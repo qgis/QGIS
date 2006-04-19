@@ -279,24 +279,22 @@ void QgsLegend::mouseReleaseEvent(QMouseEvent * e)
 	if(originType == QgsLegendItem::LEGEND_LAYER_FILE && destType == QgsLegendItem::LEGEND_LAYER_FILE_GROUP)
 	  {
 	    QgsMapLayer* origLayer = ((QgsLegendLayerFile*)(origin))->layer();
-	      if(1) //todo: find a test to avoid that symbology settings are copied if an item is moved within the same legend layer  
+	    if(dest->childCount() > 1)
 	      {
-		if(dest->childCount() > 1)
+		//find the first layer in the legend layer group != origLayer and copy its settings
+		QgsLegendItem* currentItem = dynamic_cast<QgsLegendItem*>(dest->child(0));
+		while(currentItem)
 		  {
-		    //find the first layer in the legend layer group != origLayer and copy its settings
-		    QgsLegendItem* currentItem = dynamic_cast<QgsLegendItem*>(dest->child(0));
-		    while(currentItem)
+		    if(currentItem != origin)
 		      {
-			if(currentItem != origin)
-			  {
-			    QgsMapLayer* origLayer = ((QgsLegendLayerFile*)(origin))->layer();
-			    QgsMapLayer* currentLayer = ((QgsLegendLayerFile*)(currentItem))->layer();
-			    origLayer->copySymbologySettings(*currentLayer);
-			    break;
-			  }
-			currentItem = currentItem->nextSibling();
+			QgsMapLayer* origLayer = ((QgsLegendLayerFile*)(origin))->layer();
+			QgsMapLayer* currentLayer = ((QgsLegendLayerFile*)(currentItem))->layer();
+			origLayer->copySymbologySettings(*currentLayer);
+			break;
 		      }
-		  }
+		    currentItem = currentItem->nextSibling();
+		  }                  
+		mMapCanvas->refresh();
 	      }
 	  }
 	else if(originType == QgsLegendItem::LEGEND_LAYER_FILE && destType == QgsLegendItem::LEGEND_LAYER_FILE)
@@ -306,24 +304,22 @@ void QgsLegend::mouseReleaseEvent(QMouseEvent * e)
 
 	    if(dest == origin)//origin item has been moved in mouseMoveEvent such that it is under the mouse cursor now
 	      {
-		if(1) //todo: find a test to avoid that symbology settings are copied if an item is moved within the same legend layer  
-		{
-		    if(origin->parent()->childCount() > 1)
+		if(origin->parent()->childCount() > 1)
+		  {
+		    //find the first layer in the legend layer group != origLayer and copy its settings
+		    QTreeWidgetItem* currentItem = dest->parent()->child(0);
+		    while(currentItem)
 		      {
-			//find the first layer in the legend layer group != origLayer and copy its settings
-			QTreeWidgetItem* currentItem = dest->parent()->child(0);
-			while(currentItem)
+			if(currentItem != origin)
 			  {
-			    if(currentItem != origin)
-			      {
-				QgsMapLayer* origLayer = ((QgsLegendLayerFile*)(origin))->layer();
-				QgsMapLayer* currentLayer = ((QgsLegendLayerFile*)(currentItem))->layer();
-				origLayer->copySymbologySettings(*currentLayer);
-				break;
-			      }
-			    currentItem = dynamic_cast<QgsLegendItem*>(currentItem)->nextSibling();
+			    QgsMapLayer* origLayer = ((QgsLegendLayerFile*)(origin))->layer();
+			    QgsMapLayer* currentLayer = ((QgsLegendLayerFile*)(currentItem))->layer();
+			    origLayer->copySymbologySettings(*currentLayer);
+			    break;
 			  }
+			currentItem = dynamic_cast<QgsLegendItem*>(currentItem)->nextSibling();
 		      }
+		   mMapCanvas->refresh(); 
 		  }
 	      }
 	    else
