@@ -47,14 +47,14 @@
    <item row="1" column="1" >
     <widget class="QPushButton" name="mOkButton" >
      <property name="text" >
-      <string>OK</string>
+      <string>&amp;OK</string>
      </property>
     </widget>
    </item>
    <item row="1" column="2" >
     <widget class="QPushButton" name="mCancelButton" >
      <property name="text" >
-      <string>Cancel</string>
+      <string>&amp;Cancel</string>
      </property>
     </widget>
    </item>
