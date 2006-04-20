@@ -830,14 +830,7 @@ bool QgsGeometry::vertexAt(double &x, double &y,
 QgsPoint QgsGeometry::closestVertexWithContext(QgsPoint& point,
                                                QgsGeometryVertexIndex& atVertex,
                                                double& sqrDist)
-// TODO
 {
-
-#ifdef QGISDEBUG
-      std::cout << "QgsGeometry::closestVertexWithContext: Entered"
-                << "." << std::endl;
-#endif
-
   QgsPoint minDistPoint;
 
   // Initialise some stuff
@@ -864,102 +857,8 @@ QgsPoint QgsGeometry::closestVertexWithContext(QgsPoint& point,
 	      }
 	  }
 	atVertex.push_back(closestVertexIndex);
-#if 0
-    switch (mGeos->getGeometryTypeId())
-    {
-      case geos::GEOS_POINT:                 // a point
-      {
-        atVertex.push_back(closestVertexIndex);
-
-        minDistPoint = QgsPoint(
-                                 mGeos->getCoordinate()->x,
-                                 mGeos->getCoordinate()->y
-                               );
-
-        break;
-      } // case geos::GEOS_POINT
-
-      case geos::GEOS_LINESTRING:            // a linestring
-      {
-        int numPoints = mGeos->getNumPoints();
-
-        geos::LineString* geosls = static_cast<geos::LineString*>(mGeos);
-        const geos::CoordinateSequence* sequence = geosls->getCoordinatesRO();
-
-        // go through points
-        for (int n = 0; n < numPoints; n++)
-        {
-          double testDist = point.sqrDist(
-                                           sequence->getAt(n).x,
-                                           sequence->getAt(n).y
-                                         );
-
-          if (testDist < sqrDist)
-          {
-            closestVertexIndex = n;
-            sqrDist = testDist;
-          }
-        }
-
-        atVertex.push_back(closestVertexIndex);
-
-        break;
-      } // case geos::GEOS_LINESTRING
-  
-      case geos::GEOS_LINEARRING:            // a linear ring (linestring with 1st point == last point)
-      {
-        // TODO
-        break;
-      } // case geos::GEOS_LINEARRING
-  
-      case geos::GEOS_POLYGON:               // a polygon
-      {
-	geos::CoordinateSequence* sequence = mGeos->getCoordinates();
-	if(sequence)
-	  {
-	    for(int i = 0; i < sequence->getSize(); ++i)
-	      {
-		double testDist = point.sqrDist(sequence->getAt(i).x, sequence->getAt(i).y);
-		if(testDist < sqrDist)
-		  {
-		    closestVertexIndex = i;
-		    sqrDist = testDist;
-		  }
-	      }
-	  }
-	atVertex.push_back(closestVertexIndex);
-        break;
-      } // case geos::GEOS_POLYGON
-  
-      case geos::GEOS_MULTIPOINT:            // a collection of points
-      {
-        // TODO
-        break;
-      } // case geos::GEOS_MULTIPOINT
-  
-      case geos::GEOS_MULTILINESTRING:       // a collection of linestrings
-      {
-        // TODO
-        break;
-      } // case geos::GEOS_MULTILINESTRING
-  
-      case geos::GEOS_MULTIPOLYGON:          // a collection of polygons
-      {
-        // TODO
-        break;
-      } // case geos::GEOS_MULTIPOLYGON
-  
-      case geos::GEOS_GEOMETRYCOLLECTION:    // a collection of heterogeneus geometries
-      {
-        // TODO
-        break;
-      } // case geos::GEOS_GEOMETRYCOLLECTION
-    }
-#endif
   } // if (mGeos)
-
   return minDistPoint;
-
 }
 
 
@@ -973,7 +872,7 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
   double *thisx,*thisy;
   double *prevx,*prevy;
   double testdist;
-  int closestSegmentIndex;
+  int closestSegmentIndex = 0;
 
   // Initialise some stuff
   beforeVertex.clear();
@@ -991,14 +890,14 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
     switch (wkbType)
     {
     case QGis::WKBPoint:
+    case QGis::WKBMultiPoint:  
       {
 	// Points have no lines
 	return QgsPoint(0,0);
       }
     case QGis::WKBLineString:
       {
-	closestSegmentIndex = 0;
-	unsigned char* ptr = mGeometry + 5;
+	unsigned char* ptr = mGeometry+1+sizeof(int);
 	int* npoints = (int*) ptr;
 	ptr += sizeof(int);
 	for (int index=0; index < *npoints; ++index)
@@ -1025,11 +924,45 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
 	beforeVertex.push_back(closestSegmentIndex);
 	break;
       }
+    case QGis::WKBMultiLineString:
+      {
+	unsigned char* ptr = mGeometry+1+sizeof(int);
+	int* nLines = (int*)ptr;
+	ptr += sizeof(int);
+	int* nPoints = 0; //number of points in a line
+	int pointindex = 0;//global pointindex
+	for(int linenr = 0; linenr < *nLines; ++linenr)
+	  {
+	    nPoints = (int*)ptr;
+	    ptr += sizeof(int);
+	    prevx = 0;
+	    prevy = 0;
+	    for(int pointnr = 0; pointnr < *nPoints; ++pointnr)
+	      {
+		thisx = (double*) ptr;
+		ptr += sizeof(double);
+		thisy = (double*) ptr;
+		ptr += sizeof(double);
+		if(prevx && prevy)
+		  {
+		    if((testdist = distanceSquaredPointToSegment(point, prevx, prevy, thisx, thisy, minDistPoint)) < sqrDist )
+		      {
+			closestSegmentIndex = pointindex;
+			sqrDist = testdist;
+		      }
+		  }
+		prevx = thisx;
+		prevy = thisy;
+		++pointindex;
+	      }
+	  }
+	beforeVertex.push_back(closestSegmentIndex);
+	break;
+      }
     case QGis::WKBPolygon:
       {
-	closestSegmentIndex = 0;
 	int index = 0;
-	unsigned char* ptr = mGeometry + 5;
+	unsigned char* ptr = mGeometry+1+sizeof(int);
 	int* nrings = (int*)ptr;
 	int* npoints = 0; //number of points in a ring
 	ptr += sizeof(int);
@@ -1056,6 +989,46 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
 		prevx = thisx;
 		prevy = thisy;
 		++index;
+	      }
+	  }
+	beforeVertex.push_back(closestSegmentIndex);
+	break;
+      }
+    case QGis::WKBMultiPolygon:
+      {
+	unsigned char* ptr = mGeometry+1+sizeof(int);
+	int* nRings = 0;
+	int* nPoints = 0;
+	int pointindex = 0;
+	int* nPolygons = (int*)ptr;
+	ptr += sizeof(int);
+	for(int polynr = 0; polynr < *nPolygons; ++polynr)
+	  {
+	    nRings = (int*)ptr;
+	    ptr += sizeof(int);
+	    for(int ringnr = 0; ringnr < *nRings; ++ringnr)
+	      {
+		nPoints = (int*)ptr;
+		prevx = 0;
+		prevy = 0;
+		for(int pointnr = 0; pointnr < *nPoints; ++pointnr)
+		  {
+		    thisx = (double*)ptr;
+		    ptr += sizeof(double);
+		    thisy = (double*)ptr;
+		    ptr += sizeof(double);
+		    if(prevx && prevy)
+		      {
+			if((testdist = distanceSquaredPointToSegment(point, prevx, prevy, thisx, thisy, minDistPoint)) < sqrDist )
+			  {
+			    closestSegmentIndex = pointindex;
+			    sqrDist = testdist;
+			  }
+		      }
+		    prevx = thisx;
+		    prevy = thisy;
+		    ++pointindex;
+		  }
 	      }
 	  }
 	beforeVertex.push_back(closestSegmentIndex);
