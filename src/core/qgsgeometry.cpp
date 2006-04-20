@@ -721,9 +721,31 @@ bool QgsGeometry::vertexAt(double &x, double &y,
 	      }
             case QGis::WKBPolygon:
 	      {
-                // TODO
-                return false;
-                break;
+                unsigned char *ptr;
+                int *nRings;
+		int *nPoints = 0;
+		ptr = mGeometry+5;
+		nRings = (int*)ptr;
+		ptr += sizeof(int);
+		int pointindex = 0;
+		for(int ringnr = 0; ringnr < *nRings; ++ringnr)
+		  {
+		    nPoints = (int*)ptr;
+		    ptr += sizeof(int);
+		    for(int pointnr = 0; pointnr < *nPoints; ++pointnr)
+		      {
+			if(pointindex == atVertex.back())
+			  {
+			    memcpy(&x, ptr, sizeof(double));
+			    ptr += sizeof(double);
+			    memcpy(&y, ptr, sizeof(double));
+			    break;
+			  }
+			ptr += 2*sizeof(double);
+			++pointindex;
+		      }
+		  }
+		return false;
 	      }
             case QGis::WKBMultiPoint:
 	      {
@@ -910,12 +932,6 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
                                                 QgsGeometryVertexIndex& beforeVertex,
                                                 double& sqrDist)
 {
-
-#ifdef QGISDEBUG
-//      std::cout << "QgsGeometry::closestSegment: Entered"
-//                << "." << std::endl;
-#endif
-
   QgsPoint minDistPoint;
 
   int wkbType; 
@@ -957,43 +973,57 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
 		prevx = thisx;  
 		prevy = thisy;  
 	      }
-	    
 	    thisx = (double*) ptr;
 	    ptr += sizeof(double);
 	    thisy = (double*) ptr;
 	    
 	    if (index > 0)
 	      {
-		if (
-		    (
-		     testdist = distanceSquaredPointToSegment(point,
-							      prevx, prevy,
-							      thisx, thisy,
-							      minDistPoint)  // TODO: save minDistPoint into something meaningful.
-		     )
-		    < sqrDist )
+		if((testdist = distanceSquaredPointToSegment(point, prevx, prevy, thisx, thisy, minDistPoint)) < sqrDist )
 		  {
-#ifdef QGISDEBUG
-		    //      std::cout << "QgsGeometry::closestSegment: testDist "
-		    //                << testdist << ", sqrDist"
-		    //                << sqrDist
-		    //                << "." << std::endl;
-#endif
 		    closestSegmentIndex = index;
 		    sqrDist = testdist;
 		  }
 	      }
-	    
 	    ptr += sizeof(double);
 	  }
-	
 	beforeVertex.push_back(closestSegmentIndex);
-	
 	break;
       }
-      //todo: add wkb parsing
     case QGis::WKBPolygon:
       {
+	closestSegmentIndex = 0;
+	int index = 0;
+	unsigned char* ptr = mGeometry + 5;
+	int* nrings = (int*)ptr;
+	int* npoints = 0; //number of points in a ring
+	ptr += sizeof(int);
+	for(int ringnr = 0; ringnr < *nrings; ++ringnr)//loop over rings
+	  {
+	    npoints = (int*)ptr;
+	    ptr += sizeof(int);
+	    prevx = 0;
+	    prevy = 0;
+	    for(int pointnr = 0; pointnr < *npoints; ++pointnr)//loop over points in a ring
+	      {
+		thisx = (double*)ptr;
+		ptr += sizeof(double);
+		thisy = (double*)ptr;
+		ptr += sizeof(double);
+		if(prevx && prevy)
+		  {
+		    if((testdist = distanceSquaredPointToSegment(point, prevx, prevy, thisx, thisy, minDistPoint)) < sqrDist )
+		      {
+			closestSegmentIndex = index;
+			sqrDist = testdist;
+		      }
+		  }
+		prevx = thisx;
+		prevy = thisy;
+		++index;
+	      }
+	  }
+	beforeVertex.push_back(closestSegmentIndex);
 	break;
       }
     } // switch (wkbType)
