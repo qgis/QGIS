@@ -649,13 +649,6 @@ bool QgsGeometry::deleteVertexAt(QgsGeometryVertexIndex atVertex)
 bool QgsGeometry::vertexAt(double &x, double &y, 
                            QgsGeometryVertexIndex atVertex) const
 {
-#ifdef QGISDEBUG
-      std::cout << "QgsGeometry::vertexAt: Entered with "
-//         << "atVertex " << atVertex << ", atRing " << atRing << ", atItem"
-//         << " " << atItem            
-                << "." << std::endl;
-#endif
-
       if(mGeos)//try to find the vertex from the Geos geometry (it present)
 	{
 	  geos::CoordinateSequence* cs = mGeos->getCoordinates();
@@ -672,59 +665,50 @@ bool QgsGeometry::vertexAt(double &x, double &y,
       else if(mGeometry)
 	{
 	  int wkbType;
+	  unsigned char* ptr;
 
 	  memcpy(&wkbType, (mGeometry+1), sizeof(int));
 	  switch (wkbType)
 	    {
             case QGis::WKBPoint:
 	      {
-                // TODO
-                return FALSE;
+                if(atVertex.back() == 0)
+		  {
+		    ptr = mGeometry+1+sizeof(int);
+		    memcpy(&x, ptr, sizeof(double));
+		    ptr += sizeof(double);
+		    memcpy(&y, ptr, sizeof(double));
+		  }
+		else
+		  {
+		    return FALSE;
+		  }
                 break;
 	      }
             case QGis::WKBLineString:
 	      {
-                unsigned char *ptr;
                 int *nPoints;
-		
                 // get number of points in the line
-                ptr = mGeometry + 5;     // now at mGeometry.numPoints
+                ptr = mGeometry + 1 + sizeof(int);     // now at mGeometry.numPoints
                 nPoints = (int *) ptr;
 		
-#ifdef QGISDEBUG
-		std::cout << "QgsGeometry::vertexAt: Number of points in WKBLineString is " << *nPoints
-			  << "." << std::endl;
-#endif
                 // return error if underflow
-                if (0 > atVertex.back())
+                if (0 > atVertex.back() || *nPoints <= atVertex.back())
 		  {
 		    return FALSE;
 		  }
-                // return error if overflow
-                if (*nPoints <= atVertex.back())
-		  {
-		    return FALSE;
-		  }
-		
                 // copy the vertex coordinates                      
-                ptr = mGeometry + 9 + (atVertex.back() * 16);
-                memcpy(&x, ptr, 8);
-                ptr += 8;
-                memcpy(&y, ptr, 8);
-		
-#ifdef QGISDEBUG
-		std::cout << "QgsGeometry::vertexAt: Point is (" << x << ", " << y << ")"
-			  << "." << std::endl;
-#endif
-		
+                ptr = mGeometry + 9 + (atVertex.back() * 2*sizeof(double));
+                memcpy(&x, ptr, sizeof(double));
+                ptr += sizeof(double);
+                memcpy(&y, ptr, sizeof(double));
                 break;
 	      }
             case QGis::WKBPolygon:
 	      {
-                unsigned char *ptr;
                 int *nRings;
 		int *nPoints = 0;
-		ptr = mGeometry+5;
+		ptr = mGeometry+1+sizeof(int);
 		nRings = (int*)ptr;
 		ptr += sizeof(int);
 		int pointindex = 0;
@@ -749,23 +733,74 @@ bool QgsGeometry::vertexAt(double &x, double &y,
 	      }
             case QGis::WKBMultiPoint:
 	      {
-                // TODO
-                return false;
+                ptr = mGeometry+1+sizeof(int);
+		int* nPoints = (int*)ptr;
+		if(atVertex.back() < 0 || atVertex.back() >= *nPoints)
+		  {
+		    return false;
+		  }
+		ptr += atVertex.back()*2*sizeof(double);
+		memcpy(&x, ptr, sizeof(double));
+		ptr += sizeof(double);
+		memcpy(&y, ptr, sizeof(double));
                 break;
-	      }
-	      
+	      }    
             case QGis::WKBMultiLineString:
 	      {
-                // TODO
+                ptr = mGeometry+1+sizeof(int);
+		int* nLines = (int*)ptr;
+		int* nPoints = 0; //number of points in a line
+		int pointindex = 0; //global point counter
+		ptr += sizeof(int);
+		for(int linenr = 0; linenr < *nLines; ++linenr)
+		  {
+		    nPoints = (int*)ptr;
+		    ptr += sizeof(int);
+		    for(int pointnr = 0; pointnr < *nPoints; ++pointnr)
+		      {
+			if(pointindex == atVertex.back())
+			  {
+			    memcpy(&x, ptr, sizeof(double));
+			    ptr += sizeof(double);
+			    memcpy(&y, ptr, sizeof(double));
+			    break;
+			  }
+			ptr += 2*sizeof(double);
+			++pointindex;
+		      }
+		  }
                 return false;
-                break;
 	      }
-	      
             case QGis::WKBMultiPolygon:
 	      {
-		// TODO
+		ptr = mGeometry+1+sizeof(int);
+		int* nRings = 0;//number of rings in a polygon
+		int* nPoints = 0;//number of points in a ring
+		int pointindex = 0; //global point counter
+		int* nPolygons = (int*)ptr;
+		ptr += sizeof(int);
+		for(int polynr = 0; polynr < *nPolygons; ++polynr)
+		  {
+		    nRings = (int*)ptr;
+		    ptr += sizeof(int);
+		    for(int ringnr = 0; ringnr < *nRings; ++ringnr)
+		      {
+			nPoints = (int*)ptr;
+			for(int pointnr = 0; pointnr < *nPoints; ++pointnr)
+			  {
+			    if(pointindex == atVertex.back())
+			      {
+				memcpy(&x, ptr, sizeof(double));
+				ptr += sizeof(double);
+				memcpy(&y, ptr, sizeof(double));
+				break;
+			      }
+			    ++pointindex;
+			    ptr += 2*sizeof(double);
+			  }
+		      }
+		  }
                 return false;
-                break;
 	      }
             default:
 #ifdef QGISDEBUG
