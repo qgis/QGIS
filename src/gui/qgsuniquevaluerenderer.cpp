@@ -39,7 +39,8 @@ QgsUniqueValueRenderer::QgsUniqueValueRenderer(const QgsUniqueValueRenderer& oth
 {
     mVectorType = other.mVectorType;
     mClassificationField = other.mClassificationField;
-    for(std::map<QString, QgsSymbol*>::iterator it=mSymbols.begin(); it!=mSymbols.end(); ++it)
+    std::map<QString, QgsSymbol*> s = other.mSymbols;
+    for(std::map<QString, QgsSymbol*>::iterator it=s.begin(); it!=s.end(); ++it)
     {
 	QgsSymbol* s = new QgsSymbol(*(it->second));
 	insertValue(it->first, s);
