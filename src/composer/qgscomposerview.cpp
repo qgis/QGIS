@@ -16,8 +16,8 @@
  ***************************************************************************/
 #include <iostream>
 
-#include <qmatrix.h>
-#include <qevent.h>
+#include <QMatrix>
+#include <QEvent>
 
 #include "qgsrect.h"
 

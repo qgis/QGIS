@@ -714,7 +714,7 @@ void QgsComposition::setTool ( Tool tool )
 
     // Create new object outside the visible area
     QgsComposerLabel *lab = new QgsComposerLabel ( this, mNextItemId++, 
-        (-1000)*mScale, (-1000)*mScale, "Label", (int) (mScale*mPaperHeight/40) );
+        (-1000)*mScale, (-1000)*mScale, tr("Label"), (int) (mScale*mPaperHeight/40) );
     mNewCanvasItem = dynamic_cast <Q3CanvasItem *> (lab);
     mComposer->showItemOptions ( lab->options() );
 
@@ -759,8 +759,8 @@ void QgsComposition::setTool ( Tool tool )
 	}
 	else
         {
-	    QMessageBox::warning( 0, "Warning",
-                         "Cannot load picture." );
+	    QMessageBox::warning( 0, tr("Warning"),
+                         tr("Cannot load picture.") );
 
 	    delete pi;
 	}

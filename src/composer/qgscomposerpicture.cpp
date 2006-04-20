@@ -22,7 +22,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPainter>
-#include <Q3StrList>
+#include <QImageWriter>
 
 #include <cmath>
 #include <iostream>
@@ -411,8 +411,8 @@ void QgsComposerPicture::pictureChanged ( )
     loadPicture();
 
     if ( !mPictureValid ) {
-        QMessageBox::warning( 0, "Warning",
-                        "Cannot load picture." );
+        QMessageBox::warning( 0, tr("Warning"),
+                        tr("Cannot load picture.") );
     }
     else
     {
@@ -479,11 +479,11 @@ QWidget *QgsComposerPicture::options ( void )
 QString QgsComposerPicture::pictureDialog ( void )
 {
     QString filters = "Pictures ( *.svg *.SVG ";
-    Q3StrList formats = QPictureIO::outputFormats();
+    QList<QByteArray> formats = QImageWriter::supportedImageFormats();
 
     for ( int i = 0; i < formats.count(); i++ )
     {
-        QString frmt = QPictureIO::outputFormats().at( i );
+        QString frmt = formats.at( i );
         QString fltr = " *." + frmt.lower() + " *." + frmt.upper();
         filters += fltr;
     }
@@ -491,7 +491,7 @@ QString QgsComposerPicture::pictureDialog ( void )
 
     QString file = QFileDialog::getOpenFileName(
                     0,
-                    "Choose a file",
+                    tr("Choose a file"),
                     ".",
                     filters );
 
