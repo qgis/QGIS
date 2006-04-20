@@ -568,7 +568,7 @@ void QgsComposer::on_mActionExportAsImage_activated(void)
   myQFileDialog->selectFilter(myLastUsedFilter);
 
   // set the 'Open' button to something that makes more sense
-  myQFileDialog->setLabelText(QFileDialog::Accept, tr("Save"));
+  myQFileDialog->setAcceptMode(QFileDialog::AcceptSave);
 
   //prompt the user for a filename
   QString myOutputFileNameQString; // = myQFileDialog->getSaveFileName(); //delete this
