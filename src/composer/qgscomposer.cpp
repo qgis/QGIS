@@ -27,7 +27,6 @@
 #include <QFileDialog>
 #include <QMatrix>
 #include <QMessageBox>
-#include <Q3PaintDeviceMetrics>
 #include <QPainter>
 #include <Q3Picture>
 #include <QPrinter>
@@ -35,6 +34,7 @@
 #include <QIcon>
 #include <QPixmap>
 #include <QToolBar>
+#include <QImageWriter>
 #include <iostream>
 
 
@@ -454,11 +454,9 @@ void QgsComposer::on_mActionPrint_activated(void)
 	bool print = true;
 
 	// Check size 
-	Q3PaintDeviceMetrics pm(mPrinter);
-
-	std::cout << "Paper: " << pm.widthMM() << " x " << pm.heightMM() << std::endl;
-	if ( mComposition->paperWidth() != pm.widthMM() || 
-	    mComposition->paperHeight() != pm.heightMM() )
+	std::cout << "Paper: " << mPrinter->widthMM() << " x " << mPrinter->heightMM() << std::endl;
+	if ( mComposition->paperWidth() != mPrinter->widthMM() || 
+	    mComposition->paperHeight() != mPrinter->heightMM() )
 	{
 	  int answer = QMessageBox::warning ( 0, "Paper does not match", 
 	      "The selected paper size does not match the composition size",
@@ -531,9 +529,9 @@ void QgsComposer::on_mActionExportAsImage_activated(void)
   int myCounterInt=0;
   QString myFilters;
   QString myLastUsedFilter;
-  for ( ; myCounterInt < QPictureIO::outputFormats().count(); myCounterInt++ )
+  for ( ; myCounterInt < QImageWriter::supportedImageFormats().count(); myCounterInt++ )
   {
-    QString myFormat=QString(QPictureIO::outputFormats().at( myCounterInt ));
+    QString myFormat=QString(QImageWriter::supportedImageFormats().at( myCounterInt ));
     QString myFilter = myFormat + " format (*." + myFormat.lower() + " *." + myFormat.upper() + ")";
     if ( myCounterInt > 0 ) myFilters += ";;";
     myFilters += myFilter;
@@ -557,7 +555,7 @@ void QgsComposer::on_mActionExportAsImage_activated(void)
       new QFileDialog(
         this,
         tr("Choose a filename to save the map image as"),
-        "",
+        ".",
         myFilters
         )
       );
@@ -568,6 +566,9 @@ void QgsComposer::on_mActionExportAsImage_activated(void)
 
   // set the filter to the last one used
   myQFileDialog->selectFilter(myLastUsedFilter);
+
+  // set the 'Open' button to something that makes more sense
+  myQFileDialog->setLabelText(QFileDialog::Accept, tr("Save"));
 
   //prompt the user for a filename
   QString myOutputFileNameQString; // = myQFileDialog->getSaveFileName(); //delete this
