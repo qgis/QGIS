@@ -114,7 +114,7 @@ void QgsComposerVectorLegend::init ( void )
 
     mLayersPopupMenu = new Q3PopupMenu( );
 
-    mLayersPopupMenu->insertItem( "Combine selected layers", this, SLOT(groupLayers()) );
+    mLayersPopupMenu->insertItem( tr("Combine selected layers"), this, SLOT(groupLayers()) );
 
     connect ( mLayersListView, SIGNAL(clicked(Q3ListViewItem *)), 
                          this, SLOT(layerChanged(Q3ListViewItem *)));
@@ -127,9 +127,9 @@ void QgsComposerVectorLegend::init ( void )
     
     // Preview style
     mPreviewMode = Render;
-    mPreviewModeComboBox->insertItem ( "Cache", Cache );
-    mPreviewModeComboBox->insertItem ( "Render", Render );
-    mPreviewModeComboBox->insertItem ( "Rectangle", Rectangle );
+    mPreviewModeComboBox->insertItem ( tr("Cache"), Cache );
+    mPreviewModeComboBox->insertItem ( tr("Render"), Render );
+    mPreviewModeComboBox->insertItem ( tr("Rectangle"), Rectangle );
     mPreviewModeComboBox->setCurrentItem ( mPreviewMode );
 
     connect ( mComposition, SIGNAL(mapChanged(int)), this, SLOT(mapChanged(int)) ); 

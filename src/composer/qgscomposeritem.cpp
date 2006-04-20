@@ -14,8 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qwidget.h>
-#include <qdom.h>
+#include <QWidget>
+#include <QDomNode>
 
 #include "qgscomposition.h"
 #include "qgscomposeritem.h"

@@ -80,9 +80,9 @@ void QgsComposerMap::init ()
     
     // Preview style
     mPreviewMode = Cache;
-    mPreviewModeComboBox->insertItem ( "Cache", Cache );
-    mPreviewModeComboBox->insertItem ( "Render", Render );
-    mPreviewModeComboBox->insertItem ( "Rectangle", Rectangle );
+    mPreviewModeComboBox->insertItem ( tr("Cache"), Cache );
+    mPreviewModeComboBox->insertItem ( tr("Render"), Render );
+    mPreviewModeComboBox->insertItem ( tr("Rectangle"), Rectangle );
     mPreviewModeComboBox->setCurrentItem ( Cache );
 
     mWidthScale = 1.0 / mComposition->scale();

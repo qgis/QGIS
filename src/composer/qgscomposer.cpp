@@ -365,29 +365,29 @@ void QgsComposer::on_mActionPrint_activated(void)
         s.sprintf( "%%%%BoundingBox: 0 0 %d %d", w, h );
 
         if ( s.length() > size ) {
-          QMessageBox::warning(this,"Error in Print", "Cannot format BoundingBox");
+          QMessageBox::warning(this, tr("Error in Print"), tr("Cannot format BoundingBox"));
         } else {
           if ( ! f.at(offset) ) {
-            QMessageBox::warning(this,"Error in Print", "Cannot seek");
+            QMessageBox::warning(this, tr("Error in Print"), tr("Cannot seek"));
           } else {
             /* Write spaces (for case the size > s.length() ) */
             QString es;
             es.fill(' ', size-1 );
             f.flush();
             if ( f.writeBlock ( es.toLocal8Bit().data(), size-1 ) < size-1 ) {
-              QMessageBox::warning(this,"Error in Print", "Cannot overwrite BoundingBox");
+              QMessageBox::warning(this, tr("Error in Print"), tr("Cannot overwrite BoundingBox"));
             }
             f.flush();
             f.at(offset);
             f.flush();
             if ( f.writeBlock ( s.toLocal8Bit().data(), s.length() ) <  s.length()-1 ) {
-              QMessageBox::warning(this,"Error in Print", "Cannot overwrite BoundingBox");
+              QMessageBox::warning(this, tr("Error in Print"), tr("Cannot overwrite BoundingBox"));
             }
             f.flush();
           }
         }
       } else {
-        QMessageBox::warning(this,"Error in Print", "Cannot find BoundingBox");
+        QMessageBox::warning(this, tr("Error in Print"), tr("Cannot find BoundingBox"));
       }
       f.close();
 
@@ -420,35 +420,35 @@ void QgsComposer::on_mActionPrint_activated(void)
           s.sprintf( "0 %d translate %s scale/defM matrix CM d } d", trans, (const char *)rx.cap(1).toLocal8Bit().data() );
 
           if ( s.length() > size ) {
-            QMessageBox::warning(this,"Error in Print", "Cannot format translate");
+            QMessageBox::warning(this, tr("Error in Print"), tr("Cannot format translate"));
           } else {
             if ( ! f.at(offset) ) {
-              QMessageBox::warning(this,"Error in Print", "Cannot seek");
+              QMessageBox::warning(this, tr("Error in Print"), tr("Cannot seek"));
             } else {
               /* Write spaces (for case the size > s.length() ) */
               QString es;
               es.fill(' ', size-1 );
               f.flush();
               if ( f.writeBlock ( es.toLocal8Bit().data(), size-1 ) < size-1 ) {
-                QMessageBox::warning(this,"Error in Print", "Cannot overwrite translate");
+                QMessageBox::warning(this, tr("Error in Print"), tr("Cannot overwrite translate"));
               }
               f.flush();
               f.at(offset);
               f.flush();
               if ( f.writeBlock ( s.toLocal8Bit().data(), s.length() ) <  s.length()-1 ) {
-                QMessageBox::warning(this,"Error in Print", "Cannot overwrite translate");
+                QMessageBox::warning(this, tr("Error in Print"), tr("Cannot overwrite translate"));
               }
               f.flush();
             }
           }
         } else {
-          QMessageBox::warning(this,"Error in Print", "Cannot find translate");
+          QMessageBox::warning(this, tr("Error in Print"), tr("Cannot find translate"));
         }
         f.close();
       }
 #endif
       } catch (QgsIOException e) {
-        QMessageBox::warning(this,"File IO Error", e.what());
+        QMessageBox::warning(this, tr("File IO Error"), e.what());
       }
     } else {  // print to printer
 	bool print = true;
@@ -458,8 +458,8 @@ void QgsComposer::on_mActionPrint_activated(void)
 	if ( mComposition->paperWidth() != mPrinter->widthMM() || 
 	    mComposition->paperHeight() != mPrinter->heightMM() )
 	{
-	  int answer = QMessageBox::warning ( 0, "Paper does not match", 
-	      "The selected paper size does not match the composition size",
+	  int answer = QMessageBox::warning ( 0, tr("Paper does not match"), 
+	      tr("The selected paper size does not match the composition size"),
 	      QMessageBox::Ok,  QMessageBox::Abort );
 
 	  if ( answer == QMessageBox::Abort )
@@ -502,11 +502,11 @@ void QgsComposer::on_mActionExportAsImage_activated(void)
 #endif
 
   if ( memuse > 200 ) { // cca 4500 x 4500
-    int answer = QMessageBox::warning ( 0, "Big image", 
-        "To create image " + QString::number(width) + " x " 
+    int answer = QMessageBox::warning ( 0, tr("Big image"), 
+        tr("To create image ") + QString::number(width) + " x " 
         + QString::number(height) 
-        + " requires circa " 
-        + QString::number(memuse) + " MB of memory", 
+        + tr(" requires circa ") 
+        + QString::number(memuse) + tr(" MB of memory"), 
         QMessageBox::Ok,  QMessageBox::Abort );
   
     raise ();
@@ -616,13 +616,12 @@ void QgsComposer::on_mActionExportAsSVG_activated(void)
   QSettings myQSettings;
   QString myLastUsedFile = myQSettings.readEntry("/UI/lastSaveAsSvgFile","qgis.svg");
 
-  QFileDialog *myQFileDialog = new QFileDialog( this, "Save svg file dialog",
-                                                "", "SVG Format (*.svg *SVG)" );
+  QFileDialog *myQFileDialog = new QFileDialog( this, tr("Choose a filename to save the map as"),
+                                                ".", "SVG Format (*.svg *SVG)" );
   
-  myQFileDialog->setCaption(tr("Choose a filename to save the map as"));
-
   myQFileDialog->selectFile( myLastUsedFile );
   myQFileDialog->setMode(QFileDialog::AnyFile);
+  myQFileDialog->setAcceptMode(QFileDialog::AcceptSave);
 
   int result = myQFileDialog->exec();
   raise ();
