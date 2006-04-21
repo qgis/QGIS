@@ -797,14 +797,17 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
     QgsDebugMsg("QgsVectorLayer::draw: Destroying all cached geometries.");
 
     // TODO: This area has suspect memory management
-    for (std::map<int, QgsGeometry*>::iterator it  = mCachedGeometries.begin(); 
-        it != mCachedGeometries.end();
-        ++it )
-    {
-      delete (*it).second;
-    }
-    QgsDebugMsg("QgsVectorLayer::draw: Clearing all cached geometries.");
-    mCachedGeometries.clear();
+    if(mEditable)
+      {
+	for (std::map<int, QgsGeometry*>::iterator it  = mCachedGeometries.begin(); 
+	     it != mCachedGeometries.end();
+	     ++it )
+	  {
+	    delete (*it).second;
+	  }
+	QgsDebugMsg("QgsVectorLayer::draw: Clearing all cached geometries.");
+	mCachedGeometries.clear();
+      }
 
     dataProvider->select(viewExtent);
     dataProvider->updateFeatureCount();
@@ -871,8 +874,10 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
             }
 
             // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-            mCachedGeometries[fet->featureId()] = fet->geometryAndOwnership();
-
+	    if(mEditable)
+	      {
+		mCachedGeometries[fet->featureId()] = fet->geometryAndOwnership();
+	      }
             bool sel=mSelected.find(fet->featureId()) != mSelected.end();
             m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, 
                 sel, widthScale );
