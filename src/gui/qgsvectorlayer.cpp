@@ -137,11 +137,6 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
     // have no effect on existing layers
     QSettings settings;
     updateThreshold = settings.readNumEntry("Map/updateThreshold", 1000);
-    //editing is now enabled by default
-    if(dataProvider->capabilities()&QgsVectorDataProvider::AddFeatures)
-    {
-      startEditing();
-    }
   }
 } // QgsVectorLayer ctor
 

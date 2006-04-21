@@ -407,6 +407,22 @@ void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& posit
 	    {
 	      theMenu.addAction(tr("&Make to toplevel item"), this, SLOT(makeToTopLevelItem()));
 	    }
+	  //add entry 'allow editing'
+	  QAction* toggleEditingAction = theMenu.addAction(tr("&Allow editing"), this, SLOT(legendLayerToggleEditing()));
+	  toggleEditingAction->setCheckable(true);
+	  QgsLegendLayer* theLayer = dynamic_cast<QgsLegendLayer*>(li);
+	  if(theLayer)
+	    {
+	      QgsVectorLayer* theVectorLayer = dynamic_cast<QgsVectorLayer*>(theLayer->firstMapLayer());
+	      if(!theVectorLayer || theLayer->mapLayers().size() !=1)
+		{
+		  toggleEditingAction->setEnabled(false);
+		}
+	      if(theVectorLayer)
+		{
+		  toggleEditingAction->setChecked(theVectorLayer->isEditable());
+		}
+	    }
 	}
       else if(li->type() == QgsLegendItem::LEGEND_GROUP)
 	{
@@ -650,6 +666,28 @@ void QgsLegend::legendLayerShowProperties()
 	return;
     }
     ml->showLayerProperties();
+}
+
+void QgsLegend::legendLayerToggleEditing()
+{
+  QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(currentItem());
+  if(!ll)
+    {
+      return;
+    }
+  QgsVectorLayer* theVectorLayer = dynamic_cast<QgsVectorLayer*>(ll->firstMapLayer());
+  if(!theVectorLayer)
+    {
+      return;
+    }
+  if(theVectorLayer->isEditable())
+    {
+      theVectorLayer->stopEditing();
+    }
+  else
+    {
+      theVectorLayer->startEditing();
+    }
 }
 
 void QgsLegend::expandAll()

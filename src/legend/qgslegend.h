@@ -256,6 +256,8 @@ this item may be moved back to the original position with resetToInitialPosition
   void legendLayerRemoveFromOverview();
   /**Shows the property dialog of the first legend layer file in a legend layer*/
   void legendLayerShowProperties();
+  /**Toggles the editing mode of the first layer file of a legend layer*/
+  void legendLayerToggleEditing();
    /**Sets all listview items to open*/
   void expandAll();
   /**Sets all listview items to closed*/

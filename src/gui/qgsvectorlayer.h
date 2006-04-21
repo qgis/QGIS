@@ -183,6 +183,9 @@ public slots:
   void triggerRepaint();
   /**Shows the properties dialog*/
   virtual void showLayerProperties();
+  void startEditing();
+  void stopEditing();
+
 
 public:
 
@@ -471,12 +474,8 @@ public:
 
  
 protected slots:
-  void toggleEditing();
-  
-  void startEditing();
-  
-  void stopEditing();
 
+  void toggleEditing();
 
 private:                       // Private attributes
 
