@@ -1,5 +1,16 @@
 <!DOCTYPE TS><TS>
 <context>
+    <name>@default</name>
+    <message>
+        <source>OGR Driver Manager</source>
+        <translation>OGR管理器</translation>
+    </message>
+    <message>
+        <source>unable to get OGRDriverManager</source>
+        <translation>无法得到OGR管理器</translation>
+    </message>
+</context>
+<context>
     <name>MapCoordsDialogBase</name>
     <message>
         <source>Enter map coordinates</source>
@@ -326,7 +337,7 @@
     <name>QFileDialog</name>
     <message>
         <source>open files dialog</source>
-        <translation>打开文件对话框</translation>
+        <translation type="obsolete">打开文件对话框</translation>
     </message>
     <message>
         <source>Save file dialog</source>
@@ -346,7 +357,7 @@
     </message>
     <message>
         <source>save new vector files dialog</source>
-        <translation>存储新的矢量文件对话框</translation>
+        <translation type="obsolete">存储新的矢量文件对话框</translation>
     </message>
 </context>
 <context>
@@ -362,7 +373,7 @@
     <message>
         <source>No Data Provider Plugins</source>
         <comment>No QGIS data provider plugins found in:</comment>
-        <translation>没有数据供应者插件</translation>
+        <translation>没有数据源插件</translation>
     </message>
     <message>
         <source>No vector layers can be loaded. Check your QGIS installation</source>
@@ -370,11 +381,11 @@
     </message>
     <message>
         <source>No Data Providers</source>
-        <translation>没有数据供应者</translation>
+        <translation>没有数据源</translation>
     </message>
     <message>
         <source>No data provider plugins are available. No vector layers can be loaded</source>
-        <translation>没有有效的数据供应者插件。不能加载矢量图层</translation>
+        <translation>没有有效的数据源插件。不能加载矢量图层</translation>
     </message>
     <message>
         <source>Choose a QGIS project file</source>
@@ -402,15 +413,15 @@
     </message>
     <message>
         <source>No proj4 projection string. Unable to set map units.</source>
-        <translation>没有proj4的投影字符串。不能设置地图单位.</translation>
+        <translation type="obsolete">没有proj4的投影字符串。不能设置地图单位.</translation>
     </message>
     <message>
         <source>Unsupported map units of </source>
-        <translation>不支持的地图单位</translation>
+        <translation type="obsolete">不支持的地图单位</translation>
     </message>
     <message>
         <source>No oid column in table</source>
-        <translation>表中没有OID字段</translation>
+        <translation type="obsolete">表中没有OID字段</translation>
     </message>
     <message>
         <source>The table has no primary key nor oid column. 
@@ -418,13 +429,13 @@ Qgis requires that the table either has a primary key
 or has a column containing the PostgreSQL oid.
 For better performance the column should be indexed
 </source>
-        <translation>这个表既没有主键也没有OID字段。Qgis要求表有一个主键
+        <translation type="obsolete">这个表既没有主键也没有OID字段。Qgis要求表有一个主键
 或是有一个字段包含了PostgreSQL的OID。为了有更好的
 执行效率，这个字段应该建过索引</translation>
     </message>
     <message>
         <source>No suitable key column in view</source>
-        <translation>视图中没有合适的关键字段</translation>
+        <translation type="obsolete">视图中没有合适的关键字段</translation>
     </message>
     <message>
         <source>The view has no column suitable for use as a unique key.
@@ -434,39 +445,175 @@ used as a unique key. It should be derived from a column
 of type int4 and be either a primary key or have
 a unique constraint on it (an indexed column will
 give better performance).</source>
-        <translation>当前视图没有一个字段适合作为独立关键字段。
+        <translation type="obsolete">当前视图没有一个字段适合作为独立关键字段。
 
 Qgis要求视图有一个字段能用作独立关键字段。它的类型必须是int4，
 并且要是主键或者包含了独立值(建过索引的字段会有更好的执行效率).</translation>
     </message>
     <message>
         <source>No primary key column in table</source>
-        <translation>表中没有主键字段</translation>
+        <translation type="obsolete">表中没有主键字段</translation>
     </message>
     <message>
         <source>The table has a primary key that is composed of 
 more than one column. Qgis does not currently 
 support this.</source>
-        <translation>Qgis不支持一个表的主键由多个字段构成。</translation>
+        <translation type="obsolete">Qgis不支持一个表的主键由多个字段构成。</translation>
     </message>
     <message>
         <source>Unable to save to file </source>
         <translation>无法保存文件</translation>
+    </message>
+    <message>
+        <source>Regular expressions on numeric values don&apos;t make sense. Use comparison insted.</source>
+        <translation>在数值上使用正则表达式没有意义。请使用比较运算。</translation>
+    </message>
+    <message>
+        <source>Referenced column wasn&apos;t found: </source>
+        <translation>引用的字段未找到: </translation>
+    </message>
+    <message>
+        <source>Division by zero.</source>
+        <translation>被0除。</translation>
+    </message>
+    <message>
+        <source>No active layer</source>
+        <translation>没有激活的图层</translation>
+    </message>
+    <message>
+        <source>To identify features, you must choose an layer active by clicking on its name in the legend</source>
+        <translation>要识别要素，您必须在图例上单击一个图层的名称，激活该图层</translation>
+    </message>
+    <message>
+        <source>Band</source>
+        <translation>波段</translation>
+    </message>
+    <message>
+        <source>action</source>
+        <translation>命令</translation>
+    </message>
+    <message>
+        <source> features found</source>
+        <translation>要素被找到</translation>
+    </message>
+    <message>
+        <source> 1 feature found</source>
+        <translation> 1个要素被找到</translation>
+    </message>
+    <message>
+        <source>No features found</source>
+        <translation>未找到要素</translation>
+    </message>
+    <message>
+        <source>No features were found in the active layer at the point you clicked</source>
+        <translation>在当前激活图层的鼠标点击位置上未发现要素</translation>
+    </message>
+    <message>
+        <source>Could not identify objects on</source>
+        <translation type="unfinished">无法识别要素在</translation>
+    </message>
+    <message>
+        <source>because</source>
+        <translation>因为</translation>
+    </message>
+    <message>
+        <source>To select features, you must choose an layer active by clicking on its name in the legend</source>
+        <translation>要选择要素，您必须在图例上单击一个图层的名称，激活该图层</translation>
+    </message>
+    <message>
+        <source>New centroid</source>
+        <translation>新的质心</translation>
+    </message>
+    <message>
+        <source>New point</source>
+        <translation>新的点</translation>
+    </message>
+    <message>
+        <source>New vertex</source>
+        <translation>新节点</translation>
+    </message>
+    <message>
+        <source>Undo last point</source>
+        <translation>撤消最后的点</translation>
+    </message>
+    <message>
+        <source>Close line</source>
+        <translation>闭合线</translation>
+    </message>
+    <message>
+        <source>Select vertex</source>
+        <translation>选择节点</translation>
+    </message>
+    <message>
+        <source>Select new position</source>
+        <translation>选择新的位置</translation>
+    </message>
+    <message>
+        <source>Select line segment</source>
+        <translation>选择线的片段</translation>
+    </message>
+    <message>
+        <source>New vertex position</source>
+        <translation>新的节点位置</translation>
+    </message>
+    <message>
+        <source>Release</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <source>Delete vertex</source>
+        <translation>删除节点</translation>
+    </message>
+    <message>
+        <source>Release vertex</source>
+        <translation>取消节点</translation>
+    </message>
+    <message>
+        <source>Select element</source>
+        <translation>选择元素</translation>
+    </message>
+    <message>
+        <source>New location</source>
+        <translation>新的区域</translation>
+    </message>
+    <message>
+        <source>Release selected</source>
+        <translation>取消选中的</translation>
+    </message>
+    <message>
+        <source>Delete selected / select next</source>
+        <translation>删除选中的/选择下一个</translation>
+    </message>
+    <message>
+        <source>Select position on line</source>
+        <translation>在线上选择一个位置</translation>
+    </message>
+    <message>
+        <source>Split the line</source>
+        <translation>分割线</translation>
+    </message>
+    <message>
+        <source>Release the line</source>
+        <translation>取消线</translation>
+    </message>
+    <message>
+        <source>Select point on line</source>
+        <translation>在线上选择一个点</translation>
     </message>
 </context>
 <context>
     <name>QgisApp</name>
     <message>
         <source>Loading QGIS...</source>
-        <translation>启动QGIS...</translation>
+        <translation type="obsolete">启动QGIS...</translation>
     </message>
     <message>
         <source>Setting up QGIS gui...</source>
-        <translation>设置QGIS的界面...</translation>
+        <translation type="obsolete">设置QGIS的界面...</translation>
     </message>
     <message>
         <source>Layers</source>
-        <translation>图层</translation>
+        <translation type="obsolete">图层</translation>
     </message>
     <message>
         <source>Quantum GIS - </source>
@@ -474,7 +621,7 @@ support this.</source>
     </message>
     <message>
         <source>Loading plugins...</source>
-        <translation>加载插件...</translation>
+        <translation type="obsolete">加载插件...</translation>
     </message>
     <message>
         <source>Version </source>
@@ -494,15 +641,15 @@ support this.</source>
     </message>
     <message>
         <source>Available Data Provider Plugins</source>
-        <translation>有效的数据供应者插件</translation>
+        <translation>有效的数据源插件</translation>
     </message>
     <message>
         <source>No OGR Provider</source>
-        <translation>没有OGR供应者</translation>
+        <translation type="obsolete">没有OGR供应者</translation>
     </message>
     <message>
         <source>No OGR data provider was found in the QGIS lib directory</source>
-        <translation>在QGIS lib目录下未发现OGR数据供应者</translation>
+        <translation type="obsolete">在QGIS lib目录下未发现OGR数据供应者</translation>
     </message>
     <message>
         <source>is not a valid or recognized data source</source>
@@ -522,11 +669,11 @@ support this.</source>
     </message>
     <message>
         <source>No PostgreSQL Provider</source>
-        <translation>没有PostgreSQL供应者</translation>
+        <translation type="obsolete">没有PostgreSQL供应者</translation>
     </message>
     <message>
         <source>No PostgreSQL data provider was found in the QGIS lib directory</source>
-        <translation>在QGIS lib目录下未发现PostgreSQL数据供应者</translation>
+        <translation type="obsolete">在QGIS lib目录下未发现PostgreSQL数据供应者</translation>
     </message>
     <message>
         <source>Saved map to:</source>
@@ -638,7 +785,7 @@ support this.</source>
     </message>
     <message>
         <source>QGIS - Changes in CVS Since Last Release</source>
-        <translation>QGIS - 在CVS中有新的变化</translation>
+        <translation type="obsolete">QGIS - 在CVS中有新的变化</translation>
     </message>
     <message>
         <source>Unable to get current version information from server</source>
@@ -730,11 +877,11 @@ support this.</source>
     </message>
     <message>
         <source>Setting theme...</source>
-        <translation>设置主题...</translation>
+        <translation type="obsolete">设置主题...</translation>
     </message>
     <message>
         <source>QGIS Ready</source>
-        <translation>QGIS就绪</translation>
+        <translation type="obsolete">QGIS就绪</translation>
     </message>
     <message>
         <source>PostGIS editing support in provider</source>
@@ -890,11 +1037,11 @@ support this.</source>
     </message>
     <message>
         <source>Project file exists.</source>
-        <translation>项目文件已存在.</translation>
+        <translation type="obsolete">项目文件已存在.</translation>
     </message>
     <message>
         <source>The given project file exists.  Do you wish to over-write it with a new one?</source>
-        <translation>项目文件已存在。您是否要覆盖它?</translation>
+        <translation type="obsolete">项目文件已存在。您是否要覆盖它?</translation>
     </message>
     <message>
         <source>Saved project to:</source>
@@ -918,508 +1065,193 @@ support this.</source>
         <source>You can change this option later by selecting Preferences from the Settings menu.</source>
         <translation>您可以在以后从设置菜单中选择首选项来设置这个选项.</translation>
     </message>
-</context>
-<context>
-    <name>QgisAppBase</name>
     <message>
-        <source>Quantum GIS</source>
-        <translation>Quantum GIS</translation>
+        <source>Reading settings</source>
+        <translation>读取设置</translation>
     </message>
     <message>
-        <source>&amp;File</source>
-        <translation>文件(&amp;F)</translation>
+        <source>Setting up the GUI</source>
+        <translation>设置GUI</translation>
     </message>
     <message>
-        <source>&amp;Layer</source>
-        <translation>图层(&amp;L)</translation>
+        <source>Checking database</source>
+        <translation>检查数据库</translation>
     </message>
     <message>
-        <source>&amp;View</source>
-        <translation>视图(&amp;V)</translation>
+        <source>Restoring loaded plugins</source>
+        <translation>恢复加载的插件</translation>
     </message>
     <message>
-        <source>&amp;Tools</source>
-        <translation type="obsolete">工具(&amp;T)</translation>
+        <source>Initializing file filters</source>
+        <translation>初始化文件过滤器</translation>
     </message>
     <message>
-        <source>&amp;Help</source>
-        <translation>帮助(&amp;H)</translation>
+        <source>Restoring window state</source>
+        <translation>恢复窗口状态</translation>
     </message>
     <message>
-        <source>File Management Toolbar</source>
-        <translation>文件管理工具栏</translation>
-    </message>
-    <message>
-        <source>Data Toolbar</source>
-        <translation>数据工具栏</translation>
-    </message>
-    <message>
-        <source>Map Navigation Toolbar</source>
-        <translation>地图漫游工具栏</translation>
-    </message>
-    <message>
-        <source>Attribute Data Toolbar</source>
-        <translation>属性数据工具栏</translation>
-    </message>
-    <message>
-        <source>Help Toolbar</source>
-        <translation>帮助工具栏</translation>
-    </message>
-    <message>
-        <source>Open Project</source>
-        <translation>打开项目</translation>
-    </message>
-    <message>
-        <source>&amp;Open Project</source>
-        <translation>打开项目(&amp;O)</translation>
-    </message>
-    <message>
-        <source>Open a previously saved QGIS project file. The layers (raster and vector) stored in the project file will be loaded and displayed on the map canvas</source>
-        <translation>打开先前存储的QGIS项目文件。项目文件中存储的图层(栅格和矢量)会被加载并显示在地图上</translation>
-    </message>
-    <message>
-        <source>Ctrl+O</source>
-        <translation>Ctrl+O</translation>
-    </message>
-    <message>
-        <source>Exit</source>
-        <translation>退出</translation>
-    </message>
-    <message>
-        <source>E&amp;xit</source>
-        <translation>退出(&amp;x)</translation>
-    </message>
-    <message>
-        <source>Close all layers and exit QGIS</source>
-        <translation>关闭所有图层并退出QGIS</translation>
-    </message>
-    <message>
-        <source>Add a PostGIS Layer</source>
-        <translation>添加PostGIS图层</translation>
-    </message>
-    <message>
-        <source>Add a &amp;PostGIS Layer</source>
-        <translation>添加PostGIS图层(&amp;P)</translation>
-    </message>
-    <message>
-        <source>Add a PostgreSQL layer to the map. This requires a properly configured and running PostgreSQL database and the PostGIS extensions.</source>
-        <translation>添加一个PostgreSQL图层到地图上。这需要一个正确配置并运行良好的PostgreSQL数据库，以及PostGIS扩展。</translation>
-    </message>
-    <message>
-        <source>Refresh </source>
-        <translation>刷新</translation>
-    </message>
-    <message>
-        <source>&amp;Refresh </source>
-        <translation>刷新(&amp;R)</translation>
-    </message>
-    <message>
-        <source>Refresh the map by clearing the map canvas and redrawing all visible layers</source>
-        <translation>通过清除地图显示区并重绘所有可见图层来刷新地图</translation>
-    </message>
-    <message>
-        <source>Zoom to full extent</source>
-        <translation>全幅显示</translation>
-    </message>
-    <message>
-        <source>Zoom to &amp;full extent</source>
-        <translation>全幅显示(&amp;f)</translation>
-    </message>
-    <message>
-        <source>Zoom to the full extent of all layers on the map. This brings everything on the map into full view</source>
-        <translation>缩放到所有图层的全幅范围。这将使地图上的所有内容都显示在视图范围之内</translation>
-    </message>
-    <message>
-        <source>Map Navigation Tools</source>
-        <translation>地图漫游工具</translation>
-    </message>
-    <message>
-        <source>Zoom in</source>
-        <translation>放大</translation>
-    </message>
-    <message>
-        <source>Zoom &amp;In</source>
-        <translation>放大(&amp;I)</translation>
-    </message>
-    <message>
-        <source>Zoom in on the map. Drag the mouse (hold down the left button) to draw a rectangle around the area you want to zoom to, then release the mouse.</source>
-        <translation>放大地图。在您想要放大的区域周围拖动鼠标(按下左键)拉一个矩形框，然后释放鼠标。</translation>
-    </message>
-    <message>
-        <source>Pan</source>
-        <translation>移动</translation>
-    </message>
-    <message>
-        <source>&amp;Pan</source>
-        <translation>移动(&amp;P)</translation>
-    </message>
-    <message>
-        <source>Pan the map view by dragging the mouse (hold down the left button). The area displayed will change after the mouse is released.</source>
-        <translation>通过拖动鼠标(按下左键)来移动地图视图。释放鼠标后显示区域会改变。</translation>
-    </message>
-    <message>
-        <source>Zoom out</source>
-        <translation>缩小</translation>
-    </message>
-    <message>
-        <source>Zoom &amp;Out</source>
-        <translation>缩小(&amp;O)</translation>
-    </message>
-    <message>
-        <source>Zoom out to view more of the map. Drag the mouse (hold down the left button) to draw a rectangle around an area. The current view will zoomed out and resized to &quot;fit&quot; in the rectangle.</source>
-        <translation>缩小以浏览更多的地图区域。在某个区域周围拖动鼠标(按下左键)拉一个矩形框。当前视图会被缩小以&quot;适应&quot;这个矩形框.</translation>
-    </message>
-    <message>
-        <source>Zoom to selected features</source>
-        <translation>放大至选中的要素</translation>
-    </message>
-    <message>
-        <source>&amp;Zoom to selected features</source>
-        <translation>放大至选中的要素(&amp;Z)</translation>
-    </message>
-    <message>
-        <source>Zoom to selected features in active layer</source>
-        <translation>缩放到激活图层的选中要素上</translation>
-    </message>
-    <message>
-        <source>Zoom to the extent of selected features on the active layer. The view will be zoomed so that all selected features are visible. If there are no selected features, the view is not changed.</source>
-        <translation>在激活图层上，缩放到选中要素的范围。视图会被缩放，以至于所有选中的要素都能够被看到。如果没有选中的要素，那么视图不会改变.</translation>
-    </message>
-    <message>
-        <source>Identify</source>
-        <translation>识别要素</translation>
-    </message>
-    <message>
-        <source>I&amp;dentify</source>
-        <translation>识别要素(&amp;d)</translation>
-    </message>
-    <message>
-        <source>Identify a feature on the active layer</source>
-        <translation>在激活图层上识别一个要素</translation>
-    </message>
-    <message>
-        <source>Identify a feature on the active layer (the active layer is the highlighted layer in the legend). Idenify searches for features near where the mouse is clicked and displays information about the results. The search radius can be customized on the QGIS Preferences dialog.</source>
-        <translation>在激活图层(激活图层是在图例中高亮显示的图层)上识别要素。它会在鼠标点击的附近位置查找要素，并显示找到的要素的信息。查找半径可以在QGIS首选项对话框中设置.</translation>
-    </message>
-    <message>
-        <source>select features</source>
-        <translation>选择要素</translation>
-    </message>
-    <message>
-        <source>Select features on the active layer by dragging the mouse to create a box around the features of interest. When the mouse is released, the features are selected and drawn in a different color (default is yellow)</source>
-        <translation>在激活图层上，用鼠标在感兴趣的要素周围拖一个矩形框来选择要素。当鼠标释放后，这些要素被选中，并且以不同的颜色(默认是黄色)绘制</translation>
-    </message>
-    <message>
-        <source>&amp;About Quantum GIS</source>
-        <translation>关于Quantum GIS (&amp;A)</translation>
-    </message>
-    <message>
-        <source>Display the About QGIS dialog. About QGIS contains information about the current version, contributors, and available data provider plugins.</source>
-        <translation>显示QGIS的关于对话框。关于对话框包含了当前版本的信息、贡献者以及有效的数据供应者插件。</translation>
-    </message>
-    <message>
-        <source>Test button</source>
-        <translation>测试按钮</translation>
-    </message>
-    <message>
-        <source>Add a Vector Layer</source>
-        <translation>添加一个矢量图层</translation>
-    </message>
-    <message>
-        <source>Add a &amp;Vector Layer</source>
-        <translation>添加矢量图层(&amp;V)</translation>
-    </message>
-    <message>
-        <source>Add a vector layer (e.g. Shapefile)</source>
-        <translation>添加一个矢量图层(如：Shapefile)</translation>
-    </message>
-    <message>
-        <source>Add a vector layer to the map canvas. The supported formats are those provided by the OGR library. For a list of supported formats, see http://www.remotesensing.org/gdal/ogr/ogr_formats.html</source>
-        <translation>向地图中添加一个矢量图层。支持的格式是OGR库提供的格式。要得到支持格式的列表，请参阅http://www.remotesensing.org/gdal/ogr/ogr_formats.html</translation>
-    </message>
-    <message>
-        <source>Attribute table</source>
-        <translation>属性表</translation>
-    </message>
-    <message>
-        <source>&amp;Attribute table</source>
-        <translation>属性表(&amp;A)</translation>
-    </message>
-    <message>
-        <source>Open the attribute table for the selected layer</source>
-        <translation>打开选中图层的属性表</translation>
-    </message>
-    <message>
-        <source>Open the attribute table for the selected vector layer. The rows can be sorted by clicking on the column names in the header row.</source>
-        <translation>打开选中的矢量图层的属性表。在首行点击列名，会将所有的记录进行排序.</translation>
-    </message>
-    <message>
-        <source>Previous</source>
-        <translation>前一视图</translation>
-    </message>
-    <message>
-        <source>Zoom to &amp;previous extent</source>
-        <translation>返回前一视图(&amp;p)</translation>
-    </message>
-    <message>
-        <source>Zoom to last extent</source>
-        <translation>返回前一视图</translation>
-    </message>
-    <message>
-        <source>Zoom to the last view. QGIS stores only one previous view so repeatedly clicking this button swaps the views.</source>
-        <translation>返回前一视图。QGIS只存储一个先前视图，所以反复点击该按钮会交换视图.</translation>
-    </message>
-    <message>
-        <source>Test plugin functions</source>
-        <translation>测试插件功能</translation>
-    </message>
-    <message>
-        <source>Preferences</source>
-        <translation>首选项</translation>
-    </message>
-    <message>
-        <source>&amp;Preferences</source>
-        <translation>首选项(&amp;P)</translation>
-    </message>
-    <message>
-        <source>QGIS User Preferences</source>
-        <translation>QGIS用户的偏好设定</translation>
-    </message>
-    <message>
-        <source>Open the options dialog to set QGIS preferences like web browser and identify search radius.</source>
-        <translation>打开选项对话框来设置QGIS的首选项，如web浏览器和识别要素时查找的半径.</translation>
-    </message>
-    <message>
-        <source>Save Project</source>
-        <translation>保存项目</translation>
-    </message>
-    <message>
-        <source>&amp;Save Project</source>
-        <translation>保存项目(&amp;S)</translation>
-    </message>
-    <message>
-        <source>Save the current map as a QGIS project. A QGIS project can later be opened and all layers and setting will be restored.</source>
-        <translation>将当前地图保存为QGIS项目。QGIS项目能够在以后被打开，并且所有的图层和设置会被恢复.</translation>
-    </message>
-    <message>
-        <source>Ctrl+S</source>
-        <translation>Ctrl+S</translation>
-    </message>
-    <message>
-        <source>Save Project As...</source>
-        <translation>项目另存为...</translation>
-    </message>
-    <message>
-        <source>Save Project &amp;As...</source>
-        <translation>项目另存为(&amp;A)...</translation>
-    </message>
-    <message>
-        <source>Save the current map as a new QGIS project. A QGIS project can later be opened and all layers and setting will be restored.</source>
-        <translation>将当前地图保存为一个新的QGIS项目。QGIS项目能够在以后被打开，并且所有的图层和设置会被恢复.</translation>
-    </message>
-    <message>
-        <source>New Project</source>
-        <translation>新建项目</translation>
+        <source>QGIS Ready!</source>
+        <translation>QGIS就绪!</translation>
     </message>
     <message>
         <source>&amp;New Project</source>
         <translation>新建项目(&amp;N)</translation>
     </message>
     <message>
-        <source>Start a new QGIS project</source>
-        <translation>开始一个新的QGIS项目</translation>
-    </message>
-    <message>
-        <source>Create a new, empty QGIS project. All layers will be removed from the map canvas and a blank canvas will be created.</source>
-        <translation>创建一个新的、空的QGIS项目。所有图层会被移除，并且会创建一个空白的视图区.</translation>
-    </message>
-    <message>
         <source>Ctrl+N</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <source>Plugin Manager</source>
-        <translation>插件管理</translation>
+        <source>New Project</source>
+        <translation>新建项目</translation>
     </message>
     <message>
-        <source>Plugin &amp;Manager</source>
-        <translation>插件管理(&amp;M)</translation>
+        <source>&amp;Open Project...</source>
+        <translation>打开项目(&amp;O)...</translation>
     </message>
     <message>
-        <source>Opens the Plugin Manager and allows you to view loaded plugins or load a new one. The Plugin Manager lists the available plugins and a description of the features each provides.</source>
-        <translation>打开插件管理器，您能够查看已加载的插件，或是加载一个新的。插件管理器列出了所有可用的插件和它们的功能描述.</translation>
+        <source>Ctrl+O</source>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
-        <source>Check QGIS Version</source>
-        <translation>检查QGIS版本</translation>
+        <source>Open a Project</source>
+        <translation>打开项目</translation>
     </message>
     <message>
-        <source>Check QGIS &amp;Version</source>
-        <translation>检查QGIS版本(&amp;V)</translation>
+        <source>&amp;Save Project</source>
+        <translation>保存项目(&amp;S)</translation>
     </message>
     <message>
-        <source>Contacts the QGIS version server and provides information about the current version and any new features/changes available in the development version.</source>
-        <translation>连接QGIS版本服务器，获取当前版本的信息，以及开发版本中所有新的特性/改变.</translation>
+        <source>Save Project &amp;As...</source>
+        <translation>项目另存为(&amp;A)...</translation>
     </message>
     <message>
-        <source>Export As Mapserver file</source>
-        <translation>导出为Mapserver格式</translation>
+        <source>Ctrl+A</source>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
-        <source>Export As &amp;Mapserver file</source>
-        <translation>导出为Mapserver格式(&amp;M)</translation>
+        <source>Save Project under a new name</source>
+        <translation>以新名称保存项目</translation>
     </message>
     <message>
-        <source>Creates a Mapserver file (.map) from the current QGIS view. The .map file can be used to create a Mapserver project.</source>
-        <translation>从当前的QGIS视图创建一个Mapserver文件(.map)。这个.map文件能够用来创建一个Mapserver项目.</translation>
-    </message>
-    <message>
-        <source>Export to MapServer</source>
-        <translation>导出到MapServer</translation>
-    </message>
-    <message>
-        <source>Add a Raster Layer</source>
-        <translation>添加栅格图层</translation>
-    </message>
-    <message>
-        <source>Add a &amp;Raster Layer</source>
-        <translation>添加栅格图层(&amp;R)</translation>
-    </message>
-    <message>
-        <source>Adds a raster layer to the map canvas. Supported raster formats include most of those provided by the GDAL library. See http://www.remotesensing.org/gdal/formats_list.html</source>
-        <translation>向地图中添加一个栅格图层。支持的栅格格式包括了GDAL库提供的大部分格式。请参阅http://www.remotesensing.org/gdal/formats_list.html</translation>
-    </message>
-    <message>
-        <source>Action</source>
-        <translation>命令</translation>
-    </message>
-    <message>
-        <source>&amp;Contents</source>
-        <translation>内容(&amp;C)</translation>
-    </message>
-    <message>
-        <source>QGIS Help (HTML)</source>
-        <translation>QGIS帮助(HTML)</translation>
-    </message>
-    <message>
-        <source>Open the QGIS Help Contents in a web browser</source>
-        <translation>在浏览器中打开QGIS帮助文件</translation>
-    </message>
-    <message>
-        <source>QGIS Home Page</source>
-        <translation>QGIS主页</translation>
-    </message>
-    <message>
-        <source>Open the QGIS home page in a web browser</source>
-        <translation>在浏览器中打开QGIS主页</translation>
-    </message>
-    <message>
-        <source>QGIS SourceForge Page</source>
-        <translation>QGIS SourceForge主页</translation>
-    </message>
-    <message>
-        <source>Open the QGIS SourceForge project page in a web browser</source>
-        <translation>在浏览器中打开QGIS的SourceForge主页</translation>
-    </message>
-    <message>
-        <source>Export As Image</source>
-        <translation>导出为图像</translation>
-    </message>
-    <message>
-        <source>E&amp;xport As Image</source>
-        <translation type="obsolete">导出为图像(&amp;x)</translation>
-    </message>
-    <message>
-        <source>Save the current map view as a PNG image. The image size will be exactly the same as the size of the map canvas.</source>
-        <translation>将当前地图视图存储为一个PNG图象。图象的大小与地图视图区域的大小一致.</translation>
-    </message>
-    <message>
-        <source>Whats this?</source>
-        <translation>这是什么?</translation>
-    </message>
-    <message>
-        <source>&amp;Whats this?</source>
-        <translation>这是什么(&amp;W)?</translation>
-    </message>
-    <message>
-        <source>Whats this? - Click this tool and then click on a toolbar button or menu item to get more information</source>
-        <translation>这是什么? - 点击这个工具，然后在按钮或菜单项上单击以获得更多的信息</translation>
-    </message>
-    <message>
-        <source>Shift+F1</source>
-        <translation>Shitft+F1</translation>
-    </message>
-    <message>
-        <source>Project Properties</source>
-        <translation>项目属性</translation>
-    </message>
-    <message>
-        <source>Project &amp;Properties</source>
-        <translation type="obsolete">项目属性(&amp;P)</translation>
-    </message>
-    <message>
-        <source>Set project properties, including map units</source>
-        <translation>设置项目属性，包括地图单位</translation>
-    </message>
-    <message>
-        <source>Set properties for the current project, including map units</source>
-        <translation>为当前项目设置属性，包括地图单位</translation>
-    </message>
-    <message>
-        <source>Properties</source>
-        <translation>属性</translation>
-    </message>
-    <message>
-        <source>&amp;Properties</source>
-        <translation>属性(&amp;P)</translation>
-    </message>
-    <message>
-        <source>Properties for the selected layer</source>
-        <translation type="obsolete">选中图层的属性</translation>
-    </message>
-    <message>
-        <source>Zoom to layer</source>
-        <translation>放大至图层</translation>
-    </message>
-    <message>
-        <source>Zoom to &amp;layer</source>
-        <translation>放大至图层(&amp;l)</translation>
-    </message>
-    <message>
-        <source>Print</source>
-        <translation>打印</translation>
-    </message>
-    <message>
-        <source>&amp;Print</source>
-        <translation>打印(&amp;P)</translation>
+        <source>&amp;Print...</source>
+        <translation>打印(&amp;P)...</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <source>Capture Point</source>
-        <translation>创建点</translation>
+        <source>Print</source>
+        <translation>打印</translation>
     </message>
     <message>
-        <source>Add All To Overview</source>
-        <translation>全部图层加入鹰眼图</translation>
+        <source>Save as Image...</source>
+        <translation>另存为影像...</translation>
     </message>
     <message>
-        <source>D</source>
-        <translation>D</translation>
+        <source>I</source>
+        <translation>I</translation>
+    </message>
+    <message>
+        <source>Save map as image</source>
+        <translation>将地图另存为影像</translation>
+    </message>
+    <message>
+        <source>Export to MapServer Map...</source>
+        <translation>输出为MapServer地图...</translation>
+    </message>
+    <message>
+        <source>M</source>
+        <translation>M</translation>
+    </message>
+    <message>
+        <source>Export as MapServer .map file</source>
+        <translation>输出为MapServer .map文件</translation>
+    </message>
+    <message>
+        <source>Exit</source>
+        <translation>退出</translation>
+    </message>
+    <message>
+        <source>Ctrl+Q</source>
+        <translation>Ctrl+Q</translation>
+    </message>
+    <message>
+        <source>Exit QGIS</source>
+        <translation>退出QGIS</translation>
+    </message>
+    <message>
+        <source>Add a Vector Layer...</source>
+        <translation>添加一个矢量图层...</translation>
     </message>
     <message>
         <source>V</source>
         <translation>V</translation>
     </message>
     <message>
+        <source>Add a Vector Layer</source>
+        <translation>添加一个矢量图层</translation>
+    </message>
+    <message>
+        <source>Add a Raster Layer...</source>
+        <translation>添加一个栅格图层...</translation>
+    </message>
+    <message>
         <source>R</source>
         <translation>R</translation>
     </message>
     <message>
+        <source>Add a Raster Layer</source>
+        <translation>添加栅格图层</translation>
+    </message>
+    <message>
+        <source>Add a PostGIS Layer...</source>
+        <translation>添加一个PostGIS图层...</translation>
+    </message>
+    <message>
+        <source>D</source>
+        <translation>D</translation>
+    </message>
+    <message>
+        <source>Add a PostGIS Layer</source>
+        <translation>添加PostGIS图层</translation>
+    </message>
+    <message>
+        <source>New Vector Layer...</source>
+        <translation>新的矢量图层...</translation>
+    </message>
+    <message>
+        <source>N</source>
+        <translation>N</translation>
+    </message>
+    <message>
+        <source>Create a New Vector Layer</source>
+        <translation>创建一个新的矢量图层</translation>
+    </message>
+    <message>
+        <source>Remove Layer</source>
+        <translation>移除图层</translation>
+    </message>
+    <message>
+        <source>Ctrl+D</source>
+        <translation>Ctrl+D</translation>
+    </message>
+    <message>
+        <source>Remove a Layer</source>
+        <translation>移除一个图层</translation>
+    </message>
+    <message>
+        <source>Add All To Overview</source>
+        <translation>全部图层加入鹰眼图</translation>
+    </message>
+    <message>
         <source>+</source>
         <translation>+</translation>
+    </message>
+    <message>
+        <source>Show all layers in the overview map</source>
+        <translation>在鹰眼图中显示所有图层</translation>
     </message>
     <message>
         <source>Remove All From Overview</source>
@@ -1430,12 +1262,20 @@ support this.</source>
         <translation>-</translation>
     </message>
     <message>
+        <source>Remove all layers from overview map</source>
+        <translation>移除鹰眼图内所有的图层</translation>
+    </message>
+    <message>
         <source>Show All Layers</source>
         <translation>显示所有图层</translation>
     </message>
     <message>
         <source>S</source>
         <translation>S</translation>
+    </message>
+    <message>
+        <source>Show all layers</source>
+        <translation>显示所有图层</translation>
     </message>
     <message>
         <source>Hide All Layers</source>
@@ -1446,7 +1286,279 @@ support this.</source>
         <translation>H</translation>
     </message>
     <message>
+        <source>Hide all layers</source>
+        <translation>隐藏所有图层</translation>
+    </message>
+    <message>
+        <source>Project Properties...</source>
+        <translation>项目属性...</translation>
+    </message>
+    <message>
+        <source>Alt+P</source>
+        <translation>Alt+P</translation>
+    </message>
+    <message>
+        <source>Set project properties</source>
+        <translation>设置项目属性</translation>
+    </message>
+    <message>
+        <source>Options...</source>
+        <translation>选项...</translation>
+    </message>
+    <message>
+        <source>Alt+O</source>
+        <translation>Alt+O</translation>
+    </message>
+    <message>
+        <source>Change various QGIS options</source>
+        <translation>改变QGIS选项</translation>
+    </message>
+    <message>
+        <source>Custom Projection...</source>
+        <translation>自定义投影...</translation>
+    </message>
+    <message>
+        <source>Alt+I</source>
+        <translation>Alt+I</translation>
+    </message>
+    <message>
+        <source>Manage custom projections</source>
+        <translation>管理自定义投影</translation>
+    </message>
+    <message>
+        <source>Help Contents</source>
+        <translation>帮助</translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <translation>F1</translation>
+    </message>
+    <message>
+        <source>Help Documentation</source>
+        <translation>帮助文档</translation>
+    </message>
+    <message>
+        <source>Qgis Home Page</source>
+        <translation>QGIS主页</translation>
+    </message>
+    <message>
+        <source>Ctrl+H</source>
+        <translation>Ctrl+H</translation>
+    </message>
+    <message>
+        <source>QGIS Home Page</source>
+        <translation>QGIS主页</translation>
+    </message>
+    <message>
+        <source>Qgis Sourceforge</source>
+        <translation>Qgis Sourceforge</translation>
+    </message>
+    <message>
+        <source>Alt+H</source>
+        <translation>Alt+H</translation>
+    </message>
+    <message>
+        <source>Visit QGIS SourceForge page</source>
+        <translation>Visit QGIS SourceForge page</translation>
+    </message>
+    <message>
+        <source>About</source>
+        <translation>关于</translation>
+    </message>
+    <message>
+        <source>About QGIS</source>
+        <translation>关于QGIS</translation>
+    </message>
+    <message>
+        <source>Check Qgis Version</source>
+        <translation>检查QGIS版本</translation>
+    </message>
+    <message>
+        <source>Check if your QGIS version is up to date (requires internet access)</source>
+        <translation>检查是否有新版本的QGIS (需要互联网接入)</translation>
+    </message>
+    <message>
+        <source>Refresh</source>
+        <translation>刷新</translation>
+    </message>
+    <message>
+        <source>Ctrl+R</source>
+        <translation>Ctrl+R</translation>
+    </message>
+    <message>
+        <source>Refresh Map</source>
+        <translation>刷新地图</translation>
+    </message>
+    <message>
+        <source>Zoom In</source>
+        <translation>放大</translation>
+    </message>
+    <message>
+        <source>z</source>
+        <translation>z</translation>
+    </message>
+    <message>
+        <source>Zoom Out</source>
+        <translation>缩小</translation>
+    </message>
+    <message>
+        <source>Z</source>
+        <translation>Z</translation>
+    </message>
+    <message>
+        <source>Zoom Full</source>
+        <translation>全图显示</translation>
+    </message>
+    <message>
+        <source>f</source>
+        <translation>f</translation>
+    </message>
+    <message>
+        <source>Zoom to Full Extents</source>
+        <translation>全图显示</translation>
+    </message>
+    <message>
+        <source>Zoom To Selection</source>
+        <translation>缩放到选中的记录</translation>
+    </message>
+    <message>
+        <source>F</source>
+        <translation>F</translation>
+    </message>
+    <message>
+        <source>Zoom to selection</source>
+        <translation>缩放到选中的记录</translation>
+    </message>
+    <message>
+        <source>Pan Map</source>
+        <translation>地图漫游</translation>
+    </message>
+    <message>
+        <source>Pan the map</source>
+        <translation>地图漫游</translation>
+    </message>
+    <message>
+        <source>Zoom Last</source>
+        <translation>回到上一视图</translation>
+    </message>
+    <message>
+        <source>Zoom to Last Extent</source>
+        <translation>回到上一视图</translation>
+    </message>
+    <message>
+        <source>Zoom To Layer</source>
+        <translation>缩放到图层范围</translation>
+    </message>
+    <message>
+        <source>Zoom to Layer</source>
+        <translation>缩放到图层范围</translation>
+    </message>
+    <message>
+        <source>Identify Features</source>
+        <translation>识别要素</translation>
+    </message>
+    <message>
+        <source>Click on features to identify them</source>
+        <translation>点击要素进行识别</translation>
+    </message>
+    <message>
+        <source>Select Features</source>
+        <translation>选择要素</translation>
+    </message>
+    <message>
+        <source>Open Table</source>
+        <translation>打开表</translation>
+    </message>
+    <message>
+        <source>Measure Line </source>
+        <translation>测距</translation>
+    </message>
+    <message>
+        <source>Ctrl+M</source>
+        <translation>Ctrl+M</translation>
+    </message>
+    <message>
+        <source>Measure a Line</source>
+        <translation>测量线的距离</translation>
+    </message>
+    <message>
+        <source>Measure Area</source>
+        <translation>测量面积</translation>
+    </message>
+    <message>
+        <source>Alt+M</source>
+        <translation>Alt+M</translation>
+    </message>
+    <message>
+        <source>Measure an Area</source>
+        <translation>测量面积</translation>
+    </message>
+    <message>
+        <source>Show Bookmarks</source>
+        <translation>显示书签</translation>
+    </message>
+    <message>
+        <source>Ctrl+B</source>
+        <translation>Ctrl+B</translation>
+    </message>
+    <message>
+        <source>New Bookmark...</source>
+        <translation>新的书签...</translation>
+    </message>
+    <message>
+        <source>Alt+B</source>
+        <translation>Alt+B</translation>
+    </message>
+    <message>
+        <source>New Bookmark</source>
+        <translation>新的书签</translation>
+    </message>
+    <message>
+        <source>Add WMS Layer...</source>
+        <translation>添加WMS图层...</translation>
+    </message>
+    <message>
+        <source>Add Web Mapping Server Layer</source>
+        <translation>添加Web Mapping Server图层</translation>
+    </message>
+    <message>
+        <source>In Overview</source>
+        <translation>在鹰眼图中</translation>
+    </message>
+    <message>
+        <source>Add current layer to overview map</source>
+        <translation>将当前图层添加到鹰眼图中</translation>
+    </message>
+    <message>
+        <source>Plugin Manager...</source>
+        <translation>插件管理器...</translation>
+    </message>
+    <message>
+        <source>Open the plugin manager</source>
+        <translation>打开插件管理器</translation>
+    </message>
+    <message>
+        <source>Capture Point</source>
+        <translation>创建点</translation>
+    </message>
+    <message>
+        <source>.</source>
+        <translation>.</translation>
+    </message>
+    <message>
+        <source>Capture Points</source>
+        <translation>创建点</translation>
+    </message>
+    <message>
         <source>Capture Line</source>
+        <translation>创建线</translation>
+    </message>
+    <message>
+        <source>/</source>
+        <translation>/</translation>
+    </message>
+    <message>
+        <source>Capture Lines</source>
         <translation>创建线</translation>
     </message>
     <message>
@@ -1454,164 +1566,875 @@ support this.</source>
         <translation>创建多边形</translation>
     </message>
     <message>
-        <source>Map Edit Tools</source>
-        <translation>地图编辑工具</translation>
+        <source>Ctrl+/</source>
+        <translation>Ctrl+/</translation>
     </message>
     <message>
-        <source>Show all layers</source>
-        <translation>显示所有图层</translation>
+        <source>Capture Polygons</source>
+        <translation>创建多边形</translation>
     </message>
     <message>
-        <source>Add to overview</source>
-        <translation>添加到鹰眼图</translation>
+        <source>Delete Seleced</source>
+        <translation>删除选中的记录</translation>
     </message>
     <message>
-        <source>Capture points</source>
-        <translation>创建点</translation>
+        <source>Delete Selected</source>
+        <translation>删除选中的记录</translation>
     </message>
     <message>
-        <source>Plugins Toolbar</source>
-        <translation>插件工具栏</translation>
+        <source>Add Vertex</source>
+        <translation>增加节点</translation>
+    </message>
+    <message>
+        <source>Delete Vertex</source>
+        <translation>删除节点</translation>
+    </message>
+    <message>
+        <source>Move Vertex</source>
+        <translation>移动节点</translation>
+    </message>
+    <message>
+        <source>&amp;File</source>
+        <translation>文件(&amp;F)</translation>
+    </message>
+    <message>
+        <source>&amp;Open Recent Projects</source>
+        <translation>打开最近的项目(&amp;O)</translation>
+    </message>
+    <message>
+        <source>&amp;View</source>
+        <translation>视图(&amp;V)</translation>
+    </message>
+    <message>
+        <source>&amp;Layer</source>
+        <translation>图层(&amp;L)</translation>
     </message>
     <message>
         <source>&amp;Settings</source>
         <translation>设置(&amp;S)</translation>
     </message>
     <message>
+        <source>&amp;Help</source>
+        <translation>帮助(&amp;H)</translation>
+    </message>
+    <message>
+        <source>File</source>
+        <translation>文件</translation>
+    </message>
+    <message>
+        <source>Manage Layers</source>
+        <translation>管理图层</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation>帮助</translation>
+    </message>
+    <message>
+        <source>Digitizing</source>
+        <translation>数字化</translation>
+    </message>
+    <message>
+        <source>Map Navigation</source>
+        <translation>地图浏览</translation>
+    </message>
+    <message>
+        <source>Attributes</source>
+        <translation>属性</translation>
+    </message>
+    <message>
+        <source>Plugins</source>
+        <translation>插件</translation>
+    </message>
+    <message>
+        <source>Ready</source>
+        <translation>就绪</translation>
+    </message>
+    <message>
+        <source>New features</source>
+        <translation>新特性</translation>
+    </message>
+    <message>
+        <source>Unable to open project</source>
+        <translation>无法打开项目</translation>
+    </message>
+    <message>
+        <source>Unable to save project </source>
+        <translation>无法保存项目</translation>
+    </message>
+    <message>
+        <source>Choose a filename to save the QGIS project file as</source>
+        <translation>选择一个文件名来保存QGIS项目文件</translation>
+    </message>
+    <message>
+        <source>QGIS: Unable to load project</source>
+        <translation>QGIS: 无法加载项目</translation>
+    </message>
+    <message>
+        <source>Unable to load project </source>
+        <translation>无法加载项目</translation>
+    </message>
+    <message>
+        <source>No Map Layers</source>
+        <translation>没有地图图层</translation>
+    </message>
+    <message>
+        <source>No layers to export. You must add at least one layer to the map in order to export the view.</source>
+        <translation>没有任何输出。为了输出视图，您必须在地图上至少添加一个图层。</translation>
+    </message>
+    <message>
+        <source>QGIS - Changes in SVN Since Last Release</source>
+        <translation>QGIS - 自上次发布之后在SVN中又有更新</translation>
+    </message>
+    <message>
+        <source>Layer is not valid</source>
+        <translation>图层无效</translation>
+    </message>
+    <message>
+        <source>The layer is not a valid layer and can not be added to the map</source>
+        <translation>该图层不是一个有效的图层，无法添加到地图中</translation>
+    </message>
+    <message>
+        <source>Save?</source>
+        <translation>保存?</translation>
+    </message>
+    <message>
+        <source>Do you want to save the current project?</source>
+        <translation>您是否要保存当前的项目?</translation>
+    </message>
+    <message>
+        <source>Clipboard contents set to: </source>
+        <translation>剪贴板的内容设置为:</translation>
+    </message>
+    <message>
+        <source> is not a valid or recognized raster data source</source>
+        <translation>无效或不可识别的栅格数据源</translation>
+    </message>
+    <message>
+        <source> is not a supported raster data source</source>
+        <translation>不支持的栅格数据源</translation>
+    </message>
+    <message>
+        <source>Unsupported Data Source</source>
+        <translation>不支持的数据源</translation>
+    </message>
+    <message>
+        <source>Enter a name for the new bookmark:</source>
+        <translation>新书签的名称:</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>错误</translation>
+    </message>
+    <message>
+        <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
+        <translation>无法创建书签。您的用户数据库丢失或损坏</translation>
+    </message>
+</context>
+<context>
+    <name>QgisAppBase</name>
+    <message>
+        <source>Quantum GIS</source>
+        <translation type="obsolete">Quantum GIS</translation>
+    </message>
+    <message>
+        <source>&amp;File</source>
+        <translation type="obsolete">文件(&amp;F)</translation>
+    </message>
+    <message>
+        <source>&amp;Layer</source>
+        <translation type="obsolete">图层(&amp;L)</translation>
+    </message>
+    <message>
+        <source>&amp;View</source>
+        <translation type="obsolete">视图(&amp;V)</translation>
+    </message>
+    <message>
+        <source>&amp;Tools</source>
+        <translation type="obsolete">工具(&amp;T)</translation>
+    </message>
+    <message>
+        <source>&amp;Help</source>
+        <translation type="obsolete">帮助(&amp;H)</translation>
+    </message>
+    <message>
+        <source>File Management Toolbar</source>
+        <translation type="obsolete">文件管理工具栏</translation>
+    </message>
+    <message>
+        <source>Data Toolbar</source>
+        <translation type="obsolete">数据工具栏</translation>
+    </message>
+    <message>
+        <source>Map Navigation Toolbar</source>
+        <translation type="obsolete">地图漫游工具栏</translation>
+    </message>
+    <message>
+        <source>Attribute Data Toolbar</source>
+        <translation type="obsolete">属性数据工具栏</translation>
+    </message>
+    <message>
+        <source>Help Toolbar</source>
+        <translation type="obsolete">帮助工具栏</translation>
+    </message>
+    <message>
+        <source>Open Project</source>
+        <translation type="obsolete">打开项目</translation>
+    </message>
+    <message>
+        <source>&amp;Open Project</source>
+        <translation type="obsolete">打开项目(&amp;O)</translation>
+    </message>
+    <message>
+        <source>Open a previously saved QGIS project file. The layers (raster and vector) stored in the project file will be loaded and displayed on the map canvas</source>
+        <translation type="obsolete">打开先前存储的QGIS项目文件。项目文件中存储的图层(栅格和矢量)会被加载并显示在地图上</translation>
+    </message>
+    <message>
+        <source>Ctrl+O</source>
+        <translation type="obsolete">Ctrl+O</translation>
+    </message>
+    <message>
+        <source>Exit</source>
+        <translation type="obsolete">退出</translation>
+    </message>
+    <message>
+        <source>E&amp;xit</source>
+        <translation type="obsolete">退出(&amp;x)</translation>
+    </message>
+    <message>
+        <source>Close all layers and exit QGIS</source>
+        <translation type="obsolete">关闭所有图层并退出QGIS</translation>
+    </message>
+    <message>
+        <source>Add a PostGIS Layer</source>
+        <translation type="obsolete">添加PostGIS图层</translation>
+    </message>
+    <message>
+        <source>Add a &amp;PostGIS Layer</source>
+        <translation type="obsolete">添加PostGIS图层(&amp;P)</translation>
+    </message>
+    <message>
+        <source>Add a PostgreSQL layer to the map. This requires a properly configured and running PostgreSQL database and the PostGIS extensions.</source>
+        <translation type="obsolete">添加一个PostgreSQL图层到地图上。这需要一个正确配置并运行良好的PostgreSQL数据库，以及PostGIS扩展。</translation>
+    </message>
+    <message>
+        <source>Refresh </source>
+        <translation type="obsolete">刷新</translation>
+    </message>
+    <message>
+        <source>&amp;Refresh </source>
+        <translation type="obsolete">刷新(&amp;R)</translation>
+    </message>
+    <message>
+        <source>Refresh the map by clearing the map canvas and redrawing all visible layers</source>
+        <translation type="obsolete">通过清除地图显示区并重绘所有可见图层来刷新地图</translation>
+    </message>
+    <message>
+        <source>Zoom to full extent</source>
+        <translation type="obsolete">全幅显示</translation>
+    </message>
+    <message>
+        <source>Zoom to &amp;full extent</source>
+        <translation type="obsolete">全幅显示(&amp;f)</translation>
+    </message>
+    <message>
+        <source>Zoom to the full extent of all layers on the map. This brings everything on the map into full view</source>
+        <translation type="obsolete">缩放到所有图层的全幅范围。这将使地图上的所有内容都显示在视图范围之内</translation>
+    </message>
+    <message>
+        <source>Map Navigation Tools</source>
+        <translation type="obsolete">地图漫游工具</translation>
+    </message>
+    <message>
+        <source>Zoom in</source>
+        <translation type="obsolete">放大</translation>
+    </message>
+    <message>
+        <source>Zoom &amp;In</source>
+        <translation type="obsolete">放大(&amp;I)</translation>
+    </message>
+    <message>
+        <source>Zoom in on the map. Drag the mouse (hold down the left button) to draw a rectangle around the area you want to zoom to, then release the mouse.</source>
+        <translation type="obsolete">放大地图。在您想要放大的区域周围拖动鼠标(按下左键)拉一个矩形框，然后释放鼠标。</translation>
+    </message>
+    <message>
+        <source>Pan</source>
+        <translation type="obsolete">移动</translation>
+    </message>
+    <message>
+        <source>&amp;Pan</source>
+        <translation type="obsolete">移动(&amp;P)</translation>
+    </message>
+    <message>
+        <source>Pan the map view by dragging the mouse (hold down the left button). The area displayed will change after the mouse is released.</source>
+        <translation type="obsolete">通过拖动鼠标(按下左键)来移动地图视图。释放鼠标后显示区域会改变。</translation>
+    </message>
+    <message>
+        <source>Zoom out</source>
+        <translation type="obsolete">缩小</translation>
+    </message>
+    <message>
+        <source>Zoom &amp;Out</source>
+        <translation type="obsolete">缩小(&amp;O)</translation>
+    </message>
+    <message>
+        <source>Zoom out to view more of the map. Drag the mouse (hold down the left button) to draw a rectangle around an area. The current view will zoomed out and resized to &quot;fit&quot; in the rectangle.</source>
+        <translation type="obsolete">缩小以浏览更多的地图区域。在某个区域周围拖动鼠标(按下左键)拉一个矩形框。当前视图会被缩小以&quot;适应&quot;这个矩形框.</translation>
+    </message>
+    <message>
+        <source>Zoom to selected features</source>
+        <translation type="obsolete">放大至选中的要素</translation>
+    </message>
+    <message>
+        <source>&amp;Zoom to selected features</source>
+        <translation type="obsolete">放大至选中的要素(&amp;Z)</translation>
+    </message>
+    <message>
+        <source>Zoom to selected features in active layer</source>
+        <translation type="obsolete">缩放到激活图层的选中要素上</translation>
+    </message>
+    <message>
+        <source>Zoom to the extent of selected features on the active layer. The view will be zoomed so that all selected features are visible. If there are no selected features, the view is not changed.</source>
+        <translation type="obsolete">在激活图层上，缩放到选中要素的范围。视图会被缩放，以至于所有选中的要素都能够被看到。如果没有选中的要素，那么视图不会改变.</translation>
+    </message>
+    <message>
+        <source>Identify</source>
+        <translation type="obsolete">识别要素</translation>
+    </message>
+    <message>
+        <source>I&amp;dentify</source>
+        <translation type="obsolete">识别要素(&amp;d)</translation>
+    </message>
+    <message>
+        <source>Identify a feature on the active layer</source>
+        <translation type="obsolete">在激活图层上识别一个要素</translation>
+    </message>
+    <message>
+        <source>Identify a feature on the active layer (the active layer is the highlighted layer in the legend). Idenify searches for features near where the mouse is clicked and displays information about the results. The search radius can be customized on the QGIS Preferences dialog.</source>
+        <translation type="obsolete">在激活图层(激活图层是在图例中高亮显示的图层)上识别要素。它会在鼠标点击的附近位置查找要素，并显示找到的要素的信息。查找半径可以在QGIS首选项对话框中设置.</translation>
+    </message>
+    <message>
+        <source>select features</source>
+        <translation type="obsolete">选择要素</translation>
+    </message>
+    <message>
+        <source>Select features on the active layer by dragging the mouse to create a box around the features of interest. When the mouse is released, the features are selected and drawn in a different color (default is yellow)</source>
+        <translation type="obsolete">在激活图层上，用鼠标在感兴趣的要素周围拖一个矩形框来选择要素。当鼠标释放后，这些要素被选中，并且以不同的颜色(默认是黄色)绘制</translation>
+    </message>
+    <message>
+        <source>&amp;About Quantum GIS</source>
+        <translation type="obsolete">关于Quantum GIS (&amp;A)</translation>
+    </message>
+    <message>
+        <source>Display the About QGIS dialog. About QGIS contains information about the current version, contributors, and available data provider plugins.</source>
+        <translation type="obsolete">显示QGIS的关于对话框。关于对话框包含了当前版本的信息、贡献者以及有效的数据供应者插件。</translation>
+    </message>
+    <message>
+        <source>Test button</source>
+        <translation type="obsolete">测试按钮</translation>
+    </message>
+    <message>
+        <source>Add a Vector Layer</source>
+        <translation type="obsolete">添加一个矢量图层</translation>
+    </message>
+    <message>
+        <source>Add a &amp;Vector Layer</source>
+        <translation type="obsolete">添加矢量图层(&amp;V)</translation>
+    </message>
+    <message>
+        <source>Add a vector layer (e.g. Shapefile)</source>
+        <translation type="obsolete">添加一个矢量图层(如：Shapefile)</translation>
+    </message>
+    <message>
+        <source>Add a vector layer to the map canvas. The supported formats are those provided by the OGR library. For a list of supported formats, see http://www.remotesensing.org/gdal/ogr/ogr_formats.html</source>
+        <translation type="obsolete">向地图中添加一个矢量图层。支持的格式是OGR库提供的格式。要得到支持格式的列表，请参阅http://www.remotesensing.org/gdal/ogr/ogr_formats.html</translation>
+    </message>
+    <message>
+        <source>Attribute table</source>
+        <translation type="obsolete">属性表</translation>
+    </message>
+    <message>
+        <source>&amp;Attribute table</source>
+        <translation type="obsolete">属性表(&amp;A)</translation>
+    </message>
+    <message>
+        <source>Open the attribute table for the selected layer</source>
+        <translation type="obsolete">打开选中图层的属性表</translation>
+    </message>
+    <message>
+        <source>Open the attribute table for the selected vector layer. The rows can be sorted by clicking on the column names in the header row.</source>
+        <translation type="obsolete">打开选中的矢量图层的属性表。在首行点击列名，会将所有的记录进行排序.</translation>
+    </message>
+    <message>
+        <source>Previous</source>
+        <translation type="obsolete">前一视图</translation>
+    </message>
+    <message>
+        <source>Zoom to &amp;previous extent</source>
+        <translation type="obsolete">返回前一视图(&amp;p)</translation>
+    </message>
+    <message>
+        <source>Zoom to last extent</source>
+        <translation type="obsolete">返回前一视图</translation>
+    </message>
+    <message>
+        <source>Zoom to the last view. QGIS stores only one previous view so repeatedly clicking this button swaps the views.</source>
+        <translation type="obsolete">返回前一视图。QGIS只存储一个先前视图，所以反复点击该按钮会交换视图.</translation>
+    </message>
+    <message>
+        <source>Test plugin functions</source>
+        <translation type="obsolete">测试插件功能</translation>
+    </message>
+    <message>
+        <source>Preferences</source>
+        <translation type="obsolete">首选项</translation>
+    </message>
+    <message>
+        <source>&amp;Preferences</source>
+        <translation type="obsolete">首选项(&amp;P)</translation>
+    </message>
+    <message>
+        <source>QGIS User Preferences</source>
+        <translation type="obsolete">QGIS用户的偏好设定</translation>
+    </message>
+    <message>
+        <source>Open the options dialog to set QGIS preferences like web browser and identify search radius.</source>
+        <translation type="obsolete">打开选项对话框来设置QGIS的首选项，如web浏览器和识别要素时查找的半径.</translation>
+    </message>
+    <message>
+        <source>Save Project</source>
+        <translation type="obsolete">保存项目</translation>
+    </message>
+    <message>
+        <source>&amp;Save Project</source>
+        <translation type="obsolete">保存项目(&amp;S)</translation>
+    </message>
+    <message>
+        <source>Save the current map as a QGIS project. A QGIS project can later be opened and all layers and setting will be restored.</source>
+        <translation type="obsolete">将当前地图保存为QGIS项目。QGIS项目能够在以后被打开，并且所有的图层和设置会被恢复.</translation>
+    </message>
+    <message>
+        <source>Ctrl+S</source>
+        <translation type="obsolete">Ctrl+S</translation>
+    </message>
+    <message>
+        <source>Save Project As...</source>
+        <translation type="obsolete">项目另存为...</translation>
+    </message>
+    <message>
+        <source>Save Project &amp;As...</source>
+        <translation type="obsolete">项目另存为(&amp;A)...</translation>
+    </message>
+    <message>
+        <source>Save the current map as a new QGIS project. A QGIS project can later be opened and all layers and setting will be restored.</source>
+        <translation type="obsolete">将当前地图保存为一个新的QGIS项目。QGIS项目能够在以后被打开，并且所有的图层和设置会被恢复.</translation>
+    </message>
+    <message>
+        <source>New Project</source>
+        <translation type="obsolete">新建项目</translation>
+    </message>
+    <message>
+        <source>&amp;New Project</source>
+        <translation type="obsolete">新建项目(&amp;N)</translation>
+    </message>
+    <message>
+        <source>Start a new QGIS project</source>
+        <translation type="obsolete">开始一个新的QGIS项目</translation>
+    </message>
+    <message>
+        <source>Create a new, empty QGIS project. All layers will be removed from the map canvas and a blank canvas will be created.</source>
+        <translation type="obsolete">创建一个新的、空的QGIS项目。所有图层会被移除，并且会创建一个空白的视图区.</translation>
+    </message>
+    <message>
+        <source>Ctrl+N</source>
+        <translation type="obsolete">Ctrl+N</translation>
+    </message>
+    <message>
+        <source>Plugin Manager</source>
+        <translation type="obsolete">插件管理</translation>
+    </message>
+    <message>
+        <source>Plugin &amp;Manager</source>
+        <translation type="obsolete">插件管理(&amp;M)</translation>
+    </message>
+    <message>
+        <source>Opens the Plugin Manager and allows you to view loaded plugins or load a new one. The Plugin Manager lists the available plugins and a description of the features each provides.</source>
+        <translation type="obsolete">打开插件管理器，您能够查看已加载的插件，或是加载一个新的。插件管理器列出了所有可用的插件和它们的功能描述.</translation>
+    </message>
+    <message>
+        <source>Check QGIS Version</source>
+        <translation type="obsolete">检查QGIS版本</translation>
+    </message>
+    <message>
+        <source>Check QGIS &amp;Version</source>
+        <translation type="obsolete">检查QGIS版本(&amp;V)</translation>
+    </message>
+    <message>
+        <source>Contacts the QGIS version server and provides information about the current version and any new features/changes available in the development version.</source>
+        <translation type="obsolete">连接QGIS版本服务器，获取当前版本的信息，以及开发版本中所有新的特性/改变.</translation>
+    </message>
+    <message>
+        <source>Export As Mapserver file</source>
+        <translation type="obsolete">导出为Mapserver格式</translation>
+    </message>
+    <message>
+        <source>Export As &amp;Mapserver file</source>
+        <translation type="obsolete">导出为Mapserver格式(&amp;M)</translation>
+    </message>
+    <message>
+        <source>Creates a Mapserver file (.map) from the current QGIS view. The .map file can be used to create a Mapserver project.</source>
+        <translation type="obsolete">从当前的QGIS视图创建一个Mapserver文件(.map)。这个.map文件能够用来创建一个Mapserver项目.</translation>
+    </message>
+    <message>
+        <source>Export to MapServer</source>
+        <translation type="obsolete">导出到MapServer</translation>
+    </message>
+    <message>
+        <source>Add a Raster Layer</source>
+        <translation type="obsolete">添加栅格图层</translation>
+    </message>
+    <message>
+        <source>Add a &amp;Raster Layer</source>
+        <translation type="obsolete">添加栅格图层(&amp;R)</translation>
+    </message>
+    <message>
+        <source>Adds a raster layer to the map canvas. Supported raster formats include most of those provided by the GDAL library. See http://www.remotesensing.org/gdal/formats_list.html</source>
+        <translation type="obsolete">向地图中添加一个栅格图层。支持的栅格格式包括了GDAL库提供的大部分格式。请参阅http://www.remotesensing.org/gdal/formats_list.html</translation>
+    </message>
+    <message>
+        <source>Action</source>
+        <translation type="obsolete">命令</translation>
+    </message>
+    <message>
+        <source>&amp;Contents</source>
+        <translation type="obsolete">内容(&amp;C)</translation>
+    </message>
+    <message>
+        <source>QGIS Help (HTML)</source>
+        <translation type="obsolete">QGIS帮助(HTML)</translation>
+    </message>
+    <message>
+        <source>Open the QGIS Help Contents in a web browser</source>
+        <translation type="obsolete">在浏览器中打开QGIS帮助文件</translation>
+    </message>
+    <message>
+        <source>QGIS Home Page</source>
+        <translation type="obsolete">QGIS主页</translation>
+    </message>
+    <message>
+        <source>Open the QGIS home page in a web browser</source>
+        <translation type="obsolete">在浏览器中打开QGIS主页</translation>
+    </message>
+    <message>
+        <source>QGIS SourceForge Page</source>
+        <translation type="obsolete">QGIS SourceForge主页</translation>
+    </message>
+    <message>
+        <source>Open the QGIS SourceForge project page in a web browser</source>
+        <translation type="obsolete">在浏览器中打开QGIS的SourceForge主页</translation>
+    </message>
+    <message>
+        <source>Export As Image</source>
+        <translation type="obsolete">导出为图像</translation>
+    </message>
+    <message>
+        <source>E&amp;xport As Image</source>
+        <translation type="obsolete">导出为图像(&amp;x)</translation>
+    </message>
+    <message>
+        <source>Save the current map view as a PNG image. The image size will be exactly the same as the size of the map canvas.</source>
+        <translation type="obsolete">将当前地图视图存储为一个PNG图象。图象的大小与地图视图区域的大小一致.</translation>
+    </message>
+    <message>
+        <source>Whats this?</source>
+        <translation type="obsolete">这是什么?</translation>
+    </message>
+    <message>
+        <source>&amp;Whats this?</source>
+        <translation type="obsolete">这是什么(&amp;W)?</translation>
+    </message>
+    <message>
+        <source>Whats this? - Click this tool and then click on a toolbar button or menu item to get more information</source>
+        <translation type="obsolete">这是什么? - 点击这个工具，然后在按钮或菜单项上单击以获得更多的信息</translation>
+    </message>
+    <message>
+        <source>Shift+F1</source>
+        <translation type="obsolete">Shitft+F1</translation>
+    </message>
+    <message>
+        <source>Project Properties</source>
+        <translation type="obsolete">项目属性</translation>
+    </message>
+    <message>
+        <source>Project &amp;Properties</source>
+        <translation type="obsolete">项目属性(&amp;P)</translation>
+    </message>
+    <message>
+        <source>Set project properties, including map units</source>
+        <translation type="obsolete">设置项目属性，包括地图单位</translation>
+    </message>
+    <message>
+        <source>Set properties for the current project, including map units</source>
+        <translation type="obsolete">为当前项目设置属性，包括地图单位</translation>
+    </message>
+    <message>
+        <source>Properties</source>
+        <translation type="obsolete">属性</translation>
+    </message>
+    <message>
+        <source>&amp;Properties</source>
+        <translation type="obsolete">属性(&amp;P)</translation>
+    </message>
+    <message>
+        <source>Properties for the selected layer</source>
+        <translation type="obsolete">选中图层的属性</translation>
+    </message>
+    <message>
+        <source>Zoom to layer</source>
+        <translation type="obsolete">放大至图层</translation>
+    </message>
+    <message>
+        <source>Zoom to &amp;layer</source>
+        <translation type="obsolete">放大至图层(&amp;l)</translation>
+    </message>
+    <message>
+        <source>Print</source>
+        <translation type="obsolete">打印</translation>
+    </message>
+    <message>
+        <source>&amp;Print</source>
+        <translation type="obsolete">打印(&amp;P)</translation>
+    </message>
+    <message>
+        <source>Ctrl+P</source>
+        <translation type="obsolete">Ctrl+P</translation>
+    </message>
+    <message>
+        <source>Capture Point</source>
+        <translation type="obsolete">创建点</translation>
+    </message>
+    <message>
+        <source>Add All To Overview</source>
+        <translation type="obsolete">全部图层加入鹰眼图</translation>
+    </message>
+    <message>
+        <source>D</source>
+        <translation type="obsolete">D</translation>
+    </message>
+    <message>
+        <source>V</source>
+        <translation type="obsolete">V</translation>
+    </message>
+    <message>
+        <source>R</source>
+        <translation type="obsolete">R</translation>
+    </message>
+    <message>
+        <source>+</source>
+        <translation type="obsolete">+</translation>
+    </message>
+    <message>
+        <source>Remove All From Overview</source>
+        <translation type="obsolete">移除鹰眼图内所有的图层</translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="obsolete">-</translation>
+    </message>
+    <message>
+        <source>Show All Layers</source>
+        <translation type="obsolete">显示所有图层</translation>
+    </message>
+    <message>
+        <source>S</source>
+        <translation type="obsolete">S</translation>
+    </message>
+    <message>
+        <source>Hide All Layers</source>
+        <translation type="obsolete">隐藏所有图层</translation>
+    </message>
+    <message>
+        <source>H</source>
+        <translation type="obsolete">H</translation>
+    </message>
+    <message>
+        <source>Capture Line</source>
+        <translation type="obsolete">创建线</translation>
+    </message>
+    <message>
+        <source>Capture Polygon</source>
+        <translation type="obsolete">创建多边形</translation>
+    </message>
+    <message>
+        <source>Map Edit Tools</source>
+        <translation type="obsolete">地图编辑工具</translation>
+    </message>
+    <message>
+        <source>Show all layers</source>
+        <translation type="obsolete">显示所有图层</translation>
+    </message>
+    <message>
+        <source>Add to overview</source>
+        <translation type="obsolete">添加到鹰眼图</translation>
+    </message>
+    <message>
+        <source>Capture points</source>
+        <translation type="obsolete">创建点</translation>
+    </message>
+    <message>
+        <source>Plugins Toolbar</source>
+        <translation type="obsolete">插件工具栏</translation>
+    </message>
+    <message>
+        <source>&amp;Settings</source>
+        <translation type="obsolete">设置(&amp;S)</translation>
+    </message>
+    <message>
         <source>&amp;Export As Image</source>
-        <translation>导出为影像(&amp;E)</translation>
+        <translation type="obsolete">导出为影像(&amp;E)</translation>
     </message>
     <message>
         <source>P&amp;roject Properties</source>
-        <translation>项目属性(&amp;r)</translation>
+        <translation type="obsolete">项目属性(&amp;r)</translation>
     </message>
     <message>
         <source>Remove Layer</source>
-        <translation>移除图层</translation>
+        <translation type="obsolete">移除图层</translation>
     </message>
     <message>
         <source>Toggle In Overview</source>
-        <translation>关联到鹰眼图中</translation>
+        <translation type="obsolete">关联到鹰眼图中</translation>
     </message>
     <message>
         <source>New Vectorlayer</source>
-        <translation>新的矢量图层</translation>
+        <translation type="obsolete">新的矢量图层</translation>
     </message>
     <message>
         <source>Bookmarks Toolbar</source>
-        <translation>书签工具栏</translation>
+        <translation type="obsolete">书签工具栏</translation>
     </message>
     <message>
         <source>Capture (digitise) a point on the current layer. The layer must be in edit mode.</source>
-        <translation>在当前图层上创建(数字化)一个点。这个图层必须在编辑模式下.</translation>
+        <translation type="obsolete">在当前图层上创建(数字化)一个点。这个图层必须在编辑模式下.</translation>
     </message>
     <message>
         <source>Capture (digitise) a line on the current layer. The layer must be in edit mode.</source>
-        <translation>在当前图层上创建(数字化)一条线。这个图层必须在编辑模式下.</translation>
+        <translation type="obsolete">在当前图层上创建(数字化)一条线。这个图层必须在编辑模式下.</translation>
     </message>
     <message>
         <source>Capture (digitise) a polygon on the current layer. The layer must be in edit mode.</source>
-        <translation>在当前图层上创建(数字化)一个多边形。这个图层必须在编辑模式下.</translation>
+        <translation type="obsolete">在当前图层上创建(数字化)一个多边形。这个图层必须在编辑模式下.</translation>
     </message>
     <message>
         <source>Measure</source>
-        <translation>测量</translation>
+        <translation type="obsolete">测量</translation>
     </message>
     <message>
         <source>Measure distances on the map canvas.</source>
-        <translation>在地图视图上测量距离.</translation>
+        <translation type="obsolete">在地图视图上测量距离.</translation>
     </message>
     <message>
         <source>Ctrl+M</source>
-        <translation>Ctrl+M</translation>
+        <translation type="obsolete">Ctrl+M</translation>
     </message>
     <message>
         <source>Properties for the selected layer, including rendering and projection settings.</source>
-        <translation>选中图层的属性，包括着色和项目设置.</translation>
+        <translation type="obsolete">选中图层的属性，包括着色和项目设置.</translation>
     </message>
     <message>
         <source>Zoom to the extent of the active layer</source>
-        <translation>缩放至激活的图层</translation>
+        <translation type="obsolete">缩放至激活的图层</translation>
     </message>
     <message>
         <source>Open the Map Composer to create and print a map using the current layers and settings.</source>
-        <translation>打开地图设计器来创建和打印地图，使用当前的图层和设置.</translation>
+        <translation type="obsolete">打开地图设计器来创建和打印地图，使用当前的图层和设置.</translation>
     </message>
     <message>
         <source>Add all layers to the overview map.</source>
-        <translation>将所有图层添加到鹰眼图中.</translation>
+        <translation type="obsolete">将所有图层添加到鹰眼图中.</translation>
     </message>
     <message>
         <source>Remove all layers to the overview map.</source>
-        <translation>移除鹰眼图内所有的图层.</translation>
+        <translation type="obsolete">移除鹰眼图内所有的图层.</translation>
     </message>
     <message>
         <source>Toggle the visibility of all layers to on and redraw the map.</source>
-        <translation>将所有图层的可见性置为可见，并且重绘地图.</translation>
+        <translation type="obsolete">将所有图层的可见性置为可见，并且重绘地图.</translation>
     </message>
     <message>
         <source>Toggle the visibility of all layers to off and clear the map.</source>
-        <translation>将所有图层的可见性置为不可见，并且清空地图.</translation>
+        <translation type="obsolete">将所有图层的可见性置为不可见，并且清空地图.</translation>
     </message>
     <message>
         <source>Remove the active layer from the map.</source>
-        <translation>从地图中移除激活的图层.</translation>
+        <translation type="obsolete">从地图中移除激活的图层.</translation>
     </message>
     <message>
         <source>Add or remove the active layer to the Overview map.</source>
-        <translation>在鹰眼图中增加或移除激活的图层.</translation>
+        <translation type="obsolete">在鹰眼图中增加或移除激活的图层.</translation>
     </message>
     <message>
         <source>Create a new vector layer (shapefile) for editing.</source>
-        <translation>创建一个新的矢量图层(shapefile)用来编辑.</translation>
+        <translation type="obsolete">创建一个新的矢量图层(shapefile)用来编辑.</translation>
     </message>
     <message>
         <source>DebugHook</source>
-        <translation>DebugHook</translation>
+        <translation type="obsolete">DebugHook</translation>
     </message>
     <message>
         <source>DebugHook to which random stuff can be attached</source>
-        <translation>DebugHook to which random stuff can be attached</translation>
+        <translation type="obsolete">DebugHook to which random stuff can be attached</translation>
     </message>
     <message>
         <source>Custom Projections</source>
-        <translation>自定义投影</translation>
+        <translation type="obsolete">自定义投影</translation>
     </message>
     <message>
         <source>Create or manage custom projection definitions.</source>
-        <translation>创建或管理自定义投影的设置.</translation>
+        <translation type="obsolete">创建或管理自定义投影的设置.</translation>
     </message>
     <message>
         <source>Show geospatial bookmarks</source>
-        <translation>显示书签</translation>
+        <translation type="obsolete">显示书签</translation>
     </message>
     <message>
         <source>Geospatial bookmarks...</source>
-        <translation>书签...</translation>
+        <translation type="obsolete">书签...</translation>
     </message>
     <message>
         <source>Show the spatial bookmarks dialog and zoom to a bookmark or delete unwanted bookmarks.</source>
-        <translation>显示书签对话框，用来缩放到一个书签或是删除不再需要的书签.</translation>
+        <translation type="obsolete">显示书签对话框，用来缩放到一个书签或是删除不再需要的书签.</translation>
     </message>
     <message>
         <source>Create a new geospatial bookmark</source>
-        <translation>创建一个新的书签</translation>
+        <translation type="obsolete">创建一个新的书签</translation>
     </message>
     <message>
         <source>New geospatial bookmark...</source>
-        <translation>新书签...</translation>
+        <translation type="obsolete">新书签...</translation>
     </message>
     <message>
         <source>Create a new geospatial bookmark for the current view</source>
-        <translation>为当前视图创建一个新的书签</translation>
+        <translation type="obsolete">为当前视图创建一个新的书签</translation>
     </message>
     <message>
         <source>Ctrl+B</source>
-        <translation>Ctrl+B</translation>
+        <translation type="obsolete">Ctrl+B</translation>
     </message>
     <message>
         <source>Create a new geospatial bookmark for the current view extent.</source>
-        <translation>为当前视图范围创建一个新的书签.</translation>
+        <translation type="obsolete">为当前视图范围创建一个新的书签.</translation>
+    </message>
+    <message>
+        <source>MainWindow</source>
+        <translation>主窗口</translation>
+    </message>
+    <message>
+        <source>Legend</source>
+        <translation>图例</translation>
+    </message>
+    <message>
+        <source>Map View</source>
+        <translation>地图视图</translation>
     </message>
 </context>
 <context>
@@ -1638,11 +2461,11 @@ support this.</source>
     </message>
     <message>
         <source>Contributors</source>
-        <translation>贡献者</translation>
+        <translation type="obsolete">贡献者</translation>
     </message>
     <message>
         <source>&lt;h2&gt;QGIS Contributors&lt;/h2&gt;</source>
-        <translation>&lt;h2&gt;QGIS贡献者&lt;/h2&gt;</translation>
+        <translation type="obsolete">&lt;h2&gt;QGIS贡献者&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>Plugins</source>
@@ -1655,7 +2478,7 @@ support this.</source>
     <message>
         <source>&lt;p align=&quot;center&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;p&gt;
 &lt;p align=&quot;center&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;</source>
-        <translation>&lt;p align=&quot;center&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;p&gt;
+        <translation type="obsolete">&lt;p align=&quot;center&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;p&gt;
 &lt;p align=&quot;center&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;</translation>
     </message>
     <message>
@@ -1668,7 +2491,19 @@ support this.</source>
     </message>
     <message>
         <source>Providers</source>
-        <translation>供应者</translation>
+        <translation>数据源</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p align=&apos;center&apos; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;/p&gt;&lt;p align=&apos;center&apos; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Developers</source>
+        <translation>开发人员</translation>
+    </message>
+    <message>
+        <source>&lt;h2&gt;QGIS Developers&lt;/h2&gt;</source>
+        <translation>&lt;h2&gt;QGIS开发人员&lt;/h2&gt;</translation>
     </message>
 </context>
 <context>
@@ -1702,11 +2537,11 @@ support this.</source>
     </message>
     <message>
         <source>Name</source>
-        <translation>名称</translation>
+        <translation type="obsolete">名称</translation>
     </message>
     <message>
         <source>Action</source>
-        <translation>命令</translation>
+        <translation type="obsolete">命令</translation>
     </message>
     <message>
         <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</source>
@@ -1798,7 +2633,7 @@ support this.</source>
     </message>
     <message>
         <source>Capture</source>
-        <translation>捕获</translation>
+        <translation type="obsolete">捕获</translation>
     </message>
     <message>
         <source>Capture output</source>
@@ -1827,6 +2662,18 @@ support this.</source>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
+    <message>
+        <source>1</source>
+        <translation>1</translation>
+    </message>
+    <message>
+        <source>Attribute</source>
+        <translation>属性</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>值</translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeTable</name>
@@ -1847,7 +2694,7 @@ support this.</source>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation>结束编辑</translation>
+        <translation type="obsolete">结束编辑</translation>
     </message>
     <message>
         <source>&amp;Close</source>
@@ -1892,6 +2739,85 @@ support this.</source>
     <message>
         <source>Remove selection</source>
         <translation>移除选择</translation>
+    </message>
+    <message>
+        <source>Copy selected rows to clipboard (Ctrl+C)</source>
+        <translation>将选中的行拷贝到剪贴板 (Ctrl+C)</translation>
+    </message>
+    <message>
+        <source>Copies the selected rows to the clipboard</source>
+        <translation>将选中的行拷贝到剪贴板</translation>
+    </message>
+    <message>
+        <source>Ctrl+C</source>
+        <translation>Ctrl+C</translation>
+    </message>
+    <message>
+        <source>Stop editin&amp;g</source>
+        <translation>结束编辑 (&amp;g)</translation>
+    </message>
+    <message>
+        <source>Alt+G</source>
+        <translation>Alt+G</translation>
+    </message>
+    <message>
+        <source>Search for:</source>
+        <translation>搜索:</translation>
+    </message>
+    <message>
+        <source>in</source>
+        <translation>在</translation>
+    </message>
+    <message>
+        <source>Search</source>
+        <translation>搜索</translation>
+    </message>
+    <message>
+        <source>Adva&amp;nced...</source>
+        <translation>高级 (&amp;n)...</translation>
+    </message>
+    <message>
+        <source>Alt+N</source>
+        <translation>Alt+N</translation>
+    </message>
+</context>
+<context>
+    <name>QgsAttributeTableDisplay</name>
+    <message>
+        <source>select</source>
+        <translation>选择</translation>
+    </message>
+    <message>
+        <source>select and bring to top</source>
+        <translation>选择并置于顶端</translation>
+    </message>
+    <message>
+        <source>show only matching</source>
+        <translation>只显示匹配的记录</translation>
+    </message>
+    <message>
+        <source>Search string parsing error</source>
+        <translation>搜索字符串解析错误</translation>
+    </message>
+    <message>
+        <source>Search results</source>
+        <translation>搜索结果</translation>
+    </message>
+    <message>
+        <source>You&apos;ve supplied an empty search string.</source>
+        <translation>您提供了一个空的搜索字符串。</translation>
+    </message>
+    <message>
+        <source>Error during search</source>
+        <translation>搜索时发生错误</translation>
+    </message>
+    <message>
+        <source>Found %d matching features.</source>
+        <translation>找到%d个匹配的要素。</translation>
+    </message>
+    <message>
+        <source>No matching features found.</source>
+        <translation>未找到匹配的要素。</translation>
     </message>
 </context>
 <context>
@@ -1972,27 +2898,27 @@ support this.</source>
     <name>QgsCommunityRegPluginGuiBase</name>
     <message>
         <source>QGIS Plugin QGIS Community Registration Plugin</source>
-        <translation>QGIS Community注册插件</translation>
+        <translation type="obsolete">QGIS Community注册插件</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation>确定(&amp;O)</translation>
+        <translation type="obsolete">确定(&amp;O)</translation>
     </message>
     <message>
         <source>Alt+O</source>
-        <translation>Alt+O</translation>
+        <translation type="obsolete">Alt+O</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation>取消(&amp;C)</translation>
+        <translation type="obsolete">取消(&amp;C)</translation>
     </message>
     <message>
         <source>Alt+C</source>
-        <translation>Alt+C</translation>
+        <translation type="obsolete">Alt+C</translation>
     </message>
     <message>
         <source>qgis.community.org</source>
-        <translation>qgis.community.org</translation>
+        <translation type="obsolete">qgis.community.org</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -2000,7 +2926,7 @@ support this.</source>
 &lt;p&gt;This plugin will register you on the community.qgis.org users map.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;该插件会将您注册到community.qgis.org的用户地图上。&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
@@ -2008,39 +2934,39 @@ support this.</source>
     </message>
     <message>
         <source>Home URL:</source>
-        <translation>主页地址:</translation>
+        <translation type="obsolete">主页地址:</translation>
     </message>
     <message>
         <source>Email:</source>
-        <translation>Email:</translation>
+        <translation type="obsolete">Email:</translation>
     </message>
     <message>
         <source>Place Description:</source>
-        <translation>位置描述:</translation>
+        <translation type="obsolete">位置描述:</translation>
     </message>
     <message>
         <source>Name:</source>
-        <translation>名称:</translation>
+        <translation type="obsolete">名称:</translation>
     </message>
     <message>
         <source>Longitude (dec. degrees):</source>
-        <translation>经度(十进制度):</translation>
+        <translation type="obsolete">经度(十进制度):</translation>
     </message>
     <message>
         <source>Country:</source>
-        <translation>国家:</translation>
+        <translation type="obsolete">国家:</translation>
     </message>
     <message>
         <source>Image URL (50x50):</source>
-        <translation>图片地址(50x50):</translation>
+        <translation type="obsolete">图片地址(50x50):</translation>
     </message>
     <message>
         <source>Latitude (dec. degrees):</source>
-        <translation>纬度(十进制度):</translation>
+        <translation type="obsolete">纬度(十进制度):</translation>
     </message>
     <message>
         <source>Get From Map</source>
-        <translation>从地图获得</translation>
+        <translation type="obsolete">从地图获得</translation>
     </message>
 </context>
 <context>
@@ -2062,7 +2988,7 @@ support this.</source>
     <name>QgsComposerBase</name>
     <message>
         <source>Map Composer</source>
-        <translation>地图设计器</translation>
+        <translation type="obsolete">地图设计器</translation>
     </message>
     <message>
         <source>General</source>
@@ -2078,19 +3004,19 @@ support this.</source>
     </message>
     <message>
         <source>Toolbar_2</source>
-        <translation>工具条_2</translation>
+        <translation type="obsolete">工具条_2</translation>
     </message>
     <message>
         <source>Toolbar</source>
-        <translation>工具条</translation>
+        <translation type="obsolete">工具条</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation>工具</translation>
+        <translation type="obsolete">工具</translation>
     </message>
     <message>
         <source>Open Template</source>
-        <translation>打开模板</translation>
+        <translation type="obsolete">打开模板</translation>
     </message>
     <message>
         <source>&amp;Open Template ...</source>
@@ -2098,11 +3024,11 @@ support this.</source>
     </message>
     <message>
         <source>Ctrl+O</source>
-        <translation>Ctrl+O</translation>
+        <translation type="obsolete">Ctrl+O</translation>
     </message>
     <message>
         <source>Save Template As</source>
-        <translation>模板另存为</translation>
+        <translation type="obsolete">模板另存为</translation>
     </message>
     <message>
         <source>Save Template &amp;As...</source>
@@ -2110,7 +3036,7 @@ support this.</source>
     </message>
     <message>
         <source>Print</source>
-        <translation>打印</translation>
+        <translation type="obsolete">打印</translation>
     </message>
     <message>
         <source>&amp;Print...</source>
@@ -2118,7 +3044,7 @@ support this.</source>
     </message>
     <message>
         <source>Ctrl+P</source>
-        <translation>Ctrl+P</translation>
+        <translation type="obsolete">Ctrl+P</translation>
     </message>
     <message>
         <source>Action</source>
@@ -2158,15 +3084,35 @@ support this.</source>
     </message>
     <message>
         <source>Zoom to full extent</source>
-        <translation>全幅显示</translation>
+        <translation type="obsolete">全幅显示</translation>
     </message>
     <message>
         <source>Zoom in</source>
-        <translation>放大</translation>
+        <translation type="obsolete">放大</translation>
     </message>
     <message>
         <source>Zoom out</source>
+        <translation type="obsolete">缩小</translation>
+    </message>
+    <message>
+        <source>MainWindow</source>
+        <translation>主窗口</translation>
+    </message>
+    <message>
+        <source>Zoom All</source>
+        <translation>全图显示</translation>
+    </message>
+    <message>
+        <source>Zoom In</source>
+        <translation>放大</translation>
+    </message>
+    <message>
+        <source>Zoom Out</source>
         <translation>缩小</translation>
+    </message>
+    <message>
+        <source>Add Image</source>
+        <translation>添加影像</translation>
     </message>
 </context>
 <context>
@@ -2267,6 +3213,37 @@ support this.</source>
     </message>
 </context>
 <context>
+    <name>QgsComposerPictureBase</name>
+    <message>
+        <source>Picture Options</source>
+        <translation>图片选项</translation>
+    </message>
+    <message>
+        <source>Picture</source>
+        <translation>图片</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <source>Frame</source>
+        <translation>框架</translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation>角度</translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation>宽度</translation>
+    </message>
+    <message>
+        <source>Height</source>
+        <translation>高度</translation>
+    </message>
+</context>
+<context>
     <name>QgsComposerScalebarBase</name>
     <message>
         <source>Barscale Options</source>
@@ -2340,7 +3317,7 @@ support this.</source>
     </message>
     <message>
         <source>New Item</source>
-        <translation>新项目</translation>
+        <translation type="obsolete">新项目</translation>
     </message>
     <message>
         <source>Preview</source>
@@ -2454,6 +3431,31 @@ support this.</source>
     </message>
 </context>
 <context>
+    <name>QgsConnectionDialog</name>
+    <message>
+        <source>Test connection</source>
+        <translation>测试连接</translation>
+    </message>
+    <message>
+        <source>Connection to </source>
+        <translation>连接到</translation>
+    </message>
+    <message>
+        <source> was successfull</source>
+        <translation>成功</translation>
+    </message>
+    <message>
+        <source>Connection failed - Check settings and try again </source>
+        <translation>连接失败 - 检查设置并重试</translation>
+    </message>
+    <message>
+        <source>General Interface Help:
+
+</source>
+        <translation type="unfinished">通用接口帮助:</translation>
+    </message>
+</context>
+<context>
     <name>QgsConnectionDialogBase</name>
     <message>
         <source>Create a New PostGIS connection</source>
@@ -2524,19 +3526,34 @@ support this.</source>
     <name>QgsContColDialogBase</name>
     <message>
         <source>Continuous color</source>
-        <translation>连续色</translation>
+        <translation type="obsolete">连续色</translation>
     </message>
     <message>
         <source>Classification Field:</source>
-        <translation>分类字段:</translation>
+        <translation type="obsolete">分类字段:</translation>
     </message>
     <message>
         <source>Minimum Value:</source>
-        <translation>最小值:</translation>
+        <translation type="obsolete">最小值:</translation>
     </message>
     <message>
         <source>Outline Width:</source>
-        <translation>轮廓线的宽度:</translation>
+        <translation type="obsolete">轮廓线的宽度:</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="obsolete">...</translation>
+    </message>
+    <message>
+        <source>Maximum Value:</source>
+        <translation type="obsolete">最大值:</translation>
+    </message>
+</context>
+<context>
+    <name>QgsContinuousColorDialogBase</name>
+    <message>
+        <source>Continuous color</source>
+        <translation>连续色</translation>
     </message>
     <message>
         <source>...</source>
@@ -2545,6 +3562,18 @@ support this.</source>
     <message>
         <source>Maximum Value:</source>
         <translation>最大值:</translation>
+    </message>
+    <message>
+        <source>Outline Width:</source>
+        <translation>轮廓线的宽度:</translation>
+    </message>
+    <message>
+        <source>Minimum Value:</source>
+        <translation>最小值:</translation>
+    </message>
+    <message>
+        <source>Classification Field:</source>
+        <translation>分类字段:</translation>
     </message>
 </context>
 <context>
@@ -2576,6 +3605,22 @@ support this.</source>
         <source>Top Right</source>
         <translation>右上</translation>
     </message>
+    <message>
+        <source>&amp;Decorations</source>
+        <translation>装饰 (&amp;D)</translation>
+    </message>
+    <message>
+        <source>&amp;CopyrightLabel</source>
+        <translation>版权标签 (&amp;C)</translation>
+    </message>
+    <message>
+        <source>Creates a copyright label that is displayed on the map canvas.</source>
+        <translation>在地图视图上创建一个版权标签。</translation>
+    </message>
+    <message>
+        <source>Copyright Label</source>
+        <translation>版权标签</translation>
+    </message>
 </context>
 <context>
     <name>QgsCopyrightLabelPluginGuiBase</name>
@@ -2590,7 +3635,7 @@ support this.</source>
 &lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Bold text&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Italics&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:helvetica&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:helvetica&quot;&gt;
 &lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:19pt;font-weight:600&quot;&gt;描述&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;在底部显示您的版权标签。该插件支持基本的html标记来格式化标签。例如：&lt;/p&gt;
 &lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;粗体&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;斜体&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
@@ -2599,7 +3644,7 @@ support this.</source>
     </message>
     <message encoding="UTF-8">
         <source>© QGIS 2004</source>
-        <translation>© QGIS 2004</translation>
+        <translation type="obsolete">© QGIS 2004</translation>
     </message>
     <message>
         <source>Placement</source>
@@ -2652,6 +3697,18 @@ support this.</source>
     <message>
         <source>Alt+C</source>
         <translation>Alt+C</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message encoding="UTF-8">
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;© QGIS 2006&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation>帮助</translation>
     </message>
 </context>
 <context>
@@ -2783,7 +3840,7 @@ Parameters:</source>
     </message>
     <message>
         <source>You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.</source>
-        <translation>您能够在这里定义自己的投影。空间参考系统的定义必须与proj4的格式一致.</translation>
+        <translation type="obsolete">您能够在这里定义自己的投影。空间参考系统的定义必须与proj4的格式一致.</translation>
     </message>
     <message>
         <source>Test</source>
@@ -2815,7 +3872,15 @@ Parameters:</source>
     </message>
     <message>
         <source>Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.</source>
-        <translation>用下面的文本框来测试您创建的投影。输入一个坐标（经度和纬度，并且投影后的结果您也知道，例如从地图上读取）。然后按下计算按钮，看看您所创建的投影是否正确.</translation>
+        <translation type="obsolete">用下面的文本框来测试您创建的投影。输入一个坐标（经度和纬度，并且投影后的结果您也知道，例如从地图上读取）。然后按下计算按钮，看看您所创建的投影是否正确.</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Arial; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Arial; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2862,7 +3927,7 @@ Parameters:</source>
     </message>
     <message>
         <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4%5</source>
-        <translation>连接到%1在%2上失败。可能是数据库当机，也可能是您的设置不正确。%3检查您的用户名和密码，然后重试。%4%5</translation>
+        <translation type="obsolete">连接到%1在%2上失败。可能是数据库当机，也可能是您的设置不正确。%3检查您的用户名和密码，然后重试。%4%5</translation>
     </message>
     <message>
         <source>Access to relation </source>
@@ -2879,6 +3944,62 @@ Parameters:</source>
 has failed. The database said:
 </source>
         <translation>失败。数据库回应是:</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation>类型</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation>名称</translation>
+    </message>
+    <message>
+        <source>Sql</source>
+        <translation>Sql</translation>
+    </message>
+    <message>
+        <source>Point layer</source>
+        <translation>点图层</translation>
+    </message>
+    <message>
+        <source>Multi-point layer</source>
+        <translation>多点图层</translation>
+    </message>
+    <message>
+        <source>Linestring layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Multi-linestring layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygon layer</source>
+        <translation>多边形图层</translation>
+    </message>
+    <message>
+        <source>Multi-polygon layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mixed geometry layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geometry collection layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Waiting for layer type</source>
+        <translation>等待图层类型</translation>
+    </message>
+    <message>
+        <source>Unknown layer type</source>
+        <translation>未知的图层类型</translation>
+    </message>
+    <message>
+        <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4The database said:%5%6</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2941,7 +4062,7 @@ has failed. The database said:
     </message>
     <message>
         <source>Encoding:</source>
-        <translation type="obsolete">编码:</translation>
+        <translation>编码:</translation>
     </message>
 </context>
 <context>
@@ -2960,7 +4081,34 @@ has failed. The database said:
     </message>
     <message>
         <source>New Item</source>
-        <translation>新项目</translation>
+        <translation type="obsolete">新项目</translation>
+    </message>
+</context>
+<context>
+    <name>QgsDelimitedTextPlugin</name>
+    <message>
+        <source>&amp;Delimited text</source>
+        <translation>以分隔符分割的文本 (&amp;D)</translation>
+    </message>
+    <message>
+        <source>&amp;Add Delimited Text Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add a delimited text file as a map layer. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file must have a header row containing the field names. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X and Y fields are required and must contain coordinates in decimal units.</source>
+        <translation>X和Y字段是必须的，并且所包含的坐标必须是十进制单位。</translation>
+    </message>
+    <message>
+        <source>Add Delimited Text Layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3186,7 +4334,7 @@ has failed. The database said:
     </message>
     <message>
         <source>Buffer Settings:</source>
-        <translation>缓冲区设置:</translation>
+        <translation type="obsolete">缓冲区设置:</translation>
     </message>
     <message>
         <source>Buffer distance in map units:</source>
@@ -3228,275 +4376,279 @@ has failed. The database said:
         <source>&lt;h2&gt;Buffer the features in layer: &lt;/h2&gt;</source>
         <translation>&lt;h2&gt;对该图层的要素作缓冲区: &lt;/h2&gt;</translation>
     </message>
+    <message>
+        <source>Parameters</source>
+        <translation>参数</translation>
+    </message>
 </context>
 <context>
     <name>QgsDlgVectorLayerProperties</name>
     <message>
         <source>Single Symbol</source>
-        <translation>单一符号</translation>
+        <translation type="obsolete">单一符号</translation>
     </message>
     <message>
         <source>Graduated Symbol</source>
-        <translation>渐进符号</translation>
+        <translation type="obsolete">渐进符号</translation>
     </message>
     <message>
         <source>Continuous Color</source>
-        <translation>连续色</translation>
+        <translation type="obsolete">连续色</translation>
     </message>
     <message>
         <source>Single Marker</source>
-        <translation>单一标记符号</translation>
+        <translation type="obsolete">单一标记符号</translation>
     </message>
     <message>
         <source>Graduated Marker</source>
-        <translation>渐进标记符号</translation>
+        <translation type="obsolete">渐进标记符号</translation>
     </message>
     <message>
         <source>Unique Value</source>
-        <translation>独立值</translation>
+        <translation type="obsolete">独立值</translation>
     </message>
     <message>
         <source>Unique Value Marker</source>
-        <translation>独立值标记符号</translation>
+        <translation type="obsolete">独立值标记符号</translation>
     </message>
     <message>
         <source>The source of the data (path name or database connection information)</source>
-        <translation>数据源(路径名称或数据库连接信息)</translation>
+        <translation type="obsolete">数据源(路径名称或数据库连接信息)</translation>
     </message>
     <message>
         <source>This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
-        <translation>这个按钮可以打开PostgreSQL查询构建器，它允许您创建一个图层要素的子集显示在地图上，而不是显示整个图层的所有要素</translation>
+        <translation type="obsolete">这个按钮可以打开PostgreSQL查询构建器，它允许您创建一个图层要素的子集显示在地图上，而不是显示整个图层的所有要素</translation>
     </message>
     <message>
         <source>The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button</source>
-        <translation>这里的查询用来限制图层上显示的要素。目前只支持PostgreSQL图层。要输入或修改查询，请点击查询构建器按钮</translation>
+        <translation type="obsolete">这里的查询用来限制图层上显示的要素。目前只支持PostgreSQL图层。要输入或修改查询，请点击查询构建器按钮</translation>
     </message>
     <message>
         <source>In order for QGIS to support SVG markers under Windows, we need to build QGIS</source>
-        <translation>为了让Windows下的QGIS支持SVG标记符号，我们需要编译QGIS</translation>
+        <translation type="obsolete">为了让Windows下的QGIS支持SVG标记符号，我们需要编译QGIS</translation>
     </message>
     <message>
         <source> using the commercial version of Qt. As this project is developed by volunteers</source>
-        <translation>使用商业版的QT。因为这个项目是志愿者开发的</translation>
+        <translation type="obsolete">使用商业版的QT。因为这个项目是志愿者开发的</translation>
     </message>
     <message>
         <source> donating their time, we don&apos;t have the financial resources to purchase Qt</source>
-        <translation>捐献他们时间，我们没有资金来购买QT</translation>
+        <translation type="obsolete">捐献他们时间，我们没有资金来购买QT</translation>
     </message>
     <message>
         <source> commercial.  If you would like to help us, please visit the QGIS sourceforge</source>
-        <translation>商业的。如果您想帮助我们，请访问QGIS sourceforge主页</translation>
+        <translation type="obsolete">商业的。如果您想帮助我们，请访问QGIS sourceforge主页</translation>
     </message>
     <message>
         <source> home page to make a donation</source>
-        <translation>捐赠的主页</translation>
+        <translation type="obsolete">捐赠的主页</translation>
     </message>
     <message>
         <source>No SVG Support</source>
-        <translation>没有SVG支持</translation>
+        <translation type="obsolete">没有SVG支持</translation>
     </message>
     <message>
         <source>Spatial Index</source>
-        <translation>空间索引</translation>
+        <translation type="obsolete">空间索引</translation>
     </message>
     <message>
         <source>Creation of spatial index successfull</source>
-        <translation>创建空间索引成功</translation>
+        <translation type="obsolete">创建空间索引成功</translation>
     </message>
     <message>
         <source>Creation of spatial index failed</source>
-        <translation>创建空间索引失败</translation>
+        <translation type="obsolete">创建空间索引失败</translation>
     </message>
     <message>
         <source>General:</source>
-        <translation>普通:</translation>
+        <translation type="obsolete">普通:</translation>
     </message>
     <message>
         <source>Geometry type of the features in this layer : </source>
-        <translation>这个图层的要素的几何类型:</translation>
+        <translation type="obsolete">这个图层的要素的几何类型:</translation>
     </message>
     <message>
         <source>The number of features in this layer : </source>
-        <translation>这个图层的要素数目:</translation>
+        <translation type="obsolete">这个图层的要素数目:</translation>
     </message>
     <message>
         <source>Extents:</source>
-        <translation>范围:</translation>
+        <translation type="obsolete">范围:</translation>
     </message>
     <message>
         <source>In layer spatial reference system units : </source>
-        <translation>以图层空间参考系统的单位计算:</translation>
+        <translation type="obsolete">以图层空间参考系统的单位计算:</translation>
     </message>
     <message>
         <source>xMin,yMin </source>
-        <translation>xMin,yMin </translation>
+        <translation type="obsolete">xMin,yMin </translation>
     </message>
     <message>
         <source> : xMax,yMax </source>
-        <translation> : xMax,yMax </translation>
+        <translation type="obsolete"> : xMax,yMax </translation>
     </message>
     <message>
         <source>In project spatial reference system units : </source>
-        <translation>以项目空间参考系统的单位计算:</translation>
+        <translation type="obsolete">以项目空间参考系统的单位计算:</translation>
     </message>
     <message>
         <source>Layer Spatial Reference System:</source>
-        <translation>图层的空间参考系统:</translation>
+        <translation type="obsolete">图层的空间参考系统:</translation>
     </message>
     <message>
         <source>Project (Output) Spatial Reference System:</source>
-        <translation>项目的(输出的)空间参考系统:</translation>
+        <translation type="obsolete">项目的(输出的)空间参考系统:</translation>
     </message>
     <message>
         <source>Attribute field info:</source>
-        <translation>属性字段信息:</translation>
+        <translation type="obsolete">属性字段信息:</translation>
     </message>
     <message>
         <source>Field</source>
-        <translation>字段</translation>
+        <translation type="obsolete">字段</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation>类型</translation>
+        <translation type="obsolete">类型</translation>
     </message>
     <message>
         <source>Length</source>
-        <translation>长度</translation>
+        <translation type="obsolete">长度</translation>
     </message>
     <message>
         <source>Precision</source>
-        <translation>精度</translation>
+        <translation type="obsolete">精度</translation>
     </message>
 </context>
 <context>
     <name>QgsDlgVectorLayerPropertiesBase</name>
     <message>
         <source>Layer Properties</source>
-        <translation>图层属性</translation>
+        <translation type="obsolete">图层属性</translation>
     </message>
     <message>
         <source>Apply</source>
-        <translation>应用</translation>
+        <translation type="obsolete">应用</translation>
     </message>
     <message>
         <source>Legend type:</source>
-        <translation>图例类型:</translation>
+        <translation type="obsolete">图例类型:</translation>
     </message>
     <message>
         <source>Display name</source>
-        <translation>显示名称</translation>
+        <translation type="obsolete">显示名称</translation>
     </message>
     <message>
         <source>General</source>
-        <translation>普通</translation>
+        <translation type="obsolete">普通</translation>
     </message>
     <message>
         <source>Layer source</source>
-        <translation>图层的数据源</translation>
+        <translation type="obsolete">图层的数据源</translation>
     </message>
     <message>
         <source>TextLabel2</source>
-        <translation>文本标签2</translation>
+        <translation type="obsolete">文本标签2</translation>
     </message>
     <message>
         <source>Labels</source>
-        <translation>标签</translation>
+        <translation type="obsolete">标签</translation>
     </message>
     <message>
         <source>Display labels</source>
-        <translation>显示标签</translation>
+        <translation type="obsolete">显示标签</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation>帮助</translation>
+        <translation type="obsolete">帮助</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>取消</translation>
+        <translation type="obsolete">取消</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation>确定</translation>
+        <translation type="obsolete">确定</translation>
     </message>
     <message>
         <source>Symbology</source>
-        <translation>符号化</translation>
+        <translation type="obsolete">符号化</translation>
     </message>
     <message>
         <source>Visibility</source>
-        <translation>可见性</translation>
+        <translation type="obsolete">可见性</translation>
     </message>
     <message>
         <source>Use scale dependent rendering</source>
-        <translation>依比例着色</translation>
+        <translation type="obsolete">依比例着色</translation>
     </message>
     <message>
         <source>Maximum 1:</source>
-        <translation>最大值1:</translation>
+        <translation type="obsolete">最大值1:</translation>
     </message>
     <message>
         <source>Maximum scale at which this layer will be displayed. </source>
-        <translation>图层显示的最大比例.</translation>
+        <translation type="obsolete">图层显示的最大比例.</translation>
     </message>
     <message>
         <source>Minimum 1:</source>
-        <translation>最小值1:</translation>
+        <translation type="obsolete">最小值1:</translation>
     </message>
     <message>
         <source>Minimum scale at which this layer will be displayed. </source>
-        <translation>图层显示的最小比例.</translation>
+        <translation type="obsolete">图层显示的最小比例.</translation>
     </message>
     <message>
         <source>Display field</source>
-        <translation>显示字段</translation>
+        <translation type="obsolete">显示字段</translation>
     </message>
     <message>
         <source>Display field for the Identify Results dialog box</source>
-        <translation>识别结果对话框中显示的字段</translation>
+        <translation type="obsolete">识别结果对话框中显示的字段</translation>
     </message>
     <message>
         <source>This sets the display field for the Identify Results dialog box</source>
-        <translation>这里设置了识别结果对话框中显示的字段</translation>
+        <translation type="obsolete">这里设置了识别结果对话框中显示的字段</translation>
     </message>
     <message>
         <source>Use this control to set which field is placed at the top level of the Identify Results dialog box.</source>
-        <translation>用这个控件来设置某个字段显示在识别结果对话框的顶部.</translation>
+        <translation type="obsolete">用这个控件来设置某个字段显示在识别结果对话框的顶部.</translation>
     </message>
     <message>
         <source>Subset:</source>
-        <translation>子集:</translation>
+        <translation type="obsolete">子集:</translation>
     </message>
     <message>
         <source>Query Builder</source>
-        <translation>查询构建器</translation>
+        <translation type="obsolete">查询构建器</translation>
     </message>
     <message>
         <source>Metadata</source>
-        <translation>元数据</translation>
+        <translation type="obsolete">元数据</translation>
     </message>
     <message>
         <source>Actions</source>
-        <translation>命令</translation>
+        <translation type="obsolete">命令</translation>
     </message>
     <message>
         <source>Spatial Reference System</source>
-        <translation>空间参考系统</translation>
+        <translation type="obsolete">空间参考系统</translation>
     </message>
     <message>
         <source>Change</source>
-        <translation>改变</translation>
+        <translation type="obsolete">改变</translation>
     </message>
     <message>
         <source>Spatial Index</source>
-        <translation>空间索引</translation>
+        <translation type="obsolete">空间索引</translation>
     </message>
     <message>
         <source>Create Spatial Index</source>
-        <translation>创建空间索引</translation>
+        <translation type="obsolete">创建空间索引</translation>
     </message>
     <message>
         <source>Create</source>
-        <translation>创建</translation>
+        <translation type="obsolete">创建</translation>
     </message>
 </context>
 <context>
@@ -3511,7 +4663,7 @@ has failed. The database said:
     </message>
     <message>
         <source>Column name</source>
-        <translation>字段名称</translation>
+        <translation type="obsolete">字段名称</translation>
     </message>
     <message>
         <source>Index</source>
@@ -3519,7 +4671,7 @@ has failed. The database said:
     </message>
     <message>
         <source>This shapefile contains reserved words. These may affect the import into PostgreSQL. Edit the column names so none of the reserved words listed at the right are used. You may also change any column name if desired.</source>
-        <translation>这个shapefile包含保留字。这可能会影响PostgreSQL的导入。编辑字段名称，使其没有任何保留字。您可以改变任何一个字段的名称，如果您想这么做的话.</translation>
+        <translation type="obsolete">这个shapefile包含保留字。这可能会影响PostgreSQL的导入。编辑字段名称，使其没有任何保留字。您可以改变任何一个字段的名称，如果您想这么做的话.</translation>
     </message>
     <message>
         <source>&amp;Help</source>
@@ -3540,6 +4692,33 @@ has failed. The database said:
     <message>
         <source>Reserved Words</source>
         <translation>保留字</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Double click the Column Name column to change the name of the column.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Column Name</source>
+        <translation>字段名称</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This shapefile contains reserved words. These may affect the import into PostgreSQL. Edit the column names so none of the reserved words listed at the right are used (click on a Column Name entry to edit). You may also change any other column name if desired.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsEditReservedWordsDialog</name>
+    <message>
+        <source>Status</source>
+        <translation>状态</translation>
+    </message>
+    <message>
+        <source>Column Name</source>
+        <translation>字段名称</translation>
+    </message>
+    <message>
+        <source>Index</source>
+        <translation>索引</translation>
     </message>
 </context>
 <context>
@@ -3573,6 +4752,21 @@ has failed. The database said:
     </message>
 </context>
 <context>
+    <name>QgsGPSDeviceDialog</name>
+    <message>
+        <source>New device %1</source>
+        <translation>新设备%1</translation>
+    </message>
+    <message>
+        <source>Are you sure?</source>
+        <translation>确定?</translation>
+    </message>
+    <message>
+        <source>Are you sure that you want to delete this device?</source>
+        <translation>您确定要删除这个设备?</translation>
+    </message>
+</context>
+<context>
     <name>QgsGPSDeviceDialogBase</name>
     <message>
         <source>GPS Device Editor</source>
@@ -3601,13 +4795,6 @@ has failed. The database said:
     <message>
         <source>Close</source>
         <translation>关闭</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;/p&gt;
-&lt;i&gt;%babel&lt;/i&gt; - the path to GPSBabel&lt;br&gt;
-&lt;i&gt;%in&lt;/i&gt; - the GPX filename when uploading or the port when downloading&lt;br&gt;
-&lt;i&gt;%out&lt;/i&gt; - the port when uploading or the GPX filename when downloading</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Commands</source>
@@ -3661,6 +4848,165 @@ has failed. The database said:
         <source>The command that is used to download waypoints from the device</source>
         <translation>该命令用来将路线点从设备上下载下来</translation>
     </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;span style=&quot; font-style:italic;&quot;&gt;%babel&lt;/span&gt; - the path to GPSBabel&lt;br /&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;%in&lt;/span&gt; - the GPX filename when uploading or the port when downloading&lt;br /&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;%out&lt;/span&gt; - the port when uploading or the GPX filename when downloading&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsGPSPlugin</name>
+    <message>
+        <source>&amp;Gps</source>
+        <translation>GPS (&amp;G)</translation>
+    </message>
+    <message>
+        <source>&amp;Gps Tools</source>
+        <translation>GPS工具 (&amp;G)</translation>
+    </message>
+    <message>
+        <source>&amp;Create new GPX layer</source>
+        <translation>创建新的GPX图层 (&amp;C)</translation>
+    </message>
+    <message>
+        <source>Creates a new GPX layer and displays it on the map canvas</source>
+        <translation>创建新的GPX图层并显示在地图中</translation>
+    </message>
+    <message>
+        <source>Gps Tools</source>
+        <translation>GPS工具</translation>
+    </message>
+    <message>
+        <source>Save new GPX file as...</source>
+        <translation>新的GPX文件另存为...</translation>
+    </message>
+    <message>
+        <source>GPS eXchange file (*.gpx)</source>
+        <translation>GPS交换文件 (*.gpx)</translation>
+    </message>
+    <message>
+        <source>Could not create file</source>
+        <translation>无法创建文件</translation>
+    </message>
+    <message>
+        <source>Unable to create a GPX file with the given name. </source>
+        <translation>无法以给定的名称创建GPX文件。</translation>
+    </message>
+    <message>
+        <source>Try again with another name or in another </source>
+        <translation>以其他名称重试或另存</translation>
+    </message>
+    <message>
+        <source>directory.</source>
+        <translation>目录。</translation>
+    </message>
+    <message>
+        <source>GPX Loader</source>
+        <translation>GPX加载器</translation>
+    </message>
+    <message>
+        <source>Unable to read the selected file.
+</source>
+        <translation>无法读取选中的文件。</translation>
+    </message>
+    <message>
+        <source>Please reselect a valid file.</source>
+        <translation>请重新选择一个有效的文件。</translation>
+    </message>
+    <message>
+        <source>Could not start process</source>
+        <translation>无法启动程序</translation>
+    </message>
+    <message>
+        <source>Could not start GPSBabel!</source>
+        <translation>无法启动GPSBabel!</translation>
+    </message>
+    <message>
+        <source>Importing data...</source>
+        <translation>导入数据...</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <source>Could not import data from %1!
+
+</source>
+        <translation>无法从%1导入数据!
+
+</translation>
+    </message>
+    <message>
+        <source>Error importing data</source>
+        <translation>导入数据错误</translation>
+    </message>
+    <message>
+        <source>Not supported</source>
+        <translation>不支持</translation>
+    </message>
+    <message>
+        <source>This device does not support downloading </source>
+        <translation>该设备不支持下载</translation>
+    </message>
+    <message>
+        <source>of </source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Downloading data...</source>
+        <translation>下载数据...</translation>
+    </message>
+    <message>
+        <source>Could not download data from GPS!
+
+</source>
+        <translation>无法从GPS下载数据!
+
+</translation>
+    </message>
+    <message>
+        <source>Error downloading data</source>
+        <translation>下载数据错误</translation>
+    </message>
+    <message>
+        <source>This device does not support uploading of </source>
+        <translation>该设备不支持上传</translation>
+    </message>
+    <message>
+        <source>Uploading data...</source>
+        <translation>上传数据...</translation>
+    </message>
+    <message>
+        <source>Error while uploading data to GPS!
+
+</source>
+        <translation>上传数据到GPS时发生错误!
+
+</translation>
+    </message>
+    <message>
+        <source>Error uploading data</source>
+        <translation>上传数据错误</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGPSPluginGui</name>
+    <message>
+        <source>Choose a filename to save under</source>
+        <translation>选择一个文件名来保存</translation>
+    </message>
+    <message>
+        <source>GPS eXchange format (*.gpx)</source>
+        <translation>GPS交换文件 (*.gpx)</translation>
+    </message>
+    <message>
+        <source>Select GPX file</source>
+        <translation>选择GPX文件</translation>
+    </message>
+    <message>
+        <source>Select file and format to import</source>
+        <translation>选择要导入的文件和格式</translation>
+    </message>
 </context>
 <context>
     <name>QgsGPSPluginGuiBase</name>
@@ -3679,7 +5025,7 @@ has failed. The database said:
 &lt;p&gt;Select a GPX file and then select the feature types that you want to load.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;描述&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;GPX is the &lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;GPS交换文件格式&lt;/a&gt;，它用来存储路线点、路径和轨迹的信息。&lt;/p&gt;
 &lt;p&gt;选择一个GPX文件，然后选择您想要加载的要素类型。&lt;/p&gt;
@@ -3715,21 +5061,6 @@ has failed. The database said:
         <translation>导入其它的文件</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;QGIS can only load GPX files by itself, but many other formats 
-can be converted to GPX using GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;
-http://gpsbabel.sf.net&lt;/a&gt;). This requires that you have GPSBabel installed where 
-QGIS can find it.&lt;/p&gt;
-&lt;p&gt;Select a GPS file format and the file that you want to import, the feature type 
-that you want to use, a GPX filename that you want to save the converted file as, 
-and a name for the new layer. All file formats can not store waypoints, routes, and 
-tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>File to import:</source>
         <translation>要导入的文件:</translation>
     </message>
@@ -3748,20 +5079,6 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
     <message>
         <source>Download from GPS</source>
         <translation>从GPS下载</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This tool will help you download data from a GPS device. Choose your 
-GPS device, the port it is connected to, the feature type you want to download, a name for your new layer, 
-and the GPX file where you want to store the data. If your device isn&apos;t listed, or if 
-you want to change some settings, you can also edit the devices.&lt;/p&gt;
-&lt;p&gt;This tool uses the program GPSBabel 
-(&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;http://gpsbabel.sf.net&lt;/a&gt;) to transfer the data. If you 
-don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Edit devices</source>
@@ -3784,20 +5101,6 @@ don&apos;t have GPSBabel installed where QGIS can find it, this tool will not wo
         <translation>上载到GPS</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This tool will help you upload data from a GPX layer to a GPS device. 
-Choose the layer you want to upload, the device you want to upload it to, and the port 
-your device is connected to. 
-If your device isn&apos;t listed, or if you want to change some settings, you can also 
-edit the devices.&lt;/p&gt;
-&lt;p&gt;This tool uses the program GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;http://gpsbabel.sf.net&lt;/a&gt;) 
-to transfer the data. If you don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Data layer:</source>
         <translation>数据图层:</translation>
     </message>
@@ -3816,6 +5119,22 @@ to transfer the data. If you don&apos;t have GPSBabel installed where QGIS can f
     <message>
         <source>Alt+C</source>
         <translation>Alt+C</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;GPX is the &lt;/span&gt;&lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;GPS eXchange file format&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;, which is used to store information about waypoints, routes, and tracks.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;Select a GPX file and then select the feature types that you want to load.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;QGIS can only load GPX files by itself, but many other formats can be converted to GPX using GPSBabel (&lt;/span&gt;&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;http://gpsbabel.sf.net&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;). This requires that you have GPSBabel installed where QGIS can find it.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;Select a GPS file format and the file that you want to import, the feature type that you want to use, a GPX filename that you want to save the converted file as, and a name for the new layer. All file formats can not store waypoints, routes, and tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;This tool will help you download data from a GPS device. Choose your GPS device, the port it is connected to, the feature type you want to download, a name for your new layer, and the GPX file where you want to store the data. If your device isn&apos;t listed, or if you want to change some settings, you can also edit the devices.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;This tool uses the program GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://gpsbabel.sf.net&lt;/span&gt;&lt;/a&gt;) to transfer the data. If you don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;This tool will help you upload data from a GPX layer to a GPS device. Choose the layer you want to upload, the device you want to upload it to, and the port your device is connected to. If your device isn&apos;t listed, or if you want to change some settings, you can also edit the devices.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;This tool uses the program GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://gpsbabel.sf.net&lt;/span&gt;&lt;/a&gt;) to transfer the data. If you don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3873,11 +5192,57 @@ to transfer the data. If you don&apos;t have GPSBabel installed where QGIS can f
     </message>
     <message>
         <source>New Item</source>
-        <translation>新项目</translation>
+        <translation type="obsolete">新项目</translation>
     </message>
     <message>
         <source>Remove</source>
         <translation>移除</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation>帮助</translation>
+    </message>
+    <message>
+        <source>File Format:</source>
+        <translation>文件格式:</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGeorefPlugin</name>
+    <message>
+        <source>&amp;Georeferencer</source>
+        <translation>Georeferencer (&amp;G)</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGeorefPluginGui</name>
+    <message>
+        <source>Choose a raster file</source>
+        <translation>选择一个栅格文件</translation>
+    </message>
+    <message>
+        <source>Raster files (*.*)</source>
+        <translation>栅格文件 (*.*)</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>错误</translation>
+    </message>
+    <message>
+        <source>The selected file is not a valid raster file.</source>
+        <translation>选择的文件不是一个有效的栅格文件。</translation>
+    </message>
+    <message>
+        <source>The selected file already seems to have a </source>
+        <translation>选择的文件似乎已经有一个</translation>
+    </message>
+    <message>
+        <source>world file! If you want to replace it with a </source>
+        <translation>world文件! 如果您想用一个新的world文件</translation>
+    </message>
+    <message>
+        <source>new world file, remove the old one first.</source>
+        <translation>来替换它，请先将旧的文件删除。</translation>
     </message>
 </context>
 <context>
@@ -3915,9 +5280,9 @@ to transfer the data. If you don&apos;t have GPSBabel installed where QGIS can f
         <translation>输入真实坐标</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:helvetica&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:15pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This plugin can generate world files for rasters. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p&gt;
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Tahoma&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-size:14pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p dir=&quot;ltr&quot;&gt;This plugin can generate world files for rasters. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
         <translation type="unfinished"></translation>
@@ -3958,43 +5323,43 @@ to transfer the data. If you don&apos;t have GPSBabel installed where QGIS can f
     <name>QgsGraMaDialogBase</name>
     <message>
         <source>graduated Marker</source>
-        <translation>渐进标记符号</translation>
+        <translation type="obsolete">渐进标记符号</translation>
     </message>
     <message>
         <source>Mode:</source>
-        <translation>模式:</translation>
+        <translation type="obsolete">模式:</translation>
     </message>
     <message>
         <source>Classification Field:</source>
-        <translation>分类字段:</translation>
+        <translation type="obsolete">分类字段:</translation>
     </message>
     <message>
         <source>Number of Classes:</source>
-        <translation>分类数目:</translation>
+        <translation type="obsolete">分类数目:</translation>
     </message>
 </context>
 <context>
     <name>QgsGraMaExtensionWidget</name>
     <message>
         <source>Lower</source>
-        <translation>向下</translation>
+        <translation type="obsolete">向下</translation>
     </message>
     <message>
         <source>Upper</source>
-        <translation>向上</translation>
+        <translation type="obsolete">向上</translation>
     </message>
     <message>
         <source>Label</source>
-        <translation>标签</translation>
+        <translation type="obsolete">标签</translation>
     </message>
     <message>
         <source>Image</source>
-        <translation>影像</translation>
+        <translation type="obsolete">影像</translation>
     </message>
     <message>
         <source>Scale
 Factor</source>
-        <translation>比例
+        <translation type="obsolete">比例
 因子</translation>
     </message>
 </context>
@@ -4002,11 +5367,26 @@ Factor</source>
     <name>QgsGraSyDialogBase</name>
     <message>
         <source>graduated Symbol</source>
-        <translation>渐进符号</translation>
+        <translation type="obsolete">渐进符号</translation>
     </message>
     <message>
         <source>Number of Classes:</source>
-        <translation>分类数目:</translation>
+        <translation type="obsolete">分类数目:</translation>
+    </message>
+    <message>
+        <source>Classification Field:</source>
+        <translation type="obsolete">分类字段:</translation>
+    </message>
+    <message>
+        <source>Mode:</source>
+        <translation type="obsolete">模式:</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGraduatedSymbolDialogBase</name>
+    <message>
+        <source>graduated Symbol</source>
+        <translation>渐进符号</translation>
     </message>
     <message>
         <source>Classification Field:</source>
@@ -4015,6 +5395,10 @@ Factor</source>
     <message>
         <source>Mode:</source>
         <translation>模式:</translation>
+    </message>
+    <message>
+        <source>Number of Classes:</source>
+        <translation>分类数目:</translation>
     </message>
 </context>
 <context>
@@ -4057,10 +5441,41 @@ Factor</source>
     </message>
 </context>
 <context>
+    <name>QgsGrassBrowser</name>
+    <message>
+        <source>Tools</source>
+        <translation>工具</translation>
+    </message>
+    <message>
+        <source>Add selected map to canvas</source>
+        <translation>将选中的地图添加到视图中</translation>
+    </message>
+    <message>
+        <source>Copy selected map</source>
+        <translation>复制选中的地图</translation>
+    </message>
+    <message>
+        <source>Rename selected map</source>
+        <translation>重命名选中的地图</translation>
+    </message>
+    <message>
+        <source>Delete selected map</source>
+        <translation>删除选中的地图</translation>
+    </message>
+    <message>
+        <source>Set current region to selected map</source>
+        <translation>设置当前区域为选中的地图</translation>
+    </message>
+    <message>
+        <source>Refresh</source>
+        <translation>刷新</translation>
+    </message>
+</context>
+<context>
     <name>QgsGrassEdit</name>
     <message>
         <source>New vertex</source>
-        <translation>新节点</translation>
+        <translation type="obsolete">新节点</translation>
     </message>
     <message>
         <source>New point</source>
@@ -4072,51 +5487,51 @@ Factor</source>
     </message>
     <message>
         <source>Select vertex</source>
-        <translation>选择节点</translation>
+        <translation type="obsolete">选择节点</translation>
     </message>
     <message>
         <source>Select line segment</source>
-        <translation>选择线的片段</translation>
+        <translation type="obsolete">选择线的片段</translation>
     </message>
     <message>
         <source>Select position on line</source>
-        <translation>在线上选择一个位置</translation>
+        <translation type="obsolete">在线上选择一个位置</translation>
     </message>
     <message>
         <source>Select element</source>
-        <translation>选择元素</translation>
+        <translation type="obsolete">选择元素</translation>
     </message>
     <message>
         <source>Undo last point</source>
-        <translation>撤消最后的点</translation>
+        <translation type="obsolete">撤消最后的点</translation>
     </message>
     <message>
         <source>Close line</source>
-        <translation>闭合线</translation>
+        <translation type="obsolete">闭合线</translation>
     </message>
     <message>
         <source>Delete selected / select next</source>
-        <translation>删除选中的/选择下一个</translation>
+        <translation type="obsolete">删除选中的/选择下一个</translation>
     </message>
     <message>
         <source>Release selected</source>
-        <translation>释放选中的</translation>
+        <translation type="obsolete">释放选中的</translation>
     </message>
     <message>
         <source>New location</source>
-        <translation>新的区域</translation>
+        <translation type="obsolete">新的区域</translation>
     </message>
     <message>
         <source>Select new position</source>
-        <translation>选择新的位置</translation>
+        <translation type="obsolete">选择新的位置</translation>
     </message>
     <message>
         <source>New vertex position</source>
-        <translation>新的节点位置</translation>
+        <translation type="obsolete">新的节点位置</translation>
     </message>
     <message>
         <source>Release</source>
-        <translation>释放</translation>
+        <translation type="obsolete">释放</translation>
     </message>
     <message>
         <source>Delete vertex</source>
@@ -4124,19 +5539,19 @@ Factor</source>
     </message>
     <message>
         <source>Release vertex</source>
-        <translation>释放节点</translation>
+        <translation type="obsolete">释放节点</translation>
     </message>
     <message>
         <source>Split the line</source>
-        <translation>分割线</translation>
+        <translation type="obsolete">分割线</translation>
     </message>
     <message>
         <source>Release the line</source>
-        <translation>释放线</translation>
+        <translation type="obsolete">释放线</translation>
     </message>
     <message>
         <source>Select point on line</source>
-        <translation>在线上选择一个点</translation>
+        <translation type="obsolete">在线上选择一个点</translation>
     </message>
     <message>
         <source>Left: </source>
@@ -4149,6 +5564,46 @@ Factor</source>
     <message>
         <source>Rigth: </source>
         <translation>右键:</translation>
+    </message>
+    <message>
+        <source>Edit tools</source>
+        <translation>编辑工具</translation>
+    </message>
+    <message>
+        <source>New line</source>
+        <translation>新的线</translation>
+    </message>
+    <message>
+        <source>New boundary</source>
+        <translation>新的边界</translation>
+    </message>
+    <message>
+        <source>Move vertex</source>
+        <translation>移动节点</translation>
+    </message>
+    <message>
+        <source>Add vertex</source>
+        <translation>增加节点</translation>
+    </message>
+    <message>
+        <source>Move element</source>
+        <translation>移动元素</translation>
+    </message>
+    <message>
+        <source>Split line</source>
+        <translation>分割线</translation>
+    </message>
+    <message>
+        <source>Delete element</source>
+        <translation>删除元素</translation>
+    </message>
+    <message>
+        <source>Edit attributes</source>
+        <translation>编辑属性</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>关闭</translation>
     </message>
 </context>
 <context>
@@ -4187,7 +5642,7 @@ Factor</source>
     </message>
     <message>
         <source>New Item</source>
-        <translation>新项目</translation>
+        <translation type="obsolete">新项目</translation>
     </message>
     <message>
         <source>Table</source>
@@ -4203,103 +5658,165 @@ Factor</source>
     </message>
     <message>
         <source>Tools</source>
-        <translation>工具</translation>
+        <translation type="obsolete">工具</translation>
     </message>
     <message>
         <source>Toolbar</source>
-        <translation>工具条</translation>
+        <translation type="obsolete">工具条</translation>
     </message>
     <message>
         <source>New line</source>
-        <translation>新的线</translation>
+        <translation type="obsolete">新的线</translation>
     </message>
     <message>
         <source>F2</source>
-        <translation>F2</translation>
+        <translation type="obsolete">F2</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>关闭</translation>
+        <translation type="obsolete">关闭</translation>
     </message>
     <message>
         <source>New point</source>
-        <translation>新的点</translation>
+        <translation type="obsolete">新的点</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation>F1</translation>
+        <translation type="obsolete">F1</translation>
     </message>
     <message>
         <source>New boundary</source>
-        <translation>新的边界</translation>
+        <translation type="obsolete">新的边界</translation>
     </message>
     <message>
         <source>F3</source>
-        <translation>F3</translation>
+        <translation type="obsolete">F3</translation>
     </message>
     <message>
         <source>New centroid</source>
-        <translation>新的质心</translation>
+        <translation type="obsolete">新的质心</translation>
     </message>
     <message>
         <source>F4</source>
-        <translation>F4</translation>
+        <translation type="obsolete">F4</translation>
     </message>
     <message>
         <source>Move vertex</source>
-        <translation>移动节点</translation>
+        <translation type="obsolete">移动节点</translation>
     </message>
     <message>
         <source>F5</source>
-        <translation>F5</translation>
+        <translation type="obsolete">F5</translation>
     </message>
     <message>
         <source>Add vertex</source>
-        <translation>增加节点</translation>
+        <translation type="obsolete">增加节点</translation>
     </message>
     <message>
         <source>F6</source>
-        <translation>F6</translation>
+        <translation type="obsolete">F6</translation>
     </message>
     <message>
         <source>Delete vertex</source>
-        <translation>删除节点</translation>
+        <translation type="obsolete">删除节点</translation>
     </message>
     <message>
         <source>F7</source>
-        <translation>F7</translation>
+        <translation type="obsolete">F7</translation>
     </message>
     <message>
         <source>Split line</source>
-        <translation>分割线</translation>
+        <translation type="obsolete">分割线</translation>
     </message>
     <message>
         <source>F10</source>
-        <translation>F10</translation>
+        <translation type="obsolete">F10</translation>
     </message>
     <message>
         <source>Move line</source>
-        <translation>移动线</translation>
+        <translation type="obsolete">移动线</translation>
     </message>
     <message>
         <source>F9</source>
-        <translation>F9</translation>
+        <translation type="obsolete">F9</translation>
     </message>
     <message>
         <source>Delete line</source>
-        <translation>删除线</translation>
+        <translation type="obsolete">删除线</translation>
     </message>
     <message>
         <source>F11</source>
-        <translation>F11</translation>
+        <translation type="obsolete">F11</translation>
     </message>
     <message>
         <source>Edit attributes</source>
-        <translation>编辑属性</translation>
+        <translation type="obsolete">编辑属性</translation>
     </message>
     <message>
         <source>ActionGroup</source>
-        <translation>命令组</translation>
+        <translation type="obsolete">命令组</translation>
+    </message>
+    <message>
+        <source>Line width</source>
+        <translation>线的宽度</translation>
+    </message>
+    <message>
+        <source>Marker size</source>
+        <translation>标记的大小</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassMapcalc</name>
+    <message>
+        <source>Mapcalc tools</source>
+        <translation>地图计算工具</translation>
+    </message>
+    <message>
+        <source>Add map</source>
+        <translation>添加地图</translation>
+    </message>
+    <message>
+        <source>Add constant value</source>
+        <translation>增加常量</translation>
+    </message>
+    <message>
+        <source>Add operator or function</source>
+        <translation>增加操作符或函数</translation>
+    </message>
+    <message>
+        <source>Add connection</source>
+        <translation>增加连接</translation>
+    </message>
+    <message>
+        <source>Select item</source>
+        <translation>选择条目</translation>
+    </message>
+    <message>
+        <source>Delete selected item</source>
+        <translation>删除选中的条目</translation>
+    </message>
+    <message>
+        <source>Open</source>
+        <translation>打开</translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation>保存</translation>
+    </message>
+    <message>
+        <source>Save as</source>
+        <translation>另存为</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassMapcalcBase</name>
+    <message>
+        <source>MainWindow</source>
+        <translation>主窗口</translation>
+    </message>
+    <message>
+        <source>Output</source>
+        <translation>输出</translation>
     </message>
 </context>
 <context>
@@ -4338,6 +5855,133 @@ Factor</source>
     <message>
         <source>Close</source>
         <translation>关闭</translation>
+    </message>
+    <message>
+        <source>View output</source>
+        <translation>查看输出</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassNewMapsetBase</name>
+    <message>
+        <source>Column 1</source>
+        <translation>字段1</translation>
+    </message>
+    <message>
+        <source>Example directory tree:</source>
+        <translation>示例目录树:</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;GRASS data are stored in tree directory structure.&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The GRASS database is the top-level directory in this tree structure.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Database Error</source>
+        <translation>数据库错误</translation>
+    </message>
+    <message>
+        <source>Database:</source>
+        <translation>数据库:</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <source>Select existing directory or create a new one:</source>
+        <translation>选择已有的目录或创建一个新目录:</translation>
+    </message>
+    <message>
+        <source>Location</source>
+        <translation>区域(Location)</translation>
+    </message>
+    <message>
+        <source>Select location</source>
+        <translation>选择区域</translation>
+    </message>
+    <message>
+        <source>Create new location</source>
+        <translation>创建新区域</translation>
+    </message>
+    <message>
+        <source>Location Error</source>
+        <translation>区域错误</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The GRASS location is a collection of maps for a particular territory or project.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Projection Error</source>
+        <translation>投影错误</translation>
+    </message>
+    <message>
+        <source>Coordinate system</source>
+        <translation>坐标系统</translation>
+    </message>
+    <message>
+        <source>Projection</source>
+        <translation>投影</translation>
+    </message>
+    <message>
+        <source>Not defined</source>
+        <translation>未定义的</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The GRASS region defines a workspace for raster modules. The default region is valid for one location. It is possible to set a different region in each mapset. &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;It is possible to change the default location region later.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set current QGIS extent</source>
+        <translation>设置当前QGIS的范围</translation>
+    </message>
+    <message>
+        <source>Set</source>
+        <translation>设置</translation>
+    </message>
+    <message>
+        <source>Region Error</source>
+        <translation>范围错误</translation>
+    </message>
+    <message>
+        <source>S</source>
+        <translation>南</translation>
+    </message>
+    <message>
+        <source>W</source>
+        <translation>西</translation>
+    </message>
+    <message>
+        <source>E</source>
+        <translation>东</translation>
+    </message>
+    <message>
+        <source>N</source>
+        <translation>北</translation>
+    </message>
+    <message>
+        <source>New mapset:</source>
+        <translation>新的地图集:</translation>
+    </message>
+    <message>
+        <source>Mapset Error</source>
+        <translation>地图集错误</translation>
+    </message>
+    <message>
+        <source>&lt;p align=&quot;center&quot;&gt;Existing masets&lt;/p&gt;</source>
+        <translation>&lt;p align=&quot;center&quot;&gt;已有的地图集&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The GRASS mapset is a collection of maps used by one user. &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;A user can read maps from all mapsets in the location but &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;he can open for writing only his mapset (owned by user).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Location:</source>
+        <translation>区域:</translation>
+    </message>
+    <message>
+        <source>Mapset:</source>
+        <translation>地图集:</translation>
     </message>
 </context>
 <context>
@@ -4446,46 +6090,115 @@ Factor</source>
     </message>
 </context>
 <context>
+    <name>QgsGrassShellBase</name>
+    <message>
+        <source>GRASS Shell</source>
+        <translation>GRASS Shell</translation>
+    </message>
+</context>
+<context>
     <name>QgsGrassToolsBase</name>
     <message>
         <source>GRASS Tools</source>
-        <translation>GRASS工具</translation>
+        <translation type="obsolete">GRASS工具</translation>
     </message>
     <message>
         <source>Modules</source>
-        <translation>模块</translation>
+        <translation type="obsolete">模块</translation>
     </message>
     <message>
         <source>Column 1</source>
-        <translation>字段1</translation>
+        <translation type="obsolete">字段1</translation>
     </message>
     <message>
         <source>New Item</source>
-        <translation>新项目</translation>
+        <translation type="obsolete">新项目</translation>
     </message>
     <message>
         <source>New Mapset</source>
-        <translation>新的地图集</translation>
+        <translation type="obsolete">新的地图集</translation>
     </message>
     <message>
         <source>&amp;New</source>
-        <translation>新建(&amp;N)</translation>
+        <translation type="obsolete">新建(&amp;N)</translation>
     </message>
     <message>
         <source>Ctrl+N</source>
-        <translation>Ctrl+N</translation>
+        <translation type="obsolete">Ctrl+N</translation>
     </message>
     <message>
         <source>Open Mapset</source>
-        <translation>打开地图集</translation>
+        <translation type="obsolete">打开地图集</translation>
     </message>
     <message>
         <source>&amp;Open...</source>
-        <translation>打开(&amp;O)...</translation>
+        <translation type="obsolete">打开(&amp;O)...</translation>
     </message>
     <message>
         <source>Ctrl+O</source>
-        <translation>Ctrl+O</translation>
+        <translation type="obsolete">Ctrl+O</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGridMakerPlugin</name>
+    <message>
+        <source>&amp;Graticules</source>
+        <translation>格网 (&amp;G)</translation>
+    </message>
+    <message>
+        <source>&amp;GraticuleMaker</source>
+        <translation>格网生成器 (&amp;G)</translation>
+    </message>
+    <message>
+        <source>Creates a graticule (grid) and stores the result as a shapefile</source>
+        <translation>创建一个格网并存储为shapefile</translation>
+    </message>
+    <message>
+        <source>Graticule Creator</source>
+        <translation>格网生成器</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGridMakerPluginGui</name>
+    <message>
+        <source>QGIS - Grid Maker</source>
+        <translation>QGIS - 格网生成器</translation>
+    </message>
+    <message>
+        <source>Please enter the file name before pressing OK!.</source>
+        <translation>按下OK前请输入文件名。</translation>
+    </message>
+    <message>
+        <source>Longitude Interval is invalid - please correct and try again.</source>
+        <translation>经度间隔无效 - 请改正并重试。</translation>
+    </message>
+    <message>
+        <source>Latitude Interval is invalid - please correct and try again.</source>
+        <translation>纬度间隔无效 - 请改正并重试。</translation>
+    </message>
+    <message>
+        <source>Longitude Origin is invalid - please correct and try again..</source>
+        <translation>起始经度无效 - 请改正并重试。</translation>
+    </message>
+    <message>
+        <source>Latitude Origin is invalid - please correct and try again.</source>
+        <translation>起始纬度无效 - 请改正并重试。</translation>
+    </message>
+    <message>
+        <source>End Point Longitude is invalid - please correct and try again.</source>
+        <translation>终点经度无效 - 请改正并重试。</translation>
+    </message>
+    <message>
+        <source>End Point Latitude is invalid - please correct and try again.</source>
+        <translation>终点纬度无效 - 请改正并重试。</translation>
+    </message>
+    <message>
+        <source>Choose a filename to save under</source>
+        <translation>选择一个文件名来保存</translation>
+    </message>
+    <message>
+        <source>ESRI Shapefile (*.shp)</source>
+        <translation>ESRI Shapefile (*.shp)</translation>
     </message>
 </context>
 <context>
@@ -4521,7 +6234,7 @@ Factor</source>
 &lt;p&gt;Please enter all units in decimal degrees&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;描述&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;该插件能够帮助您构建一个格网shapefile，您可以将它作为一个叠加图层在地图中使用。&lt;/p&gt;
 &lt;p&gt;所有的输入都以十进制度为单位&lt;/p&gt;
@@ -4530,7 +6243,7 @@ Factor</source>
     </message>
     <message>
         <source>Origin (Lower Left)</source>
-        <translation>起点(左下角点)</translation>
+        <translation type="obsolete">起点(左下角点)</translation>
     </message>
     <message>
         <source>#000.00000; </source>
@@ -4546,11 +6259,11 @@ Factor</source>
     </message>
     <message>
         <source>End point (Upper Right)</source>
-        <translation>终点(右上角点)</translation>
+        <translation type="obsolete">终点(右上角点)</translation>
     </message>
     <message>
         <source>Output (Shape) File</source>
-        <translation>输出文件(Shape)</translation>
+        <translation type="obsolete">输出文件(Shape)</translation>
     </message>
     <message>
         <source>...</source>
@@ -4558,7 +6271,7 @@ Factor</source>
     </message>
     <message>
         <source>Graticule Size (units in degrees)</source>
-        <translation>网格大小(单位：度)</translation>
+        <translation type="obsolete">网格大小(单位：度)</translation>
     </message>
     <message>
         <source>Latitude Interval:</source>
@@ -4567,6 +6280,42 @@ Factor</source>
     <message>
         <source>Longitude Interval:</source>
         <translation>经度间距:</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:11pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;Please enter all units in decimal degrees&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation>类型</translation>
+    </message>
+    <message>
+        <source>Point</source>
+        <translation>点</translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation>线</translation>
+    </message>
+    <message>
+        <source>Polygon</source>
+        <translation>多边形</translation>
+    </message>
+    <message>
+        <source>Origin (lower left)</source>
+        <translation>起点 (左下角点)</translation>
+    </message>
+    <message>
+        <source>End point (upper right)</source>
+        <translation>终点 (右上角点)</translation>
+    </message>
+    <message>
+        <source>Graticle size (units in degrees)</source>
+        <translation>格网大小 (以度为单位)</translation>
+    </message>
+    <message>
+        <source>Output (shape) file</source>
+        <translation>输出的(shape)文件</translation>
     </message>
 </context>
 <context>
@@ -4628,10 +6377,30 @@ Factor</source>
     </message>
 </context>
 <context>
+    <name>QgsHttpTransaction</name>
+    <message>
+        <source>WMS Server responded unexpectedly with HTTP Status Code %1 (%2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HTTP response completed, however there was an error: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Network timed out after %1 seconds of inactivity.
+This may be a problem in your network connection or at the WMS server.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsIdentifyResults</name>
     <message>
         <source>&lt;center&gt;Run action&lt;/center&gt;</source>
         <translation>&lt;center&gt;运行命令&lt;/center&gt;</translation>
+    </message>
+    <message>
+        <source>Identify Results - </source>
+        <translation>结果 -</translation>
     </message>
 </context>
 <context>
@@ -4696,7 +6465,7 @@ Factor</source>
     </message>
     <message>
         <source>Source:</source>
-        <translation>源:</translation>
+        <translation type="obsolete">源:</translation>
     </message>
     <message>
         <source>Field containing label:</source>
@@ -4724,7 +6493,7 @@ Factor</source>
     </message>
     <message>
         <source>Font size units are in ...</source>
-        <translation>字体大小的单位是...</translation>
+        <translation type="obsolete">字体大小的单位是...</translation>
     </message>
     <message>
         <source>Points</source>
@@ -4760,11 +6529,11 @@ Factor</source>
     </message>
     <message>
         <source>Offset units are in ...</source>
-        <translation>偏移量单位是...</translation>
+        <translation type="obsolete">偏移量单位是...</translation>
     </message>
     <message>
         <source>Buffer Settings</source>
-        <translation>缓冲设置</translation>
+        <translation type="obsolete">缓冲设置</translation>
     </message>
     <message>
         <source>Buffer Labels?</source>
@@ -4776,19 +6545,19 @@ Factor</source>
     </message>
     <message>
         <source>Buffer size is in ...</source>
-        <translation>缓冲大小是...</translation>
+        <translation type="obsolete">缓冲大小是...</translation>
     </message>
     <message>
         <source>Size is in map units</source>
-        <translation>大小以地图单位表示</translation>
+        <translation>地图单位</translation>
     </message>
     <message>
         <source>Size is in points</source>
-        <translation>大小以点表示</translation>
+        <translation>点</translation>
     </message>
     <message>
         <source>Alignment</source>
-        <translation>对齐</translation>
+        <translation type="obsolete">对齐</translation>
     </message>
     <message>
         <source>Above</source>
@@ -4836,11 +6605,11 @@ Factor</source>
     </message>
     <message>
         <source>Use best judgement when labels collide</source>
-        <translation>当标签重叠时使用最佳判断</translation>
+        <translation type="obsolete">当标签重叠时使用最佳判断</translation>
     </message>
     <message>
         <source>Data Defined Style</source>
-        <translation>数据定义的样式</translation>
+        <translation>定义样式的数据</translation>
     </message>
     <message>
         <source>&amp;Font family:</source>
@@ -4880,15 +6649,55 @@ Factor</source>
     </message>
     <message>
         <source>Font and Alignment</source>
-        <translation>字体和对齐</translation>
+        <translation type="obsolete">字体和对齐</translation>
     </message>
     <message>
         <source>Buffer and Position</source>
-        <translation>缓冲和位置</translation>
+        <translation type="obsolete">缓冲和位置</translation>
     </message>
     <message>
         <source>Advanced Data Defined Style</source>
-        <translation>高级的数据定义的样式</translation>
+        <translation type="obsolete">高级的数据定义的样式</translation>
+    </message>
+    <message>
+        <source>Font size units</source>
+        <translation>字体的单位</translation>
+    </message>
+    <message>
+        <source>Font Alignment</source>
+        <translation>字体对齐</translation>
+    </message>
+    <message>
+        <source>Placement</source>
+        <translation>位置</translation>
+    </message>
+    <message>
+        <source>Buffer</source>
+        <translation>缓冲区</translation>
+    </message>
+    <message>
+        <source>Buffer size units</source>
+        <translation>缓冲区的单位</translation>
+    </message>
+    <message>
+        <source>Offset units</source>
+        <translation>偏移量的单位</translation>
+    </message>
+    <message>
+        <source>Data Defined Alignment</source>
+        <translation>定义对齐的数据</translation>
+    </message>
+    <message>
+        <source>Data Defined Buffer</source>
+        <translation>定义缓冲区的数据</translation>
+    </message>
+    <message>
+        <source>Data Defined Position</source>
+        <translation>定义位置的数据</translation>
+    </message>
+    <message>
+        <source>Source</source>
+        <translation>源</translation>
     </message>
 </context>
 <context>
@@ -4907,26 +6716,81 @@ Factor</source>
 &lt;p&gt;This layer appears to have no projection specification. By default, this layer will now have its projection set to that of the project, but you may override this by selecting a different projection below.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;定义该图层的投影：&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;这个图层看起来没有指定投影。默认情况下，它的投影会被设置为项目的投影。但是您也可以从下面选择一个不同的投影来覆盖它。&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Define this layer&apos;s projection:&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This layer appears to have no projection specification. By default, this layer will now have its projection set to that of the project, but you may override this by selecting a different projection below.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsLegend</name>
+    <message>
+        <source>group</source>
+        <translation>组</translation>
+    </message>
+    <message>
+        <source>&amp;Properties</source>
+        <translation>属性(&amp;P)</translation>
+    </message>
+    <message>
+        <source>&amp;Zoom to layer extent</source>
+        <translation>缩放到图层的范围 (&amp;Z)</translation>
+    </message>
+    <message>
+        <source>&amp;Add to overview</source>
+        <translation>添加到鹰眼图 (&amp;A)</translation>
+    </message>
+    <message>
+        <source>&amp;Remove from overview</source>
+        <translation>从鹰眼图中移除 (&amp;R)</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>移除(&amp;R)</translation>
+    </message>
+    <message>
+        <source>&amp;Make to toplevel item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Re&amp;name</source>
+        <translation>重命名 (&amp;n)</translation>
+    </message>
+    <message>
+        <source>&amp;Add group</source>
+        <translation>添加组 (&amp;A)</translation>
+    </message>
+    <message>
+        <source>&amp;Expand all</source>
+        <translation>全部展开 (&amp;E)</translation>
+    </message>
+    <message>
+        <source>&amp;Collapse all</source>
+        <translation>全部折叠 (&amp;C)</translation>
+    </message>
+    <message>
+        <source>Show file groups</source>
+        <translation>显示文件</translation>
     </message>
 </context>
 <context>
     <name>QgsLegendItemBase</name>
     <message>
         <source>Form1</source>
-        <translation>窗体1</translation>
+        <translation type="obsolete">窗体1</translation>
     </message>
     <message>
         <source>CheckBox1</source>
-        <translation>复选框</translation>
+        <translation type="obsolete">复选框</translation>
     </message>
     <message>
         <source>TextLabel1</source>
-        <translation>文本标签1</translation>
+        <translation type="obsolete">文本标签1</translation>
     </message>
 </context>
 <context>
@@ -4979,65 +6843,73 @@ Factor</source>
     <name>QgsLocationCaptureWidget</name>
     <message>
         <source>Captured Pos: </source>
-        <translation>捕获的位置:</translation>
+        <translation type="obsolete">捕获的位置:</translation>
     </message>
     <message>
         <source>Current Pos: </source>
-        <translation>当前的位置:</translation>
+        <translation type="obsolete">当前的位置:</translation>
     </message>
 </context>
 <context>
     <name>QgsLocationCaptureWidgetBase</name>
     <message>
         <source>Form1</source>
-        <translation>窗体1</translation>
+        <translation type="obsolete">窗体1</translation>
     </message>
     <message>
         <source>ZoomIn</source>
-        <translation>放大</translation>
+        <translation type="obsolete">放大</translation>
     </message>
     <message>
         <source>Pan</source>
-        <translation>移动</translation>
+        <translation type="obsolete">移动</translation>
     </message>
     <message>
         <source>Zoom Out</source>
-        <translation>缩小</translation>
+        <translation type="obsolete">缩小</translation>
     </message>
     <message>
         <source>Capture Pos</source>
-        <translation>捕获位置</translation>
+        <translation type="obsolete">捕获位置</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation>确定</translation>
+        <translation type="obsolete">确定</translation>
     </message>
     <message>
         <source>Captured Pos:</source>
-        <translation>捕获的位置:</translation>
+        <translation type="obsolete">捕获的位置:</translation>
     </message>
     <message>
         <source>Current Pos:</source>
-        <translation>当前的位置:</translation>
+        <translation type="obsolete">当前的位置:</translation>
     </message>
 </context>
 <context>
     <name>QgsMapCanvas</name>
     <message>
         <source>No active layer</source>
-        <translation>没有激活的图层</translation>
+        <translation type="obsolete">没有激活的图层</translation>
     </message>
     <message>
         <source>To select features, you must choose an layer active by clicking on its name in the legend</source>
-        <translation>要选择要素，您必须在图例上单击一个图层的名称，激活该图层</translation>
+        <translation type="obsolete">要选择要素，您必须在图例上单击一个图层的名称，激活该图层</translation>
     </message>
     <message>
         <source>To identify features, you must choose an layer active by clicking on its name in the legend</source>
-        <translation>要识别要素，，您必须在图例上单击一个图层的名称，激活该图层</translation>
+        <translation type="obsolete">要识别要素，，您必须在图例上单击一个图层的名称，激活该图层</translation>
     </message>
     <message>
         <source>Error when projecting the view extent, you may need to manually zoom to the region of interest.</source>
-        <translation>投影视图区域范围时出错，您也许需要手工缩放到感兴趣的区域.</translation>
+        <translation type="obsolete">投影视图区域范围时出错，您也许需要手工缩放到感兴趣的区域.</translation>
+    </message>
+    <message>
+        <source>Could not draw</source>
+        <translation>无法绘制</translation>
+    </message>
+    <message>
+        <source>because</source>
+        <translation>因为</translation>
     </message>
 </context>
 <context>
@@ -5053,6 +6925,10 @@ Factor</source>
     <message>
         <source>&amp;Properties</source>
         <translation>属性(&amp;P)</translation>
+    </message>
+    <message>
+        <source>Toggle in Overview</source>
+        <translation>放入鹰眼图中</translation>
     </message>
 </context>
 <context>
@@ -5193,6 +7069,30 @@ Factor</source>
         <source>...</source>
         <translation>...</translation>
     </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Path to the template file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Prefix attached to map, scalebar and legend GIF filenames created using this MapFile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Project File</source>
+        <translation>QGIS项目文件</translation>
+    </message>
+    <message>
+        <source>QGIS project file to export to MapServer map format</source>
+        <translation>将QGIS项目文件输出为MapServer地图格式</translation>
+    </message>
+    <message>
+        <source>Name for the map file to be created from the QGIS project file</source>
+        <translation>地图文件的名称</translation>
+    </message>
+    <message>
+        <source>If checked, only the layer information will be processed</source>
+        <translation>如果选中，只有图层信息会处理</translation>
+    </message>
 </context>
 <context>
     <name>QgsMarkerDialogBase</name>
@@ -5225,11 +7125,15 @@ Factor</source>
     <name>QgsMeasure</name>
     <message>
         <source>Increment</source>
-        <translation>增量</translation>
+        <translation type="obsolete">增量</translation>
     </message>
     <message>
         <source>Total</source>
-        <translation>总计</translation>
+        <translation type="obsolete">总计</translation>
+    </message>
+    <message>
+        <source>Segments (in meters)</source>
+        <translation>片段 (米)</translation>
     </message>
 </context>
 <context>
@@ -5244,11 +7148,19 @@ Factor</source>
     </message>
     <message>
         <source>Close</source>
-        <translation>关闭</translation>
+        <translation type="obsolete">关闭</translation>
     </message>
     <message>
         <source>Help</source>
         <translation>帮助</translation>
+    </message>
+    <message>
+        <source>Cl&amp;ose</source>
+        <translation>关闭(&amp;o)</translation>
+    </message>
+    <message>
+        <source>Total:</source>
+        <translation>总计:</translation>
     </message>
 </context>
 <context>
@@ -5266,11 +7178,42 @@ Factor</source>
     <name>QgsMessageViewerBase</name>
     <message>
         <source>SPIT Message</source>
-        <translation>SPIT消息</translation>
+        <translation type="obsolete">SPIT消息</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>关闭</translation>
+        <translation type="obsolete">关闭</translation>
+    </message>
+</context>
+<context>
+    <name>QgsMySQLProvider</name>
+    <message>
+        <source>Unable to access relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to access the </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> relation.
+The error message from the database was:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No GEOS Support!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your PostGIS installation has no GEOS support.
+Feature selection and identification will not work properly.
+Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save layer as...</source>
+        <translation>图层另存为...</translation>
     </message>
 </context>
 <context>
@@ -5362,6 +7305,81 @@ Extended error information:
     </message>
 </context>
 <context>
+    <name>QgsNewHttpConnectionBase</name>
+    <message>
+        <source>Create a New WMS connection</source>
+        <translation>创建一个新的WMS连接</translation>
+    </message>
+    <message>
+        <source>Connection Information</source>
+        <translation>连接信息</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation>名称</translation>
+    </message>
+    <message>
+        <source>URL</source>
+        <translation>URL</translation>
+    </message>
+    <message>
+        <source>Proxy Host</source>
+        <translation>代理服务器主机</translation>
+    </message>
+    <message>
+        <source>Proxy Port</source>
+        <translation>代理服务器端口</translation>
+    </message>
+    <message>
+        <source>Proxy User</source>
+        <translation>代理服务器用户</translation>
+    </message>
+    <message>
+        <source>Proxy Password</source>
+        <translation>代理服务器密码</translation>
+    </message>
+    <message>
+        <source>Your user name for the HTTP proxy (optional)</source>
+        <translation>HTTP代理的用户名 (可选的)</translation>
+    </message>
+    <message>
+        <source>Password for your HTTP proxy (optional)</source>
+        <translation>HTTP代理的密码 (可选的)</translation>
+    </message>
+    <message>
+        <source>Name of the new connection</source>
+        <translation>新连接的名称</translation>
+    </message>
+    <message>
+        <source>HTTP address of the Web Map Server</source>
+        <translation>Web Map Server的HTTP地址</translation>
+    </message>
+    <message>
+        <source>Name of your HTTP proxy (optional)</source>
+        <translation>HTTP代理的名称 (可选的)</translation>
+    </message>
+    <message>
+        <source>Port number of your HTTP proxy (optional)</source>
+        <translation>HTTP代理的端口号 (可选的)</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>确定</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation>帮助</translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <translation>F1</translation>
+    </message>
+</context>
+<context>
     <name>QgsNorthArrowPlugin</name>
     <message>
         <source>Bottom Left</source>
@@ -5374,6 +7392,33 @@ Extended error information:
     <message>
         <source>Bottom Right</source>
         <translation>右下</translation>
+    </message>
+    <message>
+        <source>&amp;Decorations</source>
+        <translation>装饰 (&amp;D)</translation>
+    </message>
+    <message>
+        <source>&amp;NorthArrow</source>
+        <translation>指北针 (&amp;N)</translation>
+    </message>
+    <message>
+        <source>Creates a north arrow that is displayed on the map canvas</source>
+        <translation>在地图视图中创建一个指北针</translation>
+    </message>
+    <message>
+        <source>North Arrow</source>
+        <translation>指北针</translation>
+    </message>
+    <message>
+        <source>Pixmap Not Found</source>
+        <translation>Pixmap未找到</translation>
+    </message>
+</context>
+<context>
+    <name>QgsNorthArrowPluginGui</name>
+    <message>
+        <source>Pixmap Not Found</source>
+        <translation>Pixmap未找到</translation>
     </message>
 </context>
 <context>
@@ -5479,7 +7524,7 @@ Extended error information:
     </message>
     <message>
         <source>&amp;Splash Screen</source>
-        <translation>飞溅屏幕(&amp;S)</translation>
+        <translation type="obsolete">飞溅屏幕(&amp;S)</translation>
     </message>
     <message>
         <source>Hide splash screen at startup</source>
@@ -5503,7 +7548,7 @@ Extended error information:
     </message>
     <message>
         <source>&amp;Update During Drawing</source>
-        <translation>绘制过程中更新(&amp;U)</translation>
+        <translation type="obsolete">绘制过程中更新(&amp;U)</translation>
     </message>
     <message>
         <source>Update display after reading</source>
@@ -5523,11 +7568,11 @@ Extended error information:
     </message>
     <message>
         <source>&amp;Selection</source>
-        <translation>选择(&amp;S)</translation>
+        <translation type="obsolete">选择(&amp;S)</translation>
     </message>
     <message>
         <source>Search Radius</source>
-        <translation>搜索半径</translation>
+        <translation type="obsolete">搜索半径</translation>
     </message>
     <message>
         <source>Search Radius for Identifying Features</source>
@@ -5582,19 +7627,19 @@ QGIS的默认值是5。如果在不放大的情况下识别要素有困难，请
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; The browser must be in your PATH or you can specify &lt;br&gt;the full path above</source>
-        <translation>&lt;b&gt;注意：&lt;/b&gt;浏览器必须在您的PATH下，或者您可以指定完整路径</translation>
+        <translation type="obsolete">&lt;b&gt;注意：&lt;/b&gt;浏览器必须在您的PATH下，或者您可以指定完整路径</translation>
     </message>
     <message>
         <source>SVG Options</source>
-        <translation>SVG选项</translation>
+        <translation type="obsolete">SVG选项</translation>
     </message>
     <message>
         <source>SVG oversampling factor</source>
-        <translation>SVG oversampling因子</translation>
+        <translation type="obsolete">SVG oversampling因子</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note: &lt;/b&gt;A higher value gives smoother SVG symbols, but can slow down rendering</source>
-        <translation>&lt;b&gt;注意：&lt;/b&gt;值越高，SVG符号越光滑，但着色速度会变慢</translation>
+        <translation type="obsolete">&lt;b&gt;注意：&lt;/b&gt;值越高，SVG符号越光滑，但着色速度会变慢</translation>
     </message>
     <message>
         <source>...</source>
@@ -5606,7 +7651,7 @@ QGIS的默认值是5。如果在不放大的情况下识别要素有困难，请
     </message>
     <message>
         <source>New layers added to the map are not displayed</source>
-        <translation>添加到地图上的新图层不显示</translation>
+        <translation type="obsolete">添加到地图上的新图层不显示</translation>
     </message>
     <message>
         <source>&lt;html&gt;<byte value="xd"/>
@@ -5616,7 +7661,7 @@ QGIS的默认值是5。如果在不放大的情况下识别要素有困难，请
 By default QGIS uses a value of 5. Increase the value if you have trouble<byte value="xd"/>
 identifying features without zooming in very close.<byte value="xd"/>
 &lt;/html&gt;</source>
-        <translation>&lt;html&gt;
+        <translation type="obsolete">&lt;html&gt;
 &lt;b&gt;注意：&lt;/b&gt; 指定的值是千分值。搜索半径这样计算:&lt;br&gt;
 &amp;nbsp;&amp;nbsp;&lt;i&gt;(地图视图的宽度) * (输入值/1000.0)&lt;/i&gt;
 &lt;br&gt;
@@ -5625,7 +7670,7 @@ QGIS的默认值是5。如果在不放大的情况下识别要素有困难，请
     </message>
     <message>
         <source>Projection</source>
-        <translation>投影</translation>
+        <translation type="obsolete">投影</translation>
     </message>
     <message>
         <source>Select Global Default ...</source>
@@ -5633,7 +7678,7 @@ QGIS的默认值是5。如果在不放大的情况下识别要素有困难，请
     </message>
     <message>
         <source>When layer is loaded that has no projection information:</source>
-        <translation>图层加载时没有投影信息:</translation>
+        <translation type="obsolete">图层加载时没有投影信息:</translation>
     </message>
     <message>
         <source>Prompt for projection.</source>
@@ -5645,7 +7690,7 @@ QGIS的默认值是5。如果在不放大的情况下识别要素有困难，请
     </message>
     <message>
         <source>Global default projection displayed below will be used.</source>
-        <translation>使用下面显示的全局默认投影.</translation>
+        <translation type="obsolete">使用下面显示的全局默认投影.</translation>
     </message>
     <message>
         <source>firefox</source>
@@ -5654,6 +7699,125 @@ QGIS的默认值是5。如果在不放大的情况下识别要素有困难，请
     <message>
         <source>mozilla-firefox</source>
         <translation>mozilla-firefox</translation>
+    </message>
+    <message>
+        <source>Default Map Appearance (Overridden by project properties)</source>
+        <translation>默认地图外观 (项目属性优先)</translation>
+    </message>
+    <message>
+        <source>Background Color:</source>
+        <translation>背景色:</translation>
+    </message>
+    <message>
+        <source>Selection Color:</source>
+        <translation>选择颜色:</translation>
+    </message>
+    <message>
+        <source>&amp;Splash screen</source>
+        <translation>飞溅屏幕 (&amp;S)</translation>
+    </message>
+    <message>
+        <source>Anti-aliasing</source>
+        <translation>抗锯齿</translation>
+    </message>
+    <message>
+        <source>Make lines appear less jagged at the expense of some drawing performance</source>
+        <translation>牺牲绘制效率使线的显示更光滑</translation>
+    </message>
+    <message>
+        <source>By default new la&amp;yers added to the map should be displayed</source>
+        <translation>默认情况下添加到地图的新图层将会显示 (&amp;y)</translation>
+    </message>
+    <message>
+        <source>&amp;Update during drawing</source>
+        <translation>绘制时更新 (&amp;U)</translation>
+    </message>
+    <message>
+        <source>&amp;Selection &amp;&amp; Measuring</source>
+        <translation>选择并测量 (&amp;S)</translation>
+    </message>
+    <message>
+        <source>Measure tool</source>
+        <translation>测量工具</translation>
+    </message>
+    <message>
+        <source>Ellipsoid for distance calculations:</source>
+        <translation>计算距离的椭球:</translation>
+    </message>
+    <message>
+        <source>Search radius</source>
+        <translation>搜索半径</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;
+
+&lt;b&gt;Note:&lt;/b&gt; Specify the value in thousandths.  The search radius is calculated as:&lt;br&gt;
+
+&amp;nbsp;&amp;nbsp;&lt;i&gt;(Map View Width) * ( Value/1000.0)&lt;/i&gt;
+
+&lt;br&gt;
+
+By default QGIS uses a value of 5. Increase the value if you have trouble
+
+identifying features without zooming in very close.
+
+&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pro&amp;jection</source>
+        <translation>投影 (&amp;j)</translation>
+    </message>
+    <message>
+        <source>When layer is loaded that has no projection information</source>
+        <translation>加载的图层没有投影信息时</translation>
+    </message>
+    <message>
+        <source>Global default projection displa&amp;yed below will be used.</source>
+        <translation>将使用默认的全局投影(&amp;y)。 </translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Note:&lt;/b&gt; The browser must be in your PATH or you can specify the full path above</source>
+        <translation>&lt;b&gt;注意:&lt;/b&gt; 浏览器必须在PATH环境变量下，或者在上面指定完整路径</translation>
+    </message>
+</context>
+<context>
+    <name>QgsPasteTransformationsBase</name>
+    <message>
+        <source>Paste Transformations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Note: This function is not useful yet!&lt;/b&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Source</source>
+        <translation>源</translation>
+    </message>
+    <message>
+        <source>Destination</source>
+        <translation>目标</translation>
+    </message>
+    <message>
+        <source>&amp;Help</source>
+        <translation>帮助(&amp;H)</translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <translation>F1</translation>
+    </message>
+    <message>
+        <source>Add New Transfer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation>确定(&amp;O)</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>取消(&amp;C)</translation>
     </message>
 </context>
 <context>
@@ -5680,6 +7844,67 @@ QGIS的默认值是5。如果在不放大的情况下识别要素有困难，请
     <message>
         <source>Error connecting to the database</source>
         <translation>连接到数据库时出错</translation>
+    </message>
+    <message>
+        <source>&amp;Geoprocessing</source>
+        <translation>&amp;Geoprocessing</translation>
+    </message>
+    <message>
+        <source>&amp;Buffer Features</source>
+        <translation>缓冲区 (&amp;B)</translation>
+    </message>
+    <message>
+        <source>A new layer is created in the database with the buffered features.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffer features</source>
+        <translation>对要素作缓冲区</translation>
+    </message>
+    <message>
+        <source>Unable to add geometry column</source>
+        <translation>无法添加几何属性字段</translation>
+    </message>
+    <message>
+        <source>Unable to add geometry column to the output table </source>
+        <translation>无法为输出表添加几何属性字段</translation>
+    </message>
+    <message>
+        <source>Unable to create table</source>
+        <translation>无法创建表</translation>
+    </message>
+    <message>
+        <source>Failed to create the output table </source>
+        <translation>创建输出表失败</translation>
+    </message>
+    <message>
+        <source>No GEOS support</source>
+        <translation>没有GEOS支持</translation>
+    </message>
+    <message>
+        <source>Buffer function requires GEOS support in PostGIS</source>
+        <translation>在PostGIS中缓冲区功能需要GEOS支持</translation>
+    </message>
+    <message>
+        <source>Not a PostgreSQL/PosGIS Layer</source>
+        <translation>不是一个PostgreSQL/PosGIS图层</translation>
+    </message>
+    <message>
+        <source> is not a PostgreSQL/PosGIS layer.
+</source>
+        <translation>不是一个PostgreSQL/PosGIS图层。</translation>
+    </message>
+    <message>
+        <source>Geoprocessing functions are only available for PostgreSQL/PosGIS Layers</source>
+        <translation>Geoprocessing功能只对PostgreSQL/PosGIS图层有效</translation>
+    </message>
+    <message>
+        <source>No Active Layer</source>
+        <translation>没有激活的图层</translation>
+    </message>
+    <message>
+        <source>You must select a layer in the legend to buffer</source>
+        <translation>您必须在图例中选择一个图层来作缓冲区</translation>
     </message>
 </context>
 <context>
@@ -5923,6 +8148,61 @@ QGIS的默认值是5。如果在不放大的情况下识别要素有困难，请
     </message>
 </context>
 <context>
+    <name>QgsPointDialog</name>
+    <message>
+        <source>Zoom In</source>
+        <translation>放大</translation>
+    </message>
+    <message>
+        <source>z</source>
+        <translation>z</translation>
+    </message>
+    <message>
+        <source>Zoom Out</source>
+        <translation>缩小</translation>
+    </message>
+    <message>
+        <source>Z</source>
+        <translation>Z</translation>
+    </message>
+    <message>
+        <source>Zoom To Layer</source>
+        <translation>缩放到图层范围</translation>
+    </message>
+    <message>
+        <source>Zoom to Layer</source>
+        <translation>缩放到图层范围</translation>
+    </message>
+    <message>
+        <source>Pan Map</source>
+        <translation>地图漫游</translation>
+    </message>
+    <message>
+        <source>Pan the map</source>
+        <translation>地图漫游</translation>
+    </message>
+    <message>
+        <source>Add Point</source>
+        <translation>增加点</translation>
+    </message>
+    <message>
+        <source>.</source>
+        <translation>.</translation>
+    </message>
+    <message>
+        <source>Capture Points</source>
+        <translation>创建点</translation>
+    </message>
+    <message>
+        <source>Delete Point</source>
+        <translation>删除点</translation>
+    </message>
+    <message>
+        <source>Delete Selected</source>
+        <translation>删除选中的记录</translation>
+    </message>
+</context>
+<context>
     <name>QgsPointDialogBase</name>
     <message>
         <source>Georeferencer</source>
@@ -6022,12 +8302,126 @@ The error message from the database was:
     </message>
     <message>
         <source>No GEOS Support!</source>
-        <translation type="unfinished"></translation>
+        <translation>没有GEOS支持!</translation>
     </message>
     <message>
         <source>Your PostGIS installation has no GEOS support.
 Feature selection and identification will not work properly.
 Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No suitable key column in table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The table has no column suitable for use as a key.
+
+Qgis requires that the table either has a column of type
+int4 with a unique constraint on it (which includes the
+primary key) or has a PostgreSQL oid column.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The unique index on column</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>is unsuitable because Qgis does not currently support non-int4 type columns as a key into the table.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>and </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The unique index based on columns </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> is unsuitable because Qgis does not currently support multiple columns as a key into the table.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to find a key column</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> derives from </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>and is suitable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>and is not suitable </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>type is </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> and has a suitable constraint)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> and does not have a suitable constraint)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The view you selected has the following columns, none of which satisfy the above conditions:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Qgis requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The view </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>has no column suitable for use as a unique key.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No suitable key column in view</source>
+        <translation type="unfinished">视图中没有合适的关键字段</translation>
+    </message>
+    <message>
+        <source>Unknown geometry type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Column </source>
+        <translation type="unfinished">字段</translation>
+    </message>
+    <message>
+        <source> in </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> has a geometry type of </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>, which Qgis does not currently support.</source>
+        <translation>QGIS目前不支持。</translation>
+    </message>
+    <message>
+        <source>. The database communication log was:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to get feature type and srid</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6087,7 +8481,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Digitising Settings</source>
-        <translation>数字化选项设置</translation>
+        <translation type="obsolete">数字化选项设置</translation>
     </message>
     <message>
         <source>Line Width:</source>
@@ -6103,7 +8497,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Cursor display precision</source>
-        <translation>光标显示精度</translation>
+        <translation type="obsolete">光标显示精度</translation>
     </message>
     <message>
         <source>Automatic</source>
@@ -6153,6 +8547,18 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <source>Enable on the fly projection</source>
         <translation>启用动态投影</translation>
     </message>
+    <message>
+        <source>Background Color:</source>
+        <translation>背景色:</translation>
+    </message>
+    <message>
+        <source>Precision</source>
+        <translation>精度</translation>
+    </message>
+    <message>
+        <source>Digitizing</source>
+        <translation>数字化</translation>
+    </message>
 </context>
 <context>
     <name>QgsProjectionSelector</name>
@@ -6177,11 +8583,11 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Coordinate Systems</source>
-        <translation>坐标系统</translation>
+        <translation type="obsolete">坐标系统</translation>
     </message>
     <message>
         <source>Spatial Reference Id</source>
-        <translation>空间参考的ID</translation>
+        <translation type="obsolete">空间参考的ID</translation>
     </message>
     <message>
         <source>Search</source>
@@ -6207,20 +8613,28 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <source>Name</source>
         <translation>名称</translation>
     </message>
+    <message>
+        <source>Spatial Reference System</source>
+        <translation>空间参考系统</translation>
+    </message>
+    <message>
+        <source>Id</source>
+        <translation>Id</translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterLayer</name>
     <message>
         <source>Red</source>
-        <translation>红</translation>
+        <translation type="obsolete">红</translation>
     </message>
     <message>
         <source>Green</source>
-        <translation>绿</translation>
+        <translation type="obsolete">绿</translation>
     </message>
     <message>
         <source>Blue</source>
-        <translation>蓝</translation>
+        <translation type="obsolete">蓝</translation>
     </message>
     <message>
         <source>Not Set</source>
@@ -6236,7 +8650,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>&lt;center&gt;&lt;b&gt;Raster Layer&lt;/b&gt;&lt;/center&gt;</source>
-        <translation>&lt;center&gt;&lt;b&gt;栅格图层&lt;/b&gt;&lt;/center&gt;</translation>
+        <translation type="obsolete">&lt;center&gt;&lt;b&gt;栅格图层&lt;/b&gt;&lt;/center&gt;</translation>
     </message>
     <message>
         <source>&amp;Properties</source>
@@ -6436,6 +8850,18 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <source>Building pyramid overviews is not supported on this type of raster.</source>
         <translation>此类栅格不支持建立金字塔的概略图.</translation>
     </message>
+    <message>
+        <source>&amp;Convert to...</source>
+        <translation>转换为(&amp;C)... </translation>
+    </message>
+    <message>
+        <source>Dataset Description</source>
+        <translation>数据集描述</translation>
+    </message>
+    <message>
+        <source>No Data Value</source>
+        <translation>没有数据直</translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterLayerProperties</name>
@@ -6479,6 +8905,10 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <source>Palette</source>
         <translation>调色板</translation>
     </message>
+    <message>
+        <source>Not Set</source>
+        <translation>未设置</translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterLayerPropertiesBase</name>
@@ -6516,7 +8946,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Appearance</source>
-        <translation>外观</translation>
+        <translation type="obsolete">外观</translation>
     </message>
     <message>
         <source>Transparency:</source>
@@ -6540,7 +8970,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>RGB</source>
-        <translation>RGB</translation>
+        <translation type="obsolete">RGB</translation>
     </message>
     <message>
         <source>Band</source>
@@ -6564,7 +8994,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Grayscale</source>
-        <translation>灰阶</translation>
+        <translation type="obsolete">灰阶</translation>
     </message>
     <message>
         <source>Gray</source>
@@ -6580,15 +9010,15 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Show As</source>
-        <translation>显示为</translation>
+        <translation type="obsolete">显示为</translation>
     </message>
     <message>
         <source>Three Band</source>
-        <translation>三波段</translation>
+        <translation type="obsolete">三波段</translation>
     </message>
     <message>
         <source>Single Band</source>
-        <translation>单波段</translation>
+        <translation type="obsolete">单波段</translation>
     </message>
     <message>
         <source>General</source>
@@ -6600,7 +9030,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Show debug info as overlay on raster?</source>
-        <translation>是否在叠加栅格的时候显示调试信息?</translation>
+        <translation type="obsolete">是否在叠加栅格的时候显示调试信息?</translation>
     </message>
     <message>
         <source>Layer Source:</source>
@@ -6632,35 +9062,31 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Advanced Symbology</source>
-        <translation>高级符号化</translation>
+        <translation type="obsolete">高级符号化</translation>
     </message>
     <message>
         <source>Red</source>
-        <translation>红</translation>
+        <translation type="obsolete">红</translation>
     </message>
     <message>
         <source>Green</source>
-        <translation>绿</translation>
+        <translation type="obsolete">绿</translation>
     </message>
     <message>
         <source>Blue</source>
-        <translation>蓝</translation>
+        <translation type="obsolete">蓝</translation>
     </message>
     <message>
         <source>Behaviour</source>
-        <translation>行为</translation>
-    </message>
-    <message>
-        <source>Scale histogram to the limits defined above (displays all data)</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">行为</translation>
     </message>
     <message>
         <source>Exclude values outside the above ranges (after color mapping)</source>
-        <translation>排除上面范围以外的值(色彩影射以后)</translation>
+        <translation type="obsolete">排除上面范围以外的值(色彩影射以后)</translation>
     </message>
     <message>
         <source>&lt;b&gt;&lt;font color=&quot;#ff0000&quot;&gt;Please Note :&lt;/font&gt; Advanced Symbology not implemented yet!&lt;/b&gt;</source>
-        <translation>&lt;b&gt;&lt;font color=&quot;#ff0000&quot;&gt;请注意：&lt;/font&gt; 高级的符号化功能还没有实现！&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;&lt;font color=&quot;#ff0000&quot;&gt;请注意：&lt;/font&gt; 高级的符号化功能还没有实现！&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Metadata</source>
@@ -6696,11 +9122,11 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Visibility</source>
-        <translation>可见性</translation>
+        <translation type="obsolete">可见性</translation>
     </message>
     <message>
         <source>Use scale dependent rendering</source>
-        <translation>依比例着色</translation>
+        <translation type="obsolete">依比例着色</translation>
     </message>
     <message>
         <source>Maximum 1:</source>
@@ -6772,18 +9198,11 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>X Range:</source>
-        <translation>X的范围:</translation>
+        <translation type="obsolete">X的范围:</translation>
     </message>
     <message>
         <source>Refresh</source>
         <translation>刷新</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Spatial Reference System</source>
@@ -6794,14 +9213,48 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <translation>改变</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:22pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids could corrupt your image - always make a backup of your data first!&lt;/span&gt;&lt;/p&gt;
+        <source>Display</source>
+        <translation>显示</translation>
+    </message>
+    <message>
+        <source>Grayscale Image</source>
+        <translation>灰度影像</translation>
+    </message>
+    <message>
+        <source>Color Image</source>
+        <translation>彩色影像</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:14px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:14px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;注释&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
+    </message>
+    <message>
+        <source>DebugInfo</source>
+        <translation>调试信息</translation>
+    </message>
+    <message>
+        <source>Scale Dependent Visibility</source>
+        <translation>依比例显示</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p dir=&quot;ltr&quot;&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
+&lt;p dir=&quot;ltr&quot;&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
+&lt;p dir=&quot;ltr&quot;&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids could corrupt your image - always make a backup of your data first!&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Column Count:</source>
+        <translation>字段数:</translation>
     </message>
 </context>
 <context>
@@ -6897,6 +9350,22 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <source>Box</source>
         <translation>矩形框</translation>
     </message>
+    <message>
+        <source>&amp;Decorations</source>
+        <translation>装饰 (&amp;D)</translation>
+    </message>
+    <message>
+        <source>&amp;ScaleBar</source>
+        <translation>比例尺 (&amp;S)</translation>
+    </message>
+    <message>
+        <source>Creates a scale bar that is displayed on the map canvas</source>
+        <translation>在地图视图中创建一个比例尺</translation>
+    </message>
+    <message>
+        <source>Scale Bar</source>
+        <translation>比例尺</translation>
+    </message>
 </context>
 <context>
     <name>QgsScaleBarPluginGuiBase</name>
@@ -6926,7 +9395,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
 &lt;p&gt;This plugin draws a scale bar on the map. Please note the size option below is a &apos;preferred&apos; size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;描述&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;该插件会在地图上绘制一个比例尺。请注意下面的大小选项，它是一个“首选的”尺寸，QGIS会根据不同的缩放层次来改变它。这个值根据项目属性中指定的地图单位来测量。&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
@@ -6954,7 +9423,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Select Colour</source>
-        <translation>选择颜色</translation>
+        <translation type="obsolete">选择颜色</translation>
     </message>
     <message>
         <source>Placement:</source>
@@ -6996,62 +9465,306 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <source>Automatically snap to round number on resize</source>
         <translation>刻度取整</translation>
     </message>
+    <message>
+        <source>Click to select the colour</source>
+        <translation>点击选择颜色</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This plugin draws a scale bar on the map. Please note the size option below is a &apos;preferred&apos; size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsScanGeometries</name>
     <message>
         <source>Scanning Geometries</source>
-        <translation>扫描几何形状</translation>
+        <translation type="obsolete">扫描几何形状</translation>
     </message>
     <message>
         <source>textLabel1</source>
-        <translation>文本标签1</translation>
+        <translation type="obsolete">文本标签1</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSearchQueryBuilder</name>
+    <message>
+        <source>Found %d matching features.</source>
+        <translation>找到%d个匹配的要素。</translation>
+    </message>
+    <message>
+        <source>No matching features found.</source>
+        <translation>未找到匹配的要素。</translation>
+    </message>
+    <message>
+        <source>Search results</source>
+        <translation>搜索结果</translation>
+    </message>
+    <message>
+        <source>Search string parsing error</source>
+        <translation>搜索字符串解析错误</translation>
+    </message>
+    <message>
+        <source>No Records</source>
+        <translation>没有记录</translation>
+    </message>
+    <message>
+        <source>The query you specified results in zero records being returned.</source>
+        <translation>您指定的查询没有返回任何记录。</translation>
+    </message>
+</context>
+<context>
+    <name>QgsServerSourceSelect</name>
+    <message>
+        <source>PNG</source>
+        <translation>PNG</translation>
+    </message>
+    <message>
+        <source>JPEG</source>
+        <translation>JPEG</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to remove the </source>
+        <translation>您确实想删除</translation>
+    </message>
+    <message>
+        <source> connection and all associated settings?</source>
+        <translation>连接和所有相关的设置?</translation>
+    </message>
+    <message>
+        <source>Confirm Delete</source>
+        <translation>确认删除</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>是</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>否</translation>
+    </message>
+    <message>
+        <source>WMS Provider</source>
+        <translation>WMS源</translation>
+    </message>
+    <message>
+        <source>Could not open the WMS Provider</source>
+        <translation>无法打开WMS源</translation>
+    </message>
+    <message>
+        <source>Select Layer</source>
+        <translation>选择图层</translation>
+    </message>
+    <message>
+        <source>You must select at least one layer first.</source>
+        <translation>您至少要选择一个图层。</translation>
+    </message>
+    <message>
+        <source>Coordinate Reference System (%1 available)</source>
+        <translation>坐标参考系统 (%1有效)</translation>
+    </message>
+    <message>
+        <source>Could not understand the response.  The</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>provider said</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsServerSourceSelectBase</name>
+    <message>
+        <source>Add Layer(s) from a Server</source>
+        <translation>添加服务器上的图层</translation>
+    </message>
+    <message>
+        <source>C&amp;lose</source>
+        <translation>关闭(&amp;l)</translation>
+    </message>
+    <message>
+        <source>Alt+L</source>
+        <translation>Alt+L</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation>帮助</translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <translation>F1</translation>
+    </message>
+    <message>
+        <source>Image encoding</source>
+        <translation>影像编码</translation>
+    </message>
+    <message>
+        <source>Layers</source>
+        <translation>图层</translation>
+    </message>
+    <message>
+        <source>ID</source>
+        <translation>ID</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation>名称</translation>
+    </message>
+    <message>
+        <source>Title</source>
+        <translation>标题</translation>
+    </message>
+    <message>
+        <source>Abstract</source>
+        <translation>摘要</translation>
+    </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>增加 (&amp;A)</translation>
+    </message>
+    <message>
+        <source>Alt+A</source>
+        <translation>Alt+A</translation>
+    </message>
+    <message>
+        <source>Server Connections</source>
+        <translation>服务器连接</translation>
+    </message>
+    <message>
+        <source>&amp;New</source>
+        <translation>新建(&amp;N)</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>删除</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation>编辑</translation>
+    </message>
+    <message>
+        <source>C&amp;onnect</source>
+        <translation>连接 (&amp;o)</translation>
+    </message>
+    <message>
+        <source>Ready</source>
+        <translation>就绪</translation>
+    </message>
+    <message>
+        <source>Coordinate Reference System</source>
+        <translation>坐标参考系统</translation>
+    </message>
+    <message>
+        <source>Change ...</source>
+        <translation>改变...</translation>
     </message>
 </context>
 <context>
     <name>QgsSiMaDialogBase</name>
     <message>
         <source>QgsSiMaDialogBase</source>
-        <translation>QgsSiMaDialogBase</translation>
+        <translation type="obsolete">QgsSiMaDialogBase</translation>
     </message>
     <message>
         <source>Directory</source>
-        <translation>目录</translation>
+        <translation type="obsolete">目录</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>New Item</source>
-        <translation>新项目</translation>
+        <translation type="obsolete">新项目</translation>
     </message>
     <message>
         <source>Image</source>
-        <translation>影像</translation>
+        <translation type="obsolete">影像</translation>
     </message>
     <message>
         <source>Scale Factor (%)</source>
-        <translation>比例因子(%)</translation>
+        <translation type="obsolete">比例因子(%)</translation>
     </message>
 </context>
 <context>
     <name>QgsSiSyDialogBase</name>
     <message>
         <source>Single Symbol</source>
+        <translation type="obsolete">单一符号</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="obsolete">...</translation>
+    </message>
+    <message>
+        <source>Label:</source>
+        <translation type="obsolete">标签:</translation>
+    </message>
+    <message>
+        <source>Outline Style:</source>
+        <translation type="obsolete">轮廓线的样式:</translation>
+    </message>
+    <message>
+        <source>Fill Color:</source>
+        <translation type="obsolete">填充颜色:</translation>
+    </message>
+    <message>
+        <source>Outline color:</source>
+        <translation type="obsolete">轮廓线的颜色:</translation>
+    </message>
+    <message>
+        <source>Outline Width:</source>
+        <translation type="obsolete">轮廓线的宽度:</translation>
+    </message>
+    <message>
+        <source>Fill Patterns:</source>
+        <translation type="obsolete">填充样式:</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation type="obsolete">清除</translation>
+    </message>
+    <message>
+        <source>Point</source>
+        <translation type="obsolete">点</translation>
+    </message>
+    <message>
+        <source>Symbol</source>
+        <translation type="obsolete">符号</translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation type="obsolete">大小</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSingleSymbolDialogBase</name>
+    <message>
+        <source>Single Symbol</source>
         <translation>单一符号</translation>
+    </message>
+    <message>
+        <source>Fill Patterns:</source>
+        <translation>填充样式:</translation>
+    </message>
+    <message>
+        <source>Point</source>
+        <translation>点</translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation>大小</translation>
+    </message>
+    <message>
+        <source>Symbol</source>
+        <translation>符号</translation>
+    </message>
+    <message>
+        <source>Outline Width:</source>
+        <translation>轮廓线的宽度:</translation>
     </message>
     <message>
         <source>...</source>
         <translation>...</translation>
-    </message>
-    <message>
-        <source>Label:</source>
-        <translation>标签:</translation>
-    </message>
-    <message>
-        <source>Outline Style:</source>
-        <translation>轮廓线的样式:</translation>
     </message>
     <message>
         <source>Fill Color:</source>
@@ -7062,39 +9775,23 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <translation>轮廓线的颜色:</translation>
     </message>
     <message>
-        <source>Outline Width:</source>
-        <translation>轮廓线的宽度:</translation>
+        <source>Outline Style:</source>
+        <translation>轮廓线的样式:</translation>
     </message>
     <message>
-        <source>Fill Patterns:</source>
-        <translation>填充样式:</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation>清除</translation>
-    </message>
-    <message>
-        <source>Point</source>
-        <translation>点</translation>
-    </message>
-    <message>
-        <source>Symbol</source>
-        <translation>符号</translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation>大小</translation>
+        <source>Label:</source>
+        <translation>标签:</translation>
     </message>
 </context>
 <context>
     <name>QgsSpit</name>
     <message>
         <source>Are you sure you want to remove the [</source>
-        <translation type="unfinished"></translation>
+        <translation>您确实想删除[</translation>
     </message>
     <message>
         <source>] connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>]连接和所有相关的设置?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
@@ -7110,41 +9807,43 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source> - Edit Column Names</source>
-        <translation type="unfinished"></translation>
+        <translation>- 编辑字段名称</translation>
     </message>
     <message>
         <source>The following Shapefile(s) could not be loaded:
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>以下Shapefile(s)无法加载:
+
+</translation>
     </message>
     <message>
         <source>REASON: File cannot be opened</source>
-        <translation type="unfinished"></translation>
+        <translation>原因: 文件无法打开</translation>
     </message>
     <message>
         <source>REASON: One or both of the Shapefile files (*.dbf, *.shx) missing</source>
-        <translation type="unfinished"></translation>
+        <translation>原因: 缺少Shapefile (*.dbf, *.shx)文件</translation>
     </message>
     <message>
         <source>General Interface Help:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">通用接口帮助:</translation>
     </message>
     <message>
         <source>PostgreSQL Connections:</source>
-        <translation type="unfinished"></translation>
+        <translation>PostgreSQL连接:</translation>
     </message>
     <message>
         <source>[New ...] - create a new connection</source>
-        <translation type="unfinished"></translation>
+        <translation>[新建...] - 创建一个新连接</translation>
     </message>
     <message>
         <source>[Edit ...] - edit the currently selected connection</source>
-        <translation type="unfinished"></translation>
+        <translation>[编辑...] - 编辑当前选中的连接</translation>
     </message>
     <message>
         <source>[Remove] - remove the currently selected connection</source>
-        <translation type="unfinished"></translation>
+        <translation>[移除] - 移除当前选中的连接</translation>
     </message>
     <message>
         <source>-you need to select a connection that works (connects properly) in order to import files</source>
@@ -7284,11 +9983,27 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Relation Exists</source>
+        <source>Use the table below to edit column names. Make sure that none of the columns are named using a PostgreSQL reserved word</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Use the table below to edit column names. Make sure that none of the columns are named using a PostgreSQL reserved word</source>
+        <source>File Name</source>
+        <translation>文件名称</translation>
+    </message>
+    <message>
+        <source>Feature Class</source>
+        <translation>要素类</translation>
+    </message>
+    <message>
+        <source>Features</source>
+        <translation>要素</translation>
+    </message>
+    <message>
+        <source>DB Relation Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Schema</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7348,23 +10063,15 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>File Name</source>
-        <translation>文件名称</translation>
+        <translation type="obsolete">文件名称</translation>
     </message>
     <message>
         <source>Feature Class</source>
-        <translation>要素类</translation>
+        <translation type="obsolete">要素类</translation>
     </message>
     <message>
         <source>Features</source>
-        <translation>要素</translation>
-    </message>
-    <message>
-        <source>DB Relation Name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Schema</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">要素</translation>
     </message>
     <message>
         <source>Global Schema</source>
@@ -7424,44 +10131,70 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
 </context>
 <context>
+    <name>QgsSpitPlugin</name>
+    <message>
+        <source>&amp;Import Shapefiles to PostgreSQL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import shapefiles into a PostGIS-enabled PostgreSQL database. The schema and field names can be customized on import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import Shapefiles to PostgreSQL</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsUValDialogBase</name>
     <message>
         <source>Form1</source>
-        <translation>窗体1</translation>
+        <translation type="obsolete">窗体1</translation>
     </message>
     <message>
         <source>Classification Field:</source>
-        <translation>分类字段:</translation>
+        <translation type="obsolete">分类字段:</translation>
     </message>
     <message>
         <source>New Item</source>
-        <translation>新项目</translation>
+        <translation type="obsolete">新项目</translation>
     </message>
 </context>
 <context>
     <name>QgsUValMaDialogBase</name>
     <message>
         <source>Form1</source>
+        <translation type="obsolete">窗体1</translation>
+    </message>
+    <message>
+        <source>Classification Field:</source>
+        <translation type="obsolete">分类字段:</translation>
+    </message>
+    <message>
+        <source>New Item</source>
+        <translation type="obsolete">新项目</translation>
+    </message>
+</context>
+<context>
+    <name>QgsUniqueValueDialogBase</name>
+    <message>
+        <source>Form1</source>
         <translation>窗体1</translation>
     </message>
     <message>
         <source>Classification Field:</source>
         <translation>分类字段:</translation>
     </message>
-    <message>
-        <source>New Item</source>
-        <translation>新项目</translation>
-    </message>
 </context>
 <context>
     <name>QgsVectorLayer</name>
     <message>
         <source>No features found</source>
-        <translation>未发现要素</translation>
+        <translation type="obsolete">未发现要素</translation>
     </message>
     <message>
         <source>No features were found in the active layer at the point you clicked</source>
-        <translation>在当前激活图层的鼠标点击位置上未发现要素</translation>
+        <translation type="obsolete">在当前激活图层的鼠标点击位置上未发现要素</translation>
     </message>
     <message>
         <source>Attribute table - </source>
@@ -7469,7 +10202,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>&lt;center&gt;&lt;b&gt;Vector Layer&lt;/b&gt;&lt;/center&gt;</source>
-        <translation>&lt;center&gt;&lt;b&gt;矢量图层&lt;/b&gt;&lt;/center&gt;</translation>
+        <translation type="obsolete">&lt;center&gt;&lt;b&gt;矢量图层&lt;/b&gt;&lt;/center&gt;</translation>
     </message>
     <message>
         <source>&amp;Open attribute table</source>
@@ -7481,7 +10214,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Start editing</source>
-        <translation>开始编辑</translation>
+        <translation type="obsolete">开始编辑</translation>
     </message>
     <message>
         <source>Stop editing</source>
@@ -7505,11 +10238,11 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>The current layer is not editable. Choose &apos;start editing&apos; in the legend item right click menu</source>
-        <translation>当前图层不可编辑。在相应的图例条目上右键单击，选择“开始编辑”</translation>
+        <translation type="obsolete">当前图层不可编辑。在相应的图例条目上右键单击，选择“开始编辑”</translation>
     </message>
     <message>
         <source>action</source>
-        <translation>命令</translation>
+        <translation type="obsolete">命令</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
@@ -7522,6 +10255,181 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     <message>
         <source>&amp;No</source>
         <translation>否(&amp;N)</translation>
+    </message>
+    <message>
+        <source>Invert Selection...</source>
+        <translation>反转选中的记录...</translation>
+    </message>
+    <message>
+        <source>Abort</source>
+        <translation>放弃</translation>
+    </message>
+    <message>
+        <source>Allow Editing</source>
+        <translation>放弃编辑</translation>
+    </message>
+    <message>
+        <source>Layer cannot be added to</source>
+        <translation>不能添加图层</translation>
+    </message>
+    <message>
+        <source>The data provider for this layer does not support the addition of features.</source>
+        <translation>该图层的数据源不支持要素的添加。</translation>
+    </message>
+    <message>
+        <source>The current layer is not editable. Choose &apos;Allow editing&apos; in the legend item right click menu.</source>
+        <translation>当前图层无法编辑。在图例中右键单击该条目，选择&apos;允许编辑&apos;。</translation>
+    </message>
+    <message>
+        <source>The current layer is not editable. Choose &apos;Allow editing&apos; in the legend item right click menu</source>
+        <translation>当前图层无法编辑。在图例中右键单击该条目，选择&apos;允许编辑&apos;</translation>
+    </message>
+    <message>
+        <source>Start editing failed</source>
+        <translation>开始编辑失败</translation>
+    </message>
+    <message>
+        <source>Provider cannot be opened for editing</source>
+        <translation>数据源不能以可写方式打开</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>错误</translation>
+    </message>
+    <message>
+        <source>Could not commit changes</source>
+        <translation>无法提交更改</translation>
+    </message>
+    <message>
+        <source>Problems during roll back</source>
+        <translation>回滚时发生问题</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <source>Could not change attributes</source>
+        <translation>无法改变属性</translation>
+    </message>
+    <message>
+        <source>Could not commit changes to geometries</source>
+        <translation>无法提交几何形状的更改</translation>
+    </message>
+</context>
+<context>
+    <name>QgsVectorLayerProperties</name>
+    <message>
+        <source>Transparency: </source>
+        <translation>透明度:</translation>
+    </message>
+    <message>
+        <source>Single Symbol</source>
+        <translation>单一符号</translation>
+    </message>
+    <message>
+        <source>Graduated Symbol</source>
+        <translation>渐进符号</translation>
+    </message>
+    <message>
+        <source>Continuous Color</source>
+        <translation>连续色</translation>
+    </message>
+    <message>
+        <source>Unique Value</source>
+        <translation>独立值</translation>
+    </message>
+    <message>
+        <source>The source of the data (path name or database connection information)</source>
+        <translation>数据源(路径名称或数据库连接信息)</translation>
+    </message>
+    <message>
+        <source>This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
+        <translation>这个按钮可以打开PostgreSQL查询构建器，它允许您创建一个图层要素的子集显示在地图上，而不是显示整个图层的所有要素</translation>
+    </message>
+    <message>
+        <source>The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button</source>
+        <translation>这里的查询用来限制图层上显示的要素。目前只支持PostgreSQL图层。要输入或修改查询，请点击查询构建器按钮</translation>
+    </message>
+    <message>
+        <source>Spatial Index</source>
+        <translation>空间索引</translation>
+    </message>
+    <message>
+        <source>Creation of spatial index successfull</source>
+        <translation>创建空间索引成功</translation>
+    </message>
+    <message>
+        <source>Creation of spatial index failed</source>
+        <translation>创建空间索引失败</translation>
+    </message>
+    <message>
+        <source>General:</source>
+        <translation>常规:</translation>
+    </message>
+    <message>
+        <source>Storage type of this layer : </source>
+        <translation>该图层的存储类型:</translation>
+    </message>
+    <message>
+        <source>Geometry type of the features in this layer : </source>
+        <translation>该图层的要素的几何类型:</translation>
+    </message>
+    <message>
+        <source>The number of features in this layer : </source>
+        <translation>这个图层的要素数目:</translation>
+    </message>
+    <message>
+        <source>Editing capabilities of this layer : </source>
+        <translation>该图层的编辑能力: </translation>
+    </message>
+    <message>
+        <source>Extents:</source>
+        <translation>范围:</translation>
+    </message>
+    <message>
+        <source>In layer spatial reference system units : </source>
+        <translation>以图层空间参考系统的单位计算:</translation>
+    </message>
+    <message>
+        <source>xMin,yMin </source>
+        <translation>xMin,yMin </translation>
+    </message>
+    <message>
+        <source> : xMax,yMax </source>
+        <translation> : xMax,yMax </translation>
+    </message>
+    <message>
+        <source>In project spatial reference system units : </source>
+        <translation>以项目空间参考系统的单位计算:</translation>
+    </message>
+    <message>
+        <source>Layer Spatial Reference System:</source>
+        <translation>图层的空间参考系统:</translation>
+    </message>
+    <message>
+        <source>Project (Output) Spatial Reference System:</source>
+        <translation>项目的(输出的)空间参考系统:</translation>
+    </message>
+    <message>
+        <source>Attribute field info:</source>
+        <translation>属性字段信息:</translation>
+    </message>
+    <message>
+        <source>Field</source>
+        <translation>字段</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation>类型</translation>
+    </message>
+    <message>
+        <source>Length</source>
+        <translation>长度</translation>
+    </message>
+    <message>
+        <source>Precision</source>
+        <translation>精度</translation>
     </message>
 </context>
 <context>
@@ -7544,11 +10452,11 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>F1</source>
-        <translation>F1</translation>
+        <translation type="obsolete">F1</translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation>设置</translation>
+        <translation type="obsolete">设置</translation>
     </message>
     <message>
         <source>OK</source>
@@ -7561,6 +10469,108 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     <message>
         <source>TextLabel2</source>
         <translation>文本标签2</translation>
+    </message>
+    <message>
+        <source>Symbology</source>
+        <translation>符号化</translation>
+    </message>
+    <message>
+        <source>Transparency:</source>
+        <translation>透明度:</translation>
+    </message>
+    <message>
+        <source>General</source>
+        <translation>常规</translation>
+    </message>
+    <message>
+        <source>Use scale dependent rendering</source>
+        <translation>依比例着色</translation>
+    </message>
+    <message>
+        <source>Maximum 1:</source>
+        <translation>最大值1:</translation>
+    </message>
+    <message>
+        <source>Minimum 1:</source>
+        <translation>最小值1:</translation>
+    </message>
+    <message>
+        <source>Minimum scale at which this layer will be displayed. </source>
+        <translation>图层显示的最小比例.
+</translation>
+    </message>
+    <message>
+        <source>Maximum scale at which this layer will be displayed. </source>
+        <translation>图层显示的最大比例.
+</translation>
+    </message>
+    <message>
+        <source>Display name</source>
+        <translation>显示名称</translation>
+    </message>
+    <message>
+        <source>Use this control to set which field is placed at the top level of the Identify Results dialog box.</source>
+        <translation>用该控件来设置某个字段显示在识别结果对话框的顶部.</translation>
+    </message>
+    <message>
+        <source>Spatial Reference System</source>
+        <translation>空间参考系统</translation>
+    </message>
+    <message>
+        <source>Change</source>
+        <translation>改变</translation>
+    </message>
+    <message>
+        <source>Display field for the Identify Results dialog box</source>
+        <translation>识别结果对话框中显示的字段</translation>
+    </message>
+    <message>
+        <source>This sets the display field for the Identify Results dialog box</source>
+        <translation>在此处设置识别结果对话框中显示的字段</translation>
+    </message>
+    <message>
+        <source>Display field</source>
+        <translation>显示字段</translation>
+    </message>
+    <message>
+        <source>Subset</source>
+        <translation>子集</translation>
+    </message>
+    <message>
+        <source>Query Builder</source>
+        <translation>查询构建器</translation>
+    </message>
+    <message>
+        <source>Spatial Index</source>
+        <translation>空间索引</translation>
+    </message>
+    <message>
+        <source>Create Spatial Index</source>
+        <translation>创建空间索引</translation>
+    </message>
+    <message>
+        <source>Create</source>
+        <translation>创建</translation>
+    </message>
+    <message>
+        <source>Metadata</source>
+        <translation>元数据</translation>
+    </message>
+    <message>
+        <source>Labels</source>
+        <translation>标签</translation>
+    </message>
+    <message>
+        <source>Display labels</source>
+        <translation>显示标签</translation>
+    </message>
+    <message>
+        <source>Actions</source>
+        <translation>命令</translation>
+    </message>
+    <message>
+        <source>Apply</source>
+        <translation>应用</translation>
     </message>
 </context>
 <context>
@@ -7583,15 +10593,15 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Rivers</source>
-        <translation>河流</translation>
+        <translation type="obsolete">河流</translation>
     </message>
     <message>
         <source>1000</source>
-        <translation>1000</translation>
+        <translation type="obsolete">1000</translation>
     </message>
     <message>
         <source>10000</source>
-        <translation>10000</translation>
+        <translation type="obsolete">10000</translation>
     </message>
     <message>
         <source>Symbol Classes:</source>
@@ -7611,6 +10621,229 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
 </context>
 <context>
+    <name>QgsWmsProvider</name>
+    <message>
+        <source>Tried URL: </source>
+        <translation>尝试URL: </translation>
+    </message>
+    <message>
+        <source>HTTP Exception</source>
+        <translation>HTTP异常</translation>
+    </message>
+    <message>
+        <source>WMS Service Exception</source>
+        <translation>WMS服务异常</translation>
+    </message>
+    <message>
+        <source>DOM Exception</source>
+        <translation>DOM异常</translation>
+    </message>
+    <message>
+        <source>Could not get WMS capabilities: %1 at line %2 column %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is probably due to an incorrect WMS Server URL.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not get WMS Service Exception at %1: %2 at line %3 column %4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Request contains a Format not offered by the server.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Request contains a CRS not offered by the server for one or more of the Layers in the request.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Request contains a SRS not offered by the server for one or more of the Layers in the request.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GetMap request is for a Layer not offered by the server, or GetFeatureInfo request is for a Layer not shown on the map.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Request is for a Layer in a Style not offered by the server.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GetFeatureInfo request is applied to a Layer which is not declared queryable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GetFeatureInfo request contains invalid X or Y value.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Request does not include a sample dimension value, and the server did not declare a default value for that dimension.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Request contains an invalid sample dimension value.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Request is for an optional operation that is not supported by the server.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Unknown error code from a post-1.3 WMS server)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The WMS vendor also reported: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is probably due to a bug in the QGIS program.  Please report this error.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Server Properties:</source>
+        <translation>服务器属性:</translation>
+    </message>
+    <message>
+        <source>Property</source>
+        <translation>属性</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>值</translation>
+    </message>
+    <message>
+        <source>WMS Version</source>
+        <translation>WMS版本</translation>
+    </message>
+    <message>
+        <source>Title</source>
+        <translation>标题</translation>
+    </message>
+    <message>
+        <source>Abstract</source>
+        <translation>摘要</translation>
+    </message>
+    <message>
+        <source>Keywords</source>
+        <translation>关键字</translation>
+    </message>
+    <message>
+        <source>Online Resource</source>
+        <translation>在线资源</translation>
+    </message>
+    <message>
+        <source>Contact Person</source>
+        <translation>联系人</translation>
+    </message>
+    <message>
+        <source>Fees</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Access Constraints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image Formats</source>
+        <translation>影像格式</translation>
+    </message>
+    <message>
+        <source>Identify Formats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer Count</source>
+        <translation>图层数量</translation>
+    </message>
+    <message>
+        <source>Layer Properties: </source>
+        <translation>图层属性:</translation>
+    </message>
+    <message>
+        <source>Selected</source>
+        <translation>选中的</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>是</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>否</translation>
+    </message>
+    <message>
+        <source>Visibility</source>
+        <translation>可见性</translation>
+    </message>
+    <message>
+        <source>Visible</source>
+        <translation>显示</translation>
+    </message>
+    <message>
+        <source>Hidden</source>
+        <translation>隐藏</translation>
+    </message>
+    <message>
+        <source>n/a</source>
+        <translation>n/a</translation>
+    </message>
+    <message>
+        <source>Can Identify</source>
+        <translation>可识别</translation>
+    </message>
+    <message>
+        <source>Can be Transparent</source>
+        <translation>可透明</translation>
+    </message>
+    <message>
+        <source>Can Zoom In</source>
+        <translation>可缩放</translation>
+    </message>
+    <message>
+        <source>Cascade Count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fixed Width</source>
+        <translation>固定宽度</translation>
+    </message>
+    <message>
+        <source>Fixed Height</source>
+        <translation>固定高度</translation>
+    </message>
+    <message>
+        <source>WGS 84 Bounding Box</source>
+        <translation>WGS 84 边框范围</translation>
+    </message>
+    <message>
+        <source>Available in CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Available in style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation>名称</translation>
+    </message>
+</context>
+<context>
     <name>SplashScreen</name>
     <message>
         <source>Quantum GIS - </source>
@@ -7618,7 +10851,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Version </source>
-        <translation>版本 </translation>
+        <translation type="obsolete">版本 </translation>
     </message>
 </context>
 <context>
@@ -7639,7 +10872,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
 &lt;p&gt;2004&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;描述&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;该插件使用QGIS内部的插件模板生成。请根据您的需要作相应的修改。&lt;/p&gt;
 &lt;p&gt;Tim Sutton&lt;/p&gt;
@@ -7662,6 +10895,10 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     <message>
         <source>Alt+C</source>
         <translation>Alt+C</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Welcome to your automatically generated plugin!&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This is just a starting point. You now need to modify the code to make it do something useful....read on for a more information to get yourself started.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Documentation:&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;You really need to read the QGIS API Documentation now at:&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;http://svn.qgis.org/api_doc/html/&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In particular look at the following classes:&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QGisInterface&lt;/span&gt; : http://svn.qgis.org/api_doc/html/classQgisInterface.html&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QGisIface&lt;/span&gt;        :  http://svn.qgis.org/api_doc/html/classQgisIface.html&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QgsMapTool&lt;/span&gt;   : http://svn.qgis.org/api_doc/html/classQgsMapTool.html&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QgsPlugin&lt;/span&gt;       : http://svn.qgis.org/api_doc/html/classQgisPlugin.html&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;QGisIface is an abstract base class (ABC) that specifies what publicly available features of QGIS are exposed to third party code and plugins. QgisInterface is an concrete implementation of this ABC. The preferred way to carry out operations on QGIS is via the QGisInterface. An instance of the QgisInterface is passed to the plugin when it loads. Please consult the QGIS development team if there is functionality required in the QGisInterface that is not available.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;QgsPlugin is an ABC that defines required behaviour your plugin must provide. See below for more details.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;What are all the files in my generated plugin directory for?&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;Makefile.am  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This is the generated Makefile specification for your plugin. You will see that specifies c++ include paths (-I) and library linkages -l) to Qt4, GDAL, GEOS, QGIS Core, QGIS Ui, QGIS Gui and QGis Raster. You should add you application specific dependencies and source files to this Makefile.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename].h&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename].cpp  &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This is the class that provides the &apos;glue&apos; between your custom application logic and the QGIS application. You will see that a number of methods are already implemented for you - including some examples of how to add a raster or vector layer to the main application map canvas. This class is a concrete instance of the QgisPlugin interface which defines required behaviour for a plugin. In particular, a plugin has a number of static methods and members so that the QgsPluginManager and plugin loader logic can identify each plugin, create an appropriate menu entry for it etc. Note there is nothing stopping you creating multiple toolbar icons and menu entries for a single plugin. By default though a single menu entry and toolbar button is created and its pre-configured to call the run() method in this class when selected. This default implementation provided for you by the plugin builder is well documented, so please refer to the code for further advice.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename]guibase.ui  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename]guibase.ui.h&lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt;  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This is an Abstract Base Class implemented in Qt4 fashion as a Qt designer &apos;ui&apos; file. It defines the look of the default plugin dialog without implementing any application logic. You can modify this form to suite your needs or completely remove it if your plugin does not need to display a user form (e.g. for custom MapTools).&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename]gui.cpp  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename]gui.h &lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt; &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This is the concrete class where application logic for the above mentioned dialog should go. The world is your oyster here really....&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename].qrc  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;&lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt;This is the Qt4 resources file for your plugin. The Makefile generated for your plugin is all set up to compile the resource file so all you need to do is add your additional icons etc using the simple xml file format. Note the namespace used for all your resources e.g. (&quot;:/[pluginname]/&quot;). It is important to use this prefix for all your resources. We suggest you include any other images and run time data in this resurce file too.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename].png  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;&lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt;This is the icon that will be used for your plugin menu entry and toolbar icon. Simply replace this icon with your own icon to make your plugin disctinctive from the rest.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;README&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This file contains the documentation you are reading now!&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Getting developer help:&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;For Questions and Comments regarding the plugin builder template and creating your features in QGIS using the plugin interface please contact us via:&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; * the QGIS developers mailing list, or&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; * IRC (#qgis on freenode.net)&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;QGIS is distributed under the Gnu Public License. If you create a useful plugin please consider contributing it back to the community.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Have fun and thank you for choosing QGIS.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;The QGIS Team&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;2006&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
