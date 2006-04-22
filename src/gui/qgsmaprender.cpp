@@ -123,8 +123,10 @@ void QgsMapRender::adjustExtentToSize()
 
   // calculate the translation and scaling parameters
   // mupp = map units per pixel
-  double muppY = mExtent.height() / myHeight;
-  double muppX = mExtent.width() / myWidth;
+  double muppY = static_cast<double>(mExtent.height()) 
+               / static_cast<double>(myHeight);
+  double muppX = static_cast<double>(mExtent.width())  
+               / static_cast<double>(myWidth);
   mMupp = muppY > muppX ? muppY : muppX;
 
   // calculate the actual extent of the mapCanvas
@@ -134,7 +136,7 @@ void QgsMapRender::adjustExtentToSize()
   {
     dymin = mExtent.yMin();
     dymax = mExtent.yMax();
-    whitespace = ((myWidth * mMupp) - mExtent.width()) / 2;
+    whitespace = ((myWidth * mMupp) - mExtent.width()) * 0.5;
     dxmin = mExtent.xMin() - whitespace;
     dxmax = mExtent.xMax() + whitespace;
   }
@@ -142,7 +144,7 @@ void QgsMapRender::adjustExtentToSize()
   {
     dxmin = mExtent.xMin();
     dxmax = mExtent.xMax();
-    whitespace = ((myHeight * mMupp) - mExtent.height()) / 2;
+    whitespace = ((myHeight * mMupp) - mExtent.height()) * 0.5;
     dymin = mExtent.yMin() - whitespace;
     dymax = mExtent.yMax() + whitespace;
   }
@@ -165,7 +167,7 @@ void QgsMapRender::adjustExtentToSize()
   mExtent.setXmax(dxmax);
   mExtent.setYmin(dymin);
   mExtent.setYmax(dymax);
-  
+
   // update the scale
   updateScale();
 
