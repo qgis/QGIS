@@ -697,9 +697,19 @@ void QgsMapCanvas::resizeEvent(QResizeEvent * e)
   int width = e->size().width(), height = e->size().height();
 //  int width = visibleWidth(), height = visibleHeight();
   mCanvas->resize(width, height);
-  
+
+  // Adjust the size (in pixels) of that we draw by the margins in
+  // the widget that the drawing eventually gets placed in. In my testing
+  // the margin was 2 pixels on each border. Add 1 more pixel just to
+  // be sure that the drawn map appears fully within the margins in
+  // the widget.
+  int top, bottom, right, left;
+  getContentsMargins(&left, &top, &right, &bottom);
+  width = width - (left + right + 1);
+  height = height - (top + bottom + 1);
+
   mMap->resize(/*e->size()*/ QSize(width,height));
-  
+
   // notify canvas items of change
   updateCanvasItemsPositions();
   
