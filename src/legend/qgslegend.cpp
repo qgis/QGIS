@@ -115,6 +115,18 @@ void QgsLegend::removeAll()
   setIconSize(mMinimumIconSize);
 }
 
+void QgsLegend::selectAll(bool select)
+{
+  QTreeWidgetItem* theItem = firstItem();
+
+  while (theItem)
+  {
+    theItem->setCheckState(0, (select ? Qt::Checked : Qt::Unchecked));
+    handleItemChange(theItem, 0);
+    theItem = nextItem(theItem);
+  }
+}
+
 void QgsLegend::removeLayer(QString layer_key)
 {
   QTreeWidgetItem* theItem = firstItem();
