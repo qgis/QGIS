@@ -524,7 +524,6 @@ bool QgsGeometry::moveVertexAt(double x, double y, QgsGeometryVertexIndex atVert
     }
 
   unsigned int wkbType;
-  double *xPtr, *yPtr;
   unsigned char* ptr = mGeometry+1;
   memcpy(&wkbType, ptr, sizeof(wkbType));
   ptr += sizeof(wkbType);
@@ -538,6 +537,7 @@ bool QgsGeometry::moveVertexAt(double x, double y, QgsGeometryVertexIndex atVert
 	    memcpy(ptr, &x, sizeof(double));
 	    ptr += sizeof(double);
 	    memcpy(ptr, &y, sizeof(double));
+	    mDirtyGeos = true;
 	    return true;
 	  }
 	else
@@ -558,6 +558,7 @@ bool QgsGeometry::moveVertexAt(double x, double y, QgsGeometryVertexIndex atVert
 	memcpy(ptr, &x, sizeof(double));
 	ptr += sizeof(double);
 	memcpy(ptr, &y, sizeof(double));
+	mDirtyGeos = true;
 	return true;
       }
     case QGis::WKBMultiLineString:
@@ -575,6 +576,7 @@ bool QgsGeometry::moveVertexAt(double x, double y, QgsGeometryVertexIndex atVert
 		ptr += (vertexnr-pointindex)*2*sizeof(double);
 		memcpy(ptr, &x, sizeof(double));
 		memcpy(ptr+sizeof(double), &y, sizeof(double));
+		mDirtyGeos = true;
 		return true;
 	      }
 	    pointindex += (*nrPoints);
@@ -599,6 +601,7 @@ bool QgsGeometry::moveVertexAt(double x, double y, QgsGeometryVertexIndex atVert
 		memcpy(ptr+sizeof(double), &y, sizeof(double));
 		memcpy(ptr+2*sizeof(double)*(*nrPoints-1), &x, sizeof(double));
 		memcpy(ptr+sizeof(double)+2*sizeof(double)*(*nrPoints-1), &y, sizeof(double));
+		mDirtyGeos = true;
 		return true;
 	      }
 	    else if(vertexnr > pointindex && vertexnr < pointindex + (*nrPoints-1))//move only one point
@@ -607,6 +610,7 @@ bool QgsGeometry::moveVertexAt(double x, double y, QgsGeometryVertexIndex atVert
 		memcpy(ptr, &x, sizeof(double));
 		ptr += sizeof(double);
 		memcpy(ptr, &y, sizeof(double));
+		mDirtyGeos = true;
 		return true;
 	      }
 	    ptr += 2*sizeof(double)*(*nrPoints);
@@ -636,6 +640,7 @@ bool QgsGeometry::moveVertexAt(double x, double y, QgsGeometryVertexIndex atVert
 		    memcpy(ptr+sizeof(double), &y, sizeof(double));
 		    memcpy(ptr+2*sizeof(double)*(*nrPoints-1), &x, sizeof(double));
 		    memcpy(ptr+sizeof(double)+2*sizeof(double)*(*nrPoints-1), &y, sizeof(double));
+		    mDirtyGeos = true;
 		    return true;
 		  }
 		else if(vertexnr > pointindex && vertexnr < pointindex + (*nrPoints-1))//move only one point
@@ -644,6 +649,7 @@ bool QgsGeometry::moveVertexAt(double x, double y, QgsGeometryVertexIndex atVert
 		    memcpy(ptr, &x, sizeof(double));
 		    ptr += sizeof(double);
 		    memcpy(ptr, &y, sizeof(double));
+		    mDirtyGeos = true;
 		    return true;
 		  }
 		ptr += 2*sizeof(double)*(*nrPoints);
@@ -652,6 +658,245 @@ bool QgsGeometry::moveVertexAt(double x, double y, QgsGeometryVertexIndex atVert
 	  }
 	return false;
       }
+    }
+}
+
+bool QgsGeometry::deleteVertexAt(QgsGeometryVertexIndex atVertex)
+{
+  int vertexnr = atVertex.back();
+  bool success = false;
+
+  if(mDirtyWkb)
+    {
+      exportGeosToWkb();
+    }
+
+  //create a new geometry buffer for the modified geometry
+  unsigned char* newbuffer = new unsigned char[mGeometrySize-2*sizeof(double)];
+  memcpy(newbuffer, mGeometry, 1+sizeof(int)); //endian and type are the same
+
+  int pointindex = 0;
+  unsigned int wkbType;
+  unsigned char* ptr = mGeometry+1;
+  memcpy(&wkbType, ptr, sizeof(wkbType));
+  ptr += sizeof(wkbType);
+  unsigned char* newBufferPtr = newbuffer+1+sizeof(int);
+  
+  switch(wkbType)
+    {
+    case QGis::WKBPoint:
+      {
+	break; //cannot remove the only point vertex
+      }
+    case QGis::WKBMultiPoint:
+    case QGis::WKBLineString:
+      {
+	int* nPoints = (int*)ptr;
+	if((*nPoints) < 3 || vertexnr > (*nPoints)-1 || vertexnr < 0)
+	  {
+	    break;
+	  }
+	int newNPoints = (*nPoints)-1; //new number of points
+	memcpy(newBufferPtr, &newNPoints, sizeof(int));
+	ptr += sizeof(int);
+	newBufferPtr += sizeof(int);
+	for(int pointnr = 0; pointnr < *nPoints; ++pointnr)
+	  {
+	    if(vertexnr != pointindex)
+	      {
+		memcpy(newBufferPtr, ptr, sizeof(double));
+		memcpy(newBufferPtr+sizeof(double), ptr+sizeof(double), sizeof(double));
+		newBufferPtr += 2*sizeof(double);
+	      }
+	    else
+	      {
+		success = true;
+	      }
+	    ptr += 2*sizeof(double);
+	    ++pointindex;
+	  }
+	break;
+      }
+    case QGis::WKBMultiLineString:
+      {
+	int* nLines = (int*)ptr;
+	memcpy(newBufferPtr, nLines, sizeof(int));
+	newBufferPtr += sizeof(int);
+	ptr += sizeof(int);
+	int* nPoints = 0; //number of points in a line
+	int pointindex = 0;
+	for(int linenr = 0; linenr < *nLines; ++linenr)
+	  {
+	    nPoints = (int*)ptr;
+	    ptr += sizeof(int);
+	    int newNPoint;
+
+	    //find out if the vertex is in this line
+	    if(vertexnr >= pointindex && vertexnr < pointindex + (*nPoints))
+	      {
+		if(*nPoints < 3)
+		  {
+		    break;
+		  }
+		newNPoint = (*nPoints)-1;
+	      }
+	    else
+	      {
+		newNPoint = *nPoints;
+	      }
+	    memcpy(newBufferPtr, &newNPoint, sizeof(int));
+
+	    for(int pointnr = 0; pointnr < *nPoints; ++pointnr)
+	      {
+		if(vertexnr != pointindex)
+		  {
+		    memcpy(newBufferPtr, ptr, sizeof(double));//x
+		    memcpy(newBufferPtr+sizeof(double), ptr+sizeof(double), sizeof(double));//y
+		    newBufferPtr += 2*sizeof(double);
+		  }
+		else
+		  {
+		    success = true;
+		  }
+		ptr += 2*sizeof(double);
+		++pointindex;
+	      }
+	  }
+	break;
+      }
+    case QGis::WKBPolygon:
+      {
+	int* nRings = (int*)ptr;
+	memcpy(newBufferPtr, nRings, sizeof(int));
+	ptr += sizeof(int);
+	newBufferPtr += sizeof(int);
+	int* nPoints = 0; //number of points in a ring
+	int pointindex = 0;
+      
+	for(int ringnr = 0; ringnr < *nRings; ++ringnr)
+	  {
+	    nPoints = (int*)ptr;
+	    ptr += sizeof(int);
+	    int newNPoints;
+	    if(vertexnr >= pointindex && vertexnr < pointindex + *nPoints)//vertex to delete is in this ring
+	      {
+		if(*nPoints < 5) //a ring has at least 3 points
+		  {
+		    break;
+		  }
+		newNPoints = *nPoints - 1;
+	      }
+	    else
+	      {
+		newNPoints = *nPoints;
+	      }
+	    memcpy(newBufferPtr, &newNPoints, sizeof(int));
+	    newBufferPtr += sizeof(int);
+	    
+	    for(int pointnr = 0; pointnr < *nPoints; ++pointnr)
+	      {
+		if(vertexnr != pointindex)
+		  {
+		    memcpy(newBufferPtr, ptr, sizeof(double));//x
+		    memcpy(newBufferPtr+sizeof(double), ptr+sizeof(double), sizeof(double));//y
+		    newBufferPtr += 2*sizeof(double);
+		  }
+		else
+		  {
+		    if(pointnr == 0)//adjust the last point of the ring
+		      {
+			memcpy(ptr+(*nPoints-1)*2*sizeof(double), ptr+2*sizeof(double), sizeof(double));
+			memcpy(ptr+sizeof(double)+(*nPoints-1)*2*sizeof(double), ptr+3*sizeof(double), sizeof(double));
+		      }
+		    if(pointnr == (*nPoints)-1)
+		      {
+			memcpy(newBufferPtr-(*nPoints-2)*2*sizeof(double), ptr-2*sizeof(double), sizeof(double));
+			memcpy(newBufferPtr-(*nPoints-2)*2*sizeof(double)+sizeof(double), ptr-sizeof(double), sizeof(double));
+		      }
+		    success = true;
+		  }
+		ptr += 2*sizeof(double);
+		++pointindex;
+	      }
+	  }
+	break;
+      }
+    case QGis::WKBMultiPolygon:
+      {
+	int* nPolys = (int*)ptr;
+	memcpy(newBufferPtr, nPolys, sizeof(int));
+	newBufferPtr += sizeof(int);
+	ptr +=sizeof(int);
+	int* nRings = 0;
+	int* nPoints = 0;
+	int pointindex = 0;
+
+	for(int polynr = 0; polynr < *nPolys; ++polynr)
+	  {
+	    nRings = (int*)ptr;
+	    memcpy(newBufferPtr, nRings, sizeof(int));
+	    newBufferPtr += sizeof(int);
+	    ptr += sizeof(int);
+	    for(int ringnr = 0; ringnr < *nRings; ++ringnr)
+	      {
+		nPoints = (int*)ptr;
+		ptr += sizeof(int);
+		int newNPoints;
+		if(vertexnr >= pointindex && vertexnr < pointindex + *nPoints)//vertex to delete is in this ring
+		  {
+		    if(*nPoints < 5) //a ring has at least 3 points
+		      {
+			break;
+		      }
+		    newNPoints = *nPoints - 1;
+		  }
+		else
+		  {
+		    newNPoints = *nPoints;
+		  }
+		memcpy(newBufferPtr, &newNPoints, sizeof(int));
+		newBufferPtr += sizeof(int);
+	    
+		for(int pointnr = 0; pointnr < *nPoints; ++pointnr)
+		  {
+		    if(vertexnr != pointindex)
+		      {
+			memcpy(newBufferPtr, ptr, sizeof(double));//x
+			memcpy(newBufferPtr+sizeof(double), ptr+sizeof(double), sizeof(double));//y
+			newBufferPtr += 2*sizeof(double);
+		      }
+		    else
+		      {
+			if(pointnr == 0)//adjust the last point of the ring
+			  {
+			    memcpy(ptr+(*nPoints-1)*2*sizeof(double), ptr+2*sizeof(double), sizeof(double));
+			    memcpy(ptr+sizeof(double)+(*nPoints-1)*2*sizeof(double), ptr+3*sizeof(double), sizeof(double));
+			  }
+			if(pointnr == (*nPoints)-1)
+			  {
+			    memcpy(newBufferPtr-(*nPoints-2)*2*sizeof(double), ptr-2*sizeof(double), sizeof(double));
+			    memcpy(newBufferPtr-(*nPoints-2)*2*sizeof(double)+sizeof(double), ptr-sizeof(double), sizeof(double));
+			  }
+			success = true;
+		      }
+		    ptr += 2*sizeof(double);
+		    ++pointindex;
+		  }
+	      } 
+	  }
+	break;
+      }
+    }
+  if(success)
+    {
+      delete mGeometry;
+      mGeometry = newbuffer;
+      mGeometrySize -= (2*sizeof(double));
+      mDirtyGeos = true;
+    }
+  else
+    {
+      delete[] newbuffer;
     }
 }
 
@@ -697,6 +942,7 @@ bool QgsGeometry::moveVertexAt(double x, double y,
 }
 #endif
 
+#if 0
 bool QgsGeometry::deleteVertexAt(QgsGeometryVertexIndex atVertex)
 {
 
@@ -789,6 +1035,7 @@ bool QgsGeometry::deleteVertexAt(QgsGeometryVertexIndex atVertex)
   return FALSE;
 
 }
+#endif
 
 
 bool QgsGeometry::vertexAt(double &x, double &y, 
