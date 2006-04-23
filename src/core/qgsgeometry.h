@@ -104,10 +104,7 @@ class QgsGeometry {
      *  ring and item (first number is index 0)
      *  to the given coordinates.
      *  Returns FALSE if atVertex does not correspond to a valid vertex
-     *  on this geometry (including if this geometry is a Point).
-     *  It is up to the caller to distinguish between
-     *  these error conditions.  (Or maybe we add another method to this
-     *  object to help make the distinction?)
+     *  on this geometry
      */
     bool moveVertexAt(double x, double y, QgsGeometryVertexIndex atVertex);
 
