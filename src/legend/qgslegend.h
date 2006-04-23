@@ -179,6 +179,13 @@ public slots:
   void removeAll();
 
   /*!
+   * Called when the user wishes to toggle on or off all of the layers in
+   * the legend, and in the map.
+   * @return void
+   */
+  void selectAll(bool select);
+
+  /*!
    * Slot called when user wishes to add a new empty layer group to the legend.
    * The user will be prompted for the name of the newly added group.
    * @return void
