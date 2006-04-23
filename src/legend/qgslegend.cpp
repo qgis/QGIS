@@ -121,8 +121,12 @@ void QgsLegend::selectAll(bool select)
 
   while (theItem)
   {
-    theItem->setCheckState(0, (select ? Qt::Checked : Qt::Unchecked));
-    handleItemChange(theItem, 0);
+    QgsLegendItem* litem = dynamic_cast<QgsLegendItem*>(theItem);
+    if(litem && litem->type() == QgsLegendItem::LEGEND_LAYER_FILE)
+      {
+	theItem->setCheckState(0, (select ? Qt::Checked : Qt::Unchecked));
+	handleItemChange(theItem, 0);
+      }
     theItem = nextItem(theItem);
   }
 }

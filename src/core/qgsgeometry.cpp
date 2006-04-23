@@ -514,6 +514,150 @@ bool QgsGeometry::insertVertexBefore(double x, double y,
 
 }
 
+bool QgsGeometry::moveVertexAt(double x, double y, QgsGeometryVertexIndex atVertex)
+{
+  int vertexnr = atVertex.back();
+
+  if(mDirtyWkb)
+    {
+      exportGeosToWkb();
+    }
+
+  unsigned int wkbType;
+  double *xPtr, *yPtr;
+  unsigned char* ptr = mGeometry+1;
+  memcpy(&wkbType, ptr, sizeof(wkbType));
+  ptr += sizeof(wkbType);
+
+  switch(wkbType)
+    {
+    case QGis::WKBPoint:
+      {
+	if(vertexnr == 0)
+	  {
+	    memcpy(ptr, &x, sizeof(double));
+	    ptr += sizeof(double);
+	    memcpy(ptr, &y, sizeof(double));
+	    return true;
+	  }
+	else
+	  {
+	    return false;
+	  }
+      }
+    case QGis::WKBMultiPoint:
+    case QGis::WKBLineString:
+      {
+	int* nrPoints = (int*)ptr;
+	if(vertexnr > *nrPoints || vertexnr < 0)
+	  {
+	    return false;
+	  }
+	ptr += sizeof(int);
+	ptr += 2*sizeof(double)*vertexnr;
+	memcpy(ptr, &x, sizeof(double));
+	ptr += sizeof(double);
+	memcpy(ptr, &y, sizeof(double));
+	return true;
+      }
+    case QGis::WKBMultiLineString:
+      {
+	int* nrLines = (int*)ptr;
+	ptr += sizeof(int);
+	int* nrPoints = 0; //numer of points in a line
+	int pointindex = 0;
+	for(int linenr = 0; linenr < *nrLines; ++linenr)
+	  {
+	    nrPoints = (int*)ptr;
+	    ptr += sizeof(int);
+	    if(vertexnr >= pointindex && vertexnr < pointindex + (*nrPoints))
+	      {
+		ptr += (vertexnr-pointindex)*2*sizeof(double);
+		memcpy(ptr, &x, sizeof(double));
+		memcpy(ptr+sizeof(double), &y, sizeof(double));
+		return true;
+	      }
+	    pointindex += (*nrPoints);
+	    ptr += 2*sizeof(double)*(*nrPoints);
+	  }
+	return false;
+      }
+    case QGis::WKBPolygon:
+      {
+	int* nrRings = (int*)ptr;
+	ptr += sizeof(int);
+	int* nrPoints = 0; //numer of points in a ring
+	int pointindex = 0;
+
+	for(int ringnr = 0; ringnr < *nrRings; ++ringnr)
+	  {
+	    nrPoints = (int*)ptr;
+	    ptr += sizeof(int);
+	    if(vertexnr == pointindex || vertexnr == pointindex + (*nrPoints-1))//move two points
+	      {
+		memcpy(ptr, &x, sizeof(double));
+		memcpy(ptr+sizeof(double), &y, sizeof(double));
+		memcpy(ptr+2*sizeof(double)*(*nrPoints-1), &x, sizeof(double));
+		memcpy(ptr+sizeof(double)+2*sizeof(double)*(*nrPoints-1), &y, sizeof(double));
+		return true;
+	      }
+	    else if(vertexnr > pointindex && vertexnr < pointindex + (*nrPoints-1))//move only one point
+	      {
+		ptr += 2*sizeof(double)*(vertexnr - pointindex);
+		memcpy(ptr, &x, sizeof(double));
+		ptr += sizeof(double);
+		memcpy(ptr, &y, sizeof(double));
+		return true;
+	      }
+	    ptr += 2*sizeof(double)*(*nrPoints);
+	    pointindex += *nrPoints;
+	  }
+	return false;
+      }
+    case QGis::WKBMultiPolygon:
+      {
+	int* nrPolygons = (int*)ptr;
+	ptr += sizeof(int);
+	int* nrRings = 0; //number of rings in a polygon
+	int* nrPoints = 0; //number of points in a ring
+	int pointindex = 0;
+
+	for(int polynr = 0; polynr < *nrPolygons; ++polynr)
+	  {
+	    nrRings = (int*)ptr;
+	    ptr += sizeof(int);
+	    for(int ringnr = 0; ringnr< *nrRings; ++ringnr)
+	      {
+		nrPoints = (int*)ptr;
+		ptr += sizeof(int);
+		if(vertexnr == pointindex || vertexnr == pointindex + (*nrPoints-1))//move two points
+		  {
+		    memcpy(ptr, &x, sizeof(double));
+		    memcpy(ptr+sizeof(double), &y, sizeof(double));
+		    memcpy(ptr+2*sizeof(double)*(*nrPoints-1), &x, sizeof(double));
+		    memcpy(ptr+sizeof(double)+2*sizeof(double)*(*nrPoints-1), &y, sizeof(double));
+		    return true;
+		  }
+		else if(vertexnr > pointindex && vertexnr < pointindex + (*nrPoints-1))//move only one point
+		  {
+		    ptr += 2*sizeof(double)*(vertexnr - pointindex);
+		    memcpy(ptr, &x, sizeof(double));
+		    ptr += sizeof(double);
+		    memcpy(ptr, &y, sizeof(double));
+		    return true;
+		  }
+		ptr += 2*sizeof(double)*(*nrPoints);
+		pointindex += *nrPoints;
+	      }
+	  }
+	return false;
+      }
+    }
+}
+
+
+
+#if 0
 bool QgsGeometry::moveVertexAt(double x, double y, 
                                QgsGeometryVertexIndex atVertex)
 {
@@ -551,6 +695,7 @@ bool QgsGeometry::moveVertexAt(double x, double y,
 		    
   return false;
 }
+#endif
 
 bool QgsGeometry::deleteVertexAt(QgsGeometryVertexIndex atVertex)
 {
