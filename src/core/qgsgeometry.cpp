@@ -893,10 +893,12 @@ bool QgsGeometry::deleteVertexAt(QgsGeometryVertexIndex atVertex)
       mGeometry = newbuffer;
       mGeometrySize -= (2*sizeof(double));
       mDirtyGeos = true;
+      return true;
     }
   else
     {
       delete[] newbuffer;
+      return false;
     }
 }
 
@@ -956,9 +958,6 @@ bool QgsGeometry::insertVertexBefore(double x, double y, QgsGeometryVertexIndex 
 	break;
       }
     case QGis::WKBMultiLineString:
-      {
-	break;
-      }
     case QGis::WKBPolygon:
       {
 	int* nRings = (int*)ptr;
@@ -1013,6 +1012,7 @@ bool QgsGeometry::insertVertexBefore(double x, double y, QgsGeometryVertexIndex 
       delete mGeometry;
       mGeometry = newbuffer;
       mGeometrySize += 2*sizeof(double);
+      mDirtyGeos = true;
       return true;
     }
   else
