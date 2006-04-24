@@ -1003,10 +1003,59 @@ bool QgsGeometry::insertVertexBefore(double x, double y, QgsGeometryVertexIndex 
       }
     case QGis::WKBMultiPolygon:
       {
+	int* nPolys = (int*)ptr;
+	ptr += sizeof(int);
+	int* nRings = 0; //number of rings in a polygon
+	int* nPoints = 0; //number of points in a ring
+	memcpy(newBufferPtr, &nPolys, sizeof(int));
+	newBufferPtr += sizeof(int);
+	int pointindex = 0;
+
+	for(int polynr = 0; polynr < *nPolys; ++polynr)
+	  {
+	    nRings = (int*)ptr;
+	    ptr += sizeof(int);
+	    memcpy(newBufferPtr, &nRings, sizeof(int));
+	    newBufferPtr += sizeof(int);
+
+	    for(int ringnr = 0; ringnr < *nRings; ++ringnr)
+	      {
+		nPoints = (int*)ptr;
+		int newNPoints;
+		if(vertexnr >= pointindex && vertexnr < (pointindex + (*nPoints)))//point is in this ring
+		  {
+		    newNPoints = (*nPoints)+1;
+		  }
+		else
+		  {
+		    newNPoints = *nPoints;
+		  }
+		memcpy(newBufferPtr, &newNPoints, sizeof(double));
+		newBufferPtr += sizeof(int);
+		ptr += sizeof(int);
+		
+		for(int pointnr = 0; pointnr < *nPoints; ++pointnr)
+		  {
+		    memcpy(newBufferPtr, ptr, sizeof(double));//x
+		    memcpy(newBufferPtr+sizeof(double), ptr+sizeof(double), sizeof(double));//y
+		    ptr += 2*sizeof(double);
+		    newBufferPtr += 2*sizeof(double);
+		    ++pointindex;
+		    if(pointindex == vertexnr)
+		      {
+			memcpy(newBufferPtr, &x, sizeof(double));
+			memcpy(newBufferPtr+sizeof(double), &y, sizeof(double));
+			newBufferPtr += 2*sizeof(double);
+			success = true;
+		      }
+		  }
+	      }
+	    
+	  }
 	break;
       }
     }
-
+  
   if(success)
     {
       delete mGeometry;
