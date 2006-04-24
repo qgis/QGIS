@@ -27,6 +27,9 @@
      <property name="title" >
       <string>Styles</string>
      </property>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
      <property name="exclusive" >
       <bool>true</bool>
      </property>
@@ -195,6 +198,16 @@
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>solid</tabstop>
+  <tabstop>dashdot</tabstop>
+  <tabstop>dash</tabstop>
+  <tabstop>dashdotdot</tabstop>
+  <tabstop>dot</tabstop>
+  <tabstop>nopen</tabstop>
+  <tabstop>okbutton</tabstop>
+  <tabstop>cancelbutton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

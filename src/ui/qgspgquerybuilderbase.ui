@@ -125,6 +125,9 @@
      <property name="title" >
       <string>Values</string>
      </property>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
      <layout class="QGridLayout" >
       <property name="margin" >
        <number>10</number>
@@ -157,6 +160,9 @@
      <property name="title" >
       <string>Fields</string>
      </property>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
      <layout class="QGridLayout" >
       <property name="margin" >
        <number>10</number>
@@ -181,6 +187,9 @@
     <widget class="Q3GroupBox" name="groupBox4" >
      <property name="title" >
       <string>Operators</string>
+     </property>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
@@ -385,6 +394,9 @@
      <property name="title" >
       <string>SQL where clause</string>
      </property>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
      <layout class="QGridLayout" >
       <property name="margin" >
        <number>10</number>
@@ -404,6 +416,13 @@
  <pixmapfunction></pixmapfunction>
  <customwidgets>
   <customwidget>
+   <class>Q3GroupBox</class>
+   <extends></extends>
+   <header>Qt3Support/Q3GroupBox</header>
+   <container>1</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
    <class>Q3TextEdit</class>
    <extends></extends>
    <header>q3textedit.h</header>
@@ -417,14 +436,29 @@
    <container>0</container>
    <pixmap></pixmap>
   </customwidget>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends></extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>btnSampleValues</tabstop>
+  <tabstop>btnGetAllValues</tabstop>
+  <tabstop>btnEqual</tabstop>
+  <tabstop>btnLessThan</tabstop>
+  <tabstop>btnGreaterThan</tabstop>
+  <tabstop>btnLike</tabstop>
+  <tabstop>btnPct</tabstop>
+  <tabstop>btnIn</tabstop>
+  <tabstop>btnNotIn</tabstop>
+  <tabstop>btnLessEqual</tabstop>
+  <tabstop>btnGreaterEqual</tabstop>
+  <tabstop>btnNotEqual</tabstop>
+  <tabstop>btnILike</tabstop>
+  <tabstop>btnAnd</tabstop>
+  <tabstop>btnOr</tabstop>
+  <tabstop>btnNot</tabstop>
+  <tabstop>btnClear</tabstop>
+  <tabstop>btnTest</tabstop>
+  <tabstop>btnOk</tabstop>
+  <tabstop>Cancel</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

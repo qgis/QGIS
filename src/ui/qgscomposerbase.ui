@@ -363,6 +363,12 @@
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mViewFrame</tabstop>
+  <tabstop>mOptionsTabWidget</tabstop>
+  <tabstop>mCompositionNameComboBox</tabstop>
+  <tabstop>mSplitter</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

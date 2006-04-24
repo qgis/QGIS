@@ -115,6 +115,12 @@
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>btnZoomTo</tabstop>
+  <tabstop>btnDelete</tabstop>
+  <tabstop>btnClose</tabstop>
+  <tabstop>btnHelp</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

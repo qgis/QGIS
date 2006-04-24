@@ -48,7 +48,13 @@
     <widget class="QLineEdit" name="editTotal" >
      <property name="font" >
       <font>
+       <family>Sans Serif</family>
+       <pointsize>9</pointsize>
+       <weight>75</weight>
+       <italic>false</italic>
        <bold>true</bold>
+       <underline>false</underline>
+       <strikeout>false</strikeout>
       </font>
      </property>
      <property name="alignment" >
@@ -147,6 +153,9 @@
      <property name="text" >
       <string>Total:</string>
      </property>
+     <property name="buddy" >
+      <cstring>editTotal</cstring>
+     </property>
     </widget>
    </item>
   </layout>
@@ -155,17 +164,17 @@
  <pixmapfunction></pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Q3Frame</class>
-   <extends></extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
    <class>Q3Table</class>
    <extends></extends>
    <header>q3table.h</header>
    <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Q3Frame</class>
+   <extends></extends>
+   <header>Qt3Support/Q3Frame</header>
+   <container>1</container>
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>

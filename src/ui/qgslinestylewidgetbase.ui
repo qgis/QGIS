@@ -9,7 +9,7 @@
     <x>0</x>
     <y>0</y>
     <width>193</width>
-    <height>143</height>
+    <height>128</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -35,6 +35,9 @@
      <property name="title" >
       <string>Outline Style</string>
      </property>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
      <layout class="QGridLayout" >
       <property name="margin" >
        <number>10</number>
@@ -56,6 +59,9 @@
        <widget class="QLabel" name="txtOutLineWidth" >
         <property name="text" >
          <string>Width:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>spbOutlineWidth</cstring>
         </property>
        </widget>
       </item>
@@ -79,6 +85,9 @@
        <widget class="QLabel" name="txtOutlineColour" >
         <property name="text" >
          <string>Colour:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>colOutlineColour</cstring>
         </property>
        </widget>
       </item>
@@ -128,6 +137,11 @@
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>lptOutlinePattern</tabstop>
+  <tabstop>colOutlineColour</tabstop>
+  <tabstop>spbOutlineWidth</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

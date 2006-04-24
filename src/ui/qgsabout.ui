@@ -256,6 +256,15 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction></pixmapfunction>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>btnQgisUser</tabstop>
+  <tabstop>btnQgisHome</tabstop>
+  <tabstop>lblUrls</tabstop>
+  <tabstop>buttonCancel</tabstop>
+  <tabstop>txtBrowserPlugins</tabstop>
+  <tabstop>listBox1</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

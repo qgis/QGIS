@@ -84,6 +84,11 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <tabstops>
+  <tabstop>mTextLineEdit</tabstop>
+  <tabstop>mFontButton</tabstop>
+  <tabstop>mBoxCheckBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

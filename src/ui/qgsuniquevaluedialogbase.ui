@@ -3,7 +3,7 @@
  <comment></comment>
  <exportmacro></exportmacro>
  <class>QgsUniqueValueDialogBase</class>
- <widget class="QDialog" name="QgsUValDialogBase" >
+ <widget class="QDialog" name="QgsUniqueValueDialogBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -32,8 +32,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>153</width>
-        <height>231</height>
+        <width>156</width>
+        <height>234</height>
        </rect>
       </property>
      </widget>
@@ -75,6 +75,9 @@
      </property>
      <property name="text" >
       <string>Classification Field:</string>
+     </property>
+     <property name="buddy" >
+      <cstring>mClassificationComboBox</cstring>
      </property>
     </widget>
    </item>

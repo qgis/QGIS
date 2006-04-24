@@ -144,6 +144,9 @@
             <property name="text" >
              <string>Theme</string>
             </property>
+            <property name="buddy" >
+             <cstring>cmbTheme</cstring>
+            </property>
            </widget>
           </item>
           <item row="0" column="1" >
@@ -303,6 +306,9 @@
             <property name="text" >
              <string>Update display after reading</string>
             </property>
+            <property name="buddy" >
+             <cstring>spinBoxUpdateThreshold</cstring>
+            </property>
            </widget>
           </item>
           <item row="1" column="0" colspan="3" >
@@ -357,6 +363,9 @@
            <widget class="QLabel" name="textLabel1_8" >
             <property name="text" >
              <string>Ellipsoid for distance calculations:</string>
+            </property>
+            <property name="buddy" >
+             <cstring>cmbEllipsoid</cstring>
             </property>
            </widget>
           </item>
@@ -414,6 +423,9 @@ identifying features without zooming in very close.
            <widget class="QLabel" name="textLabel1_3" >
             <property name="text" >
              <string>Search Radius for Identifying Features</string>
+            </property>
+            <property name="buddy" >
+             <cstring>spinBoxIdentifyValue</cstring>
             </property>
            </widget>
           </item>
@@ -588,6 +600,9 @@ identifying features without zooming in very close.
          <property name="text" >
           <string>Open help documents with</string>
          </property>
+         <property name="buddy" >
+          <cstring>cmbBrowser</cstring>
+         </property>
         </widget>
        </item>
       </layout>
@@ -653,6 +668,27 @@ identifying features without zooming in very close.
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction></pixmapfunction>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>btnFindBrowser</tabstop>
+  <tabstop>cbxHideSplash</tabstop>
+  <tabstop>cmbTheme</tabstop>
+  <tabstop>pbnSelectionColour</tabstop>
+  <tabstop>pbnCanvasColor</tabstop>
+  <tabstop>spinBoxUpdateThreshold</tabstop>
+  <tabstop>chkAddedVisibility</tabstop>
+  <tabstop>chkAntiAliasing</tabstop>
+  <tabstop>spinBoxIdentifyValue</tabstop>
+  <tabstop>cmbEllipsoid</tabstop>
+  <tabstop>radPromptForProjection</tabstop>
+  <tabstop>radUseProjectProjection</tabstop>
+  <tabstop>radUseGlobalProjection</tabstop>
+  <tabstop>txtGlobalWKT</tabstop>
+  <tabstop>pbnSelectProjection</tabstop>
+  <tabstop>cmbBrowser</tabstop>
+  <tabstop>buttonOk</tabstop>
+  <tabstop>buttonCancel</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

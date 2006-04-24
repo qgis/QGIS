@@ -68,6 +68,9 @@
          <property name="text" >
           <string>Transparency:</string>
          </property>
+         <property name="buddy" >
+          <cstring>sliderTransparency</cstring>
+         </property>
         </widget>
        </item>
        <item row="2" column="0" colspan="2" >
@@ -113,6 +116,9 @@
          </property>
          <property name="text" >
           <string>Legend type:</string>
+         </property>
+         <property name="buddy" >
+          <cstring>legendtypecombobox</cstring>
          </property>
         </widget>
        </item>
@@ -165,12 +171,18 @@
             <property name="text" >
              <string>Maximum 1:</string>
             </property>
+            <property name="buddy" >
+             <cstring>spinMaximumScale</cstring>
+            </property>
            </widget>
           </item>
           <item row="0" column="0" >
            <widget class="QLabel" name="textLabel1" >
             <property name="text" >
              <string>Minimum 1:</string>
+            </property>
+            <property name="buddy" >
+             <cstring>spinMinimumScale</cstring>
             </property>
            </widget>
           </item>
@@ -207,6 +219,9 @@
         <widget class="QLabel" name="textLabel3" >
          <property name="text" >
           <string>Display name</string>
+         </property>
+         <property name="buddy" >
+          <cstring>txtDisplayName</cstring>
          </property>
         </widget>
        </item>
@@ -256,6 +271,9 @@
          </property>
          <property name="text" >
           <string>Display field</string>
+         </property>
+         <property name="buddy" >
+          <cstring>displayFieldComboBox</cstring>
          </property>
         </widget>
        </item>
@@ -334,6 +352,9 @@
          <property name="text" >
           <string>Layer source</string>
          </property>
+         <property name="buddy" >
+          <cstring></cstring>
+         </property>
         </widget>
        </item>
        <item row="3" column="0" colspan="4" >
@@ -352,6 +373,9 @@
            <widget class="QLabel" name="indexLabel" >
             <property name="text" >
              <string>Create Spatial Index</string>
+            </property>
+            <property name="buddy" >
+             <cstring>pbnIndex</cstring>
             </property>
            </widget>
           </item>
@@ -534,13 +558,6 @@
  <pixmapfunction></pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Q3TextEdit</class>
-   <extends></extends>
-   <header>q3textedit.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
    <class>Q3WidgetStack</class>
    <extends></extends>
    <header>q3widgetstack.h</header>
@@ -554,7 +571,32 @@
    <container>1</container>
    <pixmap></pixmap>
   </customwidget>
+  <customwidget>
+   <class>Q3TextEdit</class>
+   <extends></extends>
+   <header>q3textedit.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tabWidget2</tabstop>
+  <tabstop>legendtypecombobox</tabstop>
+  <tabstop>sliderTransparency</tabstop>
+  <tabstop>btnHelp</tabstop>
+  <tabstop>pbnApply</tabstop>
+  <tabstop>pbnOK</tabstop>
+  <tabstop>pbnCancel</tabstop>
+  <tabstop>txtDisplayName</tabstop>
+  <tabstop>displayFieldComboBox</tabstop>
+  <tabstop>spinMinimumScale</tabstop>
+  <tabstop>spinMaximumScale</tabstop>
+  <tabstop>pbnIndex</tabstop>
+  <tabstop>leSpatialRefSys</tabstop>
+  <tabstop>pbnChangeSpatialRefSys</tabstop>
+  <tabstop>pbnQueryBuilder</tabstop>
+  <tabstop>labelCheckBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

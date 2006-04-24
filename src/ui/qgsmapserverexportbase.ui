@@ -30,6 +30,9 @@
      <property name="text" >
       <string>Map file</string>
      </property>
+     <property name="buddy" >
+      <cstring>txtMapFilePath</cstring>
+     </property>
     </widget>
    </item>
    <item row="1" column="0" colspan="2" >
@@ -140,12 +143,18 @@
         <property name="text" >
          <string>Name</string>
         </property>
+        <property name="buddy" >
+         <cstring>txtMapName</cstring>
+        </property>
        </widget>
       </item>
       <item row="0" column="7" >
        <widget class="QLabel" name="textLabel2_2" >
         <property name="text" >
          <string>Height</string>
+        </property>
+        <property name="buddy" >
+         <cstring>txtMapHeight</cstring>
         </property>
        </widget>
       </item>
@@ -157,12 +166,18 @@
         <property name="text" >
          <string>Units</string>
         </property>
+        <property name="buddy" >
+         <cstring>cmbMapUnits</cstring>
+        </property>
        </widget>
       </item>
       <item row="1" column="3" colspan="2" >
        <widget class="QLabel" name="textLabel4" >
         <property name="text" >
          <string>Image type</string>
+        </property>
+        <property name="buddy" >
+         <cstring>cmbMapImageType</cstring>
         </property>
        </widget>
       </item>
@@ -210,12 +225,18 @@
         <property name="text" >
          <string>MinScale</string>
         </property>
+        <property name="buddy" >
+         <cstring>txtMinScale</cstring>
+        </property>
        </widget>
       </item>
       <item row="2" column="5" colspan="2" >
        <widget class="QLabel" name="textLabel6_2" >
         <property name="text" >
          <string>MaxScale</string>
+        </property>
+        <property name="buddy" >
+         <cstring>txtMaxScale</cstring>
         </property>
        </widget>
       </item>
@@ -243,6 +264,9 @@
         <property name="text" >
          <string>Width</string>
         </property>
+        <property name="buddy" >
+         <cstring>txtMapWidth</cstring>
+        </property>
        </widget>
       </item>
      </layout>
@@ -268,6 +292,9 @@
         <property name="text" >
          <string>Header</string>
         </property>
+        <property name="buddy" >
+         <cstring>txtWebHeader</cstring>
+        </property>
        </widget>
       </item>
       <item row="2" column="0" >
@@ -275,12 +302,18 @@
         <property name="text" >
          <string>Footer</string>
         </property>
+        <property name="buddy" >
+         <cstring>txtWebFooter</cstring>
+        </property>
        </widget>
       </item>
       <item row="1" column="0" >
        <widget class="QLabel" name="textLabel5_2" >
         <property name="text" >
          <string>Template</string>
+        </property>
+        <property name="buddy" >
+         <cstring>txtWebTemplate</cstring>
         </property>
        </widget>
       </item>
@@ -309,6 +342,24 @@
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>txtMapFilePath</tabstop>
+  <tabstop>btnChooseFile</tabstop>
+  <tabstop>chkExpLayersOnly</tabstop>
+  <tabstop>txtMapName</tabstop>
+  <tabstop>txtMapWidth</tabstop>
+  <tabstop>txtMapHeight</tabstop>
+  <tabstop>cmbMapUnits</tabstop>
+  <tabstop>cmbMapImageType</tabstop>
+  <tabstop>txtMinScale</tabstop>
+  <tabstop>txtMaxScale</tabstop>
+  <tabstop>txtWebHeader</tabstop>
+  <tabstop>txtWebTemplate</tabstop>
+  <tabstop>txtWebFooter</tabstop>
+  <tabstop>buttonHelp</tabstop>
+  <tabstop>buttonOk</tabstop>
+  <tabstop>buttonCancel</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

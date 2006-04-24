@@ -89,6 +89,9 @@
         <property name="text" >
          <string>Name:</string>
         </property>
+        <property name="buddy" >
+         <cstring>actionName</cstring>
+        </property>
        </widget>
       </item>
       <item row="3" column="5" colspan="2" >
@@ -158,6 +161,9 @@
         </property>
         <property name="text" >
          <string>Action:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>actionAction</cstring>
         </property>
        </widget>
       </item>
@@ -274,6 +280,19 @@
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>moveUpButton</tabstop>
+  <tabstop>moveDownButton</tabstop>
+  <tabstop>removeButton</tabstop>
+  <tabstop>actionName</tabstop>
+  <tabstop>actionAction</tabstop>
+  <tabstop>browseButton</tabstop>
+  <tabstop>captureCB</tabstop>
+  <tabstop>insertButton</tabstop>
+  <tabstop>updateButton</tabstop>
+  <tabstop>insertFieldButton</tabstop>
+  <tabstop>fieldComboBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

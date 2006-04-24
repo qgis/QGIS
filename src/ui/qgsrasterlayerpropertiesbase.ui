@@ -172,7 +172,7 @@
              </sizepolicy>
             </property>
             <property name="text" >
-             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style="font-size:10pt;font-family:Arial">
+             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style="font-size:9pt;font-family:Sans Serif">
 &lt;p style="margin-top:14px" dir="ltr">&lt;span style="font-weight:600">Notes&lt;/span>&lt;/p>
 &lt;/body>&lt;/html>
 </string>
@@ -231,12 +231,18 @@
             <property name="text" >
              <string>&lt;b>&lt;font color="#0000ff">Blue&lt;/font>&lt;/b></string>
             </property>
+            <property name="buddy" >
+             <cstring>cboBlue</cstring>
+            </property>
            </widget>
           </item>
           <item row="2" column="0" >
            <widget class="QLabel" name="textLabel2_2" >
             <property name="text" >
              <string>&lt;b>&lt;font color="#00ff00">Green&lt;/font>&lt;/b></string>
+            </property>
+            <property name="buddy" >
+             <cstring>cboGreen</cstring>
             </property>
            </widget>
           </item>
@@ -250,6 +256,9 @@
            <widget class="QLabel" name="textLabel2" >
             <property name="text" >
              <string>&lt;b>&lt;font color="#ff0000">Red&lt;/font>&lt;/b></string>
+            </property>
+            <property name="buddy" >
+             <cstring>cboRed</cstring>
             </property>
            </widget>
           </item>
@@ -316,12 +325,18 @@
             <property name="text" >
              <string>Color Map</string>
             </property>
+            <property name="buddy" >
+             <cstring>cboColorMap</cstring>
+            </property>
            </widget>
           </item>
           <item row="1" column="0" >
            <widget class="QLabel" name="textLabel2_6_2" >
             <property name="text" >
              <string>Std Deviations</string>
+            </property>
+            <property name="buddy" >
+             <cstring>cboStdDev</cstring>
             </property>
            </widget>
           </item>
@@ -335,6 +350,9 @@
            <widget class="QLabel" name="textLabel2_6" >
             <property name="text" >
              <string>Gray</string>
+            </property>
+            <property name="buddy" >
+             <cstring>cboGray</cstring>
             </property>
            </widget>
           </item>
@@ -510,6 +528,9 @@
          <property name="text" >
           <string>Display Name:</string>
          </property>
+         <property name="buddy" >
+          <cstring>leDisplayName</cstring>
+         </property>
         </widget>
        </item>
        <item row="0" column="1" colspan="2" >
@@ -526,6 +547,9 @@
         <widget class="QLabel" name="lblLayerSource" >
          <property name="text" >
           <string>Layer Source:</string>
+         </property>
+         <property name="buddy" >
+          <cstring>leLayerSource</cstring>
          </property>
         </widget>
        </item>
@@ -606,6 +630,9 @@
             <property name="text" >
              <string>Maximum 1:</string>
             </property>
+            <property name="buddy" >
+             <cstring>spinMaximumScale</cstring>
+            </property>
            </widget>
           </item>
           <item row="0" column="1" >
@@ -631,6 +658,9 @@
            <widget class="QLabel" name="textLabel1_3" >
             <property name="text" >
              <string>Minimum 1:</string>
+            </property>
+            <property name="buddy" >
+             <cstring>spinMinimumScale</cstring>
             </property>
            </widget>
           </item>
@@ -746,8 +776,8 @@
           </sizepolicy>
          </property>
          <property name="text" >
-          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style="font-size:10pt;font-family:Arial">
-&lt;p style="margin-top:18px" dir="ltr">&lt;span style="font-size:17pt;font-weight:600">Description&lt;/span>&lt;/p>
+          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style="font-size:9pt;font-family:Sans Serif">
+&lt;p style="margin-top:18px" dir="ltr">&lt;span style="font-size:15pt;font-weight:600">Description&lt;/span>&lt;/p>
 &lt;p dir="ltr">Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p>
 &lt;p dir="ltr">&lt;span style="color:#ff0000">Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span>&lt;/p>
 &lt;p dir="ltr">&lt;span style="color:#ff0000">Please note that building pyramids could corrupt your image - always make a backup of your data first!&lt;/span>&lt;/p>
@@ -787,6 +817,9 @@
           <widget class="QLabel" name="textLabel4_2" >
            <property name="text" >
             <string>Resampling Method</string>
+           </property>
+           <property name="buddy" >
+            <cstring>cboResamplingMethod</cstring>
            </property>
           </widget>
          </item>
@@ -1069,17 +1102,17 @@
    <pixmap></pixmap>
   </customwidget>
   <customwidget>
-   <class>Q3TextEdit</class>
-   <extends></extends>
-   <header>q3textedit.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
    <class>Q3TextBrowser</class>
    <extends>QWidget</extends>
    <header>q3textbrowser.h</header>
    <container>1</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Q3TextEdit</class>
+   <extends></extends>
+   <header>q3textedit.h</header>
+   <container>0</container>
    <pixmap></pixmap>
   </customwidget>
   <customwidget>
@@ -1090,6 +1123,38 @@
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tabSymbology</tabstop>
+  <tabstop>rbtnThreeBand</tabstop>
+  <tabstop>rbtnSingleBand</tabstop>
+  <tabstop>cboxInvertColorMap</tabstop>
+  <tabstop>sliderTransparency</tabstop>
+  <tabstop>cboRed</tabstop>
+  <tabstop>cboGreen</tabstop>
+  <tabstop>cboBlue</tabstop>
+  <tabstop>cboGray</tabstop>
+  <tabstop>cboStdDev</tabstop>
+  <tabstop>cboColorMap</tabstop>
+  <tabstop>buttonHelp</tabstop>
+  <tabstop>buttonApply</tabstop>
+  <tabstop>buttonOk</tabstop>
+  <tabstop>buttonCancel</tabstop>
+  <tabstop>leDisplayName</tabstop>
+  <tabstop>leLayerSource</tabstop>
+  <tabstop>cboxShowDebugInfo</tabstop>
+  <tabstop>spinMinimumScale</tabstop>
+  <tabstop>spinMaximumScale</tabstop>
+  <tabstop>leSpatialRefSys</tabstop>
+  <tabstop>pbnChangeSpatialRefSys</tabstop>
+  <tabstop>cboResamplingMethod</tabstop>
+  <tabstop>buttonBuildPyramids</tabstop>
+  <tabstop>radHistTypeBar</tabstop>
+  <tabstop>radHistTypeLine</tabstop>
+  <tabstop>spinHistBinCount</tabstop>
+  <tabstop>chkHistIgnoreOutOfRange</tabstop>
+  <tabstop>chkHistAllowApproximation</tabstop>
+  <tabstop>pbnHistRefresh</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

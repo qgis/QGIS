@@ -3,7 +3,7 @@
  <comment></comment>
  <exportmacro></exportmacro>
  <class>QgsSingleSymbolDialogBase</class>
- <widget class="QDialog" name="QgsSiSyDialogBase" >
+ <widget class="QDialog" name="QgsSingleSymbolDialogBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -551,6 +551,9 @@
         <property name="text" >
          <string>Size</string>
         </property>
+        <property name="buddy" >
+         <cstring>mPointSizeSpinBox</cstring>
+        </property>
        </widget>
       </item>
       <item row="0" column="4" >
@@ -582,6 +585,9 @@
         <property name="text" >
          <string>Symbol</string>
         </property>
+        <property name="buddy" >
+         <cstring>mPointSymbolComboBox</cstring>
+        </property>
        </widget>
       </item>
      </layout>
@@ -603,6 +609,9 @@
        <widget class="QLabel" name="outlinewidthlabel" >
         <property name="text" >
          <string>Outline Width:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>outlinewidthspinbox</cstring>
         </property>
        </widget>
       </item>
@@ -727,12 +736,18 @@
         <property name="text" >
          <string>Fill Color:</string>
         </property>
+        <property name="buddy" >
+         <cstring>btnFillColor</cstring>
+        </property>
        </widget>
       </item>
       <item row="0" column="0" colspan="2" >
        <widget class="QLabel" name="outlinecolorlabel" >
         <property name="text" >
          <string>Outline color:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>btnOutlineColor</cstring>
         </property>
        </widget>
       </item>
@@ -994,6 +1009,9 @@
        <property name="text" >
         <string>Label:</string>
        </property>
+       <property name="buddy" >
+        <cstring>mLabelEdit</cstring>
+       </property>
       </widget>
      </item>
      <item>
@@ -1012,6 +1030,35 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <tabstops>
+  <tabstop>mLabelEdit</tabstop>
+  <tabstop>mPointSymbolComboBox</tabstop>
+  <tabstop>mPointSizeSpinBox</tabstop>
+  <tabstop>pbnLineSolid</tabstop>
+  <tabstop>pbnLineDot</tabstop>
+  <tabstop>pbnLineDashDot</tabstop>
+  <tabstop>pbnLineDash</tabstop>
+  <tabstop>pbnLineDashDotDot</tabstop>
+  <tabstop>pbnLineNoPen</tabstop>
+  <tabstop>btnOutlineColor</tabstop>
+  <tabstop>outlinewidthspinbox</tabstop>
+  <tabstop>btnFillColor</tabstop>
+  <tabstop>solid</tabstop>
+  <tabstop>fdiag</tabstop>
+  <tabstop>dense4</tabstop>
+  <tabstop>horizontal</tabstop>
+  <tabstop>bdiag</tabstop>
+  <tabstop>diagcross</tabstop>
+  <tabstop>dense5</tabstop>
+  <tabstop>vertical</tabstop>
+  <tabstop>dense1</tabstop>
+  <tabstop>dense3</tabstop>
+  <tabstop>dense6</tabstop>
+  <tabstop>cross</tabstop>
+  <tabstop>dense2</tabstop>
+  <tabstop>dense7</tabstop>
+  <tabstop>nopen</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

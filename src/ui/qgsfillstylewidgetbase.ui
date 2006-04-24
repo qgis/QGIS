@@ -60,6 +60,9 @@
         <property name="text" >
          <string>Colour:</string>
         </property>
+        <property name="buddy" >
+         <cstring>colFillColour</cstring>
+        </property>
        </widget>
       </item>
       <item row="0" column="0" colspan="2" >
@@ -78,6 +81,10 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <tabstops>
+  <tabstop>fptFillPattern</tabstop>
+  <tabstop>colFillColour</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

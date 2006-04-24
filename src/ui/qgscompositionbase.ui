@@ -35,6 +35,9 @@
      <property name="title" >
       <string>Paper</string>
      </property>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
      <layout class="QVBoxLayout" >
       <property name="margin" >
        <number>10</number>
@@ -54,6 +57,9 @@
         </property>
         <property name="text" >
          <string>Size</string>
+        </property>
+        <property name="buddy" >
+         <cstring>mPaperSizeComboBox</cstring>
         </property>
        </widget>
       </item>
@@ -85,6 +91,9 @@
         <property name="text" >
          <string>Units</string>
         </property>
+        <property name="buddy" >
+         <cstring>mPaperUnitsComboBox</cstring>
+        </property>
        </widget>
       </item>
       <item>
@@ -115,6 +124,9 @@
         <property name="text" >
          <string>Width</string>
         </property>
+        <property name="buddy" >
+         <cstring>mPaperWidthLineEdit</cstring>
+        </property>
        </widget>
       </item>
       <item>
@@ -133,6 +145,9 @@
         <property name="text" >
          <string>Height</string>
         </property>
+        <property name="buddy" >
+         <cstring>mPaperHeightLineEdit</cstring>
+        </property>
        </widget>
       </item>
       <item>
@@ -150,6 +165,9 @@
         </property>
         <property name="text" >
          <string>Orientation</string>
+        </property>
+        <property name="buddy" >
+         <cstring>mPaperOrientationComboBox</cstring>
         </property>
        </widget>
       </item>
@@ -183,6 +201,9 @@
      </property>
      <property name="text" >
       <string>Resolution (dpi)</string>
+     </property>
+     <property name="buddy" >
+      <cstring>mResolutionLineEdit</cstring>
      </property>
     </widget>
    </item>
