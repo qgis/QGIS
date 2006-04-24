@@ -335,7 +335,7 @@ void QgsWmsProvider::setImageCrs(QString const & crs)
 
   if (
       (crs != imageCrs)
-      and
+      &&
       (! crs.isEmpty() )
      )
   {
