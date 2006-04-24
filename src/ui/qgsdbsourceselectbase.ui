@@ -216,9 +216,12 @@
   <tabstop>btnConnect</tabstop>
   <tabstop>btnNew</tabstop>
   <tabstop>btnEdit</tabstop>
+  <tabstop>btnDelete</tabstop>
+  <tabstop>lstTables</tabstop>
+  <tabstop>mEncodingComboBox</tabstop>
+  <tabstop>btnHelp</tabstop>
   <tabstop>btnAdd</tabstop>
   <tabstop>btnCancel</tabstop>
-  <tabstop>btnHelp</tabstop>
  </tabstops>
  <resources/>
  <connections>

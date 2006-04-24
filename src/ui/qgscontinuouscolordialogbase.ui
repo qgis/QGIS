@@ -3,7 +3,7 @@
  <comment></comment>
  <exportmacro></exportmacro>
  <class>QgsContinuousColorDialogBase</class>
- <widget class="QDialog" name="QgsContColDialogBase" >
+ <widget class="QDialog" name="QgsContinuousColorDialogBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -114,6 +114,9 @@
      <property name="text" >
       <string>Maximum Value:</string>
      </property>
+     <property name="buddy" >
+      <cstring>btnMaxValue</cstring>
+     </property>
     </widget>
    </item>
    <item row="2" column="2" >
@@ -201,6 +204,9 @@
      <property name="text" >
       <string>Outline Width:</string>
      </property>
+     <property name="buddy" >
+      <cstring>outlinewidthspinbox</cstring>
+     </property>
     </widget>
    </item>
    <item row="1" column="0" >
@@ -214,6 +220,9 @@
      <property name="text" >
       <string>Minimum Value:</string>
      </property>
+     <property name="buddy" >
+      <cstring>btnMinValue</cstring>
+     </property>
     </widget>
    </item>
    <item row="0" column="0" >
@@ -226,6 +235,9 @@
      </property>
      <property name="text" >
       <string>Classification Field:</string>
+     </property>
+     <property name="buddy" >
+      <cstring>classificationComboBox</cstring>
      </property>
     </widget>
    </item>

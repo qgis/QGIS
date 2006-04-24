@@ -35,6 +35,9 @@
      <property name="text" >
       <string>Title</string>
      </property>
+     <property name="buddy" >
+      <cstring>mTitleLineEdit</cstring>
+     </property>
     </widget>
    </item>
    <item>
@@ -52,6 +55,9 @@
      </property>
      <property name="text" >
       <string>Map</string>
+     </property>
+     <property name="buddy" >
+      <cstring>mMapComboBox</cstring>
      </property>
     </widget>
    </item>
@@ -114,6 +120,9 @@
      <property name="text" >
       <string>Preview</string>
      </property>
+     <property name="buddy" >
+      <cstring>mPreviewModeComboBox</cstring>
+     </property>
     </widget>
    </item>
    <item>
@@ -141,6 +150,13 @@
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mTitleLineEdit</tabstop>
+  <tabstop>mMapComboBox</tabstop>
+  <tabstop>mFontButton</tabstop>
+  <tabstop>mFrameCheckBox</tabstop>
+  <tabstop>mPreviewModeComboBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -78,6 +78,11 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <tabstops>
+  <tabstop>mTable</tabstop>
+  <tabstop>mOkButton</tabstop>
+  <tabstop>mCancelButton</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

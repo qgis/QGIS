@@ -476,6 +476,26 @@
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tabWidget2</tabstop>
+  <tabstop>titleEdit</tabstop>
+  <tabstop>radMeters</tabstop>
+  <tabstop>radFeet</tabstop>
+  <tabstop>radDecimalDegrees</tabstop>
+  <tabstop>radAutomatic</tabstop>
+  <tabstop>radManual</tabstop>
+  <tabstop>spinBoxDP</tabstop>
+  <tabstop>spinDigitisedLineWidth</tabstop>
+  <tabstop>leSnappingTolerance</tabstop>
+  <tabstop>pbnDigitisedLineColour</tabstop>
+  <tabstop>pbnSelectionColour</tabstop>
+  <tabstop>pbnCanvasColor</tabstop>
+  <tabstop>pbnHelp</tabstop>
+  <tabstop>buttonApply</tabstop>
+  <tabstop>buttonOk</tabstop>
+  <tabstop>buttonCancel</tabstop>
+  <tabstop>cbxProjectionEnabled</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

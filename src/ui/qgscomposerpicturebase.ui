@@ -43,6 +43,9 @@
        <property name="text" >
         <string>Picture</string>
        </property>
+       <property name="buddy" >
+        <cstring>mPictureBrowseButton</cstring>
+       </property>
       </widget>
      </item>
      <item>
@@ -149,6 +152,9 @@
        <property name="text" >
         <string>Angle</string>
        </property>
+       <property name="buddy" >
+        <cstring>mAngleLineEdit</cstring>
+       </property>
       </widget>
      </item>
      <item>
@@ -199,6 +205,9 @@
       <widget class="QLabel" name="textLabel3" >
        <property name="text" >
         <string>Width</string>
+       </property>
+       <property name="buddy" >
+        <cstring>mWidthLineEdit</cstring>
        </property>
       </widget>
      </item>
@@ -251,6 +260,9 @@
        <property name="text" >
         <string>Height</string>
        </property>
+       <property name="buddy" >
+        <cstring>mHeightLineEdit</cstring>
+       </property>
       </widget>
      </item>
      <item>
@@ -296,6 +308,14 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <tabstops>
+  <tabstop>mPictureBrowseButton</tabstop>
+  <tabstop>mPictureLineEdit</tabstop>
+  <tabstop>mWidthLineEdit</tabstop>
+  <tabstop>mHeightLineEdit</tabstop>
+  <tabstop>mAngleLineEdit</tabstop>
+  <tabstop>mFrameCheckBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

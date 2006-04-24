@@ -55,6 +55,9 @@
      <property name="text" >
       <string>Set</string>
      </property>
+     <property name="buddy" >
+      <cstring>mCalculateComboBox</cstring>
+     </property>
     </widget>
    </item>
    <item>
@@ -83,6 +86,9 @@
      <property name="text" >
       <string>Width</string>
      </property>
+     <property name="buddy" >
+      <cstring>mWidthLineEdit</cstring>
+     </property>
     </widget>
    </item>
    <item>
@@ -92,6 +98,9 @@
     <widget class="QLabel" name="textLabel2" >
      <property name="text" >
       <string>Height</string>
+     </property>
+     <property name="buddy" >
+      <cstring>mHeightLineEdit</cstring>
      </property>
     </widget>
    </item>
@@ -110,6 +119,9 @@
      </property>
      <property name="title" >
       <string>Scale</string>
+     </property>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
      </property>
      <layout class="QHBoxLayout" >
       <property name="margin" >
@@ -166,6 +178,9 @@
      <property name="text" >
       <string>Line width scale</string>
      </property>
+     <property name="buddy" >
+      <cstring>mWidthScaleLineEdit</cstring>
+     </property>
     </widget>
    </item>
    <item>
@@ -183,6 +198,9 @@
      <property name="text" >
       <string>Symbol scale</string>
      </property>
+     <property name="buddy" >
+      <cstring>mSymbolScaleLineEdit</cstring>
+     </property>
     </widget>
    </item>
    <item>
@@ -192,6 +210,9 @@
     <widget class="QLabel" name="textLabel2_2" >
      <property name="text" >
       <string>Font size scale</string>
+     </property>
+     <property name="buddy" >
+      <cstring>mFontScaleLineEdit</cstring>
      </property>
     </widget>
    </item>
@@ -209,6 +230,9 @@
     <widget class="QLabel" name="textLabel1_5" >
      <property name="text" >
       <string>Preview</string>
+     </property>
+     <property name="buddy" >
+      <cstring>mPreviewModeComboBox</cstring>
      </property>
     </widget>
    </item>
@@ -253,6 +277,18 @@
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mCalculateComboBox</tabstop>
+  <tabstop>mWidthLineEdit</tabstop>
+  <tabstop>mHeightLineEdit</tabstop>
+  <tabstop>mScaleLineEdit</tabstop>
+  <tabstop>mSetCurrentExtentButton</tabstop>
+  <tabstop>mWidthScaleLineEdit</tabstop>
+  <tabstop>mSymbolScaleLineEdit</tabstop>
+  <tabstop>mFontScaleLineEdit</tabstop>
+  <tabstop>mFrameCheckBox</tabstop>
+  <tabstop>mPreviewModeComboBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

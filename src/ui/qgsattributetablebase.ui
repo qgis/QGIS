@@ -192,6 +192,9 @@
        <property name="text" >
         <string>Search for:</string>
        </property>
+       <property name="buddy" >
+        <cstring>mSearchText</cstring>
+       </property>
       </widget>
      </item>
      <item>
@@ -201,6 +204,9 @@
       <widget class="QLabel" name="textLabel2" >
        <property name="text" >
         <string>in</string>
+       </property>
+       <property name="buddy" >
+        <cstring>mSearchColumns</cstring>
        </property>
       </widget>
      </item>
@@ -278,11 +284,18 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mRemoveSelectionButton</tabstop>
+  <tabstop>mSelectedToTopButton</tabstop>
+  <tabstop>mInvertSelectionButton</tabstop>
+  <tabstop>mCopySelectedRowsButton</tabstop>
+  <tabstop>mAddAttributeButton</tabstop>
+  <tabstop>mDeleteAttributeButton</tabstop>
   <tabstop>btnStartEditing</tabstop>
   <tabstop>btnStopEditing</tabstop>
   <tabstop>mSearchText</tabstop>
   <tabstop>mSearchColumns</tabstop>
   <tabstop>mSearchButton</tabstop>
+  <tabstop>mSearchShowResults</tabstop>
   <tabstop>btnAdvancedSearch</tabstop>
   <tabstop>btnClose</tabstop>
  </tabstops>

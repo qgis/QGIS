@@ -1214,6 +1214,54 @@
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>cboLabelField</tabstop>
+  <tabstop>leDefaultLabel</tabstop>
+  <tabstop>tabWidget2</tabstop>
+  <tabstop>btnDefaultFont</tabstop>
+  <tabstop>pbnDefaultFontColor</tabstop>
+  <tabstop>sliderFontTransparency</tabstop>
+  <tabstop>spinFontTransparency</tabstop>
+  <tabstop>radioFontSizeUnitsPoints</tabstop>
+  <tabstop>radioFontSizeUnitsMap</tabstop>
+  <tabstop>sliderAngle</tabstop>
+  <tabstop>spinAngle</tabstop>
+  <tabstop>radioAboveLeft</tabstop>
+  <tabstop>radioAbove</tabstop>
+  <tabstop>radioAboveRight</tabstop>
+  <tabstop>radioLeft</tabstop>
+  <tabstop>radioOver</tabstop>
+  <tabstop>radioRight</tabstop>
+  <tabstop>radioBelowLeft</tabstop>
+  <tabstop>radioBelow</tabstop>
+  <tabstop>radioBelowRight</tabstop>
+  <tabstop>chkUseBuffer</tabstop>
+  <tabstop>spinBufferSize</tabstop>
+  <tabstop>pbnDefaultBufferColor_2</tabstop>
+  <tabstop>sliderBufferTransparency</tabstop>
+  <tabstop>spinBufferTransparency</tabstop>
+  <tabstop>radioBufferUnitsPoints</tabstop>
+  <tabstop>radioBufferUnitsMap</tabstop>
+  <tabstop>spinXOffset</tabstop>
+  <tabstop>spinYOffset</tabstop>
+  <tabstop>radioOffsetUnitsPoints</tabstop>
+  <tabstop>radioOffsetUnitsMap</tabstop>
+  <tabstop>cboFontField</tabstop>
+  <tabstop>cboBoldField</tabstop>
+  <tabstop>cboItalicField</tabstop>
+  <tabstop>cboUnderlineField</tabstop>
+  <tabstop>cboFontSizeField</tabstop>
+  <tabstop>cboFontTransparencyField</tabstop>
+  <tabstop>cboAlignmentField</tabstop>
+  <tabstop>cboAngleField</tabstop>
+  <tabstop>cboBufferColorField</tabstop>
+  <tabstop>cboBufferTransparencyField</tabstop>
+  <tabstop>cboBufferSizeField</tabstop>
+  <tabstop>cboXCoordinateField</tabstop>
+  <tabstop>cboYCoordinateField</tabstop>
+  <tabstop>cboXOffsetField</tabstop>
+  <tabstop>cboYOffsetField</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

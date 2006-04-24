@@ -35,6 +35,9 @@
      <property name="title" >
       <string>Symbol Style</string>
      </property>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
      <layout class="QGridLayout" >
       <property name="margin" >
        <number>10</number>
@@ -46,6 +49,9 @@
        <widget class="QLabel" name="txtSymbolScale" >
         <property name="text" >
          <string>Scale</string>
+        </property>
+        <property name="buddy" >
+         <cstring>spbSymbolScale</cstring>
         </property>
        </widget>
       </item>
@@ -78,6 +84,10 @@
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>comboBox8</tabstop>
+  <tabstop>spbSymbolScale</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

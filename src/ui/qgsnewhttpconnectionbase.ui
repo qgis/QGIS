@@ -45,12 +45,18 @@
         <property name="text" >
          <string>Name</string>
         </property>
+        <property name="buddy" >
+         <cstring>txtName</cstring>
+        </property>
        </widget>
       </item>
       <item row="1" column="0" >
        <widget class="QLabel" name="TextLabel1" >
         <property name="text" >
          <string>URL</string>
+        </property>
+        <property name="buddy" >
+         <cstring>txtUrl</cstring>
         </property>
        </widget>
       </item>
@@ -59,12 +65,18 @@
         <property name="text" >
          <string>Proxy Host</string>
         </property>
+        <property name="buddy" >
+         <cstring>txtProxyHost</cstring>
+        </property>
        </widget>
       </item>
       <item row="3" column="0" >
        <widget class="QLabel" name="TextLabel1_3_2" >
         <property name="text" >
          <string>Proxy Port</string>
+        </property>
+        <property name="buddy" >
+         <cstring>txtProxyPort</cstring>
         </property>
        </widget>
       </item>
@@ -73,12 +85,18 @@
         <property name="text" >
          <string>Proxy User</string>
         </property>
+        <property name="buddy" >
+         <cstring>txtProxyUser</cstring>
+        </property>
        </widget>
       </item>
       <item row="5" column="0" >
        <widget class="QLabel" name="TextLabel1_3_4" >
         <property name="text" >
          <string>Proxy Password</string>
+        </property>
+        <property name="buddy" >
+         <cstring>txtProxyPass</cstring>
         </property>
        </widget>
       </item>
@@ -250,6 +268,10 @@
  <tabstops>
   <tabstop>txtName</tabstop>
   <tabstop>txtUrl</tabstop>
+  <tabstop>txtProxyHost</tabstop>
+  <tabstop>txtProxyPort</tabstop>
+  <tabstop>txtProxyUser</tabstop>
+  <tabstop>txtProxyPass</tabstop>
   <tabstop>btnOk</tabstop>
   <tabstop>btnCancel</tabstop>
   <tabstop>btnHelp</tabstop>
