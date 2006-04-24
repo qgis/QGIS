@@ -241,7 +241,9 @@ bool QgsMapToolVertexEdit::snapVertexWithContext(QgsPoint& point)
 void QgsMapToolVertexEdit::canvasReleaseEvent(QMouseEvent * e)
 {
   if (mSnappedAtFeatureId == -1)
-    return;
+    {
+      return;
+    }
   
   QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(mCanvas->currentLayer());
   
