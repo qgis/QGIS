@@ -214,7 +214,7 @@ void QgsGeometry::setGeos(geos::Geometry* geos)
 
 }
 
-QgsPoint QgsGeometry::closestVertex(const QgsPoint& point) const
+QgsPoint QgsGeometry::closestVertex(const QgsPoint& point, QgsGeometryVertexIndex& atVertex, double& sqrDist) const
 {
   if(mDirtyWkb)
     {
@@ -223,9 +223,10 @@ QgsPoint QgsGeometry::closestVertex(const QgsPoint& point) const
 
     if(mGeometry)
     {
+      int vertexnr;
+      int vertexcounter = 0;
 	int wkbType;
 	double actdist = std::numeric_limits<double>::max();
-
 	double x,y;
 	double *tempx,*tempy;
 	memcpy(&wkbType, (mGeometry+1), sizeof(int));
@@ -234,6 +235,8 @@ QgsPoint QgsGeometry::closestVertex(const QgsPoint& point) const
 	    case QGis::WKBPoint:
 		x = *((double *) (mGeometry + 5));
 		y = *((double *) (mGeometry + 5 + sizeof(double)));
+		sqrDist = point.sqrDist(x, y);
+		vertexnr = 0;
 		break;
 
 	    case QGis::WKBLineString:
@@ -251,6 +254,7 @@ QgsPoint QgsGeometry::closestVertex(const QgsPoint& point) const
 			x=*tempx;
 			y=*tempy;
 			actdist=point.sqrDist(*tempx,*tempy);
+			vertexnr = index;
 		    }
 		    ptr+=sizeof(double);
 		}
@@ -275,8 +279,10 @@ QgsPoint QgsGeometry::closestVertex(const QgsPoint& point) const
 			    x=*tempx;
 			    y=*tempy;
 			    actdist=point.sqrDist(*tempx,*tempy);
+			    vertexnr = vertexcounter;
 			}
 			ptr+=sizeof(double);
+			++vertexcounter;
 		    }
 		}
 	    }
@@ -296,6 +302,7 @@ QgsPoint QgsGeometry::closestVertex(const QgsPoint& point) const
 			    x=*tempx;
 			    y=*tempy;
 			    actdist=point.sqrDist(*tempx,*tempy);
+			    vertexnr = index;
 			}
 		    ptr+=(2*sizeof(double));
 		}
@@ -322,9 +329,10 @@ QgsPoint QgsGeometry::closestVertex(const QgsPoint& point) const
 			    x=*tempx;
 			    y=*tempy;
 			    actdist=point.sqrDist(*tempx,*tempy);
+			    vertexnr = vertexcounter;
 			}
 			ptr+=sizeof(double);
-			
+			++vertexcounter;
 		    }
 		}
 	    }
@@ -355,8 +363,10 @@ QgsPoint QgsGeometry::closestVertex(const QgsPoint& point) const
 			       x=*tempx;
 			       y=*tempy;
 			       actdist=point.sqrDist(*tempx,*tempy);
+			       vertexnr = vertexcounter;
 			   }
 			   ptr+=sizeof(double); 
+			   ++vertexcounter;
 			}
 		    }
 		}
@@ -366,6 +376,9 @@ QgsPoint QgsGeometry::closestVertex(const QgsPoint& point) const
 	    default:
 		break;
 	}
+	sqrDist = actdist;
+	atVertex.clear();
+	atVertex.push_back(vertexnr);
 	return QgsPoint(x,y);    
     }
     return QgsPoint(0,0);
