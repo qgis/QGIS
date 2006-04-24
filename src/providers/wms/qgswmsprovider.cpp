@@ -909,12 +909,16 @@ bool QgsWmsProvider::parseCapabilitiesDOM(QByteArray const & xml, QgsWmsCapabili
 
           if      (e.tagName() == "Service")
           {
+#ifdef QGISDEBUG
             std::cout << "  Service." << std::endl;
+#endif
             parseService(e, capabilitiesProperty.service);
           }
           else if (e.tagName() == "Capability")
           {
+#ifdef QGISDEBUG
             std::cout << "  Capability." << std::endl;
+#endif
             parseCapability(e, capabilitiesProperty.capability);
           }
 
