@@ -28,17 +28,11 @@
 
 #include "qgshttptransaction.h"
 
-#include <q3network.h>
-#include <q3http.h>
 #include <q3url.h>
-
-#include <qglobal.h>
-#if QT_VERSION >= 0x040000
 #include <Q3Picture>
-#endif
 
 #ifdef QGISDEBUG
-#include <qfile.h>
+#include <QFile>
 #endif
 
 #ifdef WIN32

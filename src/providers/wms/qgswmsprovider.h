@@ -33,11 +33,9 @@
 
 #include "qgsdatasourceuri.h"
 
-#include <qstring.h>
-#include <qstringlist.h>
-#include <qobject.h>
-#include <q3http.h>
-#include <qdom.h>
+#include <QString>
+#include <QStringList>
+#include <QDomElement>
 
 
 /*

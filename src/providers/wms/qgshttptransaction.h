@@ -23,8 +23,9 @@
 #define QGSHTTPTRANSACTION_H
 
 #include <QHttp>
-#include <QTimer>
-#include <qstring.h>
+#include <QString>
+
+class QTimer;
 
 /**
 

@@ -24,9 +24,8 @@
 
 #include "qgshttptransaction.h"
 
-#include <qapplication.h>
+#include <QApplication>
 #include <QUrl>
-
 #include <QTimer>
 
 static int NETWORK_TIMEOUT_MSEC = (120 * 1000);  // 120 seconds
