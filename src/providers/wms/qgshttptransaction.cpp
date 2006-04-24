@@ -112,10 +112,11 @@ bool QgsHttpTransaction::getSynchronously(QByteArray &respondedContent, int redi
   httpresponse.truncate(0);
 
   // Some WMS servers don't like receiving a http request that
-  // includes the scheme and host (the http://www.address.bit), so
-  // remove that from the url before executing an http GET.
+  // includes the scheme, host and port (the
+  // http://www.address.bit:80), so remove that from the url before
+  // executing an http GET.
   QString pathAndQuery = httpurl.remove(0, 
-                         httpurl.indexOf(qurl.host()) + qurl.host().count());
+                         httpurl.indexOf(qurl.path()));
   httpid = http->get( pathAndQuery );
 
   connect(http, SIGNAL( requestStarted ( int ) ),
