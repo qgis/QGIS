@@ -240,19 +240,6 @@ class QgsGeometry {
                             const geos::CoordinateSequence*  old_sequence,
                                   geos::CoordinateSequence** new_sequence);
 
-    /**Moves a vertex of mGeos to a new position. Internally, a new polygon is created instead of mGeos.
-     Returns true in case of success*/
-    bool movePolygonVertex(int atVertex, double x, double y);
-
-    bool deleteVertexFromPolygon(int atVertex);
-
-    bool insertVertexToPolygon(int beforeVertex, double x, double y);
-
-    /**Creates a new polygon from a coordinate sequence
-     @param coords The coordinate array for the new polygon (the new polygon does not take ownership of the sequence
-    @param pointsInRings A vector containing the number of points going into each ring*/
-    geos::Polygon* createPolygonFromCoordSequence(const geos::CoordinateSequence* coords, const std::vector<int>& pointsInRings) const;
-
 }; // class QgsGeometry
 
 #endif
