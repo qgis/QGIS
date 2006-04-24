@@ -250,7 +250,7 @@
     <widget class="QLabel" name="labelStatus" >
      <property name="sizePolicy" >
       <sizepolicy>
-       <hsizetype>7</hsizetype>
+       <hsizetype>13</hsizetype>
        <vsizetype>5</vsizetype>
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
@@ -258,6 +258,9 @@
      </property>
      <property name="text" >
       <string>Ready</string>
+     </property>
+     <property name="wordWrap" >
+      <bool>false</bool>
      </property>
     </widget>
    </item>
