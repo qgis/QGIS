@@ -553,7 +553,7 @@ bool QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
   QgsSpatialRefSys::RecordMap myRecord;
   if (!mDescription.stripWhiteSpace ().isEmpty())
   {
-     myRecord = getRecord("select * from tbl_srs where where description='" + mDescription.stripWhiteSpace () + "'");
+     myRecord = getRecord("select * from tbl_srs where description='" + mDescription.stripWhiteSpace () + "'");
   }
   if (!myRecord.empty())
   {
@@ -571,7 +571,7 @@ bool QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
     * - if the above does not match perform a whole text search on proj4 string (if not null)
     */
     QgsDebugMsg("QgsSpatialRefSys::createFromProj4 wholetext match on name failed, trying proj4string match");
-    myRecord = getRecord("select * from tbl_srs where where parameters='" + mProj4String.stripWhiteSpace () + "'");
+    myRecord = getRecord("select * from tbl_srs where parameters='" + mProj4String.stripWhiteSpace () + "'");
     if (!myRecord.empty())
     {
       mySrsId=myRecord["srs_id"].toLong();
