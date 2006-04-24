@@ -896,6 +896,11 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
         m_renderer->renderFeature(p, *it, &marker, &markerScaleFactor, 
             sel, widthScale);
         double scale = markerScaleFactor * symbolScale;
+	if (mChangedGeometries.find((*it)->featureId()) != mChangedGeometries.end())
+	  {
+	    (*it)->setGeometry( mChangedGeometries[(*it)->featureId() ] );
+	  }
+	mCachedGeometries[(*it)->featureId()] = (*it)->geometryAndOwnership();
         drawFeature(p,*it,theMapToPixelTransform,&marker,scale, 
             projectionsEnabledFlag);
       }
@@ -1571,7 +1576,7 @@ std::vector<QgsField> const& QgsVectorLayer::fields() const
 
 bool QgsVectorLayer::addFeature(QgsFeature* f, bool alsoUpdateExtent)
 {
-  static int addedIdLowWaterMark = 0;
+  static int addedIdLowWaterMark = -1;
 
   if(dataProvider)
   {
