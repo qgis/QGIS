@@ -942,6 +942,22 @@ QgsVectorLayer::endian_t QgsVectorLayer::endian()
   return (htonl(1) == 1) ? QgsVectorLayer::XDR : QgsVectorLayer::NDR ;
 }
 
+void QgsVectorLayer::cacheGeometries()
+{
+  for(std::map<int, QgsGeometry*>::iterator it = mCachedGeometries.begin(); it != mCachedGeometries.end(); ++it)
+    {
+      delete it->second;
+    }
+  mCachedGeometries.clear();
+  if(dataProvider)
+    {
+      QgsFeature* f = 0;
+      while(f = dataProvider->getNextFeature(false))
+	{
+	  mCachedGeometries.insert(std::make_pair(f->featureId(), f->geometryAndOwnership()));
+	}
+    }
+}
 
 void QgsVectorLayer::table()
 {
