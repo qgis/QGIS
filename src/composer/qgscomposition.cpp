@@ -568,7 +568,20 @@ void QgsComposition::paperSizeChanged ( void )
     setOptions();
   }
 
-  recalculate();
+  try
+  {
+    recalculate();
+  }
+  catch (std::bad_alloc& ba)
+  {
+    // A better solution here would be to set the canvas back to the
+    // original size and carry on, but for the moment this will
+    // prevent a crash due to an uncaught exception.
+    QMessageBox::critical( 0, tr("Out of memory"),
+                           tr("Qgis is unable to resize the paper size due to "
+                              "insufficient memory.\n It is best that you avoid "
+                              "using the map composer until you restart qgis.\n") );
+  }
 
   mView->repaintContents();
   writeSettings();
