@@ -557,6 +557,10 @@ private:                       // Private attributes
   };
 private:                       // Private methods
   endian_t endian();
+
+  /**Caches all the (commited) geometries to mCachedFeatures, e.g. when entering editing mode*/
+  void cacheGeometries();
+
   // pointer for loading the provider library
   QLibrary *myLib;
   //! Update threshold for drawing features as they are read. A value of zero indicates
