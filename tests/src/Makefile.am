@@ -12,3 +12,7 @@ SUBDIRS = core \
           gui \
           raster
 
+all: 
+	@echo Running unit tests
+	./runtests.sh 
+
