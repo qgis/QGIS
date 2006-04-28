@@ -361,6 +361,7 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
 #endif
         if (dataProvider->isValid())
         {
+	  delete myLib;
           return dataProvider;
         }
         else
@@ -369,7 +370,7 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
             QgsDebugMsg( "Invalid data provider" );
 
             myLib->unload();
-
+	    delete myLib;
             return 0;
         }
       }
@@ -378,7 +379,7 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
         QgsLogger::warning( "Unable to instantiate the data provider plugin" );
 
         myLib->unload();
-
+	delete myLib;
         return 0;
       }
     }
@@ -386,7 +387,7 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
   else
   {
     QgsLogger::warning( "Failed to load ../providers/libproviders.so" );
-
+    delete myLib;
     return 0;
   }
   

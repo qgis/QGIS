@@ -172,6 +172,7 @@ QgsVectorLayer::~QgsVectorLayer()
   delete popMenu;
   // delete the provider lib pointer
   delete myLib;
+  delete mLabel;
 
   // Destroy and cached geometries and clear the references to them
   for (std::map<int, QgsGeometry*>::iterator it  = mCachedGeometries.begin(); 
