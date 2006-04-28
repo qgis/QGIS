@@ -27,6 +27,7 @@ extern "C"
 #include <QThread>
 
 #include <vector>
+#include <list>
 #include <utility>
 
 #include <QMap>
@@ -93,7 +94,7 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
  private:
 
     typedef std::pair<QString, QString> geomPair;
-    typedef std::vector<geomPair > geomCol;
+    typedef std::list<geomPair > geomCol;
 
     bool getGeometryColumnInfo(PGconn *pd, 
 			       geomCol& details);

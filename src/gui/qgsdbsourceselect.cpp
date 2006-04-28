@@ -395,6 +395,7 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
       geomCol details;
       if (getGeometryColumnInfo(pd, details))
       {
+        details.sort();
         geomCol::const_iterator iter = details.begin();
         for (; iter != details.end(); ++iter)
         {
