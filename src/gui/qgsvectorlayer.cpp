@@ -2357,22 +2357,7 @@ bool QgsVectorLayer::commitChanges()
 {
   if(dataProvider)
   {
-#ifdef QGISDEBUG
-    qWarning("in QgsVectorLayer::commitChanges");
-#endif
     bool returnvalue=true;
-
-#ifdef QGISDEBUG
-    std::cout << "QgsVectorLayer::commitChanges: Committing new features"
-      << "." << std::endl;
-
-    for(std::vector<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
-    {
-      std::cout << "QgsVectorLayer::commitChanges: Got: " << (*it)->geometry()->wkt().toLocal8Bit().data()
-        << "." << std::endl;
-    }
-
-#endif
 
     // Commit new features
     std::list<QgsFeature*> addedlist;
@@ -2382,8 +2367,6 @@ bool QgsVectorLayer::commitChanges()
     }
 
     if(!dataProvider->addFeatures(addedlist))
-      // TODO: Make the Provider accept a pointer to vector instead of a list - more memory efficient
-      //    if ( !(dataProvider->addFeatures(mAddedFeatures)) )
     {
       returnvalue=false;
     }
@@ -2395,11 +2378,6 @@ bool QgsVectorLayer::commitChanges()
     }
     mAddedFeatures.clear();
 
-#ifdef QGISDEBUG
-    std::cout << "QgsVectorLayer::commitChanges: Committing changed attributes"
-      << "." << std::endl;
-#endif
-
     // Commit changed attributes
     if( mChangedAttributes.size() > 0 ) 
     {
@@ -2410,10 +2388,6 @@ bool QgsVectorLayer::commitChanges()
       mChangedAttributes.clear();
     }
 
-#ifdef QGISDEBUG
-    std::cout << "QgsVectorLayer::commitChanges: Committing changed geometries"
-      << "." << std::endl;
-#endif
     // Commit changed geometries
     if( mChangedGeometries.size() > 0 ) 
     {
@@ -2423,12 +2397,6 @@ bool QgsVectorLayer::commitChanges()
       }
       mChangedGeometries.clear();
     }
-
-
-#ifdef QGISDEBUG
-    std::cout << "QgsVectorLayer::commitChanges: Committing deleted features"
-      << "." << std::endl;
-#endif
 
     // Commit deleted features
     if(mDeleted.size()>0)
@@ -2455,8 +2423,8 @@ bool QgsVectorLayer::commitChanges()
 
 bool QgsVectorLayer::rollBack()
 {
-  // TODO: Roll back changed features
-
+  //Roll back changed features
+  mChangedGeometries.clear();
   // Roll back added features
   // Delete the features themselves before deleting the references to them.
   for(std::vector<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
