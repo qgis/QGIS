@@ -19,7 +19,7 @@
 
 #include "qgspoint.h"
 
-#include <qtextstream.h>
+#include <QTextStream>
 
 
 QgsPoint::QgsPoint(const QgsPoint& p)
