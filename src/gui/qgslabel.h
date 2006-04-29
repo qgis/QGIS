@@ -77,7 +77,7 @@ public:
                        const QgsCoordinateTransform& coordTransform,
                        bool doCoordTransform, QgsMapToPixel *transform,
 		       QgsFeature *feature, bool selected, QgsLabelAttributes *classAttributes=0, double sizeScale = 1.);
-    
+
     /** Reads the renderer configuration from an XML file
      @param rnode the DOM node to read 
     */
@@ -109,9 +109,24 @@ public:
     QString fieldValue ( int attr, QgsFeature *feature );
 
 private:
+    /** Does the actual rendering of a label at the given point
+     * 
+     */
+    void renderLabel(QPainter* painter, QgsPoint point, 
+                     bool doCoordTransform,
+                     const QgsCoordinateTransform& coordTransform,
+                     QgsMapToPixel* transform,
+                     QString text, QFont font, QPen pen,
+                     int dx, int dy,
+                     double xoffset, double yoffset,
+                     double ang);
+
     /** Get label point for simple feature in map units */
-    QgsPoint labelPoint ( QgsFeature *feature );
-    
+    void labelPoint ( std::vector<QgsPoint>&, QgsFeature *feature );
+
+    /** Get label point for the given feature in wkb format. */
+    unsigned char* labelPoint( QgsPoint& point, unsigned char* wkb);
+
     /** Color to draw selected features */
     QColor mSelectionColor;
     

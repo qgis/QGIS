@@ -66,7 +66,9 @@ QgsLabel::~QgsLabel()
 QString QgsLabel::fieldValue ( int attr, QgsFeature *feature )
 {
     if ( mLabelField[attr].isEmpty() )
+      {
         return QString();
+      }
 
     std::vector<QgsFeatureAttribute> fields =  feature->attributeMap();
 
@@ -94,15 +96,14 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
     QFont font;
     QString value;
     QString text;
-    double scale, x1, x2;
 
     /* Calc scale (not nice) */
     QgsPoint point;
     point = transform->transform ( 0, 0 );
-    x1 = point.x();
+    double x1 = point.x();
     point = transform->transform ( 1000, 0 );
-    x2 = point.x();
-    scale = (x2-x1)/1000;
+    double x2 = point.x();
+    double scale = (x2-x1)*0.001;
 
     /* Text */
     value = fieldValue ( Text, feature );
@@ -184,83 +185,21 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
         font.setUnderline ( (bool) value.toInt() );
     }
 
-
-    /* Coordinates */
-    double x, y, xoffset, yoffset, ang;
-
-    point = labelPoint ( feature );
-
+    // 
+    QgsPoint overridePoint;
+    bool useOverridePoint = false;
     value = fieldValue ( XCoordinate, feature );
     if ( !value.isEmpty() )
     {
-        point.setX ( value.toDouble() );
+        overridePoint.setX ( value.toDouble() );
+        useOverridePoint = true;
     }
     value = fieldValue ( YCoordinate, feature );
     if ( !value.isEmpty() )
     {
-        point.setY ( value.toDouble() );
+        overridePoint.setY ( value.toDouble() );
+        useOverridePoint = true;
     }
-
-    // Convert point to projected units
-    if (doCoordTransform)
-    {
-      try
-      {
-	point = (const_cast<QgsCoordinateTransform&>(coordTransform)).transform(point);
-      }
-      catch(QgsCsException &cse)
-      {
-#ifdef QGISDEBUG
-	std::cout << "Caught transform error in QgsLabel::renderLabel(). "
-		  << "Skipping rendering this label" << std::endl;
-#endif	
-	return;
-      }
-    }
-    // and then to canvas units
-    transform->transform(&point);
-    x = point.x();
-    y = point.y();
-
-    value = fieldValue ( XOffset, feature );
-    if ( value.isEmpty() )
-    {
-        xoffset = mLabelAttributes->xOffset();
-    }
-    else
-    {
-        xoffset = value.toDouble();
-    }
-    value = fieldValue ( YOffset, feature );
-    if ( value.isEmpty() )
-    {
-        yoffset = mLabelAttributes->yOffset();
-    }
-    else
-    {
-        yoffset = value.toDouble();
-    }
-
-    // recalc offset to points
-    if (  mLabelAttributes->offsetType() == QgsLabelAttributes::MapUnits )
-    {
-        xoffset *= scale;
-        yoffset *= scale;
-    }
-
-    value = fieldValue ( Angle, feature );
-    if ( value.isEmpty() )
-    {
-        ang = mLabelAttributes->angle();
-    }
-    else
-    {
-        ang = value.toDouble();
-    }
-    double rad = ang * M_PI/180;
-
-    x = x + xoffset * cos(rad) - yoffset * sin(rad);
-    y = y - xoffset * sin(rad) - yoffset * cos(rad);
 
     /* Alignment */
     int alignment;
@@ -322,6 +261,105 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
         dy = height;
     }
 
+    // Offset 
+    double xoffset, yoffset;
+    value = fieldValue ( XOffset, feature );
+    if ( value.isEmpty() )
+    {
+        xoffset = mLabelAttributes->xOffset();
+    }
+    else
+    {
+        xoffset = value.toDouble();
+    }
+    value = fieldValue ( YOffset, feature );
+    if ( value.isEmpty() )
+    {
+        yoffset = mLabelAttributes->yOffset();
+    }
+    else
+    {
+        yoffset = value.toDouble();
+    }
+
+    // recalc offset to points
+    if (  mLabelAttributes->offsetType() == QgsLabelAttributes::MapUnits )
+    {
+        xoffset *= scale;
+        yoffset *= scale;
+    }
+
+    // Angle 
+    double ang;
+    value = fieldValue ( Angle, feature );
+    if ( value.isEmpty() )
+    {
+        ang = mLabelAttributes->angle();
+    }
+    else
+    {
+        ang = value.toDouble();
+    }
+
+
+    // Work out a suitable position to put the label for the
+    // feature. For multi-geometries, put the same label on each
+    // part.
+    if (useOverridePoint)
+    {
+      renderLabel(painter, overridePoint, doCoordTransform, coordTransform, 
+                  transform, text, font, pen, dx, dy,
+                  xoffset, yoffset, ang);
+    }
+    else
+    {
+      std::vector<QgsPoint> points;
+      labelPoint ( points, feature );
+      for (int i = 0; i < points.size(); ++i)
+      {
+        renderLabel(painter, points[i], doCoordTransform, coordTransform, 
+                    transform, text, font, pen, dx, dy,
+                    xoffset, yoffset, ang);
+      }
+    }
+}
+
+void QgsLabel::renderLabel(QPainter* painter, QgsPoint point, 
+                           bool doCoordTransform,
+                           const QgsCoordinateTransform& coordTransform,
+                           QgsMapToPixel* transform,
+                           QString text, QFont font, QPen pen,
+                           int dx, int dy, 
+                           double xoffset, double yoffset, 
+                           double ang)
+{
+    // Convert point to projected units
+    if (doCoordTransform)
+    {
+      try
+      {
+	point = (const_cast<QgsCoordinateTransform&>(coordTransform)).transform(point);
+      }
+      catch(QgsCsException &cse)
+      {
+#ifdef QGISDEBUG
+	std::cout << "Caught transform error in QgsLabel::renderLabel(). "
+		  << "Skipping rendering this label" << std::endl;
+#endif	
+	return;
+      }
+    }
+
+    // and then to canvas units
+    transform->transform(&point);
+    double x = point.x();
+    double y = point.y();
+
+    static const double rad = ang * M_PI/180;
+
+    x = x + xoffset * cos(rad) - yoffset * sin(rad);
+    y = y - xoffset * sin(rad) - yoffset * cos(rad);
+
     painter->save();
     painter->setFont ( font );
     painter->translate ( x, y );
@@ -348,6 +386,7 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
             }
         }
     }
+
     painter->setPen ( pen );
     painter->drawText ( dx, dy, text );
     painter->restore();
@@ -415,32 +454,69 @@ QgsLabelAttributes *QgsLabel::layerAttributes ( void )
     return mLabelAttributes;
 }
 
-QgsPoint QgsLabel::labelPoint ( QgsFeature *feature )
+void QgsLabel::labelPoint ( std::vector<QgsPoint>& points, QgsFeature *feature )
 {
+  unsigned char *geom = feature->getGeometry();
+  int wkbType;
+  memcpy(&wkbType, (geom+1), sizeof(wkbType));
+
+  QgsPoint point;
+
+  switch (wkbType)
+  {
+  case QGis::WKBPoint:
+  case QGis::WKBLineString:
+  case QGis::WKBPolygon:
+    labelPoint(point, geom);
+    points.push_back(point);
+    break;
+  case QGis::WKBMultiPoint:
+  case QGis::WKBMultiLineString:
+  case QGis::WKBMultiPolygon:
+    // Return a position for each individual in the multi-feature
+    int numFeatures = (int)(*(geom + 5));
+    geom += 9; // now points to start of array of WKB's
+    for (int i = 0; i < numFeatures; ++i)
+    {
+      geom = labelPoint(point, geom);
+      points.push_back(point);
+    }
+    break;
+  default:
+    std::cerr << "Unknown geometry type of " << wkbType << '\n';
+  }
+}
+
+unsigned char* QgsLabel::labelPoint ( QgsPoint& point, unsigned char* geom)
+{
+    // Number of bytes that ints and doubles take in the WKB format.
+    static const unsigned int sizeOfInt = 4;
+    static const unsigned int sizeOfDouble = 8;
+
     int wkbType;
     double *x, *y;
     unsigned char *ptr;
     int *nPoints;
-
-    unsigned char *geom = feature->getGeometry();
+    // Upon return from this function, this variable will contain a
+    // pointer to the first byte beyond the current feature.
+    unsigned char *nextFeature = geom;
 
     memcpy(&wkbType, (geom+1), sizeof(wkbType));
-
-    QgsPoint point;
 
     switch (wkbType)
     {
     case QGis::WKBPoint:
-        x = (double *) (geom + 5);
-        y = (double *) (geom + 5 + sizeof(double));
-        point.setX(*x);
-        point.setY(*y);
-        break;
+      x = (double *) (geom + 5);
+      y = (double *) (geom + 5 + sizeof(double));
+      point.set(*x, *y);
+      nextFeature += 1 + sizeOfInt + sizeOfDouble*2;
+      break;
 
     case QGis::WKBLineString: // Line center
         double dx, dy, tl, l;
         ptr = geom + 5;
         nPoints = (int *)ptr;
+        nextFeature += 1 + sizeOfInt*2 + (*nPoints)*sizeOfDouble*2;
         ptr = geom + 1 + 2 * sizeof(int);
 
         tl = 0;
@@ -479,7 +555,6 @@ QgsPoint QgsLabel::labelPoint ( QgsFeature *feature )
         ptr = geom + 1 + 2 * sizeof(int); // set pointer to the first ring
         nPoints = (int *) ptr;
         ptr += 4;
-
         sx = sy = 0;
         for (int i = 0; i < *nPoints-1; i++)
         {
@@ -488,77 +563,25 @@ QgsPoint QgsLabel::labelPoint ( QgsFeature *feature )
         }
         point.setX ( sx/(*nPoints-1) );
         point.setY ( sy/(*nPoints-1) );
+        // Work out a pointer to the next feature after this one.
+        int numRings = (int)(*(geom+1+sizeOfInt));
+        unsigned char* nextRing = nextFeature + 1 + 2*sizeOfInt; 
+        for (int i = 0; i < numRings; ++i)
+        {
+          int numPoints = (int)(*nextRing);
+          // get the start of the next ring
+          nextRing += sizeOfInt + numPoints*sizeOfDouble*2;
+        }
+        nextFeature = nextRing;
 
         break;
-    case QGis::WKBMultiPolygon:
-        break; ///// <--------------remove this when code below needs testing..........
-        {
-            double sx, sy;
-            unsigned char *ptr;
-            int idx, kdx;
-            int *numPolygons, *numRings;
 
-            // get the number of polygons
-            ptr = geom + 5;
-            numPolygons = (int *) ptr;
-#ifdef QGISDEBUG
-
-            std::cout << "Finding label point for mutipolygon with "
-            << *numPolygons << " parts " << std::endl;
-#endif
-            //for (kdx = 0; kdx < *numPolygons; kdx++)
-            for (kdx = 0; kdx < 1; kdx++) //just label the first sub polygon
-            {
-                //skip the endian and feature type info and
-                // get number of rings in the polygon
-                ptr+=14;
-                numRings = (int *) ptr;
-                ptr += 4;
-#ifdef QGISDEBUG
-
-                std::cout << "Multipolygon part " << kdx << " ring iteration  " << std::endl;
-#endif
-
-                for (idx = 0; idx < *numRings; idx++)
-                {
-#ifdef QGISDEBUG
-                    std::cout << "Multipolygon part " << kdx << " ring " << idx
-                    << std::endl;
-#endif
-                    // get number of points in the ring
-                    nPoints = (int *) ptr;
-                    ptr += 4;
-                    sx = sy = 0;
-
-                    //loop through vertices skipping last which == first
-                    for (int i = 0; i < *nPoints-1; i++)
-                    {
-                        x = (double *)ptr;
-                        ptr += sizeof(double);
-                        y = (double *)ptr;
-                        ptr += sizeof(double);
-                        sx += *x;
-                        sy += *y;
-#ifdef QGISDEBUG
-
-                        std::cout << "\tVertex " << i << " x: " << *x << " y: " << *y  << std::endl;
-#endif
-
-                    }
-                }
-#ifdef QGISDEBUG
-                std::cout << "Setting multipart polygon label point to" << sx/(*nPoints-1) << ", "<< sy/(*nPoints-1) << std::endl;
-#endif
-
-                point.setX ( sx/(*nPoints-1) );
-                point.setY ( sy/(*nPoints-1) );
-            }
-            break;
-
-
-        }
+    default:
+      // To get here is a bug because our caller should be filtering
+      // on wkb type.
+      break;
     }
-    return QgsPoint ( point );
+    return nextFeature;
 }
 
 void QgsLabel::readXML( const QDomNode& node )
