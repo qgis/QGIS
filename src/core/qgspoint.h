@@ -21,9 +21,7 @@
 
 #include <iostream>
 
-#ifndef QSTRING_H
-#include <qstring.h>
-#endif
+#include <QString>
 
 class QgsPoint 
 {
