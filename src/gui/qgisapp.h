@@ -300,6 +300,10 @@ public slots:
   void refreshMapCanvas();
   //! returns pointer to map legend
   QgsLegend *legend() { return mMapLegend; }
+  //! enables the editing mode of the current layer
+  void startEditing();
+  //! disables the editing mode of the current layer
+  void stopEditing();
 
 public slots:
   void showProgress(int theProgress, int theTotalSteps);
@@ -449,6 +453,8 @@ private:
   QAction *mActionQgisSourceForgePage;
   QAction *mActionHelpAbout;
   QAction *mArawAction;
+  QAction *mActionStartEditing;
+  QAction *mActionStopEditing;
   QAction *mActionCapturePoint;
   QAction *mActionCaptureLine;
   QAction *mActionCapturePolygon;

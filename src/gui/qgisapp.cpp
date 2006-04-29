@@ -597,6 +597,11 @@ void QgisApp::createActions()
   //
   // Digitising Toolbar Items
   //
+
+  mActionStartEditing = new QAction(QIcon(myIconPath+"/mActionStartEditing.png"), tr("Start Editing"), this);
+  connect(mActionStartEditing, SIGNAL(triggered()), this, SLOT(startEditing()));
+  mActionStopEditing = new QAction(QIcon(myIconPath+"/mActionStopEditing.png"), tr("Stop Editing"), this);
+  connect(mActionStopEditing, SIGNAL(triggered()), this, SLOT(stopEditing()));
   mActionCapturePoint= new QAction(QIcon(myIconPath+"/mActionCapturePoint.png"), tr("Capture Point"), this);
   mActionCapturePoint->setShortcut(tr("."));
   mActionCapturePoint->setStatusTip(tr("Capture Points"));
@@ -787,6 +792,8 @@ void QgisApp::createToolBars()
   mDigitizeToolBar = addToolBar(tr("Digitizing"));
   mDigitizeToolBar->setIconSize(QSize(24,24));
   mDigitizeToolBar->setObjectName("Digitizing");
+  mDigitizeToolBar->addAction(mActionStartEditing);
+  mDigitizeToolBar->addAction(mActionStopEditing);
   mDigitizeToolBar->addAction(mActionCapturePoint);
   mDigitizeToolBar->addAction(mActionCaptureLine);
   mDigitizeToolBar->addAction(mActionCapturePolygon);
@@ -3392,6 +3399,38 @@ void QgisApp::refreshMapCanvas()
   mMapCanvas->refresh();
 }
 
+void QgisApp::startEditing()
+{
+  QgsMapLayer* theLayer = mMapLegend->currentLayer();
+  if(!theLayer)
+    {
+      return;
+    }
+  //only vectorlayers can be edited
+  QgsVectorLayer* theVectorLayer = dynamic_cast<QgsVectorLayer*>(theLayer);
+  if(!theVectorLayer)
+    {
+      return;
+    }
+  theVectorLayer->startEditing();
+}
+  
+void QgisApp::stopEditing()
+{
+  QgsMapLayer* theLayer = mMapLegend->currentLayer();
+  if(!theLayer)
+    {
+      return;
+    }
+  //only vectorlayers can be edited
+  QgsVectorLayer* theVectorLayer = dynamic_cast<QgsVectorLayer*>(theLayer);
+  if(!theVectorLayer)
+    {
+      return;
+    }
+  theVectorLayer->stopEditing();
+}
+
 void QgisApp::showMouseCoordinate(QgsPoint & p)
 {
   mCoordsLabel->setText(p.stringRep(mMousePrecisionDecimalPlaces));
@@ -4559,6 +4598,18 @@ void QgisApp::activateDeactivateLayerRelatedActions(const QgsMapLayer* layer)
 
       if (dprovider)
 	{
+	  //start editing/stop editing
+	  if(dprovider->capabilities() & QgsVectorDataProvider::AddFeatures)
+	    {
+	      mActionStartEditing->setEnabled(true);
+	      mActionStopEditing->setEnabled(true);
+	    }
+	  else
+	    {
+	      mActionStartEditing->setEnabled(false);
+	      mActionStopEditing->setEnabled(false);
+	    }
+
 	  //does provider allow deleting of features?
 	  if(dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures)
 	    {
@@ -4635,6 +4686,8 @@ void QgisApp::activateDeactivateLayerRelatedActions(const QgsMapLayer* layer)
     {
       mActionSelect->setEnabled(false);
       mActionOpenTable->setEnabled(false);
+      mActionStartEditing->setEnabled(false);
+      mActionStopEditing->setEnabled(false);
       mActionCapturePoint->setEnabled(false);
       mActionCaptureLine->setEnabled(false);
       mActionCapturePolygon->setEnabled(false);
