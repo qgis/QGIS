@@ -467,19 +467,23 @@ void QgsLabel::labelPoint ( std::vector<QgsPoint>& points, QgsFeature *feature )
   case QGis::WKBPoint:
   case QGis::WKBLineString:
   case QGis::WKBPolygon:
-    labelPoint(point, geom);
-    points.push_back(point);
+    {
+      labelPoint(point, geom);
+      points.push_back(point);
+    }
     break;
   case QGis::WKBMultiPoint:
   case QGis::WKBMultiLineString:
   case QGis::WKBMultiPolygon:
     // Return a position for each individual in the multi-feature
-    int numFeatures = (int)(*(geom + 5));
-    geom += 9; // now points to start of array of WKB's
-    for (int i = 0; i < numFeatures; ++i)
     {
-      geom = labelPoint(point, geom);
-      points.push_back(point);
+      int numFeatures = (int)(*(geom + 5));
+      geom += 9; // now points to start of array of WKB's
+      for (int i = 0; i < numFeatures; ++i)
+      {
+        geom = labelPoint(point, geom);
+        points.push_back(point);
+      }
     }
     break;
   default:
@@ -506,13 +510,16 @@ unsigned char* QgsLabel::labelPoint ( QgsPoint& point, unsigned char* geom)
     switch (wkbType)
     {
     case QGis::WKBPoint:
-      x = (double *) (geom + 5);
-      y = (double *) (geom + 5 + sizeof(double));
-      point.set(*x, *y);
-      nextFeature += 1 + sizeOfInt + sizeOfDouble*2;
+      {
+        x = (double *) (geom + 5);
+        y = (double *) (geom + 5 + sizeof(double));
+        point.set(*x, *y);
+        nextFeature += 1 + sizeOfInt + sizeOfDouble*2;
+      }
       break;
 
     case QGis::WKBLineString: // Line center
+      {
         double dx, dy, tl, l;
         ptr = geom + 5;
         nPoints = (int *)ptr;
@@ -548,9 +555,11 @@ unsigned char* QgsLabel::labelPoint ( QgsPoint& point, unsigned char* geom)
             }
             l += dl;
         }
-        break;
+      }
+      break;
 
     case QGis::WKBPolygon:
+      {
         double sx, sy;
         ptr = geom + 1 + 2 * sizeof(int); // set pointer to the first ring
         nPoints = (int *) ptr;
@@ -573,8 +582,8 @@ unsigned char* QgsLabel::labelPoint ( QgsPoint& point, unsigned char* geom)
           nextRing += sizeOfInt + numPoints*sizeOfDouble*2;
         }
         nextFeature = nextRing;
-
-        break;
+      }
+      break;
 
     default:
       // To get here is a bug because our caller should be filtering
