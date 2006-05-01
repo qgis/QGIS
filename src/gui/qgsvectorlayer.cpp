@@ -1679,7 +1679,7 @@ bool QgsVectorLayer::moveVertexAt(double x, double y, int atFeatureId,
     if(mChangedGeometries.find(atFeatureId) == mChangedGeometries.end())
     {
       // first time this geometry has changed since last commit
-      if(!mCachedGeometries[atFeatureId])
+      if(mCachedGeometries.find(atFeatureId) == mCachedGeometries.end() || mCachedGeometries[atFeatureId] == 0)
 	{
 	  return false;
 	}
@@ -2802,7 +2802,7 @@ bool QgsVectorLayer::snapVertexWithContext(QgsPoint& point, QgsGeometryVertexInd
   }
 
   QgsFeature* feature;
-  QgsPoint minDistSegPoint;  // the closest point on the segment
+  QgsPoint minDistSegPoint;  // the closest point
   double testSqrDist;        // the squared distance between 'point' and 'snappedFeature'
 
   double minSqrDist  = tolerance*tolerance; //current minimum distance
@@ -2830,6 +2830,8 @@ bool QgsVectorLayer::snapVertexWithContext(QgsPoint& point, QgsGeometryVertexInd
       snappedFeatureId  = feature->featureId();
       snappedGeometry   = *(feature->geometry());
       vertexFound = true;
+      delete feature;
+      return true;
     }
     delete feature;
   }
@@ -2855,14 +2857,27 @@ bool QgsVectorLayer::snapVertexWithContext(QgsPoint& point, QgsGeometryVertexInd
       snappedFeatureId  =   (*iter)->featureId();
       snappedGeometry   = *((*iter)->geometry());
       vertexFound = true;
+      return true;
     }
   }
 
-  if(!vertexFound)
+  //and also go through the changed geometries, because the spatial filter of the provider did not consider feature changes
+  for(std::map<int, QgsGeometry>::iterator it = mChangedGeometries.begin(); it != mChangedGeometries.end(); ++it)
     {
-      return false;
+      minDistSegPoint = it->second.closestVertex(origPoint, atVertexTemp, testSqrDist);
+      if(testSqrDist < minSqrDist)
+	{
+	  point = minDistSegPoint;
+	  minSqrDist = testSqrDist;
+	  atVertex      = atVertexTemp;
+	  snappedFeatureId  = it->first;
+	  snappedGeometry   = it->second;
+	  vertexFound = true;
+	  return true;
+	}
     }
-  return true;
+
+  return false;
 }
 
 
@@ -2909,6 +2924,8 @@ QgsGeometry& snappedGeometry, double tolerance)
       snappedFeatureId  = feature->featureId();
       snappedGeometry   = *(feature->geometry());
       segmentFound = true;
+      delete feature;
+      return true;
     }
     delete feature;
   }
@@ -2935,14 +2952,26 @@ QgsGeometry& snappedGeometry, double tolerance)
       snappedFeatureId  =   (*iter)->featureId();
       snappedGeometry   = *((*iter)->geometry());
       segmentFound = true;
+      return true;
     }
   }
 
-  if(!segmentFound)
-  {
-    return false;
-  }
-  return true;
+  //and also go through the changed geometries, because the spatial filter of the provider did not consider feature changes
+  for(std::map<int, QgsGeometry>::iterator it = mChangedGeometries.begin(); it != mChangedGeometries.end(); ++it)
+    {
+      minDistSegPoint = it->second.closestSegmentWithContext(origPoint, beforeVertexTemp, testSqrDist);
+      if(testSqrDist < minSqrDist)
+	{
+	  point = minDistSegPoint;
+	  minSqrDist = testSqrDist;
+	  beforeVertex      = beforeVertexTemp;
+	  snappedFeatureId  = it->first;
+	  snappedGeometry   = it->second;
+	  segmentFound = true;
+	  return true;
+	}
+    }
+  return false;
 }
 
 

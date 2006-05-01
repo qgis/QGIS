@@ -61,7 +61,12 @@ class QgsMapToolVertexEdit : public QgsMapTool
     //! current vertex edit tool
     enum Tool mTool;
     
+    /**Searches the closest point within the project tolerance and setx  mSnappedAtFeatureId and mSnappedAtVertex*/
     bool snapVertexWithContext(QgsPoint& point);
+
+    /**Snaps a point (without setting mSnappedAtFeatureId and mSnappedAtVertex). Does not snap to the specified vertex,
+     because during dragging, a vertex should not be snapped to itself*/
+    bool snapVertex(QgsPoint& point, int exclFeatureId, int exclVertexNr);
     
     bool snapSegmentWithContext(QgsPoint& point);
     
