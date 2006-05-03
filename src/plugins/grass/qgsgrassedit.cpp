@@ -185,6 +185,8 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
   mIface = iface;
   mNewMap = true;
 
+  mProjectionEnabled = (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0);
+
   mCanvas = mIface->getMapCanvas();
 
   mProvider = provider;
@@ -1658,6 +1660,7 @@ QgsPoint QgsGrassEdit::transformLayerToCanvas ( QgsPoint point)
 
 QgsPoint QgsGrassEdit::transformLayerToMap ( QgsPoint point)
 {
+    std::cout << "mProjectionEnabled = " << mProjectionEnabled << std::endl;
     if ( mProjectionEnabled && mLayer->coordinateTransform() )
     {
         try
