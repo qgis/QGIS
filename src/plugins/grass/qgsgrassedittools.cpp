@@ -463,7 +463,20 @@ void QgsGrassEditDeleteVertex::mouseClick(QgsPoint & point, Qt::ButtonState butt
         int type = e->mProvider->readLine ( e->mPoints, e->mCats, e->mSelectedLine );
         Vect_line_delete_point ( e->mPoints, e->mSelectedPart );
 
-        e->mProvider->rewriteLine ( e->mSelectedLine, type, e->mPoints, e->mCats );
+        if ( e->mPoints->n_points < 2 ) // delete line
+        {
+	    e->mProvider->deleteLine ( e->mSelectedLine );
+
+	    // Check orphan records
+	    for ( int i = 0 ; i < e->mCats->n_cats; i++ ) {
+	      e->checkOrphan ( e->mCats->field[i], e->mCats->cat[i] );
+	    }
+        }
+        else 
+        {
+	    e->mProvider->rewriteLine ( e->mSelectedLine, type, e->mPoints, e->mCats );
+        }
+
         e->updateSymb();
         e->displayUpdated();
 
