@@ -37,6 +37,7 @@ class QCloseEvent;
 #include "qgsmaptopixel.h"
 class QgsRubberBand;
 class QgsVertexMarker;
+class QgsVectorLayer;
 class QgsGrassEditLayer;
 class QgsGrassAttributes;
 
@@ -151,6 +152,9 @@ public:
     //! Check orphan database records
     void checkOrphan ( int field, int cat );
 
+    //! pointer to layer
+    QgsVectorLayer *layer() { return mLayer; }
+
 public slots:
     // TODO: once available in QGIS, use only one reciver for all signals
     
@@ -219,9 +223,18 @@ signals:
 private:
     //! Editing is already running
     static bool mRunning;
+
+    //! Pointer to edited layer
+    QgsVectorLayer *mLayer;
     
     //! Point / node size (later make editable array of Sizes)
     int mSize;
+
+    //! Transform from layer coordinates to canvas including reprojection
+    QgsPoint transformLayerToCanvas ( QgsPoint point);
+
+    //! Transform from layer coordinates to current projection
+    QgsPoint transformLayerToMap ( QgsPoint point);
 
     //! Display all lines and nodes
     void displayMap (); 
@@ -415,6 +428,9 @@ private:
     QAction *mDeleteLineAction;
     QAction *mEditAttributesAction;
     QAction *mCloseEditAction;
+
+    // Is projection enabled?
+    bool mProjectionEnabled;
 
     // Canvas items
     QgsRubberBand *mRubberBandLine;
