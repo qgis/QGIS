@@ -642,6 +642,7 @@ bool QgsGeometry::deleteVertexAt(QgsGeometryVertexIndex atVertex)
 	int pointindex = 0;
 	for(int linenr = 0; linenr < *nLines; ++linenr)
 	  {
+	    memcpy(newBufferPtr, ptr, sizeof(int) + 1);
 	    ptr += (sizeof(int) + 1);
 	    newBufferPtr += (sizeof(int) + 1);
 	    nPoints = (int*)ptr;
@@ -885,6 +886,7 @@ bool QgsGeometry::insertVertexBefore(double x, double y, QgsGeometryVertexIndex 
 
 	for(int linenr = 0; linenr < *nLines; ++linenr)
 	  {
+	    memcpy(newBufferPtr, ptr, sizeof(int) + 1);
 	    ptr += (sizeof(int) + 1);
 	    newBufferPtr += (sizeof(int) + 1);
 	    nPoints = (int*)ptr;

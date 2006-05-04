@@ -1938,6 +1938,10 @@ bool QgsPostgresProvider::changeGeometryValues(std::map<int, QgsGeometry> & geom
       sql+=" WHERE " +primaryKey+"="+QString::number(iter->first);
 
 #ifdef QGISDEBUG
+      qWarning(sql);
+#endif
+
+#ifdef QGISDEBUG
       std::cerr << "QgsPostgresProvider::changeGeometryValues: Updating with '"
                 << sql.toLocal8Bit().data()
                 << "'."
