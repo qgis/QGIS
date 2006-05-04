@@ -47,13 +47,19 @@ void QgsMapToolVertexEdit::canvasMoveEvent(QMouseEvent * e)
 {
   if (e->buttons() == Qt::LeftButton && (mTool == AddVertex || mTool == MoveVertex))
   {
-  
-#ifdef QGISDEBUG
-        qWarning("Moving rubber band for moveVertex");
-#endif
-
       int index = (mStartPointValid ? 1 : 0);
-      mRubberBand->movePoint(index, toMapCoords(e->pos()));
+      //snap to nearest vertex of vectorlayer
+      QgsPoint rbpoint = toMapCoords(e->pos());
+      if(mTool == AddVertex)
+	{
+	  snapVertex(rbpoint, mSnappedAtFeatureId, mSnappedBeforeVertex.back());
+	  mRubberBand->movePoint(index, rbpoint);
+	}
+      else if(mTool == MoveVertex)
+	{
+	  snapVertex(rbpoint, mSnappedAtFeatureId, mSnappedAtVertex.back());
+	  mRubberBand->movePoint(index, rbpoint);
+	}
   }
 
 }
@@ -304,6 +310,7 @@ void QgsMapToolVertexEdit::canvasReleaseEvent(QMouseEvent * e)
 
     //snap to nearest vertex of vectorlayer
     snapVertex(point, mSnappedAtFeatureId, mSnappedBeforeVertex.back());
+
 #ifdef QGISDEBUG
     std::cout << "QgsMapToolVertexEdit::canvasReleaseEvent: AddVertex." << std::endl;
 #endif
@@ -360,3 +367,28 @@ void QgsMapToolVertexEdit::deactivate()
   mRubberBand = 0;
 }
 
+QgsPoint QgsMapToolVertexEdit::maybeInversePoint(QgsPoint point, const char whenmsg[])
+{
+  QgsVectorLayer *vlayer = dynamic_cast <QgsVectorLayer*>(mCanvas->currentLayer());
+  QgsPoint transformedPoint;
+
+  if( mCanvas->projectionsEnabled() )
+  {
+    // Do reverse transformation before saving. If possible!
+    try
+    {
+      transformedPoint = vlayer->coordinateTransform()->transform(point, QgsCoordinateTransform::INVERSE);
+    }
+    catch(QgsCsException &cse)
+    {
+      //#ifdef QGISDEBUG
+      std::cout << "Caught transform error when " << whenmsg <<"." 
+          << "Setting untransformed values." << std::endl;
+      //#endif  
+      // Transformation failed,. Bail out with original rectangle.
+      return point;
+    }
+    return transformedPoint;
+  }
+  return point;
+}
