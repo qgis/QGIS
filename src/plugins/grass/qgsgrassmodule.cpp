@@ -112,7 +112,11 @@ QString QgsGrassModule::findExec ( QString file )
         QString path = getenv("PATH");
         std::cerr << "path = " << path.ascii() << std::endl;
 
+#ifdef WIN32
         mExecPath = path.split ( ";" );
+#else
+        mExecPath = path.split ( ":" );
+#endif
         mExecPath.prepend ( QgsApplication::applicationDirPath() );
         mExecPathInited = true;
     }
