@@ -57,6 +57,11 @@ class QgsMapToolVertexEdit : public QgsMapTool
     
     //! returns tolerance in map coordinates
     double tolerance();
+
+    /** Helper function to inverse project a point if projections
+        are enabled. Failsafe, returns the sent point if anything fails.
+        @whenmsg is a part fo the error message. */
+    QgsPoint maybeInversePoint(QgsPoint point, const char whenmsg[]);
     
     //! current vertex edit tool
     enum Tool mTool;
