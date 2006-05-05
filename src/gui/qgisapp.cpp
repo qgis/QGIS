@@ -78,6 +78,7 @@
 #include "qgslegendlayerfile.h"
 #include "qgslegendlayerfile.h"
 #include "qgslegendlayer.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapoverviewcanvas.h"
 #include "qgsmaprender.h"
@@ -1613,6 +1614,7 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
   mMapCanvas->freeze();         // XXX why do we do this?
 
   // create the layer
+  QgsDebugMsg("completeBaseName is: " + vectorFile.completeBaseName());
 
   QgsVectorLayer *layer = new QgsVectorLayer(vectorFile.filePath(),
       vectorFile.completeBaseName(),
@@ -1732,6 +1734,7 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& en
     QFileInfo fi(*it);
     QString base = fi.completeBaseName();
 
+    QgsDebugMsg("completeBaseName: "+base);
 
     // create the layer
 
