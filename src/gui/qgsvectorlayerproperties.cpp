@@ -219,6 +219,9 @@ void QgsVectorLayerProperties::reset( void )
   //update the transparency percentage label
   sliderTransparency_valueChanged(255 - layer->getTransparency());
 
+  // Get the label tab to update itself.
+  labelDialog->init();
+
 } // reset()
 
 
