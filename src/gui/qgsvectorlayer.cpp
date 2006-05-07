@@ -1193,6 +1193,7 @@ void QgsVectorLayer::showLayerProperties()
   }
   else
   {
+    m_propertiesDialog->reset();
     m_propertiesDialog->show();
     m_propertiesDialog->raise();
   }
