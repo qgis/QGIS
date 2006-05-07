@@ -29,6 +29,7 @@
 #include <QAction>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QRegExp>
 
 #include "qgisapp.h"
 #include "qgslogger.h"
@@ -122,6 +123,16 @@ QString const & QgsMapLayer::name() const
 QString const & QgsMapLayer::source() const
 {
     return dataSource;
+}
+
+QString QgsMapLayer::publicSource() const
+{
+  // Redo this every time we're asked for it, as we don't know if
+  // dataSource has changed.
+  static QRegExp regexp(" password=.* ");
+  regexp.setMinimal(true);
+  QString safeName(dataSource);
+  return safeName.replace(regexp, " ");
 }
 
 QString const & QgsMapLayer::sourceName() const

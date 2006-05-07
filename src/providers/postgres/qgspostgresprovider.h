@@ -150,24 +150,6 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     void setURI(QgsDataSourceURI &uri);
 
     /**
-     * Set the data source specification. This must be a valid database
-     * connection string:
-     * host=localhost user=gsherman dbname=test password=xxx table=test.alaska (the_geom)
-     * @uri data source specification
-     */
-    // TODO Deprecate this in favor of using the QgsDataSourceURI structure
-    void setDataSourceUri(QString uri);
-
-    /**
-     * Get the data source specification.
-     * @return data source specification as a string containing the host, user,
-     * dbname, password, and table
-     * @see setDataSourceUri
-     */
-    // TODO Deprecate this in favor of returning the QgsDataSourceURI structure
-    QString getDataSourceUri();
-
-    /**
      * Identify features within the search radius specified by rect
      * @param rect Bounding rectangle of search radius
      * @return std::vector containing QgsFeature objects that intersect rect

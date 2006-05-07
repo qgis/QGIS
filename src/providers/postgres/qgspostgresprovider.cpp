@@ -2151,6 +2151,12 @@ int QgsPostgresProvider::capabilities() const
 void QgsPostgresProvider::setSubsetString(QString theSQL)
 {
   sqlWhereClause=theSQL;
+  // Update datasource uri too
+  mUri.sql=theSQL;
+  // Update yet another copy of the uri. Why are there 3 copies of the
+  // uri? Perhaps this needs some rationalisation.....
+  setDataSourceUri(mUri.text());
+
   // need to recalculate the number of features...
   getFeatureCount();
   calculateExtents();

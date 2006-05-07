@@ -125,12 +125,7 @@ void QgsVectorLayerProperties::setDisplayField(QString name)
 void QgsVectorLayerProperties::reset( void )
 {
   // populate the general information
-  QString source = layer->source();
-  source = source.left(source.find("password"));
-  lblSource->setText(source);
   txtDisplayName->setText(layer->name());
-  // set whats this stuff
-  lblSource->setWhatsThis(tr("The source of the data (path name or database connection information)"));
   pbnQueryBuilder->setWhatsThis(tr("This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer"));
   txtSubsetSQL->setWhatsThis(tr("The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button"));
 
@@ -258,6 +253,8 @@ void QgsVectorLayerProperties::on_pbnApply_clicked()
     grpSubset->setEnabled(true);
     // set the subset sql for the layer
     layer->setSubsetString(txtSubsetSQL->text());   
+    // update the metadata with the updated sql subset
+    teMetadata->setText(getMetadata());
     // update the extents of the layer (fetched from the provider)
     layer->updateExtents(); 
   }
@@ -374,6 +371,12 @@ QString QgsVectorLayerProperties::getMetadata()
   myMetadataQString += "<tr><td bgcolor=\"white\">";
   myMetadataQString += tr("Storage type of this layer : ") + 
                        layer->storageType();
+  myMetadataQString += "</td></tr>";
+
+  // data source
+  myMetadataQString += "<tr><td bgcolor=\"white\">";
+  myMetadataQString += tr("Source for this layer : ") +
+                       layer->publicSource();
   myMetadataQString += "</td></tr>";
 
   //geom type

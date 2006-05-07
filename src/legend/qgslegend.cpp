@@ -486,7 +486,7 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
     QgsLegendLayerFileGroup * llfgroup = new QgsLegendLayerFileGroup(llayer,QString("Files"));
     QgsLegendLayerFile * llfile = new QgsLegendLayerFile(llfgroup, QgsLegendLayerFile::nameFromLayer(layer), layer);
     llayer->setLayerTypeIcon();
-    llayer->setToolTip(0, layer->source());
+    llayer->setToolTip(0, layer->publicSource());
     
     //set the correct check states
     blockSignals(true);
