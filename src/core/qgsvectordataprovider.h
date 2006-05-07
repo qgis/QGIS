@@ -23,7 +23,7 @@ class QgsGeometry;
 #include <map>
 #include <vector>
 // XXX no signals or slots so not needed #include <qobject.h>
-#include <qtextcodec.h>
+#include <QTextCodec>
 
 //QGIS Includes
 #include <qgsdataprovider.h>

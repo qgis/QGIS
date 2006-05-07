@@ -8,7 +8,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>398</width>
+    <width>408</width>
     <height>600</height>
    </rect>
   </property>
@@ -39,7 +39,7 @@
      <property name="tabShape" >
       <enum>QTabWidget::Rounded</enum>
      </property>
-     <widget class="QWidget" name="tab" >
+     <widget class="QWidget" name="tab1" >
       <attribute name="title" >
        <string>Symbology</string>
       </attribute>
@@ -140,7 +140,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab" >
+     <widget class="QWidget" name="tab2" >
       <attribute name="title" >
        <string>General</string>
       </attribute>
@@ -277,25 +277,6 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="1" colspan="3" >
-        <widget class="QLabel" name="lblSource" >
-         <property name="maximumSize" >
-          <size>
-           <width>32767</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="frameShape" >
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow" >
-          <enum>QFrame::Sunken</enum>
-         </property>
-         <property name="text" >
-          <string>TextLabel2</string>
-         </property>
-        </widget>
-       </item>
        <item row="5" column="0" colspan="4" >
         <widget class="QGroupBox" name="grpSubset" >
          <property name="title" >
@@ -339,22 +320,6 @@
            </spacer>
           </item>
          </layout>
-        </widget>
-       </item>
-       <item row="0" column="0" >
-        <widget class="QLabel" name="textLabel3_2" >
-         <property name="maximumSize" >
-          <size>
-           <width>32767</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="text" >
-          <string>Layer source</string>
-         </property>
-         <property name="buddy" >
-          <cstring></cstring>
-         </property>
         </widget>
        </item>
        <item row="3" column="0" colspan="4" >
@@ -410,7 +375,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab" >
+     <widget class="QWidget" name="tab3" >
       <attribute name="title" >
        <string>Metadata</string>
       </attribute>
@@ -426,7 +391,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab" >
+     <widget class="QWidget" name="tab4" >
       <attribute name="title" >
        <string>Labels</string>
       </attribute>
@@ -558,6 +523,13 @@
  <pixmapfunction></pixmapfunction>
  <customwidgets>
   <customwidget>
+   <class>Q3TextEdit</class>
+   <extends></extends>
+   <header>q3textedit.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
    <class>Q3WidgetStack</class>
    <extends></extends>
    <header>q3widgetstack.h</header>
@@ -569,13 +541,6 @@
    <extends></extends>
    <header>Qt3Support/Q3Frame</header>
    <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3TextEdit</class>
-   <extends></extends>
-   <header>q3textedit.h</header>
-   <container>0</container>
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>

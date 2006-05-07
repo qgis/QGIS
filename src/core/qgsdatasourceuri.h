@@ -47,6 +47,18 @@ class QgsDataSourceURI
   QString username;
   //! password
   QString password;
+  //! All in a single string
+  QString text()
+    {
+      return QString("host=" + host + 
+                     " dbname=" + database + 
+                     " port=" + port + 
+                     " user=" + username + 
+                     " password=" + password + 
+                     " table=" + schema + '.' + table + 
+                     " (" + geometryColumn + ")" +
+                     " sql=" + sql);
+    }
   };
 #endif //QGSDATASOURCEURI_H
 

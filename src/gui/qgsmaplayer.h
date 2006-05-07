@@ -136,6 +136,12 @@ public:
     //! Visibility of the layer
     bool visible();
 
+    /*! Gets a version of the internal layer definition that has sensitive
+     *  bits removed (for example, the password). This function should
+     * be used when displaying the source name for general viewing.
+    */
+    QString publicSource() const;
+
     //! Returns the source for the layer
     QString const & source() const;
 
