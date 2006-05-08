@@ -250,6 +250,12 @@ class QgsCoordinateTransform: public QObject
      * Proj4 data structure of the destination projection (map canvas coordinate system)
      */
     projPJ mDestinationProjection;
+
+    /*!
+     * Set enviroment variable PROJ_LIB on Windows if not set.
+     */
+    void setEnvironment();
+    static bool environmentSet;
 };
 
 //! Output stream operator
