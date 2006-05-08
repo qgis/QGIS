@@ -25,20 +25,17 @@
 // Qt4-only includes to go here
 #include <QTextOStream>
 #include <QApplication>
-#include <QFile>
-
-bool QgsCoordinateTransform::environmentSet = false;
 
 QgsCoordinateTransform::QgsCoordinateTransform( ) : QObject(), mSourceSRS(), mDestSRS()
 
 {
-    setEnvironment();
+    setFinder();
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform(const QgsSpatialRefSys& source, 
                                                const QgsSpatialRefSys& dest)
 {
-    setEnvironment();
+    setFinder();
   mSourceSRS = source;
   mDestSRS = dest;
   initialise();
@@ -48,7 +45,7 @@ QgsCoordinateTransform::QgsCoordinateTransform(const QgsSpatialRefSys& source,
 QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceSRS, QString theDestSRS ) : QObject()
 
 {
-    setEnvironment();
+    setFinder();
   mSourceSRS.createFromWkt(theSourceSRS);
   mDestSRS.createFromWkt(theDestSRS);
   // initialize the coordinate system data structures
@@ -62,7 +59,7 @@ QgsCoordinateTransform::QgsCoordinateTransform(long theSourceSrid,
     QString theDestWKT,
     QgsSpatialRefSys::SRS_TYPE theSourceSRSType): QObject()
 {
-    setEnvironment();
+    setFinder();
 
   mSourceSRS.createFromId(theSourceSrid, theSourceSRSType);
   mDestSRS.createFromWkt(theDestWKT);
@@ -536,42 +533,29 @@ bool QgsCoordinateTransform::writeXML( QDomNode & theNode, QDomDocument & theDoc
   return true;
 }
 
-void QgsCoordinateTransform::setEnvironment()
+const char *finder( const char *name )
+{
+    QString proj;
+#ifdef WIN32
+    proj = QApplication::applicationDirPath() 
+           + "/share/proj/" + QString(name);
+#endif
+    return proj.ascii(); 
+}
+
+void QgsCoordinateTransform::setFinder()
 {
 #ifdef WIN32
-    if ( environmentSet ) return;
-
-    bool set = false;
-
-    QString proj = getenv("PROJ_LIB");
-   
     // Attention! It should be possible to set PROJ_LIB
     // but it can happen that it was previously set by installer
     // (version 0.7) and the old installation was deleted
-    // => test also if the directory exist
 
     // Another problem: PROJ checks if pj_finder was set before 
     // PROJ_LIB enviroment variable. pj_finder is probably set in 
     // GRASS gproj library when plugin is loaded, consequently 
     // PROJ_LIB is ignored 
- 
-    QString proj_lib = getenv("PROJ_LIB");
-    if ( proj_lib.length() > 0 )
-    {
-         if ( QFile::exists ( proj_lib ) )
-         {
-             set = true;
-         }
-    }
-   
-    if ( !set )
-    {
-        QString var = "PROJ_LIB=" + QApplication::applicationDirPath() + "/share/proj/";
-        char *varChar = new char[var.length()+1];
-        strcpy ( varChar, const_cast<char *>(var.ascii()) );
-        putenv( varChar );
-    }
 
-    environmentSet = true; 
+    pj_set_finder( finder );
 #endif
 }
+
