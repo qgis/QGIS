@@ -365,6 +365,9 @@ private:
   /**QgsLegend does not set the icon with/height to values lower than the minimum icon size*/
   QSize mMinimumIconSize;
 
+  /**Stores a pointer to the current map layer. This is used to check when the current layer changes*/
+  QgsMapLayer* mCurrentLayer;
+
 signals:
   void zOrderChanged(QgsLegend * lv);
 

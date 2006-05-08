@@ -54,7 +54,7 @@ const int AUTOSCROLL_MARGIN = 16;
    set mItemBeingMoved pointer to 0 to prevent SuSE 9.0 crash
 */
 QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
-  : QTreeWidget(parent), mApp(app), mMousePressedFlag(false), mItemBeingMoved(0), mMapCanvas(0), mShowLegendLayerFiles(false), mMinimumIconSize(20, 20)
+  : QTreeWidget(parent), mApp(app), mMousePressedFlag(false), mItemBeingMoved(0), mMapCanvas(0), mShowLegendLayerFiles(false), mMinimumIconSize(20, 20), mCurrentLayer(0)
 {
   connect( this, SIGNAL(itemChanged(QTreeWidgetItem*, int)),
 	   this, SLOT(handleItemChange(QTreeWidgetItem*, int)));
@@ -87,13 +87,23 @@ QgsLegend::~QgsLegend()
 void QgsLegend::handleCurrentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 {
   QgsMapLayer *layer = currentLayer();
-  if(mApp)
+  if(layer != mCurrentLayer)
     {
-      mApp->activateDeactivateLayerRelatedActions( layer );
-    }
-  if(mMapCanvas)
-    {
-      mMapCanvas->setCurrentLayer( layer );
+      if(mApp)
+	{
+	  mApp->activateDeactivateLayerRelatedActions( layer );
+	}
+      if(mMapCanvas)
+	{
+	  mMapCanvas->setCurrentLayer( layer );
+	}
+      //stop editing for the old layer
+      QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(mCurrentLayer);
+      if(vlayer && vlayer->isEditable())
+	{
+	  vlayer->stopEditing();
+	}
+      mCurrentLayer = layer;
     }
   emit currentLayerChanged ( layer );
 }   
@@ -1368,6 +1378,7 @@ void QgsLegend::changeSymbologySettings(const QString& key, const std::list< std
   //restore the current item again
   setCurrentItem(theCurrentItem);
   adjustIconSize();
+  setExpanded(indexFromItem(theLegendLayer), true);//make sure the symbology items are visible
 }
 
 void QgsLegend::addPixmapWidthValue(int width)
