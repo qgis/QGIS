@@ -984,7 +984,7 @@ bool QgsOgrProvider::addFeature(QgsFeature* f)
     returnValue = false;
   }
   ++numberFeatures;
-  //delete feature;
+  delete feature;
   ogrLayer->SyncToDisk();
   return returnValue;
 }
