@@ -66,6 +66,7 @@ QgsMapLayer::QgsMapLayer(int type,
 
     // Set the display name = internal name
     layerName = internalName;
+
     QgsDebugMsg("QgsMapLayer::QgsMapLayer - layerName is '" + layerName);
 
     // Generate the unique ID of this layer

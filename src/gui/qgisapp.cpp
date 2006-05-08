@@ -4818,6 +4818,7 @@ bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRedra
   {
     // register this layer with the central layers registry
     QgsMapLayerRegistry::instance()->addMapLayer(theRasterLayer);
+    theRasterLayer->refreshLegend();
     // XXX doesn't the mMapCanvas->addLayer() do this?
     // XXX now it does
     //     QObject::connect(theRasterLayer,
@@ -5070,7 +5071,6 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList, bool gui
       layer->setVisible(mAddedLayersVisible);
 
       addRasterLayer(layer);
-      layer->refreshLegend();
 
       //only allow one copy of a ai grid file to be loaded at a
       //time to prevent the user selecting all adfs in 1 dir which
