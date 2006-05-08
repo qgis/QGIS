@@ -252,10 +252,9 @@ class QgsCoordinateTransform: public QObject
     projPJ mDestinationProjection;
 
     /*!
-     * Set enviroment variable PROJ_LIB on Windows if not set.
+     * Finder for PROJ grid files.
      */
-    void setEnvironment();
-    static bool environmentSet;
+    void setFinder();
 };
 
 //! Output stream operator
