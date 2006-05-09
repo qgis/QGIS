@@ -290,6 +290,9 @@ private:
 
     //! List of all flags. Necessary for scripts.
     QStringList mFlagNames;
+
+    //! Use of region defined in qgm
+    bool mUsesRegion; 
 };
 
 /*! \class QgsGrassModuleItem
@@ -397,6 +400,11 @@ public:
     //! Current value
     QString value();
 
+    //! Does this options causes use of region?
+    //  Raster input/output uses region by default
+    //  Use of region can be forced by 'region' attribute in qgm
+    bool usesRegion() { return mUsesRegion; }
+
 public slots:
     // Add new line edit for multiple options
     void addLineEdit();
@@ -441,6 +449,9 @@ private:
 
     // Layout inside box
     QVBoxLayout *mLayout;
+
+    //! Uses region
+    bool mUsesRegion;
 };
 /********************** QgsGrassModuleFlag ************************/
 /*! \class QgsGrassModuleFlag
@@ -503,6 +514,11 @@ public:
 
     QString ready() ;
 
+    //! Does this options causes use of region?
+    //  Raster input/output uses region by default
+    //  Use of region can be forced by 'region' attribute in qgm
+    bool usesRegion() { return mUsesRegion; }
+
     //! Should be used region of this input
     bool useRegion();
 
@@ -563,6 +579,9 @@ private:
 
     //! The imput map will be updated -> must be from current mapset
     bool mUpdate;
+
+    //! Uses region
+    bool mUsesRegion;
 };
 
 /*********************** QgsGrassModuleGdalInput **********************/
