@@ -809,7 +809,7 @@ bool QgsGrassModuleStandardOptions::usesRegion ()
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassModuleStandardOptions::usesRegion()" << std::endl;
     #endif
-
+ 
     for ( int i = 0; i < mItems.size(); i++ ) 
     {
 	if ( typeid(*(mItems[i])) == typeid (QgsGrassModuleInput) )
@@ -817,23 +817,23 @@ bool QgsGrassModuleStandardOptions::usesRegion ()
             QgsGrassModuleInput *item = 
                     dynamic_cast<QgsGrassModuleInput *>(mItems[i]);
 
-            if ( item->type() == QgsGrassModuleInput::Raster ) 
+            if ( item->useRegion() ) 
                 return true;
 	}
 
+        /* It only make sense to check input, right? 
+         * Output has no region yet */
 	if ( typeid(*(mItems[i])) == typeid (QgsGrassModuleOption) ) 
         {
 	     QgsGrassModuleOption *item = 
 	            dynamic_cast<QgsGrassModuleOption *> ( mItems[i] );
     
-             if ( item->isOutput() 
-                  && item->outputType() == QgsGrassModuleOption::Raster )
-             {
+             if ( item->usesRegion() )
                  return true;
-             }
 	}
     }
 
+    std::cerr << "NO usesRegion()" << std::endl;
     return false;
 }
 
@@ -1583,6 +1583,23 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
             }  
 	}
     }
+
+    mUsesRegion = false;
+    QString region = qdesc.attribute("region");
+    if ( region.length() > 0 )
+    {
+        if ( region == "yes" )
+            mUsesRegion = true;
+    }
+    else
+    {
+    std::cerr << "\n\n\n\n**************************" << std::endl;
+    std::cerr << "isOutput = " << isOutput() << std::endl;
+    std::cerr << "mOutputType = " << mOutputType << std::endl;
+        if ( isOutput() && mOutputType == Raster )
+            mUsesRegion = true;
+    }
+    std::cerr << "mUsesRegion = " << mUsesRegion << std::endl;
 }
 
 void QgsGrassModuleOption::addLineEdit()
@@ -1908,8 +1925,11 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module,
                                       QSizePolicy:: Preferred );
     l->addWidget ( mLayerComboBox );
 
-    if ( mType == Raster  && 
-         QgsGrass::versionMajor() >= 6 && QgsGrass::versionMinor() >= 1 )
+    QString region = qdesc.attribute("region");
+    if ( mType == Raster
+         && QgsGrass::versionMajor() >= 6 && QgsGrass::versionMinor() >= 1
+         && region != "no"
+       )
     {
         QString iconPath = QgsApplication::themePath() + "/grass/";
         
@@ -1943,6 +1963,18 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module,
 	    connect ( mapInput, SIGNAL(valueChanged()), this, SLOT(updateQgisLayers()) );
 	}
     }
+
+    mUsesRegion = false;
+    if ( region.length() > 0 )
+    {
+        if ( region == "yes" )
+            mUsesRegion = true;
+    }
+    else
+    {
+        if ( type() == Raster ) 
+            mUsesRegion = true;
+    }
     
     // Fill in QGIS layers 
     updateQgisLayers();
@@ -1952,7 +1984,7 @@ bool QgsGrassModuleInput::useRegion()
 {
     std::cerr << "QgsGrassModuleInput::useRegion()" << std::endl;
 
-    if ( mType == Raster && mRegionButton &&
+    if ( mUsesRegion && mType == Raster && mRegionButton &&
          mRegionButton->isChecked() )
     {
         return true;
@@ -2344,8 +2376,11 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput (
     
     // Connect to canvas 
     QgsMapCanvas *canvas = mModule->qgisIface()->getMapCanvas();
-    connect ( canvas, SIGNAL(addedLayer(QgsMapLayer *)), this, SLOT(updateQgisLayers()) );
-    connect ( canvas, SIGNAL(removedLayer(QString)), this, SLOT(updateQgisLayers()) );
+
+    // It seems that addedLayer/removedLayer does not work
+    //connect ( canvas, SIGNAL(addedLayer(QgsMapLayer *)), this, SLOT(updateQgisLayers()) );
+    //connect ( canvas, SIGNAL(removedLayer(QString)), this, SLOT(updateQgisLayers()) );
+    connect ( canvas, SIGNAL(layersChanged()), this, SLOT(updateQgisLayers()) );
     
     // Fill in QGIS layers 
     updateQgisLayers();
