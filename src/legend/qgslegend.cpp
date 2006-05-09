@@ -97,12 +97,6 @@ void QgsLegend::handleCurrentItemChanged(QTreeWidgetItem* current, QTreeWidgetIt
 	{
 	  mMapCanvas->setCurrentLayer( layer );
 	}
-      //stop editing for the old layer
-      QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(mCurrentLayer);
-      if(vlayer && vlayer->isEditable())
-	{
-	  vlayer->stopEditing();
-	}
       mCurrentLayer = layer;
     }
   emit currentLayerChanged ( layer );
