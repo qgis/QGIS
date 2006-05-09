@@ -95,6 +95,13 @@ void QgsMapToolCapture::canvasReleaseEvent(QMouseEvent * e)
   // POINT CAPTURING
   if (mTool == CapturePoint)
   {
+    //check we only use this tool for point/multipoint layers
+    if(vlayer->vectorType() != QGis::Point)
+      {
+	QMessageBox::information(0,"Wrong editing tool", "Cannot apply the 'capture point' tool on this vector layer",\
+QMessageBox::Ok);
+	return;
+      }
 
     QgsPoint idPoint = toMapCoords(e->pos());
     
@@ -145,6 +152,22 @@ void QgsMapToolCapture::canvasReleaseEvent(QMouseEvent * e)
   {
     // LINE & POLYGON CAPTURING
   
+    //check we only use the line tool for line/multiline layers
+    if(mTool == CaptureLine && vlayer->vectorType() != QGis::Line)
+      {
+	QMessageBox::information(0,"Wrong editing tool", "Cannot apply the 'capture line' tool on this vector layer",\
+QMessageBox::Ok);
+	return;
+      }
+
+    //check we only use the polygon tool for polygon/multipolygon layers
+    if(mTool == CapturePolygon && vlayer->vectorType() != QGis::Polygon)
+      {
+	QMessageBox::information(0,"Wrong editing tool", "Cannot apply the 'capture polygon' tool on this vector layer",\
+QMessageBox::Ok);
+	return;
+      }
+
     if (mCaptureList.size() == 0)
     {
       mRubberBand = new QgsRubberBand(mCanvas, mTool == CapturePolygon);
