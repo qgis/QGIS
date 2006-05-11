@@ -592,39 +592,51 @@ void QgsLegend::legendGroupRemove()
 
 void QgsLegend::legendLayerRemove()
 {
-    //remove all layers of the current legendLayer
+    //if the current item is a legend layer: remove all layers of the current legendLayer
    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(currentItem());
-   if(!ll)
+   if(ll)
    {
-       return;
-   }
-
-   std::list<QgsMapLayer*> maplayers = ll->mapLayers();
-   mStateOfCheckBoxes.erase(ll);
-
-   //todo: also remove the entries for the QgsLegendLayerFiles from the map
-   std::list<QgsLegendLayerFile*> llfiles = ll->legendLayerFiles();
-   for(std::list<QgsLegendLayerFile*>::iterator it = llfiles.begin(); it != llfiles.end(); ++it)
-     {
-       mStateOfCheckBoxes.erase(*it);
-     }
-
-   for(std::list<QgsMapLayer*>::iterator it = maplayers.begin(); it!=maplayers.end(); ++it)
-   {
-       //remove the layer
-       if(*it)
+     std::list<QgsMapLayer*> maplayers = ll->mapLayers();
+     mStateOfCheckBoxes.erase(ll);
+     
+     //also remove the entries for the QgsLegendLayerFiles from the map
+     std::list<QgsLegendLayerFile*> llfiles = ll->legendLayerFiles();
+     for(std::list<QgsLegendLayerFile*>::iterator it = llfiles.begin(); it != llfiles.end(); ++it)
        {
-	   QgsMapLayerRegistry::instance()->removeMapLayer((*it)->getLayerID());
+	 mStateOfCheckBoxes.erase(*it);
        }
+     
+     for(std::list<QgsMapLayer*>::iterator it = maplayers.begin(); it!=maplayers.end(); ++it)
+       {
+	 //remove the layer
+	 if(*it)
+	   {
+	     QgsMapLayerRegistry::instance()->removeMapLayer((*it)->getLayerID());
+	   }
+       }
+     
+     if(maplayers.size()>0)
+       {
+	 mMapCanvas->refresh();
+       }
+     removeItem(ll);
+     delete ll;
+     adjustIconSize();
+     return;
    }
 
-   if(maplayers.size()>0)
-   {
-     mMapCanvas->refresh();
-   }
-   removeItem(ll);
-   delete ll;
-   adjustIconSize();
+   //if the current item is a legend layer file
+   QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(currentItem());
+   if(llf)
+     {
+       if(llf->layer())
+	 {
+	   //the map layer registry emits a signal an this will remove the legend layer
+	   //from the legend and from memory by calling QgsLegend::removeLayer(QString layer key)
+	   QgsMapLayerRegistry::instance()->removeMapLayer(llf->layer()->getLayerID());
+	 }
+     }
+   return;
 }
 
 void QgsLegend::legendLayerAddToOverview()
