@@ -1059,22 +1059,12 @@ bool QgsRasterLayer::draw(QPainter * theQPainter,
   if (transparencyLevelInt == 0)
     return TRUE;
   QgsDebugMsg("QgsRasterLayer::draw(4 arguments): checking timestamp.");
-  
-/* TODO: Re-enable this for providers    
-  // Check timestamp
-  if ( !mProviderKey )
-  {
 
-#ifdef QGISDEBUG
-  std::cout << "QgsRasterLayer::draw(4 arguments): checking timestamp with no mProviderKey." << std::endl;
-#endif
-    
-    if ( !update() )
-    {
-      return;
-    }
+  // Check timestamp
+  if ( !update() )
+  {
+    return FALSE;
   }
-*/
 
   // clip raster extent to view extent
   QgsRect myRasterExtent = theViewExtent->intersect(&layerExtent);
