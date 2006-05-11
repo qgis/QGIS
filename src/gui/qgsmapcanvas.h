@@ -250,6 +250,12 @@ signals:
     
     //! Emitted when a new set of layers has been received
     void layersChanged();
+
+    //! Emit key press event
+    void keyPressed(QKeyEvent * e);
+
+    //! Emit key release event
+    void keyReleased(QKeyEvent * e);
     
 protected:
     /// implementation struct

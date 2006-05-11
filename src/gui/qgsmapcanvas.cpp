@@ -530,6 +530,8 @@ void QgsMapCanvas::keyPressEvent(QKeyEvent * e)
   qDebug("keyPress event at line %d in %s",  __LINE__, __FILE__);
 #endif
 
+  emit keyPressed(e);
+
   if (mCanvasProperties->mouseButtonDown || mCanvasProperties->panSelectorDown)
     return;
 
@@ -641,6 +643,9 @@ void QgsMapCanvas::keyReleaseEvent(QKeyEvent * e)
       qDebug("Ignoring key release (%d)", e->key());
 #endif
   }
+
+  emit keyReleased(e);
+
 } //keyReleaseEvent()
 
 
