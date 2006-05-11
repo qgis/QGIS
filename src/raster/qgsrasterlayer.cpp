@@ -470,9 +470,7 @@ QgsRasterLayer::QgsRasterLayer(QString const & path, QString const & baseName)
 
   if ( ! baseName.isEmpty() )   // XXX shouldn't this happen in parent?
   {
-    QString layerTitle = baseName;
-    layerTitle = layerTitle.left(1).upper() + layerTitle.mid(1);
-    setLayerName(layerTitle);
+    setLayerName(baseName);
   }
 
   // load the file if one specified
@@ -1075,9 +1073,9 @@ bool QgsRasterLayer::draw(QPainter * theQPainter,
     {
       return;
     }
-  }    
+  }
 */
-  
+
   // clip raster extent to view extent
   QgsRect myRasterExtent = theViewExtent->intersect(&layerExtent);
   if (myRasterExtent.isEmpty())
@@ -2701,7 +2699,7 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
     return myRasterBandStats;
   }
   // only print message if we are actually gathering the stats
-  emit setStatus(QString("Retrieving stats for ")+layerName);
+  emit setStatus(QString("Retrieving stats for ")+name());
   qApp->processEvents();
   QgsDebugMsg("QgsRasterLayer::retrieve stats for band " + QString::number(theBandNoInt));
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
@@ -2751,7 +2749,7 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 
   myRasterBandStats.elementCountInt = 0; // because we'll be counting only VALID pixels later
 
-  emit setStatus(QString("Calculating stats for ")+layerName);
+  emit setStatus(QString("Calculating stats for ")+name());
   //reset the main app progress bar
   emit setProgress(0,0);
 
@@ -4971,9 +4969,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
           layerExtent.setYmax(mbr->yMax());
           layerExtent.setYmin(mbr->yMin());
 
-          // upper case the first letter of the layer name
-          layerName = layerName.left(1).upper() + layerName.mid(1);
-	  QgsDebugMsg("QgsRasterLayer::setDataProvider: layerName: " + layerName);
+	  QgsDebugMsg("QgsRasterLayer::setDataProvider: layerName: " + name());
 
 
           //

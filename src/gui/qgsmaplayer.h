@@ -429,9 +429,6 @@ protected:
 
     QPixmap mEditablePixmap;
 
-    /** Name of the layer - used for display  */
-    QString layerName;
-
     /** Internal name of the layer. Derived from the datasource */
     QString internalName;
 
@@ -474,6 +471,9 @@ private:                       // Private attributes
     /// QgsMapLayer not copyable
     QgsMapLayer & operator=( QgsMapLayer const & );
 
+    /// A convenience function to capitalise the layer name
+    static QString capitaliseLayerName(const QString name);
+
     /** Unique ID of this layer - used to refer to this layer  in QGIS code */
     QString ID;
 
@@ -483,6 +483,8 @@ private:                       // Private attributes
     //! Tag for embedding additional information
     QString tag;
 
+    /** Name of the layer - used for display  */
+    QString layerName;
     
     /**  true if visible ? */
     bool m_visible;

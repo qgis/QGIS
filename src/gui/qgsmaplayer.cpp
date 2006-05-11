@@ -30,6 +30,7 @@
 #include <QKeyEvent>
 #include <QMenu>
 #include <QRegExp>
+#include <QSettings>
 
 #include "qgisapp.h"
 #include "qgslogger.h"
@@ -65,7 +66,7 @@ QgsMapLayer::QgsMapLayer(int type,
   QgsDebugMsg("QgsMapLayer::QgsMapLayer - lyrname is '" + lyrname);
 
     // Set the display name = internal name
-    layerName = internalName;
+    layerName = capitaliseLayerName(internalName);
 
     QgsDebugMsg("QgsMapLayer::QgsMapLayer - layerName is '" + layerName);
 
@@ -108,7 +109,7 @@ QString const & QgsMapLayer::getLayerID() const
 void QgsMapLayer::setLayerName(const QString & _newVal)
 {
   QgsDebugMsg("QgsMapLayer::setLayerName: new name is '" + _newVal);
-  layerName = _newVal;
+  layerName = capitaliseLayerName(_newVal);
   // And update the legend if one exists
   if (mLegend)
     mLegend->setName(mLegendLayerFile, layerName);
@@ -702,4 +703,20 @@ QgsRect QgsMapLayer::calcProjectedBoundingBox(QgsRect& extent)
 QMenu* QgsMapLayer::contextMenu()
 {
   return popMenu;
+}
+
+QString QgsMapLayer::capitaliseLayerName(const QString name)
+{
+  // Capitalise the first letter of the layer name if requested
+  QSettings settings;
+  bool capitaliseLayerName = 
+    settings.value("qgis/capitaliseLayerName",
+                   QVariant(false)).toBool();
+
+  QString layerName(name);
+
+  if (capitaliseLayerName)
+    layerName = layerName.left(1).upper() + layerName.mid(1);
+
+  return layerName;
 }

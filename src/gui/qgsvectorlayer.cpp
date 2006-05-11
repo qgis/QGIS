@@ -2129,15 +2129,14 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
 
       if (providerKey == "postgres")
       {
-	QgsDebugMsg("Beautifying layer name " + layerName);
+	QgsDebugMsg("Beautifying layer name " + name());
         // adjust the display name for postgres layers
-        layerName = layerName.mid(layerName.find(".") + 1);
-        layerName = layerName.left(layerName.find("(") - 1);   // Take one away, to avoid a trailing space
-	QgsDebugMsg("Beautifying layer name " + layerName);
+        QString lName(name());
+        lName = lName.mid(lName.find(".") + 1);
+        lName = lName.left(lName.find("(") - 1);   // Take one away, to avoid a trailing space
+        setLayerName(lName);
+	QgsDebugMsg("Beautifying layer name " + name());
       }
-
-      // upper case the first letter of the layer name
-      layerName = layerName.left(1).upper() + layerName.mid(1);
 
       // label
       mLabel = new QgsLabel ( dataProvider->fields() );
