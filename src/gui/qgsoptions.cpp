@@ -106,6 +106,8 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   myGreen = settings.value("/qgis/default_canvas_color_green",255).toInt();
   myBlue = settings.value("/qgis/default_canvas_color_blue",255).toInt();
   pbnCanvasColor->setPaletteBackgroundColor(QColor(myRed,myGreen,myBlue));
+
+  capitaliseCheckBox->setChecked(settings.value("qgis/capitaliseLayerName", QVariant(false)).toBool());
 }
 
 //! Destructor
@@ -148,6 +150,8 @@ void QgsOptions::saveOptions()
   settings.writeEntry("/qgis/hideSplash",cbxHideSplash->isChecked());
   settings.writeEntry("/qgis/new_layers_visible",chkAddedVisibility->isChecked());
   settings.writeEntry("/qgis/enable_anti_aliasing",chkAntiAliasing->isChecked());
+  settings.setValue("qgis/capitaliseLayerName", capitaliseCheckBox->isChecked());
+
   if(cmbTheme->currentText().length() == 0)
   {
     settings.writeEntry("/Themes", "default");
