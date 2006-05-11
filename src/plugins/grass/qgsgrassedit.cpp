@@ -1140,6 +1140,49 @@ void QgsGrassEdit::snap (  QgsPoint & point )
   point.setY(y);
 }
 
+void QgsGrassEdit::snap (  QgsPoint & point, double startX, double startY )
+{
+  double x = point.x();
+  double y = point.y();
+
+  double thresh = threshold();
+
+  // Start
+  double startDist = hypot ( x-startX, y-startY);
+  bool startIn = false;
+  if ( startDist <= thresh ) startIn = true;
+
+  // Nearest node
+  double nodeX, nodeY;     
+  double nodeDist;
+  bool nodeIn = false;
+  int node = mProvider->findNode ( x, y, thresh );
+
+  if ( node > 0 ) 
+  {
+       mProvider->nodeCoor ( node, &nodeX, &nodeY );
+       nodeDist = hypot ( x-nodeX, y-nodeY);
+       nodeIn = true;
+  }
+  std::cerr << "startIn = " << startIn << std::endl;
+  std::cerr << "nodeIn = " << nodeIn << std::endl;
+  std::cerr << "startDist = " << startDist << std::endl;
+  std::cerr << "nodeDist = " << nodeDist << std::endl;
+
+  // Choose
+  if ( (startIn && !nodeIn) || (startIn && nodeIn && startDist < nodeDist)  ) 
+  {
+      x = startX; y = startY;
+  }
+  else if ( (!startIn && nodeIn) || (startIn && nodeIn && startDist > nodeDist) ) 
+  {
+      x = nodeX; y = nodeY;
+  } 
+
+  point.setX(x);
+  point.setY(y);
+}
+
 void QgsGrassEdit::newPoint(void) { startTool(QgsGrassEdit::NEW_POINT); }
 void QgsGrassEdit::newLine(void) { 
   std::cerr << "QgsGrassEdit::newLine" << std::endl;

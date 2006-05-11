@@ -395,6 +395,8 @@ private:
     /** Snap to nearest node in current threshold */
     void snap ( QgsPoint & point );
     void snap ( double *x, double *y);
+    /** Snap point line  considering line starting point */
+    void snap ( QgsPoint & point, double startX, double startY);
 
     /** Attributes */
     QgsGrassAttributes *mAttributes;

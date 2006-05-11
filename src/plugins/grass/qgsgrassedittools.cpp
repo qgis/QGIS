@@ -151,8 +151,20 @@ void QgsGrassEditNewLine::mouseClick(QgsPoint & point, Qt::ButtonState button)
 {
   switch ( button ) {
     case Qt::LeftButton:
-      e->snap ( point ); 
+      if ( e->mEditPoints->n_points > 2 )
+      {
+          e->snap ( point, e->mEditPoints->x[0], e->mEditPoints->y[0] ); 
+      }
+      else
+      {
+          e->snap ( point ); 
+      }
       Vect_append_point ( e->mEditPoints, point.x(), point.y(), 0.0 );
+
+      // Draw
+      Vect_reset_line ( e->mPoints );
+      Vect_append_points ( e->mPoints, e->mEditPoints, GV_FORWARD );
+      e->displayDynamic ( e->mPoints );
       break;
     case Qt::MidButton:
       if ( e->mEditPoints->n_points > 0 ) {
