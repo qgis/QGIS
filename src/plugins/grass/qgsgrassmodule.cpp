@@ -1100,11 +1100,23 @@ void QgsGrassModule::run()
   
         QStringList list = mOptions->arguments();
 
+        QStringList argumentsHtml;
 	for ( QStringList::Iterator it = list.begin(); it != list.end(); ++it ) {
 	    std::cerr << "option: " << (*it).toLocal8Bit().data() << std::endl;
 	    //command.append ( " " + *it );
 	    arguments.append ( *it );
 	    //mProcess.addArgument( *it );
+            
+            // Quote options with special characters so that user 
+            // can copy-paste-run the command
+            if ( (*it).contains ( QRegExp("[ <>\\$|;&]" ) ) )
+            {
+                argumentsHtml.append( "'" + *it + "'" );
+            }
+            else
+            {
+                argumentsHtml.append( *it );
+            }
 	}
 
 	/* WARNING - TODO: there was a bug in GRASS 6.0.0 / 6.1.CVS (< 2005-04-29):
@@ -1118,7 +1130,7 @@ void QgsGrassModule::run()
 	
 	mOutputTextBrowser->clear();
 
-        QString commandHtml = mXName + " " + arguments.join(" ");
+        QString commandHtml = mXName + " " + argumentsHtml.join(" ");
 
 	std::cerr << "command: " << commandHtml.toLocal8Bit().data() << std::endl;
 	commandHtml.replace ( "&", "&amp;" );
