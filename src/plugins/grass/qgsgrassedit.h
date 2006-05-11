@@ -217,6 +217,9 @@ public slots:
     //! Window with attributes closed
     void attributesClosed();
 
+    //! Recieve key press from different widget 
+    void keyPress(QKeyEvent *e); 
+
 signals:
     void finished(); 
 
@@ -226,6 +229,9 @@ private:
 
     //! Pointer to edited layer
     QgsVectorLayer *mLayer;
+
+    //! Pointer to toolbar
+    QToolBar *mToolBar;
     
     //! Point / node size (later make editable array of Sizes)
     int mSize;

@@ -166,6 +166,29 @@ bool QgsGrassEdit::isEditable ( QgsMapLayer *layer )
   return true;
 }
 
+void QgsGrassEdit::keyPress(QKeyEvent *e) 
+{
+    std::cerr << "QgsGrassEdit::keyPress" << std::endl;
+    // This does not work:
+    //keyPressEvent(e); 
+
+    // TODO: this is not optimal
+    switch ( e->key() )
+    {
+        case Qt::Key_F1: newPoint(); break;  
+        case Qt::Key_F2: newLine(); break;  
+        case Qt::Key_F3: newBoundary(); break;  
+        case Qt::Key_F4: newCentroid(); break;  
+        case Qt::Key_F5: moveVertex(); break;  
+        case Qt::Key_F6: addVertex(); break;  
+        case Qt::Key_F7: deleteVertex(); break;  
+        case Qt::Key_F9: moveLine(); break;  
+        case Qt::Key_F10: splitLine(); break;  
+        case Qt::Key_F11: deleteLine(); break;  
+        default: break;
+    }
+}
+
 QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
     QgsGrassProvider *provider,
     QWidget * parent, Qt::WFlags f )
@@ -207,79 +230,80 @@ void QgsGrassEdit::init()
     return;
   }
 
+  connect ( mCanvas, SIGNAL(keyPressed(QKeyEvent *)), this, SLOT(keyPress(QKeyEvent *)) );
+
   QString myIconPath = QgsApplication::themePath() + "/grass/";
 
-
-  QToolBar *tb = addToolBar(tr("Edit tools"));
+  mToolBar = addToolBar(tr("Edit tools"));
 
   mNewPointAction = new QAction(
           QIcon(myIconPath+"grass_new_point.png"), tr("New point"), this);
   mNewPointAction->setShortcut ( QKeySequence(Qt::Key_F1) ); 
-  tb->addAction ( mNewPointAction );
+  mToolBar->addAction ( mNewPointAction );
   connect ( mNewPointAction, SIGNAL(triggered()), this, SLOT(newPoint()) );
 
   mNewLineAction = new QAction(
           QIcon(myIconPath+"grass_new_line.png"), tr("New line"), this);
   mNewLineAction->setShortcut ( QKeySequence(Qt::Key_F2) ); 
-  tb->addAction ( mNewLineAction );
+  mToolBar->addAction ( mNewLineAction );
   connect ( mNewLineAction, SIGNAL(triggered()), this, SLOT(newLine()) );
 
   mNewBoundaryAction = new QAction(
           QIcon(myIconPath+"grass_new_boundary.png"), tr("New boundary"), this);
   mNewBoundaryAction->setShortcut ( QKeySequence(Qt::Key_F3) ); 
-  tb->addAction ( mNewBoundaryAction );
+  mToolBar->addAction ( mNewBoundaryAction );
   connect ( mNewBoundaryAction, SIGNAL(triggered()), this, SLOT(newBoundary()) );
 
   mNewCentroidAction = new QAction(
           QIcon(myIconPath+"grass_new_centroid.png"), tr("New centroid"), this);
   mNewCentroidAction->setShortcut ( QKeySequence(Qt::Key_F4) ); 
-  tb->addAction ( mNewCentroidAction );
+  mToolBar->addAction ( mNewCentroidAction );
   connect ( mNewCentroidAction, SIGNAL(triggered()), this, SLOT(newCentroid()) );
 
   mMoveVertexAction = new QAction(
           QIcon(myIconPath+"grass_move_vertex.png"), tr("Move vertex"), this);
   mMoveVertexAction->setShortcut ( QKeySequence(Qt::Key_F5) ); 
-  tb->addAction ( mMoveVertexAction );
+  mToolBar->addAction ( mMoveVertexAction );
   connect ( mMoveVertexAction, SIGNAL(triggered()), this, SLOT(moveVertex()) );
 
   mAddVertexAction = new QAction(
           QIcon(myIconPath+"grass_add_vertex.png"), tr("Add vertex"), this);
   mAddVertexAction->setShortcut ( QKeySequence(Qt::Key_F6) ); 
-  tb->addAction ( mAddVertexAction );
+  mToolBar->addAction ( mAddVertexAction );
   connect ( mAddVertexAction, SIGNAL(triggered()), this, SLOT(addVertex()) );
 
   mDeleteVertexAction = new QAction(
           QIcon(myIconPath+"grass_delete_vertex.png"), tr("Delete vertex"), this);
   mDeleteVertexAction->setShortcut ( QKeySequence(Qt::Key_F7) ); 
-  tb->addAction ( mDeleteVertexAction );
+  mToolBar->addAction ( mDeleteVertexAction );
   connect ( mDeleteVertexAction, SIGNAL(triggered()), this, SLOT(deleteVertex()) );
 
   mMoveLineAction = new QAction(
           QIcon(myIconPath+"grass_move_line.png"), tr("Move element"), this);
   mMoveLineAction->setShortcut ( QKeySequence(Qt::Key_F9) ); 
-  tb->addAction ( mMoveLineAction );
+  mToolBar->addAction ( mMoveLineAction );
   connect ( mMoveLineAction, SIGNAL(triggered()), this, SLOT(moveLine()) );
 
   mSplitLineAction = new QAction(
           QIcon(myIconPath+"grass_split_line.png"), tr("Split line"), this);
   mSplitLineAction->setShortcut ( QKeySequence(Qt::Key_F10) ); 
-  tb->addAction ( mSplitLineAction );
+  mToolBar->addAction ( mSplitLineAction );
   connect ( mSplitLineAction, SIGNAL(triggered()), this, SLOT(splitLine()) );
 
   mDeleteLineAction = new QAction(
           QIcon(myIconPath+"grass_delete_line.png"), tr("Delete element"), this);
   mDeleteLineAction->setShortcut ( QKeySequence(Qt::Key_F11) ); 
-  tb->addAction ( mDeleteLineAction );
+  mToolBar->addAction ( mDeleteLineAction );
   connect ( mDeleteLineAction, SIGNAL(triggered()), this, SLOT(deleteLine()) );
 
   mEditAttributesAction = new QAction(
           QIcon(myIconPath+"grass_edit_attributes.png"), tr("Edit attributes"), this);
-  tb->addAction ( mEditAttributesAction );
+  mToolBar->addAction ( mEditAttributesAction );
   connect ( mEditAttributesAction, SIGNAL(triggered()), this, SLOT(editAttributes()) );
 
   mCloseEditAction = new QAction(
           QIcon(myIconPath+"grass_close_edit.png"), tr("Close"), this);
-  tb->addAction ( mCloseEditAction );
+  mToolBar->addAction ( mCloseEditAction );
   connect ( mCloseEditAction, SIGNAL(triggered()), this, SLOT(closeEdit()) );
   
   mNewPointAction->setCheckable ( true );
@@ -1164,10 +1188,6 @@ void QgsGrassEdit::snap (  QgsPoint & point, double startX, double startY )
        nodeDist = hypot ( x-nodeX, y-nodeY);
        nodeIn = true;
   }
-  std::cerr << "startIn = " << startIn << std::endl;
-  std::cerr << "nodeIn = " << nodeIn << std::endl;
-  std::cerr << "startDist = " << startDist << std::endl;
-  std::cerr << "nodeDist = " << nodeDist << std::endl;
 
   // Choose
   if ( (startIn && !nodeIn) || (startIn && nodeIn && startDist < nodeDist)  ) 
