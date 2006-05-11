@@ -39,8 +39,11 @@ class QgsIdentifyResults: public QWidget, private Ui::QgsIdentifyResultsBase
 
   //! Constructor - takes it own copy of the QgsAttributeAction so
   // that it is independent of whoever created it.
+  //QgsIdentifyResults(const QgsAttributeAction& actions, QWidget *parent = 0,
+  //    Qt::WFlags f = Qt::Tool | Qt::MSWindowsFixedSizeDialogHint |Qt::WindowTitleHint);
+
   QgsIdentifyResults(const QgsAttributeAction& actions, QWidget *parent = 0,
-      Qt::WFlags f = Qt::Tool | Qt::MSWindowsFixedSizeDialogHint |Qt::WindowTitleHint);
+                     Qt::WFlags f = Qt::Dialog );
 
   ~QgsIdentifyResults();
   /** Add an attribute to the feature display node */
