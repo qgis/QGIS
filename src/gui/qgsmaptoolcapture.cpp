@@ -102,7 +102,6 @@ void QgsMapToolCapture::canvasReleaseEvent(QMouseEvent * e)
 QMessageBox::Ok);
 	return;
       }
-
     QgsPoint idPoint = toMapCoords(e->pos());
     
     // emit signal - QgisApp can catch it and save point position to clipboard
@@ -150,8 +149,6 @@ QMessageBox::Ok);
   }  
   else if (mTool == CaptureLine || mTool == CapturePolygon)
   {
-    // LINE & POLYGON CAPTURING
-  
     //check we only use the line tool for line/multiline layers
     if(mTool == CaptureLine && vlayer->vectorType() != QGis::Line)
       {
