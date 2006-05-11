@@ -1222,105 +1222,105 @@ __FUNCTION__, __LINE__);
 
 */
 
-// get dimensions of clipped raster image in raster pixel space/ RasterIO will do the scaling for us.
-// So for example, if the user is zoomed in a long way, there may only be e.g. 5x5 pixels retrieved from
-// the raw raster data, but rasterio will seamlessly scale the up to whatever the screen coordinats are
-// e.g. a 600x800 display window (see next section below)
-myRasterViewPort->clippedXMinDouble = (myRasterExtent.xMin() - adfGeoTransform[0]) / adfGeoTransform[1];
-myRasterViewPort->clippedXMaxDouble = (myRasterExtent.xMax() - adfGeoTransform[0]) / adfGeoTransform[1];
-myRasterViewPort->clippedYMinDouble = (myRasterExtent.yMin() - adfGeoTransform[3]) / adfGeoTransform[5];
-myRasterViewPort->clippedYMaxDouble = (myRasterExtent.yMax() - adfGeoTransform[3]) / adfGeoTransform[5];
-myRasterViewPort->clippedWidthInt =
-abs(static_cast < int >(myRasterViewPort->clippedXMaxDouble - myRasterViewPort->clippedXMinDouble));
-myRasterViewPort->clippedHeightInt =
-abs(static_cast < int >(myRasterViewPort->clippedYMaxDouble - myRasterViewPort->clippedYMinDouble));
+  // get dimensions of clipped raster image in raster pixel space/ RasterIO will do the scaling for us.
+  // So for example, if the user is zoomed in a long way, there may only be e.g. 5x5 pixels retrieved from
+  // the raw raster data, but rasterio will seamlessly scale the up to whatever the screen coordinats are
+  // e.g. a 600x800 display window (see next section below)
+  myRasterViewPort->clippedXMinDouble = (myRasterExtent.xMin() - adfGeoTransform[0]) / adfGeoTransform[1];
+  myRasterViewPort->clippedXMaxDouble = (myRasterExtent.xMax() - adfGeoTransform[0]) / adfGeoTransform[1];
+  myRasterViewPort->clippedYMinDouble = (myRasterExtent.yMin() - adfGeoTransform[3]) / adfGeoTransform[5];
+  myRasterViewPort->clippedYMaxDouble = (myRasterExtent.yMax() - adfGeoTransform[3]) / adfGeoTransform[5];
+  myRasterViewPort->clippedWidthInt =
+    abs(static_cast < int >(myRasterViewPort->clippedXMaxDouble - myRasterViewPort->clippedXMinDouble));
+  myRasterViewPort->clippedHeightInt =
+    abs(static_cast < int >(myRasterViewPort->clippedYMaxDouble - myRasterViewPort->clippedYMinDouble));
 
-// Add one to the raster dimensions to guard against the integer truncation
-// effects of static_cast<int>
-// TODO: Can we get rid of this now that we are rounding at the point of the static_cast?
-myRasterViewPort->clippedWidthInt++;
-myRasterViewPort->clippedHeightInt++;
+  // Add one to the raster dimensions to guard against the integer truncation
+  // effects of static_cast<int>
+  // TODO: Can we get rid of this now that we are rounding at the point of the static_cast?
+  myRasterViewPort->clippedWidthInt++;
+  myRasterViewPort->clippedHeightInt++;
 
-// make sure we don't exceed size of raster, otherwise GDAL RasterIO doesn't like it
-if (myRasterViewPort->clippedWidthInt > rasterXDimInt)
-{
-  myRasterViewPort->clippedWidthInt = rasterXDimInt;
-}
-if (myRasterViewPort->clippedHeightInt > rasterYDimInt)
-{
-  myRasterViewPort->clippedHeightInt = rasterYDimInt;
-}
+  // make sure we don't exceed size of raster, otherwise GDAL RasterIO doesn't like it
+  if (myRasterViewPort->clippedWidthInt > rasterXDimInt)
+  {
+    myRasterViewPort->clippedWidthInt = rasterXDimInt;
+  }
+  if (myRasterViewPort->clippedHeightInt > rasterYDimInt)
+  {
+    myRasterViewPort->clippedHeightInt = rasterYDimInt;
+  }
 
-// get dimensions of clipped raster image in device coordinate space (this is the size of the viewport)
-myRasterViewPort->topLeftPoint = theQgsMapToPixel->transform(myRasterExtent.xMin(), myRasterExtent.yMax());
-myRasterViewPort->bottomRightPoint = theQgsMapToPixel->transform(myRasterExtent.xMax(), myRasterExtent.yMin());
+  // get dimensions of clipped raster image in device coordinate space (this is the size of the viewport)
+  myRasterViewPort->topLeftPoint = theQgsMapToPixel->transform(myRasterExtent.xMin(), myRasterExtent.yMax());
+  myRasterViewPort->bottomRightPoint = theQgsMapToPixel->transform(myRasterExtent.xMax(), myRasterExtent.yMin());
 
-// Since GDAL's RasterIO can't handle floating point, we have to round to
-// the nearest pixel.  Add 0.5 to get rounding instead of truncation
-// out of static_cast<int>.
-myRasterViewPort->drawableAreaXDimInt =
-static_cast<int>(myRasterViewPort->bottomRightPoint.x() + 0.5) -
-static_cast<int>(myRasterViewPort->topLeftPoint    .x() + 0.5);
+  // Since GDAL's RasterIO can't handle floating point, we have to round to
+  // the nearest pixel.  Add 0.5 to get rounding instead of truncation
+  // out of static_cast<int>.
+  myRasterViewPort->drawableAreaXDimInt =
+    static_cast<int>(myRasterViewPort->bottomRightPoint.x() + 0.5) -
+    static_cast<int>(myRasterViewPort->topLeftPoint    .x() + 0.5);
 
   myRasterViewPort->drawableAreaYDimInt =
     static_cast<int>(myRasterViewPort->bottomRightPoint.y() + 0.5) -
     static_cast<int>(myRasterViewPort->topLeftPoint    .y() + 0.5);
 
 #ifdef QGISDEBUG
-QgsLogger::debug("QgsRasterLayer::draw: mapUnitsPerPixel", theQgsMapToPixel->mapUnitsPerPixel(), 1, __FILE__,\
-		 __FUNCTION__, __LINE__);
-QgsLogger::debug("QgsRasterLayer::draw: rasterXDimInt", rasterXDimInt, 1, __FILE__, __FUNCTION__, __LINE__); 
-QgsLogger::debug("QgsRasterLayer::draw: rasterYDimInt", rasterYDimInt, 1, __FILE__, __FUNCTION__, __LINE__);
+  QgsLogger::debug("QgsRasterLayer::draw: mapUnitsPerPixel", theQgsMapToPixel->mapUnitsPerPixel(), 1, __FILE__,\
+                   __FUNCTION__, __LINE__);
+  QgsLogger::debug("QgsRasterLayer::draw: rasterXDimInt", rasterXDimInt, 1, __FILE__, __FUNCTION__, __LINE__); 
+  QgsLogger::debug("QgsRasterLayer::draw: rasterYDimInt", rasterYDimInt, 1, __FILE__, __FUNCTION__, __LINE__);
 
-QgsLogger::debug("QgsRasterLayer::draw: rectXOffsetFloat", myRasterViewPort->rectXOffsetFloat, 1, __FILE__,\
-		 __FUNCTION__, __LINE__);
-QgsLogger::debug("QgsRasterLayer::draw: rectXOffsetInt", myRasterViewPort->rectXOffsetInt, 1, __FILE__,\
-		 __FUNCTION__, __LINE__);
-QgsLogger::debug("QgsRasterLayer::draw: rectYOffsetFloat", myRasterViewPort->rectYOffsetFloat, 1, __FILE__,\
-		 __FUNCTION__, __LINE__);
-QgsLogger::debug("QgsRasterLayer::draw: rectYOffsetInt", myRasterViewPort->rectYOffsetInt, 1, __FILE__,\
-		 __FUNCTION__, __LINE__);
+  QgsLogger::debug("QgsRasterLayer::draw: rectXOffsetFloat", myRasterViewPort->rectXOffsetFloat, 1, __FILE__,\
+                   __FUNCTION__, __LINE__);
+  QgsLogger::debug("QgsRasterLayer::draw: rectXOffsetInt", myRasterViewPort->rectXOffsetInt, 1, __FILE__,\
+                   __FUNCTION__, __LINE__);
+  QgsLogger::debug("QgsRasterLayer::draw: rectYOffsetFloat", myRasterViewPort->rectYOffsetFloat, 1, __FILE__,\
+                   __FUNCTION__, __LINE__);
+  QgsLogger::debug("QgsRasterLayer::draw: rectYOffsetInt", myRasterViewPort->rectYOffsetInt, 1, __FILE__,\
+                   __FUNCTION__, __LINE__);
 
-QgsLogger::debug("QgsRasterLayer::draw: myRasterExtent.xMin()", myRasterExtent.xMin(), 1, __FILE__, __FUNCTION__,\
-		 __LINE__);
-QgsLogger::debug("QgsRasterLayer::draw: myRasterExtent.xMax()", myRasterExtent.xMax(), 1, __FILE__, __FUNCTION__,\
-		 __LINE__);
-QgsLogger::debug("QgsRasterLayer::draw: myRasterExtent.yMin()", myRasterExtent.yMin(), 1, __FILE__, __FUNCTION__,\
-		 __LINE__);
-QgsLogger::debug("QgsRasterLayer::draw: myRasterExtent.yMax()", myRasterExtent.yMax(), 1, __FILE__, __FUNCTION__,\
-		 __LINE__);
+  QgsLogger::debug("QgsRasterLayer::draw: myRasterExtent.xMin()", myRasterExtent.xMin(), 1, __FILE__, __FUNCTION__,\
+                   __LINE__);
+  QgsLogger::debug("QgsRasterLayer::draw: myRasterExtent.xMax()", myRasterExtent.xMax(), 1, __FILE__, __FUNCTION__,\
+                   __LINE__);
+  QgsLogger::debug("QgsRasterLayer::draw: myRasterExtent.yMin()", myRasterExtent.yMin(), 1, __FILE__, __FUNCTION__,\
+                   __LINE__);
+  QgsLogger::debug("QgsRasterLayer::draw: myRasterExtent.yMax()", myRasterExtent.yMax(), 1, __FILE__, __FUNCTION__,\
+                   __LINE__);
 
-QgsLogger::debug("QgsRasterLayer::draw: topLeftPoint.x()", myRasterViewPort->topLeftPoint.x(), 1, __FILE__,\
-		 __FUNCTION__, __LINE__);
-QgsLogger::debug("QgsRasterLayer::draw: bottomRightPoint.x()", myRasterViewPort->bottomRightPoint.x(), 1, __FILE__,\
-		 __FUNCTION__, __LINE__);
-QgsLogger::debug("QgsRasterLayer::draw: topLeftPoint.y()", myRasterViewPort->topLeftPoint.y(), 1, __FILE__,\
-		 __FUNCTION__, __LINE__);
-QgsLogger::debug("QgsRasterLayer::draw: bottomRightPoint.y()", myRasterViewPort->bottomRightPoint.y(), 1, __FILE__,\
-		 __FUNCTION__, __LINE__);
+  QgsLogger::debug("QgsRasterLayer::draw: topLeftPoint.x()", myRasterViewPort->topLeftPoint.x(), 1, __FILE__,\
+                   __FUNCTION__, __LINE__);
+  QgsLogger::debug("QgsRasterLayer::draw: bottomRightPoint.x()", myRasterViewPort->bottomRightPoint.x(), 1, __FILE__,\
+                   __FUNCTION__, __LINE__);
+  QgsLogger::debug("QgsRasterLayer::draw: topLeftPoint.y()", myRasterViewPort->topLeftPoint.y(), 1, __FILE__,\
+                   __FUNCTION__, __LINE__);
+  QgsLogger::debug("QgsRasterLayer::draw: bottomRightPoint.y()", myRasterViewPort->bottomRightPoint.y(), 1, __FILE__,\
+                   __FUNCTION__, __LINE__);
 
-QgsLogger::debug("QgsRasterLayer::draw: clippedXMinDouble", myRasterViewPort->clippedXMinDouble, 1, __FILE__,\
-		 __FUNCTION__, __LINE__);
-QgsLogger::debug("QgsRasterLayer::draw: clippedXMaxDouble", myRasterViewPort->clippedXMaxDouble, 1, __FILE__,\
-		 __FUNCTION__, __LINE__);
-QgsLogger::debug("QgsRasterLayer::draw: clippedYMinDouble", myRasterViewPort->clippedYMinDouble, 1, __FILE__,\
-		 __FUNCTION__, __LINE__);
-QgsLogger::debug("QgsRasterLayer::draw: clippedYMaxDouble", myRasterViewPort->clippedYMaxDouble, 1, __FILE__,\
-		 __FUNCTION__, __LINE__); 
+  QgsLogger::debug("QgsRasterLayer::draw: clippedXMinDouble", myRasterViewPort->clippedXMinDouble, 1, __FILE__,\
+                   __FUNCTION__, __LINE__);
+  QgsLogger::debug("QgsRasterLayer::draw: clippedXMaxDouble", myRasterViewPort->clippedXMaxDouble, 1, __FILE__,\
+                   __FUNCTION__, __LINE__);
+  QgsLogger::debug("QgsRasterLayer::draw: clippedYMinDouble", myRasterViewPort->clippedYMinDouble, 1, __FILE__,\
+                   __FUNCTION__, __LINE__);
+  QgsLogger::debug("QgsRasterLayer::draw: clippedYMaxDouble", myRasterViewPort->clippedYMaxDouble, 1, __FILE__,\
+                   __FUNCTION__, __LINE__); 
 
-QgsLogger::debug("QgsRasterLayer::draw: clippedWidthInt", myRasterViewPort->clippedWidthInt, 1, __FILE__,\
-		 __FUNCTION__, __LINE__);
-QgsLogger::debug("QgsRasterLayer::draw: clippedHeightInt", myRasterViewPort->clippedHeightInt, 1, __FILE__,\
-		 __FUNCTION__, __LINE__);  
-QgsLogger::debug("QgsRasterLayer::draw: drawableAreaXDimInt", myRasterViewPort->drawableAreaXDimInt, 1, __FILE__,\
-		 __FUNCTION__, __LINE__);
-QgsLogger::debug("QgsRasterLayer::draw: drawableAreaYDimInt", myRasterViewPort->drawableAreaYDimInt, 1, __FILE__,\
-		 __FUNCTION__, __LINE__);
+  QgsLogger::debug("QgsRasterLayer::draw: clippedWidthInt", myRasterViewPort->clippedWidthInt, 1, __FILE__,\
+                   __FUNCTION__, __LINE__);
+  QgsLogger::debug("QgsRasterLayer::draw: clippedHeightInt", myRasterViewPort->clippedHeightInt, 1, __FILE__,\
+                   __FUNCTION__, __LINE__);  
+  QgsLogger::debug("QgsRasterLayer::draw: drawableAreaXDimInt", myRasterViewPort->drawableAreaXDimInt, 1, __FILE__,\
+                   __FUNCTION__, __LINE__);
+  QgsLogger::debug("QgsRasterLayer::draw: drawableAreaYDimInt", myRasterViewPort->drawableAreaYDimInt, 1, __FILE__,\
+                   __FUNCTION__, __LINE__);
 
-QgsDebugMsg("ReadXml: gray band name : " + grayBandNameQString);
-QgsDebugMsg("ReadXml: red band name : " + redBandNameQString);
-QgsDebugMsg("ReadXml: green band name : " + greenBandNameQString);
-QgsDebugMsg("ReadXml: blue band name : " + blueBandNameQString);
+  QgsDebugMsg("ReadXml: gray band name : " + grayBandNameQString);
+  QgsDebugMsg("ReadXml: red band name : " + redBandNameQString);
+  QgsDebugMsg("ReadXml: green band name : " + greenBandNameQString);
+  QgsDebugMsg("ReadXml: blue band name : " + blueBandNameQString);
 #endif
   
   // /\/\/\ - added to handle zoomed-in rasters
@@ -1404,7 +1404,7 @@ __FUNCTION__, __LINE__, 1);
   }
   
   delete myRasterViewPort;
-QgsDebugMsg("QgsRasterLayer::draw: exiting.");
+  QgsDebugMsg("QgsRasterLayer::draw: exiting.");
 
   return TRUE;
 
