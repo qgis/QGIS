@@ -60,8 +60,8 @@ class QgsScaleBarPlugin:public QObject, public QgisPlugin
   void unload();
   //! show the help document
   void help();
-  //! set scale bar placement
-  void setPlacement(QString);
+  //! set scale bar placement.
+  void setPlacement(int);
   //! set preferred size of scale bar
   void setPreferredSize(int);
   //! set whether the scale bar length should snap to the closest A*10^B
@@ -69,7 +69,7 @@ class QgsScaleBarPlugin:public QObject, public QgisPlugin
   //! set whether scale bar is enabled
   void setEnabled(bool);
   //! set the scale bar style
-  void setStyle(QString);
+  void setStyle(int);
   //! set the scale bar colour
   void setColour(QColor);
 
@@ -80,16 +80,18 @@ class QgsScaleBarPlugin:public QObject, public QgisPlugin
   int pluginType;
   //! Id of the plugin's menu. Used for unloading
   int menuId;
-  //! Placement of the scale bar
-  QString mPlacement;
+  //! Placement of the scale bar. An index and the translated text
+  int mPlacementIndex;
+  QStringList mPlacementLabels;
   //! The size preferred size of the scale bar
   int mPreferredSize;
   //! Should we snap to integer times power of 10?
   bool mSnapping;
   //! Scale bar enabled?
   bool mEnabled;
-  //! Style of scale bar
-  QString mStyle;
+  //! Style of scale bar. An index and the translated text
+  int mStyleIndex;
+  QStringList mStyleLabels;
   //! The scale bar colour
   QColor mColour;
 

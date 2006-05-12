@@ -74,11 +74,13 @@ QgsNorthArrowPlugin::QgsNorthArrowPlugin(QgisApp * theQGisApp,
                                          QgisIface * theQgisInterFace):
     QgisPlugin(name_,description_,version_,type_),
     qgisMainWindowPointer(theQGisApp),
-    qGisInterface(theQgisInterFace)
+    qGisInterface(theQgisInterFace),
+    mPlacementIndex(1)
 {
   mRotationInt=0;
   mAutomatic=true;
-  mPlacement=tr("Bottom Left");
+  mPlacementLabels << tr("Bottom Left") << tr("Top Left") << tr("Top Right") << tr("Bottom Right");
+  mPlacementIndex = 0;
 }
 
 QgsNorthArrowPlugin::~QgsNorthArrowPlugin()
@@ -119,7 +121,7 @@ void QgsNorthArrowPlugin::projectRead()
     //default text to start with - try to fetch it from qgsproject
 
     mRotationInt = QgsProject::instance()->readNumEntry("NorthArrow","/Rotation",0);
-    mPlacement = QgsProject::instance()->readEntry("NorthArrow","/Placement","Bottom Left");
+    mPlacementIndex = QgsProject::instance()->readNumEntry("NorthArrow","/Placement",0);
     mEnable = QgsProject::instance()->readBoolEntry("NorthArrow","/Enabled",true);
     mAutomatic = QgsProject::instance()->readBoolEntry("NorthArrow","/Automatic",true);
 }
@@ -134,15 +136,16 @@ void QgsNorthArrowPlugin::help()
 void QgsNorthArrowPlugin::run()
 {
   QgsNorthArrowPluginGui *myPluginGui = new QgsNorthArrowPluginGui(qgisMainWindowPointer, QgisGui::ModalDialogFlags);
-  //overides function byt the same name created in .ui
+  //overides function by the same name created in .ui
   myPluginGui->setRotation(mRotationInt);
-  myPluginGui->setPlacement(mPlacement);
+  myPluginGui->setPlacementLabels(mPlacementLabels);
+  myPluginGui->setPlacement(mPlacementIndex);
   myPluginGui->setEnabled(mEnable);
   myPluginGui->setAutomatic(mAutomatic);
 
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(rotationChanged(int)), this, SLOT(rotationChanged(int)));
-  connect(myPluginGui, SIGNAL(changePlacement(QString)), this, SLOT(setPlacement(QString)));
+  connect(myPluginGui, SIGNAL(changePlacement(int)), this, SLOT(setPlacement(int)));
   connect(myPluginGui, SIGNAL(enableAutomatic(bool)), this, SLOT(setAutomatic(bool)));
   connect(myPluginGui, SIGNAL(enableNorthArrow(bool)), this, SLOT(setEnabled(bool)));
   connect(myPluginGui, SIGNAL(needToRefresh()), this, SLOT(refreshCanvas()));
@@ -202,26 +205,28 @@ void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
       int myWidth = theQPainter->device()->width();
 
 #ifdef QGISDEBUG
-      std::cout << "Rendering n-arrow at " << mPlacement.toLocal8Bit().data() << std::endl;
+      std::cout << "Rendering n-arrow at " << mPlacementLabels.at(mPlacementIndex).toLocal8Bit().data() << std::endl;
 #endif
       //Determine placement of label from form combo box
-      if (mPlacement==tr("Bottom Left"))
+      switch (mPlacementIndex)
       {
+      case 0: // Bottom Left
         theQPainter->translate(0,myHeight-myQPixmap.height());
-      }
-      else if (mPlacement==tr("Top Right"))
-      {
-        theQPainter->translate(myWidth-myQPixmap.width(),0);
-      }
-      else if (mPlacement==tr("Bottom Right"))
-      {
-        theQPainter->translate(myWidth-myQPixmap.width(),
-                             myHeight-myQPixmap.height());
-      }
-      else // defaulting to top left
-      {
+	break;
+      case 1: // Top Left
         //no need to translate for TL corner because we're already at the origin
         theQPainter->translate(0, 0);
+	break;
+      case 2: // Top Right
+        theQPainter->translate(myWidth-myQPixmap.width(),0);
+	break;
+      case 3: // Bottom Right
+        theQPainter->translate(myWidth-myQPixmap.width(),
+                             myHeight-myQPixmap.height());
+	break;
+      default:
+	std::cout << "Unable to determine where to put north arrow so defaulting to top left" 
+		  << std::endl;
       }
       //rotate the canvas by the north arrow rotation amount
       theQPainter->rotate( mRotationInt );
@@ -264,10 +269,10 @@ void QgsNorthArrowPlugin::rotationChanged(int theInt)
 }
 
 //! set placement of north arrow
-void QgsNorthArrowPlugin::setPlacement(QString theQString)
+void QgsNorthArrowPlugin::setPlacement(int placementIndex)
 {
-  mPlacement = theQString;
-  QgsProject::instance()->writeEntry("NorthArrow","/Placement", mPlacement);
+  mPlacementIndex = placementIndex;
+  QgsProject::instance()->writeEntry("NorthArrow","/Placement", mPlacementIndex);
 }
 
 void QgsNorthArrowPlugin::setEnabled(bool theBool)

@@ -77,9 +77,12 @@ QgsScaleBarPlugin::QgsScaleBarPlugin(QgisApp * theQGisApp,
         qgisMainWindowPointer(theQGisApp),
         qGisInterface(theQgisInterFace)
 {
+  mPlacementLabels << tr("Top Left") << tr("Bottom Left") << tr("Top Right") << tr("Bottom Right");
+  mStyleLabels << tr("Tick Down") << tr("Tick Up") << tr("Bar") << tr("Box");
+
   mPreferredSize = 30;
-  mPlacement = "Top Left";
-  mStyle = "Tick Down";
+  mPlacementIndex = 0;
+  mStyleIndex = 0;
   mEnabled = true;
   mSnapping = true;
   mColour = Qt::black;
@@ -125,8 +128,8 @@ void QgsScaleBarPlugin::projectRead()
 
 
     mPreferredSize = QgsProject::instance()->readNumEntry("ScaleBar","/PreferredSize",30);
-    mStyle = QgsProject::instance()->readEntry("ScaleBar","/Style","Tick Down");
-    mPlacement = QgsProject::instance()->readEntry("ScaleBar","/Placement","Top Left");
+    mStyleIndex = QgsProject::instance()->readNumEntry("ScaleBar","/Style",0);
+    mPlacementIndex = QgsProject::instance()->readNumEntry("ScaleBar","/Placement",0);
     mEnabled = QgsProject::instance()->readBoolEntry("ScaleBar","/Enabled",true);
     mSnapping = QgsProject::instance()->readBoolEntry("ScaleBar","/Snapping",true);
     int myRedInt = QgsProject::instance()->readNumEntry("ScaleBar","/ColorRedPart",0);
@@ -146,16 +149,18 @@ void QgsScaleBarPlugin::run()
   QgsScaleBarPluginGui *myPluginGui=new QgsScaleBarPluginGui(qgisMainWindowPointer, QgisGui::ModalDialogFlags);
   myPluginGui->setPreferredSize(mPreferredSize);
   myPluginGui->setSnapping(mSnapping);
-  myPluginGui->setPlacement(mPlacement);
+  myPluginGui->setPlacementLabels(mPlacementLabels);
+  myPluginGui->setPlacement(mPlacementIndex);
   myPluginGui->setEnabled(mEnabled);
-  myPluginGui->setStyle(mStyle);
+  myPluginGui->setStyleLabels(mStyleLabels);
+  myPluginGui->setStyle(mStyleIndex);
   myPluginGui->setColour(mColour);
 
   connect(myPluginGui, SIGNAL(changePreferredSize(int)), this, SLOT(setPreferredSize(int)));
   connect(myPluginGui, SIGNAL(changeSnapping(bool)), this, SLOT(setSnapping(bool)));
-  connect(myPluginGui, SIGNAL(changePlacement(QString)), this, SLOT(setPlacement(QString)));
+  connect(myPluginGui, SIGNAL(changePlacement(int)), this, SLOT(setPlacement(int)));
   connect(myPluginGui, SIGNAL(changeEnabled(bool)), this, SLOT(setEnabled(bool)));
-  connect(myPluginGui, SIGNAL(changeStyle(QString)), this, SLOT(setStyle(QString)));
+  connect(myPluginGui, SIGNAL(changeStyle(int)), this, SLOT(setStyle(int)));
   connect(myPluginGui, SIGNAL(changeColour(QColor)), this, SLOT(setColour(QColor)));
   connect(myPluginGui, SIGNAL(refreshCanvas()), this, SLOT(refreshCanvas()));
   myPluginGui->show();
@@ -294,28 +299,25 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     //determine the origin of scale bar depending on placement selected
     int myOriginX=myMargin;
     int myOriginY=myMargin;
-    if (mPlacement==tr("Top Left"))
+    switch (mPlacementIndex)
     {
+    case 0: // Top Left
       myOriginX=myMargin;
       myOriginY=myMargin;
-    }
-    else if (mPlacement==tr("Bottom Left"))
-    {
+      break;
+    case 1: // Bottom Left
       myOriginX=myMargin;
       myOriginY=myCanvasHeight - myMargin;
-    }
-    else if (mPlacement==tr("Top Right"))
-    {
+      break;
+    case 2: // Top Right
       myOriginX=myCanvasWidth - ((int) myTotalScaleBarWidth) - myMargin;
       myOriginY=myMargin;
-    }
-    else if (mPlacement==tr("Bottom Right"))
-    {
+      break;
+    case 3: // Bottom Right
       myOriginX=myCanvasWidth - ((int) myTotalScaleBarWidth) - myMargin;
       myOriginY=myCanvasHeight - myMargin;
-    }
-    else
-    {
+      break;
+    default:
       std::cout << "Unable to determine where to put scale bar so defaulting to top left" << std::endl;
     }
 
@@ -327,7 +329,9 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     int myScaleBarWidthInt = (int) myScaleBarWidth;
 
     //Create array of vertices for scale bar depending on style
-    if (mStyle==tr("Tick Down"))
+    switch (mStyleIndex)
+    {
+    case 0: // Tick Down
     {
       QPolygon myTickDownArray(4);
       //draw a buffer first so bar shows up on dark images
@@ -348,8 +352,9 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
               (myScaleBarWidthInt + myOriginX), (myOriginY + myMajorTickSize)
               );
       theQPainter->drawPolyline(myTickDownArray);
+      break;
     }
-    else if (mStyle==tr("Tick Up"))
+    case 1: // tick up
     {
       QPolygon myTickUpArray(4);
       //draw a buffer first so bar shows up on dark images
@@ -370,8 +375,9 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
               (myScaleBarWidthInt + myOriginX),  myOriginY
               );
       theQPainter->drawPolyline(myTickUpArray);
+      break;
     }
-    else if (mStyle==tr("Bar"))
+    case 2: // Bar
     {
       QPolygon myBarArray(2);
       //draw a buffer first so bar shows up on dark images
@@ -388,8 +394,9 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
               (myScaleBarWidthInt + myOriginX),  (myOriginY + (myMajorTickSize/2))
               );
       theQPainter->drawPolyline(myBarArray);
+      break;
     }
-    else if (mStyle==tr("Box"))
+    case 3: // box
     {
       // Want square corners for a box
       myBackgroundPen.setJoinStyle( Qt::MiterJoin );
@@ -427,6 +434,10 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
               midPointX                    ,  myOriginY
               );
       theQPainter->drawPolygon(myBoxArray);
+      break;
+    }
+    default:
+      std::cerr << "Unknown style\n";
     }
 
     //Do actual drawing of scale bar
@@ -529,10 +540,10 @@ void QgsScaleBarPlugin::unload()
 }
 
 //! set placement of scale bar
-void QgsScaleBarPlugin::setPlacement(QString theQString)
+void QgsScaleBarPlugin::setPlacement(int placementIndex)
 {
-  mPlacement = theQString;
-  QgsProject::instance()->writeEntry("ScaleBar","/Placement",mPlacement);
+  mPlacementIndex = placementIndex;
+  QgsProject::instance()->writeEntry("ScaleBar","/Placement",mPlacementIndex);
 }
 
 //! set preferred size of scale bar
@@ -556,10 +567,10 @@ void QgsScaleBarPlugin::setEnabled(bool theBool)
   QgsProject::instance()->writeEntry("ScaleBar","/Enabled",mEnabled);
 }
 //! set scale bar enable
-void QgsScaleBarPlugin::setStyle(QString theStyleQString)
+void QgsScaleBarPlugin::setStyle(int styleIndex)
 {
-  mStyle = theStyleQString;
-   QgsProject::instance()->writeEntry("ScaleBar","/Style",mStyle);
+  mStyleIndex = styleIndex;
+  QgsProject::instance()->writeEntry("ScaleBar","/Style",mStyleIndex);
 }
 //! set the scale bar colour
 void QgsScaleBarPlugin::setColour(QColor theQColor)

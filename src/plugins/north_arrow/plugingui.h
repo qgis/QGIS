@@ -31,13 +31,13 @@ public slots:
 
 private:
     void rotatePixmap(int theRotationInt);
-    void paintEvent( QPaintEvent * );//overloads qwidget
+    //    void paintEvent( QPaintEvent * );//overloads qwidget
     void resizeEvent(QResizeEvent *); //overloads qwidget
 signals:
    //void drawRasterLayer(QString);
    //void drawVectorrLayer(QString,QString,QString);
    void rotationChanged(int);
-   void changePlacement(QString);
+   void changePlacement(int);
    // enable NorthArrow
    void enableNorthArrow(bool);
    void enableAutomatic(bool);
@@ -45,7 +45,8 @@ signals:
 
 public slots:
     void setRotation(int);
-    void setPlacement(QString thePlacementQString);
+    void setPlacementLabels(QStringList&);
+    void setPlacement(int);
     void setEnabled(bool);
     void setAutomatic(bool);
     void setAutomaticDisabled();
