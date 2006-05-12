@@ -2730,6 +2730,19 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
   dataProvider->reset();
   dataProvider->select(&selectrect);
 
+  if(projectionsEnabled() && coordinateTransform())
+    {
+      //inverse tramsform point to layer SRS
+      try
+	{
+	  point = coordinateTransform()->transform(point, QgsCoordinateTransform::INVERSE);
+	}
+      catch(QgsCsException &cse)
+	{
+	  return false;
+	}
+    }
+
   //go to through the features reported by the spatial filter of the provider
   while ((fet = dataProvider->getNextFeature(false)))
   {
@@ -2783,6 +2796,19 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
   point.setX(mindistx);
   point.setY(mindisty);
 
+  if(projectionsEnabled())
+    {
+      //transform point to canvas SRC
+      try
+	{
+	  point = coordinateTransform()->transform(point);
+	}
+      catch(QgsCsException &cse)
+	{
+	  return false;
+	}
+    }
+
   return true;
 }
 
@@ -2807,9 +2833,22 @@ bool QgsVectorLayer::snapVertexWithContext(QgsPoint& point, QgsGeometryVertexInd
 
   double minSqrDist  = tolerance*tolerance; //current minimum distance
 
-  QgsRect selectrect(point.x()-tolerance, point.y()-tolerance, point.x()+tolerance, point.y()+tolerance);
+  QgsRect selectrect(origPoint.x()-tolerance, origPoint.y()-tolerance, origPoint.x()+tolerance, origPoint.y()+tolerance);
   dataProvider->reset();
   dataProvider->select(&selectrect);
+
+  if(projectionsEnabled() && coordinateTransform())
+    {
+      //inverse tramsform points to layer SRS
+      try
+	{
+	  origPoint = coordinateTransform()->transform(point, QgsCoordinateTransform::INVERSE);
+	}
+      catch(QgsCsException &cse)
+	{
+	  return false;
+	}
+    }
 
   // Go through the committed features
   while ((feature = dataProvider->getNextFeature(false)))
@@ -2830,8 +2869,6 @@ bool QgsVectorLayer::snapVertexWithContext(QgsPoint& point, QgsGeometryVertexInd
       snappedFeatureId  = feature->featureId();
       snappedGeometry   = *(feature->geometry());
       vertexFound = true;
-      delete feature;
-      return true;
     }
     delete feature;
   }
@@ -2857,7 +2894,6 @@ bool QgsVectorLayer::snapVertexWithContext(QgsPoint& point, QgsGeometryVertexInd
       snappedFeatureId  =   (*iter)->featureId();
       snappedGeometry   = *((*iter)->geometry());
       vertexFound = true;
-      return true;
     }
   }
 
@@ -2873,11 +2909,27 @@ bool QgsVectorLayer::snapVertexWithContext(QgsPoint& point, QgsGeometryVertexInd
 	  snappedFeatureId  = it->first;
 	  snappedGeometry   = it->second;
 	  vertexFound = true;
-	  return true;
 	}
     }
 
-  return false;
+  if(!vertexFound)
+    {
+      return false;
+    }
+
+   if(projectionsEnabled())
+    {
+      //transform point to canvas SRC
+      try
+	{
+	  point = coordinateTransform()->transform(point);
+	}
+      catch(QgsCsException &cse)
+	{
+	  return false;
+	}
+    }
+  return true;
 }
 
 
@@ -2903,6 +2955,19 @@ QgsGeometry& snappedGeometry, double tolerance)
   QgsRect selectrect(point.x()-tolerance, point.y()-tolerance, point.x()+tolerance, point.y()+tolerance);
   dataProvider->reset();
   dataProvider->select(&selectrect);
+
+  if(projectionsEnabled() && coordinateTransform())
+    {
+      //inverse tramsform points to layer SRS
+      try
+	{
+	  origPoint = coordinateTransform()->transform(point, QgsCoordinateTransform::INVERSE);
+	}
+      catch(QgsCsException &cse)
+	{
+	  return false;
+	}
+    }
 
   // Go through the committed features
   while ((feature = dataProvider->getNextFeature(false)))
