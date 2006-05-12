@@ -25,11 +25,13 @@ public:
     QgsScaleBarPluginGui();
     QgsScaleBarPluginGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsScaleBarPluginGui();
-    void setPlacement(QString);
+    void setPlacementLabels(QStringList&);
+    void setPlacement(int);
     void setPreferredSize(int);
     void setSnapping(bool);
     void setEnabled(bool);
-    void setStyle(QString);
+    void setStyleLabels(QStringList&);
+    void setStyle(int);
     void setColour(QColor);
 
     
@@ -46,11 +48,11 @@ private:
 signals:
    void drawRasterLayer(QString);
    void drawVectorrLayer(QString,QString,QString);
-   void changePlacement(QString);
+   void changePlacement(int);
    void changePreferredSize(int);
    void changeSnapping(bool);
    void changeEnabled(bool);
-   void changeStyle(QString);
+   void changeStyle(int);
    void changeColour(QColor);
    void refreshCanvas();
 };
