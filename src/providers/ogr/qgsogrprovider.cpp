@@ -1130,6 +1130,7 @@ bool QgsOgrProvider::deleteFeatures(std::list<int> const & id)
       returnvalue=false;
     }
   }
+  ogrLayer->SyncToDisk();
   return returnvalue;
 }
 
