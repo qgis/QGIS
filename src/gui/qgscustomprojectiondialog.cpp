@@ -901,7 +901,7 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
   if ( wgs84Proj == NULL ) 
   {
     QMessageBox::information( this, tr("QGIS Custom Projection"),
-            tr("Internal Error (source projection invalid?") );
+            tr("Internal Error (source projection invalid?)") );
     projectedX->setText("");
     projectedY->setText("");
     pj_free(myProj);

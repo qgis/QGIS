@@ -175,7 +175,7 @@ void QgsAbout::openUrl(QString url)
 	 tr("Enter the name of a web browser to use (eg. konqueror).\n"
 	    "Enter the full path if the browser is not in your PATH.\n"
             "You can change this option later by selection Options from"
-	    " the Tools menu."),
+	    " the Settings menu (Help Browser tab)."),
         QLineEdit::Normal,
         QString::null, &ok, this);
     if (ok && !text.isEmpty())
