@@ -42,6 +42,7 @@ QgsComposer::QgsComposer( QgisApp *qgis): QMainWindow()
 {
   setupUi(this);
   setupTheme();
+  setWindowTitle("QGIS - print composer");
 
   mQgis = qgis;
   mFirstTime = true;
