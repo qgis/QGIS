@@ -161,16 +161,6 @@ void QgsNorthArrowPluginGui::rotatePixmap(int theRotationInt)
   }
 }
 
-// Called when the widget needs to be updated.
-//
-/*
-void QgsNorthArrowPluginGui::paintEvent( QPaintEvent * thePaintEvent)
-{
-  std::cerr<<__FILE__<<__LINE__<<'\n';
-  rotatePixmap(sliderRotation->value());
-  std::cerr<<__FILE__<<__LINE__<<'\n';
-}
-*/
 //
 // Called when the widget has been resized.
 // 

@@ -69,7 +69,10 @@ QgsCopyrightLabelPlugin::QgsCopyrightLabelPlugin(QgisApp * theQGisApp,
         QgisPlugin(name_,description_,version_,type_),
         qgisMainWindowPointer(theQGisApp),
         qGisInterface(theQgisInterFace)
-{}
+{
+  mPlacementLabels << tr("Bottom Left") << tr("Top Left") 
+                   << tr("Top Right") << tr("Bottom Right");
+}
 
 QgsCopyrightLabelPlugin::~QgsCopyrightLabelPlugin()
 {}
@@ -110,7 +113,7 @@ void QgsCopyrightLabelPlugin::projectRead()
     mQFont.setFamily(QgsProject::instance()->readEntry("CopyrightLabel","/FontName","Arial"));
     mQFont.setPointSize(QgsProject::instance()->readNumEntry("CopyrightLabel","/FontSize",14));
     mLabelQString = QgsProject::instance()->readEntry("CopyrightLabel","/Label","&copy; QGIS 2006");
-    mPlacement = QgsProject::instance()->readEntry("CopyrightLabel","/Placement","Bottom Right");
+    mPlacementIndex = QgsProject::instance()->readNumEntry("CopyrightLabel","/Placement",3);
     mEnable = QgsProject::instance()->readBoolEntry("CopyrightLabel","/Enabled",true);
     // todo - read & store state of font color
     mLabelQColor = QColor(Qt::black);
@@ -133,10 +136,11 @@ void QgsCopyrightLabelPlugin::run()
     connect(myPluginGui, SIGNAL(changeFont(QFont )), this, SLOT(setFont(QFont )));
     connect(myPluginGui, SIGNAL(changeLabel(QString )), this, SLOT(setLabel(QString )));
     connect(myPluginGui, SIGNAL(changeColor(QColor)), this, SLOT(setColor(QColor)));
-    connect(myPluginGui, SIGNAL(changePlacement(QString)), this, SLOT(setPlacement(QString)));
+    connect(myPluginGui, SIGNAL(changePlacement(int)), this, SLOT(setPlacement(int)));
     connect(myPluginGui, SIGNAL(enableCopyrightLabel(bool)), this, SLOT(setEnable(bool)));
     myPluginGui->setText(mLabelQString);
-    myPluginGui->setPlacement(mPlacement);
+    myPluginGui->setPlacementLabels(mPlacementLabels);
+    myPluginGui->setPlacement(mPlacementIndex);
     myPluginGui->show();
 }
 //! Refresh the map display using the mapcanvas exported via the plugin interface
@@ -167,31 +171,31 @@ void QgsCopyrightLabelPlugin::renderLabel(QPainter * theQPainter)
         int myYOffset = myHeight;
         int myXOffset = myWidth;
 
-
         //Determine placement of label from form combo box
-        if (mPlacement==tr("Bottom Left"))
+        switch (mPlacementIndex)
         {
-            //Define bottom left hand corner start point
-            myYOffset = myYOffset - (myQSimpleText.height()+5);
-            myXOffset = 5;
-        }
-        else if (mPlacement==tr("Top Left"))
-        {
-            //Define top left hand corner start point
-            myYOffset = 5;
-            myXOffset = 5;
-        }
-        else if (mPlacement==tr("Top Right"))
-        {
-            //Define top right hand corner start point
-            myYOffset = 5;
-            myXOffset = myXOffset - (myQSimpleText.widthUsed()+5);
-        }
-        else // defaulting to bottom right
-        {
-            //Define bottom right hand corner start point
-            myYOffset = myYOffset - (myQSimpleText.height()+5);
-            myXOffset = myXOffset - (myQSimpleText.widthUsed()+5);
+        case 0: // Bottom Left
+          //Define bottom left hand corner start point
+          myYOffset = myYOffset - (myQSimpleText.height()+5);
+          myXOffset = 5;
+          break;
+        case 1: // Top left
+          //Define top left hand corner start point
+          myYOffset = 5;
+          myXOffset = 5;
+          break;
+        case 2: // Top Right
+          //Define top right hand corner start point
+          myYOffset = 5;
+          myXOffset = myXOffset - (myQSimpleText.widthUsed()+5);
+          break;
+        case 3: // Bottom Right
+          //Define bottom right hand corner start point
+          myYOffset = myYOffset - (myQSimpleText.height()+5);
+          myXOffset = myXOffset - (myQSimpleText.widthUsed()+5);
+          break;
+        default:
+          std::cerr << "Unknown placement index of " << mPlacementIndex << '\n';
         }
 
         //Paint label to canvas
@@ -243,10 +247,10 @@ void QgsCopyrightLabelPlugin::setColor(QColor theQColor)
 }
 
 //! set placement of copyright label
-void QgsCopyrightLabelPlugin::setPlacement(QString theQString)
+void QgsCopyrightLabelPlugin::setPlacement(int placementIndex)
 {
-    mPlacement = theQString;
-    QgsProject::instance()->writeEntry("CopyrightLabel","/Placement", mPlacement);
+    mPlacementIndex = placementIndex;
+    QgsProject::instance()->writeEntry("CopyrightLabel","/Placement", mPlacementIndex);
     refreshCanvas();
 }
 

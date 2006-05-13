@@ -63,7 +63,7 @@ class QgsCopyrightLabelPlugin:public QObject, public QgisPlugin
   //! change the copyright font colour
   void setColor(QColor);
   //! set copyright label placement
-  void setPlacement(QString);
+  void setPlacement(int);
   //! set copyright label enabled
   void setEnable(bool);
 
@@ -76,8 +76,9 @@ class QgsCopyrightLabelPlugin:public QObject, public QgisPlugin
   QString mLabelQString;
   //! This is the colour for the copyright label
   QColor mLabelQColor;
-  //! Placement of the copyright label
-  QString mPlacement;
+  //! Placement of the copyright label - index and translated label names
+  int mPlacementIndex;
+  QStringList mPlacementLabels;
   //! Copyright label enabled
   bool mEnable;
 

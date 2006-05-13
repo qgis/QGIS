@@ -44,7 +44,7 @@ void QgsCopyrightLabelPluginGui::on_pbnOK_clicked()
   emit changeFont(txtCopyrightText->currentFont());
   emit changeLabel(txtCopyrightText->text());
   emit changeColor(txtCopyrightText->color());
-  emit changePlacement(cboPlacement->currentText());
+  emit changePlacement(cboPlacement->currentIndex());
   emit enableCopyrightLabel(cboxEnabled->isChecked());
   
   done(1);
@@ -68,7 +68,13 @@ void QgsCopyrightLabelPluginGui::setText(QString theTextQString)
   txtCopyrightText->setPlainText(theTextQString);
 }
 
-void QgsCopyrightLabelPluginGui::setPlacement(QString thePlacementQString)
+void QgsCopyrightLabelPluginGui::setPlacementLabels(QStringList& labels)
 {
-  cboPlacement->setCurrentText(tr(thePlacementQString));
+  cboPlacement->clear();
+  cboPlacement->addItems(labels);
+}
+
+void QgsCopyrightLabelPluginGui::setPlacement(int placementIndex)
+{
+  cboPlacement->setCurrentIndex(placementIndex);
 }

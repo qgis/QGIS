@@ -74,13 +74,12 @@ QgsNorthArrowPlugin::QgsNorthArrowPlugin(QgisApp * theQGisApp,
                                          QgisIface * theQgisInterFace):
     QgisPlugin(name_,description_,version_,type_),
     qgisMainWindowPointer(theQGisApp),
-    qGisInterface(theQgisInterFace),
-    mPlacementIndex(1)
+    qGisInterface(theQgisInterFace)
 {
   mRotationInt=0;
   mAutomatic=true;
-  mPlacementLabels << tr("Bottom Left") << tr("Top Left") << tr("Top Right") << tr("Bottom Right");
-  mPlacementIndex = 0;
+  mPlacementLabels << tr("Bottom Left") << tr("Top Left") 
+                   << tr("Top Right") << tr("Bottom Right");
 }
 
 QgsNorthArrowPlugin::~QgsNorthArrowPlugin()
