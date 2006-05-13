@@ -38,6 +38,7 @@ class QgsSymbol{
     QgsSymbol(QGis::VectorType t, QString lvalue="", QString uvalue="", QString label="");
     /**Constructor*/
     QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString label, QColor c);
+    QgsSymbol(const QgsSymbol&);
     /**old constructors*/
     QgsSymbol();
     QgsSymbol(QColor c);
