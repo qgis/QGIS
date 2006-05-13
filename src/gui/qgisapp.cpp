@@ -599,10 +599,15 @@ void QgisApp::createActions()
   // Digitising Toolbar Items
   //
 
-  mActionStartEditing = new QAction(QIcon(myIconPath+"/mActionStartEditing.png"), tr("Start Editing"), this);
+  mActionStartEditing = new QAction(QIcon(myIconPath+"/mActionStartEditing.png"), 
+                                    tr("Start editing the current layer"), this);
   connect(mActionStartEditing, SIGNAL(triggered()), this, SLOT(startEditing()));
-  mActionStopEditing = new QAction(QIcon(myIconPath+"/mActionStopEditing.png"), tr("Stop Editing"), this);
+  //
+  mActionStopEditing = new QAction(QIcon(myIconPath+"/mActionStopEditing.png"), 
+                                   tr("Stop editing the current layer"), this);
+  mActionStopEditing->setStatusTip(tr("Stop editing the current layer")); 
   connect(mActionStopEditing, SIGNAL(triggered()), this, SLOT(stopEditing()));
+  //
   mActionCapturePoint= new QAction(QIcon(myIconPath+"/mActionCapturePoint.png"), tr("Capture Point"), this);
   mActionCapturePoint->setShortcut(tr(".","Capture Points"));
   mActionCapturePoint->setStatusTip(tr("Capture Points"));
@@ -4106,7 +4111,7 @@ void QgisApp::openURL(QString url, bool useQgisDocDirectory)
     QString myHeading = tr("QGIS Browser Selection");
     QString myMessage = tr("Enter the name of a web browser to use (eg. konqueror).\n");
     myMessage += tr("Enter the full path if the browser is not in your PATH.\n");
-    myMessage += tr("You can change this option later by selecting Preferences from the Settings menu.");
+    myMessage += tr("You can change this option later by selecting Options from the Settings menu (Help Browser tab).");
     QString text = QInputDialog::getText(myHeading,
         myMessage,
         QLineEdit::Normal,
