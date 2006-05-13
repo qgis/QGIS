@@ -2271,8 +2271,11 @@ findLayers_( QString const & fileFilters, list<QDomNode> const & layerNodes )
 
 void QgisApp::fileExit()
 {
-  removeAllLayers();
-  qApp->exit(0);
+  if (saveDirty() != QMessageBox::Cancel)
+  {
+    removeAllLayers();
+    qApp->exit(0);
+  }
 }
 
 
@@ -2662,7 +2665,7 @@ bool QgisApp::addProject(QString projectFile)
 
 
 
-void QgisApp::fileSave()
+bool QgisApp::fileSave()
 {
   // if we don't have a filename, then obviously we need to get one; note
   // that the project file name is reset to null in fileNew()
@@ -2697,7 +2700,7 @@ void QgisApp::fileSave()
     {
       // if they didn't select anything, just return
       // delete saveFileDialog; auto_ptr auto destroys
-      return;
+      return false;
     }
 
     // make sure we have the .qgs extension in the file name
@@ -2746,7 +2749,7 @@ void QgisApp::fileSave()
         Qt::NoButton );
 
   }
-
+  return true;
 } // QgisApp::fileSave
 
 
@@ -4319,7 +4322,8 @@ int QgisApp::saveDirty()
         QMessageBox::Cancel | QMessageBox::Escape);
     if (QMessageBox::Yes == answer )
     {
-      fileSave();
+      if (!fileSave())
+	answer = QMessageBox::Cancel;
     }
   }
 
@@ -4328,6 +4332,15 @@ int QgisApp::saveDirty()
   return answer;
 
 } // QgisApp::saveDirty()
+
+
+void QgisApp::closeEvent(QCloseEvent* event)
+{
+  // We'll close in our own good time, thank you very much
+  event->ignore();
+  // Do the usual checks and ask if they want to save, etc
+  fileExit();
+}
 
 
 void QgisApp::whatsThis()

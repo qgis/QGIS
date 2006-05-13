@@ -212,8 +212,8 @@ public slots:
   void saveWindowState();
   //! Restore the window and toolbar state
   void restoreWindowState();
-  //! Save project
-  void fileSave();
+  //! Save project. Returns true if the user selected a file to save to, false if not.
+  bool fileSave();
   //! Save project as
   void fileSaveAs();
   //! Open the project file corresponding to the
@@ -396,8 +396,8 @@ private:
   void pasteTransformations();
   //! check to see if file is dirty and if so, prompt the user th save it
   int saveDirty();
-  //! Set the pointer to the splash screen so status messages can be
-
+  //! Have some control over closing of the application
+  virtual void closeEvent(QCloseEvent* event);
 
   /// QgisApp aren't copyable
   QgisApp( QgisApp const & );
