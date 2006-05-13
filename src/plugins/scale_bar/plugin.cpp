@@ -77,11 +77,13 @@ QgsScaleBarPlugin::QgsScaleBarPlugin(QgisApp * theQGisApp,
         qgisMainWindowPointer(theQGisApp),
         qGisInterface(theQgisInterFace)
 {
-  mPlacementLabels << tr("Top Left") << tr("Bottom Left") << tr("Top Right") << tr("Bottom Right");
-  mStyleLabels << tr("Tick Down") << tr("Tick Up") << tr("Bar") << tr("Box");
+  mPlacementLabels << tr("Bottom Left") << tr("Top Left") 
+                   << tr("Top Right") << tr("Bottom Right");
+  mPlacementIndex = 1;
+  mStyleLabels << tr("Tick Down") << tr("Tick Up") 
+               << tr("Bar") << tr("Box");
 
   mPreferredSize = 30;
-  mPlacementIndex = 0;
   mStyleIndex = 0;
   mEnabled = true;
   mSnapping = true;
@@ -129,7 +131,7 @@ void QgsScaleBarPlugin::projectRead()
 
     mPreferredSize = QgsProject::instance()->readNumEntry("ScaleBar","/PreferredSize",30);
     mStyleIndex = QgsProject::instance()->readNumEntry("ScaleBar","/Style",0);
-    mPlacementIndex = QgsProject::instance()->readNumEntry("ScaleBar","/Placement",0);
+    mPlacementIndex = QgsProject::instance()->readNumEntry("ScaleBar","/Placement",2);
     mEnabled = QgsProject::instance()->readBoolEntry("ScaleBar","/Enabled",true);
     mSnapping = QgsProject::instance()->readBoolEntry("ScaleBar","/Snapping",true);
     int myRedInt = QgsProject::instance()->readNumEntry("ScaleBar","/ColorRedPart",0);
@@ -301,13 +303,13 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     int myOriginY=myMargin;
     switch (mPlacementIndex)
     {
-    case 0: // Top Left
-      myOriginX=myMargin;
-      myOriginY=myMargin;
-      break;
-    case 1: // Bottom Left
+    case 0: // Bottom Left
       myOriginX=myMargin;
       myOriginY=myCanvasHeight - myMargin;
+      break;
+    case 1: // Top Left
+      myOriginX=myMargin;
+      myOriginY=myMargin;
       break;
     case 2: // Top Right
       myOriginX=myCanvasWidth - ((int) myTotalScaleBarWidth) - myMargin;
