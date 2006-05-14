@@ -113,12 +113,9 @@ void QgsGeorefPlugin::initGui()
   // Connect the action to the run
   connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   
-  // add to the plugin menu
-  QMenu *pluginMenu = mQGisIface->getPluginMenu(tr("&Georeferencer"));
-  pluginMenu->addAction(mQActionPointer);
-
-  // Add to the toolbar
+  // Add to the toolbar & menu
   mQGisIface->addToolBarIcon(mQActionPointer);
+  mQGisIface->addPluginMenu(tr("&Georeferencer"), mQActionPointer);
 
 }
 //method defined in interface
@@ -137,9 +134,8 @@ void QgsGeorefPlugin::run()
 // Unload the plugin by cleaning up the GUI
 void QgsGeorefPlugin::unload()
 {
-  // TODO: make it work in Qt4 way
   // remove the GUI
-  mQGisIface->removePluginMenuItem(tr("&Georeferencer"),mMenuId);
+  mQGisIface->removePluginMenu(tr("&Georeferencer"),mQActionPointer);
   mQGisIface->removeToolBarIcon(mQActionPointer);
   delete mQActionPointer;
 }

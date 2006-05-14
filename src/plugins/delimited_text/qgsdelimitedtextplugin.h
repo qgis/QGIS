@@ -80,8 +80,6 @@ class QgsDelimitedTextPlugin:public QObject, public QgisPlugin, private Ui::QgsD
   QString pluginDescriptionQString;
   //! Plugin type as defined in Plugin::PLUGINTYPE
   int pluginType;
-  //! Id of the plugin's menu. Used for unloading
-  int menuId;
   //! Pionter to QGIS main application object
   QgisApp *qgisMainWindowPointer;
   //! Pointer to the QGIS interface object

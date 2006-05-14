@@ -80,15 +80,14 @@ private:
   //! Initializes all variables needed to run GPSBabel.
   void setupBabel();
 
-  //! Id of the plugin's menu. Used for unloading
-  int mMenuIdGPS, mMenuIdGPX;
   //! Pointer to our menu
   QgisApp *mMainWindowPointer;
   //! Pointer to the QGIS interface object
   QgisIface *mQGisInterface;
   //! Pointer to the QAction object used in the menu and toolbar
   QAction *mQActionPointer;
-  
+  //! Pointer to the QAction used for creating a new GPX layer
+  QAction *mCreateGPXAction;
   //! The path to the GPSBabel program
   QString mBabelPath;
   //! Importers for external GPS data file formats

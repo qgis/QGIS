@@ -194,20 +194,17 @@ void QgsGrassPlugin::initGui()
   connect(mNewMapsetAction, SIGNAL(activated()), this, SLOT(newMapset()));
   connect(mCloseMapsetAction, SIGNAL(activated()), this, SLOT(closeMapset()));
 
-  // Create GRASS plugin menu entry
-  QMenu *pluginMenu = qGisInterface->getPluginMenu("&GRASS");
-
-  // Add actions to the menu
-  mOpenMapsetAction->addTo(pluginMenu);
-  mNewMapsetAction->addTo(pluginMenu);
-  mCloseMapsetAction->addTo(pluginMenu);
-  mAddVectorAction->addTo(pluginMenu);
-  mAddRasterAction->addTo(pluginMenu);
-  mOpenToolsAction->addTo(pluginMenu);
-  mRegionAction->addTo(pluginMenu);
-  mEditRegionAction->addTo(pluginMenu);
-  mEditAction->addTo(pluginMenu);
-  mNewVectorAction->addTo(pluginMenu);
+  // Add actions to a GRASS plugin menu
+  qGisInterface->addPluginMenu(tr("&GRASS"), mOpenMapsetAction);
+  qGisInterface->addPluginMenu(tr("&GRASS"), mNewMapsetAction);
+  qGisInterface->addPluginMenu(tr("&GRASS"), mCloseMapsetAction);
+  qGisInterface->addPluginMenu(tr("&GRASS"), mAddVectorAction);
+  qGisInterface->addPluginMenu(tr("&GRASS"), mAddRasterAction);
+  qGisInterface->addPluginMenu(tr("&GRASS"), mOpenToolsAction);
+  qGisInterface->addPluginMenu(tr("&GRASS"), mRegionAction);
+  qGisInterface->addPluginMenu(tr("&GRASS"), mEditRegionAction);
+  qGisInterface->addPluginMenu(tr("&GRASS"), mEditAction);
+  qGisInterface->addPluginMenu(tr("&GRASS"), mNewVectorAction);
 
   // Add the toolbar to the main window
   toolBarPointer = mQgis->addToolBar(tr("GRASS")); 
@@ -798,8 +795,16 @@ void QgsGrassPlugin::unload()
   QString err = QgsGrass::closeMapset();
 
   // remove the GUI
-  for (int i = 0; i < menuId.size(); ++i)
-    qGisInterface->removePluginMenuItem("&GRASS", menuId[i]);
+  qGisInterface->removePluginMenu(tr("&GRASS"), mOpenMapsetAction);
+  qGisInterface->removePluginMenu(tr("&GRASS"), mNewMapsetAction);
+  qGisInterface->removePluginMenu(tr("&GRASS"), mCloseMapsetAction);
+  qGisInterface->removePluginMenu(tr("&GRASS"), mRemoveVectorAction);
+  qGisInterface->removePluginMenu(tr("&GRASS"), mRemoveRasterAction);
+  qGisInterface->removePluginMenu(tr("&GRASS"), mOpenToolsAction);
+  qGisInterface->removePluginMenu(tr("&GRASS"), mRegionAction);
+  qGisInterface->removePluginMenu(tr("&GRASS"), mEditRegionAction);
+  qGisInterface->removePluginMenu(tr("&GRASS"), mEditAction);
+  qGisInterface->removePluginMenu(tr("&GRASS"), mNewVectorAction);
 
   if ( toolBarPointer )
     delete toolBarPointer;

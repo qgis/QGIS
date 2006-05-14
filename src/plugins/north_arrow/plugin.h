@@ -86,8 +86,6 @@ class QgsNorthArrowPlugin:public QObject, public QgisPlugin
   // The placement index and translated text
   int mPlacementIndex;
   QStringList mPlacementLabels;
-  //! Id of the plugin's menu. Used for unloading
-  int menuId;
   //! Pointer to our toolbar
   QToolBar *toolBarPointer;
   //! Pionter to QGIS main application object

@@ -124,8 +124,6 @@ private:
   QString pluginDescriptionQString;
   //! Plugin type as defined in QgisPlugin::PLUGINTYPE
   int pluginType;
-  //! Id of the plugin's menu. Used for unloading
-  std::vector<int> menuId;
   //! Pointer to our toolbar
   QToolBar *toolBarPointer;
   //! Pionter to QGIS main application object

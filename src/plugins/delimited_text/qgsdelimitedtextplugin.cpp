@@ -101,15 +101,8 @@ void QgsDelimitedTextPlugin::help()
  */
 void QgsDelimitedTextPlugin::initGui()
 {
-  QMenu *pluginMenu = qGisInterface->getPluginMenu(tr("&Delimited text"));
-  menuId = pluginMenu->insertItem(QIcon(icon),tr("&Add Delimited Text Layer"), this, SLOT(run()));
-
-  pluginMenu->setWhatsThis(menuId, tr("Add a delimited text file as a map layer. ")+
-      tr("The file must have a header row containing the field names. ")+
-      tr("X and Y fields are required and must contain coordinates in decimal units."));
-
   // Create the action for tool
-  myQActionPointer = new QAction(QIcon(icon), tr("Add Delimited Text Layer"), this);
+  myQActionPointer = new QAction(QIcon(icon), tr("&Add Delimited Text Layer"), this);
 
   myQActionPointer->setWhatsThis(tr("Add a delimited text file as a map layer. ")+
       tr("The file must have a header row containing the field names. ")+
@@ -118,6 +111,7 @@ void QgsDelimitedTextPlugin::initGui()
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // Add the icon to the toolbar
   qGisInterface->addToolBarIcon(myQActionPointer);
+  qGisInterface->addPluginMenu(tr("&Delimited text"), myQActionPointer);
 
 }
 
@@ -154,7 +148,7 @@ void QgsDelimitedTextPlugin::drawVectorLayer(QString thePathNameQString,
 void QgsDelimitedTextPlugin::unload()
 {
   // remove the GUI
-  qGisInterface->removePluginMenuItem(tr("&Delimited text"),menuId);
+  qGisInterface->removePluginMenu(tr("&Delimited text"),myQActionPointer);
   qGisInterface->removeToolBarIcon(myQActionPointer); 
   delete myQActionPointer;
 }

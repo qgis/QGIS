@@ -198,12 +198,12 @@ public slots:
   void showPluginManager();
   //! plugin loader
   void loadPlugin(QString name, QString description, QString mFullPath);
-  //! Add a plugin menu to the main Plugins menu
-  int addPluginMenu(QString menuText, QMenu *menu);
-  //! Get the menu that holds teh list of loaded plugins 
+  //! Find the QMenu with the given name (ie the user visible text on the menu item)
   QMenu* getPluginMenu(QString menuName);
-  //! Remove an item from the qgis main app menus 
-  void removePluginMenuItem(QString name, int menuId);
+  //! Add the action to the submenu with the given name under the plugin menu
+  void addPluginMenu(QString name, QAction* action);
+  //! Remove the action to the submenu with the given name under the plugin menu
+  void removePluginMenu(QString name, QAction* action);
   //! Add an icon to the plugin toolbar
   int addPluginToolBarIcon (QAction * qAction);
   //! Remove an icon from the plugin toolbar
