@@ -48,13 +48,13 @@ lib_LTLIBRARIES = libqgis_gui.la
 
 qgis_SOURCES =	main.cpp
 
-qgis_LDADD = ../raster/libqgis_raster.la ../legend/libqgis_legend.la ../composer/libqgis_composer.la $(GEOS_LDADD) $(GDAL_LDADD)  $(LDADD) $(QT_LDADD) $(PG_LIB)  $(PYTHON_LIB) -lproj -lsqlite3 libqgis_gui.la ../core/libqgis_core.la
+qgis_LDADD = ../raster/libqgis_raster.la ../legend/libqgis_legend.la ../composer/libqgis_composer.la $(LDADD) $(QT_LDADD) $(GDAL_LDADD) $(PG_LIB) $(GEOS_LDADD) $(PYTHON_LIB) -lproj -lsqlite3 libqgis_gui.la ../core/libqgis_core.la
 if HAVE_QTMAC
 qgis_LDFLAGS = -framework ApplicationServices
 else
 qgis_LDFLAGS = -rdynamic
 endif
-qgis_CXXFLAGS = $(GEOS_CFLAGS) $(GDAL_CFLAGS) $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH)  $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS)  $(HAVE_PYTHON)  $(PYTHON_INCLUDE_DIR) -I../ui/ -I../widgets/projectionselector/ -I../legend/ -I../raster/ -I../composer/ -I../core/ -I../plugins/
+qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS)  $(HAVE_PYTHON) $(GEOS_CFLAGS) $(PYTHON_INCLUDE_DIR) -I../ui/ -I../widgets/projectionselector/ -I../legend/ -I../raster/ -I../composer/ -I../core/ -I../plugins/
 
 
 ##
@@ -294,10 +294,10 @@ nodist_libqgis_gui_la_SOURCES = $(libqgis_gui_la_MOC)
 BUILT_SOURCES = $(libqgis_gui_la_MOC) $(qgis_YACC)  $(postgresMOC)
 
 
-libqgis_gui_la_LIBADD = ../core/libqgis_core.la ../raster/libqgis_raster.la ../legend/libqgis_legend.la ../composer/libqgis_composer.la ../widgets/projectionselector/libqgsprojectionselector.la $(QT_LDADD) $(GEOS_LDADD)  $(GDAL_LDADD) $(PYTHON_LIB) -lsqlite3
+libqgis_gui_la_LIBADD = ../core/libqgis_core.la ../raster/libqgis_raster.la ../legend/libqgis_legend.la ../composer/libqgis_composer.la ../widgets/projectionselector/libqgsprojectionselector.la $(QT_LDADD) $(GEOS_LDADD) $(GDAL_LDADD) $(PYTHON_LIB) -lsqlite3
 libqgis_gui_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
 
-libqgis_gui_la_CXXFLAGS = $(GDAL_CFLAGS) $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH)  $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) $(PYTHON_INCLUDE_DIR) $(HAVE_PYTHON) -I../ui/ -I../widgets/projectionselector/ -I../legend/ -I../raster/ -I../composer/ -I../core/ -I../plugins/
+libqgis_gui_la_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) $(PYTHON_INCLUDE_DIR) $(HAVE_PYTHON) -I../ui/ -I../widgets/projectionselector/ -I../legend/ -I../raster/ -I../composer/ -I../core/ -I../plugins/
 
 ##
 ## ----------------------------------------------------------------------
