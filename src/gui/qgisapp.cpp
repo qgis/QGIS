@@ -4413,7 +4413,7 @@ QMenu* QgisApp::getPluginMenu(QString menuName)
     // This bit of code assumes that the menu items are already in
     // alphabetical order, which they will be if the menus are all
     // created using this function.
-    if (QString::localeAwareCompare(menuName, actions.at(i)->text()) <= 0)
+    if (menuName.localeAwareCompare(actions.at(i)->text()) <= 0)
       before = actions.at(i);
   }
 
