@@ -78,8 +78,6 @@ class QgsScaleBarPlugin:public QObject, public QgisPlugin
 
 
   int pluginType;
-  //! Id of the plugin's menu. Used for unloading
-  int menuId;
   //! Placement of the scale bar. An index and the translated text
   int mPlacementIndex;
   QStringList mPlacementLabels;

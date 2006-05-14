@@ -61,8 +61,6 @@ class QgsSpitPlugin:public QObject, public QgisPlugin
     QString pDescription;
     //! Plugin type as defined in QgisPlugin::PLUGINTYPE
     int ptype;
-    //! Id of the plugin's menu. Used for unloading
-    int menuId;
     //! Pionter to QGIS main application object
     QgisApp *qgisMainWindow;
     //! Pointer to the QGIS interface object

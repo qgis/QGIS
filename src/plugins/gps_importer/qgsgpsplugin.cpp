@@ -103,18 +103,18 @@ QgsGPSPlugin::~QgsGPSPlugin()
  */
 void QgsGPSPlugin::initGui()
 {
-  QMenu *pluginMenu = mQGisInterface->getPluginMenu(tr("&Gps"));
-  mMenuIdGPS = pluginMenu->insertItem(QIcon(icon),tr("&Gps Tools"), this, SLOT(run()));
-  mMenuIdGPX = pluginMenu->insertItem(QIcon(icon),tr("&Create new GPX layer"), this, SLOT(createGPX()));
-
-  pluginMenu->setWhatsThis(mMenuIdGPX, tr("Creates a new GPX layer and displays it on the map canvas"));
-
   // add an action to the toolbar
-  mQActionPointer = new QAction(QIcon(icon), tr("Gps Tools"), this);
+  mQActionPointer = new QAction(QIcon(icon), tr("&Gps Tools"), this);
+  mCreateGPXAction = new QAction(QIcon(icon), tr("&Create new GPX layer"), this);
 
   mQActionPointer->setWhatsThis(tr("Creates a new GPX layer and displays it on the map canvas"));
+  mCreateGPXAction->setWhatsThis(tr("Creates a new GPX layer and displays it on the map canvas"));
   connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
+  connect(mCreateGPXAction, SIGNAL(activated()), this, SLOT(createGPX()));
+
   mQGisInterface->addToolBarIcon(mQActionPointer);
+  mQGisInterface->addPluginMenu(tr("&Gps"), mQActionPointer);
+  mQGisInterface->addPluginMenu(tr("&Gps"), mCreateGPXAction);
 }
 
 //method defined in interface
@@ -202,8 +202,8 @@ void QgsGPSPlugin::drawVectorLayer(QString thePathNameQString,
 void QgsGPSPlugin::unload()
 {
   // remove the GUI
-  mQGisInterface->removePluginMenuItem(tr("&Gps"),mMenuIdGPS);
-  mQGisInterface->removePluginMenuItem(tr("&Gps"),mMenuIdGPX);
+  mQGisInterface->removePluginMenu(tr("&Gps"),mQActionPointer);
+  mQGisInterface->removePluginMenu(tr("&Gps"),mCreateGPXAction);
   mQGisInterface->removeToolBarIcon(mQActionPointer);
   delete mQActionPointer;
 }

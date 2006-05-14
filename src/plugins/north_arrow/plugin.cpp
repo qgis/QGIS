@@ -91,13 +91,8 @@ QgsNorthArrowPlugin::~QgsNorthArrowPlugin()
  */
 void QgsNorthArrowPlugin::initGui()
 {
-  QMenu *pluginMenu = qGisInterface->getPluginMenu(tr("&Decorations"));
-  menuId = pluginMenu->insertItem(QIcon(icon),tr("&NorthArrow"), this, SLOT(run()));
-
-  pluginMenu->setWhatsThis(menuId, tr("Creates a north arrow that is displayed on the map canvas"));
-
   // Create the action for tool
-  myQActionPointer = new QAction(QIcon(icon), tr("North Arrow"), this);
+  myQActionPointer = new QAction(QIcon(icon), tr("&North Arrow"), this);
   myQActionPointer->setWhatsThis(tr("Creates a north arrow that is displayed on the map canvas"));
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
@@ -105,8 +100,10 @@ void QgsNorthArrowPlugin::initGui()
   connect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)), this, SLOT(renderNorthArrow(QPainter *)));
   //this resets this plugin up if a project is loaded
   connect(qgisMainWindowPointer, SIGNAL(projectRead()), this, SLOT(projectRead()));
-  // Add the icon to the toolbar
+  // Add the icon to the toolbar & appropriate menu
   qGisInterface->addToolBarIcon(myQActionPointer);
+  qGisInterface->addPluginMenu(tr("&Decorations"), myQActionPointer);
+
   projectRead();
   refreshCanvas();
 
@@ -250,7 +247,7 @@ void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
 void QgsNorthArrowPlugin::unload()
 {
   // remove the GUI
-  qGisInterface->removePluginMenuItem(tr("&Decorations"),menuId);
+  qGisInterface->removePluginMenu(tr("&Decorations"), myQActionPointer);
   qGisInterface->removeToolBarIcon(myQActionPointer);
   // remove the northarrow from the canvas
   disconnect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)),

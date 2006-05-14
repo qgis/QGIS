@@ -69,20 +69,15 @@ QgsSpitPlugin::~QgsSpitPlugin()
 */
 void QgsSpitPlugin::initGui()
 {
-    QMenu *pluginMenu = qI->getPluginMenu("&Spit");
-    menuId = pluginMenu->insertItem(QIcon(spitIcon),tr("&Import Shapefiles to PostgreSQL"), this, SLOT(spit()));
-
-    pluginMenu->setWhatsThis(menuId,tr("Import shapefiles into a PostGIS-enabled PostgreSQL database. "
-        "The schema and field names can be customized on import")); 
-
      // Create the action for tool
-    spitAction = new QAction(QIcon(spitIcon), tr("Import Shapefiles to PostgreSQL"), this);
+    spitAction = new QAction(QIcon(spitIcon), tr("&Import Shapefiles to PostgreSQL"), this);
     spitAction->setWhatsThis(tr("Import shapefiles into a PostGIS-enabled PostgreSQL database. "
         "The schema and field names can be customized on import")); 
     // Connect the action to the spit slot
     connect(spitAction, SIGNAL(activated()), this, SLOT(spit()));
-     // Add the icon to the toolbar
+     // Add the icon to the toolbar and to the plugin menu
     qI->addToolBarIcon(spitAction); 
+    qI->addPluginMenu(tr("&Spit"), spitAction); 
 
 }
 
@@ -98,8 +93,8 @@ void QgsSpitPlugin::spit()
 void QgsSpitPlugin::unload()
 {
     // remove the GUI
-    qI->removePluginMenuItem("&Spit",menuId);
     qI->removeToolBarIcon(spitAction);
+    qI->removePluginMenu(tr("&Spit"), spitAction);
     delete spitAction;
 }
 

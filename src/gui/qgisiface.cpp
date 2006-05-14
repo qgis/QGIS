@@ -89,14 +89,14 @@ QString QgisIface::activeLayerSource()
   return qgis->activeLayerSource();
 }
 
-QMenu* QgisIface::getPluginMenu(QString menuName)
+void QgisIface::addPluginMenu(QString name, QAction* action)
 {
-  return qgis->getPluginMenu(menuName);
+  qgis->addPluginMenu(name, action);
 }
 
-void QgisIface::removePluginMenuItem(QString name, int menuId)
+void QgisIface::removePluginMenu(QString name, QAction* action)
 {
-  qgis->removePluginMenuItem(name, menuId);
+  qgis->removePluginMenu(name, action);
 }
 
 int QgisIface::addToolBarIcon(QAction * qAction)

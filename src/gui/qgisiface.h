@@ -63,7 +63,8 @@ class QgisIface : public QgisInterface
         //! Get source of the active layer
         QString activeLayerSource();
 
-	QMenu* getPluginMenu(QString menuName);
+	void addPluginMenu(QString name, QAction* action);
+	void removePluginMenu(QString name, QAction* action);
 
 	void removePluginMenuItem(QString name, int menuId);
 
