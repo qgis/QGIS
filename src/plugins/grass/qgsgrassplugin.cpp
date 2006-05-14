@@ -798,13 +798,24 @@ void QgsGrassPlugin::unload()
   qGisInterface->removePluginMenu(tr("&GRASS"), mOpenMapsetAction);
   qGisInterface->removePluginMenu(tr("&GRASS"), mNewMapsetAction);
   qGisInterface->removePluginMenu(tr("&GRASS"), mCloseMapsetAction);
-  qGisInterface->removePluginMenu(tr("&GRASS"), mRemoveVectorAction);
-  qGisInterface->removePluginMenu(tr("&GRASS"), mRemoveRasterAction);
+  qGisInterface->removePluginMenu(tr("&GRASS"), mAddVectorAction);
+  qGisInterface->removePluginMenu(tr("&GRASS"), mAddRasterAction);
   qGisInterface->removePluginMenu(tr("&GRASS"), mOpenToolsAction);
   qGisInterface->removePluginMenu(tr("&GRASS"), mRegionAction);
   qGisInterface->removePluginMenu(tr("&GRASS"), mEditRegionAction);
   qGisInterface->removePluginMenu(tr("&GRASS"), mEditAction);
   qGisInterface->removePluginMenu(tr("&GRASS"), mNewVectorAction);
+
+  delete mOpenMapsetAction;
+  delete mNewMapsetAction;
+  delete mCloseMapsetAction;
+  delete mAddVectorAction;
+  delete mAddRasterAction;
+  delete mOpenToolsAction;
+  delete mRegionAction;
+  delete mEditRegionAction;
+  delete mEditAction;
+  delete mNewVectorAction;
 
   if ( toolBarPointer )
     delete toolBarPointer;
