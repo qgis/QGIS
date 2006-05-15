@@ -16,6 +16,7 @@
 
 #include "qgsvectordataprovider.h"
 #include "qgsfeature.h"
+#include "qgsfield.h"
 #include "qgssearchtreenode.h"
 
 QgsVectorDataProvider::QgsVectorDataProvider()
@@ -196,4 +197,20 @@ bool QgsVectorDataProvider::setAttributeFilter(const QgsSearchString& attributeF
   mAttributeFilter = attributeFilter;
   // TODO: maybe check if all referenced columns are there, return false if not
   return true;
+}
+
+int QgsVectorDataProvider::indexFromFieldName(const QString& fieldName) const
+{
+  const std::vector<QgsField> theFields = fields();
+  int counter = 0;
+
+  for(std::vector<QgsField>::const_iterator it = theFields.begin(); it != theFields.end(); ++it)
+    {
+      if(it->name() == fieldName)
+	{
+	  return counter;
+	}
+      ++counter;
+    }
+  return -1;
 }
