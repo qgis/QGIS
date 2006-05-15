@@ -50,6 +50,7 @@
 #include "qgspostgresextentthread.h"
 
 #include "qgspostgisbox3d.h"
+#include "qgslogger.h"
 
 #ifdef WIN32
 #define QGISEXTERN extern "C" __declspec( dllexport )
@@ -370,7 +371,7 @@ QgsPostgresProvider::~QgsPostgresProvider()
 #endif
   PQfinish(connection);
 
-  std::cout << "QgsPostgresProvider: deconstructing." << std::endl;
+  QgsDebugMsg("QgsPostgresProvider: deconstructing.");
 
   //pLog.flush();
 }

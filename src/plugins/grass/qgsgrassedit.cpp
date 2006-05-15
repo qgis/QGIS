@@ -56,6 +56,7 @@
 #include "qgsvertexmarker.h"
 #include "qgsrubberband.h"
 #include "qgsproject.h"
+#include "qgslogger.h"
 
 extern "C" {
 #include <grass/gis.h>
@@ -146,20 +147,20 @@ bool QgsGrassEdit::isEditable ( QgsMapLayer *layer )
 {
   if ( !layer ) return false;
 
-  std::cerr << "layer name: " << layer->name().toLocal8Bit().data() << std::endl;
+  QgsDebugMsg("layer name: " + layer->name());
 
   if ( layer->type() != QgsMapLayer::VECTOR ) {
-    std::cerr << "The selected layer is not vector." << std::endl;
+    QgsDebugMsg("The selected layer is not vector.");
     return false;
   }
 
   //TODO dynamic_cast ?
   QgsVectorLayer *vector = (QgsVectorLayer*)layer;
 
-  std::cerr << "Vector layer type: " << vector->providerType().toLocal8Bit().data() << std::endl;
+  QgsDebugMsg("Vector layer type: " + vector->providerType());
 
   if ( vector->providerType() != "grass" ) {
-    std::cerr << "The selected layer is not GRASS." << std::endl;
+    QgsDebugMsg("The selected layer is not GRASS.");
     return false;
   }
 
@@ -1570,7 +1571,7 @@ void QgsGrassEdit::displayUpdated (void)
 
 void QgsGrassEdit::displayElement ( int line, const QPen & pen, int size, QPainter *painter)
 {
-#if QGISDEBUG
+#ifdef QGISDEBUG
   std::cerr << "QgsGrassEdit::displayElement() line = " << line << std::endl;
 #endif
 
@@ -1650,7 +1651,7 @@ void QgsGrassEdit::displayDynamic ( struct line_pnts *Points )
 
 void QgsGrassEdit::displayDynamic ( double x, double y, int type, int size )
 {
-#if QGISDEBUG
+#ifdef QGISDEBUG
   std::cerr << "QgsGrassEdit::displayDynamic icon" << std::endl;
 #endif
 
@@ -1659,7 +1660,7 @@ void QgsGrassEdit::displayDynamic ( double x, double y, int type, int size )
 
 void QgsGrassEdit::displayDynamic ( struct line_pnts *Points, double x, double y, int type, int size )
 {
-#if QGISDEBUG
+#ifdef QGISDEBUG
    std::cerr << "QgsGrassEdit::displayDynamic Points = " << Points << " type = " << type  << std::endl;
 #endif
     QgsPoint point;
@@ -1690,7 +1691,7 @@ void QgsGrassEdit::displayDynamic ( struct line_pnts *Points, double x, double y
 
 void QgsGrassEdit::displayNode ( int node, const QPen & pen, int size, QPainter *painter )
 {
-#if QGISDEBUG
+#ifdef QGISDEBUG
   std::cerr << "QgsGrassEdit::displayNode() node = " << node << std::endl;
 #endif
 
@@ -1742,7 +1743,7 @@ QgsPoint QgsGrassEdit::transformLayerToMap ( QgsPoint point)
 void QgsGrassEdit::displayIcon ( double x, double y, const QPen & pen, 
     int type, int size, QPainter *painter )
 {
-#if QGISDEBUG
+#ifdef QGISDEBUG
   std::cerr << "QgsGrassEdit::displayIcon()" << std::endl;
 #endif
 
