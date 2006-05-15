@@ -1587,7 +1587,7 @@ bool QgsVectorLayer::addFeature(QgsFeature* f, bool alsoUpdateExtent)
 
     //set the endian properly
     int end=endian();
-    memcpy(f->getGeometry(),&end,1);
+    memcpy(f->getGeometry(),&end,1);//todo: also add endian information properly for multipoint,-line,-polygon
 
     //assign a temporary id to the feature (use negative numbers)
     addedIdLowWaterMark--;

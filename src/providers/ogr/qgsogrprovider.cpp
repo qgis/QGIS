@@ -1526,6 +1526,8 @@ const std::list<std::pair<QString, QString> >& attributes)
 	if(it->second == "Real")
 	{
 	    OGRFieldDefn field(it->first, OFTReal);
+	    field.SetPrecision(3);
+	    field.SetWidth(32);
 	    if(layer->CreateField(&field) != OGRERR_NONE)
 	    {
 		QgsLogger::warning("creation of OFTReal field failed");
