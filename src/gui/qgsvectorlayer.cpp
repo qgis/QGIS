@@ -3170,6 +3170,7 @@ void QgsVectorLayer::saveAsShapefile()
   dataProvider->saveAsShapefile();
   //  QMessageBox::information(0,"Save As Shapefile", "Someday...");
 }
+
 void QgsVectorLayer::setCoordinateSystem()
 {
   delete mCoordinateTransform;

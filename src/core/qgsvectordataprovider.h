@@ -304,6 +304,9 @@ class QgsVectorDataProvider : public QgsDataProvider
        */
       virtual void setWKT(QString wkt){};
 
+      /**Returns the index of a field name or -1 if the field does not exist*/
+      int indexFromFieldName(const QString& fieldName) const;
+
     protected:
       /**Encoding*/
       QTextCodec* mEncoding;
