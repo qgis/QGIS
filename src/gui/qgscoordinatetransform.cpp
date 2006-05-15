@@ -21,8 +21,6 @@
 //qt includes
 #include <QDomNode>
 #include <QDomElement>
-
-// Qt4-only includes to go here
 #include <QTextOStream>
 #include <QApplication>
 
@@ -167,22 +165,21 @@ void QgsCoordinateTransform::initialise()
 
   if (mInitialisedFlag)
   {
-
-    std::cout << "------------------------------------------------------------"<< std::endl;
-    std::cout << "QgsCoordinateTransform::initialise()" << std::endl;
-    std::cout << "The OGR Coordinate transformation for this layer was set to" << std::endl;
-    // note overloaded << operator on qgsspatialrefsys cant be used on pointers -
-    // so we dereference them like this (*mSourceSRS) (Thanks Lars for pointing that out)
-    std::cout << "INPUT: " << std::endl << mSourceSRS << std::endl;
-    std::cout << "OUTPUT: " << std::endl << mDestSRS  << std::endl;
-    std::cout << "------------------------------------------------------------" << std::endl;
+#ifdef QGISDEBUG
+    std::cout << "------------------------------------------------------------\n"
+              << "QgsCoordinateTransform::initialise()\n"
+              << "The OGR Coordinate transformation for this layer was set to\n"
+              << "INPUT: \n"  << mSourceSRS << '\n'
+              << "OUTPUT: \n" << mDestSRS   << '\n'
+              << "------------------------------------------------------------\n";
   }
   else
   {
-    std::cout << "------------------------------------------------------------"<< std::endl;
-    std::cout << "QgsCoordinateTransform::initialise()" << std::endl;
-    std::cout << "The OGR Coordinate transformation FAILED TO INITIALISE!" << std::endl;
-    std::cout << "------------------------------------------------------------"<< std::endl;
+    std::cout<< "------------------------------------------------------------\n"
+             << "QgsCoordinateTransform::initialise()\n"
+             << "The OGR Coordinate transformation FAILED TO INITIALISE!\n"
+             << "------------------------------------------------------------\n";
+#endif
   }
 }
 

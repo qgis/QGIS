@@ -80,7 +80,6 @@ void QgsGrass::init( void )
   // or when set explicitly by the user.
   // This value should always take precedence.
   QString gisBase = getenv("GISBASE");
-  std::cerr << "gisBase = " << gisBase.toLocal8Bit().data() << std::endl;
 #ifdef QGISDEBUG
   qDebug( "%s:%d GRASS gisBase from GISBASE env var is: %s", __FILE__, __LINE__, (const char*)gisBase );
 #endif

@@ -218,7 +218,7 @@ void QgsMapRender::render(QPainter* painter)
     // added these comments and debug statement to help others...
     QgsDebugMsg("If there is a QPaintEngine error here, it is caused by an emit call");
 
-    emit setProgress(myRenderCounter++,layers.size());
+    //emit setProgress(myRenderCounter++,layers.size());
     QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer(*li);
 
     if (!ml)
