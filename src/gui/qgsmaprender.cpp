@@ -185,7 +185,7 @@ void QgsMapRender::render(QPainter* painter)
 
   if (mExtent.isEmpty())
   {
-    QgsLogger::warning("empty extent... not rendering");
+    QgsLogger::debug("empty extent... not rendering");
     return;
   }
 

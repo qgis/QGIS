@@ -3212,21 +3212,16 @@ void QgisApp::measureArea()
 
 void QgisApp::attributeTable()
 {
-  std::cerr << ">> = " << std::endl;
   QgsMapLayer *layer = mMapLegend->currentLayer();
-  std::cerr << ">> = " << std::endl;
   if (layer)
   {
-    std::cerr << ">>> = " << std::endl;
     layer->table();
-    std::cerr << ">>> = " << std::endl;
   }
   else
   {
     QMessageBox::information(this, tr("No Layer Selected"),
         tr("To open an attribute table, you must select a layer in the legend"));
   }
-  std::cerr << ">> = " << std::endl;
 }
 
 void QgisApp::deleteSelected()
