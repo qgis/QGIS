@@ -3,7 +3,7 @@
  <comment></comment>
  <exportmacro></exportmacro>
  <class>QgsIdentifyResultsBase</class>
- <widget class="QWidget" name="QgsIdentifyResultsBase" >
+ <widget class="QDialog" name="QgsIdentifyResultsBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>

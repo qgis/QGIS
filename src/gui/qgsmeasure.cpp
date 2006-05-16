@@ -27,8 +27,8 @@
 #include <iostream>
 
 
-QgsMeasure::QgsMeasure(bool measureArea, QgsMapCanvas *mc, const char * name, Qt::WFlags f)
-  : QWidget(mc->topLevelWidget(), name, f), QgsMapTool(mc)
+QgsMeasure::QgsMeasure(bool measureArea, QgsMapCanvas *mc, Qt::WFlags f)
+  : QDialog(mc->topLevelWidget(), f), QgsMapTool(mc)
 {
     setupUi(this);
     connect(mRestartButton, SIGNAL(clicked()), this, SLOT(restart()));
@@ -143,7 +143,8 @@ void QgsMeasure::mousePress(QgsPoint &point)
     addPoint(point);
     this->show();
   }
-  
+  raise();
+
   mouseMove(point);
 }
 
