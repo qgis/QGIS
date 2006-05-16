@@ -3073,7 +3073,8 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
 #endif
 
         transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
-        QPointF pt(x - (marker->width()/2),  y - (marker->height()/2));
+        //QPointF pt(x - (marker->width()/2),  y - (marker->height()/2));
+        QPointF pt(x/markerScaleFactor - (marker->width()/2),  y/markerScaleFactor - (marker->height()/2));
 
         p->save();
         p->scale(markerScaleFactor,markerScaleFactor);
@@ -3104,7 +3105,8 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
 #endif
 
           transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
-          QPointF pt(x - (marker->width()/2),  y - (marker->height()/2));
+          //QPointF pt(x - (marker->width()/2),  y - (marker->height()/2));
+          QPointF pt(x/markerScaleFactor - (marker->width()/2),  y/markerScaleFactor - (marker->height()/2));
           
 #if defined(Q_WS_X11)
           // Work around a +/- 32768 limitation on coordinates in X11
