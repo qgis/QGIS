@@ -84,7 +84,7 @@ void QgsSpitPlugin::initGui()
 // Slot called when the shapefile to postgres menu item is activated
 void QgsSpitPlugin::spit()
 {
- QgsSpit *spitDlg = new QgsSpit();
+ QgsSpit *spitDlg = new QgsSpit(qgisMainWindow, Qt::Window);
  spitDlg->show();
 }
 
