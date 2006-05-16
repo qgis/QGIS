@@ -29,15 +29,13 @@ class QgsRubberBand;
 class QCloseEvent;
 
 
-class QgsMeasure:public QWidget, public QgsMapTool, private Ui::QgsMeasureBase
+class QgsMeasure:public QDialog, public QgsMapTool, private Ui::QgsMeasureBase
 {
   Q_OBJECT;
   public:
 
   //! Constructor
-  QgsMeasure(bool measureArea, QgsMapCanvas *, const char * name = 0,
-             Qt::WFlags f = Qt::WStyle_Customize | Qt::WStyle_DialogBorder |
-                            Qt::WStyle_Title | Qt::WType_Dialog | Qt::WStyle_Tool );
+  QgsMeasure(bool measureArea, QgsMapCanvas *mc, Qt::WFlags f = 0);
 
   ~QgsMeasure();
 

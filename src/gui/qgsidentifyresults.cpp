@@ -29,7 +29,7 @@
 
 QgsIdentifyResults::QgsIdentifyResults(const QgsAttributeAction& actions,
     QWidget *parent, Qt::WFlags f)
-: QWidget(parent, f),
+: QDialog(parent, f),
   mActions(actions), mClickedOnValue(0), mActionPopup(0)
 {
   setupUi(this);

@@ -3,7 +3,7 @@
  <comment></comment>
  <exportmacro></exportmacro>
  <class>QgsMeasureBase</class>
- <widget class="QWidget" name="QgsMeasureBase" >
+ <widget class="QDialog" name="QgsMeasureBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>

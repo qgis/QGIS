@@ -32,18 +32,14 @@ class Q3PopupMenu;
  *@author Gary E.Sherman
  */
 
-class QgsIdentifyResults: public QWidget, private Ui::QgsIdentifyResultsBase
+class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 {
   Q_OBJECT;
   public:
 
   //! Constructor - takes it own copy of the QgsAttributeAction so
   // that it is independent of whoever created it.
-  //QgsIdentifyResults(const QgsAttributeAction& actions, QWidget *parent = 0,
-  //    Qt::WFlags f = Qt::Tool | Qt::MSWindowsFixedSizeDialogHint |Qt::WindowTitleHint);
-
-  QgsIdentifyResults(const QgsAttributeAction& actions, QWidget *parent = 0,
-                     Qt::WFlags f = Qt::Dialog );
+  QgsIdentifyResults(const QgsAttributeAction& actions, QWidget *parent = 0, Qt::WFlags f = 0);
 
   ~QgsIdentifyResults();
   /** Add an attribute to the feature display node */
