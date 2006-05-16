@@ -36,6 +36,8 @@
 #include <qregexp.h>
 #include <qtabwidget.h>
 
+#include <string>
+
 #include "qgis.h"
 #include "qgsrect.h"
 #include "qgsfield.h"
@@ -536,7 +538,7 @@ QString QgsDlgVectorLayerProperties::getMetadata()
 
     if ( ! coordinateTransform )
     {
-        throw QgsCsException( string("unable to get layer coordinate transform object") );
+        throw QgsCsException( std::string("unable to get layer coordinate transform object") );
     }
 
     QgsRect myProjectedExtent = coordinateTransform->transformBoundingBox(layer->extent());

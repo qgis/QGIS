@@ -22,6 +22,7 @@
 #include <iosfwd>
 #include <cmath>
 #include <cfloat>
+#include <string>
 
 // added double sentinals to take load off gcc 3.3.3 pre-processor, which was dying
 
@@ -1353,7 +1354,7 @@ void QgsMapCanvas::zoomToSelected()
 #ifdef QGISDEBUG 
             std::cout << "Throwing exception "<< __FILE__ << __LINE__ << std::endl; 
 #endif
-            throw QgsCsException( string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
+            throw QgsCsException( std::string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
         }
 
         rect = lyr->coordinateTransform()->transformBoundingBox(lyr->bBoxOfSelected());
@@ -2531,7 +2532,7 @@ void QgsMapCanvas::recalculateExtents()
 #ifdef QGISDEBUG 
         std::cout << "Throwing exception "<< __FILE__ << __LINE__ << std::endl; 
 #endif 
-        throw QgsCsException( string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
+        throw QgsCsException( std::string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
       }
 
       std::cout << "Transformed extent" << 
@@ -2555,7 +2556,7 @@ void QgsMapCanvas::recalculateExtents()
 #ifdef QGISDEBUG 
           std::cout << "Throwing exception "<< __FILE__ << __LINE__ << std::endl; 
 #endif 
-          throw QgsCsException( string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
+          throw QgsCsException( std::string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
         }
 
         updateFullExtent(lyr->coordinateTransform()->transformBoundingBox(lyr->extent()));
