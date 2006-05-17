@@ -47,6 +47,8 @@ QgsComposerMap::QgsComposerMap ( QgsComposition *composition, int id, int x, int
 QgsComposerMap::QgsComposerMap ( QgsComposition *composition, int id )
     : Q3CanvasRectangle(0,0,10,10,0)
 {
+    setupUi(this);
+
     mComposition = composition;
     mId = id;
     mMapCanvas = mComposition->mapCanvas();

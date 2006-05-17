@@ -73,6 +73,8 @@ QgsComposerPicture::QgsComposerPicture ( QgsComposition *composition, int id ) :
     std::cout << "QgsComposerPicture::QgsComposerPicture()" << std::endl;
 #endif
 
+    setupUi(this);
+
     mComposition = composition;
     mId  = id;
 
