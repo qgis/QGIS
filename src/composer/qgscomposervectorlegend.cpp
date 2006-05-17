@@ -71,6 +71,8 @@ QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, 
 {
     std::cout << "QgsComposerVectorLegend::QgsComposerVectorLegend()" << std::endl;
 
+    setupUi(this);
+
     mComposition = composition;
     mId  = id;
     mMapCanvas = mComposition->mapCanvas();

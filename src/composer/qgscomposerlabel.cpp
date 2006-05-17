@@ -61,6 +61,8 @@ QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id )
 {
     std::cout << "QgsComposerLabel::QgsComposerLabel()" << std::endl;
 
+    setupUi(this);
+
     mComposition = composition;
     mId  = id;
     mSelected = false;

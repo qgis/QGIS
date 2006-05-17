@@ -106,6 +106,9 @@ QgsComposerScalebar::QgsComposerScalebar ( QgsComposition *composition, int id )
     mBrush(QColor(150,150,150))
 {
     std::cout << "QgsComposerScalebar::QgsComposerScalebar()" << std::endl;
+
+    setupUi(this);
+
     mId = id;
     mSelected = false;
 
