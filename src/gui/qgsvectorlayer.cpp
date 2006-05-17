@@ -647,15 +647,20 @@ std::cerr << i << ": " << ring->first[i]
       ringDetails.push_back(std::make_pair(ii, ringSize));
 
       // Transfer points to the array of QPointF
-      for (register unsigned int j = 0; j != ringSize; ++j, ++ii)
+      //for (register unsigned int j = 0; j != ringSize; ++j, ++ii)
+      for (register unsigned int j = 0; j != ringSize; ++j, ii++)
       {
         // there is maybe a bug in Qt4.1: when using doubles without rounding,
         // I've experienced crashes (broken pipe) when drawing polygon
         // with more than 3000 vertices  [MD]
-        pa[ii].setX(static_cast<int>(r->first[j] + 0.5));
-        pa[ii].setY(static_cast<int>(r->second[j] + 0.5));
-//        pa[ii].setX(r->first[j]);
-//        pa[ii].setY(r->second[j]);
+        //pa[ii].setX(static_cast<int>(r->first[j] + 0.5));
+        //pa[ii].setY(static_cast<int>(r->second[j] + 0.5));
+
+        // The crash was probably caused by writing outside 
+        // pa(total_points + numRings - 1) size, because
+        // cycle was using ++ii insted of ii++ => reenabled floating point
+        pa[ii].setX(r->first[j]);
+        pa[ii].setY(r->second[j]);
       }
 
       // Store the last point of the first ring, and insert it at
