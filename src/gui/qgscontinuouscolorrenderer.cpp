@@ -126,7 +126,7 @@ void QgsContinuousColorRenderer::renderFeature(QPainter * p, QgsFeature * f, QPi
       // later add support for both pen and brush to dialog
       QPen pen = mMinimumSymbol->pen();
       pen.setColor ( QColor(red, green, blue) );
-      pen.setWidth ( (int) ( widthScale * pen.width() ) );
+      pen.setWidthF ( widthScale * pen.width() );
 
       QBrush brush = mMinimumSymbol->brush();
 

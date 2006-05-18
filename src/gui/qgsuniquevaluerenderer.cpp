@@ -120,14 +120,14 @@ void QgsUniqueValueRenderer::renderFeature(QPainter* p, QgsFeature* f,QPixmap* p
 	    if( !selected ) 
 	    {
 		QPen pen=symbol->pen();
-		pen.setWidth ( (int) (widthScale * pen.width()) );
+		pen.setWidthF ( widthScale * pen.width() );
 		p->setPen(pen);
 		p->setBrush(symbol->brush());
 	    }
 	    else
 	    {
 		QPen pen=symbol->pen();
-		pen.setWidth ( (int) (widthScale * pen.width()) );
+		pen.setWidthF ( widthScale * pen.width() );
 		pen.setColor(mSelectionColor);
 		QBrush brush=symbol->brush();
 		brush.setColor(mSelectionColor);
