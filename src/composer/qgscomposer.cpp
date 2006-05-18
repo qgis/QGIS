@@ -314,9 +314,7 @@ void QgsComposer::on_mActionPrint_activated(void)
       try {
       std::cout << "Print to file" << std::endl;
 
-// Hopefully these hacks will not be necessary with Qt4
-//#ifdef Q_WS_X11
-#ifdef XXX
+#ifdef Q_WS_X11
       // NOTE: On UNIX setPageSize after setup() works, but setOrientation does not
       //   -> the BoundingBox must follow the orientation 
 
@@ -336,9 +334,7 @@ void QgsComposer::on_mActionPrint_activated(void)
 
       p.end();
 
-// Hopefully these hacks will not be necessary with Qt4
-//#ifdef Q_WS_X11
-#ifdef XXX
+#ifdef Q_WS_X11
       // reset the page
       mPrinter->setPageSize ( psize );
 
