@@ -293,7 +293,9 @@ void QgsComposerMap::draw ( QPainter & painter )
 
     // Draw frame around
     if ( mFrame ) {
-      painter.setPen( QPen(QColor(0,0,0), 1) );
+      QPen pen(QColor(0,0,0));
+      pen.setWidthF(0.2);
+      painter.setPen( pen );
       painter.setBrush( Qt::NoBrush );
 	    painter.save();
       painter.translate ( Q3CanvasRectangle::x(), Q3CanvasRectangle::y() );
