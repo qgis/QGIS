@@ -169,8 +169,16 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect *extent, QgsMapToPixel *t
 
 	  if ( vector->labelOn() ) {
 	      double fontScale = 25.4 * mFontScale * mComposition->scale() / 72;
-	      if ( plotStyle() == QgsComposition::Postscript ) {
-		  fontScale = QgsComposition::psFontScaleFactor() * 72.0 / mComposition->resolution();
+	      if ( plotStyle() == QgsComposition::Postscript ) 
+              {
+		  //fontScale = QgsComposition::psFontScaleFactor() * 72.0 / mComposition->resolution();
+
+                  // TODO
+                  // This is not completely correct because fonts written to postscript
+                  // should use size metrics.ascent() * 72.0 / mComposition->resolution();
+                  // We could add a factor for metrics.ascent()/size but it is variable
+                  // Add a parrameter in drawLables() ?
+		  fontScale = 72.0 / mComposition->resolution();
 	      }
 	      vector->drawLabels (  painter, extent, transform, fontScale );
 	  }

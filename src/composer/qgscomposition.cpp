@@ -69,7 +69,7 @@ QgsComposition::QgsComposition( QgsComposer *c, int id )
   //          cannot be smoothly moved even if mPreviewMode == Rectangle and no zoom in
   //       scale 2 results in minimum line width 0.5 mmm which is too much
   //       scale 3 is compromise
-  mScale = 5;
+  mScale = 1;
 
   // Add paper sizes and set default. 
   mPapers.push_back ( QgsCompositionPaper( tr("Custom"), 0, 0, 1 ) );

@@ -178,25 +178,22 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
     QFontMetrics metrics ( font );
     
     // Fonts for rendering
+    double psTitleSize = titleMetrics.ascent() * 72.0 / mComposition->resolution();
+    double psSectionSize = sectionMetrics.ascent() * 72.0 / mComposition->resolution();
+    double psSize = metrics.ascent() * 72.0 / mComposition->resolution();
     
-    // TODO: For output to Postscript the font must be scaled. But how?
-    //       The factor is an empirical value.
-    //       In any case, each font scales in in different way even if painter.scale()
-    //       is used instead of font size!!! -> Postscript is never exactly the same as
-    //       in preview.
-    double psFontFactor = QgsComposition::psFontScaleFactor();
-
-    double psTitleSize = psFontFactor * 72.0 * mTitleFont.pointSizeFloat() / mComposition->resolution();
-    double psSectionSize = psFontFactor * 72.0 * mSectionFont.pointSizeFloat() / mComposition->resolution();
-    double psSize = psFontFactor * 72.0 * mFont.pointSizeFloat() / mComposition->resolution();
-
-    double psTitleFontScale = psTitleSize / titleSize; 
-    double psSectionFontScale = psSectionSize / sectionSize;
-    double psFontScale = psSize / size;
-    
-    titleFont.setPointSizeFloat ( titleSize );
-    sectionFont.setPointSizeFloat ( sectionSize );
-    font.setPointSizeFloat ( size );
+    if ( plotStyle() == QgsComposition::Postscript) 
+    {
+	titleFont.setPointSizeFloat ( psTitleSize );
+	sectionFont.setPointSizeFloat ( psSectionSize );
+	font.setPointSizeFloat ( psSize );
+    }
+    else
+    {
+	titleFont.setPointSizeFloat ( titleSize );
+	sectionFont.setPointSizeFloat ( sectionSize );
+	font.setPointSizeFloat ( size );
+    }
 
     // Not sure about Style Strategy, QFont::PreferMatch?
     titleFont.setStyleStrategy ( (QFont::StyleStrategy) (QFont::PreferOutline | QFont::PreferAntialias) );
@@ -210,15 +207,7 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
     painter->setPen ( mPen );
     painter->setFont ( titleFont );
 
-    if ( plotStyle() == QgsComposition::Postscript) {
-	painter->save();
-	painter->translate ( (int) (2*mMargin), y );
-	painter->scale ( psTitleFontScale, psTitleFontScale );
-        painter->drawText( 0, 0, mTitle );
-        painter->restore();
-    } else {
-        painter->drawText( (int) (2*mMargin), y, mTitle );
-    }
+    painter->drawText( (int) (2*mMargin), y, mTitle );
 
     int width = 4 * mMargin + titleMetrics.width ( mTitle ); 
     int height = mMargin + mSymbolSpace + titleMetrics.height(); // mSymbolSpace?
@@ -239,7 +228,6 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 	    
 	  int group = layerGroup ( layerId );
 	  if ( group > 0 ) { 
-	    //std::map<int,int>::iterator it= doneGroups.find();
 	    if ( doneGroups.find(group) != doneGroups.end() ) {
 		continue; 
 	    } else {
@@ -337,15 +325,7 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 	    painter->setPen ( mPen );
 	    painter->setFont ( sectionFont );
 
-	    if ( plotStyle() == QgsComposition::Postscript) {
-		painter->save();
-		painter->translate ( x, y );
-		painter->scale ( psSectionFontScale, psSectionFontScale );
-		painter->drawText( 0, 0, sectionTitle );
-		painter->restore();
-	    } else {
-		painter->drawText( x, y, sectionTitle );
-	    }
+	    painter->drawText( x, y,sectionTitle );
 
 	    int w = 3*mMargin + sectionMetrics.width( sectionTitle );
 	    if ( w > width ) width = w;
@@ -418,15 +398,7 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 	    x = (int) ( 2*mMargin + mSymbolWidth );
 	    y = (int) ( localHeight + symbolHeight/2 + ( metrics.height()/2 - metrics.descent()) );
 
-	    if ( plotStyle() == QgsComposition::Postscript) {
-		painter->save();
-		painter->translate ( x, y );
-		painter->scale ( psFontScale, psFontScale );
-		painter->drawText( 0, 0, lab );
-		painter->restore();
-	    } else {
-		painter->drawText( x, y, lab );
-	    }
+	    painter->drawText( x, y, lab );
 
 	    int w = 3*mMargin + mSymbolWidth + metrics.width(lab);
 	    if ( w > width ) width = w;

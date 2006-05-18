@@ -125,40 +125,20 @@ void QgsComposerLabel::draw ( QPainter & painter )
 	painter.setBrush ( brush );
 	painter.drawRect ( boxRect );
     }
+    painter.setPen ( mPen );
     
     // The width is not sufficient in postscript
     QRect tr = r;
     tr.setWidth ( r.width() );
 
-    if ( plotStyle() == QgsComposition::Postscript ) {
-	// TODO: For output to Postscript the font must be scaled. But how?  
-	//       The factor is an empirical value.
-	//       In any case, each font scales in in different way even if painter.scale()
-	//       is used instead of font size!!! -> Postscript is never exactly the same as 
-	//       in preview.
-	double factor = QgsComposition::psFontScaleFactor();
-	
-	double pssize = factor * 72.0 * mFont.pointSizeFloat() / mComposition->resolution();
-	double psscale = pssize/size;
-	
-	painter.save();
-	//painter.translate(x-w/2,(int)(y+metrics.height()/2-metrics.descent()));
-	painter.translate(x,y);
-
-	painter.scale ( psscale, psscale );
-    
-	/// rect can be too small in PS -> add buf
-	int buf = metrics.width ( "x" );
-	QRect psr ( (int)( -1.*(w+2*buf)/2/psscale), (int) (-1.*h/2/psscale),(int)(1.*(w+2*buf)/psscale), (int)(1.*h/psscale) );
-
-        //painter.drawText ( 0, 0, mText );	
-	painter.drawText ( psr, Qt::AlignCenter|Qt::TextSingleLine , mText );
-	
-	painter.restore();
-    } else {
-	//painter.drawText ( tr, Qt::AlignCenter|Qt::SingleLine , mText );
-	painter.drawText ( x-w/2,(int)(y+metrics.height()/2-metrics.descent()), mText );
+    if ( plotStyle() == QgsComposition::Postscript ) 
+    {
+        // This metrics.ascent() is empirical
+        size = metrics.ascent() * 72.0 / mComposition->resolution(); 
+        font.setPointSizeF ( size );
+        painter.setFont ( font );
     } 
+    painter.drawText ( x-w/2,(int)(y+metrics.height()/2-metrics.descent()), mText );
 
     // Show selected / Highlight
     if ( mSelected && plotStyle() == QgsComposition::Preview ) {
