@@ -98,6 +98,9 @@ public:
      *  in in different way even if painter.scale() is used instead of
      *  font size!!! -> Postscript is never exactly the same as in preview.
      */
+
+    // Hopefully no more needed
+    /*
     static const double psFontScaleFactor() {
 #ifdef Q_OS_MACX
     return 1.85;
@@ -105,6 +108,7 @@ public:
     return 2.45; // I have no idea why 2.45 - it is an empirical value
 #endif
     }
+    */
 
     /** \brief Composition ID */
     int id ( void );

@@ -30,6 +30,7 @@
 #include <QPainter>
 #include <Q3Picture>
 #include <QPrinter>
+#include <QPrintDialog>
 #include <QSettings>
 #include <QIcon>
 #include <QPixmap>
@@ -280,7 +281,10 @@ void QgsComposer::on_mActionPrint_activated(void)
 
   mPrinter->setResolution ( mComposition->resolution() );
 
-  if ( mPrinter->setup(this) ) {
+  //if ( mPrinter->setup(this) ) {
+  QPrintDialog printDialog ( mPrinter, this);
+  if ( printDialog.exec() == QDialog::Accepted ) 
+  {
     // TODO: mPrinter->setup() moves the composer under Qgisapp, get it to foreground somehow
     //       raise() for now, is it something better?
     raise ();
@@ -306,11 +310,13 @@ void QgsComposer::on_mActionPrint_activated(void)
 
     mComposition->setPlotStyle ( QgsComposition::Postscript );
 
-    if ( mPrinter->outputToFile() ) {
+    if ( !mPrinter->outputFileName().isNull() ) {
       try {
       std::cout << "Print to file" << std::endl;
 
-#ifdef Q_WS_X11
+// Hopefully these hacks will not be necessary with Qt4
+//#ifdef Q_WS_X11
+#ifdef XXX
       // NOTE: On UNIX setPageSize after setup() works, but setOrientation does not
       //   -> the BoundingBox must follow the orientation 
 
@@ -330,7 +336,9 @@ void QgsComposer::on_mActionPrint_activated(void)
 
       p.end();
 
-#ifdef Q_WS_X11
+// Hopefully these hacks will not be necessary with Qt4
+//#ifdef Q_WS_X11
+#ifdef XXX
       // reset the page
       mPrinter->setPageSize ( psize );
 
