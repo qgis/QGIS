@@ -123,7 +123,7 @@ void QgsGraduatedSymbolRenderer::renderFeature(QPainter * p, QgsFeature * f, QPi
       if( !selected ) 
       {
         QPen pen=(*it)->pen();
-        pen.setWidth ( (int) (widthScale * pen.width()) );
+        pen.setWidthF ( widthScale * pen.width() );
         p->setPen(pen);
         p->setBrush((*it)->brush());
       }
@@ -131,7 +131,7 @@ void QgsGraduatedSymbolRenderer::renderFeature(QPainter * p, QgsFeature * f, QPi
       {
         QPen pen=(*it)->pen();
         pen.setColor(mSelectionColor);
-        pen.setWidth ( (int) (widthScale * pen.width()) );
+        pen.setWidthF ( widthScale * pen.width() );
         QBrush brush=(*it)->brush();
         brush.setColor(mSelectionColor);
         p->setPen(pen);
