@@ -25,7 +25,7 @@
   </property>
   <layout class="QVBoxLayout" >
    <property name="margin" >
-    <number>10</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
@@ -141,7 +141,25 @@
     </widget>
    </item>
    <item>
-    <widget class="QSpinBox" name="mLineWidthSpinBox" />
+    <widget class="QDoubleSpinBox" name="mLineWidthSpinBox" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>7</hsizetype>
+       <vsizetype>0</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimum" >
+      <double>0.01</double>
+     </property>
+     <property name="singleStep" >
+      <double>0.1</double>
+     </property>
+     <property name="value" >
+      <double>0.2</double>
+     </property>
+    </widget>
    </item>
    <item>
     <spacer>
@@ -170,7 +188,6 @@
   <tabstop>mUnitLabelLineEdit</tabstop>
   <tabstop>mMapComboBox</tabstop>
   <tabstop>mFontButton</tabstop>
-  <tabstop>mLineWidthSpinBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>
