@@ -348,7 +348,7 @@ void QgsComposerScalebar::sizeChanged ( )
 {
     mSegmentLength = mSegmentLengthLineEdit->text().toDouble();
     mNumSegments = mNumSegmentsLineEdit->text().toInt();
-    mPen.setWidth ( mLineWidthSpinBox->value() );
+    mPen.setWidthF ( mLineWidthSpinBox->value() );
     mMapUnitsPerUnit = mMapUnitsPerUnitLineEdit->text().toInt();
     recalculate();
     Q3CanvasPolygonalItem::update();
@@ -356,7 +356,7 @@ void QgsComposerScalebar::sizeChanged ( )
     writeSettings();
 }
 
-void QgsComposerScalebar::on_mLineWidthSpinBox_returnPressed() { sizeChanged(); }
+void QgsComposerScalebar::on_mLineWidthSpinBox_valueChanged() { sizeChanged(); }
 void QgsComposerScalebar::on_mMapUnitsPerUnitLineEdit_returnPressed() { sizeChanged(); }
 void QgsComposerScalebar::on_mNumSegmentsLineEdit_returnPressed() { sizeChanged(); }
 void QgsComposerScalebar::on_mSegmentLengthLineEdit_returnPressed() { sizeChanged(); }
@@ -411,7 +411,7 @@ void QgsComposerScalebar::setOptions ( void )
     mUnitLabelLineEdit->setText( mUnitLabel );
     mMapUnitsPerUnitLineEdit->setText( QString::number(mMapUnitsPerUnit ) );
 
-    mLineWidthSpinBox->setValue ( mPen.width() );
+    mLineWidthSpinBox->setValue ( mPen.widthF() );
     
     // Maps
     mMapComboBox->clear();
@@ -478,7 +478,7 @@ bool QgsComposerScalebar::writeSettings ( void )
     QgsProject::instance()->writeEntry( "Compositions", path+"font/underline", mFont.underline() );
     QgsProject::instance()->writeEntry( "Compositions", path+"font/strikeout", mFont.strikeOut() );
     
-    QgsProject::instance()->writeEntry( "Compositions", path+"pen/width", (int)mPen.width() );
+    QgsProject::instance()->writeEntry( "Compositions", path+"pen/width", (double)mPen.widthF() );
 
     return true; 
 }
@@ -505,7 +505,7 @@ bool QgsComposerScalebar::readSettings ( void )
     mFont.setUnderline(  QgsProject::instance()->readBoolEntry("Compositions", path+"font/underline", false, &ok) );
     mFont.setStrikeOut(  QgsProject::instance()->readBoolEntry("Compositions", path+"font/strikeout", false, &ok) );
 
-    mPen.setWidth(  QgsProject::instance()->readNumEntry("Compositions", path+"pen/width", 1, &ok) );
+    mPen.setWidthF(  QgsProject::instance()->readDoubleEntry("Compositions", path+"pen/width", 1, &ok) );
     
     recalculate();
     
