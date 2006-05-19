@@ -305,7 +305,9 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
     }
     
     QApplication::restoreOverrideCursor();
-    
+
+    mResults->adjustColumnWidths();
+  
     mResults->show();
   } 
   else

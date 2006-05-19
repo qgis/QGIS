@@ -60,6 +60,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
   void restorePosition();  
   void closeEvent(QCloseEvent *e);
   void showAllAttributes();
+  void adjustColumnWidths();
 
   /** Remove results */
   void clear();
