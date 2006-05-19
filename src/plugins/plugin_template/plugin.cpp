@@ -89,15 +89,11 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
  */
 void [pluginname]::initGui()
 {
-  // we create a single menu entry for this plugin - though you can easily add more here if you need to
-  QMenu *pluginMenu = mQGisIface->getPluginMenu("&[menuname]");
-  //set the icon from the resource file
-  mMenuId = pluginMenu->insertItem(QIcon(":/[pluginlcasename]/[pluginlcasename].png"),"&[menuitemname]", this, SLOT(run()));
-  //create a tooltip for the menu entry 
-  pluginMenu->setWhatsThis(mMenuId, tr("Replace this with a short description of the what the plugin does"));
 
   // Create the action for tool
   mQActionPointer = new QAction(QIcon(":/[pluginlcasename]/[pluginlcasename].png"),"[menuitemname]", this);
+  // Set the what's this text
+  mQActionPointer->setWhatsThis(tr("Replace this with a short description of the what the plugin does"));
   // Connect the action to the run
   connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // Add the toolbar
@@ -105,6 +101,7 @@ void [pluginname]::initGui()
   mToolBarPointer->setLabel("[menuitemname]");
   // Add the to the toolbar
   mQGisIface->addToolBarIcon(mQActionPointer);
+  mQGisIface->addPluginMenu("&[menuname]", mQActionPointer);
 
 }
 //method defined in interface
@@ -130,7 +127,7 @@ void [pluginname]::run()
 void [pluginname]::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginMenuItem("&[menuname]",mMenuId);
+  mQGisIface->removePluginMenu("&[menuname]",mQActionPointer);
   mQGisIface->removeToolBarIcon(mQActionPointer);
   delete mQActionPointer;
 }
