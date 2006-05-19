@@ -48,6 +48,11 @@ class QgsVectorLayerProperties;
 
 typedef std::map<int, std::map<QString,QString> > changed_attr_map;
 
+ /** constants for endian-ness
+    XDR is network, or big-endian, byte order
+    NDR is little-endian byte order
+  */
+
 /*! \class QgsVectorLayer
  * \brief Vector layer backed by a data source provider
  */
@@ -57,6 +62,12 @@ class QgsVectorLayer : public QgsMapLayer
   Q_OBJECT;
 
 public:
+
+  typedef enum ENDIAN
+  {
+    XDR = 0,
+    NDR = 1
+  } endian_t;
 
   //! Constructor
   QgsVectorLayer(QString baseName = 0, QString path = 0, QString providerLib = 0);
@@ -429,6 +440,8 @@ public:
   /**Sets whether some features are modified or not */
   void setModified(bool modified = TRUE) { mModified = modified; }
   
+  endian_t endian();
+
   protected:
   /**Pointer to the table display object if there is one, else a pointer to 0*/
   QgsAttributeTableDisplay * tabledisplay;
@@ -470,7 +483,6 @@ public:
   bool commitChanges();
   /**Discards the edits*/
   bool rollBack();
-
 
  
 protected slots:
@@ -535,17 +547,6 @@ private:                       // Private attributes
   bool valid;
   bool registered;
 
-  /** constants for endian-ness
-    XDR is network, or big-endian, byte order
-    NDR is little-endian byte order
-  */
-  typedef enum ENDIAN
-  {
-    XDR = 0,
-    NDR = 1
-  }
-  endian_t;
-
   enum WKBTYPE
   {
     WKBPoint = 1,
@@ -556,7 +557,6 @@ private:                       // Private attributes
     WKBMultiPolygon
   };
 private:                       // Private methods
-  endian_t endian();
 
   /**Caches all the (commited) geometries to mCachedFeatures, e.g. when entering editing mode*/
   void cacheGeometries();

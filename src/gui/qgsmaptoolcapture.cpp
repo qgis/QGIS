@@ -119,12 +119,14 @@ QMessageBox::Ok);
       // project to layer's SRS
       vlayer->snapPoint(savePoint, tolerance);
       
-      // create geos geometry and attach it to feature      
+      // create geometry and attach it to feature      
       int size=5+2*sizeof(double);
       unsigned char *wkb = new unsigned char[size];
       int wkbtype=QGis::WKBPoint;
+      char end=vlayer->endian();
       double x = savePoint.x();
       double y = savePoint.y();
+      memcpy(&wkb[0],&end,1);
       memcpy(&wkb[1],&wkbtype, sizeof(int));
       memcpy(&wkb[5], &x, sizeof(double));
       memcpy(&wkb[5]+sizeof(double), &y, sizeof(double));
@@ -200,12 +202,14 @@ QMessageBox::Ok);
       QgsFeature* f = new QgsFeature(0,"WKBLineString");
       unsigned char* wkb;
       int size;
+      char end=vlayer->endian();
       if(mTool == CaptureLine)
       {
         size=1+2*sizeof(int)+2*mCaptureList.size()*sizeof(double);
         wkb= new unsigned char[size];
         int wkbtype=QGis::WKBLineString;
         int length=mCaptureList.size();
+	memcpy(&wkb[0],&end,1);
         memcpy(&wkb[1],&wkbtype, sizeof(int));
         memcpy(&wkb[5],&length, sizeof(int));
         int position=1+2*sizeof(int);
@@ -230,6 +234,7 @@ QMessageBox::Ok);
         int wkbtype=QGis::WKBPolygon;
         int length=mCaptureList.size()+1;//+1 because the first point is needed twice
         int numrings=1;
+	memcpy(&wkb[0],&end,1);
         memcpy(&wkb[1],&wkbtype, sizeof(int));
         memcpy(&wkb[1+sizeof(int)],&numrings,sizeof(int));
         memcpy(&wkb[1+2*sizeof(int)],&length, sizeof(int));
