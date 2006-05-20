@@ -34,6 +34,8 @@
 #include <QPicture>
 #include <QSettings>
 #include <QButtonGroup>
+#include <QMap>
+#include <QImageReader>
 
 #include <iostream>
 
@@ -52,19 +54,40 @@ QgsServerSourceSelect::QgsServerSourceSelect(QgisApp * app, QWidget * parent, Qt
   // Qt Designer 4.1 doesn't let us use a QButtonGroup, so it has to
   // be done manually... Unless I'm missing something, it's a whole
   // lot harder to do groups of radio buttons in Qt4 than Qt3.
-  m_imageFormatBtns = new QButtonGroup;
-  // Populate it with a couple of buttons
-  QRadioButton* btn1 = new QRadioButton(tr("PNG"));
-  QRadioButton* btn2 = new QRadioButton(tr("JPEG"));
-  m_imageFormatBtns->addButton(btn1, 1);
-  m_imageFormatBtns->addButton(btn2, 2);
-  btn1->setChecked(true);
-  // And lay then out horizontally
-  QHBoxLayout *hbox = new QHBoxLayout;
-  hbox->addWidget(btn1);
-  hbox->addWidget(btn2);
-  hbox->addStretch();
-  btnGrpImageEncoding->setLayout(hbox);
+  m_imageFormatGroup = new QButtonGroup;
+  m_imageFormatLayout = new QHBoxLayout;
+  // Populate it with buttons for all of the formats that we can support. The
+  // value is the user visible name, and a unique integer, and the key is the
+  // mime type.
+  QMap<QString, QPair<QString, int> > formats;
+  // Note - the "PNG", etc text should match the Qt format strings as given by
+  // a called QImageReader::supportedImageFormats(), but case doesn't matter
+  m_PotentialFormats.insert("image/png",             qMakePair(QString("PNG"),  1));
+  m_PotentialFormats.insert("image/jpeg",            qMakePair(QString("JPEG"), 2));
+  m_PotentialFormats.insert("image/gif",             qMakePair(QString("GIF"),  4));
+  // Desipte the Qt docs saying that it supports bmp, it practise it doesn't work...
+  //m_PotentialFormats.insert("image/wbmp",            qMakePair(QString("BMP"),  5));
+  // Some wms servers will support tiff, but by default Qt doesn't, but leave
+  // this in for those versions of Qt that might support tiff
+  m_PotentialFormats.insert("image/tiff",            qMakePair(QString("TIFF"), 6));
+
+  QMap<QString, QPair<QString, int> >::const_iterator iter = m_PotentialFormats.constBegin();
+  int i = 1;
+  while (iter != m_PotentialFormats.end())
+  {
+    QRadioButton* btn = new QRadioButton(iter.value().first);
+    m_imageFormatGroup->addButton(btn, iter.value().second);
+    m_imageFormatLayout->addWidget(btn);
+    if (i ==1)
+    {
+      btn->setChecked(true);
+    }
+    iter++;
+    i++;
+  }
+
+  m_imageFormatLayout->addStretch();
+  btnGrpImageEncoding->setLayout(m_imageFormatLayout);
 
   // set up the WMS connections we already know about
   populateConnectionList();
@@ -225,61 +248,59 @@ void QgsServerSourceSelect::populateImageEncodingGroup(QgsWmsProvider* wmsProvid
   //
   // Remove old group of buttons
   //
-  QList<QAbstractButton*> btns = m_imageFormatBtns->buttons();
-  QList<QAbstractButton*>::const_iterator iter = btns.begin();
-  for (; iter != btns.end(); ++iter)
+  QList<QAbstractButton*> btns = m_imageFormatGroup->buttons();
+  for (int i = 0; i < btns.count(); ++i)
   {
-    m_imageFormatBtns->removeButton(*iter);
-    // Should the buttons be deleted too?
+    btns.at(i)->hide();
   }
-
-  m_MimeTypeForButtonId.clear();
 
   //
   // Collect capabilities reported by Qt itself
   //
-  QStringList qtImageFormats = QPicture::inputFormatList();
+  QList<QByteArray> qtImageFormats = QImageReader::supportedImageFormats();
 
-  QStringList::Iterator it = qtImageFormats.begin();
+  QList<QByteArray>::const_iterator it = qtImageFormats.begin();
   while( it != qtImageFormats.end() )
   {
-    std::cout << "QgsServerSourceSelect::populateImageEncodingGroup: can support input of '" << (*it).toLocal8Bit().data() << "'." << std::endl;
+#ifdef QGISDEBUG
+    std::cout << "QgsServerSourceSelect::populateImageEncodingGroup: can support input of '" << (*it).data() << "'." << std::endl;
+#endif
     ++it;
   }
+
 
   //
   // Add new group of buttons
   //
 
-  int i = 1;
+  bool first = true;
   for (QStringList::Iterator format  = formats.begin();
                              format != formats.end();
                            ++format)
   {
-
 #ifdef QGISDEBUG
-  std::cout << "QgsServerSourceSelect::populateImageEncodingGroup: got image format " << (*format).toLocal8Bit().data() << "." << std::endl;
+    std::cout << "QgsServerSourceSelect::populateImageEncodingGroup: got image format " << (*format).toLocal8Bit().data() << "." << std::endl;
 #endif
 
-    QRadioButton* radioButton = new QRadioButton;
-    m_imageFormatBtns->addButton(radioButton, i);
+    QMap<QString, QPair<QString, int> >::const_iterator iter = 
+	m_PotentialFormats.find(*format);
 
-    if      ((*format) == "image/png")
+    // The formats in qtImageFormats are lowercase, so force ours to lowercase too.
+    if (iter != m_PotentialFormats.end() && 
+	qtImageFormats.contains(iter.value().first.toLower().toLocal8Bit()))
     {
-      radioButton->setText(tr("PNG"));
+      m_imageFormatGroup->button(iter.value().second)->show();
+      if (first)
+      {
+	first = false;
+	m_imageFormatGroup->button(iter.value().second)->setChecked(true);
+      }
     }
-    else if ((*format) == "image/jpeg")
+    else
     {
-      radioButton->setText(tr("JPEG"));
+      std::cerr<<"Unsupported type of " << format->toLocal8Bit().data() << '\n';
     }
-
-    m_imageFormatBtns->addButton(radioButton);
-
-    m_MimeTypeForButtonId[i] = (*format);
-
-    i++;
   }
-
 }
 
 
@@ -390,6 +411,7 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
     {
       showError(mWmsProvider);
     }
+    populateImageEncodingGroup(mWmsProvider);
   }
   else
   {
@@ -570,15 +592,14 @@ QString QgsServerSourceSelect::selectedImageEncoding()
 {
   // TODO: Match this hard coded list to the list of formats Qt reports it can actually handle.
 
-  QAbstractButton* checked = m_imageFormatBtns->checkedButton();
+  int id = m_imageFormatGroup->checkedId();
+  QString label = m_imageFormatGroup->button(id)->text();
 
-  if (checked->text() == tr("PNG"))
-    return "image/png";
-  else if (checked->text() == tr("JPEG"))
-    return "image/jpeg";
-  else // Worst-case scenario - fall back to PNG
-    return "image/png";
+  // The way that we construct the buttons, this call to key() will never have
+  // a value that isn't in the map, hence we don't need to check for the value
+  // not being found.
 
+  return m_PotentialFormats.key(qMakePair(label, id));
 }
 
 
