@@ -208,6 +208,8 @@ public:
   void setLayerProperties(QgsVectorLayerProperties * properties);
   /**Returns point, line or polygon*/
   QGis::VectorType vectorType() const;
+  /**Returns the WKBType or WKBUnknown in case of error*/
+  QGis::WKBTYPE getGeometryType() const;
   /**Returns a pointer to the properties dialog*/
   QgsVectorLayerProperties *propertiesDialog();
   /**Returns the bounding box of the selected features. If there is no selection, QgsRect(0,0,0,0) is returned*/

@@ -205,64 +205,109 @@ QMessageBox::Ok);
       char end=vlayer->endian();
       if(mTool == CaptureLine)
       {
-        size=1+2*sizeof(int)+2*mCaptureList.size()*sizeof(double);
-        wkb= new unsigned char[size];
-        int wkbtype=QGis::WKBLineString;
-        int length=mCaptureList.size();
-	memcpy(&wkb[0],&end,1);
-        memcpy(&wkb[1],&wkbtype, sizeof(int));
-        memcpy(&wkb[5],&length, sizeof(int));
-        int position=1+2*sizeof(int);
-        double x,y;
-        for(std::list<QgsPoint>::iterator it=mCaptureList.begin();it!=mCaptureList.end();++it)
-        {
-          QgsPoint savePoint = maybeInversePoint(*it, "adding line");
-          x = savePoint.x();
-          y = savePoint.y();
-  
-          memcpy(&wkb[position],&x,sizeof(double));
-          position+=sizeof(double);
-  
-          memcpy(&wkb[position],&y,sizeof(double));
-          position+=sizeof(double);
-        }
+	if(vlayer->getGeometryType() == QGis::WKBLineString)
+	  {
+	    size=1+2*sizeof(int)+2*mCaptureList.size()*sizeof(double);
+	    wkb= new unsigned char[size];
+	    int wkbtype=QGis::WKBLineString;
+	    int length=mCaptureList.size();
+	    memcpy(&wkb[0],&end,1);
+	    memcpy(&wkb[1],&wkbtype, sizeof(int));
+	    memcpy(&wkb[1+sizeof(int)],&length, sizeof(int));
+	    int position=1+2*sizeof(int);
+	    double x,y;
+	    for(std::list<QgsPoint>::iterator it=mCaptureList.begin();it!=mCaptureList.end();++it)
+	      {
+		QgsPoint savePoint = maybeInversePoint(*it, "adding line");
+		x = savePoint.x();
+		y = savePoint.y();
+		
+		memcpy(&wkb[position],&x,sizeof(double));
+		position+=sizeof(double);
+		
+		memcpy(&wkb[position],&y,sizeof(double));
+		position+=sizeof(double);
+	      }
+	  }
+	else if(vlayer->getGeometryType() == QGis::WKBMultiLineString)
+	  {
+	    size = 1+2*sizeof(int)+1+2*sizeof(int)+2*mCaptureList.size()*sizeof(double);
+	    wkb= new unsigned char[size];
+	    int position = 0;
+	    int wkbtype=QGis::WKBMultiLineString;
+	    memcpy(&wkb[position], &end, 1);
+	    position += 1;
+	    memcpy(&wkb[position], &wkbtype, sizeof(int));
+	    position += sizeof(int);
+	    int nlines = 1;
+	    memcpy(&wkb[position], &nlines, sizeof(int));
+	    position += sizeof(int);
+	    memcpy(&wkb[position], &end, 1);
+	    position += 1;
+	    int linewkbtype = QGis::WKBLineString;
+	    memcpy(&wkb[position], &linewkbtype, sizeof(int));
+	    position += sizeof(int);
+	    int length=mCaptureList.size();
+	    memcpy(&wkb[position], &length, sizeof(int));
+	    position += sizeof(int);
+	    double x,y;
+	    for(std::list<QgsPoint>::iterator it=mCaptureList.begin();it!=mCaptureList.end();++it)
+	      {
+		QgsPoint savePoint = maybeInversePoint(*it, "adding line");
+		x = savePoint.x();
+		y = savePoint.y();
+		
+		memcpy(&wkb[position],&x,sizeof(double));
+		position+=sizeof(double);
+		
+		memcpy(&wkb[position],&y,sizeof(double));
+		position+=sizeof(double);
+	      }
+	  }
       }
       else // polygon
       {
-        size=1+3*sizeof(int)+2*(mCaptureList.size()+1)*sizeof(double);
-        wkb= new unsigned char[size];
-        int wkbtype=QGis::WKBPolygon;
-        int length=mCaptureList.size()+1;//+1 because the first point is needed twice
-        int numrings=1;
-	memcpy(&wkb[0],&end,1);
-        memcpy(&wkb[1],&wkbtype, sizeof(int));
-        memcpy(&wkb[1+sizeof(int)],&numrings,sizeof(int));
-        memcpy(&wkb[1+2*sizeof(int)],&length, sizeof(int));
-        int position=1+3*sizeof(int);
-        double x,y;
-        std::list<QgsPoint>::iterator it;
-        for(it=mCaptureList.begin();it!=mCaptureList.end();++it)
-        {
-          QgsPoint savePoint = maybeInversePoint(*it, "adding poylgon");
-          x = savePoint.x();
-          y = savePoint.y();
+	if(vlayer->getGeometryType() == QGis::WKBPolygon)
+	  {
+	    size=1+3*sizeof(int)+2*(mCaptureList.size()+1)*sizeof(double);
+	    wkb= new unsigned char[size];
+	    int wkbtype=QGis::WKBPolygon;
+	    int length=mCaptureList.size()+1;//+1 because the first point is needed twice
+	    int numrings=1;
+	    memcpy(&wkb[0],&end,1);
+	    memcpy(&wkb[1],&wkbtype, sizeof(int));
+	    memcpy(&wkb[1+sizeof(int)],&numrings,sizeof(int));
+	    memcpy(&wkb[1+2*sizeof(int)],&length, sizeof(int));
+	    int position=1+3*sizeof(int);
+	    double x,y;
+	    std::list<QgsPoint>::iterator it;
+	    for(it=mCaptureList.begin();it!=mCaptureList.end();++it)
+	      {
+		QgsPoint savePoint = maybeInversePoint(*it, "adding poylgon");
+		x = savePoint.x();
+		y = savePoint.y();
+		
+		memcpy(&wkb[position],&x,sizeof(double));
+		position+=sizeof(double);
+		
+		memcpy(&wkb[position],&y,sizeof(double));
+		position+=sizeof(double);
+	      }
+	    // close the polygon
+	    it=mCaptureList.begin();
+	    QgsPoint savePoint = maybeInversePoint(*it, "closing polygon");
+	    x = savePoint.x();
+	    y = savePoint.y();
   
-          memcpy(&wkb[position],&x,sizeof(double));
-          position+=sizeof(double);
-  
-          memcpy(&wkb[position],&y,sizeof(double));
-          position+=sizeof(double);
-        }
-        // close the polygon
-        it=mCaptureList.begin();
-        QgsPoint savePoint = maybeInversePoint(*it, "closing polygon");
-        x = savePoint.x();
-        y = savePoint.y();
-  
-        memcpy(&wkb[position],&x,sizeof(double));
-        position+=sizeof(double);
-  
-        memcpy(&wkb[position],&y,sizeof(double));
+	    memcpy(&wkb[position],&x,sizeof(double));
+	    position+=sizeof(double);
+	    
+	    memcpy(&wkb[position],&y,sizeof(double));
+	  }
+	else if(vlayer->getGeometryType() == QGis::WKBMultiPolygon)
+	  {
+	    //todo
+	  }
       }
       f->setGeometryAndOwnership(&wkb[0],size);
   
