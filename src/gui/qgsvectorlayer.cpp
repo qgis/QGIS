@@ -1263,6 +1263,11 @@ QGis::VectorType QgsVectorLayer::vectorType() const
   return QGis::Unknown;
 }
 
+QGis::WKBTYPE QgsVectorLayer::getGeometryType() const
+{
+  return (QGis::WKBTYPE)(geometryType);
+}
+
 QgsVectorLayerProperties *QgsVectorLayer::propertiesDialog()
 {
   return m_propertiesDialog;
