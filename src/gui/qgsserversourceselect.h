@@ -135,14 +135,15 @@ private:
 
     std::map<QString, QString> m_selectedStyleIdForLayer;
 
-    //! What MIME type corresponds to the Button ID in btnGrpImageEncoding?
-    std::vector<QString> m_MimeTypeForButtonId;
+    //! The mime type, the text to use in the button and a unique number
+    QMap<QString, QPair<QString, int> > m_PotentialFormats;
 
     //! Pointer to the qgis application mainwindow
     QgisApp *qgisApp;
 
     //! The widget that controls the image format radio buttons
-    QButtonGroup* m_imageFormatBtns;
+    QButtonGroup* m_imageFormatGroup;
+    QHBoxLayout* m_imageFormatLayout;
 
     //! The WMS provider that retreives information for this dialog
     QgsWmsProvider * mWmsProvider;
