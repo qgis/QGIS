@@ -119,19 +119,47 @@ QMessageBox::Ok);
       // project to layer's SRS
       vlayer->snapPoint(savePoint, tolerance);
       
-      // create geometry and attach it to feature      
-      int size=5+2*sizeof(double);
-      unsigned char *wkb = new unsigned char[size];
-      int wkbtype=QGis::WKBPoint;
+      int size;
       char end=vlayer->endian();
+      unsigned char *wkb;
+      int wkbtype;
       double x = savePoint.x();
       double y = savePoint.y();
-      memcpy(&wkb[0],&end,1);
-      memcpy(&wkb[1],&wkbtype, sizeof(int));
-      memcpy(&wkb[5], &x, sizeof(double));
-      memcpy(&wkb[5]+sizeof(double), &y, sizeof(double));
-      f->setGeometryAndOwnership(&wkb[0],size);            
-      
+
+      if(vlayer->getGeometryType() == QGis::WKBPoint)
+	{
+	  size=1+sizeof(int)+2*sizeof(double);
+	  wkb = new unsigned char[size];
+	  wkbtype=QGis::WKBPoint;
+	  memcpy(&wkb[0],&end,1);
+	  memcpy(&wkb[1],&wkbtype, sizeof(int));
+	  memcpy(&wkb[5], &x, sizeof(double));
+	  memcpy(&wkb[5]+sizeof(double), &y, sizeof(double));
+	}
+      else if(vlayer->getGeometryType() == QGis::WKBMultiPoint)
+	{
+	  size = 2+3*sizeof(int)+2*sizeof(double);
+	  wkb = new unsigned char[size];
+	  wkbtype=QGis::WKBMultiPoint;
+	  int position = 0;
+	  memcpy(&wkb[position], &end, 1);
+	  position += 1;
+	  memcpy(&wkb[position], &wkbtype, sizeof(int));
+	  position += sizeof(int);
+	  int npoint = 1;
+	  memcpy(&wkb[position], &npoint, sizeof(int));
+	  position += sizeof(int);
+	  memcpy(&wkb[position], &end, 1);
+	  position += 1;
+	  int pointtype = QGis::WKBPoint;
+	  memcpy(&wkb[position],&pointtype, sizeof(int));
+	  position += sizeof(int);
+	  memcpy(&wkb[position], &x, sizeof(double));
+	  position += sizeof(double);
+	  memcpy(&wkb[position], &y, sizeof(double));
+	}
+
+      f->setGeometryAndOwnership(&wkb[0],size);
       // add the fields to the QgsFeature
       std::vector<QgsField> fields=vlayer->fields();
       for(std::vector<QgsField>::iterator it=fields.begin();it!=fields.end();++it)
