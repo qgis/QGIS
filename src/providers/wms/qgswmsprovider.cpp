@@ -18,6 +18,7 @@
 
 /* $Id$ */
 
+#include "qgslogger.h"
 #include "qgswmsprovider.h"
 
 #include <fstream>
@@ -1527,10 +1528,7 @@ void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& laye
               layerProperty.crs.push_back(*i);
             }
           }
-          else if (
-                   (e1.tagName() == "EX_GeographicBoundingBox")  ||
-                   (e1.tagName() == "LatLonBoundingBox")        // legacy from earlier versions of WMS
-                  )
+          else if (e1.tagName() == "LatLonBoundingBox")        // legacy from earlier versions of WMS
           {
 
 //            std::cout << "      LLBB is: '" << e1.attribute("minx") << "'." << std::endl;
@@ -1545,6 +1543,23 @@ void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& laye
                                                 e1.attribute("maxy").toDouble()
                                               );
           }
+	  else if(e1.tagName() == "EX_GeographicBoundingBox") //for WMS 1.3
+	    {
+	      QDomElement wBoundLongitudeElem = n1.namedItem("westBoundLongitude").toElement();
+	      QDomElement eBoundLongitudeElem = n1.namedItem("eastBoundLongitude").toElement();
+	      QDomElement sBoundLatitudeElem = n1.namedItem("southBoundLatitude").toElement();
+	      QDomElement nBoundLatitudeElem = n1.namedItem("northBoundLatitude").toElement();
+	      double wBLong, eBLong, sBLat, nBLat;
+	      bool wBOk, eBOk, sBOk, nBOk;
+	      wBLong = wBoundLongitudeElem.text().toDouble(&wBOk);
+	      eBLong = eBoundLongitudeElem.text().toDouble(&eBOk);
+	      sBLat = sBoundLatitudeElem.text().toDouble(&sBOk);
+	      nBLat = nBoundLatitudeElem.text().toDouble(&nBOk);
+	      if(wBOk && eBOk && sBOk && nBOk)
+		{
+		  layerProperty.ex_GeographicBoundingBox = QgsRect(wBLong, sBLat, eBLong, nBLat);
+		}
+	    }
           else if (e1.tagName() == "BoundingBox")
           {
               // TODO: overwrite inherited
@@ -1905,7 +1920,7 @@ bool QgsWmsProvider::calculateExtent()
                               it != activeSubLayers.end(); 
                             ++it ) 
   {
-
+    QgsDebugMsg("Sublayer Iterator: "+*it);
     // This is the extent for the layer name in *it
     QgsRect extent = extentForLayer.find( *it )->second;
 
