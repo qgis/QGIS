@@ -1063,7 +1063,7 @@ support this.</source>
     </message>
     <message>
         <source>You can change this option later by selecting Preferences from the Settings menu.</source>
-        <translation>您可以在以后从设置菜单中选择首选项来设置这个选项.</translation>
+        <translation type="obsolete">您可以在以后从设置菜单中选择首选项来设置这个选项.</translation>
     </message>
     <message>
         <source>Reading settings</source>
@@ -1099,7 +1099,7 @@ support this.</source>
     </message>
     <message>
         <source>Ctrl+N</source>
-        <translation>Ctrl+N</translation>
+        <translation type="obsolete">Ctrl+N</translation>
     </message>
     <message>
         <source>New Project</source>
@@ -1111,7 +1111,7 @@ support this.</source>
     </message>
     <message>
         <source>Ctrl+O</source>
-        <translation>Ctrl+O</translation>
+        <translation type="obsolete">Ctrl+O</translation>
     </message>
     <message>
         <source>Open a Project</source>
@@ -1127,7 +1127,7 @@ support this.</source>
     </message>
     <message>
         <source>Ctrl+A</source>
-        <translation>Ctrl+A</translation>
+        <translation type="obsolete">Ctrl+A</translation>
     </message>
     <message>
         <source>Save Project under a new name</source>
@@ -1139,7 +1139,7 @@ support this.</source>
     </message>
     <message>
         <source>Ctrl+P</source>
-        <translation>Ctrl+P</translation>
+        <translation type="obsolete">Ctrl+P</translation>
     </message>
     <message>
         <source>Print</source>
@@ -1151,7 +1151,7 @@ support this.</source>
     </message>
     <message>
         <source>I</source>
-        <translation>I</translation>
+        <translation type="obsolete">I</translation>
     </message>
     <message>
         <source>Save map as image</source>
@@ -1163,7 +1163,7 @@ support this.</source>
     </message>
     <message>
         <source>M</source>
-        <translation>M</translation>
+        <translation type="obsolete">M</translation>
     </message>
     <message>
         <source>Export as MapServer .map file</source>
@@ -1175,7 +1175,7 @@ support this.</source>
     </message>
     <message>
         <source>Ctrl+Q</source>
-        <translation>Ctrl+Q</translation>
+        <translation type="obsolete">Ctrl+Q</translation>
     </message>
     <message>
         <source>Exit QGIS</source>
@@ -1187,7 +1187,7 @@ support this.</source>
     </message>
     <message>
         <source>V</source>
-        <translation>V</translation>
+        <translation type="obsolete">V</translation>
     </message>
     <message>
         <source>Add a Vector Layer</source>
@@ -1199,7 +1199,7 @@ support this.</source>
     </message>
     <message>
         <source>R</source>
-        <translation>R</translation>
+        <translation type="obsolete">R</translation>
     </message>
     <message>
         <source>Add a Raster Layer</source>
@@ -1211,7 +1211,7 @@ support this.</source>
     </message>
     <message>
         <source>D</source>
-        <translation>D</translation>
+        <translation type="obsolete">D</translation>
     </message>
     <message>
         <source>Add a PostGIS Layer</source>
@@ -1223,7 +1223,7 @@ support this.</source>
     </message>
     <message>
         <source>N</source>
-        <translation>N</translation>
+        <translation type="obsolete">N</translation>
     </message>
     <message>
         <source>Create a New Vector Layer</source>
@@ -1235,7 +1235,7 @@ support this.</source>
     </message>
     <message>
         <source>Ctrl+D</source>
-        <translation>Ctrl+D</translation>
+        <translation type="obsolete">Ctrl+D</translation>
     </message>
     <message>
         <source>Remove a Layer</source>
@@ -1247,7 +1247,7 @@ support this.</source>
     </message>
     <message>
         <source>+</source>
-        <translation>+</translation>
+        <translation type="obsolete">+</translation>
     </message>
     <message>
         <source>Show all layers in the overview map</source>
@@ -1259,7 +1259,7 @@ support this.</source>
     </message>
     <message>
         <source>-</source>
-        <translation>-</translation>
+        <translation type="obsolete">-</translation>
     </message>
     <message>
         <source>Remove all layers from overview map</source>
@@ -1271,7 +1271,7 @@ support this.</source>
     </message>
     <message>
         <source>S</source>
-        <translation>S</translation>
+        <translation type="obsolete">S</translation>
     </message>
     <message>
         <source>Show all layers</source>
@@ -1283,7 +1283,7 @@ support this.</source>
     </message>
     <message>
         <source>H</source>
-        <translation>H</translation>
+        <translation type="obsolete">H</translation>
     </message>
     <message>
         <source>Hide all layers</source>
@@ -1295,7 +1295,7 @@ support this.</source>
     </message>
     <message>
         <source>Alt+P</source>
-        <translation>Alt+P</translation>
+        <translation type="obsolete">Alt+P</translation>
     </message>
     <message>
         <source>Set project properties</source>
@@ -1307,7 +1307,7 @@ support this.</source>
     </message>
     <message>
         <source>Alt+O</source>
-        <translation>Alt+O</translation>
+        <translation type="obsolete">Alt+O</translation>
     </message>
     <message>
         <source>Change various QGIS options</source>
@@ -1319,7 +1319,7 @@ support this.</source>
     </message>
     <message>
         <source>Alt+I</source>
-        <translation>Alt+I</translation>
+        <translation type="obsolete">Alt+I</translation>
     </message>
     <message>
         <source>Manage custom projections</source>
@@ -1331,7 +1331,7 @@ support this.</source>
     </message>
     <message>
         <source>F1</source>
-        <translation>F1</translation>
+        <translation type="obsolete">F1</translation>
     </message>
     <message>
         <source>Help Documentation</source>
@@ -1343,7 +1343,7 @@ support this.</source>
     </message>
     <message>
         <source>Ctrl+H</source>
-        <translation>Ctrl+H</translation>
+        <translation type="obsolete">Ctrl+H</translation>
     </message>
     <message>
         <source>QGIS Home Page</source>
@@ -1355,7 +1355,7 @@ support this.</source>
     </message>
     <message>
         <source>Alt+H</source>
-        <translation>Alt+H</translation>
+        <translation type="obsolete">Alt+H</translation>
     </message>
     <message>
         <source>Visit QGIS SourceForge page</source>
@@ -1383,7 +1383,7 @@ support this.</source>
     </message>
     <message>
         <source>Ctrl+R</source>
-        <translation>Ctrl+R</translation>
+        <translation type="obsolete">Ctrl+R</translation>
     </message>
     <message>
         <source>Refresh Map</source>
@@ -1395,7 +1395,7 @@ support this.</source>
     </message>
     <message>
         <source>z</source>
-        <translation>z</translation>
+        <translation type="obsolete">z</translation>
     </message>
     <message>
         <source>Zoom Out</source>
@@ -1403,7 +1403,7 @@ support this.</source>
     </message>
     <message>
         <source>Z</source>
-        <translation>Z</translation>
+        <translation type="obsolete">Z</translation>
     </message>
     <message>
         <source>Zoom Full</source>
@@ -1411,7 +1411,7 @@ support this.</source>
     </message>
     <message>
         <source>f</source>
-        <translation>f</translation>
+        <translation type="obsolete">f</translation>
     </message>
     <message>
         <source>Zoom to Full Extents</source>
@@ -1423,7 +1423,7 @@ support this.</source>
     </message>
     <message>
         <source>F</source>
-        <translation>F</translation>
+        <translation type="obsolete">F</translation>
     </message>
     <message>
         <source>Zoom to selection</source>
@@ -1475,7 +1475,7 @@ support this.</source>
     </message>
     <message>
         <source>Ctrl+M</source>
-        <translation>Ctrl+M</translation>
+        <translation type="obsolete">Ctrl+M</translation>
     </message>
     <message>
         <source>Measure a Line</source>
@@ -1487,7 +1487,7 @@ support this.</source>
     </message>
     <message>
         <source>Alt+M</source>
-        <translation>Alt+M</translation>
+        <translation type="obsolete">Alt+M</translation>
     </message>
     <message>
         <source>Measure an Area</source>
@@ -1499,7 +1499,7 @@ support this.</source>
     </message>
     <message>
         <source>Ctrl+B</source>
-        <translation>Ctrl+B</translation>
+        <translation type="obsolete">Ctrl+B</translation>
     </message>
     <message>
         <source>New Bookmark...</source>
@@ -1507,7 +1507,7 @@ support this.</source>
     </message>
     <message>
         <source>Alt+B</source>
-        <translation>Alt+B</translation>
+        <translation type="obsolete">Alt+B</translation>
     </message>
     <message>
         <source>New Bookmark</source>
@@ -1543,7 +1543,7 @@ support this.</source>
     </message>
     <message>
         <source>.</source>
-        <translation>.</translation>
+        <translation type="obsolete">.</translation>
     </message>
     <message>
         <source>Capture Points</source>
@@ -1555,7 +1555,7 @@ support this.</source>
     </message>
     <message>
         <source>/</source>
-        <translation>/</translation>
+        <translation type="obsolete">/</translation>
     </message>
     <message>
         <source>Capture Lines</source>
@@ -1567,7 +1567,7 @@ support this.</source>
     </message>
     <message>
         <source>Ctrl+/</source>
-        <translation>Ctrl+/</translation>
+        <translation type="obsolete">Ctrl+/</translation>
     </message>
     <message>
         <source>Capture Polygons</source>
@@ -1728,6 +1728,197 @@ support this.</source>
     <message>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
         <translation>无法创建书签。您的用户数据库丢失或损坏</translation>
+    </message>
+    <message>
+        <source>Ctrl+N</source>
+        <comment>New Project</comment>
+        <translation type="unfinished">Ctrl+N</translation>
+    </message>
+    <message>
+        <source>Ctrl+O</source>
+        <comment>Open a Project</comment>
+        <translation type="unfinished">Ctrl+O</translation>
+    </message>
+    <message>
+        <source>Ctrl+S</source>
+        <comment>Save Project</comment>
+        <translation type="unfinished">Ctrl+S</translation>
+    </message>
+    <message>
+        <source>Save Project</source>
+        <translation type="unfinished">保存项目</translation>
+    </message>
+    <message>
+        <source>Ctrl+A</source>
+        <comment>Save Project under a new name</comment>
+        <translation type="unfinished">Ctrl+A</translation>
+    </message>
+    <message>
+        <source>Ctrl+P</source>
+        <comment>Print</comment>
+        <translation type="unfinished">Ctrl+P</translation>
+    </message>
+    <message>
+        <source>Ctrl+I</source>
+        <comment>Save map as image</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>M</source>
+        <comment>Export as MapServer .map file</comment>
+        <translation type="unfinished">M</translation>
+    </message>
+    <message>
+        <source>Ctrl+Q</source>
+        <comment>Exit QGIS</comment>
+        <translation type="unfinished">Ctrl+Q</translation>
+    </message>
+    <message>
+        <source>V</source>
+        <comment>Add a Vector Layer</comment>
+        <translation type="unfinished">V</translation>
+    </message>
+    <message>
+        <source>R</source>
+        <comment>Add a Raster Layer</comment>
+        <translation type="unfinished">R</translation>
+    </message>
+    <message>
+        <source>D</source>
+        <comment>Add a PostGIS Layer</comment>
+        <translation type="unfinished">D</translation>
+    </message>
+    <message>
+        <source>N</source>
+        <comment>Create a New Vector Layer</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+D</source>
+        <comment>Remove a Layer</comment>
+        <translation type="unfinished">Ctrl+D</translation>
+    </message>
+    <message>
+        <source>+</source>
+        <comment>Show all layers in the overview map</comment>
+        <translation type="unfinished">+</translation>
+    </message>
+    <message>
+        <source>-</source>
+        <comment>Remove all layers from overview map</comment>
+        <translation type="unfinished">-</translation>
+    </message>
+    <message>
+        <source>S</source>
+        <comment>Show all layers</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>H</source>
+        <comment>Hide all layers</comment>
+        <translation type="unfinished">H</translation>
+    </message>
+    <message>
+        <source>P</source>
+        <comment>Set project properties</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <comment>Help Documentation</comment>
+        <translation type="unfinished">F1</translation>
+    </message>
+    <message>
+        <source>Ctrl+H</source>
+        <comment>QGIS Home Page</comment>
+        <translation type="unfinished">Ctrl+H</translation>
+    </message>
+    <message>
+        <source>Ctrl+R</source>
+        <comment>Refresh Map</comment>
+        <translation type="unfinished">Ctrl+R</translation>
+    </message>
+    <message>
+        <source>Ctrl++</source>
+        <comment>Zoom In</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+-</source>
+        <comment>Zoom Out</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F</source>
+        <comment>Zoom to Full Extents</comment>
+        <translation type="unfinished">F</translation>
+    </message>
+    <message>
+        <source>Ctrl+F</source>
+        <comment>Zoom to selection</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>I</source>
+        <comment>Click on features to identify them</comment>
+        <translation type="unfinished">I</translation>
+    </message>
+    <message>
+        <source>Ctrl+M</source>
+        <comment>Measure a Line</comment>
+        <translation type="unfinished">Ctrl+M</translation>
+    </message>
+    <message>
+        <source>Ctrl+J</source>
+        <comment>Measure an Area</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>B</source>
+        <comment>Show Bookmarks</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+B</source>
+        <comment>New Bookmark</comment>
+        <translation type="unfinished">Ctrl+B</translation>
+    </message>
+    <message>
+        <source>W</source>
+        <comment>Add Web Mapping Server Layer</comment>
+        <translation type="unfinished">西</translation>
+    </message>
+    <message>
+        <source>O</source>
+        <comment>Add current layer to overview map</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start editing the current layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop editing the current layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>.</source>
+        <comment>Capture Points</comment>
+        <translation type="unfinished">.</translation>
+    </message>
+    <message>
+        <source>/</source>
+        <comment>Capture Lines</comment>
+        <translation type="unfinished">/</translation>
+    </message>
+    <message>
+        <source>Ctrl+/</source>
+        <comment>Capture Polygons</comment>
+        <translation type="unfinished">Ctrl+/</translation>
+    </message>
+    <message>
+        <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2505,6 +2696,16 @@ support this.</source>
         <source>&lt;h2&gt;QGIS Developers&lt;/h2&gt;</source>
         <translation>&lt;h2&gt;QGIS开发人员&lt;/h2&gt;</translation>
     </message>
+    <message>
+        <source>QGIS Browser Selection</source>
+        <translation type="unfinished">选择QGIS的浏览器</translation>
+    </message>
+    <message>
+        <source>Enter the name of a web browser to use (eg. konqueror).
+Enter the full path if the browser is not in your PATH.
+You can change this option later by selection Options from the Settings menu (Help Browser tab).</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAddAttrDialogBase</name>
@@ -2656,11 +2857,11 @@ support this.</source>
     </message>
     <message>
         <source>OK</source>
-        <translation>确定</translation>
+        <translation type="obsolete">确定</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>取消</translation>
+        <translation type="obsolete">取消</translation>
     </message>
     <message>
         <source>1</source>
@@ -2673,6 +2874,14 @@ support this.</source>
     <message>
         <source>Value</source>
         <translation>值</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished">确定(&amp;O)</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">取消(&amp;C)</translation>
     </message>
 </context>
 <context>
@@ -2983,6 +3192,66 @@ support this.</source>
         <source> for read/write</source>
         <translation>读/写</translation>
     </message>
+    <message>
+        <source>Error in Print</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot format BoundingBox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot seek</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot overwrite BoundingBox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot find BoundingBox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot format translate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot overwrite translate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot find translate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File IO Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paper does not match</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The selected paper size does not match the composition size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Big image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To create image </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> requires circa </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> MB of memory</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerBase</name>
@@ -3148,6 +3417,18 @@ support this.</source>
         <source>Map %1</source>
         <translation>地图 %1</translation>
     </message>
+    <message>
+        <source>Cache</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Render</source>
+        <translation type="unfinished">着色</translation>
+    </message>
+    <message>
+        <source>Rectangle</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerMapBase</name>
@@ -3210,6 +3491,21 @@ support this.</source>
     <message>
         <source>Preview</source>
         <translation>预览</translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerPicture</name>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">警告</translation>
+    </message>
+    <message>
+        <source>Cannot load picture.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a file</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3287,6 +3583,22 @@ support this.</source>
     <message>
         <source>Group</source>
         <translation>组</translation>
+    </message>
+    <message>
+        <source>Combine selected layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cache</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Render</source>
+        <translation type="unfinished">着色</translation>
+    </message>
+    <message>
+        <source>Rectangle</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3393,6 +3705,28 @@ support this.</source>
     <message>
         <source>Landscape</source>
         <translation>横向</translation>
+    </message>
+    <message>
+        <source>Out of memory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Qgis is unable to resize the paper size due to insufficient memory.
+ It is best that you avoid using the map composer until you restart qgis.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation type="unfinished">标签</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">警告</translation>
+    </message>
+    <message>
+        <source>Cannot load picture.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3611,7 +3945,7 @@ support this.</source>
     </message>
     <message>
         <source>&amp;CopyrightLabel</source>
-        <translation>版权标签 (&amp;C)</translation>
+        <translation type="obsolete">版权标签 (&amp;C)</translation>
     </message>
     <message>
         <source>Creates a copyright label that is displayed on the map canvas.</source>
@@ -3619,7 +3953,15 @@ support this.</source>
     </message>
     <message>
         <source>Copyright Label</source>
-        <translation>版权标签</translation>
+        <translation type="obsolete">版权标签</translation>
+    </message>
+    <message>
+        <source>Bottom Right</source>
+        <translation type="unfinished">右下</translation>
+    </message>
+    <message>
+        <source>&amp;Copyright Label</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3763,7 +4105,11 @@ support this.</source>
     </message>
     <message>
         <source>Internal Error (source projection invalid?</source>
-        <translation>内部错误 - 原始投影无效?</translation>
+        <translation type="obsolete">内部错误 - 原始投影无效?</translation>
+    </message>
+    <message>
+        <source>Internal Error (source projection invalid?)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3875,11 +4221,11 @@ Parameters:</source>
         <translation type="obsolete">用下面的文本框来测试您创建的投影。输入一个坐标（经度和纬度，并且投影后的结果您也知道，例如从地图上读取）。然后按下计算按钮，看看您所创建的投影是否正确.</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Arial; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Arial; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4105,10 +4451,6 @@ has failed. The database said:
     <message>
         <source>X and Y fields are required and must contain coordinates in decimal units.</source>
         <translation>X和Y字段是必须的，并且所包含的坐标必须是十进制单位。</translation>
-    </message>
-    <message>
-        <source>Add Delimited Text Layer</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4873,7 +5215,7 @@ has failed. The database said:
     </message>
     <message>
         <source>Gps Tools</source>
-        <translation>GPS工具</translation>
+        <translation type="obsolete">GPS工具</translation>
     </message>
     <message>
         <source>Save new GPX file as...</source>
@@ -5990,6 +6332,10 @@ Factor</source>
         <source>GRASS</source>
         <translation>GRASS</translation>
     </message>
+    <message>
+        <source>&amp;GRASS</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsGrassRegionBase</name>
@@ -6147,7 +6493,7 @@ Factor</source>
     </message>
     <message>
         <source>&amp;GraticuleMaker</source>
-        <translation>格网生成器 (&amp;G)</translation>
+        <translation type="obsolete">格网生成器 (&amp;G)</translation>
     </message>
     <message>
         <source>Creates a graticule (grid) and stores the result as a shapefile</source>
@@ -6155,7 +6501,11 @@ Factor</source>
     </message>
     <message>
         <source>Graticule Creator</source>
-        <translation>格网生成器</translation>
+        <translation type="obsolete">格网生成器</translation>
+    </message>
+    <message>
+        <source>&amp;Graticule Creator</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6777,6 +7127,10 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>Show file groups</source>
         <translation>显示文件</translation>
     </message>
+    <message>
+        <source>&amp;Allow editing</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLegendItemBase</name>
@@ -7203,7 +7557,7 @@ The error message from the database was:
     </message>
     <message>
         <source>No GEOS Support!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">没有GEOS支持!</translation>
     </message>
     <message>
         <source>Your PostGIS installation has no GEOS support.
@@ -7399,7 +7753,7 @@ Extended error information:
     </message>
     <message>
         <source>&amp;NorthArrow</source>
-        <translation>指北针 (&amp;N)</translation>
+        <translation type="obsolete">指北针 (&amp;N)</translation>
     </message>
     <message>
         <source>Creates a north arrow that is displayed on the map canvas</source>
@@ -7407,11 +7761,19 @@ Extended error information:
     </message>
     <message>
         <source>North Arrow</source>
-        <translation>指北针</translation>
+        <translation type="obsolete">指北针</translation>
     </message>
     <message>
         <source>Pixmap Not Found</source>
         <translation>Pixmap未找到</translation>
+    </message>
+    <message>
+        <source>Top Left</source>
+        <translation type="unfinished">左上</translation>
+    </message>
+    <message>
+        <source>&amp;North Arrow</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7780,6 +8142,14 @@ identifying features without zooming in very close.
         <source>&lt;b&gt;Note:&lt;/b&gt; The browser must be in your PATH or you can specify the full path above</source>
         <translation>&lt;b&gt;注意:&lt;/b&gt; 浏览器必须在PATH环境变量下，或者在上面指定完整路径</translation>
     </message>
+    <message>
+        <source>Appearance</source>
+        <translation type="unfinished">外观</translation>
+    </message>
+    <message>
+        <source>Capitalise layer name</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsPasteTransformationsBase</name>
@@ -7851,7 +8221,7 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>&amp;Buffer Features</source>
-        <translation>缓冲区 (&amp;B)</translation>
+        <translation type="obsolete">缓冲区 (&amp;B)</translation>
     </message>
     <message>
         <source>A new layer is created in the database with the buffered features.</source>
@@ -7859,7 +8229,7 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Buffer features</source>
-        <translation>对要素作缓冲区</translation>
+        <translation type="obsolete">对要素作缓冲区</translation>
     </message>
     <message>
         <source>Unable to add geometry column</source>
@@ -7905,6 +8275,10 @@ identifying features without zooming in very close.
     <message>
         <source>You must select a layer in the legend to buffer</source>
         <translation>您必须在图例中选择一个图层来作缓冲区</translation>
+    </message>
+    <message>
+        <source>&amp;Buffer features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9229,7 +9603,7 @@ primary key) or has a PostgreSQL oid column.
 &lt;p style=&quot;margin-top:14px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:14px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;注释&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </translation>
@@ -9243,18 +9617,25 @@ primary key) or has a PostgreSQL oid column.
         <translation>依比例显示</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:18px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+        <source>Column Count:</source>
+        <translation>字段数:</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:9pt;font-family:Sans Serif&quot;&gt;
+&lt;p style=&quot;margin-top:14px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:9pt;font-family:Sans Serif&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-size:15pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p dir=&quot;ltr&quot;&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
 &lt;p dir=&quot;ltr&quot;&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
 &lt;p dir=&quot;ltr&quot;&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids could corrupt your image - always make a backup of your data first!&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Column Count:</source>
-        <translation>字段数:</translation>
     </message>
 </context>
 <context>
@@ -9356,7 +9737,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>&amp;ScaleBar</source>
-        <translation>比例尺 (&amp;S)</translation>
+        <translation type="obsolete">比例尺 (&amp;S)</translation>
     </message>
     <message>
         <source>Creates a scale bar that is displayed on the map canvas</source>
@@ -9364,7 +9745,11 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Scale Bar</source>
-        <translation>比例尺</translation>
+        <translation type="obsolete">比例尺</translation>
+    </message>
+    <message>
+        <source>&amp;Scale Bar</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9516,11 +9901,11 @@ primary key) or has a PostgreSQL oid column.
     <name>QgsServerSourceSelect</name>
     <message>
         <source>PNG</source>
-        <translation>PNG</translation>
+        <translation type="obsolete">PNG</translation>
     </message>
     <message>
         <source>JPEG</source>
-        <translation>JPEG</translation>
+        <translation type="obsolete">JPEG</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the </source>
@@ -10141,7 +10526,7 @@ primary key) or has a PostgreSQL oid column.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Import Shapefiles to PostgreSQL</source>
+        <source>&amp;Spit</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10341,7 +10726,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>The source of the data (path name or database connection information)</source>
-        <translation>数据源(路径名称或数据库连接信息)</translation>
+        <translation type="obsolete">数据源(路径名称或数据库连接信息)</translation>
     </message>
     <message>
         <source>This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
@@ -10431,6 +10816,10 @@ primary key) or has a PostgreSQL oid column.
         <source>Precision</source>
         <translation>精度</translation>
     </message>
+    <message>
+        <source>Source for this layer : </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerPropertiesBase</name>
@@ -10444,7 +10833,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Layer source</source>
-        <translation>图层的数据源</translation>
+        <translation type="obsolete">图层的数据源</translation>
     </message>
     <message>
         <source>Help</source>
@@ -10468,7 +10857,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>TextLabel2</source>
-        <translation>文本标签2</translation>
+        <translation type="obsolete">文本标签2</translation>
     </message>
     <message>
         <source>Symbology</source>

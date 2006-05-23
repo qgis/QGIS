@@ -1423,7 +1423,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>You can change this option later by selecting Preferences from the Settings menu.</source>
-        <translation>Tuto volbu lze změnit později výběrem Vlastnosti z menu Nastavení. </translation>
+        <translation type="obsolete">Tuto volbu lze změnit později výběrem Vlastnosti z menu Nastavení. </translation>
     </message>
     <message>
         <source>&amp;New Project...</source>
@@ -1431,7 +1431,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>Ctrl+N</source>
-        <translation>Ctrl+N</translation>
+        <translation type="obsolete">Ctrl+N</translation>
     </message>
     <message>
         <source>New Project</source>
@@ -1443,7 +1443,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>Ctrl+O</source>
-        <translation>Ctrl+O</translation>
+        <translation type="obsolete">Ctrl+O</translation>
     </message>
     <message>
         <source>Open a Project</source>
@@ -1459,7 +1459,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>Ctrl+A</source>
-        <translation>Ctrl+A</translation>
+        <translation type="obsolete">Ctrl+A</translation>
     </message>
     <message>
         <source>Save Project under a new name</source>
@@ -1471,7 +1471,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>Ctrl+P</source>
-        <translation>Ctrl+P</translation>
+        <translation type="obsolete">Ctrl+P</translation>
     </message>
     <message>
         <source>Print</source>
@@ -1483,7 +1483,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>I</source>
-        <translation>I</translation>
+        <translation type="obsolete">I</translation>
     </message>
     <message>
         <source>Save map as image</source>
@@ -1495,7 +1495,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>M</source>
-        <translation>M</translation>
+        <translation type="obsolete">M</translation>
     </message>
     <message>
         <source>Export as MapServer .map file</source>
@@ -1507,7 +1507,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>Ctrl+Q</source>
-        <translation>Ctrl+Q</translation>
+        <translation type="obsolete">Ctrl+Q</translation>
     </message>
     <message>
         <source>Exit QGIS</source>
@@ -1519,7 +1519,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>V</source>
-        <translation>V</translation>
+        <translation type="obsolete">V</translation>
     </message>
     <message>
         <source>Add a Raster Layer</source>
@@ -1527,7 +1527,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>R</source>
-        <translation>R</translation>
+        <translation type="obsolete">R</translation>
     </message>
     <message>
         <source>Add a PostGIS Layer</source>
@@ -1535,7 +1535,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>D</source>
-        <translation>D</translation>
+        <translation type="obsolete">D</translation>
     </message>
     <message>
         <source>New Vector Layer</source>
@@ -1543,7 +1543,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>N</source>
-        <translation>N</translation>
+        <translation type="obsolete">N</translation>
     </message>
     <message>
         <source>Create a New Vector Layer</source>
@@ -1555,7 +1555,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>Ctrl+D</source>
-        <translation>Ctrl+D</translation>
+        <translation type="obsolete">Ctrl+D</translation>
     </message>
     <message>
         <source>Remove a Layer</source>
@@ -1567,7 +1567,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>+</source>
-        <translation>+</translation>
+        <translation type="obsolete">+</translation>
     </message>
     <message>
         <source>Show all layers in the overview map</source>
@@ -1579,7 +1579,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>-</source>
-        <translation>-</translation>
+        <translation type="obsolete">-</translation>
     </message>
     <message>
         <source>Remove all layers from overview map</source>
@@ -1591,7 +1591,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>S</source>
-        <translation>S</translation>
+        <translation type="obsolete">S</translation>
     </message>
     <message>
         <source>Show all layers</source>
@@ -1603,7 +1603,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>H</source>
-        <translation>H</translation>
+        <translation type="obsolete">H</translation>
     </message>
     <message>
         <source>Hide all layers</source>
@@ -1615,7 +1615,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>Alt+P</source>
-        <translation>Alt+P</translation>
+        <translation type="obsolete">Alt+P</translation>
     </message>
     <message>
         <source>Set project properties</source>
@@ -1627,7 +1627,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>Alt+O</source>
-        <translation>Alt+O</translation>
+        <translation type="obsolete">Alt+O</translation>
     </message>
     <message>
         <source>Change various QGIS options</source>
@@ -1639,7 +1639,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>Alt+I</source>
-        <translation>Alt+I</translation>
+        <translation type="obsolete">Alt+I</translation>
     </message>
     <message>
         <source>Manage custom projections</source>
@@ -1651,7 +1651,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>F1</source>
-        <translation>F1</translation>
+        <translation type="obsolete">F1</translation>
     </message>
     <message>
         <source>Help Documentation</source>
@@ -1663,7 +1663,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>Ctrl+H</source>
-        <translation>Ctrl+H</translation>
+        <translation type="obsolete">Ctrl+H</translation>
     </message>
     <message>
         <source>QGIS Home Page</source>
@@ -1675,7 +1675,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>Alt+H</source>
-        <translation>Alt+H</translation>
+        <translation type="obsolete">Alt+H</translation>
     </message>
     <message>
         <source>Visit QGIS SourceForge page</source>
@@ -1703,7 +1703,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>Ctrl+R</source>
-        <translation>Ctrl+R</translation>
+        <translation type="obsolete">Ctrl+R</translation>
     </message>
     <message>
         <source>Refresh Map</source>
@@ -1715,7 +1715,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>z</source>
-        <translation>z</translation>
+        <translation type="obsolete">z</translation>
     </message>
     <message>
         <source>Zoom Out</source>
@@ -1723,7 +1723,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>Z</source>
-        <translation>Z</translation>
+        <translation type="obsolete">Z</translation>
     </message>
     <message>
         <source>Zoom Full</source>
@@ -1731,7 +1731,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>f</source>
-        <translation>f</translation>
+        <translation type="obsolete">f</translation>
     </message>
     <message>
         <source>Zoom to Full Extents</source>
@@ -1743,7 +1743,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>F</source>
-        <translation>F</translation>
+        <translation type="obsolete">F</translation>
     </message>
     <message>
         <source>Zoom to selection</source>
@@ -1795,7 +1795,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>Ctrl+M</source>
-        <translation>Ctrl+M</translation>
+        <translation type="obsolete">Ctrl+M</translation>
     </message>
     <message>
         <source>Measure a Line</source>
@@ -1807,7 +1807,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>Alt+M</source>
-        <translation>Alt+M</translation>
+        <translation type="obsolete">Alt+M</translation>
     </message>
     <message>
         <source>Measure an Area</source>
@@ -1819,7 +1819,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>Ctrl+B</source>
-        <translation>Ctrl+B</translation>
+        <translation type="obsolete">Ctrl+B</translation>
     </message>
     <message>
         <source>Show Bookmarks</source>
@@ -1831,7 +1831,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>Alt+B</source>
-        <translation>Alt+B</translation>
+        <translation type="obsolete">Alt+B</translation>
     </message>
     <message>
         <source>Add Wms Layer</source>
@@ -1863,7 +1863,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>.</source>
-        <translation>.</translation>
+        <translation type="obsolete">.</translation>
     </message>
     <message>
         <source>Capture Points</source>
@@ -1875,7 +1875,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>/</source>
-        <translation>/</translation>
+        <translation type="obsolete">/</translation>
     </message>
     <message>
         <source>Capture Lines</source>
@@ -1887,7 +1887,7 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     </message>
     <message>
         <source>Ctrl+/</source>
-        <translation>Ctrl+/</translation>
+        <translation type="obsolete">Ctrl+/</translation>
     </message>
     <message>
         <source>Capture Polygons</source>
@@ -2140,6 +2140,197 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
     <message>
         <source>QGIS - Changes in SVN Since Last Release</source>
         <translation>QGIS - Změny v SVN od posledního vydání</translation>
+    </message>
+    <message>
+        <source>Ctrl+N</source>
+        <comment>New Project</comment>
+        <translation type="unfinished">Ctrl+N</translation>
+    </message>
+    <message>
+        <source>Ctrl+O</source>
+        <comment>Open a Project</comment>
+        <translation type="unfinished">Ctrl+O</translation>
+    </message>
+    <message>
+        <source>Ctrl+S</source>
+        <comment>Save Project</comment>
+        <translation type="unfinished">Ctrl+S</translation>
+    </message>
+    <message>
+        <source>Save Project</source>
+        <translation type="unfinished">Uložit projekt</translation>
+    </message>
+    <message>
+        <source>Ctrl+A</source>
+        <comment>Save Project under a new name</comment>
+        <translation type="unfinished">Ctrl+A</translation>
+    </message>
+    <message>
+        <source>Ctrl+P</source>
+        <comment>Print</comment>
+        <translation type="unfinished">Ctrl+P</translation>
+    </message>
+    <message>
+        <source>Ctrl+I</source>
+        <comment>Save map as image</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>M</source>
+        <comment>Export as MapServer .map file</comment>
+        <translation type="unfinished">M</translation>
+    </message>
+    <message>
+        <source>Ctrl+Q</source>
+        <comment>Exit QGIS</comment>
+        <translation type="unfinished">Ctrl+Q</translation>
+    </message>
+    <message>
+        <source>V</source>
+        <comment>Add a Vector Layer</comment>
+        <translation type="unfinished">V</translation>
+    </message>
+    <message>
+        <source>R</source>
+        <comment>Add a Raster Layer</comment>
+        <translation type="unfinished">R</translation>
+    </message>
+    <message>
+        <source>D</source>
+        <comment>Add a PostGIS Layer</comment>
+        <translation type="unfinished">D</translation>
+    </message>
+    <message>
+        <source>N</source>
+        <comment>Create a New Vector Layer</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+D</source>
+        <comment>Remove a Layer</comment>
+        <translation type="unfinished">Ctrl+D</translation>
+    </message>
+    <message>
+        <source>+</source>
+        <comment>Show all layers in the overview map</comment>
+        <translation type="unfinished">+</translation>
+    </message>
+    <message>
+        <source>-</source>
+        <comment>Remove all layers from overview map</comment>
+        <translation type="unfinished">-</translation>
+    </message>
+    <message>
+        <source>S</source>
+        <comment>Show all layers</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>H</source>
+        <comment>Hide all layers</comment>
+        <translation type="unfinished">H</translation>
+    </message>
+    <message>
+        <source>P</source>
+        <comment>Set project properties</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <comment>Help Documentation</comment>
+        <translation type="unfinished">F1</translation>
+    </message>
+    <message>
+        <source>Ctrl+H</source>
+        <comment>QGIS Home Page</comment>
+        <translation type="unfinished">Ctrl+H</translation>
+    </message>
+    <message>
+        <source>Ctrl+R</source>
+        <comment>Refresh Map</comment>
+        <translation type="unfinished">Ctrl+R</translation>
+    </message>
+    <message>
+        <source>Ctrl++</source>
+        <comment>Zoom In</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+-</source>
+        <comment>Zoom Out</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F</source>
+        <comment>Zoom to Full Extents</comment>
+        <translation type="unfinished">F</translation>
+    </message>
+    <message>
+        <source>Ctrl+F</source>
+        <comment>Zoom to selection</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>I</source>
+        <comment>Click on features to identify them</comment>
+        <translation type="unfinished">I</translation>
+    </message>
+    <message>
+        <source>Ctrl+M</source>
+        <comment>Measure a Line</comment>
+        <translation type="unfinished">Ctrl+M</translation>
+    </message>
+    <message>
+        <source>Ctrl+J</source>
+        <comment>Measure an Area</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>B</source>
+        <comment>Show Bookmarks</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+B</source>
+        <comment>New Bookmark</comment>
+        <translation type="unfinished">Ctrl+B</translation>
+    </message>
+    <message>
+        <source>W</source>
+        <comment>Add Web Mapping Server Layer</comment>
+        <translation type="unfinished">Z</translation>
+    </message>
+    <message>
+        <source>O</source>
+        <comment>Add current layer to overview map</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start editing the current layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop editing the current layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>.</source>
+        <comment>Capture Points</comment>
+        <translation type="unfinished">.</translation>
+    </message>
+    <message>
+        <source>/</source>
+        <comment>Capture Lines</comment>
+        <translation type="unfinished">/</translation>
+    </message>
+    <message>
+        <source>Ctrl+/</source>
+        <comment>Capture Polygons</comment>
+        <translation type="unfinished">Ctrl+/</translation>
+    </message>
+    <message>
+        <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3051,9 +3242,15 @@ typu int4 a měl by být buď primárním nebo unikátním klíčem
         <source>Enter the name of a web browser to use (eg. konqueror).
 Enter the full path if the browser is not in your PATH.
 You can change this option later by selection Options from the Tools menu.</source>
-        <translation>Zadejte název webového prohlížeče (např. konqueror).
+        <translation type="obsolete">Zadejte název webového prohlížeče (např. konqueror).
 Zadejte absolutní cestu, pokud není prohlížeč dostupný ve vaší PATH.
 Tuto volbu můžete změnit později výběrem Možnosti QGISu z menu Nastavení.</translation>
+    </message>
+    <message>
+        <source>Enter the name of a web browser to use (eg. konqueror).
+Enter the full path if the browser is not in your PATH.
+You can change this option later by selection Options from the Settings menu (Help Browser tab).</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3646,6 +3843,66 @@ Krátký přehled syntaxe:
         <source> for read/write</source>
         <translation> pro čtení/zápis</translation>
     </message>
+    <message>
+        <source>Error in Print</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot format BoundingBox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot seek</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot overwrite BoundingBox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot find BoundingBox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot format translate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot overwrite translate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot find translate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File IO Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paper does not match</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The selected paper size does not match the composition size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Big image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To create image </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> requires circa </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> MB of memory</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerBase</name>
@@ -3815,6 +4072,18 @@ Krátký přehled syntaxe:
         <source>Map %1</source>
         <translation>Mapa %1</translation>
     </message>
+    <message>
+        <source>Cache</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Render</source>
+        <translation type="unfinished">Vykreslování</translation>
+    </message>
+    <message>
+        <source>Rectangle</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerMapBase</name>
@@ -3881,6 +4150,21 @@ Krátký přehled syntaxe:
     <message>
         <source>Set</source>
         <translation>Sada</translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerPicture</name>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">Upozornění</translation>
+    </message>
+    <message>
+        <source>Cannot load picture.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a file</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3958,6 +4242,22 @@ Krátký přehled syntaxe:
     <message>
         <source>Group</source>
         <translation>Skupina</translation>
+    </message>
+    <message>
+        <source>Combine selected layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cache</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Render</source>
+        <translation type="unfinished">Vykreslování</translation>
+    </message>
+    <message>
+        <source>Rectangle</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4064,6 +4364,28 @@ Krátký přehled syntaxe:
     <message>
         <source>Landscape</source>
         <translation>Landscape</translation>
+    </message>
+    <message>
+        <source>Out of memory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Qgis is unable to resize the paper size due to insufficient memory.
+ It is best that you avoid using the map composer until you restart qgis.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">Upozornění</translation>
+    </message>
+    <message>
+        <source>Cannot load picture.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4284,7 +4606,7 @@ Krátký přehled syntaxe:
     </message>
     <message>
         <source>&amp;CopyrightLabel</source>
-        <translation>&amp;Značka copyrightu</translation>
+        <translation type="obsolete">&amp;Značka copyrightu</translation>
     </message>
     <message>
         <source>Creates a copyright label that is displayed on the map canvas.</source>
@@ -4292,7 +4614,15 @@ Krátký přehled syntaxe:
     </message>
     <message>
         <source>Copyright Label</source>
-        <translation>Štítek copyrightu</translation>
+        <translation type="obsolete">Štítek copyrightu</translation>
+    </message>
+    <message>
+        <source>Bottom Right</source>
+        <translation type="unfinished">Vpravo dole</translation>
+    </message>
+    <message>
+        <source>&amp;Copyright Label</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4436,7 +4766,11 @@ Krátký přehled syntaxe:
     </message>
     <message>
         <source>Internal Error (source projection invalid?</source>
-        <translation>Vnitřní chyba (zdroj zobrazení není platný?</translation>
+        <translation type="obsolete">Vnitřní chyba (zdroj zobrazení není platný?</translation>
+    </message>
+    <message>
+        <source>Internal Error (source projection invalid?)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4549,11 +4883,19 @@ parametry:</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Arial; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Arial; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Zde můžete definovat vlastní uživatelské zobrazení. Definice musí odpovídat formátu proj4 pro specifikaci prostorového referenčního systému.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Arial; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Zde můžete definovat vlastní uživatelské zobrazení. Definice musí odpovídat formátu proj4 pro specifikaci prostorového referenčního systému.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Arial; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Arial; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Pro testování aktuální definice zobrazení použijte textová pole níže. Zadejte zeměpisné souřadnice (zem. délka/šířka) a známé souřadnice v cílovém souřadnicovém systému (například odečtené z mapy). Potom stiskněte tlačítko Vypočítat a zkontolujte přesnost výsledku.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Arial; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Pro testování aktuální definice zobrazení použijte textová pole níže. Zadejte zeměpisné souřadnice (zem. délka/šířka) a známé souřadnice v cílovém souřadnicovém systému (například odečtené z mapy). Potom stiskněte tlačítko Vypočítat a zkontolujte přesnost výsledku.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4787,7 +5129,7 @@ neuspělo. Databáze hlásí:
     </message>
     <message>
         <source>Add Delimited Text Layer</source>
-        <translation>Přidat vrstvu s odděleným textem</translation>
+        <translation type="obsolete">Přidat vrstvu s odděleným textem</translation>
     </message>
 </context>
 <context>
@@ -5678,7 +6020,7 @@ neuspělo. Databáze hlásí:
     </message>
     <message>
         <source>Gps Tools</source>
-        <translation>Nástroje na práci s GPS</translation>
+        <translation type="obsolete">Nástroje na práci s GPS</translation>
     </message>
     <message>
         <source>Save new GPX file as...</source>
@@ -6904,6 +7246,10 @@ Faktor</translation>
         <source>GRASS</source>
         <translation>GRASS</translation>
     </message>
+    <message>
+        <source>&amp;GRASS</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsGrassRegionBase</name>
@@ -7065,7 +7411,7 @@ Faktor</translation>
     </message>
     <message>
         <source>&amp;GraticuleMaker</source>
-        <translation>&amp;Tvůrce mřížky</translation>
+        <translation type="obsolete">&amp;Tvůrce mřížky</translation>
     </message>
     <message>
         <source>Creates a graticule (grid) and stores the result as a shapefile</source>
@@ -7073,7 +7419,11 @@ Faktor</translation>
     </message>
     <message>
         <source>Graticule Creator</source>
-        <translation>Tvůrce mřížky</translation>
+        <translation type="obsolete">Tvůrce mřížky</translation>
+    </message>
+    <message>
+        <source>&amp;Graticule Creator</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7711,6 +8061,10 @@ Problém může být ve vašem síťovém připojení nebo na straně WMS server
         <source>Show file groups</source>
         <translation>Ukázat skupiny souboru</translation>
     </message>
+    <message>
+        <source>&amp;Allow editing</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLegendItemBase</name>
@@ -8345,7 +8699,7 @@ Rozšířené informace o chybě:
     </message>
     <message>
         <source>&amp;NorthArrow</source>
-        <translation>&amp;Směrová růžice</translation>
+        <translation type="obsolete">&amp;Směrová růžice</translation>
     </message>
     <message>
         <source>Creates a north arrow that is displayed on the map canvas</source>
@@ -8353,11 +8707,19 @@ Rozšířené informace o chybě:
     </message>
     <message>
         <source>North Arrow</source>
-        <translation>Směrová růžice</translation>
+        <translation type="obsolete">Směrová růžice</translation>
     </message>
     <message>
         <source>Pixmap Not Found</source>
         <translation>Pixmap nebyla nalezena</translation>
+    </message>
+    <message>
+        <source>Top Left</source>
+        <translation type="unfinished">Vlevo nahoře</translation>
+    </message>
+    <message>
+        <source>&amp;North Arrow</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8757,6 +9119,14 @@ identifikace bez zoomování in very close.
         <source>By default new la&amp;yers added to the map should be displayed</source>
         <translation>Standardně nová &amp;vrstva přidaná do mapy by měla být zobrazena</translation>
     </message>
+    <message>
+        <source>Appearance</source>
+        <translation type="unfinished">Vzhled</translation>
+    </message>
+    <message>
+        <source>Capitalise layer name</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsPasteTransformationsBase</name>
@@ -8860,7 +9230,7 @@ identifikace bez zoomování in very close.
     </message>
     <message>
         <source>&amp;Buffer Features</source>
-        <translation>&amp;Vyrovnávací zóny objektů</translation>
+        <translation type="obsolete">&amp;Vyrovnávací zóny objektů</translation>
     </message>
     <message>
         <source>A new layer is created in the database with the buffered features.</source>
@@ -8868,7 +9238,7 @@ identifikace bez zoomování in very close.
     </message>
     <message>
         <source>Buffer features</source>
-        <translation>Vyrovnávací zóna kolem objektů</translation>
+        <translation type="obsolete">Vyrovnávací zóna kolem objektů</translation>
     </message>
     <message>
         <source>Unable to add geometry column</source>
@@ -8915,6 +9285,10 @@ identifikace bez zoomování in very close.
     <message>
         <source>You must select a layer in the legend to buffer</source>
         <translation>Pro vytvoření vyrovnávací zóny musíte vybrat vrstvu v legendě</translation>
+    </message>
+    <message>
+        <source>&amp;Buffer features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10340,7 +10714,7 @@ primární klíč) nebo sloupec PostgreSQL oid.
 &lt;p style=&quot;margin-top:14px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:14px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Poznámky&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -10360,7 +10734,7 @@ primární klíč) nebo sloupec PostgreSQL oid.
 &lt;p dir=&quot;ltr&quot;&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids could corrupt your image - always make a backup of your data first!&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:18px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Popis&lt;/span&gt;&lt;/p&gt;
 &lt;p dir=&quot;ltr&quot;&gt;Vysoké rozlišení rastrových vrstev může zpomalit odezvu QGISu. Výkon může být podstatně zlepšen vytvořením kopií s nížším rozlišením dat (pyramid), QGIS pouze vybere nejvíce vyhovující rozlišení v závislosti na úrovni zvětšení. Pro vytvoření pyramid musíte mít právo k zápisu do adresáře, kde jsou uložena originální data.&lt;/p&gt;
 &lt;p dir=&quot;ltr&quot;&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Prosím mějte na paměti, že sestavení pyramid může pozměnit vaše originální data, když už jsou jednou sestaveny nelze je odstranit.&lt;/span&gt;&lt;/p&gt;
@@ -10370,6 +10744,23 @@ primární klíč) nebo sloupec PostgreSQL oid.
     <message>
         <source>Column Count:</source>
         <translation>Sloupec počtu:</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:9pt;font-family:Sans Serif&quot;&gt;
+&lt;p style=&quot;margin-top:14px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:9pt;font-family:Sans Serif&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-size:15pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p dir=&quot;ltr&quot;&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
+&lt;p dir=&quot;ltr&quot;&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
+&lt;p dir=&quot;ltr&quot;&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids could corrupt your image - always make a backup of your data first!&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10471,7 +10862,7 @@ primární klíč) nebo sloupec PostgreSQL oid.
     </message>
     <message>
         <source>&amp;ScaleBar</source>
-        <translation>&amp;Měřítko</translation>
+        <translation type="obsolete">&amp;Měřítko</translation>
     </message>
     <message>
         <source>Creates a scale bar that is displayed on the map canvas</source>
@@ -10479,7 +10870,11 @@ primární klíč) nebo sloupec PostgreSQL oid.
     </message>
     <message>
         <source>Scale Bar</source>
-        <translation>Měřítko</translation>
+        <translation type="obsolete">Měřítko</translation>
+    </message>
+    <message>
+        <source>&amp;Scale Bar</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10659,11 +11054,11 @@ primární klíč) nebo sloupec PostgreSQL oid.
     </message>
     <message>
         <source>PNG</source>
-        <translation>PNG</translation>
+        <translation type="obsolete">PNG</translation>
     </message>
     <message>
         <source>JPEG</source>
-        <translation>JPEG</translation>
+        <translation type="obsolete">JPEG</translation>
     </message>
     <message>
         <source>WMS Provider</source>
@@ -11348,7 +11743,11 @@ primární klíč) nebo sloupec PostgreSQL oid.
     </message>
     <message>
         <source>Import Shapefiles to PostgreSQL</source>
-        <translation>Importuje soubor(y) ve formátu ShapeFile do PostgreSQL</translation>
+        <translation type="obsolete">Importuje soubor(y) ve formátu ShapeFile do PostgreSQL</translation>
+    </message>
+    <message>
+        <source>&amp;Spit</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11583,7 +11982,7 @@ primární klíč) nebo sloupec PostgreSQL oid.
     </message>
     <message>
         <source>The source of the data (path name or database connection information)</source>
-        <translation>Datový zdroj (cesta nebo informace o databázovém spojení)</translation>
+        <translation type="obsolete">Datový zdroj (cesta nebo informace o databázovém spojení)</translation>
     </message>
     <message>
         <source>This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
@@ -11685,6 +12084,10 @@ primární klíč) nebo sloupec PostgreSQL oid.
         <source>Precision</source>
         <translation>Přesnost</translation>
     </message>
+    <message>
+        <source>Source for this layer : </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerPropertiesBase</name>
@@ -11698,7 +12101,7 @@ primární klíč) nebo sloupec PostgreSQL oid.
     </message>
     <message>
         <source>Layer source</source>
-        <translation>Zdroj vrstvy</translation>
+        <translation type="obsolete">Zdroj vrstvy</translation>
     </message>
     <message>
         <source>Help</source>
@@ -11722,7 +12125,7 @@ primární klíč) nebo sloupec PostgreSQL oid.
     </message>
     <message>
         <source>TextLabel2</source>
-        <translation>TextLabel2</translation>
+        <translation type="obsolete">TextLabel2</translation>
     </message>
     <message>
         <source>Symbology</source>
