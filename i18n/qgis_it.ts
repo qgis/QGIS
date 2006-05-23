@@ -5668,6 +5668,62 @@ scala</translation>
         <source>&amp;GRASS</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Open mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add GRASS vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add GRASS raster layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open GRASS tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display Current Grass Region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit Current Grass Region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit Grass Vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adds a GRASS vector layer to the map canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adds a GRASS raster layer to the map canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Displays the current GRASS region as a rectangle on the map canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit the current GRASS region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit the currently selected GRASS vector layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsGrassRegionBase</name>
@@ -6489,9 +6545,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>col</source>
         <translation>col</translation>
     </message>
-</context>
-<context>
-    <name>QgsLocationCaptureWidget</name>
 </context>
 <context>
     <name>QgsLocationCaptureWidgetBase</name>
