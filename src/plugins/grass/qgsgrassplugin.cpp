@@ -154,33 +154,33 @@ void QgsGrassPlugin::initGui()
   mRegionBand->hide();
 
   // Create the action for tool
-  mOpenMapsetAction = new QAction( "Open mapset", this );
-  mNewMapsetAction = new QAction( "New mapset", this );
-  mCloseMapsetAction = new QAction( "Close mapset", this );
+  mOpenMapsetAction = new QAction( tr("Open mapset"), this );
+  mNewMapsetAction = new QAction( tr("New mapset"), this );
+  mCloseMapsetAction = new QAction( tr("Close mapset"), this );
 
   mAddVectorAction = new QAction(QIcon(icon_add_vector),
-      "Add GRASS vector layer", this);
+      tr("Add GRASS vector layer"), this);
   mAddRasterAction = new QAction(QIcon(icon_add_raster),
-      "Add GRASS raster layer", this);
+      tr("Add GRASS raster layer"), this);
   mOpenToolsAction = new QAction(QIcon(icon_grass_tools),
-      "Open GRASS tools", this);
+      tr("Open GRASS tools"), this);
 
   mRegionAction = new QAction(QIcon(icon_grass_region),
-      "Display Current Grass Region", this);
+      tr("Display Current Grass Region"), this);
   mRegionAction->setCheckable(true);     
 
   mEditRegionAction = new QAction(QIcon(icon_grass_region_edit),
-      "Edit Current Grass Region", this);
+      tr("Edit Current Grass Region"), this);
   mEditAction = new QAction(QIcon(icon_grass_edit),
-      "Edit Grass Vector layer", this);
+      tr("Edit Grass Vector layer"), this);
   mNewVectorAction = new QAction("Create new Grass Vector", this);
 
-  mAddVectorAction->setWhatsThis("Adds a GRASS vector layer to the map canvas");
-  mAddRasterAction->setWhatsThis("Adds a GRASS raster layer to the map canvas");
-  mOpenToolsAction->setWhatsThis("Open GRASS tools");
-  mRegionAction->setWhatsThis("Displays the current GRASS region as a rectangle on the map canvas");
-  mEditRegionAction->setWhatsThis("Edit the current GRASS region");
-  mEditAction->setWhatsThis("Edit the currently selected GRASS vector layer.");
+  mAddVectorAction->setWhatsThis(tr("Adds a GRASS vector layer to the map canvas"));
+  mAddRasterAction->setWhatsThis(tr("Adds a GRASS raster layer to the map canvas"));
+  mOpenToolsAction->setWhatsThis(tr("Open GRASS tools"));
+  mRegionAction->setWhatsThis(tr("Displays the current GRASS region as a rectangle on the map canvas"));
+  mEditRegionAction->setWhatsThis(tr("Edit the current GRASS region"));
+  mEditAction->setWhatsThis(tr("Edit the currently selected GRASS vector layer."));
 
   // Connect the action 
   connect(mAddVectorAction, SIGNAL(activated()), this, SLOT(addVector()));
