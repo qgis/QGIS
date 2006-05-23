@@ -349,6 +349,7 @@ QgsPoint QgsGeometry::closestVertex(const QgsPoint& point, QgsGeometryVertexInde
 		ptr+=sizeof(int);
 		for(int index=0;index<*npolys;++index)
 		{
+		  ptr += (1 + sizeof(int)); //skip endian and polygon type
 		    nrings=(int*)ptr;
 		    ptr+=sizeof(int);
 		    for(int index2=0;index2<*nrings;++index2)
@@ -559,6 +560,7 @@ bool QgsGeometry::moveVertexAt(double x, double y, QgsGeometryVertexIndex atVert
 
 	for(int polynr = 0; polynr < *nrPolygons; ++polynr)
 	  {
+	    ptr += (1 + sizeof(int)); //skip endian and polygon type
 	    nrRings = (int*)ptr;
 	    ptr += sizeof(int);
 	    for(int ringnr = 0; ringnr< *nrRings; ++ringnr)
@@ -771,6 +773,9 @@ bool QgsGeometry::deleteVertexAt(QgsGeometryVertexIndex atVertex)
 
 	for(int polynr = 0; polynr < *nPolys; ++polynr)
 	  {
+	    memcpy(newBufferPtr, ptr, (1 + sizeof(int))); 
+	    ptr += (1 + sizeof(int)); //skip endian and polygon type
+	    newBufferPtr += (1 + sizeof(int));
 	    nRings = (int*)ptr;
 	    memcpy(newBufferPtr, nRings, sizeof(int));
 	    newBufferPtr += sizeof(int);
@@ -994,18 +999,21 @@ bool QgsGeometry::insertVertexBefore(double x, double y, QgsGeometryVertexIndex 
     case QGis::WKBMultiPolygon:
       {
 	int* nPolys = (int*)ptr;
-	ptr += sizeof(int);
 	int* nRings = 0; //number of rings in a polygon
 	int* nPoints = 0; //number of points in a ring
-	memcpy(newBufferPtr, &nPolys, sizeof(int));
+	memcpy(newBufferPtr, nPolys, sizeof(int));
+	ptr += sizeof(int);
 	newBufferPtr += sizeof(int);
 	int pointindex = 0;
 
 	for(int polynr = 0; polynr < *nPolys; ++polynr)
 	  {
+	    memcpy(newBufferPtr, ptr, (1 + sizeof(int)));
+	    ptr += (1 + sizeof(int));//skip endian and polygon type
+	    newBufferPtr += (1 + sizeof(int));
 	    nRings = (int*)ptr;
 	    ptr += sizeof(int);
-	    memcpy(newBufferPtr, &nRings, sizeof(int));
+	    memcpy(newBufferPtr, nRings, sizeof(int));
 	    newBufferPtr += sizeof(int);
 
 	    for(int ringnr = 0; ringnr < *nRings; ++ringnr)
@@ -1198,6 +1206,7 @@ bool QgsGeometry::vertexAt(double &x, double &y,
 		ptr += sizeof(int);
 		for(int polynr = 0; polynr < *nPolygons; ++polynr)
 		  {
+		    ptr += (1 + sizeof(int)); //skip endian and polygon type
 		    nRings = (int*)ptr;
 		    ptr += sizeof(int);
 		    for(int ringnr = 0; ringnr < *nRings; ++ringnr)
@@ -1422,11 +1431,13 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
 	ptr += sizeof(int);
 	for(int polynr = 0; polynr < *nPolygons; ++polynr)
 	  {
+	    ptr += (1 + sizeof(int));
 	    nRings = (int*)ptr;
 	    ptr += sizeof(int);
 	    for(int ringnr = 0; ringnr < *nRings; ++ringnr)
 	      {
 		nPoints = (int*)ptr;
+		ptr += sizeof(int);
 		prevx = 0;
 		prevy = 0;
 		for(int pointnr = 0; pointnr < *nPoints; ++pointnr)
