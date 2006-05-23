@@ -5775,6 +5775,62 @@ Factor</source>
         <source>&amp;GRASS</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Open mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add GRASS vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add GRASS raster layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open GRASS tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display Current Grass Region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit Current Grass Region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit Grass Vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adds a GRASS vector layer to the map canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adds a GRASS raster layer to the map canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Displays the current GRASS region as a rectangle on the map canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit the current GRASS region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit the currently selected GRASS vector layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsGrassRegionBase</name>
@@ -6561,9 +6617,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>col</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>QgsLocationCaptureWidget</name>
 </context>
 <context>
     <name>QgsLocationCaptureWidgetBase</name>
@@ -9082,9 +9135,6 @@ primary key) or has a PostgreSQL oid column.
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This plugin draws a scale bar on the map. Please note the size option below is a &apos;preferred&apos; size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>QgsScanGeometries</name>
 </context>
 <context>
     <name>QgsSearchQueryBuilder</name>

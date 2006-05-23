@@ -34,9 +34,6 @@
     </message>
 </context>
 <context>
-    <name>QFileDialog</name>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <source>No Data Providers</source>
@@ -2075,9 +2072,6 @@ You can change this option later by selection Options from the Settings menu (He
     </message>
 </context>
 <context>
-    <name>QgsCommunityRegPluginGuiBase</name>
-</context>
-<context>
     <name>QgsComposer</name>
     <message>
         <source> for read/write</source>
@@ -2702,9 +2696,6 @@ You can change this option later by selection Options from the Settings menu (He
         <source>5432</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>QgsContColDialogBase</name>
 </context>
 <context>
     <name>QgsContinuousColorDialogBase</name>
@@ -3473,12 +3464,6 @@ has failed. The database said:
     </message>
 </context>
 <context>
-    <name>QgsDlgVectorLayerProperties</name>
-</context>
-<context>
-    <name>QgsDlgVectorLayerPropertiesBase</name>
-</context>
-<context>
     <name>QgsEditReservedWordsBase</name>
     <message>
         <source>Edit Reserved Words</source>
@@ -4099,15 +4084,6 @@ has failed. The database said:
     </message>
 </context>
 <context>
-    <name>QgsGraMaDialogBase</name>
-</context>
-<context>
-    <name>QgsGraMaExtensionWidget</name>
-</context>
-<context>
-    <name>QgsGraSyDialogBase</name>
-</context>
-<context>
     <name>QgsGraduatedSymbolDialogBase</name>
     <message>
         <source>graduated Symbol</source>
@@ -4547,6 +4523,62 @@ has failed. The database said:
         <source>&amp;GRASS</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Open mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add GRASS vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add GRASS raster layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open GRASS tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display Current Grass Region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit Current Grass Region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit Grass Vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adds a GRASS vector layer to the map canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adds a GRASS raster layer to the map canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Displays the current GRASS region as a rectangle on the map canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit the current GRASS region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit the currently selected GRASS vector layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsGrassRegionBase</name>
@@ -4652,9 +4684,6 @@ has failed. The database said:
         <source>GRASS Shell</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>QgsGrassToolsBase</name>
 </context>
 <context>
     <name>QgsGridMakerPlugin</name>
@@ -5214,9 +5243,6 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
 </context>
 <context>
-    <name>QgsLegendItemBase</name>
-</context>
-<context>
     <name>QgsLineStyleDialogBase</name>
     <message>
         <source>Select a line style</source>
@@ -5261,9 +5287,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>col</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>QgsLocationCaptureWidget</name>
 </context>
 <context>
     <name>QgsLocationCaptureWidgetBase</name>
@@ -5532,9 +5555,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>QgsMessageViewerBase</name>
 </context>
 <context>
     <name>QgsMySQLProvider</name>
@@ -7610,9 +7630,6 @@ primary key) or has a PostgreSQL oid column.
     </message>
 </context>
 <context>
-    <name>QgsScanGeometries</name>
-</context>
-<context>
     <name>QgsSearchQueryBuilder</name>
     <message>
         <source>Found %d matching features.</source>
@@ -7776,12 +7793,6 @@ primary key) or has a PostgreSQL oid column.
         <source>Change ...</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>QgsSiMaDialogBase</name>
-</context>
-<context>
-    <name>QgsSiSyDialogBase</name>
 </context>
 <context>
     <name>QgsSingleSymbolDialogBase</name>
@@ -8177,12 +8188,6 @@ primary key) or has a PostgreSQL oid column.
         <source>&amp;Spit</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>QgsUValDialogBase</name>
-</context>
-<context>
-    <name>QgsUValMaDialogBase</name>
 </context>
 <context>
     <name>QgsUniqueValueDialogBase</name>
