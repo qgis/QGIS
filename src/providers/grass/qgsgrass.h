@@ -145,6 +145,9 @@ public:
 
     static void init (void); 
 
+    // ! test if the directory is mapset
+    static bool isMapset ( QString path );
+
     //! Library version
     static int QgsGrass::versionMajor();
     static int QgsGrass::versionMinor();
