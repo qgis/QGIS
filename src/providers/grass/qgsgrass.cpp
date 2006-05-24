@@ -188,17 +188,26 @@ void QgsGrass::init( void )
  */
 bool QgsGrass::isValidGrassBaseDir(QString const gisBase)
 {
+  std::cerr << "isValidGrassBaseDir()" << std::endl;
   if ( gisBase.isEmpty() )
   {
     return FALSE;
   }
-
-  QFileInfo gbi ( gisBase + "/etc/element_list" );
-  if ( gbi.exists() ) {
-    return TRUE;
-  } else {
-    return FALSE;
-  }
+ 
+  /* TODO: G_is_gisbase() was added to GRASS 6.1 06-05-24,
+           enable its use after some period (others do update) */ 
+  /*
+  if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 ) 
+  {
+      if ( G_is_gisbase( gisBase.toLocal8Bit().constData() ) ) return TRUE;
+  } 
+  else
+  {
+  */
+      QFileInfo gbi ( gisBase + "/etc/element_list" );
+      if ( gbi.exists() ) return TRUE;
+  //}
+  return FALSE;
 }
 
 bool QgsGrass::activeMode( void )
@@ -566,8 +575,36 @@ QStringList QgsGrass::mapsets ( QString locationPath )
 QStringList QgsGrass::vectors ( QString gisbase, QString locationName,
 	                         QString mapsetName)
 {
+    std::cerr << "QgsGrass::vectors()" << std::endl;
+
     if ( gisbase.isEmpty() || locationName.isEmpty() || mapsetName.isEmpty() )
 	return QStringList();
+
+    /* TODO: G_list() was added to GRASS 6.1 06-05-24,
+             enable its use after some period (others do update) */ 
+    /*
+    if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 ) 
+    {
+	QStringList list;
+
+	char **glist = G_list( G_ELEMENT_VECTOR, 
+			      gisbase.toLocal8Bit().constData(), 
+			      locationName.toLocal8Bit().constData(), 
+			      mapsetName.toLocal8Bit().constData() );
+
+	int i = 0;
+
+	while ( glist[i] )
+	{
+	    list.append( QString(glist[i]) );
+	    i++;
+	}
+
+	G_free_list ( glist );
+
+	return list;
+    } 
+    */
 
     return QgsGrass::vectors ( gisbase + "/" + locationName + "/" + mapsetName );
 }
@@ -602,9 +639,38 @@ QStringList QgsGrass::vectors ( QString mapsetPath )
 QStringList QgsGrass::rasters ( QString gisbase, QString locationName,
 	                         QString mapsetName)
 {
+    std::cerr << "QgsGrass::rasters()" << std::endl;
+
     if ( gisbase.isEmpty() || locationName.isEmpty() || mapsetName.isEmpty() )
 	return QStringList();
 
+
+    /* TODO: G_list() was added to GRASS 6.1 06-05-24,
+             enable its use after some period (others do update) */ 
+    /*
+    if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 ) 
+    {
+	QStringList list;
+
+	char **glist = G_list( G_ELEMENT_RASTER, 
+			      gisbase.toLocal8Bit().constData(), 
+			      locationName.toLocal8Bit().constData(), 
+			      mapsetName.toLocal8Bit().constData() );
+
+	int i = 0;
+
+	while ( glist[i] )
+	{
+	    list.append( QString(glist[i]) );
+	    i++;
+	}
+
+	G_free_list ( glist );
+
+	return list;
+    } 
+    */
+	
     return QgsGrass::rasters ( gisbase + "/" + locationName + "/" + mapsetName );
 }
 
@@ -858,4 +924,20 @@ int QgsGrass::versionMinor()
     return QString(GRASS_VERSION_MINOR).toInt();
 }
 
+bool QgsGrass::isMapset ( QString path )
+{
+    /* TODO: G_is_mapset() was added to GRASS 6.1 06-05-24,
+             enable its use after some period (others do update) */
+    if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 )
+    {
+        if ( G_is_mapset( path.toLocal8Bit().constData() ) ) return true;
+    }
+    else
+    {
+        QString windf = path + "/WIND";
+        if ( QFile::exists ( windf ) ) return true;
+    }
+
+    return false;
+}
 
