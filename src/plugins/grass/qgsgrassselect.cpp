@@ -152,21 +152,32 @@ void QgsGrassSelect::setLocations()
     for ( unsigned int i = 0; i < d.count(); i++ ) {
 	if ( d[i] == "." || d[i] == ".." ) continue; 
 
-	QString chf = egisdbase->text() + "/" + d[i] + "/PERMANENT/DEFAULT_WIND";
-	
-	if ( !QFile::exists ( chf ) ) continue;
+	QString ldpath = egisdbase->text() + "/" + d[i];
+
+        /* TODO: G_is_location() was added to GRASS 6.1 06-05-24,
+           enable its use after some period (others do update) */
+        /*
+        if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 )
+        { 
+            if ( !G_is_location( ldpath.toLocal8Bit().constData() ) ) continue;
+        }
+        else
+        {
+        */
+	    QString chf = egisdbase->text() + "/" + d[i] + "/PERMANENT/DEFAULT_WIND";
+	    if ( !QFile::exists ( chf ) ) continue;
+        //}
              	    
-	// if type is MAPSET check also if at least one mapset woned by user exists
+	// if type is MAPSET check also if at least one mapset owned by user exists
         if  ( QgsGrassSelect::type == QgsGrassSelect::MAPSET )
 	{
 	    bool exists = false;
 	    
-	    QString ldpath = egisdbase->text() + "/" + d[i];
 	    QDir ld = QDir( ldpath );
          
-	    for ( unsigned int j = 0; j < ld.count(); j++ ) {
-		QString windf = ldpath + "/" + ld[j] + "/WIND";
-		if ( !QFile::exists ( windf ) ) continue;
+	    for ( unsigned int j = 0; j < ld.count(); j++ ) 
+            {
+                if ( !QgsGrass::isMapset( ldpath + "/" + ld[j] ) ) continue;
 		
 		QFileInfo info ( ldpath + "/" + ld[j] );
 		if ( !info.isWritable() ) continue;
@@ -214,10 +225,10 @@ void QgsGrassSelect::setMapsets()
     int sel = -1;
 
     // Go through all subdirs and add all subdirs from vector/ 
-    for ( unsigned int i = 0; i < ld.count(); i++ ) {
-	QString windf = ldpath + "/" + ld[i] + "/WIND";
-	
-	if ( QFile::exists ( windf ) ) {
+    for ( unsigned int i = 0; i < ld.count(); i++ ) 
+    {
+        if ( QgsGrass::isMapset( ldpath + "/" + ld[i] ) ) 
+        {
 	    emapset->insertItem ( ld[i], -1 );
 	    if ( ld[i] == lastMapset ) {
 		sel = idx;
@@ -251,38 +262,34 @@ void QgsGrassSelect::setMaps()
     int idx = 0;
     int sel = -1;
 
-    if (type == VECTOR ) { // vector
-	ldpath.append ( "/vector/" );
-	QDir md = QDir( ldpath );
+    if (type == VECTOR ) // vector
+    {
+        QStringList list = QgsGrass::vectors ( egisdbase->text(), 
+                              elocation->currentText(), emapset->currentText() );
 	
-	for ( unsigned int j = 0; j < md.count(); j++ ) {
-	    QString chf = ldpath + md[j] + "/head";
-	    
-	    if ( QFile::exists ( chf ) ) {
-		QString m = QString( md[j] );
-		emap->insertItem ( m, -1 );
-		if ( m == lastVectorMap ) {
-		    sel = idx;
-		}
-		idx++;
-	    }
+	for ( int j = 0; j < list.count(); j++ ) 
+        {
+	    emap->insertItem ( list[j], -1 );
+	    if ( list[j] == lastVectorMap ) sel = idx;
+	    idx++;
 	}
-    } else if ( type == RASTER ) {
+    } 
+    else if ( type == RASTER ) 
+    {
 	/* add cells */
-	QDir md = QDir( ldpath + "/cell/" );
-	md.setFilter (QDir::Files);
+        QStringList list = QgsGrass::rasters ( egisdbase->text(), 
+                              elocation->currentText(), emapset->currentText() );
 	
-	for ( unsigned int j = 0; j < md.count(); j++ ) {
-	    QString m = QString( md[j] );
-	    emap->insertItem ( m, -1 );
-	    if ( m == lastRasterMap ) {
-		sel = idx;
-	    }
+	for ( int j = 0; j < list.count(); j++ ) 
+        {
+	    emap->insertItem ( list[j], -1 );
+	    if ( list[j] == lastRasterMap ) sel = idx;
 	    idx++;
 	}
 
 	/* add groups */
-	md = QDir( ldpath + "/group/" );
+        // TODO add QgsGrass::groups ( use G_list( G_ELEMENT_GROUP) )
+	QDir md = QDir( ldpath + "/group/" );
 	md.setFilter (QDir::Dirs);
 	
 	for ( unsigned int j = 0; j < md.count(); j++ ) {
