@@ -294,6 +294,12 @@ public slots:
   void moveVertex();
   //! activates the delete vertex tool
   void deleteVertex();
+  //! cuts selected features on the active layer to the clipboard
+  void editCut();
+  //! copies selected features on the active layer to the clipboard
+  void editCopy();
+  //! copies features on the clipboard to the active layer
+  void editPaste();
   //! activates the selection tool
   void select();
   //! refresh map canvas
@@ -304,6 +310,7 @@ public slots:
   void startEditing();
   //! disables the editing mode of the current layer
   void stopEditing();
+  
 
 public slots:
   void showProgress(int theProgress, int theTotalSteps);
@@ -386,12 +393,6 @@ private:
   //void readWKB(const char *, QStringList tables);
   //! test function
   void testButton();
-  //! cuts selected features on the active layer to the clipboard
-  void editCut();
-  //! copies selected features on the active layer to the clipboard
-  void editCopy();
-  //! copies features on the clipboard to the active layer
-  void editPaste();
   //! shows the paste-transformations dialog
   void pasteTransformations();
   //! check to see if file is dirty and if so, prompt the user th save it
@@ -462,6 +463,9 @@ private:
   QAction *mActionAddVertex;
   QAction *mActionDeleteVertex;
   QAction *mActionMoveVertex;
+  QAction *mActionEditCut;
+  QAction *mActionEditCopy;
+  QAction *mActionEditPaste;
   QAction *mActionZoomIn;
   QAction *mActionZoomOut;
   QAction *mActionZoomFullExtent;

@@ -562,6 +562,8 @@ private:                       // Private methods
 
   /**Caches all the (commited) geometries to mCachedFeatures, e.g. when entering editing mode*/
   void cacheGeometries();
+  /**Deletes the geometries in mCachedGeometries*/
+  void deleteCachedGeometries();
 
   // pointer for loading the provider library
   QLibrary *myLib;
