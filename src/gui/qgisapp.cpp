@@ -639,15 +639,15 @@ void QgisApp::createActions()
   mActionMoveVertex->setStatusTip(tr("Move Vertex"));
   connect(mActionMoveVertex, SIGNAL(triggered()), this, SLOT(moveVertex()));
 
-  mActionEditCut = new QAction(QIcon(myIconPath+"/mActionEditCut.png"), tr("cut features"), this);
+  mActionEditCut = new QAction(QIcon(myIconPath+"/mActionEditCut.png"), tr("Cut Features"), this);
   mActionEditCut->setStatusTip(tr("Cut selected features"));
   connect(mActionEditCut, SIGNAL(triggered()), this, SLOT(editCut()));
 
-  mActionEditCopy = new QAction(QIcon(myIconPath+"/mActionEditCopy.png"), tr("copy features"), this);
+  mActionEditCopy = new QAction(QIcon(myIconPath+"/mActionEditCopy.png"), tr("Copy Features"), this);
   mActionEditCopy->setStatusTip(tr("Copy selected features"));
   connect(mActionEditCopy, SIGNAL(triggered()), this, SLOT(editCopy()));
 
-  mActionEditPaste = new QAction(QIcon(myIconPath+"/mActionEditPaste.png"), tr("paste features"), this);
+  mActionEditPaste = new QAction(QIcon(myIconPath+"/mActionEditPaste.png"), tr("Paste Features"), this);
   mActionEditPaste->setStatusTip(tr("Paste selected features"));
   connect(mActionEditPaste, SIGNAL(triggered()), this, SLOT(editPaste()));
 }
@@ -4639,6 +4639,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(const QgsMapLayer* layer)
       mActionSelect->setEnabled(true);
       mActionOpenTable->setEnabled(true);
       mActionIdentify->setEnabled(true);
+      mActionEditCopy->setEnabled(true);
 
       const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>(layer);
       const QgsVectorDataProvider* dprovider = vlayer->getDataProvider();

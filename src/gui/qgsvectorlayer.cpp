@@ -925,7 +925,7 @@ void QgsVectorLayer::cacheGeometries()
       QgsFeature* f = 0;
       while(f = dataProvider->getNextFeature(false))
 	{
-	  mCachedGeometries.insert(std::make_pair(f->featureId(), f->geometryAndOwnership()));
+	  //mCachedGeometries.insert(std::make_pair(f->featureId(), f->geometryAndOwnership()));
 	  delete f;
 	}
     }
@@ -1593,7 +1593,7 @@ bool QgsVectorLayer::addFeature(QgsFeature* f, bool alsoUpdateExtent)
     if(!isEditable())
     {
       QMessageBox::information(0, tr("Layer not editable"), 
-          tr("The current layer is not editable. Choose 'Allow editing' in the legend item right click menu."));
+          tr("The current layer is not editable. Choose 'Start editing' in the digitizing toolbar."));
       return false;
     }
 
