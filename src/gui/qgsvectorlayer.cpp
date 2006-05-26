@@ -925,7 +925,7 @@ void QgsVectorLayer::cacheGeometries()
       QgsFeature* f = 0;
       while(f = dataProvider->getNextFeature(false))
 	{
-	  //mCachedGeometries.insert(std::make_pair(f->featureId(), f->geometryAndOwnership()));
+	  mCachedGeometries.insert(std::make_pair(f->featureId(), f->geometryAndOwnership()));
 	  delete f;
 	}
     }
