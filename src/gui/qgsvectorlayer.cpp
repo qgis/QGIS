@@ -794,11 +794,8 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
     if(mEditable)
     {
       // Destroy all cached geometries and clear the references to them
-      for (std::map<int, QgsGeometry*>::iterator it  = mCachedGeometries.begin(); it != mCachedGeometries.end(); ++it )
-	  {
-	    delete (*it).second;
-	  }
-	mCachedGeometries.clear();
+      deleteCachedGeometries();
+      
     }
 
     dataProvider->reset();
@@ -923,19 +920,24 @@ QgsVectorLayer::endian_t QgsVectorLayer::endian()
 
 void QgsVectorLayer::cacheGeometries()
 {
-  for(std::map<int, QgsGeometry*>::iterator it = mCachedGeometries.begin(); it != mCachedGeometries.end(); ++it)
-    {
-      delete it->second;
-    }
-  mCachedGeometries.clear();
   if(dataProvider)
     {
       QgsFeature* f = 0;
       while(f = dataProvider->getNextFeature(false))
 	{
 	  mCachedGeometries.insert(std::make_pair(f->featureId(), f->geometryAndOwnership()));
+	  delete f;
 	}
     }
+}
+
+void QgsVectorLayer::deleteCachedGeometries()
+{
+  for (std::map<int, QgsGeometry*>::iterator it  = mCachedGeometries.begin(); it != mCachedGeometries.end(); ++it )
+    {
+      delete (*it).second;
+    }
+  mCachedGeometries.clear();
 }
 
 void QgsVectorLayer::table()
@@ -1837,6 +1839,7 @@ void QgsVectorLayer::startEditing()
     }
     else
     {
+      cacheGeometries();
       mEditable=true;
       if(isValid())
       {
@@ -1852,6 +1855,7 @@ void QgsVectorLayer::startEditing()
 
 void QgsVectorLayer::stopEditing()
 {
+  deleteCachedGeometries();
   if(dataProvider)
   {
     if(mModified)
@@ -2447,92 +2451,50 @@ bool QgsVectorLayer::rollBack()
   return true;
 }
 
-
 std::vector<QgsFeature>* QgsVectorLayer::selectedFeatures()
 {
-#ifdef QGISDEBUG
-  std::cout << "QgsVectorLayer::selectedFeatures: entering"
-    << "." << std::endl;
-#endif
-
   if (!dataProvider)
   {
     return 0;
   }
-
-  //TODO: Maybe make this a bit more heap-friendly (i.e. see where we can use references instead of copies)
+  
   std::vector<QgsFeature>* features = new std::vector<QgsFeature>;
-
-  for (std::set<int>::iterator it  = mSelected.begin();
-      it != mSelected.end();
-      ++it)
-  {
-    // Check this selected item against the committed or changed features
-    if ( mCachedGeometries.find(*it) != mCachedGeometries.end() )
+  if(mSelected.size() == 0)
     {
-#ifdef QGISDEBUG
-      std::cout << "QgsVectorLayer::selectedFeatures: found a cached geometry: " 
-        << std::endl;
-#endif
-
-      QgsFeature* f = new QgsFeature();
-      int row = 0;  //TODO: Get rid of this
-
-      dataProvider->getFeatureAttributes(*it, row, f);
-
-      // TODO: Should deep-copy here
-      f->setGeometry(*mCachedGeometries[*it]);
-
-#ifdef QGISDEBUG
-      std::cout << "QgsVectorLayer::selectedFeatures: '" << f->geometry()->wkt().toLocal8Bit().data() << "'"
-        << "." << std::endl;
-#endif
-
-      // TODO: Mutate with uncommitted attributes / geometry
-
-      // TODO: Retrieve details from provider
-      /*      features.push_back(
-              QgsFeature(mCachedFeatures[*it],
-              mChangedAttributes,
-              mChangedGeometries)
-              );*/
-
-      features->push_back(*f);
-
-#ifdef QGISDEBUG
-      std::cout << "QgsVectorLayer::selectedFeatures: added to feature vector"
-        << "." << std::endl;
-#endif
-
+      return features;
     }
 
+  //we need to cache all the features first (which has already been done if a layer is editable)
+  if(!mEditable)
+    {
+      deleteCachedGeometries();
+      cacheGeometries();
+    }
+
+  for (std::set<int>::iterator it  = mSelected.begin(); it != mSelected.end(); ++it)
+  {
+    // Check this selected item against the committed or cached features
+    if ( mCachedGeometries.find(*it) != mCachedGeometries.end() )
+    {
+      QgsFeature* f = new QgsFeature();
+      f->setGeometry(*mCachedGeometries[*it]);//makes a deep copy of the geometry
+      features->push_back(*f);
+      continue;
+    }
+    
     // Check this selected item against the uncommitted added features
-    for (std::vector<QgsFeature*>::iterator iter  = mAddedFeatures.begin();
+    /*for (std::vector<QgsFeature*>::iterator iter  = mAddedFeatures.begin();
         iter != mAddedFeatures.end();
         ++iter)
     {
       if ( (*it) == (*iter)->featureId() )
       {
-#ifdef QGISDEBUG
-        std::cout << "QgsVectorLayer::selectedFeatures: found an added geometry: " 
-          << std::endl;
-#endif
-        features->push_back( **iter );
+        features->push_back( **iter ); //shouldn't we make a deep copy here?
         break;
       }
-    }
-
-#ifdef QGISDEBUG
-    std::cout << "QgsVectorLayer::selectedFeatures: finished with feature ID " << (*it)
-      << "." << std::endl;
-#endif
+      }*/
 
   } // for each selected
-
-#ifdef QGISDEBUG
-  std::cout << "QgsVectorLayer::selectedFeatures: exiting"
-    << "." << std::endl;
-#endif
 
   return features;
 }

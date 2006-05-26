@@ -638,6 +638,18 @@ void QgisApp::createActions()
   mActionMoveVertex = new QAction(QIcon(myIconPath+"/mActionMoveVertex.png"), tr("Move Vertex"), this);
   mActionMoveVertex->setStatusTip(tr("Move Vertex"));
   connect(mActionMoveVertex, SIGNAL(triggered()), this, SLOT(moveVertex()));
+
+  mActionEditCut = new QAction(QIcon(myIconPath+"/mActionEditCut.png"), tr("cut features"), this);
+  mActionEditCut->setStatusTip(tr("Cut selected features"));
+  connect(mActionEditCut, SIGNAL(triggered()), this, SLOT(editCut()));
+
+  mActionEditCopy = new QAction(QIcon(myIconPath+"/mActionEditCopy.png"), tr("copy features"), this);
+  mActionEditCopy->setStatusTip(tr("Copy selected features"));
+  connect(mActionEditCopy, SIGNAL(triggered()), this, SLOT(editCopy()));
+
+  mActionEditPaste = new QAction(QIcon(myIconPath+"/mActionEditPaste.png"), tr("paste features"), this);
+  mActionEditPaste->setStatusTip(tr("Paste selected features"));
+  connect(mActionEditPaste, SIGNAL(triggered()), this, SLOT(editPaste()));
 }
 
 void QgisApp::createActionGroups()
@@ -807,6 +819,9 @@ void QgisApp::createToolBars()
   mDigitizeToolBar->addAction(mActionAddVertex);
   mDigitizeToolBar->addAction(mActionDeleteVertex);
   mDigitizeToolBar->addAction(mActionMoveVertex);
+  mDigitizeToolBar->addAction(mActionEditCut);
+  mDigitizeToolBar->addAction(mActionEditCopy);
+  mDigitizeToolBar->addAction(mActionEditPaste);
   //
   // Map Navigation Toolbar
   mMapNavToolBar = addToolBar(tr("Map Navigation"));
@@ -3379,8 +3394,8 @@ void QgisApp::editPaste()
 
     if (activeVectorLayer != 0)
     {
-      //      activeVectorLayer->addFeatures( &(clipboard()->copyOf()) );
       activeVectorLayer->addFeatures( clipboard()->copyOf() );
+      mMapCanvas->refresh();
     }  
   }  
 }
@@ -4635,21 +4650,25 @@ void QgisApp::activateDeactivateLayerRelatedActions(const QgsMapLayer* layer)
 	    {
 	      mActionStartEditing->setEnabled(true);
 	      mActionStopEditing->setEnabled(true);
+	      mActionEditPaste->setEnabled(true);
 	    }
 	  else
 	    {
 	      mActionStartEditing->setEnabled(false);
 	      mActionStopEditing->setEnabled(false);
+	      mActionEditPaste->setEnabled(false);
 	    }
 
 	  //does provider allow deleting of features?
 	  if(dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures)
 	    {
 	      mActionDeleteSelected->setEnabled(true);
+	      mActionEditCut->setEnabled(true);
 	    }
 	  else
 	    {
 	      mActionDeleteSelected->setEnabled(false);
+	      mActionEditCut->setEnabled(false);
 	    }
 
 
@@ -4727,6 +4746,9 @@ void QgisApp::activateDeactivateLayerRelatedActions(const QgsMapLayer* layer)
       mActionAddVertex->setEnabled(false);
       mActionDeleteVertex->setEnabled(false);
       mActionMoveVertex->setEnabled(false);
+      mActionEditCopy->setEnabled(false);
+      mActionEditCut->setEnabled(false);
+      mActionEditPaste->setEnabled(false);
 
       const QgsRasterLayer* vlayer = dynamic_cast<const QgsRasterLayer*> (layer);
       const QgsRasterDataProvider* dprovider = vlayer->getDataProvider();
