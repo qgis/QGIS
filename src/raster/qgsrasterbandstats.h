@@ -25,7 +25,7 @@
 #define QGSRASTERBANDSTATS
 
 #include <QString>
-#include <Q3ValueVector>
+#include <QVector>
 
 #include "qgscolortable.h"
 /** \brief The RasterBandStats struct is a container for statistics about a single
@@ -61,7 +61,7 @@ class QgsRasterBandStats
      * TODO: check if NO_DATA are excluded!*/
     int elementCountInt;    
     /** \brief Store the histogram for a given layer */
-    typedef Q3ValueVector<int> HistogramVector;
+    typedef QVector<int> HistogramVector;
     HistogramVector * histogramVector;
     /** \brief whteher histogram values are estimated or completely calculated */
     bool histogramEstimatedFlag;
