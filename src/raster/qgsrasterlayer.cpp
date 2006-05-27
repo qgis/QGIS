@@ -3091,7 +3091,8 @@ void QgsRasterLayer::setGrayBandName(QString const &  theBandNameQString)
   {
     //find out the name of this band
     QgsRasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
-    std::cout << __FILE__ << ":" << __LINE__ << "Checking if " << myRasterBandStats.bandName.data() << " == " << grayBandNameQString.data() << std::endl;
+    QgsDebugMsg("Checking if " + myRasterBandStats.bandName + " == " 
+                + grayBandNameQString);
     if (myRasterBandStats.bandName == theBandNameQString)
     {
       grayBandNameQString = theBandNameQString;
