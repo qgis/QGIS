@@ -342,11 +342,6 @@ private:
    */
   int getItemPos(QTreeWidgetItem* item);
 
-  /*!
-   * A QPopupMenu that will be displayed when the right mouse button is clicked.
-   */
-  Q3PopupMenu * mPopupMenu;
-
   /**Pointer to the main canvas. Used for requiring repaints in case of legend changes*/
   QgsMapCanvas* mMapCanvas;
 
