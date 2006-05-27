@@ -64,37 +64,30 @@ wish to see edbug messages printed to stdout.
 #include <qgslogger.h>
 #include "qgsrasterlayer.h"
 #include "qgsmaptopixel.h"
-//Added by qt3to4:
-#include <Q3Frame>
-#include <QPixmap>
+
 
 #include <cstdio>
 #include <cmath>
 #include <limits>
 #include <iostream>
 
-#include <qapplication.h>
-#include <qcursor.h>
-#include <qpainter.h>
-#include <qimage.h>
-#include <qfont.h>
-#include <qfile.h>
-#include <qfileinfo.h>
-#include <qfontmetrics.h>
-#include <qmatrix.h>
-#include <q3popupmenu.h>
-#include <qmessagebox.h>
-#include <qregexp.h>
-#include <qslider.h>
-#include <qlabel.h>
-#include <qdom.h>
-#include <q3listview.h>
-#include <qwidget.h>
-#include <qwidget.h>
-#include <qsettings.h>
-#include <qglobal.h>
-#include <QIcon>
-
+#include <QApplication>
+#include <QCursor>
+#include <QPainter>
+#include <QImage>
+#include <QFont>
+#include <QFile>
+#include <QFileInfo>
+#include <QFontMetrics>
+#include <QMatrix>
+#include <QMessageBox>
+#include <QRegExp>
+#include <QSlider>
+#include <QLabel>
+#include <QDomNode>
+#include <QDomElement>
+#include <QFrame>
+#include <QPixmap>
 
 /*
  * 
@@ -103,7 +96,7 @@ wish to see edbug messages printed to stdout.
  *
  */ 
  
-#include <qlibrary.h>
+#include <QLibrary>
 
 /*
  * END
@@ -775,17 +768,11 @@ QDateTime QgsRasterLayer::lastModified ( QString const & name )
       if ( f.open ( QIODevice::ReadOnly ) )
       {
         QString dir = fi.dirPath() + "/../../../";
-#if QT_VERSION < 0x040000
-        QString ln;
-        while ( f.readLine(ln,100) != -1 )
-        {
-#else
-        // In Qt4, QFile::readLine now expects a bare char*
+
         char buf[101];
         while ( f.readLine(buf,100) != -1 )
         {
           QString ln = QString(buf);
-#endif
           QStringList sl = QStringList::split ( ' ', ln.stripWhiteSpace() );
           QString map = sl.first();
           sl.pop_front();
@@ -3667,7 +3654,7 @@ void QgsRasterLayer::initContextMenu_(QgisApp * theApp)
 
   QLabel * myTransparencyLabel = new QLabel( popMenu );
 
-  myTransparencyLabel->setFrameStyle( Q3Frame::Panel | Q3Frame::Raised );
+  myTransparencyLabel->setFrameStyle( QFrame::Panel | QFrame::Raised );
   myTransparencyLabel->setText( tr("<center><b>Transparency</b></center>") );
 
 // TODO: Qt4 will have to use a QAction instead

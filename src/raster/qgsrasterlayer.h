@@ -166,27 +166,10 @@ The [type] part of the variable should be the type class of the variable written
 // Includes
 // 
  
-#include <q3valuevector.h>
-#include <q3valuelist.h> 
-#include <q3valuevector.h> 
-#include <qslider.h>
-#include <qdatetime.h>
+#include <QDateTime>
+#include <QVector>
+#include <QList>
 
-
-/*
- * 
- * New includes that will convert this class to a data provider interface
- * (B Morley)
- *
- */ 
- 
-#include <qlibrary.h>
-
-/*
- * END
- */
-
- 
 #include "qgspoint.h"
 #include "qgsmaplayer.h"
 #include "qgscolortable.h"
@@ -202,9 +185,6 @@ The [type] part of the variable should be the type class of the variable written
  */ 
  
 #include "qgsrasterdataprovider.h"
-//Added by qt3to4:
-#include <QPixmap>
-#include <Q3PopupMenu>
 
 /*
  * END
@@ -220,7 +200,8 @@ class QgsRasterLayerProperties;
 class GDALDataset;
 class GDALRasterBand;
 class QImage;
-
+class QSlider;
+class QLibrary;
 //
 // Structs
 //
@@ -275,7 +256,7 @@ public:
     /** \brief  A vector containing one RasterBandStats struct per raster band in this raster layer.
      * Note that while very RasterBandStats element will have the name and number of its associated
      * band populated, any additional stats are calculated on a need to know basis.*/
-    typedef Q3ValueVector<QgsRasterBandStats> RasterStatsVector;
+    typedef QVector<QgsRasterBandStats> RasterStatsVector;
 
 
     /** \brief  A list containing one RasterPyramid struct per 
@@ -286,7 +267,7 @@ public:
      * we will check to see if a pyramid matching these dimensions already exists
      * in the raster layer, and if so mark the exists flag as true. */
       
-    typedef Q3ValueList<QgsRasterPyramid> RasterPyramidList;
+    typedef QList<QgsRasterPyramid> RasterPyramidList;
 
     /** \brief This typedef is used when the showProgress function is passed to gdal as a function
     pointer. */
