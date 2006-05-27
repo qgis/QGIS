@@ -197,6 +197,12 @@ public slots:
   void startEditing();
   void stopEditing();
 
+  /**
+   * Update the extents for the layer. This is necessary if features are
+   * added/deleted or the layer has been subsetted.
+   */
+  virtual void updateExtents();
+
 
 public:
 
@@ -277,12 +283,6 @@ public:
    * @return long containing the number of features in the datasource
    */
   virtual long updateFeatureCount() const;
-
-  /**
-   * Update the extents for the layer. This is necessary if features are
-   * added/deleted or the layer has been subsetted.
-   */
-  virtual void updateExtents();
 
   /**
    * Set the string (typically sql) used to define a subset of the layer
