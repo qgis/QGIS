@@ -69,7 +69,7 @@ class QgsRasterLayerProperties : public QgsRasterLayerPropertiesBase
         /** \brief slot executed when the three band radio button is pressed. */
         void rbtnThreeBand_toggled( bool );
         /** \brief slot executed when user wishes to refresh raster histogram */
-        void QgsRasterLayerProperties::pbnHistRefresh_clicked();
+        void pbnHistRefresh_clicked();
         /** Override the SRS specified when the layer was loaded */
         void pbnChangeSpatialRefSys_clicked();
 

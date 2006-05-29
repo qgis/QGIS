@@ -60,7 +60,7 @@ public:
   /*! Accessor for projection */
   QString projectionWKT();
   /*! Indicates that the projection switch is on */
-  bool QgsProjectProperties::isProjected();
+  bool isProjected();
 public slots:
   /*! 
    * Slot called when a new button (unit) is selected
