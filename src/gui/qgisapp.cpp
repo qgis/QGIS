@@ -1803,7 +1803,6 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& en
 
       // Register this layer with the layers registry
       QgsMapLayerRegistry::instance()->addMapLayer(layer);
-      layer->refreshLegend();
 
       // connect up any keypresses to be passed tot he layer (e.g. so esc can stop rendering)
 #ifdef QGISDEBUG
