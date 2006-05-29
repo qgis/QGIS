@@ -511,14 +511,11 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
     blockSignals(false);
    
     layer->setLegend(this);
-    //QgsLegendPropertyGroup * lpgroup = new QgsLegendPropertyGroup(llayer,QString("Properties"));
     layer->setLegendLayerFile(llfile);
     layer->initContextMenu(mApp);
-
     insertTopLevelItem(0, llayer);
-    
-    setExpanded(indexFromItem(llayer), true);
-    setExpanded(indexFromItem(llfgroup), false);
+    setItemExpanded(llayer, true);
+    setItemExpanded(llfgroup, false);
     //only if qsetting for 'legend layer file visible' is not set
     if(!mShowLegendLayerFiles)
       {
@@ -530,8 +527,10 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
     // first layer?
     if (mMapCanvas->layerCount() == 1)
       mMapCanvas->zoomFullExtent();
-    
     setCurrentItem(llayer);
+    //make the QTreeWidget item up-to-date
+    doItemsLayout();
+    layer->refreshLegend();
 }
 
 QgsMapLayer* QgsLegend::currentLayer()
@@ -1384,7 +1383,7 @@ void QgsLegend::changeSymbologySettings(const QString& key, const std::list< std
   //restore the current item again
   setCurrentItem(theCurrentItem);
   adjustIconSize();
-  setExpanded(indexFromItem(theLegendLayer), true);//make sure the symbology items are visible
+  setItemExpanded(theLegendLayer, true);//make sure the symbology items are visible
 }
 
 void QgsLegend::addPixmapWidthValue(int width)
