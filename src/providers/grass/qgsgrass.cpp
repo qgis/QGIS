@@ -928,15 +928,17 @@ bool QgsGrass::isMapset ( QString path )
 {
     /* TODO: G_is_mapset() was added to GRASS 6.1 06-05-24,
              enable its use after some period (others do update) */
+    /*
     if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 )
     {
         if ( G_is_mapset( path.toLocal8Bit().constData() ) ) return true;
     }
     else
     {
+    */
         QString windf = path + "/WIND";
         if ( QFile::exists ( windf ) ) return true;
-    }
+    //}
 
     return false;
 }
