@@ -257,8 +257,6 @@ QPixmap QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush b
     {
       int oneThird = (int)(floor(size/3+0.5));
       int twoThird = (int)(floor(size/3*2+0.5));
-      int oneQuarter = (int)(floor(size/4+0.5));
-      int threeQuarter = (int)(floor(size/4*3+0.5));
       QPolygon pa(10);
       pa.setPoint(0, half, 0);
       pa.setPoint(1, oneThird, oneThird);
