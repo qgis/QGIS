@@ -44,6 +44,8 @@ QgsMarkerCatalogue::QgsMarkerCatalogue()
   mList.append ( "hard:diamond" );
   mList.append ( "hard:cross" );
   mList.append ( "hard:cross2" );
+  mList.append ( "hard:triangle");
+  mList.append ( "hard:star");
 
   // SVG
   QString svgPath = QgsApplication::svgPath();
@@ -187,7 +189,6 @@ QPixmap QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush b
 
   if ( name == "circle" ) 
   {
-    std::cout << "Drawing circle of " << size << std::endl;
     myPainter.drawEllipse(0, 0, size, size);
   } 
   else if ( name == "rectangle" ) 
@@ -244,6 +245,33 @@ QPixmap QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush b
 
     box.setRect ( -addwidth, -addwidth, size + 2*addwidth, size + 2*addwidth );	
   }
+  else if ( name == "triangle")
+    {
+      QPolygon pa(3);
+      pa.setPoint ( 0, 0, size);
+      pa.setPoint ( 1, size, size);
+      pa.setPoint ( 2, half, 0);
+      myPainter.drawPolygon ( pa );
+    }
+  else if (name == "star")
+    {
+      int oneThird = (int)(floor(size/3+0.5));
+      int twoThird = (int)(floor(size/3*2+0.5));
+      int oneQuarter = (int)(floor(size/4+0.5));
+      int threeQuarter = (int)(floor(size/4*3+0.5));
+      QPolygon pa(10);
+      pa.setPoint(0, half, 0);
+      pa.setPoint(1, oneThird, oneThird);
+      pa.setPoint(2, 0, oneThird);
+      pa.setPoint(3, oneThird, half);
+      pa.setPoint(4, 0, size);
+      pa.setPoint(5, half, twoThird);
+      pa.setPoint(6, size, size);
+      pa.setPoint(7, twoThird, half);
+      pa.setPoint(8, size, oneThird);
+      pa.setPoint(9, twoThird, oneThird);
+      myPainter.drawPolygon ( pa );
+    }
   if ( name == "cross" || name == "cross2" ) 
   {
     picture.setBoundingRect ( box ); 
