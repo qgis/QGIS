@@ -25,11 +25,12 @@
 #include <map>
 #include <set>
 
-class Q3PopupMenu;
 class QgsVectorLayer;
 class QgsFeature;
 class QMouseEvent;
 class QKeyEvent;
+class QAction;
+class QMenu;
 
 #include "qgsattributeaction.h"
 
@@ -93,7 +94,7 @@ class QgsAttributeTable:public Q3Table
     // Called when the user requests a popup menu
     void popupMenu(int row, int col, const QPoint& pos);
     // Called when the user chooses an item on the popup menu
-    void popupItemSelected(int id);
+    void popupItemSelected(QAction * menuAction);
     protected slots:
       void handleChangedSelections();
     /**Writes changed values to 'mChangedValues'*/
@@ -146,7 +147,7 @@ signals:
     // Data to do with providing a popup menu of actions that
     std::vector<std::pair<QString, QString> > mActionValues;
     int mClickedOnValue;
-    Q3PopupMenu* mActionPopup;
+    QMenu* mActionPopup;
     QgsAttributeAction mActions;
 };
 
