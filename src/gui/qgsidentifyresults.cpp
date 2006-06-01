@@ -82,10 +82,6 @@ void QgsIdentifyResults::popupContextMenu(Q3ListViewItem* item,
   {
     mActionPopup = new QMenu();
     QAction *a = mActionPopup->addAction( tr("Run action") );
-    QFont f = a->font();
-    f.setBold(true);
-    a->setFont(f);
-
     mActionPopup->addSeparator();
 
     QgsAttributeAction::aIter iter = mActions.begin();
@@ -132,7 +128,8 @@ void QgsIdentifyResults::popupContextMenu(Q3ListViewItem* item,
     child = child->nextSibling();
   }
 
-  mActionPopup->popup(p);
+  if (mActions.size() > 0)
+    mActionPopup->popup(p);
 }
 // Restore last window position/size and show the window
 void QgsIdentifyResults::restorePosition()

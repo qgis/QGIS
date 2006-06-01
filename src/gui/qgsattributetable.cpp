@@ -316,7 +316,8 @@ void QgsAttributeTable::popupMenu(int row, int col, const QPoint& pos)
   // mActionValues vector.
   mClickedOnValue = col;
 
-  mActionPopup->popup(pos);  
+  if (mActions.size() > 0)
+    mActionPopup->popup(pos);  
 }
 
 void QgsAttributeTable::popupItemSelected(QAction* menuAction)
