@@ -827,7 +827,7 @@ bool QgsComposerVectorLegend::writeSettings ( void )
     if ( !layer->visible() ) continue;
 
     QString id = layer->getLayerID();
-                path.sprintf("/composition_%d/vectorlegend_%d/layers/layer_%s/", mComposition->id(), mId, (const char *)id.toLocal8Bit().data() ); 
+                path.sprintf("/composition_%d/vectorlegend_%d/layers/layer_%s/", mComposition->id(), mId, id ); 
     QgsProject::instance()->writeEntry( "Compositions", path+"on", layerOn(id) );
     QgsProject::instance()->writeEntry( "Compositions", path+"group", layerGroup(id) );
       }
@@ -871,7 +871,7 @@ bool QgsComposerVectorLegend::readSettings ( void )
 
   QString id = (*it).right( (*it).length() - (idx+1) );
   
-  path.sprintf("/composition_%d/vectorlegend_%d/layers/layer_%s/", mComposition->id(), mId, (const char *)id.toLocal8Bit().data() );
+  path.sprintf("/composition_%d/vectorlegend_%d/layers/layer_%s/", mComposition->id(), mId, id );
   bool on = QgsProject::instance()->readBoolEntry("Compositions", path+"on", true, &ok);
   int group = QgsProject::instance()->readNumEntry("Compositions", path+"group", 0, &ok);
   setLayerOn ( id , on );

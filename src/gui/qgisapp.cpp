@@ -2669,7 +2669,7 @@ bool QgisApp::addProject(QString projectFile)
     qDebug( "%s:%d BAD LAYERS FOUND", __FILE__, __LINE__ );
 
     QMessageBox::critical( 0x0, 
-        tr("Unable to open project"), e.what(), QMessageBox::Ok, 
+        tr("Unable to open project"), QString::fromLocal8Bit(e.what()), QMessageBox::Ok, 
         Qt::NoButton );
 
     mMapCanvas->freeze(false);
