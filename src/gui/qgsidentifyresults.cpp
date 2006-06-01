@@ -22,6 +22,7 @@
 
 #include <QCloseEvent>
 #include <QLabel>
+#include <QAction>
 #include <Q3ListView>
 #include <QPixmap>
 #include <Q3PopupMenu>
@@ -79,20 +80,24 @@ void QgsIdentifyResults::popupContextMenu(Q3ListViewItem* item,
   // such a dialog box is around.
   if (mActionPopup == 0)
   {
-    mActionPopup = new Q3PopupMenu();
+    mActionPopup = new QMenu();
+    QAction *a = mActionPopup->addAction( tr("Run action") );
+    QFont f = a->font();
+    f.setBold(true);
+    a->setFont(f);
 
-    QLabel* popupLabel = new QLabel( mActionPopup );
-    popupLabel->setText( tr("<center>Run action</center>") );
-// TODO: Qt4 uses "QAction"s - need to refactor.
-    mActionPopup->insertSeparator();
+    mActionPopup->addSeparator();
 
     QgsAttributeAction::aIter iter = mActions.begin();
     for (int j = 0; iter != mActions.end(); ++iter, ++j)
     {
-      int id = mActionPopup->insertItem(iter->name(), this, 
-          SLOT(popupItemSelected(int)));
-      mActionPopup->setItemParameter(id, j);
+      QAction* a = mActionPopup->addAction(iter->name());
+      // The menu action stores an integer that is used later on to
+      // associate an menu action with an actual qgis action.
+      a->setData(QVariant::fromValue(j));
     }
+    connect(mActionPopup, SIGNAL(triggered(QAction*)),
+            this, SLOT(popupItemSelected(QAction*)));
   }
   // Save the attribute values as these are needed for substituting into
   // the action. 
@@ -190,8 +195,9 @@ void QgsIdentifyResults::setColumnText ( int column, const QString & label )
 }
 
 // Run the action that was selected in the popup menu
-void QgsIdentifyResults::popupItemSelected(int id)
+void QgsIdentifyResults::popupItemSelected(QAction* menuAction)
 {
+  int id = menuAction->data().toInt();
   mActions.doAction(id, mValues, mClickedOnValue);
 }
 

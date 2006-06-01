@@ -18,12 +18,12 @@
 /* $Id$ */
 #include <QApplication>
 #include <QMouseEvent>
-#include <Q3PopupMenu>
 #include <QKeyEvent>
 #include <QLabel>
 #include <QFont>
 #include <QClipboard>
-#include <Q3ValueList>
+#include <QAction>
+#include <QMenu>
 
 #include "qgsattributetable.h"
 #include "qgsfeature.h"
@@ -63,7 +63,7 @@ void QgsAttributeTable::columnClicked(int col)
   QApplication::setOverrideCursor(Qt::waitCursor);
 
   //store the ids of the selected rows in a list
-  Q3ValueList < int >idsOfSelected;
+  QList < int >idsOfSelected;
   for (int i = 0; i < numSelections(); i++)
     {
       for (int j = selection(i).topRow(); j <= selection(i).bottomRow(); j++)
@@ -88,7 +88,7 @@ void QgsAttributeTable::columnClicked(int col)
 
   //select the rows again after sorting
 
-  Q3ValueList < int >::iterator it;
+  QList < int >::iterator it;
   for (it = idsOfSelected.begin(); it != idsOfSelected.end(); ++it)
     {
       selectRowWithId((*it));
@@ -276,29 +276,24 @@ void QgsAttributeTable::contentsMouseReleaseEvent(QMouseEvent * e)
 
 void QgsAttributeTable::popupMenu(int row, int col, const QPoint& pos)
 {
-  std::cerr << "context menu requested" << std::endl;
-
   // Duplication of code in qgsidentufyresults.cpp. Consider placing
   // in a seperate class
   if (mActionPopup == 0)
   {
-    mActionPopup = new Q3PopupMenu();
-
-    QLabel* popupLabel = new QLabel( mActionPopup );
-    popupLabel->setText( tr("<center>Run action</center>") );
-// TODO: Qt4 uses "QAction"s - need to refactor.
-#if QT_VERSION < 0x040000
-    mActionPopup->insertItem(popupLabel);
-#endif
-    mActionPopup->insertSeparator();
+    mActionPopup = new QMenu();
+    QAction *a = mActionPopup->addAction( tr("Run action") );
+    mActionPopup->addSeparator();
 
     QgsAttributeAction::aIter	iter = mActions.begin();
     for (int j = 0; iter != mActions.end(); ++iter, ++j)
     {
-      int id = mActionPopup->insertItem(iter->name(), this, 
-					SLOT(popupItemSelected(int)));
-      mActionPopup->setItemParameter(id, j);
+      QAction* a = mActionPopup->addAction(iter->name());
+      // The menu action stores an integer that is used later on to
+      // associate an menu action with an actual qgis action.
+      a->setData(QVariant::fromValue(j));
     }
+    connect(mActionPopup, SIGNAL(triggered(QAction*)),
+            this, SLOT(popupItemSelected(QAction*)));
   }
 
   // Get and store the attribute values and their column names are
@@ -324,8 +319,9 @@ void QgsAttributeTable::popupMenu(int row, int col, const QPoint& pos)
   mActionPopup->popup(pos);  
 }
 
-void QgsAttributeTable::popupItemSelected(int id)
+void QgsAttributeTable::popupItemSelected(QAction* menuAction)
 {
+  int id = menuAction->data().toInt();
   mActions.doAction(id, mActionValues, mClickedOnValue);
 }
 

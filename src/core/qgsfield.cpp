@@ -28,9 +28,11 @@ static const char * const ident_ =
 QgsField::QgsField(QString nam, QString typ, int len, int prec, bool num)
     :mName(nam), mType(typ), mLength(len), mPrecision(prec), mNumeric(num)
 {
-  // lower case the field name since some stores use upper case 
-  // (eg. shapefiles)
-  mName = mName.lower();
+  // This function used to lower case the field name since some stores
+  // use upper case (eg. shapefiles), but that caused problems with
+  // attribute actions getting confused between uppercase and
+  // lowercase versions of the attribute names, so just leave the
+  // names how they are now.
 }
 
 QgsField::~QgsField()

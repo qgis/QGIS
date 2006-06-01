@@ -27,6 +27,7 @@
 class QCloseEvent;
 class Q3ListViewItem;
 class Q3PopupMenu;
+class QAction;
 
 /**
  *@author Gary E.Sherman
@@ -78,7 +79,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 
     void close();
     void popupContextMenu(Q3ListViewItem*, const QPoint&, int);
-    void popupItemSelected(int id);
+    void popupItemSelected(QAction* menuAction);
 
     /* Item in tree was clicked */
     void clicked ( Q3ListViewItem *lvi );
@@ -87,7 +88,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
   
   QgsAttributeAction mActions;
   int mClickedOnValue;
-  Q3PopupMenu* mActionPopup;
+  QMenu* mActionPopup;
   std::vector<std::pair<QString, QString> > mValues;
 };
 
