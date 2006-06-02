@@ -45,6 +45,10 @@ QgsComposer::QgsComposer( QgisApp *qgis): QMainWindow()
   setupTheme();
   setWindowTitle("QGIS - print composer");
 
+  // Template save and load is not yet implemented, so disable those actions
+  mActionOpenTemplate->setEnabled(false);
+  mActionSaveTemplateAs->setEnabled(false);
+
   mQgis = qgis;
   mFirstTime = true;
 
