@@ -182,7 +182,6 @@ QgsVectorLayer::~QgsVectorLayer()
     delete (*it).second;
   }
   mCachedGeometries.clear();
-
 }
 
 QString QgsVectorLayer::storageType() const
@@ -502,6 +501,17 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
   myTransparentPen.setColor(myColor);
   p->setPen(myTransparentPen);
   p->drawPolyline(pa);
+
+  if(mEditable)
+    {
+      std::vector<double>::const_iterator xIt;
+      std::vector<double>::const_iterator yIt;
+      for(xIt = x.begin(), yIt = y.begin(); xIt != x.end(); ++xIt, ++yIt)
+	{
+	  drawVertexMarker((int)(*xIt), (int)(*yIt), *p);
+	}
+    }
+
   //restore the pen
   p->setPen(pen);
   
@@ -751,6 +761,14 @@ std::cerr << i << ": " << ring->first[i]
     for (; ri != ringDetails.end(); ++ri)
       p->drawPolygon(pa.constData() + ri->first, ri->second, Qt::OddEvenFill);
     
+    if(mEditable)//draw the vertex markers
+      {
+	for(int i = 0; i < pa.size(); ++i)
+	  {
+	    drawVertexMarker((int)(pa[i].x()), (int)(pa[i].y()), *p);
+	  }
+      }
+
     //
     //restore brush and pen to original
     //
@@ -938,6 +956,14 @@ void QgsVectorLayer::deleteCachedGeometries()
       delete (*it).second;
     }
   mCachedGeometries.clear();
+}
+
+void QgsVectorLayer::drawVertexMarker(int x, int y, QPainter& p)
+{
+  int size = 15;
+  int m = (size-1)/2;
+  p.drawLine(x-m, y+m, x+m, y-m);
+  p.drawLine(x-m, y-m, x+m, y+m);
 }
 
 void QgsVectorLayer::table()
@@ -1848,6 +1874,7 @@ void QgsVectorLayer::startEditing()
         {
           mToggleEditingAction->setChecked(true);
         }
+	triggerRepaint();
       }
     }
   }
@@ -1872,6 +1899,7 @@ void QgsVectorLayer::stopEditing()
         else
         {
           dataProvider->updateExtents();
+	  dataProvider->updateFeatureCount();
           //hide and delete the table because it is not up to date any more
           if (tabledisplay)
           {
