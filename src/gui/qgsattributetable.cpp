@@ -499,6 +499,11 @@ void QgsAttributeTable::fillTable(QgsVectorLayer* layer)
 
 void QgsAttributeTable::putFeatureInTable(int row, QgsFeature* fet)
 {
+  if(row >= numRows())//prevent a crash if a provider doesn't update the feature count properly
+    {
+      setNumRows(row+1);
+    }
+  
   //id-field
   int id = fet->featureId();
   setText(row, 0, QString::number(id));

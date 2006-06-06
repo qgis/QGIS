@@ -564,6 +564,8 @@ private:                       // Private methods
   void cacheGeometries();
   /**Deletes the geometries in mCachedGeometries*/
   void deleteCachedGeometries();
+  /**Draws a vertex symbol at (screen) coordinates x, y*/
+  void drawVertexMarker(int x, int y, QPainter& p);
 
   // pointer for loading the provider library
   QLibrary *myLib;
