@@ -326,13 +326,8 @@ private:
     //! Overridden resize event
     void resizeEvent(QResizeEvent * e);
 
-#ifdef Q_WS_MACX
-    //! Overridden paint event
-    void paintEvent(QPaintEvent * ev);
-#else
     //! Overridden draw contents from canvas view
     void drawContents(QPainter * p, int cx, int cy, int cw, int ch);
-#endif
         
     //! Zooms to a given center and scale 
     void zoomByScale(int x, int y, double scaleFactor);
