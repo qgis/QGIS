@@ -1592,7 +1592,7 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f, int primaryKeyHighWater)
 #endif
         
         //add quotes if the field is a character or date type
-        if(fieldvalue!="NULL")
+      if(fieldvalue != "NULL" && fieldvalue != "DEFAULT")
         {
           for(std::vector<QgsField>::iterator iter=attributeFields.begin();iter!=attributeFields.end();++iter)
           {
@@ -1660,7 +1660,7 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f, int primaryKeyHighWater)
 
 QString QgsPostgresProvider::getDefaultValue(const QString& attr, QgsFeature* f)
 {
-  return "NULL";
+  return "DEFAULT";
 }
 
 bool QgsPostgresProvider::deleteFeature(int id)
