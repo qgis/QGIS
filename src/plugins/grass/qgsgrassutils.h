@@ -41,11 +41,11 @@ public:
     static QString vectorLayerName( QString map, QString layer, int nLayers );
 
     // Add all vector layers to QGIS view
-    static void QgsGrassUtils::addVectorLayers ( QgisIface *iface,
+    static void addVectorLayers ( QgisIface *iface,
         QString gisbase, QString location, QString mapset, QString map);
 
     // Check if element exists in current mapset
-    static bool QgsGrassUtils::itemExists ( QString element, QString item);
+    static bool itemExists ( QString element, QString item);
 
 };
 
