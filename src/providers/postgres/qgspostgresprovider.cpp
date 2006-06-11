@@ -1167,70 +1167,69 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
   // indexed, else pick one called 'oid' if it exists, else
   // pick the first one. If there are none we return an empty string. 
 
-  if (suitable.size() == 1)
+  // Search for one with an index
+  tableCols::const_iterator i = suitable.begin();
+  for (; i != suitable.end(); ++i)
   {
-    if (uniqueData(mSchemaName, mTableName, suitable.begin()->first))
+    // Get the relation oid from our cache.
+    QString rel_oid = relOid[i->first];
+    // And see if the column has an index
+    sql = "select * from pg_index where indrelid = " + rel_oid +
+      " and indkey[0] = (select attnum from pg_attribute where "
+      "attrelid = " +	rel_oid + " and attname = '" + i->second.column + "')";
+    PGresult* result = PQexec(connection, (const char*)(sql.utf8()));
+
+    if (PQntuples(result) > 0 && uniqueData(mSchemaName, mTableName, i->first))
+    { // Got one. Use it.
+      key = i->first;
+#ifdef QGISDEBUG
+      std::cerr << "Picked column '" << key.toLocal8Bit().data()
+                << "' because it has an index.\n";
+#endif
+      break;
+    }
+    PQclear(result);
+  }
+
+  if (key.isEmpty())
+  {
+    // If none have indices, choose one that is called 'oid' (if it
+    // exists). This is legacy support and could be removed in
+    // future. 
+    i = suitable.find("oid");
+    if (i != suitable.end() && uniqueData(mSchemaName, mTableName, i->first))
     {
-      key = suitable.begin()->first;
+      key = i->first;
 #ifdef QGISDEBUG
       std::cerr << "Picked column " << key.toLocal8Bit().data()
-                << " as it is the only one that was suitable.\n";
+                << " as it is probably the postgresql object id "
+                << " column (which contains unique values) and there are no"
+                << " columns with indices to choose from\n.";
 #endif
     }
-  }
-  else if (suitable.size() > 1)
-  {
-    // Search for one with an index
-    tableCols::const_iterator i = suitable.begin();
-    for (; i != suitable.end(); ++i)
+    // else choose the first one in the container that has unique data
+    else
     {
-      // Get the relation oid from our cache.
-      QString rel_oid = relOid[i->first];
-      // And see if the column has an index
-      sql = "select * from pg_index where indrelid = " + rel_oid +
-	" and indkey[0] = (select attnum from pg_attribute where "
-	"attrelid = " +	rel_oid + " and attname = '" + i->second.column + "')";
-      PGresult* result = PQexec(connection, (const char*)(sql.utf8()));
-
-      if (PQntuples(result) > 0 && uniqueData(mSchemaName, mTableName, i->first))
-      { // Got one. Use it.
-        key = i->first;
-#ifdef QGISDEBUG
-        std::cerr << "Picked column '" << key.toLocal8Bit().data()
-          << "' because it has an index.\n";
-#endif
-        break;
-      }
-      PQclear(result);
-    }
-
-    if (key.isEmpty())
-    {
-      // If none have indices, choose one that is called 'oid' (if it
-      // exists). This is legacy support and could be removed in
-      // future. 
-      i = suitable.find("oid");
-      if (i != suitable.end() && uniqueData(mSchemaName, mTableName, i->first))
+      tableCols::const_iterator i = suitable.begin();
+      for (; i != suitable.end(); ++i)
       {
-        key = i->first;
+        if (uniqueData(mSchemaName, mTableName, i->first))
+        {
+          key = i->first;
 #ifdef QGISDEBUG
-        std::cerr << "Picked column " << key.toLocal8Bit().data()
-          << " as it is probably the postgresql object id "
-          << " column (which contains unique values) and there are no"
-          << " columns with indices to choose from\n.";
+          std::cerr << "Picked column " << key.toLocal8Bit().data()
+                    << " as it was the first suitable column found"
+                    << " with unique data and were are no"
+                    << " columns with indices to choose from\n.";
 #endif
-      }
-      // else choose the first one in the container, ensuring that it
-      // contains unique data
-      else if (uniqueData(mSchemaName, mTableName, suitable.begin()->first))
-      {
-        key = suitable.begin()->first;
-#ifdef QGISDEBUG
-        std::cerr << "Picked column " << key.toLocal8Bit().data()
-          << " as it was the first suitable column found"
-          << " and there are no"
-          << " columns with indices to choose from\n.";
-#endif
+          break;
+        }
+        else
+        {
+          log << QString(tr("Note: ") + "'" + key + "'"
+                         + tr("initially appeared suitable but does not "
+                              "contain unique data, so is not suitable.\n"));
+        }
       }
     }
   }
@@ -1248,7 +1247,7 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
                    "have a unique constraint on it, or be a PostgreSQL "
                    "oid column. To improve "
                    "performance the column should also be indexed.\n"));
-    log.prepend(tr("The view ") + "'" + mSchemaName + mTableName + "'" +
+    log.prepend(tr("The view ") + "'" + mSchemaName + '.' + mTableName + "' " +
                 tr("has no column suitable for use as a unique key.\n"));
     showMessageBox(tr("No suitable key column in view"), log);
   }
