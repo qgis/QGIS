@@ -1925,13 +1925,13 @@ void QgsVectorLayer::stopEditing()
         }
       }
       emit editingStopped(true);
-      triggerRepaint();
     }
     else
     {
       emit editingStopped(false);
     }
     mEditable=false;
+    triggerRepaint();
     mModified=false;
     if(isValid())
     {
