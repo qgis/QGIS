@@ -45,6 +45,6 @@ CLEANFILES = $(BUILT_SOURCES)
 
 libqgsprojectionselector_la_LIBADD =  $(LDADD) $(QT_LDADD) -lsqlite3 ../../core/libqgis_core.la
 libqgsprojectionselector_la_LDFLAGS = -avoid-version 
-libqgsprojectionselector_la_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../core/
+libqgsprojectionselector_la_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GEOS_CFLAGS) -I../../core/
 
 EXTRA_DIST = $(selector_UIC)
