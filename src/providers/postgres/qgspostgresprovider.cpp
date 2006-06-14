@@ -1226,7 +1226,7 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
         }
         else
         {
-          log << QString(tr("Note: ") + "'" + key + "'"
+          log << QString(tr("Note: ") + "'" + i->first + "'"
                          + tr("initially appeared suitable but does not "
                               "contain unique data, so is not suitable.\n"));
         }
