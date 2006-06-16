@@ -25,6 +25,13 @@ then
    export CXXFLAGS="-g -Wall"
    #for mac fink users
    export CPPFLAGS=-I/sw/include
+ else
+   echo "Building without debug support"
+   AUTOGEN_FLAGS="--disable-debug"
+   export CFLAGS="-O2 -Wall"
+   export CXXFLAGS="-O2 -Wall"
+   #for mac fink users
+   export CPPFLAGS=-I/sw/include
  fi
  
  if [ x$2 = "static" ]
