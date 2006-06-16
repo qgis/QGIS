@@ -20,5 +20,5 @@ fi
 
 export DEBFULLNAME="Tim Sutton"
 export DEBEMAIL=tim@linfiniti.com
-dch -v 0.7.9+svn`date +%d%m%Y`
+dch -v 0.7.9+svn`date +%m%d%Y`
 fakeroot dpkg-buildpackage
