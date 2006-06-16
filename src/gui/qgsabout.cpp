@@ -47,6 +47,9 @@ QgsAbout::~QgsAbout()
 
 void QgsAbout::init()
 {
+  // set the 60x60 icon pixmap
+  QPixmap icon(QgsApplication::iconsPath() + "qgis-icon-60x60.png");
+  qgisIcon->setPixmap(icon);
   //read the authors file to populate the contributors list
   QStringList lines;
 
