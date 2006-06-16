@@ -132,6 +132,13 @@ const QString QgsApplication::splashPath()
 }
 
 /*!
+  Returns the path to the icons image directory.
+*/
+const QString QgsApplication::iconsPath()
+{
+  return mPkgDataPath + QString("/images/icons/");
+}
+/*!
   Returns the path to the srs.db file.
 */
 const QString QgsApplication::srsDbFilePath()
