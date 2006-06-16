@@ -5,40 +5,38 @@ Copyright:	GPL
 Group:		Applications/Engineering
 Autoreqprov:	on
 Source:		%{name}-%{version}.tar.gz
-URL:		http://qgis.sourceforge.net/
-Summary:	Quantum GIS (QGIS) is designed to be a Geographic Information System (GIS) built for Linux/Unix.
+URL:		http://qgis.qgis.org/
+Summary:	Quantum GIS (QGIS) is a Geographic Information System (GIS)
+for Unix, Mac and Windows operating systems.
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
 %define prefix /usr
 
 %description
-Quantum GIS (QGIS) is designed to be a Geographic Information System (GIS) 
-built for Linux/Unix. QGIS will offer support for vector and raster formats. 
-Currently QGIS supports shapefiles and PostgreSQL/PostGIS layers.  
+Quantum GIS (QGIS) is a Geographic Information System (GIS) 
+for Unix, Mac and Windows operating systems. QGIS supports many vector and
+raster formats, and well as WMS data.
 
-Planned features include:
+Features include:
 
-    * Read and edit shapefiles
-    * Display georeferenced rasters (tiff, png, geotiff)
-    * Plugins to dynamically add new functionality to the application
-    * Support for database tables
-    * Support for spatially enabled tables in PostgreSQL using PostGIS
-    * Map output
-    * Script engine
-    * Metadata support
-
+	* 
 Authors:
 ----------
+Gary Sherman
+Steve Halasz
+Marco Hugentobler
+Time Sutton
+Denis Antipov
+Mark Coletti
+Lars Luthman
+Jens Oberender
+Christoph Spoerri
 Carl Anderson
-Christoph Spoerri <spoerri at users.sourceforge.net>
-Denis Antipov <rawbytes at users.sourceforge.net>
-Gary E.Sherman <sherman at mrcc dot com>
-Jens Oberender <j.obi at troja.net>
-Marco Hugentobler <mhugent at users.sourceforge.net>
-Mark Coletti <mcoletti at users.sourceforge.net>
+Gavin Macaulay
 Masaru Hoshi
-Radim Blazek <blazek at itc.it>
-Steve Halasz <stevehalasz at users.sourceforge.net>
+Peter Brwer
+Radim Blazek
+Tom Elwertowski
 
 %prep
 %setup
