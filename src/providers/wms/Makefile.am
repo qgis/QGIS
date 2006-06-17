@@ -26,6 +26,6 @@ BUILT_SOURCES = $(wmsprovider_MOC)
                                 
 wmsprovider_la_LIBADD = $(QT_LDADD)
 wmsprovider_la_LDFLAGS = -avoid-version -module
-wmsprovider_la_CXXFLAGS = $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) 
+wmsprovider_la_CXXFLAGS = $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS)
 
 CLEANFILES = $(BUILT_SOURCES)
