@@ -361,6 +361,14 @@ int main(int argc, char *argv[])
   // it must be handled before some other event handler runs and dismisses it as unknown.
   // If run at startup, the handler will set either or both of myProjectFileName and myFileList.
   AEInstallEventHandler(kCoreEventClass, kAEOpenDocuments, openDocumentsAEHandler, 0, false);
+
+  // If the QtCore framework is bundled with the application, clear the library search path
+  // and look for Qt plugins only within the application bundle.
+  QString bundledQtCore(QCoreApplication::applicationDirPath().append("/lib/QtCore.framework"));
+  if (QFile::exists(bundledQtCore))
+  {
+    QCoreApplication::setLibraryPaths(QStringList(QCoreApplication::applicationDirPath()));
+  }
 #endif
 
   // Check to see if qgis was started from the source directory. 
