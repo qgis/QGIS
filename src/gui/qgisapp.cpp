@@ -51,6 +51,7 @@
 #include <QProcess>
 #include <QProgressBar>
 #include <QSettings>
+#include <QSplashScreen>
 #include <QStringList>
 #include <QTcpSocket>
 #include <QTextStream>
@@ -58,12 +59,13 @@
 #include <QToolTip>
 #include <QVBoxLayout>
 #include <QWhatsThis>
-#include <QSplashScreen>
 //
 // QGIS Specific Includes
 //
+#include "../../images/themes/default/qgis.xpm"
 #include "qgisapp.h"
 #include "qgis.h"
+#include "qgisplugin.h"
 #include "qgsabout.h"
 #include "qgsapplication.h"
 #include "qgsbookmarkitem.h"
@@ -76,15 +78,14 @@
 #include "qgshelpviewer.h"
 #include "qgslegend.h"
 #include "qgslegendlayerfile.h"
-#include "qgslegendlayerfile.h"
 #include "qgslegendlayer.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmapoverviewcanvas.h"
-#include "qgsmaprender.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerinterface.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmapoverviewcanvas.h"
+#include "qgsmaprender.h"
 #include "qgsmapserverexport.h"
 #include "qgsmessageviewer.h"
 #include "qgsoptions.h"
@@ -100,11 +101,9 @@
 #include "qgsrect.h"
 #include "qgsserversourceselect.h"
 #include "qgssinglesymbolrenderer.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
-#include "qgisplugin.h"
-#include "qgsvectordataprovider.h"
-#include "../../images/themes/default/qgis.xpm"
 
 //
 // Gdal/Ogr includes
@@ -128,8 +127,8 @@
 //
 #include "qgsmaptoolcapture.h"
 #include "qgsmaptoolidentify.h"
-#include "qgsmaptoolselect.h"
 #include "qgsmaptoolpan.h"
+#include "qgsmaptoolselect.h"
 #include "qgsmaptoolvertexedit.h"
 #include "qgsmaptoolzoom.h"
 #include "qgsmeasure.h"
