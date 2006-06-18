@@ -88,7 +88,7 @@ void QgsMarkerDialog::visualizeMarkers(QString directory)
 	qWarning((*it).toLocal8Bit().data());
 	
 	//render the SVG file to a pixmap and put it into mIconView
-	QPixmap pix = QgsMarkerCatalogue::svgMarker(mCurrentDir + "/" + 
+	QPixmap pix = QgsMarkerCatalogue::svgPixmapMarker(mCurrentDir + "/" + 
 							(*it), 1);
 	Q3IconViewItem* ivi=new Q3IconViewItem(mIconView,*it,pix);
 	
