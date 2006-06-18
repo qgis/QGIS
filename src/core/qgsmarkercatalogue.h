@@ -38,13 +38,14 @@ public:
     /**List of available markers*/
     QStringList list();
     
-    /** Returns picture of the marker
+    /** Returns pixmap of the marker
      * \param fullName full name, e.g. hard:circle, svg:/home/usr1/marker1.svg
      */
-    QPixmap marker ( QString fullName, int size, QPen pen, QBrush brush, bool qtBug = true );
+    QPixmap pixmapMarker ( QString fullName, int size, QPen pen, QBrush brush, bool qtBug = true );
 
-    /* Returns a pixmap given a filename of a svg marker */
-    static QPixmap svgMarker ( QString name, int size );
+    /* Returns a pixmap given a filename of a svg marker 
+     * NOTE: this method needs to be public static for QgsMarkerDialog::visualizeMarkers */
+    static QPixmap svgPixmapMarker ( QString name, int size );
 private:
 
     /**Constructor*/
@@ -56,7 +57,7 @@ private:
     QStringList mList;
 
     /** Hard coded */
-    QPixmap hardMarker ( QString name, int size, QPen pen, QBrush brush, bool qtBug = true );
+    QPixmap hardPixmapMarker ( QString name, int size, QPen pen, QBrush brush, bool qtBug = true );
 
 };
     

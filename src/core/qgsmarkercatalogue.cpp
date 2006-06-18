@@ -87,21 +87,21 @@ QgsMarkerCatalogue *QgsMarkerCatalogue::instance()
   return QgsMarkerCatalogue::mMarkerCatalogue;
 }
 
-QPixmap QgsMarkerCatalogue::marker ( QString fullName, int size, QPen pen, QBrush brush, bool qtBug )
+QPixmap QgsMarkerCatalogue::pixmapMarker ( QString fullName, int size, QPen pen, QBrush brush, bool qtBug )
 {
   //std::cerr << "QgsMarkerCatalogue::marker " << fullName.toLocal8Bit().data() << " sice:" << size << std::endl;
   if ( fullName.left(5) == "hard:" ) 
   {
-    return hardMarker ( fullName.mid(5), size, pen, brush, qtBug ); 
+    return hardPixmapMarker ( fullName.mid(5), size, pen, brush, qtBug ); 
   } 
   else if ( fullName.left(4) == "svg:" ) 
   {
-    return svgMarker ( fullName.mid(4), size ); 
+    return svgPixmapMarker ( fullName.mid(4), size ); 
   }
   return QPixmap(); // empty
 }
 
-QPixmap QgsMarkerCatalogue::svgMarker ( QString filename, int scaleFactor)
+QPixmap QgsMarkerCatalogue::svgPixmapMarker ( QString filename, int scaleFactor)
 {
   QSvgRenderer mySVG;
   mySVG.load(filename);
@@ -139,7 +139,7 @@ QPixmap QgsMarkerCatalogue::svgMarker ( QString filename, int scaleFactor)
   return myPixmap;
 }
 
-QPixmap QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush brush, bool qtBug )
+QPixmap QgsMarkerCatalogue::hardPixmapMarker ( QString name, int s, QPen pen, QBrush brush, bool qtBug )
 {
   //Note teh +1 offset below is required because the 
   //scaling to odd numbers below will cause clipping otherwise

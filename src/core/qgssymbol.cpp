@@ -229,10 +229,10 @@ void QgsSymbol::cache(  QColor selectionColor )
     // composer. Not sure why... 
     // brush.setColor ( selectionColor ); 
 
-    mPointSymbolPixmap = QgsMarkerCatalogue::instance()->marker ( mPointSymbolName, mPointSize,
+    mPointSymbolPixmap = QgsMarkerCatalogue::instance()->pixmapMarker ( mPointSymbolName, mPointSize,
 	                        mPen, mBrush );
     
-    mPointSymbolPixmapSelected = QgsMarkerCatalogue::instance()->marker ( 
+    mPointSymbolPixmapSelected = QgsMarkerCatalogue::instance()->pixmapMarker ( 
 	     mPointSymbolName, mPointSize, pen, brush );
 
     mSelectionColor = selectionColor;
@@ -247,14 +247,14 @@ void QgsSymbol::cache2( double widthScale, QColor selectionColor )
     pen.setWidth ( (int) ( widthScale * pen.width() ) );
 
     
-    mPointSymbolPixmap2 = QgsMarkerCatalogue::instance()->marker ( mPointSymbolName, mPointSize,
+    mPointSymbolPixmap2 = QgsMarkerCatalogue::instance()->pixmapMarker ( mPointSymbolName, mPointSize,
 	                        pen, mBrush, false );
 
     QBrush brush = mBrush;
     brush.setColor ( selectionColor ); 
     pen.setColor ( selectionColor ); 
 
-    mPointSymbolPixmapSelected2 = QgsMarkerCatalogue::instance()->marker ( 
+    mPointSymbolPixmapSelected2 = QgsMarkerCatalogue::instance()->pixmapMarker ( 
 	               mPointSymbolName, mPointSize, pen, brush,  false );
 
     mSelectionColor2 = selectionColor;
