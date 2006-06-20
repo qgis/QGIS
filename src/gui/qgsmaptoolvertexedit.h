@@ -78,6 +78,12 @@ class QgsMapToolVertexEdit : public QgsMapTool
     //! The snapped-to segment before this vertex number (identifying the vertex that is being moved)
     QgsGeometryVertexIndex mSnappedAtVertex;
 
+    /**The index of the first rubber band point (to connect to mSnappedatVertex). -1 if no such point exists*/
+    int mRubberBandIndex1;
+
+    /**The index of the second rubber band point (to connect to mSnappedatVertex). -1 if no such point exists*/
+    int mRubberBandIndex2;
+
     //! The snapped-to segment before this vertex number (identifying the segment that a new vertex is being added to)
     QgsGeometryVertexIndex mSnappedBeforeVertex;
 

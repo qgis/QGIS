@@ -960,6 +960,7 @@ void QgsVectorLayer::deleteCachedGeometries()
 
 void QgsVectorLayer::drawVertexMarker(int x, int y, QPainter& p)
 {
+  //todo: let the user configure the size and appearance of the marker 
   int size = 15;
   int m = (size-1)/2;
   p.drawLine(x-m, y+m, x+m, y-m);
@@ -2720,6 +2721,7 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
   QgsPoint vertexFeature;//the closest vertex of a feature
   QgsGeometryVertexIndex vindex;
   double minsquaredist;
+  int rb1, rb2; //rubberband indexes (not used in this method)
 
   QgsRect selectrect(point.x()-tolerance,point.y()-tolerance,point.x()+tolerance,point.y()+tolerance);
   selectrect = inverseProjectRect(selectrect);
@@ -2744,11 +2746,11 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
   {
     if(mChangedGeometries.find(fet->featureId()) != mChangedGeometries.end())//if geometry has been changed, use the new geometry
     {
-      vertexFeature = mChangedGeometries[fet->featureId()].closestVertex(point, vindex, minsquaredist);
+      vertexFeature = mChangedGeometries[fet->featureId()].closestVertex(point, vindex, rb1, rb2, minsquaredist);
     }
     else
     {
-      vertexFeature=fet->geometry()->closestVertex(point, vindex, minsquaredist);
+      vertexFeature=fet->geometry()->closestVertex(point, vindex, rb1, rb2, minsquaredist);
     }
     if(minsquaredist<mindist)
     {
@@ -2763,11 +2765,11 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
   {
     if(mChangedGeometries.find((*iter)->featureId()) != mChangedGeometries.end())//use the changed geometry
     {
-      vertexFeature = mChangedGeometries[(*iter)->featureId()].closestVertex(point, vindex, minsquaredist);
+      vertexFeature = mChangedGeometries[(*iter)->featureId()].closestVertex(point, vindex, rb1, rb2, minsquaredist);
     }
     else
     {
-      vertexFeature=(*iter)->geometry()->closestVertex(point, vindex, minsquaredist);
+      vertexFeature=(*iter)->geometry()->closestVertex(point, vindex, rb1, rb2, minsquaredist);
     }
     if(minsquaredist<mindist)
     {
@@ -2780,7 +2782,7 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
   //and also go through the changed geometries, because the spatial filter of the provider did not consider feature changes
   for(std::map<int, QgsGeometry>::const_iterator iter = mChangedGeometries.begin(); iter != mChangedGeometries.end(); ++iter)
   {
-    vertexFeature = iter->second.closestVertex(point, vindex, minsquaredist);
+    vertexFeature = iter->second.closestVertex(point, vindex, rb1, rb2, minsquaredist);
     if(minsquaredist<mindist)
     {
       mindistx=vertexFeature.x();
@@ -2809,11 +2811,12 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
 }
 
 
-bool QgsVectorLayer::snapVertexWithContext(QgsPoint& point, QgsGeometryVertexIndex& atVertex, int& snappedFeatureId,\
- QgsGeometry& snappedGeometry, double tolerance)
+bool QgsVectorLayer::snapVertexWithContext(QgsPoint& point, QgsGeometryVertexIndex& atVertex, int& beforeVertexIndex, int& afterVertexIndex,\
+int& snappedFeatureId, QgsGeometry& snappedGeometry, double tolerance)
 {
   bool vertexFound = false; //flag to check if a meaningful result can be returned
   QgsGeometryVertexIndex atVertexTemp;
+  int beforeVertexIndexTemp, afterVertexIndexTemp;
 
   QgsPoint origPoint = point;
 
@@ -2855,13 +2858,15 @@ bool QgsVectorLayer::snapVertexWithContext(QgsPoint& point, QgsGeometryVertexInd
       feature->setGeometry(mChangedGeometries[feature->featureId()]);
     }
 
-    minDistSegPoint = feature->geometry()->closestVertex(origPoint, atVertexTemp, testSqrDist);
+    minDistSegPoint = feature->geometry()->closestVertex(origPoint, atVertexTemp, beforeVertexIndexTemp, afterVertexIndexTemp, testSqrDist);
     if(testSqrDist < minSqrDist)
     {
       point = minDistSegPoint;
       minSqrDist = testSqrDist;
 
       atVertex          = atVertexTemp;
+      beforeVertexIndex = beforeVertexIndexTemp;
+      afterVertexIndex = afterVertexIndexTemp;
       snappedFeatureId  = feature->featureId();
       snappedGeometry   = *(feature->geometry());
       vertexFound = true;
@@ -2875,11 +2880,11 @@ bool QgsVectorLayer::snapVertexWithContext(QgsPoint& point, QgsGeometryVertexInd
     if(mChangedGeometries.find((*iter)->featureId()) != mChangedGeometries.end())
       {
 	//use the modified geometry
-	minDistSegPoint = mChangedGeometries[(*iter)->featureId()].closestVertex(origPoint, atVertexTemp, testSqrDist);
+	minDistSegPoint = mChangedGeometries[(*iter)->featureId()].closestVertex(origPoint, atVertexTemp, beforeVertexIndexTemp, afterVertexIndexTemp, testSqrDist);
       }
     else
       {
-	minDistSegPoint = (*iter)->geometry()->closestVertex(origPoint, atVertexTemp, testSqrDist);
+	minDistSegPoint = (*iter)->geometry()->closestVertex(origPoint, atVertexTemp, beforeVertexIndexTemp, afterVertexIndexTemp, testSqrDist);
       }
     if(testSqrDist < minSqrDist)
     {
@@ -2887,6 +2892,8 @@ bool QgsVectorLayer::snapVertexWithContext(QgsPoint& point, QgsGeometryVertexInd
       minSqrDist = testSqrDist;
 
       atVertex      = atVertexTemp;
+      beforeVertexIndex = beforeVertexIndexTemp;
+      afterVertexIndex = afterVertexIndexTemp;
       snappedFeatureId  =   (*iter)->featureId();
       snappedGeometry   = *((*iter)->geometry());
       vertexFound = true;
@@ -2896,12 +2903,14 @@ bool QgsVectorLayer::snapVertexWithContext(QgsPoint& point, QgsGeometryVertexInd
   //and also go through the changed geometries, because the spatial filter of the provider did not consider feature changes
   for(std::map<int, QgsGeometry>::iterator it = mChangedGeometries.begin(); it != mChangedGeometries.end(); ++it)
     {
-      minDistSegPoint = it->second.closestVertex(origPoint, atVertexTemp, testSqrDist);
+      minDistSegPoint = it->second.closestVertex(origPoint, atVertexTemp, beforeVertexIndexTemp, afterVertexIndexTemp, testSqrDist);
       if(testSqrDist < minSqrDist)
 	{
 	  point = minDistSegPoint;
 	  minSqrDist = testSqrDist;
 	  atVertex      = atVertexTemp;
+	  beforeVertexIndex = beforeVertexIndexTemp;
+	  afterVertexIndex = afterVertexIndexTemp;
 	  snappedFeatureId  = it->first;
 	  snappedGeometry   = it->second;
 	  vertexFound = true;
@@ -2910,6 +2919,8 @@ bool QgsVectorLayer::snapVertexWithContext(QgsPoint& point, QgsGeometryVertexInd
 
   if(!vertexFound)
     {
+      beforeVertexIndex = -1;
+      afterVertexIndex = -1;
       return false;
     }
 
