@@ -83,9 +83,9 @@ class QgsGeometry {
     void setGeos(geos::Geometry* geos);
 
     /**
-       Returns the vertex closest to the given point (and also vertex index and squared distance)
+       Returns the vertex closest to the given point (and also vertex index, squared distance and indexes of the vertices before/after)
     */
-    QgsPoint closestVertex(const QgsPoint& point, QgsGeometryVertexIndex& atVertex, double& sqrDist) const;
+    QgsPoint closestVertex(const QgsPoint& point, QgsGeometryVertexIndex& atVertex, int& beforeVertex, int& afterVertex, double& sqrDist) const;
 
     /** Insert a new vertex before the given vertex index,
      *  ring and item (first number is index 0)
