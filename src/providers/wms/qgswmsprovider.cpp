@@ -1916,6 +1916,7 @@ bool QgsWmsProvider::calculateExtent()
     mCoordinateTransform = new QgsCoordinateTransform(qgisSrsSource, qgisSrsDest);
   }
 
+  bool firstLayer = true; //flag to know if a layer is the first to be successfully transformed
   for ( QStringList::Iterator it  = activeSubLayers.begin(); 
                               it != activeSubLayers.end(); 
                             ++it ) 
@@ -1925,14 +1926,17 @@ bool QgsWmsProvider::calculateExtent()
     QgsRect extent = extentForLayer.find( *it )->second;
 
     // Convert to the user's CRS as required
-    extent =
-      mCoordinateTransform->transformBoundingBox(
-        extent,
-        QgsCoordinateTransform::FORWARD
-      );
+    try
+      {
+	extent = mCoordinateTransform->transformBoundingBox(extent, QgsCoordinateTransform::FORWARD);
+      }
+    catch(QgsCsException &cse)
+      {
+	continue; //ignore extents of layers which cannot be transformed info the required CRS
+      }
 
     // add to the combined extent of all the active sublayers
-    if ( it == activeSubLayers.begin() )
+    if (firstLayer)
     {
       layerExtent = extent;
     }
@@ -1940,6 +1944,8 @@ bool QgsWmsProvider::calculateExtent()
     {
       layerExtent.combineExtentWith( &extent );
     }
+
+    firstLayer = false;
   
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::calculateExtent: combined extent is '" << 
