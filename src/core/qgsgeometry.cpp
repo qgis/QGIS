@@ -1281,6 +1281,7 @@ bool QgsGeometry::vertexAt(double &x, double &y,
 		    for(int ringnr = 0; ringnr < *nRings; ++ringnr)
 		      {
 			nPoints = (int*)ptr;
+			ptr += sizeof(int);
 			for(int pointnr = 0; pointnr < *nPoints; ++pointnr)
 			  {
 			    if(pointindex == atVertex.back())
