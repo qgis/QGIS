@@ -24,14 +24,14 @@ then
    export CFLAGS="-g -Wall"
    export CXXFLAGS="-g -Wall"
    #for mac fink users
-   export CPPFLAGS=-I/sw/include
+   #export CPPFLAGS=-I/sw/include
  else
    echo "Building without debug support"
    AUTOGEN_FLAGS="--disable-debug"
    export CFLAGS="-O2 -Wall"
    export CXXFLAGS="-O2 -Wall"
    #for mac fink users
-   export CPPFLAGS=-I/sw/include
+   #export CPPFLAGS=-I/sw/include
  fi
  
  if [ x$2 = "static" ]
@@ -48,7 +48,7 @@ then
  #qt installed from debian apt
  #export QTDIR=/usr
  export QTDIR=/usr/local/Qt4.1.3
- export PATH=$QTDIR/bin:$PATH
+ #export PATH=/usr/local/gislibs/bin:/usr/local/graphicslibs/bin/:$QTDIR/bin:$PATH
  export LD_LIBRARY_PATH=$QTDIR/lib
 
  # Note: --enable-static=no tells compiler 
@@ -60,8 +60,8 @@ then
  ./autogen.sh $AUTOGEN_FLAGS --prefix=${1} \
                              --enable-static=no \
                              --with-qtdir=$QTDIR 
+                             #--with-grass=/usr/local/gislibs/grass
                              #--enable-unittests \
-                             #--with-grass=/usr/lib/grass  
 make && make install
 
 cd tests/src
