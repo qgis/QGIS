@@ -1381,7 +1381,7 @@ QgsRect QgsVectorLayer::bBoxOfSelected()
     }
     else
     {
-      const double padFactor = 0.05;
+      const double padFactor = 1e-8;
       double widthPad = retval.xMin() * padFactor;
       double heightPad = retval.yMin() * padFactor;
       double xmin = retval.xMin() - widthPad;
