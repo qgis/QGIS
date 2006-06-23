@@ -24,6 +24,8 @@ class QPicture;
 class QPixmap;
 class QPen;
 class QBrush;
+class QPainter;
+class QPicture;
 
 /** Catalogue of point symbols */
 class QgsMarkerCatalogue{
@@ -41,11 +43,15 @@ public:
     /** Returns pixmap of the marker
      * \param fullName full name, e.g. hard:circle, svg:/home/usr1/marker1.svg
      */
-    QPixmap pixmapMarker ( QString fullName, int size, QPen pen, QBrush brush, bool qtBug = true );
+    QPixmap pixmapMarker (QString fullName, int size, QPen pen, QBrush brush, bool qtBug = true );
+    /** Returns qpicture of the marker
+     * \param fullName full name, e.g. hard:circle, svg:/home/usr1/marker1.svg
+     */
+    QPicture pictureMarker (QString fullName, int size, QPen pen, QBrush brush, bool qtBug = true );
 
     /* Returns a pixmap given a filename of a svg marker 
      * NOTE: this method needs to be public static for QgsMarkerDialog::visualizeMarkers */
-    static QPixmap svgPixmapMarker ( QString name, int size );
+    static void svgMarker (QPainter * thepPainter, QString name, int size );
 private:
 
     /**Constructor*/
@@ -57,7 +63,7 @@ private:
     QStringList mList;
 
     /** Hard coded */
-    QPixmap hardPixmapMarker ( QString name, int size, QPen pen, QBrush brush, bool qtBug = true );
+    void hardMarker (QPainter * thepPainter, QString name, int size, QPen pen, QBrush brush, bool qtBug = true );
 
 };
     

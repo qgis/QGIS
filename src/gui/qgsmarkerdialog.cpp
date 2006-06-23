@@ -23,6 +23,7 @@
 #include <QFileDialog>
 #include <Q3IconView>
 #include <QPixmap>
+#include <QPainter>
 
 #include "qgsconfig.h"
 #include <qgsmarkercatalogue.h>
@@ -88,8 +89,9 @@ void QgsMarkerDialog::visualizeMarkers(QString directory)
 	qWarning((*it).toLocal8Bit().data());
 	
 	//render the SVG file to a pixmap and put it into mIconView
-	QPixmap pix = QgsMarkerCatalogue::svgPixmapMarker(mCurrentDir + "/" + 
-							(*it), 1);
+	QPixmap pix (10,10);
+  QPainter myPainter(&pix);
+  QgsMarkerCatalogue::svgMarker(&myPainter,mCurrentDir + "/" + (*it), 1);
 	Q3IconViewItem* ivi=new Q3IconViewItem(mIconView,*it,pix);
 	
     }
