@@ -335,16 +335,6 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
       theFileFiltersString += "JPEG 2000 (" + glob.lower() + " " + glob.upper() + ");;";
     }
 
-    // A number of drivers support JPEG 2000. Add it in for those.
-    if (  myGdalDriverDescription.startsWith("MrSID")
-          || myGdalDriverDescription.startsWith("ECW")
-          || myGdalDriverDescription.startsWith("JPEG2000")
-          || myGdalDriverDescription.startsWith("JP2KAK") )
-    {
-      QString glob = "*.jp2 *.j2k";
-      theFileFiltersString += "JPEG 2000 (" + glob.lower() + " " + glob.upper() + ");;";
-    }
-
     myGdalDriverExtension = myGdalDriverLongName = "";  // reset for next driver
 
   }                           // each loaded GDAL driver
@@ -352,6 +342,10 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
   // can't forget the default case
   theFileFiltersString += catchallFilter + "All other files (*)";
   QgsDebugMsg("Raster filter list built: " + theFileFiltersString);
+
+
+  std::cerr << theFileFiltersString.toLocal8Bit().data() << '\n';
+
 }                               // buildSupportedRasterFileFilter_()
 
 
