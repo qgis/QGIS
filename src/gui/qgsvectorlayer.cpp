@@ -2141,12 +2141,6 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
           this,           SLOT( updateExtents() ) 
           );
 
-      // Connect the repaintRequested chain from the data provider to this map layer
-      // in the hope that the map canvas will notice       
-      connect(dataProvider, SIGNAL( repaintRequested() ), 
-          this,           SLOT( triggerRepaint() ) 
-          );
-
       // get the extent
       QgsRect *mbr = dataProvider->extent();
 
