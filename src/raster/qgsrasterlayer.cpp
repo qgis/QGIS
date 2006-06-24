@@ -340,12 +340,8 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
   }                           // each loaded GDAL driver
 
   // can't forget the default case
-  theFileFiltersString += catchallFilter + "All other files (*)";
+  theFileFiltersString += catchallFilter + tr("and all other files") + " (*)";
   QgsDebugMsg("Raster filter list built: " + theFileFiltersString);
-
-
-  std::cerr << theFileFiltersString.toLocal8Bit().data() << '\n';
-
 }                               // buildSupportedRasterFileFilter_()
 
 
