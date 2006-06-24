@@ -259,8 +259,11 @@ QgsMapLayer* QgsMapCanvas::currentLayer()
 
 void QgsMapCanvas::refresh()
 {
-  clear();
-  updateContents();
+  if (mRenderFlag)
+  {
+    clear();
+    updateContents();
+  }
 } // refresh
 
 void QgsMapCanvas::drawContents(QPainter * p, int cx, int cy, int cw, int ch)
