@@ -188,7 +188,9 @@ void QgsGrass::init( void )
  */
 bool QgsGrass::isValidGrassBaseDir(QString const gisBase)
 {
+#ifdef QGISDEBUG
   std::cerr << "isValidGrassBaseDir()" << std::endl;
+#endif
   if ( gisBase.isEmpty() )
   {
     return FALSE;
