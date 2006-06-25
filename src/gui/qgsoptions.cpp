@@ -47,9 +47,13 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   QSettings settings;
   QString browser = settings.readEntry("/qgis/browser");
   cmbBrowser->setCurrentText(browser);
+#ifdef QGISDEBUG
   std::cout << "Standard Identify radius setting: " << QGis::DEFAULT_IDENTIFY_RADIUS << std::endl;
+#endif
   int identifyValue = settings.readNumEntry("/Map/identifyRadius",QGis::DEFAULT_IDENTIFY_RADIUS);
+#ifdef QGISDEBUG
   std::cout << "Standard Identify radius setting read from settings file: " << identifyValue << std::endl;
+#endif
   spinBoxIdentifyValue->setValue(identifyValue);
 
   // set the current theme
