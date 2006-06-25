@@ -128,7 +128,6 @@ void QgsCopyrightLabelPlugin::run()
     //connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
     //connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
     //refresh the canvas when the user presses ok
-    connect(myPluginGui, SIGNAL(refreshCanvas()), this, SLOT(refreshCanvas()));
     connect(myPluginGui, SIGNAL(changeFont(QFont )), this, SLOT(setFont(QFont )));
     connect(myPluginGui, SIGNAL(changeLabel(QString )), this, SLOT(setLabel(QString )));
     connect(myPluginGui, SIGNAL(changeColor(QColor)), this, SLOT(setColor(QColor)));
