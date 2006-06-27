@@ -734,7 +734,7 @@ void QgsPostgresProvider::getFeatureAttributes(int key, int &row, QgsFeature *f)
 #endif
   PGresult *attr = PQexec(connection, (const char *)(sql.utf8()));
 
-  for (int i = 0; i < fieldCount(); i++) {
+  for (int i = 0; i < PQntuples(attr); i++) {
     QString fld = PQfname(attr, i);
     // Dont add the WKT representation of the geometry column to the identify
     // results
