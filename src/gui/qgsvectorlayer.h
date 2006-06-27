@@ -380,7 +380,8 @@ public:
      If there is no point within this tolerance, point is left unchanged.
      @param tolerance   The snapping tolerance
      @return true if the position of point has been changed, and false otherwise */
-  bool snapPoint(QgsPoint& point, double tolerance);
+  bool snapPoint(QgsPoint& point,
+                 double tolerance);
 
   /**Snaps a point to the closest vertex if there is one within the snapping tolerance
      @param atVertex          Set to a vertex index of the snapped-to vertex
@@ -401,7 +402,7 @@ public:
                              QgsGeometry& snappedGeometry,
                              double tolerance);
 
-  /**Snaps a point to the closest line segment if there is one within the snapping tolerance (mSnappingTolerance)
+  /**Snaps a point to the closest line segment if there is one within the snapping tolerance ("tolerance")
      @param beforeVertex      Set to a value where the snapped-to segment is before this vertex index
      @param snappedFeatureId  Set to the feature ID that where the snapped-to segment belongs to.
      @param snappedGeometry   Set to the geometry that the snapped-to segment belongs to.

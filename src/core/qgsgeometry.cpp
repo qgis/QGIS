@@ -1316,6 +1316,30 @@ bool QgsGeometry::vertexAt(double &x, double &y,
 }
 
 
+double QgsGeometry::sqrDistToVertexAt(QgsPoint& point,
+                                      QgsGeometryVertexIndex& atVertex) const
+{
+  double x;
+  double y;
+
+  if (vertexAt(x, y, atVertex))
+  {
+#ifdef QGISDEBUG
+    std::cout << "QgsGeometry::sqrDistToVertexAt: Exiting with distance to " << x << " " << y << "." << std::endl;
+#endif
+    return point.sqrDist(x, y);
+  }
+  else
+  {
+#ifdef QGISDEBUG
+    std::cout << "QgsGeometry::sqrDistToVertexAt: Exiting with std::numeric_limits<double>::max()." << std::endl;
+#endif
+    // probably safest to bail out with a very large number
+    return std::numeric_limits<double>::max();
+  }
+}
+
+
 QgsPoint QgsGeometry::closestVertexWithContext(QgsPoint& point,
                                                QgsGeometryVertexIndex& atVertex,
                                                double& sqrDist)

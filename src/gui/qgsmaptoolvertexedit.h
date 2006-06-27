@@ -69,12 +69,27 @@ class QgsMapToolVertexEdit : public QgsMapTool
     /**Searches the closest point within the project tolerance and setx  mSnappedAtFeatureId and mSnappedAtVertex*/
     bool snapVertexWithContext(QgsPoint& point);
 
+    /** Searches the closest vertex of "geometry" to the given "point" 
+
+        This is useful when selecting a vertex to move, as the selection process is a two step process:
+
+        1. Select the closest line segment to the mouse pointer.
+             - snapSegmentWithContext()
+        2. Select the closest vertex on (1).
+             - snapVertexOfSnappedSegement()
+
+        Step 1 is needed to disambiguate between two geometries sharing the same vertex.
+     */
+    bool snapVertexOfSnappedSegment(QgsPoint& point);
+
     /**Snaps a point (without setting mSnappedAtFeatureId and mSnappedAtVertex). Does not snap to the specified vertex,
      because during dragging, a vertex should not be snapped to itself*/
     bool snapVertex(QgsPoint& point, int exclFeatureId, int exclVertexNr);
-    
+
+
     bool snapSegmentWithContext(QgsPoint& point);
-    
+
+
     //! The snapped-to segment before this vertex number (identifying the vertex that is being moved)
     QgsGeometryVertexIndex mSnappedAtVertex;
 

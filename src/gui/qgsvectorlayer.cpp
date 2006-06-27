@@ -2990,8 +2990,6 @@ QgsGeometry& snappedGeometry, double tolerance)
       snappedFeatureId  = feature->featureId();
       snappedGeometry   = *(feature->geometry());
       segmentFound = true;
-      delete feature;
-      return true;
     }
     delete feature;
   }
@@ -3018,7 +3016,6 @@ QgsGeometry& snappedGeometry, double tolerance)
       snappedFeatureId  =   (*iter)->featureId();
       snappedGeometry   = *((*iter)->geometry());
       segmentFound = true;
-      return true;
     }
   }
 
@@ -3034,10 +3031,10 @@ QgsGeometry& snappedGeometry, double tolerance)
 	  snappedFeatureId  = it->first;
 	  snappedGeometry   = it->second;
 	  segmentFound = true;
-	  return true;
 	}
     }
-  return false;
+
+  return segmentFound;
 }
 
 

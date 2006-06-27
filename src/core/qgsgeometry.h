@@ -134,6 +134,15 @@ class QgsGeometry {
     bool vertexAt(double &x, double &y, QgsGeometryVertexIndex atVertex) const;
 
     /**
+        Returns the squared cartesian distance between the given point
+        to the given vertex index (vertex at the given position number,
+        ring and item (first number is index 0))
+
+     */
+    double sqrDistToVertexAt(QgsPoint& point,
+                             QgsGeometryVertexIndex& atVertex) const;
+
+    /**
         Returns, in atVertex, the closest vertex in this geometry to the given point.
         The squared cartesian distance is also returned in sqrDist.
      */
