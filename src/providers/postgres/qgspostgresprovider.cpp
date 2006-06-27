@@ -63,7 +63,9 @@ const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
 
 
 QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
-  : QgsVectorDataProvider(uri), geomType(QGis::WKBUnknown)
+  : QgsVectorDataProvider(uri),
+  geomType(QGis::WKBUnknown),
+  gotPostgisVersion(FALSE)
 {
   // assume this is a valid layer until we determine otherwise
   valid = true;
@@ -1457,8 +1459,31 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f, int primaryKeyHighWater)
                 << "." << std::endl;
 #endif
   
-  if(f)
+  if (f)
   {
+    // Determine which insertion method to use for WKB
+    // PostGIS 1.0+ uses BYTEA
+    // earlier versions use HEX
+    bool useWkbHex(FALSE);
+
+    if (!gotPostgisVersion)
+    {
+      postgisVersion(connection);
+    }
+
+#ifdef QGISDEBUG
+    std::cout << "QgsPostgresProvider::addFeature: PostGIS version is " 
+              << " major: "  << postgisVersionMajor
+              << ", minor: " << postgisVersionMinor
+              << "." << std::endl;
+#endif
+
+    if (postgisVersionMajor < 1)
+    {
+      useWkbHex = TRUE;
+    }
+
+    // Start building insert string
     QString insert("INSERT INTO ");
     insert+=mSchemaTableName;
     insert+=" (";
@@ -1524,12 +1549,27 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f, int primaryKeyHighWater)
 
     insert+=") VALUES (GeomFromWKB('";
 
-    //add the wkb geometry to the insert statement
-    unsigned char* geom=f->getGeometry();
-    for(int i=0;i<f->getGeometrySize();++i)
+    // Add the WKB geometry to the INSERT statement
+    unsigned char* geom = f->getGeometry();
+    for (int i=0; i < f->getGeometrySize(); ++i)
     {
-      //Postgis 1.0 wants bytea instead of hex
-	QString oct = QString::number((int)geom[i], 8);
+      if (useWkbHex)
+      {
+        // PostGIS < 1.0 wants hex
+        QString hex = QString::number((int) geom[i], 16).upper();
+
+        if (hex.length() == 1)
+        {
+          hex = "0" + hex;
+        }
+
+        insert += hex;
+      }
+      else
+      {
+        // Postgis 1.0 wants bytea
+	QString oct = QString::number((int) geom[i], 8);
+
 	if(oct.length()==3)
 	{
 	    oct="\\\\"+oct;
@@ -1542,9 +1582,19 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f, int primaryKeyHighWater)
 	{
 	    oct="\\\\0"+oct; 
 	}
-	insert+=oct;
+
+	insert += oct;
+      }
     }
-    insert+="::bytea',"+srid+")";
+
+    if (useWkbHex)
+    {
+      insert += "',"+srid+")";
+    }
+    else
+    {
+      insert += "::bytea',"+srid+")";
+    }
 
     //add the primary key value to the insert statement
     insert += ",";
@@ -1695,20 +1745,31 @@ bool QgsPostgresProvider::hasGEOS(PGconn *connection){
   // get geos capability
   return geosAvailable;
 }
+
 /* Functions for determining available features in postGIS */
-QString QgsPostgresProvider::postgisVersion(PGconn *connection){
+QString QgsPostgresProvider::postgisVersion(PGconn *connection)
+{
   PGresult *result = PQexec(connection, "select postgis_version()");
   postgisVersionInfo = PQgetvalue(result,0,0);
 #ifdef QGISDEBUG
   std::cerr << "PostGIS version info: " << postgisVersionInfo.toLocal8Bit().data() << std::endl;
 #endif
   PQclear(result);
+
+  QStringList postgisParts = QStringList::split(" ", postgisVersionInfo);
+
+  // Get major and minor version
+  QStringList postgisVersionParts = QStringList::split(".", postgisParts[0]);
+
+  postgisVersionMajor = postgisVersionParts[0].toInt();
+  postgisVersionMinor = postgisVersionParts[1].toInt();
+
   // assume no capabilities
   geosAvailable = false;
   gistAvailable = false;
   projAvailable = false;
+
   // parse out the capabilities and store them
-  QStringList postgisParts = QStringList::split(" ", postgisVersionInfo);
   QStringList geos = postgisParts.grep("GEOS");
   if(geos.size() == 1){
     geosAvailable = (geos[0].find("=1") > -1);  
@@ -1721,6 +1782,9 @@ QString QgsPostgresProvider::postgisVersion(PGconn *connection){
   if(proj.size() == 1){
     projAvailable = (proj[0].find("=1") > -1);
   }
+
+  gotPostgisVersion = TRUE;
+
   return postgisVersionInfo;
 }
 
@@ -1882,9 +1946,33 @@ bool QgsPostgresProvider::changeGeometryValues(std::map<int, QgsGeometry> & geom
       std::cerr << "QgsPostgresProvider::changeGeometryValues: entering."
                 << std::endl;
 #endif
-  
-  bool returnvalue=true; 
-  
+
+  bool returnvalue = true;
+
+  // Determine which insertion method to use for WKB
+  // PostGIS 1.0+ uses BYTEA
+  // earlier versions use HEX
+  bool useWkbHex(FALSE);
+
+  if (!gotPostgisVersion)
+  {
+    postgisVersion(connection);
+  }
+
+#ifdef QGISDEBUG
+  std::cout << "QgsPostgresProvider::addFeature: PostGIS version is " 
+            << " major: "  << postgisVersionMajor
+            << ", minor: " << postgisVersionMinor
+            << "." << std::endl;
+#endif
+
+  if (postgisVersionMajor < 1)
+  {
+    useWkbHex = TRUE;
+  }
+
+  // Start the PostGIS transaction
+
   PQexec(connection,"BEGIN");
 
   for(std::map<int, QgsGeometry>::const_iterator iter  = geometry_map.begin();
@@ -1907,36 +1995,57 @@ bool QgsPostgresProvider::changeGeometryValues(std::map<int, QgsGeometry> & geom
     
       QString sql = "UPDATE "+ mSchemaTableName +" SET " + 
                     geometryColumn + "=";
-                    
+
       sql += "GeomFromWKB('";
 
-      //add the wkb geometry to the insert statement
+      // Add the WKB geometry to the UPDATE statement
       unsigned char* geom = iter->second.wkbBuffer();
-      
       for (int i=0; i < iter->second.wkbSize(); ++i)
       {
-        //Postgis 1.0 wants bytea instead of hex
-	QString oct = QString::number((int)geom[i], 8);
-	if(oct.length()==3)
-	{
-	    oct="\\\\"+oct;
-	}
-	else if(oct.length()==1)
-	{
-	    oct="\\\\00"+oct;
-	}
-	else if(oct.length()==2)
-	{
-	    oct="\\\\0"+oct; 
-	}
-        sql += oct;
-      }
-      sql+="::bytea',"+srid+")";
-      sql+=" WHERE " +primaryKey+"="+QString::number(iter->first);
+        if (useWkbHex)
+        {
+          // PostGIS < 1.0 wants hex
+          QString hex = QString::number((int) geom[i], 16).upper();
 
-#ifdef QGISDEBUG
-      qWarning(sql);
-#endif
+          if (hex.length() == 1)
+          {
+            hex = "0" + hex;
+          }
+
+          sql += hex;
+        }
+        else
+        {
+          // Postgis 1.0 wants bytea
+          QString oct = QString::number((int) geom[i], 8);
+
+          if(oct.length()==3)
+          {
+              oct="\\\\"+oct;
+          }
+          else if(oct.length()==1)
+          {
+              oct="\\\\00"+oct;
+          }
+          else if(oct.length()==2)
+          {
+              oct="\\\\0"+oct; 
+          }
+
+          sql += oct;
+        }
+      }
+
+      if (useWkbHex)
+      {
+        sql += "',"+srid+")";
+      }
+      else
+      {
+        sql += "::bytea',"+srid+")";
+      }
+
+      sql += " WHERE " +primaryKey+"="+QString::number(iter->first);
 
 #ifdef QGISDEBUG
       std::cerr << "QgsPostgresProvider::changeGeometryValues: Updating with '"

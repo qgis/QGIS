@@ -500,6 +500,15 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     //! PostGIS version string
     QString postgisVersionInfo;
 
+    //! Are postgisVersionMajor, postgisVersionMinor, geosAvailable, gistAvailable, projAvailable valid?
+    bool gotPostgisVersion;
+
+    //! PostGIS major version
+    int postgisVersionMajor;
+
+    //! PostGIS minor version
+    int postgisVersionMinor;
+
     //! GEOS capability
     bool geosAvailable;
 
