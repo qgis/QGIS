@@ -167,6 +167,9 @@
           <height>30</height>
          </size>
         </property>
+        <property name="toolTip" >
+         <string>No Fill</string>
+        </property>
         <property name="text" >
          <string/>
         </property>
