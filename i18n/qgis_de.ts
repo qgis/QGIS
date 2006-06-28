@@ -83,7 +83,7 @@
     </message>
     <message>
       <source>Regular expressions on numeric values don't make sense. Use comparison insted.</source>
-      <translation type="unfinished" />
+      <translation>Reguläre Ausdrücke bei numerischen Werte machen keinen Sinn. Bitte benutzen Sie Vergleichsoperatoren.</translation>
     </message>
     <message>
       <source>Referenced column wasn't found: </source>
@@ -625,8 +625,7 @@
     </message>
     <message>
       <source>&amp;Open Project...</source>
-      <comment>#, fuzzy</comment>
-      <translation>Öffnen.</translation>
+      <translation>Pr&amp;ojekt öffnen...</translation>
     </message>
     <message>
       <source>Ctrl+O</source>
@@ -635,8 +634,7 @@
     </message>
     <message>
       <source>Open a Project</source>
-      <comment>#, fuzzy</comment>
-      <translation>Öffnen</translation>
+      <translation>Projekt öffnen</translation>
     </message>
     <message>
       <source>&amp;Save Project</source>
@@ -1055,19 +1053,16 @@
     </message>
     <message>
       <source>Ctrl+B</source>
-      <comment>New Bookmark
-#, fuzzy</comment>
-      <translation>B</translation>
+      <comment>New Bookmark</comment>
+      <translation>Ctrl+B</translation>
     </message>
     <message>
       <source>New Bookmark</source>
-      <comment>#, fuzzy</comment>
-      <translation>Neu</translation>
+      <translation>Neues Lesezeichen</translation>
     </message>
     <message>
       <source>Add WMS Layer...</source>
-      <comment>#, fuzzy</comment>
-      <translation>Hinzufügen Ebene.</translation>
+      <translation>WMS Ebene hinzufügen...</translation>
     </message>
     <message>
       <source>W</source>
@@ -1076,22 +1071,20 @@
     </message>
     <message>
       <source>Add Web Mapping Server Layer</source>
-      <comment>#, fuzzy</comment>
-      <translation>Hinzufügen Ebene</translation>
+      <translation>WMS Ebene hinzufügen</translation>
     </message>
     <message>
       <source>In Overview</source>
-      <translation type="unfinished" />
+      <translation>In Übersicht anzeigen</translation>
     </message>
     <message>
       <source>O</source>
       <comment>Add current layer to overview map</comment>
-      <translation type="unfinished" />
+      <translation>O</translation>
     </message>
     <message>
       <source>Add current layer to overview map</source>
-      <comment>#, fuzzy</comment>
-      <translation>Hinzufügen</translation>
+      <translation>Aktuelle Ebene zur Übersicht hinzufügen</translation>
     </message>
     <message>
       <source>Plugin Manager...</source>
@@ -1150,23 +1143,19 @@
     </message>
     <message>
       <source>Delete Seleced</source>
-      <comment>#, fuzzy</comment>
-      <translation>Löschen</translation>
+      <translation>Ausgewähltes löschen</translation>
     </message>
     <message>
       <source>Delete Selected</source>
-      <comment>#, fuzzy</comment>
-      <translation>Ausgewählt</translation>
+      <translation>Ausgewähltes löschen</translation>
     </message>
     <message>
       <source>Add Vertex</source>
-      <comment>#, fuzzy</comment>
-      <translation>Hinzufügen</translation>
+      <translation>Knotenpunkt hinzufügen</translation>
     </message>
     <message>
       <source>Delete Vertex</source>
-      <comment>#, fuzzy</comment>
-      <translation>Löschen</translation>
+      <translation>Knotenpunkt löschen</translation>
     </message>
     <message>
       <source>Move Vertex</source>
@@ -1178,8 +1167,7 @@
     </message>
     <message>
       <source>&amp;Open Recent Projects</source>
-      <comment>#, fuzzy</comment>
-      <translation>Öffnen</translation>
+      <translation>Öffne aktuelle Pr&amp;ojekte</translation>
     </message>
     <message>
       <source>&amp;View</source>
@@ -1203,8 +1191,7 @@
     </message>
     <message>
       <source>Manage Layers</source>
-      <comment>#, fuzzy</comment>
-      <translation>Ebenen</translation>
+      <translation>Ebenen koordinieren</translation>
     </message>
     <message>
       <source>Help</source>
@@ -1212,13 +1199,11 @@
     </message>
     <message>
       <source>Digitizing</source>
-      <comment>#, fuzzy</comment>
       <translation>Digitalisierung</translation>
     </message>
     <message>
       <source>Map Navigation</source>
-      <comment>#, fuzzy</comment>
-      <translation>Karte</translation>
+      <translation>Kartennavigation</translation>
     </message>
     <message>
       <source>Attributes</source>
@@ -1230,13 +1215,11 @@
     </message>
     <message>
       <source>Ready</source>
-      <comment>#, fuzzy</comment>
       <translation>Fertig</translation>
     </message>
     <message>
       <source>New features</source>
-      <comment>#, fuzzy</comment>
-      <translation>Neu Objekte</translation>
+      <translation>Neue Objekte</translation>
     </message>
     <message>
       <source>Unable to open project</source>
@@ -1260,28 +1243,23 @@
     </message>
     <message>
       <source>No Map Layers</source>
-      <comment>#, fuzzy</comment>
-      <translation>Nein Karte Ebenen</translation>
+      <translation>Nein Kartenebenen</translation>
     </message>
     <message>
       <source>No layers to export. You must add at least one layer to the map in order to export the view.</source>
-      <comment>#, fuzzy</comment>
-      <translation>Nein.</translation>
+      <translation>Keine Ebenen zum exportieren. Es muss mindestens eine Ebene im Kartenbild sein, um ein View zu exportieren.</translation>
     </message>
     <message>
       <source>QGIS - Changes in SVN Since Last Release</source>
-      <comment>#, fuzzy</comment>
-      <translation>Freigeben</translation>
+      <translation>QGIS - Änderungen in SVN seit dem letzten Release</translation>
     </message>
     <message>
       <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
-      <comment>#, fuzzy</comment>
-      <translation>Optionen Einstellungen Hilfe.</translation>
+      <translation>Sie können diese Option später ändern, indem Sie Optionen aus dem Einstellungen Menü wählen. (Hilfe-Broweser-Reiter).</translation>
     </message>
     <message>
       <source>Layer is not valid</source>
-      <comment>#, fuzzy</comment>
-      <translation>Ebene</translation>
+      <translation>Ebene ist ungültig</translation>
     </message>
     <message>
       <source>The layer is not a valid layer and can not be added to the map</source>
@@ -1289,7 +1267,6 @@
     </message>
     <message>
       <source>Save?</source>
-      <comment>#, fuzzy</comment>
       <translation>Speichern?</translation>
     </message>
     <message>
@@ -1298,7 +1275,7 @@
     </message>
     <message>
       <source>Clipboard contents set to: </source>
-      <translation type="unfinished" />
+      <translation>Inhalt der Zwischenablage setzen auf: </translation>
     </message>
     <message>
       <source> is not a valid or recognized raster data source</source>
@@ -1326,33 +1303,27 @@
     </message>
     <message>
       <source>Cut Features</source>
-      <comment>#, fuzzy</comment>
-      <translation>Eigenschaften</translation>
+      <translation>Schneide selektierte Objekte aus</translation>
     </message>
     <message>
       <source>Cut selected features</source>
-      <comment>#, fuzzy</comment>
-      <translation>Objekte</translation>
+      <translation>Schneide selektierte Objekte aus</translation>
     </message>
     <message>
       <source>Copy Features</source>
-      <comment>#, fuzzy</comment>
-      <translation>Eigenschaften</translation>
+      <translation>Kopiere Objekte</translation>
     </message>
     <message>
       <source>Copy selected features</source>
-      <comment>#, fuzzy</comment>
-      <translation>Objekte</translation>
+      <translation>Kopiere selektierte Objekte</translation>
     </message>
     <message>
       <source>Paste Features</source>
-      <comment>#, fuzzy</comment>
-      <translation>Eigenschaften</translation>
+      <translation>Füge Objekte ein</translation>
     </message>
     <message>
       <source>Paste selected features</source>
-      <comment>#, fuzzy</comment>
-      <translation>Objekte</translation>
+      <translation>Füge selektierte Objekte ein</translation>
     </message>
   </context>
   <context>
@@ -1367,8 +1338,7 @@
     </message>
     <message>
       <source>Map View</source>
-      <comment>#, fuzzy</comment>
-      <translation>Karte</translation>
+      <translation>Kartenansicht</translation>
     </message>
   </context>
   <context>
@@ -1419,8 +1389,7 @@
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Arial; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p align='center' style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Sans Serif; font-size:9pt;&quot;>Quantum GIS is licensed under the GNU General Public License&lt;/p>&lt;p align='center' style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Sans Serif; font-size:9pt;&quot;>http://www.gnu.org/licenses&lt;/p>&lt;/body>&lt;/html></source>
-      <comment>#, fuzzy</comment>
-      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Arial; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p align='center' style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Sans Serif; font-size:9pt;&quot;> Allgemein&lt;/p>&lt;p align='center' style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Sans Serif; font-size:9pt;&quot;>http://www.gnu.org/licenses&lt;/p>&lt;/body>&lt;/html></translation>
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Arial; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p align='center' style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Sans Serif; font-size:9pt;&quot;>Quantum GIS ist lizensiert unter der GNU General Public License&lt;/p>&lt;p align='center' style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Sans Serif; font-size:9pt;&quot;>http://www.gnu.org/licenses&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
   </context>
   <context>
@@ -1584,8 +1553,7 @@
     <name>QgsAttributeTable</name>
     <message>
       <source>Run action</source>
-      <comment>#, fuzzy</comment>
-      <translation>Los Aktion</translation>
+      <translation>Aktion starten</translation>
     </message>
   </context>
   <context>
@@ -1604,7 +1572,6 @@
     </message>
     <message>
       <source>Alt+C</source>
-      <comment>#, fuzzy</comment>
       <translation>Alt+C</translation>
     </message>
     <message>
@@ -1617,7 +1584,6 @@
     </message>
     <message>
       <source>Ctrl+N</source>
-      <comment>#, fuzzy</comment>
       <translation>Ctrl+N</translation>
     </message>
     <message>
@@ -1626,7 +1592,6 @@
     </message>
     <message>
       <source>Ctrl+S</source>
-      <comment>#, fuzzy</comment>
       <translation>Ctrl+S</translation>
     </message>
     <message>
@@ -1659,8 +1624,7 @@
     </message>
     <message>
       <source>Stop editin&amp;g</source>
-      <comment>#, fuzzy</comment>
-      <translation>Stop</translation>
+      <translation>Bearbeitun&amp;g stoppen</translation>
     </message>
     <message>
       <source>Alt+G</source>
@@ -1668,8 +1632,7 @@
     </message>
     <message>
       <source>Search for:</source>
-      <comment>#, fuzzy</comment>
-      <translation>Suchen:</translation>
+      <translation>Suchen nach:</translation>
     </message>
     <message>
       <source>in</source>
@@ -1685,8 +1648,7 @@
     </message>
     <message>
       <source>Alt+N</source>
-      <comment>#, fuzzy</comment>
-      <translation>N</translation>
+      <translation>Alt+N</translation>
     </message>
   </context>
   <context>
@@ -1705,13 +1667,11 @@
     </message>
     <message>
       <source>Search string parsing error</source>
-      <comment>#, fuzzy</comment>
       <translation>Fehler im Suchstring.</translation>
     </message>
     <message>
       <source>Search results</source>
-      <comment>#, fuzzy</comment>
-      <translation>Suchergebnisse:</translation>
+      <translation>Suchergebnisse</translation>
     </message>
     <message>
       <source>You've supplied an empty search string.</source>
@@ -1719,17 +1679,14 @@
     </message>
     <message>
       <source>Error during search</source>
-      <comment>#, fuzzy</comment>
-      <translation>Fehler</translation>
+      <translation>Fehler beim Suchen</translation>
     </message>
     <message>
       <source>Found %d matching features.</source>
-      <comment>#, fuzzy</comment>
       <translation>%d Objekte gefunden.</translation>
     </message>
     <message>
       <source>No matching features found.</source>
-      <comment>#, fuzzy</comment>
       <translation>Keine Treffer gefunden.</translation>
     </message>
   </context>
@@ -1776,7 +1733,6 @@
     </message>
     <message>
       <source>Id</source>
-      <comment>#, fuzzy</comment>
       <translation>Id</translation>
     </message>
     <message>
@@ -1832,27 +1788,27 @@
     </message>
     <message>
       <source>Cannot seek</source>
-      <translation type="unfinished" />
+      <translation>Kann nicht suchen</translation>
     </message>
     <message>
       <source>Cannot overwrite BoundingBox</source>
-      <translation type="unfinished" />
+      <translation>Kann die BoundingBox nicht überschreiben</translation>
     </message>
     <message>
       <source>Cannot find BoundingBox</source>
-      <translation type="unfinished" />
+      <translation>Kann die BoundingBox nicht finden.</translation>
     </message>
     <message>
       <source>Cannot format translate</source>
-      <translation type="unfinished" />
+      <translation>Kann das Format nicht übersetzen.</translation>
     </message>
     <message>
       <source>Cannot overwrite translate</source>
-      <translation type="unfinished" />
+      <translation>Kann das Format nicht überschreiben.</translation>
     </message>
     <message>
       <source>Cannot find translate</source>
-      <translation type="unfinished" />
+      <translation>Kann Übersetzung nicht finden.</translation>
     </message>
     <message>
       <source>File IO Error</source>
@@ -1860,8 +1816,7 @@
     </message>
     <message>
       <source>Paper does not match</source>
-      <comment>#, fuzzy</comment>
-      <translation>Papier</translation>
+      <translation>Papier passt nicht</translation>
     </message>
     <message>
       <source>The selected paper size does not match the composition size</source>
@@ -1948,8 +1903,7 @@
     </message>
     <message>
       <source>Zoom All</source>
-      <comment>#, fuzzy</comment>
-      <translation>Alle</translation>
+      <translation>Auf Alles zoomen</translation>
     </message>
     <message>
       <source>Zoom In</source>
@@ -1961,8 +1915,7 @@
     </message>
     <message>
       <source>Add Image</source>
-      <comment>#, fuzzy</comment>
-      <translation>Hinzufügen</translation>
+      <translation>Bild hinzufügen</translation>
     </message>
   </context>
   <context>
@@ -2074,7 +2027,6 @@
     <name>QgsComposerPicture</name>
     <message>
       <source>Warning</source>
-      <comment>#, fuzzy</comment>
       <translation>Warnung</translation>
     </message>
     <message>
@@ -2090,8 +2042,7 @@
     <name>QgsComposerPictureBase</name>
     <message>
       <source>Picture Options</source>
-      <comment>#, fuzzy</comment>
-      <translation>Optionen</translation>
+      <translation>Bild-Optionen</translation>
     </message>
     <message>
       <source>Picture</source>
@@ -2263,7 +2214,7 @@
     </message>
     <message>
       <source>B0 (1000 x 1414 mm)</source>
-      <translation type="unfinished" />
+      <translation>B0 (1000 x 1414 mm)</translation>
     </message>
     <message>
       <source>Letter (8.5x11 inches)</source>
@@ -2271,8 +2222,7 @@
     </message>
     <message>
       <source>Legal (8.5x14 inches)</source>
-      <comment>#, fuzzy</comment>
-      <translation>Inch</translation>
+      <translation>Legal (8.5x14 inches)</translation>
     </message>
     <message>
       <source>Portrait</source>
@@ -2298,7 +2248,6 @@
     </message>
     <message>
       <source>Warning</source>
-      <comment>#, fuzzy</comment>
       <translation>Warnung</translation>
     </message>
     <message>
@@ -2363,8 +2312,7 @@
       <source>General Interface Help:
 
 </source>
-      <comment>#, fuzzy</comment>
-      <translation>Allgemein:</translation>
+      <translation>Allgemeine Hilfe:</translation>
     </message>
   </context>
   <context>
@@ -2450,7 +2398,6 @@
     </message>
     <message>
       <source>Outline Width:</source>
-      <comment>#, fuzzy</comment>
       <translation>Umrandungsbreite:</translation>
     </message>
     <message>
@@ -2497,8 +2444,7 @@
     </message>
     <message>
       <source>&amp;Copyright Label</source>
-      <comment>#, fuzzy</comment>
-      <translation>Bes&amp;chriftung</translation>
+      <translation>&amp;Copyright Label</translation>
     </message>
     <message>
       <source>Creates a copyright label that is displayed on the map canvas.</source>
@@ -2506,7 +2452,7 @@
     </message>
     <message>
       <source>&amp;Decorations</source>
-      <translation type="unfinished" />
+      <translation>&amp;Dekorationen</translation>
     </message>
   </context>
   <context>
@@ -2569,16 +2515,15 @@
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt;&quot;>Description&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600;&quot;>&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;>&lt;span style=&quot; font-weight:400; font-style:italic;&quot;>&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-style:italic;&quot;>&lt;span style=&quot; font-style:normal;&quot;>(note: &amp;amp;copy; gives a copyright symbol)&lt;/span>&lt;/p>&lt;/body>&lt;/html></source>
-      <comment>#, fuzzy</comment>
-      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt;&quot;> Beschreibung&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600;&quot;>&amp;lt; B&amp;gt;&amp;lt; B&amp;gt;&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;>&lt;span style=&quot; font-weight:400; font-style:italic;&quot;>&amp;lt; I&amp;gt;&amp;lt; I&amp;gt;&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-style:italic;&quot;>&lt;span style=&quot; font-style:normal;&quot;>&amp;amp;&lt;/span>&lt;/p>&lt;/body>&lt;/html></translation>
-    </message>
-    <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:14pt;&quot;>© QGIS 2006&lt;/span>&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" />
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt;&quot;>Beschreibung&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Geben Sie Ihr Copyright-Label unten ein. Dieses Plugin unterstützt einfaches HTML, um die Label zu formatieren. Zum Beispiel:&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600;&quot;>&amp;lt;B&amp;gt;Fetter Text &amp;lt;/B&amp;gt; &lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;>&lt;span style=&quot; font-weight:400; font-style:italic;&quot;>&amp;lt;I&amp;gt; Kursiv&amp;lt;/I&amp;gt;&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-style:italic;&quot;>&lt;span style=&quot; font-style:normal;&quot;>(Merke: &amp;amp;copy; erzeugt ein Cpyright Symbol)&lt;/span>&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
     <message>
       <source>Help</source>
       <translation>Hilfe</translation>
+    </message>
+    <message>
+      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:14pt;&quot;>© QGIS 2006&lt;/span>&lt;/p>&lt;/body>&lt;/html></source>
+      <translation type="unfinished" />
     </message>
   </context>
   <context>
@@ -2633,8 +2578,7 @@
     </message>
     <message>
       <source>Internal Error (source projection invalid?)</source>
-      <comment>#, fuzzy</comment>
-      <translation>Fehler</translation>
+      <translation>Interner Fehler (Quellprojektion ungültig?)</translation>
     </message>
   </context>
   <context>
@@ -2725,8 +2669,7 @@
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;>Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.&lt;/p>&lt;/body>&lt;/html></source>
-      <comment>#, fuzzy</comment>
-      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;> Resultat&lt;/p>&lt;/body>&lt;/html></translation>
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;>Benutzen Sie die Textboxen hierunter                         um Ihre Projektionsdefinition zu testen. Geben Sie eine Koordinate ein, von der der Lat/Long Wert und der transformierte Wert bekannt sind. (Beispielweise durch ablesen auf der Karte) Dann drücken Sie den 'Berechnen' Knopf und überprüfen Sie die Genauigkeit des  Ergebnisses.&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
   </context>
   <context>
@@ -2800,8 +2743,7 @@ has failed. The database said:
     </message>
     <message>
       <source>Point layer</source>
-      <comment>#, fuzzy</comment>
-      <translation>Punkt</translation>
+      <translation>Punktebene</translation>
     </message>
     <message>
       <source>Multi-point layer</source>
@@ -2817,8 +2759,7 @@ has failed. The database said:
     </message>
     <message>
       <source>Polygon layer</source>
-      <comment>#, fuzzy</comment>
-      <translation>Polygon</translation>
+      <translation>Polygonebene</translation>
     </message>
     <message>
       <source>Multi-polygon layer</source>
@@ -2927,13 +2868,11 @@ has failed. The database said:
     <name>QgsDelimitedTextPlugin</name>
     <message>
       <source>&amp;Add Delimited Text Layer</source>
-      <comment>#, fuzzy</comment>
-      <translation>Hinzufügen Ebene</translation>
+      <translation>Hinzufügen einer getrennten Textdatei</translation>
     </message>
     <message>
       <source>Add a delimited text file as a map layer. </source>
-      <comment>#, fuzzy</comment>
-      <translation>Hinzufügen </translation>
+      <translation>Füge eine getrennte Textdatei als Ebene der Karte hinzu.</translation>
     </message>
     <message>
       <source>The file must have a header row containing the field names. </source>
@@ -3249,13 +3188,11 @@ has failed. The database said:
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Double click the Column Name column to change the name of the column.&lt;/p>&lt;/body>&lt;/html></source>
-      <comment>#, fuzzy</comment>
-      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;> Name&lt;/p>&lt;/body>&lt;/html></translation>
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Doppelklicken SIe auf den Spaltennamen, um ihn zu ändern.&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
     <message>
       <source>Column Name</source>
-      <comment>#, fuzzy</comment>
-      <translation>Name</translation>
+      <translation>Spaltenname</translation>
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>This shapefile contains reserved words. These may affect the import into PostgreSQL. Edit the column names so none of the reserved words listed at the right are used (click on a Column Name entry to edit). You may also change any other column name if desired.&lt;/p>&lt;/body>&lt;/html></source>
@@ -3270,8 +3207,7 @@ has failed. The database said:
     </message>
     <message>
       <source>Column Name</source>
-      <comment>#, fuzzy</comment>
-      <translation>Name</translation>
+      <translation>Spaltenname</translation>
     </message>
     <message>
       <source>Index</source>
@@ -3305,7 +3241,7 @@ has failed. The database said:
     </message>
     <message>
       <source>col</source>
-      <translation type="unfinished" />
+      <translation>col</translation>
     </message>
   </context>
   <context>
@@ -3407,20 +3343,18 @@ has failed. The database said:
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;span style=&quot; font-style:italic;&quot;>%babel&lt;/span> - the path to GPSBabel&lt;br />&lt;span style=&quot; font-style:italic;&quot;>%in&lt;/span> - the GPX filename when uploading or the port when downloading&lt;br />&lt;span style=&quot; font-style:italic;&quot;>%out&lt;/span> - the port when uploading or the GPX filename when downloading&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" />
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Im Upload- und Download-Kommando können speizielle Wörter verwendet werden, die durch QGIS bei der Ausführung der Kommandos ersetzt werden. Die Wörter sind:&lt;span style=&quot; font-style:italic;&quot;>%babel&lt;/span> - Pfad zur GPSBabel&lt;br />&lt;span style=&quot; font-style:italic;&quot;>%in&lt;/span> - Die GPX-Datei zum Hochladen oder den Port fürs Downloaden.&lt;br />&lt;span style=&quot; font-style:italic;&quot;>%out&lt;/span> - den Port fürs Hochladen oder die GPX-Datei zum Downloaden.&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
   </context>
   <context>
     <name>QgsGPSPlugin</name>
     <message>
       <source>&amp;Gps Tools</source>
-      <comment>#, fuzzy</comment>
-      <translation>Werkzeu&amp;ge</translation>
+      <translation>&amp;GPS Werkzeuge</translation>
     </message>
     <message>
       <source>&amp;Create new GPX layer</source>
-      <comment>#, fuzzy</comment>
-      <translation>Erstellen</translation>
+      <translation>Erstelle neue GPX Ebene</translation>
     </message>
     <message>
       <source>Creates a new GPX layer and displays it on the map canvas</source>
@@ -3432,8 +3366,7 @@ has failed. The database said:
     </message>
     <message>
       <source>Save new GPX file as...</source>
-      <comment>#, fuzzy</comment>
-      <translation>Speichern.</translation>
+      <translation>Speicher neue GPX-Datei als...</translation>
     </message>
     <message>
       <source>GPS eXchange file (*.gpx)</source>
@@ -3492,8 +3425,7 @@ has failed. The database said:
     </message>
     <message>
       <source>Error importing data</source>
-      <comment>#, fuzzy</comment>
-      <translation>Fehler</translation>
+      <translation>Fehler beim Importieren der Daten</translation>
     </message>
     <message>
       <source>Not supported</source>
@@ -3519,8 +3451,7 @@ has failed. The database said:
     </message>
     <message>
       <source>Error downloading data</source>
-      <comment>#, fuzzy</comment>
-      <translation>Fehler</translation>
+      <translation>Fehler beim Herunterladen der Daten</translation>
     </message>
     <message>
       <source>This device does not support uploading of </source>
@@ -3534,13 +3465,11 @@ has failed. The database said:
       <source>Error while uploading data to GPS!
 
 </source>
-      <comment>#, fuzzy</comment>
-      <translation>Fehler!</translation>
+      <translation>Fehler beim Hochladen der Daten ins GPS!</translation>
     </message>
     <message>
       <source>Error uploading data</source>
-      <comment>#, fuzzy</comment>
-      <translation>Fehler</translation>
+      <translation>Fehler beim Hochladen der Daten</translation>
     </message>
   </context>
   <context>
@@ -3662,20 +3591,19 @@ has failed. The database said:
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>GPX is the &lt;/span>&lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;>&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;>GPS eXchange file format&lt;/span>&lt;/a>&lt;span style=&quot; font-size:10pt;&quot;>, which is used to store information about waypoints, routes, and tracks.&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;>Select a GPX file and then select the feature types that you want to load.&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" />
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>GPX ist das &lt;/span>&lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;>&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;>GPS eXchange Dateiformat&lt;/span>&lt;/a>&lt;span style=&quot; font-size:10pt;&quot;>, welches zum Speichern von Informationen über Wegpunkte (waypoints), Routen (routes), und Tracks (tracks) benutzt wird.&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;>Selektieren Sie eine GPX-Datei und wählen Sie danach den Objekt-Typ, den SIe laden wollen.&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>QGIS can only load GPX files by itself, but many other formats can be converted to GPX using GPSBabel (&lt;/span>&lt;a href=&quot;http://gpsbabel.sf.net&quot;>&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;>http://gpsbabel.sf.net&lt;/span>&lt;/a>&lt;span style=&quot; font-size:10pt;&quot;>). This requires that you have GPSBabel installed where QGIS can find it.&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;>Select a GPS file format and the file that you want to import, the feature type that you want to use, a GPX filename that you want to save the converted file as, and a name for the new layer. All file formats can not store waypoints, routes, and tracks, so some feature types may be disabled for some file formats.&lt;/p>&lt;/body>&lt;/html></source>
-      <comment>#, fuzzy</comment>
-      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>&lt;/span>&lt;a href=&quot;http://gpsbabel.sf.net&quot;>&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;>http://gpsbabel.sf.net&lt;/span>&lt;/a>&lt;span style=&quot; font-size:10pt;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;> Alle&lt;/p>&lt;/body>&lt;/html></translation>
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>QGIS kann nur GPX-Dateien laden, aber viele andere Formate können mit GPSBabel (&lt;/span>&lt;a href=&quot;http://gpsbabel.sf.net&quot;>&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;>http://gpsbabel.sf.net&lt;/span>&lt;/a>&lt;span style=&quot; font-size:10pt;&quot;>) in das GPX Format konvertiert werden. Das setzt natürlich voraus, dass Sie GPSBabel installiert und für QGIS auffindbar abgelegt haben.&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;>Wählen Sie ein GPS Dateiformat und eine Datei, die Sie importieren wollen, die Objekt-Typen, einen GPX-Dateinamen, in dem Sie die konvertierten Daten speichern wollen und einen Namen für die neue Ebene aus. Einige Objekttypen werden nicht von allen Formaten unterstützt. Daher kann es sein, dass einige Typen bei einigen Dateiformaten ausgeschaltet sind.&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>This tool will help you download data from a GPS device. Choose your GPS device, the port it is connected to, the feature type you want to download, a name for your new layer, and the GPX file where you want to store the data. If your device isn't listed, or if you want to change some settings, you can also edit the devices.&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;>This tool uses the program GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;>&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;>http://gpsbabel.sf.net&lt;/span>&lt;/a>) to transfer the data. If you don't have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" />
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>Dieses Werkzeug hilft Ihnen, Daten von Ihrem GPS-Empfänger zu laden. Wählen Sie Ihr GPS-Gerät, den Port, an dem es angeschlossen ist, den Objekt-Typ, den Sie herunterladen wollen, einen Namen für die neue Ebene und die GPX-Datei, in der die Daten gespeichert werden sollen. Wenn Ihr Gerät nicht aufgelistet wird, können Sie das Gerät editieren.&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;>Dieses Werkzeug benutzt das Programm GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;>&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;>http://gpsbabel.sf.net&lt;/span>&lt;/a>) um die Daten zu transferieren. Wenn Sie GPS-Babel nicht installiert haben oder QGIS es nicht finden kann, wird dieses Werkzeug leider nicht funktionieren.&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>This tool will help you upload data from a GPX layer to a GPS device. Choose the layer you want to upload, the device you want to upload it to, and the port your device is connected to. If your device isn't listed, or if you want to change some settings, you can also edit the devices.&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;>This tool uses the program GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;>&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;>http://gpsbabel.sf.net&lt;/span>&lt;/a>) to transfer the data. If you don't have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" />
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>Dieses Werkzeug hilft Ihnen, Daten von Ihrem GPS-Empfänger zu laden. Wählen Sie Ihr GPS-Gerät, den Port, an dem es angeschlossen ist, den Objekt-Typ, den Sie herunterladen wollen, einen Namen für die neue Ebene und die GPX-Datei, in der die Daten gespeichert werden sollen. Wenn Ihr Gerät nicht aufgelistet wird, können Sie das Gerät editieren.&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;>Dieses Werkzeug benutzt das Programm GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;>&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;>http://gpsbabel.sf.net&lt;/span>&lt;/a>) um die Daten zu transferieren. Wenn Sie GPS-Babel nicht installiert haben oder QGIS es nicht finden kann, wird dieses Werkzeug leider nicht funktionieren.&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
   </context>
   <context>
@@ -3741,15 +3669,13 @@ has failed. The database said:
     </message>
     <message>
       <source>File Format:</source>
-      <comment>#, fuzzy</comment>
-      <translation>Datei:</translation>
+      <translation>Dateiformat:</translation>
     </message>
   </context>
   <context>
     <name>QgsGeorefPlugin</name>
     <message>
       <source>&amp;Georeferencer</source>
-      <comment>#, fuzzy</comment>
       <translation>&amp;Georeferenzierer</translation>
     </message>
   </context>
@@ -3812,8 +3738,11 @@ has failed. The database said:
 &lt;p dir=&quot;ltr&quot;>This plugin can generate world files for rasters. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p>
 &lt;/body>&lt;/html>
 </source>
-      <comment>#, fuzzy</comment>
-      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot;font-size:11pt;font-family:Tahoma&quot;>&lt;p style=&quot;margin-top:16px&quot; dir=&quot;ltr&quot;>&lt;span style=&quot;font-size:14pt;font-weight:600&quot;> Beschreibung&lt;/span>&lt;/p>&lt;p dir=&quot;ltr&quot;> Resultat&lt;/p>&lt;/body>&lt;/html></translation>
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot;font-size:11pt;font-family:Tahoma&quot;>
+&lt;p style=&quot;margin-top:16px&quot; dir=&quot;ltr&quot;>&lt;span style=&quot;font-size:14pt;font-weight:600&quot;>Beschreibung&lt;/span>&lt;/p>
+&lt;p dir=&quot;ltr&quot;>Dieses Plugin erzeugt Georeferenzinformationen (Worldfile) für Rasterdaten. Es werden Punkte auf der Karte mit Weltkoordinaten versehen und das Plugin wird die benötigten Parameter für das Worldfile erzeugen. Je mehr Koordinaten Sie zuweisen, desto besser wird das Resultat sein.&lt;/p>
+&lt;/body>&lt;/html>
+</translation>
     </message>
   </context>
   <context>
@@ -3913,8 +3842,7 @@ has failed. The database said:
     </message>
     <message>
       <source>Add selected map to canvas</source>
-      <comment>#, fuzzy</comment>
-      <translation>Hinzufügen</translation>
+      <translation>Füge ausgewählte Ebene der Karte hinzu</translation>
     </message>
     <message>
       <source>Copy selected map</source>
@@ -3965,8 +3893,7 @@ has failed. The database said:
     </message>
     <message>
       <source>Edit tools</source>
-      <comment>#, fuzzy</comment>
-      <translation>Bearbeiten</translation>
+      <translation>Digitalisierwerkzeuge</translation>
     </message>
     <message>
       <source>New line</source>
@@ -3994,8 +3921,7 @@ has failed. The database said:
     </message>
     <message>
       <source>Delete element</source>
-      <comment>#, fuzzy</comment>
-      <translation>Löschen</translation>
+      <translation>Element löschen</translation>
     </message>
     <message>
       <source>Edit attributes</source>
@@ -4003,7 +3929,6 @@ has failed. The database said:
     </message>
     <message>
       <source>Close</source>
-      <comment>#, fuzzy</comment>
       <translation>Schliessen</translation>
     </message>
   </context>
@@ -4070,23 +3995,19 @@ has failed. The database said:
     </message>
     <message>
       <source>Add map</source>
-      <comment>#, fuzzy</comment>
-      <translation>Hinzufügen</translation>
+      <translation>Karte hinzufügen</translation>
     </message>
     <message>
       <source>Add constant value</source>
-      <comment>#, fuzzy</comment>
-      <translation>Hinzufügen</translation>
+      <translation>Konstanten Wert hinzufügen</translation>
     </message>
     <message>
       <source>Add operator or function</source>
-      <comment>#, fuzzy</comment>
-      <translation>Hinzufügen</translation>
+      <translation>Operator oder Funktion hinzufügen</translation>
     </message>
     <message>
       <source>Add connection</source>
-      <comment>#, fuzzy</comment>
-      <translation>Hinzufügen</translation>
+      <translation>Verbindung hinzufügen</translation>
     </message>
     <message>
       <source>Select item</source>
@@ -4106,8 +4027,7 @@ has failed. The database said:
     </message>
     <message>
       <source>Save as</source>
-      <comment>#, fuzzy</comment>
-      <translation>Speichern</translation>
+      <translation>Speichern unter</translation>
     </message>
   </context>
   <context>
@@ -4175,16 +4095,14 @@ has failed. The database said:
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>GRASS data are stored in tree directory structure.&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>The GRASS database is the top-level directory in this tree structure.&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" />
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>GRASS-Daten werden in einer Baumstruktur abgespeichert. &lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Die GRASS-Datenbank ist die oberste Ordnerebene in dieser Baumstruktur.&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
     <message>
       <source>Database Error</source>
-      <comment>#, fuzzy</comment>
       <translation>Datenbank Fehler</translation>
     </message>
     <message>
       <source>Database:</source>
-      <comment>#, fuzzy</comment>
       <translation>Datenbank:</translation>
     </message>
     <message>
@@ -4205,22 +4123,19 @@ has failed. The database said:
     </message>
     <message>
       <source>Create new location</source>
-      <comment>#, fuzzy</comment>
-      <translation>Erstellen</translation>
+      <translation>Erstelle neue Location</translation>
     </message>
     <message>
       <source>Location Error</source>
-      <comment>#, fuzzy</comment>
-      <translation>Ort Fehler</translation>
+      <translation>Location Fehler</translation>
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>The GRASS location is a collection of maps for a particular territory or project.&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" />
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Die GRASS Location ist eine Ansammlung von Karten mit gleicher Projektion und für ein bestimmtes Gebiet.&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
     <message>
       <source>Projection Error</source>
-      <comment>#, fuzzy</comment>
-      <translation>Projektion Fehler</translation>
+      <translation>Projektionsfehler</translation>
     </message>
     <message>
       <source>Coordinate system</source>
@@ -4236,12 +4151,11 @@ has failed. The database said:
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>The GRASS region defines a workspace for raster modules. The default region is valid for one location. It is possible to set a different region in each mapset. &lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>It is possible to change the default location region later.&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" />
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Die GRASS Region definiert eine BoundingBox für GRASS Rastermodule. Die Standard-Region (default region) gilt für jeweils eine Location. Es ist möglich, unterschiedliche Regionen für jedes Mapset zu setzen.&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Die Standard Region für die Location kann jederzeit später verändert werden.&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
     <message>
       <source>Set current QGIS extent</source>
-      <comment>#, fuzzy</comment>
-      <translation>Setzen</translation>
+      <translation>Setze aktuelle QGIS Ausdehnung</translation>
     </message>
     <message>
       <source>Set</source>
@@ -4249,12 +4163,10 @@ has failed. The database said:
     </message>
     <message>
       <source>Region Error</source>
-      <comment>#, fuzzy</comment>
-      <translation>Fehler</translation>
+      <translation>Region Fehler</translation>
     </message>
     <message>
       <source>S</source>
-      <comment>#, fuzzy</comment>
       <translation>S</translation>
     </message>
     <message>
@@ -4271,13 +4183,11 @@ has failed. The database said:
     </message>
     <message>
       <source>New mapset:</source>
-      <comment>#, fuzzy</comment>
-      <translation>Neu:</translation>
+      <translation>Neues Mapset:</translation>
     </message>
     <message>
       <source>Mapset Error</source>
-      <comment>#, fuzzy</comment>
-      <translation>Kartenset Fehler</translation>
+      <translation>Mapset Fehler</translation>
     </message>
     <message>
       <source>&lt;p align=&quot;center&quot;>Existing masets&lt;/p></source>
@@ -4285,17 +4195,15 @@ has failed. The database said:
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>The GRASS mapset is a collection of maps used by one user. &lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>A user can read maps from all mapsets in the location but &lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>he can open for writing only his mapset (owned by user).&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" />
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Das GRASS Mapset ist eine Ansammlung von Karten, die von einem Benutzer verwendet werden.&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Ein Benutzer kann alle Karten in allen Mapset innerhalb einer Location lesen, aber &lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;> er kann nur in seinem zum Schreiben geöffneten Mapset neue Karten ablegen. (Es muss ihm gehören).&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
     <message>
       <source>Location:</source>
-      <comment>#, fuzzy</comment>
-      <translation>Ort:</translation>
+      <translation>Location:</translation>
     </message>
     <message>
       <source>Mapset:</source>
-      <comment>#, fuzzy</comment>
-      <translation>Kartenset:</translation>
+      <translation>Mapset:</translation>
     </message>
   </context>
   <context>
@@ -4310,33 +4218,27 @@ has failed. The database said:
     </message>
     <message>
       <source>Open mapset</source>
-      <comment>#, fuzzy</comment>
-      <translation>Öffnen</translation>
+      <translation>Öffne Mapset</translation>
     </message>
     <message>
       <source>New mapset</source>
-      <comment>#, fuzzy</comment>
-      <translation>Neu</translation>
+      <translation>Neues Mapset</translation>
     </message>
     <message>
       <source>Close mapset</source>
-      <comment>#, fuzzy</comment>
-      <translation>Schliessen</translation>
+      <translation>Schliesse Mapset</translation>
     </message>
     <message>
       <source>Add GRASS vector layer</source>
-      <comment>#, fuzzy</comment>
-      <translation>Hinzufügen</translation>
+      <translation>Füge GRASS Vektorebene hinzu</translation>
     </message>
     <message>
       <source>Add GRASS raster layer</source>
-      <comment>#, fuzzy</comment>
-      <translation>Hinzufügen</translation>
+      <translation>Füge GRASS Rasterebene hinzu</translation>
     </message>
     <message>
       <source>Open GRASS tools</source>
-      <comment>#, fuzzy</comment>
-      <translation>Öffnen</translation>
+      <translation>Öffne GRASS Toolbox</translation>
     </message>
     <message>
       <source>Display Current Grass Region</source>
@@ -4344,13 +4246,11 @@ has failed. The database said:
     </message>
     <message>
       <source>Edit Current Grass Region</source>
-      <comment>#, fuzzy</comment>
-      <translation>Bearbeiten</translation>
+      <translation>Bearbeite aktuelle GRASS Region</translation>
     </message>
     <message>
       <source>Edit Grass Vector layer</source>
-      <comment>#, fuzzy</comment>
-      <translation>Bearbeiten</translation>
+      <translation>Bearbeite GRASS Vektorebene</translation>
     </message>
     <message>
       <source>Adds a GRASS vector layer to the map canvas</source>
@@ -4475,14 +4375,14 @@ has failed. The database said:
     <name>QgsGrassShellBase</name>
     <message>
       <source>GRASS Shell</source>
-      <translation type="unfinished" />
+      <translation>GRASS Kommandozeile</translation>
     </message>
   </context>
   <context>
     <name>QgsGridMakerPlugin</name>
     <message>
       <source>&amp;Graticule Creator</source>
-      <translation type="unfinished" />
+      <translation>Koordinatenlininen &amp;Generator</translation>
     </message>
     <message>
       <source>Creates a graticule (grid) and stores the result as a shapefile</source>
@@ -4490,14 +4390,14 @@ has failed. The database said:
     </message>
     <message>
       <source>&amp;Graticules</source>
-      <translation type="unfinished" />
+      <translation>&amp;Geographisches Netz</translation>
     </message>
   </context>
   <context>
     <name>QgsGridMakerPluginGui</name>
     <message>
       <source>QGIS - Grid Maker</source>
-      <translation type="unfinished" />
+      <translation>QGIS - Grid Maker</translation>
     </message>
     <message>
       <source>Please enter the file name before pressing OK!.</source>
@@ -4513,29 +4413,27 @@ has failed. The database said:
     </message>
     <message>
       <source>Longitude Origin is invalid - please correct and try again..</source>
-      <translation type="unfinished" />
+      <translation>Längenursprung ist ungültig. Bitte korrigieren und erneut probieren.</translation>
     </message>
     <message>
       <source>Latitude Origin is invalid - please correct and try again.</source>
-      <translation type="unfinished" />
+      <translation>Breitenursprung ist ungültig. Bitte korrigieren und erneut probieren.</translation>
     </message>
     <message>
       <source>End Point Longitude is invalid - please correct and try again.</source>
-      <comment>#, fuzzy</comment>
-      <translation>Punkt.</translation>
+      <translation>Endpunkt (Longitude) ist ungültig. Bitte korrigieren und erneut probieren.</translation>
     </message>
     <message>
       <source>End Point Latitude is invalid - please correct and try again.</source>
-      <comment>#, fuzzy</comment>
-      <translation>Punkt.</translation>
+      <translation>Endpunkt (Latitide) ist ungültig. Bitte korrigieren und erneut probieren.</translation>
     </message>
     <message>
       <source>Choose a filename to save under</source>
-      <translation type="unfinished" />
+      <translation>Wählen Sie einen Dateinamen zum Speichern.</translation>
     </message>
     <message>
       <source>ESRI Shapefile (*.shp)</source>
-      <translation type="unfinished" />
+      <translation>ESRI Shapefile (*.shp)</translation>
     </message>
   </context>
   <context>
@@ -4550,7 +4448,6 @@ has failed. The database said:
     </message>
     <message>
       <source>Alt+O</source>
-      <comment>#, fuzzy</comment>
       <translation>Alt+O</translation>
     </message>
     <message>
@@ -4559,7 +4456,6 @@ has failed. The database said:
     </message>
     <message>
       <source>Alt+C</source>
-      <comment>#, fuzzy</comment>
       <translation>Alt+C</translation>
     </message>
     <message>
@@ -4568,7 +4464,7 @@ has failed. The database said:
     </message>
     <message>
       <source>#000.00000; </source>
-      <translation type="unfinished" />
+      <translation>#000.00000; </translation>
     </message>
     <message>
       <source>Latitude:</source>
@@ -4592,7 +4488,7 @@ has failed. The database said:
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:11pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;>Please enter all units in decimal degrees&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" />
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:11pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>Dieses Plugin hilft Ihnen beim Erstellen eines Kartengitters, welches als Shapefile gespeichert und dann als Ebene über die Karte gelegt werden kann.&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;>Bitte geben Sie alle Einheiten in dezimalen Gradangaben ein.&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
     <message>
       <source>Type</source>
@@ -4612,20 +4508,19 @@ has failed. The database said:
     </message>
     <message>
       <source>Origin (lower left)</source>
-      <translation type="unfinished" />
+      <translation>Ursprung (links unten)</translation>
     </message>
     <message>
       <source>End point (upper right)</source>
-      <translation type="unfinished" />
+      <translation>Endpunkt (rechts oben)</translation>
     </message>
     <message>
       <source>Graticle size (units in degrees)</source>
-      <translation type="unfinished" />
+      <translation>Größe der Kästchen (Einheiten in Grad)</translation>
     </message>
     <message>
       <source>Output (shape) file</source>
-      <comment>#, fuzzy</comment>
-      <translation>Ergebnis</translation>
+      <translation>Ergebnisdatei (Shape)</translation>
     </message>
   </context>
   <context>
@@ -4690,30 +4585,27 @@ has failed. The database said:
     <name>QgsHttpTransaction</name>
     <message>
       <source>WMS Server responded unexpectedly with HTTP Status Code %1 (%2)</source>
-      <comment>#, fuzzy</comment>
-      <translation>Status</translation>
+      <translation>WMS Server hat unerwarteterweise folgenden HTTP Status Code herausgegeben: %1 (%2)</translation>
     </message>
     <message>
       <source>HTTP response completed, however there was an error: %1</source>
-      <comment>#, fuzzy</comment>
-      <translation>1</translation>
+      <translation>HTTP Antwort beendet, es habe jedoch Fehler: %1</translation>
     </message>
     <message>
       <source>Network timed out after %1 seconds of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
-      <translation type="unfinished" />
+      <translation>Netzwerk hatte Timeout nach %1 Sekunden der Inaktivität. Dies könnte auf ein Problem mit Ihrer Netzwerkverbindung oder der des WMS-Servers hindeuten.</translation>
     </message>
   </context>
   <context>
     <name>QgsIdentifyResults</name>
     <message>
       <source>Identify Results - </source>
-      <translation type="unfinished" />
+      <translation>Anfrageergebnisse - </translation>
     </message>
     <message>
       <source>Run action</source>
-      <comment>#, fuzzy</comment>
-      <translation>Los Aktion</translation>
+      <translation>Aktion starten</translation>
     </message>
   </context>
   <context>
@@ -4889,10 +4781,6 @@ This may be a problem in your network connection or at the WMS server.</source>
       <translation>Winkel (Grad):</translation>
     </message>
     <message>
-      <source>°</source>
-      <translation>°</translation>
-    </message>
-    <message>
       <source>Data Defined Style</source>
       <translation>Datendefinierter Stil</translation>
     </message>
@@ -4934,13 +4822,11 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
       <source>Font size units</source>
-      <comment>#, fuzzy</comment>
-      <translation>Schrift</translation>
+      <translation>Schriftgröße</translation>
     </message>
     <message>
       <source>Font Alignment</source>
-      <comment>#, fuzzy</comment>
-      <translation>Schrift</translation>
+      <translation>Schriftausrichtung</translation>
     </message>
     <message>
       <source>Placement</source>
@@ -4948,15 +4834,15 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
       <source>Buffer</source>
-      <translation type="unfinished" />
+      <translation>Puffer</translation>
     </message>
     <message>
       <source>Buffer size units</source>
-      <translation type="unfinished" />
+      <translation>Puffergrößeneinheiten</translation>
     </message>
     <message>
       <source>Offset units</source>
-      <translation type="unfinished" />
+      <translation>Offset Einheiten</translation>
     </message>
     <message>
       <source>Data Defined Alignment</source>
@@ -4964,16 +4850,19 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
       <source>Data Defined Buffer</source>
-      <translation type="unfinished" />
+      <translation>Puffer</translation>
     </message>
     <message>
       <source>Data Defined Position</source>
-      <comment>#, fuzzy</comment>
-      <translation>Position</translation>
+      <translation>Position aus Daten lesen</translation>
     </message>
     <message>
       <source>Source</source>
-      <translation type="unfinished" />
+      <translation>Quelle</translation>
+    </message>
+    <message>
+      <source>°</source>
+      <translation>°</translation>
     </message>
   </context>
   <context>
@@ -4984,20 +4873,18 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
       <source>OK</source>
-      <comment>#, fuzzy</comment>
       <translation>OK</translation>
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;>Define this layer's projection:&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>This layer appears to have no projection specification. By default, this layer will now have its projection set to that of the project, but you may override this by selecting a different projection below.&lt;/p>&lt;/body>&lt;/html></source>
-      <comment>#, fuzzy</comment>
-      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;> Definieren&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;/body>&lt;/html></translation>
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;>Geben Sie die Projektion dieser Ebene an:&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Diese Ebene schein keine Projektionsinformationen zu haben. Standardmäßig wird die Projektion des Projekts dieser Ebene zugewiesen. Sie können aber auch eine andere Projektion unten auswählen.&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
   </context>
   <context>
     <name>QgsLegend</name>
     <message>
       <source>group</source>
-      <translation type="unfinished" />
+      <translation>Gruppe</translation>
     </message>
     <message>
       <source>&amp;Properties</source>
@@ -5005,17 +4892,15 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
       <source>&amp;Zoom to layer extent</source>
-      <translation type="unfinished" />
+      <translation>Auf die Ebenenausdehnung &amp;zoomen.</translation>
     </message>
     <message>
       <source>&amp;Add to overview</source>
-      <comment>#, fuzzy</comment>
-      <translation>Hinzufügen</translation>
+      <translation>Zu Übersicht hinzufügen</translation>
     </message>
     <message>
       <source>&amp;Remove from overview</source>
-      <comment>#, fuzzy</comment>
-      <translation>Entfe&amp;rnen</translation>
+      <translation>Aus Übersicht entfe&amp;rnen</translation>
     </message>
     <message>
       <source>&amp;Remove</source>
@@ -5023,32 +4908,31 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
       <source>&amp;Make to toplevel item</source>
-      <translation type="unfinished" />
+      <translation>Als Top-Level Objekt &amp;machen</translation>
     </message>
     <message>
       <source>&amp;Allow editing</source>
-      <translation type="unfinished" />
+      <translation>Editieren erl&amp;auben</translation>
     </message>
     <message>
       <source>Re&amp;name</source>
-      <translation type="unfinished" />
+      <translation>Umbe&amp;nennen</translation>
     </message>
     <message>
       <source>&amp;Add group</source>
-      <comment>#, fuzzy</comment>
-      <translation>Hinzufügen</translation>
+      <translation>Gruppe Hinzufügen</translation>
     </message>
     <message>
       <source>&amp;Expand all</source>
-      <translation type="unfinished" />
+      <translation>Alles Ausklapp&amp;en</translation>
     </message>
     <message>
       <source>&amp;Collapse all</source>
-      <translation type="unfinished" />
+      <translation>Alles zusammenfalten</translation>
     </message>
     <message>
       <source>Show file groups</source>
-      <translation type="unfinished" />
+      <translation>Zeige Dateigruppen</translation>
     </message>
   </context>
   <context>
@@ -5094,18 +4978,17 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
       <source>col</source>
-      <translation type="unfinished" />
+      <translation>col</translation>
     </message>
   </context>
   <context>
     <name>QgsMapCanvas</name>
     <message>
       <source>Could not draw</source>
-      <translation type="unfinished" />
+      <translation>Konnte nicht zeichnen</translation>
     </message>
     <message>
       <source>because</source>
-      <comment>#, fuzzy</comment>
       <translation>weil</translation>
     </message>
   </context>
@@ -5125,7 +5008,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
       <source>Toggle in Overview</source>
-      <translation type="unfinished" />
+      <translation>In Übersicht einfügen</translation>
     </message>
   </context>
   <context>
@@ -5268,20 +5151,19 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Path to the template file&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" />
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Pfad zur Template-Datei&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Prefix attached to map, scalebar and legend GIF filenames created using this MapFile&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" />
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Prefix, der vor die Karten-, Maßstabs- und Legendengrafiken (GIF) gesetzt werden sollen.&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
     <message>
       <source>QGIS Project File</source>
-      <comment>#, fuzzy</comment>
-      <translation>Projekt Datei</translation>
+      <translation>QGIS Projekt</translation>
     </message>
     <message>
       <source>QGIS project file to export to MapServer map format</source>
-      <translation type="unfinished" />
+      <translation>Exportiert ein QGIS Projekt in ein UMN MapServer .map-Format</translation>
     </message>
     <message>
       <source>Name for the map file to be created from the QGIS project file</source>
@@ -5583,18 +5465,18 @@ Ausführliche Fehlerinformation:</translation>
     </message>
     <message>
       <source>&amp;Decorations</source>
-      <translation type="unfinished" />
+      <translation>&amp;Dekorationen</translation>
     </message>
     <message>
       <source>Pixmap Not Found</source>
-      <translation type="unfinished" />
+      <translation>Pixmap konnte nicht gefunden werden.</translation>
     </message>
   </context>
   <context>
     <name>QgsNorthArrowPluginGui</name>
     <message>
       <source>Pixmap Not Found</source>
-      <translation type="unfinished" />
+      <translation>Pixmap konnte nicht gefunden werden.</translation>
     </message>
   </context>
   <context>
@@ -5816,19 +5698,19 @@ Ausführliche Fehlerinformation:</translation>
     </message>
     <message>
       <source>Capitalise layer name</source>
-      <translation type="unfinished" />
+      <translation>Setzte Ebenennamen in Kapitälchen.</translation>
     </message>
     <message>
       <source>Anti-aliasing</source>
-      <translation type="unfinished" />
+      <translation>Anti-aliasing</translation>
     </message>
     <message>
       <source>Make lines appear less jagged at the expense of some drawing performance</source>
-      <translation type="unfinished" />
+      <translation>Zeichne die Linien weniger gezackt auf Kosten der Zeichengeschwindigkeit.</translation>
     </message>
     <message>
       <source>By default new la&amp;yers added to the map should be displayed</source>
-      <translation type="unfinished" />
+      <translation>Standardmäßig werden alle neuen Ebenen in der Karte angezeigt.</translation>
     </message>
     <message>
       <source>&amp;Update during drawing</source>
@@ -5836,7 +5718,7 @@ Ausführliche Fehlerinformation:</translation>
     </message>
     <message>
       <source>&amp;Selection &amp;&amp; Measuring</source>
-      <translation type="unfinished" />
+      <translation>Au&amp;swählen &amp;&amp; Messen</translation>
     </message>
     <message>
       <source>Measure tool</source>
@@ -5864,8 +5746,17 @@ By default QGIS uses a value of 5. Increase the value if you have trouble
 identifying features without zooming in very close.
 
 &lt;/html></source>
-      <comment>#, fuzzy</comment>
-      <translation>&lt;html>&lt;b>&lt;/b>&lt;br>&amp;nbsp;&amp;nbsp;&lt;i> Karte Breite Wert&lt;/i>&lt;br> Objekte&lt;/html></translation>
+      <translation>&lt;html>
+
+&lt;b>Bemerkung&lt;/b> Geben den Wert in 1000 an. Der Suchradius wird wie folgt berechnet:&lt;br>
+
+&amp;nbsp;&amp;nbsp;&lt;i>(Kartenbreite) * ( Wert/1000.0)&lt;/i>
+
+&lt;br>
+
+Standardmäßig benutzt QGIS einen Wert von 5. Verkleinern Sie den Wert, wenn Sie Probleme beim Abfragen haben, ohne stark herein zu zoomen.
+
+&lt;/html></translation>
     </message>
     <message>
       <source>Pro&amp;jection</source>
@@ -5873,11 +5764,11 @@ identifying features without zooming in very close.
     </message>
     <message>
       <source>When layer is loaded that has no projection information</source>
-      <translation type="unfinished" />
+      <translation>Wenn eine Ebene ohne Projektionsinformationen geladen wird</translation>
     </message>
     <message>
       <source>Global default projection displa&amp;yed below will be used.</source>
-      <translation>Unten aufgeführte globale Standardprojektion wird benutzt.</translation>
+      <translation>wird die unten aufgeführte globale Standardprojektion benutzt.</translation>
     </message>
     <message>
       <source>&lt;b>Note:&lt;/b> The browser must be in your PATH or you can specify the full path above</source>
@@ -5888,7 +5779,7 @@ identifying features without zooming in very close.
     <name>QgsPasteTransformationsBase</name>
     <message>
       <source>Paste Transformations</source>
-      <translation type="unfinished" />
+      <translation>Füge Transformationen ein</translation>
     </message>
     <message>
       <source>&lt;b>Note: This function is not useful yet!&lt;/b></source>
@@ -5896,11 +5787,11 @@ identifying features without zooming in very close.
     </message>
     <message>
       <source>Source</source>
-      <translation type="unfinished" />
+      <translation>Quelle</translation>
     </message>
     <message>
       <source>Destination</source>
-      <translation type="unfinished" />
+      <translation>Ziel</translation>
     </message>
     <message>
       <source>&amp;Help</source>
@@ -5912,8 +5803,7 @@ identifying features without zooming in very close.
     </message>
     <message>
       <source>Add New Transfer</source>
-      <comment>#, fuzzy</comment>
-      <translation>Hinzufügen Neu</translation>
+      <translation>Neuen Transfer hinzufügen</translation>
     </message>
     <message>
       <source>&amp;OK</source>
@@ -5951,67 +5841,60 @@ identifying features without zooming in very close.
     </message>
     <message>
       <source>&amp;Buffer features</source>
-      <comment>#, fuzzy</comment>
-      <translation>O&amp;bjekte</translation>
+      <translation>O&amp;bjekte puffern.</translation>
     </message>
     <message>
       <source>A new layer is created in the database with the buffered features.</source>
-      <comment>#, fuzzy</comment>
-      <translation>Objekte.</translation>
+      <translation>Eine neue Ebene ist in der Datenbank erstellt wurden, die die gepufferten Objekte enthält.</translation>
     </message>
     <message>
       <source>&amp;Geoprocessing</source>
-      <translation type="unfinished" />
+      <translation>&amp;Geoprozessierung</translation>
     </message>
     <message>
       <source>Unable to add geometry column</source>
-      <translation type="unfinished" />
+      <translation>Konnte die Geometriespalte nicht hinzufügen.</translation>
     </message>
     <message>
       <source>Unable to add geometry column to the output table </source>
-      <translation type="unfinished" />
+      <translation>Konnte die Geometriespalte nicht zur Ausgabetabelle hinzufügen.</translation>
     </message>
     <message>
       <source>Unable to create table</source>
-      <translation type="unfinished" />
+      <translation>Kann die Tabelle nicht erstellen.</translation>
     </message>
     <message>
       <source>Failed to create the output table </source>
-      <comment>#, fuzzy</comment>
-      <translation>Fehlgeschlagen </translation>
+      <translation>Erstellen der Ausgabetabelle fehlgeschlagen.</translation>
     </message>
     <message>
       <source>No GEOS support</source>
-      <comment>#, fuzzy</comment>
-      <translation>Nein</translation>
+      <translation>Keine GEOS-Unterstützung.</translation>
     </message>
     <message>
       <source>Buffer function requires GEOS support in PostGIS</source>
-      <translation type="unfinished" />
+      <translation>Pufferfunktion benötigt GEOS-Unterstützung in PostGIS.</translation>
     </message>
     <message>
       <source>Not a PostgreSQL/PosGIS Layer</source>
-      <comment>#, fuzzy</comment>
-      <translation>Ebene</translation>
+      <translation>Keine PostgreSQL/PostGIS Ebene</translation>
     </message>
     <message>
       <source> is not a PostgreSQL/PosGIS layer.
 </source>
-      <translation type="unfinished" />
+      <translation> ist keine PostgreSQL/PostGIS Ebene.</translation>
     </message>
     <message>
       <source>Geoprocessing functions are only available for PostgreSQL/PosGIS Layers</source>
-      <comment>#, fuzzy</comment>
-      <translation>Ebenen</translation>
+      <translation>Geoprozessing-Funktionen sind nur für PostgreSQL/PostGIS-Ebenen vorgesehen.</translation>
     </message>
     <message>
       <source>No Active Layer</source>
-      <comment>#, fuzzy</comment>
-      <translation>Nein Ebene</translation>
+      <translation>Keine aktive Ebene</translation>
     </message>
     <message>
       <source>You must select a layer in the legend to buffer</source>
-      <translation type="unfinished" />
+      <translation>Selektieren Sie eine Ebene in der Legende, die gepuffert werden soll.</translation>
     </message>
   </context>
   <context>
@@ -6262,7 +6145,7 @@ identifying features without zooming in very close.
     </message>
     <message>
       <source>z</source>
-      <translation type="unfinished" />
+      <translation>z</translation>
     </message>
     <message>
       <source>Zoom Out</source>
@@ -6270,47 +6153,39 @@ identifying features without zooming in very close.
     </message>
     <message>
       <source>Z</source>
-      <translation type="unfinished" />
+      <translation>Z</translation>
     </message>
     <message>
       <source>Zoom To Layer</source>
-      <comment>#, fuzzy</comment>
       <translation>Auf die Ebene zoomen</translation>
     </message>
     <message>
       <source>Zoom to Layer</source>
-      <comment>#, fuzzy</comment>
       <translation>Auf die Ebene zoomen</translation>
     </message>
     <message>
       <source>Pan Map</source>
-      <comment>#, fuzzy</comment>
       <translation>Karte verschieben</translation>
     </message>
     <message>
       <source>Pan the map</source>
-      <comment>#, fuzzy</comment>
       <translation>Karte verschieben</translation>
     </message>
     <message>
       <source>Add Point</source>
-      <comment>#, fuzzy</comment>
-      <translation>Hinzufügen Punkt</translation>
+      <translation>Addiere Punkt</translation>
     </message>
     <message>
       <source>.</source>
-      <comment>#, fuzzy</comment>
       <translation>.</translation>
     </message>
     <message>
       <source>Capture Points</source>
-      <comment>#, fuzzy</comment>
-      <translation>fange Punkte</translation>
+      <translation>Fange Punkte</translation>
     </message>
     <message>
       <source>Delete Point</source>
-      <comment>#, fuzzy</comment>
-      <translation>Löschen Punkt</translation>
+      <translation>Lösche Punkt</translation>
     </message>
     <message>
       <source>Delete Selected</source>
@@ -6329,12 +6204,11 @@ identifying features without zooming in very close.
     </message>
     <message>
       <source>Linear</source>
-      <comment>#, fuzzy</comment>
       <translation>Linear</translation>
     </message>
     <message>
       <source>Helmert</source>
-      <translation type="unfinished" />
+      <translation>Helmert</translation>
     </message>
     <message>
       <source>Zoom in</source>
@@ -6552,7 +6426,7 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     <message>
       <source>initially appeared suitable but does not contain unique data, so is not suitable.
 </source>
-      <translation type="unfinished" />
+      <translation>anfänglich schien die Ebene geeignet, allerdings enthält sie keine eindeutigen Daten, insofern nicht geeignet.</translation>
     </message>
   </context>
   <context>
@@ -7369,7 +7243,7 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     </message>
     <message>
       <source>&amp;Decorations</source>
-      <translation type="unfinished" />
+      <translation>&amp;Dekorationen</translation>
     </message>
   </context>
   <context>
@@ -7565,7 +7439,7 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     </message>
     <message>
       <source>Image encoding</source>
-      <translation type="unfinished" />
+      <translation>Bildkodierung</translation>
     </message>
     <message>
       <source>Layers</source>
@@ -7613,7 +7487,6 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     </message>
     <message>
       <source>C&amp;onnect</source>
-      <comment>#, fuzzy</comment>
       <translation>Verbinden</translation>
     </message>
     <message>
@@ -8341,7 +8214,7 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     </message>
     <message>
       <source>Subset</source>
-      <translation type="unfinished" />
+      <translation>Subset</translation>
     </message>
     <message>
       <source>Query Builder</source>
@@ -8435,8 +8308,7 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     </message>
     <message>
       <source>Could not get WMS capabilities: %1 at line %2 column %3</source>
-      <comment>#, fuzzy</comment>
-      <translation>Konnte die WMS U</translation>
+      <translation>Konnte die WMS Capabilities nicht bekommen: %1 bei Linie %2, Spalte %3</translation>
     </message>
     <message>
       <source>This is probably due to an incorrect WMS Server URL.</source>
@@ -8444,11 +8316,11 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     </message>
     <message>
       <source>Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found</source>
-      <translation type="unfinished" />
+      <translation>Konnte die WMS Capabilities nicht im erwarteten Format (DTD) erhalten: kein %1 oder %2 gefunden.</translation>
     </message>
     <message>
       <source>Could not get WMS Service Exception at %1: %2 at line %3 column %4</source>
-      <translation type="unfinished" />
+      <translation>Konnte die WMS Service Ausnahme bei %1 nicht interpretieren: %2 bei Linie %3, Spalte %4</translation>
     </message>
     <message>
       <source>Request contains a Format not offered by the server.</source>
@@ -8460,49 +8332,35 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     </message>
     <message>
       <source>Request contains a SRS not offered by the server for one or more of the Layers in the request.</source>
-      <comment>#, fuzzy</comment>
-      <translation>Ebenen.</translation>
+      <translation>Anfrage enthält SRS, das nicht vom Server angeboten wird.</translation>
     </message>
     <message>
       <source>GetMap request is for a Layer not offered by the server, or GetFeatureInfo request is for a Layer not shown on the map.</source>
-      <comment>#, fuzzy</comment>
-      <translation>Ebene Ebene.</translation>
+      <translation>GetMap Anfrage ist für eine Ebene, die nicht vom Server angeboten wird, oder GetFeatureInfo wurde für eine Ebene angefordert, die nicht in der Karte angezeigt wird.</translation>
     </message>
     <message>
       <source>Request is for a Layer in a Style not offered by the server.</source>
-      <comment>#, fuzzy</comment>
-      <translation>Ebene.</translation>
+      <translation>Anfrage ist für eine Ebene in einem Style, der nicht vom Server angeboten wird.</translation>
     </message>
     <message>
       <source>GetFeatureInfo request is applied to a Layer which is not declared queryable.</source>
-      <comment>#, fuzzy</comment>
-      <translation>Ebene.</translation>
+      <translation>GetFeatureInfo wurde auf eine Ebene angewendet, die als nicht abfragbar definiert ist.</translation>
     </message>
     <message>
       <source>GetFeatureInfo request contains invalid X or Y value.</source>
-      <translation type="unfinished" />
-    </message>
-    <message>
-      <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number.</source>
-      <comment>#, fuzzy</comment>
-      <translation>Wert.</translation>
-    </message>
-    <message>
-      <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number.</source>
-      <comment>#, fuzzy</comment>
-      <translation>Wert.</translation>
+      <translation>Get FeatureInfo Anfrage enthält ungültige X oder Y-Werte.</translation>
     </message>
     <message>
       <source>Request does not include a sample dimension value, and the server did not declare a default value for that dimension.</source>
-      <translation type="unfinished" />
+      <translation>Anfrage enthält keinen beispielhaften Dimensionswert, und der Server selbst definiert auch keinen.</translation>
     </message>
     <message>
       <source>Request contains an invalid sample dimension value.</source>
-      <translation type="unfinished" />
+      <translation>Anfrage enthält einen ungültigen beispielhaften Dimensionswert.</translation>
     </message>
     <message>
       <source>Request is for an optional operation that is not supported by the server.</source>
-      <translation type="unfinished" />
+      <translation>Anfrage ist für eine optionale Operation, die der Server nicht unterstützt.</translation>
     </message>
     <message>
       <source>(Unknown error code from a post-1.3 WMS server)</source>
@@ -8510,7 +8368,7 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     </message>
     <message>
       <source>The WMS vendor also reported: </source>
-      <translation type="unfinished" />
+      <translation>Der WMS-Betreiber sagt folgendes:</translation>
     </message>
     <message>
       <source>This is probably due to a bug in the QGIS program.  Please report this error.</source>
@@ -8518,8 +8376,7 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     </message>
     <message>
       <source>Server Properties:</source>
-      <comment>#, fuzzy</comment>
-      <translation>Eigenschaften:</translation>
+      <translation>Server-Eigenschaften:</translation>
     </message>
     <message>
       <source>Property</source>
@@ -8547,7 +8404,7 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     </message>
     <message>
       <source>Online Resource</source>
-      <translation type="unfinished" />
+      <translation>Online Quelle</translation>
     </message>
     <message>
       <source>Contact Person</source>
@@ -8559,7 +8416,7 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     </message>
     <message>
       <source>Access Constraints</source>
-      <translation type="unfinished" />
+      <translation>Zugangsbeschränkungen</translation>
     </message>
     <message>
       <source>Image Formats</source>
@@ -8567,7 +8424,7 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     </message>
     <message>
       <source>Identify Formats</source>
-      <translation type="unfinished" />
+      <translation>Abfrageformat</translation>
     </message>
     <message>
       <source>Layer Count</source>
@@ -8607,7 +8464,7 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     </message>
     <message>
       <source>Can Identify</source>
-      <translation type="unfinished" />
+      <translation>Darf abgefragt werden</translation>
     </message>
     <message>
       <source>Can be Transparent</source>
@@ -8635,15 +8492,23 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     </message>
     <message>
       <source>Available in CRS</source>
-      <translation type="unfinished" />
+      <translation>Verfügbar in CRS</translation>
     </message>
     <message>
       <source>Available in style</source>
-      <translation type="unfinished" />
+      <translation>Verfügbar im Style</translation>
     </message>
     <message>
       <source>Name</source>
       <translation>Name</translation>
+    </message>
+    <message>
+      <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number.</source>
+      <translation>Wert in.</translation>
+    </message>
+    <message>
+      <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number.</source>
+      <translation>Wert in.</translation>
     </message>
   </context>
   <context>
@@ -8676,10 +8541,6 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
       <translation>Alt+C</translation>
     </message>
     <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;>Welcome to your automatically generated plugin!&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>This is just a starting point. You now need to modify the code to make it do something useful....read on for a more information to get yourself started.&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;>Documentation:&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>You really need to read the QGIS API Documentation now at:&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; color:#0000ff;&quot;>http://svn.qgis.org/api_doc/html/&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>In particular look at the following classes:&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>QGisInterface&lt;/span> : http://svn.qgis.org/api_doc/html/classQgisInterface.html&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>QGisIface&lt;/span>        :  http://svn.qgis.org/api_doc/html/classQgisIface.html&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>QgsMapTool&lt;/span>   : http://svn.qgis.org/api_doc/html/classQgsMapTool.html&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>QgsPlugin&lt;/span>       : http://svn.qgis.org/api_doc/html/classQgisPlugin.html&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" />
-    </message>
-    <message>
       <source>&lt;&lt;</source>
       <translation>&lt;&lt;</translation>
     </message>
@@ -8694,6 +8555,10 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     <message>
       <source>Open</source>
       <translation>Öffnen</translation>
+    </message>
+    <message>
+      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;>Welcome to your automatically generated plugin!&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>This is just a starting point. You now need to modify the code to make it do something useful....read on for a more information to get yourself started.&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;>Documentation:&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>You really need to read the QGIS API Documentation now at:&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; color:#0000ff;&quot;>http://svn.qgis.org/api_doc/html/&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>In particular look at the following classes:&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>QGisInterface&lt;/span> : http://svn.qgis.org/api_doc/html/classQgisInterface.html&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>QGisIface&lt;/span>        :  http://svn.qgis.org/api_doc/html/classQgisIface.html&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>QgsMapTool&lt;/span>   : http://svn.qgis.org/api_doc/html/classQgsMapTool.html&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>QgsPlugin&lt;/span>       : http://svn.qgis.org/api_doc/html/classQgisPlugin.html&lt;/p>&lt;/body>&lt;/html></source>
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;>Welcome to your automatically generated plugin!&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>This is just a starting point. You now need to modify the code to make it do something useful....read on for a more information to get yourself started.&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;>Documentation:&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>You really need to read the QGIS API Documentation now at:&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; color:#0000ff;&quot;>http://svn.qgis.org/api_doc/html/&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>In particular look at the following classes:&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>QGisInterface&lt;/span> : http://svn.qgis.org/api_doc/html/classQgisInterface.html&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>QGisIface&lt;/span>        :  http://svn.qgis.org/api_doc/html/classQgisIface.html&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>QgsMapTool&lt;/span>   : http://svn.qgis.org/api_doc/html/classQgsMapTool.html&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>QgsPlugin&lt;/span>       : http://svn.qgis.org/api_doc/html/classQgisPlugin.html&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
   </context>
   <context>
@@ -8724,8 +8589,7 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;>Welcome to your automatically generated plugin!&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>This is just a starting point. You now need to modify the code to make it do something useful....read on for a more information to get yourself started.&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;>Documentation:&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>You really need to read the QGIS API Documentation now at:&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; color:#0000ff;&quot;>http://svn.qgis.org/api_doc/html/&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>In particular look at the following classes:&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>QGisInterface&lt;/span> : http://svn.qgis.org/api_doc/html/classQgisInterface.html&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>QGisIface&lt;/span>        :  http://svn.qgis.org/api_doc/html/classQgisIface.html&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>QgsMapTool&lt;/span>   : http://svn.qgis.org/api_doc/html/classQgsMapTool.html&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>QgsPlugin&lt;/span>       : http://svn.qgis.org/api_doc/html/classQgisPlugin.html&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>QGisIface is an abstract base class (ABC) that specifies what publicly available features of QGIS are exposed to third party code and plugins. QgisInterface is an concrete implementation of this ABC. The preferred way to carry out operations on QGIS is via the QGisInterface. An instance of the QgisInterface is passed to the plugin when it loads. Please consult the QGIS development team if there is functionality required in the QGisInterface that is not available.&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>QgsPlugin is an ABC that defines required behaviour your plugin must provide. See below for more details.&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;>What are all the files in my generated plugin directory for?&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>Makefile.am  &lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>This is the generated Makefile specification for your plugin. You will see that specifies c++ include paths (-I) and library linkages -l) to Qt4, GDAL, GEOS, QGIS Core, QGIS Ui, QGIS Gui and QGis Raster. You should add you application specific dependencies and source files to this Makefile.&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>[pluginlcasename].h&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;>[pluginlcasename].cpp  &lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>This is the class that provides the 'glue' between your custom application logic and the QGIS application. You will see that a number of methods are already implemented for you - including some examples of how to add a raster or vector layer to the main application map canvas. This class is a concrete instance of the QgisPlugin interface which defines required behaviour for a plugin. In particular, a plugin has a number of static methods and members so that the QgsPluginManager and plugin loader logic can identify each plugin, create an appropriate menu entry for it etc. Note there is nothing stopping you creating multiple toolbar icons and menu entries for a single plugin. By default though a single menu entry and toolbar button is created and its pre-configured to call the run() method in this class when selected. This default implementation provided for you by the plugin builder is well documented, so please refer to the code for further advice.&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>[pluginlcasename]guibase.ui  &lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;>[pluginlcasename]guibase.ui.h&lt;span style=&quot; font-weight:400; color:#000000;&quot;>  &lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>This is an Abstract Base Class implemented in Qt4 fashion as a Qt designer 'ui' file. It defines the look of the default plugin dialog without implementing any application logic. You can modify this form to suite your needs or completely remove it if your plugin does not need to display a user form (e.g. for custom MapTools).&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>[pluginlcasename]gui.cpp  &lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;>[pluginlcasename]gui.h &lt;span style=&quot; font-weight:400; color:#000000;&quot;> &lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>This is the concrete class where application logic for the above mentioned dialog should go. The world is your oyster here really....&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>[pluginlcasename].qrc  &lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;>&lt;span style=&quot; font-weight:400; color:#000000;&quot;>This is the Qt4 resources file for your plugin. The Makefile generated for your plugin is all set up to compile the resource file so all you need to do is add your additional icons etc using the simple xml file format. Note the namespace used for all your resources e.g. (&quot;:/[pluginname]/&quot;). It is important to use this prefix for all your resources. We suggest you include any other images and run time data in this resurce file too.&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>[pluginlcasename].png  &lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;>&lt;span style=&quot; font-weight:400; color:#000000;&quot;>This is the icon that will be used for your plugin menu entry and toolbar icon. Simply replace this icon with your own icon to make your plugin disctinctive from the rest.&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>README&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>This file contains the documentation you are reading now!&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;>Getting developer help:&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>For Questions and Comments regarding the plugin builder template and creating your features in QGIS using the plugin interface please contact us via:&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;> * the QGIS developers mailing list, or&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;> * IRC (#qgis on freenode.net)&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>QGIS is distributed under the Gnu Public License. If you create a useful plugin please consider contributing it back to the community.&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Have fun and thank you for choosing QGIS.&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600;&quot;>The QGIS Team&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;>2006&lt;/p>&lt;/body>&lt;/html></source>
-      <comment>#, fuzzy</comment>
-      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; color:#0000ff;&quot;>http://svn.qgis.org/api_doc/html/&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>&lt;/span>http://svn.qgis.org/api_doc/html/classQgisInterface.html&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>&lt;/span>http://svn.qgis.org/api_doc/html/classQgisIface.html&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>&lt;/span>http://svn.qgis.org/api_doc/html/classQgsMapTool.html&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>&lt;/span>http://svn.qgis.org/api_doc/html/classQgisPlugin.html&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;>&lt;span style=&quot; font-weight:400; color:#000000;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;> Zusammenfassung&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;>&lt;span style=&quot; font-weight:400; color:#000000;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;>&lt;span style=&quot; font-weight:400; color:#000000;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;>&lt;span style=&quot; font-weight:400; color:#000000;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;>&lt;/p>&lt;/body>&lt;/html></translation>
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; color:#0000ff;&quot;>http://svn.qgis.org/api_doc/html/&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>&lt;/span>http://svn.qgis.org/api_doc/html/classQgisInterface.html&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>&lt;/span>http://svn.qgis.org/api_doc/html/classQgisIface.html&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>&lt;/span>http://svn.qgis.org/api_doc/html/classQgsMapTool.html&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>&lt;/span>http://svn.qgis.org/api_doc/html/classQgisPlugin.html&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;> Objekte in&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;> in&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;> I&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;> in&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;>&lt;span style=&quot; font-weight:400; color:#000000;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;> Zusammenfassung in&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;>&lt;span style=&quot; font-weight:400; color:#000000;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;>&lt;span style=&quot; font-weight:400; color:#000000;&quot;> in&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;> png&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;>&lt;span style=&quot; font-weight:400; color:#000000;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;> Objekte in&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600;&quot;>&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;>&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
   </context>
   <context>
