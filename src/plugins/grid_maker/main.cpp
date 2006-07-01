@@ -8,13 +8,15 @@
 #include <qapplication.h>
 #include <qtextcodec.h>
 #include <qtranslator.h>
+#include <QString>
 
 int main(int argc, char *argv[])
 {
   QApplication a(argc, argv);
 
 #if defined(Q_OS_MACX) || defined(WIN32)
-  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+  //  XXX Is the PKGDATAPATH setting below  needed under Qt 4.x?
+  //  PKGDATAPATH = QString(qApp->applicationDirPath() + "/share/qgis");
 #endif
 
   /* Load translationfile */

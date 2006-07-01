@@ -19,8 +19,11 @@ plugindir = ${pkglibdir}
 #for plugin so
 plugin_LTLIBRARIES = gridmakerplugin.la
 
-#for standalon executable
+# For standalone executable
+# don't build on mingw since we haven't figured out the makefile issues
+if MINGW_FALSE
 bin_PROGRAMS = gridmaker 
+endif
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<

@@ -7,9 +7,23 @@ STDSUBDIRS = core ui legend raster composer widgets helpviewer
 
 WINSUBDIRS = core legend raster composer \
 	     widgets/projectionselector gui \
-	providers/ogr providers/grass providers/wms \
+	providers/ogr \
+	providers/grass \
+	providers/wms \
 	providers/postgres \
-	plugins/grass
+	providers/gpx \
+	providers/delimitedtext \
+	plugins/grass \
+	plugins/north_arrow \
+	plugins/copyright_label \
+	plugins/geoprocessing \
+	plugins/scale_bar \
+	plugins/georeferencer \
+	plugins/grid_maker \
+	plugins/delimited_text 
+	plugins/gps_importer \
+	plugins/spit 
+	
 
 all: stdsubdirs guilib winsubdirs
 
@@ -19,7 +33,7 @@ guilib:
 install: all
 	@list='$(WINSUBDIRS)'; \
 	for subdir in $$list; do \
-	    echo $$subdir ; \
+	    echo !!!!!!!!!!!!!!!!!!!! $$subdir !!!!!!!!!!!!!!!!!!!!; \
 	    $(MAKE) -C $$subdir -f Makefile.win install || exit 1 ; \
 	done
 
