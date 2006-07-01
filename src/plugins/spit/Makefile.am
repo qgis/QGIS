@@ -13,7 +13,9 @@
 plugindir = ${pkglibdir}
 
 plugin_LTLIBRARIES = spitplugin.la
+if MINGW_FALSE
 bin_PROGRAMS = spit
+endif
 
 
 %.moc.cpp: %.h
@@ -76,7 +78,7 @@ BUILT_SOURCES = $(spit_MOC) $(spit_UI) $(spitplugin_la_MOC)
 
 spitplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB) $(GDAL_LDADD) ../../core/libqgis_core.la
 spitplugin_la_LDFLAGS = -avoid-version -module
-spitplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(GEOS_CFLAGS) -I../../gui -I../../ui -I../../core
+spitplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PG_INC) -I../../gui -I../../ui -I../../core
 
 
 spit_LDADD = $(QT_LDADD)  $(PG_LIB) $(GDAL_LDADD)

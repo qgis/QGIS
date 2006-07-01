@@ -13,9 +13,9 @@ install: all
 # Copy GRASS to QGIS 
 cpgrass:
 	mkdir -p -m 755 $(prefix)/grass/docs
-	cp    $(GRASS_BASE)/COPYING $(prefix)/grass
-	cp    $(GRASS_BASE)/AUTHORS $(prefix)/grass
-	cp    $(GRASS_BASE)/README $(prefix)/grass
+#	cp    $(GRASS_BASE)/COPYING $(prefix)/grass
+#	cp    $(GRASS_BASE)/AUTHORS $(prefix)/grass
+#	cp    $(GRASS_BASE)/README $(prefix)/grass
 	cp -r $(GRASS_BASE)/etc $(prefix)/grass
 	cp -r $(GRASS_BASE)/driver $(prefix)/grass
 	cp -r $(GRASS_BASE)/bin $(prefix)/grass
@@ -54,6 +54,8 @@ pkg:
 	@ echo "Creating binary package $(BINPKG)"
 	mkdir -p -m 755 $(BINPKG)
 	cp -r $(prefix)/* $(BINPKG)
+	(cd $(BINPKG); rm -fr grass-6.1.cvs include)
+	
 	zip -r $(BINPKG).zip $(BINPKG)
 	
 	
