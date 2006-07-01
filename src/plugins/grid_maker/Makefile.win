@@ -1,0 +1,26 @@
+QGTOP=../../../
+
+OBJECTS = $(wildcard *.o) 
+
+PLUGIN = .libs/gridmakerplugin.dll
+
+all: objects $(PLUGIN)
+
+objects:
+	$(MAKE) -f Makefile 
+
+$(PLUGIN): $(OBJECTS)
+	$(CXX) -shared -o $@ \
+		-Wl,--export-all-symbols \
+		-Wl,--enable-auto-import \
+		-Wl,--whole-archive $(OBJECTS) \
+		-Wl,--no-whole-archive \
+			$(PLUGIN_LIBS) 
+	$(STRIP) $@ 
+
+#			../../providers/grass/.libs/libqgisgrass.a \
+
+install: all 
+	$(INSTALL) -m 755 $(PLUGIN) $(prefix)/lib/qgis/gridmakerplugin.dll
+
+include $(QGTOP)/Makefile.win.rules
