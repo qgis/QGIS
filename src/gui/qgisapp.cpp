@@ -2423,9 +2423,9 @@ void QgisApp::newVectorLayer()
   filename = openFileDialog->selectedFile();
   enc = openFileDialog->encoding();
 
-  settings.writeEntry("/UI//lastVectorFileFilter", openFileDialog->selectedFilter());
+  settings.writeEntry("/UI/lastVectorFileFilter", openFileDialog->selectedFilter());
 
-  settings.writeEntry("/UI//lastVectorFileFilterDir", openFileDialog->directory().absolutePath());
+  settings.writeEntry("/UI/lastVectorFileFilterDir", openFileDialog->directory().absolutePath());
   settings.writeEntry("/UI/encoding", openFileDialog->encoding());
 
   delete openFileDialog;
