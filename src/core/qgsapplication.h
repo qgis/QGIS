@@ -72,6 +72,8 @@ class QgsApplication: public QApplication
     //! Returns the path to the current theme directory.
     static const QString& themePath() { return mThemePath; }
 
+    void setPkgDataPath(const QString& path){mPkgDataPath = path;}
+
   private:
     static QString mPrefixPath;
     static QString mPluginPath;
