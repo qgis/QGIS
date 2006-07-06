@@ -1403,7 +1403,7 @@ QGISEXTERN QString fileVectorFilters()
         {
             // NOP, we don't know anything about the current driver
             // with regards to a proper file filter string
-	    QgsLogger::warning("fileVectorFilters, unknown driver: " + driverName);
+	    QgsLogger::debug("fileVectorFilters, unknown driver: " + driverName);
         }
 
     }                           // each loaded GDAL driver
