@@ -98,6 +98,9 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   cmbTheme->setCurrentText(settings.readEntry("/Themes","default"));
   //set teh state of the checkboxes
   chkAntiAliasing->setChecked(settings.value("/qgis/enable_anti_aliasing",false).toBool());
+  // Slightly awkard here at the settings value is true to use QImage,
+  // but the checkbox is true to use QPixmap
+  chkUseQPixmap->setChecked(!(settings.value("/qgis/use_qimage_to_render", true).toBool()));
   chkAddedVisibility->setChecked(settings.value("/qgis/new_layers_visible",true).toBool());
   cbxHideSplash->setChecked(settings.value("/qgis/hideSplash",false).toBool());
   //set the colour for selections
@@ -154,6 +157,7 @@ void QgsOptions::saveOptions()
   settings.writeEntry("/qgis/hideSplash",cbxHideSplash->isChecked());
   settings.writeEntry("/qgis/new_layers_visible",chkAddedVisibility->isChecked());
   settings.writeEntry("/qgis/enable_anti_aliasing",chkAntiAliasing->isChecked());
+  settings.writeEntry("/qgis/use_qimage_to_render", !(chkUseQPixmap->isChecked()));
   settings.setValue("qgis/capitaliseLayerName", capitaliseCheckBox->isChecked());
 
   if(cmbTheme->currentText().length() == 0)
@@ -250,6 +254,27 @@ void QgsOptions::on_pbnSelectProjection_clicked()
   }
 
 }
+
+void QgsOptions::on_chkAntiAliasing_stateChanged()
+{
+  // We can't have the anti-aliasing turned on when QPixmap is being
+  // used (we we can. but it then doesn't do anti-aliasing, and this
+  // will confuse people).
+  if (chkAntiAliasing->isChecked())
+    chkUseQPixmap->setChecked(false);
+
+}
+
+void QgsOptions::on_chkUseQPixmap_stateChanged()
+{
+  // We can't have the anti-aliasing turned on when QPixmap is being
+  // used (we we can. but it then doesn't do anti-aliasing, and this
+  // will confuse people).
+  if (chkUseQPixmap->isChecked())
+    chkAntiAliasing->setChecked(false);
+
+}
+
 // Return state of the visibility flag for newly added layers. If
 
 bool QgsOptions::newVisible()

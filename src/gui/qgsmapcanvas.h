@@ -185,6 +185,9 @@ class QgsMapCanvas : public Q3CanvasView
     //! used to determine if anti-aliasing is enabled or not
     void enableAntiAliasing(bool theFlag);
     
+    //! Select which Qt class to render with
+    void useQImageToRender(bool theFlag);
+
     // following 2 methods should be moved elsewhere or changed to private
     // currently used by pan map tool
     //! Ends pan action and redraws the canvas.

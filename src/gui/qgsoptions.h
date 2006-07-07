@@ -47,6 +47,8 @@ class QgsOptions :public QDialog, private Ui::QgsOptionsBase
       //! Slot called when user chooses to change the project wide projection.
       void on_pbnSelectProjection_clicked();
       void on_btnFindBrowser_clicked();
+      void on_chkAntiAliasing_stateChanged();
+      void on_chkUseQPixmap_stateChanged();
       void saveOptions();
     //! Slot to change the theme this is handled when the user 
     // activates or highlights a theme name in the drop-down list
