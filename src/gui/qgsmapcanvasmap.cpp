@@ -25,6 +25,7 @@ QgsMapCanvasMap::QgsMapCanvasMap(Q3Canvas *canvas, QgsMapRender* render)
   setZ(-10);
   move(0,0);
   resize(QSize(1,1));
+  mUseQImageToRender = false;
 }
 
 
@@ -42,22 +43,38 @@ void QgsMapCanvasMap::resize(QSize size)
 
 void QgsMapCanvasMap::render()
 {
-  // use temporary image for rendering
-  QImage image(size(), QImage::Format_RGB32);
-  
-  image.fill(mBgColor.rgb());
+  // Rendering to a QImage gives incorrectly filled polygons in some
+  // cases (as at Qt4.1.4), but it is the only renderer that supports
+  // anti-aliasing, so we provide the means to swap between QImage and
+  // QPixmap. 
 
-  QPainter paint;
-  paint.begin(&image);
-
-  // antialiasing
-  if (mAntiAliasing)
-    paint.setRenderHint(QPainter::Antialiasing);
+  if (mUseQImageToRender)
+  {
+    // use temporary image for rendering
+    QImage image(size(), QImage::Format_RGB32);
   
-  mRender->render(&paint);
+    image.fill(mBgColor.rgb());
 
-  paint.end();
+    QPainter paint;
+    paint.begin(&image);
+
+    // antialiasing
+    if (mAntiAliasing)
+      paint.setRenderHint(QPainter::Antialiasing);
   
-  // convert QImage to QPixmap to acheive faster drawing on screen
-  mPixmap = QPixmap::fromImage(image);
+    mRender->render(&paint);
+
+    paint.end();
+  
+    // convert QImage to QPixmap to acheive faster drawing on screen
+    mPixmap = QPixmap::fromImage(image);
+  }
+  else
+  {
+    mPixmap.fill(mBgColor.rgb());
+    QPainter paint;
+    paint.begin(&mPixmap);
+    mRender->render(&paint);
+    paint.end();
+  }
 }

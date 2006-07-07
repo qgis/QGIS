@@ -1050,6 +1050,7 @@ void QgisApp::createOverview()
   // moved here to set anti aliasing to both map canvas and overview
   QSettings mySettings;
   mMapCanvas->enableAntiAliasing(mySettings.value("/qgis/enable_anti_aliasing",false).toBool());
+  mMapCanvas->useQImageToRender(mySettings.value("/qgis/use_qimage_to_render",false).toBool());
 }
 
 
@@ -4048,6 +4049,7 @@ void QgisApp::options()
     mAddedLayersVisible = optionsDialog->newVisible();
     QSettings mySettings;
     mMapCanvas->enableAntiAliasing(mySettings.value("/qgis/enable_anti_aliasing").toBool());
+    mMapCanvas->useQImageToRender(mySettings.value("/qgis/use_qimage_to_render").toBool());
   }
 }
 

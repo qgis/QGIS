@@ -39,6 +39,8 @@ class QgsMapCanvasMap : public Q3CanvasRectangle
 
     void enableAntiAliasing(bool flag) { mAntiAliasing = flag; }
     
+    void useQImageToRender(bool flag) { mUseQImageToRender = flag; }
+
     QPixmap& pixmap() { return mPixmap; }
     
     //! renders map using QgsMapRender to mPixmap
@@ -61,6 +63,9 @@ class QgsMapCanvasMap : public Q3CanvasRectangle
     //! indicates whether antialiasing will be used for rendering
     bool mAntiAliasing;
     
+    //! Whether to use a QPixmap or a QImage for the rendering
+    bool mUseQImageToRender;
+
     QgsMapRender* mRender;
     
     QColor mBgColor;
