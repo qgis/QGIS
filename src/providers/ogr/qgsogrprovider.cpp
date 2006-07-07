@@ -1399,6 +1399,30 @@ QGISEXTERN QString fileVectorFilters()
         {
             // XXX needs file filter extension
         }
+        else if (driverName.startsWith("GRASS")) 
+        { 
+          // XXX needs file filter extension 
+        } 
+        else if (driverName.startsWith("KML")) 
+        { 
+          // XXX needs file filter extension 
+        } 
+        else if (driverName.startsWith("Interlis 1")) 
+        { 
+          // XXX needs file filter extension 
+        } 
+        else if (driverName.startsWith("Interlis 2")) 
+        { 
+          // XXX needs file filter extension 
+        } 
+        else if (driverName.startsWith("SQLite")) 
+        { 
+          // XXX needs file filter extension 
+        } 
+        else if (driverName.startsWith("MySQL")) 
+        { 
+          // XXX needs file filter extension 
+        } 
         else
         {
             // NOP, we don't know anything about the current driver
