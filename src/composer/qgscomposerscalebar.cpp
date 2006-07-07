@@ -136,6 +136,9 @@ void QgsComposerScalebar::init ( void )
     Q3CanvasPolygonalItem::setZ(50);
     setActive(true);
 
+    // Default value (map units?) for the scalebar border
+    mPen.setWidthF(2.0);
+
     // Plot style
     setPlotStyle ( QgsComposition::Preview );
     
