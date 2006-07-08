@@ -74,6 +74,8 @@ void QgsMapCanvasMap::render()
     mPixmap.fill(mBgColor.rgb());
     QPainter paint;
     paint.begin(&mPixmap);
+    // Clip our drawing to the QPixmap
+    paint.setClipRect(mPixmap.rect());
     mRender->render(&paint);
     paint.end();
   }
