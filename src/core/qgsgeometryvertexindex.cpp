@@ -16,6 +16,8 @@ email                : morb at ozemail dot com dot au
 
 #include "qgsgeometryvertexindex.h"
 
+#include <iostream>
+
 
 QgsGeometryVertexIndex::QgsGeometryVertexIndex()
 {
@@ -47,16 +49,33 @@ void QgsGeometryVertexIndex::push_back(int& i)
   mIndex.push_back(i);
 }
 
-int QgsGeometryVertexIndex::back()
+int QgsGeometryVertexIndex::back() const
 {
 #ifdef QGISDEBUG
-  for(std::vector<int>::iterator it = mIndex.begin(); it != mIndex.end(); ++it)
-    {
-      qWarning("mIndex contains: "+QString::number(*it));
-    }
+  std::cout << "QgsGeometryVertexIndex::back: mIndex contains:";
+  for(std::vector<int>::const_iterator it = mIndex.begin(); it != mIndex.end(); ++it)
+  {
+    std::cout << " " << (*it);
+  }
+  std::cout << "." << std::endl;
 #endif
   return mIndex.back();
 }
+
+
+int QgsGeometryVertexIndex::get_at(int i) const
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsGeometryVertexIndex::get_at: mIndex contains:";
+  for(std::vector<int>::const_iterator it = mIndex.begin(); it != mIndex.end(); ++it)
+  {
+    std::cout << " " << (*it);
+  }
+  std::cout << "." << std::endl;
+#endif
+  return mIndex[i];
+}
+
 
 void QgsGeometryVertexIndex::clear()
 {

@@ -457,6 +457,243 @@ QgsPoint QgsGeometry::closestVertex(const QgsPoint& point, QgsGeometryVertexInde
 }
 
 
+void QgsGeometry::adjacentVerticies(const QgsGeometryVertexIndex& atVertex, int& beforeVertex, int& afterVertex) const
+{
+  if(mDirtyWkb)
+  {
+    exportGeosToWkb();
+  }
+
+  beforeVertex = -1;
+  afterVertex = -1;
+
+  if (mGeometry)
+  {
+    int vertexcounter = 0;
+
+    int wkbType;
+
+    memcpy(&wkbType, (mGeometry+1), sizeof(int));
+
+    switch (wkbType)
+    {
+      case QGis::WKBPoint:
+      {
+        // NOOP - Points do not have adjacent verticies
+        break;
+      }
+
+      case QGis::WKBLineString:
+      {
+        unsigned char* ptr = mGeometry+5;
+        int* npoints = (int*) ptr;
+
+        const int index = atVertex.back();
+
+        // assign the rubber band indices
+
+        if(index == 0)
+        {
+          beforeVertex = -1;
+        }
+        else
+        {
+          beforeVertex = index-1;
+        }
+
+        if(index == (*npoints - 1))
+        {
+          afterVertex = -1;
+        }
+        else
+        {
+          afterVertex = index+1;
+        }
+
+        break;
+      }
+      case QGis::WKBPolygon:
+      {
+        int* nrings=(int*)(mGeometry+5);
+        int* npoints;
+        unsigned char* ptr=mGeometry+9;
+
+        // Walk through the POLYGON WKB
+
+        for (int index0 = 0; index0 < *nrings; ++index0)
+        {
+          npoints=(int*)ptr;
+          ptr+=sizeof(int);
+
+          for (int index1 = 0; index1 < *npoints; ++index1)
+          {
+            ptr += sizeof(double);
+            ptr += sizeof(double);
+
+            if (vertexcounter == atVertex.back())
+            // TODO: The above is deprecated as it doesn't allow for multiple linear rings in the polygon.
+            // replace with the below when the rest of QgsGeometry is migrated to a GEOS back-end.
+            //if (
+            //    (index0 == atVertex.get_at(0)) &&
+            //    (index1 == atVertex.get_at(1))
+            //   )
+            {
+              // Found the vertex of the linear-ring we were looking for.
+
+              // assign the rubber band indices
+
+              if(index1 == 0)
+              {
+                beforeVertex = vertexcounter+(*npoints-2);
+                afterVertex = vertexcounter+1;
+              }
+              else if(index1 == (*npoints-1))
+              {
+                beforeVertex = vertexcounter-1;
+                afterVertex = vertexcounter - (*npoints-2);
+              }
+              else
+              {
+                beforeVertex = vertexcounter-1;
+                afterVertex = vertexcounter+1;
+              }
+            }
+
+            ++vertexcounter;
+          }
+        }
+        break;
+      }
+
+      case QGis::WKBMultiPoint:
+      {
+        // NOOP - Points do not have adjacent verticies
+        break;
+      }
+
+      case QGis::WKBMultiLineString:
+      {
+        unsigned char* ptr=mGeometry+5;
+        int* nlines=(int*)ptr;
+        int* npoints = 0;
+        ptr+=sizeof(int);
+
+        for (int index0 = 0; index0 < *nlines; ++index0)
+        {
+          ptr += (sizeof(int) + 1);
+          npoints = (int*)ptr;
+          ptr += sizeof(int);
+
+          for (int index1 = 0; index1 < *npoints; ++index1)
+          {
+            ptr+=sizeof(double);
+            ptr+=sizeof(double);
+
+            if (vertexcounter == atVertex.back())
+            // TODO: The above is deprecated as it doesn't allow for account for all ends of lines.
+            // replace with the below when the rest of QgsGeometry is migrated to a GEOS back-end.
+            //if (
+            //    (index0 == atVertex.get_at(0)) &&
+            //    (index1 == atVertex.get_at(1))
+            //   )
+            {
+              // Found the vertex of the linestring we were looking for.
+
+              // assign the rubber band indices
+
+              if(index1 == 0)
+                {
+                  beforeVertex = -1;
+                }
+              else
+                {
+                  beforeVertex = vertexcounter-1;
+                }
+              if(index1 == (*npoints)-1)
+                {
+                  afterVertex = -1;
+                }
+              else
+                {
+                  afterVertex = vertexcounter+1;
+                }
+              }
+            ++vertexcounter;
+          }
+        }
+
+        break;
+      }
+
+      case QGis::WKBMultiPolygon:
+      {
+        unsigned char* ptr=mGeometry+5;
+        int* npolys=(int*)ptr;
+        int* nrings;
+        int* npoints;
+        ptr+=sizeof(int);
+
+        for (int index0 = 0; index0 < *npolys; ++index0)
+        {
+          ptr += (1 + sizeof(int)); //skip endian and polygon type
+          nrings=(int*)ptr;
+          ptr+=sizeof(int);
+
+          for (int index1 = 0; index1 < *nrings; ++index1)
+          {
+            npoints=(int*)ptr;
+            ptr+=sizeof(int);
+
+            for (int index2 = 0; index2 < *npoints; ++index2)
+            {
+              ptr += sizeof(double);
+              ptr += sizeof(double);
+
+              if (vertexcounter == atVertex.back())
+              // TODO: The above is deprecated as it doesn't allow for multiple linear rings in the polygon.
+              // replace with the below when the rest of QgsGeometry is migrated to a GEOS back-end.
+              //if (
+              //    (index0 == atVertex.get_at(0)) &&
+              //    (index1 == atVertex.get_at(1)) &&
+              //    (index2 == atVertex.get_at(2))
+              //    )
+              {
+                // Found the vertex of the linear-ring of the polygon we were looking for.
+
+                // assign the rubber band indices
+
+                if(index2 == 0)
+                {
+                  beforeVertex = vertexcounter+(*npoints-2);
+                  afterVertex = vertexcounter+1;
+                }
+                else if(index2 == (*npoints-1))
+                {
+                  beforeVertex = vertexcounter-1;
+                  afterVertex = vertexcounter - (*npoints-2);
+                }
+                else
+                {
+                  beforeVertex = vertexcounter-1;
+                  afterVertex = vertexcounter+1;
+                }
+              }
+              ++vertexcounter;
+            }
+          }
+        }
+
+        break;
+      }
+
+      default:
+        break;
+    } // switch (wkbType)
+
+  } // if (mGeometry)
+}
+
+
 
 bool QgsGeometry::insertVertexBefore(double x, double y,
                                      int beforeVertex,
