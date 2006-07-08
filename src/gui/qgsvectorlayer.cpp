@@ -1271,6 +1271,10 @@ QGis::VectorType QgsVectorLayer::vectorType() const
       case QGis::WKBMultiPolygon:
         return QGis::Polygon;
     }
+#ifdef QGISDEBUG
+    QgsLogger::debug("Warning: Data Provider Geometry type is not recognised, is", type, 1, __FILE__, __FUNCTION__, __LINE__);
+#endif
+
   }
   else
   {
@@ -2857,7 +2861,14 @@ int& snappedFeatureId, QgsGeometry& snappedGeometry, double tolerance)
     }
 
     minDistSegPoint = feature->geometry()->closestVertex(origPoint, atVertexTemp, beforeVertexIndexTemp, afterVertexIndexTemp, testSqrDist);
-    if(testSqrDist < minSqrDist)
+    if (
+        (testSqrDist < minSqrDist) ||
+        (
+         // this test will "choose" the polygon that the origPoint is in:
+         (testSqrDist == minSqrDist) && 
+         (feature->geometry()->contains(&origPoint))
+        )
+       )
     {
       point = minDistSegPoint;
       minSqrDist = testSqrDist;
@@ -2887,7 +2898,14 @@ int& snappedFeatureId, QgsGeometry& snappedGeometry, double tolerance)
       {
 	minDistSegPoint = (*iter)->geometry()->closestVertex(origPoint, atVertexTemp, beforeVertexIndexTemp, afterVertexIndexTemp, testSqrDist);
       }
-    if(testSqrDist < minSqrDist)
+    if (
+        (testSqrDist < minSqrDist) ||
+        (
+         // this test will "choose" the polygon that the origPoint is in:
+         (testSqrDist == minSqrDist) && 
+         ((*iter)->geometry()->contains(&origPoint))
+        )
+       )
     {
       point = minDistSegPoint;
       minSqrDist = testSqrDist;
@@ -2905,7 +2923,14 @@ int& snappedFeatureId, QgsGeometry& snappedGeometry, double tolerance)
   for(std::map<int, QgsGeometry>::iterator it = mChangedGeometries.begin(); it != mChangedGeometries.end(); ++it)
     {
       minDistSegPoint = it->second.closestVertex(origPoint, atVertexTemp, beforeVertexIndexTemp, afterVertexIndexTemp, testSqrDist);
-      if(testSqrDist < minSqrDist)
+      if (
+          (testSqrDist < minSqrDist) ||
+          (
+           // this test will "choose" the polygon that the origPoint is in:
+           (testSqrDist == minSqrDist) && 
+           (it->second.contains(&origPoint))
+          )
+         )
 	{
 	  point = minDistSegPoint;
 	  minSqrDist = testSqrDist;
@@ -2992,7 +3017,14 @@ QgsGeometry& snappedGeometry, double tolerance)
 
     minDistSegPoint = feature->geometry()->closestSegmentWithContext(origPoint, beforeVertexTemp, testSqrDist);
 
-    if (testSqrDist < minSqrDist)
+    if (
+        (testSqrDist < minSqrDist) ||
+        (
+         // this test will "choose" the polygon that the origPoint is in:
+         (testSqrDist == minSqrDist) && 
+         (feature->geometry()->contains(&origPoint))
+        )
+       )
     {
       point = minDistSegPoint;
       minSqrDist = testSqrDist;
@@ -3022,7 +3054,14 @@ QgsGeometry& snappedGeometry, double tolerance)
 	minDistSegPoint = (*iter)->geometry()->closestSegmentWithContext(origPoint, beforeVertexTemp, testSqrDist);
       }
 
-    if (testSqrDist < minSqrDist)
+    if (
+        (testSqrDist < minSqrDist) ||
+        (
+         // this test will "choose" the polygon that the origPoint is in:
+         (testSqrDist == minSqrDist) && 
+         ((*iter)->geometry()->contains(&origPoint))
+        )
+       )
     {
       point = minDistSegPoint;
       minSqrDist = testSqrDist;
@@ -3038,7 +3077,14 @@ QgsGeometry& snappedGeometry, double tolerance)
   for(std::map<int, QgsGeometry>::iterator it = mChangedGeometries.begin(); it != mChangedGeometries.end(); ++it)
     {
       minDistSegPoint = it->second.closestSegmentWithContext(origPoint, beforeVertexTemp, testSqrDist);
-      if(testSqrDist < minSqrDist)
+      if (
+          (testSqrDist < minSqrDist) ||
+          (
+           // this test will "choose" the polygon that the origPoint is in:
+           (testSqrDist == minSqrDist) && 
+           (it->second.contains(&origPoint))
+          )
+        )
 	{
 	  point = minDistSegPoint;
 	  minSqrDist = testSqrDist;

@@ -2088,6 +2088,20 @@ bool QgsGeometry::intersects(QgsRect* r) const
 }
 
 
+bool QgsGeometry::contains(QgsPoint* p) const
+{
+    bool returnval = false;
+
+    exportWkbToGeos();
+
+    geos::Point* geosPoint = geosGeometryFactory->createPoint(geos::Coordinate(p->x(), p->y()));
+
+    return mGeos->contains(geosPoint);
+
+    delete geosPoint;
+}
+
+
 bool QgsGeometry::exportToWkt(unsigned char * geom) const
 {
 #ifdef QGISDEBUG

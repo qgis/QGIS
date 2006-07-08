@@ -178,8 +178,11 @@ class QgsGeometry {
     /**Returns the bounding box of this feature*/
     QgsRect boundingBox() const;
 
-    /**Test for intersection with a rectangle (uses GEOS)*/
+    /** Test for intersection with a rectangle (uses GEOS) */
     bool intersects(QgsRect* r) const;
+
+    /** Test for containment of a point (uses GEOS) */
+    bool contains(QgsPoint* p) const;
 
     /**Creates a geos geometry from this features geometry. Note, that the returned object needs to be deleted*/
     geos::Geometry* geosGeometry() const;
@@ -190,6 +193,7 @@ class QgsGeometry {
 
     // Private static members
 
+    //! This is used to create new GEOS variables.
     static geos::GeometryFactory* geosGeometryFactory;
 
 
