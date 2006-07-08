@@ -210,11 +210,11 @@ QMessageBox::Ok);
   
     QgsPoint digitisedPoint = toMapCoords(e->pos());
     vlayer->snapPoint(digitisedPoint, tolerance);
-    mCaptureList.push_back(digitisedPoint);
-    mRubberBand->addPoint(digitisedPoint);
   
     if (e->button() == Qt::LeftButton)
     {
+      mCaptureList.push_back(digitisedPoint);
+      mRubberBand->addPoint(digitisedPoint);
       mCapturing = TRUE;
     }
     else if (e->button() == Qt::RightButton)
