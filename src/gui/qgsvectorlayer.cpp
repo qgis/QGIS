@@ -2848,8 +2848,12 @@ int& snappedFeatureId, QgsGeometry& snappedGeometry, double tolerance)
   {
     if(mChangedGeometries.find(feature->featureId()) != mChangedGeometries.end())
     {
-      // substitute the modified geometry for the committed version
-      feature->setGeometry(mChangedGeometries[feature->featureId()]);
+      // ignore for this loop, let the loop below over mChangedGeometries
+      // detect the changed geometry instead
+      continue;
+
+      // // substitute the modified geometry for the committed version
+      // feature->setGeometry(mChangedGeometries[feature->featureId()]);
     }
 
     minDistSegPoint = feature->geometry()->closestVertex(origPoint, atVertexTemp, beforeVertexIndexTemp, afterVertexIndexTemp, testSqrDist);
@@ -2873,8 +2877,11 @@ int& snappedFeatureId, QgsGeometry& snappedGeometry, double tolerance)
   {
     if(mChangedGeometries.find((*iter)->featureId()) != mChangedGeometries.end())
       {
-	//use the modified geometry
-	minDistSegPoint = mChangedGeometries[(*iter)->featureId()].closestVertex(origPoint, atVertexTemp, beforeVertexIndexTemp, afterVertexIndexTemp, testSqrDist);
+        // ignore for this loop, let the loop below over mChangedGeometries
+        // detect the changed geometry instead
+        continue;
+        // //use the modified geometry
+        // minDistSegPoint = mChangedGeometries[(*iter)->featureId()].closestVertex(origPoint, atVertexTemp, beforeVertexIndexTemp, afterVertexIndexTemp, testSqrDist);
       }
     else
       {
@@ -2975,8 +2982,12 @@ QgsGeometry& snappedGeometry, double tolerance)
   {
     if (mChangedGeometries.find(feature->featureId()) != mChangedGeometries.end())
     {
-      // substitute the modified geometry for the committed version
-      feature->setGeometry( mChangedGeometries[ feature->featureId() ] );
+      // ignore for this loop, let the loop below over mChangedGeometries
+      // detect the changed geometry instead
+      continue;
+
+      // // substitute the modified geometry for the committed version
+      // feature->setGeometry( mChangedGeometries[ feature->featureId() ] );
     }
 
     minDistSegPoint = feature->geometry()->closestSegmentWithContext(origPoint, beforeVertexTemp, testSqrDist);
@@ -2999,8 +3010,12 @@ QgsGeometry& snappedGeometry, double tolerance)
   {
     if(mChangedGeometries.find((*iter)->featureId()) != mChangedGeometries.end())
       {
-	//use the modified geometry
-	minDistSegPoint = mChangedGeometries[(*iter)->featureId()].closestSegmentWithContext(origPoint, beforeVertexTemp, testSqrDist);
+        // ignore for this loop, let the loop below over mChangedGeometries
+        // detect the changed geometry instead
+        continue;
+
+        // //use the modified geometry
+        // minDistSegPoint = mChangedGeometries[(*iter)->featureId()].closestSegmentWithContext(origPoint, beforeVertexTemp, testSqrDist);
       }
     else
       {

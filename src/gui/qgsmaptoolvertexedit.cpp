@@ -49,33 +49,46 @@ void QgsMapToolVertexEdit::canvasMoveEvent(QMouseEvent * e)
   {
     //int index = (mStartPointValid ? 1 : 0);
     int index;
-    if(mTool == MoveVertex)
-      {
-	if(mRubberBandIndex1 == -1)
-	  {
-	    index = 0;
-	  }
-	else
-	  {
-	    index = 1;
-	  }
-      }
-    else
-      {
-	index = 1;
-      }
 
-      //snap to nearest vertex of vectorlayer
-      QgsPoint rbpoint = toMapCoords(e->pos());
-      if(mTool == AddVertex)
-	{
-	  snapVertex(rbpoint, mSnappedAtFeatureId, mSnappedBeforeVertex.back());
-	}
-      else if(mTool == MoveVertex)
-	{
-	  snapVertex(rbpoint, mSnappedAtFeatureId, mSnappedAtVertex.back());
-	}
+    if(mTool == MoveVertex)
+    {
+      if(mRubberBandIndex1 == -1)
+      {
+        index = 0;
+      }
+      else
+      {
+        index = 1;
+      }
+    }
+    else
+    {
+      index = 1;
+    }
+
+    QgsPoint rbpoint = toMapCoords(e->pos());
+
+    //snap to nearest vertex of vectorlayer
+    if (mTool == AddVertex)
+    {
+      snapVertex(rbpoint, mSnappedAtFeatureId, mSnappedBeforeVertex.back());
+    }
+    else if (mTool == MoveVertex)
+    {
+      snapVertex(rbpoint, mSnappedAtFeatureId, mSnappedAtVertex.back());
+    }
+
+    if (mRubberBand)
+    {
       mRubberBand->movePoint(index, rbpoint);
+    }
+    else
+    {
+#ifdef QGISDEBUG
+        std::cout << "QgsMapToolVertexEdit::canvasMoveEvent: mRubberBand is empty when it ought not to be!" << std::endl;
+#endif
+    }
+
   }
 
 }
@@ -327,6 +340,9 @@ bool QgsMapToolVertexEdit::snapVertexOfSnappedSegment(QgsPoint& point)
             << mSnappedAtVertex.toString().toLocal8Bit().data() << "." << std::endl;
 #endif
 
+  // Now determine the rubber band verticies to use with this snapped vertex
+  mSnappedAtGeometry.adjacentVerticies(mSnappedAtVertex, mRubberBandIndex1, mRubberBandIndex2);
+
   return TRUE;
 }
 
@@ -393,9 +409,8 @@ void QgsMapToolVertexEdit::canvasReleaseEvent(QMouseEvent * e)
     std::cout << "QgsMapToolVertexEdit::canvasReleaseEvent: AddVertex." << std::endl;
 #endif
 
-    delete mRubberBand;
-    mRubberBand = 0;
-  
+    deleteRubberBand();
+
     // Add the new vertex
     vlayer->insertVertexBefore(point.x(), point.y(), mSnappedAtFeatureId, mSnappedBeforeVertex);
     mCanvas->refresh();
@@ -439,10 +454,22 @@ void QgsMapToolVertexEdit::createRubberBand()
   mRubberBand->setWidth(project->readNumEntry("Digitizing", "/LineWidth", 1));
 }
 
+void QgsMapToolVertexEdit::deleteRubberBand()
+{
+  if (mRubberBand)
+  {
+    delete mRubberBand;
+    mRubberBand = 0;
+
+    // also remove reference to the indicies to the ends of the rubber band
+    mRubberBandIndex1 = -1;
+    mRubberBandIndex2 = -1;
+  }
+}
+
 void QgsMapToolVertexEdit::deactivate()
 {
-  delete mRubberBand;
-  mRubberBand = 0;
+  deleteRubberBand();
 }
 
 QgsPoint QgsMapToolVertexEdit::maybeInversePoint(QgsPoint point, const char whenmsg[])

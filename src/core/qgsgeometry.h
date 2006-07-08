@@ -83,9 +83,26 @@ class QgsGeometry {
     void setGeos(geos::Geometry* geos);
 
     /**
-       Returns the vertex closest to the given point (and also vertex index, squared distance and indexes of the vertices before/after)
+       Returns the vertex closest to the given point 
+       (and also vertex index, squared distance and indexes of the vertices before/after)
     */
     QgsPoint closestVertex(const QgsPoint& point, QgsGeometryVertexIndex& atVertex, int& beforeVertex, int& afterVertex, double& sqrDist) const;
+
+
+    /**
+       Returns the indexes of the vertices before and after the given vertex index.
+
+       This function takes into account the following factors:
+
+       1. If the given vertex index is at the end of a linestring,
+          the adjacent index will be -1 (for "no adjacent vertex")
+       2. If the given vertex index is at the end of a linear ring
+          (such as in a polygon), the adjacent index will take into
+          account the first vertex is equal to the last vertex (and will
+          skip equal vertex positions).
+    */
+    void adjacentVerticies(const QgsGeometryVertexIndex& atVertex, int& beforeVertex, int& afterVertex) const;
+
 
     /** Insert a new vertex before the given vertex index,
      *  ring and item (first number is index 0)

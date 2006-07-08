@@ -48,13 +48,17 @@ class QgsMapToolVertexEdit : public QgsMapTool
     //! Overridden mouse release event
     virtual void canvasReleaseEvent(QMouseEvent * e);
 
+    //! called when map tool is being deactivated
     virtual void deactivate();
 
   private:
     
-    //! create instance of rubber band
+    //! create instance of rubber band - done when the mouse is pressed down
     void createRubberBand();
-    
+
+    //! delete instance of rubber band - done when the mouse is released
+    void deleteRubberBand();
+
     //! returns tolerance in map coordinates
     double tolerance();
 
@@ -73,10 +77,10 @@ class QgsMapToolVertexEdit : public QgsMapTool
 
         This is useful when selecting a vertex to move, as the selection process is a two step process:
 
-        1. Select the closest line segment to the mouse pointer.
-             - snapSegmentWithContext()
-        2. Select the closest vertex on (1).
-             - snapVertexOfSnappedSegement()
+        1. Select the closest line segment to the mouse pointer
+             (snapSegmentWithContext()).
+        2. Select the closest vertex on (1)
+             (snpVertexOfSnappedSegment()).
 
         Step 1 is needed to disambiguate between two geometries sharing the same vertex.
      */
