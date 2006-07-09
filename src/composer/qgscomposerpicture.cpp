@@ -151,7 +151,9 @@ void QgsComposerPicture::loadPicture ( void )
         // Dummy picture
         QPainter  p;
 	p.begin( &mPicture );
-  	p.setPen( QPen(QColor(0,0,0), 1) );
+        QPen pen(QColor(0,0,0));
+        pen.setWidthF(3.0);
+  	p.setPen( pen );
 	p.setBrush( QBrush( QColor( 150, 150, 150) ) );
 
         int w, h; 

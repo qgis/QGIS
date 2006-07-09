@@ -38,7 +38,7 @@ QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id,
     // Font and pen 
     mFont.setPointSize ( fontSize );
     // Could make this user variable in the future
-    mPen.setWidthF (2.0);
+    mPen.setWidthF (3.0);
 
     Q3CanvasPolygonalItem::setX(x);
     Q3CanvasPolygonalItem::setY(y);

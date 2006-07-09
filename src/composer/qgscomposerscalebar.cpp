@@ -137,7 +137,7 @@ void QgsComposerScalebar::init ( void )
     setActive(true);
 
     // Default value (map units?) for the scalebar border
-    mPen.setWidthF(2.0);
+    mPen.setWidthF(3.0);
 
     // Plot style
     setPlotStyle ( QgsComposition::Preview );
