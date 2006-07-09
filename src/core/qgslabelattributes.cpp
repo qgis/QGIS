@@ -71,7 +71,7 @@ QgsLabelAttributes::QgsLabelAttributes( bool def )
 	setAlignment ( Qt::AlignCenter );
 	setColor ( QColor(0,0,0) );
 
-	setBufferSize ( 0, PointUnits );
+	setBufferSize ( 1, PointUnits );
 	setBufferColor ( QColor(255,255,255) );
 	setBufferStyle ( Qt::NoBrush );
 	
