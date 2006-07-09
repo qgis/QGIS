@@ -279,13 +279,8 @@ void QgsComposerMap::draw ( QPainter & painter )
       painter.save();
       painter.translate ( Q3CanvasRectangle::x(), Q3CanvasRectangle::y() );
 
-#if QT_VERSION < 0x040000
-      // Note: CoordDevice doesn't work well
-      painter.setClipRect ( 0, 0, Q3CanvasRectangle::width(), Q3CanvasRectangle::height(), QPainter::CoordPainter );
-#else
       // TODO: Qt4 appears to force QPainter::CoordDevice - need to check if this is actually valid.
       painter.setClipRect ( 0, 0, Q3CanvasRectangle::width(), Q3CanvasRectangle::height() );
-#endif
 
       draw( &painter, &mExtent, &transform);
       painter.restore();
