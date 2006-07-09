@@ -285,7 +285,7 @@ void QgsLabelDialog::changeFontColor(void)
 #endif
     mFontColor = QColorDialog::getColor ( mFontColor );
     QPalette palette = lblSample->palette();
-    palette.setColor(lblSample->foregroundRole(), mBufferColor);
+    palette.setColor(lblSample->foregroundRole(), mFontColor);
     lblSample->setPalette(palette);
 }
 
