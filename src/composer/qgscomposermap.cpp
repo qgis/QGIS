@@ -88,7 +88,7 @@ void QgsComposerMap::init ()
     mPreviewModeComboBox->setCurrentItem ( Cache );
 
     mWidthScale = 1.0 / mComposition->scale();
-    mSymbolScale = 1.0;
+    mSymbolScale = 0.5;
     mFontScale = 1.0;
 
     mFrame = true;
