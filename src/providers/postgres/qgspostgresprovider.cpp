@@ -1360,7 +1360,14 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
       ii = columnRelations.find(QString(ii->second.table_schema + '.' +
 					ii->second.table_name + '.' +
 					ii->second.column_name));
-      assert(ii != columnRelations.end());
+      if (ii == columnRelations.end())
+      {
+        std::cerr << "ERROR: Failed to find the column that " 
+                  << ii->second.table_schema.local8Bit().data()  << '.'
+                  << ii->second.table_name.local8Bit().data() << "."
+                  << ii->second.column_name.local8Bit().data() 
+                  << " refers to.\n";
+      }
       ++count;
     }
 
@@ -1373,7 +1380,7 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
 		<< "interation limit (" << max_loops << ").\n";
       cols[ii->second.view_column_name] = SRC("","","","");
     }
-    else
+    else if (ii != columnRelations.end())
     {
       cols[ii->second.view_column_name] = 
 	SRC(ii->second.table_schema, 
