@@ -306,6 +306,8 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 		itemLabels[icnt] = sym->label();
 		  } else {
 		itemLabels[icnt] = sym->lowerValue();
+                if (sym->upperValue().length() > 0)
+                  itemLabels[icnt] += " - " + sym->upperValue();
 		  }
 	      }
 		  
