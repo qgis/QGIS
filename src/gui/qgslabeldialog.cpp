@@ -62,8 +62,6 @@ QgsLabelDialog::QgsLabelDialog ( QgsLabel *label,  QWidget *parent )
         this, SLOT(changeBufferColor()) );
     connect( pbnDefaultFontColor, SIGNAL(clicked()),
         this, SLOT(changeFontColor()) );
-    connect( chkUseBuffer, SIGNAL(toggled(bool)),
-        this, SLOT(chkUseBuffer_toggled(bool)) );
 }
 
 
@@ -249,7 +247,7 @@ void QgsLabelDialog::init ( )
   }
   else //defaults for when no offset is defined
   {
-    spinBufferSize->setValue(0);
+    spinBufferSize->setValue(1);
   }
   //set the state of the buffer enabled checkbox
   chkUseBuffer->setChecked(myLabelAttributes->bufferEnabled());   
@@ -264,9 +262,9 @@ void QgsLabelDialog::init ( )
 
 void QgsLabelDialog::changeFont ( void )
 {
-    #ifdef QGISDEBUG
+#ifdef QGISDEBUG
     std::cerr << "QgsLabelDialog::changeFont()" << std::endl;
-    #endif
+#endif
     bool resultFlag;
     mFont = QFontDialog::getFont(&resultFlag, mFont, this );
     if ( resultFlag ) 
@@ -282,20 +280,24 @@ void QgsLabelDialog::changeFont ( void )
 
 void QgsLabelDialog::changeFontColor(void)
 {
-    #ifdef QGISDEBUG
+#ifdef QGISDEBUG
     std::cerr << "QgsLabelDialog::changeFontColor()" << std::endl;
-    #endif
+#endif
     mFontColor = QColorDialog::getColor ( mFontColor );
-    lblSample->setPaletteForegroundColor(mFontColor);
+    QPalette palette = lblSample->palette();
+    palette.setColor(lblSample->foregroundRole(), mBufferColor);
+    lblSample->setPalette(palette);
 }
 
 void QgsLabelDialog::changeBufferColor(void)
 {
-    #ifdef QGISDEBUG
+#ifdef QGISDEBUG
     std::cerr << "QgsLabelDialog::changeBufferColor()" << std::endl;
-    #endif
+#endif
     mBufferColor = QColorDialog::getColor ( mBufferColor );
-    lblSample->setPaletteBackgroundColor(mBufferColor);
+    QPalette palette = lblSample->palette();
+    palette.setColor(lblSample->backgroundRole(), mBufferColor);
+    lblSample->setPalette(palette);
 }
 
 
@@ -313,16 +315,16 @@ int QgsLabelDialog::itemNoForField(QString theFieldName, QStringList theFieldLis
 
 QgsLabelDialog::~QgsLabelDialog()
 {
-    #ifdef QGISDEBUG
+#ifdef QGISDEBUG
     std::cerr << "QgsLabelDialog::~QgsLabelDialog()" << std::endl;
-    #endif
+#endif
 }
 
 void QgsLabelDialog::apply()
 {
-    #ifdef QGISDEBUG
+#ifdef QGISDEBUG
     std::cerr << "QgsLabelDialog::apply()" << std::endl;
-    #endif
+#endif
 
     //set the label props that are NOT bound to a field in the attributes tbl
     //All of these are set in the layerAttributes member of the layer
