@@ -1941,6 +1941,13 @@ bool QgsWmsProvider::calculateExtent()
 	continue; //ignore extents of layers which cannot be transformed info the required CRS
       }
 
+    //make sure extent does not contain 'inf' or 'nan'
+    if(!isfinite(extent.xMin()) || !isfinite((int)extent.yMin()) || !isfinite(extent.xMax()) || \
+!isfinite((int)extent.yMax()))
+      {
+	continue;
+      }
+
     // add to the combined extent of all the active sublayers
     if (firstLayer)
     {
