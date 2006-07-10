@@ -1662,6 +1662,12 @@ void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& laye
 
     // Insert into the local class' registry
     layersSupported.push_back(layerProperty);
+
+    //if there are several <Layer> elements without a parent layer, the style list needs to be cleared
+    if(atleaf)
+      {
+	layerProperty.style.clear();
+      }
   }
 
 #ifdef QGISDEBUG
