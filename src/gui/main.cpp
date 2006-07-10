@@ -369,6 +369,14 @@ int main(int argc, char *argv[])
   {
     QCoreApplication::setLibraryPaths(QStringList(QCoreApplication::applicationDirPath()));
   }
+
+  // If the GDAL plugins are bundled with the application and GDAL_DRIVER_PATH
+  // is not already defined, use the GDAL plugins in the application bundle.
+  QString gdalPlugins(QCoreApplication::applicationDirPath().append("/lib/gdalplugins"));
+  if (QFile::exists(gdalPlugins) && !getenv("GDAL_DRIVER_PATH"))
+  {
+    setenv("GDAL_DRIVER_PATH", gdalPlugins, 1);
+  }
 #endif
 
   // Check to see if qgis was started from the source directory. 
