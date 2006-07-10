@@ -477,12 +477,18 @@ void QgisApp::createActions()
   // Help Menu Related items
   //
   mActionHelpContents= new QAction(QIcon(myIconPath+"/mActionHelpContents.png"), tr("Help Contents"), this);
+#ifdef Q_WS_MAC
+  mActionHelpContents->setShortcut(tr("Ctrl+?","Help Documentation (Mac)"));
+#else
   mActionHelpContents->setShortcut(tr("F1","Help Documentation"));
+#endif
   mActionHelpContents->setStatusTip(tr("Help Documentation"));
   connect(mActionHelpContents, SIGNAL(triggered()), this, SLOT(helpContents()));
   //
   mActionQgisHomePage= new QAction(QIcon(myIconPath+"/mActionQgisHomePage.png"), tr("Qgis Home Page"), this);
+#ifndef Q_WS_MAC
   mActionQgisHomePage->setShortcut(tr("Ctrl+H","QGIS Home Page"));
+#endif
   mActionQgisHomePage->setStatusTip(tr("QGIS Home Page"));
   connect(mActionQgisHomePage, SIGNAL(triggered()), this, SLOT(helpQgisHomePage()));
   //
