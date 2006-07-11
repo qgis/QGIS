@@ -48,37 +48,58 @@ void QgsClipboard::replaceWithCopyOf( std::vector<QgsFeature> features )
 #endif
 
   // Replace the system clipboard.
-  
+
   QStringList textLines;
-  
+  QStringList textFields;
+  bool firstFeature = TRUE;
+
+  // then the field contents
   for (std::vector<QgsFeature>::iterator it  = features.begin();
                                          it != features.end();
                                        ++it)
   {
-    QStringList textFields;
+    std::vector<QgsFeatureAttribute> attributes = it->attributeMap();
+
+    // first do the field names
+    if (firstFeature)
+    {
+      textFields += "wkt_geom";
+
+      for (std::vector<QgsFeatureAttribute>::iterator it2  = attributes.begin();
+                                                      it2 != attributes.end();
+                                                    ++it2)
+      {
+        textFields += it2->fieldName();
+      }
+
+      textLines += textFields.join(",");
+      textFields.clear();
+    }
+
 
     // TODO: Set up Paste Transformations to specify the order in which fields are added.
 
     textFields += it->geometry()->wkt();
 
-    std::vector<QgsFeatureAttribute> attributes = it->attributeMap();
-
 #ifdef QGISDEBUG
-       std::cout << "QgsClipboard::replaceWithCopyOf: about to traverse fields." << std::endl;
+//       std::cout << "QgsClipboard::replaceWithCopyOf: about to traverse fields." << std::endl;
 #endif
     for (std::vector<QgsFeatureAttribute>::iterator it2  = attributes.begin();
                                                     it2 != attributes.end();
                                                   ++it2)
     {
 #ifdef QGISDEBUG
-       std::cout << "QgsClipboard::replaceWithCopyOf: inspecting field '"
-                 << (it2->fieldName()).toLocal8Bit().data()
-                 << "'." << std::endl;
+//       std::cout << "QgsClipboard::replaceWithCopyOf: inspecting field '"
+//                 << (it2->fieldName()).toLocal8Bit().data()
+//                 << "'." << std::endl;
 #endif
       textFields += it2->fieldValue();
     }
 
     textLines += textFields.join(",");
+    textFields.clear();
+
+    firstFeature = FALSE;
   }
   
   QString textCopy = textLines.join("\n");
@@ -86,6 +107,16 @@ void QgsClipboard::replaceWithCopyOf( std::vector<QgsFeature> features )
   QClipboard *cb = QApplication::clipboard();
 
   // Copy text into the clipboard
+
+  // With qgis running under Linux, but with a Windows based X
+  // server (Xwin32), ::Selection was necessary to get the data into
+  // the Windows clipboard (which seems contrary to the Qt
+  // docs). With a Linux X server, ::Clipboard was required.
+  // The simple solution was to put the text into both clipboards.
+
+  // The ::Selection setText() below one may need placing inside so
+  // #ifdef so that it doesn't get compiled under Windows.
+  cb->setText(textCopy, QClipboard::Selection);
   cb->setText(textCopy, QClipboard::Clipboard);
   
 #ifdef QGISDEBUG

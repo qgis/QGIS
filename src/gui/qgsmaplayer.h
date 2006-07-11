@@ -111,11 +111,12 @@ public:
     {}
     ;
 
-    /*! Display the attribute table for the layer
+    //! Display the attribute table for the layer
+    /**
+       \param qgisApp   This should be the QgisApp that spawned this table.
      */
-    virtual void table()
-    {}
-    ;
+    virtual void table(QgisApp * qgisApp)
+    {};
 
     /*! Return the extent of the layer as a QRect
      */
