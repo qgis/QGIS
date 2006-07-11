@@ -3211,7 +3211,7 @@ void QgisApp::attributeTable()
   QgsMapLayer *layer = mMapLegend->currentLayer();
   if (layer)
   {
-    layer->table();
+    layer->table(this);
   }
   else
   {
@@ -3322,63 +3322,62 @@ void QgisApp::deleteVertex()
 }
 
 
-void QgisApp::editCut()
+void QgisApp::editCut(QgsMapLayer * layerContainingSelection)
 {
-  if (activeLayer())
+  QgsMapLayer * selectionLayer = (layerContainingSelection != 0) ?
+                                 (layerContainingSelection) :
+                                 (activeLayer());
+
+  if (selectionLayer)
   {
     // Test for feature support in this layer
-    QgsVectorLayer* activeVectorLayer = dynamic_cast<QgsVectorLayer*>(activeLayer());
+    QgsVectorLayer* selectionVectorLayer = dynamic_cast<QgsVectorLayer*>(selectionLayer);
 
-    if (activeVectorLayer != 0)
+    if (selectionVectorLayer != 0)
     {
-
-      clipboard()->replaceWithCopyOf( *(activeVectorLayer->selectedFeatures()) );
-      activeVectorLayer->deleteSelectedFeatures();
-    }  
-  }  
+      clipboard()->replaceWithCopyOf( *(selectionVectorLayer->selectedFeatures()) );
+      selectionVectorLayer->deleteSelectedFeatures();
+    }
+  }
 }
 
 
-void QgisApp::editCopy()
+void QgisApp::editCopy(QgsMapLayer * layerContainingSelection)
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgisApp::editCopy: entered."
-    << std::endl;
-#endif
-  if (activeLayer())
-  {
-#ifdef QGISDEBUG
-    std::cerr << "QgisApp::editCopy: has active layer, feature type " << activeLayer()->featureType() << "."
-      << std::endl;
-#endif
-    // Test for feature support in this layer
-    QgsVectorLayer* activeVectorLayer = dynamic_cast<QgsVectorLayer*>(activeLayer());
+  QgsMapLayer * selectionLayer = (layerContainingSelection != 0) ?
+                                 (layerContainingSelection) :
+                                 (activeLayer());
 
-    if (activeVectorLayer != 0)
+  if (selectionLayer)
+  {
+    // Test for feature support in this layer
+    QgsVectorLayer* selectionVectorLayer = dynamic_cast<QgsVectorLayer*>(selectionLayer);
+
+    if (selectionVectorLayer != 0)
     {
-#ifdef QGISDEBUG
-      std::cerr << "QgisApp::editCopy: has active vector layer."
-        << std::endl;
-#endif
-      clipboard()->replaceWithCopyOf( *(activeVectorLayer->selectedFeatures()) );
-    }  
-  }  
+      clipboard()->replaceWithCopyOf( *(selectionVectorLayer->selectedFeatures()) );
+    }
+  }
 }
 
 
-void QgisApp::editPaste()
+void QgisApp::editPaste(QgsMapLayer * destinationLayer)
 {
-  if (activeLayer())
+  QgsMapLayer * pasteLayer = (destinationLayer != 0) ?
+                             (destinationLayer) :
+                             (activeLayer());
+
+  if (pasteLayer)
   {
     // Test for feature support in this layer
-    QgsVectorLayer* activeVectorLayer = dynamic_cast<QgsVectorLayer*>(activeLayer());
+    QgsVectorLayer* pasteVectorLayer = dynamic_cast<QgsVectorLayer*>(pasteLayer);
 
-    if (activeVectorLayer != 0)
+    if (pasteVectorLayer != 0)
     {
-      activeVectorLayer->addFeatures( clipboard()->copyOf() );
+      pasteVectorLayer->addFeatures( clipboard()->copyOf() );
       mMapCanvas->refresh();
-    }  
-  }  
+    }
+  }
 }
 
 

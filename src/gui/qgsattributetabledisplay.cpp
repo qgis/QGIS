@@ -19,6 +19,7 @@
 
 #include "qgsattributetabledisplay.h"
 
+#include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsaddattrdialog.h"
 #include "qgsdelattrdialog.h"
@@ -33,8 +34,10 @@
 #include <QPixmap>
 #include <QToolButton>
 
-QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer)
-: QDialog(), mLayer(layer)
+QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer, QgisApp * qgisApp)
+: QDialog(),
+  mLayer(layer),
+  mQgisApp(qgisApp)
 {
   setupUi(this);
   setTheme();
@@ -225,7 +228,11 @@ void QgsAttributeTableDisplay::removeSelection()
 
 void QgsAttributeTableDisplay::copySelectedRowsToClipboard()
 {
-  table()->copySelectedRows();
+  // Deprecated
+  // table()->copySelectedRows();
+
+  // Use the Application's copy method instead
+  mQgisApp->editCopy(mLayer);
 }
 
 void QgsAttributeTableDisplay::search()

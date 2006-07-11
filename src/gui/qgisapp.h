@@ -294,12 +294,7 @@ public slots:
   void moveVertex();
   //! activates the delete vertex tool
   void deleteVertex();
-  //! cuts selected features on the active layer to the clipboard
-  void editCut();
-  //! copies selected features on the active layer to the clipboard
-  void editCopy();
-  //! copies features on the clipboard to the active layer
-  void editPaste();
+
   //! activates the selection tool
   void select();
   //! refresh map canvas
@@ -345,6 +340,26 @@ public slots:
   void measureArea();
   //! show the attribute table for the currently selected layer
   void attributeTable();
+
+  //! cuts selected features on the active layer to the clipboard
+  /**
+     \param layerContainingSelection  The layer that the selection will be taken from
+                                      (defaults to the active layer on the legend)
+   */
+  void editCut(QgsMapLayer * layerContainingSelection = 0);
+  //! copies selected features on the active layer to the clipboard
+  /**
+     \param layerContainingSelection  The layer that the selection will be taken from
+                                      (defaults to the active layer on the legend)
+   */
+  void editCopy(QgsMapLayer * layerContainingSelection = 0);
+  //! copies features on the clipboard to the active layer
+  /**
+     \param destinationLayer  The layer that the clipboard will be pasted to
+                              (defaults to the active layer on the legend)
+   */
+  void editPaste(QgsMapLayer * destinationLayer = 0);
+
 
 signals:
   /** emitted when a key is pressed and we want non widget sublasses to be able

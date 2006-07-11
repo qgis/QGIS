@@ -967,7 +967,7 @@ void QgsVectorLayer::drawVertexMarker(int x, int y, QPainter& p)
   p.drawLine(x-m, y-m, x+m, y+m);
 }
 
-void QgsVectorLayer::table()
+void QgsVectorLayer::table(QgisApp * qgisApp)
 {
   if (tabledisplay)
   {
@@ -980,7 +980,7 @@ void QgsVectorLayer::table()
   {
     // display the attribute table
     QApplication::setOverrideCursor(Qt::waitCursor);
-    tabledisplay = new QgsAttributeTableDisplay(this);
+    tabledisplay = new QgsAttributeTableDisplay(this, qgisApp);
     connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDisplay()));
     tabledisplay->table()->fillTable(this);
     tabledisplay->table()->setSorting(true);

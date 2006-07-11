@@ -95,7 +95,10 @@ public:
   void invertSelection();
 
   //! Display the attribute table
-  void table();
+  /**
+     \param qgisApp   This should be the QgisApp that spawned this table.
+   */
+  void table(QgisApp * qgisApp);
 
   //! Set the primary display field to be used in the identify results dialog
   void setDisplayField(QString fldName=0);

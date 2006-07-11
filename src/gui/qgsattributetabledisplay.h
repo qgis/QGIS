@@ -25,6 +25,7 @@
 
 class QgsAttributeTable;
 class QgsVectorLayer;
+class QgisApp;
 
 /**
   *@author Gary E.Sherman
@@ -34,13 +35,21 @@ class QgsAttributeTableDisplay:public QDialog, private Ui::QgsAttributeTableBase
 {
   Q_OBJECT
   public:
-    QgsAttributeTableDisplay(QgsVectorLayer* layer);
+    /**
+     \param qgisApp   This should be the QgisApp that spawned this table.
+                      Otherwise the Copy button on this QgsAttributeTableDisplay
+                      will not work.
+     */
+    QgsAttributeTableDisplay(QgsVectorLayer* layer, QgisApp * qgisApp);
     ~QgsAttributeTableDisplay();
+
     QgsAttributeTable *table();
     void setTitle(QString title);
   protected:
     QgsVectorLayer* mLayer;
-    
+
+    QgisApp * mQgisApp;
+
     void doSearch(const QString& searchString);
 
     virtual void closeEvent(QCloseEvent* ev);
