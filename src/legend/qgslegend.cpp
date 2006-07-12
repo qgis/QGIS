@@ -228,21 +228,21 @@ void QgsLegend::mouseMoveEvent(QMouseEvent * e)
 		    {
 		      if(origin->parent() != dest->parent())
 			{
-			  dest->parent()->insertChild(dest->parent()->childCount(), origin);
-			  origin->moveItem(dest);
-			  dest->moveItem(origin);
-		      }
+			  moveItem(origin, dest);
+			  moveItem(dest, origin);
+			}
 		      else
-		      {
-			  dest->moveItem(origin);
-		      }
-		  }
-	      }
+			{
+			  moveItem(dest, origin);
+			}
+		    }
+		}
 	      else //over top of item
 	      {
 		  if (mItemBeingMoved != dest->nextSibling())
 		  {
-		      origin->moveItem(dest);
+		    //origin->moveItem(dest);
+		    moveItem(origin, dest);
 		  } 
 	      }
 	      setCurrentItem(origin);

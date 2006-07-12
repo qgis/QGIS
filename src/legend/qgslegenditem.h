@@ -85,7 +85,7 @@ public:
     QgsLegendItem* nextSibling();
     /**Returns the younger sibling or 0 if this item is the first child of its parent*/
     QgsLegendItem* findYoungerSibling();
-    /**Moves this item after as an older sibling after another item*/
+    /**Moves this item after (as an older sibling) another item*/
     void moveItem(QgsLegendItem* after);
     /**Removes all the children of this item. This function is for qt-4.0.1 compatibility, where
      'takeChildren()' does not yet exist*/

@@ -93,10 +93,10 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayer::accept(const QgsLegendItem* li) const
       LEGEND_ITEM_TYPE type = li->type();
       if ( type == LEGEND_LAYER)
 	{
-	  if(parent() == li->parent())
-	    {
+	  //if(parent() == li->parent())
+	  //{
 	      return REORDER;
-	    }
+	      //}
 	}
       else if(type == LEGEND_GROUP)
 	{
