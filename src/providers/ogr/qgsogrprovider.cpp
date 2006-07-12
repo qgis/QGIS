@@ -89,11 +89,11 @@ QgsOgrProvider::QgsOgrProvider(QString const & uri)
   QgsDebugMsg("Data source uri is " + uri);
 
   // try to open for update
-  ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri.toLocal8Bit().data(), TRUE, &ogrDriver);
+  ogrDataSource = OGRSFDriverRegistrar::Open(QFile::encodeName(uri).constData(), TRUE, &ogrDriver);
   if(ogrDataSource == NULL)
   {
     // try to open read-only
-    ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri.toLocal8Bit().data(),FALSE, &ogrDriver);
+    ogrDataSource = OGRSFDriverRegistrar::Open(QFile::encodeName(uri).constData(), FALSE, &ogrDriver);
 
     //TODO Need to set a flag or something to indicate that the layer
     //TODO is in read-only mode, otherwise edit ops will fail

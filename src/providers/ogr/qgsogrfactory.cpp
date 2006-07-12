@@ -52,7 +52,7 @@ void QgsOGRFactory::setURI(QString uri)
   // make connection to the data source
   std::cerr << "Data source uri is " << dataSourceURI << std::endl;
   // try to open for read
-  ogrDS = OGRSFDriverRegistrar::Open((const char *) dataSourceURI, FALSE, &ogrDriver);
+  ogrDS = OGRSFDriverRegistrar::Open(QFile::encodeName(dataSourceURI).constData(), FALSE, &ogrDriver);
   if(ogrDS != NULL)
   {
 #ifdef QGISDEBUG

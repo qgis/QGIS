@@ -24,6 +24,7 @@
 #include <fstream>
 #include <cstdio>
 
+#include <QFile>
 #include <QProgressDialog>
 #include <QString>
 #include <QLabel>
@@ -45,7 +46,7 @@ QgsShapeFile::QgsShapeFile(QString name){
   filename = name;
   features = 0;
   OGRRegisterAll();
-  ogrDataSource = OGRSFDriverRegistrar::Open((const char *) filename);
+  ogrDataSource = OGRSFDriverRegistrar::Open(QFile::encodeName(filename).constData());
   if (ogrDataSource != NULL){
     valid = true;
     ogrLayer = ogrDataSource->GetLayer(0);
