@@ -68,17 +68,17 @@ int main(int argc, char **argv)
     {"cflags", no_argument, 0, 'c'},
     {"libs", no_argument, 0, 'l'},
     {"plugindir", no_argument, 0, 'w'},
-    {"major_version", no_argument, 0, 'v1'},
-    {"minor_version", no_argument, 0, 'v2'},
-    {"micro_version", no_argument, 0, 'v3'},
-    {"extra_version", no_argument, 0, 'v4'},
+    {"major_version", no_argument, 0, '1'},
+    {"minor_version", no_argument, 0, '2'},
+    {"micro_version", no_argument, 0, '3'},
+    {"extra_version", no_argument, 0, '4'},
     {0, 0, 0, 0}
   };
   // If no argument is given, show hint
   if(argc == 1)
   {
-    std::cout << "qgis_config: argument required" << std::endl; 
-    std::cout << "Try \"qgis_config --help\" for more information." << std::endl; 
+    std::cout << "qgis_config: argument required\n" 
+              << "Try \"qgis_config --help\" for more information.\n";
   }else
   {
     // One or more arguments supplied
@@ -97,41 +97,42 @@ int main(int argc, char **argv)
       switch (optionChar)
       {
         case 'p':
-          std::cout << PREFIX << std::endl; 
+          std::cout << PREFIX << '\n'; 
           break;
 
         case 'b':
-          std::cout << BIN_DIR << std::endl; 
+          std::cout << BIN_DIR << '\n'; 
           break;
 
         case 'c':
-          std::cout << "-I" << INCLUDE_DIR << " ";
-					std::cout << "-I" << INCLUDE_DIR << "/qgis" << std::endl; 
+          std::cout << "-I" << INCLUDE_DIR << " "
+                    << "-I" << INCLUDE_DIR << "/qgis\n"; 
           break;
 
         case 'l':
-          std::cout << "-L" << LIB_DIR << " ";
-					std::cout << " -lqgis" << std::endl; 
+          std::cout << "-L" << LIB_DIR 
+                    << " -lqgis_core -lqgis_gui -lqgis_composer"
+                    << " -lqgisgrass -lqgis_legend -lqgis_raster\n";
           break;
 
         case 'w':
-          std::cout << PLUGIN_DIR << std::endl; 
+          std::cout << PLUGIN_DIR << '\n'; 
           break;
 
-        case 'v1':
-          std::cout << MAJOR_VERSION << std::endl; 
+        case '1':
+          std::cout << MAJOR_VERSION << '\n'; 
           break;
 
-        case 'v2':
-          std::cout << MINOR_VERSION << std::endl; 
+        case '2':
+          std::cout << MINOR_VERSION << '\n'; 
           break;
 
-        case 'v3':
-          std::cout << MICRO_VERSION << std::endl; 
+        case '3':
+          std::cout << MICRO_VERSION << '\n'; 
           break;
 
-        case 'v4':
-          std::cout << EXTRA_VERSION << std::endl; 
+        case '4':
+          std::cout << EXTRA_VERSION << '\n'; 
           break;
 
         case 'h':
@@ -140,8 +141,7 @@ int main(int argc, char **argv)
           break;
 
         default:
-          std::cout << "Try \"qgis_config --help\" for more information." 
-            << std::endl; 
+          std::cout << "Try \"qgis_config --help\" for more information.\n"; 
           return 1;  
       }
     }
