@@ -8,6 +8,8 @@
 #include <gdalwarper.h>
 #include <gdal_frmts.h>
 
+#include <QFile>
+
 #include "qgsimagewarper.h"
 
 
@@ -19,7 +21,7 @@ void QgsImageWarper::warp(const QString& input, const QString& output,
 			  ResamplingMethod resampling, bool useZeroAsTrans) {
   // Open input file
   GDALAllRegister();
-  GDALDataset* hSrcDS = static_cast<GDALDataset*>(GDALOpen((const char*)input, 
+  GDALDataset* hSrcDS = static_cast<GDALDataset*>(GDALOpen(QFile::encodeName(input).constData(), 
 							   GA_ReadOnly));
   // Setup warp options. 
   GDALWarpOptions *psWarpOptions = GDALCreateWarpOptions();
