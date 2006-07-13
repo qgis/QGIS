@@ -2096,9 +2096,11 @@ bool QgsGeometry::contains(QgsPoint* p) const
 
     geos::Point* geosPoint = geosGeometryFactory->createPoint(geos::Coordinate(p->x(), p->y()));
 
-    return mGeos->contains(geosPoint);
+    returnval = mGeos->contains(geosPoint);
 
     delete geosPoint;
+
+    return returnval;
 }
 
 
