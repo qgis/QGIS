@@ -2430,6 +2430,12 @@ void QgisApp::newVectorLayer()
   filename = openFileDialog->selectedFile();
   enc = openFileDialog->encoding();
 
+  // If the file exists, delete it otherwise we'll end up loading that
+  // file, which can cause problems (e.g., if the file contains
+  // linestrings, but we're wanting to create points, we'll end up
+  // with a linestring file).
+  QFile::remove(filename);
+
   settings.writeEntry("/UI/lastVectorFileFilter", openFileDialog->selectedFilter());
 
   settings.writeEntry("/UI/lastVectorFileFilterDir", openFileDialog->directory().absolutePath());
