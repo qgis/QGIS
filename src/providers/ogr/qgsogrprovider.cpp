@@ -1535,8 +1535,23 @@ const std::list<std::pair<QString, QString> >& attributes)
 	reference = new OGRSpatialReference(myWKT.toLocal8Bit().data());
     }
 
+    // Map the qgis geometry type to the OGR geometry type
+    OGRwkbGeometryType OGRvectortype = wkbUnknown;
+    switch (vectortype)
+    {
+    case QGis::WKBPoint:
+      OGRvectortype = wkbPoint;
+      break;
+    case QGis::WKBLineString:
+      OGRvectortype = wkbLineString;
+      break;
+    case QGis::WKBPolygon:
+      OGRvectortype = wkbPolygon;
+      break;
+    }
+
     OGRLayer* layer;	
-    layer = dataSource->CreateLayer(QFileInfo(uri).baseName(), reference, (OGRwkbGeometryType)vectortype, NULL);
+    layer = dataSource->CreateLayer(QFileInfo(uri).baseName(), reference, OGRvectortype, NULL);
     if(layer == NULL)
     {
 	return false;
