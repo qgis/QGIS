@@ -361,9 +361,10 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
         // Render label
         if ( fet != 0 )
         {
-          if(mDeleted.find(fet->featureId())==mDeleted.end())//don't render labels of deleted features
+          //don't render labels of deleted features
+          if(mDeletedFeatureIds.find(fet->featureId())==mDeletedFeatureIds.end())
           {
-            bool sel=mSelected.find(fet->featureId()) != mSelected.end();
+            bool sel=mSelectedFeatureIds.find(fet->featureId()) != mSelectedFeatureIds.end();
             mLabel->renderLabel ( p, viewExtent, *mCoordinateTransform, 
                 projectionsEnabledFlag,
                 theMapToPixelTransform, fet, sel, 0, scale);
@@ -377,7 +378,7 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
       //XXX changed from std::vector to std::list in merge from 0.7 to head (TS)
       for(std::vector<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
       {
-        bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
+        bool sel=mSelectedFeatureIds.find((*it)->featureId()) != mSelectedFeatureIds.end();
         mLabel->renderLabel ( p, viewExtent, *mCoordinateTransform, projectionsEnabledFlag,
             theMapToPixelTransform, *it, sel, 0, scale);
       }
@@ -858,7 +859,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
 	
 	if(mEditable)
 	  {
-	    if (mDeleted.find(fet->featureId()) != mDeleted.end())
+	    if (mDeletedFeatureIds.find(fet->featureId()) != mDeletedFeatureIds.end())
 	      {
 		continue; //dont't draw feature marked as deleted
 	      }
@@ -870,9 +871,22 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
 	    // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
 	    mCachedGeometries[fet->featureId()] = fet->geometryAndOwnership();
 	  }
-	    
-	//check if feature is selected
-	bool sel=mSelected.find(fet->featureId()) != mSelected.end();
+
+        // check if feature is selected
+        // only show selections of the current layer
+        bool sel;
+        if (
+            (mLegend->currentLayer() == this) &&
+            (mSelectedFeatureIds.find(fet->featureId()) != mSelectedFeatureIds.end())
+           )
+        {
+          sel = TRUE;
+        }
+        else
+        {
+          sel = FALSE;
+        }
+
 	m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel, widthScale );
 	double scale = markerScaleFactor * symbolScale;
 	drawFeature(p,fet,theMapToPixelTransform,&marker, scale, projectionsEnabledFlag);
@@ -885,7 +899,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
 	{
 	  for(std::vector<QgsFeature*>::iterator it = mAddedFeatures.begin(); it != mAddedFeatures.end(); ++it)
 	    {
-	      bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
+	      bool sel=mSelectedFeatureIds.find((*it)->featureId()) != mSelectedFeatureIds.end();
 	      m_renderer->renderFeature(p, *it, &marker, &markerScaleFactor, sel, widthScale);
 	      double scale = markerScaleFactor * symbolScale;
 	      if (mChangedGeometries.find((*it)->featureId()) != mChangedGeometries.end())
@@ -996,7 +1010,7 @@ void QgsVectorLayer::table(QgisApp * qgisApp)
 
     QObject::disconnect(tabledisplay->table(), SIGNAL(selectionChanged()), tabledisplay->table(), SLOT(handleChangedSelections()));
 
-    for (std::set<int>::iterator it = mSelected.begin(); it != mSelected.end(); ++it)
+    for (std::set<int>::iterator it = mSelectedFeatureIds.begin(); it != mSelectedFeatureIds.end(); ++it)
     {
       tabledisplay->table()->selectRowWithId(*it);//todo: avoid that the table gets repainted during each selection
 #ifdef QGISDEBUG
@@ -1018,7 +1032,7 @@ void QgsVectorLayer::table(QgisApp * qgisApp)
 
 void QgsVectorLayer::select(int number)
 {
-  mSelected.insert(number);
+  mSelectedFeatureIds.insert(number);
   emit selectionChanged();
 }
 
@@ -1049,7 +1063,7 @@ void QgsVectorLayer::select(QgsRect * rect, bool lock)
 
   while (fet = dataProvider->getNextFeature(false))
   {
-    if(mDeleted.find(fet->featureId())==mDeleted.end())//don't select deleted features
+    if(mDeletedFeatureIds.find(fet->featureId())==mDeletedFeatureIds.end())//don't select deleted features
     {
       select(fet->featureId());
       if (tabledisplay)
@@ -1097,7 +1111,7 @@ void QgsVectorLayer::invertSelection()
 
   //copy the ids of selected features to tmp
   std::list<int> tmp;
-  for(std::set<int>::iterator iter=mSelected.begin();iter!=mSelected.end();++iter)
+  for(std::set<int>::iterator iter=mSelectedFeatureIds.begin();iter!=mSelectedFeatureIds.end();++iter)
   {
     tmp.push_back(*iter);
   }
@@ -1113,7 +1127,7 @@ void QgsVectorLayer::invertSelection()
 
   while (fet = dataProvider->getNextFeature(true))
   {
-    if(mDeleted.find(fet->featureId())==mDeleted.end())//don't select deleted features
+    if(mDeletedFeatureIds.find(fet->featureId())==mDeletedFeatureIds.end())//don't select deleted features
     {
       select(fet->featureId());
     }
@@ -1126,14 +1140,14 @@ void QgsVectorLayer::invertSelection()
 
   for(std::list<int>::iterator iter=tmp.begin();iter!=tmp.end();++iter)
   {
-    mSelected.erase(*iter);
+    mSelectedFeatureIds.erase(*iter);
   }
 
   if(tabledisplay)
   {
-    QProgressDialog progress( tr("Invert Selection..."), tr("Abort"), 0, mSelected.size(), tabledisplay);
+    QProgressDialog progress( tr("Invert Selection..."), tr("Abort"), 0, mSelectedFeatureIds.size(), tabledisplay);
     int i=0;
-    for(std::set<int>::iterator iter=mSelected.begin();iter!=mSelected.end();++iter)
+    for(std::set<int>::iterator iter=mSelectedFeatureIds.begin();iter!=mSelectedFeatureIds.end();++iter)
     {
       ++i;
       progress.setValue(i);
@@ -1141,7 +1155,7 @@ void QgsVectorLayer::invertSelection()
       if(progress.wasCanceled())
       {
         //deselect the remaining features if action was canceled
-        mSelected.erase(iter,--mSelected.end());
+        mSelectedFeatureIds.erase(iter,--mSelectedFeatureIds.end());
         break;
       }
       tabledisplay->table()->selectRowWithId(*iter);//todo: avoid that the table gets repainted during each selection
@@ -1163,7 +1177,7 @@ void QgsVectorLayer::invertSelection()
 
 void QgsVectorLayer::removeSelection()
 {
-  mSelected.clear();
+  mSelectedFeatureIds.clear();
   emit selectionChanged();
 }
 
@@ -1343,7 +1357,7 @@ void QgsVectorLayer::initContextMenu_(QgisApp * app)
 
 QgsRect QgsVectorLayer::bBoxOfSelected()
 {
-  if(mSelected.size()==0)//no selected features
+  if(mSelectedFeatureIds.size()==0)//no selected features
   {
     return QgsRect(0,0,0,0);
   }
@@ -1355,7 +1369,7 @@ QgsRect QgsVectorLayer::bBoxOfSelected()
   retval.setMinimal();
   while ((fet = dataProvider->getNextFeature(false)))
   {
-    if (mSelected.find(fet->featureId()) != mSelected.end())
+    if (mSelectedFeatureIds.find(fet->featureId()) != mSelectedFeatureIds.end())
     {
       r=fet->geometry()->boundingBox();
       retval.combineExtentWith(&r);
@@ -1365,7 +1379,7 @@ QgsRect QgsVectorLayer::bBoxOfSelected()
   //also go through the not commited features
   for(std::vector<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
   {
-    if(mSelected.find((*iter)->featureId())!=mSelected.end())
+    if(mSelectedFeatureIds.find((*iter)->featureId())!=mSelectedFeatureIds.end())
     {
       r=(*iter)->geometry()->boundingBox();
       retval.combineExtentWith(&r);
@@ -1427,7 +1441,7 @@ QgsFeature * QgsVectorLayer::getFirstFeature(bool fetchAttributes, bool selected
     QgsFeature *fet = dataProvider->getFirstFeature(fetchAttributes);
     while(fet)
     {
-      bool sel = mSelected.find(fet->featureId()) != mSelected.end();
+      bool sel = mSelectedFeatureIds.find(fet->featureId()) != mSelectedFeatureIds.end();
       if ( sel ) return fet;
       fet = dataProvider->getNextFeature(fetchAttributes);
     }
@@ -1452,7 +1466,7 @@ QgsFeature * QgsVectorLayer::getNextFeature(bool fetchAttributes, bool selected)
     QgsFeature *fet;
     while ( fet = dataProvider->getNextFeature(fetchAttributes) )
     {
-      bool sel = mSelected.find(fet->featureId()) != mSelected.end();
+      bool sel = mSelectedFeatureIds.find(fet->featureId()) != mSelectedFeatureIds.end();
       if ( sel ) return fet;
     }
     return 0;
@@ -1504,7 +1518,7 @@ void QgsVectorLayer::updateExtents()
 {
   if(dataProvider)
   {
-    if(mDeleted.size()==0)
+    if(mDeletedFeatureIds.size()==0)
     {
       // get the extent of the layer from the provider
       layerExtent.setXmin(dataProvider->extent()->xMin());
@@ -1521,7 +1535,7 @@ void QgsVectorLayer::updateExtents()
       dataProvider->reset();
       while(fet=dataProvider->getNextFeature(false))
       {
-        if(mDeleted.find(fet->featureId())==mDeleted.end())
+        if(mDeletedFeatureIds.find(fet->featureId())==mDeletedFeatureIds.end())
         {
           bb=fet->boundingBox();
           layerExtent.combineExtentWith(&bb);
@@ -1784,7 +1798,7 @@ bool QgsVectorLayer::deleteSelectedFeatures()
     return false;
   }
 
-  for(std::set<int>::iterator it=mSelected.begin();it!=mSelected.end();++it)
+  for(std::set<int>::iterator it=mSelectedFeatureIds.begin();it!=mSelectedFeatureIds.end();++it)
   {
     bool notcommitedfeature=false;
     //first test, if the feature with this id is a not-commited feature
@@ -1802,14 +1816,14 @@ bool QgsVectorLayer::deleteSelectedFeatures()
     }
     if(!notcommitedfeature)
     {
-      mDeleted.insert(*it);
+      mDeletedFeatureIds.insert(*it);
     }
   }
 
-  if(mSelected.size()>0)
+  if(mSelectedFeatureIds.size()>0)
   {
     mModified=true;
-    /*      mSelected.clear();*/
+    /*      mSelectedFeatureIds.clear();*/
     removeSelection();
     triggerRepaint();
     updateExtents();
@@ -2393,76 +2407,154 @@ int QgsVectorLayer::findFreeId()
 
 bool QgsVectorLayer::commitChanges()
 {
+  /*
+     Unfortunately the commits occur in four distinct stages,
+     (add features, change attributes, change geometries, delete features)
+     so if a stage fails, it's difficult to roll back cleanly.
+     Therefore the error messages become a bit complicated to generate.
+   */
+
   if(dataProvider)
   {
-    bool returnvalue=true;
+    return FALSE;
+  }
 
-    // Commit new features
+  // Attempt the commit of new features
+  bool addedFeaturesOk = FALSE;
+  if (mAddedFeatures.size() > 0)
+  {
     std::list<QgsFeature*> addedlist;
-    for(std::vector<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+    for (std::vector<QgsFeature*>::iterator it = mAddedFeatures.begin(); it != mAddedFeatures.end(); ++it)
     {
       addedlist.push_back(*it);
     }
 
-    if(!dataProvider->addFeatures(addedlist))
+    if (!dataProvider->addFeatures(addedlist))
     {
-      returnvalue=false;
-    }
+      QStringList errorStrings;
+      errorStrings += tr("Could not commit the added features.");
+      errorStrings += tr("No other types of changes will be committed at this time.");
 
-    // Delete the features themselves before deleting the references to them.
-    for(std::vector<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
-    {
-      delete *it;
+      QMessageBox::warning(0, tr("Error"), errorStrings.join(" "));
+      return FALSE;
     }
-    mAddedFeatures.clear();
-
-    // Commit changed attributes
-    if( mChangedAttributes.size() > 0 ) 
+    else
     {
-      if ( !dataProvider->changeAttributeValues ( mChangedAttributes ) ) 
+      // Added features committed OK, remove the in-memory changes
+
+      // Delete the features themselves before deleting the references to them.
+      for (std::vector<QgsFeature*>::iterator it = mAddedFeatures.begin(); it != mAddedFeatures.end(); ++it)
       {
-        QMessageBox::warning(0,tr("Warning"),tr("Could not change attributes"));
+        delete *it;
       }
-      mChangedAttributes.clear();
+      mAddedFeatures.clear();
+      addedFeaturesOk = TRUE;
     }
-
-    // Commit changed geometries
-    if( mChangedGeometries.size() > 0 ) 
-    {
-      if ( !dataProvider->changeGeometryValues ( mChangedGeometries ) ) 
-      {
-        QMessageBox::warning(0,tr("Error"),tr("Could not commit changes to geometries"));
-      }
-      mChangedGeometries.clear();
-    }
-
-    // Commit deleted features
-    if(mDeleted.size()>0)
-    {
-      std::list<int> deletelist;
-      for(std::set<int>::iterator it=mDeleted.begin();it!=mDeleted.end();++it)
-      {
-        deletelist.push_back(*it);
-        mSelected.erase(*it);//just in case the feature is still selected
-      }
-      if(!dataProvider->deleteFeatures(deletelist))
-      {
-        returnvalue=false;
-      }
-    }
-
-    return returnvalue;
   }
-  else
+
+  // Attempt the commit of changed attributes
+  bool changedAttributesOk = FALSE;
+  if (mChangedAttributes.size() > 0)
   {
-    return false;
+    if (!dataProvider->changeAttributeValues(mChangedAttributes))
+    {
+      QStringList errorStrings;
+      errorStrings += tr("Could not commit the changed attributes.");
+      if (addedFeaturesOk)
+      {
+        errorStrings += tr("However, the added features were committed OK.");
+      }
+      errorStrings += tr("No other types of changes will be committed at this time.");
+
+      QMessageBox::warning(0, tr("Error"), errorStrings.join(" "));
+      return FALSE;
+    }
+    else
+    {
+      // Changed attributes committed OK, remove the in-memory changes
+      mChangedAttributes.clear();
+      changedAttributesOk = TRUE;
+    }
   }
+
+  // Attempt the commit of changed geometries
+  bool changedGeometriesOk = FALSE;
+  if (mChangedGeometries.size() > 0)
+  {
+    if (!dataProvider->changeGeometryValues(mChangedGeometries))
+    {
+      QStringList errorStrings;
+      errorStrings += tr("Could not commit the changed geometries.");
+      if (addedFeaturesOk)
+      {
+        errorStrings += tr("However, the added features were committed OK.");
+      }
+      if (changedAttributesOk)
+      {
+        errorStrings += tr("However, the changed attributes were committed OK.");
+      }
+      errorStrings += tr("No other types of changes will be committed at this time.");
+
+      QMessageBox::warning(0, tr("Error"), errorStrings.join(" "));
+      return FALSE;
+    }
+    else
+    {
+      // Changed geometries committed OK, remove the in-memory changes
+      mChangedGeometries.clear();
+      changedGeometriesOk = TRUE;
+    }
+  }
+
+  // Attempt the commit of deleted features
+  bool deletedFeaturesOk = FALSE;
+  if (mDeletedFeatureIds.size() > 0)
+  {
+    std::list<int> deletelist;
+    for (std::set<int>::iterator it = mDeletedFeatureIds.begin(); it != mDeletedFeatureIds.end(); ++it)
+    {
+      deletelist.push_back(*it);
+      mSelectedFeatureIds.erase(*it);//just in case the feature is still selected
+    }
+
+    if (!dataProvider->deleteFeatures(deletelist))
+    {
+      QStringList errorStrings;
+      errorStrings += tr("Could not commit the deleted features.");
+      if (addedFeaturesOk)
+      {
+        errorStrings += tr("However, the added features were committed OK.");
+      }
+      if (changedAttributesOk)
+      {
+        errorStrings += tr("However, the changed attributes were committed OK.");
+      }
+      if (changedGeometriesOk)
+      {
+        errorStrings += tr("However, the changed geometries were committed OK.");
+      }
+      errorStrings += tr("No other types of changes will be committed at this time.");
+
+      QMessageBox::warning(0, tr("Error"), errorStrings.join(" "));
+      return FALSE;
+    }
+    else
+    {
+      // Deleted features committed OK, remove the in-memory changes
+      mDeletedFeatureIds.clear();
+      deletedFeaturesOk = TRUE;
+    }
+  }
+
+  return TRUE;
 }
 
 bool QgsVectorLayer::rollBack()
 {
   //Roll back changed features
-  mChangedGeometries.clear();
+  mChangedGeometries.clear();   // TODO: Does this leak memory?
+  mChangedAttributes.clear();
+
   // Roll back added features
   // Delete the features themselves before deleting the references to them.
   for(std::vector<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
@@ -2472,7 +2564,7 @@ bool QgsVectorLayer::rollBack()
   mAddedFeatures.clear();
 
   // Roll back deleted features
-  mDeleted.clear();
+  mDeletedFeatureIds.clear();
 
   updateExtents();
   return true;
@@ -2486,7 +2578,7 @@ std::vector<QgsFeature>* QgsVectorLayer::selectedFeatures()
   }
   
   std::vector<QgsFeature>* features = new std::vector<QgsFeature>;
-  if(mSelected.size() == 0)
+  if(mSelectedFeatureIds.size() == 0)
     {
       return features;
     }
@@ -2498,7 +2590,7 @@ std::vector<QgsFeature>* QgsVectorLayer::selectedFeatures()
       cacheGeometries();
     }
 
-  for (std::set<int>::iterator it  = mSelected.begin(); it != mSelected.end(); ++it)
+  for (std::set<int>::iterator it  = mSelectedFeatureIds.begin(); it != mSelectedFeatureIds.end(); ++it)
   {
     // Check this selected item against the committed or cached features
     if ( mCachedGeometries.find(*it) != mCachedGeometries.end() )
@@ -2547,7 +2639,7 @@ bool QgsVectorLayer::addFeatures(std::vector<QgsFeature*>* features, bool makeSe
 
     if (makeSelected)
     {
-      mSelected.clear();
+      mSelectedFeatureIds.clear();
     }
 
     for (std::vector<QgsFeature*>::iterator iter  = features->begin();
@@ -2563,7 +2655,7 @@ bool QgsVectorLayer::addFeatures(std::vector<QgsFeature*>* features, bool makeSe
 
       if (makeSelected)
       {
-        mSelected.insert((*iter)->featureId());
+        mSelectedFeatureIds.insert((*iter)->featureId());
       }
     }
 

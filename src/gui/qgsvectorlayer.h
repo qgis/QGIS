@@ -420,9 +420,24 @@ public:
                               QgsGeometry& snappedGeometry,
                               double tolerance);
 
-  /**Commits edited attributes. Depending on the feature id,
-     the changes are written to not commited features or redirected to
-     the data provider*/
+  /**
+    Commits edited attributes. Depending on the feature id,
+    the changes are written to not commited features or redirected to
+    the data provider
+
+    The commits (in this version) occur in three distinct stages,
+    (delete attributes, add attributes, change attribute values)
+    so if a stage fails, it's difficult to roll back cleanly.
+
+    \todo Need to indicate at which stage the failed commit occurred,
+          for better cleanup and recovery from the error.
+
+    \param deleted  Set of attribute names (i.e. columns) to delete
+    \param added    Map (name, type) of attribute names (i.e. columns) to add
+    \param changed  Map (feature ID, Map (attribute name, new value) )
+                      of attribute values to change
+
+   */
   bool commitAttributeChanges(const std::set<QString>& deleted,
             const std::map<QString,QString>& added,
             std::map<int,std::map<QString,QString> >& changed);
@@ -442,7 +457,7 @@ public:
   std::vector<QgsFeature*>& addedFeatures() { return mAddedFeatures; }
 
   /** returns array of deleted feature IDs */
-  std::set<int>& deletedFeatureIds() { return mDeleted; }
+  std::set<int>& deletedFeatureIds() { return mDeletedFeatureIds; }
  
   /** returns array of features with changed attributes */
   changed_attr_map& changedAttributes() { return mChangedAttributes; }
@@ -459,18 +474,24 @@ public:
   /** cache of the committed geometries retrieved for the current display */
   std::map<int, QgsGeometry*> mCachedGeometries;
   
-  /** Set holding the feature IDs that are activated */
-  std::set<int> mSelected;
+  /** Set holding the feature IDs that are activated.  Note that if a feature
+      subsequently gets deleted (i.e. by its addition to mDeletedFeatureIds),
+      it always needs to be removed from mSelectedFeatureIds as well.
+   */
+  std::set<int> mSelectedFeatureIds;
   
   /** Set holding the feature IDs that are in "set A" for a future geometry algebra operation
       TODO: BM: Do something useful with this.
    */
-  std::set<int> mSubjected;
+  std::set<int> mSubjectedFeatureIds;
   
-  /** Deleted feature IDs which are not commited */
-  std::set<int> mDeleted;
+  /** Deleted feature IDs which are not commited.  Note a feature can be added and then deleted
+      again before the change is committed - in that case the added feature would be removed
+      from mAddedFeatures only and *not* entered here. */
+  std::set<int> mDeletedFeatureIds;
   
-  /** New features which are not commited */
+  /** New features which are not commited.  Note a feature can be added and then changed,
+      therefore the details here can be overridden by mChangedAttributes and mChangedGeometries. */
   std::vector<QgsFeature*> mAddedFeatures;
   
   /** Changed attributes which are not commited */
@@ -489,8 +510,24 @@ public:
   QgsVectorLayerProperties *m_propertiesDialog;
   /**Goes through all features and finds a free id (e.g. to give it temporarily to a not-commited feature)*/
   int findFreeId();
-  /**Writes the changes to disk*/
+
+  /**
+    Attempts to commit any changes to disk.  Returns the result of the attempt.
+    If a commit fails, the in-memory changes are left alone.
+
+    This allows editing to continue if the commit failed on e.g. a
+    disallowed value in a Postgres database - the user can re-edit and try
+    again.
+
+    The commits (in this version) occur in four distinct stages,
+    (add features, change attributes, change geometries, delete features)
+    so if a stage fails, it's difficult to roll back cleanly.
+    Therefore any error message also includes which stage failed so 
+    that the user has some chance of repairing the damage cleanly.
+
+   */
   bool commitChanges();
+
   /**Discards the edits*/
   bool rollBack();
 
