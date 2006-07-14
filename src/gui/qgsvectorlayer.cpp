@@ -431,7 +431,8 @@ QgsRect QgsVectorLayer::inverseProjectRect(const QgsRect& r) const
 unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature, 
     QPainter* p,
     QgsMapToPixel* mtp, 
-    bool projectionsEnabledFlag)
+    bool projectionsEnabledFlag,
+    bool drawingToEditingCanvas)
 {
   unsigned char *ptr = feature + 5;
   unsigned int nPoints = *((int*)ptr);
@@ -503,7 +504,11 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
   p->setPen(myTransparentPen);
   p->drawPolyline(pa);
 
-  if(mEditable)
+  // draw vertex markers if in editing mode, but only to the main canvas
+  if (
+      (mEditable) &&
+      (drawingToEditingCanvas)
+     )
     {
       std::vector<double>::const_iterator xIt;
       std::vector<double>::const_iterator yIt;
@@ -522,7 +527,8 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
 unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature, 
     QPainter* p, 
     QgsMapToPixel* mtp, 
-    bool projectionsEnabledFlag)
+    bool projectionsEnabledFlag,
+    bool drawingToEditingCanvas)
 {
   typedef std::pair<std::vector<double>, std::vector<double> > ringType;
   typedef ringType* ringTypePtr;
@@ -762,7 +768,11 @@ std::cerr << i << ": " << ring->first[i]
     for (; ri != ringDetails.end(); ++ri)
       p->drawPolygon(pa.constData() + ri->first, ri->second, Qt::OddEvenFill);
     
-    if(mEditable)//draw the vertex markers
+    // draw vertex markers if in editing mode, but only to the main canvas
+    if (
+        (mEditable) &&
+        (drawingToEditingCanvas)
+       )
       {
 	for(int i = 0; i < pa.size(); ++i)
 	  {
@@ -782,15 +792,27 @@ std::cerr << i << ": " << ring->first[i]
 }
 
 
-bool QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform)
+bool QgsVectorLayer::draw(QPainter * p,
+                          QgsRect * viewExtent,
+                          QgsMapToPixel * theMapToPixelTransform,
+                          bool drawingToEditingCanvas)
 {
-  draw ( p, viewExtent, theMapToPixelTransform, 1., 1.);
+  draw(p,
+       viewExtent,
+       theMapToPixelTransform,
+       drawingToEditingCanvas,
+       1.,
+       1.);
 
   return TRUE; // Assume success always
 }
 
-void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, 
-    double widthScale, double symbolScale)
+void QgsVectorLayer::draw(QPainter * p,
+                          QgsRect * viewExtent,
+                          QgsMapToPixel * theMapToPixelTransform,
+                          bool drawingToEditingCanvas,
+                          double widthScale,
+                          double symbolScale)
 {
   if(m_renderer)
   {
@@ -889,7 +911,13 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
 
 	m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel, widthScale );
 	double scale = markerScaleFactor * symbolScale;
-	drawFeature(p,fet,theMapToPixelTransform,&marker, scale, projectionsEnabledFlag);
+        drawFeature(p,
+                    fet,
+                    theMapToPixelTransform,
+                    &marker,
+                    scale,
+                    projectionsEnabledFlag,
+                    drawingToEditingCanvas);
 	++featureCount;
 	delete fet;
       }	
@@ -909,7 +937,13 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
 	      //give a deep copy of the geometry to mCachedGeometry because it will be erased at each redraw
 	      QgsGeometry* deepCopy = new QgsGeometry(*((*it)->geometry()));
 	      mCachedGeometries.insert(std::make_pair((*it)->featureId(), deepCopy));
-	      drawFeature(p,*it,theMapToPixelTransform,&marker,scale, projectionsEnabledFlag);
+              drawFeature(p,
+                          *it,
+                          theMapToPixelTransform,
+                          &marker,
+                          scale,
+                          projectionsEnabledFlag,
+                          drawingToEditingCanvas);
 	    }
 	}
     }
@@ -3191,8 +3225,13 @@ QgsGeometry& snappedGeometry, double tolerance)
 }
 
 
-void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * theMapToPixelTransform, 
-    QPixmap * marker, double markerScaleFactor, bool projectionsEnabledFlag)
+void QgsVectorLayer::drawFeature(QPainter* p,
+                                 QgsFeature* fet,
+                                 QgsMapToPixel * theMapToPixelTransform,
+                                 QPixmap * marker,
+                                 double markerScaleFactor,
+                                 bool projectionsEnabledFlag,
+                                 bool drawingToEditingCanvas)
 {
   // Only have variables, etc outside the switch() statement that are
   // used in all cases of the statement (otherwise they may get
@@ -3274,8 +3313,11 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
       }
     case WKBLineString:
       {
-        drawLineString(feature, p, theMapToPixelTransform,
-            projectionsEnabledFlag);
+        drawLineString(feature,
+                       p,
+                       theMapToPixelTransform,
+                       projectionsEnabledFlag,
+                       drawingToEditingCanvas);
         break;
       }
     case WKBMultiLineString:
@@ -3286,15 +3328,21 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
 
         for (register unsigned int jdx = 0; jdx < numLineStrings; jdx++)
         {
-          ptr = drawLineString(ptr, p, theMapToPixelTransform,
-              projectionsEnabledFlag);
+          ptr = drawLineString(ptr,
+                               p,
+                               theMapToPixelTransform,
+                               projectionsEnabledFlag,
+                               drawingToEditingCanvas);
         }
         break;
       }
     case WKBPolygon:
       {
-        drawPolygon(feature, p, theMapToPixelTransform,
-            projectionsEnabledFlag);
+        drawPolygon(feature,
+                    p,
+                    theMapToPixelTransform,
+                    projectionsEnabledFlag,
+                    drawingToEditingCanvas);
         break;
       }
     case WKBMultiPolygon:
@@ -3303,8 +3351,11 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
         unsigned int numPolygons = *((int*)ptr);
         ptr = feature + 9;
         for (register unsigned int kdx = 0; kdx < numPolygons; kdx++)
-          ptr = drawPolygon(ptr, p, theMapToPixelTransform, 
-              projectionsEnabledFlag);
+          ptr = drawPolygon(ptr,
+                            p,
+                            theMapToPixelTransform, 
+                            projectionsEnabledFlag,
+                            drawingToEditingCanvas);
         break;
       }
     default:
