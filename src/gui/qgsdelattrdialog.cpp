@@ -19,18 +19,19 @@
 #include "qgsfield.h"
 #include <Q3Header>
 
-QgsDelAttrDialog::QgsDelAttrDialog(Q3Header* header): QgsDelAttrDialogBase()
+QgsDelAttrDialog::QgsDelAttrDialog(Q3Header* header): QDialog()
 {
-    QObject::connect((QObject*)mOkButton, SIGNAL(clicked()), this, SLOT(accept()));
-    QObject::connect((QObject*)mCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+  setupUi(this);
+  QObject::connect(mOkButton, SIGNAL(clicked(bool)), this, SLOT(accept()));
+  QObject::connect(mCancelButton, SIGNAL(clicked(bool)), this, SLOT(reject()));
 
-    //insert attribute names into the QListView
-    if(header)
+  //insert attribute names into the QListView
+  if(header)
     {
-	listBox2->clear();
-	for(int i=1;i<header->count();++i)
+      listBox2->clear();
+      for(int i=1;i<header->count();++i)
 	{
-	    listBox2->insertItem(header->label(i));
+	  listBox2->insertItem(header->label(i));
 	}
     }
 }
