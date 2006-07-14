@@ -35,7 +35,6 @@ class QDomDocument;
 class QDomNode;
 class QMouseEvent;
 class QTreeWidgetItem;
-class Q3PopupMenu;
 
 /**
    \class QgsLegend

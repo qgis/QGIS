@@ -32,17 +32,16 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsrasterlayerproperties.h"
-#include <float.h>
+
+#include <cfloat>
 #include <QCoreApplication>
 #include <QPixmap>
 #include <QMouseEvent>
 #include <iostream>
 #include <QTreeWidgetItem>
-#include <Q3PopupMenu>
 #include <QMenu>
 #include <QFont>
 #include <QHeaderView>
-#include <Q3ListViewItem>
 
 static const char *const ident_ = "$Id$";
 
