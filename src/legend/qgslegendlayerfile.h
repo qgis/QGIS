@@ -42,7 +42,13 @@ public:
      This method is used by QgsMapLayer to paint additional
     information (overview, editable, pyramides) to the pixmap*/
     QPixmap getOriginalPixmap() const;
+
     void setLegendPixmap(const QPixmap& pix);
+
+    void setOverviewPixmap(const QPixmap& pix);
+
+    void setEditingPixmap(const QPixmap& pix);
+
     /**Sets mVisibilityCheckBox to on/off*/
     void toggleCheckBox(bool state);
     /**Returns a label for a layer. Is static such that
