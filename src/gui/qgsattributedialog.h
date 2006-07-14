@@ -38,6 +38,13 @@ class QgsAttributeDialog: public QDialog, private Ui::QgsAttributeDialogBase
      attribute values are set to the feature if the dialog is accepted.
     Returns true if accepted and false if canceled*/
     static bool queryAttributes(QgsFeature& f);
+
+    // Saves and restores the size and position from the last time
+    // this dialog box was used.
+    void savePositionAndColumnWidth();
+    void restorePositionAndColumnWidth();
+ private:
+    QString _settingsPath;
 };
 
 #endif
