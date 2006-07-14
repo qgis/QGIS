@@ -1964,24 +1964,7 @@ bool QgsPostgresProvider::changeAttributeValues(std::map<int,std::map<QString,QS
   {
     for(std::map<QString,QString>::const_iterator siter=(*iter).second.begin();siter!=(*iter).second.end();++siter)
     {
-      QString value=(*siter).second;
-
-      //find out, if value contains letters and quote if yes
-      bool text=false;
-      for(int i=0;i<value.length();++i)
-      {
-        if(value[i].isLetter())
-        {
-          text=true;
-        }
-      }
-      if(text)
-      {
-        value.prepend("'");
-        value.append("'");
-      }
-
-      QString sql="UPDATE "+mSchemaTableName+" SET "+(*siter).first+"="+value+" WHERE " +primaryKey+"="+QString::number((*iter).first);
+      QString sql="UPDATE "+mSchemaTableName+" SET "+(*siter).first+"='"+(*siter).second+"' WHERE " +primaryKey+"="+QString::number((*iter).first);
 #ifdef QGISDEBUG
       qWarning(sql);
 #endif
