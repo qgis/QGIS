@@ -172,7 +172,7 @@ QString QgsVectorDataProvider::capabilitiesString() const
   if (abilities & QgsVectorDataProvider::SelectAtId)
   {
     // Not really meaningful to the user.
-    // abilitiesList = "Select at ID";
+    // abilitiesList += "Select at ID";
 #ifdef QGISDEBUG
         std::cerr << "QgsVectorDataProvider::capabilitiesString "
           << "Select at ID" << std::endl;
@@ -186,6 +186,35 @@ QString QgsVectorDataProvider::capabilitiesString() const
         std::cerr << "QgsVectorDataProvider::capabilitiesString "
           << "Change Geometries" << std::endl;
 #endif
+  }
+
+  if (abilities & QgsVectorDataProvider::SelectGeometryAtId)
+  {
+
+    if (abilities & QgsVectorDataProvider::RandomSelectGeometryAtId)
+    {
+      abilitiesList += "Select Geometries by ID (random access)";
+#ifdef QGISDEBUG
+          std::cerr << "QgsVectorDataProvider::capabilitiesString "
+            << "Select Geometries by ID (random access)" << std::endl;
+#endif
+    }
+    else if (abilities & QgsVectorDataProvider::SequentialSelectGeometryAtId)
+    {
+      abilitiesList += "Select Geometries by ID (sequential access)";
+#ifdef QGISDEBUG
+          std::cerr << "QgsVectorDataProvider::capabilitiesString "
+            << "Select Geometries by ID (sequential access)" << std::endl;
+#endif
+    }
+    else
+    {
+      abilitiesList += "Select Geometries by ID (unknown access method)";
+#ifdef QGISDEBUG
+          std::cerr << "QgsVectorDataProvider::capabilitiesString "
+            << "Select Geometries by ID (unknown access method)" << std::endl;
+#endif
+    }
   }
 
   return abilitiesList.join(", ");

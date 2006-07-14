@@ -719,6 +719,56 @@ void QgsOgrProvider::getFeatureAttributes(OGRFeature *ogrFet, QgsFeature *f){
   }
 }
 
+void QgsOgrProvider::getFeatureAttributes(int key, int &row, QgsFeature *f)
+{
+  if(!valid)
+  {
+      QgsLogger::critical("Read attempt on an invalid shapefile data source");
+      return;
+  }
+
+  OGRFeature* fet;
+  OGRGeometry* geom;
+
+  if ((fet = ogrLayer->GetFeature(key)) != NULL)
+  {
+    getFeatureAttributes(fet, f);
+
+    delete fet;
+  }
+}
+
+void QgsOgrProvider::getFeatureGeometry(int key, QgsFeature *f)
+{
+  if(!valid)
+  {
+      QgsLogger::critical("Read attempt on an invalid shapefile data source");
+      return;
+  }
+
+  OGRFeature* fet;
+  OGRGeometry* geom;
+
+  if ((fet = ogrLayer->GetFeature(key)) != NULL)
+  {
+    if (geom = fet->GetGeometryRef())
+    {
+      geom = fet->GetGeometryRef();
+      // get the wkb representation
+      unsigned char *feature = new unsigned char[geom->WkbSize()];
+      geom->exportToWkb((OGRwkbByteOrder) endian(), feature);
+      OGRFeatureDefn * featureDefinition = fet->GetDefnRef();
+      QString featureTypeName = featureDefinition ? 
+                                QString(featureDefinition->GetName()) : 
+                                QString("");
+
+      f->setGeometryAndOwnership(feature, geom->WkbSize());
+
+    }
+    delete fet;
+  }
+}
+
 std::vector<QgsField> const & QgsOgrProvider::fields() const
 {
   return attributeFields;
@@ -1155,10 +1205,18 @@ int QgsOgrProvider::capabilities() const
     // the #defines we want to test for here.
 
     if (ogrLayer->TestCapability("RandomRead"))
-    // TRUE if the GetFeature() method works for this layer.
+    // TRUE if the GetFeature() method works *efficiently* for this layer.
+    // TODO: Perhaps influence if QGIS caches into memory 
+    //       (vs read from disk every time) based on this setting.
     {
-      // TODO: Perhaps influence if QGIS caches into memory (vs read from disk every time) based on this setting.
+      ability |= QgsVectorDataProvider::RandomSelectGeometryAtId;
     }
+    else
+    {
+      ability |= QgsVectorDataProvider::SequentialSelectGeometryAtId;
+    }
+    ability |= QgsVectorDataProvider::SelectGeometryAtId;
+
 
     if (ogrLayer->TestCapability("SequentialWrite"))
     // TRUE if the CreateFeature() method works for this layer.

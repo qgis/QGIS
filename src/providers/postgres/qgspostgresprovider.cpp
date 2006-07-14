@@ -777,6 +777,63 @@ void QgsPostgresProvider::getFeatureAttributes(int key, int &row,
   }
 }
 
+
+void QgsPostgresProvider::getFeatureGeometry(int key, QgsFeature *f)
+{
+  if (!valid)
+  {
+    return;
+  }
+
+  QString cursor = QString("declare qgisf binary cursor for "
+                           "select asbinary(%1,'%2') from %3 where %4 = %5")
+                   .arg(geometryColumn)
+                   .arg(endianString())
+                   .arg(mSchemaTableName)
+                   .arg(primaryKey)
+                   .arg(key);
+
+#ifdef QGISDEBUG
+  std::cerr << "QgsPostgresProvider::getFeatureGeometry using: " << cursor.toLocal8Bit().data() << std::endl; 
+#endif
+
+  PQexec(connection, "begin work");
+  PQexec(connection, (const char *)(cursor.utf8()));
+
+  QString fetch = "fetch forward 1 from qgisf";
+  PGresult *geomResult = PQexec(connection, (const char *)fetch);
+
+  if (PQntuples(geomResult) == 0)
+  {
+    // Nothing found - therefore nothing to change
+    PQexec(connection,"end work");
+    PQclear(geomResult);
+    return;
+  }
+
+  int row = 0;
+
+  int returnedLength = PQgetlength(geomResult, row, 0);
+
+  if(returnedLength > 0)
+  {
+      unsigned char *wkbgeom = new unsigned char[returnedLength + 1];
+      memset(wkbgeom, '\0', returnedLength + 1);
+      memcpy(wkbgeom, PQgetvalue(geomResult, row, 0), returnedLength);
+      f->setGeometryAndOwnership(wkbgeom, returnedLength + 1);
+  }
+  else
+  {
+    //--std::cout <<"Couldn't get the feature geometry in binary form" << std::endl;
+  }
+
+  PQclear(geomResult);
+
+  PQexec(connection,"end work");
+
+}
+
+
 std::vector<QgsField> const & QgsPostgresProvider::fields() const
 {
   return attributeFields;
@@ -2257,7 +2314,8 @@ int QgsPostgresProvider::capabilities() const
            QgsVectorDataProvider::ChangeAttributeValues |
            QgsVectorDataProvider::AddAttributes |
            QgsVectorDataProvider::DeleteAttributes |
-           QgsVectorDataProvider::ChangeGeometries
+           QgsVectorDataProvider::ChangeGeometries |
+           QgsVectorDataProvider::SelectGeometryAtId
          );
 }
 

@@ -147,6 +147,9 @@ const QString displayField() const { return fieldIndex; }
 
   QgsAttributeAction* actions() { return &mActions; }
 
+  //! The number of features that are selected in this layer
+  int selectedFeatureCount();
+
   /**
       Get a copy of the user-selected features
    */  
@@ -476,7 +479,7 @@ public:
   /**Pointer to the table display object if there is one, else a pointer to 0*/
   QgsAttributeTableDisplay * tabledisplay;
   
-  /** cache of the committed geometries retrieved for the current display */
+  /** cache of the committed geometries retrieved *for the current display* */
   std::map<int, QgsGeometry*> mCachedGeometries;
   
   /** Set holding the feature IDs that are activated.  Note that if a feature
@@ -630,7 +633,7 @@ private:                       // Private attributes
   };
 private:                       // Private methods
 
-  /**Caches all the (commited) geometries to mCachedFeatures, e.g. when entering editing mode*/
+  /**Caches all the (commited) geometries to mCachedGeometries - somewhat out of date as mCachedGeometries should only contain geometries currently visible on the canvas */
   void cacheGeometries();
   /**Deletes the geometries in mCachedGeometries*/
   void deleteCachedGeometries();

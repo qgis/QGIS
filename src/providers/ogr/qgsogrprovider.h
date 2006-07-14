@@ -116,12 +116,28 @@ class QgsOgrProvider:public QgsVectorDataProvider
     /** Return the extent for this data layer
     */
     virtual QgsRect *extent();
+
     /**Get an attribute associated with a feature*/
     void getFeatureAttribute(OGRFeature * ogrFet, QgsFeature * f, int attindex);
+
     /**
      * Get the attributes associated with a feature
      */
     void getFeatureAttributes(OGRFeature * ogrFet, QgsFeature * f);
+
+    /**
+     * Get the attributes associated with a feature
+     * TODO: Get rid of "row" and set up provider-internal caching instead
+     *       ("row" was only ever used in the PostgreSQL provider context anyway)
+     */
+    void getFeatureAttributes(int key, int& row, QgsFeature *f);
+
+    /**
+     * Fetch geometry for a particular feature with id "key",
+     * modifies "f" in-place.
+     */
+    void getFeatureGeometry(int key, QgsFeature *f);
+
     /**
      * Get the field information for the layer
      */
