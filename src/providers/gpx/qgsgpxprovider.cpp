@@ -223,7 +223,7 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
 	char* geo = new char[21];
 	std::memset(geo, 0, 21);
 	geo[0] = endian();
-	geo[1] = 1;
+	geo[geo[0] == NDR ? 1 : 4] = QGis::WKBPoint;
 	std::memcpy(geo+5, &wpt->lon, sizeof(double));
 	std::memcpy(geo+13, &wpt->lat, sizeof(double));
 	feature->setGeometryAndOwnership((unsigned char *)geo, sizeof(wkbPoint));
@@ -288,7 +288,7 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
 	char* geo = new char[9 + 16 * nPoints];
 	std::memset(geo, 0, 9 + 16 * nPoints);
 	geo[0] = endian();
-	geo[1] = 2;
+	geo[geo[0] == NDR ? 1 : 4] = QGis::WKBLineString;
 	std::memcpy(geo + 5, &nPoints, 4);
 	for (int i = 0; i < rte->points.size(); ++i) {
 	  std::memcpy(geo + 9 + 16 * i, &rte->points[i].lon, sizeof(double));
@@ -347,7 +347,7 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
 	char* geo = new char[9 + 16 * nPoints];
 	std::memset(geo, 0, 9 + 16 * nPoints);
 	geo[0] = endian();
-	geo[1] = 2;
+	geo[geo[0] == NDR ? 1 : 4] = QGis::WKBLineString;
 	std::memcpy(geo + 5, &nPoints, 4);
 	for (int i = 0; i < nPoints; ++i) {
 	  std::memcpy(geo + 9 + 16 * i, &trk->segments[0].points[i].lon, sizeof(double));
@@ -574,7 +574,7 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
   const std::vector<QgsFeatureAttribute>& attrs(f->attributeMap());
   
   // is it a waypoint?
-  if (mFeatureType == WaypointType && geo != NULL && geo[1] == 1) {
+  if (mFeatureType == WaypointType && geo != NULL && geo[geo[0] == NDR ? 1 : 4] == QGis::WKBPoint) {
     
     // add geometry
     Waypoint wpt;
@@ -600,7 +600,7 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
   }
   
   // is it a route?
-  if (mFeatureType == RouteType && geo != NULL && geo[1] == 2) {
+  if (mFeatureType == RouteType && geo != NULL && geo[geo[0] == NDR ? 1 : 4] == QGis::WKBLineString) {
 
     Route rte;
     
@@ -643,7 +643,7 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
   }
   
   // is it a track?
-  if (mFeatureType == TrackType && geo != NULL && geo[1] == 2) {
+  if (mFeatureType == TrackType && geo != NULL && geo[geo[0] == NDR ? 1 : 4] == QGis::WKBLineString) {
 
     Track trk;
     TrackSegment trkseg;
