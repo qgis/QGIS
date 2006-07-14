@@ -260,20 +260,21 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
         mResults->addAttribute(featureNode, attr[i].fieldName(), attr[i].fieldValue());
       }
 
-      // measure distance or area
+      // Calculate derived attributes and insert:
+      // measure distance or area depending on geometry type
       if (layer->vectorType() == QGis::Line)
       {
         double dist = calc.measure(fet->geometry());
         QString str = QString::number(dist/1000, 'f', 3);
         str += " km";
-        mResults->addAttribute(featureNode, ".Length", str);
+        mResults->addDerivedAttribute(featureNode, QObject::tr("Length"), str);
       }
       else if (layer->vectorType() == QGis::Polygon)
       {
         double area = calc.measure(fet->geometry());
         QString str = QString::number(area/1000000, 'f', 3);
-        str += " km2";
-        mResults->addAttribute(featureNode, ".Area", str);
+        str += " km^2";
+        mResults->addDerivedAttribute(featureNode, QObject::tr("Area"), str);
       }
 
       // Add actions 
