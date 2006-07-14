@@ -32,6 +32,7 @@
 #include <q3url.h>
 #include <Q3Picture>
 
+
 #ifdef QGISDEBUG
 #include <QFile>
 #endif
@@ -1942,8 +1943,8 @@ bool QgsWmsProvider::calculateExtent()
       }
 
     //make sure extent does not contain 'inf' or 'nan'
-    if(!isfinite(extent.xMin()) || !isfinite((int)extent.yMin()) || !isfinite(extent.xMax()) || \
-!isfinite((int)extent.yMax()))
+    if(!std::isfinite(extent.xMin()) || !std::isfinite((int)extent.yMin()) || !std::isfinite(extent.xMax()) || \
+!std::isfinite((int)extent.yMax()))
       {
 	continue;
       }
