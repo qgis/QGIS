@@ -29,6 +29,7 @@
 
 #include "qgshttptransaction.h"
 
+#include <cmath>
 #include <q3url.h>
 #include <Q3Picture>
 
@@ -1944,7 +1945,7 @@ bool QgsWmsProvider::calculateExtent()
 
     //make sure extent does not contain 'inf' or 'nan'
     if(!std::isfinite(extent.xMin()) || !std::isfinite((int)extent.yMin()) || !std::isfinite(extent.xMax()) || \
-!std::isfinite((int)extent.yMax()))
+       !std::isfinite((int)extent.yMax()))
       {
 	continue;
       }

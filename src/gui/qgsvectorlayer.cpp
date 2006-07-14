@@ -2448,7 +2448,7 @@ bool QgsVectorLayer::commitChanges()
      Therefore the error messages become a bit complicated to generate.
    */
 
-  if(dataProvider)
+  if(!dataProvider)
   {
     return FALSE;
   }
