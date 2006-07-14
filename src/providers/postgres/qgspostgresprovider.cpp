@@ -1704,8 +1704,9 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f, int primaryKeyHighWater)
                 << "." << std::endl;
 #endif
         
-        //add quotes if the field is a character or date type
-      if(fieldvalue != "NULL" && fieldvalue != "DEFAULT")
+        //add quotes if the field is a character or date type and not
+        //the postgres provided default value
+      if(fieldvalue != "NULL" && fieldvalue != getDefaultValue(it->fieldName(), f))
         {
           for(std::vector<QgsField>::iterator iter=attributeFields.begin();iter!=attributeFields.end();++iter)
           {
@@ -1720,6 +1721,7 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f, int primaryKeyHighWater)
                  )
               {
                 charactertype=true;
+                break; // no need to continue with this loop
               }
             }
           }
@@ -1746,13 +1748,13 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f, int primaryKeyHighWater)
     PGresult* result=PQexec(connection, (const char *)(insert.utf8()));
     if(result==0)
     {
-      QMessageBox::information(0,"INSERT error","An error occured during feature insertion",QMessageBox::Ok);
+      QMessageBox::information(0,tr("INSERT error"),tr("An error occured during feature insertion"),QMessageBox::Ok);
       return false;
     }
     ExecStatusType message=PQresultStatus(result);
     if(message==PGRES_FATAL_ERROR)
     {
-      QMessageBox::information(0,"INSERT error",QString(PQresultErrorMessage(result)),QMessageBox::Ok);
+      QMessageBox::information(0,tr("INSERT error"),QString(PQresultErrorMessage(result)),QMessageBox::Ok);
       return false;
     }
     
@@ -1773,7 +1775,29 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f, int primaryKeyHighWater)
 
 QString QgsPostgresProvider::getDefaultValue(const QString& attr, QgsFeature* f)
 {
-  return "DEFAULT";
+  // Get the default column value from the Postgres information
+  // schema. If there is no default we return an empty string.
+
+  // Maintaining a cache of the results of this query would be quite
+  // simple and if this query is called lots, could save some time.
+
+  QString sql("SELECT column_default FROM "
+              "information_schema.columns WHERE "
+              "column_default IS NOT NULL AND "
+              "table_schema = '" + mSchemaName + "' AND "
+              "table_name = '" + mTableName + "' AND "
+              "column_name = '" + attr + "'");
+
+  QString defaultValue("");
+
+  PGresult* result = PQexec(connection, (const char*)(sql.utf8()));
+
+  if (PQntuples(result) == 1)
+    defaultValue = PQgetvalue(result, 0, 0);
+
+  PQclear(result);
+
+  return defaultValue;
 }
 
 bool QgsPostgresProvider::deleteFeature(int id)
@@ -1787,13 +1811,13 @@ bool QgsPostgresProvider::deleteFeature(int id)
   PGresult* result=PQexec(connection, (const char *)(sql.utf8()));
   if(result==0)
   {
-    QMessageBox::information(0,"DELETE error","An error occured during deletion from disk",QMessageBox::Ok);
+    QMessageBox::information(0,tr("DELETE error"),tr("An error occured during deletion from disk"),QMessageBox::Ok);
     return false;
   }
   ExecStatusType message=PQresultStatus(result);
   if(message==PGRES_FATAL_ERROR)
   {
-    QMessageBox::information(0,"DELETE error",QString(PQresultErrorMessage(result)),QMessageBox::Ok);
+    QMessageBox::information(0,tr("DELETE error"),QString(PQresultErrorMessage(result)),QMessageBox::Ok);
     return false;
   }
 
@@ -2106,8 +2130,8 @@ bool QgsPostgresProvider::changeGeometryValues(std::map<int, QgsGeometry> & geom
       PGresult* result=PQexec(connection, (const char *)(sql.utf8()));
       if (result==0)
       {
-        QMessageBox::critical(0, "PostGIS error", 
-                                 "An error occured contacting the PostgreSQL databse",
+        QMessageBox::critical(0, tr("PostGIS error"), 
+                                 tr("An error occured contacting the PostgreSQL databse"),
                                  QMessageBox::Ok,
                                  Qt::NoButton);
         return false;
@@ -2115,8 +2139,8 @@ bool QgsPostgresProvider::changeGeometryValues(std::map<int, QgsGeometry> & geom
       ExecStatusType message=PQresultStatus(result);
       if(message==PGRES_FATAL_ERROR)
       {
-        QMessageBox::information(0, "PostGIS error", 
-                                 "The PostgreSQL databse returned: "
+        QMessageBox::information(0, tr("PostGIS error"), 
+                                 tr("The PostgreSQL databse returned: ")
                                    + QString(PQresultErrorMessage(result)),
                                  QMessageBox::Ok,
                                  Qt::NoButton);
