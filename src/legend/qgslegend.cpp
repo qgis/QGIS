@@ -63,17 +63,29 @@ QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
 	   this, SLOT(handleCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
   
 
- setSortingEnabled(false);
+  setSortingEnabled(false);
   setDragEnabled(false);
   setAutoScroll(true);
   QFont f("Arial", 10, QFont::Normal);
   setFont(f);
   setBackgroundColor(QColor(192, 192, 192));
-  setColumnCount(1);
-  QStringList myList("Layers");
+
+  setColumnCount(3);  // main column, overview indicator and editing indicator
+
+  header()->setDefaultAlignment(Qt::AlignLeft);
+
+  QStringList myList;
+  myList += tr("Layer Name");
+  myList += tr("Overview");
+  myList += tr("Editing");
+
   setHeaderLabels(myList);
+  header()->resizeSection(0, 100);
+  header()->resizeSection(1, 24);  // Enough to fit an overview action icon
+  header()->resizeSection(2, 17);  // Enough to fit an editing icon
+
   //added by Tim to hide the header - header is unneccessary
-  header()->setHidden(1);
+  // header()->setHidden(1);  // morb_au - experiment
   setRootIsDecorated(true);
 
 }

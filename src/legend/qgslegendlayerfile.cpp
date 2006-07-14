@@ -96,6 +96,18 @@ void QgsLegendLayerFile::setLegendPixmap(const QPixmap& pix)
   setIcon(0, theIcon);
 }
 
+void QgsLegendLayerFile::setOverviewPixmap(const QPixmap& pix)
+{
+  QIcon theIcon(pix);
+  setIcon(1, theIcon);
+}
+
+void QgsLegendLayerFile::setEditingPixmap(const QPixmap& pix)
+{
+  QIcon theIcon(pix);
+  setIcon(2, theIcon);
+}
+
 void QgsLegendLayerFile::toggleCheckBox(bool state)
 {
   //todo
