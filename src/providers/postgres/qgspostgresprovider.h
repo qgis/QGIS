@@ -174,10 +174,16 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     /**
      * Get the attributes associated with a feature
      */
-    virtual void getFeatureAttributes(int oid, int& row, QgsFeature *f);
+    virtual void getFeatureAttributes(int key, int& row, QgsFeature *f);
 
     /**Get the attributes with indices contained in attlist*/
-    void getFeatureAttributes(int oid, int& row, QgsFeature *f, std::list<int> const& attlist);
+    void getFeatureAttributes(int key, int& row, QgsFeature *f, std::list<int> const& attlist);
+
+    /**
+     * Fetch geometry for a particular feature with id "key",
+     * modifies "f" in-place.
+     */
+    void getFeatureGeometry(int key, QgsFeature *f);
 
     /**  * Get the name of the primary key for the layer
     */

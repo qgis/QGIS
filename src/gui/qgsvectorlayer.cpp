@@ -174,14 +174,8 @@ QgsVectorLayer::~QgsVectorLayer()
   delete myLib;
   delete mLabel;
 
-  // Destroy and cached geometries and clear the references to them
-  for (std::map<int, QgsGeometry*>::iterator it  = mCachedGeometries.begin(); 
-      it != mCachedGeometries.end();
-      ++it )
-  {
-    delete (*it).second;
-  }
-  mCachedGeometries.clear();
+  // Destroy any cached geometries and clear the references to them
+  deleteCachedGeometries();
 }
 
 QString QgsVectorLayer::storageType() const
@@ -830,13 +824,10 @@ void QgsVectorLayer::draw(QPainter * p,
     /*Scale factor of the marker image*/
     double markerScaleFactor=1.;
 
-    // Destroy all cached geometries and clear the references to them
-
     if(mEditable)
     {
       // Destroy all cached geometries and clear the references to them
       deleteCachedGeometries();
-      
     }
 
     dataProvider->reset();
@@ -988,7 +979,10 @@ void QgsVectorLayer::cacheGeometries()
 {
   if(dataProvider)
     {
-      QgsFeature* f = 0;
+      QgsFeature* f;
+
+      dataProvider->reset();
+
       while(f = dataProvider->getNextFeature(false))
 	{
 	  mCachedGeometries.insert(std::make_pair(f->featureId(), f->geometryAndOwnership()));
@@ -999,6 +993,8 @@ void QgsVectorLayer::cacheGeometries()
 
 void QgsVectorLayer::deleteCachedGeometries()
 {
+  // Destroy any cached geometries and clear the references to them
+
   for (std::map<int, QgsGeometry*>::iterator it  = mCachedGeometries.begin(); it != mCachedGeometries.end(); ++it )
     {
       delete (*it).second;
@@ -1918,7 +1914,11 @@ void QgsVectorLayer::startEditing()
     }
     else
     {
-      cacheGeometries();
+      // No longer need to cache all geometries
+      // instead, mCachedGeometries is refreshed every time the 
+      // screen is redrawn.
+      //cacheGeometries();
+
       mEditable=true;
       if(isValid())
       {
@@ -2604,6 +2604,13 @@ bool QgsVectorLayer::rollBack()
   return true;
 }
 
+
+int QgsVectorLayer::selectedFeatureCount()
+{
+  return mSelectedFeatureIds.size();
+}
+
+
 std::vector<QgsFeature>* QgsVectorLayer::selectedFeatures()
 {
   if (!dataProvider)
@@ -2612,40 +2619,80 @@ std::vector<QgsFeature>* QgsVectorLayer::selectedFeatures()
   }
   
   std::vector<QgsFeature>* features = new std::vector<QgsFeature>;
-  if(mSelectedFeatureIds.size() == 0)
-    {
-      return features;
-    }
 
-  //we need to cache all the features first (which has already been done if a layer is editable)
-  if(!mEditable)
-    {
-      deleteCachedGeometries();
-      cacheGeometries();
-    }
+  if (mSelectedFeatureIds.size() == 0)
+  {
+    // short cut
+    return features;
+  }
+
+  // we don't need to cache features ... it just adds unnecessary time
+  // as we don't need to pull *everything* from disk
+
+  // Go through each selected feature ID and determine
+  // its current geometry and attributes
 
   for (std::set<int>::iterator it  = mSelectedFeatureIds.begin(); it != mSelectedFeatureIds.end(); ++it)
   {
-    // Check this selected item against the committed or cached features
-    if ( mCachedGeometries.find(*it) != mCachedGeometries.end() )
-    {
-      QgsFeature* f = new QgsFeature();
-      f->setGeometry(*mCachedGeometries[*it]);//makes a deep copy of the geometry
-      features->push_back(*f);
-      continue;
-    }
-    
+    QgsFeature* initialFeature;
+
+    // Pull the original version of the feature from disk or memory
+    // as appropriate
+
     // Check this selected item against the uncommitted added features
-    /*for (std::vector<QgsFeature*>::iterator iter  = mAddedFeatures.begin();
+    bool selectionIsAddedFeature = FALSE;
+
+    for (std::vector<QgsFeature*>::iterator iter  = mAddedFeatures.begin();
         iter != mAddedFeatures.end();
         ++iter)
     {
       if ( (*it) == (*iter)->featureId() )
       {
-        features->push_back( **iter ); //shouldn't we make a deep copy here?
-        break;
+#ifdef QGISDEBUG
+        std::cout << "QgsVectorLayer::selectedFeatures: found an added geometry: " 
+          << std::endl;
+#endif
+        initialFeature = new QgsFeature(**iter);
+        selectionIsAddedFeature = TRUE;
       }
-      }*/
+    }
+
+    if (!selectionIsAddedFeature)
+    {
+      // pull committed version from disk
+      initialFeature = new QgsFeature(*it);
+
+      int row = 0;  //TODO: Get rid of this, but getFeatureAttributes()
+                    //      needs it for some reason
+      dataProvider->getFeatureAttributes(*it, row, initialFeature);
+
+      if ( mChangedGeometries.find(*it) == mChangedGeometries.end() )
+      {
+        // also pull committed geometry from disk as we will
+        // not need to overwrite it later
+
+        if (dataProvider->capabilities() & QgsVectorDataProvider::SelectGeometryAtId)
+        {
+          dataProvider->getFeatureGeometry(*it, initialFeature);
+        }
+        else
+        {
+          QMessageBox::information(0, tr("Cannot retrieve features"),
+              tr("The provider for the current layer cannot retrieve geometry for the selected features.  This version of the provider does not have this capability."));
+        }
+      }
+
+    }
+
+    // Transform the feature to the "current" in-memory version
+    QgsFeature finalFeature =
+      QgsFeature(*initialFeature,
+                 mChangedAttributes,
+                 mChangedGeometries);
+
+    delete initialFeature;
+
+    features->push_back(finalFeature);
 
   } // for each selected
 

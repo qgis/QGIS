@@ -43,16 +43,19 @@ class QgsVectorDataProvider : public QgsDataProvider
       // If you add to this, please also add to capabilitiesString()
       enum Capability
       {
-        NoCapabilities =              0,
-        AddFeatures =                 1,
-        DeleteFeatures =        1 <<  1,
-        ChangeAttributeValues = 1 <<  2,
-        AddAttributes =         1 <<  3,    // TODO: what is this exactly?
-        DeleteAttributes =      1 <<  4,
-        SaveAsShapefile =       1 <<  5,
-        CreateSpatialIndex =    1 <<  6,
-        SelectAtId =            1 <<  7,
-        ChangeGeometries =      1 <<  8
+        NoCapabilities =                     0,
+        AddFeatures =                        1,
+        DeleteFeatures =               1 <<  1,
+        ChangeAttributeValues =        1 <<  2,
+        AddAttributes =                1 <<  3,    // TODO: what is this exactly?
+        DeleteAttributes =             1 <<  4,
+        SaveAsShapefile =              1 <<  5,
+        CreateSpatialIndex =           1 <<  6,
+        SelectAtId =                   1 <<  7,
+        ChangeGeometries =             1 <<  8,
+        SelectGeometryAtId =           1 <<  9,
+        RandomSelectGeometryAtId =     1 << 10,
+        SequentialSelectGeometryAtId = 1 << 11
       };
 
       QgsVectorDataProvider();
@@ -137,12 +140,20 @@ class QgsVectorDataProvider : public QgsDataProvider
       virtual long featureCount() const = 0;
 
       /**
-     * Get the attributes associated with a feature
-     * TODO: Get rid of "row" and set up provider-internal caching instead
-     */
-    virtual void getFeatureAttributes(int oid, int& row, QgsFeature *f) {};
-    
-    /**
+       * Get the attributes associated with a feature
+       * TODO: Get rid of "row" and set up provider-internal caching instead
+       */
+      virtual void getFeatureAttributes(int key, int& row, QgsFeature *f) {};
+
+      /**
+       * Fetch geometry for a particular feature with id "key",
+       * modifies "f" in-place.
+       *
+       * This function is enabled if capabilities() returns "SelectGeometryAtId".
+       */
+      virtual void getFeatureGeometry(int key, QgsFeature *f) {};
+
+      /**
        * Number of attribute fields for a feature in the layer
        */
       virtual int fieldCount() const = 0;
