@@ -70,11 +70,25 @@ class QgsAttributeTable:public Q3Table
     /**Deletes an attribute (but does not commit it)
       @param name attribute name*/
     void deleteAttribute(const QString& name);
-    /**Copies the selected rows to the clipboard */
+
+    /** Copies the selected rows to the clipboard 
+        Deprecated: See QgisApp::editCopy() instead */
     void copySelectedRows();
-    /**Delegates to QgsVectorLayer to decide, which changes
-      belong to not commited features or to commited ones*/
+
+    /**
+      Attempts to commit any changes to disk.  Returns the result of the attempt.
+      If a commit fails, the in-memory changes are left alone.
+
+      This allows editing to continue if the commit failed on e.g. a
+      disallowed value in a Postgres database - the user can re-edit and try
+      again.
+
+      Delegates to QgsVectorLayer to decide, which changes
+      belong to not commited features or to commited ones.
+
+     */
     bool commitChanges(QgsVectorLayer* layer);
+
     /**Discard all changes and restore
       the state before editing was started*/
     bool rollBack(QgsVectorLayer* layer);
