@@ -161,7 +161,7 @@ void QgsMapLayer::draw(QPainter *, QgsRect * viewExtent, int yTransform)
     //  std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
-bool QgsMapLayer::draw(QPainter *, QgsRect *, QgsMapToPixel *)
+bool QgsMapLayer::draw(QPainter *, QgsRect *, QgsMapToPixel *, bool)
 {
     //  std::cout << "In QgsMapLayer::draw" << std::endl;
     return false;
@@ -450,23 +450,32 @@ void QgsMapLayer::inOverview( bool b )
 
 void QgsMapLayer::updateItemPixmap()
 {
-    if (mLegendLayerFile)
+  if (mLegendLayerFile)
+  {
+    QPixmap originalPix=mLegendLayerFile->getOriginalPixmap();
+
+    if(mShowInOverview)
     {
-        QPixmap pix=mLegendLayerFile->getOriginalPixmap();
-        if(mShowInOverview)
-        {
-            //add overview glasses to the pixmap
-            QPainter p(&pix);
-            p.drawPixmap(0,0,mInOverviewPixmap);
-        }
-        if(isEditable())
-        {
-            //add editing icon to the pixmap
-            QPainter p(&pix);
-            p.drawPixmap(30,0,mEditablePixmap);
-        }
-	mLegendLayerFile->setLegendPixmap(pix);
+      //add overview glasses to the pixmap
+      mLegendLayerFile->setOverviewPixmap(mInOverviewPixmap);
     }
+    else
+    {
+      mLegendLayerFile->setOverviewPixmap( QPixmap() );
+    }
+
+    if(isEditable())
+    {
+      //add editing icon to the pixmap
+      mLegendLayerFile->setEditingPixmap(mEditablePixmap);
+    }
+    else
+    {
+      mLegendLayerFile->setEditingPixmap( QPixmap() );
+    }
+
+    mLegendLayerFile->setLegendPixmap(originalPix);
+  }
 }
 
 void QgsMapLayer::invalidTransformInput()
@@ -477,7 +486,7 @@ void QgsMapLayer::invalidTransformInput()
         QPixmap pix=mLegendLayerFile->getOriginalPixmap();
         if(mShowInOverview)
         {
-            //add overview glasses to the pixmap
+            //add project error icon to the pixmap
             QPainter p(&pix);
             p.drawPixmap(60,0,mProjectionErrorPixmap);
         }

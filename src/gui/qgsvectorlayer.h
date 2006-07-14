@@ -446,7 +446,12 @@ public:
    *  \param widthScale line width scale
    *  \param symbolScale symbol scale
    */
-  void draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cXf, double widthScale, double symbolScale);
+  void draw(QPainter * p,
+            QgsRect * viewExtent,
+            QgsMapToPixel * cXf,
+            bool drawingToEditingCanvas,
+            double widthScale,
+            double symbolScale);
 
   /** \brief Draws the layer labels using coordinate transformation
    *  \param scale size scale, applied to all values in pixels
@@ -538,9 +543,17 @@ protected slots:
 
 private:                       // Private attributes
 
-  //! Draws features. May cause projections exceptions to be generated
-  // (i.e., code that calls this function needs to catch them
-  void drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * cXf, QPixmap* marker, double markerScaleFactor, bool projectionsEnabledFlag );
+  //! Draws features. 
+  /** \note May cause projections exceptions to be generated
+            (i.e., code that calls this function needs to catch them
+   */
+  void drawFeature(QPainter* p,
+                   QgsFeature* fet,
+                   QgsMapToPixel * cXf,
+                   QPixmap* marker,
+                   double markerScaleFactor,
+                   bool projectionsEnabledFlag,
+                   bool drawingToEditingCanvas);
 
 private:                       // Private attributes
 
@@ -562,14 +575,19 @@ private:                       // Private attributes
   // Draw the linestring as given in the WKB format. Returns a pointer
   // to the byte after the end of the line string binary data stream
   // (WKB).
-  unsigned char* drawLineString(unsigned char* WKBlinestring, QPainter* p,
-      QgsMapToPixel* mtp, 
-      bool projectionsEnabledFlag);
+  unsigned char* drawLineString(unsigned char* WKBlinestring,
+                                QPainter* p,
+                                QgsMapToPixel* mtp,
+                                bool projectionsEnabledFlag,
+                                bool drawingToEditingCanvas);
 
   // Draw the polygon as given in the WKB format. Returns a pointer to
   // the byte after the end of the polygon binary data stream (WKB).
-  unsigned char* drawPolygon(unsigned char* WKBpolygon, QPainter* p, 
-      QgsMapToPixel* mtp, bool projectionsEnabledFlag);
+  unsigned char* drawPolygon(unsigned char* WKBpolygon,
+                             QPainter* p,
+                             QgsMapToPixel* mtp,
+                             bool projectionsEnabledFlag,
+                             bool drawingToEditingCanvas);
 
   /** tailor the right-click context menu with vector layer only stuff
 
@@ -578,8 +596,15 @@ private:                       // Private attributes
   void initContextMenu_(QgisApp *);
 
   //! Draws the layer using coordinate transformation
-  //! Returns FALSE if an error occurred during drawing
-  bool draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cXf);
+  /**
+      \param drawingToEditingCanvas  Are we drawing to an editable canvas?
+
+      \return FALSE if an error occurred during drawing
+   */
+  bool draw(QPainter * p,
+            QgsRect * viewExtent,
+            QgsMapToPixel * cXf,
+            bool drawingToEditingCanvas);
 
   //! Pointer to data provider derived from the abastract base class QgsDataProvider
   QgsVectorDataProvider *dataProvider;
@@ -609,7 +634,8 @@ private:                       // Private methods
   void cacheGeometries();
   /**Deletes the geometries in mCachedGeometries*/
   void deleteCachedGeometries();
-  /**Draws a vertex symbol at (screen) coordinates x, y*/
+
+  /** Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.) */
   void drawVertexMarker(int x, int y, QPainter& p);
 
   // pointer for loading the provider library

@@ -301,12 +301,20 @@ public:
     /** \brief Get an 8x8 pixmap of the colour palette. If the layer has no palette a white pixmap will be returned. */
      QPixmap getPaletteAsPixmap();
      
-    /** \brief This is called when the view on the rasterlayer needs to be refreshed (redrawn).  */
-    bool draw(QPainter * theQPainter, QgsRect * theViewExtent, 
-              QgsMapToPixel * theQgsMapToPixel);
+    /** \brief This is called when the view on the rasterlayer needs to be refreshed (redrawn).  
+
+      \param drawingToEditingCanvas  Are we drawing to an editable canvas?
+                                  currently not used, but retain to be similar to
+                                  the QgsVectorLayer interface
+     */
+    bool draw(QPainter * theQPainter,
+              QgsRect * theViewExtent,
+              QgsMapToPixel * theQgsMapToPixel,
+              bool drawingToEditingCanvas);
 
     /** \brief This is an overloaded version of the above function that is called by both draw above and drawThumbnail */
-    void draw(QPainter * theQPainter, QgsRasterViewPort * myRasterViewPort,
+    void draw(QPainter * theQPainter,
+              QgsRasterViewPort * myRasterViewPort,
               QgsMapToPixel * theQgsMapToPixel = 0);
     
     //

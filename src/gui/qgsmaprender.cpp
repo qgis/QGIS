@@ -259,12 +259,12 @@ void QgsMapRender::render(QPainter* painter)
                     // Now do the call to the layer that actually does
                     // the rendering work!
         //
-        if (!ml->draw(painter, &r1, mCoordXForm))
+        if (!ml->draw(painter, &r1, mCoordXForm, !mOverview))
           emit drawError(ml);
         
         if (split)
         {
-          if (!ml->draw(painter, &r2, mCoordXForm))
+          if (!ml->draw(painter, &r2, mCoordXForm, !mOverview))
             emit drawError(ml);
         }
         

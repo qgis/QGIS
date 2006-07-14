@@ -103,7 +103,7 @@ public:
     virtual void draw(QPainter *, QgsRect *, int);
 
     //! Returns FALSE if an error occurred during drawing
-    virtual bool draw(QPainter *, QgsRect *, QgsMapToPixel *);
+    virtual bool draw(QPainter *, QgsRect *, QgsMapToPixel *, bool);
     virtual void drawLabels(QPainter *, QgsRect *, QgsMapToPixel *);
 
     /*!Select features on the map canvas by dragging a rectangle */

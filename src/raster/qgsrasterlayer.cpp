@@ -1028,7 +1028,8 @@ QPixmap QgsRasterLayer::getPaletteAsPixmap()
 
 bool QgsRasterLayer::draw(QPainter * theQPainter,
                           QgsRect * theViewExtent,
-                          QgsMapToPixel * theQgsMapToPixel)
+                          QgsMapToPixel * theQgsMapToPixel,
+                          bool drawingToEditingCanvas)
 {
   QgsDebugMsg("QgsRasterLayer::draw(4 arguments): entered.");
 
@@ -1377,9 +1378,9 @@ __FUNCTION__, __LINE__, 1);
 
 }
 
-void QgsRasterLayer::draw (QPainter * theQPainter, 
-                           QgsRasterViewPort * theRasterViewPort,
-                           QgsMapToPixel * theQgsMapToPixel)
+void QgsRasterLayer::draw(QPainter * theQPainter, 
+                          QgsRasterViewPort * theRasterViewPort,
+                          QgsMapToPixel * theQgsMapToPixel)
 {
   QgsDebugMsg("QgsRasterLayer::draw (3 arguments)");
   //
