@@ -347,8 +347,7 @@ public:
   /**
   * Constructor for the provider. 
   *
-  * \param   uri   HTTP URL of the Web Server, optionally followed by a space then the proxy host name,
-  *                another space, and the proxy host port.  If no proxy is declared then we will
+  * \param   uri   HTTP URL of the Web Server.  If setProxy() is not also called then we will
   *                contact the host directly.
   *
   */
@@ -356,6 +355,16 @@ public:
 
   //! Destructor
   virtual ~QgsWmsProvider();
+
+  /**
+   *
+   * Sets an HTTP proxy for the URL given in the constructor
+   *
+   */
+  virtual bool setProxy(QString const & host = 0,
+                                    int port = 80,
+                        QString const & user = 0,
+                        QString const & pass = 0);
 
   /**
    * \brief   Returns a list of the supported layers of the WMS server

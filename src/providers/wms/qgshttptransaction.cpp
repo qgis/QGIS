@@ -47,7 +47,14 @@ QgsHttpTransaction::QgsHttpTransaction(QString uri,
 #ifdef QGISDEBUG
   std::cout << "QgsHttpTransaction: constructing." << std::endl;
 #endif
-  
+
+#ifdef QGISDEBUG
+  std::cout << "  QgsHttpTransaction: proxyHost = " << proxyHost.toLocal8Bit().data() << "." << std::endl;
+  std::cout << "  QgsHttpTransaction: proxyPort = " << proxyPort << "." << std::endl;
+  std::cout << "  QgsHttpTransaction: proxyUser = " << proxyUser.toLocal8Bit().data() << "." << std::endl;
+  std::cout << "  QgsHttpTransaction: proxyPass = " << proxyPass.toLocal8Bit().data() << "." << std::endl;
+#endif
+
 
 #ifdef QGISDEBUG
   std::cout << "QgsHttpTransaction: exiting constructor." << std::endl;
@@ -124,16 +131,16 @@ bool QgsHttpTransaction::getSynchronously(QByteArray &respondedContent, int redi
           this,       SLOT( dataHeaderReceived( const QHttpResponseHeader& ) ) );
 
   connect(http,  SIGNAL( readyRead( const QHttpResponseHeader& ) ),
-  this, SLOT( dataReceived( const QHttpResponseHeader& ) ) );
+          this, SLOT( dataReceived( const QHttpResponseHeader& ) ) );
 
   connect(http, SIGNAL( dataReadProgress ( int, int ) ),
-  this,       SLOT( dataProgress ( int, int ) ) );
+          this,       SLOT( dataProgress ( int, int ) ) );
 
   connect(http, SIGNAL( requestFinished ( int, bool ) ),
           this,      SLOT( dataFinished ( int, bool ) ) );
 
   connect(http,   SIGNAL( stateChanged ( int ) ),
-    this, SLOT( dataStateChanged ( int ) ) );
+          this, SLOT( dataStateChanged ( int ) ) );
 
   // Set up the watchdog timer
   connect(mWatchdogTimer, SIGNAL( timeout () ),
@@ -156,6 +163,7 @@ bool QgsHttpTransaction::getSynchronously(QByteArray &respondedContent, int redi
   {
     // Do something else, maybe even network processing events
     qApp->processEvents();
+
     // TODO: Implement a network timeout
   }
 
@@ -282,7 +290,7 @@ void QgsHttpTransaction::dataProgress( int done, int total )
 {
 
 #ifdef QGISDEBUG
-  std::cout << "QgsHttpTransaction::dataProgress: got " << done << " of " << total << std::endl;
+//  std::cout << "QgsHttpTransaction::dataProgress: got " << done << " of " << total << std::endl;
 #endif
 
   // We saw something come back, therefore restart the watchdog timer
