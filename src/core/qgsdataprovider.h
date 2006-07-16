@@ -199,19 +199,30 @@ class QgsDataProvider : public QObject
       {
         return QString::null;
       }
-      
+
       /**
        * Sub-layers handled by this provider, in order from bottom to top
        *
        * Sub-layers are used when the provider's source can combine layers
        * it knows about in some way before it hands them off to the provider.
        */
-      virtual QStringList subLayers()
+      virtual QStringList subLayers() const
       {
         return QStringList();  // Empty
       }
-    
-    
+
+      /**
+       * Sub-layer styles for each sub-layer handled by this provider,
+       * in order from bottom to top
+       *
+       * Sub-layer styles are used to abstract the way the provider's source can symbolise
+       * layers in some way at the server, before it serves them to the provider.
+       */
+      virtual QStringList subLayerStyles() const
+      {
+        return QStringList();  // Empty
+      }
+
       /** return the number of layers for the current data source
 
           @note 

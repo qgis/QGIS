@@ -71,10 +71,15 @@ public:
     virtual QStringList supportedImageEncodings() = 0;
 
     /**
+     * Get the image encoding (as a MIME type) used in the transfer from (e.g.) the WMS server
+     */
+    virtual QString imageEncoding() const = 0;
+
+    /**
      * Set the image encoding (as a MIME type) used in the transfer from (e.g.) the WMS server
      */
     virtual void setImageEncoding(QString  const & mimeType) = 0;
- 
+
     /**
      * Set the image projection (in WMS CRS format) used in the transfer from (e.g.) the WMS server
      */

@@ -319,6 +319,12 @@ void QgsWmsProvider::setSubLayerVisibility(QString const & name, bool vis)
 }
 
 
+QString QgsWmsProvider::imageEncoding() const
+{
+  return imageMimeType;
+}
+
+
 void QgsWmsProvider::setImageEncoding(QString const & mimeType)
 {
 #ifdef QGISDEBUG
@@ -1882,10 +1888,16 @@ QStringList QgsWmsProvider::supportedImageEncodings()
   return mCapabilities.capability.request.getMap.format;
 } 
 
-  
-QStringList QgsWmsProvider::subLayers()
+
+QStringList QgsWmsProvider::subLayers() const
 {
   return activeSubLayers;
+}
+
+
+QStringList QgsWmsProvider::subLayerStyles() const
+{
+  return activeSubStyles;
 }
 
 

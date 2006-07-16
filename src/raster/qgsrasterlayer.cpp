@@ -3595,9 +3595,9 @@ QPixmap QgsRasterLayer::getDetailedLegendQPixmap(int theLabelCountInt=3)
 
 // Useful for Provider mode
 
-QStringList QgsRasterLayer::subLayers()
+QStringList QgsRasterLayer::subLayers() const
 {
-  
+
   if (dataProvider)
   {
     return dataProvider->subLayers();
@@ -4482,13 +4482,71 @@ Raster layer project file XML of form:
 bool QgsRasterLayer::readXML_( QDomNode & layer_node )
 {
   //! @NOTE Make sure to read the file first so stats etc are initialised properly!
- 
-  if ( ! readFile( source() ) )   // Data source name set in
-    // QgsMapLayer::readXML()
+
+  //process provider key
+  QDomNode pkeyNode = layer_node.namedItem("provider");
+
+  if (pkeyNode.isNull())
   {
-    QgsLogger::warning(QString(__FILE__) + ":" + QString(__LINE__) + " unable to read from raster file " + source());
-    return false;
+    mProviderKey = "";
   }
+  else
+  {
+    QDomElement pkeyElt = pkeyNode.toElement();
+    mProviderKey = pkeyElt.text();
+  }
+
+  // Open the raster source based on provider and datasource
+
+  if (!mProviderKey.isEmpty())
+  {
+    // Go down the raster-data-provider paradigm
+
+    // Collect provider-specific information
+
+    QDomNode rpNode = layer_node.namedItem("rasterproperties");
+
+    // Collect sublayer names and styles
+    QStringList layers;
+    QStringList styles;
+    QDomElement layerElement = rpNode.firstChildElement("wmsSublayer");
+    while (!layerElement.isNull())
+    {
+      // TODO: sublayer visibility - post-0.8 release timeframe
+
+      // collect name for the sublayer
+      layers += layerElement.namedItem("name").toElement().text();
+
+      // collect style for the sublayer
+      styles += layerElement.namedItem("style").toElement().text();
+
+      layerElement = layerElement.nextSiblingElement("wmsSublayer");
+    }
+
+    // Collect format
+    QString format = rpNode.namedItem("wmsFormat").toElement().text();
+
+    // Convert CRS from the coordinate transformation node
+    // which was collected earlier in QgsMapLayer::readXML()
+    QString crs = QString("EPSG:%1")
+                 .arg(mCoordinateTransform->sourceSRS().epsg());
+
+    setDataProvider( mProviderKey, layers, styles, format, crs );
+  }
+  else
+  {
+    // Go down the monolithic-gdal-provider paradigm
+
+    if (!readFile(source()))   // Data source name set in
+      // QgsMapLayer::readXML()
+    {
+      QgsLogger::warning(QString(__FILE__) + ":" + QString(__LINE__) + 
+                         " unable to read from raster file " + source());
+      return false;
+    }
+
+  }
+
   QDomNode mnl = layer_node.namedItem("rasterproperties");
 
   QDomNode snode = mnl.namedItem("showDebugOverlayFlag");
@@ -4552,9 +4610,63 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
 
   mapLayerNode.setAttribute( "type", "raster" );
 
+  // add provider node
+
+  QDomElement provider  = document.createElement( "provider" );
+  QDomText providerText = document.createTextNode( mProviderKey );
+  provider.appendChild( providerText );
+  layer_node.appendChild( provider );
+
   // <rasterproperties>
   QDomElement rasterPropertiesElement = document.createElement( "rasterproperties" );
   mapLayerNode.appendChild( rasterPropertiesElement );
+
+  if (!mProviderKey.isEmpty())
+  {
+    QStringList sl = subLayers();
+    QStringList sls = dataProvider->subLayerStyles();
+
+    QStringList::const_iterator layerStyle = sls.begin();
+
+    // <rasterproperties><wmsSublayer>
+    for ( QStringList::const_iterator layerName  = sl.begin();
+                                      layerName != sl.end();
+                                    ++layerName )
+    {
+
+#ifdef QGISDEBUG
+  std::cout << "<rasterproperties><wmsSublayer> " << layerName->toLocal8Bit().data() << std::endl;
+#endif
+
+      QDomElement sublayerElement = document.createElement("wmsSublayer");
+
+      // TODO: sublayer visibility - post-0.8 release timeframe
+
+      // <rasterproperties><wmsSublayer><name>
+      QDomElement sublayerNameElement = document.createElement("name");
+      QDomText sublayerNameText = document.createTextNode(*layerName);
+      sublayerNameElement.appendChild(sublayerNameText);
+      sublayerElement.appendChild(sublayerNameElement);
+
+      // <rasterproperties><wmsSublayer><style>
+      QDomElement sublayerStyleElement = document.createElement("style");
+      QDomText sublayerStyleText = document.createTextNode(*layerStyle);
+      sublayerStyleElement.appendChild(sublayerStyleText);
+      sublayerElement.appendChild(sublayerStyleElement);
+
+      rasterPropertiesElement.appendChild(sublayerElement);
+
+      // This assumes there are exactly the same number of "layerName"s as there are "layerStyle"s
+      ++layerStyle;
+    }
+
+    // <rasterproperties><wmsFormat>
+    QDomElement formatElement = document.createElement("wmsFormat");
+    QDomText formatText =
+      document.createTextNode(dataProvider->imageEncoding());
+    formatElement.appendChild(formatText);
+    rasterPropertiesElement.appendChild(formatElement);
+  }
 
   // <showDebugOverlayFlag>
   QDomElement showDebugOverlayFlagElement = document.createElement( "showDebugOverlayFlag" );

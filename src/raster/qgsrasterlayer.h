@@ -704,7 +704,7 @@ public:
      * (Useful for providers that manage their own layers, such as WMS)
      *
      */
-    QStringList subLayers();
+    QStringList subLayers() const;
     
     /**
      * Reorders the *previously selected* sublayers of this layer from bottom to top
@@ -1078,7 +1078,7 @@ private:
   //! pointer for loading the provider library
   QLibrary *myLib;
 
-  //! Pointer to data provider derived from the abastract base class QgsDataProvider
+  //! Pointer to data provider derived from the abstract base class QgsDataProvider
   QgsRasterDataProvider *dataProvider;
 
   /**Flag indicating wheter the layer is in editing mode or not*/

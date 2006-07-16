@@ -405,6 +405,11 @@ public:
   void setSubLayerVisibility(QString const & name, bool vis);
 
   /**
+   * Get the image encoding (as a MIME type) used in the transfer from the WMS server
+   */
+  QString imageEncoding() const;
+
+  /**
    * Set the image encoding (as a MIME type) used in the transfer from the WMS server
    */
   void setImageEncoding(QString const & mimeType);
@@ -478,7 +483,10 @@ public:
    * layers in some way at the server, before it serves them to this
    * WMS client.
    */
-  QStringList subLayers();
+  QStringList subLayers() const;
+
+  QStringList subLayerStyles() const;
+
 
   // TODO: Get the WMS connection
   
