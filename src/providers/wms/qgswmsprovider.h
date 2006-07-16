@@ -485,6 +485,14 @@ public:
    */
   QStringList subLayers() const;
 
+  /**
+   * Sub-layer styles for each sub-layer handled by this provider,
+   * in order from bottom to top
+   *
+   * Sub-layer styles are used to abstract the way the WMS server can symbolise
+   * layers in some way at the server, before it serves them to this
+   * WMS client.
+   */
   QStringList subLayerStyles() const;
 
 
