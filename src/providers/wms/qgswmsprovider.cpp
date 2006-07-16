@@ -75,60 +75,6 @@ QgsWmsProvider::QgsWmsProvider(QString const & uri)
   // assume this is a valid layer until we determine otherwise
   valid = true;
 
-  // URI is in form: URL[ proxyhost[ proxyport[ proxyuser[ proxypass]]]
-
-  // Split proxy from the provider-encoded uri  
-  QStringList drawuriparts = QStringList::split(" ", httpuri, TRUE);
-
-  baseUrl = drawuriparts.front();
-  drawuriparts.pop_front();
-
-  if (drawuriparts.count())
-  {
-    mHttpProxyHost = drawuriparts.front();
-    drawuriparts.pop_front();
-
-    if (drawuriparts.count())
-    {
-      bool conversionOK;
-      mHttpProxyPort = drawuriparts.front().toInt(&conversionOK);
-      if (!conversionOK)
-      {
-        mHttpProxyPort = 80;  // standard HTTP port
-      }
-
-      drawuriparts.pop_front();
-
-      if (drawuriparts.count())
-      {
-        bool conversionOK;
-        mHttpProxyUser = drawuriparts.front();
-
-        drawuriparts.pop_front();
-
-        if (drawuriparts.count())
-        {
-          bool conversionOK;
-          mHttpProxyPass = drawuriparts.front();
-
-          drawuriparts.pop_front();
-
-        }
-        else
-        {
-          mHttpProxyPass = QString();  // none
-        }
-      }
-      else
-      {
-        mHttpProxyUser = QString();  // anonymous
-      }
-    }
-    else
-    {
-      mHttpProxyPort = 80;  // standard HTTP port
-    }
-  }
 
   // URL can be in 3 forms:
   // 1) http://xxx.xxx.xx/yyy/yyy
@@ -136,6 +82,8 @@ QgsWmsProvider::QgsWmsProvider(QString const & uri)
   // 3) http://xxx.xxx.xx/yyy/yyy?zzz=www
 
   // Prepare the URI so that we can later simply append param=value
+  baseUrl = httpuri;
+
   if ( !(baseUrl.contains("?")) ) 
   {
     baseUrl.append("?");
@@ -198,6 +146,18 @@ QgsWmsProvider::~QgsWmsProvider()
 
 }
 
+bool QgsWmsProvider::setProxy(QString const & host,
+                                          int port,
+                              QString const & user,
+                              QString const & pass)
+{
+  mHttpProxyHost = host;
+  mHttpProxyPort = port;
+  mHttpProxyUser = user;
+  mHttpProxyPass = pass;
+
+  return TRUE;
+}
 
 bool QgsWmsProvider::supportedLayers(std::vector<QgsWmsLayerProperty> & layers)
 {

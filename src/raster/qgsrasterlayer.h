@@ -1062,6 +1062,16 @@ public:
   //! Does this layer use a provider for setting/retrieving data?
   bool usesProvider();
 
+  /**
+   * Sets a proxy for the path given in the constructor
+   *
+   * \retval TRUE if proxy setting is successful (if indeed it is supported)
+   */
+  bool setProxy(QString const & host = 0,
+                            int port = 80,
+                QString const & user = 0,
+                QString const & pass = 0);
+
   //! Which provider is being used for this Raster Layer?
   QString providerKey();
 

@@ -62,6 +62,21 @@ public:
     virtual ~QgsRasterDataProvider() {};
 
     /**
+     *
+     * Sets a proxy for the URL given in the constructor
+     *
+     *
+     * \retval TRUE if proxy setting is successful (if indeed it is supported)
+     */
+    virtual bool setProxy(QString const & host,
+                                      int port,
+                          QString const & user,
+                          QString const & pass)
+    {
+      return FALSE;
+    }
+
+    /**
      * Add the list of WMS layer names to be rendered by this server
      */
     virtual void addLayers(QStringList const & layers,

@@ -5091,6 +5091,29 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
 } // QgsRasterLayer::setDataProvider
 
 
+bool QgsRasterLayer::setProxy(QString const & host,
+                                          int port,
+                              QString const & user,
+                              QString const & pass)
+{
+  if (!dataProvider)
+  {
+    return FALSE;
+  }
+  else
+  {
+#ifdef QGISDEBUG
+  std::cout << "  QgsRasterLayer::setProxy: host = " << host.toLocal8Bit().data() << "." << std::endl;
+  std::cout << "  QgsRasterLayer::setProxy: port = " << port << "." << std::endl;
+  std::cout << "  QgsRasterLayer::setProxy: user = " << user.toLocal8Bit().data() << "." << std::endl;
+  std::cout << "  QgsRasterLayer::setProxy: pass = " << pass.toLocal8Bit().data() << "." << std::endl;
+#endif
+    return dataProvider->setProxy(host, port, user, pass);
+  }
+}
+
+
+
 bool QgsRasterLayer::usesProvider()
 {
   if (mProviderKey.isEmpty())

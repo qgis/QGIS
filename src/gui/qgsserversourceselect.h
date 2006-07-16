@@ -52,11 +52,25 @@ public:
 
     //! Connection name
     QString connName();
+
     //! Connection info (uri)
     QString connInfo();
 
+    //! Connection Proxy Host
+    QString connProxyHost();
+
+    //! Connection Proxy Port
+    int connProxyPort();
+
+    //! Connection Proxy User
+    QString connProxyUser();
+
+    //! Connection Proxy Pass
+    QString connProxyPass();
+
     //! String list containing the selected layers
     QStringList selectedLayers();
+
     //! String list containing the visual styles selected for the selected layers - this corresponds with the output from selectedLayers()
     QStringList selectedStylesForSelectedLayers();
 
@@ -126,9 +140,24 @@ private:
     //! Returns a textual description for the EPSG number
     QString descriptionForEpsg(long epsg);
 
-
+    //! Name for selected connection
     QString m_connName;
+
+    //! URI for selected connection
     QString m_connInfo;
+
+    //! Proxy Host for selected connection
+    QString m_connProxyHost;
+
+    //! Proxy Port for selected connection
+    int m_connProxyPort;
+
+    //! Proxy User for selected connection
+    QString m_connProxyUser;
+
+    //! Proxy Pass for selected connection
+    QString m_connProxyPass;
+
     QStringList m_selectedLayers;
     QStringList m_selectedStylesForSelectedLayers;
     long m_Epsg;

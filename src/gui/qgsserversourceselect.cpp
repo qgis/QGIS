@@ -348,7 +348,8 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
   QString part;
   
   connStringParts += settings.readEntry(key + "/url");
-  
+
+/*
   // Add the proxy host and port if any are defined.
   if ( ! ( (part = settings.readEntry(key + "/proxyhost")).isEmpty() ) )
   {
@@ -384,7 +385,8 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
         connStringParts += part;
       }
     }
-  }  
+  }
+*/
 
   m_connName = cmbConnections->currentText();
   // setup 'url ( + " " + proxyhost + " " + proxyport + " " + proxyuser + " " + proxypass)'
@@ -406,6 +408,22 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
   if (mWmsProvider)
   {
     connect(mWmsProvider, SIGNAL(setStatus(QString)), this, SLOT(showStatusMessage(QString)));
+
+    // Collect and set HTTP proxy on WMS provider
+
+    m_connProxyHost = settings.readEntry(key + "/proxyhost"),
+    m_connProxyPort = settings.readEntry(key + "/proxyport").toInt(),
+    m_connProxyUser = settings.readEntry(key + "/proxyuser"),
+    m_connProxyPass = settings.readEntry(key + "/proxypass"),
+
+    mWmsProvider->setProxy(
+      m_connProxyHost,
+      m_connProxyPort,
+      m_connProxyUser,
+      m_connProxyPass
+    );
+
+    // WMS Provider all set up; let's get some layers
 
     if (!populateLayerList(mWmsProvider))
     {
@@ -575,6 +593,26 @@ QString QgsServerSourceSelect::connName()
 QString QgsServerSourceSelect::connInfo()
 {
   return m_connInfo;
+}
+
+QString QgsServerSourceSelect::connProxyHost()
+{
+  return m_connProxyHost;
+}
+
+int QgsServerSourceSelect::connProxyPort()
+{
+  return m_connProxyPort;
+}
+
+QString QgsServerSourceSelect::connProxyUser()
+{
+  return m_connProxyUser;
+}
+
+QString QgsServerSourceSelect::connProxyPass()
+{
+  return m_connProxyPass;
 }
 
 QStringList QgsServerSourceSelect::selectedLayers()
