@@ -2294,27 +2294,36 @@ QString QgsWmsProvider::getMetadata()
 }
 
 
-QString QgsWmsProvider::identifyAsHtml(const QgsPoint& point)
+QString QgsWmsProvider::identifyAsText(const QgsPoint& point)
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsWmsProvider::identifyAsHtml: entering." << std::endl;
+  std::cout << "QgsWmsProvider::identifyAsText: entering." << std::endl;
 #endif
 
   // Collect which layers to query on
 
-  QStringList visibleLayers = QStringList();
+  QStringList queryableLayers = QStringList();
 
-  for ( QStringList::Iterator it  = activeSubLayers.begin(); 
-                              it != activeSubLayers.end(); 
-                            ++it ) 
+  // Test for which layers are suitable for querying with
+  for ( QStringList::const_iterator it  = activeSubLayers.begin(); 
+                                    it != activeSubLayers.end(); 
+                                  ++it )
   {
+    // Is sublayer visible?
     if (TRUE == activeSubLayerVisibility.find( *it )->second)
     {
-      visibleLayers += *it;
+      // Is sublayer queryable?
+      if (TRUE == mQueryableForLayer.find( *it )->second)
+      {
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::identifyAsText: '" << (*it).toLocal8Bit().data() << "' is queryable." << std::endl;
+#endif
+        queryableLayers += *it;
+      }
     }
   }
 
-  QString layers = visibleLayers.join(",");
+  QString layers = queryableLayers.join(",");
   Q3Url::encode( layers );
 
   // Compose request to WMS server
@@ -2343,18 +2352,13 @@ QString QgsWmsProvider::identifyAsHtml(const QgsPoint& point)
   requestUrl += QString( "Y=%1" )
                    .arg( point.y() );
 
-  QString html = retrieveUrl(requestUrl);
-
-  if (html.isEmpty())
-  {
-    return QString();
-  }
+  QString text = retrieveUrl(requestUrl);
 
 #ifdef QGISDEBUG
-  std::cout << "QgsWmsProvider::identifyAsHtml: exiting with '"
-            << html.toLocal8Bit().data() << "'." << std::endl;
+  std::cout << "QgsWmsProvider::identifyAsText: exiting with '"
+            << text.toLocal8Bit().data() << "'." << std::endl;
 #endif
-  return html;
+  return text;
 }
 
 

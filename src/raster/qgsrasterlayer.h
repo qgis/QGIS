@@ -285,12 +285,12 @@ public:
      *
      * \param point[in]  an image pixel coordinate in the last requested extent of layer.
      *
-     * \retval  An HTML document containing the return from the WMS server
+     * \return  A text document containing the return from the WMS server
      *
      * \note  The arbitraryness of the returned document is enforced by WMS standards
      *        up to at least v1.3.0
      */
-    QString identifyAsHtml(const QgsPoint& point);
+    QString identifyAsText(const QgsPoint& point);
 
     /** \brief Query gdal to find out the WKT projection string for this layer. This implements the virtual method of the same name defined in QgsMapLayer*/
     QString getProjectionWKT();

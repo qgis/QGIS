@@ -528,7 +528,7 @@ public:
    *
    * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
    *
-   * \retval  An HTML document containing the return from the WMS server
+   * \return  A text document containing the return from the WMS server
    *
    * \note WMS Servers prefer to receive coordinates in image space, therefore
    *       this function expects coordinates in that format.
@@ -536,7 +536,7 @@ public:
    * \note  The arbitraryness of the returned document is enforced by WMS standards
    *        up to at least v1.3.0
    */
-  QString identifyAsHtml(const QgsPoint& point);
+  QString identifyAsText(const QgsPoint& point);
 
   /**
    * \brief   Returns the caption error text for the last error in this provider
