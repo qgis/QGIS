@@ -3667,7 +3667,8 @@ void QgsRasterLayer::initContextMenu_(QgisApp * theApp)
 
 #endif //0
 
-  popMenu->addAction(tr("&Convert to..."), this, SLOT(convertTo()));
+  // There is no such slot anymore...
+  //popMenu->addAction(tr("&Convert to..."), this, SLOT(convertTo()));
 } // QgsRasterLayer::initContextMenu
 
 void QgsRasterLayer::updateProgress(int theProgress, int theMax)
