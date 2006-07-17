@@ -817,10 +817,9 @@ void QgsPostgresProvider::getFeatureGeometry(int key, QgsFeature *f)
 
   if(returnedLength > 0)
   {
-      unsigned char *wkbgeom = new unsigned char[returnedLength + 1];
-      memset(wkbgeom, '\0', returnedLength + 1);
+      unsigned char *wkbgeom = new unsigned char[returnedLength];
       memcpy(wkbgeom, PQgetvalue(geomResult, row, 0), returnedLength);
-      f->setGeometryAndOwnership(wkbgeom, returnedLength + 1);
+      f->setGeometryAndOwnership(wkbgeom, returnedLength);
   }
   else
   {
