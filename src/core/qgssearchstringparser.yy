@@ -19,11 +19,7 @@
  
 %{
 #include <qglobal.h>
-#if QT_VERSION < 0x040000
-#include <qptrlist.h>
-#else
 #include <QList>
-#endif
 #include "qgssearchtreenode.h"
 
 /** returns parsed tree, otherwise returns NULL and sets parserErrorMsg
@@ -44,11 +40,7 @@ QString gParserErrorMsg;
 void yyerror(const char* msg);
 
 //! temporary list for nodes without parent (if parsing fails these nodes are removed)
-#if QT_VERSION < 0x040000
-QPtrList<QgsSearchTreeNode> gTmpNodes;
-#else
 QList<QgsSearchTreeNode*> gTmpNodes;
-#endif
 void joinTmpNodes(QgsSearchTreeNode* parent, QgsSearchTreeNode* left, QgsSearchTreeNode* right);
 void addToTmpNodes(QgsSearchTreeNode* node);
 
@@ -135,11 +127,7 @@ scalar_exp:
 
 void addToTmpNodes(QgsSearchTreeNode* node)
 {
-#if QT_VERSION < 0x040000
   gTmpNodes.append(node);
-#else
-  gTmpNodes.append(node);
-#endif
 }
 
 
@@ -149,29 +137,17 @@ void joinTmpNodes(QgsSearchTreeNode* parent, QgsSearchTreeNode* left, QgsSearchT
 
   if (left)
   {
-#if QT_VERSION < 0x040000
-    res = gTmpNodes.removeRef(left);
-#else
     res = gTmpNodes.removeAll(left);
-#endif
     Q_ASSERT(res);
   }
 
   if (right)
   {
-#if QT_VERSION < 0x040000
-    res = gTmpNodes.removeRef(right);
-#else
     res = gTmpNodes.removeAll(right);
-#endif
     Q_ASSERT(res);
   }
 
-#if QT_VERSION < 0x040000
   gTmpNodes.append(parent);
-#else
-  gTmpNodes.append(parent);
-#endif
 }
 
 // returns parsed tree, otherwise returns NULL and sets parserErrorMsg
@@ -187,23 +163,14 @@ QgsSearchTreeNode* parseSearchString(const QString& str, QString& parserErrorMsg
   if (res == 0) // success?
   {
     Q_ASSERT(gTmpNodes.count() == 1);
-#if QT_VERSION < 0x040000
-    return gTmpNodes.take(0);
-#else
     return gTmpNodes.takeFirst();
-#endif
   }
   else // error?
   {
     parserErrorMsg = gParserErrorMsg;
     // remove nodes without parents - to prevent memory leaks
-#if QT_VERSION < 0x040000
-    while (gTmpNodes.first())
-      delete gTmpNodes.take();
-#else
     while (gTmpNodes.size() > 0)
       delete gTmpNodes.takeFirst();
-#endif
     return NULL;
   }
 }

@@ -194,16 +194,6 @@ bool QgsPropertyValue::readXML(QDomNode & keyNode)
 
             break;
 
-// qt3to4 changes this to QCoreVariant::Icon, which is then not compilable.
-#if QT_VERSION < 0x040000
-        case QCoreVariant::Icon:
-            qDebug("qgsproject.cpp:%d add support for QVariant::IconSet", __LINE__);
-
-            return false;
-
-            break;
-#endif
-
         case QVariant::Point:
             qDebug("qgsproject.cpp:%d add support for QVariant::Point", __LINE__);
 
@@ -272,16 +262,6 @@ bool QgsPropertyValue::readXML(QDomNode & keyNode)
             return false;
 
             break;
-
-        // in Qt4 this is equivalent to case QVariant::CString
-#if QT_VERSION < 0x040000
-        case QVariant::ByteArray :
-            qDebug( "qgsproject.cpp:%d add support for QVariant::ByteArray", __LINE__ );
-
-            return false;
-
-            break;
-#endif
 
         case QVariant::BitArray :
             qDebug( "qgsproject.cpp:%d add support for QVariant::BitArray", __LINE__ );

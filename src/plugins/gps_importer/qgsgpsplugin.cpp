@@ -267,11 +267,8 @@ void QgsGPSPlugin::importGPSFile(QString inputFilename, QgsBabelFormat* importer
 				 NULL, 0, true);
   progressDialog.show();
   for (int i = 0; babelProcess.isRunning(); ++i) {
-#if QT_VERSION < 0x040000
-    QApplication::eventLoop()->processEvents(0);
-#else
     QCoreApplication::processEvents();
-#endif
+
     progressDialog.setProgress(i/64);
     if (progressDialog.wasCanceled())
       return;
@@ -344,11 +341,8 @@ void QgsGPSPlugin::downloadFromGPS(QString device, QString port,
 				 NULL, 0, true);
   progressDialog.show();
   for (int i = 0; babelProcess.isRunning(); ++i) {
-#if QT_VERSION < 0x040000
-    QApplication::eventLoop()->processEvents(0);
-#else
     QCoreApplication::processEvents();
-#endif
+
     progressDialog.setProgress(i/64);
     if (progressDialog.wasCanceled())
       return;
@@ -429,11 +423,8 @@ void QgsGPSPlugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
 				 NULL, 0, true);
   progressDialog.show();
   for (int i = 0; babelProcess.isRunning(); ++i) {
-#if QT_VERSION < 0x040000
-    QApplication::eventLoop()->processEvents(0);
-#else
     QCoreApplication::processEvents();
-#endif
+
     progressDialog.setProgress(i/64);
     if (progressDialog.wasCanceled())
       return;

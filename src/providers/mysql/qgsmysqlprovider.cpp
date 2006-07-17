@@ -470,11 +470,7 @@ QgsMySQLProvider::getNextFeature_( QgsFeature & feature,
                                                                          // to
                                                                          // geometry
 
-#if QT_VERSION < 0x040000
-           QDataStream s( buffer, QIODevice::WriteOnly ); // open on buffers's data
-#else
            QDataStream s( &buffer, QIODevice::WriteOnly ); // open on buffers's data
-#endif
 
            switch ( endian() )
            {
