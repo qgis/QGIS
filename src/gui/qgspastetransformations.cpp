@@ -126,12 +126,7 @@ void QgsPasteTransformations::addTransfer(const QString& sourceSelectedFieldName
           << std::endl;
 #endif
 
-#if QT_VERSION < 0x040000
-  int newRow = transferLayout->numRows();
-#else
-  // For some reason Qt4's uic3 only outputs generic names for layout items
   int newRow = gridLayout->numRows();
-#endif
 
 // TODO: Do not add the transfer if neither the sourceSelectedFieldName nor the destinationSelectedFieldName could be found.
 
@@ -176,14 +171,8 @@ void QgsPasteTransformations::addTransfer(const QString& sourceSelectedFieldName
   }
 
   // Append to dialog layout
-#if QT_VERSION < 0x040000
-  transferLayout->addWidget(newSourceFields,      newRow, 0);
-  transferLayout->addWidget(newDestinationFields, newRow, 1);
-#else
-  // For some reason Qt4's uic3 only outputs generic names for layout items
   gridLayout->addWidget(newSourceFields,      newRow, 0);
   gridLayout->addWidget(newDestinationFields, newRow, 1);
-#endif
 
   // Keep a reference to them so that we can read from them
   // when the dialog is dismissed
