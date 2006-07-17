@@ -4827,7 +4827,7 @@ void QgsRasterLayer::identify(const QgsPoint& point, std::map<QString,QString>& 
 } // void QgsRasterLayer::identify
 
 
-QString QgsRasterLayer::identifyAsHtml(const QgsPoint& point)
+QString QgsRasterLayer::identifyAsText(const QgsPoint& point)
 {
   if (mProviderKey != "wms")
   {
@@ -4835,7 +4835,7 @@ QString QgsRasterLayer::identifyAsHtml(const QgsPoint& point)
     return QString();
   }
 
-  return (dataProvider->identifyAsHtml(point));
+  return (dataProvider->identifyAsText(point));
 }
 
 void QgsRasterLayer::populateHistogram(int theBandNoInt, int theBinCountInt,bool theIgnoreOutOfRangeFlag,bool theHistogramEstimatedFlag)

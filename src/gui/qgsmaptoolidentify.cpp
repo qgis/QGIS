@@ -157,9 +157,9 @@ void QgsMapToolIdentify::identifyRasterWmsLayer(QgsRasterLayer* layer, const Qgs
     return;
   }
 
-  QString html = layer->identifyAsHtml(point);
+  QString text = layer->identifyAsText(point);
 
-  if (html.isEmpty())
+  if (text.isEmpty())
   {
     showError(layer);
     return;
@@ -171,8 +171,7 @@ void QgsMapToolIdentify::identifyRasterWmsLayer(QgsRasterLayer* layer, const Qgs
   }
 
   mViewer->setCaption( layer->name() );
-  mViewer->setMessageAsPlainText( html );
-//  mViewer->setMessageAsHtml( html );
+  mViewer->setMessageAsPlainText( text );
 
 //  mViewer->exec();
   mViewer->show();
