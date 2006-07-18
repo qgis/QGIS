@@ -32,6 +32,7 @@ QgsFeature::QgsFeature()
     : mFid(0), 
       mGeometry(0),
       mOwnsGeometry(0),
+      mValid(false),
       mDirty(0)
 {
   // NOOP
@@ -42,6 +43,7 @@ QgsFeature::QgsFeature(int id, QString const & typeName )
     : mFid(id), 
       mGeometry(0),
       mOwnsGeometry(0),
+      mValid(false),
       mDirty(0),
       mTypeName(typeName)
 {
