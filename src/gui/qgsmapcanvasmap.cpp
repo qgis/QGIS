@@ -57,6 +57,8 @@ void QgsMapCanvasMap::render()
 
     QPainter paint;
     paint.begin(&image);
+    // Clip drawing to the QImage
+    paint.setClipRect(image.rect());
 
     // antialiasing
     if (mAntiAliasing)
