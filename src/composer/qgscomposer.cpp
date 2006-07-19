@@ -140,8 +140,17 @@ void QgsComposer::removeWidgetChildren ( QWidget *w )
       if( ob->isWidgetType() ) 
       {
         QWidget *ow = (QWidget *) ob;
-        w->removeChild ( ob );
-        ow->hide ();
+
+        // The following line is legacy Qt3, is not supported in Qt4
+        // and can cause a SIGABRT
+        //w->removeChild ( ob );
+        // instead:
+        ow->setParent(0);
+        // TODO: Eventually mItemOptionsFrame should be made
+        // a Qt4 QStackedWidget and all this removeWidgetChildren
+        // shenanigans can alledgedly go away
+
+        ow->hide();
       }
     }
   }
