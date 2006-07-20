@@ -1098,6 +1098,8 @@ bool QgsProject::read()
     // get the map layers
     pair< bool, list<QDomNode> > getMapLayersResults =  _getMapLayers(*doc);
 
+    // Restore the map canvas extent
+
     QgsRect savedExtent;
 
     if (!_getExtents(*doc, savedExtent))
@@ -1114,6 +1116,15 @@ bool QgsProject::read()
 
          // return false;
     }
+    else
+    {
+      if (canvas)
+      {
+        canvas->setExtent(savedExtent);
+      }
+    }
+
+    // review the integrity of the retrieved map layers
 
     if ( ! getMapLayersResults.first )
     {
