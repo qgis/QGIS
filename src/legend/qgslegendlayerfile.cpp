@@ -96,16 +96,31 @@ void QgsLegendLayerFile::setLegendPixmap(const QPixmap& pix)
   setIcon(0, theIcon);
 }
 
-void QgsLegendLayerFile::setOverviewPixmap(const QPixmap& pix)
+void QgsLegendLayerFile::setIconAppearance(bool inOverview,
+                                           bool editable)
 {
-  QIcon theIcon(pix);
-  setIcon(1, theIcon);
-}
+  QPixmap newIcon(getOriginalPixmap());
 
-void QgsLegendLayerFile::setEditingPixmap(const QPixmap& pix)
-{
-  QIcon theIcon(pix);
-  setIcon(2, theIcon);
+  if (inOverview)
+  {
+    // Overlay the overview icon on the default icon
+    QPixmap myPixmap(QgsApplication::themePath()+"mIconOverview.png");
+    QPainter p(&newIcon);
+    p.drawPixmap(0,0,myPixmap);
+    p.end();
+  }
+  
+  if (editable)
+  {
+    // Overlay the editable icon on the default icon
+    QPixmap myPixmap(QgsApplication::themePath()+"mIconEditable.png");
+    QPainter p(&newIcon);
+    p.drawPixmap(0,0,myPixmap);
+    p.end();
+  }
+
+  QIcon theIcon(newIcon);
+  setIcon(0, theIcon);
 }
 
 void QgsLegendLayerFile::toggleCheckBox(bool state)

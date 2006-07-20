@@ -45,9 +45,7 @@ public:
 
     void setLegendPixmap(const QPixmap& pix);
 
-    void setOverviewPixmap(const QPixmap& pix);
-
-    void setEditingPixmap(const QPixmap& pix);
+    void setIconAppearance(bool inOverview, bool editable);
 
     /**Sets mVisibilityCheckBox to on/off*/
     void toggleCheckBox(bool state);

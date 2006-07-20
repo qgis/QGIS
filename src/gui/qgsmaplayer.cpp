@@ -452,29 +452,8 @@ void QgsMapLayer::updateItemPixmap()
 {
   if (mLegendLayerFile)
   {
-    QPixmap originalPix=mLegendLayerFile->getOriginalPixmap();
-
-    if(mShowInOverview)
-    {
-      //add overview glasses to the pixmap
-      mLegendLayerFile->setOverviewPixmap(mInOverviewPixmap);
-    }
-    else
-    {
-      mLegendLayerFile->setOverviewPixmap( QPixmap() );
-    }
-
-    if(isEditable())
-    {
-      //add editing icon to the pixmap
-      mLegendLayerFile->setEditingPixmap(mEditablePixmap);
-    }
-    else
-    {
-      mLegendLayerFile->setEditingPixmap( QPixmap() );
-    }
-
-    mLegendLayerFile->setLegendPixmap(originalPix);
+    mLegendLayerFile->setIconAppearance(mShowInOverview,
+                                        isEditable());
   }
 }
 
@@ -490,7 +469,7 @@ void QgsMapLayer::invalidTransformInput()
             QPainter p(&pix);
             p.drawPixmap(60,0,mProjectionErrorPixmap);
         }
-	    mLegendLayerFile->setLegendPixmap(pix);
+        mLegendLayerFile->setLegendPixmap(pix);
     }
 }
 
