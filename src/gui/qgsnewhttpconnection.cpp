@@ -23,7 +23,6 @@ QgsNewHttpConnection::QgsNewHttpConnection(QWidget *parent, const QString& connN
                     : QDialog(parent, fl)
 {
   setupUi(this);
-  connect(btnHelp, SIGNAL(clicked()), this, SLOT(helpInfo()));
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
   connect(btnOk, SIGNAL(clicked()), this, SLOT(saveConnection()));
 
