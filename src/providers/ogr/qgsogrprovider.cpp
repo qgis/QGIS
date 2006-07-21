@@ -88,8 +88,13 @@ QgsOgrProvider::QgsOgrProvider(QString const & uri)
 
   QgsDebugMsg("Data source uri is " + uri);
 
-  // try to open for update
+  // try to open for update, but disable error messages to avoid a
+  // message if the file is read only, because we cope with that
+  // ourselves.
+  CPLPushErrorHandler(&CPLQuietErrorHandler);
   ogrDataSource = OGRSFDriverRegistrar::Open(QFile::encodeName(uri).constData(), TRUE, &ogrDriver);
+  CPLPopErrorHandler();
+
   if(ogrDataSource == NULL)
   {
     // try to open read-only
