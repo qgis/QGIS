@@ -146,6 +146,19 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression(QSet<QString> * cr
 
 void QgsProjectionSelector::setSelectedSRSName(QString theSRSName)
 {
+  // ensure the projection list view is actually populated
+  // before we select from its contents
+
+  if (!mProjListDone)
+  {
+    applyProjList(&mCrsFilter);
+  }
+
+  if (!mUserProjListDone)
+  {
+    applyUserProjList(&mCrsFilter);
+  }
+
   mSRSNameSelection = theSRSName;
   mSRSNameSelectionPending = TRUE;
   applySRSNameSelection();
@@ -154,6 +167,19 @@ void QgsProjectionSelector::setSelectedSRSName(QString theSRSName)
 
 void QgsProjectionSelector::setSelectedSRSID(long theSRSID)
 {
+  // ensure the projection list view is actually populated
+  // before we select from its contents
+
+  if (!mProjListDone)
+  {
+    applyProjList(&mCrsFilter);
+  }
+
+  if (!mUserProjListDone)
+  {
+    applyUserProjList(&mCrsFilter);
+  }
+
   mSRSIDSelection = theSRSID;
   mSRSIDSelectionPending = TRUE;
   applySRSIDSelection();
