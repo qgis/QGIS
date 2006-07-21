@@ -72,7 +72,7 @@ void QgsHelpViewer::loadContext(const QString &contextId)
       sqlite3_stmt *ppStmt;
       const char *pzTail;
       // build the sql statement
-      QString sql = "select content,title from tbl_help where context_id = " 
+      QString sql = "select content,title from context_helps where context_id = " 
         + contextId;
       rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
       if(rc == SQLITE_OK)
