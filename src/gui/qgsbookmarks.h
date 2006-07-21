@@ -43,7 +43,7 @@ private:
  int connectDb();
  void zoomToBookmark();
  sqlite3 *db;
- static const int context_id = 85340544;
+ static const int context_id = 151694916;
 
 };
 #endif // QGSBOOKMARKS_H

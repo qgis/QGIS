@@ -117,7 +117,7 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     //! Pointer to the qgis application mainwindow
     QgisApp *qgisApp;
     PGconn *pd;
-    static const int context_id = 1244423922;
+    static const int context_id = 939347163;
 };
 
 
