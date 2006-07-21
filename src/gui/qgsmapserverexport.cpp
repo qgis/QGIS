@@ -292,7 +292,7 @@ void QgsMapserverExport::writeMapFile()
           break;
       }
 #ifdef QGISDEBUG
-      std::cout << "\tMapsrver Export creating symbol entries" << std::endl;
+      std::cout << "\tMapserver Export creating symbol entries" << std::endl;
 #endif
       // create a simple class entry based on red fill color and black outline color
       //TODO: adapt the following section to the new symbology

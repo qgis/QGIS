@@ -43,7 +43,7 @@ class QgsNewConnection : public QDialog, private Ui::QgsNewConnectionBase
     void on_btnHelp_clicked();
     void on_btnConnect_clicked();
   private:
-    static const int context_id = 821572257;
+    static const int context_id = -929865718;
 };
 
 #endif //  QGSNEWCONNECTIONBASE_H

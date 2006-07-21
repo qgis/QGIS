@@ -18,6 +18,7 @@
 /* $Id$ */
 
 #include "qgsidentifyresults.h"
+#include "qgscontexthelp.h"
 #include "qgsapplication.h"
 
 #include <QCloseEvent>
@@ -289,4 +290,8 @@ void QgsIdentifyResults::clicked ( Q3ListViewItem *item )
   }
 
   mActions.doAction(id, mValues, mClickedOnValue);
+}
+void QgsIdentifyResults::on_buttonHelp_clicked()
+{
+  QgsContextHelp::run(context_id);
 }
