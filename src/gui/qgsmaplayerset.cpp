@@ -18,7 +18,7 @@
 #include "qgsmaplayerset.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
-
+#include <string>
 
 void QgsMapLayerSet::setLayerSet(const std::deque<QString>& layers)
 {
@@ -60,7 +60,7 @@ void QgsMapLayerSet::updateFullExtent()
         try
         {
           if ( ! lyr->coordinateTransform() )
-            throw QgsCsException( string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
+            throw QgsCsException( std::string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
               
           mFullExtent.unionRect(lyr->coordinateTransform()->transformBoundingBox(lyr->extent()));
         }
