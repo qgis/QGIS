@@ -37,7 +37,7 @@ public slots:
     void setEnabled(bool); 
      
 private:
-    static const int context_id = 732921842;
+    static const int context_id = 32338213;
     
 signals:
    //void drawRasterLayer(QString);
