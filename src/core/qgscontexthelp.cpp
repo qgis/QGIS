@@ -88,7 +88,7 @@ QProcess *QgsContextHelp::start(int contextId)
                    SLOT(processExited()));
 
   // Delete the process if the application quits
-  connect(qApp, SIGNAL(aboutToQuit()), process, SLOT(tryTerminate()));
+  connect(qApp, SIGNAL(aboutToQuit()), process, SLOT(terminate()));
 
   return process;
 }
