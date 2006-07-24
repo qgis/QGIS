@@ -482,6 +482,33 @@ QgsRasterLayer::~QgsRasterLayer()
 }
 
 
+void QgsRasterLayer::setupDestSrs()
+{
+  QgsDebugMsg("Layer registry has " + QString::number(QgsMapLayerRegistry::instance()->count()) + "layers");
+
+  if (QgsMapLayerRegistry::instance()->count() ==0)
+  {
+    mCoordinateTransform->destSRS().createFromProj4(
+           mCoordinateTransform->sourceSRS().proj4String());
+    //first layer added will set the default project level projection
+    //TODO remove cast if poss!
+    int mySrsId = static_cast<int>(mCoordinateTransform->sourceSRS().srsid());
+    if (mySrsId)
+    {
+      QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectSRSID",mySrsId);
+    }
+  }
+  else 
+  {
+      mCoordinateTransform->destSRS().createFromSrsId(
+        QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectSRSID",0));
+  }
+  if (!mCoordinateTransform->destSRS().isValid())
+  {
+    mCoordinateTransform->destSRS().validate();
+  }
+}
+
 
 bool
 QgsRasterLayer::readFile( QString const & fileName )
@@ -536,42 +563,11 @@ QgsRasterLayer::readFile( QString const & fileName )
   {
     mCoordinateTransform->sourceSRS().validate();
   }
-  QString myDestWKT = QgsProject::instance()->readEntry("SpatialRefSys","/WKT",mySourceWKT);
-  //set up the coordinat transform - in the case of raster this is mainly used to convert
-  //the inverese projection of the map extents of the canvas when zzooming in etc. so
-  //that they match the coordinate system of this layer
-  // if no other layers exist, set the output projection to be
-  // the same as the input projection, otherwise set the output to the
-  // project srs
-  QgsDebugMsg("Layer registry has " + QString::number(QgsMapLayerRegistry::instance()->count()) + "layers");
 
-  if (QgsMapLayerRegistry::instance()->count() ==0)
-  {
-     mCoordinateTransform->destSRS().createFromProj4(
-           mCoordinateTransform->sourceSRS().proj4String());
-    //first layer added will set the default project level projection
-    //TODO remove cast if poss!
-    int mySrsId = static_cast<int>(mCoordinateTransform->sourceSRS().srsid());
-    if (mySrsId)
-    {
-      QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectSRSID",mySrsId);
-    }
-  }
-  else 
-  {
-      mCoordinateTransform->destSRS().createFromSrsId(
-        QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectSRSID",0));
-  }
-  if (!mCoordinateTransform->destSRS().isValid())
-  {
-    mCoordinateTransform->destSRS().validate();  
-  }
+  setupDestSrs();
 
-  
-  //initialise the transform - you should do this any time one of the SRS's changes
-
+  // initialise the transform - you should do this any time one of the SRS's changes
   mCoordinateTransform->initialise();
-
 
   getMetadata();
 
@@ -5057,21 +5053,19 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
           //
           // Get the layers project info and set up the QgsCoordinateTransform for this layer
           //
-          
-          // get the project projection
-          // TODO: defaulting to this layer's projection if none exists....
-          QString myDestWKT = QgsProject::instance()->readEntry("SpatialRefSys","/WKT","");
-          
-          // set up the coordinate transform - in the case of raster this is mainly used to convert
-          // the inverese projection of the map extents of the canvas when zooming in etc. so
-          // that they match the coordinate system of this layer
-	  QgsDebugMsg("QgsRasterLayer::setDataProvider: myDestWKT: " + myDestWKT);
-          // Hard-code the source coordinate reference for now
-          // TODO: Make WMS projection-aware.    
-          mCoordinateTransform = new QgsCoordinateTransform(4326,  
-                                                            myDestWKT,
-                                                            QgsSpatialRefSys::EPSG);
-        
+
+          mCoordinateTransform = new QgsCoordinateTransform();
+
+          // Setup source SRS in the QgsCoordinateTransform
+          QgsSpatialRefSys sourceSrs = QgsSpatialRefSys();
+          sourceSrs.createFromOgcWmsCrs(crs);
+          mCoordinateTransform->setSourceSRS(sourceSrs);
+
+          // Setup destination SRS in the QgsCoordinateTransform
+          setupDestSrs();
+
+          // initialise the transform - you should do this any time one of the SRS's changes
+          mCoordinateTransform->initialise();
         }
       }
       else

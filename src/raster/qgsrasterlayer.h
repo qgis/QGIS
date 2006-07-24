@@ -968,6 +968,16 @@ private:
     /** \brief Update the layer if it is outdated */
     bool update ();
 
+    /**
+      set up the coordinate transform - in the case of raster this is mainly used to convert
+      the inverese projection of the map extents of the canvas when zooming in etc. so
+      that they match the coordinate system of this layer
+      if no other layers exist, set the output projection to be
+      the same as the input projection, otherwise set the output to the
+      project srs
+     */
+    void setupDestSrs();
+
     //
     // Private member vars
     //
