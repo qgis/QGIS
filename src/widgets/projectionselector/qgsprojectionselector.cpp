@@ -203,6 +203,11 @@ void QgsProjectionSelector::applySRSNameSelection()
     if (nodes.count() > 0)
     {
       lstCoordinateSystems->setCurrentItem(nodes.first());
+
+      // The following seems to be broken in Qt 4.1.0:
+      // It only works if the widget is already visible.
+      // (Which makes it really hard to scroll to an
+      // item before you exec() the widget)
       lstCoordinateSystems->scrollToItem(nodes.first());
     }
     else // unselect the selected item to avoid confusing the user
@@ -230,6 +235,11 @@ void QgsProjectionSelector::applySRSIDSelection()
     if (nodes.count() > 0)
     {
       lstCoordinateSystems->setCurrentItem(nodes.first());
+
+      // The following seems to be broken in Qt 4.1.0:
+      // It only works if the widget is already visible.
+      // (Which makes it really hard to scroll to an
+      // item before you exec() the widget)
       lstCoordinateSystems->scrollToItem(nodes.first());
     }
     else // unselect the selected item to avoid confusing the user
@@ -784,6 +794,11 @@ void QgsProjectionSelector::coordinateSystemSelected( QTreeWidgetItem * theItem)
     {
       myDescription+=(myProjString);
     }
+
+    // The following seems to be broken in Qt 4.1.0:
+    // It only works if the widget is already visible.
+    // (Which makes it really hard to scroll to an
+    // item before you exec() the widget)
     lstCoordinateSystems->scrollToItem(theItem);
     teProjection->setText(myDescription);
   }
