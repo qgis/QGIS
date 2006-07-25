@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
+#include "qgslegend.h"
 #include "qgslegendlayer.h"
 #include "qgslegendlayerfile.h"
 #include "qgslegendlayerfilegroup.h"
@@ -230,6 +231,8 @@ void QgsLegendLayer::updateCheckState()
     {
       treeWidget()->blockSignals(true);
       setCheckState(0, theState);
+      //notify the legend that the check state has changed
+      legend()->updateCheckStates(this, theState);
       treeWidget()->blockSignals(false);
     }
 }

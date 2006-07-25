@@ -87,7 +87,7 @@ void QgsBookmarks::initialise()
       {
         QString name = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 1));
         //        sqlite3_bind_parameter_index(ppStmt, "name"));
-        QgsDebugMsg("Bookmark name: " + name.toLocal8Bit().data()); 
+        //QgsDebugMsg("Bookmark name: " + name.toLocal8Bit().data()); 
         Q3ListViewItem *lvi = new Q3ListViewItem(lstBookmarks, name);
         // set the project name
         lvi->setText(1, QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 2))); 

@@ -162,6 +162,7 @@ class QgsLegend : public QTreeWidget
       the given QgsLegendLayerFile */
   void setName(QgsLegendLayerFile* w, QString layerName);
 
+  void updateCheckStates(QTreeWidgetItem* item, Qt::CheckState state) {mStateOfCheckBoxes[item] = state;}
 
 public slots:
 
