@@ -22,7 +22,7 @@ export QT_LIBS="-L/home/user/win/qt4.1_win/lib -lQtNetwork -lQtSvg -lQtXml -lQtG
 
 ./autogen.sh \
 --with-qt-pkg-config=no \
---prefix=$WIN/i586-mingw32msvc \
+--prefix=$WIN/i586-mingw32msvc/release \
 --target=$TARGET \
 --host=$TARGET \
 --build=i386-linux \
