@@ -1265,9 +1265,6 @@ QDomNode QgsLegend::nextDomNode(const QDomNode& theNode)
 
 void QgsLegend::insertItem(QTreeWidgetItem* move, QTreeWidgetItem* into)
 {
-#ifdef QGISDEBUG
-  qWarning("entering QgsLegend::insertItem");
-#endif
   QgsLegendItem* movedItem = dynamic_cast<QgsLegendItem*>(move);
   QgsLegendItem* intoItem = dynamic_cast<QgsLegendItem*>(into);
 
