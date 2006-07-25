@@ -186,6 +186,24 @@ void QgsOgrProvider::loadFields()
     if(fdef)
     {
       geomType = fdef->GetGeomType();
+
+      //Some ogr drivers (e.g. GML) are not able to determine the geometry type of a layer like this.
+      //In such cases, we examine the first feature 
+      if(geomType == wkbUnknown) 
+	{
+	  ogrLayer->ResetReading();
+	  OGRFeature* firstFeature = ogrLayer->GetNextFeature();
+	  if(firstFeature)
+	    {
+	      OGRGeometry* firstGeometry = firstFeature->GetGeometryRef();
+	      if(firstGeometry)
+		{
+		  geomType = firstGeometry->getGeometryType();
+		}
+	    }
+	  ogrLayer->ResetReading();
+	}
+      
       for(int i=0;i<fdef->GetFieldCount();++i)
       {
         OGRFieldDefn *fldDef = fdef->GetFieldDefn(i);

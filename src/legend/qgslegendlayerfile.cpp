@@ -19,6 +19,7 @@
  ***************************************************************************/
 #include "qgsapplication.h"
 #include "qgslegend.h"
+#include "qgslegendlayer.h"
 #include "qgslegendlayerfile.h"
 #include "qgsmaplayer.h"
 #include <QCoreApplication>
@@ -121,6 +122,9 @@ void QgsLegendLayerFile::setIconAppearance(bool inOverview,
 
   QIcon theIcon(newIcon);
   setIcon(0, theIcon);
+
+  //also update the icon of the legend layer
+  ((QgsLegendLayer*)(parent()->parent()))->updateIcon();
 }
 
 void QgsLegendLayerFile::toggleCheckBox(bool state)

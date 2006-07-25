@@ -889,7 +889,7 @@ void QgsVectorLayer::draw(QPainter * p,
         // only show selections of the current layer
         bool sel;
         if (
-            (mLegend->currentLayer() == this) &&
+            (mLegend && mLegend->currentLayer() == this) &&
             (mSelectedFeatureIds.find(fet->featureId()) != mSelectedFeatureIds.end())
            )
         {

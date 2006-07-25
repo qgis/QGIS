@@ -652,7 +652,6 @@ void QgsLegend::legendLayerAddToOverview()
 	       (*it)->inOverview(true);
        }
    }
-
    mMapCanvas->updateOverview();
 }
 
@@ -673,7 +672,6 @@ void QgsLegend::legendLayerRemoveFromOverview()
 	   (*it)->inOverview(false); //else
        }
    }
-
    mMapCanvas->updateOverview();
 }
 
@@ -1064,6 +1062,7 @@ void QgsLegend::storeInitialPosition(QTreeWidgetItem* li)
 
 void QgsLegend::resetToInitialPosition(QTreeWidgetItem* li)
 {
+  QgsLegendItem* formerParent = dynamic_cast<QgsLegendItem*>(li->parent()); //todo: make sure legend layers are updated
   if(mRestoreInformation == FIRST_ITEM)
     {
 #ifdef QGISDEBUG
@@ -1078,14 +1077,27 @@ void QgsLegend::resetToInitialPosition(QTreeWidgetItem* li)
       qWarning("FIRST_CHILD");
 #endif
       removeItem(li);
+      if(formerParent)
+	{
+	  formerParent->release((QgsLegendItem*)li);
+	}
       mRestoreItem->insertChild(0, li);
+      ((QgsLegendItem*)mRestoreItem)->receive((QgsLegendItem*)li);
     }
   else if(mRestoreInformation == YOUNGER_SIBLING)
     {
 #ifdef QGISDEBUG
       qWarning("YOUNGER_SIBLING");
 #endif
+      if(formerParent)
+	{
+	  formerParent->release((QgsLegendItem*)li);
+	}
       dynamic_cast<QgsLegendItem*>(li)->moveItem(dynamic_cast<QgsLegendItem*>(mRestoreItem));
+      if(mRestoreItem->parent())
+	{
+	  ((QgsLegendItem*)(mRestoreItem->parent()))->receive((QgsLegendItem*)li);
+	}
     }
 }
 
@@ -1253,14 +1265,23 @@ QDomNode QgsLegend::nextDomNode(const QDomNode& theNode)
 
 void QgsLegend::insertItem(QTreeWidgetItem* move, QTreeWidgetItem* into)
 {
+#ifdef QGISDEBUG
+  qWarning("entering QgsLegend::insertItem");
+#endif
   QgsLegendItem* movedItem = dynamic_cast<QgsLegendItem*>(move);
   QgsLegendItem* intoItem = dynamic_cast<QgsLegendItem*>(into);
 
   if(movedItem && intoItem)
     {
+      QgsLegendItem* parentItem = dynamic_cast<QgsLegendItem*>(movedItem->parent());
       movedItem->storeAppearanceSettings();//store settings in the moved item and its children
       removeItem(movedItem);
       intoItem->insert(movedItem);
+      if(parentItem)
+	{
+	  parentItem->release(movedItem); //give the former parent item the possibility to do cleanups
+	}
+      intoItem->receive(movedItem);
       movedItem->restoreAppearanceSettings();//apply the settings again
     }
 }
