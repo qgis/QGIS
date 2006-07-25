@@ -20,7 +20,7 @@ WINSUBDIRS = core legend raster composer \
 	plugins/scale_bar \
 	plugins/georeferencer \
 	plugins/grid_maker \
-	plugins/delimited_text 
+	plugins/delimited_text \
 	plugins/gps_importer \
 	plugins/spit 
 	

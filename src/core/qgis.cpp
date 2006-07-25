@@ -11,7 +11,7 @@ const char* QGis::qgisVersion = VERSION;
 const int QGis::qgisVersionInt =800;
   
 // Release name
-const char* QGis::qgisReleaseName = "Titan - Preview 1";
+const char* QGis::qgisReleaseName = "Titan - Preview 2";
 
 const char* QGis::qgisVectorGeometryType[] =
 {
