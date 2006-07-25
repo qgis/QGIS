@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgscontexthelp.h"
 #include "qgsmapcanvas.h"
+#include "qgslogger.h"
  
 #include <QDir>
 #include <QFileInfo>
@@ -86,7 +87,7 @@ void QgsBookmarks::initialise()
       {
         QString name = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 1));
         //        sqlite3_bind_parameter_index(ppStmt, "name"));
-        std::cout << "Bookmark name: " << name.toLocal8Bit().data() << std::endl; 
+        QgsDebugMsg("Bookmark name: " + name.toLocal8Bit().data()); 
         Q3ListViewItem *lvi = new Q3ListViewItem(lstBookmarks, name);
         // set the project name
         lvi->setText(1, QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 2))); 
