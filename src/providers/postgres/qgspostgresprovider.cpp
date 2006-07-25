@@ -1695,6 +1695,8 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f, int primaryKeyHighWater)
          )
       {
         QString fieldvalue = it->fieldValue();
+        if (fieldvalue.isEmpty())
+          fieldvalue = "NULL";
         bool charactertype=false;
         insert+=",";
 
@@ -1753,7 +1755,18 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f, int primaryKeyHighWater)
     ExecStatusType message=PQresultStatus(result);
     if(message==PGRES_FATAL_ERROR)
     {
-      QMessageBox::information(0,tr("INSERT error"),QString(PQresultErrorMessage(result)),QMessageBox::Ok);
+      // Use QgsMessage viewer here instead of a QMessageBox because
+      // we want to include the offending SQL, which may be quite
+      // long, and the QMessageBox doesn't wrap text, etc.
+      
+      QString sqlDetails = PQresultErrorMessage(result);
+      sqlDetails += tr("The sql was:\n\n") + insert;
+      QgsMessageViewer viewer;
+      viewer.setWindowTitle(tr("SQL error"));
+      viewer.setMessageAsPlainText(sqlDetails);
+      viewer.exec();
+
+      //      QMessageBox::information(0,tr("INSERT error"), sqlDetails,QMessageBox::Ok);
       return false;
     }
     
