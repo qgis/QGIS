@@ -17,6 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
+#include "qgsapplication.h"
 #include "qgslegendlayer.h"
 #include "qgslegendlayerfile.h"
 #include "qgslegendlayerfilegroup.h"
@@ -24,6 +26,7 @@
 #include <iostream>
 #include <QCoreApplication>
 #include <QIcon>
+#include <QPainter>
 
 QgsLegendLayer::QgsLegendLayer(QTreeWidgetItem* parent,QString name)
     : QgsLegendItem(parent, name)
@@ -57,7 +60,7 @@ QgsLegendLayer::~QgsLegendLayer()
 
 void QgsLegendLayer::setLayerTypeIcon()
 {
-  QgsMapLayer* firstLayer = firstMapLayer();
+  /*QgsMapLayer* firstLayer = firstMapLayer();
   if(firstLayer)
     {
       QFileInfo file(firstLayer->layerTypeIconPath());
@@ -66,7 +69,9 @@ void QgsLegendLayer::setLayerTypeIcon()
 	  QIcon myIcon(file.absoluteFilePath());
 	  setIcon(0, myIcon);
 	}
-    }
+	}*/
+  QIcon myIcon(getOriginalPixmap());
+  setIcon(0, myIcon);
 }
 
 bool QgsLegendLayer::isLeafNode()
@@ -110,7 +115,7 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayer::accept(const QgsLegendItem* li) const
   return NO_ACTION;
 }
 
-QgsMapLayer* QgsLegendLayer::firstMapLayer()
+QgsMapLayer* QgsLegendLayer::firstMapLayer() const
 {
   //first find the legend layer file group
   QgsLegendLayerFileGroup* llfg = 0;
@@ -227,4 +232,53 @@ void QgsLegendLayer::updateCheckState()
       setCheckState(0, theState);
       treeWidget()->blockSignals(false);
     }
+}
+
+void QgsLegendLayer::updateIcon()
+{
+  QPixmap newIcon(getOriginalPixmap());
+
+  QgsMapLayer* theLayer = firstMapLayer();
+
+  if(mapLayers().size() == 1)
+    {
+  
+      //overview
+      if(theLayer->showInOverviewStatus())
+	{
+	  // Overlay the overview icon on the default icon
+	  QPixmap myPixmap(QgsApplication::themePath()+"mIconOverview.png");
+	  QPainter p(&newIcon);
+	  p.drawPixmap(0,0,myPixmap);
+	  p.end();
+	}
+      
+      //editable
+      if(theLayer->isEditable())
+	{
+	  // Overlay the editable icon on the default icon
+	  QPixmap myPixmap(QgsApplication::themePath()+"mIconEditable.png");
+	  QPainter p(&newIcon);
+	  p.drawPixmap(0,0,myPixmap);
+	  p.end();
+	}
+    }
+
+  QIcon theIcon(newIcon);
+  setIcon(0, theIcon);
+}
+
+QPixmap QgsLegendLayer::getOriginalPixmap() const
+{
+  QgsMapLayer* firstLayer = firstMapLayer();
+  if(firstLayer)
+    {
+      QFileInfo file(firstLayer->layerTypeIconPath());
+      if(file.exists())
+	{
+	  return QPixmap(file.absoluteFilePath());
+	}
+    }
+  QPixmap emptyPixmap;
+  return emptyPixmap;
 }

@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgslegendlayer.h"
 #include "qgslegendlayerfilegroup.h"
 #include "qgslegendlayerfile.h"
 #include "qgslegendsymbologygroup.h"
@@ -72,12 +73,23 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayerFileGroup::accept(const QgsLegendItem* 
 
 bool QgsLegendLayerFileGroup::insert(QgsLegendItem* newItem)
 {
+#ifdef QGISDEBUG
+  qWarning("In QgsLegendLayerFileGroup::insert");
+#endif
   if ( newItem->type() == LEGEND_LAYER_FILE )
     {
       QgsLegendItem* oldItem = firstChild();
+      //QgsLegendLayer* parentLegendLayer = dynamic_cast<QgsLegendLayer*>(parent());
+
       if(!oldItem)//this item is the first child
 	{
 	  insertChild(0, newItem);
+	  //update the icon and the check state of the new and the former legend layer
+	  //if(parentLegendLayer)
+	  //{
+	  //  parentLegendLayer->updateIcon();
+	  //  parentLegendLayer->updateCheckState();
+	  //}
 	  return true;
 	}
       //there are already legend layer files
@@ -102,6 +114,12 @@ bool QgsLegendLayerFileGroup::insert(QgsLegendItem* newItem)
       if(newLayer->isSymbologyCompatible(*thelayer))
 	{	
 	  insertChild(childCount(), newItem);
+	  //update the icon and the check state of the new and the former legend layer
+	  //if(parentLegendLayer)
+	  //{
+	  //  parentLegendLayer->updateIcon();
+	  //  parentLegendLayer->updateCheckState();
+	  //}
 	  return true;
 	}
       else
@@ -127,4 +145,33 @@ bool QgsLegendLayerFileGroup::containsLegendLayerFile(const QgsLegendLayerFile* 
 	}
     }
   return result;
+}
+
+void QgsLegendLayerFileGroup::receive(QgsLegendItem* newChild)
+{
+  if(newChild->type() == LEGEND_LAYER_FILE)
+    {
+      QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(parent());
+      if(ll)
+	{
+	  ll->updateIcon();
+	  ll->updateCheckState();
+	}
+    }
+}
+
+void QgsLegendLayerFileGroup::release(QgsLegendItem* formerChild)
+{
+#ifdef QGISDEBUG
+  qWarning("In QgsLegendLayerFileGroup::release");
+#endif
+  if(formerChild->type() == LEGEND_LAYER_FILE)
+    {
+      QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(parent());
+      if(ll)
+	{
+	  ll->updateIcon();
+	  ll->updateCheckState();
+	}
+    }
 }

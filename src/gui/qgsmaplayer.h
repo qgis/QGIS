@@ -308,7 +308,6 @@ public:
      */
     virtual QString errorString();
 
-
 public  slots:
     /** \brief Mutator for transparency level. Should be between 0 and 255 */
     virtual void setTransparency(unsigned int)=0;

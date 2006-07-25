@@ -98,6 +98,10 @@ public:
     void restoreAppearanceSettings();
     /**Returns a pointer to the legend widget*/
     QgsLegend* legend() const;
+    /**Do preparations after a new child was inserted (default empty)*/
+    virtual void receive(QgsLegendItem* newChild){}
+    /**Do cleanups after a child item leaves (default empty)*/
+    virtual void release(QgsLegendItem* formerChild){}
 protected:
    bool mLeafNodeFlag;
    LEGEND_ITEM_TYPE mType;

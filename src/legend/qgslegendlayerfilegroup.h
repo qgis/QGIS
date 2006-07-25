@@ -29,4 +29,10 @@ class QgsLegendLayerFileGroup: public QgsLegendItem
     bool insert(QgsLegendItem* theItem);
     /**Returns true if llf is a childelement*/
     bool containsLegendLayerFile(const QgsLegendLayerFile* llf) const;
+    /**Makes the parent QgsLegendLayer update the checkState and the icon after a new
+     QgsLegendLayerFile was inserted*/
+    void receive(QgsLegendItem* newChild);
+    /**Cleanups when after a child QgsLegendLayerFile item has left. Tells the parent QgsLegendLayer to
+     refresh the checkState and the icon*/
+    void release(QgsLegendItem* formerChild);
 };
