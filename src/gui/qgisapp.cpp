@@ -4311,7 +4311,7 @@ int QgisApp::saveDirty()
 
     // prompt user to save
     answer = QMessageBox::information(this, tr("Save?"),
-        tr("Do you want to save the current project?"),
+        tr("<p>Do you want to save the current project?</p>"),
         QMessageBox::Yes | QMessageBox::Default,
         QMessageBox::No,
         QMessageBox::Cancel | QMessageBox::Escape);
