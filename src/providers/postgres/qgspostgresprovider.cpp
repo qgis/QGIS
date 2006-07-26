@@ -1602,6 +1602,7 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f, int primaryKeyHighWater)
       if (
            (fieldname != geometryColumn) &&
            (fieldname != primaryKey) &&
+           (!(it->fieldValue().isEmpty())) && 
            (fieldInLayer)
          )
       {
@@ -1691,12 +1692,11 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f, int primaryKeyHighWater)
       if (
            (fieldname != geometryColumn) &&
            (fieldname != primaryKey) &&
+           (!(it->fieldValue().isEmpty())) && 
            (fieldInLayer)
          )
       {
         QString fieldvalue = it->fieldValue();
-        if (fieldvalue.isEmpty())
-          fieldvalue = "NULL";
         bool charactertype=false;
         insert+=",";
 
