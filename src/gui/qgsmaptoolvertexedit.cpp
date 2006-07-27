@@ -110,32 +110,32 @@ void QgsMapToolVertexEdit::canvasPressEvent(QMouseEvent * e)
 #ifdef QGISDEBUG
         std::cout << "QgsMapCanvas::mousePressEvent: QGis::AddVertex." << std::endl;
 #endif
-
-    //Find nearest segment of the selected line, move that node to the mouse location
-    if (!snapSegmentWithContext(point))
-      {
-	QMessageBox::warning(0, "Error", 
-          QObject::tr("Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?"),
-          QMessageBox::Ok, Qt::NoButton);
-	return;
-      }
-
-    index = mSnappedBeforeVertex;
-    // Get the endpoint of the snapped-to segment
-    mSnappedAtGeometry.vertexAt(x2, y2, index);
-    
-    // Get the startpoint of the snapped-to segment
-    index.decrement_back();
-    mStartPointValid = mSnappedAtGeometry.vertexAt(x1, y1, index);
-    
-    createRubberBand();
-    
-    if (mStartPointValid)
-      {
-	mRubberBand->addPoint(QgsPoint(x1,y1));
-      }
-    mRubberBand->addPoint(toMapCoords(e->pos()));
-    mRubberBand->addPoint(QgsPoint(x2,y2));
+	
+	//Find nearest segment of the selected line, move that node to the mouse location
+	if (!snapSegmentWithContext(point))
+	  {
+	    QMessageBox::warning(0, "Error", 
+				 QObject::tr("Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?"),
+				 QMessageBox::Ok, Qt::NoButton);
+	    return;
+	  }
+	
+	index = mSnappedBeforeVertex;
+	// Get the endpoint of the snapped-to segment
+	mSnappedAtGeometry.vertexAt(x2, y2, index);
+	
+	// Get the startpoint of the snapped-to segment
+	index.decrement_back();
+	mStartPointValid = mSnappedAtGeometry.vertexAt(x1, y1, index);
+	
+	createRubberBand();
+	
+	if (mStartPointValid)
+	  {
+	    mRubberBand->addPoint(QgsPoint(x1,y1));
+	  }
+	mRubberBand->addPoint(toMapCoords(e->pos()));
+	mRubberBand->addPoint(QgsPoint(x2,y2));
   }
   else if (mTool == MoveVertex)
   {
@@ -150,53 +150,67 @@ void QgsMapToolVertexEdit::canvasPressEvent(QMouseEvent * e)
     QgsPoint snapPoint;
 
     snapPoint = point;
-    if (!snapSegmentWithContext(snapPoint))
-    {
-      QMessageBox::warning(0, "Error", 
-        QObject::tr("Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?"),
-      QMessageBox::Ok, Qt::NoButton);
-      return;
-    }
-
-    snapPoint = point;
-    if (!snapVertexOfSnappedSegment(snapPoint))
-    {
-      QMessageBox::warning(0, "Error", 
-        QObject::tr("Could not snap vertex. Have you set the tolerance in Settings > Project Properties > General?"),
-      QMessageBox::Ok, Qt::NoButton);
-      return;
-    }
-
+    QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(mCanvas->currentLayer());
+    if(vlayer->vectorType() == QGis::Point)//snap to point for point/multipoint layers
+      {
+	if(!snapVertexWithContext(snapPoint))
+	  {
+	    QMessageBox::warning(0, "Error", 
+				 QObject::tr("Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?"),
+				 QMessageBox::Ok, Qt::NoButton);
+	    return;
+	  }
+      }
+    else //snap to segment and take the closest vertex in case of line/multiline/polygon/multipolygon layers
+      {
+	if (!snapSegmentWithContext(snapPoint))
+	  {
+	    QMessageBox::warning(0, "Error", 
+				 QObject::tr("Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?"),
+				 QMessageBox::Ok, Qt::NoButton);
+	    return;
+	  }
+	
+	snapPoint = point;
+	if (!snapVertexOfSnappedSegment(snapPoint))
+	  {
+	    QMessageBox::warning(0, "Error", 
+				 QObject::tr("Could not snap vertex. Have you set the tolerance in Settings > Project Properties > General?"),
+				 QMessageBox::Ok, Qt::NoButton);
+	    return;
+	  }
+	
 #ifdef QGISDEBUG
-    qWarning("Creating rubber band for moveVertex");
+	qWarning("Creating rubber band for moveVertex");
 #endif
-
-    index = mSnappedAtVertex;
-    createRubberBand();
-    if(mRubberBandIndex1 != -1)
-      {
-	rb1Index.push_back(mRubberBandIndex1);
-	mSnappedAtGeometry.vertexAt(x1, y1, rb1Index);
-	mRubberBand->addPoint(QgsPoint(x1,y1));
-	mStartPointValid = true;
-      }
-    else
-      {
-	mStartPointValid = false;
-      }
-    if(mRubberBandIndex1 != -1 && mRubberBandIndex2 != -1)
-      {
-	mRubberBand->addPoint(toMapCoords(e->pos()));
-      }
-    if(mRubberBandIndex2 != -1)
-      {
-	rb2Index.push_back(mRubberBandIndex2);
-	mSnappedAtGeometry.vertexAt(x2, y2, rb2Index);
-	mRubberBand->addPoint(QgsPoint(x2,y2));
-      }
+	
+	index = mSnappedAtVertex;
+	createRubberBand();
+	if(mRubberBandIndex1 != -1)
+	  {
+	    rb1Index.push_back(mRubberBandIndex1);
+	    mSnappedAtGeometry.vertexAt(x1, y1, rb1Index);
+	    mRubberBand->addPoint(QgsPoint(x1,y1));
+	    mStartPointValid = true;
+	  }
+	else
+	  {
+	    mStartPointValid = false;
+	  }
+	if(mRubberBandIndex1 != -1 && mRubberBandIndex2 != -1)
+	  {
+	    mRubberBand->addPoint(toMapCoords(e->pos()));
+	  }
+	if(mRubberBandIndex2 != -1)
+	  {
+	    rb2Index.push_back(mRubberBandIndex2);
+	    mSnappedAtGeometry.vertexAt(x2, y2, rb2Index);
+	    mRubberBand->addPoint(QgsPoint(x2,y2));
+	  }
 #ifdef QGISDEBUG
     qWarning("Creating rubber band for moveVertex");
 #endif    
+      }
   }
   else if (mTool == DeleteVertex)
   {

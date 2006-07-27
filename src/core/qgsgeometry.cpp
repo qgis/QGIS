@@ -238,7 +238,7 @@ QgsPoint QgsGeometry::closestVertex(const QgsPoint& point, QgsGeometryVertexInde
 	    case QGis::WKBPoint:
 		x = *((double *) (mGeometry + 5));
 		y = *((double *) (mGeometry + 5 + sizeof(double)));
-		sqrDist = point.sqrDist(x, y);
+		actdist = point.sqrDist(x, y);
 		vertexnr = 0;
 		break;
 
