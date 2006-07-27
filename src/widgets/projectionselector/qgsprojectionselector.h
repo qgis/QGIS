@@ -127,6 +127,10 @@ class QgsProjectionSelector: public QWidget, private Ui::QgsProjectionSelectorBa
        *
        * \warning This function does nothing unless getUserList() and getUserProjList()
        *          Have already been called
+       *
+       * \warning This function only expands the parents of the selection and
+       *          does not scroll the list to the selection if the widget is not visible.
+       *          Therefore you will typically want to use this in a showEvent().
        */
       void applySRSNameSelection();
 
@@ -135,6 +139,10 @@ class QgsProjectionSelector: public QWidget, private Ui::QgsProjectionSelectorBa
        *
        * \warning This function does nothing unless getUserList() and getUserProjList()
        *          Have already been called
+       *
+       * \warning This function only expands the parents of the selection and
+       *          does not scroll the list to the selection if the widget is not visible.
+       *          Therefore you will typically want to use this in a showEvent().
        */
       void applySRSIDSelection();
 
