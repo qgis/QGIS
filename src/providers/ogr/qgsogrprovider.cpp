@@ -1252,7 +1252,10 @@ int QgsOgrProvider::capabilities() const
     {
       ability |= DeleteFeatures;
     }
-
+    
+    //seems to work with newer ogr versions
+    //ability |= ChangeAttributeValues;
+    
     if (ogrLayer->TestCapability("RandomWrite"))
     // TRUE if the SetFeature() method is operational on this layer.
     {

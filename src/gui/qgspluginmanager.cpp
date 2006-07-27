@@ -122,7 +122,11 @@ sharedLibExtension = "*.so*";
             {
               std::cout << "Loaded " << myLib->library().toLocal8Bit().data() << std::endl;
               // Don't bother with libraries that are providers
-              if (!myLib->resolve("isProvider"))
+              //if(!myLib->resolve("isProvider"))
+
+	      //MH: Replaced to allow for plugins that are linked to providers
+	      //type is only used in non-provider plugins 
+	      if(myLib->resolve("type"))
               {
                 name_t *pName = (name_t *) myLib->resolve("name");
                 description_t *pDesc = (description_t *) myLib->resolve("description");
