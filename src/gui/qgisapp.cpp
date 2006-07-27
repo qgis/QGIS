@@ -4667,7 +4667,10 @@ void QgisApp::activateDeactivateLayerRelatedActions(const QgsMapLayer* layer)
 	      mActionCapturePolygon->setEnabled(false);
 	      mActionAddVertex->setEnabled(false);
 	      mActionDeleteVertex->setEnabled(false);
-	      mActionMoveVertex->setEnabled(false);
+	      if(dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries)
+		{
+		  mActionMoveVertex->setEnabled(true);
+		}
 	      return;
 	    }
 	  else if(vlayer->vectorType() == QGis::Line)

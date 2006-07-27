@@ -954,6 +954,7 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 		  theLayer = new QgsLegendLayer(this, name);
 		  lastGroup = 0;
 		}
+
 	      childelem.attribute("open") == "true" ? expandItem(theLayer) : collapseItem(theLayer);
 	      
 	      //set the checkbox of the legend layer to the right state
