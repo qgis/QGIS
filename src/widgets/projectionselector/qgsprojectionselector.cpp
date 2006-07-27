@@ -73,6 +73,17 @@ void QgsProjectionSelector::showEvent ( QShowEvent * theEvent )
     applyUserProjList(&mCrsFilter);
   }
 
+  // check if a paricular projection is waiting
+  // to be pre-selected, and if so, to select it now.
+  if (mSRSNameSelectionPending)
+  {
+    applySRSNameSelection();
+  }
+  if (mSRSIDSelectionPending)
+  {
+    applySRSIDSelection();
+  }
+
   // Pass up the inheritance heirarchy
   QWidget::showEvent(theEvent);
 }
@@ -146,43 +157,33 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression(QSet<QString> * cr
 
 void QgsProjectionSelector::setSelectedSRSName(QString theSRSName)
 {
-  // ensure the projection list view is actually populated
-  // before we select from its contents
-
-  if (!mProjListDone)
-  {
-    applyProjList(&mCrsFilter);
-  }
-
-  if (!mUserProjListDone)
-  {
-    applyUserProjList(&mCrsFilter);
-  }
-
   mSRSNameSelection = theSRSName;
   mSRSNameSelectionPending = TRUE;
-  applySRSNameSelection();
+  mSRSIDSelectionPending = FALSE;  // only one type can be pending at a time
+
+  if (isVisible())
+  {
+    applySRSNameSelection();
+  }
+  // else we will wait for the projection selector to
+  // become visible (with the showEvent()) and set the
+  // selection there
 }
 
 
 void QgsProjectionSelector::setSelectedSRSID(long theSRSID)
 {
-  // ensure the projection list view is actually populated
-  // before we select from its contents
-
-  if (!mProjListDone)
-  {
-    applyProjList(&mCrsFilter);
-  }
-
-  if (!mUserProjListDone)
-  {
-    applyUserProjList(&mCrsFilter);
-  }
-
   mSRSIDSelection = theSRSID;
   mSRSIDSelectionPending = TRUE;
-  applySRSIDSelection();
+  mSRSNameSelectionPending = FALSE;  // only one type can be pending at a time
+
+  if (isVisible())
+  {
+    applySRSIDSelection();
+  }
+  // else we will wait for the projection selector to
+  // become visible (with the showEvent()) and set the
+  // selection there
 }
 
 
@@ -203,11 +204,6 @@ void QgsProjectionSelector::applySRSNameSelection()
     if (nodes.count() > 0)
     {
       lstCoordinateSystems->setCurrentItem(nodes.first());
-
-      // The following seems to be broken in Qt 4.1.0:
-      // It only works if the widget is already visible.
-      // (Which makes it really hard to scroll to an
-      // item before you exec() the widget)
       lstCoordinateSystems->scrollToItem(nodes.first());
     }
     else // unselect the selected item to avoid confusing the user
@@ -235,11 +231,6 @@ void QgsProjectionSelector::applySRSIDSelection()
     if (nodes.count() > 0)
     {
       lstCoordinateSystems->setCurrentItem(nodes.first());
-
-      // The following seems to be broken in Qt 4.1.0:
-      // It only works if the widget is already visible.
-      // (Which makes it really hard to scroll to an
-      // item before you exec() the widget)
       lstCoordinateSystems->scrollToItem(nodes.first());
     }
     else // unselect the selected item to avoid confusing the user
@@ -795,10 +786,6 @@ void QgsProjectionSelector::coordinateSystemSelected( QTreeWidgetItem * theItem)
       myDescription+=(myProjString);
     }
 
-    // The following seems to be broken in Qt 4.1.0:
-    // It only works if the widget is already visible.
-    // (Which makes it really hard to scroll to an
-    // item before you exec() the widget)
     lstCoordinateSystems->scrollToItem(theItem);
     teProjection->setText(myDescription);
   }
