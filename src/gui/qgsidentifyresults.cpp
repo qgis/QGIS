@@ -57,7 +57,7 @@ QgsIdentifyResults::~QgsIdentifyResults()
 void QgsIdentifyResults::close()
 {
   saveWindowLocation();
-  hide();
+  done(0);
 }
 // Save the current window size/position before closing 
 // from window menu or X in titlebar

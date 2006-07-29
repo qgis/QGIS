@@ -20,6 +20,8 @@
 #include "qgsmaptool.h"
 #include "qgspoint.h"
 
+#include <QObject>
+
 class QgsIdentifyResults;
 class QgsMessageViewer;
 class QgsMapLayer;
@@ -34,8 +36,10 @@ class QgsVectorLayer;
   - for vector layers shows feature attributes within search radius
     (allows to edit values when vector layer is in editing mode)
 */
-class QgsMapToolIdentify : public QgsMapTool
+class QgsMapToolIdentify : public QObject, public QgsMapTool
 {
+  Q_OBJECT;
+
   public:
     QgsMapToolIdentify(QgsMapCanvas* canvas);
 
@@ -86,6 +90,11 @@ class QgsMapToolIdentify : public QgsMapTool
 
     //! Pointer to the identify results dialog for WMS XML files
     QgsMessageViewer * mViewer;
+
+private slots:
+    // Let us know when the QgsIdentifyResults dialog box has been closed
+    void resultsDialogGone();
+
 
 };
 
