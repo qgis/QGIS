@@ -31,7 +31,6 @@
 #include <QMessageBox>
 #include <QCursor>
 #include <QPixmap>
-#include <QObject>
 
 
 QgsMapToolIdentify::QgsMapToolIdentify(QgsMapCanvas* canvas)
@@ -48,7 +47,7 @@ QgsMapToolIdentify::~QgsMapToolIdentify()
 {
   if (mResults)
   {
-    delete mResults;
+    mResults->done(0);
   }
 
   if (mViewer)
@@ -129,6 +128,10 @@ void QgsMapToolIdentify::identifyRasterLayer(QgsRasterLayer* layer, const QgsPoi
   {
     QgsAttributeAction aa;
     mResults = new QgsIdentifyResults(aa, mCanvas->window());
+    mResults->setAttribute(Qt::WA_DeleteOnClose);
+    // Be informed when the dialog box is closed so that we can stop using it. 
+    connect(mResults, SIGNAL(accepted()), this, SLOT(resultsDialogGone()));
+    connect(mResults, SIGNAL(rejected()), this, SLOT(resultsDialogGone()));
     mResults->restorePosition();
   }
   else
@@ -225,7 +228,10 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
     if(!mResults)
     {
       mResults = new QgsIdentifyResults(actions, mCanvas->window());
-
+      mResults->setAttribute(Qt::WA_DeleteOnClose);
+      // Be informed when the dialog box is closed so that we can stop using it.
+      connect(mResults, SIGNAL(accepted()), this, SLOT(resultsDialogGone()));
+      connect(mResults, SIGNAL(rejected()), this, SLOT(resultsDialogGone()));
       // restore the identify window position and show it
       mResults->restorePosition();
     }
@@ -389,6 +395,12 @@ void QgsMapToolIdentify::showError(QgsMapLayer * mapLayer)
   mv->exec();
   delete mv;
 
+}
+
+void QgsMapToolIdentify::resultsDialogGone()
+{
+  std::cerr << "Dialog closed\n";
+  mResults = 0;
 }
 
 // ENDS
