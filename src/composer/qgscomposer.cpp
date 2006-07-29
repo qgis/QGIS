@@ -25,6 +25,7 @@
 
 #include <QDesktopWidget>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QMatrix>
 #include <QMessageBox>
 #include <QPainter>
@@ -542,6 +543,7 @@ void QgsComposer::on_mActionExportAsImage_activated(void)
   QSettings myQSettings;  // where we keep last used filter in persistant state
   QString myLastUsedFormat = myQSettings.readEntry("/UI/lastSaveAsImageFormat", "PNG" );
   QString myLastUsedFile = myQSettings.readEntry("/UI/lastSaveAsImageFile","qgis.png");
+  QFileInfo file(myLastUsedFile);
 
   // get a list of supported output image types
   int myCounterInt=0;
@@ -573,11 +575,11 @@ void QgsComposer::on_mActionExportAsImage_activated(void)
       new QFileDialog(
         this,
         tr("Choose a filename to save the map image as"),
-        ".",
+        file.path(),
         myFilters
         )
       );
-  myQFileDialog->selectFile( myLastUsedFile );
+  myQFileDialog->selectFile( file.fileName() );
 
   // allow for selection of more than one file
   myQFileDialog->setMode(QFileDialog::AnyFile);
@@ -633,11 +635,12 @@ void QgsComposer::on_mActionExportAsSVG_activated(void)
 {
   QSettings myQSettings;
   QString myLastUsedFile = myQSettings.readEntry("/UI/lastSaveAsSvgFile","qgis.svg");
+  QFileInfo file(myLastUsedFile);
 
   QFileDialog *myQFileDialog = new QFileDialog( this, tr("Choose a filename to save the map as"),
-                                                ".", "SVG Format (*.svg *SVG)" );
+                                                file.path(), "SVG Format (*.svg *SVG)" );
   
-  myQFileDialog->selectFile( myLastUsedFile );
+  myQFileDialog->selectFile( file.fileName() );
   myQFileDialog->setMode(QFileDialog::AnyFile);
   myQFileDialog->setAcceptMode(QFileDialog::AcceptSave);
 
