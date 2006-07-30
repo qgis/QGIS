@@ -399,7 +399,6 @@ void QgsMapToolIdentify::showError(QgsMapLayer * mapLayer)
 
 void QgsMapToolIdentify::resultsDialogGone()
 {
-  std::cerr << "Dialog closed\n";
   mResults = 0;
 }
 
