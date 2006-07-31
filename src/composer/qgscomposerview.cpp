@@ -18,17 +18,14 @@
 
 #include <QMatrix>
 #include <QEvent>
+#include <QMouseEvent>
+#include <QKeyEvent>
 
 #include "qgsrect.h"
-
 #include "qgscomposer.h"
 #include "qgscomposeritem.h"
 #include "qgscomposerview.h"
-
 #include "qgscomposermap.h"
-//Added by qt3to4:
-#include <QMouseEvent>
-#include <QKeyEvent>
 
 // Note: |WRepaintNoErase|WResizeNoErase|WStaticContents doeen't make it faster
 QgsComposerView::QgsComposerView( QgsComposer *composer, QWidget* parent, const char* name, Qt::WFlags f) :
