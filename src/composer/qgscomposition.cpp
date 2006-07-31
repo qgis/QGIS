@@ -232,13 +232,13 @@ void QgsComposition::contentsMousePressEvent(QMouseEvent* e)
   QPoint p = mView->inverseWorldMatrix().map(e->pos());
   mLastPoint = p;
 
+  double x,y;
+  mView->inverseWorldMatrix().map( e->pos().x(), e->pos().y(), &x, &y );
+
   switch ( mTool ) {
     case Select:
       {
         Q3CanvasItemList l = mCanvas->collisions(p);
-
-        double x,y;
-        mView->inverseWorldMatrix().map( e->pos().x(), e->pos().y(), &x, &y );
 
         Q3CanvasItem * newItem = 0;
 
@@ -308,6 +308,10 @@ void QgsComposition::contentsMousePressEvent(QMouseEvent* e)
         mSelectedItem = dynamic_cast <Q3CanvasItem*> (vl);
 
         mCanvas->update();
+
+	// Remember this position for later
+	mLastX = x;
+	mLastY = y;
       }
       break;
 
@@ -327,6 +331,10 @@ void QgsComposition::contentsMousePressEvent(QMouseEvent* e)
         mSelectedItem = dynamic_cast <Q3CanvasItem*> (lab);
 
         mCanvas->update();
+
+	// Remember this position for later
+	mLastX = x;
+	mLastY = y;
       }
       break;
 
@@ -346,6 +354,10 @@ void QgsComposition::contentsMousePressEvent(QMouseEvent* e)
         mSelectedItem = dynamic_cast <Q3CanvasItem*> (sb);
 
         mCanvas->update();
+
+	// Remember this position for later
+	mLastX = x;
+	mLastY = y;
       }
       break;
 
