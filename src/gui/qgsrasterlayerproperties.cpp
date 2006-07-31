@@ -192,7 +192,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
     cboRed->insertItem(tr("Not Set"));
     cboGreen->insertItem(tr("Not Set"));
     cboBlue->insertItem(tr("Not Set"));
-    cboGray->insertItem(tr("Not Set"));
+    if (cboGray->count() != 1)
+      cboGray->insertItem(tr("Not Set"));
   }
 
   QString myThemePath = QgsApplication::themePath();
