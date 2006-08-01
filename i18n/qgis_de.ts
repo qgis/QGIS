@@ -217,6 +217,22 @@
       <source>Select point on line</source>
       <translation>Punkt in der Mitte selektieren</translation>
     </message>
+    <message>
+      <source>Length</source>
+      <translation>Länge</translation>
+    </message>
+    <message>
+      <source>Area</source>
+      <translation>Fläche</translation>
+    </message>
+    <message>
+      <source>Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?</source>
+      <translation>Konnte das Segment nicht schnappen. Haben Sie die Schnappdistanz unter Einstellungen -> Projekteigenschaften -> Allgemein eingestellt?</translation>
+    </message>
+    <message>
+      <source>Could not snap vertex. Have you set the tolerance in Settings > Project Properties > General?</source>
+      <translation>Konnten den Vertex nicht schnappen. Haben Sie die Schnappdistanz unter Einstellungen -> Projekteigenschaften-> Allgemeines eingestellt?</translation>
+    </message>
   </context>
   <context>
     <name>QgisApp</name>
@@ -1270,10 +1286,6 @@
       <translation>Speichern?</translation>
     </message>
     <message>
-      <source>Do you want to save the current project?</source>
-      <translation>Wollen Sie das aktuelle Projekt abspeichern?</translation>
-    </message>
-    <message>
       <source>Clipboard contents set to: </source>
       <translation>Inhalt der Zwischenablage setzen auf: </translation>
     </message>
@@ -1324,6 +1336,15 @@
     <message>
       <source>Paste selected features</source>
       <translation>Füge selektierte Objekte ein</translation>
+    </message>
+    <message>
+      <source>Ctrl+?</source>
+      <comment>Help Documentation (Mac)</comment>
+      <translation>Ctrl+?</translation>
+    </message>
+    <message>
+      <source>&lt;p>Do you want to save the current project?&lt;/p></source>
+      <translation>&lt;p>Wollen Sie das aktuelle Projekt abspeichern?&lt;p></translation>
     </message>
   </context>
   <context>
@@ -1390,6 +1411,18 @@
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Arial; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p align='center' style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Sans Serif; font-size:9pt;&quot;>Quantum GIS is licensed under the GNU General Public License&lt;/p>&lt;p align='center' style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Sans Serif; font-size:9pt;&quot;>http://www.gnu.org/licenses&lt;/p>&lt;/body>&lt;/html></source>
       <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Arial; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p align='center' style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Sans Serif; font-size:9pt;&quot;>Quantum GIS ist lizensiert unter der GNU General Public License&lt;/p>&lt;p align='center' style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Sans Serif; font-size:9pt;&quot;>http://www.gnu.org/licenses&lt;/p>&lt;/body>&lt;/html></translation>
+    </message>
+    <message>
+      <source>QGIS Browser Selection</source>
+      <translation>QGIS Browserauswahl</translation>
+    </message>
+    <message>
+      <source>Enter the name of a web browser to use (eg. konqueror).
+Enter the full path if the browser is not in your PATH.
+You can change this option later by selection Options from the Settings menu (Help Browser tab).</source>
+      <translation>Bitte geben Sie den Namen Ihres Webbrowsers ein (z.B. Konqueror). 
+Falls der Browser nicht im Pfad liegt, geben Sie bitte den kompletten Pfadnamen an. 
+Sie können das jederzeit im Einstellungsmenü unter Optionen ändern.</translation>
     </message>
   </context>
   <context>
@@ -2523,7 +2556,7 @@
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:14pt;&quot;>© QGIS 2006&lt;/span>&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" />
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:14pt;&quot;>© QGIS 2006&lt;/span>&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
   </context>
   <context>
@@ -4607,6 +4640,10 @@ This may be a problem in your network connection or at the WMS server.</source>
       <source>Run action</source>
       <translation>Aktion starten</translation>
     </message>
+    <message>
+      <source>(Derived)</source>
+      <translation>(abgeleitet)</translation>
+    </message>
   </context>
   <context>
     <name>QgsIdentifyResultsBase</name>
@@ -5701,10 +5738,6 @@ Ausführliche Fehlerinformation:</translation>
       <translation>Setzte Ebenennamen in Kapitälchen.</translation>
     </message>
     <message>
-      <source>Anti-aliasing</source>
-      <translation>Anti-aliasing</translation>
-    </message>
-    <message>
       <source>Make lines appear less jagged at the expense of some drawing performance</source>
       <translation>Zeichne die Linien weniger gezackt auf Kosten der Zeichengeschwindigkeit.</translation>
     </message>
@@ -5774,6 +5807,18 @@ Standardmäßig benutzt QGIS einen Wert von 5. Verkleinern Sie den Wert, wenn Si
       <source>&lt;b>Note:&lt;/b> The browser must be in your PATH or you can specify the full path above</source>
       <translation>&lt;b>Bemerkung:&lt;/b> Der Browser muss im Suchpfad (PATH) liegen oder alternativ mit voller Pfadangabe angegeben werden.</translation>
     </message>
+    <message>
+      <source>Rendering</source>
+      <translation>Zeichne</translation>
+    </message>
+    <message>
+      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Selecting this will unselect the 'make lines less' jagged toggle&lt;/p>&lt;/body>&lt;/html></source>
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Wenn Sie diese Option auswählen, wird der Knopf 'Linien weniger gezackt zeichnen' deselektiert.&lt;/p>&lt;/body>&lt;/html></translation>
+    </message>
+    <message>
+      <source>Fix problems with incorrectly filled polygons</source>
+      <translation>Behebe Problem mit falsch gefüllten Polygonen.</translation>
+    </message>
   </context>
   <context>
     <name>QgsPasteTransformationsBase</name>
@@ -5827,6 +5872,10 @@ Standardmäßig benutzt QGIS einen Wert von 5. Verkleinern Sie den Wert, wenn Si
     <message>
       <source>Ok</source>
       <translation>OK</translation>
+    </message>
+    <message>
+      <source>No Fill</source>
+      <translation>Keine Füllung</translation>
     </message>
   </context>
   <context>
@@ -6428,6 +6477,44 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
 </source>
       <translation>anfänglich schien die Ebene geeignet, allerdings enthält sie keine eindeutigen Daten, insofern nicht geeignet.</translation>
     </message>
+    <message>
+      <source>INSERT error</source>
+      <translation>INSERT Fehler</translation>
+    </message>
+    <message>
+      <source>An error occured during feature insertion</source>
+      <translation>Ein Fehler ist während des Einfügens eines Objekts aufgetreten.</translation>
+    </message>
+    <message>
+      <source>The sql was:
+
+</source>
+      <translation>Das SQL-Statement war:</translation>
+    </message>
+    <message>
+      <source>SQL error</source>
+      <translation>SQL-Fehler</translation>
+    </message>
+    <message>
+      <source>DELETE error</source>
+      <translation>DELETE Fehler</translation>
+    </message>
+    <message>
+      <source>An error occured during deletion from disk</source>
+      <translation>Ein Fehler ist beim Löschen von der Festplatte aufgetreten.</translation>
+    </message>
+    <message>
+      <source>PostGIS error</source>
+      <translation>PostGIS-Fehler</translation>
+    </message>
+    <message>
+      <source>An error occured contacting the PostgreSQL databse</source>
+      <translation>Ein Fehler ist beim Kontaktieren der PostgreSQL-Datenbank aufgetreten.</translation>
+    </message>
+    <message>
+      <source>The PostgreSQL databse returned: </source>
+      <translation>Die PostgreSQL-Datenbank hat zurückgegeben:</translation>
+    </message>
   </context>
   <context>
     <name>QgsProjectPropertiesBase</name>
@@ -6820,16 +6907,17 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
       <translation>Für diese Art von Raster können keine Pyramiden erstellt werden. </translation>
     </message>
     <message>
-      <source>&amp;Convert to...</source>
-      <translation>&amp;Konvertiere zu...</translation>
-    </message>
-    <message>
       <source>Dataset Description</source>
       <translation>Datensatzbeschreibung</translation>
     </message>
     <message>
       <source>No Data Value</source>
       <translation>NODATA Wert</translation>
+    </message>
+    <message>
+      <source>and all other files</source>
+      <comment>#, fuzzy</comment>
+      <translation>und alle anderen Dateien</translation>
     </message>
   </context>
   <context>
@@ -7548,6 +7636,10 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
       <source>Label:</source>
       <translation>Beschriftung:</translation>
     </message>
+    <message>
+      <source>No Fill</source>
+      <translation>Keine Füllung</translation>
+    </message>
   </context>
   <context>
     <name>QgsSpit</name>
@@ -7999,20 +8091,48 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
       <translation>Problem beim Rückgängigmachen (rollback).</translation>
     </message>
     <message>
-      <source>Warning</source>
-      <translation>Warnung</translation>
-    </message>
-    <message>
-      <source>Could not change attributes</source>
-      <translation>Konnte die Attribute nicht ändern.</translation>
-    </message>
-    <message>
-      <source>Could not commit changes to geometries</source>
-      <translation>Konnte die Änderungen der Geometrien nicht wegschreiben.</translation>
-    </message>
-    <message>
       <source>The current layer is not editable. Choose 'Start editing' in the digitizing toolbar.</source>
       <translation>Die aktuelle Ebene ist nicht editierbar. Bitte wählen sie 'Digitalisierung starten' aus der Digitalisiertoolbarleiste.</translation>
+    </message>
+    <message>
+      <source>Could not commit the added features.</source>
+      <translation>Konnte die hinzugefügten Objekte nicht übernehmen.</translation>
+    </message>
+    <message>
+      <source>No other types of changes will be committed at this time.</source>
+      <translation>Keine anderen Änderungen werden zu dieser Zeit übermittelt.</translation>
+    </message>
+    <message>
+      <source>Could not commit the changed attributes.</source>
+      <translation>Konnte die Änderungen an den Attributen nicht übermitteln.</translation>
+    </message>
+    <message>
+      <source>However, the added features were committed OK.</source>
+      <translation>Wieauchimmer, die hinzugefügten Objekte wurden korrekt übermittelt.</translation>
+    </message>
+    <message>
+      <source>Could not commit the changed geometries.</source>
+      <translation>Konnte die Ändernungen der Geometrien nicht übermitteln.</translation>
+    </message>
+    <message>
+      <source>However, the changed attributes were committed OK.</source>
+      <translation>Wieauchimmer, die Änderungen der Attribute wurden korrekt übermittelt.</translation>
+    </message>
+    <message>
+      <source>Could not commit the deleted features.</source>
+      <translation>Konnte die gelöschten Objekte nicht übermitteln.</translation>
+    </message>
+    <message>
+      <source>However, the changed geometries were committed OK.</source>
+      <translation>Wieauchimmer, die geänderten Geometrien wurden korrekt übermittelt.</translation>
+    </message>
+    <message>
+      <source>Cannot retrieve features</source>
+      <translation>Kann die Objekte nicht abfragen.</translation>
+    </message>
+    <message>
+      <source>The provider for the current layer cannot retrieve geometry for the selected features.  This version of the provider does not have this capability.</source>
+      <translation>Der Provider für die aktuelle Ebene kann die Geometrie für das selektierte Objekt nicht abfragen. Diese Version des Providers unterstützt das Feature nicht.</translation>
     </message>
   </context>
   <context>
@@ -8476,7 +8596,7 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     </message>
     <message>
       <source>Cascade Count</source>
-      <translation type="unfinished" />
+      <translation>Kaskadiere Anzahl</translation>
     </message>
     <message>
       <source>Fixed Width</source>
