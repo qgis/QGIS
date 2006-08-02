@@ -37,7 +37,9 @@ QgsIdentifyResults::QgsIdentifyResults(const QgsAttributeAction& actions,
   mActionPopup(0)
 {
   setupUi(this);
-  lstResults->setResizeMode(Q3ListView::AllColumns);
+  lstResults->setResizeMode(Q3ListView::LastColumn);
+  lstResults->setColumnWidthMode(0, Q3ListView::Maximum);
+  lstResults->setColumnWidthMode(1, Q3ListView::Maximum);
 
   connect( buttonCancel, SIGNAL(clicked()),
       this, SLOT(close()) );
@@ -232,14 +234,6 @@ void QgsIdentifyResults::showAllAttributes() {
   for ( ; *qlvii; ++qlvii)
     lstResults->setOpen(*qlvii, true);
 }
-
-/** adjust all of the colums to show their contents */
-void QgsIdentifyResults::adjustColumnWidths() 
-{ 
-  lstResults->adjustColumn(0); 
-  lstResults->adjustColumn(1); 
-}
-
 
 void QgsIdentifyResults::clear()
 {
