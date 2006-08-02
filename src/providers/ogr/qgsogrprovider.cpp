@@ -833,11 +833,12 @@ QString QgsOgrProvider::minValue(int position)
 
 QString QgsOgrProvider::maxValue(int position)
 {
-  if(position>=fieldCount())
+  if(position>=fieldCount() || position < 0)
   {
 #ifdef QGISDEBUG
     QgsLogger::warning("Warning: access requested to invalid position in QgsOgrProvider::maxValue(..)");
-#endif    
+#endif
+    return "";
   }
   if(minmaxcachedirty)
   {
