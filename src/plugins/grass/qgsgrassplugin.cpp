@@ -77,7 +77,7 @@ extern "C" {
 #include "grass_edit.xpm"
 #include "grass_region.xpm"
 #include "grass_region_edit.xpm"
-static const char *pluginVersion = "0.1";
+static const char *pluginVersion = "Version 0.1";
 
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app
