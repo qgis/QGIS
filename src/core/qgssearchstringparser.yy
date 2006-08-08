@@ -98,7 +98,7 @@ search_cond:
     | search_cond AND search_cond { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opAND, $1, $3); joinTmpNodes($$,$1,$3); }
     | NOT search_cond             { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opNOT, $2,  0); joinTmpNodes($$,$2, 0); }
     | '(' search_cond ')'         { $$ = $2; }
-    | predicate;
+    | predicate
     ;
 
     // more predicates to come
