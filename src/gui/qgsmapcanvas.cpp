@@ -823,6 +823,20 @@ void QgsMapCanvas::setMapTool(QgsMapTool* tool)
 
 } // setMapTool
 
+void QgsMapCanvas::unsetMapTool(QgsMapTool* tool)
+{
+  if (mMapTool && mMapTool == tool)
+  {
+    mMapTool->deactivate();
+    mMapTool = NULL;
+  }
+
+  if ( mLastNonZoomMapTool && mLastNonZoomMapTool == tool)
+  {
+    mLastNonZoomMapTool->deactivate(); // ? necessary
+    mLastNonZoomMapTool = NULL;
+  }
+} 
 
 /** Write property of QColor bgColor. */
 void QgsMapCanvas::setCanvasColor(const QColor & theColor)
