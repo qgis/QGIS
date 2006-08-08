@@ -414,7 +414,10 @@ void QgsMapCanvas::clear()
 
 void QgsMapCanvas::zoomFullExtent()
 {
-  setExtent(fullExtent());
+  QgsRect extent = fullExtent();
+  // If the full extent is an empty set, don't do the zoom
+  if (!extent.isEmpty())
+    setExtent(extent);
   refresh();
 
 } // zoomFullExtent
