@@ -231,7 +231,7 @@ int main(int argc, char *argv[])
   QString mySnapshotFileName="";
 
   // This behaviour will set initial extent of map canvas
-  QString myInitialExtent="";
+  QString myInitialExtent="-1,-1,1,1";
 
   // This behaviour will allow you to force the use of a translation file
   // which is useful for testing
