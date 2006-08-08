@@ -114,6 +114,13 @@ class QgsMapCanvas : public Q3CanvasView
 
     /** \brief Sets the map tool currently being used on the canvas */
     void setMapTool(QgsMapTool* mapTool);
+    
+    /** \brief Unset the current mapset tool or last non zoom tool if 
+     *         it the same as passed map tool pointer. The tool is not 
+     *         referenced/used any more, but the instance is not deleted 
+     *         by this method.
+     */
+    void unsetMapTool(QgsMapTool* mapTool);
 
     /**Returns the currently active tool*/
     QgsMapTool* mapTool();

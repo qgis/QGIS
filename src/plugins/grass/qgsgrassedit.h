@@ -38,6 +38,7 @@ class QCloseEvent;
 class QgsRubberBand;
 class QgsVertexMarker;
 class QgsVectorLayer;
+class QgsMapTool;
 class QgsGrassEditLayer;
 class QgsGrassAttributes;
 
@@ -436,6 +437,9 @@ private:
     QAction *mDeleteLineAction;
     QAction *mEditAttributesAction;
     QAction *mCloseEditAction;
+
+    // Current map tool
+    QgsMapTool	*mMapTool;
 
     // Is projection enabled?
     bool mProjectionEnabled;

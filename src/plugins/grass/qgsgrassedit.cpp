@@ -106,7 +106,7 @@ bool QgsGrassEdit::mRunning = false;
 
 QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
     QWidget * parent, Qt::WFlags f )
-    :QMainWindow(parent,f), QgsGrassEditBase ()
+    :QMainWindow(parent,f), QgsGrassEditBase (), mMapTool(0)
 {
 #ifdef QGISDEBUG
   std::cerr << "QgsGrassEdit()" << std::endl;
@@ -193,7 +193,7 @@ void QgsGrassEdit::keyPress(QKeyEvent *e)
 QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
     QgsGrassProvider *provider,
     QWidget * parent, Qt::WFlags f )
-    :QMainWindow(parent, 0, f), QgsGrassEditBase ()
+    :QMainWindow(parent, 0, f), QgsGrassEditBase (), mMapTool(0)
 {
 #ifdef QGISDEBUG
   std::cerr << "QgsGrassEdit()" << std::endl;
@@ -927,6 +927,10 @@ QgsGrassEdit::~QgsGrassEdit()
     delete mRubberBandLine;
     delete mRubberBandIcon;
     delete mCanvasEdit;
+  
+    if ( mMapTool ) mCanvas->unsetMapTool ( mMapTool );
+    // TODO: delete tool? Probably
+
     mCanvas->refresh();
   }
 
@@ -1235,7 +1239,10 @@ void QgsGrassEdit::startTool(int tool)
     displayElement ( mSelectedLine, mSymb[mLineSymb[mSelectedLine]], mSize );
 
   // close old tool by setting NULL tool
-  mCanvas->setMapTool(NULL);
+  // TODO: delete old tool? (check in set/unsetMapTool canvas methods)
+  if ( mMapTool ) mCanvas->unsetMapTool ( mMapTool );
+  mCanvas->setMapTool(NULL); // ? necessary
+  mMapTool = NULL;
 
   // All necessary data were written -> reset mEditPoints etc.
   Vect_reset_line ( mEditPoints );
@@ -1321,7 +1328,7 @@ void QgsGrassEdit::startTool(int tool)
   // assign newly created tool to map canvas
   // canvas will take care of destroying it
   mCanvas->setMapTool(t);
-
+  mMapTool = t;
 }
 
 
