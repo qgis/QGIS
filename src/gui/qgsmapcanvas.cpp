@@ -662,8 +662,6 @@ void QgsMapCanvas::contentsMouseReleaseEvent(QMouseEvent * e)
   // call handler of current map tool
   if (mMapTool)
   {
-    mMapTool->canvasReleaseEvent(e);
-    
     // right button was pressed in zoom tool? return to previous non zoom tool
     if (e->button() == Qt::RightButton && mMapTool->isZoomTool())
     {
@@ -680,6 +678,7 @@ void QgsMapCanvas::contentsMouseReleaseEvent(QMouseEvent * e)
       }
       return;
     }
+    mMapTool->canvasReleaseEvent(e);
   }
 
   
