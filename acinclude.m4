@@ -484,7 +484,6 @@ AC_SUBST(QASSISTANTCLIENT_LDADD)
 AC_SUBST(QTDIR)
 ])
 
-
 dnl ------------------------------------------------------------------------
 dnl
 dnl improved Qt4 check
@@ -494,22 +493,25 @@ dnl
 dnl ------------------------------------------------------------------------
 
 AC_DEFUN([AQ_CHECK_QT4],[
-    
-  AC_ARG_WITH([qtdir], AC_HELP_STRING([--with-qtdir=DIR],[Qt4 installation directory]),
-              QTDIR="$withval", QTDIR="")
-  AC_ARG_WITH([qt-pkg-config], AC_HELP_STRING([--with-qt-pkg-config],
-              [Detect Qt4 directory using pkg-config instead of using --with-qtdir. Works only with Qt4 version for X11.]),
-              QT_PKG_CONFIG="y", QT_PKG_CONFIG="n")
+   
+# Commented, it is defined above 
+#  AC_ARG_WITH([qtdir], AC_HELP_STRING([--with-qtdir=DIR],[Qt4 installation directory]),
+#              QTDIR="$withval", QTDIR="")
+
+# WARNING: PKG_CHECK_MODULES fails on many systems (not defined) => commented
+#  AC_ARG_WITH([qt-pkg-config], AC_HELP_STRING([--with-qt-pkg-config],
+#              [Detect Qt4 directory using pkg-config instead of using --with-qtdir. Works only with Qt4 version for X11.]),
+#              QT_PKG_CONFIG="y", QT_PKG_CONFIG="n")
 
   if test "$QT_PKG_CONFIG" = "y" ; then
-  
+ 
     dnl ---------------------------------------------------------------------------
     dnl we will use PKGCONFIG, check that all needed Qt4 components are there
     dnl ---------------------------------------------------------------------------
     
     QT_MIN_VER=4.1.0
 
-    PKG_CHECK_MODULES(QT, QtCore QtGui Qt3Support QtNetwork QtXml QtSvg QtTest >= $QT_MIN_VER)
+    #PKG_CHECK_MODULES(QT, QtCore QtGui Qt3Support QtNetwork QtXml QtSvg QtTest >= $QT_MIN_VER)
 
     dnl check for Qt binaries needed for compilation: moc,uic,rcc
     dnl (we could also check for moc and uic versions)
@@ -529,7 +531,7 @@ AC_DEFUN([AQ_CHECK_QT4],[
 
     dnl workaround for case when QtTest doesn't report QtTest subdirectory
     dnl in include path (this is not a very nice check)
-    PKG_CHECK_MODULES(QT_TEST, QtTest >= $QT_MIN_VER)
+    #PKG_CHECK_MODULES(QT_TEST, QtTest >= $QT_MIN_VER)
     QT_TEST_CFLAGS=`echo $QT_TEST_CFLAGS | sed 's/[ \t]*$//'` # remove trailing spaces
     QTTEST_HAS_SUBDIR=`echo $QT_TEST_CFLAGS | grep '/QtTest' | wc -l`
     if test "$QTTEST_HAS_SUBDIR" -eq "0" ; then
