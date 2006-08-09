@@ -139,7 +139,6 @@ class QgsAttributeTable:public Q3Table
     void keyReleaseEvent(QKeyEvent* ev);
     /**Method used by sortColumn (implementation of a quicksort)*/
     void qsort(int lower, int upper, int col, bool ascending, bool alphanumeric);
-    void contentsMouseReleaseEvent(QMouseEvent* e);
     /**Clears mAddedAttributes, mDeletedAttributes and mChangedValues*/
     void clearEditingStructures();
     /**Removes the column belonging to an attribute from the table
