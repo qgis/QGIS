@@ -139,7 +139,7 @@ void QgsAttributeTable::handleChangedSelections()
       emit selected(text(index, 0).toInt());
     }
 
-  //emit repaintRequested();
+  emit repaintRequested();
 
 }
 
@@ -266,12 +266,6 @@ void QgsAttributeTable::qsort(int lower, int upper, int col, bool ascending, boo
       qsort(lower, i - 1, col, ascending, alphanumeric);
       qsort(i + 1, upper, col, ascending, alphanumeric);
     }
-}
-
-void QgsAttributeTable::contentsMouseReleaseEvent(QMouseEvent * e)
-{
-  contentsMouseMoveEvent(e);    //send out a move event to keep the selections updated 
-  emit repaintRequested();
 }
 
 void QgsAttributeTable::popupMenu(int row, int col, const QPoint& pos)
