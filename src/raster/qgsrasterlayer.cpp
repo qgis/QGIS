@@ -5049,6 +5049,8 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
 
 	  QgsDebugMsg("QgsRasterLayer::setDataProvider: layerName: " + name());
 
+          // set up the raster drawing style
+          drawingStyle = MULTI_BAND_COLOR;  //sensible default
 
           //
           // Get the layers project info and set up the QgsCoordinateTransform for this layer

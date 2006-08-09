@@ -35,6 +35,20 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
 : QDialog(parent, fl), 
   rasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
 {
+  
+  if (rasterLayer->getDataProvider() == 0)
+  {
+    // This is a GDAL-based layer
+    rasterLayerIsGdal = TRUE;
+    rasterLayerIsWms = FALSE;
+  }
+  else if (rasterLayer->getDataProvider()->name() == "wms")
+  {
+    // This is a WMS-based layer
+    rasterLayerIsWms = TRUE;
+    rasterLayerIsGdal = FALSE;
+  }
+
   setupUi(this);
   connect(buttonApply, SIGNAL(clicked()), this, SLOT(apply()));
   connect(buttonOk, SIGNAL(clicked()), this, SLOT(accept()));
@@ -201,7 +215,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
   QPixmap myNoPyramidPixmap(myThemePath + "/mIconNoPyramid.png");
 
   // Only do pyramids if dealing directly with GDAL.
-  if (!(rasterLayer->usesProvider()))
+  if (rasterLayerIsGdal)
   {
     QgsRasterLayer::RasterPyramidList myPyramidList = rasterLayer->buildRasterPyramidList();
     QgsRasterLayer::RasterPyramidList::iterator myRasterPyramidIterator;
@@ -224,6 +238,14 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
       }
     }
   }
+  else if (rasterLayerIsWms)
+  {
+    // disable Pyramids tab completely
+    tabBar->setTabEnabled(tabBar->indexOf(tabPagePyramids), FALSE);
+
+    // disable Histogram tab completely
+    tabBar->setTabEnabled(tabBar->indexOf(tabPageHistogram), FALSE);
+  }
 
   if ( rasterLayer->coordinateTransform() )
   {
@@ -233,7 +255,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
   //on_pbnHistRefresh_clicked();
 
   // update based on lyr's current state
-  sync();  
+  sync();
 } // QgsRasterLayerProperties ctor
 
 
@@ -510,10 +532,21 @@ void QgsRasterLayerProperties::sync()
   //populate the metadata tab's text browser widget with gdal metadata info
   txtbMetadata->setText(rasterLayer->getMetadata());
   //tabSymbology->removePage(tabMetadata);
+
   //display the raster dimensions and no data value
-  lblColumns->setText(tr("Columns:") + QString::number(rasterLayer->getRasterXDim()));
-  lblRows->setText(tr("Rows:") + QString::number(rasterLayer->getRasterYDim()));
-  lblNoData->setText(tr("No Data:") + QString::number(rasterLayer->getNoDataValue()));
+  if (rasterLayerIsGdal)
+  {
+    lblColumns->setText(tr("Columns: ") + QString::number(rasterLayer->getRasterXDim()));
+    lblRows->setText(tr("Rows: ") + QString::number(rasterLayer->getRasterYDim()));
+    lblNoData->setText(tr("No-Data Value: ") + QString::number(rasterLayer->getNoDataValue()));
+  }
+  else if (rasterLayerIsWms)
+  {
+    // TODO: Account for fixedWidth and fixedHeight WMS layers
+    lblColumns->setText(tr("Columns: ") + tr("n/a"));
+    lblRows->setText(tr("Rows: ") + tr("n/a"));
+    lblNoData->setText(tr("No-Data Value: ") + tr("n/a"));
+  }
 
   //these properties (layername and label) are provided by the qgsmaplayer superclass
   leLayerSource->setText(rasterLayer->source());
