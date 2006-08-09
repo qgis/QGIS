@@ -64,6 +64,20 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     private:
         /** \brief Pointer to the raster layer that this property dilog changes the behaviour of. */
         QgsRasterLayer * rasterLayer;
+
+        /** \brief If the underlying raster layer is of GDAL type (i.e. non-provider)
+
+            This variable is used to determine if various parts of the Properties UI are
+            included or not
+         */
+        bool rasterLayerIsGdal;
+
+        /** \brief If the underlying raster layer is of WMS type (i.e. WMS data provider)
+
+            This variable is used to determine if various parts of the Properties UI are
+            included or not
+         */
+        bool rasterLayerIsWms;
 };
 
 #endif
