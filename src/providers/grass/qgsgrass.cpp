@@ -27,6 +27,7 @@
 #include "qsettings.h"
 #include <QMessageBox>
 #include <QCoreApplication>
+#include <QProcess>
 
 #include "qgsapplication.h"
 #include "qgsgrass.h"
@@ -179,6 +180,47 @@ void QgsGrass::init( void )
     char *pathEnvChar = new char[path.length()+1];
     strcpy ( pathEnvChar, const_cast<char *>(path.ascii()) );
     putenv( pathEnvChar );
+
+    // Set GRASS_PAGER if not set, it is necessary for some 
+    // modules printing to terminal, e.g. g.list
+    // We use 'cat' because 'more' is not present in MSYS (Win)
+    // and it doesn't work well in built in shell (Unix/Mac) 
+    // and 'less' is not user friendly (for example user must press
+    // 'q' to quit which is definitely difficult for normal user)
+    // Also scroling can be don in scrollable window in both 
+    // MSYS terminal and built in shell.
+    if ( !getenv ("GRASS_PAGER") ) 
+    {
+	QString pager;
+	QStringList pagers;
+	//pagers << "more" << "less" << "cat"; // se notes above
+	pagers << "cat";
+	    
+	for ( int i = 0; i < pagers.size(); i++ ) 
+	{
+	    int state;
+
+	    QProcess p;
+	    p.start ( pagers.at(i) );
+	    p.waitForStarted();
+	    state = p.state();
+	    p.kill();
+
+	    if ( state == QProcess::Running )
+	    {
+	        pager = pagers.at(i);
+		break;
+	    }
+	}
+
+	if ( pager.length() > 0 )
+	{
+	    pager.prepend ( "GRASS_PAGER=" );
+	    char *pagerEnvChar = new char[pager.length()+1];
+	    strcpy ( pagerEnvChar, const_cast<char *>(pager.ascii()) );
+	    putenv( pagerEnvChar );
+	}
+    }
 
     initialized = 1;
 }
