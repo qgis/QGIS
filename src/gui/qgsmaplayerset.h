@@ -33,7 +33,7 @@ class QgsMapLayerSet
     int layerCount() { return mLayerSet.size(); }
     
     //! returns current extent of layer set
-    QgsRect fullExtent() { return mFullExtent; }
+    QgsRect fullExtent() { updateFullExtent(); return mFullExtent; }
     
     //! change current layer set
     void setLayerSet(const std::deque<QString>& layers);
