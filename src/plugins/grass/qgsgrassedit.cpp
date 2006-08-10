@@ -106,7 +106,8 @@ bool QgsGrassEdit::mRunning = false;
 
 QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
     QWidget * parent, Qt::WFlags f )
-    :QMainWindow(parent,f), QgsGrassEditBase (), mMapTool(0)
+    :QMainWindow(parent,f), QgsGrassEditBase (), mMapTool(0),
+    mCanvasEdit(0), mRubberBandLine(0), mRubberBandIcon(0)
 {
 #ifdef QGISDEBUG
   std::cerr << "QgsGrassEdit()" << std::endl;
@@ -193,7 +194,8 @@ void QgsGrassEdit::keyPress(QKeyEvent *e)
 QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
     QgsGrassProvider *provider,
     QWidget * parent, Qt::WFlags f )
-    :QMainWindow(parent, 0, f), QgsGrassEditBase (), mMapTool(0)
+    :QMainWindow(parent, 0, f), QgsGrassEditBase (), mMapTool(0),
+    mCanvasEdit(0), mRubberBandLine(0), mRubberBandIcon(0)
 {
 #ifdef QGISDEBUG
   std::cerr << "QgsGrassEdit()" << std::endl;
@@ -918,8 +920,11 @@ QgsGrassEdit::~QgsGrassEdit()
   std::cerr << "QgsGrassEdit::~QgsGrassEdit()" << std::endl;
 #endif
 
-  if (mCanvasEdit) {
-    
+  if (mValid) // we can only call some methods if init was complete
+  {
+    if ( mMapTool ) mCanvas->unsetMapTool ( mMapTool );
+    // TODO: delete tool? Probably
+
     eraseDynamic();
     mRubberBandLine->hide();
     mRubberBandIcon->hide();
@@ -928,15 +933,11 @@ QgsGrassEdit::~QgsGrassEdit()
     delete mRubberBandIcon;
     delete mCanvasEdit;
   
-    if ( mMapTool ) mCanvas->unsetMapTool ( mMapTool );
-    // TODO: delete tool? Probably
-
     mCanvas->refresh();
-  }
-
-  saveWindowLocation();
-  mRunning = false;
   
+    saveWindowLocation();
+  }
+  mRunning = false;
 }
 
 bool QgsGrassEdit::isRunning(void)
