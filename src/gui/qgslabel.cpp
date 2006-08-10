@@ -418,6 +418,11 @@ void QgsLabel::addRequiredFields ( std::list<int> *fields )
     }
 }
 
+void QgsLabel::setFields( std::vector<QgsField> const & fields  )
+{
+    mField = fields;
+}
+
 std::vector<QgsField> & QgsLabel::fields ( void )
 {
     return mField;
