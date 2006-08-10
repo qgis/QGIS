@@ -89,6 +89,9 @@ public:
     //! add vector of required fields to existing list of fields
     void addRequiredFields ( std::list<int> *fields );
 
+    //! Set available fields
+    void setFields( std::vector<QgsField> const & fields  );
+
     //! Available vector fields
     std::vector<QgsField> & fields ( void );
 
