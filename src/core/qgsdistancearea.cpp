@@ -335,7 +335,7 @@ unsigned char* QgsDistanceArea::measurePolygon(unsigned char* feature, double* a
 double QgsDistanceArea::measurePolygon(const std::vector<QgsPoint>& points)
 {
   std::vector<QgsPoint> pts(points.size());
-  for (int i = 0; i < points.size(); i++)
+  for (std::vector<QgsPoint>::size_type i = 0; i < points.size(); i++)
   {
     pts[i] = mCoordTransform->transform(points[i]);
   }
