@@ -15,6 +15,7 @@ $(PROVIDER): $(OBJECTS)
 	$(CXX) -shared -o $@ \
 		-Wl,--export-all-symbols \
 		-Wl,--enable-auto-import \
+		-Wl,--enable-runtime-pseudo-reloc \
 		-Wl,--whole-archive delimitedtextprovider_la-qgsdelimitedtextprovider.o \
 		-Wl,--no-whole-archive \
 			$(CORE_DLL) $(GUI_DLL) $(CORE_DLL) \
