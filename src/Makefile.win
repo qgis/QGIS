@@ -2,18 +2,19 @@
 # creates static libraries (.libs/libqgis_xxx.a)
 # then we run win32 specific makefiles which generates DLL
 
+all: stdsubdirs guilib winsubdirs
+
+include ../Makefile.win.rules
+
 STDSUBDIRS = core ui legend raster composer widgets helpviewer
 #providers plugins
 
 WINSUBDIRS = core legend raster composer \
 	     widgets/projectionselector gui \
 	providers/ogr \
-	providers/grass \
 	providers/wms \
-	providers/postgres \
 	providers/gpx \
 	providers/delimitedtext \
-	plugins/grass \
 	plugins/north_arrow \
 	plugins/copyright_label \
 	plugins/geoprocessing \
@@ -24,8 +25,13 @@ WINSUBDIRS = core legend raster composer \
 	plugins/gps_importer \
 	plugins/spit 
 	
-
-all: stdsubdirs guilib winsubdirs
+ifneq ($(GRASS_BASE),)
+    WINSUBDIRS += providers/grass plugins/grass
+endif
+	
+ifneq ($(PG_LIB),)
+    WINSUBDIRS += providers/postgres
+endif
 
 guilib:
 	$(MAKE) -C gui -f Makefile libqgis_gui.la
@@ -37,4 +43,3 @@ install: all
 	    $(MAKE) -C $$subdir -f Makefile.win install || exit 1 ; \
 	done
 
-include ../Makefile.win.rules
