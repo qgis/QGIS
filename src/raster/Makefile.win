@@ -16,7 +16,7 @@ $(DLL): .libs/libqgis_raster.a
 		-Wl,--no-whole-archive \
 			$(GUI_A) $(CORE_A) $(LEGEND_A) $(PROJSEL_A) \
 			$(GUI_A) $(CORE_A) $(COMPOSER_A) $(GUI_A) \
-			$(GDAL_LDADD) -lproj -lsqlite3 -lpq \
+			$(GDAL_LDADD) -lproj -lsqlite3 $(PG_LIB) \
 			$(QT_LDADD) \
 			-lwsock32 -lmingw32
 	$(STRIP) $@
