@@ -156,6 +156,9 @@ static const char *const mSupportedRasterFormats[] =
     "GRASS",
     "GTiff",
     "HFA",
+    "JP2ECW",
+    "JP2KAK",
+    "JP2MrSID",
     "JPEG2000",
     "MrSID",
     "SDTS",
@@ -201,8 +204,9 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
   QStringList metadataTokens;   // essentially the metadata string delimited by '='
 
   QString catchallFilter;       // for Any file(*.*), but also for those
-  // drivers with no specific file
-  // filter
+                                // drivers with no specific file filter
+
+  GDALDriver *jp2Driver = NULL; // first JPEG2000 driver found
 
   // Grind through all the drivers and their respective metadata.
   // We'll add a file filter for those drivers that have a file
@@ -279,6 +283,17 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
       {
         // XXX add check for SDTS; in that case we want (*CATD.DDF)
         QString glob = "*." + myGdalDriverExtension;
+        // Add only the first JP2 driver found to the filter list (it's the one GDAL uses)
+        if (myGdalDriverDescription == "JPEG2000" ||
+            myGdalDriverDescription.startsWith("JP2"))	// JP2ECW, JP2KAK, JP2MrSID
+        {
+          if (!jp2Driver)
+          {
+            jp2Driver = myGdalDriver;   // first JP2 driver found
+            glob += " *.j2k";           // add alternate extension
+          }
+          else break;               // skip if already found a JP2 driver
+        }
         theFileFiltersString += myGdalDriverLongName + " (" + glob.lower() + " " + glob.upper() + ");;";
 
         break;            // ... to next driver, if any.
@@ -323,16 +338,6 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
       {
         catchallFilter += QString(myGdalDriver->GetDescription()) + " ";
       }
-    }
-    
-    // A number of drivers support JPEG 2000. Add it in for those.
-    if (  myGdalDriverDescription.startsWith("MrSID") 
-          || myGdalDriverDescription.startsWith("ECW")
-          || myGdalDriverDescription.startsWith("JPEG2000")
-          || myGdalDriverDescription.startsWith("JP2KAK") )
-    {
-      QString glob = "*.jp2 *.j2k";
-      theFileFiltersString += "JPEG 2000 (" + glob.lower() + " " + glob.upper() + ");;";
     }
 
     myGdalDriverExtension = myGdalDriverLongName = "";  // reset for next driver
