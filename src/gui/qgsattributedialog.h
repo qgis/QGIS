@@ -29,22 +29,38 @@ class QgsFeature;
 class QgsAttributeDialog: public QDialog, private Ui::QgsAttributeDialogBase
 {
     Q_OBJECT
-	public:
+
+  public:
     QgsAttributeDialog(const std::vector<QgsFeatureAttribute>* attributes);
+
     ~QgsAttributeDialog();
-    /**Returns the field value of a row*/
+
+    /** Returns the field value of a row */
     QString value(int row);
-    /**Opens an attribute dialog and queries the attributes for a given feature. The
+
+    /** Returns if the field value of a row was edited since this dialog opened */
+    bool isDirty(int row);
+
+    /** Opens an attribute dialog and queries the attributes for a given feature. The
      attribute values are set to the feature if the dialog is accepted.
-    Returns true if accepted and false if canceled*/
+     \retval true if accepted
+     \retval false if canceled */
     static bool queryAttributes(QgsFeature& f);
 
     // Saves and restores the size and position from the last time
     // this dialog box was used.
     void savePositionAndColumnWidth();
+
     void restorePositionAndColumnWidth();
- private:
+
+  public slots:
+    //! Slot to be called when an attribute value is edited in the table.
+    void setAttributeValueChanged(int row, int column);
+
+  private:
     QString _settingsPath;
+
+    std::vector<bool> mRowIsDirty;
 };
 
 #endif

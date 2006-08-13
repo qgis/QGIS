@@ -314,7 +314,7 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
 
     mResults->show();
   } 
-  else
+  else // ( layer->isEditable() )
   {
     // Edit attributes 
     // TODO: what to do if more features were selected? - nearest?
@@ -324,48 +324,70 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
 
     if ( (fet = dataProvider->getNextFeature(true)) )
     {
-      // Was already changed?
-      changed_attr_map::iterator it = changedAttributes.find(fet->featureId());
-
+      // these are the values to populate the dialog with
       std::vector < QgsFeatureAttribute > old;
+
+      // start off with list of committed attribute values
+      old = fet->attributeMap();
+
+      // Test if this feature already changed since the last commit
+
+      changed_attr_map::iterator it = changedAttributes.find(fet->featureId());
       if ( it != changedAttributes.end() )
       {
+        // Yes, this feature already has in-memory attribute changes
+
+        // go through and apply the modified-but-not-committed values
         std::map<QString,QString> oldattr = (*it).second;
-        for( std::map<QString,QString>::iterator ait = oldattr.begin(); ait!=oldattr.end(); ++ait )
+        int index=0;
+        for ( std::vector<QgsFeatureAttribute>::const_iterator
+                oldit  = old.begin();
+                oldit != old.end();
+              ++oldit)
         {
-          old.push_back ( QgsFeatureAttribute ( (*ait).first, (*ait).second ) );
+          std::map<QString,QString>::iterator ait =
+            oldattr.find( (*oldit).fieldName() );
+          if ( ait != oldattr.end() )
+          {
+            // replace the committed value with the
+            // modified-but-not-committed value
+            old[index] = QgsFeatureAttribute ( (*ait).first, (*ait).second );
+          }
+
+          ++index;
         }
       }
-      else
-      {
-        old = fet->attributeMap();
-      }
-      
+
       QApplication::restoreOverrideCursor();
-      
+
+      // Show the attribute value editing dialog
       QgsAttributeDialog ad( &old );
 
-      if ( ad.exec()==QDialog::Accepted )
+      if (ad.exec() == QDialog::Accepted)
       {
-        std::map<QString,QString> attr;
-        
-        // Do this only once rather than each pass through the loop
+
         int oldSize = old.size();
-        for(register int i= 0; i < oldSize; ++i)
+
+
+        for (int i = 0; i < oldSize; ++i)
         {
-          attr.insert ( std::make_pair( old[i].fieldName(), ad.value(i) ) );
-        }
-        
-        // Remove old if exists
-        it = changedAttributes.find(fet->featureId());
+          // only apply changed values if they were edited by the user
+          if (ad.isDirty(i))
+          {
+#ifdef QGISDEBUG
+        std::cout << "QgsMapToolIdentify::identifyVectorLayer: found an changed attribute: "
+          << old[i].fieldName().toLocal8Bit().data()
+          << " = "
+          << ad.value(i).toLocal8Bit().data()
+          << "." << std::endl;
+#endif
+            changedAttributes[ fet->featureId() ][ old[i].fieldName() ] = ad.value(i);
 
-        if ( it != changedAttributes.end() )
-        { // found
-          changedAttributes.erase ( it );
+            // propagate "dirtyness" to the layer
+            layer->setModified();
+          }
         }
 
-        changedAttributes.insert ( std::make_pair( fet->featureId(), attr ) );
-        layer->setModified();
       }
     }
     else

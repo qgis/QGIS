@@ -21,7 +21,9 @@
 #include <QSettings>
 
 QgsAttributeDialog::QgsAttributeDialog(const std::vector<QgsFeatureAttribute>* attributes)
-  : QDialog(), _settingsPath("/Windows/AttributeDialog/")
+  : QDialog(),
+    _settingsPath("/Windows/AttributeDialog/"),
+    mRowIsDirty(attributes->size(), FALSE)
 {
     restorePositionAndColumnWidth();
 
@@ -29,15 +31,31 @@ QgsAttributeDialog::QgsAttributeDialog(const std::vector<QgsFeatureAttribute>* a
     mTable->setRowCount(attributes->size());
 
     int index=0;
-    for(std::vector<QgsFeatureAttribute>::const_iterator it=attributes->begin();it!=attributes->end();++it)
+    for ( std::vector<QgsFeatureAttribute>::const_iterator
+            it  = attributes->begin();
+            it != attributes->end();
+          ++it)
     {
+      // set attribute name
+
       QTableWidgetItem * myFieldItem = new QTableWidgetItem((*it).fieldName());
       myFieldItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
       mTable->setItem(index, 0, myFieldItem);
+
+      // set attribute value
+
       QTableWidgetItem * myValueItem = new QTableWidgetItem((*it).fieldValue());
       mTable->setItem(index, 1, myValueItem);
+
       ++index;
     }
+
+    // setup the mechanism to track edited attribute values
+    // if we do it this way, only edited attributes will
+    // be attempted to be saved when the editing session stops.
+    connect(mTable, SIGNAL(cellChanged(int, int)),
+            this,   SLOT  (setAttributeValueChanged(int, int)));
+
     mTable->resizeColumnsToContents();
 }
 
@@ -48,26 +66,33 @@ QgsAttributeDialog::~QgsAttributeDialog()
 
 QString QgsAttributeDialog::value(int row)
 {
-    return mTable->item(row,1)->text();
+  return mTable->item(row,1)->text();
+}
+
+bool QgsAttributeDialog::isDirty(int row)
+{
+  return mRowIsDirty.at(row);
 }
 
 bool QgsAttributeDialog::queryAttributes(QgsFeature& f)
 {
   const std::vector<QgsFeatureAttribute> featureAttributes = f.attributeMap();
   QgsAttributeDialog attdialog(&featureAttributes);
-  if(attdialog.exec()==QDialog::Accepted)
+
+  if (attdialog.exec() == QDialog::Accepted)
+  {
+    for (int i = 0; i < featureAttributes.size(); ++i)
     {
-      for(int i=0;i<featureAttributes.size();++i)
-	{
-	  f.changeAttributeValue(featureAttributes[i].fieldName(), attdialog.value(i));
-	}
-      return true;
+      f.changeAttributeValue(featureAttributes[i].fieldName(), attdialog.value(i));
     }
+    return true;
+  }
   else
-    {
-      return false;
-    }
+  {
+    return false;
+  }
 }
+
 void QgsAttributeDialog::savePositionAndColumnWidth()
 {
   QSettings settings;
@@ -90,4 +115,16 @@ void QgsAttributeDialog::restorePositionAndColumnWidth()
 
   resize(ww,wh);
   move(wx,wy);
+}
+
+void QgsAttributeDialog::setAttributeValueChanged(int row, int column)
+{
+#ifdef QGISDEBUG
+        std::cout << "QgsAttributeDialog::setAttributeValueChanged: Entered with "
+          << "row " << row
+          << "column " << column
+          << "." << std::endl;
+#endif
+
+  mRowIsDirty.at(row) = TRUE;
 }
