@@ -1935,7 +1935,9 @@ void QgsVectorLayer::startEditing()
 
 void QgsVectorLayer::stopEditing()
 {
-  deleteCachedGeometries();
+  bool commitSuccessful = FALSE;
+  bool rollbackSuccessful = FALSE;
+
   if(dataProvider)
   {
     if(mModified)
@@ -1945,9 +1947,15 @@ void QgsVectorLayer::stopEditing()
 
       if(commit==0)
       {
-        if(!commitChanges())
+        commitSuccessful = commitChanges();
+
+        if(!commitSuccessful)
         {
           QMessageBox::information(0,tr("Error"),tr("Could not commit changes"),QMessageBox::Ok);
+
+          // Leave the in-memory editing state alone,
+          // to give the user a chance to enter different values
+          // and try the commit again later
         }
         else
         {
@@ -1976,22 +1984,36 @@ void QgsVectorLayer::stopEditing()
           delete tabledisplay;
           tabledisplay=0;
         }
+
+        // Force this to TRUE otherwise the user will never be able
+        // to get out of an ediitng session
+        rollbackSuccessful = TRUE;
       }
       emit editingStopped(true);
     }
-    else
+    else  // if (!mModified)
     {
       emit editingStopped(false);
     }
-    mEditable=false;
-    triggerRepaint();
-    mModified=false;
-    if(isValid())
+
+    if (
+        (commitSuccessful) ||
+        (rollbackSuccessful)
+       )
     {
-      updateItemPixmap();
-      if(mToggleEditingAction)
+      // convert state to non-editing mode
+      deleteCachedGeometries();
+
+      mEditable=false;
+      triggerRepaint();
+      mModified=false;
+      if(isValid())
       {
-        mToggleEditingAction->setChecked(false);
+        updateItemPixmap();
+        if(mToggleEditingAction)
+        {
+          mToggleEditingAction->setChecked(false);
+        }
       }
     }
   }

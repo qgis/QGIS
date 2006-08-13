@@ -2005,17 +2005,31 @@ bool QgsPostgresProvider::changeAttributeValues(std::map<int,std::map<QString,QS
       qWarning(sql);
 #endif
 
-      //send sql statement and do error handling
+      // s end sql statement and do error handling
+      // TODO: Make all error handling like this one
       PGresult* result=PQexec(connection, (const char *)(sql.utf8()));
-      if(result==0)
+      if (result==0)
       {
-        returnvalue=false;
-        ExecStatusType message=PQresultStatus(result);
-        if(message==PGRES_FATAL_ERROR)
-        {
-          QMessageBox::information(0,"UPDATE error",QString(PQresultErrorMessage(result)),QMessageBox::Ok);
-        }
+        QMessageBox::critical(0, tr("PostGIS error"), 
+                                 tr("An error occured contacting the PostgreSQL databse"),
+                                 QMessageBox::Ok,
+                                 Qt::NoButton);
+        return false;
       }
+      ExecStatusType message=PQresultStatus(result);
+      if(message==PGRES_FATAL_ERROR)
+      {
+        QMessageBox::information(0, tr("PostGIS error"), 
+                                 tr("The PostgreSQL databse returned: ")
+                                   + QString(PQresultErrorMessage(result))
+                                   + "\n"
+                                   + tr("When trying: ")
+                                   + sql,
+                                 QMessageBox::Ok,
+                                 Qt::NoButton);
+        return false;
+      }
+
     }
   }
   PQexec(connection,"COMMIT");
@@ -2153,7 +2167,10 @@ bool QgsPostgresProvider::changeGeometryValues(std::map<int, QgsGeometry> & geom
       {
         QMessageBox::information(0, tr("PostGIS error"), 
                                  tr("The PostgreSQL databse returned: ")
-                                   + QString(PQresultErrorMessage(result)),
+                                   + QString(PQresultErrorMessage(result))
+                                   + "\n"
+                                   + tr("When trying: ")
+                                   + sql,
                                  QMessageBox::Ok,
                                  Qt::NoButton);
         return false;
