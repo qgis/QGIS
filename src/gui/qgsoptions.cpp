@@ -77,7 +77,7 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   //! @todo changes this control name in gui to txtGlobalProjString
   QString myProjString = QgsSpatialRefSys::getProj4FromSrsId(mGlobalSRSID);
   txtGlobalWKT->setText(myProjString);
-  
+
   // populate combo box with ellipsoids
   getEllipsoidList();
   QString myEllipsoidId = settings.readEntry("/qgis/measure/ellipsoid", "WGS84");
@@ -94,25 +94,40 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
       cmbTheme->insertItem(myDirList[i]);
     }
   }
+
   // set the theme combo
   cmbTheme->setCurrentText(settings.readEntry("/Themes","default"));
-  //set teh state of the checkboxes
+
+  //set the state of the checkboxes
   chkAntiAliasing->setChecked(settings.value("/qgis/enable_anti_aliasing",false).toBool());
+
   // Slightly awkard here at the settings value is true to use QImage,
   // but the checkbox is true to use QPixmap
   chkUseQPixmap->setChecked(!(settings.value("/qgis/use_qimage_to_render", true).toBool()));
   chkAddedVisibility->setChecked(settings.value("/qgis/new_layers_visible",true).toBool());
   cbxHideSplash->setChecked(settings.value("/qgis/hideSplash",false).toBool());
+
   //set the colour for selections
   int myRed = settings.value("/qgis/default_selection_color_red",255).toInt();
   int myGreen = settings.value("/qgis/default_selection_color_green",255).toInt();
   int myBlue = settings.value("/qgis/default_selection_color_blue",0).toInt();
-  pbnSelectionColour->setPaletteBackgroundColor(QColor(myRed,myGreen,myBlue));
-  //set teh default color for canvas background
+// old Qt3 idiom
+//  pbnSelectionColour->setPaletteBackgroundColor(QColor(myRed,myGreen,myBlue));
+// new Qt4 idiom
+  QPalette palSelectionColour = pbnSelectionColour->palette();
+  palSelectionColour.setColor( QPalette::Window, QColor(myRed,myGreen,myBlue) );
+  pbnSelectionColour->setPalette(palSelectionColour);
+
+  //set the default color for canvas background
   myRed = settings.value("/qgis/default_canvas_color_red",255).toInt();
   myGreen = settings.value("/qgis/default_canvas_color_green",255).toInt();
   myBlue = settings.value("/qgis/default_canvas_color_blue",255).toInt();
-  pbnCanvasColor->setPaletteBackgroundColor(QColor(myRed,myGreen,myBlue));
+// old Qt3 idiom
+//  pbnCanvasColor->setPaletteBackgroundColor(QColor(myRed,myGreen,myBlue));
+// new Qt4 idiom
+  QPalette palCanvasColor = pbnCanvasColor->palette();
+  palCanvasColor.setColor( QPalette::Window, QColor(myRed,myGreen,myBlue) );
+  pbnCanvasColor->setPalette(palCanvasColor);
 
   capitaliseCheckBox->setChecked(settings.value("qgis/capitaliseLayerName", QVariant(false)).toBool());
 }
@@ -122,19 +137,35 @@ QgsOptions::~QgsOptions(){}
 
 void QgsOptions::on_pbnSelectionColour_clicked()
 {
-  QColor color = QColorDialog::getColor(pbnSelectionColour->paletteBackgroundColor(),this);
+// old Qt3 idiom
+//  QColor color = QColorDialog::getColor(pbnSelectionColour->paletteBackgroundColor(),this);
+// new Qt4 idiom
+  QPalette palSelectionColour = pbnSelectionColour->palette();
+  QColor color = QColorDialog::getColor( palSelectionColour.color(QPalette::Window), this );
   if (color.isValid())
   {
-    pbnSelectionColour->setPaletteBackgroundColor(color);
+// old Qt3 idiom
+//    pbnSelectionColour->setPaletteBackgroundColor(color);
+// new Qt4 idiom
+    palSelectionColour.setColor( QPalette::Window, color );
+    pbnSelectionColour->setPalette(palSelectionColour);
   }
 }
 
 void QgsOptions::on_pbnCanvasColor_clicked()
 {
-  QColor color = QColorDialog::getColor(pbnCanvasColor->paletteBackgroundColor(),this);
+// old Qt3 idiom
+//   QColor color = QColorDialog::getColor(pbnCanvasColor->paletteBackgroundColor(),this);
+// new Qt4 idiom
+  QPalette palCanvasColor = pbnCanvasColor->palette();
+  QColor color = QColorDialog::getColor( palCanvasColor.color(QPalette::Window), this );
   if (color.isValid())
   {
-    pbnCanvasColor->setPaletteBackgroundColor(color);
+// old Qt3 idiom
+//     pbnCanvasColor->setPaletteBackgroundColor(color);
+// new Qt4 idiom
+    palCanvasColor.setColor( QPalette::Window, color );
+    pbnCanvasColor->setPalette(palCanvasColor);
   }
 }
 void QgsOptions::themeChanged(const QString &newThemeName)
@@ -187,17 +218,25 @@ void QgsOptions::saveOptions()
   settings.writeEntry("/Projections/defaultProjectionSRSID",(int)mGlobalSRSID);
 
   settings.writeEntry("/qgis/measure/ellipsoid", getEllipsoidAcronym(cmbEllipsoid->currentText()));
+
   //set the colour for selections
-  QColor myColor = pbnSelectionColour->paletteBackgroundColor();
+// old Qt3 idiom
+//   QColor myColor = pbnSelectionColour->paletteBackgroundColor();
+// new Qt4 idiom
+  QColor myColor = pbnSelectionColour->palette().color(QPalette::Window);
   int myRed = settings.writeEntry("/qgis/default_selection_color_red",myColor.red());
   int myGreen = settings.writeEntry("/qgis/default_selection_color_green",myColor.green());
   int myBlue = settings.writeEntry("/qgis/default_selection_color_blue",myColor.blue());
-  //set teh default color for canvas background
-  myColor = pbnCanvasColor->paletteBackgroundColor();
+
+  //set the default color for canvas background
+// old Qt3 idiom
+//   myColor = pbnCanvasColor->paletteBackgroundColor();
+// new Qt4 idiom
+  myColor = pbnCanvasColor->palette().color(QPalette::Window);
   myRed = settings.writeEntry("/qgis/default_canvas_color_red",myColor.red());
   myGreen = settings.writeEntry("/qgis/default_canvas_color_green",myColor.green());
   myBlue = settings.writeEntry("/qgis/default_canvas_color_blue",myColor.blue());
-  
+
   //all done
   accept();
 }
