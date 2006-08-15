@@ -139,6 +139,9 @@ bool QgsHttpTransaction::getSynchronously(QByteArray &respondedContent, int redi
   connect(http, SIGNAL( requestFinished ( int, bool ) ),
           this,      SLOT( dataFinished ( int, bool ) ) );
 
+  connect(http, SIGNAL(              done ( bool ) ),
+          this, SLOT( transactionFinished ( bool ) ) );
+
   connect(http,   SIGNAL( stateChanged ( int ) ),
           this, SLOT( dataStateChanged ( int ) ) );
 
@@ -313,6 +316,7 @@ void QgsHttpTransaction::dataProgress( int done, int total )
   emit setStatus( status );
 }
 
+
 void QgsHttpTransaction::dataFinished( int id, bool error )  
 {
 
@@ -348,6 +352,56 @@ void QgsHttpTransaction::dataFinished( int id, bool error )
   }
 #endif
 
+// Don't do this here as the request could have simply been
+// to set the hostname - see transactionFinished() instead
+
+//   // TODO
+//   httpresponse = http->readAll();
+// 
+// #ifdef QGISDEBUG
+//   std::cout << "QgsHttpTransaction::getSynchronously: Setting httpactive = FALSE" << std::endl;
+// #endif
+//   httpactive = FALSE;
+
+}
+
+
+void QgsHttpTransaction::transactionFinished( bool error )
+{
+
+#ifdef QGISDEBUG
+  std::cout << "QgsHttpTransaction::transactionFinished"
+            << "." << std::endl;
+
+//   // The signal that this slot is connected to, QHttp::requestFinished,
+//   // appears to get called at the destruction of the QHttp if it is
+//   // still working at the time of the destruction.
+//   //
+//   // This situation may occur when we've detected a timeout and 
+//   // we already set httpactive = FALSE.
+//   //
+//   // We have to detect this special case so that the last known error string is
+//   // not overwritten (it should rightfully refer to the timeout event).
+//   if (!httpactive)
+//   {
+//     std::cout << "QgsHttpTransaction::dataFinished - http activity loop already FALSE." << std::endl;
+//     return;
+//   }
+
+  if (error)
+  {
+    std::cout << "QgsHttpTransaction::transactionFinished - however there was an error." << std::endl;
+    std::cout << "QgsHttpTransaction::transactionFinished - " << http->errorString().toLocal8Bit().data() << std::endl;
+
+    mError = QString( tr("HTTP transaction completed, however there was an error: %1") )
+                .arg( http->errorString() );
+  }
+  else
+  {
+    std::cout << "QgsHttpTransaction::transactionFinished - no error." << std::endl;
+  }
+#endif
+
   // TODO
   httpresponse = http->readAll();
 
@@ -357,6 +411,7 @@ void QgsHttpTransaction::dataFinished( int id, bool error )
   httpactive = FALSE;
 
 }
+
 
 void QgsHttpTransaction::dataStateChanged( int state )
 {
