@@ -2116,6 +2116,7 @@ bool QgsGeometry::exportToWkt(unsigned char * geom) const
 	double *x,*y;
 
 	mWkt="";
+        // Will this really work when geom[0] == 0 ???? I (gavin) think not.
 	wkbType = (geom[0] == 1) ? geom[1] : geom[4];
 	switch (wkbType)
 	{

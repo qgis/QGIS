@@ -22,10 +22,12 @@
 
 #include <map>
 
+#include <QStringList>
 
 class QgsFeature;
 class QgsField;
 class QFile;
+class QTextStream;
 
 
 /**
@@ -305,11 +307,18 @@ private:
   //! Text file
   QFile *mFile;
 
+  QTextStream *mStream;
+
   bool mValid;
 
   int mGeomType;
 
   long mNumberFeatures;
+
+  //! Storage for any lines in the file that couldn't be loaded
+  QStringList mInvalidLines;
+  //! Only want to show the invalid lines once to the user
+  bool mShowInvalidLines;
 
   //! Feature id
   long mFid;
