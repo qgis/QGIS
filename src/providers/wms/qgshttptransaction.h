@@ -93,6 +93,8 @@ public slots:
 
   void dataFinished( int id, bool error );
 
+  void transactionFinished( bool error );
+
   void dataStateChanged( int state );
 
   void networkTimedOut();
