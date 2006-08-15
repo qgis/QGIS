@@ -70,7 +70,7 @@ void QgsDelimitedTextPluginGui::on_pbnOK_clicked()
       .arg(txtDelimiter->text())
       .arg(cmbXField->currentText())
       .arg(cmbYField->currentText());
-    std::cerr << "Adding layer using " << uri.toLocal8Bit().data() << std::endl; 
+
     // add the layer to the map
     emit drawVectorLayer(uri,txtLayerName->text(),"delimitedtext");
     // store the settings
@@ -150,6 +150,9 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
       }
       // close the file
       file->close();
+      // put a default layer name in the text entry
+      QFileInfo finfo(txtFilePath->text());
+      txtLayerName->setText(finfo.completeBaseName());
     }
 
   }

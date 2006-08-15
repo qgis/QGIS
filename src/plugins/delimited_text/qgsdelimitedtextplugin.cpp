@@ -134,9 +134,6 @@ void QgsDelimitedTextPlugin::run()
 void QgsDelimitedTextPlugin::drawVectorLayer(QString thePathNameQString, 
     QString theBaseNameQString, QString theProviderQString)
 {
-  std::cerr << "Calling addVectorLayer with:" 
-    << thePathNameQString.toLocal8Bit().data() << ", " << theBaseNameQString.toLocal8Bit().data()
-    << ", " << theProviderQString.toLocal8Bit().data() << std::endl; 
   qGisInterface->addVectorLayer( thePathNameQString, 
       theBaseNameQString, theProviderQString);
 }
