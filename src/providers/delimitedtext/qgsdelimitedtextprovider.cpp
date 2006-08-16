@@ -368,10 +368,17 @@ QgsDelimitedTextProvider::getNextFeature_( QgsFeature & feature,
         if (! (xOk && yOk))
         {
           // Accumulate any lines that weren't ok, to report on them
-          // later, and look at the next line in the file.
-          mInvalidLines << line;
+          // later, and look at the next line in the file, but only if
+          // we need to.
+          if (mShowInvalidLines)
+            mInvalidLines << line;
+
           continue;
         }
+
+        // Give every valid line in the file an id, even if it's not
+        // in the current extent or bounds.
+        ++mFid;             // increment to next feature ID
 
         if (! boundsCheck(x,y))
           continue;
@@ -379,8 +386,6 @@ QgsDelimitedTextProvider::getNextFeature_( QgsFeature & feature,
         // at this point, one way or another, the current feature values
         // are valid
            feature.setValid( true );
-
-           ++mFid;             // increment to next feature ID
 
            feature.setFeatureId( mFid );
 
@@ -439,7 +444,7 @@ QgsDelimitedTextProvider::getNextFeature_( QgsFeature & feature,
     } // ! textStream EOF
 
     // End of the file. If there are any lines that couldn't be
-    // loaded, display them now, but only once.
+    // loaded, display them now.
 
     if (mShowInvalidLines && !mInvalidLines.isEmpty())
     {
@@ -450,6 +455,8 @@ QgsDelimitedTextProvider::getNextFeature_( QgsFeature & feature,
         lineViewer.appendMessage(mInvalidLines.at(i));
 
       lineViewer.exec();
+      // We no longer need these lines.
+      mInvalidLines.empty();
     }
 
     return false;
@@ -522,7 +529,6 @@ void QgsDelimitedTextProvider::select(QgsRect * rect, bool useIntersect)
   reset();
   // Reset the feature id to 0
   mFid = 0;
-
 }
 
 
@@ -700,10 +706,12 @@ bool QgsDelimitedTextProvider::isValid()
  */
 bool QgsDelimitedTextProvider::boundsCheck(double x, double y)
 {
-  bool inBounds = (((x < mSelectionRectangle->xMax()) &&
-                    (x > mSelectionRectangle->xMin())) &&
-                   ((y < mSelectionRectangle->yMax()) &&
-                    (y > mSelectionRectangle->yMin())));
+  bool inBounds(true);
+  if (mSelectionRectangle)
+    inBounds = (((x < mSelectionRectangle->xMax()) &&
+                 (x > mSelectionRectangle->xMin())) &&
+                ((y < mSelectionRectangle->yMax()) &&
+                 (y > mSelectionRectangle->yMin())));
   // QString hit = inBounds?"true":"false";
 
   // std::cerr << "Checking if " << x << ", " << y << " is in " << 
