@@ -1996,27 +1996,31 @@ void QgsVectorLayer::stopEditing()
       emit editingStopped(false);
     }
 
-    if (
-        (commitSuccessful) ||
-        (rollbackSuccessful)
-       )
-    {
-      // convert state to non-editing mode
-      deleteCachedGeometries();
+  }
 
-      mEditable=false;
-      triggerRepaint();
-      mModified=false;
-      if(isValid())
+  if (
+      (!dataProvider) ||
+      (!mModified) ||
+      (commitSuccessful) ||
+      (rollbackSuccessful)
+     )
+  {
+    // convert state to non-editing mode
+    deleteCachedGeometries();
+
+    mEditable=false;
+    triggerRepaint();
+    mModified=false;
+    if(isValid())
+    {
+      updateItemPixmap();
+      if(mToggleEditingAction)
       {
-        updateItemPixmap();
-        if(mToggleEditingAction)
-        {
-          mToggleEditingAction->setChecked(false);
-        }
+        mToggleEditingAction->setChecked(false);
       }
     }
   }
+
 }
 
 // return state of scale dependent rendering. True if features should
