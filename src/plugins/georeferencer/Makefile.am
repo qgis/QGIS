@@ -14,7 +14,7 @@
 if HAVE_GSL
 
 
-plugindir    = ${pkglibdir}/lib/qgis
+plugindir    = ${pkglibdir}
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
