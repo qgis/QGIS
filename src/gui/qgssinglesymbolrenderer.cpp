@@ -109,7 +109,8 @@ void QgsSingleSymbolRenderer::renderFeature(QPainter * p, QgsFeature * f, QPixma
 	    {
 		QPen pen=mSymbol->pen();
 		pen.setWidthF ( widthScale * pen.width() );
-		pen.setColor(mSelectionColor);
+                if (mVectorType == QGis::Line)
+                  pen.setColor(mSelectionColor);
 		QBrush brush=mSymbol->brush();
 		brush.setColor(mSelectionColor);
 		p->setPen(pen);
