@@ -230,8 +230,13 @@ int main(int argc, char *argv[])
   // save the image to disk and then exit
   QString mySnapshotFileName="";
 
-  // This behaviour will set initial extent of map canvas
-  QString myInitialExtent="-1,-1,1,1";
+  // This behaviour will set initial extent of map canvas, but only if
+  // there are no command line arguments. This gives a usable map
+  // extent when qgis starts with no layers loaded. When layers are
+  // loaded, we let the layers define the initial extent.
+  QString myInitialExtent="";
+  if (argc == 1)
+    myInitialExtent="-1,-1,1,1";
 
   // This behaviour will allow you to force the use of a translation file
   // which is useful for testing
