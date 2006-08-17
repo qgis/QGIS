@@ -1488,7 +1488,10 @@ void QgsLegend::handleItemChange(QTreeWidgetItem* item, int row)
 		    }
 		}
 	      mStateOfCheckBoxes[item] = item->checkState(0);
-	      mMapCanvas->setRenderFlag(true);
+              // Setting the renderFlag to true will trigger a render,
+              // so only do this if the flag is alread set to true. 
+              if (mMapCanvas->renderFlag())
+                mMapCanvas->setRenderFlag(true);
 	      return;
 	    }
 	  
@@ -1498,6 +1501,7 @@ void QgsLegend::handleItemChange(QTreeWidgetItem* item, int row)
 	    {
 	      //set all the child layer files to the new check state
 	      subfiles = lg->legendLayerFiles();
+              bool renderFlagState = mMapCanvas->renderFlag();
 	      mMapCanvas->setRenderFlag(false);
 	      for(std::list<QgsLegendLayerFile*>::iterator iter = subfiles.begin(); iter != subfiles.end(); ++iter)
 		{
@@ -1531,7 +1535,10 @@ void QgsLegend::handleItemChange(QTreeWidgetItem* item, int row)
 		  static_cast<QgsLegendLayer*>(lg->child(i))->updateCheckState();
 		  mStateOfCheckBoxes[lg->child(i)] = lg->child(i)->checkState(0);
 		}
-	      mMapCanvas->setRenderFlag(true);
+              // If it was on, turn it back on, otherwise leave it
+              // off, as turning it on causes a refresh.
+              if (renderFlagState)
+                mMapCanvas->setRenderFlag(true);
 	      mStateOfCheckBoxes[item] = item->checkState(0);
 	      return;
 	    }
@@ -1541,6 +1548,7 @@ void QgsLegend::handleItemChange(QTreeWidgetItem* item, int row)
 	    {
 	      //set all the child layer files to the new check state
 	      subfiles = ll->legendLayerFiles();
+              bool renderFlagState = mMapCanvas->renderFlag();
 	      mMapCanvas->setRenderFlag(false);
 	      for(std::list<QgsLegendLayerFile*>::iterator iter = subfiles.begin(); iter != subfiles.end(); ++iter)
 		{
@@ -1558,7 +1566,10 @@ void QgsLegend::handleItemChange(QTreeWidgetItem* item, int row)
 		  static_cast<QgsLegendGroup*>(ll->parent())->updateCheckState();
 		  mStateOfCheckBoxes[ll->parent()] = ll->parent()->checkState(0);
 		}
-	      mMapCanvas->setRenderFlag(true);
+              // If it was on, turn it back on, otherwise leave it
+              // off, as turning it on causes a refresh.
+              if (renderFlagState)
+                mMapCanvas->setRenderFlag(true);
 	      //update check state of the legend group
 	    }
 	  mStateOfCheckBoxes[item] = item->checkState(0);
