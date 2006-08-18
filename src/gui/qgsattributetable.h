@@ -105,6 +105,7 @@ class QgsAttributeTable:public Q3Table
 
     public slots:
       void columnClicked(int col);
+      void rowClicked(int row);
     // Called when the user requests a popup menu
     void popupMenu(int row, int col, const QPoint& pos);
     // Called when the user chooses an item on the popup menu
@@ -132,6 +133,8 @@ class QgsAttributeTable:public Q3Table
     /**Nested map containing the changed attribute values. The int is the feature id, 
       the first QString the attribute name and the second QString the new value*/
     std::map<int,std::map<QString,QString> > mChangedValues;
+    /**Stors the numbers of the last selected rows. This is used to check for selection changes before emit repaintRequested()*/
+    std::set<int> mLastSelectedRows;
 
     /**Compares the content of two cells either alphanumeric or numeric. If 'ascending' is true, -1 means s1 is less, 0 equal, 1 greater. If 'ascending' is false, -1 means s1 is more, 0 equal, 1 greater. This method is used mainly to sort a column*/
     int compareItems(QString s1, QString s2, bool ascending, bool alphanumeric);
@@ -146,7 +149,10 @@ class QgsAttributeTable:public Q3Table
     void removeAttrColumn(const QString& name);
     /** puts attributes of feature to the chosen table row */
     void putFeatureInTable(int row, QgsFeature* fet);
-
+    void contentsMouseReleaseEvent(QMouseEvent* e);
+    /**This function compares the current selection and the selection of the last repaint. Returns true if there are differences in the selection.
+     Also, mLastSelectedRows is updated*/
+    bool checkSelectionChanges();
 signals:
 
     /**Is emitted when a row was selected*/
