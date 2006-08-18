@@ -142,7 +142,6 @@ void QgsAttributeTable::handleChangedSelections()
   //don't send the signal repaintRequested() from here
   //but in contentsMouseReleaseEvent() and rowClicked(int)
   //todo: don't repaint in case of double clicks
-
 }
 
 void QgsAttributeTable::insertFeatureId(int id, int row)

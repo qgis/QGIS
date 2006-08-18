@@ -1254,9 +1254,6 @@ int QgsOgrProvider::capabilities() const
       ability |= DeleteFeatures;
     }
     
-    //seems to work with newer ogr versions
-    //ability |= ChangeAttributeValues;
-    
     if (ogrLayer->TestCapability("RandomWrite"))
     // TRUE if the SetFeature() method is operational on this layer.
     {
@@ -1265,6 +1262,7 @@ int QgsOgrProvider::capabilities() const
       // TODO Need to work out versions of shapelib vs versions of GDAL/OGR
       // TODO And test appropriately.
 
+      ability |= ChangeAttributeValues;
       // This provider can't change geometries yet anyway (cf. Postgres provider)
       // ability |= QgsVectorDataProvider::ChangeGeometries;
     }
