@@ -43,6 +43,8 @@ public:
   static const int qgisVersionInt;
   // Release name
   static const char* qgisReleaseName;
+  // The subversion version
+  static const char* qgisSvnVersion;
 
   // Enumerations
   //

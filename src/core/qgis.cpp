@@ -1,11 +1,15 @@
 
 #include "qgis.h"
+#include "qgssvnversion.h"
 
 // Version constants
 //
 
 // Version string
 const char* QGis::qgisVersion = VERSION;
+
+// SVN version
+const char* QGis::qgisSvnVersion = QGSSVNVERSION;
   
 // Version number used for comparing versions using the "Check QGIS Version" function
 const int QGis::qgisVersionInt =800;

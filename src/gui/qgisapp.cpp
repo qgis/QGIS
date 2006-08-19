@@ -1200,6 +1200,9 @@ void QgisApp::about()
      QgsAbout *abt = new QgsAbout();
      QString versionString = tr("Version ");
      versionString += QGis::qgisVersion;
+     versionString += " (";
+     versionString += QGis::qgisSvnVersion;
+     versionString += ")";
 #ifdef HAVE_POSTGRESQL
 
 versionString += tr(" with PostgreSQL support");

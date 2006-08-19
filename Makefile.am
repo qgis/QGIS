@@ -58,3 +58,10 @@ release: UIcheck distdir
 			> $(distdir)/qgis.spec
 	BZIP2=$(BZIP2_ENV) $(AMTAR)$(TAR) --bzip2 -chof $(distdir).tar.bz2 $(distdir)
 	-rm -rf $(distdir)
+
+BUILT_SOURCES = qgssvnversion.h
+
+.PHONY : qgssvnversion.h 
+qgssvnversion.h:
+	@ echo "#define QGSSVNVERSION \"`svnversion .`\"" > qgssvnversion.h
+

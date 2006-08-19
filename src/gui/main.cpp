@@ -54,6 +54,7 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include <qgsconfig.h>
+#include <qgssvnversion.h>
 #include "qgsexception.h"
 #include "qgsproject.h"
 
@@ -63,7 +64,8 @@ static const char * const ident_ = "$Id$";
  */
 void usage( std::string const & appName )
 {
-  std::cerr << "Quantum GIS - " << VERSION << " 'Simon'\n" 
+  std::cerr << "Quantum GIS - " << VERSION << " 'Simon' (" 
+            << QGSSVNVERSION << ")\n" 
       << "Quantum GIS (QGIS) is a viewer for spatial data sets, including\n" 
       << "raster and vector data.\n"  
       << "Usage: " << appName <<  " [options] [FILES]\n"  
