@@ -188,7 +188,7 @@ void QgsDbSourceSelect::setLayerType(QString schema,
     }
     else
     {
-      qDebug(("Unknown geometry type of " + type).toLocal8Bit().data());
+      qDebug(("Unknown geometry type of ." + type + ",.").toLocal8Bit().data());
       p = &(mLayerIcons.value("UNKNOWN").second);
       toolTipText = mLayerIcons.value("UNKNOWN").first;
     }
@@ -313,6 +313,7 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
   QString username = settings.readEntry(key + "/username");
   connString += username;
   QString password = settings.readEntry(key + "/password");
+  bool searchPublicOnly = settings.readBoolEntry(key + "/publicOnly");
   bool makeConnection = true;
   if (password == QString::null)
   {
@@ -393,7 +394,7 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
 
       // get the list of suitable tables and columns and populate the UI
       geomCol details;
-      if (getGeometryColumnInfo(pd, details))
+      if (getGeometryColumnInfo(pd, details, searchPublicOnly))
       {
         details.sort();
         geomCol::const_iterator iter = details.begin();
@@ -409,7 +410,7 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
           }
           else
           {
-            qDebug(("Unknown geometry type of " + iter->second).toLocal8Bit().data());
+	    qDebug(("Unknown geometry type of '" + iter->second + "'.").toLocal8Bit().data());
             p = &(mLayerIcons.value("UNKNOWN").second);
             toolTipText = mLayerIcons.value("UNKNOWN").first;
           }
@@ -518,7 +519,7 @@ void QgsDbSourceSelect::setSql(QTableWidgetItem *item)
 }
 
 bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg, 
-                geomCol& details)
+                geomCol& details, bool searchPublicOnly)
 {
   bool ok = false;
 
@@ -579,8 +580,12 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
   sql = "select pg_class.relname, pg_namespace.nspname, pg_attribute.attname, "
     "pg_class.relkind from "
     "pg_attribute, pg_class, pg_type, pg_namespace where pg_type.typname = 'geometry' and "
-    "pg_attribute.atttypid = pg_type.oid and pg_attribute.attrelid = pg_class.oid "
-    "and cast(pg_class.relname as character varying) not in "
+    "pg_attribute.atttypid = pg_type.oid and pg_attribute.attrelid = pg_class.oid ";
+
+  if (searchPublicOnly)
+    sql += "and pg_namespace.nspname = 'public' ";
+
+  sql += "and cast(pg_class.relname as character varying) not in "
     "(select f_table_name from geometry_columns) "
     "and pg_namespace.oid = pg_class.relnamespace "
     "and pg_class.relkind in ('v', 'r')"; // only from views and relations (tables)
@@ -614,7 +619,7 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
                              tr("\nhas failed. The database said:\n"));
           qDebug(myError + QString(PQresultErrorMessage(gresult)));
         }
-      else
+      else if (PQntuples(gresult) > 0)
         type = PQgetvalue(gresult, 0, 0); // GeometryType
       PQclear(gresult);
     }

@@ -45,6 +45,10 @@ QgsNewConnection::QgsNewConnection(QWidget *parent, const QString& connName, Qt:
       }
       txtPort->setText(port);
       txtUsername->setText(settings.readEntry(key + "/username"));
+      Qt::CheckState s = Qt::Checked;
+      if ( ! settings.readBoolEntry(key + "/publicOnly", false))
+	s = Qt::Unchecked;
+      cb_publicSchemaOnly->setCheckState(s);
       if (settings.readEntry(key + "/save") == "true")
         {
           txtPassword->setText(settings.readEntry(key + "/password"));
@@ -114,6 +118,7 @@ void QgsNewConnection::saveConnection()
   settings.writeEntry(baseKey + "/port", txtPort->text());
   settings.writeEntry(baseKey + "/username", txtUsername->text());
   settings.writeEntry(baseKey + "/password", txtPassword->text());
+  settings.writeEntry(baseKey + "/publicOnly", cb_publicSchemaOnly->isChecked());
   if (chkStorePassword->isChecked())
     {
       settings.writeEntry(baseKey + "/save", "true");
