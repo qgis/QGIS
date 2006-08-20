@@ -188,7 +188,7 @@ void QgsDbSourceSelect::setLayerType(QString schema,
     }
     else
     {
-      qDebug(("Unknown geometry type of ." + type + ",.").toLocal8Bit().data());
+      qDebug(("Unknown geometry type of '" + type + "'.").toLocal8Bit().data());
       p = &(mLayerIcons.value("UNKNOWN").second);
       toolTipText = mLayerIcons.value("UNKNOWN").first;
     }
