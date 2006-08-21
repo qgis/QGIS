@@ -112,45 +112,57 @@ AC_ARG_WITH(projdir,
     AC_HELP_STRING([--with-projdir=DIR],
       [ Proj4 installation directory, e.g. '--with-projdir=/usr/local']),
     [
-    AC_MSG_CHECKING([for Proj4 library in $with_projdir])
-      if test -d "$with_projdir/lib"; then
-          LDFLAGS="$LDFLAGS -L$with_projdir/lib"
-    CPPFLAGS="$CPPFLAGS -I$with_projdir/include"
-    AC_MSG_RESULT(["$with_projdir exists"])
-    AC_CHECK_HEADERS(proj_api.h,
-      [PROJ_INC="-I$with_projdir/include"], 
-      [
-      AC_MSG_ERROR([*** Proj4 headers not found.])
-      ])
-    AC_CHECK_LIB(proj,pj_is_latlong, 
-      [
-      have_proj_lib=yes
-      PROJ_LIB="-L$with_projdir/lib -lproj"
-      ],
-      [
-      AC_MSG_ERROR([*** Proj4 library not found.])
-      ])
-    else
-      AC_MSG_ERROR([*** directory $with_projdir does not exist.])
-  fi
-    ],  
-    [
-    AC_CHECK_HEADERS(proj_api.h,[PROJ_INC=""],
-      [
-      AC_MSG_ERROR([*** Proj4 headers not found.])
-      ])
-    ]  
-    AC_CHECK_LIB(proj,pj_is_latlong,
-  [
-  have_proj_lib=yes
-  PROJ_LIB="-lproj"
-  ],
-  [
-  AC_MSG_ERROR([Proj4 is required and was not found.])
-  ])
+      if test x"$with_projlibdir" = "x" ; then
+        AC_MSG_CHECKING([for Proj4 library in $with_projdir/lib])
+        PROJ_LIB="-L$with_projdir/lib -lproj"
+        if test -d "$with_projdir/lib" ; then
+          projlibdir="$with_projdir/lib"
+        fi
+      else
+        AC_MSG_CHECKING([for Proj4 library in $with_projlibdir])
+        PROJ_LIB="-L$with_projlibdir -lproj"
+        if test -d "$with_projlibdir" ; then
+          projlibdir="$with_projlibdir"
+        fi
+      fi
+
+      if test x"$projlibdir" = "x" ; then
+         AC_MSG_ERROR([*** directory $projlibdir does not exist.])
+      else
+        LDFLAGS="$LDFLAGS $PROJ_LIB"
+        CPPFLAGS="$CPPFLAGS -I$with_projdir/include"
+        AC_MSG_RESULT(["$with_projdir exists"])
+
+        AC_CHECK_HEADERS(proj_api.h,
+          [PROJ_INC="-I$with_projdir/include"], 
+           [AC_MSG_ERROR([*** Proj4 headers not found.])])
+
+        AC_CHECK_LIB(proj,pj_is_latlong, 
+            [have_proj_lib=yes],
+            [AC_MSG_ERROR([*** Proj4 library not found.])])
+      fi
+    ],
   
-    
-    )
+    [
+     AC_CHECK_HEADERS(proj_api.h,[PROJ_INC=""],
+       [AC_MSG_ERROR([*** Proj4 headers not found.])])
+    ]
+    AC_CHECK_LIB(proj,pj_is_latlong,
+    [
+     have_proj_lib=yes
+     PROJ_LIB="-lproj"
+    ],
+    [
+     AC_MSG_ERROR([Proj4 is required and was not found.])
+    ])
+ )
+
+dnl A dummy section that's here just to produce some text for the 
+dnl configure --help output. The actual use of projlibdir is in 
+dnl the AC_ARG_WITH(projdir) macro
+
+AC_ARG_WITH(projlibdir,AC_HELP_STRING([--with-projlibdir=DIR],
+    [ Proj4 library directory, optional, use when library is in a different directory to that derived by appending /lib to --with-projdir ]),[],[])
 
 AC_SUBST(PROJ_INC)
 AC_SUBST(PROJ_LIB)
@@ -531,7 +543,7 @@ echo "CPPFLAGS      : $CPPFLAGS"
 echo "CXXFLAGS      : $CXXFLAGS"
 echo ""
 echo "Debug         : $ac_debug"
-echo "Plugin dir    : ${libdir}/$PACKAGE"
+echo "Plugin dir    : ${prefix}/lib/$PACKAGE"
 echo ""
 if test "$have_qtmac" = "yes"; then
   echo "The binary will be installed in $prefix"
