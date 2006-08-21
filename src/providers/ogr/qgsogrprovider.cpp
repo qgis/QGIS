@@ -1027,26 +1027,32 @@ bool QgsOgrProvider::addFeature(QgsFeature* f)
       }
   }
 
-  //todo: choose i such that it doesn't get larger than fdef->GetFieldCount()
-  //todo: only add the attribute if it has the same name as fdef->GetFieldDefn(i)->GetNameRef()
-
   //add possible attribute information
   for(int i=0;i<f->attributeMap().size();++i)
   {
     QString s=(f->attributeMap())[i].fieldValue();
+    
+    //find a matching field for the new attribute
+    QString newAttribute = (f->attributeMap())[i].fieldName();
+    int targetAttributeId = fdef->GetFieldIndex(newAttribute);
+    if(targetAttributeId == -1)
+      {
+	continue;
+      }
+
     if(!s.isEmpty())
     {
-      if(fdef->GetFieldDefn(i)->GetType()==OFTInteger)
+      if(fdef->GetFieldDefn(targetAttributeId)->GetType()==OFTInteger)
       {
-        feature->SetField(i,s.toInt());
+        feature->SetField(targetAttributeId,s.toInt());
       }
-      else if(fdef->GetFieldDefn(i)->GetType()==OFTReal)
+      else if(fdef->GetFieldDefn(targetAttributeId)->GetType()==OFTReal)
       {
-        feature->SetField(i,s.toDouble());
+        feature->SetField(targetAttributeId,s.toDouble());
       }
-      else if(fdef->GetFieldDefn(i)->GetType()==OFTString)
+      else if(fdef->GetFieldDefn(targetAttributeId)->GetType()==OFTString)
       {
-	  feature->SetField(i,s.ascii());
+	  feature->SetField(targetAttributeId,s.ascii());
       }
       else
       {
