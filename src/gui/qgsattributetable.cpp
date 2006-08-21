@@ -674,11 +674,11 @@ void QgsAttributeTable::rowClicked(int row)
 
 void QgsAttributeTable::contentsMouseReleaseEvent(QMouseEvent* e)
 {
+  Q3Table::contentsMouseReleaseEvent(e);
   if(checkSelectionChanges())//only repaint the canvas if the selection has changed
     {
       emit repaintRequested();
     }
-  Q3Table::contentsMouseReleaseEvent(e);
 }
 
 bool QgsAttributeTable::checkSelectionChanges()
