@@ -209,6 +209,9 @@ public slots:
    */
   virtual void updateExtents();
 
+  //! Save as shapefile
+  virtual void saveAsShapefile();
+
 
 public:
 
@@ -377,9 +380,6 @@ public:
 
   /**Returns true if the provider has been modified since the last commit*/
   virtual bool isModified() const {return mModified;}
-
-  //! Save as shapefile
-  virtual void saveAsShapefile();
 
   /**Snaps a point to the closest vertex if there is one within the snapping tolerance
      @param point       The point which is set to the position of a vertex if there is one within the snapping tolerance.

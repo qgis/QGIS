@@ -32,6 +32,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsrasterlayerproperties.h"
+#include "qgsvectordataprovider.h"
 
 #include <cfloat>
 #include <QCoreApplication>
@@ -435,6 +436,13 @@ void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& posit
 		{
 		  toggleEditingAction->setEnabled(false);
 		}
+	      else
+		{
+		  if(theVectorLayer->getDataProvider()->capabilities() | QgsVectorDataProvider::SaveAsShapefile)
+		    {
+		      theMenu.addAction(tr("&Save as shapefile..."), this, SLOT(legendLayerSaveAsShapefile()));
+		    }
+		}
 	      if(theVectorLayer)
 		{
 		  toggleEditingAction->setChecked(theVectorLayer->isEditable());
@@ -715,6 +723,21 @@ void QgsLegend::legendLayerToggleEditing()
     {
       theVectorLayer->startEditing();
     }
+}
+
+void QgsLegend::legendLayerSaveAsShapefile()
+{
+  QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(currentItem());
+  if(!ll)
+    {
+      return;
+    }
+  QgsVectorLayer* theVectorLayer = dynamic_cast<QgsVectorLayer*>(ll->firstMapLayer());
+  if(!theVectorLayer)
+    {
+      return;
+    }
+  theVectorLayer->saveAsShapefile();
 }
 
 void QgsLegend::expandAll()
