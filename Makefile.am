@@ -63,5 +63,7 @@ BUILT_SOURCES = qgssvnversion.h
 
 .PHONY : qgssvnversion.h 
 qgssvnversion.h:
-	@ echo "#define QGSSVNVERSION \"`svnversion .`\"" > qgssvnversion.h
-
+	@QGSSVNDEF="#define QGSSVNVERSION \"`svnversion .`\"" && \
+	if [ "`grep QGSSVNVERSION qgssvnversion.h 2>/dev/null`" != "$$QGSSVNDEF" ]; then \
+		echo $$QGSSVNDEF > qgssvnversion.h; \
+	fi
