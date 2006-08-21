@@ -1027,6 +1027,9 @@ bool QgsOgrProvider::addFeature(QgsFeature* f)
       }
   }
 
+  //todo: choose i such that it doesn't get larger than fdef->GetFieldCount()
+  //todo: only add the attribute if it has the same name as fdef->GetFieldDefn(i)->GetNameRef()
+
   //add possible attribute information
   for(int i=0;i<f->attributeMap().size();++i)
   {

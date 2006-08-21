@@ -525,10 +525,6 @@ void QgsDelimitedTextProvider::select(QgsRect * rect, bool useIntersect)
   // We store the rect and use it in getNextFeature to determine if the
   // feature falls in the selection area
   mSelectionRectangle = new QgsRect((*rect));
-  // Select implies an upcoming feature read so we reset the data source
-  reset();
-  // Reset the feature id to 0
-  mFid = 0;
 }
 
 
@@ -628,6 +624,11 @@ void QgsDelimitedTextProvider::reset()
   // the header record
   mStream->seek(0);
   mStream->readLine();
+  //reset any spatial filters
+  if(mSelectionRectangle && mExtent)
+    {
+      *mSelectionRectangle = *mExtent;
+    }
 }
 
 QString QgsDelimitedTextProvider::minValue(int position)
