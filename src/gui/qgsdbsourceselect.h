@@ -97,7 +97,9 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     typedef std::list<geomPair > geomCol;
 
     bool getGeometryColumnInfo(PGconn *pd, 
-			       geomCol& details, bool searchPublicOnly);
+			       geomCol& details, 
+                               bool searchGeometryColumnsOnly,
+                               bool searchPublicOnly);
     // Set the position of the database connection list to the last
     // used one. 
     void setConnectionListPosition();

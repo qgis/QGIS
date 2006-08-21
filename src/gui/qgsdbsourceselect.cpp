@@ -314,6 +314,7 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
   connString += username;
   QString password = settings.readEntry(key + "/password");
   bool searchPublicOnly = settings.readBoolEntry(key + "/publicOnly");
+  bool searchGeometryColumnsOnly = settings.readBoolEntry(key + "/geometryColumnsOnly");
   bool makeConnection = true;
   if (password == QString::null)
   {
@@ -394,7 +395,8 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
 
       // get the list of suitable tables and columns and populate the UI
       geomCol details;
-      if (getGeometryColumnInfo(pd, details, searchPublicOnly))
+      if (getGeometryColumnInfo(pd, details, searchGeometryColumnsOnly,
+                                searchPublicOnly))
       {
         details.sort();
         geomCol::const_iterator iter = details.begin();
@@ -519,7 +521,8 @@ void QgsDbSourceSelect::setSql(QTableWidgetItem *item)
 }
 
 bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg, 
-                geomCol& details, bool searchPublicOnly)
+                geomCol& details, bool searchGeometryColumnsOnly,
+                                              bool searchPublicOnly)
 {
   bool ok = false;
 
@@ -572,6 +575,9 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
     ok = true;
   }
   PQclear(result);
+
+  if (searchGeometryColumnsOnly)
+    return ok;
 
   // Now have a look for geometry columns that aren't in the
   // geometry_columns table. This code is specific to postgresql,
