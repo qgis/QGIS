@@ -19,10 +19,12 @@ contents_DATA = \
 	Info.plist \
 	Pkginfo
 
-Info.plist: Info.plist.in $(top_builddir)/configure.in
+Info.plist: Info.plist.in $(top_builddir)/configure.in $(top_builddir)/qgssvnversion.h
 	@SHORTVERSION=$(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION) && \
+	SVNVERSION=`svnversion $(top_builddir)` && \
 	sed -e "s/@VERSION/$(VERSION)/" \
 		-e "s/@SHORTVERSION/$$SHORTVERSION/" \
+		-e "s/@SVNVERSION/$$SVNVERSION/" \
 		< Info.plist.in > $@
 
 Pkginfo: Makefile
