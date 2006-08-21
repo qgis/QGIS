@@ -3445,7 +3445,6 @@ void QgsVectorLayer::saveAsShapefile()
 {
   // call the dataproviders saveAsShapefile method
   dataProvider->saveAsShapefile();
-  //  QMessageBox::information(0,"Save As Shapefile", "Someday...");
 }
 
 void QgsVectorLayer::setCoordinateSystem()

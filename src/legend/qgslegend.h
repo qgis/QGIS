@@ -265,6 +265,8 @@ this item may be moved back to the original position with resetToInitialPosition
   void legendLayerShowProperties();
   /**Toggles the editing mode of the first layer file of a legend layer*/
   void legendLayerToggleEditing();
+  /**Saves the current layer to shapefile (if the provider supports it)*/
+  void legendLayerSaveAsShapefile();
    /**Sets all listview items to open*/
   void expandAll();
   /**Sets all listview items to closed*/
