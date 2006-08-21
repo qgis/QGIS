@@ -146,6 +146,31 @@ QgsWmsProvider::~QgsWmsProvider()
 
 }
 
+
+QString QgsWmsProvider::proxyHost() const
+{
+  return mHttpProxyHost;
+}
+
+
+int QgsWmsProvider::proxyPort() const
+{
+  return mHttpProxyPort;
+}
+
+
+QString QgsWmsProvider::proxyUser() const
+{
+  return mHttpProxyUser;
+}
+
+
+QString QgsWmsProvider::proxyPass() const
+{
+  return mHttpProxyPass;
+}
+
+
 bool QgsWmsProvider::setProxy(QString const & host,
                                           int port,
                               QString const & user,

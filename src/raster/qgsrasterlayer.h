@@ -18,8 +18,8 @@
 
 /** \file qgsrasterlayer.h
  *  \brief This class provides qgis with the ability to render raster datasets
- *  onto the mapcanvas..
- *  
+ *  onto the mapcanvas
+ *
  *  The qgsrasterlayer class makes use of gdal for data io, and thus supports
  *  any gdal supported format. The constructor attemtps to infer what type of
  *  file (RASTER_LAYER_TYPE) is being opened - not in terms of the file format (tif, ascii grid etc.)
@@ -1061,13 +1061,21 @@ public:
                  QStringList const & layers = QStringList(),
                  QStringList const & styles = QStringList(),
                  QString const & format = QString(),
-                 QString const & crs = QString());
+                 QString const & crs = QString(),
+                 QString const & proxyHost = QString(),
+                 int proxyPort = 80,
+                 QString const & proxyUser = QString(),
+                 QString const & proxyPass = QString());
 
   void setDataProvider( QString const & provider,
                         QStringList const & layers,
                         QStringList const & styles,
                         QString const & format,
-                        QString const & crs );
+                        QString const & crs,
+                        QString const & proxyHost,
+                        int proxyPort,
+                        QString const & proxyUser,
+                        QString const & proxyPass );
 
   //! Does this layer use a provider for setting/retrieving data?
   bool usesProvider();
