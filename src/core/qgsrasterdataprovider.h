@@ -61,6 +61,28 @@ public:
 
     virtual ~QgsRasterDataProvider() {};
 
+
+    /**
+     * Gets the HTTP proxy host used for this connection
+     */
+    virtual QString proxyHost() const = 0;
+
+    /**
+     * Gets the HTTP proxy port used for this connection
+     */
+    virtual int proxyPort() const = 0;
+
+    /**
+     * Gets the HTTP proxy user name used for this connection
+     */
+    virtual QString proxyUser() const = 0;
+
+    /**
+     * Gets the HTTP proxy user password used for this connection
+     */
+    virtual QString proxyPass() const = 0;
+
+
     /**
      *
      * Sets a proxy for the URL given in the constructor

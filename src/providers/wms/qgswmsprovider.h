@@ -357,6 +357,26 @@ public:
   virtual ~QgsWmsProvider();
 
   /**
+   * Gets the HTTP proxy host used for this connection
+   */
+  virtual QString proxyHost() const;
+
+  /**
+   * Gets the HTTP proxy port used for this connection
+   */
+  virtual int proxyPort() const;
+
+  /**
+   * Gets the HTTP proxy user name used for this connection
+   */
+  virtual QString proxyUser() const;
+
+  /**
+   * Gets the HTTP proxy user password used for this connection
+   */
+  virtual QString proxyPass() const;
+
+  /**
    *
    * Sets an HTTP proxy for the URL given in the constructor
    *

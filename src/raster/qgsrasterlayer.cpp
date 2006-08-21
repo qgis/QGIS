@@ -4533,7 +4533,14 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
     QString crs = QString("EPSG:%1")
                  .arg(mCoordinateTransform->sourceSRS().epsg());
 
-    setDataProvider( mProviderKey, layers, styles, format, crs );
+    // Collect proxy information
+    QString proxyHost = rpNode.namedItem("wmsProxyHost").toElement().text();
+    int     proxyPort = rpNode.namedItem("wmsProxyPort").toElement().text().toInt();
+    QString proxyUser = rpNode.namedItem("wmsProxyUser").toElement().text();
+    QString proxyPass = rpNode.namedItem("wmsProxyPass").toElement().text();
+
+    setDataProvider( mProviderKey, layers, styles, format, crs,
+                     proxyHost, proxyPort, proxyUser, proxyPass );
   }
   else
   {
@@ -4668,6 +4675,34 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
       document.createTextNode(dataProvider->imageEncoding());
     formatElement.appendChild(formatText);
     rasterPropertiesElement.appendChild(formatElement);
+
+    // <rasterproperties><wmsProxyHost>
+    QDomElement proxyHostElement = document.createElement("wmsProxyHost");
+    QDomText proxyHostText =
+      document.createTextNode(dataProvider->proxyHost());
+    proxyHostElement.appendChild(proxyHostText);
+    rasterPropertiesElement.appendChild(proxyHostElement);
+
+    // <rasterproperties><wmsProxyPort>
+    QDomElement proxyPortElement = document.createElement("wmsProxyPort");
+    QDomText proxyPortText =
+      document.createTextNode( QString::number(dataProvider->proxyPort()) );
+    proxyPortElement.appendChild(proxyPortText);
+    rasterPropertiesElement.appendChild(proxyPortElement);
+
+    // <rasterproperties><wmsProxyUser>
+    QDomElement proxyUserElement = document.createElement("wmsProxyUser");
+    QDomText proxyUserText =
+      document.createTextNode(dataProvider->proxyUser());
+    proxyUserElement.appendChild(proxyUserText);
+    rasterPropertiesElement.appendChild(proxyUserElement);
+
+    // <rasterproperties><wmsProxyPass>
+    QDomElement proxyPassElement = document.createElement("wmsProxyPass");
+    QDomText proxyPassText =
+      document.createTextNode(dataProvider->proxyPass());
+    proxyPassElement.appendChild(proxyPassText);
+    rasterPropertiesElement.appendChild(proxyPassElement);
   }
 
   // <showDebugOverlayFlag>
@@ -4903,7 +4938,11 @@ QgsRasterLayer::QgsRasterLayer(int dummy,
                                QStringList const & layers,
                                QStringList const & styles,
                                QString const & format,
-                               QString const & crs )
+                               QString const & crs,
+                               QString const & proxyHost,
+                               int proxyPort,
+                               QString const & proxyUser,
+                               QString const & proxyPass )
     : QgsMapLayer(RASTER, baseName, rasterLayerPath),
     rasterXDimInt( std::numeric_limits<int>::max() ),
     rasterYDimInt( std::numeric_limits<int>::max() ),
@@ -4933,7 +4972,8 @@ QgsRasterLayer::QgsRasterLayer(int dummy,
   // if we're given a provider type, try to create and bind one to this layer
   if ( ! providerKey.isEmpty() )
   {
-    setDataProvider( providerKey, layers, styles, format, crs );
+    setDataProvider( providerKey, layers, styles, format, crs,
+                     proxyHost, proxyPort, proxyUser, proxyPass );
   }
 
   // Default for the popup menu
@@ -4972,7 +5012,11 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
                                       QStringList const & layers,
                                       QStringList const & styles,
                                       QString const & format,
-                                      QString const & crs )
+                                      QString const & crs,
+                                      QString const & proxyHost,
+                                      int proxyPort,
+                                      QString const & proxyUser,
+                                      QString const & proxyPass )
 {
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
@@ -5039,6 +5083,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
           dataProvider->addLayers(layers, styles);
           dataProvider->setImageEncoding(format);
           dataProvider->setImageCrs(crs);
+          dataProvider->setProxy(proxyHost, proxyPort, proxyUser, proxyPass);
 
           // get the extent
           QgsRect *mbr = dataProvider->extent();
