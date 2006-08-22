@@ -112,7 +112,11 @@ class QgisApp : public QMainWindow, public Ui::QgisAppBase
       QStringList const & layers,
       QStringList const & styles,
       QString const & format,
-      QString const & crs);
+      QString const & crs,
+      QString const & proxyHost = QString(),
+      int proxyPort = 80,
+      QString const & proxyUser = QString(), 
+      QString const & proxyPassword = QString());
 
   /** open a raster layer for the given file
     @returns false if unable to open a raster layer for rasterFile
