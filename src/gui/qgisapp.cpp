@@ -1970,7 +1970,11 @@ void QgisApp::addWmsLayer()
         wmss->selectedLayers(),
         wmss->selectedStylesForSelectedLayers(),
         wmss->selectedImageEncoding(),
-        wmss->selectedCrs()
+	wmss->selectedCrs(),
+	wmss->connProxyHost(),
+	wmss->connProxyPort(),
+	wmss->connProxyUser(),
+	wmss->connProxyPass()
         );
   }
 }
@@ -4970,7 +4974,11 @@ void QgisApp::addRasterLayer(QString const & rasterLayerPath,
     QStringList const & layers,
     QStringList const & styles,
     QString const & format,
-    QString const & crs)
+    QString const & crs,
+    QString const & proxyHost, 
+    int proxyPort, 
+    QString const & proxyUser,
+    QString const & proxyPassword)
 {
 
 #ifdef QGISDEBUG
@@ -5000,7 +5008,8 @@ void QgisApp::addRasterLayer(QString const & rasterLayerPath,
 #endif
 
   // TODO: Remove the 0 when the raster layer becomes a full provider gateway.
-  layer = new QgsRasterLayer(0, rasterLayerPath, baseName, providerKey, layers, styles, format, crs);
+  layer = new QgsRasterLayer(0, rasterLayerPath, baseName, providerKey, layers, styles, format, crs,
+			     proxyHost, proxyPort, proxyUser, proxyPassword);
 
 #ifdef QGISDEBUG
   std::cout << "QgisApp::addRasterLayer: Constructed new layer." << std::endl;
