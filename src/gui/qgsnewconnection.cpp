@@ -53,6 +53,9 @@ QgsNewConnection::QgsNewConnection(QWidget *parent, const QString& connName, Qt:
       if ( ! settings.readBoolEntry(key + "/geometrycolumnsOnly", false))
 	s = Qt::Unchecked;
       cb_geometryColumnsOnly->setCheckState(s);
+      // Ensure that cb_plublicSchemaOnly is set correctly
+      on_cb_geometryColumnsOnly_clicked();
+
       if (settings.readEntry(key + "/save") == "true")
         {
           txtPassword->setText(settings.readEntry(key + "/password"));
