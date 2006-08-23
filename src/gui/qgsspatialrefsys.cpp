@@ -173,9 +173,11 @@ void QgsSpatialRefSys::validate()
       return;
     }
   }
+
   QSettings mySettings;
   QString myDefaultProjectionOption =
     mySettings.readEntry("/Projections/defaultBehaviour");
+
   if (myDefaultProjectionOption=="prompt")
   {
     //@note this class is not a descendent of QWidget so we cant pass
@@ -188,6 +190,8 @@ void QgsSpatialRefSys::validate()
     if(mySelector->exec())
     {
       createFromSrsId(mySelector->getCurrentSRSID());
+      delete mySelector;
+      return;
     }
     else
     {
@@ -200,10 +204,12 @@ void QgsSpatialRefSys::validate()
     // XXX TODO: Change project to store selected CS as 'projectSRS' not 'selectedWKT'
     mProj4String = QgsProject::instance()->readEntry("SpatialRefSys","//ProjectSRSProj4String",GEOPROJ4);
   }
-  else ///Projections/defaultBehaviour==useDefault
+  else ///Projections/defaultBehaviour==useGlobal
   {
     // XXX TODO: Change global settings to store default CS as 'defaultSRS' not 'defaultProjectionWKT'
-    mProj4String = mySettings.readEntry("/Projections/defaultSRS",GEOPROJ4);
+    int srs_id = mySettings.readNumEntry("/Projections/defaultProjectionSRSID",GEOSRS_ID);
+    createFromSrsId(srs_id);
+    return;
   }
 
   //
@@ -222,7 +228,9 @@ void QgsSpatialRefSys::validate()
     //default to proj 4..if all else fails we will use that for this srs
     mProj4String = GEOPROJ4;
   }
+
   createFromProj4(mProj4String);
+
   return;
 }
 
@@ -460,6 +468,7 @@ bool QgsSpatialRefSys::createFromSrsId (long theSrsId)
     mGeoFlag = (geo == 0 ? false : true);
     setMapUnits();
     mIsValidFlag = true;
+
   }
   else
   {

@@ -88,7 +88,7 @@ wish to see edbug messages printed to stdout.
 #include <QDomElement>
 #include <QFrame>
 #include <QPixmap>
-
+#include <QSettings>
 /*
  * 
  * New includes that will convert this class to a data provider interface
@@ -690,8 +690,15 @@ QString QgsRasterLayer::getProjectionWKT()
    {
       //try to get the gcp srs from the raster layer if available
       myWKTString=QString(gdalDataset->GetGCPProjection());
+      mySRS.createFromWkt(myWKTString);
+      if (!mySRS.isValid())
+        {
+          // set to default here?
+          QSettings settings;
+          int srsid = settings.readNumEntry("Projections/defaultProjectionSRSID", 4326);
+          mySRS.createFromId(srsid, QgsSpatialRefSys::QGIS_SRSID);
+        }
     }
-    
    
    return myWKTString;
 }
