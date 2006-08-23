@@ -29,3 +29,8 @@ void MapCoordsDialog::on_buttonOk_clicked() {
   emit pointAdded(mPixelCoords, mapCoords);
   accept();
 }
+
+void MapCoordsDialog::on_buttonCancel_clicked()
+{
+  reject();
+}
