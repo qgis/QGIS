@@ -1032,7 +1032,7 @@ bool QgsProject::read()
         // errorMsg + " at line " + QString::number( line ) +
         // " column " + QString::number( column ) );
 
-        QString errorString = QObject::tr("Project file read error") +
+        QString errorString = QObject::tr("Project file read error: ") +
             errorMsg + QObject::tr(" at line ") + QString::number(line) + QObject::tr(" column ") +
             QString::number(column);
 
