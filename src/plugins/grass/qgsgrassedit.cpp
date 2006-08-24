@@ -107,7 +107,7 @@ bool QgsGrassEdit::mRunning = false;
 QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
     QWidget * parent, Qt::WFlags f )
     :QMainWindow(parent,f), QgsGrassEditBase (), mMapTool(0),
-    mCanvasEdit(0), mRubberBandLine(0), mRubberBandIcon(0)
+    mCanvasEdit(0), mRubberBandLine(0), mRubberBandIcon(0), mInited(false)
 {
 #ifdef QGISDEBUG
   std::cerr << "QgsGrassEdit()" << std::endl;
@@ -195,7 +195,7 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
     QgsGrassProvider *provider,
     QWidget * parent, Qt::WFlags f )
     :QMainWindow(parent, 0, f), QgsGrassEditBase (), mMapTool(0),
-    mCanvasEdit(0), mRubberBandLine(0), mRubberBandIcon(0)
+    mCanvasEdit(0), mRubberBandLine(0), mRubberBandIcon(0), mInited(false)
 {
 #ifdef QGISDEBUG
   std::cerr << "QgsGrassEdit()" << std::endl;
@@ -539,6 +539,7 @@ void QgsGrassEdit::init()
   restorePosition();
 
   mValid = true; 
+  mInited = true; 
 }
 
 void QgsGrassEdit::attributeTableFieldChanged ( void )
@@ -920,7 +921,10 @@ QgsGrassEdit::~QgsGrassEdit()
   std::cerr << "QgsGrassEdit::~QgsGrassEdit()" << std::endl;
 #endif
 
-  if (mValid) // we can only call some methods if init was complete
+  // we can only call some methods if init was complete,
+  // note that we cannot use mValid because it is disabled before
+  // destructor is called
+  if (mInited) 
   {
     if ( mMapTool ) mCanvas->unsetMapTool ( mMapTool );
     // TODO: delete tool? Probably
@@ -931,6 +935,7 @@ QgsGrassEdit::~QgsGrassEdit()
     mRubberBandLine->reset();
     delete mRubberBandLine;
     delete mRubberBandIcon;
+  
     delete mCanvasEdit;
   
     mCanvas->refresh();
