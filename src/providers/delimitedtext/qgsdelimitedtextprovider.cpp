@@ -524,6 +524,7 @@ void QgsDelimitedTextProvider::select(QgsRect * rect, bool useIntersect)
   // compare each point against the rectangle.
   // We store the rect and use it in getNextFeature to determine if the
   // feature falls in the selection area
+  reset();
   mSelectionRectangle = new QgsRect((*rect));
 }
 
