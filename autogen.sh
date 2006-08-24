@@ -22,7 +22,7 @@ if [ "`uname`" = "Darwin" ]; then
 fi
 
 # Check automake version
-AM_VERSION=`automake --version | sed -n -e 's#[^0-9]* \([0-9]*\)\.\([0-9]*\)*\.*\(\([0-9]*\)\).*$#\1 \2 \3#p'`
+AM_VERSION=`automake --version | sed -n -e 's#[^0-9]* \([0-9]*\)\.\([0-9]*\)\.*\([0-9]*\).*$#\1 \2 \3#p'`
 AM_V1=`echo $AM_VERSION | awk '{print $1}'`
 AM_V2=`echo $AM_VERSION | awk '{print $2}'`
 AM_V3=`echo $AM_VERSION | awk '{if ($NF > 2) print $3; else print "0";}'`
