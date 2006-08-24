@@ -294,6 +294,9 @@ private:
 
     //! Status: true - active vector was successfully opened for editing
     bool mValid;
+
+    //! Initialization complete
+    bool mInited;
     
     //! QGIS application
     QgisApp *mQgisApp; 
