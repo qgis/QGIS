@@ -153,7 +153,7 @@ class QgsDataProvider : public QObject
         data as stored persistently instead of local hardware architecture
         endian-ness.
         */
-      virtual endian_t endian()
+      virtual endian_t endian() const
       {
         return (htonl(1) == 1) ? XDR : NDR;
       }
