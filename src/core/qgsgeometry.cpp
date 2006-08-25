@@ -2088,6 +2088,51 @@ bool QgsGeometry::intersects(QgsRect* r) const
     return returnval;
 }
 
+bool QgsGeometry::fast_intersects(const QgsRect* r) const
+{
+  bool returnval=false;
+  
+  //use the geos export of QgsGeometry
+  geos::Geometry *geosGeom = geosGeometry();
+
+  //write the selection rectangle to wkt by hand
+    QString rectwkt="POLYGON((";
+    rectwkt+=QString::number(r->xMin(),'f',3);
+    rectwkt+=" ";
+    rectwkt+=QString::number(r->yMin(),'f',3);
+    rectwkt+=",";
+    rectwkt+=QString::number(r->xMax(),'f',3);
+    rectwkt+=" ";
+    rectwkt+=QString::number(r->yMin(),'f',3);
+    rectwkt+=",";
+    rectwkt+=QString::number(r->xMax(),'f',3);
+    rectwkt+=" ";
+    rectwkt+=QString::number(r->yMax(),'f',3);
+    rectwkt+=",";
+    rectwkt+=QString::number(r->xMin(),'f',3);
+    rectwkt+=" ";
+    rectwkt+=QString::number(r->yMax(),'f',3);
+    rectwkt+=",";
+    rectwkt+=QString::number(r->xMin(),'f',3);
+    rectwkt+=" ";
+    rectwkt+=QString::number(r->yMin(),'f',3);
+    rectwkt+="))";
+    geos::GeometryFactory *gf = new geos::GeometryFactory();
+    geos::WKTReader *wktReader = new geos::WKTReader(gf);
+    geos::Geometry *geosRect = wktReader->read( qstrdup(rectwkt) );
+    
+    if(geosGeom->intersects(geosRect))
+    {
+      returnval=true;
+    }
+      
+    delete geosGeom;
+    delete geosRect;
+    delete gf;
+    delete wktReader;
+    return returnval;
+}
+
 
 bool QgsGeometry::contains(QgsPoint* p) const
 {
