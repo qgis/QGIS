@@ -181,6 +181,9 @@ class QgsGeometry {
     /** Test for intersection with a rectangle (uses GEOS) */
     bool intersects(QgsRect* r) const;
 
+    /**Also tests for intersection, but uses direct geos export of QgsGeometry instead wkb export and geos wkb import. Therefore this method is faster and could replace QgsGeometry::intersects in the future*/
+    bool fast_intersects(const QgsRect* r) const;
+
     /** Test for containment of a point (uses GEOS) */
     bool contains(QgsPoint* p) const;
 
