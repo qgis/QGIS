@@ -9,6 +9,8 @@
 import sys, string
 from xml.dom import minidom, Node
 
+# symbol map
+qgisSymbols = {'hard:circle': 'CIRCLE'}
 class Qgis2Map:
   def __init__(self, projectFile, mapFile):
     self.project = projectFile
@@ -61,7 +63,8 @@ class Qgis2Map:
     # write the LAYER sections
     self.writeMapLayers()
 
-    # close the map file
+    # END and close the map file
+    self.outFile.write("END")
     self.outFile.close()
 
     ret = "Writing the map file using " + self.project + " " + self.mapFile
@@ -77,7 +80,7 @@ class Qgis2Map:
     self.outFile.write("  NAME " + self.mapName + "\n")
     self.outFile.write("  # Map image size\n")
     self.outFile.write("  SIZE " + self.width + " " + self.height + "\n")
-    self.outFile.write("  UNITS '" + self.units + "'\n")
+    self.outFile.write("  UNITS " + self.units.lower() + "\n")
     self.outFile.write("\n")
     # extents
     xmin = self.qgs.getElementsByTagName("xmin")
@@ -97,7 +100,7 @@ class Qgis2Map:
 # Write the OUTPUTFORMAT section
   def writeOutputFormat(self):
     self.outFile.write("  # Background color for the map canvas -- change as desired\n")
-    self.outFile.write("  IMAGECOLOR 255 255 255\n")
+    self.outFile.write("  IMAGECOLOR 192 192 192\n")
     self.outFile.write("  IMAGETYPE " + self.imageType + "\n")
     self.outFile.write("  OUTPUTFORMAT\n")
     self.outFile.write("    NAME " + self.imageType + "\n")
@@ -155,30 +158,34 @@ class Qgis2Map:
     self.outFile.write("    # Template and header/footer settings\n")
     self.outFile.write("    # Only the template parameter is required to display a map. See MapServer documentation\n")
 
-    self.outFile.write("    TEMPLATE " + self.template + "\n")
-    self.outFile.write("    HEADER " + self.header + "\n")
-    self.outFile.write("    FOOTER " + self.footer + "\n")
+    self.outFile.write("    TEMPLATE '" + self.template + "'\n")
+    self.outFile.write("    HEADER '" + self.header + "'\n")
+    self.outFile.write("    FOOTER '" + self.footer + "'\n")
     self.outFile.write("  END\n")
 
 # Write the map layers
   def writeMapLayers(self):
     # get the list of maplayer nodes
     maplayers = self.qgs.getElementsByTagName("maplayer")
+    print "Processing ", len(maplayers), " layers"
+    count = 0
     for lyr in maplayers:
+      count += 1
+      print "Processing layer ", count 
       # The attributes of the maplayer tag contain the scale dependent settings,
       # visibility, and layer type
 
       self.outFile.write("  LAYER\n")
       # write the name of the layer
       self.outFile.write("    NAME '" + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode() + "'\n")
-      self.outFile.write("    TYPE '" + lyr.getAttribute("geometry").encode() + "'\n")
+      self.outFile.write("    TYPE " + lyr.getAttribute("geometry").encode().upper() + "\n")
+      # data
+      self.outFile.write("    DATA '" + lyr.getElementsByTagName("datasource")[0].childNodes[0].nodeValue.encode() + "'\n")
       self.outFile.write("    STATUS ON\n")
       self.outFile.write("    PROJECTION\n")
       proj4Text = lyr.getElementsByTagName("proj4")[0].childNodes[0].nodeValue.encode() 
       self.outFile.write(self.formatProj4(proj4Text))
-
-
-
+      self.outFile.write("    END\n")
       scaleDependent = lyr.getAttribute("scaleBasedVisibilityFlag").encode()
       if scaleDependent == '1':
         # get the min and max scale settings
@@ -188,10 +195,70 @@ class Qgis2Map:
           self.outFile.write("    MINSCALE " + minscale + "\n")
         if maxscale > '':
           self.outFile.write("    MAXSCALE " + maxscale + "\n")
-
+      # write the CLASS section for rendering
+      # First see if there is a single symbol renderer
+      if lyr.getElementsByTagName("singlesymbol").length > 0:
+        symbolNode = lyr.getElementsByTagName("singlesymbol")[0].getElementsByTagName('symbol')[0] 
+        self.simpleRenderer(lyr, symbolNode)
+      elif lyr.getElementsByTagName("graduatedsymbol").length > 0:
+        self.graduatedRenderer(lyr, lyr.getElementsByTagName("graduatedsymbol")[0].getElementsByTagName('symbol')[0] )
+      # end of CLASS  
+      self.outFile.write("    END\n")
+      # end of LAYER
       self.outFile.write("  END\n")
 
+# Simple renderer ouput
+# We need the layer node and symbol node
+  def simpleRenderer(self, layerNode, symbolNode):
+    # symbology depends on the feature type and the .qgs file
+        # contains the same markup for a layer regardless of type
+        # so we infer a symbol type based on the geometry
+        geometry = layerNode.getAttribute("geometry").encode().upper()
+        if geometry == 'POLYGON':
+          symbol = '0'
+        elif geometry == 'LINE':
+          symbol = '0'
+        elif geometry == 'POINT':
+          symbol = qgisSymbols[symbolNode.getElementsByTagName('pointsymbol')[0].childNodes[0].nodeValue.encode()]
+      
+        self.outFile.write("    CLASS\n")
+        # use the point symbol map to lookup the mapserver symbol type
+        self.outFile.write("       SYMBOL " + symbol + " \n")
+        self.outFile.write("       SIZE " 
+            + symbolNode.getElementsByTagName('pointsize')[0].childNodes[0].nodeValue.encode()  
+           + " \n")
+        # outline color
+        outlineNode = symbolNode.getElementsByTagName('outlinecolor')[0]
+        self.outFile.write("       OUTLINECOLOR " 
+            + outlineNode.getAttribute('red') + ' '
+            + outlineNode.getAttribute('green') + ' '
+            + outlineNode.getAttribute('blue')
+            + "\n")
+        # color
+        colorNode = symbolNode.getElementsByTagName('fillcolor')[0]
+        self.outFile.write("       COLOR " 
+            + colorNode.getAttribute('red') + ' '
+            + colorNode.getAttribute('green') + ' '
+            + colorNode.getAttribute('blue')
+            + "\n")
+        
 
+# Graduated symbol renderer output
+  def graduatedRenderer(self, layerNode, symbolNode):
+    # get the renderer field for building up the classes
+    classField = layerNode.getElementsByTagName('classificationattribute')[0].childNodes[0].nodeValue.encode()  
+    # write the render item
+    self.outFile.write("    CLASSITEM " + classField + "\n")
+
+    # write the rendering info for each class
+    classes = layerNode.getElementsByTagName('symbol')
+    for cls in classes:
+      self.outFile.write(cls.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode())
+
+
+    
+    # do something here
+    
 # Utility method to format a proj4 text string into mapserver format
   def formatProj4(self, proj4text):
     parms = proj4text.split(" ")
