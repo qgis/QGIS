@@ -28,7 +28,7 @@ class QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpConnectionBas
   Q_OBJECT
  public:
     //! Constructor
-    QgsNewHttpConnection(QWidget *parent = 0, const QString& connName = QString::null, Qt::WFlags fl = QgisGui::ModalDialogFlags);
+    QgsNewHttpConnection(QWidget *parent = 0, const QString& baseKey = "/Qgis/connections-wms/", const QString& connName = QString::null, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     //! Destructor
     ~QgsNewHttpConnection();
     //! Tests the connection using the parameters supplied
@@ -39,6 +39,7 @@ class QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpConnectionBas
     //! Show context help
     void on_btnHelp_clicked();
  private:
+    QString mBaseKey;
     static const int context_id = 308026563;
 };
 

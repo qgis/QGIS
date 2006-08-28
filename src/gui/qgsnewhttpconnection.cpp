@@ -19,8 +19,7 @@
 #include "qgscontexthelp.h"
 #include <QSettings>
 
-QgsNewHttpConnection::QgsNewHttpConnection(QWidget *parent, const QString& connName, Qt::WFlags fl)
-                    : QDialog(parent, fl)
+QgsNewHttpConnection::QgsNewHttpConnection(QWidget *parent, const QString& baseKey, const QString& connName, Qt::WFlags fl): QDialog(parent, fl), mBaseKey(baseKey)
 {
   setupUi(this);
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
@@ -33,7 +32,7 @@ QgsNewHttpConnection::QgsNewHttpConnection(QWidget *parent, const QString& connN
       
       QSettings settings;
 
-      QString key = "/Qgis/connections-wms/" + connName;
+      QString key = mBaseKey + connName;
       txtName->setText     (connName);
       txtUrl->setText      (settings.readEntry(key + "/url"));
       txtProxyHost->setText(settings.readEntry(key + "/proxyhost"));
@@ -58,15 +57,12 @@ void QgsNewHttpConnection::testConnection()
 void QgsNewHttpConnection::saveConnection()
 {
   QSettings settings; 
-  QString baseKey = "/Qgis/connections-wms/";
-  
-  baseKey += txtName->text();
-  settings.writeEntry(baseKey + "/url", txtUrl->text().trimmed());
-  settings.writeEntry(baseKey + "/proxyhost", txtProxyHost->text().trimmed());
-  settings.writeEntry(baseKey + "/proxyport", txtProxyPort->text().trimmed());
-  settings.writeEntry(baseKey + "/proxyuser", txtProxyUser->text().trimmed());
-  settings.writeEntry(baseKey + "/proxypassword", 
-                      txtProxyPass->text().trimmed());
+  QString key = mBaseKey + txtName->text();
+  settings.writeEntry(key + "/url", txtUrl->text().trimmed());
+  settings.writeEntry(key + "/proxyhost", txtProxyHost->text().trimmed());
+  settings.writeEntry(key + "/proxyport", txtProxyPort->text().trimmed());
+  settings.writeEntry(key + "/proxyuser", txtProxyUser->text().trimmed());
+  settings.writeEntry(key + "/proxypassword", txtProxyPass->text().trimmed());
   
   accept();
 }
