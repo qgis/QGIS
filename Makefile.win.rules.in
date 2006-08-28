@@ -63,10 +63,15 @@ stdsubdirs:
         done
 
 # Rule for subdirs using standard win system (make -f Makefile.win)
+# Warning: for some strange reason the output DLL library after first
+#          linking is corrupted. We have to delete the library
+#          and to call linker again.
 winsubdirs:
 	@list='$(WINSUBDIRS)'; \
 	for subdir in $$list; do \
 	    echo $$subdir ; \
+	    $(MAKE) -C $$subdir -f Makefile.win || exit 1 ; \
+	    rm -f $$subdir/.libs/*.dll; \
 	    $(MAKE) -C $$subdir -f Makefile.win || exit 1 ; \
         done
 
