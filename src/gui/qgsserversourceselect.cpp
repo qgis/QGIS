@@ -142,7 +142,7 @@ void QgsServerSourceSelect::on_btnNew_clicked()
 void QgsServerSourceSelect::on_btnEdit_clicked()
 {
 
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection(this, cmbConnections->currentText());
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection(this, "/Qgis/connections-wms/", cmbConnections->currentText());
 
   if (nc->exec())
   {
