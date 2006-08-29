@@ -15,9 +15,7 @@ $(PROVIDER): .libs/wmsprovider.a
 		-Wl,--enable-auto-import \
 		-Wl,--whole-archive .libs/wmsprovider.a \
 		-Wl,--no-whole-archive \
-			$(CORE_A) $(GUI_A) $(CORE_A) \
-			$(RASTER_A) $(PROJSEL_A) $(LEGEND_A) \
-			$(GUI_A) $(CORE_A) $(COMPOSER_A) $(GUI_A) \
+			$(CORE_A) $(GUI_DLL) \
 			-lgdal -lgeos -lsqlite3 -lproj $(PG_LIB) \
                         $(QT_LDADD) \
                         -lwsock32 -lmingw32
