@@ -1,6 +1,9 @@
 WINSUBDIRS = src 
 
-all: winsubdirs
+all: qgssvnversion.h winsubdirs
+
+qgssvnversion.h:
+	$(MAKE) qgssvnversion.h
 
 install: all
 	mkdir -p -m 755 $(prefix)
