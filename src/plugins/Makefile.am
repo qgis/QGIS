@@ -23,8 +23,7 @@ SUBDIRS = $(GEOPROCESSING) \
 		grid_maker \
 		north_arrow \
 		copyright_label \
-		scale_bar \
-		wfs
+		scale_bar 
 		
 EXTRA_DIST = \
 		plugin_builder.pl \
