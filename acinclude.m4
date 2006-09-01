@@ -179,7 +179,7 @@ fi
 AC_MSG_CHECKING([Qt version in $QTVERTEST])
 QT_VER=`grep 'define.*QT_VERSION_STR\W' $QTVERTEST/qglobal.h | perl -p -e 's/\D//g'`
 case "${QT_VER}" in
-  41*)
+  41*|42*)
     QT_MAJOR="4"
     case "${host}" in
     *-darwin*)
