@@ -499,6 +499,7 @@ AC_CONFIG_FILES([
   src/plugins/north_arrow/Makefile
   src/plugins/scale_bar/Makefile
   src/plugins/spit/Makefile
+  src/plugins/wfs/Makefile
   src/providers/Makefile 
   src/providers/delimitedtext/Makefile
   src/providers/gpx/Makefile
@@ -506,6 +507,7 @@ AC_CONFIG_FILES([
   src/providers/ogr/Makefile
   src/providers/postgres/Makefile
   src/providers/wms/Makefile
+  src/providers/wfs/Makefile
   src/raster/Makefile
   src/ui/Makefile
   src/widgets/Makefile
