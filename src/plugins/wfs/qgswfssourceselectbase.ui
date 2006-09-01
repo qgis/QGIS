@@ -1,0 +1,226 @@
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>QgsWFSSourceSelectBase</class>
+ <widget class="QDialog" name="QgsWFSSourceSelectBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>577</width>
+    <height>444</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Dialog</string>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="0" column="0" >
+    <widget class="QGroupBox" name="GroupBox1" >
+     <property name="title" >
+      <string>Server Connections</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="1" column="1" >
+       <widget class="QPushButton" name="btnNew" >
+        <property name="text" >
+         <string>&amp;New</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3" >
+       <widget class="QPushButton" name="btnDelete" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Delete</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" >
+       <widget class="QPushButton" name="btnEdit" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Edit</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>171</width>
+          <height>30</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QPushButton" name="btnConnect" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>C&amp;onnect</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="5" >
+       <widget class="QComboBox" name="cmbConnections" />
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QListWidget" name="lstWidget" />
+   </item>
+   <item row="3" column="0" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="btnHelp" >
+       <property name="enabled" >
+        <bool>true</bool>
+       </property>
+       <property name="text" >
+        <string>Help</string>
+       </property>
+       <property name="shortcut" >
+        <string>F1</string>
+       </property>
+       <property name="autoDefault" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>111</width>
+         <height>31</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnAdd" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
+       <property name="text" >
+        <string>&amp;Add</string>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+A</string>
+       </property>
+       <property name="autoDefault" >
+        <bool>true</bool>
+       </property>
+       <property name="default" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnCancel" >
+       <property name="text" >
+        <string>C&amp;lose</string>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+L</string>
+       </property>
+       <property name="autoDefault" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QGroupBox" name="gbCRS" >
+     <property name="title" >
+      <string>Coordinate Reference System</string>
+     </property>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="labelCoordRefSys" >
+        <property name="text" >
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>441</width>
+          <height>23</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnChangeSpatialRefSys" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Change ...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <pixmapfunction></pixmapfunction>
+ <resources/>
+ <connections/>
+</ui>
