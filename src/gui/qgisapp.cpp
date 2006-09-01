@@ -59,6 +59,7 @@
 #include <QToolTip>
 #include <QVBoxLayout>
 #include <QWhatsThis>
+#include <QtGlobal>
 //
 // QGIS Specific Includes
 //
@@ -1210,6 +1211,9 @@ versionString += tr(" with PostgreSQL support");
 
 versionString += tr(" (no PostgreSQL support)");
 #endif
+ versionString += tr("\nCompiled against Qt ") + QT_VERSION_STR
+   + tr(", running against Qt ") + qVersion();
+
 #ifdef WIN32
   // special version stuff for windows (if required)
   //  versionString += "\nThis is a Windows preview release - not for production use";
