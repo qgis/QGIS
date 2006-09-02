@@ -451,6 +451,7 @@ void QgsPointDialog::deleteDataPoint(QgsPoint& coords)
     if ((x*x + y*y) < maxDistSqr)
     {
       mPoints.erase(it);
+      delete *it;
       mCanvas->refresh();
       break;
     }
