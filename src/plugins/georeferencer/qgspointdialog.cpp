@@ -437,17 +437,17 @@ void QgsPointDialog::deleteDataPoint(QgsPoint& coords)
   std::vector<QgsGeorefDataPoint*>::iterator it = mPoints.begin();
   
   double maxDistSqr = (5 * mCanvas->mupp())*(5 * mCanvas->mupp());
-//#ifdef QGISDEBUG
+#ifdef QGISDEBUG
   std::cout << "deleteDataPoint! maxDistSqr: " << maxDistSqr << std::endl;
-//#endif
+#endif
   for ( ; it != mPoints.end(); it++)
   {
     QgsGeorefDataPoint* pt = *it;
     double x = pt->pixelCoords().x() - coords.x();
     double y = pt->pixelCoords().y() - coords.y();
-//#ifdef QGISDEBUG
+#ifdef QGISDEBUG
   std::cout << "deleteDataPoint! test: " << (x*x+y*y) << std::endl;
-//#endif
+#endif
     if ((x*x + y*y) < maxDistSqr)
     {
       mPoints.erase(it);
