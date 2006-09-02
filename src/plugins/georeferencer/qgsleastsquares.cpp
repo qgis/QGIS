@@ -3,6 +3,8 @@
 
 #include <gsl/gsl_linalg.h>
 
+#include <QObject>
+
 #include "qgsleastsquares.h"
 
 
@@ -11,8 +13,8 @@ void QgsLeastSquares::linear(std::vector<QgsPoint> mapCoords,
 			     QgsPoint& origin, double& pixelSize) {
   int n = mapCoords.size();
   if (n < 2) {
-    throw std::domain_error("Fit to a linear transform requires at "
-			    "least 2 points.");
+    throw std::domain_error(QObject::tr("Fit to a linear transform requires at "
+			    "least 2 points.").toLocal8Bit().constData());
   }
 
   double sumPx(0), sumPy(0), sumPx2(0), sumPy2(0), sumPxMx(0), sumPyMy(0),
@@ -48,8 +50,8 @@ void QgsLeastSquares::helmert(std::vector<QgsPoint> mapCoords,
 			      double& rotation) {
   int n = mapCoords.size();
   if (n < 2) {
-    throw std::domain_error("Fit to a Helmert transform requires at "
-			    "least 2 points.");
+    throw std::domain_error(QObject::tr("Fit to a Helmert transform requires at "
+			    "least 2 points.").toLocal8Bit().constData());
   }
   
   double A = 0, B = 0, C = 0, D = 0, E = 0, F = 0, G = 0, H = 0, I = 0, J = 0;
@@ -100,8 +102,8 @@ void QgsLeastSquares::affine(std::vector<QgsPoint> mapCoords,
 			     std::vector<QgsPoint> pixelCoords) {
   int n = mapCoords.size();
   if (n < 4) {
-    throw std::domain_error("Fit to an affine transform requires at "
-			    "least 4 points.");
+    throw std::domain_error(QObject::tr("Fit to an affine transform requires at "
+			    "least 4 points.").toLocal8Bit().constData());
   }
   
   double A = 0, B = 0, C = 0, D = 0, E = 0, F = 0, 

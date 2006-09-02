@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>592</width>
-    <height>403</height>
+    <width>703</width>
+    <height>410</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -17,34 +17,29 @@
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>10</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="2" column="0" >
-    <widget class="QLabel" name="textLabel2" >
-     <property name="text" >
-      <string>Transform type:</string>
+   <item row="0" column="4" colspan="4" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
      </property>
-    </widget>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>300</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
    </item>
-   <item row="2" column="1" colspan="3" >
-    <widget class="QComboBox" name="cmbTransformType" >
-     <item>
-      <property name="text" >
-       <string>Linear</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>Helmert</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="3" >
-    <widget class="Q3Frame" name="frame4" >
+   <item row="0" column="2" colspan="2" >
+    <widget class="QFrame" name="frame5" >
      <property name="sizePolicy" >
       <sizepolicy>
        <hsizetype>0</hsizetype>
@@ -59,134 +54,14 @@
      <property name="frameShadow" >
       <enum>QFrame::Raised</enum>
      </property>
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <layout class="QGridLayout" >
+     <layout class="QHBoxLayout" >
       <property name="margin" >
        <number>0</number>
       </property>
       <property name="spacing" >
        <number>0</number>
       </property>
-      <item row="0" column="0" >
-       <widget class="QToolButton" name="tbnZoomIn" >
-        <property name="toolTip" >
-         <string>Zoom in</string>
-        </property>
-        <property name="text" >
-         <string/>
-        </property>
-        <property name="icon" >
-         <iconset/>
-        </property>
-        <property name="iconSize" >
-         <size>
-          <width>22</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="checkable" >
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" >
-       <widget class="QToolButton" name="tbnZoomOut" >
-        <property name="toolTip" >
-         <string>Zoom out</string>
-        </property>
-        <property name="text" >
-         <string/>
-        </property>
-        <property name="icon" >
-         <iconset/>
-        </property>
-        <property name="iconSize" >
-         <size>
-          <width>22</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="checkable" >
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2" >
-       <widget class="QToolButton" name="tbnZoomToLayer" >
-        <property name="toolTip" >
-         <string>Zoom to the raster extents</string>
-        </property>
-        <property name="text" >
-         <string/>
-        </property>
-        <property name="icon" >
-         <iconset/>
-        </property>
-        <property name="iconSize" >
-         <size>
-          <width>22</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="checkable" >
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3" >
-       <widget class="QToolButton" name="tbnPan" >
-        <property name="toolTip" >
-         <string>Pan</string>
-        </property>
-        <property name="text" >
-         <string/>
-        </property>
-        <property name="icon" >
-         <iconset/>
-        </property>
-        <property name="iconSize" >
-         <size>
-          <width>22</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="checkable" >
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="0" column="3" colspan="2" >
-    <widget class="Q3Frame" name="frame5" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>0</hsizetype>
-       <vsizetype>0</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="frameShape" >
-      <enum>QFrame::NoFrame</enum>
-     </property>
-     <property name="frameShadow" >
-      <enum>QFrame::Raised</enum>
-     </property>
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <property name="spacing" >
-       <number>0</number>
-      </property>
-      <item row="0" column="0" >
+      <item>
        <widget class="QToolButton" name="tbnAddPoint" >
         <property name="toolTip" >
          <string>Add points</string>
@@ -208,7 +83,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
+      <item>
        <widget class="QToolButton" name="tbnDeletePoint" >
         <property name="enabled" >
          <bool>true</bool>
@@ -236,44 +111,169 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="5" colspan="5" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
+   <item row="0" column="0" colspan="2" >
+    <widget class="QFrame" name="frame4" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>0</hsizetype>
+       <vsizetype>0</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
+     <property name="frameShape" >
+      <enum>QFrame::NoFrame</enum>
      </property>
-     <property name="sizeHint" >
-      <size>
-       <width>300</width>
-       <height>20</height>
-      </size>
+     <property name="frameShadow" >
+      <enum>QFrame::Raised</enum>
      </property>
-    </spacer>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <property name="spacing" >
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QToolButton" name="tbnZoomIn" >
+        <property name="toolTip" >
+         <string>Zoom in</string>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="icon" >
+         <iconset/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>22</width>
+          <height>22</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="tbnZoomOut" >
+        <property name="toolTip" >
+         <string>Zoom out</string>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="icon" >
+         <iconset/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>22</width>
+          <height>22</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="tbnZoomToLayer" >
+        <property name="toolTip" >
+         <string>Zoom to the raster extents</string>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="icon" >
+         <iconset/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>22</width>
+          <height>22</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="tbnPan" >
+        <property name="toolTip" >
+         <string>Pan</string>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="icon" >
+         <iconset/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>22</width>
+          <height>22</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
-   <item row="4" column="8" colspan="2" >
+   <item row="2" column="7" >
+    <widget class="QPushButton" name="pbnSelectModifiedRaster" >
+     <property name="text" >
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="7" >
+    <widget class="QPushButton" name="pbnSelectWorldFile" >
+     <property name="text" >
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="6" colspan="2" >
     <widget class="QPushButton" name="pbnGenerateAndLoad" >
      <property name="text" >
       <string>Generate world file and load layer</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="7" >
+   <item row="2" column="5" colspan="2" >
+    <widget class="QLineEdit" name="leSelectModifiedRaster" />
+   </item>
+   <item row="3" column="5" colspan="2" >
+    <widget class="QLineEdit" name="leSelectWorldFile" />
+   </item>
+   <item row="4" column="5" >
     <widget class="QPushButton" name="pbnGenerateWorldFile" >
      <property name="text" >
       <string>Generate world file</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2" >
-    <widget class="QPushButton" name="pbnCancel" >
+   <item row="2" column="4" >
+    <widget class="QLabel" name="textLabel1_2" >
      <property name="text" >
-      <string>Cancel</string>
+      <string>Modified raster:</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="2" colspan="5" >
+   <item row="3" column="4" >
+    <widget class="QLabel" name="textLabel1" >
+     <property name="text" >
+      <string>World file:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="3" colspan="2" >
     <spacer>
      <property name="orientation" >
       <enum>Qt::Horizontal</enum>
@@ -289,35 +289,39 @@
      </property>
     </spacer>
    </item>
-   <item row="3" column="4" colspan="2" >
-    <widget class="QLabel" name="textLabel1" >
+   <item row="2" column="1" colspan="3" >
+    <widget class="QComboBox" name="cmbTransformType" >
+     <item>
+      <property name="text" >
+       <string>Linear</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>Helmert</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QLabel" name="textLabel2" >
      <property name="text" >
-      <string>World file:</string>
+      <string>Transform type:</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="6" colspan="3" >
-    <widget class="QLineEdit" name="leSelectModifiedRaster" />
-   </item>
-   <item row="3" column="6" colspan="3" >
-    <widget class="QLineEdit" name="leSelectWorldFile" />
-   </item>
-   <item row="3" column="9" >
-    <widget class="QPushButton" name="pbnSelectWorldFile" >
+   <item row="4" column="0" colspan="3" >
+    <widget class="QPushButton" name="pbnCancel" >
      <property name="text" >
-      <string>...</string>
+      <string>Cancel</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="9" >
-    <widget class="QPushButton" name="pbnSelectModifiedRaster" >
-     <property name="text" >
-      <string>...</string>
+   <item row="1" column="0" colspan="8" >
+    <widget class="QFrame" name="canvasFrame" >
+     <property name="autoFillBackground" >
+      <bool>true</bool>
      </property>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="10" >
-    <widget class="Q3Frame" name="canvasFrame" >
      <property name="frameShape" >
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -326,26 +330,10 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="4" colspan="2" >
-    <widget class="QLabel" name="textLabel1_2" >
-     <property name="text" >
-      <string>Modified raster:</string>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction></pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends></extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

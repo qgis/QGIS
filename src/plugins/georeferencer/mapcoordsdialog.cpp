@@ -1,6 +1,4 @@
-#include <qlineedit.h>
-#include <qvalidator.h>
-
+#include <QValidator>
 #include <mapcoordsdialog.h>
 
 

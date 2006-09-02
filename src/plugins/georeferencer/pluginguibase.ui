@@ -25,78 +25,33 @@
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="1" column="3" >
-    <widget class="QLineEdit" name="leSelectRaster" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>0</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="4" >
-    <widget class="QPushButton" name="pbnSelectRaster" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>0</hsizetype>
-       <vsizetype>0</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
+   <item row="1" column="2" >
+    <widget class="QLabel" name="textLabel1" >
      <property name="text" >
-      <string>...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="3" colspan="2" >
-    <widget class="QPushButton" name="pbnEnterWorldCoords" >
-     <property name="text" >
-      <string>Enter world coordinates</string>
+      <string>Raster file:</string>
      </property>
     </widget>
    </item>
    <item row="0" column="2" colspan="3" >
-    <widget class="Q3TextEdit" name="teInstructions_2" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>7</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>6</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text" >
-      <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style="font-size:11pt;font-family:Tahoma">
-&lt;p style="margin-top:16px" dir="ltr">&lt;span style="font-size:14pt;font-weight:600">Description&lt;/span>&lt;/p>
-&lt;p dir="ltr">This plugin can generate world files for rasters. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p>
-&lt;/body>&lt;/html>
-</string>
-     </property>
-     <property name="wordWrap" >
-      <enum>Q3TextEdit::WidgetWidth</enum>
+    <widget class="QTextEdit" name="textEdit" >
+     <property name="html" >
+      <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-size:11pt; font-weight:600;">Description&lt;/span>&lt;/p>&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">This plugin can generate world files for rasters. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p>&lt;/body>&lt;/html></string>
      </property>
     </widget>
    </item>
-   <item rowspan="3" row="0" column="1" >
-    <widget class="Line" name="line1" >
+   <item rowspan="3" row="0" column="0" >
+    <widget class="QLabel" name="pixmapLabel2" >
      <property name="maximumSize" >
       <size>
-       <width>2</width>
+       <width>150</width>
        <height>32767</height>
       </size>
      </property>
-     <property name="frameShape" >
-      <enum>QFrame::VLine</enum>
+     <property name="pixmap" >
+      <pixmap resource="georeferencer.qrc" >:/georef.png</pixmap>
      </property>
-     <property name="frameShadow" >
-      <enum>QFrame::Sunken</enum>
-     </property>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
+     <property name="scaledContents" >
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -133,26 +88,56 @@
      </item>
     </layout>
    </item>
-   <item rowspan="3" row="0" column="0" >
-    <widget class="QLabel" name="pixmapLabel2" >
+   <item rowspan="3" row="0" column="1" >
+    <widget class="Line" name="line1" >
      <property name="maximumSize" >
       <size>
-       <width>150</width>
+       <width>2</width>
        <height>32767</height>
       </size>
      </property>
-     <property name="pixmap" >
-      <pixmap resource="georeferencer.qrc" >:/georef.png</pixmap>
+     <property name="frameShape" >
+      <enum>QFrame::VLine</enum>
      </property>
-     <property name="scaledContents" >
-      <bool>true</bool>
+     <property name="frameShadow" >
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
      </property>
     </widget>
    </item>
-   <item row="1" column="2" >
-    <widget class="QLabel" name="textLabel1" >
+   <item row="2" column="3" colspan="2" >
+    <widget class="QPushButton" name="pbnEnterWorldCoords" >
      <property name="text" >
-      <string>Raster file:</string>
+      <string>Enter world coordinates</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="4" >
+    <widget class="QPushButton" name="pbnSelectRaster" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>0</hsizetype>
+       <vsizetype>0</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3" >
+    <widget class="QLineEdit" name="leSelectRaster" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>7</hsizetype>
+       <vsizetype>0</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
     </widget>
    </item>
@@ -160,15 +145,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction></pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3TextEdit</class>
-   <extends></extends>
-   <header>q3textedit.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="georeferencer.qrc" />
  </resources>
