@@ -2,7 +2,7 @@
 #define QGSIMAGEWARPER_H
 
 #include <gdalwarper.h>
-#include <qstring.h>
+#include <QString>
 
 
 class QgsImageWarper {

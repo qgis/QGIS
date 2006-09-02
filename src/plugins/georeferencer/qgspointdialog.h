@@ -14,14 +14,14 @@
 
 #include <vector>
 
-#include <qcursor.h>
+//#include <QCursor>
+#include <QDialog>
 
 #include <qgsmapcanvas.h>
 
 #include "qgsrasterlayer.h"
 
 #include <ui_qgspointdialogbase.h>
-#include <QDialog>
 
 class QAction;
 class QActionGroup;

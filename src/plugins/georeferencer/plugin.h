@@ -50,8 +50,7 @@
 //
 //QT Includes
 //
-#include <qwidget.h>
-#include <Q3ToolBar>
+#include <QWidget>
 
 /**
 * \class Plugin
@@ -103,8 +102,6 @@ private:
   ////////////////////////////////////////////////////////////////////
   
   int mPluginType;
-  //! Pointer to our toolbar
-  Q3ToolBar *mToolBarPointer;
   //! Pionter to QGIS main application object
   QgisApp *mQGisApp;
   //! Pointer to the QGIS interface object
