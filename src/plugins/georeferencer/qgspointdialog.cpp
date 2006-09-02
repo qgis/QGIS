@@ -6,6 +6,7 @@
 #include <QTextStream>
 
 #include "qgisiface.h"
+#include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgspointdialog.h"
 #include "mapcoordsdialog.h"
@@ -220,7 +221,7 @@ void QgsPointDialog::on_pbnGenerateAndLoad_clicked()
       mIface->addRasterLayer(leSelectModifiedRaster->text());
 
     // This should cause a map refresh, but it doesn't...
-    mCanvas->refresh();
+    mIface->app()->refreshMapCanvas();
 
     accept();
   }
