@@ -14,12 +14,11 @@
 
 #include <vector>
 
-//#include <QCursor>
 #include <QDialog>
+#include <QString>
 
 #include <qgsmapcanvas.h>
-
-#include "qgsrasterlayer.h"
+#include <qgsrasterlayer.h>
 
 #include <ui_qgspointdialogbase.h>
 
@@ -47,6 +46,7 @@ public slots:
   void on_pbnGenerateAndLoad_clicked();
   void on_pbnSelectWorldFile_clicked();
   void on_pbnSelectModifiedRaster_clicked();
+  void on_cmbTransformType_currentIndexChanged(const QString&);
   void zoomIn();
   void zoomOut();
   void zoomToLayer();
@@ -59,6 +59,8 @@ private:
 
   bool generateWorldFile();
   QString guessWorldFileName(const QString& raster);
+
+  void enableModifiedRasterControls(bool state);
   
   QActionGroup* mMapToolGroup;
   QAction* mActionZoomIn;

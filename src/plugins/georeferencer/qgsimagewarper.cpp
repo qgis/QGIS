@@ -12,10 +12,6 @@
 
 #include "qgsimagewarper.h"
 
-
-using namespace std;
-
-
 void QgsImageWarper::warp(const QString& input, const QString& output,
 			  double& xOffset, double& yOffset, 
 			  ResamplingMethod resampling, bool useZeroAsTrans) {
@@ -60,7 +56,7 @@ void QgsImageWarper::warp(const QString& input, const QString& output,
   tParam.x0 = xOffset;
   tParam.y0 = yOffset;
   psWarpOptions->pTransformerArg = &tParam;
-  
+
   // create the output file
   GDALDriver* driver = static_cast<GDALDriver*>(GDALGetDriverByName("GTiff"));
   char **papszOptions = NULL;
@@ -82,7 +78,6 @@ void QgsImageWarper::warp(const QString& input, const QString& output,
       hDstDS->GetRasterBand(i+1)->SetNoDataValue(0);
     }
   }
-
   psWarpOptions->hDstDS = hDstDS;
 
   // Initialize and execute the warp operation. 
@@ -90,7 +85,6 @@ void QgsImageWarper::warp(const QString& input, const QString& output,
   oOperation.Initialize(psWarpOptions);
   oOperation.ChunkAndWarpImage(0, 0, GDALGetRasterXSize(hDstDS), 
 			       GDALGetRasterYSize(hDstDS));
-
   GDALDestroyWarpOptions(psWarpOptions);
   delete hSrcDS;
   delete hDstDS;

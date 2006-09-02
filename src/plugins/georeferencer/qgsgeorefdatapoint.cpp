@@ -27,9 +27,9 @@ void QgsGeorefDataPoint::drawShape(QPainter & p)
   p.drawRect(x + 2, y + 2, textBounds.width() + 4, textBounds.height() + 4);
   p.drawText(textBounds, Qt::AlignLeft, msg);
   
-//#ifdef QGISDEBUG
+#ifdef QGISDEBUG
   std::cout << "data point at :: " << x << "," << y << std::endl;
-//#endif
+#endif
   
   setSize(textBounds.width() + 6, textBounds.height() + 6);
 }
@@ -40,8 +40,7 @@ void QgsGeorefDataPoint::updatePosition()
   move(pt.x() - 2, pt.y() - 2);
   show();
 
-//#ifdef QGISDEBUG
+#ifdef QGISDEBUG
   std::cout << "georefDataPoint::updatePosition: " << pt.x() << "," << pt.y() << std::endl;
-//#endif
-
+#endif
 }
