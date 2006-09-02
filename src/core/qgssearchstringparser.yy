@@ -156,7 +156,7 @@ QgsSearchTreeNode* parseSearchString(const QString& str, QString& parserErrorMsg
   // list should be empty when starting
   Q_ASSERT(gTmpNodes.count() == 0);
 
-  set_input_buffer((const char*)str);
+  set_input_buffer(str.toUtf8().constData());
   int res = yyparse();
  
   // list should be empty when parsing was OK
