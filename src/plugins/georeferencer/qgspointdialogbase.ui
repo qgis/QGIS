@@ -260,7 +260,7 @@
     </widget>
    </item>
    <item row="2" column="4" >
-    <widget class="QLabel" name="textLabel1_2" >
+    <widget class="QLabel" name="lblSelectModifiedRaster" >
      <property name="text" >
       <string>Modified raster:</string>
      </property>
@@ -290,18 +290,7 @@
     </spacer>
    </item>
    <item row="2" column="1" colspan="3" >
-    <widget class="QComboBox" name="cmbTransformType" >
-     <item>
-      <property name="text" >
-       <string>Linear</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>Helmert</string>
-      </property>
-     </item>
-    </widget>
+    <widget class="QComboBox" name="cmbTransformType" />
    </item>
    <item row="2" column="0" >
     <widget class="QLabel" name="textLabel2" >

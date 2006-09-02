@@ -4,11 +4,8 @@
 
 QgsGeorefWarpOptionsDialog::QgsGeorefWarpOptionsDialog(QWidget* parent)
   : QgsGeorefWarpOptionsDialogBase() 
-  // commented out during qt4 port - FIXME
-  //: QgsGeorefWarpOptionsDialogBase(parent, NULL, TRUE, 0) 
-
 {
-
+  setupUi(this);
 }
 
 
@@ -20,7 +17,7 @@ getWarpOptions(QgsImageWarper::ResamplingMethod& resampling,
 }
 
 
-void QgsGeorefWarpOptionsDialog::pbnOK_clicked() {
+void QgsGeorefWarpOptionsDialog::on_pbnOK_clicked() {
   QgsImageWarper::ResamplingMethod methods[] = {
     QgsImageWarper::NearestNeighbour,
     QgsImageWarper::Bilinear,

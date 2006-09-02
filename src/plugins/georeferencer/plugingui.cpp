@@ -64,7 +64,15 @@ void QgsGeorefPluginGui::on_pbnSelectRaster_clicked() {
 
 
 void QgsGeorefPluginGui::on_pbnEnterWorldCoords_clicked() {
-  
+
+  // Is there a filename
+  if (leSelectRaster->text().isEmpty())
+  {
+    QMessageBox::critical(this, tr("Error"), 
+			  tr("You need to specify a file to georeference first."));
+
+    return;
+  }
   // do we think that this is a valid raster?
   if (!QgsRasterLayer::isValidRasterFileName(leSelectRaster->text())) {
     QMessageBox::critical(this, tr("Error"), 
