@@ -95,9 +95,9 @@ void QgsGeorefPluginGui::on_pbnEnterWorldCoords_clicked() {
   if (!worldfile.isEmpty()) {
     if (QFile::exists(worldfile)) {
       QMessageBox::critical(this, tr("Error"),
-			    tr("The selected file already seems to have a ")+
+			    tr("<p>The selected file already seems to have a ")+
 			    tr("world file! If you want to replace it with a ")+
-			    tr("new world file, remove the old one first."));
+			    tr("new world file, remove the old one first.</p>"));
       return;
     }
   }
