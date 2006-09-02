@@ -1,14 +1,8 @@
 #include <cmath>
 
-#include <QPushButton>
-#include <QComboBox>
 #include <QFileDialog>
-#include <QHBoxLayout>
-#include <QLayout>
-#include <QLineEdit>
 #include <QMessageBox>
 #include <QTextStream>
-#include <QToolButton>
 
 #include "qgisiface.h"
 #include "qgsapplication.h"
@@ -264,11 +258,11 @@ bool QgsPointDialog::generateWorldFile()
     else if (cmbTransformType->currentItem() == 1)
     {
       int res = QMessageBox::warning(this, tr("Warning"),
-			     tr("A Helmert transform requires modifications in "
-			     "the raster layer.\nThe modifed raster will be "
-			     "saved in a new file and a world file will be "
-			     "generated for this new file instead.\nAre you "
-			     "sure that this is what you want?"),
+		     tr("<p>A Helmert transform requires modifications in "
+		     "the raster layer.</p><p>The modifed raster will be "
+		     "saved in a new file and a world file will be "
+		     "generated for this new file instead.</p><p>Are you "
+		     "sure that this is what you want?</p>"),
 			     QMessageBox::No, QMessageBox::Yes);
       if (res == QMessageBox::No)
 	       return false;
@@ -277,9 +271,9 @@ bool QgsPointDialog::generateWorldFile()
     else if (cmbTransformType->currentItem() == 2)
     {
       QMessageBox::critical(this, tr("Not implemented!"),
-			    tr("An affine transform requires changing the "
+			    tr("<p>An affine transform requires changing the "
 			    "original raster file. This is not yet "
-			    "supported."));
+			    "supported.</p>"));
       return false;
     }
   }
