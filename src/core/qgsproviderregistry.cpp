@@ -114,11 +114,15 @@ QgsProviderRegistry::QgsProviderRegistry(QString pluginPath)
         // get the description and the key for the provider plugin
         isprovider_t *isProvider = (isprovider_t *) myLib->resolve("isProvider");
 
-        if (isProvider)
+	//MH: Added a further test to detect non-provider plugins linked to provider plugins.
+	//Only pure provider plugins have 'type' not defined
+	isprovider_t *hasType = (isprovider_t *) myLib->resolve("type");
+
+        if (!hasType && isProvider)
         {
           // check to see if this is a provider plugin
           if (isProvider())
-          {
+	    {
             // looks like a provider. get the key and description
             description_t *pDesc = (description_t *) myLib->resolve("description");
             providerkey_t *pKey = (providerkey_t *) myLib->resolve("providerKey");

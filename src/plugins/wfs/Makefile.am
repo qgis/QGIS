@@ -59,7 +59,9 @@ BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 wfsplugin_la_LIBADD = $(QT_LDADD) \
 			    $(GDAL_LDADD) \
 			    ../../core/libqgis_core.la \
-			    ../../gui/libqgis_gui.la
+			    ../../gui/libqgis_gui.la \
+				../../providers/wfs/libwfsprovider.la
+
 wfsplugin_la_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
 wfsplugin_la_CXXFLAGS = $(CXXFLAGS) \
 			      $(EXTRA_CXXFLAGS) \
