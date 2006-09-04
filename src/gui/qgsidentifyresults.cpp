@@ -67,6 +67,7 @@ void QgsIdentifyResults::closeEvent(QCloseEvent *e)
 {
   saveWindowLocation();
   e->accept();
+  done(0);
 }
 
 // Popup (create if necessary) a context menu that contains a list of
