@@ -17,7 +17,7 @@
  *                                                                         *
  ***************************************************************************/
  
-/* $Id: qgshttptransaction.h 5364 2006-04-24 22:29:08Z g_j_m $ */
+/* $Id: qgshttptransaction.h 5697 2006-08-15 10:29:46Z morb_au $ */
 
 #ifndef QGSHTTPTRANSACTION_H
 #define QGSHTTPTRANSACTION_H
@@ -92,6 +92,8 @@ public slots:
   void dataProgress( int done, int total );
 
   void dataFinished( int id, bool error );
+
+  void transactionFinished( bool error );
 
   void dataStateChanged( int state );
 

@@ -23,6 +23,7 @@
 #include <iostream>
 
 #include "qgshttptransaction.h"
+#include "qgslogger.h"
 
 #include <QApplication>
 #include <QUrl>
@@ -44,32 +45,18 @@ QgsHttpTransaction::QgsHttpTransaction(QString uri,
     httpresponsecontenttype(0),
     mError(0)
 {
-#ifdef QGISDEBUG
-  std::cout << "QgsHttpTransaction: constructing." << std::endl;
-#endif
 
-#ifdef QGISDEBUG
-  std::cout << "  QgsHttpTransaction: proxyHost = " << proxyHost.toLocal8Bit().data() << "." << std::endl;
-  std::cout << "  QgsHttpTransaction: proxyPort = " << proxyPort << "." << std::endl;
-  std::cout << "  QgsHttpTransaction: proxyUser = " << proxyUser.toLocal8Bit().data() << "." << std::endl;
-  std::cout << "  QgsHttpTransaction: proxyPass = " << proxyPass.toLocal8Bit().data() << "." << std::endl;
-#endif
-
-
-#ifdef QGISDEBUG
-  std::cout << "QgsHttpTransaction: exiting constructor." << std::endl;
-#endif
-  
+  QgsDebugMsg("QgsHttpTransaction: constructing.");
+  QgsDebugMsg("  QgsHttpTransaction: proxyHost = " + proxyHost + ".");
+  QgsDebugMsg("  QgsHttpTransaction: proxyPort = " + QString::number(proxyPort) + ".");
+  QgsDebugMsg("  QgsHttpTransaction: proxyUser = " + proxyUser + ".");
+  QgsDebugMsg("  QgsHttpTransaction: proxyPass = " + proxyPass + ".");
+  QgsDebugMsg("QgsHttpTransaction: exiting constructor.");
 }
 
 QgsHttpTransaction::~QgsHttpTransaction()
 {
-
-#ifdef QGISDEBUG
-  std::cout << "QgsHttpTransaction: deconstructing." << std::endl;
-#endif
-
- 
+  QgsDebugMsg("QgsHttpTransaction: deconstructing.");
 }
 
 
@@ -85,10 +72,8 @@ bool QgsHttpTransaction::getSynchronously(QByteArray &respondedContent, int redi
 
   httpredirections = redirections;
   
-#ifdef QGISDEBUG
-  std::cout << "QgsHttpTransaction::getSynchronously: Entered." << std::endl;
-  std::cout << "QgsHttpTransaction::getSynchronously: Using '" << httpurl.toLocal8Bit().data() << "'." << std::endl;
-#endif
+  QgsDebugMsg("QgsHttpTransaction::getSynchronously: Entered.");
+  QgsDebugMsg("QgsHttpTransaction::getSynchronously: Using '" + httpurl + "'.");
 
   QUrl qurl(httpurl);
 
@@ -111,9 +96,7 @@ bool QgsHttpTransaction::getSynchronously(QByteArray &respondedContent, int redi
 
   mWatchdogTimer = new QTimer( this );
 
-#ifdef QGISDEBUG
-  qWarning("QgsHttpTransaction::getSynchronously: qurl.host() is '"+qurl.host()+ "'.");
-#endif
+  QgsDebugMsg("QgsHttpTransaction::getSynchronously: qurl.host() is '" + qurl.host()+ "'.");
 
   httpresponse.truncate(0);
 
@@ -152,13 +135,9 @@ bool QgsHttpTransaction::getSynchronously(QByteArray &respondedContent, int redi
   mWatchdogTimer->setSingleShot(TRUE);
   mWatchdogTimer->start(NETWORK_TIMEOUT_MSEC);
 
-#ifdef QGISDEBUG
-  std::cout << "QgsHttpTransaction::getSynchronously: Starting get with id " << httpid << "." << std::endl;
-#endif
+  QgsDebugMsg("QgsHttpTransaction::getSynchronously: Starting get with id " + QString::number(httpid) + ".");
+  QgsDebugMsg("QgsHttpTransaction::getSynchronously: Setting httpactive = TRUE");
 
-#ifdef QGISDEBUG
-  std::cout << "QgsHttpTransaction::getSynchronously: Setting httpactive = TRUE" << std::endl;
-#endif
   httpactive = TRUE;
 
   // A little trick to make this function blocking
@@ -171,10 +150,10 @@ bool QgsHttpTransaction::getSynchronously(QByteArray &respondedContent, int redi
   }
 
 #ifdef QGISDEBUG
-  std::cout << "QgsHttpTransaction::getSynchronously: Response received." << std::endl;
+  QgsDebugMsg("QgsHttpTransaction::getSynchronously: Response received.");
 
 //  QString httpresponsestring(httpresponse);
-//  std::cout << "QgsHttpTransaction::getSynchronously: Response received; being '" << httpresponsestring << "'." << std::endl;
+//  QgsDebugMsg("QgsHttpTransaction::getSynchronously: Response received; being '" + httpresponsestring + "'.");
 #endif
 
   delete http;
@@ -182,9 +161,7 @@ bool QgsHttpTransaction::getSynchronously(QByteArray &respondedContent, int redi
   // Did we get an error? If so, bail early
   if (!mError.isNull())
   {
-#ifdef QGISDEBUG
-    std::cout << "QgsHttpTransaction::getSynchronously: Processing an error '" << mError.toLocal8Bit().data() << "'." << std::endl;
-#endif
+    QgsDebugMsg("QgsHttpTransaction::getSynchronously: Processing an error '" + mError + "'.");
     return FALSE;
   }
 
@@ -193,11 +170,8 @@ bool QgsHttpTransaction::getSynchronously(QByteArray &respondedContent, int redi
   // TODO detect any redirection loops
   if (!httpredirecturl.isEmpty())
   {
-#ifdef QGISDEBUG
-  std::cout << "QgsHttpTransaction::getSynchronously: Starting get of '" << 
-               httpredirecturl.toLocal8Bit().data() << "'." << std::endl;
-#endif
-
+    QgsDebugMsg("QgsHttpTransaction::getSynchronously: Starting get of '" +  httpredirecturl + "'.");
+  
     QgsHttpTransaction httprecurse(httpredirecturl, httphost, httpport);
 
     // Do a passthrough for the status bar text
@@ -225,23 +199,15 @@ QString QgsHttpTransaction::responseContentType()
 
 void QgsHttpTransaction::dataStarted( int id )  
 {
-
-#ifdef QGISDEBUG
-  std::cout << "QgsHttpTransaction::dataStarted with ID " << id << "." << std::endl;
-#endif
-
- 
+  QgsDebugMsg("QgsHttpTransaction::dataStarted with ID " + QString::number(id) + ".");
 }
 
 
 void QgsHttpTransaction::dataHeaderReceived( const QHttpResponseHeader& resp )
 {
-
-#ifdef QGISDEBUG
-  std::cout << "QgsHttpTransaction::dataHeaderReceived: statuscode " << 
-    resp.statusCode() << ", reason '" << resp.reasonPhrase().toLocal8Bit().data() << "', content type: '" <<
-    resp.value("Content-Type").toLocal8Bit().data() << "'." << std::endl;
-#endif
+  QgsDebugMsg("QgsHttpTransaction::dataHeaderReceived: statuscode " + 
+    QString::number(resp.statusCode()) + ", reason '" + resp.reasonPhrase() + "', content type: '" +
+    resp.value("Content-Type") + "'.");
 
   // We saw something come back, therefore restart the watchdog timer
   mWatchdogTimer->start(NETWORK_TIMEOUT_MSEC);
@@ -281,20 +247,14 @@ void QgsHttpTransaction::dataReceived( const QHttpResponseHeader& resp )
   }
   */
 
-#ifdef QGISDEBUG
-//  std::cout << "QgsHttpTransaction::dataReceived." << std::endl;
-//  std::cout << "QgsHttpTransaction::dataReceived: received '" << data << "'."<< std::endl;
-#endif
-
+//  QgsDebugMsg("QgsHttpTransaction::dataReceived.");
+//  QgsDebugMsg("QgsHttpTransaction::dataReceived: received '" + data + "'.");
 }
 
 
 void QgsHttpTransaction::dataProgress( int done, int total )
 {
-
-#ifdef QGISDEBUG
-//  std::cout << "QgsHttpTransaction::dataProgress: got " << done << " of " << total << std::endl;
-#endif
+//  QgsDebugMsg("QgsHttpTransaction::dataProgress: got " + QString::number(done) + " of " + QString::number(total));
 
   // We saw something come back, therefore restart the watchdog timer
   mWatchdogTimer->start(NETWORK_TIMEOUT_MSEC);
@@ -321,7 +281,7 @@ void QgsHttpTransaction::dataFinished( int id, bool error )
 {
 
 #ifdef QGISDEBUG
-  std::cout << "QgsHttpTransaction::dataFinished with ID " << id << "." << std::endl;
+  QgsDebugMsg("QgsHttpTransaction::dataFinished with ID " + QString::number(id) + ".");
 
   // The signal that this slot is connected to, QHttp::requestFinished,
   // appears to get called at the destruction of the QHttp if it is
@@ -334,21 +294,21 @@ void QgsHttpTransaction::dataFinished( int id, bool error )
   // not overwritten (it should rightfully refer to the timeout event).
   if (!httpactive)
   {
-    std::cout << "QgsHttpTransaction::dataFinished - http activity loop already FALSE." << std::endl;
+    QgsDebugMsg("QgsHttpTransaction::dataFinished - http activity loop already FALSE.");
     return;
   }
 
   if (error)
   {
-    std::cout << "QgsHttpTransaction::dataFinished - however there was an error." << std::endl;
-    std::cout << "QgsHttpTransaction::dataFinished - " << http->errorString().toLocal8Bit().data() << std::endl;
+    QgsDebugMsg("QgsHttpTransaction::dataFinished - however there was an error.");
+    QgsDebugMsg("QgsHttpTransaction::dataFinished - " + http->errorString());
 
     mError = QString( tr("HTTP response completed, however there was an error: %1") )
                 .arg( http->errorString() );
   }
   else
   {
-    std::cout << "QgsHttpTransaction::dataFinished - no error." << std::endl;
+    QgsDebugMsg("QgsHttpTransaction::dataFinished - no error.");
   }
 #endif
 
@@ -370,8 +330,7 @@ void QgsHttpTransaction::transactionFinished( bool error )
 {
 
 #ifdef QGISDEBUG
-  std::cout << "QgsHttpTransaction::transactionFinished"
-            << "." << std::endl;
+  QgsDebugMsg("QgsHttpTransaction::transactionFinished.");
 
 //   // The signal that this slot is connected to, QHttp::requestFinished,
 //   // appears to get called at the destruction of the QHttp if it is
@@ -390,35 +349,29 @@ void QgsHttpTransaction::transactionFinished( bool error )
 
   if (error)
   {
-    std::cout << "QgsHttpTransaction::transactionFinished - however there was an error." << std::endl;
-    std::cout << "QgsHttpTransaction::transactionFinished - " << http->errorString().toLocal8Bit().data() << std::endl;
+    QgsDebugMsg("QgsHttpTransaction::transactionFinished - however there was an error.");
+    QgsDebugMsg("QgsHttpTransaction::transactionFinished - " + http->errorString());
 
     mError = QString( tr("HTTP transaction completed, however there was an error: %1") )
                 .arg( http->errorString() );
   }
   else
   {
-    std::cout << "QgsHttpTransaction::transactionFinished - no error." << std::endl;
+    QgsDebugMsg("QgsHttpTransaction::transactionFinished - no error.");
   }
 #endif
 
   // TODO
   httpresponse = http->readAll();
 
-#ifdef QGISDEBUG
-  std::cout << "QgsHttpTransaction::getSynchronously: Setting httpactive = FALSE" << std::endl;
-#endif
+  QgsDebugMsg("QgsHttpTransaction::getSynchronously: Setting httpactive = FALSE");
   httpactive = FALSE;
-
 }
 
 
 void QgsHttpTransaction::dataStateChanged( int state )
 {
-
-#ifdef QGISDEBUG
-  std::cout << "QgsHttpTransaction::dataStateChanged to " << state << "." << std::endl << "  ";
-#endif
+  QgsDebugMsg("QgsHttpTransaction::dataStateChanged to " + QString::number(state) + ".");
 
   // We saw something come back, therefore restart the watchdog timer
   mWatchdogTimer->start(NETWORK_TIMEOUT_MSEC);
@@ -426,63 +379,45 @@ void QgsHttpTransaction::dataStateChanged( int state )
   switch (state)
   {
     case QHttp::Unconnected:
-#ifdef QGISDEBUG
-      std::cout << "There is no connection to the host." << std::endl;
-#endif
-
+      QgsDebugMsg("There is no connection to the host.");
       emit setStatus( QString("Not connected") );
       break;
 
     case QHttp::HostLookup:
-#ifdef QGISDEBUG
-      std::cout << "A host name lookup is in progress." << std::endl;
-#endif
+      QgsDebugMsg("A host name lookup is in progress.");
 
       emit setStatus( QString("Looking up '%1'")
                          .arg(httphost) );
       break;
 
     case QHttp::Connecting:
-#ifdef QGISDEBUG
-      std::cout << "An attempt to connect to the host is in progress." << std::endl;
-#endif
+      QgsDebugMsg("An attempt to connect to the host is in progress.");
 
       emit setStatus( QString("Connecting to '%1'")
                          .arg(httphost) );
       break;
 
     case QHttp::Sending:
-#ifdef QGISDEBUG
-      std::cout << "The client is sending its request to the server." << std::endl;
-#endif
+      QgsDebugMsg("The client is sending its request to the server.");
 
       emit setStatus( QString("Sending request '%1'")
                          .arg(httpurl) );
       break;
 
     case QHttp::Reading:
-#ifdef QGISDEBUG
-      std::cout << "The client's request has been sent and the client "
-                   "is reading the server's response." << std::endl;
-#endif
+      QgsDebugMsg("The client's request has been sent and the client is reading the server's response.");
 
       emit setStatus( QString("Receiving reply") );
       break;
 
     case QHttp::Connected:
-#ifdef QGISDEBUG
-      std::cout << "The connection to the host is open, but the client "
-                   "is neither sending a request, nor waiting for a response." << std::endl;
-#endif
+      QgsDebugMsg("The connection to the host is open, but the client is neither sending a request, nor waiting for a response.");
 
       emit setStatus( QString("Response is complete") );
       break;
 
     case QHttp::Closing:
-#ifdef QGISDEBUG
-      std::cout << "The connection is closing down, but is not yet closed. "
-                   "(The state will be Unconnected when the connection is closed.)" << std::endl;
-#endif
+      QgsDebugMsg("The connection is closing down, but is not yet closed. (The state will be Unconnected when the connection is closed.)");
 
       emit setStatus( QString("Closing down connection") );
       break;
@@ -493,24 +428,15 @@ void QgsHttpTransaction::dataStateChanged( int state )
 
 void QgsHttpTransaction::networkTimedOut()
 {
-
-#ifdef QGISDEBUG
-  std::cout << "QgsHttpTransaction::networkTimedOut: entering." << std::endl;
-#endif
+  QgsDebugMsg("QgsHttpTransaction::networkTimedOut: entering.");
 
   mError = QString(tr("Network timed out after %1 seconds of inactivity.\n"
                       "This may be a problem in your network connection or at the WMS server.")
                   ).arg(NETWORK_TIMEOUT_MSEC/1000);
 
-#ifdef QGISDEBUG
-  std::cout << "QgsHttpTransaction::getSynchronously: Setting httpactive = FALSE" << std::endl;
-#endif
+  QgsDebugMsg("QgsHttpTransaction::getSynchronously: Setting httpactive = FALSE");
   httpactive = FALSE;
-
-#ifdef QGISDEBUG
-  std::cout << "QgsHttpTransaction::networkTimedOut: exiting." << std::endl;
-#endif
-
+  QgsDebugMsg("QgsHttpTransaction::networkTimedOut: exiting.");
 }
 
 
