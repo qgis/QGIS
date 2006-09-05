@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>619</width>
-    <height>259</height>
+    <width>437</width>
+    <height>255</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -18,14 +18,14 @@
   <property name="sizeGripEnabled" >
    <bool>true</bool>
   </property>
-  <layout class="QHBoxLayout" >
+  <layout class="QGridLayout" >
    <property name="margin" >
     <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item>
+   <item row="0" column="0" >
     <widget class="Q3GroupBox" name="GroupBox1" >
      <property name="title" >
       <string>Connection Information</string>
@@ -38,12 +38,41 @@
        <number>0</number>
       </property>
       <property name="spacing" >
-       <number>6</number>
+       <number>5</number>
       </property>
+      <item rowspan="6" row="0" column="2" >
+       <widget class="QFrame" name="frame" >
+        <property name="frameShape" >
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="frameShadow" >
+         <enum>QFrame::Plain</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QLineEdit" name="txtName" >
+        <property name="minimumSize" >
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string>Name of the new connection</string>
+        </property>
+        <property name="frame" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0" >
        <widget class="QLabel" name="TextLabel1_2" >
         <property name="text" >
          <string>Name</string>
+        </property>
+        <property name="margin" >
+         <number>5</number>
         </property>
         <property name="buddy" >
          <cstring>txtName</cstring>
@@ -55,6 +84,9 @@
         <property name="text" >
          <string>URL</string>
         </property>
+        <property name="margin" >
+         <number>5</number>
+        </property>
         <property name="buddy" >
          <cstring>txtUrl</cstring>
         </property>
@@ -64,6 +96,9 @@
        <widget class="QLabel" name="TextLabel1_3" >
         <property name="text" >
          <string>Proxy Host</string>
+        </property>
+        <property name="margin" >
+         <number>5</number>
         </property>
         <property name="buddy" >
          <cstring>txtProxyHost</cstring>
@@ -75,6 +110,9 @@
         <property name="text" >
          <string>Proxy Port</string>
         </property>
+        <property name="margin" >
+         <number>5</number>
+        </property>
         <property name="buddy" >
          <cstring>txtProxyPort</cstring>
         </property>
@@ -85,6 +123,9 @@
         <property name="text" >
          <string>Proxy User</string>
         </property>
+        <property name="margin" >
+         <number>5</number>
+        </property>
         <property name="buddy" >
          <cstring>txtProxyUser</cstring>
         </property>
@@ -94,6 +135,9 @@
        <widget class="QLabel" name="TextLabel1_3_4" >
         <property name="text" >
          <string>Proxy Password</string>
+        </property>
+        <property name="margin" >
+         <number>5</number>
         </property>
         <property name="buddy" >
          <cstring>txtProxyPass</cstring>
@@ -133,19 +177,6 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <widget class="QLineEdit" name="txtName" >
-        <property name="minimumSize" >
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="toolTip" >
-         <string>Name of the new connection</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="1" >
        <widget class="QLineEdit" name="txtUrl" >
         <property name="toolTip" >
@@ -181,7 +212,7 @@
      </layout>
     </widget>
    </item>
-   <item>
+   <item row="0" column="1" >
     <layout class="QVBoxLayout" >
      <property name="margin" >
       <number>0</number>
@@ -259,7 +290,7 @@
  <customwidgets>
   <customwidget>
    <class>Q3GroupBox</class>
-   <extends></extends>
+   <extends>QGroupBox</extends>
    <header>Qt3Support/Q3GroupBox</header>
    <container>1</container>
    <pixmap></pixmap>
