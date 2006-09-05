@@ -31,19 +31,6 @@
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="1" column="1" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
    <item row="1" column="2" >
     <widget class="QLineEdit" name="editTotal" >
      <property name="font" >
@@ -59,6 +46,51 @@
      </property>
      <property name="alignment" >
       <set>Qt::AlignRight</set>
+     </property>
+     <property name="readOnly" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>41</width>
+       <height>25</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QLabel" name="textLabel2" >
+     <property name="text" >
+      <string>Total:</string>
+     </property>
+     <property name="buddy" >
+      <cstring>editTotal</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="3" >
+    <widget class="Q3Table" name="mTable" >
+     <property name="resizePolicy" >
+      <enum>Q3ScrollView::Manual</enum>
+     </property>
+     <property name="numRows" >
+      <number>0</number>
+     </property>
+     <property name="numCols" >
+      <number>1</number>
+     </property>
+     <property name="showGrid" >
+      <bool>true</bool>
      </property>
      <property name="readOnly" >
       <bool>true</bool>
@@ -129,35 +161,6 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="0" colspan="3" >
-    <widget class="Q3Table" name="mTable" >
-     <property name="resizePolicy" >
-      <enum>Q3ScrollView::Manual</enum>
-     </property>
-     <property name="numRows" >
-      <number>0</number>
-     </property>
-     <property name="numCols" >
-      <number>1</number>
-     </property>
-     <property name="showGrid" >
-      <bool>true</bool>
-     </property>
-     <property name="readOnly" >
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" >
-    <widget class="QLabel" name="textLabel2" >
-     <property name="text" >
-      <string>Total:</string>
-     </property>
-     <property name="buddy" >
-      <cstring>editTotal</cstring>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
@@ -165,14 +168,14 @@
  <customwidgets>
   <customwidget>
    <class>Q3Table</class>
-   <extends></extends>
+   <extends>Q3Frame</extends>
    <header>q3table.h</header>
    <container>0</container>
    <pixmap></pixmap>
   </customwidget>
   <customwidget>
    <class>Q3Frame</class>
-   <extends></extends>
+   <extends>QFrame</extends>
    <header>Qt3Support/Q3Frame</header>
    <container>1</container>
    <pixmap></pixmap>
