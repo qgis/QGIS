@@ -817,16 +817,28 @@ bool QgsWmsProvider::downloadCapabilitiesURI(QString const & uri)
 
 }
 */
-
+#include <fstream>
 bool QgsWmsProvider::parseCapabilitiesDOM(QByteArray const & xml, QgsWmsCapabilitiesProperty& capabilitiesProperty)
 {
-#ifdef QGISDEBUG
+  //#ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseCapabilitiesDOM: entering." << std::endl;
 
-  //test the content of the QByteArray
-  QString responsestring(xml);
-  qWarning("QgsWmsProvider::parseCapabilitiesDOM, received the following data: "+responsestring);
-  
+  //test the content of the QByteArray.
+  // There is a bug in Qt4.1.2, due for fixing in 4.2.0, where
+  // QString(QByteArray) uses strlen to find the length of the
+  // QByteArray. However, there are no guarantees that the QByteArray
+  // has a terminating \0, and hence this can cause a crash, so we supply
+  // the qbytearray to qstring in a way that ensures that there is a
+  // terminating \0, and just to be safe, we also give it the actual
+  // size.
+
+  // Also, the Qt qWarning() function has a limit of 8192 bytes per
+  // message, which can easily be exceeded by wms capability
+  // documents, so we use the qgs logger stuff instead which doesn't
+  // have that limitation.
+
+  QString responsestring(QString::fromAscii(xml.constData(), xml.size()));
+  QgsLogger::debug("QgsWmsProvider::parseCapabilitiesDOM, received the following data: "+responsestring);
   
   //QFile file( "/tmp/qgis-wmsprovider-capabilities.xml" );
   //if ( file.open( QIODevice::WriteOnly ) ) 
@@ -834,7 +846,7 @@ bool QgsWmsProvider::parseCapabilitiesDOM(QByteArray const & xml, QgsWmsCapabili
   //  file.writeBlock(xml);
   //  file.close();
   //}
-#endif
+  //#endif
   
   // Convert completed document into a DOM
   QString errorMsg;
@@ -852,9 +864,7 @@ bool QgsWmsProvider::parseCapabilitiesDOM(QByteArray const & xml, QgsWmsCapabili
 
     mError += "\n" + tr("This is probably due to an incorrect WMS Server URL.");
 
-#ifdef QGISDEBUG
-  qWarning("DOM Exception: "+mError);
-#endif
+  QgsLogger::debug("DOM Exception: "+mError);
 
     return FALSE;
   }
@@ -884,9 +894,7 @@ bool QgsWmsProvider::parseCapabilitiesDOM(QByteArray const & xml, QgsWmsCapabili
 
     mError += "\n" + tr("This is probably due to an incorrect WMS Server URL.");
 
-#ifdef QGISDEBUG
-  qWarning("DOM Exception: "+mError);
-#endif
+  QgsLogger::debug("DOM Exception: "+mError);
 
     return FALSE;
   }
@@ -1676,7 +1684,7 @@ bool QgsWmsProvider::parseServiceExceptionReportDOM(QByteArray const & xml)
 
   //test the content of the QByteArray
   QString responsestring(xml);
-  qWarning("QgsWmsProvider::parseServiceExceptionReportDOM, received the following data: "+responsestring);
+  QgsLogger::debug("QgsWmsProvider::parseServiceExceptionReportDOM, received the following data: "+responsestring);
 #endif
 
   // Convert completed document into a DOM
@@ -1694,9 +1702,7 @@ bool QgsWmsProvider::parseServiceExceptionReportDOM(QByteArray const & xml)
                 .arg(errorLine)
                 .arg(errorColumn) );
 
-#ifdef QGISDEBUG
-  qWarning("DOM Exception: "+mError);
-#endif
+  QgsLogger::debug("DOM Exception: "+mError);
 
     return FALSE;
   }
