@@ -820,7 +820,7 @@ bool QgsWmsProvider::downloadCapabilitiesURI(QString const & uri)
 #include <fstream>
 bool QgsWmsProvider::parseCapabilitiesDOM(QByteArray const & xml, QgsWmsCapabilitiesProperty& capabilitiesProperty)
 {
-  //#ifdef QGISDEBUG
+#ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseCapabilitiesDOM: entering." << std::endl;
 
   //test the content of the QByteArray.
@@ -846,7 +846,7 @@ bool QgsWmsProvider::parseCapabilitiesDOM(QByteArray const & xml, QgsWmsCapabili
   //  file.writeBlock(xml);
   //  file.close();
   //}
-  //#endif
+#endif
   
   // Convert completed document into a DOM
   QString errorMsg;
