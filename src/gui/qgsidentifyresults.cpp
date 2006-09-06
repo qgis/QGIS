@@ -66,7 +66,6 @@ void QgsIdentifyResults::close()
 void QgsIdentifyResults::closeEvent(QCloseEvent *e)
 {
   saveWindowLocation();
-  e->accept();
   done(0);
 }
 
