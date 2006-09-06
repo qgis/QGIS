@@ -195,10 +195,9 @@ void QgsMapRender::render(QPainter* painter)
   
   mDrawing = true;
   
-  int myRenderCounter = 0;
   
 #ifdef QGISDEBUG
-  QgsDebugMsg("QgsMapRender::render: Starting to render layer stack.");
+  QgsDebugMsg("Starting to render layer stack.");
   QTime renderTime;
   renderTime.start();
 #endif
@@ -208,7 +207,7 @@ void QgsMapRender::render(QPainter* painter)
   
   while (li != layers.end())
   {
-    QgsDebugMsg("QgsMapRender::render: at layer item '" + (*li));
+    QgsDebugMsg("At layer item '" + (*li) + "'");
 
     // This call is supposed to cause the progress bar to
     // advance. However, it seems that updating the progress bar is
@@ -223,13 +222,13 @@ void QgsMapRender::render(QPainter* painter)
 
     if (!ml)
     {
-      QgsLogger::warning("QgsMapRender::render: layer not found in registry!");
+      QgsLogger::warning("Layer not found in registry!");
       li++;
       continue;
     }
         
 #ifdef QGISDEBUG
-		QgsDebugMsg("QgsMapRender::render: Rendering layer " + ml->name());
+		QgsDebugMsg("Rendering layer " + ml->name());
 		QgsLogger::debug("  Layer minscale ", ml->minScale(), 1, __FILE__, __FUNCTION__, __LINE__);
 		QgsLogger::debug("  Layer maxscale ", ml->maxScale(), 1, __FILE__, __FUNCTION__, __LINE__);
 		QgsLogger::debug("  Scale dep. visibility enabled? ", ml->scaleBasedVisibility(), 1,\
@@ -272,8 +271,8 @@ void QgsMapRender::render(QPainter* painter)
       }
       else
       {
-	QgsDebugMsg("QgsMapRender::render: Layer not rendered because it is not within the defined \
-visibility scale range")
+	QgsDebugMsg("Layer not rendered because it is not within the defined \
+visibility scale range");
       }
         
     } // if (ml->visible())
@@ -282,7 +281,7 @@ visibility scale range")
     
   } // while (li != end)
       
-    QgsDebugMsg("QgsMapRender::render: Done rendering map layers");
+    QgsDebugMsg("Done rendering map layers");
 
   if (!mOverview)
   {
@@ -316,8 +315,7 @@ visibility scale range")
   emit setProgress(1,1);      
       
 #ifdef QGISDEBUG
-  QgsLogger::debug("QgsMapRender::render: Rendering done in (seconds)", renderTime.elapsed() / 1000.0, 1,\
-		   __FILE__, __FUNCTION__, __LINE__);
+  QgsDebugMsg("Rendering done in " + QString("%1").arg(renderTime.elapsed() / 1000.0) + " seconds");
 #endif
 
   mDrawing = false;
