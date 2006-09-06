@@ -119,8 +119,8 @@ scalar_exp:
     | '+' scalar_exp %prec UMINUS { $$ = $2; }
     | '-' scalar_exp %prec UMINUS { $$ = $2; if ($$->type() == QgsSearchTreeNode::tNumber) $$->setNumber(- $$->number()); }
     | NUMBER                      { $$ = new QgsSearchTreeNode($1);        addToTmpNodes($$); }
-    | STRING                      { $$ = new QgsSearchTreeNode(yytext, 0); addToTmpNodes($$); }
-    | COLUMN_REF                  { $$ = new QgsSearchTreeNode(yytext, 1); addToTmpNodes($$); }
+    | STRING                      { $$ = new QgsSearchTreeNode(QString::fromUtf8(yytext), 0); addToTmpNodes($$); }
+    | COLUMN_REF                  { $$ = new QgsSearchTreeNode(QString::fromUtf8(yytext), 1); addToTmpNodes($$); }
     ;
 
 %%
