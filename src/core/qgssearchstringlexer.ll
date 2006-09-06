@@ -20,6 +20,9 @@
 %option noyywrap
 %option case-insensitive
 
+ // ensure that lexer will be 8-bit (and not just 7-bit)
+%option 8bit
+
 %{
   
 #include <stdlib.h>  // atof()
