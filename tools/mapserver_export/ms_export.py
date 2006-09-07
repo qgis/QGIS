@@ -176,7 +176,13 @@ class Qgis2Map:
     self.outFile.write("      'wms_title'           '" + self.mapName + "'\n")
     self.outFile.write("      'wms_onlineresource'  'http://my.host.com/cgi-bin/mapserv?map=wms.map&'\n")
     self.outFile.write("      'wms_srs'             'EPSG:4326'\n")
-    self.outFile.write("    END\n")
+    self.outFile.write("    END\n\n")
+
+    self.outFile.write("    #Scale range at which web interface will operate\n")
+    if self.minScale != "":
+      self.outFile.write("    MINSCALE " + self.minScale + "\n") 
+    if self.maxScale != "":
+      self.outFile.write("    MAXSCALE " + self.maxScale + "\n") 
 
     self.outFile.write("    # Template and header/footer settings\n")
     self.outFile.write("    # Only the template parameter is required to display a map. See MapServer documentation\n")
@@ -187,7 +193,7 @@ class Qgis2Map:
       self.outFile.write("    HEADER '" + self.header + "'\n")
     if self.footer != "":
       self.outFile.write("    FOOTER '" + self.footer + "'\n")
-    self.outFile.write("  END\n")
+    self.outFile.write("  END\n\n")
 
   def parsePostgisConnection( self, dataString ):
     pg = {}
@@ -228,6 +234,11 @@ class Qgis2Map:
         self.outFile.write("    TYPE " + lyr.getAttribute("geometry").encode().upper() + "\n")
       elif lyr.getAttribute("type").encode() == 'raster':  
         self.outFile.write("    TYPE " + lyr.getAttribute("type").encode().upper() + "\n")
+ 
+      # Set min/max scales
+      if lyr.getAttribute('scaleBasedVisibilityFlag').encode() == 1:
+        self.outFile.write("    MINSCALE " + lyr.getAttribute('minScale').encode() + "\n")
+        self.outFile.write("    MAXSCALE " + lyr.getAttribute('maxScale').encode() + "\n")
 
       # data
       dataString = lyr.getElementsByTagName("datasource")[0].childNodes[0].nodeValue.encode()
@@ -267,7 +278,7 @@ class Qgis2Map:
         self.outFile.write("    METADATA\n")
         self.outFile.write("      'wms_name' '" + layername + "'\n")
         self.outFile.write("      'wms_server_version' '1.1.1'\n")
-        self.outFile.write("      'wms_srs' 'EPSG:" + epsg + "'\n")
+        self.outFile.write("      'wms_srs' 'EPSG:4326 EPSG:" + epsg + "'\n")
         self.outFile.write("      'wms_format' '" + format + "'\n")
         self.outFile.write("      'wms_style' '" + style + "'\n")
         self.outFile.write("    END\n")
@@ -341,11 +352,17 @@ class Qgis2Map:
           symbol = "'" + symbolName + "'"
       
         self.outFile.write("    CLASS\n")
+
+        self.outFile.write("       NAME " 
+            + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode() 
+            + " \n")
+
         # use the point symbol map to lookup the mapserver symbol type
         self.outFile.write("       SYMBOL " + symbol + " \n")
         self.outFile.write("       SIZE " 
             + symbolNode.getElementsByTagName('pointsize')[0].childNodes[0].nodeValue.encode()  
-           + " \n")
+            + " \n")
+
         # outline color
         outlineNode = symbolNode.getElementsByTagName('outlinecolor')[0]
         self.outFile.write("       OUTLINECOLOR " 
@@ -387,8 +404,17 @@ class Qgis2Map:
     classes = layerNode.getElementsByTagName('symbol')
     for cls in classes:
       self.outFile.write("    CLASS\n")
+
       lower = cls.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode()
       upper = cls.getElementsByTagName('uppervalue')[0].childNodes[0].nodeValue.encode()
+    
+      # If there's a label use it, otherwise autogenerate one
+      try:
+        label = cls.getElementsByTagName('label')[0].childNodes[0].nodeValue.encode()
+        self.outFile.write("      NAME '" + label + "'\n") 
+      except: 
+        self.outFile.write("      NAME '" + lower + " < " + classField + " < " + upper + "'\n") 
+
       self.outFile.write("      EXPRESSION ( ([" + classField + "] >= " + lower + ") AND ([" + classField + "] <= " + upper + ") )\n") 
 
       # contains the same markup for a layer regardless of type
@@ -450,6 +476,9 @@ class Qgis2Map:
     lower = symbolNode.getElementsByTagName('lowestsymbol')[0].getElementsByTagName('symbol')[0]
     upper = symbolNode.getElementsByTagName('highestsymbol')[0].getElementsByTagName('symbol')[0]
 
+    # Class name irrelevant for color ramps since mapserver can't render their legend
+    #self.outFile.write("      NAME '" + classField + "'\n")
+
     # color
     lowerColor = lower.getElementsByTagName('fillcolor')[0]
     upperColor = upper.getElementsByTagName('fillcolor')[0]
@@ -509,6 +538,14 @@ class Qgis2Map:
       self.outFile.write("    CLASS\n")
 
       lower = cls.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode()
+
+      # If there's a label use it, otherwise autogenerate one
+      try:
+        label = cls.getElementsByTagName('label')[0].childNodes[0].nodeValue.encode()
+        self.outFile.write("      NAME '" + label + "'\n") 
+      except:
+        self.outFile.write("      NAME '" + classField + " = " + lower + "' \n") 
+
       self.outFile.write("      EXPRESSION '" + lower + "' \n") 
 
       # contains the same markup for a layer regardless of type
@@ -532,14 +569,14 @@ class Qgis2Map:
 
       # outline color
       outlineNode = cls.getElementsByTagName('outlinecolor')[0]
-      self.outFile.write("       OUTLINECOLOR " 
+      self.outFile.write("     OUTLINECOLOR " 
             + outlineNode.getAttribute('red') + ' '
             + outlineNode.getAttribute('green') + ' '
             + outlineNode.getAttribute('blue')
             + "\n")
       # color
       colorNode = cls.getElementsByTagName('fillcolor')[0]
-      self.outFile.write("       COLOR " 
+      self.outFile.write("     COLOR " 
             + colorNode.getAttribute('red') + ' '
             + colorNode.getAttribute('green') + ' '
             + colorNode.getAttribute('blue')
