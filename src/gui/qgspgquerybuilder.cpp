@@ -17,6 +17,7 @@
 #include <q3listbox.h>
 #include <QMessageBox>
 #include "qgspgquerybuilder.h"
+#include <qgslogger.h>
 // default constructor
 QgsPgQueryBuilder::QgsPgQueryBuilder(QWidget *parent, Qt::WFlags fl)
 : QDialog(parent, fl)
@@ -102,7 +103,7 @@ void QgsPgQueryBuilder::populateFields()
   // field name, type, length, and precision (if numeric)
   QString sql = "select * from \"" + mUri->schema + "\".\"" + mUri->table + "\" limit 1";
   PGresult *result = PQexec(mPgConnection, (const char *) (sql.utf8()));
-  qWarning(("Query executed: " + sql).toLocal8Bit().data());
+  QgsLogger::debug("Query executed: " + sql);
   if (PQresultStatus(result) == PGRES_TUPLES_OK) 
   {
     //--std::cout << "Field: Name, Type, Size, Modifier:" << std::endl;
@@ -111,26 +112,26 @@ void QgsPgQueryBuilder::populateFields()
       QString fieldName = PQfname(result, i);
       int fldtyp = PQftype(result, i);
       QString typOid = QString().setNum(fldtyp);
-      std::cerr << "typOid is: " << typOid.toLocal8Bit().data() << std::endl; 
+      QgsLogger::debug("typOid is: " + typOid); 
       int fieldModifier = PQfmod(result, i);
       QString sql = "select typelem from pg_type where typelem = " + typOid + " and typlen = -1";
       //  //--std::cout << sql << std::endl;
       PGresult *oidResult = PQexec(mPgConnection, 
 				   (const char *) (sql.utf8()));
       if (PQresultStatus(oidResult) == PGRES_TUPLES_OK) 
-        std::cerr << "Ok fetching typelem using\n" << sql.toLocal8Bit().data() << std::endl; 
+        QgsLogger::debug("Ok fetching typelem using\n" + sql); 
 
       // get the oid of the "real" type
       QString poid = QString::fromUtf8(PQgetvalue(oidResult, 0, 
 						  PQfnumber(oidResult, 
 							    "typelem")));
-      std::cerr << "poid is: " << poid.toLocal8Bit().data() << std::endl; 
+      QgsLogger::debug("poid is: " + poid); 
       PQclear(oidResult);
       sql = "select typname, typlen from pg_type where oid = " + poid;
       // //--std::cout << sql << std::endl;
       oidResult = PQexec(mPgConnection, (const char *) (sql.utf8()));
       if (PQresultStatus(oidResult) == PGRES_TUPLES_OK) 
-        std::cerr << "Ok fetching typenam,etc\n";
+        QgsLogger::debug("Ok fetching typenam,etc\n");
 
       QString fieldType = QString::fromUtf8(PQgetvalue(oidResult, 0, 0));
       QString fieldSize = QString::fromUtf8(PQgetvalue(oidResult, 0, 1));
