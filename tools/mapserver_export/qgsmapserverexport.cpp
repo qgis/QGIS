@@ -28,17 +28,16 @@ email                : sherman at mrcc.com
 #include <qstring.h>
 #include <QWidget>
 #include "qgsmapserverexport.h"
-#include "ui_qgsmapserverexportbase.h"
 
 
 // constructor
 QgsMapserverExport::QgsMapserverExport(QWidget * parent, Qt::WFlags fl)
 : QDialog(parent, fl)  
 {
+  setupUi(this);
 //   initialize python
   initPy();
 
-  setupUi(this);
 
 }
 
