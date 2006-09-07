@@ -14,7 +14,7 @@ CONFIG(debug, debug|release){
 }
 LIBS +=  -lpython -L/usr/lib
 mac:INCLUDEPATH += /System/Library/Frameworks/Python.framework/Versions/2.3/include/python2.3/
-linux-g++:INCLUDEPATH += /usr/include/python
+linux-g++:INCLUDEPATH += /usr/include/python2.4/Python.h
 QT += gui 
 QT += qt3support
 
