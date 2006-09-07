@@ -9,7 +9,7 @@
     <x>0</x>
     <y>0</y>
     <width>468</width>
-    <height>389</height>
+    <height>428</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -68,18 +68,11 @@
         </property>
         <layout class="QGridLayout" >
          <property name="margin" >
-          <number>9</number>
+          <number>2</number>
          </property>
          <property name="spacing" >
-          <number>6</number>
+          <number>0</number>
          </property>
-         <item row="0" column="2" >
-          <widget class="QRadioButton" name="radSRSID" >
-           <property name="text" >
-            <string>QGIS SRSID</string>
-           </property>
-          </widget>
-         </item>
          <item row="1" column="3" >
           <widget class="QPushButton" name="pbnFind" >
            <property name="maximumSize" >
@@ -99,13 +92,29 @@
          <item row="1" column="0" colspan="3" >
           <widget class="QLineEdit" name="leSearch" />
          </item>
-         <item row="0" column="0" >
-          <widget class="QRadioButton" name="radSRID" >
+         <item row="0" column="3" >
+          <widget class="QRadioButton" name="radName" >
            <property name="text" >
-            <string>Postgis SRID</string>
+            <string>Name</string>
            </property>
-           <property name="checked" >
-            <bool>true</bool>
+           <property name="iconSize" >
+            <size>
+             <width>16</width>
+             <height>10</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2" >
+          <widget class="QRadioButton" name="radSRSID" >
+           <property name="text" >
+            <string>QGIS SRSID</string>
+           </property>
+           <property name="iconSize" >
+            <size>
+             <width>16</width>
+             <height>10</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -114,16 +123,61 @@
            <property name="text" >
             <string>EPSG ID</string>
            </property>
+           <property name="iconSize" >
+            <size>
+             <width>16</width>
+             <height>10</height>
+            </size>
+           </property>
           </widget>
          </item>
-         <item row="0" column="3" >
-          <widget class="QRadioButton" name="radName" >
+         <item row="0" column="0" >
+          <widget class="QRadioButton" name="radSRID" >
            <property name="text" >
-            <string>Name</string>
+            <string>Postgis SRID</string>
+           </property>
+           <property name="iconSize" >
+            <size>
+             <width>16</width>
+             <height>10</height>
+            </size>
+           </property>
+           <property name="checked" >
+            <bool>true</bool>
            </property>
           </widget>
          </item>
         </layout>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QTextEdit" name="teProjection" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>7</hsizetype>
+          <vsizetype>7</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>0</width>
+          <height>100</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>16777215</width>
+          <height>80</height>
+         </size>
+        </property>
+        <property name="autoFormatting" >
+         <set>QTextEdit::AutoBulletList</set>
+        </property>
+        <property name="readOnly" >
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item row="0" column="0" >
@@ -147,36 +201,6 @@
           <string>Id</string>
          </property>
         </column>
-       </widget>
-      </item>
-      <item row="1" column="0" >
-       <widget class="QTextEdit" name="teProjection" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>7</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize" >
-         <size>
-          <width>0</width>
-          <height>50</height>
-         </size>
-        </property>
-        <property name="maximumSize" >
-         <size>
-          <width>16777215</width>
-          <height>80</height>
-         </size>
-        </property>
-        <property name="autoFormatting" >
-         <set>QTextEdit::AutoBulletList</set>
-        </property>
-        <property name="readOnly" >
-         <bool>true</bool>
-        </property>
        </widget>
       </item>
      </layout>
