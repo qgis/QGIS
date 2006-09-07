@@ -9,7 +9,6 @@ int main( int argc, char **argv )
   QCoreApplication::setApplicationName("qgis");
 
   QgsMapserverExport *mse = new QgsMapserverExport();
-  a.setMainWidget( mse );
   mse->show();
   return a.exec();
 }
