@@ -14,9 +14,9 @@
 //qgis includes
 #include "qgis.h" //<--magick numbers
 #include "qgsapplication.h"
+#include "qgslogger.h"
 
 //qt includes
-#include <QDir>
 #include <QFileInfo>
 #include <QMessageBox>
 
@@ -61,7 +61,10 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog(QWidget *parent, Qt::WFlags
   //getProjList();
   //getEllipsoidList();
   mRecordCountLong=getRecordCount();
-  on_pbnFirst_clicked();
+  if (mRecordCountLong > 0)
+    on_pbnFirst_clicked();
+  else
+    on_pbnNew_clicked();
 }
 
 QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
@@ -982,7 +985,7 @@ void QgsCustomProjectionDialog::cboProjectionFamily_highlighted( const QString &
 
 QString QgsCustomProjectionDialog::getProjFromParameters()
 {
-  std::cout << "QgsCustomProjectionDialog::getProjFromParameters()" << std::endl;
+  QgsLogger::debug("QgsCustomProjectionDialog::getProjFromParameters()");
   QString myProj4String = leParameters->text();
   QRegExp myProjRegExp( "\\+proj=[a-zA-Z]*" );    
   int myStart= 0;
@@ -1002,7 +1005,7 @@ QString QgsCustomProjectionDialog::getProjFromParameters()
 
 QString QgsCustomProjectionDialog::getEllipseFromParameters()
 {
-  std::cout << "QgsCustomProjectionDialog::getEllipseFromParameters()" << std::endl;
+  QgsLogger::debug("QgsCustomProjectionDialog::getEllipseFromParameters()");
   QString myProj4String = leParameters->text();
   QRegExp myEllipseRegExp( "\\+ellps=[a-zA-Z0-9\\-_]*" );    
   int myStart= 0;
