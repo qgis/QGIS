@@ -83,8 +83,8 @@ void QgsMapserverExport::on_chkExpLayersOnly_clicked(bool isChecked)
     txtMapHeight->setEnabled(!isChecked);
     cmbMapUnits->setEnabled(!isChecked);
     cmbMapImageType->setEnabled(!isChecked);
-    txtMinScale->setEnabled(!isChecked);
-    txtMaxScale->setEnabled(!isChecked);
+    //txtMinScale->setEnabled(!isChecked);
+    //txtMaxScale->setEnabled(!isChecked);
     txtWebTemplate->setEnabled(!isChecked);
     txtWebHeader->setEnabled(!isChecked);
     txtWebFooter->setEnabled(!isChecked);
@@ -130,7 +130,6 @@ void QgsMapserverExport::on_buttonOk_clicked()
     pargs = Py_BuildValue("(ssssssssss)", 
         cmbMapUnits->currentText().ascii(), cmbMapImageType->currentText().ascii(), 
         txtMapName->text().ascii(), txtMapWidth->text().ascii(), txtMapHeight->text().ascii(), 
-        txtMinScale->text().ascii(), txtMaxScale->text().ascii(), 
         txtWebTemplate->text().ascii(), txtWebFooter->text().ascii(),txtWebHeader->text().ascii());
     pstr = PyEval_CallObject(pmeth, pargs);
 
