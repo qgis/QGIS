@@ -140,7 +140,7 @@ void QgsMapserverExport::on_buttonOk_clicked()
   }
   // Get the writeMapFile method from the Qgis2Map class
   pmeth = PyObject_GetAttrString(pinst, "writeMapFile");
-  pargs = Py_BuildValue("( )");
+  pargs = Py_BuildValue("()");
   // Execute the writeMapFile method to parse the QGIS project file and create the .map file
   pstr = PyEval_CallObject(pmeth, pargs);
   // Show the return value
