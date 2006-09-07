@@ -48,12 +48,16 @@
         <property name="buddy" >
          <cstring>txtMaxScale</cstring>
         </property>
+        <property name="toolTip" >
+         <string>MaxScale</string>
+        </property>
+        
        </widget>
       </item>
       <item row="0" column="1" colspan="3" >
        <widget class="QLineEdit" name="txtMapName" >
         <property name="toolTip" >
-         <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Prefix attached to map, scalebar and legend GIF filenames created using this MapFile&lt;/p>&lt;/body>&lt;/html></string>
+         <string>Prefix attached to map, scalebar and legend GIF filenames created using this MapFile</string>
         </property>
        </widget>
       </item>
@@ -296,7 +300,7 @@
    <item row="1" column="1" >
     <widget class="QLineEdit" name="txtQgisFilePath" >
      <property name="toolTip" >
-      <string>QGIS project file to export to MapServer map format</string>
+      <string>Full path to the QGIS project file to export to MapServer map format</string>
      </property>
     </widget>
    </item>
@@ -351,14 +355,20 @@
       </property>
       <item row="2" column="1" >
        <widget class="QLineEdit" name="txtWebFooter" />
+        <property name="toolTip" >
+         <string>Path to the MapServer footer file (optional)</string>
+        </property>
       </item>
       <item row="1" column="1" >
        <widget class="QLineEdit" name="txtWebHeader" />
+        <property name="toolTip" >
+         <string>Path to the MapServer header file (optional)</string>
+        </property>
       </item>
       <item row="0" column="1" >
        <widget class="QLineEdit" name="txtWebTemplate" >
         <property name="toolTip" >
-         <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Path to the template file&lt;/p>&lt;/body>&lt;/html></string>
+         <string>Path to the MapServer template file</string>
         </property>
        </widget>
       </item>
