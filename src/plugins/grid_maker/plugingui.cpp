@@ -12,13 +12,12 @@
 #include "plugingui.h"
 
 //qt includes
-#include <qpushbutton.h>
-#include <qlineedit.h>
 #include <QFileDialog>
-#include <qmessagebox.h>
-#include <qfile.h>
-#include <qradiobutton.h>
+#include <QMessageBox>
+
 #include "graticulecreator.h"
+#include <qgslogger.h>
+
 //standard includes
 #include <iostream>
 
@@ -38,15 +37,14 @@ void QgsGridMakerPluginGui::on_pbnOK_clicked()
 {
   //check input file exists
   //
-  std::cout << "GrativuleCreator called with: " <<
-      leOutputShapeFile->text().toLocal8Bit().data() <<
-      leLongitudeInterval->text().toLocal8Bit().data() <<
-      leLatitudeInterval->text().toLocal8Bit().data() <<
-      leOriginLongitude->text().toLocal8Bit().data() <<
-      leOriginLatitude->text().toLocal8Bit().data() <<
-      leEndPointLongitude->text().toLocal8Bit().data() <<
-      leEndPointLatitude->text().toLocal8Bit().data()
-      << std::endl;
+  QgsLogger::debug("GrativuleCreator called with: " +
+      leOutputShapeFile->text() + " " +
+      leLongitudeInterval->text() + " " +
+      leLatitudeInterval->text() + " " +
+      leOriginLongitude->text() + " " +
+      leOriginLatitude->text() + " " +
+      leEndPointLongitude->text() + " " +
+      leEndPointLatitude->text());
 
   if (leOutputShapeFile->text().isEmpty())
   {
@@ -158,7 +156,7 @@ void QgsGridMakerPluginGui::on_pbnOK_clicked()
 
 void QgsGridMakerPluginGui::on_pbnSelectOutputFile_clicked()
 {
-  std::cout << " Gps File Importer Gui::pbnSelectOutputFile_clicked() " << std::endl;
+ QgsLogger::debug(" Gps File Importer Gui::pbnSelectOutputFile_clicked()");
   QString myOutputFileNameQString = QFileDialog::getSaveFileName(
           this,
           tr("Choose a filename to save under"),

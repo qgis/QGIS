@@ -2,12 +2,12 @@
 #include <qgsconfig.h>
 #endif
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include "plugingui.h"
-#include <qapplication.h>
-#include <qtextcodec.h>
-#include <qtranslator.h>
+
+#include <QApplication>
+#include <QTranslator>
 #include <QString>
 
 int main(int argc, char *argv[])
