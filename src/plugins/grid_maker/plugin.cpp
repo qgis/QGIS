@@ -27,16 +27,7 @@ email                : tim@linfiniti.com
 #include "qgsmaplayer.h"
 #include "plugin.h"
 
-
-#include <q3toolbar.h>
-#include <qmenubar.h>
-#include <qmessagebox.h>
-#include <q3popupmenu.h>
-#include <qlineedit.h>
-#include <qaction.h>
-#include <qapplication.h>
-#include <qcursor.h>
-#include <qglobal.h>
+#include <QAction>
 
 //non qt includes
 #include <iostream>

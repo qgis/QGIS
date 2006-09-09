@@ -1,16 +1,21 @@
 #include "graticulecreator.h"
+
 #include <stdio.h>
 #include <cassert>
-#include <qtextstream.h>
 #include <iostream>
 #include <fstream>
-#include <qfileinfo.h>
-#include <qstringlist.h>
+
+#include <QTextStream>
+#include <QFileInfo>
+#include <QStringList>
+
 #include <qgis.h>
+#include <qgslogger.h>
+
 GraticuleCreator::GraticuleCreator(QString theOutputFileName,ShapeType theType)
 {
-    std::cout << "GraticuleCreator constructor called with " << theOutputFileName.toLocal8Bit().data()
-    << " for output file " << std::endl;
+  QgsLogger::debug("GraticuleCreator constructor called with " + 
+		   theOutputFileName +  " for output file ");
     /* Open and prepare output files */
     createDbf(theOutputFileName);
     createShapeFile(theOutputFileName,theType);
@@ -80,7 +85,7 @@ void GraticuleCreator::writeDbfRecord ( int theRecordIdInt, QString theLabel)
         std::cerr <<  "DBFWriteStringAttribute failed. : " <<  theRecordIdInt << " - " << theLabel.toLocal8Bit().data() <<std::endl;
         //exit(ERR_DBFWRITEINTEGERATTRIBUTE);
       }
-      std::cerr << " - OK! " << std::endl;
+      QgsLogger::debug(" - OK! ");
     }
     //DBFWriteIntegerAttribute(mDbfHandle, theRecordIdInt, 0, theRecordIdInt);
     //DBFWriteStringAttribute(mDbfHandle, theRecordIdInt, 1, theLabel);

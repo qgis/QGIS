@@ -5,8 +5,8 @@
 #include "utils.h"
 
 //qt includes
-#include <qstring.h>
-#include <qfile.h>
+#include <QString>
+//#include <qfile.h>
 
 class GraticuleCreator
 {

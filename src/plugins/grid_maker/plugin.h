@@ -20,7 +20,6 @@
 #ifndef QGSGRIDMAKERPLUGIN
 #define QGSGRIDMAKERPLUGIN
 #include "../qgisplugin.h"
-#include <qwidget.h>
 #include <qgisapp.h>
 
 /**
