@@ -836,10 +836,10 @@ QString QgsGPXProvider::getDefaultValue(const QString& attr, QgsFeature* f) {
  */
 bool QgsGPXProvider::boundsCheck(double x, double y)
 {
-  bool inBounds = (((x < mSelectionRectangle->xMax()) &&
-        (x > mSelectionRectangle->xMin())) &&
-      ((y < mSelectionRectangle->yMax()) &&
-       (y > mSelectionRectangle->yMin())));
+  bool inBounds = (((x <= mSelectionRectangle->xMax()) &&
+        (x >= mSelectionRectangle->xMin())) &&
+      ((y <= mSelectionRectangle->yMax()) &&
+       (y >= mSelectionRectangle->yMin())));
   QString hit = inBounds?"true":"false";
   return inBounds;
 }
