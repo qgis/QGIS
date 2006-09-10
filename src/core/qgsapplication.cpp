@@ -90,6 +90,18 @@ const QString QgsApplication::helpAppPath()
   helpAppPath += "/qgis_help";
   return helpAppPath;
 }
+/*!
+  Returns the path to the mapserverexport application.
+*/
+const QString QgsApplication::msexportAppPath()
+{
+  QString msexportAppPath = applicationDirPath(); 
+#ifdef Q_OS_MACX
+  msexportAppPath += "/bin/msexport.app/Contents/MacOS";
+#endif
+  msexportAppPath += "/msexport";
+  return msexportAppPath;
+}
 
 /*!
   Returns the path to the translation directory.
