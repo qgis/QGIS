@@ -22,6 +22,7 @@ email                : sherman at mrcc.com
 #include <qlineedit.h>
 #include <qcheckbox.h>
 #include <QComboBox>
+#include <QSettings>
 #include <qmessagebox.h>
 #include <qcolor.h>
 #include <qregexp.h>
@@ -37,7 +38,10 @@ QgsMapserverExport::QgsMapserverExport(QWidget * parent, Qt::WFlags fl)
   setupUi(this);
 //   initialize python
   initPy();
-
+  qDebug("Reading setttings");
+  QSettings mySettings;
+  txtMapFilePath->setText(mySettings.value("mapserverExport/lastMapFile","").toString());
+  txtQgisFilePath->setText(mySettings.value("mapserverExport/lastQgsFile","").toString());
 
 }
 
@@ -95,14 +99,22 @@ void QgsMapserverExport::on_chkExpLayersOnly_clicked(bool isChecked)
 
 void QgsMapserverExport::on_buttonOk_clicked()
 {
+  qDebug("Writing setttings");
+  QSettings mySettings;
+  mySettings.setValue("mapserverExport/lastMapFile",txtMapFilePath->text());
+  mySettings.setValue("mapserverExport/lastQgsFile",txtQgisFilePath->text());
   
   char *cstr;
   PyObject *pstr, *pmod, *pclass, *pinst, *pmeth, *pargs;
   //TODO Need to append the path to the qgis python files using the path to the
   //     Python files in the QGIS install directory
   PyRun_SimpleString("import sys");
-  QString curdir = "/home/gsherman/development/qgis_qt_port/tools/mapserver_export";
-  QString sysCmd = QString("sys.path.append('%1')").arg(curdir);
+  QString dataPath ( PKGDATAPATH );
+  dataPath = dataPath.trimmed();
+  QString scriptDir = dataPath + QDir::separator() + "python";
+  qDebug(scriptDir);
+  //QString curdir = "/home/gsherman/development/qgis_qt_port/tools/mapserver_export";
+  QString sysCmd = QString("sys.path.append('%1')").arg(scriptDir);
   PyRun_SimpleString(sysCmd.ascii());
 
   // Import the module
