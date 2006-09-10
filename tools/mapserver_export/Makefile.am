@@ -75,6 +75,16 @@ libmsexport_la_LIBADD = $(PYTHON_LIB) $(QT_LDADD)
 libmsexport_la_CXXFLAGS = $(CXXFLAGS) $(PKGDATAPATH) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PYTHON_INCLUDE_DIR) -I../../src
 #msexport_la_LDFLAGS
 
+# Qt/Mac app needs to be inside a bundle to function correctly
+MACBINDIR = $(bindir)/msexport.app/Contents/MacOS
+
+install-exec-hook:
+if HAVE_QTMAC
+	$(mkinstalldirs) $(MACBINDIR)
+	mv $(bindir)/msexport $(MACBINDIR)
+endif
+
+
 #
 # Put script into an appropriate dir
 #
