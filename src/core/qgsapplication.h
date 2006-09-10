@@ -36,6 +36,9 @@ class QgsApplication: public QApplication
     //! Returns the path to the help application.
     static const QString helpAppPath();
 
+    //! Returns the path to the mapserver export application.
+    static const QString msexportAppPath();
+
     //! Returns the path to the translation directory.
     static const QString i18nPath();
 
