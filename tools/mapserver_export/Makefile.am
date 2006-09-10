@@ -11,6 +11,9 @@
 # $Id: Makefile.am 4200 2005-11-12 01:37:49Z gsherman $
 
 bin_PROGRAMS = msexport
+if HAVE_QTMAC
+MAC = mac
+endif
 
 if !HAVE_QTMAC
 PREFIX=-DPREFIX=\"$(prefix)\"
@@ -69,7 +72,7 @@ lib_LTLIBRARIES = libmsexport.la
 libmsexport_la_SOURCES = qgsmapserverexport.cpp qgsmapserverexport.moc.cpp msexport_wrap.cxx
 
 libmsexport_la_LIBADD = $(PYTHON_LIB) $(QT_LDADD)
-libmsexport_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PYTHON_INCLUDE_DIR) -I../../src
+libmsexport_la_CXXFLAGS = $(CXXFLAGS) $(PKGDATAPATH) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PYTHON_INCLUDE_DIR) -I../../src
 #msexport_la_LDFLAGS
 
 #
