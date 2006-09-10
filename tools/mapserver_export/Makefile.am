@@ -66,3 +66,13 @@ libmsexport_la_SOURCES = qgsmapserverexport.cpp qgsmapserverexport.moc.cpp msexp
 libmsexport_la_LIBADD = $(PYTHON_LIB) $(QT_LDADD)
 libmsexport_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PYTHON_INCLUDE_DIR) -I../../src
 #msexport_la_LDFLAGS
+
+#
+# Put script into an appropriate dir
+#
+
+pythondir = ${pkgdatadir}/python
+
+python_DATA = *.py
+
+EXTRA_DIST = $(python_DATA)

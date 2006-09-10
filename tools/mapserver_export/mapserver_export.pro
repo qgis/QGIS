@@ -12,6 +12,7 @@ CONFIG += build_all
 CONFIG(debug, debug|release){
   TARGET = $$member(TARGET, 0)-debug
 }
+DEFINES += PKGDATAPATH='"$$system(pwd)"'
 LIBS +=  -lpython -L/usr/lib
 mac:INCLUDEPATH += /System/Library/Frameworks/Python.framework/Versions/2.3/include/python2.3/
 linux-g++:INCLUDEPATH += /usr/include/python2.4/Python.h
