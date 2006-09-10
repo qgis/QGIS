@@ -145,7 +145,7 @@ void QgsMapserverExport::on_buttonOk_clicked()
   {
     std::cout << "Initializing all options" << std::endl; 
     pmeth = PyObject_GetAttrString(pinst, "setOptions");
-    pargs = Py_BuildValue("(ssssssssss)", 
+    pargs = Py_BuildValue("(ssssssss)", 
         cmbMapUnits->currentText().ascii(), cmbMapImageType->currentText().ascii(), 
         txtMapName->text().ascii(), txtMapWidth->text().ascii(), txtMapHeight->text().ascii(), 
         txtWebTemplate->text().ascii(), txtWebFooter->text().ascii(),txtWebHeader->text().ascii());
