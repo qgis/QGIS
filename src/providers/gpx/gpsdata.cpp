@@ -18,8 +18,7 @@
 #include <limits>
 #include <stdexcept>
 
-#include <qfile.h>
-//Added by qt3to4:
+#include <QFile>
 #include <QTextStream>
 
 #include "gpsdata.h"

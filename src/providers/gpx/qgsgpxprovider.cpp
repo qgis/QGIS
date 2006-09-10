@@ -22,17 +22,15 @@
 #include <cfloat>
 #include <iostream>
 #include <limits>
-#include <math.h>
+#include <cmath>
 
 // Changed #include <qapp.h> to <qapplication.h>. Apparently some
 // debian distros do not include the qapp.h wrapper and the compilation
 // fails. [gsherman]
-#include <qapplication.h>
+#include <QApplication>
 
-#include <qfile.h>
-#include <qtextstream.h>
-#include <qstringlist.h>
-#include <qrect.h>
+#include <QFile>
+#include <QTextStream>
 
 #include "qgis.h"
 #include "qgsdataprovider.h"
