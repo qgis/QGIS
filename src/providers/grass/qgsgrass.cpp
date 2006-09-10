@@ -203,7 +203,10 @@ void QgsGrass::init( void )
 	    QProcess p;
 	    p.start ( pagers.at(i) );
 	    p.waitForStarted();
-	    state = p.state();
+            state = p.state();
+            p.write("\004"); // Ctrl-D
+            p.closeWriteChannel();
+            p.waitForFinished(1000);
 	    p.kill();
 
 	    if ( state == QProcess::Running )
