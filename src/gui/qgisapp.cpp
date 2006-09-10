@@ -87,7 +87,6 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsmapoverviewcanvas.h"
 #include "qgsmaprender.h"
-#include "qgsmapserverexport.h"
 #include "qgsmessageviewer.h"
 #include "qgsoptions.h"
 #include "qgspastetransformations.h"
@@ -3131,20 +3130,26 @@ void QgisApp::showAllLayers()
 void QgisApp::exportMapServer()
 {
   // check to see if there are any layers to export
-  if (mMapCanvas->layerCount() > 0)
-  {
-    QgsMapserverExport *mse = new QgsMapserverExport(mMapCanvas, this);
-    if (mse->exec())
-    {
-      mse->write();
-    }
-    delete mse;
-  }
-  else
-  {
-    QMessageBox::warning(this, tr("No Map Layers"),
-        tr("No layers to export. You must add at least one layer to the map in order to export the view."));
-  }
+  // Possibly we may reinstate this in the future if we provide 'active project' export again
+  //if (mMapCanvas->layerCount() > 0)
+  //{
+    QString myMSExportPath = QgsApplication::msexportAppPath(); 
+    QProcess *process = new QProcess;
+    process->start(myMSExportPath);
+
+    // Delete this object if the process terminates
+    connect(process, SIGNAL(finished(int, QProcess::ExitStatus)), 
+        SLOT(processExited()));
+
+    // Delete the process if the application quits
+    connect(qApp, SIGNAL(aboutToQuit()), process, SLOT(terminate()));
+
+  //}
+  //else
+  //{
+  //  QMessageBox::warning(this, tr("No Map Layers"),
+  //      tr("No layers to export. You must add at least one layer to the map in order to export the view."));
+  //}
 }
 void QgisApp::zoomIn()
 {
