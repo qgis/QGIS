@@ -29,21 +29,13 @@
 #include "qgsgpsplugin.h"
 
 
-#include <qeventloop.h>
 #include <QFileDialog>
-#include <q3toolbar.h>
-#include <qmenubar.h>
-#include <qmessagebox.h>
-#include <q3popupmenu.h>
-#include <qlineedit.h>
-#include <qaction.h>
-#include <qapplication.h>
-#include <qcursor.h>
-#include <q3process.h>
-#include <q3progressdialog.h>
-#include <qsettings.h>
-#include <qstringlist.h>
-#include <qglobal.h>
+#include <QMessageBox>
+#include <QAction>
+#include <Q3Process>
+#include <Q3ProgressDialog>
+#include <QSettings>
+#include <QStringList>
 
 //non qt includes
 #include <cassert>

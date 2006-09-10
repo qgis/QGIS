@@ -20,9 +20,9 @@
 
 #include <map>
 
-#include <qstring.h>
-#include <qstringlist.h>
+#include <QStringList>
 
+class QString;
 
 class QgsBabelFormat {
 public:

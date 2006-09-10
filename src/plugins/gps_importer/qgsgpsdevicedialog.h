@@ -15,7 +15,7 @@
 #include "ui_qgsgpsdevicedialogbase.h"
 #include "qgsgpsdevice.h"
 
-#include <qstring.h>
+#include <QString>
 
 
 class QgsGPSDeviceDialog : public QDialog, private Ui::QgsGPSDeviceDialogBase 
