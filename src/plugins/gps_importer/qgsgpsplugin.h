@@ -22,7 +22,7 @@
 #include "qgsbabelformat.h"
 #include "qgsgpsdevice.h"
 #include "../qgisplugin.h"
-#include <qwidget.h>
+
 #include <qgisapp.h>
 
 class QgsVectorLayer;

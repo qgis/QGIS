@@ -20,9 +20,10 @@
 
 #include <QFile>
 #include <QTextStream>
+#include <QObject>
 
 #include "gpsdata.h"
-
+#include <qgslogger.h>
 
 QString GPSObject::xmlify(const QString& str) {
   QString tmp = str;
@@ -311,11 +312,11 @@ GPSData* GPSData::getData(const QString& filename) {
   if (dataObjects.find(filename) == dataObjects.end()) {
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly)) {
-      qWarning("Couldn't open the data source: " + filename);
+      QgsLogger::warning(QObject::tr("Couldn't open the data source: ") + filename);
       return 0;
     }
     GPSData* data = new GPSData;
-    std::cerr << "Loading file " << filename.toLocal8Bit().data() << std::endl;
+    QgsLogger::debug("Loading file " + filename);
     GPXHandler handler(*data);
     bool failed = false;
     
@@ -332,9 +333,10 @@ GPSData* GPSData::getData(const QString& filename) {
       if (file.atEnd())
         atEnd = 1;
       if (!XML_Parse(p, buffer, readBytes, atEnd)) {
-        std::cerr<<"Parse error at line "
-                 <<XML_GetCurrentLineNumber(p)<<": "
-                 <<XML_ErrorString(XML_GetErrorCode(p))<<std::endl;
+        QgsLogger::warning(QObject::tr("Parse error at line ") +
+                           QString("%1").arg(XML_GetCurrentLineNumber(p)) + 
+                           " : " +
+                           QString(XML_ErrorString(XML_GetErrorCode(p))));
         failed = true;
         break;
       }
@@ -347,7 +349,7 @@ GPSData* GPSData::getData(const QString& filename) {
     dataObjects[filename] = std::pair<GPSData*, unsigned>(data, 0);
   }
   else
-    std::cerr << filename.toLocal8Bit().data() << " is already loaded"<<std::endl;
+    QgsLogger::debug(filename + " is already loaded");
   
   // return a pointer and increase the reference count for that filename
   DataMap::iterator iter = dataObjects.find(filename);
@@ -362,9 +364,9 @@ void GPSData::releaseData(const QString& filename) {
      it if the reference count becomes 0 */
   DataMap::iterator iter = dataObjects.find(filename);
   if (iter != dataObjects.end()) {
-    std::cerr << "unrefing " << filename.toLocal8Bit().data() << std::endl;
+    QgsLogger::debug("unrefing " + filename);
     if (--(iter->second.second) == 0) {
-      std::cerr << "No one's using " << filename.toLocal8Bit().data() << ", I'll erase it" << std::endl;
+      QgsLogger::debug("No one's using " + filename + ", I'll erase it");
       delete iter->second.first;
       dataObjects.erase(iter);
     }
@@ -379,7 +381,7 @@ GPSData::DataMap GPSData::dataObjects;
 
 
 bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
-  //std::cerr<<"<"<<qName<<">"<<std::endl;
+
   if (!std::strcmp(qName, "gpx")) {
     parseModes.push(ParsingDocument);
     mData = GPSData();

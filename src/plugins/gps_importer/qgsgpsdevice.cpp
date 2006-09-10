@@ -1,4 +1,4 @@
-#include <qregexp.h>
+#include <QRegExp>
 
 #include "qgsgpsdevice.h"
 

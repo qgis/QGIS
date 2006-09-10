@@ -21,8 +21,8 @@
 #ifndef QGSGPSDEVICE_H
 #define QGSGPSDEVICE_H
 
-#include <qstring.h>
-#include <qstringlist.h>
+#include <QString>
+#include <QStringList>
 
 #include <qgsbabelformat.h>
 

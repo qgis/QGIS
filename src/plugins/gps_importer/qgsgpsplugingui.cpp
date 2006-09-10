@@ -13,6 +13,7 @@
 #include "qgsgpsdevicedialog.h"
 #include "qgsmaplayer.h"
 #include "qgsdataprovider.h"
+#include <qgslogger.h>
 
 //qt includes
 #include <QFileDialog>
@@ -201,9 +202,9 @@ void QgsGPSPluginGui::on_pbnCancel_clicked()
 
 void QgsGPSPluginGui::on_pbnGPXSelectFile_clicked()
 {
-  std::cout << " Gps File Importer::pbnGPXSelectFile_clicked() " << std::endl;
+  QgsLogger::debug(" Gps File Importer::pbnGPXSelectFile_clicked() ");
   QString myFileTypeQString;
-  QString myFilterString="GPS eXchange format (*.gpx)";
+  QString myFilterString=tr("GPS eXchange format (*.gpx)");
   QSettings settings("QuantumGIS", "qgis");
   QString dir = settings.readEntry("/Plugin-GPS/gpxdirectory");
   if (dir.isEmpty())
@@ -214,7 +215,7 @@ void QgsGPSPluginGui::on_pbnGPXSelectFile_clicked()
           dir, //initial dir
           myFilterString, //filters to select
           &myFileTypeQString); //the pointer to store selected filter
-  std::cout << "Selected filetype filter is : " << myFileTypeQString.toLocal8Bit().data() << std::endl;
+  QgsLogger::debug("Selected filetype filter is : " + myFileTypeQString);
   leGPXFile->setText(myFileNameQString);
 }
 
@@ -231,11 +232,11 @@ void QgsGPSPluginGui::on_pbnIMPInput_clicked() {
   std::map<QString, QgsBabelFormat*>::const_iterator iter;
   iter = mImporters.find(mImpFormat);
   if (iter == mImporters.end()) {
-    std::cerr << "Unknown file format selected: "
-	      << myFileType.left(myFileType.length() - 6).toLocal8Bit().data() << std::endl;
+    QgsLogger::warning("Unknown file format selected: " +
+                       myFileType.left(myFileType.length() - 6));
   }
   else {
-    std::cerr << iter->first.toLocal8Bit().data() << " selected" << std::endl;
+    QgsLogger::debug(iter->first + " selected");
     leIMPInput->setText(myFileName);
     cmbIMPFeature->clear();
     if (iter->second->supportsWaypoints())

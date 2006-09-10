@@ -19,8 +19,8 @@
 
 #include "qgsbabelformat.h"
 
-#include <qregexp.h>
-#include <qstring.h>
+#include <QRegExp>
+#include <QString>
 
 
 QgsBabelFormat::QgsBabelFormat(const QString& name) : 
