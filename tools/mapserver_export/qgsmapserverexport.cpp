@@ -28,6 +28,7 @@ email                : sherman at mrcc.com
 #include <qregexp.h>
 #include <qstring.h>
 #include <QWidget>
+#include <QApplication>
 #include "qgsmapserverexport.h"
 
 
@@ -109,7 +110,12 @@ void QgsMapserverExport::on_buttonOk_clicked()
   //TODO Need to append the path to the qgis python files using the path to the
   //     Python files in the QGIS install directory
   PyRun_SimpleString("import sys");
+#if defined(Q_WS_MACX) || defined(Q_WS_WIN32)
+  QString prefixPath = QApplication::applicationDirPath();
+  QString dataPath = prefixPath + QString("/share/qgis");
+#else
   QString dataPath ( PKGDATAPATH );
+#endif
   dataPath = dataPath.trimmed();
   QString scriptDir = dataPath + QDir::separator() + "python";
   qDebug(scriptDir);
