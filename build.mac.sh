@@ -47,7 +47,7 @@ then
  #export QTDIR=/usr/local/Trolltech/Qt-4.1.0
  #qt installed from debian apt
  #export QTDIR=/usr
- export QTDIR=/usr/local/Qt4.1.3
+ export QTDIR=/usr/local/Trolltech/Qt-4.1.4
  #export PATH=/usr/local/gislibs/bin:/usr/local/graphicslibs/bin/:$QTDIR/bin:$PATH
  export LD_LIBRARY_PATH=$QTDIR/lib
 
@@ -59,7 +59,8 @@ then
  # for additional details
  ./autogen.sh $AUTOGEN_FLAGS --prefix=${1} \
                              --enable-static=no \
-                             --with-qtdir=$QTDIR 
+                             --with-qtdir=$QTDIR \
+                             --with-python
                              #--with-grass=/usr/local/gislibs/grass
                              #--enable-unittests \
 make && make install
