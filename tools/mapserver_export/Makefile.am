@@ -12,6 +12,11 @@
 
 bin_PROGRAMS = msexport
 
+if !HAVE_QTMAC
+PREFIX=-DPREFIX=\"$(prefix)\"
+PLUGINPATH=-DPLUGINPATH=\"$(pkglibdir)\"
+PKGDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
+endif
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -53,7 +58,7 @@ BUILT_SOURCES = $(msexport_MOC) $(msexport_UI)
 
 
 msexport_LDADD = $(QT_LDADD) $(PYTHON_LIB)
-msexport_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PYTHON_INCLUDE_DIR) -I../../src
+msexport_CXXFLAGS = $(CXXFLAGS) $(PKGDATAPATH) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PYTHON_INCLUDE_DIR) -I../../src
 
 CLEANFILES = $(BUILT_SOURCES)
 
