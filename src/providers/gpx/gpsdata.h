@@ -27,8 +27,8 @@
 #include <vector>
 
 #include <expat.h>
-#include <qstring.h>
-#include <qtextstream.h>
+#include <QString>
+#include <QTextStream>
 
 #include "qgsrect.h"
 
