@@ -3155,7 +3155,7 @@ void QgisApp::zoomIn()
 {
   QgsDebugMsg ("Setting map tool to zoomIn");
   
-  QgsMapTool* tool = new QgsMapToolZoom(mMapCanvas, FALSE /* zoomOut */);
+  QgsMapTool* tool = new QgsMapToolZoom(mMapCanvas, FALSE /* zoomIn */);
   tool->setAction(mActionZoomIn);
   mMapCanvas->setMapTool(tool);
 
