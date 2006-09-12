@@ -45,10 +45,14 @@ class QgsContinuousColorRenderer: public QgsRenderer
     void setMinimumSymbol(QgsSymbol* sy);
     /**Sets the symbol for the maximum value. The symbol has to be created using the new operator and is automatically deleted when inserting a new symbol or when the instance is destroyed*/
     void setMaximumSymbol(QgsSymbol* sy);
+    /** Sets whether to draw the polygon outline*/
+    void setDrawPolygonOutline(bool draw) { mDrawPolygonOutline = draw;}
     /**Returns the symbol for the minimum value*/
     const QgsSymbol* minimumSymbol() const;
     /**Returns the symbol for the maximum value*/
     const QgsSymbol* maximumSymbol() const;
+    /** whether to draw a polygon outline*/
+    bool drawPolygonOutline() { return mDrawPolygonOutline; }
     /**Reads the renderer configuration from an XML file
      @param rnode the DOM node to read 
      @param vl the vector layer which will be associated with the renderer*/
@@ -72,6 +76,8 @@ class QgsContinuousColorRenderer: public QgsRenderer
     QgsSymbol* mMinimumSymbol;
     /**Item for the maximum value*/
     QgsSymbol* mMaximumSymbol;
+    /** Whether to draw the polygon outline or not */
+    bool mDrawPolygonOutline;
 };
 
 inline int QgsContinuousColorRenderer::classificationField() const

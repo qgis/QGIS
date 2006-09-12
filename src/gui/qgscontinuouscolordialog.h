@@ -37,6 +37,7 @@ class QgsContinuousColorDialog: public QDialog, private Ui::QgsContinuousColorDi
  protected slots:
     void selectMinimumColor();
     void selectMaximumColor();
+    void on_cb_polygonOutline_clicked();
  protected:
     QgsVectorLayer* mVectorLayer;
     /**Stores the names and numbers of the fields with numeric values*/
