@@ -47,7 +47,8 @@ then
  #export QTDIR=/usr/local/Trolltech/Qt-4.1.0
  #qt installed from debian apt
  #export QTDIR=/usr
- export QTDIR=/usr/local/Trolltech/Qt-4.1.4
+ export QTDIR=/usr/local/Trolltech/Qt-4.2.0-rc1
+ #export QTDIR=/usr/local/Trolltech/Qt-4.1.4
  #export PATH=/usr/local/gislibs/bin:/usr/local/graphicslibs/bin/:$QTDIR/bin:$PATH
  export LD_LIBRARY_PATH=$QTDIR/lib
 
