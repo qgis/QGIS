@@ -126,7 +126,7 @@ class Qgis2Map:
     self.outFile.write("    NAME " + self.imageType + "\n")
     self.outFile.write("    DRIVER 'GD/" + self.imageType.upper() + "'\n")
     self.outFile.write("    MIMETYPE 'image/" + self.imageType.lower() + "'\n")
-    self.outFile.write("    IMAGEMODE PC256\n")
+    self.outFile.write("    #IMAGEMODE PC256\n")
     self.outFile.write("    EXTENSION '" + self.imageType.lower() + "'\n")
     self.outFile.write("  END\n")
     
