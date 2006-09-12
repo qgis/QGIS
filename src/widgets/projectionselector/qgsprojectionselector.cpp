@@ -292,6 +292,11 @@ QString QgsProjectionSelector::getCurrentProj4String()
           std::cout << " QgsProjectionSelector::getCurrentProj4String :  users qgis.db not found" << std::endl;
           return NULL;
         }
+        else
+        {
+          QgsDebug(myDatabaseFileName);
+          QgsDebug("File not found");
+        }
       }
       else //must be  a system projection then
       {
@@ -891,6 +896,8 @@ void QgsProjectionSelector::on_pbnFind_clicked()
   myFileInfo.setFile(myDatabaseFileName);
   if ( !myFileInfo.exists( ) ) //its not critical if this happens
   {
+    qDebug(myDatabaseFileName);
+    qDebug("User db does not exist");
     return ;
   }
   myResult = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &myDatabase);
@@ -965,6 +972,11 @@ long QgsProjectionSelector::getLargestSRSIDMatch(QString theSql)
         }
       }
     }
+  }
+  else
+  {
+    QgsDebug(myDatabaseFileName);
+    QgsDebug("File not found");
   }
   //only bother looking in srs.db if it wasnt found above
 
