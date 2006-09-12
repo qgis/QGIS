@@ -118,7 +118,7 @@ void QgsMapserverExport::on_buttonOk_clicked()
 #endif
   dataPath = dataPath.trimmed();
   QString scriptDir = dataPath + QDir::separator() + "python";
-  qDebug(scriptDir);
+  qDebug("Python scripts directory: " + scriptDir.toLocal8Bit());
   //QString curdir = "/home/gsherman/development/qgis_qt_port/tools/mapserver_export";
   QString sysCmd = QString("sys.path.append('%1')").arg(scriptDir);
   PyRun_SimpleString(sysCmd.ascii());

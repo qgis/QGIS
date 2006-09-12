@@ -88,8 +88,10 @@ endif
 #
 # Put script into an appropriate dir
 #
-
 pythondir = ${pkgdatadir}/python
+if HAVE_QTMAC
+	pythondir=$(MACBINDIR)/share/qgis/python
+endif
 
 python_DATA = *.py
 
