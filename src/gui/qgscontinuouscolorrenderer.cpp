@@ -151,6 +151,10 @@ void QgsContinuousColorRenderer::renderFeature(QPainter * p, QgsFeature * f, QPi
     else
     {
       p->setBrush(QColor(red, green, blue));
+      if (mDrawPolygonOutline)
+        p->setPen(QColor(0, 0, 0));
+      else
+        p->setPen(Qt::NoPen);
     }
     if(selected)
     {

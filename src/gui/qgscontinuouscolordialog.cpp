@@ -87,6 +87,8 @@ QgsContinuousColorDialog::QgsContinuousColorDialog(QgsVectorLayer * layer)
 	outlinewidthspinbox->setValue(minsymbol->pen().width());
 	outlinewidthspinbox->setMinValue(1);
     }
+
+    outlinewidthspinbox->setEnabled(true);
 }
 
 QgsContinuousColorDialog::QgsContinuousColorDialog()
@@ -138,7 +140,7 @@ void QgsContinuousColorDialog::apply()
     else
     {
 	minsymbol->setBrush(QBrush(lblMinValue->paletteBackgroundColor()));
-	minsymbol->setPen(QPen(QColor(0, 0, 0), outlinewidthspinbox->value()));
+        minsymbol->setPen(QPen(QColor(0, 0, 0), outlinewidthspinbox->value()));
     }
     
     QgsSymbol* maxsymbol = new QgsSymbol(mVectorLayer->vectorType(), QString::number(maximum, 'f'), "", "");
@@ -158,6 +160,8 @@ void QgsContinuousColorDialog::apply()
     renderer->setMinimumSymbol(minsymbol);
     renderer->setMaximumSymbol(maxsymbol);
     renderer->setClassificationField(classfield);
+    bool drawOutline = (cb_polygonOutline->checkState() == Qt::Checked) ? true:false; 
+    renderer->setDrawPolygonOutline(drawOutline);
 
     mVectorLayer->refreshLegend();
 }
@@ -180,4 +184,12 @@ void QgsContinuousColorDialog::selectMaximumColor()
 	lblMaxValue->setPaletteBackgroundColor(maxcolor);
     }
     setActiveWindow();
+}
+
+void QgsContinuousColorDialog::on_cb_polygonOutline_clicked()
+{
+  if (cb_polygonOutline->checkState() == Qt::Checked)
+    outlinewidthspinbox->setEnabled(true);
+  else
+    outlinewidthspinbox->setEnabled(false);
 }
