@@ -65,6 +65,11 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog(QWidget *parent, Qt::WFlags
     on_pbnFirst_clicked();
   else
     on_pbnNew_clicked();
+  //automatically go to insert mode if there are not recs yet
+  if (mRecordCountLong<1)
+  {
+    on_pbnNew_clicked();
+  }
 }
 
 QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
@@ -428,15 +433,23 @@ void QgsCustomProjectionDialog::on_pbnFirst_clicked()
   //enable nav buttons as appropriate
   pbnFirst->setEnabled(false);
   pbnPrevious->setEnabled(false);
-  if (mCurrentRecordLong==mRecordCountLong)
+  //automatically go to insert mode if there are not recs yet
+  if (mRecordCountLong < 1)
+  {
+    on_pbnNew_clicked();
+    pbnDelete->setEnabled(false);
+  }
+  else if (mCurrentRecordLong==mRecordCountLong)
   {
     pbnNext->setEnabled(false);
     pbnLast->setEnabled(false);
+    pbnDelete->setEnabled(false);
   }
   else
   {
     pbnNext->setEnabled(true);
     pbnLast->setEnabled(true);
+    pbnDelete->setEnabled(false);
   }
 }
 
@@ -694,6 +707,7 @@ void QgsCustomProjectionDialog::on_pbnNew_clicked()
     pbnPrevious->setEnabled(false);
     pbnNext->setEnabled(false);
     pbnLast->setEnabled(false);
+    pbnDelete->setEnabled(false);
     pbnNew->setText(tr("Abort"));
     //clear the controls
     leName->setText("");
