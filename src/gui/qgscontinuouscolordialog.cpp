@@ -84,10 +84,12 @@ QgsContinuousColorDialog::QgsContinuousColorDialog(QgsVectorLayer * layer)
 	    lblMinValue->setPaletteBackgroundColor(minsymbol->brush().color());
 	    lblMaxValue->setPaletteBackgroundColor(maxsymbol->brush().color());
         }
-	outlinewidthspinbox->setValue(minsymbol->pen().width());
 	outlinewidthspinbox->setMinValue(1);
+	outlinewidthspinbox->setValue(minsymbol->pen().width());
     }
 
+    
+    cb_polygonOutline->setCheckState(Qt::Checked);
     outlinewidthspinbox->setEnabled(true);
 }
 
