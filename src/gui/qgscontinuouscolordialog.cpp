@@ -86,11 +86,20 @@ QgsContinuousColorDialog::QgsContinuousColorDialog(QgsVectorLayer * layer)
         }
 	outlinewidthspinbox->setMinValue(1);
 	outlinewidthspinbox->setValue(minsymbol->pen().width());
-    }
 
-    
-    cb_polygonOutline->setCheckState(Qt::Checked);
-    outlinewidthspinbox->setEnabled(true);
+	if (renderer->drawPolygonOutline()) 
+	  cb_polygonOutline->setCheckState(Qt::Checked);
+	else
+	  cb_polygonOutline->setCheckState(Qt::Unchecked);
+    }
+    else
+    {
+      cb_polygonOutline->setCheckState(Qt::Checked);
+      outlinewidthspinbox->setValue(1);
+    }
+    // Ensure that the state of other widgets is appropriate for the
+    // state of the polygonoutline checkbox.
+    on_cb_polygonOutline_clicked();
 }
 
 QgsContinuousColorDialog::QgsContinuousColorDialog()
