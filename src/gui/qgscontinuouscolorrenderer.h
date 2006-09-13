@@ -52,7 +52,7 @@ class QgsContinuousColorRenderer: public QgsRenderer
     /**Returns the symbol for the maximum value*/
     const QgsSymbol* maximumSymbol() const;
     /** whether to draw a polygon outline*/
-    bool drawPolygonOutline() { return mDrawPolygonOutline; }
+    bool drawPolygonOutline() const { return mDrawPolygonOutline; }
     /**Reads the renderer configuration from an XML file
      @param rnode the DOM node to read 
      @param vl the vector layer which will be associated with the renderer*/
