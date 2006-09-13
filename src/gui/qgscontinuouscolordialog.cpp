@@ -84,7 +84,7 @@ QgsContinuousColorDialog::QgsContinuousColorDialog(QgsVectorLayer * layer)
 	    lblMinValue->setPaletteBackgroundColor(minsymbol->brush().color());
 	    lblMaxValue->setPaletteBackgroundColor(maxsymbol->brush().color());
         }
-	outlinewidthspinbox->setMinValue(1);
+	outlinewidthspinbox->setMinValue(0);
 	outlinewidthspinbox->setValue(minsymbol->pen().width());
 
 	if (renderer->drawPolygonOutline()) 
@@ -96,6 +96,8 @@ QgsContinuousColorDialog::QgsContinuousColorDialog(QgsVectorLayer * layer)
     {
       cb_polygonOutline->setCheckState(Qt::Checked);
       outlinewidthspinbox->setValue(1);
+      if (mVectorLayer->vectorType() != QGis::Polygon)
+        cb_polygonOutline->setVisible(false);
     }
     // Ensure that the state of other widgets is appropriate for the
     // state of the polygonoutline checkbox.
