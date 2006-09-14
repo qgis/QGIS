@@ -255,13 +255,6 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 	    QgsVectorLayer *vector = dynamic_cast <QgsVectorLayer*> (layer2);
 	    const QgsRenderer *renderer = vector->renderer();
 
-	    // QgsContinuousColorRenderer is not supported yet
-	    // QgsSiMaRenderer, QgsGraduatedMaRenderer, QgsUValMaRenderer no more
-	    if ( typeid (*renderer) == typeid(QgsContinuousColorRenderer) )
-	    { 
-		continue;
-	    }
-
 	    if ( (group > 0 && group2 == group) || ( group == 0 && j == i )  ) {
 		groupLayers.push_back(j);
 
