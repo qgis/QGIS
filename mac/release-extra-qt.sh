@@ -10,7 +10,7 @@ LNKJPEG=libjpeg.62.dylib
 LIBPNG=libpng.3.1.2.8.dylib
 LNKPNG=libpng.3.dylib
 
-QTVER=4.1.3
+QTVER=4.1.4
 QTPREFIX=/usr/local/Trolltech/Qt-$QTVER
 QTFRAMEWORKS="QtCore QtGui QtNetwork QtSql QtSvg QtXml Qt3Support"
 QTLIBRARIES="QtDesigner QtTest"
@@ -102,7 +102,7 @@ for FILE in \
 	qgis \
 	bin/qgis_help.app/Contents/MacOS/qgis_help \
 	bin/gridmaker \
-	bin/msexport \
+	bin/msexport.app/Contents/MacOS/msexport \
 	bin/spit \
 	lib/libmsexport.0.0.0.dylib \
 	lib/libqgis_core.0.0.1.dylib \
