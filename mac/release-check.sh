@@ -7,7 +7,7 @@ PREFIX=qgis.app/Contents/MacOS
 otool -L $PREFIX/qgis
 otool -L $PREFIX/bin/qgis_help.app/Contents/MacOS/qgis_help
 otool -L $PREFIX/bin/gridmaker
-otool -L $PREFIX/bin/msexport
+otool -L $PREFIX/bin/msexport.app/Contents/MacOS/msexport
 #otool -L $PREFIX/bin/omgui
 otool -L $PREFIX/bin/qgis-config
 otool -L $PREFIX/bin/spit
@@ -45,21 +45,25 @@ otool -L $PREFIX/lib/QtNetwork.framework/Versions/4.0/QtNetwork
 otool -L $PREFIX/lib/QtSql.framework/Versions/4.0/QtSql
 otool -L $PREFIX/lib/QtSvg.framework/Versions/4.0/QtSvg
 otool -L $PREFIX/lib/QtXml.framework/Versions/4.0/QtXml
-otool -L $PREFIX/lib/libQtDesigner.4.1.3.dylib
-otool -L $PREFIX/lib/libQtTest.4.1.3.dylib
+otool -L $PREFIX/lib/libQtDesigner.4.1.4.dylib
+otool -L $PREFIX/lib/libQtTest.4.1.4.dylib
 otool -L $PREFIX/imageformats/libqjpeg.dylib
 
 otool -L $PREFIX/lib/libgdal.1.10.0.dylib
 otool -L $PREFIX/lib/gdalplugins/gdal_GRASS.so
 otool -L $PREFIX/lib/gdalplugins/ogr_GRASS.so
-otool -L $PREFIX/lib/libgeos.2.2.2.dylib
+otool -L $PREFIX/lib/libgeos.2.2.3.dylib
 otool -L $PREFIX/lib/libproj.0.5.0.dylib
 otool -L $PREFIX/lib/libsqlite3.0.8.6.dylib
 otool -L $PREFIX/lib/libxerces-c.27.0.dylib
+otool -L $PREFIX/lib/libgif.4.1.4.dylib
 otool -L $PREFIX/lib/libjpeg.62.0.0.dylib
 otool -L $PREFIX/lib/libpng.3.1.2.8.dylib
-otool -L $PREFIX/lib/libexpat.0.5.0.dylib
-otool -L $PREFIX/lib/libgsl.0.7.0.dylib
+otool -L $PREFIX/lib/libtiff.3.dylib
+otool -L $PREFIX/lib/libgeotiff.1.2.3.dylib
+otool -L $PREFIX/lib/libjasper-1.701.1.0.0.dylib
+otool -L $PREFIX/lib/libexpat.1.5.0.dylib
+otool -L $PREFIX/lib/libgsl.0.9.0.dylib
 otool -L $PREFIX/lib/libgslcblas.0.0.0.dylib
 #otool -L $PREFIX/lib/libopenmodeller.0.0.0.dylib
 #otool -L $PREFIX/lib/openmodeller/libombioclim.0.0.0.dylib
@@ -70,3 +74,8 @@ otool -L $PREFIX/lib/libgslcblas.0.0.0.dylib
 #otool -L $PREFIX/lib/openmodeller/libomminimum_distance.0.0.0.dylib
 #otool -L $PREFIX/lib/openmodeller/libomoldgarp.0.0.0.dylib
 otool -L $PREFIX/lib/libpq.4.1.dylib
+
+for LIBGRASS in datetime dbmibase dbmiclient dgl dig2 form gis gmath gproj I linkm rtree shape vask vect
+do
+	otool -L $PREFIX/lib/grass/libgrass_$LIBGRASS.6.0.2.dylib
+done

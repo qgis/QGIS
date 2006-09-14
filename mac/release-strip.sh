@@ -6,7 +6,7 @@ PREFIX=qgis.app/Contents/MacOS
 strip -x $PREFIX/qgis
 strip -x $PREFIX/bin/qgis_help.app/Contents/MacOS/qgis_help
 strip -x $PREFIX/bin/gridmaker
-strip -x $PREFIX/bin/msexport
+strip -x $PREFIX/bin/msexport.app/Contents/MacOS/msexport
 #strip -x $PREFIX/bin/omgui
 strip -x $PREFIX/bin/qgis-config
 strip -x $PREFIX/bin/spit
@@ -44,21 +44,25 @@ strip -x $PREFIX/lib/QtNetwork.framework/Versions/4.0/QtNetwork
 strip -x $PREFIX/lib/QtSql.framework/Versions/4.0/QtSql
 strip -x $PREFIX/lib/QtSvg.framework/Versions/4.0/QtSvg
 strip -x $PREFIX/lib/QtXml.framework/Versions/4.0/QtXml
-strip -x $PREFIX/lib/libQtDesigner.4.1.3.dylib
-strip -x $PREFIX/lib/libQtTest.4.1.3.dylib
+strip -x $PREFIX/lib/libQtDesigner.4.1.4.dylib
+strip -x $PREFIX/lib/libQtTest.4.1.4.dylib
 strip -x $PREFIX/imageformats/libqjpeg.dylib
 
 strip -x $PREFIX/lib/libgdal.1.10.0.dylib
 strip -x $PREFIX/lib/gdalplugins/gdal_GRASS.so
 strip -x $PREFIX/lib/gdalplugins/ogr_GRASS.so
-strip -x $PREFIX/lib/libgeos.2.2.2.dylib
+strip -x $PREFIX/lib/libgeos.2.2.3.dylib
 strip -x $PREFIX/lib/libproj.0.5.0.dylib
 strip -x $PREFIX/lib/libsqlite3.0.8.6.dylib
 strip -x $PREFIX/lib/libxerces-c.27.0.dylib
+strip -x $PREFIX/lib/libgif.4.1.4.dylib
 strip -x $PREFIX/lib/libjpeg.62.0.0.dylib
 strip -x $PREFIX/lib/libpng.3.1.2.8.dylib
-strip -x $PREFIX/lib/libexpat.0.5.0.dylib
-strip -x $PREFIX/lib/libgsl.0.7.0.dylib
+strip -x $PREFIX/lib/libtiff.3.dylib
+strip -x $PREFIX/lib/libgeotiff.1.2.3.dylib
+strip -x $PREFIX/lib/libjasper-1.701.1.0.0.dylib
+strip -x $PREFIX/lib/libexpat.1.5.0.dylib
+strip -x $PREFIX/lib/libgsl.0.9.0.dylib
 strip -x $PREFIX/lib/libgslcblas.0.0.0.dylib
 #strip -x $PREFIX/lib/libopenmodeller.0.0.0.dylib
 #strip -x $PREFIX/lib/openmodeller/libombioclim.0.0.0.dylib
@@ -69,6 +73,11 @@ strip -x $PREFIX/lib/libgslcblas.0.0.0.dylib
 #strip -x $PREFIX/lib/openmodeller/libomminimum_distance.0.0.0.dylib
 #strip -x $PREFIX/lib/openmodeller/libomoldgarp.0.0.0.dylib
 strip -x $PREFIX/lib/libpq.4.1.dylib
+
+for LIBGRASS in datetime dbmibase dbmiclient dgl dig2 form gis gmath gproj I linkm rtree shape vask vect
+do
+	strip -x $PREFIX/lib/grass/libgrass_$LIBGRASS.6.0.2.dylib
+done
 
 # Delete unneeded files in application bundle
 rm $PREFIX/lib/libmsexport.a
