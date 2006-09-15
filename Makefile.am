@@ -63,7 +63,11 @@ BUILT_SOURCES = qgssvnversion.h
 
 .PHONY : qgssvnversion.h 
 qgssvnversion.h:
-	@QGSSVNDEF="#define QGSSVNVERSION \"`svnversion .`\"" && \
+	@if [ "$(HAVE_SVNVERSION)" == "yes" ]; then \
+	  QGSSVNDEF="#define QGSSVNVERSION \"`svnversion .`\""; \
+	else \
+	  QGSSVNDEF="#define QGSSVNVERSION \"unknown\""; \
+	fi; \
 	if [ "`grep QGSSVNVERSION qgssvnversion.h 2>/dev/null`" != "$$QGSSVNDEF" ]; then \
 		echo $$QGSSVNDEF > qgssvnversion.h; \
 	fi
