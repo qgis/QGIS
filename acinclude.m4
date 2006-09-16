@@ -153,17 +153,21 @@ AC_MSG_RESULT([$QTDIR])
 # TODO: Use sed instead of perl
 QTDIR=`echo $QTDIR | perl -p -e 's/\\\\/\\//g'`
 
-# Check for QT includedir 
-if test -f $QTDIR/include/qt/qglobal.h; then
+# Check for QT includedir
+
+# Test for the Windows version first because if if QTDIR is mounted via
+# smbfs to an actual Windows installation, the /include/Qt is found
+# case-insensitively
+if test -f $QTDIR/include/Qt/qglobal.h -a -f $QTDIR/src/corelib/global/qglobal.h; then
+  # Windows: $QTDIR/include/Qt/qglobal.h includes $QTDIR/src/corelib/global/qglobal.h
+  QTINC=$QTDIR/include
+  QTVERTEST=$QTDIR/src/corelib/global/
+elif test -f $QTDIR/include/qt/qglobal.h; then
   QTINC=$QTDIR/include/qt
   QTVERTEST=$QTDIR/include/qt
 elif test -f $QTDIR/include/qt4/Qt/qglobal.h; then
   QTINC=$QTDIR/include/qt4
   QTVERTEST=$QTDIR/include/qt4/Qt
-elif test -f $QTDIR/include/Qt/qglobal.h -a -f $QTDIR/src/corelib/global/qglobal.h; then
-  # Windows: $QTDIR/include/Qt/qglobal.h includes $QTDIR/src/corelib/global/qglobal.h
-  QTINC=$QTDIR/include
-  QTVERTEST=$QTDIR/src/corelib/global/
 elif test -f $QTDIR/include/Qt/qglobal.h; then
   QTINC=$QTDIR/include
   QTVERTEST=$QTDIR/include/Qt
