@@ -134,30 +134,21 @@ void QgsBookmarks::on_btnDelete_clicked()
       int rc = connectDb();
       if(rc == SQLITE_OK)
       {
-        sqlite3_stmt *ppStmt;
-        const char *pzTail;
+        char *errmsg;
         // build the sql statement
         QString sql = "delete from tbl_bookmarks where bookmark_id = " + lvi->text(3);
-        rc = sqlite3_prepare(db, sql.utf8(), sql.length(), &ppStmt, &pzTail);
-        if(rc == SQLITE_OK)
+        rc = sqlite3_exec(db, sql.utf8(), NULL, NULL, &errmsg);
+        if(rc != SQLITE_OK)
         {
-          rc = sqlite3_step(ppStmt);
-          if(rc != SQLITE_OK)
-          {
-            // XXX Provide popup message on failure?
-            std::cout << "Failed to delete " << lvi->text(0).toLocal8Bit().data()
-              << " bookmark from the database" << std::endl; 
-          }
-          else
-          {
-            // XXX Provide popup message on failure?
-            std::cout << "Failed to delete " << lvi->text(0).toLocal8Bit().data()
-              << " bookmark from the database" << std::endl; 
-          }
+          // XXX Provide popup message on failure?
+          QMessageBox::warning(this, tr("Error deleting bookmark"),
+                               tr("Failed to delete the ") + 
+                               lvi->text(0) +
+                               tr(" bookmark from the database. The "
+                                  "database said:\n") + QString(errmsg),
+                               QMessageBox::Ok, QMessageBox::NoButton);
+          sqlite3_free(errmsg);
         }
-
-        // close the statement
-        sqlite3_finalize(ppStmt);
         // close the database
         sqlite3_close(db);
       }
