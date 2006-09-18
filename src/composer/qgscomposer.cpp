@@ -22,6 +22,7 @@
 #include "qgscomposition.h"
 #include "qgsexception.h"
 #include "qgsproject.h"
+#include "qgsmessageviewer.h"
 
 #include <QDesktopWidget>
 #include <QFileDialog>
@@ -37,6 +38,7 @@
 #include <QPixmap>
 #include <QToolBar>
 #include <QImageWriter>
+#include <QCheckBox>
 #include <iostream>
 
 
@@ -634,6 +636,35 @@ void QgsComposer::on_mActionExportAsImage_activated(void)
 void QgsComposer::on_mActionExportAsSVG_activated(void)
 {
   QSettings myQSettings;
+
+  bool displaySVGWarning = myQSettings.value("/UI/displaySVGWarning", true).toBool();
+
+  if (displaySVGWarning)
+  {
+    QgsMessageViewer* m = new QgsMessageViewer(this);
+    m->setWindowTitle(tr("SVG warning"));
+    m->setCheckBoxText(tr("Don't show this message again"));
+    m->setCheckBoxState(Qt::Unchecked);
+    m->setCheckBoxVisible(true);
+    m->setMessageAsHtml(tr("<p>The SVG export function in Qgis has several "
+                           "problems due to bugs and deficiencies in the "
+                           "Qt4 svg code. Of note, text does not "
+                           "appear in the SVG file and there are problems "
+                           "with the map bounding box clipping other items "
+                           "such as the legend or scale bar.</p>"
+                           "If you require a vector-based output file from "
+                           "Qgis it is suggested that you try exporting "
+                           "to pdf if the SVG output is not satisfactory."
+                           "</p>"));
+    m->exec();
+
+    if (m->checkBoxState() == Qt::Checked)
+      myQSettings.setValue("/UI/displaySVGWarning", false);
+    else
+      myQSettings.setValue("/UI/displaySVGWarning", true);
+    delete m;
+  }
+
   QString myLastUsedFile = myQSettings.readEntry("/UI/lastSaveAsSvgFile","qgis.svg");
   QFileInfo file(myLastUsedFile);
 
