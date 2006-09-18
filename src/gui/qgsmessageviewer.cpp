@@ -23,6 +23,9 @@ QgsMessageViewer::QgsMessageViewer(QWidget *parent, Qt::WFlags fl)
 : QDialog(parent, fl)
 {
   setupUi(this);
+  // Default state for the checkbox
+  setCheckBoxVisible(false);
+  setCheckBoxState(Qt::Unchecked);
 }
 
 QgsMessageViewer::~QgsMessageViewer()
@@ -42,4 +45,24 @@ void QgsMessageViewer::setMessageAsPlainText(const QString& msg)
 void QgsMessageViewer::appendMessage(const QString& msg)
 {
   txtMessage->append(msg);
+}
+
+void QgsMessageViewer::setCheckBoxText(const QString& text)
+{
+  checkBox->setText(text);
+}
+
+void QgsMessageViewer::setCheckBoxVisible(bool visible)
+{
+  checkBox->setVisible(visible);
+}
+
+void QgsMessageViewer::setCheckBoxState(Qt::CheckState state)
+{
+  checkBox->setCheckState(state);
+}
+
+Qt::CheckState QgsMessageViewer::checkBoxState()
+{
+  return checkBox->checkState();
 }

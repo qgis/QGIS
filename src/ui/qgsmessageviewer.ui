@@ -22,6 +22,13 @@
    <property name="spacing" >
     <number>6</number>
    </property>
+   <item row="1" column="0" >
+    <widget class="QCheckBox" name="checkBox" >
+     <property name="text" >
+      <string>Don't show this message again</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0" colspan="3" >
     <widget class="QTextEdit" name="txtMessage" >
      <property name="lineWidth" >
@@ -35,44 +42,44 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="2" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>191</width>
-       <height>31</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="1" column="0" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>191</width>
-       <height>31</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="1" column="1" >
+   <item row="2" column="1" >
     <widget class="QPushButton" name="btnClose" >
      <property name="text" >
       <string>Close</string>
      </property>
     </widget>
+   </item>
+   <item row="2" column="0" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>191</width>
+       <height>31</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="2" column="2" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>191</width>
+       <height>31</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>
