@@ -35,6 +35,15 @@ class QgsMessageViewer: public QDialog, private Ui::QgsMessageViewer
     // Treats the given text as plain text
     void setMessageAsPlainText(const QString& msg);
     void appendMessage(const QString& msg);
+    // A checkbox that can be used for something like 
+    // "don't show this message again"
+    void setCheckBoxText(const QString& text);
+    // Make the check box visible/invisible
+    void setCheckBoxVisible(bool visible);
+    // Sets the check state
+    void setCheckBoxState(Qt::CheckState state);
+    // The state of the checkbox
+    Qt::CheckState checkBoxState();
 };
 
 #endif
