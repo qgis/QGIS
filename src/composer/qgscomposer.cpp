@@ -653,8 +653,9 @@ void QgsComposer::on_mActionExportAsSVG_activated(void)
                            "with the map bounding box clipping other items "
                            "such as the legend or scale bar.</p>"
                            "If you require a vector-based output file from "
-                           "Qgis it is suggested that you try exporting "
-                           "to pdf if the SVG output is not satisfactory."
+                           "Qgis it is suggested that you try printing "
+                           "to PostScript if the SVG output is not "
+                           "satisfactory."
                            "</p>"));
     m->exec();
 
