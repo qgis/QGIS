@@ -414,7 +414,7 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
     m_connProxyHost = settings.readEntry(key + "/proxyhost"),
     m_connProxyPort = settings.readEntry(key + "/proxyport").toInt(),
     m_connProxyUser = settings.readEntry(key + "/proxyuser"),
-    m_connProxyPass = settings.readEntry(key + "/proxypass"),
+    m_connProxyPass = settings.readEntry(key + "/proxypassword"),
 
     mWmsProvider->setProxy(
       m_connProxyHost,
