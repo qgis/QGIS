@@ -315,8 +315,10 @@ void QgsGPSPluginGui::populatePortComboBoxes() {
 #ifdef WIN32
   cmbULPort->insertItem("com1");
   cmbULPort->insertItem("com2");
+  cmbULPort->insertItem("usb:");
   cmbDLPort->insertItem("com1");
   cmbDLPort->insertItem("com2");
+  cmbDLPort->insertItem("usb:");
 #endif
 
   // OSX, OpenBSD, NetBSD etc? Anyone?
