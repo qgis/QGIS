@@ -172,6 +172,9 @@ class QgsOgrProvider:public QgsVectorDataProvider
     /**Changes attribute values of existing features */
     bool changeAttributeValues(std::map<int,std::map<QString,QString> > const & attr_map);
 
+    /**Changes existing geometries*/
+    bool changeGeometryValues(std::map<int, QgsGeometry> & geometry_map);
+
     QgsDataSourceURI * getURI()
     { 
         return 0;
