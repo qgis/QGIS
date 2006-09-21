@@ -1182,6 +1182,49 @@ cannot change attribute");
   return true;
 }
 
+bool QgsOgrProvider::changeGeometryValues(std::map<int, QgsGeometry> & geometry_map)
+{
+  OGRFeature* theOGRFeature = 0;
+  OGRGeometry* theNewGeometry = 0;
+
+  for(std::map<int, QgsGeometry>::iterator it = geometry_map.begin(); it != geometry_map.end(); ++it)
+    {
+      theOGRFeature = ogrLayer->GetFeature(it->first);
+      if(!theOGRFeature)
+	{
+	  QgsLogger::warning("QgsOgrProvider::changeGeometryValues, cannot find feature");
+	  continue;
+	}
+
+      //create an OGRGeometry
+      if(OGRGeometryFactory::createFromWkb(it->second.wkbBuffer(), ogrLayer->GetSpatialRef(), &theNewGeometry, it->second.wkbSize()) != OGRERR_NONE)
+	{
+	  QgsLogger::warning("QgsOgrProvider::changeGeometryValues, error while creating new OGRGeometry");
+	  delete theNewGeometry;
+	  theNewGeometry = 0;
+	  continue;
+	}
+
+      if(!theNewGeometry)
+	{
+	  QgsLogger::warning("QgsOgrProvider::changeGeometryValues, new geometry is NULL");
+	  continue;
+	}
+      
+      //set the new geometry
+      if(theOGRFeature->SetGeometryDirectly(theNewGeometry) != OGRERR_NONE)
+	{
+	  QgsLogger::warning("QgsOgrProvider::changeGeometryValues, error while replacing geometry");
+	  delete theNewGeometry;
+	  theNewGeometry = 0;
+	  continue;
+	}
+      ogrLayer->SetFeature(theOGRFeature);
+    }
+  ogrLayer->SyncToDisk();
+  return true;
+}
+
 bool QgsOgrProvider::createSpatialIndex()
 {
     QString filename=getDataSourceUri().section('/',-1,-1);//find out the filename from the uri
@@ -1272,8 +1315,7 @@ int QgsOgrProvider::capabilities() const
       // TODO And test appropriately.
 
       ability |= ChangeAttributeValues;
-      // This provider can't change geometries yet anyway (cf. Postgres provider)
-      // ability |= QgsVectorDataProvider::ChangeGeometries;
+      ability |= QgsVectorDataProvider::ChangeGeometries;
     }
 
     if (ogrLayer->TestCapability("FastSpatialFilter"))
