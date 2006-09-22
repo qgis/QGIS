@@ -65,8 +65,9 @@ void QgsIdentifyResults::close()
 // from window menu or X in titlebar
 void QgsIdentifyResults::closeEvent(QCloseEvent *e)
 {
-  saveWindowLocation();
-  done(0);
+  // We'll close in our own good time thanks...
+  e->ignore();
+  close();
 }
 
 // Popup (create if necessary) a context menu that contains a list of
