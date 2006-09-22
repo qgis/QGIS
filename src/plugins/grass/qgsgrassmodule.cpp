@@ -1272,12 +1272,22 @@ void QgsGrassModule::readStdout()
     #endif
 
     QString line;
+    QRegExp rxpercent ( "GRASS_INFO_PERCENT: (\\d+)" );
+
     mProcess.setReadChannel ( QProcess::StandardOutput );
     while ( mProcess.canReadLine() ) {
        	//line = QString::fromLocal8Bit( mProcess.readLineStdout().ascii() );
         QByteArray ba = mProcess.readLine();
        	line = QString::fromLocal8Bit( QString(ba).ascii() );
-	mOutputTextBrowser->append ( line );
+
+        // GRASS_INFO_PERCENT is catched here only because of bugs in GRASS,
+	// normaly it should be printed to stderr
+	if ( rxpercent.search ( line ) != -1 ) {
+	    int progress = rxpercent.cap(1).toInt();
+	    mProgressBar->setProgress ( progress, 100 );
+	} else {
+	    mOutputTextBrowser->append ( line );
+	}
     }
 }
 
@@ -1301,7 +1311,7 @@ void QgsGrassModule::readStderr()
        	//line = QString::fromLocal8Bit( mProcess.readLineStderr().ascii() );
         QByteArray ba = mProcess.readLine();
        	line = QString::fromLocal8Bit( QString(ba).ascii() );
-        //std::cerr << "stderr: " << line << std::endl;
+        //std::cerr << "line: '" << line.ascii() << "'" << std::endl;
 
 	if ( rxpercent.search ( line ) != -1 ) {
 	    int progress = rxpercent.cap(1).toInt();
