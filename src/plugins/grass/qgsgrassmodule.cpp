@@ -594,6 +594,154 @@ QStringList QgsGrassModuleStandardOptions::checkOutput()
     return list;
 }
 
+void QgsGrassModuleStandardOptions::freezeOutput()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleStandardOptions::freezeOutput()" << std::endl;
+    #endif
+
+#ifdef WIN32
+    for ( int i = 0; i < mItems.size(); i++ ) 
+    {
+	if ( typeid(*(mItems[i])) != typeid (QgsGrassModuleOption) ) {
+	    continue;
+	}
+	QgsGrassModuleOption *opt = 
+	      dynamic_cast<QgsGrassModuleOption *> ( mItems[i] );
+    
+        std::cerr << "opt->key() = " << opt->key().ascii() << std::endl;
+
+	if ( opt->isOutput() 
+		&& opt->outputType() == QgsGrassModuleOption::Vector )
+	{
+            std::cerr << "freeze vector layers" << std::endl;
+
+    	    QChar sep = '/';
+
+	    int nlayers = mCanvas->layerCount();
+	    for ( int i = 0; i < nlayers; i++ ) 
+	    {
+		QgsMapLayer *layer = mCanvas->getZpos(i);
+
+		if (  layer->type() != QgsMapLayer::VECTOR ) continue;
+
+		QgsVectorLayer *vector = (QgsVectorLayer*)layer;
+		if ( vector->providerType() != "grass" ) continue;
+
+		//TODO dynamic_cast ?
+		QgsGrassProvider *provider = (QgsGrassProvider *) vector->getDataProvider();
+
+		// TODO add map() mapset() location() gisbase() to grass provider
+		QString source = QDir::cleanPath ( provider->getDataSourceUri() );
+		#ifdef QGISDEBUG
+		std::cerr << "source = " << source.ascii() << std::endl;
+		#endif
+		
+		// Check GISBASE and LOCATION
+		QStringList split = QStringList::split ( sep, source );
+		
+		if ( split.size() < 4 ) continue;
+		split.pop_back(); // layer
+
+		QString map = split.last();
+		split.pop_back(); // map
+
+		QString mapset = split.last();
+		split.pop_back(); // mapset
+		
+		QString loc =  source.remove ( QRegExp("/[^/]+/[^/]+/[^/]+$") ); 
+		loc = QDir(loc).canonicalPath();
+
+		QDir curlocDir ( QgsGrass::getDefaultGisdbase() + sep + QgsGrass::getDefaultLocation() );
+		QString curloc = curlocDir.canonicalPath();
+		
+		if ( loc != curloc ) continue;
+
+		if ( mapset != QgsGrass::getDefaultMapset() ) continue;
+
+		if ( provider->isFrozen() ) continue;
+
+		provider->freeze();
+	    }
+	}
+    } 
+#endif
+}
+
+void QgsGrassModuleStandardOptions::thawOutput()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleStandardOptions::thawOutput()" << std::endl;
+    #endif
+
+#ifdef WIN32
+    for ( int i = 0; i < mItems.size(); i++ ) 
+    {
+	if ( typeid(*(mItems[i])) != typeid (QgsGrassModuleOption) ) {
+	    continue;
+	}
+	QgsGrassModuleOption *opt = 
+	      dynamic_cast<QgsGrassModuleOption *> ( mItems[i] );
+    
+        std::cerr << "opt->key() = " << opt->key().ascii() << std::endl;
+
+	if ( opt->isOutput() 
+		&& opt->outputType() == QgsGrassModuleOption::Vector )
+	{
+            std::cerr << "thaw vector layers" << std::endl;
+
+    	    QChar sep = '/';
+
+	    int nlayers = mCanvas->layerCount();
+	    for ( int i = 0; i < nlayers; i++ ) 
+	    {
+		QgsMapLayer *layer = mCanvas->getZpos(i);
+
+		if (  layer->type() != QgsMapLayer::VECTOR ) continue;
+
+		QgsVectorLayer *vector = (QgsVectorLayer*)layer;
+		if ( vector->providerType() != "grass" ) continue;
+
+		//TODO dynamic_cast ?
+		QgsGrassProvider *provider = (QgsGrassProvider *) vector->getDataProvider();
+
+		// TODO add map() mapset() location() gisbase() to grass provider
+		QString source = QDir::cleanPath ( provider->getDataSourceUri() );
+		#ifdef QGISDEBUG
+		std::cerr << "source = " << source.ascii() << std::endl;
+		#endif
+		
+		// Check GISBASE and LOCATION
+		QStringList split = QStringList::split ( sep, source );
+		
+		if ( split.size() < 4 ) continue;
+		split.pop_back(); // layer
+
+		QString map = split.last();
+		split.pop_back(); // map
+
+		QString mapset = split.last();
+		split.pop_back(); // mapset
+		
+		QString loc =  source.remove ( QRegExp("/[^/]+/[^/]+/[^/]+$") ); 
+		loc = QDir(loc).canonicalPath();
+
+		QDir curlocDir ( QgsGrass::getDefaultGisdbase() + sep + QgsGrass::getDefaultLocation() );
+		QString curloc = curlocDir.canonicalPath();
+		
+		if ( loc != curloc ) continue;
+
+		if ( mapset != QgsGrass::getDefaultMapset() ) continue;
+
+		if ( !provider->isFrozen() ) continue;
+
+		provider->thaw();
+	    }
+	}
+    } 
+#endif
+}
+
 QStringList QgsGrassModuleStandardOptions::output(int type )
 {
     #ifdef QGISDEBUG
@@ -1227,6 +1375,9 @@ void QgsGrassModule::run()
 	QString cmd = execArguments.takeFirst();
         execArguments += arguments;
 
+	// Freeze output vector on Windows
+        mOptions->freezeOutput();
+
         mProcess.setEnvironment ( environment );
 	mProcess.start( cmd, execArguments );
 
@@ -1256,6 +1407,7 @@ void QgsGrassModule::finished(int exitCode, QProcess::ExitStatus exitStatus )
 	    mProgressBar->setProgress ( 100, 100 ); 
             mSuccess = true;
             mViewButton->setEnabled(true);
+	    mOptions->thawOutput();
 	} else {
 	    mOutputTextBrowser->append( "<B>Finished with error</B>" );
 	}

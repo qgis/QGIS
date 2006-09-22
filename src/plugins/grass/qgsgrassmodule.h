@@ -196,6 +196,12 @@ public:
     // return list of existing output maps
     virtual QStringList checkOutput() { return QStringList() ; }
 
+    //! Freeze output vector maps used in QGIS on Windows 
+    virtual void freezeOutput() { return; }
+
+    //! Thaw output vector maps used in QGIS on Windows 
+    virtual void thawOutput() { return; }
+
     //! Check if otpion is ready
     //  Returns empty string or error message
     virtual QStringList ready() { return QStringList() ; }
@@ -270,6 +276,8 @@ public:
 
     // Reimplemented methods from QgsGrassModuleOptions
     QStringList checkOutput();
+    void freezeOutput();
+    void thawOutput();
     QStringList ready() ;
     QStringList output(int type);
     QStringList checkRegion();
