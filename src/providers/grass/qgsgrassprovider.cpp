@@ -289,7 +289,7 @@ QgsFeature *QgsGrassProvider::getFirstFeature(bool fetchAttributes)
     std::cout << "QgsGrassProvider::getFirstFeature()" << std::endl;
     #endif
 
-    if ( isEdited() )
+    if ( isEdited() || isFrozen() )
 	return 0;
     
     if ( mCidxFieldIndex < 0 ) return 0; // No features, no features in this layer
@@ -309,7 +309,7 @@ bool QgsGrassProvider::getNextFeature(QgsFeature &feature, bool fetchAttributes)
     std::cout << "QgsGrassProvider::getNextFeature()" << std::endl;
     #endif
 
-    if ( isEdited() )
+    if ( isEdited() || isFrozen() )
 	return 0;
     
     if ( mCidxFieldIndex < 0 ) return 0; // No features, no features in this layer
@@ -330,7 +330,7 @@ QgsFeature *QgsGrassProvider::getNextFeature(bool fetchAttributes)
     	      << " fetchAttributes = " << fetchAttributes << std::endl;
     #endif
     
-    if ( isEdited() )
+    if ( isEdited() || isFrozen() )
 	return 0;
 
     if ( mCidxFieldIndex < 0 ) return 0; // No features, no features in this layer
@@ -357,7 +357,7 @@ QgsFeature* QgsGrassProvider::getNextFeature(std::list<int> const& attlist, int 
     std::cout << "QgsGrassProvider::getNextFeature( attlist )" << std::endl;
     #endif
 
-    if ( isEdited() )
+    if ( isEdited() || isFrozen() )
 	return 0;
     
     if ( mCidxFieldIndex < 0 ) return 0; // No features, no features in this layer
@@ -486,7 +486,7 @@ void QgsGrassProvider::select(QgsRect *rect, bool useIntersect)
     std::cout << "QgsGrassProvider::select() useIntersect = " << useIntersect << std::endl;
     #endif
 
-    if ( isEdited() )
+    if ( isEdited() || isFrozen() )
 	return;
 
     // check if outdated and update if necessary
@@ -560,7 +560,7 @@ std::vector<QgsFeature>& QgsGrassProvider::identify(QgsRect * rect)
 
     // TODO: does not return vector of features! Should it?
 
-    if ( !isEdited() ) {
+    if ( !isEdited() && !isFrozen() ) {
         select(rect, true);
     }
 }
@@ -614,7 +614,7 @@ int QgsGrassProvider::keyField()
 
 void QgsGrassProvider::reset()
 {
-    if ( isEdited() )
+    if ( isEdited() || isFrozen() )
 	return;
 
     int mapId = mLayers[mLayerId].mapId;
@@ -1013,6 +1013,8 @@ int QgsGrassProvider::openMap(QString gisdbase, QString location, QString mapset
     }
 
     GMAP map;
+    map.valid = false;
+    map.frozen = false;
     map.gisdbase = gisdbase;
     map.location = location;
     map.mapset = mapset;
@@ -1096,6 +1098,8 @@ int QgsGrassProvider::openMap(QString gisdbase, QString location, QString mapset
     #ifdef QGISDEBUG
     std::cerr << "GRASS map successfully opened" << std::endl;
     #endif
+    
+    map.valid = true;
 
     // Add new map to maps
     mMaps.push_back(map);
@@ -1373,6 +1377,49 @@ bool QgsGrassProvider::isEdited ( void )
     return (map->update);
 }
 
+bool QgsGrassProvider::isFrozen ( void )
+{
+    #if QGISDEBUG > 3
+    std::cerr << "QgsGrassProvider::isFrozen" << std::endl;
+    #endif
+
+    GMAP *map = &(mMaps[mLayers[mLayerId].mapId]);
+    return (map->frozen);
+}
+
+void QgsGrassProvider::freeze()
+{
+#ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::freeze" << std::endl;
+#endif
+
+    if ( !isValid() ) return;
+
+    GMAP *map = &(mMaps[mLayers[mLayerId].mapId]);
+
+    if ( map->frozen ) return;
+    
+    map->frozen = true;
+    Vect_close ( map->map );
+}
+
+void QgsGrassProvider::thaw()
+{
+#ifdef QGISDEBUG
+    std::cerr << "QgsGrassProvider::thaw" << std::endl;
+#endif
+
+    if ( !isValid() ) return;
+    GMAP *map = &(mMaps[mLayers[mLayerId].mapId]);
+
+    if ( !map->frozen ) return;
+
+    if ( reopenMap() ) 
+    {
+        map->frozen = false;
+    }
+}
+
 bool QgsGrassProvider::startEdit ( void )
 {
 #ifdef QGISDEBUG
@@ -1485,6 +1532,19 @@ bool QgsGrassProvider::closeEdit ( bool newMap )
 
     Vect_close ( map->map );
 
+    map->update = false;
+
+    if ( !reopenMap() ) return false;
+
+    map->valid = true;
+
+    return true;
+}
+
+bool QgsGrassProvider::reopenMap()
+{
+    GMAP *map = &(mMaps[mLayers[mLayerId].mapId]);
+
     QFileInfo di ( mGisdbase + "/" + mLocation + "/" + mMapset + "/vector/" + mMapName );
     map->lastModified = di.lastModified();
 
@@ -1499,7 +1559,7 @@ bool QgsGrassProvider::closeEdit ( bool newMap )
 
     if ( QgsGrass::getError() == QgsGrass::FATAL ) {
 	std::cerr << "Cannot reopen GRASS vector: " << QgsGrass::getErrorMessage().toLocal8Bit().data() << std::endl;
-	return -1;
+	return false;
     }
 
     #ifdef QGISDEBUG
@@ -1514,9 +1574,6 @@ bool QgsGrassProvider::closeEdit ( bool newMap )
             loadLayerSourcesFromMap ( mLayers[i] );
 	}
     }
-
-    map->update = false;
-    map->valid = true;
 
     return true;
 }

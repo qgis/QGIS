@@ -34,6 +34,12 @@ class QgsField;
  * Member variables which must be updated after updateMap() are marked !UPDATE! in this file.
  */
 
+/* Freezing.
+ * Because open file cannot be deleted on Windows it is necessary to
+ * close output vector from GRASS tools before a module is run.
+ * This is not however solution for multiple instances of QGIS.
+ */ 
+
 /* Editing.
  * If editing is started by startEdit, vector map is reopened in update mode, and GMAP.update 
  * is set to true. All data loaded from the map to QgsGrassProvider remain unchanged
@@ -82,6 +88,10 @@ struct GMAP
   QString path;          // path to the layer gisdbase+location+mapset+mapName
   bool    valid;         // true if map is opened, once the map is closed,
   // valid is set to false and no more used
+  
+  // Vector temporally disabled. Necessary for GRASS Tools on Windows
+  bool frozen;
+	
   struct  Map_info *map; // map header
   int     nUsers;        // number layers using this map
   int     update;        // true if the map is opened in update mode -> disabled standard reading
@@ -219,11 +229,26 @@ public:
    */
   bool isEdited();
 
+  /** Returns true if the layer is currently froze, i.e. a module
+   *  from GRASS Tools is writing to this vector
+   *   @return true in update mode
+   *   @return false not edited
+   */
+  bool isFrozen();
+
   /** Start editing. Reopen the vector for update and set GMAP.update = true
-   *   @return true success
-   *   @return false failed to reopen success
+   *   @return true is frozen 
+   *   @return false is not frozen
    */
   bool startEdit();
+
+  /** Freeze vector. 
+   */
+  void freeze();
+
+  /** Thaw vector. 
+   */
+  void thaw();
 
   /** Close editing. Rebuild topology, GMAP.update = false 
    *   @param newMap set to true if a new map was created
@@ -540,8 +565,11 @@ private:
 
   bool    mValid;                // !UPDATE! 
   long    mNumberFeatures;       // !UPDATE!
-	
+
   void resetSelection(bool sel); // reset selection
+
+  // Reopen map after edit or freeze
+  bool reopenMap();
 
   // -----------------------------------------------------------------------------------------
   /* Static variables and methods.
