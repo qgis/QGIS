@@ -73,8 +73,10 @@ public:
 
     /*! Set the display name of the layer
        # @param name New name for the layer
+       # @param updateLegend false if legend should not be updated
+       (to avoid infinite recursion when this function is called from the legend itself)
      */
-    void setLayerName(const QString & name);
+    void setLayerName(const QString & name, bool updateLegend=true);
 
     /*! Get the display name of the layer
      * @return the layer name
