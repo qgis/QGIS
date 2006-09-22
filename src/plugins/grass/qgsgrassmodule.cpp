@@ -1358,10 +1358,10 @@ void QgsGrassModule::viewOutput()
              QString uri = QgsGrass::getDefaultGisdbase() + "/"
 		       + QgsGrass::getDefaultLocation() + "/"
 		       + QgsGrass::getDefaultMapset() + "/" 
-		       + map + "/" + layers[i];
+		       + map + "/" + layers[j];
 
              // TODO vector layer name
-             mIface->addVectorLayer( uri, layers[i], "grass");
+             mIface->addVectorLayer( uri, layers[j], "grass");
          }
     }
 
