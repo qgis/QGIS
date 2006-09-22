@@ -2996,9 +2996,18 @@ void QgisApp::saveMapAsImage()
   // get a list of supported output image types
   int myCounterInt=0;
   QString myFilters;
-  for ( ; myCounterInt < QPictureIO::outputFormats().count(); myCounterInt++ )
+  QList<QByteArray> formats = QPictureIO::outputFormats();
+  // Workaround for a problem with Qt4 - calls to outputFormats tend
+  // to return nothing :(
+  if (formats.count() == 0)
   {
-    QString myFormat=QString(QPictureIO::outputFormats().at( myCounterInt ));
+    formats.append("png");
+    formats.append("jpg");
+  }
+
+  for ( ; myCounterInt < formats.count(); myCounterInt++ )
+  {
+    QString myFormat=QString(formats.at( myCounterInt ));
     QString myFilter = createFileFilter_(myFormat + " format", "*."+myFormat);
     myFilters += myFilter;
     myFilterMap[myFilter] = myFormat;
@@ -3045,6 +3054,12 @@ void QgisApp::saveMapAsImage()
   std::cout << "Selected filter: " << myFilterString.toLocal8Bit().data() << std::endl;
   std::cout << "Image type to be passed to mapcanvas: " << (myFilterMap[myFilterString]).toLocal8Bit().data() << std::endl;
 #endif
+
+  // Add the file type suffix to the filename if required
+  if (!myOutputFileNameQString.endsWith(myFilterMap[myFilterString]))
+  {
+    myOutputFileNameQString += "." + myFilterMap[myFilterString];
+  }
 
   myQSettings.writeEntry("/UI/lastSaveAsImageFilter" , myFilterString);
   myQSettings.writeEntry("/UI/lastSaveAsImageDir", myQFileDialog->directory().absolutePath());
