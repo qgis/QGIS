@@ -894,7 +894,10 @@ void QgsGrassMapcalc::updateMaps()
 	// Check if it is GRASS raster
 	QString source = QDir::cleanDirPath ( layer->source() ); 
 
-	QChar sep = QDir::separator();
+	// Note: QDir::cleanPath is using '/' also on Windows
+	//QChar sep = QDir::separator();
+	QChar sep = '/';
+	
 	if ( source.contains( "cellhd" ) == 0 ) continue;
 	
 	// Most probably GRASS layer, check GISBASE and LOCATION
@@ -910,8 +913,11 @@ void QgsGrassMapcalc::updateMaps()
 	QString mapset = split.last();
 	split.pop_back(); // mapset
 	
-	QDir locDir ( sep + split.join ( QString(sep) ) ) ;
-	QString loc = locDir.canonicalPath();
+	//QDir locDir ( sep + split.join ( QString(sep) ) ) ;
+	//QString loc = locDir.canonicalPath();
+	
+	QString loc =  source.remove ( QRegExp("/[^/]+/[^/]+/[^/]+$") );
+	loc = QDir(loc).canonicalPath();
 
 	QDir curlocDir ( QgsGrass::getDefaultGisdbase() + sep + QgsGrass::getDefaultLocation() );
 	QString curloc = curlocDir.canonicalPath();
