@@ -112,12 +112,12 @@ QString const & QgsMapLayer::getLayerID() const
 }
 
 /** Write property of QString layerName. */
-void QgsMapLayer::setLayerName(const QString & _newVal)
+void QgsMapLayer::setLayerName(const QString & _newVal, bool updateLegend)
 {
   QgsDebugMsg("QgsMapLayer::setLayerName: new name is '" + _newVal);
   layerName = capitaliseLayerName(_newVal);
   // And update the legend if one exists
-  if (mLegend)
+  if (mLegend && updateLegend)
     mLegend->setName(mLegendLayerFile, layerName);
 }
 

@@ -1478,7 +1478,18 @@ void QgsLegend::handleItemChange(QTreeWidgetItem* item, int row)
       return;
     }
 
+  //close the editor (for QgsLegendLayer and QgsLegendGroup)
   closePersistentEditor(item, row);
+  //if the text of a QgsLegendLayer has changed, change the display names of all its maplayers
+  QgsLegendLayer* theLegendLayer = dynamic_cast<QgsLegendLayer*>(item); //item is a legend layer
+  if(theLegendLayer)
+    {
+       std::list<QgsMapLayer*> theMapLayers = theLegendLayer->mapLayers();
+       for(std::list<QgsMapLayer*>::iterator it = theMapLayers.begin(); it != theMapLayers.end(); ++it)
+	 {
+	   (*it)->setLayerName(theLegendLayer->text(0), false);
+	 }
+    }
 
   std::map<QTreeWidgetItem*, Qt::CheckState>::iterator it = mStateOfCheckBoxes.find(item);
   if(it != mStateOfCheckBoxes.end())
