@@ -25,6 +25,14 @@ cpgrass:
 	cp -r $(GRASS_BASE)/scripts $(prefix)/grass
 	cp -r $(GRASS_BASE)/lib/*.dll $(prefix)
 	cp -r $(GRASS_BASE)/docs/html $(prefix)/grass/docs
+# Qt does not support GIF by default
+	if [ -f $(GRASS_BASE)/docs/html/grass.smlogo.gif ] ; then \
+		convert $(GRASS_BASE)/docs/html/grass.smlogo.gif $(prefix)/grass/docs/html/grass.smlogo.png ; \
+	fi
+	@list=`ls $(GRASS_BASE)/docs/html/*.html`; \
+	for f in $$list; do \
+		cat $$f  |sed 's/grass.smlogo.gif/grass.smlogo.png/' > $(prefix)/grass/docs/html/`basename $$f` ; \
+	done
 	@list=`ls $(prefix)/grass_*.dll`; \
 	for f in $$list; do \
 		$(STRIP) $$f; \
