@@ -160,7 +160,7 @@
            <widget class="QToolButton" name="pbnSelectionColour" >
             <property name="minimumSize" >
              <size>
-              <width>10</width>
+              <width>100</width>
               <height>22</height>
              </size>
             </property>
@@ -194,6 +194,12 @@
           </item>
           <item>
            <widget class="QToolButton" name="pbnCanvasColor" >
+            <property name="minimumSize" >
+             <size>
+              <width>100</width>
+              <height>22</height>
+             </size>
+            </property>
             <property name="text" >
              <string/>
             </property>

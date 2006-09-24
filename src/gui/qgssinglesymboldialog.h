@@ -22,6 +22,10 @@
 #include "ui_qgssinglesymboldialogbase.h"
 #include <vector>
 
+#ifdef Q_WS_WIN
+#include <QWindowsStyle>
+#endif
+
 class QgsSymbol;
 class QgsVectorLayer;
 
@@ -50,7 +54,7 @@ public:
 protected:
     QgsVectorLayer* mVectorLayer;
 public slots:
-    /* set from QgsSymbol */
+    /* arrange the widgets on this dialog to reflect the current state of QgsSymbol */
     void set(const QgsSymbol *sy);
     /**applies the changes to the vector layer*/
     void apply();
@@ -62,12 +66,19 @@ public slots:
 protected slots:
     void selectOutlineColor();
     void selectFillColor();
+
 private:
-    /**Default constructor is privat to not use is*/
+    /** Default constructor is private, do not use this */
     QgsSingleSymbolDialog();
 
     /** vector of marker names for combo items */
     std::vector<QString> mMarkers;
+
+#ifdef Q_WS_WIN
+    //! Holds the classic Windows style that is used to render labels with a background color
+    QWindowsStyle mWindowsStyle;
+#endif
+
 
 signals:
     void settingsChanged();
