@@ -241,7 +241,7 @@
             </property>
             <property name="minimumSize" >
              <size>
-              <width>0</width>
+              <width>100</width>
               <height>22</height>
              </size>
             </property>
@@ -317,7 +317,7 @@
             </property>
             <property name="minimumSize" >
              <size>
-              <width>10</width>
+              <width>80</width>
               <height>22</height>
              </size>
             </property>
@@ -361,6 +361,12 @@
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="minimumSize" >
+             <size>
+              <width>80</width>
+              <height>0</height>
+             </size>
             </property>
             <property name="text" >
              <string/>
