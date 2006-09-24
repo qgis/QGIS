@@ -22,12 +22,16 @@
 #include "qgisapp.h"
 #include "qgslayerprojectionselector.h"
 #include "qgsspatialrefsys.h"
+
 #include <QFileDialog>
 #include <QSettings>
 #include <QColorDialog>
+
 #include <cassert>
 #include <iostream>
 #include <sqlite3.h>
+
+
 /**
  * \class QgsOptions - Set user options and preferences
  * Constructor
@@ -113,10 +117,12 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   int myBlue = settings.value("/qgis/default_selection_color_blue",0).toInt();
 // old Qt3 idiom
 //  pbnSelectionColour->setPaletteBackgroundColor(QColor(myRed,myGreen,myBlue));
-// new Qt4 idiom
-  QPalette palSelectionColour = pbnSelectionColour->palette();
-  palSelectionColour.setColor( QPalette::Window, QColor(myRed,myGreen,myBlue) );
-  pbnSelectionColour->setPalette(palSelectionColour);
+// new Qt4 idiom - see http://lists.trolltech.com/qt4-preview-feedback/2005-04/thread00270-0.html for reasoning
+#ifdef Q_WS_WIN
+  // Coloured buttons do not work under the Windows XP style - use plain Windows instead
+  pbnSelectionColour->setStyle(&mWindowsStyle);
+#endif
+  pbnSelectionColour->setPalette( QColor(myRed,myGreen,myBlue) );
 
   //set the default color for canvas background
   myRed = settings.value("/qgis/default_canvas_color_red",255).toInt();
@@ -124,10 +130,12 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   myBlue = settings.value("/qgis/default_canvas_color_blue",255).toInt();
 // old Qt3 idiom
 //  pbnCanvasColor->setPaletteBackgroundColor(QColor(myRed,myGreen,myBlue));
-// new Qt4 idiom
-  QPalette palCanvasColor = pbnCanvasColor->palette();
-  palCanvasColor.setColor( QPalette::Window, QColor(myRed,myGreen,myBlue) );
-  pbnCanvasColor->setPalette(palCanvasColor);
+// new Qt4 idiom - see http://lists.trolltech.com/qt4-preview-feedback/2005-04/thread00270-0.html for reasoning
+#ifdef Q_WS_WIN
+  // Coloured buttons do not work under the Windows XP style - use plain Windows instead
+  pbnCanvasColor->setStyle(&mWindowsStyle);
+#endif
+  pbnCanvasColor->setPalette( QColor(myRed,myGreen,myBlue) );
 
   capitaliseCheckBox->setChecked(settings.value("qgis/capitaliseLayerName", QVariant(false)).toBool());
 }
@@ -146,9 +154,8 @@ void QgsOptions::on_pbnSelectionColour_clicked()
   {
 // old Qt3 idiom
 //    pbnSelectionColour->setPaletteBackgroundColor(color);
-// new Qt4 idiom
-    palSelectionColour.setColor( QPalette::Window, color );
-    pbnSelectionColour->setPalette(palSelectionColour);
+// new Qt4 idiom - see http://lists.trolltech.com/qt4-preview-feedback/2005-04/thread00270-0.html for reasoning
+    pbnSelectionColour->setPalette(color);
   }
 }
 
@@ -163,9 +170,8 @@ void QgsOptions::on_pbnCanvasColor_clicked()
   {
 // old Qt3 idiom
 //     pbnCanvasColor->setPaletteBackgroundColor(color);
-// new Qt4 idiom
-    palCanvasColor.setColor( QPalette::Window, color );
-    pbnCanvasColor->setPalette(palCanvasColor);
+// new Qt4 idiom - see http://lists.trolltech.com/qt4-preview-feedback/2005-04/thread00270-0.html for reasoning
+    pbnCanvasColor->setPalette(color);
   }
 }
 void QgsOptions::themeChanged(const QString &newThemeName)

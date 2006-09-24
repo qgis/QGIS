@@ -21,7 +21,12 @@
 #include "ui_qgsprojectpropertiesbase.h"
 #include "qgis.h"
 #include "qgisgui.h"
-class QColor; 
+
+#ifdef Q_WS_WIN
+#include <QWindowsStyle>
+#endif
+
+class QColor;
 
 /*!  Dialog to set project level properties
 
@@ -112,6 +117,14 @@ signals:
   void refresh();
   //! notification of when on the fly projections are enabled / disabled
   void projectionEnabled(bool);
+
 private:
-static const int context_id = 361087368;
+  static const int context_id = 361087368;
+
+#ifdef Q_WS_WIN
+  //! Holds the classic Windows style that is used to render buttons with a background color
+  QWindowsStyle mWindowsStyle;
+#endif
+
+
 };
