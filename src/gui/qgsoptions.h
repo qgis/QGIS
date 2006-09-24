@@ -18,8 +18,16 @@
 /* $Id$ */
 #ifndef QGSOPTIONS_H
 #define QGSOPTIONS_H
+
 #include "ui_qgsoptionsbase.h"
 #include "qgisgui.h"
+
+#ifdef Q_WS_WIN
+#include <QWindowsStyle>
+#endif
+
+
+
 /**
  * \class QgsOptions
  * \brief Set user options and preferences
@@ -79,8 +87,15 @@ class QgsOptions :public QDialog, private Ui::QgsOptionsBase
   private:
     //! Pointer to our parent
     QWidget *qparent;
+
     //!Global default projection used for new layers added that have no projection
     long mGlobalSRSID;
+
+#ifdef Q_WS_WIN
+    //! Holds the classic Windows style that is used to render buttons with a background color
+    QWindowsStyle mWindowsStyle;
+#endif
+
 };
 
 #endif // #ifndef QGSOPTIONS_H
