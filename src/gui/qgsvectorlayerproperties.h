@@ -50,6 +50,8 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
   QString getMetadata();
   /** Set transparency based on slider position */
   void sliderTransparency_valueChanged(int theValue);
+  /** Toggles on the label check box */
+  void setLabelCheckBox();
   
   //
   //methods reimplemented from qt designer base class

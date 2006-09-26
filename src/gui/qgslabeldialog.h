@@ -71,7 +71,14 @@ public slots:
     /** Initialise dialog to vector layer values */
     void init ( void );
 
+    void on_cboLabelField_activated(int) {emit labelSourceSet(); }
+
+ signals:
+    /* emitted when anitem in label source list is chosen */
+    void labelSourceSet();
+
 protected slots:
+
 
 private:
     QgsLabel *mLabel;
