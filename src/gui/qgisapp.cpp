@@ -2919,20 +2919,21 @@ bool QgisApp::openLayer(const QString & fileName)
 {
   QFileInfo fileInfo(fileName);
   // try to load it as raster
-  bool ok = addRasterLayer(fileInfo, false);
+  bool ok = false;
+  CPLPushErrorHandler(CPLQuietErrorHandler); 
+  if (QgsRasterLayer::isValidRasterFileName(fileName))
+    ok = addRasterLayer(fileInfo, false);
+  else // nope - try to load it as a shape/ogr
+    ok = addLayer(fileInfo);
+  CPLPopErrorHandler();
+
   if (!ok)
   {
-    // nope - try to load it as a shape/ogr
-    ok = addLayer(fileInfo);
     // we have no idea what this file is...
-    if (!ok)
-    {
-      std::cout << "Unable to load " << fileName.toLocal8Bit().data() << std::endl;
-    }
+    std::cout << "Unable to load " << fileName.toLocal8Bit().data() << std::endl;
   }
-#ifdef WIN32
-  return true;
-#endif
+
+  return ok;
 }
 
 
@@ -4976,6 +4977,7 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile, bool guiWarning)
           + tr(" is not a valid or recognized raster data source"));
       QMessageBox::critical(this, tr("Invalid Data Source"), msg);
     }
+    delete layer;
     return false;
   }
   else
