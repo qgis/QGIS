@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include <QDomDocument>
 #include <QDomNodeList>
+#include <cfloat>
 
 #ifdef WIN32
 #define QGISEXTERN extern "C" __declspec( dllexport )
@@ -151,12 +152,59 @@ void QgsWFSProvider::reset()
 
 QString QgsWFSProvider::minValue(int position)
 {
-  return "0";
+  if(mMinMaxCash.size() == 0)
+    {
+      fillMinMaxCash();
+    }
+  return mMinMaxCash[position].first;
 }
 
 QString QgsWFSProvider::maxValue(int position)
 {
-  return "0";
+  if(mMinMaxCash.size() == 0)
+    {
+      fillMinMaxCash();
+    }
+  return mMinMaxCash[position].second;
+}
+
+void QgsWFSProvider::fillMinMaxCash()
+{
+  QgsFeature* theFeature = 0;
+  int fieldCount = fields().size();
+  int i;
+  double currentValue;
+  
+  std::vector<std::pair<double, double> > tempMinMax;
+  tempMinMax.resize(fieldCount);
+  for(i = 0; i < fieldCount; ++i)
+    {
+      tempMinMax[i] = std::make_pair(DBL_MAX, -DBL_MAX);
+    }
+
+  reset();
+  while(theFeature = getNextFeature(true))
+    {
+      for(i = 0; i < fieldCount; ++i)
+	{
+	  currentValue = (theFeature->attributeMap())[i].fieldValue().toDouble();
+	  if(currentValue < tempMinMax[i].first)
+	    {
+	      tempMinMax[i].first = currentValue;
+	    }
+	  if(currentValue > tempMinMax[i].second)
+	    {
+	      tempMinMax[i].second = currentValue;
+	    }
+	}
+    }
+
+  mMinMaxCash.clear();
+  mMinMaxCash.resize(fieldCount);
+  for(i = 0; i < fieldCount; ++i) 
+    {
+      mMinMaxCash[i] = std::make_pair(QString::number(tempMinMax[i].first), QString::number(tempMinMax[i].second));
+    }
 }
 
 std::vector<QgsFeature>& QgsWFSProvider::identify(QgsRect *rect) /*legacy*/
