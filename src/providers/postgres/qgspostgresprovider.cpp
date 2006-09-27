@@ -1413,17 +1413,22 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
                 << " refers to.\n";
 #endif
 
-      ii = columnRelations.find(QString(ii->second.table_schema + '.' +
-					ii->second.table_name + '.' +
-					ii->second.column_name));
-      if (ii == columnRelations.end())
+      columnRelationsType::const_iterator 
+        jj = columnRelations.find(QString(ii->second.table_schema + '.' +
+                                          ii->second.table_name + '.' +
+                                          ii->second.column_name));
+
+      if (jj == columnRelations.end())
       {
-        std::cerr << "ERROR: Failed to find the column that " 
+        std::cerr << "WARNING: Failed to find the column that " 
                   << ii->second.table_schema.local8Bit().data()  << '.'
                   << ii->second.table_name.local8Bit().data() << "."
                   << ii->second.column_name.local8Bit().data() 
                   << " refers to.\n";
+      break;
       }
+
+      ii = jj;
       ++count;
     }
 
