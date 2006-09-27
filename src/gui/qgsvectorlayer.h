@@ -579,6 +579,7 @@ private:                       // Private attributes
   // to the byte after the end of the line string binary data stream
   // (WKB).
   unsigned char* drawLineString(unsigned char* WKBlinestring,
+                                bool hasZValue,
                                 QPainter* p,
                                 QgsMapToPixel* mtp,
                                 bool projectionsEnabledFlag,
@@ -587,6 +588,7 @@ private:                       // Private attributes
   // Draw the polygon as given in the WKB format. Returns a pointer to
   // the byte after the end of the polygon binary data stream (WKB).
   unsigned char* drawPolygon(unsigned char* WKBpolygon,
+                             bool hasZValue,
                              QPainter* p,
                              QgsMapToPixel* mtp,
                              bool projectionsEnabledFlag,
@@ -622,15 +624,6 @@ private:                       // Private attributes
   bool valid;
   bool registered;
 
-  enum WKBTYPE
-  {
-    WKBPoint = 1,
-    WKBLineString,
-    WKBPolygon,
-    WKBMultiPoint,
-    WKBMultiLineString,
-    WKBMultiPolygon
-  };
 private:                       // Private methods
 
   /**Caches all the (commited) geometries to mCachedGeometries - somewhat out of date as mCachedGeometries should only contain geometries currently visible on the canvas */
