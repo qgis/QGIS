@@ -59,7 +59,13 @@ public:
     WKBMultiPoint,
     WKBMultiLineString,
     WKBMultiPolygon,
-    WKBUnknown
+    WKBUnknown,
+    WKBPoint25D = 0x80000001,
+    WKBLineString25D,
+    WKBPolygon25D,
+    WKBMultiPoint25D,
+    WKBMultiLineString25D,
+    WKBMultiPolygon25D
   };
   enum VectorType
   {
