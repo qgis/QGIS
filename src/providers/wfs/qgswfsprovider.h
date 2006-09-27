@@ -97,6 +97,9 @@ class QgsWFSProvider: public QgsVectorDataProvider
   mutable QGis::WKBTYPE mWKBType;
   /**Source SRS*/
   QgsSpatialRefSys* mSourceSRS;
+  /**Stores the minimum/maximum values for each attribute
+   The position in the vector is equal to the position of an attribute in the layers attribute vector*/
+  std::vector< std::pair<QString, QString> > mMinMaxCash;
   
   /**Collects information about the field types. Is called internally from QgsWFSProvider::getFeature*/
   int describeFeatureType(const QString& uri, std::vector<QgsField>& fields);
@@ -141,6 +144,9 @@ class QgsWFSProvider: public QgsVectorDataProvider
   
   /**Tries to create a QgsSpatialRefSys object and assign it to mSourceSRS. Returns 0 in case of success*/
   int setSRSFromGML(const QDomElement& wfsCollectionElement);
+
+  /***/
+  void fillMinMaxCash();
 };
 
 #endif
