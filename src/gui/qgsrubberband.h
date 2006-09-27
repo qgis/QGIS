@@ -33,7 +33,11 @@ class QgsRubberBand: public QgsMapCanvasItem
     void setWidth(int width);
 
     void reset(bool isPolygon = false);
-    void addPoint(const QgsPoint & p);
+
+    //! Add point to rubberband and update canvas
+    //! If adding more points consider using update=false for better performance
+    void addPoint(const QgsPoint & p, bool update = true);
+
     void movePoint(const QgsPoint & p);
     void movePoint(int index, const QgsPoint& p);
 

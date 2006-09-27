@@ -1692,8 +1692,12 @@ void QgsGrassEdit::displayDynamic ( struct line_pnts *Points, double x, double y
 	    point.setX(Points->x[i]);
 	    point.setY(Points->y[i]);
             point = transformLayerToMap ( point );
-            mRubberBandLine->addPoint(point);
+            mRubberBandLine->addPoint(point, false); // false = don't update now
         }
+        // Now add the last point again and force update of rubberband.
+        // This should improve the performance as canvas is updated only once
+        // and not with every added point to rubberband.
+        mRubberBandLine->addPoint(point, true);
     }
 
     mRubberBandIcon->setIconType(type);

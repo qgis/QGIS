@@ -65,12 +65,15 @@ void QgsRubberBand::reset(bool isPolygon)
 /*!
   Add a point to the shape being created.
 */
-void QgsRubberBand::addPoint(const QgsPoint & p)
+void QgsRubberBand::addPoint(const QgsPoint & p, bool update /* = true */)
 {
   mPoints[mPoints.size()-1] = p; // Current mouse position becomes added point
   mPoints.push_back(p); // Allocate new point to continue tracking current mouse position
-  updateRect();
-  updateCanvas();
+  if (update)
+  {
+    updateRect();
+    updateCanvas();
+  }
 }
 
 /*!
@@ -133,3 +136,4 @@ void QgsRubberBand::updateRect()
   
   setVisible(mPoints.size() > 1);
 }
+
