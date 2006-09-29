@@ -96,7 +96,7 @@ bool QgsHttpTransaction::getSynchronously(QByteArray &respondedContent, int redi
 
   mWatchdogTimer = new QTimer( this );
 
-  QgsDebugMsg("QgsHttpTransaction::getSynchronously: qurl.host() is '" + qurl.host()+ "'.");
+  //QgsDebugMsg("QgsHttpTransaction::getSynchronously: qurl.host() is '" + qurl.host()+ "'.");
 
   httpresponse.truncate(0);
 
@@ -152,8 +152,8 @@ bool QgsHttpTransaction::getSynchronously(QByteArray &respondedContent, int redi
 #ifdef QGISDEBUG
   QgsDebugMsg("QgsHttpTransaction::getSynchronously: Response received.");
 
-//  QString httpresponsestring(httpresponse);
-//  QgsDebugMsg("QgsHttpTransaction::getSynchronously: Response received; being '" + httpresponsestring + "'.");
+  //QString httpresponsestring(httpresponse);
+  //QgsDebugMsg("QgsHttpTransaction::getSynchronously: Response received; being '" + httpresponsestring + "'.");
 #endif
 
   delete http;
