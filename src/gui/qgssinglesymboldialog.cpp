@@ -33,11 +33,23 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog(): QDialog(), mVectorLayer(0)
 #ifdef QGISDEBUG
     qWarning("constructor QgsSingleSymbolDialog called WITHOUT a layer");
 #endif
+    #ifdef Q_WS_WIN
+        // Coloured labels do not work under the Windows XP style - use plain Windows buttons instead
+        btnFillColor->setStyle(&mWindowsStyle);
+	btnOutlineColor->setStyle(&mWindowsStyle);
+    #endif
 }
 
 QgsSingleSymbolDialog::QgsSingleSymbolDialog(QgsVectorLayer * layer): QDialog(), mVectorLayer(layer)
 {
     setupUi(this);
+
+#ifdef Q_WS_WIN
+        // Coloured labels do not work under the Windows XP style - use plain Windows buttons instead
+        btnFillColor->setStyle(&mWindowsStyle);
+	btnOutlineColor->setStyle(&mWindowsStyle);
+#endif
+
 #ifdef QGISDEBUG
     qWarning("constructor QgsSingleSymbolDialog called WITH a layer");
 #endif
@@ -340,19 +352,11 @@ void QgsSingleSymbolDialog::set ( const QgsSymbol *sy )
 // old Qt3 idiom
 //        lblFillColor->setPaletteBackgroundColor(sy->brush().color());
 // new Qt4 idiom
-#ifdef Q_WS_WIN
-        // Coloured labels do not work under the Windows XP style - use plain Windows buttons instead
-        btnFillColor->setStyle(&mWindowsStyle);
-#endif
         btnFillColor->setPalette( sy->brush().color() );
 
 // old Qt3 idiom
 //        lblOutlineColor->setPaletteBackgroundColor(sy->pen().color());
 // new Qt4 idiom
-#ifdef Q_WS_WIN
-        // Coloured labels do not work under the Windows XP style - use plain Windows buttons instead
-        btnOutlineColor->setStyle(&mWindowsStyle);
-#endif
         btnOutlineColor->setPalette( sy->pen().color() );
 
 	//stylebutton->setName(QgsSymbologyUtils::penStyle2Char(sy->pen().style()));

@@ -635,7 +635,6 @@ void QgsOgrProvider::select(QgsRect *rect, bool useIntersect)
   }else{
 #ifdef QGISDEBUG    
     QgsLogger::warning("Setting spatial filter failed!");
-    assert(result==OGRERR_NONE);
 #endif
   }
   OGRGeometryFactory::destroyGeometry(filter);  

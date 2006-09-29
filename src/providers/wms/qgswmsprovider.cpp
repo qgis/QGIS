@@ -693,6 +693,7 @@ bool QgsWmsProvider::retrieveServerCapabilities(bool forceRefresh)
 
 QByteArray QgsWmsProvider::retrieveUrl(QString url)
 {
+  QgsDebugMsg("WMS request Url: " + url);
   QgsHttpTransaction http(
     url,
     mHttpProxyHost,
