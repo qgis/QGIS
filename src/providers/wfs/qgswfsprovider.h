@@ -100,6 +100,9 @@ class QgsWFSProvider: public QgsVectorDataProvider
   /**Stores the minimum/maximum values for each attribute
    The position in the vector is equal to the position of an attribute in the layers attribute vector*/
   std::vector< std::pair<QString, QString> > mMinMaxCash;
+
+  /**Goes through all the features and their attributes and populates mMinMaxCash with entries*/
+  void fillMinMaxCash();
   
   /**Collects information about the field types. Is called internally from QgsWFSProvider::getFeature*/
   int describeFeatureType(const QString& uri, std::vector<QgsField>& fields);
@@ -116,26 +119,55 @@ class QgsWFSProvider: public QgsVectorDataProvider
   int describeFeatureTypeGET(const QString& uri, std::vector<QgsField>& fields);
   int describeFeatureTypePOST(const QString& uri, std::vector<QgsField>& fields);
   int describeFeatureTypeSOAP(const QString& uri, std::vector<QgsField>& fields);
+
+  //GML2 specific methods
+  int getExtentFromGML2(QgsRect* extent, const QDomElement& wfsCollectionElement) const;
+  
+  int getFeaturesFromGML2(const QDomElement& wfsCollectionElement, const QString& geometryAttribute, std::vector<QgsFeature*>& features) const;
+
+  int getWkbFromGML2(const QDomNode& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const;
+  /**Creates WKB from a <Point> element*/
+  int getWkbFromGML2Point(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const;
+  /**Creates WKB from a <Polygon> element*/
+  int getWkbFromGML2Polygon(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const;
+  /**Creates WKB from a <LineString> element*/
+  int getWkbFromGML2LineString(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const;
+  /**Creates WKB from a <MultiPoint> element*/
+  int getWkbFromGML2MultiPoint(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const;
+  /**Creates WKB from a <MultiLineString> element*/
+  int getWkbFromGML2MultiLineString(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const;
+  /**Creates WKB from a <MultiPolygon> element*/
+  int getWkbFromGML2MultiPolygon(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const;
+  /**Reads the <gml:coordinates> element and extracts the coordinates as points
+     @param coords list where the found coordinates are appended
+     @param elem the <gml:coordinates> element
+     @return 0 in case of success*/
+  int readGML2Coordinates(std::list<QgsPoint>& coords, const QDomElement elem) const;
+  /**Tries to create a QgsSpatialRefSys object and assign it to mSourceSRS. Returns 0 in case of success*/
+  int setSRSFromGML2(const QDomElement& wfsCollectionElement);
+
+  //GML3 specific methods. Not needed at the moment as most servers support GML2
+#if 0
   /**Evaluates the <gml:boundedBy> element
    @return 0 in case of success*/
-  int getExtentFromGML(QgsRect* extent, const QDomElement& wfsCollectionElement) const;
+  int getExtentFromGML3(QgsRect* extent, const QDomElement& wfsCollectionElement) const;
   /**Turns GML into QGIS features
    @param wfsCollectionElement reference to the GML parent element
    @param geometryAttribute the name of the attribute containing the geometry
    @param features the vector where pointers to the features are filled (the features have to be deleted after usage)
    @return 0 in case of success*/
-  int getFeaturesFromGML(const QDomElement& wfsCollectionElement, const QString& geometryAttribute, std::vector<QgsFeature*>& features) const;
+  int getFeaturesFromGML3(const QDomElement& wfsCollectionElement, const QString& geometryAttribute, std::vector<QgsFeature*>& features) const;
   /**Turns a GML geometry attribute element (and its contents) into wkb. This function delegates the work to the geometry type specific functions below.
    @param wkb allocated geometry data
    @param wkbSize size of the allocated data
    @param type wkb type (point/multipoint/line/multiline/polygon/multipolygon)
    @return 0 in case of success*/
-  int getWkbFromGML(const QDomNode& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const;
-  int getWkbFromGMLPoint(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const;
-  int getWkbFromGMLLineString(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const;
-  int getWkbFromGMLPolygon(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const;
-  int getWkbFromGMLMultiSurface(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const;
-  int getWkbFromMultiCurve(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const;
+  int getWkbFromGML3(const QDomNode& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const;
+  int getWkbFromGML3Point(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const;
+  int getWkbFromGML3LineString(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const;
+  int getWkbFromGML3Polygon(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const;
+  int getWkbFromGML3MultiSurface(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const;
+  int getWkbFromGML3MultiCurve(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const;
   /**Takes a <gml:pos> or <gml:posList> element and fills the coordinates into the passed list
    @param coords the list where the coordinates are filled into
    @param elem the <gml:pos> or <gml:posList> element
@@ -143,10 +175,8 @@ class QgsWFSProvider: public QgsVectorDataProvider
   int readCoordinatesFromPosList(std::list<QgsPoint>& coords, const QDomElement elem) const;
   
   /**Tries to create a QgsSpatialRefSys object and assign it to mSourceSRS. Returns 0 in case of success*/
-  int setSRSFromGML(const QDomElement& wfsCollectionElement);
-
-  /***/
-  void fillMinMaxCash();
+  int setSRSFromGML3(const QDomElement& wfsCollectionElement);
+#endif //0 methods for GML3
 };
 
 #endif
