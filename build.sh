@@ -50,6 +50,7 @@ then
  ./autogen.sh $AUTOGEN_FLAGS --prefix=${1} \
                              --enable-static=no \
                              --enable-unittests \
+                             --with-python \
                              --with-qtdir=$QTDIR \
                              --with-grass=/usr/lib/grass && make && make install
 
