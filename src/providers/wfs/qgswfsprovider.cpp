@@ -383,7 +383,7 @@ int QgsWFSProvider::getCapabilitiesSOAP(const QString& uri, std::list<QString>& 
 int QgsWFSProvider::getFeatureGET(const QString& uri, const QString& geometryAttribute)
 {
   //assemble request string
-  QString request = uri + "&OUTPUTFORMAT=gml3"; //version 1.1.1 would be correct
+  QString request = uri /*+ "&OUTPUTFORMAT=gml3"*/; //use gml2 as it is supported by most wfs servers
   QByteArray result;
   QgsHttpTransaction http(request);
   http.getSynchronously(result);
@@ -397,14 +397,14 @@ int QgsWFSProvider::getFeatureGET(const QString& uri, const QString& geometryAtt
   QDomElement featureCollectionElement = getFeatureDocument.documentElement();
   
   //get and set Extent
-  if(getExtentFromGML(&mExtent, featureCollectionElement) != 0)
+  if(getExtentFromGML2(&mExtent, featureCollectionElement) != 0)
     {
       return 3;
     }
 
-  setSRSFromGML(featureCollectionElement);  
+  setSRSFromGML2(featureCollectionElement);  
 
-  if(getFeaturesFromGML(featureCollectionElement, geometryAttribute, mFeatures) != 0)
+  if(getFeaturesFromGML2(featureCollectionElement, geometryAttribute, mFeatures) != 0)
   {
     return 4;
   }
@@ -438,6 +438,12 @@ int QgsWFSProvider::describeFeatureTypeGET(const QString& uri, std::vector<QgsFi
 	  QStringList tlist = tnamelist.at(i).split("=");
 	  tname = tlist.at(1);
 	}
+    }
+
+  //remove the namespace from tname
+  if(tname.contains(":"))
+    {
+      tname = tname.section(":", 1, 1);
     }
 
   QDomDocument describeFeatureDocument;
@@ -474,7 +480,10 @@ int QgsWFSProvider::describeFeatureTypeGET(const QString& uri, std::vector<QgsFi
     }
 
   //remove the namespace on complexTypeType
-  complexTypeType = complexTypeType.section(':', 1, 1);
+  if(complexTypeType.contains(":"))
+    {
+      complexTypeType = complexTypeType.section(":", 1, 1);
+    }
 
   //find <complexType name=complexTypeType
   QDomElement complexTypeElement;
@@ -521,7 +530,783 @@ int QgsWFSProvider::describeFeatureTypeSOAP(const QString& uri, std::vector<QgsF
   return 1; //soon...
 }
 
-int QgsWFSProvider::getExtentFromGML(QgsRect* extent, const QDomElement& wfsCollectionElement) const
+int QgsWFSProvider::getExtentFromGML2(QgsRect* extent, const QDomElement& wfsCollectionElement) const
+{
+  QDomNodeList boundedByList = wfsCollectionElement.elementsByTagNameNS(GML_NAMESPACE, "boundedBy");
+  if(boundedByList.length() < 1)
+    {
+      return 1;
+    }
+  QDomElement boundedByElement = boundedByList.at(0).toElement();
+  QDomNode childNode = boundedByElement.firstChild();
+  if(childNode.isNull())
+    {
+      return 2;
+    }
+
+  //support <gml:Box>, <gml:coordinates> and <gml:Envelope>,<gml::lowerCorner>,<gml::upperCorner>. What
+  //about <gml:Envelope>, <gml:pos>?
+  QString bboxName = childNode.localName();
+  if(bboxName != "Box")
+    {
+      return 3;
+    }
+
+  QDomNode coordinatesNode = childNode.firstChild();
+  if(coordinatesNode.localName() != "coordinates")
+    {
+      return 4;
+    }
+
+  std::list<QgsPoint> boundingPoints;
+  if(readGML2Coordinates(boundingPoints, coordinatesNode.toElement()) != 0)
+    {
+      return 5;
+    }
+  
+  if(boundingPoints.size() != 2)
+    {
+      return 6;
+    }
+ 
+  std::list<QgsPoint>::const_iterator it = boundingPoints.begin();
+  extent->setXmin(it->x());
+  extent->setYmin(it->y());
+  ++it;
+  extent->setXmax(it->x());
+  extent->setYmax(it->y());
+  return 0;
+}
+
+int QgsWFSProvider::setSRSFromGML2(const QDomElement& wfsCollectionElement)
+{
+  QgsDebugMsg("entering QgsWFSProvider::setSRSFromGML");
+  //search <gml:boundedBy>
+  QDomNodeList boundedByList = wfsCollectionElement.elementsByTagNameNS(GML_NAMESPACE, "boundedBy");
+  if(boundedByList.size() < 1)
+    {
+      QgsDebugMsg("Error, could not find boundedBy element");
+      return 1;
+    }
+  //search <gml:Envelope>
+  QDomElement boundedByElem = boundedByList.at(0).toElement();
+  QDomNodeList boxList = boundedByElem.elementsByTagNameNS(GML_NAMESPACE, "Box");
+  if(boxList.size() < 1)
+    {
+      QgsDebugMsg("Error, could not find Envelope element");
+      return 2;
+    }
+  QDomElement boxElem = boxList.at(0).toElement();
+  //getAttribute 'srsName'
+  QString srsName = boxElem.attribute("srsName");
+  if(srsName.isEmpty())
+    {
+      QgsDebugMsg("Error, srsName is empty");
+      return 3;
+    }
+  QgsDebugMsg("srsName is: " +srsName);
+
+
+  //extract the EPSG id
+  int epsgId;
+  bool conversionSuccess;
+  if(srsName.contains("#"))//geoserver has "http://www.opengis.net/gml/srs/epsg.xml#4326"
+    {
+      epsgId = srsName.section("#", 1, 1).toInt(&conversionSuccess);
+      if(!conversionSuccess)
+	{
+	  return 4;
+	}
+    }
+  else if(srsName.contains(":"))//mapserver has "EPSG:4326"
+    {
+      epsgId = srsName.section(":", 1, 1).toInt(&conversionSuccess);
+      if(!conversionSuccess)
+	{
+	  return 5;
+	}
+    }
+
+  mSourceSRS = new QgsSpatialRefSys();
+  if(!mSourceSRS->createFromEpsg(epsgId))
+    {
+      QgsDebugMsg("Error, creation of QgsSpatialRefSys failed");
+      delete mSourceSRS;
+      mSourceSRS = 0;
+      return 6;
+    }
+  return 0;
+}
+  
+int QgsWFSProvider::getFeaturesFromGML2(const QDomElement& wfsCollectionElement, const QString& geometryAttribute, std::vector<QgsFeature*>& features) const
+{
+  QDomNodeList featureTypeNodeList = wfsCollectionElement.elementsByTagNameNS(GML_NAMESPACE, "featureMember");
+  QDomElement currentFeatureMemberElem;
+  QDomElement layerNameElem;
+  QDomNode currentAttributeChild;
+  QDomElement currentAttributeElement;
+  int counter = 0;
+  QgsFeature* f = 0;
+  unsigned char* wkb = 0;
+  int wkbSize = 0;
+  QGis::WKBTYPE currentType;
+
+  for(int i = 0; i < featureTypeNodeList.size(); ++i)
+    {
+      f = new QgsFeature(counter);
+      currentFeatureMemberElem = featureTypeNodeList.at(i).toElement();
+      //the first child element is always <namespace:layer>
+      layerNameElem = currentFeatureMemberElem.firstChild().toElement();
+      //the children are the attributes
+      currentAttributeChild = layerNameElem.firstChild();
+      while(!currentAttributeChild.isNull())
+	{
+	  currentAttributeElement = currentAttributeChild.toElement();
+	  if(currentAttributeElement.localName() != "boundedBy")
+	    {
+	      if((currentAttributeElement.localName()) != geometryAttribute) //a normal attribute
+		{
+		  f->addAttribute(currentAttributeElement.localName(), currentAttributeElement.text(), false);
+		}
+	      else //a geometry attribute
+		{
+		  getWkbFromGML2(currentAttributeElement, &wkb, &wkbSize, &currentType);
+		  mWKBType = currentType; //a more sophisticated method is necessary
+		  f->setGeometryAndOwnership(wkb, wkbSize);
+		}
+	    }
+	  currentAttributeChild = currentAttributeChild.nextSibling();
+	}
+      if(wkb && wkbSize > 0)
+	{
+	  features.push_back(f);
+	}
+      ++counter;
+    }
+  return 0;
+}
+
+int QgsWFSProvider::getWkbFromGML2(const QDomNode& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const
+{
+  QDomNode geometryChild = geometryElement.firstChild();
+  if(geometryChild.isNull())
+    {
+      return 1;
+    }
+  QDomElement geometryTypeElement = geometryChild.toElement();
+  QString geomType = geometryTypeElement.localName();
+  if(geomType == "Point")
+    {
+      return getWkbFromGML2Point(geometryTypeElement, wkb, wkbSize, type);
+    }
+  else if(geomType == "LineString")
+    {
+      return getWkbFromGML2LineString(geometryTypeElement, wkb, wkbSize, type);
+    }
+  else if(geomType == "Polygon")
+    {
+      return getWkbFromGML2Polygon(geometryTypeElement, wkb, wkbSize, type);
+    }
+  else if(geomType == "MultiPoint")
+    {
+      return getWkbFromGML2MultiPoint(geometryTypeElement, wkb, wkbSize, type);
+    }
+  else if(geomType == "MultiLineString")
+    {
+      return getWkbFromGML2MultiLineString(geometryTypeElement, wkb, wkbSize, type);
+    }
+  else if(geomType == "MultiPolygon")
+    {
+      return getWkbFromGML2MultiPolygon(geometryTypeElement, wkb, wkbSize, type);
+    }
+  else //unknown type
+    {
+      *wkb = 0;
+      *wkbSize = 0;
+    }
+  return 0;
+}
+
+int QgsWFSProvider::getWkbFromGML2Point(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const
+{
+  QDomNodeList coordList = geometryElement.elementsByTagNameNS(GML_NAMESPACE, "coordinates");
+  if(coordList.size() < 1)
+    {
+      return 1;
+    }
+  QDomElement coordElement = coordList.at(0).toElement();
+  std::list<QgsPoint> pointCoordinate;
+  if(readGML2Coordinates(pointCoordinate, coordElement) != 0)
+    {
+      return 2;
+    }
+  
+  if(pointCoordinate.size() < 1)
+    {
+      return 3;
+    }
+  
+  std::list<QgsPoint>::const_iterator point_it = pointCoordinate.begin();
+  char e = endian();
+  double x = point_it->x();
+  double y = point_it->y();
+  int size = 1 + sizeof(int) + 2 * sizeof(double);
+  *wkb = new unsigned char[size];
+  *wkbSize = size;
+  *type = QGis::WKBPoint;
+  int wkbPosition = 0; //current offset from wkb beginning (in bytes)
+  memcpy(&(*wkb)[wkbPosition], &e, 1);
+  wkbPosition += 1;
+  memcpy(&(*wkb)[wkbPosition], type, sizeof(int));
+  wkbPosition += sizeof(int);
+  memcpy(&(*wkb)[wkbPosition], &x, sizeof(double));
+  wkbPosition += sizeof(double);
+  memcpy(&(*wkb)[wkbPosition], &y, sizeof(double));
+  return 0;
+}
+
+int QgsWFSProvider::getWkbFromGML2Polygon(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const
+{
+  //read all the coordinates (as QgsPoint) into memory. Each linear ring has an entry in the vector
+  std::vector<std::list<QgsPoint> > ringCoordinates;
+  
+  //read coordinates for outer boundary
+  QDomNodeList outerBoundaryList = geometryElement.elementsByTagNameNS(GML_NAMESPACE, "outerBoundaryIs");
+  if(outerBoundaryList.size() < 1) //outer ring is necessary
+    {
+      return 1; 
+    }
+  QDomElement coordinatesElement = outerBoundaryList.at(0).firstChild().firstChild().toElement();
+  if(coordinatesElement.isNull())
+    {
+      return 2;
+    }
+  std::list<QgsPoint> exteriorPointList;
+  if(readGML2Coordinates(exteriorPointList, coordinatesElement) != 0)
+    {
+      return 3;
+    }
+  ringCoordinates.push_back(exteriorPointList);
+
+  //read coordinates for inner boundary
+  QDomNodeList innerBoundaryList = geometryElement.elementsByTagNameNS(GML_NAMESPACE, "innerBoundaryIs");
+  for(int i = 0; i < innerBoundaryList.size(); ++i)
+    {
+      std::list<QgsPoint> interiorPointList;
+      QDomElement coordinatesElement = innerBoundaryList.at(i).firstChild().firstChild().toElement();
+      if(coordinatesElement.isNull())
+	{
+	  return 4;
+	}
+      if(readGML2Coordinates(interiorPointList, coordinatesElement) != 0)
+	{
+	  return 5;
+	}
+      ringCoordinates.push_back(interiorPointList); 
+    }
+
+  //calculate number of bytes to allocate
+  int nrings = 1 + innerBoundaryList.size();
+  int npoints = 0;//total number of points
+  for(std::vector<std::list<QgsPoint> >::const_iterator it = ringCoordinates.begin(); it != ringCoordinates.end(); ++it)
+    {
+      npoints += it->size();
+    } 
+  int size = 1 + 2 * sizeof(int) + nrings * sizeof(int) + 2 * npoints * sizeof(double);
+  *wkb = new unsigned char[size];
+  *wkbSize = size;
+  *type = QGis::WKBPolygon;
+  char e = endian();
+  int wkbPosition = 0; //current offset from wkb beginning (in bytes)
+  int nPointsInRing = 0;
+  double x, y;
+  
+  //fill the contents into *wkb
+  memcpy(&(*wkb)[wkbPosition], &e, 1);
+  wkbPosition += 1;
+  memcpy(&(*wkb)[wkbPosition], type, sizeof(int));
+  wkbPosition += sizeof(int);
+  memcpy(&(*wkb)[wkbPosition], &nrings, sizeof(int));
+  wkbPosition += sizeof(int);
+  for(std::vector<std::list<QgsPoint> >::const_iterator it = ringCoordinates.begin(); it != ringCoordinates.end(); ++it)
+    {
+      nPointsInRing = it->size(); 
+      memcpy(&(*wkb)[wkbPosition], &nPointsInRing, sizeof(int));
+      wkbPosition += sizeof(int);
+      //iterate through the string list converting the strings to x-/y- doubles
+      std::list<QgsPoint>::const_iterator iter;
+      for(iter = it->begin(); iter != it->end(); ++iter)
+	{
+	  x = iter->x();
+	  y = iter->y();
+	  //qWarning("currentCoordinate: " + QString::number(x) + " // " + QString::number(y));
+	  memcpy(&(*wkb)[wkbPosition], &x, sizeof(double));
+	  wkbPosition += sizeof(double);
+	  memcpy(&(*wkb)[wkbPosition], &y, sizeof(double));
+	  wkbPosition += sizeof(double);
+	}
+    }
+  return 0;
+}
+
+int QgsWFSProvider::getWkbFromGML2LineString(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const
+{
+  QDomNodeList coordinatesList = geometryElement.elementsByTagNameNS(GML_NAMESPACE, "coordinates");
+  if(coordinatesList.size() < 1)
+    {
+      return 1;
+    }
+  QDomElement coordinatesElement = coordinatesList.at(0).toElement();
+  std::list<QgsPoint> lineCoordinates;
+  if(readGML2Coordinates(lineCoordinates, coordinatesElement) != 0)
+    {
+      return 2;
+    }
+
+  char e = endian();
+  int size = 1 + 2 * sizeof(int) + lineCoordinates.size() * 2* sizeof(double);
+  *wkb = new unsigned char[size];
+  *wkbSize = size;
+  *type = QGis::WKBLineString;
+  int wkbPosition = 0; //current offset from wkb beginning (in bytes)
+  double x, y;
+  int nPoints = lineCoordinates.size();
+  
+  //fill the contents into *wkb
+  memcpy(&(*wkb)[wkbPosition], &e, 1);
+  wkbPosition += 1;
+  memcpy(&(*wkb)[wkbPosition], type, sizeof(int));
+  wkbPosition += sizeof(int);
+  memcpy(&(*wkb)[wkbPosition], &nPoints, sizeof(int));
+  wkbPosition += sizeof(int);
+  
+  std::list<QgsPoint>::const_iterator iter;
+  for(iter = lineCoordinates.begin(); iter != lineCoordinates.end(); ++iter)
+    {
+      x = iter->x();
+      y = iter->y();
+      memcpy(&(*wkb)[wkbPosition], &x, sizeof(double));
+      wkbPosition += sizeof(double);
+      memcpy(&(*wkb)[wkbPosition], &y, sizeof(double));
+      wkbPosition += sizeof(double);
+    }
+  return 0;
+}
+
+int QgsWFSProvider::getWkbFromGML2MultiPoint(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const
+{
+  std::list<QgsPoint> pointList;
+  std::list<QgsPoint> currentPoint;
+  QDomNodeList pointMemberList = geometryElement.elementsByTagNameNS(GML_NAMESPACE, "pointMember");
+  if(pointMemberList.size() < 1)
+    {
+      return 1;
+    }
+  QDomNodeList pointNodeList;
+  QDomNodeList coordinatesList;
+  for(int i = 0; i < pointMemberList.size(); ++i)
+    {
+      //<Point> element
+      pointNodeList = pointMemberList.at(i).toElement().elementsByTagNameNS(GML_NAMESPACE, "Point");
+      if(pointNodeList.size() < 1)
+	{
+	  continue;
+	}
+      //<coordinates> element
+      coordinatesList = pointNodeList.at(0).toElement().elementsByTagNameNS(GML_NAMESPACE, "coordinates");
+      if(coordinatesList.size() < 1)
+	{
+	  continue;
+	}
+      currentPoint.clear();
+      if(readGML2Coordinates(currentPoint, coordinatesList.at(0).toElement()) != 0)
+	{
+	  continue;
+	}
+      if(currentPoint.size() < 1)
+	{
+	  continue;
+	}
+      pointList.push_back((*currentPoint.begin()));
+    }
+
+  //calculate the required wkb size
+  int size = 1 + 2 * sizeof(int) + pointList.size() * (2 * sizeof(double) + 1 + sizeof(int));
+  *wkb = new unsigned char[size];
+  *wkbSize = size;
+  *type = QGis::WKBMultiPoint;
+
+  //fill the wkb content
+  char e = endian();
+  int wkbPosition = 0; //current offset from wkb beginning (in bytes)
+  int nPoints = pointList.size(); //number of points
+  double x, y;
+  memcpy(&(*wkb)[wkbPosition], &e, 1);
+  wkbPosition += 1;
+  memcpy(&(*wkb)[wkbPosition], type, sizeof(int));
+  wkbPosition += sizeof(int);
+  memcpy(&(*wkb)[wkbPosition], &nPoints, sizeof(int));
+  wkbPosition += sizeof(int);
+  for(std::list<QgsPoint>::const_iterator it = pointList.begin(); it != pointList.end(); ++it)
+    {
+      memcpy(&(*wkb)[wkbPosition], &e, 1);
+      wkbPosition += 1;
+      memcpy(&(*wkb)[wkbPosition], type, sizeof(int));
+      wkbPosition += sizeof(int);
+      x = it->x();
+      memcpy(&(*wkb)[wkbPosition], &x, sizeof(double));
+      wkbPosition += sizeof(double);
+      y = it->y();
+      memcpy(&(*wkb)[wkbPosition], &y, sizeof(double));
+      wkbPosition += sizeof(double);
+    }
+  return 0;
+}
+
+int QgsWFSProvider::getWkbFromGML2MultiLineString(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const
+{
+  //geoserver has
+  //<gml:MultiLineString>
+  //<gml:lineStringMember>
+  //<gml:LineString>
+  
+  //mapserver has directly
+  //<gml:MultiLineString
+  //<gml:LineString
+
+  std::list<std::list<QgsPoint> > lineCoordinates; //first list: lines, second list: points of one line
+  QDomElement currentLineStringElement;
+  QDomNodeList currentCoordList;
+
+  QDomNodeList lineStringMemberList = geometryElement.elementsByTagNameNS(GML_NAMESPACE, "lineStringMember");
+  if(lineStringMemberList.size() > 0) //geoserver
+    {
+      for(int i = 0; i < lineStringMemberList.size(); ++i)
+	{
+	  QDomNodeList lineStringNodeList = geometryElement.elementsByTagNameNS(GML_NAMESPACE, "LineString");
+	  if(lineStringNodeList.size() < 1)
+	    {
+	      return 1;
+	    }
+	  currentLineStringElement = lineStringNodeList.at(0).toElement();
+	  currentCoordList = currentLineStringElement.elementsByTagNameNS(GML_NAMESPACE, "coordinates");
+	  if(currentCoordList.size() < 1)
+	    {
+	      return 2;
+	    }
+	  std::list<QgsPoint> currentPointList;
+	  if(readGML2Coordinates(currentPointList, currentCoordList.at(0).toElement()) != 0)
+	    {
+	      return 3;
+	    }
+	  lineCoordinates.push_back(currentPointList);
+	}
+    }
+  else
+    {
+      QDomNodeList lineStringList = geometryElement.elementsByTagNameNS(GML_NAMESPACE, "LineString");
+      if(lineStringList.size() > 0) //mapserver
+	{
+	  for(int i = 0; i < lineStringList.size(); ++i)
+	    {
+	      currentLineStringElement = lineStringList.at(i).toElement();
+	      currentCoordList = currentLineStringElement.elementsByTagNameNS(GML_NAMESPACE, "coordinates");
+	      if(currentCoordList.size() < 1)
+		{
+		  return 4;
+		}
+	      std::list<QgsPoint> currentPointList;
+	      if(readGML2Coordinates(currentPointList, currentCoordList.at(0).toElement()) != 0)
+		{
+		  return 5;
+		}
+	      lineCoordinates.push_back(currentPointList);
+	    }
+	}
+      else
+	{
+	  return 6;
+	}
+    }
+
+
+  //calculate the required wkb size
+  int size = (lineCoordinates.size() + 1) * (1 + 2 * sizeof(int));
+  for(std::list<std::list<QgsPoint> >::const_iterator it = lineCoordinates.begin(); it != lineCoordinates.end(); ++it)
+    {
+      size += it->size() * 2 * sizeof(double);
+    }
+  *wkb = new unsigned char[size];
+  *wkbSize = size;
+  *type = QGis::WKBMultiLineString;
+  
+  //fill the wkb content
+  char e = endian();
+  int wkbPosition = 0; //current offset from wkb beginning (in bytes)
+  int nLines = lineCoordinates.size();
+  int nPoints; //number of points in a line
+  double x, y;
+  memcpy(&(*wkb)[wkbPosition], &e, 1);
+  wkbPosition += 1;
+  memcpy(&(*wkb)[wkbPosition], type, sizeof(int));
+  wkbPosition += sizeof(int);
+  memcpy(&(*wkb)[wkbPosition], &nLines, sizeof(int));
+  wkbPosition += sizeof(int);
+  for(std::list<std::list<QgsPoint> >::const_iterator it = lineCoordinates.begin(); it != lineCoordinates.end(); ++it)
+    {
+      memcpy(&(*wkb)[wkbPosition], &e, 1);
+      wkbPosition += 1;
+      memcpy(&(*wkb)[wkbPosition], type, sizeof(int));
+      wkbPosition += sizeof(int);
+      nPoints = it->size();
+      memcpy(&(*wkb)[wkbPosition], &nPoints, sizeof(int));
+      wkbPosition += sizeof(int);
+      for(std::list<QgsPoint>::const_iterator iter = it->begin(); iter != it->end(); ++iter)
+	{
+	  x = iter->x();
+	  //qWarning("x is: " + QString::number(x));
+	  y = iter->y();
+	  //qWarning("y is: " + QString::number(y));
+	  memcpy(&(*wkb)[wkbPosition], &x, sizeof(double));
+	  wkbPosition += sizeof(double);
+	  memcpy(&(*wkb)[wkbPosition], &y, sizeof(double));
+	  wkbPosition += sizeof(double);
+	}
+    }
+  return 0;  
+}
+
+int QgsWFSProvider::getWkbFromGML2MultiPolygon(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const
+{
+  //first list: different polygons, second list: different rings, third list: different points
+  std::list<std::list<std::list<QgsPoint> > > multiPolygonPoints;
+  QDomElement currentPolygonMemberElement;
+  QDomNodeList polygonList;
+  QDomElement currentPolygonElement;
+  QDomNodeList outerBoundaryList;
+  QDomElement currentOuterBoundaryElement;
+  QDomElement currentInnerBoundaryElement;
+  QDomNodeList innerBoundaryList;
+  QDomNodeList linearRingNodeList;
+  QDomElement currentLinearRingElement;
+  QDomNodeList currentCoordinateList;
+
+  QDomNodeList polygonMemberList = geometryElement.elementsByTagNameNS(GML_NAMESPACE, "polygonMember");
+  for(int i = 0; i < polygonMemberList.size(); ++i)
+    {
+      std::list<std::list<QgsPoint> > currentPolygonList;
+      currentPolygonMemberElement = polygonMemberList.at(i).toElement();
+      polygonList = currentPolygonMemberElement.elementsByTagNameNS(GML_NAMESPACE, "Polygon");
+      if(polygonList.size() < 1)
+	{
+	  continue;
+	}
+      currentPolygonElement = polygonList.at(0).toElement();
+      
+      //find exterior ring
+      outerBoundaryList = currentPolygonElement.elementsByTagNameNS(GML_NAMESPACE, "outerBoundaryIs");
+      if(outerBoundaryList.size() < 1)
+	{
+	  continue;
+	}
+      
+      currentOuterBoundaryElement = outerBoundaryList.at(0).toElement();
+      std::list<QgsPoint> ringCoordinates;
+     
+      linearRingNodeList = currentOuterBoundaryElement.elementsByTagNameNS(GML_NAMESPACE, "LinearRing");
+      if(linearRingNodeList.size() < 1)
+	{
+	  continue;
+	}
+      currentLinearRingElement = linearRingNodeList.at(i).toElement();
+      currentCoordinateList = currentLinearRingElement.elementsByTagNameNS(GML_NAMESPACE, "coordinates");
+      if(currentCoordinateList.size() < 1)
+	{
+	  continue;
+	}
+      if(readGML2Coordinates(ringCoordinates, currentCoordinateList.at(0).toElement()) != 0)
+	{
+	  continue;
+	}
+      currentPolygonList.push_back(ringCoordinates);
+
+      //find interior rings
+      QDomNodeList innerBoundaryList = currentPolygonElement.elementsByTagNameNS(GML_NAMESPACE, "innerBoundaryIs");
+      for(int i = 0; i < innerBoundaryList.size(); ++i)
+	{
+	  std::list<QgsPoint> ringCoordinates;
+	  currentInnerBoundaryElement = innerBoundaryList.at(i).toElement();
+	  linearRingNodeList = currentOuterBoundaryElement.elementsByTagNameNS(GML_NAMESPACE, "LinearRing");
+	  if(linearRingNodeList.size() < 1)
+	    {
+	      continue;
+	    }
+	  currentLinearRingElement = linearRingNodeList.at(i).toElement(); 
+	  currentCoordinateList = currentLinearRingElement.elementsByTagNameNS(GML_NAMESPACE, "coordinates");
+	  if(currentCoordinateList.size() < 1)
+	    {
+	      continue;
+	    }
+	  if(readGML2Coordinates(ringCoordinates, currentCoordinateList.at(0).toElement()) != 0)
+	    {
+	      continue;
+	    } 
+	  currentPolygonList.push_back(ringCoordinates);
+	}
+      multiPolygonPoints.push_back(currentPolygonList);
+    }
+  
+  int size = 1 + 2 * sizeof(int);
+  //calculate the wkb size
+  for(std::list<std::list<std::list<QgsPoint> > >::const_iterator it = multiPolygonPoints.begin(); it != multiPolygonPoints.end(); ++it)
+    {
+      size += 1 + 2 * sizeof(int);
+      for(std::list<std::list<QgsPoint> >::const_iterator iter = it->begin(); iter != it->end(); ++iter)
+	{
+	  size += sizeof(int) + 2 * iter->size() * sizeof(double);
+	}
+    }
+  *wkb = new unsigned char[size];
+  *wkbSize = size;
+  *type = QGis::WKBMultiPolygon;
+  int polygonType = QGis::WKBPolygon;
+  char e = endian();
+  int wkbPosition = 0; //current offset from wkb beginning (in bytes)
+  double x, y;
+  int nPolygons = multiPolygonPoints.size();
+  int nRings;
+  int nPointsInRing;
+  
+  //fill the contents into *wkb
+  memcpy(&(*wkb)[wkbPosition], &e, 1);
+  wkbPosition += 1;
+  memcpy(&(*wkb)[wkbPosition], type, sizeof(int));
+  wkbPosition += sizeof(int);
+  memcpy(&(*wkb)[wkbPosition], &nPolygons, sizeof(int));
+  wkbPosition += sizeof(int);
+  
+  for(std::list<std::list<std::list<QgsPoint> > >::const_iterator it = multiPolygonPoints.begin(); it != multiPolygonPoints.end(); ++it)
+    {
+      memcpy(&(*wkb)[wkbPosition], &e, 1);
+      wkbPosition += 1;
+      memcpy(&(*wkb)[wkbPosition], &polygonType, sizeof(int));
+      wkbPosition += sizeof(int);
+      nRings = it->size();
+      memcpy(&(*wkb)[wkbPosition], &nRings, sizeof(int));
+      wkbPosition += sizeof(int);
+      for(std::list<std::list<QgsPoint> >::const_iterator iter = it->begin(); iter != it->end(); ++iter)
+	{
+	  nPointsInRing = iter->size();
+	  memcpy(&(*wkb)[wkbPosition], &nPointsInRing, sizeof(int));
+	  wkbPosition += sizeof(int);
+	  for(std::list<QgsPoint>::const_iterator iterator = iter->begin(); iterator != iter->end(); ++iterator)
+	    {
+	      x = iterator->x();
+	      y = iterator->y();
+	      memcpy(&(*wkb)[wkbPosition], &x, sizeof(double));
+	      wkbPosition += sizeof(double);
+	      memcpy(&(*wkb)[wkbPosition], &y, sizeof(double));
+	      wkbPosition += sizeof(double);
+	    }
+	}
+    }
+  return 0;
+}
+
+int QgsWFSProvider::readGML2Coordinates(std::list<QgsPoint>& coords, const QDomElement elem) const
+{
+  QString coordSeparator = ",";
+  QString tupelSeparator = " ";
+  //"decimal" has to be "."
+
+  coords.clear();
+
+  if(elem.hasAttribute("cs"))
+    {
+      coordSeparator = elem.attribute("cs");
+    }
+  if(elem.hasAttribute("ts"))
+    {
+      tupelSeparator = elem.attribute("ts");
+    }
+
+  QStringList tupels = elem.text().split(tupelSeparator, QString::SkipEmptyParts);
+  QStringList tupel_coords;
+  double x, y;
+  bool conversionSuccess;
+
+  QStringList::const_iterator it;
+  for(it = tupels.constBegin(); it != tupels.constEnd(); ++it)
+    {
+      tupel_coords = (*it).split(coordSeparator, QString::SkipEmptyParts);
+      if(tupel_coords.size() < 2)
+	{
+	  continue;
+	}
+      x = tupel_coords.at(0).toDouble(&conversionSuccess);
+      if(!conversionSuccess)
+	{
+	  return 1;
+	}
+      y = tupel_coords.at(1).toDouble(&conversionSuccess);
+      if(!conversionSuccess)
+	{
+	  return 1;
+	}
+      coords.push_back(QgsPoint(x, y));
+    }
+  return 0;
+}
+
+int QgsWFSProvider::getSrid()
+{
+  if(mSourceSRS)
+    {
+      return mSourceSRS->srid();
+    }
+  else
+    {
+      return 0;
+    }
+}
+
+QString QgsWFSProvider::name() const
+{
+  return TEXT_PROVIDER_KEY;
+}
+
+QString QgsWFSProvider::description() const
+{
+  return TEXT_PROVIDER_DESCRIPTION;
+}
+
+
+QGISEXTERN QgsWFSProvider* classFactory(const QString *uri)
+{
+  return new QgsWFSProvider(*uri);
+}
+
+QGISEXTERN QString providerKey()
+{
+    return TEXT_PROVIDER_KEY;
+}
+
+QGISEXTERN QString description()
+{
+    return TEXT_PROVIDER_DESCRIPTION;
+}
+
+QGISEXTERN bool isProvider()
+{
+  return true;
+}
+
+
+
+//methods for reading GML3. Not needed at the moment as most servers support GML2
+
+#if 0
+int QgsWFSProvider::getExtentFromGML3(QgsRect* extent, const QDomElement& wfsCollectionElement) const
 {
   QDomNodeList boundedByList = wfsCollectionElement.elementsByTagNameNS(GML_NAMESPACE, "boundedBy");
   if(boundedByList.length() < 1)
@@ -570,72 +1355,6 @@ int QgsWFSProvider::getExtentFromGML(QgsRect* extent, const QDomElement& wfsColl
       extent->setYmin(yLow);
       extent->setXmax(xRight);
       extent->setYmax(yUp);
-      
-#if 0
-      //lowerCorner
-      QDomNodeList lowerCornerList = envelopeElement.elementsByTagNameNS(GML_NAMESPACE, "lowerCorner");
-      if(lowerCornerList.length() < 1)
-	{
-	  return 3;
-	}
-      QDomElement lowerCornerElement = lowerCornerList.at(0).toElement();
-      QStringList lowerCornerStringList = lowerCornerElement.text().split(" ", QString::SkipEmptyParts);
-      if(lowerCornerStringList.size() < 2)
-	{
-	  return 4;
-	}
-
-      bool conversionOk;
-      double xLow = lowerCornerStringList.at(0).toDouble(&conversionOk);
-      if(conversionOk)
-	{
-	  extent->setXmin(xLow);
-	}
-      else
-	{
-	  return 5;
-	}
-      double yLow = lowerCornerStringList.at(1).toDouble(&conversionOk);
-      if(conversionOk)
-	{
-	  extent->setYmin(yLow);
-	}
-      else
-	{
-	  return 6;
-	}
-
-      //upperCorner
-      QDomNodeList upperCornerList = envelopeElement.elementsByTagNameNS(GML_NAMESPACE, "upperCorner");
-      if(upperCornerList.length() < 1)
-	{
-	  return 7;
-	}
-      QDomElement upperCornerElement = upperCornerList.at(0).toElement();
-      QStringList upperCornerStringList = upperCornerElement.text().split(" ", QString::SkipEmptyParts);
-      if(upperCornerStringList.size() < 2)
-	{
-	  return 8;
-	}
-      double xUp = upperCornerStringList.at(0).toDouble(&conversionOk);
-      if(conversionOk)
-	{
-	  extent->setXmax(xUp);
-	}
-      else
-	{
-	  return 9;
-	}
-      double yUp = upperCornerStringList.at(1).toDouble();
-      if(conversionOk)
-	{
-	  extent->setYmax(yUp);
-	}
-      else
-	{
-	  return 10;
-	}
-#endif
     }
   else if(bboxName == "Box")
     {
@@ -702,7 +1421,7 @@ int QgsWFSProvider::getExtentFromGML(QgsRect* extent, const QDomElement& wfsColl
   return 0;
 }
 
-int QgsWFSProvider::getFeaturesFromGML(const QDomElement& wfsCollectionElement, const QString& geometryAttribute, std::vector<QgsFeature*>& features) const
+int QgsWFSProvider::getFeaturesFromGML3(const QDomElement& wfsCollectionElement, const QString& geometryAttribute, std::vector<QgsFeature*>& features) const
 {
   QDomNodeList featureTypeNodeList = wfsCollectionElement.elementsByTagNameNS(GML_NAMESPACE, "featureMember");
   QDomElement currentFeatureMemberElem;
@@ -734,7 +1453,7 @@ int QgsWFSProvider::getFeaturesFromGML(const QDomElement& wfsCollectionElement, 
 		}
 	      else //a geometry attribute
 		{
-		  getWkbFromGML(currentAttributeElement, &wkb, &wkbSize, &currentType);
+		  getWkbFromGML3(currentAttributeElement, &wkb, &wkbSize, &currentType);
 		  mWKBType = currentType; //a more sophisticated method is necessary
 		  f->setGeometryAndOwnership(wkb, wkbSize);
 		}
@@ -750,7 +1469,7 @@ int QgsWFSProvider::getFeaturesFromGML(const QDomElement& wfsCollectionElement, 
   return 1;
 }
 
-int QgsWFSProvider::getWkbFromGML(const QDomNode& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const
+int QgsWFSProvider::getWkbFromGML3(const QDomNode& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const
 {
   QDomNode geometryChild = geometryElement.firstChild();
   if(geometryChild.isNull())
@@ -761,23 +1480,23 @@ int QgsWFSProvider::getWkbFromGML(const QDomNode& geometryElement, unsigned char
   QString geomType = geometryTypeElement.localName();
   if(geomType == "Point")
     {
-      return getWkbFromGMLPoint(geometryTypeElement, wkb, wkbSize, type);
+      return getWkbFromGML3Point(geometryTypeElement, wkb, wkbSize, type);
     }
   else if(geomType == "Polygon")
     {
-      return getWkbFromGMLPolygon(geometryTypeElement, wkb, wkbSize, type);
+      return getWkbFromGML3Polygon(geometryTypeElement, wkb, wkbSize, type);
     }
   else if(geomType == "LineString")
     {
-      return getWkbFromGMLLineString(geometryTypeElement, wkb, wkbSize, type);
+      return getWkbFromGML3LineString(geometryTypeElement, wkb, wkbSize, type);
     }
   else if(geomType == "MultiCurve")
     {
-      return getWkbFromMultiCurve(geometryTypeElement, wkb, wkbSize, type); 
+      return getWkbFromGML3MultiCurve(geometryTypeElement, wkb, wkbSize, type); 
     }
   else if(geomType == "MultiSurface")
     {
-      return getWkbFromGMLMultiSurface(geometryTypeElement, wkb, wkbSize, type);
+      return getWkbFromGML3MultiSurface(geometryTypeElement, wkb, wkbSize, type);
     }
   else //unknown type
     {
@@ -787,7 +1506,7 @@ int QgsWFSProvider::getWkbFromGML(const QDomNode& geometryElement, unsigned char
   return 0;
 }
 
-int QgsWFSProvider::getWkbFromGMLPoint(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const
+int QgsWFSProvider::getWkbFromGML3Point(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const
 {
   QDomNodeList posList = geometryElement.elementsByTagNameNS(GML_NAMESPACE, "pos");
   if(posList.size() < 1)
@@ -825,7 +1544,7 @@ int QgsWFSProvider::getWkbFromGMLPoint(const QDomElement& geometryElement, unsig
   return 0;
 }
 
-int QgsWFSProvider::getWkbFromGMLLineString(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const
+int QgsWFSProvider::getWkbFromGML3LineString(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const
 {
   QDomNodeList posList = geometryElement.elementsByTagNameNS(GML_NAMESPACE, "posList");
   if(posList.size() < 1)
@@ -868,7 +1587,7 @@ int QgsWFSProvider::getWkbFromGMLLineString(const QDomElement& geometryElement, 
   return 0;
 }
 
-int QgsWFSProvider::getWkbFromGMLPolygon(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const
+int QgsWFSProvider::getWkbFromGML3Polygon(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const
 {
   QDomNodeList exteriorList = geometryElement.elementsByTagNameNS(GML_NAMESPACE, "exterior");
   if(exteriorList.size() < 1) //exterior ring is necessary
@@ -946,7 +1665,7 @@ int QgsWFSProvider::getWkbFromGMLPolygon(const QDomElement& geometryElement, uns
   return 0;
 }
 
-int QgsWFSProvider::getWkbFromGMLMultiSurface(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const
+int QgsWFSProvider::getWkbFromGML3MultiSurface(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const
 {
   //get <surfaceMembers> tag
   QDomNodeList surfaceMembersList = geometryElement.elementsByTagNameNS(GML_NAMESPACE, "surfaceMembers");
@@ -1083,7 +1802,7 @@ int QgsWFSProvider::getWkbFromGMLMultiSurface(const QDomElement& geometryElement
   return 0;
 }
 
-int QgsWFSProvider::getWkbFromMultiCurve(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const
+int QgsWFSProvider::getWkbFromGML3MultiCurve(const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const
 {
   QDomNodeList curveMembersList = geometryElement.elementsByTagNameNS(GML_NAMESPACE, "curveMembers");
   if(curveMembersList.size() < 1)
@@ -1224,7 +1943,7 @@ int QgsWFSProvider::readCoordinatesFromPosList(std::list<QgsPoint>& coords, cons
   return 0;
 }
 
-int QgsWFSProvider::setSRSFromGML(const QDomElement& wfsCollectionElement)
+int QgsWFSProvider::setSRSFromGML3(const QDomElement& wfsCollectionElement)
 {
   QgsDebugMsg("entering QgsWFSProvider::setSRSFromGML");
   //search <gml:boundedBy>
@@ -1261,46 +1980,4 @@ int QgsWFSProvider::setSRSFromGML(const QDomElement& wfsCollectionElement)
     }
   return 0;
 }
-
-int QgsWFSProvider::getSrid()
-{
-  if(mSourceSRS)
-    {
-      return mSourceSRS->srid();
-    }
-  else
-    {
-      return 0;
-    }
-}
-
-QString QgsWFSProvider::name() const
-{
-  return TEXT_PROVIDER_KEY;
-}
-
-QString QgsWFSProvider::description() const
-{
-  return TEXT_PROVIDER_DESCRIPTION;
-}
-
-
-QGISEXTERN QgsWFSProvider* classFactory(const QString *uri)
-{
-  return new QgsWFSProvider(*uri);
-}
-
-QGISEXTERN QString providerKey()
-{
-    return TEXT_PROVIDER_KEY;
-}
-
-QGISEXTERN QString description()
-{
-    return TEXT_PROVIDER_DESCRIPTION;
-}
-
-QGISEXTERN bool isProvider()
-{
-  return true;
-}
+#endif //0 //methods for reading GML3
