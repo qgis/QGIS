@@ -19,9 +19,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cmath>
-#ifdef WIN32
 #include <limits>
-#endif
 #include <QString>
 #include <QTextStream> 
 
@@ -282,4 +280,27 @@ void QgsRect::unionRect(const QgsRect& r)
   if (r.xMax() > xMax()) setXmax(r.xMax());
   if (r.yMin() < yMin()) setYmin(r.yMin());
   if (r.yMax() > yMax()) setYmax(r.yMax());
+}
+
+bool QgsRect::isFinite() const
+{
+  if (std::numeric_limits<double>::has_infinity)
+  {
+    if (xmin == std::numeric_limits<double>::infinity() ||
+        xmax == std::numeric_limits<double>::infinity() ||
+        ymin == std::numeric_limits<double>::infinity() ||
+        ymax == std::numeric_limits<double>::infinity())
+      return false;
+  }
+  // Only check for quiet NaN, as the signalling NaN will have caused
+  // an exception well before we get the chance to get here.
+  if (std::numeric_limits<double>::has_quiet_NaN)
+  {
+    if (xmin == std::numeric_limits<double>::quiet_NaN() ||
+        xmax == std::numeric_limits<double>::quiet_NaN() ||
+        ymin == std::numeric_limits<double>::quiet_NaN() ||
+        ymax == std::numeric_limits<double>::quiet_NaN())
+      return false;
+  }
+  return true;
 }

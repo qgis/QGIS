@@ -18,14 +18,6 @@
 
 /* $Id$ */
 
-#include "qgsconfig.h"
-
-#ifdef HAVE_STDISFINITE
-  #include <cmath>
-#else
-  #include <math.h>
-#endif
-
 #include "qgslogger.h"
 #include "qgswmsprovider.h"
 
@@ -1954,16 +1946,10 @@ bool QgsWmsProvider::calculateExtent()
       }
 
     //make sure extent does not contain 'inf' or 'nan'
-#ifdef HAVE_STDISFINITE
-    if(!std::isfinite(extent.xMin()) || !std::isfinite((int)extent.yMin()) || !std::isfinite(extent.xMax()) || \
-       !std::isfinite((int)extent.yMax()))
-#else
-    if(!isfinite(extent.xMin()) || !isfinite((int)extent.yMin()) || !isfinite(extent.xMax()) || \
-       !isfinite((int)extent.yMax()))
-#endif
-      {
-	continue;
-      }
+    if (!extent.isFinite())
+    {
+      continue;
+    }
 
     // add to the combined extent of all the active sublayers
     if (firstLayer)
