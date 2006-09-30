@@ -821,8 +821,8 @@ bool QgsDelimitedTextProvider::saveAsShapefile()
               name().toLocal8Bit().data() << " width length " << lengths[i] << std::endl;
             if (poLayer->CreateField(&fld) != OGRERR_NONE)
             {
-              QMessageBox::warning(0, "Error",
-                                   "Error creating field " + attrField.name());
+              QMessageBox::warning(0, tr("Error"),
+                                   tr("Error creating field ") + attrField.name());
             }
           }
           // read the delimited text file and create the features
@@ -895,14 +895,14 @@ bool QgsDelimitedTextProvider::saveAsShapefile()
         }
         else
         {
-          QMessageBox::warning(0, "Error", "Layer creation failed");
+          QMessageBox::warning(0, tr("Error"), tr("Layer creation failed"));
         }
 
       }
       else
       {
-        QMessageBox::warning(0, "Error creating shapefile",
-                             "The shapefile could not be created (" +
+        QMessageBox::warning(0, tr("Error creating shapefile"),
+                             tr("The shapefile could not be created (") +
                              shapefileName + ")");
       }
 
@@ -911,8 +911,8 @@ bool QgsDelimitedTextProvider::saveAsShapefile()
   }
   else
   {
-    QMessageBox::warning(0, "Driver not found",
-                         driverName + " driver is not available");
+    QMessageBox::warning(0, tr("Driver not found"),
+                         driverName + tr(" driver is not available"));
     returnValue = false;
   }
   return returnValue;

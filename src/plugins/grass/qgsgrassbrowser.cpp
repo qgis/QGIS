@@ -285,9 +285,9 @@ void QgsGrassBrowser::copyMap()
         {
             QString output ( process.readAllStandardOutput () );
             QString error ( process.readAllStandardError () );
-            QMessageBox::warning( 0, "Warning", "Cannot copy map "
+            QMessageBox::warning( 0, tr("Warning"), tr("Cannot copy map ")
                        + map + "@" + mapset 
-                       + "<br>command: " + module + " " + args.join(" ")
+                       + tr("<br>command: ") + module + " " + args.join(" ")
                        + "<br>" + formatMessage(output)
                        + "<br>" + formatMessage(error) ); 
         }
@@ -351,9 +351,9 @@ void QgsGrassBrowser::renameMap()
         {
             QString output ( process.readAllStandardOutput () );
             QString error ( process.readAllStandardError () );
-            QMessageBox::warning( 0, "Warning", "Cannot rename map "
+            QMessageBox::warning( 0, tr("Warning"), tr("Cannot rename map ")
                        + map  
-                       + "<br>command: " + module + " " + args.join(" ")
+                       + tr("<br>command: ") + module + " " + args.join(" ")
                        + "<br>" + formatMessage(output)
                        + "<br>" + formatMessage(error) ); 
         }
@@ -389,8 +389,8 @@ void QgsGrassBrowser::deleteMap()
             continue; // should not happen
         }
          
-        int ret = QMessageBox::question ( 0, "Warning",
-              "Delete map <b>" + map + "</b>",
+        int ret = QMessageBox::question ( 0, tr("Warning"),
+              tr("Delete map <b>") + map + "</b>",
               QMessageBox::Yes,  QMessageBox::No );
 
         if ( ret == QMessageBox::No ) continue;
@@ -406,9 +406,9 @@ void QgsGrassBrowser::deleteMap()
         {
             QString output ( process.readAllStandardOutput () );
             QString error ( process.readAllStandardError () );
-            QMessageBox::warning( 0, "Warning", "Cannot delete map "
+            QMessageBox::warning( 0, tr("Warning"), tr("Cannot delete map ")
                        + map  
-                       + "<br>command: " + module + " " + args.join(" ")
+                       + tr("<br>command: ") + module + " " + args.join(" ")
                        + "<br>" + formatMessage(output)
                        + "<br>" + formatMessage(error) ); 
         }
@@ -450,8 +450,8 @@ void QgsGrassBrowser::writeRegion(struct Cell_head *window )
 
     if ( G_put_window ( window ) == -1 )
     { 
-	QMessageBox::warning( 0, "Warning", 
-		 "Cannot write new region" ); 
+	QMessageBox::warning( 0, tr("Warning"), 
+		 tr("Cannot write new region") ); 
         return;
     }
     emit regionChanged();

@@ -17,12 +17,10 @@
 #ifndef QGSLABELATTRIBUTES_H
 #define QGSLABELATTRIBUTES_H
 
-#include <qnamespace.h>
-#include <qpen.h>
+#include <QPen>
 class QString;
 class QFont;
 class QColor;
-class QPen;
 class QBrush;
 
 /** This class can be used to store attributes needed for label rendering. 
@@ -154,7 +152,7 @@ public:
 
     void  setBufferColor ( const QColor &color );
     bool  bufferColorIsSet ( void ) const;
-    const QColor & bufferColor ( void ) const;
+    QColor bufferColor ( void ) const;
 
     void  setBufferStyle ( Qt::BrushStyle style );
     bool  bufferStyleIsSet ( void ) const;
@@ -163,7 +161,7 @@ public:
     /* Border */
     void  setBorderColor ( const QColor &color );
     bool  borderColorIsSet ( void ) const;
-    const QColor & borderColor ( void ) const;
+    QColor borderColor ( void ) const;
 
     void  setBorderWidth ( int width );
     bool  borderWidthIsSet ( void ) const;

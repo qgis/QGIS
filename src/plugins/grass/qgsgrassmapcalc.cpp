@@ -173,61 +173,61 @@ QgsGrassMapcalc::QgsGrassMapcalc (
     int t = QgsGrassMapcalcFunction::Operator;
     //mFunctions.push_back(QgsGrassMapcalcFunction("-",2, "Odcitani", "in1,in2" ));
     // Arithmetical
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "+", 2, "Addition" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "-", 2, "Subtraction"));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "*", 2, "Multiplication" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "/", 2, "Division" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "%", 2, "Modulus" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "^", 2, "Exponentiation" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "+", 2, tr("Addition" )));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "-", 2, tr("Subtraction")));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "*", 2, tr("Multiplication" )));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "/", 2, tr("Division" )));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "%", 2, tr("Modulus" )));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "^", 2, tr("Exponentiation" )));
 
     // Logical
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "==", 2, "Equal" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "!=", 2, "Not equal" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, ">",  2, "Greater than" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, ">=", 2, "Greater than or equal" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "<",  2, "Less than" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "<=", 2, "Less than or equal" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "&&", 2, "And" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "||", 2, "Or" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "==", 2, tr("Equal" )));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "!=", 2, tr("Not equal" )));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, ">",  2, tr("Greater than" )));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, ">=", 2, tr("Greater than or equal" )));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "<",  2, tr("Less than" )));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "<=", 2, tr("Less than or equal" )));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "&&", 2, tr("And" )));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "||", 2, tr("Or" )));
 
     t = QgsGrassMapcalcFunction::Function;
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "abs",  1, "Absolute value of x", "abs(x)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "atan", 1, "Inverse tangent of x (result is in degrees)", "atan(x)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "atan", 2, "Inverse tangent of y/x (result is in degrees)", "atan(x,y)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "col", 0, "Current column of moving window (starts with 1)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "cos",  1, "Cosine of x (x is in degrees)", "cos(x)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "double", 1, "Convert x to double-precision floating point", "double(x)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "ewres", 0, "Current east-west resolution" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "exp", 1, "Exponential function of x", "exp(x)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "exp", 2, "x to the power y", "exp(x,y)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "float", 2, "Convert x to single-precision floating point", "float(x)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "if", 1, "Decision: 1 if x not zero, 0 otherwise", "if(x)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "if", 2, "Decision: a if x not zero, 0 otherwise", "if(x,a)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "if", 3, "Decision: a if x not zero, b otherwise", "if(x,a,b)", "if,then,else", false ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "if", 4, "Decision: a if x > 0, b if x is zero, c if x < 0", "if(x,a,b,c)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "int", 1, "Convert x to integer [ truncates ]", "int(x)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "isnull", 1, "Check if x = NULL", "isnull(x)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "log", 1, "Natural log of x", "log(x)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "log", 2, "Log of x base b", "log(x,b)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "max", 2, "Largest value", "max(a,b)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "max", 3, "Largest value", "max(a,b,c)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "median", 2, "Median value", "median(a,b)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "median", 3, "Median value", "median(a,b,c)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "min", 2, "Smallest value", "min(a,b)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "min", 3, "Smallest value", "min(a,b,c)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "mode", 2, "Mode value", "mode(a,b)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "mode", 3, "Mode value", "mode(a,b,c)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "not", 1, "1 if x is zero, 0 otherwise", "not(x)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "nsres", 0, "Current north-south resolution" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "null", 0, "NULL value" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "rand", 2, "Random value between a and b", "rand(a,b)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "round", 1, "Round x to nearest integer", "round(x)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "row", 0, "Current row of moving window (Starts with 1)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "sin", 1, "Sine of x (x is in degrees)", "sin(x)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "sqrt", 1, "Square root of x", "sqrt(x)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "tan", 1, "Tangent of x (x is in degrees)", "tan(x)" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "x", 0, "Current x-coordinate of moving window" ));
-    mFunctions.push_back(QgsGrassMapcalcFunction( t, "y", 0, "Current y-coordinate of moving window" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "abs",  1, tr("Absolute value of x"), "abs(x)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "atan", 1, tr("Inverse tangent of x (result is in degrees)"), "atan(x)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "atan", 2, tr("Inverse tangent of y/x (result is in degrees)"), "atan(x,y)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "col", 0, tr("Current column of moving window (starts with 1)") ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "cos",  1, tr("Cosine of x (x is in degrees)"), "cos(x)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "double", 1, tr("Convert x to double-precision floating point"), "double(x)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "ewres", 0, tr("Current east-west resolution" )));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "exp", 1, tr("Exponential function of x"), "exp(x)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "exp", 2, tr("x to the power y"), "exp(x,y)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "float", 2, tr("Convert x to single-precision floating point"), "float(x)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "if", 1, tr("Decision: 1 if x not zero, 0 otherwise"), "if(x)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "if", 2, tr("Decision: a if x not zero, 0 otherwise"), "if(x,a)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "if", 3, tr("Decision: a if x not zero, b otherwise"), "if(x,a,b)", "if,then,else", false ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "if", 4, tr("Decision: a if x > 0, b if x is zero, c if x < 0"), "if(x,a,b,c)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "int", 1, tr("Convert x to integer [ truncates ]"), "int(x)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "isnull", 1, tr("Check if x = NULL"), "isnull(x)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "log", 1, tr("Natural log of x"), "log(x)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "log", 2, tr("Log of x base b"), "log(x,b)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "max", 2, tr("Largest value"), "max(a,b)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "max", 3, tr("Largest value"), "max(a,b,c)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "median", 2, tr("Median value"), "median(a,b)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "median", 3, tr("Median value"), "median(a,b,c)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "min", 2, tr("Smallest value"), "min(a,b)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "min", 3, tr("Smallest value"), "min(a,b,c)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "mode", 2, tr("Mode value"), "mode(a,b)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "mode", 3, tr("Mode value"), "mode(a,b,c)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "not", 1, tr("1 if x is zero, 0 otherwise"), "not(x)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "nsres", 0, tr("Current north-south resolution" )));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "null", 0, tr("NULL value" )));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "rand", 2, tr("Random value between a and b"), "rand(a,b)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "round", 1, tr("Round x to nearest integer"), "round(x)" ));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "row", 0, tr("Current row of moving window (Starts with 1)" )));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "sin", 1, tr("Sine of x (x is in degrees)", "sin(x)" )));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "sqrt", 1, tr("Square root of x", "sqrt(x)" )));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "tan", 1, tr("Tangent of x (x is in degrees)", "tan(x)" )));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "x", 0, tr("Current x-coordinate of moving window" )));
+    mFunctions.push_back(QgsGrassMapcalcFunction( t, "y", 0, tr("Current y-coordinate of moving window" )));
     
     for ( int i =0; i < mFunctions.size(); i++ )
     {
@@ -526,7 +526,7 @@ QStringList QgsGrassMapcalc::checkRegion()
                     QgsGrass::getDefaultLocation(),
                     QgsGrass::getDefaultMapset(), &currentWindow ) )
     {
-        QMessageBox::warning( 0, "Warning", "Cannot get current region" );
+        QMessageBox::warning( 0, tr("Warning"), tr("Cannot get current region" ));
         return list;
     }
 
@@ -555,8 +555,8 @@ QStringList QgsGrassMapcalc::checkRegion()
                 QgsGrass::getDefaultLocation(), mapset, map,
                 &window ) )
         {
-            QMessageBox::warning( 0, "Warning", "Cannot check region "
-                                  "of map " + obj->value() );
+            QMessageBox::warning( 0, tr("Warning"), tr("Cannot check region "
+                                  "of map ") + obj->value() );
             continue;
         }
 
@@ -579,7 +579,7 @@ bool QgsGrassMapcalc::inputRegion ( struct Cell_head *window, bool all )
                     QgsGrass::getDefaultLocation(),
                     QgsGrass::getDefaultMapset(), window ) )
     {
-        QMessageBox::warning( 0, "Warning", "Cannot get current region" );
+        QMessageBox::warning( 0, tr("Warning"), tr("Cannot get current region" ));
         return false;
     }
 
@@ -611,8 +611,8 @@ bool QgsGrassMapcalc::inputRegion ( struct Cell_head *window, bool all )
                 QgsGrass::getDefaultLocation(), mapset, map,
                 &mapWindow ) )
         {
-            QMessageBox::warning( 0, "Warning", "Cannot get region "
-                                  "of map " + obj->value() );
+            QMessageBox::warning( 0, tr("Warning"), tr("Cannot get region "
+                                  "of map ") + obj->value() );
             return false;
         }
        
@@ -806,8 +806,8 @@ void QgsGrassMapcalc::addMap()
     updateMaps();
     if ( mMaps.size() == 0 )
     {
-         QMessageBox::warning( 0, "Warning", "No GRASS raster maps"
-		 " currently in QGIS" );
+         QMessageBox::warning( 0, tr("Warning"), tr("No GRASS raster maps"
+		 " currently in QGIS" ));
 
 	 setTool ( AddConstant);
 	 return;
@@ -1096,8 +1096,8 @@ void QgsGrassMapcalc::saveAs()
 
 	if ( !d.mkdir("mapcalc" ) )
 	{
-             QMessageBox::warning( 0, "Warning", "Cannot create 'mapcalc' "
-		     "directory in current mapset." );
+             QMessageBox::warning( 0, tr("Warning"), tr("Cannot create 'mapcalc' "
+		     "directory in current mapset." ));
              return;
 	}
     }
@@ -1107,21 +1107,21 @@ void QgsGrassMapcalc::saveAs()
     while ( 1 ) 
     {
 	bool ok;
-	name = QInputDialog::getText( "New mapcalc", 
-		 "Enter new mapcalc name:", QLineEdit::Normal, mFileName, &ok);
+	name = QInputDialog::getText( tr("New mapcalc"), 
+		 tr("Enter new mapcalc name:"), QLineEdit::Normal, mFileName, &ok);
 	if ( !ok ) return;
 	name = name.stripWhiteSpace();
 
 	if ( name.isEmpty() ) {
-	     QMessageBox::warning( 0, "Warning", "Enter vector name" );
+	     QMessageBox::warning( 0, tr("Warning"), tr("Enter vector name" ));
 	     continue;
 	}
 
 	// check if exists
 	if ( QFile::exists( mc+ "/" + name ) )
 	{
-	    int ret = QMessageBox::question ( 0, "Warning", 
-		        "The file already exists. Overwrite? ",  
+	    int ret = QMessageBox::question ( 0, tr("Warning"), 
+		        tr("The file already exists. Overwrite? "),  
 			QMessageBox::Yes,  QMessageBox::No );
 
             if ( ret == QMessageBox::No ) continue;   
@@ -1141,7 +1141,7 @@ void QgsGrassMapcalc::save()
 #endif
     if ( mFileName.isEmpty() ) // Should not happen
     {
-	QMessageBox::warning (this, "Save mapcalc", "File name empty" );
+	QMessageBox::warning (this, tr("Save mapcalc"), tr("File name empty") );
         return;
     }
     // TODO!!!: 'escape' < > & ...
@@ -1159,8 +1159,8 @@ void QgsGrassMapcalc::save()
     QFile out ( path );
     if ( !out.open( QIODevice::WriteOnly ) )
     {
-        QMessageBox::warning (this, "Save mapcalc", 
-		              "Cannot open mapcalc file" );
+        QMessageBox::warning (this, tr("Save mapcalc"), 
+		              tr("Cannot open mapcalc file") );
         return;
     }
     
@@ -1289,14 +1289,14 @@ void QgsGrassMapcalc::load()
     
     if ( !file.exists() ) // should not happen
     {
-	QMessageBox::warning( 0, "Warning", "The mapcalc schema (" 
-				+ path + ") not found." );
+	QMessageBox::warning( 0, tr("Warning"), tr("The mapcalc schema (") 
+				+ path + tr(") not found." ));
 	return;
     }
 
     if ( ! file.open( QIODevice::ReadOnly ) ) 
     {
-        QMessageBox::warning( 0, "Warning", "Cannot open mapcalc schema ("
+        QMessageBox::warning( 0, tr("Warning"), tr("Cannot open mapcalc schema (")
 		                 + path + ")" );
 		        
 	return;
@@ -1308,11 +1308,11 @@ void QgsGrassMapcalc::load()
     int parsed = doc.setContent( &file,  &err, &line, &column );
     file.close();
     if ( !parsed ) {
-        QString errmsg = "Cannot read mapcalc schema (" + path + "):\n" + err 
-	        	+ "\nat line " + QString::number(line) 
-			+ " column " + QString::number(column);
+        QString errmsg = tr("Cannot read mapcalc schema (") + path + "):\n" + err 
+	        	+ tr("\nat line ") + QString::number(line) 
+			+ tr(" column ") + QString::number(column);
 				        
-	QMessageBox::warning( 0, "Warning", errmsg );
+	QMessageBox::warning( 0, tr("Warning"), errmsg );
         return;
     }
 

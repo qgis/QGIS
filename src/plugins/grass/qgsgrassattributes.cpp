@@ -310,7 +310,7 @@ void QgsGrassAttributes::updateAttributes ( )
       QString *error = mProvider->updateAttributes ( tb->text(0,1).toInt(), tb->text(1,1).toInt(), sql );
 
       if ( !error->isEmpty() ) {
-	  QMessageBox::warning( 0, "Warning", *error );
+	  QMessageBox::warning( 0, tr("Warning"), *error );
 	  resultLabel->setText ( "ERROR" );
       } else {
 	  resultLabel->setText ( "OK" );

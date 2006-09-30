@@ -1,4 +1,4 @@
-/***************************************************************************
+	/***************************************************************************
   qgshttptransaction.cpp  -  Tracks a HTTP request with its response,
                              with particular attention to tracking 
                              HTTP redirect responses
@@ -263,13 +263,13 @@ void QgsHttpTransaction::dataProgress( int done, int total )
   
   if (total)
   {
-    status = QString("Received %1 of %2 bytes")
+    status = QString(tr("Received %1 of %2 bytes"))
                          .arg( done )
                          .arg( total );
   }
   else
   {
-    status = QString("Received %1 bytes (total unknown)")
+    status = QString(tr("Received %1 bytes (total unknown)"))
                          .arg( done );
   }
 
@@ -380,46 +380,46 @@ void QgsHttpTransaction::dataStateChanged( int state )
   {
     case QHttp::Unconnected:
       QgsDebugMsg("There is no connection to the host.");
-      emit setStatus( QString("Not connected") );
+      emit setStatus( QString(tr("Not connected")) );
       break;
 
     case QHttp::HostLookup:
       QgsDebugMsg("A host name lookup is in progress.");
 
-      emit setStatus( QString("Looking up '%1'")
+      emit setStatus( QString(tr("Looking up '%1'"))
                          .arg(httphost) );
       break;
 
     case QHttp::Connecting:
       QgsDebugMsg("An attempt to connect to the host is in progress.");
 
-      emit setStatus( QString("Connecting to '%1'")
+      emit setStatus( QString(tr("Connecting to '%1'"))
                          .arg(httphost) );
       break;
 
     case QHttp::Sending:
       QgsDebugMsg("The client is sending its request to the server.");
 
-      emit setStatus( QString("Sending request '%1'")
+      emit setStatus( QString(tr("Sending request '%1'"))
                          .arg(httpurl) );
       break;
 
     case QHttp::Reading:
       QgsDebugMsg("The client's request has been sent and the client is reading the server's response.");
 
-      emit setStatus( QString("Receiving reply") );
+      emit setStatus( QString(tr("Receiving reply")) );
       break;
 
     case QHttp::Connected:
       QgsDebugMsg("The connection to the host is open, but the client is neither sending a request, nor waiting for a response.");
 
-      emit setStatus( QString("Response is complete") );
+      emit setStatus( QString(tr("Response is complete")) );
       break;
 
     case QHttp::Closing:
       QgsDebugMsg("The connection is closing down, but is not yet closed. (The state will be Unconnected when the connection is closed.)");
 
-      emit setStatus( QString("Closing down connection") );
+      emit setStatus( QString(tr("Closing down connection")) );
       break;
   }
 
