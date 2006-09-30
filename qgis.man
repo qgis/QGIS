@@ -71,7 +71,7 @@ layers in a PostgreSQL database and GRASS vector/raster data.
 
 .SH FILES
 .TP
-.B ~/.qt/qgisrc
+.B ~/.config/QuantumGIS/qgis.conf
 QGIS preferences file. This file stores windows size/location, loaded plugins,
 user options, and other application settings.
 .SH BUGS
