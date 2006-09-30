@@ -111,6 +111,10 @@ class QgsRect
     
     /** updates rectangle to include passed argument */
     void unionRect(const QgsRect& rect);
+
+    /** Returns true if the rectangle has finite boundaries. Will
+        return false if any of the rectangle boundaries are NaN or Inf. */
+    bool isFinite() const;
  
 protected:
 
