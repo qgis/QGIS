@@ -492,11 +492,6 @@ void QgisApp::createActions()
   mActionQgisHomePage->setStatusTip(tr("QGIS Home Page"));
   connect(mActionQgisHomePage, SIGNAL(triggered()), this, SLOT(helpQgisHomePage()));
   //
-  mActionQgisSourceForgePage= new QAction(QIcon(myIconPath+"/mActionQgisSourceForgePage.png"), tr("Qgis Sourceforge"), this);
-  // mActionQgisSourceForgePage->setShortcut(tr("Alt+H","Visit QGIS SourceForge page"));
-  mActionQgisSourceForgePage->setStatusTip(tr("Visit QGIS SourceForge page"));
-  connect(mActionQgisSourceForgePage, SIGNAL(triggered()), this, SLOT(helpQgisSourceForge()));
-  //
   mActionHelpAbout= new QAction(QIcon(myIconPath+"/mActionHelpAbout.png"), tr("About"), this);
   mActionHelpAbout->setStatusTip(tr("About QGIS"));
   connect(mActionHelpAbout, SIGNAL(triggered()), this, SLOT(about()));
@@ -776,7 +771,6 @@ void QgisApp::createMenus()
   mHelpMenu = menuBar()->addMenu(tr("&Help"));
   mHelpMenu->addAction(mActionHelpContents);
   mHelpMenu->addAction(mActionQgisHomePage);
-  mHelpMenu->addAction(mActionQgisSourceForgePage);
   mHelpMenu->addAction(mActionCheckQgisVersion);
   mHelpMenu->addAction(mActionHelpAbout);
 }
@@ -986,7 +980,6 @@ void QgisApp::setTheme(QString theThemeName)
   mActionOptions->setIconSet(QIcon(QPixmap(myIconPath + "/mActionOptions.png")));
   mActionHelpContents->setIconSet(QIcon(QPixmap(myIconPath + "/mActionHelpContents.png")));
   mActionQgisHomePage->setIconSet(QIcon(QPixmap(myIconPath + "/mActionQgisHomePage.png")));
-  mActionQgisSourceForgePage->setIconSet(QIcon(QPixmap(myIconPath + "/mActionQgisSourceForgePage.png")));
   mActionHelpAbout->setIconSet(QIcon(QPixmap(myIconPath + "/mActionHelpAbout.png")));
   mActionDraw->setIconSet(QIcon(QPixmap(myIconPath + "/mActionDraw.png")));
   mActionCapturePoint->setIconSet(QIcon(QPixmap(myIconPath + "/mActionCapturePoint.png")));
@@ -4116,11 +4109,6 @@ void QgisApp::helpContents()
 void QgisApp::helpQgisHomePage()
 {
   openURL("http://qgis.org", false);
-}
-
-void QgisApp::helpQgisSourceForge()
-{
-  openURL("http://sourceforge.net/projects/qgis", false);
 }
 
 void QgisApp::openURL(QString url, bool useQgisDocDirectory)

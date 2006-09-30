@@ -253,8 +253,6 @@ public slots:
   void helpContents();
   //! Open the QGIS homepage in users browser
   void helpQgisHomePage();
-  //! Open the QGIS Sourceforge page in users browser
-  void helpQgisSourceForge();
   //! Open a url in the users configured browser
   void openURL(QString url, bool useQgisDocDirectory=true);
   //! Check qgis version against the qgis version server
@@ -470,7 +468,6 @@ private:
   QAction *mActionOptions;
   QAction *mActionHelpContents;
   QAction *mActionQgisHomePage;
-  QAction *mActionQgisSourceForgePage;
   QAction *mActionHelpAbout;
   QAction *mArawAction;
   QAction *mActionStartEditing;
