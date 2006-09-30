@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include "qgsrect.h"
 #include "qgsvectordataprovider.h"
+#include <indexStrtree.h>
 
 class QgsRect;
 
@@ -86,13 +87,17 @@ class QgsWFSProvider: public QgsVectorDataProvider
   /**Bounding box for the layer*/
   QgsRect mExtent;
   /**Spatial filter for the layer*/
-  QgsRect* mFilter;
+  QgsRect mSpatialFilter;
   /**Flag if precise intersection test is needed. Otherwise, every feature is returned (even if a filter is set)*/
   bool mUseIntersect;
-  /**Stores all the features*/
-  std::vector<QgsFeature*> mFeatures;
+  /**A spatial index for fast access to a feature subset*/
+  geos::STRtree mSpatialIndex;
+  /**Stores all the inserted rectangles and features. This is used to clean up the memory in the destructor*/
+  std::list< std::pair<geos::Envelope*, QgsFeature*> > mEnvelopesAndFeatures;
+  /**Vector where the QgsFeature* of a query are inserted*/
+  std::vector<void*>* mSelectedFeatures;
   /**Iterator on the feature vector for use in reset(), getNextFeature(), etc...*/
-  std::vector<QgsFeature*>::iterator mFeatureIterator;
+  std::vector<void*>::iterator mFeatureIterator;
   /**Geometry type of the features in this layer*/
   mutable QGis::WKBTYPE mWKBType;
   /**Source SRS*/
@@ -100,6 +105,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
   /**Stores the minimum/maximum values for each attribute
    The position in the vector is equal to the position of an attribute in the layers attribute vector*/
   std::vector< std::pair<QString, QString> > mMinMaxCash;
+  int mFeatureCount;
 
   /**Goes through all the features and their attributes and populates mMinMaxCash with entries*/
   void fillMinMaxCash();
@@ -123,7 +129,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
   //GML2 specific methods
   int getExtentFromGML2(QgsRect* extent, const QDomElement& wfsCollectionElement) const;
   
-  int getFeaturesFromGML2(const QDomElement& wfsCollectionElement, const QString& geometryAttribute, std::vector<QgsFeature*>& features) const;
+  int getFeaturesFromGML2(const QDomElement& wfsCollectionElement, const QString& geometryAttribute);
 
   int getWkbFromGML2(const QDomNode& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type) const;
   /**Creates WKB from a <Point> element*/
