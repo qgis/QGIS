@@ -18,6 +18,10 @@
 
 /* $Id$ */
 
+#define _GLIBCPP_USE_C99 1
+#include <cmath>
+#undef _GLIBCPP_USE_C99
+
 #include "qgslogger.h"
 #include "qgswmsprovider.h"
 
@@ -29,7 +33,6 @@
 
 #include "qgshttptransaction.h"
 
-#include <cmath>
 #include <q3url.h>
 #include <Q3Picture>
 
@@ -1948,8 +1951,13 @@ bool QgsWmsProvider::calculateExtent()
       }
 
     //make sure extent does not contain 'inf' or 'nan'
+#if __GNUC__ >= 4
+    if(!isfinite(extent.xMin()) || !isfinite((int)extent.yMin()) || !isfinite(extent.xMax()) || \
+       !isfinite((int)extent.yMax()))
+#else
     if(!std::isfinite(extent.xMin()) || !std::isfinite((int)extent.yMin()) || !std::isfinite(extent.xMax()) || \
        !std::isfinite((int)extent.yMax()))
+#endif
       {
 	continue;
       }
