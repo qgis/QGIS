@@ -101,6 +101,17 @@ dnl ---------------------------------------------------------------------------
 AQ_CHECK_GDAL
 
 dnl ---------------------------------------------------------------------------
+dnl Whether to use isfinite or std::isfinite
+dnl ---------------------------------------------------------------------------
+have_stdisfinite=no
+AC_MSG_CHECKING([[<cmath> for std::isfinite]])
+AC_COMPILE_IFELSE(AC_LANG_PROGRAM([[#include <cmath>]], [[ std::isfinite(0) ]]),
+        [[have_stdisfinite=yes]
+         AC_DEFINE(HAVE_STDISFINITE,1,[Define to 1 if std::isfinite is available])
+        ], [])
+AC_MSG_RESULT([[$have_stdisfinite]])
+
+dnl ---------------------------------------------------------------------------
 dnl GEOS
 dnl ---------------------------------------------------------------------------
 AQ_CHECK_GEOS
