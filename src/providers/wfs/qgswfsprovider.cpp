@@ -36,9 +36,8 @@ static const QString TEXT_PROVIDER_DESCRIPTION = "WFS data provider";
 static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 
-QgsWFSProvider::QgsWFSProvider(const QString& uri): QgsVectorDataProvider(uri), mFilter(0), mUseIntersect(false), mSourceSRS(0)
+QgsWFSProvider::QgsWFSProvider(const QString& uri): QgsVectorDataProvider(uri), mUseIntersect(false), mSourceSRS(0), mSelectedFeatures(0), mFeatureCount(0)
 {
-  mFeatureIterator = mFeatures.begin();
   if(getFeature(uri) == 0)
     {
       //provider valid
@@ -47,16 +46,20 @@ QgsWFSProvider::QgsWFSProvider(const QString& uri): QgsVectorDataProvider(uri), 
     {
       //provider invalid
     }
+  //set spatial filter to the whole extent
+  select(&mExtent, false);
 }
 
 QgsWFSProvider::~QgsWFSProvider()
 {
-  for(std::vector<QgsFeature*>::iterator it = mFeatures.begin(); it != mFeatures.end(); ++it)
+  delete mSelectedFeatures;
+  delete mSourceSRS;
+  for(std::list<std::pair<geos::Envelope*, QgsFeature*> >::iterator it = mEnvelopesAndFeatures.begin();\
+      it != mEnvelopesAndFeatures.end(); ++it)
     {
-      delete (*it);
+      delete it->first;
+      delete it->second;
     }
-  mFeatures.clear();
-  delete mFilter;
 }
 
 QgsFeature* QgsWFSProvider::getFirstFeature(bool fetchAttributes)
@@ -80,29 +83,29 @@ QgsFeature* QgsWFSProvider::getNextFeature(std::list<int> const & attlist, int f
 {
   while(true) //go through the loop until we find a feature in the filter
     {
-      if(mFeatureIterator == mFeatures.end())
+      if(!mSelectedFeatures || mFeatureIterator == mSelectedFeatures->end())
 	{
 	  return 0;
 	}
 
       QgsFeature* f = new QgsFeature();
-      unsigned char* geom = (*mFeatureIterator)->getGeometry();
-      int geomSize = (*mFeatureIterator)->getGeometrySize();
+      unsigned char* geom = ((QgsFeature*)(*mFeatureIterator))->getGeometry();
+      int geomSize = ((QgsFeature*)(*mFeatureIterator))->getGeometrySize();
       
       unsigned char* copiedGeom = new unsigned char[geomSize];
       memcpy(copiedGeom, geom, geomSize);
       f->setGeometryAndOwnership(copiedGeom, geomSize);
-      f->setFeatureId((*mFeatureIterator)->featureId());
+      f->setFeatureId(((QgsFeature*)(*mFeatureIterator))->featureId());
       
-      const std::vector<QgsFeatureAttribute> attributes = (*mFeatureIterator)->attributeMap();
+      const std::vector<QgsFeatureAttribute> attributes = ((QgsFeature*)(*mFeatureIterator))->attributeMap();
       for(std::list<int>::const_iterator it = attlist.begin(); it != attlist.end(); ++it)
 	{
 	  f->addAttribute(attributes[*it].fieldName(), attributes[*it].fieldValue(), attributes[*it].isNumeric());
 	}
       ++mFeatureIterator;
-      if(mFilter && mUseIntersect)
+      if(mUseIntersect)
 	{
-	  if(f->geometry()->fast_intersects(mFilter))
+	  if(f->geometry()->fast_intersects(&mSpatialFilter))
 	    {
 	      return f;
 	    }
@@ -130,7 +133,7 @@ int QgsWFSProvider::geometryType() const
 
 long QgsWFSProvider::featureCount() const
 {
-  return mFeatures.size();
+  return mFeatureCount;
 }
 
 int QgsWFSProvider::fieldCount() const
@@ -145,9 +148,13 @@ std::vector<QgsField> const & QgsWFSProvider::fields() const
 
 void QgsWFSProvider::reset()
 {
-  mFeatureIterator = mFeatures.begin();
-  delete mFilter;
-  mFilter = 0;
+  geos::Envelope e(mExtent.xMin(), mExtent.xMax(), mExtent.yMin(), mExtent.yMax());
+  delete mSelectedFeatures;
+  mSelectedFeatures = mSpatialIndex.query(&e);
+  if(mSelectedFeatures)
+    {
+      mFeatureIterator = mSelectedFeatures->begin();
+    }
 }
 
 QString QgsWFSProvider::minValue(int position)
@@ -231,9 +238,12 @@ bool QgsWFSProvider::isValid()
 
 void QgsWFSProvider::select(QgsRect *mbr, bool useIntersect)
 {
-  reset();
-  mFilter = new QgsRect(*mbr);
   mUseIntersect = useIntersect;
+  delete mSelectedFeatures;
+  mSpatialFilter = *mbr;
+  geos::Envelope filter(mbr->xMin(), mbr->xMax(), mbr->yMin(), mbr->yMax());
+  mSelectedFeatures = mSpatialIndex.query(&filter);
+  mFeatureIterator = mSelectedFeatures->begin();
 }
 
 int QgsWFSProvider::getCapabilities(const QString& uri, QgsWFSProvider::REQUEST_ENCODING e, std::list<QString>& typenames, std::list< std::list<QString> >& crs)
@@ -404,7 +414,7 @@ int QgsWFSProvider::getFeatureGET(const QString& uri, const QString& geometryAtt
 
   setSRSFromGML2(featureCollectionElement);  
 
-  if(getFeaturesFromGML2(featureCollectionElement, geometryAttribute, mFeatures) != 0)
+  if(getFeaturesFromGML2(featureCollectionElement, geometryAttribute) != 0)
   {
     return 4;
   }
@@ -638,7 +648,7 @@ int QgsWFSProvider::setSRSFromGML2(const QDomElement& wfsCollectionElement)
   return 0;
 }
   
-int QgsWFSProvider::getFeaturesFromGML2(const QDomElement& wfsCollectionElement, const QString& geometryAttribute, std::vector<QgsFeature*>& features) const
+int QgsWFSProvider::getFeaturesFromGML2(const QDomElement& wfsCollectionElement, const QString& geometryAttribute)
 {
   QDomNodeList featureTypeNodeList = wfsCollectionElement.elementsByTagNameNS(GML_NAMESPACE, "featureMember");
   QDomElement currentFeatureMemberElem;
@@ -650,6 +660,9 @@ int QgsWFSProvider::getFeaturesFromGML2(const QDomElement& wfsCollectionElement,
   unsigned char* wkb = 0;
   int wkbSize = 0;
   QGis::WKBTYPE currentType;
+  QgsRect featureBBox;
+  geos::Envelope* geosBBox;
+  mFeatureCount = 0;
 
   for(int i = 0; i < featureTypeNodeList.size(); ++i)
     {
@@ -679,7 +692,12 @@ int QgsWFSProvider::getFeaturesFromGML2(const QDomElement& wfsCollectionElement,
 	}
       if(wkb && wkbSize > 0)
 	{
-	  features.push_back(f);
+	  //insert bbox and pointer to feature into search tree
+	  featureBBox = f->boundingBox();
+	  geosBBox = new geos::Envelope(featureBBox.xMin(), featureBBox.xMax(), featureBBox.yMin(), featureBBox.yMax());
+	  mSpatialIndex.insert(geosBBox, (void*)f);
+	  mEnvelopesAndFeatures.push_back(std::make_pair(geosBBox, f));
+	  ++mFeatureCount;
 	}
       ++counter;
     }
