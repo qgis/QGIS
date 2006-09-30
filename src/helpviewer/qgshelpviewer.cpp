@@ -86,7 +86,7 @@ void QgsHelpViewer::loadContext(const QString &contextId)
       }
       else
       {
-        QMessageBox::critical(this, "Error", 
+        QMessageBox::critical(this, tr("Error"), 
             tr("Failed to get the help text from the database") + QString(":\n   ")
             + sqlite3_errmsg(db));  
       }
