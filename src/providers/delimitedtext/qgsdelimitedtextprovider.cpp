@@ -710,10 +710,10 @@ bool QgsDelimitedTextProvider::boundsCheck(double x, double y)
 {
   bool inBounds(true);
   if (mSelectionRectangle)
-    inBounds = (((x < mSelectionRectangle->xMax()) &&
-                 (x > mSelectionRectangle->xMin())) &&
-                ((y < mSelectionRectangle->yMax()) &&
-                 (y > mSelectionRectangle->yMin())));
+    inBounds = (((x <= mSelectionRectangle->xMax()) &&
+                 (x >= mSelectionRectangle->xMin())) &&
+                ((y <= mSelectionRectangle->yMax()) &&
+                 (y >= mSelectionRectangle->yMin())));
   // QString hit = inBounds?"true":"false";
 
   // std::cerr << "Checking if " << x << ", " << y << " is in " << 
