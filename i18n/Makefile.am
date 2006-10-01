@@ -49,6 +49,6 @@ i18n_SOURCES = \
 		qgis_lv.ts \
 		qgis_zh_CN.ts
 %.qm: %.ts
-	cd ..; ./create_qm_files.sh
+	cd ..; /bin/sh ./create_qm_files.sh
 
 EXTRA_DIST = $(i18n_SOURCES)
