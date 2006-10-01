@@ -65,8 +65,6 @@ msexport_CXXFLAGS = $(CXXFLAGS) $(PKGDATAPATH) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) 
 
 CLEANFILES = $(BUILT_SOURCES)
 
-EXTRA_DIST = $(msexport_UIC) 
-
 lib_LTLIBRARIES = libmsexport.la
 
 libmsexport_la_SOURCES = qgsmapserverexport.cpp qgsmapserverexport.moc.cpp msexport_wrap.cxx
@@ -95,4 +93,5 @@ endif
 
 python_DATA = *.py
 
-EXTRA_DIST = $(python_DATA)
+EXTRA_DIST = $(msexport_UIC) \
+             $(python_DATA)
