@@ -26,8 +26,8 @@
 #include <QAction>
 #include <Q3ListView>
 #include <QPixmap>
-#include <Q3PopupMenu>
 #include <QSettings>
+#include <QMenu>
 
 QgsIdentifyResults::QgsIdentifyResults(const QgsAttributeAction& actions,
     QWidget *parent, Qt::WFlags f)
