@@ -17,7 +17,7 @@
    xml:space="preserve"
    sodipodi:version="0.32"
    inkscape:version="0.43"
-   sodipodi:docname="gas.svg"
+   sodipodi:docname="conveneince.svg"
    sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols"><metadata
      id="metadata11"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
@@ -57,4 +57,11 @@
        style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:7;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 61.201608,90.448405 C 83.238455,90.732751 81.844099,81.201785 81.838026,78.956238 C 81.813897,70.306214 70.138128,66.346885 70.138128,66.346885 L 69.867324,41.703758 L 59.576787,33.038042"
        id="path1310"
-       sodipodi:nodetypes="csccc" /></g></svg>
+       sodipodi:nodetypes="csccc" /><rect
+       id="rect2185"
+       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000"
+       y="3.2627718"
+       x="65.22805"
+       height="17.697685"
+       width="18.114395"
+       transform="matrix(0.707107,0.707107,-0.707107,0.707107,0,0)" /></g></svg>
