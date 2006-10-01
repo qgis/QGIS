@@ -27,8 +27,8 @@
 
 class QCloseEvent;
 class Q3ListViewItem;
-class Q3PopupMenu;
 class QAction;
+class QMenu;
 
 /**
  *@author Gary E.Sherman
