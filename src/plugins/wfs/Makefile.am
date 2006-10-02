@@ -75,6 +75,7 @@ wfsplugin_la_CXXFLAGS = $(CXXFLAGS) \
 			  	-I../../raster \
 				-I../../../include/qgis \
 				-I../../providers/wfs \
-				-I../../widgets/projectionselector
+				-I../../widgets/projectionselector \
+				-I..
 
 wfsplugin_la_LDFLAGS = -avoid-version -module
