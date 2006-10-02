@@ -1136,7 +1136,7 @@ int QgsWFSProvider::getWkbFromGML2MultiPolygon(const QDomElement& geometryElemen
 	{
 	  continue;
 	}
-      currentLinearRingElement = linearRingNodeList.at(i).toElement();
+      currentLinearRingElement = linearRingNodeList.at(0).toElement();
       currentCoordinateList = currentLinearRingElement.elementsByTagNameNS(GML_NAMESPACE, "coordinates");
       if(currentCoordinateList.size() < 1)
 	{
@@ -1150,16 +1150,16 @@ int QgsWFSProvider::getWkbFromGML2MultiPolygon(const QDomElement& geometryElemen
 
       //find interior rings
       QDomNodeList innerBoundaryList = currentPolygonElement.elementsByTagNameNS(GML_NAMESPACE, "innerBoundaryIs");
-      for(int i = 0; i < innerBoundaryList.size(); ++i)
+      for(int j = 0; j < innerBoundaryList.size(); ++j)
 	{
 	  std::list<QgsPoint> ringCoordinates;
-	  currentInnerBoundaryElement = innerBoundaryList.at(i).toElement();
+	  currentInnerBoundaryElement = innerBoundaryList.at(j).toElement();
 	  linearRingNodeList = currentOuterBoundaryElement.elementsByTagNameNS(GML_NAMESPACE, "LinearRing");
 	  if(linearRingNodeList.size() < 1)
 	    {
 	      continue;
 	    }
-	  currentLinearRingElement = linearRingNodeList.at(i).toElement(); 
+	  currentLinearRingElement = linearRingNodeList.at(j).toElement(); 
 	  currentCoordinateList = currentLinearRingElement.elementsByTagNameNS(GML_NAMESPACE, "coordinates");
 	  if(currentCoordinateList.size() < 1)
 	    {
