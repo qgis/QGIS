@@ -425,6 +425,22 @@ AM_CONDITIONAL([HAVE_GSL], [test "$ac_gsl" = "yes"])
 
 
 dnl ---------------------------------------------------------------------------
+dnl WFS plugin
+dnl ---------------------------------------------------------------------------
+AC_MSG_CHECKING([for WFS])
+
+if test -n "$with_wfs" -a x"$with_wfs" != "xno"; then
+      ac_wfs=yes
+      AC_DEFINE([HAVE_WFS],1,
+	[Define to 1 if wfs plugin/provider is requested])
+	AC_MSG_RESULT([yes])
+else
+	ac_wfs=no
+	AC_MSG_RESULT([no])
+fi
+AM_CONDITIONAL([HAVE_WFS], [test "$ac_wfs" = "yes"])
+
+dnl ---------------------------------------------------------------------------
 dnl Debugging
 dnl ---------------------------------------------------------------------------
 AC_ARG_ENABLE(debug,
@@ -541,6 +557,7 @@ echo "PostgreSQL    : $ac_postgresql $postgresql_version_string"
 echo "GRASS         : $ac_grass"
 echo "SPIT          : $ac_spit"
 echo "Georeferencer : $ac_gsl"
+echo "WFS           : $ac_wfs"
 echo "GPS/GPX       : $have_expat_lib"
 echo "PROJ4         : $have_proj_lib"
 echo "SQLITE3       : $have_sqlite3_lib"
