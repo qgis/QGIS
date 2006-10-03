@@ -187,7 +187,7 @@ void QgsDelimitedTextPluginGui::getOpenFileName()
       this,
       tr("Choose a delimited text file to open"),
       settings.readEntry("/Plugin-DelimitedText/text_path","./"),
-      "Text files (*.txt)");
+      "Text files (*.txt);; CSV files (*.csv);; All files (*)");
 
   // set path
   txtFilePath->setText(s);
