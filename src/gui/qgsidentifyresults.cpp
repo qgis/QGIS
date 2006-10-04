@@ -24,10 +24,12 @@
 #include <QCloseEvent>
 #include <QLabel>
 #include <QAction>
-#include <Q3ListView>
+#include <QTreeWidgetItem>
 #include <QPixmap>
 #include <QSettings>
 #include <QMenu>
+
+#include <iostream>
 
 QgsIdentifyResults::QgsIdentifyResults(const QgsAttributeAction& actions,
     QWidget *parent, Qt::WFlags f)
@@ -37,22 +39,32 @@ QgsIdentifyResults::QgsIdentifyResults(const QgsAttributeAction& actions,
   mActionPopup(0)
 {
   setupUi(this);
-  lstResults->setResizeMode(Q3ListView::LastColumn);
-  lstResults->setColumnWidthMode(0, Q3ListView::Maximum);
-  lstResults->setColumnWidthMode(1, Q3ListView::Maximum);
+  lstResults->setColumnCount(2);
+  setColumnText(0, tr("Feature"));
+  setColumnText(1, tr("Value"));
 
   connect( buttonCancel, SIGNAL(clicked()),
       this, SLOT(close()) );
-  connect( lstResults, SIGNAL(clicked(Q3ListViewItem *)),
-      this, SLOT(clicked(Q3ListViewItem *)) );
-  connect( lstResults, SIGNAL(contextMenuRequested(Q3ListViewItem *, const QPoint &, int)),
-      this, SLOT(popupContextMenu(Q3ListViewItem *, const QPoint &, int)) );
+  connect( lstResults, SIGNAL(itemClicked(QTreeWidgetItem*, int)),
+      this, SLOT(clicked(QTreeWidgetItem *)) );
+  connect( lstResults, SIGNAL(itemExpanded(QTreeWidgetItem*)),
+           this, SLOT(itemExpanded(QTreeWidgetItem*)));
 }
 
 QgsIdentifyResults::~QgsIdentifyResults()
 {
   saveWindowLocation();
   delete mActionPopup;
+}
+
+// Call to show the dialog box.
+void QgsIdentifyResults::show()
+{
+  // Enfore a few things before showing the dialog box
+  lstResults->sortItems(0, Qt::Ascending);
+  expandColumnsToFit();
+
+  QDialog::show();
 }
 // Slot called when user clicks the Close button
 // (saves the current window size/position)
@@ -73,13 +85,14 @@ void QgsIdentifyResults::closeEvent(QCloseEvent *e)
 // Popup (create if necessary) a context menu that contains a list of
 // actions that can be applied to the data in the identify results
 // dialog box.
-void QgsIdentifyResults::popupContextMenu(Q3ListViewItem* item, 
-    const QPoint& p, int i)
+
+void QgsIdentifyResults::contextMenuEvent(QContextMenuEvent* event)
 {
+  QTreeWidgetItem* item = lstResults->itemAt(lstResults->viewport()->mapFrom(this, event->pos()));
   // if the user clicked below the end of the attribute list, just return
   if (item == NULL)
     return;
-
+  
   // The assumption is made that an instance of QgsIdentifyResults is
   // created for each new Identify Results dialog box, and that the
   // contents of the popup menu doesn't change during the time that
@@ -87,7 +100,8 @@ void QgsIdentifyResults::popupContextMenu(Q3ListViewItem* item,
   if (mActionPopup == 0)
   {
     mActionPopup = new QMenu();
-    QAction *a = mActionPopup->addAction( tr("Run action") );
+    QAction* a = mActionPopup->addAction( tr("Run action") );
+    a->setEnabled(false);
     mActionPopup->addSeparator();
 
     QgsAttributeAction::aIter iter = mActions.begin();
@@ -108,35 +122,30 @@ void QgsIdentifyResults::popupContextMenu(Q3ListViewItem* item,
   // track of which row in the identify results table was actually
   // clicked on. This is stored as an index into the mValues vector.
 
-  Q3ListViewItem* parent = item->parent();
-  Q3ListViewItem* child;
-
-  if (item->parent() == 0)
-    child = item->firstChild();
-  else
-    child = parent->firstChild();
+  QTreeWidgetItem* parent = item->parent();
+  if (parent == 0)
+    parent = item;
 
   mValues.clear();
-  int j = 0;
-  while (child != 0)
+  for (int j = 0; j < parent->childCount(); ++j)
   {
-    if ( child->text(2) != "action" ) {
-      mValues.push_back(std::make_pair(child->text(0), child->text(1)));
+    if ( parent->child(j)->text(0) != "action" ) {
+      mValues.push_back(std::make_pair(parent->child(j)->text(0), 
+                                       parent->child(j)->text(1)));
       // Need to do the comparison on the text strings rather than the
       // pointers because if the user clicked on the parent, we need
       // to pick up which child that actually is (the parent in the
       // identify results dialog box is just one of the children
       // that has been chosen by some method).
-      if (child->text(0) == item->text(0))
+      if (parent->child(j)->text(0) == item->text(0))
         mClickedOnValue = j;
-      ++j;
     }
-    child = child->nextSibling();
   }
 
   if (mActions.size() > 0)
-    mActionPopup->popup(p);
+    mActionPopup->popup(event->globalPos());
 }
+
 // Restore last window position/size and show the window
 void QgsIdentifyResults::restorePosition()
 {
@@ -165,22 +174,23 @@ void QgsIdentifyResults::saveWindowLocation()
 } 
 
 /** add an attribute and its value to the list */
-void QgsIdentifyResults::addAttribute(Q3ListViewItem * fnode, QString field, QString value)
+void QgsIdentifyResults::addAttribute(QTreeWidgetItem * fnode, QString field, QString value)
 {
-  new Q3ListViewItem(fnode, field, value);
+  QStringList labels;
+  labels << field << value;
+  new QTreeWidgetItem(fnode, labels);
 }
 
 void QgsIdentifyResults::addAttribute(QString field, QString value)
 {
-  new Q3ListViewItem(lstResults, field, value);
+  QStringList labels;
+  labels << field << value;
+  new QTreeWidgetItem(lstResults, labels);
 }
 
-void QgsIdentifyResults::addDerivedAttribute(Q3ListViewItem * fnode, QString field, QString value)
+void QgsIdentifyResults::addDerivedAttribute(QTreeWidgetItem * fnode, QString field, QString value)
 {
-  // TODO: When we migrate this to a Qt4 QTreeViewWidget,
-  //       this should be added as italic text instead
-
-  Q3ListViewItem * daRootNode;
+  QTreeWidgetItem * daRootNode;
 
   // Determine if this is the first derived attribute for this
   // feature or not
@@ -192,24 +202,31 @@ void QgsIdentifyResults::addDerivedAttribute(Q3ListViewItem * fnode, QString fie
   else
   {
     // Create new derived-attribute root node
-    daRootNode = new Q3ListViewItem(fnode, tr("(Derived)"));
+    daRootNode = new QTreeWidgetItem(fnode, QStringList(tr("(Derived)")));
+    QFont font = daRootNode->font(0);
+    font.setItalic(true);
+    daRootNode->setFont(0, font);
   }
 
-  new Q3ListViewItem(daRootNode, field, value);
+  QStringList labels;
+  labels << field << value;
+  new QTreeWidgetItem(daRootNode, labels);
 }
 
-void QgsIdentifyResults::addAction(Q3ListViewItem * fnode, int id, QString field, QString value)
+void QgsIdentifyResults::addAction(QTreeWidgetItem * fnode, int id, QString field, QString value)
 {
-  Q3ListViewItem *item = new Q3ListViewItem(fnode, field, value, "action", QString::number(id) );
+  QStringList labels;
+  labels << field << value << "action" << QString::number(id);
+  QTreeWidgetItem *item = new QTreeWidgetItem(fnode, labels );
 
   QPixmap pm ( QgsApplication::themePath() + "/mAction.png" );
-  item->setPixmap ( 0, pm ); 
+  item->setIcon ( 0, QIcon(pm) ); 
 }
 
 /** Add a feature node to the list */
-Q3ListViewItem *QgsIdentifyResults::addNode(QString label)
+QTreeWidgetItem *QgsIdentifyResults::addNode(QString label)
 {
-  return (new Q3ListViewItem(lstResults, label));
+  return (new QTreeWidgetItem(lstResults, QStringList(label)));
 }
 
 void QgsIdentifyResults::setTitle(QString title)
@@ -219,7 +236,8 @@ void QgsIdentifyResults::setTitle(QString title)
 
 void QgsIdentifyResults::setColumnText ( int column, const QString & label )
 {
-  lstResults->setColumnText ( column, label );
+  QTreeWidgetItem* header = lstResults->headerItem();
+  header->setText ( column, label );
 }
 
 // Run the action that was selected in the popup menu
@@ -231,9 +249,15 @@ void QgsIdentifyResults::popupItemSelected(QAction* menuAction)
 
 /** Expand all the identified features (show their attributes). */
 void QgsIdentifyResults::showAllAttributes() {
-  Q3ListViewItemIterator qlvii(lstResults);
+  QTreeWidgetItemIterator qlvii(lstResults);
   for ( ; *qlvii; ++qlvii)
-    lstResults->setOpen(*qlvii, true);
+    lstResults->setItemExpanded(*qlvii, true);
+}
+
+void QgsIdentifyResults::expandColumnsToFit()
+{
+  lstResults->resizeColumnToContents(0);
+  lstResults->resizeColumnToContents(1);
 }
 
 void QgsIdentifyResults::clear()
@@ -243,7 +267,9 @@ void QgsIdentifyResults::clear()
 
 void QgsIdentifyResults::setMessage( QString shortMsg, QString longMsg )
 {
-  new Q3ListViewItem(lstResults, shortMsg, longMsg );
+  QStringList labels;
+  labels << shortMsg << longMsg;
+  new QTreeWidgetItem(lstResults, labels );
 }
 
 void QgsIdentifyResults::setActions( const QgsAttributeAction& actions  )
@@ -251,7 +277,7 @@ void QgsIdentifyResults::setActions( const QgsAttributeAction& actions  )
   mActions = actions;
 }
 
-void QgsIdentifyResults::clicked ( Q3ListViewItem *item )
+void QgsIdentifyResults::clicked ( QTreeWidgetItem *item )
 {
   if ( !item ) return;
 
@@ -259,29 +285,20 @@ void QgsIdentifyResults::clicked ( Q3ListViewItem *item )
 
   int id = item->text(3).toInt();
 
-  Q3ListViewItem* parent = item->parent();
-  Q3ListViewItem* child;
-
-  if (item->parent() == 0)
-    child = item->firstChild();
-  else
-    child = parent->firstChild();
+  QTreeWidgetItem* parent = item->parent();
+  if (parent == 0)
+    parent = item;
 
   mValues.clear();
 
-  int j = 0;
-
-  while (child != 0)
+  for (int j = 0; j < parent->childCount(); ++j)
   {
-    if ( child->text(2) != "action" ) {
-      mValues.push_back(std::make_pair(child->text(0), child->text(1)));
-
-      if (child->text(0) == item->text(0))
+    if ( parent->child(j)->text(0) != "action" ) {
+      mValues.push_back(std::make_pair(parent->child(j)->text(0), 
+                                       parent->child(j)->text(1)));
+      if (parent->child(j)->text(0) == item->text(0))
         mClickedOnValue = j;
-
-      ++j;
     }
-    child = child->nextSibling();
   }
 
   mActions.doAction(id, mValues, mClickedOnValue);
@@ -289,4 +306,9 @@ void QgsIdentifyResults::clicked ( Q3ListViewItem *item )
 void QgsIdentifyResults::on_buttonHelp_clicked()
 {
   QgsContextHelp::run(context_id);
+}
+
+void QgsIdentifyResults::itemExpanded(QTreeWidgetItem* item)
+{
+  expandColumnsToFit();
 }
