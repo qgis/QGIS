@@ -824,7 +824,7 @@ int QgsWFSProvider::getWkbFromGML2Polygon(const QDomElement& geometryElement, un
     }
 
   //calculate number of bytes to allocate
-  int nrings = 1 + innerBoundaryList.size();
+  int nrings = ringCoordinates.size();
   int npoints = 0;//total number of points
   for(std::vector<std::list<QgsPoint> >::const_iterator it = ringCoordinates.begin(); it != ringCoordinates.end(); ++it)
     {
@@ -1154,12 +1154,12 @@ int QgsWFSProvider::getWkbFromGML2MultiPolygon(const QDomElement& geometryElemen
 	{
 	  std::list<QgsPoint> ringCoordinates;
 	  currentInnerBoundaryElement = innerBoundaryList.at(j).toElement();
-	  linearRingNodeList = currentOuterBoundaryElement.elementsByTagNameNS(GML_NAMESPACE, "LinearRing");
+	  linearRingNodeList = currentInnerBoundaryElement.elementsByTagNameNS(GML_NAMESPACE, "LinearRing");
 	  if(linearRingNodeList.size() < 1)
 	    {
 	      continue;
 	    }
-	  currentLinearRingElement = linearRingNodeList.at(j).toElement(); 
+	  currentLinearRingElement = linearRingNodeList.at(0).toElement(); 
 	  currentCoordinateList = currentLinearRingElement.elementsByTagNameNS(GML_NAMESPACE, "coordinates");
 	  if(currentCoordinateList.size() < 1)
 	    {

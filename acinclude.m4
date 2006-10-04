@@ -95,7 +95,7 @@ else
     AC_MSG_ERROR([Geos Version 2.x.x is needed, but you have $ac_geos_version!])
   else
     AC_MSG_CHECKING([GEOS_CFLAGS])
-    GEOS_CFLAGS="`$GEOS_CONFIG --cflags` `$GEOS_CONFIG --cflags`/geos" 
+    GEOS_CFLAGS=`$GEOS_CONFIG --cflags` 
     AC_MSG_RESULT($GEOS_CFLAGS)
 
     AC_MSG_CHECKING([GEOS_LDADD])
