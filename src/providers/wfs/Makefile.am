@@ -14,6 +14,6 @@ BUILT_SOURCES = $(wfsprovider_MOC)
 
 libwfsprovider_la_LIBADD = $(QT_LDADD)  $(GDAL_LIB) $(GEOS_LDADD) ../../gui/libqgis_gui.la ../../core/libqgis_core.la
 libwfsprovider_la_LDFLAGS = -avoid-version -module
-libwfsprovider_la_CXXFLAGS = $(GDAL_CFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GEOS_CFLAGS)
+libwfsprovider_la_CXXFLAGS = $(GDAL_CFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GEOS_CFLAGS) $(GEOS_CFLAGS)/geos
 
 CLEANFILES = $(BUILT_SOURCES)

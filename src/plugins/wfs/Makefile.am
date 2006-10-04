@@ -69,6 +69,7 @@ wfsplugin_la_CXXFLAGS = $(CXXFLAGS) \
 			      $(DEBUG_QGIS) \
 			      $(GDAL_CFLAGS) \
 			      $(GEOS_CFLAGS) \
+				$(GEOS_CFLAGS)/geos \
 			      	-I../../core \
 			      	-I../../ui \
 			      	-I../../gui \
