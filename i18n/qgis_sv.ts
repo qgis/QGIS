@@ -937,6 +937,10 @@ och spår, så en del objekttyper är inte tillgängliga för alla filformat.&lt
         <source>GPS eXchange format provider</source>
         <translation>GPS eXchange format datakälla</translation>
     </message>
+    <message>
+        <source>Label</source>
+        <translation>Etikett</translation>
+    </message>
 </context>
 <context>
     <name>QgisApp</name>
@@ -1650,11 +1654,11 @@ och spår, så en del objekttyper är inte tillgängliga för alla filformat.&lt
     </message>
     <message>
         <source>Qgis Sourceforge</source>
-        <translation>Qgis Sourceforge</translation>
+        <translation type="obsolete">Qgis Sourceforge</translation>
     </message>
     <message>
         <source>Visit QGIS SourceForge page</source>
-        <translation>Besök QGIS SourceForge sida</translation>
+        <translation type="obsolete">Besök QGIS SourceForge sida</translation>
     </message>
     <message>
         <source>About</source>
@@ -4910,6 +4914,39 @@ har misslyckats. Databasen sa:
         <translation>OBS: Följande rad laddades inte, eftersom Qgis inte kunde bestämma värde för x och y-koordinaterna:
 </translation>
     </message>
+    <message>
+        <source>Error</source>
+        <translation>Fel</translation>
+    </message>
+    <message>
+        <source>Error creating field </source>
+        <translation> Fel vid skapandet av fält</translation>
+    </message>
+    <message>
+        <source>Layer creation failed</source>
+        <translation>Fel vid skapandet av lager</translation>
+    </message>
+    <message>
+        <source>Error creating shapefile</source>
+        <translation> Fel vid skapandet av shapefil</translation>
+    </message>
+    <message>
+        <source>The shapefile could not be created (</source>
+        <translation>Shapefilen kunde inte skapas (</translation>
+    </message>
+    <message>
+        <source>Driver not found</source>
+        <translation>Drivrutin hittades inte</translation>
+    </message>
+    <message>
+        <source> driver is not available</source>
+        <translation> drivrutin finns ej</translation>
+    </message>
+    <message>
+        <source>Shapefiles (*.shp)</source>
+        <comment>The *.shp is used as a file filter in a dialog box</comment>
+        <translation>Shapefiler (*.shp)</translation>
+    </message>
 </context>
 <context>
     <name>QgsDlgPgBufferBase</name>
@@ -5809,30 +5846,30 @@ inte har GPSBabel installerat där QGIS kan hitta det så kommer inte det här v
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;This tool will help you download data from a GPS device. Choose your GPS device, the port it is connected to, the feature type you want to download, a name for your new layer, and the GPX file where you want to store the data. If your device isn&apos;t listed, or if you want to change some settings, you can also edit the devices.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;This tool uses the program GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://gpsbabel.sf.net&lt;/span&gt;&lt;/a&gt;) to transfer the data. If you don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Detta verktyg hjälper dig att hämta data från en GPS. Välj GPS-enhet, porten som den är kopplad till, vilken sorts objekt du vill hämta, ett namn för det nya lagret,och GPX-filen där datat sparas. Om din enhet inte finns med i listan, eller om du vill ändra inställningar, kan du redigera enheterna.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;Verktyget använder programet GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://gpsbabel.sf.net&lt;/span&gt;&lt;/a&gt;) för att överföra data. Om du inte har GPSBabel installerat där QGIS hittar det, fungerar inte verktyget.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;This tool will help you upload data from a GPX layer to a GPS device. Choose the layer you want to upload, the device you want to upload it to, and the port your device is connected to. If your device isn&apos;t listed, or if you want to change some settings, you can also edit the devices.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;This tool uses the program GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://gpsbabel.sf.net&lt;/span&gt;&lt;/a&gt;) to transfer the data. If you don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Detta verktyg hjälper dig att skicka data från ett GPX-lager till en GPS. Välj lager du vill skicka, enheten du vill skicka till, och porten enheten är kopplad till. Om din enhet inte finns med i listan, eller om du vill ändra inställningar, kan du redigera enheterna.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;Verktyget använder programet GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://gpsbabel.sf.net&lt;/span&gt;&lt;/a&gt;) för att överföra data. Om du inte har GPSBabel installerat där QGIS hittar det, fungerar inte verktyget.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
     <name>QgsGPXProvider</name>
     <message>
         <source>Bad URI - you need to specify the feature type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Felaktig URI - du måste specificera objekttyp.</translation>
     </message>
     <message>
         <source>GPS eXchange file</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS eXchange fil</translation>
     </message>
     <message>
         <source>Warning: access requested to invalid position in QgsGPXProvider::minValue(..)</source>
-        <translation type="unfinished"></translation>
+        <translation>Varning: åtkomst önskad till felaktig position i QgsGPXProvider::minValue(..)</translation>
     </message>
     <message>
         <source>Warning: access requested to invalid position in QgsGPXProvider::maxValue(..)</source>
-        <translation type="unfinished"></translation>
+        <translation>Varning: åtkomst önskad till felaktig position i QgsGPXProvider::maxValue(..)</translation>
     </message>
     <message>
         <source>Digitized in QGIS</source>
@@ -5986,31 +6023,31 @@ inte har GPSBabel installerat där QGIS kan hitta det så kommer inte det här v
     <name>QgsGeorefWarpOptionsDialogBase</name>
     <message>
         <source>Warp options</source>
-        <translation type="unfinished"></translation>
+        <translation>Böjningsalternativ</translation>
     </message>
     <message>
         <source>Resampling method:</source>
-        <translation type="unfinished"></translation>
+        <translation>Metod för omsampling:</translation>
     </message>
     <message>
         <source>Nearest neighbour</source>
-        <translation type="unfinished"></translation>
+        <translation>Närmaste granne</translation>
     </message>
     <message>
         <source>Linear</source>
-        <translation type="unfinished"></translation>
+        <translation>Linjär</translation>
     </message>
     <message>
         <source>Cubic</source>
-        <translation type="unfinished"></translation>
+        <translation>Kubisk</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <source>Use 0 for transparency when needed</source>
-        <translation type="unfinished"></translation>
+        <translation>Använd 0 för transparens om behovs finns</translation>
     </message>
 </context>
 <context>
@@ -6200,6 +6237,13 @@ Pattern</source>
     </message>
 </context>
 <context>
+    <name>QgsGrassAttributes</name>
+    <message>
+        <source>Warning</source>
+        <translation>Varning</translation>
+    </message>
+</context>
+<context>
     <name>QgsGrassAttributesBase</name>
     <message>
         <source>GRASS Attributes</source>
@@ -6246,34 +6290,62 @@ Pattern</source>
     </message>
     <message>
         <source>Add selected map to canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till vald karta till kartbladet</translation>
     </message>
     <message>
         <source>Copy selected map</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiera vald karta</translation>
     </message>
     <message>
         <source>Rename selected map</source>
-        <translation type="unfinished"></translation>
+        <translation>Döp om vald karta</translation>
     </message>
     <message>
         <source>Delete selected map</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort vald karta</translation>
     </message>
     <message>
         <source>Set current region to selected map</source>
-        <translation type="unfinished"></translation>
+        <translation>Sätt aktiv region till vald karta</translation>
     </message>
     <message>
         <source>Refresh</source>
         <translation>Uppdatera</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>Varning</translation>
+    </message>
+    <message>
+        <source>Cannot copy map </source>
+        <translation> Kan inte kopiera karta</translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;command: </source>
+        <translation> &lt;br&gt;kommando: </translation>
+    </message>
+    <message>
+        <source>Cannot rename map </source>
+        <translation> Kan inte döpa om karta</translation>
+    </message>
+    <message>
+        <source>Delete map &lt;b&gt;</source>
+        <translation>Ta bort karta &lt;b&gt;</translation>
+    </message>
+    <message>
+        <source>Cannot delete map </source>
+        <translation> Kan inte ta bort karta</translation>
+    </message>
+    <message>
+        <source>Cannot write new region</source>
+        <translation>Kan inte skapa ny region</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassEdit</name>
     <message>
         <source>Edit tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Redigeringsverktyg</translation>
     </message>
     <message>
         <source>New point</source>
@@ -6334,6 +6406,46 @@ Pattern</source>
     <message>
         <source>Rigth: </source>
         <translation> Höger:</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>Varning</translation>
+    </message>
+    <message>
+        <source>You are not owner of the mapset, cannot open the vector for editing.</source>
+        <translation>Du är inte ägare till kartset, kan inte öppna vektorn för redigering.</translation>
+    </message>
+    <message>
+        <source>Cannot open vector for update.</source>
+        <translation>Kan inte öppna vektorn för uppdatering.</translation>
+    </message>
+    <message>
+        <source>Info</source>
+        <translation>Info</translation>
+    </message>
+    <message>
+        <source>The table was created</source>
+        <translation>Tabellen skapades</translation>
+    </message>
+    <message>
+        <source>Tool not yet implemented.</source>
+        <translation>Verktyget finns ännu inte.</translation>
+    </message>
+    <message>
+        <source>Cannot check orphan record: </source>
+        <translation> Kan inte kontrollera föräldralös post:</translation>
+    </message>
+    <message>
+        <source>Orphan record was left in attribute table. &lt;br&gt;Delete the record?</source>
+        <translation>Föräldralös post finns kvar i attributtabellen. &lt;br&gt;Ta bort posten?</translation>
+    </message>
+    <message>
+        <source>Cannot delete orphan record: </source>
+        <translation> Kan inte ta bort föräldralös post:</translation>
+    </message>
+    <message>
+        <source>Cannot describe table for field </source>
+        <translation> Kan inte beskriva fältets tabell</translation>
     </message>
 </context>
 <context>
@@ -6499,286 +6611,555 @@ Pattern</source>
     <name>QgsGrassMapcalc</name>
     <message>
         <source>Mapcalc tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapcalc-verktyg</translation>
     </message>
     <message>
         <source>Add map</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till karta</translation>
     </message>
     <message>
         <source>Add constant value</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till konstant värde</translation>
     </message>
     <message>
         <source>Add operator or function</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till operator eller funktion</translation>
     </message>
     <message>
         <source>Add connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till uppkoppling</translation>
     </message>
     <message>
         <source>Select item</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj sak</translation>
     </message>
     <message>
         <source>Delete selected item</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort vald sak</translation>
     </message>
     <message>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Öppna</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished">Spara</translation>
+        <translation>Spara</translation>
     </message>
     <message>
         <source>Save as</source>
-        <translation type="unfinished"></translation>
+        <translation>Spara som</translation>
+    </message>
+    <message>
+        <source>Addition</source>
+        <translation>Addition</translation>
+    </message>
+    <message>
+        <source>Subtraction</source>
+        <translation>Subtraktion</translation>
+    </message>
+    <message>
+        <source>Multiplication</source>
+        <translation>Multiplikation</translation>
+    </message>
+    <message>
+        <source>Division</source>
+        <translation>Division</translation>
+    </message>
+    <message>
+        <source>Modulus</source>
+        <translation>Modulo</translation>
+    </message>
+    <message>
+        <source>Exponentiation</source>
+        <translation>Exponentiering</translation>
+    </message>
+    <message>
+        <source>Equal</source>
+        <translation>Lika med</translation>
+    </message>
+    <message>
+        <source>Not equal</source>
+        <translation>Olik med</translation>
+    </message>
+    <message>
+        <source>Greater than</source>
+        <translation>Större än</translation>
+    </message>
+    <message>
+        <source>Greater than or equal</source>
+        <translation>Större än eller lika med</translation>
+    </message>
+    <message>
+        <source>Less than</source>
+        <translation>Mindre än</translation>
+    </message>
+    <message>
+        <source>Less than or equal</source>
+        <translation>Mindre än eller lika med</translation>
+    </message>
+    <message>
+        <source>And</source>
+        <translation>Och</translation>
+    </message>
+    <message>
+        <source>Or</source>
+        <translation>Eller</translation>
+    </message>
+    <message>
+        <source>Absolute value of x</source>
+        <translation>Absolutvärdet av x</translation>
+    </message>
+    <message>
+        <source>Inverse tangent of x (result is in degrees)</source>
+        <translation>Inverstangens av x (resultat i grader)</translation>
+    </message>
+    <message>
+        <source>Inverse tangent of y/x (result is in degrees)</source>
+        <translation>Inverstangens av y/x (resultat i grader)</translation>
+    </message>
+    <message>
+        <source>Current column of moving window (starts with 1)</source>
+        <translation>Aktuell kolumn i flyttande fönstret (startar på 1)</translation>
+    </message>
+    <message>
+        <source>Cosine of x (x is in degrees)</source>
+        <translation>Cosinus av x (x i grader)</translation>
+    </message>
+    <message>
+        <source>Convert x to double-precision floating point</source>
+        <translation>Konvertera x till flyttal med dubbelprecision</translation>
+    </message>
+    <message>
+        <source>Current east-west resolution</source>
+        <translation>Aktuell öst-västlig upplösning</translation>
+    </message>
+    <message>
+        <source>Exponential function of x</source>
+        <translation>Exponentialfunktion av x</translation>
+    </message>
+    <message>
+        <source>x to the power y</source>
+        <translation>x upphöjt till y</translation>
+    </message>
+    <message>
+        <source>Convert x to single-precision floating point</source>
+        <translation>Konvertera x till flyttal med enkelprecision</translation>
+    </message>
+    <message>
+        <source>Decision: 1 if x not zero, 0 otherwise</source>
+        <translation>Beslut: 1 om x inte är noll, annars 0</translation>
+    </message>
+    <message>
+        <source>Decision: a if x not zero, 0 otherwise</source>
+        <translation>Beslut: a om x inte är noll, annars 0</translation>
+    </message>
+    <message>
+        <source>Decision: a if x not zero, b otherwise</source>
+        <translation>Beslut: a om x inte är noll, annars b</translation>
+    </message>
+    <message>
+        <source>Decision: a if x &gt; 0, b if x is zero, c if x &lt; 0</source>
+        <translation>Beslut: a om x &gt; 0, b om z är noll, c om x &lt; 0</translation>
+    </message>
+    <message>
+        <source>Convert x to integer [ truncates ]</source>
+        <translation>Konvertera x till heltal [ trunkerar ]</translation>
+    </message>
+    <message>
+        <source>Check if x = NULL</source>
+        <translation>Kontrollera om x = NULL</translation>
+    </message>
+    <message>
+        <source>Natural log of x</source>
+        <translation>Naturliga logaritmen av x</translation>
+    </message>
+    <message>
+        <source>Log of x base b</source>
+        <translation>b-bas logaritm av x</translation>
+    </message>
+    <message>
+        <source>Largest value</source>
+        <translation>Största värde</translation>
+    </message>
+    <message>
+        <source>Median value</source>
+        <translation>Medianvärde</translation>
+    </message>
+    <message>
+        <source>Smallest value</source>
+        <translation>Minsta värde</translation>
+    </message>
+    <message>
+        <source>Mode value</source>
+        <translation>Mod värde</translation>
+    </message>
+    <message>
+        <source>1 if x is zero, 0 otherwise</source>
+        <translation>1 om x är noll, annars 0</translation>
+    </message>
+    <message>
+        <source>Current north-south resolution</source>
+        <translation>Aktulle nord-sydlig uppösning</translation>
+    </message>
+    <message>
+        <source>NULL value</source>
+        <translation>värde NULL</translation>
+    </message>
+    <message>
+        <source>Random value between a and b</source>
+        <translation>Slumpmässiga värden mellan a och b</translation>
+    </message>
+    <message>
+        <source>Round x to nearest integer</source>
+        <translation>Avrunda x till närmaste heltal</translation>
+    </message>
+    <message>
+        <source>Current row of moving window (Starts with 1)</source>
+        <translation>Aktuell rad i flyttande fönstret (startar på 1)</translation>
+    </message>
+    <message>
+        <source>Sine of x (x is in degrees)</source>
+        <comment>sin(x)</comment>
+        <translation>Sinus av x (x i grader)</translation>
+    </message>
+    <message>
+        <source>Square root of x</source>
+        <comment>sqrt(x)</comment>
+        <translation>Kvadratroten av x</translation>
+    </message>
+    <message>
+        <source>Tangent of x (x is in degrees)</source>
+        <comment>tan(x)</comment>
+        <translation>Tangens av x (x i grader)</translation>
+    </message>
+    <message>
+        <source>Current x-coordinate of moving window</source>
+        <translation>Aktuell x-koordinat i flyttande fönstret</translation>
+    </message>
+    <message>
+        <source>Current y-coordinate of moving window</source>
+        <translation>Aktuell y-koordinat i flyttande fönstret</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>Varning</translation>
+    </message>
+    <message>
+        <source>Cannot get current region</source>
+        <translation>Kan inte få aktuell region</translation>
+    </message>
+    <message>
+        <source>Cannot check region of map </source>
+        <translation> Kan inte kontrollera kartans region</translation>
+    </message>
+    <message>
+        <source>Cannot get region of map </source>
+        <translation> Kan inte få kartans region</translation>
+    </message>
+    <message>
+        <source>No GRASS raster maps currently in QGIS</source>
+        <translation>Inga GRASS ratserkartor i QGIS för tillfället</translation>
+    </message>
+    <message>
+        <source>Cannot create &apos;mapcalc&apos; directory in current mapset.</source>
+        <translation>Kan inet skapa &apos;mapcalc&apos; bibliotek i nuvarande kartset.</translation>
+    </message>
+    <message>
+        <source>New mapcalc</source>
+        <translation>Ny mapcalc</translation>
+    </message>
+    <message>
+        <source>Enter new mapcalc name:</source>
+        <translation>Skriv in nytt namn på mapcalc:</translation>
+    </message>
+    <message>
+        <source>Enter vector name</source>
+        <translation>Skriv in vektornamnet</translation>
+    </message>
+    <message>
+        <source>The file already exists. Overwrite? </source>
+        <translation> Filen finns redan. Skriva över?</translation>
+    </message>
+    <message>
+        <source>Save mapcalc</source>
+        <translation>Spara mapcalc</translation>
+    </message>
+    <message>
+        <source>File name empty</source>
+        <translation>Filanmnet är tomt</translation>
+    </message>
+    <message>
+        <source>Cannot open mapcalc file</source>
+        <translation>Kan inte öppna mapcalc-fil</translation>
+    </message>
+    <message>
+        <source>The mapcalc schema (</source>
+        <translation>Mapcalc schema (</translation>
+    </message>
+    <message>
+        <source>) not found.</source>
+        <translation>) hittades inte.</translation>
+    </message>
+    <message>
+        <source>Cannot open mapcalc schema (</source>
+        <translation>Kan inte öppna mapcalc schema (</translation>
+    </message>
+    <message>
+        <source>Cannot read mapcalc schema (</source>
+        <translation>Kan inte läsa mapcalc schema (</translation>
+    </message>
+    <message>
+        <source>
+at line </source>
+        <translation>
+ på rad</translation>
+    </message>
+    <message>
+        <source> column </source>
+        <translation>  kolumn</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassMapcalcBase</name>
     <message>
         <source>MainWindow</source>
-        <translation type="unfinished"></translation>
+        <translation>Huvudfönster</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="unfinished"></translation>
+        <translation>Utdata</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassModule</name>
     <message>
         <source>Run</source>
-        <translation type="unfinished"></translation>
+        <translation>Kör</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Stanna</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassModuleBase</name>
     <message>
         <source>GRASS Module</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS-modul</translation>
     </message>
     <message>
         <source>Options</source>
-        <translation type="unfinished">Inställningar</translation>
+        <translation>Inställningar</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="unfinished"></translation>
+        <translation>Utdata</translation>
     </message>
     <message>
         <source>Manual</source>
-        <translation type="unfinished">Manuell</translation>
+        <translation>Manuell</translation>
     </message>
     <message>
         <source>Run</source>
-        <translation type="unfinished"></translation>
+        <translation>Kör</translation>
     </message>
     <message>
         <source>View output</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa utdata</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Stäng</translation>
+        <translation>Stäng</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassNewMapsetBase</name>
     <message>
         <source>Column 1</source>
-        <translation type="unfinished">Kolumn 1</translation>
+        <translation>Kolumn 1</translation>
     </message>
     <message>
         <source>Example directory tree:</source>
-        <translation type="unfinished"></translation>
+        <translation>Exempel på biblioteksträd:</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;GRASS data are stored in tree directory structure.&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The GRASS database is the top-level directory in this tree structure.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;GRASS data sparas i ett biblioteksträd.&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;GRASS-databasen är det översta biblioteker i denna struktur.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Database Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Databasfel</translation>
     </message>
     <message>
         <source>Database:</source>
-        <translation type="unfinished"></translation>
+        <translation>Databas:</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Select existing directory or create a new one:</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj ett existerande bibliotek eller skapa ett nytt:</translation>
     </message>
     <message>
         <source>Location</source>
-        <translation type="unfinished">Plats</translation>
+        <translation>Plats</translation>
     </message>
     <message>
         <source>Select location</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj plats</translation>
     </message>
     <message>
         <source>Create new location</source>
-        <translation type="unfinished"></translation>
+        <translation>Skapa en ny plats</translation>
     </message>
     <message>
         <source>Location Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel på platsen</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The GRASS location is a collection of maps for a particular territory or project.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;GRASS-platsen är en samling av kartor för ett speciellt område eller projekt.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Projection Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Projektionsfel</translation>
     </message>
     <message>
         <source>Coordinate system</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinatsystem</translation>
     </message>
     <message>
         <source>Projection</source>
-        <translation type="unfinished">Projektion</translation>
+        <translation>Projektion</translation>
     </message>
     <message>
         <source>Not defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Odefinerad</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The GRASS region defines a workspace for raster modules. The default region is valid for one location. It is possible to set a different region in each mapset. &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;It is possible to change the default location region later.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;GRASS-regionen bestämmer ett arbetsområde för rastermodulen. Standardregionen är giltig för en plats. Det är möjligt att ställa in en annan region för varje kartset. &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Det är möjligt att ändra standardplatsen senare.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Set current QGIS extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Sätt aktuell QGIS-utsträckning</translation>
     </message>
     <message>
         <source>Set</source>
-        <translation type="unfinished">Sätt</translation>
+        <translation>Sätt</translation>
     </message>
     <message>
         <source>Region Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Regionsfel</translation>
     </message>
     <message>
         <source>S</source>
-        <translation type="unfinished">S</translation>
+        <translation>S</translation>
     </message>
     <message>
         <source>W</source>
-        <translation type="unfinished"></translation>
+        <translation>V</translation>
     </message>
     <message>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>Ö</translation>
     </message>
     <message>
         <source>N</source>
-        <translation type="unfinished"></translation>
+        <translation>N</translation>
     </message>
     <message>
         <source>New mapset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nytt kartset:</translation>
     </message>
     <message>
         <source>Mapset Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartsetsfel</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;center&quot;&gt;Existing masets&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;center&quot;&gt;Existerande kartset&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The GRASS mapset is a collection of maps used by one user. &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;A user can read maps from all mapsets in the location but &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;he can open for writing only his mapset (owned by user).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;GRASS-kartset är en samling kartor som används av en användare. &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;En användare kan läsa kartor från alla kartset över platsen men &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;han/hon kan bara skriva i sitt eget kartset (ägd av användaren).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Location:</source>
-        <translation type="unfinished"></translation>
+        <translation>Plats:</translation>
     </message>
     <message>
         <source>Mapset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartset:</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassPlugin</name>
     <message>
         <source>&amp;GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;GRASS</translation>
     </message>
     <message>
         <source>GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS</translation>
     </message>
     <message>
         <source>Open mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Öppna kartset</translation>
     </message>
     <message>
         <source>New mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Nytt kartset</translation>
     </message>
     <message>
         <source>Close mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Stäng kartset</translation>
     </message>
     <message>
         <source>Add GRASS vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till GRASS-vektorlager</translation>
     </message>
     <message>
         <source>Add GRASS raster layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till GRASS-rasterlager</translation>
     </message>
     <message>
         <source>Open GRASS tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Öppna GRASS-verktyg</translation>
     </message>
     <message>
         <source>Display Current Grass Region</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa aktuell GRASS-region</translation>
     </message>
     <message>
         <source>Edit Current Grass Region</source>
-        <translation type="unfinished"></translation>
+        <translation>Redigera aktuell GRASS-region</translation>
     </message>
     <message>
         <source>Edit Grass Vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Redigera GRASS-vektorlager</translation>
     </message>
     <message>
         <source>Adds a GRASS vector layer to the map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägger till ett GRASS-vektorlager till kartbladet</translation>
     </message>
     <message>
         <source>Adds a GRASS raster layer to the map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägger till ett GRASS-rasterlager till kartbladet</translation>
     </message>
     <message>
         <source>Displays the current GRASS region as a rectangle on the map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Visar aktuell GRASS-region som en rektangel på kartbladet</translation>
     </message>
     <message>
         <source>Edit the current GRASS region</source>
-        <translation type="unfinished"></translation>
+        <translation>Redigera aktuell GRASS-region</translation>
     </message>
     <message>
         <source>Edit the currently selected GRASS vector layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Redigera aktuellt GRASS-vektorlager.</translation>
     </message>
 </context>
 <context>
@@ -6887,171 +7268,171 @@ Pattern</source>
     <name>QgsGrassShellBase</name>
     <message>
         <source>GRASS Shell</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS skal</translation>
     </message>
 </context>
 <context>
     <name>QgsGridMakerPlugin</name>
     <message>
         <source>&amp;Graticule Creator</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Rutnätsskaparen</translation>
     </message>
     <message>
         <source>Creates a graticule (grid) and stores the result as a shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Skapar ett rutnät och sparar resultatet som en shapefil</translation>
     </message>
     <message>
         <source>&amp;Graticules</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Rutnät</translation>
     </message>
 </context>
 <context>
     <name>QgsGridMakerPluginGui</name>
     <message>
         <source>QGIS - Grid Maker</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS - Rutnätsskaparen</translation>
     </message>
     <message>
         <source>Please enter the file name before pressing OK!.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vänligen skriv in filnamnet innan du trycker OK!.</translation>
     </message>
     <message>
         <source>Longitude Interval is invalid - please correct and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Longitudintervallet är ogiltigt - rätta och försök igen.</translation>
     </message>
     <message>
         <source>Latitude Interval is invalid - please correct and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Latitudintervallet är ogiltigt - rätta och försök igen.</translation>
     </message>
     <message>
         <source>Longitude Origin is invalid - please correct and try again..</source>
-        <translation type="unfinished"></translation>
+        <translation>Longitudstart är ogiltigt - rätta och försök igen.</translation>
     </message>
     <message>
         <source>Latitude Origin is invalid - please correct and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Latitudstart är ogiltigt - rätta och försök igen.</translation>
     </message>
     <message>
         <source>End Point Longitude is invalid - please correct and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Longitudslut är ogiltigt - rätta och försök igen.</translation>
     </message>
     <message>
         <source>End Point Latitude is invalid - please correct and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Latitudslut är ogiltigt - rätta och försök igen.</translation>
     </message>
     <message>
         <source>Choose a filename to save under</source>
-        <translation type="unfinished">Välj ett filnamn att spara till</translation>
+        <translation>Välj ett filnamn att spara till</translation>
     </message>
     <message>
         <source>ESRI Shapefile (*.shp)</source>
-        <translation type="unfinished"></translation>
+        <translation>ESRI Shapefil (*.shp)</translation>
     </message>
 </context>
 <context>
     <name>QgsGridMakerPluginGuiBase</name>
     <message>
         <source>QGIS Plugin Template</source>
-        <translation type="unfinished">QGIS-pluginmall</translation>
+        <translation>QGIS-pluginmall</translation>
     </message>
     <message>
         <source>Graticule Builder</source>
-        <translation type="unfinished">Rutnätsbyggare</translation>
+        <translation>Rutnätsbyggare</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:11pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;Please enter all units in decimal degrees&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:11pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Denna plugin hjälper till att skapa en shapefil med rutnät, som du sdean kan använda som ett lager i Qgis kartvyn.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;Skriv in alla enheter i decimalgrader.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Typ</translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Linje</translation>
+        <translation>Linje</translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="unfinished">Polygon</translation>
+        <translation>Polygon</translation>
     </message>
     <message>
         <source>Origin (lower left)</source>
-        <translation type="unfinished"></translation>
+        <translation>Start (ner till vänster)</translation>
     </message>
     <message>
         <source>Latitude:</source>
-        <translation type="unfinished">Latitud:</translation>
+        <translation>Latitud:</translation>
     </message>
     <message>
         <source>#000.00000; </source>
-        <translation type="unfinished"></translation>
+        <translation>#000.00000; </translation>
     </message>
     <message>
         <source>Longitude:</source>
-        <translation type="unfinished">Longitud:</translation>
+        <translation>Longitud:</translation>
     </message>
     <message>
         <source>End point (upper right)</source>
-        <translation type="unfinished"></translation>
+        <translation>Slutpunkt (uppe till höger)</translation>
     </message>
     <message>
         <source>Graticle size (units in degrees)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rutnätsstorlek (i grader)</translation>
     </message>
     <message>
         <source>Latitude Interval:</source>
-        <translation type="unfinished">Latitudintervall:</translation>
+        <translation>Latitudintervall:</translation>
     </message>
     <message>
         <source>Longitude Interval:</source>
-        <translation type="unfinished">Longitudintervall:</translation>
+        <translation>Longitudintervall:</translation>
     </message>
     <message>
         <source>Output (shape) file</source>
-        <translation type="unfinished"></translation>
+        <translation>Utdata (shapefil)</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation type="unfinished">&amp;OK</translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <source>Alt+O</source>
-        <translation type="unfinished">Alt+O</translation>
+        <translation>Alt+O</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">&amp;Avbryt</translation>
+        <translation>&amp;Avbryt</translation>
     </message>
     <message>
         <source>Alt+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+A</translation>
     </message>
 </context>
 <context>
     <name>QgsHelpViewer</name>
     <message>
         <source>Quantum GIS Help - </source>
-        <translation type="unfinished"></translation>
+        <translation> Quantum GIS Hjälp - </translation>
     </message>
     <message>
         <source>Failed to get the help text from the database</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte hämta hjälptext från databasen</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Fel</translation>
+        <translation>Fel</translation>
     </message>
     <message>
         <source>The QGIS help database is not installed</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS hjälpdatabas är inte installerad</translation>
     </message>
 </context>
 <context>
@@ -7113,6 +7494,42 @@ Detta kan vara ett problem med ditt nätverk, eller i WMS-servern.</translation>
         <source>HTTP transaction completed, however there was an error: %1</source>
         <translation>HTTP utbyte avklarat men det blev fel: %1</translation>
     </message>
+    <message>
+        <source>Received %1 of %2 bytes</source>
+        <translation>Tog emot %1 av %2 bytes</translation>
+    </message>
+    <message>
+        <source>Received %1 bytes (total unknown)</source>
+        <translation>Tog emot %1 bytes (okänd totalsumma)</translation>
+    </message>
+    <message>
+        <source>Not connected</source>
+        <translation>Ej uppkopplad</translation>
+    </message>
+    <message>
+        <source>Looking up &apos;%1&apos;</source>
+        <translation>Slår upp %1</translation>
+    </message>
+    <message>
+        <source>Connecting to &apos;%1&apos;</source>
+        <translation>Kopplar upp till %1</translation>
+    </message>
+    <message>
+        <source>Sending request &apos;%1&apos;</source>
+        <translation>Skickar förfrågan %1</translation>
+    </message>
+    <message>
+        <source>Receiving reply</source>
+        <translation>Tar emot svar</translation>
+    </message>
+    <message>
+        <source>Response is complete</source>
+        <translation>Svaret är komplett</translation>
+    </message>
+    <message>
+        <source>Closing down connection</source>
+        <translation>Stänger uppkoppling</translation>
+    </message>
 </context>
 <context>
     <name>QgsIdentifyResults</name>
@@ -7131,6 +7548,14 @@ Detta kan vara ett problem med ditt nätverk, eller i WMS-servern.</translation>
     <message>
         <source>(Derived)</source>
         <translation>(Härledd)</translation>
+    </message>
+    <message>
+        <source>Feature</source>
+        <translation>Objekt</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>Värde</translation>
     </message>
 </context>
 <context>
@@ -7157,11 +7582,11 @@ Detta kan vara ett problem med ditt nätverk, eller i WMS-servern.</translation>
     </message>
     <message>
         <source>Feature</source>
-        <translation>Objekt</translation>
+        <translation type="obsolete">Objekt</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation>Värde</translation>
+        <translation type="obsolete">Värde</translation>
     </message>
     <message>
         <source>Close</source>
@@ -7911,7 +8336,7 @@ Detta kan vara ett problem med ditt nätverk, eller i WMS-servern.</translation>
     </message>
     <message>
         <source>Cl&amp;ose</source>
-        <translation>St&amp;ng</translation>
+        <translation type="unfinished">St&amp;äng</translation>
     </message>
     <message>
         <source>Total:</source>
@@ -7948,31 +8373,63 @@ Detta kan vara ett problem med ditt nätverk, eller i WMS-servern.</translation>
     <name>QgsMySQLProvider</name>
     <message>
         <source>Unable to access relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte komma åt relation</translation>
     </message>
     <message>
         <source>Unable to access the </source>
-        <translation type="unfinished"></translation>
+        <translation> Kunde inte komma åt</translation>
     </message>
     <message>
         <source> relation.
 The error message from the database was:
 </source>
-        <translation type="unfinished"></translation>
+        <translation> relationen.
+Felmeddelandet från databasen:
+</translation>
     </message>
     <message>
         <source>No GEOS Support!</source>
-        <translation type="unfinished"></translation>
+        <translation>Inget stöd för GEOS!</translation>
     </message>
     <message>
         <source>Your PostGIS installation has no GEOS support.
 Feature selection and identification will not work properly.
 Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
-        <translation type="unfinished"></translation>
+        <translation>Din PostGIS-nistallation har inte stöd för GEOS.
+Val av objekt och identifiering komemr inte fungera.
+Installera PostGIS med GEOS-stöd (http://geos.refractions.net)</translation>
     </message>
     <message>
         <source>Save layer as...</source>
-        <translation type="unfinished">Spara lager som...</translation>
+        <translation>Spara lager som...</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Fel</translation>
+    </message>
+    <message>
+        <source>Error creating field </source>
+        <translation> Fel vid skapandet av fält</translation>
+    </message>
+    <message>
+        <source>Layer creation failed</source>
+        <translation>Fel vid skapandet av lager</translation>
+    </message>
+    <message>
+        <source>Error creating shapefile</source>
+        <translation> Fel vid skapandet av shapefil</translation>
+    </message>
+    <message>
+        <source>The shapefile could not be created (</source>
+        <translation>Shapefilen kunde inte skapas (</translation>
+    </message>
+    <message>
+        <source>Driver not found</source>
+        <translation>Drivrutin hittades inte</translation>
+    </message>
+    <message>
+        <source> driver is not available</source>
+        <translation> drivrutin finns ej</translation>
     </message>
 </context>
 <context>
@@ -8067,223 +8524,234 @@ Detaljerad felinformation:</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Restrict the search to the public schema for spatial tables not in the geometry_columns table&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Begränsa sökningen till det allmäna schemat för de rumsliga tabeller som inte finns i tabelln geometri_kolumner&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;When searching for spatial tables that are not in the geometry_columns tables, restrict the search to tables that are in the public schema (for some databases this can save lots of time)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Sökning för rumsliga tabveller som inte finns i tabellen geometri_kolumner begränsa sökningen till tabeller som finns i det allmäna schemat (för vissa databaser sparar detta mycket tid).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Only look in the &apos;public&apos; schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Leta bara i det &apos;allmänna&apos; schemat</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;&gt;Restrict the displayed tables to those that are in the geometry_columns table&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;&gt;Begränsa visade tabeller till de som finns i tabellen geometri_kolumner.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;&gt;Restricts the displayed tables to those that are in the geometry_columns table. This can speed up the initial display of spatial tables.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;&gt;Begränsa visade tabeller till de som finns i tabellen geometri_kolumner. Detta kan göra första visningen av rumsliga tabeller snabbare.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Only look in the geometry_columns table</source>
-        <translation type="unfinished"></translation>
+        <translation>Leta bara i tabellen geometri_kolumner</translation>
     </message>
 </context>
 <context>
     <name>QgsNewHttpConnectionBase</name>
     <message>
         <source>Create a New WMS connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Skapa en ny WMS-uppkoppling</translation>
     </message>
     <message>
         <source>Connection Information</source>
-        <translation type="unfinished">Uppkopplingsinformation</translation>
+        <translation>Uppkopplingsinformation</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Namn</translation>
+        <translation>Namn</translation>
     </message>
     <message>
         <source>URL</source>
-        <translation type="unfinished"></translation>
+        <translation>URL</translation>
     </message>
     <message>
         <source>Proxy Host</source>
-        <translation type="unfinished"></translation>
+        <translation>Mellanvärd</translation>
     </message>
     <message>
         <source>Proxy Port</source>
-        <translation type="unfinished"></translation>
+        <translation>Mellanvärdsport</translation>
     </message>
     <message>
         <source>Proxy User</source>
-        <translation type="unfinished"></translation>
+        <translation>Mellanvärdsanvändare</translation>
     </message>
     <message>
         <source>Proxy Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Mellanvärdslösenord</translation>
     </message>
     <message>
         <source>Your user name for the HTTP proxy (optional)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ditt användarnamn för HTTP mellanvärd (valfritt)</translation>
     </message>
     <message>
         <source>Password for your HTTP proxy (optional)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ditt lösenord för HTTP mellanvärd (valfritt)</translation>
     </message>
     <message>
         <source>Name of the new connection</source>
-        <translation type="unfinished">Namn för den nya uppkopplingen</translation>
+        <translation>Namn för den nya uppkopplingen</translation>
     </message>
     <message>
         <source>HTTP address of the Web Map Server</source>
-        <translation type="unfinished"></translation>
+        <translation>HTTP adress för Web Map Server</translation>
     </message>
     <message>
         <source>Name of your HTTP proxy (optional)</source>
-        <translation type="unfinished"></translation>
+        <translation>Namn för HTTP mellanvärd (valfritt)</translation>
     </message>
     <message>
         <source>Port number of your HTTP proxy (optional)</source>
-        <translation type="unfinished"></translation>
+        <translation>Port nummer för din HTTP mellanvärd (valfritt)</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Avbryt</translation>
+        <translation>Avbryt</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished">Hjälp</translation>
+        <translation>Hjälp</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation type="unfinished">F1</translation>
+        <translation>F1</translation>
     </message>
 </context>
 <context>
     <name>QgsNorthArrowPlugin</name>
     <message>
         <source>Bottom Left</source>
-        <translation type="unfinished">Nere till vänster</translation>
+        <translation>Nere till vänster</translation>
     </message>
     <message>
         <source>Top Left</source>
-        <translation type="unfinished">Uppe till vänster</translation>
+        <translation>Uppe till vänster</translation>
     </message>
     <message>
         <source>Top Right</source>
-        <translation type="unfinished">Uppe till höger</translation>
+        <translation>Uppe till höger</translation>
     </message>
     <message>
         <source>Bottom Right</source>
-        <translation type="unfinished">Nere till höger</translation>
+        <translation>Nere till höger</translation>
     </message>
     <message>
         <source>&amp;North Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nordpil</translation>
     </message>
     <message>
         <source>Creates a north arrow that is displayed on the map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Skapar en nordpil som visas på kartbladet</translation>
     </message>
     <message>
         <source>&amp;Decorations</source>
-        <translation type="unfinished">&amp;Dekoreringar</translation>
+        <translation>&amp;Dekoreringar</translation>
     </message>
     <message>
         <source>Pixmap Not Found</source>
-        <translation type="unfinished"></translation>
+        <translation>Hittade inte pixmap</translation>
     </message>
 </context>
 <context>
     <name>QgsNorthArrowPluginGui</name>
     <message>
         <source>Pixmap Not Found</source>
-        <translation type="unfinished"></translation>
+        <translation>Hittade inte pixmap</translation>
     </message>
 </context>
 <context>
     <name>QgsNorthArrowPluginGuiBase</name>
     <message>
         <source>North Arrow Plugin</source>
-        <translation type="unfinished">Nordpilplugin</translation>
+        <translation>Nordpilplugin</translation>
     </message>
     <message>
         <source>Properties</source>
-        <translation type="unfinished">Egenskaper</translation>
+        <translation>Egenskaper</translation>
     </message>
     <message>
         <source>Angle</source>
-        <translation type="unfinished">Vinkel</translation>
+        <translation>Vinkel</translation>
     </message>
     <message>
         <source>Placement</source>
-        <translation type="unfinished">Placering</translation>
+        <translation>Placering</translation>
     </message>
     <message>
         <source>Set direction automatically</source>
-        <translation type="unfinished"></translation>
+        <translation>Sätt riktning automatiskt</translation>
     </message>
     <message>
         <source>Enable North Arrow</source>
-        <translation type="unfinished">Aktivera nordpil</translation>
+        <translation>Aktivera nordpil</translation>
     </message>
     <message>
         <source>Placement on screen</source>
-        <translation type="unfinished">Placering på skärmen</translation>
+        <translation>Placering på skärmen</translation>
     </message>
     <message>
         <source>Top Left</source>
-        <translation type="unfinished">Uppe till vänster</translation>
+        <translation>Uppe till vänster</translation>
     </message>
     <message>
         <source>Top Right</source>
-        <translation type="unfinished">Uppe till höger</translation>
+        <translation>Uppe till höger</translation>
     </message>
     <message>
         <source>Bottom Left</source>
-        <translation type="unfinished">Nere till vänster</translation>
+        <translation>Nere till vänster</translation>
     </message>
     <message>
         <source>Bottom Right</source>
-        <translation type="unfinished">Nere till höger</translation>
+        <translation>Nere till höger</translation>
     </message>
     <message>
         <source>Preview of north arrow</source>
-        <translation type="unfinished">Förhandsvy av nordpil</translation>
+        <translation>Förhandsvy av nordpil</translation>
     </message>
     <message>
         <source>Icon</source>
-        <translation type="unfinished">Ikon</translation>
+        <translation>Ikon</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>New Item</source>
-        <translation type="unfinished">Ny Post</translation>
+        <translation>Ny Post</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation type="unfinished">&amp;OK</translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <source>Alt+O</source>
-        <translation type="unfinished">Alt+O</translation>
+        <translation>Alt+O</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">&amp;Avbryt</translation>
+        <translation>&amp;Avbryt</translation>
     </message>
     <message>
         <source>Alt+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+A</translation>
+    </message>
+</context>
+<context>
+    <name>QgsOGRFactory</name>
+    <message>
+        <source>Wrong Path/URI</source>
+        <translation>Fel sökväg/URI</translation>
+    </message>
+    <message>
+        <source>The provided path for the dataset is not valid.</source>
+        <translation>Sökvägen som angavs för datamängden är ej giltig.</translation>
     </message>
 </context>
 <context>
@@ -8494,55 +8962,55 @@ med att identifiera objekt utan att zooma in väldigt nära.
     </message>
     <message>
         <source>&amp;Splash screen</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Startbild</translation>
     </message>
     <message>
         <source>Default Map Appearance (Overridden by project properties)</source>
-        <translation type="unfinished"></translation>
+        <translation>Standard kartutseende (projektinställningar väger tyngre)</translation>
     </message>
     <message>
         <source>Background Color:</source>
-        <translation type="unfinished">Bakgrundsfärg:</translation>
+        <translation>Bakgrundsfärg:</translation>
     </message>
     <message>
         <source>Selection Color:</source>
-        <translation type="unfinished">Färg för valda:</translation>
+        <translation>Färg för valda:</translation>
     </message>
     <message>
         <source>Appearance</source>
-        <translation type="unfinished">Utseende</translation>
+        <translation>Utseende</translation>
     </message>
     <message>
         <source>Capitalise layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Stor första bokstav på lagernamn</translation>
     </message>
     <message>
         <source>Make lines appear less jagged at the expense of some drawing performance</source>
-        <translation type="unfinished"></translation>
+        <translation>Får linjer att se mindre hackiga ut, men utritningen går något långsammare</translation>
     </message>
     <message>
         <source>By default new la&amp;yers added to the map should be displayed</source>
-        <translation type="unfinished"></translation>
+        <translation>N&amp;ya lager som läggs till kartan skall normalt visas</translation>
     </message>
     <message>
         <source>&amp;Update during drawing</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Uppdatera medan ritning pågår</translation>
     </message>
     <message>
         <source>&amp;Selection &amp;&amp; Measuring</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Välja och Mäta</translation>
     </message>
     <message>
         <source>Measure tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Mätverktyg</translation>
     </message>
     <message>
         <source>Ellipsoid for distance calculations:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ellipsoid för avståndsberäkningar:</translation>
     </message>
     <message>
         <source>Search radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Sökradie</translation>
     </message>
     <message>
         <source>&lt;html&gt;
@@ -8558,94 +9026,106 @@ By default QGIS uses a value of 5. Increase the value if you have trouble
 identifying features without zooming in very close.
 
 &lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;
+
+&lt;b&gt;OBS:&lt;/b&gt; Specificera värdet i tusendelar. Sökradien beräknas som:&lt;br&gt;
+
+&amp;nbsp;&amp;nbsp;&lt;i&gt;(Bredd kartvy) * ( värde/1000.0)&lt;/i&gt;
+
+&lt;br&gt;
+
+QGIS standardvärde är 5. Öka värdet om du har problem med att 
+
+identifera objekt utan att zooma in mycket.
+
+&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Pro&amp;jection</source>
-        <translation type="unfinished"></translation>
+        <translation>Pro&amp;jektion</translation>
     </message>
     <message>
         <source>Select Global Default ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj globala standardinställningar...</translation>
     </message>
     <message>
         <source>When layer is loaded that has no projection information</source>
-        <translation type="unfinished"></translation>
+        <translation>När lager hämtas som inte har någon projketionsinformation</translation>
     </message>
     <message>
         <source>Prompt for projection.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fråga efter projektion.</translation>
     </message>
     <message>
         <source>Project wide default projection will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>projektionen som är projektstandard kommer att användas.</translation>
     </message>
     <message>
         <source>Global default projection displa&amp;yed below will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Global standardprojektion visad nedan kommer att &amp;användas.</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; The browser must be in your PATH or you can specify the full path above</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;OBS:&lt;/b&gt; Bläddraren måste vara i din sökväg, eller så kan du specificera hela sökvägen ovan</translation>
     </message>
     <message>
         <source>firefox</source>
-        <translation type="unfinished"></translation>
+        <translation>firefox</translation>
     </message>
     <message>
         <source>mozilla-firefox</source>
-        <translation type="unfinished"></translation>
+        <translation>mozilla-firefox</translation>
     </message>
     <message>
         <source>Rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Rendering</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Selecting this will unselect the &apos;make lines less&apos; jagged toggle&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Här kan du ändra inställningen om du vill göra linjer mindre hackiga.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Fix problems with incorrectly filled polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Fixa problem med polygoner som fylls på ett felaktigt sätt</translation>
     </message>
 </context>
 <context>
     <name>QgsPasteTransformationsBase</name>
     <message>
         <source>Paste Transformations</source>
-        <translation type="unfinished"></translation>
+        <translation>Klista in transformationer</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note: This function is not useful yet!&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;OBS: Denna funktion är ännu ej användbar!&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Source</source>
-        <translation type="unfinished">Källa</translation>
+        <translation>Källa</translation>
     </message>
     <message>
         <source>Destination</source>
-        <translation type="unfinished"></translation>
+        <translation>Mål</translation>
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Hjälp</translation>
+        <translation>&amp;Hjälp</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation type="unfinished">F1</translation>
+        <translation>F1</translation>
     </message>
     <message>
         <source>Add New Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till ny överföring</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation type="unfinished">&amp;OK</translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">&amp;Avbryt</translation>
+        <translation>&amp;Avbryt</translation>
     </message>
 </context>
 <context>
@@ -8732,7 +9212,7 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>No Fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Fyll ej</translation>
     </message>
 </context>
 <context>
@@ -8747,60 +9227,61 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>&amp;Buffer features</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Buffra objekt</translation>
     </message>
     <message>
         <source>A new layer is created in the database with the buffered features.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ett nytt lager skapas i databasen med de buffrade objekten.</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Geoprocessing</translation>
     </message>
     <message>
         <source>Unable to add geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte lägga till geometrikolumn</translation>
     </message>
     <message>
         <source>Unable to add geometry column to the output table </source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte lägga till geometrikolumn till tabell som skall skrivas</translation>
     </message>
     <message>
         <source>Unable to create table</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte skapa tabell</translation>
     </message>
     <message>
         <source>Failed to create the output table </source>
-        <translation type="unfinished"></translation>
+        <translation> Kunde inte skapa tabell som skall skrivas</translation>
     </message>
     <message>
         <source>No GEOS support</source>
-        <translation type="unfinished"></translation>
+        <translation>Finns inget GEOS-stöd</translation>
     </message>
     <message>
         <source>Buffer function requires GEOS support in PostGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Buffringsfunktion kräver GEOS-stöd i PostGIS</translation>
     </message>
     <message>
         <source>Not a PostgreSQL/PosGIS Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Inte ett PostgrSQL/PostGIS lager</translation>
     </message>
     <message>
         <source> is not a PostgreSQL/PosGIS layer.
 </source>
-        <translation type="unfinished"></translation>
+        <translation> är inte ett PostgrSQL/PostGIS lager.
+</translation>
     </message>
     <message>
         <source>Geoprocessing functions are only available for PostgreSQL/PosGIS Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Funktioner för geobearbetning finns bara för PostgreSQL/PosGIS lager</translation>
     </message>
     <message>
         <source>No Active Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Inget aktivt lager</translation>
     </message>
     <message>
         <source>You must select a layer in the legend to buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Du måset välja ett lager i innehållsförteckningen som du vill buffra</translation>
     </message>
 </context>
 <context>
@@ -9055,213 +9536,217 @@ identifying features without zooming in very close.
     <name>QgsPointDialog</name>
     <message>
         <source>Zoom In</source>
-        <translation type="unfinished">Zooma In</translation>
+        <translation>Zooma In</translation>
     </message>
     <message>
         <source>z</source>
-        <translation type="unfinished"></translation>
+        <translation>z</translation>
     </message>
     <message>
         <source>Zoom Out</source>
-        <translation type="unfinished">Zooma ut</translation>
+        <translation>Zooma ut</translation>
     </message>
     <message>
         <source>Z</source>
-        <translation type="unfinished"></translation>
+        <translation>Z</translation>
     </message>
     <message>
         <source>Zoom To Layer</source>
-        <translation type="unfinished">Zooma till lager</translation>
+        <translation>Zooma till lager</translation>
     </message>
     <message>
         <source>Zoom to Layer</source>
-        <translation type="unfinished">Zooma till lager</translation>
+        <translation>Zooma till lager</translation>
     </message>
     <message>
         <source>Pan Map</source>
-        <translation type="unfinished">Panorera karta</translation>
+        <translation>Panorera karta</translation>
     </message>
     <message>
         <source>Pan the map</source>
-        <translation type="unfinished">Panorera kartan</translation>
+        <translation>Panorera kartan</translation>
     </message>
     <message>
         <source>Add Point</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till punkt</translation>
     </message>
     <message>
         <source>.</source>
-        <translation type="unfinished">.</translation>
+        <translation>.</translation>
     </message>
     <message>
         <source>Capture Points</source>
-        <translation type="unfinished">Skapa punkter</translation>
+        <translation>Skapa punkter</translation>
     </message>
     <message>
         <source>Delete Point</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort punkt</translation>
     </message>
     <message>
         <source>Delete Selected</source>
-        <translation type="unfinished">Ta bort vald</translation>
+        <translation>Ta bort vald</translation>
     </message>
     <message>
         <source>Linear</source>
-        <translation type="unfinished"></translation>
+        <translation>Linjär</translation>
     </message>
     <message>
         <source>Helmert</source>
-        <translation type="unfinished"></translation>
+        <translation>Helmert</translation>
     </message>
     <message>
         <source>Choose a name for the world file</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj ett filnamn för världsfilen</translation>
     </message>
     <message>
         <source>-modified</source>
         <comment>Georeferencer:QgsPointDialog.cpp - used to modify a user given filename</comment>
-        <translation type="unfinished"></translation>
+        <translation>-modifierad</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Varning</translation>
+        <translation>Varning</translation>
     </message>
     <message>
         <source>&lt;p&gt;A Helmert transform requires modifications in the raster layer.&lt;/p&gt;&lt;p&gt;The modifed raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p&gt;&lt;p&gt;Are you sure that this is what you want?&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;En Helmerttransform kräver att rasterlagret modifieras.&lt;/p&gt;&lt;p&gt;Rasterlagert kommer att sparas i en ny fil, och en världsfil kommer att skapas för denna nya fil.&lt;/p&gt;&lt;p&gt;Är detta verkligen vad du vill göra?&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Affine</source>
-        <translation type="unfinished"></translation>
+        <translation>Affin</translation>
     </message>
     <message>
         <source>Not implemented!</source>
-        <translation type="unfinished"></translation>
+        <translation>Inte implementerad!</translation>
     </message>
     <message>
         <source>&lt;p&gt;An affine transform requires changing the original raster file. This is not yet supported.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;En affin transform kräver att man ändrar ursprungliga rasterfilen. Detta stöds ännu inte. &lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;The </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;</translation>
     </message>
     <message>
         <source> transform is not yet supported.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>-transformen stöds ännu inte.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Fel</translation>
+        <translation>Fel</translation>
     </message>
     <message>
         <source>Could not write to </source>
-        <translation type="unfinished"></translation>
+        <translation> Kunde inte skriva till</translation>
     </message>
 </context>
 <context>
     <name>QgsPointDialogBase</name>
     <message>
         <source>Georeferencer</source>
-        <translation type="unfinished"></translation>
+        <translation>Georefererare</translation>
     </message>
     <message>
         <source>Transform type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformtyp:</translation>
     </message>
     <message>
         <source>Zoom in</source>
-        <translation type="unfinished">Zooma in</translation>
+        <translation>Zooma in</translation>
     </message>
     <message>
         <source>Zoom out</source>
-        <translation type="unfinished">Zooma ut</translation>
+        <translation>Zooma ut</translation>
     </message>
     <message>
         <source>Zoom to the raster extents</source>
-        <translation type="unfinished"></translation>
+        <translation>Zooma till rastrets utsträckning</translation>
     </message>
     <message>
         <source>Pan</source>
-        <translation type="unfinished">Flytta vy</translation>
+        <translation>Flytta vy</translation>
     </message>
     <message>
         <source>Add points</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till punkter</translation>
     </message>
     <message>
         <source>Delete points</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort punkter</translation>
     </message>
     <message>
         <source>Generate world file and load layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Skapa världsfil och hämta lager</translation>
     </message>
     <message>
         <source>Generate world file</source>
-        <translation type="unfinished"></translation>
+        <translation>Skapa världsfil</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Avbryt</translation>
+        <translation>Avbryt</translation>
     </message>
     <message>
         <source>World file:</source>
-        <translation type="unfinished"></translation>
+        <translation>Världsfil:</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>......</translation>
     </message>
     <message>
         <source>Modified raster:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ändrat raster:</translation>
     </message>
 </context>
 <context>
     <name>QgsPointStyleWidgetBase</name>
     <message>
         <source>Form3</source>
-        <translation type="unfinished">Formulär3</translation>
+        <translation>Formulär3</translation>
     </message>
     <message>
         <source>Symbol Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbolstil</translation>
     </message>
     <message>
         <source>Scale</source>
-        <translation type="unfinished">Skala</translation>
+        <translation>Skala</translation>
     </message>
 </context>
 <context>
     <name>QgsPostgresProvider</name>
     <message>
         <source>Unable to access relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte komma åt relation</translation>
     </message>
     <message>
         <source>Unable to access the </source>
-        <translation type="unfinished"></translation>
+        <translation> Kunde inte komma åt</translation>
     </message>
     <message>
         <source> relation.
 The error message from the database was:
 </source>
-        <translation type="unfinished"></translation>
+        <translation> relationen.
+Felmeddelandet från databasen:
+</translation>
     </message>
     <message>
         <source>No GEOS Support!</source>
-        <translation type="unfinished"></translation>
+        <translation>Inget stöd för GEOS!</translation>
     </message>
     <message>
         <source>Your PostGIS installation has no GEOS support.
 Feature selection and identification will not work properly.
 Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
-        <translation type="unfinished"></translation>
+        <translation>Din PostGIS-installation har inte stöd för GEOS.
+Val av objekt och identifiering komemr inte fungera.
+Installera PostGIS med GEOS-stöd (http://geos.refractions.net)</translation>
     </message>
     <message>
         <source>No suitable key column in table</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingen lämplig nyckelkolumn i tabellen</translation>
     </message>
     <message>
         <source>The table has no column suitable for use as a key.
@@ -9270,159 +9755,171 @@ Qgis requires that the table either has a column of type
 int4 with a unique constraint on it (which includes the
 primary key) or has a PostgreSQL oid column.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Tabellen har ingen kolumn lämplig som nyckel.
+
+Qgis kräver att tabellen antingen har en kolumn med typen
+int4 med en unik begränsning (vilket inkluderar primärnyckeln)
+eller har en PostgreSQL oid-kolumn.
+</translation>
     </message>
     <message>
         <source>The unique index on column</source>
-        <translation type="unfinished"></translation>
+        <translation>Det unika indexet på kolumn</translation>
     </message>
     <message>
         <source>is unsuitable because Qgis does not currently support non-int4 type columns as a key into the table.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>passar inte eftersom Qgis för närvarande inte stödjer kolumner som inte har int4 som typ, som nycklar till tabellen.</translation>
     </message>
     <message>
         <source>and </source>
-        <translation type="unfinished"></translation>
+        <translation> och</translation>
     </message>
     <message>
         <source>The unique index based on columns </source>
-        <translation type="unfinished"></translation>
+        <translation> Det unika indexet baserat på kolumn</translation>
     </message>
     <message>
         <source> is unsuitable because Qgis does not currently support multiple columns as a key into the table.
 </source>
-        <translation type="unfinished"></translation>
+        <translation> passar inte eftersom Qgsi för närvarande inte stödjer föera kolumner som nycklar till tabellen.
+</translation>
     </message>
     <message>
         <source>Unable to find a key column</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte hita nyckelkolumn</translation>
     </message>
     <message>
         <source> derives from </source>
-        <translation type="unfinished"></translation>
+        <translation>  härstammar från</translation>
     </message>
     <message>
         <source>and is suitable.</source>
-        <translation type="unfinished"></translation>
+        <translation>och passar.</translation>
     </message>
     <message>
         <source>and is not suitable </source>
-        <translation type="unfinished"></translation>
+        <translation> och passar inte</translation>
     </message>
     <message>
         <source>type is </source>
-        <translation type="unfinished"></translation>
+        <translation> typen är</translation>
     </message>
     <message>
         <source> and has a suitable constraint)</source>
-        <translation type="unfinished"></translation>
+        <translation> och har passande begränsning)</translation>
     </message>
     <message>
         <source> and does not have a suitable constraint)</source>
-        <translation type="unfinished"></translation>
+        <translation> och har inte en passande begränsning)</translation>
     </message>
     <message>
         <source>The view you selected has the following columns, none of which satisfy the above conditions:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyn du valde har följande kolumner, men ingen av dem uppfyller ovanstående krav:</translation>
     </message>
     <message>
         <source>Qgis requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Qgis kräver att vyn har en kolumn som kan användas till unik nyckel. En sådan kolum måste härledas från en tabellkolumn av typen int4 och vara en primärnyckel, ha en unikbegränsning eller vara en PostgreSQL oid-kolumn. För att förbättra prestanda skall kolumnen även vara indexerad.
+</translation>
     </message>
     <message>
         <source>The view </source>
-        <translation type="unfinished"></translation>
+        <translation> Vyn</translation>
     </message>
     <message>
         <source>has no column suitable for use as a unique key.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>har inga kolumner som passar till unik nyckel.
+</translation>
     </message>
     <message>
         <source>No suitable key column in view</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingen passande nyckelkolumn i vyn</translation>
     </message>
     <message>
         <source>Unknown geometry type</source>
-        <translation type="unfinished"></translation>
+        <translation>Okänd geometrityp</translation>
     </message>
     <message>
         <source>Column </source>
-        <translation type="unfinished"></translation>
+        <translation> Kolumn</translation>
     </message>
     <message>
         <source> in </source>
-        <translation type="unfinished"></translation>
+        <translation>  i</translation>
     </message>
     <message>
         <source> has a geometry type of </source>
-        <translation type="unfinished"></translation>
+        <translation>  har geometritypen</translation>
     </message>
     <message>
         <source>, which Qgis does not currently support.</source>
-        <translation type="unfinished"></translation>
+        <translation>, som Qgis för närvarande inte stödjer.</translation>
     </message>
     <message>
         <source>. The database communication log was:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>, databasens loggfil blev:
+</translation>
     </message>
     <message>
         <source>Unable to get feature type and srid</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte få objekttyp och srid</translation>
     </message>
     <message>
         <source>Note: </source>
-        <translation type="unfinished"></translation>
+        <translation> OBS:</translation>
     </message>
     <message>
         <source>initially appeared suitable but does not contain unique data, so is not suitable.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>såg förs passande ut, men innehåller inte unika data, så det passar inte.
+</translation>
     </message>
     <message>
         <source>INSERT error</source>
-        <translation type="unfinished"></translation>
+        <translation>INSERT-fel</translation>
     </message>
     <message>
         <source>An error occured during feature insertion</source>
-        <translation type="unfinished"></translation>
+        <translation>Ett fel inträffade under införande av objekt</translation>
     </message>
     <message>
         <source>The sql was:
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Sql-en var:
+
+</translation>
     </message>
     <message>
         <source>SQL error</source>
-        <translation type="unfinished"></translation>
+        <translation>SQL-fel</translation>
     </message>
     <message>
         <source>DELETE error</source>
-        <translation type="unfinished"></translation>
+        <translation>DELETE-fel</translation>
     </message>
     <message>
         <source>An error occured during deletion from disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Ett fel inträffade under radering från disken</translation>
     </message>
     <message>
         <source>PostGIS error</source>
-        <translation type="unfinished"></translation>
+        <translation>PostGIS-fel</translation>
     </message>
     <message>
         <source>An error occured contacting the PostgreSQL databse</source>
-        <translation type="unfinished"></translation>
+        <translation>Ett fel inträffade vid uppkopplingen til PostgreSQL databas</translation>
     </message>
     <message>
         <source>The PostgreSQL databse returned: </source>
-        <translation type="unfinished"></translation>
+        <translation> PostgreSQL-databasen svarade:</translation>
     </message>
     <message>
         <source>When trying: </source>
-        <translation type="unfinished"></translation>
+        <translation> när det försöks med:</translation>
     </message>
 </context>
 <context>
@@ -9571,43 +10068,43 @@ primary key) or has a PostgreSQL oid column.
     <name>QgsProjectionSelectorBase</name>
     <message>
         <source>Projection Selector</source>
-        <translation type="unfinished"></translation>
+        <translation>Projektionsväljare</translation>
     </message>
     <message>
         <source>Projection</source>
-        <translation type="unfinished">Projektion</translation>
+        <translation>Projektion</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation type="unfinished">Sök</translation>
+        <translation>Sök</translation>
     </message>
     <message>
         <source>QGIS SRSID</source>
-        <translation type="unfinished"></translation>
+        <translation> QGIS SRSID</translation>
     </message>
     <message>
         <source>Find</source>
-        <translation type="unfinished"></translation>
+        <translation>Hitta</translation>
     </message>
     <message>
         <source>Postgis SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Postgis SRID</translation>
     </message>
     <message>
         <source>EPSG ID</source>
-        <translation type="unfinished"></translation>
+        <translation>EPSG ID</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Namn</translation>
+        <translation>Namn</translation>
     </message>
     <message>
         <source>Spatial Reference System</source>
-        <translation type="unfinished">Spatial Reference System</translation>
+        <translation>Spatial Reference System</translation>
     </message>
     <message>
         <source>Id</source>
-        <translation type="unfinished">ID</translation>
+        <translation>ID</translation>
     </message>
 </context>
 <context>
@@ -10293,9 +10790,9 @@ primary key) or has a PostgreSQL oid column.
 </source>
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:9pt;font-family:Sans Serif&quot;&gt;
 &lt;p style=&quot;margin-top:18px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-size:15pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p dir=&quot;ltr&quot;&gt;Raster med hög upplösning kan sinka navigering i QGIS. Genom att skapa kopior med lägre upplösning (pyramider) kan prestanda avsevärt förbättras, genom att QGIS väljer genom att QGIS väljer den lämpligaste upplösningen beroende på zoom-nivå. Du måste ha skrivrättigheter i biblioteket som den ursprungliga datan ligger för att kunna bygga pyrmaider.&lt;/p&gt;
-&lt;p dir=&quot;ltr&quot;&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Vänligen notera att den ursungliga datafilen kan ändras när du bygger pyramider, och de kan ej tas bort.&lt;/span&gt;&lt;/p&gt;
-&lt;p dir=&quot;ltr&quot;&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Vänligen notera din bild kan förstöras när du bygger pyramider. Ta alltid backup FÖRST!&lt;/span&gt;&lt;/p&gt;
+&lt;p dir=&quot;ltr&quot;&gt;Raster med hög upplösning kan sinka navigeringen i QGIS. Genom att skapa kopior med lägre upplösning (pyramider) kan prestanda avsevärt förbättras, genom att  QGIS väljer den lämpligaste upplösningen beroende på zoom-nivå. Du måste ha skrivrättigheter i biblioteket som den ursprungliga datan ligger för att kunna bygga pyramider.&lt;/p&gt;
+&lt;p dir=&quot;ltr&quot;&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Den ursungliga datafilen kan ändras när du bygger pyramider, och de kan ej tas bort efter de har skapats.&lt;/span&gt;&lt;/p&gt;
+&lt;p dir=&quot;ltr&quot;&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Din bild kan förstöras när du bygger pyramider. Ta alltid backup FÖRST!&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </translation>
     </message>
@@ -10340,197 +10837,197 @@ primary key) or has a PostgreSQL oid column.
     <name>QgsRunProcess</name>
     <message>
         <source>Unable to run command</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte utföra kommando</translation>
     </message>
     <message>
         <source>Unable to run the command</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte utföra kommandot</translation>
     </message>
     <message>
         <source>Starting</source>
-        <translation type="unfinished"></translation>
+        <translation>Startar</translation>
     </message>
     <message>
         <source>Done</source>
-        <translation type="unfinished"></translation>
+        <translation>Klar</translation>
     </message>
 </context>
 <context>
     <name>QgsScaleBarPlugin</name>
     <message>
         <source>Bottom Left</source>
-        <translation type="unfinished">Nere till vänster</translation>
+        <translation>Nere till vänster</translation>
     </message>
     <message>
         <source>Top Left</source>
-        <translation type="unfinished">Uppe till vänster</translation>
+        <translation>Uppe till vänster</translation>
     </message>
     <message>
         <source>Top Right</source>
-        <translation type="unfinished">Uppe till höger</translation>
+        <translation>Uppe till höger</translation>
     </message>
     <message>
         <source>Bottom Right</source>
-        <translation type="unfinished">Nere till höger</translation>
+        <translation>Nere till höger</translation>
     </message>
     <message>
         <source>Tick Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Streck ner</translation>
     </message>
     <message>
         <source>Tick Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Streck upp</translation>
     </message>
     <message>
         <source>Bar</source>
-        <translation type="unfinished">Streck</translation>
+        <translation>Streck</translation>
     </message>
     <message>
         <source>Box</source>
-        <translation type="unfinished">Låda</translation>
+        <translation>Låda</translation>
     </message>
     <message>
         <source>&amp;Scale Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Skala</translation>
     </message>
     <message>
         <source>Creates a scale bar that is displayed on the map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Skapar en skala som visas på kartbladet</translation>
     </message>
     <message>
         <source>&amp;Decorations</source>
-        <translation type="unfinished">&amp;Dekoreringar</translation>
+        <translation>&amp;Dekoreringar</translation>
     </message>
     <message>
         <source> metres/km</source>
-        <translation type="unfinished">meter/km</translation>
+        <translation>meter/km</translation>
     </message>
     <message>
         <source> feet</source>
-        <translation type="unfinished">feet</translation>
+        <translation>fot</translation>
     </message>
     <message>
         <source> degrees</source>
-        <translation type="unfinished">grader</translation>
+        <translation>grader</translation>
     </message>
     <message>
         <source> km</source>
-        <translation type="unfinished">km</translation>
+        <translation>km</translation>
     </message>
     <message>
         <source> mm</source>
-        <translation type="unfinished"></translation>
+        <translation> mm</translation>
     </message>
     <message>
         <source> cm</source>
-        <translation type="unfinished"></translation>
+        <translation> cm</translation>
     </message>
     <message>
         <source> m</source>
-        <translation type="unfinished"></translation>
+        <translation> m</translation>
     </message>
     <message>
         <source> foot</source>
-        <translation type="unfinished"></translation>
+        <translation> fot</translation>
     </message>
     <message>
         <source> degree</source>
-        <translation type="unfinished"></translation>
+        <translation> grader</translation>
     </message>
     <message>
         <source> unknown</source>
-        <translation type="unfinished"></translation>
+        <translation> obekant</translation>
     </message>
 </context>
 <context>
     <name>QgsScaleBarPluginGuiBase</name>
     <message>
         <source>Scale Bar Plugin</source>
-        <translation type="unfinished">Skalplugin</translation>
+        <translation>Skalaplugin</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation type="unfinished">&amp;OK</translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <source>Alt+O</source>
-        <translation type="unfinished">Alt+O</translation>
+        <translation>Alt+O</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">&amp;Avbryt</translation>
+        <translation>&amp;Avbryt</translation>
     </message>
     <message>
         <source>Alt+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+A</translation>
     </message>
     <message>
         <source>Click to select the colour</source>
-        <translation type="unfinished"></translation>
+        <translation>Klicka för att välja färg</translation>
     </message>
     <message>
         <source>Size of bar:</source>
-        <translation type="unfinished">Storlek:</translation>
+        <translation>Storlek:</translation>
     </message>
     <message>
         <source>Automatically snap to round number on resize</source>
-        <translation type="unfinished">Runda av till vettig storlek</translation>
+        <translation>Runda av till vettig storlek</translation>
     </message>
     <message>
         <source>Colour of bar:</source>
-        <translation type="unfinished">Färg på skala:</translation>
+        <translation>Färg på skalan:</translation>
     </message>
     <message>
         <source>Top Left</source>
-        <translation type="unfinished">Uppe till vänster</translation>
+        <translation>Uppe till vänster</translation>
     </message>
     <message>
         <source>Top Right</source>
-        <translation type="unfinished">Uppe till höger</translation>
+        <translation>Uppe till höger</translation>
     </message>
     <message>
         <source>Bottom Left</source>
-        <translation type="unfinished">Nere till vänster</translation>
+        <translation>Nere till vänster</translation>
     </message>
     <message>
         <source>Bottom Right</source>
-        <translation type="unfinished">Nere till höger</translation>
+        <translation>Nere till höger</translation>
     </message>
     <message>
         <source>Enable scale bar</source>
-        <translation type="unfinished">Aktivera skala</translation>
+        <translation>Aktivera skala</translation>
     </message>
     <message>
         <source>Scale bar style:</source>
-        <translation type="unfinished">Typ av skala:</translation>
+        <translation>Typ av skala:</translation>
     </message>
     <message>
         <source>Select the style of the scale bar</source>
-        <translation type="unfinished">Välj typ av skala</translation>
+        <translation>Välj typ av skala</translation>
     </message>
     <message>
         <source>Tick Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Streck ner</translation>
     </message>
     <message>
         <source>Tick Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Streck upp</translation>
     </message>
     <message>
         <source>Box</source>
-        <translation type="unfinished">Låda</translation>
+        <translation>Låda</translation>
     </message>
     <message>
         <source>Bar</source>
-        <translation type="unfinished">Streck</translation>
+        <translation>Streck</translation>
     </message>
     <message>
         <source>Placement:</source>
-        <translation type="unfinished">Placering:</translation>
+        <translation>Placering:</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This plugin draws a scale bar on the map. Please note the size option below is a &apos;preferred&apos; size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Denna plugin ritar en skala på kartan. Storleksalternativet nedan är en &apos;önskad&apos; storlek och QGIS kan behöva ändra detta beroende på in/ut-zoomning. Storleken mäts med kartenheten som är specificerad i projektegenskaper.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -10599,114 +11096,114 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Could not open the WMS Provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte öppna WMS-källan</translation>
     </message>
     <message>
         <source>Select Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Välja lager</translation>
     </message>
     <message>
         <source>You must select at least one layer first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Du måste först välja minst ett lager.</translation>
     </message>
     <message>
         <source>Coordinate Reference System (%1 available)</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinaternas referenssystem (1% tillgängliga)</translation>
     </message>
     <message>
         <source>Could not understand the response.  The</source>
-        <translation type="unfinished"></translation>
+        <translation>  Förstod inte svaret</translation>
     </message>
     <message>
         <source>provider said</source>
-        <translation type="unfinished"></translation>
+        <translation>källan sa</translation>
     </message>
 </context>
 <context>
     <name>QgsServerSourceSelectBase</name>
     <message>
         <source>Add Layer(s) from a Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till lager från en server</translation>
     </message>
     <message>
         <source>C&amp;lose</source>
-        <translation type="unfinished">S&amp;täng</translation>
+        <translation>S&amp;täng</translation>
     </message>
     <message>
         <source>Alt+L</source>
-        <translation type="unfinished">Alt+L</translation>
+        <translation>Alt+T</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished">Hjälp</translation>
+        <translation>Hjälp</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation type="unfinished">F1</translation>
+        <translation>F1</translation>
     </message>
     <message>
         <source>Image encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Bildkodning</translation>
     </message>
     <message>
         <source>Layers</source>
-        <translation type="unfinished">Lager</translation>
+        <translation>Lager</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Namn</translation>
+        <translation>Namn</translation>
     </message>
     <message>
         <source>Title</source>
-        <translation type="unfinished">Titel</translation>
+        <translation>Titel</translation>
     </message>
     <message>
         <source>Abstract</source>
-        <translation type="unfinished"></translation>
+        <translation>Sammanfattning</translation>
     </message>
     <message>
         <source>&amp;Add</source>
-        <translation type="unfinished">L&amp;ägg till</translation>
+        <translation>L&amp;ägg till</translation>
     </message>
     <message>
         <source>Alt+A</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt-Ä</translation>
     </message>
     <message>
         <source>Server Connections</source>
-        <translation type="unfinished">Serveruppkoppling</translation>
+        <translation>Serveruppkoppling</translation>
     </message>
     <message>
         <source>&amp;New</source>
-        <translation type="unfinished">&amp;Ny</translation>
+        <translation>&amp;Ny</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">Radera</translation>
+        <translation>Radera</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished">Redigera</translation>
+        <translation>Redigera</translation>
     </message>
     <message>
         <source>C&amp;onnect</source>
-        <translation type="unfinished">K&amp;oppla upp</translation>
+        <translation>K&amp;oppla upp</translation>
     </message>
     <message>
         <source>Ready</source>
-        <translation type="unfinished">Klar</translation>
+        <translation>Klar</translation>
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished">Koordinaternas referenssystem</translation>
+        <translation>Koordinaternas referenssystem</translation>
     </message>
     <message>
         <source>Change ...</source>
-        <translation type="unfinished">Ändra...</translation>
+        <translation>Ändra...</translation>
     </message>
 </context>
 <context>
@@ -10838,27 +11335,27 @@ primary key) or has a PostgreSQL oid column.
     <name>QgsSingleSymbolDialogBase</name>
     <message>
         <source>Single Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Enkel symbol</translation>
     </message>
     <message>
         <source>Fill Patterns:</source>
-        <translation type="unfinished">Fyllningsmönster:</translation>
+        <translation>Fyllningsmönster:</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished">Storlek</translation>
+        <translation>Storlek</translation>
     </message>
     <message>
         <source>Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbol</translation>
     </message>
     <message>
         <source>Outline Width:</source>
-        <translation type="unfinished">Kantbredd:</translation>
+        <translation>Kantbredd:</translation>
     </message>
     <message>
         <source>...</source>
@@ -10866,245 +11363,248 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Fill Color:</source>
-        <translation type="unfinished">Fyllnadsfärg:</translation>
+        <translation>Fyllnadsfärg:</translation>
     </message>
     <message>
         <source>Outline color:</source>
-        <translation type="unfinished">Kantfärg:</translation>
+        <translation>Kantfärg:</translation>
     </message>
     <message>
         <source>Outline Style:</source>
-        <translation type="unfinished">Kantstil:</translation>
+        <translation>Kantstil:</translation>
     </message>
     <message>
         <source>Label:</source>
-        <translation type="unfinished">Etikett:</translation>
+        <translation>Etikett:</translation>
     </message>
     <message>
         <source>No Fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Fyll ej</translation>
     </message>
 </context>
 <context>
     <name>QgsSpit</name>
     <message>
         <source>File Name</source>
-        <translation type="unfinished">Filnamn</translation>
+        <translation>Filnamn</translation>
     </message>
     <message>
         <source>Feature Class</source>
-        <translation type="unfinished">Objektklass</translation>
+        <translation>Objektklass</translation>
     </message>
     <message>
         <source>Features</source>
-        <translation type="unfinished">Objekt</translation>
+        <translation>Objekt</translation>
     </message>
     <message>
         <source>DB Relation Name</source>
-        <translation type="unfinished">DB-relationsnamn</translation>
+        <translation>DB-relationsnamn</translation>
     </message>
     <message>
         <source>Schema</source>
-        <translation type="unfinished">Schema</translation>
+        <translation>Schema</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the [</source>
-        <translation type="unfinished"></translation>
+        <translation>Är du säker du vill ta bort [</translation>
     </message>
     <message>
         <source>] connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>] uppkopplingen och alla tillhörande inställningar?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
-        <translation type="unfinished">Bekräfta Radering</translation>
+        <translation>Bekräfta Radering</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Ja</translation>
+        <translation>Ja</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Nej</translation>
+        <translation>Nej</translation>
     </message>
     <message>
         <source> - Edit Column Names</source>
-        <translation type="unfinished"></translation>
+        <translation> - Redigera kolumnnamn</translation>
     </message>
     <message>
         <source>The following Shapefile(s) could not be loaded:
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Shapefilen kunde inte hämtas:
+
+</translation>
     </message>
     <message>
         <source>REASON: File cannot be opened</source>
-        <translation type="unfinished"></translation>
+        <translation>ANLEDNING: Filen kunde inte öppnas</translation>
     </message>
     <message>
         <source>REASON: One or both of the Shapefile files (*.dbf, *.shx) missing</source>
-        <translation type="unfinished"></translation>
+        <translation>ANLEDNING: En eller båda shapefilerna (*.dbf, *.shx) saknas</translation>
     </message>
     <message>
         <source>General Interface Help:</source>
-        <translation type="unfinished"></translation>
+        <translation>Allmän hjälp:</translation>
     </message>
     <message>
         <source>PostgreSQL Connections:</source>
-        <translation type="unfinished"></translation>
+        <translation>PostgreSQL uppkopplingar:</translation>
     </message>
     <message>
         <source>[New ...] - create a new connection</source>
-        <translation type="unfinished"></translation>
+        <translation>[Ny ...] - skapa en ny uppkoppling</translation>
     </message>
     <message>
         <source>[Edit ...] - edit the currently selected connection</source>
-        <translation type="unfinished"></translation>
+        <translation>[Redigera ...] - redigera vald uppkoppling</translation>
     </message>
     <message>
         <source>[Remove] - remove the currently selected connection</source>
-        <translation type="unfinished"></translation>
+        <translation>[Ta bort] - ta bort vald uppkopling</translation>
     </message>
     <message>
         <source>-you need to select a connection that works (connects properly) in order to import files</source>
-        <translation type="unfinished"></translation>
+        <translation>- du måste välja en fungerande uppkoppling för att importera filer</translation>
     </message>
     <message>
         <source>-when changing connections Global Schema also changes accordingly</source>
-        <translation type="unfinished"></translation>
+        <translation>- när du byter uppkoppling ändra sig också globalt schema</translation>
     </message>
     <message>
         <source>Shapefile List:</source>
-        <translation type="unfinished"></translation>
+        <translation>Shapefiler:</translation>
     </message>
     <message>
         <source>[Add ...] - open a File dialog and browse to the desired file(s) to import</source>
-        <translation type="unfinished"></translation>
+        <translation>[Lägg till ...] - öppna en fildialog och sök efter den fil/filen du vill importera</translation>
     </message>
     <message>
         <source>[Remove] - remove the currently selected file(s) from the list</source>
-        <translation type="unfinished"></translation>
+        <translation>[Ta bort] - ta bort vald(a) fil(er) från listan</translation>
     </message>
     <message>
         <source>[Remove All] - remove all the files in the list</source>
-        <translation type="unfinished"></translation>
+        <translation>[Ta bort alla] - ta bort alla filer från listan</translation>
     </message>
     <message>
         <source>[SRID] - Reference ID for the shapefiles to be imported</source>
-        <translation type="unfinished"></translation>
+        <translation>[SRID] - Reference-ID för shapefilerna som skall importeras</translation>
     </message>
     <message>
         <source>[Use Default (SRID)] - set SRID to -1</source>
-        <translation type="unfinished"></translation>
+        <translation>[Använd standard SRID] - sätt SRID till -1</translation>
     </message>
     <message>
         <source>[Geometry Column Name] - name of the geometry column in the database</source>
-        <translation type="unfinished"></translation>
+        <translation>[Geometrins kolumnnamn] - namn på kolumenn med geometrin i databasen</translation>
     </message>
     <message>
         <source>[Use Default (Geometry Column Name)] - set column name to &apos;the_geom&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>[Använd standard (geometrins kolumnnamn)] - sätt kolumnnamn till &apos;the_geom&apos;</translation>
     </message>
     <message>
         <source>[Glogal Schema] - set the schema for all files to be imported into</source>
-        <translation type="unfinished"></translation>
+        <translation>[Global schema] - sätt schema som alla filer importeras till</translation>
     </message>
     <message>
         <source>[Import] - import the current shapefiles in the list</source>
-        <translation type="unfinished"></translation>
+        <translation>[Importera] - importera aktuell shapefil i listan</translation>
     </message>
     <message>
         <source>[Quit] - quit the program
 </source>
-        <translation type="unfinished"></translation>
+        <translation>[Avsluta] - avsluta programmet
+</translation>
     </message>
     <message>
         <source>[Help] - display this help dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>[Hjälp] - visa hjälpdialogen</translation>
     </message>
     <message>
         <source>Import Shapefiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Importera shapefiler</translation>
     </message>
     <message>
         <source>You need to specify a Connection first</source>
-        <translation type="unfinished"></translation>
+        <translation>Du måste specificera en uppkoppling först</translation>
     </message>
     <message>
         <source>Connection failed - Check settings and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Uppkopplingen misslyckades - Kontrollera inställningarna och försök igen</translation>
     </message>
     <message>
         <source>You need to add shapefiles to the list first</source>
-        <translation type="unfinished"></translation>
+        <translation>Du måste först lägga till en shapefil till listan</translation>
     </message>
     <message>
         <source>Importing files</source>
-        <translation type="unfinished"></translation>
+        <translation>Importerar filer</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Avbryt</translation>
+        <translation>Avbryt</translation>
     </message>
     <message>
         <source>Progress</source>
-        <translation type="unfinished"></translation>
+        <translation>Klar</translation>
     </message>
     <message>
         <source>Problem inserting features from file:</source>
-        <translation type="unfinished"></translation>
+        <translation>Problem att lägga til objekt från fil:</translation>
     </message>
     <message>
         <source>Invalid table name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogiltigt tabellnamn.</translation>
     </message>
     <message>
         <source>No fields detected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga fält hittades.</translation>
     </message>
     <message>
         <source>The following fields are duplicates:</source>
-        <translation type="unfinished"></translation>
+        <translation>Följande fält är dubletter:</translation>
     </message>
     <message>
         <source>Import Shapefiles - Relation Exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Impotrera shapefiler - relationen existerar</translation>
     </message>
     <message>
         <source>The Shapefile:</source>
-        <translation type="unfinished"></translation>
+        <translation>Shapefilen:</translation>
     </message>
     <message>
         <source>will use [</source>
-        <translation type="unfinished"></translation>
+        <translation>kommer att använda [</translation>
     </message>
     <message>
         <source>] relation for its data,</source>
-        <translation type="unfinished"></translation>
+        <translation>]-relationen för sitt data,</translation>
     </message>
     <message>
         <source>which already exists and possibly contains data.</source>
-        <translation type="unfinished"></translation>
+        <translation>som redan existerar och kanske innehåller data.</translation>
     </message>
     <message>
         <source>To avoid data loss change the &quot;DB Relation Name&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>För att undvika förlust av data, byt &quot;DB relationsnamn&quot;</translation>
     </message>
     <message>
         <source>for this Shapefile in the main dialog file list.</source>
-        <translation type="unfinished"></translation>
+        <translation>för denna shapefil i huvuddialogens lista med filer.</translation>
     </message>
     <message>
         <source>Do you want to overwrite the [</source>
-        <translation type="unfinished"></translation>
+        <translation>Vill du skriva över relationen [</translation>
     </message>
     <message>
         <source>] relation?</source>
-        <translation type="unfinished"></translation>
+        <translation>] ?</translation>
     </message>
     <message>
         <source>Use the table below to edit column names. Make sure that none of the columns are named using a PostgreSQL reserved word</source>
-        <translation type="unfinished"></translation>
+        <translation>Används tabellen nedan för att redigera kolumnnamn. Se till att ingent kolumnnamn använder ett PostgreSQL resverat ord</translation>
     </message>
 </context>
 <context>
@@ -11266,15 +11766,15 @@ primary key) or has a PostgreSQL oid column.
     <name>QgsSpitPlugin</name>
     <message>
         <source>&amp;Import Shapefiles to PostgreSQL</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Importera shapefiler till PostgreSQL</translation>
     </message>
     <message>
         <source>Import shapefiles into a PostGIS-enabled PostgreSQL database. The schema and field names can be customized on import</source>
-        <translation type="unfinished"></translation>
+        <translation>Importera shapefiler till en PostgrerSQL databas med PostGIS. Schemata och fältnamn kan anpassas vid import</translation>
     </message>
     <message>
         <source>&amp;Spit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Spit</translation>
     </message>
 </context>
 <context>
@@ -11490,7 +11990,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>The provider for the current layer cannot retrieve geometry for the selected features.  This version of the provider does not have this capability.</source>
-        <translation>  Källan för aktivt lager kunde inte hämta geometrin för valt objekt. Denna versionen av källan har ej den möjligheten.</translation>
+        <translation>  Källan för aktivt lager kunde inte hämta geometrin för valt objekt. Denna version av källan har ej den möjligheten.</translation>
     </message>
 </context>
 <context>
@@ -11903,207 +12403,207 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Could not get WMS capabilities: %1 at line %2 column %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte hitta WMS-möjligheter: %1 på rad %2, kolumn %3</translation>
     </message>
     <message>
         <source>This is probably due to an incorrect WMS Server URL.</source>
-        <translation type="unfinished"></translation>
+        <translation>Det berorn antagligen på en felaktig URL till WMS-servern.</translation>
     </message>
     <message>
         <source>Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte hitta WMS-möjligheter på det förväntade formatet (DTD): hittade ej %1 eller %2</translation>
     </message>
     <message>
         <source>Could not get WMS Service Exception at %1: %2 at line %3 column %4</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte hitta WMS Service Exception på %1: %2 på rad 3, kolumn %4</translation>
     </message>
     <message>
         <source>Request contains a Format not offered by the server.</source>
-        <translation type="unfinished"></translation>
+        <translation>Förfrågan innehåller ett format som servern inte tillhandahåller.</translation>
     </message>
     <message>
         <source>Request contains a CRS not offered by the server for one or more of the Layers in the request.</source>
-        <translation type="unfinished"></translation>
+        <translation>Förfrågan innehåller en CRS för ett eller flera lager i anropet, som servern inte tillhandahåller.</translation>
     </message>
     <message>
         <source>Request contains a SRS not offered by the server for one or more of the Layers in the request.</source>
-        <translation type="unfinished"></translation>
+        <translation>Förfrågan innehåller en SRS för ett eller flera lager i anropet, som servern inte tillhandahåller.</translation>
     </message>
     <message>
         <source>GetMap request is for a Layer not offered by the server, or GetFeatureInfo request is for a Layer not shown on the map.</source>
-        <translation type="unfinished"></translation>
+        <translation>GetMap-förfrågan är för ett lager som serven inte tillhandahåller, eller GetFeatureInfo-anropet är avsett för ett lager som inte är med på kartan.</translation>
     </message>
     <message>
         <source>Request is for a Layer in a Style not offered by the server.</source>
-        <translation type="unfinished"></translation>
+        <translation>Förfrågan är för ett lager med en stil som servern inte stödjer.</translation>
     </message>
     <message>
         <source>GetFeatureInfo request is applied to a Layer which is not declared queryable.</source>
-        <translation type="unfinished"></translation>
+        <translation>GetFeatureInfo-förfrågan ställdes till ett lager som inte är definerat som frågbart.</translation>
     </message>
     <message>
         <source>GetFeatureInfo request contains invalid X or Y value.</source>
-        <translation type="unfinished"></translation>
+        <translation>GetFeatureInfo-förfrågan innehåller ogiltigt X- eller Y-värde.</translation>
     </message>
     <message>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number.</source>
-        <translation type="unfinished"></translation>
+        <translation>Värdet på (frivilliga) UpdateSequence-parameter i GetCapabilities-förfrågan är samma som nuvarande värde på &apos;service metadata update&apos; sekvensnummer.</translation>
     </message>
     <message>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number.</source>
-        <translation type="unfinished"></translation>
+        <translation>Värdet på (frivilliga) UpdateSequence-parameter i GetCapabilities-förfrågan är större än nuvarande värde på &apos;service metadata update&apos; sekvensnummer.</translation>
     </message>
     <message>
         <source>Request does not include a sample dimension value, and the server did not declare a default value for that dimension.</source>
-        <translation type="unfinished"></translation>
+        <translation>Förfrågan innehåller inte ett dimensionsvärde, och servern har inte angett ett standardvärde för dimensionen.</translation>
     </message>
     <message>
         <source>Request contains an invalid sample dimension value.</source>
-        <translation type="unfinished"></translation>
+        <translation>Förfrågan innehåller ett ogiltigt dimensionsvärde.</translation>
     </message>
     <message>
         <source>Request is for an optional operation that is not supported by the server.</source>
-        <translation type="unfinished"></translation>
+        <translation>Förfrågan gäller en frivillig operation som servern inte stödjer.</translation>
     </message>
     <message>
         <source>(Unknown error code from a post-1.3 WMS server)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Okänd felkod från en post-1.3 WMS-server)</translation>
     </message>
     <message>
         <source>The WMS vendor also reported: </source>
-        <translation type="unfinished"></translation>
+        <translation> WMS-företaget sa också:</translation>
     </message>
     <message>
         <source>This is probably due to a bug in the QGIS program.  Please report this error.</source>
-        <translation type="unfinished"></translation>
+        <translation>  Detta beror antagligen på ett fel i QGIS. Rapportera detta fel.</translation>
     </message>
     <message>
         <source>Server Properties:</source>
-        <translation type="unfinished"></translation>
+        <translation>Serveregenskaper:</translation>
     </message>
     <message>
         <source>Property</source>
-        <translation type="unfinished">Egenskap</translation>
+        <translation>Egenskap</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished">Värde</translation>
+        <translation>Värde</translation>
     </message>
     <message>
         <source>WMS Version</source>
-        <translation type="unfinished"></translation>
+        <translation>WMS version</translation>
     </message>
     <message>
         <source>Title</source>
-        <translation type="unfinished">Titel</translation>
+        <translation>Titel</translation>
     </message>
     <message>
         <source>Abstract</source>
-        <translation type="unfinished"></translation>
+        <translation>Sammanfattning</translation>
     </message>
     <message>
         <source>Keywords</source>
-        <translation type="unfinished"></translation>
+        <translation>Nyckelord</translation>
     </message>
     <message>
         <source>Online Resource</source>
-        <translation type="unfinished"></translation>
+        <translation>Online-resurser</translation>
     </message>
     <message>
         <source>Contact Person</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontaktperson</translation>
     </message>
     <message>
         <source>Fees</source>
-        <translation type="unfinished"></translation>
+        <translation>Avgifter</translation>
     </message>
     <message>
         <source>Access Constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>Åtkomstbegränsningar</translation>
     </message>
     <message>
         <source>Image Formats</source>
-        <translation type="unfinished"></translation>
+        <translation>Bildformat</translation>
     </message>
     <message>
         <source>Identify Formats</source>
-        <translation type="unfinished"></translation>
+        <translation>Identifieringsformat</translation>
     </message>
     <message>
         <source>Layer Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Antal lager</translation>
     </message>
     <message>
         <source>Layer Properties: </source>
-        <translation type="unfinished"></translation>
+        <translation> Lageregenskaper:</translation>
     </message>
     <message>
         <source>Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Vald</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Ja</translation>
+        <translation>Ja</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Nej</translation>
+        <translation>Nej</translation>
     </message>
     <message>
         <source>Visibility</source>
-        <translation type="unfinished">Synlighet</translation>
+        <translation>Synlighet</translation>
     </message>
     <message>
         <source>Visible</source>
-        <translation type="unfinished"></translation>
+        <translation>Synlig</translation>
     </message>
     <message>
         <source>Hidden</source>
-        <translation type="unfinished"></translation>
+        <translation>Gömd</translation>
     </message>
     <message>
         <source>n/a</source>
-        <translation type="unfinished">---</translation>
+        <translation>---</translation>
     </message>
     <message>
         <source>Can Identify</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan identifieras</translation>
     </message>
     <message>
         <source>Can be Transparent</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan vara transparent</translation>
     </message>
     <message>
         <source>Can Zoom In</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan zooma in</translation>
     </message>
     <message>
         <source>Cascade Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaskadnummer</translation>
     </message>
     <message>
         <source>Fixed Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Fast bredd</translation>
     </message>
     <message>
         <source>Fixed Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Fast höjd</translation>
     </message>
     <message>
         <source>WGS 84 Bounding Box</source>
-        <translation type="unfinished"></translation>
+        <translation>WGS 84 begränsningsruta</translation>
     </message>
     <message>
         <source>Available in CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Tillgänglig i CRS</translation>
     </message>
     <message>
         <source>Available in style</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilgänglig med stil</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Namn</translation>
+        <translation>Namn</translation>
     </message>
 </context>
 <context>
