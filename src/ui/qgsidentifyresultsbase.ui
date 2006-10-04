@@ -15,39 +15,24 @@
   <property name="windowTitle" >
    <string>Identify Results</string>
   </property>
-  <layout class="QGridLayout" >
+  <layout class="QVBoxLayout" >
    <property name="margin" >
     <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="0" column="0" >
-    <widget class="QSplitter" name="splitter1" >
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
+   <item>
+    <widget class="QTreeWidget" name="lstResults" >
+     <property name="lineWidth" >
+      <number>2</number>
      </property>
-     <widget class="Q3ListView" name="lstResults" >
-      <property name="showSortIndicator" >
-       <bool>true</bool>
-      </property>
-      <property name="rootIsDecorated" >
-       <bool>true</bool>
-      </property>
-      <column>
-       <property name="text" >
-        <string>Feature</string>
-       </property>
-      </column>
-      <column>
-       <property name="text" >
-        <string>Value</string>
-       </property>
-      </column>
-     </widget>
+     <property name="sortingEnabled" >
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
-   <item row="1" column="0" >
+   <item>
     <layout class="QHBoxLayout" >
      <property name="margin" >
       <number>0</number>
@@ -103,15 +88,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3ListView</class>
-   <extends></extends>
-   <header>q3listview.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

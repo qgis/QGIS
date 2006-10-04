@@ -26,7 +26,7 @@
 #include <map>
 
 class QCloseEvent;
-class Q3ListViewItem;
+class QTreeWidgetItem;
 class QAction;
 class QMenu;
 
@@ -46,19 +46,19 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
   ~QgsIdentifyResults();
 
   /** Add an attribute to the feature display node */
-  void addAttribute(Q3ListViewItem *parent, QString field, QString value);
+  void addAttribute(QTreeWidgetItem *parent, QString field, QString value);
 
   /** Add an attribute */
   void addAttribute(QString field, QString value);
 
   /** Add a derived attribute (e.g. Length, Area) to the feature display node */
-  void addDerivedAttribute(Q3ListViewItem *parent, QString field, QString value);
+  void addDerivedAttribute(QTreeWidgetItem *parent, QString field, QString value);
 
   /** Add an action to the feature display node */
-  void addAction(Q3ListViewItem *parent, int id, QString field, QString value);
+  void addAction(QTreeWidgetItem *parent, int id, QString field, QString value);
 
   /** Add a feature node to the feature display */
-  Q3ListViewItem * addNode(QString label);
+  QTreeWidgetItem * addNode(QString label);
   /** Set the title for the identify results dialog */
   void setTitle(QString title);
   /** Set header column */
@@ -67,6 +67,9 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
   void restorePosition();  
   void closeEvent(QCloseEvent *e);
   void showAllAttributes();
+
+  /** Resize all of the columns to fit the data in them */
+  void expandColumnsToFit();
 
   /** Remove results */
   void clear();
@@ -82,15 +85,21 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 
   public slots:
 
+    void show();
+
     void close();
-    void popupContextMenu(Q3ListViewItem*, const QPoint&, int);
+    void contextMenuEvent(QContextMenuEvent*);
     void popupItemSelected(QAction* menuAction);
 
     /* Item in tree was clicked */
-    void clicked ( Q3ListViewItem *lvi );
+    void clicked ( QTreeWidgetItem *lvi );
 
     //! Context help
     void on_buttonHelp_clicked();
+
+    /* Called when an item is expanded so that we can ensure that the
+       column width if expanded to show it */
+    void itemExpanded(QTreeWidgetItem*);
 
  private:
   
@@ -107,7 +116,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
    First item:  Feature root node
    Second item: Derived-attribute root node for that feature
    */
-  std::map<Q3ListViewItem *, Q3ListViewItem *> mDerivedAttributeRootNodes;
+  std::map<QTreeWidgetItem *, QTreeWidgetItem *> mDerivedAttributeRootNodes;
 };
 
 #endif
