@@ -10,17 +10,13 @@ plugin_LTLIBRARIES     = wmsprovider.la
 ## non-uic files generated from MOC
 
 wmsprovider_MOC =	qgswmsprovider.moc.cpp			\
-			qgshttptransaction.moc.cpp \
 		../../core/qgsdataprovider.moc.cpp		\
 		../../core/qgsrasterdataprovider.moc.cpp		
                 
 wmsprovider_la_SOURCES =					\
 		qgswmsprovider.cpp				\
 		qgswmsprovider.moc.cpp				\
-		qgswmsprovider.h				\
-		qgshttptransaction.cpp				\
-		qgshttptransaction.moc.cpp			\
-		qgshttptransaction.h
+		qgswmsprovider.h				
 
 BUILT_SOURCES = $(wmsprovider_MOC)
                                 

@@ -27,6 +27,14 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
 {
   Q_OBJECT
  public:
+
+  enum REQUEST_ENCODING
+    {
+      GET,
+      POST,
+      SOAP /*Note that this goes also through HTTP POST but additionally uses soap envelope and friends*/
+    };
+
   QgsWFSSourceSelect(QWidget* parent, QgisIface* iface);
   ~QgsWFSSourceSelect();
   
@@ -40,6 +48,17 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
   stores the CRS for the typename in the form 'EPSG:XXXX'*/
   std::map<QString, std::list<QString> > mAvailableCRS;
   void populateConnectionList();
+
+  /**Makes a GetCapabilities and returns the typenamse and crs supported by the server.
+     @param typenames a list of layers provided by the server
+     @param a list of crs supported by the server. The place in the list corresponds to the \
+     typenames list (means that the crs list at position 0 is a crs for typename at position 0 etc.)
+     @return 0 in case of success*/
+  int getCapabilities(const QString& uri, QgsWFSSourceSelect::REQUEST_ENCODING e, std::list<QString>& typenames, std::list< std::list<QString> >& crs);
+  //encoding specific methods of getCapabilities
+  int getCapabilitiesGET(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs);
+  int getCapabilitiesPOST(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs);
+  int getCapabilitiesSOAP(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs);
 
   private slots:
   void addEntryToServerList();

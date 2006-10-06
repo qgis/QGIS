@@ -61,6 +61,7 @@ libqgis_coreHEADERS =				\
 		qgsfield.h					\
 		qgsgeometry.h				\
 		qgsgeometryvertexindex.h	\
+		qgshttptransaction.h		\
 		qgslabelattributes.h		\
 		qgsline.h					\
 		qgslinesymbol.h				\
@@ -95,6 +96,7 @@ libqgis_coreHEADERS =				\
 libqgis_core_la_MOC =							\
 		qgscontexthelp.moc.cpp			\
 		qgsdataprovider.moc.cpp				\
+		qgshttptransaction.moc.cpp		\
 		qgsrasterdataprovider.moc.cpp		
 
 libqgis_core_la_SOURCES =\
@@ -114,6 +116,7 @@ libqgis_core_la_SOURCES =\
 		qgsfield.cpp						\
 		qgsgeometry.cpp						\
 		qgsgeometryvertexindex.cpp			\
+		qgshttptransaction.cpp		\
 		qgslabelattributes.cpp		\
 		qgsline.cpp			\
 		qgslinesymbol.cpp		\

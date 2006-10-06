@@ -17,12 +17,15 @@
 
 #include "qgisiface.h"
 #include "qgswfssourceselect.h"
-#include "../../providers/wfs/qgswfsprovider.h"
 #include "qgsnewhttpconnection.h"
 #include "qgslayerprojectionselector.h"
+#include "qgshttptransaction.h"
+#include <QDomDocument>
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QSettings>
+
+static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 
 QgsWFSSourceSelect::QgsWFSSourceSelect(QWidget* parent, QgisIface* iface): QDialog(parent), mIface(iface) 
 {
@@ -75,6 +78,91 @@ void QgsWFSSourceSelect::populateConnectionList()
   }
 }
 
+int QgsWFSSourceSelect::getCapabilities(const QString& uri, QgsWFSSourceSelect::REQUEST_ENCODING e, std::list<QString>& typenames, std::list< std::list<QString> >& crs)
+{
+  switch(e)
+    {
+    case QgsWFSSourceSelect::GET:
+      return getCapabilitiesGET(uri, typenames, crs);
+    case QgsWFSSourceSelect::POST:
+      return getCapabilitiesPOST(uri, typenames, crs);
+    case QgsWFSSourceSelect::SOAP:
+      return getCapabilitiesSOAP(uri, typenames, crs);
+    }
+  return 1;
+}
+
+int QgsWFSSourceSelect::getCapabilitiesGET(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs)
+{
+  QString request = uri + "SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.1.1";
+  QByteArray result;
+  QgsHttpTransaction http(request);
+  http.getSynchronously(result);
+  
+  QDomDocument capabilitiesDocument;
+  if(!capabilitiesDocument.setContent(result, true))
+    {
+      return 1; //error
+    }
+  
+  
+
+  //get the <FeatureType> elements
+  QDomNodeList featureTypeList = capabilitiesDocument.elementsByTagNameNS(WFS_NAMESPACE, "FeatureType");
+  for(unsigned int i = 0; i < featureTypeList.length(); ++i)
+    {
+      QDomElement featureTypeElem = featureTypeList.at(i).toElement();
+      std::list<QString> featureSRSList; //SRS list for this feature
+
+      //Name
+      QDomNodeList nameList = featureTypeElem.elementsByTagNameNS(WFS_NAMESPACE, "Name");
+      if(nameList.length() > 0)
+	{
+	  typenames.push_back(nameList.at(0).toElement().text());
+	}
+      
+      //DefaultSRS is always the first entry in the feature crs list
+      QDomNodeList defaultSRSList = featureTypeElem.elementsByTagNameNS(WFS_NAMESPACE, "DefaultSRS");
+      if(defaultSRSList.length() > 0)
+	{
+	  featureSRSList.push_back(defaultSRSList.at(0).toElement().text());
+	}
+
+      //OtherSRS
+      QDomNodeList otherSRSList = featureTypeElem.elementsByTagNameNS(WFS_NAMESPACE, "OtherSRS");
+      for(unsigned int i = 0; i < otherSRSList.length(); ++i)
+	{
+	  featureSRSList.push_back(otherSRSList.at(i).toElement().text());
+	}
+
+      //Support <SRS> for compatibility with older versions
+      QDomNodeList srsList = featureTypeElem.elementsByTagNameNS(WFS_NAMESPACE, "SRS");
+      for(unsigned int i = 0; i < srsList.length(); ++i)
+	{
+	  featureSRSList.push_back(srsList.at(i).toElement().text());
+	}
+
+      crs.push_back(featureSRSList);
+    }
+
+
+  //print out result for a test
+  QString resultString(result);
+  qWarning(resultString);
+
+  return 0;
+}
+
+int QgsWFSSourceSelect::getCapabilitiesPOST(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs)
+{
+  return 1; //soon...
+}
+
+int QgsWFSSourceSelect::getCapabilitiesSOAP(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs)
+{
+  return 1; //soon...
+}
+
 void QgsWFSSourceSelect::addEntryToServerList()
 {
   QgsNewHttpConnection *nc = new QgsNewHttpConnection(this, "/Qgis/connections-wfs/");
@@ -121,7 +209,7 @@ void QgsWFSSourceSelect::connectToServer()
   //make a GetCapabilities request
   std::list<QString> typenames;
   std::list< std::list<QString> > crsList;
-  if(QgsWFSProvider::getCapabilities(mUri, QgsWFSProvider::GET, typenames, crsList) != 0)
+  if(getCapabilities(mUri, QgsWFSSourceSelect::GET, typenames, crsList) != 0)
     {
       qWarning("error during GetCapabilities request");
     }
