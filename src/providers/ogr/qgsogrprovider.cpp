@@ -17,8 +17,6 @@ email                : sherman at mrcc.com
 /* $Id$ */
 
 #include "qgsogrprovider.h"
-//Added by qt3to4:
-#include <Q3CString>
 
 #ifndef WIN32
 #include <netinet/in.h>
@@ -718,7 +716,7 @@ void QgsOgrProvider::getFeatureAttribute(OGRFeature * ogrFet, QgsFeature * f, in
   }
 
   QString fld = fldDef->GetNameRef();
-  Q3CString cstr(ogrFet->GetFieldAsString(attindex));
+  QByteArray cstr(ogrFet->GetFieldAsString(attindex));
   bool numeric = attributeFields[attindex].isNumeric();
 
   f->addAttribute(fld, mEncoding->toUnicode(cstr), numeric);
