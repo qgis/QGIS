@@ -65,13 +65,6 @@ class QgsWFSProvider: public QgsVectorDataProvider
    results. Posibilities are GET, POST, SOAP*/
   void setEncoding(QgsWFSProvider::REQUEST_ENCODING e) {mEncoding = e;}
 
-  /**Makes a GetCapabilities and returns the typenamse and crs supported by the server. This function is static because it is usually used from dialogs when no WFS provider object yet exists.
-     @param typenames a list of layers provided by the server
-     @param a list of crs supported by the server. The place in the list corresponds to the \
-     typenames list (means that the crs list at position 0 is a crs for typename at position 0 etc.)
-     @return 0 in case of success*/
-  static int getCapabilities(const QString& uri, QgsWFSProvider::REQUEST_ENCODING e, std::list<QString>& typenames, std::list< std::list<QString> >& crs);
-
   /**Makes a GetFeatures, receives the features from the wfs server (as GML), converts them to QgsFeature and \
      stores them in a vector*/
   int getFeature(const QString& uri);
@@ -113,10 +106,6 @@ class QgsWFSProvider: public QgsVectorDataProvider
   /**Collects information about the field types. Is called internally from QgsWFSProvider::getFeature*/
   int describeFeatureType(const QString& uri, std::vector<QgsField>& fields);
 
-  //encoding specific methods of getCapabilities
-  static int getCapabilitiesGET(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs);
-  static int getCapabilitiesPOST(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs);
-  static int getCapabilitiesSOAP(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs);
   //encoding specific methods of getFeature
   int getFeatureGET(const QString& uri, const QString& geometryAttribute);
   int getFeaturePOST(const QString& uri, const QString& geometryAttribute);

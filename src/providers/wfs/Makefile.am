@@ -3,12 +3,10 @@ INCLUDES = -I../../core/ -I../../gui/ -I../../ui
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-libwfsprovider_MOC = qgshttptransaction.moc.cpp
-
 plugindir = ${pkglibdir}
 plugin_LTLIBRARIES = libwfsprovider.la
 
-libwfsprovider_la_SOURCES = qgswfsprovider.cpp qgshttptransaction.cpp $(libwfsprovider_MOC)
+libwfsprovider_la_SOURCES = qgswfsprovider.cpp $(libwfsprovider_MOC)
 
 BUILT_SOURCES = $(wfsprovider_MOC)
 
