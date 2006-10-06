@@ -28,7 +28,7 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QRegExp>
-#include <q3url.h>
+#include <QUrl>
 
 #include <ogrsf_frmts.h>
 
@@ -73,10 +73,10 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString const &uri)
   temp = parameters.grep("yField=");
   mYField = temp.size()? temp[0].mid(temp[0].find("=") + 1) : "";
   // Decode the parts of the uri. Good if someone entered '=' as a delimiter, for instance.
-  Q3Url::decode(mFileName);
-  Q3Url::decode(mDelimiter);
-  Q3Url::decode(mXField);
-  Q3Url::decode(mYField);
+  mFileName  = QUrl::fromPercentEncoding(mFileName.toUtf8());
+  mDelimiter = QUrl::fromPercentEncoding(mDelimiter.toUtf8());
+  mXField    = QUrl::fromPercentEncoding(mXField.toUtf8());
+  mYField    = QUrl::fromPercentEncoding(mYField.toUtf8());
 #ifdef QGISDEBUG
   std::cerr << "Data source uri is " << (const char *)uri.toLocal8Bit().data() << std::endl;
   std::cerr << "Delimited text file is: " << (const char *)mFileName.toLocal8Bit().data() << std::endl;
