@@ -843,7 +843,7 @@ bool QgsMySQLProvider::saveAsShapefile()
       }
       OGRDataSource *poDS;
       // create the data source
-      poDS = poDriver->CreateDataSource((const char *) shapefileName, NULL);
+      poDS = poDriver->CreateDataSource((const char *) shapefileName.toLocal8Bit(), NULL);
       if (poDS != NULL)
       {
         QTextCodec* saveCodec = QTextCodec::codecForName(enc.toLocal8Bit().data());
