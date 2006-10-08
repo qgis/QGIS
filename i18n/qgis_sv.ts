@@ -8336,7 +8336,7 @@ Detta kan vara ett problem med ditt nätverk, eller i WMS-servern.</translation>
     </message>
     <message>
         <source>Cl&amp;ose</source>
-        <translation type="unfinished">St&amp;äng</translation>
+        <translation>St&amp;äng</translation>
     </message>
     <message>
         <source>Total:</source>
