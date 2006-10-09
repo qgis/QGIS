@@ -98,6 +98,8 @@ public slots:
     { tblShapefiles->editItem(item); }
   // When the user changes the selected connection, update the schema list
   void on_cmbConnections_activated(int) { getSchema(); }
+  void on_chkUseDefaultSrid_toggled(bool) { useDefaultSrid(); }
+  void on_chkUseDefaultGeom_toggled(bool) { useDefaultGeom(); }
 
 private:
 
