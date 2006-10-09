@@ -1641,7 +1641,7 @@ const std::list<std::pair<QString, QString> >& attributes)
     }
 
     OGRDataSource* dataSource;
-    dataSource = driver->CreateDataSource(uri.toLocal8Bit(), NULL);
+    dataSource = driver->CreateDataSource(QFile::encodeName(uri).constData(), NULL);
     if(dataSource == NULL)
     {
 	return false;

@@ -19,6 +19,7 @@
 #include "qgsvectorfilewriter.h"
 
 #include <iostream>
+#include <QFile>
 #include <QString>
 #include <QTextCodec>
 
@@ -125,8 +126,8 @@ bool QgsVectorFileWriter::initialise()
     return false;
   }
 
-  // Filename needs toLocal8Bit().data()
-  mDataSourceHandle = OGR_Dr_CreateDataSource( myDriverHandle, mOutputFileName.toLocal8Bit().data(), NULL );
+  // Filename needs to be UTF-8 for Mac but local8Bit otherwise
+  mDataSourceHandle = OGR_Dr_CreateDataSource( myDriverHandle, QFile::encodeName(mOutputFileName).constData(), NULL );
   if( mDataSourceHandle == NULL )
   {
     std::cout << "Datasource handle is null! " << std::endl;
