@@ -570,7 +570,7 @@ void QgsCustomProjectionDialog::on_pbnNext_clicked()
       //cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
       //QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
       //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
-      //leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4)));
+      leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4)));
       ++mCurrentRecordLong;
       lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
   }
@@ -927,7 +927,7 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
 
   double z = 0.0;
 
-  int projResult = pj_transform(wgs84Proj, myProj, 1, 0, &northing, &easthing, &z);
+  int projResult = pj_transform(wgs84Proj, myProj, 1, 0, &easthing, &northing, &z);
   if ( projResult != 0 )
   {
     projectedX->setText("Error");
