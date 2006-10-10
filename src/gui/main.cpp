@@ -462,8 +462,7 @@ int main(int argc, char *argv[])
   }
   else
   {
-    QPixmap myMaskPixmap(mySplashPath+QString("splash_mask.png"), 0, Qt::ThresholdDither | Qt::ThresholdAlphaDither | Qt::AvoidDither );
-    mypSplash->setMask( myMaskPixmap.createHeuristicMask() );
+    mypSplash->setMask( myPixmap.mask() );
     mypSplash->show();
   }
 
