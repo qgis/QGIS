@@ -1,7 +1,8 @@
 
 #include "qgis.h"
+#ifndef QGSSVNVERSION
 #include "qgssvnversion.h"
-
+#endif
 // Version constants
 //
 
