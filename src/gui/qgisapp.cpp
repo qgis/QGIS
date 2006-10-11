@@ -572,6 +572,18 @@ void QgisApp::createActions()
   mActionShowBookmarks->setStatusTip(tr("Show Bookmarks"));
   connect(mActionShowBookmarks, SIGNAL(triggered()), this, SLOT(showBookmarks()));
   //
+  mActionShowAllToolbars = new QAction(tr("Show most toolbars"), this);
+  mActionShowAllToolbars->setShortcut(tr("S", "Show most toolbars"));
+  mActionShowAllToolbars->setStatusTip(tr("Show most toolbars"));
+  connect(mActionShowAllToolbars, SIGNAL(triggered()), this,
+          SLOT(showAllToolbars()));
+  //
+  mActionHideAllToolbars = new QAction(tr("Hide most toolbars"), this);
+  mActionHideAllToolbars->setShortcut(tr("H", "Hide most toolbars"));
+  mActionHideAllToolbars->setStatusTip(tr("Hide most toolbars"));
+  connect(mActionHideAllToolbars, SIGNAL(triggered()), this,
+          SLOT(hideAllToolbars()));
+  //
   mActionNewBookmark= new QAction(QIcon(myIconPath+"/mActionNewBookmark.png"), tr("New Bookmark..."), this);
   mActionNewBookmark->setShortcut(tr("Ctrl+B","New Bookmark"));
   mActionNewBookmark->setStatusTip(tr("New Bookmark"));
@@ -700,6 +712,7 @@ void QgisApp::createActionGroups()
 
 void QgisApp::createMenus()
 {
+  QString myIconPath = QgsApplication::themePath();
   //
   // File Menu
   mFileMenu = menuBar()->addMenu(tr("&File"));
@@ -729,7 +742,14 @@ void QgisApp::createMenus()
   mViewMenu->addAction(mActionDraw);
   mViewMenu->addAction(mActionShowBookmarks);
   mViewMenu->addAction(mActionNewBookmark);
-    
+  mToolbarMenu = mViewMenu->addMenu(QIcon(myIconPath+"/mActionOptions.png"),
+                                    tr("&Toolbars..."));
+
+  //
+  // View:toolbars menu
+  mToolbarMenu->addAction(mActionShowAllToolbars);
+  mToolbarMenu->addAction(mActionHideAllToolbars);
+
   //
   // Layers Menu
   mLayerMenu = menuBar()->addMenu(tr("&Layer"));
@@ -5252,3 +5272,24 @@ void QgisApp::newBookmark()
     }
   }
 }      
+
+void QgisApp::showAllToolbars()
+{
+  setToolbarVisibility(true);
+}
+
+void QgisApp::hideAllToolbars()
+{
+  setToolbarVisibility(false);
+}
+
+void QgisApp::setToolbarVisibility(bool visibility)
+{
+  mFileToolBar->setVisible(visibility);
+  mLayerToolBar->setVisible(visibility);
+  mMapNavToolBar->setVisible(visibility);
+  mDigitizeToolBar->setVisible(visibility);
+  mAttributesToolBar->setVisible(visibility);
+  mPluginToolBar->setVisible(visibility);
+  mHelpToolBar->setVisible(visibility);
+}
