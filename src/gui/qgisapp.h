@@ -282,6 +282,12 @@ public slots:
   void showBookmarks();
   //! Create a new spatial bookmark
   void newBookmark();
+  //! Lets the user show all of the toolbars
+  void showAllToolbars();
+  //! Lets the user hide all of the toolbars
+  void hideAllToolbars();
+  //! Sets the visibility of the toolbars
+  void setToolbarVisibility(bool visibility);
   //! activates the capture point tool
   void capturePoint();
   //! activates the capture line tool
@@ -500,6 +506,8 @@ private:
   QAction *mActionAddWmsLayer;
   QAction *mActionInOverview;
   QAction *mActionDraw;
+  QAction *mActionShowAllToolbars;
+  QAction *mActionHideAllToolbars;
   //
   //tool groups -------------------------------------
   QActionGroup *mMapToolGroup;
@@ -508,6 +516,7 @@ private:
   QMenu *mFileMenu;
   QMenu *mRecentProjectsMenu;
   QMenu *mViewMenu;
+  QMenu *mToolbarMenu;
   QMenu *mLayerMenu;
   QMenu *mSettingsMenu;
   QMenu *mHelpMenu;
