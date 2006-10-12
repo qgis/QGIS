@@ -715,7 +715,7 @@ void QgsOgrProvider::getFeatureAttribute(OGRFeature * ogrFet, QgsFeature * f, in
     return;
   }
 
-  QString fld = fldDef->GetNameRef();
+  QString fld = mEncoding->toUnicode(fldDef->GetNameRef());
   QByteArray cstr(ogrFet->GetFieldAsString(attindex));
   bool numeric = attributeFields[attindex].isNumeric();
 
@@ -730,7 +730,7 @@ void QgsOgrProvider::getFeatureAttributes(OGRFeature *ogrFet, QgsFeature *f){
     getFeatureAttribute(ogrFet,f,i);
     // add the feature attributes to the tree
     /*OGRFieldDefn *fldDef = ogrFet->GetFieldDefnRef(i);
-      QString fld = fldDef->GetNameRef();
+    QString fld = mEncoding->toUnicode(fldDef->GetNameRef());
     //    OGRFieldType fldType = fldDef->GetType();
     QString val;
 
@@ -1149,7 +1149,7 @@ bool QgsOgrProvider::changeAttributeValues(std::map<int,std::map<QString,QString
 	for ( int f = 0; f < fc; f++ ) {
 	    OGRFieldDefn *fd = of->GetFieldDefnRef ( f );
 	    
-	    if ( name.compare( fd->GetNameRef() ) == 0 ) {
+    if ( name.compare( mEncoding->toUnicode(fd->GetNameRef()) ) == 0 ) {
 		OGRFieldType type = fd->GetType();
 		switch ( type ) {
 		    case OFTInteger:

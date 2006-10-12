@@ -34,8 +34,10 @@
 
 white       [ \t\r\n]+
 
-col_first    [A-Za-z_]
-col_next     [A-Za-z0-9_]
+non_ascii    [\x80-\xFF]
+
+col_first    [A-Za-z_]|{non_ascii}
+col_next     [A-Za-z0-9_]|{non_ascii}
 column_ref  {col_first}{col_next}*
 
 dig     [0-9]

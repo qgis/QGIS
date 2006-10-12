@@ -16,27 +16,15 @@
  *                                                                         *
  ***************************************************************************/
  /* $Id$ */
- 
+
+#include "qgslogger.h"
 #include "qgssearchtreenode.h"
 #include <qregexp.h>
 #include <qobject.h>
 #include <iostream>
 
-// turn on/off debugging of search tree evaulation
-#undef DEBUG_TREE_EVAL
 
-#ifdef DEBUG_TREE_EVAL
-#define TREE_EVAL(x)  std::cout << x;
-#define TREE_EVAL2(x,y) std::cout << x << y << std::endl;
-#define TREE_EVAL3(x,y,z) std::cout << x << y << z << std::endl;
-#define TREE_EVAL4(x,y,z,zz) std::cout << x << y << z << zz << std::endl;
 #define EVAL_STR(x) (x.length() ? x : "(empty)")
-#else
-#define TREE_EVAL(x) 
-#define TREE_EVAL2(x,y) 
-#define TREE_EVAL3(x,y,z) 
-#define TREE_EVAL4(x,y,z,zz) 
-#endif
 
 QgsSearchTreeNode::QgsSearchTreeNode(double number)
 {
@@ -194,7 +182,7 @@ QString QgsSearchTreeNode::makeSearchString()
 
 bool QgsSearchTreeNode::checkAgainst(const std::vector<QgsFeatureAttribute>& attributes)
 {
-  TREE_EVAL2("checkAgainst: ", makeSearchString());
+  QgsDebugMsgLevel("checkAgainst: " + makeSearchString(), 2);
 
   mError = "";
   
@@ -275,8 +263,8 @@ bool QgsSearchTreeNode::checkAgainst(const std::vector<QgsFeatureAttribute>& att
       
       QRegExp re(str);
       res = re.search(value1.string());
-      TREE_EVAL4("REGEXP: ", str, " ~ ", value2.string());
-      TREE_EVAL2("   res: ", res);
+      QgsDebugMsgLevel("REGEXP: " + str + " ~ " + value2.string(), 2);
+      QgsDebugMsgLevel("   res: " + res, 2);
       return (res != -1);
     }
 
@@ -324,22 +312,22 @@ bool QgsSearchTreeNode::getValue(QgsSearchTreeValue& value, QgsSearchTreeNode* n
 
 QgsSearchTreeValue QgsSearchTreeNode::valueAgainst(const std::vector<QgsFeatureAttribute>& attributes)
 {
-  TREE_EVAL2("valueAgainst: ", makeSearchString());
+  QgsDebugMsgLevel("valueAgainst: " + makeSearchString(), 2);
 
   switch (mType)
   {
 
     case tNumber:
-      TREE_EVAL2("number: ", mNumber);
+      QgsDebugMsgLevel("number: " + QString::number(mNumber), 2);
       return QgsSearchTreeValue(mNumber);
   
     case tString:
-      TREE_EVAL2("text: ", EVAL_STR(mText));
+      QgsDebugMsgLevel("text: " + EVAL_STR(mText), 2);
       return QgsSearchTreeValue(mText);
   
     case tColumnRef:
     {
-      TREE_EVAL3("column (", mText, "): ");;
+      QgsDebugMsgLevel("column (" + mText.lower() + "): ", 2);
       // find value for the column
       std::vector<QgsFeatureAttribute>::const_iterator it;
       for (it = attributes.begin(); it != attributes.end(); it++)
@@ -349,19 +337,19 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst(const std::vector<QgsFeatureA
           QString value = (*it).fieldValue();
           if ((*it).isNumeric())
           {
-            TREE_EVAL2("   number: ", value.toDouble());
+            QgsDebugMsgLevel("   number: " + QString::number(value.toDouble()), 2);
             return QgsSearchTreeValue(value.toDouble());
           }
           else
           {
-            TREE_EVAL2("   text: ", EVAL_STR(value));
+            QgsDebugMsgLevel("   text: " + EVAL_STR(value), 2);
             return QgsSearchTreeValue(value);
           }
         }
       }
           
       // else report missing column
-      TREE_EVAL("ERROR");
+      QgsDebugMsgLevel("ERROR!", 2);
       return QgsSearchTreeValue(1, mText);
     }
     
@@ -424,7 +412,7 @@ int QgsSearchTreeValue::compare(QgsSearchTreeValue& value1, QgsSearchTreeValue& 
     else
       val2 = value2.string().toDouble();
    
-    TREE_EVAL4("NUM_COMP: ", val1, " ~ ", val2);
+    QgsDebugMsgLevel("NUM_COMP: " + QString::number(val1) + " ~ " + QString::number(val2), 2);
 
     if (val1 < val2)
       return -1;
