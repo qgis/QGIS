@@ -14,6 +14,7 @@
  ***************************************************************************/
 /* $Id$ */
 
+#include "qgslogger.h"
 #include "qgsmaptool.h"
 #include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"
@@ -29,6 +30,7 @@ QgsMapTool::QgsMapTool(QgsMapCanvas* canvas)
 
 QgsMapTool::~QgsMapTool()
 {
+  mCanvas->unsetMapTool(this);
 }
 
 
@@ -78,6 +80,7 @@ void QgsMapTool::activate()
   
   // set cursor (map tools usually set it in constructor)
   mCanvas->setCursor(mCursor);
+  QgsDebugMsg("Cursor has been set");
 }
     
 

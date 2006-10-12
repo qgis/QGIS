@@ -51,14 +51,24 @@ QgsMeasure::QgsMeasure(bool measureArea, QgsMapCanvas *mc, Qt::WFlags f)
     updateUi();
     
     connect( mMapCanvas, SIGNAL(renderComplete(QPainter*)), this, SLOT(mapCanvasChanged()) );
-    restorePosition();
     
     mCalc = new QgsDistanceArea;
 
     mRubberBand = new QgsRubberBand(mMapCanvas, mMeasureArea);
-    mRubberBand->show();
 
     mCanvas->setCursor(Qt::CrossCursor);
+}
+
+void QgsMeasure::activate()
+{
+  restorePosition();
+  QgsMapTool::activate();
+}
+    
+void QgsMeasure::deactivate()
+{
+  close();
+  QgsMapTool::deactivate();
 }
 
 

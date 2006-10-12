@@ -37,6 +37,7 @@ class QSplashScreen;
 class QgsPoint;
 class QgsLegend;
 class QgsMapLayer;
+class QgsMapTool;
 class QgsProviderRegistry;
 class QgsHelpViewer;
 class QgsMapCanvas;
@@ -521,6 +522,24 @@ private:
   QMenu *mSettingsMenu;
   QMenu *mHelpMenu;
 
+  class Tools
+  {
+    public:
+      QgsMapTool* mZoomIn;
+      QgsMapTool* mZoomOut;
+      QgsMapTool* mPan;
+      QgsMapTool* mIdentify;
+      QgsMapTool* mMeasureDist;
+      QgsMapTool* mMeasureArea;
+      QgsMapTool* mCapturePoint;
+      QgsMapTool* mCaptureLine;
+      QgsMapTool* mCapturePolygon;
+      QgsMapTool* mSelect;
+      QgsMapTool* mVertexAdd;
+      QgsMapTool* mVertexMove;
+      QgsMapTool* mVertexDelete;
+  } mMapTools;
+  
   //!The name of the active theme
   QString mThemeName;
 

@@ -124,8 +124,12 @@ QgsMapCanvas::QgsMapCanvas()
 
 QgsMapCanvas::~QgsMapCanvas()
 {
-  delete mMapTool;
-  delete mLastNonZoomMapTool;
+  if (mMapTool)
+  {
+    mMapTool->deactivate();
+    mMapTool = NULL;
+  }
+  mLastNonZoomMapTool = NULL;
   
   // delete canvas items prior to deleteing the canvas
   // because they might try to update canvas when it's
@@ -274,7 +278,7 @@ void QgsMapCanvas::refresh()
 void QgsMapCanvas::drawContents(QPainter * p, int cx, int cy, int cw, int ch)
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsMapCanvas::drawContents" << std::endl;
+//  std::cout << "QgsMapCanvas::drawContents" << std::endl;
 #endif
   
   if (mDirty && mRenderFlag && !mFrozen)
@@ -790,30 +794,22 @@ void QgsMapCanvas::zoomByScale(int x, int y, double scaleFactor)
 /** Sets the map tool currently being used on the canvas */
 void QgsMapCanvas::setMapTool(QgsMapTool* tool)
 {
+  if (!tool)
+    return;
+  
   if (mMapTool)
     mMapTool->deactivate();
   
-  
-  if (tool && tool->isZoomTool() )
+  if (tool->isZoomTool() && mMapTool && !mMapTool->isZoomTool())
   {        
     // if zoom or pan tool will be active, save old tool
     // to bring it back on right click
     // (but only if it wasn't also zoom or pan tool)
-    if (mMapTool && !mMapTool->isZoomTool())
-    {
-      delete mLastNonZoomMapTool;
-      mLastNonZoomMapTool = mMapTool;
-    }
-    
+    mLastNonZoomMapTool = mMapTool;
   }
   else
-  {    
-    // if there's already an old tool, delete it
-    delete mLastNonZoomMapTool;
+  {
     mLastNonZoomMapTool = NULL;
-  
-    // delete current map tool
-    delete mMapTool;
   }
   
   // set new map tool and activate it
@@ -831,9 +827,8 @@ void QgsMapCanvas::unsetMapTool(QgsMapTool* tool)
     mMapTool = NULL;
   }
 
-  if ( mLastNonZoomMapTool && mLastNonZoomMapTool == tool)
+  if (mLastNonZoomMapTool && mLastNonZoomMapTool == tool)
   {
-    mLastNonZoomMapTool->deactivate(); // ? necessary
     mLastNonZoomMapTool = NULL;
   }
 } 

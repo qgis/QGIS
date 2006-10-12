@@ -327,7 +327,21 @@ static void setTitleBarText_( QWidget & qgisApp )
 
 
 QgisApp::~QgisApp()
-{}
+{
+  delete mMapTools.mZoomIn;
+  delete mMapTools.mZoomOut;
+  delete mMapTools.mPan;
+  delete mMapTools.mIdentify;
+  delete mMapTools.mMeasureDist;
+  delete mMapTools.mMeasureArea;
+  delete mMapTools.mCapturePoint;
+  delete mMapTools.mCaptureLine;
+  delete mMapTools.mCapturePolygon;
+  delete mMapTools.mSelect;
+  delete mMapTools.mVertexAdd;
+  delete mMapTools.mVertexMove;
+  delete mMapTools.mVertexDelete;
+}
 
 // restore any application settings stored in QSettings
 void QgisApp::readSettings()
@@ -1060,6 +1074,34 @@ void QgisApp::createCanvas()
   tabWidget->widget(0)->setLayout(myCanvasLayout);
   // set the focus to the map canvas
   mMapCanvas->setFocus();
+
+  // create tools
+  mMapTools.mZoomIn = new QgsMapToolZoom(mMapCanvas, FALSE /* zoomIn */);
+  mMapTools.mZoomIn->setAction(mActionZoomIn);
+  mMapTools.mZoomOut = new QgsMapToolZoom(mMapCanvas, TRUE /* zoomOut */);
+  mMapTools.mZoomOut->setAction(mActionZoomOut);
+  mMapTools.mPan = new QgsMapToolPan(mMapCanvas);
+  mMapTools.mPan->setAction(mActionPan);
+  mMapTools.mIdentify = new QgsMapToolIdentify(mMapCanvas);
+  mMapTools.mIdentify->setAction(mActionIdentify);
+  mMapTools.mMeasureDist = new QgsMeasure(FALSE /* area */, mMapCanvas);
+  mMapTools.mMeasureDist->setAction(mActionMeasure);
+  mMapTools.mMeasureArea = new QgsMeasure(TRUE /* area */, mMapCanvas);
+  mMapTools.mMeasureArea->setAction(mActionMeasureArea);
+  mMapTools.mCapturePoint = new QgsMapToolCapture(mMapCanvas, QgsMapToolCapture::CapturePoint);
+  mMapTools.mCapturePoint->setAction(mActionCapturePoint);
+  mMapTools.mCaptureLine = new QgsMapToolCapture(mMapCanvas, QgsMapToolCapture::CaptureLine);
+  mMapTools.mCaptureLine->setAction(mActionCaptureLine);
+  mMapTools.mCapturePolygon = new QgsMapToolCapture(mMapCanvas, QgsMapToolCapture::CapturePolygon);
+  mMapTools.mCapturePolygon->setAction(mActionCapturePolygon);
+  mMapTools.mSelect = new QgsMapToolSelect(mMapCanvas);
+  mMapTools.mSelect->setAction(mActionSelect);
+  mMapTools.mVertexAdd = new QgsMapToolVertexEdit(mMapCanvas, QgsMapToolVertexEdit::AddVertex);
+  mMapTools.mVertexAdd->setAction(mActionAddVertex);
+  mMapTools.mVertexMove = new QgsMapToolVertexEdit(mMapCanvas, QgsMapToolVertexEdit::MoveVertex);
+  mMapTools.mVertexMove->setAction(mActionMoveVertex);
+  mMapTools.mVertexDelete = new QgsMapToolVertexEdit(mMapCanvas, QgsMapToolVertexEdit::DeleteVertex);
+  mMapTools.mVertexDelete->setAction(mActionDeleteVertex);
 }
 
 void QgisApp::createOverview()
@@ -3192,13 +3234,14 @@ void QgisApp::exportMapServer()
   //      tr("No layers to export. You must add at least one layer to the map in order to export the view."));
   //}
 }
+
+
+
 void QgisApp::zoomIn()
 {
   QgsDebugMsg ("Setting map tool to zoomIn");
   
-  QgsMapTool* tool = new QgsMapToolZoom(mMapCanvas, FALSE /* zoomIn */);
-  tool->setAction(mActionZoomIn);
-  mMapCanvas->setMapTool(tool);
+  mMapCanvas->setMapTool(mMapTools.mZoomIn);
 
   // notify the project we've made a change
   QgsProject::instance()->dirty(true);
@@ -3207,9 +3250,7 @@ void QgisApp::zoomIn()
 
 void QgisApp::zoomOut()
 {
-  QgsMapTool* tool = new QgsMapToolZoom(mMapCanvas, TRUE /* zoomOut */);
-  tool->setAction(mActionZoomOut);
-  mMapCanvas->setMapTool(tool);
+  mMapCanvas->setMapTool(mMapTools.mZoomOut);
 
   // notify the project we've made a change
   QgsProject::instance()->dirty(true);
@@ -3225,9 +3266,7 @@ void QgisApp::zoomToSelected()
 
 void QgisApp::pan()
 {
-  QgsMapTool* tool = new QgsMapToolPan(mMapCanvas);
-  tool->setAction(mActionPan);
-  mMapCanvas->setMapTool(tool);
+  mMapCanvas->setMapTool(mMapTools.mPan);
 }
 
 void QgisApp::zoomFull()
@@ -3248,23 +3287,17 @@ void QgisApp::zoomPrevious()
 
 void QgisApp::identify()
 {
-  QgsMapTool* tool = new QgsMapToolIdentify(mMapCanvas);
-  tool->setAction(mActionIdentify);
-  mMapCanvas->setMapTool(tool);
+  mMapCanvas->setMapTool(mMapTools.mIdentify);
 }
 
 void QgisApp::measure()
 {
-  QgsMapTool* tool = new QgsMeasure(FALSE /* area */, mMapCanvas);
-  tool->setAction(mActionMeasure);
-  mMapCanvas->setMapTool(tool);
+  mMapCanvas->setMapTool(mMapTools.mMeasureDist);
 }
 
 void QgisApp::measureArea()
 {
-  QgsMapTool* tool = new QgsMeasure(TRUE /* area */, mMapCanvas);
-  tool->setAction(mActionMeasureArea);
-  mMapCanvas->setMapTool(tool);
+  mMapCanvas->setMapTool(mMapTools.mMeasureArea);
 }
 
 
@@ -3316,9 +3349,7 @@ void QgisApp::deleteSelected()
 void QgisApp::capturePoint()
 {
   // set current map tool to select
-  QgsMapTool* t = new QgsMapToolCapture(mMapCanvas, QgsMapToolCapture::CapturePoint);
-  t->setAction(mActionCapturePoint);
-  mMapCanvas->setMapTool(t);
+  mMapCanvas->setMapTool(mMapTools.mCapturePoint);
   
   // FIXME: is this still actual or something old that's not used anymore?
   //connect(t, SIGNAL(xyClickCoordinates(QgsPoint &)), this, SLOT(showCapturePointCoordinate(QgsPoint &)));
@@ -3326,62 +3357,35 @@ void QgisApp::capturePoint()
 
 void QgisApp::captureLine()
 {
-  QgsMapTool* t = new QgsMapToolCapture(mMapCanvas, QgsMapToolCapture::CaptureLine);
-  t->setAction(mActionCaptureLine);
-  mMapCanvas->setMapTool(t);
+  mMapCanvas->setMapTool(mMapTools.mCaptureLine);
 }
 
 void QgisApp::capturePolygon()
 {
-  QgsMapTool* t = new QgsMapToolCapture(mMapCanvas, QgsMapToolCapture::CapturePolygon);
-  t->setAction(mActionCapturePolygon);
-  mMapCanvas->setMapTool(t);
+  mMapCanvas->setMapTool(mMapTools.mCapturePolygon);
 }
 
 void QgisApp::select()
 {
-  QgsMapTool* t = new QgsMapToolSelect(mMapCanvas);
-  t->setAction(mActionSelect);
-  mMapCanvas->setMapTool(t);
+  mMapCanvas->setMapTool(mMapTools.mSelect);
 }
 
 
 void QgisApp::addVertex()
 {
-
-#ifdef QGISDEBUG
-  std::cout << "QgisApp::addVertex." << std::endl;
-#endif
-
-  QgsMapTool* t = new QgsMapToolVertexEdit(mMapCanvas, QgsMapToolVertexEdit::AddVertex);
-  t->setAction(mActionAddVertex);
-  mMapCanvas->setMapTool(t);
+  mMapCanvas->setMapTool(mMapTools.mVertexAdd);
   
 }
 
 void QgisApp::moveVertex()
 {
-
-#ifdef QGISDEBUG
-  std::cout << "QgisApp::moveVertex." << std::endl;
-#endif
-
-  QgsMapTool* t = new QgsMapToolVertexEdit(mMapCanvas, QgsMapToolVertexEdit::MoveVertex);
-  t->setAction(mActionMoveVertex);
-  mMapCanvas->setMapTool(t);
+  mMapCanvas->setMapTool(mMapTools.mVertexMove);
 }
 
 
 void QgisApp::deleteVertex()
 {
-
-#ifdef QGISDEBUG
-  std::cout << "QgisApp::deleteVertex." << std::endl;
-#endif
-
-  QgsMapTool* t = new QgsMapToolVertexEdit(mMapCanvas, QgsMapToolVertexEdit::DeleteVertex);
-  t->setAction(mActionDeleteVertex);
-  mMapCanvas->setMapTool(t);
+  mMapCanvas->setMapTool(mMapTools.mVertexDelete);
 }
 
 

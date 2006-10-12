@@ -421,4 +421,7 @@ void QgsMapToolIdentify::resultsDialogGone()
   mResults = 0;
 }
 
-// ENDS
+void QgsMapToolIdentify::deactivate()
+{
+  mResults->done(0); // close the window
+}
