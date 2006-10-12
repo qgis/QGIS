@@ -25,6 +25,7 @@
 class QAction;
 class QActionGroup;
 class QgsGeorefDataPoint;
+class QgsMapTool;
 class QgisIface;
 
 class QgsPointDialog : public QDialog, private Ui::QgsPointDialogBase
@@ -72,6 +73,12 @@ private:
   
   QgsMapCanvas* mCanvas;
   QgsRasterLayer* mLayer;
+  
+  QgsMapTool* mToolZoomIn;
+  QgsMapTool* mToolZoomOut;
+  QgsMapTool* mToolPan;
+  QgsMapTool* mToolAddPoint;
+  QgsMapTool* mToolDeletePoint;
   
 //  std::vector<QgsPoint> mPixelCoords, mMapCoords;
 //  std::vector<QString> mAcetateIDs;

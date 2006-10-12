@@ -76,8 +76,8 @@ void QgsMapCanvasItem::updatePosition()
   setSize(r.width(), r.height());
 
 #ifdef QGISDEBUG
-  std::cout << "QgsMapCanvasItem::updatePosition: "  << " [" << (int) x() 
-    << "," << (int) y() << "]-[" << width() << "x" << height() << "]" << std::endl;
+//  std::cout << "QgsMapCanvasItem::updatePosition: "  << " [" << (int) x() 
+//    << "," << (int) y() << "]-[" << width() << "x" << height() << "]" << std::endl;
 #endif
 }
 

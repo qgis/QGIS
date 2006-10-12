@@ -72,6 +72,11 @@ public:
   //! Mouse release event for overriding
   virtual void canvasReleaseEvent(QMouseEvent * e);
 
+  //! called when set as currently active map tool
+  virtual void activate();
+    
+  //! called when map tool is being deactivated
+  virtual void deactivate();
   
 public slots:
   //! Close

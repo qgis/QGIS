@@ -290,6 +290,7 @@ void QgsGrassRegion::setGuiValues( bool north, bool south, bool east, bool west,
 
 QgsGrassRegion::~QgsGrassRegion ()
 {
+  delete mRegionEdit;
 }
 
 void QgsGrassRegion::northChanged(const QString &str)

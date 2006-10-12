@@ -54,6 +54,8 @@ class QgsMapToolIdentify : public QObject, public QgsMapTool
     //! Overridden mouse release event
     virtual void canvasReleaseEvent(QMouseEvent * e);
 
+    //! called when map tool is being deactivated
+    virtual void deactivate();
 
   private:
 

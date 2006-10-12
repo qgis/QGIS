@@ -115,6 +115,18 @@ QgsPointDialog::QgsPointDialog(QString layerPath, QgisIface* theQgisInterface,
   mCanvas->setMinimumWidth(400);
   mCanvas->freeze(true);
   
+  // set up map tools
+  mToolZoomIn = new QgsMapToolZoom(mCanvas, FALSE /* zoomOut */); 
+  mToolZoomIn->setAction(mActionZoomIn);
+  mToolZoomOut = new QgsMapToolZoom(mCanvas, TRUE /* zoomOut */); 
+  mToolZoomOut->setAction(mActionZoomOut);
+  mToolPan = new QgsMapToolPan(mCanvas); 
+  mToolPan->setAction(mActionPan);
+  mToolAddPoint = new QgsGeorefTool(mCanvas, this, TRUE /* addPoint */); 
+  mToolAddPoint->setAction(mActionAddPoint);
+  mToolDeletePoint = new QgsGeorefTool(mCanvas, this, FALSE /* addPoint */); 
+  mToolDeletePoint->setAction(mActionDeletePoint);
+  
   // open raster layer
   QgsRasterLayer* layer = new QgsRasterLayer(layerPath, "Raster");
   mLayer = layer;
@@ -173,6 +185,12 @@ QgsPointDialog::~QgsPointDialog()
   {
     QgsMapLayerRegistry::instance()->removeMapLayer(mLayer->getLayerID(), FALSE);
   }
+  
+  delete mToolZoomIn;
+  delete mToolZoomOut;
+  delete mToolPan;
+  delete mToolAddPoint;
+  delete mToolDeletePoint;
 }
 
 
@@ -378,17 +396,13 @@ bool QgsPointDialog::generateWorldFile()
 
 void QgsPointDialog::zoomIn()
 {
-  QgsMapToolZoom* tool = new QgsMapToolZoom(mCanvas, FALSE /* zoomOut */); 
-  tool->setAction(mActionZoomIn);
-  mCanvas->setMapTool(tool);
+  mCanvas->setMapTool(mToolZoomIn);
 }
 
 
 void QgsPointDialog::zoomOut()
 {
-  QgsMapToolZoom* tool = new QgsMapToolZoom(mCanvas, TRUE /* zoomOut */); 
-  tool->setAction(mActionZoomOut);
-  mCanvas->setMapTool(tool);
+  mCanvas->setMapTool(mToolZoomOut);
 }
 
 
@@ -401,25 +415,19 @@ void QgsPointDialog::zoomToLayer()
 
 void QgsPointDialog::pan()
 {
-  QgsMapToolPan* tool = new QgsMapToolPan(mCanvas); 
-  tool->setAction(mActionPan);
-  mCanvas->setMapTool(tool);
+  mCanvas->setMapTool(mToolPan);
 }
 
 
 void QgsPointDialog::addPoint()
 {
-  QgsGeorefTool* tool = new QgsGeorefTool(mCanvas, this, TRUE /* addPoint */); 
-  tool->setAction(mActionAddPoint);
-  mCanvas->setMapTool(tool);
+  mCanvas->setMapTool(mToolAddPoint);
 }
 
 
 void QgsPointDialog::deletePoint()
 {
-  QgsGeorefTool* tool = new QgsGeorefTool(mCanvas, this, FALSE /* addPoint */); 
-  tool->setAction(mActionDeletePoint);
-  mCanvas->setMapTool(tool);
+  mCanvas->setMapTool(mToolDeletePoint);
 }
 
 

@@ -926,8 +926,8 @@ QgsGrassEdit::~QgsGrassEdit()
   // destructor is called
   if (mInited) 
   {
-    if ( mMapTool ) mCanvas->unsetMapTool ( mMapTool );
-    // TODO: delete tool? Probably
+    // delete tool if exists
+    delete mMapTool;
 
     eraseDynamic();
     mRubberBandLine->hide();
@@ -1244,11 +1244,12 @@ void QgsGrassEdit::startTool(int tool)
   if ( mSelectedLine > 0 )
     displayElement ( mSelectedLine, mSymb[mLineSymb[mSelectedLine]], mSize );
 
-  // close old tool by setting NULL tool
-  // TODO: delete old tool? (check in set/unsetMapTool canvas methods)
-  if ( mMapTool ) mCanvas->unsetMapTool ( mMapTool );
-  mCanvas->setMapTool(NULL); // ? necessary
-  mMapTool = NULL;
+  // close old tool
+  if (mMapTool)
+  {
+    delete mMapTool;
+    mMapTool = NULL;
+  }
 
   // All necessary data were written -> reset mEditPoints etc.
   Vect_reset_line ( mEditPoints );
@@ -1263,62 +1264,61 @@ void QgsGrassEdit::startTool(int tool)
   // Start new tool
   mTool = tool;
 
-  QgsMapTool* t = NULL;
   switch (mTool)
   {
     case NEW_POINT:
-      t = new QgsGrassEditNewPoint(this, false);
-      t->setAction(mNewPointAction);
+      mMapTool = new QgsGrassEditNewPoint(this, false);
+      mMapTool->setAction(mNewPointAction);
       break;
       
     case NEW_CENTROID:
-      t = new QgsGrassEditNewPoint(this, true);
-      t->setAction(mNewCentroidAction);
+      mMapTool = new QgsGrassEditNewPoint(this, true);
+      mMapTool->setAction(mNewCentroidAction);
       break;
       
     case NEW_LINE:
-      t = new QgsGrassEditNewLine(this, false);
-      t->setAction(mNewLineAction);
+      mMapTool = new QgsGrassEditNewLine(this, false);
+      mMapTool->setAction(mNewLineAction);
       break;
   
     case NEW_BOUNDARY:
-      t = new QgsGrassEditNewLine(this, true);
-      t->setAction(mNewBoundaryAction);
+      mMapTool = new QgsGrassEditNewLine(this, true);
+      mMapTool->setAction(mNewBoundaryAction);
       break;
       
     case MOVE_VERTEX:
-      t = new QgsGrassEditMoveVertex(this);
-      t->setAction(mMoveVertexAction);
+      mMapTool = new QgsGrassEditMoveVertex(this);
+      mMapTool->setAction(mMoveVertexAction);
       break;
       
     case ADD_VERTEX:
-      t = new QgsGrassEditAddVertex(this);
-      t->setAction(mAddVertexAction);
+      mMapTool = new QgsGrassEditAddVertex(this);
+      mMapTool->setAction(mAddVertexAction);
       break;
       
     case DELETE_VERTEX:
-      t = new QgsGrassEditDeleteVertex(this);
-      t->setAction(mDeleteVertexAction);
+      mMapTool = new QgsGrassEditDeleteVertex(this);
+      mMapTool->setAction(mDeleteVertexAction);
       break;
       
     case MOVE_LINE:
-      t = new QgsGrassEditMoveLine(this);
-      t->setAction(mMoveLineAction);
+      mMapTool = new QgsGrassEditMoveLine(this);
+      mMapTool->setAction(mMoveLineAction);
       break;
       
     case DELETE_LINE:
-      t = new QgsGrassEditDeleteLine(this);
-      t->setAction(mDeleteLineAction);
+      mMapTool = new QgsGrassEditDeleteLine(this);
+      mMapTool->setAction(mDeleteLineAction);
       break;
       
     case SPLIT_LINE:
-      t = new QgsGrassEditSplitLine(this);
-      t->setAction(mSplitLineAction);
+      mMapTool = new QgsGrassEditSplitLine(this);
+      mMapTool->setAction(mSplitLineAction);
       break;
       
     case EDIT_ATTRIBUTES:
-      t = new QgsGrassEditAttributes(this);
-      t->setAction(mEditAttributesAction);
+      mMapTool = new QgsGrassEditAttributes(this);
+      mMapTool->setAction(mEditAttributesAction);
       break;
       
     case EDIT_CATS:
@@ -1332,9 +1332,7 @@ void QgsGrassEdit::startTool(int tool)
   }
     
   // assign newly created tool to map canvas
-  // canvas will take care of destroying it
-  mCanvas->setMapTool(t);
-  mMapTool = t;
+  mCanvas->setMapTool(mMapTool);
 }
 
 
