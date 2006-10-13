@@ -214,8 +214,13 @@ static void setTitleBarText_( QWidget & qgisApp )
 : QMainWindow(parent,fl),
   mSplash(splash)
 {
-
   setupUi(this);
+
+  mSplash->showMessage(tr("Checking database"), Qt::AlignHCenter | Qt::AlignBottom);
+  qApp->processEvents();
+  // Do this early on before anyone else opens it and prevents us copying it
+  createDB();    
+
   mSplash->showMessage(tr("Reading settings"), Qt::AlignHCenter | Qt::AlignBottom);
   qApp->processEvents();
   readSettings();
@@ -231,12 +236,9 @@ static void setTitleBarText_( QWidget & qgisApp )
   createCanvas();
   createOverview();
   createLegend();
-  
-  fileNew(); // prepare empty project
 
-  mSplash->showMessage(tr("Checking database"), Qt::AlignHCenter | Qt::AlignBottom);
+  fileNew(); // prepare empty project
   qApp->processEvents();
-  createDB();    
 
   // register all GDAL and OGR plug-ins
   // Should this be here? isnt it the job of the provider? Tim
