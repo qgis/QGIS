@@ -121,7 +121,13 @@ public slots:
     //! Stores the selected datasource whenerver it is changed
     void on_cmbConnections_activated(int);
 
+    //! Add some default wms servers to the list
+    void on_btnAddDefault_clicked();
+
 private:
+
+    //! Add a few example servers to the list.
+    void addDefaultServers();
 
     /**
      * \brief Populate the layer list - private for now.

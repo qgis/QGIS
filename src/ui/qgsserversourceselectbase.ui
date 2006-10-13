@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsServerSourceSelectBase</class>
  <widget class="QDialog" name="QgsServerSourceSelectBase" >
   <property name="geometry" >
@@ -31,69 +28,172 @@
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="4" column="3" >
-    <widget class="QPushButton" name="btnCancel" >
-     <property name="text" >
-      <string>C&amp;lose</string>
+   <item row="0" column="0" colspan="4" >
+    <widget class="QGroupBox" name="GroupBox1" >
+     <property name="title" >
+      <string>Server Connections</string>
      </property>
-     <property name="shortcut" >
-      <string>Alt+L</string>
-     </property>
-     <property name="autoDefault" >
-      <bool>true</bool>
-     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="1" column="4" >
+       <widget class="QPushButton" name="btnAddDefault" >
+        <property name="statusTip" >
+         <string>Adds a few example WMS servers</string>
+        </property>
+        <property name="whatsThis" >
+         <string comment="Adds several example WMS servers to the list" />
+        </property>
+        <property name="text" >
+         <string>Add default servers</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="5" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>131</width>
+          <height>30</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="0" colspan="6" >
+       <widget class="QComboBox" name="cmbConnections" />
+      </item>
+      <item row="1" column="0" >
+       <widget class="QPushButton" name="btnConnect" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>C&amp;onnect</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" >
+       <widget class="QPushButton" name="btnEdit" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Edit</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3" >
+       <widget class="QPushButton" name="btnDelete" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Delete</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QPushButton" name="btnNew" >
+        <property name="text" >
+         <string>&amp;New</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="4" column="0" >
-    <widget class="QPushButton" name="btnHelp" >
-     <property name="enabled" >
-      <bool>true</bool>
+   <item row="3" column="0" colspan="4" >
+    <widget class="QGroupBox" name="gbCRS" >
+     <property name="title" >
+      <string>Coordinate Reference System</string>
      </property>
-     <property name="text" >
-      <string>Help</string>
-     </property>
-     <property name="shortcut" >
-      <string>F1</string>
-     </property>
-     <property name="autoDefault" >
-      <bool>true</bool>
-     </property>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="labelCoordRefSys" >
+        <property name="text" >
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>441</width>
+          <height>23</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnChangeSpatialRefSys" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Change ...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="4" column="1" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>284</width>
-       <height>31</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="1" column="0" colspan="4" >
-    <widget class="QGroupBox" name="btnGrpImageEncoding" >
+   <item row="5" column="0" colspan="4" >
+    <widget class="QLabel" name="labelStatus" >
      <property name="sizePolicy" >
       <sizepolicy>
-       <hsizetype>5</hsizetype>
+       <hsizetype>13</hsizetype>
        <vsizetype>5</vsizetype>
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="minimumSize" >
-      <size>
-       <width>16</width>
-       <height>60</height>
-      </size>
+     <property name="text" >
+      <string>Ready</string>
      </property>
-     <property name="title" >
-      <string>Image encoding</string>
+     <property name="wordWrap" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2" >
+    <widget class="QPushButton" name="btnAdd" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+     <property name="text" >
+      <string>&amp;Add</string>
+     </property>
+     <property name="shortcut" >
+      <string>Alt+A</string>
+     </property>
+     <property name="autoDefault" >
+      <bool>true</bool>
+     </property>
+     <property name="default" >
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -156,173 +256,80 @@
      </layout>
     </widget>
    </item>
-   <item row="4" column="2" >
-    <widget class="QPushButton" name="btnAdd" >
-     <property name="enabled" >
-      <bool>false</bool>
-     </property>
-     <property name="text" >
-      <string>&amp;Add</string>
-     </property>
-     <property name="shortcut" >
-      <string>Alt+A</string>
-     </property>
-     <property name="autoDefault" >
-      <bool>true</bool>
-     </property>
-     <property name="default" >
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="4" >
-    <widget class="QGroupBox" name="GroupBox1" >
-     <property name="title" >
-      <string>Server Connections</string>
-     </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item row="1" column="1" >
-       <widget class="QPushButton" name="btnNew" >
-        <property name="text" >
-         <string>&amp;New</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3" >
-       <widget class="QPushButton" name="btnDelete" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string>Delete</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2" >
-       <widget class="QPushButton" name="btnEdit" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string>Edit</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4" >
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>171</width>
-          <height>30</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="1" column="0" >
-       <widget class="QPushButton" name="btnConnect" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string>C&amp;onnect</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" colspan="5" >
-       <widget class="QComboBox" name="cmbConnections" />
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="5" column="0" colspan="4" >
-    <widget class="QLabel" name="labelStatus" >
+   <item row="1" column="0" colspan="4" >
+    <widget class="QGroupBox" name="btnGrpImageEncoding" >
      <property name="sizePolicy" >
       <sizepolicy>
-       <hsizetype>13</hsizetype>
+       <hsizetype>5</hsizetype>
        <vsizetype>5</vsizetype>
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="text" >
-      <string>Ready</string>
+     <property name="minimumSize" >
+      <size>
+       <width>16</width>
+       <height>60</height>
+      </size>
      </property>
-     <property name="wordWrap" >
-      <bool>false</bool>
+     <property name="title" >
+      <string>Image encoding</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0" colspan="4" >
-    <widget class="QGroupBox" name="gbCRS" >
-     <property name="title" >
-      <string>Coordinate Reference System</string>
+   <item row="4" column="1" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
      </property>
-     <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="labelCoordRefSys" >
-        <property name="text" >
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>441</width>
-          <height>23</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnChangeSpatialRefSys" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string>Change ...</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>284</width>
+       <height>31</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="0" >
+    <widget class="QPushButton" name="btnHelp" >
+     <property name="enabled" >
+      <bool>true</bool>
+     </property>
+     <property name="text" >
+      <string>Help</string>
+     </property>
+     <property name="shortcut" >
+      <string>F1</string>
+     </property>
+     <property name="autoDefault" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="3" >
+    <widget class="QPushButton" name="btnCancel" >
+     <property name="text" >
+      <string>C&amp;lose</string>
+     </property>
+     <property name="shortcut" >
+      <string>Alt+L</string>
+     </property>
+     <property name="autoDefault" >
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
  <customwidgets>
   <customwidget>
    <class>Q3ListView</class>
-   <extends></extends>
+   <extends>Q3Frame</extends>
    <header>q3listview.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
   </customwidget>
  </customwidgets>
  <tabstops>

@@ -113,20 +113,20 @@ void QgsServerSourceSelect::populateConnectionList()
   }
   setConnectionListPosition();
 
-  if (keys.begin() != keys.end())
-  {
-    // Connections available - enable various buttons
-    btnConnect->setEnabled(TRUE);
-    btnEdit->setEnabled(TRUE);
-    btnDelete->setEnabled(TRUE);
-  }
+  if (keys.begin() == keys.end())
+    {
+      // No connections - disable various buttons
+      btnConnect->setEnabled(FALSE);
+      btnEdit->setEnabled(FALSE);
+      btnDelete->setEnabled(FALSE);
+    }
   else
-  {
-    // No connections available - disable various buttons
-    btnConnect->setEnabled(FALSE);
-    btnEdit->setEnabled(FALSE);
-    btnDelete->setEnabled(FALSE);
-  }
+    {
+      // Connections - enable various buttons
+      btnConnect->setEnabled(TRUE);
+      btnEdit->setEnabled(TRUE);
+      btnDelete->setEnabled(TRUE);
+    }
 }
 void QgsServerSourceSelect::on_btnNew_clicked()
 {
@@ -726,6 +726,11 @@ void QgsServerSourceSelect::on_cmbConnections_activated(int)
   serverChanged();
 }
 
+void QgsServerSourceSelect::on_btnAddDefault_clicked()
+{
+  addDefaultServers();
+}
+
 QString QgsServerSourceSelect::descriptionForEpsg(long epsg)
 {
   // We'll assume this function isn't called very often,
@@ -736,5 +741,33 @@ QString QgsServerSourceSelect::descriptionForEpsg(long epsg)
   return qgisSrs.description();
 }
 
+void QgsServerSourceSelect::addDefaultServers()
+{
+  QMap<QString, QString> exampleServers;
+  exampleServers["NASA (JPL)"] = "http://wms.jpl.nasa.gov/wms.cgi";
+  exampleServers["DM Solutions GMap"] = "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap";
+  exampleServers["TerraService"] = "http://terraservice.net/ogccapabilities.ashx";
+  // Nice to have the qgis users map, but I'm not sure of the URL at the moment.
+  //  exampleServers["Qgis users map"] = "http://qgis.org/wms.cgi";
+
+  QSettings settings;
+  QString basePath("/Qgis/connections-wms/");
+  QMap<QString, QString>::const_iterator i = exampleServers.constBegin();
+  for (; i != exampleServers.constEnd(); ++i)
+  {
+    // Only do a server if it's name doesn't already exist.
+    QStringList keys = settings.subkeyList(basePath);
+    if (!keys.contains(i.key()))
+    {
+      QString path = basePath + i.key();
+      settings.setValue(path + "/proxyhost", "");
+      settings.setValue(path + "/proxyport", 80);
+      settings.setValue(path + "/proxyuser", "");
+      settings.setValue(path + "/proxypassword", "");
+      settings.setValue(path + "/url", i.value());
+    }
+  }
+  populateConnectionList();
+}
 
 // ENDS
