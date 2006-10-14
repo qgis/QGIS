@@ -114,9 +114,6 @@ void QgsLabelDialog::init ( )
   cboFontTransparencyField->insertStringList(myFieldStringList); 
   //cboFontTransparencyField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::FontTransparency),myFieldStringList));
 
-  //cboBufferColorField->clear();
-  //cboBufferColorField->insertStringList(myFieldStringList); 
-
   cboBufferSizeField->clear();
   cboBufferSizeField->insertStringList(myFieldStringList); 
   cboBufferSizeField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::BufferSize),myFieldStringList));
