@@ -45,14 +45,17 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer * lyr,
   setupUi(this);
   // Create the Label dialog tab
   QVBoxLayout *layout = new QVBoxLayout( labelOptionsFrame );
+  layout->setMargin(0);
   labelDialog = new QgsLabelDialog ( layer->label(), labelOptionsFrame);
   layout->addWidget( labelDialog );
+  labelOptionsFrame->setLayout(layout);
   connect(labelDialog, SIGNAL(labelSourceSet()), 
           this, SLOT(setLabelCheckBox()));
 
   // Create the Actions dialog tab
   QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
   QVBoxLayout *actionLayout = new QVBoxLayout( actionOptionsFrame );
+  actionLayout->setMargin(0);
   std::vector<QgsField> fields = dp->fields();
   actionDialog = new QgsAttributeActionDialog ( layer->actions(), fields, 
                                                 actionOptionsFrame );
@@ -117,7 +120,7 @@ void QgsVectorLayerProperties::alterLayerDialog(const QString & dialogString)
 	mRendererDialog = new QgsUniqueValueDialog(layer);
     }
     widgetStackRenderers->addWidget(mRendererDialog);
-    widgetStackRenderers->raiseWidget(mRendererDialog);  
+    widgetStackRenderers->setCurrentWidget(mRendererDialog);  
 }
 
 void QgsVectorLayerProperties::setLegendType(QString type)
@@ -211,7 +214,7 @@ void QgsVectorLayerProperties::reset( void )
   if(mRendererDialog)
   {
       widgetStackRenderers->addWidget(mRendererDialog);
-      widgetStackRenderers->raiseWidget(mRendererDialog);
+      widgetStackRenderers->setCurrentWidget(mRendererDialog);
   }
   
 
@@ -288,10 +291,10 @@ void QgsVectorLayerProperties::on_pbnApply_clicked()
   layer->setLayerName(displayName());
 
 
-  QgsSingleSymbolDialog *sdialog = dynamic_cast < QgsSingleSymbolDialog * >(widgetStackRenderers->visibleWidget());
-  QgsGraduatedSymbolDialog *gdialog = dynamic_cast < QgsGraduatedSymbolDialog * >(widgetStackRenderers->visibleWidget());
-  QgsContinuousColorDialog *cdialog = dynamic_cast < QgsContinuousColorDialog * >(widgetStackRenderers->visibleWidget());
-  QgsUniqueValueDialog* udialog = dynamic_cast< QgsUniqueValueDialog * >(widgetStackRenderers->visibleWidget()); 
+  QgsSingleSymbolDialog *sdialog = dynamic_cast < QgsSingleSymbolDialog * >(widgetStackRenderers->currentWidget());
+  QgsGraduatedSymbolDialog *gdialog = dynamic_cast < QgsGraduatedSymbolDialog * >(widgetStackRenderers->currentWidget());
+  QgsContinuousColorDialog *cdialog = dynamic_cast < QgsContinuousColorDialog * >(widgetStackRenderers->currentWidget());
+  QgsUniqueValueDialog* udialog = dynamic_cast< QgsUniqueValueDialog * >(widgetStackRenderers->currentWidget()); 
 
   if (sdialog)
     {

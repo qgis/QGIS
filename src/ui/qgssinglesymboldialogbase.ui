@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsSingleSymbolDialogBase</class>
  <widget class="QDialog" name="QgsSingleSymbolDialogBase" >
   <property name="geometry" >
@@ -23,957 +20,941 @@
   <property name="windowTitle" >
    <string>Single Symbol</string>
   </property>
-  <widget class="QGroupBox" name="grpPattern" >
-   <property name="geometry" >
-    <rect>
-     <x>8</x>
-     <y>323</y>
-     <width>397</width>
-     <height>122</height>
-    </rect>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>9</number>
    </property>
-   <property name="title" >
-    <string>Fill Patterns:</string>
+   <property name="spacing" >
+    <number>6</number>
    </property>
-   <layout class="QGridLayout" >
-    <property name="margin" >
-     <number>4</number>
-    </property>
-    <property name="spacing" >
-     <number>4</number>
-    </property>
-    <item row="0" column="4" >
-     <widget class="QToolButton" name="bdiag" >
-      <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>1</hsizetype>
-        <vsizetype>1</vsizetype>
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize" >
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize" >
-       <size>
-        <width>60</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-      <property name="iconSize" >
-       <size>
-        <width>50</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="checkable" >
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="4" >
-     <widget class="QToolButton" name="dense3" >
-      <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>5</hsizetype>
-        <vsizetype>5</vsizetype>
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize" >
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize" >
-       <size>
-        <width>60</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-      <property name="iconSize" >
-       <size>
-        <width>50</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="checkable" >
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="3" >
-     <widget class="QToolButton" name="horizontal" >
-      <property name="maximumSize" >
-       <size>
-        <width>60</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-      <property name="iconSize" >
-       <size>
-        <width>50</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="checkable" >
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="4" >
-     <widget class="QToolButton" name="nopen" >
-      <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>5</hsizetype>
-        <vsizetype>5</vsizetype>
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize" >
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize" >
-       <size>
-        <width>60</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="toolTip" >
-       <string>No Fill</string>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-      <property name="iconSize" >
-       <size>
-        <width>50</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="checkable" >
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0" >
-     <widget class="QToolButton" name="solid" >
-      <property name="maximumSize" >
-       <size>
-        <width>60</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-      <property name="iconSize" >
-       <size>
-        <width>50</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="checkable" >
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0" >
-     <widget class="QToolButton" name="diagcross" >
-      <property name="maximumSize" >
-       <size>
-        <width>60</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-      <property name="iconSize" >
-       <size>
-        <width>50</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="checkable" >
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0" >
-     <widget class="QToolButton" name="dense6" >
-      <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>5</hsizetype>
-        <vsizetype>5</vsizetype>
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="maximumSize" >
-       <size>
-        <width>60</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-      <property name="iconSize" >
-       <size>
-        <width>50</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="checkable" >
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1" >
-     <widget class="QToolButton" name="fdiag" >
-      <property name="maximumSize" >
-       <size>
-        <width>60</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-      <property name="iconSize" >
-       <size>
-        <width>50</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="checkable" >
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1" >
-     <widget class="QToolButton" name="dense5" >
-      <property name="maximumSize" >
-       <size>
-        <width>60</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-      <property name="iconSize" >
-       <size>
-        <width>50</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="checkable" >
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1" >
-     <widget class="QToolButton" name="cross" >
-      <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>5</hsizetype>
-        <vsizetype>5</vsizetype>
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="maximumSize" >
-       <size>
-        <width>60</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-      <property name="iconSize" >
-       <size>
-        <width>50</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="checkable" >
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2" >
-     <widget class="QToolButton" name="dense4" >
-      <property name="maximumSize" >
-       <size>
-        <width>60</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-      <property name="iconSize" >
-       <size>
-        <width>50</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="checkable" >
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2" >
-     <widget class="QToolButton" name="vertical" >
-      <property name="maximumSize" >
-       <size>
-        <width>60</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-      <property name="iconSize" >
-       <size>
-        <width>50</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="checkable" >
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="2" >
-     <widget class="QToolButton" name="dense2" >
-      <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>5</hsizetype>
-        <vsizetype>5</vsizetype>
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="maximumSize" >
-       <size>
-        <width>60</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-      <property name="iconSize" >
-       <size>
-        <width>50</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="checkable" >
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="3" >
-     <widget class="QToolButton" name="dense1" >
-      <property name="maximumSize" >
-       <size>
-        <width>60</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-      <property name="iconSize" >
-       <size>
-        <width>50</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="checkable" >
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="3" >
-     <widget class="QToolButton" name="dense7" >
-      <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>5</hsizetype>
-        <vsizetype>5</vsizetype>
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="maximumSize" >
-       <size>
-        <width>60</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-      <property name="iconSize" >
-       <size>
-        <width>50</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="checkable" >
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="mGroupPoint" >
-   <property name="geometry" >
-    <rect>
-     <x>8</x>
-     <y>43</y>
-     <width>397</width>
-     <height>91</height>
-    </rect>
-   </property>
-   <property name="title" >
-    <string>Point</string>
-   </property>
-   <layout class="QGridLayout" >
-    <property name="margin" >
-     <number>8</number>
-    </property>
-    <property name="spacing" >
-     <number>6</number>
-    </property>
-    <item row="0" column="2" >
-     <spacer>
-      <property name="orientation" >
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeType" >
-       <enum>QSizePolicy::Expanding</enum>
-      </property>
-      <property name="sizeHint" >
-       <size>
-        <width>78</width>
-        <height>35</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="0" column="1" >
-     <widget class="QComboBox" name="mPointSymbolComboBox" >
-      <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>7</hsizetype>
-        <vsizetype>7</vsizetype>
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize" >
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize" >
-       <size>
-        <width>32767</width>
-        <height>40</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="3" >
-     <widget class="QLabel" name="textLabel1_2" >
-      <property name="text" >
-       <string>Size</string>
-      </property>
-      <property name="buddy" >
-       <cstring>mPointSizeSpinBox</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="4" >
-     <widget class="QSpinBox" name="mPointSizeSpinBox" >
-      <property name="maximum" >
-       <number>1000</number>
-      </property>
-      <property name="minimum" >
-       <number>3</number>
-      </property>
-      <property name="singleStep" >
-       <number>1</number>
-      </property>
-      <property name="value" >
-       <number>3</number>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0" >
-     <widget class="QLabel" name="textLabel1" >
-      <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>5</hsizetype>
-        <vsizetype>1</vsizetype>
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text" >
-       <string>Symbol</string>
-      </property>
-      <property name="buddy" >
-       <cstring>mPointSymbolComboBox</cstring>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_2" >
-   <property name="geometry" >
-    <rect>
-     <x>8</x>
-     <y>140</y>
-     <width>397</width>
-     <height>68</height>
-    </rect>
-   </property>
-   <property name="title" >
-    <string>Outline Style:</string>
-   </property>
-   <layout class="QGridLayout" >
-    <property name="margin" >
-     <number>8</number>
-    </property>
-    <property name="spacing" >
-     <number>6</number>
-    </property>
-    <item row="0" column="2" >
-     <widget class="QToolButton" name="pbnLineDashDot" >
-      <property name="maximumSize" >
-       <size>
-        <width>50</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-      <property name="iconSize" >
-       <size>
-        <width>60</width>
-        <height>26</height>
-       </size>
-      </property>
-      <property name="checkable" >
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="4" >
-     <widget class="QToolButton" name="pbnLineDashDotDot" >
-      <property name="maximumSize" >
-       <size>
-        <width>50</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-      <property name="iconSize" >
-       <size>
-        <width>60</width>
-        <height>26</height>
-       </size>
-      </property>
-      <property name="checkable" >
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0" >
-     <widget class="QToolButton" name="pbnLineSolid" >
-      <property name="maximumSize" >
-       <size>
-        <width>50</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-      <property name="iconSize" >
-       <size>
-        <width>60</width>
-        <height>26</height>
-       </size>
-      </property>
-      <property name="checkable" >
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="3" >
-     <widget class="QToolButton" name="pbnLineDash" >
-      <property name="maximumSize" >
-       <size>
-        <width>50</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-      <property name="iconSize" >
-       <size>
-        <width>60</width>
-        <height>26</height>
-       </size>
-      </property>
-      <property name="checkable" >
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1" >
-     <widget class="QToolButton" name="pbnLineDot" >
-      <property name="maximumSize" >
-       <size>
-        <width>50</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-      <property name="iconSize" >
-       <size>
-        <width>60</width>
-        <height>26</height>
-       </size>
-      </property>
-      <property name="checkable" >
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="5" >
-     <widget class="QToolButton" name="pbnLineNoPen" >
-      <property name="maximumSize" >
-       <size>
-        <width>50</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-      <property name="iconSize" >
-       <size>
-        <width>60</width>
-        <height>26</height>
-       </size>
-      </property>
-      <property name="checkable" >
-       <bool>true</bool>
-      </property>
-      <property name="autoExclusive" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="" >
-   <layout class="QHBoxLayout" >
-    <property name="margin" >
-     <number>0</number>
-    </property>
-    <property name="spacing" >
-     <number>6</number>
-    </property>
-    <item>
-     <widget class="QLabel" name="mLabel" >
-      <property name="minimumSize" >
-       <size>
-        <width>0</width>
-        <height>22</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string>Label:</string>
-      </property>
-      <property name="buddy" >
-       <cstring>mLabelEdit</cstring>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLineEdit" name="mLabelEdit" >
-      <property name="minimumSize" >
-       <size>
-        <width>0</width>
-        <height>22</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_3" >
-   <property name="geometry" >
-    <rect>
-     <x>8</x>
-     <y>214</y>
-     <width>397</width>
-     <height>103</height>
-    </rect>
-   </property>
-   <property name="title" >
-    <string/>
-   </property>
-   <layout class="QGridLayout" >
-    <property name="margin" >
-     <number>8</number>
-    </property>
-    <property name="spacing" >
-     <number>6</number>
-    </property>
-    <item row="1" column="2" >
-     <spacer>
-      <property name="orientation" >
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeType" >
-       <enum>QSizePolicy::Expanding</enum>
-      </property>
-      <property name="sizeHint" >
-       <size>
-        <width>201</width>
-        <height>16</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="1" column="3" >
-     <widget class="QSpinBox" name="outlinewidthspinbox" >
-      <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>4</hsizetype>
-        <vsizetype>0</vsizetype>
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="maximumSize" >
-       <size>
-        <width>100</width>
-        <height>32767</height>
-       </size>
-      </property>
-      <property name="minimum" >
-       <number>0</number>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0" colspan="2" >
-     <widget class="QLabel" name="outlinewidthlabel" >
-      <property name="text" >
-       <string>Outline Width:</string>
-      </property>
-      <property name="buddy" >
-       <cstring>outlinewidthspinbox</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="3" >
-     <widget class="QToolButton" name="btnOutlineColor" >
-      <property name="minimumSize" >
-       <size>
-        <width>100</width>
-        <height>22</height>
-       </size>
-      </property>
-      <property name="maximumSize" >
-       <size>
-        <width>100</width>
-        <height>22</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="3" >
-     <widget class="QToolButton" name="btnFillColor" >
-      <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>4</hsizetype>
-        <vsizetype>1</vsizetype>
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize" >
-       <size>
-        <width>100</width>
-        <height>22</height>
-       </size>
-      </property>
-      <property name="maximumSize" >
-       <size>
-        <width>100</width>
-        <height>22</height>
-       </size>
-      </property>
-      <property name="text" >
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1" colspan="2" >
-     <spacer>
-      <property name="orientation" >
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeType" >
-       <enum>QSizePolicy::Expanding</enum>
-      </property>
-      <property name="sizeHint" >
-       <size>
-        <width>138</width>
-        <height>16</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="2" column="0" >
-     <widget class="QLabel" name="fillcolorlabel" >
-      <property name="text" >
-       <string>Fill Color:</string>
-      </property>
-      <property name="buddy" >
-       <cstring>btnFillColor</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0" colspan="2" >
-     <widget class="QLabel" name="outlinecolorlabel" >
-      <property name="text" >
-       <string>Outline color:</string>
-      </property>
-      <property name="buddy" >
-       <cstring>btnOutlineColor</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2" >
-     <spacer>
-      <property name="orientation" >
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeType" >
-       <enum>QSizePolicy::Expanding</enum>
-      </property>
-      <property name="sizeHint" >
-       <size>
-        <width>116</width>
-        <height>16</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-   </layout>
-  </widget>
+   <item row="4" column="0" >
+    <widget class="QGroupBox" name="grpPattern" >
+     <property name="title" >
+      <string>Fill Patterns:</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>4</number>
+      </property>
+      <property name="spacing" >
+       <number>4</number>
+      </property>
+      <item row="0" column="4" >
+       <widget class="QToolButton" name="bdiag" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>1</hsizetype>
+          <vsizetype>1</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>60</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4" >
+       <widget class="QToolButton" name="dense3" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>5</hsizetype>
+          <vsizetype>5</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>60</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3" >
+       <widget class="QToolButton" name="horizontal" >
+        <property name="maximumSize" >
+         <size>
+          <width>60</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="4" >
+       <widget class="QToolButton" name="nopen" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>5</hsizetype>
+          <vsizetype>5</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>60</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string>No Fill</string>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QToolButton" name="solid" >
+        <property name="maximumSize" >
+         <size>
+          <width>60</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QToolButton" name="diagcross" >
+        <property name="maximumSize" >
+         <size>
+          <width>60</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QToolButton" name="dense6" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>5</hsizetype>
+          <vsizetype>5</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>60</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QToolButton" name="fdiag" >
+        <property name="maximumSize" >
+         <size>
+          <width>60</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QToolButton" name="dense5" >
+        <property name="maximumSize" >
+         <size>
+          <width>60</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" >
+       <widget class="QToolButton" name="cross" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>5</hsizetype>
+          <vsizetype>5</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>60</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" >
+       <widget class="QToolButton" name="dense4" >
+        <property name="maximumSize" >
+         <size>
+          <width>60</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" >
+       <widget class="QToolButton" name="vertical" >
+        <property name="maximumSize" >
+         <size>
+          <width>60</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2" >
+       <widget class="QToolButton" name="dense2" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>5</hsizetype>
+          <vsizetype>5</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>60</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3" >
+       <widget class="QToolButton" name="dense1" >
+        <property name="maximumSize" >
+         <size>
+          <width>60</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3" >
+       <widget class="QToolButton" name="dense7" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>5</hsizetype>
+          <vsizetype>5</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>60</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0" >
+    <widget class="QGroupBox" name="groupBox_3" >
+     <property name="title" >
+      <string/>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>8</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="1" column="2" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>201</width>
+          <height>16</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="3" >
+       <widget class="QSpinBox" name="outlinewidthspinbox" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>4</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>100</width>
+          <height>32767</height>
+         </size>
+        </property>
+        <property name="minimum" >
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2" >
+       <widget class="QLabel" name="outlinewidthlabel" >
+        <property name="text" >
+         <string>Outline Width:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>outlinewidthspinbox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3" >
+       <widget class="QToolButton" name="btnOutlineColor" >
+        <property name="minimumSize" >
+         <size>
+          <width>100</width>
+          <height>22</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>100</width>
+          <height>22</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3" >
+       <widget class="QToolButton" name="btnFillColor" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>4</hsizetype>
+          <vsizetype>1</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>100</width>
+          <height>22</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>100</width>
+          <height>22</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>138</width>
+          <height>16</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QLabel" name="fillcolorlabel" >
+        <property name="text" >
+         <string>Fill Color:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>btnFillColor</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="2" >
+       <widget class="QLabel" name="outlinecolorlabel" >
+        <property name="text" >
+         <string>Outline color:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>btnOutlineColor</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>116</width>
+          <height>16</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QGroupBox" name="groupBox_2" >
+     <property name="title" >
+      <string>Outline Style:</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>8</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="0" column="2" >
+       <widget class="QToolButton" name="pbnLineDashDot" >
+        <property name="maximumSize" >
+         <size>
+          <width>50</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>60</width>
+          <height>26</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4" >
+       <widget class="QToolButton" name="pbnLineDashDotDot" >
+        <property name="maximumSize" >
+         <size>
+          <width>50</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>60</width>
+          <height>26</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QToolButton" name="pbnLineSolid" >
+        <property name="maximumSize" >
+         <size>
+          <width>50</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>60</width>
+          <height>26</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3" >
+       <widget class="QToolButton" name="pbnLineDash" >
+        <property name="maximumSize" >
+         <size>
+          <width>50</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>60</width>
+          <height>26</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QToolButton" name="pbnLineDot" >
+        <property name="maximumSize" >
+         <size>
+          <width>50</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>60</width>
+          <height>26</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5" >
+       <widget class="QToolButton" name="pbnLineNoPen" >
+        <property name="maximumSize" >
+         <size>
+          <width>50</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>60</width>
+          <height>26</height>
+         </size>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QGroupBox" name="mGroupPoint" >
+     <property name="title" >
+      <string>Point</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="0" column="2" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>78</width>
+          <height>35</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QComboBox" name="mPointSymbolComboBox" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>7</hsizetype>
+          <vsizetype>7</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>32767</width>
+          <height>40</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3" >
+       <widget class="QLabel" name="textLabel1_2" >
+        <property name="text" >
+         <string>Size</string>
+        </property>
+        <property name="buddy" >
+         <cstring>mPointSizeSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4" >
+       <widget class="QSpinBox" name="mPointSizeSpinBox" >
+        <property name="maximum" >
+         <number>1000</number>
+        </property>
+        <property name="minimum" >
+         <number>3</number>
+        </property>
+        <property name="singleStep" >
+         <number>1</number>
+        </property>
+        <property name="value" >
+         <number>3</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="textLabel1" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>5</hsizetype>
+          <vsizetype>1</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>Symbol</string>
+        </property>
+        <property name="buddy" >
+         <cstring>mPointSymbolComboBox</cstring>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="0" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="mLabel" >
+       <property name="minimumSize" >
+        <size>
+         <width>0</width>
+         <height>22</height>
+        </size>
+       </property>
+       <property name="text" >
+        <string>Label:</string>
+       </property>
+       <property name="buddy" >
+        <cstring>mLabelEdit</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="mLabelEdit" >
+       <property name="minimumSize" >
+        <size>
+         <width>0</width>
+         <height>22</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
