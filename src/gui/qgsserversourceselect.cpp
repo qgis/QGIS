@@ -746,7 +746,7 @@ void QgsServerSourceSelect::addDefaultServers()
   QMap<QString, QString> exampleServers;
   exampleServers["NASA (JPL)"] = "http://wms.jpl.nasa.gov/wms.cgi";
   exampleServers["DM Solutions GMap"] = "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap";
-  exampleServers["TerraService"] = "http://terraservice.net/ogccapabilities.ashx";
+  exampleServers["Lizardtech server"] =  "http://wms.lizardtech.com/lizardtech/iserv/ows";
   // Nice to have the qgis users map, but I'm not sure of the URL at the moment.
   //  exampleServers["Qgis users map"] = "http://qgis.org/wms.cgi";
 
@@ -768,6 +768,8 @@ void QgsServerSourceSelect::addDefaultServers()
     }
   }
   populateConnectionList();
+
+  QMessageBox::information(this, tr("WMS proxies"), tr("<p>Several WMS servers have been added to the server list. Note that the proxy fields have been left blank and if you access the internet via a web proxy, you will need to individually set the proxy fields with appropriate values.</p>"), QMessageBox::Ok);
 }
 
 // ENDS
