@@ -436,7 +436,7 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
 
     // get the value of the primary key based on type
 
-    int oid = *(int *)PQgetvalue(queryResult, row, PQfnumber(queryResult,primaryKey));
+    int oid = *(int *)PQgetvalue(queryResult, row, PQfnumber(queryResult,"\""+primaryKey+"\""));
 #ifdef QGISDEBUG
     // std::cerr << "OID from database: " << oid << std::endl; 
 #endif
@@ -508,7 +508,7 @@ QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int> const & attlist, 
       queryResult = PQexec(connection, (const char *)fetch);
       
       int rows = PQntuples(queryResult);
-      
+
       if (rows == 0)
       {
 #ifdef QGISDEBUG
@@ -521,7 +521,7 @@ QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int> const & attlist, 
       
       for (int row = 0; row < rows; row++)
       {
-        int oid = *(int *)PQgetvalue(queryResult, row, PQfnumber(queryResult,primaryKey));
+        int oid = *(int *)PQgetvalue(queryResult, row, PQfnumber(queryResult,"\""+primaryKey+"\""));
 #ifdef QGISDEBUG 
         //  std::cerr << "Primary key type is " << primaryKeyType << std::endl; 
 #endif  
@@ -601,9 +601,9 @@ void QgsPostgresProvider::select(QgsRect * rect, bool useIntersect)
   std::cerr << "Selection polygon is " << rect->asPolygon().toLocal8Bit().data() << std::endl;
 #endif
 
-  QString declare = QString("declare qgisf binary cursor for select "
+  QString declare = QString("declare qgisf binary cursor for select \""
       + primaryKey  
-      + ",asbinary(%1,'%2') as qgs_feature_geometry from %3").arg(geometryColumn).arg(endianString()).arg(mSchemaTableName);
+      + "\",asbinary(\"%1\",'%2') as qgs_feature_geometry from %3").arg(geometryColumn).arg(endianString()).arg(mSchemaTableName);
 #ifdef QGISDEBUG
   std::cout << "Binary cursor: " << declare.toLocal8Bit().data() << std::endl; 
 #endif
@@ -727,7 +727,7 @@ int QgsPostgresProvider::fieldCount() const
  */
 void QgsPostgresProvider::getFeatureAttributes(int key, int &row, QgsFeature *f) {
 
-  QString sql = QString("select * from %1 where %2 = %3").arg(mSchemaTableName).arg(primaryKey).arg(key);
+  QString sql = QString("select * from %1 where \"%2\" = %3").arg(mSchemaTableName).arg(primaryKey).arg(key);
 
 #ifdef QGISDEBUG
   std::cerr << "QgsPostgresProvider::getFeatureAttributes using: " << sql.toLocal8Bit().data() << std::endl; 
@@ -756,7 +756,7 @@ void QgsPostgresProvider::getFeatureAttributes(int key, int &row,
   std::list<int>::const_iterator iter;
   for(iter=attlist.begin();iter!=attlist.end();++iter)
   {
-    QString sql = QString("select %1 from %2 where %3 = %4")
+    QString sql = QString("select \"%1\" from %2 where \"%3\" = %4")
       .arg(fields()[*iter].name())
       .arg(mSchemaTableName)
       .arg(primaryKey)
@@ -786,7 +786,7 @@ void QgsPostgresProvider::getFeatureGeometry(int key, QgsFeature *f)
   }
 
   QString cursor = QString("declare qgisf binary cursor for "
-                           "select asbinary(%1,'%2') from %3 where %4 = %5")
+                           "select asbinary(\"%1\",'%2') from %3 where \"%4\" = %5")
                    .arg(geometryColumn)
                    .arg(endianString())
                    .arg(mSchemaTableName)
@@ -842,9 +842,9 @@ void QgsPostgresProvider::reset()
 {
   // reset the cursor to the first record
   //--std::cout << "Resetting the cursor to the first record " << std::endl;
-  QString declare = QString("declare qgisf binary cursor for select " +
+  QString declare = QString("declare qgisf binary cursor for select \"" +
       primaryKey + 
-      ",asbinary(%1,'%2') as qgs_feature_geometry from %3").arg(geometryColumn)
+      "\",asbinary(\"%1\",'%2') as qgs_feature_geometry from %3").arg(geometryColumn)
     .arg(endianString()).arg(mSchemaTableName);
   if(sqlWhereClause.length() > 0)
   {
@@ -1028,7 +1028,6 @@ QString QgsPostgresProvider::getPrimaryKey()
       }
       else
       {
-        std::cerr << col.local8Bit().data() << '\n';
 	sql = "select attname from pg_attribute, pg_type where "
 	  "atttypid = pg_type.oid and attnum in (" +
 	  col.replace(" ", ",") 
@@ -1284,7 +1283,7 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
         }
         else
         {
-          log << QString(tr("Note: ") + "'" + i->first + "'"
+          log << QString(tr("Note: ") + "'" + i->first + "' "
                          + tr("initially appeared suitable but does not "
                               "contain unique data, so is not suitable.\n"));
         }
@@ -1320,11 +1319,12 @@ bool QgsPostgresProvider::uniqueData(QString schemaName,
 
   bool isUnique = false;
 
-  QString sql = "select count(distinct " + colName + ") = count(" +
-      colName + ") from \"" + schemaName + "\".\"" + tableName + "\"";
+  QString sql = "select count(distinct \"" + colName + "\") = count(\"" +
+      colName + "\") from \"" + schemaName + "\".\"" + tableName + "\"";
 
   PGresult* unique = PQexec(connection, (const char*) (sql.utf8()));
-    if (PQntuples(unique) == 1)
+
+  if (PQntuples(unique) == 1)
       if (strncmp(PQgetvalue(unique, 0, 0),"t", 1) == 0)
 	isUnique = true;
 
@@ -1342,7 +1342,47 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
   // This sql is derived from the one that defines the view
   // 'information_schema.view_column_usage' in PostgreSQL, with a few
   // mods to suit our purposes. 
-  QString sql = "SELECT DISTINCT nv.nspname AS view_schema, v.relname AS view_name, a.attname AS view_column_name, nt.nspname AS table_schema, t.relname AS table_name, a.attname AS column_name, t.relkind as table_type, typ.typname as column_type FROM pg_namespace nv, pg_class v, pg_depend dv, pg_depend dt, pg_class t, pg_namespace nt, pg_attribute a, pg_user u, pg_type typ WHERE nv.oid = v.relnamespace AND v.relkind = 'v'::\"char\" AND v.oid = dv.refobjid AND dv.refclassid = 'pg_class'::regclass::oid AND dv.classid = 'pg_rewrite'::regclass::oid AND dv.deptype = 'i'::\"char\" AND dv.objid = dt.objid AND dv.refobjid <> dt.refobjid AND dt.classid = 'pg_rewrite'::regclass::oid AND dt.refclassid = 'pg_class'::regclass::oid AND dt.refobjid = t.oid AND t.relnamespace = nt.oid AND (t.relkind = 'r'::\"char\" OR t.relkind = 'v'::\"char\") AND t.oid = a.attrelid AND dt.refobjsubid = a.attnum AND nv.nspname NOT IN ('pg_catalog', 'information_schema' ) AND a.atttypid = typ.oid";
+    QString sql = ""
+	"SELECT DISTINCT "
+	"	nv.nspname AS view_schema, "
+	"	v.relname AS view_name, "
+	"	va.attname AS view_column_name, "
+	"	nt.nspname AS table_schema, "
+	"	t.relname AS table_name, "
+	"	a.attname AS column_name, "
+	"	t.relkind as table_type, "
+	"	typ.typname as column_type "
+	"FROM "
+	"	pg_namespace nv, "
+	"	pg_class v, "
+	"	pg_depend dv,"
+	"	pg_depend dt, "
+	"	pg_class t, "
+	"	pg_namespace nt, "
+	"	pg_attribute a,"
+	"	pg_attribute va,"
+	"	pg_user u, "
+	"	pg_type typ "
+	"WHERE "
+	"	nv.oid = v.relnamespace AND "
+	"	v.relkind = 'v'::\"char\" AND "
+	"	v.oid = dv.refobjid AND "
+	"	dv.refclassid = 'pg_class'::regclass::oid AND "
+	"	dv.classid = 'pg_rewrite'::regclass::oid AND "
+	"	dv.deptype = 'i'::\"char\" AND "
+	"	dv.objid = dt.objid AND "
+	"	dv.refobjid <> dt.refobjid AND "
+	"	dt.classid = 'pg_rewrite'::regclass::oid AND "
+	"	dt.refclassid = 'pg_class'::regclass::oid AND "
+	"	dt.refobjid = t.oid AND "
+	"	t.relnamespace = nt.oid AND "
+	"	(t.relkind = 'r'::\"char\" OR t.relkind = 'v'::\"char\") AND "
+	"	t.oid = a.attrelid AND "
+	"	dt.refobjsubid = a.attnum AND "
+	"	nv.nspname NOT IN ('pg_catalog', 'information_schema' ) AND "
+	"	a.atttypid = typ.oid AND "
+	"	v.oid = va.attrelid AND "
+	"	va.attnum = dt.refobjsubid";
 
   // A structure to store the results of the above sql.
   typedef std::map<QString, TT> columnRelationsType;
@@ -1396,6 +1436,7 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
   {
     columnRelationsType::const_iterator 
       ii = columnRelations.find(PQgetvalue(result, i, 0));
+    columnRelationsType::const_iterator start_iter = ii;
 
     if (ii == columnRelations.end())
       continue;
@@ -1439,11 +1480,12 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
 		<< ii->second.table_name.local8Bit().data() << '.'
 		<< ii->second.column_name.local8Bit().data() << " failed: exceeded maximum "
 		<< "interation limit (" << max_loops << ").\n";
+
       cols[ii->second.view_column_name] = SRC("","","","");
     }
     else if (ii != columnRelations.end())
     {
-      cols[ii->second.view_column_name] = 
+      cols[start_iter->second.view_column_name] = 
 	SRC(ii->second.table_schema, 
 	    ii->second.table_name, 
 	    ii->second.column_name, 
@@ -1467,11 +1509,11 @@ QString QgsPostgresProvider::minValue(int position){
   QString sql;
   if(sqlWhereClause.isEmpty())
   {
-    sql = QString("select min(%1) from %2").arg(fld.name()).arg(mSchemaTableName);
+    sql = QString("select min(\"%1\") from %2").arg(fld.name()).arg(mSchemaTableName);
   }
   else
   {
-    sql = QString("select min(%1) from %2").arg(fld.name()).arg(mSchemaTableName)+" where "+sqlWhereClause;
+    sql = QString("select min(\"%1\") from %2").arg(fld.name()).arg(mSchemaTableName)+" where "+sqlWhereClause;
   }
   PGresult *rmin = PQexec(connection,(const char *)(sql.utf8()));
   QString minValue = PQgetvalue(rmin,0,0);
@@ -1487,11 +1529,11 @@ QString QgsPostgresProvider::maxValue(int position){
   QString sql;
   if(sqlWhereClause.isEmpty())
   {
-    sql = QString("select max(%1) from %2").arg(fld.name()).arg(mSchemaTableName);
+    sql = QString("select max(\"%1\") from %2").arg(fld.name()).arg(mSchemaTableName);
   }
   else
   {
-    sql = QString("select max(%1) from %2").arg(fld.name()).arg(mSchemaTableName)+" where "+sqlWhereClause;
+    sql = QString("select max(\"%1\") from %2").arg(fld.name()).arg(mSchemaTableName)+" where "+sqlWhereClause;
   } 
   PGresult *rmax = PQexec(connection,(const char *)(sql.utf8()));
   QString maxValue = PQgetvalue(rmax,0,0);
@@ -1504,7 +1546,7 @@ int QgsPostgresProvider::maxPrimaryKeyValue()
 {
   QString sql;
 
-  sql = QString("select max(%1) from %2")
+  sql = QString("select max(\"%1\") from %2")
            .arg(primaryKey)
            .arg(mSchemaTableName);
 
@@ -1557,11 +1599,11 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f, int primaryKeyHighWater)
     insert+=" (";
 
     // add the name of the geometry column to the insert statement
-    insert += geometryColumn;
+    insert += "\"" + geometryColumn;
 
     // add the name of the primary key column to the insert statement
-    insert += ",";
-    insert += primaryKey;
+    insert += "\",\"";
+    insert += primaryKey + "\"";
 
 #ifdef QGISDEBUG
       std::cout << "QgsPostgresProvider::addFeature: Constructing insert SQL, currently at: " << insert.toLocal8Bit().data()
@@ -1611,8 +1653,8 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f, int primaryKeyHighWater)
            (fieldInLayer)
          )
       {
-        insert+=",";
-        insert+=fieldname;
+        insert+=",\"";
+        insert+=fieldname +"\"";
       }
     }
 
@@ -1819,7 +1861,7 @@ QString QgsPostgresProvider::getDefaultValue(const QString& attr, QgsFeature* f)
 
 bool QgsPostgresProvider::deleteFeature(int id)
 {
-  QString sql("DELETE FROM "+mSchemaTableName+" WHERE "+primaryKey+" = "+QString::number(id));
+  QString sql("DELETE FROM "+mSchemaTableName+" WHERE \""+primaryKey+"\" = "+QString::number(id));
 #ifdef QGISDEBUG
   qWarning("delete sql: "+sql);
 #endif
@@ -2005,7 +2047,7 @@ bool QgsPostgresProvider::changeAttributeValues(std::map<int,std::map<QString,QS
   {
     for(std::map<QString,QString>::const_iterator siter=(*iter).second.begin();siter!=(*iter).second.end();++siter)
     {
-      QString sql="UPDATE "+mSchemaTableName+" SET "+(*siter).first+"='"+(*siter).second+"' WHERE " +primaryKey+"="+QString::number((*iter).first);
+      QString sql="UPDATE "+mSchemaTableName+" SET "+(*siter).first+"='"+(*siter).second+"' WHERE \"" +primaryKey+"\"="+QString::number((*iter).first);
 #ifdef QGISDEBUG
       qWarning(sql);
 #endif
@@ -2095,8 +2137,8 @@ bool QgsPostgresProvider::changeGeometryValues(std::map<int, QgsGeometry> & geom
                 << std::endl;
 #endif
     
-      QString sql = "UPDATE "+ mSchemaTableName +" SET " + 
-                    geometryColumn + "=";
+      QString sql = "UPDATE "+ mSchemaTableName +" SET \"" + 
+                    geometryColumn + "\"=";
 
       sql += "GeomFromWKB('";
 
@@ -2147,7 +2189,7 @@ bool QgsPostgresProvider::changeGeometryValues(std::map<int, QgsGeometry> & geom
         sql += "::bytea',"+srid+")";
       }
 
-      sql += " WHERE " +primaryKey+"="+QString::number(iter->first);
+      sql += " WHERE \"" +primaryKey+"\"="+QString::number(iter->first);
 
 #ifdef QGISDEBUG
       std::cerr << "QgsPostgresProvider::changeGeometryValues: Updating with '"
@@ -2389,7 +2431,7 @@ long QgsPostgresProvider::getFeatureCount()
   std::cerr << "QgsPostgresProvider: Running SQL: " << 
     sql << std::endl;        
 #else                 
-  QString sql = "select count(*) from " + mSchemaTableName;
+  QString sql = "select count(*) from " + mSchemaTableName + "";
 
   if(sqlWhereClause.length() > 0)
   {
@@ -2435,11 +2477,11 @@ void QgsPostgresProvider::calculateExtents()
 
 
 #if WASTE_TIME
-  sql = "select xmax(extent(" + geometryColumn + ")) as xmax,"
-    "xmin(extent(" + geometryColumn + ")) as xmin,"
-    "ymax(extent(" + geometryColumn + ")) as ymax," 
-    "ymin(extent(" + geometryColumn + ")) as ymin" 
-    " from " + mSchemaTableName + "";
+  sql = "select xmax(extent(\"" + geometryColumn + "\")) as xmax,"
+    "xmin(extent(\"" + geometryColumn + "\")) as xmin,"
+    "ymax(extent(\"" + geometryColumn + "\")) as ymax," 
+    "ymin(extent(\"" + geometryColumn + "\")) as ymin" 
+    " from " + mSchemaTableName;
 #endif
 
 #ifdef QGISDEBUG 
@@ -2492,7 +2534,7 @@ void QgsPostgresProvider::calculateExtents()
 
   // get the extents
 
-  QString sql = "select extent(" + geometryColumn + ") from " + 
+  QString sql = "select extent(\"" + geometryColumn + "\") from " + 
     mSchemaTableName;
   if(sqlWhereClause.length() > 0)
   {
@@ -2500,10 +2542,10 @@ void QgsPostgresProvider::calculateExtents()
   }
 
 #if WASTE_TIME
-  sql = "select xmax(extent(" + geometryColumn + ")) as xmax,"
-    "xmin(extent(" + geometryColumn + ")) as xmin,"
-    "ymax(extent(" + geometryColumn + ")) as ymax," 
-    "ymin(extent(" + geometryColumn + ")) as ymin" 
+  sql = "select xmax(extent(\"" + geometryColumn + "\")) as xmax,"
+    "xmin(extent(\"" + geometryColumn + "\")) as xmin,"
+    "ymax(extent(\"" + geometryColumn + "\")) as ymax," 
+    "ymin(extent(\"" + geometryColumn + "\")) as ymin" 
     " from " + mSchemaTableName;
 #endif
 
@@ -2698,8 +2740,8 @@ bool QgsPostgresProvider::getGeometryDetails()
     // fail if there is no data in the relevant table.
     PQclear(result); // for the query just before the if() statement
     sql = "select "
-      "srid("         + geometryColumn + "), "
-      "geometrytype(" + geometryColumn + ") from " + 
+      "srid(\""         + geometryColumn + "\"), "
+      "geometrytype(\"" + geometryColumn + "\") from " + 
       mSchemaTableName + " limit 1";
 
     result = executeDbCommand(connection, sql);
