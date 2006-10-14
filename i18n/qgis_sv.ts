@@ -2218,6 +2218,28 @@ Compiled against Qt </source>
         <source>&lt;p&gt;Do you want to save the current project?&lt;/p&gt;</source>
         <translation>&lt;p&gt;Vill du spara aktivt projekt?&lt;/p&gt;</translation>
     </message>
+    <message>
+        <source>Show most toolbars</source>
+        <translation>Visa de flesta verktygsraderna</translation>
+    </message>
+    <message>
+        <source>S</source>
+        <comment>Show most toolbars</comment>
+        <translation>S</translation>
+    </message>
+    <message>
+        <source>Hide most toolbars</source>
+        <translation>Göm de flesta verktygsraderna</translation>
+    </message>
+    <message>
+        <source>H</source>
+        <comment>Hide most toolbars</comment>
+        <translation>G</translation>
+    </message>
+    <message>
+        <source>&amp;Toolbars...</source>
+        <translation>Verk&amp;tygsrader...</translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -7496,39 +7518,39 @@ Detta kan vara ett problem med ditt nätverk, eller i WMS-servern.</translation>
     </message>
     <message>
         <source>Received %1 of %2 bytes</source>
-        <translation>Tog emot %1 av %2 bytes</translation>
+        <translation type="obsolete">Tog emot %1 av %2 bytes</translation>
     </message>
     <message>
         <source>Received %1 bytes (total unknown)</source>
-        <translation>Tog emot %1 bytes (okänd totalsumma)</translation>
+        <translation type="obsolete">Tog emot %1 bytes (okänd totalsumma)</translation>
     </message>
     <message>
         <source>Not connected</source>
-        <translation>Ej uppkopplad</translation>
+        <translation type="obsolete">Ej uppkopplad</translation>
     </message>
     <message>
         <source>Looking up &apos;%1&apos;</source>
-        <translation>Slår upp %1</translation>
+        <translation type="obsolete">Slår upp %1</translation>
     </message>
     <message>
         <source>Connecting to &apos;%1&apos;</source>
-        <translation>Kopplar upp till %1</translation>
+        <translation type="obsolete">Kopplar upp till %1</translation>
     </message>
     <message>
         <source>Sending request &apos;%1&apos;</source>
-        <translation>Skickar förfrågan %1</translation>
+        <translation type="obsolete">Skickar förfrågan %1</translation>
     </message>
     <message>
         <source>Receiving reply</source>
-        <translation>Tar emot svar</translation>
+        <translation type="obsolete">Tar emot svar</translation>
     </message>
     <message>
         <source>Response is complete</source>
-        <translation>Svaret är komplett</translation>
+        <translation type="obsolete">Svaret är komplett</translation>
     </message>
     <message>
         <source>Closing down connection</source>
-        <translation>Stänger uppkoppling</translation>
+        <translation type="obsolete">Stänger uppkoppling</translation>
     </message>
 </context>
 <context>
@@ -11118,6 +11140,14 @@ eller har en PostgreSQL oid-kolumn.
         <source>provider said</source>
         <translation>källan sa</translation>
     </message>
+    <message>
+        <source>WMS proxies</source>
+        <translation>WMS mellanvärdar</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Several WMS servers have been added to the server list. Note that the proxy fields have been left blank and if you access the internet via a web proxy, you will need to individually set the proxy fields with appropriate values.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;Många WMS-servrar har lagts till listan. Mellanvärdsfälten har ej fyllts i, och om du använder dig av mellanvärd för att komma åt internet, måste du fylla i fälten med lämpligt värde.&lt;/p&gt;</translation>
+    </message>
 </context>
 <context>
     <name>QgsServerSourceSelectBase</name>
@@ -11204,6 +11234,14 @@ eller har en PostgreSQL oid-kolumn.
     <message>
         <source>Change ...</source>
         <translation>Ändra...</translation>
+    </message>
+    <message>
+        <source>Adds a few example WMS servers</source>
+        <translation>Lägger till några exempel på WMS servrar</translation>
+    </message>
+    <message>
+        <source>Add default servers</source>
+        <translation>Lägg till standardservrar</translation>
     </message>
 </context>
 <context>
