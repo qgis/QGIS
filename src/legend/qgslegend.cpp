@@ -1702,14 +1702,16 @@ void QgsLegend::zoomToLayerExtent()
       if(theLayer)
 	{
 	  layerExtent = theLayer->extent();
-	  ct = theLayer->coordinateTransform();
-	  if(ct)
-	    {
+	  
+      if (QgsProject::instance()->readNumEntry("SpatialRefSys", "/ProjectionsEnabled",0) != 0
+          && (ct = theLayer->coordinateTransform()))
+      {
 	      //transform layer extent to canvas coordinate system
 	      transformedExtent = ct->transform(layerExtent);
 	    }
 	  else
 	    {
+        // do not transform when projections are not enabled
 	      transformedExtent = layerExtent;
 	    }
 
