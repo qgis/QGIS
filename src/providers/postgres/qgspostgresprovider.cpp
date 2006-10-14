@@ -1346,7 +1346,7 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
 	"SELECT DISTINCT "
 	"	nv.nspname AS view_schema, "
 	"	v.relname AS view_name, "
-	"	va.attname AS view_column_name, "
+	"	a.attname AS view_column_name, "
 	"	nt.nspname AS table_schema, "
 	"	t.relname AS table_name, "
 	"	a.attname AS column_name, "
@@ -1360,7 +1360,6 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
 	"	pg_class t, "
 	"	pg_namespace nt, "
 	"	pg_attribute a,"
-	"	pg_attribute va,"
 	"	pg_user u, "
 	"	pg_type typ "
 	"WHERE "
@@ -1380,9 +1379,7 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
 	"	t.oid = a.attrelid AND "
 	"	dt.refobjsubid = a.attnum AND "
 	"	nv.nspname NOT IN ('pg_catalog', 'information_schema' ) AND "
-	"	a.atttypid = typ.oid AND "
-	"	v.oid = va.attrelid AND "
-	"	va.attnum = dt.refobjsubid";
+	"	a.atttypid = typ.oid";
 
   // A structure to store the results of the above sql.
   typedef std::map<QString, TT> columnRelationsType;
