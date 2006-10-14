@@ -927,6 +927,13 @@ bool QgsLegend::readXML(QDomNode& legendnode)
   
   child = legendnode.firstChild();
 
+  // For some unexplained reason, collapsing/expanding the legendLayer items
+  // immediately after they have been created doesn't work (they all end up
+  // expanded). The legendGroups and legendLayerFiles seems ok through. The
+  // workaround is to store the required states of the legendLayers and set
+  // them at the end of this function.
+  QList<QTreeWidgetItem*> collapsed, expanded;
+
   if(!child.isNull())
     {
       clear(); //remove all items first
@@ -978,7 +985,7 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 		  lastGroup = 0;
 		}
 
-	      childelem.attribute("open") == "true" ? expandItem(theLayer) : collapseItem(theLayer);
+	      childelem.attribute("open") == "true" ? expanded.push_back(theLayer) : collapsed.push_back(theLayer);
 	      
 	      //set the checkbox of the legend layer to the right state
 	      blockSignals(true);
@@ -1056,6 +1063,14 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	}
       while(!(child.isNull()));
     }
+
+  // Do the tree item expands and collapses.
+  for (int i = 0; i < collapsed.size(); ++i)
+      collapseItem(collapsed[i]);
+
+  for (int i = 0; i < expanded.size(); ++i)
+      expandItem(expanded[i]);
+
   return true;
 }
 
