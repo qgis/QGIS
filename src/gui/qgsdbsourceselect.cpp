@@ -201,10 +201,10 @@ void QgsDbSourceSelect::setLayerType(QString schema,
 QString QgsDbSourceSelect::makeGeomQuery(QString schema, 
                                                 QString table, QString column)
 {
-  QString query = "select GeometryType(" + column + ") from ";
+  QString query = "select GeometryType(\"" + column + "\") from ";
   if (schema.length() > 0)
     query += "\"" + schema + "\".";
-  query += "\"" + table + "\" where " + column + " is not null limit 1";
+  query += "\"" + table + "\" where \"" + column + "\" is not null limit 1";
   return query;
 }
 
