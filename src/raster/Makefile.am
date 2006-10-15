@@ -8,15 +8,22 @@ endif
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
+
 lib_LTLIBRARIES = libqgis_raster.la
+
 libqgis_raster_la_MOC =	\
 		qgsrasterlayer.moc.cpp
-libqgis_raster_la_SOURCES = qgsrasterbandstats.h \
-	qgsrasterpyramid.h \
+
+libqgis_raster_la_SOURCES = \
 	qgsrasterlayer.cpp \
-	qgsrasterlayer.h \
-	qgsrasterviewport.h \
 	$(libqgis_raster_la_MOC) 
+
+libqgis_rasterHEADERS = \
+  qgsrasterbandstats.h \
+	qgsrasterpyramid.h \
+	qgsrasterlayer.h \
+	qgsrasterviewport.h
+
 BUILT_SOURCES = $(libqgis_raster_la_MOC) $(libqgis_raster_la_SOURCES)
 ##libqgis_raster_la_LDFLAGS = -no-undefined
 libqgis_raster_la_CPPFLAGS = -I$(OMSRCDIR)
@@ -28,3 +35,7 @@ EXTRA_DIST = \
 	qgsrasterpyramid.h 
 
 CLEANFILES = $(libqgis_raster_la_MOC)
+
+pkginclude_dir = $(includedir)/qgis
+pkginclude_HEADERS = $(libqgis_rasterHEADERS)
+

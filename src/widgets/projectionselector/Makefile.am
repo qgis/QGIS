@@ -32,6 +32,7 @@ selector_UIC = qgsprojectionselectorbase.ui
 
 selector_UI = ui_qgsprojectionselectorbase.h 
 
+selectorHEADERS = qgsprojectionselector.h
 
 libqgsprojectionselector_la_SOURCES =  qgsprojectionselector.cpp \
 			         $(selector_UI) \
@@ -48,3 +49,7 @@ libqgsprojectionselector_la_LDFLAGS = -avoid-version
 libqgsprojectionselector_la_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GEOS_CFLAGS) -I../../core/
 
 EXTRA_DIST = $(selector_UIC)
+
+pkginclude_dir = $(includedir)/qgis
+pkginclude_HEADERS = $(selectorHEADERS)
+

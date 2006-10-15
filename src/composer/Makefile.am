@@ -29,15 +29,15 @@ libqgis_composer_MOC = qgscomposer.moc.cpp	\
 		qgscomposerview.moc.cpp				\
 		qgscomposition.moc.cpp				
 
-##libqgis_composer_la_HEADERS = qgscomposer.h\
-##		qgscomposeritem.h					\
-##		qgscomposerlabel.h					\
-##		qgscomposerpicture.h				\
-##		qgscomposermap.h					\
-##		qgscomposerscalebar.h				\
-##		qgscomposervectorlegend.h			\
-##		qgscomposerview.h					\
-##		qgscomposition.h					
+libqgis_composerHEADERS = qgscomposer.h\
+		qgscomposeritem.h					\
+		qgscomposerlabel.h					\
+		qgscomposerpicture.h				\
+		qgscomposermap.h					\
+		qgscomposerscalebar.h				\
+		qgscomposervectorlegend.h			\
+		qgscomposerview.h					\
+		qgscomposition.h					
 
 libqgis_composer_la_SOURCES =  qgscomposer.cpp\
 		qgscomposeritem.cpp					\
@@ -61,3 +61,7 @@ libqgis_composer_la_CXXFLAGS = $(PKGDATAPATH) -I../gui/ -I../ui/ -I../core/ \
 BUILT_SOURCES = $(libqgis_composer_MOC)
 
 CLEANFILES = $(BUILT_SOURCES) 
+
+pkginclude_dir = $(includedir)/qgis
+pkginclude_HEADERS = $(libqgis_composerHEADERS)
+
