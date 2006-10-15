@@ -34,6 +34,18 @@ libqgis_legend_la_SOURCES =	qgslegendgroup.cpp \
 				qgslegendsymbologyitem.cpp \
 				qgslegendvectorsymbologyitem.cpp
 
+libqgis_legendHEADERS = \
+		qgslegend.h \
+		qgslegenditem.h \
+		qgslegendlayer.h \
+		qgslegendlayerfile.h \
+		qgslegendlayerfilegroup.h \
+		qgslegendpropertygroup.h \
+		qgslegendpropertyitem.h \
+		qgslegendsymbologygroup.h \
+		qgslegendsymbologyitem.h \
+		qgslegendvectorsymbologyitem.h
+
 libqgis_legend_la_LIBFLAGS = $(QT_LDADD)
 
 libqgis_legend_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
@@ -45,3 +57,7 @@ libqgis_legend_la_CXXFLAGS = $(PKGDATAPATH) -I../gui/ -I../ui/ -I../core/ \
 BUILT_SOURCES = $(qgis_MOC)
 
 CLEANFILES = $(BUILT_SOURCES)
+
+pkginclude_dir = $(includedir)/qgis
+pkginclude_HEADERS = $(libqgis_legendHEADERS)
+
