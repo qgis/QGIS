@@ -568,8 +568,12 @@ void QgsSpit::import()
       rel_exists1 = ( PQntuples( res ) > 0 );
       if ( PQresultStatus( res ) != PGRES_TUPLES_OK )
       {
-        qWarning( PQresultErrorMessage( res ) );
-        QMessageBox::warning( &pro, tr("Import Shapefiles"), error );
+        QString err = PQresultErrorMessage( res );
+        qWarning( err );
+        QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
+                              "<p>Error while executing the SQL:</p><p>" +
+                              query + "</p><p>The database said:" +
+                              err + "</p>" );
         pro.setValue( pro.value() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         continue;
       }
@@ -585,8 +589,13 @@ void QgsSpit::import()
       rel_exists2 = ( PQntuples( res ) > 0 );
       if ( PQresultStatus( res ) != PGRES_TUPLES_OK )
       {
-        qWarning( PQresultErrorMessage( res ) );
-        QMessageBox::warning( &pro, tr("Import Shapefiles"), error );
+        QString err = PQresultErrorMessage( res );
+        qWarning( err );
+        QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
+                              "<p>Error while executing the SQL:</p><p>" +
+                              query + "</p><p>The database said:" +
+                              err + "</p>" );
+
         pro.setValue( pro.value() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         continue;
       }
@@ -600,8 +609,12 @@ void QgsSpit::import()
       res = PQexec( pd, query );
       if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
       {
-        qWarning( PQresultErrorMessage( res ) );
-        QMessageBox::warning( &pro, tr("Import Shapefiles"), error );
+        QString err = PQresultErrorMessage( res );
+        qWarning( err );
+        QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
+                              "<p>Error while executing the SQL:</p><p>" +
+                              query + "</p><p>The database said:" +
+                              err + "</p>" );
         pro.setValue( pro.value() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         continue;
       }
@@ -619,9 +632,13 @@ void QgsSpit::import()
       qWarning( query );
       if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
       {
-        qWarning( PQresultErrorMessage( res ) );
+        QString err = PQresultErrorMessage( res );
+        qWarning( err );
         qWarning( PQresStatus( PQresultStatus( res ) ) );
-        QMessageBox::warning( &pro, tr("Import Shapefiles"), error );
+        QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
+                              "<p>Error while executing the SQL:</p><p>" +
+                              query + "</p><p>The database said:" +
+                              err + "</p>" );
         pro.setValue( pro.value() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         continue;
       }
@@ -655,8 +672,12 @@ void QgsSpit::import()
             res = PQexec( pd, ( const char * ) query );
             if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
             {
-              qWarning( PQresultErrorMessage( res ) );
-              QMessageBox::warning( &pro, tr("Import Shapefiles"), error );
+              QString err = PQresultErrorMessage( res );
+              qWarning( err );
+              QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
+                                    "<p>Error while executing the SQL:</p><p>" +
+                                    query + "</p><p>The database said:" +
+                                    err + "</p>" );
               pro.setValue( pro.value() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
               continue;
             }
@@ -676,8 +697,12 @@ void QgsSpit::import()
             res = PQexec( pd, ( const char * ) query );
             if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
             {
-              qWarning( PQresultErrorMessage( res ) );
-              QMessageBox::warning( &pro, tr("Import Shapefiles"), error );
+              QString err = PQresultErrorMessage( res );
+              qWarning( err );
+              QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
+                                    "<p>Error while executing the SQL:</p><p>" +
+                                    query + "</p><p>The database said:" +
+                                    err + "</p>" );
               pro.setValue( pro.value() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
               continue;
             }
@@ -693,8 +718,12 @@ void QgsSpit::import()
           res = PQexec( pd, query );
           if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
           {
-            qWarning( PQresultErrorMessage( res ) );
-            QMessageBox::warning( &pro, tr("Import Shapefiles"), error );
+            QString err = PQresultErrorMessage( res );
+            qWarning( err );
+            QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
+                                  "<p>Error while executing the SQL:</p><p>" +
+                                  query + "</p><p>The database said:" +
+                                  err + "</p>" );
           }
           else
           {
@@ -715,8 +744,12 @@ void QgsSpit::import()
         res = PQexec( pd, query );
         if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
         {
-          qWarning( PQresultErrorMessage( res ) );
-          QMessageBox::warning( &pro, tr("Import Shapefiles"), error );
+          QString err = PQresultErrorMessage( res );
+          qWarning( err );
+          QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
+                                "<p>Error while executing the SQL:</p><p>" +
+                                query + "</p><p>The database said:" +
+                                err + "</p>" );
           continue;
         }
         else
@@ -745,8 +778,12 @@ void QgsSpit::import()
         res = PQexec( pd, query );
         if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
         {
-          qWarning( PQresultErrorMessage( res ) );
-          QMessageBox::warning( &pro, tr("Import Shapefiles"), error );
+          QString err = PQresultErrorMessage( res );
+          qWarning( err );
+          QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
+                                "<p>Error while executing the SQL:</p><p>" +
+                                query + "</p><p>The database said:" +
+                                err + "</p>" );
         }
         else
         {
