@@ -51,14 +51,16 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
 
   /**Makes a GetCapabilities and returns the typenamse and crs supported by the server.
      @param typenames a list of layers provided by the server
-     @param a list of crs supported by the server. The place in the list corresponds to the \
+     @param crs a list of crs supported by the server. The place in the list corresponds to the \
      typenames list (means that the crs list at position 0 is a crs for typename at position 0 etc.)
+     @param title title list 
+     @param abstract textual descriptions for the types
      @return 0 in case of success*/
-  int getCapabilities(const QString& uri, QgsWFSSourceSelect::REQUEST_ENCODING e, std::list<QString>& typenames, std::list< std::list<QString> >& crs);
+  int getCapabilities(const QString& uri, QgsWFSSourceSelect::REQUEST_ENCODING e, std::list<QString>& typenames, std::list< std::list<QString> >& crs, std::list<QString>& titles, std::list<QString>& abstracts);
   //encoding specific methods of getCapabilities
-  int getCapabilitiesGET(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs);
-  int getCapabilitiesPOST(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs);
-  int getCapabilitiesSOAP(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs);
+  int getCapabilitiesGET(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs, std::list<QString>& titles, std::list<QString>& abstracts);
+  int getCapabilitiesPOST(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs, std::list<QString>& titles, std::list<QString>& abstracts);
+  int getCapabilitiesSOAP(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs, std::list<QString>& titles, std::list<QString>& abstracts);
 
   private slots:
   void addEntryToServerList();
