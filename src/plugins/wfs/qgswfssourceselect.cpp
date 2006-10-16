@@ -38,7 +38,7 @@ QgsWFSSourceSelect::QgsWFSSourceSelect(QWidget* parent, QgisIface* iface): QDial
   connect(btnDelete, SIGNAL(clicked()), this, SLOT(deleteEntryOfServerList()));
   connect(btnConnect,SIGNAL(clicked()), this, SLOT(connectToServer()));
   connect(btnChangeSpatialRefSys, SIGNAL(clicked()), this, SLOT(changeCRS()));
-  connect(lstWidget, SIGNAL(currentRowChanged(int)), this, SLOT(changeCRSFilter()));
+  connect(treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(changeCRSFilter()));
   populateConnectionList();
 
   mProjectionSelector = new QgsLayerProjectionSelector(this);
@@ -78,21 +78,21 @@ void QgsWFSSourceSelect::populateConnectionList()
   }
 }
 
-int QgsWFSSourceSelect::getCapabilities(const QString& uri, QgsWFSSourceSelect::REQUEST_ENCODING e, std::list<QString>& typenames, std::list< std::list<QString> >& crs)
+int QgsWFSSourceSelect::getCapabilities(const QString& uri, QgsWFSSourceSelect::REQUEST_ENCODING e, std::list<QString>& typenames, std::list< std::list<QString> >& crs, std::list<QString>& titles, std::list<QString>& abstracts)
 {
   switch(e)
     {
     case QgsWFSSourceSelect::GET:
-      return getCapabilitiesGET(uri, typenames, crs);
+      return getCapabilitiesGET(uri, typenames, crs, titles, abstracts);
     case QgsWFSSourceSelect::POST:
-      return getCapabilitiesPOST(uri, typenames, crs);
+      return getCapabilitiesPOST(uri, typenames, crs, titles, abstracts);
     case QgsWFSSourceSelect::SOAP:
-      return getCapabilitiesSOAP(uri, typenames, crs);
+      return getCapabilitiesSOAP(uri, typenames, crs, titles, abstracts);
     }
   return 1;
 }
 
-int QgsWFSSourceSelect::getCapabilitiesGET(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs)
+int QgsWFSSourceSelect::getCapabilitiesGET(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs, std::list<QString>& titles, std::list<QString>& abstracts)
 {
   QString request = uri + "SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.1.1";
   QByteArray result;
@@ -111,6 +111,7 @@ int QgsWFSSourceSelect::getCapabilitiesGET(const QString& uri, std::list<QString
   QDomNodeList featureTypeList = capabilitiesDocument.elementsByTagNameNS(WFS_NAMESPACE, "FeatureType");
   for(unsigned int i = 0; i < featureTypeList.length(); ++i)
     {
+      QString tname, title, abstract;
       QDomElement featureTypeElem = featureTypeList.at(i).toElement();
       std::list<QString> featureSRSList; //SRS list for this feature
 
@@ -118,9 +119,21 @@ int QgsWFSSourceSelect::getCapabilitiesGET(const QString& uri, std::list<QString
       QDomNodeList nameList = featureTypeElem.elementsByTagNameNS(WFS_NAMESPACE, "Name");
       if(nameList.length() > 0)
 	{
-	  typenames.push_back(nameList.at(0).toElement().text());
+	  tname = nameList.at(0).toElement().text();
 	}
-      
+      //Title
+      QDomNodeList titleList = featureTypeElem.elementsByTagNameNS(WFS_NAMESPACE, "Title");
+      if(titleList.length() > 0)
+	{
+	  title = titleList.at(0).toElement().text();
+	}
+      //Abstract
+      QDomNodeList abstractList = featureTypeElem.elementsByTagNameNS(WFS_NAMESPACE, "Abstract");
+      if(abstractList.length() > 0)
+	{
+	  abstract = abstractList.at(0).toElement().text();
+	}
+
       //DefaultSRS is always the first entry in the feature crs list
       QDomNodeList defaultSRSList = featureTypeElem.elementsByTagNameNS(WFS_NAMESPACE, "DefaultSRS");
       if(defaultSRSList.length() > 0)
@@ -143,6 +156,9 @@ int QgsWFSSourceSelect::getCapabilitiesGET(const QString& uri, std::list<QString
 	}
 
       crs.push_back(featureSRSList);
+      typenames.push_back(tname);
+      titles.push_back(title);
+      abstracts.push_back(abstract);
     }
 
 
@@ -153,12 +169,12 @@ int QgsWFSSourceSelect::getCapabilitiesGET(const QString& uri, std::list<QString
   return 0;
 }
 
-int QgsWFSSourceSelect::getCapabilitiesPOST(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs)
+int QgsWFSSourceSelect::getCapabilitiesPOST(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs, std::list<QString>& titles, std::list<QString>& abstracts)
 {
   return 1; //soon...
 }
 
-int QgsWFSSourceSelect::getCapabilitiesSOAP(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs)
+int QgsWFSSourceSelect::getCapabilitiesSOAP(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs, std::list<QString>& titles, std::list<QString>& abstracts)
 {
   return 1; //soon...
 }
@@ -209,7 +225,10 @@ void QgsWFSSourceSelect::connectToServer()
   //make a GetCapabilities request
   std::list<QString> typenames;
   std::list< std::list<QString> > crsList;
-  if(getCapabilities(mUri, QgsWFSSourceSelect::GET, typenames, crsList) != 0)
+  std::list<QString> titles;
+  std::list<QString> abstracts;
+
+  if(getCapabilities(mUri, QgsWFSSourceSelect::GET, typenames, crsList, titles, abstracts) != 0)
     {
       qWarning("error during GetCapabilities request");
     }
@@ -228,17 +247,24 @@ void QgsWFSSourceSelect::connectToServer()
       mAvailableCRS.insert(std::make_pair(*typeNameIter, currentCRSList));
     }
 
-  //insert the typenames into the list view
-  lstWidget->clear();
-  for(std::list<QString>::const_iterator it = typenames.begin(); it != typenames.end(); ++it)
+  //insert the typenames, titles and abstracts into the tree view
+  treeWidget->clear();
+  std::list<QString>::const_iterator t_it = titles.begin();
+  std::list<QString>::const_iterator n_it = typenames.begin();
+  std::list<QString>::const_iterator a_it = abstracts.begin();
+  for(; t_it != titles.end(); ++t_it, ++n_it, ++a_it)
     {
-      lstWidget->addItem(*it);
+      QTreeWidgetItem* newItem = new QTreeWidgetItem();
+      newItem->setText(0, *t_it);
+      newItem->setText(1, *n_it);
+      newItem->setText(2, *a_it);
+      treeWidget->addTopLevelItem(newItem);
     }
   
   if(typenames.size() > 0)
     {
       btnAdd->setEnabled(true);
-      lstWidget->setCurrentRow(0);
+      treeWidget->setCurrentItem(treeWidget->topLevelItem(0));
       btnChangeSpatialRefSys->setEnabled(true);
     }
   else
@@ -252,12 +278,12 @@ void QgsWFSSourceSelect::connectToServer()
 void QgsWFSSourceSelect::addLayer()
 {
   //get selected entry in lstWidget
-  QListWidgetItem* cItem = lstWidget->currentItem();
-  if(!cItem)
+  QTreeWidgetItem* tItem = treeWidget->currentItem();
+  if(!tItem)
     {
       return;
     }
-  QString typeName = cItem->text();
+  QString typeName = tItem->text(1);
   qWarning(mUri + "SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=" + typeName);
 
   //get CRS
@@ -290,10 +316,10 @@ void QgsWFSSourceSelect::changeCRS()
 void QgsWFSSourceSelect::changeCRSFilter()
 {
   //evaluate currently selected typename and set the CRS filter in mProjectionSelector
-  QListWidgetItem* currentListItem = lstWidget->currentItem();
-  if(currentListItem)
+  QTreeWidgetItem* currentTreeItem = treeWidget->currentItem();
+  if(currentTreeItem)
     {
-      QString currentTypename = currentListItem->text();
+      QString currentTypename = currentTreeItem->text(1);
       qWarning("the current typename is: " + currentTypename);
     
       std::map<QString, std::list<QString> >::const_iterator crsIterator = mAvailableCRS.find(currentTypename);

@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsWFSSourceSelectBase</class>
  <widget class="QDialog" name="QgsWFSSourceSelectBase" >
   <property name="geometry" >
@@ -22,46 +19,48 @@
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="0" column="0" >
-    <widget class="QGroupBox" name="GroupBox1" >
-     <property name="title" >
-      <string>Server Connections</string>
+   <item row="1" column="0" >
+    <widget class="QTreeWidget" name="treeWidget" >
+     <property name="columnCount" >
+      <number>3</number>
      </property>
-     <layout class="QGridLayout" >
+     <column>
+      <property name="text" >
+       <string>Title</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Name</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Abstract</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QGroupBox" name="gbCRS" >
+     <property name="title" >
+      <string>Coordinate Reference System</string>
+     </property>
+     <layout class="QHBoxLayout" >
       <property name="margin" >
        <number>9</number>
       </property>
       <property name="spacing" >
        <number>6</number>
       </property>
-      <item row="1" column="1" >
-       <widget class="QPushButton" name="btnNew" >
+      <item>
+       <widget class="QLabel" name="labelCoordRefSys" >
         <property name="text" >
-         <string>&amp;New</string>
+         <string/>
         </property>
        </widget>
       </item>
-      <item row="1" column="3" >
-       <widget class="QPushButton" name="btnDelete" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string>Delete</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2" >
-       <widget class="QPushButton" name="btnEdit" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string>Edit</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4" >
+      <item>
        <spacer>
         <property name="orientation" >
          <enum>Qt::Horizontal</enum>
@@ -71,30 +70,24 @@
         </property>
         <property name="sizeHint" >
          <size>
-          <width>171</width>
-          <height>30</height>
+          <width>441</width>
+          <height>23</height>
          </size>
         </property>
        </spacer>
       </item>
-      <item row="1" column="0" >
-       <widget class="QPushButton" name="btnConnect" >
+      <item>
+       <widget class="QPushButton" name="btnChangeSpatialRefSys" >
         <property name="enabled" >
          <bool>false</bool>
         </property>
         <property name="text" >
-         <string>C&amp;onnect</string>
+         <string>Change ...</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="0" colspan="5" >
-       <widget class="QComboBox" name="cmbConnections" />
-      </item>
      </layout>
     </widget>
-   </item>
-   <item row="1" column="0" >
-    <widget class="QListWidget" name="lstWidget" />
    </item>
    <item row="3" column="0" >
     <layout class="QHBoxLayout" >
@@ -170,26 +163,46 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="0" >
-    <widget class="QGroupBox" name="gbCRS" >
+   <item row="0" column="0" >
+    <widget class="QGroupBox" name="GroupBox1" >
      <property name="title" >
-      <string>Coordinate Reference System</string>
+      <string>Server Connections</string>
      </property>
-     <layout class="QHBoxLayout" >
+     <layout class="QGridLayout" >
       <property name="margin" >
        <number>9</number>
       </property>
       <property name="spacing" >
        <number>6</number>
       </property>
-      <item>
-       <widget class="QLabel" name="labelCoordRefSys" >
+      <item row="1" column="1" >
+       <widget class="QPushButton" name="btnNew" >
         <property name="text" >
-         <string/>
+         <string>&amp;New</string>
         </property>
        </widget>
       </item>
-      <item>
+      <item row="1" column="3" >
+       <widget class="QPushButton" name="btnDelete" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Delete</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" >
+       <widget class="QPushButton" name="btnEdit" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Edit</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4" >
        <spacer>
         <property name="orientation" >
          <enum>Qt::Horizontal</enum>
@@ -199,28 +212,30 @@
         </property>
         <property name="sizeHint" >
          <size>
-          <width>441</width>
-          <height>23</height>
+          <width>171</width>
+          <height>30</height>
          </size>
         </property>
        </spacer>
       </item>
-      <item>
-       <widget class="QPushButton" name="btnChangeSpatialRefSys" >
+      <item row="1" column="0" >
+       <widget class="QPushButton" name="btnConnect" >
         <property name="enabled" >
          <bool>false</bool>
         </property>
         <property name="text" >
-         <string>Change ...</string>
+         <string>C&amp;onnect</string>
         </property>
        </widget>
+      </item>
+      <item row="0" column="0" colspan="5" >
+       <widget class="QComboBox" name="cmbConnections" />
       </item>
      </layout>
     </widget>
    </item>
   </layout>
  </widget>
- <pixmapfunction></pixmapfunction>
  <resources/>
  <connections/>
 </ui>
