@@ -111,7 +111,7 @@ void QgsSpit::populateConnectionList()
 
 void QgsSpit::newConnection()
 {
-  QgsConnectionDialog * con = new QgsConnectionDialog( this, "New Connection" );
+  QgsConnectionDialog * con = new QgsConnectionDialog( this, tr("New Connection") );
 
   if ( con->exec() )
   {
@@ -159,9 +159,9 @@ void QgsSpit::addFile()
   QSettings settings("QuantumGIS", "qgis");
 
   QStringList files = QFileDialog::getOpenFileNames(this,
-                        "Add Shapefiles",
+                        tr("Add Shapefiles"),
                         settings.readEntry( "/Plugin-Spit/last_directory" ),
-                        "Shapefiles (*.shp);;All files (*.*)" );
+                        tr("Shapefiles (*.shp);;All files (*.*)") );
   if ( files.size() > 0 )
   {
     // Save the directory for future use
@@ -541,7 +541,7 @@ void QgsSpit::import()
       for ( int k = 1; k < names_copy.size(); k++ )
       {
         std::cerr << "USING :" << names_copy[ k ].toLocal8Bit().data() << " index " << k << std::endl;
-        qWarning( "Checking to see if " + names_copy[ k ] + " == " + names_copy[ k - 1 ] );
+        qWarning( tr("Checking to see if ") + names_copy[ k ] + " == " + names_copy[ k - 1 ] );
         if ( names_copy[ k ] == names_copy[ k - 1 ] )
           dupl += names_copy[ k ] + "\n";
       }
@@ -571,8 +571,8 @@ void QgsSpit::import()
         QString err = PQresultErrorMessage( res );
         qWarning( err );
         QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
-                              "<p>Error while executing the SQL:</p><p>" +
-                              query + "</p><p>The database said:" +
+                              tr("<p>Error while executing the SQL:</p><p>") +
+                              query + tr("</p><p>The database said:") +
                               err + "</p>" );
         pro.setValue( pro.value() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         continue;
@@ -592,8 +592,8 @@ void QgsSpit::import()
         QString err = PQresultErrorMessage( res );
         qWarning( err );
         QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
-                              "<p>Error while executing the SQL:</p><p>" +
-                              query + "</p><p>The database said:" +
+                              tr("<p>Error while executing the SQL:</p><p>") +
+                              query + tr("</p><p>The database said:") +
                               err + "</p>" );
 
         pro.setValue( pro.value() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
@@ -612,8 +612,8 @@ void QgsSpit::import()
         QString err = PQresultErrorMessage( res );
         qWarning( err );
         QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
-                              "<p>Error while executing the SQL:</p><p>" +
-                              query + "</p><p>The database said:" +
+                              tr("<p>Error while executing the SQL:</p><p>") +
+                              query + tr("</p><p>The database said:") +
                               err + "</p>" );
         pro.setValue( pro.value() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         continue;
@@ -636,8 +636,8 @@ void QgsSpit::import()
         qWarning( err );
         qWarning( PQresStatus( PQresultStatus( res ) ) );
         QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
-                              "<p>Error while executing the SQL:</p><p>" +
-                              query + "</p><p>The database said:" +
+                              tr("<p>Error while executing the SQL:</p><p>") +
+                              query + tr("</p><p>The database said:") +
                               err + "</p>" );
         pro.setValue( pro.value() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         continue;
@@ -675,8 +675,8 @@ void QgsSpit::import()
               QString err = PQresultErrorMessage( res );
               qWarning( err );
               QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
-                                    "<p>Error while executing the SQL:</p><p>" +
-                                    query + "</p><p>The database said:" +
+                                    tr("<p>Error while executing the SQL:</p><p>") +
+                                    query + tr("</p><p>The database said:") +
                                     err + "</p>" );
               pro.setValue( pro.value() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
               continue;
@@ -700,8 +700,8 @@ void QgsSpit::import()
               QString err = PQresultErrorMessage( res );
               qWarning( err );
               QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
-                                    "<p>Error while executing the SQL:</p><p>" +
-                                    query + "</p><p>The database said:" +
+                                    tr("<p>Error while executing the SQL:</p><p>") +
+                                    query + tr("</p><p>The database said:") +
                                     err + "</p>" );
               pro.setValue( pro.value() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
               continue;
@@ -721,8 +721,8 @@ void QgsSpit::import()
             QString err = PQresultErrorMessage( res );
             qWarning( err );
             QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
-                                  "<p>Error while executing the SQL:</p><p>" +
-                                  query + "</p><p>The database said:" +
+                                  tr("<p>Error while executing the SQL:</p><p>") +
+                                  query + tr("</p><p>The database said:") +
                                   err + "</p>" );
           }
           else
@@ -747,8 +747,8 @@ void QgsSpit::import()
           QString err = PQresultErrorMessage( res );
           qWarning( err );
           QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
-                                "<p>Error while executing the SQL:</p><p>" +
-                                query + "</p><p>The database said:" +
+                                tr("<p>Error while executing the SQL:</p><p>") +
+                                query + tr("</p><p>The database said:") +
                                 err + "</p>" );
           continue;
         }
@@ -781,8 +781,8 @@ void QgsSpit::import()
           QString err = PQresultErrorMessage( res );
           qWarning( err );
           QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
-                                "<p>Error while executing the SQL:</p><p>" +
-                                query + "</p><p>The database said:" +
+                                tr("<p>Error while executing the SQL:</p><p>") +
+                                query + tr("</p><p>The database said:") +
                                 err + "</p>" );
         }
         else
