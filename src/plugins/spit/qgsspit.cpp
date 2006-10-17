@@ -427,8 +427,30 @@ PGconn* QgsSpit::checkConnection()
       result = false;
     }
   }
-  if ( result )
+
+  if (result )
+  {
+    // Check that the database actually has postgis in it.
+    QString sql1 = "SELECT postgis_lib_version()"; // available from v 0.9.0 onwards
+    QString sql2 = "SELECT postgis_version()"; // depreciated 
+
+    PGresult* ver = PQexec(pd, sql1.toLocal8Bit().data());
+    if ( PQresultStatus(ver) != PGRES_TUPLES_OK)
+    {
+      // In case the version of postgis is older than 0.9.0, try the
+      // depreciated call before erroring out.
+      PQclear(ver);
+      ver = PQexec(pd, sql2.toLocal8Bit().data());
+      if ( PQresultStatus(ver) != PGRES_TUPLES_OK)
+      {
+        QMessageBox::warning( this, tr("PostGIS not available"),
+                              tr("<p>The chosen database does not have PostGIS installed, "
+                                 "but this is required for storage of spatial data.</p>"));
+        return NULL;
+      }
+    }
     return pd;
+  }
   else
     return NULL;
 }
