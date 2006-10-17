@@ -14,7 +14,8 @@ message(******************** settings.pro ***********************)
 #################################################################
 
 unix:WORKDIR=$$system(pwd)
-win32:WORKDIR=c:/temp/
+#a hack to get the current working dir under windows
+win32:WORKDIR=$$system(cd)
 message(Building in $${WORKDIR})
 QGIS_APP_NAME=omgui1
 QGIS_LOCALPLUGIN=true
@@ -59,7 +60,7 @@ CONFIG += exceptions
 # Require that there are no undefined symbols in any libs!
 QMAKE_LFLAGS_SHLIB *= --no-undefined
 
-QGSSVNVERSION="version0.8pre2"
+QGSSVNVERSION=version0.8pre2
 #################################################################
 ##
 ## Destination dir
@@ -146,20 +147,6 @@ macx:LIBS+=-L$${QGISLIBDIR}
 macx:LIBS+=-F/Library/Frameworks/
 macx:LIBS+=-L/usr/local/lib
 
-contains(QGIS_USE_QGIS,true){
-  QT+= qt3support
-  #For mac we specify the path into a qgis.app bundle for the libs
-  #on other systems we will assume they are already in the path
-  macx:QGISDIR=/Users/timsutton/apps/qgis.app/Contents/MacOS/
-  linux-g++:QGISDIR=/home/timlinux/apps
-  #linux-g++:/usr
-  QGISLIBDIR=$${QGISDIR}/lib
-  LIBS+=-L$${QGISLIBDIR}
-
-  QGISPLUGINDIR=$${QGISLIBDIR}/qgis
-  DEFINES += QGISPLUGINDIR=$${QGISPLUGINDIR}
-  DEFINES += WITH_QGIS
-}
 
 #################################################################
 #
@@ -167,22 +154,15 @@ contains(QGIS_USE_QGIS,true){
 #
 #################################################################
 
-linux-g++:INCLUDEPATH += /usr/lib/ccache/include
-contains(QGIS_USE_QGIS,true){
-  macx:QGISSRCDIR=/Users/timsutton/dev/cpp/qgis/src
-  linux-g++:QGISSRCDIR=/home/timlinux/dev/cpp/qgis/src
-  win32:QGISSRCDIR=c:/dev/cpp/qgis/src
-  
-  unix:INCLUDEPATH += $${QGISDIR}/include/qgis
-  win32:INCLUDEPATH += $${QGISSRCDIR}
-  win32:INCLUDEPATH += c:/msys/local/include
-  INCLUDEPATH +=$${QGISSRCDIR}/core \
-                $${QGISSRCDIR}/gui \
-                $${QGISSRCDIR}/plugins \
-                $${QGISSRCDIR}/providers \
-                $${QGISSRCDIR}/raster \
-                $${QGISSRCDIR}/ui 
-}
+win32:INCLUDEPATH += c:/msys/local/include
+INCLUDEPATH +=$${WORKDIR}/src \
+              $${WORKDIR}/src/core \
+              $${WORKDIR}/src/gui \
+              $${WORKDIR}/src/legend \
+              $${WORKDIR}/src/plugins \
+              $${WORKDIR}/src/providers \
+              $${WORKDIR}/src/raster \
+              $${WORKDIR}/src/ui 
 
 #################################################################
 #

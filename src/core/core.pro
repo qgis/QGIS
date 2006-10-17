@@ -13,13 +13,16 @@
 include(../../settings.pro)
 TEMPLATE=lib
 TARGET=qgis_core
-system(echo $$QGSSVNVERSION > qgssvnversion.h)
+#need to figure out how to automate making qgssvnversion file
+#  line below doesnt work
+#system(echo $$QGSSVNVERSION >> qgssvnversion.h)
 #suffix debug to target if applicable
 CONFIG(debug, debug|release){
   TARGET = $$member(TARGET, 0)-debug
 }
 LIBS += $${GDALLIBADD}
 DESTDIR=$${QGISLIBDIR}
+QT += network qt3support xml svg
 message("Building libs into $${DESTDIR}")
 
 #AM_YFLAGS       = -d
