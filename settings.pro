@@ -17,7 +17,7 @@ unix:WORKDIR=$$system(pwd)
 #a hack to get the current working dir under windows
 win32:WORKDIR=$$system(cd)
 message(Building in $${WORKDIR})
-QGIS_APP_NAME=omgui1
+QGIS_APP_NAME=qgis
 QGIS_LOCALPLUGIN=true
 QGIS_WEBSERVICESPLUGIN=false #disabled until renato gets it fully implemented
 QGIS_DUMMYPLUGIN=false
@@ -106,35 +106,28 @@ message(QGISPLUGINDIR : $${QGISPLUGINDIR})
 
 #################################################################
 ##
-## Library names
+## Libraries to link to (used on a case by case basis as needed)
 ##
 #################################################################
 
-QGISLIBADD=-lomgui
-QGISWIDGETSLIBADD=-lomgwidgets
-QGISSOAPLIBADD=-lomgsoap
-OPENMODELLERLIBADD=-lopenmodeller
+QGISCORELIBADD=-lqgis_core
 CONFIG(debug, debug|release){
-  QGISLIBADD=$$member(QGISLIBADD, 0)-debug
-  #win32:LIBS += -lomgui-debug$${VER_MAJ}
-  QGISWIDGETSLIBADD=$$member(QGISWIDGETSLIBADD, 0)-debug
-  QGISSOAPLIBADD=$$member(QGISSOAPLIBADD, 0)-debug
-  win32:OPENMODELLERLIBADD=$$member(OPENMODELLERLIBADD, 0)-debug
+  QGISCORELIBADD=$$member(QGISLIBADD, 0)-debug
 }
-win32:EXPATLIBADD=libexpat-1
-unix:EXPATLIBADD= #not needed for unix
+
 win32:GDALLIBADD=-lgdal
 unix:GDALLIBADD=-lgdal
 macx:GDALLIBADD=-framework gdal
 
-contains(QGIS_USE_QGIS,true){
-  QGISLIBADD = -lqgis_core -lqgis_gui -lproj
-}
+SQLITELIBADD=-lsqlite3
+PROJLIBADD=-lproj
+GEOSLIBADD=-lgeos
 
+win32:LIBS += -lWs2_32
 
 #################################################################
 #
-# Lib search paths
+# Lib search paths (globally set for all pro files)
 #
 #################################################################
 
@@ -150,7 +143,7 @@ macx:LIBS+=-L/usr/local/lib
 
 #################################################################
 #
-# Include paths
+# Include paths (globally set for all pro files)
 #
 #################################################################
 
@@ -200,44 +193,6 @@ macx{
     message(Gdal framework copied into the bundle)
   }
   system(cp mac/Info.plist $${DESTDIR}/bin/$${QGIS_APP_NAME}.app/Contents)
-}
-
-####################################################
-
-
-# Whether we should build the local om plugin
-contains(QGIS_LOCALPLUGIN,true){
-  message("Building with omglocalplugin support")
-  #make available as a c++ compiler macro
-  DEFINES += WITH_LOCAL_PLUGIN
-}else {
-  message("OmgLocalPlugin support disabled")
-}
-
-####################################################
-
-# Whether we should build the webservices om plugin
-contains(QGIS_WEBSERVICESPLUGIN,true){
-  message("Building with omgwebservicesplugin support")
-  #make available as a c++ compiler macro
-  DEFINES += WITH_WEBSERVICES_PLUGIN
-}else{
-  message("OmgWebServicesPlugin support disabled")
-  #nullify soap lib include if WS is disabled
-  QGISSOAPLIBADD=
-}
-
-####################################################
-
-
-# Whether we should build with experimental/incomplete features
-# enabled on the GUI
-contains(QGIS_ALLOW_EXPERIMENTAL,false){
-  message("Building with NO_EXPERIMENTAL features visible to user")
-  #make available as a c++ compiler macro
-  DEFINES += QGIS_NO_EXPERIMENTAL
-}else{
-  message("EXPERIMENTAL features will be visible to user")
 }
 
 
