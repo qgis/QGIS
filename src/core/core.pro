@@ -21,12 +21,20 @@ CONFIG(debug, debug|release){
   TARGET = $$member(TARGET, 0)-debug
 }
 LIBS += $${GDALLIBADD}
+LIBS += $${SQLITELIBADD}
+LIBS += $${GEOSLIBADD}
+LIBS += $${PROJLIBADD}
 DESTDIR=$${QGISLIBDIR}
-QT += network qt3support xml svg
+#leave the next line here - it clears the Qt defines
+QT =
+QT += network qt3support xml svg core gui
 message("Building libs into $${DESTDIR}")
 
 #AM_YFLAGS       = -d
 #qgis_YACC       = qgssearchstringparser.h
+#LEXSOURCES       = qgssearchstringlexer.ll \
+#        	    qgssearchstringparser.yy
+
 HEADERS =				\
 		qgis.h					\
 		qgsapplication.h			\
@@ -36,6 +44,8 @@ HEADERS =				\
 		qgscontexthelp.h			\
 		qgscsexception.h			\
 		qgscustomsymbol.h			\
+		qgscoordinatetransform.h                \
+		qgsspatialrefsys.h                      \
 		qgsdatamanager.h			\
 		qgsdataprovider.h			\
 		qgsdatasource.h				\
@@ -57,7 +67,6 @@ HEADERS =				\
 		qgsmarkersymbol.h			\
 		qgsnumericsortlistviewitem.h		\
 		qgspluginitem.h				\
-		qgspluginregistry.h			\
 		qgspoint.h				\
 		qgspolygonsymbol.h			\
 		qgsprojectproperty.h			\
@@ -76,6 +85,7 @@ HEADERS =				\
 		qgssinglesymrenderer.h			\
 		qgssymbol.h				\
 		qgssymbologyutils.h			\
+		qgssearchstringparser.h                \
 		qgsvectordataprovider.h		
 
 
@@ -83,6 +93,8 @@ SOURCES =\
 		qgis.cpp				\
 		qgsapplication.cpp			\
 		qgsbookmarkitem.cpp			\
+		qgscoordinatetransform.cpp              \
+		qgsspatialrefsys.cpp                    \
 		qgsclipper.cpp				\
 		qgscolortable.cpp			\
 		qgscontexthelp.cpp			\
@@ -106,7 +118,6 @@ SOURCES =\
 		qgsmarkersymbol.cpp			\
 		qgsnumericsortlistviewitem.cpp		\
 		qgspluginitem.cpp			\
-		qgspluginregistry.cpp			\
 		qgspoint.cpp				\
 		qgspolygonsymbol.cpp			\
 		qgsprojectproperty.cpp			\
@@ -121,11 +132,13 @@ SOURCES =\
 		qgsrenderitem.cpp			\
 		qgsscalecalculator.cpp			\
 		qgssearchstring.cpp   		        \
-		qgssearchstringlexer.ll			\
-		qgssearchstringparser.yy		\
 		qgssearchtreenode.cpp			\
 		qgssymbol.cpp				\
 		qgssymbologyutils.cpp			\
+		qgssearchstringlexer.cc                 \
+		qgssearchstringparser.cc                \
 		qgsvectordataprovider.cpp			
+
+
 
 
