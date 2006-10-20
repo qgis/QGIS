@@ -12,5 +12,5 @@
 
 TEMPLATE=subdirs
 
-SUBDIRS=core
+SUBDIRS=core widgets gui
 

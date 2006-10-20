@@ -140,6 +140,11 @@
 #include <ApplicationServices/ApplicationServices.h>
 #endif
 
+//short term hack by Tim for windows to disable postgresql support
+//#ifndef WIN32
+#undef HAVE_POSTGRESQL
+//#endif
+
 #ifdef HAVE_POSTGRESQL
 #include "qgsdbsourceselect.h"
 #endif
