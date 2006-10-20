@@ -28,6 +28,11 @@
 #include "qgsuniquevaluedialog.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+
+#ifdef WIN32
+//temporary hack by Tim to disable pg on windows
+#undef HAVE_POSTGRESQL
+#endif
 #ifdef HAVE_POSTGRESQL
 #include "qgspgquerybuilder.h"
 #include "../providers/postgres/qgspostgresprovider.h"

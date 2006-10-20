@@ -59,8 +59,11 @@ LANGUAGE  = C++
 CONFIG += exceptions
 # Require that there are no undefined symbols in any libs!
 QMAKE_LFLAGS_SHLIB *= --no-undefined
+#clear all qt modules - each pro should specify exactly which qt modules it wants
+QT =
 
 QGSSVNVERSION=version0.8pre2
+DEFINES += HAVE_POSTGRESQL=0
 #################################################################
 ##
 ## Destination dir
@@ -112,7 +115,17 @@ message(QGISPLUGINDIR : $${QGISPLUGINDIR})
 
 QGISCORELIBADD=-lqgis_core
 CONFIG(debug, debug|release){
-  QGISCORELIBADD=$$member(QGISLIBADD, 0)-debug
+  QGISCORELIBADD=$$member(QGISCORELIBADD, 0)-debug
+}
+
+QGISPROJECTIONSELECTORLIBADD=-lqgis_projectionselector
+CONFIG(debug, debug|release){
+  QGISPROJECTIONSELECTORLIBADD=$$member(QGISPROJECTIONSELECTORLIBADD, 0)-debug
+}
+
+QGISCOMPOSERLIBADD=-lqgis_composer
+CONFIG(debug, debug|release){
+  QGISCOMPOSERLIBADD=$$member(QGISCOMPOSERLIBADD, 0)-debug
 }
 
 win32:GDALLIBADD=-lgdal
@@ -152,6 +165,8 @@ INCLUDEPATH +=$${WORKDIR}/src \
               $${WORKDIR}/src/core \
               $${WORKDIR}/src/gui \
               $${WORKDIR}/src/legend \
+              $${WORKDIR}/src/composer \
+              $${WORKDIR}/src/widgets/projectionselector \
               $${WORKDIR}/src/plugins \
               $${WORKDIR}/src/providers \
               $${WORKDIR}/src/raster \

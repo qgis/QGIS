@@ -25,9 +25,8 @@ LIBS += $${SQLITELIBADD}
 LIBS += $${GEOSLIBADD}
 LIBS += $${PROJLIBADD}
 DESTDIR=$${QGISLIBDIR}
-#leave the next line here - it clears the Qt defines
-QT =
 QT += network qt3support xml svg core gui
+QT = $$unique(QT)
 message("Building libs into $${DESTDIR}")
 
 #AM_YFLAGS       = -d
@@ -42,7 +41,6 @@ HEADERS =				\
 		qgsclipper.h				\
 		qgscolortable.h				\
 		qgscontexthelp.h			\
-		qgscsexception.h			\
 		qgscustomsymbol.h			\
 		qgscoordinatetransform.h                \
 		qgsspatialrefsys.h                      \
@@ -82,12 +80,12 @@ HEADERS =				\
 		qgsscalecalculator.h			\
 		qgssearchstring.h			\
                 qgssearchtreenode.h			\
-		qgssinglesymrenderer.h			\
 		qgssymbol.h				\
 		qgssymbologyutils.h			\
 		qgssearchstringparser.h                \
 		qgsvectordataprovider.h		
 
+HEADERS = $$unique(HEADERS)
 
 SOURCES =\
 		qgis.cpp				\
