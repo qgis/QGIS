@@ -483,7 +483,7 @@ QWidget *QgsComposerPicture::options ( void )
 
 QString QgsComposerPicture::pictureDialog ( void )
 {
-    QString filters = "Pictures ( *.svg *.SVG ";
+    QString filters = tr("Pictures") + " ( *.svg *.SVG ";
     QList<QByteArray> formats = QImageWriter::supportedImageFormats();
 
     for ( int i = 0; i < formats.count(); i++ )

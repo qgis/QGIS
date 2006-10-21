@@ -95,7 +95,7 @@ void QgsComposerVectorLegend::init ( void )
 {
     mSelected = false;
     mNumCachedLayers = 0;
-    mTitle = "Legend";
+    mTitle = tr("Legend");
     mMap = 0;
     mNextLayerGroup = 1;
     mFrame = true;
