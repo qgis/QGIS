@@ -1,12 +1,13 @@
-######################################################################
-# Qmake project file for QGIS providers directory
-# This file is used by qmake to generate the Makefile for building
-# QGIS on Windows
+#################################################################
 #
-# $Id $ 
-######################################################################
+#         QMAKE Project File for Quantum GIS 
+# 
+#                   Tim Sutton 2006
+#
+# NOTE: Do not place any hard coded external paths in this file
+#       all libs and includes should be specified in settings.pro
+#       in the top level qgis directory.
+# 
+#################################################################
 TEMPLATE = subdirs
-SUBDIRS =  delimitedtext \
-           ogr \
-           postgres \
-	   gpx
+SUBDIRS =  ogr 
