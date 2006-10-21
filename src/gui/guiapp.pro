@@ -26,12 +26,11 @@ LIBS += $${GDALLIBADD}
 #LIBS += $${SQLITELIBADD}
 #LIBS += $${GEOSLIBADD}
 #LIBS += $${PROJLIBADD}
-#LIBS += $${QGISCORELIBADD}
+LIBS += $${QGISCORELIBADD}
 LIBS += $${QGISGUILIBADD}
 #LIBS += $${QGISPROJECTIONSELECTORLIBADD}
 DESTDIR=$${QGISBINDIR}
-#QT += qt3support svg core gui xml network
-QT  += gui core
+QT += qt3support svg core gui xml network
 message("Building libs into $${DESTDIR}")
 
 
