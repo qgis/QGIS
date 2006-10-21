@@ -19,11 +19,7 @@
 class QgsSymbol;
 
 
-#ifdef WIN32
-#include "qgsvectorsymbologywidgetbase.uic.h"
-#else
-#include "qgsvectorsymbologywidgetbase.uic.h"
-#endif
+#include "ui_qgsvectorsymbologywidgetbase.h"
 
 class QgsVectorSymbologyWidget:public QgsVectorSymbologyWidgetBase
 {
