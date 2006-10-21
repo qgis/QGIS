@@ -29,10 +29,10 @@ message("LIBS: $${LIBS}")
 DESTDIR=$${QGISLIBDIR}
 #leave the next line here - it clears the Qt defines
 QT =
-QT += qt3support svg core gui
+QT += qt3support svg core gui xml
 message("Building libs into $${DESTDIR}")
 
-libqgis_composerHEADERS = qgscomposer.h \
+HEADERS = qgscomposer.h \
 		qgscomposeritem.h	\
 		qgscomposerlabel.h	\
 		qgscomposerpicture.h	\
@@ -42,7 +42,7 @@ libqgis_composerHEADERS = qgscomposer.h \
 		qgscomposerview.h	\
 		qgscomposition.h					
 
-libqgis_composer_la_SOURCES =  qgscomposer.cpp \
+SOURCES =  qgscomposer.cpp \
 		qgscomposeritem.cpp	       \
 		qgscomposerlabel.cpp	       \
 		qgscomposerpicture.cpp	       \
