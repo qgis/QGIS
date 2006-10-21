@@ -1,25 +1,36 @@
-####################################################################
-# Qmake project file for QGIS data provider
-# This file is used by qmake to generate the Makefile for building
-# the QGIS delimited text data provider on Windows
+#################################################################
 #
-# delimitedtext.pro,v 1.1 2004/07/15 01:10:40 gsherman Exp
-####################################################################
+#         QMAKE Project File for Quantum GIS 
+# 
+#                   Tim Sutton 2006
+#
+# NOTE: Do not place any hard coded external paths in this file
+#       all libs and includes should be specified in settings.pro
+#       in the top level qgis directory.
+# 
+#################################################################
 
+#
+# This file builds the gui library - the app is built in a separate pro file
+#
+
+include(../../../settings.pro)
+TARGET=delimitedtextprovider
 TEMPLATE = lib
-INCLUDEPATH += . $(GEOS)\include \
-                 $(GDAL)\include
-LIBS += ..\..\src\libqgis.lib \
-        $(GEOS)\lib\geos.lib \
-        $(GDAL)\lib\gdal_i.lib 
-CONFIG += qt dll thread
-DLLDESTDIR= ..\..\win_build\lib\qgis
+#suffix debug to target if applicable
+CONFIG(debug, debug|release){
+  TARGET = $$member(TARGET, 0)-debug
+}
+LIBS += $${GDALLIBADD}
+LIBS += $${GEOSLIBADD}
+#LIBS += $${PROJLIBADD}
+LIBS += $${QGISCORELIBADD}
+LIBS += $${QGISGUILIBADD}
+LIBS += $${QGISPROJECTIONSELECTORLIBADD}
+DESTDIR=$${QGISPROVIDERDIR}
+QT += qt3support svg core gui xml network
+message("Building libs into $${DESTDIR}")
 
-# Input
+CONFIG += qt dll thread debug rtti
 HEADERS += qgsdelimitedtextprovider.h
-SOURCES += qgsdelimitedtextprovider.cpp \
-           ..\..\src\qgsfeature.cpp \
-           ..\..\src\qgsfield.cpp \
-           ..\..\src\qgsrect.cpp \
-           ..\..\src\qgsfeatureattribute.cpp \
-           ..\..\src\qgspoint.cpp
+SOURCES += qgsdelimitedtextprovider.cpp 

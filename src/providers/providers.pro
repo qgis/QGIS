@@ -10,4 +10,4 @@
 # 
 #################################################################
 TEMPLATE = subdirs
-SUBDIRS =  ogr 
+SUBDIRS =  ogr delimitedtext 
