@@ -160,7 +160,6 @@ macx:LIBS+=-L/usr/local/lib
 #
 #################################################################
 
-win32:INCLUDEPATH += c:/msys/local/include
 INCLUDEPATH +=$${WORKDIR}/src \
               $${WORKDIR}/src/core \
               $${WORKDIR}/src/gui \
@@ -180,10 +179,8 @@ INCLUDEPATH +=$${WORKDIR}/src \
 
 win32{
   message(Installing for windows!)
-  INCLUDEPATH += . 
-  INCLUDEPATH += C:/MinGW/include
-  INCLUDEPATH += C:/cygwin/usr/local/src/om/src
-  INCLUDEPATH += c:/dev/cpp/om/src
+  #add any win specific rules here 
+  INCLUDEPATH += c:/msys/local/include
 }
 
 
@@ -194,7 +191,6 @@ win32{
 #################################################################
 
 macx{
-  INCLUDEPATH += /usr/local/include/openmodeller
   #fixme should not need the next line
   #INCLUDEPATH += /Users/timsutton/dev/cpp/om/src
   FRAMEWORKSDIR=$${DESTDIR}/$${QGIS_APP_NAME}.app/Contents/Frameworks
