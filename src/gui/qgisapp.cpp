@@ -140,8 +140,10 @@
 #include <ApplicationServices/ApplicationServices.h>
 #endif
 
+#ifndef WIN32
 #ifdef HAVE_POSTGRESQL
 #include "qgsdbsourceselect.h"
+#endif
 #endif
 
 #ifndef WIN32
@@ -771,8 +773,10 @@ void QgisApp::createMenus()
   mLayerMenu = menuBar()->addMenu(tr("&Layer"));
   mLayerMenu->addAction(mActionAddNonDbLayer);
   mLayerMenu->addAction(mActionAddRasterLayer);
+#ifndef WIN32
 #ifdef HAVE_POSTGRESQL
   mLayerMenu->addAction(mActionAddLayer);
+#endif
 #endif
   mLayerMenu->addAction(mActionAddWmsLayer);
   mLayerMenu->addAction(mActionRemoveLayer);
@@ -835,8 +839,10 @@ void QgisApp::createToolBars()
   mLayerToolBar->setObjectName("LayerToolBar");
   mLayerToolBar->addAction(mActionAddNonDbLayer);
   mLayerToolBar->addAction(mActionAddRasterLayer);
+#ifndef WIN32
 #ifdef HAVE_POSTGRESQL
   mLayerToolBar->addAction(mActionAddLayer);
+#endif
 #endif
   mLayerToolBar->addAction(mActionAddWmsLayer);
   mLayerToolBar->addAction(mActionNewVectorLayer);
@@ -1939,9 +1945,10 @@ bool QgisApp::isValidVectorFileName(QString * theFileNameQString)
   return isValidVectorFileName(*theFileNameQString);
 }
 
-#ifndef HAVE_POSTGRESQL
+#ifndef WIN32
+ #ifndef HAVE_POSTGRESQL
 void QgisApp::addDatabaseLayer(){}
-#else
+ #else
 void QgisApp::addDatabaseLayer()
 {
   // only supports postgis layers at present
@@ -1988,9 +1995,9 @@ void QgisApp::addDatabaseLayer()
         layer->refreshLegend();
 
         // connect up any keypresses to be passed tot he layer (e.g. so esc can stop rendering)
-#ifdef QGISDEBUG
+  #ifdef QGISDEBUG
         std::cout << " Connecting up maplayers keyPressed event to the QgisApp keyPress signal" << std::endl;
-#endif
+  #endif
         QObject::connect(this,
             SIGNAL(keyPressed(QKeyEvent *)),
             layer,
@@ -2017,8 +2024,10 @@ void QgisApp::addDatabaseLayer()
 //  QApplication::restoreOverrideCursor();
 
 } // QgisApp::addDatabaseLayer()
+ #endif
+#else
+void QgisApp::addDatabaseLayer(){}
 #endif
-
 
 void QgisApp::addWmsLayer()
 {
