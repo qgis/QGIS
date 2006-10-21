@@ -46,7 +46,7 @@ QgsComposer::QgsComposer( QgisApp *qgis): QMainWindow()
 {
   setupUi(this);
   setupTheme();
-  setWindowTitle("QGIS - print composer");
+  setWindowTitle(tr("QGIS - print composer"));
 
   // Template save and load is not yet implemented, so disable those actions
   mActionOpenTemplate->setEnabled(false);
@@ -68,7 +68,7 @@ QgsComposer::QgsComposer( QgisApp *qgis): QMainWindow()
   mCompositionOptionsLayout = new QGridLayout( mCompositionOptionsFrame, 1, 1 );
   mItemOptionsLayout = new QGridLayout( mItemOptionsFrame, 1, 1 );
 
-  mCompositionNameComboBox->insertItem( "Map 1" );
+  mCompositionNameComboBox->insertItem( tr("Map 1") );
 
   mComposition  = new QgsComposition( this, 1 );
   mComposition->setActive ( true );
@@ -415,7 +415,7 @@ void QgsComposer::on_mActionPrint_activated(void)
       // Overwrite translate
       if ( mPrinter->orientation() == QPrinter::Portrait ) { 
         if (!f.open( QIODevice::ReadWrite )) {
-          throw QgsIOException(tr("Couldn't open " + f.name() + tr(" for read/write")));
+          throw QgsIOException(tr("Couldn't open ") + f.name() + tr(" for read/write"));
         }
         offset = 0;
         found = false;
@@ -554,7 +554,7 @@ void QgsComposer::on_mActionExportAsImage_activated(void)
   for ( ; myCounterInt < QImageWriter::supportedImageFormats().count(); myCounterInt++ )
   {
     QString myFormat=QString(QImageWriter::supportedImageFormats().at( myCounterInt ));
-    QString myFilter = myFormat + " format (*." + myFormat.lower() + " *." + myFormat.upper() + ")";
+    QString myFilter = myFormat + " " + tr("format") + " (*." + myFormat.lower() + " *." + myFormat.upper() + ")";
     if ( myCounterInt > 0 ) myFilters += ";;";
     myFilters += myFilter;
     myFilterMap[myFilter] = myFormat;
@@ -670,7 +670,7 @@ void QgsComposer::on_mActionExportAsSVG_activated(void)
   QFileInfo file(myLastUsedFile);
 
   QFileDialog *myQFileDialog = new QFileDialog( this, tr("Choose a filename to save the map as"),
-                                                file.path(), "SVG Format (*.svg *SVG)" );
+                                                file.path(), tr("SVG Format") + " (*.svg *SVG)" );
   
   myQFileDialog->selectFile( file.fileName() );
   myQFileDialog->setMode(QFileDialog::AnyFile);
