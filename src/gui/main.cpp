@@ -30,6 +30,7 @@
 #include <QString>
 #include <QStringList> 
 #include <QStyle>
+#include <QPlastiqueStyle>
 #include <QTextCodec>
 #include <QTranslator>
 
@@ -402,6 +403,11 @@ int main(int argc, char *argv[])
   QString appPath = argv[0];
   QString appDir = appPath.left(appPath.findRev("/"));
   QString testFile = "lt-qgis";
+#endif
+
+#ifdef Q_WS_WIN
+  //for windows lets use plastique syle!
+  QApplication::setStyle(new QPlastiqueStyle);
 #endif
 
   if(appPath.contains("/src/"))

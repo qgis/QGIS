@@ -123,9 +123,16 @@ CONFIG(debug, debug|release){
   QGISPROJECTIONSELECTORLIBADD=$$member(QGISPROJECTIONSELECTORLIBADD, 0)-debug
 }
 
+#not currently used since I had to incorporate composer into gui lib due to 
+#cyclical dependency issues
 QGISCOMPOSERLIBADD=-lqgis_composer
 CONFIG(debug, debug|release){
   QGISCOMPOSERLIBADD=$$member(QGISCOMPOSERLIBADD, 0)-debug
+}
+
+QGISGUILIBADD=-lqgis_gui
+CONFIG(debug, debug|release){
+  QGISGUILIBADD=$$member(QGISGUILIBADD, 0)-debug
 }
 
 win32:GDALLIBADD=-lgdal
