@@ -1,18 +1,39 @@
-####################################################################
-# Qmake project file for QGIS top-level plugins directory
-# This file is used by qmake to generate the Makefiles for building
-# QGIS plugins on Windows
+#################################################################
 #
-# delimited_text.pro,v 1.1 2004/06/23 04:15:54 gsherman Exp
-####################################################################
+#         QMAKE Project File for Quantum GIS 
+# 
+#                   Tim Sutton 2006
+#
+# NOTE: Do not place any hard coded external paths in this file
+#       all libs and includes should be specified in settings.pro
+#       in the top level qgis directory.
+# 
+#################################################################
+
+#
+# This file builds the gui library - the app is built in a separate pro file
+#
+
+include(../../../settings.pro)
+TARGET=delimitedtextprovider
 TEMPLATE = lib
-INCLUDEPATH += . ..\..\src $(GDAL)\include
-LIBS += $(GDAL)\lib\gdal_i.lib
-DLLDESTDIR= ..\..\win_build\lib\qgis
-CONFIG += qt dll thread
-# Input
+#suffix debug to target if applicable
+CONFIG(debug, debug|release){
+  TARGET = $$member(TARGET, 0)-debug
+}
+LIBS += $${GDALLIBADD}
+#LIBS += $${GEOSLIBADD}
+#LIBS += $${PROJLIBADD}
+LIBS += $${QGISCORELIBADD}
+LIBS += $${QGISGUILIBADD}
+#LIBS += $${QGISPROJECTIONSELECTORLIBADD}
+DESTDIR=$${QGISPLUGINDIR}
+QT += qt3support svg core gui xml network
+message("Building libs into $${DESTDIR}")
+
+CONFIG += qt dll thread debug rtti
 HEADERS += qgsdelimitedtextplugin.h \
            qgsdelimitedtextplugingui.h 
-INTERFACES += qgsdelimitedtextpluginguibase.ui
+FORMS +=   qgsdelimitedtextpluginguibase.ui
 SOURCES += qgsdelimitedtextplugin.cpp \
            qgsdelimitedtextplugingui.cpp 
