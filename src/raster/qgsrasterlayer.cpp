@@ -1539,7 +1539,12 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPor
       double myGrayValDouble = readValue ( myGdalScanData, myDataType,
                                            myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
 
-      if ( myGrayValDouble == noDataValueDouble ) 
+      // If noDataValueDouble is 'nan', the comparison
+      // against myGrayValDouble will always fail ( nan==nan always
+      // returns false, by design), hence the slightly odd comparison
+      // of myGrayValDouble against itself. 
+      if ( myGrayValDouble == noDataValueDouble ||
+           myGrayValDouble != myGrayValDouble)
       {
 
         myQImage.setPixel(myRowInt, myColumnInt, qRgba(255,255,255,0 ));
