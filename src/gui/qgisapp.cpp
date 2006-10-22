@@ -1304,35 +1304,15 @@ QString watsNew = "<html><body>" + tr("Version") + " ";
 watsNew += QGis::qgisVersion;
 watsNew += "<h3>" + tr("New features") + "</h3>";
 watsNew += "<ul><li>"
-+ tr("On the fly projection support to automatically project layers from different coordinate systems")
++ tr("Improvements to the WMS provider. Now works correctly with web proxies")
++ "<li>"
++ tr("Many user interface improvements")
++ "<li>"
++ tr("Improved vector and attribute editing")
 + "<li>"
 + tr("Map Composer for creating map layouts")
 + "<li>"
-+ tr("Toolbox for running GRASS tools from QGIS. The toolbox can be easily customized to add additional tools")
-+ "<li>"
-+ tr("Handling of spatially enabled tables and views in PostgreSQL has been greatly improved. QGIS can now load any table in the database that contains a geometry column")
-+ "<li>"
-+ tr("PostgreSQL views containing a geometry column can be viewed in QGIS")
-+ "<li>"
-+ tr("Raster graphing tool to produce a histogram for a raster layer")
-+ "<li>"
-+ tr("Raster query using the identify tool allows you to get the pixel values from a raster by making it the active layer and clicking on the point of interest")  
-+ "<li>"
-+ tr("User preferences provides customizable settings for the digitizing line width, color, and selection color")  
-+ "<li>"
-+ tr("New symbols for use with point layers are available from the layer properties dialog") 
-+ "<li>"
-+ tr("Spatial bookmarks allow you to create and manage bookmarks for an area on the map. Bookmarks are persistent and global; meaning they are available for all projects")
-+ "<li>"
-+ tr("Measure tool allows you to measure distances on the map with both segment length and total length displayed as you click")
-+ "<li>"
-+ tr("GPX loading times and memory consumption for large GPX (GPS) files has been drastically reduced")  
-+ "<li>"
-+ tr("Many enhancements to the digitizing tools have been made, including the ability to capture data straight into PostgreSQL/PostGIS, and improvements to the definition of attribute tables for newly created layers")
-+ "<li>"
-+ tr("The Raster Georeferencer plugin can be used to generate a world file for a raster. The plugin allows you to define known control points in the raster coordinate system. Once enough control points are defined, the world file can be generated and the raster properly displayed in QGIS or other GIS applications")
-+ "<li>"
-+ tr("Improvements to the Mapserver export tool")
++ tr("Lots of other stuff that we can't rememeber")
 + "</ul></body></html>";
 
 
