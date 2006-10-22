@@ -66,24 +66,28 @@ ShowUnInstDetails show
 
 Section "MainSection" SEC01
   SetOutPath "$INSTDIR"
-
-  SetOverwrite ifnewer
-  File "C:\dev/cpp/qgis/\qgis-release\qgis_core.dll"
   SetOverwrite try
 ;------- Qt 
-  ;File "C:\dev/cpp/qgis/\qgis-release\QtCore4.dll"
-  ;File "C:\dev/cpp/qgis/\qgis-release\QtGui4.dll"
-  ;File "C:\dev/cpp/qgis/\qgis-release\QtNetwork4.dll"
-  ;File "C:\dev/cpp/qgis/\qgis-release\QtXml4.dll"
-  ;File "C:\dev/cpp/qgis/\qgis-release\QtSvg4.dll"
-  ;File "C:\dev/cpp/qgis/\qgis-release\mingwm10.dll"
+  File "C:\dev\cpp\qgis\qgis-release\QtCore4.dll"
+  File "C:\dev\cpp\qgis\qgis-release\QtGui4.dll"
+  File "C:\dev\cpp\qgis\qgis-release\QtNetwork4.dll"
+  File "C:\dev\cpp\qgis\qgis-release\QtXml4.dll"
+  File "C:\dev\cpp\qgis\qgis-release\QtSvg4.dll"
+  File "C:\dev\cpp\qgis\qgis-release\mingwm10.dll"
 ;------- qgis Related
-  File "C:\dev/cpp/qgis/\qgis-release\*.dll"
-  ;File "C:\dev/cpp/qgis/\qgis-release\*.exe"
+  File "C:\dev\cpp\qgis\qgis-release\*.dll"
+  File "C:\dev\cpp\qgis\qgis-release\*.exe"
+;------- proj and gdal Related
+  File "C:\dev\cpp\qgis\qgis-release\*.csv"
+;subdirs
+  File /r "C:\dev\cpp\qgis\qgis-release\lib"
+  File /r "C:\dev\cpp\qgis\qgis-release\share"
+  File /r "C:\dev\cpp\qgis\qgis-release\nad"
+ 
 ; Shortcuts
 ; Next line is important - added by Tim
 ; if its not there the application working dir will be the last used
-;outpath and libom wont be able to find its alg
+; outpath 
   SetOutPath "$INSTDIR"
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   CreateDirectory "$SMPROGRAMS\$ICONS_GROUP"
@@ -153,6 +157,11 @@ Section Uninstall
   Delete "$INSTDIR\uninst.exe"
   Delete "$INSTDIR\*.exe"
   Delete "$INSTDIR\*.dll"
+  Delete "$INSTDIR\*.csv"
+;----------------- subdirs
+  RMDir /r "C:\dev/cpp/qgis/qgis-release/lib"
+  RMDir /r "C:\dev/cpp/qgis/qgis-release/share"
+  RMDir /r "C:\dev/cpp/qgis/qgis-release/nad"
 ;----------------- icons and shortcuts
   Delete "$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\Website.lnk"

@@ -101,6 +101,9 @@ win32:QGISLIBDIR=$${DESTDIR}
 QGISPLUGINDIR=$${QGISBINDIR}/plugins
 macx:QGISPLUGINDIR=$${DESTDIR}/$${QGIS_APP_NAME}.app/Contents/plugins
 
+QGISPROVIDERDIR=$${QGISBINDIR}/lib/qgis
+macx:QGISPROVIDERDIR=$${DESTDIR}/$${QGIS_APP_NAME}.app/Contents/lib/qgis
+
 message(WORKDIR      : $${WORKDIR})
 message(DESTDIR      : $${DESTDIR})
 message(QGISBINDIR    : $${QGISBINDIR})

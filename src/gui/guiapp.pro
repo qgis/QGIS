@@ -33,5 +33,6 @@ DESTDIR=$${QGISBINDIR}
 QT += qt3support svg core gui xml network
 message("Building libs into $${DESTDIR}")
 
+win32: RC_FILE = ../../win_build/qgis.rc
 
 SOURCES = main.cpp					\
