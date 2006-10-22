@@ -159,9 +159,9 @@ Section Uninstall
   Delete "$INSTDIR\*.dll"
   Delete "$INSTDIR\*.csv"
 ;----------------- subdirs
-  RMDir /r "C:\dev/cpp/qgis/qgis-release/lib"
-  RMDir /r "C:\dev/cpp/qgis/qgis-release/share"
-  RMDir /r "C:\dev/cpp/qgis/qgis-release/nad"
+  RMDir /r "$INSTDIR/lib"
+  RMDir /r "$INSTDIR/share"
+  RMDir /r "$INSTDIR/nad"
 ;----------------- icons and shortcuts
   Delete "$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\Website.lnk"
