@@ -98,8 +98,8 @@ linux-g++:QGISLIBDIR=$${DESTDIR}/lib
 macx:QGISLIBDIR=$${QGISBINDIR}
 win32:QGISLIBDIR=$${DESTDIR}
 
-QGISPLUGINDIR=$${QGISBINDIR}/plugins
-macx:QGISPLUGINDIR=$${DESTDIR}/$${QGIS_APP_NAME}.app/Contents/plugins
+QGISPLUGINDIR=$${DESTDIR}/lib/qgis
+macx:QGISPLUGINDIR=$${DESTDIR}/$${QGIS_APP_NAME}.app/Contents/lib/qgis
 
 QGISPROVIDERDIR=$${QGISBINDIR}/lib/qgis
 macx:QGISPROVIDERDIR=$${DESTDIR}/$${QGIS_APP_NAME}.app/Contents/lib/qgis
@@ -145,6 +145,7 @@ macx:GDALLIBADD=-framework gdal
 SQLITELIBADD=-lsqlite3
 PROJLIBADD=-lproj
 GEOSLIBADD=-lgeos
+GRASSLIBADD=-lgrass
 
 win32:LIBS += -lWs2_32
 
@@ -231,4 +232,3 @@ linux-g++:OBJECTS_DIR =  $${OBJDIR}/o/linux
 win32:OBJECTS_DIR     =  $${OBJDIR}/o/win32
 #These next two are not currently needed for this simple project
 #RCC_DIR               =  $${OBJDIR}/rcc
-#RC_FILE               =  $${APPNAME}.rc

@@ -11,3 +11,4 @@
 #################################################################
 TEMPLATE = subdirs
 SUBDIRS =  ogr delimitedtext 
+#grass 
