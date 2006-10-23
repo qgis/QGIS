@@ -292,15 +292,10 @@ bool QgsRect::isFinite() const
         ymax == std::numeric_limits<double>::infinity())
       return false;
   }
-  // Only check for quiet NaN, as the signalling NaN will have caused
-  // an exception well before we get the chance to get here.
-  if (std::numeric_limits<double>::has_quiet_NaN)
-  {
-    if (xmin == std::numeric_limits<double>::quiet_NaN() ||
-        xmax == std::numeric_limits<double>::quiet_NaN() ||
-        ymin == std::numeric_limits<double>::quiet_NaN() ||
-        ymax == std::numeric_limits<double>::quiet_NaN())
-      return false;
-  }
+  // By design, if a variable is nan, it won't equal itself, so that's
+  // how we test for nan
+  if (xmin != xmin || xmax != xmax || ymin != ymin || ymax != ymax)
+    return false;
+
   return true;
 }
