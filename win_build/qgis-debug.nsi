@@ -51,6 +51,26 @@ var ICONS_GROUP
 
 ; Language files
 !insertmacro MUI_LANGUAGE "English"
+!insertmacro MUI_LANGUAGE "French" 
+!insertmacro MUI_LANGUAGE "German" 
+!insertmacro MUI_LANGUAGE "SimpChinese" 
+!insertmacro MUI_LANGUAGE "Japanese" 
+!insertmacro MUI_LANGUAGE "Italian" 
+!insertmacro MUI_LANGUAGE "Swedish" 
+!insertmacro MUI_LANGUAGE "Russian" 
+!insertmacro MUI_LANGUAGE "Portuguese" 
+!insertmacro MUI_LANGUAGE "PortugueseBR" 
+!insertmacro MUI_LANGUAGE "Polish" 
+!insertmacro MUI_LANGUAGE "Czech" 
+!insertmacro MUI_LANGUAGE "Slovak" 
+!insertmacro MUI_LANGUAGE "Latvian" 
+!insertmacro MUI_LANGUAGE "Indonesian" 
+
+; Initialize language 
+Function .onInit 
+!insertmacro MUI_LANGDLL_DISPLAY 
+FunctionEnd 
+
 
 ; Reserve files
 !insertmacro MUI_RESERVEFILE_INSTALLOPTIONS
