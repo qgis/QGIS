@@ -44,12 +44,6 @@ void QgsWFSPlugin::initGui()
 {
   if(mIface)
     {
-      //mIface->addVectorLayer("http://karlinapp.ethz.ch/cgi-bin/mapserv?map=/home/marco/mapfiles/mapfile1.map&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=states", "states", "WFS");
-      //mIface->addVectorLayer("http://karlinapp.ethz.ch/cgi-bin/mapserv?map=/home/marco/mapfiles/mapfile1.map&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=usroads", "usroads", "WFS");
-      //mIface->addVectorLayer("http://localhost/cgi-bin/mapserv?map=/var/www/mapfile_europe.map&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=mjrivers", "mjrivers", "WFS");
-      //mIface->addVectorLayer("http://localhost/cgi-bin/mapserv?map=/var/www/mapfile_europe.map&SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=cities", "cities", "WFS");
-      //mIface->addVectorLayer("http://map.ns.ec.gc.ca/MapServer/mapserv.exe?map=/mapserver/services/envdat/config.map&service=WFS&version=1.0.0&request=GetFeature&TYPENAME=envirodat", "envirodat", "WFS");
-
       mWfsDialogAction = new QAction(QIcon(mIconAddWfsLayer), tr("&Add WFS layer"), 0);
       QObject::connect(mWfsDialogAction, SIGNAL(activated()), this, SLOT(showSourceDialog()));
       mIface->addToolBarIcon(mWfsDialogAction);

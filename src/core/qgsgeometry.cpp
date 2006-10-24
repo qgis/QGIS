@@ -205,7 +205,7 @@ void QgsGeometry::setGeos(geos::Geometry* geos)
   mGeos = geos;
 
 #ifdef QGISDEBUG
-  std::cout << "QgsGeometry::setGeos: setting Geos = '" << mGeos->toString() << "'." << std::endl;
+  //std::cout << "QgsGeometry::setGeos: setting Geos = '" << mGeos->toString() << "'." << std::endl;
 #endif
 
 
