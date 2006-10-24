@@ -28,22 +28,20 @@ DESTDIR=$${QGISLIBDIR}
 QT += network qt3support xml svg core gui
 QT = $$unique(QT)
 message("Building libs into $${DESTDIR}")
+win32{
+  #generate lex and yacc sources
+  message("Generating lex and yacc sources")
+  #system(genlexyacc)
+} 
 
-#AM_YFLAGS       = -d
-#qgis_YACC       = qgssearchstringparser.h
-#LEXSOURCES       = qgssearchstringlexer.ll \
-#        	    qgssearchstringparser.yy
-
-HEADERS =				\
-		qgis.h					\
-		qgsapplication.h			\
+HEADERS =       qgis.h					\
+		qgsapplication.h			\	
 		qgsbookmarkitem.h			\
 		qgsclipper.h				\
 		qgscolortable.h				\
 		qgscontexthelp.h			\
+		qgscoordinatetransform.h		\
 		qgscustomsymbol.h			\
-		qgscoordinatetransform.h                \
-		qgsspatialrefsys.h                      \
 		qgsdatamanager.h			\
 		qgsdataprovider.h			\
 		qgsdatasource.h				\
@@ -79,11 +77,12 @@ HEADERS =				\
 		qgsrenderitem.h				\
 		qgsscalecalculator.h			\
 		qgssearchstring.h			\
-                qgssearchtreenode.h			\
+		qgssearchstringparser.h			\
+		qgsspatialrefsys.h			\
 		qgssymbol.h				\
 		qgssymbologyutils.h			\
-		qgssearchstringparser.h                \
-		qgsvectordataprovider.h		
+		qgsvectordataprovider.h			\
+                qgssearchtreenode.h
 
 HEADERS = $$unique(HEADERS)
 
@@ -91,11 +90,10 @@ SOURCES =\
 		qgis.cpp				\
 		qgsapplication.cpp			\
 		qgsbookmarkitem.cpp			\
-		qgscoordinatetransform.cpp              \
-		qgsspatialrefsys.cpp                    \
 		qgsclipper.cpp				\
 		qgscolortable.cpp			\
 		qgscontexthelp.cpp			\
+		qgscoordinatetransform.cpp		\
 		qgscustomsymbol.cpp			\
 		qgsdatamanager.cpp			\
 		qgsdatasource.cpp			\
@@ -130,13 +128,13 @@ SOURCES =\
 		qgsrenderitem.cpp			\
 		qgsscalecalculator.cpp			\
 		qgssearchstring.cpp   		        \
-		qgssearchtreenode.cpp			\
-		qgssymbol.cpp				\
-		qgssymbologyutils.cpp			\
 		qgssearchstringlexer.cc                 \
 		qgssearchstringparser.cc                \
+		qgssearchtreenode.cpp			\
+		qgsspatialrefsys.cpp			\
+		qgssymbol.cpp				\
+		qgssymbologyutils.cpp			\
 		qgsvectordataprovider.cpp			
-
 
 
 
