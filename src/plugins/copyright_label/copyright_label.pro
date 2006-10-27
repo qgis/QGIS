@@ -1,24 +1,36 @@
-####################################################################
-# Qmake project file for QGIS plugin
-# This file is used by qmake to generate the Makefiles for building
-# the QGIS copyright plugin on Windows
+#################################################################
 #
-# copyright_label.pro,v 1.1 2004/06/23 04:15:54 gsherman Exp
-####################################################################
-TEMPLATE = lib
-INCLUDEPATH += . ..\..\src \
-          $(GEOS)\include
-LIBS += ..\..\src\libqgis.lib \
-        $(GDAL)\lib\gdal_i.lib \
-        $(GEOS)\lib\geos.lib \
-        $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib 
-CONFIG += qt dll thread
-DLLDESTDIR= ..\..\win_build\lib\qgis
+#         QMAKE Project File for Quantum GIS 
+# 
+#                   Tim Sutton 2006
+#
+# NOTE: Do not place any hard coded external paths in this file
+#       all libs and includes should be specified in settings.pro
+#       in the top level qgis directory.
+# 
+#################################################################
 
-# Input
+#
+# This file builds the copyright label provider 
+#
+
+include(../../../settings.pro)
+TARGET=copyrightlabelprovider
+TEMPLATE = lib
+#suffix debug to target if applicable
+CONFIG(debug, debug|release){
+  TARGET = $$member(TARGET, 0)-debug
+}
+
+LIBS += $${QGISCORELIBADD}
+LIBS += $${QGISGUILIBADD}
+DESTDIR=$${QGISPLUGINDIR}
+QT += qt3support svg core gui xml network
+message("Building libs into $${DESTDIR}")
+
+CONFIG += qt dll thread debug rtti
 HEADERS += plugin.h \
-           plugingui.h \
-           pluginguibase.ui.h 
-INTERFACES += pluginguibase.ui
+           plugingui.h 
+FORMS +=  pluginguibase.ui
 SOURCES += plugin.cpp \
            plugingui.cpp 

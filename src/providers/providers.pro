@@ -10,5 +10,5 @@
 # 
 #################################################################
 TEMPLATE = subdirs
-SUBDIRS =  ogr delimitedtext 
+SUBDIRS =  ogr delimitedtext wfs
 #grass 
