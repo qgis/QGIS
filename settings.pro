@@ -180,6 +180,7 @@ INCLUDEPATH +=$${WORKDIR}/src \
               $${WORKDIR}/src/plugins \
               $${WORKDIR}/src/providers \
               $${WORKDIR}/src/raster \
+	      $${WORKDIR}/src/providers/wfs \
               $${WORKDIR}/src/ui 
 
 #################################################################
@@ -192,6 +193,7 @@ win32{
   message(Installing for windows!)
   #add any win specific rules here 
   INCLUDEPATH += c:/msys/local/include
+  INCLUDEPATH += c:/msys/local/include/geos
 }
 
 

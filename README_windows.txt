@@ -17,6 +17,10 @@ http://qgis.org/uploadfiles/mingw/msys.rar
 
 and unpack to c:\msys
 
+The file is compressed using rar - you can get a free windows application for creating and decompressing rar files here:
+
+http://www.filzip.com/
+
 Qt4.2:
 -------------
 Download qt4.2 opensource precompiled edition exe and install (including the 
