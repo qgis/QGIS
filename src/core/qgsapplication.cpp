@@ -69,7 +69,13 @@ const QString QgsApplication::authorsFilePath()
 {
   return mPkgDataPath + QString("/doc/AUTHORS");
 }
-
+/*!
+  Returns the path to the sponsors file.
+*/
+const QString QgsApplication::sponsorsFilePath()
+{
+  return mPkgDataPath + QString("/doc/SPONSORS");
+}
 /*!
   Returns the path to the developer image directory.
 */
