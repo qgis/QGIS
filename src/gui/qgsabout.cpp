@@ -93,6 +93,28 @@ void QgsAbout::init()
       listBox1->setCurrentRow(0);
   }
 
+  // read the SPONSORS file and populate the text widget
+    QFile sponsorFile(QgsApplication::sponsorsFilePath());
+  #ifdef QGISDEBUG
+    printf (("Reading sponsors file " + sponsorFile.name() +
+        ".............................................\n").toLocal8Bit().data());
+  #endif
+    if ( sponsorFile.open( QIODevice::ReadOnly ) ) {
+      QString sponsorHTML = "<center>" 
+        + tr("The following have sponsored QGIS by contributing money to fund development and other project costs")
+        + "</center>";
+      QTextStream sponsorStream( &sponsorFile );
+      QString sline;
+      int i = 1;
+      while ( !sponsorStream.atEnd() ) 
+      {
+        sline = sponsorStream.readLine(); // line of text excluding '\n'
+        //ignore the line if it starts with a hash....
+        if (sline.left(1)=="#") continue;
+        sponsorHTML += sline + "<br>";
+      }
+      txtSponsors->setText(txtSponsors->text() + sponsorHTML);
+    }
 }
 
 void QgsAbout::setVersion(QString v)

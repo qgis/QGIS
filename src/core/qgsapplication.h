@@ -30,6 +30,9 @@ class QgsApplication: public QApplication
     //! Returns the path to the authors file.
     static const QString authorsFilePath();
 
+    //! Returns the path to the sponsors file.
+    static const QString sponsorsFilePath();
+
     //! Returns the path to the developer image directory.
     static const QString developerPath();
 
