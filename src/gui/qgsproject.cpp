@@ -31,6 +31,7 @@ using namespace std;
 #include "qgsexception.h"
 #include "qgsprojectproperty.h"
 #include "qgsmapcanvas.h"
+#include "qgslogger.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -1084,7 +1085,30 @@ bool QgsProject::read()
         QgsDebug( QString("project file has version " + fileVersion).ascii() );
     }
 
-    // XXX some day insert version checking
+    QStringList fileVersionParts = fileVersion.split(".");
+    QStringList qgisVersionParts = QString(QGis::qgisVersion).split(".");
+
+    bool older = false;
+
+    if (fileVersionParts.size() != 3 || qgisVersionParts.size() != 3)
+      older = false; // probably an older version
+    else
+    {
+      if (fileVersionParts.at(0) < qgisVersionParts.at(0))
+        older = true;
+      else if (fileVersionParts.at(1) < qgisVersionParts.at(1))
+        older = true;
+      else if (fileVersionParts.at(2) < qgisVersionParts.at(2))
+        older = true;
+    }
+
+    if (older)
+    {
+      QgsLogger::warning("Loading a file that was saved with an older "
+                         "version of qgis (saved in " + fileVersion +
+                         ", loaded in " + QGis::qgisVersion +
+                         "). Problems may occur.");
+    }
 
 #ifdef QGISDEBUG
     qDebug(("Project title: " + imp_->title).toLocal8Bit().data());
