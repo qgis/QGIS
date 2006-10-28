@@ -10,6 +10,7 @@
 
 EXTRA_DIST = \
 	AUTHORS \
+	SPONSORS \
 	BUGS \
 	ChangeLog \
 	COPYING \
@@ -28,7 +29,7 @@ man1_MANS = qgis.man
 
 docdatadir = $(datadir)/$(PACKAGE)/doc
 
-docdata_DATA = AUTHORS
+docdata_DATA = AUTHORS SPONSORS
 
 if WITH_UNITTESTS
 TESTS = tests
