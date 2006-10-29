@@ -155,9 +155,12 @@ void QgsPgQueryBuilder::populateFields()
 
 void QgsPgQueryBuilder::on_btnSampleValues_clicked()
 {
-  QString sql = "select distinct \"" + lstFields->currentText() 
-      + "\" from \"" + mUri->schema + "\".\"" + mUri->table + "\" order by \"" + lstFields->currentText()
-    + "\" limit 25";
+  QString sql = "SELECT DISTINCT \"" + lstFields->currentText() + "\" " +
+      "FROM (SELECT \"" + lstFields->currentText() + "\" " +
+      "FROM \"" + mUri->schema + "\".\"" + mUri->table + "\" " +
+      "LIMIT 5000) AS foo " +
+      "ORDER BY \"" + lstFields->currentText() + "\" "+
+      "LIMIT 25";
   // clear the values list 
   lstValues->clear();
   // determine the field type
@@ -183,7 +186,7 @@ void QgsPgQueryBuilder::on_btnSampleValues_clicked()
 
   }else
   {
-    QMessageBox::warning(this, tr("Database error"), tr("Failed to get sample of field values") + QString(PQerrorMessage(mPgConnection)) );
+    QMessageBox::warning(this, tr("Database error"), tr("<p>Failed to get sample of field values using SQL:</p><p>") + sql + "</p><p>Error message was: "+ QString(PQerrorMessage(mPgConnection)) + "</p>");
   }
   // free the result set
   PQclear(result);
