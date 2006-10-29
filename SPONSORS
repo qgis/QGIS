@@ -6,15 +6,17 @@
 # for the sponsors list, so names should be strictly 
 # in the format:
 # name [tab] <website>
-# New sponsors should be added to the *top* of the list.
-Yves Jacolin
-Ferdinando Urbano
-Paolo Cavallini     (www.faunalia.it)
-Lorenzo Becchi      (ominiverdi.org)
-Alessandro Pasotti  (www.itopen.it)
-Ivan Marchesini     (www.gfosservices.it)
-Niccolo Rigacci     (www.rigacci.org)
+# New sponsors should be added to the *top* of the list. The
+# website entry is optional.
+Mateusz Loskot      (mateusz.loskot.net)
 Tyler Mitchell      (spatialguru.com)
+Niccolo Rigacci     (www.rigacci.org)
+Ivan Marchesini     (www.gfosservices.it)
+Alessandro Pasotti  (www.itopen.it)
+Lorenzo Becchi      (ominiverdi.org)
+Paolo Cavallini     (www.faunalia.it)
+Ferdinando Urbano
+Yves Jacolin
 Tim Baggett
 Tishampati Dhar
 Jason Jorgenson
