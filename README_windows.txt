@@ -13,11 +13,11 @@ Msys:
 -------------
 get this : 
 
-http://qgis.org/uploadfiles/mingw/msys.rar 
+http://qgis.org/uploadfiles/mingw/msys.zip 
 
 and unpack to c:\msys
 
-The file is compressed using rar - you can get a free windows application for creating and decompressing rar files here:
+The file is compressed using zip - you can get a free windows application for creating and decompressing zip files here:
 
 http://www.filzip.com/
 
@@ -63,6 +63,7 @@ Core:
  - qgsspatialrefsys.cpp - commented out lines using qgsproject as it depends on gui stuff
  - qgsdistancearea.cpp - commented out lines using qgsproject as it depends on 
    gui stuff and moved to core
+ - qgscsexception.h  into core from gui (only tested on mac)
 
 I have created a small archive which includes the above changes, which I will make available.
 
