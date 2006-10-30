@@ -100,20 +100,58 @@ void QgsAbout::init()
         ".............................................\n").toLocal8Bit().data());
   #endif
     if ( sponsorFile.open( QIODevice::ReadOnly ) ) {
-      QString sponsorHTML = "<center>" 
+      QString sponsorHTML = "<html><body><h2>"
+        + tr("QGIS Sponsors") + "</h2><center>"
+
         + tr("The following have sponsored QGIS by contributing money to fund development and other project costs")
-        + "</center>";
+        + "</center><hr>"
+        + "<table border='1' cellpadding='1' width='100%'>"
+        + "<tr><th>" + tr("Name") + "</th><th>" + tr("Website") + "</th>"
+        + "<th></th>"
+        + "</th><th>" + tr("Name") + "</th><th>" + tr("Website") + "</th></tr>";
+      QString website;
       QTextStream sponsorStream( &sponsorFile );
       QString sline;
-      int i = 1;
+      int count = 0;
       while ( !sponsorStream.atEnd() ) 
       {
         sline = sponsorStream.readLine(); // line of text excluding '\n'
         //ignore the line if it starts with a hash....
         if (sline.left(1)=="#") continue;
-        sponsorHTML += sline + "<br>";
+        count++;
+        QStringList myTokens = QStringList::split("|",sline);
+        if(myTokens.size() > 1)
+        {
+          website = myTokens[1];
+        }
+        else
+        { 
+          website = "&nbsp;";
+        }
+        if(count == 1){
+          sponsorHTML += "<tr>";
+        }
+        if(count == 2)
+        {
+          // a spacer between donator columns
+          sponsorHTML += "<td></td>";
+        }
+        sponsorHTML += "<td>" + myTokens[0] + "</td><td>" + website + "</td>";
+        if(count == 2){
+          // close the row 
+          sponsorHTML += "</tr>";
+          count = 0;
+        }
+        
       }
-      txtSponsors->setText(txtSponsors->text() + sponsorHTML);
+      sponsorHTML += "</table></body></html>";
+
+      txtSponsors->setAcceptRichText(true);
+      txtSponsors->setHtml(sponsorHTML);
+      #ifdef QGISDEBUG
+       std::cout << "sponsorHTML:" << sponsorHTML.ascii() << std::endl;
+       std::cout << "txtSponsors:" << txtSponsors->toHtml().ascii() << std::endl;
+      #endif
     }
 }
 
