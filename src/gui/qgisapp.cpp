@@ -2684,7 +2684,7 @@ bool QgisApp::addProject(QString projectFile)
       int  myBlueInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorBluePart",255);
       QColor myColor = QColor(myRedInt,myGreenInt,myBlueInt);
       mMapCanvas->setCanvasColor(myColor); //this is fill colour before rendering starts
-      qDebug("Canvas bacground color restored...");
+      qDebug("Canvas background color restored...");
 
       emit projectRead(); // let plug-ins know that we've read in a new
       // project so that they can check any project
