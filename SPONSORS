@@ -6,22 +6,25 @@
 # for the sponsors list, so names should be strictly 
 # in the format:
 # name|<website>
-# New sponsors should be added to the *top* of the list. The
+# This list should be sorted by first name. The
 # website entry is optional.
-Luca Casagrande 
-David Enns|www.mapitout.com
-Alexandre Leroux
-Stefano Menegon|www.mpasol.it
-Maciej Sieczka
-Jason Jorgenson
-Mateusz Loskot|mateusz.loskot.net
-Tyler Mitchell|spatialguru.com
-Niccolo Rigacci|www.rigacci.org
-Ivan Marchesini|www.gfosservices.it
 Alessandro Pasotti|www.itopen.it
-Lorenzo Becchi|ominiverdi.org
-Paolo Cavallini|www.faunalia.it
+Alexandre Leroux
+David Enns|www.mapitout.com
 Ferdinando Urbano
-Yves Jacolin
+Glasic S.r.l.|www.glasic.it
+Ivan Marchesini|www.gfosservices.it
+Jason Jorgenson
+Lorenzo Becchi|ominiverdi.org
+Luca Casagrande 
+Maciej Sieczka
+Mateusz Loskot|mateusz.loskot.net
+Matt Wilkie
+Niccolo Rigacci|www.rigacci.org
+Paolo Cavallini|www.faunalia.it
+Stefano Menegon|www.mpasol.it
+Thierry Gonon
 Tim Baggett
 Tishampati Dhar
+Tyler Mitchell|spatialguru.com
+Yves Jacolin
