@@ -286,7 +286,7 @@ void QgsGPSPluginGui::populatePortComboBoxes() {
   
 #endif
 
-#ifdef freebsd
+#ifdef __FreeBSD__ // freebsd
   // and freebsd devices (untested)
   QString freebsdDev("/dev/cuaa%1");
   for (int i = 0; i < 10; ++i) {
@@ -297,6 +297,18 @@ void QgsGPSPluginGui::populatePortComboBoxes() {
     else
       break;
   }
+
+  // and the ucom devices (serial USB adaptors)
+  freebsdDev = "/dev/ucom%1";
+  for (int i = 0; i < 10; ++i) {
+    if (QFileInfo(freebsdDev.arg(i)).exists()) {
+      cmbDLPort->insertItem(freebsdDev.arg(i));
+      cmbULPort->insertItem(freebsdDev.arg(i));
+    }
+    else
+      break;
+  }
+ 
 #endif
   
 #ifdef sparc
