@@ -1,5 +1,5 @@
        Procedure for setup of a windows build environment for QGIS
-                    Tim Sutton and Godofredo Contreras 2005
+                    Tim Sutton and Godofredo Contreras 2006
   With thanks to Tisham Dhar for preparing the initial msys environment
 ---------------------------------------------------------------------------------
 
@@ -13,7 +13,7 @@ Msys:
 -------------
 get this : 
 
-http://qgis.org/uploadfiles/mingw/msys.zip 
+http://qgis.org/uploadfiles/msys/msys.zip 
 
 and unpack to c:\msys
 
