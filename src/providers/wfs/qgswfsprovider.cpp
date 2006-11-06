@@ -478,29 +478,69 @@ int QgsWFSProvider::getExtentFromGML2(QgsRect* extent, const QDomElement& wfsCol
     }
 
   QDomNode coordinatesNode = childNode.firstChild();
-  if(coordinatesNode.localName() != "coordinates")
+  if(coordinatesNode.localName() == "coordinates")
     {
-      return 4;
+      std::list<QgsPoint> boundingPoints;
+      if(readGML2Coordinates(boundingPoints, coordinatesNode.toElement()) != 0)
+	{
+	  return 5;
+	}
+      
+      if(boundingPoints.size() != 2)
+	{
+	  return 6;
+	}
+      
+      std::list<QgsPoint>::const_iterator it = boundingPoints.begin();
+      extent->setXmin(it->x());
+      extent->setYmin(it->y());
+      ++it;
+      extent->setXmax(it->x());
+      extent->setYmax(it->y());
+      return 0;
     }
-
-  std::list<QgsPoint> boundingPoints;
-  if(readGML2Coordinates(boundingPoints, coordinatesNode.toElement()) != 0)
+  else if(coordinatesNode.localName() == "coord")
     {
-      return 5;
+      //first <coord> element
+      QDomElement xElement, yElement;
+      bool conversion1, conversion2; //string->double conversion success
+      xElement = coordinatesNode.firstChild().toElement();
+      yElement = xElement.nextSibling().toElement();
+      if(xElement.isNull() || yElement.isNull())
+	{
+	  return 7;
+	}
+      double x1 = xElement.text().toDouble(&conversion1);
+      double y1 = yElement.text().toDouble(&conversion2);
+      if(!conversion1 || !conversion2)
+	{
+	  return 8;
+	}
+      
+      //second <coord> element
+      coordinatesNode = coordinatesNode.nextSibling();
+      xElement = coordinatesNode.firstChild().toElement();
+      yElement = xElement.nextSibling().toElement();
+      if(xElement.isNull() || yElement.isNull())
+	{
+	  return 9;
+	}
+      double x2 = xElement.text().toDouble(&conversion1);
+      double y2 = yElement.text().toDouble(&conversion2);
+      if(!conversion1 || !conversion2)
+	{
+	  return 10;
+	}
+      extent->setXmin(x1);
+      extent->setYmin(y1);
+      extent->setXmax(x2);
+      extent->setYmax(y2);
+      return 0;
     }
-  
-  if(boundingPoints.size() != 2)
+  else
     {
-      return 6;
+      return 11; //no valid tag for the bounding box
     }
- 
-  std::list<QgsPoint>::const_iterator it = boundingPoints.begin();
-  extent->setXmin(it->x());
-  extent->setYmin(it->y());
-  ++it;
-  extent->setXmax(it->x());
-  extent->setYmax(it->y());
-  return 0;
 }
 
 int QgsWFSProvider::setSRSFromGML2(const QDomElement& wfsCollectionElement)
