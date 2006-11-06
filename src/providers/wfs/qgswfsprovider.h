@@ -99,6 +99,8 @@ class QgsWFSProvider: public QgsVectorDataProvider
    The position in the vector is equal to the position of an attribute in the layers attribute vector*/
   std::vector< std::pair<QString, QString> > mMinMaxCash;
   int mFeatureCount;
+  /**Flag if provider is valid*/
+  bool mValid;
 
   /**Goes through all the features and their attributes and populates mMinMaxCash with entries*/
   void fillMinMaxCash();
