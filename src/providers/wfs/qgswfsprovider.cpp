@@ -36,18 +36,18 @@ static const QString TEXT_PROVIDER_DESCRIPTION = "WFS data provider";
 static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 
-QgsWFSProvider::QgsWFSProvider(const QString& uri): QgsVectorDataProvider(uri), mUseIntersect(false), mSourceSRS(0), mSelectedFeatures(0), mFeatureCount(0)
+QgsWFSProvider::QgsWFSProvider(const QString& uri): QgsVectorDataProvider(uri), mUseIntersect(false), mSourceSRS(0), mSelectedFeatures(0), mFeatureCount(0), mValid(true)
 {
   if(getFeature(uri) == 0)
     {
-      //provider valid
+      mValid = true;
+      //set spatial filter to the whole extent
+      select(&mExtent, false);
     }
   else
     {
-      //provider invalid
+      mValid = false;
     }
-  //set spatial filter to the whole extent
-  select(&mExtent, false);
 }
 
 QgsWFSProvider::~QgsWFSProvider()
@@ -233,7 +233,7 @@ QgsRect* QgsWFSProvider::extent()
 
 bool QgsWFSProvider::isValid()
 {
-  return true;
+  return mValid;
 }
 
 void QgsWFSProvider::select(QgsRect *mbr, bool useIntersect)
