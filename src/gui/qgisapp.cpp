@@ -1820,7 +1820,7 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& en
 
     // create the layer
 
-    QgsVectorLayer *layer = new QgsVectorLayer(*it, base, "GML");
+    QgsVectorLayer *layer = new QgsVectorLayer(*it, base, "ogr");
     Q_CHECK_PTR( layer );
     // set the visibility based on user preference for newly added
     // layers
