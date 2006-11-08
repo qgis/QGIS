@@ -608,8 +608,8 @@ QgsRasterLayer::readFile( QString const & fileName )
     GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(i);
     QString myColorQString = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
     QgsRasterBandStats myRasterBandStats;
-    myRasterBandStats.bandName = myColorQString ;
-    //myRasterBandStats.bandName=QString::number(i) + " : " + myColorQString;
+    //myRasterBandStats.bandName = myColorQString ;
+    myRasterBandStats.bandName=QString::number(i) + " : " + myColorQString;
     myRasterBandStats.bandNoInt = i;
     myRasterBandStats.statsGatheredFlag = false;
     myRasterBandStats.histogramVector = new QgsRasterBandStats::HistogramVector();
