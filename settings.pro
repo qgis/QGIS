@@ -154,7 +154,6 @@ macx:GDALLIBADD=-framework gdal
 SQLITELIBADD=-lsqlite3
 PROJLIBADD=-lproj
 GEOSLIBADD=-lgeos
-GRASSLIBADD=-lgrass
 
 win32:LIBS += -lWs2_32
 
