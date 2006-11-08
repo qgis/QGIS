@@ -166,6 +166,7 @@ win32:LIBS += -lWs2_32
 #win32:LIBS+=-LC:\MinGW\lib
 win32:LIBS+=-LC:\msys\local\lib
 win32:LIBS+=-L$${DESTDIR}
+win32:LIBS+=-L$${DESTDIR}/lib/qgis
 linux-g++:LIBS+=-L$${DESTDIR}/lib
 linux-g++:LIBS+=-L/usr/lib/ccache/lib
 macx:LIBS+=-L$${QGISLIBDIR}
