@@ -31,7 +31,7 @@ message("Building libs into $${DESTDIR}")
 win32{
   #generate lex and yacc sources
   message("Generating lex and yacc sources")
-  #system(genlexyacc)
+  system(genlexyacc)
 } 
 
 HEADERS =       qgis.h					\
