@@ -15,7 +15,7 @@
 #
 
 include(../../../settings.pro)
-TARGET=delimitedtextprovider
+TARGET=delimitedtextplugin
 TEMPLATE = lib
 #suffix debug to target if applicable
 CONFIG(debug, debug|release){

@@ -15,7 +15,7 @@
 #
 
 include(../../../settings.pro)
-TARGET=copyrightlabelprovider
+TARGET=copyrightlabelplugin
 TEMPLATE = lib
 #suffix debug to target if applicable
 CONFIG(debug, debug|release){
