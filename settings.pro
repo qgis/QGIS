@@ -116,6 +116,15 @@ message(QGISPLUGINDIR : $${QGISPLUGINDIR})
 ##
 #################################################################
 
+QGISGRASSPROVIDERLIBADD=-lgrassprovider
+CONFIG(debug, debug|release){
+  QGISGRASSPROVIDERLIBADD=$$member(QGISGRASSPROVIDERLIBADD, 0)-debug
+}
+GRASSLIBADD=-lgrass_vect -lgrass_dig2 -lgrass_dgl -lgrass_rtree \
+            -lgrass_linkm -lgrass_dbmiclient -lgrass_dbmibase \
+            -lgrass_I -lgrass_gproj -lgrass_gmath -lgrass_gis \
+            -lgrass_datetime
+
 QGISCORELIBADD=-lqgis_core
 CONFIG(debug, debug|release){
   QGISCORELIBADD=$$member(QGISCORELIBADD, 0)-debug
@@ -193,7 +202,7 @@ win32{
   message(Installing for windows!)
   #add any win specific rules here 
   INCLUDEPATH += c:/msys/local/include
-  INCLUDEPATH += c:/msys/local/include/geos
+  #INCLUDEPATH += c:/msys/local/include/geos
 }
 
 
