@@ -12,6 +12,7 @@ SUBDIRS =  delimited_text \
            grid_maker \
 	   north_arrow \
            wfs \
+	   grass \
            copyright_label 
 #      	    gps_importer \
 #           spit
