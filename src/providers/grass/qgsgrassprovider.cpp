@@ -206,7 +206,8 @@ void QgsGrassProvider::update ( void )
     #endif
 
     mValid = false;
-    // TODO check if reopened map is valid
+
+    if ( ! mMaps[mLayers[mLayerId].mapId].valid ) return;
 
     // Getting the total number of features in the layer
     // It may happen that the field disappeares from the map (deleted features, new map without that field)
@@ -289,7 +290,7 @@ QgsFeature *QgsGrassProvider::getFirstFeature(bool fetchAttributes)
     std::cout << "QgsGrassProvider::getFirstFeature()" << std::endl;
     #endif
 
-    if ( isEdited() || isFrozen() )
+    if ( isEdited() || isFrozen() || !mValid )
 	return 0;
     
     if ( mCidxFieldIndex < 0 ) return 0; // No features, no features in this layer
@@ -309,7 +310,7 @@ bool QgsGrassProvider::getNextFeature(QgsFeature &feature, bool fetchAttributes)
     std::cout << "QgsGrassProvider::getNextFeature()" << std::endl;
     #endif
 
-    if ( isEdited() || isFrozen() )
+    if ( isEdited() || isFrozen() || !mValid )
 	return 0;
     
     if ( mCidxFieldIndex < 0 ) return 0; // No features, no features in this layer
@@ -330,7 +331,7 @@ QgsFeature *QgsGrassProvider::getNextFeature(bool fetchAttributes)
     	      << " fetchAttributes = " << fetchAttributes << std::endl;
     #endif
     
-    if ( isEdited() || isFrozen() )
+    if ( isEdited() || isFrozen() || !mValid )
 	return 0;
 
     if ( mCidxFieldIndex < 0 ) return 0; // No features, no features in this layer
@@ -357,7 +358,7 @@ QgsFeature* QgsGrassProvider::getNextFeature(std::list<int> const& attlist, int 
     std::cout << "QgsGrassProvider::getNextFeature( attlist )" << std::endl;
     #endif
 
-    if ( isEdited() || isFrozen() )
+    if ( isEdited() || isFrozen() || !mValid )
 	return 0;
     
     if ( mCidxFieldIndex < 0 ) return 0; // No features, no features in this layer
@@ -471,6 +472,7 @@ void QgsGrassProvider::resetSelection( bool sel)
     #ifdef QGISDEBUG
     std::cout << "QgsGrassProvider::resetSelection()" << std::endl;
     #endif
+    if ( !mValid ) return;
     memset ( mSelection, (int) sel, mSelectionSize );
     mNextCidx = 0;
 }
@@ -486,7 +488,7 @@ void QgsGrassProvider::select(QgsRect *rect, bool useIntersect)
     std::cout << "QgsGrassProvider::select() useIntersect = " << useIntersect << std::endl;
     #endif
 
-    if ( isEdited() || isFrozen() )
+    if ( isEdited() || isFrozen() || !mValid )
 	return;
 
     // check if outdated and update if necessary
@@ -560,7 +562,7 @@ std::vector<QgsFeature>& QgsGrassProvider::identify(QgsRect * rect)
 
     // TODO: does not return vector of features! Should it?
 
-    if ( !isEdited() && !isFrozen() ) {
+    if ( !isEdited() && !isFrozen() && mValid ) {
         select(rect, true);
     }
 }
@@ -614,7 +616,7 @@ int QgsGrassProvider::keyField()
 
 void QgsGrassProvider::reset()
 {
-    if ( isEdited() || isFrozen() )
+    if ( isEdited() || isFrozen() || !mValid )
 	return;
 
     int mapId = mLayers[mLayerId].mapId;
@@ -756,6 +758,10 @@ void QgsGrassProvider::loadAttributes ( GLAYER &layer )
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassProvider::loadLayerSourcesFromMap" << std::endl;
     #endif
+
+    // TODO: free old attributes
+    
+    if ( !layer.map ) return;
 
     // Get field info
     layer.fieldInfo = Vect_get_field( layer.map, layer.field); // should work also with field = 0
@@ -1116,6 +1122,7 @@ void QgsGrassProvider::updateMap ( int mapId )
     /* Close map */
     GMAP *map = &(mMaps[mapId]);
 
+    bool closeMap = map->valid;
     map->valid = false;
     map->version++;
 
@@ -1125,7 +1132,7 @@ void QgsGrassProvider::updateMap ( int mapId )
     // TODO: Is it necessary for close ?
     G__setenv( "MAPSET", (char *) map->mapset.ascii() );
     
-    Vect_close ( map->map );
+    if ( closeMap ) Vect_close ( map->map );
 
     QFileInfo di ( map->gisdbase + "/" + map->location + "/" + map->mapset + "/vector/" + map->mapName );
     map->lastModified = di.lastModified();
@@ -1180,8 +1187,11 @@ void QgsGrassProvider::closeMap( int mapId )
 		                     "you can expect crash soon." );
 	}
 
+	if ( mMaps[mapId].valid )
+	{
+	    Vect_close ( mMaps[mapId].map );
+	}
         mMaps[mapId].valid = false;
-	Vect_close ( mMaps[mapId].map );
     }
 }
 
