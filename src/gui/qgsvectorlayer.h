@@ -579,7 +579,6 @@ private:                       // Private attributes
   // to the byte after the end of the line string binary data stream
   // (WKB).
   unsigned char* drawLineString(unsigned char* WKBlinestring,
-                                bool hasZValue,
                                 QPainter* p,
                                 QgsMapToPixel* mtp,
                                 bool projectionsEnabledFlag,
@@ -588,7 +587,6 @@ private:                       // Private attributes
   // Draw the polygon as given in the WKB format. Returns a pointer to
   // the byte after the end of the polygon binary data stream (WKB).
   unsigned char* drawPolygon(unsigned char* WKBpolygon,
-                             bool hasZValue,
                              QPainter* p,
                              QgsMapToPixel* mtp,
                              bool projectionsEnabledFlag,
