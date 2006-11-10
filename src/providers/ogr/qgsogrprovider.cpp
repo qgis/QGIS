@@ -423,7 +423,20 @@ QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
 	       mSelectionRectangle->exportToWkt(&sWkt);  
 	       geos::Geometry *geosRect = wktReader->read(sWkt);
 	       assert(geosRect != 0);
-	       if(geosGeom->intersects(geosRect))
+         bool intersection = false;
+         
+         try // geos might throw exception on error
+         {
+           if(geosGeom->intersects(geosRect))
+             intersection = true;
+         }
+         catch (geos::TopologyException* e)
+         {
+           QString error = e->toString().c_str();
+           QgsLogger::warning("GEOS: " + error);
+         }
+         
+         if (intersection)
 	       {
 		   QgsDebugMsg("intersection found");
 		   delete[] sWkt;
