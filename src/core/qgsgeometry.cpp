@@ -2076,9 +2076,17 @@ bool QgsGeometry::intersects(QgsRect* r) const
     rectwkt+="))";
     
     geos::Geometry *geosRect = wktReader->read( qstrdup(rectwkt) );
-    if(geosGeom->intersects(geosRect))
+    try // geos might throw exception on error
     {
-      returnval=true;
+      if(geosGeom->intersects(geosRect))
+      {
+        returnval=true;
+      }
+    }
+    catch (geos::TopologyException* e)
+    {
+      QString error = e->toString().c_str();
+      QgsLogger::warning("GEOS: " + error);
     }
  
     delete geosGeom;
@@ -2121,9 +2129,17 @@ bool QgsGeometry::fast_intersects(const QgsRect* r) const
     geos::WKTReader *wktReader = new geos::WKTReader(gf);
     geos::Geometry *geosRect = wktReader->read( qstrdup(rectwkt) );
     
-    if(geosGeom->intersects(geosRect))
+    try // geos might throw exception on error
     {
-      returnval=true;
+      if(geosGeom->intersects(geosRect))
+      {
+        returnval=true;
+      }
+    }
+    catch (geos::TopologyException* e)
+    {
+      QString error = e->toString().c_str();
+      QgsLogger::warning("GEOS: " + error);
     }
       
     delete geosGeom;
