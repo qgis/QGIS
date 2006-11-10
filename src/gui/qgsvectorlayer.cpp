@@ -423,20 +423,22 @@ QgsRect QgsVectorLayer::inverseProjectRect(const QgsRect& r) const
 }
 
 unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature, 
-    bool hasZValue,
     QPainter* p,
     QgsMapToPixel* mtp, 
     bool projectionsEnabledFlag,
     bool drawingToEditingCanvas)
 {
   unsigned char *ptr = feature + 5;
+  unsigned int wkbType = *((int*)(feature+1));
   unsigned int nPoints = *((int*)ptr);
   ptr = feature + 9;
+  
+  bool hasZValue = (wkbType == QGis::WKBLineString25D);
 
   std::vector<double> x(nPoints);
   std::vector<double> y(nPoints);
   std::vector<double> z(nPoints, 0.0);
-
+  
   // Extract the points from the WKB format into the x and y vectors. 
   for (register unsigned int i = 0; i < nPoints; ++i)
   {
@@ -523,7 +525,6 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
 }
 
 unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature, 
-    bool hasZValue,
     QPainter* p, 
     QgsMapToPixel* mtp, 
     bool projectionsEnabledFlag,
@@ -539,6 +540,10 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
   if ( numRings == 0 )  // sanity check for zero rings in polygon
     return feature + 9;
 
+  unsigned int wkbType = *((int*)(feature+1));
+  
+  bool hasZValue = (wkbType == QGis::WKBPolygon25D);
+  
   int total_points = 0;
 
   // A vector containing a pointer to a pair of double vectors.The
@@ -3413,7 +3418,6 @@ void QgsVectorLayer::drawFeature(QPainter* p,
     case QGis::WKBLineString25D:
       {
         drawLineString(feature,
-                       (wkbType == QGis::WKBLineString25D),
                        p,
                        theMapToPixelTransform,
                        projectionsEnabledFlag,
@@ -3426,11 +3430,10 @@ void QgsVectorLayer::drawFeature(QPainter* p,
         unsigned char* ptr = feature + 5;
         unsigned int numLineStrings = *((int*)ptr);
         ptr = feature + 9;
-
+        
         for (register unsigned int jdx = 0; jdx < numLineStrings; jdx++)
         {
           ptr = drawLineString(ptr,
-                               (wkbType == QGis::WKBMultiLineString25D),
                                p,
                                theMapToPixelTransform,
                                projectionsEnabledFlag,
@@ -3442,7 +3445,6 @@ void QgsVectorLayer::drawFeature(QPainter* p,
     case QGis::WKBPolygon25D:
     {
         drawPolygon(feature,
-                    (wkbType == QGis::WKBPolygon25D),
                     p,
                     theMapToPixelTransform,
                     projectionsEnabledFlag,
@@ -3457,7 +3459,6 @@ void QgsVectorLayer::drawFeature(QPainter* p,
         ptr = feature + 9;
         for (register unsigned int kdx = 0; kdx < numPolygons; kdx++)
           ptr = drawPolygon(ptr,
-                            (wkbType == QGis::WKBMultiPolygon25D),
                             p,
                             theMapToPixelTransform, 
                             projectionsEnabledFlag,
