@@ -91,13 +91,20 @@ void QgsMapToolZoom::canvasReleaseEvent(QMouseEvent * e)
       double sf;
       if (mZoomRect.width() > mZoomRect.height())
       {
+	if(r.width() == 0)//prevent nan map extent
+	  {
+	    return;
+	  }
         sf = extent.width() / r.width();
       }
       else
       {
+	if(r.height() == 0)//prevent nan map extent
+	  {
+	    return;
+	  }
         sf = extent.height() / r.height();
       }
-              
       r.expand(sf);
             
   #ifdef QGISDEBUG
