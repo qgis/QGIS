@@ -99,6 +99,7 @@ Section "MainSection" SEC01
 ;------- proj and gdal Related
   File "C:\dev\cpp\qgis\qgis-release\*.csv"
 ;subdirs
+  File /r "C:\dev\cpp\qgis\qgis-release\grass"
   File /r "C:\dev\cpp\qgis\qgis-release\lib"
   File /r "C:\dev\cpp\qgis\qgis-release\share"
   File /r "C:\dev\cpp\qgis\qgis-release\nad"
@@ -178,6 +179,7 @@ Section Uninstall
   Delete "$INSTDIR\*.dll"
   Delete "$INSTDIR\*.csv"
 ;----------------- subdirs
+  RMDir /r "$INSTDIR/grass"
   RMDir /r "$INSTDIR/lib"
   RMDir /r "$INSTDIR/share"
   RMDir /r "$INSTDIR/nad"
