@@ -483,7 +483,7 @@ QWidget *QgsComposerPicture::options ( void )
 
 QString QgsComposerPicture::pictureDialog ( void )
 {
-    QString filters = tr("Pictures") + " ( *.svg *.SVG ";
+    QString filters = tr("Pictures ("); //+ " ( *.svg *.SVG ";
     QList<QByteArray> formats = QImageWriter::supportedImageFormats();
 
     for ( int i = 0; i < formats.count(); i++ )
@@ -492,7 +492,7 @@ QString QgsComposerPicture::pictureDialog ( void )
         QString fltr = " *." + frmt.lower() + " *." + frmt.upper();
         filters += fltr;
     }
-    filters += " )";
+    filters += ");;All other files (*.*)";
 
     // Retrieve the last used directory
     QSettings settings;
