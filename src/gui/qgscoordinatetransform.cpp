@@ -388,8 +388,22 @@ QgsRect QgsCoordinateTransform::transformBoundingBox(const QgsRect rect, Transfo
 
 void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, double *y, double *z,TransformDirection direction)
 {
-  assert(mSourceSRS.isValid());
-  assert(mDestSRS.isValid());
+  // Refuse to transform the points if the srs's are invalid
+  if (!mSourceSRS.isValid())
+  {
+    QgsLogger::critical( tr("The source spatial reference system (SRS) is not valid. ") +
+			 tr("The coordinates can not be reprojected. The SRS is: ") +
+			    mSourceSRS.proj4String() );
+    return;
+  }
+  if (!mDestSRS.isValid())
+  {
+    QgsLogger::critical( tr("The destination spatial reference system (SRS) is not valid. ") +
+			 tr("The coordinates can not be reprojected. The SRS is: ") +
+			    mDestSRS.proj4String() );
+    return;
+  }
+
 #ifdef QGISDEBUG
   //double xorg = x;
   //double yorg = y;
