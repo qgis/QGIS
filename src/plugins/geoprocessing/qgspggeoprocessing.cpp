@@ -209,7 +209,7 @@ void QgsPgGeoprocessing::buffer()
             }
             // first create the new table
 
-            sql = QString("create table %1.%2 (%3 %4)")
+            sql = QString("create table %1.%2 (%3 %4 PRIMARY KEY)")
               .arg(bb->schema())
               .arg(bb->bufferLayerName())
               .arg(objId)
@@ -220,6 +220,7 @@ void QgsPgGeoprocessing::buffer()
             result = PQexec(conn, (const char *) sql);
 #ifdef QGISDEBUG
             std::cerr << "Status from create table is " << PQresultStatus(result) << std::endl;
+            std::cerr << "Error message is " << PQresStatus(PQresultStatus(result)) << std::endl;
 #endif
             if (PQresultStatus(result) == PGRES_COMMAND_OK) {
               PQclear(result);
@@ -237,16 +238,22 @@ void QgsPgGeoprocessing::buffer()
 #endif
               PGresult *geoCol = PQexec(conn, (const char *) sql);
 
-            if (PQresultStatus(geoCol) == PGRES_COMMAND_OK) {
+            if (PQresultStatus(geoCol) == PGRES_TUPLES_OK) {
               PQclear(geoCol);
+              /* The constraint naming convention has changed in PostGIS
+               * from $2 to enforce_geotype_shape. This change means the
+               * buffer plugin will fail for older version of PostGIS.
+               */
               // drop the check constraint based on geometry type
-              sql = QString("alter table %1.%2 drop constraint \"$2\"")
+              sql = QString("alter table %1.%2 drop constraint \"enforce_geotype_shape\"")
                 .arg(bb->schema())
                 .arg(bb->bufferLayerName());
 #ifdef QGISDEBUG
               std::cerr << sql.toLocal8Bit().data() << std::endl;
 #endif
               result = PQexec(conn, (const char *) sql);
+              if(PQresultStatus(result) == PGRES_COMMAND_OK)
+              {
               PQclear(result);
               // check pg version and formulate insert query accordingly
               result = PQexec(conn,"select version()");
@@ -325,9 +332,21 @@ void QgsPgGeoprocessing::buffer()
                  "postgres"); 
 
               }
+              }
+              else
+              {
+#ifdef QGISDEBUG
+            std::cerr << "Status from drop constraint is " << PQresultStatus(result) << std::endl;
+            std::cerr << "Error message is " << PQresStatus(PQresultStatus(result)) << std::endl;
+#endif
+              }
             }
             else
             {
+#ifdef QGISDEBUG
+            std::cerr << "Status from add geometry column is " << PQresultStatus(geoCol) << std::endl;
+            std::cerr << "Error message is " << PQresStatus(PQresultStatus(geoCol)) << std::endl;
+#endif
               QMessageBox::critical(0, tr("Unable to add geometry column"),
                   QString(tr("Unable to add geometry column to the output table ") +
                       QString("%1-%2").arg(bb->bufferLayerName()).arg(PQerrorMessage(conn))));
