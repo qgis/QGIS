@@ -1304,15 +1304,39 @@ QString watsNew = "<html><body>" + tr("Version") + " ";
 watsNew += QGis::qgisVersion;
 watsNew += "<h3>" + tr("New features") + "</h3>";
 watsNew += "<ul><li>"
-+ tr("Improvements to the WMS provider. Now works correctly with web proxies")
-+ "<li>"
-+ tr("Many user interface improvements")
++ tr("WMS support")
 + "<li>"
 + tr("Improved vector and attribute editing")
 + "<li>"
 + tr("Map Composer for creating map layouts")
 + "<li>"
-+ tr("Lots of other stuff that we can't rememeber")
++ tr("Improved measure tools with area measuring")
++ "<li>"
++ tr("Attribute searching")
++ "<li>"
++ tr("New legend structure")
++ "<li>"
++ tr("Refactoring of API to allow the use of QGIS libraries in mapping applications")
++ "<li>"
++ tr("Improved MapServer export tool")
++ "<li>"
++ tr("Map canvas background color is customizable")
++ "<li>"
++ tr("Vector layer transparency")
++ "<li>"
++ tr("Antialiasing for vector layers")
++ "<li>"
++ tr("GRASS support in all platforms")
++ "<li>"
++ tr("Enhanced GRASS support and toolbox commands")
++ "<li>"
++ tr("Enhanced vector editing, including copy/paste, snapping and vertex editing")
++ "<li>"
++ tr("Shapefile/OGR layer editing")
++ "<li>"
++ tr("Option to only look in the geometry_columns table when searching for PostGIS layers")
++ "<li>"
++ tr("Many user interface improvements")
 + "</ul></body></html>";
 
 
