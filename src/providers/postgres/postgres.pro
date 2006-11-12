@@ -1,25 +1,38 @@
-######################################################################
-# Qmake project file for building the postgres provider.
-# This file is needed for building on Windows
-######################################################################
-# postgres.pro,v 1.2 2004/06/23 04:15:55 gsherman Exp 
+#################################################################
+#
+#         QMAKE Project File for Quantum GIS 
+# 
+#                   Tim Sutton 2006
+#
+# NOTE: Do not place any hard coded external paths in this file
+#       all libs and includes should be specified in settings.pro
+#       in the top level qgis directory.
+# 
+#################################################################
 
+#
+# This file builds the gui library - the app is built in a separate pro file
+#
+
+include(../../../settings.pro)
+TARGET=postgresprovider
 TEMPLATE = lib
-INCLUDEPATH += . \
-                ..\..\src \
-                $(POSTGRESQL)\src\interfaces\libpq \
-                $(POSTGRESQL)\src\include \
-                $(GEOS)\include \
-                $(GDAL)\include \
-                $(WINSDK)\include
-LIBS += $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib \
-        ..\..\src\libqgis.lib \
-        $(GEOS)\lib\geos.lib \
-        $(FWTOOLS)\lib\gdal_i.lib
+#suffix debug to target if applicable
+CONFIG(debug, debug|release){
+  TARGET = $$member(TARGET, 0)-debug
+}
+LIBS += $${GDALLIBADD}
+LIBS += $${GEOSLIBADD}
+LIBS += $${POSTGRESLIBADD}
+LIBS += $${QGISCORELIBADD}
+LIBS += $${QGISGUILIBADD}
+LIBS += $${QGISPROJECTIONSELECTORLIBADD}
+DESTDIR=$${QGISPROVIDERDIR}
+QT += qt3support svg core gui xml network
+message("Building libs into $${DESTDIR}")
 
-CONFIG += qt dll thread
-DLLDESTDIR= ..\..\win_build\lib\qgis
-# Input
+CONFIG += qt dll thread debug rtti
+
 HEADERS += qgspostgresprovider.h \
            qgspostgrescountthread.h \
            qgspostgisbox2d.h \
@@ -32,8 +45,3 @@ SOURCES += qgspostgresprovider.cpp \
            qgspostgisbox2d.cpp \
            qgspostgisbox3d.cpp \
            qgspostgresextentthread.cpp \
-           ..\..\src\qgsfeature.cpp \
-           ..\..\src\qgsfield.cpp \
-           ..\..\src\qgsrect.cpp \
-           ..\..\src\qgsfeatureattribute.cpp \
-           ..\..\src\qgspoint.cpp
