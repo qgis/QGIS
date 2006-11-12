@@ -67,13 +67,7 @@ Core:
 
 I have created a small archive which includes the above changes, which I will make available.
 
-Gui:
--------------
- Temporarily disable postgres support until we heve resolved issues
- - added #undef HAVE_POSTGRESQL to qgisapp.cpp around line 144
- - added #undef HAVE_POSTGRESQL to qgsvectorlayerproperties.cpp around line 32
 
- - moved qgspluginregistry.* to gui from core
 
 Building:
 -------------
