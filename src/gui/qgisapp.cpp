@@ -771,10 +771,8 @@ void QgisApp::createMenus()
   mLayerMenu = menuBar()->addMenu(tr("&Layer"));
   mLayerMenu->addAction(mActionAddNonDbLayer);
   mLayerMenu->addAction(mActionAddRasterLayer);
-#ifndef WIN32
 #ifdef HAVE_POSTGRESQL
   mLayerMenu->addAction(mActionAddLayer);
-#endif
 #endif
   mLayerMenu->addAction(mActionAddWmsLayer);
   mLayerMenu->addAction(mActionRemoveLayer);
@@ -837,10 +835,8 @@ void QgisApp::createToolBars()
   mLayerToolBar->setObjectName("LayerToolBar");
   mLayerToolBar->addAction(mActionAddNonDbLayer);
   mLayerToolBar->addAction(mActionAddRasterLayer);
-#ifndef WIN32
 #ifdef HAVE_POSTGRESQL
   mLayerToolBar->addAction(mActionAddLayer);
-#endif
 #endif
   mLayerToolBar->addAction(mActionAddWmsLayer);
   mLayerToolBar->addAction(mActionNewVectorLayer);
@@ -1947,10 +1943,9 @@ bool QgisApp::isValidVectorFileName(QString * theFileNameQString)
   return isValidVectorFileName(*theFileNameQString);
 }
 
-#ifndef WIN32
- #ifndef HAVE_POSTGRESQL
+#ifndef HAVE_POSTGRESQL
 void QgisApp::addDatabaseLayer(){}
- #else
+#else
 void QgisApp::addDatabaseLayer()
 {
   // only supports postgis layers at present
@@ -2026,9 +2021,6 @@ void QgisApp::addDatabaseLayer()
 //  QApplication::restoreOverrideCursor();
 
 } // QgisApp::addDatabaseLayer()
- #endif
-#else
-void QgisApp::addDatabaseLayer(){}
 #endif
 
 void QgisApp::addWmsLayer()
