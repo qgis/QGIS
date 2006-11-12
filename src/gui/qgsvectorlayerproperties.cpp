@@ -28,11 +28,9 @@
 #include "qgsuniquevaluedialog.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#ifndef WIN32
 #ifdef HAVE_POSTGRESQL
 #include "qgspgquerybuilder.h"
 #include "../providers/postgres/qgspostgresprovider.h"
-#endif
 #endif
 
 #include <QMessageBox>
