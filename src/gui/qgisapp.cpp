@@ -140,10 +140,8 @@
 #include <ApplicationServices/ApplicationServices.h>
 #endif
 
-#ifndef WIN32
 #ifdef HAVE_POSTGRESQL
 #include "qgsdbsourceselect.h"
-#endif
 #endif
 
 #ifndef WIN32

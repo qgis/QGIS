@@ -23,7 +23,7 @@ CONFIG(debug, debug|release){
   TARGET = $$member(TARGET, 0)-debug
 }
 LIBS += $${GDALLIBADD}
-#LIBS += $${SQLITELIBADD}
+LIBS += $${POSTGRESLIBADD}
 #LIBS += $${GEOSLIBADD}
 #LIBS += $${PROJLIBADD}
 LIBS += $${QGISCORELIBADD}
@@ -131,7 +131,11 @@ HEADERS =							\
 		../composer/qgscomposerscalebar.h	\
 		../composer/qgscomposervectorlegend.h \
 		../composer/qgscomposerview.h	\
-		../composer/qgscomposition.h					
+		../composer/qgscomposition.h \					
+                qgsdbsourceselect.h \	         
+                qgsnewconnection.h \		 
+                qgspgquerybuilder.h \           
+                qgspgutil.h #from pg lib
 
 SOURCES =					\
                 qgisapp.cpp                     \ # needed to ensure ui gets build for qgsiface
@@ -223,18 +227,10 @@ SOURCES =					\
 		../composer/qgscomposerscalebar.cpp	       \
 		../composer/qgscomposervectorlegend.cpp    \
 		../composer/qgscomposerview.cpp	       \
-		../composer/qgscomposition.cpp					
+		../composer/qgscomposition.cpp \					
+                qgsdbsourceselect.cpp \		 
+                qgsnewconnection.cpp \	         
+                qgspgquerybuilder.cpp \         
+                qgspgutil.cpp # from pg lib
 
-
-# Postgres specific compilation		
-# qgsdbsourceselect.h		         
-#qgsnewconnection.h		 
-#qgspgquerybuilder.h            
-#qgspgutil.h #from pg lib
-
-#qgsdbsourceselect.cpp		 
-#qgsnewconnection.cpp	         
-#qgspgquerybuilder.cpp          
-#qgspgutil.cpp # from pg lib
-#
 
