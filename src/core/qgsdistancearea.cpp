@@ -14,10 +14,10 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include <math.h>
+#include <cmath>
 #include <sqlite3.h>
-#include <qdir.h>
-#include <qsettings.h>
+#include <QDir>
+#include <QSettings>
 
 #include "qgis.h"
 #include "qgspoint.h"
@@ -27,6 +27,7 @@
 #include "qgsgeometry.h"
 #include "qgsdistancearea.h"
 #include "qgsapplication.h"
+#include "qgslogger.h"
 
 #define DEG2RAD(x)    ((x)*M_PI/180)
 
@@ -264,24 +265,41 @@ double QgsDistanceArea::measureLine(const std::vector<QgsPoint>& points)
   if (points.size() < 2)
     return 0;
   
-  double total = 0;
-  QgsPoint p1, p2;
-  p1 = mCoordTransform->transform(points[0]);
-  
-  for (int i = 1; i < points.size(); i++)
+  try
   {
-    p2 = mCoordTransform->transform(points[i]);
-    total = computeDistanceBearing(p1,p2);
-    p1 = p2;
+    double total = 0;
+    QgsPoint p1, p2;
+    p1 = mCoordTransform->transform(points[0]);
+
+    for (int i = 1; i < points.size(); i++)
+    {
+      p2 = mCoordTransform->transform(points[i]);
+      total = computeDistanceBearing(p1,p2);
+      p1 = p2;
+    }
+    return total;
   }
-  return total;
+  catch (QgsCsException &cse)
+  {
+    QgsLogger::warning(QObject::tr("Caught a coordinate system exception while trying to transform a point. Unable to calculate line length."));
+    return 0.0;
+  }
+
 }
 
 double QgsDistanceArea::measureLine(const QgsPoint& p1, const QgsPoint& p2)
 {
-  QgsPoint pp1 = mCoordTransform->transform(p1);
-  QgsPoint pp2 = mCoordTransform->transform(p2);
-  return computeDistanceBearing(pp1, pp2);
+  try
+  {
+    QgsPoint pp1 = mCoordTransform->transform(p1);
+    QgsPoint pp2 = mCoordTransform->transform(p2);
+    return computeDistanceBearing(pp1, pp2);
+  }
+  catch (QgsCsException &cse)
+  {
+    QgsLogger::warning(QObject::tr("Caught a coordinate system exception while trying to transform a point. Unable to calculate line length."));
+    return 0.0;
+  }
 }
 
 
@@ -300,32 +318,39 @@ unsigned char* QgsDistanceArea::measurePolygon(unsigned char* feature, double* a
   double x,y, areaTmp;
   *area = 0;
 
-  for (unsigned int idx = 0; idx < numRings; idx++)
+  try
   {
-    int nPoints = *((int*)ptr);
-    points.resize(nPoints);
-    ptr += 4;
-
-    // Extract the points from the WKB and store in a pair of
-    // vectors.
-    for (unsigned int jdx = 0; jdx < nPoints; jdx++)
+    for (unsigned int idx = 0; idx < numRings; idx++)
     {
-      x = *((double *) ptr);
-      ptr += sizeof(double);
-      y = *((double *) ptr);
-      ptr += sizeof(double);
-    
-      points[jdx] = mCoordTransform->transform(QgsPoint(x,y));
-    }
+      int nPoints = *((int*)ptr);
+      points.resize(nPoints);
+      ptr += 4;
 
-    if (points.size() > 2)
-    {
-      areaTmp = computePolygonArea(points);
-      if (idx == 0)
-        *area += areaTmp; // exterior ring
-      else
-        *area -= areaTmp; // interior rings
+      // Extract the points from the WKB and store in a pair of
+      // vectors.
+      for (unsigned int jdx = 0; jdx < nPoints; jdx++)
+      {
+        x = *((double *) ptr);
+        ptr += sizeof(double);
+        y = *((double *) ptr);
+        ptr += sizeof(double);
+
+        points[jdx] = mCoordTransform->transform(QgsPoint(x,y));
+      }
+
+      if (points.size() > 2)
+      {
+        areaTmp = computePolygonArea(points);
+        if (idx == 0)
+          *area += areaTmp; // exterior ring
+        else
+          *area -= areaTmp; // interior rings
+      }
     }
+  }
+  catch (QgsCsException &cse)
+  {
+    QgsLogger::warning(QObject::tr("Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area."));
   }
   
   return ptr;
@@ -334,12 +359,20 @@ unsigned char* QgsDistanceArea::measurePolygon(unsigned char* feature, double* a
 
 double QgsDistanceArea::measurePolygon(const std::vector<QgsPoint>& points)
 {
-  std::vector<QgsPoint> pts(points.size());
-  for (std::vector<QgsPoint>::size_type i = 0; i < points.size(); i++)
+  try
   {
-    pts[i] = mCoordTransform->transform(points[i]);
+    std::vector<QgsPoint> pts(points.size());
+    for (std::vector<QgsPoint>::size_type i = 0; i < points.size(); i++)
+    {
+      pts[i] = mCoordTransform->transform(points[i]);
+    }
+    return computePolygonArea(pts);
   }
-  return computePolygonArea(pts);
+  catch (QgsCsException &cse)
+  {
+    QgsLogger::warning(QObject::tr("Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area."));
+    return 0.0;
+  }
 }
 
 
