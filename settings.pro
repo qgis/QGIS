@@ -63,7 +63,7 @@ QMAKE_LFLAGS_SHLIB *= --no-undefined
 QT =
 
 QGSSVNVERSION=version0.8pre2
-DEFINES += HAVE_POSTGRESQL=0
+DEFINES += HAVE_POSTGRESQL=1
 #################################################################
 ##
 ## Destination dir
@@ -124,6 +124,8 @@ GRASSLIBADD=-lgrass_vect -lgrass_dig2 -lgrass_dgl -lgrass_rtree \
             -lgrass_linkm -lgrass_dbmiclient -lgrass_dbmibase \
             -lgrass_I -lgrass_gproj -lgrass_gmath -lgrass_gis \
             -lgrass_datetime
+
+POSTGRESLIBADD=-lpq	    
 
 QGISCORELIBADD=-lqgis_core
 CONFIG(debug, debug|release){
