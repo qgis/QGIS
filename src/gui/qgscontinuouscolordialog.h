@@ -48,8 +48,9 @@ class QgsContinuousColorDialog: public QDialog, private Ui::QgsContinuousColorDi
 
  protected:
     QgsVectorLayer* mVectorLayer;
-    /**Stores the names and numbers of the fields with numeric values*/
-     std::map<QString,int> mFieldMap;
+    /**Stores the relationship between provider field indices and field selection 
+       combobox indices. First is the combobox index, second is the provider field index */
+     std::map<int,int> mFieldMap;
 
  private:
     /** Default constructor is private, do not use this */

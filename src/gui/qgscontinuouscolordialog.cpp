@@ -43,7 +43,7 @@ QgsContinuousColorDialog::QgsContinuousColorDialog(QgsVectorLayer * layer)
     if (provider = dynamic_cast<QgsVectorDataProvider*>(mVectorLayer->getDataProvider()))
     {
 	std::vector < QgsField > const & fields = provider->fields();
-	int fieldnumber = 0;
+	int fieldnumber(0), combonumber(0);
 	QString str;
 
 	for (std::vector < QgsField >::const_iterator it = fields.begin(); it != fields.end(); ++it)
@@ -54,7 +54,8 @@ QgsContinuousColorDialog::QgsContinuousColorDialog(QgsVectorLayer * layer)
 		str = (*it).name();
 		str = str.left(1).upper() + str.right(str.length() - 1);  //make the first letter uppercase
 		classificationComboBox->insertItem(str);
-		mFieldMap.insert(std::make_pair(str, fieldnumber));
+		mFieldMap.insert(std::make_pair(combonumber, fieldnumber));
+		combonumber++;
             }
 	    fieldnumber++;
         }
@@ -78,7 +79,22 @@ QgsContinuousColorDialog::QgsContinuousColorDialog(QgsVectorLayer * layer)
 
     if (renderer)
     {
-	classificationComboBox->setCurrentItem(renderer->classificationField());
+	// Awkard - here we want to search through mFieldMap for a
+	// particular value, while elsewhere in this code we need to search
+	// for a particular key, so one or the other loses out, which is here.
+
+	std::map<int,int>::const_iterator iter = mFieldMap.begin();
+	while (iter != mFieldMap.end())
+	{
+	    if (iter->second == renderer->classificationField())
+		break;
+	    iter++;
+	}
+	if (iter != mFieldMap.end())
+	    classificationComboBox->setCurrentItem(iter->first);
+	else
+	    classificationComboBox->setCurrentItem(-1);
+
 	const QgsSymbol* minsymbol = renderer->minimumSymbol();
 	const QgsSymbol* maxsymbol = renderer->maximumSymbol();
 
@@ -108,6 +124,8 @@ QgsContinuousColorDialog::QgsContinuousColorDialog(QgsVectorLayer * layer)
 	  cb_polygonOutline->setCheckState(Qt::Checked);
 	else
 	  cb_polygonOutline->setCheckState(Qt::Unchecked);
+	if (mVectorLayer->vectorType() != QGis::Polygon)
+	  cb_polygonOutline->setVisible(false);
     }
     else
     {
@@ -142,14 +160,17 @@ QgsContinuousColorDialog::~QgsContinuousColorDialog()
 
 void QgsContinuousColorDialog::apply()
 {
-    QString fieldstring = classificationComboBox->currentText();
-    if (fieldstring.isEmpty())    //don't do anything, it there is no classification field
+    int comboIndex = classificationComboBox->currentIndex();
+    if (comboIndex == -1)    //don't do anything, if there is no classification field
     {
 	return;
     }
-    std::map < QString, int >::iterator iter = mFieldMap.find(fieldstring);
+    std::map < int, int >::iterator iter = mFieldMap.find(comboIndex);
+    // Should never happen...
+    assert(iter != mFieldMap.end());
+
     int classfield = iter->second;
-    
+
     //find the minimum and maximum for the classification variable
     double minimum, maximum;
     QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider*>(mVectorLayer->getDataProvider());
