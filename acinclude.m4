@@ -405,6 +405,15 @@ case "${host}" in
     fi
     ;;
 
+  *netbsd*)
+    QT_LIBS="$QT_LIB"
+    if test $QT_IS_STATIC = yes && test $QT_IS_EMBEDDED = no; then
+      QT_LIBS="$QT_LIBS -L$x_libraries -lXext -lX11 -lm -lSM -lICE -ldl -ljpeg -lpthread"
+   else
+      QT_LIBS="$QT_LIBS -lpthread"
+    fi
+    ;;
+
   *freebsd*)
     QT_LIBS="$QT_LIB"
     if test $QT_IS_STATIC = yes && test $QT_IS_EMBEDDED = no; then
@@ -508,6 +517,7 @@ AC_SUBST(QASSISTANTCLIENT_LDADD)
 AC_SUBST(QTDIR)
 ])
 
+
 dnl ------------------------------------------------------------------------
 dnl
 dnl improved Qt4 check
@@ -517,25 +527,22 @@ dnl
 dnl ------------------------------------------------------------------------
 
 AC_DEFUN([AQ_CHECK_QT4],[
-   
-# Commented, it is defined above 
-#  AC_ARG_WITH([qtdir], AC_HELP_STRING([--with-qtdir=DIR],[Qt4 installation directory]),
-#              QTDIR="$withval", QTDIR="")
-
-# WARNING: PKG_CHECK_MODULES fails on many systems (not defined) => commented
-#  AC_ARG_WITH([qt-pkg-config], AC_HELP_STRING([--with-qt-pkg-config],
-#              [Detect Qt4 directory using pkg-config instead of using --with-qtdir. Works only with Qt4 version for X11.]),
-#              QT_PKG_CONFIG="y", QT_PKG_CONFIG="n")
+    
+  AC_ARG_WITH([qtdir], AC_HELP_STRING([--with-qtdir=DIR],[Qt4 installation directory]),
+              QTDIR="$withval", QTDIR="")
+  AC_ARG_WITH([qt-pkg-config], AC_HELP_STRING([--with-qt-pkg-config],
+              [Detect Qt4 directory using pkg-config instead of using --with-qtdir. Works only with Qt4 version for X11.]),
+              QT_PKG_CONFIG="y", QT_PKG_CONFIG="n")
 
   if test "$QT_PKG_CONFIG" = "y" ; then
- 
+  
     dnl ---------------------------------------------------------------------------
     dnl we will use PKGCONFIG, check that all needed Qt4 components are there
     dnl ---------------------------------------------------------------------------
     
     QT_MIN_VER=4.1.0
 
-    #PKG_CHECK_MODULES(QT, QtCore QtGui Qt3Support QtNetwork QtXml QtSvg QtTest >= $QT_MIN_VER)
+dnl    PKG_CHECK_MODULES(QT, QtCore QtGui Qt3Support QtNetwork QtXml QtSvg QtTest >= $QT_MIN_VER)
 
     dnl check for Qt binaries needed for compilation: moc,uic,rcc
     dnl (we could also check for moc and uic versions)
@@ -555,7 +562,7 @@ AC_DEFUN([AQ_CHECK_QT4],[
 
     dnl workaround for case when QtTest doesn't report QtTest subdirectory
     dnl in include path (this is not a very nice check)
-    #PKG_CHECK_MODULES(QT_TEST, QtTest >= $QT_MIN_VER)
+dnl    PKG_CHECK_MODULES(QT_TEST, QtTest >= $QT_MIN_VER)
     QT_TEST_CFLAGS=`echo $QT_TEST_CFLAGS | sed 's/[ \t]*$//'` # remove trailing spaces
     QTTEST_HAS_SUBDIR=`echo $QT_TEST_CFLAGS | grep '/QtTest' | wc -l`
     if test "$QTTEST_HAS_SUBDIR" -eq "0" ; then
@@ -802,7 +809,7 @@ AC_MSG_CHECKING(for python build information)
         python_prefix=/System/Library/Frameworks/Python.framework/*/
       fi
       AC_CHECK_HEADER([$ax_python_bin/Python.h],
-      [[ax_python_header=`locate $python_prefix$ax_python_bin/Python.h | sed -e s,/Python.h,,`]],
+      [[ax_python_header=`locate $python_prefix$ax_python_bin/Python.h | head -1 | sed -e s,/Python.h,,`]],
       ax_python_header=no)
       if test $ax_python_lib != no; then
         if test $ax_python_header != no; then
