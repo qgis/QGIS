@@ -50,7 +50,6 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(QgsVectorLayer * layer): QDia
 	    if (type != "String" && type != "varchar" && type != "geometry")
             {
 		str = (*it).name();
-		str = str.left(1).upper() + str.right(str.length() - 1);  //make the first letter uppercase
 		classificationComboBox->insertItem(str);
 		mFieldMap.insert(std::make_pair(str, fieldnumber));
             }
