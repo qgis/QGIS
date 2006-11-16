@@ -41,7 +41,7 @@ dnl library interfase version number
 dnl change when lib interface changes
 dnl see http://www.gnu.org/software/libtool/manual.html#TOC32
 dnl ---------------------------------------------------------------------------
-INTERFACE_VERSION=0:1:0
+INTERFACE_VERSION=1:0:0
 
 
 AM_INIT_AUTOMAKE(qgis, ${VERSION})
@@ -494,6 +494,7 @@ AC_CONFIG_FILES([
   images/themes/Makefile
   images/themes/nkids/Makefile
   resources/Makefile
+  resources/context_help/Makefile
   src/Makefile 
   src/composer/Makefile
   src/core/Makefile
