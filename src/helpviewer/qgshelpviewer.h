@@ -33,6 +33,7 @@ public slots:
     void fileExit();
 private:
     void loadContext(const QString &contextId);
+    void loadContextFromSqlite(const QString &contextId);
   int connectDb(const QString &helpDbPath);
  sqlite3 *db;
 };
