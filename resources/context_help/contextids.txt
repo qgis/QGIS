@@ -1,0 +1,9 @@
+151694916_en_US   QgsBookmark
+32338213_en_US    QgsCopyrightLabelPluginGui
+361087368_en_US   QgsProjectProperties
+308026563_en_US   QgsNewHttpConnection
+689216579_en_US   QgsIdentifyResulsts
+710979116_en_US   QgsServerSourceSelect
+929865718_en_US   QgsNewConnection
+939347163_en_US   QgsDbSourceSelect
+687883780_en_US   QgsMeasure

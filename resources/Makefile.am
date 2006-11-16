@@ -12,7 +12,9 @@
 
  resourcedir = ${pkgdatadir}/resources
 
- resource_DATA = srs.db qgis.db qgis_help.db
+ resource_DATA = srs.db qgis.db qgis_help.db 
+ 
+ SUBDIRS = context_help
 
  EXTRA_DIST = $(resource_DATA)
  
