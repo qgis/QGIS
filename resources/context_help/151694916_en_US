@@ -1,0 +1,22 @@
+<h3>Spatial Bookmarks</h3>
+Spatial Bookmarks allow you to "bookmark" a geographic location and return to it later. 
+
+<h4>Creating a Bookmark</h4>
+To create a bookmark:
+<ol>
+<li>Zoom or pan to the area of interest
+<li>Click on the <i>Create a new geospatial bookmark</i> or type Ctrl-B
+<li>Enter a descriptive name for the bookmark (up to 255 characters)
+<li>Click <i>OK</i> to add the bookmark or <i>Cancel</i> to exit without adding the bookmark
+</ol>
+Note that you can have multiple bookmarks with the same name.
+<h4>Working with Bookmarks</h4>
+To use or manage bookmarks, click on the <i>Show geospatial bookmarks</i> button or choose <i>Geospatial Bookmarks</i> from the <i>View</i> menu. The bookmarks dialog allows you to zoom to or delete a bookmark. You can not edit the bookmark name or coordinates.
+<h5>Zooming to a Bookmark</h5>
+From the Bookmarks dialog, select the desired bookmark by clicking on it, then click the <i>Zoom To</i> button.
+<p>
+You can also zoom to a bookmark by double-clicking on it.
+
+<h5>Deleting a Bookmark</h5>
+To delete a bookmark from the Bookmarks dialog, click on it then click the <i>Delete</i> button. Confirm your choice by clicking <i>Yes</i> or cancel the delete by clicking <i>No</i>.
+
