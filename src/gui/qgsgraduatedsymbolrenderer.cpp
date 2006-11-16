@@ -100,9 +100,10 @@ void QgsGraduatedSymbolRenderer::renderFeature(QPainter * p, QgsFeature * f, QPi
     }
   }
 
-  if (it == mSymbols.end())      //value is contained in no item
+  if (it == mSymbols.end())      //only draw features which are covered by a render item
   {
-    std::cout << "Warning, value is contained in no class" << std::endl << std::flush;
+    p->setPen(QPen(Qt::NoPen));
+    p->setBrush(QBrush(Qt::NoBrush));
     return;
   } 
   else
