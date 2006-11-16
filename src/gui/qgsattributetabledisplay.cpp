@@ -28,6 +28,7 @@
 #include "qgssearchtreenode.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgscontexthelp.h"
 
 #include <QMessageBox>
 #include <QIcon>
@@ -362,4 +363,13 @@ void QgsAttributeTableDisplay::closeEvent(QCloseEvent* ev)
   ev->ignore();
   emit deleted();
   delete this;
+}
+
+void QgsAttributeTableDisplay::on_btnHelp_clicked()
+{
+  showHelp();
+}
+void QgsAttributeTableDisplay::showHelp()
+{
+  QgsContextHelp::run(context_id);
 }
