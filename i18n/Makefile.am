@@ -31,6 +31,7 @@ nodist_i18n_DATA = \
 		qgis_sk.qm \
 		qgis_sv.qm \
 		qgis_lv.qm \
+		qgis_vi.qm \
 		qgis_zh_CN.qm
 i18n_SOURCES = \
 		qgis_cs_CZ.ts \
@@ -47,6 +48,7 @@ i18n_SOURCES = \
 		qgis_sk.ts \
 		qgis_sv.ts \
 		qgis_lv.ts \
+		qgis_vi.ts \
 		qgis_zh_CN.ts
 %.qm: %.ts
 	cd ..; /bin/sh ./create_qm_files.sh
