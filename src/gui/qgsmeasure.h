@@ -118,7 +118,7 @@ private:
   QgsRubberBand *mRubberBand;
 
   //! Help context id
-  static const int context_id = -687883780;
+  static const int context_id = 687883780;
   
   //! indicates whether we're measuring distances or areas
   bool mMeasureArea;

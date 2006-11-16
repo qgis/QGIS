@@ -107,7 +107,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
   int mClickedOnValue;
   QMenu* mActionPopup;
   std::vector<std::pair<QString, QString> > mValues;
-  static const int context_id = -689216579;
+  static const int context_id = 689216579;
 
   /**
    Keeps track of what derived-attribute (e.g. Length, Area)
