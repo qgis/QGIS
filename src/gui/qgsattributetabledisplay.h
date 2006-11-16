@@ -53,6 +53,7 @@ class QgsAttributeTableDisplay:public QDialog, private Ui::QgsAttributeTableBase
     void doSearch(const QString& searchString);
 
     virtual void closeEvent(QCloseEvent* ev);
+    void showHelp();
 
     /** array of feature IDs that match last searched condition */
     std::vector<int> mSearchIds;
@@ -69,6 +70,7 @@ class QgsAttributeTableDisplay:public QDialog, private Ui::QgsAttributeTableBase
     void search();
     void advancedSearch();
     void searchShowResultsChanged(int item);
+    void on_btnHelp_clicked();
 
   signals:
     void deleted();
@@ -77,6 +79,8 @@ class QgsAttributeTableDisplay:public QDialog, private Ui::QgsAttributeTableBase
     void setTheme();
     
     QString mSearchString;
+
+    static const int context_id = 831088384;
 };
 
 #endif
