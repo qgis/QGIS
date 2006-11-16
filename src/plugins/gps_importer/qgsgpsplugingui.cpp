@@ -13,6 +13,7 @@
 #include "qgsgpsdevicedialog.h"
 #include "qgsmaplayer.h"
 #include "qgsdataprovider.h"
+#include "qgscontexthelp.h"
 #include <qgslogger.h>
 
 //qt includes
@@ -399,3 +400,7 @@ void QgsGPSPluginGui::devicesUpdated() {
 }
 
 
+void QgsGPSPluginGui::on_pbnHelp_clicked()
+{
+  QgsContextHelp::run(context_id);
+}
