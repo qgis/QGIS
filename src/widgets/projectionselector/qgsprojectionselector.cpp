@@ -18,6 +18,7 @@
 //qgis includes
 #include "qgis.h" //magick numbers here
 #include "qgsapplication.h"
+#include "qgslogger.h"
 
 //qt includes
 #include <QDir>
@@ -276,8 +277,8 @@ QString QgsProjectionSelector::getCurrentProj4String()
       QString myDatabaseFileName;
       QString mySrsId = myItem->text(1);
 
-      std::cout << " QgsProjectionSelector::getCurrentProj4String :  mySrsId = " << mySrsId.toLocal8Bit().data() << std::endl;
-      std::cout << " QgsProjectionSelector::getCurrentProj4String :  USER_PROJECTION_START_ID = " << USER_PROJECTION_START_ID << std::endl;
+      QgsDebugMsg("mySrsId = " + mySrsId);
+      QgsDebugMsg("USER_PROJECTION_START_ID = " + QString::number(USER_PROJECTION_START_ID));
       //
       // Determine if this is a user projection or a system on
       // user projection defs all have srs_id >= 100000
@@ -289,20 +290,19 @@ QString QgsProjectionSelector::getCurrentProj4String()
         myFileInfo.setFile(myDatabaseFileName);
         if ( !myFileInfo.exists( ) ) //its unlikely that this condition will ever be reached
         {
-          std::cout << " QgsProjectionSelector::getCurrentProj4String :  users qgis.db not found" << std::endl;
+          QgsDebugMsg("users qgis.db not found");
           return NULL;
         }
         else
         {
-          QgsDebug(myDatabaseFileName);
-          QgsDebug("File not found");
+          QgsDebugMsg("users qgis.db found");
         }
       }
       else //must be  a system projection then
       {
         myDatabaseFileName =  mSrsDatabaseFileName;
       }
-      std::cout << "QgsProjectionSelector::getCurrentProj4String db = " << myDatabaseFileName.toLocal8Bit().data() << std::endl;
+      QgsDebugMsg("db = " + myDatabaseFileName);
 
 
       sqlite3 *db;
