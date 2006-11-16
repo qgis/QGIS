@@ -99,7 +99,7 @@ void QgsHelpViewer::loadContext(const QString &contextId)
         +":<p><b>"
         + fullHelpPath 
         + "</b><p>"
-        + tr("Feel free to translate it and submit it to the QGIS development team");
+        + tr("If you would like to create it, contact the QGIS development team");
     }
     else
     { 
