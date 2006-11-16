@@ -25,6 +25,9 @@
 #include <qfileinfo.h>
 #include <q3textbrowser.h>
 #include <sqlite3.h>
+#include <QTextCodec>
+#include <QTextStream>
+#include <QFile>
 #include "qgshelpviewer.h"
 QgsHelpViewer::QgsHelpViewer(const QString &contextId, QWidget *parent, 
     Qt::WFlags fl)
@@ -49,7 +52,73 @@ void QgsHelpViewer::fileExit()
 {
   QApplication::exit();
 }
+/*
+ * Read the help file and populate the viewer
+ */
 void QgsHelpViewer::loadContext(const QString &contextId)
+{
+  if(contextId != QString::null)
+  {
+    // set up the path to the help file
+    QString helpFilesPath =
+#ifdef Q_OS_MACX
+      // remove bin/qgis_help.app/Contents/MacOS to get to share/qgis
+      qApp->applicationDirPath() + "/../../../../share/qgis" +
+#elif WIN32
+      qApp->applicationDirPath() + "/share/qgis"
+#else
+      QString(PKGDATAPATH) +
+#endif
+      "/resources/context_help/";
+    /* 
+     * determine the locale and create the file name from
+     * the context id
+     */
+    QString lang(QTextCodec::locale());
+    QString fullHelpPath = helpFilesPath + contextId + "_" + lang;
+    // get the help content and title from the localized file
+    QString helpContents;
+    QFile file(fullHelpPath);
+    // check to see if the localized version exists
+    if(!file.exists())
+    {
+      // change the file name to the en_US version (default)
+      fullHelpPath = helpFilesPath + contextId + "_en_US";
+      file.setFileName(fullHelpPath);
+      // Check for some sort of english locale and if not found, include 
+      // translate this for us message
+      if(!lang.contains("en_"))
+      {
+        helpContents = "<i>This help file is not available in your language."
+         " If you would like to translate it, please contact the QGIS  development team.</i><hr>";
+      }
+    }
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+      helpContents = tr("This help file does not exist for your language")
+        +":<p><b>"
+        + fullHelpPath 
+        + "</b><p>"
+        + tr("Feel free to translate it and submit it to the QGIS development team");
+    }
+    else
+    { 
+      QTextStream in(&file);
+      while (!in.atEnd()) {
+        QString line = in.readLine();
+        helpContents += line;
+      }
+    }
+    file.close();
+
+    // Set the browser text to the help contents
+    txtBrowser->setText(helpContents);
+    setCaption(tr("Quantum GIS Help"));
+
+        }
+        }
+
+void QgsHelpViewer::loadContextFromSqlite(const QString &contextId)
 {
   if(contextId != QString::null)
   {
