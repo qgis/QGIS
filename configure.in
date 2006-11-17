@@ -296,6 +296,16 @@ dnl ---------------------------------------------------------------------------
 AC_PROG_YACC
 AM_PROG_LEX
 
+# test whether they have been really found
+# (by default if not found autoconf will use a stub)
+
+if test x"$LEX" != "xflex" -a x"$LEX" != "xlex" ; then
+  AC_MSG_ERROR("Lex/Flex is not available!")
+fi
+
+if test x"$YACC" != "xbison" -a x"$YACC" != "xyacc" -a x"$YACC" != "xbison -y" ; then
+  AC_MSG_ERROR("Yacc/Bison is not available!")
+fi
 
 dnl ---------------------------------------------------------------------------
 dnl SPIT plugin
