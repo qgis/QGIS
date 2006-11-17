@@ -388,22 +388,12 @@ int main(int argc, char *argv[])
 #endif
 
   // Check to see if qgis was started from the source directory. 
-  // This is done by looking for Makefile in the directory where qgis was
-  // started from. If running from the src directory, exit gracefully
-
-  // Get the application path. This method is required to support qt 3.1.2
-  // which does not support the applicationFilePath and applicationDirPath
-  // functions. We assume that OS X and Win32 systems will be using at least
-  // Qt 3.2 and therefore support the required functions.
-#if defined(Q_OS_MACX) || defined(WIN32)
+  // This is done by looking for a particular file in the directory 
+  // where qgis was started from. If running from the src directory, 
+  // exit gracefully
   QString appPath = qApp->applicationFilePath();
   QString appDir = qApp->applicationDirPath();
-  QString testFile = "libqgis.la";
-#else
-  QString appPath = argv[0];
-  QString appDir = appPath.left(appPath.findRev("/"));
-  QString testFile = "lt-qgis";
-#endif
+  QString testFile = "libqgis_gui.la";
 
 #ifdef Q_WS_WIN
   //for windows lets use plastique syle!
