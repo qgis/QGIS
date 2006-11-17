@@ -235,10 +235,10 @@ void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
     }
     else
     {
-      QFont myQFont("time", 32, QFont::Bold);
+      QFont myQFont("time", 12, QFont::Bold);
       theQPainter->setFont(myQFont);
       theQPainter->setPen(Qt::black);
-      theQPainter->drawText(10, 20, QString(tr("Pixmap Not Found")));
+      theQPainter->drawText(10, 20, QString(tr("North arrow pixmap not found")));
     }
   }
 
