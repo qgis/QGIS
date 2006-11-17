@@ -722,10 +722,10 @@ void QgsGrassShell::printStdout()
 		mStdoutBuffer.remove ( 0, mlen );
 		continue;
 	    } 
-	    
+	   
 	    if ( rxend.search(mStdoutBuffer) == 0 ) 
 	    {
-		mlen = rxerror.matchedLength();
+		mlen = rxend.matchedLength();
 		mStdoutBuffer.remove ( 0, mlen );
 		continue;
 	    }
