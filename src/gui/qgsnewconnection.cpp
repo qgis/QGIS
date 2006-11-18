@@ -99,12 +99,17 @@ void QgsNewConnection::testConnection()
   // following line uses Qt SQL plugin - currently not used
   // QSqlDatabase *testCon = QSqlDatabase::addDatabase("QPSQL7","testconnection");
 
+  // Need to escape the password to allow for single quotes and backslashes
+  QString password = txtPassword->text();
+  password.replace('\\', "\\\\");
+  password.replace('\'', "\\'");
+
   QString connInfo =
     "host=" + txtHost->text() + 
     " dbname=" + txtDatabase->text() + 
     " port=" + txtPort->text() +
     " user=" + txtUsername->text() + 
-    " password=" + txtPassword->text();
+    " password='" + password + "'";
   PGconn *pd = PQconnectdb(connInfo.toLocal8Bit().data());
 //  std::cout << pd->ErrorMessage();
   if (PQstatus(pd) == CONNECTION_OK)
