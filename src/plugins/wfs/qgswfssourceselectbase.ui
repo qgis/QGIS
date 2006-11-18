@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Dialog</string>
+   <string>Note: this plugin not considered stable yet. Use it on your own risk</string>
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
