@@ -323,10 +323,13 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
     QString password = QInputDialog::getText(tr("Password for ") + database + "@" + host,
         tr("Please enter your password:"),
         QLineEdit::Password, QString::null, &makeConnection, this);
-
-    //  allow null password entry in case its valid for the database
+    // allow null password entry in case its valid for the database
   }
-  connString += " password=" + password;
+
+  // Need to escape the password to allow for single quotes and backslashes
+  password.replace('\\', "\\\\");
+  password.replace('\'', "\\'");
+  connString += " password='" + password + "'";
 #ifdef QGISDEBUG
   std::cout << "Connection info: " << connString.toLocal8Bit().data() << std::endl;
 #endif

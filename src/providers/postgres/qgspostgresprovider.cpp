@@ -147,11 +147,32 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
   {
     mUri.username = parm[1];
   }
-  parm = QStringList::split("=", conParts[4]);
-  if(parm.size() == 2)
-  {
-    mUri.password = parm[1];
-  }
+
+  // The password can have '=' and ' ' characters in it, so we can't
+  // use the split on '=' and ' ' technique - use indexOf()
+  // instead.
+  QString key="password='";
+  int i = connInfo.indexOf(key);
+  if (i != -1)
+    {
+      QString password = connInfo.mid(i+key.length());
+      // Now walk through the string till we find a ' character, but
+      // need to allow for an escaped ' character (which will be the
+      // \' character pair).
+      int n = 0;
+      bool escaped = false;
+      while (n < password.length() && (password[n] != '\'' || escaped))
+        {
+          if (password[n] == '\\')
+            escaped = true;
+          else
+            escaped = false;
+          n++;
+        }
+      // The -1 is to remove the trailing ' character
+      mUri.password = password.left(n-1);
+    }
+  else
   /* end uri structure */
 
   QgsDebugMsg("Geometry column is: " + geometryColumn);
@@ -266,7 +287,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
         QString attnum = PQgetvalue(tresult, 0, 0);
         PQclear(tresult);
 
-        QgsDebugMsg("Field: " + attnum + " maps to " + QString::number(i) + " " + fieldName + ", " + \ 
+        QgsDebugMsg("Field: " + attnum + " maps to " + QString::number(i) + " " + fieldName + ", " +  
 		    fieldType + " (" + QString::number(fldtyp) + "),  " + fieldSize + ", " + QString::number(fieldModifier));
 
         attributeFieldsIdMap[attnum.toInt()] = i;
@@ -1344,13 +1365,13 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
     temp.table_type       = PQgetvalue(result, i, 6);
     temp.column_type      = PQgetvalue(result, i, 7);
 
-    QgsDebugMsg(temp.view_schema + "." \ 
-	      + temp.view_name + "." \
-	      + temp.view_column_name + " <- " \
-	      + temp.table_schema + "." \
-	      + temp.table_name + "." \
-	      + temp.column_name + " is a '" \
-	      + temp.table_type + "' of type " \
+    QgsDebugMsg(temp.view_schema + "." 
+	      + temp.view_name + "." 
+	      + temp.view_column_name + " <- " 
+	      + temp.table_schema + "." 
+	      + temp.table_name + "." 
+	      + temp.column_name + " is a '" 
+	      + temp.table_type + "' of type " 
 		+ temp.column_type);
 
     columnRelations[temp.view_schema + '.' +
@@ -2471,8 +2492,8 @@ void QgsPostgresProvider::customEvent( QCustomEvent * e )
 
       QgsDebugMsg("QgsPostgresProvider: new extent has been saved");
 
-      QgsDebugMsg("QgsPostgresProvider: Set extent to: " + QString::number(layerExtent.xMin()) + ", " + \
-		  QString::number(layerExtent.yMin()) + " " + QString::number(layerExtent.xMax()) + ", " + \ 
+      QgsDebugMsg("QgsPostgresProvider: Set extent to: " + QString::number(layerExtent.xMin()) + ", " + 
+		  QString::number(layerExtent.yMin()) + " " + QString::number(layerExtent.xMax()) + ", " + 
 		  QString::number(layerExtent.yMax()));
 
       QgsDebugMsg("QgsPostgresProvider: emitting fullExtentCalculated()");
