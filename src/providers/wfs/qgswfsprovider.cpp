@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include <QDomDocument>
 #include <QDomNodeList>
+#include <QFile>
 #include <cfloat>
 
 #ifdef WIN32
@@ -248,59 +249,57 @@ void QgsWFSProvider::select(QgsRect *mbr, bool useIntersect)
 
 int QgsWFSProvider::getFeature(const QString& uri)
 {
-  //GET or SOAP?
-  if(uri.startsWith("SOAP://"))
-    {
-      mEncoding = QgsWFSProvider::SOAP;
-    }
-  else
+  QString geometryAttribute;
+
+  //Local url or HTTP?
+  if(uri.startsWith("http://"))
     {
       mEncoding = QgsWFSProvider::GET;
     }
-
-  QString describeFeatureUri = uri;
-  describeFeatureUri.replace(QString("GetFeature"), QString("DescribeFeatureType"));
-  if(describeFeatureType(describeFeatureUri, mFields) != 0)
-  {
-    return 1;
-  }
-
-  //find out the name of the attribute containing the geometry
-  QString geometryAttribute;
-  QString currentAttribute;
-  for(std::vector<QgsField>::iterator iter =  mFields.begin(); iter != mFields.end(); ++iter)
-    {
-      currentAttribute = iter->type();
-      if(currentAttribute.startsWith("gml:") && currentAttribute.endsWith("PropertyType"))
-      {
-  	geometryAttribute = iter->name();
-	//erase the geometry attribute from mFields (QGIS distinguishes between geometry and thematic attributes)
-	mFields.erase(iter);
-	break;
-      }
-    }
-
-  if(mEncoding == QgsWFSProvider::SOAP)
-    {
-      return getFeatureSOAP(uri, geometryAttribute);
-    }
   else
     {
+      mEncoding = QgsWFSProvider::FILE;
+    }
+
+  if(mEncoding == QgsWFSProvider::FILE)
+    {
+      //guess geometry attribute and other attributes from schema or from .gml file
+      if(describeFeatureTypeFile(uri, geometryAttribute, mFields) != 0)
+	{
+	  return 1;
+	}
+    }
+  else //take schema with describeFeatureType request
+    {
+      QString describeFeatureUri = uri;
+      describeFeatureUri.replace(QString("GetFeature"), QString("DescribeFeatureType"));
+      if(describeFeatureType(describeFeatureUri, geometryAttribute, mFields) != 0)
+	{
+	  return 1;
+	}
+    }
+
+  if(mEncoding == QgsWFSProvider::GET)
+    {
       return getFeatureGET(uri, geometryAttribute);
+    }
+  else//local file
+    {
+      return getFeatureFILE(uri, geometryAttribute); //read the features from disk
     }
   return 2;
 }
 
-int QgsWFSProvider::describeFeatureType(const QString& uri, std::vector<QgsField>& fields)
+int QgsWFSProvider::describeFeatureType(const QString& uri, QString& geometryAttribute, std::vector<QgsField>& fields)
 {
   switch(mEncoding)
     {
     case QgsWFSProvider::GET:
-      return describeFeatureTypeGET(uri, fields);
+      return describeFeatureTypeGET(uri, geometryAttribute, fields);
     case QgsWFSProvider::POST:
-      return describeFeatureTypePOST(uri, fields);
+      return describeFeatureTypePOST(uri, geometryAttribute, fields);
     case QgsWFSProvider::SOAP:
-      return describeFeatureTypeSOAP(uri, fields);
+      return describeFeatureTypeSOAP(uri, geometryAttribute, fields);
     }
   return 1;
 }
@@ -347,57 +346,128 @@ int QgsWFSProvider::getFeatureSOAP(const QString& uri, const QString& geometryAt
   return 1; //soon...
 }
 
-int QgsWFSProvider::describeFeatureTypeGET(const QString& uri, std::vector<QgsField>& fields)
+int QgsWFSProvider::getFeatureFILE(const QString& uri, const QString& geometryAttribute)
+{
+  QFile gmlFile(uri);
+  if(!gmlFile.open(QIODevice::ReadOnly))
+    {
+      mValid = false;
+      return 1;
+    }
+
+  QDomDocument gmlDoc;
+  QString errorMsg;
+  int errorLine, errorColumn;
+  if(!gmlDoc.setContent(&gmlFile, true, &errorMsg, &errorLine, &errorColumn))
+    {
+      mValid = false;
+      return 2;
+    }
+
+  QDomElement featureCollectionElement = gmlDoc.documentElement();
+  //get and set Extent
+  if(getExtentFromGML2(&mExtent, featureCollectionElement) != 0)
+    {
+      return 3;
+    }
+
+  setSRSFromGML2(featureCollectionElement);  
+
+  if(getFeaturesFromGML2(featureCollectionElement, geometryAttribute) != 0)
+  {
+    return 4;
+  }
+
+  return 0;
+}
+
+int QgsWFSProvider::describeFeatureTypeGET(const QString& uri, QString& geometryAttribute, std::vector<QgsField>& fields)
 {
   QByteArray result;
   QgsHttpTransaction http(uri);
-  http.getSynchronously(result);
-
-  //find out the typename
-  QString tname;
-  QStringList tnamelist = uri.split("&");
-  for(int i = 0; i < tnamelist.size(); ++i)
+  if(!http.getSynchronously(result))
     {
-      if(tnamelist.at(i).startsWith("typename", Qt::CaseInsensitive))
-	{
-	  QStringList tlist = tnamelist.at(i).split("=");
-	  tname = tlist.at(1);
-	}
+      return 1;
     }
-
-  //remove the namespace from tname
-  if(tname.contains(":"))
-    {
-      tname = tname.section(":", 1, 1);
-    }
-
   QDomDocument describeFeatureDocument;
+  
   if(!describeFeatureDocument.setContent(result, true))
     {
-      return 1; //error
+      return 2;
     }
 
-  qWarning(describeFeatureDocument.toString());
+  if(readAttributesFromSchema(describeFeatureDocument, geometryAttribute, fields) != 0)
+    {
+      return 3;
+    }
+
+  return 0;
+}
+
+int QgsWFSProvider::describeFeatureTypePOST(const QString& uri, QString& geometryAttribute, std::vector<QgsField>& fields)
+{
+  return 1; //soon...
+}
+
+int QgsWFSProvider::describeFeatureTypeSOAP(const QString& uri, QString& geometryAttribute, std::vector<QgsField>& fields)
+{
+  return 1; //soon...
+}
+
+int QgsWFSProvider::describeFeatureTypeFile(const QString& uri, QString& geometryAttribute, std::vector<QgsField>& fields)
+{
+  //first look in the schema file
+  QString noExtension = uri;
+  noExtension.chop(3);
+  QString schemaUri = noExtension.append("xsd");
+  QFile schemaFile(schemaUri);
   
+  if(schemaFile.open(QIODevice::ReadOnly))
+    {
+      QDomDocument schemaDoc;
+      if(!schemaDoc.setContent(&schemaFile, true))
+	{
+	  return 1; //xml file not readable or not valid
+	}
+      
+      if(readAttributesFromSchema(schemaDoc, geometryAttribute, fields) != 0)
+	{
+	  return 2;
+	}
+      return 0;
+    }
+ 
+  std::list<QString> thematicAttributes;
+
+  //if this fails (e.g. no schema file), try to guess the geometry attribute and the names of the thematic attributes from the .gml file
+  if(guessAttributesFromFile(uri, geometryAttribute, thematicAttributes) != 0)
+    {
+      return 1;
+    }
+
+  fields.clear();
+  for(std::list<QString>::const_iterator it = thematicAttributes.begin(); it != thematicAttributes.end(); ++it)
+    {
+      fields.push_back(QgsField(*it, "unknown"));
+    }
+  return 0;
+}
+
+int QgsWFSProvider::readAttributesFromSchema(QDomDocument& schemaDoc, QString& geometryAttribute, std::vector<QgsField>& fields) const
+{
   //get the <schema> root element
-  QDomNodeList schemaNodeList = describeFeatureDocument.elementsByTagNameNS("http://www.w3.org/2001/XMLSchema", "schema");
+  QDomNodeList schemaNodeList = schemaDoc.elementsByTagNameNS("http://www.w3.org/2001/XMLSchema", "schema");
   if(schemaNodeList.length() < 1)
     {
-      return 2;
+      return 1;
     }
   QDomElement schemaElement = schemaNodeList.at(0).toElement();
   
   //find <element name="tname" type = ...>
   QString complexTypeType;
   QDomNodeList typeElementNodeList = schemaElement.elementsByTagNameNS("http://www.w3.org/2001/XMLSchema", "element");
-  for(int i = 0; i < typeElementNodeList.length(); ++i)
-    {
-      QDomElement typeElement = typeElementNodeList.at(i).toElement();
-      if(typeElement.attribute("name") == tname)
-	{
-	  complexTypeType = typeElement.attribute("type");
-	}
-    }
+  QDomElement typeElement = typeElementNodeList.at(0).toElement();
+  complexTypeType = typeElement.attribute("type");	
 
   if(complexTypeType.isEmpty())
     {
@@ -418,6 +488,7 @@ int QgsWFSProvider::describeFeatureTypeGET(const QString& uri, std::vector<QgsFi
       if(complexTypeNodeList.at(i).toElement().attribute("name") == complexTypeType)
 	{
 	  complexTypeElement = complexTypeNodeList.at(i).toElement();
+	  break;
 	}
     }
 
@@ -428,6 +499,11 @@ int QgsWFSProvider::describeFeatureTypeGET(const QString& uri, std::vector<QgsFi
   
   //now create the attributes
   QDomNodeList attributeNodeList = complexTypeElement.elementsByTagNameNS("http://www.w3.org/2001/XMLSchema", "element");
+  if(attributeNodeList.size() < 1)
+    {
+      return 5;
+    }
+
   for(int i = 0; i < attributeNodeList.length(); ++i)
     {
       QDomElement attributeElement = attributeNodeList.at(i).toElement();
@@ -435,24 +511,82 @@ int QgsWFSProvider::describeFeatureTypeGET(const QString& uri, std::vector<QgsFi
       QString name = attributeElement.attribute("name");
       //attribute type
       QString type = attributeElement.attribute("type");
-      if(type.isEmpty())
+      
+      //is it a geometry attribute?
+      if(type.startsWith("gml:") && type.endsWith("PropertyType"))
+      {
+  	geometryAttribute = name;
+      }
+      else //todo: distinguish between numerical and non-numerical types
 	{
-	  //todo: is the type name inside a <simpleType> element?
+	  fields.push_back(QgsField(name, type));
 	}
-      //todo: distinguish between numerical and non-numerical types
-      fields.push_back(QgsField(name, type));
     }
   return 0;
 }
 
-int QgsWFSProvider::describeFeatureTypePOST(const QString& uri, std::vector<QgsField>& fields)
+int QgsWFSProvider::guessAttributesFromFile(const QString& uri, QString& geometryAttribute, std::list<QString>& thematicAttributes) const
 {
-  return 1; //soon...
-}
+  QFile gmlFile(uri);
+  if(!gmlFile.open(QIODevice::ReadOnly))
+    {
+      return 1;
+    }
 
-int QgsWFSProvider::describeFeatureTypeSOAP(const QString& uri, std::vector<QgsField>& fields)
-{
-  return 1; //soon...
+  QDomDocument gmlDoc;
+  if(!gmlDoc.setContent(&gmlFile, true))
+    {
+      return 2; //xml file not readable or not valid
+    }
+
+  
+  //find gmlCollection element
+  QDomElement featureCollectionElement = gmlDoc.documentElement();
+  
+  //get the first feature to guess attributes
+  QDomNodeList featureList = featureCollectionElement.elementsByTagNameNS(GML_NAMESPACE, "featureMember");
+  if(featureList.size() < 1)
+    {
+      return 3; //we need at least one attribute
+    }
+
+  QDomElement featureElement = featureList.at(0).toElement();
+  QDomNode attributeNode = featureElement.firstChild().firstChild();
+  if(attributeNode.isNull())
+    {
+      return 4;
+    }
+  QString attributeText;
+  QDomElement attributeChildElement;
+  QString attributeChildLocalName;
+  
+  while(!attributeNode.isNull())//loop over attributes
+    {
+      QString attributeNodeName = attributeNode.toElement().localName();
+      attributeChildElement = attributeNode.firstChild().toElement();
+      if(attributeChildElement.isNull())//no child element means it is a thematic attribute for sure
+	{
+	  thematicAttributes.push_back(attributeNode.toElement().localName());
+	  attributeNode = attributeNode.nextSibling();
+	  continue;
+	}
+
+      attributeChildLocalName = attributeChildElement.localName();
+      if(attributeChildLocalName == "Point" || attributeChildLocalName == "LineString" || \
+attributeChildLocalName == "Polygon" || attributeChildLocalName == "MultiPoint" || \
+attributeChildLocalName == "MultiLineString" || attributeChildLocalName == "MultiPolygon" || \
+	 attributeChildLocalName == "Surface" || attributeChildLocalName == "MultiSurface")
+	{
+	  geometryAttribute = attributeNode.toElement().localName(); //a geometry attribute
+	}
+      else
+	{
+	  thematicAttributes.push_back(attributeNode.toElement().localName()); //a thematic attribute
+	}
+      attributeNode = attributeNode.nextSibling();
+    }
+
+  return 0;
 }
 
 int QgsWFSProvider::getExtentFromGML2(QgsRect* extent, const QDomElement& wfsCollectionElement) const
