@@ -24,6 +24,7 @@ http://www.7-zip.org/
 
 Qt4.2:
 ------
+
 Download qt4.2 opensource precompiled edition exe and install (including the 
 download and install of mingw) from here:
 
@@ -34,6 +35,9 @@ needed if you like vim in your shell):
 
 set PATH=%PATH%;C:\msys\local\bin;c:\msys\local\lib
 set PATH=%PATH%;"c:\Program Files\Vim\vim70\
+
+If you plan to do some debugging, you'll need to complie debug version of Qt:
+C:\Qt\4.2.0\bin\qtvars.bat compile_debug
 
 
 QGIS:
@@ -70,7 +74,7 @@ List of what has been changed / added by this archive to enable compilation:
 Building:
 ---------
 
-Now open the qt command shell (or start "cmd" and run c:\Qt\4.2.0\qtvars.bat)
+Now open the qt command shell (or start "cmd" and run c:\Qt\4.2.0\bin\qtvars.bat)
 
 cd c:\dev\cpp\qgis
 qmake
@@ -80,7 +84,8 @@ This will compile both debug and release version. To make just a one of them
 use "make debug" or "make release" respectively.
 
 Note: debug version uses debug version of Qt library thus if linking fails
-on not founding library QtSvgd4 (or similar), you need to install them.
+on not founding library QtSvgd4 (or similar), you need to compile them
+as described in section for Qt.
 
 Running: (optional)
 --------
