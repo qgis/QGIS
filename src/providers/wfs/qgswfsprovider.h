@@ -35,7 +35,8 @@ class QgsWFSProvider: public QgsVectorDataProvider
     {
       GET,
       POST,
-      SOAP /*Note that this goes also through HTTP POST but additionally uses soap envelope and friends*/
+      SOAP,/*Note that this goes also through HTTP POST but additionally uses soap envelope and friends*/
+      FILE  //reads from a file on disk
     };
 
   QgsWFSProvider(const QString& uri);
@@ -105,17 +106,24 @@ class QgsWFSProvider: public QgsVectorDataProvider
   /**Goes through all the features and their attributes and populates mMinMaxCash with entries*/
   void fillMinMaxCash();
   
-  /**Collects information about the field types. Is called internally from QgsWFSProvider::getFeature*/
-  int describeFeatureType(const QString& uri, std::vector<QgsField>& fields);
+  /**Collects information about the field types. Is called internally from QgsWFSProvider::getFeature. The method delegates the work to request specific ones and gives back the name of the geometry attribute and the thematic attributes with their types*/
+  int describeFeatureType(const QString& uri, QString& geometryAttribute, std::vector<QgsField>& fields);
 
   //encoding specific methods of getFeature
   int getFeatureGET(const QString& uri, const QString& geometryAttribute);
   int getFeaturePOST(const QString& uri, const QString& geometryAttribute);
   int getFeatureSOAP(const QString& uri, const QString& geometryAttribute);
+  int getFeatureFILE(const QString& uri, const QString& geometryAttribute);
   //encoding specific methods of describeFeatureType
-  int describeFeatureTypeGET(const QString& uri, std::vector<QgsField>& fields);
-  int describeFeatureTypePOST(const QString& uri, std::vector<QgsField>& fields);
-  int describeFeatureTypeSOAP(const QString& uri, std::vector<QgsField>& fields);
+  int describeFeatureTypeGET(const QString& uri, QString& geometryAttribute, std::vector<QgsField>& fields);
+  int describeFeatureTypePOST(const QString& uri, QString& geometryAttribute, std::vector<QgsField>& fields);
+  int describeFeatureTypeSOAP(const QString& uri, QString& geometryAttribute, std::vector<QgsField>& fields);
+  int describeFeatureTypeFile(const QString& uri, QString& geometryAttribute, std::vector<QgsField>& fields);
+
+  /**Reads the name of the geometry attribute, the thematic attributes and their types from a dom document. Returns 0 in case of success*/
+  int readAttributesFromSchema(QDomDocument& schemaDoc, QString& geometryAttribute, std::vector<QgsField>& fields) const;
+  /**This method tries to guess the geometry attribute and the other attribute names from the .gml file if no schema is present. Returns 0 in case of success*/
+  int guessAttributesFromFile(const QString& uri, QString& geometryAttribute, std::list<QString>& thematicAttributes) const;
 
   //GML2 specific methods
   int getExtentFromGML2(QgsRect* extent, const QDomElement& wfsCollectionElement) const;
@@ -142,6 +150,11 @@ class QgsWFSProvider: public QgsVectorDataProvider
   int readGML2Coordinates(std::list<QgsPoint>& coords, const QDomElement elem) const;
   /**Tries to create a QgsSpatialRefSys object and assign it to mSourceSRS. Returns 0 in case of success*/
   int setSRSFromGML2(const QDomElement& wfsCollectionElement);
+
+
+
+
+
 
   //GML3 specific methods. Not needed at the moment as most servers support GML2
 #if 0
