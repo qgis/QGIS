@@ -43,7 +43,11 @@ namespace QgisGui
    * the dialog is a fixed size and does not have a size grip.
    */
   static const Qt::WFlags ModalDialogFlags =
+#if QT_VERSION < 0x040200
       Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowMaximizeButtonHint;
+#else
+      0;
+#endif
 
 }
 
