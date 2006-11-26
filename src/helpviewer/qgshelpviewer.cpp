@@ -75,6 +75,16 @@ void QgsHelpViewer::loadContext(const QString &contextId)
      * the context id
      */
     QString lang(QTextCodec::locale());
+    /*
+     * If the language isn't set on the system, assume en_US,
+     * otherwise we get the banner at the top of the help file 
+     * saying it isn't available in "your" language. Some systems
+     * may be installed without the LANG environment being set.
+     */
+    if(lang.length() == 0 || lang == "C")
+    {
+      lang = "en_US";
+    }
     QString fullHelpPath = helpFilesPath + contextId + "_" + lang;
     // get the help content and title from the localized file
     QString helpContents;

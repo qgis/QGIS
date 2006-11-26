@@ -60,7 +60,8 @@ BUILT_SOURCES = $(msexport_MOC) $(msexport_UI)
 
 
 
-msexport_LDADD = $(QT_LDADD) $(PYTHON_LIB)
+msexport_LDADD = $(QT_LDADD) $(PYTHON_LIB) ../../src/core/libqgis_core.la ../../src/gui/libqgis_gui.la
+
 msexport_CXXFLAGS = $(CXXFLAGS) $(PKGDATAPATH) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PYTHON_INCLUDE_DIR) -I../../src
 
 CLEANFILES = $(BUILT_SOURCES)

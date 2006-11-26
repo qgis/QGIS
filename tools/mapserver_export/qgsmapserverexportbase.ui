@@ -450,7 +450,7 @@
    <item row="1" column="0" >
     <widget class="QLabel" name="textLabel7_2" >
      <property name="text" >
-      <string>QGIS Project File</string>
+      <string>QGIS project file</string>
      </property>
      <property name="buddy" >
       <cstring>txtQgisFilePath</cstring>
