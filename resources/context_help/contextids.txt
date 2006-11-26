@@ -8,3 +8,5 @@
 939347163_en_US   QgsDbSourceSelect
 687883780_en_US   QgsMeasure
 1033030847_en_US  QgsDelimitedTextPluginGui
+863656587_en_US   QgsMapserverExport
+
