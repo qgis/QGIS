@@ -835,11 +835,6 @@
              <string>Nearest Neighbour</string>
             </property>
            </item>
-           <item>
-            <property name="text" >
-             <string>Average Magphase</string>
-            </property>
-           </item>
           </widget>
          </item>
          <item>
