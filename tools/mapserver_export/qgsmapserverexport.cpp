@@ -29,6 +29,7 @@ email                : sherman at mrcc.com
 #include <qstring.h>
 #include <QWidget>
 #include <QApplication>
+#include "../src/core/qgscontexthelp.h"
 #include "qgsmapserverexport.h"
 
 
@@ -167,6 +168,11 @@ void QgsMapserverExport::on_buttonOk_clicked()
   Py_DECREF(pstr);
 
 }
+void QgsMapserverExport::on_buttonHelp_clicked()
+{
+ QgsContextHelp::run(context_id); 
+}
+
 /** End of Auto-connected Slots **/
 
 // Write the map file
