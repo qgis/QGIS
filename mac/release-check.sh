@@ -40,15 +40,15 @@ otool -L $PREFIX/lib/qgis/wmsprovider.so
 otool -L $PREFIX/lib/qgis/libqgsprojectionselector.dylib
 #otool -L $PREFIX/lib/qgis/libopenmodellerplugin.so 
 
-otool -L $PREFIX/lib/Qt3Support.framework/Versions/4.0/Qt3Support
-otool -L $PREFIX/lib/QtCore.framework/Versions/4.0/QtCore
-otool -L $PREFIX/lib/QtGui.framework/Versions/4.0/QtGui
-otool -L $PREFIX/lib/QtNetwork.framework/Versions/4.0/QtNetwork
-otool -L $PREFIX/lib/QtSql.framework/Versions/4.0/QtSql
-otool -L $PREFIX/lib/QtSvg.framework/Versions/4.0/QtSvg
-otool -L $PREFIX/lib/QtXml.framework/Versions/4.0/QtXml
-otool -L $PREFIX/lib/libQtDesigner.4.1.4.dylib
-otool -L $PREFIX/lib/libQtTest.4.1.4.dylib
+otool -L $PREFIX/lib/Qt3Support.framework/Versions/4/Qt3Support
+otool -L $PREFIX/lib/QtCore.framework/Versions/4/QtCore
+otool -L $PREFIX/lib/QtGui.framework/Versions/4/QtGui
+otool -L $PREFIX/lib/QtNetwork.framework/Versions/4/QtNetwork
+otool -L $PREFIX/lib/QtSql.framework/Versions/4/QtSql
+otool -L $PREFIX/lib/QtSvg.framework/Versions/4/QtSvg
+otool -L $PREFIX/lib/QtXml.framework/Versions/4/QtXml
+otool -L $PREFIX/lib/QtDesigner.framework/Versions/4/QtDesigner
+otool -L $PREFIX/lib/QtTest.framework/Versions/4/QtTest
 otool -L $PREFIX/imageformats/libqjpeg.dylib
 
 otool -L $PREFIX/lib/libgdal.1.10.0.dylib
