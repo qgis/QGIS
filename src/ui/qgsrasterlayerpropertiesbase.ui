@@ -1008,7 +1008,7 @@
      <item>
       <widget class="QPushButton" name="buttonHelp" >
        <property name="enabled" >
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="text" >
         <string>&amp;Help</string>

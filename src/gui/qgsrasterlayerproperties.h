@@ -60,6 +60,8 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
         void on_pbnHistRefresh_clicked();
         /** Override the SRS specified when the layer was loaded */
         void on_pbnChangeSpatialRefSys_clicked();
+        /** Help button */
+        void on_buttonHelp_clicked();
         
     private:
         /** \brief Pointer to the raster layer that this property dilog changes the behaviour of. */
@@ -78,6 +80,9 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
             included or not
          */
         bool rasterLayerIsWms;
+
+        /** Id for context help */
+        static const int context_id = 394441851;
 };
 
 #endif

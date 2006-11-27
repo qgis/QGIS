@@ -21,6 +21,7 @@ email                : tim@linfiniti.com
 #include "qgslayerprojectionselector.h"
 #include "qgsproject.h"
 #include "qgsrasterbandstats.h"
+#include "qgscontexthelp.h"
 #include <qgsrasterlayer.h>
 
 #include <QPainter>
@@ -1115,4 +1116,8 @@ void QgsRasterLayerProperties::on_pbnChangeSpatialRefSys_clicked()
     }
     delete mySelector;
     leSpatialRefSys->setText(rasterLayer->coordinateTransform()->sourceSRS().proj4String());
+}
+void QgsRasterLayerProperties::on_buttonHelp_clicked()
+{
+  QgsContextHelp::run(context_id);
 }
