@@ -4509,14 +4509,14 @@ void QgisApp::projectionsEnabled(bool theFlag)
   {
     QPixmap myProjPixmap;
     myProjPixmap.load(myIconPath+"/mIconProjectionEnabled.png");
-    assert(!myProjPixmap.isNull());
+    //assert(!myProjPixmap.isNull());
     mOnTheFlyProjectionStatusButton->setPixmap(myProjPixmap);
   }
   else
   {
     QPixmap myProjPixmap;
     myProjPixmap.load(myIconPath+"/mIconProjectionDisabled.png");
-    assert(!myProjPixmap.isNull());
+    //assert(!myProjPixmap.isNull());
     mOnTheFlyProjectionStatusButton->setPixmap(myProjPixmap);
   }
 }
