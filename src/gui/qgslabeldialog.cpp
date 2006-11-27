@@ -22,6 +22,7 @@
 
 #include <QColorDialog>
 #include <QFontDialog>
+#include <QTabWidget>
 
 
 const int PIXMAP_WIDTH = 200;
@@ -62,6 +63,8 @@ QgsLabelDialog::QgsLabelDialog ( QgsLabel *label,  QWidget *parent )
         this, SLOT(changeBufferColor()) );
     connect( pbnDefaultFontColor, SIGNAL(clicked()),
         this, SLOT(changeFontColor()) );
+    //added by Tim to force scrolling of tab bar on Mac
+    tabWidget2->setUsesScrollButtons(true);
 }
 
 
