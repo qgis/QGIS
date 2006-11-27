@@ -1,0 +1,26 @@
+<h3>Vector Layer Properties</h3>
+This dialog allows you to work with vector layer settings and properties. There are five tabs:
+<ol>
+<li><a href="#symbology">Symbology</a></li>
+<li><a href="#general">General</a></li>
+<li><a href="#metadata">Metadata</a></li>
+<li><a href="#labels">Labels</a></li>
+<li><a href="#actions">Actions</a></li>
+</ol>
+<a name="symbology">
+<h4>Symbology</h4>
+</a>
+
+<a name="general">
+<h4>General</h4>
+</a>
+
+<a name="metadata">
+<h4>Metadata</h4>
+</a>
+<a name="labels">
+<h4>Labels</h4>
+</a>
+<a name="actions">
+<h4>Actions</h4>
+</a>
