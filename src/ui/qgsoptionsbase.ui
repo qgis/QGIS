@@ -611,8 +611,8 @@ identifying features without zooming in very close.
         <widget class="QPushButton" name="btnFindBrowser" >
          <property name="maximumSize" >
           <size>
-           <width>21</width>
-           <height>21</height>
+           <width>60</width>
+           <height>32767</height>
           </size>
          </property>
          <property name="text" >

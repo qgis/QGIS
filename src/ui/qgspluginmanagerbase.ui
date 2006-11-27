@@ -47,7 +47,7 @@
       <widget class="QPushButton" name="btnBrowse" >
        <property name="maximumSize" >
         <size>
-         <width>30</width>
+         <width>60</width>
          <height>32767</height>
         </size>
        </property>

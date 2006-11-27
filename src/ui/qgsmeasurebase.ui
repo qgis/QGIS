@@ -35,13 +35,8 @@
     <widget class="QLineEdit" name="editTotal" >
      <property name="font" >
       <font>
-       <family>Sans Serif</family>
-       <pointsize>9</pointsize>
        <weight>75</weight>
-       <italic>false</italic>
        <bold>true</bold>
-       <underline>false</underline>
-       <strikeout>false</strikeout>
       </font>
      </property>
      <property name="alignment" >

@@ -31,6 +31,10 @@ QgsMeasure::QgsMeasure(bool measureArea, QgsMapCanvas *mc, Qt::WFlags f)
   : QDialog(mc->topLevelWidget(), f), QgsMapTool(mc)
 {
     setupUi(this);
+#ifdef Q_WS_MAC
+    // Mac buttons are larger than X11 and require a larger minimum width to be drawn correctly
+    frame4->setMinimumSize(QSize(224, 0));
+#endif
     connect(mRestartButton, SIGNAL(clicked()), this, SLOT(restart()));
     connect(mCloseButton, SIGNAL(clicked()), this, SLOT(close()));
 
