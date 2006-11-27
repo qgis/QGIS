@@ -2,11 +2,11 @@
 32338213_en_US    QgsCopyrightLabelPluginGui
 361087368_en_US   QgsProjectProperties
 308026563_en_US   QgsNewHttpConnection
-689216579_en_US   QgsIdentifyResulsts
+689216579_en_US   QgsIdentifyResults
 710979116_en_US   QgsServerSourceSelect
 929865718_en_US   QgsNewConnection
 939347163_en_US   QgsDbSourceSelect
 687883780_en_US   QgsMeasure
 1033030847_en_US  QgsDelimitedTextPluginGui
 863656587_en_US   QgsMapserverExport
-
+94000531_en_US    QgsVectorLayerProperties
