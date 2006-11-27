@@ -458,7 +458,16 @@ int main(int argc, char *argv[])
   }
   else
   {
+#ifdef Q_OS_MACX
+    //on mac automasking as done below does not work (as of qt 4.2.1)
+    //so we do it the old way see bug #387
+    qDebug("setting mask for mac");
+    QPixmap myMaskPixmap(mySplashPath+QString("splash_mask.png"), 0, Qt::ThresholdDither | Qt::ThresholdAlphaDither | Qt::AvoidDither ); 
+    mypSplash->setMask( myMaskPixmap.createHeuristicMask() ); 
+#else
+    //for win and linux we can just automask and png transparency areas will be used
     mypSplash->setMask( myPixmap.mask() );
+#endif
     mypSplash->show();
   }
 
