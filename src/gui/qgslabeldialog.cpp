@@ -64,6 +64,7 @@ QgsLabelDialog::QgsLabelDialog ( QgsLabel *label,  QWidget *parent )
     connect( pbnDefaultFontColor, SIGNAL(clicked()),
         this, SLOT(changeFontColor()) );
     //added by Tim to force scrolling of tab bar on Mac
+    tabWidget2->setElideMode(Qt::ElideNone);
     tabWidget2->setUsesScrollButtons(true);
 }
 
