@@ -438,7 +438,7 @@ void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& posit
 		}
 	      else
 		{
-		  if(theVectorLayer->getDataProvider()->capabilities() | QgsVectorDataProvider::SaveAsShapefile)
+		  if(theVectorLayer->getDataProvider()->capabilities() & QgsVectorDataProvider::SaveAsShapefile)
 		    {
 		      theMenu.addAction(tr("&Save as shapefile..."), this, SLOT(legendLayerSaveAsShapefile()));
 		    }
