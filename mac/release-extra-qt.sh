@@ -105,10 +105,10 @@ for FILE in \
 	bin/msexport.app/Contents/MacOS/msexport \
 	bin/spit \
 	lib/libmsexport.0.0.0.dylib \
-	lib/libqgis_core.0.0.1.dylib \
-	lib/libqgis_gui.0.0.1.dylib \
+	lib/libqgis_core.1.0.0.dylib \
+	lib/libqgis_gui.1.0.0.dylib \
 	lib/libqgis_raster.0.0.0.dylib \
-	lib/libqgisgrass.0.0.1.dylib \
+	lib/libqgisgrass.1.0.0.dylib \
 	lib/qgis/copyrightlabelplugin.so \
 	lib/qgis/delimitedtextplugin.so \
 	lib/qgis/delimitedtextprovider.so \
@@ -119,11 +119,13 @@ for FILE in \
 	lib/qgis/grassprovider.so \
 	lib/qgis/gridmakerplugin.so \
 	lib/qgis/libScaleBarplugin.so \
+	lib/qgis/libwfsprovider.so \
 	lib/qgis/northarrowplugin.so \
 	lib/qgis/ogrprovider.so \
 	lib/qgis/pggeoprocessingplugin.so \
 	lib/qgis/postgresprovider.so \
 	lib/qgis/spitplugin.so \
+	lib/qgis/wfsplugin.so \
 	lib/qgis/wmsprovider.so \
 	lib/qgis/libqgsprojectionselector.dylib
 	#bin/omgui \
