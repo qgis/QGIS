@@ -13,12 +13,12 @@ otool -L $PREFIX/bin/qgis-config
 otool -L $PREFIX/bin/spit
 
 otool -L $PREFIX/lib/libmsexport.0.0.0.dylib
-otool -L $PREFIX/lib/libqgis_composer.0.0.1.dylib
-otool -L $PREFIX/lib/libqgis_core.0.0.1.dylib
-otool -L $PREFIX/lib/libqgis_gui.0.0.1.dylib
-otool -L $PREFIX/lib/libqgis_legend.0.0.1.dylib
+otool -L $PREFIX/lib/libqgis_composer.1.0.0.dylib
+otool -L $PREFIX/lib/libqgis_core.1.0.0.dylib
+otool -L $PREFIX/lib/libqgis_gui.1.0.0.dylib
+otool -L $PREFIX/lib/libqgis_legend.1.0.0.dylib
 otool -L $PREFIX/lib/libqgis_raster.0.0.0.dylib
-otool -L $PREFIX/lib/libqgisgrass.0.0.1.dylib
+otool -L $PREFIX/lib/libqgisgrass.1.0.0.dylib
 otool -L $PREFIX/lib/qgis/copyrightlabelplugin.so 
 otool -L $PREFIX/lib/qgis/delimitedtextplugin.so
 otool -L $PREFIX/lib/qgis/delimitedtextprovider.so
@@ -29,11 +29,13 @@ otool -L $PREFIX/lib/qgis/grassplugin.so
 otool -L $PREFIX/lib/qgis/grassprovider.so 
 otool -L $PREFIX/lib/qgis/gridmakerplugin.so 
 otool -L $PREFIX/lib/qgis/libScaleBarplugin.so
+otool -L $PREFIX/lib/qgis/libwfsprovider.so
 otool -L $PREFIX/lib/qgis/northarrowplugin.so
 otool -L $PREFIX/lib/qgis/ogrprovider.so
 otool -L $PREFIX/lib/qgis/pggeoprocessingplugin.so
 otool -L $PREFIX/lib/qgis/postgresprovider.so
 otool -L $PREFIX/lib/qgis/spitplugin.so
+otool -L $PREFIX/lib/qgis/wfsplugin.so
 otool -L $PREFIX/lib/qgis/wmsprovider.so
 otool -L $PREFIX/lib/qgis/libqgsprojectionselector.dylib
 #otool -L $PREFIX/lib/qgis/libopenmodellerplugin.so 
@@ -77,5 +79,5 @@ otool -L $PREFIX/lib/libpq.4.1.dylib
 
 for LIBGRASS in datetime dbmibase dbmiclient dgl dig2 form gis gmath gproj I linkm rtree shape vask vect
 do
-	otool -L $PREFIX/lib/grass/libgrass_$LIBGRASS.6.0.2.dylib
+	otool -L $PREFIX/lib/grass/libgrass_$LIBGRASS.6.2.0.dylib
 done

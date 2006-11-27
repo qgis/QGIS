@@ -41,7 +41,7 @@ LNKEXPAT=libexpat.1.dylib
 #LNKOPENMODELLER=libopenmodeller.0.dylib
 LIBPQ=libpq.4.1.dylib
 LNKPQ=libpq.4.dylib
-GRASSLIB=/usr/local/grass-6.0.2/lib
+GRASSLIB=/usr/local/grass-6.2.0/lib
 
 # Copy supporting libraries to application bundle
 cd $PREFIX/lib
@@ -202,9 +202,9 @@ install_name_tool -change /usr/local/lib/$LNKJASPER @executable_path/lib/$LNKJAS
 install_name_tool -change /usr/local/pgsql/lib/$LNKPQ @executable_path/lib/$LNKPQ $PREFIX/qgis
 
 # Update library paths to supporting libraries
-install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $PREFIX/lib/libqgis_core.0.0.1.dylib
-install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $PREFIX/lib/libqgis_core.0.0.1.dylib
-for LIB in _core.0.0.1 _gui.0.0.1 _raster.0.0.0 grass.0.0.1
+install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $PREFIX/lib/libqgis_core.1.0.0.dylib
+install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $PREFIX/lib/libqgis_core.1.0.0.dylib
+for LIB in _core.1.0.0 _gui.1.0.0 _raster.0.0.0 grass.1.0.0
 do
 	install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL $PREFIX/lib/libqgis$LIB.dylib
 	install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $PREFIX/lib/libqgis$LIB.dylib
@@ -230,11 +230,13 @@ for PLUGIN in \
 	grassprovider.so \
 	gridmakerplugin.so \
 	libScaleBarplugin.so \
+	libwfsprovider.so \
 	northarrowplugin.so \
 	ogrprovider.so \
 	pggeoprocessingplugin.so \
 	postgresprovider.so \
 	spitplugin.so \
+	wfsplugin.so \
 	wmsprovider.so \
 	libqgsprojectionselector.dylib
  	#libopenmodellerplugin.so
@@ -270,7 +272,7 @@ install_name_tool -change /usr/local/lib/$LNKEXPAT @executable_path/lib/$LNKEXPA
 
 # Update GRASS plugins paths to GRASS libraries
 for PLUGIN in \
-	libqgisgrass.0.0.1.dylib \
+	libqgisgrass.1.0.0.dylib \
 	qgis/grassplugin.so
 do
 	for LIB in datetime dbmibase dbmiclient dgl dig2 form gis gproj linkm rtree shape vect
@@ -298,6 +300,17 @@ install_name_tool -change /usr/local/lib/$LNKPNG @executable_path/lib/$LNKPNG $H
 ln -sf $PREFIXBACKTRACK/lib $HELPPREFIX/lib
 
 # Update msexort application paths to supporting libraries
+install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL $MSEXPORTPREFIX/msexport
+install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $MSEXPORTPREFIX/msexport
+install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $MSEXPORTPREFIX/msexport
+install_name_tool -change /usr/local/lib/$LNKXERCESC @executable_path/lib/$LNKXERCESC $MSEXPORTPREFIX/msexport
+install_name_tool -change /usr/local/lib/$LNKGIF @executable_path/lib/$LNKGIF $MSEXPORTPREFIX/msexport
+install_name_tool -change /usr/local/lib/$LNKJPEG @executable_path/lib/$LNKJPEG $MSEXPORTPREFIX/msexport
+install_name_tool -change /usr/local/lib/$LNKPNG @executable_path/lib/$LNKPNG $MSEXPORTPREFIX/msexport
+install_name_tool -change /usr/local/lib/$LNKTIFF @executable_path/lib/$LNKTIFF $MSEXPORTPREFIX/msexport
+install_name_tool -change /usr/local/lib/$LNKGEOTIFF @executable_path/lib/$LNKGEOTIFF $MSEXPORTPREFIX/msexport
+install_name_tool -change /usr/local/lib/$LNKJASPER @executable_path/lib/$LNKJASPER $MSEXPORTPREFIX/msexport
+install_name_tool -change /usr/local/pgsql/lib/$LNKPQ @executable_path/lib/$LNKPQ $MSEXPORTPREFIX/msexport
 ln -sf $PREFIXBACKTRACK/lib $MSEXPORTPREFIX/lib
 
 # Update omgui application paths to supporting libraries

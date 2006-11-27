@@ -13,12 +13,16 @@ QLIBNAMES="composer core gui legend"
 # Declare libqgis_* relative to bundle and update qgis app client
 for NAME in $QLIBNAMES
 do
-	install_name_tool -id @executable_path/lib/libqgis_$NAME.0.0.1.dylib \
-		$BUILDPREFIX/lib/libqgis_$NAME.0.0.1.dylib
+	install_name_tool -id @executable_path/lib/libqgis_$NAME.1.0.0.dylib \
+		$BUILDPREFIX/lib/libqgis_$NAME.1.0.0.dylib
 
-	install_name_tool -change $BUILDPREFIX/lib/libqgis_$NAME.0.dylib \
-		@executable_path/lib/libqgis_$NAME.0.dylib \
+	install_name_tool -change $BUILDPREFIX/lib/libqgis_$NAME.1.dylib \
+		@executable_path/lib/libqgis_$NAME.1.dylib \
 		$BUILDPREFIX/qgis
+
+	install_name_tool -change $BUILDPREFIX/lib/libqgis_$NAME.1.dylib \
+		@executable_path/lib/libqgis_$NAME.1.dylib \
+		$BUILDPREFIX/bin/msexport.app/Contents/MacOS/msexport
 done
 
 # Declare libqgis_libqgis_raster relative to bundle and update qgis app client
@@ -30,6 +34,10 @@ install_name_tool -change $BUILDPREFIX/lib/libqgis_raster.0.dylib \
 	@executable_path/lib/libqgis_raster.0.dylib \
 	$BUILDPREFIX/qgis
 
+install_name_tool -change $BUILDPREFIX/lib/libqgis_raster.0.dylib \
+	@executable_path/lib/libqgis_raster.0.dylib \
+	$BUILDPREFIX/bin/msexport.app/Contents/MacOS/msexport
+
 # Declare libqgsprojectionselector relative to bundle and update qgis app client
 install_name_tool -id @executable_path/lib/qgis/libqgsprojectionselector.dylib \
 	$BUILDPREFIX/lib/qgis/libqgsprojectionselector.dylib
@@ -38,13 +46,17 @@ install_name_tool -change $BUILDPREFIX/lib/qgis/libqgsprojectionselector.dylib \
 	@executable_path/lib/qgis/libqgsprojectionselector.dylib \
 	$BUILDPREFIX/qgis
 
+install_name_tool -change $BUILDPREFIX/lib/qgis/libqgsprojectionselector.dylib \
+	@executable_path/lib/qgis/libqgsprojectionselector.dylib \
+	$BUILDPREFIX/bin/msexport.app/Contents/MacOS/msexport
+
 # Update libqgis_gui client of libqgis_*
-for LIB in libqgis_composer.0.dylib libqgis_core.0.dylib libqgis_legend.0.dylib \
+for LIB in libqgis_composer.1.dylib libqgis_core.1.dylib libqgis_legend.1.dylib \
 	libqgis_raster.0.dylib qgis/libqgsprojectionselector.dylib
 do
 	install_name_tool -change $BUILDPREFIX/lib/$LIB \
 		@executable_path/lib/$LIB \
-		$BUILDPREFIX/lib/libqgis_gui.0.0.1.dylib
+		$BUILDPREFIX/lib/libqgis_gui.1.0.0.dylib
 done
 
 # Update plugin and lib clients of libqgis_* and libqgsprojectionselector
@@ -59,35 +71,40 @@ for PLUGIN in \
 	qgis/grassprovider.so \
 	qgis/gridmakerplugin.so \
 	qgis/libScaleBarplugin.so \
+	qgis/libwfsprovider.so \
 	qgis/northarrowplugin.so \
 	qgis/ogrprovider.so \
 	qgis/pggeoprocessingplugin.so \
 	qgis/postgresprovider.so \
 	qgis/spitplugin.so \
+	qgis/wfsplugin.so \
 	qgis/wmsprovider.so \
 	qgis/libqgsprojectionselector.dylib \
-	libqgisgrass.0.0.1.dylib
+	libqgisgrass.1.0.0.dylib
 do
-	for NAME in $QLIBNAMES raster
+	for NAME in $QLIBNAMES
 	do
-		install_name_tool -change $BUILDPREFIX/lib/libqgis_$NAME.0.dylib \
-			@executable_path/lib/libqgis_$NAME.0.dylib \
+		install_name_tool -change $BUILDPREFIX/lib/libqgis_$NAME.1.dylib \
+			@executable_path/lib/libqgis_$NAME.1.dylib \
 			$BUILDPREFIX/lib/$PLUGIN
 	done
+	install_name_tool -change $BUILDPREFIX/lib/libqgis_raster.0.dylib \
+		@executable_path/lib/libqgis_raster.0.dylib \
+		$BUILDPREFIX/lib/$PLUGIN
 	install_name_tool -change $BUILDPREFIX/lib/qgis/libqgsprojectionselector.dylib \
 		@executable_path/lib/qgis/libqgsprojectionselector.dylib \
 		$BUILDPREFIX/lib/$PLUGIN
 done
 
 # Declare libqgisgrass relative to bundle
-install_name_tool -id @executable_path/lib/libqgisgrass.0.0.1.dylib \
-	$BUILDPREFIX/lib/libqgisgrass.0.0.1.dylib
+install_name_tool -id @executable_path/lib/libqgisgrass.1.0.0.dylib \
+	$BUILDPREFIX/lib/libqgisgrass.1.0.0.dylib
 
 # Update plugin clients of libqgisgrass
 for PLUGIN in qgis/grassplugin.so qgis/grassprovider.so
 do
-	install_name_tool -change $BUILDPREFIX/lib/libqgisgrass.0.dylib \
-		@executable_path/lib/libqgisgrass.0.dylib \
+	install_name_tool -change $BUILDPREFIX/lib/libqgisgrass.1.dylib \
+		@executable_path/lib/libqgisgrass.1.dylib \
 		$BUILDPREFIX/lib/$PLUGIN
 done
 
