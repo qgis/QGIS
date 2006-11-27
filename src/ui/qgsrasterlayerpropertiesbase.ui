@@ -120,12 +120,6 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="minimumSize" >
-             <size>
-              <width>0</width>
-              <height>20</height>
-             </size>
-            </property>
             <property name="maximum" >
              <number>255</number>
             </property>
@@ -608,12 +602,6 @@
           </property>
           <item row="0" column="3" >
            <widget class="QSpinBox" name="spinMaximumScale" >
-            <property name="minimumSize" >
-             <size>
-              <width>0</width>
-              <height>20</height>
-             </size>
-            </property>
             <property name="toolTip" >
              <string>Maximum scale at which this layer will be displayed. </string>
             </property>
@@ -637,12 +625,6 @@
           </item>
           <item row="0" column="1" >
            <widget class="QSpinBox" name="spinMinimumScale" >
-            <property name="minimumSize" >
-             <size>
-              <width>0</width>
-              <height>12</height>
-             </size>
-            </property>
             <property name="toolTip" >
              <string>Minimum scale at which this layer will be displayed. </string>
             </property>
@@ -681,12 +663,6 @@
           </property>
           <item row="0" column="1" >
            <widget class="QPushButton" name="pbnChangeSpatialRefSys" >
-            <property name="minimumSize" >
-             <size>
-              <width>0</width>
-              <height>12</height>
-             </size>
-            </property>
             <property name="text" >
              <string>Change</string>
             </property>
@@ -694,12 +670,6 @@
           </item>
           <item row="0" column="0" >
            <widget class="QLineEdit" name="leSpatialRefSys" >
-            <property name="minimumSize" >
-             <size>
-              <width>0</width>
-              <height>20</height>
-             </size>
-            </property>
             <property name="readOnly" >
              <bool>true</bool>
             </property>
