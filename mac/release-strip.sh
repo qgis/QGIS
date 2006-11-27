@@ -39,15 +39,15 @@ strip -x $PREFIX/lib/qgis/wmsprovider.so
 strip -x $PREFIX/lib/qgis/libqgsprojectionselector.dylib
 #strip -x $PREFIX/lib/qgis/libopenmodellerplugin.so 
 
-strip -x $PREFIX/lib/Qt3Support.framework/Versions/4.0/Qt3Support
-strip -x $PREFIX/lib/QtCore.framework/Versions/4.0/QtCore
-strip -x $PREFIX/lib/QtGui.framework/Versions/4.0/QtGui
-strip -x $PREFIX/lib/QtNetwork.framework/Versions/4.0/QtNetwork
-strip -x $PREFIX/lib/QtSql.framework/Versions/4.0/QtSql
-strip -x $PREFIX/lib/QtSvg.framework/Versions/4.0/QtSvg
-strip -x $PREFIX/lib/QtXml.framework/Versions/4.0/QtXml
-strip -x $PREFIX/lib/libQtDesigner.4.1.4.dylib
-strip -x $PREFIX/lib/libQtTest.4.1.4.dylib
+strip -x $PREFIX/lib/Qt3Support.framework/Versions/4/Qt3Support
+strip -x $PREFIX/lib/QtCore.framework/Versions/4/QtCore
+strip -x $PREFIX/lib/QtGui.framework/Versions/4/QtGui
+strip -x $PREFIX/lib/QtNetwork.framework/Versions/4/QtNetwork
+strip -x $PREFIX/lib/QtSql.framework/Versions/4/QtSql
+strip -x $PREFIX/lib/QtSvg.framework/Versions/4/QtSvg
+strip -x $PREFIX/lib/QtXml.framework/Versions/4/QtXml
+strip -x $PREFIX/lib/QtDesigner.framework/Versions/4/QtDesigner
+strip -x $PREFIX/lib/QtTest.framework/Versions/4/QtTest
 strip -x $PREFIX/imageformats/libqjpeg.dylib
 
 strip -x $PREFIX/lib/libgdal.1.10.0.dylib
