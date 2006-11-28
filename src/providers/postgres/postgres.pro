@@ -31,8 +31,6 @@ DESTDIR=$${QGISPROVIDERDIR}
 QT += qt3support svg core gui xml network
 message("Building libs into $${DESTDIR}")
 
-CONFIG += qt dll thread debug rtti
-
 HEADERS += qgspostgresprovider.h \
            qgspostgrescountthread.h \
            qgspostgisbox2d.h \
