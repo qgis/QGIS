@@ -1536,6 +1536,8 @@ bool QgsGrassProvider::closeEdit ( bool newMap )
     {
         std::cerr << "mLayers.size() = " << mLayers.size() << std::endl;
         map->update = false;
+        // Map must be set as valid otherwise it is not closed and topo is not written
+	map->valid = true;
         closeLayer( mLayerId );
         return true;
     }
