@@ -33,7 +33,6 @@ DESTDIR=$${QGISPLUGINDIR}
 QT += qt3support svg core gui xml network
 message("Building libs into $${DESTDIR}")
 
-CONFIG += qt dll thread debug rtti
 HEADERS += qgsgrassattributes.h		\
            qgsgrassbrowser.h		\
            qgsgrassedit.h		\
