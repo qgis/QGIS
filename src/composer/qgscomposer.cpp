@@ -414,15 +414,19 @@ void QgsComposer::on_mActionPrint_activated(void)
 
       // Overwrite translate
       if ( mPrinter->orientation() == QPrinter::Portrait ) { 
+	std::cout << "Orientation portraint -> overwrite translate" << std::endl;
         if (!f.open( QIODevice::ReadWrite )) {
           throw QgsIOException(tr("Couldn't open ") + f.name() + tr(" for read/write"));
         }
         offset = 0;
         found = false;
 
-        //Example:
+        //Example Qt3:
         //0 4008 translate 1 -1 scale/defM ...
-        QRegExp rx ( "^0 [^ ]+ translate ([^ ]+ [^ ]+) scale/defM matrix CM d \\} d" );
+        //QRegExp rx ( "^0 [^ ]+ translate ([^ ]+ [^ ]+) scale/defM matrix CM d \\} d" );
+	//Example Qt4:
+	//0 0 translate 0.239999 -0.239999 scale } def
+        QRegExp rx ( "^0 [^ ]+ translate ([^ ]+ [^ ]+) scale \\} def" );
 
         while ( !f.atEnd() ) {
           size = f.readLine ( buf, 100 );
@@ -438,14 +442,32 @@ void QgsComposer::on_mActionPrint_activated(void)
           int trans;
 
           trans = (int) ( 72 * mComposition->paperHeight() / 25.4 );
-          s.sprintf( "0 %d translate %s scale/defM matrix CM d } d", trans, (const char *)rx.cap(1).toLocal8Bit().data() );
+          std::cout << "trans = " << trans << std::endl;
+	  //Qt3:
+          //s.sprintf( "0 %d translate %s scale/defM matrix CM d } d", trans, (const char *)rx.cap(1).toLocal8Bit().data() );
+	  //Qt4:
+          s.sprintf( "0 %d translate %s scale } def\n", trans, (const char *)rx.cap(1).toLocal8Bit().data() );
 
+		
+	  std::cout << "s.length() = " << s.length() << " size = " << size << std::endl;
           if ( s.length() > size ) {
-            QMessageBox::warning(this, tr("Error in Print"), tr("Cannot format translate"));
-          } else {
-            if ( ! f.at(offset) ) {
+            //QMessageBox::warning(this, tr("Error in Print"), tr("Cannot format translate"));
+	    // Move the content up
+	    int shift = s.length() - size;
+	    int last = f.size() + shift -1;
+	    for ( int i = last; i > offset + size; i-- )
+	    {
+                f.at(i-shift);
+		QByteArray ba = f.read(1);
+		f.at(i);
+		f.write(ba);
+	    }
+	  }
+
+	  // Overwrite the row
+          if ( ! f.at(offset) ) {
               QMessageBox::warning(this, tr("Error in Print"), tr("Cannot seek"));
-            } else {
+          } else {
               /* Write spaces (for case the size > s.length() ) */
               QString es;
               es.fill(' ', size-1 );
@@ -460,7 +482,6 @@ void QgsComposer::on_mActionPrint_activated(void)
                 QMessageBox::warning(this, tr("Error in Print"), tr("Cannot overwrite translate"));
               }
               f.flush();
-            }
           }
         } else {
           QMessageBox::warning(this, tr("Error in Print"), tr("Cannot find translate"));
