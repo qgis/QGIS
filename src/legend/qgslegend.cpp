@@ -524,7 +524,7 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
     //only if qsetting for 'legend layer file visible' is not set
     if(!mShowLegendLayerFiles)
       {
-	setItemHidden(llfgroup, true);
+	llfgroup->setHidden(true);
       }
     
     updateMapCanvasLayerSet();
@@ -1051,7 +1051,7 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	    {
 	      QgsLegendLayerFileGroup* theFileGroup = new QgsLegendLayerFileGroup(lastLayer, "Files");
 	      childelem.attribute("open") == "true" ? expandItem(theFileGroup) : collapseItem(theFileGroup);
-	      childelem.attribute("hidden") == "true" ? setItemHidden(theFileGroup, true) : setItemHidden(theFileGroup, false);
+	      childelem.attribute("hidden") == "true" ? theFileGroup->setHidden(true) : theFileGroup->setHidden(false);
 	      lastLayerFileGroup = theFileGroup;
 	    }
 	  else if(childelem.tagName() == "propertygroup")
@@ -1665,7 +1665,7 @@ void QgsLegend::showLegendLayerFileGroups()
       theFileGroup = dynamic_cast<QgsLegendLayerFileGroup*>(theItem);
       if(theFileGroup)
 	{
-	  setItemHidden(theFileGroup, !mShowLegendLayerFiles);
+	  theFileGroup->setHidden(!mShowLegendLayerFiles);
 	}
     }
   while(theItem = nextItem(theItem));
