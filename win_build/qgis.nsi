@@ -103,6 +103,7 @@ Section "MainSection" SEC01
   File /r "C:\dev\cpp\qgis\qgis-release\lib"
   File /r "C:\dev\cpp\qgis\qgis-release\share"
   File /r "C:\dev\cpp\qgis\qgis-release\nad"
+  File /r "C:\dev\cpp\qgis\qgis-release\msys"
  
 ; Shortcuts
 ; Next line is important - added by Tim
@@ -183,6 +184,7 @@ Section Uninstall
   RMDir /r "$INSTDIR/lib"
   RMDir /r "$INSTDIR/share"
   RMDir /r "$INSTDIR/nad"
+  RMDir /r "$INSTDIR/msys"
 ;----------------- icons and shortcuts
   Delete "$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\Website.lnk"
