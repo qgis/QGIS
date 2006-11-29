@@ -35,7 +35,7 @@ SetCompressor zlib
 ; Start menu page
 var ICONS_GROUP
 !define MUI_STARTMENUPAGE_NODISABLE
-!define MUI_STARTMENUPAGE_DEFAULTFOLDER "Quantum GIS Debug"
+!define MUI_STARTMENUPAGE_DEFAULTFOLDER "QuantumGISDebug"
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT "${PRODUCT_UNINST_ROOT_KEY}"
 !define MUI_STARTMENUPAGE_REGISTRY_KEY "${PRODUCT_UNINST_KEY}"
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "${PRODUCT_STARTMENU_REGVAL}"
@@ -79,7 +79,7 @@ FunctionEnd
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "qgis_debug_setup.exe"
-InstallDir "$PROGRAMFILES\Quantum GIS Debug"
+InstallDir "$PROGRAMFILES\QuantumGISDebug"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
@@ -187,10 +187,10 @@ Section Uninstall
   RMDir /r "$INSTDIR/nad"
   RMDir /r "$INSTDIR/msys"
 ;----------------- icons and shortcuts
-  Delete "$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk"
+  Delete "$SMPROGRAMS\$ICONS_GROUP\UninstallDebug.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\Website.lnk"
-  Delete "$DESKTOP\Quantum GIS.lnk"
-  Delete "$SMPROGRAMS\$ICONS_GROUP\Quantum GIS.lnk"
+  Delete "$DESKTOP\Quantum GIS Debug.lnk"
+  Delete "$SMPROGRAMS\$ICONS_GROUP\Quantum GIS Debug.lnk"
   RMDir "$SMPROGRAMS\$ICONS_GROUP"
 
   ;RMDir "$INSTDIR\plugins"
