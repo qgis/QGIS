@@ -183,7 +183,7 @@ fi
 AC_MSG_CHECKING([Qt version in $QTVERTEST])
 QT_VER=`grep 'define.*QT_VERSION_STR\W' $QTVERTEST/qglobal.h | perl -p -e 's/\D//g'`
 case "${QT_VER}" in
-  41*|42*)
+  42*)
     QT_MAJOR="${QT_VER:0:1}"
     QT_MINOR="${QT_VER:1:1}"
     case "${host}" in
@@ -220,23 +220,10 @@ case "${QT_VER}" in
     QT4_DEFAULTINC=$QTDIR/mkspecs/default
     ;;
   *)
-    AC_MSG_ERROR([*** Qt version 4.1 or higher is required])
+    AC_MSG_ERROR([*** Qt version 4.2 or higher is required])
     ;;
 esac
 AC_MSG_RESULT([$QT_VER ($QT_MAJOR)])
-
-if test $QT_MAJOR = "3" ; then
-  # Check that moc is in path
-  AC_CHECK_PROG(MOC, moc, moc)
-  if test x$MOC = x ; then
-    AC_MSG_ERROR([*** moc must be in path])
-  fi
-  # uic is the Qt user interface compiler
-  AC_CHECK_PROG(UIC, uic, uic)
-  if test x$UIC = x ; then
-    AC_MSG_ERROR([*** uic must be in path])
-  fi
-fi
 
 if test $QT_MAJOR = "4" ; then
   # Hard code things for the moment
@@ -280,9 +267,6 @@ fi
 # manually, we'll let it slide if it isn't present
 ### AC_CHECK_PROG(QEMBED, qembed, qembed)
 # Calculate Qt include path
-if test $QT_MAJOR = "3" ; then
-QT_CXXFLAGS="-I$QTINC"
-fi
 if test $QT_MAJOR = "4" ; then
 QT_CXXFLAGS="-DQT3_SUPPORT -I$QT4_DEFAULTINC -I$QT4_3SUPPORTINC -I$QT4_COREINC -I$QT4_DESIGNERINC -I$QT4_GUIINC -I$QT4_NETWORKINC -I$QT4_OPENGLINC -I$QT4_SQLINC -I$QT4_XMLINC -I$QTINC -I$QT4_SVGINC -I$QT4_TESTINC -I$QT4_DESIGNERINC"
 fi
@@ -467,15 +451,8 @@ case "${host}" in
 
     if test $QT_IS_STATIC = yes ; then
       QT_LIBS="$QT_LIBS $QT_LIB kernel32.lib user32.lib gdi32.lib comdlg32.lib ole32.lib shell32.lib imm32.lib advapi32.lib wsock32.lib winspool.lib winmm.lib netapi32.lib"
-      if test $QT_MAJOR = "3" ; then
-        QT_LIBS="$QT_LIBS qtmain.lib"
-      fi
     else
       QT_LIBS="$QT_LIBS $QT_LIB"        
-      if test $QT_MAJOR = "3" ; then
-        QT_CXXFLAGS="$QT_CXXFLAGS -DQT_DLL"
-        QT_LIBS="$QT_LIBS qtmain.lib qui.lib user32.lib netapi32.lib"
-      fi
     fi
     QASSISTANTCLIENT_LDADD="qassistantclient.lib"
     ;;
@@ -611,7 +588,6 @@ dnl    PKG_CHECK_MODULES(QT_TEST, QtTest >= $QT_MIN_VER)
   dnl Assume for the moment that Qt4 installations will still compile against uic3
   dnl AM_CONDITIONAL([NO_UIC_IMPLEMENTATIONS], [test "$QT_MAJOR" = "4"])
   AM_CONDITIONAL([NO_UIC_IMPLEMENTATIONS], [test "$QT_MAJOR" = "0"])
-  AM_CONDITIONAL([HAVE_QT3], [test "$QT_MAJOR" = "3"])
   AM_CONDITIONAL([HAVE_QT4], [test "$QT_MAJOR" = "4"])
 
   AM_CONDITIONAL([HAVE_QTMAC], [test "$have_qtmac" = "yes"])
