@@ -203,7 +203,7 @@ INCLUDEPATH +=$${WORKDIR}/src \
               $${WORKDIR}/src/plugins \
               $${WORKDIR}/src/providers \
               $${WORKDIR}/src/raster \
-	      $${WORKDIR}/src/providers/wfs \
+      	      $${WORKDIR}/src/providers/wfs \
               $${WORKDIR}/src/ui 
 INCLUDEPATH += $${OBJDIR}/ui 
 
