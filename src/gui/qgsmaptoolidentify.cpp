@@ -303,12 +303,18 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
       mResults->showAllAttributes();
       mResults->setTitle(layer->name() + " - " + QObject::tr(" 1 feature found") );
     }
-    if (featureCount == 0)
+    else if (featureCount == 0)
     {
       mResults->setTitle(layer->name() + " - " + QObject::tr("No features found") );
       mResults->setMessage ( QObject::tr("No features found"), QObject::tr("No features were found in the active layer at the point you clicked") );
     }
-    
+    else
+    {
+      QString title = layer->name();
+      title += QString(" - %d").arg(featureCount);
+      title += QObject::tr(" features found");
+      mResults->setTitle(title);    
+    }
     QApplication::restoreOverrideCursor();
 
     mResults->show();
