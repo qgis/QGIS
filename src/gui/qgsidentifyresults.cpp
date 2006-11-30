@@ -248,10 +248,10 @@ void QgsIdentifyResults::popupItemSelected(QAction* menuAction)
 }
 
 /** Expand all the identified features (show their attributes). */
-void QgsIdentifyResults::showAllAttributes() {
-  QTreeWidgetItemIterator qlvii(lstResults);
-  for ( ; *qlvii; ++qlvii)
-    lstResults->setItemExpanded(*qlvii, true);
+void QgsIdentifyResults::showAllAttributes() 
+{
+  // Easy now with Qt 4.2...
+  lstResults->expandAll();
 }
 
 void QgsIdentifyResults::expandColumnsToFit()
