@@ -2267,9 +2267,12 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
       {
 	QgsDebugMsg("Beautifying layer name " + name());
         // adjust the display name for postgres layers
-        QString lName(name());
-        lName = lName.mid(lName.find(".") + 1);
-        lName = lName.left(lName.find("(") - 1);   // Take one away, to avoid a trailing space
+        QRegExp reg("\".+\"\.\"(.+)\"");
+        reg.indexIn(name());
+        QStringList stuff = reg.capturedTexts();
+        QString lName = stuff[1];
+        if (lName.length() == 0) // fallback
+          lName = name();
         setLayerName(lName);
 	QgsDebugMsg("Beautifying layer name " + name());
       }
