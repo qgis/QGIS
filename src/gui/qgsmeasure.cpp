@@ -304,6 +304,9 @@ void QgsMeasure::canvasPressEvent(QMouseEvent * e)
 {
   if (e->button() == Qt::LeftButton)
   {
+    if (mRightMouseClicked)
+      restart();
+
     QgsPoint  idPoint = mCanvas->getCoordinateTransform()->toMapCoordinates(e->x(), e->y());
     mousePress(idPoint);
   }
