@@ -61,12 +61,15 @@ QgsMeasure::QgsMeasure(bool measureArea, QgsMapCanvas *mc, Qt::WFlags f)
     mRubberBand = new QgsRubberBand(mMapCanvas, mMeasureArea);
 
     mCanvas->setCursor(Qt::CrossCursor);
+
+    mRightMouseClicked = false;
 }
 
 void QgsMeasure::activate()
 {
   restorePosition();
   QgsMapTool::activate();
+  mRightMouseClicked = false;
 }
     
 void QgsMeasure::deactivate()
@@ -100,6 +103,8 @@ void QgsMeasure::restart(void )
     updateUi();
 
     mRubberBand->reset(mMeasureArea);
+
+    mRightMouseClicked = false;
 }
 
 void QgsMeasure::addPoint(QgsPoint &point)
@@ -307,8 +312,11 @@ void QgsMeasure::canvasPressEvent(QMouseEvent * e)
 
 void QgsMeasure::canvasMoveEvent(QMouseEvent * e)
 {
-  QgsPoint point = mCanvas->getCoordinateTransform()->toMapCoordinates(e->pos().x(), e->pos().y());
-  mouseMove(point);
+  if (!mRightMouseClicked)
+    {
+      QgsPoint point = mCanvas->getCoordinateTransform()->toMapCoordinates(e->pos().x(), e->pos().y());
+      mouseMove(point);
+    }
 }
 
 
@@ -318,11 +326,15 @@ void QgsMeasure::canvasReleaseEvent(QMouseEvent * e)
 
   if(e->button() == Qt::RightButton && (e->state() & Qt::LeftButton) == 0) // restart
   {
-     restart();
+    if (mRightMouseClicked)
+      restart();
+    else
+      mRightMouseClicked = true;
   } 
   else if (e->button() == Qt::LeftButton)
   {
     addPoint(point);
     show();
   }
+
 }
