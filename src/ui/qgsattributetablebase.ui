@@ -197,7 +197,7 @@
      <item>
       <widget class="QToolButton" name="mAddAttributeButton" >
        <property name="toolTip" >
-        <string>New attribute</string>
+        <string>New column</string>
        </property>
        <property name="text" >
         <string/>
@@ -213,7 +213,7 @@
      <item>
       <widget class="QToolButton" name="mDeleteAttributeButton" >
        <property name="toolTip" >
-        <string>Delete attribute</string>
+        <string>Delete column</string>
        </property>
        <property name="text" >
         <string/>
