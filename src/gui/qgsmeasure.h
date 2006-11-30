@@ -122,6 +122,9 @@ private:
   
   //! indicates whether we're measuring distances or areas
   bool mMeasureArea;
+
+  //! indicates whether we've just done a right mouse click
+  bool mRightMouseClicked;
 };
 
 #endif
