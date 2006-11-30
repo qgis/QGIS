@@ -561,12 +561,14 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
 
         if (schemaName.length() > 0)
         {
+          v += '"';
           v += schemaName;
-          v += ".";
+          v += "\".";
         }
 
+        v += '"';
         v += tableName;
-        v += " (";
+        v += "\" (";
         v += PQgetvalue(result, idx, PQfnumber(result, "f_geometry_column"));
         v += ")";
 
@@ -665,8 +667,8 @@ QString QgsDbSourceSelect::fullDescription(QString schema, QString table,
 {
   QString full_desc = "";
   if (schema.length() > 0)
-    full_desc = schema + ".";
-  full_desc += table + " (" + column + ")";
+    full_desc = '"' + schema + "\".\"";
+  full_desc += table + "\" (" + column + ")";
   return full_desc;
 }
 void QgsDbSourceSelect::dbChanged()

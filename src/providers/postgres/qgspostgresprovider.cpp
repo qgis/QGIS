@@ -27,6 +27,7 @@
 #include <QEvent>
 #include <QCustomEvent>
 #include <QTextOStream>
+#include <QRegExp>
 
 // for ntohl
 #ifdef WIN32
@@ -104,14 +105,17 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
   qDebug( (const char*)(QString("SQL is ") + sqlWhereClause).toLocal8Bit().data() );
   qDebug( "Connection info is " + connInfo);
 #endif
-  // calculate the schema if specified
-  mSchemaName = "";
-  if (mTableName.find(".") > -1) {
-    mSchemaName = mTableName.left(mTableName.find("."));
-  }
+
+  // Pick up some stuff from the uri: basically two bits of text
+  // inside double quote marks, separated by a .
+  QRegExp reg("\"(.+)\"\.\"(.+)\"");
+  reg.indexIn(mTableName);
+  QStringList stuff = reg.capturedTexts();
+
+  mSchemaName = stuff[1];
+  mTableName = stuff[2];
   geometryColumn = mTableName.mid(mTableName.find(" (") + 2);
   geometryColumn.truncate(geometryColumn.length() - 1);
-  mTableName = mTableName.mid(mTableName.find(".") + 1, mTableName.find(" (") - (mTableName.find(".") + 1)); 
 
   // Keep a schema qualified table name for convenience later on.
   if (mSchemaName.length() > 0)
