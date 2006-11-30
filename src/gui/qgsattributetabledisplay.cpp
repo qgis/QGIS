@@ -36,7 +36,7 @@
 #include <QToolButton>
 
 QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer, QgisApp * qgisApp)
-: QDialog(),
+: QDialog(0, Qt::Window),
   mLayer(layer),
   mQgisApp(qgisApp)
 {
