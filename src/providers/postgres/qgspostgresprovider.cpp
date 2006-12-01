@@ -113,9 +113,9 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
   QStringList stuff = reg.capturedTexts();
 
   mSchemaName = stuff[1];
-  mTableName = stuff[2];
   geometryColumn = mTableName.mid(mTableName.find(" (") + 2);
   geometryColumn.truncate(geometryColumn.length() - 1);
+  mTableName = stuff[2];
 
   // Keep a schema qualified table name for convenience later on.
   if (mSchemaName.length() > 0)
