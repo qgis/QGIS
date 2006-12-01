@@ -23,6 +23,7 @@
 #include "qgsexception.h"
 #include "qgsproject.h"
 #include "qgsmessageviewer.h"
+#include "qgscontexthelp.h"
 
 #include <QDesktopWidget>
 #include <QFileDialog>
@@ -86,6 +87,8 @@ QgsComposer::QgsComposer( QgisApp *qgis): QMainWindow()
   restoreWindowState();
 
   selectItem(); // Set selection tool
+
+  statusBar()->setHidden(true);
 }
 
 QgsComposer::~QgsComposer()
@@ -837,6 +840,16 @@ void QgsComposer::restoreWindowState()
   w = settings.readNumEntry("/Composer/geometry/options", 300);
   list.push_back( w );
   mSplitter->setSizes ( list );
+}
+
+void QgsComposer::on_helpPButton_clicked()
+{
+  QgsContextHelp::run(context_id);
+}
+
+void QgsComposer::on_closePButton_clicked()
+{
+  close();
 }
 
 void QgsComposer::projectRead(void)

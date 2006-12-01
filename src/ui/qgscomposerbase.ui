@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsComposerBase</class>
  <widget class="QMainWindow" name="QgsComposerBase" >
   <property name="geometry" >
@@ -9,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>600</height>
+    <height>609</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -23,7 +20,7 @@
     <property name="spacing" >
      <number>6</number>
     </property>
-    <item row="0" column="0" >
+    <item row="0" column="0" colspan="3" >
      <widget class="QSplitter" name="mSplitter" >
       <property name="sizePolicy" >
        <sizepolicy>
@@ -195,18 +192,36 @@
       </widget>
      </widget>
     </item>
+    <item row="1" column="2" >
+     <widget class="QPushButton" name="closePButton" >
+      <property name="text" >
+       <string>Close</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" >
+     <widget class="QPushButton" name="helpPButton" >
+      <property name="text" >
+       <string>Help</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1" >
+     <spacer>
+      <property name="orientation" >
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" >
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusbar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>578</y>
-     <width>800</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
+  <widget class="QStatusBar" name="statusbar" />
   <widget class="QToolBar" name="toolBar" >
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
@@ -227,7 +242,6 @@
    <addaction name="separator" />
    <addaction name="mActionAddNewMap" />
    <addaction name="mActionAddNewLabel" />
-   <addaction name="mActionAddImage" />
    <addaction name="mActionAddNewVectLegend" />
    <addaction name="mActionAddNewScalebar" />
    <addaction name="mActionSelectMoveItem" />
@@ -353,14 +367,12 @@
    </property>
   </action>
  </widget>
- <pixmapfunction></pixmapfunction>
  <customwidgets>
   <customwidget>
    <class>Q3Frame</class>
-   <extends></extends>
+   <extends>QFrame</extends>
    <header>Qt3Support/Q3Frame</header>
    <container>1</container>
-   <pixmap></pixmap>
   </customwidget>
  </customwidgets>
  <tabstops>
