@@ -187,10 +187,10 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
   
   // load identify radius from settings
   QSettings settings;
-  int identifyValue = settings.readNumEntry("/qgis/map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS);
+  double identifyValue = settings.value("/Map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS).toDouble();
 
   // create the search rectangle
-  double searchRadius = mCanvas->extent().width() * (identifyValue/1000.0);
+  double searchRadius = mCanvas->extent().width() * (identifyValue/100.0);
     
   QgsRect r;
   r.setXmin(point.x() - searchRadius);
@@ -311,7 +311,7 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
     else
     {
       QString title = layer->name();
-      title += QString(" - %d").arg(featureCount);
+      title += QString(" - %1").arg(featureCount);
       title += QObject::tr(" features found");
       mResults->setTitle(title);    
     }

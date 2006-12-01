@@ -54,7 +54,7 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
 #ifdef QGISDEBUG
   std::cout << "Standard Identify radius setting: " << QGis::DEFAULT_IDENTIFY_RADIUS << std::endl;
 #endif
-  int identifyValue = settings.readNumEntry("/Map/identifyRadius",QGis::DEFAULT_IDENTIFY_RADIUS);
+  double identifyValue = settings.value("/Map/identifyRadius",QGis::DEFAULT_IDENTIFY_RADIUS).toDouble();
 #ifdef QGISDEBUG
   std::cout << "Standard Identify radius setting read from settings file: " << identifyValue << std::endl;
 #endif

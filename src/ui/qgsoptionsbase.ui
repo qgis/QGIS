@@ -1,14 +1,11 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsOptionsBase</class>
  <widget class="QDialog" name="QgsOptionsBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>554</width>
+    <width>576</width>
     <height>451</height>
    </rect>
   </property>
@@ -401,18 +398,60 @@
        <property name="spacing" >
         <number>6</number>
        </property>
-       <item row="2" column="0" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Vertical</enum>
+       <item row="0" column="0" >
+        <widget class="QGroupBox" name="groupBox_7" >
+         <property name="title" >
+          <string>Search radius</string>
          </property>
-         <property name="sizeHint" >
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="1" column="0" colspan="2" >
+           <widget class="QLabel" name="textLabel2" >
+            <property name="text" >
+             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-weight:600;">Note:&lt;/span> Specify the search radius as a percentage of the map width.&lt;/p>
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;/p>&lt;/body>&lt;/html></string>
+            </property>
+            <property name="wordWrap" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="textLabel1_3" >
+            <property name="text" >
+             <string>Search Radius for Identifying Features</string>
+            </property>
+            <property name="buddy" >
+             <cstring>spinBoxIdentifyValue</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
+           <widget class="QDoubleSpinBox" name="spinBoxIdentifyValue" >
+            <property name="suffix" >
+             <string>%</string>
+            </property>
+            <property name="maximum" >
+             <double>1000.000000000000000</double>
+            </property>
+            <property name="singleStep" >
+             <double>0.010000000000000</double>
+            </property>
+            <property name="value" >
+             <double>5.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
        <item row="1" column="0" >
         <widget class="QGroupBox" name="groupBox_6" >
@@ -442,62 +481,18 @@
          </layout>
         </widget>
        </item>
-       <item row="0" column="0" >
-        <widget class="QGroupBox" name="groupBox_7" >
-         <property name="title" >
-          <string>Search radius</string>
+       <item row="2" column="0" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
          </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="1" column="0" colspan="2" >
-           <widget class="QLabel" name="textLabel2" >
-            <property name="text" >
-             <string>&lt;html>
-
-&lt;b>Note:&lt;/b> Specify the value in thousandths.  The search radius is calculated as:&lt;br>
-
-&amp;nbsp;&amp;nbsp;&lt;i>(Map View Width) * ( Value/1000.0)&lt;/i>
-
-&lt;br>
-
-By default QGIS uses a value of 5. Increase the value if you have trouble
-
-identifying features without zooming in very close.
-
-&lt;/html></string>
-            </property>
-            <property name="wordWrap" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" >
-           <widget class="QSpinBox" name="spinBoxIdentifyValue" >
-            <property name="maximum" >
-             <number>100</number>
-            </property>
-            <property name="minimum" >
-             <number>1</number>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="textLabel1_3" >
-            <property name="text" >
-             <string>Search Radius for Identifying Features</string>
-            </property>
-            <property name="buddy" >
-             <cstring>spinBoxIdentifyValue</cstring>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -734,7 +729,6 @@ identifying features without zooming in very close.
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>btnFindBrowser</tabstop>
@@ -745,7 +739,6 @@ identifying features without zooming in very close.
   <tabstop>spinBoxUpdateThreshold</tabstop>
   <tabstop>chkAddedVisibility</tabstop>
   <tabstop>chkAntiAliasing</tabstop>
-  <tabstop>spinBoxIdentifyValue</tabstop>
   <tabstop>cmbEllipsoid</tabstop>
   <tabstop>radPromptForProjection</tabstop>
   <tabstop>radUseProjectProjection</tabstop>
