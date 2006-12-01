@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1">
+<!DOCTYPE TS><TS version="1.1" language="de">
 <context>
     <name>@default</name>
     <message>
@@ -2253,7 +2253,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetablebase.ui" line="216"/>
         <source>Delete attribute</source>
-        <translation>Attribut löschen</translation>
+        <translation type="obsolete">Attribut löschen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetablebase.ui" line="209"/>
@@ -2263,7 +2263,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetablebase.ui" line="200"/>
         <source>New attribute</source>
-        <translation>Neues Attribut</translation>
+        <translation type="obsolete">Neues Attribut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetablebase.ui" line="174"/>
@@ -2344,6 +2344,16 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsattributetablebase.ui" line="36"/>
         <source>&amp;Help</source>
         <translation type="unfinished">&amp;Hilfe</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsattributetablebase.ui" line="200"/>
+        <source>New column</source>
+        <translation>Neue Attributspalte</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsattributetablebase.ui" line="216"/>
+        <source>Delete column</source>
+        <translation>Lösche Attributspalte</translation>
     </message>
 </context>
 <context>
@@ -2504,22 +2514,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsComposer</name>
     <message>
-        <location filename="../src/composer/qgscomposer.cpp" line="579"/>
+        <location filename="../src/composer/qgscomposer.cpp" line="600"/>
         <source>Choose a filename to save the map image as</source>
         <translation>Einen Dateinamen zum Speichern des Kartebildes wählen</translation>
     </message>
     <message>
-        <location filename="../src/composer/qgscomposer.cpp" line="672"/>
+        <location filename="../src/composer/qgscomposer.cpp" line="693"/>
         <source>Choose a filename to save the map as</source>
         <translation>Einen Dateinahmen zum Speichern der Karte wählen</translation>
     </message>
     <message>
-        <location filename="../src/composer/qgscomposer.cpp" line="418"/>
+        <location filename="../src/composer/qgscomposer.cpp" line="419"/>
         <source> for read/write</source>
         <translation>um zu lesen/ schreiben</translation>
     </message>
     <message>
-        <location filename="../src/composer/qgscomposer.cpp" line="466"/>
+        <location filename="../src/composer/qgscomposer.cpp" line="487"/>
         <source>Error in Print</source>
         <translation>Fehler beim Drucken</translation>
     </message>
@@ -2529,7 +2539,7 @@ p, li { white-space: pre-wrap; }
         <translation>Kann keine BoundingBox formieren</translation>
     </message>
     <message>
-        <location filename="../src/composer/qgscomposer.cpp" line="447"/>
+        <location filename="../src/composer/qgscomposer.cpp" line="469"/>
         <source>Cannot seek</source>
         <translation>Kann nicht suchen</translation>
     </message>
@@ -2546,50 +2556,50 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/composer/qgscomposer.cpp" line="444"/>
         <source>Cannot format translate</source>
-        <translation>Kann das Format nicht übersetzen.</translation>
+        <translation type="obsolete">Kann das Format nicht übersetzen.</translation>
     </message>
     <message>
-        <location filename="../src/composer/qgscomposer.cpp" line="460"/>
+        <location filename="../src/composer/qgscomposer.cpp" line="482"/>
         <source>Cannot overwrite translate</source>
         <translation>Kann das Format nicht überschreiben.</translation>
     </message>
     <message>
-        <location filename="../src/composer/qgscomposer.cpp" line="466"/>
+        <location filename="../src/composer/qgscomposer.cpp" line="487"/>
         <source>Cannot find translate</source>
         <translation>Kann Übersetzung nicht finden.</translation>
     </message>
     <message>
-        <location filename="../src/composer/qgscomposer.cpp" line="472"/>
+        <location filename="../src/composer/qgscomposer.cpp" line="493"/>
         <source>File IO Error</source>
         <translation>Datei Fehler</translation>
     </message>
     <message>
-        <location filename="../src/composer/qgscomposer.cpp" line="482"/>
+        <location filename="../src/composer/qgscomposer.cpp" line="503"/>
         <source>Paper does not match</source>
         <translation>Papier passt nicht</translation>
     </message>
     <message>
-        <location filename="../src/composer/qgscomposer.cpp" line="483"/>
+        <location filename="../src/composer/qgscomposer.cpp" line="504"/>
         <source>The selected paper size does not match the composition size</source>
         <translation>Die ausgewählte Papiergröße passt nicht mit der Auswahl zusammen.</translation>
     </message>
     <message>
-        <location filename="../src/composer/qgscomposer.cpp" line="526"/>
+        <location filename="../src/composer/qgscomposer.cpp" line="547"/>
         <source>Big image</source>
         <translation>Großes Bild</translation>
     </message>
     <message>
-        <location filename="../src/composer/qgscomposer.cpp" line="527"/>
+        <location filename="../src/composer/qgscomposer.cpp" line="548"/>
         <source>To create image </source>
         <translation>Um ein Bild zu erzeugen </translation>
     </message>
     <message>
-        <location filename="../src/composer/qgscomposer.cpp" line="530"/>
+        <location filename="../src/composer/qgscomposer.cpp" line="551"/>
         <source> requires circa </source>
         <translation>werden ca. </translation>
     </message>
     <message>
-        <location filename="../src/composer/qgscomposer.cpp" line="530"/>
+        <location filename="../src/composer/qgscomposer.cpp" line="551"/>
         <source> MB of memory</source>
         <translation> MB Speicher benötigt.</translation>
     </message>
@@ -2604,32 +2614,32 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/composer/qgscomposer.cpp" line="418"/>
+        <location filename="../src/composer/qgscomposer.cpp" line="419"/>
         <source>Couldn&apos;t open </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/composer/qgscomposer.cpp" line="557"/>
+        <location filename="../src/composer/qgscomposer.cpp" line="578"/>
         <source>format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/composer/qgscomposer.cpp" line="645"/>
+        <location filename="../src/composer/qgscomposer.cpp" line="666"/>
         <source>SVG warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/composer/qgscomposer.cpp" line="646"/>
+        <location filename="../src/composer/qgscomposer.cpp" line="667"/>
         <source>Don&apos;t show this message again</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/composer/qgscomposer.cpp" line="659"/>
+        <location filename="../src/composer/qgscomposer.cpp" line="680"/>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the Qt4 svg code. Of note, text does not appear in the SVG file and there are problems with the map bounding box clipping other items such as the legend or scale bar.&lt;/p&gt;If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/composer/qgscomposer.cpp" line="673"/>
+        <location filename="../src/composer/qgscomposer.cpp" line="694"/>
         <source>SVG Format</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7462,7 +7472,7 @@ This may be a problem in your network connection or at the WMS server.</source>
 <context>
     <name>QgsMeasure</name>
     <message>
-        <location filename="../src/gui/qgsmeasure.cpp" line="43"/>
+        <location filename="../src/gui/qgsmeasure.cpp" line="47"/>
         <source>Segments (in meters)</source>
         <translation>Segmente (in Meter)</translation>
     </message>
@@ -7475,22 +7485,22 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>Messen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsmeasurebase.ui" line="150"/>
+        <location filename="../src/ui/qgsmeasurebase.ui" line="145"/>
         <source>New</source>
         <translation>Neu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsmeasurebase.ui" line="127"/>
+        <location filename="../src/ui/qgsmeasurebase.ui" line="122"/>
         <source>Help</source>
         <translation>Hilfe</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsmeasurebase.ui" line="157"/>
+        <location filename="../src/ui/qgsmeasurebase.ui" line="152"/>
         <source>Cl&amp;ose</source>
         <translation>Schli&amp;eßen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsmeasurebase.ui" line="74"/>
+        <location filename="../src/ui/qgsmeasurebase.ui" line="69"/>
         <source>Total:</source>
         <translation>Total:</translation>
     </message>
@@ -9445,6 +9455,32 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     </message>
 </context>
 <context>
+    <name>QgsPublishToWebDialogBase</name>
+    <message>
+        <location filename="../src/plugins/publish_to_web/qgspublishtowebdialogbase.ui" line="13"/>
+        <source>Publish current project to web</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/publish_to_web/qgspublishtowebdialogbase.ui" line="50"/>
+        <source>Publish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/publish_to_web/qgspublishtowebdialogbase.ui" line="57"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Abbrechen</translation>
+    </message>
+</context>
+<context>
+    <name>QgsPublishToWebPlugin</name>
+    <message>
+        <location filename="../src/plugins/publish_to_web/qgspublishtowebplugin.cpp" line="49"/>
+        <source>&amp;Publish to web</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsRasterLayer</name>
     <message>
         <location filename="../src/raster/qgsrasterlayer.cpp" line="3108"/>
@@ -9791,57 +9827,57 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
         <translation>Rasterebeneneigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1075"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1045"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1059"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1029"/>
         <source>&amp;OK</source>
         <translation>&amp;OK</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1043"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1013"/>
         <source>&amp;Apply</source>
         <translation>&amp;Anwenden</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1046"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1016"/>
         <source>Alt+A</source>
         <translation>Alt+A</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1014"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="984"/>
         <source>&amp;Help</source>
         <translation>&amp;Hilfe</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1017"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="987"/>
         <source>F1</source>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="366"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="360"/>
         <source>General</source>
         <translation>Generell</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="549"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="543"/>
         <source>Layer Source:</source>
         <translation>Ebenenquelle:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="529"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="523"/>
         <source>Display Name:</source>
         <translation>Anzeigename:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="433"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="427"/>
         <source>Legend:</source>
         <translation>Legende:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="581"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="575"/>
         <source>No Data:</source>
         <translation>Keine Daten:</translation>
     </message>
@@ -9866,7 +9902,7 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
         <translation>Keine</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="157"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="151"/>
         <source>Invert Color Map</source>
         <translation>Farben invertieren</translation>
     </message>
@@ -9876,57 +9912,57 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
         <translation>0%</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="268"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="262"/>
         <source>Band</source>
         <translation>Band</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="242"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="236"/>
         <source>&lt;b&gt;&lt;font color=&quot;#00ff00&quot;&gt;Green&lt;/font&gt;&lt;/b&gt;</source>
         <translation>&lt;b&gt;&lt;font color=&quot;#00ff00&quot;&gt;Grün&lt;/font&gt;&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="258"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="252"/>
         <source>&lt;b&gt;&lt;font color=&quot;#ff0000&quot;&gt;Red&lt;/font&gt;&lt;/b&gt;</source>
         <translation>&lt;b&gt;&lt;font color=&quot;#ff0000&quot;&gt;Rot&lt;/font&gt;&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="232"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="226"/>
         <source>&lt;b&gt;&lt;font color=&quot;#0000ff&quot;&gt;Blue&lt;/font&gt;&lt;/b&gt;</source>
         <translation>&lt;b&gt;&lt;font color=&quot;#0000ff&quot;&gt;Blau&lt;/font&gt;&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="275"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="269"/>
         <source>Color</source>
         <translation>Farbe</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="352"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="346"/>
         <source>Gray</source>
         <translation>Grau</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="336"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="330"/>
         <source>Std Deviations</source>
         <translation>Standard Abweichung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="326"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="320"/>
         <source>Color Map</source>
         <translation>Farbpalette</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="715"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="685"/>
         <source>Metadata</source>
         <translation>Metadaten</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="731"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="701"/>
         <source>Pyramids</source>
         <translation>Pyramiden</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="819"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="789"/>
         <source>Resampling Method</source>
         <translation>Umrechnungsmethode</translation>
     </message>
@@ -9936,112 +9972,112 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
         <translation type="obsolete">Durchschnitts Magphase</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="830"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="800"/>
         <source>Average</source>
         <translation>Durchschnitt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="835"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="805"/>
         <source>Nearest Neighbour</source>
         <translation>Nächster Nachbar</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="843"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="813"/>
         <source>Build Pyramids</source>
         <translation>Erstelle Pyramiden</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="743"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="713"/>
         <source>Pyramid Resolutions</source>
         <translation>Pyramidenauflösungen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="386"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="380"/>
         <source>Thumbnail</source>
         <translation>Miniaturbild</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="567"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="561"/>
         <source>Columns:</source>
         <translation>Spalten:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="574"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="568"/>
         <source>Rows:</source>
         <translation>Zeilen:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="480"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="474"/>
         <source>Palette:</source>
         <translation>Palette:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="631"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="619"/>
         <source>Maximum 1:</source>
         <translation>Maximum 1:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="618"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="606"/>
         <source>Maximum scale at which this layer will be displayed. </source>
         <translation>Maximum Massstab, bei welchem diese Ebene angezeigt wird.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="660"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="642"/>
         <source>Minimum 1:</source>
         <translation>Minimum 1:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="647"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="629"/>
         <source>Minimum scale at which this layer will be displayed. </source>
         <translation>Minimum Massstab, bei welchem diese Ebene angezeigt wird.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="853"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="823"/>
         <source>Histogram</source>
         <translation>Histogramm</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="878"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="848"/>
         <source>Options</source>
         <translation>Optionen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="897"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="867"/>
         <source>Out Of Range OK?</source>
         <translation>Ausserhalb des Wertebereiches OK?</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="904"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="874"/>
         <source>Allow Approximation</source>
         <translation>Approximation erlauben</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="933"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="903"/>
         <source>Chart Type</source>
         <translation>Diagrammtyp</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="955"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="925"/>
         <source>Bar Chart</source>
         <translation>Balkendiagramm</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="945"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="915"/>
         <source>Line Graph</source>
         <translation>Liniengrafik</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="965"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="935"/>
         <source>Refresh</source>
         <translation>Erneuern</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="673"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="655"/>
         <source>Spatial Reference System</source>
         <translation>Räumliches Referenzsystem</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="691"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="667"/>
         <source>Change</source>
         <translation>Wechseln</translation>
     </message>
@@ -10051,17 +10087,17 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
         <translation>Darstellung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="285"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="279"/>
         <source>Grayscale Image</source>
         <translation>Graustufenbild</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="191"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="185"/>
         <source>Color Image</source>
         <translation>Farbbild</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="175"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="169"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:9pt;font-family:Sans Serif&quot;&gt;
 &lt;p style=&quot;margin-top:14px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
@@ -10072,17 +10108,17 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
 </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="590"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="584"/>
         <source>DebugInfo</source>
         <translation>DebugInfo</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="597"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="591"/>
         <source>Scale Dependent Visibility</source>
         <translation>Skalenabhängige Sichtbarkeit</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="779"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="749"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:9pt;font-family:Sans Serif&quot;&gt;
 &lt;p style=&quot;margin-top:18px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-size:15pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p dir=&quot;ltr&quot;&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
@@ -10099,7 +10135,7 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
 </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="890"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="860"/>
         <source>Column Count:</source>
         <translation>Spaltenanzahl:</translation>
     </message>
