@@ -79,7 +79,10 @@ void QgsClipboard::replaceWithCopyOf( std::vector<QgsFeature> features )
 
     // TODO: Set up Paste Transformations to specify the order in which fields are added.
 
-    textFields += it->geometry()->wkt();
+    if (it->geometry())
+      textFields += it->geometry()->wkt();
+    else
+      textFields += "NULL";
 
 #ifdef QGISDEBUG
 //       std::cout << "QgsClipboard::replaceWithCopyOf: about to traverse fields." << std::endl;
