@@ -1662,11 +1662,17 @@ void QgsLegend::showLegendLayerFileGroups()
 
   do
     {
+      // This call seems to fix a bug in Qt4.2 (qgis trac #405) whereby the
+      // setHidden() call in the if statement below doesn't result in
+      // correct drawing of the visible file group part of the tree,
+      // but doing this setHidden() call does result in correct drawing.
+      theItem->setHidden(false);
+
       theFileGroup = dynamic_cast<QgsLegendLayerFileGroup*>(theItem);
       if(theFileGroup)
-	{
-	  theFileGroup->setHidden(!mShowLegendLayerFiles);
-	}
+      {
+        theFileGroup->setHidden(!mShowLegendLayerFiles);
+      }
     }
   while(theItem = nextItem(theItem));
 }
