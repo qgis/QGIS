@@ -146,6 +146,12 @@ public slots:
     //! Save window state
     void saveWindowState();
 
+    //! Slot for when the help button is clicked
+    void on_helpPButton_clicked();
+
+    //! Slot for when the close button is clicked
+    void on_closePButton_clicked();
+
 private:
     //! Set teh pixmap / icons on the toolbar buttons
     void setupTheme();
@@ -175,6 +181,10 @@ private:
 
     //! Layout
     QGridLayout *mItemOptionsLayout;
+
+    //! Help context id
+    static const int context_id = 1212121212; // CHANGE ME PLEASE GARY :)
+
 };
 
 #endif
