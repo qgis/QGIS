@@ -108,14 +108,13 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
 
   // Pick up some stuff from the uri: basically two bits of text
   // inside double quote marks, separated by a .
-  QRegExp reg("\"(.+)\"\.\"(.+)\"");
+  QRegExp reg("\"(.+)\"\\.\"(.+)\".+\\((.+)\\)");
   reg.indexIn(mTableName);
   QStringList stuff = reg.capturedTexts();
 
   mSchemaName = stuff[1];
-  geometryColumn = mTableName.mid(mTableName.find(" (") + 2);
-  geometryColumn.truncate(geometryColumn.length() - 1);
   mTableName = stuff[2];
+  geometryColumn = stuff[3];
 
   // Keep a schema qualified table name for convenience later on.
   if (mSchemaName.length() > 0)
