@@ -19,16 +19,19 @@
 
 #include <cassert>
 #include <iostream>
-#include <qstring.h>
-#include <qapplication.h>
-#include <qmessagebox.h>
-#include <qfileinfo.h>
-#include <q3textbrowser.h>
-#include <sqlite3.h>
+
+#include <QString>
+#include <QApplication>
+#include <QMessageBox>
+#include <QFileInfo>
 #include <QTextCodec>
 #include <QTextStream>
 #include <QFile>
+
+#include <sqlite3.h>
+
 #include "qgshelpviewer.h"
+
 QgsHelpViewer::QgsHelpViewer(const QString &contextId, QWidget *parent, 
     Qt::WFlags fl)
 : QDialog(parent, fl)
@@ -122,7 +125,7 @@ void QgsHelpViewer::loadContext(const QString &contextId)
     file.close();
 
     // Set the browser text to the help contents
-    txtBrowser->setText(helpContents);
+    txtBrowser->setHtml(helpContents);
     setCaption(tr("Quantum GIS Help"));
 
         }

@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsHelpViewerBase</class>
  <widget class="QDialog" name="QgsHelpViewerBase" >
   <property name="geometry" >
@@ -23,13 +20,17 @@
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>6</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
    <item row="0" column="0" >
-    <widget class="Q3TextBrowser" name="txtBrowser" />
+    <widget class="QTextBrowser" name="txtBrowser" >
+     <property name="acceptDrops" >
+      <bool>false</bool>
+     </property>
+    </widget>
    </item>
    <item row="1" column="0" >
     <layout class="QHBoxLayout" >
@@ -73,16 +74,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3TextBrowser</class>
-   <extends>QWidget</extends>
-   <header>q3textbrowser.h</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections>
   <connection>
