@@ -183,7 +183,7 @@ private:
     QGridLayout *mItemOptionsLayout;
 
     //! Help context id
-    static const int context_id = 1212121212; // CHANGE ME PLEASE GARY :)
+    static const int context_id = 985715179;
 
 };
 
