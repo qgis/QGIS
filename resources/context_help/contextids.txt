@@ -10,4 +10,4 @@
 1033030847_en_US  QgsDelimitedTextPluginGui
 863656587_en_US   QgsMapserverExport
 94000531_en_US    QgsVectorLayerProperties
-1212121212_en_US  QgsComposer
+985715179_en_US   QgsComposer
