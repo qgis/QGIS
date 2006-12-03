@@ -138,6 +138,9 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   pbnCanvasColor->setPalette( QColor(myRed,myGreen,myBlue) );
 
   capitaliseCheckBox->setChecked(settings.value("qgis/capitaliseLayerName", QVariant(false)).toBool());
+  
+  cmbWheelAction->setCurrentIndex(settings.value("/qgis/wheel_action", 0).toInt());
+  spinZoomFactor->setValue(settings.value("/qgis/zoom_factor", 2).toDouble());
 }
 
 //! Destructor
@@ -243,6 +246,9 @@ void QgsOptions::saveOptions()
   myGreen = settings.writeEntry("/qgis/default_canvas_color_green",myColor.green());
   myBlue = settings.writeEntry("/qgis/default_canvas_color_blue",myColor.blue());
 
+  settings.writeEntry("/qgis/wheel_action", cmbWheelAction->currentIndex());
+  settings.writeEntry("/qgis/zoom_factor", spinZoomFactor->value());
+  
   //all done
   accept();
 }

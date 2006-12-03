@@ -64,7 +64,10 @@ class QgsMapCanvas : public Q3CanvasView
 {
     Q_OBJECT;
 
- public:
+  public:
+    
+    enum WheelAction { WheelZoom, WheelZoomAndRecenter, WheelNothing };
+        
     //! Constructor
     QgsMapCanvas(QWidget * parent = 0, const char *name = 0);
 
@@ -186,8 +189,14 @@ class QgsMapCanvas : public Q3CanvasView
     
     //! returns current layer (set by legend widget)
     QgsMapLayer* currentLayer();
+    
+    //! set wheel action and zoom factor (should be greater than 1)
+    void setWheelAction(WheelAction action, double factor = 2);
 
-    //! Zooms in/out with a given center (uses zoomByScale)
+    //! Zooms in/out preserving
+    void zoom(bool zoomIn);
+
+    //! Zooms in/out with a given center
     void zoomWithCenter(int x, int y, bool zoomIn);
 
     //! used to determine if anti-aliasing is enabled or not
@@ -340,9 +349,6 @@ private:
     //! Overridden draw contents from canvas view
     void drawContents(QPainter * p, int cx, int cy, int cw, int ch);
         
-    //! Zooms to a given center and scale 
-    void zoomByScale(int x, int y, double scaleFactor);
-    
     //! called when panning is in action, reset indicates end of panning
     void moveCanvasContents(bool reset = FALSE);
     
@@ -372,8 +378,10 @@ private:
     QgsRect mLastExtent;
     
     //! Scale factor multiple for default zoom in/out
-    // TODO Make this customisable by the user
-    static const double scaleDefaultMultiple;
+    double mWheelZoomFactor;
+    
+    //! Mouse wheel action
+    WheelAction mWheelAction;
 
 }; // class QgsMapCanvas
 

@@ -76,10 +76,6 @@ class QgsMapCanvas::CanvasProperties
 
 
 
-// But the static members must be initialised outside the class! (or GCC 4 dies)
-const double QgsMapCanvas::scaleDefaultMultiple = 2.0;
-
-
 /** note this is private and so shouldn't be accessible */
 QgsMapCanvas::QgsMapCanvas()
 {}
@@ -101,6 +97,8 @@ QgsMapCanvas::QgsMapCanvas()
   mDrawing = false;
   mFrozen = false;
   mDirty = true;
+  
+  setWheelAction(WheelZoom);
   
   // by default, the canvas is rendered
   mRenderFlag = true;
@@ -740,20 +738,55 @@ void QgsMapCanvas::updateCanvasItemsPositions()
 void QgsMapCanvas::wheelEvent(QWheelEvent *e)
 {
   // Zoom the map canvas in response to a mouse wheel event. Moving the
-  // wheel forward (away) from the user zooms in by a factor of 2.
-  // TODO The scale factor needs to be customizable by the user.
+  // wheel forward (away) from the user zooms in
 #ifdef QGISDEBUG
   std::cout << "Wheel event delta " << e->delta() << std::endl;
 #endif
 
-  // change extent
-  zoomWithCenter(e->x(), e->y(), e->delta() > 0);
+  switch (mWheelAction)
+  {
+    case WheelZoom:
+      // zoom without changing extent
+      zoom(e->delta() > 0);
+      break;
+      
+    case WheelZoomAndRecenter:
+      // zoom and don't change extent
+      zoomWithCenter(e->x(), e->y(), e->delta() > 0);
+      break;
+      
+    case WheelNothing:
+      // well, nothing!
+      break;
+  }
+}
 
+void QgsMapCanvas::setWheelAction(WheelAction action, double factor)
+{
+  mWheelAction = action;
+  mWheelZoomFactor = factor;
+}
+
+void QgsMapCanvas::zoom(bool zoomIn)
+{
+  double scaleFactor = (zoomIn ? 1/mWheelZoomFactor : mWheelZoomFactor);
+  
+  QgsRect r = mMapRender->extent();
+  r.scale(scaleFactor);
+  setExtent(r);
+  refresh();
 }
 
 void QgsMapCanvas::zoomWithCenter(int x, int y, bool zoomIn)
 {
-  zoomByScale(x, y, (zoomIn ? 1/scaleDefaultMultiple : scaleDefaultMultiple));
+  double scaleFactor = (zoomIn ? 1/mWheelZoomFactor : mWheelZoomFactor);
+
+  // transform the mouse pos to map coordinates
+  QgsPoint center  = getCoordinateTransform()->toMapPoint(x, y);
+  QgsRect r = mMapRender->extent();
+  r.scale(scaleFactor, &center);
+  setExtent(r);
+  refresh();
 }
 
 
@@ -776,19 +809,6 @@ void QgsMapCanvas::contentsMouseMoveEvent(QMouseEvent * e)
   emit xyCoordinates(coord);
 } // mouseMoveEvent
 
-
-/** 
- * Zooms at the given screen x and y by the given scale (< 1, zoom out, > 1, zoom in)
- */
-void QgsMapCanvas::zoomByScale(int x, int y, double scaleFactor)
-{
-  // transform the mouse pos to map coordinates
-  QgsPoint center  = getCoordinateTransform()->toMapPoint(x, y);
-  QgsRect r = mMapRender->extent();
-  r.scale(scaleFactor, &center);
-  setExtent(r);
-  refresh();
-}
 
 
 /** Sets the map tool currently being used on the canvas */
