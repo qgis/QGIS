@@ -1126,6 +1126,10 @@ void QgisApp::createOverview()
   QSettings mySettings;
   mMapCanvas->enableAntiAliasing(mySettings.value("/qgis/enable_anti_aliasing",false).toBool());
   mMapCanvas->useQImageToRender(mySettings.value("/qgis/use_qimage_to_render",false).toBool());
+
+  int action = mySettings.value("/qgis/wheel_action", 0).toInt();
+  double zoomFactor = mySettings.value("/qgis/zoom_factor", 2).toDouble();
+  mMapCanvas->setWheelAction((QgsMapCanvas::WheelAction) action, zoomFactor);
 }
 
 
@@ -4127,6 +4131,10 @@ void QgisApp::options()
     QSettings mySettings;
     mMapCanvas->enableAntiAliasing(mySettings.value("/qgis/enable_anti_aliasing").toBool());
     mMapCanvas->useQImageToRender(mySettings.value("/qgis/use_qimage_to_render").toBool());
+  
+    int action = mySettings.value("/qgis/wheel_action", 0).toInt();
+    double zoomFactor = mySettings.value("/qgis/zoom_factor", 2).toDouble();
+    mMapCanvas->setWheelAction((QgsMapCanvas::WheelAction) action, zoomFactor);
   }
 }
 
