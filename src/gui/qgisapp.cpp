@@ -1385,6 +1385,7 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
 #endif
 
       QLibrary *myLib = new QLibrary(myFullPath);
+      myLib->setLoadHints(QLibrary::ExportExternalSymbolsHint | QLibrary::ResolveAllSymbolsHint);
       bool loaded = myLib->load();
       if (loaded)
       {
@@ -1422,6 +1423,7 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
       else
       {
         std::cerr << "Failed to load " << myLib->library().toLocal8Bit().data() << std::endl;
+        std::cerr << "Reason: " << myLib->errorString().toLocal8Bit().data() << std::endl;
       }
       delete myLib;
     }
@@ -3710,8 +3712,8 @@ void QgisApp::loadPlugin(QString name, QString description, QString theFullPathN
 
       switch (pType())
       {
-      case QgisPlugin::RENDERER:
-      case QgisPlugin::UI:
+        case QgisPlugin::RENDERER:
+        case QgisPlugin::UI:
           {
             // UI only -- doesn't use mapcanvas
             create_ui *cf = (create_ui *) myLib->resolve("classFactory");
