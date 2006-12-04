@@ -2819,6 +2819,7 @@ bool QgisApp::fileSave()
   {
     if ( QgsProject::instance()->write() )
     {
+      setTitleBarText_(*this); // update title bar
       statusBar()->message(tr("Saved project to:") + " " + QgsProject::instance()->filename() );
 
       if (isNewProject)
@@ -2901,6 +2902,7 @@ void QgisApp::fileSaveAs()
 
   if ( QgsProject::instance()->write() )
   {
+    setTitleBarText_(*this); // update title bar
     statusBar()->message(tr("Saved project to:") + " " + QgsProject::instance()->filename() );
     // add this to the list of recently used project files
     saveRecentProjectPath(fullPath.filePath(), settings);
