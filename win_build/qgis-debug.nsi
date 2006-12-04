@@ -35,7 +35,7 @@ SetCompressor zlib
 ; Start menu page
 var ICONS_GROUP
 !define MUI_STARTMENUPAGE_NODISABLE
-!define MUI_STARTMENUPAGE_DEFAULTFOLDER "QuantumGISDebug"
+!define MUI_STARTMENUPAGE_DEFAULTFOLDER "Quantum GIS Debug"
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT "${PRODUCT_UNINST_ROOT_KEY}"
 !define MUI_STARTMENUPAGE_REGISTRY_KEY "${PRODUCT_UNINST_KEY}"
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "${PRODUCT_STARTMENU_REGVAL}"
@@ -79,7 +79,7 @@ FunctionEnd
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "qgis_debug_setup.exe"
-InstallDir "$PROGRAMFILES\QuantumGISDebug"
+InstallDir "$PROGRAMFILES\Quantum GIS Debug"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
