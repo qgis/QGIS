@@ -57,15 +57,15 @@ CONFIG += warn_off
 #
 
 #create both debug and relase makefiles
-#CONFIG += debug_and_release
+CONFIG += debug_and_release
 #build both release and debug targets when make is run
-#CONFIG += build_all 
+CONFIG += build_all 
 
 #
 # Building release only version
 #
 
-CONFIG += release
+#CONFIG += release
 
 LANGUAGE  = C++
 CONFIG += exceptions
@@ -88,6 +88,7 @@ CONFIG(debug, debug|release){
   # for ifdefs in code that should run only 
   # when debug support is enabled
   QGIS_DEBUGMODE=true 
+  DEFINES += QGISDEBUG=1
   QGIS_APP_NAME=$${QGIS_APP_NAME}-debug
   win32:CONFIG+=console
 }else{
