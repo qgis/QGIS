@@ -21,14 +21,16 @@ TEMPLATE = lib
 CONFIG(debug, debug|release){
   TARGET = $$member(TARGET, 0)-debug
 }
-LIBS += $${GDALLIBADD}
+#LIBS += $${GDALLIBADD}
 LIBS += $${GEOSLIBADD}
+LIBS += $${PROJLIBADD}
 LIBS += $${POSTGRESLIBADD}
 LIBS += $${QGISCORELIBADD}
 LIBS += $${QGISGUILIBADD}
 LIBS += $${QGISPROJECTIONSELECTORLIBADD}
 DESTDIR=$${QGISPROVIDERDIR}
-QT += qt3support svg core gui xml network
+#QT += qt3support svg core gui xml network
+QT += core gui qt3support xml
 message("Building libs into $${DESTDIR}")
 
 HEADERS += qgspostgresprovider.h \

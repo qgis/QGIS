@@ -64,7 +64,7 @@ const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
 
 
 QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
-  : QgsVectorDataProvider(uri),
+  :  QgsVectorDataProvider(uri),
   geomType(QGis::WKBUnknown),
   gotPostgisVersion(FALSE)
 {
@@ -2510,7 +2510,9 @@ void QgsPostgresProvider::customEvent( QCustomEvent * e )
 
       QgsDebugMsg("QgsPostgresProvider: emitting fullExtentCalculated()");
 
+#ifndef WIN32 //temporary hack for native win build
       emit fullExtentCalculated();
+#endif
 
       // TODO: Only uncomment this when the overview map canvas has been subclassed
       // from the QgsMapCanvas

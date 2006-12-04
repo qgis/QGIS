@@ -53,10 +53,13 @@ class QgsGeometry;
   interface defined in the QgsDataProvider class to provide access to spatial
   data residing in a PostgreSQL/PostGIS enabled database.
   */
-class QgsPostgresProvider:public QgsVectorDataProvider
+class QgsPostgresProvider: public QgsVectorDataProvider
 {
 
+
+#ifndef WIN32 //temporary hack for native win build
   Q_OBJECT
+#endif
 
   public:
     /**
@@ -331,6 +334,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
 
 
 
+#ifndef WIN32 //temporary hack for native win build
     signals:
     /** 
      *   This is emitted whenever the worker thread has fully calculated the
@@ -350,6 +354,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
      *          when the user adjusts the extent of the main map canvas.
      */
     void repaintRequested();
+#endif
 
   private:
 
