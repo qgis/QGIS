@@ -557,7 +557,7 @@ void QgsComposer::on_mActionPrint_activated(void)
   }
 }
 
-bool shiftFileContent ( QFile *file, Q_LONG start, int shift )
+bool QgsComposer::shiftFileContent ( QFile *file, Q_LONG start, int shift )
 {
 	int last = file->size() + shift -1;
 	for ( int i = last; i >= start + shift; i-- )
