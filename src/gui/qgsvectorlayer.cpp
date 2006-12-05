@@ -45,6 +45,7 @@
 #include <QLibrary>
 #include <QMessageBox>
 #include <QPainter>
+#include <QPainterPath>
 #include <QPixmap>
 #include <QPolygonF>
 #include <QProgressDialog>
@@ -639,26 +640,18 @@ std::cerr << i << ": " << ring->first[i]
 
   // Now we draw the polygons
 
+  // use painter paths for drawing polygons with holes
+  // when adding polygon to the path they invert the area
+  // this means that adding inner rings to the path creates
+  // holes in outer ring
+  QPainterPath path; // OddEven fill rule by default
+  
   // Only try to draw polygons if there is something to draw
   if (total_points > 0)
   {
-    int ii = 0;
-    QPointF outerRingPt;
-
-    // Stores the start index of each ring (first) and the number
-    // of points in each ring (second).
-    typedef std::vector<std::pair<unsigned int, unsigned int> > ringDetailType;
-    ringDetailType ringDetails;
-
-    // Need to copy the polygon vertices into a QPologynF for the
-    // QPainter::drawpolygon() call. The size is the sum of points in
-    // the polygon plus one extra point for each ring except for the
-    // first ring.
-
     // Store size here and use it in the loop to avoid penalty of
     // multiple calls to size()
     int numRings = rings.size();
-    QPolygonF pa(total_points + numRings - 1);
     for (register int i = 0; i < numRings; ++i)
     {
       // Store the pointer in a variable with a short name so as to make
@@ -667,37 +660,15 @@ std::cerr << i << ": " << ring->first[i]
       // only do this once to avoid penalty of additional calls
       unsigned ringSize = r->first.size();
 
-      // Store the start index of this ring, and the number of
-      // points in the ring.
-      ringDetails.push_back(std::make_pair(ii, ringSize));
-
       // Transfer points to the array of QPointF
-      //for (register unsigned int j = 0; j != ringSize; ++j, ++ii)
-      for (register unsigned int j = 0; j != ringSize; ++j, ii++)
+      QPolygonF pa(ringSize);
+      for (register unsigned int j = 0; j != ringSize; ++j)
       {
-        // there is maybe a bug in Qt4.1: when using doubles without rounding,
-        // I've experienced crashes (broken pipe) when drawing polygon
-        // with more than 3000 vertices  [MD]
-        //pa[ii].setX(static_cast<int>(r->first[j] + 0.5));
-        //pa[ii].setY(static_cast<int>(r->second[j] + 0.5));
-
-        // The crash was probably caused by writing outside 
-        // pa(total_points + numRings - 1) size, because
-        // cycle was using ++ii insted of ii++ => reenabled floating point
-        pa[ii].setX(r->first[j]);
-        pa[ii].setY(r->second[j]);
+        pa[j].setX(r->first[j]);
+        pa[j].setY(r->second[j]);
       }
 
-      // Store the last point of the first ring, and insert it at
-      // the end of all other rings. This makes all the other rings
-      // appear as holes in the first ring.
-      if (i == 0)
-      {
-        outerRingPt.setX(pa[ii-1].x());
-        outerRingPt.setY(pa[ii-1].y());
-      }
-      else
-        pa[ii++] = outerRingPt;
+      path.addPolygon(pa);
 
       // Tidy up the pointed to pairs of vectors as we finish with them
       delete rings[i];
@@ -759,32 +730,26 @@ std::cerr << i << ": " << ring->first[i]
     myColor = myTransparentPen.color();
     myColor.setAlpha(transparencyLevelInt);
     myTransparentPen.setColor(myColor);
-    //
-    // draw the polygon fill
-    // 
-    p->setBrush(myTransparentBrush);
-    p->setPen ( Qt::NoPen ); // no boundary
-    p->drawPolygon( pa );
-
-    // draw the polygon outline. Draw each ring as a separate
-    // polygon to avoid the lines associated with the outerRingPt.
-    p->setBrush ( Qt::NoBrush );
-    p->setPen (myTransparentPen);
-
-    ringDetailType::const_iterator ri = ringDetails.begin();
-
-    for (; ri != ringDetails.end(); ++ri)
-      p->drawPolygon(pa.constData() + ri->first, ri->second, Qt::OddEvenFill);
     
+    p->setBrush(myTransparentBrush);
+    p->setPen (myTransparentPen);
+    
+    //
+    // draw the polygon
+    // 
+    p->drawPath(path);
+    
+
     // draw vertex markers if in editing mode, but only to the main canvas
     if (
         (mEditable) &&
         (drawingToEditingCanvas)
        )
       {
-	for(int i = 0; i < pa.size(); ++i)
+	for(int i = 0; i < path.elementCount(); ++i)
 	  {
-	    drawVertexMarker((int)(pa[i].x()), (int)(pa[i].y()), *p);
+            const QPainterPath::Element & e = path.elementAt(i);
+	    drawVertexMarker((int)e.x, (int)e.y, *p);
 	  }
       }
 
