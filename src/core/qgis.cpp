@@ -37,5 +37,5 @@ const char* QGis::qgisFeatureTypes[] =
   "WKBMultiPolygon"
 };
 
-const int QGis::DEFAULT_IDENTIFY_RADIUS=0.5;
+const double QGis::DEFAULT_IDENTIFY_RADIUS=0.5;
 
