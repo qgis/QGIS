@@ -211,24 +211,27 @@ void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
          // Note: I was not able to run cmd.exe and command.com
          //       with QProcess
 
-         QString msysPath = mAppDir + "/msys/msys.bat";
+         QString msysPath = mAppDir + "/msys/bin/rxvt.exe";
+         QString myArguments = "-backspacekey ^H -sl 2500 -fg white -bg black -sr -fn Courier-16 -tn msys -geometry 80x25 -e    /bin/sh --login -i";
          QFile file ( msysPath );
 
          if ( !file.exists() ) 
          {
-	     QMessageBox::warning( 0, "Warning",
-                 "Cannot find MSYS (" + msysPath + ")" );
+           QMessageBox::warning( 0, "Warning",
+               "Cannot find MSYS (" + msysPath + ")" );
          } 
          else
          {
-             QProcess *proc = new QProcess(this);
-             proc->start (msysPath);
-             proc->waitForStarted();
-             if ( proc->state() != QProcess::Running )
-             {
-	         QMessageBox::warning( 0, "Warning",
+           QProcess *proc = new QProcess(this);
+           //allow msys to exist in a path with spaces
+           msysPath =  "\"" + msysPath + "\""  ;
+           proc->start(msysPath + " " +  myArguments);
+           proc->waitForStarted();
+           if ( proc->state() != QProcess::Running )
+           {
+             QMessageBox::warning( 0, "Warning",
                  "Cannot start MSYS (" + msysPath + ")" );
-             }
+           }
          }
          return;
 #else 
