@@ -68,11 +68,14 @@ QgsComposition::QgsComposition( QgsComposer *c, int id )
   
   // Attention: Qt4.1 writes line width to PS/PDF still as integer 
   // (using QPen->width() to get the value) so we MUST use mScale > 1
+  
+  // Note: It seems that Qt4.2 is using widthF so that we can set mScale to 1
+  //       and hopefuly we can remove mScale completely
 
   // Note: scale 10 make it inacceptable slow: QgsComposerMap 900x900mm on paper 1500x1000
   //          cannot be smoothly moved even if mPreviewMode == Rectangle and no zoom in
   //       scale 2 results in minimum line width 0.5 mmm which is too much
-  mScale = 5;
+  mScale = 1;
 
   // Add paper sizes and set default. 
   mPapers.push_back ( QgsCompositionPaper( tr("Custom"), 0, 0, 1 ) );
