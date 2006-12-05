@@ -100,7 +100,7 @@ public:
     ProviderCountCalcEvent
   };
   
-  static const int DEFAULT_IDENTIFY_RADIUS;
+  static const double DEFAULT_IDENTIFY_RADIUS;
 };
   /** WKT string that represents a geographic coord sys */
   const  QString GEOWKT =
