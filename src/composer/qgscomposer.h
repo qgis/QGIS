@@ -30,6 +30,7 @@ class QDomNode;
 class QDomDocument;
 class QMoveEvent;
 class QResizeEvent;
+class QFile;
 
 /* The constructor creates empty composer, without compositions and mFirstTime set to true. 
  * - if signal projectRead() is recieved all old compositions are deleted and
@@ -158,6 +159,13 @@ private:
     //! remove widget childrens
     void removeWidgetChildren ( QWidget *w );
 
+    /** \brief move up the content of the file
+        \param file file
+	\param from starting position
+	\param shift shift in bytes 
+    */
+    bool shiftFileContent ( QFile *file, Q_LONG start, int shift );
+    
     //! Set buttons up
     void setToolActionsOff (void);
 
