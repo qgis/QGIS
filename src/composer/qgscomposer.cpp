@@ -333,15 +333,27 @@ void QgsComposer::on_mActionPrint_activated(void)
       try {
       std::cout << "Print to file" << std::endl;
 
-#ifdef Q_WS_X11
-      // NOTE: On UNIX setPageSize after setup() works, but setOrientation does not
-      //   -> the BoundingBox must follow the orientation 
+      QPrinter::PageSize psize;
+      
+      // WARNING mPrinter->outputFormat() returns always 0 in Qt 4.2.2
+      // => we have to check extension
+      bool isPs = false;
+      if ( mPrinter->outputFileName().right(3).toLower() == ".ps"
+           || mPrinter->outputFileName().right(4).toLower() == ".eps" )
+      {
+          isPs = true;
+      }
+      //if ( mPrinter->outputFormat() == QPrinter::PostScriptFormat )
+      if ( isPs )
+      {
+          // NOTE: setPageSize after setup() works, but setOrientation does not
+          //   -> the BoundingBox must follow the orientation 
 
-      QPrinter::PageSize psize = mPrinter->pageSize();
-      // B0 ( 1000x1414mm = 2835x4008pt ) is the biggest defined in Qt, a map can be bigger 
-      // but probably not bigger than 9999x9999pt = 3527x3527mm 
-      mPrinter->setPageSize ( QPrinter::B0 );
-#endif
+          psize = mPrinter->pageSize();
+          // B0 ( 1000x1414mm = 2835x4008pt ) is the biggest defined in Qt, a map can be bigger 
+          // but probably not bigger than 9999x9999pt = 3527x3527mm 
+          mPrinter->setPageSize ( QPrinter::B0 );
+      }
 
       QPainter p(mPrinter);
       p.scale ( scale, scale); 
@@ -353,145 +365,156 @@ void QgsComposer::on_mActionPrint_activated(void)
 
       p.end();
 
-#ifdef Q_WS_X11
-      // reset the page
-      mPrinter->setPageSize ( psize );
-
-      QFile f(mPrinter->outputFileName());
-
-      // Overwrite the bounding box
-      if (!f.open( QIODevice::ReadWrite )) {
-        throw QgsIOException(tr("Couldn't open " + f.name() + tr(" for read/write")));
+      std::cout << "mPrinter->outputFormat() = " << mPrinter->outputFormat() << std::endl;
+      
+      
+      //if ( mPrinter->outputFormat() == QPrinter::PostScriptFormat )
+      if ( isPs )
+      {
+	// reset the page
+	mPrinter->setPageSize ( psize );
+	
+	QFile f(mPrinter->outputFileName());
+	
+	// Overwrite the bounding box
+	std::cout << "Overwrite the bounding box" << std::endl;
+	if (!f.open( QIODevice::ReadWrite )) {
+		throw QgsIOException(tr("Couldn't open " + f.name() + tr(" for read/write")));
+	}
+	Q_LONG offset = 0;
+	Q_LONG size;
+	bool found = false;
+	QString s;
+	char buf[101];
+	while ( !f.atEnd() ) {
+		size = f.readLine ( buf, 100 );
+		s = QString(buf);
+		if ( s.find ("%%BoundingBox:") == 0 ) {
+		found = true;
+		break;
+		}
+		offset += size;
+	}
+	
+	if ( found ) {
+		int w,h;
+	
+		w = (int) ( 72 * mComposition->paperWidth() / 25.4 );
+		h = (int) ( 72 * mComposition->paperHeight() / 25.4 );
+		if ( mPrinter->orientation() == QPrinter::Landscape ) { 
+		int tmp = w; w = h; h = tmp;
+		}
+		s.sprintf( "%%%%BoundingBox: 0 0 %d %d", w, h );
+	
+		if ( s.length() > size ) 
+		{
+		int shift = s.length() - size;
+		shiftFileContent ( &f, offset + size + 1, shift );
+		} else {
+		if ( ! f.at(offset) ) {
+		QMessageBox::warning(this, tr("Error in Print"), tr("Cannot seek"));
+		} else {
+		/* Write spaces (for case the size > s.length() ) */
+		QString es;
+		es.fill(' ', size-1 );
+		f.flush();
+		if ( f.writeBlock ( es.toLocal8Bit().data(), size-1 ) < size-1 ) {
+		QMessageBox::warning(this, tr("Error in Print"), tr("Cannot overwrite BoundingBox"));
+		}
+		f.flush();
+		f.at(offset);
+		f.flush();
+		if ( f.writeBlock ( s.toLocal8Bit().data(), s.length() ) <  s.length()-1 ) {
+		QMessageBox::warning(this, tr("Error in Print"), tr("Cannot overwrite BoundingBox"));
+		}
+		f.flush();
+		}
+		}
+	} else {
+		QMessageBox::warning(this, tr("Error in Print"), tr("Cannot find BoundingBox"));
+	}
+	f.close();
+	
+	// Overwrite translate
+	if ( mPrinter->orientation() == QPrinter::Portrait ) { 
+		std::cout << "Orientation portraint -> overwrite translate" << std::endl;
+		if (!f.open( QIODevice::ReadWrite )) {
+		throw QgsIOException(tr("Couldn't open ") + f.name() + tr(" for read/write"));
+		}
+		offset = 0;
+		found = false;
+	
+		//Example Qt3:
+		//0 4008 translate 1 -1 scale/defM ...
+		//QRegExp rx ( "^0 [^ ]+ translate ([^ ]+ [^ ]+) scale/defM matrix CM d \\} d" );
+		//Example Qt4:
+		//0 0 translate 0.239999 -0.239999 scale } def
+		QRegExp rx ( "^0 [^ ]+ translate ([^ ]+ [^ ]+) scale \\} def" );
+	
+		while ( !f.atEnd() ) {
+		size = f.readLine ( buf, 100 );
+		s = QString(buf);
+		if ( rx.search( s ) != -1 ) {
+		found = true;
+		break;
+		}
+		offset += size;
+		}
+	
+		if ( found ) {
+		int trans;
+	
+		trans = (int) ( 72 * mComposition->paperHeight() / 25.4 );
+		std::cout << "trans = " << trans << std::endl;
+		//Qt3:
+		//s.sprintf( "0 %d translate %s scale/defM matrix CM d } d", trans, (const char *)rx.cap(1).toLocal8Bit().data() );
+		//Qt4:
+		s.sprintf( "0 %d translate %s scale } def\n", trans, (const char *)rx.cap(1).toLocal8Bit().data() );
+	
+			
+		std::cout << "s.length() = " << s.length() << " size = " << size << std::endl;
+		if ( s.length() > size ) {
+		//QMessageBox::warning(this, tr("Error in Print"), tr("Cannot format translate"));
+		// Move the content up
+		int shift = s.length() - size;
+		/*
+		int last = f.size() + shift -1;
+		for ( int i = last; i > offset + size; i-- )
+		{
+			f.at(i-shift);
+			QByteArray ba = f.read(1);
+			f.at(i);
+			f.write(ba);
+		}
+		*/
+		shiftFileContent ( &f, offset + size + 1, shift );
+		}
+	
+		// Overwrite the row
+		if ( ! f.at(offset) ) {
+		QMessageBox::warning(this, tr("Error in Print"), tr("Cannot seek"));
+		} else {
+		/* Write spaces (for case the size > s.length() ) */
+		QString es;
+		es.fill(' ', size-1 );
+		f.flush();
+		if ( f.writeBlock ( es.toLocal8Bit().data(), size-1 ) < size-1 ) {
+			QMessageBox::warning(this, tr("Error in Print"), tr("Cannot overwrite translate"));
+		}
+		f.flush();
+		f.at(offset);
+		f.flush();
+		if ( f.writeBlock ( s.toLocal8Bit().data(), s.length() ) <  s.length()-1 ) {
+			QMessageBox::warning(this, tr("Error in Print"), tr("Cannot overwrite translate"));
+		}
+		f.flush();
+		}
+		} else {
+		QMessageBox::warning(this, tr("Error in Print"), tr("Cannot find translate"));
+		}
+		f.close();
+	}
       }
-      Q_LONG offset = 0;
-      Q_LONG size;
-      bool found = false;
-      QString s;
-      char buf[101];
-      while ( !f.atEnd() ) {
-        size = f.readLine ( buf, 100 );
-        s = QString(buf);
-        if ( s.find ("%%BoundingBox:") == 0 ) {
-          found = true;
-          break;
-        }
-        offset += size;
-      }
-
-      if ( found ) {
-        int w,h;
-
-        w = (int) ( 72 * mComposition->paperWidth() / 25.4 );
-        h = (int) ( 72 * mComposition->paperHeight() / 25.4 );
-        if ( mPrinter->orientation() == QPrinter::Landscape ) { 
-          int tmp = w; w = h; h = tmp;
-        }
-        s.sprintf( "%%%%BoundingBox: 0 0 %d %d", w, h );
-
-        if ( s.length() > size ) {
-          QMessageBox::warning(this, tr("Error in Print"), tr("Cannot format BoundingBox"));
-        } else {
-          if ( ! f.at(offset) ) {
-            QMessageBox::warning(this, tr("Error in Print"), tr("Cannot seek"));
-          } else {
-            /* Write spaces (for case the size > s.length() ) */
-            QString es;
-            es.fill(' ', size-1 );
-            f.flush();
-            if ( f.writeBlock ( es.toLocal8Bit().data(), size-1 ) < size-1 ) {
-              QMessageBox::warning(this, tr("Error in Print"), tr("Cannot overwrite BoundingBox"));
-            }
-            f.flush();
-            f.at(offset);
-            f.flush();
-            if ( f.writeBlock ( s.toLocal8Bit().data(), s.length() ) <  s.length()-1 ) {
-              QMessageBox::warning(this, tr("Error in Print"), tr("Cannot overwrite BoundingBox"));
-            }
-            f.flush();
-          }
-        }
-      } else {
-        QMessageBox::warning(this, tr("Error in Print"), tr("Cannot find BoundingBox"));
-      }
-      f.close();
-
-      // Overwrite translate
-      if ( mPrinter->orientation() == QPrinter::Portrait ) { 
-	std::cout << "Orientation portraint -> overwrite translate" << std::endl;
-        if (!f.open( QIODevice::ReadWrite )) {
-          throw QgsIOException(tr("Couldn't open ") + f.name() + tr(" for read/write"));
-        }
-        offset = 0;
-        found = false;
-
-        //Example Qt3:
-        //0 4008 translate 1 -1 scale/defM ...
-        //QRegExp rx ( "^0 [^ ]+ translate ([^ ]+ [^ ]+) scale/defM matrix CM d \\} d" );
-	//Example Qt4:
-	//0 0 translate 0.239999 -0.239999 scale } def
-        QRegExp rx ( "^0 [^ ]+ translate ([^ ]+ [^ ]+) scale \\} def" );
-
-        while ( !f.atEnd() ) {
-          size = f.readLine ( buf, 100 );
-          s = QString(buf);
-          if ( rx.search( s ) != -1 ) {
-            found = true;
-            break;
-          }
-          offset += size;
-        }
-
-        if ( found ) {
-          int trans;
-
-          trans = (int) ( 72 * mComposition->paperHeight() / 25.4 );
-          std::cout << "trans = " << trans << std::endl;
-	  //Qt3:
-          //s.sprintf( "0 %d translate %s scale/defM matrix CM d } d", trans, (const char *)rx.cap(1).toLocal8Bit().data() );
-	  //Qt4:
-          s.sprintf( "0 %d translate %s scale } def\n", trans, (const char *)rx.cap(1).toLocal8Bit().data() );
-
-		
-	  std::cout << "s.length() = " << s.length() << " size = " << size << std::endl;
-          if ( s.length() > size ) {
-            //QMessageBox::warning(this, tr("Error in Print"), tr("Cannot format translate"));
-	    // Move the content up
-	    int shift = s.length() - size;
-	    int last = f.size() + shift -1;
-	    for ( int i = last; i > offset + size; i-- )
-	    {
-                f.at(i-shift);
-		QByteArray ba = f.read(1);
-		f.at(i);
-		f.write(ba);
-	    }
-	  }
-
-	  // Overwrite the row
-          if ( ! f.at(offset) ) {
-              QMessageBox::warning(this, tr("Error in Print"), tr("Cannot seek"));
-          } else {
-              /* Write spaces (for case the size > s.length() ) */
-              QString es;
-              es.fill(' ', size-1 );
-              f.flush();
-              if ( f.writeBlock ( es.toLocal8Bit().data(), size-1 ) < size-1 ) {
-                QMessageBox::warning(this, tr("Error in Print"), tr("Cannot overwrite translate"));
-              }
-              f.flush();
-              f.at(offset);
-              f.flush();
-              if ( f.writeBlock ( s.toLocal8Bit().data(), s.length() ) <  s.length()-1 ) {
-                QMessageBox::warning(this, tr("Error in Print"), tr("Cannot overwrite translate"));
-              }
-              f.flush();
-          }
-        } else {
-          QMessageBox::warning(this, tr("Error in Print"), tr("Cannot find translate"));
-        }
-        f.close();
-      }
-#endif
       } catch (QgsIOException e) {
         QMessageBox::warning(this, tr("File IO Error"), e.what());
       }
@@ -532,6 +555,20 @@ void QgsComposer::on_mActionPrint_activated(void)
   {
       raise ();
   }
+}
+
+bool shiftFileContent ( QFile *file, Q_LONG start, int shift )
+{
+	int last = file->size() + shift -1;
+	for ( int i = last; i >= start + shift; i-- )
+	{
+            if ( !file->at(i-shift) ) return false;
+	    QByteArray ba = file->read(1);
+	    if ( ba.isEmpty() ) return false;
+	    if ( !file->at(i) ) return false;
+	    if ( file->write(ba) != 1 ) return false;
+	}
+	return true;
 }
 
 void QgsComposer::on_mActionExportAsImage_activated(void)
