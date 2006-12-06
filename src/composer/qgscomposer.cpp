@@ -285,8 +285,11 @@ void QgsComposer::on_mActionPrint_activated(void)
     // The Mac Print dialog provides an option to create a pdf which is
     // intended to be invisible to the application. If an eps is desired,
     // a custom Mac Print dialog is needed.
-    mPrinter->setOutputToFile (true ) ;
-    mPrinter->setOutputFileName ( QDir::convertSeparators ( QDir::home().path() + "/" + "qgis.eps") );
+    
+    // There is a bug in Qt<=4.2.2 (dialog is not correct) if output is set to file
+    // => disable until they fix it
+    //mPrinter->setOutputToFile (true ) ;
+    //mPrinter->setOutputFileName ( QDir::convertSeparators ( QDir::home().path() + "/" + "qgis.eps") );
 #endif
 
     if ( mComposition->paperOrientation() == QgsComposition::Portrait ) {
@@ -296,6 +299,12 @@ void QgsComposer::on_mActionPrint_activated(void)
     }
     mPrinter->setColorMode ( QPrinter::Color );
     mPrinter->setPageSize ( QPrinter::A4 );
+  }
+  else
+  {
+      // Because of bug in Qt<=4.2.2 (dialog is not correct) we have to reset always
+      // to printer otherwise print to file is checked but printer combobox is in dialog
+      mPrinter->setOutputToFile (false) ;
   }
 
   mPrinter->setResolution ( mComposition->resolution() );
