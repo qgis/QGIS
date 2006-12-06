@@ -1728,12 +1728,34 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
                     }
                 }
             }
-
-            addLineEdit();
-
-            // add/delete buttons for multiple options
-   	    if ( gelem.attribute("multiple") == "yes" ) 
+            
+            QDomNode keydescNode = gnode.namedItem ( "keydesc" );
+            if (!keydescNode.isNull())
             {
+              // fixed number of line edits
+              // Example:
+              // <keydesc>
+              //    <item order="1">rows</item>
+              //    <item order="2">columns</item>
+              // </keydesc>
+              
+              QDomNodeList keydescs = keydescNode.childNodes();
+              for (int k = 0; k < keydescs.count(); k++)
+              {
+                QDomNode nodeItem = keydescs.at(k);
+                QString itemDesc = nodeItem.toElement().text().stripWhiteSpace();
+                //QString itemDesc = nodeItem.firstChild().toText().data();
+                std::cerr << "keydesc item = " << itemDesc.toLocal8Bit().data() << std::endl;
+                
+                addLineEdit();
+              }
+              
+              setLayout(mLayout);
+            }
+   	    else if ( gelem.attribute("multiple") == "yes" ) 
+            {
+                // variable number of line edits
+                // add/delete buttons for multiple options
                 QHBoxLayout *l = new QHBoxLayout (this);
                 QVBoxLayout *vl = new QVBoxLayout ();
                 l->insertLayout( -1, mLayout );
@@ -1753,6 +1775,8 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
             }
             else 
             {
+                // only one line edit
+                addLineEdit();
                 setLayout ( mLayout );
             }  
 	}
