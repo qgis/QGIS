@@ -110,8 +110,12 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
         std::cerr << "Attempting to split the input line: " << line.toLocal8Bit().data() <<
           " using delimiter " << txtDelimiter->text().toLocal8Bit().data() << std::endl;
 #endif
-
-        QStringList fieldList = QStringList::split(QRegExp(txtDelimiter->text()), line);
+        QString delimiter = txtDelimiter->text();
+        
+        // convert \t to tabulator
+        delimiter.replace("\\t", "\t");
+        
+        QStringList fieldList = QStringList::split(delimiter, line);
 
 #ifdef QGISDEBUG
         std::cerr << "Split line into " << fieldList.size() << " parts" << std::endl; 
