@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>576</width>
-    <height>451</height>
+    <height>454</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -34,17 +34,17 @@
       <attribute name="title" >
        <string>&amp;Appearance</string>
       </attribute>
-      <layout class="QGridLayout" >
+      <layout class="QVBoxLayout" >
        <property name="margin" >
         <number>9</number>
        </property>
        <property name="spacing" >
         <number>6</number>
        </property>
-       <item row="3" column="0" >
-        <widget class="QGroupBox" name="groupBox_3" >
+       <item>
+        <widget class="QGroupBox" name="groupBox" >
          <property name="title" >
-          <string>Appearance</string>
+          <string>&amp;Splash screen</string>
          </property>
          <layout class="QGridLayout" >
           <property name="margin" >
@@ -53,37 +53,85 @@
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item row="1" column="0" >
-           <widget class="QCheckBox" name="cbxSplitterRedraw" >
-            <property name="text" >
-             <string>Remember Legend Width</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0" >
-           <widget class="QCheckBox" name="capitaliseCheckBox" >
+           <widget class="QCheckBox" name="cbxHideSplash" >
             <property name="text" >
-             <string>Capitalise layer name</string>
+             <string>Hide splash screen at startup</string>
             </property>
            </widget>
           </item>
          </layout>
         </widget>
        </item>
-       <item row="4" column="0" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Vertical</enum>
+       <item>
+        <widget class="QGroupBox" name="groupBox_2" >
+         <property name="title" >
+          <string>&amp;Icon Theme</string>
          </property>
-         <property name="sizeHint" >
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="1" column="0" colspan="3" >
+           <widget class="QLabel" name="textLabel1_5" >
+            <property name="text" >
+             <string>&lt;b>Note: &lt;/b>Theme changes take effect the next time QGIS is started</string>
+            </property>
+            <property name="alignment" >
+             <set>Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="textLabel1_4" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>5</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Theme</string>
+            </property>
+            <property name="buddy" >
+             <cstring>cmbTheme</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
+           <widget class="QComboBox" name="cmbTheme" >
+            <property name="duplicatesEnabled" >
+             <bool>false</bool>
+            </property>
+            <item>
+             <property name="text" >
+              <string/>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="0" column="2" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
        </item>
-       <item row="2" column="0" >
+       <item>
         <widget class="QGroupBox" name="groupBox_9" >
          <property name="title" >
           <string>Default Map Appearance (Overridden by project properties)</string>
@@ -170,95 +218,40 @@
          </layout>
         </widget>
        </item>
-       <item row="1" column="0" >
-        <widget class="QGroupBox" name="groupBox_2" >
+       <item>
+        <widget class="QGroupBox" name="groupBox_3" >
          <property name="title" >
-          <string>&amp;Icon Theme</string>
+          <string>Appearance</string>
          </property>
-         <layout class="QGridLayout" >
+         <layout class="QVBoxLayout" >
           <property name="margin" >
            <number>9</number>
           </property>
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item row="1" column="0" colspan="3" >
-           <widget class="QLabel" name="textLabel1_5" >
+          <item>
+           <widget class="QCheckBox" name="capitaliseCheckBox" >
             <property name="text" >
-             <string>&lt;b>Note: &lt;/b>Theme changes take effect the next time QGIS is started</string>
-            </property>
-            <property name="alignment" >
-             <set>Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="textLabel1_4" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>0</hsizetype>
-              <vsizetype>5</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text" >
-             <string>Theme</string>
-            </property>
-            <property name="buddy" >
-             <cstring>cmbTheme</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" >
-           <widget class="QComboBox" name="cmbTheme" >
-            <property name="duplicatesEnabled" >
-             <bool>false</bool>
-            </property>
-            <item>
-             <property name="text" >
-              <string/>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="0" column="2" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="0" column="0" >
-        <widget class="QGroupBox" name="groupBox" >
-         <property name="title" >
-          <string>&amp;Splash screen</string>
-         </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="0" column="0" >
-           <widget class="QCheckBox" name="cbxHideSplash" >
-            <property name="text" >
-             <string>Hide splash screen at startup</string>
+             <string>Capitalise layer name</string>
             </property>
            </widget>
           </item>
          </layout>
         </widget>
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -352,14 +345,21 @@
          <property name="title" >
           <string>Rendering</string>
          </property>
-         <layout class="QGridLayout" >
+         <layout class="QVBoxLayout" >
           <property name="margin" >
            <number>9</number>
           </property>
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item row="1" column="0" >
+          <item>
+           <widget class="QCheckBox" name="chkAntiAliasing" >
+            <property name="text" >
+             <string>Make lines appear less jagged at the expense of some drawing performance</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QCheckBox" name="chkUseQPixmap" >
             <property name="toolTip" >
              <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Selecting this will unselect the 'make lines less' jagged toggle&lt;/p>&lt;/body>&lt;/html></string>
@@ -369,10 +369,10 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0" >
-           <widget class="QCheckBox" name="chkAntiAliasing" >
+          <item>
+           <widget class="QCheckBox" name="cbxSplitterRedraw" >
             <property name="text" >
-             <string>Make lines appear less jagged at the expense of some drawing performance</string>
+             <string>Continuously redraw the map when dragging the legend/map divider</string>
             </property>
            </widget>
           </item>
