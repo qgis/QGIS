@@ -53,6 +53,9 @@ QgsPgQueryBuilder::QgsPgQueryBuilder(QgsDataSourceURI *uri,
     mOwnConnection = true; // we own this connection since we created it
     // tell the DB that we want text encoded in UTF8
     PQsetClientEncoding(mPgConnection, "UNICODE");
+    // and strip any quotation as this code does it's own quoting.
+    trimQuotation();
+
     lblDataUri->setText(datasource);
     populateFields();
   }
@@ -85,6 +88,8 @@ QgsPgQueryBuilder::QgsPgQueryBuilder(QString tableName, PGconn *con,
   mUri->schema = parts[0];
   // strip whitespace to make sure the table name is clean
   mUri->table = parts[1].stripWhiteSpace();
+  // and strip any quotation as this code does it's own quoting.
+  trimQuotation();
 
   lblDataUri->setText(datasource);
   populateFields();
@@ -151,6 +156,21 @@ void QgsPgQueryBuilder::populateFields()
 #endif 
   }
   PQclear(result);
+}
+
+void QgsPgQueryBuilder::trimQuotation()
+{
+  // Trim " characters that may be surrounding the table and schema name
+  if (mUri->schema.at(0) == '"')
+    {
+      mUri->schema.remove(mUri->schema.length()-1, 1);
+      mUri->schema.remove(0, 1);
+    }
+  if (mUri->table.at(0) == '"')
+    {
+      mUri->table.remove(mUri->table.length()-1, 1);
+      mUri->table.remove(0, 1);
+    }
 }
 
 void QgsPgQueryBuilder::on_btnSampleValues_clicked()
