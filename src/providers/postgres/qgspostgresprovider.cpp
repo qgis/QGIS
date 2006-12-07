@@ -77,36 +77,60 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
   // string:
   //  host=192.168.1.5 dbname=test port=5342 user=gsherman password=xxx table=tablename
 
+  // A little bit of backwards compability. At r6193 the schema/table
+  // names became fully quoted, but with the problem that earlier
+  // project files then didn't load. This bit of code puts in the
+  // quotes that are now required.
+  QString uriModified = uri;
+  int start = uriModified.indexOf("table=\"");
+  if (start == -1)
+    {
+      // Need to put in some "'s
+      start = uriModified.indexOf("table=");
+      uriModified.insert(start+6, '"');
+      int start_dot = uriModified.indexOf('.', start+7);
+      if (start_dot != -1)
+        {
+          uriModified.insert(start_dot, '"');
+          uriModified.insert(start_dot+2, '"');
+        }
+      // and one at the end
+      int end = uriModified.indexOf(' ',start);
+      if (end != -1)
+        uriModified.insert(end, '"');
+    }
+
   // Strip the table and sql statement name off and store them
-  int sqlStart = uri.find(" sql");
-  int tableStart = uri.find("table=");
+  int sqlStart = uriModified.find(" sql");
+  int tableStart = uriModified.find("table=");
 #ifdef QGISDEBUG
   qDebug(  "****************************************");
   qDebug(  "****   Postgresql Layer Creation   *****" );
   qDebug(  "****************************************");
-  qDebug(  (const char*)(QString("URI: ") + uri).toLocal8Bit().data() );
+  qDebug(  (const char*)(QString("URI: ") + uriModified).toLocal8Bit().data() );
   QString msg;
 
   qDebug(  "tableStart: " + msg.setNum(tableStart) );
   qDebug(  "sqlStart: " + msg.setNum(sqlStart));
 #endif 
-  mTableName = uri.mid(tableStart + 6, sqlStart - tableStart -6);
+  mTableName = uriModified.mid(tableStart + 6, sqlStart - tableStart -6);
+
   if(sqlStart > -1)
   { 
-    sqlWhereClause = uri.mid(sqlStart + 5);
+    sqlWhereClause = uriModified.mid(sqlStart + 5);
   }
   else
   {
     sqlWhereClause = QString::null;
   }
-  QString connInfo = uri.left(uri.find("table="));
+  QString connInfo = uriModified.left(uriModified.find("table="));
 #ifdef QGISDEBUG
   qDebug( (const char*)(QString("Table name is ") + mTableName).toLocal8Bit().data());
   qDebug( (const char*)(QString("SQL is ") + sqlWhereClause).toLocal8Bit().data() );
   qDebug( "Connection info is " + connInfo);
 #endif
 
-  // Pick up some stuff from the uri: basically two bits of text
+  // Pick up some stuff from the uriModified: basically two bits of text
   // inside double quote marks, separated by a .
   QRegExp reg("\"(.+)\"\\.\"(.+)\".+\\((.+)\\)");
   reg.indexIn(mTableName);
