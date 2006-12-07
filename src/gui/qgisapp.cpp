@@ -366,6 +366,10 @@ void QgisApp::readSettings()
   // Add the recently accessed project file paths to the File menu
   mRecentProjectPaths = settings.readListEntry("/UI/recentProjectsList");
 
+  // Set the behaviour when the map splitters are resized
+  bool splitterRedraw = settings.value("/qgis/splitterRedraw", true).toBool();
+  canvasLegendSplit->setOpaqueResize(splitterRedraw);
+  legendOverviewSplit->setOpaqueResize(splitterRedraw);
 }
 
 
@@ -1244,7 +1248,8 @@ void QgisApp::saveWindowState()
   settings.writeEntry("/Geometry/y", p.y());
   settings.writeEntry("/Geometry/w", s.width());
   settings.writeEntry("/Geometry/h", s.height());
-
+  settings.setValue("/Geometry/canvasSplitterState", canvasLegendSplit->saveState());
+  settings.setValue("/Geometry/legendSplitterState", legendOverviewSplit->saveState());
 }
 
 void QgisApp::restoreWindowState()
@@ -1264,6 +1269,9 @@ void QgisApp::restoreWindowState()
   int y = settings.readNumEntry("/Geometry/y", (dh - 400) / 2);
   resize(w, h);
   move(x, y);
+
+  canvasLegendSplit->restoreState(settings.value("/Geometry/canvasSplitterState").toByteArray());
+  legendOverviewSplit->restoreState(settings.value("/Geometry/legendSplitterState").toByteArray());
 }
 ///////////// END OF GUI SETUP ROUTINES ///////////////
 
@@ -4139,6 +4147,10 @@ void QgisApp::options()
     int action = mySettings.value("/qgis/wheel_action", 0).toInt();
     double zoomFactor = mySettings.value("/qgis/zoom_factor", 2).toDouble();
     mMapCanvas->setWheelAction((QgsMapCanvas::WheelAction) action, zoomFactor);
+
+    bool splitterRedraw = mySettings.value("/qgis/splitterRedraw", true).toBool();
+    canvasLegendSplit->setOpaqueResize(splitterRedraw);
+    legendOverviewSplit->setOpaqueResize(splitterRedraw);
   }
 }
 
