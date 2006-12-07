@@ -141,6 +141,8 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   
   cmbWheelAction->setCurrentIndex(settings.value("/qgis/wheel_action", 0).toInt());
   spinZoomFactor->setValue(settings.value("/qgis/zoom_factor", 2).toDouble());
+
+  splitterRedrawCB->setChecked(settings.value("/qgis/splitterRedraw", QVariant(true)).toBool());
 }
 
 //! Destructor
@@ -248,7 +250,9 @@ void QgsOptions::saveOptions()
 
   settings.writeEntry("/qgis/wheel_action", cmbWheelAction->currentIndex());
   settings.writeEntry("/qgis/zoom_factor", spinZoomFactor->value());
-  
+
+  settings.setValue("/qgis/splitterRedraw", splitterRedrawCB->isChecked());  
+
   //all done
   accept();
 }
