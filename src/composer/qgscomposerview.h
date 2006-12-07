@@ -38,6 +38,7 @@ protected:
     void contentsMouseMoveEvent(QMouseEvent*);
 
     void keyPressEvent ( QKeyEvent * e );
+    void resizeEvent ( QResizeEvent *  );
 
 private:
     QgsComposer *mComposer;

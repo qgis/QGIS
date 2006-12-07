@@ -60,3 +60,8 @@ void QgsComposerView::keyPressEvent ( QKeyEvent * e )
 {
     mComposer->composition()->keyPressEvent ( e );
 }
+
+void QgsComposerView::resizeEvent ( QResizeEvent *  )
+{
+    mComposer->zoomFull();
+}

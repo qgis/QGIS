@@ -169,6 +169,9 @@ private:
     //! Set buttons up
     void setToolActionsOff (void);
 
+    //! returns new world matrix for canvas view after zoom with factor scaleChange
+    QMatrix updateMatrix(double scaleChange);
+    
     //! Pointer to composer view
     QgsComposerView *mView;
 

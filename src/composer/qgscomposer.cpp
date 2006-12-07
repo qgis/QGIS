@@ -231,18 +231,34 @@ void QgsComposer::on_mActionZoomAll_activated(void)
   zoomFull();
 }
 
+QMatrix QgsComposer::updateMatrix(double scaleChange)
+{
+  double scale = mView->worldMatrix().m11() * scaleChange; // get new scale
+
+  double dx = ( mView->width() - scale * mComposition->canvas()->width() ) / 2;
+  double dy = ( mView->height() - scale * mComposition->canvas()->height() ) / 2;
+  
+  // don't translate if composition is bigger than view
+  if (dx < 0) dx = 0;
+  if (dy < 0) dy = 0;
+  
+  // create new world matrix:  
+  QMatrix m;
+  m.translate ( dx, dy );
+  m.scale ( scale, scale );
+  return m;
+}
+
 void QgsComposer::on_mActionZoomIn_activated(void)
 {
-  QMatrix m = mView->worldMatrix();
-  m.scale( 2.0, 2.0 );
+  QMatrix m = updateMatrix(2);
   mView->setWorldMatrix( m );
   mView->repaintContents();
 }
 
 void QgsComposer::on_mActionZoomOut_activated(void)
 {
-  QMatrix m = mView->worldMatrix();
-  m.scale( 0.5, 0.5 );
+  QMatrix m = updateMatrix(0.5);
   mView->setWorldMatrix( m );
   mView->repaintContents();
 }
