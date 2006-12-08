@@ -1514,6 +1514,18 @@ void QgsGrassModule::viewOutput()
 			   QgsGrass::getDefaultLocation(),
 			   QgsGrass::getDefaultMapset(), map );
 
+         // check whether there are 1_* layers
+         // if so, 0_* layers won't be added
+         bool onlyLayer1 = false;
+         for ( int j = 0; j < layers.count(); j++ )
+         {
+           if (layers[j].left(1) == "1")
+           {
+             onlyLayer1 = true;
+             break;
+           }
+         }
+           
          // TODO common method for add all layers
          for ( int j = 0; j < layers.count(); j++ )
          {
@@ -1521,6 +1533,10 @@ void QgsGrassModule::viewOutput()
 		       + QgsGrass::getDefaultLocation() + "/"
 		       + QgsGrass::getDefaultMapset() + "/" 
 		       + map + "/" + layers[j];
+             
+             // skip 0_* layers
+             if (onlyLayer1 && layers[j].left(1) != "1")
+               continue;
 
              // TODO vector layer name
              mIface->addVectorLayer( uri, layers[j], "grass");
