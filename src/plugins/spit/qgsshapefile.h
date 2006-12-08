@@ -26,6 +26,7 @@
 #include <ogrsf_frmts.h>
 
 class QProgressDialog;
+class QTextCodec;
 
 class OGRLayer;
 class OGRDataSource;
@@ -40,7 +41,7 @@ class QgsShapeFile : public QObject
   Q_OBJECT
   public:
 
-  QgsShapeFile(QString filename);
+  QgsShapeFile(QString filename, QString encoding = QString());
   ~QgsShapeFile();
   int getFeatureCount();
   QString getFeatureClass();
@@ -69,6 +70,7 @@ class QgsShapeFile : public QObject
   QString filename;
   QString geom_type;
   QStringList geometries;
+  QTextCodec* codec;
 
   public slots:
   void cancelImport();

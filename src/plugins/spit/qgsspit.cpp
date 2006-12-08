@@ -25,8 +25,11 @@
 #include <QSettings>
 #include <QPixmap>
 #include <QHeaderView>
+#include <QTextCodec>
 
 #include <iostream>
+    
+#include "qgsencodingfiledialog.h"
 
 #include "qgspgutil.h"
 #include "qgsspit.h"
@@ -158,15 +161,23 @@ void QgsSpit::addFile()
   bool is_error = false;
   QSettings settings("QuantumGIS", "qgis");
 
-  QStringList files = QFileDialog::getOpenFileNames(this,
+  QgsEncodingFileDialog dlg(this,
                         tr("Add Shapefiles"),
                         settings.readEntry( "/Plugin-Spit/last_directory" ),
-                        tr("Shapefiles (*.shp);;All files (*.*)") );
+                        tr("Shapefiles (*.shp);;All files (*.*)"),
+                        settings.readEntry( "/Plugin-Spit/last_encoding" ) );
+  dlg.setMode(QFileDialog::ExistingFiles);
+  
+  if (dlg.exec() != QDialog::Accepted)
+    return;
+  QStringList files = dlg.selectedFiles();
+
   if ( files.size() > 0 )
   {
     // Save the directory for future use
     QFileInfo fi( files[ 0 ] );
     settings.writeEntry( "/Plugin-Spit/last_directory", fi.dirPath( true ) );
+    settings.writeEntry( "/Plugin-Spit/last_encoding", dlg.encoding());
   }
   // Process the files
   for ( QStringList::Iterator it = files.begin(); it != files.end(); ++it )
@@ -197,7 +208,7 @@ void QgsSpit::addFile()
 
       if ( !is_error )
       {
-        QgsShapeFile * file = new QgsShapeFile( name );
+        QgsShapeFile * file = new QgsShapeFile( name, dlg.encoding() );
         if ( file->is_valid() )
         {
           /* XXX getFeatureClass actually does a whole bunch
@@ -426,6 +437,17 @@ PGconn* QgsSpit::checkConnection()
       QMessageBox::warning( this, tr("Import Shapefiles"), tr("Connection failed - Check settings and try again") );
       result = false;
     }
+  
+    int errcode = PQsetClientEncoding(pd, "UNICODE");
+#ifdef QGISDEBUG
+    if(errcode==0)
+      qWarning("encoding successfully set");
+    else if(errcode==-1)
+      qWarning("error in setting encoding");
+    else
+      qWarning("undefined return value from encoding setting");
+#endif
+  
   }
 
   if (result )
