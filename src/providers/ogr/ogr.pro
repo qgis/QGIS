@@ -10,10 +10,6 @@
 # 
 #################################################################
 
-#
-# This file builds the gui library - the app is built in a separate pro file
-#
-
 include(../../../settings.pro)
 TARGET=ogrprovider
 TEMPLATE = lib
