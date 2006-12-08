@@ -338,8 +338,10 @@
 */
 class QgsWmsProvider : public QgsRasterDataProvider
 {
-  
+
+#ifndef WIN32  
   Q_OBJECT
+#endif 
 
 public:
   
@@ -610,6 +612,8 @@ public:
     QString description() const;
 
 
+#ifndef WIN32    
+
 signals:
 
     /** \brief emit a signal to notify of a progress event */
@@ -620,6 +624,7 @@ signals:
 
 
 public slots:
+#endif
 
   void showStatusMessage(QString const &  theMessage);
 
