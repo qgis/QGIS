@@ -10,8 +10,8 @@ TEMPLATE = subdirs
 SUBDIRS =  delimited_text \
            scale_bar \
            grid_maker \
-	   north_arrow \
-	   grass \
-           copyright_label 
+           north_arrow \
+           grass \
+           copyright_label \
+           spit
 #      	    gps_importer \
-#           spit
