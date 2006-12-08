@@ -449,6 +449,10 @@ void QgsServerSourceSelect::on_btnAdd_clicked()
   {
     QMessageBox::information(this, tr("Select Layer"), tr("You must select at least one layer first."));
   }
+  else if (mWmsProvider->supportedCrsForLayers(m_selectedLayers).size() == 0)
+  {
+    QMessageBox::information(this, tr("Coordinate Reference System"), tr("There are no available coordinate reference system for the set of layers you've selected."));
+  }
   else
   {
     accept();
@@ -570,6 +574,38 @@ void QgsServerSourceSelect::on_lstLayers_selectionChanged()
                           .arg( crsFilter.count() )
                      );
 
+      // check whether current CRS is supported
+      // if not, use one of the available CRS
+      bool isThere = false;
+      long defaultEpsg = 0;
+      for ( QSet<QString>::const_iterator i = crsFilter.begin(); i != crsFilter.end(); ++i)
+      {
+        QStringList parts = i->split(":");
+        
+        if (parts.at(0) == "EPSG")
+        {
+          long epsg = atol(parts.at(1));
+          if (epsg == m_Epsg)
+          {
+            isThere = true;
+            break;
+          }
+          
+          // save first CRS in case we current m_Epsg is not available
+          if (i == crsFilter.begin())
+            defaultEpsg = epsg;
+          // prefer value of DEFAULT_WMS_EPSG if available
+          if (epsg == DEFAULT_WMS_EPSG)
+            defaultEpsg = epsg;
+        }
+      }
+      
+      // we have to change selected CRS to default one
+      if (!isThere && crsFilter.size() > 0)
+      {
+        m_Epsg = defaultEpsg;
+        labelCoordRefSys->setText( descriptionForEpsg(m_Epsg) );
+      }
     }
 
     btnChangeSpatialRefSys->setEnabled(TRUE);
