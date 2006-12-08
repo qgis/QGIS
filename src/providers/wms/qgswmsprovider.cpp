@@ -1893,7 +1893,9 @@ void QgsWmsProvider::showStatusMessage(QString const & theMessage)
 {
     // Pass-through
     // TODO: See if we can connect signal-to-signal.  This is a kludge according to the Qt doc.
+#ifndef WIN32
     emit setStatus(theMessage);
+#endif
 }
 
 
