@@ -273,6 +273,7 @@ void QgsGrassSelect::setMaps()
 	    if ( list[j] == lastVectorMap ) sel = idx;
 	    idx++;
 	}
+        
     } 
     else if ( type == RASTER ) 
     {
@@ -354,6 +355,20 @@ void QgsGrassSelect::setLayers()
 	idx++;
     }
 	
+    // if last used layer has not been found
+    // make default a map from layer 1
+    if (sel == -1)
+    {
+      for ( int j = 0; j < layers.count(); j++ )
+      {
+        if (layers[j].left(1) == "1")
+        {
+          sel = j;
+          break;
+        }
+      }
+    }
+    
     if ( sel >= 0 ) {
         elayer->setCurrentItem(sel);
     } else {
