@@ -28,6 +28,7 @@
 #include <QProgressDialog>
 #include <QString>
 #include <QLabel>
+#include <QTextCodec>
 
 #include "qgsdbfbase.h"
 #include "cpl_error.h"
@@ -42,7 +43,7 @@
 #endif    
 
 
-QgsShapeFile::QgsShapeFile(QString name){
+QgsShapeFile::QgsShapeFile(QString name, QString encoding){
   filename = name;
   features = 0;
   OGRRegisterAll();
@@ -58,6 +59,10 @@ QgsShapeFile::QgsShapeFile(QString name){
   // init the geometry types
   geometries << "NULL" << "POINT" << "LINESTRING" << "POLYGON" << "MULTPOINT" 
     << "MULTILINESTRING" << "MULTIPOLYGON" << "GEOMETRYCOLLECTION";
+  
+  codec = QTextCodec::codecForName(encoding.toLocal8Bit().data());
+  if (!codec)
+    codec = QTextCodec::codecForLocale();
 }
 
 QgsShapeFile::~QgsShapeFile(){
@@ -207,7 +212,10 @@ QString QgsShapeFile::getFeatureClass(){
       dbf.close();
       int numFields = feat->GetFieldCount();
       for(int n=0; n<numFields; n++)
-        column_names.push_back(feat->GetFieldDefnRef(n)->GetNameRef());
+      {
+        QString s = codec->toUnicode(feat->GetFieldDefnRef(n)->GetNameRef());
+        column_names.push_back(s);
+      }
       
     }else valid = false;
     delete feat;
@@ -342,21 +350,22 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
           query += quotes;
 
           // escape the string value
-          QString val = feat->GetFieldAsString(n);
-          char * esc_str = new char[val.length()*2+1];
-          PQescapeString(esc_str, (const char *)val.lower(), val.length());
+          QString val = codec->toUnicode(feat->GetFieldAsString(n));
+          val.replace("'", "''");
+          //char * esc_str = new char[val.length()*2+1];
+          //PQescapeString(esc_str, (const char *)val.lower().utf8(), val.length());
 
           // add escaped value to the query 
-          query += esc_str;
+          query += val; //esc_str;
           query += QString(quotes + ", ");
 
-          delete[] esc_str;
+          //delete[] esc_str;
         }
         query += QString("GeometryFromText(\'")+geometry+QString("\', ")+srid+QString("))");
     //    std::cerr << query << std::endl; 
 
         if(result)
-          res = PQexec(conn, (const char *)query);
+          res = PQexec(conn, (const char *)query.utf8());
         if(PQresultStatus(res)!=PGRES_COMMAND_OK){
           // flag error and send query and error message to stdout on debug
           result = false;
