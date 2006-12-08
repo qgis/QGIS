@@ -114,21 +114,38 @@ void QgsGrass::init( void )
   }
 
   bool userGisbase = false;
-  while ( !isValidGrassBaseDir(gisBase) ) {
-    // Keep asking user for GISBASE until we get a valid one
-    //QMessageBox::warning( 0, "Warning", "QGIS can't find your GRASS installation,\nGRASS data "
-    //    "cannot be used.\nPlease select your GISBASE.\nGISBASE is full path to the\n"
-    //    "directory where GRASS is installed." );
+  bool valid = false;
+  while ( !(valid = isValidGrassBaseDir(gisBase)) ) {
+    
+    // ask user if he wants to specify GISBASE
+    int res = QMessageBox::warning(0, QObject::tr("GRASS plugin"),
+                    QObject::tr("QGIS couldn't find your GRASS installation.\n"
+                    "Would you like to specify path (GISBASE) to your GRASS installation?"),
+                 QMessageBox::Yes, QMessageBox::No);
+    
+    if (res != QMessageBox::Yes)
+    {
+      userGisbase = false;
+      break;
+    }
+    
     // XXX Need to subclass this and add explantory message above to left side
     userGisbase = true;
     gisBase = QFileDialog::getExistingDirectory(
-	0, "Choose GISBASE ...", gisBase);
+	0, QObject::tr("Choose GRASS installation path (GISBASE)"), gisBase);
     if (gisBase == QString::null)
     {
       // User pressed cancel. No GRASS for you!
       userGisbase = false;
       break;
     }
+  }
+  
+  if (!valid)
+  {
+    // warn user
+    QMessageBox::information(0, QObject::tr("GRASS plugin"),
+                             QObject::tr("GRASS data won't be available if GISBASE is not specified."));
   }
 
   if ( userGisbase )
