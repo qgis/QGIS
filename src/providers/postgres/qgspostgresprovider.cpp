@@ -1741,6 +1741,10 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f, int primaryKeyHighWater)
         {
           insert+="'";
         }
+        
+        // important: escape quotes in field value
+        fieldvalue.replace("'", "''");
+        
         insert+=fieldvalue;
         if(charactertype)
         {
@@ -1995,7 +1999,12 @@ bool QgsPostgresProvider::changeAttributeValues(std::map<int,std::map<QString,QS
   {
     for(std::map<QString,QString>::const_iterator siter=(*iter).second.begin();siter!=(*iter).second.end();++siter)
     {
-      QString sql="UPDATE "+mSchemaTableName+" SET "+(*siter).first+"='"+(*siter).second+"' WHERE \"" +primaryKey+"\"="+QString::number((*iter).first);
+      QString val = (*siter).second;
+      
+      // escape quotes
+      val.replace("'", "''");
+      
+      QString sql="UPDATE "+mSchemaTableName+" SET "+(*siter).first+"='"+val+"' WHERE \"" +primaryKey+"\"="+QString::number((*iter).first);
       QgsDebugMsg(sql);
 
       // s end sql statement and do error handling
