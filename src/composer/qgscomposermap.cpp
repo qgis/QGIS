@@ -294,7 +294,7 @@ void QgsComposerMap::draw ( QPainter & painter )
       painter.setBrush( Qt::NoBrush );
 	    painter.save();
       painter.translate ( Q3CanvasRectangle::x(), Q3CanvasRectangle::y() );
-      painter.drawRect ( 0, 0, Q3CanvasRectangle::width()+1, Q3CanvasRectangle::height()+1 ); // is it right?
+      painter.drawRect ( 0, 0, Q3CanvasRectangle::width(), Q3CanvasRectangle::height() );
         painter.restore();
     }
 
