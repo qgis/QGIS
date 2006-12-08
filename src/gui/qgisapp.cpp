@@ -2059,11 +2059,11 @@ void QgisApp::addWmsLayer()
         wmss->selectedLayers(),
         wmss->selectedStylesForSelectedLayers(),
         wmss->selectedImageEncoding(),
-	wmss->selectedCrs(),
-	wmss->connProxyHost(),
-	wmss->connProxyPort(),
-	wmss->connProxyUser(),
-	wmss->connProxyPass()
+        wmss->selectedCrs(),
+        wmss->connProxyHost(),
+        wmss->connProxyPort(),
+        wmss->connProxyUser(),
+        wmss->connProxyPass()
         );
   }
 }
