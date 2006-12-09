@@ -13,6 +13,8 @@
 SetCompressor zlib
 ; Added by Tim for setting env vars (see this file on disk)
 !include WriteEnvStr.nsh
+;Added by Tim for a macro that will recursively delete the files in the install dir
+!include RecursiveDelete.nsh
 
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"
@@ -85,7 +87,7 @@ ShowUnInstDetails show
 
 Section "MainSection" SEC01
   ;Set the reg key so we get default toolbar layout
-  !include qgis_window_geometry.nsi
+  !include qgis_window_geometry.nsh
   SetOutPath "$INSTDIR"
   SetOverwrite try
 ;------- Qt 
@@ -170,6 +172,7 @@ Function un.onInit
   Abort
 FunctionEnd
 
+
 Section Uninstall
   # remove the variable
   Push PROJ_LIB
@@ -178,15 +181,7 @@ Section Uninstall
   !insertmacro MUI_STARTMENU_GETFOLDER "Application" $ICONS_GROUP
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
-  Delete "$INSTDIR\*.exe"
-  Delete "$INSTDIR\*.dll"
-  Delete "$INSTDIR\*.csv"
-;----------------- subdirs
-  RMDir /r "$INSTDIR/grass"
-  RMDir /r "$INSTDIR/lib"
-  RMDir /r "$INSTDIR/share"
-  RMDir /r "$INSTDIR/nad"
-  RMDir /r "$INSTDIR/msys"
+
 ;----------------- icons and shortcuts
   Delete "$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\Website.lnk"
@@ -194,7 +189,11 @@ Section Uninstall
   Delete "$SMPROGRAMS\$ICONS_GROUP\Quantum GIS.lnk"
   RMDir "$SMPROGRAMS\$ICONS_GROUP"
 
-  ;RMDir "$INSTDIR\plugins"
+;----------------- The application dir gets zapped next ...  
+  ;I added this recursive delte implementation because
+  ; RM -R wasnt working properly
+  Push "$INSTDIR"
+  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\"
   RMDir "$INSTDIR"
 
 
@@ -202,3 +201,4 @@ Section Uninstall
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
   SetAutoClose true
 SectionEnd
+
