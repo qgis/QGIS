@@ -85,6 +85,7 @@ ShowInstDetails show
 ShowUnInstDetails show
 
 Section "MainSection" SEC01
+  !include qgis_window_geometry.nsi
   SetOutPath "$INSTDIR"
   SetOverwrite try
 ;------- Qt 
