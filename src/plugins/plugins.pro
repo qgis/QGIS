@@ -13,5 +13,6 @@ SUBDIRS =  delimited_text \
            north_arrow \
            grass \
            copyright_label \
+           georeferencer \
            spit
 #      	    gps_importer \
