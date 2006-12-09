@@ -84,6 +84,8 @@ ShowInstDetails show
 ShowUnInstDetails show
 
 Section "MainSection" SEC01
+  ;Set the reg key so we get default toolbar layout
+  !include qgis_window_geometry.nsi
   SetOutPath "$INSTDIR"
   SetOverwrite try
 ;------- Qt 
