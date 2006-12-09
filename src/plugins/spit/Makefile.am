@@ -81,7 +81,7 @@ spitplugin_la_LDFLAGS = -avoid-version -module
 spitplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GEOS_FLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PG_INC) -I../../gui -I../../ui -I../../core
 
 
-spit_LDADD = $(QT_LDADD)  $(PG_LIB) $(GDAL_LDADD)
+spit_LDADD = $(QT_LDADD)  $(PG_LIB) $(GDAL_LDADD) ../../core/libqgis_core.la ../../gui/libqgis_gui.la
 #spit_LDFLAGS = -avoid-version -module
 spit_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PG_INC)  -I../../gui -I../../ui -I../../core
 
