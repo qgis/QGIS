@@ -14,5 +14,6 @@ SUBDIRS =  delimited_text \
            grass \
            copyright_label \
            georeferencer \
+           geoprocessing \
            spit
 #      	    gps_importer \
