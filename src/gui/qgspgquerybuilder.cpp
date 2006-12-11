@@ -18,6 +18,7 @@
 #include <QMessageBox>
 #include "qgspgquerybuilder.h"
 #include <qgslogger.h>
+#include <QRegExp>
 // default constructor
 QgsPgQueryBuilder::QgsPgQueryBuilder(QWidget *parent, Qt::WFlags fl)
 : QDialog(parent, fl)
@@ -82,12 +83,14 @@ QgsPgQueryBuilder::QgsPgQueryBuilder(QString tableName, PGconn *con,
     .arg(PQdb(mPgConnection))
     .arg(PQhost(mPgConnection))
     .arg(PQuser(mPgConnection));
-
   // populate minimum uri fields needed for the populate fields function
-  QStringList parts = QStringList::split(".", tableName); // table name contains table and schema
-  mUri->schema = parts[0];
+  QRegExp reg("\"(.+)\"\\.\"(.+)\"");
+  reg.indexIn(tableName);
+  QStringList parts = reg.capturedTexts(); // table name contains table and schema
+  mUri->schema = parts[1];
   // strip whitespace to make sure the table name is clean
-  mUri->table = parts[1].stripWhiteSpace();
+  mUri->table = parts[2];
+
   // and strip any quotation as this code does it's own quoting.
   trimQuotation();
 
@@ -175,6 +178,9 @@ void QgsPgQueryBuilder::trimQuotation()
 
 void QgsPgQueryBuilder::on_btnSampleValues_clicked()
 {
+  if (lstFields->currentText().isEmpty())
+      return;
+
   QString sql = "SELECT DISTINCT \"" + lstFields->currentText() + "\" " +
       "FROM (SELECT \"" + lstFields->currentText() + "\" " +
       "FROM \"" + mUri->schema + "\".\"" + mUri->table + "\" " +
@@ -214,6 +220,9 @@ void QgsPgQueryBuilder::on_btnSampleValues_clicked()
 
 void QgsPgQueryBuilder::on_btnGetAllValues_clicked()
 {
+  if (lstFields->currentText().isEmpty())
+      return;
+
   QString sql = "select distinct \"" + lstFields->currentText() 
     + "\" from \"" + mUri->schema + "\".\"" + mUri->table + "\" order by \"" + lstFields->currentText() + "\"";
   // clear the values list 
