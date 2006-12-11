@@ -15,5 +15,7 @@ SUBDIRS =  delimited_text \
            copyright_label \
            georeferencer \
            geoprocessing \
-           spit
-#      	    gps_importer \
+           spit \
+           gps_importer 
+#\
+ #          wfs
