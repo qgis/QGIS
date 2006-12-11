@@ -24,11 +24,11 @@ CONFIG(debug, debug|release){
 
 LIBS += $${GEOSLIBADD}
 LIBS += $${QGISCORELIBADD}
+INCLUDEPATH += $${GEOSINCADD}
 
 DESTDIR=$${QGISPROVIDERDIR}
 QT += qt3support svg core gui xml network
 message("Building libs into $${DESTDIR}")
 
-CONFIG += qt dll thread debug rtti
 HEADERS += qgswfsprovider.h
 SOURCES += qgswfsprovider.cpp 
