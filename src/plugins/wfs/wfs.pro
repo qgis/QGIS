@@ -27,8 +27,8 @@ LIBS += $${QGISGUILIBADD}
 DESTDIR=$${QGISPLUGINDIR}
 QT += qt3support svg core gui xml network
 message("Building libs into $${DESTDIR}")
+INCLUDEPATH += $${GEOSINCADD}
 
-CONFIG += qt dll thread debug rtti
 HEADERS += qgswfsplugin.h \
            qgswfssourceselect.h 
 FORMS +=  qgswfssourceselectbase.ui
