@@ -16,6 +16,5 @@ SUBDIRS =  delimited_text \
            georeferencer \
            geoprocessing \
            spit \
-           gps_importer 
-#\
- #          wfs
+           gps_importer \
+           wfs
