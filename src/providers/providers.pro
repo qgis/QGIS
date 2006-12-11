@@ -10,4 +10,4 @@
 # 
 #################################################################
 TEMPLATE = subdirs
-SUBDIRS =  ogr delimitedtext grass postgres wms
+SUBDIRS =  ogr delimitedtext grass postgres wms wfs
