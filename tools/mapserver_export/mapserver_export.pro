@@ -4,7 +4,7 @@
 
 include(../../settings.pro)
 TEMPLATE = app
-TARGET = ms_export
+TARGET = msexport
 DEPENDPATH += .
 INCLUDEPATH += . $${PYTHONINCLUDE}
 LIBS += $${PYTHONLIBADD}
