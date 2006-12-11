@@ -270,7 +270,7 @@ QString QgsMeasure::formatDistance(double distance)
 QString QgsMeasure::formatArea(double area)
 {
   QString txt;
-  if (area < 1000)
+  if (area < 10000)
   {
     txt = QString::number(area,'f',0);
     txt += " m2";
