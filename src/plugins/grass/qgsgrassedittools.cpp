@@ -94,6 +94,7 @@ void QgsGrassEditNewPoint::mouseClick(QgsPoint & point, Qt::ButtonState button)
 
     if ( e->mAttributes ) 
     {
+        e->mAttributes->setLine ( line );
         e->mAttributes->clear();
     }
     else
@@ -193,6 +194,7 @@ void QgsGrassEditNewLine::mouseClick(QgsPoint & point, Qt::ButtonState button)
 
 	if ( e->mAttributes ) 
 	{
+            e->mAttributes->setLine ( line );
 	    e->mAttributes->clear();
 	}
 	else
@@ -799,6 +801,7 @@ void QgsGrassEditAttributes::mouseClick(QgsPoint & point, Qt::ButtonState button
 
   if ( e->mAttributes ) 
   {
+      e->mAttributes->setLine ( 0 );
       e->mAttributes->clear();
       e->mAttributes->raise();
   }
@@ -811,6 +814,10 @@ void QgsGrassEditAttributes::mouseClick(QgsPoint & point, Qt::ButtonState button
     if ( !e->mAttributes ) 
     {
         e->mAttributes = new QgsGrassAttributes ( e, e->mProvider, e->mSelectedLine, e->mQgisApp );
+    }
+    else
+    {
+      e->mAttributes->setLine ( e->mSelectedLine );
     }
     for ( int i = 0; i < e->mCats->n_cats; i++ ) {
       e->addAttributes ( e->mCats->field[i], e->mCats->cat[i] );
