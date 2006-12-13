@@ -456,6 +456,7 @@ QString QgsGrassModelItem::uri ()
 
 QgsGrassModelItem *QgsGrassModelItem::child ( int i ) 
 {
+    Q_ASSERT(i >= 0 );
     Q_ASSERT(i < mChildren.size());
     //return &(mChildren[i]);
     return mChildren[i];
@@ -592,7 +593,7 @@ void QgsGrassModel::addItems(QgsGrassModelItem *item, QStringList list, int type
 	
 	if ( insertAt >= 0 )
 	{
-	    std::cerr << "-> add " << name.ascii() << std::endl;
+	    std::cerr << "insert " << name.ascii() << " at " << insertAt << std::endl;
 	    beginInsertRows( index, insertAt, insertAt );
 	    QgsGrassModelItem *newItem = new QgsGrassModelItem();
 	    item->mChildren.insert( insertAt, newItem );
@@ -739,6 +740,12 @@ QModelIndex QgsGrassModel::index( int row, int column,
 {
     //std::cerr << "QgsGrassModel::index row = " << row 
     //                      << " column = " << column << std::endl;
+
+    // It is strange(?) but Qt can call this method with row < 0
+    // for example if beginInsertRows(,0,0) is called and the first
+    // item was previously deleted => check if row < 0
+    // and return empty QModelIndex, but is it correct?
+    if ( row < 0 ) return QModelIndex ();    
     
     QgsGrassModelItem *item;
     if (!parent.isValid()) { 
