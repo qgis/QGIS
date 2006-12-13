@@ -22,10 +22,6 @@
 #include "ui_qgssinglesymboldialogbase.h"
 #include <vector>
 
-#ifdef Q_WS_WIN
-#include <QWindowsStyle>
-#endif
-
 class QgsSymbol;
 class QgsVectorLayer;
 
@@ -73,12 +69,6 @@ private:
 
     /** vector of marker names for combo items */
     std::vector<QString> mMarkers;
-
-#ifdef Q_WS_WIN
-    //! Holds the classic Windows style that is used to render labels with a background color
-    QWindowsStyle mWindowsStyle;
-#endif
-
 
 signals:
     void settingsChanged();

@@ -65,13 +65,6 @@ QgsContinuousColorDialog::QgsContinuousColorDialog(QgsVectorLayer * layer)
 	return;
     }
 
-// new Qt4 idiom
-#ifdef Q_WS_WIN
-        // Coloured buttons do not work under the Windows XP style - use plain Windows instead
-        btnMinValue->setStyle(&mWindowsStyle);
-        btnMaxValue->setStyle(&mWindowsStyle);
-#endif
-
     //restore the correct colors for minimum and maximum values
 
     const QgsContinuousColorRenderer* renderer = dynamic_cast < const QgsContinuousColorRenderer * >(layer->renderer());;
@@ -98,23 +91,15 @@ QgsContinuousColorDialog::QgsContinuousColorDialog(QgsVectorLayer * layer)
 	const QgsSymbol* maxsymbol = renderer->maximumSymbol();
 
 	if (mVectorLayer->vectorType() == QGis::Line || mVectorLayer->vectorType() == QGis::Point)
-        {
-// old Qt3 idiom
-//          lblMinValue->setPaletteBackgroundColor(minsymbol->pen().color());
-//          lblMaxValue->setPaletteBackgroundColor(maxsymbol->pen().color());
-// new Qt4 idiom
-          btnMinValue->setPalette( minsymbol->pen().color() );
-          btnMaxValue->setPalette( maxsymbol->pen().color() );
+    {
+        btnMinValue->setColor( minsymbol->pen().color() );
+        btnMaxValue->setColor( maxsymbol->pen().color() );
 	}
 	else
-        {
-// old Qt3 idiom
-//          lblMinValue->setPaletteBackgroundColor(minsymbol->brush().color());
-//          lblMaxValue->setPaletteBackgroundColor(maxsymbol->brush().color());
-// new Qt4 idiom
-          btnMinValue->setPalette( minsymbol->brush().color() );
-          btnMaxValue->setPalette( maxsymbol->brush().color() );
-        }
+    {
+        btnMinValue->setColor( minsymbol->brush().color() );
+        btnMaxValue->setColor( maxsymbol->brush().color() );
+    }
 
 	outlinewidthspinbox->setMinValue(0);
 	outlinewidthspinbox->setValue(minsymbol->pen().width());
@@ -133,8 +118,8 @@ QgsContinuousColorDialog::QgsContinuousColorDialog(QgsVectorLayer * layer)
       if (mVectorLayer->vectorType() != QGis::Polygon)
         cb_polygonOutline->setVisible(false);
 
-      btnMinValue->setPalette(Qt::black);
-      btnMaxValue->setPalette(Qt::white);
+      btnMinValue->setColor(Qt::black);
+      btnMaxValue->setColor(Qt::white);
 
     }
     // Ensure that the state of other widgets is appropriate for the
@@ -189,22 +174,22 @@ void QgsContinuousColorDialog::apply()
     QgsSymbol* minsymbol = new QgsSymbol(mVectorLayer->vectorType(), QString::number(minimum, 'f'), "", "");
     if (mVectorLayer->vectorType() == QGis::Line || mVectorLayer->vectorType() == QGis::Point)
     {
-	minsymbol->setPen(QPen(btnMinValue->paletteBackgroundColor(),outlinewidthspinbox->value()));
+	minsymbol->setPen(QPen(btnMinValue->color(), outlinewidthspinbox->value()));
     } 
     else
     {
-	minsymbol->setBrush(QBrush(btnMinValue->paletteBackgroundColor()));
+	minsymbol->setBrush(QBrush(btnMinValue->color()));
         minsymbol->setPen(QPen(QColor(0, 0, 0), outlinewidthspinbox->value()));
     }
     
     QgsSymbol* maxsymbol = new QgsSymbol(mVectorLayer->vectorType(), QString::number(maximum, 'f'), "", "");
     if (mVectorLayer->vectorType() == QGis::Line || mVectorLayer->vectorType() == QGis::Point)
     {
-	maxsymbol->setPen(QPen(btnMaxValue->paletteBackgroundColor(),outlinewidthspinbox->value()));
+	maxsymbol->setPen(QPen(btnMaxValue->color(), outlinewidthspinbox->value()));
     } 
     else
     {
-	maxsymbol->setBrush(QBrush(btnMaxValue->paletteBackgroundColor()));
+	maxsymbol->setBrush(QBrush(btnMaxValue->color()));
 	maxsymbol->setPen(QPen(QColor(0, 0, 0), outlinewidthspinbox->value()));
     }
   
@@ -222,26 +207,20 @@ void QgsContinuousColorDialog::apply()
 
 void QgsContinuousColorDialog::selectMinimumColor()
 {
-    QColor mincolor = QColorDialog::getColor(btnMinValue->paletteBackgroundColor(), this);
+    QColor mincolor = QColorDialog::getColor(btnMinValue->color(), this);
     if(mincolor.isValid())
     {
-// old Qt3 idiom
-//      lblMinValue->setPaletteBackgroundColor(mincolor);
-// new Qt4 idiom
-      btnMinValue->setPalette(mincolor);
+      btnMinValue->setColor(mincolor);
     }
     setActiveWindow();
 }
 
 void QgsContinuousColorDialog::selectMaximumColor()
 {
-    QColor maxcolor = QColorDialog::getColor(btnMaxValue->paletteBackgroundColor(), this);
+    QColor maxcolor = QColorDialog::getColor(btnMaxValue->color(), this);
     if(maxcolor.isValid())
     {
-// old Qt3 idiom
-//      lblMaxValue->setPaletteBackgroundColor(maxcolor);
-// new Qt4 idiom
-      btnMaxValue->setPalette(maxcolor);
+      btnMaxValue->setColor(maxcolor);
     }
     setActiveWindow();
 }

@@ -76,10 +76,11 @@ libqgis_guiHEADERS =							\
 		qgsattributetable.h				\
 		qgsbookmarks.h			\
 		qgsclipboard.h				\
+		qgscolorbutton.h				\
 		qgscontinuouscolordialog.h				\
 		qgscontinuouscolorrenderer.h			\
-		qgscsexception.h				\
 		qgscoordinatetransform.h	\
+		qgscsexception.h				\
 		qgscustomprojectiondialog.h			\
 		qgscursors.h			\
 		qgsdelattrdialog.h				\
@@ -199,13 +200,14 @@ libqgis_gui_la_SOURCES =						\
 		qgisinterface.cpp	\
 		qgsabout.cpp		\
 		qgsaddattrdialog.cpp		\
-	  qgsattributeaction.cpp				\
+		qgsattributeaction.cpp				\
 		qgsattributeactiondialog.cpp	\
 		qgsattributedialog.cpp		\
 		qgsattributetable.cpp		\
 		qgsattributetabledisplay.cpp	\
 		qgsbookmarks.cpp	\
 		qgsclipboard.cpp		\
+		qgscolorbutton.cpp		\
 		qgscontinuouscolordialog.cpp		\
 		qgscoordinatetransform.cpp			\
 		qgscontinuouscolorrenderer.cpp		\

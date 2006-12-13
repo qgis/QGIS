@@ -1,14 +1,11 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsContinuousColorDialogBase</class>
  <widget class="QDialog" name="QgsContinuousColorDialogBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>408</width>
+    <width>425</width>
     <height>155</height>
    </rect>
   </property>
@@ -81,21 +78,12 @@
     </widget>
    </item>
    <item row="2" column="1" >
-    <widget class="QToolButton" name="btnMaxValue" >
+    <widget class="QgsColorButton" name="btnMaxValue" >
      <property name="minimumSize" >
       <size>
        <width>100</width>
-       <height>22</height>
+       <height>0</height>
       </size>
-     </property>
-     <property name="maximumSize" >
-      <size>
-       <width>100</width>
-       <height>22</height>
-      </size>
-     </property>
-     <property name="text" >
-      <string/>
      </property>
     </widget>
    </item>
@@ -116,21 +104,12 @@
     </widget>
    </item>
    <item row="1" column="1" >
-    <widget class="QToolButton" name="btnMinValue" >
+    <widget class="QgsColorButton" name="btnMinValue" >
      <property name="minimumSize" >
       <size>
        <width>100</width>
-       <height>22</height>
+       <height>0</height>
       </size>
-     </property>
-     <property name="maximumSize" >
-      <size>
-       <width>100</width>
-       <height>22</height>
-      </size>
-     </property>
-     <property name="text" >
-      <string/>
      </property>
     </widget>
    </item>
@@ -148,6 +127,13 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

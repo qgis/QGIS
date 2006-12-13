@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>576</width>
+    <width>590</width>
     <height>454</height>
    </rect>
   </property>
@@ -154,11 +154,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QToolButton" name="pbnSelectionColour" >
+           <widget class="QgsColorButton" name="pbnSelectionColour" >
             <property name="minimumSize" >
              <size>
               <width>100</width>
-              <height>22</height>
+              <height>0</height>
              </size>
             </property>
             <property name="text" >
@@ -190,11 +190,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QToolButton" name="pbnCanvasColor" >
+           <widget class="QgsColorButton" name="pbnCanvasColor" >
             <property name="minimumSize" >
              <size>
               <width>100</width>
-              <height>22</height>
+              <height>0</height>
              </size>
             </property>
             <property name="text" >
@@ -797,6 +797,13 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
+ <customwidgets>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>btnFindBrowser</tabstop>

@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>413</width>
-    <height>453</height>
+    <height>486</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -554,17 +554,11 @@
        </widget>
       </item>
       <item row="0" column="3" >
-       <widget class="QToolButton" name="btnOutlineColor" >
+       <widget class="QgsColorButton" name="btnOutlineColor" >
         <property name="minimumSize" >
          <size>
           <width>100</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="maximumSize" >
-         <size>
-          <width>100</width>
-          <height>22</height>
+          <height>0</height>
          </size>
         </property>
         <property name="text" >
@@ -573,25 +567,11 @@
        </widget>
       </item>
       <item row="2" column="3" >
-       <widget class="QToolButton" name="btnFillColor" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>4</hsizetype>
-          <vsizetype>1</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+       <widget class="QgsColorButton" name="btnFillColor" >
         <property name="minimumSize" >
          <size>
           <width>100</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="maximumSize" >
-         <size>
-          <width>100</width>
-          <height>22</height>
+          <height>0</height>
          </size>
         </property>
         <property name="text" >
@@ -958,6 +938,13 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mLabelEdit</tabstop>
   <tabstop>mPointSymbolComboBox</tabstop>

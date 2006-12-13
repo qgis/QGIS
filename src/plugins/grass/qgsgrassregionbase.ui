@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsGrassRegionBase</class>
  <widget class="QWidget" name="QgsGrassRegionBase" >
   <property name="geometry" >
@@ -369,22 +366,8 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="mColorButton" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>0</hsizetype>
-          <vsizetype>0</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+       <widget class="QgsColorButton" name="mColorButton" >
         <property name="minimumSize" >
-         <size>
-          <width>35</width>
-          <height>25</height>
-         </size>
-        </property>
-        <property name="maximumSize" >
          <size>
           <width>35</width>
           <height>25</height>
@@ -437,13 +420,13 @@
      <property name="minimumSize" >
       <size>
        <width>0</width>
-       <height>35</height>
+       <height>38</height>
       </size>
      </property>
      <property name="maximumSize" >
       <size>
        <width>32767</width>
-       <height>35</height>
+       <height>38</height>
       </size>
      </property>
      <property name="frameShape" >
@@ -531,10 +514,14 @@
  <customwidgets>
   <customwidget>
    <class>Q3Frame</class>
-   <extends></extends>
+   <extends>QFrame</extends>
    <header>Qt3Support/Q3Frame</header>
    <container>1</container>
-   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
