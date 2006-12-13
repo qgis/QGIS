@@ -251,6 +251,9 @@ this item may be moved back to the original position with resetToInitialPosition
   /**Checks mPixmapWidthValues and mPixmapHeightValues and sets a new icon size if necessary*/
   void adjustIconSize();
 
+  /**This function compares the layer order before a drag with the current layer ordering and triggers a canvas repaint if it has changed*/
+  bool checkLayerOrderUpdate();
+
   private slots:
 
   /**Calls 'handleRightClickEvent' on the item*/

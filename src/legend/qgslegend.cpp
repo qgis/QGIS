@@ -286,7 +286,8 @@ void QgsLegend::mouseReleaseEvent(QMouseEvent * e)
 
       if(!dest || !origin)
       {
-	  return;
+	checkLayerOrderUpdate();
+	return;
       }
 
       if(dest && origin && getItemPos(dest) != mItemBeingMovedOrigPos)
@@ -348,13 +349,7 @@ void QgsLegend::mouseReleaseEvent(QMouseEvent * e)
 		origLayer->setLegend((QgsLegend*)(dynamic_cast<QgsLegendItem*>(dest->parent())->nextSibling()));
 	      }
 	  }
-	
-	 std::deque<QString> layersAfterRelease = layerIDs(); //test if canvas redraw is really necessary
-   if(layersAfterRelease != mLayersPriorToMove)
-   {
-     // z-order has changed - update layer set
-     updateMapCanvasLayerSet();
-   }
+	checkLayerOrderUpdate();
       }
   }
   mMousePressedFlag = false;
@@ -1744,4 +1739,17 @@ void QgsLegend::zoomToLayerExtent()
   mMapCanvas->setExtent(QgsRect(xmin, ymin, xmax, ymax));
   mMapCanvas->render();
   mMapCanvas->refresh();
+}
+
+
+bool QgsLegend::checkLayerOrderUpdate()
+{
+  std::deque<QString> layersAfterRelease = layerIDs(); //test if canvas redraw is really necessary
+  if(layersAfterRelease != mLayersPriorToMove)
+    {
+      // z-order has changed - update layer set
+      updateMapCanvasLayerSet();
+      return true;
+    }
+  return false;
 }
