@@ -41,14 +41,13 @@ void QgsScaleBarPluginGui::on_pbnOK_clicked()
   emit changeSnapping(chkSnapping->isChecked());
   emit changeEnabled(chkEnable->isChecked());
   emit changeStyle(cboStyle->currentItem());
-  emit changeColour(pbnChangeColour->palette().color(QPalette::Button));
+  emit changeColour(pbnChangeColour->color());
   emit refreshCanvas();
   done(1);
 } 
 void QgsScaleBarPluginGui::on_pbnChangeColour_clicked()
 {
-  QColor colour = QColorDialog::getColor(
-		   pbnChangeColour->palette().color(QPalette::Button), this);
+  QColor colour = QColorDialog::getColor(pbnChangeColour->color(), this);
   
   if (colour.isValid())
     setColour(colour);
@@ -96,7 +95,5 @@ void QgsScaleBarPluginGui::setStyle(int styleIndex)
 
 void QgsScaleBarPluginGui::setColour(QColor theQColor)
 {
-  QPalette palette;
-  palette.setColor(QPalette::Button, theQColor);
-  pbnChangeColour->setPalette(palette);
+  pbnChangeColour->setColor(theQColor);
 }

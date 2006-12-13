@@ -23,10 +23,6 @@
 #include "ui_qgscontinuouscolordialogbase.h"
 #include <map>
 
-#ifdef Q_WS_WIN
-#include <QWindowsStyle>
-#endif
-
 class QgsVectorLayer;
 
 
@@ -55,11 +51,6 @@ class QgsContinuousColorDialog: public QDialog, private Ui::QgsContinuousColorDi
  private:
     /** Default constructor is private, do not use this */
     QgsContinuousColorDialog();
-
-#ifdef Q_WS_WIN
-    //! Holds the classic Windows style that is used to render labels with a background color
-    QWindowsStyle mWindowsStyle;
-#endif
 
 };
 

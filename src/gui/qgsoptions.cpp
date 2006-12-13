@@ -115,27 +115,13 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   int myRed = settings.value("/qgis/default_selection_color_red",255).toInt();
   int myGreen = settings.value("/qgis/default_selection_color_green",255).toInt();
   int myBlue = settings.value("/qgis/default_selection_color_blue",0).toInt();
-// old Qt3 idiom
-//  pbnSelectionColour->setPaletteBackgroundColor(QColor(myRed,myGreen,myBlue));
-// new Qt4 idiom - see http://lists.trolltech.com/qt4-preview-feedback/2005-04/thread00270-0.html for reasoning
-#ifdef Q_WS_WIN
-  // Coloured buttons do not work under the Windows XP style - use plain Windows instead
-  pbnSelectionColour->setStyle(&mWindowsStyle);
-#endif
-  pbnSelectionColour->setPalette( QColor(myRed,myGreen,myBlue) );
+  pbnSelectionColour->setColor( QColor(myRed,myGreen,myBlue) );
 
   //set the default color for canvas background
   myRed = settings.value("/qgis/default_canvas_color_red",255).toInt();
   myGreen = settings.value("/qgis/default_canvas_color_green",255).toInt();
   myBlue = settings.value("/qgis/default_canvas_color_blue",255).toInt();
-// old Qt3 idiom
-//  pbnCanvasColor->setPaletteBackgroundColor(QColor(myRed,myGreen,myBlue));
-// new Qt4 idiom - see http://lists.trolltech.com/qt4-preview-feedback/2005-04/thread00270-0.html for reasoning
-#ifdef Q_WS_WIN
-  // Coloured buttons do not work under the Windows XP style - use plain Windows instead
-  pbnCanvasColor->setStyle(&mWindowsStyle);
-#endif
-  pbnCanvasColor->setPalette( QColor(myRed,myGreen,myBlue) );
+  pbnCanvasColor->setColor( QColor(myRed,myGreen,myBlue) );
 
   capitaliseCheckBox->setChecked(settings.value("qgis/capitaliseLayerName", QVariant(false)).toBool());
   
@@ -150,33 +136,19 @@ QgsOptions::~QgsOptions(){}
 
 void QgsOptions::on_pbnSelectionColour_clicked()
 {
-// old Qt3 idiom
-//  QColor color = QColorDialog::getColor(pbnSelectionColour->paletteBackgroundColor(),this);
-// new Qt4 idiom
-  QPalette palSelectionColour = pbnSelectionColour->palette();
-  QColor color = QColorDialog::getColor( palSelectionColour.color(QPalette::Window), this );
+  QColor color = QColorDialog::getColor(pbnSelectionColour->color(), this);
   if (color.isValid())
   {
-// old Qt3 idiom
-//    pbnSelectionColour->setPaletteBackgroundColor(color);
-// new Qt4 idiom - see http://lists.trolltech.com/qt4-preview-feedback/2005-04/thread00270-0.html for reasoning
-    pbnSelectionColour->setPalette(color);
+    pbnSelectionColour->setColor(color);
   }
 }
 
 void QgsOptions::on_pbnCanvasColor_clicked()
 {
-// old Qt3 idiom
-//   QColor color = QColorDialog::getColor(pbnCanvasColor->paletteBackgroundColor(),this);
-// new Qt4 idiom
-  QPalette palCanvasColor = pbnCanvasColor->palette();
-  QColor color = QColorDialog::getColor( palCanvasColor.color(QPalette::Window), this );
+  QColor color = QColorDialog::getColor(pbnCanvasColor->color(), this);
   if (color.isValid())
   {
-// old Qt3 idiom
-//     pbnCanvasColor->setPaletteBackgroundColor(color);
-// new Qt4 idiom - see http://lists.trolltech.com/qt4-preview-feedback/2005-04/thread00270-0.html for reasoning
-    pbnCanvasColor->setPalette(color);
+    pbnCanvasColor->setColor(color);
   }
 }
 void QgsOptions::themeChanged(const QString &newThemeName)
@@ -231,19 +203,13 @@ void QgsOptions::saveOptions()
   settings.writeEntry("/qgis/measure/ellipsoid", getEllipsoidAcronym(cmbEllipsoid->currentText()));
 
   //set the colour for selections
-// old Qt3 idiom
-//   QColor myColor = pbnSelectionColour->paletteBackgroundColor();
-// new Qt4 idiom
-  QColor myColor = pbnSelectionColour->palette().color(QPalette::Window);
+  QColor myColor = pbnSelectionColour->color();
   int myRed = settings.writeEntry("/qgis/default_selection_color_red",myColor.red());
   int myGreen = settings.writeEntry("/qgis/default_selection_color_green",myColor.green());
   int myBlue = settings.writeEntry("/qgis/default_selection_color_blue",myColor.blue());
 
   //set the default color for canvas background
-// old Qt3 idiom
-//   myColor = pbnCanvasColor->paletteBackgroundColor();
-// new Qt4 idiom
-  myColor = pbnCanvasColor->palette().color(QPalette::Window);
+  myColor = pbnCanvasColor->color();
   myRed = settings.writeEntry("/qgis/default_canvas_color_red",myColor.red());
   myGreen = settings.writeEntry("/qgis/default_canvas_color_green",myColor.green());
   myBlue = settings.writeEntry("/qgis/default_canvas_color_blue",myColor.blue());

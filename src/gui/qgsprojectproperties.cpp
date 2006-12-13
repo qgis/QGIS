@@ -106,14 +106,7 @@
   int myGreenInt = QgsProject::instance()->readNumEntry("Digitizing","/LineColorGreenPart",0);
   int myBlueInt = QgsProject::instance()->readNumEntry("Digitizing","/LineColorBluePart",0);
   QColor myColour = QColor(myRedInt,myGreenInt,myBlueInt);
-// old Qt3 idiom
-//   pbnDigitisedLineColour->setPaletteBackgroundColor (myColour);
-// new Qt4 idiom - see http://lists.trolltech.com/qt4-preview-feedback/2005-04/thread00270-0.html for reasoning
-#ifdef Q_WS_WIN
-  // Coloured buttons do not work under the Windows XP style - use plain Windows instead
-  pbnDigitisedLineColour->setStyle(&mWindowsStyle);
-#endif
-  pbnDigitisedLineColour->setPalette(myColour);
+  pbnDigitisedLineColour->setColor(myColour);
 
 
   //get the colour selections and set the button colour accordingly
@@ -121,28 +114,14 @@
   myGreenInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorGreenPart",255);
   myBlueInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorBluePart",0);
   myColour = QColor(myRedInt,myGreenInt,myBlueInt);
-// old Qt3 idiom
-//   pbnSelectionColour->setPaletteBackgroundColor (myColour);
-// new Qt4 idiom - see http://lists.trolltech.com/qt4-preview-feedback/2005-04/thread00270-0.html for reasoning
-#ifdef Q_WS_WIN
-  // Coloured buttons do not work under the Windows XP style - use plain Windows instead
-  pbnSelectionColour->setStyle(&mWindowsStyle);
-#endif
-  pbnSelectionColour->setPalette(myColour);
+  pbnSelectionColour->setColor(myColour);
 
   //get the colour for map canvas background and set button colour accordingly (default white)
   myRedInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorRedPart",255);
   myGreenInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorGreenPart",255);
   myBlueInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorBluePart",255);
   myColour = QColor(myRedInt,myGreenInt,myBlueInt);
-// old Qt3 idiom
-//   pbnCanvasColor->setPaletteBackgroundColor (myColour);
-// new Qt4 idiom - see http://lists.trolltech.com/qt4-preview-feedback/2005-04/thread00270-0.html for reasoning
-#ifdef Q_WS_WIN
-  // Coloured buttons do not work under the Windows XP style - use plain Windows instead
-  pbnCanvasColor->setStyle(&mWindowsStyle);
-#endif
-  pbnCanvasColor->setPalette(myColour);
+  pbnCanvasColor->setColor(myColour);
 }
 
 QgsProjectProperties::~QgsProjectProperties()
@@ -287,29 +266,20 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry("Digitizing","/LineWidth",spinDigitisedLineWidth->value());
 
   //set the colour of digitising lines
-// old Qt3 idiom
-//   QColor myColour = pbnDigitisedLineColour->paletteBackgroundColor();
-// new Qt4 idiom
-  QColor myColour = pbnDigitisedLineColour->palette().color(QPalette::Window);
+  QColor myColour = pbnDigitisedLineColour->color();
   QgsProject::instance()->writeEntry("Digitizing","/LineColorRedPart",myColour.red());
   QgsProject::instance()->writeEntry("Digitizing","/LineColorGreenPart",myColour.green());
   QgsProject::instance()->writeEntry("Digitizing","/LineColorBluePart",myColour.blue());
 
   //set the colour for selections
-// old Qt3 idiom
-//   myColour = pbnSelectionColour->paletteBackgroundColor();
-// new Qt4 idiom
-  myColour = pbnSelectionColour->palette().color(QPalette::Window);
+  myColour = pbnSelectionColour->color();
   QgsProject::instance()->writeEntry("Gui","/SelectionColorRedPart",myColour.red());
   QgsProject::instance()->writeEntry("Gui","/SelectionColorGreenPart",myColour.green());
   QgsProject::instance()->writeEntry("Gui","/SelectionColorBluePart",myColour.blue()); 
   QgsRenderer::mSelectionColor=myColour;
 
   //set the colour for canvas
-// old Qt3 idiom
-//   myColour = pbnCanvasColor->paletteBackgroundColor();
-// new Qt4 idiom
-  myColour = pbnCanvasColor->palette().color(QPalette::Window);
+  myColour = pbnCanvasColor->color();
   QgsProject::instance()->writeEntry("Gui","/CanvasColorRedPart",myColour.red());
   QgsProject::instance()->writeEntry("Gui","/CanvasColorGreenPart",myColour.green());
   QgsProject::instance()->writeEntry("Gui","/CanvasColorBluePart",myColour.blue()); 
@@ -336,50 +306,28 @@ void QgsProjectProperties::showProjectionsTab()
 
 void QgsProjectProperties::on_pbnDigitisedLineColour_clicked()
 {
-// old Qt3 idiom
-//   QColor color = QColorDialog::getColor(pbnDigitisedLineColour->paletteBackgroundColor(),this);
-// new Qt4 idiom
-  QPalette palDigitisedLineColour = pbnDigitisedLineColour->palette();
-  QColor color = QColorDialog::getColor( palDigitisedLineColour.color(QPalette::Window), this );
+  QColor color = QColorDialog::getColor( pbnDigitisedLineColour->color(), this );
   if (color.isValid())
   {
-// old Qt3 idiom
-//     pbnDigitisedLineColour->setPaletteBackgroundColor(color);
-// new Qt4 idiom - see http://lists.trolltech.com/qt4-preview-feedback/2005-04/thread00270-0.html for reasoning
-    pbnDigitisedLineColour->setPalette(color);
-
+    pbnDigitisedLineColour->setColor(color);
   }
 }
 
 void QgsProjectProperties::on_pbnSelectionColour_clicked()
 {
-// old Qt3 idiom
-//   QColor color = QColorDialog::getColor(pbnSelectionColour->paletteBackgroundColor(),this);
-// new Qt4 idiom
-  QPalette palSelectionColour = pbnSelectionColour->palette();
-  QColor color = QColorDialog::getColor( palSelectionColour.color(QPalette::Window), this );
+  QColor color = QColorDialog::getColor( pbnSelectionColour->color(), this );
   if (color.isValid())
   {
-// old Qt3 idiom
-//     pbnSelectionColour->setPaletteBackgroundColor(color);
-// new Qt4 idiom - see http://lists.trolltech.com/qt4-preview-feedback/2005-04/thread00270-0.html for reasoning
-    pbnSelectionColour->setPalette(color);
+    pbnSelectionColour->setColor(color);
   }
 }
 
 void QgsProjectProperties::on_pbnCanvasColor_clicked()
 {
-// old Qt3 idiom
-//   QColor color = QColorDialog::getColor(pbnCanvasColor->paletteBackgroundColor(),this);
-// new Qt4 idiom
-  QPalette palCanvasColor = pbnCanvasColor->palette();
-  QColor color = QColorDialog::getColor( palCanvasColor.color(QPalette::Window), this );
+  QColor color = QColorDialog::getColor( pbnCanvasColor->color(), this );
   if (color.isValid())
   {
-// old Qt3 idiom
-//     pbnCanvasColor->setPaletteBackgroundColor(color);
-// new Qt4 idiom - see http://lists.trolltech.com/qt4-preview-feedback/2005-04/thread00270-0.html for reasoning
-    pbnCanvasColor->setPalette(color);
+    pbnCanvasColor->setColor(color);
   }
 }
 void QgsProjectProperties::on_pbnHelp_clicked()

@@ -22,10 +22,6 @@
 #include "qgis.h"
 #include "qgisgui.h"
 
-#ifdef Q_WS_WIN
-#include <QWindowsStyle>
-#endif
-
 class QColor;
 
 /*!  Dialog to set project level properties
@@ -120,11 +116,5 @@ signals:
 
 private:
   static const int context_id = 361087368;
-
-#ifdef Q_WS_WIN
-  //! Holds the classic Windows style that is used to render buttons with a background color
-  QWindowsStyle mWindowsStyle;
-#endif
-
 
 };

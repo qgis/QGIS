@@ -36,7 +36,6 @@
 #include <qpushbutton.h>
 #include <qradiobutton.h>
 #include <q3buttongroup.h>
-#include <qpalette.h>
 #include <qcolordialog.h>
 #include <qspinbox.h>
 #include <qglobal.h>
@@ -223,9 +222,7 @@ QgsGrassRegion::QgsGrassRegion ( QgsGrassPlugin *plugin,  QgisApp *qgisApp, Qgis
 
     // Symbology
     QPen pen = mPlugin->regionPen();
-    QPalette palette = mColorButton->palette();
-    palette.setColor( QColorGroup::Button, pen.color() );
-    mColorButton->setPalette( palette );
+    mColorButton->setColor( pen.color() );
     connect( mColorButton, SIGNAL(clicked()), this, SLOT(changeColor()));
 
     mWidthSpinBox->setValue( pen.width() );
@@ -241,13 +238,13 @@ QgsGrassRegion::QgsGrassRegion ( QgsGrassPlugin *plugin,  QgisApp *qgisApp, Qgis
 void QgsGrassRegion::changeColor ( void ) {
     QPen pen = mPlugin->regionPen();
     QColor color = QColorDialog::getColor ( pen.color(), this );
+    if (color.isValid())
+    {
+      mColorButton->setColor( color );
 
-    QPalette palette = mColorButton->palette();
-    palette.setColor( QColorGroup::Button, pen.color() );
-    mColorButton->setPalette( palette );
-
-    pen.setColor(color);
-    mPlugin->setRegionPen(pen);
+      pen.setColor(color);
+      mPlugin->setRegionPen(pen);
+    }
 }
 
 void QgsGrassRegion::changeWidth ( void ) {

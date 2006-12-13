@@ -1,14 +1,11 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsProjectPropertiesBase</class>
  <widget class="QDialog" name="QgsProjectPropertiesBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>504</width>
+    <width>565</width>
     <height>550</height>
    </rect>
   </property>
@@ -58,11 +55,11 @@
           </property>
           <item row="0" column="0" >
            <widget class="QLineEdit" name="titleEdit" >
+            <property name="toolTip" >
+             <string>Descriptive project name</string>
+            </property>
             <property name="text" >
              <string>Default project title</string>
-            </property>
-            <property name="toolTip">
-              <string>Descriptive project name</string>
             </property>
            </widget>
           </item>
@@ -227,28 +224,20 @@
           </item>
           <item row="0" column="1" >
            <widget class="QSpinBox" name="spinDigitisedLineWidth" >
-            <property name="minimum" >
-             <number>1</number>
-            </property>
             <property name="toolTip" >
              <string>Line width in pixels</string>
+            </property>
+            <property name="minimum" >
+             <number>1</number>
             </property>
            </widget>
           </item>
           <item row="1" column="1" >
-           <widget class="QToolButton" name="pbnDigitisedLineColour" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>5</hsizetype>
-              <vsizetype>5</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
+           <widget class="QgsColorButton" name="pbnDigitisedLineColour" >
             <property name="minimumSize" >
              <size>
               <width>100</width>
-              <height>22</height>
+              <height>0</height>
              </size>
             </property>
             <property name="text" >
@@ -315,19 +304,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QToolButton" name="pbnSelectionColour" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>5</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
+           <widget class="QgsColorButton" name="pbnSelectionColour" >
             <property name="minimumSize" >
              <size>
-              <width>80</width>
-              <height>22</height>
+              <width>100</width>
+              <height>0</height>
              </size>
             </property>
             <property name="text" >
@@ -341,7 +322,7 @@
              <enum>Qt::Horizontal</enum>
             </property>
             <property name="sizeType" >
-             <enum>QSizePolicy::Fixed</enum>
+             <enum>QSizePolicy::Expanding</enum>
             </property>
             <property name="sizeHint" >
              <size>
@@ -362,18 +343,10 @@
            </widget>
           </item>
           <item>
-           <widget class="QToolButton" name="pbnCanvasColor" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>5</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
+           <widget class="QgsColorButton" name="pbnCanvasColor" >
             <property name="minimumSize" >
              <size>
-              <width>80</width>
+              <width>100</width>
               <height>0</height>
              </size>
             </property>
@@ -381,6 +354,19 @@
              <string/>
             </property>
            </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
@@ -419,7 +405,7 @@
         </widget>
        </item>
        <item row="1" column="0" >
-        <widget class="QgsProjectionSelector" name="projectionSelector" />
+        <widget class="QgsProjectionSelector" native="1" name="projectionSelector" />
        </item>
       </layout>
      </widget>
@@ -497,14 +483,17 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
  <customwidgets>
   <customwidget>
    <class>QgsProjectionSelector</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselector.h</header>
    <container>1</container>
-   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
