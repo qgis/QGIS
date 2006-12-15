@@ -50,6 +50,7 @@ HEADERS =							\
 		qgsattributetabledisplay.h			\
 		qgsbookmarks.h					\	
 		qgsclipboard.h					\
+		qgscolorbutton.h				\
 		qgscontinuouscolordialog.h			\
 		qgscontinuouscolorrenderer.h			\
 		qgscsexception.h				\
@@ -76,7 +77,6 @@ HEADERS =							\
 		qgsmaplayerset.h				\
 		qgsmapoverviewcanvas.h				\
 		qgsmaprender.h					\
-		qgsmapserverexport.h				\
 		qgsmaptool.h					\
 		qgsmaptoolcapture.h				\
 		qgsmaptoolidentify.h				\
@@ -150,6 +150,7 @@ SOURCES =					\
 		qgsattributetabledisplay.cpp	\
 		qgsbookmarks.cpp	        \
 		qgsclipboard.cpp		\
+		qgscolorbutton.cpp		\
 		qgscontinuouscolordialog.cpp	\
 		qgscontinuouscolorrenderer.cpp	\
 		qgscursors.cpp		        \
@@ -174,7 +175,6 @@ SOURCES =					\
 		qgsmaplayerset.cpp		\
 		qgsmapoverviewcanvas.cpp	\
 		qgsmaprender.cpp		\
-		qgsmapserverexport.cpp		\
 		qgsmaptool.cpp			\
 		qgsmaptoolcapture.cpp		\
 		qgsmaptoolidentify.cpp		\
