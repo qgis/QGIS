@@ -44,7 +44,7 @@ msexport_UIC = qgsmapserverexportbase.ui
 
 msexport_SOURCES =  qgsmapserverexport.cpp \
 										qgsmapserverexport.h \
-							main.cpp \
+							ms_main.cpp \
 							msexport_wrap.cxx \
 	$(msexport_UI) \
 	$(msexport_UIC) \
