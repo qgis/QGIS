@@ -3239,6 +3239,10 @@ void QgisApp::exportMapServer()
   //{
     QString myMSExportPath = QgsApplication::msexportAppPath(); 
     QProcess *process = new QProcess;
+#ifdef WIN32
+    // quote the application path on windows
+    myMSExportPath = QString("\"") + myMSExportPath + QString("\"");
+#endif
     process->start(myMSExportPath);
 
     // Delete this object if the process terminates
