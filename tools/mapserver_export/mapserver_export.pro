@@ -9,8 +9,9 @@ DEPENDPATH += .
 INCLUDEPATH += . $${PYTHONINCLUDE}
 LIBS += $${PYTHONLIBADD}
 LIBS += $${QGISCORELIBADD}
+LIBS += $${QGISGUILIBADD}
 QT += qt3support svg core gui xml network
 # Input
 HEADERS += qgsmapserverexport.h
 FORMS += qgsmapserverexportbase.ui
-SOURCES += main.cpp msexport_wrap.cxx qgsmapserverexport.cpp
+SOURCES += ms_main.cpp msexport_wrap.cxx qgsmapserverexport.cpp
