@@ -75,7 +75,7 @@ class QgsMapRender : public QObject
     
   signals:
     
-    void setProgress(int current, int total);
+    void drawingProgress(int current, int total);
     
     void updateMap();
 
