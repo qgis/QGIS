@@ -111,9 +111,12 @@ void QgsMapserverExport::on_buttonOk_clicked()
   //TODO Need to append the path to the qgis python files using the path to the
   //     Python files in the QGIS install directory
   PyRun_SimpleString("import sys");
-#if defined(Q_WS_MACX) || defined(Q_WS_WIN32)
   QString prefixPath = QApplication::applicationDirPath();
-  QString dataPath = prefixPath + QString("/share/qgis");
+  // Setup up path to the python script directory based on platform
+#ifdef Q_WS_MACX
+  QString dataPath = prefixPath + "/../../../../share/qgis";
+#elif WIN32
+  QString dataPath = prefixPath + "/share/qgis";
 #else
   QString dataPath ( PKGDATAPATH );
 #endif
