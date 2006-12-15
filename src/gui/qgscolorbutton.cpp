@@ -53,3 +53,9 @@ void QgsColorButton::paintEvent(QPaintEvent *e)
     p.fillRect(r, mColor);
   }
 }
+
+void QgsColorButton::setColor(const QColor &color)
+{
+  mColor = color;
+  update();
+}

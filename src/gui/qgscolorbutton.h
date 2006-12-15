@@ -24,7 +24,7 @@ class QgsColorButton: public QToolButton
     QgsColorButton(QWidget *parent = 0);
     ~QgsColorButton();
 
-    void setColor(const QColor &color) { mColor = color; }
+    void setColor(const QColor &color); 
     QColor color() const { return mColor; }
 
   protected:
