@@ -1061,7 +1061,7 @@ void QgisApp::setupConnections()
   //signal when mouse moved over window (coords display in status bar)
   connect(mMapCanvas, SIGNAL(xyCoordinates(QgsPoint &)), this, SLOT(showMouseCoordinate(QgsPoint &)));
   //signal when mouse in capturePoint mode and mouse clicked on canvas
-  connect(mMapCanvas->mapRender(), SIGNAL(setProgress(int,int)), this, SLOT(showProgress(int,int)));
+  connect(mMapCanvas->mapRender(), SIGNAL(drawingProgress(int,int)), this, SLOT(showProgress(int,int)));
   connect(mMapCanvas, SIGNAL(extentsChanged(QgsRect )),this,SLOT(showExtents(QgsRect )));
   connect(mMapCanvas, SIGNAL(scaleChanged(QString)), this, SLOT(showScale(QString)));
   connect(mMapCanvas, SIGNAL(scaleChanged(QString)), this, SLOT(updateMouseCoordinatePrecision()));
@@ -4552,7 +4552,7 @@ void QgisApp::projectionsEnabled(bool theFlag)
 void QgisApp::showProgress(int theProgress, int theTotalSteps)
 {
 #ifdef QGISDEBUG
-  std::cout << "setProgress called with " << theProgress << "/" << theTotalSteps << std::endl;
+  std::cout << "showProgress called with " << theProgress << "/" << theTotalSteps << std::endl;
 #endif
 
   if (theProgress==theTotalSteps)
@@ -4952,7 +4952,7 @@ bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRedra
 
     // connect up any request the raster may make to update the app progress
     QObject::connect(theRasterLayer,
-        SIGNAL(setProgress(int,int)),
+        SIGNAL(drawingProgress(int,int)),
         this,
         SLOT(showProgress(int,int)));
     // connect up any request the raster may make to update the statusbar message
@@ -5109,7 +5109,7 @@ void QgisApp::addRasterLayer(QString const & rasterLayerPath,
 
     // connect up any request the raster may make to update the app progress
     QObject::connect(layer,
-        SIGNAL(setProgress(int,int)),
+        SIGNAL(drawingProgress(int,int)),
         this,
         SLOT(showProgress(int,int)));
     // connect up any request the raster may make to update the statusbar message

@@ -2732,7 +2732,7 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 
   emit setStatus(QString("Calculating stats for ")+name());
   //reset the main app progress bar
-  emit setProgress(0,0);
+  emit drawingProgress(0,0);
 
   // let the user know we're going to possibly be taking a while
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -2802,7 +2802,7 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 
   for( int iYBlock = 0; iYBlock < myNYBlocks; iYBlock++ )
   {
-    emit setProgress ( iYBlock, myNYBlocks * 2 );
+    emit drawingProgress ( iYBlock, myNYBlocks * 2 );
 
     for( int iXBlock = 0; iXBlock < myNXBlocks; iXBlock++ )
     {
@@ -2874,7 +2874,7 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
   //for the second pass we will get the sum of the squares / mean
   for( int iYBlock = 0; iYBlock < myNYBlocks; iYBlock++ )
   {
-    emit setProgress ( iYBlock+myNYBlocks, myNYBlocks * 2 );
+    emit drawingProgress ( iYBlock+myNYBlocks, myNYBlocks * 2 );
 
     for( int iXBlock = 0; iXBlock < myNXBlocks; iXBlock++ )
     {
@@ -2960,7 +2960,7 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
   QgsDebugMsg("adding stats to stats collection at position " + QString::number(theBandNoInt - 1));
   //add this band to the class stats map
   rasterStatsVector[theBandNoInt - 1] = myRasterBandStats;
-  emit setProgress(rasterYDimInt, rasterYDimInt); //reset progress
+  emit drawingProgress(rasterYDimInt, rasterYDimInt); //reset progress
   QApplication::restoreOverrideCursor(); //restore the cursor
   QgsDebugMsg("Stats collection completed returning");
   return myRasterBandStats;
@@ -3687,7 +3687,7 @@ void QgsRasterLayer::initContextMenu_(QgisApp * theApp)
 void QgsRasterLayer::updateProgress(int theProgress, int theMax)
 {
   //simply propogate it on!
-  emit setProgress (theProgress,theMax);
+  emit drawingProgress (theProgress,theMax);
 }
 
 void QgsRasterLayer::popupTransparencySliderMoved(int theInt)
@@ -4125,7 +4125,7 @@ QString QgsRasterLayer::getMetadata()
 void QgsRasterLayer::buildPyramids(RasterPyramidList const & theRasterPyramidList, 
                                    QString const & theResamplingMethod)
 {
-  emit setProgress(0,0);
+  emit drawingProgress(0,0);
   //first test if the file is writeable
   QFileInfo myQFile(dataSource);
   
@@ -4151,7 +4151,7 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList const & theRasterPyramidLis
   
   // if the dataset couldn't be opened in read / write mode, tell the user
   if (!gdalDataset) {
-    emit setProgress(0,0);
+    emit drawingProgress(0,0);
     QApplication::restoreOverrideCursor();
     QMessageBox myMessageBox( tr("Building pyramids failed."),
 			      tr("The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again."),
@@ -4185,7 +4185,7 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList const & theRasterPyramidLis
     if ((*myRasterPyramidIterator).existsFlag)
     {
       QgsDebugMsg("Building.....");
-      emit setProgress(myCountInt,myTotalInt);
+      emit drawingProgress(myCountInt,myTotalInt);
       int myOverviewLevelsIntArray[1] = {(*myRasterPyramidIterator).levelInt };
       /* From : http://remotesensing.org/gdal/classGDALDataset.html#a23
       * pszResampling : one of "NEAREST", "AVERAGE" or "MODE" controlling the downsampling method applied.
@@ -4231,7 +4231,7 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList const & theRasterPyramidLis
             myMessageBox.exec();
             delete gdalDataset;
             gdalDataset = (GDALDataset *) GDALOpen(QFile::encodeName(dataSource).constData(), GA_ReadOnly);
-            emit setProgress(0,0);
+            emit drawingProgress(0,0);
             return;
         }
         myCountInt++;
@@ -4248,7 +4248,7 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList const & theRasterPyramidLis
   //close the gdal dataset and reopen it in read only mode
   delete gdalDataset;
   gdalDataset = (GDALDataset *) GDALOpen(QFile::encodeName(dataSource).constData(), GA_ReadOnly);
-  emit setProgress(0,0);
+  emit drawingProgress(0,0);
   QApplication::restoreOverrideCursor();
 }
 

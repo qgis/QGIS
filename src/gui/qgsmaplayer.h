@@ -378,7 +378,7 @@ signals:
     void visibilityChanged(void);
 
     /** \brief emit a signal to notify of a progress event */
-    void setProgress(int theProgress, int theTotalSteps);
+    void drawingProgress(int theProgress, int theTotalSteps);
 
     /** \brief emit a signal to be caught by gisapp and display a msg on status bar */
     void setStatus(QString theStatusQString);

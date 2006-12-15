@@ -183,9 +183,6 @@ signals:
   /** This signal is emited when selection was changed */
   void selectionChanged(); 
   
-  /** This signal is emitted when drawing features to tell current progress */
-  void drawingProgress(int current, int total);
-  
 public slots:
 
   /** \brief Mutator for transparency level. Should be between 0 and 255 */
