@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<!-- TODO: this is bad -->
+<qgisgrassmodule label="Delete category values" module="v.category">
+	<option key="input" typeoption="type" layeroption="layer"/>
+	<option key="output" />
+	<option key="option" answer="del" hidden="yes" />
+</qgisgrassmodule>
