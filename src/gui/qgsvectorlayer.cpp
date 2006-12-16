@@ -853,6 +853,7 @@ void QgsVectorLayer::draw(QPainter * p,
 	  {
 	    if (mDeletedFeatureIds.find(fet->featureId()) != mDeletedFeatureIds.end())
 	      {
+		delete fet;
 		continue; //dont't draw feature marked as deleted
 	      }
 	    if (mChangedGeometries.find(fet->featureId()) != mChangedGeometries.end())
@@ -1557,8 +1558,11 @@ void QgsVectorLayer::updateExtents()
       {
         if(mDeletedFeatureIds.find(fet->featureId())==mDeletedFeatureIds.end())
         {
-          bb=fet->boundingBox();
-          layerExtent.combineExtentWith(&bb);
+	  if(fet->geometry())
+	    {
+	      bb=fet->boundingBox();
+	      layerExtent.combineExtentWith(&bb);
+	    }
         }
         delete fet;
       }

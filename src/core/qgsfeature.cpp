@@ -1437,7 +1437,12 @@ QgsPoint QgsFeature::closestVertex(const QgsPoint& point) const
 // 
 QgsRect QgsFeature::boundingBox() const
 {
-  return mGeometry->boundingBox();
+  if(mGeometry)
+    {
+      return mGeometry->boundingBox();
+    }
+  QgsRect nullRect;
+  return nullRect;
 }
 // QgsRect QgsFeature::boundingBox() const
 // {
