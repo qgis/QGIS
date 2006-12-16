@@ -1401,6 +1401,49 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
     temp.table_type       = PQgetvalue(result, i, 6);
     temp.column_type      = PQgetvalue(result, i, 7);
 
+    // BUT, the above SQL doesn't always give the correct value for the view
+    // column name (that's because that information isn't available directly
+    // from the database), mainly when the view column name has been renamed
+    // using 'AS'. To fix this we need to look in the view definition and
+    // adjust the view column name if necessary.
+
+    QString view = "SELECT definition FROM pg_views WHERE schemaname = '" + temp.view_schema + "' AND "
+	" viewname = '" + temp.view_name + "'";
+
+    PGresult* r = PQexec(connection, (const char*)(view.utf8()));
+    if (PQntuples(r) > 0)
+    {
+      QString viewDef = PQgetvalue(r, 0, 0);
+      // Now pick the view definiton apart, looking for
+      // temp.column_name to the left of an 'AS'.
+
+      // This regular expression needs more work and testing. Since the view
+      // definition comes from postgresql and has been 'standardised', we
+      // don't need to deal with everything that the user could put in a view
+      // definition. Possible variations could include:
+      // - lowercase AS 
+      // - quotes around table and column names
+      // - inclusion of the scheam
+      // - meaningful characters in the schema/table/column names (such as . ' " )
+      // - anything else???
+      QRegExp s(".* " + temp.table_name + "\\." + temp.column_name + " AS (\\w+),* .*");
+
+#ifdef QGSIDEBUG
+      std::cerr <<__FILE__<<__LINE__ << ' ' << view.toLocal8Bit().data() << '\n'
+		<< viewDef.toLocal8Bit().data() << '\n'
+		<< s.pattern().toLocal8Bit().data() << '\n';
+#endif
+
+      if (s.indexIn(viewDef) != -1)
+      {
+	temp.view_column_name = s.cap(1);
+	//std::cerr<<__FILE__<<__LINE__<<' '<<temp.view_column_name.toLocal8Bit().data()<<'\n';
+      }
+    }
+    else
+      QgsDebugMsg("Failed to get view definition for " + temp.view_schema + "." + temp.view_name);
+
+
     QgsDebugMsg(temp.view_schema + "." 
 	      + temp.view_name + "." 
 	      + temp.view_column_name + " <- " 
