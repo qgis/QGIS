@@ -28,6 +28,7 @@
 #include <QCustomEvent>
 #include <QTextOStream>
 #include <QRegExp>
+#include <QMap>
 
 // for ntohl
 #ifdef WIN32
@@ -1387,6 +1388,11 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
   typedef std::map<QString, TT> columnRelationsType;
   columnRelationsType columnRelations;
 
+  // A structure to cache the query results that return the view
+  // definition.
+  typedef QMap<QString, QString> viewDefCache;
+  viewDefCache viewDefs;
+
   PGresult* result = PQexec(connection, (const char*)(sql.utf8()));
   // Store the results of the query for convenient access 
   for (int i = 0; i < PQntuples(result); ++i)
@@ -1407,50 +1413,57 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
     // using 'AS'. To fix this we need to look in the view definition and
     // adjust the view column name if necessary.
 
-    QString view = "SELECT definition FROM pg_views WHERE schemaname = '" + temp.view_schema + "' AND "
-	" viewname = '" + temp.view_name + "'";
+    QString viewQuery = "SELECT definition FROM pg_views "
+      "WHERE schemaname = '" + temp.view_schema + "' AND "
+      "viewname = '" + temp.view_name + "'";
 
-    PGresult* r = PQexec(connection, (const char*)(view.utf8()));
-    if (PQntuples(r) > 0)
+    // Maintain a cache of the above SQL.
+    QString viewDef;
+    if (!viewDefs.contains(viewQuery))
     {
-      QString viewDef = PQgetvalue(r, 0, 0);
-      // Now pick the view definiton apart, looking for
-      // temp.column_name to the left of an 'AS'.
+      PGresult* r = PQexec(connection, (const char*)(viewQuery.utf8()));
+      if (PQntuples(r) > 0)
+        viewDef = PQgetvalue(r, 0, 0);
+      else
+        QgsDebugMsg("Failed to get view definition for " + temp.view_schema + "." + temp.view_name);
+      viewDefs[viewQuery] = viewDef;
+    }
 
-      // This regular expression needs more work and testing. Since the view
-      // definition comes from postgresql and has been 'standardised', we
-      // don't need to deal with everything that the user could put in a view
-      // definition. Possible variations could include:
-      // - lowercase AS 
-      // - quotes around table and column names
-      // - inclusion of the scheam
-      // - meaningful characters in the schema/table/column names (such as . ' " )
-      // - anything else???
-      QRegExp s(".* " + temp.table_name + "\\." + temp.column_name + " AS (\\w+),* .*");
+    viewDef = viewDefs.value(viewQuery);
+
+    // Now pick the view definiton apart, looking for
+    // temp.column_name to the left of an 'AS'.
+
+    // This regular expression needs more testing. Since the view
+    // definition comes from postgresql and has been 'standardised', we
+    // don't need to deal with everything that the user could put in a view
+    // definition. Does the regexp have to deal with the schema??
+    if (!viewDef.isEmpty())
+    {
+      QRegExp s(".* \"?" + QRegExp::escape(temp.table_name) + 
+                "\"?\\.\"?" + QRegExp::escape(temp.column_name) + 
+                "\"? AS \"?(\\w+)\"?,* .*");
 
 #ifdef QGSIDEBUG
-      std::cerr <<__FILE__<<__LINE__ << ' ' << view.toLocal8Bit().data() << '\n'
-		<< viewDef.toLocal8Bit().data() << '\n'
-		<< s.pattern().toLocal8Bit().data() << '\n';
+      std::cerr <<__FILE__<<__LINE__ << ' ' << viewQuery.toLocal8Bit().data() << '\n'
+                << viewDef.toLocal8Bit().data() << '\n'
+                << s.pattern().toLocal8Bit().data() << '\n';
 #endif
 
       if (s.indexIn(viewDef) != -1)
-      {
-	temp.view_column_name = s.cap(1);
-	//std::cerr<<__FILE__<<__LINE__<<' '<<temp.view_column_name.toLocal8Bit().data()<<'\n';
-      }
+        {
+          temp.view_column_name = s.cap(1);
+          //std::cerr<<__FILE__<<__LINE__<<' '<<temp.view_column_name.toLocal8Bit().data()<<'\n';
+        }
     }
-    else
-      QgsDebugMsg("Failed to get view definition for " + temp.view_schema + "." + temp.view_name);
-
 
     QgsDebugMsg(temp.view_schema + "." 
-	      + temp.view_name + "." 
-	      + temp.view_column_name + " <- " 
-	      + temp.table_schema + "." 
-	      + temp.table_name + "." 
-	      + temp.column_name + " is a '" 
-	      + temp.table_type + "' of type " 
+                + temp.view_name + "." 
+                + temp.view_column_name + " <- " 
+                + temp.table_schema + "." 
+                + temp.table_name + "." 
+                + temp.column_name + " is a '" 
+                + temp.table_type + "' of type " 
 		+ temp.column_type);
 
     columnRelations[temp.view_schema + '.' +
