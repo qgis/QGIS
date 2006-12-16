@@ -71,7 +71,7 @@
 		<grass name="r.slope.aspect.aspect"/>
 		<grass name="r.shaded.relief"/>
 	</section>
-	<section label="Neighbors analysies">
+	<section label="Neighbors analyses">
 		<grass name="r.neighbors"/>
 	</section>
 	<section label="Set raster color table">
