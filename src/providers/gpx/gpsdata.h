@@ -132,7 +132,9 @@ class GPSData {
       which is the bounding box for this dataset. You'll have to deallocate it
       yourself. */
   QgsRect* getExtent() const;
-  
+
+  /** Sets a default sensible extent. Only applies when there are no actual data. */
+  void setNoDataExtent();
 
   /** Returns the number of waypoints in this dataset. */
   int getNumberOfWaypoints() const;
