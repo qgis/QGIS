@@ -135,6 +135,15 @@ QgsRect* GPSData::getExtent() const {
   return new QgsRect(xMin, yMin, xMax, yMax);
 }
 
+void GPSData::setNoDataExtent() {
+  if (getNumberOfWaypoints() + getNumberOfRoutes() + getNumberOfTracks() == 0)
+  {
+    xMin = -1.0;
+    xMax =  1.0;
+    yMin = -1.0;
+    yMax =  1.0;
+  }
+}
 
 int GPSData::getNumberOfWaypoints() const {
   return waypoints.size();
@@ -345,7 +354,9 @@ GPSData* GPSData::getData(const QString& filename) {
     XML_ParserFree(p);
     if (failed)
       return 0;
-    
+
+    data->setNoDataExtent();
+
     dataObjects[filename] = std::pair<GPSData*, unsigned>(data, 0);
   }
   else
