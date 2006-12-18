@@ -22,7 +22,13 @@
 #include "qgis.h"
 #include "qgsrect.h"
 #include "qgsvectordataprovider.h"
+
 #include <indexStrtree.h>
+#if GEOS_VERSION_MAJOR < 3
+#define GEOS_INDEX_STRTREE geos
+#else
+#define GEOS_INDEX_STRTREE geos::index::strtree
+#endif
 
 class QgsRect;
 
@@ -85,9 +91,9 @@ class QgsWFSProvider: public QgsVectorDataProvider
   /**Flag if precise intersection test is needed. Otherwise, every feature is returned (even if a filter is set)*/
   bool mUseIntersect;
   /**A spatial index for fast access to a feature subset*/
-  geos::STRtree mSpatialIndex;
+  GEOS_INDEX_STRTREE::STRtree mSpatialIndex;
   /**Stores all the inserted rectangles and features. This is used to clean up the memory in the destructor*/
-  std::list< std::pair<geos::Envelope*, QgsFeature*> > mEnvelopesAndFeatures;
+  std::list< std::pair<GEOS_GEOM::Envelope*, QgsFeature*> > mEnvelopesAndFeatures;
   /**Vector where the QgsFeature* of a query are inserted*/
   std::vector<void*>* mSelectedFeatures;
   /**Iterator on the feature vector for use in reset(), getNextFeature(), etc...*/

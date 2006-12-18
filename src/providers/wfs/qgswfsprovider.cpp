@@ -55,7 +55,7 @@ QgsWFSProvider::~QgsWFSProvider()
 {
   delete mSelectedFeatures;
   delete mSourceSRS;
-  for(std::list<std::pair<geos::Envelope*, QgsFeature*> >::iterator it = mEnvelopesAndFeatures.begin();\
+  for(std::list<std::pair<GEOS_GEOM::Envelope*, QgsFeature*> >::iterator it = mEnvelopesAndFeatures.begin();\
       it != mEnvelopesAndFeatures.end(); ++it)
     {
       delete it->first;
@@ -149,9 +149,14 @@ std::vector<QgsField> const & QgsWFSProvider::fields() const
 
 void QgsWFSProvider::reset()
 {
-  geos::Envelope e(mExtent.xMin(), mExtent.xMax(), mExtent.yMin(), mExtent.yMax());
+  GEOS_GEOM::Envelope e(mExtent.xMin(), mExtent.xMax(), mExtent.yMin(), mExtent.yMax());
   delete mSelectedFeatures;
+#if GEOS_VERSION_MAJOR < 3
   mSelectedFeatures = mSpatialIndex.query(&e);
+#else
+#warning *** FIXME: Need to revise use of mSelectedFeatures for GEOS 3.0.0
+  mSpatialIndex.query(&e, *mSelectedFeatures);
+#endif
   if(mSelectedFeatures)
     {
       mFeatureIterator = mSelectedFeatures->begin();
@@ -242,8 +247,13 @@ void QgsWFSProvider::select(QgsRect *mbr, bool useIntersect)
   mUseIntersect = useIntersect;
   delete mSelectedFeatures;
   mSpatialFilter = *mbr;
-  geos::Envelope filter(mbr->xMin(), mbr->xMax(), mbr->yMin(), mbr->yMax());
+  GEOS_GEOM::Envelope filter(mbr->xMin(), mbr->xMax(), mbr->yMin(), mbr->yMax());
+#if GEOS_VERSION_MAJOR < 3
   mSelectedFeatures = mSpatialIndex.query(&filter);
+#else
+#warning *** FIXME: Need to revise use of mSelectedFeatures for GEOS 3.0.0
+  mSpatialIndex.query(&filter, *mSelectedFeatures);
+#endif
   mFeatureIterator = mSelectedFeatures->begin();
 }
 
@@ -750,7 +760,7 @@ int QgsWFSProvider::getFeaturesFromGML2(const QDomElement& wfsCollectionElement,
   int wkbSize = 0;
   QGis::WKBTYPE currentType;
   QgsRect featureBBox;
-  geos::Envelope* geosBBox;
+  GEOS_GEOM::Envelope* geosBBox;
   mFeatureCount = 0;
 
   for(int i = 0; i < featureTypeNodeList.size(); ++i)
@@ -783,7 +793,7 @@ int QgsWFSProvider::getFeaturesFromGML2(const QDomElement& wfsCollectionElement,
 	{
 	  //insert bbox and pointer to feature into search tree
 	  featureBBox = f->boundingBox();
-	  geosBBox = new geos::Envelope(featureBBox.xMin(), featureBBox.xMax(), featureBBox.yMin(), featureBBox.yMax());
+	  geosBBox = new GEOS_GEOM::Envelope(featureBBox.xMin(), featureBBox.xMax(), featureBBox.yMin(), featureBBox.yMax());
 	  mSpatialIndex.insert(geosBBox, (void*)f);
 	  mEnvelopesAndFeatures.push_back(std::make_pair(geosBBox, f));
 	  ++mFeatureCount;

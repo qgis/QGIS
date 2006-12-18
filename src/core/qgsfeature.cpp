@@ -818,9 +818,9 @@ void QgsFeature::resetDirty()
 // {
 //     bool returnval=false;
 // 
-//     geos::GeometryFactory *gf = new geos::GeometryFactory();
-//     geos::WKTReader *wktReader = new geos::WKTReader(gf);
-//     geos::Geometry *geosGeom = wktReader->read( qstrdup(wellKnownText()) );
+//     GEOS_GEOM::GeometryFactory *gf = new GEOS_GEOM::GeometryFactory();
+//     GEOS_IO::WKTReader *wktReader = new GEOS_IO::WKTReader(gf);
+//     GEOS_GEOM::Geometry *geosGeom = wktReader->read( qstrdup(wellKnownText()) );
 // 
 //     //write the selection rectangle to wkt by hand
 //     QString rectwkt="POLYGON((";
@@ -845,7 +845,7 @@ void QgsFeature::resetDirty()
 //     rectwkt+=QString::number(r->yMin(),'f',3);
 //     rectwkt+="))";
 //     
-//     geos::Geometry *geosRect = wktReader->read( qstrdup(rectwkt) );
+//     GEOS_GEOM::Geometry *geosRect = wktReader->read( qstrdup(rectwkt) );
 //     if(geosGeom->intersects(geosRect))
 //     {
 // 	returnval=true;
@@ -1655,7 +1655,7 @@ QgsRect QgsFeature::boundingBox() const
 // }
 // 
 
-geos::Geometry* QgsFeature::geosGeometry() const
+GEOS_GEOM::Geometry* QgsFeature::geosGeometry() const
 {
   return mGeometry->geosGeometry();
 }

@@ -20,6 +20,15 @@ email                : morb at ozemail dot com dot au
 #include <qstring.h>
 
 #include <geos.h>
+#if GEOS_VERSION_MAJOR < 3
+#define GEOS_GEOM geos
+#define GEOS_IO geos
+#define GEOS_UTIL geos
+#else
+#define GEOS_GEOM geos::geom
+#define GEOS_IO geos::io
+#define GEOS_UTIL geos::util
+#endif
 
 #include "qgsgeometryvertexindex.h"
 #include "qgspoint.h"
@@ -80,7 +89,7 @@ class QgsGeometry {
     /**
        Set the geometry, feeding in a geometry in GEOS format.
     */
-    void setGeos(geos::Geometry* geos);
+    void setGeos(GEOS_GEOM::Geometry* geos);
 
     /**
        Returns the vertex closest to the given point 
@@ -188,7 +197,7 @@ class QgsGeometry {
     bool contains(QgsPoint* p) const;
 
     /**Creates a geos geometry from this features geometry. Note, that the returned object needs to be deleted*/
-    geos::Geometry* geosGeometry() const;
+    GEOS_GEOM::Geometry* geosGeometry() const;
 
 
 
@@ -197,7 +206,7 @@ class QgsGeometry {
     // Private static members
 
     //! This is used to create new GEOS variables.
-    static geos::GeometryFactory* geosGeometryFactory;
+    static GEOS_GEOM::GeometryFactory* geosGeometryFactory;
 
 
     // Private variables
@@ -219,7 +228,7 @@ class QgsGeometry {
     mutable QString mWkt;
 
     /** cached GEOS version of this geometry */
-    mutable geos::Geometry* mGeos;
+    mutable GEOS_GEOM::Geometry* mGeos;
 
     /** If the geometry has been set since the last conversion to WKB **/
     mutable bool mDirtyWkb;
@@ -270,8 +279,8 @@ class QgsGeometry {
      */
     bool insertVertexBefore(double x, double y,
                             int beforeVertex,
-                            const geos::CoordinateSequence*  old_sequence,
-                                  geos::CoordinateSequence** new_sequence);
+                            const GEOS_GEOM::CoordinateSequence*  old_sequence,
+                                  GEOS_GEOM::CoordinateSequence** new_sequence);
 
 }; // class QgsGeometry
 

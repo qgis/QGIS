@@ -60,6 +60,15 @@
 #include <QVBoxLayout>
 #include <QWhatsThis>
 #include <QtGlobal>
+
+//
+// Mac OS X Includes
+// Must include before GEOS 3 due to unqualified use of 'Point'
+//
+#ifdef Q_OS_MACX
+#include <ApplicationServices/ApplicationServices.h>
+#endif
+
 //
 // QGIS Specific Includes
 //
@@ -136,10 +145,6 @@
 //
 // Conditional Includes
 //
-#ifdef Q_OS_MACX
-#include <ApplicationServices/ApplicationServices.h>
-#endif
-
 #ifdef HAVE_POSTGRESQL
 #include "qgsdbsourceselect.h"
 #endif
