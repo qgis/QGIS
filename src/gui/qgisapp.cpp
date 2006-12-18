@@ -665,7 +665,7 @@ void QgisApp::createActions()
   connect(mActionCapturePolygon, SIGNAL(triggered()), this, SLOT(capturePolygon()));
   mActionCapturePolygon->setEnabled(false);
   //
-  mActionDeleteSelected = new QAction(QIcon(myIconPath+"/mActionDeleteSelected.png"), tr("Delete Seleced"), this);
+  mActionDeleteSelected = new QAction(QIcon(myIconPath+"/mActionDeleteSelected.png"), tr("Delete Selected"), this);
   mActionDeleteSelected->setStatusTip(tr("Delete Selected"));
   connect(mActionDeleteSelected, SIGNAL(triggered()), this, SLOT(deleteSelected()));
   mActionDeleteSelected->setEnabled(false);
