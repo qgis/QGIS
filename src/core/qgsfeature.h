@@ -235,7 +235,7 @@ class QgsFeature {
      /** Creates a geos geometry from this features geometry. Note, that the returned object needs to be deleted.
          @note  This function is deprecated - use geometry()->geosGeometry() instead.
       */
-     geos::Geometry* geosGeometry() const;
+     GEOS_GEOM::Geometry* geosGeometry() const;
 
   private:
 

@@ -18,7 +18,17 @@ email                : sherman at mrcc.com
 
 #include "qgsrect.h"
 #include "qgsvectordataprovider.h"
+
 #include <geos.h>
+#if GEOS_VERSION_MAJOR < 3
+#define GEOS_GEOM geos
+#define GEOS_IO geos
+#define GEOS_UTIL geos
+#else
+#define GEOS_GEOM geos::geom
+#define GEOS_IO geos::io
+#define GEOS_UTIL geos::util
+#endif
 
 #include <ogr_spatialref.h>
 #include <ogrsf_frmts.h>
@@ -285,8 +295,8 @@ class QgsOgrProvider:public QgsVectorDataProvider
     /**Deletes one feature*/
     bool deleteFeature(int id);
     //! The geometry factory
-    geos::GeometryFactory *geometryFactory;
+    GEOS_GEOM::GeometryFactory *geometryFactory;
     //! The well known text reader
-    geos::WKTReader *wktReader;
+    GEOS_IO::WKTReader *wktReader;
 
 };

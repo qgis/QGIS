@@ -143,11 +143,11 @@ QgsOgrProvider::QgsOgrProvider(QString const & uri)
     minmaxcache[i]=new double[2];
   }
   // create the geos objects
-  geometryFactory = new geos::GeometryFactory();
+  geometryFactory = new GEOS_GEOM::GeometryFactory();
   assert(geometryFactory!=0);
   // create the reader
   //    std::cerr << "Creating the wktReader\n";
-  wktReader = new geos::WKTReader(geometryFactory);
+  wktReader = new GEOS_IO::WKTReader(geometryFactory);
 
   mNumericalTypes.push_back("Integer");
   mNumericalTypes.push_back("Real");
@@ -415,13 +415,13 @@ QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
     
 	   if(mUseIntersect)
 	   {
-	       geos::Geometry *geosGeom = 0;
+	       GEOS_GEOM::Geometry *geosGeom = 0;
 	       geosGeom=f->geosGeometry();
 	       assert(geosGeom != 0);
          
 	       char *sWkt = new char[2 * mSelectionRectangle->WkbSize()];
 	       mSelectionRectangle->exportToWkt(&sWkt);  
-	       geos::Geometry *geosRect = wktReader->read(sWkt);
+	       GEOS_GEOM::Geometry *geosRect = wktReader->read(sWkt);
 	       assert(geosRect != 0);
          bool intersection = false;
          
@@ -430,9 +430,13 @@ QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
            if(geosGeom->intersects(geosRect))
              intersection = true;
          }
-         catch (geos::TopologyException* e)
+         catch (GEOS_UTIL::TopologyException* e)
          {
+#if GEOS_VERSION_MAJOR < 3
            QString error = e->toString().c_str();
+#else
+           QString error = e->what();
+#endif
            QgsLogger::warning("GEOS: " + error);
          }
          
@@ -481,14 +485,14 @@ QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
           geom  =  fet->GetGeometryRef();
           char *wkt = new char[2 * geom->WkbSize()];
           geom->exportToWkt(&wkt);
-          geos::Geometry *geosGeom = wktReader->read(wkt);
+          GEOS_GEOM::Geometry *geosGeom = wktReader->read(wkt);
           assert(geosGeom != 0);
           QgsDebugMsg("Geometry type of geos object is : " + geosGeom->getGeometryType()); 
           // get the selection rectangle and create a geos geometry from it
           char *sWkt = new char[2 * mSelectionRectangle->WkbSize()];
           mSelectionRectangle->exportToWkt(&sWkt);
           std::cerr << "Passing " << sWkt << " to goes\n";    
-          geos::Geometry *geosRect = wktReader->read(sWkt);
+          GEOS_GEOM::Geometry *geosRect = wktReader->read(sWkt);
           assert(geosRect != 0);
           std::cerr << "About to apply intersects function\n";
           // test the geometry
