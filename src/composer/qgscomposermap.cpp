@@ -117,11 +117,13 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect *extent, QgsMapToPixel *t
     if ( layer->type() == QgsMapLayer::VECTOR ) {
       QgsVectorLayer *vector = dynamic_cast <QgsVectorLayer*> (layer);
 
-      double widthScale = mWidthScale * mComposition->scale();
-      if ( plotStyle() == QgsComposition::Preview && mPreviewMode == Render ) {
-        widthScale *= mComposition->viewScale();
+      double widthScale = mWidthScale;
+      double symbolScale = mSymbolScale;
+      if (plotStyle() != QgsComposition::Preview)
+      {
+        widthScale /= mComposition->viewScale();
+        symbolScale /= mComposition->viewScale();
       }
-      double symbolScale = mSymbolScale * mComposition->scale();
 
       QgsRect r1, r2;
       r1 = *extent;
@@ -205,7 +207,8 @@ void QgsComposerMap::cache ( void )
     //       1 pixel in cache should have ia similar size as 1 pixel in canvas
     //       but it can result in big cache -> limit
 
-    int w = Q3CanvasRectangle::width() < 1000 ? Q3CanvasRectangle::width() : 1000;
+    int w = Q3CanvasRectangle::width() * mComposition->viewScale();
+    w = w < 1000 ? w : 1000;
     int h = (int) ( mExtent.height() * w / mExtent.width() );
     // It can happen that extent is not initialised well -> check 
     if ( h < 1 || h > 10000 ) h = w; 
