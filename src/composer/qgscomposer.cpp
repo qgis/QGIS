@@ -803,6 +803,7 @@ void QgsComposer::setToolActionsOff(void)
   mActionZoomOut->setOn ( false );
   mActionRefreshView->setOn ( false );
   mActionAddNewMap->setOn ( false );
+  mActionAddImage->setOn ( false );
   mActionAddNewLabel->setOn ( false );
   mActionAddNewVectLegend->setOn ( false );
   mActionAddNewScalebar->setOn ( false );
