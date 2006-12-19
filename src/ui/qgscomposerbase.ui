@@ -241,6 +241,7 @@
    <addaction name="mActionRefreshView" />
    <addaction name="separator" />
    <addaction name="mActionAddNewMap" />
+   <addaction name="mActionAddImage" />
    <addaction name="mActionAddNewLabel" />
    <addaction name="mActionAddNewVectLegend" />
    <addaction name="mActionAddNewScalebar" />
