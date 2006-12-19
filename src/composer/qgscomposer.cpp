@@ -40,6 +40,7 @@
 #include <QToolBar>
 #include <QImageWriter>
 #include <QCheckBox>
+#include <QSizeGrip>
 #include <iostream>
 
 
@@ -74,6 +75,11 @@ QgsComposer::QgsComposer( QgisApp *qgis): QMainWindow()
   mComposition  = new QgsComposition( this, 1 );
   mComposition->setActive ( true );
 
+  // Create size grip (needed by Mac OS X for QMainWindow if QStatusBar is not visible)
+  mSizeGrip = new QSizeGrip(this);
+  mSizeGrip->resize(mSizeGrip->sizeHint());
+  mSizeGrip->move(rect().bottomRight() - mSizeGrip->rect().bottomRight());
+
   if ( ! connect( mQgis, SIGNAL( projectRead() ), this, SLOT( projectRead()) ) ) {
     qDebug( "unable to connect to projectRead" );
   } 
@@ -87,8 +93,6 @@ QgsComposer::QgsComposer( QgisApp *qgis): QMainWindow()
   restoreWindowState();
 
   selectItem(); // Set selection tool
-
-  statusBar()->setHidden(true);
 }
 
 QgsComposer::~QgsComposer()
@@ -858,7 +862,14 @@ void QgsComposer::on_mActionAddImage_activated(void)
 }
 
 void QgsComposer::moveEvent ( QMoveEvent *e ) { saveWindowState(); }
-void QgsComposer::resizeEvent ( QResizeEvent *e ) { saveWindowState(); }
+
+void QgsComposer::resizeEvent ( QResizeEvent *e )
+{
+  // Move size grip when window is resized
+  mSizeGrip->move(rect().bottomRight() - mSizeGrip->rect().bottomRight());
+
+  saveWindowState();
+}
 
 void QgsComposer::saveWindowState()
 {
