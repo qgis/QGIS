@@ -52,6 +52,7 @@
 #include <QProgressBar>
 #include <QSettings>
 #include <QSplashScreen>
+#include <QStatusBar>
 #include <QStringList>
 #include <QTcpSocket>
 #include <QTextStream>

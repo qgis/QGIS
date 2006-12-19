@@ -31,6 +31,7 @@ class QDomDocument;
 class QMoveEvent;
 class QResizeEvent;
 class QFile;
+class QSizeGrip;
 
 /* The constructor creates empty composer, without compositions and mFirstTime set to true. 
  * - if signal projectRead() is recieved all old compositions are deleted and
@@ -192,6 +193,9 @@ private:
 
     //! Layout
     QGridLayout *mItemOptionsLayout;
+
+    //! Size grip
+    QSizeGrip *mSizeGrip;
 
     //! Help context id
     static const int context_id = 985715179;
