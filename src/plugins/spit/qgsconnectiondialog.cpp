@@ -35,7 +35,7 @@ QgsConnectionDialog::QgsConnectionDialog(QWidget *parent, const QString& connNam
 {
     setupUi(this);
 	if (!connName.isEmpty()) {
-		QSettings settings("QuantumGIS", "qgis");
+		QSettings settings;
 		QString key = "/PostgreSQL/connections/" + connName;
 		txtHost->setText(settings.readEntry(key + "/host"));
 		txtDatabase->setText(settings.readEntry(key + "/database"));
@@ -90,7 +90,7 @@ void QgsConnectionDialog::testConnection()
 
 void QgsConnectionDialog::saveConnection()
 {
-	QSettings settings("QuantumGIS", "qgis");
+	QSettings settings;
 	QString baseKey = "/PostgreSQL/connections/";
 	baseKey += txtName->text();
 	settings.writeEntry(baseKey + "/host", txtHost->text());

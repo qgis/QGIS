@@ -50,7 +50,7 @@ void QgsGeorefPluginGui::on_pbnClose_clicked()
 
 
 void QgsGeorefPluginGui::on_pbnSelectRaster_clicked() {
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   QString dir = settings.readEntry("/Plugin-GeoReferencer/rasterdirectory");
   if (dir.isEmpty())
     dir = ".";
@@ -82,7 +82,7 @@ void QgsGeorefPluginGui::on_pbnEnterWorldCoords_clicked() {
   
   // remember the directory
   {
-    QSettings settings("QuantumGIS", "qgis");
+    QSettings settings;
     QFileInfo fileInfo(leSelectRaster->text());
     settings.writeEntry("/Plugin-GeoReferencer/rasterdirectory", 
 			fileInfo.dirPath());
@@ -117,7 +117,7 @@ void QgsGeorefPluginGui::on_pbnEnterWorldCoords_clicked() {
   
   // XXX This is horrible, but it works and I'm tired / ll
   {
-    QSettings settings("QuantumGIS", "qgis");
+    QSettings settings;
     QgsProject* prj = QgsProject::instance();
     mProjBehaviour = settings.readEntry("/Projections/defaultBehaviour");
     mProjectSRS = prj->readEntry("SpatialRefSys", "/ProjectSRSProj4String");

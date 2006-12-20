@@ -125,7 +125,7 @@ void QgsGrassAttributes::restorePosition()
   #ifdef QGISDEBUG
   std::cerr << "QgsGrassAttributes::restorePosition()" << std::endl;
   #endif
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   int ww = settings.readNumEntry("/GRASS/windows/attributes/w", 250);
   int wh = settings.readNumEntry("/GRASS/windows/attributes/h", 350);
   int wx = settings.readNumEntry("/GRASS/windows/attributes/x", 100);
@@ -142,7 +142,7 @@ void QgsGrassAttributes::saveWindowLocation()
   #ifdef QGISDEBUG
   std::cerr << "QgsGrassAttributes::saveWindowLocation()" << std::endl;
   #endif
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   QPoint p = this->pos();
   QSize s = this->size();
   settings.writeEntry("/GRASS/windows/attributes/x", p.x());
@@ -181,7 +181,7 @@ int QgsGrassAttributes::addTab ( const QString & label )
 
     resetButtons();
 
-    QSettings settings("QuantumGIS", "qgis");
+    QSettings settings;
     QString path = "/GRASS/windows/attributes/columnWidth/";
     for ( int i = 0; i < 2; i++ ) 
     {
@@ -401,7 +401,7 @@ void QgsGrassAttributes::resetButtons ( )
 
 void QgsGrassAttributes::columnSizeChanged ( int section, int oldSize, int newSize )
 {
-    QSettings settings("QuantumGIS", "qgis");
+    QSettings settings;
     QString path = "/GRASS/windows/attributes/columnWidth/"
                    + QString::number(section);
     std::cerr << "path = " << path.ascii() << " newSize = " << newSize << std::endl;
