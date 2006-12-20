@@ -23,6 +23,7 @@
 #include "qgsmaptopixel.h"
 #include "qgsrubberband.h"
 
+#include "QMessageBox"
 #include <QSettings>
 #include <iostream>
 
@@ -70,6 +71,29 @@ void QgsMeasure::activate()
   restorePosition();
   QgsMapTool::activate();
   mRightMouseClicked = false;
+
+  // ensure that we have correct settings
+  mCalc->setDefaultEllipsoid();
+  mCalc->setProjectAsSourceSRS();
+
+  // If we suspect that they have data that is projected, yet the
+  // map SRS is set to a geographic one, warn them.
+  if (mCalc->geographic() &&
+      (mMapCanvas->extent().height() > 360 || 
+       mMapCanvas->extent().width() > 720))
+  {
+    QMessageBox::warning(this, tr("Incorrect measure results"),
+        tr("<p>This map is defined with a geographic coordinate system "
+           "(latitude/longitude) "
+           "but the map extents suggest that it is actually a projected "
+           "coordinate system (e.g., Mercator). "
+           "If so, the results from line or area measurements will be "
+           "incorrect.</p>"
+           "<p>To fix this, explicitly set an appropriate map coordinate "
+           "system using the <tt>Settings:Project Properties</tt> menu."),
+                         QMessageBox::Ok,
+                         QMessageBox::NoButton);
+  }
 }
     
 void QgsMeasure::deactivate()
@@ -120,13 +144,6 @@ void QgsMeasure::addPoint(QgsPoint &point)
     QgsPoint pnt(point);
     mPoints.push_back(pnt);
     
-    if (mPoints.size() == 1)
-    {
-      // ensure that we have correct settings
-      mCalc->setDefaultEllipsoid();
-      mCalc->setProjectAsSourceSRS();
-    }
-
     if (mMeasureArea && mPoints.size() > 2)
     {
       double area = mCalc->measurePolygon(mPoints);
