@@ -39,7 +39,7 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui(QgisIface * _qI, QWidget * 
   setupUi(this);
   // at startup, fetch the last used delimiter and directory from
   // settings
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   QString key = "/Plugin-DelimitedText";
   txtDelimiter->setText(settings.readEntry(key + "/delimiter"));
 
@@ -75,7 +75,7 @@ void QgsDelimitedTextPluginGui::on_pbnOK_clicked()
     emit drawVectorLayer(uri,txtLayerName->text(),"delimitedtext");
     // store the settings
 
-    QSettings settings("QuantumGIS", "qgis");
+    QSettings settings;
     QString key = "/Plugin-DelimitedText";
     settings.writeEntry(key + "/delimiter", txtDelimiter->text());
     QFileInfo fi(txtFilePath->text());
@@ -185,7 +185,7 @@ void QgsDelimitedTextPluginGui::getOpenFileName()
 {
   // Get a file to process, starting at the current directory
   // Set inital dir to last used
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
 
   QString s = QFileDialog::getOpenFileName(
       this,

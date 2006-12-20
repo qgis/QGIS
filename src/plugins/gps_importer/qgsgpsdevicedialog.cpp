@@ -149,7 +149,7 @@ void QgsGPSDeviceDialog::slotSelectionChanged() {
 
 void QgsGPSDeviceDialog::writeDeviceSettings() {
   QStringList deviceNames;
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   QString devPath = "/Plugin-GPS/devices/%1";
   settings.remove("/Plugin-GPS/devices");
 

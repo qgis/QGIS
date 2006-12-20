@@ -449,7 +449,7 @@ void QgsGrassRegion::postRender(QPainter *painter)
 void QgsGrassRegion::accept()
 {
     // TODO: better repaint region
-    QSettings settings("QuantumGIS", "qgis");
+    QSettings settings;
 
     bool on = settings.readBoolEntry ("/GRASS/region/on", true );
 
@@ -483,7 +483,7 @@ void QgsGrassRegion::reject()
 
 void QgsGrassRegion::restorePosition()
 {
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   int ww = settings.readNumEntry("/GRASS/windows/region/w", 250);
   int wh = settings.readNumEntry("/GRASS/windows/region/h", 350);
   int wx = settings.readNumEntry("/GRASS/windows/region/x", 100);
@@ -494,7 +494,7 @@ void QgsGrassRegion::restorePosition()
 
 void QgsGrassRegion::saveWindowLocation()
 {
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   QPoint p = this->pos();
   QSize s = this->size();
   settings.writeEntry("/GRASS/windows/region/x", p.x());

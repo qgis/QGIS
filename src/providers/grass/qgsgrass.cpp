@@ -50,7 +50,7 @@ void QgsGrass::init( void )
 
     if ( initialized ) return;
 
-    QSettings settings("QuantumGIS", "qgis");
+    QSettings settings;
 
     // Is it active mode ?
     if ( getenv ("GISRC") ) {

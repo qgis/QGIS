@@ -101,7 +101,7 @@ QgsSpit::~QgsSpit()
 
 void QgsSpit::populateConnectionList()
 {
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   QStringList keys = settings.subkeyList( "/PostgreSQL/connections" );
   QStringList::Iterator it = keys.begin();
   cmbConnections->clear();
@@ -135,7 +135,7 @@ void QgsSpit::editConnection()
 
 void QgsSpit::removeConnection()
 {
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   QString key = "/PostgreSQL/connections/" + cmbConnections->currentText();
   QString msg = tr("Are you sure you want to remove the [") + cmbConnections->currentText() + tr("] connection and all associated settings?");
   int result = QMessageBox::information( this, tr("Confirm Delete"), msg, tr("Yes"), tr("No") );
@@ -159,7 +159,7 @@ void QgsSpit::addFile()
   QString error2 = "";
   bool exist;
   bool is_error = false;
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
 
   QgsEncodingFileDialog dlg(this,
                         tr("Add Shapefiles"),
@@ -414,7 +414,7 @@ void QgsSpit::helpInfo()
 
 PGconn* QgsSpit::checkConnection()
 {
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   PGconn * pd;
   bool result = true;
   QString connName = cmbConnections->currentText();
@@ -479,7 +479,7 @@ PGconn* QgsSpit::checkConnection()
 
 void QgsSpit::getSchema()
 {
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   schema_list.clear();
   schema_list << "public";
   PGconn* pd = checkConnection();
@@ -528,7 +528,7 @@ void QgsSpit::import()
   tblShapefiles->setCurrentCell( -1, 0 );
 
   QString connName = cmbConnections->currentText();
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   bool cancelled = false;
   PGconn* pd = checkConnection();
   QString query;
