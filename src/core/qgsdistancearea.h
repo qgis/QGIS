@@ -18,8 +18,8 @@
 #define QGSDISTANCEAREA_H
 
 #include <vector>
+#include "qgscoordinatetransform.h"
 
-class QgsCoordinateTransform;
 class QgsGeometry;
 
 /**
@@ -49,6 +49,8 @@ class QgsDistanceArea
     void setProjectAsSourceSRS();
     //! returns source spatial reference system
     long sourceSRS() { return mSourceRefSys; }
+    //! What sort of coordinate system is being used?
+    bool geographic() { return mCoordTransform->sourceSRS().geographicFlag(); }
 
     //! sets ellipsoid by its acronym
     bool setEllipsoid(const QString& ellipsoid);
