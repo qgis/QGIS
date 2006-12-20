@@ -56,7 +56,6 @@ FORMS =	\
 		$${WORKDIR}/src/ui/qgslinestylewidgetbase.ui 		\
 		$${WORKDIR}/src/ui/qgsludialogbase.ui			\
 		$${WORKDIR}/src/ui/qgsludialogbase.ui 			\
-		$${WORKDIR}/src/ui/qgsmapserverexportbase.ui		\
 		$${WORKDIR}/src/ui/qgsmarkerdialogbase.ui		\
 		$${WORKDIR}/src/ui/qgsmarkerdialogbase.ui 		\
 		$${WORKDIR}/src/ui/qgsmeasurebase.ui			\
