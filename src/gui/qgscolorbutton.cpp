@@ -34,7 +34,9 @@
 
 QgsColorButton::QgsColorButton(QWidget *parent)
 : QToolButton(parent)
-{}
+{
+  setToolButtonStyle(Qt::ToolButtonTextOnly);   // decrease default button height
+}
 
 QgsColorButton::~QgsColorButton()
 {}
@@ -45,7 +47,12 @@ QgsColorButton::~QgsColorButton()
 void QgsColorButton::paintEvent(QPaintEvent *e)
 {
   QToolButton::paintEvent(e);
-  if (isEnabled())
+  if (
+#ifdef Q_WS_MAC
+    // Mac shows color only a when a window is active
+    isActiveWindow() &&
+#endif
+    isEnabled())
   {
     QPainter p(this);
     int margin = 2;  // Leave some space for highlighting
