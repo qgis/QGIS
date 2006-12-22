@@ -753,6 +753,7 @@ void QgisApp::createMenus()
   mFileMenu->addAction(mActionFileSave);
   mFileMenu->addAction(mActionFileSaveAs);
   mFileMenu->addAction(mActionSaveMapAsImage);
+  mFileMenu->addSeparator();
   mFileMenu->addAction(mActionExportMapServer);
   mFileMenu->addAction(mActionFilePrint);
   mFileMenu->addSeparator();
@@ -766,8 +767,10 @@ void QgisApp::createMenus()
   mViewMenu->addAction(mActionZoomToLayer);
   mViewMenu->addAction(mActionZoomLast);
   mViewMenu->addAction(mActionDraw);
+  mViewMenu->addSeparator();
   mViewMenu->addAction(mActionShowBookmarks);
   mViewMenu->addAction(mActionNewBookmark);
+  mViewMenu->addSeparator();
   mToolbarMenu = mViewMenu->addMenu(QIcon(myIconPath+"/mActionOptions.png"),
                                     tr("&Toolbars..."));
 
@@ -785,11 +788,14 @@ void QgisApp::createMenus()
   mLayerMenu->addAction(mActionAddLayer);
 #endif
   mLayerMenu->addAction(mActionAddWmsLayer);
+  mLayerMenu->addSeparator();
   mLayerMenu->addAction(mActionRemoveLayer);
   mLayerMenu->addAction(mActionNewVectorLayer);
+  mLayerMenu->addSeparator();
   mLayerMenu->addAction(mActionInOverview);
   mLayerMenu->addAction(mActionAddAllToOverview);
   mLayerMenu->addAction(mActionRemoveAllFromOverview);
+  mLayerMenu->addSeparator();
   mLayerMenu->addAction(mActionHideAllLayers);
   mLayerMenu->addAction(mActionShowAllLayers);
 
@@ -804,6 +810,7 @@ void QgisApp::createMenus()
   // Plugins Menu
   mPluginMenu = menuBar()->addMenu(tr("&Plugins"));
   mPluginMenu->addAction(mActionShowPluginManager);
+  mPluginMenu->addSeparator();
 
   // Add the plugin manager action to it
   //actionPluginManager->addTo(mPluginMenu);
@@ -816,8 +823,10 @@ void QgisApp::createMenus()
   menuBar()->addSeparator();
   mHelpMenu = menuBar()->addMenu(tr("&Help"));
   mHelpMenu->addAction(mActionHelpContents);
+  mHelpMenu->addSeparator();
   mHelpMenu->addAction(mActionQgisHomePage);
   mHelpMenu->addAction(mActionCheckQgisVersion);
+  mHelpMenu->addSeparator();
   mHelpMenu->addAction(mActionHelpAbout);
 }
 
@@ -1283,8 +1292,10 @@ void QgisApp::restoreWindowState()
 
 void QgisApp::about()
 {
+  static QgsAbout *abt = NULL;
+  if (!abt) {
      QApplication::setOverrideCursor(Qt::WaitCursor);
-     QgsAbout *abt = new QgsAbout();
+     abt = new QgsAbout();
      QString versionString = tr("Version ");
      versionString += QGis::qgisVersion;
      versionString += " (";
@@ -1358,9 +1369,10 @@ abt->setWhatsNew(watsNew);
   QString providerInfo = "<b>" + tr("Available Data Provider Plugins") + "</b><br>";
   abt->setPluginInfo(providerInfo + mProviderRegistry->pluginList(true));
   QApplication::restoreOverrideCursor();
+  }
   abt->show();
-  abt->exec();
-
+  abt->raise();
+  abt->setActiveWindow();
 }
 
 /** Load up any plugins used in the last session
@@ -5290,7 +5302,7 @@ void QgisApp::showBookmarks()
   static QgsBookmarks *bookmarks = NULL;
   if (bookmarks == NULL)
   {
-    bookmarks = new QgsBookmarks(this);
+    bookmarks = new QgsBookmarks(this, Qt::WindowMinMaxButtonsHint);
   }
   bookmarks->show();
   bookmarks->raise();
