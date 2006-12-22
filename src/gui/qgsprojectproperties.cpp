@@ -39,7 +39,7 @@
 : QDialog(parent, fl)
 {
   setupUi(this);
-  connect(btnGrpMapUnits, SIGNAL(clicked(int)), this, SLOT(mapUnitChange(int)));
+
   connect(buttonApply, SIGNAL(clicked()), this, SLOT(apply()));
   connect(buttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
   connect(buttonOk, SIGNAL(clicked()), this, SLOT(accept()));
@@ -134,16 +134,6 @@ QGis::units QgsProjectProperties::mapUnits() const
 {
   return QgsProject::instance()->mapUnits();
 }
-
-
-void QgsProjectProperties::mapUnitChange(int unit)
-{
-  /*
-     QgsProject::instance()->mapUnits(
-     static_cast<QGis::units>(unit));
-     */
-}
-
 
 void QgsProjectProperties::setMapUnits(QGis::units unit)
 {
