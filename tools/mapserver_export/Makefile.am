@@ -71,8 +71,8 @@ lib_LTLIBRARIES = libmsexport.la
 libmsexport_la_SOURCES = qgsmapserverexport.cpp qgsmapserverexport.moc.cpp msexport_wrap.cxx
 
 libmsexport_la_LIBADD = $(PYTHON_LIB) $(QT_LDADD)
+libmsexport_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
 libmsexport_la_CXXFLAGS = $(CXXFLAGS) $(PKGDATAPATH) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PYTHON_INCLUDE_DIR) -I../../src
-#msexport_la_LDFLAGS
 
 # Qt/Mac app needs to be inside a bundle to function correctly
 MACBINDIR = $(bindir)/msexport.app/Contents/MacOS
