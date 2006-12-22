@@ -59,12 +59,6 @@ public:
   /*! Indicates that the projection switch is on */
   bool isProjected();
 public slots:
-  /*! 
-   * Slot called when a new button (unit) is selected
-   * @param int specifying which button was selected. The button ids match the enum
-   * values in QGis::units
-   */
-  void mapUnitChange(int);
   /*!
    * Slot called when apply button is pressed 
    */
