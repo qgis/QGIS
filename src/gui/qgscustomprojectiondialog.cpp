@@ -149,10 +149,6 @@ void QgsCustomProjectionDialog::getEllipsoidList()
   sqlite3_close(myDatabase);
 }
 */
-void QgsCustomProjectionDialog::on_pbnHelp_clicked()
-{
-
-}
 
 void QgsCustomProjectionDialog::on_pbnDelete_clicked()
 {
