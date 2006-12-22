@@ -4037,7 +4037,8 @@ void QgisApp::checkQgisVersion()
   connect(mSocket, SIGNAL(connected()), SLOT(socketConnected()));
   connect(mSocket, SIGNAL(connectionClosed()), SLOT(socketConnectionClosed()));
   connect(mSocket, SIGNAL(readyRead()), SLOT(socketReadyRead()));
-  connect(mSocket, SIGNAL(error(int)), SLOT(socketError(int)));
+  connect(mSocket, SIGNAL(error(QAbstractSocket::SocketError)), 
+                   SLOT(socketError(QAbstractSocket::SocketError)));
   mSocket->connectToHost("mrcc.com", 80);
 }
 
@@ -4108,25 +4109,32 @@ void QgisApp::socketConnectionClosed()
     QMessageBox::warning(this, tr("QGIS Version Information"), tr("Unable to get current version information from server"));
   }
 }
-void QgisApp::socketError(int e)
+void QgisApp::socketError(QAbstractSocket::SocketError e)
 {
+  if (e == QAbstractSocket::RemoteHostClosedError)
+    return;
+
   QApplication::restoreOverrideCursor();
   // get error type
   QString detail;
   switch (e)
   {
-    case QTcpSocket::ErrConnectionRefused:
+    case QAbstractSocket::ConnectionRefusedError:
       detail = tr("Connection refused - server may be down");
       break;
-    case QTcpSocket::ErrHostNotFound:
+    case QAbstractSocket::HostNotFoundError:
       detail = tr("QGIS server was not found");
       break;
-    case QTcpSocket::ErrSocketRead:
-      detail = tr("Error reading from server");
+    case QAbstractSocket::NetworkError:
+      detail = tr("Network error while communicating with server");
+      break;
+    default:
+      detail = tr("Unknown network socket error");
       break;
   }
+
   // show version message from server
-  QMessageBox::critical(this, tr("QGIS Version Information"), tr("Unable to connect to the QGIS Version server") + "\n" + detail);
+  QMessageBox::critical(this, tr("QGIS Version Information"), tr("Unable to communicate with QGIS Version server") + "\n" + detail);
 }
 
 void QgisApp::socketReadyRead()
