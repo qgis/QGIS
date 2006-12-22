@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsGrassSelectBase</class>
  <widget class="QDialog" name="QgsGrassSelectBase" >
   <property name="geometry" >
@@ -24,6 +21,9 @@
    <string>Add GRASS Layer</string>
   </property>
   <property name="sizeGripEnabled" >
+   <bool>true</bool>
+  </property>
+  <property name="modal" >
    <bool>true</bool>
   </property>
   <layout class="QHBoxLayout" >
@@ -186,10 +186,9 @@
  <customwidgets>
   <customwidget>
    <class>Q3Frame</class>
-   <extends></extends>
+   <extends>QFrame</extends>
    <header>Qt3Support/Q3Frame</header>
    <container>1</container>
-   <pixmap></pixmap>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsLUDialogBase</class>
  <widget class="QDialog" name="QgsLUDialogBase" >
   <property name="geometry" >
@@ -14,6 +11,9 @@
   </property>
   <property name="windowTitle" >
    <string>Enter class bounds</string>
+  </property>
+  <property name="modal" >
+   <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >

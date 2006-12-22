@@ -1,15 +1,14 @@
 <ui version="4.0" >
  <author>Gary Sherman</author>
  <comment>Query builder for PostgreSQL layers (using PostGIS)	</comment>
- <exportmacro></exportmacro>
  <class>QgsPgQueryBuilderBase</class>
  <widget class="QDialog" name="QgsPgQueryBuilderBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>525</width>
-    <height>461</height>
+    <width>644</width>
+    <height>533</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -25,6 +24,9 @@
   </property>
   <property name="windowIcon" >
    <iconset/>
+  </property>
+  <property name="modal" >
+   <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
@@ -413,28 +415,22 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
  <customwidgets>
   <customwidget>
    <class>Q3GroupBox</class>
-   <extends></extends>
+   <extends>QGroupBox</extends>
    <header>Qt3Support/Q3GroupBox</header>
    <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3TextEdit</class>
-   <extends></extends>
-   <header>q3textedit.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
   </customwidget>
   <customwidget>
    <class>Q3ListBox</class>
-   <extends></extends>
+   <extends>Q3Frame</extends>
    <header>q3listbox.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Q3TextEdit</class>
+   <extends>Q3Frame</extends>
+   <header>q3textedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

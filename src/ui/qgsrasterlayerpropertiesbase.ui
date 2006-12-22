@@ -1,15 +1,12 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsRasterLayerPropertiesBase</class>
  <widget class="QDialog" name="QgsRasterLayerPropertiesBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>466</width>
-    <height>487</height>
+    <width>564</width>
+    <height>522</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -19,6 +16,9 @@
    <iconset/>
   </property>
   <property name="sizeGripEnabled" >
+   <bool>true</bool>
+  </property>
+  <property name="modal" >
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
@@ -379,6 +379,9 @@
            <property name="title" >
             <string>Thumbnail</string>
            </property>
+           <property name="orientation" >
+            <enum>Qt::Vertical</enum>
+           </property>
            <layout class="QGridLayout" >
             <property name="margin" >
              <number>0</number>
@@ -426,6 +429,9 @@
            <property name="title" >
             <string>Legend:</string>
            </property>
+           <property name="orientation" >
+            <enum>Qt::Vertical</enum>
+           </property>
            <layout class="QGridLayout" >
             <property name="margin" >
              <number>0</number>
@@ -472,6 +478,9 @@
           <widget class="Q3GroupBox" name="groupBox8" >
            <property name="title" >
             <string>Palette:</string>
+           </property>
+           <property name="orientation" >
+            <enum>Qt::Vertical</enum>
            </property>
            <layout class="QGridLayout" >
             <property name="margin" >
@@ -1057,35 +1066,27 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Q3TextEdit</class>
-   <extends></extends>
-   <header>q3textedit.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
    <class>Q3TextBrowser</class>
-   <extends>QWidget</extends>
-   <header>q3textbrowser.h</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3ListBox</class>
-   <extends></extends>
-   <header>q3listbox.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
+   <extends>Q3TextEdit</extends>
+   <header>Qt3Support/Q3TextBrowser</header>
   </customwidget>
   <customwidget>
    <class>Q3GroupBox</class>
-   <extends></extends>
+   <extends>QGroupBox</extends>
    <header>Qt3Support/Q3GroupBox</header>
    <container>1</container>
-   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Q3ListBox</class>
+   <extends>Q3Frame</extends>
+   <header>q3listbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Q3TextEdit</class>
+   <extends>Q3Frame</extends>
+   <header>q3textedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

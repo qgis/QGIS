@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsEditReservedWordsBase</class>
  <widget class="QDialog" name="QgsEditReservedWordsBase" >
   <property name="geometry" >
@@ -16,6 +13,9 @@
    <string>Edit Reserved Words</string>
   </property>
   <property name="sizeGripEnabled" >
+   <bool>true</bool>
+  </property>
+  <property name="modal" >
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
