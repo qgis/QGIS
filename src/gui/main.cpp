@@ -370,14 +370,6 @@ int main(int argc, char *argv[])
   // If run at startup, the handler will set either or both of myProjectFileName and myFileList.
   AEInstallEventHandler(kCoreEventClass, kAEOpenDocuments, openDocumentsAEHandler, 0, false);
 
-  // If the QtCore framework is bundled with the application, clear the library search path
-  // and look for Qt plugins only within the application bundle.
-  QString bundledQtCore(QCoreApplication::applicationDirPath().append("/lib/QtCore.framework"));
-  if (QFile::exists(bundledQtCore))
-  {
-    QCoreApplication::setLibraryPaths(QStringList(QCoreApplication::applicationDirPath()));
-  }
-
   // If the GDAL plugins are bundled with the application and GDAL_DRIVER_PATH
   // is not already defined, use the GDAL plugins in the application bundle.
   QString gdalPlugins(QCoreApplication::applicationDirPath().append("/lib/gdalplugins"));
