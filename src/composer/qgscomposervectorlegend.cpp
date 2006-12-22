@@ -450,7 +450,7 @@ void QgsComposerVectorLegend::draw ( QPainter & painter )
 
   if ( mFrame ) {
     QPen pen(QColor(0,0,0));
-    pen.setWidthF(2.0);
+    pen.setWidthF(0.5);
     painter.setPen( pen );
     painter.setBrush( QBrush( QColor(255,255,255), Qt::SolidPattern) );
 
