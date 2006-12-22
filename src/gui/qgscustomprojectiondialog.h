@@ -29,7 +29,6 @@ public:
     //a recursive function to make a directory and its ancestors
 public slots:    
     void on_pbnCalculate_clicked();
-    void on_pbnHelp_clicked();
     void on_pbnClose_clicked();
     void on_pbnDelete_clicked();
     //
