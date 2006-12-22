@@ -12,7 +12,7 @@
 
 plugindir = ${pkglibdir}
 #ScaleBar below to be replaced with the name of the plugin
-plugin_LTLIBRARIES = libScaleBarplugin.la
+plugin_LTLIBRARIES = scalebarplugin.la
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -23,7 +23,7 @@ ui_%.h: %.ui
 %.qrc.cpp: %.qrc
 	$(RCC) -o $@ $<
 
-libScaleBarplugin_la_SOURCES =  plugin.cpp \
+scalebarplugin_la_SOURCES =  plugin.cpp \
 			      plugin.h \
 			      plugingui.cpp \
 			      plugingui.h \
@@ -49,9 +49,9 @@ pluginguibase.cpp: pluginguibase.h pluginguibase.ui
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI) $(plugin_RES)
 
 
-libScaleBarplugin_la_LIBADD = $(QT_LDADD) ../../core/libqgis_core.la
-libScaleBarplugin_la_LDFLAGS = -avoid-version -module
-libScaleBarplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GEOS_CFLAGS) -I../../gui -I../../ui -I../../core 
+scalebarplugin_la_LIBADD = $(QT_LDADD) ../../core/libqgis_core.la
+scalebarplugin_la_LDFLAGS = -avoid-version -module
+scalebarplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GEOS_CFLAGS) -I../../gui -I../../ui -I../../core 
 
 CLEANFILES = $(BUILT_SOURCES)
 
