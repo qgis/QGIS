@@ -1,21 +1,21 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsMapserverExportBase</class>
  <widget class="QDialog" name="QgsMapserverExportBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>481</width>
-    <height>386</height>
+    <width>483</width>
+    <height>433</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Export to Mapserver</string>
   </property>
   <property name="sizeGripEnabled" >
+   <bool>true</bool>
+  </property>
+  <property name="modal" >
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
@@ -336,10 +336,9 @@
  <customwidgets>
   <customwidget>
    <class>Q3GroupBox</class>
-   <extends></extends>
+   <extends>QGroupBox</extends>
    <header>Qt3Support/Q3GroupBox</header>
    <container>1</container>
-   <pixmap></pixmap>
   </customwidget>
  </customwidgets>
  <tabstops>

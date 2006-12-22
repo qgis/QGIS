@@ -1,14 +1,11 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsDbSourceSelectBase</class>
  <widget class="QDialog" name="QgsDbSourceSelectBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>433</width>
+    <width>494</width>
     <height>481</height>
    </rect>
   </property>
@@ -19,6 +16,9 @@
    <iconset/>
   </property>
   <property name="sizeGripEnabled" >
+   <bool>true</bool>
+  </property>
+  <property name="modal" >
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
@@ -210,7 +210,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
  <tabstops>
   <tabstop>cmbConnections</tabstop>
   <tabstop>btnConnect</tabstop>

@@ -1,19 +1,19 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsPatternDialogBase</class>
  <widget class="QDialog" name="QgsPatternDialogBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>344</width>
+    <width>411</width>
     <height>326</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Select a fill pattern</string>
+  </property>
+  <property name="modal" >
+   <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
@@ -26,6 +26,9 @@
     <widget class="Q3ButtonGroup" name="buttonGroup1" >
      <property name="title" >
       <string/>
+     </property>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
      </property>
      <property name="exclusive" >
       <bool>true</bool>
@@ -252,10 +255,9 @@
  <customwidgets>
   <customwidget>
    <class>Q3ButtonGroup</class>
-   <extends></extends>
+   <extends>Q3GroupBox</extends>
    <header>Qt3Support/Q3ButtonGroup</header>
    <container>1</container>
-   <pixmap></pixmap>
   </customwidget>
  </customwidgets>
  <tabstops>

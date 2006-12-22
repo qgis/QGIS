@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsLineStyleDialogBase</class>
  <widget class="QDialog" name="QgsLineStyleDialogBase" >
   <property name="geometry" >
@@ -14,6 +11,9 @@
   </property>
   <property name="windowTitle" >
    <string>Select a line style</string>
+  </property>
+  <property name="modal" >
+   <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
@@ -192,10 +192,9 @@
  <customwidgets>
   <customwidget>
    <class>Q3ButtonGroup</class>
-   <extends></extends>
+   <extends>Q3GroupBox</extends>
    <header>Qt3Support/Q3ButtonGroup</header>
    <container>1</container>
-   <pixmap></pixmap>
   </customwidget>
  </customwidgets>
  <tabstops>

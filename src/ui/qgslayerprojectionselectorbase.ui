@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsLayerProjectionSelectorBase</class>
  <widget class="QDialog" name="QgsLayerProjectionSelectorBase" >
   <property name="geometry" >
@@ -18,6 +15,9 @@
   <property name="windowIcon" >
    <iconset/>
   </property>
+  <property name="modal" >
+   <bool>true</bool>
+  </property>
   <layout class="QGridLayout" >
    <property name="margin" >
     <number>9</number>
@@ -26,7 +26,7 @@
     <number>6</number>
    </property>
    <item row="1" column="0" colspan="2" >
-    <widget class="QgsProjectionSelector" name="projectionSelector" />
+    <widget class="QgsProjectionSelector" native="1" name="projectionSelector" />
    </item>
    <item row="0" column="0" colspan="2" >
     <widget class="QTextEdit" name="textEdit" >
@@ -87,14 +87,12 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
  <customwidgets>
   <customwidget>
    <class>QgsProjectionSelector</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselector.h</header>
    <container>1</container>
-   <pixmap></pixmap>
   </customwidget>
  </customwidgets>
  <resources/>

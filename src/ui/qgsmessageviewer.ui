@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsMessageViewer</class>
  <widget class="QDialog" name="QgsMessageViewer" >
   <property name="geometry" >
@@ -14,6 +11,9 @@
   </property>
   <property name="windowTitle" >
    <string>QGIS Message</string>
+  </property>
+  <property name="modal" >
+   <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >

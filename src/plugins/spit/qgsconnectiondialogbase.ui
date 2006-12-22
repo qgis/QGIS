@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsConnectionDialogBase</class>
  <widget class="QDialog" name="QgsConnectionDialogBase" >
   <property name="geometry" >
@@ -16,6 +13,9 @@
    <string>Create a New PostGIS connection</string>
   </property>
   <property name="sizeGripEnabled" >
+   <bool>true</bool>
+  </property>
+  <property name="modal" >
    <bool>true</bool>
   </property>
   <layout class="QVBoxLayout" >

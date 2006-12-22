@@ -1,19 +1,19 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsGeomTypeDialogBase</class>
  <widget class="QDialog" name="QgsGeomTypeDialogBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>383</width>
+    <width>400</width>
     <height>427</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>New Vector Layer</string>
+  </property>
+  <property name="modal" >
+   <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
@@ -180,10 +180,8 @@
  <customwidgets>
   <customwidget>
    <class>Q3ListView</class>
-   <extends></extends>
+   <extends>Q3Frame</extends>
    <header>q3listview.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
   </customwidget>
  </customwidgets>
  <tabstops>

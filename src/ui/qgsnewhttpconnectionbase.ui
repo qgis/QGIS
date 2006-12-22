@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsNewHttpConnectionBase</class>
  <widget class="QDialog" name="QgsNewHttpConnectionBase" >
   <property name="geometry" >
@@ -9,13 +6,16 @@
     <x>0</x>
     <y>0</y>
     <width>437</width>
-    <height>255</height>
+    <height>256</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Create a New WMS connection</string>
   </property>
   <property name="sizeGripEnabled" >
+   <bool>true</bool>
+  </property>
+  <property name="modal" >
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
@@ -293,7 +293,6 @@
    <extends>QGroupBox</extends>
    <header>Qt3Support/Q3GroupBox</header>
    <container>1</container>
-   <pixmap></pixmap>
   </customwidget>
  </customwidgets>
  <tabstops>
