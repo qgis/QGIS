@@ -52,9 +52,9 @@ email                : tim@linfiniti.com
 
 static const char * const ident_ = "$Id$";
 
-static const char * const name_ = "CopyrightLabel";
-static const char * const description_ = "This plugin overlays copyright information on the rendered map.";
-static const char * const version_ = "Version 0.1";
+static const QString name_ = QObject::tr("CopyrightLabel");
+static const QString description_ = QObject::tr("Draws copyright information");
+static const QString version_ = QObject::tr("Version 0.1");
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 
 

@@ -39,9 +39,9 @@
 
 static const char * const ident_ = "$Id$";
 
-static const char * const name_ = "SPIT";
-static const char * const description_ = "Shapefile to PostgreSQL/PostGIS Import Tool";
-static const char * const version_ = "Version 0.1";
+static const QString name_ = QObject::tr("SPIT");
+static const QString description_ = QObject::tr("Shapefile to PostgreSQL/PostGIS Import Tool");
+static const QString version_ = QObject::tr("Version 0.1");
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 
 

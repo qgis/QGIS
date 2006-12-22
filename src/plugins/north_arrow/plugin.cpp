@@ -54,9 +54,9 @@ email                : tim@linfiniti.com
 //
 static const char * const ident_ = "$Id$";
 
-static const char * const name_ = "NorthArrow";
-static const char * const description_ = "This plugin displays a north arrow overlayed onto the map.";
-static const char * const version_ = "Version 0.1";
+static const QString name_ = QObject::tr("NorthArrow");
+static const QString description_ = QObject::tr("Displays a north arrow overlayed onto the map");
+static const QString version_ = QObject::tr("Version 0.1");
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 
 const double QgsNorthArrowPlugin::PI = 3.14159265358979323846;

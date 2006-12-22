@@ -46,7 +46,8 @@ Functions:
 #define QGISEXTERN extern "C"
 #endif
 
-static const char *pluginVersion = "Version 0.2";
+static const QString pluginVersion = QObject::tr("Version 0.2");
+static const QString description_ = QObject::tr("Loads and displays delimited text files containing x,y coordinates");
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app
  * and an interface object that provides access to exposed functions in QGIS.
@@ -57,9 +58,9 @@ static const char *pluginVersion = "Version 0.2";
 qgisMainWindowPointer(theQGisApp), qGisInterface(theQgisInterFace)
 {
   /** Initialize the plugin and set the required attributes */
-  pluginNameQString = "DelimitedTextLayer";
-  pluginVersionQString = "Version 0.1";
-  pluginDescriptionQString = "This plugin provides support for delimited text files containing x,y coordinates";
+  pluginNameQString = tr("DelimitedTextLayer");
+  pluginVersionQString = pluginVersion;
+  pluginDescriptionQString = description_;
 
 }
 
@@ -162,13 +163,13 @@ QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer,
 // the class may not yet be insantiated when this method is called.
 QGISEXTERN QString name()
 {
-  return QString("Add Delimited Text Layer");
+  return QString(QObject::tr("Add Delimited Text Layer"));
 }
 
 // Return the description
 QGISEXTERN QString description()
 {
-  return QString("This plugin provides support for delimited text files containing x,y coordinates");
+  return description_;
 }
 
 // Return the type (either UI or MapLayer plugin)

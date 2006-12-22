@@ -60,9 +60,9 @@
 #endif
 
 static const char * const sIdent = "$Id$";
-static const char * const sName = "Georeferencer";
-static const char * const sDescription = "The georeferencer plugin is a tool for adding projection info to rasters";
-static const char * const sPluginVersion = "Version 0.1";
+static const QString sName = QObject::tr("Georeferencer");
+static const QString sDescription = QObject::tr("Adding projection info to rasters");
+static const QString sPluginVersion = QObject::tr("Version 0.1");
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
 //////////////////////////////////////////////////////////////////////
