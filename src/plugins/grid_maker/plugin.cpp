@@ -47,9 +47,9 @@ email                : tim@linfiniti.com
 
 static const char * const ident_ = "$Id$";
 
-static const char * const name_ = "Graticule Creator";
-static const char * const description_ = "A graticule building plugin.";
-static const char * const version_ = "Version 0.1";
+static const QString name_ = QObject::tr("Graticule Creator");
+static const QString description_ = QObject::tr("Builds a graticule");
+static const QString version_ = QObject::tr("Version 0.1");
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app

@@ -53,9 +53,9 @@
 #endif
 
 static const char * const sIdent = "$Id$";
-static const char * const sName = "[menuitemname]";
-static const char * const sDescription = "[plugindescription]";
-static const char * const sPluginVersion = "Version 0.1";
+static const QString sName = QObject::tr("[menuitemname]");
+static const QString sDescription = QObject::tr("[plugindescription]");
+static const QString sPluginVersion = QObject::tr("Version 0.1");
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
 //////////////////////////////////////////////////////////////////////

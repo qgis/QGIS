@@ -59,9 +59,9 @@ email                : sbr00pwb@users.sourceforge.net
 
 static const char * const ident_ = "$Id$";
 
-static const char * const name_ = "ScaleBar";
-static const char * const description_ = "Plugin to draw scale bar on map";
-static const char * const version_ = "Version 0.1";
+static const QString name_ = QObject::tr("ScaleBar");
+static const QString description_ = QObject::tr("Draws a scale bar");
+static const QString version_ = QObject::tr("Version 0.1");
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 
 

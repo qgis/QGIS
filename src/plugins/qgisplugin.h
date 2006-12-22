@@ -21,7 +21,7 @@
 #define QGISPLUGIN_H
 
 
-#include <qstring.h>
+#include <QString>
 
 #include <qgisapp.h>
 
