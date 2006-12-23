@@ -5,19 +5,19 @@
 PREFIX=qgis.app/Contents/MacOS
 
 otool -L $PREFIX/qgis
-otool -L $PREFIX/bin/qgis_help.app/Contents/MacOS/qgis_help
-otool -L $PREFIX/bin/gridmaker
-otool -L $PREFIX/bin/msexport.app/Contents/MacOS/msexport
-#otool -L $PREFIX/bin/omgui
 otool -L $PREFIX/bin/qgis-config
-otool -L $PREFIX/bin/spit
+otool -L $PREFIX/bin/qgis_help.app/Contents/MacOS/qgis_help
+otool -L $PREFIX/bin/msexport.app/Contents/MacOS/msexport
+#otool -L $PREFIX/bin/gridmaker
+#otool -L $PREFIX/bin/spit
+#otool -L $PREFIX/bin/omgui
 
-otool -L $PREFIX/lib/libmsexport.0.0.0.dylib
+otool -L $PREFIX/lib/libmsexport.1.0.0.dylib
 otool -L $PREFIX/lib/libqgis_composer.1.0.0.dylib
 otool -L $PREFIX/lib/libqgis_core.1.0.0.dylib
 otool -L $PREFIX/lib/libqgis_gui.1.0.0.dylib
 otool -L $PREFIX/lib/libqgis_legend.1.0.0.dylib
-otool -L $PREFIX/lib/libqgis_raster.0.0.0.dylib
+otool -L $PREFIX/lib/libqgis_raster.1.0.0.dylib
 otool -L $PREFIX/lib/libqgisgrass.1.0.0.dylib
 otool -L $PREFIX/lib/qgis/copyrightlabelplugin.so 
 otool -L $PREFIX/lib/qgis/delimitedtextplugin.so
@@ -28,12 +28,12 @@ otool -L $PREFIX/lib/qgis/gpxprovider.so
 otool -L $PREFIX/lib/qgis/grassplugin.so 
 otool -L $PREFIX/lib/qgis/grassprovider.so 
 otool -L $PREFIX/lib/qgis/gridmakerplugin.so 
-otool -L $PREFIX/lib/qgis/libScaleBarplugin.so
 otool -L $PREFIX/lib/qgis/libwfsprovider.so
 otool -L $PREFIX/lib/qgis/northarrowplugin.so
 otool -L $PREFIX/lib/qgis/ogrprovider.so
 otool -L $PREFIX/lib/qgis/pggeoprocessingplugin.so
 otool -L $PREFIX/lib/qgis/postgresprovider.so
+otool -L $PREFIX/lib/qgis/scalebarplugin.so
 otool -L $PREFIX/lib/qgis/spitplugin.so
 otool -L $PREFIX/lib/qgis/wfsplugin.so
 otool -L $PREFIX/lib/qgis/wmsprovider.so
@@ -75,9 +75,9 @@ otool -L $PREFIX/lib/libgslcblas.0.0.0.dylib
 #otool -L $PREFIX/lib/openmodeller/libomdistance_to_average.0.0.0.dylib
 #otool -L $PREFIX/lib/openmodeller/libomminimum_distance.0.0.0.dylib
 #otool -L $PREFIX/lib/openmodeller/libomoldgarp.0.0.0.dylib
-otool -L $PREFIX/lib/libpq.4.1.dylib
+otool -L $PREFIX/lib/libpq.5.0.dylib
 
 for LIBGRASS in datetime dbmibase dbmiclient dgl dig2 form gis gmath gproj I linkm rtree shape vask vect
 do
-	otool -L $PREFIX/lib/grass/libgrass_$LIBGRASS.6.2.0.dylib
+	otool -L $PREFIX/lib/grass/libgrass_$LIBGRASS.6.2.1.dylib
 done

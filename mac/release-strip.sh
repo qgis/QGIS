@@ -4,19 +4,19 @@
 PREFIX=qgis.app/Contents/MacOS
 
 strip -x $PREFIX/qgis
-strip -x $PREFIX/bin/qgis_help.app/Contents/MacOS/qgis_help
-strip -x $PREFIX/bin/gridmaker
-strip -x $PREFIX/bin/msexport.app/Contents/MacOS/msexport
-#strip -x $PREFIX/bin/omgui
 strip -x $PREFIX/bin/qgis-config
-strip -x $PREFIX/bin/spit
+strip -x $PREFIX/bin/qgis_help.app/Contents/MacOS/qgis_help
+strip -x $PREFIX/bin/msexport.app/Contents/MacOS/msexport
+#strip -x $PREFIX/bin/gridmaker
+#strip -x $PREFIX/bin/spit
+#strip -x $PREFIX/bin/omgui
 
-strip -x $PREFIX/lib/libmsexport.0.0.0.dylib
+strip -x $PREFIX/lib/libmsexport.1.0.0.dylib
 strip -x $PREFIX/lib/libqgis_composer.1.0.0.dylib
 strip -x $PREFIX/lib/libqgis_core.1.0.0.dylib
 strip -x $PREFIX/lib/libqgis_gui.1.0.0.dylib
 strip -x $PREFIX/lib/libqgis_legend.1.0.0.dylib
-strip -x $PREFIX/lib/libqgis_raster.0.0.0.dylib
+strip -x $PREFIX/lib/libqgis_raster.1.0.0.dylib
 strip -x $PREFIX/lib/libqgisgrass.1.0.0.dylib
 strip -x $PREFIX/lib/qgis/copyrightlabelplugin.so 
 strip -x $PREFIX/lib/qgis/delimitedtextplugin.so
@@ -27,12 +27,12 @@ strip -x $PREFIX/lib/qgis/gpxprovider.so
 strip -x $PREFIX/lib/qgis/grassplugin.so 
 strip -x $PREFIX/lib/qgis/grassprovider.so 
 strip -x $PREFIX/lib/qgis/gridmakerplugin.so 
-strip -x $PREFIX/lib/qgis/libScaleBarplugin.so
 strip -x $PREFIX/lib/qgis/libwfsprovider.so
 strip -x $PREFIX/lib/qgis/northarrowplugin.so
 strip -x $PREFIX/lib/qgis/ogrprovider.so
 strip -x $PREFIX/lib/qgis/pggeoprocessingplugin.so
 strip -x $PREFIX/lib/qgis/postgresprovider.so
+strip -x $PREFIX/lib/qgis/scalebarplugin.so
 strip -x $PREFIX/lib/qgis/spitplugin.so
 strip -x $PREFIX/lib/qgis/wfsplugin.so
 strip -x $PREFIX/lib/qgis/wmsprovider.so
@@ -74,11 +74,11 @@ strip -x $PREFIX/lib/libgslcblas.0.0.0.dylib
 #strip -x $PREFIX/lib/openmodeller/libomdistance_to_average.0.0.0.dylib
 #strip -x $PREFIX/lib/openmodeller/libomminimum_distance.0.0.0.dylib
 #strip -x $PREFIX/lib/openmodeller/libomoldgarp.0.0.0.dylib
-strip -x $PREFIX/lib/libpq.4.1.dylib
+strip -x $PREFIX/lib/libpq.5.0.dylib
 
 for LIBGRASS in datetime dbmibase dbmiclient dgl dig2 form gis gmath gproj I linkm rtree shape vask vect
 do
-	strip -x $PREFIX/lib/grass/libgrass_$LIBGRASS.6.2.0.dylib
+	strip -x $PREFIX/lib/grass/libgrass_$LIBGRASS.6.2.1.dylib
 done
 
 # Delete unneeded files in application bundle
