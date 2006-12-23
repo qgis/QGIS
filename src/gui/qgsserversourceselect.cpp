@@ -298,7 +298,9 @@ void QgsServerSourceSelect::populateImageEncodingGroup(QgsWmsProvider* wmsProvid
     }
     else
     {
+#ifdef QGISDEBUG
       std::cerr<<"Unsupported type of " << format->toLocal8Bit().data() << '\n';
+#endif
     }
   }
 }
