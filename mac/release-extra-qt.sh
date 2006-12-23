@@ -10,7 +10,7 @@ LNKJPEG=libjpeg.62.dylib
 LIBPNG=libpng.3.1.2.8.dylib
 LNKPNG=libpng.3.dylib
 
-QTVER=4.2.0
+QTVER=4.2.2
 QTPREFIX=/usr/local/Trolltech/Qt-$QTVER
 QTFRAMEWORKS="QtCore QtGui QtNetwork QtSql QtSvg QtXml Qt3Support QtDesigner QtTest"
 
@@ -79,13 +79,13 @@ cd ../../../
 for FILE in \
 	qgis \
 	bin/qgis_help.app/Contents/MacOS/qgis_help \
-	bin/gridmaker \
 	bin/msexport.app/Contents/MacOS/msexport \
+	bin/gridmaker \
 	bin/spit \
-	lib/libmsexport.0.0.0.dylib \
+	lib/libmsexport.1.0.0.dylib \
 	lib/libqgis_core.1.0.0.dylib \
 	lib/libqgis_gui.1.0.0.dylib \
-	lib/libqgis_raster.0.0.0.dylib \
+	lib/libqgis_raster.1.0.0.dylib \
 	lib/libqgisgrass.1.0.0.dylib \
 	lib/qgis/copyrightlabelplugin.so \
 	lib/qgis/delimitedtextplugin.so \
@@ -96,12 +96,12 @@ for FILE in \
 	lib/qgis/grassplugin.so \
 	lib/qgis/grassprovider.so \
 	lib/qgis/gridmakerplugin.so \
-	lib/qgis/libScaleBarplugin.so \
 	lib/qgis/libwfsprovider.so \
 	lib/qgis/northarrowplugin.so \
 	lib/qgis/ogrprovider.so \
 	lib/qgis/pggeoprocessingplugin.so \
 	lib/qgis/postgresprovider.so \
+	lib/qgis/ScaleBarplugin.so \
 	lib/qgis/spitplugin.so \
 	lib/qgis/wfsplugin.so \
 	lib/qgis/wmsprovider.so \
@@ -109,7 +109,7 @@ for FILE in \
 	#bin/omgui \
 	#lib/qgis/libopenmodeller.so
 do
-	for FRAMEWORK in QtCore QtGui QtNetwork QtSvg QtXml Qt3Support QtDesigner QtTest
+	for FRAMEWORK in QtCore QtGui QtNetwork QtSql QtSvg QtXml Qt3Support QtDesigner QtTest
 	do
 		install_name_tool -change $QTPREFIX/lib/$FRAMEWORK.framework/Versions/4/$FRAMEWORK \
 			@executable_path/lib/$FRAMEWORK.framework/Versions/4/$FRAMEWORK \
