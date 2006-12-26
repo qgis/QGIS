@@ -1699,7 +1699,7 @@ const std::list<std::pair<QString, QString> >& attributes)
     }
 
     OGRLayer* layer;	
-    layer = dataSource->CreateLayer(QFileInfo(uri).baseName(), reference, OGRvectortype, NULL);
+    layer = dataSource->CreateLayer(QFile::encodeName(QFileInfo(uri).baseName()).constData(), reference, OGRvectortype, NULL);
     if(layer == NULL)
     {
 	return false;
