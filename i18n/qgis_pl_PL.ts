@@ -864,7 +864,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     </message>
     <message>
         <source>No MapLayer plugins in ../plugins/maplayer</source>
-        <translation>Nie znaleziono wtyczek MapLayes w ../plugins/maplayer</translation>
+        <translation>Nie znaleziono wtyczek MapLayer w ../plugins/maplayer</translation>
     </message>
     <message>
         <source>No Plugins</source>
@@ -1023,8 +1023,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     <message>
         <source>Enter the full path if the browser is not in your PATH.
 </source>
-        <translation>Wpisz pełną ścieżkę, jeśli przeglądarki nie ma w PATH.
-</translation>
+        <translation type="unfinished">Wpisz pełną ścieżkę, jeśli przeglądarki nie ma w ścieżce określonej przez zmienną PATH.</translation>
     </message>
     <message>
         <source>Open a GDAL Supported Raster Data Source</source>
@@ -1641,7 +1640,7 @@ Zapisz projekt pod nową nazwą</translation>
     </message>
     <message>
         <source>Digitizing</source>
-        <translation type="unfinished"></translation>
+        <translation>Digitalizacja</translation>
     </message>
     <message>
         <source>Map Navigation</source>
@@ -2566,7 +2565,7 @@ http://www.remotesensing.org/gdal/ogr/ogr_formats.html</translation>
 Enter the full path if the browser is not in your PATH.
 You can change this option later by selection Options from the Settings menu (Help Browser tab).</source>
         <translation>Wpisz nazwę przeglądarki, którą chcesz używać (np. konqueror).
-Podaj pełną ścieżkę jeśli przeglądarki nie ma w PATH.
+Podaj pełną ścieżkę jeśli przeglądarki nie ma  w ścieżce określonej przez zmienną PATH
 Możesz zmienić tą opcję później wybierając Opcje z menu Ustawienia (zakładka Przeglądarka pomocy).</translation>
     </message>
     <message>
@@ -2986,7 +2985,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Extent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zasięg</translation>
     </message>
     <message>
         <source>Id</source>
@@ -3480,7 +3479,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Legend</source>
-        <translation>Leganda</translation>
+        <translation>Legenda</translation>
     </message>
 </context>
 <context>
@@ -4000,7 +3999,7 @@ Przed ponownym użyciem kompozytora mapy zaleca się restart qgis.
     <name>QgsCustomProjectionDialogBase</name>
     <message>
         <source>Custom Projection Definition</source>
-        <translation type="unfinished"></translation>
+        <translation>Definicja własnego układu współrzędnych</translation>
     </message>
     <message>
         <source>Define</source>
@@ -4064,7 +4063,7 @@ Przed ponownym użyciem kompozytora mapy zaleca się restart qgis.
     </message>
     <message>
         <source>Projected Corrdinate System</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Projektowany układ współrzędnych</translation>
     </message>
     <message>
         <source>Geographic / WGS84</source>
@@ -5031,19 +5030,19 @@ has failed. The database said:
     </message>
     <message>
         <source>Track download:</source>
-        <translation>Import ścieżek (tracków):</translation>
+        <translation>Import śladów (tracków):</translation>
     </message>
     <message>
         <source>The command that is used to upload tracks to the device</source>
-        <translation>Komenda używana do eksportu ścieżek (tracków) do urządzenia</translation>
+        <translation>Komenda używana do eksportu śladów (tracków) do urządzenia</translation>
     </message>
     <message>
         <source>Track upload:</source>
-        <translation>Eksport ścieżek (tracków):</translation>
+        <translation>Eksport śladów (tracków):</translation>
     </message>
     <message>
         <source>The command that is used to download tracks from the device</source>
-        <translation>Komenda używana do importu ścieżek (tracków) z urządzenia</translation>
+        <translation>Komenda używana do importu śladów (tracków) z urządzenia</translation>
     </message>
     <message>
         <source>The command that is used to upload routes to the device</source>
@@ -5063,7 +5062,7 @@ has failed. The database said:
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;span style=&quot; font-style:italic;&quot;&gt;%babel&lt;/span&gt; - the path to GPSBabel&lt;br /&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;%in&lt;/span&gt; - the GPX filename when uploading or the port when downloading&lt;br /&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;%out&lt;/span&gt; - the port when uploading or the GPX filename when downloading&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;W komendach importu i eksportu powinny się znaleźć specjalne słowa kluczowe QGIS. Te słowa to:&lt;span style=&quot; font-style:italic;&quot;&gt;%babel&lt;/span&gt; - ścieżka do GPSBabel&lt;br /&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;%in&lt;/span&gt; - nazwa pliku GPX podczas eksportu lub port podczas importu&lt;br /&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;%out&lt;/span&gt; - port podczas eksportu lub nazwa pliku GPX podczas importu&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;W poleceniach do wysyłania i pobierania można użyć specjalnych wyrażeń, które zostaną odpowiednio zastąpione podczas użycia tych poleceń. Te wyrażenia to:&lt;span style=&quot; font-style:italic;&quot;&gt;%babel&lt;/span&gt; - ścieżka do GPSBabel&lt;br /&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;%in&lt;/span&gt; - nazwa pliku GPX podczas eksportu lub port podczas importu&lt;br /&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;%out&lt;/span&gt; - port podczas eksportu lub nazwa pliku GPX podczas importu&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -5327,7 +5326,7 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Arial&apos;; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;GPX is the &lt;/span&gt;&lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Format wymiany z GPS&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;, używany do zapisu o punktach  (waypoints), trasach (routes), i ścieżkach (tracks).&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;GPX is the &lt;/span&gt;&lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Format wymiany z GPS&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;, używany do zapisu informacji o punktach  (waypoints), trasach (routes), i śladach (tracks).&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;Wybierz plik GPX a następnie zaznacz typy danych, które chcesz załadować.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
@@ -5340,7 +5339,7 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Arial&apos;; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;QGIS może załadować tylko pliki GPX, lecz wiele innych formatów może być przekształcone do GPX przy pomocy programu GPSBabel (&lt;/span&gt;&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;http://gpsbabel.sf.net&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;). To wymaga, byś miał zainstalowany program GPSBabel i by QGIS mógł go znaleźć.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;Wybierz format pliku GPS i plik, który chcesz importować, typ danych, którego chcesz użyć, wpisz nazwę pliku GPX pod jaką chcesz zapisać przekształcony plik i nazwę nowej warstwy. Niektóre formaty plików nie mogą zapisywać punktów, tras i ścieżek dlatego niektóre typy mogą być niedozwolone dla pewnych formatów plików.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;Wybierz format pliku GPS i plik, który chcesz importować, typ danych, którego chcesz użyć, wpisz nazwę pliku GPX pod jaką chcesz zapisać przekształcony plik i nazwę nowej warstwy. Niektóre formaty plików nie mogą zapisywać punktów, tras i śladów dlatego niektóre typy mogą być niedozwolone dla pewnych formatów plików.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -8251,31 +8250,31 @@ Domyślnie QGIS używa wartości 5. W razie problemów z identyfikacją obiektó
     </message>
     <message>
         <source>Select Global Default ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Wskaż domyślne globalnie...</translation>
     </message>
     <message>
         <source>Prompt for projection.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pytaj o układ współrzędnych.</translation>
     </message>
     <message>
         <source>Project wide default projection will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj domyślnego układu współrzędnych projektu.</translation>
     </message>
     <message>
         <source>firefox</source>
-        <translation type="unfinished"></translation>
+        <translation>firefox</translation>
     </message>
     <message>
         <source>mozilla-firefox</source>
-        <translation type="unfinished"></translation>
+        <translation>mozilla-firefox</translation>
     </message>
     <message>
         <source>&amp;Splash screen</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ekran powitalny</translation>
     </message>
     <message>
         <source>Default Map Appearance (Overridden by project properties)</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślny wygląd mapy (podrzędny do właściwości projektu)</translation>
     </message>
     <message>
         <source>Background Color:</source>
@@ -8291,7 +8290,7 @@ Domyślnie QGIS używa wartości 5. W razie problemów z identyfikacją obiektó
     </message>
     <message>
         <source>Capitalise layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa warstwy od dużej litery</translation>
     </message>
     <message>
         <source>Make lines appear less jagged at the expense of some drawing performance</source>
@@ -8299,11 +8298,11 @@ Domyślnie QGIS używa wartości 5. W razie problemów z identyfikacją obiektó
     </message>
     <message>
         <source>By default new la&amp;yers added to the map should be displayed</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślnie nowo dodawane warstw&amp;y są wyświetlane</translation>
     </message>
     <message>
         <source>&amp;Update during drawing</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Odświeżanie podczas rysowania</translation>
     </message>
     <message>
         <source>Measure tool</source>
@@ -8311,31 +8310,31 @@ Domyślnie QGIS używa wartości 5. W razie problemów z identyfikacją obiektó
     </message>
     <message>
         <source>Ellipsoid for distance calculations:</source>
-        <translation type="unfinished"></translation>
+        <translation>Elipsoida do kalkulacji odległości:</translation>
     </message>
     <message>
         <source>Search radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Promień wyszukiwania</translation>
     </message>
     <message>
         <source>Pro&amp;jection</source>
-        <translation type="unfinished"></translation>
+        <translation>Układ &amp;współrzędnych</translation>
     </message>
     <message>
         <source>When layer is loaded that has no projection information</source>
-        <translation type="unfinished"></translation>
+        <translation>Gdy dodawana warstwa nie posiada informacji o układzie współrzędnych</translation>
     </message>
     <message>
         <source>Global default projection displa&amp;yed below will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj globalnego dom&amp;yślnego układu współrzędnych, wyświetlonego poniżej.</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; The browser must be in your PATH or you can specify the full path above</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Uwaga:&lt;/b&gt;  Przeglądarka musi znajdować się w ścieżce określonej przez zmienną PATH&lt;br&gt;albo podaj pełną ścieżkę do przeglądarki powyżej</translation>
     </message>
     <message>
         <source>Rendering</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Renderowanie</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Selecting this will unselect the &apos;make lines less&apos; jagged toggle&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -8343,7 +8342,7 @@ Domyślnie QGIS używa wartości 5. W razie problemów z identyfikacją obiektó
     </message>
     <message>
         <source>Fix problems with incorrectly filled polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Napraw problemy związane z nieprawidłowo wypełnionymi poligonami</translation>
     </message>
     <message>
         <source>Continuously redraw the map when dragging the legend/map divider</source>
@@ -8398,7 +8397,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;b&gt;Note: This function is not useful yet!&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Uwaga: Ta funkcja jeszcze nie działa!&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Source</source>
@@ -8445,7 +8444,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No Fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Bez wypełnienia</translation>
     </message>
 </context>
 <context>
@@ -9189,7 +9188,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Feet</source>
-        <translation>Stopa</translation>
+        <translation>Stopy</translation>
     </message>
     <message>
         <source>Decimal degrees</source>
@@ -9221,7 +9220,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Automatic</source>
-        <translation>Automatyczny</translation>
+        <translation>Automatyczna</translation>
     </message>
     <message>
         <source>Automatically sets the number of decimal places in the mouse position display</source>
@@ -9233,7 +9232,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Manual</source>
-        <translation>Ręczny</translation>
+        <translation>Ręczna</translation>
     </message>
     <message>
         <source>Sets the number of decimal places to use for the mouse position display</source>
@@ -9249,7 +9248,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Map Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Wygląd mapy</translation>
     </message>
     <message>
         <source>Selection Color:</source>
@@ -9261,7 +9260,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Układ współrzędnych</translation>
     </message>
     <message>
         <source>Enable on the fly projection</source>
@@ -9285,7 +9284,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Line width in pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>Szerokość linii w pikselach</translation>
     </message>
     <message>
         <source>Snapping tolerance in map units</source>
@@ -9319,7 +9318,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Find</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Szukaj</translation>
     </message>
     <message>
         <source>Postgis SRID</source>
