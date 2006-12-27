@@ -1392,8 +1392,11 @@ QgsRect QgsVectorLayer::bBoxOfSelected()
   {
     if (mSelectedFeatureIds.find(fet->featureId()) != mSelectedFeatureIds.end())
     {
-      r=fet->geometry()->boundingBox();
-      retval.combineExtentWith(&r);
+      if(fet->geometry())
+	{
+	  r=fet->boundingBox();
+	  retval.combineExtentWith(&r);
+	}
     }
     delete fet;
   }
