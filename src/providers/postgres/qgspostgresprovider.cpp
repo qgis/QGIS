@@ -198,7 +198,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
           n++;
         }
       // The -1 is to remove the trailing ' character
-      mUri.password = password.left(n-1);
+      mUri.password = password.left(n);
     }
   else
   /* end uri structure */
