@@ -936,7 +936,7 @@ void QgisApp::createStatusBar()
   // plenty of display space on 1024x768 resolutions
   QFont myFont( "Arial", 9 );
   statusBar()->setFont(myFont);
-  mScaleLabel = new QLabel(QString("Scale"),statusBar());
+  mScaleLabel = new QLabel(QString(),statusBar());
   mScaleLabel->setFont(myFont);
   mScaleLabel->setMinimumWidth(10);
   mScaleLabel->setMargin(3);
@@ -944,7 +944,7 @@ void QgisApp::createStatusBar()
   QWhatsThis::add(mScaleLabel, tr("Displays the current map scale"));
   statusBar()->addWidget(mScaleLabel, 0,true);
   //coords status bar widget
-  mCoordsLabel = new QLabel(QString("Coordinates:"), statusBar());
+  mCoordsLabel = new QLabel(QString(), statusBar());
   mCoordsLabel->setMinimumWidth(10);
   mCoordsLabel->setFont(myFont);
   mCoordsLabel->setMargin(3);
