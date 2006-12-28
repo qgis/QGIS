@@ -880,51 +880,36 @@
        <property name="spacing" >
         <number>6</number>
        </property>
-       <item row="3" column="1" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" >
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="3" column="0" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" >
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
        <item row="2" column="1" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="0" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="1" >
         <widget class="QComboBox" name="cboBufferSizeField" />
        </item>
        <item row="0" column="0" >
-        <widget class="QLabel" name="textLabel1_3_3" >
-         <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>0</hsizetype>
-           <vsizetype>5</vsizetype>
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text" >
-          <string>&amp;Colour:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0" >
         <widget class="QLabel" name="textLabel1_3_2_2_2" >
          <property name="enabled" >
           <bool>false</bool>
@@ -951,14 +936,14 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1" >
+       <item row="0" column="1" >
         <widget class="QComboBox" name="cboBufferTransparencyField" >
          <property name="enabled" >
           <bool>false</bool>
          </property>
         </widget>
        </item>
-       <item row="2" column="0" >
+       <item row="1" column="0" >
         <widget class="QLabel" name="textLabel4_3_2_2_2" >
          <property name="sizePolicy" >
           <sizepolicy>
