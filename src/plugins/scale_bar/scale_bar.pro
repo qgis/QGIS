@@ -38,6 +38,7 @@ DESTDIR=$${QGISPLUGINDIR}
 QT += qt3support svg core gui xml network
 message("Building libs into $${DESTDIR}")
 
+RESOURCES += scalebar_plugin.qrc
 
 HEADERS += plugin.h \
            plugingui.h \

@@ -38,6 +38,7 @@ QT += qt3support svg core gui xml network
 
 message("Building libs into $${DESTDIR}")
 
+RESOURCES += gridmaker_plugin.qrc
 
 HEADERS += graticulecreator.h \
            plugin.h \

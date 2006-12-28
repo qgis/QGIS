@@ -37,6 +37,8 @@ DESTDIR=$${QGISPLUGINDIR}
 QT += qt3support svg core gui xml network
 message("Building libs into $${DESTDIR}")
 
+RESOURCES += northarrow_plugin.qrc
+
 HEADERS += plugin.h \
            plugingui.h \
            pluginguibase.ui.h 

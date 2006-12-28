@@ -31,6 +31,8 @@ DESTDIR=$${QGISPLUGINDIR}
 QT += qt3support svg core gui xml network
 message("Building libs into $${DESTDIR}")
 
+RESOURCES = delimited_text.qrc
+
 HEADERS += qgsdelimitedtextplugin.h \
            qgsdelimitedtextplugingui.h 
 FORMS +=   qgsdelimitedtextpluginguibase.ui
