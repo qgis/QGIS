@@ -2570,22 +2570,22 @@ void QgisApp::newVectorLayer()
 #ifdef QGISDEBUG
     qWarning("ogr provider loaded");
 #endif
-    typedef bool (*createEmptyDataSourceProc)(const QString&, const QString&, QGis::WKBTYPE, \
+    typedef bool (*createEmptyDataSourceProc)(const QString&, const QString&, const QString&, QGis::WKBTYPE, \
         const std::list<std::pair<QString, QString> >&);
     createEmptyDataSourceProc createEmptyDataSource=(createEmptyDataSourceProc)myLib->resolve("createEmptyDataSource");
     if(createEmptyDataSource)
     {
       if(geometrytype == QGis::WKBPoint)
       {
-        createEmptyDataSource(filename,fileformat,QGis::WKBPoint, attributes);
+        createEmptyDataSource(filename,fileformat, enc, QGis::WKBPoint, attributes);
       }
       else if (geometrytype == QGis::WKBLineString)
       {
-        createEmptyDataSource(filename,fileformat,QGis::WKBLineString, attributes);
+        createEmptyDataSource(filename,fileformat, enc, QGis::WKBLineString, attributes);
       }
       else if(geometrytype == QGis::WKBPolygon)
       {
-        createEmptyDataSource(filename,fileformat,QGis::WKBPolygon, attributes);
+        createEmptyDataSource(filename,fileformat, enc, QGis::WKBPolygon, attributes);
       }
       else
       {
