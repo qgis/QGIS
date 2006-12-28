@@ -44,7 +44,7 @@ QT += qt3support svg core gui xml network
 
 message("Building libs into $${DESTDIR}")
 
-REOURCES += georeferencer.qrc
+RESOURCES += georeferencer.qrc
 
 FORMS += mapcoordsdialogbase.ui \
          pluginguibase.ui \

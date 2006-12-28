@@ -44,6 +44,8 @@ message("Building libs into $${DESTDIR}")
 
 
 # Input
+RESOURCES += qgsgps_plugin.qrc
+
 FORMS += qgsgpspluginguibase.ui \
               qgsgpsdevicedialogbase.ui
 
