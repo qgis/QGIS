@@ -8,7 +8,7 @@
 # The name will be used to infer the image name, with spaces 
 # replaced by underscores. If no matching image is found
 # a blank image will be displayed.
-# Images are read out of $PREFIX/share/images/contributors/
+# Images are read out of $PREFIX/share/qgis/images/developers/
 # ---------------------------------------------------------
 Gary E.Sherman	<sherman at mrcc dot com>
 Steve Halasz	<stevehalasz at users.sourceforge.net>
@@ -26,3 +26,4 @@ Peter Brewer	<p.w.brewer at rdg dot ac dot uk>
 Radim Blazek	<blazek at itc.it>
 Tom Elwertowski	<telwertowski at users.sourceforge.net>
 Godofredo Contreras	      <frdcn athotmail.com>
+Martin Dobias	<wonder.sk at gmail.com>
