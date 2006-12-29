@@ -4423,7 +4423,7 @@ void *QgsRasterLayer::readData ( GDALRasterBand *gdalBand, QgsRasterViewPort *vi
 	      ", " + QString::number(viewPort->rectYOffsetInt)+\
 	      ", source size: " + QString::number(viewPort->clippedWidthInt)+\
 	      ", " + QString::number(viewPort->clippedHeightInt)+\
-	      "dest size: " + QString::number(viewPort->drawableAreaXDimInt)+\
+	      ", dest size: " + QString::number(viewPort->drawableAreaXDimInt)+\
 	      ", " + QString::number(viewPort->drawableAreaYDimInt));
 
   CPLErr myErr = gdalBand->RasterIO ( GF_Read,
