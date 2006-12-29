@@ -1591,6 +1591,7 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPor
 	      + QString::number(paintXoffset) + ", " + QString::number(paintYoffset)\
 	      + " to "\
 	      + QString::number(static_cast<int>(theRasterViewPort->topLeftPoint.x() + 0.5))\
+              + ", "\
 	      + QString::number(static_cast<int>(theRasterViewPort->topLeftPoint.y() + 0.5))\
 	      + ".");
 
@@ -2349,6 +2350,7 @@ QgsDebugMsg("QgsRasterLayer::drawSingleBandGray: painting image to canvas from "
 	      + QString::number(paintXoffset) + ", " + QString::number(paintYoffset)\
 	      + " to "\
 	      + QString::number(static_cast<int>(theRasterViewPort->topLeftPoint.x() + 0.5))\
+	      + ", "\
 	      + QString::number(static_cast<int>(theRasterViewPort->topLeftPoint.y() + 0.5))\
 	      + ".");
 
@@ -2482,6 +2484,7 @@ QgsDebugMsg("QgsRasterLayer::drawSingleBandGray: painting image to canvas from s
 	      + QString::number(paintXoffset) + ", " + QString::number(paintYoffset)\
 	      + " to "\
 	      + QString::number(static_cast<int>(theRasterViewPort->topLeftPoint.x() + 0.5))\
+	      + ", "\
 	      + QString::number(static_cast<int>(theRasterViewPort->topLeftPoint.y() + 0.5))\
 	      + ".");
 
