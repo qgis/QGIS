@@ -1677,15 +1677,15 @@ void QgsLegend::zoomToLayerExtent()
   //find current Layer
   QgsLegendLayer* currentLayer=dynamic_cast<QgsLegendLayer*>(currentItem());
   if(!currentLayer)
-    {
-      return;
-    }
+  {
+    return;
+  }
 
   std::list<QgsLegendLayerFile*> layerFiles = currentLayer->legendLayerFiles();
   if(layerFiles.size() == 0)
-    {
-      return;
-    }
+  {
+    return;
+  }
 
   double xmin = DBL_MAX;
   double ymin = DBL_MAX;
@@ -1698,42 +1698,45 @@ void QgsLegend::zoomToLayerExtent()
   QgsMapLayer* theLayer;
 
   for(std::list<QgsLegendLayerFile*>::iterator it= layerFiles.begin(); it != layerFiles.end(); ++it)
+  {
+    theLayer = (*it)->layer();
+    if(theLayer)
     {
-      theLayer = (*it)->layer();
-      if(theLayer)
-	{
-	  layerExtent = theLayer->extent();
+      layerExtent = theLayer->extent();
 	  
       if (QgsProject::instance()->readNumEntry("SpatialRefSys", "/ProjectionsEnabled",0) != 0
           && (ct = theLayer->coordinateTransform()))
       {
-	      //transform layer extent to canvas coordinate system
-	      transformedExtent = ct->transform(layerExtent);
-	    }
-	  else
-	    {
+        //transform layer extent to canvas coordinate system
+        transformedExtent = ct->transform(layerExtent);
+      }
+      else
+      {
         // do not transform when projections are not enabled
-	      transformedExtent = layerExtent;
-	    }
+        transformedExtent = layerExtent;
+      }
 
-	  if(transformedExtent.xMin() < xmin)
-	    {
-	      xmin = transformedExtent.xMin();
-	    }
-	  if(transformedExtent.yMin() < ymin)
-	    {
-	      ymin = transformedExtent.yMin();
-	    }
-	  if(transformedExtent.xMax() > xmax)
-	    {
-	      xmax = transformedExtent.xMax();
-	    }
-	  if(transformedExtent.yMax() > ymax)
-	    {
-	      ymax = transformedExtent.yMax();
-	    }
-	}
+      if(transformedExtent.xMin() < xmin)
+      {
+        xmin = transformedExtent.xMin();
+      }
+
+      if(transformedExtent.yMin() < ymin)
+      {
+        ymin = transformedExtent.yMin();
+      }
+
+      if(transformedExtent.xMax() > xmax)
+      {
+        xmax = transformedExtent.xMax();
+      }
+
+      if(transformedExtent.yMax() > ymax)
+      {
+        ymax = transformedExtent.yMax();
+      }
     }
+  }
 
   //zoom to bounding box
   mMapCanvas->setExtent(QgsRect(xmin, ymin, xmax, ymax));
