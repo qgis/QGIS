@@ -599,13 +599,13 @@ void QgisApp::createActions()
   connect(mActionShowBookmarks, SIGNAL(triggered()), this, SLOT(showBookmarks()));
   //
   mActionShowAllToolbars = new QAction(tr("Show most toolbars"), this);
-  mActionShowAllToolbars->setShortcut(tr("S", "Show most toolbars"));
+  mActionShowAllToolbars->setShortcut(tr("T", "Show most toolbars"));
   mActionShowAllToolbars->setStatusTip(tr("Show most toolbars"));
   connect(mActionShowAllToolbars, SIGNAL(triggered()), this,
           SLOT(showAllToolbars()));
   //
   mActionHideAllToolbars = new QAction(tr("Hide most toolbars"), this);
-  mActionHideAllToolbars->setShortcut(tr("H", "Hide most toolbars"));
+  mActionHideAllToolbars->setShortcut(tr("Ctrl+T", "Hide most toolbars"));
   mActionHideAllToolbars->setStatusTip(tr("Hide most toolbars"));
   connect(mActionHideAllToolbars, SIGNAL(triggered()), this,
           SLOT(hideAllToolbars()));
@@ -640,7 +640,8 @@ void QgisApp::createActions()
   //
 
   mActionStartEditing = new QAction(QIcon(myIconPath+"/mActionStartEditing.png"), 
-                                    tr("Start editing the current layer"), this);
+                                    tr("Start editing the current layer"), this); 
+  mActionStartEditing->setStatusTip(tr("Start editing the current layer")); 
   connect(mActionStartEditing, SIGNAL(triggered()), this, SLOT(startEditing()));
   //
   mActionStopEditing = new QAction(QIcon(myIconPath+"/mActionStopEditing.png"), 
