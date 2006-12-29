@@ -1,0 +1,6 @@
+<h3>Nástroje na meranie</h3>
+V QGISe existujú dva nástroje na meranie -- jeden slúži na meranie dĺžky, druhý na meranie plošného obsahu. V súčasnosti oba udávajú výsledky iba v metrických jednotkách. Jednoduché kliknutie pravým tlačidlom myši zastaví meranie, dvojklik pravým tlačidlom začne nové meranie.
+<h4>Meranie dĺžok</h4>
+Vyberte (kliknutím) nástroj na meranie dĺžok a vyklikajte cestu, ktorú chcete zmerať. V okne sa zobrazuje dĺžka každého úseku ako aj celková dĺžka cesty. S nástrojom na meranie možno merať aj vzdialenosti aj plochy priamo na mapovom plátne.
+<h4>Meranie plôch</h4>
+Vyberte (kliknutím) nástroj na meranie rozlohy a klikaním vytvorte oblasť, ktorej rozlohu si želáte zmerať. Celková rozloha sa zobrazuje priebežne počas vášho klikania.

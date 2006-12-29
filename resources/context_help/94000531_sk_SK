@@ -1,0 +1,26 @@
+<h3>Vlastnosti vektorovej vrstvy</h3>
+Toto dialógové okno vám umožňuje nastaviť vlastnosti vektrovej vrstvy. Je tu päť záložiek:
+<ol>
+<li><a href="#symbology">Symbolika</a></li>
+<li><a href="#general">Všobecné</a></li>
+<li><a href="#metadata">Meta údaje</a></li>
+<li><a href="#labels">Popisy</a></li>
+<li><a href="#actions">Akcie</a></li>
+</ol>
+<a name="symbology">
+<h4>Symbolika</h4>
+</a>
+
+<a name="general">
+<h4>Všeobecné</h4>
+</a>
+
+<a name="metadata">
+<h4>Meta údaje</h4>
+</a>
+<a name="labels">
+<h4>Popisy</h4>
+</a>
+<a name="actions">
+<h4>Akcie</h4>
+</a>
