@@ -1687,15 +1687,11 @@ void QgsLegend::zoomToLayerExtent()
     return;
   }
 
-  double xmin = DBL_MAX;
-  double ymin = DBL_MAX;
-  double xmax = -DBL_MAX;
-  double ymax = -DBL_MAX;
-
   QgsRect transformedExtent;
   QgsRect layerExtent;
-  QgsCoordinateTransform *ct;
+  QgsRect r2;
   QgsMapLayer* theLayer;
+  bool first(true);
 
   for(std::list<QgsLegendLayerFile*>::iterator it= layerFiles.begin(); it != layerFiles.end(); ++it)
   {
@@ -1703,43 +1699,33 @@ void QgsLegend::zoomToLayerExtent()
     if(theLayer)
     {
       layerExtent = theLayer->extent();
-	  
-      if (QgsProject::instance()->readNumEntry("SpatialRefSys", "/ProjectionsEnabled",0) != 0
-          && (ct = theLayer->coordinateTransform()))
+
+      if (theLayer->projectionsEnabled())
       {
-        //transform layer extent to canvas coordinate system
-        transformedExtent = ct->transform(layerExtent);
+
+        //        std::cerr<<__FILE__<<__LINE__<<' ' 
+        //                 << layerExtent.stringRep().toLocal8Bit().data() << '\n';
+
+        bool split = theLayer->projectExtent(layerExtent, r2);
+
+        //        std::cerr<<__FILE__<<__LINE__<<' ' 
+        //                 << layerExtent.stringRep().toLocal8Bit().data() << '\n';
+      }
+
+      if (first)
+      {
+        transformedExtent = layerExtent;
+        first = false;
       }
       else
       {
-        // do not transform when projections are not enabled
-        transformedExtent = layerExtent;
-      }
-
-      if(transformedExtent.xMin() < xmin)
-      {
-        xmin = transformedExtent.xMin();
-      }
-
-      if(transformedExtent.yMin() < ymin)
-      {
-        ymin = transformedExtent.yMin();
-      }
-
-      if(transformedExtent.xMax() > xmax)
-      {
-        xmax = transformedExtent.xMax();
-      }
-
-      if(transformedExtent.yMax() > ymax)
-      {
-        ymax = transformedExtent.yMax();
+        transformedExtent.combineExtentWith(&layerExtent);
       }
     }
   }
 
   //zoom to bounding box
-  mMapCanvas->setExtent(QgsRect(xmin, ymin, xmax, ymax));
+  mMapCanvas->setExtent(transformedExtent);
   mMapCanvas->render();
   mMapCanvas->refresh();
 }
