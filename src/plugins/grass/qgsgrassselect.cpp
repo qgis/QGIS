@@ -65,21 +65,21 @@ QgsGrassSelect::QgsGrassSelect(int type):QgsGrassSelectBase()
     switch ( type ) 
     {
 	case QgsGrassSelect::VECTOR:
-	    setCaption ( "Select GRASS Vector Layer" );
+	    setCaption ( tr("Select GRASS Vector Layer") );
             break;
 
 	case QgsGrassSelect::RASTER:
 	    /* Remove layer combo box */
 	    Layer->hide();
 	    elayer->hide();
-	    setCaption ( "Select GRASS Raster Layer" );
+	    setCaption ( tr("Select GRASS Raster Layer") );
 	    break;
 
 	case QgsGrassSelect::MAPCALC:
 	    /* Remove layer combo box */
 	    Layer->hide();
 	    elayer->hide();
-	    setCaption ( "Select GRASS mapcalc schema" );
+	    setCaption ( tr("Select GRASS mapcalc schema") );
 	    break;
 	    
 	case QgsGrassSelect::MAPSET:
@@ -87,7 +87,7 @@ QgsGrassSelect::QgsGrassSelect(int type):QgsGrassSelectBase()
 	    elayer->hide();
 	    MapName->hide();
 	    emap->hide();
-	    setCaption ( "Select GRASS Mapset" );
+	    setCaption ( tr("Select GRASS Mapset") );
 	    break;
     }
 	    
@@ -404,7 +404,7 @@ QStringList QgsGrassSelect::vectorLayers ( QString gisdbase,
 
     if ( level < 2 ) {
         std::cerr << "Cannot open vector on level 2" << std::endl;
-	QMessageBox::warning( 0, "Warning", "Cannot open vector on level 2 (topology not available)." );
+	QMessageBox::warning( 0, tr("Warning"), tr("Cannot open vector on level 2 (topology not available).") );
 	return list;
     }
 
@@ -462,7 +462,7 @@ void QgsGrassSelect::on_GisdbaseBrowse_clicked()
 {
     
     QString Gisdbase = QFileDialog::getExistingDirectory( this,
-                                 "Choose existing GISDBASE", egisdbase->text() );
+                                 tr("Choose existing GISDBASE"), egisdbase->text() );
 
     if ( !Gisdbase.isNull() ) 
     {
@@ -478,8 +478,8 @@ void QgsGrassSelect::on_ok_clicked()
     lastGisdbase = QString( gisdbase );
     
     if ( elocation->count() == 0 ) {
-        QString msg = "Wrong GISDBASE, no locations available.";
-	QMessageBox::warning(this, "Wrong GISDBASE", msg);
+        QString msg = tr("Wrong GISDBASE, no locations available.");
+	QMessageBox::warning(this, tr("Wrong GISDBASE"), msg);
 	return;
     }
 
@@ -496,8 +496,8 @@ void QgsGrassSelect::on_ok_clicked()
     map = emap->currentText().stripWhiteSpace();
 
     if ( type != QgsGrassSelect::MAPSET && map.isEmpty() ) {
-        QString msg = "Select a map.";
-	QMessageBox::warning(0, "No map", msg);
+        QString msg = tr("Select a map.");
+	QMessageBox::warning(0, tr("No map"), msg);
 	return;
     }
 
@@ -505,8 +505,8 @@ void QgsGrassSelect::on_ok_clicked()
     {
         if ( elayer->count() == 0 ) 
         { 
-	    QMessageBox::warning(0, "No layer", 
-                    "No layers available in this map");
+	    QMessageBox::warning(0, tr("No layer"), 
+                    tr("No layers available in this map"));
             return;
         }
         lastVectorMap = map;
