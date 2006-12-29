@@ -1689,7 +1689,7 @@ void QgsLegend::zoomToLayerExtent()
 
   QgsRect transformedExtent;
   QgsRect layerExtent;
-  QgsRect r2;
+  QgsCoordinateTransform *ct;
   QgsMapLayer* theLayer;
   bool first(true);
 
@@ -1700,16 +1700,22 @@ void QgsLegend::zoomToLayerExtent()
     {
       layerExtent = theLayer->extent();
 
-      if (theLayer->projectionsEnabled())
+      if (theLayer->projectionsEnabled() 
+          && (ct = theLayer->coordinateTransform()))
       {
+        try
+        {
+          layerExtent = ct->transformBoundingBox(layerExtent, QgsCoordinateTransform::FORWARD);
+        }
+        catch (QgsCsException &cse)
+        {
+          // Catch any exceptions, and by default the rest of the code
+          // just gets the unprojected extent instead.
+        }
 
-        //        std::cerr<<__FILE__<<__LINE__<<' ' 
-        //                 << layerExtent.stringRep().toLocal8Bit().data() << '\n';
-
-        bool split = theLayer->projectExtent(layerExtent, r2);
-
-        //        std::cerr<<__FILE__<<__LINE__<<' ' 
-        //                 << layerExtent.stringRep().toLocal8Bit().data() << '\n';
+        // If the extent is odd, default to the unprojected extent.
+        if (!layerExtent.isFinite())
+          layerExtent = theLayer->extent();
       }
 
       if (first)
