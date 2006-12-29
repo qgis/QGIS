@@ -200,7 +200,7 @@ QgsPoint QgsCoordinateTransform::transform(const QgsPoint thePoint,TransformDire
   catch(QgsCsException &cse)
   {
     // rethrow the exception
-    QgsLogger::warning("Throwing exception " + QString(__FILE__) + QString(__LINE__));
+    QgsLogger::warning("Throwing exception " + QString(__FILE__) + QString::number(__LINE__));
     throw cse;
   }
 
@@ -220,7 +220,7 @@ QgsPoint QgsCoordinateTransform::transform(const double theX, const double theY=
   catch(QgsCsException &cse)
   {
     // rethrow the exception
-    QgsLogger::warning("Throwing exception " + QString(__FILE__) + QString(__LINE__));
+    QgsLogger::warning("Throwing exception " + QString(__FILE__) + QString::number(__LINE__));
     throw cse;
   }
 }
@@ -246,7 +246,7 @@ QgsRect QgsCoordinateTransform::transform(const QgsRect theRect,TransformDirecti
   catch(QgsCsException &cse)
   {
     // rethrow the exception
-    QgsLogger::warning("Throwing exception " + QString(__FILE__) + QString(__LINE__));
+    QgsLogger::warning("Throwing exception " + QString(__FILE__) + QString::number(__LINE__));
     throw cse;
   }
 
@@ -280,7 +280,7 @@ void QgsCoordinateTransform::transformInPlace(double& x, double& y, double& z,
   catch(QgsCsException &cse)
   {
     // rethrow the exception 
-    QgsLogger::warning("Throwing exception " + QString(__FILE__) + QString(__LINE__));
+    QgsLogger::warning("Throwing exception " + QString(__FILE__) + QString::number(__LINE__));
     throw cse;
   }
 }
@@ -306,7 +306,7 @@ void QgsCoordinateTransform::transformInPlace(std::vector<double>& x,
   catch(QgsCsException &cse)
   {
     // rethrow the exception
-    QgsLogger::warning("Throwing exception " + QString(__FILE__) + QString(__LINE__));
+    QgsLogger::warning("Throwing exception " + QString(__FILE__) + QString::number(__LINE__));
     throw cse;
   }
 }
@@ -369,7 +369,7 @@ QgsRect QgsCoordinateTransform::transformBoundingBox(const QgsRect rect, Transfo
   catch(QgsCsException &cse)
   {
   // rethrow the exception
-    QgsLogger::warning("Throwing exception " + QString(__FILE__) + QString(__LINE__));
+    QgsLogger::warning("Throwing exception " + QString(__FILE__) + QString::number(__LINE__));
     throw cse;
   }
 
@@ -475,7 +475,7 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
   QgsDebugMsg("Projection failed emitting invalid transform signal: " + QString(msg.toLocal8Bit().data()));
 #endif
   emit invalidTransformInput();
-    QgsLogger::warning("Throwing exception " + QString(__FILE__) + QString(__LINE__));
+    QgsLogger::warning("Throwing exception " + QString(__FILE__) + QString::number(__LINE__));
     throw  QgsCsException(msg);
   }
   // if the result is lat/long, convert the results from radians back
