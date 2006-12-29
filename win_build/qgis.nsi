@@ -11,13 +11,15 @@
 !define PRODUCT_STARTMENU_REGVAL "NSIS:StartMenuDir"
 
 SetCompressor zlib
+
+; MUI 1.67 compatible ------
+!include "MUI.nsh"
 ; Added by Tim for setting env vars (see this file on disk)
 !include WriteEnvStr.nsh
 ;Added by Tim for a macro that will recursively delete the files in the install dir
 !include RecursiveDelete.nsh
-
-; MUI 1.67 compatible ------
-!include "MUI.nsh"
+;Added by Tim to support unzipping downloaded sample data automatically
+!include ZipDLL.nsh
 
 ; MUI Settings
 !define MUI_ABORTWARNING
@@ -85,7 +87,7 @@ InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
 
-Section "MainSection" SEC01
+Section "Quantum GIS Application" SEC01
   ;Set the reg key so we get default toolbar layout
   !include qgis_window_geometry.nsh
   SetOutPath "$INSTDIR"
@@ -126,9 +128,21 @@ Section "MainSection" SEC01
 
 SectionEnd
 
-Section "Sample Data" SEC02
- ; SetOutPath "$INSTDIR\SampleData\EnvironmentLayers\2050\A1F"
+Section "Sample Data - Spearfish (GRASS)" SEC02
+ SetOutPath "$INSTDIR\SampleData\"
+ NSISdl::download http://grass.itc.it/sampledata/spearfish_grass60data-0.3.zip spearfish.zip
+ !insertmacro ZIPDLL_EXTRACT "$INSTDIR\SampleData\spearfish.zip" "$INSTDIR\SampleData\" "<ALL>"
+ ;ZipDLL::extractall  "$INSTDIR\SampleData\spearfish.zip" "$INSTDIR\SampleData\"
+ ;the next line is a hack / workaround for a problem in zipdll.nsh
+ !endif
+
+
+SectionEnd
+Section "Sample Data - Alaska (Non GRASS)" SEC03
+ SetOutPath "$INSTDIR\SampleData\Alaska\"
+ NSISdl::download http://qgis.org/uploadfiles/qgis_sample_data.tar.gz alaska.tar.gz
  ; File "C:\dev/cpp/qgis/\qgis-release\SampleData\EnvironmentLayers\2050\A1F\Annual_dev/cpp/qgis/erature_range.asc"
+
 
 ; Shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
@@ -158,7 +172,8 @@ SectionEnd
 ; Section descriptions
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "Main application files - you really need this!"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Sample data (not required if you have your own data already)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "20mb Download of sample data in GRASS format (not required if you have your own data already)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "20mb Download of sample shapefiles and TIFF data for Alaska (not required if you have your own data already)"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 
