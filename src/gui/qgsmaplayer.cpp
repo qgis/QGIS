@@ -631,8 +631,10 @@ bool QgsMapLayer::projectExtent(QgsRect& extent, QgsRect& r2)
     catch (QgsCsException &cse)
       {
 	QgsLogger::warning("Transform error caught in " + QString(__FILE__) + ", line " + QString::number(__LINE__));
-        extent = QgsRect(-DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX);
-        r2     = QgsRect(-DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX);
+        // Return the untransformed extent when the transformation
+        // fails rather then the largest extent possible!
+        //extent = QgsRect(-DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX);
+        //r2     = QgsRect(-DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX);
       }
   }
   return split;
