@@ -117,6 +117,9 @@ macx:QGISPLUGINDIR=$${DESTDIR}/$${QGIS_APP_NAME}.app/Contents/lib/qgis
 QGISPROVIDERDIR=$${QGISBINDIR}/lib/qgis
 macx:QGISPROVIDERDIR=$${DESTDIR}/$${QGIS_APP_NAME}.app/Contents/lib/qgis
 
+win32:QGISDOCDIR=$${DESTDIR}/share/qgis/doc
+win32:QGISDEVELOPERSIMAGEDIR=$${DESTDIR}/share/qgis/images/developers
+
 message(WORKDIR      : $${WORKDIR})
 message(DESTDIR      : $${DESTDIR})
 message(QGISBINDIR    : $${QGISBINDIR})
