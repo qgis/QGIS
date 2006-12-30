@@ -33,7 +33,7 @@ gpsimporterplugin_la_SOURCES = \
 	qgsgpsdevice.h \
 	qgsgpsdevice.cpp \
 	qgsgpsplugingui.cpp \
-	qgsgpsplugingui.h
+	qgsgpsplugingui.h \
 	qgsgpsdevicedialog.cpp \
 	$(plugin_UI)\
 	$(plugin_MOC) \
@@ -57,9 +57,9 @@ plugin_UIC = \
 
 plugin_RES = qgsgps_plugin.qrc.cpp
 
-plugin_QRC = qgsgps_plugin.qrc
+#plugin_QRC = qgsgps_plugin.qrc
 
-BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
+BUILT_SOURCES = $(plugin_MOC) $(plugin_UI) $(plugin_RES)
 
 gpsimporterplugin_la_LIBADD = $(QT_LDADD)  $(GDAL_LDADD)  ../../gui/libqgis_gui.la ../../core/libqgis_core.la
 gpsimporterplugin_la_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
