@@ -508,7 +508,6 @@ AC_CONFIG_FILES([
   src/Makefile 
   src/composer/Makefile
   src/core/Makefile
-  src/designer/Makefile
   src/helpviewer/Makefile
   src/gui/Makefile
   src/legend/Makefile
@@ -527,7 +526,6 @@ AC_CONFIG_FILES([
   src/plugins/grass/themes/default/Makefile
   src/plugins/grass/themes/Makefile
   src/plugins/grid_maker/Makefile
-  src/plugins/maplayer/Makefile
   src/plugins/north_arrow/Makefile
   src/plugins/scale_bar/Makefile
   src/plugins/spit/Makefile

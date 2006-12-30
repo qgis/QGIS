@@ -32,7 +32,7 @@ plugin_UI = ui_qgsdelimitedtextpluginguibase.h
 
 plugin_UIC = qgsdelimitedtextpluginguibase.ui
 
-plugin_QRC = delimited_text.qrc
+#plugin_QRC = delimited_text.qrc
  
 plugin_RES = delimited_text.qrc.cpp
 

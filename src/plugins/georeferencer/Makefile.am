@@ -82,7 +82,7 @@ BUILT_SOURCES = $(plugin_UI) $(plugin_MOC) $(plugin_RES)
 
 CLEANFILES = $(BUILT_SOURCES)
 
-EXTRA_DIST = $(plugin_UIC) zoom_in.xpm zoom_out.xpm pan.xpm add_point.xpm
+EXTRA_DIST = $(plugin_UIC) add_point.xpm
 
 
 endif

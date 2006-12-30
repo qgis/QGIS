@@ -44,15 +44,18 @@ ui_%.h: %.ui
 
 wfsplugin_la_SOURCES = qgswfsplugin.cpp \
 	qgswfssourceselect.cpp \
+  qgswfsplugin.h \
+  qgswfssourceselect.h \
 	$(plugin_UI)\
 	$(plugin_MOC)
+
 
 plugin_MOC = qgswfsplugin.moc.cpp \
     qgswfssourceselect.moc.cpp 
 
 plugin_UI = ui_qgswfssourceselectbase.h 
 
-plugin_UIC = qgswfssourceselectbase.u
+plugin_UIC = qgswfssourceselectbase.ui
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
@@ -79,3 +82,5 @@ wfsplugin_la_CXXFLAGS = $(CXXFLAGS) \
 				-I..
 
 wfsplugin_la_LDFLAGS = -avoid-version -module
+
+EXTRA_DIST = $(wfsplugin_la_HEADERS) $(PLUGIN_UI) $(PLUGIN_UIC) mIconAddWfsLayer.xpm

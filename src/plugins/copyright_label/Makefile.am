@@ -41,7 +41,7 @@ plugin_UIC = pluginguibase.ui
 
 plugin_RES = copyright_plugin.qrc.cpp
 
-plugin_QRC = copyright_plugin.qrc
+#plugin_QRC = copyright_plugin.qrc
 
 # UI dependencies      
 pluginguibase.cpp: pluginguibase.h pluginguibase.ui

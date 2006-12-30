@@ -46,7 +46,7 @@ qgis_help_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) 
 
 CLEANFILES = $(BUILT_SOURCES)
 
-EXTRA_DIST = $(qgis_help_UIC) icon.xpm
+EXTRA_DIST = $(qgis_help_UIC) 
 
 # Qt/Mac app needs to be inside a bundle to function correctly
 MACBINDIR = $(bindir)/qgis_help.app/Contents/MacOS

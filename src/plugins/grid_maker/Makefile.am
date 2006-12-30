@@ -61,7 +61,7 @@ plugin_UIC = pluginguibase.ui
 
 plugin_RES = gridmaker_plugin.qrc.cpp
 
-plugin_QRC = gridmaker_plugin.qrc
+#plugin_QRC = gridmaker_plugin.qrc
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI) $(plugin_RES)
 
