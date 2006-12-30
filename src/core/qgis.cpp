@@ -16,7 +16,7 @@ const char* QGis::qgisSvnVersion = QGSSVNVERSION;
 const int QGis::qgisVersionInt =800;
   
 // Release name
-const char* QGis::qgisReleaseName = "Titan - Release Candidate 1";
+const char* QGis::qgisReleaseName = "Titan";
 
 const char* QGis::qgisVectorGeometryType[] =
 {

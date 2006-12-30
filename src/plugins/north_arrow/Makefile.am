@@ -44,7 +44,7 @@ plugin_UIC = pluginguibase.ui
 
 plugin_RES = northarrow_plugin.qrc.cpp
 
-plugin_QRC = northarrow_plugin.qrc
+#plugin_QRC = northarrow_plugin.qrc
 
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI) $(plugin_RES)

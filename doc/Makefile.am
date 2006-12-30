@@ -12,11 +12,8 @@ docdatadir = $(datadir)/$(PACKAGE)/doc
 
 docdata_DATA = \
 							 favicon.ico \
-							 images \
 							 index.html \
-							 install_guide \
 							 install.pdf \
-							 plugins \
 							 qgisdoc.css \
 							 userguide.pdf 
 

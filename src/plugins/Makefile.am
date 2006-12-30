@@ -31,7 +31,7 @@ SUBDIRS = $(GEOPROCESSING) \
 		
 EXTRA_DIST = \
 		plugin_builder.pl \
-		plugin_template/icon.xpm \
+		plugin_template/plugin.png \
 		plugin_template/Makefile.am \
 		plugin_template/plugin.cpp \
 		plugin_template/pluginguibase.ui \

@@ -12,6 +12,6 @@
 
 imagedir = ${pkgdatadir}/themes/default
 
-image_DATA = *.png
+image_DATA = *.png *.xpm
 
 EXTRA_DIST = $(image_DATA)

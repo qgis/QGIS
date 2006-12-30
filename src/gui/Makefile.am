@@ -65,6 +65,7 @@ qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS
 
 libqgis_guiHEADERS =							\
 		qgisapp.h							\
+		qgisgui.h						\
 		qgisiface.h					\
 		qgisinterface.h \
 		qgsabout.h				\
@@ -95,6 +96,7 @@ libqgis_guiHEADERS =							\
 		qgslabel.h							\
 		qgslayerprojectionselector.h \
 		qgslinestyledialog.h				\
+		qgslinestylewidget.h   			\
 		qgsludialog.h					\
 		qgsmapcanvas.h						\
 		qgsmapcanvasitem.h			\
@@ -136,6 +138,7 @@ libqgis_guiHEADERS =							\
 		qgsuniquevaluerenderer.h				\
 		qgsuniquevaluedialog.h					\
 		qgsvectorfilewriter.h				\
+		qgsvectorlayer.h						\
 		qgsvectorlayerproperties.h			\
 		qgsvertexmarker.h
 
@@ -313,7 +316,7 @@ pkginclude_dir = $(includedir)/qgis
 
 CLEANFILES = $(BUILT_SOURCES)
 
-EXTRA_DIST=
+EXTRA_DIST = $(libqgis_gui_la_MOC)
 
 if HAVE_POSTGRESQL
 

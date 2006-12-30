@@ -58,7 +58,6 @@ plugin_UI = ui_qgsgrassselectbase.h \
 	    ui_qgsgrassregionbase.h 
 
 plugin_UIC = qgsgrassselectbase.ui \
-	     qgsgrassselectbase.ui.h \
 	     qgsgrasseditbase.ui \
 	     qgsgrassmapcalcbase.ui \
 	     qgsgrassmodulebase.ui \

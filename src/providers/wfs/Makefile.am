@@ -6,7 +6,7 @@ INCLUDES = -I../../core/ -I../../gui/ -I../../ui
 plugindir = ${pkglibdir}
 plugin_LTLIBRARIES = libwfsprovider.la
 
-libwfsprovider_la_SOURCES = qgswfsprovider.cpp $(libwfsprovider_MOC)
+libwfsprovider_la_SOURCES = qgswfsprovider.cpp $(libwfsprovider_MOC) qgswfsprovider.h
 
 BUILT_SOURCES = $(wfsprovider_MOC)
 

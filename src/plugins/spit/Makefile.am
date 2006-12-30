@@ -34,7 +34,7 @@ spit_MOC = qgsspit.moc.cpp \
 
 spit_RES = spit.qrc.cpp
 
-spit_QRC = spit.qrc
+#spit_QRC = spit.qrc
 
 spitplugin_la_MOC = $(spit_MOC) qgsspitplugin.moc.cpp
 

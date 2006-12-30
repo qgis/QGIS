@@ -36,6 +36,7 @@ libqgis_legend_la_SOURCES =	qgslegendgroup.cpp \
 
 libqgis_legendHEADERS = \
 		qgslegend.h \
+		qgslegendgroup.h \
 		qgslegenditem.h \
 		qgslegendlayer.h \
 		qgslegendlayerfile.h \
@@ -57,6 +58,8 @@ libqgis_legend_la_CXXFLAGS = $(PKGDATAPATH) -I../gui/ -I../ui/ -I../core/ \
 BUILT_SOURCES = $(qgis_MOC)
 
 CLEANFILES = $(BUILT_SOURCES)
+
+#EXTRA_DIST = $(libqgis_legendHEADERS)
 
 pkginclude_dir = $(includedir)/qgis
 pkginclude_HEADERS = $(libqgis_legendHEADERS)

@@ -41,7 +41,7 @@ plugin_UIC = pluginguibase.ui
 
 plugin_RES = scalebar_plugin.qrc.cpp
 
-plugin_QRC = scalebar_plugin.qrc
+#plugin_QRC = scalebar_plugin.qrc
 
 # UI dependencies
 pluginguibase.cpp: pluginguibase.h pluginguibase.ui
