@@ -17,6 +17,7 @@
 
 
 #include "qgslogger.h"
+#include <QtDebug>
 
 void QgsLogger::debug(const QString& msg, int debuglevel, const char* file, const char* function, int line)
 {
@@ -112,7 +113,7 @@ void QgsLogger::debug(const QString& var, double val, int debuglevel, const char
 	}
       else
 	{
-	  qDebug("%s: %d: (%s), %s: %d", file, line, function, var.toLocal8Bit().data(), val);
+	  qDebug("%s: %d: (%s), %s: %f", file, line, function, var.toLocal8Bit().data(), val);
 	}
     }
 }
