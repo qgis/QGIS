@@ -1132,14 +1132,6 @@ __FUNCTION__, __LINE__);
   myRasterViewPort->clippedHeightInt =
     abs(static_cast < int >(myRasterViewPort->clippedYMaxDouble - myRasterViewPort->clippedYMinDouble)) + 2;
   
-/*
-  // Add one to the raster dimensions to guard against the integer truncation
-  // effects of static_cast<int>
-  // TODO: Can we get rid of this now that we are rounding at the point of the static_cast?
-  myRasterViewPort->clippedWidthInt++;
-  myRasterViewPort->clippedHeightInt++;
-*/
-  
   // but make sure the intended SE corner extent doesn't exceed the SE corner
   // of the source raster, otherwise GDAL's RasterIO gives an error and returns nothing.
   // The SE corner = NW origin + dimensions of the image itself.
@@ -1156,91 +1148,14 @@ __FUNCTION__, __LINE__);
       rasterYDimInt - myRasterViewPort->rectYOffsetInt;
   }
 
-/*
-  if (myRasterViewPort->clippedWidthInt > rasterXDimInt)
-  {
-    myRasterViewPort->clippedWidthInt = rasterXDimInt;
-  }
-  if (myRasterViewPort->clippedHeightInt > rasterYDimInt)
-  {
-    myRasterViewPort->clippedHeightInt = rasterYDimInt;
-  }
-*/
-
   // get dimensions of clipped raster image in device coordinate space (this is the size of the viewport)
   myRasterViewPort->topLeftPoint = theQgsMapToPixel->transform(myRasterExtent.xMin(), myRasterExtent.yMax());
   myRasterViewPort->bottomRightPoint = theQgsMapToPixel->transform(myRasterExtent.xMax(), myRasterExtent.yMin());
 
-  // Try a different method - round up to the nearest whole source pixel.
   myRasterViewPort->drawableAreaXDimInt =
     abs(static_cast<int> (myRasterViewPort->clippedWidthInt  / theQgsMapToPixel->mapUnitsPerPixel() * adfGeoTransform[1]));
   myRasterViewPort->drawableAreaYDimInt =
     abs(static_cast<int> (myRasterViewPort->clippedHeightInt / theQgsMapToPixel->mapUnitsPerPixel() * adfGeoTransform[5]));
-
-/*
-  myRasterViewPort->drawableAreaXDimInt =
-    static_cast<int> ((myRasterViewPort->clippedXMaxDouble - myRasterViewPort->clippedXMinDouble) /
-                       theQgsMapToPixel->mapUnitsPerPixel() * adfGeoTransform[1]);
-
-  myRasterViewPort->drawableAreaYDimInt =
-    static_cast<int> ((myRasterViewPort->clippedYMaxDouble - myRasterViewPort->clippedYMinDouble) /
-                       theQgsMapToPixel->mapUnitsPerPixel() * adfGeoTransform[5]);
-*/
-
-/*
-  // Since GDAL's RasterIO can't handle floating point, we have to round to
-  // the nearest pixel.  Add 0.5 to get rounding instead of truncation
-  // out of static_cast<int>.
-  myRasterViewPort->drawableAreaXDimInt =
-    static_cast<int>(myRasterViewPort->bottomRightPoint.x() + 0.5) -
-    static_cast<int>(myRasterViewPort->topLeftPoint    .x() + 0.5);
-
-
-*/
-
-  // get dimensions of clipped raster image in raster pixel space/ RasterIO will do the scaling for us.
-  // So for example, if the user is zoomed in a long way, there may only be e.g. 5x5 pixels retrieved from
-  // the raw raster data, but rasterio will seamlessly scale the up to whatever the screen coordinats are
-  // e.g. a 600x800 display window (see next section below)
-  myRasterViewPort->clippedXMinDouble = (myRasterExtent.xMin() - adfGeoTransform[0]) / adfGeoTransform[1];
-  myRasterViewPort->clippedXMaxDouble = (myRasterExtent.xMax() - adfGeoTransform[0]) / adfGeoTransform[1];
-  myRasterViewPort->clippedYMinDouble = (myRasterExtent.yMin() - adfGeoTransform[3]) / adfGeoTransform[5];
-  myRasterViewPort->clippedYMaxDouble = (myRasterExtent.yMax() - adfGeoTransform[3]) / adfGeoTransform[5];
-  myRasterViewPort->clippedWidthInt =
-    abs(static_cast < int >(myRasterViewPort->clippedXMaxDouble - myRasterViewPort->clippedXMinDouble));
-  myRasterViewPort->clippedHeightInt =
-    abs(static_cast < int >(myRasterViewPort->clippedYMaxDouble - myRasterViewPort->clippedYMinDouble));
-
-  // Add one to the raster dimensions to guard against the integer truncation
-  // effects of static_cast<int>
-  // TODO: Can we get rid of this now that we are rounding at the point of the static_cast?
-  myRasterViewPort->clippedWidthInt++;
-  myRasterViewPort->clippedHeightInt++;
-
-  // make sure we don't exceed size of raster, otherwise GDAL RasterIO doesn't like it
-  if (myRasterViewPort->clippedWidthInt > rasterXDimInt)
-  {
-    myRasterViewPort->clippedWidthInt = rasterXDimInt;
-  }
-  if (myRasterViewPort->clippedHeightInt > rasterYDimInt)
-  {
-    myRasterViewPort->clippedHeightInt = rasterYDimInt;
-  }
-
-  // get dimensions of clipped raster image in device coordinate space (this is the size of the viewport)
-  myRasterViewPort->topLeftPoint = theQgsMapToPixel->transform(myRasterExtent.xMin(), myRasterExtent.yMax());
-  myRasterViewPort->bottomRightPoint = theQgsMapToPixel->transform(myRasterExtent.xMax(), myRasterExtent.yMin());
-
-  // Since GDAL's RasterIO can't handle floating point, we have to round to
-  // the nearest pixel.  Add 0.5 to get rounding instead of truncation
-  // out of static_cast<int>.
-  myRasterViewPort->drawableAreaXDimInt =
-    static_cast<int>(myRasterViewPort->bottomRightPoint.x() + 0.5) -
-    static_cast<int>(myRasterViewPort->topLeftPoint    .x() + 0.5);
-
-  myRasterViewPort->drawableAreaYDimInt =
-    static_cast<int>(myRasterViewPort->bottomRightPoint.y() + 0.5) -
-    static_cast<int>(myRasterViewPort->topLeftPoint    .y() + 0.5);
 
 #ifdef QGISDEBUG
   QgsLogger::debug("QgsRasterLayer::draw: mapUnitsPerPixel", theQgsMapToPixel->mapUnitsPerPixel(), 1, __FILE__,\
