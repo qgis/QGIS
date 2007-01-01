@@ -3734,10 +3734,10 @@ QString QgsRasterLayer::getMetadata()
     myMetadataQString += tr("Dataset Description");
     myMetadataQString += "</td></tr>";
     myMetadataQString += "<tr><td bgcolor=\"white\">";
-    myMetadataQString += QString(gdalDataset->GetDescription());
+    myMetadataQString += QFile::decodeName(gdalDataset->GetDescription());
     myMetadataQString += "</td></tr>";
   
-    
+     
     char ** GDALmetadata = gdalDataset->GetMetadata();
     
     if ( GDALmetadata )
