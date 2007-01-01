@@ -14,7 +14,7 @@ QgsGeorefDataPoint::QgsGeorefDataPoint(QgsMapCanvas* mapCanvas, int id,
 
 void QgsGeorefDataPoint::drawShape(QPainter & p)
 {
-  QString msg = QString("X %1\nY %2").arg(int(mMapCoords.x())).arg(int(mMapCoords.y()));
+  QString msg = QString("X %1\nY %2").arg(QString::number(mMapCoords.x(),'f')).arg(QString::number(mMapCoords.y(),'f'));
   QPoint pnt = toCanvasCoords(mPixelCoords);
   int x = pnt.x(), y = pnt.y();
   QFont font;
