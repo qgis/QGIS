@@ -15,61 +15,57 @@
  ***************************************************************************/
 #include <iostream>
 
-#include <qapplication.h>
-#include <qdir.h>
-#include <qfile.h>
-#include <qsettings.h>
-#include <qpixmap.h>
-#include <q3listbox.h>
-#include <qstringlist.h>
-#include <qlabel.h>
 #include <QComboBox>
-#include <qspinbox.h>
-#include <qpushbutton.h>
-#include <qmessagebox.h>
-#include <qinputdialog.h>
-#include <qsettings.h>
-#include <qpainter.h>
-#include <q3painter.h>
-#include <qpixmap.h>
-#include <qpen.h>
-#include <q3pointarray.h>
-#include <qcursor.h>
-#include <qnamespace.h>
-#include <q3listview.h>
-#include <qcolordialog.h>
-#include <q3table.h>
-#include <qstatusbar.h>
-#include <qevent.h>
-#include <qpoint.h>
-#include <qsize.h>
-#include <qdom.h>
-#include <qtabwidget.h>
-#include <qlayout.h>
-#include <q3process.h>
+#include <QDoubleValidator>
+#include <QFileDialog>
+#include <QGridLayout>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QIntValidator>
+#include <QProcess>
+#include <QPushButton>
+#include <QRegExpValidator>
+#include <QVBoxLayout>
 #include <q3cstring.h>
-#include <qlineedit.h>
-#include <q3textbrowser.h>
-#include <qdir.h>
-#include <qregexp.h>
+#include <q3groupbox.h>
+#include <q3listbox.h>
+#include <q3listview.h>
+#include <q3painter.h>
+#include <q3picture.h>
+#include <q3pointarray.h>
+#include <q3process.h>
 #include <q3progressbar.h>
 #include <q3stylesheet.h>
-#include <q3groupbox.h>
-#include <qpainter.h>
-#include <qpixmap.h>
-#include <q3picture.h>
+#include <q3table.h>
+#include <q3textbrowser.h>
+#include <qapplication.h>
+#include <qcolordialog.h>
+#include <qcursor.h>
+#include <qdir.h>
+#include <qdir.h>
+#include <qdom.h>
+#include <qevent.h>
+#include <qfile.h>
 #include <qimage.h>
-//Added by qt3to4:
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGridLayout>
-#include <QIntValidator>
-#include <QDoubleValidator>
-#include <QRegExpValidator>
-#include <QPushButton>
-#include <QGroupBox>
-#include <QFileDialog>
-#include <QProcess>
+#include <qinputdialog.h>
+#include <qlabel.h>
+#include <qlayout.h>
+#include <qlineedit.h>
+#include <qmessagebox.h>
+#include <qnamespace.h>
+#include <qpainter.h>
+#include <qpen.h>
+#include <qpixmap.h>
+#include <qpoint.h>
+#include <qpushbutton.h>
+#include <qregexp.h>
+#include <qsettings.h>
+#include <qsize.h>
+#include <qspinbox.h>
+#include <qstatusbar.h>
+#include <qstringlist.h>
+#include <qtabwidget.h>
+#include <QUrl>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -293,7 +289,11 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
     QString manPath = gisBase + "/docs/html/" + xName + ".html";
     QFile manFile ( manPath );
     if ( manFile.exists() ) {
-	mManualTextBrowser->setSource ( "file://" + manPath );
+      mManualTextBrowser->setSource ( QUrl::fromLocalFile( manPath ) );
+    }
+    else
+    {
+      QMessageBox::warning( 0, "Warning", "Cannot find man page " + manPath );
     }
     
     connect ( &mProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(readStdout()));
