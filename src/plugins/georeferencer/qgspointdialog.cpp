@@ -375,8 +375,8 @@ bool QgsPointDialog::generateWorldFile()
 	<<0<<endl
 	<<0<<endl
 	<<-pixelSize<<endl
-	<<(origin.x() - xOffset * pixelSize)<<endl
-	<<(origin.y() + yOffset * pixelSize)<<endl;  
+	<<QString::number(origin.x() - xOffset * pixelSize, 'f')<<endl
+	<<QString::number(origin.y() + yOffset * pixelSize, 'f')<<endl;  
   // write the data points in case we need them later
   QFile pointFile(mLayer->source() + ".points");
   if (pointFile.open(QIODevice::WriteOnly))
@@ -386,7 +386,8 @@ bool QgsPointDialog::generateWorldFile()
     for (unsigned int i = 0; i < mapCoords.size(); ++i)
     {
       points<<(QString("%1\t%2\t%3\t%4").
-	       arg(mapCoords[i].x()).arg(mapCoords[i].y()).
+	       arg(QString::number(mapCoords[i].x(), 'f')).
+               arg(QString::number(mapCoords[i].y(), 'f')).
 	       arg(pixelCoords[i].x()).arg(pixelCoords[i].y()))<<endl;
     }
   }
