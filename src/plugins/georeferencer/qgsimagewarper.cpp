@@ -62,7 +62,7 @@ void QgsImageWarper::warp(const QString& input, const QString& output,
   char **papszOptions = NULL;
   papszOptions = CSLSetNameValue(papszOptions, "INIT_DEST", "NO_DATA");
   GDALDataset* hDstDS = 
-    driver->Create((const char*)output, newXSize, newYSize, 
+    driver->Create(QFile::encodeName(output).constData(), newXSize, newYSize, 
 		   hSrcDS->GetRasterCount(),
 		   hSrcDS->GetRasterBand(1)->GetRasterDataType(),
 		   papszOptions);
