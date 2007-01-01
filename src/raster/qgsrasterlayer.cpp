@@ -491,7 +491,9 @@ void QgsRasterLayer::setupDestSrs()
 {
   QgsDebugMsg("Layer registry has " + QString::number(QgsMapLayerRegistry::instance()->count()) + "layers");
 
-  if (QgsMapLayerRegistry::instance()->count() ==0)
+  // No reason to set project SRS
+  //  if (QgsMapLayerRegistry::instance()->count() ==0)
+  if (NULL)
   {
     mCoordinateTransform->destSRS().createFromProj4(
            mCoordinateTransform->sourceSRS().proj4String());
@@ -551,22 +553,32 @@ QgsRasterLayer::readFile( QString const & fileName )
   QPixmap myPyramidPixmap(myThemePath + "/mIconPyramid.png");
   QPixmap myNoPyramidPixmap(myThemePath + "/mIconNoPyramid.png");
 
-  // Get the layer's projection info and set up the
-  // QgsCoordinateTransform for this layer
-  // NOTE: we must do this before getMetadata is called
-  mCoordinateTransform = new QgsCoordinateTransform();
-  QString mySourceWKT = getProjectionWKT();
 
-  QgsDebugMsg("--------------------------------------------------------------------------------------");
-  QgsDebugMsg("QgsRasterLayer::readFile --- using wkt\n" + mySourceWKT);
-  QgsDebugMsg("--------------------------------------------------------------------------------------");
-
-  mCoordinateTransform->sourceSRS().createFromWkt(mySourceWKT);
-  //get the project projection, defaulting to this layer's projection
-  //if none exists....
-  if (!mCoordinateTransform->sourceSRS().isValid())
+  if (mCoordinateTransform && mCoordinateTransform->sourceSRS().isValid())
   {
-    mCoordinateTransform->sourceSRS().validate();
+    // Layer source SRS is already set, probably by reading XML from project file
+    // This setting should override any GDAL info.
+    QgsDebugMsg("Source SRS is alerady set. Ignoring GDAL projection info");
+  }
+  else
+  {
+    // Get the layer's projection info and set up the
+    // QgsCoordinateTransform for this layer
+    // NOTE: we must do this before getMetadata is called
+    mCoordinateTransform = new QgsCoordinateTransform();
+    QString mySourceWKT = getProjectionWKT();
+
+    QgsDebugMsg("--------------------------------------------------------------------------------------");
+    QgsDebugMsg("QgsRasterLayer::readFile --- using wkt\n" + mySourceWKT);
+    QgsDebugMsg("--------------------------------------------------------------------------------------");
+
+    mCoordinateTransform->sourceSRS().createFromWkt(mySourceWKT);
+    //get the project projection, defaulting to this layer's projection
+    //if none exists....
+    if (!mCoordinateTransform->sourceSRS().isValid())
+    {
+      mCoordinateTransform->sourceSRS().validate();
+    }
   }
 
   setupDestSrs();
@@ -4527,6 +4539,8 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   QgsDebugMsg("ReadXml: red band name " + redBandNameQString);
   QgsDebugMsg("ReadXml: green band name  " + greenBandNameQString);
   QgsDebugMsg("Drawing style " + getDrawingStyleAsQString());
+  QgsDebugMsg("Source SRS: " + mCoordinateTransform->sourceSRS().description());
+  QgsDebugMsg("Dest   SRS: " + mCoordinateTransform->destSRS().description());
 
   return true;
 

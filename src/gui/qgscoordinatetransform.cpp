@@ -119,6 +119,7 @@ void QgsCoordinateTransform::initialise()
     // Pass through with no projection since we have no idea what the layer
     // coordinates are and projecting them may not be appropriate
     mShortCircuit = true;
+    QgsDebugMsg("SourceSRS deemed invalid!");
     return;
   }
 
@@ -128,22 +129,6 @@ void QgsCoordinateTransform::initialise()
     //be the same as input proj. This only happens on the first layer loaded
     //whatever that may be...
     mDestSRS.createFromProj4(mSourceSRS.proj4String());
-  }
-
-  //XXX todo overload == operator for QgsSpatialRefSys
-  //at the moment srs.parameters contains the whole proj def...soon it wont...
-  //if (mSourceSRS->proj4String() == mDestSRS->proj4String())
-  if (mSourceSRS == mDestSRS)
-  {
-    // If the source and destination projection are the same, set the short
-    // circuit flag (no transform takes place)
-    mShortCircuit=true;
-    return;
-  }
-  else
-  {
-    // Transform must take place
-    mShortCircuit=false;
   }
 
   // init the projections (destination and source)
@@ -176,6 +161,23 @@ void QgsCoordinateTransform::initialise()
     QgsDebugMsg("------------------------------------------------------------");
   }
 #endif
+
+  //XXX todo overload == operator for QgsSpatialRefSys
+  //at the moment srs.parameters contains the whole proj def...soon it wont...
+  //if (mSourceSRS->proj4String() == mDestSRS->proj4String())
+  if (mSourceSRS == mDestSRS)
+  {
+    // If the source and destination projection are the same, set the short
+    // circuit flag (no transform takes place)
+    mShortCircuit=true;
+    QgsDebugMsg("Source/Dest SRS equal, shortcircuit is set.");
+  }
+  else
+  {
+    // Transform must take place
+    mShortCircuit=false;
+  }
+
 }
 
 //
