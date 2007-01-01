@@ -1133,16 +1133,21 @@ __FUNCTION__, __LINE__);
   myRasterViewPort->clippedYMinDouble = (myRasterExtent.yMin() - adfGeoTransform[3]) / adfGeoTransform[5];
   myRasterViewPort->clippedYMaxDouble = (myRasterExtent.yMax() - adfGeoTransform[3]) / adfGeoTransform[5];
 
-  // We do a "+2" for each of the 2 assignments below because:
-  //  + 1 to simulate a ceil() out of static_cast<int> which otherwise is just a truncation.
-  //  + 1 to allow for the fact that the left hand source pixel may be mostly scrolled out of view
-  //      and therefore a fraction of a pixel would "leak" in the right hand side.
-  //      (we could test for this case more explicitly if we wanted to be pedantic, but
-  //       it's easier to just add one pixel "just in case")
-  myRasterViewPort->clippedWidthInt =
-    abs(static_cast < int >(myRasterViewPort->clippedXMaxDouble - myRasterViewPort->clippedXMinDouble)) + 2;
-  myRasterViewPort->clippedHeightInt =
-    abs(static_cast < int >(myRasterViewPort->clippedYMaxDouble - myRasterViewPort->clippedYMinDouble)) + 2;
+  // Sometimes the Ymin/Ymax are reversed.
+  if (myRasterViewPort->clippedYMinDouble > myRasterViewPort->clippedYMaxDouble)
+  {
+    double t = myRasterViewPort->clippedYMinDouble;
+    myRasterViewPort->clippedYMinDouble = myRasterViewPort->clippedYMaxDouble;
+    myRasterViewPort->clippedYMaxDouble = t;
+  }
+
+  // Set the clipped width and height to encompass all of the source pixels
+  // that could end up being displayed.
+  myRasterViewPort->clippedWidthInt = 
+    static_cast<int>(ceil(myRasterViewPort->clippedXMaxDouble) - floor(myRasterViewPort->clippedXMinDouble));
+
+  myRasterViewPort->clippedHeightInt = 
+    static_cast<int>(ceil(myRasterViewPort->clippedYMaxDouble) - floor(myRasterViewPort->clippedYMinDouble));
   
   // but make sure the intended SE corner extent doesn't exceed the SE corner
   // of the source raster, otherwise GDAL's RasterIO gives an error and returns nothing.
