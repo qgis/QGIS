@@ -25,6 +25,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsrenderer.h"
+#include "qgslogger.h"
 
 //qt includes
 #include <QColorDialog>
@@ -61,6 +62,7 @@
   }
   // set the default wkt to WGS 84
   long mySRSID =  QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectSRSID",GEOSRS_ID);
+  QgsDebugMsg("Read project SRSID: " + QString::number(mySRSID));
   projectionSelector->setSelectedSRSID(mySRSID);
   
   

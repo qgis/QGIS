@@ -3506,7 +3506,9 @@ void QgsVectorLayer::setCoordinateSystem()
   // project srs
 
   QgsDebugMsg("Layer registry has " + QString::number(QgsMapLayerRegistry::instance()->count()) + " layers ");
-  if (QgsMapLayerRegistry::instance()->count() ==0)
+  // No reason to set project SRS
+  // if (QgsMapLayerRegistry::instance()->count() ==0)
+  if (NULL)
   {
     mCoordinateTransform->destSRS().createFromProj4(
         mCoordinateTransform->sourceSRS().proj4String());

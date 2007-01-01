@@ -260,6 +260,7 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
     QDomNode srsNode = layer_node.namedItem("coordinatetransform");
     if( ! srsNode.isNull()  )
     {
+      qDebug("Reading coordinatetransform from project file");
        mCoordinateTransform=new QgsCoordinateTransform();
        mCoordinateTransform->readXML(srsNode);
     }
@@ -268,7 +269,7 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
     QDomNode transparencyNode = layer_node.namedItem("transparencyLevelInt");
     if ( ! transparencyNode.isNull() )
     {
-      // set transparency level only if it's in project
+      // set transparency level only if it's in project 
       // (otherwise it sets the layer transparent)
       QDomElement myElement = transparencyNode.toElement();
       setTransparency(myElement.text().toInt());
