@@ -45,6 +45,11 @@ QgsMeasure::QgsMeasure(bool measureArea, QgsMapCanvas *mc, Qt::WFlags f)
 
     mTable->setLeftMargin(0); // hide row labels
 
+    // Set one cell row where to update current distance
+    // If measuring area, the table doesn't get shown
+    mTable->setNumRows(1);
+    mTable->setText(0, 0, QString::number(0, 'f',1));
+
     mTable->horizontalHeader()->setLabel( 0, tr("Segments (in meters)") );
     //mTable->horizontalHeader()->setLabel( 1, tr("Total") );
     //mTable->horizontalHeader()->setLabel( 2, tr("Azimuth") );
@@ -121,7 +126,10 @@ QgsMeasure::~QgsMeasure()
 void QgsMeasure::restart(void )
 {
     mPoints.resize(0);
-    mTable->setNumRows(0);
+    // Set one cell row where to update current distance
+    // If measuring area, the table doesn't get shown
+    mTable->setNumRows(1);
+    mTable->setText(0, 0, QString::number(0, 'f',1));
     mTotal = 0.;
     
     updateUi();
@@ -160,13 +168,14 @@ void QgsMeasure::addPoint(QgsPoint &point)
       mTotal += d;
       editTotal->setText(formatDistance(mTotal));
 	
-    	mTable->setNumRows ( mPoints.size()-1 );
 
 	    int row = mPoints.size()-2;
       mTable->setText(row, 0, QString::number(d, 'f',1));
       //mTable->setText ( row, 1, QString::number(mTotal) );
+      mTable->setNumRows ( mPoints.size() );
       
-      mTable->ensureCellVisible(row,0);
+      mTable->setText(row + 1, 0, QString::number(0, 'f',1));
+      mTable->ensureCellVisible(row + 1,0);
     }
 
     mRubberBand->addPoint(point);
@@ -208,6 +217,7 @@ void QgsMeasure::mouseMove(QgsPoint &point)
     QgsPoint p1 = tmpPoints[last], p2 = tmpPoints[last+1];
 
     double d = mCalc->measureLine(p1,p2);
+    mTable->setText(last, 0, QString::number(d, 'f',1));
     editTotal->setText(formatDistance(mTotal + d));
   }
 }
