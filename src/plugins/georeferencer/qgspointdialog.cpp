@@ -136,6 +136,12 @@ QgsPointDialog::QgsPointDialog(QString layerPath, QgisIface* theQgisInterface,
   QgsMapLayerRegistry* registry = QgsMapLayerRegistry::instance();
   registry->addMapLayer(layer, FALSE);  
   
+
+  // Set source SRS same as dest SRS, so that we don't do any transformation.
+  // Dest SRS is set by project defaults
+  // The CoordinateTransform should now be shortcircuited.
+  layer->coordinateTransform()->setSourceSRS(layer->coordinateTransform()->destSRS());
+
   // add layer to map canvas
   std::deque<QString> layers;
   layers.push_back(layer->getLayerID());
@@ -459,8 +465,8 @@ void QgsPointDialog::deleteDataPoint(QgsPoint& coords)
 #endif
     if ((x*x + y*y) < maxDistSqr)
     {
-      mPoints.erase(it);
       delete *it;
+      mPoints.erase(it);
       mCanvas->refresh();
       break;
     }
