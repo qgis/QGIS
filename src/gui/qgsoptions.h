@@ -69,6 +69,11 @@ class QgsOptions :public QDialog, private Ui::QgsOptionsBase
   void on_pbnSelectionColour_clicked();
   
   /*!
+   * Slot to select the default measure tool colour
+   */
+  void on_pbnMeasureColour_clicked();
+
+  /*!
    * Slot to select the default map selection colour
    */
   void on_pbnCanvasColor_clicked();
