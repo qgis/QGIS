@@ -4391,7 +4391,7 @@ void QgisApp::setExtent(QgsRect theRect)
 
 int QgisApp::saveDirty()
 {
-  int answer = 0;
+  int answer(QMessageBox::No);
   mMapCanvas->freeze(true);
 
 #ifdef QGISDEBUG
@@ -4418,7 +4418,10 @@ int QgisApp::saveDirty()
   }
 #endif
 
-  if ((QgsProject::instance()->dirty() || (mMapCanvas->isDirty()) && mMapCanvas->layerCount() > 0))
+  QSettings settings;
+  bool askThem = settings.value("qgis/askToSaveProjectChanges", true).toBool();
+
+  if (askThem && (QgsProject::instance()->dirty() || (mMapCanvas->isDirty()) && mMapCanvas->layerCount() > 0))
   {
     // flag project as dirty since dirty state of canvas is reset if "dirty"
     // is based on a zoom or pan
