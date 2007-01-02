@@ -232,9 +232,9 @@ void QgsOptions::saveOptions()
 
   //set the default color for the measure tool
   myColor = pbnMeasureColour->color();
-  myRed = settings.setValue("/qgis/default_measure_color_red",myColor.red());
-  myGreen = settings.setValue("/qgis/default_measure_color_green",myColor.green());
-  myBlue = settings.setValue("/qgis/default_measure_color_blue",myColor.blue());
+  settings.setValue("/qgis/default_measure_color_red",myColor.red());
+  settings.setValue("/qgis/default_measure_color_green",myColor.green());
+  settings.setValue("/qgis/default_measure_color_blue",myColor.blue());
 
   settings.writeEntry("/qgis/wheel_action", cmbWheelAction->currentIndex());
   settings.writeEntry("/qgis/zoom_factor", spinZoomFactor->value());
