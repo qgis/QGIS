@@ -81,6 +81,12 @@ void QgsMeasure::activate()
   mCalc->setDefaultEllipsoid();
   mCalc->setProjectAsSourceSRS();
 
+  QSettings settings;
+  int myRed = settings.value("/qgis/default_measure_color_red", 180).toInt();
+  int myGreen = settings.value("/qgis/default_measure_color_green", 180).toInt();
+  int myBlue = settings.value("/qgis/default_measure_color_blue", 180).toInt();
+  mRubberBand->setColor(QColor(myRed, myGreen, myBlue));
+
   // If we suspect that they have data that is projected, yet the
   // map SRS is set to a geographic one, warn them.
   if (mCalc->geographic() &&
@@ -135,6 +141,13 @@ void QgsMeasure::restart(void )
     updateUi();
 
     mRubberBand->reset(mMeasureArea);
+
+    // re-read color settings
+    QSettings settings;
+    int myRed = settings.value("/qgis/default_measure_color_red", 180).toInt();
+    int myGreen = settings.value("/qgis/default_measure_color_green", 180).toInt();
+    int myBlue = settings.value("/qgis/default_measure_color_blue", 180).toInt();
+    mRubberBand->setColor(QColor(myRed, myGreen, myBlue));
 
     mRightMouseClicked = false;
 }
