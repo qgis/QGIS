@@ -172,6 +172,7 @@ macx:GDALLIBADD=-framework gdal
 SQLITELIBADD=-lsqlite3
 PROJLIBADD=-lproj
 GEOSLIBADD=-lgeos
+EXPATLIBADD=-lexpat
 
 win32:LIBS += -lWs2_32
 
