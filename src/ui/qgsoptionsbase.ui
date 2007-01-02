@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>590</width>
-    <height>454</height>
+    <height>463</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -31,8 +31,56 @@
    <item row="0" column="0" >
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
-      <number>2</number>
+      <number>0</number>
      </property>
+     <widget class="QWidget" name="tabGeneral" >
+      <attribute name="title" >
+       <string>&amp;General</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QGroupBox" name="groupBox_11" >
+         <property name="title" >
+          <string>General</string>
+         </property>
+         <layout class="QVBoxLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QCheckBox" name="chbAskToSaveProjectChanges" >
+            <property name="text" >
+             <string>Ask to save project changes when required</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
      <widget class="QWidget" name="tabAppearance" >
       <attribute name="title" >
        <string>&amp;Appearance</string>
@@ -258,7 +306,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="TabPage" >
+     <widget class="QWidget" name="tabRendering" >
       <attribute name="title" >
        <string>&amp;Rendering</string>
       </attribute>
@@ -603,7 +651,7 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="TabPage" >
+     <widget class="QWidget" name="tabProjection" >
       <attribute name="title" >
        <string>Pro&amp;jection</string>
       </attribute>

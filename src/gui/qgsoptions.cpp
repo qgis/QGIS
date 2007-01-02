@@ -130,6 +130,8 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   pbnMeasureColour->setColor( QColor(myRed,myGreen,myBlue) );
 
   capitaliseCheckBox->setChecked(settings.value("qgis/capitaliseLayerName", QVariant(false)).toBool());
+
+  chbAskToSaveProjectChanges->setChecked(settings.value("qgis/askToSaveProjectChanges", QVariant(true)).toBool());
   
   cmbWheelAction->setCurrentIndex(settings.value("/qgis/wheel_action", 0).toInt());
   spinZoomFactor->setValue(settings.value("/qgis/zoom_factor", 2).toDouble());
@@ -189,6 +191,7 @@ void QgsOptions::saveOptions()
   settings.writeEntry("/qgis/enable_anti_aliasing",chkAntiAliasing->isChecked());
   settings.writeEntry("/qgis/use_qimage_to_render", !(chkUseQPixmap->isChecked()));
   settings.setValue("qgis/capitaliseLayerName", capitaliseCheckBox->isChecked());
+  settings.setValue("qgis/askToSaveProjectChanges", chbAskToSaveProjectChanges->isChecked());
 
   if(cmbTheme->currentText().length() == 0)
   {
