@@ -37,6 +37,8 @@ QT += qt3support svg core gui xml network
 win32:system(copy "c:\dev\cpp\qgis\AUTHORS" "c:\dev\cpp\qgis\qgis-release\share\qgis\doc\") 
 win32:system(copy "c:\dev\cpp\qgis\SPONSORS" "c:\dev\cpp\qgis\qgis-release\share\qgis\doc\") 
 win32:system(copy "c:\dev\cpp\qgis\images\developers\*.jpg" "c:\dev\cpp\qgis\qgis-release\share\qgis\images\developers\")
+win32:system(copy "c:\dev\cpp\qgis\doc\index.html" "c:\dev\cpp\qgis\qgis-release\share\qgis\doc\")
+win32:system(copy "c:\dev\cpp\qgis\doc\userguide.pdf" "c:\dev\cpp\qgis\qgis-release\share\qgis\doc\")
 #this way didnt work but would be nicer than above
 #win32:system(copy "c:\dev\cpp\qgis\AUTHORS" $${QGISDOCDIR}
 #win32:system(copy ../../SPONSORS $${QGISDOCDIR})
