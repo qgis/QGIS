@@ -67,16 +67,16 @@ QString QgsMapserverExport::baseName()
 // Choose the map file to create
 void QgsMapserverExport::on_btnChooseFile_clicked()
 {
-  mapFile = QFileDialog::getSaveFileName(this, "Name for the map file",
-      ".", "MapServer map files (*.map);;All files(*.*)");
+  mapFile = QFileDialog::getSaveFileName(this, tr("Name for the map file"),
+      ".", tr("MapServer map files (*.map);;All files(*.*)","Filter list for selecting files from a dialog box"));
   txtMapFilePath->setText(mapFile);
 
 }
 // Chooose the project file to process
 void QgsMapserverExport::on_btnChooseProjectFile_clicked()
 {
-  qgisProjectFile = QFileDialog::getOpenFileName(this, "Choose the QGIS project file",
-      ".", "QGIS Project Files (*.qgs);;All files (*.*)");
+  qgisProjectFile = QFileDialog::getOpenFileName(this, tr("Choose the QGIS project file"),
+      ".", tr("QGIS Project Files (*.qgs);;All files (*.*)", "Filter list for selecting files from a dialog box"));
   txtQgisFilePath->setText(qgisProjectFile);
 
 }
@@ -187,8 +187,9 @@ bool QgsMapserverExport::write()
   // Check for file and prompt for overwrite if it exists
   if (QFile::exists(txtMapFilePath->text()))
   {
-    okToSave = QMessageBox::warning(0, "Overwrite File?", txtMapFilePath->text() +
-        " exists. \nDo you want to overwrite it?", "Yes", "No");
+    okToSave = QMessageBox::warning(0, tr("Overwrite File?"), txtMapFilePath->text() +
+        tr(" exists. \nDo you want to overwrite it?",
+           "a filename is prepended to this text, and appears in a dialog box"), tr("Yes"), tr("No"));
   }
   if (okToSave == 0)
   {
