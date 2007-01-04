@@ -34,6 +34,7 @@
 #include "cpl_error.h"
 #include "qgsshapefile.h"
 #include "qgis.h"
+#include "qgslogger.h"
 
 // for htonl
 #ifdef WIN32
@@ -159,11 +160,11 @@ QString QgsShapeFile::getFeatureClass(){
       */
       //geom_type = QString(geom->getGeometryName());
       //geom_type = "GEOMETRY";
-      std::cerr << "Preparing to escape " << geom_type.toLocal8Bit().data() << std::endl; 
+      QgsDebugMsg("Preparing to escape " + geom_type);
       char * esc_str = new char[geom_type.length()*2+1];
       PQescapeString(esc_str, (const char *)geom_type, geom_type.length());
       geom_type = QString(esc_str);
-      std::cerr << "After escaping, geom_type is : " << geom_type.toLocal8Bit().data() << std::endl;  
+      QgsDebugMsg("After escaping, geom_type is : " + geom_type);
       delete[] esc_str;
       
       QString file(filename);
@@ -258,59 +259,73 @@ void QgsShapeFile::setColumnNames(QStringList columns)
   }
 }
 
-bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col, QString srid, PGconn * conn, QProgressDialog& pro, bool &fin){
+bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col, 
+                               QString srid, PGconn * conn, QProgressDialog& pro, bool &fin,
+                               QString& errorText)
+{
   connect(&pro, SIGNAL(cancelled()), this, SLOT(cancelImport()));
   import_cancelled = false;
   bool result = true;
   // Mangle the table name to make it PG compliant by replacing spaces with 
   // underscores
   table_name = table_name.replace(" ","_");
+
   QString query = "CREATE TABLE "+schema+"."+table_name+"(gid int4 PRIMARY KEY, ";
+
   for(int n=0; n<column_names.size() && result; n++){
     if(!column_names[n][0].isLetter())
       result = false;
+
     char * esc_str = new char[column_names[n].length()*2+1];
-    std::cerr << "Escaping " << column_names[n].toLocal8Bit().data() << " to ";
+
     PQescapeString(esc_str, (const char *)column_names[n].lower(), column_names[n].length());
-    std::cerr << esc_str << std::endl; 
+    QgsDebugMsg("Escaped " + column_names[n] + " to " + esc_str); 
     query += esc_str;
-    std::cerr << query.toLocal8Bit().data() << std::endl; 
-    query += " ";
-    std::cerr << query.toLocal8Bit().data() << std::endl; 
-    query += column_types[n];
-    std::cerr << query.toLocal8Bit().data() << std::endl; 
+    query += " " + column_types[n];
+
     if(n<column_names.size()-1)
     {
       query += ", ";
-      std::cerr << query.toLocal8Bit().data() << std::endl; 
     }
     delete[] esc_str;
   }
   query += " )";
-      std::cerr << query.toLocal8Bit().data() << std::endl; 
+
+  QgsDebugMsg("Query string is: " + query);
 
   PGresult *res = PQexec(conn, (const char *)query);
-  qWarning(query);
+
   if(PQresultStatus(res)!=PGRES_COMMAND_OK){
     // flag error and send query and error message to stdout on debug
-    result = false;
-    qWarning(PQresultErrorMessage(res));
+    errorText += tr("The database gave an error while executing this SQL:") + "\n";
+    errorText += query + '\n';
+    errorText += tr("The error was:") + "\n";
+    errorText += PQresultErrorMessage(res) + '\n';
+    PQclear(res);
+    return false;
   }
   else {
     PQclear(res);
   }
 
-  query = "SELECT AddGeometryColumn(\'" + schema + "\', \'" + table_name + "\', \'"+geom_col+"\', " + srid +
-    ", \'" + geom_type + "\', 2)";            
-  if(result) res = PQexec(conn, (const char *)query);
+  query = "SELECT AddGeometryColumn(\'" + schema + "\', \'" + table_name + "\', \'"+
+    geom_col + "\', " + srid + ", \'" + geom_type + "\', 2)";
+
+  res = PQexec(conn, (const char *)query);
+
   if(PQresultStatus(res)!=PGRES_TUPLES_OK){
-    result = false;    
+    errorText += tr("The database gave an error while executing this SQL:") + "\n";
+
+    errorText += query + '\n';
+    errorText += tr("The error was:") + "\n";
+    errorText += PQresultErrorMessage(res) + '\n';
+    PQclear(res);
+    return false;
   }
   else{
-    qWarning(query);
-    qWarning(PQresultErrorMessage(res));
     PQclear(res);
   }
+
   if(isMulti)
   {
     // drop the check constraint 
@@ -319,8 +334,19 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
     // multiple types in the check constraint. For now, we
     // just drop the constraint...
     query = "alter table " + table_name + " drop constraint \"$2\"";
-    // XXX tacky - we don't even check the result...
-    PQexec(conn, (const char*)query);
+
+    res = PQexec(conn, (const char*)query);
+    if(PQresultStatus(res)!=PGRES_TUPLES_OK){
+      errorText += tr("The database gave an error while executing this SQL:") + "\n";
+      errorText += query + '\n';
+      errorText += tr("The error was:") + "\n";
+      errorText += PQresultErrorMessage(res) + '\n';
+      PQclear(res);
+      return false;
+    }
+    else{
+      PQclear(res);
+    }
   }
       
   //adding the data into the table
@@ -334,7 +360,8 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
     if(feat){
       OGRGeometry *geom = feat->GetGeometryRef();
       if(geom){
-        query = "INSERT INTO "+schema+"."+table_name+QString(" VALUES( %1, ").arg(m);
+        query = "INSERT INTO \"" + schema + "\".\"" + table_name + "\"" +
+          QString(" VALUES( %1, ").arg(m);
 
         int num = geom->WkbSize();
         char * geo_temp = new char[num*3];
@@ -343,14 +370,22 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
 
         QString quotes;
         for(int n=0; n<column_types.size(); n++){
+          bool numericType(false);
           if(column_types[n] == "int" || column_types[n] == "float")
+          {
             quotes = " ";
+            numericType = true;
+          }
           else
             quotes = "\'";
           query += quotes;
 
-          // escape the string value
+          // escape the string value and cope with blank data
           QString val = codec->toUnicode(feat->GetFieldAsString(n));
+          if (val.isEmpty() && numericType)
+          {
+            val = "NULL";
+          }
           val.replace("'", "''");
           //char * esc_str = new char[val.length()*2+1];
           //PQescapeString(esc_str, (const char *)val.lower().utf8(), val.length());
@@ -362,14 +397,24 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
           //delete[] esc_str;
         }
         query += QString("GeometryFromText(\'")+geometry+QString("\', ")+srid+QString("))");
-    //    std::cerr << query << std::endl; 
 
         if(result)
           res = PQexec(conn, (const char *)query.utf8());
+
         if(PQresultStatus(res)!=PGRES_COMMAND_OK){
           // flag error and send query and error message to stdout on debug
           result = false;
-          qWarning(PQresultErrorMessage(res));
+          errorText += tr("The database gave an error while executing this SQL:") + "\n";
+          // the query string can be quite long. Trim if necessary...
+          if (query.count() > 100)
+            errorText += query.left(150) + 
+              tr("... (rest of SQL trimmed)", "is appended to a truncated SQL statement") + 
+              "\n";
+          else
+            errorText += query + '\n';
+          errorText += tr("The error was:") + "\n";
+          errorText += PQresultErrorMessage(res);
+          errorText += '\n';
         }
         else {
           PQclear(res);
