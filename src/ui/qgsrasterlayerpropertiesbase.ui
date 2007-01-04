@@ -191,44 +191,41 @@
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item row="4" column="1" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="4" column="0" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
           <item row="3" column="1" >
            <widget class="QComboBox" name="cboBlue" />
           </item>
-          <item row="3" column="0" >
-           <widget class="QLabel" name="textLabel2_3" >
+          <item row="1" column="1" >
+           <widget class="QComboBox" name="cboRed" />
+          </item>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="textLabel2_4" >
             <property name="text" >
-             <string>&lt;b>&lt;font color="#0000ff">Blue&lt;/font>&lt;/b></string>
-            </property>
-            <property name="buddy" >
-             <cstring>cboBlue</cstring>
+             <string>Color</string>
             </property>
            </widget>
+          </item>
+          <item row="0" column="1" >
+           <widget class="QLabel" name="textLabel2_5" >
+            <property name="text" >
+             <string>Band</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="2" column="1" >
+           <widget class="QComboBox" name="cboGreen" />
           </item>
           <item row="2" column="0" >
            <widget class="QLabel" name="textLabel2_2" >
@@ -240,12 +237,6 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1" >
-           <widget class="QComboBox" name="cboGreen" />
-          </item>
-          <item row="1" column="1" >
-           <widget class="QComboBox" name="cboRed" />
-          </item>
           <item row="1" column="0" >
            <widget class="QLabel" name="textLabel2" >
             <property name="text" >
@@ -256,19 +247,38 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1" >
-           <widget class="QLabel" name="textLabel2_5" >
+          <item row="5" column="0" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="3" column="0" >
+           <widget class="QLabel" name="textLabel2_3" >
             <property name="text" >
-             <string>Band</string>
+             <string>&lt;b>&lt;font color="#0000ff">Blue&lt;/font>&lt;/b></string>
+            </property>
+            <property name="buddy" >
+             <cstring>cboBlue</cstring>
             </property>
            </widget>
           </item>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="textLabel2_4" >
+          <item row="4" column="0" >
+           <widget class="QLabel" name="label" >
             <property name="text" >
-             <string>Color</string>
+             <string>Transparent</string>
             </property>
            </widget>
+          </item>
+          <item row="4" column="1" >
+           <widget class="QComboBox" name="cboTransparent" />
           </item>
          </layout>
         </widget>
@@ -1068,9 +1078,14 @@
  <layoutdefault spacing="6" margin="11" />
  <customwidgets>
   <customwidget>
-   <class>Q3TextBrowser</class>
-   <extends>Q3TextEdit</extends>
-   <header>Qt3Support/Q3TextBrowser</header>
+   <class>Q3TextEdit</class>
+   <extends>Q3Frame</extends>
+   <header>q3textedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Q3ListBox</class>
+   <extends>Q3Frame</extends>
+   <header>q3listbox.h</header>
   </customwidget>
   <customwidget>
    <class>Q3GroupBox</class>
@@ -1079,14 +1094,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>Q3ListBox</class>
-   <extends>Q3Frame</extends>
-   <header>q3listbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>Q3TextEdit</class>
-   <extends>Q3Frame</extends>
-   <header>q3textedit.h</header>
+   <class>Q3TextBrowser</class>
+   <extends>Q3TextEdit</extends>
+   <header>Qt3Support/Q3TextBrowser</header>
   </customwidget>
  </customwidgets>
  <tabstops>
