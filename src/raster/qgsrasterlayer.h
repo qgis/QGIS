@@ -415,6 +415,16 @@ public:
     /** \brief Mutator for blue band name mapping.  */
     void setBlueBandName(QString const & theBandNameQString);
     //
+    // Accessor and mutator for transparent band name
+    // 
+    /** \brief  Accessor for transparent band name mapping. */
+    QString getTransparentBandName()
+    {
+        return transparentBandNameQString;
+    };
+    /** \brief Mutator for transparent band name mapping.  */
+    void setTransparentBandName(QString const & theBandNameQString);
+    //
     // Accessor and mutator for gray band name
     //
     /** \brief Accessor for gray band name mapping.  */
@@ -1007,6 +1017,8 @@ private:
     QString greenBandNameQString;
     /** \brief The band to be associated with the color blue - usually 3.  */
     QString blueBandNameQString;
+    /** \brief The band to be associated with transparency.  */
+    QString transparentBandNameQString;
     /** \brief The band to be associated with the grayscale only ouput - usually 1.  */
     QString grayBandNameQString;
     /** \brief Minimum red value - used in scaling procedure.  */

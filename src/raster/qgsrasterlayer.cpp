@@ -653,6 +653,7 @@ QgsRasterLayer::readFile( QString const & fileName )
     redBandNameQString = "Red"; // sensible default
     greenBandNameQString = "Green"; // sensible default
     blueBandNameQString = "Blue";// sensible default
+    transparentBandNameQString = tr("Not Set"); // sensible default
     grayBandNameQString = tr("Not Set");  //sensible default
     drawingStyle = PALETTED_MULTI_BAND_COLOR; //sensible default
   }
@@ -670,6 +671,11 @@ QgsRasterLayer::readFile( QString const & fileName )
     {
       blueBandNameQString = tr("Not Set");  // sensible default
     }
+    if (gdalDataset->GetRasterCount() > 3)
+      transparentBandNameQString = getRasterBandName(4);
+    else
+      transparentBandNameQString = tr("Not Set");
+
     grayBandNameQString = tr("Not Set");  //sensible default
     drawingStyle = MULTI_BAND_COLOR;  //sensible default
   }
@@ -679,6 +685,7 @@ QgsRasterLayer::readFile( QString const & fileName )
     redBandNameQString = tr("Not Set"); //sensible default
     greenBandNameQString = tr("Not Set"); //sensible default
     blueBandNameQString = tr("Not Set");  //sensible default
+    transparentBandNameQString = tr("Not Set");  //sensible default
     drawingStyle = SINGLE_BAND_GRAY;  //sensible default
     grayBandNameQString = getRasterBandName(1); // usually gdal will return gray or undefined  
   }
@@ -2333,6 +2340,20 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPor
   void *myGdalGreenData = readData ( myGdalGreenBand, theRasterViewPort );
   void *myGdalBlueData = readData ( myGdalBlueBand, theRasterViewPort );
 
+  bool haveTransparencyBand(false);
+  GDALRasterBand *myGdalTransparentBand;
+  GDALDataType myTransparentType;
+  void *myGdalTransparentData;
+
+  if (transparentBandNameQString != tr("Not Set"))
+  {
+    haveTransparencyBand = true;
+    int myTransparentBandNoInt = getRasterBandNumber(transparentBandNameQString); 
+    myGdalTransparentBand = gdalDataset->GetRasterBand(myTransparentBandNoInt);
+    myTransparentType = myGdalTransparentBand->GetRasterDataType();
+    myGdalTransparentData = readData ( myGdalTransparentBand, theRasterViewPort );
+  }
+
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
   //myQImage.fill(0);
   myQImage.setAlphaBuffer(true);
@@ -2347,9 +2368,16 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPor
                                               myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
       double myBlueValueDouble  = readValue ( myGdalBlueData, myBlueType,
                                               myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
+      if (haveTransparencyBand)
+      {
+        double myTransparentValueDouble  = readValue ( myGdalTransparentData, myTransparentType,
+                                           myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
+        if (myTransparentValueDouble == 0.0)
+          continue;
+      }
 
       // TODO: check all channels ?
-      if ( myRedValueDouble == noDataValueDouble || myRedValueDouble != myRedValueDouble )
+      if ( myRedValueDouble == noDataValueDouble || myRedValueDouble != myRedValueDouble)
       {
 #ifdef QGISDEBUG
 	QgsLogger::debug("myRedValueDouble", myRedValueDouble, __FILE__, __FUNCTION__, __LINE__, 1);
@@ -2439,6 +2467,8 @@ QgsDebugMsg("QgsRasterLayer::drawSingleBandGray: painting image to canvas from s
   CPLFree(myGdalRedData);
   CPLFree(myGdalGreenData);
   CPLFree(myGdalBlueData);
+  if (haveTransparencyBand)
+    CPLFree(myGdalTransparentData);
 }
 
 
@@ -3007,6 +3037,38 @@ void QgsRasterLayer::setBlueBandName(QString const &  theBandNameQString)
   return;
 }
 
+//mutator for transparent band name
+void QgsRasterLayer::setTransparentBandName(QString const &  theBandNameQString)
+{
+  //check if the band is unset
+  if (theBandNameQString == tr("Not Set"))
+  {
+    transparentBandNameQString = theBandNameQString;
+    return;
+  }
+  //check if the image is paletted
+  if (rasterLayerType == PALETTE && (theBandNameQString == "Red" || theBandNameQString == "Green" || theBandNameQString == "Blue"))
+  {
+    transparentBandNameQString = theBandNameQString;
+    return;
+  }
+  //check that a valid band name was passed
+
+  for (int myIteratorInt = 0; myIteratorInt < rasterStatsVector.size(); ++myIteratorInt)
+  {
+    //find out the name of this band
+    QgsRasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
+    if (myRasterBandStats.bandName == theBandNameQString)
+    {
+      transparentBandNameQString = theBandNameQString;
+      return;
+    }
+  }
+
+  //if no matches were found default to not set
+  transparentBandNameQString = tr("Not Set");
+  return;
+}
 
 
 //mutator for gray band name
