@@ -78,8 +78,7 @@ void QgsMeasure::activate()
   mRightMouseClicked = false;
 
   // ensure that we have correct settings
-  mCalc->setDefaultEllipsoid();
-  mCalc->setProjectAsSourceSRS();
+  updateProjection();
 
   QSettings settings;
   int myRed = settings.value("/qgis/default_measure_color_red", 180).toInt();
@@ -104,6 +103,7 @@ void QgsMeasure::activate()
            "system using the <tt>Settings:Project Properties</tt> menu."),
                          QMessageBox::Ok,
                          QMessageBox::NoButton);
+    mWrongProjectProjection = true;
   }
 }
     
@@ -131,6 +131,7 @@ QgsMeasure::~QgsMeasure()
 
 void QgsMeasure::restart(void )
 {
+    updateProjection();
     mPoints.resize(0);
     // Set one cell row where to update current distance
     // If measuring area, the table doesn't get shown
@@ -150,6 +151,7 @@ void QgsMeasure::restart(void )
     mRubberBand->setColor(QColor(myRed, myGreen, myBlue));
 
     mRightMouseClicked = false;
+    mWrongProjectProjection = false;
 }
 
 void QgsMeasure::addPoint(QgsPoint &point)
@@ -157,6 +159,12 @@ void QgsMeasure::addPoint(QgsPoint &point)
 #ifdef QGISDEBUG
     std::cout << "QgsMeasure::addPoint" << point.x() << ", " << point.y() << std::endl;
 #endif
+
+    if (mWrongProjectProjection)
+    {
+      updateProjection();
+      mWrongProjectProjection = false;
+    }
 
     // don't add points with the same coordinates
     if (mPoints.size() > 0 && point == mPoints[0])
@@ -336,6 +344,12 @@ void QgsMeasure::updateUi()
     editTotal->setText(formatDistance(0));
   }
   
+}
+
+void QgsMeasure::updateProjection()
+{
+  mCalc->setDefaultEllipsoid();
+  mCalc->setProjectAsSourceSRS();
 }
 
 //////////////////////////

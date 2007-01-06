@@ -105,6 +105,9 @@ private:
   //! shows/hides table, shows correct units
   void updateUi();
   
+  //! updates the projections we're using 
+  void updateProjection();
+
   QgsMapCanvas *mMapCanvas;
   
   //! distance/area calculator
@@ -125,6 +128,10 @@ private:
 
   //! indicates whether we've just done a right mouse click
   bool mRightMouseClicked;
+
+  //! indicates whether we've recently warned the user about having the wrong 
+  // project projection
+  bool mWrongProjectProjection;
 };
 
 #endif
