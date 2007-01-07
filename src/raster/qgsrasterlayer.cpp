@@ -2380,8 +2380,8 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPor
       if ( myRedValueDouble == noDataValueDouble || myRedValueDouble != myRedValueDouble)
       {
 #ifdef QGISDEBUG
-	QgsLogger::debug("myRedValueDouble", myRedValueDouble, __FILE__, __FUNCTION__, __LINE__, 1);
-	QgsLogger::debug("noDataValueDouble", noDataValueDouble, __FILE__, __FUNCTION__, __LINE__, 1);
+//	QgsLogger::debug("myRedValueDouble", myRedValueDouble, __FILE__, __FUNCTION__, __LINE__, 1);
+//	QgsLogger::debug("noDataValueDouble", noDataValueDouble, __FILE__, __FUNCTION__, __LINE__, 1);
 #endif
         continue;
       }

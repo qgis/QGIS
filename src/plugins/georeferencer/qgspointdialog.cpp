@@ -280,7 +280,9 @@ void QgsPointDialog::on_cmbTransformType_currentIndexChanged(const QString& valu
     QFileInfo file(mLayer->source());
     int pos = filename.size()-file.suffix().size()-1;
     filename.insert(pos, tr("-modified", "Georeferencer:QgsPointDialog.cpp - used to modify a user given filename"));
-    
+    pos = filename.size()-file.suffix().size();
+    filename.replace(pos, filename.size(), "tif");
+
     leSelectModifiedRaster->setText(filename);
     leSelectWorldFile->setText(guessWorldFileName(filename));
   }
@@ -323,8 +325,9 @@ bool QgsPointDialog::generateWorldFile()
 		     "the raster layer.</p><p>The modifed raster will be "
 		     "saved in a new file and a world file will be "
 		     "generated for this new file instead.</p><p>Are you "
-		     "sure that this is what you want?</p>"),
-			     QMessageBox::No, QMessageBox::Yes);
+		     "sure that this is what you want?</p>") + 
+		     "<p><i>" + tr("Currently all modified files will be written in TIFF format.") + 
+		     "</i><p>", QMessageBox::No, QMessageBox::Yes);
       if (res == QMessageBox::No)
 	       return false;
 
