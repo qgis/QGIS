@@ -25,7 +25,7 @@
 #include <QAction>
 #include <QMenu>
 
-#include "qgisapp.h"
+#include "qgisinterface.h"
 #include "qgsspitplugin.h"
 #include "qgsspit.h"
 // xpm for creating the toolbar icon
@@ -52,10 +52,10 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 * @param qgis Pointer to the QGIS main window
 * @parma _qI Pointer to the QGIS interface object
 */
-QgsSpitPlugin::QgsSpitPlugin(QgisApp * qgis, QgisIface * _qI)
-    : qgisMainWindow(qgis), 
-      qI(_qI),
-      QgisPlugin(name_, description_, version_, type_ )
+QgsSpitPlugin::QgsSpitPlugin(QgisInterface * _qI)
+  : QgisPlugin(name_, description_, version_, type_ ),
+    qgisMainWindow(_qI->getMainWindow()), 
+    qI(_qI)
 {
 }
 
@@ -104,9 +104,9 @@ void QgsSpitPlugin::unload()
 * of the plugin class
 */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory(QgisApp * qgis, QgisIface * qI)
+QGISEXTERN QgisPlugin * classFactory(QgisInterface * qI)
 {
-    return new QgsSpitPlugin(qgis, qI);
+    return new QgsSpitPlugin(qI);
 }
 
 // Return the name of the plugin

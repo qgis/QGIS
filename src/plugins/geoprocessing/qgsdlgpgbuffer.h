@@ -23,14 +23,14 @@
 #include "ui_qgsdlgpgbufferbase.h"
 #include "qgisgui.h"
 
-class QgisIface;
+class QgisInterface;
 class QDoubleValidator;
 
 class QgsDlgPgBuffer:public QDialog, private Ui::QgsDlgPgBufferBase
 {
   Q_OBJECT public:
   //! Constructor
-    QgsDlgPgBuffer( QgisIface * _qI = 0, QWidget * parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
+    QgsDlgPgBuffer( QgisInterface * _qI = 0, QWidget * parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     //! Destructor
     ~QgsDlgPgBuffer();
     //! Set the information label in the dialog
@@ -63,7 +63,7 @@ class QgsDlgPgBuffer:public QDialog, private Ui::QgsDlgPgBufferBase
     void on_btnHelp_clicked();
     private:
       //! Pointer to the QGIS interface object
-    QgisIface *qI;
+    QgisInterface *qI;
     //! Input validator for the buffer distance
     QDoubleValidator *distanceValidator;
     //! Context help id

@@ -33,7 +33,7 @@ class QgsSearchTreeNode;
  * - keeps string and node tree always in sync
  *
  */
-class QgsSearchString
+class CORE_EXPORT QgsSearchString
 {
 public:
   //! constructor

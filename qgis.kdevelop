@@ -1,12 +1,31 @@
 <?xml version = '1.0'?>
 <kdevelop>
   <general>
-    <author>Gary Sherman</author>
-    <email>gsherman at mrcc dot com</email>
+    <author>The QGIS Team</author>
+    <email></email>
     <version>$VERSION$</version>
     <projectmanagement>KDevAutoProject</projectmanagement>
     <primarylanguage>C++</primarylanguage>
-    <ignoreparts/>
+    <ignoreparts>
+      <part>kdevabbrev</part>
+      <part>kdevdocumentation</part>
+      <part>kdevdoxygen</part>
+      <part>kdevfilegroups</part>
+      <part>kdevfilelist</part>
+      <part>kdevfileselector</part>
+      <part>kdevdistpart</part>
+      <part>kdevopenwith</part>
+      <part>kdevpartexplorer</part>
+      <part>kdevquickopen</part>
+      <part>kdevregexptest</part>
+      <part>kdevreplace</part>
+      <part>kdevrbdebugger</part>
+      <part>kdevscripting</part>
+      <part>kdevfilter</part>
+      <part>kdevastyle</part>
+      <part>kdevtexttools</part>
+      <part>kdevtools</part>
+    </ignoreparts>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
     <description></description>
@@ -17,10 +36,10 @@
       <useconfiguration>default</useconfiguration>
     </general>
     <run>
-      <mainprogram>/usr/bin/qgis</mainprogram>
+      <mainprogram>/home/mloskot/usr/bin/qgis</mainprogram>
       <directoryradio>custom</directoryradio>
-      <customdirectory>/</customdirectory>
-      <programargs/>
+      <customdirectory>/home/mloskot/usr/bin/</customdirectory>
+      <programargs></programargs>
       <terminal>false</terminal>
       <autocompile>true</autocompile>
       <envvars/>
@@ -34,24 +53,29 @@
         <cxxflags>-O2 -g0</cxxflags>
       </optimized>
       <debug>
-        <configargs>--enable-debug=full --prefix=/home/gsherman/qgis07_head --with-grass=/usr/local/grass-5.7.0_org</configargs>
+        <configargs>--enable-debug=full</configargs>
         <builddir>debug</builddir>
-        <ccompiler>kdevgccoptions</ccompiler>
-        <cxxcompiler>kdevgppoptions</cxxcompiler>
-        <f77compiler>kdevpgf77options</f77compiler>
+        <ccompiler>GccOptions</ccompiler>
+        <cxxcompiler>GppOptions</cxxcompiler>
+        <f77compiler>G77Options</f77compiler>
         <cxxflags>-O0 -g3</cxxflags>
-        <envvars/>
-        <topsourcedir/>
-        <cppflags/>
-        <ldflags/>
-        <ccompilerbinary/>
-        <cxxcompilerbinary/>
-        <f77compilerbinary/>
-        <cflags/>
-        <f77flags/>
       </debug>
       <default>
         <envvars/>
+        <configargs>--prefix=$HOME/usr --enable-debug</configargs>
+        <builddir></builddir>
+        <topsourcedir></topsourcedir>
+        <cppflags></cppflags>
+        <ldflags></ldflags>
+        <ccompiler>kdevgccoptions</ccompiler>
+        <cxxcompiler>kdevgppoptions</cxxcompiler>
+        <f77compiler>kdevpgf77options</f77compiler>
+        <ccompilerbinary></ccompilerbinary>
+        <cxxcompilerbinary></cxxcompilerbinary>
+        <f77compilerbinary></f77compilerbinary>
+        <cflags></cflags>
+        <cxxflags></cxxflags>
+        <f77flags></f77flags>
       </default>
     </configurations>
     <make>
@@ -59,11 +83,6 @@
         <envvar value="1" name="WANT_AUTOCONF_2_5" />
         <envvar value="1" name="WANT_AUTOMAKE_1_6" />
       </envvars>
-      <abortonerror>true</abortonerror>
-      <numberofjobs>1</numberofjobs>
-      <dontact>false</dontact>
-      <makebin/>
-      <prio>0</prio>
     </make>
   </kdevautoproject>
   <kdevdebugger>
@@ -138,6 +157,16 @@
       <type ext="h" />
     </useglobaltypes>
   </kdevfilecreate>
+  <kdevfileview>
+    <groups>
+      <hidenonprojectfiles>false</hidenonprojectfiles>
+      <hidenonlocation>false</hidenonlocation>
+    </groups>
+    <tree>
+      <hidepatterns>*.o,*.lo,CVS</hidepatterns>
+      <hidenonprojectfiles>false</hidenonprojectfiles>
+    </tree>
+  </kdevfileview>
   <cppsupportpart>
     <filetemplates>
       <interfacesuffix>.h</interfacesuffix>
@@ -166,31 +195,17 @@
       <inlineSet>true</inlineSet>
     </creategettersetter>
     <references>
-      <pcs>QGIS</pcs>
-      <pcs>Qt</pcs>
+      <pcs>GEOS Code Completion</pcs>
+      <pcs>QT4 Custom Completion</pcs>
     </references>
-    <qt>
-      <used>false</used>
-      <version>3</version>
-      <root></root>
-    </qt>
   </kdevcppsupport>
-  <kdevfileview>
-    <groups>
-      <hidenonprojectfiles>false</hidenonprojectfiles>
-      <hidenonlocation>false</hidenonlocation>
-    </groups>
-    <tree>
-      <hidepatterns>*.o,*.lo,CVS</hidepatterns>
-      <hidenonprojectfiles>false</hidenonprojectfiles>
-      <showvcsfields>false</showvcsfields>
-    </tree>
-  </kdevfileview>
-  <kdevcvsservice>
-    <recursivewhenupdate>true</recursivewhenupdate>
-    <prunedirswhenupdate>true</prunedirswhenupdate>
-    <createdirswhenupdate>true</createdirswhenupdate>
-    <recursivewhencommitremove>true</recursivewhencommitremove>
-    <revertoptions>-C</revertoptions>
-  </kdevcvsservice>
+  <kdevvisualadvance>
+    <emulator>VisualBoyAdvance</emulator>
+    <binary></binary>
+    <addOptions></addOptions>
+    <terminal>false</terminal>
+    <fullscreen>false</fullscreen>
+    <graphicFilter>-f0</graphicFilter>
+    <scaling>-1</scaling>
+  </kdevvisualadvance>
 </kdevelop>

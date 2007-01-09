@@ -24,11 +24,12 @@ class QgsMapLayer;
 class QgsMapCanvas;
 class QMouseEvent;
 class QgsPoint;
+class QgsRect;
 class QPoint;
 class QAction;
 
 
-class QgsMapTool
+class GUI_EXPORT QgsMapTool
 {
   public:
     
@@ -78,6 +79,12 @@ class QgsMapTool
     //! transformation from screen coordinates to layer's coordinates
     QgsPoint toLayerCoords(QgsMapLayer* layer, const QPoint& point);
     
+    //! trnasformation from map coordinates to layer's coordinates
+    QgsPoint toLayerCoords(QgsMapLayer* layer, const QgsPoint& point);
+    
+    //! trnasformation of the rect from map coordinates to layer's coordinates
+    QgsRect toLayerCoords(QgsMapLayer* layer, const QgsRect& rect);
+
     //! transformation from map coordinates to screen coordinates
     QPoint toCanvasCoords(const QgsPoint& point);
     

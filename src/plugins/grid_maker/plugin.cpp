@@ -22,7 +22,7 @@ email                : tim@linfiniti.com
 
 // includes
 
-#include "qgisapp.h"
+#include "qgisinterface.h"
 #include "qgisgui.h"
 #include "qgsmaplayer.h"
 #include "plugin.h"
@@ -57,10 +57,8 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-QgsGridMakerPlugin::QgsGridMakerPlugin(QgisApp * theQGisApp, 
-				       QgisIface * theQgisInterFace):
+QgsGridMakerPlugin::QgsGridMakerPlugin(QgisInterface * theQgisInterFace):
           QgisPlugin(name_,description_,version_,type_),
-          qgisMainWindowPointer(theQGisApp), 
           qGisInterface(theQgisInterFace)
 {
 }
@@ -118,7 +116,7 @@ void QgsGridMakerPlugin::help()
 // Slot called when the buffer menu item is activated
 void QgsGridMakerPlugin::run()
 {
-  QgsGridMakerPluginGui *myPluginGui=new QgsGridMakerPluginGui(qgisMainWindowPointer, QgisGui::ModalDialogFlags);
+  QgsGridMakerPluginGui *myPluginGui=new QgsGridMakerPluginGui(qGisInterface->getMainWindow(), QgisGui::ModalDialogFlags);
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
   connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
@@ -151,9 +149,9 @@ void QgsGridMakerPlugin::unload()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
+QGISEXTERN QgisPlugin * classFactory(QgisInterface * theQgisInterfacePointer)
 {
-  return new QgsGridMakerPlugin(theQGisAppPointer, theQgisInterfacePointer);
+  return new QgsGridMakerPlugin(theQgisInterfacePointer);
 }
 
 // Return the name of the plugin - note that we do not user class members as

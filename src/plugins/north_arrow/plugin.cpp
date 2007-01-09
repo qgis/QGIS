@@ -22,12 +22,14 @@ email                : tim@linfiniti.com
 
 // includes
 
-#include <qgisapp.h>
+#include "qgisinterface.h"
 #include "qgisgui.h"
-#include <qgsmaplayer.h>
+#include "qgscoordinatetransform.h"
+#include "qgsmaplayer.h"
 #include "plugin.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaprender.h"
 #include "qgsapplication.h"
 
 // qt includes
@@ -51,6 +53,10 @@ email                : tim@linfiniti.com
 #define QGISEXTERN extern "C"
 #endif
 
+#ifdef _MSC_VER
+#define round(x)  ((x) >= 0 ? floor((x)+0.5) : floor((x)-0.5))
+#endif
+
 //
 static const char * const ident_ = "$Id$";
 
@@ -70,10 +76,8 @@ const double QgsNorthArrowPlugin::TOL = 1e-8;
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-QgsNorthArrowPlugin::QgsNorthArrowPlugin(QgisApp * theQGisApp,
-                                         QgisIface * theQgisInterFace):
+QgsNorthArrowPlugin::QgsNorthArrowPlugin(QgisInterface * theQgisInterFace):
     QgisPlugin(name_,description_,version_,type_),
-    qgisMainWindowPointer(theQGisApp),
     qGisInterface(theQgisInterFace)
 {
   mRotationInt=0;
@@ -99,7 +103,7 @@ void QgsNorthArrowPlugin::initGui()
   //render the arrow each time the map is rendered
   connect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)), this, SLOT(renderNorthArrow(QPainter *)));
   //this resets this plugin up if a project is loaded
-  connect(qgisMainWindowPointer, SIGNAL(projectRead()), this, SLOT(projectRead()));
+  connect(qGisInterface->getMainWindow(), SIGNAL(projectRead()), this, SLOT(projectRead()));
   // Add the icon to the toolbar & appropriate menu
   qGisInterface->addToolBarIcon(myQActionPointer);
   qGisInterface->addPluginMenu(tr("&Decorations"), myQActionPointer);
@@ -131,7 +135,7 @@ void QgsNorthArrowPlugin::help()
 // Slot called when the buffer menu item is activated
 void QgsNorthArrowPlugin::run()
 {
-  QgsNorthArrowPluginGui *myPluginGui = new QgsNorthArrowPluginGui(qgisMainWindowPointer, QgisGui::ModalDialogFlags);
+  QgsNorthArrowPluginGui *myPluginGui = new QgsNorthArrowPluginGui(qGisInterface->getMainWindow(), QgisGui::ModalDialogFlags);
   //overides function by the same name created in .ui
   myPluginGui->setRotation(mRotationInt);
   myPluginGui->setPlacementLabels(mPlacementLabels);
@@ -293,9 +297,7 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
 
   if (mapCanvas.layerCount() > 0)
   {
-    // Grab an SRS from any layer
-    QgsMapLayer& mapLayer = *(mapCanvas.getZpos(0));
-    QgsSpatialRefSys& outputSRS = mapLayer.coordinateTransform()->destSRS();
+    QgsSpatialRefSys outputSRS = mapCanvas.mapRender()->destinationSrs();
 
     if (outputSRS.isValid() && !outputSRS.geographicFlag())
     {
@@ -397,9 +399,9 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
+QGISEXTERN QgisPlugin * classFactory(QgisInterface * theQgisInterfacePointer)
 {
-  return new QgsNorthArrowPlugin(theQGisAppPointer, theQgisInterfacePointer);
+  return new QgsNorthArrowPlugin(theQgisInterfacePointer);
 }
 
 // Return the name of the plugin - note that we do not user class members as

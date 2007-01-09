@@ -30,11 +30,7 @@ extern "C"
 #include <list>
 #include <queue>
 #include <fstream>
-
-class QString;
-
-class OGRDataSource;
-class OGRLayer;
+#include <set>
 
 class QgsFeature;
 class QgsField;
@@ -53,13 +49,10 @@ class QgsGeometry;
   interface defined in the QgsDataProvider class to provide access to spatial
   data residing in a PostgreSQL/PostGIS enabled database.
   */
-class QgsPostgresProvider: public QgsVectorDataProvider
+class QgsPostgresProvider:public QgsVectorDataProvider
 {
 
-
-#ifndef WIN32 //temporary hack for native win build
   Q_OBJECT
-#endif
 
   public:
     /**
@@ -78,29 +71,36 @@ class QgsPostgresProvider: public QgsVectorDataProvider
       */
     QString storageType();
 
-    /** Used to ask the layer for its projection as a WKT string. Implements
-     * virtual method of same name in QgsDataProvider. */
-    QString getProjectionWKT()  {return QString("Not implemented yet");} ;
+      /**
+     * Set the QgsSpatialReferenceSystem for this layer.
+     * @note Must be reimplemented by each provider. 
+     *
+     * @param theSRS QgsSpatialRefSys to be assigned to this layer
+     *               A complete copy of the passed in SRS will be made.
+       */
+    virtual void setSRS(const QgsSpatialRefSys& theSRS);
 
+      /*! Get the QgsSpatialRefSys for this layer
+     * @note Must be reimplemented by each provider. 
+     * If the provider isn't capable of returning
+     * its projection an empty srs will be return, ti will return 0
+       */
+    virtual QgsSpatialRefSys getSRS();
+
+    
     /**
-     * Get the first feature resutling from a select operation
-     * @return QgsFeature
+     * Get the next feature resulting from a select operation.
+     * @param feature feature which will receive data from the provider
+     * @param fetchGeoemtry if true, geometry will be fetched from the provider
+     * @param fetchAttributes a list containing the indexes of the attribute fields to copy
+     * @param featureQueueSize  a hint to the provider as to how many features are likely to be retrieved in a batch
+     * @return true when there was a feature to fetch, false when end was hit
      */
-    QgsFeature *getFirstFeature(bool fetchAttributes = false);
+    virtual bool getNextFeature(QgsFeature& feature,
+                                bool fetchGeometry = true,
+                                QgsAttributeList fetchAttributes = QgsAttributeList(),
+                                uint featureQueueSize = 1);
 
-    /**
-     * Get the next feature resulting from a select operation
-     * @return QgsFeature
-     */
-    QgsFeature *getNextFeature(bool fetchAttributes = false);
-    bool getNextFeature(QgsFeature &feature, bool fetchAttributes=0);
-
-    /**Get the next feature resulting from a select operation.
-     * @param attlist            a list containing the indexes of the attribute fields to copy
-     * @param featureQueueSize   a hint to the provider as to how many features are likely to be retrieved in a batch
-     */
-//    QgsFeature* getNextFeature(std::list<int> const & attlist);
-    QgsFeature* getNextFeature(std::list<int> const & attlist, int featureQueueSize = 1);
     
     /** Get the feature type. This corresponds to
      * WKBPoint,
@@ -111,8 +111,7 @@ class QgsPostgresProvider: public QgsVectorDataProvider
      * WKBMultiPolygon
      * as defined in qgis.h
      */
-
-    int geometryType() const;
+    QGis::WKBTYPE geometryType() const;
 
 
     /** return the number of layers for the current data source
@@ -133,31 +132,19 @@ class QgsPostgresProvider: public QgsVectorDataProvider
     /**
      * Get the number of fields in the layer
      */
-    int fieldCount() const;
+    uint fieldCount() const;
 
     /**
      * Select features based on a bounding rectangle. Features can be retrieved
      * with calls to getFirstFeature and getNextFeature.
      * @param mbr QgsRect containing the extent to use in selecting features
      */
-    void select(QgsRect * mbr, bool useIntersect=false);
+    void select(QgsRect mbr, bool useIntersect=false);
 
     /**
      * Get the data source URI structure used by this layer
      */
-    QgsDataSourceURI * getURI();
-
-    /**
-     * Set the data source URI used by this layer
-     */
-    void setURI(QgsDataSourceURI &uri);
-
-    /**
-     * Identify features within the search radius specified by rect
-     * @param rect Bounding rectangle of search radius
-     * @return std::vector containing QgsFeature objects that intersect rect
-     */
-    virtual std::vector<QgsFeature>& identify(QgsRect * rect);
+    QgsDataSourceURI& getURI();
 
     /**
      * Return a string representation of the endian-ness for the layer
@@ -168,25 +155,25 @@ class QgsPostgresProvider: public QgsVectorDataProvider
      * Changes the stored extent for this layer to the supplied extent.
      * For example, this is called when the extent worker thread has a result.
      */ 
-    void setExtent( QgsRect* newExtent );
+    void setExtent( QgsRect& newExtent );
 
     /** Return the extent for this data layer
     */
-    virtual QgsRect *extent();
+    virtual QgsRect extent();
 
     /**
      * Get the attributes associated with a feature
      */
-    virtual void getFeatureAttributes(int key, int& row, QgsFeature *f);
+    virtual void getFeatureAttributes(int key, int& row, QgsFeature& f);
 
     /**Get the attributes with indices contained in attlist*/
-    void getFeatureAttributes(int key, int& row, QgsFeature *f, std::list<int> const& attlist);
+    void getFeatureAttributes(int key, int& row, QgsFeature& f, const QgsAttributeList& attlist);
 
     /**
      * Fetch geometry for a particular feature with id "key",
      * modifies "f" in-place.
      */
-    void getFeatureGeometry(int key, QgsFeature *f);
+    void getFeatureGeometry(int key, QgsFeature& f);
 
     /**  * Get the name of the primary key for the layer
     */
@@ -196,7 +183,7 @@ class QgsPostgresProvider: public QgsVectorDataProvider
      * Get the field information for the layer
      * @return vector of QgsField objects
      */
-    std::vector<QgsField> const & fields() const;
+    const QgsFieldMap & fields() const;
 
     /** Reset the layer - for a PostgreSQL layer, this means clearing the PQresult
      * pointer and setting it to 0
@@ -205,11 +192,11 @@ class QgsPostgresProvider: public QgsVectorDataProvider
 
     /**Returns the minimum value of an attribute
       @param position the number of the attribute*/
-    QString minValue(int position);
+    QString minValue(uint position);
 
     /**Returns the maximum value of an attribute
       @param position the number of the attribute*/
-    QString maxValue(int position);
+    QString maxValue(uint position);
 
     /**Returns true if layer is valid
     */
@@ -228,32 +215,32 @@ class QgsPostgresProvider: public QgsVectorDataProvider
     bool hasPROJ(PGconn *);
 
     /**Returns the default value for attribute @c attr for feature @c f. */
-    QString getDefaultValue(const QString& attr, QgsFeature* f);
+    QString getDefaultValue(const QString& attr, QgsFeature& f);
 
     /**Adds a list of features
       @return true in case of success and false in case of failure*/
-    bool addFeatures(std::list<QgsFeature*> const flist);
+    bool addFeatures(QgsFeatureList & flist);
 
     /**Deletes a list of features
       @param id list of feature ids
       @return true in case of success and false in case of failure*/
-    bool deleteFeatures(std::list<int> const & id);
+    bool deleteFeatures(const QgsFeatureIds & id);
 
     /**Adds new attributes
       @param name map with attribute name as key and type as value
       @return true in case of success and false in case of failure*/
-    bool addAttributes(std::map<QString,QString> const & name);
+    bool addAttributes(const QgsNewAttributesMap & name);
 
     /**Deletes existing attributes
       @param names of the attributes to delete
       @return true in case of success and false in case of failure*/
-    bool deleteAttributes(std::set<QString> const & name);
+    bool deleteAttributes(const QgsAttributeIds & name);
 
     /**Changes attribute values of existing features
       @param attr_map a map containing the new attributes. The integer is the feature id,
       the first QString is the attribute name and the second one is the new attribute value
       @return true in case of success and false in case of failure*/
-    bool changeAttributeValues(std::map<int,std::map<QString,QString> > const & attr_map);
+    bool changeAttributeValues(const QgsChangedAttributesMap & attr_map);
 
     /** 
        Changes geometries of existing features
@@ -261,25 +248,23 @@ class QgsPostgresProvider: public QgsVectorDataProvider
                              the second map parameter being the new geometries themselves
        @return               true in case of success and false in case of failure
      */
-    bool changeGeometryValues(std::map<int, QgsGeometry> & geometry_map);
-
-    //! Flag to indicate if the provider can export to shapefile
-    bool supportsSaveAsShapefile() const;
-
-    /** Accessor for sql where clause used to limit dataset */
-    QString subsetString() {return sqlWhereClause;};
+    bool changeGeometryValues(QgsGeometryMap & geometry_map);
 
     //! Get the postgres connection
-    PGconn * pgConnection() {return connection;};
+    PGconn * pgConnection();
 
     //! Get the table name associated with this provider instance
-    QString getTableName() {return mTableName;};
+    QString getTableName();
+
+    /** Accessor for sql where clause used to limit dataset */
+    QString subsetString();
 
     /** mutator for sql where clause used to limit dataset size */
-    void setSubsetString(QString theSQL); //{sqlWhereClause = theSQL;};
+    void setSubsetString(QString theSQL);
 
     /**Returns a bitmask containing the supported capabilities*/
     int capabilities() const;
+
     /** The Postgres provider does its own transforms so we return
      * true for the following three functions to indicate that transforms
      * should not be handled by the QgsCoordinateTransform object. See the
@@ -288,15 +273,6 @@ class QgsPostgresProvider: public QgsVectorDataProvider
     // XXX For now we have disabled native transforms in the PG provider since
     //     it appears there are problems with some of the projection definitions
     bool supportsNativeTransform(){return false;}
-    bool usesSrid(){return true;}
-    bool usesWKT(){return false;}
-
-    /*! Set the SRID of the target (map canvas) SRS.
-     * @parm srid SRID of the map canvas SRS
-     */
-    void setTargetSrid(int srid);
-
-    int getSrid();
 
 
     /** return a provider name
@@ -334,7 +310,6 @@ class QgsPostgresProvider: public QgsVectorDataProvider
 
 
 
-#ifndef WIN32 //temporary hack for native win build
     signals:
     /** 
      *   This is emitted whenever the worker thread has fully calculated the
@@ -354,12 +329,11 @@ class QgsPostgresProvider: public QgsVectorDataProvider
      *          when the user adjusts the extent of the main map canvas.
      */
     void repaintRequested();
-#endif
 
   private:
 
     std::vector < QgsFeature > features;
-    std::vector < QgsField > attributeFields;
+    QgsFieldMap attributeFields;
     std::map < int, int > attributeFieldsIdMap;
 
     //! Data source URI struct for this layer
@@ -415,7 +389,7 @@ class QgsPostgresProvider: public QgsVectorDataProvider
     /**
      * Geometry type
      */
-    int geomType;
+    QGis::WKBTYPE geomType;
     /**
      * Connection pointer
      */
@@ -438,7 +412,7 @@ class QgsPostgresProvider: public QgsVectorDataProvider
      * Feature queue that GetNextFeature will retrieve from 
      * before the next fetch from PostgreSQL
      */
-    std::queue<QgsFeature*> mFeatureQueue; 
+    std::queue<QgsFeature> mFeatureQueue; 
         
     /**
      * Flag indicating whether data from binary cursors must undergo an
@@ -538,7 +512,7 @@ class QgsPostgresProvider: public QgsVectorDataProvider
 
     /** Writes a single feature 
         @param primaryKeyHighWater   is the recommended value of the primary key for this new feature. */
-    bool addFeature(QgsFeature* f, int primaryKeyHighWater);
+    bool addFeature(QgsFeature& f, int primaryKeyHighWater);
 
     /**Deletes a feature*/
     bool deleteFeature(int id);

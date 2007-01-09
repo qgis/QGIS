@@ -34,7 +34,7 @@
  *
  * For example, (1,1 2,2) != (2,2 1,1)
  */
-class QgsLine 
+class CORE_EXPORT QgsLine 
 {
  public:
     //! Default constructor

@@ -18,12 +18,11 @@
 /* $Id$ */
 
 #include <fstream>
-#include <qevent.h>
-#include <qapplication.h>
+#include <QEvent>
+#include <QApplication>
 
 #include "qgis.h"
 #include "qgsrect.h"
-#include "qgsmapcanvas.h"
 
 #include "qgsprovidercountcalcevent.h"
 

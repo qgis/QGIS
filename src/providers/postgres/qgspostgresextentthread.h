@@ -25,7 +25,7 @@ extern "C"
 #include <libpq-fe.h>
 }
 
-#include <qthread.h>
+#include <QThread>
 
 /*!
  * \brief   A thread to retrieve the exact extent in a PostgreSQL/PostGIS table in its native coordinates

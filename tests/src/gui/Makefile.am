@@ -58,7 +58,6 @@ noinst_PROGRAMS = testqgisapp \
 		testqgspastetransformations \
 		testqgspatterndialog \
 		testqgspgquerybuilder \
-		testqgspgutil \
 		testqgspluginmanager \
 		testqgspluginmetadata \
 		testqgspointstylewidget \
@@ -92,17 +91,13 @@ GLOBALLDADD = $(QT_LDADD) \
 				$(GDAL_LDADD) \
 				-lproj \
 				../../../src/core/libqgis_core.la \
-				../../../src/raster/libqgis_raster.la \
-				../../../src/legend/libqgis_legend.la \
-				../../../src/gui/libqgis_gui.la \
-				../../../src/composer/libqgis_composer.la  
+				../../../src/gui/libqgis_gui.la
 GLOBALCXXFLAGS = $(CXXFLAGS) \
 				$(EXTRA_CXXFLAGS) \
 				$(GDAL_CFLAGS) \
 				$(QT_CXXFLAGS) \
 				$(PG_INC) \
-				-I../../../src/raster \
-				-I../../../src/core \
+				-I../../../src/core/include \
 				-I../../../src/widgets/projectionselector \
 				-I../../../src/ui \
 				-I../../../src/gui
@@ -135,7 +130,6 @@ BUILT_SOURCES = $(testqgisapp_MOC) \
 		$(testqgspointstylewidget_MOC) \
 		$(testqgspluginmetadata_MOC) \
 		$(testqgspluginmanager_MOC) \
-		$(testqgspgutil_MOC) \
 		$(testqgspgquerybuilder_MOC) \
 		$(testqgspatterndialog_MOC) \
 		$(testqgspastetransformations_MOC) \
@@ -453,11 +447,6 @@ testqgspgquerybuilder_MOC = testqgspgquerybuilder.moc.cpp
 testqgspgquerybuilder_SOURCES = testqgspgquerybuilder.cpp
 testqgspgquerybuilder_LDADD = $(GLOBALLDADD)
 testqgspgquerybuilder_CXXFLAGS =  $(GLOBALCXXFLAGS)
-
-testqgspgutil_MOC = testqgspgutil.moc.cpp
-testqgspgutil_SOURCES = testqgspgutil.cpp
-testqgspgutil_LDADD = $(GLOBALLDADD)
-testqgspgutil_CXXFLAGS =  $(GLOBALCXXFLAGS)
 
 testqgspluginmanager_MOC = testqgspluginmanager.moc.cpp
 testqgspluginmanager_SOURCES = testqgspluginmanager.cpp

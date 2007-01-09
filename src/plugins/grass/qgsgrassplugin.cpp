@@ -16,10 +16,8 @@
 /*  $Id$ */
 
 // includes
-#include "qgisapp.h"
 #include "qgsmaplayer.h"
-#include "qgslegend.h"
-#include "qgisiface.h"
+#include "qgisinterface.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
@@ -85,8 +83,8 @@ static const QString pluginVersion = QObject::tr("Version 0.1");
  * @param theQGisApp Pointer to the QGIS main window
  * @param theQgisInterFace Pointer to the QGIS interface object
  */
-QgsGrassPlugin::QgsGrassPlugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
-  mQgis(theQGisApp), qGisInterface(theQgisInterFace)
+QgsGrassPlugin::QgsGrassPlugin(QgisInterface * theQgisInterFace):
+  qGisInterface(theQgisInterFace)
 {
   /** Initialize the plugin and set the required attributes */
   pluginNameQString = tr("GrassVector");
@@ -143,14 +141,15 @@ void QgsGrassPlugin::initGui()
   QgsGrass::init();
 
   mCanvas = qGisInterface->getMapCanvas();
+  QWidget* qgis = qGisInterface->getMainWindow();
 
   // Connect project
-  connect( mQgis, SIGNAL( projectRead() ), this, SLOT( projectRead()));
-  connect( mQgis, SIGNAL( newProject() ), this, SLOT(newProject()));
+  connect( qgis, SIGNAL( projectRead() ), this, SLOT( projectRead()));
+  connect( qgis, SIGNAL( newProject() ), this, SLOT(newProject()));
 
   // Create region rubber band
   mRegionBand = new QgsRubberBand(mCanvas, 1);
-  mRegionBand->setZ(20);
+  mRegionBand->setZValue(20);
 
   // Create the action for tool
   mOpenMapsetAction = new QAction( tr("Open mapset"), this );
@@ -206,7 +205,7 @@ void QgsGrassPlugin::initGui()
   qGisInterface->addPluginMenu(tr("&GRASS"), mNewVectorAction);
 
   // Add the toolbar to the main window
-  toolBarPointer = mQgis->addToolBar(tr("GRASS")); 
+  toolBarPointer = qGisInterface->addToolBar(tr("GRASS")); 
   toolBarPointer->setIconSize(QSize(24,24));
   toolBarPointer->setObjectName("GRASS");
 
@@ -417,7 +416,7 @@ void QgsGrassPlugin::addRaster()
 void QgsGrassPlugin::openTools()
 {
   if ( !mTools ) { 
-      mTools = new QgsGrassTools ( mQgis, qGisInterface, mQgis, 0, Qt::WType_Dialog );
+      mTools = new QgsGrassTools ( qGisInterface, qGisInterface->getMainWindow(), 0, Qt::WType_Dialog );
     
       std::cout << "connect = " <<
       connect( mTools, SIGNAL( regionChanged() ), this, SLOT( redrawRegion()) )
@@ -437,7 +436,7 @@ void QgsGrassPlugin::edit()
   }
 
   mEditAction->setEnabled(false);
-  QgsGrassEdit *ed = new QgsGrassEdit( mQgis, qGisInterface, mQgis, Qt::WType_Dialog );
+  QgsGrassEdit *ed = new QgsGrassEdit( qGisInterface, qGisInterface->getMainWindow(), Qt::WType_Dialog );
 
   if ( ed->isValid() ) {
     ed->show();
@@ -525,9 +524,8 @@ void QgsGrassPlugin::newVector()
         return;
     }
 
-    QgsGrassEdit *ed = new QgsGrassEdit( mQgis, 
-               qGisInterface, provider, mQgis, 
-               Qt::WType_Dialog );
+    QgsGrassEdit *ed = new QgsGrassEdit(qGisInterface, provider, 
+               qGisInterface->getMainWindow(), Qt::WType_Dialog );
 
     if ( ed->isValid() ) {
         ed->show();
@@ -638,8 +636,7 @@ void QgsGrassPlugin::changeRegion(void)
   }
 
   // Warning: don't use Qt::WType_Dialog, it would ignore restorePosition
-  mRegion = new QgsGrassRegion(this, mQgis, qGisInterface, 
-      mQgis, Qt::Window );
+  mRegion = new QgsGrassRegion(this, qGisInterface, qGisInterface->getMainWindow(), Qt::Window );
 
   connect ( mRegion, SIGNAL(destroyed(QObject *)), this, SLOT( regionClosed() ));
 
@@ -715,9 +712,8 @@ void QgsGrassPlugin::newMapset()
 {
     if ( !QgsGrassNewMapset::isRunning() )
     {
-        mNewMapset = new QgsGrassNewMapset ( 
-	                    mQgis, qGisInterface, 
-                            this, mQgis );
+        mNewMapset = new QgsGrassNewMapset ( qGisInterface, 
+                            this, qGisInterface->getMainWindow() );
     }
     mNewMapset->show();
     mNewMapset->raise();
@@ -822,9 +818,9 @@ void QgsGrassPlugin::unload()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-extern "C" QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
+extern "C" QgisPlugin * classFactory(QgisInterface * theQgisInterfacePointer)
 {
-  return new QgsGrassPlugin(theQGisAppPointer, theQgisInterfacePointer);
+  return new QgsGrassPlugin(theQgisInterfacePointer);
 }
 
 // Return the name of the plugin - note that we do not user class members as

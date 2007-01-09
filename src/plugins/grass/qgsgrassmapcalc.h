@@ -39,9 +39,7 @@ class QPixmap;
 #include <q3process.h>
 #include <q3canvas.h>
 
-// Must be here, so that it is included to moc file
-#include "qgisapp.h"
-#include "qgisiface.h"
+class QgisInterface;
 
 class QgsGrassProvider;
 class QgsGrassTools;
@@ -67,7 +65,7 @@ public:
     //! Constructor
     QgsGrassMapcalc ( 
             QgsGrassTools *tools, QgsGrassModule *module, 
-            QgisApp *qgisApp, QgisIface *iface,  
+            QgisInterface *iface,  
             QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
 
     //! Destructor

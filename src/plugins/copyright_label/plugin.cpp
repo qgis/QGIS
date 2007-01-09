@@ -22,12 +22,13 @@ email                : tim@linfiniti.com
 
 // includes
 
-#include <qgisapp.h>
+#include "qgisinterface.h"
 #include "qgisgui.h"
-#include <qgsmaplayer.h>
+#include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
+#include "qgsproject.h"
+
 #include "plugin.h"
-#include <qgsproject.h>
-#include <qgsmapcanvas.h>
 
 #include <Q3Button>
 #include <Q3PaintDeviceMetrics>
@@ -61,13 +62,10 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app
  * and an interface object that provides access to exposed functions in QGIS.
- * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-QgsCopyrightLabelPlugin::QgsCopyrightLabelPlugin(QgisApp * theQGisApp, 
-						 QgisIface * theQgisInterFace):
+QgsCopyrightLabelPlugin::QgsCopyrightLabelPlugin(QgisInterface * theQgisInterFace):
         QgisPlugin(name_,description_,version_,type_),
-        qgisMainWindowPointer(theQGisApp),
         qGisInterface(theQgisInterFace)
 {
   mPlacementLabels << tr("Bottom Left") << tr("Top Left") 
@@ -90,7 +88,7 @@ void QgsCopyrightLabelPlugin::initGui()
     // This calls the renderer everytime the cnavas has drawn itself
     connect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)), this, SLOT(renderLabel(QPainter *)));
     //this resets this plugin up if a project is loaded
-    connect(qgisMainWindowPointer, SIGNAL(projectRead()), this, SLOT(projectRead()));
+    connect(qGisInterface->getMainWindow(), SIGNAL(projectRead()), this, SLOT(projectRead()));
 
     // Add the icon to the toolbar
     qGisInterface->addToolBarIcon(myQActionPointer);
@@ -123,7 +121,7 @@ void QgsCopyrightLabelPlugin::help()
 // Slot called when the buffer menu item is activated
 void QgsCopyrightLabelPlugin::run()
 {
-    QgsCopyrightLabelPluginGui *myPluginGui=new QgsCopyrightLabelPluginGui(qgisMainWindowPointer, QgisGui::ModalDialogFlags);
+    QgsCopyrightLabelPluginGui *myPluginGui=new QgsCopyrightLabelPluginGui(qGisInterface->getMainWindow(), QgisGui::ModalDialogFlags);
     //listen for when the layer has been made so we can draw it
     //connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
     //connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
@@ -267,9 +265,9 @@ void QgsCopyrightLabelPlugin::setEnable(bool theBool)
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
+QGISEXTERN QgisPlugin * classFactory(QgisInterface * theQgisInterfacePointer)
 {
-    return new QgsCopyrightLabelPlugin(theQGisAppPointer, theQgisInterfacePointer);
+    return new QgsCopyrightLabelPlugin(theQgisInterfacePointer);
 }
 
 // Return the name of the plugin - note that we do not user class members as

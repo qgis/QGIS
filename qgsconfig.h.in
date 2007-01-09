@@ -1,0 +1,16 @@
+
+// QGSCONFIG.H
+
+#ifndef QGSCONFIG_H
+#define QGSCONFIG_H
+
+#define VERSION "0.8.0"
+
+#define PREFIX "${CMAKE_INSTALL_PREFIX}"
+
+#cmakedefine HAVE_POSTGRESQL
+
+#cmakedefine HAVE_PYTHON
+
+#endif
+

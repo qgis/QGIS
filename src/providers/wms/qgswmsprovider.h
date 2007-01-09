@@ -24,19 +24,14 @@
 #include <map>
 #include <vector>
 
-#include <QSet>
-
 #include "qgsrasterdataprovider.h"
 #include "qgsrect.h"
-
-#include <qgscoordinatetransform.h>
-
-#include "qgsdatasourceuri.h"
 
 #include <QString>
 #include <QStringList>
 #include <QDomElement>
 
+class QgsCoordinateTransform;
 
 /*
  * The following structs reflect the WMS XML schema,
@@ -338,10 +333,8 @@
 */
 class QgsWmsProvider : public QgsRasterDataProvider
 {
-
-#ifndef WIN32  
+  
   Q_OBJECT
-#endif 
 
 public:
   
@@ -409,12 +402,28 @@ public:
   virtual QSet<QString> supportedCrsForLayers(QStringList const & layers);
 
   /**
+   * Set the QgsSpatialReferenceSystem for this layer.
+   * @note Must be reimplemented by each provider. 
+   *
+   * @param theSRS QgsSpatialRefSys to be assigned to this layer
+   *               A complete copy of the passed in SRS will be made.
+   */
+  virtual void setSRS(const QgsSpatialRefSys& theSRS);
+
+  /*! Get the QgsSpatialRefSys for this layer
+   * @note Must be reimplemented by each provider. 
+   * If the provider isn't capable of returning
+   * its projection an empty srs will be return, ti will return 0
+   */
+  virtual QgsSpatialRefSys getSRS();
+  
+  /**
    * Add the list of WMS layer names to be rendered by this server
    */
   void addLayers(QStringList const &  layers,
                  QStringList const &  styles = QStringList());
 
-
+  
   /** return the number of layers for the current data source
 
     @note 
@@ -474,23 +483,9 @@ public:
   
   /* Example URI: http://ims.cr.usgs.gov:80/servlet/com.esri.wms.Esrimap/USGS_EDC_Trans_BTS_Roads?SERVICE=WMS&REQUEST=GetCapabilities */
 
-  /** Used to ask the layer for its projection as a WKT string. Implements
-   * virtual method of same name in QgsDataProvider. */
-  QString getProjectionWKT()  {return QString("Not implemented yet");} ;
-
-  /**
-   * Get the data source URI structure used by this layer
-   */
-  QgsDataSourceURI * getURI();
-
-  /**
-   * Set the data source URI used by this layer
-   */
-  void setURI(QgsDataSourceURI * uri);
-
   /** Return the extent for this data layer
   */
-  virtual QgsRect *extent();
+  virtual QgsRect extent();
 
   /** Reset the layer - for a PostgreSQL layer, this means clearing the PQresult
    * pointer and setting it to 0
@@ -612,8 +607,6 @@ public:
     QString description() const;
 
 
-#ifndef WIN32    
-
 signals:
 
     /** \brief emit a signal to notify of a progress event */
@@ -624,7 +617,6 @@ signals:
 
 
 public slots:
-#endif
 
   void showStatusMessage(QString const &  theMessage);
 

@@ -24,16 +24,15 @@ class Q3ListView;
 class Q3ListViewItem;
 class QDomNode;
 class QDomElement;
+class QSize;
 
-// Must be here, so that it is included to moc file
-#include "qgisapp.h"
-#include "qgisiface.h"
-
+class QgisInterface;
 class QgsGrassProvider;
 class QgsGrassBrowser;
+class QgsMapCanvas;
+
 #include <QDialog>
-#include <QTabBar>
-class QSize;
+#include <QTabWidget>
 
 class QgsGrassToolsTabWidget: public QTabWidget
 {
@@ -59,7 +58,7 @@ class QgsGrassTools: public QDialog
 
 public:
     //! Constructor
-    QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface, 
+    QgsGrassTools ( QgisInterface *iface, 
 	           QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
 
     //! Destructor
@@ -104,17 +103,11 @@ signals:
     void regionChanged();
 
 private:
-    //! QGIS application
-    QgisApp *mQgisApp;
-
     //! Pointer to the QGIS interface object
-    QgisIface *mIface;
+    QgisInterface *mIface;
 
     //! Pointer to canvas
     QgsMapCanvas *mCanvas;
-
-    //! QGIS directory
-    QString mAppDir;
 
     //! Browser
     QgsGrassBrowser *mBrowser;

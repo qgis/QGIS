@@ -14,31 +14,47 @@
  ***************************************************************************/
 /* $Id$ */
 
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
 #include "qgsmapcanvasmap.h"
 #include "qgsmaprender.h"
 
 #include <QPainter>
 
-QgsMapCanvasMap::QgsMapCanvasMap(Q3Canvas *canvas, QgsMapRender* render)
-  : Q3CanvasRectangle(canvas), mRender(render)
+QgsMapCanvasMap::QgsMapCanvasMap(QgsMapCanvas* canvas)
+  : mCanvas(canvas)
 {
-  setZ(-10);
-  move(0,0);
+  setZValue(-10);
+  setPos(0,0);
   resize(QSize(1,1));
   mUseQImageToRender = false;
 }
 
-
-void QgsMapCanvasMap::drawShape(QPainter & p)
+void QgsMapCanvasMap::paint(QPainter* p, const QStyleOptionGraphicsItem*, QWidget*)
 {
-  p.drawPixmap(mOffset.x(), mOffset.y(), mPixmap);
+  if (mCanvas->isDirty())
+  {
+    mCanvas->render();
+  }
+  p->drawPixmap(0,0, mPixmap);
 }
+
+QRectF QgsMapCanvasMap::boundingRect() const
+{
+  return QRectF(0,0,mPixmap.width(),mPixmap.height());
+}
+
 
 void QgsMapCanvasMap::resize(QSize size)
 {
-  setSize(size.width(), size.height());
   mPixmap = QPixmap(size);
-  mRender->setOutputSize(size, mPixmap.logicalDpiX());
+  mCanvas->mapRender()->setOutputSize(size, mPixmap.logicalDpiX());
+}
+
+void QgsMapCanvasMap::setPanningOffset(const QPoint& point)
+{
+  mOffset = point;
+  setPos(mOffset);
 }
 
 void QgsMapCanvasMap::render()
@@ -51,7 +67,7 @@ void QgsMapCanvasMap::render()
   if (mUseQImageToRender)
   {
     // use temporary image for rendering
-    QImage image(size(), QImage::Format_RGB32);
+    QImage image(boundingRect().size().toSize(), QImage::Format_RGB32);
   
     image.fill(mBgColor.rgb());
 
@@ -64,7 +80,7 @@ void QgsMapCanvasMap::render()
     if (mAntiAliasing)
       paint.setRenderHint(QPainter::Antialiasing);
   
-    mRender->render(&paint);
+    mCanvas->mapRender()->render(&paint);
 
     paint.end();
   
@@ -78,7 +94,7 @@ void QgsMapCanvasMap::render()
     paint.begin(&mPixmap);
     // Clip our drawing to the QPixmap
     paint.setClipRect(mPixmap.rect());
-    mRender->render(&paint);
+    mCanvas->mapRender()->render(&paint);
     paint.end();
   }
 }

@@ -279,7 +279,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
     char * esc_str = new char[column_names[n].length()*2+1];
 
     PQescapeString(esc_str, (const char *)column_names[n].lower(), column_names[n].length());
-    QgsDebugMsg("Escaped " + column_names[n] + " to " + esc_str); 
+    QgsDebugMsg("Escaped " + column_names[n] + " to " + QString(esc_str)); 
     query += esc_str;
     query += " " + column_types[n];
 

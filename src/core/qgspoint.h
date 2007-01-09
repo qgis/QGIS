@@ -23,7 +23,7 @@
 
 #include <QString>
 
-class QgsPoint 
+class CORE_EXPORT QgsPoint 
 {
  public:
     /// Default constructor

@@ -23,9 +23,14 @@ email                : sbr00pwb@users.sourceforge.net
 #define QGSCALEBARPLUGIN
 #include "../qgisplugin.h"
 
-#include "qgisapp.h"
+class QgisInterface;
+class QAction;
 class QToolBar;
 class QPainter;
+
+#include <QColor>
+#include <QObject>
+
 /**
 * \class Plugin
 * \brief OpenModeller plugin for QGIS
@@ -35,12 +40,11 @@ class QgsScaleBarPlugin:public QObject, public QgisPlugin
 {
   Q_OBJECT public:
       /**
-       * Constructor for a plugin. The QgisApp and QgisIface pointers are passed by
+       * Constructor for a plugin. The QgisInterface pointer is passed by
        * QGIS when it attempts to instantiate the plugin.
-       * @param qgis Pointer to the QgisApp object
-       * @param qI Pointer to the QgisIface object.
+       * @param qI Pointer to the QgisInterface object.
        */
-      QgsScaleBarPlugin(QgisApp * , QgisIface * );
+      QgsScaleBarPlugin(QgisInterface * );
 
 
   //! Destructor
@@ -95,10 +99,8 @@ class QgsScaleBarPlugin:public QObject, public QgisPlugin
 
   //! Pointer to our toolbar
   QToolBar *toolBarPointer;
-  //! Pionter to QGIS main application object
-  QgisApp *qgisMainWindowPointer;
   //! Pointer to the QGIS interface object
-  QgisIface *qGisInterface;
+  QgisInterface *qGisInterface;
   //! Pointer to the QAction object used in the menu and toolbar
   QAction *myQActionPointer;
 };

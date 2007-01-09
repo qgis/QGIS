@@ -1,0 +1,99 @@
+
+SUBDIRS(config modules themes)
+
+ADD_DEFINITIONS(-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\")
+ADD_DEFINITIONS(-DHAVE_OPENPTY=${HAVE_OPENPTY})
+
+########################################################
+# Files
+
+SET (GRASS_PLUGIN_SRCS
+     qgsgrassplugin.cpp
+     qgsgrassselect.cpp
+     qgsgrassbrowser.cpp
+     qgsgrassedit.cpp
+     qgsgrassedittools.cpp
+     qgsgrasstools.cpp
+     qgsgrassmodel.cpp
+     qgsgrassmapcalc.cpp
+     qgsgrassmodule.cpp
+     qgsgrassnewmapset.cpp
+     qgsgrassshell.cpp
+     qgsgrassattributes.cpp
+     qgsgrassregion.cpp
+     qgsgrassutils.cpp
+)
+
+SET (GRASS_PLUGIN_UIS
+     qgsgrassselectbase.ui
+     qgsgrasseditbase.ui
+     qgsgrassmapcalcbase.ui
+     qgsgrassmodulebase.ui
+     qgsgrassnewmapsetbase.ui
+     qgsgrassshellbase.ui
+     qgsgrassattributesbase.ui
+     qgsgrassregionbase.ui
+     ../../ui/qgsprojectionselectorbase.ui
+)
+
+SET (GRASS_PLUGIN_MOC_HDRS
+     qgsgrassplugin.h
+     qgsgrassselect.h
+     qgsgrassbrowser.h
+     qgsgrassedit.h
+     qgsgrasstools.h
+     qgsgrassmodel.h
+     qgsgrassmapcalc.h
+     qgsgrassmodule.h
+     qgsgrassnewmapset.h
+     qgsgrassshell.h
+     qgsgrassattributes.h
+     qgsgrassregion.h
+     qgsgrassutils.h
+)
+
+#SET (GRASS_PLUGIN_RCCS  qgsgps_plugin.qrc)
+
+
+########################################################
+# Build
+
+QT4_WRAP_UI (GRASS_PLUGIN_UIS_H  ${GRASS_PLUGIN_UIS})
+
+QT4_WRAP_CPP (GRASS_PLUGIN_MOC_SRCS  ${GRASS_PLUGIN_MOC_HDRS})
+
+#QT4_ADD_RESOURCES(GRASS_PLUGIN_RCC_SRCS ${GRASS_PLUGIN_RCCS})
+
+ADD_LIBRARY (grassplugin SHARED ${GRASS_PLUGIN_SRCS} ${GRASS_PLUGIN_MOC_SRCS} ${GRASS_PLUGIN_UIS_H})
+
+INCLUDE_DIRECTORIES(
+     .
+     ${CMAKE_CURRENT_BINARY_DIR}
+     ../../core ../../core/raster ../../core/renderer ../../core/symbology
+     ../../gui
+     ..
+     ${GRASS_INCLUDE_DIR}
+     ${GDAL_INCLUDE_DIR}
+     ${PROJ_INCLUDE_DIR}
+)
+
+TARGET_LINK_LIBRARIES(grassplugin
+  ${QT_LIBRARIES}
+  qgis_core
+  qgis_gui
+  qgisgrass
+  ${GRASS_LIBRARIES}
+)
+
+
+########################################################
+# Install
+
+INSTALL(TARGETS grassplugin
+  RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
+  LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
+
+
+FILE (GLOB GMLS *.gml)
+INSTALL (FILES ${GMLS} images/world.png
+         DESTINATION ${QGIS_DATA_DIR}/grass)

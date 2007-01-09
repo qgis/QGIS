@@ -21,16 +21,24 @@
 #include "qgslogger.h"
 #include "qgswmsprovider.h"
 
+#include <math.h>
 #include <fstream>
 #include <iostream>
 
+#include "qgscoordinatetransform.h"
 #include "qgsrect.h"
 #include "qgsspatialrefsys.h"
 
 #include "qgshttptransaction.h"
 
 #include <QUrl>
+#include <QImage>
+#include <QSet>
 
+#ifdef _MSC_VER
+#include <float.h>
+#define isfinite(x) _finite(x)
+#endif
 
 #ifdef QGISDEBUG
 #include <QFile>
@@ -612,7 +620,7 @@ bool QgsWmsProvider::retrieveServerCapabilities(bool forceRefresh)
   std::cout << "QgsWmsProvider::retrieveServerCapabilities: entering." << std::endl;
 #endif
 
-  if ( httpcapabilitiesresponse.isNull() or
+  if ( httpcapabilitiesresponse.isNull() ||
        forceRefresh )
   {
 
@@ -877,7 +885,7 @@ bool QgsWmsProvider::parseCapabilitiesDOM(QByteArray const & xml, QgsWmsCapabili
   if (!
       (
        (docElem.tagName() == "WMS_Capabilities")     // (1.3 vintage)
-       or
+       ||
        (docElem.tagName() == "WMT_MS_Capabilities")  // (1.1.1 vintage)
       )
      )
@@ -1822,27 +1830,8 @@ void QgsWmsProvider::parseServiceException(QDomElement const & e)
 }
 
 
-QgsDataSourceURI * QgsWmsProvider::getURI()
-{
 
-  QgsDataSourceURI* dsuri;
-   
-  dsuri = new QgsDataSourceURI;
-  
-  //TODO
-  
-  return dsuri;
-}
-
-
-void QgsWmsProvider::setURI(QgsDataSourceURI * uri)
-{
-  // TODO
-} 
-
-
-
-QgsRect *QgsWmsProvider::extent()
+QgsRect QgsWmsProvider::extent()
 {
   if (extentDirty)
   {
@@ -1852,7 +1841,7 @@ QgsRect *QgsWmsProvider::extent()
     }
   }
 
-  return &layerExtent;
+  return layerExtent;
 }
 
 void QgsWmsProvider::reset()
@@ -1869,6 +1858,7 @@ bool QgsWmsProvider::isValid()
 QString QgsWmsProvider::wmsVersion()
 {
   // TODO
+  return NULL;
 } 
 
 QStringList QgsWmsProvider::supportedImageEncodings()
@@ -1893,9 +1883,7 @@ void QgsWmsProvider::showStatusMessage(QString const & theMessage)
 {
     // Pass-through
     // TODO: See if we can connect signal-to-signal.  This is a kludge according to the Qt doc.
-#ifndef WIN32
     emit setStatus(theMessage);
-#endif
 }
 
 
@@ -2387,6 +2375,18 @@ QString QgsWmsProvider::identifyAsText(const QgsPoint& point)
             << text.toLocal8Bit().data() << "'." << std::endl;
 #endif
   return text;
+}
+
+
+void QgsWmsProvider::setSRS(const QgsSpatialRefSys& theSRS)
+{
+  // TODO: implement
+}
+
+QgsSpatialRefSys QgsWmsProvider::getSRS()
+{
+  // TODO: implement
+  return QgsSpatialRefSys();
 }
 
 

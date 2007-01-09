@@ -17,24 +17,24 @@
 #define QGSGRASSEDIT_H
 
 #include <vector>
-//Added by qt3to4:
-#include <QPixmap>
-#include <QCloseEvent>
-#include <QAction>
 
+#include <Q3PointArray>
+#include <QMainWindow>
+
+class QAction;
+class QPainter;
+class QPen;
+class QPixmap;
 class QString;
 class QCloseEvent;
 
-#include <q3pointarray.h>
-#include <qcursor.h>
-#include <qpen.h>
-#include <qpainter.h>
 
-// Must be here, so that it is included to moc file
-#include "qgisapp.h"
 #include "qgspoint.h"
-#include "qgisiface.h"
-#include "qgsmaptopixel.h"
+
+class QgisInterface;
+class QgsMapCanvas;
+class QgsMapLayer;
+class QgsMapToPixel;
 class QgsRubberBand;
 class QgsVertexMarker;
 class QgsVectorLayer;
@@ -44,7 +44,6 @@ class QgsGrassAttributes;
 
 class QgsGrassProvider;
 #include "ui_qgsgrasseditbase.h"
-#include <QMainWindow>
 #include "qgsgrassselect.h"
 
 // forward declaration of edit tools
@@ -116,10 +115,10 @@ public:
     };
 
     //! Constructor
-    QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
+    QgsGrassEdit ( QgisInterface *iface, 
 	           QWidget * parent = 0, Qt::WFlags f = 0 );
 
-    QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
+    QgsGrassEdit ( QgisInterface *iface, 
                    QgsGrassProvider *provider,
 	           QWidget * parent = 0, Qt::WFlags f = 0 );
 
@@ -298,11 +297,8 @@ private:
     //! Initialization complete
     bool mInited;
     
-    //! QGIS application
-    QgisApp *mQgisApp; 
-    
     //! Pointer to the QGIS interface object
-    QgisIface *mIface;
+    QgisInterface *mIface;
 
     //! Pointer to canvas 
     QgsMapCanvas *mCanvas;

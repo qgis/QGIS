@@ -16,10 +16,9 @@
 
 #include "qgslogger.h"
 #include "qgsmaptool.h"
-#include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaprender.h"
 #include "qgsmaptopixel.h"
-#include "qgsproject.h"
 #include <QAction>
 
 QgsMapTool::QgsMapTool(QgsMapCanvas* canvas)
@@ -42,27 +41,19 @@ QgsPoint QgsMapTool::toMapCoords(const QPoint& point)
 
 QgsPoint QgsMapTool::toLayerCoords(QgsMapLayer* layer, const QPoint& point)
 {
-  // FIXME: this information should be accessible elsewhere without accessing QgsProject!
-  bool projectionsEnabled = (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0);
-  
-  if (projectionsEnabled)
-  {
-  
-    if (!layer || !layer->coordinateTransform())
-      return QgsPoint(0,0);
-    
-    // first transform from canvas coords to map coordinates
-    QgsPoint pnt = toMapCoords(point);
-    
-    // then convert from 
-    return layer->coordinateTransform()->transform(pnt, QgsCoordinateTransform::INVERSE);
-  }
-  else
-  {
-    return toMapCoords(point);
-  }
+  QgsPoint pt = toMapCoords(point);
+  return toLayerCoords(layer, pt);
 }
 
+QgsPoint QgsMapTool::toLayerCoords(QgsMapLayer* layer, const QgsPoint& point)
+{
+  return mCanvas->mapRender()->outputCoordsToLayerCoords(layer, point);
+}
+
+QgsRect QgsMapTool::toLayerCoords(QgsMapLayer* layer, const QgsRect& rect)
+{
+  return mCanvas->mapRender()->outputCoordsToLayerCoords(layer, rect);
+}
 
 QPoint QgsMapTool::toCanvasCoords(const QgsPoint& point)
 {

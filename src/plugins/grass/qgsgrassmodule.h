@@ -43,9 +43,9 @@ class QValidator;
 #include <QProcess>
 
 // Must be here, so that it is included to moc file
-#include "qgisapp.h"
-#include "qgisiface.h"
 #include "qgsvectorlayer.h"
+class QgisInterface;
+class QgsMapCanvas;
 
 class QgsGrassProvider;
 class QgsGrassTools;
@@ -64,7 +64,7 @@ class QgsGrassModule: public QDialog, private  Ui::QgsGrassModuleBase
 
 public:
     //! Constructor
-    QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIface *iface,  
+    QgsGrassModule ( QgsGrassTools *tools, QgisInterface *iface,  
 	           QString path, QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
 
     //! Destructor
@@ -82,10 +82,7 @@ public:
     static QDomNode nodeByKey ( QDomElement gDocElem, QString key );
 
     //! Returns pointer to QGIS interface 
-    QgisIface *qgisIface();
-
-    //! Returns pointer to QGIS application
-    QgisApp *qgisApp();
+    QgisInterface *qgisIface();
 
     // ! Options widget 
     QgsGrassModuleOptions *options() { return mOptions; }
@@ -130,11 +127,8 @@ public slots:
     void readStderr();
 
 private:
-    //! QGIS application
-    QgisApp *mQgisApp;
-
     //! Pointer to the QGIS interface object
-    QgisIface *mIface;
+    QgisInterface *mIface;
 
     //! Pointer to canvas
     QgsMapCanvas *mCanvas;
@@ -183,7 +177,7 @@ public:
     //! Constructor
     QgsGrassModuleOptions ( 
             QgsGrassTools *tools, QgsGrassModule *module, 
-            QgisApp *qgisApp, QgisIface *iface ); 
+            QgisInterface *iface ); 
 
     //! Destructor
     virtual ~QgsGrassModuleOptions();
@@ -229,11 +223,8 @@ public:
     virtual QStringList flagNames() { return QStringList() ; }
 
 protected:
-    //! QGIS application
-    QgisApp *mQgisApp;
-
     //! Pointer to the QGIS interface object
-    QgisIface *mIface;
+    QgisInterface *mIface;
 
     //! Pointer to canvas
     QgsMapCanvas *mCanvas;
@@ -261,7 +252,7 @@ public:
     //! Constructor
     QgsGrassModuleStandardOptions ( 
             QgsGrassTools *tools, QgsGrassModule *module, 
-            QgisApp *qgisApp, QgisIface *iface,  
+            QgisInterface *iface,  
 	    QString xname, QDomElement docElem,
             QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
 

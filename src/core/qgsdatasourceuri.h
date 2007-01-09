@@ -1,5 +1,3 @@
-#ifndef QGSDATASOURCEURI_H
-#define QGSDATASOURCEURI_H
 /***************************************************************************
       qgsdatasourceuri.h  -  Structure to contain the component parts
                              of a data source URI
@@ -18,6 +16,12 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
+
+#ifndef QGSDATASOURCEURI_H
+#define QGSDATASOURCEURI_H
+
+#include <QString> 
+
 /** 
 \struct QgsDataSourceURI 
 \brief Structure for storing the component parts of a PostgreSQL/RDBMS datasource URI.
@@ -25,10 +29,22 @@
  This structure stores the database connection information, including host, database,
   user name, password, schema, password, and sql where clause
  */
-#include <QString> 
-class QgsDataSourceURI
+class CORE_EXPORT QgsDataSourceURI
 {
- public:
+
+public:
+  
+  //! default constructor
+  QgsDataSourceURI();
+   
+  //! constructor which parses input URI
+  QgsDataSourceURI(QString uri);
+   
+  //! All in a single string
+  QString text() const;
+  
+  /* data */
+
   //! host name
   QString host;
   //! database name
@@ -47,18 +63,11 @@ class QgsDataSourceURI
   QString username;
   //! password
   QString password;
-  //! All in a single string
-  QString text()
-    {
-      return QString("host=" + host + 
-                     " dbname=" + database + 
-                     " port=" + port + 
-                     " user=" + username + 
-                     " password=" + password + 
-                     " table=" + schema + '.' + table + 
-                     " (" + geometryColumn + ")" +
-                     " sql=" + sql);
-    }
-  };
+  
+  //! whole connection info (host, db, port, name, pass)
+  QString connInfo;
+
+};
+
 #endif //QGSDATASOURCEURI_H
 

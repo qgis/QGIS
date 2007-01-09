@@ -41,11 +41,13 @@
 #include <QObject>
 
 //QGIS includes
-#include <qgisapp.h>
 #include "../qgisplugin.h"
 
 //forward declarations
+class QAction;
 class QToolBar;
+
+class QgisInterface;
 
 /**
 * \class Plugin
@@ -64,12 +66,11 @@ class [pluginname]:public QObject, public QgisPlugin
   //////////////////////////////////////////////////////////////////////
 
   /** 
-  * Constructor for a plugin. The QgisApp and QgisIface pointers are passed by 
+  * Constructor for a plugin. The QgisInterface pointer is passed by 
   * QGIS when it attempts to instantiate the plugin.
-  * @param Pointer to the QgisApp object
-  * @param Pointer to the QgisIface object. 
+  * @param theInterface Pointer to the QgisInterface object. 
    */
-  [pluginname](QgisApp * theApplication, QgisIface * theInterface);
+  [pluginname](QgisInterface * theInterface);
   //! Destructor
   virtual ~[pluginname]();
 
@@ -111,10 +112,8 @@ private:
   int mPluginType;
   //! Pointer to our toolbar
   QToolBar *mToolBarPointer;
-  //! Pionter to QGIS main application object
-  QgisApp *mQGisApp;
   //! Pointer to the QGIS interface object
-  QgisIface *mQGisIface;
+  QgisInterface *mQGisIface;
   //!pointer to the qaction for this plugin
   QAction * mQActionPointer;
   ////////////////////////////////////////////////////////////////////

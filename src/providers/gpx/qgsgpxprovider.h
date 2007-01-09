@@ -36,121 +36,130 @@ class GPSData;
 * This provider adds the ability to load GPX files as vector layers.
 * 
 */
-class QgsGPXProvider : public QgsVectorDataProvider {
+class QgsGPXProvider : public QgsVectorDataProvider
+{
+  
 public:
-  QgsGPXProvider(QString const & uri = "");
+  
+  QgsGPXProvider(QString uri = QString());
   virtual ~QgsGPXProvider();
   
-  /**
-    *   Returns the permanent storage type for this layer as a friendly name.
-    */
-  QString storageType();
-
-  /** Used to ask the layer for its projection as a WKT string. Implements 
-      virtual method of same name in QgsDataProvider. */
-  QString getProjectionWKT();
-  /**
-   * Get the first feature resulting from a select operation
-   * @return QgsFeature
-   */
-  QgsFeature * getFirstFeature(bool fetchAttributes=false);
-  /** 
-  * Get the next feature resutling from a select operation
-  * @return QgsFeature
-  */
-  QgsFeature * getNextFeature(bool fetchAttributes=false);
-  bool getNextFeature(QgsFeature &feature, bool fetchAttributes=false);
-  QgsFeature * getNextFeature(std::list<int> const & attlist, int featureQueueSize = 1);
+  /* Functions inherited from QgsVectorDataProvider */
   
-  /** Get the feature type. This corresponds to 
-      WKBPoint,
-      WKBLineString,
-      WKBPolygon,
-      WKBMultiPoint,
-      WKBMultiLineString or
-      WKBMultiPolygon
-  * as defined in qgis.h
-  * This provider will always return WKBPoint
-  */
-  int geometryType() const;
-  /** 
-   * Get the number of features in the layer
+  /**
+   *   Returns the permanent storage type for this layer as a friendly name.
    */
-  long featureCount() const;
-  /** 
-   * Get the number of fields in the layer
-   */
-  int fieldCount() const;
+  virtual QString storageType() const;
+
   /**
    * Select features based on a bounding rectangle. Features can be retrieved 
    * with calls to getFirstFeature and getNextFeature.
    * @param mbr QgsRect containing the extent to use in selecting features
    */
-  void select(QgsRect *mbr, bool useIntersect=false);
-  /** 
-   * Set the data source specification. This may be a path or database
-   * connection string
-   * @uri data source specification
+  virtual void select(QgsRect mbr, bool useIntersect=false);
+
+  /**
+   * Get the next feature resulting from a select operation.
+   * @param feature feature which will receive data from the provider
+   * @param fetchGeoemtry if true, geometry will be fetched from the provider
+   * @param fetchAttributes a list containing the indexes of the attribute fields to copy
+   * @param featureQueueSize  a hint to the provider as to how many features are likely to be retrieved in a batch
+   * @return true when there was a feature to fetch, false when end was hit
    */
-  void setDataSourceUri(QString uri);
-  
-  /** 
-   * Get the data source specification. This may be a path or database
-   * connection string
-   * @return data source specification
-   */
-  QString getDataSourceUri();
+  virtual bool getNextFeature(QgsFeature& feature,
+                              bool fetchGeometry = true,
+                              QgsAttributeList fetchAttributes = QgsAttributeList(),
+                              uint featureQueueSize = 1);
   
   /**
-   * Identify features within the search radius specified by rect
-   * @param rect Bounding rectangle of search radius
-   * @return std::vector containing QgsFeature objects that intersect rect
+   * Get feature type.
+   * @return int representing the feature type
    */
-  virtual std::vector<QgsFeature>& identify(QgsRect *rect);
-  
-  /** Return the extent for this data layer
+  virtual QGis::WKBTYPE geometryType() const;
+
+  /**
+   * Number of features in the layer
+   * @return long containing number of features
    */
-  virtual QgsRect * extent();
-  
+  virtual long featureCount() const;
+    
+  /** 
+   * Get the number of fields in the layer
+   */
+  virtual uint fieldCount() const;
+
   /**
    * Get the field information for the layer
    */
-  std::vector<QgsField> const & fields() const;
+  virtual const QgsFieldMap & fields() const;
   
-  /* Reset the layer (ie move the file pointer to the head
-     of the file.
-  */
-  void reset();
+  /** 
+   * Reset the layer (ie move the file pointer to the head of the file.
+   */
+  virtual void reset();
     
   /**Returns the minimum value of an attribute
-     @param position the number of the attribute*/
-  QString minValue(int position);
+  @param position the number of the attribute*/
+  virtual QString minValue(uint position);
   
   /**Returns the maximum value of an attribute
-     @param position the number of the attribute*/
-  QString maxValue(int position);
+  @param position the number of the attribute*/
+  virtual QString maxValue(uint position);
+  
+  /**
+   * Adds a list of features
+   * @return true in case of success and false in case of failure
+   */
+  virtual bool addFeatures(QgsFeatureList & flist);
+
+  /** 
+   * Deletes a feature
+   * @param id list containing feature ids to delete
+   * @return true in case of success and false in case of failure
+   */
+  virtual bool deleteFeatures(const QgsFeatureIds & id);
+  
+  /**
+   * Changes attribute values of existing features.
+   * @param attr_map a map containing changed attributes
+   * @return true in case of success and false in case of failure 
+   */
+  virtual bool changeAttributeValues(const QgsChangedAttributesMap & attr_map);
+  
+  virtual int capabilities() const;
+  
+  /**Returns the default value for attribute @c attr for feature @c f. */
+  virtual QString getDefaultValue(const QString& attr, QgsFeature* f);
+  
+  
+  /* Functions inherited from QgsDataProvider */
+  
+  /** Return the extent for this data layer
+   */
+  virtual QgsRect extent();
   
   /**Returns true if this is a valid delimited file
    */
-  bool isValid();
+  virtual bool isValid();
 
-  /**Adds a list of features
-     @return true in case of success and false in case of failure*/
-  bool addFeatures(std::list<QgsFeature*> flist);
+  /** return a provider name */
+  virtual QString name() const;
+
+  /** return description */
+  virtual QString description() const;
+
+  virtual void setSRS(const QgsSpatialRefSys& theSRS);
+
+  virtual QgsSpatialRefSys getSRS();
   
-  bool deleteFeatures(std::list<int> const & id);
   
-  bool changeAttributeValues(std::map<int,std::map<QString,QString> > const & 
-			     attr_map);
-  
+  /* new functions */
+
   void changeAttributeValues(GPSObject& obj, 
-			     const std::map<QString, QString>& attrs);
+                             const QgsAttributeMap& attrs);
   
   /** Adds one feature (used by addFeatures()) */
-  bool addFeature(QgsFeature* f);
-  
-  /**Returns the default value for attribute @c attr for feature @c f. */
-  QString getDefaultValue(const QString& attr, QgsFeature* f);
+  bool addFeature(QgsFeature& f);
   
   /**
    * Check to see if the point is withn the selection
@@ -161,55 +170,7 @@ public:
    */
   bool boundsCheck(double x, double y);
 
-  int capabilities() const {
-    return AddFeatures | DeleteFeatures | ChangeAttributeValues;
-  }
-  
-  QgsDataSourceURI *getURI()
-  {
-      return 0;
-  }
 
-  /** return the number of layers for the current data source
-
-  @note 
-
-  Should this be subLayerCount() instead?
-  */
-  size_t layerCount() const;
-
-
-    /** return a provider name
-
-    Essentially just returns the provider key.  Should be used to build file
-    dialogs so that providers can be shown with their supported types. Thus
-    if more than one provider supports a given format, the user is able to
-    select a specific provider to open that file.
-
-    @note
-
-    Instead of being pure virtual, might be better to generalize this
-    behavior and presume that none of the sub-classes are going to do
-    anything strange with regards to their name or description?
-
-    */
-    QString name() const;
-
-
-    /** return description
-
-    Return a terse string describing what the provider is.
-
-    @note
-
-    Instead of being pure virtual, might be better to generalize this
-    behavior and presume that none of the sub-classes are going to do
-    anything strange with regards to their name or description?
-
-    */
-    QString description() const;
-
-  
 private:
   
   /** Internal function used by the other getNextFeature() functions. */
@@ -219,8 +180,8 @@ private:
   GPSData* data;
   void fillMinMaxCash();
   //! Fields
-  std::vector<QgsField> attributeFields;
-  std::list<int> mAllAttributes;
+  QgsFieldMap attributeFields;
+  
   //! Map to store field position by name
   std::map<QString, int> fieldPositions;
 
@@ -233,7 +194,6 @@ private:
   //! Current selection rectangle
   QgsRect *mSelectionRectangle;
   bool mValid;
-  int mGeomType;
   long mNumberFeatures;
   
   //! Current waypoint iterator

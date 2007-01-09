@@ -21,6 +21,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QObject>
+#include <QSet>
 
 #include "gpsdata.h"
 #include <qgslogger.h>
@@ -131,8 +132,8 @@ GPSData::GPSData() {
 }
 
 
-QgsRect* GPSData::getExtent() const {
-  return new QgsRect(xMin, yMin, xMax, yMax);
+QgsRect GPSData::getExtent() const {
+  return QgsRect(xMin, yMin, xMax, yMax);
 }
 
 void GPSData::setNoDataExtent() {
@@ -248,10 +249,10 @@ GPSData::TrackIterator GPSData::addTrack(const Track& trk) {
 }
 
 
-void GPSData::removeWaypoints(std::list<int> const & ids) {
-  std::list<int> ids2 = ids;
-  ids2.sort();
-  std::list<int>::const_iterator iter = ids2.begin();
+void GPSData::removeWaypoints(const QgsFeatureIds & ids) {
+  QList<int> ids2 = ids.toList();
+  qSort(ids2);
+  QList<int>::const_iterator iter = ids2.begin();
   WaypointIterator wIter;
   for (wIter = waypoints.begin(); 
        wIter != waypoints.end() && iter != ids2.end(); ) {
@@ -266,10 +267,10 @@ void GPSData::removeWaypoints(std::list<int> const & ids) {
 }
   
 
-void GPSData::removeRoutes(std::list<int> const & ids) {
-  std::list<int> ids2 = ids;
-  ids2.sort();
-  std::list<int>::const_iterator iter = ids2.begin();
+void GPSData::removeRoutes(const QgsFeatureIds & ids) {
+  QList<int> ids2 = ids.toList();
+  qSort(ids2);
+  QList<int>::const_iterator iter = ids2.begin();
   RouteIterator rIter;
   for (rIter = routes.begin(); rIter != routes.end() && iter != ids2.end(); ) {
     RouteIterator tmpIter = rIter;
@@ -283,10 +284,10 @@ void GPSData::removeRoutes(std::list<int> const & ids) {
 }
   
 
-void GPSData::removeTracks(std::list<int> const & ids) {
-  std::list<int> ids2 = ids;
-  ids2.sort();
-  std::list<int>::const_iterator iter = ids2.begin();
+void GPSData::removeTracks(const QgsFeatureIds & ids) {
+  QList<int> ids2 = ids.toList();
+  qSort(ids2);
+  QList<int>::const_iterator iter = ids2.begin();
   TrackIterator tIter;
   for (tIter = tracks.begin(); tIter != tracks.end() && iter != ids2.end(); ) {
     TrackIterator tmpIter = tIter;

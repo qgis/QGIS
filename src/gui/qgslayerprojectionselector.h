@@ -28,7 +28,7 @@
  * \brief Set Projection system for a layer
  */
 
-class QgsLayerProjectionSelector : public QDialog, private Ui::QgsLayerProjectionSelectorBase
+class GUI_EXPORT QgsLayerProjectionSelector : public QDialog, private Ui::QgsLayerProjectionSelectorBase
 {
   Q_OBJECT;
   public:

@@ -1,6 +1,8 @@
+ID
 autogen.sh
 Makefile
 Makefile.in
+Makefile.win.rules
 aclocal.m4
 compile
 config.guess
@@ -14,3 +16,11 @@ qgis.spec
 qgsconfig.h
 qgsconfig.h.in
 stamp-h1
+*.pcs
+*.kdevses
+*.loT
+*.in
+*.swp
+*~
+.deps
+.libs

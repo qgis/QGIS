@@ -41,6 +41,11 @@ void QgsScaleCalculator::setMapUnits(QGis::units mapUnits)
   mMapUnits = mapUnits;
 }
 
+QGis::units QgsScaleCalculator::mapUnits() const
+{
+  return mMapUnits;
+}
+
 double QgsScaleCalculator::calculate(QgsRect &mapExtent, int canvasWidth)
 {
   double conversionFactor; 
@@ -68,6 +73,11 @@ double QgsScaleCalculator::calculate(QgsRect &mapExtent, int canvasWidth)
       break; 
   }
   QgsDebugMsg("Using conversionFactor of " + QString::number(conversionFactor));
+  if (canvasWidth == 0 || mDpi == 0)
+  {
+    QgsDebugMsg("Can't calculate scale from the input values");
+    return 0;
+  }
   double scale = (delta * conversionFactor)/(canvasWidth/mDpi);
   return scale;
 }

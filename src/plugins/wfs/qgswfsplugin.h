@@ -21,15 +21,15 @@
 #include "qgisplugin.h"
 #include <QObject>
 
-class QGisApp;
-class QgisIface;
+class QgisInterface;
+class QAction;
 
 /**A plugin for adding vector layers with the WFS provider*/
 class QgsWFSPlugin: public QObject, public QgisPlugin
 {
   Q_OBJECT
  public:
-  QgsWFSPlugin(QgisApp* app, QgisIface* iface);
+  QgsWFSPlugin(QgisInterface* iface);
   ~QgsWFSPlugin();
   /**initialize connection to GUI*/
   void initGui();
@@ -37,8 +37,7 @@ class QgsWFSPlugin: public QObject, public QgisPlugin
   void unload();
 
  private:
-  QgisApp* mApp;
-  QgisIface* mIface;
+  QgisInterface* mIface;
   QAction* mWfsDialogAction;
 
   private slots:

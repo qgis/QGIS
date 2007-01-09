@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgisinterface.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
@@ -99,7 +100,7 @@ void QgsGrassEditNewPoint::mouseClick(QgsPoint & point, Qt::ButtonState button)
     }
     else
     {
-        e->mAttributes = new QgsGrassAttributes ( e, e->mProvider, line, e->mQgisApp );
+        e->mAttributes = new QgsGrassAttributes ( e, e->mProvider, line, e->mIface->getMainWindow() );
     }
     for ( int i = 0; i < e->mCats->n_cats; i++ ) {
       e->addAttributes ( e->mCats->field[i], e->mCats->cat[i] );
@@ -199,7 +200,7 @@ void QgsGrassEditNewLine::mouseClick(QgsPoint & point, Qt::ButtonState button)
 	}
 	else
 	{
-	    e->mAttributes = new QgsGrassAttributes ( e, e->mProvider, line, e->mQgisApp );
+      e->mAttributes = new QgsGrassAttributes ( e, e->mProvider, line, e->mIface->getMainWindow() );
 	}
         for ( int i = 0; i < e->mCats->n_cats; i++ ) {
           e->addAttributes ( e->mCats->field[i], e->mCats->cat[i] );
@@ -813,7 +814,7 @@ void QgsGrassEditAttributes::mouseClick(QgsPoint & point, Qt::ButtonState button
 
     if ( !e->mAttributes ) 
     {
-        e->mAttributes = new QgsGrassAttributes ( e, e->mProvider, e->mSelectedLine, e->mQgisApp );
+      e->mAttributes = new QgsGrassAttributes ( e, e->mProvider, e->mSelectedLine, e->mIface->getMainWindow() );
     }
     else
     {

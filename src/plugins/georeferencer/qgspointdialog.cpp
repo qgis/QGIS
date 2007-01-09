@@ -5,8 +5,7 @@
 #include <QMessageBox>
 #include <QTextStream>
 
-#include "qgisiface.h"
-#include "qgisapp.h"
+#include "qgisinterface.h"
 #include "qgsapplication.h"
 #include "qgspointdialog.h"
 #include "mapcoordsdialog.h"
@@ -47,7 +46,7 @@ class QgsGeorefTool : public QgsMapTool
 };
 
 
-QgsPointDialog::QgsPointDialog(QString layerPath, QgisIface* theQgisInterface,
+QgsPointDialog::QgsPointDialog(QString layerPath, QgisInterface* theQgisInterface,
                                 QWidget* parent, Qt::WFlags fl) 
   : QDialog(parent, fl), mIface(theQgisInterface)
 {
@@ -136,15 +135,10 @@ QgsPointDialog::QgsPointDialog(QString layerPath, QgisIface* theQgisInterface,
   QgsMapLayerRegistry* registry = QgsMapLayerRegistry::instance();
   registry->addMapLayer(layer, FALSE);  
   
-
-  // Set source SRS same as dest SRS, so that we don't do any transformation.
-  // Dest SRS is set by project defaults
-  // The CoordinateTransform should now be shortcircuited.
-  layer->coordinateTransform()->setSourceSRS(layer->coordinateTransform()->destSRS());
-
   // add layer to map canvas
-  std::deque<QString> layers;
-  layers.push_back(layer->getLayerID());
+  QList<QgsMapCanvasLayer> layers;
+  QgsMapCanvasLayer lyr(layer);
+  layers.append(lyr);
   mCanvas->setLayerSet(layers);
   
   // load previously added points
@@ -244,8 +238,8 @@ void QgsPointDialog::on_pbnGenerateAndLoad_clicked()
     else 
       mIface->addRasterLayer(leSelectModifiedRaster->text());
 
-    // This should cause a map refresh, but it doesn't...
-    mIface->app()->refreshMapCanvas();
+    // This should cause a map refresh
+    mIface->getMapCanvas()->refresh();
 
     accept();
   }
@@ -280,7 +274,9 @@ void QgsPointDialog::on_cmbTransformType_currentIndexChanged(const QString& valu
     QFileInfo file(mLayer->source());
     int pos = filename.size()-file.suffix().size()-1;
     filename.insert(pos, tr("-modified", "Georeferencer:QgsPointDialog.cpp - used to modify a user given filename"));
-    
+    pos = filename.size()-file.suffix().size();
+    filename.replace(pos, filename.size(), "tif");
+
     leSelectModifiedRaster->setText(filename);
     leSelectWorldFile->setText(guessWorldFileName(filename));
   }
@@ -323,8 +319,9 @@ bool QgsPointDialog::generateWorldFile()
 		     "the raster layer.</p><p>The modifed raster will be "
 		     "saved in a new file and a world file will be "
 		     "generated for this new file instead.</p><p>Are you "
-		     "sure that this is what you want?</p>"),
-			     QMessageBox::No, QMessageBox::Yes);
+		     "sure that this is what you want?</p>") + 
+		     "<p><i>" + tr("Currently all modified files will be written in TIFF format.") + 
+		     "</i><p>", QMessageBox::No, QMessageBox::Yes);
       if (res == QMessageBox::No)
 	       return false;
 

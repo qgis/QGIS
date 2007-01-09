@@ -19,7 +19,7 @@
 
 #include <fstream>
 
-#include <qstring.h>
+#include <QString>
 
 #include "qgsrect.h"
 

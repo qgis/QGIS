@@ -22,8 +22,6 @@
 
 #include <string>
 
-#include <qstring.h>
-
 #include "qgsrect.h"
 
 /*!

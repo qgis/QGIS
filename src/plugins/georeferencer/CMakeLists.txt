@@ -1,0 +1,68 @@
+
+########################################################
+# Files
+
+SET (GEOREF_SRCS
+     plugin.cpp
+     qgsgeorefdatapoint.cpp
+     plugingui.cpp
+     qgsimagewarper.cpp
+     qgsleastsquares.cpp
+     qgspointdialog.cpp
+     qgsgeorefwarpoptionsdialog.cpp
+     mapcoordsdialog.cpp
+)
+
+SET (GEOREF_UIS
+     pluginguibase.ui
+     qgspointdialogbase.ui
+     mapcoordsdialogbase.ui
+     qgsgeorefwarpoptionsdialogbase.ui
+)
+
+SET (GEOREF_MOC_HDRS
+     plugin.h
+     plugingui.h
+     qgspointdialog.h
+     mapcoordsdialog.h
+     qgsgeorefwarpoptionsdialog.h
+)
+
+SET (GEOREF_RCCS  georeferencer.qrc)
+
+
+########################################################
+# Build
+
+QT4_WRAP_UI (GEOREF_UIS_H  ${GEOREF_UIS})
+
+QT4_WRAP_CPP (GEOREF_MOC_SRCS  ${GEOREF_MOC_HDRS})
+
+QT4_ADD_RESOURCES(GEOREF_RCC_SRCS ${GEOREF_RCCS})
+
+ADD_LIBRARY (georefplugin SHARED ${GEOREF_SRCS} ${GEOREF_MOC_SRCS} ${GEOREF_RCC_SRCS} ${GEOREF_UIS_H})
+
+INCLUDE_DIRECTORIES(
+     .
+     ${CMAKE_CURRENT_BINARY_DIR}
+     ../../core ../../core/raster ../../core/renderer ../../core/symbology
+     ../../gui
+     ..
+     ${GSL_INCLUDE_DIR}
+     ${GDAL_INCLUDE_DIR}
+)
+
+TARGET_LINK_LIBRARIES(georefplugin
+  ${QT_LIBRARIES}
+  qgis_core
+  qgis_gui
+  ${GSL_LIBRARIES}
+)
+
+
+########################################################
+# Install
+
+INSTALL(TARGETS georefplugin
+  RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
+  LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

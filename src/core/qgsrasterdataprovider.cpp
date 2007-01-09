@@ -17,7 +17,7 @@
 /* $Id$ */
 
 #include "qgsrasterdataprovider.h"
-
+#include <iostream>
 
 QgsRasterDataProvider::QgsRasterDataProvider()
 {

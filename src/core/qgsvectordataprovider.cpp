@@ -14,54 +14,83 @@
  ***************************************************************************/
 /* $Id$ */
 
+#include <QTextCodec>
+
 #include "qgsvectordataprovider.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
-#include "qgssearchtreenode.h"
+#include "qgslogger.h"
 
-QgsVectorDataProvider::QgsVectorDataProvider()
-    : mEncoding(QTextCodec::codecForLocale())
-{
-}
-
-QgsVectorDataProvider::QgsVectorDataProvider( QString const & uri )
+QgsVectorDataProvider::QgsVectorDataProvider(QString uri)
     : QgsDataProvider(uri),
-      mEncoding(QTextCodec::codecForLocale())
+      mEncoding(QTextCodec::codecForLocale()),
+      mFetchFeaturesWithoutGeom(FALSE)
 {
 }
 
 
-bool QgsVectorDataProvider::addFeatures(std::list<QgsFeature*> flist)
+QgsVectorDataProvider::~QgsVectorDataProvider()
+{
+}
+
+QString QgsVectorDataProvider::storageType() const
+{
+  return "Generic vector file";
+}
+
+long QgsVectorDataProvider::updateFeatureCount()
+{
+  return -1;
+}
+
+bool QgsVectorDataProvider::getFeatureAtId(int featureId,
+                                      QgsFeature& feature,
+                                      bool fetchGeometry,
+                                      QgsAttributeList fetchAttributes)
+{
+  return 0;
+}
+
+void QgsVectorDataProvider::getFeatureAttributes(int key, int& row, QgsFeature *f)
+{
+}
+
+void QgsVectorDataProvider::getFeatureGeometry(int key, QgsFeature *f)
+{
+}
+
+
+bool QgsVectorDataProvider::addFeatures(QgsFeatureList & flist)
 {
   return false;
 }
 
-bool QgsVectorDataProvider::deleteFeatures(std::list<int> const & id)
+bool QgsVectorDataProvider::deleteFeatures(const QgsFeatureIds & id)
 {
   return false;
 }
 
-bool QgsVectorDataProvider::addAttributes(std::map<QString,QString> const & name)
+bool QgsVectorDataProvider::addAttributes(const QgsNewAttributesMap & attributes)
 {
   return false;
 }
 
-bool QgsVectorDataProvider::deleteAttributes(std::set<QString> const & name)
+bool QgsVectorDataProvider::deleteAttributes(const QgsAttributeIds & attributes)
 {
   return false;
 }
 
-bool QgsVectorDataProvider::changeAttributeValues(std::map<int,std::map<QString,QString> > const & attr_map)
+bool QgsVectorDataProvider::changeAttributeValues(const QgsChangedAttributesMap & attr_map)
 {
   return false;
 }
 
-QString QgsVectorDataProvider::getDefaultValue(const QString& attr, 
-    QgsFeature* f) {
+QString QgsVectorDataProvider::getDefaultValue(const QString& attr, QgsFeature* f)
+{
   return "";
 }
 
-bool QgsVectorDataProvider::changeGeometryValues(std::map<int, QgsGeometry> & geometry_map)
+bool QgsVectorDataProvider::changeGeometryValues(QgsGeometryMap & geometry_map)
 {
   return false;
 }
@@ -71,31 +100,33 @@ bool QgsVectorDataProvider::createSpatialIndex()
     return false;
 }
 
+int QgsVectorDataProvider::capabilities() const
+{
+  return QgsVectorDataProvider::NoCapabilities;
+}
+
+
 void QgsVectorDataProvider::setEncoding(const QString& e)
 {
-    QTextCodec* ncodec=QTextCodec::codecForName(e.toLocal8Bit().data());
-    if(ncodec)
-    {
-	mEncoding=ncodec;
-    }
-    else
-    {
-#ifdef QGISDEBUG
-	qWarning("error finding QTextCodec in QgsVectorDataProvider::setEncoding");
-#endif
-    }
+  QTextCodec* ncodec=QTextCodec::codecForName(e.toLocal8Bit().data());
+  if(ncodec)
+  {
+  	mEncoding=ncodec;
+  }
+  else
+  {
+    QgsDebugMsg("error finding QTextCodec for " + e);
+  }
 }
 
 QString QgsVectorDataProvider::encoding() const
 {
-    if(mEncoding)
-    {
-	return mEncoding->name();
-    }
-    else
-    {
-	return "";
-    }
+  if (mEncoding)
+  {
+    	return mEncoding->name();
+  }
+	
+  return "";
 }
 
 QString QgsVectorDataProvider::capabilitiesString() const
@@ -107,85 +138,51 @@ QString QgsVectorDataProvider::capabilitiesString() const
   if (abilities & QgsVectorDataProvider::AddFeatures)
   {
     abilitiesList += "Add Features";
-#ifdef QGISDEBUG
-        std::cerr << "QgsVectorDataProvider::capabilitiesString "
-          << "Add Features" << std::endl;
-#endif
-
+    QgsDebugMsg("Capability: Add Features");
   }
 
   if (abilities & QgsVectorDataProvider::DeleteFeatures)
   {
     abilitiesList += "Delete Features";
-#ifdef QGISDEBUG
-        std::cerr << "QgsVectorDataProvider::capabilitiesString "
-          << "Delete Features" << std::endl;
-#endif
+    QgsDebugMsg("Capability: Delete Features");
   }
 
   if (abilities & QgsVectorDataProvider::ChangeAttributeValues)
   {
     abilitiesList += "Change Attribute Values";
-#ifdef QGISDEBUG
-        std::cerr << "QgsVectorDataProvider::capabilitiesString "
-          << "Change Attribute Values" << std::endl;
-#endif
+    QgsDebugMsg("Capability: Change Attribute Values");
   }
 
   if (abilities & QgsVectorDataProvider::AddAttributes)
   {
     abilitiesList += "Add Attributes";
-#ifdef QGISDEBUG
-        std::cerr << "QgsVectorDataProvider::capabilitiesString "
-          << "Add Attributes" << std::endl;
-#endif
+    QgsDebugMsg("Capability: Add Attributes");
   }
 
   if (abilities & QgsVectorDataProvider::DeleteAttributes)
   {
     abilitiesList += "Delete Attributes";
-#ifdef QGISDEBUG
-        std::cerr << "QgsVectorDataProvider::capabilitiesString "
-          << "Delete Attributes" << std::endl;
-#endif
-  }
-
-  if (abilities & QgsVectorDataProvider::SaveAsShapefile)
-  {
-    abilitiesList += "Save As Shapefile";
-#ifdef QGISDEBUG
-        std::cerr << "QgsVectorDataProvider::capabilitiesString "
-          << "Save As Shapefile" << std::endl;
-#endif
+    QgsDebugMsg("Capability: Delete Attributes");
   }
 
   if (abilities & QgsVectorDataProvider::CreateSpatialIndex)
   {
     // TODO: Tighten up this test.  See QgsOgrProvider for details.
     abilitiesList += "Create Spatial Index";
-#ifdef QGISDEBUG
-        std::cerr << "QgsVectorDataProvider::capabilitiesString "
-          << "Create Spatial Index" << std::endl;
-#endif
+    QgsDebugMsg("Capability: Create Spatial Index");
   }
 
   if (abilities & QgsVectorDataProvider::SelectAtId)
   {
     // Not really meaningful to the user.
     // abilitiesList += "Select at ID";
-#ifdef QGISDEBUG
-        std::cerr << "QgsVectorDataProvider::capabilitiesString "
-          << "Select at ID" << std::endl;
-#endif
+    QgsDebugMsg("Capability: Select at ID");
   }
 
   if (abilities & QgsVectorDataProvider::ChangeGeometries)
   {
     abilitiesList += "Change Geometries";
-#ifdef QGISDEBUG
-        std::cerr << "QgsVectorDataProvider::capabilitiesString "
-          << "Change Geometries" << std::endl;
-#endif
+    QgsDebugMsg("Capability: Change Geometries");
   }
 
   if (abilities & QgsVectorDataProvider::SelectGeometryAtId)
@@ -194,26 +191,17 @@ QString QgsVectorDataProvider::capabilitiesString() const
     if (abilities & QgsVectorDataProvider::RandomSelectGeometryAtId)
     {
       abilitiesList += "Select Geometries by ID (random access)";
-#ifdef QGISDEBUG
-          std::cerr << "QgsVectorDataProvider::capabilitiesString "
-            << "Select Geometries by ID (random access)" << std::endl;
-#endif
+      QgsDebugMsg("Capability: Select Geometries by ID (random access)");
     }
     else if (abilities & QgsVectorDataProvider::SequentialSelectGeometryAtId)
     {
       abilitiesList += "Select Geometries by ID (sequential access)";
-#ifdef QGISDEBUG
-          std::cerr << "QgsVectorDataProvider::capabilitiesString "
-            << "Select Geometries by ID (sequential access)" << std::endl;
-#endif
+      QgsDebugMsg("Capability: Select Geometries by ID (sequential access)");
     }
     else
     {
       abilitiesList += "Select Geometries by ID (unknown access method)";
-#ifdef QGISDEBUG
-          std::cerr << "QgsVectorDataProvider::capabilitiesString "
-            << "Select Geometries by ID (unknown access method)" << std::endl;
-#endif
+      QgsDebugMsg("Capability: Select Geometries by ID (unknown access method)");
     }
   }
 
@@ -221,25 +209,35 @@ QString QgsVectorDataProvider::capabilitiesString() const
 
 }
 
-bool QgsVectorDataProvider::setAttributeFilter(const QgsSearchString& attributeFilter)
-{
-  mAttributeFilter = attributeFilter;
-  // TODO: maybe check if all referenced columns are there, return false if not
-  return true;
-}
 
 int QgsVectorDataProvider::indexFromFieldName(const QString& fieldName) const
 {
-  const std::vector<QgsField> theFields = fields();
+  const QgsFieldMap& theFields = fields();
   int counter = 0;
 
-  for(std::vector<QgsField>::const_iterator it = theFields.begin(); it != theFields.end(); ++it)
+  for (QgsFieldMap::const_iterator it = theFields.begin(); it != theFields.end(); ++it)
+  {
+    if(*it == fieldName)
     {
-      if(it->name() == fieldName)
-	{
-	  return counter;
-	}
-      ++counter;
+      return counter;
     }
+    ++counter;
+  }
   return -1;
+}
+
+QgsAttributeList QgsVectorDataProvider::allAttributesList()
+{
+  uint count = fieldCount();
+  QgsAttributeList list;
+
+  for (uint i = 0; i < count; i++)
+    list.append(i);
+
+  return list;
+}
+
+void QgsVectorDataProvider::setFetchFeaturesWithoutGeom(bool fetch)
+{
+  mFetchFeaturesWithoutGeom = fetch;
 }

@@ -32,7 +32,7 @@ class QString;
  * QgsRect is used to store a rectangle when double values are required. 
  * Examples are storing a layer extent or the current view extent of a map
  */
-class QgsRect
+class CORE_EXPORT QgsRect
 {
  public:
     //! Constructor

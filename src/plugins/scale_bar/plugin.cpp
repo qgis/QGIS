@@ -22,14 +22,15 @@ email                : sbr00pwb@users.sourceforge.net
 
 // includes
 
-#include <qgisapp.h>
+#include "qgisinterface.h"
 #include "qgisgui.h"
-#include <qgsmaplayer.h>
-#include "plugin.h"
-#include "qgsproject.h"
 #include "qgsmapcanvas.h"
-#include <qgspoint.h>
-#include <qgsmaptopixel.h>
+#include "qgsmaplayer.h"
+#include "qgsmaptopixel.h"
+#include "qgspoint.h"
+#include "qgsproject.h"
+
+#include "plugin.h"
 
 #include <QPainter>
 #include <QAction>
@@ -57,6 +58,10 @@ email                : sbr00pwb@users.sourceforge.net
 #define QGISEXTERN extern "C"
 #endif
 
+#ifdef _MSC_VER
+#define round(x)  ((x) >= 0 ? floor((x)+0.5) : floor((x)-0.5))
+#endif
+
 static const char * const ident_ = "$Id$";
 
 static const QString name_ = QObject::tr("ScaleBar");
@@ -71,10 +76,8 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-QgsScaleBarPlugin::QgsScaleBarPlugin(QgisApp * theQGisApp,
-                                     QgisIface * theQgisInterFace):
+QgsScaleBarPlugin::QgsScaleBarPlugin(QgisInterface * theQgisInterFace):
         QgisPlugin(name_,description_,version_,type_),
-        qgisMainWindowPointer(theQGisApp),
         qGisInterface(theQgisInterFace)
 {
   mPlacementLabels << tr("Bottom Left") << tr("Top Left") 
@@ -108,7 +111,7 @@ void QgsScaleBarPlugin::initGui()
   //render the scale bar each time the map is rendered
   connect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)), this, SLOT(renderScaleBar(QPainter *)));
   //this resets this plugin up if a project is loaded
-  connect(qgisMainWindowPointer, SIGNAL(projectRead()), this, SLOT(projectRead()));
+  connect(qGisInterface->getMainWindow(), SIGNAL(projectRead()), this, SLOT(projectRead()));
   // Add the icon to the toolbar
   qGisInterface->addToolBarIcon(myQActionPointer);
   qGisInterface->addPluginMenu(tr("&Decorations"), myQActionPointer);
@@ -140,7 +143,7 @@ void QgsScaleBarPlugin::help()
 // Slot called when the  menu item is activated
 void QgsScaleBarPlugin::run()
 {
-  QgsScaleBarPluginGui *myPluginGui=new QgsScaleBarPluginGui(qgisMainWindowPointer, QgisGui::ModalDialogFlags);
+  QgsScaleBarPluginGui *myPluginGui=new QgsScaleBarPluginGui(qGisInterface->getMainWindow(), QgisGui::ModalDialogFlags);
   myPluginGui->setPreferredSize(mPreferredSize);
   myPluginGui->setSnapping(mSnapping);
   myPluginGui->setPlacementLabels(mPlacementLabels);
@@ -582,9 +585,9 @@ void QgsScaleBarPlugin::setColour(QColor theQColor)
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
+QGISEXTERN QgisPlugin * classFactory(QgisInterface * theQgisInterfacePointer)
 {
-  return new QgsScaleBarPlugin(theQGisAppPointer, theQgisInterfacePointer);
+  return new QgsScaleBarPlugin(theQgisInterfacePointer);
 }
 
 // Return the name of the plugin - note that we do not user class members as

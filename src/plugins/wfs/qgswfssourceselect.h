@@ -20,7 +20,7 @@
 
 #include "ui_qgswfssourceselectbase.h"
 
-class QgisIface;
+class QgisInterface;
 class QgsLayerProjectionSelector;
 
 class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
@@ -35,12 +35,12 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
       SOAP /*Note that this goes also through HTTP POST but additionally uses soap envelope and friends*/
     };
 
-  QgsWFSSourceSelect(QWidget* parent, QgisIface* iface);
+  QgsWFSSourceSelect(QWidget* parent, QgisInterface* iface);
   ~QgsWFSSourceSelect();
   
  private:
   QgsWFSSourceSelect(); //default constructor is forbidden
-  QgisIface* mIface; //pointer to the QGIS interface object (needed to add WFS layers)
+  QgisInterface* mIface; //pointer to the QGIS interface object (needed to add WFS layers)
   QString mUri; //uri of the currently connected server
   QgsLayerProjectionSelector* mProjectionSelector;
   /**Stores the available CRS for a server connections.

@@ -31,7 +31,7 @@ class QPoint;
 *
 * This class can convert device coordinates to map coordinates and vice versa.
 */
-class QgsMapToPixel{
+class CORE_EXPORT QgsMapToPixel{
  public:
  /* Constructor
  * @param mupp Map units per pixel

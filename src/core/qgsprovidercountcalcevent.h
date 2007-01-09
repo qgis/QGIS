@@ -43,7 +43,7 @@
 
 // TODO: Add the pg table this is a count OF.
 
-class QgsProviderCountCalcEvent : public QCustomEvent
+class CORE_EXPORT QgsProviderCountCalcEvent : public QCustomEvent
 {
 
 public:

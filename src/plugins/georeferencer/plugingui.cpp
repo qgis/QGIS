@@ -30,7 +30,7 @@ QgsGeorefPluginGui::QgsGeorefPluginGui() : QgsGeorefPluginGuiBase()
   
 }
 
-QgsGeorefPluginGui::QgsGeorefPluginGui(QgisIface* theQgisInterface,
+QgsGeorefPluginGui::QgsGeorefPluginGui(QgisInterface* theQgisInterface,
                                        QWidget* parent, Qt::WFlags fl)
   : QDialog(parent, fl), mIface(theQgisInterface)
 {
@@ -113,23 +113,6 @@ void QgsGeorefPluginGui::on_pbnEnterWorldCoords_clicked() {
       else
         QFile::remove(worldfile);
     }
-  }
-  
-  // XXX This is horrible, but it works and I'm tired / ll
-  {
-    QSettings settings;
-    QgsProject* prj = QgsProject::instance();
-    mProjBehaviour = settings.readEntry("/Projections/defaultBehaviour");
-    mProjectSRS = prj->readEntry("SpatialRefSys", "/ProjectSRSProj4String");
-    mProjectSRSID = prj->readNumEntry("SpatialRefSys", "/ProjectSRSID");
-    
-    settings.writeEntry("/Projections/defaultBehaviour", "useProject");
-    prj->writeEntry("SpatialRefSys", "/ProjectSRSProj4String", GEOPROJ4);
-    prj->writeEntry("SpatialRefSys", "/ProjectSRSID", int(GEOSRS_ID));
-    
-    settings.writeEntry("/Projections/defaultBehaviour", mProjBehaviour);
-    prj->writeEntry("SpatialRefSys", "/ProjectSRSProj4String", mProjectSRS);
-    prj->writeEntry("SpatialRefSys", "/ProjectSRSID", mProjectSRSID);
   }
   
   QgsPointDialog* dlg = new QgsPointDialog(raster, mIface, this);

@@ -38,7 +38,7 @@ QGIS_DEBUG is an int describing what debug messages are written to the console. 
 QGIS_DEBUG_FILE may contain a filename. Only the messages from this file are printed (provided they have the right debuglevel). If QGIS_DEBUG_FILE is not set, messages from all files are printed
 */
 
-class QgsLogger
+class CORE_EXPORT QgsLogger
 {
  public:
 

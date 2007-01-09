@@ -27,7 +27,7 @@
   length, and if applicable, precision.
  */
 
-class QgsField
+class CORE_EXPORT QgsField
 {
 public:
     /** Constructor. Constructs a new QgsField object.

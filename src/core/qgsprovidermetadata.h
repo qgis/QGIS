@@ -35,7 +35,7 @@
    library object.
 
  */
-class QgsProviderMetadata
+class CORE_EXPORT QgsProviderMetadata
 {
 public:
 

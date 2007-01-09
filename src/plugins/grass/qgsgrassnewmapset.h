@@ -26,11 +26,10 @@ class QCloseEvent;
 #include <qlabel.h>
 
 // Must be here, so that it is included to moc file
-#include "qgisapp.h"
-#include "qgisiface.h"
 #include "qgspoint.h"
 #include "qgsspatialrefsys.h"
 #include "qgsprojectionselector.h"
+class QgisInterface;
 
 class QgsGrassProvider;
 #include "qgsgrassplugin.h"
@@ -65,7 +64,7 @@ public:
     	      };
     
     //! Constructor
-    QgsGrassNewMapset ( QgisApp *qgisApp, QgisIface *iface,
+    QgsGrassNewMapset ( QgisInterface *iface,
                    QgsGrassPlugin *plugin, 
           QWidget * parent = 0, const char * name = "", Qt::WFlags f = 0 );
 
@@ -191,11 +190,8 @@ public slots:
     //! Set error line
     void setError ( QLabel *line, const QString &err ); 
 private:
-    //! QGIS application
-    QgisApp *mQgisApp; 
-    
     //! Pointer to the QGIS interface object
-    QgisIface *mIface;
+    QgisInterface *mIface;
 
     //! Plugin
     QgsGrassPlugin *mPlugin;

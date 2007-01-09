@@ -42,7 +42,7 @@ class QTcpSocket;
  * window for window managers such as Linux/GNOME which will make a window
  * active but not bring it to the top if raised programatically.
  */
-class QgsContextHelp : public QObject {
+class CORE_EXPORT QgsContextHelp : public QObject {
   Q_OBJECT
 public:
   static void run(int contextId);

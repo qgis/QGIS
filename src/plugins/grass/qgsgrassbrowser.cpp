@@ -39,6 +39,7 @@
 #include <QScrollBar>
 
 #include "qgis.h"
+#include "qgisinterface.h"
 #include "qgsapplication.h"
 #include "qgsrasterlayer.h"
 
@@ -53,9 +54,9 @@ extern "C" {
 #include "qgsgrassselect.h"
 #include "qgsgrassutils.h"
 
-QgsGrassBrowser::QgsGrassBrowser ( QgisIface *iface, 
+QgsGrassBrowser::QgsGrassBrowser ( QgisInterface *iface, 
 	 QWidget * parent, Qt::WFlags f )
-             :mIface(iface), QMainWindow(parent, Qt::WType_Dialog)
+     : QMainWindow(parent, Qt::WType_Dialog), mIface(iface)
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassBrowser()" << std::endl;

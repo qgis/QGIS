@@ -31,7 +31,7 @@ class QgsMapCanvas;
 class QgsMapRender;
 class QgsPanningWidget; // defined in .cpp
 
-class QgsMapOverviewCanvas : public QWidget
+class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
 {
   Q_OBJECT;
   
@@ -52,9 +52,17 @@ class QgsMapOverviewCanvas : public QWidget
     //! updates layer set for overview
     void setLayerSet(std::deque<QString>& layerSet);
     
+    std::deque<QString>& layerSet();
+    
     void enableAntiAliasing(bool flag) { mAntiAliasing = flag; }
     
     void updateFullExtent();
+    
+  public slots:
+    
+    void projectionsEnabled(bool flag);
+    
+    void destinationSrsChanged();
     
   protected:
   

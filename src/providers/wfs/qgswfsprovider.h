@@ -22,13 +22,14 @@
 #include "qgis.h"
 #include "qgsrect.h"
 #include "qgsvectordataprovider.h"
-
 #include <indexStrtree.h>
-#if GEOS_VERSION_MAJOR < 3
-#define GEOS_INDEX_STRTREE geos
-#else
-#define GEOS_INDEX_STRTREE geos::index::strtree
-#endif
+#if GEOS_VERSION_MAJOR < 3 
+#define GEOS_INDEX_STRTREE geos 
+#define GEOS_GEOM geos
+#else 
+#define GEOS_INDEX_STRTREE geos::index::strtree 
+#define GEOS_GEOM geos::geom
+#endif 
 
 class QgsRect;
 
@@ -47,26 +48,36 @@ class QgsWFSProvider: public QgsVectorDataProvider
 
   QgsWFSProvider(const QString& uri);
   ~QgsWFSProvider();
-  QgsFeature* getFirstFeature(bool fetchAttributes = false);
-  QgsFeature* getNextFeature(bool fetchAttributes = false);
-  QgsFeature* getNextFeature(std::list<int> const & attlist, int featureQueueSize = 1);
-  bool getNextFeature(QgsFeature &feature, bool fetchAttributes = false); /*legacy*/
-  int geometryType() const;
+  
+  /* Inherited from QgsVectorDataProvider */
+  
+  virtual void select(QgsRect mbr, bool useIntersect=false);
+  
+  virtual bool getNextFeature(QgsFeature& feature,
+                              bool fetchGeometry = true,
+                              QgsAttributeList fetchAttributes = QgsAttributeList(),
+                              uint featureQueueSize = 1);
+
+  
+  QGis::WKBTYPE geometryType() const;
   long featureCount() const;
-  int fieldCount() const;
-  std::vector<QgsField> const & fields() const;
+  uint fieldCount() const;
+  const QgsFieldMap & fields() const;
   void reset();
-  QString minValue(int position);
-  QString maxValue(int position);
-  std::vector<QgsFeature>& identify(QgsRect *rect); /*legacy*/
-  QString getProjectionWKT();
-  QgsRect* extent();
+  QString minValue(uint position);
+  QString maxValue(uint position);
+  
+  virtual QgsSpatialRefSys getSRS();
+  virtual void setSRS(const QgsSpatialRefSys& theSRS);
+  
+  /* Inherited from QgsDataProvider */
+  
+  QgsRect extent();
   bool isValid();
   QString name() const;
   QString description() const;
-  size_t layerCount() const {return 1;}
-  QgsDataSourceURI* getURI() {return 0;}
-  virtual void select(QgsRect *mbr, bool useIntersect=false);
+  
+  /* new functions */
 
   /**Sets the encoding type in which the provider makes requests and interprets
    results. Posibilities are GET, POST, SOAP*/
@@ -75,13 +86,11 @@ class QgsWFSProvider: public QgsVectorDataProvider
   /**Makes a GetFeatures, receives the features from the wfs server (as GML), converts them to QgsFeature and \
      stores them in a vector*/
   int getFeature(const QString& uri);
-  /**Return Srid number from mSourceSRS*/
-  int getSrid();
 
   
 
  protected:
-  std::vector<QgsField> mFields;
+  QgsFieldMap mFields;
   /**The encoding used for request/response. Can be GET, POST or SOAP*/
   REQUEST_ENCODING mEncoding;
   /**Bounding box for the layer*/
@@ -113,7 +122,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
   void fillMinMaxCash();
   
   /**Collects information about the field types. Is called internally from QgsWFSProvider::getFeature. The method delegates the work to request specific ones and gives back the name of the geometry attribute and the thematic attributes with their types*/
-  int describeFeatureType(const QString& uri, QString& geometryAttribute, std::vector<QgsField>& fields);
+  int describeFeatureType(const QString& uri, QString& geometryAttribute, QgsFieldMap& fields);
 
   //encoding specific methods of getFeature
   int getFeatureGET(const QString& uri, const QString& geometryAttribute);
@@ -121,13 +130,13 @@ class QgsWFSProvider: public QgsVectorDataProvider
   int getFeatureSOAP(const QString& uri, const QString& geometryAttribute);
   int getFeatureFILE(const QString& uri, const QString& geometryAttribute);
   //encoding specific methods of describeFeatureType
-  int describeFeatureTypeGET(const QString& uri, QString& geometryAttribute, std::vector<QgsField>& fields);
-  int describeFeatureTypePOST(const QString& uri, QString& geometryAttribute, std::vector<QgsField>& fields);
-  int describeFeatureTypeSOAP(const QString& uri, QString& geometryAttribute, std::vector<QgsField>& fields);
-  int describeFeatureTypeFile(const QString& uri, QString& geometryAttribute, std::vector<QgsField>& fields);
+  int describeFeatureTypeGET(const QString& uri, QString& geometryAttribute, QgsFieldMap& fields);
+  int describeFeatureTypePOST(const QString& uri, QString& geometryAttribute, QgsFieldMap& fields);
+  int describeFeatureTypeSOAP(const QString& uri, QString& geometryAttribute, QgsFieldMap& fields);
+  int describeFeatureTypeFile(const QString& uri, QString& geometryAttribute, QgsFieldMap& fields);
 
   /**Reads the name of the geometry attribute, the thematic attributes and their types from a dom document. Returns 0 in case of success*/
-  int readAttributesFromSchema(QDomDocument& schemaDoc, QString& geometryAttribute, std::vector<QgsField>& fields) const;
+  int readAttributesFromSchema(QDomDocument& schemaDoc, QString& geometryAttribute, QgsFieldMap& fields) const;
   /**This method tries to guess the geometry attribute and the other attribute names from the .gml file if no schema is present. Returns 0 in case of success*/
   int guessAttributesFromFile(const QString& uri, QString& geometryAttribute, std::list<QString>& thematicAttributes) const;
 

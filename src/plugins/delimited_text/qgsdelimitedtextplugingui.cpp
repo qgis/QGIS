@@ -16,7 +16,7 @@
 #include "qgsdelimitedtextplugingui.h"
 #include "qgscontexthelp.h"
 
-#include "qgisiface.h"
+#include "qgisinterface.h"
 
 #include <QFileDialog>
 #include <QFile>
@@ -33,7 +33,7 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui() : QDialog()
 
 }
 
-QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui(QgisIface * _qI, QWidget * parent, Qt::WFlags fl) 
+QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui(QgisInterface * _qI, QWidget * parent, Qt::WFlags fl) 
 : QDialog(parent, fl), qI(_qI)
 {
   setupUi(this);

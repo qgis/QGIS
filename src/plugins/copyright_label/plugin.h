@@ -20,9 +20,14 @@
 #ifndef QGSCOPYRIGHTLABELPLUGIN
 #define QGSCOPYRIGHTLABELPLUGIN
 #include "../qgisplugin.h"
-#include "qgisapp.h"
 
+#include <QColor>
+#include <QFont>
+#include <QObject>
+class QAction;
 class QPainter;
+
+class QgisInterface;
 
 /**
 * \class Plugin
@@ -33,12 +38,11 @@ class QgsCopyrightLabelPlugin:public QObject, public QgisPlugin
 {
   Q_OBJECT public:
       /**
-       * Constructor for a plugin. The QgisApp and QgisIface pointers are passed by
+       * Constructor for a plugin. The QgisInterface pointer is passed by
        * QGIS when it attempts to instantiate the plugin.
-       * @param qgis Pointer to the QgisApp object
-       * @param qI Pointer to the QgisIface object.
+       * @param qI Pointer to the QgisInterface object.
        */
-      QgsCopyrightLabelPlugin(QgisApp * , QgisIface * );
+      QgsCopyrightLabelPlugin(QgisInterface * );
   //! Destructor
   virtual ~ QgsCopyrightLabelPlugin();
   void writeEntry(QString theScope, QString theProperty, QVariant theValue);
@@ -83,10 +87,8 @@ class QgsCopyrightLabelPlugin:public QObject, public QgisPlugin
   bool mEnable;
 
   int pluginType;
-  //! Pionter to QGIS main application object
-  QgisApp *qgisMainWindowPointer;
   //! Pointer to the QGIS interface object
-  QgisIface *qGisInterface;
+  QgisInterface *qGisInterface;
   //! Pointer to the QAction object used in the menu and toolbar
   QAction *myQActionPointer;
 };

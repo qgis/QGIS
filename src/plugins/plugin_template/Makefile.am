@@ -74,8 +74,8 @@ libqgis_plugin_[pluginlcasename]_la_CXXFLAGS = $(CXXFLAGS) \
 			      $(DEBUG_QGIS) \
 			      $(GDAL_CFLAGS) \
 			      $(GEOS_CFLAGS) \
-			      -I../../core \
+			      -I../../core/include \
 			      -I../../ui \
-			      -I../../gui -I../../raster
+			      -I../../gui
 
 libqgis_plugin_[pluginlcasename]_la_LDFLAGS = -avoid-version -module

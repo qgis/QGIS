@@ -44,7 +44,7 @@
 
 // TODO: Add the pg table this is a extent OF.
 
-class QgsProviderExtentCalcEvent : public QCustomEvent
+class CORE_EXPORT QgsProviderExtentCalcEvent : public QCustomEvent
 {
 
 public:
