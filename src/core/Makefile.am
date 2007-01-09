@@ -44,14 +44,12 @@ lib_LTLIBRARIES = libqgis_core.la
 libqgis_coreHEADERS =				\
 		qgis.h						\
 		qgsapplication.h			\
-		qgsbookmarkitem.h			\
+		qgsattributeaction.h		\
 		qgsclipper.h				\
-		qgscolortable.h				\
 		qgscontexthelp.h			\
-		qgscustomsymbol.h			\
-		qgsdatamanager.h			\
+		qgscoordinatetransform.h			\
+		qgscsexception.h			\
 		qgsdataprovider.h			\
-		qgsdatasource.h				\
 		qgsdatasourceuri.h			\
 		qgsdistancearea.h			\
 		qgsexception.h				\
@@ -61,52 +59,80 @@ libqgis_coreHEADERS =				\
 		qgsgeometry.h				\
 		qgsgeometryvertexindex.h	\
 		qgshttptransaction.h		\
+		qgslabel.h					\
 		qgslabelattributes.h		\
 		qgsline.h					\
-		qgslinesymbol.h				\
 		qgslogger.h				\
+		qgsmaplayer.h				\
+		qgsmaplayerregistry.h		\
+		qgsmaprender.h			\
 		qgsmaptopixel.h				\
-		qgsmarkercatalogue.h		\
-		qgsmarkersymbol.h			\
-		qgsnumericsortlistviewitem.h\
-		qgspluginitem.h				\
-		qgspluginregistry.h			\
+		qgsmessageoutput.h		\
 		qgspoint.h					\
-		qgspolygonsymbol.h			\
+		qgsproject.h				\
 		qgsprojectproperty.h		\
 		qgsprovidercountcalcevent.h	\
 		qgsproviderextentcalcevent.h\
 		qgsprovidermetadata.h		\
 		qgsproviderregistry.h		\
-		qgsrangerenderitem.h		\
 		qgsrasterdataprovider.h		\
 		qgsrect.h					\
-		qgsrenderer.h				\
-		qgsrenderitem.h				\
+		qgsrunprocess.h			\
 		qgsscalecalculator.h		\
 		qgssearchstring.h			\
-		qgssearchtreenode.h			\
-		qgssymbol.h					\
-		qgssymbologyutils.h			\
-		qgsvectordataprovider.h		
+    qgssearchtreenode.h			\
+		qgsspatialrefsys.h		\
+		qgsvectorfilewriter.h		\
+		qgsvectorlayer.h			\
+		qgsvectordataprovider.h		\
+    \
+		raster/qgscolortable.h		\
+		raster/qgsrasterbandstats.h \
+		raster/qgsrasterpyramid.h \
+    raster/qgsrasterlayer.h \
+	  raster/qgsrasterviewport.h \
+		\
+		renderer/qgscontinuouscolorrenderer.h \
+		renderer/qgsgraduatedsymbolrenderer.h \
+		renderer/qgsrangerenderitem.h	\
+		renderer/qgsrenderer.h \
+		renderer/qgsrenderitem.h \
+		renderer/qgssinglesymbolrenderer.h \
+		renderer/qgsuniquevaluerenderer.h \
+		\
+		symbology/qgssymbol.h \
+		symbology/qgssymbologyutils.h \
+		symbology/qgslinesymbol.h \
+		symbology/qgsmarkercatalogue.h \
+		symbology/qgsmarkersymbol.h \
+		symbology/qgspolygonsymbol.h
+	
+						
 
 ## files generated from MOC                             
 libqgis_core_la_MOC =							\
 		qgscontexthelp.moc.cpp			\
+		qgscoordinatetransform.moc.cpp		\
 		qgsdataprovider.moc.cpp				\
 		qgshttptransaction.moc.cpp		\
-		qgsrasterdataprovider.moc.cpp		
+		qgsmaplayer.moc.cpp				\
+		qgsmaplayerregistry.moc.cpp		\
+		qgsmaprender.moc.cpp			\
+		qgsmessageoutput.moc.cpp		\
+		qgsproject.moc.cpp		\
+		qgsrasterdataprovider.moc.cpp		\
+		qgsrunprocess.moc.cpp			\
+		qgsvectorlayer.moc.cpp \
+		\
+		raster/qgsrasterlayer.moc.cpp
 
 libqgis_core_la_SOURCES =\
 		qgis.cpp								\
 		qgsapplication.cpp	\
-		qgsbookmarkitem.cpp	\
+		qgsattributeaction.cpp	\
 		qgsclipper.cpp						\
-		qgscolortable.cpp					\
 		qgscontexthelp.cpp		\
-		qgscustomsymbol.cpp		\
-		qgsdatamanager.cpp				\
-		qgsdatasource.cpp		\
+		qgscoordinatetransform.cpp		\
 		qgsdistancearea.cpp			\
 		qgsexception.cpp				\
 		qgsfeature.cpp					\
@@ -115,52 +141,81 @@ libqgis_core_la_SOURCES =\
 		qgsgeometry.cpp						\
 		qgsgeometryvertexindex.cpp			\
 		qgshttptransaction.cpp		\
+		qgslabel.cpp				\
 		qgslabelattributes.cpp		\
 		qgsline.cpp			\
-		qgslinesymbol.cpp		\
 		qgslogger.cpp			\
+		qgsmaplayer.cpp				\
+		qgsmaplayerregistry.cpp		\
+		qgsmaprender.cpp			\
 		qgsmaptopixel.cpp					\
-		qgsmarkercatalogue.cpp				\
-		qgsmarkersymbol.cpp					\
-		qgsnumericsortlistviewitem.cpp			\
-		qgspluginitem.cpp		\
-		qgspluginregistry.cpp		\
+		qgsmessageoutput.cpp			\
 		qgspoint.cpp						\
-		qgspolygonsymbol.cpp		\
-		qgsprojectproperty.cpp				\
+		qgsproject.cpp			\
+		qgsprojectproperty.cpp			\
 		qgsprovidercountcalcevent.cpp		\
 		qgsproviderextentcalcevent.cpp		\
 		qgsprovidermetadata.cpp		\
 		qgsproviderregistry.cpp				\
-		qgsrangerenderitem.cpp				\
 		qgsrasterdataprovider.cpp	\
 		qgsrect.cpp							\
-		qgsrenderer.cpp						\
-		qgsrenderitem.cpp					\
+		qgsrunprocess.cpp				\
 		qgsscalecalculator.cpp				\
 		qgssearchstring.cpp             \
 		qgssearchstringlexer.ll		\
 		qgssearchstringparser.yy	\
 		qgssearchtreenode.cpp		\
-		qgssymbol.cpp						\
-		qgssymbologyutils.cpp		\
-		qgsvectordataprovider.cpp			
-
+		qgsspatialrefsys.cpp		\
+		qgsvectorfilewriter.cpp		\
+		qgsvectorlayer.cpp		\
+		qgsvectordataprovider.cpp \
+		\
+		raster/qgscolortable.cpp		\
+		raster/qgsrasterlayer.cpp \
+		\
+		renderer/qgscontinuouscolorrenderer.cpp \
+		renderer/qgsgraduatedsymbolrenderer.cpp \
+		renderer/qgssinglesymbolrenderer.cpp \
+		renderer/qgsrangerenderitem.cpp \
+		renderer/qgsrenderer.cpp \
+		renderer/qgsrenderitem.cpp \
+		renderer/qgsuniquevaluerenderer.cpp \
+		\
+		symbology/qgssymbol.cpp \
+		symbology/qgssymbologyutils.cpp \
+		symbology/qgslinesymbol.cpp \
+		symbology/qgsmarkercatalogue.cpp \
+		symbology/qgsmarkersymbol.cpp \
+		symbology/qgspolygonsymbol.cpp
+		
 
 AM_YFLAGS       = -d
-qgis_YACC       = qgssearchstringparser.h
+libqgis_core_la_YACC = qgssearchstringparser.h
 
 
 nodist_libqgis_core_la_SOURCES = $(libqgis_core_la_MOC)  
 
-BUILT_SOURCES = $(libqgis_core_la_MOC) $(qgis_YACC)  $(postgresMOC)
+BUILT_SOURCES = $(libqgis_core_la_YACC) $(libqgis_core_la_MOC)  $(postgresMOC)
 
 
-#libqgis_core_la_LIBADD = ../raster/libqgis_raster.la ../legend/libqgis_legend.la ../composer/libqgis_composer.la ../widgets/projectionselector/libqgsprojectionselector.la $(QT_LDADD) $(GEOS_LDADD) $(GDAL_LDADD) $(PYTHON_LIB) -lsqlite3
-libqgis_core_la_LIBADD = $(QT_LDADD) $(GDAL_LDADD) $(GEOS_LDADD) $(PYTHON_LIB) -lsqlite3
+libqgis_core_la_LIBADD = $(QT_LDADD) $(GDAL_LDADD) $(GEOS_LDADD) $(PYTHON_LIB) $(GDAL_LDADD) -lsqlite3
 libqgis_core_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
 
-libqgis_core_la_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GEOS_CFLAGS) $(PYTHON_INCLUDE_DIR) $(HAVE_PYTHON) -I../ui/ -I../widgets/projectionselector/ -I../legend/ -I../raster/ -I../composer/ -I../gui/
+libqgis_core_la_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) $(GDAL_CFLAGS) $(PYTHON_INCLUDE_DIR) $(HAVE_PYTHON) -Iraster -Irenderer -Isymbology
+
+# Link headers to include directory
+all-local:
+	rm -rf include/
+	mkdir include
+	includes='$(pkginclude_HEADERS)' ; \
+	for file in $$includes ; do \
+	  base=`basename $$file` ; \
+		ln -s ../$$file include/$$base ; \
+	done
+
+clean-local:
+	rm -rf include/
+
 
 ##
 ## ----------------------------------------------------------------------

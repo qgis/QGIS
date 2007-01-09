@@ -59,20 +59,20 @@ void QgsRubberBand::reset(bool isPolygon)
   mPoints.resize(1); // addPoint assumes an initial allocated point
   mIsPolygon = isPolygon;
   updateRect();
-  updateCanvas();
+  update();
 }
 
 /*!
   Add a point to the shape being created.
 */
-void QgsRubberBand::addPoint(const QgsPoint & p, bool update /* = true */)
+void QgsRubberBand::addPoint(const QgsPoint & p, bool do_update /* = true */)
 {
   mPoints[mPoints.size()-1] = p; // Current mouse position becomes added point
   mPoints.push_back(p); // Allocate new point to continue tracking current mouse position
-  if (update)
+  if (do_update)
   {
     updateRect();
-    updateCanvas();
+    update();
   }
 }
 
@@ -83,37 +83,36 @@ void QgsRubberBand::movePoint(const QgsPoint & p)
 {
   mPoints[mPoints.size()-1] = p; // Update current mouse position
   updateRect();
-  updateCanvas();
+  update();
 }
 
 void QgsRubberBand::movePoint(int index, const QgsPoint& p)
 {
   mPoints[index] = p;
   updateRect();
-  updateCanvas();
+  update();
 }
 
 /*!
   Draw the shape in response to an update event.
 */
-void QgsRubberBand::drawShape(QPainter & p)
+void QgsRubberBand::paint(QPainter* p)
 {
   if (mPoints.size() > 1)
   {
-    QPolygon pts;
-    int i;
-    for (i = 0; i < mPoints.size(); i++)
-      pts.append(toCanvasCoords(mPoints[i]));
+    QPolygonF pts;
+    for (uint i = 0; i < mPoints.size(); i++)
+      pts.append(toCanvasCoords(mPoints[i])-pos());
     
-    p.setPen(mPen);
-    p.setBrush(mBrush);
+    p->setPen(mPen);
+    p->setBrush(mBrush);
     if (mIsPolygon)
     {
-      p.drawPolygon(pts);
+      p->drawPolygon(pts);
     }
     else
     {
-      p.drawPolyline(pts);
+      p->drawPolyline(pts);
     }
   }
 }
@@ -123,8 +122,7 @@ void QgsRubberBand::updateRect()
   if (mPoints.size() > 0)
   {
     QgsRect r(mPoints[0], mPoints[0]);
-    int i;
-    for (i = 1; i < mPoints.size(); i++)
+    for (uint i = 1; i < mPoints.size(); i++)
       r.combineExtentWith(mPoints[i].x(), mPoints[i].y());
     setRect(r);
   }
@@ -136,4 +134,3 @@ void QgsRubberBand::updateRect()
   
   setVisible(mPoints.size() > 1);
 }
-

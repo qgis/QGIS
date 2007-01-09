@@ -18,14 +18,12 @@
 /* $Id$ */
 
 #include <fstream>
-#include <qevent.h>
-#include <qapplication.h>
-//Added by qt3to4:
+#include <QEvent>
+#include <QApplication>
 #include <QCustomEvent>
 
 #include "qgis.h"
 #include "qgsrect.h"
-#include "qgsmapcanvas.h"
 
 
 #include "qgspostgresextentthread.h"

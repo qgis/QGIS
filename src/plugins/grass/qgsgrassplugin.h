@@ -20,10 +20,11 @@
 #include <qwidget.h>
 #include <qpen.h>
 
-#include "qgisapp.h"
 
 #include <vector>
 
+class QgisInterface;
+class QgsMapCanvas;
 class QgsRubberBand;
 
 class QgsGrassTools;
@@ -39,12 +40,11 @@ class QgsGrassPlugin:public QObject, public QgisPlugin
 {
 Q_OBJECT public:
       /** 
-       * Constructor for a plugin. The QgisApp and QgisIface pointers are passed by 
+       * Constructor for a plugin. The QgisInterface pointer is passed by 
        * QGIS when it attempts to instantiate the plugin.
-       * @param qgis Pointer to the QgisApp object
-       * @param qI Pointer to the QgisIface object. 
+       * @param qI Pointer to the QgisInterface object. 
        */
-      QgsGrassPlugin(QgisApp * , QgisIface * );
+      QgsGrassPlugin(QgisInterface * qI);
   /**
    * Virtual function to return the name of the plugin. The name will be used when presenting a list 
    * of installable plugins to the user
@@ -126,10 +126,8 @@ private:
   int pluginType;
   //! Pointer to our toolbar
   QToolBar *toolBarPointer;
-  //! Pionter to QGIS main application object
-  QgisApp *mQgis;
   //! Pointer to the QGIS interface object
-  QgisIface *qGisInterface;
+  QgisInterface *qGisInterface;
   //! Pointer to canvas
   QgsMapCanvas *mCanvas;
 

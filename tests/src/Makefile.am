@@ -9,8 +9,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 SUBDIRS = core \
-          gui \
-          raster
+          gui
 
 all: 
 	@echo Running unit tests

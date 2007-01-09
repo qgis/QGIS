@@ -17,13 +17,13 @@
 #ifndef QGSMAPCANVASITEM_H
 #define QGSMAPCANVASITEM_H
 
-#include <Q3CanvasItem>
+#include <QGraphicsItem>
 #include "qgsrect.h"
 
 class QgsMapCanvas;
 class QPainter;
 
-class QgsMapCanvasItem : public QObject, public Q3CanvasRectangle
+class GUI_EXPORT QgsMapCanvasItem : public QObject, public QGraphicsItem
 {
   Q_OBJECT;
   
@@ -31,23 +31,34 @@ class QgsMapCanvasItem : public QObject, public Q3CanvasRectangle
     
     //! protected constructor: cannot be constructed directly
     QgsMapCanvasItem(QgsMapCanvas* mapCanvas);
-    
+
     virtual ~QgsMapCanvasItem();
-    
+
     //! function to be implemented by derived classes
-    virtual void drawShape(QPainter & p)=0;
+    virtual void paint(QPainter * painter) = 0;
+    
+    //! paint function called by map canvas
+    virtual void paint(QPainter * painter,
+                       const QStyleOptionGraphicsItem * option,
+                       QWidget * widget = 0);
     
     //! schedules map canvas for repaint
     void updateCanvas();
     
-  
+
   public:
-    
+
+    //! called on changed extent or resize event to update position of the item
+    virtual void updatePosition();
+
+    //! default implementation for canvas items
+    virtual QRectF boundingRect() const;
+
     //! sets current offset, to be called from QgsMapCanvas
     void setPanningOffset(const QPoint& point);
-    
+
     //! returns canvas item rectangle
-    QgsRect rect();
+    QgsRect rect() const;
     
     //! sets canvas item rectangle
     void setRect(const QgsRect& r);
@@ -56,12 +67,7 @@ class QgsMapCanvasItem : public QObject, public Q3CanvasRectangle
     QgsPoint toMapCoords(const QPoint& point);
     
     //! transformation from map coordinates to screen coordinates
-    QPoint toCanvasCoords(const QgsPoint& point);
-
-    /** called on changed extents or changed item rectangle
-     * Override this in your subclass if you wish to have custom
-     * behaviour for when the canvas area of interest is changed */
-    virtual void updatePosition();
+    QPointF toCanvasCoords(const QgsPoint& point);
 
   protected:
     
@@ -74,6 +80,9 @@ class QgsMapCanvasItem : public QObject, public Q3CanvasRectangle
     //! offset from normal position due current panning operation,
     //! used when converting map coordinates to move map canvas items
     QPoint mPanningOffset;
+    
+    //! cached size of the item (to return in boundingRect())
+    QSizeF mItemSize;
 };
 
 

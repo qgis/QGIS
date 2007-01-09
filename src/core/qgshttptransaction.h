@@ -39,7 +39,7 @@ class QTimer;
   
 */
 
-class QgsHttpTransaction : public QObject
+class CORE_EXPORT QgsHttpTransaction : public QObject
 {
   
   Q_OBJECT

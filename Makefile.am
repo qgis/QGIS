@@ -15,7 +15,6 @@ EXTRA_DIST = \
 	ChangeLog \
 	COPYING \
 	create_qm_files.sh \
-	doc \
 	INSTALL \
 	$(man1_MANS) \
 	NEWS \

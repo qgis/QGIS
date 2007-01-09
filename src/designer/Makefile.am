@@ -48,7 +48,7 @@ libqgis_designerwidgets_la_SOURCES =  qgsprojectionselectorwidget.cpp \
 
 libqgis_designerwidgets_la_LIBADD =  $(QT_LDADD) ../widgets/projectionselector/libqgsprojectionselector.la
 libqgis_designerwidgets_la_LDFLAGS = -avoid-version -module
-libqgis_designerwidgets_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../gui/ -I../legend -I../core -I../widgets/projectionselector/
+libqgis_designerwidgets_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../gui/ -I../legend -I../core/include -I../widgets/projectionselector/
 
 ##
 ## ----------------------------------------------------------------------

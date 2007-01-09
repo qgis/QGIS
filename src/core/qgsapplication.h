@@ -18,7 +18,7 @@
 
 #include <QApplication>
 
-class QgsApplication: public QApplication
+class CORE_EXPORT QgsApplication: public QApplication
 {
   public:
     QgsApplication(int & argc, char ** argv, bool GUIenabled);
@@ -77,8 +77,32 @@ class QgsApplication: public QApplication
 
     //! Returns the path to the current theme directory.
     static const QString& themePath() { return mThemePath; }
+    
+    //! Alters prefix path - used by 3rd party apps
+    static void setPrefixPath(const QString& thePrefixPath, bool useDefaultPaths = FALSE);
+    
+    //! Alters plugin path - used by 3rd party apps
+    static void setPluginPath(const QString& thePluginPath);
 
-    void setPkgDataPath(const QString& path){mPkgDataPath = path;}
+    //! Alters pkg data path - used by 3rd party apps
+    static void setPkgDataPath(const QString& thePkgDataPath);
+    
+    //! loads providers
+    static void initQgis();
+
+    //! deletes provider registry and map layer registry
+    static void exitQgis();
+    
+    /** constants for endian-ness */
+    typedef enum ENDIAN
+    {
+      XDR = 0,  // network, or big-endian, byte order
+      NDR = 1   // little-endian byte order
+    }
+    endian_t;
+    
+    //! Returns whether this machine uses big or little endian
+    static endian_t endian();
 
   private:
     static QString mPrefixPath;

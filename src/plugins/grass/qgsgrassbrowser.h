@@ -23,7 +23,7 @@ class QTreeView;
 class QTextBrowser;
 class QDirModel;
 
-#include "qgisiface.h"
+class QgisInterface;
 #include "qgsgrassmodel.h"
 
 /*! \class QgsGrassBrowser
@@ -35,7 +35,7 @@ class QgsGrassBrowser: public QMainWindow
 
 public:
     //! Constructor
-    QgsGrassBrowser ( QgisIface *iface, QWidget * parent = 0, Qt::WFlags f = 0  );
+    QgsGrassBrowser ( QgisInterface *iface, QWidget * parent = 0, Qt::WFlags f = 0  );
 
     //! Destructor
     ~QgsGrassBrowser();
@@ -80,7 +80,7 @@ signals:
     void regionChanged();
 
 private:
-    QgisIface *mIface;
+    QgisInterface *mIface;
     
     //! Current GISBASE
     QString mGisbase;

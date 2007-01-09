@@ -22,9 +22,9 @@
 
 #include "qgsdlgpgbuffer.h"
 #include "qgscontexthelp.h"
-#include "qgisiface.h"
+#include "qgisinterface.h"
 
-QgsDlgPgBuffer::QgsDlgPgBuffer( QgisIface * _qI, QWidget * parent, Qt::WFlags fl)
+QgsDlgPgBuffer::QgsDlgPgBuffer( QgisInterface * _qI, QWidget * parent, Qt::WFlags fl)
 :QDialog(parent, fl),qI(_qI)
 {
   setupUi(this);

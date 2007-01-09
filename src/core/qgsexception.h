@@ -28,7 +28,7 @@
 /**
    Defines a qgis exception class
  */
-class QgsException : public std::exception
+class CORE_EXPORT QgsException : public std::exception
 {
 public:
 

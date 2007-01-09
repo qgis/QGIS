@@ -24,7 +24,6 @@ noinst_PROGRAMS = testqgsapplication \
 		testqgsline \
 		testqgslinesymbol \
 		testqgsmarkercatalogue \
-		testqgsnumericsortlistviewitem \
 		testqgspluginitem \
 		testqgspluginregistry \
 		testqgspoint \
@@ -55,20 +54,14 @@ GLOBALLDADD = $(QT_LDADD) \
 				$(PG_LIB) \
 				$(GDAL_LDADD) \
 				-lproj \
-				../../../src/core/libqgis_core.la \
-				../../../src/raster/libqgis_raster.la \
-				../../../src/legend/libqgis_legend.la \
-				../../../src/gui/libqgis_gui.la \
-				../../../src/composer/libqgis_composer.la
+				../../../src/core/libqgis_core.la
 GLOBALCXXFLAGS = $(CXXFLAGS) \
 				$(EXTRA_CXXFLAGS) \
 				$(GDAL_CFLAGS) \
 				$(QT_CXXFLAGS) \
         $(GEOS_CFLAGS) \
 				$(PG_INC) \
-				-I../../../src/raster \
-				-I../../../src/core \
-				-I../../../src/gui
+				-I../../../src/core/include
 
 #
 # Instruction for running the qt4 meta object compiler 
@@ -94,7 +87,6 @@ BUILT_SOURCES = $(testqgsapplication_MOC) \
 		$(testqgsline_MOC) \
 		$(testqgslinesymbol_MOC) \
 		$(testqgsmarkercatalogue_MOC) \
-		$(testqgsnumericsortlistviewitem_MOC) \
 		$(testqgspluginitem_MOC) \
 		$(testqgspluginregistry_MOC) \
 		$(testqgspoint_MOC) \
@@ -210,11 +202,6 @@ testqgsmarkercatalogue_MOC = testqgsmarkercatalogue.moc.cpp
 testqgsmarkercatalogue_SOURCES = testqgsmarkercatalogue.cpp
 testqgsmarkercatalogue_LDADD = $(GLOBALLDADD)
 testqgsmarkercatalogue_CXXFLAGS =  $(GLOBALCXXFLAGS)
-
-testqgsnumericsortlistviewitem_MOC = testqgsnumericsortlistviewitem.moc.cpp
-testqgsnumericsortlistviewitem_SOURCES = testqgsnumericsortlistviewitem.cpp
-testqgsnumericsortlistviewitem_LDADD = $(GLOBALLDADD)
-testqgsnumericsortlistviewitem_CXXFLAGS =  $(GLOBALCXXFLAGS)
 
 testqgspluginitem_MOC = testqgspluginitem.moc.cpp
 testqgspluginitem_SOURCES = testqgspluginitem.cpp

@@ -107,5 +107,5 @@ void QgsConnectionDialog::helpInfo(){
   QString message = tr("General Interface Help:\n\n");
   QgsMessageViewer * e = new QgsMessageViewer(this);
   e->setMessageAsPlainText(message);
-  e->exec();
+  e->exec();  // deletes itself on close
 }

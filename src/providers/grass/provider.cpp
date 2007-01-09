@@ -18,12 +18,8 @@
 #include <vector>
 #include <cfloat>
 
-#include <qpixmap.h>
-#include <qicon.h>
-#include <qdir.h>
-#include <qstring.h>
-#include <qdatetime.h>
-#include <qmessagebox.h>
+#include <QString>
+#include <QDateTime>
 
 #include "qgis.h"
 #include "qgsdataprovider.h"

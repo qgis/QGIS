@@ -30,6 +30,8 @@ extern "C" {
 #include <grass/Vect.h>
 }
 
+#include "qgisinterface.h"
+
 #include "../../src/providers/grass/qgsgrass.h"
 #include "qgsgrassutils.h"
 #include "qgsgrassselect.h"
@@ -45,7 +47,7 @@ QString QgsGrassUtils::vectorLayerName( QString map, QString layer,
     return name;
 }
 
-void QgsGrassUtils::addVectorLayers ( QgisIface *iface,
+void QgsGrassUtils::addVectorLayers ( QgisInterface *iface,
         QString gisbase, QString location, QString mapset, QString map)
 {
     QStringList layers = QgsGrassSelect::vectorLayers(

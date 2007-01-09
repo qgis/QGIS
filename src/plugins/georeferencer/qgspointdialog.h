@@ -25,14 +25,14 @@
 class QAction;
 class QActionGroup;
 class QgsGeorefDataPoint;
+class QgisInterface;
 class QgsMapTool;
-class QgisIface;
 
 class QgsPointDialog : public QDialog, private Ui::QgsPointDialogBase
 {
 Q_OBJECT
 public:
-  QgsPointDialog(QString layerPath, QgisIface* theQgisInterface,
+  QgsPointDialog(QString layerPath, QgisInterface* theQgisInterface,
                  QWidget* parent = 0, Qt::WFlags fl = 0);
   ~QgsPointDialog();
 
@@ -83,7 +83,7 @@ private:
 //  std::vector<QgsPoint> mPixelCoords, mMapCoords;
 //  std::vector<QString> mAcetateIDs;
   std::vector<QgsGeorefDataPoint*> mPoints;
-  QgisIface* mIface;
+  QgisInterface* mIface;
 };
 
 #endif

@@ -4,7 +4,7 @@
     Date                 : 02-Jan-2006
     Copyright            : (C) 2006 by Tom Elwertowski
     Email                : telwertowski at users dot sourceforge dot net
-/***************************************************************************
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -15,8 +15,19 @@
 /* $Id$ */
 
 #include "qgsapplication.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsproviderregistry.h"
 
 #include <QDir>
+
+#include <qgsconfig.h>
+
+// for htonl
+#ifdef WIN32
+#include <winsock.h>
+#else
+#include <netinet/in.h>
+#endif
 
 QString QgsApplication::mPrefixPath;
 QString QgsApplication::mPluginPath;
@@ -40,19 +51,41 @@ QgsApplication::QgsApplication(int & argc, char ** argv, bool GUIenabled)
 : QApplication(argc, argv, GUIenabled)
 {
 #if defined(Q_WS_MACX) || defined(Q_WS_WIN32)
-  mPrefixPath = applicationDirPath();
-  mPluginPath = mPrefixPath + QString("/lib/qgis");
-  mPkgDataPath = mPrefixPath + QString("/share/qgis");
+  setPrefixPath(applicationDirPath(), TRUE);
 #else
-  mPrefixPath = PREFIX;
-  mPluginPath = PLUGINPATH;
-  mPkgDataPath = PKGDATAPATH;
+  setPrefixPath(PREFIX, TRUE);
 #endif
-  mThemePath = mPkgDataPath + QString("/themes/default/");
 }
 
 QgsApplication::~QgsApplication()
 {}
+
+void QgsApplication::setPrefixPath(const QString& thePrefixPath, bool useDefaultPaths)
+{
+  mPrefixPath = thePrefixPath;
+  if (useDefaultPaths)
+  {
+#if defined(Q_WS_WIN32)
+	setPluginPath(mPrefixPath + QString("/plugins"));
+	setPkgDataPath(mPrefixPath);
+#else
+    setPluginPath(mPrefixPath + QString("/lib/qgis"));
+    setPkgDataPath(mPrefixPath + QString("/share/qgis"));
+#endif
+  }
+}
+
+void QgsApplication::setPluginPath(const QString& thePluginPath)
+{
+  mPluginPath = thePluginPath;
+}
+
+void QgsApplication::setPkgDataPath(const QString& thePkgDataPath)
+{
+  mPkgDataPath = thePkgDataPath;
+  mThemePath = mPkgDataPath + QString("/themes/default/");
+}
+
 
 /*!
   Set the theme path to the specified theme.
@@ -170,4 +203,24 @@ const QString QgsApplication::srsDbFilePath()
 const QString QgsApplication::svgPath()
 {
   return mPkgDataPath + QString("/svg/");
+}
+
+QgsApplication::endian_t QgsApplication::endian()
+{
+  return (htonl(1) == 1) ? XDR : NDR ;
+}
+
+void QgsApplication::initQgis()
+{
+  // set the provider plugin path (this creates provider registry)
+  QgsProviderRegistry::instance(pluginPath());
+  
+  // create map layer registry if doesn't exist
+  QgsMapLayerRegistry::instance();
+}
+
+void QgsApplication::exitQgis()
+{
+  delete QgsMapLayerRegistry::instance();
+  delete QgsProviderRegistry::instance();
 }

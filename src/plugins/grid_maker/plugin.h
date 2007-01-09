@@ -20,23 +20,25 @@
 #ifndef QGSGRIDMAKERPLUGIN
 #define QGSGRIDMAKERPLUGIN
 #include "../qgisplugin.h"
-#include <qgisapp.h>
+
+#include <QObject>
+class QAction;
+class QgisInterface;
 
 /**
 * \class Plugin
-* \brief OpenModeller plugin for QGIS
+* \brief Grid maker plugin for QGIS
 *
 */
 class QgsGridMakerPlugin:public QObject, public QgisPlugin
 {
   Q_OBJECT public:
       /** 
-       * Constructor for a plugin. The QgisApp and QgisIface pointers are passed by 
+       * Constructor for a plugin. The QgisInterface pointer is passed by 
        * QGIS when it attempts to instantiate the plugin.
-       * @param qgis Pointer to the QgisApp object
-       * @param qI Pointer to the QgisIface object. 
+       * @param qI Pointer to the QgisInterface object. 
        */
-    QgsGridMakerPlugin(QgisApp * , QgisIface * );
+    QgsGridMakerPlugin(QgisInterface * );
   /**
    * Virtual function to return the name of the plugin. The name will be used when presenting a list 
    * of installable plugins to the user
@@ -80,10 +82,8 @@ class QgsGridMakerPlugin:public QObject, public QgisPlugin
   QString pluginDescriptionQString;
   //! Plugin type as defined in QgisPlugin::PLUGINTYPE
   int pluginType;
-  //! Pionter to QGIS main application object
-  QgisApp *qgisMainWindowPointer;
   //! Pointer to the QGIS interface object
-  QgisIface *qGisInterface;
+  QgisInterface *qGisInterface;
   //! Pointer to the QAction object used in the menu and toolbar
   QAction *myQActionPointer;
 };

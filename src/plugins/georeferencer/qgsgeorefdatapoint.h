@@ -12,9 +12,11 @@ class QgsGeorefDataPoint : public QgsMapCanvasItem
                        const QgsPoint& mapCoords);
   
     //! draws point information
-    virtual void drawShape(QPainter & p);
+    virtual void paint(QPainter* p);
         
     //! handler for manual updating of position and size
+    virtual QRectF boundingRect() const;
+    
     virtual void updatePosition();
     
     //! returns coordinates of the point
@@ -25,5 +27,6 @@ class QgsGeorefDataPoint : public QgsMapCanvasItem
     int mId;
     QgsPoint mPixelCoords;
     QgsPoint mMapCoords;
+    QSizeF mTextBounds;
 };
 

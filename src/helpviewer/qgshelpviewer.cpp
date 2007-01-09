@@ -141,7 +141,7 @@ void QgsHelpViewer::loadContextFromSqlite(const QString &contextId)
       // remove bin/qgis_help.app/Contents/MacOS to get to share/qgis
       qApp->applicationDirPath() + "/../../../../share/qgis" +
 #elif WIN32
-      qApp->applicationDirPath() + "/share/qgis"
+      qApp->applicationDirPath() +
 #else
       QString(PKGDATAPATH) +
 #endif

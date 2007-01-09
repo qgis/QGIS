@@ -29,9 +29,9 @@ extern "C"
 }
 
 class QAction;
+#include <QObject>
 
 //#include "qgsworkerclass.h"
-#include "qgisapp.h"
 
 /**
 * \class QgsPgGeoprocessing
@@ -42,12 +42,11 @@ class QgsPgGeoprocessing:public QObject, public QgisPlugin
 {
   Q_OBJECT public:
 /** 
-* Constructor for a plugin. The QgisApp and QgisIface pointers are passed by 
+* Constructor for a plugin. The QgisInterface pointer is passed by 
 * QGIS when it attempts to instantiate the plugin.
-* @param qgis Pointer to the QgisApp object
-* @param qI Pointer to the QgisIface object. 
+* @param qI Pointer to the QgisInterface object. 
 */
-    QgsPgGeoprocessing(QgisApp * qgis, QgisIface * qI);
+    QgsPgGeoprocessing(QgisInterface * qI);
 
     //! Destructor
       virtual ~ QgsPgGeoprocessing();
@@ -74,9 +73,9 @@ class QgsPgGeoprocessing:public QObject, public QgisPlugin
   bool projAvailable;
   
     //! Pionter to QGIS main application object
-    QgisApp *qgisMainWindow;
+    QWidget *qgisMainWindow;
     //! Pointer to the QGIS interface object
-    QgisIface *qI;
+    QgisInterface *qI;
     //! Pointer to the QAction used for the menu and toolbar (needed to enable unloading of the plugin)
     QAction *bufferAction;
 };

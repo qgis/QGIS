@@ -32,6 +32,15 @@
 
 #include "qgsrect.h"
 
+// workaround for MSVC compiler which already has defined macro max
+// that interferes with calling std::numeric_limits<int>::max
+#ifdef _MSC_VER
+# ifdef max(x,y)
+#  undef max(x,y)
+# endif
+#endif
+
+typedef QSet<int> QgsFeatureIds;
 
 /** This is the parent class for all GPS data classes (except tracksegment).
     It contains the variables that all GPS objects can have.
@@ -131,7 +140,7 @@ class GPSData {
   /** This function returns a pointer to a dynamically allocated QgsRect
       which is the bounding box for this dataset. You'll have to deallocate it
       yourself. */
-  QgsRect* getExtent() const;
+  QgsRect getExtent() const;
 
   /** Sets a default sensible extent. Only applies when there are no actual data. */
   void setNoDataExtent();
@@ -187,13 +196,13 @@ class GPSData {
   TrackIterator addTrack(const Track& trk);
   
   /** This function removes the waypoints whose IDs are in the list. */
-  void removeWaypoints(std::list<int> const & ids);
+  void removeWaypoints(const QgsFeatureIds & ids);
   
   /** This function removes the routes whose IDs are in the list. */
-  void removeRoutes(std::list<int> const & ids);
+  void removeRoutes(const QgsFeatureIds & ids);
   
   /** This function removes the tracks whose IDs are in the list. */
-  void removeTracks(std::list<int> const & ids);
+  void removeTracks(const QgsFeatureIds & ids);
   
   /** This function will write the contents of this GPSData object as XML to
       the given text stream. */

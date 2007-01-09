@@ -19,7 +19,7 @@ email                : morb at ozemail dot com dot au
 
 #include <vector>
 
-#include <qstring.h>
+class QString;
 
 
  /**
@@ -32,7 +32,7 @@ email                : morb at ozemail dot com dot au
   * @author Brendan Morley
   */
 
-class QgsGeometryVertexIndex {
+class CORE_EXPORT QgsGeometryVertexIndex {
 
   public:
   

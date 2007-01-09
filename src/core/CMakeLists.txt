@@ -1,0 +1,158 @@
+
+
+#############################################################
+# sources
+
+SET(QGIS_CORE_SRCS
+qgis.cpp
+qgsapplication.cpp
+qgsattributeaction.cpp
+qgsclipper.cpp
+qgscontexthelp.cpp
+qgscoordinatetransform.cpp
+qgsdatasourceuri.cpp
+qgsdistancearea.cpp
+qgsexception.cpp
+qgsfeature.cpp
+qgsfeatureattribute.cpp
+qgsfield.cpp
+qgsgeometry.cpp
+qgsgeometryvertexindex.cpp
+qgshttptransaction.cpp
+qgslabel.cpp
+qgslabelattributes.cpp
+qgsline.cpp
+qgslogger.cpp
+qgsmaplayer.cpp
+qgsmaplayerregistry.cpp
+qgsmaprender.cpp
+qgsmaptopixel.cpp
+qgsmessageoutput.cpp
+qgspoint.cpp
+qgsproject.cpp
+qgsprojectproperty.cpp
+qgsprovidercountcalcevent.cpp
+qgsproviderextentcalcevent.cpp
+qgsprovidermetadata.cpp
+qgsproviderregistry.cpp
+qgsrasterdataprovider.cpp
+qgsrect.cpp
+qgsrunprocess.cpp
+qgsscalecalculator.cpp
+qgssearchstring.cpp
+qgssearchtreenode.cpp
+qgsspatialrefsys.cpp
+qgsvectordataprovider.cpp
+qgsvectorfilewriter.cpp
+qgsvectorlayer.cpp
+
+raster/qgscolortable.cpp
+raster/qgsrasterlayer.cpp
+
+renderer/qgscontinuouscolorrenderer.cpp
+renderer/qgsgraduatedsymbolrenderer.cpp
+renderer/qgsrangerenderitem.cpp
+renderer/qgsrenderer.cpp
+renderer/qgsrenderitem.cpp
+renderer/qgssinglesymbolrenderer.cpp
+renderer/qgsuniquevaluerenderer.cpp
+
+symbology/qgslinesymbol.cpp
+symbology/qgsmarkercatalogue.cpp
+symbology/qgsmarkersymbol.cpp
+symbology/qgspolygonsymbol.cpp
+symbology/qgssymbol.cpp
+symbology/qgssymbologyutils.cpp
+
+spatialindex/qgsspatialindex.cpp
+)
+
+ADD_FLEX_FILES(QGIS_CORE_SRCS qgssearchstringlexer.ll)
+
+ADD_BISON_FILES(QGIS_CORE_SRCS qgssearchstringparser.yy)
+
+SET(QGIS_CORE_MOC_HDRS
+qgscontexthelp.h
+qgscoordinatetransform.h
+qgsdataprovider.h
+qgshttptransaction.h
+qgsmaplayer.h
+qgsmaplayerregistry.h
+qgsmaprender.h
+qgsmessageoutput.h
+qgsproject.h
+qgsrasterdataprovider.h
+qgsrunprocess.h
+qgsvectorlayer.h
+
+raster/qgsrasterlayer.h
+)
+
+QT4_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
+
+INCLUDE_DIRECTORIES(. raster renderer symbology
+  ${QT_QTSVG_INCLUDE_DIR}
+  ${PROJ_INCLUDE_DIR}
+  ${SQLITE3_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
+  ${GDAL_INCLUDE_DIR}
+)
+
+IF (WIN32)
+  IF (MSVC)
+    ADD_DEFINITIONS("-DCORE_EXPORT=__declspec(dllexport)")
+  ELSE (MSVC)
+    ADD_DEFINITIONS("-UCORE_EXPORT \"-DCORE_EXPORT=__declspec(dllexport)\"")
+  ENDIF (MSVC)
+ENDIF (WIN32)
+
+#############################################################
+# spatial indexing library
+
+# add path prefix to every specified file
+MACRO(PATH_PREFIX OUTPUT PREFIX)
+  FOREACH(F ${ARGN})
+    SET(${OUTPUT} ${${OUTPUT}} ${PREFIX}/${F})
+  ENDFOREACH(F)
+ENDMACRO(PATH_PREFIX)
+
+# tools library
+PATH_PREFIX(TOOLS_SRC tools   ExternalSort.cc ExternalSort.h TemporaryFile.cc Tools.cc)
+PATH_PREFIX(GEOM_SRC geometry LineSegment.cc Point.cc Region.cc)
+
+# spatial index library
+PATH_PREFIX(SPINDEX_SRC spatialindex SpatialIndexImpl.cc)
+PATH_PREFIX(STMAN_SRC storagemanager Buffer.cc DiskStorageManager.cc MemoryStorageManager.cc RandomEvictionsBuffer.cc)
+PATH_PREFIX(RTREE_SRC rtree BulkLoader.cc Index.cc Leaf.cc Node.cc RTree.cc Statistics.cc)
+
+INCLUDE_DIRECTORIES(spatialindex/include)
+
+SET(SPINDEX_SRC ${TOOLS_SRC} ${GEOM_SRC} ${SPINDEX_SRC} ${STMAN_SRC} ${RTREE_SRC})
+
+PATH_PREFIX(INDEX_SRC spatialindex ${SPINDEX_SRC})
+
+#############################################################
+# qgis_core library
+
+ADD_LIBRARY(qgis_core SHARED ${QGIS_CORE_SRCS} ${QGIS_CORE_MOC_SRCS} ${INDEX_SRC})
+
+# make sure to create qgssvnversion.h before compiling
+ADD_DEPENDENCIES(qgis_core svnversion)
+
+# because of htonl
+IF (WIN32)
+  SET(PLATFORM_LIBRARIES wsock32)
+ENDIF (WIN32)
+
+TARGET_LINK_LIBRARIES(qgis_core
+  ${QT_LIBRARIES} ${QT_QTSVG_LIBRARY}
+  ${PROJ_LIBRARY}
+  ${SQLITE3_LIBRARY}
+  ${GEOS_LIBRARY}
+  ${GDAL_LIBRARY}
+  ${PLATFORM_LIBRARIES}
+)
+
+INSTALL(TARGETS qgis_core
+  RUNTIME DESTINATION ${QGIS_BIN_DIR}
+  LIBRARY DESTINATION lib)

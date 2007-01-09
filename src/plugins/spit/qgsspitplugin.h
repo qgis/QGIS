@@ -26,7 +26,8 @@ extern "C"
 #include <libpq-fe.h>
 }
 
-#include "qgisapp.h"
+class QAction;
+#include <QObject>
 
 /**
 * \class QgsSpitPlugin
@@ -37,12 +38,11 @@ class QgsSpitPlugin:public QObject, public QgisPlugin
 {
   Q_OBJECT public:
 /** 
-* Constructor for a plugin. The QgisApp and QgisIface pointers are passed by 
+* Constructor for a plugin. The QgisInterface pointer is passed by 
 * QGIS when it attempts to instantiate the plugin.
-* @param qgis Pointer to the QgisApp object
-* @param qI Pointer to the QgisIface object. 
+* @param qI Pointer to the QgisInterface object. 
 */
-    QgsSpitPlugin(QgisApp * qgis, QgisIface * qI);
+    QgsSpitPlugin(QgisInterface * qI);
 
     //! Destructor
       virtual ~ QgsSpitPlugin();
@@ -62,9 +62,9 @@ class QgsSpitPlugin:public QObject, public QgisPlugin
     //! Plugin type as defined in QgisPlugin::PLUGINTYPE
     int ptype;
     //! Pionter to QGIS main application object
-    QgisApp *qgisMainWindow;
+    QWidget *qgisMainWindow;
     //! Pointer to the QGIS interface object
-    QgisIface *qI;
+    QgisInterface *qI;
     //! Pointer to the QAction used in the menu and on the toolbar
     QAction *spitAction;
 };

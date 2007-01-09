@@ -23,7 +23,7 @@
 #include <QPolygon>
 class QPaintEvent;
 
-class QgsRubberBand: public QgsMapCanvasItem
+class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 {
   public:
     QgsRubberBand(QgsMapCanvas* mapCanvas, bool isPolygon = false);
@@ -42,7 +42,7 @@ class QgsRubberBand: public QgsMapCanvasItem
     void movePoint(int index, const QgsPoint& p);
 
   protected:
-    virtual void drawShape(QPainter & p);
+    virtual void paint(QPainter* p);
     
     //! recalculates needed rectangle
     void updateRect();

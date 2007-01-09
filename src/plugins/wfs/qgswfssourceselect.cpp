@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgisiface.h"
+#include "qgisinterface.h"
 #include "qgswfssourceselect.h"
 #include "qgsnewhttpconnection.h"
 #include "qgslayerprojectionselector.h"
@@ -27,7 +27,7 @@
 
 static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 
-QgsWFSSourceSelect::QgsWFSSourceSelect(QWidget* parent, QgisIface* iface): QDialog(parent), mIface(iface) 
+QgsWFSSourceSelect::QgsWFSSourceSelect(QWidget* parent, QgisInterface* iface): QDialog(parent), mIface(iface) 
 {
   setupUi(this);
   

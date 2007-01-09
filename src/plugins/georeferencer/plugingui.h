@@ -15,7 +15,7 @@
 #include <ui_pluginguibase.h>
 #include <QDialog>
 
-class QgisIface;
+class QgisInterface;
 
 /**
 @author Tim Sutton
@@ -25,7 +25,7 @@ class QgsGeorefPluginGui : public QDialog, private Ui::QgsGeorefPluginGuiBase
 Q_OBJECT
 public:
     QgsGeorefPluginGui();
-    QgsGeorefPluginGui(QgisIface* theQgisInterface, QWidget* parent = 0, Qt::WFlags fl = 0);
+    QgsGeorefPluginGui(QgisInterface* theQgisInterface, QWidget* parent = 0, Qt::WFlags fl = 0);
     ~QgsGeorefPluginGui();
     
 public slots:
@@ -37,7 +37,7 @@ private:
     
    QString mProjBehaviour, mProjectSRS;
    int mProjectSRSID;
-   QgisIface* mIface;
+   QgisInterface* mIface;
 
 };
 

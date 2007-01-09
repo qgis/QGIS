@@ -29,7 +29,6 @@
 #include <qinputdialog.h>
 #include <qsettings.h>
 #include <qpainter.h>
-#include <qpixmap.h>
 #include <qpen.h>
 #include <q3pointarray.h>
 #include <qcursor.h>
@@ -55,6 +54,7 @@
 #include <QHeaderView>
 
 #include "qgis.h"
+#include "qgisinterface.h"
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
@@ -94,7 +94,7 @@ QSize QgsGrassToolsTabWidget::iconSize()
 
 QgsGrassToolsTabWidget::~QgsGrassToolsTabWidget() {}
 
-QgsGrassTools::QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface, 
+QgsGrassTools::QgsGrassTools ( QgisInterface *iface, 
 	                     QWidget * parent, const char * name, Qt::WFlags f )
              :QDialog ( parent )
 {
@@ -105,7 +105,6 @@ QgsGrassTools::QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface,
    setWindowTitle ( "GRASS Tools" );
 //    setupUi(this);
 
-    mQgisApp = qgisApp;
     mIface = iface;
     mCanvas = mIface->getMapCanvas();
 
@@ -136,17 +135,7 @@ QgsGrassTools::QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface,
                 + "/" + QgsGrass::getDefaultMapset();
     setCaption(title);
 
-    // Warning: QgsApplication initialized in main.cpp
-    //          is not valid here (static libraries / linking)
-
-#if defined(WIN32) || defined(Q_OS_MACX)
-    mAppDir = qApp->applicationDirPath();
-#else
-    mAppDir = PREFIX;
-#endif
-
-    //QString conf = QgsApplication::pkgDataPath() + "/grass/config/default.qgc";
-    QString conf = mAppDir + "/share/qgis/grass/config/default.qgc";
+    QString conf = QgsApplication::pkgDataPath() + "/grass/config/default.qgc";
 
     restorePosition();
 
@@ -178,8 +167,7 @@ void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
     
     if ( name.length() == 0 ) return;  // Section
     
-    //QString path = QgsApplication::pkgDataPath() + "/grass/modules/" + name;
-    QString path = mAppDir + "/share/qgis/grass/modules/" + name;
+    QString path = QgsApplication::pkgDataPath() + "/grass/modules/" + name;
     #ifdef QGISDEBUG
     std::cerr << "path = " << path.ascii() << std::endl;
     #endif
@@ -211,7 +199,7 @@ void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
          // Note: I was not able to run cmd.exe and command.com
          //       with QProcess
 
-         QString msysPath = mAppDir + "/msys/bin/rxvt.exe";
+         QString msysPath = appDir() + "/msys/bin/rxvt.exe";
          QString myArguments = "-backspacekey ^H -sl 2500 -fg white -bg black -sr -fn Courier-16 -tn msys -geometry 80x25 -e    /bin/sh --login -i";
          QFile file ( msysPath );
 
@@ -248,7 +236,7 @@ void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
     else
     {
 	m = dynamic_cast<QWidget *> ( new QgsGrassModule ( this, 
-                                      mQgisApp, mIface, path, mTabWidget ) );
+                                      mIface, path, mTabWidget ) );
     }
     
     int height = mTabWidget->iconSize().height();
@@ -361,8 +349,7 @@ void QgsGrassTools::addModules (  Q3ListViewItem *parent, QDomElement &element )
 		QString name = e.attribute("name");
 	        std::cout << "name = " << name.toLocal8Bit().data() << std::endl;
 
-                //QString path = QgsApplication::pkgDataPath() + "/grass/modules/" + name;
-                QString path = mAppDir + "/share/qgis/grass/modules/" + name;
+                QString path = QgsApplication::pkgDataPath() + "/grass/modules/" + name;
                 QString label = QgsGrassModule::label ( path );
 		QPixmap pixmap = QgsGrassModule::pixmap ( path, 25 ); 
 
@@ -402,8 +389,7 @@ QgsGrassTools::~QgsGrassTools()
 
 QString QgsGrassTools::appDir(void)
 {
-    //return QgsApplication::applicationDirPath();
-    return mAppDir;
+    return QgsApplication::applicationDirPath();
 }
 
 void QgsGrassTools::close(void)

@@ -28,7 +28,11 @@
 #include <stdlib.h>  // atof()
   
 #include "qgssearchtreenode.h"
-#include "qgssearchstringparser.h"
+#include "qgssearchstringparser.hpp"
+
+// if not defined, searches for isatty()
+// which doesn't in MSVC compiler
+#define YY_NEVER_INTERACTIVE 1
 
 %}
 

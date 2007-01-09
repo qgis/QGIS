@@ -180,7 +180,7 @@ QString QgsSearchTreeNode::makeSearchString()
 }
 
 
-bool QgsSearchTreeNode::checkAgainst(const std::vector<QgsFeatureAttribute>& attributes)
+bool QgsSearchTreeNode::checkAgainst(const QgsAttributeMap& attributes)
 {
   QgsDebugMsgLevel("checkAgainst: " + makeSearchString(), 2);
 
@@ -277,7 +277,7 @@ bool QgsSearchTreeNode::checkAgainst(const std::vector<QgsFeatureAttribute>& att
   return false; // will never get there
 }
 
-bool QgsSearchTreeNode::getValue(QgsSearchTreeValue& value, QgsSearchTreeNode* node, const std::vector<QgsFeatureAttribute>& attributes)
+bool QgsSearchTreeNode::getValue(QgsSearchTreeValue& value, QgsSearchTreeNode* node, const QgsAttributeMap& attributes)
 {
   value = node->valueAgainst(attributes);
   if (value.isError())
@@ -310,7 +310,7 @@ bool QgsSearchTreeNode::getValue(QgsSearchTreeValue& value, QgsSearchTreeNode* n
   return true;
 }
 
-QgsSearchTreeValue QgsSearchTreeNode::valueAgainst(const std::vector<QgsFeatureAttribute>& attributes)
+QgsSearchTreeValue QgsSearchTreeNode::valueAgainst(const QgsAttributeMap& attributes)
 {
   QgsDebugMsgLevel("valueAgainst: " + makeSearchString(), 2);
 
@@ -329,13 +329,13 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst(const std::vector<QgsFeatureA
     {
       QgsDebugMsgLevel("column (" + mText.lower() + "): ", 2);
       // find value for the column
-      std::vector<QgsFeatureAttribute>::const_iterator it;
+      QgsAttributeMap::const_iterator it;
       for (it = attributes.begin(); it != attributes.end(); it++)
       {
-        if ( (*it).fieldName().lower() == mText.lower()) // TODO: optimize
+        if ( it->fieldName().lower() == mText.lower()) // TODO: optimize
         {
-          QString value = (*it).fieldValue();
-          if ((*it).isNumeric())
+          QString value = it->fieldValue();
+          if (it->isNumeric())
           {
             QgsDebugMsgLevel("   number: " + QString::number(value.toDouble()), 2);
             return QgsSearchTreeValue(value.toDouble());

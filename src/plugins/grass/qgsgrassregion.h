@@ -20,8 +20,7 @@
 
 class QgsGrassProvider;
 class QgsGrassPlugin;
-class QgisApp;
-class QgisIface;
+class QgisInterface;
 class QgsMapCanvas;
 class Q3ButtonGroup;
 class QgsPoint;
@@ -44,7 +43,7 @@ class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
 
 public:
     //! Constructor
-    QgsGrassRegion ( QgsGrassPlugin *plugin, QgisApp *qgisApp, QgisIface *iface, 
+    QgsGrassRegion ( QgsGrassPlugin *plugin, QgisInterface *iface, 
 	             QWidget * parent = 0, Qt::WFlags f = 0 );
 
     //! Destructor
@@ -92,11 +91,8 @@ private:
     //! Pointer to plugin 
     QgsGrassPlugin *mPlugin;
 
-    //! Pointer to vector provider 
-    QgisApp *mQgisApp;
-
     //! Pointer to QGIS interface
-    QgisIface *mInterface;
+    QgisInterface *mInterface;
 
     //! Pointer to canvas
     QgsMapCanvas *mCanvas;

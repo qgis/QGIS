@@ -1,0 +1,46 @@
+
+%Module qgis.core 0
+
+%Import QtCore/QtCoremod.sip
+%Import QtGui/QtGuimod.sip
+%Import QtXml/QtXmlmod.sip
+
+// TODO: more files to wrap
+
+%Include qgis.sip
+%Include qgsapplication.sip
+// TODO: %Include qgscolortable.sip
+%Include qgscontexthelp.sip
+%Include qgscoordinatetransform.sip
+%Include qgsdataprovider.sip
+%Include qgsdatasourceuri.sip
+%Include qgsfeature.sip
+%Include qgsfeatureattribute.sip
+%Include qgsfield.sip
+%Include qgsgeometry.sip
+%Include qgsgeometryvertexindex.sip
+%Include qgslabel.sip
+%Include qgslabelattributes.sip
+%Include qgslogger.sip
+%Include qgsmaplayer.sip
+%Include qgsmaplayerregistry.sip
+%Include qgsmaprender.sip
+%Include qgsmaptopixel.sip
+%Include qgsmessageoutput.sip
+%Include qgspoint.sip
+%Include qgsproject.sip
+%Include qgsprovidermetadata.sip
+%Include qgsproviderregistry.sip
+%Include qgsrasterbandstats.sip
+%Include qgsrasterdataprovider.sip
+%Include qgsrasterlayer.sip
+%Include qgsrasterpyramid.sip
+%Include qgsrasterviewport.sip
+%Include qgsrect.sip
+%Include qgsrenderer.sip
+%Include qgsscalecalculator.sip
+%Include qgsspatialindex.sip
+%Include qgsspatialrefsys.sip
+%Include qgsvectordataprovider.sip
+%Include qgsvectorlayer.sip
+

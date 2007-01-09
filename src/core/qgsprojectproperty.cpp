@@ -296,7 +296,7 @@ bool QgsPropertyValue::readXML(QDomNode & keyNode)
               break;
             */
         default :
-            qDebug( "%s:%d unsupported value type %s .. not propertly translated to QVariant in qgsproject.cpp:",
+            qDebug( "%s:%d unsupported value type %s .. not propertly translated to QVariant in qgsproject.cpp",
                     __FILE__, __LINE__, (const char*)typeString.utf8() );
     }
 
@@ -363,7 +363,7 @@ QVariant QgsPropertyKey::value() const
 {
     QgsProperty * foundQgsProperty;
 
-    if ( 0 == ( foundQgsProperty = properties_.find( name()) ) )
+    if ( 0 == ( foundQgsProperty = properties_.find(name()) ) )
     {                        // recurse down to next key
         return foundQgsProperty->value();
     } else

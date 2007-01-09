@@ -25,7 +25,7 @@
   *@author Gary E.Sherman
   */
 
-class QgsFeatureAttribute
+class CORE_EXPORT QgsFeatureAttribute
 {
 public:
 

@@ -1,0 +1,5 @@
+
+FILE (GLOB CONFIG *.qgc)
+
+INSTALL (FILES ${CONFIG}
+         DESTINATION ${QGIS_DATA_DIR}/grass/config)

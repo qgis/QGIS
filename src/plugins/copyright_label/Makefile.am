@@ -51,7 +51,7 @@ BUILT_SOURCES = $(plugin_MOC) $(plugin_UI) $(plugin_RES)
 
 copyrightlabelplugin_la_LIBADD = $(QT_LDADD) $(GDAL_LDADD) ../../gui/libqgis_gui.la ../../core/libqgis_core.la
 copyrightlabelplugin_la_LDFLAGS = -avoid-version -module
-copyrightlabelplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GEOS_CFLAGS) -I../../gui -I../../ui -I../../core
+copyrightlabelplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GEOS_CFLAGS) -I../../gui -I../../ui -I../../core/include
 
 CLEANFILES = $(BUILT_SOURCES)
 

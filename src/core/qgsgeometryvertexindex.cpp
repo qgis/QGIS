@@ -16,6 +16,7 @@ email                : morb at ozemail dot com dot au
 
 #include "qgsgeometryvertexindex.h"
 
+#include <QString>
 #include <iostream>
 
 

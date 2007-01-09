@@ -30,12 +30,10 @@ email                : sherman at mrcc.com
 #define GEOS_UTIL geos::util
 #endif
 
-#include <ogr_spatialref.h>
-#include <ogrsf_frmts.h>
-
 class QgsFeature;
 class QgsField;
 class OGRDataSource;
+class OGRSFDriver;
 class OGRLayer;
 class OGRFeature;
 class OGREnvelope;
@@ -45,52 +43,60 @@ class OGRPolygon;
   \class QgsOgrProvider
   \brief Data provider for ESRI shapefiles
   */
-class QgsOgrProvider:public QgsVectorDataProvider
+class QgsOgrProvider : public QgsVectorDataProvider
 {
   public:
+    
+    /**
+     * Constructor of the vector provider
+     * @param uri  uniform resource locator (URI) for a dataset
+     */
     QgsOgrProvider(QString const & uri = "");
-    virtual ~ QgsOgrProvider();
+    
+    /**
+     * Destructor
+     */
+    virtual ~QgsOgrProvider();
+
+    
+    
+    virtual QgsSpatialRefSys getSRS();
+    
+    virtual void setSRS(const QgsSpatialRefSys& theSRS);
+    
+    
+    /**
+     *   Returns the permanent storage type for this layer as a friendly name.
+     */
+    virtual QString storageType() const;
 
     /**
-      *   Returns the permanent storage type for this layer as a friendly name.
-      */
-    QString storageType();
+     * Select features based on a bounding rectangle. Features can be retrieved 
+     * with calls to getFirstFeature and getNextFeature.
+     * @param mbr QgsRect containing the extent to use in selecting features
+     * @param useIntersect Use geos functions to determine the selected set
+     */
+    virtual void select(QgsRect mbr, bool useIntersect = false);
 
-    /** Used to ask the layer for its projection as a WKT string. Implements virtual method of same name in      QgsDataProvider. */
-    QString getProjectionWKT()  ;    
     /**
-     * Get the first feature resulting from a select operation
-     * @return QgsFeature
+     * Get the next feature resulting from a select operation.
+     * @param feature feature which will receive data from the provider
+     * @param fetchGeoemtry if true, geometry will be fetched from the provider
+     * @param fetchAttributes a list containing the indexes of the attribute fields to copy
+     * @param featureQueueSize  a hint to the provider as to how many features are likely to be retrieved in a batch
+     * @return true when there was a feature to fetch, false when end was hit
      */
-    QgsFeature *getFirstFeature(bool fetchAttributes = false);
-    /** 
-     * Get the next feature resutling from a select operation
-     * @return QgsFeature
-     */
-    QgsFeature *getNextFeature(bool fetchAttributes = false);
-    /**Get the next feature resulting from a select operation.
-    *@param attlist a list containing the indexes of the attribute fields to copy
-    *@param getnotcommited flag indicating if not commited features should be returned
-    */
-    QgsFeature *getNextFeature(std::list<int> const& attlist, int featureQueueSize = 1);
-    /** 
-     * Get the next feature resutling from a select operation
-     * @return True if the feature was read. This does not indicate
-     * that the feature is valid. Use QgsFeature::isValid() to check
-     * the validity of a feature before using it.
-     */
-    bool getNextFeature(QgsFeature &feature, bool fetchAttributes = false);
+    virtual bool getNextFeature(QgsFeature& feature,
+                                bool fetchGeometry = true,
+                                QgsAttributeList fetchAttributes = QgsAttributeList(),
+                                uint featureQueueSize = 1);
 
-    /** Get the feature type. This corresponds to 
-      WKBPoint,
-      WKBLineString,
-      WKBPolygon,
-      WKBMultiPoint,
-      WKBMultiLineString or
-      WKBMultiPolygon
-     * as defined in qgis.h
+    
+    /**
+     * Get feature type.
+     * @return int representing the feature type
      */
-    int geometryType() const;
+    virtual QGis::WKBTYPE geometryType() const;
 
     /** return the number of layers for the current data source
 
@@ -98,101 +104,71 @@ class QgsOgrProvider:public QgsVectorDataProvider
 
     Should this be subLayerCount() instead?
     */
-    size_t layerCount() const;
+    virtual size_t layerCount() const;
 
     /** 
      * Get the number of features in the layer
      */
-    long featureCount() const;
-    /** 
-     * Get the number of fields in the layer
-     */
-    int fieldCount() const;
-    /**
-     * Select features based on a bounding rectangle. Features can be retrieved 
-     * with calls to getFirstFeature and getNextFeature.
-     * @param mbr QgsRect containing the extent to use in selecting features
-     * @param useIntersect Use geos functions to determine the selected set
-     */
-    void select(QgsRect * mbr, bool useIntersect = false);
-
-    /**
-     * Identify features within the search radius specified by rect
-     * @param rect Bounding rectangle of search radius
-     * @return std::vector containing QgsFeature objects that intersect rect
-     */
-    virtual std::vector < QgsFeature > &identify(QgsRect * rect);
-
-    /** Return the extent for this data layer
-    */
-    virtual QgsRect *extent();
-
-    /**Get an attribute associated with a feature*/
-    void getFeatureAttribute(OGRFeature * ogrFet, QgsFeature * f, int attindex);
-
-    /**
-     * Get the attributes associated with a feature
-     */
-    void getFeatureAttributes(OGRFeature * ogrFet, QgsFeature * f);
+    virtual long featureCount() const;
 
     /**
      * Get the attributes associated with a feature
      * TODO: Get rid of "row" and set up provider-internal caching instead
      *       ("row" was only ever used in the PostgreSQL provider context anyway)
      */
-    void getFeatureAttributes(int key, int& row, QgsFeature *f);
+    virtual void getFeatureAttributes(int key, int& row, QgsFeature &f);
 
     /**
      * Fetch geometry for a particular feature with id "key",
      * modifies "f" in-place.
      */
-    void getFeatureGeometry(int key, QgsFeature *f);
+    virtual void getFeatureGeometry(int key, QgsFeature *f);
+
+    /** 
+     * Get the number of fields in the layer
+     */
+    virtual uint fieldCount() const;
 
     /**
      * Get the field information for the layer
      */
-    std::vector < QgsField > const & fields() const;
+    virtual const QgsFieldMap & fields() const;
 
-    /* Reset the layer - for an OGRLayer, this means clearing the
+    /** Return the extent for this data layer
+     */
+    virtual QgsRect extent();
+
+    /** Reset the layer - for an OGRLayer, this means clearing the
      * spatial filter and calling ResetReading
      */
-    /* virtual */ void reset();
+    virtual void reset();
 
     /**Returns the minimum value of an attribut
       @param position the number of the attribute*/
-    QString minValue(int position);
+    virtual QString minValue(uint position);
 
     /**Returns the maximum value of an attribut
       @param position the number of the attribute*/
-    QString maxValue(int position);
-
-    /**Returns true if this is a valid shapefile
-    */
-    bool isValid();
+    virtual QString maxValue(uint position);
 
     /**Writes a list of features to the file*/
-    bool addFeatures(std::list<QgsFeature*> const flist);
+    virtual bool addFeatures(QgsFeatureList & flist);
 
     /**Deletes a feature*/
-    bool deleteFeatures(std::list<int> const & id);
+    virtual bool deleteFeatures(const QgsFeatureIds & id);
     
     /**Adds new attributess. Unfortunately not supported for layers with features in it*/
-    bool addAttributes(std::map<QString,QString> const & name);
+    virtual bool addAttributes(const QgsNewAttributesMap & attributes);
 
     /**Changes attribute values of existing features */
-    bool changeAttributeValues(std::map<int,std::map<QString,QString> > const & attr_map);
+    virtual bool changeAttributeValues(const QgsChangedAttributesMap & attr_map);
 
     /**Changes existing geometries*/
-    bool changeGeometryValues(std::map<int, QgsGeometry> & geometry_map);
-
-    QgsDataSourceURI * getURI()
-    { 
-        return 0;
-    }
+    virtual bool changeGeometryValues(QgsGeometryMap & geometry_map);
 
     /**Tries to create a .qix index file for faster access if only a subset of the features is required
      @return true in case of success*/
-    bool createSpatialIndex();
+    virtual bool createSpatialIndex();
 
     /** Returns a bitmask containing the supported capabilities
         Note, some capabilities may change depending on whether
@@ -200,9 +176,9 @@ class QgsOgrProvider:public QgsVectorDataProvider
         be prudent to check this value per intended operation.
         See the OGRLayer::TestCapability API for details.
       */
-    int capabilities() const;
+    virtual int capabilities() const;
 
-    void setEncoding(const QString& e);
+    virtual void setEncoding(const QString& e);
     
 
     /** return vector file filter string
@@ -218,11 +194,17 @@ class QgsOgrProvider:public QgsVectorDataProvider
     */
     /* virtual */ QString fileVectorFilters() const;
 
+    /**Returns true if this is a valid shapefile
+    */
+    bool isValid();
+
 
   protected:
     /** loads fields from input file to member attributeFields */
     void loadFields();
 
+    /**Get an attribute associated with a feature*/
+    void getFeatureAttribute(OGRFeature * ogrFet, QgsFeature & f, int attindex);
 
       /** return a provider name
 
@@ -257,7 +239,8 @@ class QgsOgrProvider:public QgsVectorDataProvider
 
   private:
     unsigned char *getGeometryPointer(OGRFeature * fet);
-    std::vector < QgsField > attributeFields;
+    
+    QgsFieldMap mAttributeFields;
 
     OGRDataSource *ogrDataSource;
     OGREnvelope *extent_;
@@ -277,11 +260,7 @@ class QgsOgrProvider:public QgsVectorDataProvider
     bool mUseIntersect;
     int geomType;
     long numberFeatures;
-    enum ENDIAN
-    {
-      NDR = 1,
-      XDR = 0
-    };
+    
     /**Flag indicating, if the minmaxcache should be renewed (true) or not (false)*/
     bool minmaxcachedirty;
     /**Matrix storing the minimum and maximum values*/
@@ -291,7 +270,7 @@ class QgsOgrProvider:public QgsVectorDataProvider
     //! Selection rectangle 
     OGRPolygon * mSelectionRectangle;
     /**Adds one feature*/
-    bool addFeature(QgsFeature* f);
+    bool addFeature(QgsFeature& f);
     /**Deletes one feature*/
     bool deleteFeature(int id);
     //! The geometry factory

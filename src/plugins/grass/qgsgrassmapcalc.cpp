@@ -45,6 +45,7 @@
 #include <QToolBar>
 
 #include "qgis.h"
+#include "qgisinterface.h"
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
@@ -68,10 +69,10 @@ extern "C" {
 
 QgsGrassMapcalc::QgsGrassMapcalc ( 
            QgsGrassTools *tools, QgsGrassModule *module,
-           QgisApp *qgisApp, QgisIface *iface, 
+           QgisInterface *iface, 
            QWidget * parent, const char * name, Qt::WFlags f )
        : QMainWindow(0,Qt::WType_Dialog),
-         QgsGrassModuleOptions( tools, module, qgisApp, iface),
+         QgsGrassModuleOptions( tools, module, iface),
          QgsGrassMapcalcBase ( ),
 	 mObject(0), mConnector(0), mTool(-1)
 {

@@ -23,6 +23,8 @@ QgsMessageViewer::QgsMessageViewer(QWidget *parent, Qt::WFlags fl)
 : QDialog(parent, fl)
 {
   setupUi(this);
+  setAttribute(Qt::WA_DeleteOnClose);
+  
   // Default state for the checkbox
   setCheckBoxVisible(false);
   setCheckBoxState(Qt::Unchecked);
@@ -45,6 +47,28 @@ void QgsMessageViewer::setMessageAsPlainText(const QString& msg)
 void QgsMessageViewer::appendMessage(const QString& msg)
 {
   txtMessage->append(msg);
+}
+
+
+void QgsMessageViewer::setMessage(const QString& message, MessageType msgType)
+{
+  if (msgType == MessageHtml)
+    setMessageAsHtml(message);
+  else
+    setMessageAsPlainText(message);
+}
+
+void QgsMessageViewer::showMessage(bool blocking)
+{
+  if (blocking)
+    exec();
+  else
+    show();
+}
+
+void QgsMessageViewer::setTitle(const QString& title)
+{
+  setCaption(title);
 }
 
 void QgsMessageViewer::setCheckBoxText(const QString& text)

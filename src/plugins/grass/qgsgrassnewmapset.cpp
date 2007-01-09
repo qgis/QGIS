@@ -47,13 +47,14 @@
 #include <Q3Wizard>
 
 #include "qgis.h"
+#include "qgisinterface.h"
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsrect.h"
 #include "qgscoordinatetransform.h"
 #include "qgsspatialrefsys.h"
-#include "../../src/widgets/projectionselector/qgsprojectionselector.h"
+#include "qgsprojectionselector.h"
 
 #include "../../src/providers/grass/qgsgrass.h"
 #include "qgsgrassnewmapset.h"
@@ -63,7 +64,7 @@
 
 bool QgsGrassNewMapset::mRunning = false;
 
-QgsGrassNewMapset::QgsGrassNewMapset ( QgisApp *qgisApp, QgisIface *iface, 
+QgsGrassNewMapset::QgsGrassNewMapset ( QgisInterface *iface, 
 	QgsGrassPlugin *plugin, QWidget * parent, 
         const char * name, Qt::WFlags f ):
         Q3Wizard(parent, name, false, f),
@@ -76,7 +77,6 @@ QgsGrassNewMapset::QgsGrassNewMapset ( QgisApp *qgisApp, QgisIface *iface,
     setupUi(this);
 
     mRunning = true;
-    mQgisApp = qgisApp;
     mIface = iface;
     mProjectionSelector = 0;
     mPreviousPage = -1;
@@ -629,7 +629,7 @@ void QgsGrassNewMapset::setRegionPage()
         mRegionButton->show();
         mSetRegionFrame->show();
 
-	QgsRect ext = mQgisApp->getMapCanvas()->extent();
+	QgsRect ext = mIface->getMapCanvas()->extent();
 
 	if ( ext.xMin() >= ext.xMax() || ext.yMin() >= ext.yMax() )
 	{
@@ -658,7 +658,7 @@ void QgsGrassNewMapset::setGrassRegionDefaults()
     std::cerr << "current project srsid = " << srsid << std::endl;
 #endif
         
-    QgsRect ext = mQgisApp->getMapCanvas()->extent();
+    QgsRect ext = mIface->getMapCanvas()->extent();
     bool extSet = false;
     if ( ext.xMin() < ext.xMax() && ext.yMin() < ext.yMax() )
     {
@@ -781,13 +781,7 @@ void QgsGrassNewMapset::loadRegions()
     std::cerr << "QgsGrassNewMapset::loadRegions()" << std::endl;
 #endif
 
-#if defined(WIN32) || defined(Q_OS_MACX)
-    QString appDir = qApp->applicationDirPath();
-#else
-    QString appDir = PREFIX;
-#endif
-
-    QString path = appDir + "/share/qgis/grass/locations.gml";
+    QString path = QgsApplication::pkgDataPath() + "/grass/locations.gml";
 #ifdef QGISDEBUG
     std::cerr << "load:" << path.local8Bit().data() << std::endl;
 #endif
@@ -995,7 +989,7 @@ void QgsGrassNewMapset::setCurrentRegion()
     std::cerr << "QgsGrassNewMapset::setCurrentRegion()" << std::endl;
 #endif
 
-    QgsRect ext = mQgisApp->getMapCanvas()->extent();
+    QgsRect ext = mIface->getMapCanvas()->extent();
 
     int srsid = QgsProject::instance()->readNumEntry(
 	   "SpatialRefSys","/ProjectSRSID",0);

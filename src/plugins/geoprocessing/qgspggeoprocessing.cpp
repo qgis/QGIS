@@ -23,7 +23,7 @@ email                : sherman at mrcc.com
 // includes
 #include <iostream>
 #include <vector>
-#include "qgisapp.h"
+#include "qgisinterface.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
@@ -32,6 +32,7 @@ email                : sherman at mrcc.com
 #include <QMessageBox>
 #include <QAction>
 #include <QApplication>
+#include <QMenu>
 
 #include "qgsdlgpgbuffer.h"
 #include "qgspggeoprocessing.h"
@@ -55,9 +56,10 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
  * @param qgis Pointer to the QGIS main window
  * @parma _qI Pointer to the QGIS interface object
  */
-QgsPgGeoprocessing::QgsPgGeoprocessing(QgisApp * qgis, QgisIface * _qI)
-    : qgisMainWindow(qgis), qI(_qI), 
-      QgisPlugin( name_, description_, version_, type_ )
+QgsPgGeoprocessing::QgsPgGeoprocessing(QgisInterface * _qI)
+  : QgisPlugin( name_, description_, version_, type_ ),
+    qgisMainWindow(_qI->getMainWindow()),
+    qI(_qI)
 {
 }
 
@@ -137,11 +139,11 @@ void QgsPgGeoprocessing::buffer()
         bb->setBufferLayerName(tableName.mid(tableName.find(".") + 1) + "_buffer");
         // set the fields on the dialog box drop-down
         QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(lyr->getDataProvider());
-        std::vector < QgsField > flds = dp->fields();
-        for (int i = 0; i < flds.size(); i++) {
+        QgsFieldMap flds = dp->fields();
+        for (QgsFieldMap::iterator it = flds.begin(); it != flds.end(); ++it) {
           // check the field type -- if its int we can use it
-          if (flds[i].type().find("int") > -1) {
-            bb->addFieldItem(flds[i].name());
+          if (it->type().find("int") > -1) {
+            bb->addFieldItem(it->name());
           }
         }
         // connect to the database
@@ -440,9 +442,9 @@ void QgsPgGeoprocessing::unload()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-extern "C" QgisPlugin * classFactory(QgisApp * qgis, QgisIface * qI)
+extern "C" QgisPlugin * classFactory(QgisInterface * qI)
 {
-  return new QgsPgGeoprocessing(qgis, qI);
+  return new QgsPgGeoprocessing(qI);
 }
 
 // Return the name of the plugin

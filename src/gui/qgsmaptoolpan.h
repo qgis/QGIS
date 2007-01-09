@@ -21,7 +21,7 @@
 class QgsMapCanvas;
 
 
-class QgsMapToolPan : public QgsMapTool
+class GUI_EXPORT QgsMapToolPan : public QgsMapTool
 {
   public:
     //! constructor

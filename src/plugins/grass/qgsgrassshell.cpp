@@ -24,6 +24,8 @@
 #include <qfontmetrics.h>
 #include <q3progressbar.h>
 
+#include "qgsapplication.h"
+
 #include "qgsgrassshell.h"
 //Added by qt3to4:
 #include <QGridLayout>
@@ -688,13 +690,13 @@ void QgsGrassShell::printStdout()
 	    {
 		mlen = rxwarning.matchedLength();
 		msg = rxwarning.cap(1);
-		img = mAppDir + "/share/qgis/themes/default/grass/grass_module_warning.png";
+		img = QgsApplication::pkgDataPath() + "/themes/default/grass/grass_module_warning.png";
 	    }
 	    else if ( rxerror.search(mStdoutBuffer) == 0 ) 
 	    {
 		mlen = rxerror.matchedLength();
 		msg = rxerror.cap(1);
-		img = mAppDir + "/share/qgis/themes/default/grass/grass_module_error.png";
+		img = QgsApplication::pkgDataPath() + "/themes/default/grass/grass_module_error.png";
 	    }
 
 	    if ( mlen > 0 ) // found error or warning

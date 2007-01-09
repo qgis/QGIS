@@ -15,9 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
 #include "qgsfeature.h"
+#include "qgsfeatureattribute.h"
 #include "qgsfield.h"
+#include "qgsgeometry.h"
 #include "qgshttptransaction.h"
+#include "qgsspatialrefsys.h"
 #include "qgswfsprovider.h"
 #include "qgslogger.h"
 #include <QDomDocument>
@@ -37,13 +41,14 @@ static const QString TEXT_PROVIDER_DESCRIPTION = "WFS data provider";
 static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 
-QgsWFSProvider::QgsWFSProvider(const QString& uri): QgsVectorDataProvider(uri), mUseIntersect(false), mSourceSRS(0), mSelectedFeatures(0), mFeatureCount(0), mValid(true)
+QgsWFSProvider::QgsWFSProvider(const QString& uri)
+  : QgsVectorDataProvider(uri), mUseIntersect(false), mSelectedFeatures(0), mSourceSRS(0), mFeatureCount(0), mValid(true)
 {
   if(getFeature(uri) == 0)
     {
       mValid = true;
       //set spatial filter to the whole extent
-      select(&mExtent, false);
+      select(mExtent, false);
     }
   else
     {
@@ -63,24 +68,11 @@ QgsWFSProvider::~QgsWFSProvider()
     }
 }
 
-QgsFeature* QgsWFSProvider::getFirstFeature(bool fetchAttributes)
-{
-  reset();
-  getNextFeature(fetchAttributes);
-}
 
-QgsFeature* QgsWFSProvider::getNextFeature(bool fetchAttributes)
-{
-  std::list<int> attlist;
-  //todo: add the indexes of all attributes
-  for(int i = 0; i < mFields.size(); ++i)
-    {
-      attlist.push_back(i);
-    }
-  return getNextFeature(attlist, 1);
-}
-
-QgsFeature* QgsWFSProvider::getNextFeature(std::list<int> const & attlist, int featureQueueSize)
+bool QgsWFSProvider::getNextFeature(QgsFeature& feature,
+                                    bool fetchGeometry,
+                                    QgsAttributeList attlist,
+                                    uint featureQueueSize)
 {
   while(true) //go through the loop until we find a feature in the filter
     {
@@ -89,45 +81,40 @@ QgsFeature* QgsWFSProvider::getNextFeature(std::list<int> const & attlist, int f
 	  return 0;
 	}
 
-      QgsFeature* f = new QgsFeature();
-      unsigned char* geom = ((QgsFeature*)(*mFeatureIterator))->getGeometry();
-      int geomSize = ((QgsFeature*)(*mFeatureIterator))->getGeometrySize();
+      QgsGeometry* geometry = ((QgsFeature*)(*mFeatureIterator))->geometry();
+      unsigned char* geom = geometry->wkbBuffer();
+      int geomSize = geometry->wkbSize();
       
       unsigned char* copiedGeom = new unsigned char[geomSize];
       memcpy(copiedGeom, geom, geomSize);
-      f->setGeometryAndOwnership(copiedGeom, geomSize);
-      f->setFeatureId(((QgsFeature*)(*mFeatureIterator))->featureId());
+      feature.setGeometryAndOwnership(copiedGeom, geomSize);
+      feature.setFeatureId(((QgsFeature*)(*mFeatureIterator))->featureId());
       
-      const std::vector<QgsFeatureAttribute> attributes = ((QgsFeature*)(*mFeatureIterator))->attributeMap();
-      for(std::list<int>::const_iterator it = attlist.begin(); it != attlist.end(); ++it)
+      const QgsAttributeMap& attributes = ((QgsFeature*)(*mFeatureIterator))->attributeMap();
+      for(QgsAttributeList::const_iterator it = attlist.begin(); it != attlist.end(); ++it)
 	{
-	  f->addAttribute(attributes[*it].fieldName(), attributes[*it].fieldValue(), attributes[*it].isNumeric());
+	  feature.addAttribute(*it, QgsFeatureAttribute(attributes[*it].fieldName(), attributes[*it].fieldValue()));
 	}
       ++mFeatureIterator;
       if(mUseIntersect)
 	{
-	  if(f->geometry()->fast_intersects(&mSpatialFilter))
+	  if(feature.geometry()->fast_intersects(mSpatialFilter))
 	    {
-	      return f;
+	      return true;
 	    }
 	  else
 	    {
-	      delete f;
+	      return false;
 	    }
 	}
       else
 	{
-	  return f;
+	  return true;
 	}
     }
 }
 
-bool QgsWFSProvider::getNextFeature(QgsFeature &feature, bool fetchAttributes) /*legacy*/
-{
-  return false;
-}
-
-int QgsWFSProvider::geometryType() const
+QGis::WKBTYPE QgsWFSProvider::geometryType() const
 {
   return mWKBType;
 }
@@ -137,12 +124,12 @@ long QgsWFSProvider::featureCount() const
   return mFeatureCount;
 }
 
-int QgsWFSProvider::fieldCount() const
+uint QgsWFSProvider::fieldCount() const
 {
   return mFields.size();
 }
 
-std::vector<QgsField> const & QgsWFSProvider::fields() const
+const QgsFieldMap & QgsWFSProvider::fields() const
 {
   return mFields;
 }
@@ -163,7 +150,7 @@ void QgsWFSProvider::reset()
     }
 }
 
-QString QgsWFSProvider::minValue(int position)
+QString QgsWFSProvider::minValue(uint position)
 {
   if(mMinMaxCash.size() == 0)
     {
@@ -172,7 +159,7 @@ QString QgsWFSProvider::minValue(int position)
   return mMinMaxCash[position].first;
 }
 
-QString QgsWFSProvider::maxValue(int position)
+QString QgsWFSProvider::maxValue(uint position)
 {
   if(mMinMaxCash.size() == 0)
     {
@@ -183,7 +170,6 @@ QString QgsWFSProvider::maxValue(int position)
 
 void QgsWFSProvider::fillMinMaxCash()
 {
-  QgsFeature* theFeature = 0;
   int fieldCount = fields().size();
   int i;
   double currentValue;
@@ -196,11 +182,13 @@ void QgsWFSProvider::fillMinMaxCash()
     }
 
   reset();
-  while(theFeature = getNextFeature(true))
+  QgsAttributeList allAttr = allAttributesList();
+  QgsFeature theFeature;
+  while (getNextFeature(theFeature, true, allAttr))
     {
       for(i = 0; i < fieldCount; ++i)
 	{
-	  currentValue = (theFeature->attributeMap())[i].fieldValue().toDouble();
+	  currentValue = (theFeature.attributeMap())[i].fieldValue().toDouble();
 	  if(currentValue < tempMinMax[i].first)
 	    {
 	      tempMinMax[i].first = currentValue;
@@ -220,21 +208,23 @@ void QgsWFSProvider::fillMinMaxCash()
     }
 }
 
-std::vector<QgsFeature>& QgsWFSProvider::identify(QgsRect *rect) /*legacy*/
+
+QgsSpatialRefSys QgsWFSProvider::getSRS()
 {
-  std::vector<QgsFeature> bla;
-  return bla; //that's of course rubbish but the whole method isn't used in qgis
+  if (mSourceSRS)
+    return *mSourceSRS;
+  else
+    return QgsSpatialRefSys();
 }
 
-QString QgsWFSProvider::getProjectionWKT()
+void QgsWFSProvider::setSRS(const QgsSpatialRefSys& theSRS)
 {
-  return "";
+  // do nothing
 }
 
-QgsRect* QgsWFSProvider::extent()
+QgsRect QgsWFSProvider::extent()
 {
-  QgsRect* ext = new QgsRect(mExtent);
-  return ext;
+  return mExtent;
 }
 
 bool QgsWFSProvider::isValid()
@@ -242,12 +232,12 @@ bool QgsWFSProvider::isValid()
   return mValid;
 }
 
-void QgsWFSProvider::select(QgsRect *mbr, bool useIntersect)
+void QgsWFSProvider::select(QgsRect mbr, bool useIntersect)
 {
   mUseIntersect = useIntersect;
   delete mSelectedFeatures;
-  mSpatialFilter = *mbr;
-  GEOS_GEOM::Envelope filter(mbr->xMin(), mbr->xMax(), mbr->yMin(), mbr->yMax());
+  mSpatialFilter = mbr;
+  GEOS_GEOM::Envelope filter(mbr.xMin(), mbr.xMax(), mbr.yMin(), mbr.yMax());
 #if GEOS_VERSION_MAJOR < 3
   mSelectedFeatures = mSpatialIndex.query(&filter);
 #else
@@ -300,7 +290,7 @@ int QgsWFSProvider::getFeature(const QString& uri)
   return 2;
 }
 
-int QgsWFSProvider::describeFeatureType(const QString& uri, QString& geometryAttribute, std::vector<QgsField>& fields)
+int QgsWFSProvider::describeFeatureType(const QString& uri, QString& geometryAttribute, QgsFieldMap& fields)
 {
   switch(mEncoding)
     {
@@ -391,7 +381,7 @@ int QgsWFSProvider::getFeatureFILE(const QString& uri, const QString& geometryAt
   return 0;
 }
 
-int QgsWFSProvider::describeFeatureTypeGET(const QString& uri, QString& geometryAttribute, std::vector<QgsField>& fields)
+int QgsWFSProvider::describeFeatureTypeGET(const QString& uri, QString& geometryAttribute, QgsFieldMap& fields)
 {
   QByteArray result;
   QgsHttpTransaction http(uri);
@@ -414,17 +404,17 @@ int QgsWFSProvider::describeFeatureTypeGET(const QString& uri, QString& geometry
   return 0;
 }
 
-int QgsWFSProvider::describeFeatureTypePOST(const QString& uri, QString& geometryAttribute, std::vector<QgsField>& fields)
+int QgsWFSProvider::describeFeatureTypePOST(const QString& uri, QString& geometryAttribute, QgsFieldMap& fields)
 {
   return 1; //soon...
 }
 
-int QgsWFSProvider::describeFeatureTypeSOAP(const QString& uri, QString& geometryAttribute, std::vector<QgsField>& fields)
+int QgsWFSProvider::describeFeatureTypeSOAP(const QString& uri, QString& geometryAttribute, QgsFieldMap& fields)
 {
   return 1; //soon...
 }
 
-int QgsWFSProvider::describeFeatureTypeFile(const QString& uri, QString& geometryAttribute, std::vector<QgsField>& fields)
+int QgsWFSProvider::describeFeatureTypeFile(const QString& uri, QString& geometryAttribute, QgsFieldMap& fields)
 {
   //first look in the schema file
   QString noExtension = uri;
@@ -456,14 +446,16 @@ int QgsWFSProvider::describeFeatureTypeFile(const QString& uri, QString& geometr
     }
 
   fields.clear();
-  for(std::list<QString>::const_iterator it = thematicAttributes.begin(); it != thematicAttributes.end(); ++it)
+  int i = 0;
+  for(std::list<QString>::const_iterator it = thematicAttributes.begin(); it != thematicAttributes.end(); ++it, ++i)
     {
-      fields.push_back(QgsField(*it, "unknown"));
+      // TODO: is this correct?
+      fields[i] = QgsField(*it, "unknown");
     }
   return 0;
 }
 
-int QgsWFSProvider::readAttributesFromSchema(QDomDocument& schemaDoc, QString& geometryAttribute, std::vector<QgsField>& fields) const
+int QgsWFSProvider::readAttributesFromSchema(QDomDocument& schemaDoc, QString& geometryAttribute, QgsFieldMap& fields) const
 {
   //get the <schema> root element
   QDomNodeList schemaNodeList = schemaDoc.elementsByTagNameNS("http://www.w3.org/2001/XMLSchema", "schema");
@@ -529,7 +521,7 @@ int QgsWFSProvider::readAttributesFromSchema(QDomDocument& schemaDoc, QString& g
       }
       else //todo: distinguish between numerical and non-numerical types
 	{
-	  fields.push_back(QgsField(name, type));
+          fields[i] = QgsField(name, type);
 	}
     }
   return 0;
@@ -773,12 +765,13 @@ int QgsWFSProvider::getFeaturesFromGML2(const QDomElement& wfsCollectionElement,
       currentAttributeChild = layerNameElem.firstChild();
       while(!currentAttributeChild.isNull())
 	{
+          int attr = 0;
 	  currentAttributeElement = currentAttributeChild.toElement();
 	  if(currentAttributeElement.localName() != "boundedBy")
 	    {
 	      if((currentAttributeElement.localName()) != geometryAttribute) //a normal attribute
 		{
-		  f->addAttribute(currentAttributeElement.localName(), currentAttributeElement.text(), false);
+		  f->addAttribute(attr++, QgsFeatureAttribute(currentAttributeElement.localName(), currentAttributeElement.text()));
 		}
 	      else //a geometry attribute
 		{
@@ -864,7 +857,7 @@ int QgsWFSProvider::getWkbFromGML2Point(const QDomElement& geometryElement, unsi
     }
   
   std::list<QgsPoint>::const_iterator point_it = pointCoordinate.begin();
-  char e = endian();
+  char e = QgsApplication::endian();
   double x = point_it->x();
   double y = point_it->y();
   int size = 1 + sizeof(int) + 2 * sizeof(double);
@@ -933,7 +926,7 @@ int QgsWFSProvider::getWkbFromGML2Polygon(const QDomElement& geometryElement, un
   *wkb = new unsigned char[size];
   *wkbSize = size;
   *type = QGis::WKBPolygon;
-  char e = endian();
+  char e = QgsApplication::endian();
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
   int nPointsInRing = 0;
   double x, y;
@@ -980,7 +973,7 @@ int QgsWFSProvider::getWkbFromGML2LineString(const QDomElement& geometryElement,
       return 2;
     }
 
-  char e = endian();
+  char e = QgsApplication::endian();
   int size = 1 + 2 * sizeof(int) + lineCoordinates.size() * 2* sizeof(double);
   *wkb = new unsigned char[size];
   *wkbSize = size;
@@ -1054,7 +1047,7 @@ int QgsWFSProvider::getWkbFromGML2MultiPoint(const QDomElement& geometryElement,
   *type = QGis::WKBMultiPoint;
 
   //fill the wkb content
-  char e = endian();
+  char e = QgsApplication::endian();
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
   int nPoints = pointList.size(); //number of points
   double x, y;
@@ -1158,7 +1151,7 @@ int QgsWFSProvider::getWkbFromGML2MultiLineString(const QDomElement& geometryEle
   *type = QGis::WKBMultiLineString;
   
   //fill the wkb content
-  char e = endian();
+  char e = QgsApplication::endian();
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
   int nLines = lineCoordinates.size();
   int nPoints; //number of points in a line
@@ -1287,7 +1280,7 @@ int QgsWFSProvider::getWkbFromGML2MultiPolygon(const QDomElement& geometryElemen
   *wkbSize = size;
   *type = QGis::WKBMultiPolygon;
   int polygonType = QGis::WKBPolygon;
-  char e = endian();
+  char e = QgsApplication::endian();
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
   double x, y;
   int nPolygons = multiPolygonPoints.size();
@@ -1375,17 +1368,6 @@ int QgsWFSProvider::readGML2Coordinates(std::list<QgsPoint>& coords, const QDomE
   return 0;
 }
 
-int QgsWFSProvider::getSrid()
-{
-  if(mSourceSRS)
-    {
-      return mSourceSRS->srid();
-    }
-  else
-    {
-      return 0;
-    }
-}
 
 QString QgsWFSProvider::name() const
 {
@@ -1643,7 +1625,7 @@ int QgsWFSProvider::getWkbFromGML3Point(const QDomElement& geometryElement, unsi
     }
   
   std::list<QgsPoint>::const_iterator point_it = pointCoordinate.begin();
-  char e = endian();
+  char e = QgsApplication::endian();
   double x = point_it->x();
   double y = point_it->y();
   int size = 1 + sizeof(int) + 2 * sizeof(double);
@@ -1674,7 +1656,7 @@ int QgsWFSProvider::getWkbFromGML3LineString(const QDomElement& geometryElement,
     {
       return 2;
     }
-  char e = endian();
+  char e = QgsApplication::endian();
   int size = 1 + 2 * sizeof(int) + lineCoordinates.size() * 2* sizeof(double);
   *wkb = new unsigned char[size];
   *wkbSize = size;
@@ -1749,7 +1731,7 @@ int QgsWFSProvider::getWkbFromGML3Polygon(const QDomElement& geometryElement, un
   *wkb = new unsigned char[size];
   *wkbSize = size;
   *type = QGis::WKBPolygon;
-  char e = endian();
+  char e = QgsApplication::endian();
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
   int nPointsInRing = 0;
   double x, y;
@@ -1876,7 +1858,7 @@ int QgsWFSProvider::getWkbFromGML3MultiSurface(const QDomElement& geometryElemen
   *wkbSize = size;
   *type = QGis::WKBMultiPolygon;
   int polygonType = QGis::WKBPolygon;
-  char e = endian();
+  char e = QgsApplication::endian();
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
   double x, y;
   int nPolygons = multiPolygonPoints.size();
@@ -1962,7 +1944,7 @@ int QgsWFSProvider::getWkbFromGML3MultiCurve(const QDomElement& geometryElement,
   *type = QGis::WKBMultiLineString;
   
   //fill the wkb content
-  char e = endian();
+  char e = QgsApplication::endian();
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
   int nLines = lineCoordinates.size();
   int nPoints; //number of points in a line

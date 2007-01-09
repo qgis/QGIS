@@ -17,11 +17,14 @@
 #ifndef QGSLABELATTRIBUTES_H
 #define QGSLABELATTRIBUTES_H
 
+#include <qnamespace.h>
+
+#include <QBrush>
+#include <QFont>
 #include <QPen>
+
 class QString;
-class QFont;
 class QColor;
-class QBrush;
 
 /** This class can be used to store attributes needed for label rendering. 
  *
@@ -72,7 +75,7 @@ class QBrush;
  *   Each attribute is either se or unset.
  */
 
-class QgsLabelAttributes
+class  CORE_EXPORT QgsLabelAttributes
 {
 public:
     /** Constructor.

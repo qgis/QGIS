@@ -5,7 +5,7 @@
     begin                : Jan 21, 2004
     copyright            : (C) 2004 by Tim Sutton
     email                : tim@linfiniti.com
-/***************************************************************************
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *

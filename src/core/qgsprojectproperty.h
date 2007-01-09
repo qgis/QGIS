@@ -46,7 +46,7 @@ class QStringList;
    too large and unwieldy, so it's broken out here into separate files.
 
 */
-class QgsProperty
+class CORE_EXPORT QgsProperty
 {
 public:
 
@@ -118,7 +118,7 @@ public:
 
 Contains a QgsPropertyKey's value
 */
-class QgsPropertyValue : public QgsProperty
+class CORE_EXPORT QgsPropertyValue : public QgsProperty
 {
 public:
     QgsPropertyValue()
@@ -197,7 +197,7 @@ private:
    that will contain a QgsPropertyValue.
 
 */
-class QgsPropertyKey : public QgsProperty
+class CORE_EXPORT QgsPropertyKey : public QgsProperty
 {
 public:
 

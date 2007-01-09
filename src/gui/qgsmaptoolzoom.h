@@ -23,7 +23,7 @@
 
 class QRubberBand;
 
-class QgsMapToolZoom : public QgsMapTool
+class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
 {
   public:
     //! constructor
