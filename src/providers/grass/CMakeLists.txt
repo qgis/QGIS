@@ -27,7 +27,7 @@ TARGET_LINK_LIBRARIES (qgisgrass
   qgis_core
 )
 
-ADD_LIBRARY (grassprovider SHARED ${GRASS_PROVIDER_SRCS})
+ADD_LIBRARY (grassprovider MODULE ${GRASS_PROVIDER_SRCS})
 
 TARGET_LINK_LIBRARIES (grassprovider
   ${QT_LIBRARIES}

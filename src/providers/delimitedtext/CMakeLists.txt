@@ -15,7 +15,7 @@ INCLUDE_DIRECTORIES(
   ${GEOS_INCLUDE_DIR}
 )
 
-ADD_LIBRARY(delimitedtextprovider SHARED ${DTEXT_SRCS})
+ADD_LIBRARY(delimitedtextprovider MODULE ${DTEXT_SRCS})
 
 TARGET_LINK_LIBRARIES(delimitedtextprovider
   ${QT_LIBRARIES}
