@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include "qgsrect.h"
 #include "qgsvectordataprovider.h"
+#include <geos.h>
 #include <indexStrtree.h>
 #if GEOS_VERSION_MAJOR < 3 
 #define GEOS_INDEX_STRTREE geos 
