@@ -164,6 +164,11 @@ IF (WIN32)
 
 ELSE (WIN32)
 
+  IF (APPLE)
+    # for Mac OS X, everything is put inside an application bundle
+    SET (CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/qgis.app/Contents/MacOS)
+  ENDIF (APPLE)
+
   # common for MAC and UNIX
   SET (QGIS_BIN_DIR    ${CMAKE_INSTALL_PREFIX}/bin)
   SET (QGIS_DATA_DIR   ${CMAKE_INSTALL_PREFIX}/share/qgis)
