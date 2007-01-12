@@ -1070,35 +1070,37 @@ QString QgsSpatialRefSys::toWkt()
 bool QgsSpatialRefSys::readXML( QDomNode & theNode )
 {
   QgsDebugMsg("Reading Spatial Ref Sys from xml ------------------------!");
-     QDomNode myNode = theNode.namedItem("proj4");
+  QDomNode srsNode  = theNode.namedItem( "spatialrefsys" );
+
+     QDomNode myNode = srsNode.namedItem("proj4");
      QDomElement myElement = myNode.toElement();
      setProj4String(myElement.text());
 
-     myNode = theNode.namedItem("srsid");
+     myNode = srsNode.namedItem("srsid");
      myElement = myNode.toElement();
      setSrsId(myElement.text().toLong());
 
-     myNode = theNode.namedItem("srid");
+     myNode = srsNode.namedItem("srid");
      myElement = myNode.toElement();
      setSrid(myElement.text().toLong());
 
-     myNode = theNode.namedItem("epsg");
+     myNode = srsNode.namedItem("epsg");
      myElement = myNode.toElement();
      setEpsg(myElement.text().toLong());
 
-     myNode = theNode.namedItem("description");
+     myNode = srsNode.namedItem("description");
      myElement = myNode.toElement();
      setDescription(myElement.text());
 
-     myNode = theNode.namedItem("projectionacronym");
+     myNode = srsNode.namedItem("projectionacronym");
      myElement = myNode.toElement();
      setProjectionAcronym(myElement.text());
 
-     myNode = theNode.namedItem("ellipsoidacronym");
+     myNode = srsNode.namedItem("ellipsoidacronym");
      myElement = myNode.toElement();
      setEllipsoidAcronym(myElement.text());
  
-     myNode = theNode.namedItem("geographicflag");
+     myNode = srsNode.namedItem("geographicflag");
      myElement = myNode.toElement();
      if (myElement.text().compare("true"))
      {

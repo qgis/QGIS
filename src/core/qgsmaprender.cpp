@@ -377,8 +377,12 @@ bool QgsMapRender::projectionsEnabled()
 
 void QgsMapRender::setDestinationSrs(const QgsSpatialRefSys& srs)
 {
+  QgsDebugMsg("* Setting destSRS");
+  QgsDebugMsg("* DestSRS.srsid() = " + QString::number(srs.srsid()));
+  QgsDebugMsg("* DestSRS.proj4() = " + srs.proj4String());
   if (*mDestSRS != srs)
   {
+    QgsDebugMsg("No, changed my mind!");
     *mDestSRS = srs;
     updateFullExtent();
     emit destinationSrsChanged();
@@ -387,6 +391,9 @@ void QgsMapRender::setDestinationSrs(const QgsSpatialRefSys& srs)
 
 const QgsSpatialRefSys& QgsMapRender::destinationSrs()
 {
+  QgsDebugMsg("* Returning destSRS");
+  QgsDebugMsg("* DestSRS.srsid() = " + QString::number(mDestSRS->srsid()));
+  QgsDebugMsg("* DestSRS.proj4() = " + mDestSRS->proj4String());
   return *mDestSRS;
 }
 
