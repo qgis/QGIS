@@ -16,7 +16,7 @@ const char* QGis::qgisSvnVersion = QGSSVNVERSION;
 const int QGis::qgisVersionInt =900;
   
 // Release name
-const char* QGis::qgisReleaseName = "Grumpy - 0.9 UNSTABLE";
+const char* QGis::qgisReleaseName = "Grumpy - UNSTABLE";
 
 const char* QGis::qgisVectorGeometryType[] =
 {
