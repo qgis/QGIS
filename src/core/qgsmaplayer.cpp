@@ -192,11 +192,7 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
 
     //read srs
     QDomNode srsNode = layer_node.namedItem("srs");
-    if( ! srsNode.isNull()  )
-    {
-      QDomNode mySrsNode = srsNode.namedItem("spatialrefsys");
-      mSRS->readXML(mySrsNode);
-    }
+    mSRS->readXML(srsNode);
     
     //read transparency level
     QDomNode transparencyNode = layer_node.namedItem("transparencyLevelInt");

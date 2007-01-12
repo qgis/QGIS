@@ -524,12 +524,12 @@ bool QgsCoordinateTransform::readXML( QDomNode & theNode )
   
   QgsDebugMsg("Reading Coordinate Transform from xml ------------------------!");
   
-  QDomNode mySrcNodeParent = theNode.namedItem("sourcesrs");
-  QDomNode mySrcNode = mySrcNodeParent.namedItem("spatialrefsys");
+  QDomNode mySrcNode = theNode.namedItem("sourcesrs");
   mSourceSRS.readXML(mySrcNode);
-  QDomNode myDestNodeParent = theNode.namedItem("destinationsrs");
-  QDomNode myDestNode = myDestNodeParent.namedItem("spatialrefsys");
+
+  QDomNode myDestNode = theNode.namedItem("destinationsrs");
   mDestSRS.readXML(myDestNode);
+
   initialise();
 
   return true;
