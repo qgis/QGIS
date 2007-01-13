@@ -210,9 +210,9 @@ void QgsMapRender::render(QPainter* painter)
 #endif
 
   // render all layers in the stack, starting at the base
-  std::deque<QString>::iterator li = mLayerSet.begin();
+  std::deque<QString>::reverse_iterator li = mLayerSet.rbegin();
   
-  while (li != mLayerSet.end())
+  while (li != mLayerSet.rend())
   {
     QgsDebugMsg("Rendering at layer item " + (*li));
 
@@ -289,8 +289,8 @@ void QgsMapRender::render(QPainter* painter)
   if (!mOverview)
   {
     // render all labels for vector layers in the stack, starting at the base
-    li = mLayerSet.begin();
-    while (li != mLayerSet.end())
+    li = mLayerSet.rbegin();
+    while (li != mLayerSet.rend())
     {
       // TODO: emit drawingProgress((myRenderCounter++),zOrder.size());
       QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer(*li);
