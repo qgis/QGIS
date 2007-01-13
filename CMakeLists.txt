@@ -167,6 +167,8 @@ ELSE (WIN32)
   IF (APPLE)
     # for Mac OS X, everything is put inside an application bundle
     SET (CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/qgis.app/Contents/MacOS)
+    # path for library references
+    SET (CMAKE_INSTALL_NAME_DIR @executable_path/lib)
   ENDIF (APPLE)
 
   # common for MAC and UNIX
