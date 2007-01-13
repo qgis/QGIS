@@ -259,7 +259,9 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
     mySelector->setSelectedSRSID(myDefaultSRS);
     if(mySelector->exec())
     {
+      QgsDebugMsg("Layer srs set from dialog: " + QString::number(mySelector->getCurrentSRSID()));
       srs->createFromSrsId(mySelector->getCurrentSRSID());
+      srs->debugPrint();
     }
     else
     {
@@ -271,13 +273,17 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
   {
     // XXX TODO: Change project to store selected CS as 'projectSRS' not 'selectedWKT'
     proj4String = QgsProject::instance()->readEntry("SpatialRefSys","//ProjectSRSProj4String",GEOPROJ4);
+    QgsDebugMsg("Layer srs set from project: " + proj4String);
     srs->createFromProj4(proj4String);  
+    srs->debugPrint();
   }
   else ///Projections/defaultBehaviour==useGlobal
   {
     // XXX TODO: Change global settings to store default CS as 'defaultSRS' not 'defaultProjectionWKT'
     int srs_id = mySettings.readNumEntry("/Projections/defaultProjectionSRSID",GEOSRS_ID); 
-    srs->createFromSrsId(srs_id); 
+    QgsDebugMsg("Layer srs set from global: " + proj4String);
+    srs->createFromSrsId(srs_id);
+    srs->debugPrint();
   }
 
 }

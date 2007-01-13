@@ -519,6 +519,9 @@ QgsRasterLayer::readFile( QString const & fileName )
   // QgsCoordinateTransform for this layer
   // NOTE: we must do this before getMetadata is called
 
+  QgsDebugMsg("Raster initial SRS");
+  mSRS->debugPrint();
+
   QString mySourceWKT = getProjectionWKT();
 
   QgsDebugMsg("--------------------------------------------------------------------------------------");
@@ -532,6 +535,8 @@ QgsRasterLayer::readFile( QString const & fileName )
   {
     mSRS->validate();
   }
+  QgsDebugMsg("Raster determined to have the following SRS");
+  mSRS->debugPrint();
 
   //set up the coordinat transform - in the case of raster this is mainly used to convert
   //the inverese projection of the map extents of the canvas when zzooming in etc. so
@@ -662,12 +667,15 @@ QString QgsRasterLayer::getProjectionWKT()
     //try to get the gcp srs from the raster layer if available
     myWKTString=QString(gdalDataset->GetGCPProjection());
 
-    mySRS.createFromWkt(myWKTString);
-    if (!mySRS.isValid())
-    {
-      // use force and make SRS valid!
-      mySRS.validate();
-    }
+// What is the purpose of this piece of code?
+// Sideeffects from validate()?
+//    mySRS.createFromWkt(myWKTString);
+//    if (!mySRS.isValid())
+//    {
+//      // use force and make SRS valid!
+//      mySRS.validate();
+//    }
+
   }
 
   return myWKTString;
