@@ -24,6 +24,14 @@ SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 SET (PLUGINS_ALSO_BINARIES FALSE)
 
 
+# try to configure and build GRASS plugin by default
+SET (WITH_GRASS TRE CACHE BOOL "Determines whether GRASS plugin should be built")
+SET (GRASS_PREFIX "" CACHE PATH "Path to GRASS base directory")
+
+# try to configure and build python bindings by default
+SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
+
+
 #############################################################
 # check if lexer and parser are not missing
 # http://www.mail-archive.com/cmake@cmake.org/msg02861.html
@@ -58,8 +66,12 @@ FIND_PACKAGE(Postgres) # PostgreSQL provider, SPIT plugin
 FIND_PACKAGE(Expat)    # GPS importer plugin
 FIND_PACKAGE(GSL)      # Georeferencer
 FIND_PACKAGE(GRASS)    # GRASS plugin
-FIND_PACKAGE(PythonLibs) # MapServer export tool
-FIND_PACKAGE(PythonInterp) # test for sip and PyQt4
+
+# python support:
+# - mapserver export tool
+# - bindings
+INCLUDE (Python) # file cmake/Python.cmake
+
 
 IF (NOT PROJ_FOUND OR NOT SQLITE3_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
   MESSAGE (SEND_ERROR "Some dependencies were not found!")
@@ -69,57 +81,6 @@ IF (POSTGRES_FOUND)
   # following variable is used in qgsconfig.h
   SET (HAVE_POSTGRESQL TRUE)
 ENDIF (POSTGRES_FOUND)
-
-
-#############################################################
-# python support
-
-MACRO (TRY_RUN_PYTHON RESULT CMD)
-  IF (PYTHONINTERP_FOUND)
-    
-    EXEC_PROGRAM(${PYTHON_EXECUTABLE} ARGS -c "\"${CMD}\""
-                 OUTPUT_VARIABLE out
-                 RETURN_VALUE retval)
-    IF (retval EQUAL 0)
-      SET (${RESULT} TRUE)
-    ELSE (retval EQUAL 0)
-      SET (${RESULT} FALSE)
-    ENDIF (retval EQUAL 0)
-  
-  ELSE (PYTHONINTERP_FOUND)
-    SET (${${RESULT}} FALSE)
-  ENDIF (PYTHONINTERP_FOUND)
-ENDMACRO (TRY_RUN_PYTHON)
-
-
-# enable/disable python support (mapserver export tool and bindings)
-IF (PYTHON_LIBRARIES AND PYTHON_INCLUDE_PATH)
-  SET (PYTHON_FOUND TRUE)
-  MESSAGE(STATUS "Python libraries found")
-
-  # TODO: should not be needed, report it to CMake devs
-  IF (UNIX AND NOT APPLE)
-    SET (PYTHON_LIBRARIES ${PYTHON_LIBRARIES} util)
-  ENDIF (UNIX AND NOT APPLE)
-  
-  # check for SIP
-  TRY_RUN_PYTHON (HAVE_SIP_MODULE "from sip import wrapinstance")
-  FIND_PROGRAM (SIP_BINARY_PATH sip)
-
-  # check for PyQt4
-  TRY_RUN_PYTHON (HAVE_PYQT4 "from PyQt4 import QtCore, QtGui")
-  
-  # if SIP and PyQt4 are found, enable bindings
-  IF (HAVE_SIP_MODULE AND SIP_BINARY_PATH AND HAVE_PYQT4)
-    SET (HAVE_PYTHON TRUE)
-    MESSAGE(STATUS "Python bindings enabled")
-  ELSE (HAVE_SIP_MODULE AND SIP_BINARY_PATH AND HAVE_PYQT4)
-    SET (HAVE_PYTHON FALSE)
-    MESSAGE(STATUS "Python bindings disabled")
-  ENDIF (HAVE_SIP_MODULE AND SIP_BINARY_PATH AND HAVE_PYQT4)
-
-ENDIF (PYTHON_LIBRARIES AND PYTHON_INCLUDE_PATH)
-
 
 
 #############################################################
