@@ -310,6 +310,10 @@ class CORE_EXPORT QgsSpatialRefSys
          * @param QString the acronym (must be a valid proj4 ellipsoid acronym)
          */
         void setEllipsoidAcronym(QString theEllipsoidAcronym);
+
+        /*! Print the description if debugging
+         */
+	void debugPrint();
     private:
         // Open SQLite db and show message if ccannot be opened
         // returns the same code as sqlite3_open

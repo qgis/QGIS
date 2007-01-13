@@ -128,7 +128,7 @@ void QgsSpatialRefSys::validate()
     //if not we will prompt the user for and srs
     //then retest using gdal
     //if the retest fails we will then set  this srs to the GEOCS/WGS84 default
-
+    QgsDebugMsg("Use GDAL to vaildate");
 
     /* Here are the possible OGR error codes :
        typedef int OGRErr;
@@ -243,6 +243,7 @@ bool QgsSpatialRefSys::createFromWkt(QString theWkt)
 {
   if (theWkt.isEmpty())
   {
+    QgsDebugMsg("QgsSpatialRefSys::createFromWkt -- theWkt is uninitialised, operation failed")
     QgsLogger::critical("QgsSpatialRefSys::createFromWkt -- theWkt is uninitialised, operation failed");
     mIsValidFlag = false;
     return false;
@@ -442,11 +443,13 @@ bool QgsSpatialRefSys::isValid() const
   OGRErr myResult = myOgrSpatialRef.importFromProj4( mySourceCharArrayPointer );
   if (myResult==OGRERR_NONE)
   {
+    QgsDebugMsg("The OGRe says it's a valid SRS with proj4 string: " +  mProj4String);
     //srs is valid so nothing more to do...
     return true;
   }
   else
   {
+    QgsDebugMsg("The OGRe says it's an invalid SRS with proj4 string: " +  mProj4String);
     return false;
   }
 }
@@ -510,7 +513,9 @@ bool QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
   {
      myRecord = getRecord("select * from tbl_srs where description='" + mDescription.stripWhiteSpace () + "'");
   }
-  if (!myRecord.empty())
+//  if (!myRecord.empty())
+// What if descriptions aren't unique?
+  if (NULL)
   {
     mySrsId=myRecord["srs_id"].toLong();
     QgsDebugMsg("QgsSpatialRefSys::createFromProj4 Projection Description match search for srsid returned srsid: "\
@@ -1266,4 +1271,13 @@ int QgsSpatialRefSys::openDb(QString path, sqlite3 **db)
 void QgsSpatialRefSys::setCustomSrsValidation(CUSTOM_SRS_VALIDATION f)
 {
   mCustomSrsValidation = f;
+}
+
+void QgsSpatialRefSys::debugPrint()
+{
+  QgsDebugMsg("***SpatialRefSystem***");
+  QgsDebugMsg("* Valid : " + (mIsValidFlag?QString("true"):QString("false")));
+  QgsDebugMsg("* SrsId : " + QString::number(mSrsId));
+  QgsDebugMsg("* Proj4 : " + mProj4String);
+  QgsDebugMsg("* Desc. : " + mDescription);
 }

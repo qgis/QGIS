@@ -44,7 +44,7 @@ QgsMapLayer::QgsMapLayer(int type,
 {
     QgsDebugMsg("QgsMapLayer::QgsMapLayer - lyrname is '" + lyrname);
     
-    mSRS = new QgsSpatialRefSys(GEOSRS_ID, QgsSpatialRefSys::QGIS_SRSID); // WGS 84
+    mSRS = new QgsSpatialRefSys();
 
     // Set the display name = internal name
     mLayerName = capitaliseLayerName(lyrname);
@@ -150,6 +150,11 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
     QDomNode mnl = layer_node.namedItem("datasource");
     QDomElement mne = mnl.toElement();
     mDataSource = mne.text();
+
+    // Set a SRS (any will do) so that we don't ask the user.
+    // We will overwrite whatever GDAL etc picks up anway
+    // further down this function.
+    mSRS->createFromSrsId(GEOSRS_ID);
 
     // now let the children grab what they need from the DOM node.
     if (!readXML_( layer_node ))
