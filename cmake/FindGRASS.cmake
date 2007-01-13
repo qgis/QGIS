@@ -27,16 +27,16 @@ MACRO (CHECK_GRASS G_PREFIX)
     SET (GRASS_FOUND TRUE)
     SET (GRASS_PREFIX ${G_PREFIX})
   ENDIF (GRASS_INCLUDE_DIR AND GRASS_LIBRARIES)
+    
+  MARK_AS_ADVANCED (
+    GRASS_INCLUDE_DIR
+    GRASS_LIBRARIES
+  )
 
 ENDMACRO (CHECK_GRASS)
 
 ###################################
 # search for grass installations
-
-# try to build with GRASS by default
-SET (WITH_GRASS "ON" CACHE BOOL "Determines whether GRASS plugin should be built")
-
-SET (GRASS_PREFIX "" CACHE PATH "Path to GRASS base directory")
 
 # list of paths which to search - user's choice as first
 SET (GRASS_PATHS ${GRASS_PREFIX} /usr/lib/grass)
