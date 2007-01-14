@@ -16,53 +16,18 @@ email                : tim at linfiniti.com
  ***************************************************************************/
 /* $Id$ */
 
-/*
-   Please observe the following variable naming guidelines when editing this class:
-   ---------------------------------------------------------------------------------
-   In my opinion, clarity of code is more important than brevity, so variables should be
-   given clear, unambiguous names. Variables names should be written in mixed case, with
-   a lowercase first letter. Each variable name should include a scope resolution
-   indicator and a type indicator, in the form:
 
-   [scope]+[name]+[type]
-
-   Where scope resolution indicators are:
-
-   - global vars and class members : [none]
-   - variables passed as parameters to a function/method: the
-   - variables declared locally in a method or function: my
-
-   For example:
-
-   class FooClass {
-   int fooInt;  //class var has no prefix
-
-   void FooClass::fooMethod (int theBarInt)  //function parameter prefixed by 'the'
-   {
-   fooInt=1;
-   int myLocalInt=0; //function members prefixed by 'my'
-   myLocalInt=fooInt+theBarInt;
-   }
-   }
-
-   Using this scope resolution naming scheme makes the origin of each variable unambiguous
-   and the code easy to read (especially by people who did not write it!).
-
-   The [name] part of the variable should be short and descriptive, usually a noun.
-
-   The [type] part of the variable should be the type class of the variable written out in full.
-
-
-   DEBUG DIRECTIVES:
-
-   When compiling you can make sure DEBUG is defined by including -DDEBUG in the gcc command (e.g. gcc -DDEBUG myprog.c ) if you
-   wish to see edbug messages printed to stdout.
-
-*/
-
+#include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgsrasterlayer.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsmaptopixel.h"
+#include "qgsproviderregistry.h"
+#include "qgsrasterbandstats.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterpyramid.h"
+#include "qgsrasterviewport.h"
+#include "qgsrect.h"
+#include "qgsspatialrefsys.h"
 
 
 #include <cstdio>
@@ -72,53 +37,23 @@ email                : tim at linfiniti.com
 
 #include <QApplication>
 #include <QCursor>
-#include <QPainter>
-#include <QImage>
-#include <QFont>
+#include <QDomElement>
+#include <QDomNode>
 #include <QFile>
 #include <QFileInfo>
+#include <QFont>
 #include <QFontMetrics>
-#include <QMatrix>
-#include <QMessageBox>
-#include <QRegExp>
-#include <QSlider>
-#include <QLabel>
-#include <QDomNode>
-#include <QDomElement>
 #include <QFrame>
 #include <QImage>
 #include <QLabel>
 #include <QMatrix>
+#include <QMessageBox>
+#include <QLibrary>
 #include <QPainter>
 #include <QPixmap>
 #include <QRegExp>
+#include <QSlider>
 
-/*
- * 
- * New includes that will convert this class to a data provider interface
- * (B Morley)
- *
- */ 
-
-#include <QLibrary>
-
-#include "qgsproviderregistry.h"
-
-/*
- * END
- */
-
-#include "qgsrasterlayer.h"
-
-#include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgsmaplayerregistry.h"
-#include "qgsmaptopixel.h"
-#include "qgsrasterbandstats.h"
-#include "qgsrasterpyramid.h"
-#include "qgsrasterviewport.h"
-#include "qgsrect.h"
-#include "qgsspatialrefsys.h"
 
 
 // workaround for MSVC compiler which already has defined macro max
