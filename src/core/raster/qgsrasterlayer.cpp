@@ -2605,15 +2605,25 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
     QgsDebugMsg("myGdalBand->GetMinimum() failed");
   }
 
+//ifdefs below to remove compiler warning about unused vars
+#ifdef QGISDEBUG
   double GDALmaximum = myGdalBand->GetMaximum( &success );
-
+#else
+  myGdalBand->GetMaximum( &success );
+#endif
+  
   if ( ! success )
   {
     QgsDebugMsg("myGdalBand->GetMaximum() failed");
   }
 
+//ifdefs below to remove compiler warning about unused vars
+#ifdef QGISDEBUG
   double GDALnodata = myGdalBand->GetNoDataValue( &success );
-
+#else
+  myGdalBand->GetNoDataValue( &success );
+#endif
+  
   if ( ! success )
   {
     QgsDebugMsg("myGdalBand->GetNoDataValue() failed");
@@ -3270,8 +3280,9 @@ QPixmap QgsRasterLayer::getDetailedLegendQPixmap(int theLabelCountInt=3)
   int myFontHeight = (myQFontMetrics.height() );
   const int myInterLabelSpacing = 5;
   int myImageHeightInt = ((myFontHeight + (myInterLabelSpacing*2)) * theLabelCountInt);
-  int myLongestLabelWidthInt =  myQFontMetrics.width(this->name());
-  const int myHorizontalLabelSpacing = 5;
+  //these next two vars are not used anywhere so commented out for now
+  //int myLongestLabelWidthInt =  myQFontMetrics.width(this->name());
+  //const int myHorizontalLabelSpacing = 5;
   const int myColourBarWidthInt = 10;
   //
   // Get the adjusted matrix stats
