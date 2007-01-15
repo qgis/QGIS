@@ -21,7 +21,6 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgswfsplugin.h"
-#include "qgswfsprovider.h"
 
 #include "mIconAddWfsLayer.xpm"
 

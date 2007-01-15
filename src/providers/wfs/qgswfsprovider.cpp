@@ -22,6 +22,7 @@
 #include "qgsgeometry.h"
 #include "qgshttptransaction.h"
 #include "qgsspatialrefsys.h"
+#include "qgswfsdata.h"
 #include "qgswfsprovider.h"
 #include "qgslogger.h"
 #include <QDomDocument>
@@ -306,6 +307,7 @@ int QgsWFSProvider::describeFeatureType(const QString& uri, QString& geometryAtt
 
 int QgsWFSProvider::getFeatureGET(const QString& uri, const QString& geometryAttribute)
 {
+#if 0
   //assemble request string
   QString request = uri /*+ "&OUTPUTFORMAT=gml3"*/; //use gml2 as it is supported by most wfs servers
   QByteArray result;
@@ -333,6 +335,41 @@ int QgsWFSProvider::getFeatureGET(const QString& uri, const QString& geometryAtt
     return 4;
   }
 
+  return 0;
+#endif
+
+  //try the new and faster method with the expat parser
+  std::list<QgsFeature*> dataFeatures;
+  std::set<QString> thematicAttributes;
+  for(QgsFieldMap::const_iterator it = mFields.begin(); it != mFields.end(); ++it)
+    {
+      thematicAttributes.insert(it->name());
+    }
+  
+  QgsWFSData dataReader(uri, &mExtent, mSourceSRS, &dataFeatures, geometryAttribute, thematicAttributes, &mWKBType);
+  if(dataReader.getWFSData() != 0)
+    {
+      qWarning("getWFSData returned with error");
+      return 1;
+    }
+
+  qWarning("feature count after request is:");
+  qWarning(QString::number(dataFeatures.size()).toLocal8Bit().data());
+  qWarning("mExtent after request is:");
+  qWarning(mExtent.stringRep().toLocal8Bit().data());
+
+  mFeatureCount = 0;
+
+  QgsRect featureBBox;
+  GEOS_GEOM::Envelope* geosBBox;
+  for(std::list<QgsFeature*>::const_iterator it = dataFeatures.begin(); it != dataFeatures.end(); ++it)
+    {
+      featureBBox = (*it)->boundingBox();
+      geosBBox = new GEOS_GEOM::Envelope(featureBBox.xMin(), featureBBox.xMax(), featureBBox.yMin(), featureBBox.yMax());
+      mSpatialIndex.insert(geosBBox, (void*)(*it));
+      mEnvelopesAndFeatures.push_back(std::make_pair(geosBBox, (*it)));
+      ++mFeatureCount;
+    }
   return 0;
 }
 

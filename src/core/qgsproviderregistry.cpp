@@ -394,7 +394,7 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
   }
   else
   {
-    QgsLogger::warning( "Failed to load ../providers/libproviders.so" );
+    QgsLogger::warning( "Failed to load " + lib );
     delete myLib;
     return 0;
   }
