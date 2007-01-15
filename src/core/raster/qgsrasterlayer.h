@@ -460,6 +460,7 @@ public:
      * that falls outside the clipping range.*/
     void setMinRedDouble(double theDouble)
     {
+        userDefinedColorMinMax = true;
         minRedDouble=theDouble;
     };
     /** \brief Accessor for maximum clipping range for red.
@@ -478,6 +479,7 @@ public:
      * that falls outside the clipping range.*/
     void setMaxRedDouble(double theDouble)
     {
+        userDefinedColorMinMax = true;
         maxRedDouble=theDouble;
     };
     // 
@@ -499,6 +501,7 @@ public:
      * that falls outside the clipping range.*/
     void setMinGreenDouble(double theDouble)
     {
+        userDefinedColorMinMax = true;
         minGreenDouble=theDouble;
     };
     /** \brief Accessor for maximum clipping range for green.
@@ -517,6 +520,7 @@ public:
      * that falls outside the clipping range.*/
     void setMaxGreenDouble(double theDouble)
     {
+        userDefinedColorMinMax = true;
         maxGreenDouble=theDouble;
     };
     // 
@@ -539,6 +543,7 @@ public:
      * that falls outside the clipping range.*/
     void setMinBlueDouble(double theDouble)
     {
+        userDefinedColorMinMax = true;
         minBlueDouble=theDouble;
     };
     /** \brief Accessor for maximum clipping range for blue.
@@ -557,6 +562,7 @@ public:
      * that falls outside the clipping range.*/
     void setMaxBlueDouble(double theDouble)
     {
+        userDefinedColorMinMax = true;
         maxBlueDouble=theDouble;
     };
     // 
@@ -578,6 +584,7 @@ public:
      * that falls outside the clipping range.*/
     void setMinGrayDouble(double theDouble)
     {
+        userDefinedGrayMinMax = true;
         minGrayDouble=theDouble;
     };
     /** \brief Accessor for maximum clipping range for gray.
@@ -596,12 +603,14 @@ public:
      * that falls outside the clipping range.*/
     void setMaxGrayDouble(double theDouble)
     {
+        userDefinedGrayMinMax = true;
         maxGrayDouble=theDouble;
     };
     //
     /** \brief This enumerator describes the types of histogram scaling algorithms that can be used.  */
     enum COLOR_SCALING_ALGORITHM
     {
+        NO_STRETCH, //this should be the default color scaling algorithm, will allow for the display of images without calling QgsRasterBandStats unless needed
         STRETCH_TO_MINMAX, //linear histogram stretch
         STRETCH_AND_CLIP_TO_MINMAX,
         CLIP_TO_MINMAX
@@ -998,6 +1007,9 @@ private:
     double maxGrayDouble;
     /** \brief Whether this raster has overviews / pyramids or not */
     bool hasPyramidsFlag;
+    //Since QgsRasterBandStats deos not set the minRedDouble maxRedDouble etc., it is benificial to know if the user as set these values. Default = false
+    bool userDefinedColorMinMax;
+    bool userDefinedGrayMinMax;
     /** \brief This list holds a series of RasterPyramid structs
      * which store infomation for each potential pyramid level for this raster.*/
     RasterPyramidList mPyramidList;

@@ -377,6 +377,10 @@ QgsRasterLayer::QgsRasterLayer(QString const & path, QString const & baseName)
 dataProvider(0)
 
 {
+  userDefinedColorMinMax = false; //defaults needed to bypass stretch
+  userDefinedGrayMinMax = false;
+  setColorScalingAlgorithm(QgsRasterLayer::NO_STRETCH); //defaults needed to bypass stretch
+
   // Initialise the affine transform matrix
   adfGeoTransform[0] =  0;
   adfGeoTransform[1] =  1;
@@ -1335,7 +1339,7 @@ void QgsRasterLayer::draw (QPainter * theQPainter,
 void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort,                                                                             QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
 {
   QgsDebugMsg("QgsRasterLayer::drawSingleBandGray called for layer " + QString::number(theBandNoInt));
-  QgsRasterBandStats myRasterBandStats = getRasterBandStats(theBandNoInt);
+  //QgsRasterBandStats myRasterBandStats = getRasterBandStats(theBandNoInt);
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
   GDALDataType myDataType = myGdalBand->GetRasterDataType();
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
@@ -1345,34 +1349,85 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPor
   myQImage.setAlphaBuffer(true);
   myQImage.fill(qRgba(255,255,255,0 )); // fill transparent
 
-  double myRangeDouble = myRasterBandStats.rangeDouble;
+  //double myRangeDouble = myRasterBandStats.rangeDouble;
+  QgsRasterBandStats myGrayBandStats;
+  /*
+   * If stDevsToPlotDouble is set it will override any user defined Min Max values
+   */
+  if(QgsRasterLayer::NO_STRETCH != getColorScalingAlgorithm() && (!userDefinedGrayMinMax || stdDevsToPlotDouble > 0))
+  {
+    myGrayBandStats = getRasterBandStats(theBandNoInt);
+
+    /*
+     * This may upset some, but these values are set directly so that the userDefinedColorMinMax variable is not set, 
+     * though it really does not matter by this point.
+     */
+    if(stdDevsToPlotDouble > 0)
+    {
+      minGrayDouble = myGrayBandStats.meanDouble - (stdDevsToPlotDouble * myGrayBandStats.stdDevDouble);
+      maxGrayDouble = myGrayBandStats.meanDouble + (stdDevsToPlotDouble * myGrayBandStats.stdDevDouble);
+    }
+    else 
+    {
+      minGrayDouble = myGrayBandStats.minValDouble;
+      maxGrayDouble = myGrayBandStats.maxValDouble;
+    }
+  }
+  
+  /*
+   * Check for invalid min max value based on GDALDataType.
+   * Invalid values can happen if the user uses stdDevs to set min and max
+   * TODO:Needs to be expanded for all GDALDataTypes
+   */
+  if(GDT_Byte == myDataType)
+  {
+    if(minGrayDouble < 0.0)
+      minGrayDouble = 0.0;
+    if(maxGrayDouble > 255.0)
+      maxGrayDouble = 255.0;
+  }
 
   // print each point in myGdalScanData with equal parts R, G ,B o make it show as gray
   for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; ++myColumnInt)
   {
     for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; ++myRowInt)
     {
-      double myGrayValDouble = readValue ( myGdalScanData, myDataType,
+      double myGrayValueDouble = readValue ( myGdalScanData, myDataType,
           myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
 
       // If noDataValueDouble is 'nan', the comparison
       // against myGrayValDouble will always fail ( nan==nan always
       // returns false, by design), hence the slightly odd comparison
       // of myGrayValDouble against itself. 
-      if ( myGrayValDouble == noDataValueDouble ||
-          myGrayValDouble != myGrayValDouble)
+      if ( myGrayValueDouble == noDataValueDouble ||
+          myGrayValueDouble != myGrayValueDouble)
       {
 
         myQImage.setPixel(myRowInt, myColumnInt, qRgba(255,255,255,0 ));
         continue;
       }
 
-      int myGrayValInt = static_cast < int >( (myGrayValDouble-myRasterBandStats.minValDouble)
-          * (255/myRangeDouble));
+      if(QgsRasterLayer::NO_STRETCH != getColorScalingAlgorithm())
+      {
+        if(QgsRasterLayer::CLIP_TO_MINMAX == getColorScalingAlgorithm() || QgsRasterLayer::STRETCH_AND_CLIP_TO_MINMAX == getColorScalingAlgorithm())
+          if(myGrayValueDouble < minGrayDouble || myGrayValueDouble > maxGrayDouble) continue;
+
+        if(QgsRasterLayer::STRETCH_TO_MINMAX == getColorScalingAlgorithm() || QgsRasterLayer::STRETCH_AND_CLIP_TO_MINMAX == getColorScalingAlgorithm())
+          myGrayValueDouble = ((myGrayValueDouble - minGrayDouble)/(maxGrayDouble - minGrayDouble))*255;
+
+        //Check for out of range pixel values
+        if(myGrayValueDouble < 0.0)
+          myGrayValueDouble = 0.0;
+        else if(myGrayValueDouble > 255.0)
+          myGrayValueDouble = 255.0;
+      }
+
+      int myGrayValInt = static_cast < int > ( myGrayValueDouble);
+      //int myGrayValInt = static_cast < int >( (myGrayValDouble-myRasterBandStats.minValDouble) * (255/myRangeDouble));
 
       if (invertHistogramFlag)
       {
-        myGrayValDouble = 255 - myGrayValDouble;
+        myGrayValInt = 255 - myGrayValInt;
       }
       myQImage.setPixel(myRowInt, myColumnInt, qRgba(myGrayValInt, myGrayValInt, myGrayValInt, mTransparencyLevel));
     }
@@ -2235,6 +2290,80 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPor
   //myQImage.fill(0);
   myQImage.setAlphaBuffer(true);
   myQImage.fill(qRgba(255,255,255,0 )); // fill transparent
+
+  QgsRasterBandStats myRedBandStats;
+  QgsRasterBandStats myGreenBandStats;
+  QgsRasterBandStats myBlueBandStats;
+  /*
+   * If a stetch is requested and there are no user defined Min Max values
+   * we need to get these values from the bands themselves.
+   * If stDevsToPlotDouble is set it will override any user defined Min Max values
+   *
+   * NOTE: If the user only set minRedDouble this next block would be skipped 
+   * and all the other variables could have garbage (they are not initialized in the constructor) 
+   * This may want to be updated so that each Min Max is check to be sure it was set and if one is missing
+   * the get the QgsRasterBandStats for that band.
+   */
+  if(QgsRasterLayer::NO_STRETCH != getColorScalingAlgorithm() && (!userDefinedColorMinMax || stdDevsToPlotDouble > 0))
+  {
+    myRedBandStats = getRasterBandStats(myRedBandNoInt);
+    myGreenBandStats = getRasterBandStats(myGreenBandNoInt);
+    myBlueBandStats = getRasterBandStats(myBlueBandNoInt);
+
+    /*
+     * This may upset some, but these values are set directly so that the userDefinedColorMinMax variable is not set, 
+     * though it really does not matter at this point. Also insignificantly faster.
+     */
+    if(stdDevsToPlotDouble > 0)
+    {
+      minRedDouble = myRedBandStats.meanDouble - (stdDevsToPlotDouble * myRedBandStats.stdDevDouble);
+      maxRedDouble = myRedBandStats.meanDouble + (stdDevsToPlotDouble * myRedBandStats.stdDevDouble);
+      minGreenDouble = myGreenBandStats.meanDouble - (stdDevsToPlotDouble * myGreenBandStats.stdDevDouble);
+      maxGreenDouble = myGreenBandStats.meanDouble + (stdDevsToPlotDouble * myGreenBandStats.stdDevDouble);
+      minBlueDouble = myBlueBandStats.meanDouble - (stdDevsToPlotDouble * myBlueBandStats.stdDevDouble);
+      maxBlueDouble = myBlueBandStats.meanDouble + (stdDevsToPlotDouble * myBlueBandStats.stdDevDouble);
+    }
+    else 
+    {
+      minRedDouble = myRedBandStats.minValDouble;
+      maxRedDouble = myRedBandStats.maxValDouble;
+      minGreenDouble = myGreenBandStats.minValDouble;
+      maxGreenDouble = myGreenBandStats.maxValDouble;
+      minBlueDouble = myBlueBandStats.minValDouble;
+      maxBlueDouble = myBlueBandStats.maxValDouble;
+    }
+  }
+
+  /*
+   * Check for invalid min max value based on GDALDataType.
+   * Invalid values can happen if the user uses stdDevs to set min and max
+   * TODO:Needs to be expanded for all GDALDataTypes
+   */
+  if(GDT_Byte == myRedType)
+  {
+    if(minRedDouble < 0.0)
+      minRedDouble = 0.0;
+    if(maxRedDouble > 255.0)
+      maxRedDouble = 255.0;
+  }
+
+  if(GDT_Byte == myGreenType)
+  {
+    if(minGreenDouble < 0.0)
+      minGreenDouble = 0.0;
+    if(maxGreenDouble > 255.0)
+      maxGreenDouble = 255.0;
+  }
+
+  if(GDT_Byte == myBlueType)
+  {
+    if(minBlueDouble < 0.0)
+      minBlueDouble = 0.0;
+    if(maxBlueDouble > 255.0)
+      maxBlueDouble = 255.0;
+  }
+
+  //Read and display pixels
   for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; ++myColumnInt)
   {
     for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; ++myRowInt)
@@ -2263,6 +2392,44 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPor
         continue;
       }
 
+      /*
+       * Stretch RBG values based on selected color scaling algoritm
+       * NOTE: NO_STRETCH enum will help eliminte the need to call QgsRasterBandStats when an image is initially loaded
+       */
+      
+      if(QgsRasterLayer::NO_STRETCH != getColorScalingAlgorithm())
+      {
+        /*
+         * Currently if any one band is outside of min max range for the band the pixel is discarded,
+         * this can easily be updated so that all band have to be ouside of the min max range
+         */
+        if(QgsRasterLayer::CLIP_TO_MINMAX == getColorScalingAlgorithm() || QgsRasterLayer::STRETCH_AND_CLIP_TO_MINMAX == getColorScalingAlgorithm())
+        {
+          if(myRedValueDouble < minRedDouble || myRedValueDouble > maxRedDouble) continue;
+          if(myGreenValueDouble < minRedDouble || myGreenValueDouble > maxRedDouble) continue;
+          if(myBlueValueDouble < minBlueDouble || myBlueValueDouble > maxBlueDouble) continue;
+        }
+        if(QgsRasterLayer::STRETCH_TO_MINMAX == getColorScalingAlgorithm() || QgsRasterLayer::STRETCH_AND_CLIP_TO_MINMAX == getColorScalingAlgorithm())
+        {
+          myRedValueDouble = ((myRedValueDouble - minRedDouble)/(maxRedDouble - minRedDouble))*255;
+          myGreenValueDouble = ((myGreenValueDouble - minGreenDouble)/(maxGreenDouble - minGreenDouble))*255;
+          myBlueValueDouble = ((myBlueValueDouble - minBlueDouble)/(maxBlueDouble - minBlueDouble))*255;
+        }
+        //Check for out of range pixel values
+        if(myRedValueDouble < 0.0)
+          myRedValueDouble = 0.0;
+        else if(myRedValueDouble > 255.0)
+          myRedValueDouble = 255.0;
+        if(myGreenValueDouble < 0.0)
+          myGreenValueDouble = 0.0;
+        else if(myGreenValueDouble > 255.0)
+          myGreenValueDouble = 255.0;
+        if(myBlueValueDouble < 0.0)
+          myBlueValueDouble = 0.0;
+        else if(myBlueValueDouble > 255.0)
+          myBlueValueDouble = 255.0;
+      }
+
       int myRedValueInt   = static_cast < int > ( myRedValueDouble );
       int myGreenValueInt = static_cast < int > ( myGreenValueDouble );
       int myBlueValueInt  = static_cast < int > ( myBlueValueDouble );
@@ -2273,6 +2440,7 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPor
         myGreenValueInt = 255 - myGreenValueInt;
         myBlueValueInt = 255 - myBlueValueInt;
       }
+
       //set the pixel based on the above color mappings
       myQImage.setPixel ( myRowInt, myColumnInt,
           qRgba(myRedValueInt, myGreenValueInt, myBlueValueInt, mTransparencyLevel) );
@@ -2315,7 +2483,7 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPor
         / theQgsMapToPixel->mapUnitsPerPixel() 
         * fabs(adfGeoTransform[5])
         ); 
-  }                                   
+  }
 
   QgsDebugMsg("QgsRasterLayer::drawSingleBandGray: painting image to canvas from source NW"\
       + QString::number(paintXoffset) + ", " + QString::number(paintYoffset)\
