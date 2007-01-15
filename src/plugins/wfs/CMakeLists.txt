@@ -35,7 +35,6 @@ INCLUDE_DIRECTORIES(
      ../../core ../../core/raster ../../core/renderer ../../core/symbology
      ../../gui
      ..
-     ../../providers/wfs
      ../../app # for QgsNewHttpConnection
      ${GEOS_INCLUDE_DIR}
      ${GEOS_INCLUDE_DIR}/geos
