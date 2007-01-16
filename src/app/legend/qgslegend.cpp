@@ -1269,7 +1269,7 @@ QgsLegendLayer* QgsLegend::findLegendLayer(const QString& layerKey)
 	    }
 	}
     }
-  while(theItem = nextItem(theItem));
+  while((theItem = nextItem(theItem)));
   return 0;
 }
 
@@ -1763,7 +1763,7 @@ void QgsLegend::showLegendLayerFileGroups()
         theFileGroup->setHidden(!mShowLegendLayerFiles);
       }
     }
-  while(theItem = nextItem(theItem));
+  while((theItem = nextItem(theItem)));
 }
 
 void QgsLegend::zoomToLayerExtent()
