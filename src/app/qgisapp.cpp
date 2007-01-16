@@ -2525,7 +2525,7 @@ void QgisApp::newVectorLayer()
   QGis::WKBTYPE geometrytype;
   QString fileformat;
 
-  QgsGeomTypeDialog geomDialog;
+  QgsGeomTypeDialog geomDialog(this);
   if(geomDialog.exec()==QDialog::Rejected)
   {
     return;
