@@ -329,7 +329,7 @@ case "${host}" in
       QT_IS_MT="yes"
       QT_IS_EMBEDDED="yes"
     elif test "x`ls $QTDIR/lib/QtCore.framework/QtCore 2> /dev/null`" != x ; then
-      QT_LIB="-Xlinker -F$QTDIR/lib -framework Qt3Support -framework QtCore -framework QtGui -framework QtNetwork -framework QtXml -framework QtSvg"
+      QT_LIB="-Xlinker -F$QTDIR/lib -framework Qt3Support -framework QtCore -framework QtGui -framework QtNetwork -framework QtSql -framework QtSvg -framework QtXml"
       if test $QT_MINOR -lt "2"; then
         QT_LIB="$QT_LIB -L$QTDIR/lib -lQtDesigner -lQtTest"
       else
