@@ -2,20 +2,21 @@
 #############################################################
 # create Info.plist
 
-EXECUTE_PROCESS(COMMAND grep VERSION ${CMAKE_SOURCE_DIR}/qgsconfig.h
-                OUTPUT_VARIABLE VERSION
-                OUTPUT_STRIP_TRAILING_WHITESPACE)
-STRING(REGEX REPLACE "#define VERSION \"(.*)\"" "\\1" VERSION ${VERSION})
+ADD_CUSTOM_TARGET(Info.plist ALL
+                  VERSION=`grep VERSION ${CMAKE_SOURCE_DIR}/qgsconfig.h |
+                           sed -e "s/#define VERSION //"
+                               -e "s/\\\"//g"` &&
+                  SVNVERSION=`grep QGSSVNVERSION ${CMAKE_SOURCE_DIR}/qgssvnversion.h |
+                              sed -e "s/#define QGSSVNVERSION //"
+                                  -e "s/\\\"//g"` &&
+                  sed -e "s/@VERSION/$$VERSION/"
+                      -e "s/@SHORTVERSION/$$VERSION/"
+                      -e "s/@SVNVERSION/$$SVNVERSION/"
+                      < ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in > Info.plist
+                  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in
+                          ${CMAKE_SOURCE_DIR}/qgsconfig.h)
 
-EXECUTE_PROCESS(COMMAND grep SVNVERSION ${CMAKE_SOURCE_DIR}/qgssvnversion.h
-                OUTPUT_VARIABLE SVNVERSION
-                OUTPUT_STRIP_TRAILING_WHITESPACE)
-STRING(REGEX REPLACE "#define QGSSVNVERSION \"(.*)\"" "\\1" SVNVERSION ${SVNVERSION})
-
-SET(SHORTVERSION ${VERSION})
-
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in
-               ${CMAKE_CURRENT_BINARY_DIR}/Info.plist)
+ADD_DEPENDENCIES(Info.plist svnversion)
 
 #############################################################
 # process subdirs
@@ -26,6 +27,7 @@ SUBDIRS(Resources)
 # install
 
 INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/Info.plist
+               ${CMAKE_CURRENT_SOURCE_DIR}/PkgInfo
          DESTINATION ${CMAKE_INSTALL_PREFIX}/..)
 
 # Update bundle modification date so Finder scans latest plist

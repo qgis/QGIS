@@ -11,11 +11,11 @@
 	<key>CFBundleSignature</key>
 	<string>QGIS</string>
 	<key>CFBundleGetInfoString</key>
-	<string>QGIS ${VERSION} (${SVNVERSION}), © 2002-2007 QGIS Development Team</string>
+	<string>QGIS @VERSION (@SVNVERSION), © 2002-2007 QGIS Development Team</string>
 	<key>CFBundleShortVersionString</key>
-	<string>${SHORTVERSION} (${SVNVERSION})</string>
+	<string>@SHORTVERSION (@SVNVERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>${VERSION}</string>
+	<string>@VERSION</string>
 	<key>CFBundleIconFile</key>
 	<string>qgis.icns</string>
 	<key>CFBundleDocumentTypes</key>
