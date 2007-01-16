@@ -19,8 +19,8 @@
 #define QGSGEOMTYPEDIALOG_H
 
 #include "ui_qgsgeomtypedialogbase.h"
+#include "qgisgui.h"
 #include "qgscontexthelp.h"
-#include <QDialog>
 
 #include "qgis.h"
 
@@ -28,7 +28,7 @@ class QgsGeomTypeDialog: public QDialog, private Ui::QgsGeomTypeDialogBase
 {
   Q_OBJECT
   public:
-  QgsGeomTypeDialog();
+  QgsGeomTypeDialog(QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
   ~QgsGeomTypeDialog();
   /**Returns the selected geometry type*/
   QGis::WKBTYPE selectedType() const;

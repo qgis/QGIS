@@ -18,8 +18,8 @@
 #include "qgsaddattrdialog.h"
 #include "qgsvectordataprovider.h"
 
-QgsAddAttrDialog::QgsAddAttrDialog(QgsVectorDataProvider* provider)
-: QDialog(), mDataProvider(provider)
+QgsAddAttrDialog::QgsAddAttrDialog(QgsVectorDataProvider* provider, QWidget *parent, Qt::WFlags fl)
+: QDialog(parent, fl), mDataProvider(provider)
 {
     setupUi(this);
     connect(mOkButton, SIGNAL(clicked()), this, SLOT(accept()));
@@ -42,8 +42,8 @@ QgsAddAttrDialog::QgsAddAttrDialog(QgsVectorDataProvider* provider)
     */
 }
 
-QgsAddAttrDialog::QgsAddAttrDialog(const std::list<QString>& typelist)
-: QDialog(), mDataProvider(0)
+QgsAddAttrDialog::QgsAddAttrDialog(const std::list<QString>& typelist, QWidget *parent, Qt::WFlags fl)
+: QDialog(parent, fl), mDataProvider(0)
 {
     setupUi(this);
     connect(mOkButton, SIGNAL(clicked()), this, SLOT(accept()));

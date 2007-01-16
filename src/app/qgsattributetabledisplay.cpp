@@ -128,7 +128,7 @@ void QgsAttributeTableDisplay::deleteAttributes()
 
 void QgsAttributeTableDisplay::addAttribute()
 {
-  QgsAddAttrDialog dialog(mLayer->getDataProvider());
+  QgsAddAttrDialog dialog(mLayer->getDataProvider(), this);
   if(dialog.exec()==QDialog::Accepted)
   {
     if(!table()->addAttribute(dialog.name(),dialog.type()))
