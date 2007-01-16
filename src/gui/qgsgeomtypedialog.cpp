@@ -19,7 +19,8 @@
 #include "qgsgeomtypedialog.h"
 #include "qgsaddattrdialog.h"
 
-QgsGeomTypeDialog::QgsGeomTypeDialog(): QDialog()
+QgsGeomTypeDialog::QgsGeomTypeDialog(QWidget *parent, Qt::WFlags fl)
+: QDialog(parent, fl)
 {
     setupUi(this);
     connect(mOkButton, SIGNAL(clicked()), this, SLOT(accept()));
@@ -64,7 +65,7 @@ void QgsGeomTypeDialog::on_mAddAttributeButton_clicked()
     types.push_back("Real");
     types.push_back("Integer");
     types.push_back("String");
-    QgsAddAttrDialog d(types);
+    QgsAddAttrDialog d(types, this);
     if(d.exec()==QDialog::Accepted)
     {
 	Q3ListViewItem* attritem=new Q3ListViewItem(mAttributeView, d.name(), d.type());

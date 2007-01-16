@@ -19,7 +19,7 @@
 #define QGSADDATTRDIALOG_H
 
 #include "ui_qgsaddattrdialogbase.h"
-#include <QDialog>
+#include "qgisgui.h"
 
 class QgsVectorDataProvider;
 
@@ -27,8 +27,10 @@ class QgsAddAttrDialog: public QDialog, private Ui::QgsAddAttrDialogBase
 {
     Q_OBJECT
  public:
-    QgsAddAttrDialog(QgsVectorDataProvider* provider);
-    QgsAddAttrDialog(const std::list<QString>& typelist);
+    QgsAddAttrDialog(QgsVectorDataProvider* provider,
+                     QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
+    QgsAddAttrDialog(const std::list<QString>& typelist,
+                     QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     QString name() const;
     QString type() const;
  protected:
