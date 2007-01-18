@@ -2078,13 +2078,13 @@ bool QgsPostgresProvider::changeGeometryValues(QgsGeometryMap & geometry_map)
     PGresult* result=PQexec(connection, (const char *)(insert.utf8()));
     if(result==0)
     {
-      QMessageBox::information(0,"INSERT error","An error occured during feature insertion",QMessageBox::Ok);
+      QMessageBox::information(0,"INSERT error","An error occured during feature insertion");
       return false;
     }
     ExecStatusType message=PQresultStatus(result);
     if(message==PGRES_FATAL_ERROR)
     {
-      QMessageBox::information(0,"INSERT error",QString(PQresultErrorMessage(result)),QMessageBox::Ok);
+      QMessageBox::information(0,"INSERT error",QString(PQresultErrorMessage(result)));
       return false;
     }
     return true;
@@ -2129,7 +2129,7 @@ bool QgsPostgresProvider::changeGeometryValues(QgsGeometryMap & geometry_map)
         ExecStatusType message=PQresultStatus(result);
         if(message==PGRES_FATAL_ERROR)
         {
-          QMessageBox::information(0,"UPDATE error",QString(PQresultErrorMessage(result)),QMessageBox::Ok);
+          QMessageBox::information(0,"UPDATE error",QString(PQresultErrorMessage(result)));
         }
       }
     }

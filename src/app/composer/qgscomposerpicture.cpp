@@ -416,7 +416,7 @@ void QgsComposerPicture::pictureChanged ( )
     loadPicture();
 
     if ( !mPictureValid ) {
-        QMessageBox::warning( 0, tr("Warning"),
+        QMessageBox::warning( this, tr("Warning"),
                         tr("Cannot load picture.") );
     }
     else

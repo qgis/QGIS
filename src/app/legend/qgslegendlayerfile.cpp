@@ -321,21 +321,21 @@ void QgsLegendLayerFile::saveAsShapefile()
   
   if (error == "DRIVER_NOT_FOUND")
   {
-    QMessageBox::warning(0, "Driver not found", "ESRI Shapefile driver is not available");
+    QMessageBox::warning(0, tr("Driver not found"), tr("ESRI Shapefile driver is not available"));
   }
   else if (error == "ERROR_CREATE_SOURCE")
   {
-    QMessageBox::warning(0, "Error creating shapefile",
-                         "The shapefile could not be created (" +
+    QMessageBox::warning(0, tr("Error creating shapefile"),
+                         tr("The shapefile could not be created (") +
                              shapefileName + ")");
   }
   else if (error == "ERROR_CREATE_LAYER")
   {
-    QMessageBox::warning(0, "Error", "Layer creation failed");
+    QMessageBox::warning(0, tr("Error"), tr("Layer creation failed"));
   }
   else
   {
-    QMessageBox::information( 0, "Saving done", "Export to Shapefile has been completed");
+    QMessageBox::information(0, tr("Saving done"), tr("Export to Shapefile has been completed"));
   }
 }
 
@@ -351,34 +351,33 @@ void QgsLegendLayerFile::toggleEditing()
     if(!(vlayer->getDataProvider()->capabilities() & QgsVectorDataProvider::AddFeatures))
     {
       QMessageBox::information(0,tr("Start editing failed"),
-                               tr("Provider cannot be opened for editing"),
-                               QMessageBox::Ok);
+                               tr("Provider cannot be opened for editing"));
     }
   }
   else
   {
     // commit or roll back?
-    int commit = QMessageBox::information(0,tr("Stop editing"),
+    QMessageBox::StandardButton commit = QMessageBox::information(0,tr("Stop editing"),
                                           tr("Do you want to save the changes?"),
-                                          tr("&Yes"),tr("&No"),QString::null,0,1);  
+                                          QMessageBox::Save | QMessageBox::Discard);  
 
-    if(commit==0)
+    if(commit==QMessageBox::Save)
     {
       if(!vlayer->commitChanges())
       {
-        QMessageBox::information(0,tr("Error"),tr("Could not commit changes"),QMessageBox::Ok);
+        QMessageBox::information(0,tr("Error"),tr("Could not commit changes"));
       
         // Leave the in-memory editing state alone,
         // to give the user a chance to enter different values
         // and try the commit again later
       }
     }
-    else if(commit==1)
+    else if(commit==QMessageBox::Discard)
     {
       if(!vlayer->rollBack())
       {
         QMessageBox::information(0,tr("Error"),
-                                 tr("Problems during roll back"),QMessageBox::Ok);
+                                 tr("Problems during roll back"));
       }
     }
     vlayer->triggerRepaint();

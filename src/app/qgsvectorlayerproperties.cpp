@@ -362,12 +362,12 @@ void QgsVectorLayerProperties::on_pbnIndex_clicked()
 	setCursor(Qt::ArrowCursor);
 	if(errval)
 	{
-	    QMessageBox::information(this, tr("Spatial Index"), tr("Creation of spatial index successfull"),QMessageBox::Ok);
+	    QMessageBox::information(this, tr("Spatial Index"), tr("Creation of spatial index successfull"));
 	}
 	else
 	{
            // TODO: Remind the user to use OGR >= 1.2.6 and Shapefile
-	   QMessageBox::information(this, tr("Spatial Index"), tr("Creation of spatial index failed"),QMessageBox::Ok); 
+	   QMessageBox::information(this, tr("Spatial Index"), tr("Creation of spatial index failed")); 
 	}
     }
 }

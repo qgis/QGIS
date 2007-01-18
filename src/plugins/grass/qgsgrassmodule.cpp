@@ -1186,25 +1186,18 @@ void QgsGrassModule::run()
 	    QStringList outsideRegion = mOptions->checkRegion();
 	    if ( outsideRegion.size() > 0 )
 	    {
-                if  ( QgsGrass::versionMajor() >= 6 && QgsGrass::versionMinor() >= 1 )
-                {
-		    int ret = QMessageBox::question ( 0, "Warning", 
-				  "Input " + outsideRegion.join(",")
-				  + " outside current region!",  
-				"Use input region", "Continue", "Cancel" );
-
-		    if ( ret == 2 ) return;
-		    if ( ret == 0 ) resetRegion = true;
-                }
-                else 
-                {
-		    int ret = QMessageBox::question ( 0, "Warning", 
-				  "Input " + outsideRegion.join(",")
-				  + " outside current region!",  
-				  "Continue", "Cancel" );
-
-		    if ( ret == 1 ) return;
-                }
+	      QMessageBox::QMessageBox questionBox( QMessageBox::Question, "Warning", 
+	        "Input " + outsideRegion.join(",") + " outside current region!",  
+	        QMessageBox::Ok | QMessageBox::Cancel );
+	      QPushButton *resetButton = NULL;
+	      if  ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMajor() == 6 && QgsGrass::versionMinor() >= 1 )
+	      {
+	        resetButton = questionBox.addButton(tr("Use Input Region"), QMessageBox::DestructiveRole);
+	      }
+	      questionBox.exec();
+	      QAbstractButton *clicked = questionBox.clickedButton();
+	      if ( clicked == questionBox.button(QMessageBox::Cancel) ) return;
+	      if ( clicked == resetButton ) resetRegion = true;
 
                 if ( resetRegion ) 
                 {
@@ -1222,12 +1215,12 @@ void QgsGrassModule::run()
         QStringList outputExists = mOptions->checkOutput();
         if ( outputExists.size() > 0 )
         {
-            int ret = QMessageBox::question ( 0, "Warning", 
+            QMessageBox::StandardButton ret = QMessageBox::question ( 0, "Warning", 
                           "Output " + outputExists.join(",")
                           + " exists! Overwrite?",  
-                          QMessageBox::Yes,  QMessageBox::No );
+                          QMessageBox::Ok | QMessageBox::Cancel );
 
-            if ( ret == QMessageBox::No ) return;
+            if ( ret == QMessageBox::Cancel ) return;
 
             // r.mapcalc does not use standard parser
             if ( typeid(*mOptions) != typeid(QgsGrassMapcalc) )

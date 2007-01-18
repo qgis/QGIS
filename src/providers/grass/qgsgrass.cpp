@@ -118,12 +118,12 @@ void QgsGrass::init( void )
   while ( !(valid = isValidGrassBaseDir(gisBase)) ) {
     
     // ask user if he wants to specify GISBASE
-    int res = QMessageBox::warning(0, QObject::tr("GRASS plugin"),
+    QMessageBox::StandardButton res = QMessageBox::warning(0, QObject::tr("GRASS plugin"),
                     QObject::tr("QGIS couldn't find your GRASS installation.\n"
                     "Would you like to specify path (GISBASE) to your GRASS installation?"),
-                 QMessageBox::Yes, QMessageBox::No);
+                 QMessageBox::Ok | QMessageBox::Cancel);
     
-    if (res != QMessageBox::Yes)
+    if (res != QMessageBox::Ok)
     {
       userGisbase = false;
       break;

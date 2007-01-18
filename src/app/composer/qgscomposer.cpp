@@ -555,9 +555,9 @@ void QgsComposer::on_mActionPrint_activated(void)
 	if ( mComposition->paperWidth() != mPrinter->widthMM() || 
 	    mComposition->paperHeight() != mPrinter->heightMM() )
 	{
-	  int answer = QMessageBox::warning ( 0, tr("Paper does not match"), 
+	  int answer = QMessageBox::warning ( this, tr("Paper does not match"), 
 	      tr("The selected paper size does not match the composition size"),
-	      QMessageBox::Ok,  QMessageBox::Abort );
+	      QMessageBox::Ok | QMessageBox::Abort );
 
 	  if ( answer == QMessageBox::Abort )
 	    print = false;
@@ -613,12 +613,12 @@ void QgsComposer::on_mActionExportAsImage_activated(void)
 #endif
 
   if ( memuse > 200 ) { // cca 4500 x 4500
-    int answer = QMessageBox::warning ( 0, tr("Big image"), 
+    int answer = QMessageBox::warning ( this, tr("Big image"), 
         tr("To create image ") + QString::number(width) + " x " 
         + QString::number(height) 
         + tr(" requires circa ") 
         + QString::number(memuse) + tr(" MB of memory"), 
-        QMessageBox::Ok,  QMessageBox::Abort );
+        QMessageBox::Ok | QMessageBox::Abort );
   
     raise ();
     if ( answer == QMessageBox::Abort ) return;

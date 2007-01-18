@@ -200,10 +200,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
       if ( 0 == strncmp(msg, "libpng error:", 13) )
       {
         // Let the user know
-        QMessageBox::warning( 0, "libpng Error",
-          msg,
-          QMessageBox::Ok,
-          Qt::NoButton);
+        QMessageBox::warning( 0, "libpng Error", msg );
       }
       
       break;

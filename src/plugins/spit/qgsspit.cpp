@@ -141,8 +141,8 @@ void QgsSpit::removeConnection()
   QSettings settings;
   QString key = "/PostgreSQL/connections/" + cmbConnections->currentText();
   QString msg = tr("Are you sure you want to remove the [") + cmbConnections->currentText() + tr("] connection and all associated settings?");
-  int result = QMessageBox::information( this, tr("Confirm Delete"), msg, tr("Yes"), tr("No") );
-  if ( result == 0 )
+  QMessageBox::StandardButton result = QMessageBox::information( this, tr("Confirm Delete"), msg, QMessageBox::Ok | QMessageBox::Cancel);
+  if ( result == QMessageBox::Ok )
   {
     settings.removeEntry( key + "/host" );
     settings.removeEntry( key + "/database" );
@@ -696,23 +696,17 @@ void QgsSpit::import()
         PQclear( res );
       }
 
-      QMessageBox *del_confirm;
       if ( rel_exists1 || rel_exists2 )
       {
-        del_confirm = new QMessageBox( tr("Import Shapefiles - Relation Exists"),
+        QMessageBox::StandardButton del_confirm = QMessageBox::warning( this,
+                                       tr("Import Shapefiles - Relation Exists"),
                                        tr("The Shapefile:" ) + "\n" + tblShapefiles->item( i, 0 )->text() + "\n" + tr("will use [") +
                                        tblShapefiles->item( i, ColDBRELATIONNAME )->text() + tr("] relation for its data,") + "\n" + tr("which already exists and possibly contains data.") + "\n" +
                                        tr("To avoid data loss change the \"DB Relation Name\"") + "\n" + tr("for this Shapefile in the main dialog file list.") + "\n\n" +
                                        tr("Do you want to overwrite the [") + tblShapefiles->item( i, ColDBRELATIONNAME )->text() + tr("] relation?"),
-                                       QMessageBox::Warning,
-                                       QMessageBox::Yes | QMessageBox::Default,
-                                       QMessageBox::No | QMessageBox::Escape,
-                                       Qt::NoButton, 
-                                       this
-//                                       tr("Relation Exists") 
-                                     );
+                                       QMessageBox::Ok | QMessageBox::Cancel );
 
-        if ( del_confirm->exec() == QMessageBox::Yes )
+        if ( del_confirm == QMessageBox::Ok )
         {
           if ( rel_exists2 )
           {

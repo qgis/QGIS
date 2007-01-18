@@ -314,15 +314,15 @@ bool QgsPointDialog::generateWorldFile()
     }
     else if (cmbTransformType->currentText() == tr("Helmert"))
     {
-      int res = QMessageBox::warning(this, tr("Warning"),
+      QMessageBox::StandardButton res = QMessageBox::warning(this, tr("Warning"),
 		     tr("<p>A Helmert transform requires modifications in "
 		     "the raster layer.</p><p>The modifed raster will be "
 		     "saved in a new file and a world file will be "
 		     "generated for this new file instead.</p><p>Are you "
 		     "sure that this is what you want?</p>") + 
 		     "<p><i>" + tr("Currently all modified files will be written in TIFF format.") + 
-		     "</i><p>", QMessageBox::No, QMessageBox::Yes);
-      if (res == QMessageBox::No)
+		     "</i><p>", QMessageBox::Ok | QMessageBox::Cancel);
+      if (res == QMessageBox::Cancel)
 	       return false;
 
       QgsLeastSquares::helmert(mapCoords, pixelCoords, origin, pixelSize, rotation);
