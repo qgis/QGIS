@@ -267,7 +267,7 @@ void QgsPgQueryBuilder::on_btnTest_clicked()
   // if there is no sql, issue a warning
   if(txtSQL->text().isEmpty())
   {
-    QMessageBox::information(this, "No Query", "You must create a query before you can test it");
+    QMessageBox::information(this, tr("No Query"), tr("You must create a query before you can test it"));
   }
   else
   { 
@@ -334,7 +334,7 @@ void QgsPgQueryBuilder::on_btnOk_clicked()
     if(numRecs == -1)
     {
       //error in query - show the problem
-      QMessageBox::warning(this,"Error in Query", mPgErrorMessage);
+      QMessageBox::warning(this,tr("Error in Query"), mPgErrorMessage);
     }
     else
     {

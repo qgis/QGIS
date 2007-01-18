@@ -1123,11 +1123,11 @@ void QgsGrassMapcalc::saveAs()
 	// check if exists
 	if ( QFile::exists( mc+ "/" + name ) )
 	{
-	    int ret = QMessageBox::question ( 0, tr("Warning"), 
+	    QMessageBox::StandardButton ret = QMessageBox::question ( 0, tr("Warning"), 
 		        tr("The file already exists. Overwrite? "),  
-			QMessageBox::Yes,  QMessageBox::No );
+			QMessageBox::Ok | QMessageBox::Cancel );
 
-            if ( ret == QMessageBox::No ) continue;   
+            if ( ret == QMessageBox::Cancel ) continue;   
 	}
 	break;
     }

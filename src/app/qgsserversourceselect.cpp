@@ -157,8 +157,8 @@ void QgsServerSourceSelect::on_btnDelete_clicked()
   QString key = "/Qgis/connections-wms/" + cmbConnections->currentText();
   QString msg =
     tr("Are you sure you want to remove the ") + cmbConnections->currentText() + tr(" connection and all associated settings?");
-  int result = QMessageBox::information(this, tr("Confirm Delete"), msg, tr("Yes"), tr("No"));
-  if (result == 0)
+  QMessageBox::StandardButton result = QMessageBox::information(this, tr("Confirm Delete"), msg, QMessageBox::Ok | QMessageBox::Cancel);
+  if (result == QMessageBox::Ok)
   {
     settings.remove(key);
     cmbConnections->removeItem(cmbConnections->currentItem());  // populateConnectionList();
@@ -808,7 +808,7 @@ void QgsServerSourceSelect::addDefaultServers()
   }
   populateConnectionList();
 
-  QMessageBox::information(this, tr("WMS proxies"), tr("<p>Several WMS servers have been added to the server list. Note that the proxy fields have been left blank and if you access the internet via a web proxy, you will need to individually set the proxy fields with appropriate values.</p>"), QMessageBox::Ok);
+  QMessageBox::information(this, tr("WMS proxies"), tr("<p>Several WMS servers have been added to the server list. Note that the proxy fields have been left blank and if you access the internet via a web proxy, you will need to individually set the proxy fields with appropriate values.</p>"));
 }
 
 // ENDS

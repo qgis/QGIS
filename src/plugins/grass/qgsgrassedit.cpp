@@ -1357,12 +1357,12 @@ void QgsGrassEdit::checkOrphan ( int field, int cat )
   }
   if ( !orphan ) return;
 
-  int ret = QMessageBox::question ( 0, tr("Warning"), 
+  QMessageBox::StandardButton ret = QMessageBox::question ( 0, tr("Warning"), 
 	     tr("Orphan record was left in attribute table. "
 	      "<br>Delete the record?"),  
-	      QMessageBox::Yes,  QMessageBox::No );
+	      QMessageBox::Ok | QMessageBox::Cancel );
 
-  if ( ret == QMessageBox::No ) return;
+  if ( ret == QMessageBox::Cancel ) return;
 
   // Delete record
   error = mProvider->deleteAttributes ( field, cat );

@@ -124,9 +124,9 @@ void QgsBookmarks::on_btnDelete_clicked()
   if(lvi)
   {
     // make sure the user really wants to delete this bookmark
-    if(0 == QMessageBox::information(this,tr("Really Delete?"),
-          tr("Are you sure you want to delete the ") + lvi->text(0) +
-          tr(" bookmark?"), tr("&Yes"), tr("&No"), QString::null, 0, 1))  
+    if(QMessageBox::Ok == QMessageBox::information(this,tr("Really Delete?"),
+          tr("Are you sure you want to delete the ") + lvi->text(0) + tr(" bookmark?"),
+          QMessageBox::Ok | QMessageBox::Cancel))
     {
       // remove it from the listview
       lstBookmarks->takeItem(lvi);
@@ -145,8 +145,7 @@ void QgsBookmarks::on_btnDelete_clicked()
                                tr("Failed to delete the ") + 
                                lvi->text(0) +
                                tr(" bookmark from the database. The "
-                                  "database said:\n") + QString(errmsg),
-                               QMessageBox::Ok, QMessageBox::NoButton);
+                                  "database said:\n") + QString(errmsg));
           sqlite3_free(errmsg);
         }
         // close the database

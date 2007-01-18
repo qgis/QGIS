@@ -595,7 +595,7 @@ void QgsComposition::paperSizeChanged ( void )
     // A better solution here would be to set the canvas back to the
     // original size and carry on, but for the moment this will
     // prevent a crash due to an uncaught exception.
-    QMessageBox::critical( 0, tr("Out of memory"),
+    QMessageBox::critical( this, tr("Out of memory"),
                            tr("Qgis is unable to resize the paper size due to "
                               "insufficient memory.\n It is best that you avoid "
                               "using the map composer until you restart qgis.\n") );
@@ -790,7 +790,7 @@ void QgsComposition::setTool ( Tool tool )
 	}
 	else
         {
-	    QMessageBox::warning( 0, tr("Warning"),
+	    QMessageBox::warning( this, tr("Warning"),
                          tr("Cannot load picture.") );
 
 	    delete pi;

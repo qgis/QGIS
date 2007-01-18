@@ -102,13 +102,12 @@ void QgsGeorefPluginGui::on_pbnEnterWorldCoords_clicked() {
   // check if there already is a world file
   if (!worldfile.isEmpty()) {
     if (QFile::exists(worldfile)) {
-      int r = QMessageBox::question(this, tr("World file exists"),
+      QMessageBox::StandardButton r = QMessageBox::question(this, tr("World file exists"),
                        tr("<p>The selected file already seems to have a ")+
                        tr("world file! Do you want to replace it with the ")+
-		       tr("new world file?</p>"),
-                       QMessageBox::Yes|QMessageBox::Default, 
-                       QMessageBox::No|QMessageBox::Escape);
-      if (r == QMessageBox::No)
+		               tr("new world file?</p>"),
+                       QMessageBox::Ok | QMessageBox::Cancel);
+      if (r == QMessageBox::Cancel)
         return;
       else
         QFile::remove(worldfile);

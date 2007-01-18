@@ -416,7 +416,7 @@ private:
   //! shows the paste-transformations dialog
   void pasteTransformations();
   //! check to see if file is dirty and if so, prompt the user th save it
-  int saveDirty();
+  bool saveDirty();
   //! Have some control over closing of the application
   virtual void closeEvent(QCloseEvent* event);
 

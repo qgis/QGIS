@@ -252,8 +252,8 @@ void QgsDbSourceSelect::deleteConnection()
   QString key = "/Postgresql/connections/" + cmbConnections->currentText();
   QString msg =
     tr("Are you sure you want to remove the ") + cmbConnections->currentText() + tr(" connection and all associated settings?");
-  int result = QMessageBox::information(this, tr("Confirm Delete"), msg, tr("Yes"), tr("No"));
-  if (result == 0)
+  QMessageBox::StandardButton result = QMessageBox::information(this, tr("Confirm Delete"), msg, QMessageBox::Ok | QMessageBox::Cancel);
+  if (result == QMessageBox::Ok)
   {
     settings.removeEntry(key + "/host");
     settings.removeEntry(key + "/database");

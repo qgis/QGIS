@@ -1540,7 +1540,7 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
       
       if (pluginName == "__error__" || description == "__error__" || version == "__error__")
       {
-        QMessageBox::warning(0, tr("Python error"), tr("Error when reading metadata of plugin ") + packageName);
+        QMessageBox::warning(this, tr("Python error"), tr("Error when reading metadata of plugin ") + packageName);
         continue;
       }
       
@@ -1608,7 +1608,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
 
   if (!driverRegistrar)
   {
-    QMessageBox::warning(0,tr("OGR Driver Manager"),tr("unable to get OGRDriverManager"));
+    QMessageBox::warning(this,tr("OGR Driver Manager"),tr("unable to get OGRDriverManager"));
     return;                 // XXX good place to throw exception if we
   }                           // XXX decide to do exceptions
 
@@ -2425,13 +2425,9 @@ findLayers_( QString const & fileFilters, list<QDomNode> const & layerNodes )
 
 
 
-
-
-
-
 void QgisApp::fileExit()
 {
-  if (saveDirty() != QMessageBox::Cancel)
+  if (saveDirty())
   {
     removeAllLayers();
     qApp->exit(0);
@@ -2451,9 +2447,7 @@ void QgisApp::fileNew(bool thePromptToSaveFlag)
 { 
   if (thePromptToSaveFlag)
   {
-    int answer = saveDirty();
-
-    if (answer == QMessageBox::Cancel)
+    if (!saveDirty())
     {
       return;
     }
@@ -2649,9 +2643,7 @@ void QgisApp::newVectorLayer()
 void QgisApp::fileOpen()
 {
   // possibly save any pending work before opening a new project
-  int answer = saveDirty();
-
-  if (answer != QMessageBox::Cancel)
+  if (saveDirty())
   {
     // Retrieve last used project dir from persistent settings
     QSettings settings;
@@ -2768,12 +2760,11 @@ bool QgisApp::addProject(QString projectFile)
   {
     qDebug( "%s:%d %d bad layers found", __FILE__, __LINE__, e.layers().size() );
 
-    if ( QMessageBox::Yes == QMessageBox::critical( this, 
+    if ( QMessageBox::Ok == QMessageBox::critical( this, 
           tr("QGIS Project Read Error"), 
           tr("") + "\n" + e.what() + "\n" +
           tr("Try to find missing layers?"),
-          QMessageBox::Yes | QMessageBox::Default, 
-          QMessageBox::No  | QMessageBox::Escape ) )
+          QMessageBox::Ok | QMessageBox::Cancel ) )
     {
       qDebug( "%s:%d want to find missing layers is true", __FILE__, __LINE__ );
 
@@ -2787,9 +2778,8 @@ bool QgisApp::addProject(QString projectFile)
   {
     qDebug( "%s:%d BAD LAYERS FOUND", __FILE__, __LINE__ );
 
-    QMessageBox::critical( 0x0, 
-        tr("Unable to open project"), QString::fromLocal8Bit(e.what()), QMessageBox::Ok, 
-        Qt::NoButton );
+    QMessageBox::critical( this, 
+        tr("Unable to open project"), QString::fromLocal8Bit(e.what()) );
 
     mMapCanvas->freeze(false);
     mMapCanvas->refresh();
@@ -2881,12 +2871,9 @@ bool QgisApp::fileSave()
   }
   catch ( std::exception & e )
   {
-    QMessageBox::critical( 0x0,
+    QMessageBox::critical( this,
         tr("Unable to save project ") + QgsProject::instance()->filename(),
-        e.what(),
-        QMessageBox::Ok,
-        Qt::NoButton );
-
+        e.what() );
   }
   return true;
 } // QgisApp::fileSave
@@ -2974,8 +2961,7 @@ void QgisApp::openProject(QAction *action)
 
   debugme = action->text();
 
-  int answer = saveDirty();
-  if (answer != QMessageBox::Cancel)
+  if (saveDirty())
   {
     addProject(debugme);
 
@@ -2994,9 +2980,7 @@ void QgisApp::openProject(QAction *action)
 void QgisApp::openProject(const QString & fileName)
 {
   // possibly save any pending work before opening a different project
-  int answer = saveDirty();
-
-  if (answer != QMessageBox::Cancel)
+  if (saveDirty())
   {
     try
     {
@@ -3012,7 +2996,7 @@ void QgisApp::openProject(const QString & fileName)
     }
     catch ( QgsIOException & io_exception )
     {
-      QMessageBox::critical( 0x0, 
+      QMessageBox::critical( this, 
           tr("QGIS: Unable to load project"), 
           tr("Unable to load project ") + fileName );
     }
@@ -3408,14 +3392,14 @@ void QgisApp::deleteSelected()
       
   if(!(vlayer->getDataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures))
   {
-    QMessageBox::information(0, tr("Provider does not support deletion"), 
+    QMessageBox::information(this, tr("Provider does not support deletion"), 
                             tr("Data provider does not support deleting features"));
     return;
   }
 
   if(!vlayer->isEditable())
   {
-    QMessageBox::information(0, tr("Layer not editable"), 
+    QMessageBox::information(this, tr("Layer not editable"), 
                              tr("The current layer is not editable. Choose 'Start editing' in the digitizing toolbar."));
     return;
   }
@@ -4151,8 +4135,8 @@ void QgisApp::socketConnectionClosed()
     {
       versionInfo += parts[1] + "\n\n" + tr("Would you like more information?");
       ;
-      int result = QMessageBox::information(this, tr("QGIS Version Information"), versionInfo, tr("Yes"), tr("No"));
-      if (result == 0)
+      QMessageBox::StandardButton result = QMessageBox::information(this, tr("QGIS Version Information"), versionInfo, QMessageBox::Ok | QMessageBox::Cancel);
+      if (result == QMessageBox::Ok)
       {
         // show more info
         QgsMessageViewer *mv = new QgsMessageViewer(this);
@@ -4412,12 +4396,13 @@ void QgisApp::setExtent(QgsRect theRect)
   mMapCanvas->setExtent(theRect);
 }
 
-
-
-
-int QgisApp::saveDirty()
+/**
+  Prompt and save if project has been modified.
+  @return true if saved or discarded, false if cancelled
+ */
+bool QgisApp::saveDirty()
 {
-  int answer(QMessageBox::No);
+  QMessageBox::StandardButton answer(QMessageBox::Discard);
   mMapCanvas->freeze(true);
 
 #ifdef QGISDEBUG
@@ -4456,20 +4441,18 @@ int QgisApp::saveDirty()
 
     // prompt user to save
     answer = QMessageBox::information(this, tr("Save?"),
-        tr("<p>Do you want to save the current project?</p>"),
-        QMessageBox::Yes | QMessageBox::Default,
-        QMessageBox::No,
-        QMessageBox::Cancel | QMessageBox::Escape);
-    if (QMessageBox::Yes == answer )
+        tr("Do you want to save the current project?"),
+        QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Discard);
+    if (QMessageBox::Save == answer)
     {
       if (!fileSave())
-	answer = QMessageBox::Cancel;
+	    answer = QMessageBox::Cancel;
     }
   }
 
   mMapCanvas->freeze(false);
 
-  return answer;
+  return (answer != QMessageBox::Cancel);
 
 } // QgisApp::saveDirty()
 

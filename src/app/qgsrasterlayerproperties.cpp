@@ -490,33 +490,18 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   {
     if (res == "ERROR_WRITE_ACCESS")
     {
-      QMessageBox myMessageBox( tr("Write access denied"),
-                                tr("Write access denied. Adjust the file permissions and try again.\n\n"),
-                                QMessageBox::Warning,
-                                QMessageBox::Ok,
-                                Qt::NoButton,
-                                Qt::NoButton );
-      myMessageBox.exec();
+      QMessageBox::warning(this, tr("Write access denied"),
+                           tr("Write access denied. Adjust the file permissions and try again.\n\n") );
     }
     else if (res == "ERROR_WRITE_FORMAT")
     {
-      QMessageBox myMessageBox( tr("Building pyramids failed."),
-                                tr("The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again."),
-                                QMessageBox::Warning,
-                                QMessageBox::Ok,
-                                Qt::NoButton,
-                                Qt::NoButton );
-      myMessageBox.exec();
+      QMessageBox::warning(this, tr("Building pyramids failed."),
+                           tr("The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again.") );
     }
     else if (res == "FAILED_NOT_SUPPORTED")
     {
-      QMessageBox myMessageBox( tr("Building pyramids failed."),
-                                tr("Building pyramid overviews is not supported on this type of raster."),
-                                QMessageBox::Warning,
-                                QMessageBox::Ok,
-                                Qt::NoButton,
-                                Qt::NoButton );
-      myMessageBox.exec();
+      QMessageBox::warning(this, tr("Building pyramids failed."),
+                           tr("Building pyramid overviews is not supported on this type of raster.") );
     }
   }
 

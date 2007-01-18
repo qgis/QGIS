@@ -986,12 +986,12 @@ int QgsGrassProvider::openMap(QString gisdbase, QString location, QString mapset
 
     if ( level == 1 )
     {
-        int ret = QMessageBox::question ( 0, "Warning",
+        QMessageBox::StandardButton ret = QMessageBox::question ( 0, "Warning",
                       "GRASS vector map " + mapName + 
                       + " does not have topology. Build topology?",
-                      QMessageBox::Yes,  QMessageBox::No );
+                      QMessageBox::Ok | QMessageBox::Cancel );
 
-        if ( ret == QMessageBox::No ) return -1;
+        if ( ret == QMessageBox::Cancel ) return -1;
     }
 
     // Open vector

@@ -115,9 +115,8 @@ void QgsMapToolVertexEdit::canvasPressEvent(QMouseEvent * e)
 	//Find nearest segment of the selected line, move that node to the mouse location
 	if (!snapSegmentWithContext(point))
 	  {
-	    QMessageBox::warning(0, "Error", 
-				 QObject::tr("Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?"),
-				 QMessageBox::Ok, Qt::NoButton);
+	    QMessageBox::warning(0, QObject::tr("Error"), 
+				QObject::tr("Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?"));
 	    return;
 	  }
 	
@@ -160,9 +159,8 @@ void QgsMapToolVertexEdit::canvasPressEvent(QMouseEvent * e)
       {
 	if(!snapVertexWithContext(snapPoint))
 	  {
-	    QMessageBox::warning(0, "Error", 
-				 QObject::tr("Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?"),
-				 QMessageBox::Ok, Qt::NoButton);
+	    QMessageBox::warning(0, QObject::tr("Error"), 
+				QObject::tr("Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?"));
 	    return;
 	  }
       }
@@ -170,18 +168,16 @@ void QgsMapToolVertexEdit::canvasPressEvent(QMouseEvent * e)
       {
 	if (!snapSegmentWithContext(snapPoint))
 	  {
-	    QMessageBox::warning(0, "Error", 
-				 QObject::tr("Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?"),
-				 QMessageBox::Ok, Qt::NoButton);
+	    QMessageBox::warning(0, QObject::tr("Error"), 
+				QObject::tr("Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?"));
 	    return;
 	  }
 	
 	snapPoint = point;
 	if (!snapVertexOfSnappedSegment(snapPoint))
 	  {
-	    QMessageBox::warning(0, "Error", 
-				 QObject::tr("Could not snap vertex. Have you set the tolerance in Settings > Project Properties > General?"),
-				 QMessageBox::Ok, Qt::NoButton);
+	    QMessageBox::warning(0, QObject::tr("Error"), 
+				QObject::tr("Could not snap vertex. Have you set the tolerance in Settings > Project Properties > General?"));
 	    return;
 	  }
 	
@@ -228,9 +224,8 @@ void QgsMapToolVertexEdit::canvasPressEvent(QMouseEvent * e)
     // TODO: Find nearest segment of the selected line, move that node to the mouse location
     if (!snapVertexWithContext(point))
       {
-	QMessageBox::warning(0, "Error", 
-          QObject::tr("Could not snap vertex. Have you set the tolerance in Settings > Project Properties > General?"),
-          QMessageBox::Ok, Qt::NoButton);
+	QMessageBox::warning(0, QObject::tr("Error"), 
+			QObject::tr("Could not snap vertex. Have you set the tolerance in Settings > Project Properties > General?"));
 	return;
       }
       
@@ -269,9 +264,8 @@ bool QgsMapToolVertexEdit::snapSegmentWithContext(QgsPoint& point)
   if (!vlayer->snapSegmentWithContext(layerPoint, beforeVertex, atFeatureId, atGeometry, tolerance()))
   {
     mSnappedAtFeatureId = -1;
-    QMessageBox::warning(0, "Error",
-      QObject::tr("Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?"),
-      QMessageBox::Ok, Qt::NoButton);
+    QMessageBox::warning(0, QObject::tr("Error"),
+            QObject::tr("Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?"));
     return FALSE;
   }
   else
@@ -401,23 +395,22 @@ void QgsMapToolVertexEdit::canvasReleaseEvent(QMouseEvent * e)
   
   if (!vlayer)
   {
-    QMessageBox::information(0,"Not a vector layer","The current layer is not a vector layer",QMessageBox::Ok);
+    QMessageBox::information(0, QObject::tr("Not a vector layer"),
+            QObject::tr("The current layer is not a vector layer"));
     return;
   }
   
   if (!(vlayer->getDataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries))
   {
-    QMessageBox::information(0,"Change geometry",
-                             "Data provider of the current layer doesn't allow changing geometries",
-                             QMessageBox::Ok);
+    QMessageBox::information(0, QObject::tr("Change geometry"),
+            QObject::tr("Data provider of the current layer doesn't allow changing geometries"));
     return;
   }
   
   if (!vlayer->isEditable())
   {
-    QMessageBox::information(0,"Layer not editable",
-                              "Cannot edit the vector layer. Use 'Start editing' in the legend item menu",
-                              QMessageBox::Ok);
+    QMessageBox::information(0, QObject::tr("Layer not editable"),
+            QObject::tr("Cannot edit the vector layer. Use 'Start editing' in the legend item menu"));
     return;
   }
   

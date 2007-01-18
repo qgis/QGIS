@@ -96,9 +96,7 @@ void QgsMeasure::activate()
            "If so, the results from line or area measurements will be "
            "incorrect.</p>"
            "<p>To fix this, explicitly set an appropriate map coordinate "
-           "system using the <tt>Settings:Project Properties</tt> menu."),
-                         QMessageBox::Ok,
-                         QMessageBox::NoButton);
+           "system using the <tt>Settings:Project Properties</tt> menu."));
     mWrongProjectProjection = true;
   }
 }

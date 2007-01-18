@@ -390,11 +390,11 @@ void QgsGrassBrowser::deleteMap()
             continue; // should not happen
         }
          
-        int ret = QMessageBox::question ( 0, tr("Warning"),
+        QMessageBox::StandardButton ret = QMessageBox::question ( 0, tr("Warning"),
               tr("Delete map <b>") + map + "</b>",
-              QMessageBox::Yes,  QMessageBox::No );
+              QMessageBox::Ok | QMessageBox::Cancel );
 
-        if ( ret == QMessageBox::No ) continue;
+        if ( ret == QMessageBox::Cancel ) continue;
 
         QString module = "g.remove";
 #ifdef WIN32

@@ -133,7 +133,7 @@ void QgsAttributeTableDisplay::addAttribute()
   {
     if(!table()->addAttribute(dialog.name(),dialog.type()))
     {
-      QMessageBox::information(0,"Name conflict","The attribute could not be inserted. The name already exists in the table",QMessageBox::Ok);
+      QMessageBox::information(this,tr("Name conflict"),tr("The attribute could not be inserted. The name already exists in the table"));
     }
   }
 }
@@ -182,12 +182,14 @@ void QgsAttributeTableDisplay::stopEditing()
   if(table()->edited())
   {
     //commit or roll back?
-    int commit=QMessageBox::information(0,"Stop editing","Do you want to save the changes?",QMessageBox::Yes,QMessageBox::No);
-    if(commit==QMessageBox::Yes)
+    QMessageBox::StandardButton commit=QMessageBox::information(this,tr("Stop editing"),
+                                        tr("Do you want to save the changes?"),
+                                        QMessageBox::Save | QMessageBox::Discard);
+    if(commit==QMessageBox::Save)
     {
       if(!table()->commitChanges(mLayer))
       {
-        QMessageBox::information(0,"Error","Could not commit changes",QMessageBox::Ok);
+        QMessageBox::information(this,tr("Error"),tr("Could not commit changes"));
       }
     }
     else
