@@ -183,15 +183,16 @@ bool QgsMapserverExport::write()
 {
 
   //QMessageBox::information(0,"Full Path",fullPath);
-  int okToSave = 0;
+  QMessageBox::StandardButton okToSave = QMessageBox::Ok;
   // Check for file and prompt for overwrite if it exists
   if (QFile::exists(txtMapFilePath->text()))
   {
     okToSave = QMessageBox::warning(0, tr("Overwrite File?"), txtMapFilePath->text() +
         tr(" exists. \nDo you want to overwrite it?",
-           "a filename is prepended to this text, and appears in a dialog box"), tr("Yes"), tr("No"));
+           "a filename is prepended to this text, and appears in a dialog box"),
+           QMessageBox::Ok | QMessageBox::Cancel);
   }
-  if (okToSave == 0)
+  if (okToSave == QMessageBox::Ok)
   {
     // write the project information to the selected file
     writeMapFile();
