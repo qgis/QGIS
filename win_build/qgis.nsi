@@ -134,7 +134,10 @@ Section "Sample Data - Spearfish (GRASS)" SEC02
  !insertmacro ZIPDLL_EXTRACT "$INSTDIR\SampleData\spearfish.zip" "$INSTDIR\SampleData\" "<ALL>"
  ;ZipDLL::extractall  "$INSTDIR\SampleData\spearfish.zip" "$INSTDIR\SampleData\"
  ;the next line is a hack / workaround for a problem in zipdll.nsh
- !endif
+ ;!endif
+ ;!endif commented by freddy to solve the sample data extracting problem,
+ ;also is neccesary to download header file for nsi from :
+ ; http://forums.winamp.com/attachment.php?s=b03c6736d9de4a864dd2d4e7b40babfb&postid=1293264
 
 
 SectionEnd
