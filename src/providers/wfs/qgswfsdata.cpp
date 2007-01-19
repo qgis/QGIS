@@ -357,7 +357,15 @@ int QgsWFSData::readEpsgFromAttribute(int& epsgNr, const XML_Char** attr) const
       if(strcmp(attr[i], "srsName") == 0)
 	{
 	  QString epsgString(attr[i+1]);
-	  QString epsgNrString = epsgString.section(":", 1, 1);
+	  QString epsgNrString;
+	  if(epsgString.startsWith("http")) //e.g. geoserver: "http://www.opengis.net/gml/srs/epsg.xml#4326"
+	    {
+	      epsgNrString = epsgString.section("#", 1, 1);
+	    }
+	  else //e.g. umn mapserver: "EPSG:4326">
+	    {
+	      epsgNrString = epsgString.section(":", 1, 1);
+	    }
 	  bool conversionOk;
 	  int eNr = epsgNrString.toInt(&conversionOk);
 	  if(!conversionOk)

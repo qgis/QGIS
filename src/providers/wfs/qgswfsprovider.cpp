@@ -501,33 +501,46 @@ int QgsWFSProvider::readAttributesFromSchema(QDomDocument& schemaDoc, QString& g
       return 1;
     }
   QDomElement schemaElement = schemaNodeList.at(0).toElement();
-  
-  //find <element name="tname" type = ...>
-  QString complexTypeType;
-  QDomNodeList typeElementNodeList = schemaElement.elementsByTagNameNS("http://www.w3.org/2001/XMLSchema", "element");
-  QDomElement typeElement = typeElementNodeList.at(0).toElement();
-  complexTypeType = typeElement.attribute("type");	
+  QDomElement complexTypeElement; //the <complexType> element corresponding to the feature type
 
-  if(complexTypeType.isEmpty())
+  //find out, on which lines the first <element> or the first <complexType> occur. If <element> occurs first (mapserver), read the type of the relevant <complexType> tag. If <complexType> occurs first (geoserver), search for information about the feature type directly under this first complexType element
+
+  int firstElementTagPos = schemaElement.elementsByTagNameNS("http://www.w3.org/2001/XMLSchema", "element").at(0).toElement().columnNumber();
+  int firstComplexTypeTagPos = schemaElement.elementsByTagNameNS("http://www.w3.org/2001/XMLSchema", "complexType").at(0).toElement().columnNumber();
+
+  if(firstComplexTypeTagPos < firstElementTagPos)
     {
-      return 3;
+      //geoserver
+      complexTypeElement = schemaElement.elementsByTagNameNS("http://www.w3.org/2001/XMLSchema", "complexType").at(0).toElement();
     }
-
-  //remove the namespace on complexTypeType
-  if(complexTypeType.contains(":"))
+  else
     {
-      complexTypeType = complexTypeType.section(":", 1, 1);
-    }
-
-  //find <complexType name=complexTypeType
-  QDomElement complexTypeElement;
-  QDomNodeList complexTypeNodeList = schemaElement.elementsByTagNameNS("http://www.w3.org/2001/XMLSchema", "complexType");
-  for(int i = 0; i < complexTypeNodeList.length(); ++i)
-    {
-      if(complexTypeNodeList.at(i).toElement().attribute("name") == complexTypeType)
+      //UMN mapserver
+      QString complexTypeType;
+      QDomNodeList typeElementNodeList = schemaElement.elementsByTagNameNS("http://www.w3.org/2001/XMLSchema", "element");
+      QDomElement typeElement = typeElementNodeList.at(0).toElement();
+      complexTypeType = typeElement.attribute("type");	
+      
+      if(complexTypeType.isEmpty())
 	{
-	  complexTypeElement = complexTypeNodeList.at(i).toElement();
-	  break;
+	  return 3;
+	}
+      
+      //remove the namespace on complexTypeType
+      if(complexTypeType.contains(":"))
+	{
+	  complexTypeType = complexTypeType.section(":", 1, 1);
+	}
+      
+      //find <complexType name=complexTypeType
+      QDomNodeList complexTypeNodeList = schemaElement.elementsByTagNameNS("http://www.w3.org/2001/XMLSchema", "complexType");
+      for(int i = 0; i < complexTypeNodeList.length(); ++i)
+	{
+	  if(complexTypeNodeList.at(i).toElement().attribute("name") == complexTypeType)
+	    {
+	      complexTypeElement = complexTypeNodeList.at(i).toElement();
+	      break;
+	    }
 	}
     }
 
@@ -536,7 +549,7 @@ int QgsWFSProvider::readAttributesFromSchema(QDomDocument& schemaDoc, QString& g
       return 4;
     }
   
-  //now create the attributes
+  //we have the relevant <complexType> element. Now find out the geometry and the thematic attributes
   QDomNodeList attributeNodeList = complexTypeElement.elementsByTagNameNS("http://www.w3.org/2001/XMLSchema", "element");
   if(attributeNodeList.size() < 1)
     {
