@@ -32,6 +32,7 @@ class QgsMapToPixel;
 class QgsMapLayer;
 class QgsScaleCalculator;
 class QgsSpatialRefSys;
+class QgsDistanceArea;
 
 /**
  * \class QgsMapRender
@@ -68,6 +69,8 @@ class CORE_EXPORT QgsMapRender : public QObject
     //! Recalculate the map scale
     void updateScale();
 
+    //! Return the measuring object
+    QgsDistanceArea* distArea() { return mDistArea; }
     QGis::units mapUnits() const;
     void setMapUnits(QGis::units u);
     
@@ -191,6 +194,8 @@ class CORE_EXPORT QgsMapRender : public QObject
     //! full extent of the layer set
     QgsRect mFullExtent;
 
+    //! tool for measuring 
+    QgsDistanceArea* mDistArea;
 };
 
 #endif

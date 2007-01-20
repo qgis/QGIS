@@ -24,6 +24,7 @@
 #include "qgsmaptopixel.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsdistancearea.h"
 //#include "qgsspatialrefsys.h"
 
 #include <QDomDocument>
@@ -37,6 +38,7 @@ QgsMapRender::QgsMapRender()
 {
   mCoordXForm = new QgsMapToPixel;
   mScaleCalculator = new QgsScaleCalculator;
+  mDistArea = new QgsDistanceArea;
     
   mDrawing = false;
   mOverview = false;
@@ -55,6 +57,7 @@ QgsMapRender::~QgsMapRender()
 {
   delete mCoordXForm;
   delete mScaleCalculator;
+  delete mDistArea;
   delete mDestSRS;
 }
 
@@ -365,6 +368,8 @@ void QgsMapRender::setProjectionsEnabled(bool enabled)
   if (mProjectionsEnabled != enabled)
   {
     mProjectionsEnabled = enabled;
+    QgsDebugMsg("Adjusting DistArea projection on/off");
+    mDistArea->setProjectionsEnabled(enabled);
     updateFullExtent();
     emit projectionsEnabled(enabled);
   }
@@ -382,7 +387,8 @@ void QgsMapRender::setDestinationSrs(const QgsSpatialRefSys& srs)
   QgsDebugMsg("* DestSRS.proj4() = " + srs.proj4String());
   if (*mDestSRS != srs)
   {
-    QgsDebugMsg("No, changed my mind!");
+    QgsDebugMsg("Setting DistArea SRS to " + QString::number(srs.srsid()));
+    mDistArea->setSourceSRS(srs.srsid());
     *mDestSRS = srs;
     updateFullExtent();
     emit destinationSrsChanged();
