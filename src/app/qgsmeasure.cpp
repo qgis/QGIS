@@ -52,7 +52,7 @@ QgsMeasure::QgsMeasure(bool measureArea, QgsMapCanvas *mc, Qt::WFlags f)
     mTable->setNumRows(1);
     mTable->setText(0, 0, QString::number(0, 'f',1));
 
-    mTable->horizontalHeader()->setLabel( 0, tr("Segments (in meters)") );
+    //mTable->horizontalHeader()->setLabel( 0, tr("Segments (in meters)") );
     //mTable->horizontalHeader()->setLabel( 1, tr("Total") );
     //mTable->horizontalHeader()->setLabel( 2, tr("Azimuth") );
 
@@ -64,7 +64,7 @@ QgsMeasure::QgsMeasure(bool measureArea, QgsMapCanvas *mc, Qt::WFlags f)
     
     connect( mMapCanvas, SIGNAL(renderComplete(QPainter*)), this, SLOT(mapCanvasChanged()) );
     
-    mCalc = new QgsDistanceArea;
+    //mCalc = new QgsDistanceArea;
 
     mRubberBand = new QgsRubberBand(mMapCanvas, mMeasureArea);
 
@@ -84,7 +84,7 @@ void QgsMeasure::activate()
   
   // If we suspect that they have data that is projected, yet the
   // map SRS is set to a geographic one, warn them.
-  if (mCalc->geographic() &&
+  if (mCanvas->mapRender()->distArea()->geographic() &&
       (mMapCanvas->extent().height() > 360 || 
        mMapCanvas->extent().width() > 720))
   {
@@ -119,7 +119,7 @@ void QgsMeasure::setMeasureArea(bool measureArea)
 
 QgsMeasure::~QgsMeasure()
 {
-  delete mCalc;
+//  delete mCalc;
   delete mRubberBand;
 }
 
@@ -169,7 +169,7 @@ void QgsMeasure::addPoint(QgsPoint &point)
     
     if (mMeasureArea && mPoints.size() > 2)
     {
-      double area = mCalc->measurePolygon(mPoints);
+      double area = mCanvas->mapRender()->distArea()->measurePolygon(mPoints);
       editTotal->setText(formatArea(area));
     }
     else if (!mMeasureArea && mPoints.size() > 1)
@@ -178,7 +178,7 @@ void QgsMeasure::addPoint(QgsPoint &point)
         
       QgsPoint p1 = mPoints[last], p2 = mPoints[last+1];
       
-      double d = mCalc->measureLine(p1,p2);
+      double d = mCanvas->mapRender()->distArea()->measureLine(p1,p2);
             
       mTotal += d;
       editTotal->setText(formatDistance(mTotal));
@@ -223,7 +223,7 @@ void QgsMeasure::mouseMove(QgsPoint &point)
   tmpPoints.push_back(point);
   if (mMeasureArea && tmpPoints.size() > 2)
   {
-    double area = mCalc->measurePolygon(tmpPoints);
+    double area = mCanvas->mapRender()->distArea()->measurePolygon(tmpPoints);
     editTotal->setText(formatArea(area));
   }
   else if (!mMeasureArea && tmpPoints.size() > 1)
@@ -231,7 +231,7 @@ void QgsMeasure::mouseMove(QgsPoint &point)
     int last = tmpPoints.size()-2;
     QgsPoint p1 = tmpPoints[last], p2 = tmpPoints[last+1];
 
-    double d = mCalc->measureLine(p1,p2);
+    double d = mCanvas->mapRender()->distArea()->measureLine(p1,p2);
     mTable->setText(last, 0, QString::number(d, 'f',1));
     editTotal->setText(formatDistance(mTotal + d));
   }
@@ -296,16 +296,52 @@ void QgsMeasure::on_btnHelp_clicked()
 QString QgsMeasure::formatDistance(double distance)
 {
   QString txt;
-  if (distance < 1000)
+  QString unitLabel;
+
+  QGis::units myMapUnits = mCanvas->mapUnits();
+  switch (myMapUnits)
   {
-    txt = QString::number(distance,'f',0);
-    txt += " m";
-  }
-  else
-  {
-    txt = QString::number(distance/1000,'f',1);
-    txt += " km";
-  }
+    case QGis::METERS: 
+      if (distance > 1000.0)
+      {
+	unitLabel=tr(" km");
+	distance = distance/1000;
+      }
+      else if (distance < 0.01)
+      {
+	unitLabel=tr(" mm");
+	distance = distance*1000;
+      }
+      else if (distance < 0.1)
+      {
+        unitLabel=tr(" cm");
+        distance = distance*100;
+      }
+      else
+	unitLabel=tr(" m"); 
+      break;
+    case QGis::FEET:
+      if (distance == 1.0)
+	unitLabel=tr(" foot"); 
+      else
+	unitLabel=tr(" feet"); 
+      break;
+    case QGis::DEGREES:
+      if (distance == 1.0)
+	unitLabel=tr(" degree"); 
+      else
+	unitLabel=tr(" degrees"); 
+      break;
+    case QGis::UNKNOWN:
+      unitLabel=tr(" unknown");
+    default: 
+      std::cout << "Error: not picked up map units - actual value = " 
+		<< myMapUnits << std::endl;
+  };
+
+  txt = QString::number(distance,'f',1);
+  txt += unitLabel;
+
   return txt;
 }
 
@@ -327,6 +363,23 @@ QString QgsMeasure::formatArea(double area)
 
 void QgsMeasure::updateUi()
 {
+  
+  QGis::units myMapUnits = mCanvas->mapUnits();
+  switch (myMapUnits)
+  {
+    case QGis::METERS: 
+      mTable->horizontalHeader()->setLabel( 0, tr("Segments (in meters)") );
+      break;
+    case QGis::FEET:
+      mTable->horizontalHeader()->setLabel( 0, tr("Segments (in feet)") );
+      break;
+    case QGis::DEGREES:
+      mTable->horizontalHeader()->setLabel( 0, tr("Segments (in degrees)") );
+      break;
+    case QGis::UNKNOWN:
+      mTable->horizontalHeader()->setLabel( 0, tr("Segments") );
+  };
+
   if (mMeasureArea)
   {
     mTable->hide();
@@ -344,14 +397,14 @@ void QgsMeasure::updateProjection()
 {
   // set ellipsoid
   QSettings settings;
-  QString ellipsoid = settings.readEntry("/qgis/measure/ellipsoid", "WGS84");
-  mCalc->setEllipsoid(ellipsoid);
+  // QString ellipsoid = settings.readEntry("/qgis/measure/ellipsoid", "WGS84");
+  // mCalc->setEllipsoid(ellipsoid);
 
   // set source SRS and projections enabled flag
-  QgsMapRender* mapRender = mCanvas->mapRender();
-  mCalc->setProjectionsEnabled(mapRender->projectionsEnabled());
-  int srsid = mapRender->destinationSrs().srsid();
-  mCalc->setSourceSRS(srsid);
+  // QgsMapRender* mapRender = mCanvas->mapRender();
+  // mCalc->setProjectionsEnabled(mapRender->projectionsEnabled());
+  // int srsid = mapRender->destinationSrs().srsid();
+  // mCalc->setSourceSRS(srsid);
   
   int myRed = settings.value("/qgis/default_measure_color_red", 180).toInt();
   int myGreen = settings.value("/qgis/default_measure_color_green", 180).toInt();

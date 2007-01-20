@@ -279,8 +279,12 @@ double QgsDistanceArea::measureLine(const QgsPoint& p1, const QgsPoint& p2)
     {
       pp1 = mCoordTransform->transform(p1);
       pp2 = mCoordTransform->transform(p2);
+      return computeDistanceBearing(pp1, pp2);
     }
-    return computeDistanceBearing(pp1, pp2);
+    else
+    {
+      return sqrt((p2.x()-p1.x())*(p2.x()-p1.x()) + (p2.y()-p1.y())*(p2.y()-p1.y()));
+    }
   }
   catch (QgsCsException &cse)
   {

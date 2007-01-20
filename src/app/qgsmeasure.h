@@ -111,7 +111,7 @@ private:
   QgsMapCanvas *mMapCanvas;
   
   //! distance/area calculator
-  QgsDistanceArea* mCalc;
+  //QgsDistanceArea* mCalc;
   
   std::vector<QgsPoint> mPoints;
 
