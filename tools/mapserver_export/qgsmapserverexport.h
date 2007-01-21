@@ -52,11 +52,11 @@ public:
 	};
   public slots:
   void showHelp();
-  void on_buttonHelp_clicked();
+  void on_buttonBox_helpRequested();
   void on_btnChooseFile_clicked();
   void on_chkExpLayersOnly_clicked(bool);
   void on_btnChooseProjectFile_clicked();
-  void on_buttonOk_clicked();
+  void apply();
   private:
   void initPy();
   void writeMapFile(void);

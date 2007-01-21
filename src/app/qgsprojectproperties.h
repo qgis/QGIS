@@ -57,17 +57,16 @@ public:
   
   /*! Accessor for projection */
   QString projectionWKT();
+
   /*! Indicates that the projection switch is on */
   bool isProjected();
+
 public slots:
   /*!
-   * Slot called when apply button is pressed 
+   * Slot called when apply button is pressed or dialog is accepted
    */
   void apply();
-  /*!
-   * Slot called when ok button pressed (inherits from gui base)
-   */
-  void accept();
+
   /*!
    * Slot to show the projections tab when the dialog is opened
    */
@@ -91,11 +90,12 @@ public slots:
   /*!
    * Slot to show the context help for this dialog
    */
-  void on_pbnHelp_clicked();
+  void on_buttonBox_helpRequested();
 
 signals:
   //! Signal used to inform listeners that the mouse display precision may have changed
   void displayPrecisionChanged();
+
   //! let listening canvases know to refresh
   void refresh();
   

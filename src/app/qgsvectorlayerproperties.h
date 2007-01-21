@@ -52,16 +52,14 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
   void sliderTransparency_valueChanged(int theValue);
   /** Toggles on the label check box */
   void setLabelCheckBox();
-  
+  /** Called when apply button is pressed or dialog is accepted */
+  void apply();
+
   //
   //methods reimplemented from qt designer base class
   //
 
-
-  void on_pbnCancel_clicked();
-  void on_pbnOK_clicked();
-  void on_pbnApply_clicked();
-  void on_btnHelp_clicked();
+  void on_buttonBox_helpRequested();
   void on_pbnQueryBuilder_clicked();
   void on_pbnIndex_clicked();
   void on_pbnChangeSpatialRefSys_clicked();

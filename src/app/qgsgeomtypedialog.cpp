@@ -23,8 +23,8 @@ QgsGeomTypeDialog::QgsGeomTypeDialog(QWidget *parent, Qt::WFlags fl)
 : QDialog(parent, fl)
 {
     setupUi(this);
-    connect(mOkButton, SIGNAL(clicked()), this, SLOT(accept()));
-    connect(mCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
     mPointRadioButton->setChecked(true);
     mAttributeView->removeColumn(0);
@@ -34,6 +34,8 @@ QgsGeomTypeDialog::QgsGeomTypeDialog(QWidget *parent, Qt::WFlags fl)
     /*mFileFormatComboBox->insertItem("Comma Separated Value");
     mFileFormatComboBox->insertItem("GML");
     mFileFormatComboBox->insertItem("Mapinfo File");*/
+    mOkButton = buttonBox->button(QDialogButtonBox::Ok);
+	mOkButton->setEnabled(false);
 }
 
 QgsGeomTypeDialog::~QgsGeomTypeDialog()
@@ -86,10 +88,11 @@ void QgsGeomTypeDialog::on_mRemoveAttributeButton_clicked()
     
 }
 
-void QgsGeomTypeDialog::on_btnHelp_clicked()
+void QgsGeomTypeDialog::on_buttonBox_helpRequested()
 {
   QgsContextHelp::run(context_id);
 }
+
 void QgsGeomTypeDialog::attributes(std::list<std::pair<QString, QString> >& at) const
 {
     Q3ListViewItemIterator it(mAttributeView);

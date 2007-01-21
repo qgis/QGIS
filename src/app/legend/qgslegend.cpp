@@ -760,66 +760,47 @@ void QgsLegend::legendLayerShowProperties()
   //QgsDebugMsg("Showing layer properties dialog");
   
   QgsMapLayer* ml = llf->layer();
-  
+
+  /*
+  TODO: Consider reusing the property dialogs again.
+  Sometimes around mid 2005, the property dialogs were saved for later reuse;
+  this resulted in a time savings when reopening the dialog. The code below
+  cannot be used as is, however, simply by saving the dialog pointer here.
+  Either the map layer needs to be passed as an argument to sync or else
+  a separate copy of the dialog pointer needs to be stored with each layer.
+  */
+
   if (ml->type() == QgsMapLayer::RASTER)
   {
-    QgsRasterLayerProperties *rlp = new QgsRasterLayerProperties(ml);
-    connect(rlp, SIGNAL(refreshLegend(QString)), this, SLOT(refreshLayerSymbology(QString)));
-    if (rlp->exec())
+    QgsRasterLayerProperties *rlp = NULL; // See note above about reusing this
+    if (rlp)
     {
-      delete rlp;
-      QCoreApplication::processEvents();
+      rlp->sync();
     }
-      
-      /*
-        void QgsRasterLayer::showLayerProperties()
-        {
-        qApp->setOverrideCursor(QCursor(Qt::WaitCursor));
-        if ( ! mLayerProperties )
-        {
-        mLayerProperties = new QgsRasterLayerProperties(this);
-        QgsDebugMsg("Creating new raster properties dialog instance");
-      }
-
-        mLayerProperties->sync();
-        mLayerProperties->raise();
-        mLayerProperties->show();
-        qApp->restoreOverrideCursor();
-      } // QgsRasterLayer::showLayerProperties()
-      */      
+    else
+    {
+      rlp = new QgsRasterLayerProperties(ml);
+      connect(rlp, SIGNAL(refreshLegend(QString)), this, SLOT(refreshLayerSymbology(QString)));
+    }
+    rlp->exec();
+    delete rlp; // delete since dialog cannot be reused without updating code
   }
   else // VECTOR
   {
     QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(ml);
-    
-    QgsVectorLayerProperties* vlp = new QgsVectorLayerProperties(vlayer);
-    connect(vlp, SIGNAL(refreshLegend(QString)), this, SLOT(refreshLayerSymbology(QString)));
-    if (vlp->exec())
+
+    QgsVectorLayerProperties *vlp = NULL; // See note above about reusing this
+    if (vlp)
     {
-      delete vlp;
-      QCoreApplication::processEvents();
+      vlp->reset();
     }
-    
-    /*
-    // TODO: this was previous implementation which saved the instance of the dialog
-    
-    // Set wait cursor while the property dialog is created
-    // and initialized
-    qApp->setOverrideCursor(QCursor(Qt::WaitCursor));
-
-    QgsVectorLayerProperties* propertiesDialog = new QgsVectorLayerProperties(vlayer);
-    
-    // Make sure that the UI starts out with the correct display
-    // field value
-    propertiesDialog->setDisplayField(displayField());
-
-    propertiesDialog->reset();
-    propertiesDialog->raise();
-    propertiesDialog->show();
-
-    // restore normal cursor
-    qApp->restoreOverrideCursor();
-    */
+    else
+    {
+      vlp = new QgsVectorLayerProperties(vlayer);
+      connect(vlp, SIGNAL(refreshLegend(QString)), this, SLOT(refreshLayerSymbology(QString)));
+    }
+    vlp->exec();
+    delete vlp; // delete since dialog cannot be reused without updating code
   }
   
   llf->updateLegendItem();

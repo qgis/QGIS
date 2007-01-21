@@ -41,10 +41,10 @@ QgsProjectProperties::QgsProjectProperties(QgsMapCanvas* mapCanvas, QWidget *par
   : QDialog(parent, fl), mMapCanvas(mapCanvas)
 {
   setupUi(this);
-
-  connect(buttonApply, SIGNAL(clicked()), this, SLOT(apply()));
-  connect(buttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
-  connect(buttonOk, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect(buttonBox->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this, SLOT(apply()));
+  connect(this, SIGNAL(accepted()), this, SLOT(apply()));
 
   ///////////////////////////////////////////////////////////
   // Properties stored in map canvas's QgsMapRender
@@ -253,13 +253,6 @@ void QgsProjectProperties::apply()
   emit refresh();
 }
 
-//when user clicks ok
-void QgsProjectProperties::accept()
-{
-  apply();
-  close();
-}
-
 bool QgsProjectProperties::isProjected()
 {
   return cbxProjectionEnabled->isChecked();
@@ -267,7 +260,7 @@ bool QgsProjectProperties::isProjected()
 
 void QgsProjectProperties::showProjectionsTab()
 {
-  tabWidget2->setCurrentPage(1);
+  tabWidget->setCurrentPage(1);
 }
 
 void QgsProjectProperties::on_pbnDigitisedLineColour_clicked()
@@ -296,7 +289,8 @@ void QgsProjectProperties::on_pbnCanvasColor_clicked()
     pbnCanvasColor->setColor(color);
   }
 }
-void QgsProjectProperties::on_pbnHelp_clicked()
+
+void QgsProjectProperties::on_buttonBox_helpRequested()
 {
   std::cout << "running help" << std::endl; 
   QgsContextHelp::run(context_id);

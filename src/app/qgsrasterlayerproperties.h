@@ -46,8 +46,6 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     public slots:
         /** \brief Applies the settings made in the dialog without closing the box */
         void apply();
-        /** \bried Apply the settings made and close the dialog. */
-        void accept();
         /** \brief slot executed when the transparency level changes. */ 
         void sliderTransparency_valueChanged( int );
         /** \brief slot executed when the max red level changes. */
@@ -61,7 +59,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
         /** Override the SRS specified when the layer was loaded */
         void on_pbnChangeSpatialRefSys_clicked();
         /** Help button */
-        void on_buttonHelp_clicked();
+        void on_buttonBox_helpRequested();
         
   signals:
     
