@@ -84,6 +84,8 @@ class CORE_EXPORT QgsDistanceArea
     //! compute bearing - in radians
     double getBearing(const QgsPoint& p1, const QgsPoint& p2);
 
+    static QString textUnit(double value, int decimals, QGis::units u, bool isArea);
+
   protected:
     
     //! measures line distance, line points are extracted from WKB
@@ -111,6 +113,8 @@ class CORE_EXPORT QgsDistanceArea
     
     */
     double computePolygonArea(const std::vector<QgsPoint>& points);
+
+    double computePolygonFlatArea(const std::vector<QgsPoint>& points);
     
     /**
       precalculates some values

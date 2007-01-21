@@ -17,6 +17,9 @@
 #include <cmath>
 #include <sqlite3.h>
 #include <QDir>
+#include <QString>
+#include <QLocale>
+#include <QObject>
 
 #include "qgis.h"
 #include "qgspoint.h"
@@ -529,6 +532,10 @@ double QgsDistanceArea::computePolygonArea(const std::vector<QgsPoint>& points)
   double Qbar1, Qbar2;
   double area;
 
+  if (! mProjectionsEnabled)
+  {
+    return computePolygonFlatArea(points);
+  }
   int n = points.size();
   x2 = DEG2RAD(points[n-1].x());
   y2 = DEG2RAD(points[n-1].y());
@@ -573,3 +580,109 @@ double QgsDistanceArea::computePolygonArea(const std::vector<QgsPoint>& points)
   return area;
 }
 
+double QgsDistanceArea::computePolygonFlatArea(const std::vector<QgsPoint>& points)
+{
+  // Normal plane area calculations.
+  double area = 0.0;
+  int i, size;
+  
+  size = points.size();
+
+  // QgsDebugMsg("New area calc, nr of points: " + QString::number(size));
+  for(i = 0; i < size; i++)
+  {
+    // QgsDebugMsg("Area from point: " + (points[i]).stringRep(2));
+    // Using '% size', so that we always end with the starting point
+    // and thus close the polygon.
+    area = area + points[i].x()*points[(i+1) % size].y() - points[(i+1) % size].x()*points[i].y();
+  }
+  // QgsDebugMsg("Area from point: " + (points[i % size]).stringRep(2));
+  area = area / 2.0;
+  return area;
+}
+
+QString QgsDistanceArea::textUnit(double value, int decimals, QGis::units u, bool isArea)
+{
+  QString unitLabel;
+
+
+  switch (u)
+  {
+  case QGis::METERS: 
+    if (isArea)
+    {
+      if (value > 1000000.0)
+      {
+	unitLabel = QObject::tr(" km2");
+	value = value / 1000000.0;
+      }
+      else if (value > 1000.0)
+      {
+	unitLabel = QObject::tr(" ha");
+	value = value / 10000.0;
+      }
+      else
+      {
+	unitLabel = QObject::tr(" m2");
+      }
+    }
+    else
+    {
+      if (value > 1000.0)
+      {
+	unitLabel=QObject::tr(" km");
+	value = value/1000;
+      }
+      else if (value < 0.01)
+      {
+	unitLabel=QObject::tr(" mm");
+	value = value*1000;
+      }
+      else if (value < 0.1)
+      {
+	unitLabel=QObject::tr(" cm");
+	value = value*100;
+      }
+      else
+      {
+	unitLabel=QObject::tr(" m"); 
+      }
+    }
+    break;
+  case QGis::FEET:
+    if (isArea)
+    {
+      unitLabel = QObject::tr(" sq ft");
+    }
+    else
+    {
+      if (value == 1.0)
+	unitLabel=QObject::tr(" foot"); 
+      else
+	unitLabel=QObject::tr(" feet"); 
+    }
+    break;
+  case QGis::DEGREES:
+    if (isArea)
+    {
+      unitLabel = QObject::tr(" sq.deg.");
+    }
+    else
+    {
+      if (value == 1.0)
+	unitLabel=QObject::tr(" degree"); 
+      else
+	unitLabel=QObject::tr(" degrees"); 
+    }
+    break;
+  case QGis::UNKNOWN:
+    unitLabel=QObject::tr(" unknown");
+  default: 
+    std::cout << "Error: not picked up map units - actual value = " 
+	      << u << std::endl;
+  };
+
+
+  return QLocale::system().toString(value, 'f', decimals) + unitLabel;
+
+}

@@ -215,7 +215,7 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
 
   // init distance/area calculator
   QgsDistanceArea calc;
-  calc.setProjectionsEnabled(TRUE); // always project
+  calc.setProjectionsEnabled(mCanvas->projectionsEnabled()); // project?
   calc.setEllipsoid(ellipsoid);
   calc.setSourceSRS(layer->srs().srsid());
   
@@ -265,15 +265,13 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
       if (layer->vectorType() == QGis::Line)
       {
         double dist = calc.measure(feat.geometry());
-        QString str = QString::number(dist/1000, 'f', 3);
-        str += " km";
+        QString str = calc.textUnit(dist, 3, mCanvas->mapUnits(), false);
         mResults->addDerivedAttribute(featureNode, QObject::tr("Length"), str);
       }
       else if (layer->vectorType() == QGis::Polygon)
       {
         double area = calc.measure(feat.geometry());
-        QString str = QString::number(area/1000000, 'f', 3);
-        str += " km^2";
+        QString str = calc.textUnit(area, 3, mCanvas->mapUnits(), true);
         mResults->addDerivedAttribute(featureNode, QObject::tr("Area"), str);
       }
 
