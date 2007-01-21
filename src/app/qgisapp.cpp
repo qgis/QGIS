@@ -1264,13 +1264,13 @@ bool QgisApp::createDB()
     //now copy the master file into the users .qgis dir
     bool isDbFileCopied = masterFile.copy(qgisPrivateDbFile.name());
 
-#ifdef QGISDEBUG
     if (!isDbFileCopied)
     {
+#ifdef QGISDEBUG
       std::cout << "[ERROR] Can not make qgis.db private copy" << std::endl;
       return FALSE;
-    }
 #endif
+    }
   }
   return TRUE;
 }
@@ -2590,8 +2590,6 @@ void QgisApp::newVectorLayer()
   //try to create the new layer with OGRProvider instead of QgsVectorFileWriter
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
   QString ogrlib = pReg->library("ogr");
-  // This var is not used...remove? TS FIXME
-  const char *cOgrLib = (const char *) ogrlib;
   // load the data provider
   QLibrary* myLib = new QLibrary((const char *) ogrlib);
   bool loaded = myLib->load();

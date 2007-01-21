@@ -37,12 +37,12 @@ QgsHttpTransaction::QgsHttpTransaction(QString uri,
                                        int     proxyPort,
                                        QString proxyUser,
                                        QString proxyPass)
-  : httpurl(uri),
+  : httpresponsecontenttype(0),
+    httpurl(uri),
     httphost(proxyHost),
     httpport(proxyPort),
     httpuser(proxyUser),
     httppass(proxyPass),
-    httpresponsecontenttype(0),
     mError(0)
 {
 

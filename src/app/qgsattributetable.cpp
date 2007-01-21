@@ -162,7 +162,7 @@ void QgsAttributeTable::sortColumn(int col, bool ascending, bool wholeRows)
   //if the first entry contains a letter, sort alphanumerically, otherwise numerically
   QString firstentry = text(0, col);
   bool containsletter = false;
-  for (uint i = 0; i < firstentry.length(); i++)
+  for (int i = 0; i < firstentry.length(); i++)
     {
       if (firstentry.ref(i).isLetter())
         {
@@ -278,7 +278,7 @@ void QgsAttributeTable::popupMenu(int row, int col, const QPoint& pos)
   if (mActionPopup == 0)
   {
     mActionPopup = new QMenu();
-    QAction *a = mActionPopup->addAction( tr("Run action") );
+    mActionPopup->addAction( tr("Run action") );
     mActionPopup->addSeparator();
 
     QgsAttributeAction::aIter	iter = mActions.begin();

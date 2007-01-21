@@ -433,7 +433,7 @@ void QgsLabel::setLabelField ( int attr, const QString str )
     mLabelField[attr] = str;
 
     mLabelFieldIdx[attr] = -1;
-    for ( uint i = 0; i < mField.size(); i++ )
+    for ( int i = 0; i < mField.size(); i++ )
     {
         if ( mField[i].name().compare(str) == 0 )
         {
