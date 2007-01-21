@@ -492,7 +492,7 @@ QString QgsVectorFileWriter::writeVectorLayerAsShapefile(QString shapefileName, 
   // create the fields
   QgsDebugMsg("creating " + QString("%d").arg(attributeFields.size()) + " fields");
 
-  for (uint i = 0; i < attributeFields.size(); i++)
+  for (int i = 0; i < attributeFields.size(); i++)
   {
     // check the field length - if > 10 we need to truncate it
     QgsField attrField = attributeFields[i];
