@@ -61,6 +61,9 @@ void QgsAbout::init()
   if ( file.open( QIODevice::ReadOnly ) ) {
     QTextStream stream( &file );
     QString line;
+#ifdef QGISDEBUG 
+    int i = 1; 
+#endif 
 
     while ( !stream.atEnd() ) 
     {
