@@ -27,6 +27,7 @@
 
 #include "QMessageBox"
 #include <QSettings>
+#include <QLocale>
 #include <iostream>
 
 
@@ -184,12 +185,11 @@ void QgsMeasure::addPoint(QgsPoint &point)
       editTotal->setText(formatDistance(mTotal));
 	
 
-	    int row = mPoints.size()-2;
-      mTable->setText(row, 0, QString::number(d, 'f',1));
-      //mTable->setText ( row, 1, QString::number(mTotal) );
+      int row = mPoints.size()-2;
+      mTable->setText(row, 0, QLocale::system().toString(d, 'f', 2));
       mTable->setNumRows ( mPoints.size() );
       
-      mTable->setText(row + 1, 0, QString::number(0, 'f',1));
+      mTable->setText(row + 1, 0, QLocale::system().toString(0.0, 'f', 2));
       mTable->ensureCellVisible(row + 1,0);
     }
 
@@ -232,7 +232,8 @@ void QgsMeasure::mouseMove(QgsPoint &point)
     QgsPoint p1 = tmpPoints[last], p2 = tmpPoints[last+1];
 
     double d = mCanvas->mapRender()->distArea()->measureLine(p1,p2);
-    mTable->setText(last, 0, QString::number(d, 'f',1));
+    //mTable->setText(last, 0, QString::number(d, 'f',1));
+    mTable->setText(last, 0, QLocale::system().toString(d, 'f', 2));
     editTotal->setText(formatDistance(mTotal + d));
   }
 }
@@ -299,66 +300,13 @@ QString QgsMeasure::formatDistance(double distance)
   QString unitLabel;
 
   QGis::units myMapUnits = mCanvas->mapUnits();
-  switch (myMapUnits)
-  {
-    case QGis::METERS: 
-      if (distance > 1000.0)
-      {
-	unitLabel=tr(" km");
-	distance = distance/1000;
-      }
-      else if (distance < 0.01)
-      {
-	unitLabel=tr(" mm");
-	distance = distance*1000;
-      }
-      else if (distance < 0.1)
-      {
-        unitLabel=tr(" cm");
-        distance = distance*100;
-      }
-      else
-	unitLabel=tr(" m"); 
-      break;
-    case QGis::FEET:
-      if (distance == 1.0)
-	unitLabel=tr(" foot"); 
-      else
-	unitLabel=tr(" feet"); 
-      break;
-    case QGis::DEGREES:
-      if (distance == 1.0)
-	unitLabel=tr(" degree"); 
-      else
-	unitLabel=tr(" degrees"); 
-      break;
-    case QGis::UNKNOWN:
-      unitLabel=tr(" unknown");
-    default: 
-      std::cout << "Error: not picked up map units - actual value = " 
-		<< myMapUnits << std::endl;
-  };
-
-  txt = QString::number(distance,'f',1);
-  txt += unitLabel;
-
-  return txt;
+  return QgsDistanceArea::textUnit(distance, 2, myMapUnits, false);
 }
 
 QString QgsMeasure::formatArea(double area)
 {
-  QString txt;
-  if (area < 10000)
-  {
-    txt = QString::number(area,'f',0);
-    txt += " m2";
-  }
-  else
-  {
-    txt = QString::number(area/1000000,'f',3);
-    txt += " km2";
-  }
-  return txt;
+  QGis::units myMapUnits = mCanvas->mapUnits();
+  return QgsDistanceArea::textUnit(area, 2, myMapUnits, true);
 }
 
 void QgsMeasure::updateUi()
