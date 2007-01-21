@@ -45,6 +45,11 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer * lyr,
       mRendererDialog(0)
 {
   setupUi(this);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect(buttonBox->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this, SLOT(apply()));
+  connect(this, SIGNAL(accepted()), this, SLOT(apply()));
+
   // Create the Label dialog tab
   QVBoxLayout *layout = new QVBoxLayout( labelOptionsFrame );
   layout->setMargin(0);
@@ -64,7 +69,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer * lyr,
   actionLayout->addWidget( actionDialog );
 
   reset();
-  pbnOK->setFocus();
   if(layer->getDataProvider())//enable spatial index button group if supported by provider
   {
       int capabilities=layer->getDataProvider()->capabilities();
@@ -240,20 +244,12 @@ void QgsVectorLayerProperties::reset( void )
 // methods reimplemented from qt designer base class
 //
 
-void QgsVectorLayerProperties::on_pbnCancel_clicked()
-{
- reject();
-}
-void QgsVectorLayerProperties::on_btnHelp_clicked()
+void QgsVectorLayerProperties::on_buttonBox_helpRequested()
 {
   QgsContextHelp::run(context_id);
 }
-void QgsVectorLayerProperties::on_pbnOK_clicked()
-{
-  on_pbnApply_clicked();
-  close(true);
-}
-void QgsVectorLayerProperties::on_pbnApply_clicked()
+
+void QgsVectorLayerProperties::apply()
 {
   //
   // Set up sql subset query if applicable

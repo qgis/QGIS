@@ -54,9 +54,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
   }
 
   setupUi(this);
-  connect(buttonApply, SIGNAL(clicked()), this, SLOT(apply()));
-  connect(buttonOk, SIGNAL(clicked()), this, SLOT(accept()));
-  connect(buttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect(buttonBox->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this, SLOT(apply()));
+  connect(this, SIGNAL(accepted()), this, SLOT(apply()));
   connect(sliderTransparency, SIGNAL(valueChanged(int)), this, SLOT(sliderTransparency_valueChanged(int)));
 
   // set up the scale based layer visibility stuff....
@@ -265,7 +266,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
 
 QgsRasterLayerProperties::~QgsRasterLayerProperties()
 {
-  delete rasterLayer;
 }
 
 
@@ -437,21 +437,12 @@ void QgsRasterLayerProperties::apply()
   rasterLayer->triggerRepaint();
 }//apply
 
-void QgsRasterLayerProperties::accept()
-{
-  apply();
-  close();
-}//accept
 void QgsRasterLayerProperties::sliderTransparency_valueChanged(int theValue)
 {
   //set the transparency percentage label to a suitable value
   int myInt = static_cast < int >((theValue / 255.0) * 100);  //255.0 to prevent integer division
   lblTransparencyPercent->setText(QString::number(myInt) + "%");
 }//sliderTransparency_valueChanged
-
-
-
-
 
 
 void QgsRasterLayerProperties::on_rbtnSingleBand_toggled(bool)
@@ -1143,7 +1134,7 @@ void QgsRasterLayerProperties::on_pbnChangeSpatialRefSys_clicked()
     
     leSpatialRefSys->setText(rasterLayer->srs().proj4String());
 }
-void QgsRasterLayerProperties::on_buttonHelp_clicked()
+void QgsRasterLayerProperties::on_buttonBox_helpRequested()
 {
   QgsContextHelp::run(context_id);
 }

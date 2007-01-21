@@ -40,8 +40,10 @@ class QgsGeomTypeDialog: public QDialog, private Ui::QgsGeomTypeDialogBase
   protected slots:
   void on_mAddAttributeButton_clicked();
   void on_mRemoveAttributeButton_clicked();
-  void on_btnHelp_clicked();
+  void on_buttonBox_helpRequested();
+
   private:
+  QAbstractButton *mOkButton;
   static const int context_id = 165149618;
   
 };

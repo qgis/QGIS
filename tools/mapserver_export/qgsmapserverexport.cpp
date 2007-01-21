@@ -38,6 +38,7 @@ QgsMapserverExport::QgsMapserverExport(QWidget * parent, Qt::WFlags fl)
 : QDialog(parent, fl)  
 {
   setupUi(this);
+  connect(this, SIGNAL(accepted()), this, SLOT(apply()));
 //   initialize python
   initPy();
   qDebug("Reading setttings");
@@ -99,7 +100,7 @@ void QgsMapserverExport::on_chkExpLayersOnly_clicked(bool isChecked)
     btnChooseTemplateFile->setEnabled(!isChecked);
 }
 
-void QgsMapserverExport::on_buttonOk_clicked()
+void QgsMapserverExport::apply()
 {
   qDebug("Writing setttings");
   QSettings mySettings;
@@ -171,7 +172,7 @@ void QgsMapserverExport::on_buttonOk_clicked()
   Py_DECREF(pstr);
 
 }
-void QgsMapserverExport::on_buttonHelp_clicked()
+void QgsMapserverExport::on_buttonBox_helpRequested()
 {
  QgsContextHelp::run(context_id); 
 }

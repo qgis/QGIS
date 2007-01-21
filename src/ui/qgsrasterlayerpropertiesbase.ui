@@ -30,6 +30,9 @@
    </property>
    <item row="0" column="0" >
     <widget class="QTabWidget" name="tabBar" >
+     <property name="currentIndex" >
+      <number>0</number>
+     </property>
      <widget class="QWidget" name="tabPageSymbology" >
       <attribute name="title" >
        <string>Symbology</string>
@@ -987,91 +990,14 @@
     </widget>
    </item>
    <item row="1" column="0" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
      </property>
-     <property name="spacing" >
-      <number>6</number>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
      </property>
-     <item>
-      <widget class="QPushButton" name="buttonHelp" >
-       <property name="enabled" >
-        <bool>true</bool>
-       </property>
-       <property name="text" >
-        <string>&amp;Help</string>
-       </property>
-       <property name="shortcut" >
-        <string>F1</string>
-       </property>
-       <property name="autoDefault" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>280</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonApply" >
-       <property name="text" >
-        <string>&amp;Apply</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+A</string>
-       </property>
-       <property name="autoDefault" >
-        <bool>true</bool>
-       </property>
-       <property name="default" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonOk" >
-       <property name="text" >
-        <string>&amp;OK</string>
-       </property>
-       <property name="shortcut" >
-        <string/>
-       </property>
-       <property name="autoDefault" >
-        <bool>true</bool>
-       </property>
-       <property name="default" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonCancel" >
-       <property name="text" >
-        <string>&amp;Cancel</string>
-       </property>
-       <property name="shortcut" >
-        <string/>
-       </property>
-       <property name="autoDefault" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -1083,9 +1009,9 @@
    <header>q3textedit.h</header>
   </customwidget>
   <customwidget>
-   <class>Q3ListBox</class>
-   <extends>Q3Frame</extends>
-   <header>q3listbox.h</header>
+   <class>Q3TextBrowser</class>
+   <extends>Q3TextEdit</extends>
+   <header>Qt3Support/Q3TextBrowser</header>
   </customwidget>
   <customwidget>
    <class>Q3GroupBox</class>
@@ -1094,9 +1020,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>Q3TextBrowser</class>
-   <extends>Q3TextEdit</extends>
-   <header>Qt3Support/Q3TextBrowser</header>
+   <class>Q3ListBox</class>
+   <extends>Q3Frame</extends>
+   <header>Qt3Support/Q3ListBox</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -1111,10 +1037,6 @@
   <tabstop>cboGray</tabstop>
   <tabstop>cboStdDev</tabstop>
   <tabstop>cboColorMap</tabstop>
-  <tabstop>buttonHelp</tabstop>
-  <tabstop>buttonApply</tabstop>
-  <tabstop>buttonOk</tabstop>
-  <tabstop>buttonCancel</tabstop>
   <tabstop>leDisplayName</tabstop>
   <tabstop>leLayerSource</tabstop>
   <tabstop>cboxShowDebugInfo</tabstop>

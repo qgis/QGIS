@@ -43,8 +43,9 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   connect(cmbTheme, SIGNAL(activated(const QString&)), this, SLOT(themeChanged(const QString&)));
   connect(cmbTheme, SIGNAL(highlighted(const QString&)), this, SLOT(themeChanged(const QString&)));
   connect(cmbTheme, SIGNAL(textChanged(const QString&)), this, SLOT(themeChanged(const QString&)));
-  connect(buttonOk, SIGNAL(clicked()), this, SLOT(saveOptions()));
-  connect(buttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect(this, SIGNAL(accepted()), this, SLOT(saveOptions()));
 
   qparent = parent;
   // read the current browser and set it
@@ -243,15 +244,7 @@ void QgsOptions::saveOptions()
   settings.writeEntry("/qgis/zoom_factor", spinZoomFactor->value());
 
   settings.setValue("/qgis/splitterRedraw", cbxSplitterRedraw->isChecked());  
-
-  //all done
-  accept();
 }
-
-
-
-
-
 
 
 void QgsOptions::on_btnFindBrowser_clicked()
