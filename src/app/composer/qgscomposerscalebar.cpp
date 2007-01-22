@@ -425,7 +425,7 @@ void QgsComposerScalebar::setOptions ( void )
     bool found = false;
     mMapComboBox->insertItem ( "", 0 );
     mMaps.push_back ( 0 );
-    for ( int i = 0; i < maps.size(); i++ ) {
+    for ( uint i = 0; i < maps.size(); i++ ) {
 	mMapComboBox->insertItem ( maps[i]->name(), i+1 );
 	mMaps.push_back ( maps[i]->id() );
 

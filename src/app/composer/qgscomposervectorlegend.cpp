@@ -241,7 +241,7 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
       std::vector<int> groupLayers; // vector of layers
       std::vector<int> itemHeights; // maximum item sizes
       std::vector<QString> itemLabels; // item labels
-      int sectionItemsCount = 0;
+      unsigned int sectionItemsCount = 0;
       QString sectionTitle;
 
       for ( int j = nlayers - 1; j >= 0; j-- ) {
@@ -407,7 +407,7 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
       }
       /* add height of section items */
       height = groupStartHeight;
-      for ( int j = 0; j < itemHeights.size(); j++ ) {
+      for ( uint j = 0; j < itemHeights.size(); j++ ) {
 	height += mSymbolSpace + itemHeights[j];
       }
       if ( sectionItemsCount > 1 ) { // add more space to separate section from next item
@@ -615,7 +615,7 @@ void QgsComposerVectorLegend::setOptions ( void )
   bool found = false;
   mMapComboBox->insertItem ( "", 0 );
   mMaps.push_back ( 0 );
-  for ( int i = 0; i < maps.size(); i++ ) {
+  for ( uint i = 0; i < maps.size(); i++ ) {
     mMapComboBox->insertItem ( maps[i]->name(), i+1 );
     mMaps.push_back ( maps[i]->id() );
 

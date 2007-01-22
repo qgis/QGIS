@@ -24,7 +24,7 @@
 
 QgsComposerItem::QgsComposerItem(void)
 {
-    mSelected;
+    mSelected = false;
     mPlotStyle = QgsComposition::Preview;
 }
 

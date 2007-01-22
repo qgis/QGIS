@@ -24,6 +24,7 @@
 #include "qgsvectorlayer.h"
 #include <QPainter>
 #include <iostream>
+#include <cmath>
 
 QgsComposerMap::QgsComposerMap ( QgsComposition *composition, int id, int x, int y, int width, int height )
     : QWidget(), Q3CanvasRectangle(x,y,width,height,0)
@@ -236,7 +237,7 @@ void QgsComposerMap::cache ( void )
     //       1 pixel in cache should have ia similar size as 1 pixel in canvas
     //       but it can result in big cache -> limit
 
-    int w = Q3CanvasRectangle::width() * mComposition->viewScale();
+    int w = static_cast<int>(round(Q3CanvasRectangle::width() * mComposition->viewScale()));
     w = w < 1000 ? w : 1000;
     int h = (int) ( mExtent.height() * w / mExtent.width() );
     // It can happen that extent is not initialised well -> check 
@@ -397,6 +398,7 @@ double QgsComposerMap::scaleFromUserScale ( double us )
     case QGis::FEET :
       s = 304.8 * mComposition->scale() / us;
       break;
+    case QGis::UNKNOWN :
     case QGis::DEGREES :
       s = mComposition->scale() / us;
       break;
@@ -416,6 +418,7 @@ double QgsComposerMap::userScaleFromScale ( double s )
       us = 304.8 * mComposition->scale() / s; 
       break;
     case QGis::DEGREES :
+    case QGis::UNKNOWN :
       us = mComposition->scale() / s;
       break;
   }
@@ -559,6 +562,7 @@ void QgsComposerMap::setOptions ( void )
       mScaleLineEdit->setText ( QString("%1").arg((int)mUserScale) );
       break;
     case QGis::DEGREES :
+    case QGis::UNKNOWN :
       mScaleLineEdit->setText ( QString("%1").arg(mUserScale,0,'f') );
       break;
   }
