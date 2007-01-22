@@ -185,7 +185,7 @@ void QgsCustomProjectionDialog::on_pbnDelete_clicked()
 #endif
   if(myResult == SQLITE_OK)
   {
-    sqlite3_step(myPreparedStatement) == SQLITE_ROW;
+    sqlite3_step(myPreparedStatement);
   }
   // close the sqlite3 statement
   sqlite3_finalize(myPreparedStatement);
@@ -242,9 +242,11 @@ long QgsCustomProjectionDialog::getRecordCount()
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
-      sqlite3_step(myPreparedStatement) == SQLITE_ROW;
-      QString myRecordCountString = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
-      myRecordCount=myRecordCountString.toLong();
+      if (sqlite3_step(myPreparedStatement) == SQLITE_ROW)
+      {
+	QString myRecordCountString = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
+	myRecordCount=myRecordCountString.toLong();
+      }
   }
   // close the sqlite3 statement
   sqlite3_finalize(myPreparedStatement);
@@ -275,8 +277,8 @@ QString QgsCustomProjectionDialog::getProjectionFamilyName(QString theProjection
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
-      sqlite3_step(myPreparedStatement) == SQLITE_ROW;
-      myName = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
+      if (sqlite3_step(myPreparedStatement) == SQLITE_ROW)
+	myName = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
   }
   // close the sqlite3 statement
   sqlite3_finalize(myPreparedStatement);
@@ -306,8 +308,8 @@ QString QgsCustomProjectionDialog::getEllipsoidName(QString theEllipsoidAcronym)
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
-      sqlite3_step(myPreparedStatement) == SQLITE_ROW;
-      myName = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
+      if (sqlite3_step(myPreparedStatement) == SQLITE_ROW)
+	myName = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
   }
   // close the sqlite3 statement
   sqlite3_finalize(myPreparedStatement);
@@ -337,8 +339,8 @@ QString QgsCustomProjectionDialog::getProjectionFamilyAcronym(QString theProject
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
-      sqlite3_step(myPreparedStatement) == SQLITE_ROW;
-      myName = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
+      if (sqlite3_step(myPreparedStatement) == SQLITE_ROW)
+	myName = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
   }
   // close the sqlite3 statement
   sqlite3_finalize(myPreparedStatement);
@@ -368,8 +370,8 @@ QString QgsCustomProjectionDialog::getEllipsoidAcronym(QString theEllipsoidName)
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
-      sqlite3_step(myPreparedStatement) == SQLITE_ROW;
-      myName = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
+      if (sqlite3_step(myPreparedStatement) == SQLITE_ROW)
+	myName = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
   }
   // close the sqlite3 statement
   sqlite3_finalize(myPreparedStatement);
@@ -405,16 +407,18 @@ void QgsCustomProjectionDialog::on_pbnFirst_clicked()
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
-      sqlite3_step(myPreparedStatement) == SQLITE_ROW;
-      mCurrentRecordId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
-      leName->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1)));
-      //QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
-      //cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
-      //QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
-      //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
-      leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4)));
-      mCurrentRecordLong=1; 
-      lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
+      if (sqlite3_step(myPreparedStatement) == SQLITE_ROW)
+      {
+	mCurrentRecordId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
+	leName->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1)));
+	//QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
+	//cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
+	//QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
+	//cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
+	leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4)));
+	mCurrentRecordLong=1; 
+	lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
+      }
   }
   else
   {
@@ -481,16 +485,18 @@ void QgsCustomProjectionDialog::on_pbnPrevious_clicked()
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
-      sqlite3_step(myPreparedStatement) == SQLITE_ROW;
-      mCurrentRecordId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
-      leName->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1)));
-      //QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
-      //cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
-      //QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
-      //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
-      leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4))),
-      --mCurrentRecordLong;
-      lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
+      if (sqlite3_step(myPreparedStatement) == SQLITE_ROW)
+      {
+	mCurrentRecordId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
+	leName->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1)));
+	//QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
+	//cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
+	//QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
+	//cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
+	leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4))),
+	  --mCurrentRecordLong;
+	lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
+      }
   }
   else
   {
@@ -559,16 +565,18 @@ void QgsCustomProjectionDialog::on_pbnNext_clicked()
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
-      sqlite3_step(myPreparedStatement) == SQLITE_ROW;
-      mCurrentRecordId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
-      leName->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1)));
-      //QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
-      //cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
-      //QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
-      //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
-      leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4)));
-      ++mCurrentRecordLong;
-      lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
+      if (sqlite3_step(myPreparedStatement) == SQLITE_ROW)
+      {
+	mCurrentRecordId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
+	leName->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1)));
+	//QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
+	//cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
+	//QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
+	//cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
+	leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4)));
+	++mCurrentRecordLong;
+	lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
+      }
   }
   else
   {
@@ -632,16 +640,18 @@ void QgsCustomProjectionDialog::on_pbnLast_clicked()
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
-      sqlite3_step(myPreparedStatement) == SQLITE_ROW;
-      mCurrentRecordId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
-      leName->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1)));
-      //QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
-      //cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
-      //QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
-      //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
-      leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4)));
-      mCurrentRecordLong =mRecordCountLong;
-      lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
+      if (sqlite3_step(myPreparedStatement) == SQLITE_ROW)
+      {
+	mCurrentRecordId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
+	leName->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1)));
+	//QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
+	//cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
+	//QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
+	//cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
+	leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4)));
+	mCurrentRecordLong =mRecordCountLong;
+	lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
+      }
   }
   else
   {

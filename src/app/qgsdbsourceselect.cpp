@@ -37,7 +37,7 @@ email                : sherman at mrcc.com
 #include <iostream>
 
 QgsDbSourceSelect::QgsDbSourceSelect(QgisApp *app, Qt::WFlags fl)
-  : QDialog(app, fl), qgisApp(app), mColumnTypeThread(NULL), pd(0)
+  : QDialog(app, fl), mColumnTypeThread(NULL), qgisApp(app), pd(0)
 {
   setupUi(this);
   btnAdd->setEnabled(false);
@@ -729,7 +729,7 @@ void QgsGeomColumnTypeThread::getLayerTypes()
   {
     PQsetClientEncoding(pd, "UNICODE");
 
-    for (int i = 0; i < schemas.size(); ++i)
+    for (uint i = 0; i < schemas.size(); ++i)
     {
       QString query = QgsDbSourceSelect::makeGeomQuery(schemas[i],
                                                        tables[i],

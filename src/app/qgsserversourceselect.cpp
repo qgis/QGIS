@@ -45,9 +45,9 @@ static long DEFAULT_WMS_EPSG = 4326;  // WGS 84
 
 QgsServerSourceSelect::QgsServerSourceSelect(QgisApp * app, QWidget * parent, Qt::WFlags fl)
   : QDialog(parent, fl),
+    m_Epsg(DEFAULT_WMS_EPSG),
     qgisApp(app),
-    mWmsProvider(0),
-    m_Epsg(DEFAULT_WMS_EPSG)
+    mWmsProvider(0)
 {
   setupUi(this);
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
@@ -206,7 +206,7 @@ bool QgsServerSourceSelect::populateLayerList(QgsWmsProvider* wmsProvider)
 
     // Also insert the styles
     // Layer Styles
-    for (int j = 0; j < layer->style.size(); j++)
+    for (uint j = 0; j < layer->style.size(); j++)
     {
 #ifdef QGISDEBUG
   std::cout << "QgsServerSourceSelect::populateLayerList: got style name " << layer->style[j].name.toLocal8Bit().data() << " and title '" << layer->style[j].title.toLocal8Bit().data() << "'." << std::endl;

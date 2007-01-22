@@ -95,7 +95,7 @@ QgsComposition::QgsComposition( QgsComposer *c, int id )
   mPapers.push_back ( QgsCompositionPaper( tr("Legal (8.5x14 inches)"), 216, 356 ) );
 
   mPaper = mDefaultPaper = mCustomPaper = 0;
-  for( int i = 0; i < mPapers.size(); i++ ) {
+  for( uint i = 0; i < mPapers.size(); i++ ) {
     mPaperSizeComboBox->insertItem( mPapers[i].mName );
     // Map - A4 land for now, if future read from template
     if ( mPapers[i].mWidth == 210 && mPapers[i].mHeight == 297 ){

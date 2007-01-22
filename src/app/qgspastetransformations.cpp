@@ -71,7 +71,7 @@ void QgsPasteTransformations::accept()
   QString sourceKey      = sourceLayerComboBox     ->currentText();
   QString destinationKey = destinationLayerComboBox->currentText();
 
-  for (int i = 0; i < mSourceTransfers.size(); i++)
+  for (uint i = 0; i < mSourceTransfers.size(); i++)
   {
     settings.writeEntry(
                         baseKey + "/" + sourceKey + "/" + destinationKey + "/" +
