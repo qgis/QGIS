@@ -33,7 +33,7 @@ QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVect
 
     //find out the fields of mVectorLayer
     QgsVectorDataProvider *provider;
-    if (provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider()))
+    if ((provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider())))
     {
 	const QgsFieldMap & fields = provider->fields();
 	QString str;
