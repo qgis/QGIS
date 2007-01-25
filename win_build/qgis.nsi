@@ -143,7 +143,8 @@ Section "Sample Data - Spearfish (GRASS)" SEC02
 SectionEnd
 Section "Sample Data - Alaska (Non GRASS)" SEC03
  SetOutPath "$INSTDIR\SampleData\Alaska\"
- NSISdl::download http://qgis.org/uploadfiles/qgis_sample_data.tar.gz alaska.tar.gz
+ NSISdl::download http://qgis.org/uploadfiles/qgis_sample_data.zip alaska.zip
+ !insertmacro ZIPDLL_EXTRACT "$INSTDIR\SampleData\Alaska\alaska.zip" "$INSTDIR\SampleData\Alaska" "<ALL>"
  ; File "C:\dev/cpp/qgis/\qgis-release\SampleData\EnvironmentLayers\2050\A1F\Annual_dev/cpp/qgis/erature_range.asc"
 
 
