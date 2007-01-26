@@ -179,7 +179,7 @@ ENDIF (WIN32)
 
 
 INCLUDE_DIRECTORIES(
-     . composer legend
+     ${CMAKE_CURRENT_SOURCE_DIR} composer legend
      ${CMAKE_CURRENT_BINARY_DIR}
      ${CMAKE_CURRENT_BINARY_DIR}/../ui
      ../core
