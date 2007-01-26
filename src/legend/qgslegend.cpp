@@ -943,7 +943,7 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	  if(childelem.tagName()=="legendgroup")
 	    {
 	      QgsLegendGroup* theGroup = new QgsLegendGroup(this, name);
-	      childelem.attribute("open") == "true" ? expandItem(theGroup) : collapseItem(theGroup);
+	      childelem.attribute("open") == "true" ? expanded.push_back(theGroup) : collapsed.push_back(theGroup);
 	      //set the checkbox of the legend group to the right state
 	      blockSignals(true);
 	      QString checked = childelem.attribute("checked");
@@ -1009,7 +1009,15 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	      //find out the legendlayer
 	      std::map<QString,QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
 	      std::map<QString, QgsMapLayer*>::const_iterator iter = mapLayers.find(childelem.attribute("layerid"));
-	      if(iter != mapLayers.end() && lastLayerFileGroup)
+	      if(iter == mapLayers.end()) //the layer cannot be found (e.g. the file has been moved)
+		{
+		  //remove the whole legendlayer if this is the only legendlayerfile
+		  if(childelem.previousSibling().isNull() && childelem.nextSibling().isNull())
+		    {
+		      delete lastLayer;
+		    }
+		}
+	      else if(lastLayerFileGroup)
 		{
 		  QgsMapLayer* theMapLayer = iter->second;
 		  QgsLegendLayerFile* theLegendLayerFile = new QgsLegendLayerFile(lastLayerFileGroup, QgsLegendLayerFile::nameFromLayer(theMapLayer), theMapLayer);
@@ -1060,11 +1068,11 @@ bool QgsLegend::readXML(QDomNode& legendnode)
     }
 
   // Do the tree item expands and collapses.
-  for (int i = 0; i < collapsed.size(); ++i)
-      collapseItem(collapsed[i]);
-
   for (int i = 0; i < expanded.size(); ++i)
       expandItem(expanded[i]);
+  
+  for (int i = 0; i < collapsed.size(); ++i)
+      collapseItem(collapsed[i]);
 
   return true;
 }

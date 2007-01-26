@@ -1166,6 +1166,19 @@ bool QgsProject::read()
         // doesn't *have* layers -- nor a GUI for that matter -- we'll just
         // leave in the whining and boldly stomp on.
 
+	//also restore the legend before bailing out
+	QgsLegend* theLegend = _findLegend();
+	if(theLegend)
+	  {
+	    QDomNodeList ll = doc->elementsByTagName("legend");
+	    if(ll.count()==1)
+	      {
+		QDomNode legendnode = ll.item(0);
+		theLegend->readXML(legendnode);
+	      }
+	  
+	  }
+
         throw QgsProjectBadLayerException( getMapLayersResults.second );
 
 //         return false;
