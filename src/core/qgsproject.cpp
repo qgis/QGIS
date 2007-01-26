@@ -858,7 +858,7 @@ bool QgsProject::read()
         // Since we could be executing this from the test harness which
         // doesn't *have* layers -- nor a GUI for that matter -- we'll just
         // leave in the whining and boldly stomp on.
-
+	emit readProject(*doc);
         throw QgsProjectBadLayerException( getMapLayersResults.second );
 
 //         return false;
