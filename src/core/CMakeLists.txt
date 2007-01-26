@@ -90,7 +90,7 @@ raster/qgsrasterlayer.h
 
 QT4_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
 
-INCLUDE_DIRECTORIES(. raster renderer symbology
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} raster renderer symbology
   ${QT_QTSVG_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}

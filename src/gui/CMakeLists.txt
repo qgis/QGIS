@@ -31,7 +31,7 @@ qgsprojectionselector.h
 
 QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
 
-INCLUDE_DIRECTORIES(. ../core
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} ../core
      ../core/raster ../core/renderer ../core/symbology
      ${SQLITE3_INCLUDE_DIR}
      ${CMAKE_CURRENT_BINARY_DIR}
