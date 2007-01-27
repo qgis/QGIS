@@ -1,4 +1,8 @@
 #!/bin/sh
+echo "This source tree uses CMake rather than autoconf/automake"
+echo "Please see http://wiki.qgis.org/qgiswiki/Building_with_CMake"
+echo "for information on building QGIS with CMake."
+exit
 
 # Automakeversion
 AM_1=1
