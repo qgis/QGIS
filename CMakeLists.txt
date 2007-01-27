@@ -167,39 +167,28 @@ ENDIF (WIN32)
 #############################################################
 # create qgsconfig.h
 
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/qgsconfig.h.in ${CMAKE_SOURCE_DIR}/qgsconfig.h)
+CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/qgsconfig.h.in ${CMAKE_BINARY_DIR}/qgsconfig.h)
 
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
 
 #############################################################
 # create qgssvnversion.h
 
-# this is useful variable for developers
-SET (QGIS_NO_SVNVERSION FALSE CACHE BOOL "Set to true if you don't want qgssvnversion.h to be regenerated every make")
+IF (WIN32)
+  
+  # TODO: create qgssvnversion.h properly
+  ADD_CUSTOM_TARGET(svnversion echo "#define QGSSVNVERSION \"svn\"" > qgssvnversion.h
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
-IF (QGIS_NO_SVNVERSION)
+ELSE (WIN32)
 
-  ADD_CUSTOM_TARGET(svnversion
-                    echo '\#define QGSSVNVERSION \"\"' > qgssvnversion.h
-                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-
-ELSE (QGIS_NO_SVNVERSION)
-
-  IF (WIN32)
-    # TODO: create qgssvnversion.h properly
-    ADD_CUSTOM_TARGET(svnversion echo "#define QGSSVNVERSION \"svn\"" > qgssvnversion.h
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-  ELSE (WIN32)
-    ADD_CUSTOM_TARGET(svnversion ALL
+  ADD_CUSTOM_TARGET(svnversion ALL
   QGSSVNDEF='\#define QGSSVNVERSION \"'`svnversion .`'\"' &&
   if [ \"`grep QGSSVNVERSION qgssvnversion.h 2>/dev/null`\" != \"$$QGSSVNDEF\" ]; then 
   echo $$QGSSVNDEF > qgssvnversion.h  \; fi 
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-  )
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
 ENDIF (WIN32)
-
-ENDIF (QGIS_NO_SVNVERSION)
 
 #############################################################
 # process subdirs
