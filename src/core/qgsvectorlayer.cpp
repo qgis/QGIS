@@ -44,7 +44,6 @@
 #include "qgscontinuouscolorrenderer.h"
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgsrenderer.h"
-#include "qgsrenderitem.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsuniquevaluerenderer.h"
 
