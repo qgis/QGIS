@@ -3118,7 +3118,7 @@ Vill du skriva över den?</translation>
     </message>
     <message>
       <source>error in the text declaration of an external entity</source>
-      <translation>fel i textdeklareringen av en extern entitet</translation>
+       <translation>fel i textdeklareringen av en extern entitet</translation>
     </message>
   </context>
 </TS>
