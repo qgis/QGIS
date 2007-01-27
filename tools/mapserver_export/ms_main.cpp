@@ -4,7 +4,7 @@
 #include <QStringList>
 
 #include "qgsmapserverexport.h"
-#include "src/core/qgsapplication.h"
+#include "qgsapplication.h"
 
 #include <iostream>
 
