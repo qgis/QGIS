@@ -51,9 +51,7 @@ raster/qgsrasterlayer.cpp
 
 renderer/qgscontinuouscolorrenderer.cpp
 renderer/qgsgraduatedsymbolrenderer.cpp
-renderer/qgsrangerenderitem.cpp
 renderer/qgsrenderer.cpp
-renderer/qgsrenderitem.cpp
 renderer/qgssinglesymbolrenderer.cpp
 renderer/qgsuniquevaluerenderer.cpp
 
