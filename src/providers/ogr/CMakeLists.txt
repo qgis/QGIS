@@ -1,0 +1,24 @@
+
+SET (OGR_SRCS qgsogrprovider.cpp)
+
+INCLUDE_DIRECTORIES(
+  .
+  ../../core
+  ../../gui
+  ${GDAL_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
+)
+
+ADD_LIBRARY(ogrprovider MODULE ${OGR_SRCS})
+
+TARGET_LINK_LIBRARIES(ogrprovider
+  ${QT_LIBRARIES}
+  ${GDAL_LIBRARY}
+  ${GEOS_LIBRARY}
+  qgis_core
+)
+
+INSTALL (TARGETS ogrprovider
+  RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
+  LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
+

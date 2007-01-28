@@ -1,0 +1,34 @@
+
+########################################################
+# Files
+
+SET (DTEXT_SRCS qgsdelimitedtextprovider.cpp)
+
+
+########################################################
+# Build
+
+INCLUDE_DIRECTORIES(
+  .
+  ../../core
+  ../../gui
+  ${CMAKE_CURRENT_BINARY_DIR}/../../ui
+  ${GDAL_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
+)
+
+ADD_LIBRARY(delimitedtextprovider MODULE ${DTEXT_SRCS})
+
+TARGET_LINK_LIBRARIES(delimitedtextprovider
+  ${QT_LIBRARIES}
+  ${GDAL_LIBRARY}
+  ${GEOS_LIBRARY}
+  qgis_core
+)
+
+########################################################
+# Install
+
+INSTALL (TARGETS delimitedtextprovider
+  RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
+  LIBRARY DESTINATION ${QGIS_PLUGIN_DIR}) 
