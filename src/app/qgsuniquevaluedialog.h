@@ -47,9 +47,11 @@ class QgsUniqueValueDialog: public QDialog, private Ui::QgsUniqueValueDialogBase
 
  protected slots:
     /**Set new attribut for classification*/
-    void changeClassificationAttribute(int nr);
+    void changeClassificationAttribute();
     /**Changes the display of the single symbol dialog*/
     void changeCurrentValue();
+    /**Removes a class from the classification*/
+    void deleteCurrentClass();
     /**Writes changes in the single symbol dialog to the corresponding QgsSymbol*/
     void applySymbologyChanges();
 };

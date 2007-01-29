@@ -114,7 +114,7 @@ void QgsUniqueValueRenderer::renderFeature(QPainter* p, QgsFeature& f,QImage* im
 	} 
 
         // Line, polygon
- 	if ( mVectorType != QGis::Point )
+ 	else if ( mVectorType != QGis::Point )
 	{
 	    if( !selected ) 
 	    {
@@ -137,9 +137,16 @@ void QgsUniqueValueRenderer::renderFeature(QPainter* p, QgsFeature& f,QImage* im
     }
     else
     {
-#ifdef QGISDEBUG
-	qWarning("Warning, no render item found in QgsUniqueValueRenderer::renderFeature");
-#endif
+      //no matching symbol found. In this case, set Qt::NoPen, Qt::NoBrush or transparent image
+	if ( img && mVectorType == QGis::Point )
+	  {
+	    //todo: fill image transparent
+	  }
+	else if ( mVectorType != QGis::Point )
+	  {
+	    p->setPen(Qt::NoPen);
+	    p->setBrush(Qt::NoBrush);
+	  }
     }
     
 }

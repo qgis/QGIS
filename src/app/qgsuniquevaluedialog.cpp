@@ -77,12 +77,9 @@ QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVect
 	    mClassBreakBox->insertItem(symbolvalue);
 	}
     }
-    else
-    {
-	changeClassificationAttribute(0);	
-    }
 
-    QObject::connect(mClassificationComboBox, SIGNAL(activated(int)), this, SLOT(changeClassificationAttribute(int)));
+    QObject::connect(mClassifyButton, SIGNAL(clicked()), this, SLOT(changeClassificationAttribute()));
+    QObject::connect(mDeletePushButton, SIGNAL(clicked()), this, SLOT(deleteCurrentClass()));
     QObject::connect(mClassBreakBox, SIGNAL(selectionChanged()), this, SLOT(changeCurrentValue()));
     QObject::connect(&sydialog, SIGNAL(settingsChanged()), this, SLOT(applySymbologyChanges()));
     mSymbolWidgetStack->addWidget(&sydialog);
@@ -126,8 +123,9 @@ void QgsUniqueValueDialog::apply()
     mVectorLayer->setRenderer(renderer);
 }
 
-void QgsUniqueValueDialog::changeClassificationAttribute(int nr)
+void QgsUniqueValueDialog::changeClassificationAttribute()
 {
+  int nr = mClassificationComboBox->currentIndex();
     //delete old entries
     for(std::map<QString,QgsSymbol*>::iterator it=mValues.begin();it!=mValues.end();++it)
     {
@@ -151,7 +149,7 @@ void QgsUniqueValueDialog::changeClassificationAttribute(int nr)
 	while(provider->getNextFeature(feat, false, attlist))
 	{
       const QgsAttributeMap& vec = feat.attributeMap();
-	    value=vec[0].fieldValue();
+	    value=vec[nr].fieldValue();
 	   
 	    if(mValues.find(value)==mValues.end())
 	    {
@@ -162,7 +160,6 @@ void QgsUniqueValueDialog::changeClassificationAttribute(int nr)
 
 	//set symbology for all QgsSiSyDialogs
 	QColor thecolor;
-	double frac;
 
 	for(std::map<QString,QgsSymbol*>::iterator it=mValues.begin();it!=mValues.end();++it)
 	{
@@ -200,18 +197,42 @@ void QgsUniqueValueDialog::changeCurrentValue()
 {
     sydialog.blockSignals(true);//block signal to prevent sydialog from changing the current QgsRenderItem
     Q3ListBoxItem* item=mClassBreakBox->selectedItem();
-    QString value=item->text();
-    std::map<QString,QgsSymbol*>::iterator it=mValues.find(value);
-    if(it!=mValues.end())
-    {
-	sydialog.set( it->second);
-	sydialog.setLabel(it->second->label());
-    }
-    else
-    {
-	//no entry found
-    }
+    if(item)
+      {
+	QString value=item->text();
+	std::map<QString,QgsSymbol*>::iterator it=mValues.find(value);
+	if(it!=mValues.end())
+	  {
+	    sydialog.set( it->second);
+	    sydialog.setLabel(it->second->label());
+	  }
+	else
+	  {
+	    //no entry found
+	  }
+      }
     sydialog.blockSignals(false);
+}
+
+void QgsUniqueValueDialog::deleteCurrentClass()
+{
+  QString classValue = mClassBreakBox->currentText();
+  int currentIndex = mClassBreakBox->currentItem();
+  mValues.erase(classValue);
+  mClassBreakBox->removeItem(currentIndex);
+  qWarning("numRows: ");
+  qWarning(QString::number(mClassBreakBox->numRows()));
+  //
+  if(mClassBreakBox->numRows() < (currentIndex + 1))
+    {
+      qWarning("selecting numRows - 1");
+      mClassBreakBox->setSelected(mClassBreakBox->numRows() - 1, true);
+    }
+  else
+    {
+      qWarning("selecting currentIndex");
+      mClassBreakBox->setSelected(currentIndex, true);
+    }
 }
 
 void QgsUniqueValueDialog::applySymbologyChanges()
