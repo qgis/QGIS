@@ -20,9 +20,9 @@
 #ifndef QGSLEGENDLAYERFILE_H
 #define QGSLEGENDLAYERFILE_H
 
-#include <qgslegenditem.h>
 #include <QPixmap>
 
+#include "qgslegenditem.h"
 #include "qgsmapcanvas.h"
 
 class QgsMapLayer;
@@ -52,9 +52,6 @@ public:
     
     void setIconAppearance(bool inOverview, bool editable);
 
-    /**Sets mVisibilityCheckBox to on/off*/
-    void toggleCheckBox(bool state);
-
     /**Returns a label for a layer. Is static such that
      the name can be passed to the constructor of QgsLegendLayerFile*/
     static QString nameFromLayer(QgsMapLayer* layer);
@@ -65,6 +62,9 @@ public:
     
     void setInOverview(bool inOverview = TRUE);
     bool isInOverview();
+    
+    /** called to add appropriate menu items to legend's popup menu */
+    void addToPopupMenu(QMenu& theMenu);
     
   public slots:
     
@@ -85,6 +85,9 @@ public:
     
     /**Toggle editing for layer*/
     void toggleEditing();
+    
+    /**Toggle show in overview*/
+    void showInOverview();
     
     /**Layer name has changed - set it also in legend*/
     void layerNameChanged();

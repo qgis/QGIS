@@ -143,6 +143,9 @@ class QgsLegend : public QTreeWidget
   
   /**Updates layer set of map canvas*/
   void updateMapCanvasLayerSet();
+  
+  /**Updates overview*/
+  void updateOverview();
 
   /**Adds an entry to mPixmapWidthValues*/
   void addPixmapWidthValue(int width);
@@ -165,7 +168,7 @@ class QgsLegend : public QTreeWidget
   QgsLegendPixmaps& pixmaps() { return mPixmaps; }
   
   void updateCheckStates(QTreeWidgetItem* item, Qt::CheckState state) {mStateOfCheckBoxes[item] = state;}
-
+  
 public slots:
 
     /*!Adds a new layer group with the maplayer to the canvas*/
@@ -198,15 +201,28 @@ public slots:
   void addGroup();
   void removeLayer(QString);
 
-  /**Removes the current LegendLayer and all its LegendLayerFiles*/
-  void legendLayerRemove();
-  
   /** called to read legend settings from project */
   void readProject(const QDomDocument &);
     
   /** called to write legend settings to project */
   void writeProject(QDomDocument &);
 
+  /**Removes the current LegendLayer and all its LegendLayerFiles*/
+  void legendLayerRemove();
+  
+  /**Toggle show in overview for current layer*/
+  void legendLayerShowInOverview();
+
+  /**Zooms to extent of the current legend layer (considers there may be several
+  legend layer files*/
+  void legendLayerZoom();
+  
+  /**Show attribute table*/
+  void legendLayerAttributeTable();
+
+  /**Shows the property dialog of the first legend layer file in a legend layer*/
+  void legendLayerShowProperties();
+  
 protected:
 
   /*!Event handler for mouse movements.
@@ -274,14 +290,6 @@ this item may be moved back to the original position with resetToInitialPosition
   void handleRightClickEvent(QTreeWidgetItem* item, const QPoint& position);
   /**Removes the current legend group*/
   void legendGroupRemove();
-  /**Adds all the legend layer files of the current legend layer to overview*/
-  void legendLayerAddToOverview();
-  /**Removes all the legend layer files of the current legend layer from overview*/
-  void legendLayerRemoveFromOverview();
-  /**Shows the property dialog of the first legend layer file in a legend layer*/
-  void legendLayerShowProperties();
-  /**Toggles the editing mode of the first layer file of a legend layer*/
-  void legendLayerToggleEditing();
    /**Sets all listview items to open*/
   void expandAll();
   /**Sets all listview items to closed*/
@@ -296,9 +304,6 @@ this item may be moved back to the original position with resetToInitialPosition
   void makeToTopLevelItem();
   /**Show/ Hide the legend layer file groups*/
   void showLegendLayerFileGroups();
-  /**Zooms to extent of the current legend layer (considers there may be several
-   legend layer files*/
-  void zoomToLayerExtent();
   
 private:
 
