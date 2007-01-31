@@ -125,6 +125,7 @@ composer/qgscomposerview.h
 composer/qgscomposition.h
 
 legend/qgslegend.h
+legend/qgslegendlayer.h
 legend/qgslegendlayerfile.h
 )
 

@@ -42,6 +42,8 @@ Container for layer, including layer file(s), symbology class breaks and propert
 */
 class QgsLegendLayer : public QgsLegendItem
 {
+    Q_OBJECT
+  
 public:
     QgsLegendLayer(QTreeWidgetItem * ,QString);
     QgsLegendLayer(QTreeWidget* ,QString);
@@ -72,6 +74,22 @@ public:
     have the same editing/overview state, a tristate is applied*/
     void updateIcon();
   
+    /** called to add appropriate menu items to legend's popup menu */
+    void addToPopupMenu(QMenu& theMenu);
+    
+    /**Determines whether there are layers in overview*/
+    bool isInOverview();
+    
+  public slots:
+    
+    /**Toggle show in overview*/
+    void showInOverview();
+  
+    /**Show layer attribute table*/
+    void table();
+    
+    void toggleEditing();
+    
   protected:
     
     /** Prepare and change symbology for vector layer */

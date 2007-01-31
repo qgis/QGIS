@@ -35,8 +35,11 @@
 #include "qgsvectordataprovider.h"
 
 #include <iostream>
+#include <QAction>
 #include <QCoreApplication>
 #include <QIcon>
+#include <QMenu>
+#include <QMessageBox>
 #include <QPainter>
 
 QgsLegendLayer::QgsLegendLayer(QTreeWidgetItem* parent,QString name)
@@ -451,4 +454,125 @@ QPixmap QgsLegendLayer::getOriginalPixmap() const
 
   QPixmap emptyPixmap;
   return emptyPixmap;
+}
+
+
+void QgsLegendLayer::addToPopupMenu(QMenu& theMenu)
+{
+  QString iconsPath = QgsApplication::themePath();
+  std::list<QgsLegendLayerFile*> files = legendLayerFiles();
+  QgsMapLayer* firstLayer = NULL;
+  if (files.size() > 0)
+  {
+    firstLayer = files.front()->layer();
+  }
+  
+  // zoom to layer extent
+  theMenu.addAction(QIcon(iconsPath+QString("/mActionZoomToLayer.png")),
+                    tr("&Zoom to layer extent"), legend(), SLOT(legendLayerZoom()));
+  
+  // show in overview
+  QAction* showInOverviewAction = theMenu.addAction(tr("&Show in overview"), this, SLOT(showInOverview()));
+  showInOverviewAction->setCheckable(true); // doesn't support tristate
+  showInOverviewAction->setChecked(isInOverview());
+    
+  // remove from canvas
+  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/mActionRemove.png"))),
+                    tr("&Remove"), legend(), SLOT(legendLayerRemove()));
+	  
+  theMenu.addSeparator();
+  
+  if (firstLayer && firstLayer->type() == QgsMapLayer::VECTOR)
+  {
+    // attribute table
+    QAction* tableAction = theMenu.addAction(tr("&Open attribute table"), this, SLOT(table()));
+    if (files.size() != 1)
+    {
+      tableAction->setEnabled(false);
+    }
+    
+    // allow editing
+    QAction* toggleEditingAction = theMenu.addAction(tr("&Allow editing"), this, SLOT(toggleEditing()));
+    toggleEditingAction->setCheckable(true);
+    
+    QgsVectorLayer* theVectorLayer = dynamic_cast<QgsVectorLayer*>(firstLayer);
+  
+    if (files.size() != 1)
+    {
+      toggleEditingAction->setEnabled(false);
+    }
+    if (theVectorLayer)
+    {
+      toggleEditingAction->setChecked(theVectorLayer->isEditable());
+    }
+  
+    theMenu.addSeparator();
+  }
+	
+  
+  QAction* propertiesAction = theMenu.addAction(tr("&Properties"), legend(), SLOT(legendLayerShowProperties()));
+  if (files.size() != 1)
+  {
+    propertiesAction->setEnabled(false);
+  }
+
+}
+
+bool QgsLegendLayer::isInOverview()
+{
+  // QAction doesn't support tristate checkboxes
+  // returns true if just some are in overview
+  bool hasVisible = false;
+  
+  // find out whether we're showing or hiding them
+  std::list<QgsLegendLayerFile*> maplayers = legendLayerFiles();
+  for (std::list<QgsLegendLayerFile*>::iterator it = maplayers.begin(); it!=maplayers.end(); ++it)
+  {
+    if (*it && (*it)->isInOverview())
+    {
+      hasVisible = true;
+      break;
+    }
+  }
+  
+  return hasVisible;
+}
+
+void QgsLegendLayer::showInOverview()
+{
+  std::list<QgsLegendLayerFile*> maplayers = legendLayerFiles();
+  bool showLayers = ( ! isInOverview() );
+  
+  // set overview visibility
+  for (std::list<QgsLegendLayerFile*>::iterator it = maplayers.begin(); it!=maplayers.end(); ++it)
+  {
+    if (*it)
+      (*it)->setInOverview(showLayers);
+  }
+   
+  legend()->updateMapCanvasLayerSet();
+  legend()->updateOverview();
+}
+
+void QgsLegendLayer::table()
+{
+  std::list<QgsLegendLayerFile*> maplayers = legendLayerFiles();
+  if (maplayers.size() > 1)
+  {
+    QMessageBox::information(0, tr("More layers"),
+      tr("This item contains more layer files. Displaying more layers in table is not supported."));
+  }
+  else if (maplayers.size() == 1)
+  {
+    maplayers.front()->table();
+  }
+}
+
+void QgsLegendLayer::toggleEditing()
+{
+  std::list<QgsLegendLayerFile*> maplayers = legendLayerFiles();
+  if (maplayers.size() == 1)
+  {
+    maplayers.front()->toggleEditing();
+  }
 }

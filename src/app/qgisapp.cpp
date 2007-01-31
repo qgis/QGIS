@@ -3346,28 +3346,7 @@ void QgisApp::measureArea()
 
 void QgisApp::attributeTable()
 {
-  QgsMapLayer *layer = mMapLegend->currentLayer();
-  if (layer)
-  {
-  
-    QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(layer);
-    if (vlayer)
-    {
-      // TODO: revisit and repair [MD]
-      //layer->table(this);
-    }
-    else
-    {
-      QMessageBox::information(this, tr("Not a vector layer"),
-        tr("To open an attribute table, you must select a vector layer in the legend"));
-    }
-
-  }
-  else
-  {
-    QMessageBox::information(this, tr("No Layer Selected"),
-        tr("To open an attribute table, you must select a vector layer in the legend"));
-  }
+  mMapLegend->legendLayerAttributeTable();
 }
 
 void QgisApp::deleteSelected()
@@ -3643,22 +3622,8 @@ void QgisApp::menubar_highlighted( int i )
 // toggle overview status
 void QgisApp::inOverview()
 {
-  // TODO: make working
-  /*
-#ifdef QGISDEBUG
-  std::cout << "QGisApp::inOverview" << std::endl;
-#endif
-
-  QgsMapLayer* layer = mMapLegend->currentLayer();
-  if(layer)
-  {
-    layer->inOverview( ! layer->showInOverviewStatus() );
-    mMapCanvas->updateOverview();
-  }
-  */
-} // QgisApp::inOverview(bool)
-
-
+  mMapLegend->legendLayerShowInOverview();
+}
 
 void QgisApp::removeLayer()
 {
@@ -3675,17 +3640,8 @@ void QgisApp::removeAllLayers()
 
 void QgisApp::zoomToLayerExtent()
 {
-  QgsMapLayer *layer = mMapLegend->currentLayer();
-  if (layer)
-  {
-    QgsRect extent = mMapCanvas->mapRender()->layerExtentToOutputExtent(layer, layer->extent());
-    mMapCanvas->setExtent(extent);
-    mMapCanvas->refresh();
-
-    // notify the project we've made a change
-    QgsProject::instance()->dirty(true);
-  }
-} // QgisApp::zoomToLayerExtent()
+  mMapLegend->legendLayerZoom();
+}
 
 
 void QgisApp::showPluginManager()

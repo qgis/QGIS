@@ -23,6 +23,7 @@
 #include "qgslegendlayer.h"
 #include "qgslegendlayerfile.h"
 #include "qgsmaplayer.h"
+#include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
@@ -33,6 +34,7 @@
 #include "qgsencodingfiledialog.h"
 
 #include <QApplication>
+#include <QMenu>
 #include <QMessageBox>
 #include <QPainter>
 #include <QSettings>
@@ -162,10 +164,6 @@ void QgsLegendLayerFile::setIconAppearance(bool inOverview,
   ((QgsLegendLayer*)(parent()->parent()))->updateIcon();
 }
 
-void QgsLegendLayerFile::toggleCheckBox(bool state)
-{
-  //todo
-}
 
 QString QgsLegendLayerFile::nameFromLayer(QgsMapLayer* layer)
 {
@@ -205,12 +203,25 @@ bool QgsLegendLayerFile::isInOverview()
   return mLyr.inOverview();
 }
 
+void QgsLegendLayerFile::showInOverview()
+{
+  // toggle current status
+  setInOverview( ! isInOverview() );
+  
+  legend()->updateMapCanvasLayerSet();
+  legend()->updateOverview();
+}
+
 
 void QgsLegendLayerFile::table()
 {
   QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(mLyr.layer());
   if (!vlayer)
+  {
+    QMessageBox::information(0, tr("Not a vector layer"),
+                             tr("To open an attribute table, you must select a vector layer in the legend"));
     return;
+  }
   
   QgsAttributeAction& actions = *vlayer->actions();
   
@@ -395,4 +406,65 @@ void QgsLegendLayerFile::layerNameChanged()
 
   // set also parent's name
   legend()->setName(this, name);
+}
+
+
+void QgsLegendLayerFile::addToPopupMenu(QMenu& theMenu)
+{
+  QgsMapLayer* lyr = layer();
+  QString iconsPath = QgsApplication::themePath();
+
+  // zoom to layer extent
+  theMenu.addAction(QIcon(iconsPath+QString("/mActionZoomToLayer.png")),
+                    tr("&Zoom to layer extent"), legend(), SLOT(legendLayerZoom()));
+  
+  // show in overview
+  QAction* showInOverviewAction = theMenu.addAction(tr("&Show in overview"), this, SLOT(showInOverview()));
+  showInOverviewAction->setCheckable(true);
+  showInOverviewAction->blockSignals(true);
+  showInOverviewAction->setChecked(mLyr.inOverview());
+  showInOverviewAction->blockSignals(false);
+  
+  // remove from canvas
+  theMenu.addAction(QIcon(iconsPath+QString("/mActionRemove.png")),
+                    tr("&Remove"), legend(), SLOT(legendLayerRemove()));
+
+  theMenu.addSeparator();
+
+  if (lyr->type() == QgsMapLayer::VECTOR)
+  {
+    QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(lyr);
+    
+    // attribute table
+    theMenu.addAction(tr("&Open attribute table"), this, SLOT(table()));
+    
+    // editing
+    int cap = vlayer->getDataProvider()->capabilities();
+    if ((cap & QgsVectorDataProvider::AddFeatures)
+        ||(cap & QgsVectorDataProvider::DeleteFeatures))
+    {
+      QAction* toggleEditingAction = theMenu.addAction(tr("Allow Editing"), this, SLOT(toggleEditing()));
+      toggleEditingAction->setCheckable(true);
+      toggleEditingAction->blockSignals(true);
+      toggleEditingAction->setChecked(vlayer->isEditable());
+      toggleEditingAction->blockSignals(false);
+    }
+    
+    // add the save as shapefile menu item
+    // TODO: currently not working
+    //theMenu.addAction(tr("Save as shapefile..."), this, SLOT(saveAsShapefile()));
+
+    theMenu.addSeparator();
+  }
+  else if (lyr->type() == QgsMapLayer::RASTER)
+  {
+    QgsRasterLayer* rlayer = dynamic_cast<QgsRasterLayer*>(lyr);
+    
+    // TODO: what was this for?
+    //theMenu.addAction(tr("&Convert to..."), rlayer, SLOT(convertTo()));
+  }
+     
+  // properties goes on bottom of menu for consistency with normal ui standards
+  // e.g. kde stuff
+  theMenu.addAction(tr("&Properties"), legend(), SLOT(legendLayerShowProperties()));
 }

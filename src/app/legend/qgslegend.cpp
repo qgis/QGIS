@@ -39,14 +39,15 @@
 #include "qgsvectordataprovider.h"
 
 #include <cfloat>
-#include <QCoreApplication>
-#include <QPixmap>
-#include <QMouseEvent>
 #include <iostream>
-#include <QTreeWidgetItem>
-#include <QMenu>
+
 #include <QFont>
 #include <QHeaderView>
+#include <QMenu>
+#include <QMessageBox>
+#include <QMouseEvent>
+#include <QPixmap>
+#include <QTreeWidgetItem>
 
 static const char *const ident_ = "$Id$";
 
@@ -377,135 +378,45 @@ void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& posit
   QString iconsPath = QgsApplication::themePath();
 
   if(mMapCanvas->isDrawing())
-    {
-      return;
-    }
-
-  // TODO: synchronize LEGEND_LAYER_FILE and LEGEND_LAYER menus a bit?
-  
-  QgsLegendItem* li = dynamic_cast<QgsLegendItem*>(item);
-  if(li)
-    {
-      if(li->type() == QgsLegendItem::LEGEND_LAYER_FILE)
-	{
-    QgsMapLayer* layer = (static_cast<QgsLegendLayerFile*>(li))->layer();
-	  
-    theMenu.addAction(tr("&Zoom to layer extent"), this, SLOT(zoomToLayerExtent()));
-    
-    // TODO: decide whether to use toggle in overview or add/remove to/from overview
-    //mShowInOverviewAction = popMenu->addAction(tr("Toggle in Overview"), app, SLOT(inOverview()));
-    //mShowInOverviewAction->setCheckable(true);
-    theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/mActionAddAllToOverview.png"))), tr("&Add to overview"), this, SLOT(legendLayerAddToOverview()));
-    theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/mActionRemoveAllFromOverview.png"))), tr("&Remove from overview"), this, SLOT(legendLayerRemoveFromOverview()));
-    theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/mActionRemove.png"))), tr("&Remove"), this, SLOT(legendLayerRemove()));
-
-    if (layer->type() == QgsMapLayer::VECTOR)
-    {
-      QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(layer);
-      
-      theMenu.addAction(tr("&Open attribute table"), li, SLOT(table()));
-      theMenu.addSeparator();
-    
-      int cap = vlayer->getDataProvider()->capabilities();
-      if((cap & QgsVectorDataProvider::AddFeatures)
-          ||(cap & QgsVectorDataProvider::DeleteFeatures))
-      {
-        QAction* toggleEditingAction = theMenu.addAction(tr("Allow Editing"),li,SLOT(toggleEditing()));
-        toggleEditingAction->setCheckable(true);
-        toggleEditingAction->blockSignals(true);
-        toggleEditingAction->setChecked(vlayer->isEditable());
-        toggleEditingAction->blockSignals(false);
-      }
-    
-      // add the save as shapefile menu item
-      theMenu.addSeparator();
-      theMenu.addAction(tr("Save as shapefile..."), li, SLOT(saveAsShapefile()));
-
-    }
-    else if (layer->type() == QgsMapLayer::RASTER)
-    {
-      QgsRasterLayer* rlayer = dynamic_cast<QgsRasterLayer*>(layer);
-      
-      /*
-      //In qt4, inserting a slider in QMenu seems difficult
-      popMenu->setCheckable ( true );
-    
-      QLabel * myTransparencyLabel = new QLabel( popMenu );
-    
-      myTransparencyLabel->setFrameStyle( Q3Frame::Panel | Q3Frame::Raised );
-      myTransparencyLabel->setText( tr("<center><b>Transparency</b></center>") );
-    
-    // TODO: Qt4 will have to use a QAction instead
-    #if QT_VERSION < 0x040000
-      popMenu->insertItem(myTransparencyLabel);
-    
-      // XXX why GUI element here?
-      // XXX Dunno who put the above comment in, but whole context menu is a gui element! TS
-      mTransparencySlider = new QSlider(0,255,5,255-transparencyLevelInt,Qt::Horizontal,popMenu);
-      mTransparencySlider->setTickmarks(QSlider::TicksBothSides);
-      mTransparencySlider->setTickInterval(25);
-      mTransparencySlider->setTracking(false); //stop slider emmitting a signal until mouse released
-    
-      connect(mTransparencySlider, SIGNAL(valueChanged(int)), this, SLOT(popupTransparencySliderMoved(int)));
-    
-      popMenu->insertItem(mTransparencySlider);
-    #endif
-      */
-
-      theMenu.addAction(tr("&Convert to..."), rlayer, SLOT(convertTo()));
-    }
-     
-    // properties goes on bottom of menu for consistency with normal ui standards
-    // e.g. kde stuff
-    theMenu.addAction(tr("&Properties"), this, SLOT(legendLayerShowProperties()));
-   
-    theMenu.exec(position);
+  {
     return;
-	}
-      else if(li->type() == QgsLegendItem::LEGEND_LAYER)
-	{
-	  theMenu.addAction(tr("&Properties"), this, SLOT(legendLayerShowProperties()));
-	  theMenu.addAction(tr("&Zoom to layer extent"), this, SLOT(zoomToLayerExtent()));
-	  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/mActionAddAllToOverview.png"))), tr("&Add to overview"), this, SLOT(legendLayerAddToOverview()));
-	  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/mActionRemoveAllFromOverview.png"))), tr("&Remove from overview"), this, SLOT(legendLayerRemoveFromOverview()));
-	  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/mActionRemove.png"))), tr("&Remove"), this, SLOT(legendLayerRemove()));
-	  if(li->parent())
-	    {
-	      theMenu.addAction(tr("&Make to toplevel item"), this, SLOT(makeToTopLevelItem()));
-	    }
-	  //add entry 'allow editing'
-	  QAction* toggleEditingAction = theMenu.addAction(tr("&Allow editing"), this, SLOT(legendLayerToggleEditing()));
-	  toggleEditingAction->setCheckable(true);
-	  QgsLegendLayer* theLayer = dynamic_cast<QgsLegendLayer*>(li);
-	  if(theLayer)
-	    {
-	      QgsVectorLayer* theVectorLayer = dynamic_cast<QgsVectorLayer*>(theLayer->firstMapLayer());
-	      if(!theVectorLayer || theLayer->mapLayers().size() !=1)
-		{
-		  toggleEditingAction->setEnabled(false);
-		}
-	      if(theVectorLayer)
-		{
-		  toggleEditingAction->setChecked(theVectorLayer->isEditable());
-		}
-	    }
-	}
-      else if(li->type() == QgsLegendItem::LEGEND_GROUP)
-	{
-	  theMenu.addAction(QPixmap(iconsPath+QString("/mActionRemove.png")), tr("&Remove"), this, SLOT(legendGroupRemove()));
-	}
+  }
 
-      if(li->type() == QgsLegendItem::LEGEND_LAYER || li->type() == QgsLegendItem::LEGEND_GROUP)
-	{
-	  theMenu.addAction(tr("Re&name"), this, SLOT(openEditor()));
-	}
-	
+  QgsLegendItem* li = dynamic_cast<QgsLegendItem*>(item);
+  if (li)
+  {
+  
+    if(li->type() == QgsLegendItem::LEGEND_LAYER_FILE)
+    {
+      (static_cast<QgsLegendLayerFile*>(li))->addToPopupMenu(theMenu);
+    }
+    else if(li->type() == QgsLegendItem::LEGEND_LAYER)
+    {
+      (static_cast<QgsLegendLayer*>(li))->addToPopupMenu(theMenu);
+    
+      if (li->parent())
+      {
+        theMenu.addAction(tr("&Make to toplevel item"), this, SLOT(makeToTopLevelItem()));
+      }
       
     }
+    else if(li->type() == QgsLegendItem::LEGEND_GROUP)
+    {
+      theMenu.addAction(QPixmap(iconsPath+QString("/mActionRemove.png")),
+                        tr("&Remove"), this, SLOT(legendGroupRemove()));
+    }
+  
+    if(li->type() == QgsLegendItem::LEGEND_LAYER || li->type() == QgsLegendItem::LEGEND_GROUP)
+    {
+      theMenu.addAction(tr("Re&name"), this, SLOT(openEditor()));
+    }
+	
+  }
 
   theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
   theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/mActionExpandTree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
   theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/mActionCollapseTree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
+
   QAction* showFileGroupsAction = theMenu.addAction(tr("Show file groups"), this, SLOT(showLegendLayerFileGroups()));
   showFileGroupsAction->setCheckable(true);
   showFileGroupsAction->blockSignals(true);
@@ -686,51 +597,7 @@ void QgsLegend::legendLayerRemove()
    return;
 }
 
-void QgsLegend::legendLayerAddToOverview()
-{
-   //add or remove all layers to/ from overview
-   QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(currentItem());
-   if(!ll)
-   {
-       return;
-   }
 
-   std::list<QgsLegendLayerFile*> maplayers = ll->legendLayerFiles();
-   for(std::list<QgsLegendLayerFile*>::iterator it = maplayers.begin(); it!=maplayers.end(); ++it)
-   {
-       if(*it)
-       {
-	       (*it)->setInOverview(true);
-       }
-   }
-   // update layer set
-   updateMapCanvasLayerSet();
-   
-   mMapCanvas->updateOverview();
-}
-
-void QgsLegend::legendLayerRemoveFromOverview()
-{
-    //add or remove all layers to/ from overview
-   QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(currentItem());
-   if(!ll)
-   {
-       return;
-   }
-   
-   std::list<QgsLegendLayerFile*> maplayers = ll->legendLayerFiles();
-   for(std::list<QgsLegendLayerFile*>::iterator it = maplayers.begin(); it!=maplayers.end(); ++it)
-   {
-     if(*it)
-     {
-       (*it)->setInOverview(false);
-     }
-   }
-   // update layer set
-   updateMapCanvasLayerSet();
-   
-   mMapCanvas->updateOverview();
-}
 
 void QgsLegend::legendLayerShowProperties()
 {
@@ -807,20 +674,24 @@ void QgsLegend::legendLayerShowProperties()
 
 }
 
-void QgsLegend::legendLayerToggleEditing()
+void QgsLegend::legendLayerShowInOverview()
 {
-  QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(currentItem());
-  if(!ll)
-    {
-      return;
-    }
-  QgsVectorLayer* theVectorLayer = dynamic_cast<QgsVectorLayer*>(ll->firstMapLayer());
-  if(!theVectorLayer)
-    {
-      return;
-    }
-
-    // TODO: call QgsLegendLayerFile::toggleEditing ... for first or all files? [MD]
+  QgsLegendItem* li = dynamic_cast<QgsLegendItem*>(currentItem());
+  if(!li)
+    return;
+  
+  if(li->type() == QgsLegendItem::LEGEND_LAYER_FILE)
+  {
+    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(li);
+    if (!llf) return;
+    llf->showInOverview();
+  }
+  else if(li->type() == QgsLegendItem::LEGEND_LAYER)
+  {
+    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(li);
+    if (!ll) return;
+    ll->showInOverview();
+  }
 }
 
 void QgsLegend::expandAll()
@@ -1476,6 +1347,11 @@ void QgsLegend::updateMapCanvasLayerSet()
   mMapCanvas->setLayerSet(layers);
 }
 
+void QgsLegend::updateOverview()
+{
+  mMapCanvas->updateOverview();
+}
+
 std::deque<QString> QgsLegend::layerIDs()
 {
   std::deque<QString> layers;
@@ -1580,27 +1456,29 @@ void QgsLegend::handleItemChange(QTreeWidgetItem* item, int row)
   closePersistentEditor(item, row);
 
   std::map<QTreeWidgetItem*, Qt::CheckState>::iterator it = mStateOfCheckBoxes.find(item);
-  if(it != mStateOfCheckBoxes.end())
-    {
-      if(it->second != item->checkState(0)) //the checkState has changed
-	{
+  if (it == mStateOfCheckBoxes.end())
+    return;
+    
+  // has the checkState changed?
+  if (it->second == item->checkState(0))
+	 return;
 	  
-	  QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(item); //item is a layer file
-	  if(llf)
-	    {
-	      if(llf->layer())
+  QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(item); //item is a layer file
+  if(llf)
+  {
+    if(llf->layer())
 		{
 		  llf->setVisible(item->checkState(0) == Qt::Checked);
 		}
-	      //update check state of the legend layer
-	      QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(item->parent()->parent());
-	      if(ll)
+    //update check state of the legend layer
+    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(item->parent()->parent());
+    if(ll)
 		{
 		  ll->updateCheckState();
 		  mStateOfCheckBoxes[ll] = ll->checkState(0);
 		}
-	      //update check state of the legend group (if any)
-	      if(item->parent()->parent()->parent())
+    //update check state of the legend group (if any)
+    if(item->parent()->parent()->parent())
 		{
 		  QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup*>(item->parent()->parent()->parent());
 		  if(lg)
@@ -1609,23 +1487,22 @@ void QgsLegend::handleItemChange(QTreeWidgetItem* item, int row)
 		      mStateOfCheckBoxes[lg] = lg->checkState(0);
 		    }
 		}
-	      mStateOfCheckBoxes[item] = item->checkState(0);
-              // Setting the renderFlag to true will trigger a render,
-              // so only do this if the flag is alread set to true. 
-              if (mMapCanvas->renderFlag())
-                mMapCanvas->setRenderFlag(true);
-	      return;
-	    }
+    mStateOfCheckBoxes[item] = item->checkState(0);
+    // Setting the renderFlag to true will trigger a render,
+    // so only do this if the flag is alread set to true. 
+    if (mMapCanvas->renderFlag())
+      mMapCanvas->setRenderFlag(true);
+  }
 	  
-	  std::list<QgsLegendLayerFile*> subfiles;
-	  QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup*>(item); //item is a legend group
-	  if(lg)
-	    {
-	      //set all the child layer files to the new check state
-	      subfiles = lg->legendLayerFiles();
-              bool renderFlagState = mMapCanvas->renderFlag();
-	      mMapCanvas->setRenderFlag(false);
-	      for(std::list<QgsLegendLayerFile*>::iterator iter = subfiles.begin(); iter != subfiles.end(); ++iter)
+  std::list<QgsLegendLayerFile*> subfiles;
+  QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup*>(item); //item is a legend group
+  if(lg)
+  {
+    //set all the child layer files to the new check state
+    subfiles = lg->legendLayerFiles();
+    bool renderFlagState = mMapCanvas->renderFlag();
+    mMapCanvas->setRenderFlag(false);
+    for(std::list<QgsLegendLayerFile*>::iterator iter = subfiles.begin(); iter != subfiles.end(); ++iter)
 		{
 #ifdef QGISDEBUG
 		  if(item->checkState(0) == Qt::Checked)
@@ -1646,60 +1523,57 @@ void QgsLegend::handleItemChange(QTreeWidgetItem* item, int row)
 		  blockSignals(false);
 		  mStateOfCheckBoxes[(*iter)] = item->checkState(0);
 		  if((*iter)->layer())
-		    {
-		      (*iter)->setVisible(item->checkState(0) == Qt::Checked);
-		    }
+      {
+        (*iter)->setVisible(item->checkState(0) == Qt::Checked);
+      }
 		}
 	      
-	      //update the check states of all child legend layers
-	      for(int i = 0; i < lg->childCount(); ++i)
+    //update the check states of all child legend layers
+    for(int i = 0; i < lg->childCount(); ++i)
 		{
 		  static_cast<QgsLegendLayer*>(lg->child(i))->updateCheckState();
 		  mStateOfCheckBoxes[lg->child(i)] = lg->child(i)->checkState(0);
 		}
-              // If it was on, turn it back on, otherwise leave it
-              // off, as turning it on causes a refresh.
-              if (renderFlagState)
-                mMapCanvas->setRenderFlag(true);
-	      mStateOfCheckBoxes[item] = item->checkState(0);
-	      return;
-	    }
-	  
-	  QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(item); //item is a legend layer
-	  if(ll)
-	    {
-	      //set all the child layer files to the new check state
-	      subfiles = ll->legendLayerFiles();
-              bool renderFlagState = mMapCanvas->renderFlag();
-	      mMapCanvas->setRenderFlag(false);
-	      for(std::list<QgsLegendLayerFile*>::iterator iter = subfiles.begin(); iter != subfiles.end(); ++iter)
+    // If it was on, turn it back on, otherwise leave it
+    // off, as turning it on causes a refresh.
+    if (renderFlagState)
+      mMapCanvas->setRenderFlag(true);
+    mStateOfCheckBoxes[item] = item->checkState(0);
+  }
+  
+  QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(item); //item is a legend layer
+  if(ll)
+  {
+    //set all the child layer files to the new check state
+    subfiles = ll->legendLayerFiles();
+    bool renderFlagState = mMapCanvas->renderFlag();
+    mMapCanvas->setRenderFlag(false);
+    for(std::list<QgsLegendLayerFile*>::iterator iter = subfiles.begin(); iter != subfiles.end(); ++iter)
 		{
 		  blockSignals(true);
 		  (*iter)->setCheckState(0, item->checkState(0));
 		  blockSignals(false);
 		  mStateOfCheckBoxes[(*iter)] = item->checkState(0);
 		  if((*iter)->layer())
-		    {
-		      (*iter)->setVisible(item->checkState(0) == Qt::Checked);
-		    }
+      {
+        (*iter)->setVisible(item->checkState(0) == Qt::Checked);
+      }
 		}
-	      if(ll->parent())
+    if(ll->parent())
 		{
 		  static_cast<QgsLegendGroup*>(ll->parent())->updateCheckState();
 		  mStateOfCheckBoxes[ll->parent()] = ll->parent()->checkState(0);
 		}
-              // If it was on, turn it back on, otherwise leave it
-              // off, as turning it on causes a refresh.
-              if (renderFlagState)
-                mMapCanvas->setRenderFlag(true);
-	      //update check state of the legend group
-	    }
-	  mStateOfCheckBoxes[item] = item->checkState(0);
-	}
-    }
+    // If it was on, turn it back on, otherwise leave it
+    // off, as turning it on causes a refresh.
+    if (renderFlagState)
+      mMapCanvas->setRenderFlag(true);
+    //update check state of the legend group
+    mStateOfCheckBoxes[item] = item->checkState(0);
+  }
     
-    // update layer set
-    updateMapCanvasLayerSet();
+  // update layer set
+  updateMapCanvasLayerSet();
 }
 
 void QgsLegend::openEditor()
@@ -1753,21 +1627,29 @@ void QgsLegend::showLegendLayerFileGroups()
   while((theItem = nextItem(theItem)));
 }
 
-void QgsLegend::zoomToLayerExtent()
+void QgsLegend::legendLayerZoom()
 {
+  std::list<QgsLegendLayerFile*> layerFiles;
+  
   //find current Layer
   QgsLegendLayer* currentLayer=dynamic_cast<QgsLegendLayer*>(currentItem());
-  if(!currentLayer)
+  if (currentLayer)
   {
-    return;
+    layerFiles = currentLayer->legendLayerFiles();
   }
-
-  std::list<QgsLegendLayerFile*> layerFiles = currentLayer->legendLayerFiles();
+  else
+  {
+    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(currentItem());
+    if (llf)
+    {
+      // user selected legend layer file - use just that one
+      layerFiles.push_back(llf);
+    }
+  }
+  
   if(layerFiles.size() == 0)
-  {
     return;
-  }
-
+  
   QgsMapLayer* theLayer;
   bool first(true);
   QgsRect extent;
@@ -1796,7 +1678,34 @@ void QgsLegend::zoomToLayerExtent()
 
   //zoom to bounding box
   mMapCanvas->setExtent(extent);
-  mMapCanvas->refresh();
+  mMapCanvas->refresh(); 
+
+  // notify the project we've made a change
+  QgsProject::instance()->dirty(true);
+}
+
+void QgsLegend::legendLayerAttributeTable()
+{
+
+  // try whether it's a legend layer
+  QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(currentItem());
+  if (ll)
+  {
+    ll->table();
+    return;
+  }
+  
+  // try whether it's a legend layer file
+  QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(currentItem());
+  if (llf)
+  {
+    llf->table();
+    return;
+  }
+
+  // nothing selected
+  QMessageBox::information(this, tr("No Layer Selected"),
+                           tr("To open an attribute table, you must select a vector layer in the legend"));
 }
 
 void QgsLegend::initPixmaps()
