@@ -62,7 +62,9 @@ QgsLabel::QgsLabel( const QgsFieldMap & fields )
 }
 
 QgsLabel::~QgsLabel()
-{}
+{
+  delete mLabelAttributes;
+}
 
 QString QgsLabel::fieldValue ( int attr, QgsFeature &feature )
 {
