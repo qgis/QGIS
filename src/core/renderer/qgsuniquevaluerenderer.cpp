@@ -140,7 +140,7 @@ void QgsUniqueValueRenderer::renderFeature(QPainter* p, QgsFeature& f,QImage* im
       //no matching symbol found. In this case, set Qt::NoPen, Qt::NoBrush or transparent image
 	if ( img && mVectorType == QGis::Point )
 	  {
-	    //todo: fill image transparent
+	    img->fill(0);
 	  }
 	else if ( mVectorType != QGis::Point )
 	  {
