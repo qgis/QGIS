@@ -154,3 +154,71 @@ TARGET_LINK_LIBRARIES(qgis_core
 INSTALL(TARGETS qgis_core
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION lib)
+
+
+# Added by Tim to install headers
+
+SET(QGIS_CORE_HDRS
+qgis.h
+qgsapplication.h
+qgsattributeaction.h
+qgsclipper.h
+qgscontexthelp.h
+qgscoordinatetransform.h
+qgsdatasourceuri.h
+qgsdistancearea.h
+qgsexception.h
+qgsfeature.h
+qgsfeatureattribute.h
+qgsfield.h
+qgsgeometry.h
+qgsgeometryvertexindex.h
+qgshttptransaction.h
+qgslabel.h
+qgslabelattributes.h
+qgsline.h
+qgslogger.h
+qgsmaplayer.h
+qgsmaplayerregistry.h
+qgsmaprender.h
+qgsmaptopixel.h
+qgsmessageoutput.h
+qgspoint.h
+qgsproject.h
+qgsprojectproperty.h
+qgsprovidercountcalcevent.h
+qgsproviderextentcalcevent.h
+qgsprovidermetadata.h
+qgsproviderregistry.h
+qgsrasterdataprovider.h
+qgsrect.h
+qgsrunprocess.h
+qgsscalecalculator.h
+qgssearchstring.h
+qgssearchtreenode.h
+qgsspatialrefsys.h
+qgsvectordataprovider.h
+qgsvectorfilewriter.h
+qgsvectorlayer.h
+
+raster/qgscolortable.h
+raster/qgsrasterlayer.h
+
+renderer/qgscontinuouscolorrenderer.h
+renderer/qgsgraduatedsymbolrenderer.h
+renderer/qgsrenderer.h
+renderer/qgssinglesymbolrenderer.h
+renderer/qgsuniquevaluerenderer.h
+
+symbology/qgslinesymbol.h
+symbology/qgsmarkercatalogue.h
+symbology/qgsmarkersymbol.h
+symbology/qgspolygonsymbol.h
+symbology/qgssymbol.h
+symbology/qgssymbologyutils.h
+
+spatialindex/qgsspatialindex.h
+)
+
+INSTALL(CODE "MESSAGE(\"Installing headers...\")")
+INSTALL(FILES ${QGIS_CORE_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
