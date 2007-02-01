@@ -22,16 +22,20 @@ class [pluginname]Gui : public QDialog, private Ui::[pluginname]GuiBase
 {
 Q_OBJECT
 public:
-    [pluginname]Gui();
     [pluginname]Gui( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~[pluginname]Gui();
-    void pbnOK_clicked();
-    void pbnCancel_clicked();
+
 private:
-    
+    static const int context_id = 0;
+
+private slots:
+    void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
+    void on_buttonBox_helpRequested();
+
 signals:
-   void drawRasterLayer(QString);
-   void drawVectorrLayer(QString,QString,QString);
+    void drawRasterLayer(QString);
+    void drawVectorrLayer(QString,QString,QString);
 };
 
 #endif

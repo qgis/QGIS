@@ -14,7 +14,7 @@
 #include "qgsmaplayer.h"
 #include "qgsdataprovider.h"
 #include "qgscontexthelp.h"
-#include <qgslogger.h>
+#include "qgslogger.h"
 
 //qt includes
 #include <QFileDialog>
@@ -43,6 +43,8 @@ QgsGPSPluginGui::QgsGPSPluginGui(const BabelMap& importers,
   
   // make sure that the OK button is enabled only when it makes sense to
   // click it
+  pbnOK = buttonBox->button(QDialogButtonBox::Ok);
+  pbnOK->setEnabled(false);
   connect(leGPXFile, SIGNAL(textChanged(const QString&)), 
    this, SLOT(enableRelevantControls()));
   connect(leIMPInput, SIGNAL(textChanged(const QString&)), 
@@ -64,7 +66,7 @@ QgsGPSPluginGui::~QgsGPSPluginGui()
 {
 }
 
-void QgsGPSPluginGui::on_pbnOK_clicked()
+void QgsGPSPluginGui::on_buttonBox_accepted()
 {
   
   // what should we do?
@@ -126,6 +128,7 @@ void QgsGPSPluginGui::on_pbnOK_clicked()
 		     cmbULDevice->currentText(), cmbULPort->currentText());
     break;
   }
+  accept();
 } 
 
 
@@ -195,9 +198,9 @@ void QgsGPSPluginGui::enableRelevantControls()
 }
 
 
-void QgsGPSPluginGui::on_pbnCancel_clicked()
+void QgsGPSPluginGui::on_buttonBox_rejected()
 {
- close(1);
+  reject();
 }
 
 
@@ -356,7 +359,7 @@ void QgsGPSPluginGui::populatePortComboBoxes() {
 
 
 void QgsGPSPluginGui::populateULLayerComboBox() {
-  for (int i = 0; i < mGPXLayers.size(); ++i)
+  for (std::vector<QgsVectorLayer*>::size_type i = 0; i < mGPXLayers.size(); ++i)
     cmbULLayer->insertItem(mGPXLayers[i]->name());
 }
 
@@ -400,7 +403,7 @@ void QgsGPSPluginGui::devicesUpdated() {
 }
 
 
-void QgsGPSPluginGui::on_pbnHelp_clicked()
+void QgsGPSPluginGui::on_buttonBox_helpRequested()
 {
   QgsContextHelp::run(context_id);
 }

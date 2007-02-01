@@ -40,13 +40,11 @@ email                : sherman at mrcc.com
 // xpm for creating the toolbar icon
 #include "icon_buffer.xpm"
 
-static const char *pluginVersion = "0.1";
-
 static const char * const ident_ = "$Id$";
 
-static const char * const name_ = "PostgresSQL Geoprocessing";
-static const char * const description_ = "Geoprocessing functions for working with PostgreSQL/PostGIS layers";
-static const char * const version_ = "Version 0.1";
+static const QString name_ = QObject::tr("PostgresSQL Geoprocessing");
+static const QString description_ = QObject::tr("Geoprocessing functions for working with PostgreSQL/PostGIS layers");
+static const QString version_ = QObject::tr("Version 0.1");
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 
 

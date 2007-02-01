@@ -47,6 +47,8 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
    The first string is the typename, the corresponding list
   stores the CRS for the typename in the form 'EPSG:XXXX'*/
   std::map<QString, std::list<QString> > mAvailableCRS;
+  static const int context_id = 0;
+  QAbstractButton* btnAdd;
   void populateConnectionList();
 
   /**Makes a GetCapabilities and returns the typenamse and crs supported by the server.
@@ -70,6 +72,7 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
   void addLayer();
   void changeCRS();
   void changeCRSFilter();
+  void showHelp();
 };
 
 #endif

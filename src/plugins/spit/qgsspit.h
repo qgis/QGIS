@@ -88,9 +88,9 @@ public slots:
   void on_btnEdit_clicked()       { editConnection();   }
   void on_btnNew_clicked()        { newConnection();    }
   void on_btnRemove_clicked()     { removeConnection(); }
-  void on_btnImport_clicked()     { import();           } 
-  void on_btnHelp_clicked()       { helpInfo();         }
-  void on_btnQuit_clicked()       { close();           }
+  void on_buttonBox_accepted()    { import();           } 
+  void on_buttonBox_helpRequested() { helpInfo();       }
+  void on_buttonBox_rejected()    { reject();           }
   void on_btnAddFile_clicked()    { addFile();          }
   void on_btnRemoveAll_clicked()  { removeAllFiles();   }
   void on_btnRemoveFile_clicked() { removeFile();       }

@@ -39,7 +39,6 @@
 #include "qgseditreservedwordsdialog.h"
 #include "qgsmessageviewer.h"
 #include "spiticon.xpm"
-#include "spit_icons.h"
 #include "qgslogger.h"
 
 // Qt implementation of alignment() + changed the numeric types to be shown on the left as well
@@ -124,6 +123,7 @@ void QgsSpit::newConnection()
     populateConnectionList();
     getSchema();
   }
+  delete con;
 }
 
 void QgsSpit::editConnection()
@@ -134,6 +134,7 @@ void QgsSpit::editConnection()
     con->saveConnection();
     getSchema();
   }
+  delete con;
 }
 
 void QgsSpit::removeConnection()
@@ -250,7 +251,7 @@ void QgsSpit::addFile()
           // if a reserved word is found, set the flag so the "adjustment"
           // dialog can be presented to the user
 	  hasReservedWords = false;
-          for ( int i = 0; i < file->column_names.size(); i++ )
+          for ( std::vector<QString>::size_type i = 0; i < file->column_names.size(); i++ )
           {
             if ( pgu->isReserved( file->column_names[ i ] ) )
             {
@@ -270,7 +271,7 @@ void QgsSpit::addFile()
             // load the reserved words list
             srw->setReservedWords( pgu->reservedWords() );
             // load the columns and set their status
-            for ( int i = 0; i < file->column_names.size(); i++ )
+            for ( std::vector<QString>::size_type i = 0; i < file->column_names.size(); i++ )
             {
               srw->addColumn( file->column_names[ i ],
                               pgu->isReserved( file->column_names[ i ] ), i );
@@ -443,8 +444,8 @@ PGconn* QgsSpit::checkConnection()
       result = false;
     }
   
-    int errcode = PQsetClientEncoding(pd, "UNICODE");
 #ifdef QGISDEBUG
+    int errcode = PQsetClientEncoding(pd, "UNICODE");
     if(errcode==0)
       qWarning("encoding successfully set");
     else if(errcode==-1)
@@ -557,7 +558,7 @@ void QgsSpit::import()
     //pro->show();
     qApp->processEvents();
 
-    for ( int i = 0; i < fileList.size() ; i++ )
+    for ( std::vector<QgsShapeFile*>::size_type i = 0; i < fileList.size() ; i++ )
     {
       QString error = tr("Problem inserting features from file:") + "\n" + 
                       tblShapefiles->item( i, ColFILENAME )->text();
@@ -587,7 +588,7 @@ void QgsSpit::import()
       QString dupl = "";
       std::sort( names_copy.begin(), names_copy.end() );
 
-      for ( int k = 1; k < names_copy.size(); k++ )
+      for ( std::vector<QString>::size_type k = 1; k < names_copy.size(); k++ )
       {
         QgsDebugMsg( tr("Checking to see if ") + names_copy[ k ] + " == " + names_copy[ k - 1 ] );
         if ( names_copy[ k ] == names_copy[ k - 1 ] )
@@ -846,8 +847,9 @@ void QgsSpit::import()
         break;
       }
     }
+    PQfinish( pd );
+    accept();
   }
-  PQfinish( pd );
 }
 void QgsSpit::editColumns( int row, int col, int button, const QPoint &mousePos )
 {
@@ -863,7 +865,7 @@ void QgsSpit::editColumns( int row, int col, int button, const QPoint &mousePos 
   // load the reserved words list
   srw->setReservedWords( pgu->reservedWords() );
   // load the columns and set their status
-  for ( int i = 0; i < fileList[ row ] ->column_names.size(); i++ )
+  for ( std::vector<QString>::size_type i = 0; i < fileList[ row ] ->column_names.size(); i++ )
   {
     srw->addColumn( fileList[ row ] ->column_names[ i ],
                     pgu->isReserved( fileList[ row ] ->column_names[ i ] ), i );
@@ -874,7 +876,7 @@ void QgsSpit::editColumns( int row, int col, int button, const QPoint &mousePos 
     // and replace the existing column spec for the shapefile
     fileList[ row ] ->setColumnNames( srw->columnNames() );
   }
-
+  delete srw;
 }
 
 void QgsSpit::editShapefile(int row, int col, int button, const QPoint& mousePos)
@@ -912,6 +914,7 @@ QWidget *ShapefileTableDelegate::createEditor(QWidget *parent,
       break;
     }
   }
+  return NULL;
 }
 
 void ShapefileTableDelegate::setEditorData(QWidget *editor,

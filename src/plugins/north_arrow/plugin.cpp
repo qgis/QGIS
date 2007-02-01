@@ -136,6 +136,7 @@ void QgsNorthArrowPlugin::help()
 void QgsNorthArrowPlugin::run()
 {
   QgsNorthArrowPluginGui *myPluginGui = new QgsNorthArrowPluginGui(qGisInterface->getMainWindow(), QgisGui::ModalDialogFlags);
+  myPluginGui->setAttribute(Qt::WA_DeleteOnClose);
   //overides function by the same name created in .ui
   myPluginGui->setRotation(mRotationInt);
   myPluginGui->setPlacementLabels(mPlacementLabels);

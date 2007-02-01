@@ -85,6 +85,7 @@ void QgsSpitPlugin::initGui()
 void QgsSpitPlugin::spit()
 {
  QgsSpit *spitDlg = new QgsSpit(qgisMainWindow, Qt::Window);
+ spitDlg->setAttribute(Qt::WA_DeleteOnClose);
  spitDlg->show();
 }
 

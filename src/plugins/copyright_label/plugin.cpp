@@ -122,6 +122,7 @@ void QgsCopyrightLabelPlugin::help()
 void QgsCopyrightLabelPlugin::run()
 {
     QgsCopyrightLabelPluginGui *myPluginGui=new QgsCopyrightLabelPluginGui(qGisInterface->getMainWindow(), QgisGui::ModalDialogFlags);
+    myPluginGui->setAttribute(Qt::WA_DeleteOnClose);
     //listen for when the layer has been made so we can draw it
     //connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
     //connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
@@ -134,6 +135,7 @@ void QgsCopyrightLabelPlugin::run()
     myPluginGui->setText(mLabelQString);
     myPluginGui->setPlacementLabels(mPlacementLabels);
     myPluginGui->setPlacement(mPlacementIndex);
+    myPluginGui->setEnabled(mEnable);
     myPluginGui->show();
 }
 //! Refresh the map display using the mapcanvas exported via the plugin interface

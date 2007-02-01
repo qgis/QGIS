@@ -12,7 +12,7 @@
 #ifndef QGSNORTHARROWPLUGINGUI_H
 #define QGSNORTHARROWPLUGINGUI_H
 
-#include <ui_pluginguibase.h>
+#include "ui_pluginguibase.h"
 
 /**
 @author Tim Sutton
@@ -21,18 +21,16 @@ class QgsNorthArrowPluginGui : public QDialog, private Ui::QgsNorthArrowPluginGu
 {
 Q_OBJECT
 public:
-    QgsNorthArrowPluginGui();
     QgsNorthArrowPluginGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsNorthArrowPluginGui();
-
-public slots:
-    void on_pbnOK_clicked();
-    void on_pbnCancel_clicked();
 
 private:
     void rotatePixmap(int theRotationInt);
     //    void paintEvent( QPaintEvent * );//overloads qwidget
     void resizeEvent(QResizeEvent *); //overloads qwidget
+
+    static const int context_id = 0;
+
 signals:
    //void drawRasterLayer(QString);
    //void drawVectorrLayer(QString,QString,QString);
@@ -52,6 +50,9 @@ public slots:
     void setAutomaticDisabled();
 
 private slots:
+    void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
+    void on_buttonBox_helpRequested();
     void on_spinAngle_valueChanged( int theInt);
     void on_sliderRotation_valueChanged( int theInt);
 };

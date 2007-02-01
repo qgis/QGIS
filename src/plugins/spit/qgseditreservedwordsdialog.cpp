@@ -5,6 +5,7 @@
 #include <QPixmap>
 #include <QTableWidgetItem>
 
+#include "qgscontexthelp.h"
 #include "qgspgutil.h"
 #include "spit_icons.h"
 
@@ -96,4 +97,7 @@ void QgsEditReservedWordsDialog::setDescription(const QString &description)
 {
   txtExplanation->setPlainText(description);
 }
-
+void QgsEditReservedWordsDialog::on_buttonBox_helpRequested()
+{
+  QgsContextHelp::run(context_id);
+}

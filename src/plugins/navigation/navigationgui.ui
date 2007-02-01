@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>NavigationGui</class>
  <widget class="QDialog" name="NavigationGui" >
   <property name="geometry" >
@@ -87,22 +84,8 @@
            <property name="enabled" >
             <bool>false</bool>
            </property>
-           <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>0</hsizetype>
-             <vsizetype>0</vsizetype>
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="maximumSize" >
-            <size>
-             <width>29</width>
-             <height>1000</height>
-            </size>
-           </property>
            <property name="text" >
-            <string>...</string>
+            <string>Browse...</string>
            </property>
            <property name="autoDefault" >
             <bool>false</bool>
@@ -562,7 +545,7 @@
      </widget>
     </widget>
    </item>
-   <item rowspan="2" row="0" column="0" >
+   <item row="0" column="0" >
     <layout class="QVBoxLayout" >
      <property name="margin" >
       <number>0</number>
@@ -595,62 +578,19 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="1" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
+   <item row="1" column="0" colspan="2" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
      </property>
-     <property name="spacing" >
-      <number>6</number>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
      </property>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>320</width>
-         <height>21</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbnOK" >
-       <property name="maximumSize" >
-        <size>
-         <width>32767</width>
-         <height>32767</height>
-        </size>
-       </property>
-       <property name="text" >
-        <string>&amp;OK</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+O</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbnCancel" >
-       <property name="text" >
-        <string>&amp;Cancel</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+C</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    </widget>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>radioButton_3</tabstop>
@@ -659,44 +599,9 @@
   <tabstop>cboGpsInput</tabstop>
   <tabstop>pbnStart</tabstop>
   <tabstop>pbnStop</tabstop>
-  <tabstop>pbnOK</tabstop>
-  <tabstop>pbnCancel</tabstop>
   <tabstop>cboLayer</tabstop>
   <tabstop>cboRoadClass</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>pbnOK</sender>
-   <signal>clicked()</signal>
-   <receiver>NavigationGui</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>318</x>
-     <y>412</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>194</x>
-     <y>403</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pbnCancel</sender>
-   <signal>clicked()</signal>
-   <receiver>NavigationGui</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>407</x>
-     <y>406</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>83</x>
-     <y>409</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

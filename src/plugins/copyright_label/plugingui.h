@@ -13,8 +13,8 @@
 #define QGSCOPYRIGHTLABELPLUGINGUI_H
 
 #include <ui_pluginguibase.h>
-#include <qfont.h>
-#include <qcolor.h>
+#include <QColor>
+#include <QFont>
 
 /**
 @author Tim Sutton
@@ -23,18 +23,17 @@ class QgsCopyrightLabelPluginGui : public QDialog, private Ui::QgsCopyrightLabel
 {
 Q_OBJECT;
 public:
-    QgsCopyrightLabelPluginGui();
     QgsCopyrightLabelPluginGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsCopyrightLabelPluginGui();
     void setText(QString);
     void setPlacementLabels(QStringList&);
     void setPlacement(int);
-
-public slots:
-    void on_pbnOK_clicked();
-    void on_pbnCancel_clicked();    
-    void on_pbnHelp_clicked();
     void setEnabled(bool); 
+
+private slots:
+    void on_buttonBox_accepted();
+    void on_buttonBox_rejected();    
+    void on_buttonBox_helpRequested();
      
 private:
     static const int context_id = 32338213;

@@ -114,6 +114,7 @@ void [pluginname]::help()
 void [pluginname]::run()
 {
   [pluginname]Gui *myPluginGui=new [pluginname]Gui(mQGisIface->getMainWindow(), QgisGui::ModalDialogFlags);
+  myPluginGui->setAttribute(Qt::WA_DeleteOnClose);
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
   connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));

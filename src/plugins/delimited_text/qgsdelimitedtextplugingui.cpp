@@ -27,16 +27,14 @@
 #include <QMessageBox>
 #include <QTextStream>
 
-QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui() : QDialog()
-{
-  setupUi(this);
-
-}
-
 QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui(QgisInterface * _qI, QWidget * parent, Qt::WFlags fl) 
 : QDialog(parent, fl), qI(_qI)
 {
   setupUi(this);
+  pbnOK = buttonBox->button(QDialogButtonBox::Ok);
+  pbnParse = buttonBox->addButton(tr("Parse"), QDialogButtonBox::ActionRole);
+  connect(pbnParse, SIGNAL(clicked()), this, SLOT(on_pbnParse_clicked()));
+  enableButtons();
   // at startup, fetch the last used delimiter and directory from
   // settings
   QSettings settings;
@@ -48,7 +46,7 @@ QgsDelimitedTextPluginGui::~QgsDelimitedTextPluginGui()
 {
 }
 /** Autoconnected slots **/
-void QgsDelimitedTextPluginGui::on_pbnHelp_clicked()
+void QgsDelimitedTextPluginGui::on_buttonBox_helpRequested()
 {
   QgsContextHelp::run(context_id);
 }
@@ -60,7 +58,7 @@ void QgsDelimitedTextPluginGui::on_pbnParse_clicked()
 {
   updateFieldLists();
 }
-void QgsDelimitedTextPluginGui::on_pbnOK_clicked()
+void QgsDelimitedTextPluginGui::on_buttonBox_accepted()
 {
   if(txtLayerName->text().length() > 0)
   {
@@ -80,12 +78,19 @@ void QgsDelimitedTextPluginGui::on_pbnOK_clicked()
     settings.writeEntry(key + "/delimiter", txtDelimiter->text());
     QFileInfo fi(txtFilePath->text());
     settings.writeEntry(key + "/text_path", fi.dirPath());
+
+    accept();
   }
   else
   {
     QMessageBox::warning(this, tr("No layer name"), tr("Please enter a layer name before adding the layer to the map"));
   }
 } 
+
+void QgsDelimitedTextPluginGui::on_buttonBox_rejected()
+{
+  reject();
+}
 
 void QgsDelimitedTextPluginGui::updateFieldLists()
 {

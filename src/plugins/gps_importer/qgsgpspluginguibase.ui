@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>650</width>
+    <width>694</width>
     <height>395</height>
    </rect>
   </property>
@@ -22,65 +22,6 @@
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="1" column="0" colspan="3" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <widget class="QPushButton" name="pbnHelp" >
-       <property name="text" >
-        <string>&amp;Help</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+C</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>391</width>
-         <height>26</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbnOK" >
-       <property name="enabled" >
-        <bool>false</bool>
-       </property>
-       <property name="text" >
-        <string>&amp;OK</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+O</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbnCancel" >
-       <property name="text" >
-        <string>&amp;Cancel</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+C</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item row="0" column="0" >
     <widget class="QLabel" name="label" >
      <property name="text" >
@@ -155,7 +96,7 @@ p, li { white-space: pre-wrap; }
        <item row="2" column="1" >
         <widget class="QPushButton" name="pbnGPXSelectFile" >
          <property name="text" >
-          <string>...</string>
+          <string>Browse...</string>
          </property>
         </widget>
        </item>
@@ -248,14 +189,14 @@ p, li { white-space: pre-wrap; }
        <item row="3" column="3" >
         <widget class="QPushButton" name="pbnIMPOutput" >
          <property name="text" >
-          <string>...</string>
+          <string>Browse...</string>
          </property>
         </widget>
        </item>
        <item row="1" column="3" >
         <widget class="QPushButton" name="pbnIMPInput" >
          <property name="text" >
-          <string>...</string>
+          <string>Browse...</string>
          </property>
         </widget>
        </item>
@@ -444,7 +385,7 @@ p, li { white-space: pre-wrap; }
        <item row="3" column="4" >
         <widget class="QPushButton" name="pbnDLOutput" >
          <property name="text" >
-          <string>...</string>
+          <string>Browse...</string>
          </property>
         </widget>
        </item>
@@ -530,6 +471,16 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="3" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+     </property>
     </widget>
    </item>
   </layout>

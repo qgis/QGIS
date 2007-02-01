@@ -16,14 +16,6 @@
 
 //standard includes
 
-QgsCopyrightLabelPluginGui::QgsCopyrightLabelPluginGui() : QDialog()
-{
-  setupUi(this);
-  //programmatically hide orientation selection for now
-  cboOrientation->hide();
-  textLabel15->hide();
-}
-
 QgsCopyrightLabelPluginGui::QgsCopyrightLabelPluginGui(QWidget* parent, Qt::WFlags fl)
 : QDialog(parent, fl)
 {
@@ -32,11 +24,12 @@ QgsCopyrightLabelPluginGui::QgsCopyrightLabelPluginGui(QWidget* parent, Qt::WFla
   cboOrientation->hide();
   textLabel15->hide();
 }  
+
 QgsCopyrightLabelPluginGui::~QgsCopyrightLabelPluginGui()
 {
 }
 
-void QgsCopyrightLabelPluginGui::on_pbnOK_clicked()
+void QgsCopyrightLabelPluginGui::on_buttonBox_accepted()
 {
   //hide the dialog before we send all our signals
   hide();
@@ -46,18 +39,20 @@ void QgsCopyrightLabelPluginGui::on_pbnOK_clicked()
   emit changeColor(txtCopyrightText->color());
   emit changePlacement(cboPlacement->currentIndex());
   emit enableCopyrightLabel(cboxEnabled->isChecked());
-  
-  done(1);
+
+  accept();
 } 
-void QgsCopyrightLabelPluginGui::on_pbnCancel_clicked()
+
+void QgsCopyrightLabelPluginGui::on_buttonBox_rejected()
 {
- close(1);
+  reject();
 }
 
-void QgsCopyrightLabelPluginGui::on_pbnHelp_clicked()
+void QgsCopyrightLabelPluginGui::on_buttonBox_helpRequested()
 {
   QgsContextHelp::run(context_id);
 }
+
 void QgsCopyrightLabelPluginGui::setEnabled(bool theBool)
 {
   cboxEnabled->setChecked(theBool);
