@@ -24,23 +24,30 @@ class QgsDelimitedTextPluginGui : public QDialog, private Ui::QgsDelimitedTextPl
 {
   Q_OBJECT
   public:
-    QgsDelimitedTextPluginGui();
     QgsDelimitedTextPluginGui( QgisInterface * _qI, QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsDelimitedTextPluginGui();
-    public slots:
-    void on_pbnOK_clicked();
-    void on_pbnHelp_clicked();
-    void on_btnBrowseForFile_clicked();
-    void on_pbnParse_clicked();
-    void updateFieldLists();
-    void getOpenFileName();
-    void enableButtons();
+
+  public slots:
     void help();
 
   private:
+    void updateFieldLists();
+    void getOpenFileName();
+    void enableButtons();
+
     QgisInterface * qI;
+    QAbstractButton *pbnOK;
+    QAbstractButton *pbnParse;
     static const int context_id = 1033030847;
-signals:
+
+  private slots:
+    void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
+    void on_buttonBox_helpRequested();
+    void on_btnBrowseForFile_clicked();
+    void on_pbnParse_clicked();
+
+  signals:
     void drawRasterLayer(QString);
     void drawVectorLayer(QString,QString,QString);
 };

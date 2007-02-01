@@ -16,11 +16,10 @@ class NavigationGui : public QDialog, private Ui::NavigationGui
   public:
     NavigationGui(Navigation* plugin);
     ~NavigationGui();
-    void pbnOK_clicked();
-    void pbnCancel_clicked();
     
   private:
     Navigation* mPlugin;
+    static const int context_id = 0;
     
   public slots:
     void gpsStateChanged(QAbstractSocket::SocketState);
@@ -29,6 +28,9 @@ class NavigationGui : public QDialog, private Ui::NavigationGui
   private slots:
     void on_pbnStart_clicked();
     void on_pbnStop_clicked();
+    void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
+    void on_buttonBox_helpRequested();
 
 };
 

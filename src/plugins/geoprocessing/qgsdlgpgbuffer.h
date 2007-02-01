@@ -59,8 +59,8 @@ class QgsDlgPgBuffer:public QDialog, private Ui::QgsDlgPgBufferBase
     void setBufferLayerName(QString name);
     //! Set the geometry column on the dialog
     void setGeometryColumn(QString name);
-    public slots:
-    void on_btnHelp_clicked();
+    private slots:
+    void on_buttonBox_helpRequested();
     private:
       //! Pointer to the QGIS interface object
     QgisInterface *qI;

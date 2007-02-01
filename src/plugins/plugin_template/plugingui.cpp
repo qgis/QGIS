@@ -10,26 +10,23 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "[pluginlcasename]gui.h"
+#include "qgscontexthelp.h"
 
 //qt includes
 
 //standard includes
-
-[pluginname]Gui::[pluginname]Gui() : [pluginname]GuiBase()
-{
-  setupUi(this);
-}
 
 [pluginname]Gui::[pluginname]Gui( QWidget* parent, Qt::WFlags fl )
 : QDialog ( parent, fl )
 {
   setupUi(this);
 }  
+
 [pluginname]Gui::~[pluginname]Gui()
 {
 }
 
-void [pluginname]Gui::pbnOK_clicked()
+void [pluginname]Gui::on_buttonBox_accepted()
 {
   //
   // If you have a produced a raster layer using your plugin, you can ask qgis to 
@@ -39,9 +36,15 @@ void [pluginname]Gui::pbnOK_clicked()
   // emit drawVectorLayer(QString("pathname"),QString("layername"),QString("provider name (either ogr or postgres"));
   //
   //close the dialog
-  done(1);
+  accept();
 } 
-void [pluginname]Gui::pbnCancel_clicked()
+
+void [pluginname]Gui::on_buttonBox_rejected()
 {
- close(1);
+  reject();
+}
+
+void [pluginname]Gui::on_buttonBox_helpRequested()
+{
+  QgsContextHelp::run(context_id);
 }

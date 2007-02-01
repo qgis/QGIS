@@ -11,19 +11,12 @@
  ***************************************************************************/
 #include "plugingui.h"
 #include "qgsapplication.h"
+#include "qgscontexthelp.h"
 
 #include <QPainter>
 #include <cmath>
 
 #include <iostream>
-
-QgsNorthArrowPluginGui::QgsNorthArrowPluginGui() : QDialog()
-{
-  setupUi(this);
-  //temporary hack until this is implemented
-  tabNorthArrowOptions->removePage( tabIcon );
-  rotatePixmap(0);
-}
 
 QgsNorthArrowPluginGui::QgsNorthArrowPluginGui(QWidget* parent, Qt::WFlags fl)
 : QDialog(parent, fl)
@@ -37,7 +30,7 @@ QgsNorthArrowPluginGui::~QgsNorthArrowPluginGui()
 {
 }
 
-void QgsNorthArrowPluginGui::on_pbnOK_clicked()
+void QgsNorthArrowPluginGui::on_buttonBox_accepted()
 {
   // Hide the dialog
   hide();
@@ -48,11 +41,17 @@ void QgsNorthArrowPluginGui::on_pbnOK_clicked()
   emit enableNorthArrow(cboxShow->isChecked());
   emit needToRefresh();
 
-  done(1);
+  accept();
 }
-void QgsNorthArrowPluginGui::on_pbnCancel_clicked()
+
+void QgsNorthArrowPluginGui::on_buttonBox_rejected()
 {
-  close(1);
+  reject();
+}
+
+void QgsNorthArrowPluginGui::on_buttonBox_helpRequested()
+{
+  QgsContextHelp::run(context_id);
 }
 
 void QgsNorthArrowPluginGui::setRotation(int theInt)

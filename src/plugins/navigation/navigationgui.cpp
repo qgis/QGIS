@@ -16,6 +16,7 @@
 
 #include "qgisinterface.h"
 #include "qgisgui.h"
+#include "qgscontexthelp.h"
 
 #include <QMessageBox>
 
@@ -41,15 +42,15 @@ NavigationGui::~NavigationGui()
 {
 }
 
-void NavigationGui::pbnOK_clicked()
+void NavigationGui::on_buttonBox_accepted()
 {
   //close the dialog
-  done(1);
+  accept();
 } 
 
-void NavigationGui::pbnCancel_clicked()
+void NavigationGui::on_buttonBox_rejected()
 {
- close(1);
+  reject();
 }
 
 
@@ -100,4 +101,9 @@ void NavigationGui::socketError(QAbstractSocket::SocketError error)
 {
   // GUI is not updated automatically on error => do it explicitly
   gpsStateChanged(mPlugin->gps()->tcpSocket()->state());
+}
+
+void NavigationGui::on_buttonBox_helpRequested()
+{
+  QgsContextHelp::run(context_id);
 }

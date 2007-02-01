@@ -22,19 +22,23 @@ class QgsGridMakerPluginGui : public QDialog, private Ui::QgsGridMakerPluginGuiB
 {
   Q_OBJECT
 public:
-  QgsGridMakerPluginGui();
   QgsGridMakerPluginGui(QWidget* parent, Qt::WFlags);
   ~QgsGridMakerPluginGui();
 
-public slots:
+private slots:
   
   void on_pbnSelectOutputFile_clicked();
-  void on_pbnCancel_clicked();
-  void on_pbnOK_clicked();
+  void on_buttonBox_accepted();
+  void on_buttonBox_rejected();
+  void on_buttonBox_helpRequested();
 
 signals:
   void drawRasterLayer(QString);
   void drawVectorLayer(QString,QString,QString);
+
+private:
+  QAbstractButton *pbnOK;
+  static const int context_id = 0;
 };
 
 #endif

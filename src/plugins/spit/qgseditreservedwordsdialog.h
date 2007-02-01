@@ -16,12 +16,16 @@ public:
     QStringList columnNames();
     //! Set the description displayed in the dialog
     void setDescription(const QString &description);
-public slots:
+
+private:
     void checkWord(QTableWidgetItem *);
 
-    void on_buttonOk_clicked()     { done(1); }
-    void on_buttonCancel_clicked() { done(1); }
-    void on_buttonHelp_clicked() {};
+    static const int context_id = 0;
+
+private slots:
+    void on_buttonBox_accepted() { accept(); }
+    void on_buttonBox_rejected() { reject(); }
+    void on_buttonBox_helpRequested();
     void on_lvColumns_itemChanged(QTableWidgetItem* item) { checkWord(item); }
     void on_lvColumns_itemClicked(QTableWidgetItem* item) 
       { lvColumns->editItem(item); }

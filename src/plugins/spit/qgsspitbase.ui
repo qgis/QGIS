@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsSpitBase</class>
  <widget class="QDialog" name="QgsSpitBase" >
   <property name="geometry" >
@@ -9,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>662</width>
-    <height>500</height>
+    <height>487</height>
    </rect>
   </property>
   <property name="baseSize" >
@@ -441,59 +438,6 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0" colspan="3" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <widget class="QPushButton" name="btnHelp" >
-       <property name="text" >
-        <string>Help</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>361</width>
-         <height>21</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnImport" >
-       <property name="toolTip" >
-        <string>Import the defined shapefiles to PostGIS</string>
-       </property>
-       <property name="whatsThis" >
-        <string>Import the defined shapefiles to PostGIS</string>
-       </property>
-       <property name="text" >
-        <string>Import</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnQuit" >
-       <property name="text" >
-        <string>Close</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item rowspan="3" row="0" column="0" >
     <widget class="QLabel" name="pixmapLabel1" >
      <property name="pixmap" >
@@ -517,10 +461,19 @@
      </property>
     </widget>
    </item>
+   <item row="3" column="0" colspan="3" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
  <resources>
   <include location="spit.qrc" />
  </resources>

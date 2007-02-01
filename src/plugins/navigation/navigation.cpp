@@ -52,9 +52,9 @@
 #endif
 
 static const char * const sIdent = "$Id: plugin.cpp 5400 2006-04-30 20:14:08Z wonder $";
-static const char * const sName = "Navigation";
-static const char * const sDescription = "A simple GPS navigation and routing system";
-static const char * const sPluginVersion = "Version 0.1";
+static const QString sName = QObject::tr("Navigation");
+static const QString sDescription = QObject::tr("A simple GPS navigation and routing system");
+static const QString sPluginVersion = QObject::tr("Version 0.1");
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
 //////////////////////////////////////////////////////////////////////
@@ -116,6 +116,7 @@ void Navigation::help()
 void Navigation::run()
 {
   NavigationGui *myPluginGui=new NavigationGui(this);
+  myPluginGui->setAttribute(Qt::WA_DeleteOnClose);
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
   connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));

@@ -53,10 +53,6 @@ public slots:
   void on_pbnIMPOutput_clicked();
   
   void on_pbnDLOutput_clicked();
-  
-  void on_pbnCancel_clicked();
-  void on_pbnOK_clicked();
-  void on_pbnHelp_clicked();
 
 private:
   
@@ -65,6 +61,12 @@ private:
   void populateIMPBabelFormats();
   void populatePortComboBoxes();
   
+private slots:
+
+  void on_buttonBox_accepted();
+  void on_buttonBox_rejected();
+  void on_buttonBox_helpRequested();
+
 signals:
   void drawRasterLayer(QString);
   void drawVectorLayer(QString,QString,QString);
@@ -86,6 +88,7 @@ private:
   std::map<QString, QgsGPSDevice*>& mDevices;
   QString mBabelFilter;
   QString mImpFormat;
+  QAbstractButton *pbnOK;
   static const int context_id = 995980174;
 };
 

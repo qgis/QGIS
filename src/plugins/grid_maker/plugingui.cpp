@@ -16,24 +16,24 @@
 #include <QMessageBox>
 
 #include "graticulecreator.h"
-#include <qgslogger.h>
+#include "qgscontexthelp.h"
+#include "qgslogger.h"
 
 //standard includes
 #include <iostream>
 
-QgsGridMakerPluginGui::QgsGridMakerPluginGui() : QgsGridMakerPluginGuiBase()
-{
-  setupUi(this);
-}
 QgsGridMakerPluginGui::QgsGridMakerPluginGui(QWidget* parent, Qt::WFlags fl)
   : QDialog(parent, fl)
 {
   setupUi(this);
+  pbnOK = buttonBox->button(QDialogButtonBox::Ok);
+  pbnOK->setEnabled(false);
 }
+
 QgsGridMakerPluginGui::~QgsGridMakerPluginGui()
 {}
 
-void QgsGridMakerPluginGui::on_pbnOK_clicked()
+void QgsGridMakerPluginGui::on_buttonBox_accepted()
 {
   //check input file exists
   //
@@ -150,7 +150,7 @@ void QgsGridMakerPluginGui::on_pbnOK_clicked()
 
   emit drawVectorLayer(leOutputShapeFile->text(),QString("Graticule"),QString("ogr"));
   //close the dialog
-  done(1);
+  accept();
 }
 
 
@@ -178,8 +178,12 @@ void QgsGridMakerPluginGui::on_pbnSelectOutputFile_clicked()
 }
 
 
-void QgsGridMakerPluginGui::on_pbnCancel_clicked()
+void QgsGridMakerPluginGui::on_buttonBox_rejected()
 {
-  close(1);
+  reject();
 }
 
+void QgsGridMakerPluginGui::on_buttonBox_helpRequested()
+{
+  QgsContextHelp::run(context_id);
+}

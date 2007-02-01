@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>564</width>
+    <width>657</width>
     <height>517</height>
    </rect>
   </property>
@@ -38,96 +38,6 @@
       <bool>true</bool>
      </property>
     </widget>
-   </item>
-   <item row="7" column="2" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <widget class="QPushButton" name="pbnHelp" >
-       <property name="toolTip" >
-        <string>Help on using the plugin</string>
-       </property>
-       <property name="whatsThis" >
-        <string>Opens the Delimited Text Plugin help in your configured browser</string>
-       </property>
-       <property name="text" >
-        <string>&amp;Help</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+H</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>16</width>
-         <height>21</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbnParse" >
-       <property name="toolTip" >
-        <string>Parse the header row and update the X and Y field lists</string>
-       </property>
-       <property name="whatsThis" >
-        <string>Parse the header row of the input file and refresh the fields in the X and Y field drop-down lists. Use this button to refresh the field lists if you change the delimiter after selecting the delimited text file.</string>
-       </property>
-       <property name="text" >
-        <string>&amp;Parse</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+P</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbnOK" >
-       <property name="toolTip" >
-        <string>Add layer using the delimiter, file, and x/y fields specified</string>
-       </property>
-       <property name="whatsThis" >
-        <string>Creates a layer using the specified parameters and adds it to the map. The dialog remains open to allow adding of additional layers.</string>
-       </property>
-       <property name="text" >
-        <string>&amp;Add Layer</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+A</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbnCancel" >
-       <property name="toolTip" >
-        <string>Close the dialog</string>
-       </property>
-       <property name="whatsThis" >
-        <string>Close the dialog without adding anything to the map.</string>
-       </property>
-       <property name="text" >
-        <string>&amp;Close</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+C</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </item>
    <item rowspan="7" row="1" column="1" >
     <widget class="Line" name="line1" >
@@ -323,12 +233,6 @@
        <property name="enabled" >
         <bool>true</bool>
        </property>
-       <property name="maximumSize" >
-        <size>
-         <width>30</width>
-         <height>32767</height>
-        </size>
-       </property>
        <property name="toolTip" >
         <string>Browse to find the delimited text file to be processed</string>
        </property>
@@ -336,7 +240,7 @@
         <string>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i>Delimiter&lt;/i> box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</string>
        </property>
        <property name="text" >
-        <string>...</string>
+        <string>Browse...</string>
        </property>
       </widget>
      </item>
@@ -408,20 +312,30 @@
      </item>
     </layout>
    </item>
+   <item row="7" column="2" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <customwidgets>
   <customwidget>
-   <class>Q3TextEdit</class>
-   <extends>Q3Frame</extends>
-   <header>q3textedit.h</header>
-  </customwidget>
-  <customwidget>
    <class>Q3GroupBox</class>
    <extends>QGroupBox</extends>
    <header>Qt3Support/Q3GroupBox</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Q3TextEdit</class>
+   <extends>Q3Frame</extends>
+   <header>Qt3Support/Q3TextEdit</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -431,32 +345,11 @@
   <tabstop>btnBrowseForFile</tabstop>
   <tabstop>cmbXField</tabstop>
   <tabstop>cmbYField</tabstop>
-  <tabstop>pbnHelp</tabstop>
-  <tabstop>pbnParse</tabstop>
-  <tabstop>pbnOK</tabstop>
-  <tabstop>pbnCancel</tabstop>
   <tabstop>pbnCancel_2</tabstop>
   <tabstop>teInstructions</tabstop>
  </tabstops>
  <resources>
   <include location="delimited_text.qrc" />
  </resources>
- <connections>
-  <connection>
-   <sender>pbnCancel</sender>
-   <signal>clicked()</signal>
-   <receiver>QgsDelimitedTextPluginGuiBase</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>503</x>
-     <y>389</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>525</x>
-     <y>408</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

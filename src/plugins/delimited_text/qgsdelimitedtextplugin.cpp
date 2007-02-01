@@ -122,6 +122,7 @@ void QgsDelimitedTextPlugin::run()
   QgsDelimitedTextPluginGui *myQgsDelimitedTextPluginGui=
     new QgsDelimitedTextPluginGui(qGisInterface,
              qGisInterface->getMainWindow(), QgisGui::ModalDialogFlags);
+  myQgsDelimitedTextPluginGui->setAttribute(Qt::WA_DeleteOnClose);
   //listen for when the layer has been made so we can draw it
   connect(myQgsDelimitedTextPluginGui, 
       SIGNAL(drawVectorLayer(QString,QString,QString)),

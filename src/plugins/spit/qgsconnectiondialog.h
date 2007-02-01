@@ -36,10 +36,10 @@ class QgsConnectionDialog : public QDialog, private Ui::QgsConnectionDialogBase
 
 public slots:
 
-  void on_btnOk_clicked()      { saveConnection(); }
-  void on_btnCancel_clicked()  { done(1); }
-  void on_btnHelp_clicked()    { helpInfo(); }
-  void on_btnConnect_clicked() { testConnection(); }
+  void on_buttonBox_accepted()      { saveConnection(); }
+  void on_buttonBox_rejected()      { reject(); }
+  void on_buttonBox_helpRequested() { helpInfo(); }
+  void on_btnConnect_clicked()      { testConnection(); }
 };
 
 #endif

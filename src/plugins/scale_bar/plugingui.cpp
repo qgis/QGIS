@@ -10,20 +10,16 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "plugingui.h"
+#include "qgscontexthelp.h"
 #include <QComboBox>
 #include <QColorDialog>
-
-QgsScaleBarPluginGui::QgsScaleBarPluginGui() : QDialog()
-{
-  setupUi(this);
-
-}
 
 QgsScaleBarPluginGui::QgsScaleBarPluginGui(QWidget* parent, Qt::WFlags fl)
 : QDialog(parent, fl)
 {
   setupUi(this);
 }  
+
 QgsScaleBarPluginGui::~QgsScaleBarPluginGui()
 {
 }
@@ -33,7 +29,7 @@ QSpinBox * QgsScaleBarPluginGui::getSpinSize()
     return spnSize;
 }
 
-void QgsScaleBarPluginGui::on_pbnOK_clicked()
+void QgsScaleBarPluginGui::on_buttonBox_accepted()
 {
   hide();
   emit changePlacement(cboPlacement->currentIndex());
@@ -43,8 +39,9 @@ void QgsScaleBarPluginGui::on_pbnOK_clicked()
   emit changeStyle(cboStyle->currentItem());
   emit changeColour(pbnChangeColour->color());
   emit refreshCanvas();
-  done(1);
+  accept();
 } 
+
 void QgsScaleBarPluginGui::on_pbnChangeColour_clicked()
 {
   QColor colour = QColorDialog::getColor(pbnChangeColour->color(), this);
@@ -52,9 +49,10 @@ void QgsScaleBarPluginGui::on_pbnChangeColour_clicked()
   if (colour.isValid())
     setColour(colour);
 }
-void QgsScaleBarPluginGui::on_pbnCancel_clicked()
+
+void QgsScaleBarPluginGui::on_buttonBox_rejected()
 {
- close(1);
+  reject();
 }
 
 void QgsScaleBarPluginGui::setPlacementLabels(QStringList& labels)
@@ -96,4 +94,9 @@ void QgsScaleBarPluginGui::setStyle(int styleIndex)
 void QgsScaleBarPluginGui::setColour(QColor theQColor)
 {
   pbnChangeColour->setColor(theQColor);
+}
+
+void QgsScaleBarPluginGui::on_buttonBox_helpRequested()
+{
+  QgsContextHelp::run(context_id);
 }

@@ -20,6 +20,7 @@
 #include "qgsnewhttpconnection.h"
 #include "qgslayerprojectionselector.h"
 #include "qgshttptransaction.h"
+#include "qgscontexthelp.h"
 #include <QDomDocument>
 #include <QListWidgetItem>
 #include <QMessageBox>
@@ -30,9 +31,12 @@ static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 QgsWFSSourceSelect::QgsWFSSourceSelect(QWidget* parent, QgisInterface* iface): QDialog(parent), mIface(iface) 
 {
   setupUi(this);
+  btnAdd = buttonBox->button(QDialogButtonBox::Ok);
+  btnAdd->setEnabled(false);
   
-  connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
-  connect(btnAdd, SIGNAL(clicked()), this, SLOT(addLayer()));
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(addLayer()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect(buttonBox, SIGNAL(helpRequested()), this, SLOT(showHelp()));
   connect(btnNew, SIGNAL(clicked()), this, SLOT(addEntryToServerList()));
   connect(btnEdit, SIGNAL(clicked()), this, SLOT(modifyEntryOfServerList()));
   connect(btnDelete, SIGNAL(clicked()), this, SLOT(deleteEntryOfServerList()));
@@ -338,4 +342,9 @@ void QgsWFSSourceSelect::changeCRSFilter()
 	    }
 	}
     }
+}
+
+void QgsWFSSourceSelect::showHelp()
+{
+  QgsContextHelp::run(context_id);
 }

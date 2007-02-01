@@ -144,6 +144,7 @@ void QgsScaleBarPlugin::help()
 void QgsScaleBarPlugin::run()
 {
   QgsScaleBarPluginGui *myPluginGui=new QgsScaleBarPluginGui(qGisInterface->getMainWindow(), QgisGui::ModalDialogFlags);
+  myPluginGui->setAttribute(Qt::WA_DeleteOnClose);
   myPluginGui->setPreferredSize(mPreferredSize);
   myPluginGui->setSnapping(mSnapping);
   myPluginGui->setPlacementLabels(mPlacementLabels);

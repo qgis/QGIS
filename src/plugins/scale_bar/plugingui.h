@@ -22,7 +22,6 @@ class QgsScaleBarPluginGui : public QDialog, private Ui::QgsScaleBarPluginGuiBas
 {
 Q_OBJECT;
 public:
-    QgsScaleBarPluginGui();
     QgsScaleBarPluginGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsScaleBarPluginGui();
     void setPlacementLabels(QStringList&);
@@ -33,17 +32,19 @@ public:
     void setStyleLabels(QStringList&);
     void setStyle(int);
     void setColour(QColor);
-
     
    //accessor for getting a pointer to the size spin widget
    QSpinBox * getSpinSize();
 
-public slots:
-    void on_pbnOK_clicked();
-    void on_pbnCancel_clicked();
+private slots:
+    void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
+    void on_buttonBox_helpRequested();
     void on_pbnChangeColour_clicked();
     
 private:
+
+    static const int context_id = 0;
     
 signals:
    void drawRasterLayer(QString);
