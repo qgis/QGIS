@@ -19,6 +19,7 @@
 #include <ogr_api.h>
 #include <ogr_spatialref.h>
 #include <cpl_error.h>
+#include <cpl_conv.h>
 
 CUSTOM_SRS_VALIDATION QgsSpatialRefSys::mCustomSrsValidation = NULL;
 
@@ -291,6 +292,8 @@ bool QgsSpatialRefSys::createFromWkt(QString theWkt)
   createFromProj4(QString(proj4src));
   return mIsValidFlag;
   //setMapunits will be called by createfromproj above
+
+  CPLFree(proj4src); 
 }
 
 bool QgsSpatialRefSys::createFromEpsg(long theEpsg)
