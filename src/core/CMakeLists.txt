@@ -220,5 +220,5 @@ symbology/qgssymbologyutils.h
 spatialindex/qgsspatialindex.h
 )
 
-INSTALL(CODE "MESSAGE(\"Installing headers...\")")
-INSTALL(FILES ${QGIS_CORE_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+INSTALL(CODE "MESSAGE(\"Installing CORE headers...\")")
+INSTALL(FILES ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
