@@ -26,6 +26,8 @@
 #include "gpsdata.h"
 #include <qgslogger.h>
 
+#define OUTPUT_PRECISION 12
+
 QString GPSObject::xmlify(const QString& str) {
   QString tmp = str;
   tmp.replace("&", "&amp;");
@@ -85,7 +87,8 @@ void GPSExtended::writeXML(QTextStream& stream) {
 
 
 void Waypoint::writeXML(QTextStream& stream) {
-  stream<<"<wpt lat=\""<<lat<<"\" lon=\""<<lon<<"\">\n";
+  stream << "<wpt lat=\"" << QString::number(lat, 'f', OUTPUT_PRECISION) <<
+    "\" lon=\"" << QString::number(lon, 'f', OUTPUT_PRECISION) << "\">\n";
   GPSPoint::writeXML(stream);
   stream<<"</wpt>\n";
 }
@@ -94,9 +97,9 @@ void Waypoint::writeXML(QTextStream& stream) {
 void Route::writeXML(QTextStream& stream) {
   stream<<"<rte>\n";
   GPSExtended::writeXML(stream);
-  for (int i = 0; i < points.size(); ++i) {
-    stream<<"<rtept lat=\""<<points[i].lat
-	  <<"\" lon=\""<<points[i].lon<<"\">\n";
+  for (unsigned int i = 0; i < points.size(); ++i) {
+    stream<<"<rtept lat=\""<< QString::number(points[i].lat, 'f', OUTPUT_PRECISION)
+	  <<"\" lon=\"" << QString::number(points[i].lon, 'f', OUTPUT_PRECISION) <<"\">\n";
     points[i].writeXML(stream);
     stream<<"</rtept>\n";
   }
@@ -107,11 +110,13 @@ void Route::writeXML(QTextStream& stream) {
 void Track::writeXML(QTextStream& stream) {
   stream<<"<trk>\n";
   GPSExtended::writeXML(stream);
-  for (int i = 0; i < segments.size(); ++i) {
+  for (unsigned int i = 0; i < segments.size(); ++i) {
     stream<<"<trkseg>\n";
-    for (int j = 0; j < segments[i].points.size(); ++j) {
-      stream<<"<trkpt lat=\""<<segments[i].points[j].lat
-      <<"\" lon=\""<<segments[i].points[j].lon<<"\">\n";
+    for (unsigned int j = 0; j < segments[i].points.size(); ++j) {
+      stream<<"<trkpt lat=\"" <<
+        QString::number(segments[i].points[j].lat, 'f', OUTPUT_PRECISION) <<
+        "\" lon=\""<< QString::number(segments[i].points[j].lon, 'f', OUTPUT_PRECISION) <<
+        "\">\n";
       segments[i].points[j].writeXML(stream);
       stream<<"</trkpt>\n";
     }
