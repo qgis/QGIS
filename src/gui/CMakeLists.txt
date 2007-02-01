@@ -65,3 +65,29 @@ TARGET_LINK_LIBRARIES(qgis_gui
 INSTALL(TARGETS qgis_gui
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION lib)
+
+# for installing headers
+
+SET(QGIS_GUI_HDRS
+qgisgui.h
+qgisinterface.h
+qgscolorbutton.h
+qgscursors.h
+qgsencodingfiledialog.h
+qgslayerprojectionselector.h
+qgsmapcanvas.h
+qgsmapcanvasitem.h
+qgsmapcanvasmap.h
+qgsmapoverviewcanvas.h
+qgsmaptool.h
+qgsmaptoolpan.h
+qgsmaptoolzoom.h
+qgsmessageviewer.h
+qgsprojectionselector.h
+qgsrubberband.h
+qgsvertexmarker.h
+)
+
+
+INSTALL(CODE "MESSAGE(\"Installing GUI headers...\")")
+INSTALL(FILES ${QGIS_GUI_HDRS} ${QGIS_GUI_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
