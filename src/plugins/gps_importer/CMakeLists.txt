@@ -17,8 +17,6 @@ SET (GPS_UIS
 
 SET (GPS_MOC_HDRS
      qgsgpsplugin.h
-     qgsbabelformat.h
-     qgsgpsdevice.h
      qgsgpsplugingui.h
      qgsgpsdevicedialog.h
 )
