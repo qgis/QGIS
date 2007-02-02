@@ -137,6 +137,7 @@ static char rcsid[] =
 #include <limits.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef unsigned char uchar;
 

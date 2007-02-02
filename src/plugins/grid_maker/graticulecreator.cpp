@@ -189,7 +189,7 @@ void GraticuleCreator::generatePointGraticule(
   double * myYArrayDouble;
   long myXIntersectionCount = 1;
   long myYIntersectionCount = 1;
-  myXArrayDouble = (double *)malloc(myYIntersectionCount * sizeof(double));
+  myXArrayDouble = (double *)malloc(myXIntersectionCount * sizeof(double));
   myYArrayDouble = (double *)malloc(myYIntersectionCount * sizeof(double));
   for (double myXDouble = theXOriginDouble;myXDouble <=theXEndPointDouble;myXDouble+=theXIntervalDouble)
   {
@@ -307,7 +307,7 @@ void GraticuleCreator::generatePolygonGraticule(
   //
   //Longitude loop
   //
-  myXArrayDouble = (double *)malloc(myYVertexCount * sizeof(double));
+  myXArrayDouble = (double *)malloc(myXVertexCount * sizeof(double));
   myYArrayDouble = (double *)malloc(myYVertexCount * sizeof(double));
   for (double myXDouble = theXOriginDouble ; myXDouble < theXEndPointDouble ; myXDouble+=theXIntervalDouble)
   {

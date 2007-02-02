@@ -125,9 +125,7 @@ static char rcsid[] =
 
 #include <math.h>
 #include <stdlib.h>
-#ifdef WIN32
 #include <string.h>
-#endif
 typedef unsigned char uchar;
 
 #ifndef FALSE
