@@ -368,7 +368,7 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feat,
         feat.setFeatureId(oid);
 
         // fetch attributes
-        if (fetchAttributes.count() == fieldCount())
+        if (static_cast<uint>(fetchAttributes.count()) == fieldCount())
           getFeatureAttributes(oid, row, feat); // only one sql query to get all attributes
         else
           getFeatureAttributes(oid, row, feat, fetchAttributes); // ineffective: one sql per attribute
@@ -1019,7 +1019,7 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
   // 'oid' columns in tables don't have a constraint on them, but
   // they are useful to consider, so add them in if not already
   // here.
-  for (int i = 0; i < oids.size(); ++i)
+  for (uint i = 0; i < oids.size(); ++i)
   {
     if (suitable.find(oids[i]->first) == suitable.end())
     {
@@ -1493,7 +1493,7 @@ bool QgsPostgresProvider::addFeature(QgsFeature& f, int primaryKeyHighWater)
     // Add the WKB geometry to the INSERT statement
     QgsGeometry* geometry = f.geometry();
     unsigned char* geom = geometry->wkbBuffer();
-    for (int i=0; i < geometry->wkbSize(); ++i)
+    for (uint i=0; i < geometry->wkbSize(); ++i)
     {
       if (useWkbHex)
       {
@@ -1929,7 +1929,7 @@ bool QgsPostgresProvider::changeGeometryValues(QgsGeometryMap & geometry_map)
 
       // Add the WKB geometry to the UPDATE statement
       unsigned char* geom = iter->wkbBuffer();
-      for (int i=0; i < iter->wkbSize(); ++i)
+      for (uint i=0; i < iter->wkbSize(); ++i)
       {
         if (useWkbHex)
         {

@@ -65,13 +65,13 @@ QgsWmsProvider::QgsWmsProvider(QString const & uri)
     mHttpProxyUser(0),
     mHttpProxyPass(0),
     httpcapabilitiesresponse(0),
+    imageCrs(DEFAULT_LATLON_CRS),
     cachedImage(0),
     cachedViewExtent(0),
     cachedPixelWidth(0),
     cachedPixelHeight(0),
     mCoordinateTransform(0),
     extentDirty(TRUE),
-    imageCrs(DEFAULT_LATLON_CRS),
     mGetFeatureInfoUrlBase(0)
 {
 #ifdef QGISDEBUG
@@ -224,7 +224,7 @@ QSet<QString> QgsWmsProvider::supportedCrsForLayers(QStringList const & layers)
     QSet<QString>    crsSet;
 
     // convert std::vector to std::set for set comparisons
-    for (int j = 0; j < crsVector.size(); j++)
+    for (uint j = 0; j < crsVector.size(); j++)
     {
       crsSet.insert( crsVector[j] );
     }
@@ -1647,7 +1647,7 @@ void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& laye
     extentForLayer[ layerProperty.name ] = layerProperty.ex_GeographicBoundingBox;
 
     // see if we can refine the bounding box with the CRS-specific bounding boxes
-    for ( int i = 0; i < layerProperty.boundingBox.size(); i++ ) 
+    for ( uint i = 0; i < layerProperty.boundingBox.size(); i++ ) 
     {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseLayer: testing bounding box CRS which is " 
@@ -2128,7 +2128,7 @@ QString QgsWmsProvider::getMetadata()
 
   // Iterate through layers
 
-  for (int i = 0; i < layersSupported.size(); i++)
+  for (uint i = 0; i < layersSupported.size(); i++)
   {
 
     // TODO: Handle nested layers
@@ -2247,7 +2247,7 @@ QString QgsWmsProvider::getMetadata()
     myMetadataQString += "</td></tr>";
 
     // Layer Coordinate Reference Systems
-    for ( int j = 0; j < layersSupported[i].crs.size(); j++ )
+    for ( uint j = 0; j < layersSupported[i].crs.size(); j++ )
     {
       myMetadataQString += "<tr><td bgcolor=\"gray\">";
       myMetadataQString += tr("Available in CRS");
@@ -2258,7 +2258,7 @@ QString QgsWmsProvider::getMetadata()
     }
 
     // Layer Styles
-    for (int j = 0; j < layersSupported[i].style.size(); j++)
+    for (uint j = 0; j < layersSupported[i].style.size(); j++)
     {
       myMetadataQString += "<tr><td bgcolor=\"gray\">";
       myMetadataQString += tr("Available in style");
