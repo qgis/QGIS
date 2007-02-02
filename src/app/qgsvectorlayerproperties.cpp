@@ -255,7 +255,8 @@ void QgsVectorLayerProperties::apply()
   // Set up sql subset query if applicable
   //
 #ifdef HAVE_POSTGRESQL
-  QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
+  // Tim commented out the next line because dp is not actually used anywhere....
+  //QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
   //see if we are dealing with a pg layer here
   if(layer->providerType() == "postgres")
   {
