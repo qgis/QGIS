@@ -94,7 +94,7 @@ bool QgsShapeFile::scanGeometries()
   qApp->processEvents();
 
   OGRFeature *feat;
-  int currentType = 0;
+  unsigned int currentType = 0;
   bool multi = false;
   while((feat = ogrLayer->GetNextFeature()))
   {
@@ -272,7 +272,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
 
   QString query = "CREATE TABLE "+schema+"."+table_name+"(gid int4 PRIMARY KEY, ";
 
-  for(int n=0; n<column_names.size() && result; n++){
+  for(uint n=0; n<column_names.size() && result; n++){
     if(!column_names[n][0].isLetter())
       result = false;
 
@@ -369,7 +369,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
         QString geometry(geo_temp);
 
         QString quotes;
-        for(int n=0; n<column_types.size(); n++){
+        for(uint n=0; n<column_types.size(); n++){
           bool numericType(false);
           if(column_types[n] == "int" || column_types[n] == "float")
           {
