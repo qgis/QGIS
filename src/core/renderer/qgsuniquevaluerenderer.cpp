@@ -93,62 +93,78 @@ int QgsUniqueValueRenderer::classificationField()
 {
     return mClassificationField;
 }
+
+bool QgsUniqueValueRenderer::willRenderFeature(QgsFeature *f)
+{
+  return (symbolForFeature(f) != 0);
+}
     
 void QgsUniqueValueRenderer::renderFeature(QPainter* p, QgsFeature& f,QImage* img, 
 	double* scalefactor, bool selected, double widthScale)
 {
-    const QgsAttributeMap& attrs = f.attributeMap();
-    QString value = attrs[mClassificationField].fieldValue();
-  
-    std::map<QString,QgsSymbol*>::iterator it=mSymbols.find(value);
-    if(it!=mSymbols.end())
+  QgsSymbol* symbol = symbolForFeature(&f);
+  if(!symbol) //no matching symbol
     {
-	QgsSymbol* symbol = it->second;
-
-	// Point 
-	if ( img && mVectorType == QGis::Point ) {
-	    *img = symbol->getPointSymbolAsImage(  widthScale,
-		                                       selected, mSelectionColor );
-	    
-	    if ( scalefactor ) *scalefactor = 1;
-	} 
-
-        // Line, polygon
- 	else if ( mVectorType != QGis::Point )
+      if ( img && mVectorType == QGis::Point )
 	{
-	    if( !selected ) 
-	    {
-		QPen pen=symbol->pen();
-		pen.setWidthF ( widthScale * pen.width() );
-		p->setPen(pen);
-		p->setBrush(symbol->brush());
-	    }
-	    else
-	    {
-		QPen pen=symbol->pen();
-		pen.setWidthF ( widthScale * pen.width() );
-		pen.setColor(mSelectionColor);
-		QBrush brush=symbol->brush();
+	  img->fill(0);
+	}
+      else if ( mVectorType != QGis::Point )
+	{
+	  p->setPen(Qt::NoPen);
+	  p->setBrush(Qt::NoBrush);
+	}
+      return;
+    }
+  
+  // Point 
+  if ( img && mVectorType == QGis::Point ) 
+    {
+      *img = symbol->getPointSymbolAsImage(  widthScale, selected, mSelectionColor );
+      if ( scalefactor ) 
+	{
+	  *scalefactor = 1;
+	}
+    } 
+  
+  // Line, polygon
+  else if ( mVectorType != QGis::Point )
+    {
+      if( !selected ) 
+	{
+	  QPen pen=symbol->pen();
+	  pen.setWidthF ( widthScale * pen.width() );
+	  p->setPen(pen);
+	  p->setBrush(symbol->brush());
+	}
+      else
+	{
+	  QPen pen=symbol->pen();
+	  pen.setWidthF ( widthScale * pen.width() );
+	  pen.setColor(mSelectionColor);
+	  QBrush brush=symbol->brush();
 		brush.setColor(mSelectionColor);
 		p->setPen(pen);
 		p->setBrush(brush);
-	    }
 	}
     }
-    else
+}
+
+QgsSymbol* QgsUniqueValueRenderer::symbolForFeature(const QgsFeature* f)
+{
+  //first find out the value
+  const QgsAttributeMap& attrs = f->attributeMap();
+  QString value = attrs[mClassificationField].fieldValue();
+  
+  std::map<QString,QgsSymbol*>::iterator it=mSymbols.find(value);
+  if(it == mSymbols.end())
     {
-      //no matching symbol found. In this case, set Qt::NoPen, Qt::NoBrush or transparent image
-	if ( img && mVectorType == QGis::Point )
-	  {
-	    img->fill(0);
-	  }
-	else if ( mVectorType != QGis::Point )
-	  {
-	    p->setPen(Qt::NoPen);
-	    p->setBrush(Qt::NoBrush);
-	  }
+      return 0;
     }
-    
+  else
+    {
+      return it->second;
+    }
 }
 
 void QgsUniqueValueRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)

@@ -28,6 +28,9 @@ class CORE_EXPORT QgsUniqueValueRenderer: public QgsRenderer
     QgsUniqueValueRenderer(const QgsUniqueValueRenderer& other);
     QgsUniqueValueRenderer& operator=(const QgsUniqueValueRenderer& other);
     virtual ~QgsUniqueValueRenderer();
+    /** Determines if a feature will be rendered or not 
+	@param f a pointer to the feature to determine if rendering will happen*/
+    bool willRenderFeature(QgsFeature *f);
     void renderFeature(QPainter* p, QgsFeature& f,QImage* img, double* scalefactor, bool selected, double widthScale = 1.);
     /**Reads the renderer configuration from an XML file
      @param rnode the DOM node to read 
@@ -58,6 +61,8 @@ class CORE_EXPORT QgsUniqueValueRenderer: public QgsRenderer
     int mClassificationField;
     /**Symbols for the unique values*/
     std::map<QString, QgsSymbol*> mSymbols;
+    /**Returns the symbol for a feature or 0 if there isn't any*/
+    QgsSymbol* symbolForFeature(const QgsFeature* f);
 };
 
 inline bool QgsUniqueValueRenderer::needsAttributes() const
