@@ -186,7 +186,6 @@ int QgsHelpViewer::connectDb(const QString &helpDbPath)
   // a sqlite3 database always succeeds 
   int result;
   if(QFileInfo(helpDbPath).exists()){
-    char *zErrMsg = 0;
     int rc;
     rc = sqlite3_open(helpDbPath, &db);
     result = rc;
