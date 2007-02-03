@@ -30,11 +30,11 @@ INCLUDE_DIRECTORIES(
      ../../gui
      ${CMAKE_CURRENT_BINARY_DIR}/../../ui
      ..
+     ${GEOS_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(copyrightlabelplugin
   qgis_core
-  qgis_gui
 )
 
 

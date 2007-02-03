@@ -47,12 +47,12 @@ INCLUDE_DIRECTORIES(
      ../../gui
      ${CMAKE_CURRENT_BINARY_DIR}/../../ui
      ..
+	${GEOS_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(gridmakerplugin
   ${QT_LIBRARIES}
   qgis_core
-  qgis_gui
 )
 
 IF (PLUGINS_ALSO_BINARIES)
@@ -62,7 +62,6 @@ IF (PLUGINS_ALSO_BINARIES)
   TARGET_LINK_LIBRARIES(gridmaker
     ${QT_LIBRARIES}
     qgis_core
-    qgis_gui
   )
 
 ENDIF (PLUGINS_ALSO_BINARIES)

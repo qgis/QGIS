@@ -32,7 +32,6 @@ TARGET_LINK_LIBRARIES (msexport
    ${QT_LIBRARIES}
    ${PYTHON_LIBRARIES}
    qgis_core
-   qgis_gui
 )
 
 

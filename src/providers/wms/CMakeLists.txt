@@ -4,7 +4,7 @@ SET (WMS_MOC_HDRS  qgswmsprovider.h)
 
 QT4_WRAP_CPP (WMS_MOC_SRCS ${WMS_MOC_HDRS})
 
-INCLUDE_DIRECTORIES( . ../../gui ../../core ../../raster)
+INCLUDE_DIRECTORIES( . ../../gui ../../raster ../../core ${SQLITE3_INCLUDE_DIR})
 
 ADD_LIBRARY(wmsprovider MODULE ${WMS_SRCS} ${WMS_MOC_SRCS})
 

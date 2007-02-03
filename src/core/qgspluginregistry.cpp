@@ -24,6 +24,7 @@
 #include <qlibrary.h>
 #include <qapplication.h>
 #include "qgsprovidermetadata.h"
+#include "qgspluginmetadata.h"
 #include "qgspluginregistry.h"
 
 QgsPluginRegistry *QgsPluginRegistry::_instance = 0;

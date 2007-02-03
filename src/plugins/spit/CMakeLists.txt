@@ -68,7 +68,6 @@ TARGET_LINK_LIBRARIES(spitplugin
   ${POSTGRES_LIBRARY}
   ${GDAL_LIBRARY}
   qgis_core
-  qgis_gui
 )
 
 IF (PLUGINS_ALSO_BINARIES)
@@ -79,7 +78,6 @@ IF (PLUGINS_ALSO_BINARIES)
     ${QT_LIBRARIES}
     ${POSTGRES_LIBRARY}
     qgis_core
-    qgis_gui
   )
 ENDIF (PLUGINS_ALSO_BINARIES)
 

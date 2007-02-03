@@ -43,7 +43,7 @@ QT4_ADD_RESOURCES(GEOREF_RCC_SRCS ${GEOREF_RCCS})
 ADD_LIBRARY (georefplugin MODULE ${GEOREF_SRCS} ${GEOREF_MOC_SRCS} ${GEOREF_RCC_SRCS} ${GEOREF_UIS_H})
 
 INCLUDE_DIRECTORIES(
-     .
+     ${CMAKE_CURRENT_SOURCE_DIR}
      ${CMAKE_CURRENT_BINARY_DIR}
      ../../core ../../raster ../../renderer ../../core/symbology
      ../../gui
@@ -56,7 +56,6 @@ INCLUDE_DIRECTORIES(
 TARGET_LINK_LIBRARIES(georefplugin
   ${QT_LIBRARIES}
   qgis_core
-  qgis_gui
   ${GSL_LIBRARIES}
 )
 
