@@ -48,6 +48,9 @@ class QgsRenderer
     QgsRenderer();
     /** Virtual destructor because we have virtual methods... */
     virtual ~QgsRenderer() {};
+    /** Determines if a feature will be rendered or not 
+	@param f a pointer to the feature to determine if rendering will happen*/
+    virtual bool willRenderFeature(QgsFeature *f); 
     /**A vector layer passes features to a renderer object to change the brush and pen of the qpainter
      @param p the painter storing brush and pen
      @param f a pointer to the feature to be rendered

@@ -45,6 +45,9 @@ class QgsGraduatedSymbolRenderer: public QgsRenderer
     int classificationField() const;
     /**Removes all symbols*/
     void removeSymbols();
+    /**Determines if an OGRFeature is in range of any symbol's upper and lower bounds 
+     @param f a pointer to the feature to check*/ 
+    bool willRenderFeature(QgsFeature *f); 
     /**Renders an OGRFeature
      \param p a painter (usually the one from the current map canvas)
      \param f a pointer to a feature to render
@@ -75,6 +78,10 @@ class QgsGraduatedSymbolRenderer: public QgsRenderer
     int mClassificationField;
     /**List holding the symbols for the individual classes*/
     std::list<QgsSymbol*> mSymbols;
+
+ private:
+    /**Helper function for finding symbol having feature value in range*/ 
+    std::list < QgsSymbol* >::iterator firstSymbolForFeature(QgsFeature *f); 
     
 };
 

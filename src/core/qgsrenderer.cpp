@@ -72,3 +72,8 @@ bool QgsRenderer::containsPixmap() const
     }
 }
 
+bool QgsRenderer::willRenderFeature(QgsFeature *f) 
+{
+  // Normally render the feature, unless told otherwise
+  return true;
+}

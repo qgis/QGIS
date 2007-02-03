@@ -360,9 +360,11 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
           if(mDeletedFeatureIds.find(fet->featureId())==mDeletedFeatureIds.end())
           {
             bool sel=mSelectedFeatureIds.find(fet->featureId()) != mSelectedFeatureIds.end();
-            mLabel->renderLabel ( p, viewExtent, *mCoordinateTransform, 
-                projectionsEnabledFlag,
-                theMapToPixelTransform, fet, sel, 0, scale);
+	    if (m_renderer && m_renderer->willRenderFeature(fet)) 
+            { 
+	      mLabel->renderLabel ( p, viewExtent, *mCoordinateTransform, projectionsEnabledFlag, \
+theMapToPixelTransform, fet, sel, 0, scale);
+	    }
           }
         }
         delete fet;
@@ -374,8 +376,11 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
       for(std::vector<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
       {
         bool sel=mSelectedFeatureIds.find((*it)->featureId()) != mSelectedFeatureIds.end();
-        mLabel->renderLabel ( p, viewExtent, *mCoordinateTransform, projectionsEnabledFlag,
+	if (m_renderer && m_renderer->willRenderFeature(fet)) 
+	  {
+	    mLabel->renderLabel ( p, viewExtent, *mCoordinateTransform, projectionsEnabledFlag,
             theMapToPixelTransform, *it, sel, 0, scale);
+	  }
       }
     }
     catch (QgsCsException &e)
@@ -880,17 +885,20 @@ void QgsVectorLayer::draw(QPainter * p,
           sel = FALSE;
         }
 
-	m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel, widthScale );
-	double scale = markerScaleFactor * symbolScale;
-        drawFeature(p,
+	if (m_renderer->willRenderFeature(fet))
+	  { 
+	    m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel, widthScale );
+	    double scale = markerScaleFactor * symbolScale;
+	    drawFeature(p,
                     fet,
                     theMapToPixelTransform,
                     &marker,
                     scale,
                     projectionsEnabledFlag,
                     drawingToEditingCanvas);
-	++featureCount;
-	delete fet;
+	    ++featureCount;
+	    delete fet;
+	  }
       }	
 
       //also draw the not yet commited features
@@ -898,6 +906,10 @@ void QgsVectorLayer::draw(QPainter * p,
 	{
 	  for(std::vector<QgsFeature*>::iterator it = mAddedFeatures.begin(); it != mAddedFeatures.end(); ++it)
 	    {
+	      if (!m_renderer->willRenderFeature(*it)) 
+              { 
+                continue; 
+              }  
 	      bool sel=mSelectedFeatureIds.find((*it)->featureId()) != mSelectedFeatureIds.end();
 	      m_renderer->renderFeature(p, *it, &marker, &markerScaleFactor, sel, widthScale);
 	      double scale = markerScaleFactor * symbolScale;

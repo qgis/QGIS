@@ -83,22 +83,20 @@ void QgsGraduatedSymbolRenderer::removeSymbols()
     mSymbols.clear();
 }
 
+bool QgsGraduatedSymbolRenderer::willRenderFeature(QgsFeature *f)
+{
+  std::list < QgsSymbol* >::iterator it = firstSymbolForFeature(f);
+  if (it == mSymbols.end())      //only draw features which are covered by a render item 
+    {
+      return false;
+    }
+  return true;
+}
+
 void QgsGraduatedSymbolRenderer::renderFeature(QPainter * p, QgsFeature * f, QPixmap* pic, 
 	double* scalefactor, bool selected, double widthScale)
 {
-  //first find out the value for the classification attribute
-  std::vector < QgsFeatureAttribute > vec = f->attributeMap();
-  double value = vec[0].fieldValue().toDouble();
-
-  std::list < QgsSymbol* >::iterator it;
-  //find the first render item which contains the feature
-  for (it = mSymbols.begin(); it != mSymbols.end(); ++it)
-  {
-    if (value >= (*it)->lowerValue().toDouble() && value <= (*it)->upperValue().toDouble())
-    {
-      break;
-    }
-  }
+  std::list < QgsSymbol* >::iterator it = firstSymbolForFeature(f);
 
   if (it == mSymbols.end())      //only draw features which are covered by a render item
   {
@@ -140,6 +138,24 @@ void QgsGraduatedSymbolRenderer::renderFeature(QPainter * p, QgsFeature * f, QPi
       }
     }
   }
+}
+
+std::list < QgsSymbol* >::iterator QgsGraduatedSymbolRenderer::firstSymbolForFeature(QgsFeature *f) 
+{
+  //first find out the value for the classification attribute
+  std::vector < QgsFeatureAttribute > vec = f->attributeMap();
+  double value = vec[0].fieldValue().toDouble();
+  
+  std::list < QgsSymbol* >::iterator it;
+  //find the first render item which contains the feature
+  for (it = mSymbols.begin(); it != mSymbols.end(); ++it)
+  {
+    if (value >= (*it)->lowerValue().toDouble() && value <= (*it)->upperValue().toDouble())
+    {
+      break;
+    }
+  }
+  return it;
 }
 
 void QgsGraduatedSymbolRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
