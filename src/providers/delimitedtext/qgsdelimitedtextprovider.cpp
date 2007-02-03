@@ -41,6 +41,7 @@
 #include "qgsrect.h"
 #include "qgsspatialrefsys.h"
 #include "qgis.h"
+#include "qgslogger.h"
 
 #ifdef WIN32
 #define QGISEXTERN extern "C" __declspec( dllexport )
@@ -180,6 +181,12 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
             // split the line on the delimiter
             QStringList parts =
               QStringList::split(mDelimiter, line, true);
+
+	    // Skip malformed lines silently. Report line number with getNextFeature()
+	    if ( (parts.size() <= fieldPositions[mXField]) || (parts.size() <= fieldPositions[mYField]) )
+	    {
+	      continue;
+	    }
             //if(parts.size() == attributeFields.size())
             //{
             //  // we can populate attributes if required
@@ -338,6 +345,8 @@ QgsDelimitedTextProvider::getNextFeature_( QgsFeature & feature,
     feature.setValid( false );
     while ( ! mStream->atEnd() )
     {
+      double x = 0.0;
+      double y = 0.0;
       QString line = mStream->readLine(); // Default local 8 bit encoding
         // lex the tokens from the current data line
         QStringList tokens = QStringList::split(mDelimiter, line, true);
@@ -345,17 +354,23 @@ QgsDelimitedTextProvider::getNextFeature_( QgsFeature & feature,
         bool xOk = false;
         bool yOk = false;
 
-        int xFieldPos = fieldPositions[mXField];
-        int yFieldPos = fieldPositions[mYField];
+	// Skip indexing malformed lines.
+	if ( ! ((tokens.size() <= fieldPositions[mXField]) || (tokens.size() <= fieldPositions[mXField])) )
+	{
 
-        double x = tokens[xFieldPos].toDouble( &xOk );
-        double y = tokens[yFieldPos].toDouble( &yOk );
+	  int xFieldPos = fieldPositions[mXField];
+	  int yFieldPos = fieldPositions[mYField];
 
+	  x = tokens[xFieldPos].toDouble( &xOk );
+	  y = tokens[yFieldPos].toDouble( &yOk );
+
+	}
         if (! (xOk && yOk))
         {
           // Accumulate any lines that weren't ok, to report on them
           // later, and look at the next line in the file, but only if
           // we need to.
+	  QgsDebugMsg("Malformed line : " + line);
           if (mShowInvalidLines)
             mInvalidLines << line;
 
