@@ -1,29 +1,52 @@
 
+IF (WIN32)
+  SET(BINDINGS_CORE_LIB ${CMAKE_CURRENT_BINARY_DIR}/core/core.pyd)
+  SET(BINDINGS_GUI_LIB  ${CMAKE_CURRENT_BINARY_DIR}/gui/gui.pyd)
+  SET(QGIS_CORE_LIB     ${CMAKE_BINARY_DIR}/src/core/libqgis_core.dll)
+  SET(QGIS_GUI_LIB      ${CMAKE_BINARY_DIR}/src/gui/libqgis_gui.dll)
+ELSE (WIN32)
+  SET(BINDINGS_CORE_LIB ${CMAKE_CURRENT_BINARY_DIR}/core/core.so)
+  SET(BINDINGS_GUI_LIB  ${CMAKE_CURRENT_BINARY_DIR}/gui/gui.so)
+  SET(QGIS_CORE_LIB     ${CMAKE_BINARY_DIR}/src/core/libqgis_core.so)
+  SET(QGIS_GUI_LIB      ${CMAKE_BINARY_DIR}/src/gui/libqgis_gui.so)
+ENDIF (WIN32)
 
-ADD_CUSTOM_TARGET (python ALL DEPENDS run_sip compile_python_core compile_python_gui)
+SET (BINDINGS_LIBS ${BINDING_CORE_LIB} ${BINDINGS_GUI_LIB})
 
+SET (BINDINGS_CORE_MAKEFILE ${CMAKE_CURRENT_BINARY_DIR}/core/Makefile)
+SET (BINDINGS_GUI_MAKEFILE  ${CMAKE_CURRENT_BINARY_DIR}/gui/Makefile)
+
+
+# 'python' target will force to build bindings libs for core and gui
+ADD_CUSTOM_TARGET (python ALL DEPENDS ${BINDINGS_CORE_LIB} ${BINDINGS_GUI_LIB})
+
+# don't run python before the libs are built
 ADD_DEPENDENCIES (python qgis_core qgis_gui)
+
 
 # Step 1: during configuration
 # create file configure.py from configure.py.in
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/configure.py.in
-               ${CMAKE_CURRENT_SOURCE_DIR}/configure.py)
+               ${CMAKE_CURRENT_BINARY_DIR}/configure.py)
 
 # Step 2: during make
 # run python configure.py
-ADD_CUSTOM_COMMAND(OUTPUT run_sip PRE_BUILD
+# it will run SIP utility to generate sources and will prepare makefiles
+# should be run everytime core or gui library has been changed
+ADD_CUSTOM_COMMAND(OUTPUT ${BINDINGS_CORE_MAKEFILE} ${BINDINGS_GUI_MAKEFILE} PRE_BUILD
                    COMMAND ${PYTHON_EXECUTABLE}
-                   ARGS ${CMAKE_CURRENT_SOURCE_DIR}/configure.py)
+                   ARGS ${CMAKE_CURRENT_BINARY_DIR}/configure.py
+		   DEPENDS ${QGIS_CORE_LIB} ${QGIS_GUI_LIB})
 
 # Step 3: run make in core and gui subdirs
-ADD_CUSTOM_COMMAND(OUTPUT compile_python_core PRE_LINK
+ADD_CUSTOM_COMMAND(OUTPUT ${BINDINGS_CORE_LIB} PRE_LINK
                    COMMAND ${CMAKE_MAKE_PROGRAM}
                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/core
-                   DEPENDS run_sip)
-ADD_CUSTOM_COMMAND(OUTPUT compile_python_gui PRE_LINK
+                   DEPENDS ${BINDINGS_CORE_MAKEFILE})
+ADD_CUSTOM_COMMAND(OUTPUT ${BINDINGS_GUI_LIB} PRE_LINK
                    COMMAND ${CMAKE_MAKE_PROGRAM}
                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/gui
-                   DEPENDS run_sip)
+                   DEPENDS ${BINDINGS_GUI_MAKEFILE})
 
 
 # python's site-packages dir: bindings will be installed here
@@ -43,12 +66,5 @@ ENDIF (UNIX)
 EXEC_PROGRAM(${PYTHON_EXECUTABLE} ARGS -c "\"${CMD}\"" OUTPUT_VARIABLE SITE_PKG_PATH)
 
 # Step 4: install built libs to python's site packages
-IF (WIN32)
-  SET(BINDINGS_LIBS ${CMAKE_CURRENT_BINARY_DIR}/core/core.pyd
-                    ${CMAKE_CURRENT_BINARY_DIR}/gui/gui.pyd)
-ELSE (WIN32)
-  SET(BINDINGS_LIBS ${CMAKE_CURRENT_BINARY_DIR}/core/core.so
-                    ${CMAKE_CURRENT_BINARY_DIR}/gui/gui.so)
-ENDIF (WIN32)
+INSTALL(FILES __init__.py ${CMAKE_CURRENT_BINARY_DIR}/qgisconfig.py ${BINDINGS_LIBS} DESTINATION ${SITE_PKG_PATH}/qgis)
 
-INSTALL(FILES __init__.py qgisconfig.py ${BINDINGS_LIBS} DESTINATION ${SITE_PKG_PATH}/qgis)
