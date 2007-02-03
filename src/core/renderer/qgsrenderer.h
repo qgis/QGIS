@@ -44,10 +44,13 @@ class CORE_EXPORT QgsRenderer
     QgsRenderer();
     /** Virtual destructor because we have virtual methods... */
     virtual ~QgsRenderer();
+    /** Determines if a feature will be rendered or not 
+	@param f a pointer to the feature to determine if rendering will happen*/
+    virtual bool willRenderFeature(QgsFeature *f) {return true;}
     /**A vector layer passes features to a renderer object to change the brush and pen of the qpainter
      @param p the painter storing brush and pen
      @param f a pointer to the feature to be rendered
-     @param pic pointer to a marker from SVG (is only used by marker renderers)
+     @param pic pointer to an image (used for point symbols)
      @param scalefactor pointer to the scale factor for the marker image*/
     virtual void renderFeature(QPainter* p, QgsFeature& f,QImage* pic, double* scalefactor, bool selected, double widthScale = 1.)=0;
     /**Reads the renderer configuration from an XML file
