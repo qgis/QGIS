@@ -380,8 +380,8 @@ QString QgsOptions::getEllipsoidAcronym(QString theEllipsoidName)
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
-    sqlite3_step(myPreparedStatement) == SQLITE_ROW;
-    myName = QString((char *)sqlite3_column_text(myPreparedStatement,0));
+    if (sqlite3_step(myPreparedStatement) == SQLITE_ROW)
+      myName = QString((char *)sqlite3_column_text(myPreparedStatement,0));
   }
   // close the sqlite3 statement
   sqlite3_finalize(myPreparedStatement);
@@ -412,8 +412,8 @@ QString QgsOptions::getEllipsoidName(QString theEllipsoidAcronym)
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
-    sqlite3_step(myPreparedStatement) == SQLITE_ROW;
-    myName = QString((char *)sqlite3_column_text(myPreparedStatement,0));
+    if (sqlite3_step(myPreparedStatement) == SQLITE_ROW)
+      myName = QString((char *)sqlite3_column_text(myPreparedStatement,0));
   }
   // close the sqlite3 statement
   sqlite3_finalize(myPreparedStatement);

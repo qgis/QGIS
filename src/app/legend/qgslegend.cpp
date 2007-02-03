@@ -306,7 +306,8 @@ void QgsLegend::mouseReleaseEvent(QMouseEvent * e)
 	if(originType == QgsLegendItem::LEGEND_LAYER_FILE && destType == QgsLegendItem::LEGEND_LAYER_FILE_GROUP)
 	  {
       QgsDebugMsg("Legend layer file moved to layer file group");
-	    QgsMapLayer* origLayer = ((QgsLegendLayerFile*)(origin))->layer();
+      // Not used... delete?
+      //QgsMapLayer* origLayer = ((QgsLegendLayerFile*)(origin))->layer();
 	    if(dest->childCount() > 1)
 	      {
 		//find the first layer in the legend layer group != origLayer and copy its settings
@@ -327,8 +328,9 @@ void QgsLegend::mouseReleaseEvent(QMouseEvent * e)
 	else if(originType == QgsLegendItem::LEGEND_LAYER_FILE && destType == QgsLegendItem::LEGEND_LAYER_FILE)
 	  {
       QgsDebugMsg("Legend layer file moved to legend layer file");
-	    QgsMapLayer* origLayer = ((QgsLegendLayerFile*)(origin))->layer();
-	    QgsMapLayer* destLayer = ((QgsLegendLayerFile*)(dest))->layer();
+      // Not used. Delete?
+      // QgsMapLayer* origLayer = ((QgsLegendLayerFile*)(origin))->layer();
+      // QgsMapLayer* destLayer = ((QgsLegendLayerFile*)(dest))->layer();
 
 	    if(dest == origin)//origin item has been moved in mouseMoveEvent such that it is under the mouse cursor now
 	      {

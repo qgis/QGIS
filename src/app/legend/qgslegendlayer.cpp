@@ -274,7 +274,6 @@ void QgsLegendLayer::changeSymbologySettings(const QgsMapLayer* theMapLayer,
     return;
   }
 
-  QgsLegend* myLegend = legend();
   QgsLegendSymbologyItem* theSymbologyItem = 0;
 
   //remove the symbology items under the legend layer
