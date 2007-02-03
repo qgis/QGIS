@@ -213,7 +213,7 @@ void QgsOgrProvider::loadFields()
       for(int i=0;i<fdef->GetFieldCount();++i)
       {
         OGRFieldDefn *fldDef = fdef->GetFieldDefn(i);
-        OGRFieldType type = type = fldDef->GetType();
+        OGRFieldType type = fldDef->GetType();
         bool numeric = (type == OFTInteger || type == OFTReal);
         mAttributeFields.insert(i, QgsField(
               mEncoding->toUnicode(fldDef->GetNameRef()), 
@@ -495,7 +495,7 @@ void QgsOgrProvider::getFeatureGeometry(int key, QgsFeature *f)
 
   if ((fet = ogrLayer->GetFeature(key)) != NULL)
   {
-    if (geom = fet->GetGeometryRef())
+      if ((geom = fet->GetGeometryRef()))
     {
       geom = fet->GetGeometryRef();
       // get the wkb representation
@@ -740,6 +740,13 @@ bool QgsOgrProvider::addFeature(QgsFeature& f)
 	    return false;
 	  }
         break;
+      }
+    default:
+      {
+        QgsLogger::debug("Unknown feature type of: ", (int)(ftype), 1, 
+                         __FILE__, __FUNCTION__, __LINE__);
+	return false;
+	break;
       }
   }
   
@@ -1411,6 +1418,13 @@ QGISEXTERN bool createEmptyDataSource(const QString& uri,
     case QGis::WKBPolygon:
       OGRvectortype = wkbPolygon;
       break;
+    default:
+      {
+        QgsLogger::debug("Unknown vector type of: ", (int)(vectortype), 1, 
+                         __FILE__, __FUNCTION__, __LINE__);
+	return false;
+	break;
+      }
     }
 
     OGRLayer* layer;	

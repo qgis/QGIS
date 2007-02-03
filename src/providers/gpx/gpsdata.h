@@ -47,6 +47,7 @@ typedef QSet<int> QgsFeatureIds;
 */
 class GPSObject {
  public:
+  virtual ~GPSObject() {};
   QString xmlify(const QString& str);
   virtual void writeXML(QTextStream& stream);
   QString name, cmt, desc, src, url, urlname;
