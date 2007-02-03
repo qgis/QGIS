@@ -82,8 +82,6 @@ int QgsShapeFile::getFeatureCount(){
 }
 bool QgsShapeFile::scanGeometries()
 {
-  int progressThreshold = 5;
-  int progressCount = 0;
   QProgressDialog *sg = new QProgressDialog();
   sg->setMinimum(0);
   sg->setMaximum(0);
