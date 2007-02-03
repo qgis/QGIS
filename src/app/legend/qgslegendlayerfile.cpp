@@ -458,9 +458,8 @@ void QgsLegendLayerFile::addToPopupMenu(QMenu& theMenu)
   }
   else if (lyr->type() == QgsMapLayer::RASTER)
   {
-    QgsRasterLayer* rlayer = dynamic_cast<QgsRasterLayer*>(lyr);
-    
     // TODO: what was this for?
+    //QgsRasterLayer* rlayer = dynamic_cast<QgsRasterLayer*>(lyr);
     //theMenu.addAction(tr("&Convert to..."), rlayer, SLOT(convertTo()));
   }
      

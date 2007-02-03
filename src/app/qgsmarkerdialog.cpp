@@ -79,22 +79,22 @@ void QgsMarkerDialog::changeDirectory()
 
 void QgsMarkerDialog::visualizeMarkers(QString directory)
 {
-    mIconView->clear();
+  mIconView->clear();
 
-    QDir dir(directory);
-    QStringList files=dir.entryList("*.svg;*.SVG");
+  QDir dir(directory);
+  QStringList files=dir.entryList("*.svg;*.SVG");
     
-    for(QStringList::Iterator it = files.begin(); it != files.end(); ++it )
-    {
-	qWarning((*it).toLocal8Bit().data());
+  for(QStringList::Iterator it = files.begin(); it != files.end(); ++it )
+  {
+    qWarning((*it).toLocal8Bit().data());
 	
-	//render the SVG file to a pixmap and put it into mIconView
-	QPixmap pix (10,10);
-  QPainter myPainter(&pix);
-  QgsMarkerCatalogue::svgMarker(&myPainter,mCurrentDir + "/" + (*it), 1);
-	Q3IconViewItem* ivi=new Q3IconViewItem(mIconView,*it,pix);
+    //render the SVG file to a pixmap and put it into mIconView
+    QPixmap pix (10,10);
+    QPainter myPainter(&pix);
+    QgsMarkerCatalogue::svgMarker(&myPainter,mCurrentDir + "/" + (*it), 1);
+    new Q3IconViewItem(mIconView,*it,pix);
 	
-    }
+  }
 }
 
 QString QgsMarkerDialog::defaultDir()

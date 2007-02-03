@@ -70,7 +70,7 @@ void QgsGeomTypeDialog::on_mAddAttributeButton_clicked()
     QgsAddAttrDialog d(types, this);
     if(d.exec()==QDialog::Accepted)
     {
-	Q3ListViewItem* attritem=new Q3ListViewItem(mAttributeView, d.name(), d.type());
+      new Q3ListViewItem(mAttributeView, d.name(), d.type());
     }
     if(mAttributeView->childCount()>0)
     {

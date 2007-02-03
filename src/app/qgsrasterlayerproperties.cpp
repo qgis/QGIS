@@ -753,7 +753,9 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   bool myIgnoreOutOfRangeFlag = chkHistIgnoreOutOfRange->isChecked();
   bool myThoroughBandScanFlag = chkHistAllowApproximation->isChecked();
 
+#ifdef QGISDEBUG
   long myCellCount = rasterLayer->getRasterXDim() * rasterLayer->getRasterYDim();
+#endif
 
 
 #ifdef QGISDEBUG

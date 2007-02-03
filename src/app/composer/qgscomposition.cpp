@@ -533,6 +533,10 @@ void QgsComposition::contentsMouseReleaseEvent(QMouseEvent* e)
         ci->writeSettings();
       }
       break;
+
+    default:
+      // ignore any others...
+      break;
   }
 }
 
