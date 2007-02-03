@@ -294,6 +294,8 @@ bool QgsPointDialog::generateWorldFile()
   QgsPoint origin(0, 0);
   double pixelSize = 1;
   double rotation = 0;
+  double xOffset = 0.0;
+  double yOffset = 0.0;
   
   // create arrays with points from mPoints
   std::vector<QgsPoint> pixelCoords, mapCoords;
@@ -351,7 +353,6 @@ bool QgsPointDialog::generateWorldFile()
   }
 
   // warp the raster if needed
-  double xOffset, yOffset;
   if (rotation != 0)
   {
 
