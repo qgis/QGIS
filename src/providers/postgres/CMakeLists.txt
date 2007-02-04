@@ -10,7 +10,7 @@ qgspostgrescountthread.cpp
 qgspostgresextentthread.cpp
 )
 
-SET(PG_MOC_HDRS qgspostgresprovider.h)
+#SET(PG_MOC_HDRS qgspostgresprovider.h)
 
 
 ########################################################

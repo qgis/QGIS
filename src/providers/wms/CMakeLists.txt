@@ -1,6 +1,6 @@
 
 SET (WMS_SRCS      qgswmsprovider.cpp)
-SET (WMS_MOC_HDRS  qgswmsprovider.h)
+SET (WMS_MOC_HDRS  "") #qgswmsprovider.h)
 
 QT4_WRAP_CPP (WMS_MOC_SRCS ${WMS_MOC_HDRS})
 
