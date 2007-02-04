@@ -46,7 +46,15 @@ IF (PYTHON_LIBRARIES AND PYTHON_INCLUDE_PATH)
     
     # check for SIP
     TRY_RUN_PYTHON (HAVE_SIP_MODULE "from sip import wrapinstance")
-    FIND_PROGRAM (SIP_BINARY_PATH sip)
+
+    IF (APPLE)
+      SET (SIP_MAC_PATH
+        /System/Library/Frameworks/Python.framework/Versions/2.5/bin/
+	/System/Library/Frameworks/Python.framework/Versions/2.4/bin/
+	/System/Library/Frameworks/Python.framework/Versions/2.3/bin/)
+    ENDIF (APPLE)
+
+    FIND_PROGRAM (SIP_BINARY_PATH sip ${SIP_MAC_PATH})
     
     IF (HAVE_SIP_MODULE AND SIP_BINARY_PATH)
       # check for SIP version
