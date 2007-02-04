@@ -25,7 +25,7 @@
 
 IF(WIN32)
 
-  SET(GSL_PREFIX "" CACHE PATH "Path to GSL directory")
+  SET(GSL_PREFIX "c:/msys/local" CACHE PATH "Path to GSL directory")
 
   FIND_LIBRARY(GSL_LIB gsl PATH ${GSL_PREFIX}/lib)
   FIND_LIBRARY(GSLCBLAS_LIB gslcblas PATH ${GSL_PREFIX}/lib)
@@ -41,6 +41,7 @@ ELSE(WIN32)
     SET(GSL_CONFIG_PREFER_PATH "$ENV{GSL_HOME}/bin" CACHE STRING "preferred path to GSL (gsl-config)")
     FIND_PROGRAM(GSL_CONFIG gsl-config
       ${GSL_CONFIG_PREFER_PATH}
+      /usr/local/bin/
       /usr/bin/
       )
     # MESSAGE("DBG GSL_CONFIG ${GSL_CONFIG}")
