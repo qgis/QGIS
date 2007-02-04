@@ -47,6 +47,9 @@ class QgsPythonUtils
     //! returns true if python support is ready to use (must be inited first)
     static bool isEnabled();
     
+    //! returns path where QGIS python stuff is located
+    static QString pythonPath();
+    
     //! run a statement (wrapper for PyRun_String)
     //! this command is more advanced as enables error checking etc.
     //! @return true if no error occured
@@ -71,9 +74,6 @@ class QgsPythonUtils
 
     /* plugins related functions */
     
-    //! change path
-    static void setPluginsPath(QString path);
-  
     //! return current path for python plugins
     static QString pluginsPath();
     
