@@ -12,7 +12,7 @@
 IF(WIN32)
 
   FIND_PATH(GDAL_INCLUDE_DIR gdal.h /usr/local/include /usr/include c:/msys/local/include)
-  FIND_LIBRARY(GDAL_LIBRARY NAMES gdal PATH /usr/local/lib /usr/lib c:/msys/local/lib)
+  FIND_LIBRARY(GDAL_LIBRARY NAMES gdal PATHS /usr/local/lib /usr/lib c:/msys/local/lib)
 
   
 ELSE(WIN32)
