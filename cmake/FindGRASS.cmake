@@ -41,6 +41,11 @@ ENDMACRO (CHECK_GRASS)
 # list of paths which to search - user's choice as first
 SET (GRASS_PATHS ${GRASS_PREFIX} /usr/lib/grass)
 
+# mac-specific path
+IF (APPLE)
+  SET (GRASS_PATHS ${GRASS_PATHS} /Applications/GRASS.app/Contents/Resources)
+ENDIF (APPLE)
+
 IF (WITH_GRASS)
 
   FOREACH (G_PREFIX ${GRASS_PATHS})
