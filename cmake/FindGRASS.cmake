@@ -39,7 +39,7 @@ ENDMACRO (CHECK_GRASS)
 # search for grass installations
 
 # list of paths which to search - user's choice as first
-SET (GRASS_PATHS ${GRASS_PREFIX} /usr/lib/grass)
+SET (GRASS_PATHS ${GRASS_PREFIX} /usr/lib/grass c:/msys/local/grass-6.3.cvs)
 
 # mac-specific path
 IF (APPLE)
@@ -76,7 +76,7 @@ IF (GRASS_FOUND)
 
   # add 'util' library to the dependencies
   IF (HAVE_OPENPTY)
-    FIND_LIBRARY(OPENPTY_LIBRARY NAMES util PATH /usr/local/lib /usr/lib)
+    FIND_LIBRARY(OPENPTY_LIBRARY NAMES util PATHS /usr/local/lib /usr/lib c:/msys/local/lib)
     SET (GRASS_LIBRARIES ${GRASS_LIBRARIES} ${OPENPTY_LIBRARY})
   ENDIF (HAVE_OPENPTY)
 

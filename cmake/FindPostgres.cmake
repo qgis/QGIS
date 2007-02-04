@@ -15,7 +15,7 @@ IF(WIN32)
   ENDIF (NOT POSTGRES_INCLUDE_DIR)
 
   IF (NOT POSTGRES_LIBRARY)
-    FIND_LIBRARY(POSTGRES_LIBRARY NAMES pq PATH /usr/local/lib /usr/lib c:/msys/local/lib)
+    FIND_LIBRARY(POSTGRES_LIBRARY NAMES pq PATHS /usr/local/lib /usr/lib c:/msys/local/lib)
   ENDIF (NOT POSTGRES_LIBRARY)
 
 ELSE(WIN32)
