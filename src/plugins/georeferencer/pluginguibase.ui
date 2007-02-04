@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsGeorefPluginGuiBase</class>
  <widget class="QDialog" name="QgsGeorefPluginGuiBase" >
   <property name="geometry" >
@@ -125,12 +122,12 @@
       </sizepolicy>
      </property>
      <property name="text" >
-      <string>...</string>
+      <string>Browse...</string>
      </property>
     </widget>
    </item>
    <item row="1" column="3" >
-    <widget class="QLineEdit" name="leSelectRaster" >
+    <widget class="QgsFileDropEdit" name="leSelectRaster" >
      <property name="sizePolicy" >
       <sizepolicy>
        <hsizetype>7</hsizetype>
@@ -144,7 +141,13 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFileDropEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfiledropedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="georeferencer.qrc" />
  </resources>

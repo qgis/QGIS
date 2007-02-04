@@ -104,7 +104,7 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item row="2" column="0" >
-        <widget class="QLineEdit" name="leGPXFile" />
+        <widget class="QgsFileDropEdit" name="leGPXFile" />
        </item>
        <item row="3" column="0" >
         <widget class="QLabel" name="lblGPXFeatureTypes" >
@@ -192,7 +192,7 @@ p, li { white-space: pre-wrap; }
        <item row="3" column="3" >
         <widget class="QPushButton" name="pbnIMPOutput" >
          <property name="text" >
-          <string>Browse...</string>
+          <string>Save As...</string>
          </property>
         </widget>
        </item>
@@ -388,7 +388,7 @@ p, li { white-space: pre-wrap; }
        <item row="3" column="4" >
         <widget class="QPushButton" name="pbnDLOutput" >
          <property name="text" >
-          <string>Browse...</string>
+          <string>Save As...</string>
          </property>
         </widget>
        </item>
@@ -489,6 +489,13 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
+ <customwidgets>
+  <customwidget>
+   <class>QgsFileDropEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfiledropedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="qgsgps_plugin.qrc" />
  </resources>

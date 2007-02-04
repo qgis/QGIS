@@ -228,14 +228,14 @@
    <item row="2" column="7" >
     <widget class="QPushButton" name="pbnSelectModifiedRaster" >
      <property name="text" >
-      <string>...</string>
+      <string>Save As...</string>
      </property>
     </widget>
    </item>
    <item row="3" column="7" >
     <widget class="QPushButton" name="pbnSelectWorldFile" >
      <property name="text" >
-      <string>...</string>
+      <string>Save As...</string>
      </property>
     </widget>
    </item>
