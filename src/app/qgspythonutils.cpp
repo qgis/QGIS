@@ -45,8 +45,8 @@ void QgsPythonUtils::initPython(QgisInterface* interface)
   runString("import sys");
   
   // expect that bindings are installed locally, so add the path to modules
-  QString pythonPath = QgsApplication::pkgDataPath() + "/python";
-  runString("sys.path.insert(0, \"" + pythonPath + "\")");
+  // also add path to plugins
+  runString("sys.path = [\"" + pythonPath() + "\", \"" + pluginsPath() + "\"] + sys.path");
 
   // import SIP
   if (!runString("from sip import wrapinstance, unwrapinstance"))
@@ -103,8 +103,6 @@ void QgsPythonUtils::initPython(QgisInterface* interface)
   // initialize 'iface' object
   runString("iface = wrapinstance(" + QString::number((unsigned long) interface) + ", QgisInterface)");
   runString("plugins = {}");
-
-  setPluginsPath(QgsApplication::pluginPath() + "/python");
 
 }
 
@@ -206,18 +204,14 @@ QString QgsPythonUtils::getResult()
 }
 
 
-
-void QgsPythonUtils::setPluginsPath(QString path)
+QString QgsPythonUtils::pythonPath()
 {
-  mPluginsPath = path;
-  
-  // alter sys.path to search for packages & modules in (plugin_dir)/python
-  runString("sys.path.insert(0, '" + path + "')");
+  return QgsApplication::pkgDataPath() + "/python";
 }
 
 QString QgsPythonUtils::pluginsPath()
 {
-  return mPluginsPath;
+  return pythonPath() + "/plugins";
 }
 
 QString QgsPythonUtils::getPluginMetadata(QString pluginName, QString function)
