@@ -10,7 +10,7 @@
 
 FIND_PATH(EXPAT_INCLUDE_DIR expat.h /usr/local/include /usr/include c:/msys/local/include)
 
-FIND_LIBRARY(EXPAT_LIBRARY NAMES expat PATH /usr/local/lib /usr/lib c:/msys/local/lib)
+FIND_LIBRARY(EXPAT_LIBRARY NAMES expat PATHS /usr/local/lib /usr/lib c:/msys/local/lib)
 
 IF (EXPAT_INCLUDE_DIR AND EXPAT_LIBRARY)
    SET(EXPAT_FOUND TRUE)

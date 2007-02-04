@@ -25,7 +25,7 @@ SET (PLUGINS_ALSO_BINARIES FALSE)
 
 
 # try to configure and build GRASS plugin by default
-SET (WITH_GRASS TRE CACHE BOOL "Determines whether GRASS plugin should be built")
+SET (WITH_GRASS TRUE CACHE BOOL "Determines whether GRASS plugin should be built")
 SET (GRASS_PREFIX "" CACHE PATH "Path to GRASS base directory")
 
 # try to configure and build python bindings by default
