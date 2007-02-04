@@ -25,11 +25,17 @@ SET (PLUGINS_ALSO_BINARIES FALSE)
 
 
 # try to configure and build GRASS plugin by default
-SET (WITH_GRASS TRE CACHE BOOL "Determines whether GRASS plugin should be built")
+SET (WITH_GRASS TRUE CACHE BOOL "Determines whether GRASS plugin should be built")
 SET (GRASS_PREFIX "" CACHE PATH "Path to GRASS base directory")
 
 # try to configure and build python bindings by default
 SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
+
+# By default bindings will be installed only to QGIS directory
+# Someone might want to install it to python site-packages directory
+# as otherwise user has to use PYTHONPATH environemnt variable to add
+# QGIS bindings to package search path
+SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
 
 
 #############################################################
