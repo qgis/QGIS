@@ -48,6 +48,7 @@ ADD_CUSTOM_COMMAND(OUTPUT ${BINDINGS_GUI_LIB} PRE_LINK
                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/gui
                    DEPENDS ${BINDINGS_GUI_MAKEFILE})
 
+IF (BINDINGS_GLOBAL_INSTALL)
 
 # python's site-packages dir: bindings will be installed here
 IF (UNIX)
@@ -65,6 +66,12 @@ ENDIF (UNIX)
 
 EXEC_PROGRAM(${PYTHON_EXECUTABLE} ARGS -c "\"${CMD}\"" OUTPUT_VARIABLE SITE_PKG_PATH)
 
+ELSE (BINDINGS_GLOBAL_INSTALL)
+
+  SET (SITE_PKG_PATH ${QGIS_DATA_DIR}/python)
+  
+ENDIF (BINDINGS_GLOBAL_INSTALL)
+
+
 # Step 4: install built libs to python's site packages
 INSTALL(FILES __init__.py ${CMAKE_CURRENT_BINARY_DIR}/qgisconfig.py ${BINDINGS_LIBS} DESTINATION ${SITE_PKG_PATH}/qgis)
-

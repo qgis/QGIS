@@ -43,6 +43,10 @@ void QgsPythonUtils::initPython(QgisInterface* interface)
   
   // import sys module
   runString("import sys");
+  
+  // expect that bindings are installed locally, so add the path to modules
+  QString pythonPath = QgsApplication::pkgDataPath() + "/python";
+  runString("sys.path.insert(0, \"" + pythonPath + "\")");
 
   // import SIP
   if (!runString("from sip import wrapinstance, unwrapinstance"))
