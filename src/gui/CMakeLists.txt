@@ -5,6 +5,7 @@ qgisinterface.cpp
 qgscolorbutton.cpp
 qgscursors.cpp
 qgsencodingfiledialog.cpp
+qgsfiledropedit.cpp
 qgslayerprojectionselector.cpp
 qgsmapcanvas.cpp
 qgsmapcanvasitem.cpp

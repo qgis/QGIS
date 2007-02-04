@@ -39,7 +39,9 @@ QgsMapserverExport::QgsMapserverExport(QWidget * parent, Qt::WFlags fl)
 {
   setupUi(this);
   connect(this, SIGNAL(accepted()), this, SLOT(apply()));
-//   initialize python
+  // drag and drop filter
+  txtQgisFilePath->setSuffixFilter("qgs");
+  // initialize python
   initPy();
   qDebug("Reading setttings");
   QSettings mySettings;

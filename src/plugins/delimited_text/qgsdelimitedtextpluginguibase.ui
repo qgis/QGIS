@@ -216,7 +216,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="txtFilePath" >
+      <widget class="QgsFileDropEdit" name="txtFilePath" >
        <property name="toolTip" >
         <string>Full path to the delimited text file</string>
        </property>
@@ -331,6 +331,11 @@
    <extends>QGroupBox</extends>
    <header>Qt3Support/Q3GroupBox</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFileDropEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfiledropedit.h</header>
   </customwidget>
   <customwidget>
    <class>Q3TextEdit</class>
