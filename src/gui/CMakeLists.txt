@@ -75,6 +75,7 @@ qgisinterface.h
 qgscolorbutton.h
 qgscursors.h
 qgsencodingfiledialog.h
+qgsfiledropedit.h
 qgslayerprojectionselector.h
 qgsmapcanvas.h
 qgsmapcanvasitem.h
