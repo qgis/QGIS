@@ -17,9 +17,17 @@ IF(WIN32)
   
 ELSE(WIN32)
   IF(UNIX) 
+
+    # try to use framework on mac
+    IF (APPLE)
+      SET (GDAL_MAC_PATH /Library/Frameworks/GDAL.framework/unix/bin)
+    ENDIF (APPLE)
+
     SET(GDAL_CONFIG_PREFER_PATH "$ENV{GDAL_HOME}/bin" CACHE STRING "preferred path to GDAL (gdal-config)")
     FIND_PROGRAM(GDAL_CONFIG gdal-config
       ${GDAL_CONFIG_PREFER_PATH}
+      ${GDAL_MAC_PATH}
+      /usr/local/bin/
       /usr/bin/
       )
     # MESSAGE("DBG GDAL_CONFIG ${GDAL_CONFIG}")
