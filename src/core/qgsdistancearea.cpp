@@ -78,6 +78,14 @@ bool QgsDistanceArea::setEllipsoid(const QString& ellipsoid)
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
+
+  // Shortcut if ellipsoid is none.
+  if (ellipsoid == "NONE")
+  {
+    mEllipsoid = "NONE";
+    return true;
+  }
+
   //check the db is available
   myResult = sqlite3_open(QString(QgsApplication::qgisUserDbFilePath()).latin1(), &myDatabase);
   if(myResult) 
@@ -248,14 +256,14 @@ double QgsDistanceArea::measureLine(const std::vector<QgsPoint>& points)
   
   try
   {
-    if (mProjectionsEnabled)
+    if (mProjectionsEnabled && (mEllipsoid != "NONE"))
       p1 = mCoordTransform->transform(points[0]);
     else
       p1 = points[0];
     
     for (std::vector<QgsPoint>::size_type i = 1; i < points.size(); i++)
     {
-      if (mProjectionsEnabled)
+      if (mProjectionsEnabled && (mEllipsoid != "NONE"))
       {
         p2 = mCoordTransform->transform(points[i]);
         total += computeDistanceBearing(p1,p2);
@@ -284,7 +292,7 @@ double QgsDistanceArea::measureLine(const QgsPoint& p1, const QgsPoint& p2)
   try
   {
     QgsPoint pp1 = p1, pp2 = p2;
-    if (mProjectionsEnabled)
+    if (mProjectionsEnabled && (mEllipsoid != "NONE"))
     {
       pp1 = mCoordTransform->transform(p1);
       pp2 = mCoordTransform->transform(p2);
@@ -336,7 +344,7 @@ unsigned char* QgsDistanceArea::measurePolygon(unsigned char* feature, double* a
         ptr += sizeof(double);
 
         points[jdx] = QgsPoint(x,y);
-        if (mProjectionsEnabled)
+        if (mProjectionsEnabled && (mEllipsoid != "NONE"))
         {
           points[jdx] = mCoordTransform->transform(points[jdx]);
         }
@@ -366,7 +374,7 @@ double QgsDistanceArea::measurePolygon(const std::vector<QgsPoint>& points)
   
   try
   {
-    if (mProjectionsEnabled)
+    if (mProjectionsEnabled && (mEllipsoid != "NONE"))
     {
       std::vector<QgsPoint> pts(points.size());
       for (std::vector<QgsPoint>::size_type i = 0; i < points.size(); i++)
@@ -391,7 +399,7 @@ double QgsDistanceArea::measurePolygon(const std::vector<QgsPoint>& points)
 double QgsDistanceArea::getBearing(const QgsPoint& p1, const QgsPoint& p2)
 {
   QgsPoint pp1 = p1, pp2 = p2;
-  if (mProjectionsEnabled)
+  if (mProjectionsEnabled && (mEllipsoid != "NONE"))
   {
     pp1 = mCoordTransform->transform(p1);
     pp2 = mCoordTransform->transform(p2);
@@ -538,7 +546,8 @@ double QgsDistanceArea::computePolygonArea(const std::vector<QgsPoint>& points)
   double Qbar1, Qbar2;
   double area;
 
-  if (! mProjectionsEnabled)
+  QgsDebugMsg("Ellipsoid: " + mEllipsoid);
+  if ((! mProjectionsEnabled) || (mEllipsoid == "NONE"))
   {
     return computePolygonFlatArea(points);
   }
@@ -604,7 +613,7 @@ double QgsDistanceArea::computePolygonFlatArea(const std::vector<QgsPoint>& poin
   }
   // QgsDebugMsg("Area from point: " + (points[i % size]).stringRep(2));
   area = area / 2.0;
-  return area;
+  return fabs(area); // All areas are positive!
 }
 
 QString QgsDistanceArea::textUnit(double value, int decimals, QGis::units u, bool isArea)
@@ -617,12 +626,12 @@ QString QgsDistanceArea::textUnit(double value, int decimals, QGis::units u, boo
   case QGis::METERS: 
     if (isArea)
     {
-      if (value > 1000000.0)
+      if (fabs(value) > 1000000.0)
       {
 	unitLabel = QObject::tr(" km2");
 	value = value / 1000000.0;
       }
-      else if (value > 1000.0)
+      else if (fabs(value) > 1000.0)
       {
 	unitLabel = QObject::tr(" ha");
 	value = value / 10000.0;
@@ -634,17 +643,17 @@ QString QgsDistanceArea::textUnit(double value, int decimals, QGis::units u, boo
     }
     else
     {
-      if (value > 1000.0)
+      if (fabs(value) > 1000.0)
       {
 	unitLabel=QObject::tr(" km");
 	value = value/1000;
       }
-      else if (value < 0.01)
+      else if (fabs(value) < 0.01)
       {
 	unitLabel=QObject::tr(" mm");
 	value = value*1000;
       }
-      else if (value < 0.1)
+      else if (fabs(value) < 0.1)
       {
 	unitLabel=QObject::tr(" cm");
 	value = value*100;
@@ -662,7 +671,7 @@ QString QgsDistanceArea::textUnit(double value, int decimals, QGis::units u, boo
     }
     else
     {
-      if (value == 1.0)
+      if (fabs(value) == 1.0)
 	unitLabel=QObject::tr(" foot"); 
       else
 	unitLabel=QObject::tr(" feet"); 
@@ -675,7 +684,7 @@ QString QgsDistanceArea::textUnit(double value, int decimals, QGis::units u, boo
     }
     else
     {
-      if (value == 1.0)
+      if (fabs(value) == 1.0)
 	unitLabel=QObject::tr(" degree"); 
       else
 	unitLabel=QObject::tr(" degrees"); 
