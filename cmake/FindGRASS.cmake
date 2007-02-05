@@ -70,15 +70,19 @@ IF (GRASS_FOUND)
 
   # openpty is currently needed for GRASS shell
   INCLUDE(CheckFunctionExists)
+  IF (APPLE)
+  SET (CMAKE_REQUIRED_INCLUDES util.h)
+  ELSE (APPLE)
   SET (CMAKE_REQUIRED_INCLUDES pty.h)
   SET (CMAKE_REQUIRED_LIBRARIES util)
+  ENDIF (APPLE)
   CHECK_FUNCTION_EXISTS(openpty HAVE_OPENPTY)
 
   # add 'util' library to the dependencies
-  IF (HAVE_OPENPTY)
+  IF (HAVE_OPENPTY AND NOT APPLE)
     FIND_LIBRARY(OPENPTY_LIBRARY NAMES util PATHS /usr/local/lib /usr/lib c:/msys/local/lib)
     SET (GRASS_LIBRARIES ${GRASS_LIBRARIES} ${OPENPTY_LIBRARY})
-  ENDIF (HAVE_OPENPTY)
+  ENDIF (HAVE_OPENPTY AND NOT APPLE)
 
 ELSE (GRASS_FOUND)
 
