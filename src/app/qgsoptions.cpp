@@ -30,7 +30,8 @@
 #include <cassert>
 #include <iostream>
 #include <sqlite3.h>
-
+#define ELLIPS_FLAT "NONE"
+#define ELLIPS_FLAT_DESC "None / Planimetric"
 
 /**
  * \class QgsOptions - Set user options and preferences
@@ -332,6 +333,9 @@ void QgsOptions::getEllipsoidList()
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
+
+
+  cmbEllipsoid->insertItem(ELLIPS_FLAT_DESC);
   //check the db is available
   myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &myDatabase);
   if(myResult) 
@@ -364,7 +368,7 @@ QString QgsOptions::getEllipsoidAcronym(QString theEllipsoidName)
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
-  QString       myName;
+  QString       myName(ELLIPS_FLAT);
   //check the db is available
   myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &myDatabase);
   if(myResult) 
@@ -396,7 +400,7 @@ QString QgsOptions::getEllipsoidName(QString theEllipsoidAcronym)
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
-  QString       myName;
+  QString       myName(ELLIPS_FLAT_DESC);
   //check the db is available
   myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &myDatabase);
   if(myResult) 
