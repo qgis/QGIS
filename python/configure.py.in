@@ -76,7 +76,7 @@ for sip in sips_gui:
 # linker flags needed by the Qt library.
 makefile_core = sipconfig.ModuleMakefile(
         configuration=config,
-        qt=["QtCore","QtGui","QtXml"],
+        qt=["QtCore","QtGui","QtNetwork","QtSql","QtSvg","QtXml","Qt3Support"],
         build_file=build_file_core,
         installs=installs_core,
         install_dir=mod_dir,
@@ -84,7 +84,7 @@ makefile_core = sipconfig.ModuleMakefile(
 
 makefile_gui = sipconfig.ModuleMakefile(
         configuration=config,
-        qt=["QtCore","QtGui","QtXml"],
+        qt=["QtCore","QtGui","QtNetwork","QtSql","QtSvg","QtXml","Qt3Support"],
         build_file=build_file_gui,
         installs=installs_gui,
         install_dir=mod_dir,
