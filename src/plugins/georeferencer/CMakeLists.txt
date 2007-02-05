@@ -43,7 +43,7 @@ QT4_ADD_RESOURCES(GEOREF_RCC_SRCS ${GEOREF_RCCS})
 ADD_LIBRARY (georefplugin MODULE ${GEOREF_SRCS} ${GEOREF_MOC_SRCS} ${GEOREF_RCC_SRCS} ${GEOREF_UIS_H})
 
 INCLUDE_DIRECTORIES(
-     .
+     ${CMAKE_CURRENT_SOURCE_DIR}
      ${CMAKE_CURRENT_BINARY_DIR}
      ../../core ../../core/raster ../../core/renderer ../../core/symbology
      ../../gui

@@ -36,7 +36,7 @@ QT4_ADD_RESOURCES(GPS_RCC_SRCS ${GPS_RCCS})
 ADD_LIBRARY (gpsimporterplugin MODULE ${GPS_SRCS} ${GPS_MOC_SRCS} ${GPS_RCC_SRCS} ${GPS_UIS_H})
 
 INCLUDE_DIRECTORIES(
-     .
+     ${CMAKE_CURRENT_SOURCE_DIR}
      ${CMAKE_CURRENT_BINARY_DIR}
      ../../core ../../core/raster ../../core/renderer ../../core/symbology
      ../../gui
