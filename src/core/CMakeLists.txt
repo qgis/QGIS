@@ -89,6 +89,7 @@ raster/qgsrasterlayer.h
 QT4_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} raster renderer symbology
+  spatialindex/include
   ${QT_QTSVG_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
@@ -122,8 +123,6 @@ PATH_PREFIX(GEOM_SRC geometry LineSegment.cc Point.cc Region.cc)
 PATH_PREFIX(SPINDEX_SRC spatialindex SpatialIndexImpl.cc)
 PATH_PREFIX(STMAN_SRC storagemanager Buffer.cc DiskStorageManager.cc MemoryStorageManager.cc RandomEvictionsBuffer.cc)
 PATH_PREFIX(RTREE_SRC rtree BulkLoader.cc Index.cc Leaf.cc Node.cc RTree.cc Statistics.cc)
-
-INCLUDE_DIRECTORIES(spatialindex/include)
 
 SET(SPINDEX_SRC ${TOOLS_SRC} ${GEOM_SRC} ${SPINDEX_SRC} ${STMAN_SRC} ${RTREE_SRC})
 

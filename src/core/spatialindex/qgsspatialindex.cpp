@@ -20,7 +20,7 @@
 #include "qgsfeature.h"
 #include "qgsrect.h"
     
-#include <SpatialIndex.h>
+#include "SpatialIndex.h"
 
 using namespace SpatialIndex;
 
