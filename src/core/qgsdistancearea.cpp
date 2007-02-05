@@ -223,6 +223,7 @@ unsigned char* QgsDistanceArea::measureLine(unsigned char* feature, double* area
   
   std::vector<QgsPoint> points(nPoints);
 
+  QgsDebugMsg("This feature WKB has " + QString::number(nPoints) + " points");
   // Extract the points from the WKB format into the vector
   for (unsigned int i = 0; i < nPoints; ++i)
   {
@@ -255,11 +256,16 @@ double QgsDistanceArea::measureLine(const std::vector<QgsPoint>& points)
     for (std::vector<QgsPoint>::size_type i = 1; i < points.size(); i++)
     {
       if (mProjectionsEnabled)
+      {
         p2 = mCoordTransform->transform(points[i]);
+        total += computeDistanceBearing(p1,p2);
+      }
       else
+      {
         p2 = points[i];
+        total += measureLine(p1,p2);
+      }
   
-      total = computeDistanceBearing(p1,p2);
       p1 = p2;
     }
     
