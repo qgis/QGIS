@@ -154,7 +154,12 @@ As a background read http://wiki.qgis.org/qgiswiki/Building_with_CMake
 
 *) Make sure %QTDIR%\bin;c:\msys\local\bin;c:\msys\bin;c;\msys\mingw\bin is in your Path
 
-*) Start a cmd.exe window ( Start -> Run -> cmd.exe ) if you don't have one already.
+*) If you have a MinGW installation somewhere besides in
+   c:\msys\mingw, be sure to remove it from your Path. Safest is to
+   rename the MinGW installation directory. Mixing of libraries is not good.
+
+*) Start a cmd.exe window ( Start -> Run -> cmd.exe ) if you don't have
+   one already.
 
 *) > mkdir build
 
@@ -169,11 +174,15 @@ As a background read http://wiki.qgis.org/qgiswiki/Building_with_CMake
    installation destination and/or set 'Debug'.
 
 
-*) > make.exe install
+*) Now, start sh.exe and run 'make.exe install' from within that shell
 
-   It should now start compiling. 
-   
-   ALTERNATIVE) Start sh.exe now, and write 'make install' from within sh.exe
+   It should now start compiling. The reason for this is that we use
+   the mingw compiler included in the msys tar, but that compiler is
+   not found from within sh.exe. (MSYS magic). So, if you delete
+   CMakeCache, you have to generate it from cmd.exe.
 
-*) (Optional) Make sure to copy all .dll:s needed to the same directory as the
+   Why not run make from cmd.exe? Because creating 'qgssvnversion.h'
+   requires the 'mv' command...
+
+*) (Make sure to copy all .dll:s needed to the same directory as the
    qgis.exe binary is installed to, if not already done so.
