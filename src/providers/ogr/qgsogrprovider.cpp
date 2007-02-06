@@ -31,7 +31,6 @@ email                : sherman at mrcc.com
 #include <cpl_error.h>
 #include "ogr_api.h"//only for a test
 
-#include <Q3CString>
 #include <QtDebug>
 #include <QFile>
 #include <QFileInfo>
