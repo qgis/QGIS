@@ -51,6 +51,11 @@ Currently you need to put it into that location in case you plan to create
 the NSIS installer because so far it contains hardcoded paths for this location.
 
 
+*******************************************************
+* TO USE CMAKE GO DIRECTLY TO 'USING CMAKE' BELOW !!! *
+*******************************************************
+
+
 Source changes:
 ---------------
 
@@ -128,3 +133,47 @@ Now using windows explorer, enter the c:\dev\cpp\qgis\win_build directory and ri
 click on qgis.nsi and choose the option 'Compile NSIS Script'. Do the same 
 for qgis-debug.nsi. Congratulations you should have two installable qgis 
 setup files in the win_build directory now..
+
+
+*********************************
+
+USING CMAKE FOR 0.8
+-------------------
+
+Instead of shifting around files, you could use CMake. CMake compiles
+raster, compaser, legend, gui and core libraries into one core
+library. So it is not 100% compatible with 'normal' 0.8 Makefiles.
+
+Below are the steps to configure and make the source. The building
+takes plac in a separate directory from the source. If you have built
+the source with 'normal' Makefiels first, please do a make clean (or
+remove and check out everything). Previoussly made intermediate files
+can disturb the CMake process.
+
+As a background read http://wiki.qgis.org/qgiswiki/Building_with_CMake
+
+*) Make sure %QTDIR%\bin;c:\msys\local\bin;c:\msys\bin;c;\msys\mingw\bin is in your Path
+
+*) Start a cmd.exe window ( Start -> Run -> cmd.exe ) if you don't have one already.
+
+*) > mkdir build
+
+*) > cd build
+
+*) > cmakesetup ..
+
+   If asked, you should chose 'MSYS Makefiles' as generator.
+
+   All dependencies should be picked up automatically, if you have set
+   up the Paths correctly. The only thing you need to change is the
+   installation destination and/or set 'Debug'.
+
+
+*) > make.exe install
+
+   It should now start compiling. 
+   
+   ALTERNATIVE) Start sh.exe now, and write 'make install' from within sh.exe
+
+*) (Optional) Make sure to copy all .dll:s needed to the same directory as the
+   qgis.exe binary is installed to, if not already done so.
