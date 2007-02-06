@@ -33,8 +33,8 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui(QgisInterface * _qI, QWidge
   setupUi(this);
   pbnOK = buttonBox->button(QDialogButtonBox::Ok);
   pbnParse = buttonBox->addButton(tr("Parse"), QDialogButtonBox::ActionRole);
-  connect(pbnParse, SIGNAL(clicked()), this, SLOT(on_pbnParse_clicked()));
-  connect(txtFilePath, SIGNAL(textChanged(const QString&)), this, SLOT(on_pbnParse_clicked()));
+  connect(pbnParse, SIGNAL(clicked()), this, SLOT(pbnParse_clicked()));
+  connect(txtFilePath, SIGNAL(textChanged(const QString&)), this, SLOT(pbnParse_clicked()));
   enableButtons();
   // at startup, fetch the last used delimiter and directory from
   // settings
@@ -55,7 +55,7 @@ void QgsDelimitedTextPluginGui::on_btnBrowseForFile_clicked()
 {
   getOpenFileName();
 }
-void QgsDelimitedTextPluginGui::on_pbnParse_clicked()
+void QgsDelimitedTextPluginGui::pbnParse_clicked()
 {
   updateFieldLists();
 }

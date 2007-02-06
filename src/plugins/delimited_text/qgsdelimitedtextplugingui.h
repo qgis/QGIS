@@ -45,7 +45,7 @@ class QgsDelimitedTextPluginGui : public QDialog, private Ui::QgsDelimitedTextPl
     void on_buttonBox_rejected();
     void on_buttonBox_helpRequested();
     void on_btnBrowseForFile_clicked();
-    void on_pbnParse_clicked();
+    void pbnParse_clicked();
 
   signals:
     void drawRasterLayer(QString);
