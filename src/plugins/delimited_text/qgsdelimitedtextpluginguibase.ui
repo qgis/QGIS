@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>657</width>
-    <height>517</height>
+    <height>547</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -17,19 +17,33 @@
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>10</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="0" column="0" >
-    <widget class="QPushButton" name="pbnCancel_2" >
+   <item row="0" column="0" colspan="5" >
+    <widget class="QLabel" name="txtHeading" >
+     <property name="font" >
+      <font>
+       <family>Sans Serif</family>
+       <pointsize>20</pointsize>
+       <weight>50</weight>
+       <italic>false</italic>
+       <bold>false</bold>
+       <underline>false</underline>
+       <strikeout>false</strikeout>
+      </font>
+     </property>
      <property name="text" >
-      <string>Cancel</string>
+      <string>Delimited Text Layer</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </item>
-   <item rowspan="8" row="0" column="0" colspan="2" >
+   <item rowspan="6" row="1" column="0" >
     <widget class="QLabel" name="pixmapLabel1" >
      <property name="pixmap" >
       <pixmap resource="delimited_text.qrc" >:/new/prefix1/delimited_text.png</pixmap>
@@ -39,20 +53,129 @@
      </property>
     </widget>
    </item>
-   <item rowspan="7" row="1" column="1" >
-    <widget class="Line" name="line1" >
-     <property name="frameShape" >
-      <enum>QFrame::VLine</enum>
-     </property>
-     <property name="frameShadow" >
-      <enum>QFrame::Sunken</enum>
-     </property>
+   <item row="6" column="4" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
      <property name="orientation" >
-      <enum>Qt::Vertical</enum>
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
-   <item row="5" column="2" >
+   <item row="3" column="4" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="textLabel1_2" >
+       <property name="text" >
+        <string>Layer name</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="txtLayerName" >
+       <property name="toolTip" >
+        <string>Name to display in the map legend</string>
+       </property>
+       <property name="whatsThis" >
+        <string>Name displayed in the map legend</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>20</width>
+         <height>21</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="textLabel3" >
+       <property name="text" >
+        <string>Delimiter</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="txtDelimiter" >
+       <property name="maximumSize" >
+        <size>
+         <width>25</width>
+         <height>32767</height>
+        </size>
+       </property>
+       <property name="toolTip" >
+        <string>Delimiter to use when splitting fields in the text file. The delimiter can be more than one character.</string>
+       </property>
+       <property name="whatsThis" >
+        <string>Delimiter to use when splitting fields in the delimited text file. The delimiter can be 1 or more characters in length.</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="4" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="textLabel1" >
+       <property name="text" >
+        <string>Delimited text file</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsFileDropEdit" name="txtFilePath" >
+       <property name="toolTip" >
+        <string>Full path to the delimited text file</string>
+       </property>
+       <property name="whatsThis" >
+        <string>Full path to the delimited text file. In order to properly parse the fields in the file, the delimiter must be defined prior to entering the file name. Use the Browse button to the right of this field to choose the input file.</string>
+       </property>
+       <property name="readOnly" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnBrowseForFile" >
+       <property name="enabled" >
+        <bool>true</bool>
+       </property>
+       <property name="toolTip" >
+        <string>Browse to find the delimited text file to be processed</string>
+       </property>
+       <property name="whatsThis" >
+        <string>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i>Delimiter&lt;/i> box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</string>
+       </property>
+       <property name="text" >
+        <string>Browse...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="4" >
     <layout class="QHBoxLayout" >
      <property name="margin" >
       <number>0</number>
@@ -130,29 +253,33 @@
      </item>
     </layout>
    </item>
-   <item row="6" column="2" >
-    <widget class="Q3GroupBox" name="groupBox1" >
-     <property name="title" >
-      <string>Sample text</string>
+   <item rowspan="6" row="1" column="1" >
+    <widget class="Line" name="line1" >
+     <property name="frameShape" >
+      <enum>QFrame::VLine</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Sunken</enum>
      </property>
      <property name="orientation" >
       <enum>Qt::Vertical</enum>
      </property>
+    </widget>
+   </item>
+   <item row="5" column="3" colspan="2" >
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>Sample text</string>
+     </property>
      <layout class="QGridLayout" >
       <property name="margin" >
-       <number>10</number>
+       <number>9</number>
       </property>
       <property name="spacing" >
        <number>6</number>
       </property>
       <item row="0" column="0" >
-       <widget class="Q3TextEdit" name="txtSample" >
-        <property name="textFormat" >
-         <enum>Qt::PlainText</enum>
-        </property>
-        <property name="wordWrap" >
-         <enum>Q3TextEdit::NoWrap</enum>
-        </property>
+       <widget class="QTextEdit" name="txtSample" >
         <property name="readOnly" >
          <bool>true</bool>
         </property>
@@ -161,164 +288,16 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="2" >
-    <widget class="Q3TextEdit" name="teInstructions" >
-     <property name="text" >
-      <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style="font-size:12pt;font-family:Arial">
-&lt;p style="margin-top:16px">&lt;span style="font-size:16pt;font-weight:600">Description&lt;/span>&lt;/p>
-&lt;p>Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you! &lt;/p>
-&lt;p>Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma or tab). After choosing a delimiter, press the parse button an select the columns containing the x and y values for the layer.&lt;/p>
-&lt;/body>&lt;/html>
-</string>
-     </property>
-     <property name="wordWrap" >
-      <enum>Q3TextEdit::WidgetWidth</enum>
-     </property>
+   <item row="1" column="2" colspan="3" >
+    <widget class="QTextEdit" name="teInstructions" >
      <property name="readOnly" >
       <bool>true</bool>
      </property>
-    </widget>
-   </item>
-   <item rowspan="2" row="0" column="2" >
-    <widget class="QLabel" name="txtHeading" >
-     <property name="font" >
-      <font>
-       <family>Sans Serif</family>
-       <pointsize>20</pointsize>
-       <weight>50</weight>
-       <italic>false</italic>
-       <bold>false</bold>
-       <underline>false</underline>
-       <strikeout>false</strikeout>
-      </font>
-     </property>
-     <property name="text" >
-      <string>Delimited Text Layer</string>
-     </property>
-     <property name="alignment" >
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="2" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="textLabel1" >
-       <property name="text" >
-        <string>Delimited text file</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsFileDropEdit" name="txtFilePath" >
-       <property name="toolTip" >
-        <string>Full path to the delimited text file</string>
-       </property>
-       <property name="whatsThis" >
-        <string>Full path to the delimited text file. In order to properly parse the fields in the file, the delimiter must be defined prior to entering the file name. Use the Browse button to the right of this field to choose the input file.</string>
-       </property>
-       <property name="readOnly" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnBrowseForFile" >
-       <property name="enabled" >
-        <bool>true</bool>
-       </property>
-       <property name="toolTip" >
-        <string>Browse to find the delimited text file to be processed</string>
-       </property>
-       <property name="whatsThis" >
-        <string>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i>Delimiter&lt;/i> box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</string>
-       </property>
-       <property name="text" >
-        <string>Browse...</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="4" column="2" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="textLabel1_2" >
-       <property name="text" >
-        <string>Layer name</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="txtLayerName" >
-       <property name="toolTip" >
-        <string>Name to display in the map legend</string>
-       </property>
-       <property name="whatsThis" >
-        <string>Name displayed in the map legend</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Fixed</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>20</width>
-         <height>21</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="textLabel3" >
-       <property name="text" >
-        <string>Delimiter</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="txtDelimiter" >
-       <property name="maximumSize" >
-        <size>
-         <width>25</width>
-         <height>32767</height>
-        </size>
-       </property>
-       <property name="toolTip" >
-        <string>Delimiter to use when splitting fields in the text file. The delimiter can be more than one character.</string>
-       </property>
-       <property name="whatsThis" >
-        <string>Delimiter to use when splitting fields in the delimited text file. The delimiter can be 1 or more characters in length.</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="7" column="2" >
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+     <property name="html" >
+      <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;/p>&lt;/body>&lt;/html></string>
      </property>
     </widget>
    </item>
@@ -327,20 +306,9 @@
  <layoutdefault spacing="6" margin="11" />
  <customwidgets>
   <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsFileDropEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfiledropedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>Q3TextEdit</class>
-   <extends>Q3Frame</extends>
-   <header>Qt3Support/Q3TextEdit</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -350,8 +318,6 @@
   <tabstop>btnBrowseForFile</tabstop>
   <tabstop>cmbXField</tabstop>
   <tabstop>cmbYField</tabstop>
-  <tabstop>pbnCancel_2</tabstop>
-  <tabstop>teInstructions</tabstop>
  </tabstops>
  <resources>
   <include location="delimited_text.qrc" />
