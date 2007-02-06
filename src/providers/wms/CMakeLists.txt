@@ -1,6 +1,8 @@
 
 SET (WMS_SRCS      qgswmsprovider.cpp)
-SET (WMS_MOC_HDRS  "") #qgswmsprovider.h)
+IF (NOT WIN32)
+   SET (WMS_MOC_HDRS  qgswmsprovider.h)
+ENDIF (NOT WIN32)
 
 QT4_WRAP_CPP (WMS_MOC_SRCS ${WMS_MOC_HDRS})
 

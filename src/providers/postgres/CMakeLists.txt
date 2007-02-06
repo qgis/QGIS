@@ -10,8 +10,9 @@ qgspostgrescountthread.cpp
 qgspostgresextentthread.cpp
 )
 
-#SET(PG_MOC_HDRS qgspostgresprovider.h)
-
+IF(NOT WIN32)
+    SET(PG_MOC_HDRS qgspostgresprovider.h)
+ENDIF(NOT WIN32)
 
 ########################################################
 # Build
