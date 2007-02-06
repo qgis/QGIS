@@ -186,7 +186,7 @@ INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
 IF (WIN32)
   
   # TODO: create qgssvnversion.h properly
-  ADD_CUSTOM_TARGET(svnversion echo "#define QGSSVNVERSION \"svn\"" > qgssvnversion.h
+  ADD_CUSTOM_TARGET(svnversion ALL echo \\"#define QGSSVNVERSION \\\"svn_rev_unavailable\\\" \\" > qgssvnversion.h
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
 ELSE (WIN32)
