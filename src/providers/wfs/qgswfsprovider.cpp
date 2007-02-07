@@ -142,7 +142,7 @@ void QgsWFSProvider::reset()
 #if GEOS_VERSION_MAJOR < 3
   mSelectedFeatures = mSpatialIndex.query(&e);
 #else
-#warning *** FIXME: Need to revise use of mSelectedFeatures for GEOS 3.0.0
+  mSelectedFeatures = new std::vector<void*>;
   mSpatialIndex.query(&e, *mSelectedFeatures);
 #endif
   if(mSelectedFeatures)
@@ -242,7 +242,7 @@ void QgsWFSProvider::select(QgsRect mbr, bool useIntersect)
 #if GEOS_VERSION_MAJOR < 3
   mSelectedFeatures = mSpatialIndex.query(&filter);
 #else
-#warning *** FIXME: Need to revise use of mSelectedFeatures for GEOS 3.0.0
+  mSelectedFeatures = new std::vector<void*>;
   mSpatialIndex.query(&filter, *mSelectedFeatures);
 #endif
   mFeatureIterator = mSelectedFeatures->begin();
