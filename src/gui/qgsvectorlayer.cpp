@@ -376,7 +376,7 @@ theMapToPixelTransform, fet, sel, 0, scale);
       for(std::vector<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
       {
         bool sel=mSelectedFeatureIds.find((*it)->featureId()) != mSelectedFeatureIds.end();
-	if (m_renderer && m_renderer->willRenderFeature(fet)) 
+	if (m_renderer && m_renderer->willRenderFeature(*it)) 
 	  {
 	    mLabel->renderLabel ( p, viewExtent, *mCoordinateTransform, projectionsEnabledFlag,
             theMapToPixelTransform, *it, sel, 0, scale);
