@@ -136,6 +136,15 @@ void QgsMapOverviewCanvas::reflectChangedExtent()
   if (y1 > y2)
     std::swap(y1, y2);
   
+#ifdef Q_WS_MAC
+  // setGeometry (Qt 4.2) is causing Mac window corruption (decorations
+  // are drawn at odd locations) if both coords are at limit. This may
+  // have something to do with Qt calculating dimensions as x2 - x1 + 1.
+  // (INT_MAX - INT_MIN + 1 is UINT_MAX + 1)
+  if (x1 == INT_MIN && x2 == INT_MAX) x1 += 1;  // x2 -= 1 works too
+  if (y1 == INT_MIN && y2 == INT_MAX) y1 += 1;
+#endif
+
   QRect r(x1, y1, x2-x1+1, y2-y1+1);
   
 #ifdef QGISDEBUG
