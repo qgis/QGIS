@@ -225,3 +225,7 @@ IF (APPLE)
 ELSE (APPLE)
   INSTALL(TARGETS qgis RUNTIME DESTINATION ${QGIS_BIN_DIR})
 ENDIF (APPLE)
+
+
+########## Install headers for developers to use against qgis libs
+INSTALL(FILES ${QGIS_APP_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
