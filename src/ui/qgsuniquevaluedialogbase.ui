@@ -19,37 +19,32 @@
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="1" column="2" colspan="4" >
-    <widget class="QListWidget" name="mClassBreakBox" />
-   </item>
    <item row="1" column="0" colspan="2" >
-    <widget class="Q3WidgetStack" name="mSymbolWidgetStack" >
-     <widget class="QWidget" name="WStackPage" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>190</width>
-        <height>246</height>
-       </rect>
-      </property>
-     </widget>
+    <widget class="QStackedWidget" name="mSymbolWidgetStack" >
+     <widget class="QWidget" name="page" />
+     <widget class="QWidget" name="page_2" />
     </widget>
    </item>
-   <item row="0" column="3" >
-    <widget class="QPushButton" name="mClassifyButton" >
-     <property name="text" >
-      <string>Classify</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1" colspan="2" >
-    <widget class="QComboBox" name="mClassificationComboBox" >
+   <item row="0" column="0" >
+    <widget class="QLabel" name="mClassVarLabel" >
      <property name="minimumSize" >
       <size>
        <width>0</width>
        <height>20</height>
       </size>
+     </property>
+     <property name="text" >
+      <string>Classification Field:</string>
+     </property>
+     <property name="buddy" >
+      <cstring>mClassificationComboBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="4" >
+    <widget class="QPushButton" name="mDeletePushButton" >
+     <property name="text" >
+      <string>Delete class</string>
      </property>
     </widget>
    </item>
@@ -69,41 +64,30 @@
      </property>
     </spacer>
    </item>
-   <item row="0" column="4" >
-    <widget class="QPushButton" name="mDeletePushButton" >
-     <property name="text" >
-      <string>Delete class</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" >
-    <widget class="QLabel" name="mClassVarLabel" >
+   <item row="0" column="1" colspan="2" >
+    <widget class="QComboBox" name="mClassificationComboBox" >
      <property name="minimumSize" >
       <size>
        <width>0</width>
        <height>20</height>
       </size>
      </property>
+    </widget>
+   </item>
+   <item row="0" column="3" >
+    <widget class="QPushButton" name="mClassifyButton" >
      <property name="text" >
-      <string>Classification Field:</string>
-     </property>
-     <property name="buddy" >
-      <cstring>mClassificationComboBox</cstring>
+      <string>Classify</string>
      </property>
     </widget>
+   </item>
+   <item row="1" column="2" colspan="4" >
+    <widget class="QListWidget" name="mClassListWidget" />
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3WidgetStack</class>
-   <extends>Q3WidgetStack</extends>
-   <header>q3widgetstack.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

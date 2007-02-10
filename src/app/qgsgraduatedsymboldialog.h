@@ -46,7 +46,7 @@ class QgsGraduatedSymbolDialog: public QDialog, private Ui::QgsGraduatedSymbolDi
      /**Writes changes in the single symbol dialog to the corresponding QgsRangeRenderItem*/
      void applySymbologyChanges();
      /**Shows a dialog to modify lower and upper values*/
-     void changeClass(Q3ListBoxItem* item);
+     void modifyClass(QListWidgetItem* item);
  protected:
      /**Pointer to the associated vector layer*/
      QgsVectorLayer* mVectorLayer;
@@ -57,6 +57,11 @@ class QgsGraduatedSymbolDialog: public QDialog, private Ui::QgsGraduatedSymbolDi
      /**Dialog which shows the settings of the activated class*/
      QgsSingleSymbolDialog sydialog;
      int mClassificationField;
+
+ protected slots:
+     /**Removes a class from the classification*/
+     void deleteCurrentClass();
+
  private:
      /**Default constructor is privat to not use is*/
      QgsGraduatedSymbolDialog();

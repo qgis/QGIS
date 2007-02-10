@@ -63,8 +63,8 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(QgsVectorLayer * layer): QDia
 	return;
     }
 
-    modeComboBox->insertItem("Empty");
     modeComboBox->insertItem("Equal Interval");
+    modeComboBox->insertItem("Empty");
     
     //restore the correct settings
     const QgsGraduatedSymbolRenderer* renderer = dynamic_cast < const QgsGraduatedSymbolRenderer * >(layer->renderer());
@@ -97,23 +97,22 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(QgsVectorLayer * layer): QDia
 		sym->setNamedPointSymbol((*it)->pointSymbolName());
 		sym->setPointSize((*it)->pointSize());
 		mEntries.insert(std::make_pair(classbreak,sym));
-		mClassBreakBox->insertItem(classbreak);
+		mClassListWidget->addItem(classbreak);
 	}
 	
     }
     
     //do the necessary signal/slot connections
-    QObject::connect(numberofclassesspinbox, SIGNAL(valueChanged(int)), this, SLOT(adjustClassification()));
-    QObject::connect(classificationComboBox, SIGNAL(activated(int)), this, SLOT(adjustClassification()));
-    QObject::connect(modeComboBox, SIGNAL(activated(int)), this, SLOT(adjustClassification()));
-    QObject::connect(mClassBreakBox, SIGNAL(selectionChanged()), this, SLOT(changeCurrentValue()));
+    QObject::connect(mClassifyButton, SIGNAL(clicked()), this, SLOT(adjustClassification()));
+    QObject::connect(mClassListWidget, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), this, SLOT(changeCurrentValue()));
     QObject::connect(&sydialog, SIGNAL(settingsChanged()), this, SLOT(applySymbologyChanges()));
-    QObject::connect(mClassBreakBox, SIGNAL(doubleClicked(Q3ListBoxItem*)), this, SLOT(changeClass(Q3ListBoxItem*)));
+    QObject::connect(mClassListWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(modifyClass(QListWidgetItem*)));
+    QObject::connect(mDeleteClassButton, SIGNAL(clicked()), this, SLOT(deleteCurrentClass()));
 
     mSymbolWidgetStack->addWidget(&sydialog);
-    mSymbolWidgetStack->raiseWidget(&sydialog); 
+    mSymbolWidgetStack->setCurrentWidget(&sydialog); 
 
-    mClassBreakBox->setCurrentItem(0);
+    mClassListWidget->setCurrentRow(0);
 }
 
 QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(): QDialog(), mVectorLayer(0), sydialog(0)
@@ -154,78 +153,78 @@ void QgsGraduatedSymbolDialog::apply()
 	
 	QgsGraduatedSymbolRenderer* renderer = new QgsGraduatedSymbolRenderer(mVectorLayer->vectorType());
 
-	for (uint item=0;item<mClassBreakBox->count();++item)
+	for (int item=0;item<mClassListWidget->count();++item)
         {
-	    QString classbreak=mClassBreakBox->text(item);
-	    std::map<QString,QgsSymbol*>::iterator it=mEntries.find(classbreak);
-	    if(it==mEntries.end())
+	  QString classbreak=mClassListWidget->item(item)->text();
+	  std::map<QString,QgsSymbol*>::iterator it=mEntries.find(classbreak);
+	  if(it==mEntries.end())
 	    {
-		continue;
+	      continue;
 	    }
-	
-	    QString lower_bound=it->second->lowerValue();
-	    QString upper_bound=it->second->upperValue();
-	    QString label=it->second->label();
-
-	    QgsSymbol* sy = new QgsSymbol(mVectorLayer->vectorType(), lower_bound, upper_bound, label);
-	    
-	    sy->setColor(it->second->pen().color());
-	    sy->setLineStyle(it->second->pen().style());
-	    sy->setLineWidth(it->second->pen().width());
-	    
-	    if (mVectorLayer->vectorType() == QGis::Point)
+	  
+	  QString lower_bound=it->second->lowerValue();
+	  QString upper_bound=it->second->upperValue();
+	  QString label=it->second->label();
+	  
+	  QgsSymbol* sy = new QgsSymbol(mVectorLayer->vectorType(), lower_bound, upper_bound, label);
+	  
+	  sy->setColor(it->second->pen().color());
+	  sy->setLineStyle(it->second->pen().style());
+	  sy->setLineWidth(it->second->pen().width());
+	  
+	  if (mVectorLayer->vectorType() == QGis::Point)
 	    {
-		sy->setNamedPointSymbol(it->second->pointSymbolName());
-		sy->setPointSize(it->second->pointSize());
-	     
+	      sy->setNamedPointSymbol(it->second->pointSymbolName());
+	      sy->setPointSize(it->second->pointSize());
+	      
 	    }
-	    
-	    if (mVectorLayer->vectorType() != QGis::Line)
+	  
+	  if (mVectorLayer->vectorType() != QGis::Line)
             {
-		sy->setFillColor(it->second->brush().color());
-		sy->setFillStyle(it->second->brush().style());
+	      sy->setFillColor(it->second->brush().color());
+	      sy->setFillStyle(it->second->brush().style());
             }
-	    
-	    //test, if lower_bound is numeric or not (making a subclass of QString would be the proper solution)
-	    bool lbcontainsletter = false;
-	    for (int j = 0; j < lower_bound.length(); j++)
+	  
+	  //test, if lower_bound is numeric or not (making a subclass of QString would be the proper solution)
+	  bool lbcontainsletter = false;
+	  for (int j = 0; j < lower_bound.length(); j++)
             {
-		if (lower_bound.ref(j).isLetter())
+	      if (lower_bound.ref(j).isLetter())
                 {
-		    lbcontainsletter = true;
+		  lbcontainsletter = true;
                 }
             }
-	    
-	    //test, if upper_bound is numeric or not (making a subclass of QString would be the proper solution)
-	    bool ubcontainsletter = false;
-	    for (int j = 0; j < upper_bound.length(); j++)
+	  
+	  //test, if upper_bound is numeric or not (making a subclass of QString would be the proper solution)
+	  bool ubcontainsletter = false;
+	  for (int j = 0; j < upper_bound.length(); j++)
             {
-		if (upper_bound.ref(j).isLetter())
+	      if (upper_bound.ref(j).isLetter())
                 {
-		    ubcontainsletter = true;
+		  ubcontainsletter = true;
                 }
             }
-	    if (lbcontainsletter == false && ubcontainsletter == false && lower_bound.length() > 0 && upper_bound.length() > 0) //only add the item if the value bounds do not contain letters and are not null strings
+	  if (lbcontainsletter == false && ubcontainsletter == false && lower_bound.length() > 0 && upper_bound.length() > 0) //only add the item if the value bounds do not contain letters and are not null strings
             {
-		renderer->addSymbol(sy);
+	      renderer->addSymbol(sy);
 	    }
-	    else
+	  else
 	    {
-		delete sy;
+	      delete sy;
 	    }
         }
 	
 	std::map<QString,int>::iterator iter=mFieldMap.find(classificationComboBox->currentText());
 	if(iter!=mFieldMap.end())
-	{
-	   renderer->setClassificationField(iter->second);
-	}
+	  {
+	    renderer->setClassificationField(iter->second);
+	  }
 	mVectorLayer->setRenderer(renderer);
 }
 
 void QgsGraduatedSymbolDialog::adjustClassification()
 {
-    mClassBreakBox->clear();
+    mClassListWidget->clear();
     QGis::VectorType m_type = mVectorLayer->vectorType();
     QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider());
     double minimum, maximum;
@@ -275,7 +274,7 @@ void QgsGraduatedSymbolDialog::adjustClassification()
 	if (modeComboBox->currentText() == "Empty")
 	{
 	    listboxtext="Empty"+QString::number(i+1);
-	    mClassBreakBox->insertItem(listboxtext);
+	    mClassListWidget->addItem(listboxtext);
 	}
 	else if(modeComboBox->currentText() == "Equal Interval")
 	{
@@ -292,7 +291,7 @@ void QgsGraduatedSymbolDialog::adjustClassification()
 	    symbol->setLowerValue(QString::number(lower,'f',3));
 	    symbol->setUpperValue(QString::number(upper,'f',3));
 	    listboxtext=QString::number(lower,'f',3)+" - " +QString::number(upper,'f',3);
-	    mClassBreakBox->insertItem(listboxtext);
+	    mClassListWidget->addItem(listboxtext);
 	}
 	    //set default symbology
 
@@ -328,13 +327,13 @@ void QgsGraduatedSymbolDialog::adjustClassification()
        
 	mEntries.insert(std::make_pair(listboxtext,symbol));
     }
-    mClassBreakBox->setCurrentItem(0);
+    mClassListWidget->setCurrentRow(0);
 }
 
 void QgsGraduatedSymbolDialog::changeCurrentValue()
 {
     sydialog.blockSignals(true);//block signals to prevent sydialog from changing the current QgsRenderItem
-    Q3ListBoxItem* item=mClassBreakBox->selectedItem();
+    QListWidgetItem* item=mClassListWidget->currentItem();
     if(item)
     {
 	QString value=item->text();
@@ -350,7 +349,7 @@ void QgsGraduatedSymbolDialog::changeCurrentValue()
 
 void QgsGraduatedSymbolDialog::applySymbologyChanges()
 {
-    Q3ListBoxItem* item=mClassBreakBox->selectedItem();
+    QListWidgetItem* item=mClassListWidget->currentItem();
     if(item)
     {
 	QString value=item->text();
@@ -363,7 +362,7 @@ void QgsGraduatedSymbolDialog::applySymbologyChanges()
     }
 }
 
-void QgsGraduatedSymbolDialog::changeClass(Q3ListBoxItem* item)
+void QgsGraduatedSymbolDialog::modifyClass(QListWidgetItem* item)
 {
     QString currenttext=item->text();
     QgsSymbol* symbol=0;
@@ -389,12 +388,34 @@ void QgsGraduatedSymbolDialog::changeClass(Q3ListBoxItem* item)
 	    symbol->setUpperValue(dialog.upperValue());
 	    QString newclass=dialog.lowerValue()+"-"+dialog.upperValue();
 	    mEntries.insert(std::make_pair(newclass,symbol));
-	    int index=mClassBreakBox->index(item);
-	    QObject::disconnect(mClassBreakBox, SIGNAL(selectionChanged()), this, SLOT(changeCurrentValue()));
-	    mClassBreakBox->removeItem(index);
-	    mClassBreakBox->insertItem(newclass,index);
-	    mClassBreakBox->setSelected(index,true);
-	    QObject::connect(mClassBreakBox, SIGNAL(selectionChanged()), this, SLOT(changeCurrentValue()));
+	    item->setText(newclass);
 	}	
+    }
+}
+
+void QgsGraduatedSymbolDialog::deleteCurrentClass()
+{
+  QListWidgetItem* currentItem = mClassListWidget->currentItem();
+  if(!currentItem)
+    {
+      return;
+    }
+
+  QString classValue = currentItem->text();
+  int currentIndex = mClassListWidget->currentRow();
+  mEntries.erase(classValue);
+  delete (mClassListWidget->takeItem(currentIndex));
+  qWarning("numRows: ");
+  qWarning(QString::number(mClassListWidget->count()));
+  //
+  if(mClassListWidget->count() < (currentIndex + 1))
+    {
+      qWarning("selecting numRows - 1");
+      mClassListWidget->setCurrentRow(mClassListWidget->count() - 1);
+    }
+  else
+    {
+      qWarning("selecting currentIndex");
+      mClassListWidget->setCurrentRow(currentIndex);
     }
 }

@@ -54,7 +54,7 @@ QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVect
     
     if (renderer)
     {
-	mClassBreakBox->clear();
+	mClassListWidget->clear();
 	
 	// XXX - mloskot - fix for Ticket #31 (bug)
 	QgsAttributeList attributes = renderer->classificationAttributes();
@@ -74,18 +74,18 @@ QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVect
 	    sym->setNamedPointSymbol(symbol->pointSymbolName());
 	    sym->setPointSize(symbol->pointSize());
 	    mValues.insert(std::make_pair(symbolvalue,sym));
-	    mClassBreakBox->addItem(symbolvalue);
+	    mClassListWidget->addItem(symbolvalue);
 	}
     }
 
     QObject::connect(mClassifyButton, SIGNAL(clicked()), this, SLOT(changeClassificationAttribute()));
     QObject::connect(mDeletePushButton, SIGNAL(clicked()), this, SLOT(deleteCurrentClass()));
-    QObject::connect(mClassBreakBox, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), this, SLOT(changeCurrentValue()));
+    QObject::connect(mClassListWidget, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), this, SLOT(changeCurrentValue()));
     QObject::connect(&sydialog, SIGNAL(settingsChanged()), this, SLOT(applySymbologyChanges()));
     mSymbolWidgetStack->addWidget(&sydialog);
-    mSymbolWidgetStack->raiseWidget(&sydialog);
+    mSymbolWidgetStack->setCurrentWidget(&sydialog);
     
-    mClassBreakBox->setCurrentItem(0);
+    mClassListWidget->setCurrentItem(0);
 }
 
 QgsUniqueValueDialog::~QgsUniqueValueDialog()
@@ -100,7 +100,7 @@ QgsUniqueValueDialog::~QgsUniqueValueDialog()
         myValueIterator = mValues.begin(); // since iterator invalidated due to
                                         // erase(), reset to new first element
     }
-    mClassBreakBox->setCurrentItem(0);
+    mClassListWidget->setCurrentItem(0);
 }
 
 void QgsUniqueValueDialog::apply()
@@ -144,8 +144,8 @@ void QgsUniqueValueDialog::changeClassificationAttribute()
 	provider->reset();
 	QgsFeature feat;
 
-	//go through all the features and insert their value into the map and into mClassBreakBox
-	mClassBreakBox->clear();
+	//go through all the features and insert their value into the map and into mClassListWidget
+	mClassListWidget->clear();
 	while(provider->getNextFeature(feat, false, attlist))
 	{
       const QgsAttributeMap& vec = feat.attributeMap();
@@ -168,7 +168,7 @@ void QgsUniqueValueDialog::changeClassificationAttribute()
 	    int green = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
 	    int blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
 	    thecolor.setRgb(red, green, blue);
-	    mClassBreakBox->addItem(it->first);
+	    mClassListWidget->addItem(it->first);
 	    QgsSymbol* sym=it->second;
 	    QPen pen;
 	    QBrush brush;
@@ -190,13 +190,13 @@ void QgsUniqueValueDialog::changeClassificationAttribute()
 	    sym->setBrush(brush);
 	}
     }
-    mClassBreakBox->setCurrentItem(0);
+    mClassListWidget->setCurrentRow(0);
 }
 
 void QgsUniqueValueDialog::changeCurrentValue()
 {
     sydialog.blockSignals(true);//block signal to prevent sydialog from changing the current QgsRenderItem
-    QListWidgetItem* item=mClassBreakBox->currentItem();
+    QListWidgetItem* item=mClassListWidget->currentItem();
     if(item)
       {
 	QString value=item->text();
@@ -216,34 +216,34 @@ void QgsUniqueValueDialog::changeCurrentValue()
 
 void QgsUniqueValueDialog::deleteCurrentClass()
 {
-  QListWidgetItem* currentItem = mClassBreakBox->currentItem();
+  QListWidgetItem* currentItem = mClassListWidget->currentItem();
   if(!currentItem)
     {
       return;
     }
 
   QString classValue = currentItem->text();
-  int currentIndex = mClassBreakBox->currentRow();
+  int currentIndex = mClassListWidget->currentRow();
   mValues.erase(classValue);
-  delete (mClassBreakBox->takeItem(currentIndex));
+  delete (mClassListWidget->takeItem(currentIndex));
   qWarning("numRows: ");
-  qWarning(QString::number(mClassBreakBox->count()));
+  qWarning(QString::number(mClassListWidget->count()));
   //
-  if(mClassBreakBox->count() < (currentIndex + 1))
+  if(mClassListWidget->count() < (currentIndex + 1))
     {
       qWarning("selecting numRows - 1");
-      mClassBreakBox->setCurrentRow(mClassBreakBox->count() - 1);
+      mClassListWidget->setCurrentRow(mClassListWidget->count() - 1);
     }
   else
     {
       qWarning("selecting currentIndex");
-      mClassBreakBox->setCurrentRow(currentIndex);
+      mClassListWidget->setCurrentRow(currentIndex);
     }
 }
 
 void QgsUniqueValueDialog::applySymbologyChanges()
 {
-  QListWidgetItem* item=mClassBreakBox->currentItem();
+  QListWidgetItem* item=mClassListWidget->currentItem();
   if(!item)
     {
       return;
