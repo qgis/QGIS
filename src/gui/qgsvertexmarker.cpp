@@ -77,8 +77,8 @@ void QgsVertexMarker::paint(QPainter* p)
 
 QRectF QgsVertexMarker::boundingRect() const
 {
-  qreal s = mIconSize / 2;
-  return QRectF(-s,-s,s,s);
+  qreal s = qreal(mIconSize + QPen(QColor(255,0,0)).width()) / 2.0;
+  return QRectF(-s,-s,2.0*s,2.0*s);
 }
 
 void QgsVertexMarker::updatePosition()
