@@ -24,7 +24,8 @@ INCLUDE_DIRECTORIES (
   ../../gui
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
   ${POSTGRES_INCLUDE_DIR}
-  $GEOS_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
+  ${GDAL_INCLUDE_DIR}
 )
 
 ADD_LIBRARY (postgresprovider MODULE ${PG_SRCS} ${PG_MOC_SRCS})
@@ -32,6 +33,7 @@ ADD_LIBRARY (postgresprovider MODULE ${PG_SRCS} ${PG_MOC_SRCS})
 TARGET_LINK_LIBRARIES (postgresprovider
   ${QT_LIBRARIES}
   ${POSTGRES_LIBRARY}
+  ${GDAL_LIBRARIES}
   qgis_core
 )
 
