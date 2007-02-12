@@ -34,10 +34,14 @@ INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}/../../ui
      ..
 	${GEOS_INCLUDE_DIR}
+  ${GDAL_INCLUDE_DIR}
+  ${PROJ_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(delimitedtextplugin
   ${QT_LIBRARIES}
+  ${GDAL_LIBRARIES}
+  ${PROJ_LIBRARY}
   qgis_core
 )
 
