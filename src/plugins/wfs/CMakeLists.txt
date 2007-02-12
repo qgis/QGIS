@@ -39,10 +39,15 @@ INCLUDE_DIRECTORIES(
      ..
      ${GEOS_INCLUDE_DIR}
      ${GEOS_INCLUDE_DIR}/geos
+     ${PROJ_INCLUDE_DIR}
+     ${GDAL_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(wfsplugin
   ${QT_LIBRARIES}
+  ${GEOS_LIBRARY}
+  ${PROJ_LIBRARY}
+  ${GDAL_LIBRARY}
   qgis_core
 )
 
