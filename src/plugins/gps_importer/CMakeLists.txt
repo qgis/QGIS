@@ -45,10 +45,16 @@ INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}/../../ui
      ..
      ${EXPAT_INCLUDE_DIR}
+     ${GEOS_INCLUDE_DIR}
+     ${PROJ_INCLUDE_DIR}
+     ${GDAL_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(gpsimporterplugin
   ${QT_LIBRARIES}
+  ${PROJ_LIBRARY}
+  ${GDAL_LIBRARY}
+  ${GEOS_LIBRARY}
   qgis_core
 )
 
