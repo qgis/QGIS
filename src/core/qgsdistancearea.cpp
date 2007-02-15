@@ -643,7 +643,13 @@ QString QgsDistanceArea::textUnit(double value, int decimals, QGis::units u, boo
     }
     else
     {
-      if (fabs(value) > 1000.0)
+      if (fabs(value) == 0.0)
+      {
+        // Special case for pretty printing.
+	unitLabel=QObject::tr(" m"); 
+        
+      }
+      else if (fabs(value) > 1000.0)
       {
 	unitLabel=QObject::tr(" km");
 	value = value/1000;
@@ -667,14 +673,30 @@ QString QgsDistanceArea::textUnit(double value, int decimals, QGis::units u, boo
   case QGis::FEET:
     if (isArea)
     {
-      unitLabel = QObject::tr(" sq ft");
+      if (fabs(value) > (528.0*528.0))
+      {
+        unitLabel = QObject::tr(" sq mile");
+        value = value / (5280.0*5280.0);
+      }
+      else
+      {
+        unitLabel = QObject::tr(" sq ft");
+      }
     }
     else
     {
-      if (fabs(value) == 1.0)
-	unitLabel=QObject::tr(" foot"); 
+      if (fabs(value) > 528.0)
+      {
+        unitLabel = QObject::tr(" mile");
+        value = value / 5280.0;
+      }
       else
-	unitLabel=QObject::tr(" feet"); 
+      {
+        if (fabs(value) == 1.0)
+          unitLabel=QObject::tr(" foot"); 
+        else
+          unitLabel=QObject::tr(" feet"); 
+      }
     }
     break;
   case QGis::DEGREES:

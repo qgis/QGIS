@@ -452,7 +452,9 @@ bool QgsSpatialRefSys::isValid() const
   }
   else
   {
-    QgsDebugMsg("The OGRe says it's an invalid SRS with proj4 string: " +  mProj4String);
+    QgsDebugMsg("The OGRe says it's an invalid SRS (OGRErr = "
+                + QString::number(myResult)
+                + ") with proj4 string: " + mProj4String);
     return false;
   }
 }
