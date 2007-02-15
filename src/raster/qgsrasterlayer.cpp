@@ -1181,6 +1181,7 @@ __FUNCTION__, __LINE__);
   myRasterViewPort->drawableAreaYDimInt =
     abs(static_cast<int> (myRasterViewPort->clippedHeightInt / theQgsMapToPixel->mapUnitsPerPixel() * adfGeoTransform[5]));
 
+
 #ifdef QGISDEBUG
   QgsLogger::debug("QgsRasterLayer::draw: mapUnitsPerPixel", theQgsMapToPixel->mapUnitsPerPixel(), 1, __FILE__,\
                    __FUNCTION__, __LINE__);
@@ -1240,7 +1241,15 @@ __FUNCTION__, __LINE__);
   
   // /\/\/\ - added to handle zoomed-in rasters
 
-  
+  if ((myRasterViewPort->drawableAreaXDimInt) > 4000 &&  (myRasterViewPort->drawableAreaYDimInt > 4000))
+  {
+    // We have scale one raster pixel to more than 4000 screen pixels. What's the point of showing this layer?
+    // Instead, we just stop displaying the layer. Prevents allocating the entire world of memory for showing
+    // The pixel in all its glory.
+    QgsDebugMsg("Too zoomed out! Raster will not display");
+    return TRUE;
+  }
+
     // Provider mode: See if a provider key is specified, and if so use the provider instead
   
 QgsDebugMsg("QgsRasterLayer::draw: Checking for provider key.");
@@ -1336,7 +1345,6 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
   // so that we can maximise performance of the rendering process. So now we check which drawing
   // procedure to use :
   //
-  
   
   switch (drawingStyle)
   {
@@ -1445,7 +1453,7 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
     break;
 
   }
-
+  
   //see if debug info is wanted
   if (showDebugOverlayFlag)
   {
@@ -1462,6 +1470,12 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPor
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
   GDALDataType myDataType = myGdalBand->GetRasterDataType();
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
+
+  /* Check for out of memory error */
+  if (myGdalScanData == NULL)
+  {
+    return;
+  }
 
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
   //myQImage.fill(0);
@@ -1500,6 +1514,8 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPor
       myQImage.setPixel(myRowInt, myColumnInt, qRgba(myGrayValInt, myGrayValInt, myGrayValInt, transparencyLevelInt));
     }
   }
+  
+  /* TODO: Should readData be freed here? */
 
   //render any inline filters
   filterLayer(&myQImage);
@@ -1554,6 +1570,12 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter,
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
   GDALDataType myDataType = myGdalBand->GetRasterDataType();
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
+
+  /* Check for out of memory error */
+  if (myGdalScanData == NULL)
+  {
+    return;
+  }
 
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
   //myQImage.fill(0);
@@ -1772,6 +1794,13 @@ void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, QgsRast
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
   GDALDataType myDataType = myGdalBand->GetRasterDataType();
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
+
+  /* Check for out of memory error */
+  if (myGdalScanData == NULL)
+  {
+    return;
+  }
+
   QgsColorTable *myColorTable = colorTable ( theBandNoInt );
 
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
@@ -1802,6 +1831,9 @@ void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, QgsRast
       myQImage.setPixel(myRowInt, myColumnInt, qRgba(c1, c2, c3, transparencyLevelInt));
     }
   }
+
+  /* TODO: Should readData be freed here? */
+
   //render any inline filters
   filterLayer(&myQImage);
   
@@ -1862,6 +1894,13 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter, QgsRaste
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
   GDALDataType myDataType = myGdalBand->GetRasterDataType();
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
+
+  /* Check for out of memory error */
+  if (myGdalScanData == NULL)
+  {
+    return;
+  }
+
   QgsColorTable *myColorTable = &(myRasterBandStats.colorTable);
 
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
@@ -1966,6 +2005,13 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter, Q
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
   GDALDataType myDataType = myGdalBand->GetRasterDataType();
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
+
+  /* Check for out of memory error */
+  if (myGdalScanData == NULL)
+  {
+    return;
+  }
+
   QgsColorTable *myColorTable = &(myRasterBandStats.colorTable);
 
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
@@ -2202,6 +2248,13 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, QgsRaste
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
   GDALDataType myDataType = myGdalBand->GetRasterDataType();
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
+
+  /* Check for out of memory error */
+  if (myGdalScanData == NULL)
+  {
+    return;
+  }
+
   QgsColorTable *myColorTable = colorTable ( theBandNoInt );
 
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
@@ -2340,6 +2393,16 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPor
   void *myGdalGreenData = readData ( myGdalGreenBand, theRasterViewPort );
   void *myGdalBlueData = readData ( myGdalBlueBand, theRasterViewPort );
 
+  /* Check for out of memory error */
+  if (myGdalRedData == NULL || myGdalGreenData == NULL || myGdalBlueData == NULL)
+  {
+    // Safe to free NULL-pointer */
+    VSIFree(myGdalRedData);
+    VSIFree(myGdalGreenData);
+    VSIFree(myGdalBlueData);
+    return;
+  }
+
   bool haveTransparencyBand(false);
   GDALRasterBand *myGdalTransparentBand;
   GDALDataType myTransparentType;
@@ -2352,6 +2415,14 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPor
     myGdalTransparentBand = gdalDataset->GetRasterBand(myTransparentBandNoInt);
     myTransparentType = myGdalTransparentBand->GetRasterDataType();
     myGdalTransparentData = readData ( myGdalTransparentBand, theRasterViewPort );
+    if (myGdalTransparentData == NULL)
+    {
+      // Safe to free NULL-pointer */
+      VSIFree(myGdalRedData);
+      VSIFree(myGdalGreenData);
+      VSIFree(myGdalBlueData);
+      return;
+    }
   }
 
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
@@ -4410,8 +4481,6 @@ void *QgsRasterLayer::readData ( GDALRasterBand *gdalBand, QgsRasterViewPort *vi
   GDALDataType type = gdalBand->GetRasterDataType();
   int size = GDALGetDataTypeSize ( type ) / 8;
 
-  void *data = CPLMalloc ( size * viewPort->drawableAreaXDimInt * viewPort->drawableAreaYDimInt );
-
   QgsDebugMsg("QgsRasterLayer::readData: calling RasterIO with " +\
 	      QString(", source NW corner: ") + QString::number(viewPort->rectXOffsetInt)+\
 	      ", " + QString::number(viewPort->rectYOffsetInt)+\
@@ -4420,16 +4489,26 @@ void *QgsRasterLayer::readData ( GDALRasterBand *gdalBand, QgsRasterViewPort *vi
 	      ", dest size: " + QString::number(viewPort->drawableAreaXDimInt)+\
 	      ", " + QString::number(viewPort->drawableAreaYDimInt));
 
-  CPLErr myErr = gdalBand->RasterIO ( GF_Read,
-                                      viewPort->rectXOffsetInt,
-                                      viewPort->rectYOffsetInt,
-                                      viewPort->clippedWidthInt,
-                                      viewPort->clippedHeightInt,
-                                      data,
-                                      viewPort->drawableAreaXDimInt,
-                                      viewPort->drawableAreaYDimInt,
-                                      type, 0, 0 );
+  void *data = VSIMalloc ( size * viewPort->drawableAreaXDimInt * viewPort->drawableAreaYDimInt );
+  
+  /* Abort if out of memory */
+  if (data == NULL) 
+  {
+    QgsDebugMsg("Layer " + this->name() + " couldn't allocate enough memory. Ignoring");
+  }
+  else
+  {
+    CPLErr myErr = gdalBand->RasterIO ( GF_Read,
+                                        viewPort->rectXOffsetInt,
+                                        viewPort->rectYOffsetInt,
+                                        viewPort->clippedWidthInt,
+                                        viewPort->clippedHeightInt,
+                                        data,
+                                        viewPort->drawableAreaXDimInt,
+                                        viewPort->drawableAreaYDimInt,
+                                        type, 0, 0 );
                                       
+  }
   return data;
 }
 
