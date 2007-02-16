@@ -264,8 +264,6 @@ bool QgsMapToolVertexEdit::snapSegmentWithContext(QgsPoint& point)
   if (!vlayer->snapSegmentWithContext(layerPoint, beforeVertex, atFeatureId, atGeometry, tolerance()))
   {
     mSnappedAtFeatureId = -1;
-    QMessageBox::warning(0, QObject::tr("Error"),
-            QObject::tr("Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?"));
     return FALSE;
   }
   else
