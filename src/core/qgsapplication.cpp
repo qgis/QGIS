@@ -4,7 +4,7 @@
     Date                 : 02-Jan-2006
     Copyright            : (C) 2006 by Tom Elwertowski
     Email                : telwertowski at users dot sourceforge dot net
-/***************************************************************************
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -15,7 +15,7 @@
 /* $Id$ */
 
 #include "qgsapplication.h"
-
+#include <QFile>
 #include <QDir>
 
 QString QgsApplication::mPrefixPath;
@@ -44,9 +44,22 @@ QgsApplication::QgsApplication(int & argc, char ** argv, bool GUIenabled)
   mPluginPath = mPrefixPath + QString("/lib/qgis");
   mPkgDataPath = mPrefixPath + QString("/share/qgis");
 #else
-  mPrefixPath = PREFIX;
-  mPluginPath = PLUGINPATH;
-  mPkgDataPath = PKGDATAPATH;
+  // We could just hard code teh path to qgis libs and share but
+  // that makes qgis non relocatable which is needed for my
+  // generic QGIS linux bundle. So lets start by trying a relative path
+  // and then falling back to the paths set in the make process
+  if (QFile::exists(applicationDirPath()+"/../share/qgis/images/icons/qgis-icon.png"))
+  {
+    mPrefixPath = applicationDirPath();
+    mPluginPath = mPrefixPath + QString("/../lib/qgis");
+    mPkgDataPath = mPrefixPath + QString("/../share/qgis");
+  }
+  else //fall back to make specified paths
+  {
+    mPrefixPath = PREFIX;
+    mPluginPath = PLUGINPATH;
+    mPkgDataPath = PKGDATAPATH;
+  }
 #endif
   mThemePath = mPkgDataPath + QString("/themes/default/");
 }
