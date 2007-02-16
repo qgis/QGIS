@@ -32,8 +32,8 @@ QgsGPSDeviceDialog::QgsGPSDeviceDialog(std::map<QString, QgsGPSDevice*>&
   split.append(340);
   splitter->setSizes(split);
 
-  QObject::connect(lbDeviceList, SIGNAL(itemSelectionChanged()), 
-		   this, SLOT(slotSelectionChanged()));
+  QObject::connect(lbDeviceList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), 
+		   this, SLOT(slotSelectionChanged(QListWidgetItem*)));
   slotUpdateDeviceList();
 }
 
@@ -103,8 +103,8 @@ void QgsGPSDeviceDialog::slotUpdateDeviceList(const QString& selection) {
 
   // We're going to be changing the selected item, so disable our
   // notificaton of that.
-  QObject::disconnect(lbDeviceList, SIGNAL(itemSelectionChanged()), 
-		   this, SLOT(slotSelectionChanged()));
+  QObject::disconnect(lbDeviceList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), 
+		   this, SLOT(slotSelectionChanged(QListWidgetItem*)));
 
   lbDeviceList->clear();
   std::map<QString, QgsGPSDevice*>::const_iterator iter;
@@ -119,16 +119,16 @@ void QgsGPSDeviceDialog::slotUpdateDeviceList(const QString& selection) {
     lbDeviceList->setCurrentRow(0);
 
   // Update the display and reconnect the selection changed signal
-  slotSelectionChanged();
-  QObject::connect(lbDeviceList, SIGNAL(itemSelectionChanged()), 
-		   this, SLOT(slotSelectionChanged()));
+  slotSelectionChanged(lbDeviceList->currentItem());
+  QObject::connect(lbDeviceList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), 
+		   this, SLOT(slotSelectionChanged(QListWidgetItem*)));
 }
 
 
-void QgsGPSDeviceDialog::slotSelectionChanged() {
+void QgsGPSDeviceDialog::slotSelectionChanged(QListWidgetItem *current) {
   if (lbDeviceList->count() > 0)
   {
-    QString devName = lbDeviceList->currentItem()->text();
+    QString devName = current->text();
     leDeviceName->setText(devName);
     QgsGPSDevice* device = mDevices[devName];
     leWptDown->setText(device->
