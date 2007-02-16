@@ -30,7 +30,7 @@ public slots:
   void on_pbnUpdateDevice_clicked();
   void on_pbnClose_clicked();
   void slotUpdateDeviceList(const QString& selection = "");
-  void slotSelectionChanged();
+  void slotSelectionChanged(QListWidgetItem *current);
 
 signals:
   void devicesChanged();
