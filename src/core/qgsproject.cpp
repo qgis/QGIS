@@ -1011,7 +1011,7 @@ bool QgsProject::write()
 
   dump_(imp_->properties_);
 
-  qDebug("there are %d property scopes", imp_->properties_.count());
+  qDebug("there are %d property scopes", static_cast<int>(imp_->properties_.count()));
 
   if (!imp_->properties_.isEmpty()) // only worry about properties if we
     // actually have any properties
