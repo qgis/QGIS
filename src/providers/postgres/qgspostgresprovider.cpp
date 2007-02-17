@@ -1240,7 +1240,7 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
                 "\"?\\.\"?" + QRegExp::escape(temp.column_name) +
                 "\"? AS \"?(\\w+)\"?,* .*");
  
-      QgsDebugMsg(viewQuery + "\n" + viewDef + "\n" + s.pattern());
+      QgsDebugMsg(viewDef + "\n" + s.pattern());
 
       if (s.indexIn(viewDef) != -1)
       {
