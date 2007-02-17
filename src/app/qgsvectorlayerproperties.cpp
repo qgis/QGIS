@@ -523,6 +523,9 @@ QString QgsVectorLayerProperties::getMetadata()
   myMetadataQString += "<th bgcolor=\"black\">";
   myMetadataQString += "<font color=\"white\">" + tr("Precision") + "</font>";
   myMetadataQString += "</th>";      
+  myMetadataQString += "<th bgcolor=\"black\">";
+  myMetadataQString += "<font color=\"white\">" + tr("Comment") + "</font>";
+  myMetadataQString += "</th>";      
   myMetadataQString += "<tr>";
  
   //get info for each field by looping through them
@@ -543,6 +546,9 @@ QString QgsVectorLayerProperties::getMetadata()
     myMetadataQString += "</td>";
     myMetadataQString += "<td bgcolor=\"white\">";
     myMetadataQString += QString("%1").arg(myField.precision());
+    myMetadataQString += "</td>";
+    myMetadataQString += "<td bgcolor=\"white\">";
+    myMetadataQString += QString("%1").arg(myField.comment());
     myMetadataQString += "</td></tr>";
   } 
 

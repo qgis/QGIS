@@ -25,8 +25,10 @@ static const char * const ident_ =
    "$Id$";
 
 
-QgsField::QgsField(QString nam, QString typ, int len, int prec, bool num)
-    :mName(nam), mType(typ), mLength(len), mPrecision(prec), mNumeric(num)
+QgsField::QgsField(QString nam, QString typ, int len, int prec, bool num,
+                   QString comment)
+    :mName(nam), mType(typ), mLength(len), mPrecision(prec), mNumeric(num),
+     mComment(comment)
 {
   // This function used to lower case the field name since some stores
   // use upper case (eg. shapefiles), but that caused problems with
@@ -75,6 +77,11 @@ bool QgsField::isNumeric() const
   return mNumeric;
 }
 
+QString const & QgsField::comment() const
+{
+  return mComment;
+}
+
 void QgsField::setName(QString const & nam)
 {
   mName = nam;
@@ -95,4 +102,8 @@ void QgsField::setPrecision(int prec)
 void QgsField::setNumeric(bool num)
 {
   mNumeric = num;
+}
+void QgsField::setComment(QString comment)
+{
+  mComment = comment;
 }
