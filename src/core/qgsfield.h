@@ -40,7 +40,7 @@ public:
      * used in conjunction with other fields types (eg. variable character fields)
      * @param num Has to be true if field contains numeric values.
      */
-  QgsField(QString nam = "", QString typ = "", int len = 0, int prec = 0, bool num = false);
+  QgsField(QString nam = "", QString typ = "", int len = 0, int prec = 0, bool num = false, QString comment = "");
 
   //! Destructor
    ~QgsField();
@@ -80,6 +80,11 @@ public:
   bool isNumeric() const;
 
 
+    /** 
+    Returns the field comment
+    */
+    QString const & comment() const;
+
     /**
       Set the field name.
       @param nam Name of the field
@@ -109,6 +114,11 @@ public:
       */
   void setNumeric(bool num);
 
+    /**
+      Set the field comment
+      */
+  void setComment(QString comment);
+
 private:
 
   //! Name
@@ -125,6 +135,9 @@ private:
 
   //! Numeric
   bool mNumeric;
+
+  //! Comment
+  QString mComment;
 
 }; // class QgsField
 

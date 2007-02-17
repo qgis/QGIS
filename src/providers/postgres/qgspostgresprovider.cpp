@@ -181,6 +181,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
         int fldtyp = PQftype(result, i);
         QString typOid = QString().setNum(fldtyp);
         int fieldModifier = PQfmod(result, i);
+        QString fieldComment = "";
 
         sql = "select typelem from pg_type where typelem = " + typOid + " and typlen = -1";
         //  //--std::cout << sql << std::endl;
@@ -214,7 +215,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
 
         if(fieldName!=geometryColumn)
         {
-          attributeFields.insert(i, QgsField(fieldName, fieldType, fieldSize.toInt(), fieldModifier));
+          attributeFields.insert(i, QgsField(fieldName, fieldType, fieldSize.toInt(), fieldModifier, false, fieldComment));
         }
       }
       PQclear(result);
