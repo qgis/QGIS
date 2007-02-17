@@ -312,6 +312,10 @@ void QgsSingleSymbolDialog::apply()
 
 void QgsSingleSymbolDialog::set ( const QgsSymbol *sy ) 
 {
+  //set label
+
+  mLabelEdit->setText(sy->label());
+
 	// Set point symbol
   for ( uint i = 0; i < mMarkers.size(); i++ ) {
 	    if ( mMarkers[i] ==  sy->pointSymbolName() ) {
