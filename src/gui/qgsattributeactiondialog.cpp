@@ -54,9 +54,9 @@ QgsAttributeActionDialog::QgsAttributeActionDialog(QgsAttributeAction* actions,
 void QgsAttributeActionDialog::init()
 {
   Q3Header* header = attributeActionTable->horizontalHeader();
-  header->setLabel(0, "Name");
-  header->setLabel(1, "Action");
-  header->setLabel(2, "Capture");
+  header->setLabel(0, tr("Name") );
+  header->setLabel(1, tr("Action") );
+  header->setLabel(2, tr("Capture") );
 
   attributeActionTable->setColumnStretchable(0, true);
   attributeActionTable->setColumnStretchable(1, true);
@@ -139,7 +139,7 @@ void QgsAttributeActionDialog::browse()
   // widget 
 
   QString action = QFileDialog::getOpenFileName(
-    this, "Select an action");
+    this, tr("Select an action","File dialog window title") );
 
   if (!action.isNull())
     actionAction->insert(action);    
