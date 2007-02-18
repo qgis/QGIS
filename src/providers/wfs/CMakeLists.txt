@@ -8,9 +8,8 @@ SET (WFS_MOC_HDRS
      qgswfsdata.h
 )
 
-MESSAGE("providers/wfs : -Werror removed for this directory for now - please get rid of all warnings!")
-REMOVE_DEFINITIONS( -Werror )
-
+MESSAGE("providers/wfs : -Werror removed for qgswfsprovider.cpp for now - please get rid of any compiler warnings!")
+SET_SOURCE_FILES_PROPERTIES(qgswfsprovider.cpp PROPERTIES COMPILE_FLAGS -Wno-error )
 ########################################################
 # Build
 
