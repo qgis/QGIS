@@ -4,7 +4,7 @@
 #ifndef QGSCONFIG_H
 #define QGSCONFIG_H
 
-#define VERSION "0.8.0 - Titan (with CMake)"
+#define VERSION "0.8.1-Titan"
 
 #define PREFIX "${CMAKE_INSTALL_PREFIX}"
 
