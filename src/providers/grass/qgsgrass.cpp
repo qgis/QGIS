@@ -987,6 +987,14 @@ int QgsGrass::versionMinor()
 {
     return QString(GRASS_VERSION_MINOR).toInt();
 }
+int QgsGrass::versionRelease()
+{
+    return QString(GRASS_VERSION_RELEASE).toInt();
+}
+QString QgsGrass::versionString()
+{
+    return QString(GRASS_VERSION_STRING);
+}
 
 bool QgsGrass::isMapset ( QString path )
 {

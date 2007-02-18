@@ -3,8 +3,6 @@ SUBDIRS(config modules themes)
 
 ADD_DEFINITIONS(-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\")
 ADD_DEFINITIONS(-DHAVE_OPENPTY=${HAVE_OPENPTY})
-MESSAGE("plugins/grass : -Werror removed for this directory for now - please get rid of all warnings!")
-REMOVE_DEFINITIONS( -Werror )
 
 ########################################################
 # Files
