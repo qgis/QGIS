@@ -404,10 +404,6 @@ QString QgsVectorLayerProperties::getMetadata()
   {
       QString vectorTypeString( QGis::qgisVectorGeometryType[layer->vectorType()] );
 
-#ifdef QGISDEBUG
-      const char* vectorTypeProbe = vectorTypeString.ascii(); // debugger probe point
-#endif
-
       myMetadataQString += "<tr><td bgcolor=\"white\">";
       myMetadataQString += tr("Geometry type of the features in this layer : ") + 
           vectorTypeString;

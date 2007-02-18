@@ -2410,9 +2410,6 @@ static
   void
 findLayers_( QString const & fileFilters, list<QDomNode> const & layerNodes )
 {
-#ifdef QGISDEBUG
-  const char * fileFiltersC = fileFilters.ascii(); // debugger probe
-#endif
 
   for( list<QDomNode>::const_iterator i = layerNodes.begin();
       i != layerNodes.end();
@@ -2833,16 +2830,10 @@ bool QgisApp::fileSave()
     if( "qgs" != fullPath.extension( false ) )
     {
       QString newFilePath = fullPath.filePath() + ".qgs";
-#ifdef QGISDEBUG
-      const char* filePathStr = newFilePath.ascii(); // debugger probe
-#endif
       fullPath.setFile( newFilePath );
     }
 
 
-#ifdef QGISDEBUG
-    const char* filePathStr = fullPath.filePath().ascii(); // debugger probe
-#endif
     QgsProject::instance()->filename( fullPath.filePath() );
   }
 
@@ -2919,9 +2910,6 @@ void QgisApp::fileSaveAs()
   if( "qgs" != fullPath.extension( false ) )
   {
     QString newFilePath = fullPath.filePath() + ".qgs";
-#ifdef QGISDEBUG
-    const char* filePathStr = newFilePath.ascii(); // debugger probe
-#endif
     fullPath.setFile( newFilePath );
   }
 
