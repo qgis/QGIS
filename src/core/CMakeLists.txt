@@ -69,6 +69,11 @@ ADD_FLEX_FILES(QGIS_CORE_SRCS qgssearchstringlexer.ll)
 
 ADD_BISON_FILES(QGIS_CORE_SRCS qgssearchstringparser.yy)
 
+# Disabe compiler warnings for lex generated sources
+SET_SOURCE_FILES_PROPERTIES(
+                ${CMAKE_BINARY_DIR}/src/core/flex_qgssearchstringlexer.cpp 
+                PROPERTIES COMPILE_FLAGS -w)
+
 SET(QGIS_CORE_MOC_HDRS
 qgscontexthelp.h
 qgscoordinatetransform.h
