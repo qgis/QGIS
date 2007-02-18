@@ -114,7 +114,7 @@ FIND_PROGRAM(QT_LRELEASE_EXECUTABLE
 #############################################################
 # enable warnings
 
-ADD_DEFINITIONS( -Wall )
+ADD_DEFINITIONS( -Wall -Werror )
 
 IF (CMAKE_BUILD_TYPE MATCHES Debug)
   ADD_DEFINITIONS(-DQGISDEBUG=1)

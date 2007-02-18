@@ -8,7 +8,7 @@ SET (WFS_MOC_HDRS
      qgswfsdata.h
 )
 
-MESSAGE("-Werror removed for this directory for now - please get rid of all warnings!")
+MESSAGE("providers/wfs : -Werror removed for this directory for now - please get rid of all warnings!")
 REMOVE_DEFINITIONS( -Werror )
 
 ########################################################

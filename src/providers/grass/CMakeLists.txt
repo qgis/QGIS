@@ -1,5 +1,7 @@
 
 ADD_DEFINITIONS(-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\")
+MESSAGE("providers/grass : -Werror removed for this directory for now - please get rid of all warnings!")
+REMOVE_DEFINITIONS( -Werror )
 
 ########################################################
 # Files

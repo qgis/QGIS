@@ -12,6 +12,10 @@ SET (MSEXPORT_MOC_HDRS qgsmapserverexport.h)
 
 SET (MSEXPORT_UIS qgsmapserverexportbase.ui)
 
+# Disable compiler warnings for lex generated sources
+SET_SOURCE_FILES_PROPERTIES(
+                ${CMAKE_CURRENT_SOURCE_DIR}/msexport_wrap.cxx 
+                PROPERTIES COMPILE_FLAGS -w)
 
 ########################################################
 # Build
