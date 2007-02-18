@@ -229,6 +229,7 @@ void QgsAbout::openUrl(QString url)
       reinterpret_cast<const UInt8*>(url.utf8().data()), url.length(),
       kCFStringEncodingUTF8, NULL);
   OSStatus status = LSOpenCFURLRef(urlRef, NULL);
+  status = 0; // avoid compiler warnings
   CFRelease(urlRef);
 #else
   QSettings settings;
