@@ -8,10 +8,8 @@ SET (WFS_MOC_HDRS
      qgswfsdata.h
 )
 
-# Disabe compiler warnings for lex generated sources
-SET_SOURCE_FILES_PROPERTIES(
-                ${GEOS_INCLUDE_DIR}/indexStrtree.h
-                PROPERTIES COMPILE_FLAGS -w)
+MESSAGE("-Werror removed for this directory for now - please get rid of all warnings!")
+REMOVE_DEFINITIONS( -Werror )
 
 ########################################################
 # Build
