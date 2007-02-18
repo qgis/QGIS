@@ -110,7 +110,7 @@ void QgsGrassSelect::restorePosition()
   
   QSettings settings;
   int ww = settings.readNumEntry("/GRASS/windows/select/w", 500);
-  int wh = settings.readNumEntry("/GRASS/windows/select/h", 100);
+  //int wh = settings.readNumEntry("/GRASS/windows/select/h", 100);
   int wx = settings.readNumEntry("/GRASS/windows/select/x", 100);
   int wy = settings.readNumEntry("/GRASS/windows/select/y", 100);
   resize(ww,height());

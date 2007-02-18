@@ -444,9 +444,9 @@ private:
     bool mProjectionEnabled;
 
     // Canvas items
+    QgsGrassEditLayer* mCanvasEdit;
     QgsRubberBand *mRubberBandLine;
     QgsVertexMarker *mRubberBandIcon;
-    QgsGrassEditLayer* mCanvasEdit;
     
     // edit tools are friend classes so they can
     // access proteced/private members of QgsGrassEdit

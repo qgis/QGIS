@@ -114,8 +114,8 @@ bool QgsGrassEdit::mRunning = false;
 
 QgsGrassEdit::QgsGrassEdit ( QgisInterface *iface, 
     QWidget * parent, Qt::WFlags f )
-    :QMainWindow(parent,f), QgsGrassEditBase (), mMapTool(0),
-    mCanvasEdit(0), mRubberBandLine(0), mRubberBandIcon(0), mInited(false)
+    :QMainWindow(parent,f), QgsGrassEditBase (), mInited(false), 
+     mMapTool(0), mCanvasEdit(0), mRubberBandLine(0), mRubberBandIcon(0)
 {
 #ifdef QGISDEBUG
   std::cerr << "QgsGrassEdit()" << std::endl;
@@ -201,8 +201,8 @@ void QgsGrassEdit::keyPress(QKeyEvent *e)
 QgsGrassEdit::QgsGrassEdit ( QgisInterface *iface, 
     QgsGrassProvider *provider,
     QWidget * parent, Qt::WFlags f )
-    :QMainWindow(parent, 0, f), QgsGrassEditBase (), mMapTool(0),
-    mCanvasEdit(0), mRubberBandLine(0), mRubberBandIcon(0), mInited(false)
+    :QMainWindow(parent, 0, f), QgsGrassEditBase (), mInited(false), 
+     mMapTool(0), mCanvasEdit(0), mRubberBandLine(0), mRubberBandIcon(0)
 {
 #ifdef QGISDEBUG
   std::cerr << "QgsGrassEdit()" << std::endl;
@@ -567,7 +567,7 @@ void QgsGrassEdit::setAttributeTable ( int field )
     mAttributeTable->setNumRows ( cols->size() );
 
 
-    for ( int c = 0; c < cols->size(); c++ ) {
+    for ( unsigned int c = 0; c < cols->size(); c++ ) {
       QgsField col = (*cols)[c];
 
       Q3TableItem *ti;
@@ -746,7 +746,7 @@ void QgsGrassEdit::changeSymbology(Q3ListViewItem * item, const QPoint & pnt, in
     Q3CheckListItem *clvi = (Q3CheckListItem *) item;
     mSymbDisplay[index] = clvi->isOn();
 
-    int ww = settings.readNumEntry("/GRASS/windows/edit/w", 420);
+    //int ww = settings.readNumEntry("/GRASS/windows/edit/w", 420);
     QString sn;
     // TODO use a name instead of index
     sn.sprintf( "/GRASS/edit/symb/display/%d", index );
@@ -822,12 +822,12 @@ void QgsGrassEdit::updateSymb ( void )
 #endif
 
   // Set lines symbology from map
-  int nlines = mProvider->numLines(); 
+  unsigned int nlines = mProvider->numLines(); 
   if ( nlines+1 >= mLineSymb.size() )
     mLineSymb.resize(nlines+1000); 
 
   nlines = mProvider->numUpdatedLines();
-  for ( int i = 0; i < nlines; i++ ) {
+  for ( unsigned int i = 0; i < nlines; i++ ) {
     int line = mProvider->updatedLine(i);
     std::cerr << "updated line = " << line << std::endl;
     if ( !(mProvider->lineAlive(line)) ) continue;
@@ -835,12 +835,12 @@ void QgsGrassEdit::updateSymb ( void )
   }
 
   // Set nodes symbology from map
-  int nnodes = mProvider->numNodes(); 
+  unsigned int nnodes = mProvider->numNodes(); 
   if ( nnodes+1 >= mNodeSymb.size() )
     mNodeSymb.resize(nnodes+1000); 
 
   nnodes = mProvider->numUpdatedNodes(); 
-  for ( int i = 0; i < nnodes; i++ ) {
+  for ( unsigned int i = 0; i < nnodes; i++ ) {
     int node = mProvider->updatedNode(i);
     if ( !(mProvider->nodeAlive(node)) ) continue;
     mNodeSymb[node] = nodeSymbFromMap ( node );
@@ -1028,7 +1028,7 @@ void QgsGrassEdit::catModeChanged ( void )
 
   if ( mode == CAT_MODE_NEXT ) { // Find next not used
     QString c = "1"; // Default for new field
-    for (int i = 0; i < mMaxCats.size(); i++ ) {
+    for (unsigned int i = 0; i < mMaxCats.size(); i++ ) {
       if ( mMaxCats[i].field == field ) {
         c.sprintf("%d", mMaxCats[i].maxCat+1);
         break;
@@ -1057,7 +1057,7 @@ void QgsGrassEdit::fieldChanged ( void )
 
   if ( mode == CAT_MODE_NEXT ) { // Find next not used
     QString c = "1"; // Default for new field
-    for (int i = 0; i < mMaxCats.size(); i++ ) {
+    for (unsigned int i = 0; i < mMaxCats.size(); i++ ) {
       if ( mMaxCats[i].field == field ) {
         c.sprintf("%d", mMaxCats[i].maxCat+1);
         break;
@@ -1110,7 +1110,7 @@ void QgsGrassEdit::increaseMaxCat ( void )
 
   if ( mode == CAT_MODE_NEXT || mode == CAT_MODE_MANUAL ) {
     int found = 0;
-    for (int i = 0; i < mMaxCats.size(); i++ ) {
+    for (unsigned int i = 0; i < mMaxCats.size(); i++ ) {
       if ( mMaxCats[i].field == field ) {
         if ( cat > mMaxCats[i].maxCat ) {
           mMaxCats[i].maxCat = cat;
@@ -1410,7 +1410,7 @@ void QgsGrassEdit::addAttributes ( int field, int cat )
         else
           size = cols->size();
 
-        for ( int j = 0; j < cols->size(); j++ ) {
+        for ( unsigned int j = 0; j < cols->size(); j++ ) {
           QgsField col = (*cols)[j];
           QgsFeatureAttribute att = (*atts)[j];
           std::cerr << " name = " << col.name().toLocal8Bit().data() <<  std::endl;

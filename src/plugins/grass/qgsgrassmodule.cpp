@@ -532,7 +532,7 @@ QStringList QgsGrassModuleStandardOptions::arguments()
 {
     QStringList arg;
 
-    for ( int i = 0; i < mItems.size(); i++ ) 
+    for ( unsigned int i = 0; i < mItems.size(); i++ ) 
     {
 	QStringList list = mItems[i]->options();
         
@@ -552,7 +552,7 @@ QgsGrassModuleItem *QgsGrassModuleStandardOptions::item ( QString id )
 	      << id.toLocal8Bit().data() << std::endl;
     #endif
         
-    for ( int i = 0; i < mItems.size(); i++ )
+    for ( unsigned int i = 0; i < mItems.size(); i++ )
     {
 	if ( mItems[i]->id() == id ) 
 	{
@@ -571,7 +571,7 @@ QStringList QgsGrassModuleStandardOptions::checkOutput()
     #endif
     QStringList list;
 
-    for ( int i = 0; i < mItems.size(); i++ ) 
+    for ( unsigned int i = 0; i < mItems.size(); i++ ) 
     {
 	if ( typeid(*(mItems[i])) != typeid (QgsGrassModuleOption) ) {
 	    continue;
@@ -749,7 +749,7 @@ QStringList QgsGrassModuleStandardOptions::output(int type )
     #endif
     QStringList list;
 
-    for ( int i = 0; i < mItems.size(); i++ ) 
+    for ( unsigned int i = 0; i < mItems.size(); i++ ) 
     {
 	if ( typeid(*(mItems[i])) != typeid (QgsGrassModuleOption) ) {
 	    continue;
@@ -779,7 +779,7 @@ QStringList QgsGrassModuleStandardOptions::ready()
     #endif
     QStringList list;
 
-    for ( int i = 0; i < mItems.size(); i++ ) 
+    for ( unsigned int i = 0; i < mItems.size(); i++ ) 
     {
 	QString err = mItems[i]->ready();
 	if ( !err.isNull() ) 
@@ -807,7 +807,7 @@ QStringList QgsGrassModuleStandardOptions::checkRegion()
         return list;
     }
 
-    for ( int i = 0; i < mItems.size(); i++ ) 
+    for ( unsigned int i = 0; i < mItems.size(); i++ ) 
     {
 	if ( typeid(*(mItems[i])) != typeid (QgsGrassModuleInput) ) {
 	    continue;
@@ -869,7 +869,7 @@ bool QgsGrassModuleStandardOptions::inputRegion ( struct Cell_head *window, bool
 
     int rasterCount = 0;
     int vectorCount = 0;
-    for ( int i = 0; i < mItems.size(); i++ ) 
+    for ( unsigned int i = 0; i < mItems.size(); i++ ) 
     {
 	if ( typeid(*(mItems[i])) != typeid (QgsGrassModuleInput) ) {
 	    continue;
@@ -938,7 +938,7 @@ bool QgsGrassModuleStandardOptions::requestsRegion()
     std::cerr << "QgsGrassModuleStandardOptions::requestsRegion()" << std::endl;
     #endif
 
-    for ( int i = 0; i < mItems.size(); i++ ) 
+    for ( unsigned int i = 0; i < mItems.size(); i++ ) 
     {
 	if ( typeid(*(mItems[i])) != typeid (QgsGrassModuleInput) ) {
 	    continue;
@@ -958,7 +958,7 @@ bool QgsGrassModuleStandardOptions::usesRegion ()
     std::cerr << "QgsGrassModuleStandardOptions::usesRegion()" << std::endl;
     #endif
  
-    for ( int i = 0; i < mItems.size(); i++ ) 
+    for ( unsigned int i = 0; i < mItems.size(); i++ ) 
     {
 	if ( typeid(*(mItems[i])) == typeid (QgsGrassModuleInput) )
         {
@@ -1086,7 +1086,7 @@ QPixmap QgsGrassModule::pixmap ( QString path, int height )
 
     // Get total width
     int width = 0;
-    for ( int i = 0; i < pixmaps.size(); i++ ) {
+    for ( unsigned int i = 0; i < pixmaps.size(); i++ ) {
 	width += pixmaps[i].width();
     }
 
@@ -1108,7 +1108,7 @@ QPixmap QgsGrassModule::pixmap ( QString path, int height )
     painter.setRenderHint(QPainter::Antialiasing);
     
     int pos = 0;
-    for ( int i = 0; i < pixmaps.size(); i++ ) {
+    for ( unsigned int i = 0; i < pixmaps.size(); i++ ) {
 	if ( i == 1 && pixmaps.size() == 3 ) { // +
 	    pos += buffer;
     
@@ -1593,7 +1593,7 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
 	                                   QWidget * parent)
                     : QGroupBox ( parent ),
                       QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
-	mIsOutput(false), mValueType(String), mHaveLimits(false), mOutputType(None), mControlType(NoControl)
+	mControlType(NoControl), mValueType(String), mOutputType(None), mHaveLimits(false), mIsOutput(false)
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassModuleOption::QgsGrassModuleOption" << std::endl;
@@ -1892,7 +1892,7 @@ QString QgsGrassModuleOption::value()
     QString value;
 
     if ( mControlType == LineEdit ) {
-	for ( int i = 0; i < mLineEdits.size(); i++ ) 
+	for ( unsigned int i = 0; i < mLineEdits.size(); i++ ) 
 	{
 	    QLineEdit *lineEdit = mLineEdits.at(i);
 	    if( lineEdit->text().trimmed().length() > 0 )
@@ -1909,7 +1909,7 @@ QString QgsGrassModuleOption::value()
     else if ( mControlType == CheckBoxes ) 
     {
 	int cnt = 0;
-	for ( int i = 0; i < mCheckBoxes.size(); i++ ) {
+	for ( unsigned int i = 0; i < mCheckBoxes.size(); i++ ) {
 	    if ( mCheckBoxes[i]->isChecked() ) {
 		if ( cnt > 0 ) value.append ( "," );
 		value.append ( mValues[i] );
@@ -1994,8 +1994,8 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module,
                     : QGroupBox ( parent ),
                       QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
 		      mModuleStandardOptions(options),
-		      mUpdate(false), mVectorTypeOption(0), mVectorLayerOption(0),
-		      mRegionButton(0)
+		      mVectorTypeOption(0), mVectorLayerOption(0),  
+                      mRegionButton(0), mUpdate(false)
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassModuleInput::QgsGrassModuleInput" << std::endl;
@@ -2044,7 +2044,7 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module,
 		}
 		else
 		{
-		    mVectorTypeMask = 0; GV_POINT | GV_LINE | GV_AREA;
+		    mVectorTypeMask = 0; //GV_POINT | GV_LINE | GV_AREA;
 		    
 		    QDomElement valuesElem = valuesNode.toElement();
 		    QDomNode valueNode = valuesElem.firstChild();
@@ -2381,7 +2381,11 @@ QStringList QgsGrassModuleInput::options()
     QStringList list;
     QString opt;
 
-    int current = mLayerComboBox->currentItem();
+    int c = mLayerComboBox->currentItem();
+    if (c < 0) // not found 
+      return list;
+
+    unsigned current = c;
 
     // TODO: this is hack for network nodes, do it somehow better
     if ( mMapId.isEmpty() )
@@ -2417,7 +2421,11 @@ std::vector<QgsField> QgsGrassModuleInput::currentFields()
 
     std::vector<QgsField> fields;
     
-    int current = mLayerComboBox->currentItem();
+    int c = mLayerComboBox->currentItem();
+    if (c < 0)
+      return fields;
+
+    unsigned current = c;
 
     if ( current >= 0 && current <  mVectorFields.size() ) 
     {
@@ -2433,7 +2441,11 @@ QgsMapLayer * QgsGrassModuleInput::currentLayer()
     std::cerr << "QgsGrassModuleInput::currentLayer" << std::endl;
     #endif
 
-    int current = mLayerComboBox->currentItem();
+    int c = mLayerComboBox->currentItem();
+    if (c < 0)
+      return 0;
+
+    unsigned int current = c;
 
     if ( current >= 0 && current <  mMapLayers.size() ) 
     {
@@ -2449,7 +2461,11 @@ QString QgsGrassModuleInput::currentMap()
     std::cerr << "QgsGrassModuleInput::currentMap" << std::endl;
     #endif
 
-    int current = mLayerComboBox->currentItem();
+    int c = mLayerComboBox->currentItem();
+    if (c < 0)
+      return QString();
+
+    unsigned int current = c;
 
     if ( current >= 0 && current <  mMaps.size() ) 
     {
@@ -2488,9 +2504,9 @@ QgsGrassModuleInput::~QgsGrassModuleInput()
 
 QgsGrassModuleItem::QgsGrassModuleItem( QgsGrassModule *module, QString key,
 	 				QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode )
-	:mKey(key),
-	mHidden(false), 
-	mModule(module)
+        :mModule(module),
+         mKey(key),
+         mHidden(false)
 { 
     //mAnswer = qdesc.attribute("answer", "");
 
@@ -2671,7 +2687,11 @@ QStringList QgsGrassModuleGdalInput::options()
 {
     QStringList list;
 
-    int current = mLayerComboBox->currentItem();
+    int c = mLayerComboBox->currentItem();
+    if (c < 0)
+      return list;
+
+    unsigned int current = c;
 
     QString opt(mKey + "=");
 
@@ -2783,13 +2803,13 @@ void QgsGrassModuleField::updateFields()
     QString current = mFieldComboBox->currentText ();
     mFieldComboBox->clear();
 
-    QgsMapCanvas *canvas = mModule->qgisIface()->getMapCanvas();
+    //QgsMapCanvas *canvas = mModule->qgisIface()->getMapCanvas();
 
     if ( mLayerInput == 0 ) return;
 
     std::vector<QgsField> fields = mLayerInput->currentFields();
 
-    for ( int i = 0; i < fields.size(); i++ )
+    for ( unsigned int i = 0; i < fields.size(); i++ )
     {
 	if ( mType.contains ( fields[i].type() ) )
 	{
@@ -2872,7 +2892,7 @@ void QgsGrassModuleSelection::updateSelection()
     #endif
 
     mLineEdit->setText("");
-    QgsMapCanvas *canvas = mModule->qgisIface()->getMapCanvas();
+    //QgsMapCanvas *canvas = mModule->qgisIface()->getMapCanvas();
     if ( mLayerInput == 0 ) return;
 
     QgsMapLayer *layer = mLayerInput->currentLayer();

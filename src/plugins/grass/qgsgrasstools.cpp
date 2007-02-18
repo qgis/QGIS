@@ -312,6 +312,7 @@ bool QgsGrassTools::loadConfig(QString filePath)
     addModules ( 0, modulesElem );
     
     file.close();
+    return true;
 }
 
 void QgsGrassTools::addModules (  Q3ListViewItem *parent, QDomElement &element )

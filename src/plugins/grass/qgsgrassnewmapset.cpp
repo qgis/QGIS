@@ -227,7 +227,7 @@ void QgsGrassNewMapset::databaseChanged()
     // database is writable
     bool locationExists = false;
     QDir d ( mDatabaseLineEdit->text() );
-    for ( int i = 0; i < d.count(); i++ ) 
+    for ( unsigned int i = 0; i < d.count(); i++ ) 
     {
 	if ( d[i] == "." || d[i] == ".." ) continue; 
 
@@ -280,7 +280,7 @@ void QgsGrassNewMapset::setLocations ( )
     // Add all subdirs containing PERMANENT/DEFAULT_WIND
     int idx = 0;
     int sel = -1;
-    for ( int i = 0; i < d.count(); i++ ) 
+    for ( unsigned int i = 0; i < d.count(); i++ ) 
     {
 	if ( d[i] == "." || d[i] == ".." ) continue; 
 
@@ -353,7 +353,7 @@ void QgsGrassNewMapset::checkLocation()
         {
 	    QDir d ( mDatabaseLineEdit->text() );
 
-	    for ( int i = 0; i < d.count(); i++ ) 
+	    for ( unsigned int i = 0; i < d.count(); i++ ) 
 	    {
 		if ( d[i] == "." || d[i] == ".." ) continue; 
 		
@@ -1231,7 +1231,7 @@ void QgsGrassNewMapset::setMapsets()
 
     // Add all subdirs containing WIND
     Q3ListViewItem *lvi;
-    for ( int i = 0; i < d.count(); i++ ) 
+    for ( unsigned int i = 0; i < d.count(); i++ ) 
     {
 	if ( d[i] == "." || d[i] == ".." ) continue; 
 
@@ -1271,7 +1271,7 @@ void QgsGrassNewMapset::mapsetChanged()
 	QString locationPath = mDatabaseLineEdit->text() + "/" + mLocationComboBox->currentText();
 	QDir d ( locationPath );
 
-	for ( int i = 0; i < d.count(); i++ ) 
+	for ( unsigned int i = 0; i < d.count(); i++ ) 
 	{
 	    if ( d[i] == "." || d[i] == ".." ) continue; 
 

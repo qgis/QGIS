@@ -375,7 +375,7 @@ void QgsGrassAttributes::tabChanged ( QWidget *widget )
     std::cerr << "QgsGrassAttributes::tabChanged()" << std::endl;
     #endif
     
-    Q3Table *tb = (Q3Table *) tabCats->currentPage();
+    //Q3Table *tb = (Q3Table *) tabCats->currentPage();
 
     resultLabel->setText ( "" );
 }
