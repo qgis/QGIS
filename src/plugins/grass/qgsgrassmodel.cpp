@@ -95,7 +95,7 @@ public:
 };
 
 QgsGrassModelItem::QgsGrassModelItem()
-     :mParent(0),mPopulated(false),mType(QgsGrassModel::None)
+    :mParent(0),mType(QgsGrassModel::None),mPopulated(false)
 {
 }
 

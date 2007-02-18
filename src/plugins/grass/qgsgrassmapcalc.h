@@ -212,7 +212,7 @@ private:
     QString mFileName;
 
     //! Item id
-    int mNextId;
+    unsigned int mNextId;
 
     //! Background
     Q3CanvasRectangle *mPaper;

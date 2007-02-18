@@ -72,9 +72,9 @@ QgsGrassMapcalc::QgsGrassMapcalc (
            QgisInterface *iface, 
            QWidget * parent, const char * name, Qt::WFlags f )
        : QMainWindow(0,Qt::WType_Dialog),
-         QgsGrassModuleOptions( tools, module, iface),
          QgsGrassMapcalcBase ( ),
-	 mObject(0), mConnector(0), mTool(-1)
+         QgsGrassModuleOptions( tools, module, iface),
+	 mTool(-1), mObject(0), mConnector(0)
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassMapcalc()" << std::endl;
@@ -231,7 +231,7 @@ QgsGrassMapcalc::QgsGrassMapcalc (
     mFunctions.push_back(QgsGrassMapcalcFunction( t, "x", 0, tr("Current x-coordinate of moving window" )));
     mFunctions.push_back(QgsGrassMapcalcFunction( t, "y", 0, tr("Current y-coordinate of moving window" )));
     
-    for ( int i =0; i < mFunctions.size(); i++ )
+    for ( unsigned int i =0; i < mFunctions.size(); i++ )
     {
         mFunctionComboBox->insertItem( mFunctions[i].label() 
 		      + "  " + mFunctions[i].description() );
@@ -688,7 +688,7 @@ void QgsGrassMapcalc::setOption()
 	case QgsGrassMapcalcObject::Map :
 	{
 	    bool found = false;
-	    for ( int i = 0 ; i < mMaps.size(); i++ ) 
+	    for ( unsigned int i = 0 ; i < mMaps.size(); i++ ) 
 	    { 
 		if ( mMapComboBox->text(i) == mObject->label()
 		     && mMaps[i] == mObject->value() )
@@ -711,7 +711,7 @@ void QgsGrassMapcalc::setOption()
 	    break;
 
 	case QgsGrassMapcalcObject::Function :
-	    for ( int i = 0; i < mFunctions.size(); i++ ) 
+	    for ( unsigned int i = 0; i < mFunctions.size(); i++ ) 
 	    {
 		if ( mFunctions[i].name() != mObject->function().name() ) continue;
 		if ( mFunctions[i].inputCount() != mObject->function().inputCount() ) continue;
@@ -1340,7 +1340,7 @@ void QgsGrassMapcalc::load()
         if( e.isNull() ) continue;
 
 	std::cerr << "id = " << e.attribute("id","?").local8Bit().data() << std::endl;
-	int id = e.attribute("id","0").toInt();
+	unsigned int id = e.attribute("id","0").toInt();
 	int x = e.attribute("x","0").toInt();
 	int y = e.attribute("y","0").toInt();
 	QString typeName = e.attribute("type","constant");
@@ -1394,7 +1394,7 @@ void QgsGrassMapcalc::load()
 		int inputCount = e.attribute("inputCount","1").toInt();
 		// Find function
 		int fn = -1;
-		for ( int i = 0; i < mFunctions.size(); i++ ) 
+		for ( unsigned int i = 0; i < mFunctions.size(); i++ ) 
 		{
 	            if ( mFunctions[i].name() != value ) continue;
 	            if ( mFunctions[i].inputCount() != inputCount ) continue;
@@ -1420,7 +1420,7 @@ void QgsGrassMapcalc::load()
         if( e.isNull() ) continue;
 
 	std::cerr << "id = " << e.attribute("id","?").local8Bit().data() << std::endl;
-	int id = e.attribute("id","0").toInt();
+	unsigned int id = e.attribute("id","0").toInt();
 	if ( id >= mNextId ) mNextId = id+1;
 
 	QgsGrassMapcalcConnector *con = new QgsGrassMapcalcConnector ( mCanvas );
@@ -1447,7 +1447,7 @@ void QgsGrassMapcalc::load()
 	    std::cerr << "objId = " << objId << std::endl;
 	    if ( objId < 0 ) continue; // not connected 
 
-	    if ( objId < objects.size() && objects[objId] )
+	    if ( static_cast<uint>(objId) < objects.size() && objects[objId] )
 	    {
 	        QString socketTypeName = e2.attribute("socketType","out");
 		int socketType;
@@ -2131,9 +2131,9 @@ QgsGrassMapcalcObject *QgsGrassMapcalcConnector::object( int end )
 QgsGrassMapcalcFunction::QgsGrassMapcalcFunction ( int type, QString name, 
 	  int count, QString description, QString label, QString labels,
           bool drawLabel ) :
-    	mType(type), mName(name), mInputCount(count), 
-    	mDescription(description),
-	mLabel(label), mDrawLabel(drawLabel)
+        mName(name), mType(type), mInputCount(count), 
+    	mLabel(label), mDescription(description),
+	mDrawLabel(drawLabel)
     
 {
     if ( mLabel.isEmpty() ) mLabel = mName;

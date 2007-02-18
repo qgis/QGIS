@@ -23,7 +23,7 @@
   <property name="focusPolicy" >
    <enum>Qt::TabFocus</enum>
   </property>
-  <widget class="QWidget" name="WizardPage" >
+  <widget class="QWidget" name="WizardPage1" >
    <property name="geometry" >
     <rect>
      <x>0</x>
@@ -478,7 +478,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="WizardPage" >
+  <widget class="QWidget" name="WizardPage2" >
    <property name="geometry" >
     <rect>
      <x>0</x>
@@ -864,7 +864,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="WizardPage" >
+  <widget class="QWidget" name="WizardPage3" >
    <property name="geometry" >
     <rect>
      <x>0</x>
@@ -1226,7 +1226,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="WizardPage" >
+  <widget class="QWidget" name="WizardPage4" >
    <property name="geometry" >
     <rect>
      <x>0</x>
@@ -1669,7 +1669,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="WizardPage" >
+  <widget class="QWidget" name="WizardPage5" >
    <property name="geometry" >
     <rect>
      <x>0</x>
@@ -2117,7 +2117,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="WizardPage" >
+  <widget class="QWidget" name="WizardPage6" >
    <property name="geometry" >
     <rect>
      <x>0</x>

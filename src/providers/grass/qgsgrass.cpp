@@ -17,14 +17,14 @@
 
 #include <iostream>
 
-#include "qstring.h"
+#include "QString"
 #include "q3process.h"
-#include "qfile.h"
-#include "qfileinfo.h"
-#include "qfiledialog.h"
-#include "qdir.h"
-#include "qtextstream.h"
-#include "qsettings.h"
+#include "QFile"
+#include "QFileInfo"
+#include "QFileDialog"
+#include "QDir"
+#include "QTextStream"
+#include "QSettings"
 #include <QMessageBox>
 #include <QCoreApplication>
 #include <QProcess>
@@ -553,7 +553,7 @@ QString QgsGrass::closeMapset ( )
         if ( mTmp.left(4) == "/tmp" ) 
         {
 	    QDir dir ( mTmp );
-	    for ( int i = 0; i < dir.count(); i++ )
+	    for ( unsigned int i = 0; i < dir.count(); i++ )
 	    {
 		if ( dir[i] == "." || dir[i] == ".." ) continue;
 
@@ -588,7 +588,7 @@ QStringList QgsGrass::locations ( QString gisbase )
     QDir d = QDir( gisbase );
     d.setFilter(QDir::NoDotAndDotDot|QDir::Dirs);
 
-    for ( int i = 0; i < d.count(); i++ ) 
+    for ( unsigned int i = 0; i < d.count(); i++ ) 
     {
         if ( QFile::exists ( gisbase + "/" + d[i] 
 		             + "/PERMANENT/DEFAULT_WIND" ) )
@@ -626,7 +626,7 @@ QStringList QgsGrass::mapsets ( QString locationPath )
     QDir d = QDir( locationPath );
     d.setFilter(QDir::NoDotAndDotDot|QDir::Dirs);
 
-    for ( int i = 0; i < d.count(); i++ ) 
+    for ( unsigned int i = 0; i < d.count(); i++ ) 
     {
         if ( QFile::exists ( locationPath + "/" + d[i] + "/WIND" ) )
 	{
@@ -687,7 +687,7 @@ QStringList QgsGrass::vectors ( QString mapsetPath )
     QDir d = QDir( mapsetPath + "/vector" );
     d.setFilter(QDir::NoDotAndDotDot|QDir::Dirs);
 
-    for ( int i = 0; i < d.count(); i++ ) 
+    for ( unsigned int i = 0; i < d.count(); i++ ) 
     {
         /*
         if ( QFile::exists ( mapsetPath + "/vector/" + d[i] + "/head" ) )
@@ -752,7 +752,7 @@ QStringList QgsGrass::rasters ( QString mapsetPath )
     QDir d = QDir( mapsetPath + "/cellhd" );
     d.setFilter(QDir::Files);
 
-    for ( int i = 0; i < d.count(); i++ ) 
+    for ( unsigned int i = 0; i < d.count(); i++ ) 
     {
         list.append(d[i]);
     }
@@ -783,7 +783,7 @@ QStringList QgsGrass::elements ( QString mapsetPath, QString element )
     QDir d = QDir( mapsetPath + "/" + element );
     d.setFilter(QDir::Files);
 
-    for ( int i = 0; i < d.count(); i++ ) 
+    for ( unsigned int i = 0; i < d.count(); i++ ) 
     {
         list.append(d[i]);
     }

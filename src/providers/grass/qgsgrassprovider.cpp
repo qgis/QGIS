@@ -285,7 +285,7 @@ bool QgsGrassProvider::getNextFeature(QgsFeature& feature,
                                       QgsAttributeList attlist,
                                       uint featureQueueSize)
 {
-    int cat, type, id, idx;
+    int cat, type, id;
     unsigned char *wkb;
     int wkbsize;
 
@@ -599,7 +599,7 @@ int QgsGrassProvider::openLayer(QString gisdbase, QString location, QString maps
 
     // Check if this layer is already opened
 
-    for ( int i = 0; i <  mLayers.size(); i++) {
+    for ( unsigned int i = 0; i <  mLayers.size(); i++) {
 	if ( !(mLayers[i].valid) ) continue;
 
 	GMAP *mp = &(mMaps[mLayers[i].mapId]);
@@ -922,7 +922,7 @@ int QgsGrassProvider::openMap(QString gisdbase, QString location, QString mapset
     QString tmpPath = gisdbase + "/" + location + "/" + mapset + "/" + mapName;
 
     // Check if this map is already opened
-    for ( int i = 0; i <  mMaps.size(); i++) {
+    for ( unsigned int i = 0; i <  mMaps.size(); i++) {
 	if ( mMaps[i].valid && mMaps[i].path == tmpPath ) 
 	{
 	    // the map is already opened, return map id
@@ -1072,7 +1072,7 @@ void QgsGrassProvider::updateMap ( int mapId )
     std::cerr << "GRASS map successfully reopened for reading." << std::endl;
     #endif
 
-    for ( int i = 0; i <  mLayers.size(); i++) {
+    for ( unsigned int i = 0; i <  mLayers.size(); i++) {
 	// if ( !(mLayers[i].valid) ) continue; // ?
 
 	if  ( mLayers[i].mapId == mapId ) {
@@ -1503,7 +1503,7 @@ bool QgsGrassProvider::reopenMap()
     #endif
 
     // Reload sources to layers
-    for ( int i = 0; i <  mLayers.size(); i++) {
+    for ( unsigned int i = 0; i <  mLayers.size(); i++) {
 	// if ( !(mLayers[i].valid) ) continue; // ?
 
 	if  ( mLayers[i].mapId == mLayers[mLayerId].mapId ) {

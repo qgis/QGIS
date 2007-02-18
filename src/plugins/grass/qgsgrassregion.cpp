@@ -397,8 +397,6 @@ void QgsGrassRegion::draw ( double x1, double y1, double x2, double y2 )
     std::cerr << "QgsGrassRegion::draw()" << std::endl;
     #endif
 
-    double n, s, e, w;
-
     if ( x1 < x2 ) {
         mWindow.west = x1;
 	mWindow.east = x2; 
