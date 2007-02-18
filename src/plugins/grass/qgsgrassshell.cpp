@@ -35,10 +35,9 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
 #ifndef WIN32
 #ifdef Q_OS_MACX
-#include <util.h>
+#include "/usr/include/util.h"
 #else
 #ifdef __NetBSD__
 #include <util.h>
