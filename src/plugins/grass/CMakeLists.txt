@@ -67,6 +67,7 @@ QT4_WRAP_CPP (GRASS_PLUGIN_MOC_SRCS  ${GRASS_PLUGIN_MOC_HDRS})
 ADD_LIBRARY (grassplugin MODULE ${GRASS_PLUGIN_SRCS} ${GRASS_PLUGIN_MOC_SRCS} ${GRASS_PLUGIN_UIS_H})
 
 INCLUDE_DIRECTORIES(
+     /usr/include
      .
      ${CMAKE_CURRENT_BINARY_DIR}
      ../../core ../../raster ../../renderer ../../legend
