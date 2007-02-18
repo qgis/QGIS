@@ -1,3 +1,4 @@
+
 /***************************************************************************
     qgsgrassnewmapset.cpp  - New GRASS mapset wizard
                                -------------------
@@ -61,6 +62,11 @@
 
 // For bug in GPJ_osr_to_grass()
 #include "grass/version.h"
+// Prevents some compiler warnings from the version.h include
+QString temp1(GRASS_VERSION_STRING);
+QString temp2(GRASS_VERSION_MAJOR);
+QString temp3(GRASS_VERSION_MINOR);
+QString temp4(GRASS_VERSION_RELEASE);
 
 bool QgsGrassNewMapset::mRunning = false;
 

@@ -149,6 +149,8 @@ public:
     //! Library version
     static int versionMajor();
     static int versionMinor();
+    static int versionRelease();
+    static QString versionString();
 
 private:
     static int initialized; // Set to 1 after initialization 
