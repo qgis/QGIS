@@ -1022,6 +1022,7 @@ void QgisApp::createStatusBar()
   mScaleLabel->setMargin(3);
   mScaleLabel->setAlignment(Qt::AlignCenter);
   QWhatsThis::add(mScaleLabel, tr("Displays the current map scale"));
+  QToolTip::add (mScaleLabel, tr("Current map scale"));
   statusBar()->addWidget(mScaleLabel, 0,true);
   //coords status bar widget
   mCoordsLabel = new QLabel(QString(), statusBar());
@@ -1030,6 +1031,7 @@ void QgisApp::createStatusBar()
   mCoordsLabel->setMargin(3);
   mCoordsLabel->setAlignment(Qt::AlignCenter);
   QWhatsThis::add(mCoordsLabel, tr("Shows the map coordinates at the current cursor postion. The display is continuously updated as the mouse is moved."));
+  QToolTip::add (mCoordsLabel, tr("Map coordinates at mouse cursor position"));
   statusBar()->addWidget(mCoordsLabel, 0, true);
   // render suppression status bar widget
   mRenderSuppressionCBox = new QCheckBox(tr("Render"),statusBar());
