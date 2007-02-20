@@ -53,7 +53,6 @@ SET(QGIS_GUI_SRCS
 ../gui/qgsoptions.cpp
 ../gui/qgspastetransformations.cpp
 ../gui/qgspatterndialog.cpp
-../gui/qgspgutil.cpp
 ../gui/qgspluginmanager.cpp
 ../gui/qgspointstylewidget.cpp
 ../gui/qgsproject.cpp
@@ -235,8 +234,9 @@ qgsrasterdataprovider.h
 IF (POSTGRES_FOUND)
   SET (QGIS_GUI_SRCS ${QGIS_GUI_SRCS}
           ../gui/qgsdbsourceselect.cpp
-		  ../gui/qgsnewconnection.cpp
-		  ../gui/qgspgquerybuilder.cpp
+          ../gui/qgsnewconnection.cpp
+          ../gui/qgspgquerybuilder.cpp
+          ../gui/qgspgutil.cpp
   )
   SET (QGIS_GUI_MOC_HDRS ${QGIS_GUI_MOC_HDRS}
           ../gui/qgsdbsourceselect.h
