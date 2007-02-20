@@ -341,10 +341,8 @@ public slots:
   //! show the attribute table for the currently selected layer
   void attributeTable();
   
-#ifdef HAVE_PYTHON
   //! show python console
   void showPythonDialog();
-#endif
 
   //! cuts selected features on the active layer to the clipboard
   /**

@@ -770,14 +770,14 @@ void QgisApp::createActions()
 #endif
 }
 
-#ifdef HAVE_PYTHON
 void QgisApp::showPythonDialog()
 {
+#ifdef HAVE_PYTHON
   if (mPythonConsole == NULL)
     mPythonConsole = new QgsPythonDialog(mQgisInterface);
   mPythonConsole->show();
-}
 #endif
+}
 
 void QgisApp::createActionGroups()
 {
