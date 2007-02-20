@@ -49,12 +49,12 @@ IF (PYTHON_LIBRARIES AND PYTHON_INCLUDE_PATH)
 
     IF (APPLE)
       SET (SIP_MAC_PATH
-        /System/Library/Frameworks/Python.framework/Versions/2.5/bin/
-	/System/Library/Frameworks/Python.framework/Versions/2.4/bin/
-	/System/Library/Frameworks/Python.framework/Versions/2.3/bin/)
+      /System/Library/Frameworks/Python.framework/Versions/2.5/bin
+      /System/Library/Frameworks/Python.framework/Versions/2.4/bin
+      /System/Library/Frameworks/Python.framework/Versions/2.3/bin)
     ENDIF (APPLE)
 
-    FIND_PROGRAM (SIP_BINARY_PATH sip ${SIP_MAC_PATH})
+    FIND_PROGRAM (SIP_BINARY_PATH sip PATHS ${SIP_MAC_PATH})
     
     IF (HAVE_SIP_MODULE AND SIP_BINARY_PATH)
       # check for SIP version
