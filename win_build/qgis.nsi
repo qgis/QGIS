@@ -110,6 +110,8 @@ Section "Quantum GIS Application" SEC01
   File /r "C:\dev\cpp\qgis\qgis-release\share"
   File /r "C:\dev\cpp\qgis\qgis-release\nad"
   File /r "C:\dev\cpp\qgis\qgis-release\msys"
+  ;qt plugins
+  File /r "C:\dev\cpp\qgis\qgis-release\plugins"
  
 ; Shortcuts
 ; Next line is important - added by Tim
@@ -141,17 +143,21 @@ Section "Sample Data - Spearfish (GRASS)" SEC02
 
 
 SectionEnd
-Section "Sample Data - Alaska (Non GRASS)" SEC03
+
+Section "Development headers" SEC03
+ SetOutPath "$INSTDIR\include"
+ File "C:\dev\cpp\qgis\qgis-release\include\*.h"
+SectionEnd
+
+Section "Sample Data - Alaska (Non GRASS)" SEC04
  SetOutPath "$INSTDIR\SampleData\Alaska\"
  NSISdl::download http://qgis.org/uploadfiles/qgis_sample_data.zip alaska.zip
  !insertmacro ZIPDLL_EXTRACT "$INSTDIR\SampleData\Alaska\alaska.zip" "$INSTDIR\SampleData\Alaska" "<ALL>"
- ; File "C:\dev/cpp/qgis/\qgis-release\SampleData\EnvironmentLayers\2050\A1F\Annual_dev/cpp/qgis/erature_range.asc"
-
-
 ; Shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
+
 
 Section -AdditionalIcons
   SetOutPath $INSTDIR
