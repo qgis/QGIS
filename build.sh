@@ -35,7 +35,9 @@ then
  fi
   
  #qt installed from source
- #export QTDIR=/usr/local/Trolltech/Qt-4.1.0
+ #export QTDIR=/usr/local/Trolltech/Qt-4.2.2
+ #export QTDIR=/opt/omg_linux_bundle/usr/
+
  #qt installed from debian apt
  export QTDIR=/usr
  export PATH=$QTDIR/bin:$PATH
@@ -47,12 +49,18 @@ then
  # up the compilation process. See discussion on 
  # http://logs.qgis.org/slogs/%23qgis.2006-04-15.log at 17:06:10
  # for additional details
+ export PATH=/opt/omg_linux_bundle/usr/bin/:$PATH
  ./autogen.sh $AUTOGEN_FLAGS --prefix=${1} \
                              --enable-static=no \
-                             --enable-unittests \
                              --with-python \
-                             --with-qtdir=$QTDIR \
-                             --with-grass=/usr/lib/grass && make && make install
-
-cd tests/src
-./runtests.sh
+                             --with-gsl=/opt/omg_linux_bundle/usr/bin/gsl-config \
+                             --with-gdal=/opt/omg_linux_bundle/usr/ \
+                             --with-projdir=/opt/omg_linux_bundle/usr/ \
+                             --with-gdal=/opt/omg_linux_bundle/usr/bin/gdal-config \
+                             --with-qtdir=$QTDIR 
+                             --with-grass=/usr/lib/grass && make && make install 
+                             ##--enable-unittests \
+#cd tests/src
+#./runtests.sh
+make
+make install
