@@ -306,3 +306,160 @@ ENDIF (POSTGRES_FOUND)
 INSTALL(TARGETS qgis_core
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION lib)
+
+
+
+############################################################
+# Install headers
+SET(QGIS_CORE_HDRS
+  qgis.h
+  qgsapplication.h
+  qgsbookmarkitem.h
+  qgsclipper.h
+  qgscolortable.h
+  qgscontexthelp.h
+  qgscustomsymbol.h
+  qgsdatamanager.h
+  qgsdatasource.h
+  qgsdistancearea.h
+  qgsexception.h
+  qgsfeatureattribute.h
+  qgsfeature.h
+  qgsfield.h
+  qgsgeometry.h
+  qgsgeometryvertexindex.h
+  qgshttptransaction.h
+  qgslabelattributes.h
+  qgsline.h
+  qgslinesymbol.h
+  qgslogger.h
+  qgsmaptopixel.h
+  qgsmarkercatalogue.h
+  qgsmarkersymbol.h
+  qgsnumericsortlistviewitem.h
+  qgspluginitem.h
+  qgspluginregistry.h
+  ../gui/qgspluginmetadata.h
+  qgspoint.h
+  qgspolygonsymbol.h
+  qgsprojectproperty.h
+  qgsprovidercountcalcevent.h
+  qgsproviderextentcalcevent.h
+  qgsprovidermetadata.h
+  qgsproviderregistry.h
+  qgsrangerenderitem.h
+  qgsrasterdataprovider.h
+  qgsrect.h
+  qgsrenderer.h
+  qgsrenderitem.h
+  qgsscalecalculator.h
+  qgssearchstring.h
+  qgssearchtreenode.h
+  qgssymbol.h
+  qgssymbologyutils.h
+  qgsvectordataprovider.h
+  )
+
+SET(QGIS_GUI_HDRS
+../gui/qgisapp.h
+../gui/qgisiface.h
+../gui/qgisinterface.h
+../gui/qgsabout.h
+../gui/qgsaddattrdialog.h
+../gui/qgsattributeaction.h
+../gui/qgsattributeactiondialog.h
+../gui/qgsattributedialog.h
+../gui/qgsattributetable.h
+../gui/qgsattributetabledisplay.h
+../gui/qgsbookmarks.h
+../gui/qgsclipboard.h
+../gui/qgscolorbutton.h
+../gui/qgscontinuouscolordialog.h
+../gui/qgscontinuouscolorrenderer.h
+../gui/qgscoordinatetransform.h
+../gui/qgscursors.h
+../gui/qgscustomprojectiondialog.h
+../gui/qgsdelattrdialog.h
+../gui/qgsencodingfiledialog.h
+../gui/qgsfillstylewidget.h
+../gui/qgsgeomtypedialog.h
+../gui/qgsgraduatedsymboldialog.h
+../gui/qgsgraduatedsymbolrenderer.h
+../gui/qgshelpviewer.h
+../gui/qgsidentifyresults.h
+../gui/qgslabel.h
+../gui/qgslabeldialog.h
+../gui/qgslayerprojectionselector.h
+../gui/qgslinestyledialog.h
+../gui/qgslinestylewidget.h
+../gui/qgsludialog.h
+../gui/qgsmapcanvas.h
+../gui/qgsmapcanvasitem.h
+../gui/qgsmapcanvasmap.h
+../gui/qgsmaplayer.h
+../gui/qgsmaplayerregistry.h
+../gui/qgsmaplayerset.h
+../gui/qgsmapoverviewcanvas.h
+../gui/qgsmaprender.h
+../gui/qgsmaptoolcapture.h
+../gui/qgsmaptool.h
+../gui/qgsmaptoolidentify.h
+../gui/qgsmaptoolpan.h
+../gui/qgsmaptoolselect.h
+../gui/qgsmaptoolvertexedit.h
+../gui/qgsmaptoolzoom.h
+../gui/qgsmarkerdialog.h
+../gui/qgsmeasure.h
+../gui/qgsmessageviewer.h
+../gui/qgsnewhttpconnection.h
+../gui/qgsoptions.h
+../gui/qgspastetransformations.h
+../gui/qgspatterndialog.h
+../gui/qgspluginmanager.h
+../gui/qgspointstylewidget.h
+../gui/qgsproject.h
+../gui/qgsprojectproperties.h
+../gui/qgsrasterlayerproperties.h
+../gui/qgsrubberband.h
+../gui/qgsrunprocess.h
+../gui/qgssearchquerybuilder.h
+../gui/qgsserversourceselect.h
+../gui/qgssinglesymboldialog.h
+../gui/qgssinglesymbolrenderer.h
+../gui/qgsspatialrefsys.h
+../gui/qgsuniquevaluedialog.h
+../gui/qgsuniquevaluerenderer.h
+../gui/qgsvectorfilewriter.h
+../gui/qgsvectorlayer.h
+../gui/qgsvectorlayerproperties.h
+../gui/qgsvertexmarker.h
+../widgets/projectionselector/qgsprojectionselector.h
+
+../composer/qgscomposer.h
+../composer/qgscomposeritem.h
+../composer/qgscomposerlabel.h
+../composer/qgscomposermap.h
+../composer/qgscomposerpicture.h
+../composer/qgscomposerscalebar.h
+../composer/qgscomposervectorlegend.h
+../composer/qgscomposerview.h
+../composer/qgscomposition.h
+
+../legend/qgslegend.h
+../legend/qgslegendgroup.h
+../legend/qgslegenditem.h
+../legend/qgslegendlayer.h
+../legend/qgslegendlayerfile.h
+../legend/qgslegendlayerfilegroup.h
+../legend/qgslegendpropertygroup.h
+../legend/qgslegendpropertyitem.h
+../legend/qgslegendsymbologygroup.h
+../legend/qgslegendsymbologyitem.h
+../legend/qgslegendvectorsymbologyitem.h
+
+../raster/qgsrasterlayer.h
+
+)
+
+INSTALL(CODE "MESSAGE(\"Installing headers...\")")
+INSTALL(FILES ${QGIS_CORE_HDRS} ${QGIS_GUI_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
