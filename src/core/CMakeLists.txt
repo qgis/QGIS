@@ -145,7 +145,6 @@ SET(QGIS_GUI_MOC_HDRS
 ../gui/qgsmaptoolidentify.h
 ../gui/qgspointstylewidget.h
 ../widgets/projectionselector/qgsprojectionselector.h
-../gui/qgsproject.h
 ../gui/qgsprojectproperties.h
 ../gui/qgsrasterlayerproperties.h
 ../gui/qgsrunprocess.h
