@@ -5,9 +5,24 @@ MACRO(FIND_BISON)
     IF(NOT BISON_EXECUTABLE)
         FIND_PROGRAM(BISON_EXECUTABLE bison)
         IF (NOT BISON_EXECUTABLE)
-          MESSAGE(FATAL_ERROR "Bison not found - aborting")
-        ENDIF (NOT BISON_EXECUTABLE)
+        
+	  MESSAGE(FATAL_ERROR "Bison not found - aborting")
+	
+	ELSE (NOT BISON_EXECUTABLE)
+
+          EXEC_PROGRAM(${BISON_EXECUTABLE} ARGS --version OUTPUT_VARIABLE BISON_VERSION_STR)
+          # get first line in case it's multiline
+          STRING(REGEX REPLACE "([^\n]+).*" "\\1" FIRST_LINE "${BISON_VERSION_STR}")
+          # get version information
+          STRING(REGEX REPLACE ".* ([0-9]+)\\.([0-9]+)" "\\1" BISON_VERSION_MAJOR "${FIRST_LINE}")
+          STRING(REGEX REPLACE ".* ([0-9]+)\\.([0-9]+)" "\\2" BISON_VERSION_MINOR "${FIRST_LINE}")
+          IF (BISON_VERSION_MAJOR LESS 2)
+            MESSAGE (FATAL_ERROR "Bison version is too old (${BISON_VERSION_MAJOR}.${BISON_VERSION_MINOR}). Use 2.0 or higher.")
+          ENDIF (BISON_VERSION_MAJOR LESS 2)
+
+      ENDIF (NOT BISON_EXECUTABLE)
     ENDIF(NOT BISON_EXECUTABLE)
+
 ENDMACRO(FIND_BISON)
 
 MACRO(ADD_BISON_FILES _sources )
@@ -18,15 +33,13 @@ MACRO(ADD_BISON_FILES _sources )
       GET_FILENAME_COMPONENT(_basename ${_current_FILE} NAME_WE)
 
       SET(_out ${CMAKE_CURRENT_BINARY_DIR}/${_basename}.cpp)
-      SET(_out_h ${CMAKE_CURRENT_BINARY_DIR}/${_basename}.h)
-      SET(_out_hpp ${CMAKE_CURRENT_BINARY_DIR}/${_basename}.hpp)
 
 
 		# bison options:
 		# -t add debugging facilities
 		# -d produce additional header file (used in parser.l)
 		# -v produce additional *.output file with parser states
- 
+
       ADD_CUSTOM_COMMAND(
          OUTPUT ${_out}
          COMMAND ${BISON_EXECUTABLE}
@@ -35,15 +48,7 @@ MACRO(ADD_BISON_FILES _sources )
          ${_in}
          DEPENDS ${_in}
       )
-      ADD_CUSTOM_COMMAND(
-         OUTPUT ${_out_h}
-         COMMAND mv
-         ARGS
-         ${_out_hpp} ${_out_h} 
-         DEPENDS ${_out}
-      )
 
-
-      SET(${_sources} ${${_sources}} ${_out} ${_out_h} )
+      SET(${_sources} ${${_sources}} ${_out} )
    ENDFOREACH (_current_FILE)
 ENDMACRO(ADD_BISON_FILES)
