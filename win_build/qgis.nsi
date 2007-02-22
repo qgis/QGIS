@@ -2,7 +2,9 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Quantum GIS"
-!define PRODUCT_VERSION "0.8.1 Titan"
+!define PRODUCT_VERSION_NUMBER "0.8.1"
+!define PRODUCT_VERSION_NAME "Titan"
+!define PRODUCT_VERSION "${PRODUCT_VERSION_NUMBER} ${PRODUCT_VERSION_NAME}"
 !define PRODUCT_PUBLISHER "qgis.org"
 !define PRODUCT_WEB_SITE "http://qgis.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\qgis.exe"
@@ -93,25 +95,25 @@ Section "Quantum GIS Application" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite try
 ;------- Qt 
-  File "C:\dev\cpp\qgis\qgis-release\QtCore4.dll"
-  File "C:\dev\cpp\qgis\qgis-release\QtGui4.dll"
-  File "C:\dev\cpp\qgis\qgis-release\QtNetwork4.dll"
-  File "C:\dev\cpp\qgis\qgis-release\QtXml4.dll"
-  File "C:\dev\cpp\qgis\qgis-release\QtSvg4.dll"
-  File "C:\dev\cpp\qgis\qgis-release\mingwm10.dll"
+  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\QtCore4.dll"
+  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\QtGui4.dll"
+  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\QtNetwork4.dll"
+  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\QtXml4.dll"
+  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\QtSvg4.dll"
+  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\mingwm10.dll"
 ;------- qgis Related
-  File "C:\dev\cpp\qgis\qgis-release\*.dll"
-  File "C:\dev\cpp\qgis\qgis-release\*.exe"
+  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\*.dll"
+  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\*.exe"
 ;------- proj and gdal Related
-  File "C:\dev\cpp\qgis\qgis-release\*.csv"
+  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\*.csv"
 ;subdirs
-  File /r "C:\dev\cpp\qgis\qgis-release\grass"
-  File /r "C:\dev\cpp\qgis\qgis-release\lib"
-  File /r "C:\dev\cpp\qgis\qgis-release\share"
-  File /r "C:\dev\cpp\qgis\qgis-release\nad"
-  File /r "C:\dev\cpp\qgis\qgis-release\msys"
+  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\grass"
+  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\lib"
+  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\share"
+  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\nad"
+  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\msys"
   ;qt plugins
-  File /r "C:\dev\cpp\qgis\qgis-release\plugins"
+  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\plugins"
  
 ; Shortcuts
 ; Next line is important - added by Tim
@@ -146,7 +148,7 @@ SectionEnd
 
 Section "Development headers" SEC03
  SetOutPath "$INSTDIR\include"
- File "C:\dev\cpp\qgis\qgis-release\include\*.h"
+ File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\include\*.h"
 SectionEnd
 
 Section "Sample Data - Alaska (Non GRASS)" SEC04
