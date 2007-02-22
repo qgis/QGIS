@@ -644,7 +644,7 @@ void QgsAttributeTable::selectRowsWithId(const QgsFeatureIds& ids)
   
   QObject::disconnect(this, SIGNAL(selectionChanged()), this, SLOT(handleChangedSelections()));
     
-  clearSelection(false);
+  clearSelection(true); 
   QgsFeatureIds::const_iterator it;
   for (it = ids.begin(); it != ids.end(); it++)
   {
