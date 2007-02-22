@@ -172,7 +172,6 @@ void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
     std::cerr << "path = " << path.ascii() << std::endl;
     #endif
     QWidget *m;
-    QgsGrassShell *sh = 0;
     if ( name == "shell" )
     {
          // Set history file

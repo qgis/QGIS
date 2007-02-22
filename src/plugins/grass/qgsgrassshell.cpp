@@ -900,6 +900,7 @@ void QgsGrassShell::mousePressEvent(QMouseEvent* e)
 
 void QgsGrassShell::resizeTerminal()
 {
+#ifndef WIN32
     int width = mText->visibleWidth(); 
     int height = mText->visibleHeight(); 
 
@@ -907,7 +908,6 @@ void QgsGrassShell::resizeTerminal()
     int col = (int) (width / fm.width("x")); 
     int row = (int) (height / fm.height()); 
 
-#ifndef WIN32
     struct winsize winSize;
     memset(&winSize, 0, sizeof(winSize));
     winSize.ws_row = row;
