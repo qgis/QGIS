@@ -412,9 +412,11 @@ QString QgsGrass::openMapset ( QString gisdbase, QString location, QString mapse
     // TODO better wait 
     while ( process->isRunning () ) { }
 
-#ifdef QGISDEBUG
+#ifndef WIN32
     int status = process->exitStatus ();
+#ifdef QGISDEBUG
     std::cerr << "status = " << status << std::endl;
+#endif
 #endif
     delete process;
 

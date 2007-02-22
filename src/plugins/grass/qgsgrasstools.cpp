@@ -167,6 +167,10 @@ void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
     
     if ( name.length() == 0 ) return;  // Section
     
+#ifndef WIN32
+    QgsGrassShell* sh = 0;
+#endif
+    
     QString path = QgsApplication::pkgDataPath() + "/grass/modules/" + name;
     #ifdef QGISDEBUG
     std::cerr << "path = " << path.ascii() << std::endl;
