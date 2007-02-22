@@ -1872,15 +1872,6 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
     // Register this layer with the layers registry
     QgsMapLayerRegistry::instance()->addMapLayer(layer);
 
-    // connect up any keypresses to be passed tot he layer (e.g. so esc can stop rendering)
-#ifdef QGISDEBUG
-    std::cout << " Connecting up maplayers keyPressed event to the QgisApp keyPress signal" << std::endl;
-#endif
-    QObject::connect(this,
-        SIGNAL(keyPressed(QKeyEvent *)),
-        layer,
-        SLOT(keyPressed(QKeyEvent* )));
-
   }
   else
   {
@@ -1963,14 +1954,6 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& en
       // Register this layer with the layers registry
       QgsMapLayerRegistry::instance()->addMapLayer(layer);
 
-      // connect up any keypresses to be passed tot he layer (e.g. so esc can stop rendering)
-#ifdef QGISDEBUG
-      std::cout << " Connecting up maplayers keyPressed event to the QgisApp keyPress signal" << std::endl;
-#endif
-      QObject::connect(this,
-          SIGNAL(keyPressed(QKeyEvent *)),
-          layer,
-          SLOT(keyPressed(QKeyEvent* )));
     }
     else
     {
@@ -2062,14 +2045,6 @@ void QgisApp::addDatabaseLayer()
         // register this layer with the central layers registry
         QgsMapLayerRegistry::instance()->addMapLayer(layer);
 
-        // connect up any keypresses to be passed tot he layer (e.g. so esc can stop rendering)
-#ifdef QGISDEBUG
-        std::cout << " Connecting up maplayers keyPressed event to the QgisApp keyPress signal" << std::endl;
-#endif
-        QObject::connect(this,
-            SIGNAL(keyPressed(QKeyEvent *)),
-            layer,
-            SLOT(keyPressed(QKeyEvent* )));
       }
       else
       {
@@ -4275,15 +4250,6 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
     // Register this layer with the layers registry
     QgsMapLayerRegistry::instance()->addMapLayer(layer);
 
-    // connect up any keypresses to be passed tot he layer (e.g. so esc can stop rendering)
-#ifdef QGISDEBUG
-    std::cout << " Connecting up maplayers keyPressed event to the QgisApp keyPress signal" << std::endl;
-#endif
-    QObject::connect(this,
-        SIGNAL(keyPressed(QKeyEvent * )),
-        layer,
-        SLOT(keyPressed(QKeyEvent* )));
-
     QgsProject::instance()->dirty(false); // XXX this might be redundant
 
     statusBar()->message(mMapCanvas->extent().stringRep(2));
@@ -4947,14 +4913,6 @@ bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRedra
         SIGNAL(setStatus(QString)),
         this,
         SLOT(showStatusMessage(QString)));
-    // connect up any keypresses to be passed tot he layer (e.g. so esc can stop rendering)
-#ifdef QGISDEBUG
-    std::cout << " Connecting up maplayers keyPressed event to the QgisApp keyPress signal" << std::endl;
-#endif
-    QObject::connect(this ,
-        SIGNAL(keyPressed(QKeyEvent * )),
-        theRasterLayer,
-        SLOT(keyPressed(QKeyEvent* )));
 
     // add it to the mapcanvas collection
     // no longer necessary since adding to registry automatically adds to canvas
@@ -5098,15 +5056,6 @@ void QgisApp::addRasterLayer(QString const & rasterLayerPath,
         SIGNAL(setStatus(QString)),
         this,
         SLOT(showStatusMessage(QString)));
-
-    // connect up any keypresses to be passed tot he layer (e.g. so esc can stop rendering)
-#ifdef QGISDEBUG
-    std::cout << " Connecting up maplayers keyPressed event to the QgisApp keyPress signal" << std::endl;
-#endif
-    QObject::connect(this,
-        SIGNAL(keyPressed(QKeyEvent * )),
-        layer,
-        SLOT(keyPressed(QKeyEvent* )));
 
     QgsProject::instance()->dirty(false); // XXX this might be redundant
 

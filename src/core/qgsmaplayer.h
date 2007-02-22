@@ -222,9 +222,6 @@ public slots:
     void setScaleBasedVisibility( bool theVisibilityFlag);
     bool scaleBasedVisibility();
 
-    /** Layer can be informed when a key is pressed. */
-    virtual void keyPressed (QKeyEvent *e) {};
-
 signals:
 
     /** Emit a signal to notify of a progress event */
