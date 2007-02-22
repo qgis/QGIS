@@ -126,7 +126,7 @@ void QgsAttributeTable::handleChangedSelections()
   if (lockKeyPressed == false)
     {
       //clear the list and evaluate the last selection
-      emit selectionRemoved();
+      emit selectionRemoved(false);
     }
   //if there is no current selection, there is nothing to do
   if (currentSelection() == -1)
@@ -138,7 +138,7 @@ void QgsAttributeTable::handleChangedSelections()
 
   for (int index = cselection.topRow(); index <= cselection.bottomRow(); index++)
     {
-      emit selected(text(index, 0).toInt());
+      emit selected(text(index, 0).toInt(), false);
     }
 
   //don't send the signal repaintRequested() from here
@@ -652,7 +652,6 @@ void QgsAttributeTable::selectRowsWithId(const QgsFeatureIds& ids)
   }
   
   QObject::connect(this, SIGNAL(selectionChanged()), this, SLOT(handleChangedSelections()));
-
   emit repaintRequested();
 }
 

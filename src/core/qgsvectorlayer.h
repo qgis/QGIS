@@ -115,12 +115,6 @@ public:
   
   /** Select features found within the search rectangle (in layer's coordinates) */
   void select(QgsRect & rect, bool lock);
-
-  /** Select feature by its ID, optionally emit signal selectionChanged() */
-  void select(int featureId, bool emitSignal = TRUE);
-  
-  /** Clear selection */
-  void removeSelection(bool emitSignal = TRUE);
   
   /** Select not selected features and deselect selected ones */
   void invertSelection();
@@ -402,6 +396,12 @@ public:
   bool rollBack();
 
 public slots:
+
+  /** Select feature by its ID, optionally emit signal selectionChanged() */
+  void select(int featureId, bool emitSignal = TRUE);
+  
+  /** Clear selection */
+  void removeSelection(bool emitSignal = TRUE);
 
   void triggerRepaint();
 
