@@ -573,7 +573,7 @@ int QgsWFSProvider::readAttributesFromSchema(QDomDocument& schemaDoc, QString& g
       }
       else //todo: distinguish between numerical and non-numerical types
 	{
-          fields[i] = QgsField(name, type);
+          fields[fields.size()] = QgsField(name, type);
 	}
     }
   return 0;
