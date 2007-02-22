@@ -183,7 +183,6 @@ INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
 # create qgssvnversion.h
 
 IF (WIN32)
-  WRITE_FILE(${CMAKE_BINARY_DIR}/qgssvnversion.h "#define QGSSVNVERSION \"svn_rev_unavailable\"") 
   SET (SVNVER_H ${CMAKE_BINARY_DIR}/qgssvnversion.h) 
   IF (NOT EXISTS ${SVNVER_H}) 
     WRITE_FILE(${SVNVER_H} "#define QGSSVNVERSION \"svn_rev_unavailable\"") 
