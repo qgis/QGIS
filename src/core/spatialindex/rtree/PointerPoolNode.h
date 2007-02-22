@@ -24,6 +24,8 @@
 
 #include "Node.h"
 
+#define NDEBUG 1
+
 using namespace SpatialIndex;
 
 namespace Tools

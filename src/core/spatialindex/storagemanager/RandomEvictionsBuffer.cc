@@ -27,7 +27,7 @@
 #include "RandomEvictionsBuffer.h"
 
 #ifdef WIN32
-double drand48(void) { return rand(); }
+double drand48(void) { return (double) rand() / (double) RAND_MAX; }
 void srand48(long seed) { srand(seed); }
 #endif
 

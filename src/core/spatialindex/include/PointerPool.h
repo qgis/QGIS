@@ -24,6 +24,8 @@
 
 #include "PoolPointer.h"
 
+#define NDEBUG 1
+
 namespace Tools
 {
 	template <class X> class PointerPool
