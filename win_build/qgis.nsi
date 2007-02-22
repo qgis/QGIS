@@ -2,7 +2,9 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Quantum GIS"
-!define PRODUCT_VERSION "0.8 Titan"
+!define PRODUCT_VERSION_NUMBER "0.8.1"
+!define PRODUCT_VERSION_NAME "Titan"
+!define PRODUCT_VERSION "${PRODUCT_VERSION_NUMBER} ${PRODUCT_VERSION_NAME}"
 !define PRODUCT_PUBLISHER "qgis.org"
 !define PRODUCT_WEB_SITE "http://qgis.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\qgis.exe"
@@ -81,7 +83,7 @@ FunctionEnd
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "qgis_setup.exe"
+OutFile "qgis_setup${PRODUCT_VERSION_NUMBER}.exe"
 InstallDir "$PROGRAMFILES\Quantum GIS"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
@@ -93,23 +95,25 @@ Section "Quantum GIS Application" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite try
 ;------- Qt 
-  File "C:\dev\cpp\qgis\qgis-release\QtCore4.dll"
-  File "C:\dev\cpp\qgis\qgis-release\QtGui4.dll"
-  File "C:\dev\cpp\qgis\qgis-release\QtNetwork4.dll"
-  File "C:\dev\cpp\qgis\qgis-release\QtXml4.dll"
-  File "C:\dev\cpp\qgis\qgis-release\QtSvg4.dll"
-  File "C:\dev\cpp\qgis\qgis-release\mingwm10.dll"
+  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\QtCore4.dll"
+  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\QtGui4.dll"
+  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\QtNetwork4.dll"
+  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\QtXml4.dll"
+  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\QtSvg4.dll"
+  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\mingwm10.dll"
 ;------- qgis Related
-  File "C:\dev\cpp\qgis\qgis-release\*.dll"
-  File "C:\dev\cpp\qgis\qgis-release\*.exe"
+  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\*.dll"
+  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\*.exe"
 ;------- proj and gdal Related
-  File "C:\dev\cpp\qgis\qgis-release\*.csv"
+  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\*.csv"
 ;subdirs
-  File /r "C:\dev\cpp\qgis\qgis-release\grass"
-  File /r "C:\dev\cpp\qgis\qgis-release\lib"
-  File /r "C:\dev\cpp\qgis\qgis-release\share"
-  File /r "C:\dev\cpp\qgis\qgis-release\nad"
-  File /r "C:\dev\cpp\qgis\qgis-release\msys"
+  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\grass"
+  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\lib"
+  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\share"
+  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\nad"
+  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\msys"
+  ;qt plugins
+  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\plugins"
  
 ; Shortcuts
 ; Next line is important - added by Tim
@@ -134,20 +138,28 @@ Section "Sample Data - Spearfish (GRASS)" SEC02
  !insertmacro ZIPDLL_EXTRACT "$INSTDIR\SampleData\spearfish.zip" "$INSTDIR\SampleData\" "<ALL>"
  ;ZipDLL::extractall  "$INSTDIR\SampleData\spearfish.zip" "$INSTDIR\SampleData\"
  ;the next line is a hack / workaround for a problem in zipdll.nsh
- !endif
+ ;!endif
+ ;!endif commented by freddy to solve the sample data extracting problem,
+ ;also is neccesary to download header file for nsi from :
+ ; http://forums.winamp.com/attachment.php?s=b03c6736d9de4a864dd2d4e7b40babfb&postid=1293264
 
 
 SectionEnd
-Section "Sample Data - Alaska (Non GRASS)" SEC03
+
+Section "Development headers" SEC03
+ SetOutPath "$INSTDIR\include"
+ File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\include\*.h"
+SectionEnd
+
+Section "Sample Data - Alaska (Non GRASS)" SEC04
  SetOutPath "$INSTDIR\SampleData\Alaska\"
- NSISdl::download http://qgis.org/uploadfiles/qgis_sample_data.tar.gz alaska.tar.gz
- ; File "C:\dev/cpp/qgis/\qgis-release\SampleData\EnvironmentLayers\2050\A1F\Annual_dev/cpp/qgis/erature_range.asc"
-
-
+ NSISdl::download http://qgis.org/uploadfiles/qgis_sample_data.zip alaska.zip
+ !insertmacro ZIPDLL_EXTRACT "$INSTDIR\SampleData\Alaska\alaska.zip" "$INSTDIR\SampleData\Alaska" "<ALL>"
 ; Shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
+
 
 Section -AdditionalIcons
   SetOutPath $INSTDIR
