@@ -193,7 +193,10 @@ IF (WIN32)
   #    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
   # this should work with both msys and mingw generators
-  WRITE_FILE(${CMAKE_BINARY_DIR}/qgssvnversion.h "#define QGSSVNVERSION \"svn_rev_unavailable\"")
+  SET (SVNVER_H ${CMAKE_BINARY_DIR}/qgssvnversion.h)
+  IF (NOT EXISTS ${SVNVER_H})
+    WRITE_FILE(${SVNVER_H} "#define QGSSVNVERSION \"svn_rev_unavailable\"")
+  ENDIF (NOT EXISTS ${SVNVER_H})
 
 ELSE (WIN32)
 
