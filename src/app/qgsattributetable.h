@@ -157,9 +157,9 @@ class QgsAttributeTable:public Q3Table
 signals:
 
     /**Is emitted when a row was selected*/
-    void selected(int);
+    void selected(int, bool);
     /**Is emitted when all rows have been deselected*/
-    void selectionRemoved();
+    void selectionRemoved(bool);
     /**Is emmited when a set of related selection and deselection signals have been emitted*/
     void repaintRequested();
 

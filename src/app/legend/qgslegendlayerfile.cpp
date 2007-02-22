@@ -255,8 +255,8 @@ void QgsLegendLayerFile::table()
     selectionChanged();
     
     // etablish the necessary connections between the table and the vector layer
-    connect(mTableDisplay->table(), SIGNAL(selected(int)), mLyr.layer(), SLOT(select(int)));
-    connect(mTableDisplay->table(), SIGNAL(selectionRemoved()), mLyr.layer(), SLOT(removeSelection()));
+    connect(mTableDisplay->table(), SIGNAL(selected(int, bool)), mLyr.layer(), SLOT(select(int, bool)));
+    connect(mTableDisplay->table(), SIGNAL(selectionRemoved(bool)), mLyr.layer(), SLOT(removeSelection(bool)));
     connect(mTableDisplay->table(), SIGNAL(repaintRequested()), mLyr.layer(), SLOT(triggerRepaint()));
     
     QApplication::restoreOverrideCursor();
