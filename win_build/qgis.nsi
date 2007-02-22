@@ -83,7 +83,7 @@ FunctionEnd
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "qgis_setup.exe"
+OutFile "qgis_setup${PRODUCT_VERSION_NUMBER}.exe"
 InstallDir "$PROGRAMFILES\Quantum GIS"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
