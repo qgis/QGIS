@@ -2,8 +2,8 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Quantum GIS"
-!define PRODUCT_VERSION_NUMBER "0.8.1"
-!define PRODUCT_VERSION_NAME "Titan"
+!define PRODUCT_VERSION_NUMBER "0.9"
+!define PRODUCT_VERSION_NAME "Grumpy"
 !define PRODUCT_VERSION "${PRODUCT_VERSION_NUMBER} ${PRODUCT_VERSION_NAME}"
 !define PRODUCT_PUBLISHER "qgis.org"
 !define PRODUCT_WEB_SITE "http://qgis.org"
@@ -25,15 +25,15 @@ SetCompressor zlib
 
 ; MUI Settings
 !define MUI_ABORTWARNING
-!define MUI_ICON "C:\dev\cpp\qgis\win_build\qgis64x64.ico"
-!define MUI_UNICON "C:\dev\cpp\qgis\win_build\qgis64x64.ico"
+!define MUI_ICON "qgis64x64.ico"
+!define MUI_UNICON "qgis64x64.ico"
 ; Added by Tim for side image
-!define MUI_WELCOMEFINISHPAGE_BITMAP "C:\dev\cpp\qgis\win_build\sidebar.bmp"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "sidebar.bmp"
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
 ; License page
 !define MUI_LICENSEPAGE_RADIOBUTTONS
-!insertmacro MUI_PAGE_LICENSE "C:\dev\cpp\qgis\LICENSE.txt"
+!insertmacro MUI_PAGE_LICENSE "LICENSE.txt"
 ; Components page
 !insertmacro MUI_PAGE_COMPONENTS
 ; Directory page
