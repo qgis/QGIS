@@ -185,7 +185,7 @@ INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
 
 # We only do this if we are in a .svn dir
 
-FIND_FILE(SVN_MARKER ${CMAKE_SOURCE_DIR}/.svn/entries)
+FIND_FILE(SVN_MARKER entries PATHS ${CMAKE_SOURCE_DIR}/.svn)
 
 IF (NOT SVN_MARKER)
   SET (SVN_MARKER ${CMAKE_SOURCE_DIR}/CMakeLists.txt)  # Dummy file
