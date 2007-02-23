@@ -170,8 +170,8 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
       getFeatureCount();
 
       // Get the relation oid for use in later queries
-      sql = "select oid from pg_class where relname = '" + mTableName + "' and relnamespace = ("
-	  "select oid from pg_namespace where nspname = '" + mSchemaName + "')";
+      sql = "SELECT oid FROM pg_class WHERE relname = '" + mTableName + "' AND relnamespace = ("
+	  "SELECT oid FROM pg_namespace WHERE nspname = '" + mSchemaName + "')";
       PGresult *tresult= PQexec(pd, (const char *)(sql.utf8()));
       QString tableoid = PQgetvalue(tresult, 0, 0);
       PQclear(tresult);
@@ -190,7 +190,7 @@ to the rest of qgis...
 
       // Populate the field vector for this layer. The field vector contains
       // field name, type, length, and precision (if numeric)
-      sql = "select * from " + mSchemaTableName + " limit 1";
+      sql = "select * from " + mSchemaTableName + " limit 0";
 
       PGresult *result = PQexec(pd, (const char *) (sql.utf8()));
       //--std::cout << "Field: Name, Type, Size, Modifier:" << std::endl;
@@ -206,30 +206,24 @@ to the rest of qgis...
         int fieldModifier = PQfmod(result, i);
         QString fieldComment("");
 
-        sql = "select typelem from pg_type where typelem = " + typOid + " and typlen = -1";
-        //  //--std::cout << sql << std::endl;
-        PGresult *oidResult = PQexec(pd, (const char *) sql);
-        // get the oid of the "real" type
-        QString poid = PQgetvalue(oidResult, 0, PQfnumber(oidResult, "typelem"));
-        PQclear(oidResult);
+        sql = "SELECT typname, typlen FROM pg_type WHERE "
+            "oid = (SELECT typelem FROM pg_type WHERE "
+            "typelem = " + typOid + " AND typlen = -1)";
 
-        sql = "select typname, typlen from pg_type where oid = " + poid;
-        // //--std::cout << sql << std::endl;
-        oidResult = PQexec(pd, (const char *) sql);
+        PGresult* oidResult = PQexec(pd, (const char *) sql);
         QString fieldType = PQgetvalue(oidResult, 0, 0);
         QString fieldSize = PQgetvalue(oidResult, 0, 1);
         PQclear(oidResult);
 
-        sql = "select attnum from pg_attribute where attrelid = " + tableoid + " and attname = '" + fieldName + "'";
+        sql = "SELECT attnum FROM pg_attribute WHERE "
+            "attrelid = " + tableoid + " AND attname = '" + fieldName + "'";
         PGresult *tresult = PQexec(pd, (const char *)(sql.utf8()));
         QString attnum = PQgetvalue(tresult, 0, 0);
         PQclear(tresult);
 
-        sql = "SELECT description FROM pg_description WHERE objoid = " + tableoid +
-            " AND objsubid = " + attnum;
-
+        sql = "SELECT description FROM pg_description WHERE "
+            "objoid = " + tableoid + " AND objsubid = " + attnum;
         tresult = PQexec(pd, (const char*)(sql.utf8()));
-
         if (PQntuples(tresult) > 0)
           fieldComment = PQgetvalue(tresult, 0, 0);
         PQclear(tresult);
