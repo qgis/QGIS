@@ -169,19 +169,42 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
       calculateExtents();
       getFeatureCount();
 
+      // Get the relation oid for use in later queries
+      sql = "select oid from pg_class where relname = '" + mTableName + "' and relnamespace = ("
+	  "select oid from pg_namespace where nspname = '" + mSchemaName + "')";
+      PGresult *tresult= PQexec(pd, (const char *)(sql.utf8()));
+      QString tableoid = PQgetvalue(tresult, 0, 0);
+      PQclear(tresult);
+
+/* Code to extrac the table description. Needs a way to make is accesssible
+to the rest of qgis...
+
+      // Get the table description
+      sql = "SELECT description FROM pg_description WHERE "
+          "classoid = " + tableoid + " AND objsubid = 0";
+      tresult = PQexec(pd, (const char*) sql.utf8());
+      if (PQntuples(tresult) > 0)
+        mDescription = PQgetvalue(tresult, 0, 0);
+      PQclear(tresult);
+*/
+
       // Populate the field vector for this layer. The field vector contains
       // field name, type, length, and precision (if numeric)
       sql = "select * from " + mSchemaTableName + " limit 1";
 
-      PGresult* result = PQexec(pd, (const char *) (sql.utf8()));
+      PGresult *result = PQexec(pd, (const char *) (sql.utf8()));
       //--std::cout << "Field: Name, Type, Size, Modifier:" << std::endl;
+
+      // The queries inside this loop could possibly be combined into one
+      // single query - this would make the code run faster.
+
       for (int i = 0; i < PQnfields(result); i++)
       {
         QString fieldName = PQfname(result, i);
         int fldtyp = PQftype(result, i);
         QString typOid = QString().setNum(fldtyp);
         int fieldModifier = PQfmod(result, i);
-        QString fieldComment = "";
+        QString fieldComment("");
 
         sql = "select typelem from pg_type where typelem = " + typOid + " and typlen = -1";
         //  //--std::cout << sql << std::endl;
@@ -197,15 +220,18 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
         QString fieldSize = PQgetvalue(oidResult, 0, 1);
         PQclear(oidResult);
 
-        sql = "select oid from pg_class where relname = '" + mTableName + "' and relnamespace = ("
-	  "select oid from pg_namespace where nspname = '" + mSchemaName + "')";
-        PGresult *tresult= PQexec(pd, (const char *)(sql.utf8()));
-        QString tableoid = PQgetvalue(tresult, 0, 0);
+        sql = "select attnum from pg_attribute where attrelid = " + tableoid + " and attname = '" + fieldName + "'";
+        PGresult *tresult = PQexec(pd, (const char *)(sql.utf8()));
+        QString attnum = PQgetvalue(tresult, 0, 0);
         PQclear(tresult);
 
-        sql = "select attnum from pg_attribute where attrelid = " + tableoid + " and attname = '" + fieldName + "'";
-        tresult = PQexec(pd, (const char *)(sql.utf8()));
-        QString attnum = PQgetvalue(tresult, 0, 0);
+        sql = "SELECT description FROM pg_description WHERE objoid = " + tableoid +
+            " AND objsubid = " + attnum;
+
+        tresult = PQexec(pd, (const char*)(sql.utf8()));
+
+        if (PQntuples(tresult) > 0)
+          fieldComment = PQgetvalue(tresult, 0, 0);
         PQclear(tresult);
 
         QgsDebugMsg("Field: " + attnum + " maps to " + QString::number(i) + " " + fieldName + ", " 
