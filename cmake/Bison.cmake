@@ -33,7 +33,8 @@ MACRO(ADD_BISON_FILES _sources )
       GET_FILENAME_COMPONENT(_basename ${_current_FILE} NAME_WE)
 
       SET(_out ${CMAKE_CURRENT_BINARY_DIR}/${_basename}.cpp)
-
+      SET(_out_h ${CMAKE_CURRENT_BINARY_DIR}/${_basename}.h)  	 
+      SET(_out_hpp ${CMAKE_CURRENT_BINARY_DIR}/${_basename}.hpp)
 
 		# bison options:
 		# -t add debugging facilities
@@ -49,6 +50,18 @@ MACRO(ADD_BISON_FILES _sources )
          DEPENDS ${_in}
       )
 
-      SET(${_sources} ${${_sources}} ${_out} )
+      # Hack to change output file name to <include_file>.h
+      # instead of <include_file>.hpp
+      # (Instead of changing source code)
+
+      ADD_CUSTOM_COMMAND(  	 
+         OUTPUT ${_out_h} 	 
+         COMMAND ${CMAKE_COMMAND} 	 
+         ARGS 	 
+         -E copy ${_out_hpp} ${_out_h} 	 
+         DEPENDS ${_out} 	 
+      )
+
+      SET(${_sources} ${${_sources}} ${_out} ${_out_h} )
    ENDFOREACH (_current_FILE)
 ENDMACRO(ADD_BISON_FILES)
