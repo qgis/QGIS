@@ -1251,21 +1251,31 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
 
     if (!viewDef.isEmpty())
     {
-      // This regular expression needs more testing. Since the view
-      // definition comes from postgresql and has been 'standardised', we
-      // don't need to deal with everything that the user could put in a view
-      // definition. Does the regexp have to deal with the schema??
+      // Compiling and executing the regexp for each row from the above query
+      // can take quite a while - a database can easily have hundreds of
+      // rows. Working on the premise that we are only doing this to catch the
+      // cases where the view column has been renamed using the AS construct,
+      // we'll check for that first before doing the potentially
+      // time-consuming regular expression.
 
-      QRegExp s(".* \"?" + QRegExp::escape(temp.table_name) +
-                "\"?\\.\"?" + QRegExp::escape(temp.column_name) +
-                "\"? AS \"?(\\w+)\"?,* .*");
+        if (viewDef.contains("AS"))
+        {
+          // This regular expression needs more testing. Since the view
+          // definition comes from postgresql and has been 'standardised', we
+          // don't need to deal with everything that the user could put in a view
+          // definition. Does the regexp have to deal with the schema??
+
+          QRegExp s(".* \"?" + QRegExp::escape(temp.table_name) +
+                    "\"?\\.\"?" + QRegExp::escape(temp.column_name) +
+                    "\"? AS \"?(\\w+)\"?,* .*");
  
-      QgsDebugMsg(viewDef + "\n" + s.pattern());
+          QgsDebugMsg(viewDef + "\n" + s.pattern());
 
-      if (s.indexIn(viewDef) != -1)
-      {
-        temp.view_column_name = s.cap(1);
-      }
+          if (s.indexIn(viewDef) != -1)
+          {
+            temp.view_column_name = s.cap(1);
+          }
+        }
     }
 
     QgsDebugMsg(temp.view_schema + "." 
