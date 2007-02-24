@@ -43,6 +43,22 @@ ELSE (WIN32)
    ADD_EXECUTABLE(qgis ${QGIS_APP_SRCS})
 ENDIF (WIN32)
 
+# This sets runpath to the installation directory
+SET_TARGET_PROPERTIES(qgis PROPERTIES
+  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib
+  BUILD_WITH_INSTALL_RPATH true
+)
+
+# Uncomment this to set runpath to the directory path specified at compile time
+#SET_TARGET_PROPERTIES(qgis PROPERTIES
+#  INSTALL_RPATH_USE_LINK_PATH true
+#)
+
+# Uncomment this to set runpath relative to executable
+#SET_TARGET_PROPERTIES(qgis PROPERTIES
+#  LINK_FLAGS "-Wl,-rpath,'\$\$ORIGIN/../lib'"
+#)
+
 TARGET_LINK_LIBRARIES(qgis
   ${QT_LIBRARIES}
   qgis_core
