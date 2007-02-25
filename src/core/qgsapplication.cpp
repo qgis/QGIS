@@ -15,6 +15,7 @@
 /* $Id$ */
 
 #include "qgsapplication.h"
+#include "qgslogger.h"
 #include <QFile>
 #include <QDir>
 
@@ -50,9 +51,10 @@ QgsApplication::QgsApplication(int & argc, char ** argv, bool GUIenabled)
   // and then falling back to the paths set in the make process
   if (QFile::exists(applicationDirPath()+"/../share/qgis/images/icons/qgis-icon.png"))
   {
-    mPrefixPath = applicationDirPath();
-    mPluginPath = mPrefixPath + QString("/../lib/qgis");
-    mPkgDataPath = mPrefixPath + QString("/../share/qgis");
+    QgsDebugMsg("Using data/plugin relative to " + applicationDirPath() + "/..");
+    mPrefixPath = applicationDirPath() + QString("/..");
+    mPluginPath = mPrefixPath + QString("/lib/qgis");
+    mPkgDataPath = mPrefixPath + QString("/share/qgis");
   }
   else //fall back to make specified paths
   {
