@@ -117,6 +117,7 @@ void QgsHelpViewer::loadContext(const QString &contextId)
     else
     { 
       QTextStream in(&file);
+      in.setCodec("UTF-8"); // Help files must be in Utf-8
       while (!in.atEnd()) {
         QString line = in.readLine();
         helpContents += line;
