@@ -1,0 +1,26 @@
+<h3>Lägg till PostGIS lager</h3>
+Denna dialogruta gör det möjligt att lägga till PostGIS lager (tabeller
+ med geometrikolumner) till QGIS kartblad.
+<h4>Uppkopplingar</h4>
+<ul>
+
+<li>Välj uppkopplingen som skall användas från rull-listan och
+    välj <i>Koppla upp</i> 
+
+<li>Om det inte finns några uppkopplingar, använda knappen <i>Ny</i>
+    för att skapa en uppkoppling.
+
+<li>För att redigera ett lager, klicka på knappen <i>Redigera</i>.
+</ul>
+<h4>Lägga till lager</h4>
+För att lägga till ett lager:
+<ol>
+<li>Välj önskad uppkoppling från rull-listan.
+<li>Klicka <i>Koppla upp</i>.
+<li>Hitta lagret du vill lägga till och klicka på det för att välja det.
+<li>Du kan välja ytterligare lager genom att hålla nere Ctrl-tangenten när du klickar.
+<li>Klicka <i>Lägg till</i> för att lägga till lagret/lagren till kartan.
+</ol>
+<h4>Filtrera ett lager</h4>
+För att filtrera ett lager inan du lägger till det till kartan, dubbeklicka på namnet. Detta öppnar frågebyggaren, som gör det möjligt att skapa en SQL-fråga för att filtrera poster.
+

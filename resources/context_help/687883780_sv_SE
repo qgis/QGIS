@@ -1,0 +1,17 @@
+<h3>Mätverktyg</h3>
+
+Det finns två mätverktyg: längd och area. För närvarande ger
+ mätverktyget bara resultat i metriska enheter. Ett klick med högra
+ musknappen avslutar mätningen, ett dubbeklick med högra musknappen
+ startar en ny mätning.
+
+<h4>Mäta längd</h4>
+
+För att mäta längd, välj verktyget och klicka längs vägen du skall
+ mäta. Längden för varje segment visas, och även total längd för hela
+ vägen.
+
+<h4>Mäta area</h4>
+
+För att mäta area, välj verktyget och klicka för att skapa en
+ area. Den totala arean visas medan du klickar.
