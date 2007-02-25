@@ -439,7 +439,7 @@ void QgisApp::createActions()
   mActionAddRasterLayer= new QAction(QIcon(myIconPath+"/mActionAddRasterLayer.png"), tr("Add a Raster Layer..."), this);
   mActionAddRasterLayer->setShortcut(tr("R","Add a Raster Layer"));
   mActionAddRasterLayer->setStatusTip(tr("Add a Raster Layer"));
-  assert(connect(mActionAddRasterLayer, SIGNAL(triggered()), this, SLOT(addRasterLayer())));
+  connect(mActionAddRasterLayer, SIGNAL(triggered()), this, SLOT(addRasterLayer()));
   //
   mActionAddLayer= new QAction(QIcon(myIconPath+"/mActionAddLayer.png"), tr("Add a PostGIS Layer..."), this);
   mActionAddLayer->setShortcut(tr("D","Add a PostGIS Layer"));
@@ -451,7 +451,7 @@ void QgisApp::createActions()
 //  std::cout << "HAVE_POSTGRESQL not defined" << std::endl; 
 //  assert(0);
 //#endif
-  assert(connect(mActionAddLayer, SIGNAL(triggered()), this, SLOT(addDatabaseLayer())));
+  connect(mActionAddLayer, SIGNAL(triggered()), this, SLOT(addDatabaseLayer()));
   //
   mActionNewVectorLayer= new QAction(QIcon(myIconPath+"/mActionNewVectorLayer.png"), tr("New Vector Layer..."), this);
   mActionNewVectorLayer->setShortcut(tr("N","Create a New Vector Layer"));
