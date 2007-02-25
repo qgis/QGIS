@@ -1575,7 +1575,7 @@ Python support will be disabled.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1380"/>
         <source>Version </source>
-        <translation>Version</translation>
+        <translation>Version </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1387"/>
@@ -2293,7 +2293,7 @@ Python support will be disabled.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="527"/>
         <source>Add All To Overview</source>
-        <translation>Lägg till Allt i Översikten</translation>
+        <translation>Lägg till allt i översikten</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="528"/>
@@ -2309,7 +2309,7 @@ Python support will be disabled.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="532"/>
         <source>Remove All From Overview</source>
-        <translation>Ta Bort Allt från Översikten</translation>
+        <translation>Ta bort allt från översikten</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="533"/>
@@ -2325,7 +2325,7 @@ Python support will be disabled.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="537"/>
         <source>Show All Layers</source>
-        <translation>Visa Alla Lager</translation>
+        <translation>Visa alla lager</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="538"/>
@@ -2341,7 +2341,7 @@ Python support will be disabled.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="542"/>
         <source>Hide All Layers</source>
-        <translation>Göm Alla Lager</translation>
+        <translation>Göm alla lager</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="543"/>
@@ -2656,7 +2656,7 @@ Python support will be disabled.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="684"/>
         <source>In Overview</source>
-        <translation>i översikten</translation>
+        <translation>I översikten</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="685"/>
@@ -3245,13 +3245,13 @@ Compiled against Qt </source>
         <location filename="../src/app/qgisapp.cpp" line="663"/>
         <source>T</source>
         <comment>Show most toolbars</comment>
-        <translation type="unfinished"></translation>
+        <translation>T</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="669"/>
         <source>Ctrl+T</source>
         <comment>Hide most toolbars</comment>
-        <translation type="unfinished">Ctrl+T</translation>
+        <translation>Ctrl+T</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="343"/>
@@ -3296,22 +3296,22 @@ Compiled against Qt </source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3411"/>
         <source>Provider does not support deletion</source>
-        <translation type="unfinished">Datapluginet stödjer inte radering</translation>
+        <translation>Datapluginet stödjer inte radering</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3412"/>
         <source>Data provider does not support deleting features</source>
-        <translation type="unfinished">Datapluginet stödjer inte radering av objekt</translation>
+        <translation>Datapluginet stödjer inte radering av objekt</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3418"/>
         <source>Layer not editable</source>
-        <translation type="unfinished">Lagret kan inte redigeras</translation>
+        <translation>Lagret kan inte redigeras</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3419"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
-        <translation type="unfinished">Nuvarande lager är ej redigerbart. Välj &apos;Tillåt redigering&apos; i verktygsraden för digitalisering.</translation>
+        <translation>Nuvarande lager är ej redigerbart. Välj &apos;Tillåt redigering&apos; i verktygsraden för digitalisering.</translation>
     </message>
 </context>
 <context>
@@ -11541,7 +11541,7 @@ Detaljerad felinformation:</translation>
     <message>
         <location filename="../src/ui/qgsnewconnectionbase.ui" line="108"/>
         <source>Save Password</source>
-        <translation>Spara Lösenord</translation>
+        <translation>Spara lösenord</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewconnectionbase.ui" line="290"/>
@@ -11561,7 +11561,7 @@ Detaljerad felinformation:</translation>
     <message>
         <location filename="../src/ui/qgsnewconnectionbase.ui" line="64"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Restrict the search to the public schema for spatial tables not in the geometry_columns table&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Begränsa sökningen till det allmäna schemat för de rumsliga tabeller som inte finns i tabelln geometri_kolumner&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Begränsa sökningen till det allmäna schemat för de rumsliga tabeller som inte finns i tabellen geometry_columns&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewconnectionbase.ui" line="67"/>
@@ -11571,7 +11571,7 @@ Detaljerad felinformation:</translation>
     <message>
         <location filename="../src/ui/qgsnewconnectionbase.ui" line="70"/>
         <source>Only look in the &apos;public&apos; schema</source>
-        <translation>Leta bara i det &apos;allmänna&apos; schemat</translation>
+        <translation>Leta bara i &apos;public&apos; schema</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewconnectionbase.ui" line="87"/>
@@ -11581,12 +11581,12 @@ Detaljerad felinformation:</translation>
     <message>
         <location filename="../src/ui/qgsnewconnectionbase.ui" line="90"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;&gt;Restricts the displayed tables to those that are in the geometry_columns table. This can speed up the initial display of spatial tables.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;&gt;Begränsa visade tabeller till de som finns i tabellen geometri_kolumner. Detta kan göra första visningen av rumsliga tabeller snabbare.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;&gt;Begränsa visade tabeller till de som finns i tabellen geometry_columns. Detta kan göra första visningen av rumsliga tabeller snabbare.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewconnectionbase.ui" line="93"/>
         <source>Only look in the geometry_columns table</source>
-        <translation>Leta bara i tabellen geometri_kolumner</translation>
+        <translation>Leta bara i tabellen över &apos;geometry_columns&apos;</translation>
     </message>
 </context>
 <context>
@@ -12276,7 +12276,7 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; Specificera sökradie som procent av katrans bredd.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;OBS:&lt;/span&gt; Specificera sökradie som procent av katrans bredd.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
@@ -15727,7 +15727,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="128"/>
         <source>Remove All</source>
-        <translation>Ta Bort Alla</translation>
+        <translation>Ta bort alla</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="333"/>
