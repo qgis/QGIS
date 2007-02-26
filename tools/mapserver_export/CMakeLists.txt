@@ -29,6 +29,23 @@ INCLUDE_DIRECTORIES (
 
 ADD_EXECUTABLE (msexport MACOSX_BUNDLE ${MSEXPORT_SRCS} ${MSEXPORT_MOC_SRCS})
 
+# This sets runpath to the installation directory
+SET_TARGET_PROPERTIES(msexport PROPERTIES
+  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib
+  BUILD_WITH_INSTALL_RPATH true
+)
+
+# Uncomment this to set runpath to the directory path specified at compile time
+#SET_TARGET_PROPERTIES(msexport PROPERTIES
+#  INSTALL_RPATH_USE_LINK_PATH true
+#)
+
+# Uncomment this to set runpath relative to executable
+#SET_TARGET_PROPERTIES(msexport PROPERTIES
+#  LINK_FLAGS "-Wl,-rpath,'\$\$ORIGIN/../lib'"
+#)
+
+
 TARGET_LINK_LIBRARIES (msexport
    ${QT_LIBRARIES}
    ${PYTHON_LIBRARIES}
