@@ -139,7 +139,7 @@ Section "Quantum GIS Application" SEC01
 
 SectionEnd
 
-Section "Development headers" SEC03
+Section "Development headers" SEC02
  SetOutPath "$INSTDIR\include"
  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\include\*.h"
 SectionEnd
