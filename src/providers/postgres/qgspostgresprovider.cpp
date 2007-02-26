@@ -613,7 +613,7 @@ void QgsPostgresProvider::getFeatureAttributes(int key, int &row,
     {
       // Add the attribute to the feature
 	QString val = QString::fromUtf8(PQgetvalue(attr, 0, 0));
-  f.addAttribute(i, QgsFeatureAttribute(fld, val));
+	f.addAttribute(*iter, QgsFeatureAttribute(fld, val)); 
     }
     PQclear(attr);
   }
