@@ -14,6 +14,8 @@
 bin_PROGRAMS = qgis_help
 
 PKGDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
+PLUGINPATH=-DPLUGINPATH=\"$(pluginpath)\"
+PREFIX=-DPREFIX=\"$(prefix)\"
 
 
 %.moc.cpp: %.h
@@ -35,6 +37,10 @@ qgis_help_SOURCES = main.cpp \
 									qgshelpserver.cpp \
 									qgshelpviewer.h \
 									qgshelpviewer.cpp \
+							     	../core/qgsapplication.h \
+							     	../core/qgsapplication.cpp \
+								../core/qgslogger.h \
+								../core/qgslogger.cpp \
 				       $(qgis_help_UI)			\
 				       $(qgis_help_MOC)
 
@@ -42,7 +48,7 @@ BUILT_SOURCES = $(qgis_help_MOC) $(qgis_help_UI)
 
 qgis_help_LDADD = $(LDADD) $(QT_LDADD) -lsqlite3
 
-qgis_help_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(PKGDATAPATH)
+qgis_help_CXXFLAGS = -I../core $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(PKGDATAPATH) $(PLUGINPATH) $(PREFIX)
 
 CLEANFILES = $(BUILT_SOURCES)
 
