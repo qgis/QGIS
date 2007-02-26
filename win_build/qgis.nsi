@@ -90,6 +90,9 @@ ShowInstDetails show
 ShowUnInstDetails show
 
 Section "Quantum GIS Application" SEC01
+  ;this section is mandatory
+  SectionIn RO
+
   ;Set the reg key so we get default toolbar layout
   !include qgis_window_geometry.nsh
   SetOutPath "$INSTDIR"
