@@ -92,6 +92,10 @@ ShowUnInstDetails show
 Section "Quantum GIS Application" SEC01
   ;this section is mandatory
   SectionIn RO
+  ;Added by Tim to install for all users not just the logged in user..
+  ;make sure this is at the top of the section
+  SetShellVarContext all
+
 
   ;Set the reg key so we get default toolbar layout
   !include qgis_window_geometry.nsh
@@ -135,7 +139,13 @@ Section "Quantum GIS Application" SEC01
 
 SectionEnd
 
-Section "Sample Data - Spearfish (GRASS)" SEC02
+Section "Development headers" SEC02
+ SetOutPath "$INSTDIR\include"
+ File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\include\*.h"
+SectionEnd
+
+; /o means unchecked by default
+Section /o "Sample Data - Spearfish (GRASS)" SEC03
  SetOutPath "$INSTDIR\SampleData\"
  NSISdl::download http://grass.itc.it/sampledata/spearfish_grass60data-0.3.zip spearfish.zip
  !insertmacro ZIPDLL_EXTRACT "$INSTDIR\SampleData\spearfish.zip" "$INSTDIR\SampleData\" "<ALL>"
@@ -149,12 +159,8 @@ Section "Sample Data - Spearfish (GRASS)" SEC02
 
 SectionEnd
 
-Section "Development headers" SEC03
- SetOutPath "$INSTDIR\include"
- File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\include\*.h"
-SectionEnd
-
-Section "Sample Data - Alaska (Non GRASS)" SEC04
+; /o means unchecked by default
+Section /o "Sample Data - Alaska (Non GRASS)" SEC04
  SetOutPath "$INSTDIR\SampleData\Alaska\"
  NSISdl::download http://qgis.org/uploadfiles/qgis_sample_data.zip alaska.zip
  !insertmacro ZIPDLL_EXTRACT "$INSTDIR\SampleData\Alaska\alaska.zip" "$INSTDIR\SampleData\Alaska" "<ALL>"
@@ -165,6 +171,10 @@ SectionEnd
 
 
 Section -AdditionalIcons
+  ;Added by Tim to install for all users not just the logged in user..
+  ;make sure this is at the top of the section
+  SetShellVarContext all
+
   SetOutPath $INSTDIR
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
@@ -187,8 +197,9 @@ SectionEnd
 ; Section descriptions
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "Main application files - you really need this!"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "20mb Download of sample data in GRASS format (not required if you have your own data already)"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "20mb Download of sample shapefiles and TIFF data for Alaska (not required if you have your own data already)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Header files for developers."
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "20mb Download of sample data in GRASS format (not required if you have your own data already)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "20mb Download of sample shapefiles and TIFF data for Alaska (not required if you have your own data already)"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 
@@ -204,6 +215,10 @@ FunctionEnd
 
 
 Section Uninstall
+  ;Added by Tim to install for all users not just the logged in user..
+  ;make sure this is at the top of the section
+  SetShellVarContext all
+
   # remove the variable
   Push PROJ_LIB
   Call un.DeleteEnvStr
