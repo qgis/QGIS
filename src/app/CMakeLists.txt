@@ -151,7 +151,7 @@ ENDIF (PYTHON_FOUND)
 QT4_WRAP_CPP(QGIS_APP_MOC_SRCS ${QGIS_APP_MOC_HDRS})
 
 
-IF (WIN32)
+IF (WIN32 AND NOT MSVC)
 
   # Icon for windows
   # Note: can't include .rc directly to source files
@@ -178,7 +178,7 @@ IF (WIN32)
     SET(QGIS_APP_SRCS ${QGIS_APP_SRCS} icon.rc)
   ENDIF( MINGW )
 
-ENDIF (WIN32)
+ENDIF (WIN32 AND NOT MSVC)
 
 # This is the right way to include icon in MSVC but currently
 # it ends with error that qgis_win322.ico is old DIB and it has to be converted
