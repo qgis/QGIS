@@ -72,9 +72,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer * lyr,
   if(layer->getDataProvider())//enable spatial index button group if supported by provider
   {
       int capabilities=layer->getDataProvider()->capabilities();
-      if(capabilities&QgsVectorDataProvider::CreateSpatialIndex)
+      if(!(capabilities&QgsVectorDataProvider::CreateSpatialIndex))
       {
-	  indexGroupBox->setEnabled(true);
+	  indexGroupBox->setEnabled(false);
       }
   }
 
