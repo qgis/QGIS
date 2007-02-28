@@ -1724,7 +1724,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
   }
   else
   {
-    QgsDebug( " unable to get data provider" );
+    QgsDebugMsg( " unable to get data provider" );
 
     return false;
   }

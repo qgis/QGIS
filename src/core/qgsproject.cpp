@@ -324,7 +324,7 @@ QgsProject * QgsProject::theProject_;
       */ 
      void clear()
      {
-         QgsDebug( "Clearing project properties Impl->clear();" );
+         QgsDebugMsg( "Clearing project properties Impl->clear();" );
 
          properties_.clearKeys();
          title = "";
@@ -582,7 +582,7 @@ static QString _getVersion(QDomDocument const &doc)
 
     if (!nl.count())
     {
-        QgsDebug(" unable to find qgis element in project file");
+        QgsDebugMsg(" unable to find qgis element in project file");
         return "";
     }
     

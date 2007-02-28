@@ -3,6 +3,9 @@
 #ifndef QGSSVNVERSION
 #include "qgssvnversion.h"
 #endif
+
+#include "qgsconfig.h"
+
 // Version constants
 //
 
