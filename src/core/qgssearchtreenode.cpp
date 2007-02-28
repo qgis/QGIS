@@ -249,7 +249,7 @@ bool QgsSearchTreeNode::checkAgainst(const QgsAttributeMap& attributes)
       // in what format should they be?
       if (value1.isNumeric() || value2.isNumeric())
       {
-        mError = QObject::tr("Regular expressions on numeric values don't make sense. Use comparison insted.");
+        mError = QObject::tr("Regular expressions on numeric values don't make sense. Use comparison instead.");
         return false;
       }
       
