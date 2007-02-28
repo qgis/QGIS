@@ -1696,6 +1696,34 @@ void QgsLegend::legendLayerZoom()
   QgsProject::instance()->dirty(true);
 }
 
+void QgsLegend::legendLayerZoomNative()
+{
+  QgsLegendItem* citem=dynamic_cast<QgsLegendItem*>(currentItem());
+  if(!citem)
+  {
+      return;
+  }
+  QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(citem);
+  if(!ll)
+  {
+    return;
+  }
+  QgsRasterLayer *layer =  dynamic_cast<QgsRasterLayer*>(ll->firstMapLayer()); 
+  if(layer)
+  {
+    QgsDebugMsg("Raster units per pixel  : " + QString::number(layer->rasterUnitsPerPixel()));
+    QgsDebugMsg("Mupp before             : " + QString::number(mMapCanvas->mupp()));
+
+    mMapCanvas->zoom(fabs( layer->rasterUnitsPerPixel() / mMapCanvas->mupp()));
+    mMapCanvas->refresh();
+
+    QgsDebugMsg("Mupp after              : " + QString::number(mMapCanvas->mupp()));
+
+    // notify the project we've made a change
+    QgsProject::instance()->dirty(true);
+  }
+}
+
 void QgsLegend::legendLayerAttributeTable()
 {
 

@@ -216,6 +216,10 @@ public slots:
   /**Zooms to extent of the current legend layer (considers there may be several
   legend layer files*/
   void legendLayerZoom();
+
+ /***Zooms so that the pixels of the raster layer occupies exactly one screen pixel.
+     Only works on raster layers*/
+  void legendLayerZoomNative();
   
   /**Show attribute table*/
   void legendLayerAttributeTable();

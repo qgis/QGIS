@@ -1073,3 +1073,13 @@ void QgsMapCanvas::writeProject(QDomDocument & doc)
 
   
 }
+
+void QgsMapCanvas::zoom(double scaleFactor)
+{
+  
+  QgsRect r = mMapRender->extent();
+  r.scale(scaleFactor);
+  setExtent(r);
+  refresh();
+}
+

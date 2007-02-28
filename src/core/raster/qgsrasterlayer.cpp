@@ -1057,10 +1057,10 @@ bool QgsRasterLayer::draw(QPainter * theQPainter,
   myRasterViewPort->topLeftPoint = theQgsMapToPixel->transform(myRasterExtent.xMin(), myRasterExtent.yMax());
   myRasterViewPort->bottomRightPoint = theQgsMapToPixel->transform(myRasterExtent.xMax(), myRasterExtent.yMin());
 
-  myRasterViewPort->drawableAreaXDimInt =
-    abs(static_cast<int> (myRasterViewPort->clippedWidthInt  / theQgsMapToPixel->mapUnitsPerPixel() * adfGeoTransform[1]));
-  myRasterViewPort->drawableAreaYDimInt =
-    abs(static_cast<int> (myRasterViewPort->clippedHeightInt / theQgsMapToPixel->mapUnitsPerPixel() * adfGeoTransform[5]));
+  myRasterViewPort->drawableAreaXDimInt = static_cast<int>
+    (fabs( (myRasterViewPort->clippedWidthInt  / theQgsMapToPixel->mapUnitsPerPixel() * adfGeoTransform[1])) + 0.5);
+  myRasterViewPort->drawableAreaYDimInt = static_cast<int>
+    (fabs( (myRasterViewPort->clippedHeightInt / theQgsMapToPixel->mapUnitsPerPixel() * adfGeoTransform[5])) + 0.5);
 
 #ifdef QGISDEBUG
   QgsLogger::debug("QgsRasterLayer::draw: mapUnitsPerPixel", theQgsMapToPixel->mapUnitsPerPixel(), 1, __FILE__,\
@@ -5262,5 +5262,17 @@ const unsigned int QgsRasterLayer::getBandCount()
   return rasterStatsVector.size();
 };
 
+double QgsRasterLayer::rasterUnitsPerPixel()
+{
+ 
+  // We return one raster pixel per map unit pixel
+  // One raster pixel can have several raster units...
+
+  // We can only use one of the adfGeoTransform[], so go with the
+   // horisontal one.
+  
+  return fabs(adfGeoTransform[1]);
+}
+ 
 
 // ENDS

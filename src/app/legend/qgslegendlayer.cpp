@@ -24,6 +24,7 @@
 #include "qgslegendlayerfile.h"
 #include "qgslegendlayerfilegroup.h"
 #include "qgslegendsymbologyitem.h"
+#include "qgslogger.h"
 
 #include "qgsapplication.h"
 #include "qgsfield.h"
@@ -469,7 +470,11 @@ void QgsLegendLayer::addToPopupMenu(QMenu& theMenu)
   // zoom to layer extent
   theMenu.addAction(QIcon(iconsPath+QString("/mActionZoomToLayer.png")),
                     tr("&Zoom to layer extent"), legend(), SLOT(legendLayerZoom()));
-  
+  if (firstLayer && firstLayer->type() == QgsMapLayer::RASTER)
+  {
+    theMenu.addAction(tr("&Zoom to best scale (100%)"), legend(), SLOT(legendLayerZoomNative()));
+  }
+
   // show in overview
   QAction* showInOverviewAction = theMenu.addAction(tr("&Show in overview"), this, SLOT(showInOverview()));
   showInOverviewAction->setCheckable(true); // doesn't support tristate
