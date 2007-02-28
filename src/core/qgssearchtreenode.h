@@ -166,7 +166,8 @@ public:
   QgsSearchTreeValue(double number) { mType = valNumber; mNumber = number; }
   QgsSearchTreeValue(int error, QString errorMsg) { mType = valError; mNumber = error; mString = errorMsg; }
 
-  static int compare(QgsSearchTreeValue& value1, QgsSearchTreeValue& value2);
+  static int compare(QgsSearchTreeValue& value1, QgsSearchTreeValue& value2,
+                     Qt::CaseSensitivity = Qt::CaseSensitive);
 
   bool isNumeric() { return mType == valNumber; }
   bool isError() { return mType == valError; }
