@@ -14,6 +14,7 @@
 %Include qgscoordinatetransform.sip
 %Include qgsdataprovider.sip
 %Include qgsdatasourceuri.sip
+%Include qgsdistancearea.sip
 %Include qgsfeature.sip
 %Include qgsfeatureattribute.sip
 %Include qgsfield.sip
