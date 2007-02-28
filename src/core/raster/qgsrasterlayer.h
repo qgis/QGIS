@@ -294,6 +294,10 @@ public:
     /** \brief Query gdal to find out the WKT projection string for this layer. This implements the virtual method of the same name defined in QgsMapLayer*/
     QString getProjectionWKT();
 
+    /** \brief Returns the number of raster units per each raster pixel. For rasters with world file, this is
+     normally the first row (without the sign) in that file */
+    double rasterUnitsPerPixel();
+
     /** \brief Draws a thumbnail of the rasterlayer into the supplied pixmap pointer */
      void drawThumbnail(QPixmap * theQPixmap);
 

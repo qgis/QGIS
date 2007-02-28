@@ -230,6 +230,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! returns last position of mouse cursor
     QPoint mouseLastXY();
   
+    //! zooms with the factor supplied. Factor > 1 zooms in
+    void zoom(double scaleFactor);
+
+
   public slots:
 
     /**Sets dirty=true and calls render()*/
