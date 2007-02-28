@@ -165,6 +165,15 @@ QString QgsVectorLayer::capabilitiesString() const
   return 0;
 }
 
+QString QgsVectorLayer::dataComment() const
+{
+  if (mDataProvider)
+  {
+    return mDataProvider->dataComment();
+  }
+  return QString();
+}
+
 
 QString QgsVectorLayer::providerType() const
 {

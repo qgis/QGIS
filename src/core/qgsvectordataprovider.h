@@ -155,6 +155,12 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
        */
       virtual const QgsFieldMap & fields() const = 0;
 
+      /**
+       * Return a short comment for the data that this provider is
+       * providing access to (e.g. the comment for postgres table).
+       */
+      virtual QString dataComment() const;
+
       /** 
        * Reset the layer to clear any spatial filtering or other contstraints that
        * would prevent the entire record set from being traversed by call to 

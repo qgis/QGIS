@@ -82,6 +82,9 @@ public:
   /** Capabilities for this layer in a friendly format. */
   QString capabilitiesString() const;
 
+  /** Returns a comment for the data in the layer */
+  QString dataComment() const;
+
   /** Set the primary display field to be used in the identify results dialog */
   void setDisplayField(QString fldName=0);
 
