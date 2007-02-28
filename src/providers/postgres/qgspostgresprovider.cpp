@@ -176,17 +176,13 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
       QString tableoid = PQgetvalue(tresult, 0, 0);
       PQclear(tresult);
 
-/* Code to extrac the table description. Needs a way to make is accesssible
-to the rest of qgis...
-
       // Get the table description
       sql = "SELECT description FROM pg_description WHERE "
-          "classoid = " + tableoid + " AND objsubid = 0";
+          "objoid = " + tableoid + " AND objsubid = 0";
       tresult = PQexec(pd, (const char*) sql.utf8());
       if (PQntuples(tresult) > 0)
-        mDescription = PQgetvalue(tresult, 0, 0);
+        mDataComment = PQgetvalue(tresult, 0, 0);
       PQclear(tresult);
-*/
 
       // Populate the field vector for this layer. The field vector contains
       // field name, type, length, and precision (if numeric)
@@ -683,6 +679,11 @@ void QgsPostgresProvider::getFeatureGeometry(int key, QgsFeature& f)
 const QgsFieldMap & QgsPostgresProvider::fields() const
 {
   return attributeFields;
+}
+
+QString QgsPostgresProvider::dataComment() const
+{
+  return mDataComment;
 }
 
 void QgsPostgresProvider::reset()

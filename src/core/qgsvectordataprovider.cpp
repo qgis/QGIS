@@ -59,6 +59,10 @@ void QgsVectorDataProvider::getFeatureGeometry(int key, QgsFeature *f)
 {
 }
 
+QString QgsVectorDataProvider::dataComment() const
+{
+    return QString();
+}
 
 bool QgsVectorDataProvider::addFeatures(QgsFeatureList & flist)
 {

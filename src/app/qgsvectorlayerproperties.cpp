@@ -380,6 +380,15 @@ QString QgsVectorLayerProperties::getMetadata()
   myMetadataQString += tr("General:");
   myMetadataQString += "</td></tr>";
 
+  // data comment
+  if (!(layer->dataComment().isEmpty()))
+  {
+    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += tr("Layer comment: ") + 
+        layer->dataComment();
+    myMetadataQString += "</td></tr>";
+  }
+
   //storage type
   myMetadataQString += "<tr><td bgcolor=\"white\">";
   myMetadataQString += tr("Storage type of this layer : ") + 

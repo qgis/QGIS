@@ -185,6 +185,12 @@ class QgsPostgresProvider:public QgsVectorDataProvider
      */
     const QgsFieldMap & fields() const;
 
+    /**
+     * Return a short comment for the data that this provider is
+     * providing access to (e.g. the comment for postgres table).
+     */
+    QString dataComment() const;
+
     /** Reset the layer - for a PostgreSQL layer, this means clearing the PQresult
      * pointer and setting it to 0
      */
@@ -335,6 +341,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     std::vector < QgsFeature > features;
     QgsFieldMap attributeFields;
     std::map < int, int > attributeFieldsIdMap;
+    QString mDataComment;
 
     //! Data source URI struct for this layer
     QgsDataSourceURI mUri;
