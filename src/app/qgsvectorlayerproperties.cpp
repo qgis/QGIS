@@ -18,18 +18,21 @@
  /* $Id$ */
 
 #include "qgsvectorlayerproperties.h"
+
 #include "qgsattributeactiondialog.h"
+#include "qgscontexthelp.h"
 #include "qgscontinuouscolordialog.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgraduatedsymboldialog.h"
 #include "qgslabel.h"
 #include "qgslabeldialog.h"
 #include "qgslayerprojectionselector.h"
+#include "qgslogger.h"
 #include "qgssinglesymboldialog.h"
 #include "qgsuniquevaluedialog.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgscontexthelp.h"
+
 #ifdef HAVE_POSTGRESQL
 #include "qgspgquerybuilder.h"
 #include "../providers/postgres/qgspostgresprovider.h"
@@ -407,7 +410,7 @@ QString QgsVectorLayerProperties::getMetadata()
 
   if ( vectorType < 0 || vectorType > QGis::Polygon )
   {
-      QgsDebug( "Invalid vector type" );
+      QgsDebugMsg( "Invalid vector type" );
   }
   else
   {
@@ -496,7 +499,7 @@ QString QgsVectorLayerProperties::getMetadata()
   }
   catch(QgsCsException &cse)
   {
-    QgsDebug( cse.what() );
+    QgsDebugMsg( cse.what() );
 
     myMetadataQString += "<tr><td bgcolor=\"white\">";
     myMetadataQString += tr("In project spatial reference system units : ");
