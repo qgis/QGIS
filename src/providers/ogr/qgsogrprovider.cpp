@@ -1492,7 +1492,7 @@ QgsSpatialRefSys QgsOgrProvider::getSRS()
   OGRSpatialReference * mySpatialRefSys = ogrLayer->GetSpatialRef();
   if (mySpatialRefSys == NULL)
   {
-    QgsLogger::warning("no spatial reference found"); 
+    QgsDebugMsg("no spatial reference found"); 
   }
   else
   {
