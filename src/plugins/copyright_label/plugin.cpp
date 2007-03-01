@@ -35,6 +35,7 @@ email                : tim@linfiniti.com
 #include <Q3SimpleRichText>
 #include <QPainter>
 #include <QMenu>
+#include <QDate>
 
 //non qt includes
 #include <iostream>
@@ -103,10 +104,15 @@ void QgsCopyrightLabelPlugin::projectRead()
     std::cout << "+++++++++ Copyright plugin - project read slot called...." << std::endl;
 #endif    //default text to start with - try to fetch it from qgsproject
 
+    QDate now;
+    QString defString;
 
-    mQFont.setFamily(QgsProject::instance()->readEntry("CopyrightLabel","/FontName","Arial"));
-    mQFont.setPointSize(QgsProject::instance()->readNumEntry("CopyrightLabel","/FontSize",14));
-    mLabelQString = QgsProject::instance()->readEntry("CopyrightLabel","/Label","&copy; QGIS 2006");
+    now = QDate::currentDate();
+    defString = "&copy QGIS " + now.toString("yyyy");
+
+    mQFont.setFamily(QgsProject::instance()->readEntry("CopyrightLabel","/FontName","Sans Serif"));
+    mQFont.setPointSize(QgsProject::instance()->readNumEntry("CopyrightLabel","/FontSize",9));
+    mLabelQString = QgsProject::instance()->readEntry("CopyrightLabel","/Label", defString);
     mPlacementIndex = QgsProject::instance()->readNumEntry("CopyrightLabel","/Placement",3);
     mEnable = QgsProject::instance()->readBoolEntry("CopyrightLabel","/Enabled",true);
     // todo - read & store state of font color
