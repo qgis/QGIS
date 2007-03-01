@@ -108,7 +108,7 @@ void QgsCopyrightLabelPlugin::projectRead()
 
     mQFont.setFamily(QgsProject::instance()->readEntry("CopyrightLabel","/FontName","Arial"));
     mQFont.setPointSize(QgsProject::instance()->readNumEntry("CopyrightLabel","/FontSize",14));
-    mLabelQString = QgsProject::instance()->readEntry("CopyrightLabel","/Label","&copy; QGIS 2006");
+    mLabelQString = QgsProject::instance()->readEntry("CopyrightLabel","/Label","&copy; QGIS 2007");
     mPlacementIndex = QgsProject::instance()->readNumEntry("CopyrightLabel","/Placement",3);
     mEnable = QgsProject::instance()->readBoolEntry("CopyrightLabel","/Enabled",true);
     // todo - read & store state of font color
