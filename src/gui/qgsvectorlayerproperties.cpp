@@ -264,7 +264,6 @@ void QgsVectorLayerProperties::on_pbnApply_clicked()
   //
   // Set up sql subset query if applicable
   //
-#ifndef WIN32
 #ifdef HAVE_POSTGRESQL
   QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
   //see if we are dealing with a pg layer here
@@ -278,7 +277,6 @@ void QgsVectorLayerProperties::on_pbnApply_clicked()
     // update the extents of the layer (fetched from the provider)
     layer->updateExtents(); 
   }
-#endif
 #endif
   // set up the scale based layer visibility stuff....
   layer->setScaleBasedVisibility(chkUseScaleDependentRendering->isChecked());
@@ -324,7 +322,6 @@ void QgsVectorLayerProperties::on_pbnApply_clicked()
 
 void QgsVectorLayerProperties::on_pbnQueryBuilder_clicked()
 {
-#ifndef WIN32
 #ifdef HAVE_POSTGRESQL
   // launch the query builder using the PostgreSQL connection
   // from the provider
@@ -355,7 +352,6 @@ void QgsVectorLayerProperties::on_pbnQueryBuilder_clicked()
   }
   // delete the query builder object
   delete pqb;
-#endif
 #endif
 }
 
