@@ -277,7 +277,7 @@ signals:
     void xyCoordinates(QgsPoint & p);
 
     //! Emitted when the scale of the map changes
-    void scaleChanged(QString);
+    void scaleChanged(long);
 
     //! Emitted when the extents of the map change
     void extentsChanged();

@@ -1021,9 +1021,20 @@ void QgisApp::createStatusBar()
   mScaleLabel->setMinimumWidth(10);
   mScaleLabel->setMargin(3);
   mScaleLabel->setAlignment(Qt::AlignCenter);
-  QWhatsThis::add(mScaleLabel, tr("Displays the current map scale"));
-  QToolTip::add (mScaleLabel, tr("Current map scale"));
+//  QWhatsThis::add(mScaleLabel, tr("Displays the current map scale"));
+//  QToolTip::add (mScaleLabel, tr("Current map scale"));
   statusBar()->addWidget(mScaleLabel, 0,true);
+  mScaleEdit = new QLineEdit(QString(),statusBar());
+  mScaleEdit->setFont(myFont);
+  mScaleEdit->setMinimumWidth(10);
+  mScaleEdit->setMaximumWidth(100);
+  mScaleEdit->setMargin(0);
+  mScaleEdit->setAlignment(Qt::AlignLeft);
+  QWhatsThis::add(mScaleEdit, tr("Displays the current map scale"));
+  QToolTip::add (mScaleEdit, tr("Current map scale"));
+  statusBar()->addWidget(mScaleEdit, 0,true);
+  connect(mScaleEdit, SIGNAL(editingFinished()), this, SLOT(userScale()));
+
   //coords status bar widget
   mCoordsLabel = new QLabel(QString(), statusBar());
   mCoordsLabel->setMinimumWidth(10);
@@ -1161,8 +1172,8 @@ void QgisApp::setupConnections()
   connect(mMapCanvas->mapRender(), SIGNAL(projectionsEnabled(bool)), this, SLOT(projectionsEnabled(bool)));
   connect(mMapCanvas->mapRender(), SIGNAL(destinationSrsChanged()), this, SLOT(destinationSrsChanged()));
   connect(mMapCanvas, SIGNAL(extentsChanged()),this,SLOT(showExtents()));
-  connect(mMapCanvas, SIGNAL(scaleChanged(QString)), this, SLOT(showScale(QString)));
-  connect(mMapCanvas, SIGNAL(scaleChanged(QString)), this, SLOT(updateMouseCoordinatePrecision()));
+  connect(mMapCanvas, SIGNAL(scaleChanged(long)), this, SLOT(showScale(long)));
+  connect(mMapCanvas, SIGNAL(scaleChanged(long)), this, SLOT(updateMouseCoordinatePrecision()));
 
   connect(mRenderSuppressionCBox, SIGNAL(toggled(bool )), mMapCanvas, SLOT(setRenderFlag(bool)));
 }
@@ -3524,16 +3535,27 @@ void QgisApp::showMouseCoordinate(QgsPoint & p)
   }
 }
 
-void QgisApp::showScale(QString theScale)
+void QgisApp::showScale(long theScale)
 {
-  mScaleLabel->setText(theScale);
+  mScaleLabel->setText(tr("Scale 1: "));
+  mScaleEdit->setText(QString::number(theScale));
   // Set minimum necessary width
-  if ( mScaleLabel->width() > mScaleLabel->minimumWidth() )
+  if ( mScaleEdit->width() > mScaleEdit->minimumWidth() )
   {
-    mScaleLabel->setMinimumWidth(mScaleLabel->width());
+    mScaleEdit->setMinimumWidth(mScaleEdit->width());
   }
 }
 
+void QgisApp::userScale()
+{
+  bool ok;
+  double currentScale = mMapCanvas->getScale();
+  double wantedScale = mScaleEdit->text().toDouble(&ok);
+
+  if (ok)
+    mMapCanvas->zoom(wantedScale/currentScale);
+
+}
 void QgisApp::testButton()
 {
   /* QgsShapeFileLayer *sfl = new QgsShapeFileLayer("foo");
