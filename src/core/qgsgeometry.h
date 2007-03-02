@@ -237,7 +237,8 @@ class CORE_EXPORT QgsGeometry {
     /** Test for containment of a point (uses GEOS) */
     bool contains(QgsPoint* p) const;
 
-    /**Creates a geos geometry from this features geometry. Note, that the returned object needs to be deleted*/
+    /**Returns a geos geometry from the features geometry. Note that object pointer is cached (mGoes) and
+     should _not_ be deleted by the calling method*/
     GEOS_GEOM::Geometry* geosGeometry() const;
 
 

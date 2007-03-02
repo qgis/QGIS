@@ -157,7 +157,6 @@ void QgsGeometry::setWkbAndOwnership(unsigned char * wkb, size_t length)
   mDirtyWkb   = FALSE;
   mDirtyGeos  = TRUE;
   mDirtyWkt   = TRUE;
-
 }
     
 unsigned char * QgsGeometry::wkbBuffer() const
@@ -2190,7 +2189,7 @@ bool QgsGeometry::fast_intersects(const QgsRect& r) const
     rectwkt+="))";
     GEOS_GEOM::GeometryFactory *gf = new GEOS_GEOM::GeometryFactory();
     GEOS_IO::WKTReader *wktReader = new GEOS_IO::WKTReader(gf);
-    GEOS_GEOM::Geometry *geosRect = wktReader->read( qstrdup(rectwkt) );
+    GEOS_GEOM::Geometry *geosRect = wktReader->read(rectwkt.toLocal8Bit().data());
     
     try // geos might throw exception on error
     {
@@ -2209,7 +2208,6 @@ bool QgsGeometry::fast_intersects(const QgsRect& r) const
       QgsLogger::warning("GEOS: " + error);
     }
       
-    delete geosGeom;
     delete geosRect;
     delete gf;
     delete wktReader;
@@ -2501,8 +2499,6 @@ GEOS_GEOM::Geometry* QgsGeometry::geosGeometry() const
     {
       // No need to convert again
       return mGeos;
-      
-      // TODO: make mGeos useful - assign to it and clear mDirty before we return out of this function
     }
 
     if(!mGeometry)
@@ -2522,20 +2518,27 @@ GEOS_GEOM::Geometry* QgsGeometry::geosGeometry() const
     unsigned char *ptr;
     char lsb;
     QgsPoint pt;
-    int wkbtype;
+    QGis::WKBTYPE wkbtype;
+    bool hasZValue = false;
 
-    wkbtype = (mGeometry[0] == 1) ? mGeometry[1] : mGeometry[4];
+    //wkbtype = (mGeometry[0] == 1) ? mGeometry[1] : mGeometry[4];//MH: this does not work for 2.5D types
+    wkbtype = wkbType();
     switch(wkbtype)
-    {
-	case QGis::WKBPoint:
+      {
+      case QGis::WKBPoint25D:
+      case QGis::WKBPoint:
 	{
 	   x = (double *) (mGeometry + 5);
 	   y = (double *) (mGeometry + 5 + sizeof(double));
            
-           mDirtyGeos = FALSE;
-	   return geosGeometryFactory->createPoint(GEOS_GEOM::Coordinate(*x,*y));
+	   mDirtyGeos = FALSE;
+           mGeos = geosGeometryFactory->createPoint(GEOS_GEOM::Coordinate(*x,*y));
+	   mDirtyGeos = FALSE;
+	   return mGeos;
 	}
-	case QGis::WKBMultiPoint:
+      case QGis::WKBMultiPoint25D:
+	hasZValue = true;
+      case QGis::WKBMultiPoint:
 	{
 	    std::vector<GEOS_GEOM::Geometry*>* points=new std::vector<GEOS_GEOM::Geometry*>;
 	    ptr = mGeometry + 5;
@@ -2549,10 +2552,19 @@ GEOS_GEOM::Geometry* QgsGeometry::geosGeometry() const
 		y = (double *) ptr;
 		ptr += sizeof(double);
 		points->push_back(geosGeometryFactory->createPoint(GEOS_GEOM::Coordinate(*x,*y)));
+		if(hasZValue)
+		  {
+		    ptr += sizeof(double);
+		  }
 	    }
-	    return geosGeometryFactory->createMultiPoint(points);
+	    delete mGeos;
+	    mGeos = geosGeometryFactory->createMultiPoint(points);
+	    mDirtyGeos = FALSE;
+	    return mGeos;
 	}
-	case QGis::WKBLineString:
+      case QGis::WKBLineString25D:
+	hasZValue = true;
+      case QGis::WKBLineString:
 	{
       QgsDebugMsg("QgsGeometry::geosGeometry: Linestring found");
 
@@ -2567,10 +2579,19 @@ GEOS_GEOM::Geometry* QgsGeometry::geosGeometry() const
 		y = (double *) ptr;
 		ptr += sizeof(double);
 		sequence->add(GEOS_GEOM::Coordinate(*x,*y));
+		if(hasZValue)
+		  {
+		    ptr += sizeof(double);
+		  }
 	    }
-	    return geosGeometryFactory->createLineString(sequence); 
+	    delete mGeos;
+	    mGeos = geosGeometryFactory->createLineString(sequence);
+	    mDirtyGeos = FALSE;
+	    return mGeos;
 	}
-	case QGis::WKBMultiLineString:
+      case QGis::WKBMultiLineString25D:
+	hasZValue = true;
+      case QGis::WKBMultiLineString:
 	{
 	    std::vector<GEOS_GEOM::Geometry*>* lines=new std::vector<GEOS_GEOM::Geometry*>;
 	    numLineStrings = (int) (mGeometry[5]);
@@ -2590,14 +2611,23 @@ GEOS_GEOM::Geometry* QgsGeometry::geosGeometry() const
 		    y = (double *) ptr;
 		    ptr += sizeof(double);
 		    sequence->add(GEOS_GEOM::Coordinate(*x,*y));
+		    if(hasZValue)
+		      {
+			ptr += sizeof(double);
+		      }
 		}
 		lines->push_back(geosGeometryFactory->createLineString(sequence));
 	    }
-	    return geosGeometryFactory->createMultiLineString(lines);
+	    delete mGeos;
+	    mGeos = geosGeometryFactory->createMultiLineString(lines);
+	    mDirtyGeos = FALSE;
+	    return mGeos;
 	}
-	case QGis::WKBPolygon: 
+      case QGis::WKBPolygon25D:
+	hasZValue = true;
+      case QGis::WKBPolygon: 
 	{
-      QgsDebugMsg("Polygon found");
+	  QgsDebugMsg("Polygon found");
 
 	    // get number of rings in the polygon
 	    numRings = (int *) (mGeometry + 1 + sizeof(int));
@@ -2623,6 +2653,10 @@ GEOS_GEOM::Geometry* QgsGeometry::geosGeometry() const
 		    y = (double *) ptr;
 		    ptr += sizeof(double);
 		    sequence->add(GEOS_GEOM::Coordinate(*x,*y));
+		    if(hasZValue)
+		      {
+			ptr += sizeof(double);
+		      }
 		}
 		GEOS_GEOM::LinearRing* ring=geosGeometryFactory->createLinearRing(sequence);
 		if(idx==0)
@@ -2634,10 +2668,14 @@ GEOS_GEOM::Geometry* QgsGeometry::geosGeometry() const
 		    inner->push_back(ring);
 		}
 	    }
-	    return geosGeometryFactory->createPolygon(outer,inner);
+	    delete mGeos;
+	    mGeos = geosGeometryFactory->createPolygon(outer,inner);
+	    mDirtyGeos = FALSE;
+	    return mGeos;
 	}
-	
-	case QGis::WKBMultiPolygon:
+      case QGis::WKBMultiPolygon25D:
+	hasZValue = true;
+      case QGis::WKBMultiPolygon:
 	{
 	    QgsDebugMsg("Multipolygon found");
 
@@ -2675,6 +2713,10 @@ GEOS_GEOM::Geometry* QgsGeometry::geosGeometry() const
 			y = (double *) ptr;
 			ptr += sizeof(double);
 			sequence->add(GEOS_GEOM::Coordinate(*x,*y));
+			if(hasZValue)
+			  {
+			    ptr += sizeof(double);
+			  }
 		    }
 		    GEOS_GEOM::LinearRing* ring=geosGeometryFactory->createLinearRing(sequence);
 		    if(idx==0)
@@ -2689,10 +2731,13 @@ GEOS_GEOM::Geometry* QgsGeometry::geosGeometry() const
 	    
 		polygons->push_back(geosGeometryFactory->createPolygon(outer,inner));
 	    }
-	    return (geosGeometryFactory->createMultiPolygon(polygons));
+	    delete mGeos;
+	    mGeos = (geosGeometryFactory->createMultiPolygon(polygons));
+	    mDirtyGeos = false;
+	    return mGeos;
 	}
-	default:
-	    return 0;
+    default:
+      return 0;
     }
     
 }
