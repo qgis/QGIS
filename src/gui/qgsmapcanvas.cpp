@@ -431,15 +431,11 @@ void QgsMapCanvas::setExtent(QgsRect const & r)
 void QgsMapCanvas::updateScale()
 {
   double scale = mMapRender->scale();
-  QString myScaleString = tr("Scale ");
-  int thePrecision = 0;
-  if (scale == 0)
-    myScaleString = "";
-  else if (scale >= 1)
-    myScaleString += QString("1: ") + QString::number(scale,'f',thePrecision);
-  else
-    myScaleString += QString::number(1.0/scale, 'f', thePrecision) + QString(": 1");
-  emit scaleChanged(myScaleString);
+
+  if (scale < 1)
+    emit scaleChanged(lround(-1.0/scale));
+  else 
+    emit scaleChanged(lround(scale));
 }
 
 
