@@ -175,8 +175,11 @@ QgsMapRender* QgsMapCanvas::mapRender()
 
 QgsMapLayer* QgsMapCanvas::getZpos(int index)
 {
-  QString layer = mMapRender->layerSet()[index];
-  return QgsMapLayerRegistry::instance()->mapLayer(layer);
+  std::deque<QString>& layers = mMapRender->layerSet();
+  if (index >= 0 && index < (int) layers.size())
+    return QgsMapLayerRegistry::instance()->mapLayer(layers[index]);
+  else
+    return NULL;
 }
 
 
