@@ -142,7 +142,9 @@ QgsGrassTools::QgsGrassTools ( QgisInterface *iface,
     // Show before loadConfig() so that user can see loading
     mModulesListView->show(); 
 
+    QApplication::setOverrideCursor(Qt::waitCursor);
     loadConfig ( conf );
+    QApplication::restoreOverrideCursor();
     //statusBar()->hide();
 
     // Add map browser 
