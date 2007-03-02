@@ -63,10 +63,10 @@ public:
     void setFields( const QMap<int, QgsField> & fields  );
 
     //! Available vector fields
-    // TODO: ??? QMap<int, QgsField> & fields ( void );
+    QMap<int, QgsField> & fields ( );
 
     //! Pointer to default attributes
-    // TODO: wrap QgsLabelAttributes *layerAttributes ( void );
+    QgsLabelAttributes *layerAttributes ( );
 
     //! Set label field
     void setLabelField ( int attr, const QString str );
