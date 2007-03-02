@@ -1,6 +1,6 @@
 
 import os, os.path
-import copy, glob
+import copy, glob, sys
 import sipconfig
 import PyQt4.pyqtconfig
 
@@ -9,6 +9,10 @@ build_path = '@CMAKE_BINARY_DIR@'
 python_path = src_path + '/python'
 gdal_inc_dir = '@GDAL_INCLUDE_DIR@'
 geos_inc_dir = '@GEOS_INCLUDE_DIR@'
+
+qt_libs = ["QtCore","QtGui","QtNetwork","QtSql","QtSvg","QtXml"]
+if sys.platform == 'darwin':
+  qt_libs.append("Qt3Support")
 
 # create paths for temporary files if don't exist
 if not os.path.isdir("./core"):
@@ -77,7 +81,7 @@ for sip in sips_gui:
 # linker flags needed by the Qt library.
 makefile_core = sipconfig.ModuleMakefile(
         configuration=config,
-        qt=["QtCore","QtGui","QtNetwork","QtSql","QtSvg","QtXml"],
+        qt=qt_libs,
         build_file=build_file_core,
         installs=installs_core,
         install_dir=mod_dir,
@@ -85,7 +89,7 @@ makefile_core = sipconfig.ModuleMakefile(
 
 makefile_gui = sipconfig.ModuleMakefile(
         configuration=config,
-        qt=["QtCore","QtGui","QtNetwork","QtSql","QtSvg","QtXml"],
+        qt=qt_libs,
         build_file=build_file_gui,
         installs=installs_gui,
         install_dir=mod_dir,
