@@ -23,10 +23,8 @@
 class QgsMapCanvas;
 class QPainter;
 
-class GUI_EXPORT QgsMapCanvasItem : public QObject, public QGraphicsItem
+class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
 {
-  Q_OBJECT;
-  
   protected:
     
     //! protected constructor: cannot be constructed directly
