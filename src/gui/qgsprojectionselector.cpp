@@ -286,7 +286,7 @@ QString QgsProjectionSelector::getCurrentProj4String()
         if ( !myFileInfo.exists( ) ) //its unlikely that this condition will ever be reached
         {
           QgsDebugMsg("users qgis.db not found");
-          return NULL;
+          return QString("");
         }
         else
         {
@@ -342,13 +342,13 @@ QString QgsProjectionSelector::getCurrentProj4String()
     else
     {
       // No node is selected, return null
-      return NULL;
+      return QString("");
     }
   }
   else
   {
     // No node is selected, return null
-    return NULL;
+    return QString("");
   }
 
 }
@@ -380,7 +380,7 @@ long QgsProjectionSelector::getCurrentLongAttribute(QString attributeName)
         if ( !myFileInfo.exists( ) )
         {
           std::cout << " QgsSpatialRefSys::createFromSrid failed :  users qgis.db not found" << std::endl;
-          return (long)NULL;
+          return 0;
         }
       }
       else //must be  a system projection then
@@ -435,7 +435,7 @@ long QgsProjectionSelector::getCurrentLongAttribute(QString attributeName)
   }
 
   // No node is selected, return null
-  return (long)NULL;
+  return 0;
 }
 
 
@@ -461,7 +461,7 @@ long QgsProjectionSelector::getCurrentSRSID()
   }
   else
   {
-    return (long)NULL;
+    return 0;
   }
 }
 
