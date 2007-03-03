@@ -175,7 +175,7 @@ public slots:
   //copy the click coord to clipboard and let the user know its there
   void showCapturePointCoordinate(QgsPoint &);
   //! Slot to show current map scale;
-  void showScale(long theScale);
+  void showScale(double theScale);
   //! Slot to handle user scale input;
   void userScale();
   //! Remove a layer from the map and legend

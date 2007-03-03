@@ -1172,8 +1172,8 @@ void QgisApp::setupConnections()
   connect(mMapCanvas->mapRender(), SIGNAL(projectionsEnabled(bool)), this, SLOT(projectionsEnabled(bool)));
   connect(mMapCanvas->mapRender(), SIGNAL(destinationSrsChanged()), this, SLOT(destinationSrsChanged()));
   connect(mMapCanvas, SIGNAL(extentsChanged()),this,SLOT(showExtents()));
-  connect(mMapCanvas, SIGNAL(scaleChanged(long)), this, SLOT(showScale(long)));
-  connect(mMapCanvas, SIGNAL(scaleChanged(long)), this, SLOT(updateMouseCoordinatePrecision()));
+  connect(mMapCanvas, SIGNAL(scaleChanged(double)), this, SLOT(showScale(double)));
+  connect(mMapCanvas, SIGNAL(scaleChanged(double)), this, SLOT(updateMouseCoordinatePrecision()));
 
   connect(mRenderSuppressionCBox, SIGNAL(toggled(bool )), mMapCanvas, SLOT(setRenderFlag(bool)));
 }
@@ -3535,10 +3535,14 @@ void QgisApp::showMouseCoordinate(QgsPoint & p)
   }
 }
 
-void QgisApp::showScale(long theScale)
+void QgisApp::showScale(double theScale)
 {
   mScaleLabel->setText(tr("Scale 1: "));
-  mScaleEdit->setText(QString::number(theScale));
+
+  if (theScale >= 1.0)
+    mScaleEdit->setText(QString::number(theScale, 'f', 0));
+  else
+    mScaleEdit->setText(QString::number(theScale));
   // Set minimum necessary width
   if ( mScaleEdit->width() > mScaleEdit->minimumWidth() )
   {
