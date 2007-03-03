@@ -432,10 +432,7 @@ void QgsMapCanvas::updateScale()
 {
   double scale = mMapRender->scale();
 
-  if (scale < 1)
-    emit scaleChanged(lround(-1.0/scale));
-  else 
-    emit scaleChanged(lround(scale));
+  emit scaleChanged(scale);
 }
 
 
