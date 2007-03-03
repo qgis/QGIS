@@ -20,9 +20,9 @@ class QgsMapOverviewCanvas : QWidget
     void setbgColor(const QColor& color);
         
     //! updates layer set for overview
-    // TODO void setLayerSet(std::deque<QString>& layerSet);
+    void setLayerSet(const QStringList& layerSet);
     
-    // TODO std::deque<QString>& layerSet();
+    QStringList& layerSet();
     
     void enableAntiAliasing(bool flag);
     

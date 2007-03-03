@@ -17,8 +17,6 @@
 #ifndef QGSMAPRENDER_H
 #define QGSMAPRENDER_H
 
-#include <deque>
-#include <QString>
 #include <QStringList>
 
 #include "qgis.h"
@@ -107,13 +105,10 @@ class CORE_EXPORT QgsMapRender : public QObject
     QgsRect fullExtent();
     
     //! returns current layer set
-    std::deque<QString>& layerSet() { return mLayerSet; }
+    QStringList& layerSet();
     
     //! change current layer set
-    void setLayerSet(const std::deque<QString>& layers);
-
-    //!Overloaded version of above menthod to change current layer set
-    void setLayerSet(const QStringList layers);
+    void setLayerSet(const QStringList& layers);
 
     //! updates extent of the layer set
     void updateFullExtent();
@@ -189,7 +184,7 @@ class CORE_EXPORT QgsMapRender : public QObject
     QgsSpatialRefSys* mDestSRS;
 
     //! stores array of layers to be rendered (identified by string)
-    std::deque<QString> mLayerSet;
+    QStringList mLayerSet;
     
     //! full extent of the layer set
     QgsRect mFullExtent;

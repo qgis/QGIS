@@ -175,7 +175,7 @@ QgsMapRender* QgsMapCanvas::mapRender()
 
 QgsMapLayer* QgsMapCanvas::getZpos(int index)
 {
-  std::deque<QString>& layers = mMapRender->layerSet();
+  QStringList& layers = mMapRender->layerSet();
   if (index >= 0 && index < (int) layers.size())
     return QgsMapLayerRegistry::instance()->mapLayer(layers[index]);
   else
@@ -223,7 +223,7 @@ void QgsMapCanvas::setLayerSet(QList<QgsMapCanvasLayer>& layers)
   int i;
   
   // create layer set
-  std::deque<QString> layerSet, layerSetOverview;
+  QStringList layerSet, layerSetOverview;
   
   for (i = 0; i < layers.size(); i++)
   {
@@ -238,7 +238,7 @@ void QgsMapCanvas::setLayerSet(QList<QgsMapCanvasLayer>& layers)
     }
   }
   
-  std::deque<QString>& layerSetOld = mMapRender->layerSet();
+  QStringList& layerSetOld = mMapRender->layerSet();
   
   bool layerSetChanged = (layerSetOld != layerSet);
   
@@ -263,7 +263,7 @@ void QgsMapCanvas::setLayerSet(QList<QgsMapCanvasLayer>& layers)
 
   if (mMapOverview)
   {
-    std::deque<QString>& layerSetOvOld = mMapOverview->layerSet();
+    QStringList& layerSetOvOld = mMapOverview->layerSet();
     if (layerSetOvOld != layerSetOverview)
     {
       mMapOverview->setLayerSet(layerSetOverview);

@@ -213,11 +213,14 @@ void QgsMapRender::render(QPainter* painter)
 #endif
 
   // render all layers in the stack, starting at the base
-  std::deque<QString>::reverse_iterator li = mLayerSet.rbegin();
+  QListIterator<QString> li(mLayerSet);
+  li.toBack();
   
-  while (li != mLayerSet.rend())
+  while (li.hasPrevious())
   {
-    QgsDebugMsg("Rendering at layer item " + (*li));
+    QString layerId = li.previous();
+
+    QgsDebugMsg("Rendering at layer item " + layerId);
 
     // This call is supposed to cause the progress bar to
     // advance. However, it seems that updating the progress bar is
@@ -228,12 +231,11 @@ void QgsMapRender::render(QPainter* painter)
     QgsDebugMsg("If there is a QPaintEngine error here, it is caused by an emit call");
 
     //emit drawingProgress(myRenderCounter++, mLayerSet.size());
-    QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer(*li);
+    QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer(layerId);
 
     if (!ml)
     {
       QgsLogger::warning("Layer not found in registry!");
-      li++;
       continue;
     }
         
@@ -283,20 +285,20 @@ void QgsMapRender::render(QPainter* painter)
                   "visibility scale range");
     }
 
-    li++;
-    
-  } // while (li != end)
+  } // while (li.hasPrevious())
       
     QgsDebugMsg("Done rendering map layers");
 
   if (!mOverview)
   {
     // render all labels for vector layers in the stack, starting at the base
-    li = mLayerSet.rbegin();
-    while (li != mLayerSet.rend())
+    li.toBack();
+    while (li.hasPrevious())
     {
+      QString layerId = li.previous();
+
       // TODO: emit drawingProgress((myRenderCounter++),zOrder.size());
-      QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer(*li);
+      QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer(layerId);
   
       if (ml && (ml->type() != QgsMapLayer::RASTER))
       {
@@ -324,7 +326,6 @@ void QgsMapRender::render(QPainter* painter)
           delete ct;
         }
       }
-      li++;
     }
   } // if (!mOverview)
 
@@ -555,7 +556,7 @@ void QgsMapRender::updateFullExtent()
   
   // iterate through the map layers and test each layers extent
   // against the current min and max values
-  std::deque<QString>::iterator it = mLayerSet.begin();
+  QStringList::iterator it = mLayerSet.begin();
   while(it != mLayerSet.end())
   {
     QgsMapLayer * lyr = registry->mapLayer(*it);
@@ -587,24 +588,16 @@ QgsRect QgsMapRender::fullExtent()
   return mFullExtent;
 }
 
-void QgsMapRender::setLayerSet(const std::deque<QString>& layers)
+void QgsMapRender::setLayerSet(const QStringList& layers)
 {
   mLayerSet = layers;
   updateFullExtent();
 }
 
-void QgsMapRender::setLayerSet(const QStringList layers)
+QStringList& QgsMapRender::layerSet()
 {
-  //convert the stringlist to a deque 
-  QListIterator<QString> i(layers);
-  mLayerSet.clear();
-  while (i.hasNext())
-  {
-    mLayerSet.push_back(i.next());
-  }
-  updateFullExtent();
+  return mLayerSet;
 }
-
 
 bool QgsMapRender::readXML(QDomNode & theNode)
 {

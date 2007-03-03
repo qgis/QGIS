@@ -24,7 +24,7 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QWidget>
-#include <deque>
+#include <QStringList>
 #include <QPixmap>
 
 class QgsMapCanvas;
@@ -50,9 +50,9 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     void setbgColor(const QColor& color);
         
     //! updates layer set for overview
-    void setLayerSet(std::deque<QString>& layerSet);
+    void setLayerSet(const QStringList& layerSet);
     
-    std::deque<QString>& layerSet();
+    QStringList& layerSet();
     
     void enableAntiAliasing(bool flag) { mAntiAliasing = flag; }
     
