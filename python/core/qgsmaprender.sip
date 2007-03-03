@@ -72,15 +72,10 @@ class QgsMapRender : QObject
     QgsRect fullExtent();
     
     //! returns current layer set
-    // TODO: wrap
-    //std::deque<QString>& layerSet();
+    QStringList& layerSet();
     
     //! change current layer set
-    // TODO: wrap
-    //void setLayerSet(const std::deque<QString>& layers);
-
-    //!Overloaded version of above menthod to change current layer set
-    void setLayerSet(const QStringList layers);
+    void setLayerSet(const QStringList& layers);
 
     //! updates extent of the layer set
     void updateFullExtent();

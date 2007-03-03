@@ -269,7 +269,7 @@ void QgsMapOverviewCanvas::setbgColor(const QColor& color)
   setPalette(palette);
 }
 
-void QgsMapOverviewCanvas::setLayerSet(std::deque<QString>& layerSet)
+void QgsMapOverviewCanvas::setLayerSet(const QStringList& layerSet)
 {
   mMapRender->setLayerSet(layerSet);
 }
@@ -290,7 +290,7 @@ void QgsMapOverviewCanvas::destinationSrsChanged()
   mMapRender->setDestinationSrs(srs);
 }
 
-std::deque<QString>& QgsMapOverviewCanvas::layerSet()
+QStringList& QgsMapOverviewCanvas::layerSet()
 {
   return mMapRender->layerSet();
 }
