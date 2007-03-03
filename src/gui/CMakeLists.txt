@@ -25,7 +25,6 @@ qgisinterface.h
 qgsencodingfiledialog.h
 qgslayerprojectionselector.h
 qgsmapcanvas.h
-qgsmapcanvasitem.h
 qgsmapoverviewcanvas.h
 qgsprojectionselector.h
 )

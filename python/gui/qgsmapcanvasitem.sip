@@ -1,5 +1,5 @@
 
-class QgsMapCanvasItem : QObject, QGraphicsItem
+class QgsMapCanvasItem : QGraphicsItem
 {
 %TypeHeaderCode
 #include <qgsmapcanvasitem.h>
