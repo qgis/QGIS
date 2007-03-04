@@ -83,15 +83,20 @@ void QgsPythonUtils::initPython(QgisInterface* interface)
   runString("import traceback"); // for formatting stack traces
   
   // hook that will show information and traceback in message box
-  // TODO: maybe QgsMessageOutput / QgsMessageViewer should be used instead
   runString(
       "def qgis_except_hook(type, value, tb):\n"
       "  lst = traceback.format_exception(type, value, tb)\n"
-      "  str = 'An error has occured while executing Python code:\\n'\n"
+      "  str = '<font color=\"red\">An error has occured while executing Python code:</font><br><br>'\n"
       "  for s in lst:\n"
       "    str += s\n"
-      "  QtGui.QMessageBox.warning(None, 'Python error', str)\n");
-
+      "  str = str.replace('\\n', '<br>')\n"
+      "  str = str.replace('  ', '&nbsp;')\n" // preserve whitespaces for nicer output
+      "  \n"
+      "  msg = QgsMessageOutput.createMessageOutput()\n"
+      "  msg.setTitle('Error')\n"
+      "  msg.setMessage(str, QgsMessageOutput.MessageHtml)\n"
+      "  msg.showMessage()\n");
+  
   // hook for python console so all output will be redirected
   // and then shown in console
   runString(
