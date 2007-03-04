@@ -2313,13 +2313,13 @@ QString QgsWmsProvider::getMetadata()
 
 QString QgsWmsProvider::identifyAsText(const QgsPoint& point)
 {
-#ifdef QGISDEBUG
-  std::cout << "QgsWmsProvider::identifyAsText: entering." << std::endl;
-#endif
+
+  QgsDebugMsg("Entering.");
 
   // Collect which layers to query on
 
   QStringList queryableLayers = QStringList();
+  QString text = "";;
 
   // Test for which layers are suitable for querying with
   for ( QStringList::const_iterator it  = activeSubLayers.begin(); 
@@ -2332,25 +2332,18 @@ QString QgsWmsProvider::identifyAsText(const QgsPoint& point)
       // Is sublayer queryable?
       if (TRUE == mQueryableForLayer.find( *it )->second)
       {
-#ifdef QGISDEBUG
-  std::cout << "QgsWmsProvider::identifyAsText: '" << (*it).toLocal8Bit().data() << "' is queryable." << std::endl;
-#endif
-        queryableLayers += *it;
-      }
-    }
-  }
+        QgsDebugMsg("Layer '" + *it + "' is queryable.");
+        // Compose request to WMS server
 
-  QString layers = QUrl::toPercentEncoding(queryableLayers.join(","));
+        QString requestUrl = mGetFeatureInfoUrlBase;
+        QString layer = QUrl::toPercentEncoding(*it);
 
-  // Compose request to WMS server
+        requestUrl += "&";
+        requestUrl += "QUERY_LAYERS=" + layer ;
+        requestUrl += "&";
+        //! \todo Need to tie this into the options provided by GetCapabilities
+        requestUrl += "INFO_FORMAT=text/plain";
 
-  QString requestUrl = mGetFeatureInfoUrlBase;
-
-  requestUrl += "&";
-  requestUrl += "QUERY_LAYERS=" + layers;
-  requestUrl += "&";
-   //! \todo Need to tie this into the options provided by GetCapabilities
-  requestUrl += "INFO_FORMAT=text/plain";
 
 // X,Y in WMS 1.1.1; I,J in WMS 1.3.0
 
@@ -2361,19 +2354,29 @@ QString QgsWmsProvider::identifyAsText(const QgsPoint& point)
 //   requestUrl += QString( "J=%1" )
 //                    .arg( point.y() );
 
-  requestUrl += "&";
-  requestUrl += QString( "X=%1" )
-                   .arg( point.x() );
-  requestUrl += "&";
-  requestUrl += QString( "Y=%1" )
-                   .arg( point.y() );
+        requestUrl += "&";
+        requestUrl += QString( "X=%1" )
+          .arg( point.x() );
+        requestUrl += "&";
+        requestUrl += QString( "Y=%1" )
+          .arg( point.y() );
 
-  QString text = retrieveUrl(requestUrl);
+        text += "---------------\n" + retrieveUrl(requestUrl);
+      }
+    }
+  }
 
-#ifdef QGISDEBUG
-  std::cout << "QgsWmsProvider::identifyAsText: exiting with '"
-            << text.toLocal8Bit().data() << "'." << std::endl;
-#endif
+
+  if (text.isEmpty())
+  {
+    // No layers were queryably. This can happen if identify tool was
+    // active when this non-queriable layer was selected.
+    // Return a descriptive text.
+
+    text = tr("Layer cannot be queried.");
+  }
+
+  QgsDebugMsg("Exiting with: " + text);
   return text;
 }
 
