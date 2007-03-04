@@ -1522,7 +1522,7 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPor
     }
   }
   
-  /* TODO: Should readData be freed here? */
+  CPLFree ( myGdalScanData );
 
   //render any inline filters
   filterLayer(&myQImage);
@@ -1839,7 +1839,7 @@ void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, QgsRast
     }
   }
 
-  /* TODO: Should readData be freed here? */
+  CPLFree(myGdalScanData);
 
   //render any inline filters
   filterLayer(&myQImage);
