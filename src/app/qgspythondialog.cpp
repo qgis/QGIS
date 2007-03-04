@@ -17,8 +17,6 @@
 #include "qgspythondialog.h"
 #include "qgspythonutils.h"
 
-#include <iostream> // %%%
-
 
 QgsPythonDialog::QgsPythonDialog(QgisInterface* pIface, QWidget *parent)
   : QDialog(parent)
@@ -43,7 +41,10 @@ void QgsPythonDialog::on_edtCmdLine_returnPressed()
   // we're using custom hooks for output and exceptions to show output in console
   if (QgsPythonUtils::runString(command))
   {
-    output = QgsPythonUtils::getResult();
+    QgsPythonUtils::evalString("sys.stdout.data", output);
+    QgsPythonUtils::runString("sys.stdout.data = ''");
+    
+    output += QgsPythonUtils::getResult();
     
     if (!output.isEmpty())
       output += "<br>";

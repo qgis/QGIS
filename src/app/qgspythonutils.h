@@ -53,12 +53,17 @@ class QgsPythonUtils
     //! run a statement (wrapper for PyRun_String)
     //! this command is more advanced as enables error checking etc.
     //! @return true if no error occured
-    static bool runString(QString command);
+    static bool runString(const QString& command);
+    
+    static bool evalString(const QString& command, QString& result);
     
     //! get information about error to the supplied arguments
     //! @return false if there was no python error
     static bool getError(QString& errorClassName, QString& errorText);
     
+    //! get variable from main dictionary
+    static QString getVariableFromMain(QString name);
+
     /* python console related functions */
     
     //! change displayhook and excepthook
