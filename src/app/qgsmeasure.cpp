@@ -127,7 +127,7 @@ QgsMeasure::~QgsMeasure()
 void QgsMeasure::restart(void )
 {
     updateProjection();
-    mPoints.resize(0);
+    mPoints.clear();
     // Set one cell row where to update current distance
     // If measuring area, the table doesn't get shown
     mTable->setNumRows(1);
@@ -166,7 +166,7 @@ void QgsMeasure::addPoint(QgsPoint &point)
       return;
     
     QgsPoint pnt(point);
-    mPoints.push_back(pnt);
+    mPoints.append(pnt);
     
     if (mMeasureArea && mPoints.size() > 2)
     {
@@ -219,8 +219,8 @@ void QgsMeasure::mouseMove(QgsPoint &point)
   // show current distance/area while moving the point
   // by creating a temporary copy of point array
   // and adding moving point at the end
-  std::vector<QgsPoint> tmpPoints = mPoints;
-  tmpPoints.push_back(point);
+  QList<QgsPoint> tmpPoints = mPoints;
+  tmpPoints.append(point);
   if (mMeasureArea && tmpPoints.size() > 2)
   {
     double area = mCanvas->mapRender()->distArea()->measurePolygon(tmpPoints);

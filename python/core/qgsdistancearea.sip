@@ -44,13 +44,13 @@ class QgsDistanceArea
     double measure(QgsGeometry* geometry);
     
     //! measures line with more segments
-    // TODO wrap double measureLine(const std::vector<QgsPoint>& points);
+    double measureLine(const QList<QgsPoint>& points);
     
     //! measures line with one segment
     double measureLine(const QgsPoint& p1, const QgsPoint& p2);
     
     //! measures polygon area
-    // TODO wrap double measurePolygon(const std::vector<QgsPoint>& points);
+    double measurePolygon(const QList<QgsPoint>& points);
     
     //! compute bearing - in radians
     double getBearing(const QgsPoint& p1, const QgsPoint& p2);
