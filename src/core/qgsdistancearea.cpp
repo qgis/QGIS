@@ -229,24 +229,25 @@ unsigned char* QgsDistanceArea::measureLine(unsigned char* feature, double* area
   unsigned int nPoints = *((int*)ptr);
   ptr = feature + 9;
   
-  std::vector<QgsPoint> points(nPoints);
+  QList<QgsPoint> points;
+  double x,y;
 
   QgsDebugMsg("This feature WKB has " + QString::number(nPoints) + " points");
   // Extract the points from the WKB format into the vector
   for (unsigned int i = 0; i < nPoints; ++i)
   {
-    QgsPoint& p = points[i];
-    p.setX(*((double *) ptr));
+    x = *((double *) ptr);
     ptr += sizeof(double);
-    p.setY(*((double *) ptr));
+    y = *((double *) ptr);
     ptr += sizeof(double);
+    points.append(QgsPoint(x,y));
   }
   
   *area = measureLine(points);
   return ptr;
 }
 
-double QgsDistanceArea::measureLine(const std::vector<QgsPoint>& points)
+double QgsDistanceArea::measureLine(const QList<QgsPoint>& points)
 {
   if (points.size() < 2)
     return 0;
@@ -261,16 +262,16 @@ double QgsDistanceArea::measureLine(const std::vector<QgsPoint>& points)
     else
       p1 = points[0];
     
-    for (std::vector<QgsPoint>::size_type i = 1; i < points.size(); i++)
+    for (QList<QgsPoint>::const_iterator i = points.begin(); i != points.end(); ++i)
     {
       if (mProjectionsEnabled && (mEllipsoid != "NONE"))
       {
-        p2 = mCoordTransform->transform(points[i]);
+        p2 = mCoordTransform->transform(*i);
         total += computeDistanceBearing(p1,p2);
       }
       else
       {
-        p2 = points[i];
+        p2 = *i;
         total += measureLine(p1,p2);
       }
   
@@ -322,7 +323,8 @@ unsigned char* QgsDistanceArea::measurePolygon(unsigned char* feature, double* a
   // Set pointer to the first ring
   unsigned char* ptr = feature + 1 + 2 * sizeof(int); 
   
-  std::vector<QgsPoint> points;
+  QList<QgsPoint> points;
+  QgsPoint pnt;
   double x,y, areaTmp;
   *area = 0;
 
@@ -331,7 +333,6 @@ unsigned char* QgsDistanceArea::measurePolygon(unsigned char* feature, double* a
     for (unsigned int idx = 0; idx < numRings; idx++)
     {
       int nPoints = *((int*)ptr);
-      points.resize(nPoints);
       ptr += 4;
 
       // Extract the points from the WKB and store in a pair of
@@ -342,12 +343,14 @@ unsigned char* QgsDistanceArea::measurePolygon(unsigned char* feature, double* a
         ptr += sizeof(double);
         y = *((double *) ptr);
         ptr += sizeof(double);
+        
+        pnt = QgsPoint(x,y);
 
-        points[jdx] = QgsPoint(x,y);
         if (mProjectionsEnabled && (mEllipsoid != "NONE"))
         {
-          points[jdx] = mCoordTransform->transform(points[jdx]);
+          pnt = mCoordTransform->transform(pnt);
         }
+        points.append(pnt);
       }
 
       if (points.size() > 2)
@@ -369,17 +372,17 @@ unsigned char* QgsDistanceArea::measurePolygon(unsigned char* feature, double* a
 }
 
 
-double QgsDistanceArea::measurePolygon(const std::vector<QgsPoint>& points)
+double QgsDistanceArea::measurePolygon(const QList<QgsPoint>& points)
 {
   
   try
   {
     if (mProjectionsEnabled && (mEllipsoid != "NONE"))
     {
-      std::vector<QgsPoint> pts(points.size());
-      for (std::vector<QgsPoint>::size_type i = 0; i < points.size(); i++)
+      QList<QgsPoint> pts;
+      for (QList<QgsPoint>::const_iterator i = points.begin(); i != points.end(); ++i)
       {
-        pts[i] = mCoordTransform->transform(points[i]);
+        pts.append(mCoordTransform->transform(*i));
       }
       return computePolygonArea(pts);
     }
@@ -540,7 +543,7 @@ void QgsDistanceArea::computeAreaInit()
 }
 
 
-double QgsDistanceArea::computePolygonArea(const std::vector<QgsPoint>& points)
+double QgsDistanceArea::computePolygonArea(const QList<QgsPoint>& points)
 {
   double x1,y1,x2,y2,dx,dy;
   double Qbar1, Qbar2;
@@ -595,7 +598,7 @@ double QgsDistanceArea::computePolygonArea(const std::vector<QgsPoint>& points)
   return area;
 }
 
-double QgsDistanceArea::computePolygonFlatArea(const std::vector<QgsPoint>& points)
+double QgsDistanceArea::computePolygonFlatArea(const QList<QgsPoint>& points)
 {
   // Normal plane area calculations.
   double area = 0.0;

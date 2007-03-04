@@ -20,7 +20,6 @@
 #include <QWidget>
 #include "qgsmaptool.h"
 #include "qgspoint.h"
-#include <vector>
 
 class QgsDistanceArea;
 class QgsMapCanvas;
@@ -113,7 +112,7 @@ private:
   //! distance/area calculator
   //QgsDistanceArea* mCalc;
   
-  std::vector<QgsPoint> mPoints;
+  QList<QgsPoint> mPoints;
 
   double mTotal;
 

@@ -17,7 +17,7 @@
 #ifndef QGSDISTANCEAREA_H
 #define QGSDISTANCEAREA_H
 
-#include <vector>
+#include <QList>
 #include "qgscoordinatetransform.h"
 
 class QgsGeometry;
@@ -28,7 +28,7 @@ General purpose distance and area calculator
 - it's possible to pass points/features in any SRS, coordinates are transformed
 - two options how to use it
   + use measure() takes QgsGeometry as a parameter and calculates distance or area
-  + use directly measureLine(), measurePolygon() which take vector of QgsPoints
+  + use directly measureLine(), measurePolygon() which take list of QgsPoints
   (both cases transform the coordinates from source SRS to the ellipse coords)
 - returned values are in meters resp. square meters
 */
@@ -74,12 +74,12 @@ class CORE_EXPORT QgsDistanceArea
     double measure(QgsGeometry* geometry);
     
     //! measures line with more segments
-    double measureLine(const std::vector<QgsPoint>& points);
+    double measureLine(const QList<QgsPoint>& points);
     //! measures line with one segment
     double measureLine(const QgsPoint& p1, const QgsPoint& p2);
     
     //! measures polygon area
-    double measurePolygon(const std::vector<QgsPoint>& points);
+    double measurePolygon(const QList<QgsPoint>& points);
     
     //! compute bearing - in radians
     double getBearing(const QgsPoint& p1, const QgsPoint& p2);
@@ -112,9 +112,9 @@ class CORE_EXPORT QgsDistanceArea
      algorithm has been taken from GRASS: gis/area_poly1.c
     
     */
-    double computePolygonArea(const std::vector<QgsPoint>& points);
+    double computePolygonArea(const QList<QgsPoint>& points);
 
-    double computePolygonFlatArea(const std::vector<QgsPoint>& points);
+    double computePolygonFlatArea(const QList<QgsPoint>& points);
     
     /**
       precalculates some values
