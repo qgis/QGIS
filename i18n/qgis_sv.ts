@@ -1165,12 +1165,12 @@ Vill du specificera sökväg (GISBASE) till installationen av GRASS?</translatio
         <translation>GRASS data finns inte tillgängligt om GISBASE inte är specificerat.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/copyright_label/plugin.cpp" line="55"/>
+        <location filename="../src/plugins/copyright_label/plugin.cpp" line="56"/>
         <source>CopyrightLabel</source>
         <translation>CopyrightMärke</translation>
     </message>
     <message>
-        <location filename="../src/plugins/copyright_label/plugin.cpp" line="56"/>
+        <location filename="../src/plugins/copyright_label/plugin.cpp" line="57"/>
         <source>Draws copyright information</source>
         <translation>Ritar information om upphosvrätt</translation>
     </message>
@@ -4111,7 +4111,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsattributeactiondialog.cpp" line="59"/>
         <source>Capture</source>
-        <translation type="unfinished"></translation>
+        <translation>Skapa</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsattributeactiondialog.cpp" line="142"/>
@@ -5589,37 +5589,37 @@ A5 (148x210 mm)</translation>
 <context>
     <name>QgsCopyrightLabelPlugin</name>
     <message>
-        <location filename="../src/plugins/copyright_label/plugin.cpp" line="73"/>
+        <location filename="../src/plugins/copyright_label/plugin.cpp" line="74"/>
         <source>Bottom Left</source>
         <translation>Nere till vänster</translation>
     </message>
     <message>
-        <location filename="../src/plugins/copyright_label/plugin.cpp" line="74"/>
+        <location filename="../src/plugins/copyright_label/plugin.cpp" line="75"/>
         <source>Top Left</source>
         <translation>Uppe till vänster</translation>
     </message>
     <message>
-        <location filename="../src/plugins/copyright_label/plugin.cpp" line="74"/>
+        <location filename="../src/plugins/copyright_label/plugin.cpp" line="75"/>
         <source>Top Right</source>
         <translation>Uppe till höger</translation>
     </message>
     <message>
-        <location filename="../src/plugins/copyright_label/plugin.cpp" line="74"/>
+        <location filename="../src/plugins/copyright_label/plugin.cpp" line="75"/>
         <source>Bottom Right</source>
         <translation>Nere till höger</translation>
     </message>
     <message>
-        <location filename="../src/plugins/copyright_label/plugin.cpp" line="86"/>
+        <location filename="../src/plugins/copyright_label/plugin.cpp" line="87"/>
         <source>&amp;Copyright Label</source>
         <translation>&amp;Copyrighttext</translation>
     </message>
     <message>
-        <location filename="../src/plugins/copyright_label/plugin.cpp" line="87"/>
+        <location filename="../src/plugins/copyright_label/plugin.cpp" line="88"/>
         <source>Creates a copyright label that is displayed on the map canvas.</source>
         <translation>Skapar en text om upphovsskydd som visas på kartbladet.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/copyright_label/plugin.cpp" line="206"/>
+        <location filename="../src/plugins/copyright_label/plugin.cpp" line="212"/>
         <source>&amp;Decorations</source>
         <translation>&amp;Dekoreringar</translation>
     </message>
@@ -9756,22 +9756,22 @@ at line </source>
 <context>
     <name>QgsHelpViewer</name>
     <message>
-        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="166"/>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="167"/>
         <source>Quantum GIS Help - </source>
         <translation> Quantum GIS Hjälp - </translation>
     </message>
     <message>
-        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="172"/>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="173"/>
         <source>Failed to get the help text from the database</source>
         <translation>Kunde inte hämta hjälptext från databasen</translation>
     </message>
     <message>
-        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="196"/>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="197"/>
         <source>Error</source>
         <translation>Fel</translation>
     </message>
     <message>
-        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="197"/>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="198"/>
         <source>The QGIS help database is not installed</source>
         <translation>QGIS hjälpdatabas är inte installerad</translation>
     </message>
@@ -9786,7 +9786,7 @@ at line </source>
         <translation>Vill du skapa den, kontakta QGIS utvecklingsteam</translation>
     </message>
     <message>
-        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="129"/>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="130"/>
         <source>Quantum GIS Help</source>
         <translation>Quantum GIS Hjälp</translation>
     </message>
@@ -13266,7 +13266,7 @@ eller har en PostgreSQL oid-kolumn.
 <context>
     <name>QgsRasterLayer</name>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3176"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3183"/>
         <source>Not Set</source>
         <translation>Inte satt</translation>
     </message>
@@ -13286,27 +13286,27 @@ eller har en PostgreSQL oid-kolumn.
         <translation type="obsolete">&amp;Radera</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3858"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3865"/>
         <source>Driver:</source>
         <translation>Drivrutin:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3934"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3941"/>
         <source>Dimensions:</source>
         <translation>Dimensioner:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3937"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3944"/>
         <source>X: </source>
         <translation>X: </translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3938"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3945"/>
         <source> Y: </source>
         <translation> Y: </translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3938"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3945"/>
         <source> Bands: </source>
         <translation>Band:</translation>
     </message>
@@ -13316,12 +13316,12 @@ eller har en PostgreSQL oid-kolumn.
         <translation type="obsolete">Projektion: </translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4044"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4051"/>
         <source>Origin:</source>
         <translation>Origo:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4053"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4060"/>
         <source>Pixel Size:</source>
         <translation>Pixelstorlek:</translation>
     </message>
@@ -13341,169 +13341,169 @@ eller har en PostgreSQL oid-kolumn.
         <translation type="obsolete">Blå</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="2575"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="2582"/>
         <source>Raster Extent: </source>
         <translation>Rasterutsträckning:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="2578"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="2585"/>
         <source>Clipped area: </source>
         <translation>Kapad yta:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3997"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4004"/>
         <source>Pyramid overviews:</source>
         <translation>Pyramidöversikter:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4066"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4073"/>
         <source>Band Statistics (if gathered):</source>
         <translation>Bandstatistik (om insamlad):</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4073"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4080"/>
         <source>Property</source>
         <translation>Egenskap</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4076"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4083"/>
         <source>Value</source>
         <translation>Värde</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4948"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4955"/>
         <source>Band</source>
         <translation>Band</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4092"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4099"/>
         <source>Band No</source>
         <translation>Bandnr</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4104"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4111"/>
         <source>No Stats</source>
         <translation>Ingen statistik</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4107"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4114"/>
         <source>No stats collected yet</source>
         <translation>Ingen statistik har samlats in</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4117"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4124"/>
         <source>Min Val</source>
         <translation>MinVärde</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4125"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4132"/>
         <source>Max Val</source>
         <translation>MaxVärde</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4133"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4140"/>
         <source>Range</source>
         <translation>Intervall</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4141"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4148"/>
         <source>Mean</source>
         <translation>Medel</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4149"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4156"/>
         <source>Sum of squares</source>
         <translation>Kvadratsumma</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4157"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4164"/>
         <source>Standard Deviation</source>
         <translation>Standardavvikelse</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4165"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4172"/>
         <source>Sum of all cells</source>
         <translation>Summa av alla celler</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4173"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4180"/>
         <source>Cell Count</source>
         <translation>Cellantal</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4203"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4210"/>
         <source>Write access denied</source>
         <translation>Skrivåtkomst nekad</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4204"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4211"/>
         <source>Write access denied. Adjust the file permissions and try again.
 
 </source>
         <translation>Skrivåtkomst nekad. Justera filrättigheterna och försök igen.</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3953"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3960"/>
         <source>Data Type:</source>
         <translation>Datatyp:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3959"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3966"/>
         <source>GDT_Byte - Eight bit unsigned integer</source>
         <translation>GDT_Byte - Åttabitars ickenegativt heltal</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3962"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3969"/>
         <source>GDT_UInt16 - Sixteen bit unsigned integer </source>
         <translation>GDT_UInt16 - Sextonbitars ickenegativt heltal</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3965"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3972"/>
         <source>GDT_Int16 - Sixteen bit signed integer </source>
         <translation>GDT_Int16 - Sextonbitars heltal</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3968"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3975"/>
         <source>GDT_UInt32 - Thirty two bit unsigned integer </source>
         <translation>GDT_UInt32 - Trettiotvåbitars ickenegativt heltal</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3971"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3978"/>
         <source>GDT_Int32 - Thirty two bit signed integer </source>
         <translation>GDT_Int32 - Trettiotvåbitars heltal</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3974"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3981"/>
         <source>GDT_Float32 - Thirty two bit floating point </source>
         <translation>GDT_Float32 - Trettiotvåbitars flyttal</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3977"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3984"/>
         <source>GDT_Float64 - Sixty four bit floating point </source>
         <translation>GDT_Float64 - Sextiofyrabitars flyttal</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3980"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3987"/>
         <source>GDT_CInt16 - Complex Int16 </source>
         <translation>GDT_CInt16 - Komplex Int16 </translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3983"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3990"/>
         <source>GDT_CInt32 - Complex Int32 </source>
         <translation>GDT_CInt32 - Komplex Int32 </translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3986"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3993"/>
         <source>GDT_CFloat32 - Complex Float32 </source>
         <translation>GDT_CFloat32 - Komplex Float32 </translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3989"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3996"/>
         <source>GDT_CFloat64 - Complex Float64 </source>
         <translation>GDT_CFloat64 - Komplex Float64 </translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3992"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3999"/>
         <source>Could not determine raster data type.</source>
         <translation>Kunde inte bestämma rastertyp.</translation>
     </message>
@@ -13518,62 +13518,62 @@ eller har en PostgreSQL oid-kolumn.
         <translation type="obsolete">Visa i &amp;Översikt</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3731"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3738"/>
         <source>&lt;center&gt;&lt;b&gt;Transparency&lt;/b&gt;&lt;/center&gt;</source>
         <translation>&lt;center&gt;&lt;b&gt;Genomskinlighet&lt;/b&gt;&lt;/center&gt;</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4272"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4279"/>
         <source>Average Magphase</source>
         <translation>Average Magphase</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4277"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4284"/>
         <source>Average</source>
         <translation>Average</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3884"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3891"/>
         <source>Dataset Description</source>
         <translation>Beskrivning av dataset</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3945"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3952"/>
         <source>No Data Value</source>
         <translation>Inget datavärde</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4019"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4026"/>
         <source>Layer Spatial Reference System: </source>
         <translation> Lagrets Spatial Reference System:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4027"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4034"/>
         <source>Project Spatial Reference System: </source>
         <translation> Projektets Spatial Reference System:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4293"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4300"/>
         <source>Building pyramids failed.</source>
         <translation>Kunde ej skapa pyramider.</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4225"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4232"/>
         <source>The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again.</source>
         <translation>Filen var ej skrivbar. Några format kan ej skrivas, bara läsas. Förök  även att ändra filrättigheterna, och pröva igen.</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4294"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4301"/>
         <source>Building pyramid overviews is not supported on this type of raster.</source>
         <translation>Denna typ av raster stödjer ej att bygga pyramider.</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4910"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4917"/>
         <source>out of extent</source>
         <translation>utanför utsträckning</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4942"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4949"/>
         <source>null (no data)</source>
         <translation>null (ingen data)</translation>
     </message>
@@ -15736,107 +15736,107 @@ eller har en PostgreSQL oid-kolumn.
         <translation>Frågan som används för att begränsa objekten i lagret visas här. Detta kan just nu enbart användas för PostgreSQL-lager. För att ange eller ändra frågan, klicka på Frågebyggarknappen</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="377"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="373"/>
         <source>Spatial Index</source>
         <translation>Rumsligt index</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="372"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="368"/>
         <source>Creation of spatial index successfull</source>
         <translation>Lyckades skapa rumsligt index</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="377"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="373"/>
         <source>Creation of spatial index failed</source>
         <translation>Misslyckades skapa rumsligt index</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="390"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="386"/>
         <source>General:</source>
         <translation>Allmänt:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="396"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="392"/>
         <source>Storage type of this layer : </source>
         <translation> Lagringstyp för detta lager:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="402"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="398"/>
         <source>Source for this layer : </source>
         <translation> Källa för detta lager :</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="423"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="419"/>
         <source>Geometry type of the features in this layer : </source>
         <translation> Geometrityp på objekten i detta lager :</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="431"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="427"/>
         <source>The number of features in this layer : </source>
         <translation> Antal objekt i detta lager :</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="436"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="432"/>
         <source>Editing capabilities of this layer : </source>
         <translation> Möjlighet till redigering i detta lager :</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="443"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="439"/>
         <source>Extents:</source>
         <translation>Utsträckning:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="448"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="444"/>
         <source>In layer spatial reference system units : </source>
         <translation> I lagrets Spatial Reference System-enheter :</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="473"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="469"/>
         <source>xMin,yMin </source>
         <translation> xMin,yMin </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="477"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="473"/>
         <source> : xMax,yMax </source>
         <translation>  : xMax,yMax </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="510"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="506"/>
         <source>In project spatial reference system units : </source>
         <translation> I projektets Spatial Reference System-enheter :</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="488"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="484"/>
         <source>Layer Spatial Reference System:</source>
         <translation> Lagrets Spatial Reference System:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="498"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="494"/>
         <source>Project (Output) Spatial Reference System:</source>
         <translation>Projektets (visade) Spatial Reference System:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="521"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="517"/>
         <source>Attribute field info:</source>
         <translation>Attributfält info:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="528"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="524"/>
         <source>Field</source>
         <translation>Fält</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="531"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="527"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="534"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="530"/>
         <source>Length</source>
         <translation>Längd</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="537"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="533"/>
         <source>Precision</source>
         <translation>Precision</translation>
     </message>
@@ -16462,6 +16462,11 @@ eller har en PostgreSQL oid-kolumn.
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2285"/>
         <source>Name</source>
         <translation>Namn</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2361"/>
+        <source>Layer cannot be queried.</source>
+        <translation>Lagerinfo kan ej ges.</translation>
     </message>
 </context>
 <context>
