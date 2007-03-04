@@ -78,6 +78,18 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     virtual void select(QgsRect mbr, bool useIntersect = false);
 
+    /** 
+     * Gets the feature at the given feature ID.
+     * @param featureId id of the feature
+     * @param feature feature which will receive the data
+     * @param fetchGeoemtry if true, geometry will be fetched from the provider
+     * @param fetchAttributes a list containing the indexes of the attribute fields to copy
+     * @return True when feature was found, otherwise false
+     */
+    virtual bool getFeatureAtId(int featureId,
+                                QgsFeature& feature,
+                                bool fetchGeometry = true,
+                                QgsAttributeList fetchAttributes = QgsAttributeList());
     /**
      * Get the next feature resulting from a select operation.
      * @param feature feature which will receive data from the provider

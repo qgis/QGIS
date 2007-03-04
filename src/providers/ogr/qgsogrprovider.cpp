@@ -233,6 +233,41 @@ QString QgsOgrProvider::storageType() const
 }
 
 
+
+bool QgsOgrProvider::getFeatureAtId(int featureId,
+                                    QgsFeature& feature,
+                                    bool fetchGeometry,
+                                    QgsAttributeList fetchAttributes)
+{
+  OGRFeature *fet = ogrLayer->GetFeature(featureId);
+  if (fet == NULL)
+    return false;
+  
+  feature.setFeatureId(fet->GetFID());
+
+  /* fetch geometry */
+  if (fetchGeometry)
+  {
+    OGRGeometry *geom = fet->GetGeometryRef();
+      
+    // get the wkb representation
+    unsigned char *wkb = new unsigned char[geom->WkbSize()];
+    geom->exportToWkb((OGRwkbByteOrder) QgsApplication::endian(), wkb);
+      
+    feature.setGeometryAndOwnership(wkb, geom->WkbSize());
+  }
+
+  /* fetch attributes */
+  for(QgsAttributeList::iterator it = fetchAttributes.begin(); it != fetchAttributes.end(); ++it)
+  {
+    getFeatureAttribute(fet,feature,*it);
+  }
+  
+  return true;
+}
+
+
+
 bool QgsOgrProvider::getNextFeature(QgsFeature& feature,
                                     bool fetchGeometry,
                                     QgsAttributeList fetchAttributes,
@@ -251,49 +286,57 @@ bool QgsOgrProvider::getNextFeature(QgsFeature& feature,
   while ((fet = ogrLayer->GetNextFeature()) != NULL)
   {
     // skip features without geometry
-    if (fet->GetGeometryRef() != NULL || mFetchFeaturesWithoutGeom)
+    if (fet->GetGeometryRef() == NULL && !mFetchFeaturesWithoutGeom)
     {
-      OGRFeatureDefn * featureDefinition = fet->GetDefnRef();
-      QString featureTypeName = featureDefinition ? QString(featureDefinition->GetName()) : QString("");
-      feature.setFeatureId(fet->GetFID());
-      feature.setTypeName(featureTypeName);
-
-      if (fetchGeometry)
-	{
-	  OGRGeometry *geom = fet->GetGeometryRef();
-    
-	  // get the wkb representation
-	  unsigned char *wkb = new unsigned char[geom->WkbSize()];
-	  geom->exportToWkb((OGRwkbByteOrder) QgsApplication::endian(), wkb);
-	  
-	  feature.setGeometryAndOwnership(wkb, geom->WkbSize());
-
-	  if(mUseIntersect)
-	    {
-	      //precise test for intersection with search rectangle
-	      //first make QgsRect from OGRPolygon
-	      OGREnvelope env;
-	      mSelectionRectangle->getEnvelope(&env);
-	      if(env.IsInit()) //if envelope is invalid, skip the precise intersection test
-		{
-		  selectionRect.set(env.MinX, env.MinY, env.MaxX, env.MaxY);
-		  if(!feature.geometry()->fast_intersects(selectionRect))
-		    {
-		      delete fet;
-		      continue;
-		    }
-		}
-	    }
-	}
-
-      for(QgsAttributeList::iterator it = fetchAttributes.begin(); it != fetchAttributes.end(); ++it)
-	{
-	  getFeatureAttribute(fet,feature,*it);
-	}
-    
-      break;
+      delete fet;
+      continue;
     }
-  }
+    
+    OGRFeatureDefn * featureDefinition = fet->GetDefnRef();
+    QString featureTypeName = featureDefinition ? QString(featureDefinition->GetName()) : QString("");
+    feature.setFeatureId(fet->GetFID());
+    feature.setTypeName(featureTypeName);
+
+    /* fetch geometry */
+    if (fetchGeometry)
+    {
+      OGRGeometry *geom = fet->GetGeometryRef();
+      
+      // get the wkb representation
+      unsigned char *wkb = new unsigned char[geom->WkbSize()];
+      geom->exportToWkb((OGRwkbByteOrder) QgsApplication::endian(), wkb);
+      
+      feature.setGeometryAndOwnership(wkb, geom->WkbSize());
+  
+      if (mUseIntersect)
+      {
+        //precise test for intersection with search rectangle
+        //first make QgsRect from OGRPolygon
+        OGREnvelope env;
+        mSelectionRectangle->getEnvelope(&env);
+        if(env.IsInit()) //if envelope is invalid, skip the precise intersection test
+        {
+          selectionRect.set(env.MinX, env.MinY, env.MaxX, env.MaxY);
+          if(!feature.geometry()->fast_intersects(selectionRect))
+          {
+            delete fet;
+            continue;
+          }
+        }
+        
+      }
+    }
+
+    /* fetch attributes */
+    for(QgsAttributeList::iterator it = fetchAttributes.begin(); it != fetchAttributes.end(); ++it)
+    {
+      getFeatureAttribute(fet,feature,*it);
+    }
+  
+    /* we have a feature, end this cycle */
+    break;
+
+  } /* while */
    
   if (fet)
   {
