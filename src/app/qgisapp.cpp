@@ -1531,6 +1531,7 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
   }
 
 #ifdef HAVE_PYTHON
+  QString pluginName, description, version;
   
   if (QgsPythonUtils::isEnabled())
   {
@@ -1544,12 +1545,18 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
       QString packageName = pluginDir[i];
       
       // import plugin's package
-      QgsPythonUtils::loadPlugin(packageName);
+      if (!QgsPythonUtils::loadPlugin(packageName))
+        continue;
       
       // get information from the plugin
-      QString pluginName  = QgsPythonUtils::getPluginMetadata(packageName, "name");
-      QString description = QgsPythonUtils::getPluginMetadata(packageName, "description");
-      QString version     = QgsPythonUtils::getPluginMetadata(packageName, "version");
+      // if there are some problems, don't continue with metadata retreival
+      pluginName = QgsPythonUtils::getPluginMetadata(packageName, "name");
+      if (pluginName != "__error__")
+      {
+        description = QgsPythonUtils::getPluginMetadata(packageName, "description");
+        if (description != "__error__")
+          version = QgsPythonUtils::getPluginMetadata(packageName, "version");
+      }
       
       if (pluginName == "__error__" || description == "__error__" || version == "__error__")
       {
