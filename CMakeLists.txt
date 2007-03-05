@@ -37,6 +37,8 @@ SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be
 # QGIS bindings to package search path
 SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
 
+# Compile flag. Make it posible to turn it off.
+SET (PEDANTIC TRUE CACHE BOOL "Determines if we should compile with -Wall -Werror.")
 
 #############################################################
 # check if lexer and parser are not missing
@@ -114,7 +116,9 @@ FIND_PROGRAM(QT_LRELEASE_EXECUTABLE
 #############################################################
 # enable warnings
 
-ADD_DEFINITIONS( -Wall -Werror )
+IF (PEDANTIC)
+  ADD_DEFINITIONS( -Wall -Werror )
+ENDIF (PEDANTIC)
 
 IF (CMAKE_BUILD_TYPE MATCHES Debug)
   ADD_DEFINITIONS(-DQGISDEBUG=1)
