@@ -756,8 +756,7 @@ void QgsServerSourceSelect::showError(QgsWmsProvider * wms)
     tr("provider said") + ":\n" +
     wms->errorString()
   );
-  mv->exec();
-  delete mv;
+  mv->showMessage(true); // Is deleted when closed
 }
 
 void QgsServerSourceSelect::on_cmbConnections_activated(int)
