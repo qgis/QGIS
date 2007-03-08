@@ -15,43 +15,38 @@
  ***************************************************************************/
 #include <iostream>
 
-#include <qapplication.h>
-#include <qdir.h>
-#include <qfile.h>
-#include <qsettings.h>
-#include <qpixmap.h>
-#include <q3listbox.h>
-#include <qstringlist.h>
-#include <qlabel.h>
+#include <QApplication>
+#include <QDir>
+#include <QFile>
+#include <QSettings>
+#include <QPixmap>
+#include <QStringList>
+#include <QLabel>
 #include <QComboBox>
-#include <qspinbox.h>
-#include <qmessagebox.h>
-#include <qinputdialog.h>
-#include <qsettings.h>
-#include <qpainter.h>
-#include <qpen.h>
-#include <q3pointarray.h>
-#include <qcursor.h>
-#include <qnamespace.h>
-#include <q3listview.h>
-#include <qcolordialog.h>
-#include <q3table.h>
-#include <qstatusbar.h>
-#include <qevent.h>
-#include <qpoint.h>
-#include <qsize.h>
-#include <qdom.h>
-#include <qtabwidget.h>
-#include <qlayout.h>
-#include <qcheckbox.h>
-#include <q3process.h>
-#include <qicon.h>
-//Added by qt3to4:
+#include <QSpinBox>
+#include <QMessageBox>
+#include <QInputDialog>
+#include <QSettings>
+#include <QPainter>
+#include <QPen>
+#include <QCursor>
+//#include <qnamespace.h>
+#include <QColorDialog>
+#include <QStatusBar>
+#include <QEvent>
+#include <QPoint>
+#include <QSize>
+#include <QDomDocument>
+#include <QTabWidget>
+#include <QLayout>
+#include <QCheckBox>
+#include <QIcon>
 #include <QCloseEvent>
 #include <QTabBar>
-#include <QListView>
-#include <QProcess>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
 #include <QHeaderView>
+#include <QProcess>
 
 #include "qgis.h"
 #include "qgisinterface.h"
@@ -116,20 +111,21 @@ QgsGrassTools::QgsGrassTools ( QgisInterface *iface,
     layout1->addWidget(mTabWidget);
 
 
-    mModulesListView = new Q3ListView();
+    mModulesListView = new QTreeWidget();
     mTabWidget->addTab( mModulesListView, tr("Modules") );
-    mModulesListView->addColumn("col1",0);
-    
+    mModulesListView->setColumnCount(1);
+    QStringList headers;
+    headers << tr("Modules");
+    mModulesListView->setHeaderLabels(headers);    
     // Set list view
-    mModulesListView->setColumnText(0,tr("Modules"));
     mModulesListView->clear();
-    mModulesListView->setSorting(-1);
+    mModulesListView->setSortingEnabled(false);
     mModulesListView->setRootIsDecorated(true);
-    mModulesListView->setResizeMode(Q3ListView::AllColumns);
+//    mModulesListView->setResizeMode(QTreeWidget::AllColumns);
     mModulesListView->header()->hide();
 
-    connect( mModulesListView, SIGNAL(clicked(Q3ListViewItem *)), 
-		         this, SLOT(moduleClicked( Q3ListViewItem *)) );
+    connect( mModulesListView, SIGNAL(itemClicked(QTreeWidgetItem *, int)), 
+		         this, SLOT(moduleClicked( QTreeWidgetItem *, int)) );
 
     QString title = "GRASS Tools: " + QgsGrass::getDefaultLocation()
                 + "/" + QgsGrass::getDefaultMapset();
@@ -157,15 +153,15 @@ QgsGrassTools::QgsGrassTools ( QgisInterface *iface,
 		         this, SLOT(emitRegionChanged()) );
 }
 
-void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
+void QgsGrassTools::moduleClicked( QTreeWidgetItem * item, int column )
 {
-    #ifdef QGISDEBUG
+  //  #ifdef QGISDEBUG
     std::cerr << "QgsGrassTools::moduleClicked()" << std::endl;
-    #endif
+ //   #endif
     if ( !item ) return;
 
     QString name = item->text(1);
-    //std::cerr << "name = " << name << std::endl;
+    std::cerr << "name = " << name.ascii() << std::endl;
     
     if ( name.length() == 0 ) return;  // Section
     
@@ -221,7 +217,7 @@ void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
            proc->start(msysPath + " " +  myArguments);
            proc->waitForStarted();
            if ( proc->state() != QProcess::Running )
-           {
+  {
              QMessageBox::warning( 0, "Warning",
                  "Cannot start MSYS (" + msysPath + ")" );
            }
@@ -278,6 +274,7 @@ bool QgsGrassTools::loadConfig(QString filePath)
     std::cerr << "QgsGrassTools::loadConfig(): " << filePath.toLocal8Bit().data() << std::endl;
     #endif
     mModulesListView->clear();
+    mModulesListView->setIconSize(QSize(80,22));
 
     QFile file ( filePath );
 
@@ -320,12 +317,12 @@ bool QgsGrassTools::loadConfig(QString filePath)
     return true;
 }
 
-void QgsGrassTools::addModules (  Q3ListViewItem *parent, QDomElement &element )
+void QgsGrassTools::addModules (  QTreeWidgetItem *parent, QDomElement &element )
 {
     QDomNode n = element.firstChild();
 
-    Q3ListViewItem *item;
-    Q3ListViewItem *lastItem = 0;
+    QTreeWidgetItem *item;
+    QTreeWidgetItem *lastItem = 0;
     while( !n.isNull() ) {
 	QDomElement e = n.toElement();
 	if( !e.isNull() ) {
@@ -337,16 +334,16 @@ void QgsGrassTools::addModules (  Q3ListViewItem *parent, QDomElement &element )
 	    }
 	    
 	    if ( parent ) {
-		item = new Q3ListViewItem( parent, lastItem );
+		item = new QTreeWidgetItem( parent, lastItem );
 	    } else {
-		item = new Q3ListViewItem( mModulesListView, lastItem );
+		item = new QTreeWidgetItem( mModulesListView, lastItem );
 	    }
 
 	    if ( e.tagName() == "section" ) {
 		QString label = e.attribute("label");
 	        std::cout << "label = " << label.toLocal8Bit().data() << std::endl;
 		item->setText( 0, label );
-		item->setOpen(true); // for debuging to spare one click
+		item->setExpanded(true); // for debuging to spare one click
 
 		addModules ( item, e );
 		
@@ -360,7 +357,7 @@ void QgsGrassTools::addModules (  Q3ListViewItem *parent, QDomElement &element )
 		QPixmap pixmap = QgsGrassModule::pixmap ( path, 25 ); 
 
 		item->setText( 0, label );
-		item->setPixmap( 0, pixmap );
+		item->setIcon( 0, QIcon(pixmap) );
 		item->setText( 1, name );
 		lastItem = item;
 	    }
