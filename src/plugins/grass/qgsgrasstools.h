@@ -20,8 +20,8 @@
 
 class QCloseEvent;
 class QString;
-class Q3ListView;
-class Q3ListViewItem;
+class QTreeWidget;
+class QTreeWidgetItem;
 class QDomNode;
 class QDomElement;
 class QSize;
@@ -66,7 +66,7 @@ public:
 
     //! Recursively add sections and modules to the list view
     //  If parent is 0, the modules are added to mModulesListView root
-    void addModules ( Q3ListViewItem *parent, QDomElement &element );
+    void addModules ( QTreeWidgetItem *parent, QDomElement &element );
 
     //! Returns application directory
     QString appDir();
@@ -88,7 +88,7 @@ public slots:
     void saveWindowLocation();
 
     //! Module in list clicked
-    void moduleClicked ( Q3ListViewItem * item );
+    void moduleClicked ( QTreeWidgetItem * item, int column );
 
     //! Current mapset changed
     void mapsetChanged();
@@ -113,7 +113,7 @@ private:
     QgsGrassBrowser *mBrowser;
 
     QgsGrassToolsTabWidget *mTabWidget;
-    Q3ListView *mModulesListView;
+    QTreeWidget *mModulesListView;
 };
 
 #endif // QGSGRASSTOOLS_H
