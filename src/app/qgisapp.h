@@ -34,6 +34,7 @@ class QKeyEvent;
 class QMenu;
 class QPixmap;
 class QSplashScreen;
+class QValidator;
 
 class QgisAppInterface;
 class QgsClipboard;
@@ -547,6 +548,8 @@ private:
   QLabel * mScaleLabel;
   //! Widget that will live on the statusbar to display scale value
   QLineEdit * mScaleEdit;
+  //! The validator for the mScaleEdit
+  QValidator * mScaleEditValidator;
   //! Widget that will live in the statusbar to display coords
   QLabel * mCoordsLabel;
   //! Widget that will live in the statusbar to show progress of operations
