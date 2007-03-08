@@ -9,7 +9,7 @@
 
 %Include qgis.sip
 %Include qgsapplication.sip
-// TODO: %Include qgscolortable.sip
+%Include qgscolortable.sip
 %Include qgscontexthelp.sip
 %Include qgscoordinatetransform.sip
 %Include qgsdataprovider.sip

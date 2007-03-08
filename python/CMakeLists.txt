@@ -28,6 +28,8 @@ ADD_CUSTOM_TARGET (python ALL DEPENDS ${BINDINGS_CORE_LIB} ${BINDINGS_GUI_LIB})
 # don't run python before the libs are built
 ADD_DEPENDENCIES (python qgis_core qgis_gui)
 
+FILE(GLOB CORE_SIP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/core/*.sip")
+FILE(GLOB GUI_SIP_FILES  "${CMAKE_CURRENT_SOURCE_DIR}/gui/*.sip")
 
 # Step 1: during configuration
 # create file configure.py from configure.py.in
@@ -41,7 +43,9 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/configure.py.in
 ADD_CUSTOM_COMMAND(OUTPUT ${BINDINGS_CORE_MAKEFILE} ${BINDINGS_GUI_MAKEFILE} PRE_BUILD
                    COMMAND ${PYTHON_EXECUTABLE}
                    ARGS ${CMAKE_CURRENT_BINARY_DIR}/configure.py
-		   DEPENDS ${QGIS_CORE_LIB} ${QGIS_GUI_LIB} ${CMAKE_CURRENT_BINARY_DIR}/configure.py)
+		   DEPENDS ${QGIS_CORE_LIB} ${QGIS_GUI_LIB}
+		           ${CMAKE_CURRENT_BINARY_DIR}/configure.py
+			   ${CORE_SIP_FILES} ${GUI_SIP_FILES})
 
 # Step 3: run make in core and gui subdirs
 ADD_CUSTOM_COMMAND(OUTPUT ${BINDINGS_CORE_LIB} PRE_LINK
