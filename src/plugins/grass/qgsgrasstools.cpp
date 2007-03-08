@@ -155,13 +155,15 @@ QgsGrassTools::QgsGrassTools ( QgisInterface *iface,
 
 void QgsGrassTools::moduleClicked( QTreeWidgetItem * item, int column )
 {
-  //  #ifdef QGISDEBUG
+    #ifdef QGISDEBUG
     std::cerr << "QgsGrassTools::moduleClicked()" << std::endl;
- //   #endif
+    #endif
     if ( !item ) return;
 
     QString name = item->text(1);
+#ifdef QGISDEBUG
     std::cerr << "name = " << name.ascii() << std::endl;
+#endif
     
     if ( name.length() == 0 ) return;  // Section
     
