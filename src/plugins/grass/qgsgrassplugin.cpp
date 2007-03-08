@@ -75,6 +75,10 @@ extern "C" {
 #include "grass_edit.xpm"
 #include "grass_region.xpm"
 #include "grass_region_edit.xpm"
+#include "grass_open_mapset.xpm"
+#include "grass_new_vector_layer.xpm"
+#include "grass_new_mapset.xpm"
+#include "grass_close_mapset.xpm"
 static const QString pluginVersion = QObject::tr("Version 0.1");
 
 /**
@@ -152,9 +156,9 @@ void QgsGrassPlugin::initGui()
   mRegionBand->setZValue(20);
 
   // Create the action for tool
-  mOpenMapsetAction = new QAction( tr("Open mapset"), this );
-  mNewMapsetAction = new QAction( tr("New mapset"), this );
-  mCloseMapsetAction = new QAction( tr("Close mapset"), this );
+  mOpenMapsetAction = new QAction(QIcon(icon_open_mapset), tr("Open mapset"), this );
+  mNewMapsetAction = new QAction(QIcon(icon_new_mapset), tr("New mapset"), this );
+  mCloseMapsetAction = new QAction(QIcon(icon_close_mapset), tr("Close mapset"), this );
 
   mAddVectorAction = new QAction(QIcon(icon_add_vector),
       tr("Add GRASS vector layer"), this);
@@ -171,7 +175,7 @@ void QgsGrassPlugin::initGui()
       tr("Edit Current Grass Region"), this);
   mEditAction = new QAction(QIcon(icon_grass_edit),
       tr("Edit Grass Vector layer"), this);
-  mNewVectorAction = new QAction("Create new Grass Vector", this);
+  mNewVectorAction = new QAction(QIcon(icon_new_vector_layer),"Create new Grass Vector", this);
 
   mAddVectorAction->setWhatsThis(tr("Adds a GRASS vector layer to the map canvas"));
   mAddRasterAction->setWhatsThis(tr("Adds a GRASS raster layer to the map canvas"));
@@ -216,6 +220,11 @@ void QgsGrassPlugin::initGui()
   mRegionAction->addTo(toolBarPointer);
   mEditRegionAction->addTo(toolBarPointer);
   mEditAction->addTo(toolBarPointer);
+  toolBarPointer->addSeparator();
+  mOpenMapsetAction->addTo(toolBarPointer);
+  mNewMapsetAction->addTo(toolBarPointer);
+  mNewVectorAction->addTo(toolBarPointer);
+  mCloseMapsetAction->addTo(toolBarPointer);
 
   // Connect display region
   connect( mCanvas, SIGNAL(renderComplete(QPainter *)), this, SLOT(postRender(QPainter *)));
