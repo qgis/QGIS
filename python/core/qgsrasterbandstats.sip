@@ -37,14 +37,12 @@ class QgsRasterBandStats
     int elementCountInt;    
     /** \brief Store the histogram for a given layer */
     typedef QVector<int> HistogramVector;
-    // TODO: why SIP says its unsupported?
     //HistogramVector * histogramVector;
     /** \brief whteher histogram values are estimated or completely calculated */
     bool histogramEstimatedFlag;
     /** whehter histogram compuation should include out of range values */
     bool histogramOutOfRangeFlag;
     /** Color table */
-    // TODO: not working
-    //QgsColorTable colorTable;
+    QgsColorTable colorTable;
 };
 
