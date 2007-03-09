@@ -104,16 +104,16 @@ class Qgis2Map:
     # extents
     xmin = self.qgs.getElementsByTagName("xmin")
     self.outFile.write("  EXTENT ")
-    self.outFile.write(xmin[0].childNodes[0].nodeValue.encode())
+    self.outFile.write(xmin[0].childNodes[0].nodeValue.encode('utf-8'))
     self.outFile.write(" ")
     ymin = self.qgs.getElementsByTagName("ymin")
-    self.outFile.write(ymin[0].childNodes[0].nodeValue.encode())
+    self.outFile.write(ymin[0].childNodes[0].nodeValue.encode('utf-8'))
     self.outFile.write(" ")
     xmax = self.qgs.getElementsByTagName("xmax")
-    self.outFile.write(xmax[0].childNodes[0].nodeValue.encode())
+    self.outFile.write(xmax[0].childNodes[0].nodeValue.encode('utf-8'))
     self.outFile.write(" ")
     ymax = self.qgs.getElementsByTagName("ymax")
-    self.outFile.write(ymax[0].childNodes[0].nodeValue.encode())
+    self.outFile.write(ymax[0].childNodes[0].nodeValue.encode('utf-8'))
     self.outFile.write("\n")
 
   # Write the OUTPUTFORMAT section
@@ -141,7 +141,7 @@ class Qgis2Map:
 
     # Get the proj4 text from the first map layer's destination SRS
     destsrs = self.qgs.getElementsByTagName("destinationsrs")[0] 
-    proj4Text = destsrs.getElementsByTagName("proj4")[0].childNodes[0].nodeValue.encode() 
+    proj4Text = destsrs.getElementsByTagName("proj4")[0].childNodes[0].nodeValue.encode('utf-8') 
     # the proj4 text string needs to be reformatted to make mapserver happy
     self.outFile.write(self.formatProj4(proj4Text))
 
@@ -240,24 +240,24 @@ class Qgis2Map:
 
       self.outFile.write("  LAYER\n")
       # write the name of the layer
-      self.outFile.write("    NAME '" + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode() + "'\n")
-      if lyr.getAttribute("type").encode() == 'vector':  
-        self.outFile.write("    TYPE " + lyr.getAttribute("geometry").encode().upper() + "\n")
-      elif lyr.getAttribute("type").encode() == 'raster':  
-        self.outFile.write("    TYPE " + lyr.getAttribute("type").encode().upper() + "\n")
+      self.outFile.write("    NAME '" + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8') + "'\n")
+      if lyr.getAttribute("type").encode('utf-8') == 'vector':  
+        self.outFile.write("    TYPE " + lyr.getAttribute("geometry").encode('utf-8').upper() + "\n")
+      elif lyr.getAttribute("type").encode('utf-8') == 'raster':  
+        self.outFile.write("    TYPE " + lyr.getAttribute("type").encode('utf-8').upper() + "\n")
  
       # Set min/max scales
-      if lyr.getAttribute('scaleBasedVisibilityFlag').encode() == 1:
-        self.outFile.write("    MINSCALE " + lyr.getAttribute('minScale').encode() + "\n")
-        self.outFile.write("    MAXSCALE " + lyr.getAttribute('maxScale').encode() + "\n")
+      if lyr.getAttribute('scaleBasedVisibilityFlag').encode('utf-8') == 1:
+        self.outFile.write("    MINSCALE " + lyr.getAttribute('minScale').encode('utf-8') + "\n")
+        self.outFile.write("    MAXSCALE " + lyr.getAttribute('maxScale').encode('utf-8') + "\n")
 
       # data
-      dataString = lyr.getElementsByTagName("datasource")[0].childNodes[0].nodeValue.encode()
+      dataString = lyr.getElementsByTagName("datasource")[0].childNodes[0].nodeValue.encode('utf-8')
 
       # test if it is a postgis, grass or WMS layer
       # is there a better way to do this? probably.
       try:
-        providerString = lyr.getElementsByTagName("provider")[0].childNodes[0].nodeValue.encode()
+        providerString = lyr.getElementsByTagName("provider")[0].childNodes[0].nodeValue.encode('utf-8')
       except:
         # if providerString is null
         providerString = ''
@@ -270,7 +270,7 @@ class Qgis2Map:
                             + " password=" + pg['password'] + " user=" + pg['user'] + "'\n")
         self.outFile.write("    DATA '" + pg['geom'] + " FROM " + pg['table'] + "'\n")
 
-      elif providerString == 'wms' and lyr.getAttribute("type").encode().upper() == 'RASTER':
+      elif providerString == 'wms' and lyr.getAttribute("type").encode('utf-8').upper() == 'RASTER':
         # it's a WMS layer 
         self.outFile.write("    CONNECTIONTYPE WMS\n")
         self.outFile.write("    CONNECTION '" + dataString + "'\n")
@@ -280,16 +280,16 @@ class Qgis2Map:
         wmsNames = []
         wmsStyles = []
         for wmsLayer in wmsSubLayers: 
-          wmsNames.append( wmsLayer.getElementsByTagName('name')[0].childNodes[0].nodeValue.encode() )
+          wmsNames.append( wmsLayer.getElementsByTagName('name')[0].childNodes[0].nodeValue.encode('utf-8') )
           try: 
-            wmsStyles.append( wmsLayer.getElementsByTagName('style')[0].childNodes[0].nodeValue.encode() )
+            wmsStyles.append( wmsLayer.getElementsByTagName('style')[0].childNodes[0].nodeValue.encode('utf-8') )
           except:
             wmsStyles.append( '' )
         # Create necesssary wms metadata
-        format = rasterProp.getElementsByTagName('wmsFormat')[0].childNodes[0].nodeValue.encode()
+        format = rasterProp.getElementsByTagName('wmsFormat')[0].childNodes[0].nodeValue.encode('utf-8')
         ct = lyr.getElementsByTagName('coordinatetransform')[0]
         srs = ct.getElementsByTagName('sourcesrs')[0].getElementsByTagName('spatialrefsys')[0]
-        epsg = srs.getElementsByTagName('epsg')[0].childNodes[0].nodeValue.encode()
+        epsg = srs.getElementsByTagName('epsg')[0].childNodes[0].nodeValue.encode('utf-8')
         self.outFile.write("    METADATA\n")
         self.outFile.write("      'wms_name' '" + ','.join(wmsNames) + "'\n")
         self.outFile.write("      'wms_server_version' '1.1.1'\n")
@@ -305,24 +305,24 @@ class Qgis2Map:
       # WMS settings for all layers
       self.outFile.write("    METADATA\n")
       self.outFile.write("      'wms_title' '" 
-           + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode() + "'\n")
+           + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8') + "'\n")
       self.outFile.write("    END\n")
 
       self.outFile.write("    STATUS DEFAULT\n")
 
       opacity = int ( 100.0 * 
-           float(lyr.getElementsByTagName("transparencyLevelInt")[0].childNodes[0].nodeValue.encode()) / 255.0 ) 
+           float(lyr.getElementsByTagName("transparencyLevelInt")[0].childNodes[0].nodeValue.encode('utf-8')) / 255.0 ) 
       self.outFile.write("    TRANSPARENCY " + str(opacity) + "\n")
 
       self.outFile.write("    PROJECTION\n")
-      proj4Text = lyr.getElementsByTagName("proj4")[0].childNodes[0].nodeValue.encode() 
+      proj4Text = lyr.getElementsByTagName("proj4")[0].childNodes[0].nodeValue.encode('utf-8') 
       self.outFile.write(self.formatProj4(proj4Text))
       self.outFile.write("    END\n")
-      scaleDependent = lyr.getAttribute("scaleBasedVisibilityFlag").encode()
+      scaleDependent = lyr.getAttribute("scaleBasedVisibilityFlag").encode('utf-8')
       if scaleDependent == '1':
         # get the min and max scale settings
-        minscale = lyr.getAttribute("minScale").encode()
-        maxscale = lyr.getAttribute("maxScale").encode()
+        minscale = lyr.getAttribute("minScale").encode('utf-8')
+        maxscale = lyr.getAttribute("maxScale").encode('utf-8')
         if minscale > '':
           self.outFile.write("    MINSCALE " + minscale + "\n")
         if maxscale > '':
@@ -331,9 +331,9 @@ class Qgis2Map:
       
       # Check for label field (ie LABELITEM) and label status
       try:
-        labelOn = lyr.getElementsByTagName("label")[0].childNodes[0].nodeValue.encode()
+        labelOn = lyr.getElementsByTagName("label")[0].childNodes[0].nodeValue.encode('utf-8')
         labelNode = lyr.getElementsByTagName('labelattributes')[0]
-        labelField = labelNode.getElementsByTagName('label')[0].getAttribute('field').encode()
+        labelField = labelNode.getElementsByTagName('label')[0].getAttribute('field').encode('utf-8')
         if labelField != '' and labelField is not None and labelOn == "1":
           self.outFile.write("    LABELITEM '" + labelField + "'\n");
       except:
@@ -360,12 +360,12 @@ class Qgis2Map:
   # We need the layer node and symbol node
   def simpleRenderer(self, layerNode, symbolNode):
     # get the layers geometry type
-    geometry = layerNode.getAttribute("geometry").encode().upper()
+    geometry = layerNode.getAttribute("geometry").encode('utf-8').upper()
 
     self.outFile.write("    CLASS\n")
 
     self.outFile.write("       NAME " 
-         + layerNode.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode() 
+         + layerNode.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8') 
          + " \n")
 
     self.outFile.write("       STYLE\n")
@@ -373,7 +373,7 @@ class Qgis2Map:
     symbol = self.msSymbol( geometry, symbolNode )
     self.outFile.write("         SYMBOL " + symbol + " \n")
     self.outFile.write("         SIZE " 
-        + symbolNode.getElementsByTagName('pointsize')[0].childNodes[0].nodeValue.encode()  
+        + symbolNode.getElementsByTagName('pointsize')[0].childNodes[0].nodeValue.encode('utf-8')  
         + " \n")
 
     # outline color
@@ -402,10 +402,10 @@ class Qgis2Map:
   # Graduated symbol renderer output
   def graduatedRenderer(self, layerNode, symbolNode):
     # get the layers geometry type
-    geometry = layerNode.getAttribute("geometry").encode().upper()
+    geometry = layerNode.getAttribute("geometry").encode('utf-8').upper()
 
     # get the renderer field for building up the classes
-    classField = layerNode.getElementsByTagName('classificationattribute')[0].childNodes[0].nodeValue.encode()  
+    classField = layerNode.getElementsByTagName('classificationattribute')[0].childNodes[0].nodeValue.encode('utf-8')  
     # write the render item
     self.outFile.write("    CLASSITEM '" + classField + "'\n")
 
@@ -414,12 +414,12 @@ class Qgis2Map:
     for cls in classes:
       self.outFile.write("    CLASS\n")
 
-      lower = cls.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode()
-      upper = cls.getElementsByTagName('uppervalue')[0].childNodes[0].nodeValue.encode()
+      lower = cls.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode('utf-8')
+      upper = cls.getElementsByTagName('uppervalue')[0].childNodes[0].nodeValue.encode('utf-8')
     
       # If there's a label use it, otherwise autogenerate one
       try:
-        label = cls.getElementsByTagName('label')[0].childNodes[0].nodeValue.encode()
+        label = cls.getElementsByTagName('label')[0].childNodes[0].nodeValue.encode('utf-8')
         self.outFile.write("      NAME '" + label + "'\n") 
       except: 
         self.outFile.write("      NAME '" + lower + " < " + classField + " < " + upper + "'\n") 
@@ -434,7 +434,7 @@ class Qgis2Map:
       # Symbol size 
       if geometry == 'POINT' or geometry == 'LINE':
         self.outFile.write("        SIZE " 
-            + cls.getElementsByTagName('pointsize')[0].childNodes[0].nodeValue.encode()  
+            + cls.getElementsByTagName('pointsize')[0].childNodes[0].nodeValue.encode('utf-8')  
             + " \n")
 
       # outline color
@@ -463,10 +463,10 @@ class Qgis2Map:
   # Continuous symbol renderer output
   def continuousRenderer(self, layerNode, symbolNode):
     # get the layers geometry type
-    geometry = layerNode.getAttribute("geometry").encode().upper()
+    geometry = layerNode.getAttribute("geometry").encode('utf-8').upper()
 
     # get the renderer field for building up the classes
-    classField = layerNode.getElementsByTagName('classificationattribute')[0].childNodes[0].nodeValue.encode()  
+    classField = layerNode.getElementsByTagName('classificationattribute')[0].childNodes[0].nodeValue.encode('utf-8')  
 
     # write the rendering info for each class
     self.outFile.write("    CLASS\n")
@@ -496,8 +496,8 @@ class Qgis2Map:
 
     # The range of values over which to ramp the colors
     self.outFile.write("        DATARANGE "
-         + lower.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode() + ' '
-         + upper.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode() + '\n')
+         + lower.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode('utf-8') + ' '
+         + upper.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode('utf-8') + '\n')
 
     self.outFile.write("        RANGEITEM '" + classField + "'\n")                                        
     self.outFile.write("      END\n")
@@ -519,10 +519,10 @@ class Qgis2Map:
   # Unique value renderer output
   def uniqueRenderer(self, layerNode, symbolNode):
     # get the renderer field for building up the classes
-    classField = layerNode.getElementsByTagName('classificationattribute')[0].childNodes[0].nodeValue.encode()  
+    classField = layerNode.getElementsByTagName('classificationattribute')[0].childNodes[0].nodeValue.encode('utf-8')  
 
     # get the layers geometry type
-    geometry = layerNode.getAttribute("geometry").encode().upper()
+    geometry = layerNode.getAttribute("geometry").encode('utf-8').upper()
     
     # write the render item
     self.outFile.write("    CLASSITEM '" + classField + "'\n")
@@ -532,11 +532,11 @@ class Qgis2Map:
     for cls in classes:
       self.outFile.write("    CLASS\n")
 
-      lower = cls.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode()
+      lower = cls.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode('utf-8')
 
       # If there's a label use it, otherwise autogenerate one
       try:
-        label = cls.getElementsByTagName('label')[0].childNodes[0].nodeValue.encode()
+        label = cls.getElementsByTagName('label')[0].childNodes[0].nodeValue.encode('utf-8')
         self.outFile.write("      NAME '" + label + "'\n") 
       except:
         self.outFile.write("      NAME '" + classField + " = " + lower + "' \n") 
@@ -552,7 +552,7 @@ class Qgis2Map:
       # Symbol size 
       if geometry == 'POINT' or geometry == 'LINE':
         self.outFile.write("        SIZE " 
-            + cls.getElementsByTagName('pointsize')[0].childNodes[0].nodeValue.encode()  
+            + cls.getElementsByTagName('pointsize')[0].childNodes[0].nodeValue.encode('utf-8')  
             + " \n")
 
       # outline color
@@ -600,7 +600,7 @@ class Qgis2Map:
       symbol = '0'
     elif geometry == 'POINT':
       try:
-        symbolName = qgisSymbols[symbolNode.getElementsByTagName('pointsymbol')[0].childNodes[0].nodeValue.encode()]
+        symbolName = qgisSymbols[symbolNode.getElementsByTagName('pointsymbol')[0].childNodes[0].nodeValue.encode('utf-8')]
       except:
         symbolName = "CIRCLE"
       # make sure it's single quoted
@@ -639,7 +639,7 @@ class Qgis2Map:
   def msLabel(self, layerNode):
     # currently a very basic bitmap font
     labelNode = layerNode.getElementsByTagName('labelattributes')[0]
-    labelField = labelNode.getElementsByTagName('label')[0].getAttribute('field').encode()
+    labelField = labelNode.getElementsByTagName('label')[0].getAttribute('field').encode('utf-8')
     if labelField != '' and labelField is not None:
       labelBlock  = "     LABEL \n"
      
@@ -648,7 +648,7 @@ class Qgis2Map:
  
       # Include label angle if specified
       # Note that angles only work for truetype fonts which aren't supported yet
-      angle = labelNode.getElementsByTagName('angle')[0].getAttribute('value').encode()
+      angle = labelNode.getElementsByTagName('angle')[0].getAttribute('value').encode('utf-8')
       labelBlock += "      ANGLE " + angle + "\n"
      
       # Include label buffer if specified
@@ -656,7 +656,7 @@ class Qgis2Map:
       # mapserver just adds blank space around the label while
       # qgis uses a fill color around the label
       # Note that buffer only works for truetype fonts which aren't supported yet
-      buffer = labelNode.getElementsByTagName('buffersize')[0].getAttribute('value').encode()
+      buffer = labelNode.getElementsByTagName('buffersize')[0].getAttribute('value').encode('utf-8')
       labelBlock += "      BUFFER " + buffer + "\n"
 
       labelBlock += "     END \n"
