@@ -63,7 +63,6 @@ public:
 
     /** \brief Clear the color table */
     void clear();
-	void gack();
 
 };
 

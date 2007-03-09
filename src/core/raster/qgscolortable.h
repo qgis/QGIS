@@ -100,7 +100,6 @@ public:
 
     /** \brief Clear the color table */
     void clear();
-	void gack();
 
 private:
     /** \brief vector of discrete values */
