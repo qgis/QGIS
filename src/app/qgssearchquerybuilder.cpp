@@ -126,7 +126,7 @@ void QgsSearchQueryBuilder::on_btnTest_clicked()
 
   QString str;
   if (count)
-    str.sprintf(tr("Found %d matching features."), count);
+    str.sprintf(tr("Found %d matching features.","",count), count);
   else
     str = tr("No matching features found.");
   QMessageBox::information(this, tr("Search results"), str);
