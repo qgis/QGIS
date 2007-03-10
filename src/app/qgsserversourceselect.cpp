@@ -573,7 +573,7 @@ void QgsServerSourceSelect::on_lstLayers_selectionChanged()
       QSet<QString> crsFilter = mWmsProvider->supportedCrsForLayers(newSelectedLayers);
 
       gbCRS->setTitle(
-                       QString( tr("Coordinate Reference System (%1 available)") )
+                       QString( tr("Coordinate Reference System (%1 available)", "", crsFilter.count() ) )
                           .arg( crsFilter.count() )
                      );
 

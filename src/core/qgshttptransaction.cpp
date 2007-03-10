@@ -431,7 +431,7 @@ void QgsHttpTransaction::networkTimedOut()
   QgsDebugMsg("QgsHttpTransaction::networkTimedOut: entering.");
 
   mError = QString(tr("Network timed out after %1 seconds of inactivity.\n"
-                      "This may be a problem in your network connection or at the WMS server.")
+                      "This may be a problem in your network connection or at the WMS server.","", NETWORK_TIMEOUT_MSEC/1000)
                   ).arg(NETWORK_TIMEOUT_MSEC/1000);
 
   QgsDebugMsg("QgsHttpTransaction::getSynchronously: Setting httpactive = FALSE");

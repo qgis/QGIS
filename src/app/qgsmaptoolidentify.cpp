@@ -302,8 +302,7 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
     else
     {
       QString title = layer->name();
-      title += QString(" - %1").arg(featureCount);
-      title += QObject::tr(" features found");
+      title += QString( tr("- %1 features found","Identify results window title",featureCount) ).arg(featureCount);
       mResults->setTitle(title);    
     }
     QApplication::restoreOverrideCursor();
