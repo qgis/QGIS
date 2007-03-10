@@ -1174,7 +1174,7 @@ type_error:
     obj = pyobj;
     if (PyCFunction_Check(obj)) {
       /* here we get the method pointer for callbacks */
-#if 1 //#ifdef WIN32
+#if 1 /* #ifdef WIN32 */
       char *doc = (char *)(((PyCFunctionObject *)obj) -> m_ml -> ml_doc);
 #else
       char *doc = (((PyCFunctionObject *)obj) -> m_ml -> ml_doc);
@@ -2065,7 +2065,7 @@ extern "C" {
     swig_type_info **types_initial) {
         size_t i;
         for (i = 0; methods[i].ml_name; ++i) {
-#if 1 //#ifdef WIN32
+#if 1 /* #ifdef WIN32 */
             char *c = (char *)methods[i].ml_doc;
 #else
             char *c = methods[i].ml_doc;
