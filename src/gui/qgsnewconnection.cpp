@@ -115,7 +115,7 @@ void QgsNewConnection::testConnection()
   if (PQstatus(pd) == CONNECTION_OK)
     {
       // Database successfully opened; we can now issue SQL commands.
-      QMessageBox::information(this, tr("Test connection"), tr("Connection to %1 was successfull").arg(txtDatabase->text()));
+      QMessageBox::information(this, tr("Test connection"), tr("Connection to %1 was successful").arg(txtDatabase->text()));
   } else
     {
       QMessageBox::information(this, tr("Test connection"), tr("Connection failed - Check settings and try again.\n\nExtended error information:\n") + QString(PQerrorMessage(pd)) );
