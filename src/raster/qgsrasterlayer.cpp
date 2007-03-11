@@ -4441,10 +4441,13 @@ void QgsRasterLayer::readColorTable ( GDALRasterBand *gdalBand, QgsColorTable *t
       {
         continue;
       }
-      theColorTable->add ( min, max,
-                           (unsigned char)min_c1, (unsigned char)min_c2, (unsigned char)min_c3, 0,
-                           (unsigned char)max_c1, (unsigned char)max_c2, (unsigned char)max_c3, 0 );
-      found = true;
+      if ( (min > 0.0) || (max > 0.0) ) { // A quick hack for malformed GDALMetadata
+        theColorTable->add ( min, max,
+                             (unsigned char)min_c1, (unsigned char)min_c2, (unsigned char)min_c3, 0,
+                             (unsigned char)max_c1, (unsigned char)max_c2, (unsigned char)max_c3, 0 );
+        found = true;
+      }
+
     }
     ++metadata;
   }
@@ -4514,6 +4517,12 @@ void *QgsRasterLayer::readData ( GDALRasterBand *gdalBand, QgsRasterViewPort *vi
                                         viewPort->drawableAreaXDimInt,
                                         viewPort->drawableAreaYDimInt,
                                         type, 0, 0 );
+    if (myErr != CPLE_None)
+    {
+      // Couldn't read the raster, print the reason on debug.
+      // We should notify the user somehow
+      QgsDebugMsg("RasterIO failed and returned (see cpl_error.h) : " + QString::number(myErr));
+    }
                                       
   }
   return data;
