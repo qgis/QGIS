@@ -330,54 +330,54 @@ bool QgsGrassTools::loadConfig(QString filePath)
 
 void QgsGrassTools::addModules (  Q3ListViewItem *parent, QDomElement &element )
 {
-  QDomNode n = element.firstChild();
+    QDomNode n = element.firstChild();
 
-  Q3ListViewItem *item;
-  Q3ListViewItem *lastItem = 0;
-  while( !n.isNull() ) {
-    QDomElement e = n.toElement();
-    if( !e.isNull() ) {
-      //std::cout << "tag = " << e.tagName() << std::endl;
+    Q3ListViewItem *item;
+    Q3ListViewItem *lastItem = 0;
+    while( !n.isNull() ) {
+	QDomElement e = n.toElement();
+	if( !e.isNull() ) {
+	    //std::cout << "tag = " << e.tagName() << std::endl;
 
-      if ( e.tagName() == "section" && e.tagName() == "grass" ) {
-        std::cout << "Unknown tag: " << e.tagName().toLocal8Bit().data() << std::endl;
-        continue;
-      }
+	    if ( e.tagName() == "section" && e.tagName() == "grass" ) {
+		std::cout << "Unknown tag: " << e.tagName().toLocal8Bit().data() << std::endl;
+		continue;
+	    }
+	    
+	    if ( parent ) {
+		item = new Q3ListViewItem( parent, lastItem );
+	    } else {
+		item = new Q3ListViewItem( mModulesListView, lastItem );
+	    }
 
-      if ( parent ) {
-        item = new Q3ListViewItem( parent, lastItem );
-      } else {
-        item = new Q3ListViewItem( mModulesListView, lastItem );
-      }
+	    if ( e.tagName() == "section" ) {
+		QString label = e.attribute("label");
+	        std::cout << "label = " << label.toLocal8Bit().data() << std::endl;
+		item->setText( 0, label );
+		item->setOpen(true); // for debuging to spare one click
 
-      if ( e.tagName() == "section" ) {
-        QString label = e.attribute("label");
-        //std::cout << "label = " << label.toLocal8Bit().data() << std::endl;
-        item->setText( 0, label );
-        item->setOpen(true); // for debuging to spare one click
+		addModules ( item, e );
+		
+		lastItem = item;
+	    } else if ( e.tagName() == "grass" ) { // GRASS module
+		QString name = e.attribute("name");
+	        std::cout << "name = " << name.toLocal8Bit().data() << std::endl;
 
-        addModules ( item, e );
+                //QString path = QgsApplication::pkgDataPath() + "/grass/modules/" + name;
+                QString path = mAppDir + "/share/qgis/grass/modules/" + name;
+                QString label = QgsGrassModule::label ( path );
+		QPixmap pixmap = QgsGrassModule::pixmap ( path, 25 ); 
 
-        lastItem = item;
-      } else if ( e.tagName() == "grass" ) { // GRASS module
-        QString name = e.attribute("name");
-        //std::cout << "name = " << name.toLocal8Bit().data() << std::endl;
-
-        //QString path = QgsApplication::pkgDataPath() + "/grass/modules/" + name;
-        QString path = mAppDir + "/share/qgis/grass/modules/" + name;
-        QString label = QgsGrassModule::label ( path );
-        QPixmap pixmap = QgsGrassModule::pixmap ( path, 25 ); 
-
-        item->setText( 0, label );
-        item->setPixmap( 0, pixmap );
-        item->setText( 1, name );
-        lastItem = item;
-      }
-      // Show items during loading
-         mModulesListView->repaint();
+		item->setText( 0, label );
+		item->setPixmap( 0, pixmap );
+		item->setText( 1, name );
+		lastItem = item;
+	    }
+            // Show items during loading
+            mModulesListView->repaint();
+	}
+	n = n.nextSibling();
     }
-    n = n.nextSibling();
-  }
 }
 
 void QgsGrassTools::mapsetChanged()

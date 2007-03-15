@@ -2,7 +2,7 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <!-- TODO: this is bad -->
-<qgisgrassmodule label=" v.category - Delete category values" module="v.category">
+<qgisgrassmodule label="Delete category values" module="v.category">
 	<option key="input" typeoption="type" layeroption="layer"/>
 	<option key="output" />
 	<option key="option" answer="del" hidden="yes" />

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="p.out.vrml - Export a raster map to the Virtual Reality Modelling (VRML) " module="p.out.vrml">
-	<option key="elev" />
-       <option key="color" />
-       <option key="exag" />
-       <option key="output" />
-</qgisgrassmodule>

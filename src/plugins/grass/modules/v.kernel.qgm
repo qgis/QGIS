@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="v.kernel - Gaussian kernel density" module="v.kernel">
+<qgisgrassmodule label="Gaussian kernel density" module="v.kernel">
 	<option key="input" />
 	<option key="stddeviation" />
 	<option key="output" />

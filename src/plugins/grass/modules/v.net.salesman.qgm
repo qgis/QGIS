@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="v.net.salesman - Connect nodes by shortest route (traveling salesman)" module="v.net.salesman">
+<qgisgrassmodule label="Connect nodes by shortest route (traveling salesman)" module="v.net.salesman">
 	<option key="input" layeroption="alayer" typemask="line,boundary" label="Input arcs" id="arcs" />
 	<option key="input" mapid="arcs" layeroption="nlayer" typemask="point" label="Input nodes" id="nodes" />
 	<selection key="ccats" layerid="nodes" label="Cats" />

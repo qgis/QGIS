@@ -1,4 +1,7 @@
 <ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
  <class>QgsGrassShellBase</class>
  <widget class="QWidget" name="QgsGrassShellBase" >
   <property name="geometry" >
@@ -18,21 +21,14 @@
   <property name="windowTitle" >
    <string>GRASS Shell</string>
   </property>
-  <layout class="QGridLayout" >
+  <layout class="QVBoxLayout" >
    <property name="margin" >
-    <number>9</number>
+    <number>10</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="0" column="0" >
-    <widget class="QPushButton" name="mCloseButton" >
-     <property name="text" >
-      <string>Close Shell</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" >
+   <item>
     <widget class="Q3Frame" name="mTextFrame" >
      <property name="sizePolicy" >
       <sizepolicy>
@@ -50,7 +46,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0" >
+   <item>
     <widget class="Q3ProgressBar" name="mProgressBar" />
    </item>
   </layout>
@@ -59,15 +55,18 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
+   <class>Q3ProgressBar</class>
+   <extends>QWidget</extends>
+   <header>q3progressbar.h</header>
    <container>1</container>
+   <pixmap></pixmap>
   </customwidget>
   <customwidget>
-   <class>Q3ProgressBar</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3ProgressBar</header>
+   <class>Q3Frame</class>
+   <extends></extends>
+   <header>Qt3Support/Q3Frame</header>
+   <container>1</container>
+   <pixmap></pixmap>
   </customwidget>
  </customwidgets>
  <resources/>

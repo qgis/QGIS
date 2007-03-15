@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label=" v.neighbors - Count of neighbouring points" module="v.neighbors">
+<qgisgrassmodule label="Count of neighbouring points" module="v.neighbors">
 	<option key="input"/>
 	<option key="size"/>
 	<option key="output" />

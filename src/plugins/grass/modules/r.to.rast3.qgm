@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="r.to.rast3 - Converts 2D raster map slices to one 3D raster volume map" module="r.to.rast3">
-    <flag key="m" />
-	<option key="input" />
-    <option key="output" />
-</qgisgrassmodule>
-
