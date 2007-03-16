@@ -47,6 +47,8 @@ public slots:
   void processError(QProcess::ProcessError);
   //! Slot to save the previous command list and close the dialog
   void cleanUp();
+  //! Slot to clear the command list
+  void on_btnClearCommandList_clicked();
 
 private:
   //! QProcess object used to launch a program

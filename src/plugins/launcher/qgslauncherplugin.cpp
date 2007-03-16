@@ -97,13 +97,10 @@ void QgsLauncherPlugin::help()
   //implement me!
 }
 
-// Slot called when the buffer menu item is activated
+// Slot called when the run button is pushed
 void QgsLauncherPlugin::run()
 {
   QgsLauncherPluginGui *myPluginGui=new QgsLauncherPluginGui(qgisMainWindowPointer,"Run...",true,0);
-  //listen for when the layer has been made so we can draw it
-  connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
-  connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
   myPluginGui->show();
 }
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
@@ -112,13 +109,6 @@ void QgsLauncherPlugin::drawRasterLayer(QString theQString)
 {
   qGisInterface->addRasterLayer(theQString);
 }
-//!draw a vector layer in the qui - intended to respond to signal sent by diolog when it as finished creating a layer
-////needs to be given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
-void QgsLauncherPlugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
-{
- qGisInterface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString);
-}
-
 // Unload the plugin by cleaning up the GUI
 void QgsLauncherPlugin::unload()
 {

@@ -32,12 +32,12 @@ QgsLauncherPluginGui::QgsLauncherPluginGui( QWidget* parent ,
   setupUi(this);
   // populate the combobox from the settings file
   QSettings settings;
-  int count = settings.readNumEntry("/qgis/launcher_plugin/command_count"); 
+  int count = settings.readNumEntry("launcher_plugin/command_count"); 
   QString commandNum;
   for(int i=0; i < count; i++)
   {
 //    std::cerr << "Reading key /qgis/launcher_plugin/" << commandNum.setNum(i) << std::endl; 
-    cmbCommands->insertItem(settings.readEntry("/qgis/launcher_plugin/command" 
+    cmbCommands->insertItem(settings.readEntry("launcher_plugin/command" 
           + commandNum.setNum(i)));
   }
   // Set flag to indicate first run is pending
@@ -82,7 +82,7 @@ void QgsLauncherPluginGui::runProgram()
 
     
       // add the program to the combo list
-//      cmbCommands->insertItem(cmbCommands->currentText(), 0);
+      cmbCommands->insertItem(cmbCommands->currentText(), 0);
       // If this is first time around, remove the default tab
       if(firstRun)
       {
@@ -159,14 +159,19 @@ void QgsLauncherPluginGui::cleanUp()
   // Write out the command list to the settings file and then exit
   QSettings settings;
 
-  settings.writeEntry("/qgis/launcher_plugin/command_count", 
+  settings.writeEntry("launcher_plugin/command_count", 
       cmbCommands->count());
   // write the commands in the combo box to the settings file (~/.qt/qgisrc)
   for(int i = 0; i < cmbCommands->count(); i++)
   {
     QString commandNumber;
-    settings.writeEntry("/qgis/launcher_plugin/command" 
+    settings.writeEntry("launcher_plugin/command" 
         + commandNumber.setNum(i), cmbCommands->text(i));
   }
   reject();
+}
+
+void QgsLauncherPluginGui::on_btnClearCommandList_clicked()
+{
+  cmbCommands->clear();
 }

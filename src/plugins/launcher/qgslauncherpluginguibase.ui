@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>592</width>
-    <height>294</height>
+    <width>476</width>
+    <height>307</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -22,7 +22,36 @@
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="0" column="1" >
+   <item row="3" column="0" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>221</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="3" column="2" >
+    <widget class="QPushButton" name="pbnCancel" >
+     <property name="maximumSize" >
+      <size>
+       <width>62</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="text" >
+      <string>&amp;Close</string>
+     </property>
+     <property name="shortcut" >
+      <string>Alt+C</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2" >
     <widget class="QLabel" name="textLabel1" >
      <property name="sizePolicy" >
       <sizepolicy>
@@ -42,103 +71,14 @@
       <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
 p, li { white-space: pre-wrap; }
 &lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;">&lt;span style=" font-size:11pt;">Run an External Command or Program&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+&lt;p style=" margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;">&lt;span style=" font-size:10pt;">Run an External Command or Program&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
      </property>
      <property name="wordWrap" >
       <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item row="0" column="0" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>21</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="0" column="2" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Fixed</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>91</width>
-       <height>25</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="2" column="0" colspan="4" >
-    <widget class="QTabWidget" name="tabOutput" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>7</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <widget class="QWidget" name="tab" >
-      <attribute name="title" >
-       <string>Output</string>
-      </attribute>
-      <layout class="QGridLayout" >
-       <property name="margin" >
-        <number>0</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item row="0" column="0" >
-        <widget class="Q3TextEdit" name="txtOutput" >
-         <property name="font" >
-          <font>
-           <family>Bitstream Vera Sans Mono</family>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
-         <property name="textFormat" >
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="wordWrap" >
-          <enum>Q3TextEdit::NoWrap</enum>
-         </property>
-         <property name="readOnly" >
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-   </item>
-   <item row="0" column="3" >
-    <widget class="QPushButton" name="pbnCancel" >
-     <property name="maximumSize" >
-      <size>
-       <width>62</width>
-       <height>25</height>
-      </size>
-     </property>
-     <property name="text" >
-      <string>&amp;Close</string>
-     </property>
-     <property name="shortcut" >
-      <string>Alt+C</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="4" >
+   <item row="1" column="0" colspan="3" >
     <layout class="QHBoxLayout" >
      <property name="margin" >
       <number>0</number>
@@ -194,8 +134,8 @@ p, li { white-space: pre-wrap; }
       <widget class="QPushButton" name="btnRun" >
        <property name="maximumSize" >
         <size>
-         <width>26</width>
-         <height>26</height>
+         <width>49</width>
+         <height>41</height>
         </size>
        </property>
        <property name="toolTip" >
@@ -205,10 +145,7 @@ p, li { white-space: pre-wrap; }
         <string>Run the selected program/command and display the output</string>
        </property>
        <property name="text" >
-         <string>Run</string>
-       </property>
-       <property name="icon" >
-        <iconset>icon.xpm</iconset>
+        <string>Run</string>
        </property>
        <property name="default" >
         <bool>true</bool>
@@ -216,6 +153,57 @@ p, li { white-space: pre-wrap; }
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="2" column="0" colspan="3" >
+    <widget class="QTabWidget" name="tabOutput" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>7</hsizetype>
+       <vsizetype>7</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <widget class="QWidget" name="tab" >
+      <attribute name="title" >
+       <string>Output</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item row="0" column="0" >
+        <widget class="Q3TextEdit" name="txtOutput" >
+         <property name="font" >
+          <font>
+           <family>Bitstream Vera Sans Mono</family>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
+         <property name="textFormat" >
+          <enum>Qt::AutoText</enum>
+         </property>
+         <property name="wordWrap" >
+          <enum>Q3TextEdit::NoWrap</enum>
+         </property>
+         <property name="readOnly" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="3" column="1" >
+    <widget class="QPushButton" name="btnClearCommandList" >
+     <property name="text" >
+      <string>Clear Command List</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
