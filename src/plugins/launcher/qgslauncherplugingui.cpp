@@ -82,7 +82,10 @@ void QgsLauncherPluginGui::runProgram()
 
     
       // add the program to the combo list
-      cmbCommands->insertItem(cmbCommands->currentText(), 0);
+      if(cmbCommands->findText(cmbCommands->currentText()) == -1)
+      {
+        cmbCommands->insertItem(cmbCommands->currentText(), 0);
+      }
       // If this is first time around, remove the default tab
       if(firstRun)
       {
