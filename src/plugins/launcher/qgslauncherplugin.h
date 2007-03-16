@@ -65,6 +65,8 @@ class QgsLauncherPlugin:public QObject, public QgisPlugin
   QgisApp *qgisMainWindowPointer;
   //! Pointer to the QGIS interface object
   QgisIface *qGisInterface;
+  //! Pointer to the action
+  QAction *myQActionPointer;
 };
 
 #endif

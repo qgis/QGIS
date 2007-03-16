@@ -205,7 +205,7 @@ p, li { white-space: pre-wrap; }
         <string>Run the selected program/command and display the output</string>
        </property>
        <property name="text" >
-        <string/>
+         <string>Run</string>
        </property>
        <property name="icon" >
         <iconset>icon.xpm</iconset>

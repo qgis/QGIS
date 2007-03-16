@@ -82,7 +82,7 @@ void QgsLauncherPlugin::initGui()
   //menuId = pluginMenu->insertItem(QIconSet(icon),"&Run...", this, SLOT(run()));
 
   // Create the action for tool
-  QAction *myQActionPointer = new QAction(QIcon(icon), tr("Run..."), this);
+  myQActionPointer = new QAction(QIcon(icon), tr("Run..."), this);
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // Add the toolbar
@@ -123,8 +123,9 @@ void QgsLauncherPlugin::drawVectorLayer(QString thePathNameQString, QString theB
 void QgsLauncherPlugin::unload()
 {
   // remove the GUI
-  qGisInterface->removePluginMenuItem("&Launcher", menuId);
-  delete toolBarPointer;
+  qGisInterface->removePluginMenu(tr("&Launcher"),myQActionPointer);
+  qGisInterface->removeToolBarIcon(myQActionPointer); 
+  delete myQActionPointer;
 }
 /** 
  * Required extern functions needed  for every plugin 
