@@ -64,7 +64,7 @@ class QgsGrassModule: public QDialog, private  Ui::QgsGrassModuleBase
 
 public:
     //! Constructor
-    QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIface *iface,  
+    QgsGrassModule ( QgsGrassTools *tools, QString moduleName, QgisApp *qgisApp, QgisIface *iface,  
 	           QString path, QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
 
     //! Destructor

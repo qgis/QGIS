@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsGrassModuleBase</class>
  <widget class="QWidget" name="QgsGrassModuleBase" >
   <property name="geometry" >
@@ -15,14 +12,14 @@
   <property name="windowTitle" >
    <string>GRASS Module</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QGridLayout" >
    <property name="margin" >
     <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item>
+   <item row="1" column="0" >
     <widget class="QTabWidget" name="mTabWidget" >
      <widget class="QWidget" name="options" >
       <attribute name="title" >
@@ -63,10 +60,22 @@
      </widget>
     </widget>
    </item>
-   <item>
-    <widget class="Q3ProgressBar" name="mProgressBar" />
+   <item row="0" column="0" >
+    <widget class="QLabel" name="lblModuleName" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>7</hsizetype>
+       <vsizetype>5</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>TextLabel</string>
+     </property>
+    </widget>
    </item>
-   <item>
+   <item row="3" column="0" >
     <widget class="Q3Frame" name="frame4" >
      <property name="frameShape" >
       <enum>QFrame::StyledPanel</enum>
@@ -172,31 +181,24 @@
      </layout>
     </widget>
    </item>
+   <item row="2" column="0" >
+    <widget class="Q3ProgressBar" name="mProgressBar" />
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Q3TextBrowser</class>
-   <extends>QWidget</extends>
-   <header>q3textbrowser.h</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
    <class>Q3ProgressBar</class>
-   <extends>QWidget</extends>
-   <header>q3progressbar.h</header>
-   <container>1</container>
-   <pixmap></pixmap>
+   <extends>QFrame</extends>
+   <header>Qt3Support/Q3ProgressBar</header>
   </customwidget>
   <customwidget>
    <class>Q3Frame</class>
-   <extends></extends>
+   <extends>QFrame</extends>
    <header>Qt3Support/Q3Frame</header>
    <container>1</container>
-   <pixmap></pixmap>
   </customwidget>
  </customwidgets>
  <resources/>

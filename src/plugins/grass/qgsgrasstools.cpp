@@ -249,7 +249,7 @@ void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
     }
     else
     {
-	m = dynamic_cast<QWidget *> ( new QgsGrassModule ( this, 
+	m = dynamic_cast<QWidget *> ( new QgsGrassModule ( this, name,
                                       mQgisApp, mIface, path, mTabWidget ) );
     }
     
