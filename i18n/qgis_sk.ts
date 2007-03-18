@@ -3,12 +3,12 @@
 <context>
     <name>@default</name>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1515"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1517"/>
         <source>OGR Driver Manager</source>
         <translation>Správca ovládača OGR</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1515"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1517"/>
         <source>unable to get OGRDriverManager</source>
         <translation>nie je možné získať údaje z OGRDriverManager</translation>
     </message>
@@ -756,7 +756,7 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
         <translation type="obsolete">Nie</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2888"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2890"/>
         <source>QGis files (*.qgs)</source>
         <translation>QGIS súbory (*.qgs)</translation>
     </message>
@@ -828,7 +828,7 @@ z viac než jedného stĺpca. Qgis túto vlastnosť
 v súčastnosti nepodporuje.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2297"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2299"/>
         <source>Open an OGR Supported Layer</source>
         <translation>Otvoriť vrstvu podporovanú knižnicou OGR</translation>
     </message>
@@ -925,7 +925,7 @@ lepší výkon).</translation>
         <translation>akcia</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsmaptoolidentify.cpp" line="315"/>
+        <location filename="../src/gui/qgsmaptoolidentify.cpp" line="300"/>
         <source> features found</source>
         <translation> objektov nájdených</translation>
     </message>
@@ -950,12 +950,12 @@ lepší výkon).</translation>
         <translation>Na to, aby bolo možné identifikovať objekty, je potrebné najskôr vybrať aktívnu vrstvu kliknutím na jej meno v okne Legenda</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsmaptoolidentify.cpp" line="423"/>
+        <location filename="../src/gui/qgsmaptoolidentify.cpp" line="422"/>
         <source>Could not identify objects on</source>
         <translation>Nemožno identifikovať objekty na</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsmaptoolidentify.cpp" line="423"/>
+        <location filename="../src/gui/qgsmaptoolidentify.cpp" line="422"/>
         <source>because</source>
         <translation>z nasledujúceho dôvodu</translation>
     </message>
@@ -1070,7 +1070,7 @@ lepší výkon).</translation>
         <translation>Rozloha</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsmaptoolvertexedit.cpp" line="270"/>
+        <location filename="../src/gui/qgsmaptoolvertexedit.cpp" line="173"/>
         <source>Could not snap segment. Have you set the tolerance in Settings &gt; Project Properties &gt; General?</source>
         <translation>Úsek nemožno zamerať. Je správne nastavená tolerancia v Nastavenia &gt; Vlastnosti projektu &gt; Všeobecné?</translation>
     </message>
@@ -1090,17 +1090,17 @@ lepší výkon).</translation>
         <translation> Chyba pri čítaní súboru projketu:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="17"/>
+        <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="18"/>
         <source>Fit to a linear transform requires at least 2 points.</source>
         <translation> Na lineárnu transformáciu sú potrebné najmenej dva body.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="54"/>
+        <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="57"/>
         <source>Fit to a Helmert transform requires at least 2 points.</source>
         <translation>Na Helmertovu transformáciu sú potrebné najmenej dva body.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="106"/>
+        <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="109"/>
         <source>Fit to an affine transform requires at least 4 points.</source>
         <translation>Na afinnú transformáciu sú potrebné najmenej štyri body.</translation>
     </message>
@@ -1130,12 +1130,12 @@ lepší výkon).</translation>
         <translation type="unfinished">Pri pokuse o transformáciu bodu bola zachytená výnimka súradnicového systému. Plochu polygónu nemožno vypočítať.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/copyright_label/plugin.cpp" line="55"/>
+        <location filename="../src/plugins/copyright_label/plugin.cpp" line="56"/>
         <source>CopyrightLabel</source>
         <translation>Označenie autorských práv</translation>
     </message>
     <message>
-        <location filename="../src/plugins/copyright_label/plugin.cpp" line="56"/>
+        <location filename="../src/plugins/copyright_label/plugin.cpp" line="57"/>
         <source>Draws copyright information</source>
         <translation>Vypíše na plátno informáciu o autorských právach</translation>
     </message>
@@ -1180,12 +1180,12 @@ lepší výkon).</translation>
         <translation>Nástroje na nahratie a import údajov GPS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="834"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="843"/>
         <source>GRASS</source>
         <translation>GRASS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="840"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="849"/>
         <source>GRASS layer</source>
         <translation>vrstva GRASSu</translation>
     </message>
@@ -1255,26 +1255,96 @@ lepší výkon).</translation>
         <translation>Verzia 0.0001</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="147"/>
+        <location filename="../../src/providers/grass/qgsgrass.cpp" line="147"/>
         <source>GRASS plugin</source>
         <translation>Zásuvný modul GRASSu</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="123"/>
+        <location filename="../../src/providers/grass/qgsgrass.cpp" line="123"/>
         <source>QGIS couldn&apos;t find your GRASS installation.
 Would you like to specify path (GISBASE) to your GRASS installation?</source>
-        <translation type="unfinished">QGIS nemôže nájsť vašu inštaláciu GRASSU.
+        <translation type="unfinished">QGIS nemôže nájsť vašu inštaláciu GRASSu.
 Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="135"/>
+        <location filename="../../src/providers/grass/qgsgrass.cpp" line="135"/>
         <source>Choose GRASS installation path (GISBASE)</source>
         <translation type="unfinished">Vyberte cestu k inštalácii GRASSu (GISBASE)</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="148"/>
+        <location filename="../../src/providers/grass/qgsgrass.cpp" line="148"/>
         <source>GRASS data won&apos;t be available if GISBASE is not specified.</source>
         <translation>Údaje GRASSu nebudú dostupné pokiaľ nebude určená GISBASE.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsmaptoolvertexedit.cpp" line="398"/>
+        <source>Not a vector layer</source>
+        <translation>Nie je vektorová vrstva</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsmaptoolvertexedit.cpp" line="398"/>
+        <source>The current layer is not a vector layer</source>
+        <translation>Táto vrstva nie je vektorovou vrstvou</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsmaptoolvertexedit.cpp" line="412"/>
+        <source>Layer not editable</source>
+        <translation>Vrstva nie je upravovateľná</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsmaptoolcapture.cpp" line="88"/>
+        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
+        <translation>Túto vektorovú vrstvu nemožno upravovať. Aby ju bolo možné upravovať je potrebné kliknúť pravý tlačidlom myši na meno vrstvy a zaškrtnúť &apos;Povoliť úpravy&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsmaptoolcapture.cpp" line="193"/>
+        <source>Wrong editing tool</source>
+        <translation>Nesprávny naástroj na úpravy</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsmaptoolcapture.cpp" line="101"/>
+        <source>Cannot apply the &apos;capture point&apos; tool on this vector layer</source>
+        <translation>Na túto vektorovú vrstvu nemožno používať nástroj &apos;Ziskať bod&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsmaptoolcapture.cpp" line="185"/>
+        <source>Cannot apply the &apos;capture line&apos; tool on this vector layer</source>
+        <translation>Na túto vektorovú vrstvu nemožno používať nástroj &apos;Ziskať líniu&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsmaptoolcapture.cpp" line="193"/>
+        <source>Cannot apply the &apos;capture polygon&apos; tool on this vector layer</source>
+        <translation>Na túto vektorovú vrstvu nemožno používať nástroj &apos;Ziskať polygón&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsspatialrefsys.cpp" line="1294"/>
+        <source>Error</source>
+        <translation>Chyba</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsmaptoolvertexedit.cpp" line="404"/>
+        <source>Change geometry</source>
+        <translation>Zmena geometrie</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsmaptoolvertexedit.cpp" line="405"/>
+        <source>Data provider of the current layer doesn&apos;t allow changing geometries</source>
+        <translation>Správca údajov pre aktruálnu vrstvu neumožňuje meniť geometrie</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsmaptoolvertexedit.cpp" line="413"/>
+        <source>Cannot edit the vector layer. Use &apos;Start editing&apos; in the legend item menu</source>
+        <translation type="unfinished">Nemožno upravovať vektorovú vrstvu. Použite položku &apos;Začať upravovať&apos; v kontextovom menu v Legende</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsspatialrefsys.cpp" line="1295"/>
+        <source>Could not open SRS database </source>
+        <translation>Nemožno otvoriť databázu so SRS </translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsspatialrefsys.cpp" line="1295"/>
+        <source>&lt;br&gt;Error(</source>
+        <translation>&lt;br&gt;Chyba(</translation>
     </message>
 </context>
 <context>
@@ -1290,37 +1360,37 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Quantum GIS -</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1300"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1302"/>
         <source>Version </source>
         <translation>verzia </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1307"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1309"/>
         <source> with PostgreSQL support</source>
         <translation> s podporou PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1310"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1312"/>
         <source> (no PostgreSQL support)</source>
         <translation> (bez podpory PostgreSQL)</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1327"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1329"/>
         <source>Version</source>
         <translation>verzia </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1370"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1372"/>
         <source>Available Data Provider Plugins</source>
         <translation>Dostupné zásuvné moduly na prístup k údajom</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1932"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1934"/>
         <source>is not a valid or recognized data source</source>
         <translation>nie je platný alebo rozpoznaný zdroj údajov</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5051"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5053"/>
         <source>Invalid Data Source</source>
         <translation>Chybný zdroj údajov</translation>
     </message>
@@ -1360,127 +1430,127 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation type="obsolete">Uložiť mapu do:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3385"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3387"/>
         <source>No Layer Selected</source>
         <translation>Nie je vybratá žiadna vrstva</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3359"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3361"/>
         <source>To open an attribute table, you must select a layer in the legend</source>
         <translation>Pred otvorením tabuľky atribútov je nutné vybrať vrstvu v okne Legenda</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3842"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3844"/>
         <source>No MapLayer Plugins</source>
         <translation>Žiadne zásuvné moduly na prácu s vrstvou</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3842"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3844"/>
         <source>No MapLayer plugins in ../plugins/maplayer</source>
         <translation>Žiadne zásuvné moduly na prácu s vrstvou v adresári ../plugins/maplayer</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3940"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3942"/>
         <source>No Plugins</source>
         <translation>Žiadne zásuvné moduly</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3941"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3943"/>
         <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
         <translation>V adresári ../plugins sa nenašli žiadne zásuvné moduly. Na odskúšanie zásuvných modulov spustite qgis z adresára src</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3983"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3985"/>
         <source>Name</source>
         <translation>Meno</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3983"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3985"/>
         <source>Plugin %1 is named %2</source>
         <translation>Zásuvný modul %1 má názov %2</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4006"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4008"/>
         <source>Plugin Information</source>
         <translation>Informácie o zásuvných moduloch</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4007"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4009"/>
         <source>QGis loaded the following plugin:</source>
         <translation>QGis načítal nasledujúci zásuvný modul:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4007"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4009"/>
         <source>Name: %1</source>
         <translation>Meno: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4007"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4009"/>
         <source>Version: %1</source>
         <translation>Verzia: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4008"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4010"/>
         <source>Description: %1</source>
         <translation>Popis: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4027"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4029"/>
         <source>Unable to Load Plugin</source>
         <translation>Nie je možné nahrať zásuvný modul</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4028"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4030"/>
         <source>QGIS was unable to load the plugin from: %1</source>
         <translation>QGIS nemohol nahrať zásuvný modul z: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4088"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4090"/>
         <source>There is a new version of QGIS available</source>
         <translation>K dispozícii je nová verzia QGIS</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4094"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4096"/>
         <source>You are running a development version of QGIS</source>
         <translation>Používate vývojovú verziu QGIS</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4098"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4100"/>
         <source>You are running the current version of QGIS</source>
         <translation>Používate aktuálnu verziu QGIS</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4103"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4105"/>
         <source>Would you like more information?</source>
         <translation>Prajete si viac informácií?</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4150"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4152"/>
         <source>QGIS Version Information</source>
         <translation>Informácie o verzii QGIS</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4105"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4107"/>
         <source>Yes</source>
         <translation>Áno</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4105"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4107"/>
         <source>No</source>
         <translation>Nie</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4122"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4124"/>
         <source>Unable to get current version information from server</source>
         <translation>Zo servera nie je možné získať informáciu o aktuálnej verzii</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4136"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4138"/>
         <source>Connection refused - server may be down</source>
         <translation>Spojenie odmietnuté - server je zrejme vypnutý</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4139"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4141"/>
         <source>QGIS server was not found</source>
         <translation>Nebol nájdený server QGIS</translation>
     </message>
@@ -1510,27 +1580,27 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation type="obsolete">Nahrávam zásuvné moduly...</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2039"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2041"/>
         <source>Invalid Layer</source>
         <translation>Chybná vrstva</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2039"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2041"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
         <translation>%1 je chybná vrstva a nemôže byť nahratá.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3800"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3802"/>
         <source>Error Loading Plugin</source>
         <translation>Chyba pri nahrávaní zásuvného modulu</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3800"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3802"/>
         <source>There was an error loading %1.</source>
         <translation>Pri nahrávaní %1 sa vyskytla chyba.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3168"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3170"/>
         <source>Saved map image to</source>
         <translation>Uložiť obrázok mapy do</translation>
     </message>
@@ -1540,12 +1610,12 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation type="obsolete">QGIS - zmeny v CVS od posledného vydania</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3123"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3125"/>
         <source>Choose a filename to save the map image as</source>
         <translation>Vyberte meno súboru, do ktorého sa má uložiť obrázok mapy</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4607"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4609"/>
         <source>Extents: </source>
         <translation>Rozsah: </translation>
     </message>
@@ -1555,27 +1625,27 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation type="obsolete">Web Page: http://qgis.org</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3373"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3375"/>
         <source>Problem deleting features</source>
         <translation>Problém pri mazaní objektov</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3374"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3376"/>
         <source>A problem occured during deletion of features</source>
         <translation>Pri mazaní objektov sa vyskytol problém</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3379"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3381"/>
         <source>No Vector Layer Selected</source>
         <translation>Nie je vybratá žiadna vrstva</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3380"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3382"/>
         <source>Deleting features only works on vector layers</source>
         <translation>Mazanie objektov funguje iba pri vektorových vrstvách</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3386"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3388"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>Na vymazanie objektu je treba vybrať vektorovú vrstvu v okne Legenda</translation>
     </message>
@@ -1585,17 +1655,17 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation type="obsolete">QGIS pripravené</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1323"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1325"/>
         <source>Quantum GIS is licensed under the GNU General Public License</source>
         <translation>Quantum GIS je šírený pod licenciou GNU General Public License</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1325"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1327"/>
         <source>http://www.gnu.org/licenses</source>
         <translation>http://www.gnu.org/licenses</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="956"/>
+        <location filename="../src/gui/qgisapp.cpp" line="958"/>
         <source>Render</source>
         <translation>Vykresľovanie</translation>
     </message>
@@ -1680,32 +1750,32 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation type="obsolete">QGIS súbory (*.qgs)</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2810"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2812"/>
         <source>Choose a QGIS project file</source>
         <translation>Vyberte súbor QGIS projektu</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2940"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2942"/>
         <source>Unable to save project</source>
         <translation>Nie je možné uložiť projekt</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2941"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2943"/>
         <source>Unable to save project to </source>
         <translation>Nie je možné uložiť projekt do </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1162"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1164"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
         <translation>Okno Legenda, ktoré zobrazuje všetky vrstvy nachádzajúce sa na mapovom plátne. Kliknutím na zaškrtávacie políčko sa zapne alebo vypne vrstva. Dvojklikom na vrstvu v okne Legenda možno prispôsobiť jej vzhľad a nastaviť ostatné vlastnosti.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1133"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1135"/>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
         <translation>Okno Mapový prehľad. Táto oblasť môže byť použitá na zobrazenie polohy mapy, kde vidno práve vyobrazený výrez z mapy. Aktuálne zobrazený rozsah je znázornený červeným obdĺžnikom. Do mapového prehľadu je možné pridať ktorúkoľvek vrstvu.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1091"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1093"/>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
         <translation>Mapové plátno. Toto je oblasť, kde sa zobrazujú vektorové a rastrové vrstvy pridané do mapy</translation>
     </message>
@@ -1725,12 +1795,12 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Zobrazuje aktuálnu mierku mapy</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="953"/>
+        <location filename="../src/gui/qgisapp.cpp" line="954"/>
         <source>Shows the map coordinates at the current cursor postion. The display is continuously updated as the mouse is moved.</source>
         <translation>Ukazuje mapové súradnice aktuálnej pozície kurzora. Pri pohybe myši je údaj plynule aktualizovaný.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="959"/>
+        <location filename="../src/gui/qgisapp.cpp" line="961"/>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
         <translation>Pokiaľ je políčko zaškrtnuté, mapové vrstvy sú vykresľované v náväznosti na príkazy mapovej navigácie a ďalšie udalosti. Ak nie je zaškrtnuté, nič sa nevykresľuje. To dovoľuje pridať veľké množstvo vrstiev a upraviť ich symboliku ešte pred ich vykreslením.</translation>
     </message>
@@ -1775,32 +1845,32 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation type="obsolete">Údajové sady s názvami súborov v UTF8, Kanji a CJK sú odteraz načítavané správne</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1729"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1731"/>
         <source>Open an OGR Supported Vector Layer</source>
         <translation>Otvoriť vektorovú vrstvu podporovanú knižnicou OGR</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2756"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2758"/>
         <source>QGIS Project Read Error</source>
         <translation>Chyba pri čítaní QGIS projektu</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4935"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4937"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>Otvoriť rastrový zdroj údajov podporovaný knižnicou GDAL</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="960"/>
+        <location filename="../src/gui/qgisapp.cpp" line="962"/>
         <source>Toggle map rendering</source>
         <translation>Prepínač vykresľovania mapy</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="975"/>
+        <location filename="../src/gui/qgisapp.cpp" line="977"/>
         <source>This icon shows whether on the fly projection is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
         <translation>Táto ikona ukazuje, či je povolený (zapnutý) priamy prevod medzi mapovými zobrazeniami. Kliknutím na túto ikonu sa otvorí dialóg Vlastnosti projektu, kde je možné zmeniť toto nastavenie.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="976"/>
+        <location filename="../src/gui/qgisapp.cpp" line="978"/>
         <source>Projection status - Click to open projection dialog</source>
         <translation>Stav zobrazenia - kliknutím sa otvorí menu mapových zobrazení</translation>
     </message>
@@ -1810,7 +1880,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation type="obsolete">Podpora zobrazovania &quot;za jazdy&quot; slúži na automatické premietanie vrstiev z rôznych súradnicových systémov</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1336"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1338"/>
         <source>Map Composer for creating map layouts</source>
         <translation>Skladateľ máp na tvorbu mapových výstupov</translation>
     </message>
@@ -1880,7 +1950,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation type="obsolete">Zdokonalený nástroj na export pre Mapsever</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2758"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2760"/>
         <source>Try to find missing layers?</source>
         <translation>Pokúsiť sa nájsť chýbajúce vrstvy?</translation>
     </message>
@@ -1910,12 +1980,12 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation type="obsolete">Mierka</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2527"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2529"/>
         <source>Save As</source>
         <translation>Uložiť ako</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2626"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2628"/>
         <source>Choose a QGIS project file to open</source>
         <translation>Vyberte súbor QGIS projektu, ktorý chcete otvoriť</translation>
     </message>
@@ -1930,24 +2000,24 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation type="obsolete">Dané meno súboru projektu už existuje.  Želáte si prepísať týmto projektom?</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2933"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2935"/>
         <source>Saved project to:</source>
         <translation>Projekt uložený do:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4224"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4226"/>
         <source>QGIS Browser Selection</source>
         <translation>QGIS Výber prehliadača</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4225"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4227"/>
         <source>Enter the name of a web browser to use (eg. konqueror).
 </source>
         <translation>Vložte meno prehliadača www stránok, ktorý sa má používať (napr. konqueror).
 </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4226"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4228"/>
         <source>Enter the full path if the browser is not in your PATH.
 </source>
         <translation>Vložte úplnú cestu k prehliadaču, ak nie je v premennej PATH.
@@ -1959,7 +2029,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation type="obsolete">Toto nastavenie je možné neskôr zmeniť v dialógu Vlastnosti z menu Nastavenia.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1329"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1331"/>
         <source>New features</source>
         <translation>Nové vlastnosti</translation>
     </message>
@@ -1974,22 +2044,22 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation type="obsolete">Zapisovanie vrstvy zlyhalo</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2775"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2777"/>
         <source>Unable to open project</source>
         <translation>Nie je možné otvoriť projekt</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2869"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2871"/>
         <source>Unable to save project </source>
         <translation>Nie je možné uložiť projekt</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3000"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3002"/>
         <source>QGIS: Unable to load project</source>
         <translation>QGIS: Nie je možné načítať projekt</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3001"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3003"/>
         <source>Unable to load project </source>
         <translation>Nemožno načítať projekt</translation>
     </message>
@@ -2004,17 +2074,17 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation type="obsolete">Žiadne vrstvy na export. Na to, aby bolo možné exportovať pohľad, je potrebné pridať do mapy aspoň jednu vrstvu.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5164"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5166"/>
         <source>Layer is not valid</source>
         <translation>Neplatná vrstva</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5165"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5167"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>Táto vrstva nie je platnou vrstvou a nemôže byť pridaná do mapy</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4429"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4431"/>
         <source>Save?</source>
         <translation>Uložiť?</translation>
     </message>
@@ -2064,42 +2134,42 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation type="obsolete">Vymazať výber</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4890"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4892"/>
         <source>Clipboard contents set to: </source>
         <translation>Obsah schránky uložený do: </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5050"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5052"/>
         <source> is not a valid or recognized raster data source</source>
         <translation>nie je platný, alebo rozpoznaný zdroj údajov</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5239"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5241"/>
         <source> is not a supported raster data source</source>
         <translation>nie je podporovaný zdroj údajov</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5240"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5242"/>
         <source>Unsupported Data Source</source>
         <translation>Nepodporovaný zdroj údajov</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5319"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5321"/>
         <source>New Bookmark</source>
         <translation>Nová záložka</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5320"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5322"/>
         <source>Enter a name for the new bookmark:</source>
         <translation>Vložte meno novej záložky:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5337"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5339"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5337"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5339"/>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
         <translation>Nie je možné vytvoriť záložku. Databáza používateľa chýba, alebo je poškodená</translation>
     </message>
@@ -2734,7 +2804,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Zásuvné moduly</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="980"/>
+        <location filename="../src/gui/qgisapp.cpp" line="982"/>
         <source>Ready</source>
         <translation>Pripravený</translation>
     </message>
@@ -2764,7 +2834,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Premiestniť uzol</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4110"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4112"/>
         <source>QGIS - Changes in SVN Since Last Release</source>
         <translation>QGIS - Zmeny v SVN od ostatného vydania</translation>
     </message>
@@ -2879,7 +2949,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Nedávno &amp;otvorené projekty</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2887"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2889"/>
         <source>Choose a filename to save the QGIS project file as</source>
         <translation>Vyberte meno súboru do ktorého sa uloží súbor projektu QGIS</translation>
     </message>
@@ -3109,7 +3179,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Ctrl+/</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4227"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4229"/>
         <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
         <translation>Voľbu možno upraviť neskôr vybratím položky Možnosti z menu Nastavenia (záložka Prehliadač Pomocníka).</translation>
     </message>
@@ -3150,19 +3220,19 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Vloží vybrané objekty</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1312"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1314"/>
         <source>
 Compiled against Qt </source>
         <translation>
 Kompilované s knižnicou Qt </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1313"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1315"/>
         <source>, running against Qt </source>
         <translation> , spustené na knižnici Qt </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4430"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4432"/>
         <source>&lt;p&gt;Do you want to save the current project?&lt;/p&gt;</source>
         <translation>&lt;p&gt;Prajete si uložiť tento projekt?&lt;/p&gt;</translation>
     </message>
@@ -3194,97 +3264,97 @@ Kompilované s knižnicou Qt </translation>
         <translation>&amp;Panely nástrojov...</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1332"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1334"/>
         <source>WMS support</source>
         <translation>Podpora WMS</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1334"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1336"/>
         <source>Improved vector and attribute editing</source>
         <translation>Rozšírené možnosti práce na úpravu vektorových vrstiv a tabuľky atribútov</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1338"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1340"/>
         <source>Improved measure tools with area measuring</source>
         <translation>Vylepšené nástroje na meranie s možnosťou merania rozlohy</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1340"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1342"/>
         <source>Attribute searching</source>
         <translation>Vyhľadávanie v atribútoch</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1342"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1344"/>
         <source>New legend structure</source>
         <translation>Nová štruktúra legendy</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1344"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1346"/>
         <source>Refactoring of API to allow the use of QGIS libraries in mapping applications</source>
         <translation>Upravené API dovoľujúce využiť knižnice QGIS v mapovacích aplikáciách</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1346"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1348"/>
         <source>Improved MapServer export tool</source>
         <translation>Zdokonalený nástroj na export pre MapServer</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1348"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1350"/>
         <source>Map canvas background color is customizable</source>
         <translation>Možnosť prispôsobenia farby pozadia</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1350"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1352"/>
         <source>Vector layer transparency</source>
         <translation>Priehľadnosť vektorových vrstiev</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1352"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1354"/>
         <source>Antialiasing for vector layers</source>
         <translation>Vyhladzovanie (antialiasing) vektorových vrstiev</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1354"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1356"/>
         <source>GRASS support in all platforms</source>
         <translation>Podpora GRASSu na všetkých platformách</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1356"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1358"/>
         <source>Enhanced GRASS support and toolbox commands</source>
         <translation>Rozšírená podpora GRASSu a nové príkazy v nástrojoch GRASSu</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1358"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1360"/>
         <source>Enhanced vector editing, including copy/paste, snapping and vertex editing</source>
         <translation>Rozšírená podpora pre úpravy vektorových vrstiev s možnosťou kopírovania/vkladania, zameriavania a úpravy uzlových bodov</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1360"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1362"/>
         <source>Shapefile/OGR layer editing</source>
         <translation>Možnosť úprava vrstiev vo formáte Shapefile/OGR</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1362"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1364"/>
         <source>Option to only look in the geometry_columns table when searching for PostGIS layers</source>
         <translation type="unfinished">Pri hľadaní vrstiev PostGIS možnosť len nahliadnuť do tabuľky geometry_columns</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1364"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1366"/>
         <source>Many user interface improvements</source>
         <translation>Mnohé vylepšenia užívateľského rozhrania</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4142"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4144"/>
         <source>Network error while communicating with server</source>
         <translation>Chyba siete pri komunikácii so serverom</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4145"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4147"/>
         <source>Unknown network socket error</source>
         <translation>Neznáma chyba sieťového spojenia</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4150"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4152"/>
         <source>Unable to communicate with QGIS Version server</source>
         <translation>Nemožno nadviazať spojenie so serverom QGIS Version</translation>
     </message>
@@ -3292,13 +3362,23 @@ Kompilované s knižnicou Qt </translation>
         <location filename="../src/gui/qgisapp.cpp" line="602"/>
         <source>T</source>
         <comment>Show most toolbars</comment>
-        <translation type="unfinished"></translation>
+        <translation>T</translation>
     </message>
     <message>
         <location filename="../src/gui/qgisapp.cpp" line="608"/>
         <source>Ctrl+T</source>
         <comment>Hide most toolbars</comment>
-        <translation type="unfinished">Ctrl+T</translation>
+        <translation>Ctrl+T</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="946"/>
+        <source>Current map scale</source>
+        <translation>Aktuálna mierka mapy</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="955"/>
+        <source>Map coordinates at mouse cursor position</source>
+        <translation>Mapové súradnice polohy kurzora myši</translation>
     </message>
 </context>
 <context>
@@ -4496,6 +4576,30 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsAttributeActionDialog</name>
+    <message>
+        <location filename="../src/gui/qgsattributeactiondialog.cpp" line="57"/>
+        <source>Name</source>
+        <translation>Názov</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsattributeactiondialog.cpp" line="58"/>
+        <source>Action</source>
+        <translation>Akcia</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsattributeactiondialog.cpp" line="59"/>
+        <source>Capture</source>
+        <translation>Sledovať</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsattributeactiondialog.cpp" line="142"/>
+        <source>Select an action</source>
+        <comment>File dialog window title</comment>
+        <translation>Výber akcie</translation>
+    </message>
+</context>
+<context>
     <name>QgsAttributeActionDialogBase</name>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="21"/>
@@ -4919,15 +5023,49 @@ p, li { white-space: pre-wrap; }
         <source>Error during search</source>
         <translation>Chyba počas hľadania</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <location filename="../src/gui/qgsattributetabledisplay.cpp" line="354"/>
         <source>Found %d matching features.</source>
-        <translation>Našlo sa %d zodpovedajúcich objektov.</translation>
+        <translation>
+            <numerusform>Našiel sa %d zodpovedajúci objekt.</numerusform>
+            <numerusform>Našli sa %d zodpovedajúce objekty.</numerusform>
+            <numerusform>Našlo sa %d zodpovedajúcich objektov.</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="../src/gui/qgsattributetabledisplay.cpp" line="356"/>
         <source>No matching features found.</source>
         <translation>Nenašli sa žiadne zodpovedajúce objekty.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsattributetabledisplay.cpp" line="136"/>
+        <source>Name conflict</source>
+        <translation>Konflikt názov</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsattributetabledisplay.cpp" line="136"/>
+        <source>The attribute could not be inserted. The name already exists in the table</source>
+        <translation>Nemožno vložiť atribút. Rovnaký názov už v tabuľke existuje</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsattributetabledisplay.cpp" line="185"/>
+        <source>Stop editing</source>
+        <translation>Ukončiť úpravy</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsattributetabledisplay.cpp" line="185"/>
+        <source>Do you want to save the changes?</source>
+        <translation>Prajete si uložiť zmeny?</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsattributetabledisplay.cpp" line="190"/>
+        <source>Error</source>
+        <translation>Chyba</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsattributetabledisplay.cpp" line="190"/>
+        <source>Could not commit changes</source>
+        <translation>Nemožno odoslať zmeny </translation>
     </message>
 </context>
 <context>
@@ -6168,22 +6306,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsCopyrightLabelPlugin</name>
     <message>
-        <location filename="../src/plugins/copyright_label/plugin.cpp" line="73"/>
+        <location filename="../src/plugins/copyright_label/plugin.cpp" line="74"/>
         <source>Bottom Left</source>
         <translation>Vľavo dole</translation>
     </message>
     <message>
-        <location filename="../src/plugins/copyright_label/plugin.cpp" line="74"/>
+        <location filename="../src/plugins/copyright_label/plugin.cpp" line="75"/>
         <source>Top Left</source>
         <translation>Vľavo hore</translation>
     </message>
     <message>
-        <location filename="../src/plugins/copyright_label/plugin.cpp" line="74"/>
+        <location filename="../src/plugins/copyright_label/plugin.cpp" line="75"/>
         <source>Top Right</source>
         <translation>Vpravo hore</translation>
     </message>
     <message>
-        <location filename="../src/plugins/copyright_label/plugin.cpp" line="206"/>
+        <location filename="../src/plugins/copyright_label/plugin.cpp" line="212"/>
         <source>&amp;Decorations</source>
         <translation>&amp;Doplnky</translation>
     </message>
@@ -6193,7 +6331,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&amp;Označenie autorských práv</translation>
     </message>
     <message>
-        <location filename="../src/plugins/copyright_label/plugin.cpp" line="87"/>
+        <location filename="../src/plugins/copyright_label/plugin.cpp" line="88"/>
         <source>Creates a copyright label that is displayed on the map canvas.</source>
         <translation>Vytvorí označenie autorských práv zobrazujúce sa na mapovom plátne.</translation>
     </message>
@@ -6203,12 +6341,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Označenie autorských práv</translation>
     </message>
     <message>
-        <location filename="../src/plugins/copyright_label/plugin.cpp" line="74"/>
+        <location filename="../src/plugins/copyright_label/plugin.cpp" line="75"/>
         <source>Bottom Right</source>
         <translation>Vpravo dole</translation>
     </message>
     <message>
-        <location filename="../src/plugins/copyright_label/plugin.cpp" line="86"/>
+        <location filename="../src/plugins/copyright_label/plugin.cpp" line="87"/>
         <source>&amp;Copyright Label</source>
         <translation>&amp;Označenie autorských práv</translation>
     </message>
@@ -6337,7 +6475,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Popis&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Do poľa dolu vložte text vášho copyrightu (označenia vlastníckych práv). Tento zásuvný modul podporuje pri formátovaní základné značky jazyka HTML. Napríklad:&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Tučné písmo &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Kurzíva &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(poznámka: &amp;amp;copy; sa používa pre znak copyrightu)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message encoding="UTF-8">
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="46"/>
@@ -6345,7 +6483,7 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;© QGIS 2006&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;© QGIS 2006&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -6419,6 +6557,16 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/qgscustomprojectiondialog.cpp" line="917"/>
         <source>Internal Error (source projection invalid?)</source>
         <translation>Vnútorná chyba (chybný zdroj mapového zobrazenia?)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgscustomprojectiondialog.cpp" line="644"/>
+        <source> of </source>
+        <translation> z </translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgscustomprojectiondialog.cpp" line="713"/>
+        <source>* of </source>
+        <translation>* z </translation>
     </message>
 </context>
 <context>
@@ -7149,55 +7297,55 @@ zlyhal. Správa databázy:
 <context>
     <name>QgsDelimitedTextProvider</name>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="756"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="771"/>
         <source>Save layer as...</source>
         <translation>Uložiť vrstvu ako...</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="457"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="472"/>
         <source>Note: the following lines were not loaded because Qgis was unable to determine values for the x and y coordinates:
 </source>
         <translation>Poznámka: nasledujúce riadky neboli nahraté pretože QGIS nedokázal rozpoznať hodnoty pre súradnice x a y:
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="752"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="767"/>
         <source>Shapefiles (*.shp)</source>
         <comment>The *.shp is used as a file filter in a dialog box</comment>
         <translation>Súbory ESRI Shape (*.shp)</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="902"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="917"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="829"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="844"/>
         <source>Error creating field </source>
         <translation>Chyba pri vytváraní pola </translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="902"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="917"/>
         <source>Layer creation failed</source>
         <translation>Vytvorenie vrstvy zlyhalo</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="908"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="923"/>
         <source>Error creating shapefile</source>
         <translation>Chyba pri vytváraní súboru Shape</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="910"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="925"/>
         <source>The shapefile could not be created (</source>
         <translation>Súbor Shape nemožno vytvoriť (</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="918"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="933"/>
         <source>Driver not found</source>
         <translation>Ovládač sa nenašiel</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="919"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="934"/>
         <source> driver is not available</source>
         <translation> ovládač nie je dostupný</translation>
     </message>
@@ -7262,7 +7410,7 @@ zlyhal. Správa databázy:
     <message>
         <location filename="../src/plugins/geoprocessing/qgsdlgpgbufferbase.ui" line="95"/>
         <source>Spatial reference ID:</source>
-        <translation type="unfinished">ID priestorovej referencie:</translation>
+        <translation>ID priestorového ref. systému:</translation>
     </message>
     <message>
         <location filename="../src/plugins/geoprocessing/qgsdlgpgbufferbase.ui" line="128"/>
@@ -8641,27 +8789,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/plugingui.cpp" line="72"/>
         <source>You need to specify a file to georeference first.</source>
-        <translation type="unfinished">Najkôr je potrebné určiť súbor na georeferencovanie (polohové priradenie).</translation>
+        <translation>Najkôr je potrebné určiť súbor na georeferencovanie (polohové priradenie).</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/plugingui.cpp" line="105"/>
         <source>World file exists</source>
-        <translation type="unfinished">Súbor world existuje</translation>
+        <translation>Súbor world existuje</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/plugingui.cpp" line="107"/>
         <source>&lt;p&gt;The selected file already seems to have a </source>
-        <translation type="unfinished">&lt;p&gt;Vybraný súbor už zrejme má  </translation>
+        <translation>&lt;p&gt;Vybraný súbor už zrejme má nejaký </translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/plugingui.cpp" line="108"/>
         <source>world file! Do you want to replace it with the </source>
-        <translation type="unfinished">world súbor! Želáte si nahradiť ho </translation>
+        <translation>world súbor! Želáte si nahradiť ho </translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/plugingui.cpp" line="108"/>
         <source>new world file?&lt;/p&gt;</source>
-        <translation type="unfinished">s novým world súborom?&lt;/p&gt;</translation>
+        <translation>s novým world súborom?&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -8847,6 +8995,19 @@ Factor</source>
         <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Mode:</source>
         <translation type="obsolete">Mód:</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGraduatedSymbolDialog</name>
+    <message>
+        <location filename="../src/gui/qgsgraduatedsymboldialog.cpp" line="279"/>
+        <source>Empty</source>
+        <translation>Prázdny</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsgraduatedsymboldialog.cpp" line="282"/>
+        <source>Equal Interval</source>
+        <translation>Rovnaký interval</translation>
     </message>
 </context>
 <context>
@@ -9866,52 +10027,62 @@ v riadku </translation>
 <context>
     <name>QgsGrassModule</name>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1417"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1419"/>
         <source>Run</source>
         <translation>Spustiť</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1393"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1395"/>
         <source>Stop</source>
         <translation>Zastaviť</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="198"/>
+        <source>Module</source>
+        <translation>Modul</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassModuleBase</name>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="16"/>
+        <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="13"/>
         <source>GRASS Module</source>
         <translation>GRASS - moduly</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="29"/>
+        <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="26"/>
         <source>Options</source>
         <translation>Možnosti</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="34"/>
+        <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="31"/>
         <source>Output</source>
         <translation>Výstup</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="109"/>
+        <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="118"/>
         <source>Run</source>
         <translation>Spustiť</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="152"/>
+        <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="161"/>
         <source>Close</source>
         <translation>Zatvoriť</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="50"/>
+        <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="47"/>
         <source>Manual</source>
         <translation>Manuál</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="132"/>
+        <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="141"/>
         <source>View output</source>
         <translation>Prezrieť výstup</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="74"/>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10070,97 +10241,97 @@ v riadku </translation>
 <context>
     <name>QgsGrassPlugin</name>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="209"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="213"/>
         <source>GRASS</source>
         <translation>GRASS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="803"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="812"/>
         <source>&amp;GRASS</source>
         <translation>&amp;GRASS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="156"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="160"/>
         <source>Open mapset</source>
         <translation>Otvoriť súbor máp (mapset)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="157"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="161"/>
         <source>New mapset</source>
         <translation>Nový súbor máp (mapset)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="158"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="162"/>
         <source>Close mapset</source>
         <translation>Zatvoriť súbor máp (mapset)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="161"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="165"/>
         <source>Add GRASS vector layer</source>
         <translation>Pridať vektorovú vrstvu GRASSu</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="163"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="167"/>
         <source>Add GRASS raster layer</source>
         <translation>Pridať rastrovú vrstvu GRASSu</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="179"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="183"/>
         <source>Open GRASS tools</source>
         <translation>Otvoriť nástroje GRASSu</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="168"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="172"/>
         <source>Display Current Grass Region</source>
         <translation>Zobraziť aktuálny región GRASSu</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="172"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="176"/>
         <source>Edit Current Grass Region</source>
         <translation>Upraviť aktuálny región GRASSu</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="174"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="178"/>
         <source>Edit Grass Vector layer</source>
         <translation>Upraviť vektorovú vrstvu GRASSu</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="177"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="181"/>
         <source>Adds a GRASS vector layer to the map canvas</source>
         <translation>Na mapové plátno pridá vektorovú vrstvu GRASSu</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="178"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="182"/>
         <source>Adds a GRASS raster layer to the map canvas</source>
         <translation>Na mapové plátno pridá rastrovú vrstvu GRASSu</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="180"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="184"/>
         <source>Displays the current GRASS region as a rectangle on the map canvas</source>
         <translation>Zobrazí na mapovom plátne aktuálny región GRASSu ako obdĺžnik</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="181"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="185"/>
         <source>Edit the current GRASS region</source>
         <translation>Upraví aktuálny región GRASSu</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="182"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="186"/>
         <source>Edit the currently selected GRASS vector layer.</source>
         <translation>Upraví vybranú vektorovú vrstvu GRASSu.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="92"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="96"/>
         <source>GrassVector</source>
         <translation type="unfinished">GrassVektor</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="93"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="97"/>
         <source>0.1</source>
         <translation>0.1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="94"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="98"/>
         <source>GRASS layer</source>
         <translation>Vrstva GRASSu</translation>
     </message>
@@ -10370,7 +10541,7 @@ v riadku </translation>
         <translation>Moduly</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="163"/>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="165"/>
         <source>Browser</source>
         <translation>Prehliadač</translation>
     </message>
@@ -10675,22 +10846,22 @@ v riadku </translation>
 <context>
     <name>QgsHelpViewer</name>
     <message>
-        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="166"/>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="167"/>
         <source>Quantum GIS Help - </source>
         <translation>Quantum GIS Pomocník -</translation>
     </message>
     <message>
-        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="172"/>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="173"/>
         <source>Failed to get the help text from the database</source>
         <translation>Zlyhal pokus získať pomocný text z databázy</translation>
     </message>
     <message>
-        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="196"/>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="197"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="197"/>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="198"/>
         <source>The QGIS help database is not installed</source>
         <translation>Databáza Pomocníka QGIS nie je nainštalovaná</translation>
     </message>
@@ -10705,7 +10876,7 @@ v riadku </translation>
         <translation>Pokiaľ aby ste radi pomohli s jeho vytvorením, kontaktujte vývojársky tím QGIS</translation>
     </message>
     <message>
-        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="129"/>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="130"/>
         <source>Quantum GIS Help</source>
         <translation>Pomocník Quantum GIS</translation>
     </message>
@@ -10770,12 +10941,18 @@ v riadku </translation>
         <source>HTTP response completed, however there was an error: %1</source>
         <translation>Požiadavka HTTP dokončená, avšak vyskytla sa chyba: %1</translation>
     </message>
-    <message>
-        <location filename="../src/core/qgshttptransaction.cpp" line="435"/>
+    <message numerus="yes">
+        <location filename="../src/core/qgshttptransaction.cpp" line="434"/>
         <source>Network timed out after %1 seconds of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
-        <translation>Čas sieťovej požiadavky vypršal po %1 sekundách nečinnosti.
-Problém môže byť v sieťovom spojení alebo na strane WMS servera.</translation>
+        <translation>
+            <numerusform>Čas sieťovej požiadavky vypršal po %1 sekunde nečinnosti.
+Problém môže byť v sieťovom spojení alebo na strane WMS servera.</numerusform>
+            <numerusform>Čas sieťovej požiadavky vypršal po %1 sekundách nečinnosti.
+Problém môže byť v sieťovom spojení alebo na strane WMS servera.</numerusform>
+            <numerusform>Čas sieťovej požiadavky vypršal po %1 sekundách nečinnosti.
+Problém môže byť v sieťovom spojení alebo na strane WMS servera.</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="355"/>
@@ -11237,6 +11414,95 @@ Problém môže byť v sieťovom spojení alebo na strane WMS servera.</translat
     </message>
 </context>
 <context>
+    <name>QgsLauncherPlugin</name>
+    <message>
+        <location filename="../src/plugins/launcher/qgslauncherplugin.cpp" line="85"/>
+        <source>Run...</source>
+        <translation>Spustiť...</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/launcher/qgslauncherplugin.cpp" line="91"/>
+        <source>&amp;Run...</source>
+        <translation>&amp;Spustiť...</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/launcher/qgslauncherplugin.cpp" line="116"/>
+        <source>&amp;Launcher</source>
+        <translation type="unfinished">&amp;Spúšťač</translation>
+    </message>
+</context>
+<context>
+    <name>QgsLauncherPluginGuiBase</name>
+    <message>
+        <location filename="../src/plugins/launcher/qgslauncherpluginguibase.ui" line="13"/>
+        <source>QGIS Launcher</source>
+        <translation type="unfinished">QGIS Spúšťač programov</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/launcher/qgslauncherpluginguibase.ui" line="47"/>
+        <source>&amp;Close</source>
+        <translation>&amp;Zatvoriť</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/launcher/qgslauncherpluginguibase.ui" line="50"/>
+        <source>Alt+C</source>
+        <translation type="unfinished">Alt+Z</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/launcher/qgslauncherpluginguibase.ui" line="71"/>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Run an External Command or Program&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Spustí externý príkaz alebo program&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/launcher/qgslauncherpluginguibase.ui" line="92"/>
+        <source>Command</source>
+        <translation>Príkaz</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/launcher/qgslauncherpluginguibase.ui" line="123"/>
+        <source>Select program tor execute</source>
+        <translation type="unfinished">Vyberte program na spustenie</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/launcher/qgslauncherpluginguibase.ui" line="126"/>
+        <source>Select the program to execute by browsing the file system</source>
+        <translation type="unfinished">Nalistujte a vyberte program ktorý bude spúťať tento zásuvný modul</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/launcher/qgslauncherpluginguibase.ui" line="129"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/launcher/qgslauncherpluginguibase.ui" line="142"/>
+        <source>Run the selected program/command</source>
+        <translation>Spustiť vybraný program/príkaz</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/launcher/qgslauncherpluginguibase.ui" line="145"/>
+        <source>Run the selected program/command and display the output</source>
+        <translation type="unfinished">Spustiť vybraný program/príkaz a zobraziť výstup</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/launcher/qgslauncherpluginguibase.ui" line="148"/>
+        <source>Run</source>
+        <translation>Spustiť</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/launcher/qgslauncherpluginguibase.ui" line="169"/>
+        <source>Output</source>
+        <translation>Výstup</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/launcher/qgslauncherpluginguibase.ui" line="204"/>
+        <source>Clear Command List</source>
+        <translation>Vyčistiť zoznam príkazov</translation>
+    </message>
+</context>
+<context>
     <name>QgsLayerProjectionSelectorBase</name>
     <message>
         <location filename="../src/ui/qgslayerprojectionselectorbase.ui" line="13"/>
@@ -11549,61 +11815,93 @@ Problém môže byť v sieťovom spojení alebo na strane WMS servera.</translat
 <context>
     <name>QgsMapToolIdentify</name>
     <message>
-        <location filename="../src/gui/qgsmaptoolidentify.cpp" line="401"/>
+        <location filename="../src/gui/qgsmaptoolidentify.cpp" line="400"/>
         <source>No features found</source>
         <translation>Nenašli sa žiadne objekty</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsmaptoolidentify.cpp" line="404"/>
+        <location filename="../src/gui/qgsmaptoolidentify.cpp" line="403"/>
         <source>&lt;p&gt;No features were found within the search radius. Note that it is currently not possible to use the identify tool on unsaved features.&lt;/p&gt;</source>
         <translation>&lt;p&gt;V okruhu danom poloemor vyhľadávania sa nenašli žiadne objekty.&lt;/p&gt;&lt;p&gt;Poznámka: V súčasnosti nie je možné využívať nástroj identifikácie na neuložené objekty.&lt;/p&gt;</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/gui/qgsmaptoolidentify.cpp" line="314"/>
+        <source>- %1 features found</source>
+        <comment>Identify results window title</comment>
+        <translation>
+            <numerusform>- nájdený %1 objekt </numerusform>
+            <numerusform>- nájdené %1 objekty</numerusform>
+            <numerusform>- nájdených %1 objektov</numerusform>
+        </translation>
     </message>
 </context>
 <context>
     <name>QgsMapserverExport</name>
     <message>
+        <location filename="../tools/mapserver_export/qgsmapserverexport.cpp" line="190"/>
+        <source>Overwrite File?</source>
+        <translation>Prepísať súbor?</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsmapserverexport.cpp" line="74"/>
+        <source> exists. 
+Do you want to overwrite it?</source>
+        <translation> existuje. 
+Želáte si ho prepísať?</translation>
+    </message>
+    <message>
+        <location filename="../tools/mapserver_export/qgsmapserverexport.cpp" line="192"/>
+        <source>Yes</source>
+        <translation>Áno</translation>
+    </message>
+    <message>
+        <location filename="../tools/mapserver_export/qgsmapserverexport.cpp" line="192"/>
+        <source>No</source>
+        <translation>Nie</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsmapserverexport.cpp" line="365"/>
+        <source>Choose a filename for the exported map file</source>
+        <translation type="unfinished">Vyberte meno súboru pre exportovaný súbor map</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsmapserverexport.cpp" line="367"/>
+        <source>Mapserver files (*.map)</source>
+        <translation>Súbory pre Mapserver (*.map)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsmapserverexport.cpp" line="376"/>
+        <source>QGIS Help - Mapserver Export</source>
+        <translation type="unfinished">QGIS Pomocník - Export pre Mapserver</translation>
+    </message>
+    <message>
         <location filename="../tools/mapserver_export/qgsmapserverexport.cpp" line="70"/>
         <source>Name for the map file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Meno pre súbor map</translation>
     </message>
     <message>
         <location filename="../tools/mapserver_export/qgsmapserverexport.cpp" line="71"/>
         <source>MapServer map files (*.map);;All files(*.*)</source>
         <comment>Filter list for selecting files from a dialog box</comment>
-        <translation type="unfinished"></translation>
+        <translation>Súbory map pre MapServer (*.map);;Všetky súbory(*.*)</translation>
     </message>
     <message>
         <location filename="../tools/mapserver_export/qgsmapserverexport.cpp" line="78"/>
         <source>Choose the QGIS project file</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyberte súbor QGIS projektu</translation>
     </message>
     <message>
         <location filename="../tools/mapserver_export/qgsmapserverexport.cpp" line="79"/>
         <source>QGIS Project Files (*.qgs);;All files (*.*)</source>
         <comment>Filter list for selecting files from a dialog box</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/mapserver_export/qgsmapserverexport.cpp" line="190"/>
-        <source>Overwrite File?</source>
-        <translation type="unfinished">Prepísať súbor?</translation>
+        <translation>Súbory projektov QGIS (*.qgs);;Všetky súbory (*.*)</translation>
     </message>
     <message>
         <location filename="../tools/mapserver_export/qgsmapserverexport.cpp" line="192"/>
         <source> exists. 
 Do you want to overwrite it?</source>
         <comment>a filename is prepended to this text, and appears in a dialog box</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/mapserver_export/qgsmapserverexport.cpp" line="192"/>
-        <source>Yes</source>
-        <translation type="unfinished">Áno</translation>
-    </message>
-    <message>
-        <location filename="../tools/mapserver_export/qgsmapserverexport.cpp" line="192"/>
-        <source>No</source>
-        <translation type="unfinished">Nie</translation>
+        <translation> existuje. Želáte si ho prepísať?</translation>
     </message>
 </context>
 <context>
@@ -11646,32 +11944,32 @@ Do you want to overwrite it?</source>
     <message>
         <location filename="../tools/mapserver_export/qgsmapserverexportbase.ui" line="266"/>
         <source>dd</source>
-        <translation>stupne</translation>
+        <translation>dd</translation>
     </message>
     <message>
         <location filename="../tools/mapserver_export/qgsmapserverexportbase.ui" line="271"/>
         <source>feet</source>
-        <translation>stopy</translation>
+        <translation>feet</translation>
     </message>
     <message>
         <location filename="../tools/mapserver_export/qgsmapserverexportbase.ui" line="276"/>
         <source>meters</source>
-        <translation>metre</translation>
+        <translation>meters</translation>
     </message>
     <message>
         <location filename="../tools/mapserver_export/qgsmapserverexportbase.ui" line="281"/>
         <source>miles</source>
-        <translation>míle</translation>
+        <translation>miles</translation>
     </message>
     <message>
         <location filename="../tools/mapserver_export/qgsmapserverexportbase.ui" line="286"/>
         <source>inches</source>
-        <translation>palce</translation>
+        <translation>inches</translation>
     </message>
     <message>
         <location filename="../tools/mapserver_export/qgsmapserverexportbase.ui" line="291"/>
         <source>kilometers</source>
-        <translation>kilometre</translation>
+        <translation>kilometers</translation>
     </message>
     <message>
         <location filename="../tools/mapserver_export/qgsmapserverexportbase.ui" line="252"/>
@@ -11711,7 +12009,7 @@ Do you want to overwrite it?</source>
     <message>
         <location filename="../tools/mapserver_export/qgsmapserverexportbase.ui" line="338"/>
         <source>userdefined</source>
-        <translation>uživateľsky definované</translation>
+        <translation>userdefined</translation>
     </message>
     <message>
         <location filename="../tools/mapserver_export/qgsmapserverexportbase.ui" line="343"/>
@@ -11827,6 +12125,14 @@ Do you want to overwrite it?</source>
         <location filename="../tools/mapserver_export/qgsmapserverexportbase.ui" line="453"/>
         <source>QGIS project file</source>
         <translation type="unfinished">Súbor vo formáte projektu QGIS</translation>
+    </message>
+</context>
+<context>
+    <name>QgsMarkerDialog</name>
+    <message>
+        <location filename="../src/gui/qgsmarkerdialog.cpp" line="71"/>
+        <source>Choose a directory</source>
+        <translation>Vybrať adresár</translation>
     </message>
 </context>
 <context>
@@ -12045,7 +12351,7 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     <message>
         <location filename="../src/gui/qgsnewconnection.cpp" line="118"/>
         <source>Connection to %1 was successfull</source>
-        <translation>Spojenie k databáze %1 bolo úspešné</translation>
+        <translation type="obsolete">Spojenie k databáze %1 bolo úspešné</translation>
     </message>
     <message>
         <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
@@ -12062,6 +12368,11 @@ Extended error information:
 
 Rozšírené informácie o chybe:
 </translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsnewconnection.cpp" line="118"/>
+        <source>Connection to %1 was successful</source>
+        <translation>Spojenie k databáze %1 bolo úspešné</translation>
     </message>
 </context>
 <context>
@@ -12453,6 +12764,14 @@ Rozšírené informácie o chybe:
     </message>
 </context>
 <context>
+    <name>QgsOptions</name>
+    <message>
+        <location filename="../src/gui/qgsoptions.cpp" line="242"/>
+        <source>Choose a browser</source>
+        <translation>Vyberte prehliadač</translation>
+    </message>
+</context>
+<context>
     <name>QgsOptionsBase</name>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="13"/>
@@ -12507,7 +12826,7 @@ Rozšírené informácie o chybe:
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="453"/>
         <source>Search Radius for Identifying Features</source>
-        <translation type="unfinished">Polomer vyhľadávania pre identifikáciu objektov</translation>
+        <translation>Polomer vyhľadávania pre identifikáciu objektov</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="62"/>
@@ -12770,7 +13089,7 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ je problém ident
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="427"/>
         <source>Search radius</source>
-        <translation type="unfinished">Polomer vyhľadávania</translation>
+        <translation>Polomer vyhľadávania</translation>
     </message>
     <message>
         <location filename="build/qgisdev/qgis_unstable/src/ui/qgsoptionsbase.ui" line="460"/>
@@ -13076,7 +13395,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="78"/>
         <source>Create a buffer for a PostgreSQL layer. </source>
-        <translation type="unfinished">Vytvoriť okolie (buffer) pre vrstvu PostgreSQL. </translation>
+        <translation>Vytvoriť okolie (buffer) pre vrstvu PostgreSQL. </translation>
     </message>
 </context>
 <context>
@@ -13146,6 +13465,26 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/qgspgquerybuilder.cpp" line="215"/>
         <source>&lt;p&gt;Failed to get sample of field values using SQL:&lt;/p&gt;&lt;p&gt;</source>
         <translation type="unfinished">&lt;p&gt;Nepodarilo sa získať vzorku údajov z jednotlivých polí s použitím SQL dopytu:&lt;/p&gt;&lt;p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgspgquerybuilder.cpp" line="215"/>
+        <source>&lt;/p&gt;&lt;p&gt;Error message was: </source>
+        <translation>&lt;/p&gt;&lt;p&gt;Hlásenie o chybe: </translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgspgquerybuilder.cpp" line="270"/>
+        <source>No Query</source>
+        <translation>Žiadny dopyt</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgspgquerybuilder.cpp" line="270"/>
+        <source>You must create a query before you can test it</source>
+        <translation type="unfinished">Je potrebné najprv vytvoriť dopyt predtým než ho budete testovať</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgspgquerybuilder.cpp" line="337"/>
+        <source>Error in Query</source>
+        <translation>Chyba v dopyte</translation>
     </message>
 </context>
 <context>
@@ -13460,12 +13799,12 @@ p, li { white-space: pre-wrap; }
         <translation>Zmazať vybrané</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="494"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="495"/>
         <source>Linear</source>
         <translation>Lineárna</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="321"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="323"/>
         <source>Helmert</source>
         <translation>Helmertova</translation>
     </message>
@@ -13481,54 +13820,54 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="323"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="325"/>
         <source>Warning</source>
         <translation>Upozornenie</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="329"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="331"/>
         <source>&lt;p&gt;A Helmert transform requires modifications in the raster layer.&lt;/p&gt;&lt;p&gt;The modifed raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p&gt;&lt;p&gt;Are you sure that this is what you want?&lt;/p&gt;</source>
         <translation type="unfinished">&lt;p&gt;Helmertova transformácia vyžaduje úpravy v tejto rastrovej vrstve.&lt;/p&gt;&lt;p&gt;Pozmenený raster bude uložený v novom súbore a world súbor bude vygenerovaný pre tento nový súbor.&lt;/p&gt;&lt;p&gt;Ste si istý, že chcete vykonať túto operáciu?&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="336"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="338"/>
         <source>Affine</source>
         <translation>Afinná</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="346"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="348"/>
         <source>Not implemented!</source>
         <translation>Neimplementované!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="341"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="343"/>
         <source>&lt;p&gt;An affine transform requires changing the original raster file. This is not yet supported.&lt;/p&gt;</source>
         <translation>&lt;p&gt;Afinná transformácia vyžaduje zmeniť pôvodný rastrový súbor. Táto funkcia zatiaľ nie je implementovaná.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="348"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="350"/>
         <source>&lt;p&gt;The </source>
         <translation>&lt;p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="349"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="351"/>
         <source> transform is not yet supported.&lt;/p&gt;</source>
         <translation> transformácia nie je zatiaľ podporovaná.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="378"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="379"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="379"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="380"/>
         <source>Could not write to </source>
         <translation>Nemožno zapisovať do </translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="330"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="332"/>
         <source>Currently all modified files will be written in TIFF format.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">V súčastnosti všetky zmenené súbory budú uložené vo formáte TIFF.</translation>
     </message>
 </context>
 <context>
@@ -14098,12 +14437,12 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
 <context>
     <name>QgsProjectionSelector</name>
     <message>
-        <location filename="../src/widgets/projectionselector/qgsprojectionselector.cpp" line="788"/>
+        <location filename="../../src/widgets/projectionselector/qgsprojectionselector.cpp" line="788"/>
         <source>QGIS SRSID: </source>
         <translation>QGIS SRSID:</translation>
     </message>
     <message>
-        <location filename="../src/widgets/projectionselector/qgsprojectionselector.cpp" line="789"/>
+        <location filename="../../src/widgets/projectionselector/qgsprojectionselector.cpp" line="789"/>
         <source>PostGIS SRID: </source>
         <translation>Postgis SRID:</translation>
     </message>
@@ -14179,7 +14518,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
 <context>
     <name>QgsRasterLayer</name>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3105"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3183"/>
         <source>Not Set</source>
         <translation>Nenastavené</translation>
     </message>
@@ -14199,27 +14538,27 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation type="obsolete">&amp;Odobrať</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3787"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3865"/>
         <source>Driver:</source>
         <translation>Ovládač:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3863"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3941"/>
         <source>Dimensions:</source>
         <translation>Rozmery:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3866"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3944"/>
         <source>X: </source>
         <translation>X:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3867"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3945"/>
         <source> Y: </source>
         <translation>Y:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3867"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3945"/>
         <source> Bands: </source>
         <translation>Kanály: </translation>
     </message>
@@ -14229,12 +14568,12 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation type="obsolete">Projekcia:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3973"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4051"/>
         <source>Origin:</source>
         <translation>Počiatok:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3982"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4060"/>
         <source>Pixel Size:</source>
         <translation>Veľkosť pixela:</translation>
     </message>
@@ -14254,102 +14593,102 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation type="obsolete">Modrá</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="2504"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="2582"/>
         <source>Raster Extent: </source>
         <translation>Rozsah rastra:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="2507"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="2585"/>
         <source>Clipped area: </source>
         <translation> Vystrihnutá oblasť:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3926"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4004"/>
         <source>Pyramid overviews:</source>
         <translation>Prehľad pyramíd:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3995"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4073"/>
         <source>Band Statistics (if gathered):</source>
         <translation>Kanálová štatistika (pokiaľ je zozbieraná):</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4002"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4080"/>
         <source>Property</source>
         <translation>Vlastnosť</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4005"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4083"/>
         <source>Value</source>
         <translation>Hodnota</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4869"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4964"/>
         <source>Band</source>
         <translation>Kanál</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4021"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4099"/>
         <source>Band No</source>
         <translation type="unfinished">Kanál č. </translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4033"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4111"/>
         <source>No Stats</source>
         <translation>Žiadna štatistika</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4036"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4114"/>
         <source>No stats collected yet</source>
         <translation>Zatiaľ neboli zozbierané žiadne štatistické údaje</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4046"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4124"/>
         <source>Min Val</source>
         <translation>Minimálna hodnota</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4054"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4132"/>
         <source>Max Val</source>
         <translation>Maximálna hodnota</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4062"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4140"/>
         <source>Range</source>
         <translation>Rozpätie (valencia)</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4070"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4148"/>
         <source>Mean</source>
         <translation>Priemer</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4078"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4156"/>
         <source>Sum of squares</source>
         <translation>Rozptyl</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4086"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4164"/>
         <source>Standard Deviation</source>
         <translation>Štandardná odchýlka</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4094"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4172"/>
         <source>Sum of all cells</source>
         <translation>Suma všetkých buniek</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4102"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4180"/>
         <source>Cell Count</source>
         <translation>Počet buniek</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4132"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4210"/>
         <source>Write access denied</source>
         <translation>Zápis odmietnutý</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4133"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4211"/>
         <source>Write access denied. Adjust the file permissions and try again.
 
 </source>
@@ -14359,67 +14698,67 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
 </translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3882"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3960"/>
         <source>Data Type:</source>
         <translation>Typ údajov:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3888"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3966"/>
         <source>GDT_Byte - Eight bit unsigned integer</source>
         <translation>GDT_Byte - 8 bitový unsigned integer</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3891"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3969"/>
         <source>GDT_UInt16 - Sixteen bit unsigned integer </source>
         <translation>GDT_UInt16 - 16 bitový unsigned integer </translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3894"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3972"/>
         <source>GDT_Int16 - Sixteen bit signed integer </source>
         <translation>GDT_Int16 - 16 bitový signed integer</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3897"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3975"/>
         <source>GDT_UInt32 - Thirty two bit unsigned integer </source>
         <translation>GDT_UInt32 - 32 bitový unsigned integer</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3900"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3978"/>
         <source>GDT_Int32 - Thirty two bit signed integer </source>
         <translation>GDT_Int32 - 32 bitový signed integer</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3903"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3981"/>
         <source>GDT_Float32 - Thirty two bit floating point </source>
         <translation>GDT_Float32 - 32 bitový floating point</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3906"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3984"/>
         <source>GDT_Float64 - Sixty four bit floating point </source>
         <translation>GDT_Float64 - 64 bitový floating point</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3909"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3987"/>
         <source>GDT_CInt16 - Complex Int16 </source>
         <translation>GDT_CInt16 - Complex Int16</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3912"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3990"/>
         <source>GDT_CInt32 - Complex Int32 </source>
         <translation>GDT_CInt32 - Complex Int32</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3915"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3993"/>
         <source>GDT_CFloat32 - Complex Float32 </source>
         <translation>GDT_CFloat32 - Complex Float32</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3918"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3996"/>
         <source>GDT_CFloat64 - Complex Float64 </source>
         <translation>GDT_CFloat64 - Complex Float64</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3921"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3999"/>
         <source>Could not determine raster data type.</source>
         <translation>Nemožno rozpoznať typ rastrových údajov.</translation>
     </message>
@@ -14434,52 +14773,52 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation type="obsolete">&amp;Ukázať v náhľade</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3660"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3738"/>
         <source>&lt;center&gt;&lt;b&gt;Transparency&lt;/b&gt;&lt;/center&gt;</source>
         <translation>&lt;center&gt;&lt;b&gt;Priehľadnosť&lt;/b&gt;&lt;/center&gt;</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4201"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4279"/>
         <source>Average Magphase</source>
         <translation type="unfinished">Priemerná Magphase</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4206"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4284"/>
         <source>Average</source>
         <translation>Priemer</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3948"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4026"/>
         <source>Layer Spatial Reference System: </source>
         <translation>Referenčný priestorový systém vrstvy: </translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3956"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4034"/>
         <source>Project Spatial Reference System: </source>
         <translation>Referenčný priestorový systém projektu: </translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4831"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4926"/>
         <source>out of extent</source>
         <translation>mimo rozsahu</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4863"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4958"/>
         <source>null (no data)</source>
         <translation>null (žiadne údaje)</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4222"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4300"/>
         <source>Building pyramids failed.</source>
         <translation>Tvorba pyramíd zlyhala.</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4154"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4232"/>
         <source>The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again.</source>
         <translation>Súbor nie je zapisovateľný. Niektoré formáty nemožno zapisovať, iba čítať. Skontrolujte práva a skúste znova.</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4223"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4301"/>
         <source>Building pyramid overviews is not supported on this type of raster.</source>
         <translation>Pri tomto type rastra nie je možné zostaviť pyramídy.</translation>
     </message>
@@ -14494,12 +14833,12 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation type="obsolete">&amp;Konvertovať na...</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3813"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3891"/>
         <source>Dataset Description</source>
         <translation>Popis súpravy údajov</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3874"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3952"/>
         <source>No Data Value</source>
         <translation>Údaj bez hodnoty</translation>
     </message>
@@ -15098,7 +15437,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="276"/>
         <source>Transparent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Priehľadná</translation>
     </message>
 </context>
 <context>
@@ -15388,10 +15727,14 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
 </context>
 <context>
     <name>QgsSearchQueryBuilder</name>
-    <message>
+    <message numerus="yes">
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="130"/>
         <source>Found %d matching features.</source>
-        <translation>Našlo sa %d zodpovedajúcich objektov.</translation>
+        <translation>
+            <numerusform>Našlo sa %d zodpovedajúci objekt.</numerusform>
+            <numerusform>Našlo sa %d zodpovedajúce objekty.</numerusform>
+            <numerusform>Našlo sa %d zodpovedajúcich objektov.</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="132"/>
@@ -15417,6 +15760,11 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="198"/>
         <source>The query you specified results in zero records being returned.</source>
         <translation>Dopyt ktorý ste zadali vrátil nula záznamov.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgssearchquerybuilder.cpp" line="34"/>
+        <source>Search query builder</source>
+        <translation>Tvorba dopytov pre vyhľadávanie</translation>
     </message>
 </context>
 <context>
@@ -15476,10 +15824,14 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <source>Could not open the WMS Provider</source>
         <translation>Nemožno otvoriť Nástroj na prístup k údajom WMS</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <location filename="../src/gui/qgsserversourceselect.cpp" line="575"/>
         <source>Coordinate Reference System (%1 available)</source>
-        <translation>Referenčný súradnicový systém (dostupný %1)</translation>
+        <translation>
+            <numerusform>Referenčný súradnicový systém (dostupný %1)</numerusform>
+            <numerusform>Referenčný súradnicový systém (dostupné %1)</numerusform>
+            <numerusform>Referenčný súradnicový systém (dostupných %1)</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="../src/gui/qgsserversourceselect.cpp" line="754"/>
@@ -15499,7 +15851,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
     <message>
         <location filename="../src/gui/qgsserversourceselect.cpp" line="810"/>
         <source>&lt;p&gt;Several WMS servers have been added to the server list. Note that the proxy fields have been left blank and if you access the internet via a web proxy, you will need to individually set the proxy fields with appropriate values.&lt;/p&gt;</source>
-        <translation type="unfinished">&lt;p&gt;Niekoľko WMS serverov bolo pridaných do zoznamu serverov. Nezabudnite, že polia pre proxy ostali prázdne a pokiaľ sa pripájate do internetu prostredníctvom proxy servera budete musieť individuálne nastaviť polia proxy s príslušnými hodnotami.&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Niekoľko WMS serverov bolo pridaných do zoznamu serverov. Nezabudnite, že polia pre proxy ostali prázdne a pokiaľ sa pripájate do internetu prostredníctvom proxy servera budete musieť polia proxy s príslušnými hodnotami nastaviť zvlášť.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsserversourceselect.cpp" line="456"/>
@@ -15665,18 +16017,18 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
     <message>
         <location filename="../src/plugins/spit/qgsshapefile.cpp" line="407"/>
         <source>The database gave an error while executing this SQL:</source>
-        <translation type="unfinished"></translation>
+        <translation>Databáza vrátila chyby pri vykonávaní SQL dopytu:</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsshapefile.cpp" line="415"/>
         <source>The error was:</source>
-        <translation type="unfinished"></translation>
+        <translation>Chybové hlásenie:</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsshapefile.cpp" line="412"/>
         <source>... (rest of SQL trimmed)</source>
         <comment>is appended to a truncated SQL statement</comment>
-        <translation type="unfinished"></translation>
+        <translation>... (zvyšok SQL odrezaný)</translation>
     </message>
 </context>
 <context>
@@ -16613,7 +16965,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
     <message>
         <location filename="../src/gui/qgsvectorlayer.cpp" line="1987"/>
         <source>Problems during roll back</source>
-        <translation type="unfinished">Problémy v priebehu návratu do východzieho stavu (roll back)</translation>
+        <translation>Problémy v priebehu návratu do východzieho stavu (roll back)</translation>
     </message>
     <message>
         <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
@@ -16759,109 +17111,119 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation type="obsolete">Značka jedinečnej hodnoty</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="377"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="373"/>
         <source>Spatial Index</source>
-        <translation type="unfinished">Priestorový index</translation>
+        <translation>Priestorový index</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="372"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="368"/>
         <source>Creation of spatial index successfull</source>
-        <translation type="unfinished">Vytvorenie priestorového indexu bolo úspešné</translation>
+        <translation>Vytvorenie priestorového indexu bolo úspešné</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="377"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="373"/>
         <source>Creation of spatial index failed</source>
-        <translation type="unfinished">Vytvorenie priestorového indexu zlyhalo</translation>
+        <translation>Vytvorenie priestorového indexu zlyhalo</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="390"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="386"/>
         <source>General:</source>
         <translation>Všeobecné:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="396"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="392"/>
         <source>Storage type of this layer : </source>
         <translation> Typ uloženia tejto vrstvy:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="423"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="419"/>
         <source>Geometry type of the features in this layer : </source>
         <translation>Geometrický typ objektov v tejto vrstve: </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="431"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="427"/>
         <source>The number of features in this layer : </source>
         <translation>Počet objektov v tejto vrstve: </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="436"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="432"/>
         <source>Editing capabilities of this layer : </source>
         <translation> Možnosti úprav tejto vrstvy: </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="443"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="439"/>
         <source>Extents:</source>
         <translation>Rozsah:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="448"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="444"/>
         <source>In layer spatial reference system units : </source>
         <translation> V jednotkách referenčného priestorového systému vrstvy: </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="473"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="469"/>
         <source>xMin,yMin </source>
         <translation>xMin,yMin </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="477"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="473"/>
         <source> : xMax,yMax </source>
         <translation> : xMax,yMax </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="510"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="468"/>
         <source>In project spatial reference system units : </source>
         <translation>V jednotkách priestorového referenčného systému projektu: </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="488"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="484"/>
         <source>Layer Spatial Reference System:</source>
         <translation>Priestorový referenčný systém vrstvy:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="498"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="494"/>
         <source>Project (Output) Spatial Reference System:</source>
         <translation>Referenčný súradnicový systém projektu (výstupný):</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="521"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="517"/>
         <source>Attribute field info:</source>
         <translation>Informácia o atribútovom poli:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="528"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="524"/>
         <source>Field</source>
         <translation>Pole</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="531"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="527"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="534"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="530"/>
         <source>Length</source>
         <translation>Dĺžka</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="537"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="533"/>
         <source>Precision</source>
         <translation>Presnosť</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="402"/>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="398"/>
         <source>Source for this layer : </source>
         <translation> Zdroj pre túto vrstvu:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="506"/>
+        <source>In project spatial reference system units: </source>
+        <translation>V jednotkách priestorového referenčného systému projektu: </translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsvectorlayerproperties.cpp" line="507"/>
+        <source> (Invalid transformation of layer extents) </source>
+        <translation> (Neplatná tranformácia rozsahu vrstvy) </translation>
     </message>
 </context>
 <context>
@@ -16999,12 +17361,12 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="285"/>
         <source>Spatial Index</source>
-        <translation type="unfinished">Priestorový index</translation>
+        <translation>Priestorový index</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="297"/>
         <source>Create Spatial Index</source>
-        <translation type="unfinished">Vytvoriť priestorový index</translation>
+        <translation>Vytvoriť priestorový index</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="307"/>
@@ -17500,6 +17862,11 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2255"/>
         <source>WGS 84 Bounding Box</source>
         <translation>WGS 84 vymedzujúci/ohraničujúci obdĺžnik</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2388"/>
+        <source>Layer cannot be queried.</source>
+        <translation type="unfinished">Na vrstvu nemožno robiť dopyty.</translation>
     </message>
 </context>
 <context>
