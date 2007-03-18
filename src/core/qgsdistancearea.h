@@ -32,7 +32,7 @@ General purpose distance and area calculator
   (both cases transform the coordinates from source SRS to the ellipse coords)
 - returned values are in meters resp. square meters
 */
-class CORE_EXPORT QgsDistanceArea
+class QgsDistanceArea
 {
 
   public:
