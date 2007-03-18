@@ -239,7 +239,7 @@ void QgsOptions::on_btnFindBrowser_clicked()
 #endif
   QString browser = QFileDialog::getOpenFileName(
           this,
-          "Choose a browser",
+          tr("Choose a browser"),
           "./",
           filter );
   if(browser.length() > 0)

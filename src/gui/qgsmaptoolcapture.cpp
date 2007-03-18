@@ -78,14 +78,14 @@ void QgsMapToolCapture::canvasReleaseEvent(QMouseEvent * e)
   
   if (!vlayer)
   {
-    QMessageBox::information(0,"Not a vector layer","The current layer is not a vector layer",QMessageBox::Ok);
+    QMessageBox::information(0, QObject::tr("Not a vector layer"), QObject::tr("The current layer is not a vector layer"),QMessageBox::Ok);
     return;
   }
   
   if (!vlayer->isEditable())
   {
-    QMessageBox::information(0,"Layer not editable",
-                             "Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check 'Allow Editing'.",
+    QMessageBox::information(0,QObject::tr("Layer not editable"),
+                             QObject::tr("Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check 'Allow Editing'."),
                              QMessageBox::Ok);
     return;
   }
@@ -98,8 +98,8 @@ void QgsMapToolCapture::canvasReleaseEvent(QMouseEvent * e)
     //check we only use this tool for point/multipoint layers
     if(vlayer->vectorType() != QGis::Point)
       {
-	QMessageBox::information(0,"Wrong editing tool", "Cannot apply the 'capture point' tool on this vector layer",\
-QMessageBox::Ok);
+	QMessageBox::information(0, QObject::tr("Wrong editing tool"), QObject::tr("Cannot apply the 'capture point' tool on this vector layer"),
+                                 QMessageBox::Ok);
 	return;
       }
     QgsPoint idPoint = toMapCoords(e->pos());
@@ -182,7 +182,7 @@ QMessageBox::Ok);
     //check we only use the line tool for line/multiline layers
     if(mTool == CaptureLine && vlayer->vectorType() != QGis::Line)
       {
-	QMessageBox::information(0,"Wrong editing tool", "Cannot apply the 'capture line' tool on this vector layer",\
+	QMessageBox::information(0,QObject::tr("Wrong editing tool"), QObject::tr("Cannot apply the 'capture line' tool on this vector layer"),\
 QMessageBox::Ok);
 	return;
       }
@@ -190,7 +190,7 @@ QMessageBox::Ok);
     //check we only use the polygon tool for polygon/multipolygon layers
     if(mTool == CapturePolygon && vlayer->vectorType() != QGis::Polygon)
       {
-	QMessageBox::information(0,"Wrong editing tool", "Cannot apply the 'capture polygon' tool on this vector layer",\
+	QMessageBox::information(0,QObject::tr("Wrong editing tool"), QObject::tr("Cannot apply the 'capture polygon' tool on this vector layer"),\
 QMessageBox::Ok);
 	return;
       }

@@ -503,8 +503,8 @@ QString QgsVectorLayerProperties::getMetadata()
     QgsDebug( cse.what() );
 
     myMetadataQString += "<tr><td bgcolor=\"white\">";
-    myMetadataQString += tr("In project spatial reference system units : ");
-    myMetadataQString += " (Invalid transformation of layer extents) ";
+    myMetadataQString += tr("In project spatial reference system units: ");
+    myMetadataQString += tr(" (Invalid transformation of layer extents) ");
     myMetadataQString += "</td></tr>";
 
   }

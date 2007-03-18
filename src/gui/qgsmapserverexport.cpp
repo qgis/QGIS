@@ -70,8 +70,8 @@ bool QgsMapserverExport::write()
   // Check for file and prompt for overwrite if it exists
   if (QFile::exists(txtMapFilePath->text()))
   {
-    okToSave = QMessageBox::warning(0, "Overwrite File?", txtMapFilePath->text() +
-        " exists. \nDo you want to overwrite it?", "Yes", "No");
+    okToSave = QMessageBox::warning(0, tr("Overwrite File?"), txtMapFilePath->text() +
+        tr(" exists. \nDo you want to overwrite it?"), tr("Yes"), tr("No"));
   }
   if (okToSave == 0)
   {
@@ -203,7 +203,7 @@ void QgsMapserverExport::writeMapFile()
       mapFile << "  NAME " << name.toLocal8Bit().data() << std::endl;
       // feature type
 #ifdef QGISDEBUG
-      std::cout << "\tMapsrver Export checking feature type" << std::endl;
+      std::cout << "\tMapserver Export checking feature type" << std::endl;
 #endif
       mapFile << "  TYPE ";
       switch (lyr->featureType())
@@ -231,7 +231,7 @@ void QgsMapserverExport::writeMapFile()
       mapFile << std::endl;
 
 #ifdef QGISDEBUG
-      std::cout << "\tMapsrver Export checking visibility" << std::endl;
+      std::cout << "\tMapserver Export checking visibility" << std::endl;
 #endif
       // set visibility (STATUS)
       mapFile << "  STATUS ";
@@ -247,7 +247,7 @@ void QgsMapserverExport::writeMapFile()
       // data source (DATA)
       // Data source spec depends on layer type
 #ifdef QGISDEBUG
-      std::cout << "\tMapsrver Export checking layer type" << std::endl;
+      std::cout << "\tMapserver Export checking layer type" << std::endl;
 #endif
       switch (lyr->type())
       {
@@ -301,14 +301,14 @@ void QgsMapserverExport::writeMapFile()
       //QListViewItem *li = map->getLegend()->currentItem();
       //    return li->text(0);
 #ifdef QGISDEBUG
-      std::cout << "\tMapsrver Export symbol name" << std::endl;
+      std::cout << "\tMapserver Export symbol name" << std::endl;
 #endif
       mapFile << "    NAME \"" << lyr->name().toLocal8Bit().data() << "\"" << std::endl;
       mapFile << "    # TEMPLATE" << std::endl;
       if (isPolygon)
       {
 #ifdef QGISDEBUG
-        std::cout << "\tMapsrver Export symbol fill color" << std::endl;
+        std::cout << "\tMapserver Export symbol fill color" << std::endl;
 #endif
         // use random fill colors
         // TODO Get fill color from the renderer
@@ -322,7 +322,7 @@ void QgsMapserverExport::writeMapFile()
         mapFile << "    COLOR " << red << " " << green << " " << blue << std::endl;
       }
 #ifdef QGISDEBUG
-      std::cout << "\tMapsrver Export checking for line symbol " << std::endl;
+      std::cout << "\tMapserver Export checking for line symbol " << std::endl;
 #endif
       if (isPolygon || isLine)
       {
@@ -337,7 +337,7 @@ void QgsMapserverExport::writeMapFile()
       mapFile << "  END" << std::endl;
       mapFile << "END" << std::endl;
 #ifdef QGISDEBUG
-      std::cout << "\tMapsrver Export layer definition done..." << std::endl;
+      std::cout << "\tMapserver Export layer definition done..." << std::endl;
 #endif
     }
     if (!chkExpLayersOnly->isChecked())
@@ -362,9 +362,9 @@ void QgsMapserverExport::on_btnChooseFile_clicked()
 {
   QString s = QFileDialog::getSaveFileName(
                     this,
-                    "Choose a filename for the exported map file",
+                    tr("Choose a filename for the exported map file"),
                     "./",
-                    "Mapserver files (*.map)" );
+                    tr("Mapserver files (*.map)" ) );
   txtMapFilePath->setText(s);
 }
 
@@ -373,6 +373,6 @@ void QgsMapserverExport::on_buttonHelp_clicked()
   //QMessageBox::information(this, "Help","Help");
   QgsHelpViewer *hv = new QgsHelpViewer(this);
   // causes problems in qt3.1.x:  hv->setModal(false);
-  hv->setCaption("QGIS Help - Mapserver Export");
+  hv->setCaption( tr("QGIS Help - Mapserver Export") );
   hv->show();
 }

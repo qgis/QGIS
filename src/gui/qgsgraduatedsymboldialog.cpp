@@ -62,8 +62,8 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(QgsVectorLayer * layer): QDia
 	return;
     }
 
-    modeComboBox->insertItem("Empty");
-    modeComboBox->insertItem("Equal Interval");
+    modeComboBox->insertItem( tr("Empty") );
+    modeComboBox->insertItem( tr("Equal Interval") );
     
     //restore the correct settings
     const QgsGraduatedSymbolRenderer* renderer = dynamic_cast < const QgsGraduatedSymbolRenderer * >(layer->renderer());
@@ -253,7 +253,7 @@ void QgsGraduatedSymbolDialog::adjustClassification()
 
     if (provider)
     {
-	if (modeComboBox->currentText() == "Equal Interval")
+	if (modeComboBox->currentText() == tr("Equal Interval") )
 	{
 	    minimum = provider->minValue(field).toDouble();
 	    maximum = provider->maxValue(field).toDouble();
@@ -274,12 +274,12 @@ void QgsGraduatedSymbolDialog::adjustClassification()
 	QPen pen;
 	QBrush brush;
 
-	if (modeComboBox->currentText() == "Empty")
+	if (modeComboBox->currentText() == tr("Empty") )
 	{
-	    listboxtext="Empty"+QString::number(i+1);
+	    listboxtext= tr("Empty") + QString::number(i+1);
 	    mClassBreakBox->insertItem(listboxtext);
 	}
-	else if(modeComboBox->currentText() == "Equal Interval")
+	else if(modeComboBox->currentText() == tr("Equal Interval") )
 	{
 	    double lower=minimum + (maximum - minimum) / numberofclassesspinbox->value() * i;
 	    double upper=minimum + (maximum - minimum) / numberofclassesspinbox->value() * (i+1);

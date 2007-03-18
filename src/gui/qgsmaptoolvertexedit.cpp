@@ -114,7 +114,7 @@ void QgsMapToolVertexEdit::canvasPressEvent(QMouseEvent * e)
 	//Find nearest segment of the selected line, move that node to the mouse location
 	if (!snapSegmentWithContext(point))
 	  {
-	    QMessageBox::warning(0, "Error", 
+	    QMessageBox::warning(0, QObject::tr("Error"), 
 				 QObject::tr("Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?"),
 				 QMessageBox::Ok, Qt::NoButton);
 	    return;
@@ -159,7 +159,7 @@ void QgsMapToolVertexEdit::canvasPressEvent(QMouseEvent * e)
       {
 	if(!snapVertexWithContext(snapPoint))
 	  {
-	    QMessageBox::warning(0, "Error", 
+	    QMessageBox::warning(0, QObject::tr("Error"), 
 				 QObject::tr("Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?"),
 				 QMessageBox::Ok, Qt::NoButton);
 	    return;
@@ -169,7 +169,7 @@ void QgsMapToolVertexEdit::canvasPressEvent(QMouseEvent * e)
       {
 	if (!snapSegmentWithContext(snapPoint))
 	  {
-	    QMessageBox::warning(0, "Error", 
+	    QMessageBox::warning(0, QObject::tr("Error"), 
 				 QObject::tr("Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?"),
 				 QMessageBox::Ok, Qt::NoButton);
 	    return;
@@ -178,7 +178,7 @@ void QgsMapToolVertexEdit::canvasPressEvent(QMouseEvent * e)
 	snapPoint = point;
 	if (!snapVertexOfSnappedSegment(snapPoint))
 	  {
-	    QMessageBox::warning(0, "Error", 
+	    QMessageBox::warning(0, QObject::tr("Error"), 
 				 QObject::tr("Could not snap vertex. Have you set the tolerance in Settings > Project Properties > General?"),
 				 QMessageBox::Ok, Qt::NoButton);
 	    return;
@@ -227,7 +227,7 @@ void QgsMapToolVertexEdit::canvasPressEvent(QMouseEvent * e)
     // TODO: Find nearest segment of the selected line, move that node to the mouse location
     if (!snapVertexWithContext(point))
       {
-	QMessageBox::warning(0, "Error", 
+	QMessageBox::warning(0, QObject::tr("Error"), 
           QObject::tr("Could not snap vertex. Have you set the tolerance in Settings > Project Properties > General?"),
           QMessageBox::Ok, Qt::NoButton);
 	return;
@@ -395,22 +395,22 @@ void QgsMapToolVertexEdit::canvasReleaseEvent(QMouseEvent * e)
   
   if (!vlayer)
   {
-    QMessageBox::information(0,"Not a vector layer","The current layer is not a vector layer",QMessageBox::Ok);
+    QMessageBox::information(0, QObject::tr("Not a vector layer"), QObject::tr("The current layer is not a vector layer"), QMessageBox::Ok);
     return;
   }
   
   if (!(vlayer->getDataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries))
   {
-    QMessageBox::information(0,"Change geometry",
-                             "Data provider of the current layer doesn't allow changing geometries",
+    QMessageBox::information(0, QObject::tr("Change geometry"),
+                             QObject::tr("Data provider of the current layer doesn't allow changing geometries"),
                              QMessageBox::Ok);
     return;
   }
   
   if (!vlayer->isEditable())
   {
-    QMessageBox::information(0,"Layer not editable",
-                              "Cannot edit the vector layer. Use 'Start editing' in the legend item menu",
+    QMessageBox::information(0, QObject::tr("Layer not editable"),
+                              QObject::tr("Cannot edit the vector layer. Use 'Start editing' in the legend item menu"),
                               QMessageBox::Ok);
     return;
   }

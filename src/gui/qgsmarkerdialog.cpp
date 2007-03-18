@@ -68,7 +68,7 @@ QString QgsMarkerDialog::selectedMarker()
 void QgsMarkerDialog::changeDirectory()
 {
     QString newdir = QFileDialog::getExistingDirectory(
-        this, "Choose a directory", mCurrentDir);
+        this, tr("Choose a directory"), mCurrentDir);
     if (!newdir.isEmpty())
     {
 	mCurrentDir=newdir;

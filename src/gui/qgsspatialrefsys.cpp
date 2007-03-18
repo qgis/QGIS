@@ -1291,8 +1291,8 @@ int QgsSpatialRefSys::openDb(QString path, sqlite3 **db)
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
     // ... unfortunately it happens on Windows
-    QMessageBox::warning(0,"Error","Could not open SRS database "
-                + path + "<br>Error(" + QString::number(myResult)
+    QMessageBox::warning(0, QObject::tr("Error"), QObject::tr("Could not open SRS database ")
+                + path + QObject::tr("<br>Error(") + QString::number(myResult)
                 + "): " + QString(sqlite3_errmsg(*db)) ); 
     
   }

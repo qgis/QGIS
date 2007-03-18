@@ -414,7 +414,7 @@ void QgsCustomProjectionDialog::on_pbnFirst_clicked()
       //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
       leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4)));
       mCurrentRecordLong=1; 
-      lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
+      lblRecordNo->setText(QString::number(mCurrentRecordLong) + tr(" of ") + QString::number(mRecordCountLong));
   }
   else
   {
@@ -490,7 +490,7 @@ void QgsCustomProjectionDialog::on_pbnPrevious_clicked()
       //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
       leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4))),
       --mCurrentRecordLong;
-      lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
+      lblRecordNo->setText(QString::number(mCurrentRecordLong) + tr(" of ") + QString::number(mRecordCountLong));
   }
   else
   {
@@ -568,7 +568,7 @@ void QgsCustomProjectionDialog::on_pbnNext_clicked()
       //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
       leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4)));
       ++mCurrentRecordLong;
-      lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
+      lblRecordNo->setText(QString::number(mCurrentRecordLong) + tr(" of ") + QString::number(mRecordCountLong));
   }
   else
   {
@@ -641,7 +641,7 @@ void QgsCustomProjectionDialog::on_pbnLast_clicked()
       //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
       leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4)));
       mCurrentRecordLong =mRecordCountLong;
-      lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
+      lblRecordNo->setText(QString::number(mCurrentRecordLong) + tr(" of ") + QString::number(mRecordCountLong));
   }
   else
   {
@@ -710,7 +710,7 @@ void QgsCustomProjectionDialog::on_pbnNew_clicked()
     leParameters->setText("");
     //cboProjectionFamily->setCurrentItem(0);
     //cboEllipsoid->setCurrentItem(0);
-    lblRecordNo->setText("* of " + QString::number(mRecordCountLong));
+    lblRecordNo->setText( tr("* of ") + QString::number(mRecordCountLong));
     //remember the rec we are on in case the user aborts
     mLastRecordLong=mCurrentRecordLong;
     mCurrentRecordId="";
