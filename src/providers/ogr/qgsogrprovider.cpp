@@ -1005,7 +1005,13 @@ bool QgsOgrProvider::deleteFeatures(const QgsFeatureIds & id)
       returnvalue=false;
     }
   }
+
   ogrLayer->SyncToDisk();
+  QString filename=dataSourceUri().section('/',-1,-1);//find out the filename from the uri
+  QString layername=filename.section('.',0,0);
+  QString sql="REPACK " + layername;
+  ogrDataSource->ExecuteSQL(sql.toLocal8Bit().data(), NULL, NULL);
+  
   return returnvalue;
 }
 
