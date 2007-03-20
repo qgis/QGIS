@@ -231,8 +231,6 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
     QDomElement mne = mnl.toElement();
     dataSource = mne.text();
 
-    const char * dataSourceStr = dataSource.toLocal8Bit().data(); // debugger probe
-
     // the internal name is just the data source basename
     QFileInfo dataSourceFileInfo( dataSource );
     internalName = dataSourceFileInfo.baseName();
@@ -252,16 +250,15 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
     mne = mnl.toElement();
     setLayerName( mne.text() );
 
-    const char * layerNameStr = mne.text().toLocal8Bit().data(); // debugger probe
-
 
 
     //read srs
     QDomNode srsNode = layer_node.namedItem("coordinatetransform");
+
+    mCoordinateTransform=new QgsCoordinateTransform();
     if( ! srsNode.isNull()  )
     {
       qDebug("Reading coordinatetransform from project file");
-       mCoordinateTransform=new QgsCoordinateTransform();
        mCoordinateTransform->readXML(srsNode);
     }
     
@@ -681,7 +678,7 @@ QgsRect QgsMapLayer::calcProjectedBoundingBox(QgsRect& extent)
   double xmax = std::numeric_limits<double>::min();
   double ymin = std::numeric_limits<double>::max();
   double ymax = std::numeric_limits<double>::min();
-  for (int i = 0; i < top.size(); ++i)
+  for (unsigned int i = 0; i < top.size(); ++i)
   {
     xmin = std::min(xmin, left[i].x());
     xmax = std::max(xmax, right[i].x());
