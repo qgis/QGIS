@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>565</width>
+    <width>583</width>
     <height>517</height>
    </rect>
   </property>
@@ -261,7 +261,7 @@
           <item row="0" column="2" >
            <widget class="QLabel" name="textLabel1_2_2_2" >
             <property name="text" >
-             <string>Snapping Tolerance:</string>
+             <string>Snapping Tolerance (in map units):</string>
             </property>
             <property name="buddy" >
              <cstring>leSnappingTolerance</cstring>
