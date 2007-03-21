@@ -58,6 +58,10 @@ QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer, QgisAp
   connect(btnAdvancedSearch, SIGNAL(clicked()), this, SLOT(advancedSearch()));
   connect(btnClose, SIGNAL(clicked()), this, SLOT(close()));
 
+  //disable those buttons until start editing has been pressed and provider supports it
+  mAddAttributeButton->setEnabled(false);
+  mDeleteAttributeButton->setEnabled(false);
+
   btnStopEditing->setEnabled(false);
   int cap=layer->getDataProvider()->capabilities();
   if((cap&QgsVectorDataProvider::ChangeAttributeValues)
