@@ -302,7 +302,7 @@ QString QgsProjectionSelector::getCurrentProj4String()
 
       sqlite3 *db;
       int rc;
-      rc = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &db);
+      rc = sqlite3_open(myDatabaseFileName.toUtf8().data(), &db);
       if(rc)
       {
         QgsLogger::warning("Can't open database: " + QString(sqlite3_errmsg(db)));
@@ -394,7 +394,7 @@ long QgsProjectionSelector::getCurrentLongAttribute(QString attributeName)
       // opening it each time seems to be a reasonable approach at this time.
       sqlite3 *db;
       int rc;
-      rc = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &db);
+      rc = sqlite3_open(myDatabaseFileName.toUtf8().data(), &db);
       if(rc)
       {
         std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl;
@@ -515,7 +515,7 @@ void QgsProjectionSelector::applyUserProjList(QSet<QString> * crsFilter)
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(myDatabaseFileName).toLocal8Bit().data(), &myDatabase);
+  myResult = sqlite3_open(QString(myDatabaseFileName).toUtf8().data(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -591,7 +591,7 @@ void QgsProjectionSelector::applyProjList(QSet<QString> * crsFilter)
   // open the database containing the spatial reference data
   sqlite3 *db;
   int rc;
-  rc = sqlite3_open(mSrsDatabaseFileName.toLocal8Bit().data(), &db);
+  rc = sqlite3_open(mSrsDatabaseFileName.toUtf8().data(), &db);
   if(rc)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl;
@@ -861,7 +861,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(mSrsDatabaseFileName.toLocal8Bit().data(), &myDatabase);
+  myResult = sqlite3_open(mSrsDatabaseFileName.toUtf8().data(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -897,7 +897,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
     qDebug("User db does not exist");
     return ;
   }
-  myResult = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &myDatabase);
+  myResult = sqlite3_open(myDatabaseFileName.toUtf8().data(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "Can't open * user * database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -941,7 +941,7 @@ long QgsProjectionSelector::getLargestSRSIDMatch(QString theSql)
   myFileInfo.setFile(myDatabaseFileName);
   if ( myFileInfo.exists( ) ) //only bother trying to open if the file exists
   {
-    myResult = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &myDatabase);
+    myResult = sqlite3_open(myDatabaseFileName.toUtf8().data(), &myDatabase);
     if(myResult)
     {
       std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -973,7 +973,7 @@ long QgsProjectionSelector::getLargestSRSIDMatch(QString theSql)
   
   //only bother looking in srs.db if it wasnt found above
 
-  myResult = sqlite3_open(mSrsDatabaseFileName.toLocal8Bit().data(), &myDatabase);
+  myResult = sqlite3_open(mSrsDatabaseFileName.toUtf8().data(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "Can't open * user * database: " <<  sqlite3_errmsg(myDatabase) << std::endl;

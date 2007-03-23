@@ -1261,7 +1261,7 @@ QString::number(USER_PROJECTION_START_ID));
 int QgsSpatialRefSys::openDb(QString path, sqlite3 **db)
 {
   QgsDebugMsg("QgsSpatialRefSys::openDb path = " + path);
-  int myResult = sqlite3_open(path.toLocal8Bit().data(), db);
+  int myResult = sqlite3_open(path.toUtf8().data(), db);
 
   if(myResult)
   {
