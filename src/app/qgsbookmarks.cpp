@@ -216,7 +216,7 @@ int QgsBookmarks::connectDb()
 {
 
   int rc;
-  rc = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &db);
+  rc = sqlite3_open(QgsApplication::qgisUserDbFilePath().toUtf8().data(), &db);
   if(rc)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl;
