@@ -58,6 +58,16 @@ class QgsGraduatedSymbolDialog: public QDialog, private Ui::QgsGraduatedSymbolDi
      QgsSingleSymbolDialog sydialog;
      int mClassificationField;
 
+     /**Calculates quantiles from mVectorLayer.
+      @return 0 in case of success*/
+     int quantilesFromVectorLayer(std::list<double>& result, int attributeIndex, int numQuantiles) const;
+     /**A function that calculates the values of the quantiles
+	@param result the list where the function inserts the result values
+	@param values a _sorted_ vector of variable values
+	@param numQuantiles the number of quantiles, e.g. 4 calculates the quantiles for 25%, 50%, 75%, 100%
+      @return 0 in case of success*/
+     int calculateQuantiles(std::list<double>& result, const std::vector<double>& values, int numQuantiles) const;
+
  protected slots:
      /**Removes a class from the classification*/
      void deleteCurrentClass();
