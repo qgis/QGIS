@@ -45,7 +45,7 @@ QgsBookmarkItem::~QgsBookmarkItem()
 #ifdef QGISDEBUG 
   std::cout << "Opening user database: " << mUserDbPath.toLocal8Bit().data() << std::endl; 
 #endif 
-  rc = sqlite3_open(mUserDbPath.toLocal8Bit().data(), &db);
+  rc = sqlite3_open(mUserDbPath.toUtf8().data(), &db);
   if(rc)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl;
