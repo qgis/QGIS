@@ -187,7 +187,7 @@ QStringList QgsGrassModule::execArguments ( QString module )
     return arguments;
 }
 
-QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisInterface *iface, 
+QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QString moduleName, QgisInterface *iface, 
 	                     QString path, QWidget * parent, const char * name, Qt::WFlags f )
              :QgsGrassModuleBase ( ), mSuccess(false)
 {
@@ -196,7 +196,7 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisInterface *iface,
     #endif
 
     setupUi(this);
-
+    lblModuleName->setText(tr("Module") + ": " + moduleName);
     mPath = path;
     mTools = tools;
     mIface = iface;
