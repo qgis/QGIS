@@ -267,6 +267,12 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
        */
       QgsAttributeList allAttributesList();
 
+      /**Returns the names of the numerical types*/
+      const QSet<QString> numericalTypes() const {return mNumericalTypes;}
+
+      /**Returns the names of the non numerical types*/
+      const QSet<QString> nonNumericalTypes() const {return mNonNumericalTypes;}
+
 
       /**
        * Set whether provider should return also features that don't have
@@ -282,6 +288,10 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       /** should provider fetch also features that don't have geometry? */
       bool mFetchFeaturesWithoutGeom;
 
+      /**The names of the numerical types*/
+      QSet<QString> mNumericalTypes;
+      /**The names of the non-numerical types*/
+      QSet<QString> mNonNumericalTypes;
 };
 
 #endif
