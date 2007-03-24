@@ -3,7 +3,7 @@
 #include <QCloseEvent>
 #include <Q3Frame>
 /***************************************************************************
-                              qgsgrasstools.h 
+                              qgsgrassmodule.h 
                              -------------------
     begin                : March, 2005
     copyright            : (C) 2005 by Radim Blazek
@@ -64,7 +64,7 @@ class QgsGrassModule: public QDialog, private  Ui::QgsGrassModuleBase
 
 public:
     //! Constructor
-    QgsGrassModule ( QgsGrassTools *tools, QgisInterface *iface,  
+    QgsGrassModule ( QgsGrassTools *tools, QString moduleName, QgisInterface *iface,  
 	           QString path, QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
 
     //! Destructor
