@@ -19,7 +19,6 @@
 #include "qgsuniquevaluedialog.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
-#include "qgsfeatureattribute.h"
 #include "qgssymbol.h"
 #include "qgsuniquevaluerenderer.h"
 #include "qgsvectordataprovider.h"
@@ -148,8 +147,8 @@ void QgsUniqueValueDialog::changeClassificationAttribute()
 	mClassListWidget->clear();
 	while(provider->getNextFeature(feat, false, attlist))
 	{
-      const QgsAttributeMap& vec = feat.attributeMap();
-	    value=vec[nr].fieldValue();
+      const QgsAttributeMap& attrs = feat.attributeMap();
+	    value = attrs[nr].toString();
 	   
 	    if(mValues.find(value)==mValues.end())
 	    {

@@ -35,7 +35,6 @@
 
 #include "qgis.h"
 #include "qgsapplication.h"
-#include "qgsfeatureattribute.h" // TODO: remove - this is only for qgsgrassprovider.h
 
 extern "C" {
 #include <grass/gis.h>

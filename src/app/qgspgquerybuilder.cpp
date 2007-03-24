@@ -121,7 +121,7 @@ void QgsPgQueryBuilder::populateFields()
       int fldtyp = PQftype(result, i);
       QString typOid = QString().setNum(fldtyp);
       QgsLogger::debug("typOid is: " + typOid); 
-      int fieldModifier = PQfmod(result, i);
+      //int fieldModifier = PQfmod(result, i);
       QString sql = "select typelem from pg_type where typelem = " + typOid + " and typlen = -1";
       //  //--std::cout << sql << std::endl;
       PGresult *oidResult = PQexec(mPgConnection, 
@@ -148,8 +148,8 @@ void QgsPgQueryBuilder::populateFields()
       std::cerr << "Field parms: Name = " << fieldName.toLocal8Bit().data()
         << ", Type = " << fieldType.toLocal8Bit().data() << std::endl; 
 #endif
-      mFieldMap[fieldName] = QgsField(fieldName, fieldType, 
-          fieldSize.toInt(), fieldModifier);
+      QVariant::Type type = QVariant::String; // TODO: should be set correctly [MD]
+      mFieldMap[fieldName] = QgsField(fieldName, type, fieldType);
       lstFields->insertItem(fieldName);
     }
   }else
@@ -191,7 +191,7 @@ void QgsPgQueryBuilder::on_btnSampleValues_clicked()
   lstValues->clear();
   // determine the field type
   QgsField field = mFieldMap[lstFields->currentText()];
-  bool isCharField = field.type().find("char") > -1;
+  bool isCharField = field.typeName().find("char") > -1;
   PGresult *result = PQexec(mPgConnection, (const char *) (sql.utf8()));
 
   if (PQresultStatus(result) == PGRES_TUPLES_OK) 
@@ -229,7 +229,7 @@ void QgsPgQueryBuilder::on_btnGetAllValues_clicked()
   lstValues->clear();
   // determine the field type
   QgsField field = mFieldMap[lstFields->currentText()];
-  bool isCharField = field.type().find("char") > -1;
+  bool isCharField = field.typeName().find("char") > -1;
 
   PGresult *result = PQexec(mPgConnection, (const char *) (sql.utf8()));
 

@@ -18,9 +18,10 @@
  /* $Id$ */
 
 #include "qgslogger.h"
+#include "qgsfield.h"
 #include "qgssearchtreenode.h"
-#include <qregexp.h>
-#include <qobject.h>
+#include <QRegExp>
+#include <QObject>
 #include <iostream>
 
 
@@ -180,7 +181,7 @@ QString QgsSearchTreeNode::makeSearchString()
 }
 
 
-bool QgsSearchTreeNode::checkAgainst(const QgsAttributeMap& attributes)
+bool QgsSearchTreeNode::checkAgainst(const QgsFieldMap& fields, const QgsAttributeMap& attributes)
 {
   QgsDebugMsgLevel("checkAgainst: " + makeSearchString(), 2);
 
@@ -199,17 +200,17 @@ bool QgsSearchTreeNode::checkAgainst(const QgsAttributeMap& attributes)
   switch (mOp)
   {
     case opNOT:
-      return !mLeft->checkAgainst(attributes);
+      return !mLeft->checkAgainst(fields, attributes);
     
     case opAND:
-      if (!mLeft->checkAgainst(attributes))
+      if (!mLeft->checkAgainst(fields, attributes))
         return false;
-      return mRight->checkAgainst(attributes);
+      return mRight->checkAgainst(fields, attributes);
     
     case opOR:
-      if (mLeft->checkAgainst(attributes))
+      if (mLeft->checkAgainst(fields, attributes))
         return true;
-      return mRight->checkAgainst(attributes);
+      return mRight->checkAgainst(fields, attributes);
 
     case opEQ:
     case opNE:
@@ -218,7 +219,7 @@ bool QgsSearchTreeNode::checkAgainst(const QgsAttributeMap& attributes)
     case opGE:
     case opLE:
         
-      if (!getValue(value1, mLeft, attributes) || !getValue(value2, mRight, attributes))
+      if (!getValue(value1, mLeft, fields, attributes) || !getValue(value2, mRight, fields, attributes))
             return false;
         
       res = QgsSearchTreeValue::compare(value1, value2);
@@ -239,7 +240,7 @@ bool QgsSearchTreeNode::checkAgainst(const QgsAttributeMap& attributes)
     case opRegexp:
     case opLike:
     {
-      if (!getValue(value1, mLeft, attributes) || !getValue(value2, mRight, attributes))
+      if (!getValue(value1, mLeft, fields, attributes) || !getValue(value2, mRight, fields, attributes))
         return false;
       
       // value1 is string to be matched
@@ -277,9 +278,9 @@ bool QgsSearchTreeNode::checkAgainst(const QgsAttributeMap& attributes)
   return false; // will never get there
 }
 
-bool QgsSearchTreeNode::getValue(QgsSearchTreeValue& value, QgsSearchTreeNode* node, const QgsAttributeMap& attributes)
+bool QgsSearchTreeNode::getValue(QgsSearchTreeValue& value, QgsSearchTreeNode* node, const QgsFieldMap& fields, const QgsAttributeMap& attributes)
 {
-  value = node->valueAgainst(attributes);
+  value = node->valueAgainst(fields, attributes);
   if (value.isError())
   {
     switch ((int)value.number())
@@ -310,7 +311,7 @@ bool QgsSearchTreeNode::getValue(QgsSearchTreeValue& value, QgsSearchTreeNode* n
   return true;
 }
 
-QgsSearchTreeValue QgsSearchTreeNode::valueAgainst(const QgsAttributeMap& attributes)
+QgsSearchTreeValue QgsSearchTreeNode::valueAgainst(const QgsFieldMap& fields, const QgsAttributeMap& attributes)
 {
   QgsDebugMsgLevel("valueAgainst: " + makeSearchString(), 2);
 
@@ -328,37 +329,42 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst(const QgsAttributeMap& attrib
     case tColumnRef:
     {
       QgsDebugMsgLevel("column (" + mText.lower() + "): ", 2);
-      // find value for the column
-      QgsAttributeMap::const_iterator it;
-      for (it = attributes.begin(); it != attributes.end(); it++)
+      // find field index for the column
+      QgsFieldMap::const_iterator it;
+      for (it = fields.begin(); it != fields.end(); it++)
       {
-        if ( it->fieldName().lower() == mText.lower()) // TODO: optimize
-        {
-          QString value = it->fieldValue();
-          if (it->isNumeric())
-          {
-            QgsDebugMsgLevel("   number: " + QString::number(value.toDouble()), 2);
-            return QgsSearchTreeValue(value.toDouble());
-          }
-          else
-          {
-            QgsDebugMsgLevel("   text: " + EVAL_STR(value), 2);
-            return QgsSearchTreeValue(value);
-          }
-        }
+        if ( it->name().lower() == mText.lower()) // TODO: optimize
+          break;
       }
-          
-      // else report missing column
-      QgsDebugMsgLevel("ERROR!", 2);
-      return QgsSearchTreeValue(1, mText);
+      
+      if (it == fields.end())
+      {
+        // report missing column if not found
+        QgsDebugMsgLevel("ERROR!", 2);
+        return QgsSearchTreeValue(1, mText);
+      }
+      
+      // get the value
+      QVariant val = attributes[it.key()];
+      if (val.type() == QVariant::Bool || val.type() == QVariant::Int || val.type() == QVariant::Double)
+      {
+        QgsDebugMsgLevel("   number: " + QString::number(val.toDouble()), 2);
+        return QgsSearchTreeValue(val.toDouble());
+      }
+      else
+      {
+        QgsDebugMsgLevel("   text: " + EVAL_STR(val.toString()), 2);
+        return QgsSearchTreeValue(val.toString());
+      }
+
     }
     
     // arithmetic operators
     case tOperator:
       {
         QgsSearchTreeValue value1, value2;
-        if (!getValue(value1, mLeft,  attributes)) return value1;
-        if (!getValue(value2, mRight, attributes)) return value2;
+        if (!getValue(value1, mLeft, fields, attributes)) return value1;
+        if (!getValue(value2, mRight, fields, attributes)) return value2;
         
         // convert to numbers if needed
         double val1, val2;

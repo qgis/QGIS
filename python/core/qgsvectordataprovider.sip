@@ -343,12 +343,12 @@ class QgsVectorDataProvider : QgsDataProvider
        * @param attr_map a map containing changed attributes
        * @return true in case of success and false in case of failure 
        */
-      virtual bool changeAttributeValues(const QMap<int, QMap<int, QgsFeatureAttribute> > & attr_map);
+      virtual bool changeAttributeValues(const QMap<int, QMap<int, QVariant> > & attr_map);
 
       /**
-       * Returns the default value for attribute @c attr for feature @c f.
+       * Returns the default value for field specified by @c fieldId
        */
-      virtual QString getDefaultValue(const QString & attr, QgsFeature* f);
+      virtual QVariant getDefaultValue(int fieldId);
 
       /**
        * Changes geometries of existing features

@@ -19,14 +19,14 @@ email                : sherman at mrcc.com
 
 #include <QMap>
 #include <QString>
+#include <QVariant>
 
-class QgsFeatureAttribute;
 class QgsGeometry;
 class QgsRect;
 
 
-// key = field index, value = field name and attribute value
-typedef QMap<int, QgsFeatureAttribute> QgsAttributeMap;
+// key = field index, value = field value
+typedef QMap<int, QVariant> QgsAttributeMap;
 
 // key = feature id, value = changed attributes
 typedef QMap<int, QgsAttributeMap> QgsChangedAttributesMap;
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsFeature {
     /** 
      * Add an attribute to the map
      */
-    void addAttribute(int field, QgsFeatureAttribute attr);
+    void addAttribute(int field, QVariant attr);
 
     /**Deletes an attribute and its value*/
     void deleteAttribute(int field);
@@ -112,13 +112,7 @@ class CORE_EXPORT QgsFeature {
     /**Changes an existing attribute value
        @param field index of the field
        @param attr attribute name and value to be set */
-    void changeAttribute(int field, QgsFeatureAttribute attr);
-
-    /**
-     * Get the fields for this feature
-     * @return A std::map containing field position (index) and field name
-     */
-    QgsFieldNameMap fields() const;
+    void changeAttribute(int field, QVariant attr);
 
     /**
      * Return the validity of this feature. This is normally set by
@@ -166,58 +160,6 @@ class CORE_EXPORT QgsFeature {
      */
     void setGeometryAndOwnership(unsigned char * geom, size_t length);
     
-    /** Set bulk-modified WKB geometry 
-        \note   this function assumes the Geometry is not committed. 
-     */
-/*    void setModifiedGeometry(unsigned char * geom, size_t length);*/
-    
-    /** Insert a new vertex before the given vertex number,
-     *  ring and item (first number is index 0)
-     *  Not meaningful for Point geometries
-     */
-//     bool insertVertexBefore(double x, double y, int beforeVertex = 0, int atRing = 0, int atItem = 0);
-
-    /** Moves the vertex at the given position number,
-     *  ring and item (first number is index 0)
-     *  to the given coordinates
-     */
-/*    bool moveVertexAt(double x, double y, int atVertex = 0, int atRing = 0, int atItem = 0);*/
-    
-    /**
-     *  Modifies x and y to indicate the location of
-     *  the vertex at the given position number,
-     *  ring and item (first number is index 0)
-     *  to the given coordinates
-     */
-/*    bool vertexAt(double &x, double &y, int atVertex = 0, int atRing = 0, int atItem = 0) const;*/
-
-//     /**Test for intersection with a rectangle (uses GEOS)*/
-//     bool intersects(QgsRect* r) const;
-
-    /**Returns the Vertex closest to a given point*/
-//     QgsPoint closestVertex(const QgsPoint& point) const;
-
-    /** Returns the line segment closest to the given point in beforeVertex, atRing and atItem
-        Returns the SQUARE of the closest distance in minDist.
-        Returns the closest point on the line segment to the given point
-        
-                
-        TODO: point handling
-        TODO: const correctness
-     */
-//    QgsPoint closestSegment(QgsPoint& point, 
-//                            QgsPoint& segStart, QgsPoint& segStop,
-//                            double& minSqrDist);
-
-//     QgsPoint QgsFeature::closestSegmentWithContext(QgsPoint& point, 
-//                                                    int& beforeVertex, int& atRing, int& atItem,
-//                                                    double& minSqrDist);
-//                             
-//                             
-     /**Returns the bounding box of this feature*/
-     QgsRect boundingBox() const;
-// 
-
   private:
 
     //! feature id
@@ -237,41 +179,17 @@ class CORE_EXPORT QgsFeature {
      */ 
     bool mOwnsGeometry;   
 
-//     /** pointer to modified (dirty / uncommitted) geometry in binary WKB format
-//         This is only valid if isDirty().
-//      */
-//     unsigned char * modifiedGeometry;
-//     
-//     /** size of geometry */
-//     size_t geometrySize;
-// 
-//     /** size of modified geometry */
-//     size_t modifiedGeometrySize;
-
     //! Flag to indicate if this feature is valid
+    // TODO: still applies? [MD]
     bool mValid;
 
     //! Flag to indicate if this feature is dirty (e.g. geometry has been modified in-memory)
+    // TODO: still applies? [MD]
     bool mDirty;
 
     /// feature type name
     QString mTypeName;
 
-//     /**WKT representation of the geometry*/
-//     mutable QString mWKT;
-// 
-//     /**Exports the current WKB to mWKT
-//      @return true in case of success and false else*/
-//     bool exportToWKT(unsigned char * geom) const;
-//     bool exportToWKT() const;
-// 
-//     /** Squared distance from point to the given line segment 
-//      *  TODO: Perhaps move this to QgsPoint
-//      */
-//     double distanceSquaredPointToSegment(QgsPoint& point,
-//                                          double *x1, double *y1,
-//                                          double *x2, double *y2,
-//                                          QgsPoint& minDistPoint);
 
 }; // class QgsFeature
 

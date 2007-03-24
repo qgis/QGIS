@@ -386,20 +386,30 @@ void QgsLabelDialog::apply()
     //TODO - transparency attributes for buffers
     
     //set the label props that are data bound to a field in the attributes tbl
-    mLabel->setLabelField( QgsLabel::Text,  cboLabelField->currentText() );
-    mLabel->setLabelField( QgsLabel::Family, cboFontField->currentText() );
-    mLabel->setLabelField( QgsLabel::Bold,  cboBoldField->currentText() );
-    mLabel->setLabelField( QgsLabel::Italic,  cboItalicField->currentText() );
-    mLabel->setLabelField( QgsLabel::Underline,  cboUnderlineField->currentText() );
-    mLabel->setLabelField( QgsLabel::Size,  cboFontSizeField->currentText() );
-    mLabel->setLabelField( QgsLabel::BufferSize,  cboBufferSizeField->currentText() );
+    mLabel->setLabelField( QgsLabel::Text,  fieldIndexFromName(cboLabelField->currentText()) );
+    mLabel->setLabelField( QgsLabel::Family, fieldIndexFromName(cboFontField->currentText()) );
+    mLabel->setLabelField( QgsLabel::Bold,  fieldIndexFromName(cboBoldField->currentText()) );
+    mLabel->setLabelField( QgsLabel::Italic,  fieldIndexFromName(cboItalicField->currentText()) );
+    mLabel->setLabelField( QgsLabel::Underline,  fieldIndexFromName(cboUnderlineField->currentText()) );
+    mLabel->setLabelField( QgsLabel::Size,  fieldIndexFromName(cboFontSizeField->currentText()) );
+    mLabel->setLabelField( QgsLabel::BufferSize,  fieldIndexFromName(cboBufferSizeField->currentText()) );
     //mLabel->setLabelField( QgsLabel::BufferTransparency,  cboBufferTransparencyField->currentText() );
-    mLabel->setLabelField( QgsLabel::XCoordinate,  cboXCoordinateField->currentText() );
-    mLabel->setLabelField( QgsLabel::YCoordinate,  cboYCoordinateField->currentText() );
-    mLabel->setLabelField( QgsLabel::XOffset,  cboXOffsetField->currentText() );
-    mLabel->setLabelField( QgsLabel::YOffset,  cboYOffsetField->currentText() );
-    mLabel->setLabelField( QgsLabel::Alignment,  cboAlignmentField->currentText() );
-    mLabel->setLabelField( QgsLabel::Angle,  cboAngleField->currentText() );
+    mLabel->setLabelField( QgsLabel::XCoordinate,  fieldIndexFromName(cboXCoordinateField->currentText()) );
+    mLabel->setLabelField( QgsLabel::YCoordinate,  fieldIndexFromName(cboYCoordinateField->currentText()) );
+    mLabel->setLabelField( QgsLabel::XOffset,  fieldIndexFromName(cboXOffsetField->currentText()) );
+    mLabel->setLabelField( QgsLabel::YOffset,  fieldIndexFromName(cboYOffsetField->currentText()) );
+    mLabel->setLabelField( QgsLabel::Alignment,  fieldIndexFromName(cboAlignmentField->currentText()) );
+    mLabel->setLabelField( QgsLabel::Angle,  fieldIndexFromName(cboAngleField->currentText()) );
 
 }
 
+int QgsLabelDialog::fieldIndexFromName(QString name)
+{
+  const QgsFieldMap& fields = mLabel->fields();
+  for (QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it)
+  {
+    if (it->name() == name)
+      return it.key();
+  }
+  return -1;
+}

@@ -48,8 +48,8 @@ QgsContinuousColorDialog::QgsContinuousColorDialog(QgsVectorLayer * layer)
 
 	for (QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it)
         {
-	    QString type = (*it).type();
-	    if (type != "String" && type != "varchar" && type != "geometry")
+	    QVariant::Type type = (*it).type();
+	    if (type == QVariant::Int || type == QVariant::Double)
             {
 		str = (*it).name();
 		classificationComboBox->insertItem(str);

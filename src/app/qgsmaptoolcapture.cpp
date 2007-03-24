@@ -18,7 +18,6 @@
 #include "qgsattributedialog.h"
 #include "qgscoordinatetransform.h"
 #include "qgsfield.h"
-#include "qgsfeatureattribute.h"
 #include "qgsmaptoolcapture.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprender.h"
@@ -61,7 +60,9 @@ void QgsMapToolCapture::canvasReleaseEvent(QMouseEvent * e)
     return;
   }
   
-  if(!(vlayer->getDataProvider()->capabilities() & QgsVectorDataProvider::AddFeatures))
+  QgsVectorDataProvider* provider = vlayer->getDataProvider();
+  
+  if(!(provider->capabilities() & QgsVectorDataProvider::AddFeatures))
   {
     QMessageBox::information(0, QObject::tr("Layer cannot be added to"),
             QObject::tr("The data provider for this layer does not support the addition of features."));
@@ -97,7 +98,7 @@ void QgsMapToolCapture::canvasReleaseEvent(QMouseEvent * e)
     //only do the rest for provider with feature addition support
     //note that for the grass provider, this will return false since
     //grass provider has its own mechanism of feature addition
-    if(vlayer->getDataProvider()->capabilities()&QgsVectorDataProvider::AddFeatures)
+    if(provider->capabilities() & QgsVectorDataProvider::AddFeatures)
     {
       QgsFeature* f = new QgsFeature(0,"WKBPoint");
       // project to layer's SRS
@@ -147,15 +148,14 @@ void QgsMapToolCapture::canvasReleaseEvent(QMouseEvent * e)
 
       f->setGeometryAndOwnership(&wkb[0],size);
       // add the fields to the QgsFeature
-      const QgsFieldMap& fields=vlayer->fields();
+      const QgsFieldMap& fields=provider->fields();
       for(QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it)
       {
-        QString name = it->name();
-        f->addAttribute(it.key(), QgsFeatureAttribute(name, vlayer->getDefaultValue(name,f)));
+        f->addAttribute(it.key(), provider->getDefaultValue(it.key()) );
       }
 
       // show the dialog to enter attribute values
-      if (QgsAttributeDialog::queryAttributes(*f))
+      if (QgsAttributeDialog::queryAttributes(fields, *f))
         vlayer->addFeature(*f);
       else
         delete f;
@@ -371,14 +371,13 @@ void QgsMapToolCapture::canvasReleaseEvent(QMouseEvent * e)
       f->setGeometryAndOwnership(&wkb[0],size);
   
       // add the fields to the QgsFeature
-      const QgsFieldMap& fields = vlayer->fields();
+      const QgsFieldMap& fields = provider->fields();
       for(QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it)
       {
-        QString name = it->name();
-        f->addAttribute(it.key(), QgsFeatureAttribute(name, vlayer->getDefaultValue(name, f)));
+        f->addAttribute(it.key(), provider->getDefaultValue(it.key()));
       }
   
-      if (QgsAttributeDialog::queryAttributes(*f))
+      if (QgsAttributeDialog::queryAttributes(fields, *f))
         vlayer->addFeature(*f);
       else
         delete f;

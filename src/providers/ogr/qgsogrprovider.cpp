@@ -50,7 +50,6 @@ email                : sherman at mrcc.com
 #include "qgsapplication.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
-#include "qgsfeatureattribute.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
@@ -213,14 +212,23 @@ void QgsOgrProvider::loadFields()
       for(int i=0;i<fdef->GetFieldCount();++i)
       {
         OGRFieldDefn *fldDef = fdef->GetFieldDefn(i);
-        OGRFieldType type = fldDef->GetType();
-        bool numeric = (type == OFTInteger || type == OFTReal);
+        OGRFieldType ogrType = fldDef->GetType();
+        QVariant::Type varType;
+        switch (ogrType)
+        {
+          case OFTInteger: varType = QVariant::Int; break;
+          case OFTReal: varType = QVariant::Double; break;
+          // unsupported in OGR 1.3
+          //case OFTDateTime: varType = QVariant::DateTime; break;
+          case OFTString: varType = QVariant::String; break;
+          default: varType = QVariant::String; // other unsupported, leave it as a string
+        }
+        
         mAttributeFields.insert(i, QgsField(
-              mEncoding->toUnicode(fldDef->GetNameRef()), 
-              mEncoding->toUnicode(fldDef->GetFieldTypeName(type)),
+              mEncoding->toUnicode(fldDef->GetNameRef()), varType,
+              mEncoding->toUnicode(fldDef->GetFieldTypeName(ogrType)),
               fldDef->GetWidth(),
-              fldDef->GetPrecision(),
-              numeric));
+              fldDef->GetPrecision() ));
       }
     }
 }
@@ -466,10 +474,21 @@ void QgsOgrProvider::getFeatureAttribute(OGRFeature * ogrFet, QgsFeature & f, in
     return;
   }
 
-  QString fld = mEncoding->toUnicode(fldDef->GetNameRef());
+  //QString fld = mEncoding->toUnicode(fldDef->GetNameRef());
   QByteArray cstr(ogrFet->GetFieldAsString(attindex));
+  QString str = mEncoding->toUnicode(cstr);
+  QVariant value;
+  
+  switch (mAttributeFields[attindex].type())
+  {
+    case QVariant::String: value = QVariant(str); break;
+    case QVariant::Int: value = QVariant(str.toInt()); break;
+    case QVariant::Double: value = QVariant(str.toDouble()); break;
+    //case QVariant::DateTime: value = QVariant(QDateTime::fromString(str)); break;
+    default: assert(NULL && "unsupported field type");
+  }
 
-  f.addAttribute(attindex, QgsFeatureAttribute(fld, mEncoding->toUnicode(cstr)));
+  f.addAttribute(attindex, value);
 }
 
 
@@ -581,13 +600,18 @@ void QgsOgrProvider::fillMinMaxCash()
     minmaxcache[i][1]=-DBL_MAX;
   }
 
+  // TODO: fetch only numeric columns
   QgsFeature f;
   QgsAttributeList all = allAttributesList();
   while (getNextFeature(f, false, all))
   {
     for(uint i = 0; i < fieldCount(); i++)
     {
-      double value = (f.attributeMap())[i].fieldValue().toDouble();
+      const QVariant& varValue = (f.attributeMap())[i];
+      if (varValue.type() != QVariant::Double && varValue.type() != QVariant::Int)
+        continue;
+
+      double value = varValue.toDouble();
       if(value<minmaxcache[i][0])
       {
         minmaxcache[i][0]=value;  
@@ -764,40 +788,33 @@ bool QgsOgrProvider::addFeature(QgsFeature& f)
   QgsAttributeMap attrs = f.attributeMap();
 
   //add possible attribute information
-  for(int i = 0; i < attrs.size(); ++i)
+  for(QgsAttributeMap::iterator it = attrs.begin(); it != attrs.end(); ++it)
   {
-    QString s = attrs[i].fieldValue();
-    
-    //find a matching field for the new attribute
-    QString newAttribute = attrs[i].fieldName();
-    int targetAttributeId = fdef->GetFieldIndex(mEncoding->fromUnicode(newAttribute).constData());
-    if(targetAttributeId == -1)
-      {
-	continue;
-      }
+    int targetAttributeId = it.key();
 
-    if(!s.isEmpty())
+    //if(!s.isEmpty())
+    // continue;
+      
+    if(fdef->GetFieldDefn(targetAttributeId)->GetType()==OFTInteger)
     {
-      if(fdef->GetFieldDefn(targetAttributeId)->GetType()==OFTInteger)
-      {
-        feature->SetField(targetAttributeId,s.toInt());
-      }
-      else if(fdef->GetFieldDefn(targetAttributeId)->GetType()==OFTReal)
-      {
-        feature->SetField(targetAttributeId,s.toDouble());
-      }
-      else if(fdef->GetFieldDefn(targetAttributeId)->GetType()==OFTString)
-      {
+      feature->SetField(targetAttributeId,it->toInt());
+    }
+    else if(fdef->GetFieldDefn(targetAttributeId)->GetType()==OFTReal)
+    {
+      feature->SetField(targetAttributeId,it->toDouble());
+    }
+    else if(fdef->GetFieldDefn(targetAttributeId)->GetType()==OFTString)
+    {
 #ifdef QGISDEBUG
-        std::cerr << "Writing string attribute " << newAttribute.toLocal8Bit().data() <<
-	          " with " << s.toLocal8Bit().data() << ", encoding " << mEncoding->name().data() << "\n";
+        std::cerr << "Writing string attribute " << targetAttributeId
+	                << " with " << it->toString().toLocal8Bit().data()
+                  << ", encoding " << mEncoding->name().data() << std::endl;
 #endif
-        feature->SetField(targetAttributeId,mEncoding->fromUnicode(s).constData());
-      }
-      else
-      {
-        QgsLogger::warning("QgsOgrProvider::addFeature, no type found");
-      }
+      feature->SetField(targetAttributeId,mEncoding->fromUnicode(it->toString()).constData());
+    }
+    else
+    {
+      QgsLogger::warning("QgsOgrProvider::addFeature, no type found");
     }
   }
 
@@ -890,8 +907,6 @@ bool QgsOgrProvider::changeAttributeValues(const QgsChangedAttributesMap & attr_
     for( QgsAttributeMap::const_iterator it2 = attr.begin(); it2 != attr.end(); ++it2 )
     {
       int f = it2.key();
-      QString name = it2->fieldName();
-      QString value = it2->fieldValue();
 		
       OGRFieldDefn *fd = of->GetFieldDefnRef ( f );
       if (fd == NULL)
@@ -904,13 +919,13 @@ bool QgsOgrProvider::changeAttributeValues(const QgsChangedAttributesMap & attr_
       switch ( type )
       {
         case OFTInteger:
-          of->SetField ( f, value.toInt() );
+          of->SetField ( f, it2->toInt() );
           break;
         case OFTReal:
-          of->SetField ( f, value.toDouble() );
+          of->SetField ( f, it2->toDouble() );
           break;
         case OFTString:
-          of->SetField ( f, mEncoding->fromUnicode(value).constData() );
+          of->SetField ( f, mEncoding->fromUnicode(it2->toString()).constData() );
           break;
         default:
           QgsLogger::warning("QgsOgrProvider::changeAttributeValues, Unknown field type, cannot change attribute");

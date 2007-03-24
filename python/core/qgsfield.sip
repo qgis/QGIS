@@ -17,25 +17,33 @@ class QgsField
 public:
     /** Constructor. Constructs a new QgsField object.
      * @param nam Field name
-     * @param typ Field type (eg. char, varchar, text, int, serial, double). 
+     * @param type Field variant type, currently supported: String / Int / Double
+     * @param typeName Field type (eg. char, varchar, text, int, serial, double). 
      Field types are usually unique to the source and are stored exactly
      as returned from the data store.
      * @param len Field length
      * @param prec Field precision. Usually decimal places but may also be
      * used in conjunction with other fields types (eg. variable character fields)
-     * @param num Has to be true if field contains numeric values.
+     * @param comment Comment for the field
      */
-  QgsField(QString nam = "", QString typ = "", int len = 0, int prec = 0, bool num = false);
+  
+  QgsField(QString name = QString(),
+           QVariant::Type type = QVariant::Invalid,
+           QString typeName = QString(),
+           int len = 0,
+           int prec = 0,
+           QString comment = QString());
 
   //! Destructor
    ~QgsField();
 
-   bool operator==(const QgsField other) const;
-   bool operator!=(const QgsField other) const;
+   bool operator==(const QgsField& other) const;
 
   //! Gets the name of the field
   const QString & name() const;
 
+  //! Gets variant type of the field as it will be retreived from data source
+  QVariant::Type type() const;
 
     /** 
       Gets the field type. Field types vary depending on the data source. Examples
@@ -43,7 +51,7 @@ public:
       the data store reports it, with no attenpt to standardize the value.
       @return QString containing the field type
      */
-  const QString & type() const;
+  const QString & typeName() const;
 
 
     /**
@@ -59,23 +67,27 @@ public:
      */
   int precision() const;
 
-    /**
-     Returns true if field contains numeric values. This information is set by provider.
-     */
-  bool isNumeric() const;
-
+    /** 
+    Returns the field comment
+    */
+  const QString & comment() const;
 
     /**
       Set the field name.
       @param nam Name of the field
      */
   void setName(const QString & nam);
+  
+    /**
+      Set variant type.
+     */
+  void setType(QVariant::Type type);
 
     /**
       Set the field type.
       @param typ Field type
      */
-  void setType(const QString & typ);
+  void setTypeName(const QString & typ);
 
     /**
       Set the field length.
@@ -89,10 +101,11 @@ public:
      */
   void setPrecision(int prec);
 
+
     /**
-      Set whether field is numeric
+      Set the field comment
       */
-  void setNumeric(bool num);
+  void setComment(const QString & comment);
 
 }; // class QgsField
 

@@ -31,10 +31,8 @@
 #include "qgsapplication.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
-#include "qgsfeatureattribute.h"
 #include "qgsfield.h"
 #include "qgsrect.h"
-#include "qgsfeatureattribute.h"
 #include "qgsspatialrefsys.h"
 
 extern "C" {
@@ -739,6 +737,7 @@ void QgsGrassProvider::loadAttributes ( GLAYER &layer )
 		    dbColumn *column = db_get_table_column (databaseTable, i);
 
 		    int ctype = db_sqltype_to_Ctype ( db_get_column_sqltype(column) );
+        QVariant::Type qtype;
                     #ifdef QGISDEBUG
 		    std::cerr << "column = " << db_get_column_name(column) 
 			      << " ctype = " << ctype << std::endl;
@@ -748,18 +747,22 @@ void QgsGrassProvider::loadAttributes ( GLAYER &layer )
 		    switch ( ctype ) {
 			case DB_C_TYPE_INT:
 			    ctypeStr = "integer";
+          qtype = QVariant::Int;
 			    break; 
 			case DB_C_TYPE_DOUBLE:
 			    ctypeStr = "double";
+          qtype = QVariant::Double;
 			    break; 
 			case DB_C_TYPE_STRING:
 			    ctypeStr = "string";
+          qtype = QVariant::String;
 			    break; 
 			case DB_C_TYPE_DATETIME:
 			    ctypeStr = "datetime";
+          qtype = QVariant::String;
 			    break; 
 		    }
-		    layer.fields[i] = QgsField( db_get_column_name(column), ctypeStr, 
+		    layer.fields[i] = QgsField( db_get_column_name(column), qtype, ctypeStr,
 		                     db_get_column_length(column), db_get_column_precision(column) );
 		    
 		    if ( G_strcasecmp ( db_get_column_name(column), layer.fieldInfo->key) == 0 ) {
@@ -848,7 +851,7 @@ void QgsGrassProvider::loadAttributes ( GLAYER &layer )
     // Add cat if no attribute fields exist (otherwise qgis crashes)
     if ( layer.nColumns == 0 ) {
         layer.keyColumn = 0;
-	layer.fields[0] = ( QgsField( "cat", "integer", 10, 0) );
+	layer.fields[0] = ( QgsField( "cat", QVariant::Int, "integer") );
 	layer.minmax = new double[1][2];
 	layer.minmax[0][0] = 0; 
 	layer.minmax[0][1] = 0; 
@@ -1172,15 +1175,13 @@ void QgsGrassProvider::setFeatureAttributes ( int layerId, int cat, QgsFeature *
 	for (int i = 0; i < mLayers[layerId].nColumns; i++) {
 	    if ( att != NULL ) {
 		Q3CString cstr( att->values[i] );
-		feature->addAttribute (i, QgsFeatureAttribute( mLayers[layerId].fields[i].name(), mEncoding->toUnicode(cstr) ));
+		feature->addAttribute (i, QVariant(mEncoding->toUnicode(cstr)) );
 	    } else { /* it may happen that attributes are missing -> set to empty string */
-		feature->addAttribute (i, QgsFeatureAttribute( mLayers[layerId].fields[i].name(), ""));
+		feature->addAttribute (i, QVariant());
 	    }
 	}
     } else { 
-	QString tmp;
-	tmp.sprintf("%d", cat );
-	feature->addAttribute (0, QgsFeatureAttribute("cat", tmp));
+	feature->addAttribute (0, QVariant(cat));
     }
 }
 
@@ -1199,15 +1200,13 @@ void QgsGrassProvider::setFeatureAttributes ( int layerId, int cat, QgsFeature *
 	for (QgsAttributeList::const_iterator iter=attlist.begin(); iter!=attlist.end();++iter) {
 	    if ( att != NULL ) {
 		Q3CString cstr( att->values[*iter] );
-		feature->addAttribute (*iter, QgsFeatureAttribute(mLayers[layerId].fields[*iter].name(), mEncoding->toUnicode(cstr) ));
+		feature->addAttribute (*iter, QVariant( mEncoding->toUnicode(cstr) ));
 	    } else { /* it may happen that attributes are missing -> set to empty string */
-		feature->addAttribute (*iter, QgsFeatureAttribute(mLayers[layerId].fields[*iter].name(), ""));
+		feature->addAttribute (*iter, QVariant());
 	    } 
 	}
     } else { 
-	QString tmp;
-	tmp.sprintf("%d", cat );
-	feature->addAttribute (0, QgsFeatureAttribute("cat", tmp));
+	feature->addAttribute (0, QVariant(cat));
     }
 }
 
@@ -1820,21 +1819,26 @@ std::vector<QgsField> *QgsGrassProvider::columns ( int field )
 
 	int ctype = db_sqltype_to_Ctype( db_get_column_sqltype (column) );
 	QString type;
+  QVariant::Type qtype;
 	switch ( ctype ) {
 	    case DB_C_TYPE_INT:
 		type = "int";
+    qtype = QVariant::Int;
 		break;
 	    case DB_C_TYPE_DOUBLE:
 		type = "double";
+    qtype = QVariant::Double;
 		break;
 	    case DB_C_TYPE_STRING:
 		type = "string";
+    qtype = QVariant::String;
 		break;
 	    case DB_C_TYPE_DATETIME:
 		type = "datetime";
+    qtype = QVariant::String;
 		break;
 	}
-        col->push_back ( QgsField( db_get_column_name (column), type, db_get_column_length(column), 0) );
+        col->push_back ( QgsField( db_get_column_name (column), qtype, type, db_get_column_length(column), 0) );
     }
 	
     db_close_database_shutdown_driver ( driver );
@@ -1842,13 +1846,13 @@ std::vector<QgsField> *QgsGrassProvider::columns ( int field )
     return col;
 }
 
-std::vector<QgsFeatureAttribute> *QgsGrassProvider::attributes ( int field, int cat )
+QgsAttributeMap *QgsGrassProvider::attributes ( int field, int cat )
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassProvider::attributes() field = " << field << " cat = " << cat << std::endl;
     #endif
 
-    std::vector<QgsFeatureAttribute> *att = new std::vector<QgsFeatureAttribute>;
+    QgsAttributeMap *att = new QgsAttributeMap;
 
     struct  field_info *fi = Vect_get_field( mMap, field); // should work also with field = 0
 
@@ -1920,7 +1924,7 @@ std::vector<QgsFeatureAttribute> *QgsGrassProvider::attributes ( int field, int 
 
         QString v = mEncoding->toUnicode(db_get_string(&dbstr));
 	std::cerr << "Value: " << v.toLocal8Bit().data() << std::endl;
-        att->push_back ( QgsFeatureAttribute( db_get_column_name(column), v ) );
+        att->insert(i, QVariant( v ) );
     }
 
     db_close_cursor (&databaseCursor);

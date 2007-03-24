@@ -22,7 +22,6 @@
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsdataprovider.h"
-#include "qgsfeatureattribute.h"
 #include "qgsproviderregistry.h"
 #include <qgsrasterlayer.h>
 

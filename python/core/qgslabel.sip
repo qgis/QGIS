@@ -69,7 +69,7 @@ public:
     QgsLabelAttributes *layerAttributes ( );
 
     //! Set label field
-    void setLabelField ( int attr, const QString str );
+    void setLabelField ( int attr, int fieldId );
 
     //! label field
     QString labelField ( int attr );

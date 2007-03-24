@@ -16,7 +16,6 @@
 %Include qgsdatasourceuri.sip
 %Include qgsdistancearea.sip
 %Include qgsfeature.sip
-%Include qgsfeatureattribute.sip
 %Include qgsfield.sip
 %Include qgsgeometry.sip
 %Include qgsgeometryvertexindex.sip
