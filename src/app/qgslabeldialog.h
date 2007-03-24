@@ -77,8 +77,10 @@ public slots:
     /* emitted when anitem in label source list is chosen */
     void labelSourceSet();
 
-protected slots:
+protected:
 
+    /** return field index based on field's name, -1 if not found */
+    int fieldIndexFromName(QString name);
 
 private:
     QgsLabel *mLabel;

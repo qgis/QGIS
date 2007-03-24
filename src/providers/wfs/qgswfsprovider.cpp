@@ -17,7 +17,6 @@
 
 #include "qgsapplication.h"
 #include "qgsfeature.h"
-#include "qgsfeatureattribute.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgshttptransaction.h"
@@ -94,7 +93,7 @@ bool QgsWFSProvider::getNextFeature(QgsFeature& feature,
       const QgsAttributeMap& attributes = ((QgsFeature*)(*mFeatureIterator))->attributeMap();
       for(QgsAttributeList::const_iterator it = attlist.begin(); it != attlist.end(); ++it)
 	{
-	  feature.addAttribute(*it, QgsFeatureAttribute(attributes[*it].fieldName(), attributes[*it].fieldValue()));
+	  feature.addAttribute(*it, attributes[*it]);
 	}
       ++mFeatureIterator;
       if(mUseIntersect)
@@ -189,7 +188,7 @@ void QgsWFSProvider::fillMinMaxCash()
     {
       for(i = 0; i < fieldCount; ++i)
 	{
-	  currentValue = (theFeature.attributeMap())[i].fieldValue().toDouble();
+	  currentValue = (theFeature.attributeMap())[i].toDouble();
 	  if(currentValue < tempMinMax[i].first)
 	    {
 	      tempMinMax[i].first = currentValue;
@@ -366,7 +365,7 @@ int QgsWFSProvider::getFeatureGET(const QString& uri, const QString& geometryAtt
   GEOS_GEOM::Envelope* geosBBox;
   for(std::list<QgsFeature*>::const_iterator it = dataFeatures.begin(); it != dataFeatures.end(); ++it)
     {
-      featureBBox = (*it)->boundingBox();
+      featureBBox = (*it)->geometry()->boundingBox();
       geosBBox = new GEOS_GEOM::Envelope(featureBBox.xMin(), featureBBox.xMax(), featureBBox.yMin(), featureBBox.yMax());
       mSpatialIndex.insert(geosBBox, (void*)(*it));
       mEnvelopesAndFeatures.push_back(std::make_pair(geosBBox, (*it)));
@@ -489,7 +488,7 @@ int QgsWFSProvider::describeFeatureTypeFile(const QString& uri, QString& geometr
   for(std::list<QString>::const_iterator it = thematicAttributes.begin(); it != thematicAttributes.end(); ++it, ++i)
     {
       // TODO: is this correct?
-      fields[i] = QgsField(*it, "unknown");
+      fields[i] = QgsField(*it, QVariant::String, "unknown");
     }
   return 0;
 }
@@ -573,7 +572,7 @@ int QgsWFSProvider::readAttributesFromSchema(QDomDocument& schemaDoc, QString& g
       }
       else //todo: distinguish between numerical and non-numerical types
 	{
-          fields[fields.size()] = QgsField(name, type);
+          fields[fields.size()] = QgsField(name, QVariant::String, type);
 	}
     }
   return 0;
@@ -823,7 +822,7 @@ int QgsWFSProvider::getFeaturesFromGML2(const QDomElement& wfsCollectionElement,
 	    {
 	      if((currentAttributeElement.localName()) != geometryAttribute) //a normal attribute
 		{
-		  f->addAttribute(attr++, QgsFeatureAttribute(currentAttributeElement.localName(), currentAttributeElement.text()));
+		  f->addAttribute(attr++, QVariant(currentAttributeElement.text()));
 		}
 	      else //a geometry attribute
 		{
@@ -837,7 +836,7 @@ int QgsWFSProvider::getFeaturesFromGML2(const QDomElement& wfsCollectionElement,
       if(wkb && wkbSize > 0)
 	{
 	  //insert bbox and pointer to feature into search tree
-	  featureBBox = f->boundingBox();
+	  featureBBox = f->geometry()->boundingBox();
 	  geosBBox = new GEOS_GEOM::Envelope(featureBBox.xMin(), featureBBox.xMax(), featureBBox.yMin(), featureBBox.yMax());
 	  mSpatialIndex.insert(geosBBox, (void*)f);
 	  mEnvelopesAndFeatures.push_back(std::make_pair(geosBBox, f));

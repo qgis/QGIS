@@ -16,12 +16,13 @@
  ***************************************************************************/
 /* $Id$ */
 #include "qgsattributedialog.h"
-#include "qgsfeatureattribute.h"
+#include "qgsfield.h"
 #include "qgslogger.h"
+
 #include <QTableWidgetItem>
 #include <QSettings>
 
-QgsAttributeDialog::QgsAttributeDialog(const QgsAttributeMap& attributes)
+QgsAttributeDialog::QgsAttributeDialog(const QgsFieldMap& fields, const QgsAttributeMap& attributes)
   : QDialog(),
     _settingsPath("/Windows/AttributeDialog/"),
     mRowIsDirty(attributes.size(), FALSE)
@@ -35,14 +36,16 @@ QgsAttributeDialog::QgsAttributeDialog(const QgsAttributeMap& attributes)
     for (QgsAttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it)
     {
       // set attribute name
+      
+      QString fieldName = fields[it.key()].name();
 
-      QTableWidgetItem * myFieldItem = new QTableWidgetItem((*it).fieldName());
+      QTableWidgetItem * myFieldItem = new QTableWidgetItem(fieldName);
       myFieldItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
       mTable->setItem(index, 0, myFieldItem);
 
       // set attribute value
 
-      QTableWidgetItem * myValueItem = new QTableWidgetItem((*it).fieldValue());
+      QTableWidgetItem * myValueItem = new QTableWidgetItem((*it).toString());
       mTable->setItem(index, 1, myValueItem);
 
       ++index;
@@ -72,16 +75,16 @@ bool QgsAttributeDialog::isDirty(int row)
   return mRowIsDirty.at(row);
 }
 
-bool QgsAttributeDialog::queryAttributes(QgsFeature& f)
+bool QgsAttributeDialog::queryAttributes(const QgsFieldMap& fields, QgsFeature& f)
 {
   QgsAttributeMap featureAttributes = f.attributeMap();
-  QgsAttributeDialog attdialog(featureAttributes);
+  QgsAttributeDialog attdialog(fields, featureAttributes);
 
   if (attdialog.exec() == QDialog::Accepted)
   {
     for (int i = 0; i < featureAttributes.size(); ++i)
     {
-      f.changeAttribute(i, QgsFeatureAttribute(featureAttributes[i].fieldName(), attdialog.value(i)));
+      f.changeAttribute(i, QVariant(attdialog.value(i)) );
     }
     return true;
   }

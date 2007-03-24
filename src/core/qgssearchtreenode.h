@@ -22,14 +22,13 @@
 
 #include <QMap>
 #include <QString>
-#include "qgsfeatureattribute.h"
-
-// forward declaration due recursive declaration
-class QgsFeatureAttribute;
+#include <QVariant>
 
 class QgsSearchTreeValue;
+class QgsField;
 
-typedef QMap<int, QgsFeatureAttribute> QgsAttributeMap;
+typedef QMap<int, QgsField> QgsFieldMap;
+typedef QMap<int, QVariant> QgsAttributeMap;
 
 /**
  * QgsSearchTreeNode
@@ -112,7 +111,7 @@ public:
     QString makeSearchString();
 
     //! checks whether the node tree is valid against supplied attributes
-    bool checkAgainst(const QgsAttributeMap& attributes);
+    bool checkAgainst(const QgsFieldMap& fields, const QgsAttributeMap& attributes);
     
     //! checks if there were errors during evaluation
     bool hasError() { return (!mError.isEmpty()); }
@@ -123,11 +122,11 @@ public:
 protected:
 
     //! returns scalar value of node
-    QgsSearchTreeValue valueAgainst(const QgsAttributeMap& attributes);
+    QgsSearchTreeValue valueAgainst(const QgsFieldMap& fields, const QgsAttributeMap& attributes);
     
     //! wrapper around valueAgainst()
     bool getValue(QgsSearchTreeValue& value, QgsSearchTreeNode* node,
-                  const QgsAttributeMap& attributes);
+                  const QgsFieldMap& fields, const QgsAttributeMap& attributes);
 
     //! strips mText when node is of string type
     void stripText();

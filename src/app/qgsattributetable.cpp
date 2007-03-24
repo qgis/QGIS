@@ -27,7 +27,6 @@
 
 #include "qgsattributetable.h"
 #include "qgsfeature.h"
-#include "qgsfeatureattribute.h"
 #include "qgsfield.h"
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
@@ -512,7 +511,7 @@ void QgsAttributeTable::putFeatureInTable(int row, QgsFeature& fet)
   for (int i = 0; i < attr.size(); i++)
   {
     // get the field values
-    setText(row, i + 1, attr[i].fieldValue());
+    setText(row, i + 1, attr[i].toString());
   }
 }
 
@@ -535,7 +534,7 @@ void QgsAttributeTable::storeChangedValue(int row, int column)
   }
   
   uint index = mFields.key(attribute);
-  mChangedValues[id].insert(index, QgsFeatureAttribute(attribute, text(row,column)) );
+  mChangedValues[id].insert(index, QVariant(text(row,column)) );
   
 	QgsDebugMsg("value: " + text(row,column));
 	mEdited=true;

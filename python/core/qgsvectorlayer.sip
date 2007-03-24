@@ -151,17 +151,6 @@ public:
    */
   virtual QString subsetString();
 
-  /**
-   * Number of attribute fields for a feature in the layer
-   */
-  virtual int fieldCount() const;
-
-  /**
-    Return a list of field names for this layer
-   @return vector of field names
-  */
-  virtual const QMap<int, QgsField> & fields() const;
-
   /** Adds a feature
       @param lastFeatureInBatch  If True, will also go to the effort of e.g. updating the extents.
       @return                    Irue in case of success and False in case of error
@@ -193,9 +182,6 @@ public:
    *  @return true in case of success and false otherwise
    */
   bool deleteSelectedFeatures();
-
-  /** Returns the default value for the attribute @c attr for the feature @c f. */
-  QString getDefaultValue(const QString& attr, QgsFeature* f);
 
   /** Set labels on */
   void setLabelOn( bool on );
@@ -270,7 +256,7 @@ public:
    */
   bool commitAttributeChanges(const QSet<int>& deleted,
                               const QMap<QString, QString>& added,
-                              const QMap<int, QMap<int, QgsFeatureAttribute> >& changed);
+                              const QMap<int, QMap<int, QVariant> >& changed);
 
   /** Draws the layer using coordinate transformation
    *  @return FALSE if an error occurred during drawing
@@ -308,7 +294,7 @@ public:
   QSet<int>& deletedFeatureIds();
  
   /** returns array of features with changed attributes */
-  QMap<int, QMap<int, QgsFeatureAttribute> >& changedAttributes();
+  QMap<int, QMap<int, QVariant> >& changedAttributes();
 
   /** Sets whether some features are modified or not */
   void setModified(bool modified = TRUE, bool onlyGeometryWasModified = FALSE);

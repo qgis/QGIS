@@ -250,7 +250,8 @@ void QgsAttributeTableDisplay::search()
 
   QgsVectorDataProvider* provider = mLayer->getDataProvider();
   int item = mSearchColumns->currentItem();
-  bool numeric = provider->fields()[item].isNumeric();
+  QVariant::Type type = provider->fields()[item].type();
+  bool numeric = (type == QVariant::Int || type == QVariant::Double);
   
   QString str;
   str = mSearchColumns->currentText();
@@ -328,10 +329,11 @@ void QgsAttributeTableDisplay::doSearch(const QString& searchString)
   QgsVectorDataProvider* provider = mLayer->getDataProvider();
   provider->reset();
   mSearchIds.clear();
+  const QgsFieldMap& fields = provider->fields();
   QgsAttributeList all = provider->allAttributesList();
   while (provider->getNextFeature(fet, false, all))
   {
-    if (searchTree->checkAgainst(fet.attributeMap()))
+    if (searchTree->checkAgainst(fields, fet.attributeMap()))
     {
       mSearchIds.insert(fet.featureId());
     }

@@ -21,11 +21,13 @@
 #define QGSCLIPBOARD_H
 
 #include <QList>
+#include <QMap>
 
 class QgsFeature;
+class QgsField;
 
 typedef QList<QgsFeature> QgsFeatureList;
-
+typedef QMap<int, QgsField> QgsFieldMap;
 
 /**
 
@@ -64,7 +66,7 @@ public:
    *  Place a copy of features on the internal clipboard, 
    *  destroying the previous contents.
    */
-  void replaceWithCopyOf( QgsFeatureList& features );
+  void replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList& features );
 
   /*
    *  Returns a copy of features on the internal clipboard, 

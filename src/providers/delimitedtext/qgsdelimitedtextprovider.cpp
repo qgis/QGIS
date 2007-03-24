@@ -35,7 +35,6 @@
 #include "qgsapplication.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
-#include "qgsfeatureattribute.h"
 #include "qgsfield.h"
 #include "qgsmessageoutput.h"
 #include "qgsrect.h"
@@ -145,7 +144,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
               QString field = *it;
               if (field.length() > 0)
               {
-                attributeFields[fieldPos] = QgsField(*it, "Text");
+                attributeFields[fieldPos] = QgsField(*it, QVariant::String, "Text");
                 fieldPositions[*it] = fieldPos++;
                 // check to see if this field matches either the x or y field 
                 if (mXField == *it)
@@ -426,7 +425,7 @@ QgsDelimitedTextProvider::getNextFeature_( QgsFeature & feature,
                      i != desiredAttributes.end();
                      ++i )
                {
-                   feature.addAttribute(*i, QgsFeatureAttribute(attributeFields[*i].name(), tokens[*i]));
+                   feature.addAttribute(*i, QVariant(tokens[*i]) );
                }
            }
            
@@ -587,7 +586,7 @@ void QgsDelimitedTextProvider::fillMinMaxCash()
   {
     for (uint i = 0; i < fieldCount(); i++)
     {
-      double value = (f.attributeMap())[i].fieldValue().toDouble();
+      double value = (f.attributeMap())[i].toDouble();
       if (value < mMinMaxCache[i][0])
       {
         mMinMaxCache[i][0] = value;

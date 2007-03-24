@@ -111,11 +111,8 @@ class QgsSearchQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase
     //! Layer for which is the query builder opened
     QgsVectorLayer* mLayer;
     
-    //! Vector of QgsField objects
-    std::vector<QgsField> mFields;
-    
     //! Map that holds field information, keyed by field name
-    std::map<QString, QgsField> mFieldMap;
+    QMap<QString, int> mFieldMap;
 
 };
 #endif //QGSSEARCHQUERYBUILDER_H

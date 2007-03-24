@@ -14,6 +14,7 @@
  ***************************************************************************/
 /* $Id$ */
 
+#include "qgsfield.h"
 #include "qgsmessageviewer.h"
 #include "qgsmaptoolidentify.h"
 #include "qgsmapcanvas.h"
@@ -25,7 +26,6 @@
 #include "qgsidentifyresults.h"
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
-#include "qgsfeatureattribute.h"
 #include "qgslogger.h"
 #include "qgsattributedialog.h"
 #include "qgscursors.h"
@@ -210,6 +210,7 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
   QString fieldIndex = layer->displayField();
   QgsVectorDataProvider* dataProvider = layer->getDataProvider();
   QgsAttributeList allAttributes = dataProvider->allAttributesList();
+  const QgsFieldMap& fields = dataProvider->fields();
   
   dataProvider->select(r, true);
 
@@ -251,13 +252,13 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
       
       for (QgsAttributeMap::const_iterator it = attr.begin(); it != attr.end(); ++it)
       {
-        QgsDebugMsg(it->fieldName() + " == " + fieldIndex);
+        //QgsDebugMsg(it->fieldName() + " == " + fieldIndex);
         
-        if (it->fieldName().lower() == fieldIndex)
+        if (fields[it.key()].name() == fieldIndex)
         {
-          featureNode->setText(1, it->fieldValue());
+          featureNode->setText(1, it->toString());
         }
-        mResults->addAttribute(featureNode, it->fieldName(), it->fieldValue());
+        mResults->addAttribute(featureNode, fields[it.key()].name(), it->toString());
       }
 
       // Calculate derived attributes and insert:
@@ -350,7 +351,7 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
       QApplication::restoreOverrideCursor();
 
       // Show the attribute value editing dialog
-      QgsAttributeDialog ad( old );
+      QgsAttributeDialog ad( dataProvider->fields(), old );
 
       if (ad.exec() == QDialog::Accepted)
       {
@@ -369,7 +370,7 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
           << "." << std::endl;
 #endif
             QgsAttributeMap& chattr = changedAttributes[ feat.featureId() ];
-            chattr[i] = QgsFeatureAttribute(oldit->fieldName(), ad.value(i));
+            chattr[i] = ad.value(i);
 
             // propagate "dirtyness" to the layer
             layer->setModified();

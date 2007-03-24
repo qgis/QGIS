@@ -217,9 +217,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       virtual bool changeAttributeValues(const QgsChangedAttributesMap & attr_map);
 
       /**
-       * Returns the default value for attribute @c attr for feature @c f.
+       * Returns the default value for field specified by @c fieldId
        */
-      virtual QString getDefaultValue(const QString & attr, QgsFeature* f);
+      virtual QVariant getDefaultValue(int fieldId);
 
       /**
        * Changes geometries of existing features

@@ -19,7 +19,6 @@
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgsfeature.h"
-#include "qgsfeatureattribute.h"
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgssymbol.h"
 #include "qgssymbologyutils.h"
@@ -148,7 +147,7 @@ QgsSymbol* QgsGraduatedSymbolRenderer::symbolForFeature(const QgsFeature* f)
 {
   //first find out the value for the classification attribute
   const QgsAttributeMap& attrs = f->attributeMap();
-  double value = attrs[mClassificationField].fieldValue().toDouble();
+  double value = attrs[mClassificationField].toDouble();
 
   std::list < QgsSymbol* >::iterator it;
   //find the first render item which contains the feature

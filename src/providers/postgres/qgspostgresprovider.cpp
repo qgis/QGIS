@@ -38,7 +38,6 @@
 #include <qgis.h>
 #include <qgsapplication.h>
 #include <qgsfeature.h>
-#include <qgsfeatureattribute.h>
 #include <qgsfield.h>
 #include <qgsgeometry.h>
 #include <qgsmessageoutput.h>
@@ -207,7 +206,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
             "typelem = " + typOid + " AND typlen = -1)";
 
         PGresult* oidResult = PQexec(pd, (const char *) sql);
-        QString fieldType = PQgetvalue(oidResult, 0, 0);
+        QString fieldTypeName = PQgetvalue(oidResult, 0, 0);
         QString fieldSize = PQgetvalue(oidResult, 0, 1);
         PQclear(oidResult);
 
@@ -225,13 +224,20 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
         PQclear(tresult);
 
         QgsDebugMsg("Field: " + attnum + " maps to " + QString::number(i) + " " + fieldName + ", " 
-          + fieldType + " (" + QString::number(fldtyp) + "),  " + fieldSize + ", " + QString::number(fieldModifier));
+          + fieldTypeName + " (" + QString::number(fldtyp) + "),  " + fieldSize + ", " + QString::number(fieldModifier));
         
         attributeFieldsIdMap[attnum.toInt()] = i;
 
         if(fieldName!=geometryColumn)
         {
-          attributeFields.insert(i, QgsField(fieldName, fieldType, fieldSize.toInt(), fieldModifier, false, fieldComment));
+          QVariant::Type fieldType;
+          if (fieldTypeName.find("int") != -1 || fieldTypeName.find("serial") != -1)
+            fieldType = QVariant::Int;
+          else if (fieldTypeName == "real" || fieldTypeName == "double precision")
+            fieldType = QVariant::Double;
+          else
+            fieldType = QVariant::String;
+          attributeFields.insert(i, QgsField(fieldName, fieldType, fieldTypeName, fieldSize.toInt(), fieldModifier, fieldComment));
         }
       }
       PQclear(result);
@@ -577,8 +583,21 @@ void QgsPostgresProvider::getFeatureAttributes(int key, int &row, QgsFeature& f)
     if(fld != geometryColumn){
       // Add the attribute to the feature
       //QString val = mEncoding->toUnicode(PQgetvalue(attr,0, i));
-	QString val = QString::fromUtf8 (PQgetvalue(attr, row, i));
-  f.addAttribute(i, QgsFeatureAttribute(fld, val));
+      QString val = QString::fromUtf8 (PQgetvalue(attr, row, i));
+      switch (attributeFields[i].type())
+      {
+        case QVariant::Int:
+          f.addAttribute(i, val.toInt());
+          break;
+        case QVariant::Double:
+          f.addAttribute(i, val.toDouble());
+          break;
+        case QVariant::String:
+          f.addAttribute(i, val);
+          break;
+        default:
+          assert(0 && "unsupported field type");
+      }
     }
   }
   PQclear(attr);
@@ -606,8 +625,21 @@ void QgsPostgresProvider::getFeatureAttributes(int key, int &row,
     if(fld != geometryColumn)
     {
       // Add the attribute to the feature
-	QString val = QString::fromUtf8(PQgetvalue(attr, 0, 0));
-	f.addAttribute(*iter, QgsFeatureAttribute(fld, val)); 
+      QString val = QString::fromUtf8(PQgetvalue(attr, 0, 0));
+      switch (attributeFields[*iter].type())
+      {
+        case QVariant::Int:
+          f.addAttribute(*iter, val.toInt());
+          break;
+        case QVariant::Double:
+          f.addAttribute(*iter, val.toDouble());
+          break;
+        case QVariant::String:
+          f.addAttribute(*iter, val);
+          break;
+        default:
+          assert(0 && "unsupported field type");
+      }
     }
     PQclear(attr);
   }
@@ -1473,31 +1505,18 @@ bool QgsPostgresProvider::addFeature(QgsFeature& f, int primaryKeyHighWater)
     
     for(QgsAttributeMap::const_iterator it = attributevec.begin(); it != attributevec.end(); ++it)
     {
-      QString fieldname=it->fieldName();
+      QString fieldname;
+      QgsFieldMap::const_iterator fit = attributeFields.find(it.key());
+      if (fit != attributeFields.end())
+        fieldname = fit->name();
 
       QgsDebugMsg("Checking field against: " + fieldname);
             
-      //TODO: Check if field exists in this layer
-      // (Sometimes features will have fields that are not part of this layer since
-      // they have been pasted from other layers with a different field map)
-      bool fieldInLayer = FALSE;
-      
-      for (QgsFieldMap::iterator iter  = attributeFields.begin();
-                                 iter != attributeFields.end();
-                               ++iter)
-      {
-        if ( iter->name() == it->fieldName() )
-        {
-          fieldInLayer = TRUE;
-          break;
-        }
-      }                                         
-      
       if (
+           (fieldname != "") &&
            (fieldname != geometryColumn) &&
            (fieldname != primaryKey) &&
-           (!(it->fieldValue().isEmpty())) && 
-           (fieldInLayer)
+           (!(it->isNull()))
          )
       {
         insert+=",\"";
@@ -1562,34 +1581,21 @@ bool QgsPostgresProvider::addFeature(QgsFeature& f, int primaryKeyHighWater)
     //add the field values to the insert statement
     for(QgsAttributeMap::const_iterator it=attributevec.begin();it!=attributevec.end();++it)
     {
-      QString fieldname=it->fieldName();
+      QString fieldname;
+      QgsFieldMap::const_iterator fit = attributeFields.find(it.key());
+      if (fit != attributeFields.end())
+        fieldname = fit->name();
       
       QgsDebugMsg("Checking field name " + fieldname);
       
-      //TODO: Check if field exists in this layer
-      // (Sometimes features will have fields that are not part of this layer since
-      // they have been pasted from other layers with a different field map)
-      bool fieldInLayer = FALSE;
-      
-      for (QgsFieldMap::iterator iter  = attributeFields.begin();
-                                 iter != attributeFields.end();
-                               ++iter)
-      {
-        if ( iter->name() == it->fieldName() )
-        {
-          fieldInLayer = TRUE;
-          break;
-        }
-      }                                         
-      
       if (
+           (fieldname != "") &&
            (fieldname != geometryColumn) &&
            (fieldname != primaryKey) &&
-           (!(it->fieldValue().isEmpty())) && 
-           (fieldInLayer)
+           (!(it->isNull()))
          )
       {
-        QString fieldvalue = it->fieldValue();
+        QString fieldvalue = it->toString();
         bool charactertype=false;
         insert+=",";
 
@@ -1597,30 +1603,27 @@ bool QgsPostgresProvider::addFeature(QgsFeature& f, int primaryKeyHighWater)
         
         //add quotes if the field is a character or date type and not
         //the postgres provided default value
-      if(fieldvalue != "NULL" && fieldvalue != getDefaultValue(it->fieldName(), f))
+        if(fieldvalue != "NULL" && fieldvalue != getDefaultValue(it.key()).toString() )
         {
-          for(QgsFieldMap::iterator iter=attributeFields.begin();iter!=attributeFields.end();++iter)
+          QString typeName = it->typeName();
+          if (
+              typeName.contains("char",false) > 0 || 
+              typeName == "text"                  ||
+              typeName == "date"                  ||
+              typeName == "interval"              ||
+              typeName.contains("time",false) > 0      // includes time and timestamp
+              )
           {
-            if(iter->name()==it->fieldName())
-            {
-              if (
-                  iter->type().contains("char",false) > 0 || 
-                  iter->type() == "text"                  ||
-                  iter->type() == "date"                  ||
-                  iter->type() == "interval"              ||
-                  iter->type().contains("time",false) > 0      // includes time and timestamp
-                 )
-              {
-                charactertype=true;
-                break; // no need to continue with this loop
-              }
-            }
+            charactertype=true;
+            break; // no need to continue with this loop
           }
+        
         }
 
         // important: escape quotes in field value
         fieldvalue.replace("'", "''");
 
+        // XXX isn't it better to always escape field value?
         if(charactertype)
         {
           insert+="'";
@@ -1654,20 +1657,22 @@ bool QgsPostgresProvider::addFeature(QgsFeature& f, int primaryKeyHighWater)
     return true;
 }
 
-QString QgsPostgresProvider::getDefaultValue(const QString& attr, QgsFeature& f)
+QVariant QgsPostgresProvider::getDefaultValue(int fieldId)
 {
   // Get the default column value from the Postgres information
   // schema. If there is no default we return an empty string.
 
   // Maintaining a cache of the results of this query would be quite
   // simple and if this query is called lots, could save some time.
+  
+  QString fieldName = attributeFields[fieldId].name();
 
   QString sql("SELECT column_default FROM "
               "information_schema.columns WHERE "
               "column_default IS NOT NULL AND "
               "table_schema = '" + mSchemaName + "' AND "
               "table_name = '" + mTableName + "' AND "
-              "column_name = '" + attr + "'");
+              "column_name = '" + fieldName + "'");
 
   QString defaultValue("");
 
@@ -1867,12 +1872,13 @@ bool QgsPostgresProvider::changeAttributeValues(const QgsChangedAttributesMap & 
     // cycle through the changed attributes of the feature
     for(QgsAttributeMap::const_iterator siter = attrs.begin(); siter != attrs.end(); ++siter)
     {
-      QString val = siter->fieldValue();
+      QString val = siter->toString();
+      QString fieldName = attributeFields[siter.key()].name();
 
       // escape quotes
       val.replace("'", "''");
        
-      QString sql="UPDATE "+mSchemaTableName+" SET "+siter->fieldName()+"='"+val+"' WHERE \"" +primaryKey+"\"="+QString::number(fid);
+      QString sql="UPDATE "+mSchemaTableName+" SET "+fieldName+"='"+val+"' WHERE \"" +primaryKey+"\"="+QString::number(fid);
       QgsDebugMsg(sql);
 
       // s end sql statement and do error handling

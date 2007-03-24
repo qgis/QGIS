@@ -55,7 +55,6 @@
 #include "qgsmaptoolpan.h"
 #include "qgsmaptopixel.h"
 #include "qgsfield.h"
-#include "qgsfeatureattribute.h"
 #include "qgsvertexmarker.h"
 #include "qgsrubberband.h"
 #include "qgsproject.h"
@@ -576,7 +575,7 @@ void QgsGrassEdit::setAttributeTable ( int field )
       ti->setEnabled( false );
       mAttributeTable->setItem ( c, 0, ti );
 
-      ti = new Q3TableItem( mAttributeTable, Q3TableItem::Never, col.type() );
+      ti = new Q3TableItem( mAttributeTable, Q3TableItem::Never, col.typeName() );
       ti->setEnabled( false );
       mAttributeTable->setItem ( c, 1, ti );
 
@@ -1081,9 +1080,9 @@ int QgsGrassEdit::writeLine ( int type, struct line_pnts *Points )
     QString *key = mProvider->key ( field );
 
     if ( !key->isEmpty() ) { // Database link defined 
-      std::vector<QgsFeatureAttribute> *atts = mProvider->attributes ( field, cat );
+      QgsAttributeMap *atts = mProvider->attributes ( field, cat );
 
-      if ( atts->size() == 0 ) { // Nothing selected
+      if ( atts->count() == 0 ) { // Nothing selected
         QString *error = mProvider->insertAttributes ( field, cat );
 
         if ( !error->isEmpty() ) {
@@ -1398,26 +1397,25 @@ void QgsGrassEdit::addAttributes ( int field, int cat )
       str.setNum( field );
       QMessageBox::warning( 0, tr("Warning"), tr("Cannot describe table for field ") + str );
     } else {
-      std::vector<QgsFeatureAttribute> *atts = 
-        mProvider->attributes ( field, cat );
+      QgsAttributeMap *atts = mProvider->attributes ( field, cat );
 
       if ( atts->size() == 0 ) { // cannot select attributes
         mAttributes->addTextRow ( tab, "WARNING: ATTRIBUTES MISSING" );
       } else {
         int size;
-        if ( atts->size() < cols->size() )
+        if ( atts->size() < (int) cols->size() )
           size = atts->size();
         else
           size = cols->size();
 
         for ( unsigned int j = 0; j < cols->size(); j++ ) {
           QgsField col = (*cols)[j];
-          QgsFeatureAttribute att = (*atts)[j];
+          QVariant att = (*atts)[j];
           std::cerr << " name = " << col.name().toLocal8Bit().data() <<  std::endl;
 
           if ( col.name() != *key ) {
-            std::cerr << " value = " << att.fieldValue().toLocal8Bit().data() <<  std::endl;
-            mAttributes->addAttribute ( tab, col.name(), att.fieldValue(), col.type() );
+            std::cerr << " value = " << att.toString().toLocal8Bit().data() <<  std::endl;
+            mAttributes->addAttribute ( tab, col.name(), att.toString(), col.typeName() );
           }
         }
       }
@@ -1448,7 +1446,7 @@ void QgsGrassEdit::addCat ( int line )
   QString *key = mProvider->key ( field );
 
   if ( !key->isEmpty() ) { // Database link defined 
-    std::vector<QgsFeatureAttribute> *atts = mProvider->attributes ( field, cat );
+    QgsAttributeMap *atts = mProvider->attributes ( field, cat );
 
     if ( atts->size() == 0 ) { // Nothing selected
       QString *error = mProvider->insertAttributes ( field, cat );

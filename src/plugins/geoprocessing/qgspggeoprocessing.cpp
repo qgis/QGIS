@@ -140,7 +140,7 @@ void QgsPgGeoprocessing::buffer()
         QgsFieldMap flds = dp->fields();
         for (QgsFieldMap::iterator it = flds.begin(); it != flds.end(); ++it) {
           // check the field type -- if its int we can use it
-          if (it->type().find("int") > -1) {
+          if (it->typeName().find("int") > -1) {
             bb->addFieldItem(it->name());
           }
         }

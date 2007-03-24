@@ -45,7 +45,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsdataprovider.h"
 #include "qgsmaptopixel.h"
-#include "qgsfeatureattribute.h"
 
 extern "C" {
 #include <grass/gis.h>

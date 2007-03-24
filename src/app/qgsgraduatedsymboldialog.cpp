@@ -17,7 +17,6 @@
 /* $Id$ */
 
 #include "qgsgraduatedsymboldialog.h"
-#include "qgsfeatureattribute.h"
 #include "qgsfield.h"
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgsludialog.h"
@@ -50,8 +49,8 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(QgsVectorLayer * layer): QDia
              it != fields.end(); 
              ++it)
         {
-	    QString type = (*it).type();
-	    if (type != "String" && type != "varchar" && type != "geometry")
+	    QVariant::Type type = (*it).type();
+	    if (type == QVariant::Int || type == QVariant::Double)
             {
 		str = (*it).name();
 		classificationComboBox->insertItem(str);
@@ -482,7 +481,7 @@ int QgsGraduatedSymbolDialog::quantilesFromVectorLayer(std::list<double>& result
 	  while(provider->getNextFeature(currentFeature, false, attList))
 	    {
 	      currentAttributeMap = currentFeature.attributeMap();
-	      currentValue = currentAttributeMap[attributeIndex].fieldValue().toDouble();
+	      currentValue = currentAttributeMap[attributeIndex].toDouble();
 	      attributeValues[index] = currentValue;
 	      ++index;
 	    }

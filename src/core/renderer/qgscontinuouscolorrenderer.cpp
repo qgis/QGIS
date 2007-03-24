@@ -17,7 +17,6 @@
 /* $Id: qgscontinuouscolorrenderer.cpp 5371 2006-04-25 01:52:13Z wonder $ */
 
 #include "qgscontinuouscolorrenderer.h"
-#include "qgsfeatureattribute.h"
 #include "qgsmarkercatalogue.h"
 #include "qgssymbol.h"
 #include "qgssymbologyutils.h"
@@ -80,7 +79,7 @@ void QgsContinuousColorRenderer::renderFeature(QPainter * p, QgsFeature & f, QIm
   {
     //first find out the value for the classification attribute
     const QgsAttributeMap& attrs = f.attributeMap();
-    double fvalue = attrs[mClassificationField].fieldValue().toDouble();
+    double fvalue = attrs[mClassificationField].toDouble();
 
     //double fvalue = vec[mClassificationField].fieldValue().toDouble();
     double minvalue = mMinimumSymbol->lowerValue().toDouble();

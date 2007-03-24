@@ -78,7 +78,6 @@
 #include "qgsdataprovider.h"
 #include "qgsfield.h"
 #include "qgsfeature.h"
-#include "qgsfeatureattribute.h"
 
 extern "C" {
 #include <grass/gis.h>
@@ -2328,7 +2327,7 @@ void QgsGrassModuleInput::updateQgisLayers()
 	    mVectorLayerNames.push_back ( grassLayer );
             
             // convert from QgsFieldMap to std::vector<QgsField>
-            QgsFieldMap flds = vector->fields();
+            QgsFieldMap flds = vector->getDataProvider()->fields();
             std::vector<QgsField> fields;
             for (QgsFieldMap::iterator it = flds.begin(); it != flds.end(); ++it)
               fields.push_back(it.value());
@@ -2915,7 +2914,7 @@ void QgsGrassModuleSelection::updateSelection()
 	if ( attr.size() > keyField )
 	{
 	    if ( i > 0 ) cats.append( "," );
-	    cats.append( attr[keyField].fieldValue() );
+	    cats.append( attr[keyField].toString() );
 	    i++;
 	}
         delete feature;

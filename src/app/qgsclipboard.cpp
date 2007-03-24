@@ -27,9 +27,10 @@
 
 #include "qgsclipboard.h"
 #include "qgsfeature.h"
-#include "qgsfeatureattribute.h"
+#include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
+
 
 QgsClipboard::QgsClipboard()
   : mFeatureClipboard()
@@ -40,7 +41,7 @@ QgsClipboard::~QgsClipboard()
 {
 }
 
-void QgsClipboard::replaceWithCopyOf( QgsFeatureList& features )
+void QgsClipboard::replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList& features )
 {
 
   // Replace the QGis clipboard.
@@ -54,26 +55,21 @@ void QgsClipboard::replaceWithCopyOf( QgsFeatureList& features )
 
   QStringList textLines;
   QStringList textFields;
-  bool firstFeature = TRUE;
 
+  // first do the field names
+  textFields += "wkt_geom";
+  for (QgsFieldMap::const_iterator fit = fields.begin(); fit != fields.end(); ++fit)
+  {
+    textFields += fit->name();
+  }
+  textLines += textFields.join(",");
+  textFields.clear();
+
+  
   // then the field contents
   for (QgsFeatureList::iterator it = features.begin(); it != features.end(); ++it)
   {
     QgsAttributeMap attributes = it->attributeMap();
-
-    // first do the field names
-    if (firstFeature)
-    {
-      textFields += "wkt_geom";
-
-      for (QgsAttributeMap::iterator it2 = attributes.begin(); it2 != attributes.end(); ++it2)
-      {
-        textFields += it2->fieldName();
-      }
-
-      textLines += textFields.join(",");
-      textFields.clear();
-    }
 
 
     // TODO: Set up Paste Transformations to specify the order in which fields are added.
@@ -93,13 +89,11 @@ void QgsClipboard::replaceWithCopyOf( QgsFeatureList& features )
 //                 << (it2->fieldName()).toLocal8Bit().data()
 //                 << "'." << std::endl;
 #endif
-      textFields += it2->fieldValue();
+      textFields += it2->toString();
     }
 
     textLines += textFields.join(",");
     textFields.clear();
-
-    firstFeature = FALSE;
   }
   
   QString textCopy = textLines.join("\n");

@@ -17,7 +17,6 @@
 /* $Id: qgsuniquevaluerenderer.cpp 5371 2006-04-25 01:52:13Z wonder $ */
 
 #include "qgsuniquevaluerenderer.h"
-#include "qgsfeatureattribute.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
 #include "qgssymbol.h"
@@ -154,7 +153,7 @@ QgsSymbol* QgsUniqueValueRenderer::symbolForFeature(const QgsFeature* f)
 {
   //first find out the value
   const QgsAttributeMap& attrs = f->attributeMap();
-  QString value = attrs[mClassificationField].fieldValue();
+  QString value = attrs[mClassificationField].toString();
   
   std::map<QString,QgsSymbol*>::iterator it=mSymbols.find(value);
   if(it == mSymbols.end())

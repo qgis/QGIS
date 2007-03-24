@@ -14,7 +14,6 @@ qgsdatasourceuri.cpp
 qgsdistancearea.cpp
 qgsexception.cpp
 qgsfeature.cpp
-qgsfeatureattribute.cpp
 qgsfield.cpp
 qgsgeometry.cpp
 qgsgeometryvertexindex.cpp
@@ -173,7 +172,6 @@ qgsdatasourceuri.h
 qgsdistancearea.h
 qgsexception.h
 qgsfeature.h
-qgsfeatureattribute.h
 qgsfield.h
 qgsgeometry.h
 qgsgeometryvertexindex.h

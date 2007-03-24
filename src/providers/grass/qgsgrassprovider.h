@@ -17,7 +17,6 @@
 #define QGSGRASSPROVIDER_H
 
 class QgsFeature;
-class QgsFeatureAttribute;
 class QgsField;
 
 #include <QDateTime>
@@ -368,7 +367,7 @@ public:
    *   @param cat
    *   @return vector of attributes
    */
-  std::vector<QgsFeatureAttribute> *attributes ( int field, int cat );
+  QgsAttributeMap *attributes ( int field, int cat );
 
   /** Key (cat) column name 
    *   @param field

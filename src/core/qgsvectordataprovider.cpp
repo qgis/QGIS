@@ -89,9 +89,9 @@ bool QgsVectorDataProvider::changeAttributeValues(const QgsChangedAttributesMap 
   return false;
 }
 
-QString QgsVectorDataProvider::getDefaultValue(const QString& attr, QgsFeature* f)
+QVariant QgsVectorDataProvider::getDefaultValue(int fieldId)
 {
-  return "";
+  return QVariant();
 }
 
 bool QgsVectorDataProvider::changeGeometryValues(QgsGeometryMap & geometry_map)
@@ -221,7 +221,7 @@ int QgsVectorDataProvider::indexFromFieldName(const QString& fieldName) const
 
   for (QgsFieldMap::const_iterator it = theFields.begin(); it != theFields.end(); ++it)
   {
-    if(*it == fieldName)
+    if(it->name() == fieldName)
     {
       return counter;
     }

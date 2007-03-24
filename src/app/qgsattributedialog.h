@@ -26,12 +26,15 @@
 class QDialog;
 class QgsFeature;
 
+class QgsField;
+typedef QMap<int, QgsField> QgsFieldMap;
+
 class QgsAttributeDialog: public QDialog, private Ui::QgsAttributeDialogBase
 {
     Q_OBJECT
 
   public:
-    QgsAttributeDialog(const QgsAttributeMap& attributes);
+    QgsAttributeDialog(const QgsFieldMap& fields, const QgsAttributeMap& attributes);
 
     ~QgsAttributeDialog();
 
@@ -45,7 +48,7 @@ class QgsAttributeDialog: public QDialog, private Ui::QgsAttributeDialogBase
      attribute values are set to the feature if the dialog is accepted.
      \retval true if accepted
      \retval false if canceled */
-    static bool queryAttributes(QgsFeature& f);
+    static bool queryAttributes(const QgsFieldMap& fields, QgsFeature& f);
 
     // Saves and restores the size and position from the last time
     // this dialog box was used.

@@ -220,8 +220,8 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     //! get status of PROJ4 capability
     bool hasPROJ(PGconn *);
 
-    /**Returns the default value for attribute @c attr for feature @c f. */
-    QString getDefaultValue(const QString& attr, QgsFeature& f);
+    /**Returns the default value for field specified by @c fieldId */
+    QVariant getDefaultValue(int fieldId);
 
     /**Adds a list of features
       @return true in case of success and false in case of failure*/

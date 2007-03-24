@@ -20,7 +20,6 @@
 #include "qgsapplication.h"
 #include "qgsfield.h"
 #include "qgsfeature.h"
-#include "qgsfeatureattribute.h"
 #include "qgslogger.h"
 #include "qgsspatialrefsys.h"
 #include "qgsvectorfilewriter.h"
@@ -483,7 +482,7 @@ QString QgsVectorFileWriter::writeVectorLayerAsShapefile(QString shapefileName, 
   
   QgsDebugMsg("created layer");
   
-  const QgsFieldMap & attributeFields = layer->fields();
+  const QgsFieldMap & attributeFields = layer->getDataProvider()->fields();
     
   // TODO: calculate the field lengths
   //int *lengths = getFieldLengths();
@@ -536,7 +535,7 @@ QString QgsVectorFileWriter::writeVectorLayerAsShapefile(QString shapefileName, 
     
     for (it = attributes.begin(); it != attributes.end(); it++)
     {
-      QString value = it.value().fieldValue();
+      QString value = it.value().toString();
       uint i = it.key();
       if (!value.isNull())
       {

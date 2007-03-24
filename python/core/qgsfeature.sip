@@ -22,7 +22,7 @@ class QgsFeature
         want a copy of the "current" feature, not the on-disk feature.
      */
      QgsFeature( const QgsFeature & rhs,
-                 const QMap<int, QMap<int, QgsFeatureAttribute> >& changedAttributes,
+                 const QMap<int, QMap<int, QVariant> >& changedAttributes,
                  const QMap<int, QgsGeometry> & changedGeometries );
 
     /** copy ctor needed due to internal pointer */
@@ -58,12 +58,12 @@ class QgsFeature
      * Get the attributes for this feature.
      * @return A std::map containing the field name/value mapping
      */
-    const QMap<int, QgsFeatureAttribute> & attributeMap() const;
+    const QMap<int, QVariant> & attributeMap() const;
 
     /** 
      * Add an attribute to the map
      */
-    void addAttribute(int field, QgsFeatureAttribute attr);
+    void addAttribute(int field, QVariant attr);
 
     /**Deletes an attribute and its value*/
     void deleteAttribute(int field);
@@ -71,13 +71,7 @@ class QgsFeature
     /**Changes an existing attribute value
         @param field index of the field
         @param attr attribute name and value to be set */
-    void changeAttribute(int field, QgsFeatureAttribute attr);
-
-    /**
-     * Get the fields for this feature
-     * @return A std::map containing field position (index) and field name
-     */
-    QMap<int, QString> fields() const;
+    void changeAttribute(int field, QVariant attr);
 
     /**
      * Return the validity of this feature. This is normally set by
@@ -125,9 +119,6 @@ class QgsFeature
      */
     void setGeometryAndOwnership(unsigned char * geom, size_t length);
     
-    /**Returns the bounding box of this feature*/
-    QgsRect boundingBox() const;
-
     
 }; // class QgsFeature
 

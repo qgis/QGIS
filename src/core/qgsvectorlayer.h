@@ -210,16 +210,6 @@ public:
    */
   virtual QString subsetString();
 
-  /**
-   * Number of attribute fields for a feature in the layer
-   */
-  virtual int fieldCount() const;
-
-  /**
-    Return a list of field names for this layer
-   @return vector of field names
-  */
-  virtual const QgsFieldMap & fields() const;
 
   /** Adds a feature
       @param lastFeatureInBatch  If True, will also go to the effort of e.g. updating the extents.
@@ -253,8 +243,6 @@ public:
    */
   bool deleteSelectedFeatures();
 
-  /** Returns the default value for the attribute @c attr for the feature @c f. */
-  QString getDefaultValue(const QString& attr, QgsFeature* f);
 
   /** Set labels on */
   void setLabelOn( bool on );

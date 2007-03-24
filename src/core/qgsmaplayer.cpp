@@ -23,7 +23,6 @@
 #include <QFileInfo>
 #include <QSettings> // TODO: get rid of it [MD]
 
-#include "qgsfield.h"
 #include "qgslogger.h"
 #include "qgsmaptopixel.h"
 #include "qgsrect.h"

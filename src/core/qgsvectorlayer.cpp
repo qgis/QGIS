@@ -53,7 +53,6 @@
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
 #include "qgsfeature.h"
-#include "qgsfeatureattribute.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryvertexindex.h"
@@ -1063,7 +1062,7 @@ QgsRect QgsVectorLayer::boundingBoxOfSelected()
     {
       if(fet.geometry())
       {
-        r=fet.boundingBox();
+        r=fet.geometry()->boundingBox();
         retval.combineExtentWith(&r);
       }
     }
@@ -1196,7 +1195,7 @@ void QgsVectorLayer::updateExtents()
         {
           if (fet.geometry())
           {
-            bb = fet.boundingBox();
+            bb = fet.geometry()->boundingBox();
             mLayerExtent.combineExtentWith(&bb);
           }
         }
@@ -1211,7 +1210,7 @@ void QgsVectorLayer::updateExtents()
   // also consider the not commited features
   for(QgsFeatureList::iterator iter = mAddedFeatures.begin(); iter != mAddedFeatures.end(); ++iter)
   {
-    QgsRect bb = (*iter).boundingBox();
+    QgsRect bb = iter->geometry()->boundingBox();
     mLayerExtent.combineExtentWith(&bb);
   }
 
@@ -1250,29 +1249,6 @@ void QgsVectorLayer::setSubsetString(QString subset)
   emit recalculateExtents();
 }
 
-int QgsVectorLayer::fieldCount() const
-{
-  if ( ! mDataProvider )
-  {
-    QgsLogger::warning(" QgsVectorLayer::fieldCount() invoked with null mDataProvider");
-    return 0;
-  }
-
-  return mDataProvider->fieldCount();
-} // QgsVectorLayer::fieldCount
-
-
-const QgsFieldMap & QgsVectorLayer::fields() const
-{
-  if ( ! mDataProvider )
-  {
-    QgsLogger::warning(" QgsVectorLayer::fields() invoked with null mDataProvider");
-    assert(false);
-  }
-
-  return mDataProvider->fields();
-} // QgsVectorLayer::fields()
-
 
 bool QgsVectorLayer::addFeature(QgsFeature& f, bool alsoUpdateExtent)
 {
@@ -1297,18 +1273,6 @@ bool QgsVectorLayer::addFeature(QgsFeature& f, bool alsoUpdateExtent)
     addedIdLowWaterMark--;
 
     QgsDebugMsg("Assigned feature id " + QString::number(addedIdLowWaterMark));
-
-    // Change the fields on the feature to suit the destination
-    // in the paste transformation transfer.
-    // TODO: Could be done more efficiently for large pastes
-    QgsFieldNameMap fields = f.fields();
-
-    QgsDebugMsg("QgsVectorLayer::addFeature: about to traverse fields.");
-    
-    for (QgsFieldNameMap::iterator it = fields.begin(); it != fields.end(); ++it)
-    {
-      QgsDebugMsg("QgsVectorLayer::addFeature: inspecting field '" + *it + "'.");
-    }
 
     // Force a feature ID (to keep other functions in QGIS happy,
     // providers will use their own new feature ID when we commit the new feature)
@@ -1416,12 +1380,6 @@ bool QgsVectorLayer::deleteVertexAt(int atFeatureId,
   return false;
 }
 
-
-QString QgsVectorLayer::getDefaultValue(const QString& attr,
-    QgsFeature* f)
-{
-  return mDataProvider->getDefaultValue(attr, f);
-}
 
 bool QgsVectorLayer::deleteSelectedFeatures()
 {

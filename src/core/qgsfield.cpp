@@ -24,7 +24,7 @@
 static const char * const ident_ = 
    "$Id$";
 
-
+/*
 QgsField::QgsField(QString nam, QString typ, int len, int prec, bool num,
                    QString comment)
     :mName(nam), mType(typ), mLength(len), mPrecision(prec), mNumeric(num),
@@ -35,31 +35,38 @@ QgsField::QgsField(QString nam, QString typ, int len, int prec, bool num,
   // attribute actions getting confused between uppercase and
   // lowercase versions of the attribute names, so just leave the
   // names how they are now.
+}*/
+
+QgsField::QgsField(QString name, QVariant::Type type, QString typeName, int len, int prec, QString comment)
+  : mName(name), mType(type), mTypeName(typeName),
+    mLength(len), mPrecision(prec), mComment(comment)
+{
 }
+
 
 QgsField::~QgsField()
 {
 }
 
-bool QgsField::operator==(const QgsField other) const
+bool QgsField::operator==(const QgsField& other) const
 {
-    return ((mName == other.mName) && (mType == other.mType)
+    return ((mName == other.mName) && (mType == other.mType) && (mTypeName == other.mTypeName)
 	    && (mLength == other.mLength) && (mPrecision == other.mPrecision));
 }
 
-bool QgsField::operator!=(const QgsField other) const
-{
-    return !(*this == other);
-}
-
-QString const & QgsField::name() const
+const QString & QgsField::name() const
 {
   return mName;
 }
 
-QString const & QgsField::type() const
+QVariant::Type QgsField::type() const
 {
   return mType;
+}
+
+const QString & QgsField::typeName() const
+{
+  return mTypeName;
 }
 
 int QgsField::length() const
@@ -72,25 +79,26 @@ int QgsField::precision() const
   return mPrecision;
 }
 
-bool QgsField::isNumeric() const
-{
-  return mNumeric;
-}
-
-QString const & QgsField::comment() const
+const QString & QgsField::comment() const
 {
   return mComment;
 }
 
-void QgsField::setName(QString const & nam)
+void QgsField::setName(const QString & nam)
 {
   mName = nam;
 }
 
-void QgsField::setType(QString const & typ)
+void QgsField::setType(QVariant::Type type)
 {
-  mType = typ;
+  mType = type;
 }
+
+void QgsField::setTypeName(const QString & typeName)
+{
+  mTypeName = typeName;
+}
+
 void QgsField::setLength(int len)
 {
   mLength = len;
@@ -99,11 +107,8 @@ void QgsField::setPrecision(int prec)
 {
   mPrecision = prec;
 }
-void QgsField::setNumeric(bool num)
-{
-  mNumeric = num;
-}
-void QgsField::setComment(QString comment)
+
+void QgsField::setComment(const QString & comment)
 {
   mComment = comment;
 }
