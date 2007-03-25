@@ -458,8 +458,7 @@ void QgsAttributeTable::fillTable(QgsVectorLayer* layer)
     int fieldcount=provider->fieldCount();
 #ifdef QGISDEBUG
     for (int l = 0; l < mFields.size(); l++)
-      QgsDebugMsg("field: " + mFields[l].name() + " | " +
-                  QString::number(mFields[l].isNumeric()) + " | " + mFields[l].type());
+      QgsDebugMsg("field: " + mFields[l].name() + " | " + QString::number(mFields[l].type()) );
 #endif
   
     setNumRows(provider->featureCount() + addedFeatures.size() - deletedFeatures.size());

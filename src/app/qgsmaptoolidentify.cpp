@@ -362,13 +362,8 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
           // only apply changed values if they were edited by the user
           if (ad.isDirty(i))
           {
-#ifdef QGISDEBUG
-        std::cout << "QgsMapToolIdentify::identifyVectorLayer: found an changed attribute: "
-          << old[i].fieldName().toLocal8Bit().data()
-          << " = "
-          << ad.value(i).toLocal8Bit().data()
-          << "." << std::endl;
-#endif
+            QgsDebugMsg("found a changed attribute: " + QString::number(i) + " = " + ad.value(i));
+
             QgsAttributeMap& chattr = changedAttributes[ feat.featureId() ];
             chattr[i] = ad.value(i);
 
