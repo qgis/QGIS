@@ -1887,13 +1887,13 @@ bool QgsPostgresProvider::changeAttributeValues(const QgsChangedAttributesMap & 
       if (result==0)
       {
         showMessageBox(tr("PostGIS error"),
-                       tr("An error occured contacting the PostgreSQL databse"));
+                       tr("An error occured contacting the PostgreSQL database"));
         return false;
       }
       ExecStatusType message=PQresultStatus(result);
       if(message==PGRES_FATAL_ERROR)
       {
-        showMessageBox(tr("PostGIS error"),tr("The PostgreSQL databse returned: ")
+        showMessageBox(tr("PostGIS error"),tr("The PostgreSQL database returned: ")
                         + QString(PQresultErrorMessage(result))
                         + "\n" + tr("When trying: ") + sql);
         return false;
@@ -2006,13 +2006,13 @@ bool QgsPostgresProvider::changeGeometryValues(QgsGeometryMap & geometry_map)
       PGresult* result=PQexec(connection, (const char *)(sql.utf8()));
       if (result==0)
       {
-        showMessageBox(tr("PostGIS error"), tr("An error occured contacting the PostgreSQL databse"));
+        showMessageBox(tr("PostGIS error"), tr("An error occured contacting the PostgreSQL database"));
         return false;
       }
       ExecStatusType message=PQresultStatus(result);
       if(message==PGRES_FATAL_ERROR)
       {
-        showMessageBox(tr("PostGIS error"), tr("The PostgreSQL databse returned: ")
+        showMessageBox(tr("PostGIS error"), tr("The PostgreSQL database returned: ")
                                    + QString(PQresultErrorMessage(result))
                                    + "\n" + tr("When trying: ") + sql);
         return false;

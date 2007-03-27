@@ -49,7 +49,7 @@ void QgsGridMakerPluginGui::on_buttonBox_accepted()
   if (leOutputShapeFile->text().isEmpty())
   {
     QMessageBox::warning( 0, tr("QGIS - Grid Maker"),
-            QString(tr("Please enter the file name before pressing OK!.") ));
+            QString(tr("Please enter the file name before pressing OK!") ));
     return;
   }
 
