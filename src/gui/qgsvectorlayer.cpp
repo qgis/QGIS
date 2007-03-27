@@ -1833,7 +1833,7 @@ bool QgsVectorLayer::deleteSelectedFeatures()
   if(!isEditable())
   {
     QMessageBox::information(0, tr("Layer not editable"), 
-        tr("The current layer is not editable. Choose 'Allow editing' in the legend item right click menu"));
+        tr("The current layer is not editable. Choose 'Allow editing' in the legend item right click menu."));
     return false;
   }
 

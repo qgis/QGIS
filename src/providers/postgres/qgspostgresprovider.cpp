@@ -2069,7 +2069,7 @@ bool QgsPostgresProvider::changeAttributeValues(std::map<int,std::map<QString,QS
       if (result==0)
       {
         QMessageBox::critical(0, tr("PostGIS error"), 
-                                 tr("An error occured contacting the PostgreSQL databse"),
+                                 tr("An error occured contacting the PostgreSQL database"),
                                  QMessageBox::Ok,
                                  Qt::NoButton);
         return false;
@@ -2078,7 +2078,7 @@ bool QgsPostgresProvider::changeAttributeValues(std::map<int,std::map<QString,QS
       if(message==PGRES_FATAL_ERROR)
       {
         QMessageBox::information(0, tr("PostGIS error"), 
-                                 tr("The PostgreSQL databse returned: ")
+                                 tr("The PostgreSQL database returned: ")
                                    + QString(PQresultErrorMessage(result))
                                    + "\n"
                                    + tr("When trying: ")
@@ -2195,7 +2195,7 @@ bool QgsPostgresProvider::changeGeometryValues(std::map<int, QgsGeometry> & geom
       if (result==0)
       {
         QMessageBox::critical(0, tr("PostGIS error"), 
-                                 tr("An error occured contacting the PostgreSQL databse"),
+                                 tr("An error occured contacting the PostgreSQL database"),
                                  QMessageBox::Ok,
                                  Qt::NoButton);
         return false;
@@ -2204,7 +2204,7 @@ bool QgsPostgresProvider::changeGeometryValues(std::map<int, QgsGeometry> & geom
       if(message==PGRES_FATAL_ERROR)
       {
         QMessageBox::information(0, tr("PostGIS error"), 
-                                 tr("The PostgreSQL databse returned: ")
+                                 tr("The PostgreSQL database returned: ")
                                    + QString(PQresultErrorMessage(result))
                                    + "\n"
                                    + tr("When trying: ")
