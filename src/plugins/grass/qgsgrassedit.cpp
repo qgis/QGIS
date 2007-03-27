@@ -391,19 +391,19 @@ void QgsGrassEdit::init()
 
   // Set symbology names
   mSymbName.resize(SYMB_COUNT);
-  mSymbName[SYMB_BACKGROUND]    = "Background";
-  mSymbName[SYMB_HIGHLIGHT]     = "Highlight";
-  mSymbName[SYMB_DYNAMIC]       = "Dynamic";
-  mSymbName[SYMB_POINT]         = "Point";
-  mSymbName[SYMB_LINE]          = "Line";
-  mSymbName[SYMB_BOUNDARY_0]    = "Boundary (no area)";
-  mSymbName[SYMB_BOUNDARY_1]    = "Boundary (1 area)";
-  mSymbName[SYMB_BOUNDARY_2]    = "Boundary (2 areas)";
-  mSymbName[SYMB_CENTROID_IN]   = "Centroid (in area)";
-  mSymbName[SYMB_CENTROID_OUT]  = "Centroid (outside area)";
-  mSymbName[SYMB_CENTROID_DUPL] = "Centroid (duplicate in area)";
-  mSymbName[SYMB_NODE_1]        = "Node (1 line)";
-  mSymbName[SYMB_NODE_2]        = "Node (2 lines)";
+  mSymbName[SYMB_BACKGROUND]    = tr("Background");
+  mSymbName[SYMB_HIGHLIGHT]     = tr("Highlight");
+  mSymbName[SYMB_DYNAMIC]       = tr("Dynamic");
+  mSymbName[SYMB_POINT]         = tr("Point");
+  mSymbName[SYMB_LINE]          = tr("Line");
+  mSymbName[SYMB_BOUNDARY_0]    = tr("Boundary (no area)");
+  mSymbName[SYMB_BOUNDARY_1]    = tr("Boundary (1 area)");
+  mSymbName[SYMB_BOUNDARY_2]    = tr("Boundary (2 areas)");
+  mSymbName[SYMB_CENTROID_IN]   = tr("Centroid (in area)");
+  mSymbName[SYMB_CENTROID_OUT]  = tr("Centroid (outside area)");
+  mSymbName[SYMB_CENTROID_DUPL] = tr("Centroid (duplicate in area)");
+  mSymbName[SYMB_NODE_1]        = tr("Node (1 line)");
+  mSymbName[SYMB_NODE_2]        = tr("Node (2 lines)");
 
   // Restore symbology
   QString spath = "/GRASS/edit/symb/";
@@ -436,13 +436,13 @@ void QgsGrassEdit::init()
   }
 
   // Set Symbology in dialog
-  symbologyList->setColumnText(0,"Disp");
+  symbologyList->setColumnText(0,tr("Disp","Column title") );
   symbologyList->setColumnWidth(0,20);
-  symbologyList->addColumn("Color");
+  symbologyList->addColumn( tr("Color","Column title") );
   symbologyList->setColumnWidth(0,50);
-  symbologyList->addColumn("Type");
+  symbologyList->addColumn( tr("Type","Column title") );
   symbologyList->setColumnWidthMode(2,Q3ListView::Maximum);
-  symbologyList->addColumn("Index", 0);
+  symbologyList->addColumn(tr("Index","Column title") , 0);
   symbologyList->clear();
   symbologyList->setSorting(-1);
 
@@ -472,9 +472,9 @@ void QgsGrassEdit::init()
 
   // Init table tab
   mAttributeTable->setLeftMargin(0); // hide row labels
-  mAttributeTable->horizontalHeader()->setLabel( 0, "Column" );
-  mAttributeTable->horizontalHeader()->setLabel( 1, "Type" );
-  mAttributeTable->horizontalHeader()->setLabel( 2, "Length" );
+  mAttributeTable->horizontalHeader()->setLabel( 0, tr("Column") );
+  mAttributeTable->horizontalHeader()->setLabel( 1, tr("Type") );
+  mAttributeTable->horizontalHeader()->setLabel( 2, tr("Length") );
 
   int ndblinks = mProvider->numDbLinks();
 
@@ -529,9 +529,9 @@ void QgsGrassEdit::init()
   mRubberBandIcon->setZValue(20);
 
   // Init GUI values
-  mCatModeBox->insertItem( "Next not used", CAT_MODE_NEXT );
-  mCatModeBox->insertItem( "Manual entry", CAT_MODE_MANUAL );
-  mCatModeBox->insertItem( "No category", CAT_MODE_NOCAT );
+  mCatModeBox->insertItem( tr("Next not used"), CAT_MODE_NEXT );
+  mCatModeBox->insertItem( tr("Manual entry"), CAT_MODE_MANUAL );
+  mCatModeBox->insertItem( tr("No category"), CAT_MODE_NOCAT );
   catModeChanged ( );
 
   // TODO: how to get keyboard events from canvas (shortcuts)
@@ -1813,7 +1813,7 @@ void QgsGrassEdit::setCanvasPropmt( QString left, QString mid, QString rigth)
   mCanvasPrompt = "";
   if ( left.length() > 0 ) mCanvasPrompt.append ( tr("Left: ") + left + "   " );
   if ( mid.length() > 0 ) mCanvasPrompt.append ( tr("Middle: ") + mid + "   " );
-  if ( rigth.length() > 0 ) mCanvasPrompt.append ( tr("Rigth: ") + rigth );
+  if ( rigth.length() > 0 ) mCanvasPrompt.append ( tr("Right: ") + rigth );
 }
 
 void QgsGrassEdit::attributesClosed()
