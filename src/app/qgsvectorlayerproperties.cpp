@@ -33,6 +33,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
+#include "qgsconfig.h"
 #ifdef HAVE_POSTGRESQL
 #include "qgspgquerybuilder.h"
 #include "../providers/postgres/qgspostgresprovider.h"
