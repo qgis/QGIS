@@ -144,7 +144,7 @@ bool QgsHttpTransaction::getSynchronously(QByteArray &respondedContent, int redi
   while ( httpactive )
   {
     // Do something else, maybe even network processing events
-    qApp->processEvents();
+    qApp->processEvents(QEventLoop::ExcludeUserInputEvents | QEventLoop::X11ExcludeTimers);
 
     // TODO: Implement a network timeout
   }
