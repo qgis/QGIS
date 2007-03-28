@@ -1439,6 +1439,116 @@ Vill du specificera sökväg (GISBASE) till installationen av GRASS?</translatio
         <source> unknown</source>
         <translation> obekant</translation>
     </message>
+    <message>
+        <location filename="../src/core/qgshttptransaction.cpp" line="266"/>
+        <source>Received %1 of %2 bytes</source>
+        <translation>Tog emot %1 av %2 bytes</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgshttptransaction.cpp" line="272"/>
+        <source>Received %1 bytes (total unknown)</source>
+        <translation>Tog emot %1 bytes (okänd totalsumma)</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgshttptransaction.cpp" line="383"/>
+        <source>Not connected</source>
+        <translation>Ej uppkopplad</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgshttptransaction.cpp" line="389"/>
+        <source>Looking up &apos;%1&apos;</source>
+        <translation>Slår upp &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgshttptransaction.cpp" line="396"/>
+        <source>Connecting to &apos;%1&apos;</source>
+        <translation>Kopplar upp till &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgshttptransaction.cpp" line="403"/>
+        <source>Sending request &apos;%1&apos;</source>
+        <translation>Skickar förfrågan &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgshttptransaction.cpp" line="410"/>
+        <source>Receiving reply</source>
+        <translation>Tar emot svar</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgshttptransaction.cpp" line="416"/>
+        <source>Response is complete</source>
+        <translation>Svaret är komplett</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgshttptransaction.cpp" line="422"/>
+        <source>Closing down connection</source>
+        <translation>Stänger uppkoppling</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="386"/>
+        <source>GISBASE is not set.</source>
+        <translation>GISBASE är ej satt.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="391"/>
+        <source> is not a GRASS mapset.</source>
+        <translation> är inte ett GRASS kartset.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="409"/>
+        <source>Cannot start </source>
+        <translation>Kan inte starta </translation>
+    </message>
+    <message>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="424"/>
+        <source>Mapset is already in use.</source>
+        <translation>Kartset används redan.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="439"/>
+        <source>Temporary directory </source>
+        <translation>Temporärt bibliotek </translation>
+    </message>
+    <message>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="439"/>
+        <source> exist but is not writable</source>
+        <translation> finns men är ej skrivbart</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="445"/>
+        <source>Cannot create temporary directory </source>
+        <translation>Kan inte skapa temporärt bibliotek </translation>
+    </message>
+    <message>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="461"/>
+        <source>Cannot create </source>
+        <translation>Kan inte skapa </translation>
+    </message>
+    <message>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="534"/>
+        <source>Cannot remove mapset lock: </source>
+        <translation>Kan inte ta bort låsning av kartset: </translation>
+    </message>
+    <message>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="974"/>
+        <source>Warning</source>
+        <translation>Varning</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="922"/>
+        <source>Cannot read raster map region</source>
+        <translation>Kan inte läsa rasterkartans region</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="939"/>
+        <source>Cannot read vector map region</source>
+        <translation>Kan inte läsa vektorkartans region</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="975"/>
+        <source>Cannot read region</source>
+        <translation>Kan inte läsa region</translation>
+    </message>
 </context>
 <context>
     <name>QgisApp</name>
@@ -8611,7 +8721,7 @@ Pattern</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1832"/>
         <source>Rigth: </source>
-        <translation> Höger:</translation>
+        <translation type="obsolete"> Höger:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1454"/>
@@ -8662,6 +8772,130 @@ Pattern</source>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1396"/>
         <source>Cannot describe table for field </source>
         <translation> Kan inte beskriva fältets tabell</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="389"/>
+        <source>Background</source>
+        <translation>Bakgrund</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="390"/>
+        <source>Highlight</source>
+        <translation>Markera</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="391"/>
+        <source>Dynamic</source>
+        <translation>Dynamisk</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="392"/>
+        <source>Point</source>
+        <translation>Punkt</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="393"/>
+        <source>Line</source>
+        <translation>Linje</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="394"/>
+        <source>Boundary (no area)</source>
+        <translation>Gräns (ingen area)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="395"/>
+        <source>Boundary (1 area)</source>
+        <translation>Gräns (1 area)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="396"/>
+        <source>Boundary (2 areas)</source>
+        <translation>Gräns (2 areor)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="397"/>
+        <source>Centroid (in area)</source>
+        <translation>Centroid (i area)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="398"/>
+        <source>Centroid (outside area)</source>
+        <translation>Centroid (utanför area)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="399"/>
+        <source>Centroid (duplicate in area)</source>
+        <translation>Centroid (duplikat i area)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="400"/>
+        <source>Node (1 line)</source>
+        <translation>Nod (1 linje)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="401"/>
+        <source>Node (2 lines)</source>
+        <translation>Nod (2 linjer)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="434"/>
+        <source>Disp</source>
+        <comment>Column title</comment>
+        <translation>Visa</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="436"/>
+        <source>Color</source>
+        <comment>Column title</comment>
+        <translation>Färg</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="438"/>
+        <source>Type</source>
+        <comment>Column title</comment>
+        <translation>Typ</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="440"/>
+        <source>Index</source>
+        <comment>Column title</comment>
+        <translation>Index</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="470"/>
+        <source>Column</source>
+        <translation>Kolumn</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="471"/>
+        <source>Type</source>
+        <translation>Typ</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="472"/>
+        <source>Length</source>
+        <translation>Längd</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="530"/>
+        <source>Next not used</source>
+        <translation>Nästa icke använd</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="531"/>
+        <source>Manual entry</source>
+        <translation>Manuell inmatning</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="532"/>
+        <source>No category</source>
+        <translation>Ingen kategori</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1832"/>
+        <source>Right: </source>
+        <translation>Höger: </translation>
     </message>
 </context>
 <context>
@@ -9818,7 +10052,7 @@ at line </source>
     <message>
         <location filename="../src/plugins/grid_maker/plugingui.cpp" line="52"/>
         <source>Please enter the file name before pressing OK!.</source>
-        <translation>Vänligen skriv in filnamnet innan du trycker OK!.</translation>
+        <translation type="obsolete">Vänligen skriv in filnamnet innan du trycker OK!.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grid_maker/plugingui.cpp" line="62"/>
@@ -9859,6 +10093,11 @@ at line </source>
         <location filename="../src/plugins/grid_maker/plugingui.cpp" line="164"/>
         <source>ESRI Shapefile (*.shp)</source>
         <translation>ESRI Shapefil (*.shp)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grid_maker/plugingui.cpp" line="52"/>
+        <source>Please enter the file name before pressing OK!</source>
+        <translation>Vänligen skriv in filnamnet innan du trycker OK!</translation>
     </message>
 </context>
 <context>
@@ -10937,22 +11176,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsMapLayer</name>
     <message>
-        <location filename="../src/gui/qgsmaplayer.cpp" line="530"/>
+        <location filename="../src/gui/qgsmaplayer.cpp" line="527"/>
         <source>&amp;Zoom to extent of selected layer</source>
         <translation>&amp;Zooma till det markerade lagrets utsträckning</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsmaplayer.cpp" line="535"/>
+        <location filename="../src/gui/qgsmaplayer.cpp" line="532"/>
         <source>&amp;Remove</source>
         <translation>&amp;Radera</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsmaplayer.cpp" line="541"/>
+        <location filename="../src/gui/qgsmaplayer.cpp" line="538"/>
         <source>&amp;Properties</source>
         <translation>&amp;Egenskaper</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsmaplayer.cpp" line="531"/>
+        <location filename="../src/gui/qgsmaplayer.cpp" line="528"/>
         <source>Toggle in Overview</source>
         <translation>Toggla i översikten</translation>
     </message>
@@ -13392,12 +13631,12 @@ eller har en PostgreSQL oid-kolumn.
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2198"/>
         <source>An error occured contacting the PostgreSQL databse</source>
-        <translation>Ett fel inträffade vid uppkopplingen til PostgreSQL databas</translation>
+        <translation type="obsolete">Ett fel inträffade vid uppkopplingen til PostgreSQL databas</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2208"/>
         <source>The PostgreSQL databse returned: </source>
-        <translation> PostgreSQL-databasen svarade:</translation>
+        <translation type="obsolete"> PostgreSQL-databasen svarade:</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2211"/>
@@ -13408,6 +13647,16 @@ eller har en PostgreSQL oid-kolumn.
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2759"/>
         <source>Qgis was unable to determine the type and srid of column </source>
         <translation>Qgis kunde inte avgöra typ och srid hos kolumnen </translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2198"/>
+        <source>An error occured contacting the PostgreSQL database</source>
+        <translation>Ett fel inträffade vid uppkopplingen till PostgreSQL databas</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2208"/>
+        <source>The PostgreSQL database returned: </source>
+        <translation> PostgreSQL-databasen svarade: </translation>
     </message>
 </context>
 <context>
@@ -15995,7 +16244,7 @@ eller har en PostgreSQL oid-kolumn.
     <message>
         <location filename="../src/gui/qgsvectorlayer.cpp" line="1836"/>
         <source>The current layer is not editable. Choose &apos;Allow editing&apos; in the legend item right click menu</source>
-        <translation>Nuvarande lager är ej redigerbart. Välj &apos;Tillåt redigering&apos; i innehållsförteckningens högerklicksmeny</translation>
+        <translation type="obsolete">Nuvarande lager är ej redigerbart. Välj &apos;Tillåt redigering&apos; i innehållsförteckningens högerklicksmeny</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsvectorlayer.cpp" line="1920"/>
