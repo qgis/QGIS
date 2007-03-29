@@ -291,12 +291,12 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
     //--std::cout << "Connection to database failed\n";
   }
 
-  //fill type names into the sets
-  mNumericalTypes.insert("double precision");
-  mNumericalTypes.insert("int4");
-  mNumericalTypes.insert("int8");
-  mNonNumericalTypes.insert("text");
-  mNonNumericalTypes.insert("varchar(30)");
+  //fill type names into sets
+  mSupportedNativeTypes.insert("double precision");
+  mSupportedNativeTypes.insert("int4");
+  mSupportedNativeTypes.insert("int8");
+  mSupportedNativeTypes.insert("text");
+  mSupportedNativeTypes.insert("varchar(30)");
 
   if (primaryKey.isEmpty())
   {
