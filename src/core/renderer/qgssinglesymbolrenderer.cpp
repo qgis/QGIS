@@ -164,10 +164,10 @@ QString QgsSingleSymbolRenderer::name() const
   return "Single Symbol";
 }
 
-const std::list<QgsSymbol*> QgsSingleSymbolRenderer::symbols() const
+const QList<QgsSymbol*> QgsSingleSymbolRenderer::symbols() const
 {
-    std::list<QgsSymbol*> list;
-    list.push_back(mSymbol);
+    QList<QgsSymbol*> list;
+    list.append(mSymbol);
     return list;
 }
 

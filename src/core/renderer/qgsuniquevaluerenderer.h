@@ -19,7 +19,7 @@
 #define QGSUNIQUEVALUERENDERER_H
 
 #include "qgsrenderer.h"
-#include <map>
+#include <QMap>
 
 class CORE_EXPORT QgsUniqueValueRenderer: public QgsRenderer
 {
@@ -54,13 +54,13 @@ class CORE_EXPORT QgsUniqueValueRenderer: public QgsRenderer
     /**Returns the index of the classification field*/
     int classificationField();
     /**Return symbology items*/
-    const std::list<QgsSymbol*> symbols() const;
+    const QList<QgsSymbol*> symbols() const;
     QgsRenderer* clone() const;
  protected:
     /**Field index used for classification*/
     int mClassificationField;
     /**Symbols for the unique values*/
-    std::map<QString, QgsSymbol*> mSymbols;
+    QMap<QString, QgsSymbol*> mSymbols;
     /**Returns the symbol for a feature or 0 if there isn't any*/
     QgsSymbol* symbolForFeature(const QgsFeature* f);
 };

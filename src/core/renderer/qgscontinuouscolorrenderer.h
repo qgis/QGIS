@@ -67,7 +67,7 @@ class CORE_EXPORT QgsContinuousColorRenderer: public QgsRenderer
     /**Returns the renderers name*/
     QString name() const;
     /**Return symbology items*/
-    const std::list<QgsSymbol*> symbols() const;
+    const QList<QgsSymbol*> symbols() const;
     QgsRenderer* clone() const;
  protected:
     /**Number of the classification field (it must be a numerical field)*/

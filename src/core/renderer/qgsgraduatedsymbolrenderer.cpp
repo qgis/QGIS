@@ -39,8 +39,8 @@ QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer(const QgsGraduatedSymbolR
 {
     mVectorType = other.mVectorType;
     mClassificationField = other.mClassificationField;
-    const std::list<QgsSymbol*> s = other.symbols();
-    for(std::list<QgsSymbol*>::const_iterator it=s.begin(); it!=s.end(); ++it)
+    const QList<QgsSymbol*> s = other.symbols();
+    for(QList<QgsSymbol*>::const_iterator it=s.begin(); it!=s.end(); ++it)
     {
 	addSymbol(new QgsSymbol(**it));
     }
@@ -53,8 +53,8 @@ QgsGraduatedSymbolRenderer& QgsGraduatedSymbolRenderer::operator=(const QgsGradu
         mVectorType = other.mVectorType; 
         mClassificationField = other.mClassificationField;
         removeSymbols();
-        const std::list<QgsSymbol*> s = other.symbols();
-        for(std::list<QgsSymbol*>::const_iterator it=s.begin(); it!=s.end(); ++it)
+        const QList<QgsSymbol*> s = other.symbols();
+        for(QList<QgsSymbol*>::const_iterator it=s.begin(); it!=s.end(); ++it)
         {
             addSymbol(new QgsSymbol(**it));
         }
@@ -68,7 +68,7 @@ QgsGraduatedSymbolRenderer::~QgsGraduatedSymbolRenderer()
  
 }
 
-const std::list<QgsSymbol*> QgsGraduatedSymbolRenderer::symbols() const
+const QList<QgsSymbol*> QgsGraduatedSymbolRenderer::symbols() const
 {
     return mSymbols;
 }
@@ -76,7 +76,7 @@ const std::list<QgsSymbol*> QgsGraduatedSymbolRenderer::symbols() const
 void QgsGraduatedSymbolRenderer::removeSymbols()
 {
     //free the memory first
-    for (std::list < QgsSymbol * >::iterator it = mSymbols.begin(); it != mSymbols.end(); ++it)
+    for (QList<QgsSymbol*>::iterator it = mSymbols.begin(); it != mSymbols.end(); ++it)
     {
 	delete *it;
     }
@@ -149,7 +149,7 @@ QgsSymbol* QgsGraduatedSymbolRenderer::symbolForFeature(const QgsFeature* f)
   const QgsAttributeMap& attrs = f->attributeMap();
   double value = attrs[mClassificationField].toDouble();
 
-  std::list < QgsSymbol* >::iterator it;
+  QList<QgsSymbol*>::iterator it;
   //find the first render item which contains the feature
   for (it = mSymbols.begin(); it != mSymbols.end(); ++it)
   {
@@ -208,7 +208,7 @@ bool QgsGraduatedSymbolRenderer::writeXML( QDomNode & layer_node, QDomDocument &
     QDomText classificationfieldtxt=document.createTextNode(QString::number(mClassificationField));
     classificationfield.appendChild(classificationfieldtxt);
     graduatedsymbol.appendChild(classificationfield);
-    for(std::list<QgsSymbol*>::const_iterator it=mSymbols.begin();it!=mSymbols.end();++it)
+    for (QList<QgsSymbol*>::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it)
     {
 	if(!(*it)->writeXML(graduatedsymbol,document))
 	{

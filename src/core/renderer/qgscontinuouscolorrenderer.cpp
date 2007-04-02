@@ -255,11 +255,11 @@ bool QgsContinuousColorRenderer::writeXML( QDomNode & layer_node, QDomDocument &
     return returnval;
 }
 
-const std::list<QgsSymbol*> QgsContinuousColorRenderer::symbols() const
+const QList<QgsSymbol*> QgsContinuousColorRenderer::symbols() const
 {
-    std::list<QgsSymbol*> list;
-    list.push_back(mMinimumSymbol);
-    list.push_back(mMaximumSymbol);
+    QList<QgsSymbol*> list;
+    list.append(mMinimumSymbol);
+    list.append(mMaximumSymbol);
     return list;
 }
 

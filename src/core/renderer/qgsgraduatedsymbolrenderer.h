@@ -19,8 +19,6 @@
 #ifndef QGSGRADUATEDSYMBOLRENDERER_H
 #define QGSGRADUATEDSYMBOLRENDERER_H
 
-#include <list>
-
 #include "qgsrenderer.h"
 
 class QgsVectorLayer;
@@ -65,14 +63,14 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer: public QgsRenderer
     /**Returns the renderers name*/
     QString name() const;
     /**Returns the symbols of the items*/
-    const std::list<QgsSymbol*> symbols() const;
+    const QList<QgsSymbol*> symbols() const;
     /**Returns a copy of the renderer (a deep copy on the heap)*/
     QgsRenderer* clone() const;
  protected:
     /**Index of the classification field (it must be a numerical field)*/
     int mClassificationField;
     /**List holding the symbols for the individual classes*/
-    std::list<QgsSymbol*> mSymbols;
+    QList<QgsSymbol*> mSymbols;
     QgsSymbol* symbolForFeature(const QgsFeature* f);
     
 };

@@ -241,7 +241,7 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
       std::vector<int> groupLayers; // vector of layers
       std::vector<int> itemHeights; // maximum item sizes
       std::vector<QString> itemLabels; // item labels
-      unsigned int sectionItemsCount = 0;
+      int sectionItemsCount = 0;
       QString sectionTitle;
 
       for ( int j = nlayers - 1; j >= 0; j-- ) {
@@ -261,7 +261,7 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
         if ( (group > 0 && group2 == group) || ( group == 0 && j == i )  ) {
           groupLayers.push_back(j);
 
-          std::list<QgsSymbol*> symbols = renderer->symbols();
+          QList<QgsSymbol*> symbols = renderer->symbols();
 
           if ( sectionTitle.length() == 0 ) {
             sectionTitle = layer2->name();
@@ -281,7 +281,7 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
           double scale = map->symbolScale() * mComposition->scale();
 
           int icnt = 0;
-          for ( std::list<QgsSymbol*>::iterator it = symbols.begin(); it != symbols.end(); ++it ) {
+          for ( QList<QgsSymbol*>::iterator it = symbols.begin(); it != symbols.end(); ++it ) {
 		
             QgsSymbol* sym = (*it);
 	      
@@ -343,10 +343,10 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 	const QgsRenderer *renderer = vector->renderer();
 
 	// Symbol
-	std::list<QgsSymbol*> symbols = renderer->symbols();
+	QList<QgsSymbol*> symbols = renderer->symbols();
 
 	int icnt = 0;
-	for ( std::list<QgsSymbol*>::iterator it = symbols.begin(); it != symbols.end(); ++it ) {
+	for ( QList<QgsSymbol*>::iterator it = symbols.begin(); it != symbols.end(); ++it ) {
           localHeight += mSymbolSpace;
 
           int symbolHeight = itemHeights[icnt];
