@@ -31,8 +31,7 @@ class QgsRenderer /Abstract/
     /**Returns the renderers name*/
     virtual QString name() const=0;    
     /**Return symbology items*/
-    // TODO: wrap
-    //virtual const std::list<QgsSymbol*> symbols() const=0;
+    virtual const QList<QgsSymbol*> symbols() const=0;
     /**Returns a copy of the renderer (a deep copy on the heap)*/
     virtual QgsRenderer* clone() const=0;
     /** Change selection color */
