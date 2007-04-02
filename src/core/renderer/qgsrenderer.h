@@ -28,9 +28,6 @@ class QColor;
 
 #include "qgis.h"
 
-#include <list>
-
-class QgsRenderItem;
 class QgsSymbol;
 
 typedef QList<int> QgsAttributeList;
@@ -69,7 +66,7 @@ class CORE_EXPORT QgsRenderer
     /**Returns the renderers name*/
     virtual QString name() const=0;    
     /**Return symbology items*/
-    virtual const std::list<QgsSymbol*> symbols() const=0;
+    virtual const QList<QgsSymbol*> symbols() const=0;
     /**Returns a copy of the renderer (a deep copy on the heap)*/
     virtual QgsRenderer* clone() const=0;
     /** Change selection color */

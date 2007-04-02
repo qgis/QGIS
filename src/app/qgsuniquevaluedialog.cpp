@@ -61,9 +61,9 @@ QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVect
 	int classattr = *iter;
 	mClassificationComboBox->setCurrentItem(classattr);
 
-	const std::list<QgsSymbol*> list = renderer->symbols();
+	const QList<QgsSymbol*> list = renderer->symbols();
 	//fill the items of the renderer into mValues
-	for(std::list<QgsSymbol*>::const_iterator iter=list.begin();iter!=list.end();++iter)
+	for(QList<QgsSymbol*>::const_iterator iter=list.begin();iter!=list.end();++iter)
 	{
 	    QgsSymbol* symbol=(*iter);
 	    QString symbolvalue=symbol->lowerValue();

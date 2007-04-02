@@ -52,7 +52,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer: public QgsRenderer
     /**Returns the renderers name*/
     virtual QString name() const;
     /**Returns a list containing mSymbol*/
-    const std::list<QgsSymbol*> symbols() const;
+    const QList<QgsSymbol*> symbols() const;
     /**Returns a deep copy of this renderer*/
     QgsRenderer* clone() const;
  protected:

@@ -74,7 +74,7 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(QgsVectorLayer * layer): QDia
     
     if (renderer)
     {
-	std::list < QgsSymbol * >list = renderer->symbols();
+	QList < QgsSymbol * >list = renderer->symbols();
 	
 	//display the classification field
 	QString classfield="";
@@ -90,7 +90,7 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(QgsVectorLayer * layer): QDia
 
 	numberofclassesspinbox->setValue(list.size());
 	//fill the items of the renderer into mValues
-	for(std::list<QgsSymbol*>::iterator it=list.begin();it!=list.end();++it)
+	for(QList<QgsSymbol*>::iterator it=list.begin();it!=list.end();++it)
 	{
 	    //todo: make an assignment operator and a copy constructor for QgsSymbol
 		QString classbreak=(*it)->lowerValue()+" - "+(*it)->upperValue();

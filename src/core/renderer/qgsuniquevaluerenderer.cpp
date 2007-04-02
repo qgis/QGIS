@@ -36,11 +36,11 @@ QgsUniqueValueRenderer::QgsUniqueValueRenderer(const QgsUniqueValueRenderer& oth
 {
     mVectorType = other.mVectorType;
     mClassificationField = other.mClassificationField;
-    std::map<QString, QgsSymbol*> s = other.mSymbols;
-    for(std::map<QString, QgsSymbol*>::iterator it=s.begin(); it!=s.end(); ++it)
+    QMap<QString, QgsSymbol*> s = other.mSymbols;
+    for(QMap<QString, QgsSymbol*>::iterator it=s.begin(); it!=s.end(); ++it)
     {
-	QgsSymbol* s = new QgsSymbol(*(it->second));
-	insertValue(it->first, s);
+	QgsSymbol* s = new QgsSymbol(* it.value());
+	insertValue(it.key(), s);
     }
 }
 
@@ -51,10 +51,10 @@ QgsUniqueValueRenderer& QgsUniqueValueRenderer::operator=(const QgsUniqueValueRe
         mVectorType = other.mVectorType;
         mClassificationField = other.mClassificationField;
         clearValues();
-        for(std::map<QString, QgsSymbol*>::iterator it=mSymbols.begin(); it!=mSymbols.end(); ++it)
+        for(QMap<QString, QgsSymbol*>::iterator it=mSymbols.begin(); it!=mSymbols.end(); ++it)
         {
-            QgsSymbol* s = new QgsSymbol(*(it->second));
-            insertValue(it->first, s);
+            QgsSymbol* s = new QgsSymbol(*it.value());
+            insertValue(it.key(), s);
         }
     }
     return *this;
@@ -62,25 +62,25 @@ QgsUniqueValueRenderer& QgsUniqueValueRenderer::operator=(const QgsUniqueValueRe
 
 QgsUniqueValueRenderer::~QgsUniqueValueRenderer()
 {
-    for(std::map<QString,QgsSymbol*>::iterator it=mSymbols.begin();it!=mSymbols.end();++it)
+    for(QMap<QString,QgsSymbol*>::iterator it=mSymbols.begin();it!=mSymbols.end();++it)
     {
-	delete it->second;
+	delete it.value();
     }
 }
 
-const std::list<QgsSymbol*> QgsUniqueValueRenderer::symbols() const
+const QList<QgsSymbol*> QgsUniqueValueRenderer::symbols() const
 {
-    std::list <QgsSymbol*> symbollist;
-    for(std::map<QString, QgsSymbol*>::const_iterator it = mSymbols.begin(); it!=mSymbols.end(); ++it)
+    QList <QgsSymbol*> symbollist;
+    for(QMap<QString, QgsSymbol*>::const_iterator it = mSymbols.begin(); it!=mSymbols.end(); ++it)
     {
-	symbollist.push_back(it->second);
+	symbollist.append(it.value());
     }
     return symbollist;
 }
 
 void QgsUniqueValueRenderer::insertValue(QString name, QgsSymbol* symbol)
 {
-    mSymbols.insert(std::make_pair(name, symbol));
+    mSymbols.insert(name, symbol);
 }
 
 void QgsUniqueValueRenderer::setClassificationField(int field)
@@ -155,14 +155,14 @@ QgsSymbol* QgsUniqueValueRenderer::symbolForFeature(const QgsFeature* f)
   const QgsAttributeMap& attrs = f->attributeMap();
   QString value = attrs[mClassificationField].toString();
   
-  std::map<QString,QgsSymbol*>::iterator it=mSymbols.find(value);
+  QMap<QString,QgsSymbol*>::iterator it=mSymbols.find(value);
   if(it == mSymbols.end())
     {
       return 0;
     }
   else
     {
-      return it->second;
+      return it.value();
     }
 }
 
@@ -186,9 +186,9 @@ void QgsUniqueValueRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 
 void QgsUniqueValueRenderer::clearValues()
 {
-    for(std::map<QString,QgsSymbol*>::iterator it=mSymbols.begin();it!=mSymbols.end();++it)
+    for(QMap<QString,QgsSymbol*>::iterator it=mSymbols.begin();it!=mSymbols.end();++it)
     {
-	delete it->second;
+	delete it.value();
     }
     mSymbols.clear();
 }
@@ -214,9 +214,9 @@ bool QgsUniqueValueRenderer::writeXML( QDomNode & layer_node, QDomDocument & doc
     QDomText classificationfieldtxt=document.createTextNode(QString::number(mClassificationField));
     classificationfield.appendChild(classificationfieldtxt);
     uniquevalue.appendChild(classificationfield);
-    for(std::map<QString,QgsSymbol*>::const_iterator it=mSymbols.begin();it!=mSymbols.end();++it)
+    for(QMap<QString,QgsSymbol*>::const_iterator it=mSymbols.begin();it!=mSymbols.end();++it)
     {
-	if(!(it->second)->writeXML(uniquevalue,document))
+	if(!(it.value()->writeXML(uniquevalue,document)))
 	{
 	    returnval=false;  
 	}

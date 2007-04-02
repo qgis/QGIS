@@ -313,9 +313,9 @@ void QgsLegendLayer::vectorLayerSymbology(const QgsVectorLayer* layer)
   //add the new items
   QString lw, uv, label;
   const QgsRenderer* renderer = layer->renderer();
-  const std::list<QgsSymbol*> sym = renderer->symbols();
+  const QList<QgsSymbol*> sym = renderer->symbols();
 
-  for(std::list<QgsSymbol*>::const_iterator it=sym.begin(); it!=sym.end(); ++it)
+  for(QList<QgsSymbol*>::const_iterator it=sym.begin(); it!=sym.end(); ++it)
   {
     QImage img;
     if((*it)->type() == QGis::Point)
