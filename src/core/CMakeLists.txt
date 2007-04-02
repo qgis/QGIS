@@ -54,10 +54,7 @@ renderer/qgsrenderer.cpp
 renderer/qgssinglesymbolrenderer.cpp
 renderer/qgsuniquevaluerenderer.cpp
 
-symbology/qgslinesymbol.cpp
 symbology/qgsmarkercatalogue.cpp
-symbology/qgsmarkersymbol.cpp
-symbology/qgspolygonsymbol.cpp
 symbology/qgssymbol.cpp
 symbology/qgssymbologyutils.cpp
 
@@ -212,10 +209,7 @@ renderer/qgsrenderer.h
 renderer/qgssinglesymbolrenderer.h
 renderer/qgsuniquevaluerenderer.h
 
-symbology/qgslinesymbol.h
 symbology/qgsmarkercatalogue.h
-symbology/qgsmarkersymbol.h
-symbology/qgspolygonsymbol.h
 symbology/qgssymbol.h
 symbology/qgssymbologyutils.h
 
