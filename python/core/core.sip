@@ -28,6 +28,7 @@
 %Include qgsmaplayerregistry.sip
 %Include qgsmaprender.sip
 %Include qgsmaptopixel.sip
+%Include qgsmarkercatalogue.sip
 %Include qgsmessageoutput.sip
 %Include qgspoint.sip
 %Include qgsproject.sip
@@ -45,6 +46,7 @@
 %Include qgsspatialindex.sip
 %Include qgsspatialrefsys.sip
 %Include qgssymbol.sip
+%Include qgssymbologyutils.sip
 %Include qgsuniquevaluerenderer.sip
 %Include qgsvectordataprovider.sip
 %Include qgsvectorlayer.sip
