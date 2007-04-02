@@ -43,7 +43,7 @@ public:
     /** Returns pixmap of the marker
      * \param fullName full name, e.g. hard:circle, svg:/home/usr1/marker1.svg
      */
-    QImage pixmapMarker (QString fullName, int size, QPen pen, QBrush brush, bool qtBug = true );
+    QImage imageMarker (QString fullName, int size, QPen pen, QBrush brush, bool qtBug = true );
 
     /** Returns qpicture of the marker
      * \param fullName full name, e.g. hard:circle, svg:/home/usr1/marker1.svg

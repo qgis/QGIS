@@ -87,7 +87,7 @@ QgsMarkerCatalogue *QgsMarkerCatalogue::instance()
   return QgsMarkerCatalogue::mMarkerCatalogue;
 }
 
-QImage QgsMarkerCatalogue::pixmapMarker ( QString fullName, int size, QPen pen, QBrush brush, bool qtBug )
+QImage QgsMarkerCatalogue::imageMarker ( QString fullName, int size, QPen pen, QBrush brush, bool qtBug )
 {
   //std::cerr << "QgsMarkerCatalogue::marker " << fullName.toLocal8Bit().data() << " sice:" << size << std::endl;
       
