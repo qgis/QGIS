@@ -30,6 +30,8 @@ class QgsPythonDialog : public QDialog, private Ui::QgsPythonDialog
     
     ~QgsPythonDialog();
 
+    QString escapeHtml(QString text);
+
   public slots:
     
     void on_edtCmdLine_returnPressed();
