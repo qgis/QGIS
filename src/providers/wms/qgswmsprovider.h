@@ -401,15 +401,6 @@ public:
    */
   virtual QSet<QString> supportedCrsForLayers(QStringList const & layers);
 
-  /**
-   * Set the QgsSpatialReferenceSystem for this layer.
-   * @note Must be reimplemented by each provider. 
-   *
-   * @param theSRS QgsSpatialRefSys to be assigned to this layer
-   *               A complete copy of the passed in SRS will be made.
-   */
-  virtual void setSRS(const QgsSpatialRefSys& theSRS);
-
   /*! Get the QgsSpatialRefSys for this layer
    * @note Must be reimplemented by each provider. 
    * If the provider isn't capable of returning

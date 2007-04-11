@@ -456,26 +456,26 @@ void QgsAttributeTable::fillTable(QgsVectorLayer* layer)
     Q3Header *colHeader = horizontalHeader();
     mFields = provider->fields();
     int fieldcount=provider->fieldCount();
-#ifdef QGISDEBUG
-    for (int l = 0; l < mFields.size(); l++)
-      QgsDebugMsg("field: " + mFields[l].name() + " | " + QString::number(mFields[l].type()) );
-#endif
   
     setNumRows(provider->featureCount() + addedFeatures.size() - deletedFeatures.size());
     setNumCols(fieldcount+1);
     colHeader->setLabel(0, "id"); //label for the id-column
 
-    for (int h = 1; h <= fieldcount; h++)
+    int h = 1;
+    QgsFieldMap::const_iterator fldIt;
+    for (fldIt = mFields.begin(); fldIt != mFields.end(); ++fldIt)
     {
-        colHeader->setLabel(h, mFields[h - 1].name());
+      QgsDebugMsg("field " + QString::number(fldIt.key()) + ": " + fldIt->name() +
+                  " | " + QString(QVariant::typeToName(fldIt->type())) );
         
-        QgsDebugMsg("Setting column label " + mFields[h - 1].name());
+      colHeader->setLabel(h++, fldIt->name());
     }
 
     //go through the features and fill the values into the table
-    provider->reset();
     QgsAttributeList all = provider->allAttributesList();
-    while (provider->getNextFeature(fet, false, all))
+    provider->select(all, QgsRect(), false);
+    
+    while (provider->getNextFeature(fet))
     {
       if (!deletedFeatures.contains(fet.featureId()))
       {
@@ -491,7 +491,6 @@ void QgsAttributeTable::fillTable(QgsVectorLayer* layer)
       row++;
     }
 
-    provider->reset();
   }
 }
 
@@ -507,11 +506,37 @@ void QgsAttributeTable::putFeatureInTable(int row, QgsFeature& fet)
   setText(row, 0, QString::number(id));
   insertFeatureId(id, row);  //insert the id into the search tree of qgsattributetable
   const QgsAttributeMap& attr = fet.attributeMap();
-  for (int i = 0; i < attr.size(); i++)
+  QgsAttributeMap::const_iterator it;
+  int h = 1;
+  for (it = attr.begin(); it != attr.end(); ++it)
   {
     // get the field values
-    setText(row, i + 1, attr[i].toString());
+    setText(row, h++, it->toString());
   }
+}
+
+int QgsAttributeTable::colIndexFromFieldIndex(int fieldId)
+{
+  int colIndex = 1; // index 0 is feature ID
+  QgsFieldMap::const_iterator it;
+  for (it = mFields.begin(); it != mFields.end(); ++it, ++colIndex)
+  {
+    if (it.key() == fieldId)
+      return colIndex;
+  }
+  return -1;
+}
+
+int QgsAttributeTable::fieldIndexFromColIndex(int colIndex)
+{
+  colIndex--; // first one is feature ID
+  QgsFieldMap::const_iterator it;
+  for (it = mFields.begin(); it != mFields.end(); ++it, --colIndex)
+  {
+    if (colIndex == 0)
+      return it.key();
+  }
+  return -1;
 }
 
 void QgsAttributeTable::storeChangedValue(int row, int column)
@@ -521,10 +546,10 @@ void QgsAttributeTable::storeChangedValue(int row, int column)
     {
 	//find feature id
 	int id=text(row,0).toInt();
-	QString attribute=horizontalHeader()->label(column);
+	int field = fieldIndexFromColIndex(column);
 	
   QgsDebugMsg("feature id: " + QString::number(id));
-	QgsDebugMsg("attribute: " + attribute);
+  QgsDebugMsg("attribute: " + QString::number(field) + ": " + mFields[field].name());
 
   // add empty map for feature if doesn't exist
   if (!mChangedValues.contains(id))
@@ -532,8 +557,7 @@ void QgsAttributeTable::storeChangedValue(int row, int column)
     mChangedValues.insert(id, QgsAttributeMap());
   }
   
-  uint index = mFields.key(attribute);
-  mChangedValues[id].insert(index, QVariant(text(row,column)) );
+  mChangedValues[id].insert(field, QVariant(text(row,column)) );
   
 	QgsDebugMsg("value: " + text(row,column));
 	mEdited=true;

@@ -154,6 +154,12 @@ class QgsAttributeTable:public Q3Table
     /**This function compares the current selection and the selection of the last repaint. Returns true if there are differences in the selection.
      Also, mLastSelectedRows is updated*/
     bool checkSelectionChanges();
+    
+    /** returns column index for field index or -1 on invalid field index */
+    int colIndexFromFieldIndex(int fieldId);
+    /** returns field index for a column or -1 when on invalid column */
+    int fieldIndexFromColIndex(int colIndex);
+
 signals:
 
     /**Is emitted when a row was selected*/

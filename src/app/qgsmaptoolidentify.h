@@ -26,6 +26,7 @@ class QgsIdentifyResults;
 class QgsMessageViewer;
 class QgsMapLayer;
 class QgsRasterLayer;
+class QgsRubberBand;
 class QgsVectorLayer;
 
 /**
@@ -57,6 +58,10 @@ class QgsMapToolIdentify : public QObject, public QgsMapTool
     //! called when map tool is being deactivated
     virtual void deactivate();
 
+  public slots:
+    //! creates rubberband on top of the feature to highlight it
+    void highlightFeature(int featureId);
+  
   private:
 
     /**
@@ -92,6 +97,9 @@ class QgsMapToolIdentify : public QObject, public QgsMapTool
 
     //! Pointer to the identify results dialog for WMS XML files
     QgsMessageViewer * mViewer;
+    
+    //! Rubber band for highlighting identified feature
+    QgsRubberBand* mRubberBand;
 
 private slots:
     // Let us know when the QgsIdentifyResults dialog box has been closed

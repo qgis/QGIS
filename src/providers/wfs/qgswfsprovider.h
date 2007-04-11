@@ -51,25 +51,33 @@ class QgsWFSProvider: public QgsVectorDataProvider
   ~QgsWFSProvider();
   
   /* Inherited from QgsVectorDataProvider */
-  
-  virtual void select(QgsRect mbr, bool useIntersect=false);
-  
-  virtual bool getNextFeature(QgsFeature& feature,
-                              bool fetchGeometry = true,
-                              QgsAttributeList fetchAttributes = QgsAttributeList(),
-                              uint featureQueueSize = 1);
 
+  /** Select features based on a bounding rectangle. Features can be retrieved with calls to getNextFeature.
+   *  @param fetchAttributes list of attributes which should be fetched
+   *  @param rect spatial filter
+   *  @param fetchGeometry true if the feature geometry should be fetched
+   *  @param useIntersect true if an accurate intersection test should be used,
+   *                     false if a test based on bounding box is sufficient
+   */
+  virtual void select(QgsAttributeList fetchAttributes = QgsAttributeList(),
+                      QgsRect rect = QgsRect(),
+                      bool fetchGeometry = true,
+                      bool useIntersect = false);
+
+  /**
+   * Get the next feature resulting from a select operation.
+   * @param feature feature which will receive data from the provider
+   * @return true when there was a feature to fetch, false when end was hit
+   */
+  virtual bool getNextFeature(QgsFeature& feature);
   
   QGis::WKBTYPE geometryType() const;
   long featureCount() const;
   uint fieldCount() const;
   const QgsFieldMap & fields() const;
   void reset();
-  QString minValue(uint position);
-  QString maxValue(uint position);
   
   virtual QgsSpatialRefSys getSRS();
-  virtual void setSRS(const QgsSpatialRefSys& theSRS);
   
   /* Inherited from QgsDataProvider */
   
@@ -112,15 +120,10 @@ class QgsWFSProvider: public QgsVectorDataProvider
   mutable QGis::WKBTYPE mWKBType;
   /**Source SRS*/
   QgsSpatialRefSys* mSourceSRS;
-  /**Stores the minimum/maximum values for each attribute
-   The position in the vector is equal to the position of an attribute in the layers attribute vector*/
-  std::vector< std::pair<QString, QString> > mMinMaxCash;
   int mFeatureCount;
   /**Flag if provider is valid*/
   bool mValid;
 
-  /**Goes through all the features and their attributes and populates mMinMaxCash with entries*/
-  void fillMinMaxCash();
   
   /**Collects information about the field types. Is called internally from QgsWFSProvider::getFeature. The method delegates the work to request specific ones and gives back the name of the geometry attribute and the thematic attributes with their types*/
   int describeFeatureType(const QString& uri, QString& geometryAttribute, QgsFieldMap& fields);

@@ -36,7 +36,8 @@ QgsIdentifyResults::QgsIdentifyResults(const QgsAttributeAction& actions,
 : QDialog(parent, f),
   mActions(actions),
   mClickedOnValue(0),
-  mActionPopup(0)
+  mActionPopup(0),
+  mCurrentFeatureId(0)
 {
   setupUi(this);
   lstResults->setColumnCount(2);
@@ -49,6 +50,9 @@ QgsIdentifyResults::QgsIdentifyResults(const QgsAttributeAction& actions,
       this, SLOT(clicked(QTreeWidgetItem *)) );
   connect( lstResults, SIGNAL(itemExpanded(QTreeWidgetItem*)),
            this, SLOT(itemExpanded(QTreeWidgetItem*)));
+
+  connect( lstResults, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
+           this, SLOT(handleCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
 }
 
 QgsIdentifyResults::~QgsIdentifyResults()
@@ -306,4 +310,37 @@ void QgsIdentifyResults::on_buttonHelp_clicked()
 void QgsIdentifyResults::itemExpanded(QTreeWidgetItem* item)
 {
   expandColumnsToFit();
+}
+
+void QgsIdentifyResults::handleCurrentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
+{
+  if (lstResults->model()->rowCount() <= 1)
+    return;
+  
+  if (current == NULL)
+  {
+    mCurrentFeatureId = 0;
+    emit selectedFeatureChanged(0);
+    return;
+  }
+  
+  // move to node where is saved feature ID
+  QTreeWidgetItem* topLevelItem = current;
+  while (topLevelItem->parent() != NULL)
+  {
+    topLevelItem = topLevelItem->parent();
+  }
+  
+  QVariant fid = topLevelItem->data(0, Qt::UserRole);
+  
+  // no data saved...
+  if (fid.type() != QVariant::Int)
+    return;
+  int fid2 = fid.toInt();
+  
+  if (fid2 == mCurrentFeatureId)
+    return;
+      
+  mCurrentFeatureId = fid2;
+  emit selectedFeatureChanged(mCurrentFeatureId);
 }

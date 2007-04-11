@@ -2899,25 +2899,29 @@ void QgsGrassModuleSelection::updateSelection()
     QgsVectorLayer *vector = dynamic_cast<QgsVectorLayer*>(layer);
 	    
     QgsGrassProvider *provider = (QgsGrassProvider *) vector->getDataProvider();
+    QgsAttributeList allAttributes = provider->allAttributesList();
+    const QgsFeatureIds& selected = vector->selectedFeaturesIds();
     int keyField = provider->keyField();
 
     if ( keyField < 0 ) return;
     
     QString cats;
-    provider->reset();
-    QgsFeature* feature;
+    provider->select(allAttributes, QgsRect(), true);
+    QgsFeature feature;
 
     int i = 0;
-    while ( (feature = vector->getNextFeature(true, true)) != NULL )
+    while ( provider->getNextFeature(feature) )
     {
-	QgsAttributeMap attr = feature->attributeMap();
-	if ( attr.size() > keyField )
-	{
-	    if ( i > 0 ) cats.append( "," );
-	    cats.append( attr[keyField].toString() );
-	    i++;
-	}
-        delete feature;
+      if (!selected.contains(feature.featureId()))
+          continue;
+      
+      QgsAttributeMap attr = feature.attributeMap();
+      if ( attr.size() > keyField )
+      {
+          if ( i > 0 ) cats.append( "," );
+          cats.append( attr[keyField].toString() );
+          i++;
+      }
     }
     if ( mVectorLayer != vector ) 
     {

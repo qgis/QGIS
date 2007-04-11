@@ -17,564 +17,276 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include "qgsapplication.h"
 #include "qgsfield.h"
 #include "qgsfeature.h"
+#include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsspatialrefsys.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectordataprovider.h"
 
-#include <iostream>
 #include <QFile>
-#include <QString>
 #include <QTextCodec>
 
-// Includes for ogr shaprewriting
-#include <ogr_srs_api.h>
+#include <cassert>
+
 #include <ogrsf_frmts.h>
 
-//  needed for OFTDate (supported from GDAL 1.3.2)
-#include <gdal_version.h>
 
-QgsVectorFileWriter::QgsVectorFileWriter(QString theOutputFileName, QString fileEncoding, QgsVectorLayer * theVectorLayer)
+QgsVectorFileWriter::QgsVectorFileWriter(const QString& shapefileName,
+                                         const QString& fileEncoding,
+                                         const QgsFieldMap& fields,
+                                         QGis::WKBTYPE geometryType,
+                                         const QgsSpatialRefSys* srs)
+  : mDS(NULL), mLayer(NULL), mGeom(NULL), mError(NoError)
 {
-  std::cout << "QgsVectorFileWriter constructor called with " << theOutputFileName.toLocal8Bit().data() << 
-      " and vector layer : " << theVectorLayer->getLayerID().toLocal8Bit().data() << std::endl;
-  //const char *mOutputFormat = "ESRI Shapefile";
-  mOutputFormat = "ESRI Shapefile";
-  //const char *theOutputFileName = "ogrtest.shp";
-  mOutputFileName = theOutputFileName;
 
-  QTextCodec* ncodec=QTextCodec::codecForName(fileEncoding.toLocal8Bit().data());
-  if(ncodec)
-    {
-      mEncoding=ncodec;
-    }
-  else
-    {
-#ifdef QGISDEBUG
-      qWarning("error finding QTextCodec in QgsVectorFileWriter ctor");
-#endif
-    }
-
-  //
-  // We should retrieve the geometry type from the vector layer!
-  //
-
-
-
-  mInitialisedFlag = false;
-  
-}
-
-QgsVectorFileWriter::QgsVectorFileWriter(QString theOutputFileName, QString fileEncoding, OGRwkbGeometryType theGeometryType)
-{
-  std::cout << "QgsVectorFileWriter constructor called with " << theOutputFileName.toLocal8Bit().data() <<  " and no input vector layer "  << std::endl;
-  mOutputFormat = "ESRI Shapefile"; //hard coded for now!
-  QTextCodec* ncodec=QTextCodec::codecForName(fileEncoding.toLocal8Bit().data());
-  if(ncodec)
-    {
-      mEncoding=ncodec;
-    }
-  else
-    {
-#ifdef QGISDEBUG
-      qWarning("error finding QTextCodec in QgsVectorFileWriter ctor");
-#endif
-    }
-  mOutputFileName = theOutputFileName; 
-  mGeometryType = theGeometryType;
-  mInitialisedFlag = false;
-}
-
-QgsVectorFileWriter::~QgsVectorFileWriter()
-{
-  OGR_DS_Destroy( mDataSourceHandle );
-  //GDALClose( hSrcDS );
-}
-
-bool QgsVectorFileWriter::initialise()
-{
-  // Valid OGRwkbGeometryType as defined in ogr_core.h
-  //    wkbUnknown = 0,             /* non-standard */
-  //    wkbPoint = 1,               /* rest are standard WKB type codes */
-  //    wkbLineString = 2,
-  //    wkbPolygon = 3,
-  //    wkbMultiPoint = 4,
-  //    wkbMultiLineString = 5,
-  //    wkbMultiPolygon = 6,
-  //    wkbGeometryCollection = 7,
-  //    wkbNone = 100,              /* non-standard, for pure attribute records */
-  //    wkbLinearRing = 101,        /* non-standard, just for createGeometry() */
-  //    wkbPoint25D = 0x80000001,   /* 2.5D extensions as per 99-402 */
-  //    wkbLineString25D = 0x80000002,
-  //    wkbPolygon25D = 0x80000003,
-  //    wkbMultiPoint25D = 0x80000004,
-  //    wkbMultiLineString25D = 0x80000005,
-  //    wkbMultiPolygon25D = 0x80000006,
-  //    wkbGeometryCollection25D = 0x80000007
-
-  //
-  // The following stuff just sets up the shapefile - without writing any data to it!
-  //
-
-  //assume failure
-  mInitialisedFlag=false; 
-  
-  OGRRegisterAll();
-  OGRSFDriverH myDriverHandle = OGRGetDriverByName( mOutputFormat.toLocal8Bit().data() );
-
-  if( myDriverHandle == NULL )
-  {
-    std::cout << "Unable to find format driver named " << mOutputFormat.toLocal8Bit().data() << std::endl;
-    return false;
-  }
-
-  // Filename needs to be UTF-8 for Mac but local8Bit otherwise
-  mDataSourceHandle = OGR_Dr_CreateDataSource( myDriverHandle, QFile::encodeName(mOutputFileName).constData(), NULL );
-  if( mDataSourceHandle == NULL )
-  {
-    std::cout << "Datasource handle is null! " << std::endl;
-    return false;
-  }
-
-  //define the spatial ref system
-  OGRSpatialReferenceH mySpatialReferenceSystemHandle = NULL;
-  QgsSpatialRefSys mySpatialRefSys;
-  mySpatialRefSys.validate();
-  QString myWKT = mySpatialRefSys.toWkt();
-
- 
-  //sample below shows how to extract srs from a raster
-  //    const char *myWKT = GDALGetProjectionRef( hBand );
-
-
-  if( !myWKT.isNull()  &&  myWKT.length() != 0 )
-  {
-    mySpatialReferenceSystemHandle = OSRNewSpatialReference( myWKT.toLocal8Bit().data() );
-  }
-  //change 'contour' to something more useful!
-#ifdef QGISDEBUG
-  qWarning(("mOutputFileName: "+mOutputFileName).toLocal8Bit().data());
-#endif //QGISDEBUG
-
-#ifdef WIN32 
-  QString outname=mOutputFileName.mid(mOutputFileName.findRev("\\")+1,mOutputFileName.length());
-#else
-  QString outname=mOutputFileName.mid(mOutputFileName.findRev("/")+1,mOutputFileName.length());
-#endif
-  
-
-#ifdef QGISDEBUG
-  qWarning(("outname: "+outname).toLocal8Bit().data());
-#endif //QGISDEBUG
-
-  // Unsure if this will be a filename or not. Use custom encoding for now.
-  mLayerHandle = OGR_DS_CreateLayer( mDataSourceHandle, mEncoding->fromUnicode(outname), 
-  mySpatialReferenceSystemHandle, mGeometryType, NULL );
-  
-  if( mLayerHandle == NULL )
-  {
-    std::cout << "Error layer handle is null!" << std::endl;
-    return false;
-  }
-  else
-  {
-    std::cout << "File handle created!" << std::endl;
-  }
-
-  // Check and fall back on encoding.
-  if (mEncoding == NULL)
-  {
-    qWarning("Failed to initialize VectorFileWriter with encoding. Falling back on utf8");
-    mEncoding = QTextCodec::codecForName("utf8");
-    Q_ASSERT(mEncoding);
-  }
-  //let other methods know we have an initialised file
-  mInitialisedFlag=true; 
-  return true;
-}
-
-bool QgsVectorFileWriter::createField(QString theName, OGRFieldType theType, int theWidthInt, int thePrecisionInt)
-{
-  if (!mInitialisedFlag)
-  {
-    return false;
-  }
-  OGRFieldDefnH myFieldDefinitionHandle;
-
-  //
-  // OGRFieldType types as defined in  ogr_core.h :
-  // 
-  //        OFTInteger = 0,
-  //        OFTIntegerList = 1,
-  //        OFTReal = 2,
-  //        OFTRealList = 3,
-  //        OFTString = 4,
-  //        OFTStringList = 5,
-  //        OFTWideString = 6,
-  //        OFTWideStringList = 7,
-  //        OFTBinary = 8
-  //
-  // XXX Is the layer encoding set here?
-  Q_ASSERT(mEncoding != NULL);
-  myFieldDefinitionHandle = OGR_Fld_Create( mEncoding->fromUnicode(theName), theType );
-  OGR_Fld_SetWidth( myFieldDefinitionHandle, theWidthInt );
-  //
-  // Set the precision where applicable!
-  //
-  switch (theType)
-  {
-      case OFTInteger:
-          //do nothing  (has no precision to set)
-        break;
-      case OFTIntegerList:
-          //XXX Find out how this is used!!!!!!!
-          break;
-      case OFTReal:
-          OGR_Fld_SetPrecision( myFieldDefinitionHandle, thePrecisionInt );
-          break;
-      case OFTRealList:
-          //XXX Find out how this is used!!!!!!!
-          break;
-      case OFTString:
-          break;
-      case OFTStringList:
-          //XXX Find out how this is used!!!!!!!
-          break;
-      case OFTWideString:
-          break;
-      case OFTWideStringList:
-          //XXX Find out how this is used!!!!!!!
-          break;
-      case OFTBinary:
-          break;
-#if GDAL_VERSION_NUM >= 1320
-      case OFTDate:
-      case OFTTime:
-      case OFTDateTime:
-          //XXX Find out how this is used!!!!!!!
-          break;
-#endif
-  }
-
-  OGR_L_CreateField( mLayerHandle, myFieldDefinitionHandle, FALSE );
-  OGR_Fld_Destroy( myFieldDefinitionHandle );
-  
-  return true;
-}
-
-bool QgsVectorFileWriter::writePoint(QgsPoint * thePoint)
-{
-    bool returnvalue=true;
-    //check the output file has been initialised
-    if (!mInitialisedFlag)
-    {
-	std::cout << "Vector file writer not initialised yet. Initialise first before calling writePoint!" << std::endl;
-	return false;
-    }
-    //check the geomtry of the output file is compatible
-    if (mGeometryType != wkbPoint)
-    {
-	std::cout << "Vector file writer geometry type is not compatible with writePoint!" << std::endl;
-	return false;
-    }
-    
-    OGRFeatureDefnH fdef=OGR_L_GetLayerDefn(mLayerHandle);
-    OGRFeatureH fhand= OGR_F_Create( fdef );
-    OGRGeometryH geometryh=OGR_G_CreateGeometry(wkbPoint);
-    OGR_G_AddPoint( geometryh, thePoint->x(), thePoint->y(), 0 );
-    
-    if(OGR_F_SetGeometryDirectly(fhand, geometryh )!=OGRERR_NONE)
-    {
-#ifdef QGISDEBUG
-	qWarning("Set geometry failed");
-#endif
-	returnvalue=false;
-    }
-    
-    if(OGR_L_CreateFeature( mLayerHandle, fhand )!=OGRERR_NONE)
-    {
-#ifdef QGISDEBUG
-	qWarning("Creation of the point failed");
-#endif  
-	returnvalue=false;
-    }
-    
-    if(OGR_L_SyncToDisk( mLayerHandle )!=OGRERR_NONE)
-    {
-#ifdef QGISDEBUG
-	qWarning("Sync to disk failed");
-#endif 
-	returnvalue=false;
-    }
-    OGR_F_Destroy( fhand );  
-    return returnvalue;
-}
-
-bool QgsVectorFileWriter::writeLine(unsigned char* wkb, int size)
-{
-    bool returnvalue=true;
-    //add endianness
-    int endianval = endian();
-    memcpy(&wkb[0],&endianval,1);
-    //check the output file has been initialised
-    if (!mInitialisedFlag)
-    {
-	std::cout << "Vector file writer not initialised yet. Initialise first before calling writePoint!" << std::endl;
-	return false;
-    }
-    //check the geomtry of the output file is compatible
-    if (mGeometryType != wkbLineString)
-    {
-	std::cout << "Vector file writer geometry type is not compatible with writePoint!" << std::endl;
-	return false;
-    }
-
-    OGRFeatureDefnH fdef=OGR_L_GetLayerDefn(mLayerHandle);
-    OGRFeatureH fhand= OGR_F_Create( fdef );
-    OGRGeometryH geometryh=OGR_G_CreateGeometry(wkbLineString);
-    
-    if(OGR_G_ImportFromWkb(geometryh, wkb, size)!=OGRERR_NONE)
-    {
-#ifdef QGISDEBUG
-	qWarning("wkb import failed");
-#endif
-	returnvalue=false;
-    }
-
-    if(OGR_F_SetGeometryDirectly(fhand, geometryh )!=OGRERR_NONE)
-    {
-#ifdef QGISDEBUG
-	qWarning("Set geometry failed");
-#endif
-	returnvalue=false;
-    }
-
-    if(OGR_L_CreateFeature( mLayerHandle, fhand )!=OGRERR_NONE)
-    {
-#ifdef QGISDEBUG
-	qWarning("Creation of the point failed");
-#endif    
-	returnvalue=false;
-    }
-    
-    if(OGR_L_SyncToDisk( mLayerHandle )!=OGRERR_NONE)
-    {
-#ifdef QGISDEBUG
-	qWarning("Sync to disk failed");
-#endif 
-	returnvalue=false;
-    }
-    OGR_F_Destroy( fhand );  
-    return returnvalue;
-}
-
-bool QgsVectorFileWriter::writePolygon(unsigned char* wkb, int size)
-{
-    bool returnvalue = true;
-    //add endianness
-    int endianval = endian();
-    memcpy(&wkb[0],&endianval,1);
-    //check the output file has been initialised
-    if (!mInitialisedFlag)
-    {
-	std::cout << "Vector file writer not initialised yet. Initialise first before calling writePoint!" << std::endl;
-	return false;
-    }
-    //check the geomtry of the output file is compatible
-    if (mGeometryType != wkbPolygon)
-    {
-	std::cout << "Vector file writer geometry type is not compatible with writePoint!" << std::endl;
-	return false;
-    }
-
-    OGRFeatureDefnH fdef=OGR_L_GetLayerDefn(mLayerHandle);
-    OGRFeatureH fhand= OGR_F_Create( fdef );
-    OGRGeometryH geometryh=OGR_G_CreateGeometry(wkbPolygon);
-    
-    if(OGR_G_ImportFromWkb(geometryh, wkb, size)!=OGRERR_NONE)
-    {
-#ifdef QGISDEBUG
-	qWarning("wkb import failed");
-#endif
-	returnvalue = false;
-    }
-
-    if(OGR_F_SetGeometryDirectly(fhand, geometryh )!=OGRERR_NONE)
-    {
-#ifdef QGISDEBUG
-	qWarning("Set geometry failed");
-#endif
-	returnvalue = false;
-    }
-
-    if(OGR_L_CreateFeature( mLayerHandle, fhand )!=OGRERR_NONE)
-    {
-#ifdef QGISDEBUG
-	qWarning("Creation of the point failed");
-#endif      
-	returnvalue = false;
-    }
-    
-    if(OGR_L_SyncToDisk( mLayerHandle )!=OGRERR_NONE)
-    {
-#ifdef QGISDEBUG
-	qWarning("Sync to disk failed");
-#endif 
-	returnvalue = false;
-    }
-    OGR_F_Destroy( fhand );  
-    return true;
-    
-}
-
-int QgsVectorFileWriter::endian()
-{
-  return QgsApplication::endian();
-}
-
-
-QString QgsVectorFileWriter::writeVectorLayerAsShapefile(QString shapefileName, QString enc, QgsVectorLayer* layer)
-{
   // save the layer as a shapefile
   QString driverName = "ESRI Shapefile";
+  
+  // find driver in OGR
   OGRSFDriver *poDriver;
   OGRRegisterAll();
   poDriver =
       OGRSFDriverRegistrar::GetRegistrar()->
-      GetDriverByName((const char *)driverName.toLocal8Bit().data());
+      GetDriverByName(driverName.toLocal8Bit().data());
   
   if (poDriver == NULL)
   {
-    return "DRIVER_NOT_FOUND";
+    mError = ErrDriverNotFound;
+    return;
   }
 
-  OGRDataSource *poDS;
   // create the data source
-  poDS = poDriver->CreateDataSource((const char *) shapefileName, NULL);
-  if (poDS == NULL)
+  mDS = poDriver->CreateDataSource(shapefileName, NULL);
+  if (mDS == NULL)
   {
-    return "ERROR_CREATE_SOURCE";
+    mError = ErrCreateDataSource;
+    return;
   }
   
   QgsDebugMsg("Created data source");
   
-  QTextCodec* saveCodec = QTextCodec::codecForName(enc.toLocal8Bit().data());
-  if(!saveCodec)
+  // use appropriate codec
+  mCodec = QTextCodec::codecForName(fileEncoding.toLocal8Bit().data());
+  if (!mCodec)
   {
-      QgsDebugMsg("error finding QTextCodec for " + enc);
-      saveCodec = QTextCodec::codecForLocale();
+    QgsDebugMsg("error finding QTextCodec for " + fileEncoding);
+    mCodec = QTextCodec::codecForLocale();
+  }
+  
+  // consider spatial reference system of the layer
+  OGRSpatialReference* ogrRef = NULL;
+  if (srs)
+  {
+    QString srsWkt = srs->toWkt();
+    ogrRef = new OGRSpatialReference(srsWkt.toLocal8Bit().data());
   }
  
-  // datasource created, now create the output layer, use utf8() for now.
-  OGRLayer *poLayer;
-  poLayer =
-      poDS->CreateLayer((const char *) (shapefileName.
-      left(shapefileName.find(".shp"))).utf8(), NULL,
-  static_cast < OGRwkbGeometryType > (1), NULL);
+  // datasource created, now create the output layer
+  QString layerName = shapefileName.left(shapefileName.find(".shp"));
+  OGRwkbGeometryType wkbType = static_cast<OGRwkbGeometryType>(geometryType);
+  mLayer = mDS->CreateLayer(QFile::encodeName(layerName).data(), ogrRef, wkbType, NULL);
   
-  if (poLayer == NULL)
+  if (srs)
+    delete ogrRef;
+  
+  if (mLayer == NULL)
   {
-    return "ERROR_CREATE_LAYER";
+    mError = ErrCreateLayer;
+    return;
   }
   
   QgsDebugMsg("created layer");
-  
-  const QgsFieldMap & attributeFields = layer->getDataProvider()->fields();
-    
-  // TODO: calculate the field lengths
-  //int *lengths = getFieldLengths();
-  int lengths[] = { 1,2,3 }; // dummy lengths!
-  
-  // create the fields
-  QgsDebugMsg("creating " + QString("%d").arg(attributeFields.size()) + " fields");
 
-  for (int i = 0; i < attributeFields.size(); i++)
+  // create the fields
+  QgsDebugMsg("creating " + QString::number(fields.size()) + " fields");
+  
+  mFields = fields;
+
+  QgsFieldMap::const_iterator fldIt;
+  for (fldIt = fields.begin(); fldIt != fields.end(); ++fldIt)
   {
-    // check the field length - if > 10 we need to truncate it
-    QgsField attrField = attributeFields[i];
-    if (attrField.name().length() > 10)
+    const QgsField& attrField = fldIt.value();
+    
+    OGRFieldType ogrType;
+    switch (attrField.type())
     {
-      attrField = attrField.name().left(10);
+      case QVariant::String:
+        ogrType = OFTString;
+        break;
+      case QVariant::Int:
+        ogrType = OFTInteger;
+        break;
+      case QVariant::Double:
+        ogrType = OFTReal;
+        break;
+      default:
+        assert(0 && "invalid variant type!");
     }
 
-    // all fields are created as string (for now)
-    // TODO: make it type-aware
-    OGRFieldDefn fld(saveCodec->fromUnicode(attrField.name()), OFTString);
-
-    // set the length for the field -- but we don't know what it is...
-    fld.SetWidth(lengths[i]);
+    // create field definition
+    OGRFieldDefn fld(mCodec->fromUnicode(attrField.name()), ogrType);
+    fld.SetWidth(attrField.length());
+    fld.SetPrecision(attrField.precision());
 
     // create the field
-    QgsDebugMsg("creating field " + attrField.name() + " width length " + QString("%d").arg(lengths[i]));
-    if (poLayer->CreateField(&fld) != OGRERR_NONE)
+    QgsDebugMsg("creating field " + attrField.name() +
+                " type " + QString(QVariant::typeToName(attrField.type())) +
+                " width length " + QString::number(attrField.length()));
+    if (mLayer->CreateField(&fld) != OGRERR_NONE)
     {
       QgsDebugMsg("error creating field " + attrField.name());
     }
   }
 
-  QgsDebugMsg("Done creating fields, saving features");
+  QgsDebugMsg("Done creating fields");
 
-  QgsVectorDataProvider* provider = layer->getDataProvider();
-  QgsFeature fet;
-  QgsAttributeList allAttr = provider->allAttributesList();
-
-  provider->reset();
-
-  while (provider->getNextFeature(fet, true, allAttr))
+  // create instance of OGR geometry (will be used to import from WKB)
+  switch (geometryType)
   {
+    case QGis::WKBPoint:
+    case QGis::WKBPoint25D:
+      mGeom = new OGRPoint;
+      break;
+    case QGis::WKBLineString:
+    case QGis::WKBLineString25D:
+      mGeom = new OGRLineString;
+      break;
+    case QGis::WKBPolygon:
+    case QGis::WKBPolygon25D:
+      mGeom = new OGRPolygon;
+      break;
+    case QGis::WKBMultiPoint:
+    case QGis::WKBMultiPoint25D:
+      mGeom = new OGRMultiPoint;
+      break;
+    case QGis::WKBMultiLineString:
+    case QGis::WKBMultiLineString25D:
+      mGeom = new OGRMultiLineString;
+      break;
+    case QGis::WKBMultiPolygon:
+    case QGis::WKBMultiPolygon25D:
+      mGeom = new OGRMultiPolygon;
+      break;
+    default:
+      assert(0 && "invalid WKB type");
+  }
+}
+
+QgsVectorFileWriter::WriterError QgsVectorFileWriter::hasError()
+{
+  return mError;
+}
+    
+bool QgsVectorFileWriter::addFeature(QgsFeature& feature)
+{
+  if (hasError() != NoError)
+    return false;
+  
+  QgsAttributeMap::const_iterator it;
+
     // create the feature
-    OGRFeature *poFeature = new OGRFeature(poLayer->GetLayerDefn());
+  OGRFeature *poFeature = new OGRFeature(mLayer->GetLayerDefn());
 
-    QgsDebugMsg("Setting the field values");
-
-    const QgsAttributeMap& attributes = fet.attributeMap();
-    QgsAttributeMap::const_iterator it;
-    
-    for (it = attributes.begin(); it != attributes.end(); it++)
+    // attribute handling
+  const QgsAttributeMap& attributes = feature.attributeMap();
+  for (it = attributes.begin(); it != attributes.end(); it++)
+  {
+    QgsFieldMap::const_iterator fldIt = mFields.find(it.key());
+    if (fldIt == mFields.end())
     {
-      QString value = it.value().toString();
-      uint i = it.key();
-      if (!value.isNull())
-      {
-        QgsDebugMsg("Setting " + attributeFields[i].name() + " to " + value);
-        poFeature->SetField(saveCodec->fromUnicode(attributeFields[i].name()).data(),
-                            saveCodec->fromUnicode(value).data());
-      }
-      else
-      {
-        poFeature->SetField(saveCodec->fromUnicode(attributeFields[i].name()).data(), "");
-      }
+      QgsDebugMsg("ignoring attribute that's not in field map: type=" +
+                  QString(it.value().typeName()) + " value=" + it.value().toString());
+      continue;
     }
     
+    QString attrName = mFields[it.key()].name();
+    QByteArray encAttrName = mCodec->fromUnicode(attrName);
+    const QVariant& attrValue = it.value();
+
+    switch (attrValue.type())
+    {
+      case QVariant::Int:
+        poFeature->SetField(encAttrName.data(), attrValue.toInt());
+        break;
+      case QVariant::Double:
+        poFeature->SetField(encAttrName.data(), attrValue.toDouble());
+        break;
+      case QVariant::String:
+        poFeature->SetField(encAttrName.data(), mCodec->fromUnicode(attrValue.toString()).data());
+        break;
+      default:
+        assert(0 && "invalid variant type");
+    }
+  }
     
-    // TODO: get the geometry and save it
-    OGRPoint *poPoint = new OGRPoint();
-    poPoint->setX(0);
-    poPoint->setY(0);
-//    QString sX = parts[fieldPositions[mXField]];
-//    QString sY = parts[fieldPositions[mYField]];
-//    poPoint->setX(sX.toDouble());
-//    poPoint->setY(sY.toDouble());
+  // build geometry from WKB
+  QgsGeometry* geom = feature.geometry();
+  if (mGeom->importFromWkb(geom->wkbBuffer(), geom->wkbSize()) != OGRERR_NONE)
+  {
+    QgsDebugMsg("Failed to import geometry from WKB");
+  }
+    
+  // set geometry (ownership is not passed to OGR)
+  poFeature->SetGeometry(mGeom);
+    
+  // put the created feature to layer
+  if (mLayer->CreateFeature(poFeature) != OGRERR_NONE)
+  {
+    QgsDebugMsg("Failed to create feature in shapefile");
+    OGRFeature::DestroyFeature(poFeature);
+    return false;
+  }
 
-    QgsDebugMsg("Setting geometry");
+  OGRFeature::DestroyFeature(poFeature);
+  
+  return true;
+}
+    
+QgsVectorFileWriter::~QgsVectorFileWriter()
+{
+  if (mGeom)
+    delete mGeom;
+  
+  if (mDS)
+    OGRDataSource::DestroyDataSource(mDS);
+}
 
-    poFeature->SetGeometryDirectly(poPoint);
-    if (poLayer->CreateFeature(poFeature) != OGRERR_NONE)
-    {
-      QgsDebugMsg("Failed to create feature in shapefile");
-    }
-    else
-    {
-      QgsDebugMsg("Added feature");
-    }
 
-    delete poFeature;
+
+
+QgsVectorFileWriter::WriterError
+    QgsVectorFileWriter::writeAsShapefile(QgsVectorLayer* layer,
+                                          const QString& shapefileName,
+                                          const QString& fileEncoding)
+{
+  
+  QgsVectorDataProvider* provider = layer->getDataProvider();
+  
+  QgsVectorFileWriter* writer = new QgsVectorFileWriter(shapefileName,
+      fileEncoding, provider->fields(), provider->geometryType(), &layer->srs());
+  
+  // check whether file creation was successfull
+  WriterError err = writer->hasError();
+  if (err != NoError)
+  {
+    delete writer;
+    return err;
+  }
+
+  QgsAttributeList allAttr = provider->allAttributesList();
+  QgsFeature fet;
+  
+  provider->select(allAttr, QgsRect(), true);
+
+  // write all features
+  while (provider->getNextFeature(fet))
+  {
+    writer->addFeature(fet);
   }
   
-  delete poDS;
-
-  return NULL;
+  delete writer;
+  
+  return NoError;
 }

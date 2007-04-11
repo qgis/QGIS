@@ -49,5 +49,6 @@
 %Include qgssymbologyutils.sip
 %Include qgsuniquevaluerenderer.sip
 %Include qgsvectordataprovider.sip
+%Include qgsvectorfilewriter.sip
 %Include qgsvectorlayer.sip
 

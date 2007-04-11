@@ -16,6 +16,8 @@
 
 #include <QTextCodec>
 
+#include <cfloat> // for DBL_MAX
+
 #include "qgsvectordataprovider.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
@@ -23,6 +25,7 @@
 
 QgsVectorDataProvider::QgsVectorDataProvider(QString uri)
     : QgsDataProvider(uri),
+      mCacheMinMaxDirty(TRUE),
       mEncoding(QTextCodec::codecForLocale()),
       mFetchFeaturesWithoutGeom(FALSE)
 {
@@ -48,15 +51,15 @@ bool QgsVectorDataProvider::getFeatureAtId(int featureId,
                                       bool fetchGeometry,
                                       QgsAttributeList fetchAttributes)
 {
-  return 0;
-}
-
-void QgsVectorDataProvider::getFeatureAttributes(int key, int& row, QgsFeature *f)
-{
-}
-
-void QgsVectorDataProvider::getFeatureGeometry(int key, QgsFeature *f)
-{
+  select(fetchAttributes, QgsRect(), fetchGeometry);
+  
+  while (getNextFeature(feature))
+  {
+    if (feature.featureId() == featureId)
+      return TRUE;
+  }
+  
+  return FALSE;
 }
 
 QString QgsVectorDataProvider::dataComment() const
@@ -244,4 +247,98 @@ QgsAttributeList QgsVectorDataProvider::allAttributesList()
 void QgsVectorDataProvider::setFetchFeaturesWithoutGeom(bool fetch)
 {
   mFetchFeaturesWithoutGeom = fetch;
+}
+
+const QSet<QString>& QgsVectorDataProvider::supportedNativeTypes() const
+{
+  return mSupportedNativeTypes;
+}
+
+
+QVariant QgsVectorDataProvider::minValue(int index)
+{
+  if (!fields().contains(index))
+  {
+    QgsDebugMsg("Warning: access requested to invalid field index: " + QString::number(index));
+    return QVariant();
+  }
+  
+  if (mCacheMinMaxDirty)
+  {
+    fillMinMaxCache();
+  }
+  
+  if (!mCacheMinValues.contains(index))
+    return QVariant();
+  
+  return mCacheMinValues[index];
+}
+
+QVariant QgsVectorDataProvider::maxValue(int index)
+{
+  if (!fields().contains(index))
+  {
+    QgsDebugMsg("Warning: access requested to invalid field index: " + QString::number(index));
+    return QVariant();
+  }
+  
+  if (mCacheMinMaxDirty)
+  {
+    fillMinMaxCache();
+  }
+  
+  if (!mCacheMaxValues.contains(index))
+    return QVariant();
+  
+  return mCacheMaxValues[index];
+}
+
+void QgsVectorDataProvider::fillMinMaxCache()
+{
+  const QgsFieldMap& flds = fields();
+  for(QgsFieldMap::const_iterator it = flds.begin(); it != flds.end(); ++it)
+  {
+    if (it->type() == QVariant::Int)
+    {
+      mCacheMinValues[it.key()] = QVariant(INT_MAX);
+      mCacheMaxValues[it.key()] = QVariant(INT_MIN);
+    }
+    else if (it->type() == QVariant::Double)
+    {
+      mCacheMinValues[it.key()] = QVariant(DBL_MAX);
+      mCacheMaxValues[it.key()] = QVariant(-DBL_MAX);
+    }
+  }
+
+  QgsFeature f;
+  QgsAttributeList keys = mCacheMinValues.keys();
+  select(keys, QgsRect(), false);
+
+  while (getNextFeature(f))
+  {
+    QgsAttributeMap attrMap = f.attributeMap();
+    for (QgsAttributeList::const_iterator it = keys.begin(); it != keys.end(); ++it)
+    {
+      const QVariant& varValue = attrMap[*it];
+      
+      if (flds[*it].type() == QVariant::Int)
+      {
+        int value = varValue.toInt();
+        if (value < mCacheMinValues[*it].toInt())
+          mCacheMinValues[*it] = value;
+        if(value > mCacheMaxValues[*it].toInt())
+          mCacheMaxValues[*it] = value;  
+      }
+      else if (flds[*it].type() == QVariant::Double)
+      {
+        double value = varValue.toDouble();
+        if (value < mCacheMinValues[*it].toDouble())
+          mCacheMinValues[*it] = value;
+        if(value > mCacheMaxValues[*it].toDouble())
+          mCacheMaxValues[*it] = value;  
+      }
+    }
+  }
+
+  mCacheMinMaxDirty = FALSE;
 }

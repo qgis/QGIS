@@ -61,23 +61,32 @@ class QgsOgrProvider : public QgsVectorDataProvider
     
     
     virtual QgsSpatialRefSys getSRS();
-    
-    virtual void setSRS(const QgsSpatialRefSys& theSRS);
-    
+   
     
     /**
      *   Returns the permanent storage type for this layer as a friendly name.
      */
     virtual QString storageType() const;
 
-    /**
-     * Select features based on a bounding rectangle. Features can be retrieved 
-     * with calls to getFirstFeature and getNextFeature.
-     * @param mbr QgsRect containing the extent to use in selecting features
-     * @param useIntersect Use geos functions to determine the selected set
+    /** Select features based on a bounding rectangle. Features can be retrieved with calls to getNextFeature.
+     *  @param fetchAttributes list of attributes which should be fetched
+     *  @param rect spatial filter
+     *  @param fetchGeometry true if the feature geometry should be fetched
+     *  @param useIntersect true if an accurate intersection test should be used,
+     *                     false if a test based on bounding box is sufficient
      */
-    virtual void select(QgsRect mbr, bool useIntersect = false);
-
+    virtual void select(QgsAttributeList fetchAttributes = QgsAttributeList(),
+                        QgsRect rect = QgsRect(),
+                        bool fetchGeometry = true,
+                        bool useIntersect = false);
+  
+    /**
+     * Get the next feature resulting from a select operation.
+     * @param feature feature which will receive data from the provider
+     * @return true when there was a feature to fetch, false when end was hit
+     */
+    virtual bool getNextFeature(QgsFeature& feature);
+    
     /** 
      * Gets the feature at the given feature ID.
      * @param featureId id of the feature
@@ -90,20 +99,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
                                 QgsFeature& feature,
                                 bool fetchGeometry = true,
                                 QgsAttributeList fetchAttributes = QgsAttributeList());
-    /**
-     * Get the next feature resulting from a select operation.
-     * @param feature feature which will receive data from the provider
-     * @param fetchGeoemtry if true, geometry will be fetched from the provider
-     * @param fetchAttributes a list containing the indexes of the attribute fields to copy
-     * @param featureQueueSize  a hint to the provider as to how many features are likely to be retrieved in a batch
-     * @return true when there was a feature to fetch, false when end was hit
-     */
-    virtual bool getNextFeature(QgsFeature& feature,
-                                bool fetchGeometry = true,
-                                QgsAttributeList fetchAttributes = QgsAttributeList(),
-                                uint featureQueueSize = 1);
 
-    
     /**
      * Get feature type.
      * @return int representing the feature type
@@ -123,18 +119,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     virtual long featureCount() const;
 
-    /**
-     * Get the attributes associated with a feature
-     * TODO: Get rid of "row" and set up provider-internal caching instead
-     *       ("row" was only ever used in the PostgreSQL provider context anyway)
-     */
-    virtual void getFeatureAttributes(int key, int& row, QgsFeature &f);
-
-    /**
-     * Fetch geometry for a particular feature with id "key",
-     * modifies "f" in-place.
-     */
-    virtual void getFeatureGeometry(int key, QgsFeature *f);
 
     /** 
      * Get the number of fields in the layer
@@ -150,18 +134,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     virtual QgsRect extent();
 
-    /** Reset the layer - for an OGRLayer, this means clearing the
-     * spatial filter and calling ResetReading
-     */
+    /** Restart reading features from previous select operation */
     virtual void reset();
-
-    /**Returns the minimum value of an attribut
-      @param position the number of the attribute*/
-    virtual QString minValue(uint position);
-
-    /**Returns the maximum value of an attribut
-      @param position the number of the attribute*/
-    virtual QString maxValue(uint position);
 
     /**Writes a list of features to the file*/
     virtual bool addFeatures(QgsFeatureList & flist);
@@ -273,12 +247,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
     int geomType;
     long numberFeatures;
     
-    /**Flag indicating, if the minmaxcache should be renewed (true) or not (false)*/
-    bool minmaxcachedirty;
-    /**Matrix storing the minimum and maximum values*/
-    double **minmaxcache;
-    /**Fills the cash and sets minmaxcachedirty to false*/
-    void fillMinMaxCash();
     //! Selection rectangle 
     OGRPolygon * mSelectionRectangle;
     /**Adds one feature*/
@@ -287,7 +255,5 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool deleteFeature(int id);
     //! The geometry factory
     GEOS_GEOM::GeometryFactory *geometryFactory;
-    //! The well known text reader
-    GEOS_IO::WKTReader *wktReader;
 
 };

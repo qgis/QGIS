@@ -325,7 +325,7 @@ QgsMapLayer* QgsMapCanvas::currentLayer()
 
 void QgsMapCanvas::refresh()
 {
-  if (mRenderFlag)
+  if (mRenderFlag && !mFrozen)
   {
     clear();
     

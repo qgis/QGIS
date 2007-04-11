@@ -27,10 +27,12 @@ email                : morb at ozemail dot com dot au
 #define GEOS_GEOM geos
 #define GEOS_IO geos
 #define GEOS_UTIL geos
+#define COORD_SEQ_FACTORY DefaultCoordinateSequenceFactory
 #else
 #define GEOS_GEOM geos::geom
 #define GEOS_IO geos::io
 #define GEOS_UTIL geos::util
+#define COORD_SEQ_FACTORY CoordinateArraySequenceFactory
 #endif
 
 #include "qgspoint.h"
@@ -68,8 +70,11 @@ class QgsRect;
  * (at least) the Open Geospatial Consortium (WKB / WKT), and containing
  * various functions for geoprocessing of the geometry.
  *
- * The geometry is represented internally by the OGC WKB format, though
- * perhaps this will be migrated to GEOS geometry in future.
+ * The geometry is represented internally by the OGC WKB format or
+ * as GEOS geometry. Some functions use WKB for their work, others
+ * use GEOS.
+ *
+ * TODO: migrate completely to GEOS and only support WKB/WKT import/export.
  *
  * @author Brendan Morley
  */
@@ -93,42 +98,48 @@ class CORE_EXPORT QgsGeometry {
 
     /** static method that creates geometry from WKT */
     static QgsGeometry* fromWkt(QString wkt);
-   
-    /** 
-       Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
-       This class will take ownership of the buffer.
-    */
-    void setWkbAndOwnership(unsigned char * wkb, size_t length);
     
+    /** construct geometry from a point */
+    static QgsGeometry* fromPoint(const QgsPoint& point);
+    /** construct geometry from a polyline */
+    static QgsGeometry* fromPolyline(const QgsPolyline& polyline);
+    /** construct geometry from a polygon */
+    static QgsGeometry* fromPolygon(const QgsPolygon& polygon);
+    /** construct geometry from a rectangle */
+    static QgsGeometry* fromRect(const QgsRect& rect);
+   
     /** 
        Returns the buffer containing this geometry in WKB format.
        You may wish to use in conjunction with wkbSize().
     */
-    unsigned char * wkbBuffer() const;
+    unsigned char * wkbBuffer();
     
     /** 
        Returns the size of the WKB in wkbBuffer().
     */
-    size_t wkbSize() const;
-    
-    /** 
-       Returns the QString containing this geometry in WKT format.
-    */
-    QString const& wkt() const; 
+    size_t wkbSize();
     
     /** Returns type of wkb (point / linestring / polygon etc.) */
-    QGis::WKBTYPE wkbType() const;
+    QGis::WKBTYPE wkbType();
     
     /** Returns type of the vector */
-    QGis::VectorType vectorType() const;
+    QGis::VectorType vectorType();
     
     /** Returns true if wkb of the geometry is of WKBMulti* type */
-    bool isMultipart() const;
+    bool isMultipart();
 
     /**
-       Set the geometry, feeding in a geometry in GEOS format.
-    */
+      Set the geometry, feeding in a geometry in GEOS format.
+      This class will take ownership of the buffer.
+     */
     void setGeos(GEOS_GEOM::Geometry* geos);
+    
+    /** 
+      Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
+      This class will take ownership of the buffer.
+     */
+    void setWkbAndOwnership(unsigned char * wkb, size_t length);
+    
     
     double distance(QgsGeometry& geom);
 
@@ -136,7 +147,7 @@ class CORE_EXPORT QgsGeometry {
        Returns the vertex closest to the given point 
        (and also vertex index, squared distance and indexes of the vertices before/after)
     */
-    QgsPoint closestVertex(const QgsPoint& point, QgsGeometryVertexIndex& atVertex, int& beforeVertex, int& afterVertex, double& sqrDist) const;
+    QgsPoint closestVertex(const QgsPoint& point, QgsGeometryVertexIndex& atVertex, int& beforeVertex, int& afterVertex, double& sqrDist);
 
 
     /**
@@ -151,7 +162,7 @@ class CORE_EXPORT QgsGeometry {
           account the first vertex is equal to the last vertex (and will
           skip equal vertex positions).
     */
-    void adjacentVerticies(const QgsGeometryVertexIndex& atVertex, int& beforeVertex, int& afterVertex) const;
+    void adjacentVerticies(const QgsGeometryVertexIndex& atVertex, int& beforeVertex, int& afterVertex);
 
 
     /** Insert a new vertex before the given vertex index,
@@ -198,7 +209,7 @@ class CORE_EXPORT QgsGeometry {
      *
      *  If FALSE, x and y are not modified.
      */
-    bool vertexAt(double &x, double &y, QgsGeometryVertexIndex atVertex) const;
+    bool vertexAt(double &x, double &y, QgsGeometryVertexIndex atVertex);
 
     /**
         Returns the squared cartesian distance between the given point
@@ -207,7 +218,7 @@ class CORE_EXPORT QgsGeometry {
 
      */
     double sqrDistToVertexAt(QgsPoint& point,
-                             QgsGeometryVertexIndex& atVertex) const;
+                             QgsGeometryVertexIndex& atVertex);
 
     /**
         Returns, in atVertex, the closest vertex in this geometry to the given point.
@@ -226,20 +237,20 @@ class CORE_EXPORT QgsGeometry {
                                        double& sqrDist);
 
     /**Returns the bounding box of this feature*/
-    QgsRect boundingBox() const;
+    QgsRect boundingBox();
 
     /** Test for intersection with a rectangle (uses GEOS) */
-    bool intersects(const QgsRect& r) const;
-
-    /**Also tests for intersection, but uses direct geos export of QgsGeometry instead wkb export and geos wkb import. Therefore this method is faster and could replace QgsGeometry::intersects in the future*/
-    bool fast_intersects(const QgsRect& r) const;
+    bool intersects(const QgsRect& r);
+    /** Test for intersection with a geoemetry (uses GEOS) */
+    bool intersects(QgsGeometry* geometry);
 
     /** Test for containment of a point (uses GEOS) */
-    bool contains(QgsPoint* p) const;
+    bool contains(QgsPoint* p);
 
-    /**Returns a geos geometry from the features geometry. Note that object pointer is cached (mGoes) and
-     should _not_ be deleted by the calling method*/
-    GEOS_GEOM::Geometry* geosGeometry() const;
+    /** Exports the geometry to mWkt
+        @return true in case of success and false else
+     */
+    QString exportToWkt();
 
 
     /* Accessor functions for getting geometry data */
@@ -286,25 +297,19 @@ class CORE_EXPORT QgsGeometry {
     /** pointer to geometry in binary WKB format
         This is the class' native implementation
      */
-    mutable unsigned char * mGeometry;
+    unsigned char * mGeometry;
 
     /** size of geometry */
-    mutable size_t mGeometrySize;
-
-    /** cached WKT version of this geometry */
-    mutable QString mWkt;
+    size_t mGeometrySize;
 
     /** cached GEOS version of this geometry */
-    mutable GEOS_GEOM::Geometry* mGeos;
+    GEOS_GEOM::Geometry* mGeos;
 
     /** If the geometry has been set since the last conversion to WKB **/
-    mutable bool mDirtyWkb;
-
-    /** If the geometry has been set since the last conversion to WKT **/
-    mutable bool mDirtyWkt;
+    bool mDirtyWkb;
 
     /** If the geometry has been set  since the last conversion to GEOS **/
-    mutable bool mDirtyGeos;
+    bool mDirtyGeos;
 
 
     // Private functions
@@ -317,20 +322,15 @@ class CORE_EXPORT QgsGeometry {
                                          double *x2, double *y2,
                                          QgsPoint& minDistPoint);
 
-    /**Exports the current WKB to mWkt
-     @return true in case of success and false else*/
-    bool exportToWkt(unsigned char * geom) const;
-    bool exportToWkt() const;
-
-    /** Converts from the WKB geometry to the GEOS geometry.  (Experimental) 
+    /** Converts from the WKB geometry to the GEOS geometry.
         @return   true in case of success and false else
      */
-    bool exportWkbToGeos() const;
+    bool exportWkbToGeos();
 
-    /** Converts from the GEOS geometry to the WKB geometry.  (Experimental) 
+    /** Converts from the GEOS geometry to the WKB geometry.
         @return   true in case of success and false else
      */
-    bool exportGeosToWkb() const;
+    bool exportGeosToWkb();
 
 
 

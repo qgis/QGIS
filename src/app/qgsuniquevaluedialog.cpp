@@ -140,12 +140,12 @@ void QgsUniqueValueDialog::changeClassificationAttribute()
 	attlist.append(nr);
 	QgsSymbol* symbol;
 
-	provider->reset();
+	provider->select(attlist, QgsRect(), false);
 	QgsFeature feat;
 
 	//go through all the features and insert their value into the map and into mClassListWidget
 	mClassListWidget->clear();
-	while(provider->getNextFeature(feat, false, attlist))
+	while(provider->getNextFeature(feat))
 	{
       const QgsAttributeMap& attrs = feat.attributeMap();
 	    value = attrs[nr].toString();

@@ -71,35 +71,44 @@ class QgsPostgresProvider:public QgsVectorDataProvider
       */
     QString storageType();
 
-      /**
-     * Set the QgsSpatialReferenceSystem for this layer.
-     * @note Must be reimplemented by each provider. 
-     *
-     * @param theSRS QgsSpatialRefSys to be assigned to this layer
-     *               A complete copy of the passed in SRS will be made.
-       */
-    virtual void setSRS(const QgsSpatialRefSys& theSRS);
-
-      /*! Get the QgsSpatialRefSys for this layer
+    /*! Get the QgsSpatialRefSys for this layer
      * @note Must be reimplemented by each provider. 
      * If the provider isn't capable of returning
      * its projection an empty srs will be return, ti will return 0
-       */
+     */
     virtual QgsSpatialRefSys getSRS();
 
-    
+    /** Select features based on a bounding rectangle. Features can be retrieved with calls to getNextFeature.
+     *  @param fetchAttributes list of attributes which should be fetched
+     *  @param rect spatial filter
+     *  @param fetchGeometry true if the feature geometry should be fetched
+     *  @param useIntersect true if an accurate intersection test should be used,
+     *                     false if a test based on bounding box is sufficient
+     */
+    virtual void select(QgsAttributeList fetchAttributes = QgsAttributeList(),
+                        QgsRect rect = QgsRect(),
+                        bool fetchGeometry = true,
+                        bool useIntersect = false);
+  
     /**
      * Get the next feature resulting from a select operation.
      * @param feature feature which will receive data from the provider
-     * @param fetchGeoemtry if true, geometry will be fetched from the provider
-     * @param fetchAttributes a list containing the indexes of the attribute fields to copy
-     * @param featureQueueSize  a hint to the provider as to how many features are likely to be retrieved in a batch
      * @return true when there was a feature to fetch, false when end was hit
      */
-    virtual bool getNextFeature(QgsFeature& feature,
+    virtual bool getNextFeature(QgsFeature& feature);
+    
+    /** 
+      * Gets the feature at the given feature ID.
+      * @param featureId id of the feature
+      * @param feature feature which will receive the data
+      * @param fetchGeoemtry if true, geometry will be fetched from the provider
+      * @param fetchAttributes a list containing the indexes of the attribute fields to copy
+      * @return True when feature was found, otherwise false
+      */
+    virtual bool getFeatureAtId(int featureId,
+                                QgsFeature& feature,
                                 bool fetchGeometry = true,
-                                QgsAttributeList fetchAttributes = QgsAttributeList(),
-                                uint featureQueueSize = 1);
+                                QgsAttributeList fetchAttributes = QgsAttributeList());
 
     
     /** Get the feature type. This corresponds to
@@ -135,13 +144,6 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     uint fieldCount() const;
 
     /**
-     * Select features based on a bounding rectangle. Features can be retrieved
-     * with calls to getFirstFeature and getNextFeature.
-     * @param mbr QgsRect containing the extent to use in selecting features
-     */
-    void select(QgsRect mbr, bool useIntersect=false);
-
-    /**
      * Get the data source URI structure used by this layer
      */
     QgsDataSourceURI& getURI();
@@ -160,20 +162,6 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     /** Return the extent for this data layer
     */
     virtual QgsRect extent();
-
-    /**
-     * Get the attributes associated with a feature
-     */
-    virtual void getFeatureAttributes(int key, int& row, QgsFeature& f);
-
-    /**Get the attributes with indices contained in attlist*/
-    void getFeatureAttributes(int key, int& row, QgsFeature& f, const QgsAttributeList& attlist);
-
-    /**
-     * Fetch geometry for a particular feature with id "key",
-     * modifies "f" in-place.
-     */
-    void getFeatureGeometry(int key, QgsFeature& f);
 
     /**  * Get the name of the primary key for the layer
     */
@@ -196,13 +184,13 @@ class QgsPostgresProvider:public QgsVectorDataProvider
      */
     void reset();
 
-    /**Returns the minimum value of an attribute
-      @param position the number of the attribute*/
-    QString minValue(uint position);
+    /** Returns the minimum value of an attributs
+     *  @param index the index of the attribute */
+    QVariant minValue(int index);
 
-    /**Returns the maximum value of an attribute
-      @param position the number of the attribute*/
-    QString maxValue(uint position);
+    /** Returns the maximum value of an attributs
+     *  @param index the index of the attribute */
+    QVariant maxValue(int index);
 
     /**Returns true if layer is valid
     */
@@ -420,6 +408,11 @@ class QgsPostgresProvider:public QgsVectorDataProvider
      * before the next fetch from PostgreSQL
      */
     std::queue<QgsFeature> mFeatureQueue; 
+    
+    /**
+     * Maximal size of the feature queue
+     */
+    int mFeatureQueueSize;
         
     /**
      * Flag indicating whether data from binary cursors must undergo an
@@ -432,6 +425,9 @@ class QgsPostgresProvider:public QgsVectorDataProvider
      XXX that's not reflected in this variable
      */
     bool swapEndian;
+
+    /**Stores the names of the attributes to fetch*/
+    std::list<QString> mFetchAttributeNames;
 
     bool deduceEndian();
     bool getGeometryDetails();

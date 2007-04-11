@@ -535,7 +535,6 @@ QString QgsVectorLayerProperties::getMetadata()
   myMetadataQString += "<th bgcolor=\"black\">";
   myMetadataQString += "<font color=\"white\">" + tr("Comment") + "</font>";
   myMetadataQString += "</th>";
-  myMetadataQString += "<tr>";
  
   //get info for each field by looping through them
   QgsVectorDataProvider *myDataProvider = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
