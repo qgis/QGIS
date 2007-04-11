@@ -310,6 +310,7 @@ void QgsLegendLayerFile::saveAsShapefile()
       dirName,
       filter,
       QString("UTF-8"));
+  openFileDialog->setAcceptMode(QFileDialog::AcceptSave);
 
   // allow for selection of more than one file
   //openFileDialog->setMode(QFileDialog::AnyFile);
@@ -317,8 +318,11 @@ void QgsLegendLayerFile::saveAsShapefile()
   if (openFileDialog->exec() != QDialog::Accepted)
     return;
     
+  
   QString encoding = openFileDialog->encoding();
   QString shapefileName = openFileDialog->selectedFile();
+  settings.writeEntry("/UI/lastShapefileDir", QFileInfo(shapefileName).absolutePath());
+  
   
   if (shapefileName.isNull())
     return;
