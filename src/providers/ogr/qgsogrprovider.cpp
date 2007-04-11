@@ -339,7 +339,7 @@ void QgsOgrProvider::select(QgsAttributeList fetchAttributes, QgsRect rect, bool
 {
   mUseIntersect = useIntersect;
   mAttributesToFetch = fetchAttributes;
-  mFetchGeom = true;
+  mFetchGeom = fetchGeometry;
 
   // spatial query to select features
   if(rect.isEmpty())
