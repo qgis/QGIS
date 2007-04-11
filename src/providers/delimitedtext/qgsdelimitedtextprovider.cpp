@@ -18,7 +18,6 @@
 
 #include "qgsdelimitedtextprovider.h"
 
-#include <cfloat>
 #include <iostream>
 
 #include <QtGlobal>
@@ -56,8 +55,7 @@ static const QString TEXT_PROVIDER_DESCRIPTION = "Delimited text data provider";
 
 QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
     : QgsVectorDataProvider(uri), 
-      mShowInvalidLines(true),
-      mMinMaxCacheDirty(true)
+      mShowInvalidLines(true)
 {
   // Get the file name and mDelimiter out of the uri
   mFileName = uri.left(uri.find("?"));
@@ -261,12 +259,6 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
       std::cerr << "Done checking validity\n";
 #endif
 
-      //resize the cache matrix
-      mMinMaxCache = new double *[attributeFields.size()];
-      for (int i = 0; i < attributeFields.size(); i++)
-      {
-        mMinMaxCache[i] = new double[2];
-      }
     }
     else
       // file does not exist
@@ -288,11 +280,6 @@ QgsDelimitedTextProvider::~QgsDelimitedTextProvider()
   mFile->close();
   delete mFile;
   delete mStream;
-  for (uint i = 0; i < fieldCount(); i++)
-  {
-    delete mMinMaxCache[i];
-  }
-  delete[]mMinMaxCache;
 }
 
 
@@ -459,32 +446,28 @@ QgsDelimitedTextProvider::getNextFeature_( QgsFeature & feature,
 
 } // getNextFeature_( QgsFeature & feature )
 
-
-bool QgsDelimitedTextProvider::getNextFeature(QgsFeature& feature,
-                              bool fetchGeometry,
-                              QgsAttributeList fetchAttributes,
-                              uint featureQueueSize)
+bool QgsDelimitedTextProvider::getNextFeature(QgsFeature& feature)
 {
-  return getNextFeature_(feature, fetchAttributes);
+  return getNextFeature_(feature, mAttributesToFetch);
 }
 
-
-
-
-/**
- * Select features based on a bounding rectangle. Features can be retrieved
- * with calls to getFirstFeature and getNextFeature.
- * @param mbr QgsRect containing the extent to use in selecting features
- */
-void QgsDelimitedTextProvider::select(QgsRect rect, bool useIntersect)
+void QgsDelimitedTextProvider::select(QgsAttributeList fetchAttributes,
+                                      QgsRect rect,
+                                      bool fetchGeometry,
+                                      bool useIntersect)
 {
-
-  // Setting a spatial filter doesn't make much sense since we have to
-  // compare each point against the rectangle.
-  // We store the rect and use it in getNextFeature to determine if the
-  // feature falls in the selection area
-  reset();
   mSelectionRectangle = rect;
+  mAttributesToFetch = fetchAttributes;
+  mFetchGeom = fetchGeometry;
+  if(rect.isEmpty())
+    {
+      mSelectionRectangle = mExtent;
+    }
+  else
+    {
+      mSelectionRectangle = rect;
+    }
+  reset();
 }
 
 
@@ -535,71 +518,6 @@ void QgsDelimitedTextProvider::reset()
   // the header record
   mStream->seek(0);
   mStream->readLine();
-  //reset any spatial filters
-  mSelectionRectangle = mExtent;
-}
-
-QString QgsDelimitedTextProvider::minValue(uint position)
-{
-  if (position >= fieldCount())
-  {
-    std::
-      cerr << "Warning: access requested to invalid position " <<
-      "in QgsDelimitedTextProvider::minValue(..)" << std::endl;
-  }
-  if (mMinMaxCacheDirty)
-  {
-    fillMinMaxCash();
-  }
-  return QString::number(mMinMaxCache[position][0], 'f', 2);
-}
-
-
-QString QgsDelimitedTextProvider::maxValue(uint position)
-{
-  if (position >= fieldCount())
-  {
-    std::
-      cerr << "Warning: access requested to invalid position " <<
-      "in QgsDelimitedTextProvider::maxValue(..)" << std::endl;
-  }
-  if (mMinMaxCacheDirty)
-  {
-    fillMinMaxCash();
-  }
-  return QString::number(mMinMaxCache[position][1], 'f', 2);
-}
-
-void QgsDelimitedTextProvider::fillMinMaxCash()
-{
-  for (uint i = 0; i < fieldCount(); i++)
-  {
-    mMinMaxCache[i][0] = DBL_MAX;
-    mMinMaxCache[i][1] = -DBL_MAX;
-  }
-
-  QgsFeature f;
-  reset();
-
-  getNextFeature(f, true);
-  do
-  {
-    for (uint i = 0; i < fieldCount(); i++)
-    {
-      double value = (f.attributeMap())[i].toDouble();
-      if (value < mMinMaxCache[i][0])
-      {
-        mMinMaxCache[i][0] = value;
-      }
-      if (value > mMinMaxCache[i][1])
-      {
-        mMinMaxCache[i][1] = value;
-      }
-    }
-  }
-  while (getNextFeature(f, true));
-
-  mMinMaxCacheDirty = false;
 }
 
 bool QgsDelimitedTextProvider::isValid()
@@ -670,11 +588,6 @@ int *QgsDelimitedTextProvider::getFieldLengths()
     }
   }
   return lengths;
-}
-
-void QgsDelimitedTextProvider::setSRS(const QgsSpatialRefSys& theSRS)
-{
-  // TODO: make provider projection-aware
 }
   
 QgsSpatialRefSys QgsDelimitedTextProvider::getSRS()

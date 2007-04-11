@@ -54,15 +54,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
        */
       virtual ~QgsDataProvider() {};
 
-      /**
-       * Set the QgsSpatialReferenceSystem for this layer.
-       * @note Must be reimplemented by each provider. 
-       *
-       * @param theSRS QgsSpatialRefSys to be assigned to this layer
-       *               A complete copy of the passed in SRS will be made.
-       */
-      virtual void setSRS(const QgsSpatialRefSys& theSRS) = 0;
-
+      
       /*! Get the QgsSpatialRefSys for this layer
        * @note Must be reimplemented by each provider. 
        * If the provider isn't capable of returning

@@ -191,26 +191,6 @@ void QgsFeature::changeAttribute(int field, QVariant attr)
 }
 
 
-/**
- * Get the fields for this feature
- * @return A std::map containing field position (index) and field name
- */
-/*
-TODO: delete - QgsVectorDataProvider::fields() should be used [MD]
-QgsFieldNameMap QgsFeature::fields() const
-{
-  QgsFieldNameMap fieldNames;
-  QgsAttributeMap::const_iterator it;
-  
-  for (it = mAttributes.begin(); it != mAttributes.end(); it++)
-  {
-    fieldNames.insert(it.key(), it.value().fieldName());
-  }
-
-  return fieldNames;
-}
-*/
-
 QgsGeometry * QgsFeature::geometry()
 {
   return mGeometry;
@@ -263,6 +243,18 @@ void QgsFeature::setGeometry(QgsGeometry& geom)
   mOwnsGeometry = TRUE;
 }
 
+void QgsFeature::setGeometry(QgsGeometry* geom)
+{
+  // Destruct the attached geometry only if we still own it, before assigning new one.
+  if ( (mOwnsGeometry) && (mGeometry) )
+  {
+    delete mGeometry;
+    mGeometry = 0;
+  }
+  
+  mGeometry = geom;
+  mOwnsGeometry = TRUE;
+}
 
 /** Set the pointer to the feature geometry
 */
@@ -301,16 +293,3 @@ void QgsFeature::resetDirty()
 {
   mDirty = FALSE;
 }
-
-/*
-TODO: delete - use QgsGeometry::boundingBox() instead [MD]
-QgsRect QgsFeature::boundingBox() const
-{
-  if(mGeometry)
-    {
-      return mGeometry->boundingBox();
-    }
-  QgsRect nullRect;
-  return nullRect;
-}
-*/

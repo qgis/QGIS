@@ -13,8 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <iostream>
-#include <fstream>
+
 #include <math.h> //needed for win32 build (ts)
 
 #include <QString>
@@ -29,6 +28,7 @@
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsfield.h"
+#include "qgslogger.h"
 #include "qgsrect.h"
 #include "qgsmaptopixel.h"
 #include "qgscoordinatetransform.h"
@@ -89,9 +89,6 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect &viewExtent,
                             QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes,
        			    double sizeScale )
 {
-#if QGISDEBUG > 3
-    std::cerr << "QgsLabel::renderLabel()" << std::endl;
-#endif
 
     QPen pen;
     QFont font;
@@ -342,10 +339,8 @@ void QgsLabel::renderLabel(QPainter* painter, QgsPoint point,
       }
       catch(QgsCsException &cse)
       {
-#ifdef QGISDEBUG
-	std::cout << "Caught transform error in QgsLabel::renderLabel(). "
-		  << "Skipping rendering this label" << std::endl;
-#endif	
+	QgsDebugMsg("Caught transform error in QgsLabel::renderLabel(). "
+		          "Skipping rendering this label");
 	return;
       }
     }
@@ -430,7 +425,6 @@ void QgsLabel::setLabelField ( int attr, int fieldIndex )
         return;
 
     mLabelFieldIdx[attr] = fieldIndex;
-    std::cout << "setLabelField: " << attr << " -> " << fieldIndex << std::endl; // %%%
 }
 
 QString QgsLabel::labelField ( int attr )
@@ -486,7 +480,7 @@ void QgsLabel::labelPoint ( std::vector<QgsPoint>& points, QgsFeature & feature 
     }
     break;
   default:
-    std::cerr << "Unknown geometry type of " << wkbType << '\n';
+    QgsDebugMsg("Unknown geometry type of " + QString::number(wkbType));
   }
 }
 
@@ -644,11 +638,7 @@ unsigned char* QgsLabel::labelPoint ( QgsPoint& point, unsigned char* geom)
 
 void QgsLabel::readXML( const QDomNode& node )
 {
-#if QGISDEBUG
-    std::cout << "QgsLabel::readXML() called for layer label properties \n" << std::endl;
-#endif
-
-    qDebug( "%s:%d QgsLabel::readXML() got node %s", __FILE__, __LINE__, (const char *)node.nodeName().toLocal8Bit().data() );
+    QgsDebugMsg(" called for layer label properties, got node " + node.nodeName());
 
     QDomNode scratchNode;       // DOM node re-used to get current QgsLabel attribute
     QDomElement el;
@@ -661,7 +651,7 @@ void QgsLabel::readXML( const QDomNode& node )
 
     if ( scratchNode.isNull() )
     {
-        qDebug( "%s:%d couldn't find QgsLabel ``label'' attribute", __FILE__, __LINE__ );
+        QgsDebugMsg("couldn't find QgsLabel ``label'' attribute");
     }
     else
     {
@@ -675,7 +665,7 @@ void QgsLabel::readXML( const QDomNode& node )
 
     if ( scratchNode.isNull() )
     {
-        qDebug( "%s:%d couldn't find QgsLabel ``family'' attribute", __FILE__, __LINE__  );
+        QgsDebugMsg("couldn't find QgsLabel ``family'' attribute");
     }
     else
     {
@@ -689,7 +679,7 @@ void QgsLabel::readXML( const QDomNode& node )
 
     if ( scratchNode.isNull() )
     {
-        qDebug( "%s:%d couldn't find QgsLabel ``size'' attribute", __FILE__, __LINE__  );
+       QgsDebugMsg("couldn't find QgsLabel ``size'' attribute");
     }
     else
     {
@@ -704,7 +694,7 @@ void QgsLabel::readXML( const QDomNode& node )
 
     if ( scratchNode.isNull() )
     {
-        qDebug( "%s:%d couldn't find QgsLabel ``bold'' attribute", __FILE__, __LINE__  );
+        QgsDebugMsg("couldn't find QgsLabel ``bold'' attribute");
     }
     else
     {
@@ -718,7 +708,7 @@ void QgsLabel::readXML( const QDomNode& node )
 
     if ( scratchNode.isNull() )
     {
-        qDebug( "%s:%d couldn't find QgsLabel ``italic'' attribute", __FILE__, __LINE__  );
+        QgsDebugMsg("couldn't find QgsLabel ``italic'' attribute");
     }
     else
     {
@@ -732,7 +722,7 @@ void QgsLabel::readXML( const QDomNode& node )
 
     if ( scratchNode.isNull() )
     {
-        qDebug( "%s:%d couldn't find QgsLabel ``underline'' attribute", __FILE__, __LINE__  );
+        QgsDebugMsg("couldn't find QgsLabel ``underline'' attribute");
     }
     else
     {
@@ -746,7 +736,7 @@ void QgsLabel::readXML( const QDomNode& node )
 
     if ( scratchNode.isNull() )
     {
-        qDebug( "%s:%d couldn't find QgsLabel ``color'' attribute", __FILE__, __LINE__  );
+        QgsDebugMsg("couldn't find QgsLabel ``color'' attribute");
     }
     else
     {
@@ -766,7 +756,7 @@ void QgsLabel::readXML( const QDomNode& node )
 
     if ( scratchNode.isNull() )
     {
-        qDebug( "%s:%d couldn't find QgsLabel ``x'' attribute", __FILE__, __LINE__  );
+        QgsDebugMsg("couldn't find QgsLabel ``x'' attribute");
     }
     else
     {
@@ -779,7 +769,7 @@ void QgsLabel::readXML( const QDomNode& node )
 
     if ( scratchNode.isNull() )
     {
-        qDebug( "%s:%d couldn't find QgsLabel ``y'' attribute", __FILE__, __LINE__  );
+        QgsDebugMsg("couldn't find QgsLabel ``y'' attribute");
     }
     else
     {
@@ -793,7 +783,7 @@ void QgsLabel::readXML( const QDomNode& node )
 
     if ( scratchNode.isNull() )
     {
-        qDebug( "%s:%d couldn't find QgsLabel ``offset'' attribute", __FILE__, __LINE__  );
+        QgsDebugMsg("couldn't find QgsLabel ``offset'' attribute");
     }
     else
     {
@@ -815,7 +805,7 @@ void QgsLabel::readXML( const QDomNode& node )
 
     if ( scratchNode.isNull() )
     {
-        qDebug( "%s:%d couldn't find QgsLabel ``angle'' attribute", __FILE__, __LINE__  );
+        QgsDebugMsg("couldn't find QgsLabel ``angle'' attribute");
     }
     else
     {
@@ -829,7 +819,7 @@ void QgsLabel::readXML( const QDomNode& node )
 
     if ( scratchNode.isNull() )
     {
-        qDebug( "%s:%d couldn't find QgsLabel ``alignment'' attribute", __FILE__, __LINE__  );
+        QgsDebugMsg("couldn't find QgsLabel ``alignment'' attribute");
     }
     else
     {
@@ -844,7 +834,7 @@ void QgsLabel::readXML( const QDomNode& node )
 
     if ( scratchNode.isNull() )
     {
-        qDebug( "%s:%d couldn't find QgsLabel ``buffercolor'' attribute", __FILE__, __LINE__  );
+        QgsDebugMsg("couldn't find QgsLabel ``buffercolor'' attribute");
     }
     else
     {
@@ -862,7 +852,7 @@ void QgsLabel::readXML( const QDomNode& node )
 
     if ( scratchNode.isNull() )
     {
-        qDebug( "%s:%d couldn't find QgsLabel ``buffersize'' attribute", __FILE__, __LINE__  );
+        QgsDebugMsg("couldn't find QgsLabel ``bffersize'' attribute");
     }
     else
     {
@@ -877,7 +867,7 @@ void QgsLabel::readXML( const QDomNode& node )
 
     if ( scratchNode.isNull() )
     {
-        qDebug( "%s:%d couldn't find QgsLabel ``bufferenabled'' attribute", __FILE__, __LINE__  );
+        QgsDebugMsg("couldn't find QgsLabel ``bufferenabled'' attribute");
     }
     else
     {

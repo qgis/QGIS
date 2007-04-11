@@ -2381,11 +2381,6 @@ QString QgsWmsProvider::identifyAsText(const QgsPoint& point)
 }
 
 
-void QgsWmsProvider::setSRS(const QgsSpatialRefSys& theSRS)
-{
-  // TODO: implement
-}
-
 QgsSpatialRefSys QgsWmsProvider::getSRS()
 {
   // TODO: implement

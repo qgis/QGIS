@@ -1063,7 +1063,7 @@ bool QgsSpatialRefSys::equals(QString theProj4CharArray)
   return myMatchFlag;
 }
 
-QString QgsSpatialRefSys::toWkt()
+QString QgsSpatialRefSys::toWkt() const
 {
   OGRSpatialReference myOgrSpatialRef;
   OGRErr myInputResult = myOgrSpatialRef.importFromProj4(mProj4String.latin1());

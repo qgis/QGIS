@@ -121,7 +121,6 @@
 #include "qgsrenderer.h"
 #include "qgsserversourceselect.h"
 #include "qgsvectordataprovider.h"
-#include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 
 //
@@ -1913,10 +1912,11 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
     return false;
   }
 
-  mMapCanvas->freeze(false);
-  // mMapLegend->update(); NOW UPDATED VIA SIGNAL/SLOT
-  qApp->processEvents();       // XXX why does this need to be called manually?
+  // update UI
+  qApp->processEvents();
   
+  // draw the map
+  mMapCanvas->freeze(false);
   mMapCanvas->refresh();
 
 // Let render() do its own cursor management
@@ -1993,13 +1993,10 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& en
 
   }
 
-  //qApp->processEvents();
-  // update legend
-  /*! \todo Need legend scrollview and legenditem classes */
+  // update UI
+  qApp->processEvents();
+  
   // draw the map
-
-  // mMapLegend->update(); NOW UPDATED VIA SIGNAL/SLOTS
-  qApp->processEvents();    // XXX why does this need to be called manually?
   mMapCanvas->freeze(false);
   mMapCanvas->refresh();
 
@@ -2082,7 +2079,11 @@ void QgisApp::addDatabaseLayer()
   }
 
   delete dbs;
+  
+  // update UI
   qApp->processEvents();
+  
+  // draw the map
   mMapCanvas->freeze(false);
   mMapCanvas->refresh();
 
@@ -4306,7 +4307,11 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
     QMessageBox::critical(this,tr("Layer is not valid"),
         tr("The layer is not a valid layer and can not be added to the map"));
   }
+  
+  // update UI
   qApp->processEvents();
+  
+  // draw the map
   mMapCanvas->freeze(false);
   mMapCanvas->refresh();
 
@@ -4339,7 +4344,11 @@ void QgisApp::addMapLayer(QgsMapLayer *theMapLayer)
     QMessageBox::critical(this,tr("Layer is not valid"),
         tr("The layer is not a valid layer and can not be added to the map"));
   }
+  
+  // update UI
   qApp->processEvents();
+  
+  // draw the map
   mMapCanvas->freeze(false);
   mMapCanvas->refresh();
 
@@ -4973,7 +4982,9 @@ bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRedra
 
   if (theForceRedrawFlag)
   {
+    // update UI
     qApp->processEvents();
+    // draw the map
     mMapCanvas->freeze(false);
     mMapCanvas->refresh();
   }
@@ -5114,7 +5125,9 @@ void QgisApp::addRasterLayer(QString const & rasterLayerPath,
         tr("The layer is not a valid layer and can not be added to the map"));
   }
 
+  // update UI
   qApp->processEvents();
+  // draw the map
   mMapCanvas->freeze(false);
   mMapCanvas->refresh();
 

@@ -112,12 +112,16 @@ class QgsFeature
      */
     void setGeometry(QgsGeometry& geom);
     
+    /** Set this feature's geometry (takes geometry ownership)
+     */
+    void setGeometry(QgsGeometry* geom);
+    
     /** 
      * Set this feature's geometry from WKB
      *
      * This feature assumes responsibility for destroying geom.
      */
-    void setGeometryAndOwnership(unsigned char * geom, size_t length);
+    void setGeometryAndOwnership(unsigned char * geom /Transfer/, size_t length);
     
     
 }; // class QgsFeature

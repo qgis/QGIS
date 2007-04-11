@@ -19,7 +19,10 @@ public:
 
   /** Capabilities for this layer in a friendly format. */
   QString capabilitiesString() const;
-
+  
+  /** Returns a comment for the data in the layer */
+  QString dataComment() const;
+  
   /** Set the primary display field to be used in the identify results dialog */
   void setDisplayField(QString fldName=0);
 
@@ -53,12 +56,6 @@ public:
   
   /** Select features found within the search rectangle (in layer's coordinates) */
   void select(QgsRect & rect, bool lock);
-
-  /** Select feature by its ID, optionally emit signal selectionChanged() */
-  void select(int featureId, bool emitSignal = TRUE);
-  
-  /** Clear selection */
-  void removeSelection(bool emitSignal = TRUE);
   
   /** Select not selected features and deselect selected ones */
   void invertSelection();
@@ -89,7 +86,7 @@ public:
   const QgsRenderer* renderer() const;
 
   /** Sets the renderer. If a renderer is already present, it is deleted */
-  void setRenderer(QgsRenderer * r);
+  void setRenderer(QgsRenderer * r /Transfer/);
 
   /** Returns point, line or polygon */
   QGis::VectorType vectorType() const;
@@ -110,18 +107,6 @@ public:
    */
   virtual bool writeXML_( QDomNode & layer_node, QDomDocument & doc );
 
-
-  /** Get the next feature resulting from a select operation
-  * @param selected selected feeatures only
-  * @return QgsFeature
-  */
-  virtual QgsFeature * getNextFeature(bool fetchAttributes=false, bool selected=false) const;
-
-  /** Get the next feature using new method
-   * TODO - make this pure virtual once it works and change existing providers
-   *        to use this method of fetching features
-   */
-  virtual bool getNextFeature(QgsFeature &feature, bool fetchAttributes=false) const;
 
   /**
    * Number of features in the layer. This is necessary if features are
@@ -299,9 +284,6 @@ public:
   /** Sets whether some features are modified or not */
   void setModified(bool modified = TRUE, bool onlyGeometryWasModified = FALSE);
   
-  /** Save as shapefile */
-  QString saveAsShapefile(QString path, QString encoding);
-
   /** Make layer editable */
   bool startEditing();
   
@@ -327,6 +309,12 @@ public:
 
 public slots:
 
+  /** Select feature by its ID, optionally emit signal selectionChanged() */
+  void select(int featureId, bool emitSignal = TRUE);
+  
+  /** Clear selection */
+  void removeSelection(bool emitSignal = TRUE);
+
   void triggerRepaint();
 
   /** Update the extents for the layer. This is necessary if features are
@@ -341,9 +329,6 @@ signals:
   
   /** This signal is emitted when modifications has been done on layer */
   void wasModified(bool onlyGeometry);
-
-  /** This signal is emitted when drawing features to tell current progress */
-  void drawingProgress(int current, int total);
 
 private:                       // Private methods
 

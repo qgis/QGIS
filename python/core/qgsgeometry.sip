@@ -188,6 +188,15 @@ class QgsGeometry
     /** static method that creates geometry from WKT */
     static QgsGeometry* fromWkt(QString wkt) /Factory/;
     
+    /** construct geometry from a point */
+    static QgsGeometry* fromPoint(const QgsPoint& point) /Factory/;
+    /** construct geometry from a polyline */
+    static QgsGeometry* fromPolyline(const QgsPolyline& polyline) /Factory/;
+    /** construct geometry from a polygon */
+    static QgsGeometry* fromPolygon(const QgsPolygon& polygon) /Factory/;
+    /** construct geometry from a rectangle */
+    static QgsGeometry* fromRect(const QgsRect& rect) /Factory/;
+        
     typedef unsigned int size_t;
 
     
@@ -203,26 +212,21 @@ class QgsGeometry
        Returns the buffer containing this geometry in WKB format.
        You may wish to use in conjunction with wkbSize().
     */
-    unsigned char * wkbBuffer() const;
+    unsigned char * wkbBuffer();
     
     /** 
        Returns the size of the WKB in wkbBuffer().
     */
-    size_t wkbSize() const;
+    size_t wkbSize();
     
-    /** 
-       Returns the QString containing this geometry in WKT format.
-    */
-    const QString & wkt() const; 
-
     /** Returns type of wkb (point / linestring / polygon etc.) */
-    QGis::WKBTYPE wkbType() const;
+    QGis::WKBTYPE wkbType();
 
     /** Returns type of the vector */
-    QGis::VectorType vectorType() const;
+    QGis::VectorType vectorType();
 
     /** Returns true if wkb of the geometry is of WKBMulti* type */
-    bool isMultipart() const;
+    bool isMultipart();
 
     /**
        Set the geometry, feeding in a geometry in GEOS format.
@@ -236,7 +240,7 @@ class QgsGeometry
        Returns the vertex closest to the given point 
        (and also vertex index, squared distance and indexes of the vertices before/after)
     */
-    QgsPoint closestVertex(const QgsPoint& point, QgsGeometryVertexIndex& atVertex, int& beforeVertex, int& afterVertex, double& sqrDist) const;
+    QgsPoint closestVertex(const QgsPoint& point, QgsGeometryVertexIndex& atVertex, int& beforeVertex, int& afterVertex, double& sqrDist);
 
 
     /**
@@ -251,7 +255,7 @@ class QgsGeometry
           account the first vertex is equal to the last vertex (and will
           skip equal vertex positions).
     */
-    void adjacentVerticies(const QgsGeometryVertexIndex& atVertex, int& beforeVertex, int& afterVertex) const;
+    void adjacentVerticies(const QgsGeometryVertexIndex& atVertex, int& beforeVertex, int& afterVertex);
 
 
     /** Insert a new vertex before the given vertex index,
@@ -294,7 +298,7 @@ class QgsGeometry
 
      */
     double sqrDistToVertexAt(QgsPoint& point,
-                             QgsGeometryVertexIndex& atVertex) const;
+                             QgsGeometryVertexIndex& atVertex);
 
     /**
      *  Modifies x and y to indicate the location of
@@ -307,7 +311,7 @@ class QgsGeometry
      *
      *  If FALSE, x and y are not modified.
      */
-    bool vertexAt(double &x, double &y, QgsGeometryVertexIndex atVertex) const;
+    bool vertexAt(double &x, double &y, QgsGeometryVertexIndex atVertex);
 
     /**
         Returns, in atVertex, the closest vertex in this geometry to the given point.
@@ -326,21 +330,24 @@ class QgsGeometry
                                        double& sqrDist);
 
     /**Returns the bounding box of this feature*/
-    QgsRect boundingBox() const;
+    QgsRect boundingBox();
 
-    /**Test for intersection with a rectangle (uses GEOS)*/
-    bool intersects(const QgsRect& r) const;
-
-    /**Also tests for intersection, but uses direct geos export of QgsGeometry instead wkb export and geos wkb import. Therefore this method is faster and could replace QgsGeometry::intersects in the future*/
-    bool fast_intersects(const QgsRect& r) const;
+    /** Test for intersection with a rectangle (uses GEOS) */
+    bool intersects(const QgsRect& r);
+    /** Test for intersection with a geoemetry (uses GEOS) */
+    bool intersects(QgsGeometry* geometry);
 
     /** Test for containment of a point (uses GEOS) */
-    bool contains(QgsPoint* p) const;
+    bool contains(QgsPoint* p);
 
     /**Creates a geos geometry from this features geometry. Note, that the returned object needs to be deleted*/
     // TODO: unsupported class... would be possible to use PyGEOS?
     //geos::Geometry* geosGeometry() const;
 
+    /** Exports the geometry to mWkt
+        @return true in case of success and false else
+     */
+    QString exportToWkt();
     
     /* Accessor functions for getting geometry data */
     

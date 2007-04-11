@@ -1,5 +1,6 @@
 /***************************************************************************
-                     qgsvectorfilewriter.h -  description
+                          qgsvectorfilewriter.h
+                          generic vector file writer 
                              -------------------
     begin                : Jun 6 2004
     copyright            : (C) 2004 by Tim Sutton
@@ -15,69 +16,74 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
+
 #ifndef _QGSVECTORFILEWRITER_H_
 #define _QGSVECTORFILEWRITER_H_
 
-// qgis includes
-#include "qgspoint.h"
 #include "qgsvectorlayer.h"
 
-//qt includes
 #include <QString>
 
-// OGR Includes
-#include "ogr_api.h"
+class OGRDataSource;
+class OGRLayer;
+class OGRGeometry;
 
+class QTextCodec;
+
+/**
+ There are two possibilities how to use this class:
+ 1. static call to QgsVectorFileWriter::writeAsShapefile(...) which saves the whole vector layer
+ 2. create an instance of the class and issue calls to addFeature(...)
+
+ Currently supports only writing to shapefiles, but shouldn't be a problem to add capability
+ to support other OGR-writable formats.
+ */
 class CORE_EXPORT QgsVectorFileWriter
 {
-    public:
+  public:
       
-      /** Write contents of vector layer to a shapefile */
-      static QString writeVectorLayerAsShapefile(QString path, QString encoding, QgsVectorLayer* layer);
+    enum WriterError
+    {
+      NoError = 0,
+      ErrDriverNotFound,
+      ErrCreateDataSource,
+      ErrCreateLayer
+    };
+
+    /** Write contents of vector layer to a shapefile */
+    static WriterError writeAsShapefile(QgsVectorLayer* layer,
+                                        const QString& shapefileName,
+                                        const QString& fileEncoding);
 
 
-  QgsVectorFileWriter(QString theOutputFileName, QString fileEncoding, QgsVectorLayer * theVectorLayer);
-        QgsVectorFileWriter(QString theOutputFileName, QString fileEncoding, OGRwkbGeometryType theGeometryType);
-        ~QgsVectorFileWriter() ;
-	/**Writes a point to the file*/
-        bool writePoint(QgsPoint * thePoint);
-	/**Writes a line to the file
-	 @param wkb well known binary char array
-	 @param size size of the binary array
-	 @return true in case of success and false else*/
-	bool writeLine(unsigned char* wkb, int size);
-	/**Writes a polygon to the file
-	@param wkb well known binary char array
-	@param size size of the binary array
-	@return true in case of success and false else*/ 
-	bool writePolygon(unsigned char* wkb, int size);
-        //! Add a new field to the output attribute table
-        bool createField(QString theName, OGRFieldType theType, int theWidthInt=0, int thePrecisionInt=0);
-        //! creates the output file etc...
-        bool initialise();
-    private:
-        //! current record number
-        int mCurrentRecInt;    
-        //! file name to be written to 
-        QString mOutputFileName;
-        //! file type to be written to
-        QString mOutputFormat;
-        //! Encodionf for the layer attributes and other properties.
-        QTextCodec *mEncoding;
-        //! Ogr handle to the output datasource
-        OGRDataSourceH mDataSourceHandle;
-        //! Ogr handle to the spatial layer (e.g. .shp) parrt of the datasource
-        OGRLayerH mLayerHandle;
-        //! The geometry type for the output file
-        OGRwkbGeometryType mGeometryType;
-        //! Whether the output gile has been initialised. Some operations require this to be true before they will run
-        bool mInitialisedFlag;
-	enum ENDIAN
-	    {
-		NDR = 1,
-		XDR = 0
-	    };
-	/** Return endian-ness for this layer*/
-	int endian();
+    /** create shapefile and initialize it */
+    QgsVectorFileWriter(const QString& shapefileName,
+                        const QString& fileEncoding,
+                        const QgsFieldMap& fields,
+                        QGis::WKBTYPE geometryType,
+                        const QgsSpatialRefSys* srs);
+    
+    /** checks whether there were any errors in constructor */
+    WriterError hasError();
+    
+    /** add feature to the currently opened shapefile */
+    bool addFeature(QgsFeature& feature);
+    
+    /** close opened shapefile for writing */
+    ~QgsVectorFileWriter();
+    
+  protected:
+    
+    OGRDataSource* mDS;
+    OGRLayer* mLayer;
+    OGRGeometry* mGeom;
+    
+    QgsFieldMap mFields;
+    
+    /** contains error value if construction was not successfull */
+    WriterError mError;
+
+    QTextCodec* mCodec;
 };
+
 #endif

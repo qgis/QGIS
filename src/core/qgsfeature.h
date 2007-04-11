@@ -152,6 +152,10 @@ class CORE_EXPORT QgsFeature {
     /** Set this feature's geometry from another QgsGeometry object (deep copy)
      */
     void setGeometry(QgsGeometry& geom);
+
+    /** Set this feature's geometry (takes geometry ownership)
+     */
+    void setGeometry(QgsGeometry* geom);
     
     /** 
      * Set this feature's geometry from WKB

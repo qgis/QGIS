@@ -191,7 +191,7 @@ class CORE_EXPORT QgsSpatialRefSys
          /*! A helper to get an wkt representation of this srs
           * @return string containing Wkt of the srs
           */
-         QString toWkt();
+         QString toWkt() const;
 
          /*! Restores state from the given DOM node.
          * @param theNode The node from which state will be restored

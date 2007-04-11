@@ -117,7 +117,6 @@ void QgsWFSData::startElement(const XML_Char* el, const XML_Char** attr)
   else if(elementName == GML_NAMESPACE + NS_SEPARATOR + "featureMember")
     {
       mCurrentFeature = new QgsFeature(mFeatureCount);
-      ++mFeatureCount;
       mAttributeIndex = 0;
       mParseModeStack.push(QgsWFSData::featureMember);
     }

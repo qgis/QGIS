@@ -327,11 +327,13 @@ void QgsAttributeTableDisplay::doSearch(const QString& searchString)
   // or search by traversing table ... which one is quicker?
   QgsFeature fet;
   QgsVectorDataProvider* provider = mLayer->getDataProvider();
-  provider->reset();
   mSearchIds.clear();
   const QgsFieldMap& fields = provider->fields();
   QgsAttributeList all = provider->allAttributesList();
-  while (provider->getNextFeature(fet, false, all))
+  
+  provider->select(all, QgsRect(), false);
+
+  while (provider->getNextFeature(fet))
   {
     if (searchTree->checkAgainst(fields, fet.attributeMap()))
     {
@@ -342,7 +344,6 @@ void QgsAttributeTableDisplay::doSearch(const QString& searchString)
     if (searchTree->hasError())
       break;
   }
-  provider->reset();
 
   QApplication::restoreOverrideCursor();
 

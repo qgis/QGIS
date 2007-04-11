@@ -48,6 +48,7 @@
 
 };
 
+
 template<TYPE>
 %MappedType QMap<int, QMap<int, TYPE> >
 {
@@ -208,17 +209,17 @@ class QgsVectorDataProvider : QgsDataProvider
        */
       virtual QString storageType() const;
 
-      /**
-       * Select features based on a bounding rectangle. Features can be retrieved 
-       * with calls to getFirstFeature and getNextFeature. Request for features 
-       * for use in drawing the map canvas should set useIntersect to false.
-       * @param mbr QgsRect containing the extent to use in selecting features
-       * @param useIntersect If true, use the intersects function to select features
-       * rather than the PostGIS && operator that selects based on bounding box
-       * overlap.
-       *
+      /** Select features based on a bounding rectangle. Features can be retrieved with calls to getNextFeature.
+       * @param fetchAttributes list of attributes which should be fetched
+       * @param rect spatial filter
+       * @param fetchGeometry true if the feature geometry should be fetched
+       * @param useIntersect true if an accurate intersection test should be used,
+       *                     false if a test based on bounding box is sufficient
        */
-      virtual void select(QgsRect mbr, bool useIntersect = false) = 0;
+      virtual void select(QList<int> fetchAttributes = QList<int>(),
+                          QgsRect rect = QgsRect(),
+                          bool fetchGeometry = true,
+                          bool useIntersect = false) = 0;
 
       /**
        * Update the feature count based on current spatial filter. If not
@@ -242,15 +243,9 @@ class QgsVectorDataProvider : QgsDataProvider
       /**
        * Get the next feature resulting from a select operation.
        * @param feature feature which will receive data from the provider
-       * @param fetchGeoemtry if true, geometry will be fetched from the provider
-       * @param fetchAttributes a list containing the indexes of the attribute fields to copy
-       * @param featureQueueSize  a hint to the provider as to how many features are likely to be retrieved in a batch
        * @return true when there was a feature to fetch, false when end was hit
        */
-      virtual bool getNextFeature(QgsFeature& feature,
-                                  bool fetchGeometry = true,
-                                  QList<int> fetchAttributes = QList<int>(),
-                                  uint featureQueueSize = 1) = 0;
+      virtual bool getNextFeature(QgsFeature& feature) = 0;
 
       /**
        * Get feature type.
@@ -266,20 +261,6 @@ class QgsVectorDataProvider : QgsDataProvider
       virtual long featureCount() const = 0;
 
       /**
-       * Get the attributes associated with a feature
-       * TODO: Get rid of "row" and set up provider-internal caching instead
-       */
-      virtual void getFeatureAttributes(int key, int& row, QgsFeature *f);
-
-      /**
-       * Fetch geometry for a particular feature with id "key",
-       * modifies "f" in-place.
-       *
-       * This function is enabled if capabilities() returns "SelectGeometryAtId".
-       */
-      virtual void getFeatureGeometry(int key, QgsFeature *f);
-
-      /**
        * Number of attribute fields for a feature in the layer
        */
       virtual uint fieldCount() const = 0;
@@ -290,26 +271,34 @@ class QgsVectorDataProvider : QgsDataProvider
        */
       virtual const QMap<int, QgsField> & fields() const = 0;
 
-      /** 
-       * Reset the layer to clear any spatial filtering or other contstraints that
-       * would prevent the entire record set from being traversed by call to 
-       * getNextFeature(). Some data stores may not require any special action to
-       * reset the layer. In this case, the provider should simply implement an empty
-       * function body.
+      /**
+       * Return a short comment for the data that this provider is
+       * providing access to (e.g. the comment for postgres table).
        */
+      virtual QString dataComment() const;
+      
+      /** Restart reading features from previous select operation */
       virtual void reset() = 0;
 
       /**
        * Returns the minimum value of an attributs
-       * @param position the number of the attribute
+       * @param index the index of the attribute
+       *
+       * Default implementation walks all numeric attributes and caches minimal
+       * and maximal values. If provider has facilities to retreive minimal
+       * value directly, override this function.
        */
-      virtual QString minValue(uint position) = 0;
+      virtual QVariant minValue(int index);
 
       /**
        * Returns the maximum value of an attributs
-       * @param position the number of the attribute
+       * @param index the index of the attribute
+       *
+       * Default implementation walks all numeric attributes and caches minimal
+       * and maximal values. If provider has facilities to retreive maximal
+       * value directly, override this function.
        */
-      virtual QString maxValue(uint position) = 0;
+      virtual QVariant maxValue(int index);
 
       /**
        * Adds a list of features
@@ -396,6 +385,10 @@ class QgsVectorDataProvider : QgsDataProvider
        */
       QList<int> allAttributesList();
 
+      /**Returns the names of the numerical types*/
+      // TODO: wrap, must wrap QSet<TYPE> first
+      //const QSet<QString>& supportedNativeTypes() const;
+      
       /**
        * Set whether provider should return also features that don't have
        * associated geometry. FALSE by default

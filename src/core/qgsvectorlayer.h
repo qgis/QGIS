@@ -170,18 +170,6 @@ public:
   virtual bool writeXML_( QDomNode & layer_node, QDomDocument & doc );
 
 
-  /** Get the next feature resulting from a select operation
-  * @param selected selected feeatures only
-  * @return QgsFeature
-  */
-  virtual QgsFeature * getNextFeature(bool fetchAttributes=false, bool selected=false) const;
-
-  /** Get the next feature using new method
-   * TODO - make this pure virtual once it works and change existing providers
-   *        to use this method of fetching features
-   */
-  virtual bool getNextFeature(QgsFeature &feature, bool fetchAttributes=false) const;
-
   /**
    * Number of features in the layer. This is necessary if features are
    * added/deleted or the layer has been subsetted. If the data provider
@@ -360,9 +348,6 @@ public:
   /** Sets whether some features are modified or not */
   void setModified(bool modified = TRUE, bool onlyGeometryWasModified = FALSE);
   
-  /** Save as shapefile */
-  QString saveAsShapefile(QString path, QString encoding);
-
   /** Make layer editable */
   bool startEditing();
   
@@ -456,8 +441,6 @@ private:                       // Private methods
   /** Goes through all features and finds a free id (e.g. to give it temporarily to a not-commited feature) */
   int findFreeId();
 
-  /**Caches all the (commited) geometries to mCachedGeometries - somewhat out of date as mCachedGeometries should only contain geometries currently visible on the canvas */
-  void cacheGeometries();
   /**Deletes the geometries in mCachedGeometries*/
   void deleteCachedGeometries();
   /** Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.) */

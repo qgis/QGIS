@@ -510,6 +510,13 @@ void QgsLegendLayer::addToPopupMenu(QMenu& theMenu)
       toggleEditingAction->setChecked(theVectorLayer->isEditable());
     }
   
+    // save as shapefile
+    theMenu.addAction(tr("Save as shapefile..."), this, SLOT(saveAsShapefile()));
+    if (files.size() != 1)
+    {
+      tableAction->setEnabled(false);
+    }
+    
     theMenu.addSeparator();
   }
 	
@@ -578,5 +585,14 @@ void QgsLegendLayer::toggleEditing()
   if (maplayers.size() == 1)
   {
     maplayers.front()->toggleEditing();
+  }
+}
+
+void QgsLegendLayer::saveAsShapefile()
+{
+  std::list<QgsLegendLayerFile*> maplayers = legendLayerFiles();
+  if (maplayers.size() == 1)
+  {
+    maplayers.front()->saveAsShapefile();
   }
 }

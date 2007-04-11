@@ -19,7 +19,6 @@
 /* $Id$ */
 
 #include <algorithm>
-#include <cfloat>
 #include <iostream>
 #include <limits>
 #include <cmath>
@@ -62,9 +61,7 @@ const QString GPX_DESCRIPTION = QObject::tr("GPS eXchange format provider");
 
 
 QgsGPXProvider::QgsGPXProvider(QString uri) : 
-        QgsVectorDataProvider(uri),
-        mEditable(false),
-        mMinMaxCacheDirty(true)
+        QgsVectorDataProvider(uri)
 {
   // assume that it won't work
   mValid = false;
@@ -101,12 +98,6 @@ QgsGPXProvider::QgsGPXProvider(QString uri) :
   // set the selection rectangle to null
   mSelectionRectangle = 0;
   
-  // resize the cache matrix
-  mMinMaxCache=new double*[attributeFields.size()];
-  for(int i=0;i<attributeFields.size();i++) {
-    mMinMaxCache[i]=new double[2];
-  }
-
   // parse the file
   data = GPSData::getData(mFileName);
   if (data == 0) {
@@ -119,10 +110,6 @@ QgsGPXProvider::QgsGPXProvider(QString uri) :
 
 QgsGPXProvider::~QgsGPXProvider()
 {
-  for(uint i=0;i<fieldCount();i++) {
-    delete mMinMaxCache[i];
-  }
-  delete[] mMinMaxCache;
   GPSData::releaseData(mFileName);
 }
 
@@ -138,210 +125,238 @@ int QgsGPXProvider::capabilities() const
          QgsVectorDataProvider::DeleteFeatures |
          QgsVectorDataProvider::ChangeAttributeValues;
 }
-  
 
-bool QgsGPXProvider::getNextFeature(QgsFeature& feature,
-                                    bool fetchGeometry,
-                                    QgsAttributeList attlist,
-                                    uint featureQueueSize)
+bool QgsGPXProvider::getNextFeature(QgsFeature& feature)
 {
   bool result = false;
   
   QgsAttributeList::const_iterator iter;
   
-  if (mFeatureType == WaypointType) {
-    // go through the list of waypoints and return the first one that is in
-    // the bounds rectangle
-    for (; mWptIter != data->waypointsEnd(); ++mWptIter) {
-      const Waypoint* wpt;
-      wpt = &(*mWptIter);
-      if (boundsCheck(wpt->lon, wpt->lat)) {
-	feature.setFeatureId(wpt->id);
-	result = true;
+  if (mFeatureType == WaypointType) 
+    {
+      // go through the list of waypoints and return the first one that is in
+      // the bounds rectangle
+      for (; mWptIter != data->waypointsEnd(); ++mWptIter) 
+	{
+	  const Waypoint* wpt;
+	  wpt = &(*mWptIter);
+	  if (boundsCheck(wpt->lon, wpt->lat)) 
+	    {
+	      feature.setFeatureId(wpt->id);
+	      result = true;
+	      
+	      // some wkb voodoo
+	      if(mFetchGeom)
+		{
+		  char* geo = new char[21];
+		  std::memset(geo, 0, 21);
+		  geo[0] = QgsApplication::endian();
+		  geo[geo[0] == QgsApplication::NDR ? 1 : 4] = QGis::WKBPoint;
+		  std::memcpy(geo+5, &wpt->lon, sizeof(double));
+		  std::memcpy(geo+13, &wpt->lat, sizeof(double));
+		  feature.setGeometryAndOwnership((unsigned char *)geo, sizeof(wkbPoint));
+		}
+	      feature.setValid(true);
 	
-	// some wkb voodoo
-	char* geo = new char[21];
-	std::memset(geo, 0, 21);
-	geo[0] = QgsApplication::endian();
-	geo[geo[0] == QgsApplication::NDR ? 1 : 4] = QGis::WKBPoint;
-	std::memcpy(geo+5, &wpt->lon, sizeof(double));
-	std::memcpy(geo+13, &wpt->lat, sizeof(double));
-	feature.setGeometryAndOwnership((unsigned char *)geo, sizeof(wkbPoint));
-	feature.setValid(true);
-	
-	// add attributes if they are wanted
-	for (iter = attlist.begin(); iter != attlist.end(); ++iter) {
-	  switch (*iter) {
-	  case 0:
-	    feature.addAttribute(0, QVariant(wpt->name));
-	    break;
-	  case 1:
-	    if (wpt->ele == -std::numeric_limits<double>::max())
-        feature.addAttribute(1, QVariant());
-	    else
-        feature.addAttribute(1, QVariant(wpt->ele));
-	    break;
-	  case 2:
-      feature.addAttribute(2, QVariant(wpt->sym));
-	    break;
-	  case 3:
-      feature.addAttribute(3, QVariant(wpt->cmt));
-	    break;
-	  case 4:
-      feature.addAttribute(4, QVariant(wpt->desc));
-	    break;
-	  case 5:
-      feature.addAttribute(5, QVariant(wpt->src));
-	    break;
-	  case 6:
-      feature.addAttribute(6, QVariant(wpt->url));
-	    break;
-	  case 7:
-      feature.addAttribute(7, QVariant(wpt->urlname));
-	    break;
-	  }
+        // add attributes if they are wanted
+	      for (iter = mAttributesToFetch.begin(); iter != mAttributesToFetch.end(); ++iter) 
+		{
+		  switch (*iter) 
+		    {
+        case NameAttr:
+          feature.addAttribute(NameAttr, QVariant(wpt->name));
+		      break;
+        case EleAttr:
+		      if (wpt->ele != -std::numeric_limits<double>::max())
+            feature.addAttribute(EleAttr, QVariant(wpt->ele));
+		      break;
+		    case SymAttr:
+          feature.addAttribute(SymAttr, QVariant(wpt->sym));
+		      break;
+        case CmtAttr:
+          feature.addAttribute(CmtAttr, QVariant(wpt->cmt));
+		      break;
+		    case DscAttr:
+          feature.addAttribute(DscAttr, QVariant(wpt->desc));
+		      break;
+		    case SrcAttr:
+          feature.addAttribute(SrcAttr, QVariant(wpt->src));
+		      break;
+		    case URLAttr:
+          feature.addAttribute(URLAttr, QVariant(wpt->url));
+		      break;
+		    case URLNameAttr:
+          feature.addAttribute(URLNameAttr, QVariant(wpt->urlname));
+		      break;
+		    }
+		}
+	      
+	      ++mWptIter;
+	      break;
+	    }
 	}
-	
-	++mWptIter;
-	break;
-      }
     }
-  }
   
-  else if (mFeatureType == RouteType) {
-    // go through the routes and return the first one that is in the bounds
-    // rectangle
-    for (; mRteIter != data->routesEnd(); ++mRteIter) {
-      const Route* rte;
-      rte = &(*mRteIter);
-      
-      if (rte->points.size() == 0)
-	continue;
-      const QgsRect& b(*mSelectionRectangle);
-      if ((rte->xMax >= b.xMin()) && (rte->xMin <= b.xMax()) &&
-	  (rte->yMax >= b.yMin()) && (rte->yMin <= b.yMax())) {
-	feature.setFeatureId(rte->id);
-	result = true;
-	
-	// some wkb voodoo
-	int nPoints = rte->points.size();
-	char* geo = new char[9 + 16 * nPoints];
-	std::memset(geo, 0, 9 + 16 * nPoints);
-	geo[0] = QgsApplication::endian();
-	geo[geo[0] == QgsApplication::NDR ? 1 : 4] = QGis::WKBLineString;
-	std::memcpy(geo + 5, &nPoints, 4);
-	for (uint i = 0; i < rte->points.size(); ++i) {
-	  std::memcpy(geo + 9 + 16 * i, &rte->points[i].lon, sizeof(double));
-	  std::memcpy(geo + 9 + 16 * i + 8, &rte->points[i].lat, sizeof(double));
-	}
-	feature.setGeometryAndOwnership((unsigned char *)geo, 9 + 16 * nPoints);
-	feature.setValid(true);
-	
-	// add attributes if they are wanted
-	for (iter = attlist.begin(); iter != attlist.end(); ++iter) {
-	  if (*iter == 0)
-      feature.addAttribute(0, QVariant(rte->name));
-	  else if (*iter == 1) {
-	    if (rte->number == std::numeric_limits<int>::max())
-        feature.addAttribute(1, QVariant());
-	    else
-        feature.addAttribute(1, QVariant(rte->number));
-	  }
-	  else if (*iter == 2)
-      feature.addAttribute(2, QVariant(rte->cmt));
-	  else if (*iter == 3)
-      feature.addAttribute(3, QVariant(rte->desc));
-	  else if (*iter == 4)
-      feature.addAttribute(4, QVariant(rte->src));
-	  else if (*iter == 5)
-      feature.addAttribute(5, QVariant(rte->url));
-	  else if (*iter == 6)
-      feature.addAttribute(6, QVariant(rte->urlname));
-	}
-	
-	++mRteIter;
-	break;
+  else if (mFeatureType == RouteType) 
+    {
+      // go through the routes and return the first one that is in the bounds
+      // rectangle
+      for (; mRteIter != data->routesEnd(); ++mRteIter) 
+	{
+	  const Route* rte;
+	  rte = &(*mRteIter);
+	  
+	  if (rte->points.size() == 0)
+	    continue;
+	  const QgsRect& b(*mSelectionRectangle);
+	  if ((rte->xMax >= b.xMin()) && (rte->xMin <= b.xMax()) &&
+	      (rte->yMax >= b.yMin()) && (rte->yMin <= b.yMax())) {
+	    feature.setFeatureId(rte->id);
+	    result = true;
+	    
+	    // some wkb voodoo
+	    if(mFetchGeom)
+	      {
+		int nPoints = rte->points.size();
+		char* geo = new char[9 + 16 * nPoints];
+		std::memset(geo, 0, 9 + 16 * nPoints);
+		geo[0] = QgsApplication::endian();
+		geo[geo[0] == QgsApplication::NDR ? 1 : 4] = QGis::WKBLineString;
+		std::memcpy(geo + 5, &nPoints, 4);
+		for (uint i = 0; i < rte->points.size(); ++i) {
+		  std::memcpy(geo + 9 + 16 * i, &rte->points[i].lon, sizeof(double));
+		  std::memcpy(geo + 9 + 16 * i + 8, &rte->points[i].lat, sizeof(double));
+		}
+		feature.setGeometryAndOwnership((unsigned char *)geo, 9 + 16 * nPoints);
+	      }
+	    feature.setValid(true);
+	    
+	    // add attributes if they are wanted
+	    for (iter = mAttributesToFetch.begin(); iter != mAttributesToFetch.end(); ++iter) 
+      {
+        switch (*iter)
+        {
+          case NameAttr:
+            feature.addAttribute(NameAttr, QVariant(rte->name));
+            break;
+          case NumAttr:
+            if (rte->number != std::numeric_limits<int>::max())
+              feature.addAttribute(NumAttr, QVariant(rte->number));
+            break;
+          case CmtAttr:
+            feature.addAttribute(CmtAttr, QVariant(rte->cmt));
+            break;
+          case DscAttr:
+            feature.addAttribute(DscAttr, QVariant(rte->desc));
+            break;
+          case SrcAttr:
+            feature.addAttribute(SrcAttr, QVariant(rte->src));
+            break;
+          case URLAttr:
+            feature.addAttribute(URLAttr, QVariant(rte->url));
+            break;
+          case URLNameAttr:
+            feature.addAttribute(URLNameAttr, QVariant(rte->urlname));
+            break;
+        }
       }
+	    
+	    ++mRteIter;
+	    break;
+	  }
+	}
     }
-  }
   
-  else if (mFeatureType == TrackType) {
-    // go through the tracks and return the first one that is in the bounds
-    // rectangle
-    for (; mTrkIter != data->tracksEnd(); ++mTrkIter) {
-      const Track* trk;
-      trk = &(*mTrkIter);
-      
-      if (trk->segments.size() == 0)
-	continue;
-      if (trk->segments[0].points.size() == 0)
-	continue;
-      const QgsRect& b(*mSelectionRectangle);
-      if ((trk->xMax >= b.xMin()) && (trk->xMin <= b.xMax()) &&
-	  (trk->yMax >= b.yMin()) && (trk->yMin <= b.yMax())) {
-	feature.setFeatureId(trk->id);
-	result = true;
-	
-	// some wkb voodoo
-	int nPoints = trk->segments[0].points.size();
-	char* geo = new char[9 + 16 * nPoints];
-	std::memset(geo, 0, 9 + 16 * nPoints);
-	geo[0] = QgsApplication::endian();
-	geo[geo[0] == QgsApplication::NDR ? 1 : 4] = QGis::WKBLineString;
-	std::memcpy(geo + 5, &nPoints, 4);
-	for (int i = 0; i < nPoints; ++i) {
-	  std::memcpy(geo + 9 + 16 * i, &trk->segments[0].points[i].lon, sizeof(double));
-	  std::memcpy(geo + 9 + 16 * i + 8, &trk->segments[0].points[i].lat, sizeof(double));
-	}
-	feature.setGeometryAndOwnership((unsigned char *)geo, 9 + 16 * nPoints);
-	feature.setValid(true);
-	
-	// add attributes if they are wanted
-	for (iter = attlist.begin(); iter != attlist.end(); ++iter) {
-	  if (*iter == 0)
-      feature.addAttribute(0, QVariant(trk->name));
-	  else if (*iter == 1) {
-	    if (trk->number == std::numeric_limits<int>::max())
-        feature.addAttribute(1, QVariant());
-	    else
-        feature.addAttribute(1, QVariant(trk->number));
-	  }
-	  else if (*iter == 2)
-      feature.addAttribute(2, QVariant(trk->cmt));
-	  else if (*iter == 3)
-      feature.addAttribute(3, QVariant(trk->desc));
-	  else if (*iter == 4)
-      feature.addAttribute(4, QVariant(trk->src));
-	  else if (*iter == 5)
-      feature.addAttribute(5, QVariant(trk->url));
-	  else if (*iter == 6)
-      feature.addAttribute(6, QVariant(trk->urlname));
-	}
-	
-	++mTrkIter;
-	break;
+  else if (mFeatureType == TrackType) 
+    {
+      // go through the tracks and return the first one that is in the bounds
+      // rectangle
+      for (; mTrkIter != data->tracksEnd(); ++mTrkIter) 
+	{
+	  const Track* trk;
+	  trk = &(*mTrkIter);
+	  
+	  if (trk->segments.size() == 0)
+	    continue;
+	  if (trk->segments[0].points.size() == 0)
+	    continue;
+	  const QgsRect& b(*mSelectionRectangle);
+	  if ((trk->xMax >= b.xMin()) && (trk->xMin <= b.xMax()) &&
+	      (trk->yMax >= b.yMin()) && (trk->yMin <= b.yMax())) {
+	    feature.setFeatureId(trk->id);
+	    result = true;
+	    
+	    // some wkb voodoo
+	    if(mFetchGeom)
+	      {
+		int nPoints = trk->segments[0].points.size();
+		char* geo = new char[9 + 16 * nPoints];
+		std::memset(geo, 0, 9 + 16 * nPoints);
+		geo[0] = QgsApplication::endian();
+		geo[geo[0] == QgsApplication::NDR ? 1 : 4] = QGis::WKBLineString;
+		std::memcpy(geo + 5, &nPoints, 4);
+		for (int i = 0; i < nPoints; ++i) 
+		  {
+		    std::memcpy(geo + 9 + 16 * i, &trk->segments[0].points[i].lon, sizeof(double));
+		    std::memcpy(geo + 9 + 16 * i + 8, &trk->segments[0].points[i].lat, sizeof(double));
+		  }
+		feature.setGeometryAndOwnership((unsigned char *)geo, 9 + 16 * nPoints);
+	      }
+	    feature.setValid(true);
+	    
+	    // add attributes if they are wanted
+	    for (iter = mAttributesToFetch.begin(); iter != mAttributesToFetch.end(); ++iter) 
+      {
+        switch (*iter)
+        {
+          case NameAttr:
+            feature.addAttribute(NameAttr, QVariant(trk->name));
+            break;
+          case NumAttr:
+            if (trk->number != std::numeric_limits<int>::max())
+              feature.addAttribute(NumAttr, QVariant(trk->number));
+            break;
+          case CmtAttr:
+            feature.addAttribute(CmtAttr, QVariant(trk->cmt));
+            break;
+          case DscAttr:
+            feature.addAttribute(DscAttr, QVariant(trk->desc));
+            break;
+          case SrcAttr:
+            feature.addAttribute(SrcAttr, QVariant(trk->src));
+            break;
+          case URLAttr:
+            feature.addAttribute(URLAttr, QVariant(trk->url));
+            break;
+          case URLNameAttr:
+            feature.addAttribute(URLNameAttr, QVariant(trk->urlname));
+            break;
+        }
       }
+	    
+      ++mTrkIter;
+	    break;
+	  }
+	}
     }
-  }
   return result;
 }
 
-
-/**
- * Select features based on a bounding rectangle. Features can be retrieved
- * with calls to getFirstFeature and getNextFeature.
- * @param mbr QgsRect containing the extent to use in selecting features
- */
-void QgsGPXProvider::select(QgsRect rect, bool useIntersect)
+void QgsGPXProvider::select(QgsAttributeList fetchAttributes,
+                            QgsRect rect,
+                            bool fetchGeometry,
+                            bool useIntersect)
 {
-  
-  // Setting a spatial filter doesn't make much sense since we have to
-  // compare each point against the rectangle.
-  // We store the rect and use it in getNextFeature to determine if the
-  // feature falls in the selection area
-  mSelectionRectangle = new QgsRect(rect);
-  // Select implies an upcoming feature read so we reset the data source
-  reset();
+  if(rect.isEmpty())
+    {
+      mSelectionRectangle = new QgsRect(extent());
+    }
+  else
+    {
+      mSelectionRectangle = new QgsRect(rect);
+    }
+  mAttributesToFetch = fetchAttributes;
+  mFetchGeom = fetchGeometry;
 }
 
 
@@ -409,60 +424,6 @@ void QgsGPXProvider::reset()
 }
 
 
-QString QgsGPXProvider::minValue(uint position)
-{
-  if (position >= fieldCount()) {
-    QgsLogger::warning(tr("Warning: access requested to invalid position "
-                       "in QgsGPXProvider::minValue(..)"));
-  }
-  if (mMinMaxCacheDirty) {
-    fillMinMaxCash();
-  }
-  return QString::number(mMinMaxCache[position][0],'f',2);
-}
-
-
-QString QgsGPXProvider::maxValue(uint position)
-{
-  if (position >= fieldCount()) {
-    QgsLogger::warning(tr("Warning: access requested to invalid position "
-                       "in QgsGPXProvider::maxValue(..)"));
-  }
-  if (mMinMaxCacheDirty) {
-    fillMinMaxCash();
-  }
-  return QString::number(mMinMaxCache[position][1],'f',2);
-}
-
-
-void QgsGPXProvider::fillMinMaxCash()
-{
-  for(uint i=0;i<fieldCount();i++) {
-    mMinMaxCache[i][0]=DBL_MAX;
-    mMinMaxCache[i][1]=-DBL_MAX;
-  }
-
-  QgsFeature f;
-  reset();
-
-  getNextFeature(f, true);
-  do {
-    for(uint i=0;i<fieldCount();i++) {
-      double value=(f.attributeMap())[i].toDouble();
-      if(value<mMinMaxCache[i][0]) {
-        mMinMaxCache[i][0]=value;  
-      }  
-      if(value>mMinMaxCache[i][1]) {
-        mMinMaxCache[i][1]=value;  
-      }
-    }
-  } while(getNextFeature(f, true));
-
-  mMinMaxCacheDirty=false;
-}
-
-
-
 bool QgsGPXProvider::isValid()
 {
   return mValid;
@@ -508,13 +469,13 @@ bool QgsGPXProvider::addFeature(QgsFeature& f)
     
     // add waypoint-specific attributes
     for (it = attrs.begin(); it != attrs.end(); ++it) {
-      if (attributeFields[it.key()].name() == attr[EleAttr]) {
+      if (it.key() == EleAttr) {
 	bool eleIsOK;
 	double ele = it->toDouble(&eleIsOK);
 	if (eleIsOK)
 	  wpt.ele = ele;
       }
-      else if (attributeFields[it.key()].name() == attr[SymAttr]) {
+      else if (it.key() == SymAttr) {
 	wpt.sym = it->toString();
       }
     }
@@ -554,7 +515,7 @@ bool QgsGPXProvider::addFeature(QgsFeature& f)
     
     // add route-specific attributes
     for (it = attrs.begin(); it != attrs.end(); ++it) {
-      if (attributeFields[it.key()].name() == attr[NumAttr]) {
+      if (it.key() == NumAttr) {
 	bool numIsOK;
 	long num = it->toInt(&numIsOK);
 	if (numIsOK)
@@ -598,7 +559,7 @@ bool QgsGPXProvider::addFeature(QgsFeature& f)
     
     // add track-specific attributes
     for (it = attrs.begin(); it != attrs.end(); ++it) {
-      if (attributeFields[it.key()].name() == attr[NumAttr]) {
+      if (it.key() == NumAttr) {
 	bool numIsOK;
 	long num = it->toInt(&numIsOK);
 	if (numIsOK)
@@ -616,23 +577,22 @@ bool QgsGPXProvider::addFeature(QgsFeature& f)
   // add common attributes
   if (obj) {
     for (it = attrs.begin(); it != attrs.end(); ++it) {
-      QString fieldName = attributeFields[it.key()].name();
-      if (fieldName == attr[NameAttr]) {
+      if (it.key() == NameAttr) {
 	      obj->name = it->toString();
       }
-      else if (fieldName == attr[CmtAttr]) {
+      else if (it.key() == CmtAttr) {
         obj->cmt = it->toString();
       }
-      else if (fieldName == attr[DscAttr]) {
+      else if (it.key() ==DscAttr) {
         obj->desc = it->toString();
       }
-      else if (fieldName == attr[SrcAttr]) {
+      else if (it.key() == SrcAttr) {
         obj->src = it->toString();
       }
-      else if (fieldName == attr[URLAttr]) {
+      else if (it.key() == URLAttr) {
         obj->url = it->toString();
       }
-      else if (fieldName == attr[URLNameAttr]) {
+      else if (it.key() == URLNameAttr) {
         obj->urlname = it->toString();
       }
     }
@@ -748,11 +708,11 @@ void QgsGPXProvider::changeAttributeValues(GPSObject& obj, const QgsAttributeMap
 }
 
 
-QString QgsGPXProvider::getDefaultValue(const QString& attr, QgsFeature* f)
+QVariant QgsGPXProvider::getDefaultValue(int fieldId)
 {
-  if (attr == "source")
+  if (fieldId == SrcAttr)
     return tr("Digitized in QGIS");
-  return "";
+  return QVariant();
 }
 
 
@@ -781,10 +741,6 @@ QString QgsGPXProvider::description() const
 {
     return GPX_DESCRIPTION;
 } // QgsGPXProvider::description()
-
-void QgsGPXProvider::setSRS(const QgsSpatialRefSys& theSRS)
-{
-}
 
 QgsSpatialRefSys QgsGPXProvider::getSRS()
 {

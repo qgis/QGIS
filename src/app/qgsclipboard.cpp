@@ -75,7 +75,7 @@ void QgsClipboard::replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList&
     // TODO: Set up Paste Transformations to specify the order in which fields are added.
 
     if (it->geometry())
-      textFields += it->geometry()->wkt();
+      textFields += it->geometry()->exportToWkt();
     else
       textFields += "NULL";
 
@@ -146,6 +146,6 @@ void QgsClipboard::insert( QgsFeature& feature )
 {
   mFeatureClipboard.push_back(feature);
         
-  QgsDebugMsg("QgsClipboard::insert: inserted " + feature.geometry()->wkt());
+  QgsDebugMsg("QgsClipboard::insert: inserted " + feature.geometry()->exportToWkt());
 }
  

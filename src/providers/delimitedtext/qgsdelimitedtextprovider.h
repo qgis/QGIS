@@ -58,26 +58,24 @@ public:
    */
   virtual QString storageType() const;
 
-  /**
-   * Select features based on a bounding rectangle. Features can be retrieved 
-   * with calls to getFirstFeature and getNextFeature.
-   * @param mbr QgsRect containing the extent to use in selecting features
+  /** Select features based on a bounding rectangle. Features can be retrieved with calls to getNextFeature.
+   *  @param fetchAttributes list of attributes which should be fetched
+   *  @param rect spatial filter
+   *  @param fetchGeometry true if the feature geometry should be fetched
+   *  @param useIntersect true if an accurate intersection test should be used,
+   *                     false if a test based on bounding box is sufficient
    */
-  virtual void select(QgsRect mbr, bool useIntersect = false);
+  virtual void select(QgsAttributeList fetchAttributes = QgsAttributeList(),
+                      QgsRect rect = QgsRect(),
+                      bool fetchGeometry = true,
+                      bool useIntersect = false);
 
   /**
    * Get the next feature resulting from a select operation.
    * @param feature feature which will receive data from the provider
-   * @param fetchGeoemtry if true, geometry will be fetched from the provider
-   * @param fetchAttributes a list containing the indexes of the attribute fields to copy
-   * @param featureQueueSize  a hint to the provider as to how many features are likely to be retrieved in a batch
    * @return true when there was a feature to fetch, false when end was hit
    */
-  virtual bool getNextFeature(QgsFeature& feature,
-                              bool fetchGeometry = true,
-                              QgsAttributeList fetchAttributes = QgsAttributeList(),
-                              uint featureQueueSize = 1);
-
+  virtual bool getNextFeature(QgsFeature& feature);
 
   /**
    * Get feature type.
@@ -102,22 +100,8 @@ public:
    */
   virtual const QgsFieldMap & fields() const;
 
-  /** Reset the layer (ie move the file pointer to the head
-   *  of the file.
-   */
+  /** Restart reading features from previous select operation */
   virtual void reset();
-
-  /**
-   * Returns the minimum value of an attribute
-   * @param position the number of the attribute
-   */
-  virtual QString minValue(uint position);
-
-  /**
-   * Returns the maximum value of an attribute
-   * @param position the number of the attribute
-   */
-  virtual QString maxValue(uint position);
 
   /** Returns a bitmask containing the supported capabilities
       Note, some capabilities may change depending on whether
@@ -166,8 +150,6 @@ public:
    */
   bool isValid();
 
-  virtual void setSRS(const QgsSpatialRefSys& theSRS);
-  
   virtual QgsSpatialRefSys getSRS();
 
   /* new functions */
@@ -200,8 +182,6 @@ private:
     @return false if unable to get the next feature
   */
   bool getNextFeature_( QgsFeature & feature, QgsAttributeList desiredAttributes);
-
-  void fillMinMaxCash();
 
   int *getFieldLengths();
 
@@ -241,15 +221,6 @@ private:
 
   //! Feature id
   long mFid;
-
-  /**Flag indicating, if the minmaxcache should be renewed (true) or not (false)*/
-  bool mMinMaxCacheDirty;
-
-  /**Matrix storing the minimum and maximum values*/
-  double **mMinMaxCache;
-
-  /**Fills the cash and sets minmaxcachedirty to false*/
-  void mFillMinMaxCash();
 
   struct wkbPoint
   {

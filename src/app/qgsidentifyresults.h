@@ -82,6 +82,9 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
   
   //void accept();
   //void reject();
+  
+  signals:
+    void selectedFeatureChanged(int featureId);
 
   public slots:
 
@@ -100,14 +103,19 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     /* Called when an item is expanded so that we can ensure that the
        column width if expanded to show it */
     void itemExpanded(QTreeWidgetItem*);
+    
+    //! sends signal if current feature id has changed
+    void handleCurrentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
 
- private:
+    
+  private:
   
   QgsAttributeAction mActions;
   int mClickedOnValue;
   QMenu* mActionPopup;
   std::vector<std::pair<QString, QString> > mValues;
   static const int context_id = 689216579;
+  int mCurrentFeatureId;
 
   /**
    Keeps track of what derived-attribute (e.g. Length, Area)
