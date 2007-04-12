@@ -40,6 +40,10 @@ SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python
 # Compile flag. Make it posible to turn it off.
 SET (PEDANTIC TRUE CACHE BOOL "Determines if we should compile with -Wall -Werror.")
 
+# hide this variable because building of python bindings might fail
+# if set to other directory than expected
+MARK_AS_ADVANCED(LIBRARY_OUTPUT_PATH)
+
 #############################################################
 # check if lexer and parser are not missing
 # http://www.mail-archive.com/cmake@cmake.org/msg02861.html
