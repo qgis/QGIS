@@ -1549,7 +1549,6 @@ bool QgsPostgresProvider::addFeature(QgsFeature& f, int primaryKeyHighWater)
               )
           {
             charactertype=true;
-            break; // no need to continue with this loop
           }
         
         }
@@ -1557,16 +1556,26 @@ bool QgsPostgresProvider::addFeature(QgsFeature& f, int primaryKeyHighWater)
         // important: escape quotes in field value
         fieldvalue.replace("'", "''");
 
-        // XXX isn't it better to always escape field value?
-        if(charactertype)
-        {
-          insert+="'";
-        }
-        insert+=fieldvalue;
-        if(charactertype)
-        {
-          insert+="'";
-        }
+	//request default value explicitly if fieldvalue is an empty string
+	if(fieldvalue.isEmpty())
+	  {
+	    insert += "DEFAULT";
+	  }
+	else
+	  {
+	    // XXX isn't it better to always escape field value?
+	    if(charactertype)
+	      {
+		insert+="'";
+	      }
+	    
+	    insert+=fieldvalue;
+	    
+	    if(charactertype)
+	      {
+		insert+="'";
+	      }
+	  }
       }
     }
 
