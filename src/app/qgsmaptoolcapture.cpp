@@ -148,8 +148,8 @@ void QgsMapToolCapture::canvasReleaseEvent(QMouseEvent * e)
 
       f->setGeometryAndOwnership(&wkb[0],size);
       // add the fields to the QgsFeature
-      const QgsFieldMap& fields=provider->fields();
-      for(QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it)
+      const QgsFieldMap fields=provider->fields();
+      for(QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); ++it)
       {
         f->addAttribute(it.key(), provider->getDefaultValue(it.key()) );
       }
@@ -371,7 +371,7 @@ void QgsMapToolCapture::canvasReleaseEvent(QMouseEvent * e)
       f->setGeometryAndOwnership(&wkb[0],size);
   
       // add the fields to the QgsFeature
-      const QgsFieldMap& fields = provider->fields();
+      const QgsFieldMap fields = provider->fields();
       for(QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it)
       {
         f->addAttribute(it.key(), provider->getDefaultValue(it.key()));
