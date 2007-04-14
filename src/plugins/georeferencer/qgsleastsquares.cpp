@@ -11,7 +11,7 @@
 
 void QgsLeastSquares::linear(std::vector<QgsPoint> mapCoords, 
 			     std::vector<QgsPoint> pixelCoords,
-			     QgsPoint& origin, double& pixelSize) {
+			     QgsPoint& origin, double& pixelXSize, double& pixelYSize) {
   int n = mapCoords.size();
   if (n < 2) {
     throw std::domain_error(QObject::tr("Fit to a linear transform requires at "
@@ -43,7 +43,8 @@ void QgsLeastSquares::linear(std::vector<QgsPoint> mapCoords,
   
   origin.setX(aX);
   origin.setY(aY);
-  pixelSize = (std::abs(bX) + std::abs(bY)) / 2;
+  pixelXSize = std::abs(bX);
+  pixelYSize = std::abs(bY);
 }
 
   
@@ -150,4 +151,3 @@ void QgsLeastSquares::affine(std::vector<QgsPoint> mapCoords,
   gsl_permutation_free(p);
 
 }
-
