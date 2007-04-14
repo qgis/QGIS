@@ -290,7 +290,8 @@ void QgsPointDialog::on_cmbTransformType_currentIndexChanged(const QString& valu
 bool QgsPointDialog::generateWorldFile()
 {
   QgsPoint origin(0, 0);
-  double pixelSize = 1;
+  double pixelXSize = 1;
+  double pixelYSize = 1;
   double rotation = 0;
   
   // create arrays with points from mPoints
@@ -308,7 +309,7 @@ bool QgsPointDialog::generateWorldFile()
   {
     if (cmbTransformType->currentText() == tr("Linear"))
     {
-      QgsLeastSquares::linear(mapCoords, pixelCoords, origin, pixelSize);
+      QgsLeastSquares::linear(mapCoords, pixelCoords, origin, pixelXSize, pixelYSize);
     }
     else if (cmbTransformType->currentText() == tr("Helmert"))
     {
@@ -322,7 +323,8 @@ bool QgsPointDialog::generateWorldFile()
       if (res == QMessageBox::No)
 	       return false;
 
-      QgsLeastSquares::helmert(mapCoords, pixelCoords, origin, pixelSize, rotation);
+      QgsLeastSquares::helmert(mapCoords, pixelCoords, origin, pixelXSize, rotation);
+      pixelXSize = pixelYSize;
     }
     else if (cmbTransformType->currentText() == tr("Affine"))
     {
@@ -371,12 +373,12 @@ bool QgsPointDialog::generateWorldFile()
     return false;
   }
   QTextStream stream(&file);
-  stream<<pixelSize<<endl
+  stream<<pixelXSize<<endl
 	<<0<<endl
 	<<0<<endl
-	<<-pixelSize<<endl
-	<<(origin.x() - xOffset * pixelSize)<<endl
-	<<(origin.y() + yOffset * pixelSize)<<endl;  
+	<<-pixelYSize<<endl
+	<<(origin.x() - xOffset * pixelXSize)<<endl
+	<<(origin.y() + yOffset * pixelYSize)<<endl;  
   // write the data points in case we need them later
   QFile pointFile(mLayer->source() + ".points");
   if (pointFile.open(QIODevice::WriteOnly))
