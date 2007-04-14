@@ -136,12 +136,6 @@ QgsPointDialog::QgsPointDialog(QString layerPath, QgisIface* theQgisInterface,
   QgsMapLayerRegistry* registry = QgsMapLayerRegistry::instance();
   registry->addMapLayer(layer, FALSE);  
   
-
-  // Set source SRS same as dest SRS, so that we don't do any transformation.
-  // Dest SRS is set by project defaults
-  // The CoordinateTransform should now be shortcircuited.
-  layer->coordinateTransform()->setSourceSRS(layer->coordinateTransform()->destSRS());
-
   // add layer to map canvas
   std::deque<QString> layers;
   layers.push_back(layer->getLayerID());
@@ -280,9 +274,7 @@ void QgsPointDialog::on_cmbTransformType_currentIndexChanged(const QString& valu
     QFileInfo file(mLayer->source());
     int pos = filename.size()-file.suffix().size()-1;
     filename.insert(pos, tr("-modified", "Georeferencer:QgsPointDialog.cpp - used to modify a user given filename"));
-    pos = filename.size()-file.suffix().size();
-    filename.replace(pos, filename.size(), "tif");
-
+    
     leSelectModifiedRaster->setText(filename);
     leSelectWorldFile->setText(guessWorldFileName(filename));
   }
@@ -298,10 +290,9 @@ void QgsPointDialog::on_cmbTransformType_currentIndexChanged(const QString& valu
 bool QgsPointDialog::generateWorldFile()
 {
   QgsPoint origin(0, 0);
-  double pixelSize = 1;
+  double pixelXSize = 1;
+  double pixelYSize = 1;
   double rotation = 0;
-  double xOffset = 0.0;
-  double yOffset = 0.0;
   
   // create arrays with points from mPoints
   std::vector<QgsPoint> pixelCoords, mapCoords;
@@ -318,7 +309,7 @@ bool QgsPointDialog::generateWorldFile()
   {
     if (cmbTransformType->currentText() == tr("Linear"))
     {
-      QgsLeastSquares::linear(mapCoords, pixelCoords, origin, pixelSize);
+      QgsLeastSquares::linear(mapCoords, pixelCoords, origin, pixelXSize, pixelYSize);
     }
     else if (cmbTransformType->currentText() == tr("Helmert"))
     {
@@ -327,13 +318,13 @@ bool QgsPointDialog::generateWorldFile()
 		     "the raster layer.</p><p>The modifed raster will be "
 		     "saved in a new file and a world file will be "
 		     "generated for this new file instead.</p><p>Are you "
-		     "sure that this is what you want?</p>") + 
-		     "<p><i>" + tr("Currently all modified files will be written in TIFF format.") + 
-		     "</i><p>", QMessageBox::No, QMessageBox::Yes);
+		     "sure that this is what you want?</p>"),
+			     QMessageBox::No, QMessageBox::Yes);
       if (res == QMessageBox::No)
 	       return false;
 
-      QgsLeastSquares::helmert(mapCoords, pixelCoords, origin, pixelSize, rotation);
+      QgsLeastSquares::helmert(mapCoords, pixelCoords, origin, pixelXSize, rotation);
+      pixelXSize = pixelYSize;
     }
     else if (cmbTransformType->currentText() == tr("Affine"))
     {
@@ -359,6 +350,8 @@ bool QgsPointDialog::generateWorldFile()
   }
 
   // warp the raster if needed
+  double xOffset = 0;
+  double yOffset = 0;
   if (rotation != 0)
   {
 
@@ -381,12 +374,12 @@ bool QgsPointDialog::generateWorldFile()
     return false;
   }
   QTextStream stream(&file);
-  stream<<pixelSize<<endl
+  stream<<pixelXSize<<endl
 	<<0<<endl
 	<<0<<endl
-	<<-pixelSize<<endl
-	<<QString::number(origin.x() - xOffset * pixelSize, 'f')<<endl
-	<<QString::number(origin.y() + yOffset * pixelSize, 'f')<<endl;  
+	<<-pixelYSize<<endl
+	<<(origin.x() - xOffset * pixelXSize)<<endl
+	<<(origin.y() + yOffset * pixelYSize)<<endl;  
   // write the data points in case we need them later
   QFile pointFile(mLayer->source() + ".points");
   if (pointFile.open(QIODevice::WriteOnly))
@@ -396,8 +389,7 @@ bool QgsPointDialog::generateWorldFile()
     for (unsigned int i = 0; i < mapCoords.size(); ++i)
     {
       points<<(QString("%1\t%2\t%3\t%4").
-	       arg(QString::number(mapCoords[i].x(), 'f')).
-               arg(QString::number(mapCoords[i].y(), 'f')).
+	       arg(mapCoords[i].x()).arg(mapCoords[i].y()).
 	       arg(pixelCoords[i].x()).arg(pixelCoords[i].y()))<<endl;
     }
   }
@@ -469,8 +461,8 @@ void QgsPointDialog::deleteDataPoint(QgsPoint& coords)
 #endif
     if ((x*x + y*y) < maxDistSqr)
     {
-      delete *it;
       mPoints.erase(it);
+      delete *it;
       mCanvas->refresh();
       break;
     }
