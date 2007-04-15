@@ -357,6 +357,8 @@ void QgsGPXProvider::select(QgsAttributeList fetchAttributes,
     }
   mAttributesToFetch = fetchAttributes;
   mFetchGeom = fetchGeometry;
+  
+  reset();
 }
 
 
