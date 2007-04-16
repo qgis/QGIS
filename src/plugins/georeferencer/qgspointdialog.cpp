@@ -377,12 +377,12 @@ bool QgsPointDialog::generateWorldFile()
     return false;
   }
   QTextStream stream(&file);
-  stream<<pixelXSize<<endl
+  stream<< QString::number(pixelXSize, 'f', 15) <<endl
 	<<0<<endl
 	<<0<<endl
-	<<-pixelYSize<<endl
-	<<QString::number(origin.x() - xOffset * pixelXSize, 'f')<<endl
-	<<QString::number(origin.y() + yOffset * pixelYSize, 'f')<<endl;  
+	<<QString::number(-pixelYSize, 'f', 15) <<endl
+	<<QString::number(origin.x() - xOffset * pixelXSize, 'f', 15)<<endl
+	<<QString::number(origin.y() + yOffset * pixelYSize, 'f', 15)<<endl;  
   // write the data points in case we need them later
   QFile pointFile(mLayer->source() + ".points");
   if (pointFile.open(QIODevice::WriteOnly))
@@ -392,8 +392,8 @@ bool QgsPointDialog::generateWorldFile()
     for (unsigned int i = 0; i < mapCoords.size(); ++i)
     {
       points<<(QString("%1\t%2\t%3\t%4").
-	       arg(QString::number(mapCoords[i].x(), 'f')).
-               arg(QString::number(mapCoords[i].y(), 'f')).
+	       arg(QString::number(mapCoords[i].x(), 'f', 15)).
+               arg(QString::number(mapCoords[i].y(), 'f', 15)).
 	       arg(pixelCoords[i].x()).arg(pixelCoords[i].y()))<<endl;
     }
   }
