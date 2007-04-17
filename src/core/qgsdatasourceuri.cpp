@@ -152,3 +152,27 @@ QString QgsDataSourceURI::text() const
       " (" + geometryColumn + ")" +
       " sql=" + sql);
 }
+
+void QgsDataSourceURI::setConnection(const QString& aHost,
+                                     const QString& aPort,
+                                     const QString& aDatabase,
+                                     const QString& aUsername,
+                                     const QString& aPassword)
+{
+  host = aHost;
+  database = aDatabase;
+  port = aPort;
+  username = aUsername;
+  password = aPassword;
+}
+  
+void QgsDataSourceURI::setDataSource(const QString& aSchema,
+                                     const QString& aTable,
+                                     const QString& aGeometryColumn,
+                                     const QString& aSql)
+{
+  schema = aSchema;
+  table = aTable;
+  geometryColumn = aGeometryColumn;
+  sql = aSql;
+}
