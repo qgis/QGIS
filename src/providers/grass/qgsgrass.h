@@ -163,6 +163,11 @@ private:
     static GERROR error;         // static, because used in constructor
     static QString error_message;
 
+    // G_set_error_routine has two versions of the function's first argument it expects:
+    // - char* msg - older version
+    // - const char* msg - in CVS from 04/2007
+    // this way compiler chooses suitable call
+    static int error_routine ( const char *msg, int fatal); // static because pointer to this function is set later
     static int error_routine ( char *msg, int fatal); // static because pointer to this function is set later
 
     // Current mapset lock file path
