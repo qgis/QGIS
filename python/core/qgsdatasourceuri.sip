@@ -11,7 +11,32 @@ class QgsDataSourceURI
 #include <qgsdatasourceuri.h>
 %End
 
- public:
+public:
+
+  //! default constructor
+  QgsDataSourceURI();
+   
+  //! constructor which parses input URI
+  QgsDataSourceURI(QString uri);
+   
+  //! All in a single string
+  QString text() const;
+  
+  //! Set all connection related members at once
+  void setConnection(const QString& aHost,
+                     const QString& aPort,
+                     const QString& aDatabase,
+                     const QString& aUsername,
+                     const QString& aPassword);
+  
+  //! Set all data source related members at once
+  void setDataSource(const QString& aSchema,
+                     const QString& aTable,
+                     const QString& aGeometryColumn,
+                     const QString& aSql = QString());
+  
+  /* data */
+
   //! host name
   QString host;
   //! database name
@@ -30,7 +55,8 @@ class QgsDataSourceURI
   QString username;
   //! password
   QString password;
-  //! All in a single string
-  QString text();
+
+  //! whole connection info (host, db, port, name, pass)
+  QString connInfo;
 };
 
