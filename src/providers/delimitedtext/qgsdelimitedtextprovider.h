@@ -74,6 +74,9 @@ public:
    * Get the next feature resulting from a select operation.
    * @param feature feature which will receive data from the provider
    * @return true when there was a feature to fetch, false when end was hit
+   *
+   * mFile should be open with the file pointer at the record of the next
+   * feature, or EOF.  The feature found on the current line is parsed.
    */
   virtual bool getNextFeature(QgsFeature& feature);
 
@@ -169,32 +172,16 @@ public:
 
 private:
 
-  /** get the next feature, if any
-
-    mFile should be open with the file pointer at the record of the next
-    feature, or EOF.  The feature found on the current line is parsed.
-
-    @param feature the feature object to be populated with next feature
-    
-    @param desiredAttributes attributes fields to be collected for the feature
-                             as denoted by their position
-
-    @return false if unable to get the next feature
-  */
-  bool getNextFeature_( QgsFeature & feature, QgsAttributeList desiredAttributes);
-
-  int *getFieldLengths();
-
   //! Fields
   QgsFieldMap attributeFields;
-
-  //! Map to store field position by name
-  std::map < QString, int >fieldPositions;
+  
+  QgsAttributeList mAttributesToFetch;
 
   QString mFileName;
   QString mDelimiter;
-  QString mXField;
-  QString mYField;
+  
+  int mXFieldIndex;
+  int mYFieldIndex;
 
   //! Layer extent
   QgsRect mExtent;
