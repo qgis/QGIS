@@ -18,7 +18,6 @@
 
 #include "qgsdelimitedtextprovider.h"
 
-#include <iostream>
 
 #include <QtGlobal>
 #include <QFile>
@@ -35,11 +34,11 @@
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
+#include "qgslogger.h"
 #include "qgsmessageoutput.h"
 #include "qgsrect.h"
 #include "qgsspatialrefsys.h"
 #include "qgis.h"
-#include "qgslogger.h"
 
 #ifdef WIN32
 #define QGISEXTERN extern "C" __declspec( dllexport )
@@ -55,35 +54,34 @@ static const QString TEXT_PROVIDER_DESCRIPTION = "Delimited text data provider";
 
 QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
     : QgsVectorDataProvider(uri), 
+      mXFieldIndex(-1), mYFieldIndex(-1),
       mShowInvalidLines(true)
 {
   // Get the file name and mDelimiter out of the uri
   mFileName = uri.left(uri.find("?"));
   // split the string up on & to get the individual parameters
   QStringList parameters = QStringList::split("&", uri.mid(uri.find("?")));
-#ifdef QGISDEBUG
-  std::cerr << "Parameter count after split on &" << parameters.
-    size() << std::endl;
-#endif
+  
+  QgsDebugMsg("Parameter count after split on &" + QString::number(parameters.size()));
+  
   // get the individual parameters and assign values
   QStringList temp = parameters.grep("delimiter=");
   mDelimiter = temp.size()? temp[0].mid(temp[0].find("=") + 1) : "";
   temp = parameters.grep("xField=");
-  mXField = temp.size()? temp[0].mid(temp[0].find("=") + 1) : "";
+  QString xField = temp.size()? temp[0].mid(temp[0].find("=") + 1) : "";
   temp = parameters.grep("yField=");
-  mYField = temp.size()? temp[0].mid(temp[0].find("=") + 1) : "";
+  QString yField = temp.size()? temp[0].mid(temp[0].find("=") + 1) : "";
   // Decode the parts of the uri. Good if someone entered '=' as a delimiter, for instance.
   mFileName  = QUrl::fromPercentEncoding(mFileName.toUtf8());
   mDelimiter = QUrl::fromPercentEncoding(mDelimiter.toUtf8());
-  mXField    = QUrl::fromPercentEncoding(mXField.toUtf8());
-  mYField    = QUrl::fromPercentEncoding(mYField.toUtf8());
-#ifdef QGISDEBUG
-  std::cerr << "Data source uri is " << (const char *)uri.toLocal8Bit().data() << std::endl;
-  std::cerr << "Delimited text file is: " << (const char *)mFileName.toLocal8Bit().data() << std::endl;
-  std::cerr << "Delimiter is: " << (const char *)mDelimiter.toLocal8Bit().data() << std::endl;
-  std::cerr << "xField is: " << (const char *)mXField.toLocal8Bit().data() << std::endl;
-  std::cerr << "yField is: " << (const char *)mYField.toLocal8Bit().data() << std::endl;
-#endif
+  xField    = QUrl::fromPercentEncoding(xField.toUtf8());
+  yField    = QUrl::fromPercentEncoding(yField.toUtf8());
+  
+  QgsDebugMsg("Data source uri is " + uri);
+  QgsDebugMsg("Delimited text file is: " + mFileName);
+  QgsDebugMsg("Delimiter is: " + mDelimiter);
+  QgsDebugMsg("xField is: " + xField);
+  QgsDebugMsg("yField is: " + yField);
   
   // if delimiter contains some special characters, convert them
   // (we no longer use delimiter as regexp as it introduces problems with special characters)
@@ -93,186 +91,173 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
   mSelectionRectangle = QgsRect();
   // assume the layer is invalid until proven otherwise
   mValid = false;
-  if (!mFileName.isEmpty() && !mDelimiter.isEmpty() && !mXField.isEmpty() &&
-      !mYField.isEmpty())
+  if (mFileName.isEmpty() || mDelimiter.isEmpty() || xField.isEmpty() || yField.isEmpty())
   {
-    // check to see that the file exists and perform some sanity checks
-    if (QFile::exists(mFileName))
+    // uri is invalid so the layer must be too...
+    QString("Data source is invalid");
+    return;
+  }
+
+  // check to see that the file exists and perform some sanity checks
+  if (!QFile::exists(mFileName))
+  {
+    QgsDebugMsg("Data source " + dataSourceUri() + " doesn't exist");
+    return;
+  }
+      
+  // Open the file and get number of rows, etc. We assume that the
+  // file has a header row and process accordingly. Caller should make
+  // sure the the delimited file is properly formed.
+  mFile = new QFile(mFileName);
+  if (!mFile->open(QIODevice::ReadOnly))
+  {
+    QgsDebugMsg("Data source " + dataSourceUri() + " could not be opened");
+    delete mFile;
+    return;
+  }
+  
+  // now we have the file opened and ready for parsing
+  
+  // set the initial extent
+  mExtent = QgsRect();
+  
+  QMap<int, bool> couldBeInt;
+  QMap<int, bool> couldBeDouble;
+  
+  mStream = new QTextStream(mFile);
+  QString line;
+  mNumberFeatures = 0;
+  int lineNumber = 0;
+  bool firstPoint = true;
+  bool hasFields = false;
+  while (!mStream->atEnd())
+  {
+    lineNumber++;
+    line = mStream->readLine(); // line of text excluding '\n', default local 8 bit encoding.
+    if (!hasFields)
     {
-      // Open the file and get number of rows, etc. We assume that the
-      // file has a header row and process accordingly. Caller should make
-      // sure the the delimited file is properly formed.
-      mFile = new QFile(mFileName);
-      if (mFile->open(QIODevice::ReadOnly))
+      // Get the fields from the header row and store them in the 
+      // fields vector
+      QgsDebugMsg("Attempting to split the input line: " + line + " using delimiter " + mDelimiter);
+      
+      QStringList fieldList = QStringList::split(mDelimiter, line, true);
+      QgsDebugMsg("Split line into " + QString::number(fieldList.size()) + " parts");
+      
+      // We don't know anything about a text based field other
+      // than its name. All fields are assumed to be text
+      int fieldPos = 0;
+      for (QStringList::Iterator it = fieldList.begin();
+            it != fieldList.end(); ++it)
       {
-        mStream = new QTextStream(mFile);
-        QString line;
-        mNumberFeatures = 0;
-        int xyCount = 0;
-        int lineNumber = 0;
-        // set the initial extent
-        mExtent = QgsRect();
-        //commented out by Tim for now - setMinimal needs to be merged in from 0.7 branch
-        //mExtent->setMinimal(); // This defeats normalization
-        bool firstPoint = true;
-        while (!mStream->atEnd())
+        QString field = *it;
+        if (field.length() > 0)
         {
-          lineNumber++;
-          line = mStream->readLine(); // line of text excluding '\n', default local 8 bit encoding.
-          if (mNumberFeatures++ == 0)
+          // for now, let's set field type as text
+          attributeFields[fieldPos] = QgsField(*it, QVariant::String, "Text");
+          
+          // check to see if this field matches either the x or y field 
+          if (xField == *it)
           {
-            // Get the fields from the header row and store them in the 
-            // fields vector
-#ifdef QGISDEBUG
-            std::
-              cerr << "Attempting to split the input line: " << (const char *)line.toLocal8Bit().data() <<
-              " using delimiter " << (const char *)mDelimiter.toLocal8Bit().data() << std::endl;
-#endif
-            QStringList fieldList = QStringList::split(mDelimiter, line, true);
-#ifdef QGISDEBUG
-            std::cerr << "Split line into " 
-                      << fieldList.size() << " parts" << std::endl;
-#endif
-            // We don't know anything about a text based field other
-            // than its name. All fields are assumed to be text
-            int fieldPos = 0;
-            for (QStringList::Iterator it = fieldList.begin();
-                 it != fieldList.end(); ++it)
-            {
-              QString field = *it;
-              if (field.length() > 0)
-              {
-                attributeFields[fieldPos] = QgsField(*it, QVariant::String, "Text");
-                fieldPositions[*it] = fieldPos++;
-                // check to see if this field matches either the x or y field 
-                if (mXField == *it)
-                {
-#ifdef QGISDEBUG
-                  std::cerr << "Found x field " << (const char *)(*it).toLocal8Bit().data() << std::endl;
-#endif
-                  xyCount++;
-                }
-                if (mYField == *it)
-                {
-#ifdef QGISDEBUG
-                  std::cerr << "Found y field " << (const char *)(*it).toLocal8Bit().data() << std::endl;
-#endif
-                  xyCount++;
-                }
-#ifdef QGISDEBUG
-                std::cerr << "Adding field: " << (const char *)(*it).toLocal8Bit().data() << std::endl;
-#endif
-
-              }
-            }
-#ifdef QGISDEBUG
-            std::
-              cerr << "Field count for the delimited text file is " <<
-              attributeFields.size() << std::endl;
-#endif
+            QgsDebugMsg("Found x field: " + (*it));
+            mXFieldIndex = fieldPos;
           }
-          else
+          else if (yField == *it)
           {
-            // examine the x,y and update extents
-            //  std::cout << line << std::endl; 
-            // split the line on the delimiter
-            QStringList parts =
-              QStringList::split(mDelimiter, line, true);
-
-	    // Skip malformed lines silently. Report line number with getNextFeature()
-	    if ( (parts.size() <= fieldPositions[mXField]) || (parts.size() <= fieldPositions[mYField]) )
-	    {
-	      continue;
-	    }
-            //if(parts.size() == attributeFields.size())
-            //{
-            //  // we can populate attributes if required
-            //  fieldsMatch = true;
-            //}else
-            //{
-            //  fieldsMatch = false;
-            //}
-            /*
-               std::cout << "Record hit line " << lineNumber << ": " <<
-               parts[fieldPositions[mXField]] << ", " <<
-               parts[fieldPositions[mYField]] << std::endl;
-             */
-            // Get the x and y values, first checking to make sure they
-            // aren't null.
-            QString sX = parts[fieldPositions[mXField]];
-            QString sY = parts[fieldPositions[mYField]];
-            //std::cout << "x ,y " << sX << ", " << sY << std::endl; 
-            bool xOk = true;
-            bool yOk = true;
-            double x = sX.toDouble(&xOk);
-            double y = sY.toDouble(&yOk);
-
-            if (xOk && yOk)
-            {
-              if (!firstPoint)
-              {
-                if (x > mExtent.xMax())
-                {
-                  mExtent.setXmax(x);
-                }
-                if (x < mExtent.xMin())
-                {
-                  mExtent.setXmin(x);
-                }
-                if (y > mExtent.yMax())
-                {
-                  mExtent.setYmax(y);
-                }
-                if (y < mExtent.yMin())
-                {
-                  mExtent.setYmin(y);
-                }
-              }
-              else
-              { // Extent for the first point is just the first point
-                mExtent.set(x,y,x,y);
-                firstPoint = false;
-              }
-            }
+            QgsDebugMsg("Found y field: " + (*it));
+            mYFieldIndex = fieldPos;
           }
-        }
-        reset();
-        mNumberFeatures--;
-
-        if (xyCount == 2)
-        {
-#ifdef QGISDEBUG
-          std::cerr << "Data store is valid" << std::endl;
-          std::cerr << "Number of features " << mNumberFeatures << std::endl;
-          std::cerr << "Extents " << (const char *)mExtent.stringRep().toLocal8Bit().data() << std::endl;
-#endif
-          mValid = true;
-        }
-        else
-        {
-          std::
-            cerr << "Data store is invalid. Specified x,y fields do not match\n"
-            << "those in the database (xyCount=" << xyCount << ")" << std::endl;
+            
+          QgsDebugMsg("Adding field: " + (*it));
+          // assume that the field could be integer or double
+          couldBeInt.insert(fieldPos, true);
+          couldBeDouble.insert(fieldPos, true);
+          fieldPos++;
         }
       }
-#ifdef QGISDEBUG
-      std::cerr << "Done checking validity\n";
-#endif
-
+      QgsDebugMsg("Field count for the delimited text file is " + QString::number(attributeFields.size()));
+      hasFields = true;
     }
     else
-      // file does not exist
-      std::
-        cerr << "Data source " << (const char *)dataSourceUri().toLocal8Bit().data() << " could not be opened" <<
-        std::endl;
+    {
+      mNumberFeatures++;
+      
+      // split the line on the delimiter
+      QStringList parts = QStringList::split(mDelimiter, line, true);
 
+      // Skip malformed lines silently. Report line number with getNextFeature()
+      if (attributeFields.size() != parts.size())
+      {
+        continue;
+      }
+      
+      // Get the x and y values, first checking to make sure they
+      // aren't null.
+      QString sX = parts[mXFieldIndex];
+      QString sY = parts[mYFieldIndex];
+      
+      bool xOk = true;
+      bool yOk = true;
+      double x = sX.toDouble(&xOk);
+      double y = sY.toDouble(&yOk);
+
+      if (xOk && yOk)
+      {
+        if (!firstPoint)
+        {
+          mExtent.combineExtentWith(x,y);
+        }
+        else
+        { // Extent for the first point is just the first point
+          mExtent.set(x,y,x,y);
+          firstPoint = false;
+        }
+      }
+      
+      int i = 0;
+      for (QStringList::iterator it = parts.begin(); it != parts.end(); ++it, ++i)
+      {
+        // try to convert attribute values to integer and double
+        if (couldBeInt[i])
+        {
+          it->toInt(&couldBeInt[i]);
+        }
+        if (couldBeDouble[i])
+        {
+          it->toDouble(&couldBeDouble[i]);
+        }
+      }
+    }
+  }
+  
+  // now it's time to decide the types for the fields
+  for (QgsFieldMap::iterator it = attributeFields.begin(); it != attributeFields.end(); ++it)
+  {
+    if (couldBeInt[it.key()])
+    {
+      it->setType(QVariant::Int);
+      it->setTypeName("integer");
+    }
+    else if (couldBeDouble[it.key()])
+    {
+      it->setType(QVariant::Double);
+      it->setTypeName("double");
+    }
+  }
+
+  if (mXFieldIndex != -1 && mYFieldIndex != -1)
+  {
+    QgsDebugMsg("Data store is valid");
+    QgsDebugMsg("Number of features " + QString::number(mNumberFeatures));
+    QgsDebugMsg("Extents " + mExtent.stringRep());
+    
+    mValid = true;
   }
   else
   {
-    // uri is invalid so the layer must be too...
-    std::cerr << "Data source is invalid" << std::endl;
-
+    QgsDebugMsg("Data store is invalid. Specified x,y fields do not match those in the database");
   }
+  QgsDebugMsg("Done checking validity");
+
 }
 
 QgsDelimitedTextProvider::~QgsDelimitedTextProvider()
@@ -289,167 +274,136 @@ QString QgsDelimitedTextProvider::storageType() const
 }
 
 
-/**
-
-  insure double value is properly translated into locate endian-ness
-
-*/
-/*
-static
-double
-translateDouble_( double d )
-{
-    union
-    {
-        double fpval;
-        char   char_val[8];
-    } from, to;
-
-    // break double into byte sized chunks
-    from.fpval = d;
-
-    to.char_val[7] = from.char_val[0];
-    to.char_val[6] = from.char_val[1];
-    to.char_val[5] = from.char_val[2];
-    to.char_val[4] = from.char_val[3];
-    to.char_val[3] = from.char_val[4];
-    to.char_val[2] = from.char_val[5];
-    to.char_val[1] = from.char_val[6];
-    to.char_val[0] = from.char_val[7];
-
-    return to.fpval;
-
-} // translateDouble_
-*/
-
-bool
-QgsDelimitedTextProvider::getNextFeature_( QgsFeature & feature, 
-                                           QgsAttributeList desiredAttributes )
-{
-    // before we do anything else, assume that there's something wrong with
-    // the feature
-    feature.setValid( false );
-    while ( ! mStream->atEnd() )
-    {
-      double x = 0.0;
-      double y = 0.0;
-      QString line = mStream->readLine(); // Default local 8 bit encoding
-        // lex the tokens from the current data line
-        QStringList tokens = QStringList::split(mDelimiter, line, true);
-
-        bool xOk = false;
-        bool yOk = false;
-
-	// Skip indexing malformed lines.
-	if ( ! ((tokens.size() <= fieldPositions[mXField]) || (tokens.size() <= fieldPositions[mXField])) )
-	{
-
-	  int xFieldPos = fieldPositions[mXField];
-	  int yFieldPos = fieldPositions[mYField];
-
-	  x = tokens[xFieldPos].toDouble( &xOk );
-	  y = tokens[yFieldPos].toDouble( &yOk );
-
-	}
-        if (! (xOk && yOk))
-        {
-          // Accumulate any lines that weren't ok, to report on them
-          // later, and look at the next line in the file, but only if
-          // we need to.
-	  QgsDebugMsg("Malformed line : " + line);
-          if (mShowInvalidLines)
-            mInvalidLines << line;
-
-          continue;
-        }
-
-        // Give every valid line in the file an id, even if it's not
-        // in the current extent or bounds.
-        ++mFid;             // increment to next feature ID
-
-        if (! boundsCheck(x,y))
-          continue;
-
-        // at this point, one way or another, the current feature values
-        // are valid
-           feature.setValid( true );
-
-           feature.setFeatureId( mFid );
-
-           QByteArray  buffer;
-           QDataStream s( &buffer, QIODevice::WriteOnly ); // open on buffers's data
-
-           switch ( QgsApplication::endian() )
-           {
-               case QgsApplication::NDR :
-                   // we're on a little-endian platform, so tell the data
-                   // stream to use that
-                   s.setByteOrder( QDataStream::LittleEndian );
-                   s << (Q_UINT8)1; // 1 is for little-endian
-                   break;
-               case QgsApplication::XDR :
-                   // don't change byte order since QDataStream is big endian by default
-                   s << (Q_UINT8)0; // 0 is for big-endian
-                   break;
-               default :
-                   qDebug( "%s:%d unknown endian", __FILE__, __LINE__ );
-                   //delete [] geometry;
-                   return false;
-           }
-
-           s << (Q_UINT32)QGis::WKBPoint;
-           s << x;
-           s << y;
-
-           unsigned char* geometry = new unsigned char[buffer.size()];
-           memcpy(geometry, buffer.data(), buffer.size());
-
-           feature.setGeometryAndOwnership( geometry, sizeof(wkbPoint) );
-
-           if ( desiredAttributes.size() > 0 )
-           {
-               for ( QgsAttributeList::const_iterator i = desiredAttributes.begin();
-                     i != desiredAttributes.end();
-                     ++i )
-               {
-                   feature.addAttribute(*i, QVariant(tokens[*i]) );
-               }
-           }
-           
-           // We have a good line, so return
-           return true;
-
-    } // ! textStream EOF
-
-    // End of the file. If there are any lines that couldn't be
-    // loaded, display them now.
-
-    if (mShowInvalidLines && !mInvalidLines.isEmpty())
-    {
-      mShowInvalidLines = false;
-      QgsMessageOutput* output = QgsMessageOutput::createMessageOutput();
-      output->setTitle(tr("Error"));
-      output->setMessage(tr("Note: the following lines were not loaded because Qgis was "
-                            "unable to determine values for the x and y coordinates:\n"),
-                         QgsMessageOutput::MessageText);
-      
-      for (int i = 0; i < mInvalidLines.size(); ++i)
-        output->appendMessage(mInvalidLines.at(i));
-      
-      output->showMessage();
-
-      // We no longer need these lines.
-      mInvalidLines.empty();
-    }
-
-    return false;
-
-} // getNextFeature_( QgsFeature & feature )
-
 bool QgsDelimitedTextProvider::getNextFeature(QgsFeature& feature)
 {
-  return getNextFeature_(feature, mAttributesToFetch);
-}
+  // before we do anything else, assume that there's something wrong with
+  // the feature
+  feature.setValid( false );
+  while ( ! mStream->atEnd() )
+  {
+    double x = 0.0;
+    double y = 0.0;
+    QString line = mStream->readLine(); // Default local 8 bit encoding
+        
+    // lex the tokens from the current data line
+    QStringList tokens = QStringList::split(mDelimiter, line, true);
+
+    bool xOk = false;
+    bool yOk = false;
+
+    // Skip indexing malformed lines.
+    if (attributeFields.size() == tokens.size())
+    {
+      x = tokens[mXFieldIndex].toDouble( &xOk );
+      y = tokens[mYFieldIndex].toDouble( &yOk );
+    }
+    
+    if (! (xOk && yOk))
+    {
+      // Accumulate any lines that weren't ok, to report on them
+      // later, and look at the next line in the file, but only if
+      // we need to.
+      QgsDebugMsg("Malformed line : " + line);
+      if (mShowInvalidLines)
+        mInvalidLines << line;
+
+      continue;
+    }
+
+    // Give every valid line in the file an id, even if it's not
+    // in the current extent or bounds.
+    ++mFid;             // increment to next feature ID
+
+    // skip the feature if it's out of current bounds
+    if (! boundsCheck(x,y))
+      continue;
+
+    // at this point, one way or another, the current feature values
+    // are valid
+    feature.setValid( true );
+
+    feature.setFeatureId( mFid );
+
+    QByteArray  buffer;
+    QDataStream s( &buffer, QIODevice::WriteOnly ); // open on buffers's data
+
+    switch ( QgsApplication::endian() )
+    {
+        case QgsApplication::NDR :
+            // we're on a little-endian platform, so tell the data
+            // stream to use that
+            s.setByteOrder( QDataStream::LittleEndian );
+            s << (Q_UINT8)1; // 1 is for little-endian
+            break;
+        case QgsApplication::XDR :
+            // don't change byte order since QDataStream is big endian by default
+            s << (Q_UINT8)0; // 0 is for big-endian
+            break;
+        default :
+            qDebug( "%s:%d unknown endian", __FILE__, __LINE__ );
+            //delete [] geometry;
+            return false;
+    }
+
+    s << (Q_UINT32)QGis::WKBPoint;
+    s << x;
+    s << y;
+
+    unsigned char* geometry = new unsigned char[buffer.size()];
+    memcpy(geometry, buffer.data(), buffer.size());
+
+    feature.setGeometryAndOwnership( geometry, sizeof(wkbPoint) );
+
+    for ( QgsAttributeList::const_iterator i = mAttributesToFetch.begin();
+          i != mAttributesToFetch.end();
+          ++i )
+    {
+      QVariant val;
+      switch (attributeFields[*i].type())
+      {
+        case QVariant::Int:
+          val = QVariant(tokens[*i].toInt());
+          break;
+        case QVariant::Double:
+          val = QVariant(tokens[*i].toDouble());
+          break;
+        default:
+          val = QVariant(tokens[*i]);
+          break;
+      }
+      feature.addAttribute(*i, val);
+    }
+      
+    // We have a good line, so return
+    return true;
+  
+  } // ! textStream EOF
+
+  // End of the file. If there are any lines that couldn't be
+  // loaded, display them now.
+
+  if (mShowInvalidLines && !mInvalidLines.isEmpty())
+  {
+    mShowInvalidLines = false;
+    QgsMessageOutput* output = QgsMessageOutput::createMessageOutput();
+    output->setTitle(tr("Error"));
+    output->setMessage(tr("Note: the following lines were not loaded because Qgis was "
+                          "unable to determine values for the x and y coordinates:\n"),
+                        QgsMessageOutput::MessageText);
+    
+    for (int i = 0; i < mInvalidLines.size(); ++i)
+      output->appendMessage(mInvalidLines.at(i));
+    
+    output->showMessage();
+
+    // We no longer need these lines.
+    mInvalidLines.empty();
+  }
+
+  return false;
+
+} // getNextFeature
+
 
 void QgsDelimitedTextProvider::select(QgsAttributeList fetchAttributes,
                                       QgsRect rect,
@@ -476,8 +430,7 @@ void QgsDelimitedTextProvider::select(QgsAttributeList fetchAttributes,
 // Return the extent of the layer
 QgsRect QgsDelimitedTextProvider::extent()
 {
-  return QgsRect(mExtent.xMin(), mExtent.yMin(), mExtent.xMax(),
-                     mExtent.yMax());
+  return mExtent;
 }
 
 /** 
@@ -530,17 +483,12 @@ bool QgsDelimitedTextProvider::isValid()
  */
 bool QgsDelimitedTextProvider::boundsCheck(double x, double y)
 {
-  bool inBounds(true);
-  if (!mSelectionRectangle.isEmpty())
-    inBounds = (((x <= mSelectionRectangle.xMax()) &&
-                 (x >= mSelectionRectangle.xMin())) &&
-                ((y <= mSelectionRectangle.yMax()) &&
-                 (y >= mSelectionRectangle.yMin())));
-  // QString hit = inBounds?"true":"false";
-
-  // std::cerr << "Checking if " << x << ", " << y << " is in " << 
-  //mSelectionRectangle->stringRep().ascii() << ": " << hit.ascii() << std::endl; 
-  return inBounds;
+  // no selection rectangle => always in the bounds
+  if (mSelectionRectangle.isEmpty())
+    return true;
+  
+  return (x <= mSelectionRectangle.xMax()) && (x >= mSelectionRectangle.xMin()) &&
+         (y <= mSelectionRectangle.yMax()) && (y >= mSelectionRectangle.yMin());
 }
 
 int QgsDelimitedTextProvider::capabilities() const
@@ -549,47 +497,6 @@ int QgsDelimitedTextProvider::capabilities() const
 }
 
 
-int *QgsDelimitedTextProvider::getFieldLengths()
-{
-  // this function parses the entire data file and calculates the
-  // max for each
-
-  // Only do this if we haven't done it already (ie. the vector is
-  // empty)
-  int *lengths = new int[attributeFields.size()];
-  // init the lengths to zero
-  for (int il = 0; il < attributeFields.size(); il++)
-  {
-    lengths[il] = 0;
-  }
-  if (mValid)
-  {
-    reset();
-    // read the line
-    QString line;
-    while (!mStream->atEnd())
-    {
-      line = mStream->readLine(); // line of text excluding '\n'
-      // split the line
-      QStringList parts = QStringList::split(mDelimiter, line, true);
-      // iterate over the parts and update the max value
-      for (int i = 0; i < parts.size(); i++)
-      {
-        if (parts[i] != QString::null)
-        {
-          // std::cerr << "comparing length for " << parts[i] << " against max len of " << lengths[i] << std::endl; 
-          if (parts[i].length() > lengths[i])
-          {
-            lengths[i] = parts[i].length();
-          }
-        }
-
-      }
-    }
-  }
-  return lengths;
-}
-  
 QgsSpatialRefSys QgsDelimitedTextProvider::getSRS()
 {
   // TODO: make provider projection-aware
