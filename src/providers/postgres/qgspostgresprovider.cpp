@@ -488,6 +488,8 @@ void QgsPostgresProvider::select(QgsAttributeList fetchAttributes,
   
   QgsDebugMsg("Binary cursor: " + declare);
   
+  bool hasWhere = FALSE;
+  
   if(!rect.isEmpty())
     {
       if(useIntersect)
@@ -513,11 +515,17 @@ void QgsPostgresProvider::select(QgsAttributeList fetchAttributes,
 	  declare += srid;
 	  declare += ")";
 	}
+      hasWhere = TRUE;
     }
 
   if(sqlWhereClause.length() > 0)
     {
-      declare += " and (" + sqlWhereClause + ")";
+      if (hasWhere)
+        declare += " and ";
+      else
+        declare += " where ";
+      declare += "(" + sqlWhereClause + ")";
+      hasWhere = TRUE;
     }
   
   QgsDebugMsg("Selecting features using: " + declare);
