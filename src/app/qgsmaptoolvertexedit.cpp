@@ -99,8 +99,6 @@ void QgsMapToolVertexEdit::canvasPressEvent(QMouseEvent * e)
 {
   QgsPoint point = toMapCoords(e->pos());
   
-  double x1, y1;
-  double x2, y2;
   QgsGeometryVertexIndex index, rb1Index, rb2Index; //rb1Index/rb2Index is for rubberbanding
   
   if (mTool == AddVertex)
@@ -122,20 +120,20 @@ void QgsMapToolVertexEdit::canvasPressEvent(QMouseEvent * e)
 	
 	index = mSnappedBeforeVertex;
 	// Get the endpoint of the snapped-to segment
-	mSnappedAtGeometry.vertexAt(x2, y2, index);
+	QgsPoint pnt2 = mSnappedAtGeometry.vertexAt(index);
 	
 	// Get the startpoint of the snapped-to segment
 	index.decrement_back();
-	mStartPointValid = mSnappedAtGeometry.vertexAt(x1, y1, index);
+  QgsPoint pnt1 = mSnappedAtGeometry.vertexAt(index);
 	
 	createRubberBand();
 	
-	if (mStartPointValid)
+	if (pnt1 != QgsPoint(0,0))
 	  {
-	    mRubberBand->addPoint(QgsPoint(x1,y1));
+	    mRubberBand->addPoint(pnt1);
 	  }
 	mRubberBand->addPoint(toMapCoords(e->pos()));
-	mRubberBand->addPoint(QgsPoint(x2,y2));
+	mRubberBand->addPoint(pnt2);
   }
   else if (mTool == MoveVertex)
   {
@@ -190,8 +188,8 @@ void QgsMapToolVertexEdit::canvasPressEvent(QMouseEvent * e)
 	if(mRubberBandIndex1 != -1)
 	  {
 	    rb1Index.push_back(mRubberBandIndex1);
-	    mSnappedAtGeometry.vertexAt(x1, y1, rb1Index);
-	    mRubberBand->addPoint(QgsPoint(x1,y1));
+	    QgsPoint pnt1 = mSnappedAtGeometry.vertexAt(rb1Index);
+	    mRubberBand->addPoint(pnt1);
 	    mStartPointValid = true;
 	  }
 	else
@@ -205,8 +203,8 @@ void QgsMapToolVertexEdit::canvasPressEvent(QMouseEvent * e)
 	if(mRubberBandIndex2 != -1)
 	  {
 	    rb2Index.push_back(mRubberBandIndex2);
-	    mSnappedAtGeometry.vertexAt(x2, y2, rb2Index);
-	    mRubberBand->addPoint(QgsPoint(x2,y2));
+	    QgsPoint pnt2 = mSnappedAtGeometry.vertexAt(rb2Index);
+	    mRubberBand->addPoint(pnt2);
 	  }
 #ifdef QGISDEBUG
     qWarning("Creating rubber band for moveVertex");
@@ -230,11 +228,11 @@ void QgsMapToolVertexEdit::canvasPressEvent(QMouseEvent * e)
       }
       
     // Get the point of the snapped-to vertex
-    mSnappedAtGeometry.vertexAt(x1, y1, mSnappedAtVertex);
+    QgsPoint pnt = mSnappedAtGeometry.vertexAt(mSnappedAtVertex);
     
     mCross = new QgsVertexMarker(mCanvas);
     mCross->setIconType(QgsVertexMarker::ICON_X);
-    mCross->setCenter(QgsPoint(x1,y1));
+    mCross->setCenter(pnt);
   }
   
 }

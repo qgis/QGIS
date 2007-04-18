@@ -1727,10 +1727,11 @@ bool QgsGeometry::insertVertexBefore(double x, double y, QgsGeometryVertexIndex 
     }
 }
 
-bool QgsGeometry::vertexAt(double &x, double &y, 
-                           QgsGeometryVertexIndex atVertex)
+QgsPoint QgsGeometry::vertexAt(const QgsGeometryVertexIndex& atVertex)
 {
-      if(mGeos)//try to find the vertex from the Geos geometry (it present)
+  double x,y;
+  
+  if (mGeos) //try to find the vertex from the Geos geometry (it present)
 	{
 	  GEOS_GEOM::CoordinateSequence* cs = mGeos->getCoordinates();
 	  if(cs)
@@ -1739,7 +1740,7 @@ bool QgsGeometry::vertexAt(double &x, double &y,
 	      x = coord.x;
 	      y = coord.y;
 	      delete cs;
-	      return true;
+	      return QgsPoint(x,y);
 	    }
 	}
     else if(mGeometry)
@@ -1760,11 +1761,11 @@ bool QgsGeometry::vertexAt(double &x, double &y,
 		    memcpy(&x, ptr, sizeof(double));
 		    ptr += sizeof(double);
 		    memcpy(&y, ptr, sizeof(double));
-		    return true;
+		    return QgsPoint(x,y);
 		  }
 		else
 		  {
-		    return FALSE;
+		    return QgsPoint(0,0);
 		  }
 	      }
 	    case QGis::WKBLineString25D:
@@ -1779,7 +1780,7 @@ bool QgsGeometry::vertexAt(double &x, double &y,
                 // return error if underflow
                 if (0 > atVertex.back() || *nPoints <= atVertex.back())
 		        {
-		            return FALSE;
+		            return QgsPoint(0,0);
 		        }
 
                 // copy the vertex coordinates 
@@ -1794,7 +1795,7 @@ bool QgsGeometry::vertexAt(double &x, double &y,
                 memcpy(&x, ptr, sizeof(double));
                 ptr += sizeof(double);
                 memcpy(&y, ptr, sizeof(double));
-                return true;
+                return QgsPoint(x,y);
 	      }
 	    case QGis::WKBPolygon25D:
 	      hasZValue = true;
@@ -1817,7 +1818,7 @@ bool QgsGeometry::vertexAt(double &x, double &y,
 			    memcpy(&x, ptr, sizeof(double));
 			    ptr += sizeof(double);
 			    memcpy(&y, ptr, sizeof(double));
-			    return true;
+			    return QgsPoint(x,y);
 			  }
 			ptr += 2*sizeof(double);
 			if(hasZValue)
@@ -1827,7 +1828,7 @@ bool QgsGeometry::vertexAt(double &x, double &y,
 			++pointindex;
 		      }
 		  }
-		return false;
+		return QgsPoint(0,0);
 	      }
 	    case QGis::WKBMultiPoint25D:
 	      hasZValue = true;
@@ -1837,7 +1838,7 @@ bool QgsGeometry::vertexAt(double &x, double &y,
 		int* nPoints = (int*)ptr;
 		if(atVertex.back() < 0 || atVertex.back() >= *nPoints)
 		  {
-		    return false;
+        return QgsPoint(0,0);
 		  }
 		if(hasZValue)
 		  {
@@ -1851,7 +1852,7 @@ bool QgsGeometry::vertexAt(double &x, double &y,
 		memcpy(&x, ptr, sizeof(double));
 		ptr += sizeof(double);
 		memcpy(&y, ptr, sizeof(double));
-                return true;
+                return QgsPoint(x,y);
 	      }
 	    case QGis::WKBMultiLineString25D:
 	      hasZValue = true;
@@ -1874,7 +1875,7 @@ bool QgsGeometry::vertexAt(double &x, double &y,
 			    memcpy(&x, ptr, sizeof(double));
 			    ptr += sizeof(double);
 			    memcpy(&y, ptr, sizeof(double));
-			    return true;
+			    return QgsPoint(x,y);
 			  }
 			ptr += 2*sizeof(double);
 			if(hasZValue)
@@ -1884,7 +1885,7 @@ bool QgsGeometry::vertexAt(double &x, double &y,
 			++pointindex;
 		      }
 		  }
-                return false;
+                return QgsPoint(0,0);
 	      }
 	    case QGis::WKBMultiPolygon25D:
 	      hasZValue = true;
@@ -1912,7 +1913,7 @@ bool QgsGeometry::vertexAt(double &x, double &y,
 				memcpy(&x, ptr, sizeof(double));
 				ptr += sizeof(double);
 				memcpy(&y, ptr, sizeof(double));
-				return true;
+				return QgsPoint(x,y);
 			      }
 			    ++pointindex;
 			    ptr += 2*sizeof(double);
@@ -1923,60 +1924,46 @@ bool QgsGeometry::vertexAt(double &x, double &y,
 			  }
 		      }
 		  }
-                return false;
+                return QgsPoint(0,0);
 	      }
-            default:
-#ifdef QGISDEBUG
-	      qWarning("error: mGeometry type not recognized in QgsGeometry::vertexAt");
-#endif
-	      return false;
-	      break;
+      default:
+	      QgsDebugMsg("error: mGeometry type not recognized");
+        return QgsPoint(0,0);
 	    }
 	}
-    else
-    {
-#ifdef QGISDEBUG
-	  qWarning("error: no mGeometry pointer in QgsGeometry::vertexAt");
-#endif
+  else
+  {
+	  QgsDebugMsg("error: no mGeometry pointer");
 	}     
 	
-    return false;
+  return QgsPoint(0,0);
 }
 
 
 double QgsGeometry::sqrDistToVertexAt(QgsPoint& point,
                                       QgsGeometryVertexIndex& atVertex)
 {
-  double x;
-  double y;
-
-  if (vertexAt(x, y, atVertex))
+  QgsPoint pnt = vertexAt(atVertex);
+  if (pnt != QgsPoint(0,0))
   {
-#ifdef QGISDEBUG
-    std::cout << "QgsGeometry::sqrDistToVertexAt: Exiting with distance to " << x << " " << y << "." << std::endl;
-#endif
-    return point.sqrDist(x, y);
+    QgsDebugMsg("Exiting with distance to " + pnt.stringRep());
+    return point.sqrDist(pnt);
   }
   else
   {
-#ifdef QGISDEBUG
-    std::cout << "QgsGeometry::sqrDistToVertexAt: Exiting with std::numeric_limits<double>::max()." << std::endl;
-#endif
+    QgsDebugMsg("Exiting with std::numeric_limits<double>::max().");
     // probably safest to bail out with a very large number
     return std::numeric_limits<double>::max();
   }
 }
 
 
-QgsPoint QgsGeometry::closestVertexWithContext(QgsPoint& point,
-                                               QgsGeometryVertexIndex& atVertex,
-                                               double& sqrDist)
+double QgsGeometry::closestVertexWithContext(const QgsPoint& point,
+                                             QgsGeometryVertexIndex& atVertex)
 {
-  QgsPoint minDistPoint;
-
   // Initialise some stuff
   atVertex.clear();
-  sqrDist   = std::numeric_limits<double>::max();
+  double sqrDist = std::numeric_limits<double>::max();
   int closestVertexIndex = 0;
 
   // set up the GEOS geometry
@@ -1985,7 +1972,7 @@ QgsPoint QgsGeometry::closestVertexWithContext(QgsPoint& point,
   if (!mGeos)
   {
     QgsDebugMsg("GEOS geometry not available!");
-    return QgsPoint(0,0);
+    return -1;
   }
   
     GEOS_GEOM::CoordinateSequence* sequence = mGeos->getCoordinates();
@@ -2003,15 +1990,15 @@ QgsPoint QgsGeometry::closestVertexWithContext(QgsPoint& point,
 	  }
 	atVertex.push_back(closestVertexIndex);
   
-  return minDistPoint;
+  return sqrDist;
 }
 
 
-QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
-                                                QgsGeometryVertexIndex& beforeVertex,
-                                                double& sqrDist)
+double QgsGeometry::closestSegmentWithContext(const QgsPoint& point,
+                                              QgsPoint& minDistPoint,
+                                              QgsGeometryVertexIndex& beforeVertex)
 {
-  QgsPoint minDistPoint;
+  QgsPoint distPoint;
 
   QGis::WKBTYPE wkbType;
   bool hasZValue = false;
@@ -2022,7 +2009,7 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
 
   // Initialise some stuff
   beforeVertex.clear();
-  sqrDist   = std::numeric_limits<double>::max();
+  double sqrDist = std::numeric_limits<double>::max();
 
   // TODO: implement with GEOS
   if(mDirtyWkb) //convert latest geos to mGeometry
@@ -2033,7 +2020,7 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
   if (!mGeometry)
   { 
     QgsDebugMsg("WKB geometry not available!");
-    return QgsPoint(0,0);
+    return -1;
   }
 
     memcpy(&wkbType, (mGeometry+1), sizeof(int));
@@ -2046,7 +2033,7 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
     case QGis::WKBMultiPoint:  
       {
 	// Points have no lines
-	return QgsPoint(0,0);
+	return -1;
       }
     case QGis::WKBLineString25D:
       hasZValue = true;
@@ -2068,10 +2055,11 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
 	    
 	    if (index > 0)
 	      {
-		if((testdist = distanceSquaredPointToSegment(point, prevx, prevy, thisx, thisy, minDistPoint)) < sqrDist )
+		if((testdist = distanceSquaredPointToSegment(point, prevx, prevy, thisx, thisy, distPoint)) < sqrDist )
 		  {
 		    closestSegmentIndex = index;
 		    sqrDist = testdist;
+        minDistPoint = distPoint;
 		  }
 	      }
 	    ptr += sizeof(double);
@@ -2111,10 +2099,11 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
 		  }
 		if(prevx && prevy)
 		  {
-		    if((testdist = distanceSquaredPointToSegment(point, prevx, prevy, thisx, thisy, minDistPoint)) < sqrDist )
+		    if((testdist = distanceSquaredPointToSegment(point, prevx, prevy, thisx, thisy, distPoint)) < sqrDist )
 		      {
 			closestSegmentIndex = pointindex;
 			sqrDist = testdist;
+      minDistPoint = distPoint;
 		      }
 		  }
 		prevx = thisx;
@@ -2152,10 +2141,11 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
 		  }
 		if(prevx && prevy)
 		  {
-		    if((testdist = distanceSquaredPointToSegment(point, prevx, prevy, thisx, thisy, minDistPoint)) < sqrDist )
+		    if((testdist = distanceSquaredPointToSegment(point, prevx, prevy, thisx, thisy, distPoint)) < sqrDist )
 		      {
 			closestSegmentIndex = index;
 			sqrDist = testdist;
+      minDistPoint = distPoint;
 		      }
 		  }
 		prevx = thisx;
@@ -2199,10 +2189,11 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
 		      }
 		    if(prevx && prevy)
 		      {
-			if((testdist = distanceSquaredPointToSegment(point, prevx, prevy, thisx, thisy, minDistPoint)) < sqrDist )
+			if((testdist = distanceSquaredPointToSegment(point, prevx, prevy, thisx, thisy, distPoint)) < sqrDist )
 			  {
 			    closestSegmentIndex = pointindex;
 			    sqrDist = testdist;
+          minDistPoint = distPoint;
 			  }
 		      }
 		    prevx = thisx;
@@ -2215,20 +2206,16 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
 	break;
       }
     case QGis::WKBUnknown:
+    default:
+      return -1;
       break;
     } // switch (wkbType)
     
 
-#ifdef QGISDEBUG
-      std::cout << "QgsGeometry::closestSegment: Exiting with beforeVertex "
-//                << beforeVertex << ", sqrDist from "
-                << point.stringRep().toLocal8Bit().data() << " is "
-                << sqrDist
-                << "." << std::endl;
-#endif
-      
-  return minDistPoint;  // TODO: Is this meaningful?
-
+  QgsDebugMsg("Exiting with nearest point " + point.stringRep() +
+              ", dist: " + QString::number(sqrDist) + ".");
+  
+  return sqrDist;
 }                 
 
 
@@ -3353,7 +3340,7 @@ bool QgsGeometry::exportGeosToWkb()
 
 
 
-double QgsGeometry::distanceSquaredPointToSegment(QgsPoint& point,
+double QgsGeometry::distanceSquaredPointToSegment(const QgsPoint& point,
                                                   double *x1, double *y1,
                                                   double *x2, double *y2,
                                                   QgsPoint& minDistPoint)

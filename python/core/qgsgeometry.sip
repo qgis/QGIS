@@ -206,7 +206,7 @@ class QgsGeometry
     */
     // SIP: buffer will be transferred from python to C++
     // TODO: create pythonic interface that will receive wkb as a string
-    void setWkbAndOwnership(unsigned char * wkb /Transfer/, size_t length);
+    void setWkbAndOwnership(unsigned char * wkb /Transfer, Array/, size_t length /ArraySize/);
     
     /** 
        Returns the buffer containing this geometry in WKB format.
@@ -298,36 +298,34 @@ class QgsGeometry
 
      */
     double sqrDistToVertexAt(QgsPoint& point,
-                             QgsGeometryVertexIndex& atVertex);
+                             QgsGeometryVertexIndex& atVertex /Out/);
 
     /**
-     *  Modifies x and y to indicate the location of
-     *  the vertex at the given position number,
-     *  ring and item (first number is index 0)
-     *  to the given coordinates
-     *
-     *  Returns TRUE if atVertex is a valid position on
-     *  the geometry, otherwise FALSE.
-     *
-     *  If FALSE, x and y are not modified.
+     *  Returns coordinates of a vertex.
+     *  @param atVertex index of the vertex
+     *  @return Coordinates of the vertex or QgsPoint(0,0) on error
      */
-    bool vertexAt(double &x, double &y, QgsGeometryVertexIndex atVertex);
+    QgsPoint vertexAt(const QgsGeometryVertexIndex& atVertex);
 
     /**
-        Returns, in atVertex, the closest vertex in this geometry to the given point.
-        The squared cartesian distance is also returned in sqrDist.
+     * Searches for the the closest vertex in this geometry to the given point.
+     * @param point Specifiest the point for search
+     * @param atVertex Receives index of the closest vertex
+     * @return The squared cartesian distance is also returned in sqrDist, negative number on error
      */
-    QgsPoint closestVertexWithContext(QgsPoint& point,
-                                      QgsGeometryVertexIndex& atVertex,
-                                      double& sqrDist);
+    double closestVertexWithContext(const QgsPoint& point,
+                                    QgsGeometryVertexIndex& atVertex /Out/);
 
     /**
-        Returns, in beforeVertex, the closest segment in this geometry to the given point.
-        The squared cartesian distance is also returned in sqrDist.
+     * Searches for the closest segment of geometry to the given point
+     * @param point Specifies the point for search
+     * @param minDistPoint Receives the nearest point on the segment
+     * @param beforeVertex Receives index of the vertex before the closest segment
+     * @return The squared cartesian distance is also returned in sqrDist, negative number on error
      */
-    QgsPoint closestSegmentWithContext(QgsPoint& point,
-                                       QgsGeometryVertexIndex& beforeVertex,
-                                       double& sqrDist);
+    double closestSegmentWithContext(const QgsPoint& point,
+                                     QgsPoint& minDistPoint /Out/,
+                                     QgsGeometryVertexIndex& beforeVertex /Out/);
 
     /**Returns the bounding box of this feature*/
     QgsRect boundingBox();

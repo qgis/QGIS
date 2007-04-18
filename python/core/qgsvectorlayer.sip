@@ -185,7 +185,7 @@ public:
      If there is no point within this tolerance, point is left unchanged.
      @param tolerance   The snapping tolerance
      @return true if the position of point has been changed, and false otherwise */
-  bool snapPoint(QgsPoint& point, double tolerance);
+  bool snapPoint(QgsPoint& point /In, Out/, double tolerance);
 
   /**Snaps a point to the closest vertex if there is one within the snapping tolerance
      @param atVertex          Set to a vertex index of the snapped-to vertex
@@ -199,11 +199,11 @@ public:
      TODO: Handle returning multiple verticies if they are coincident
    */
   bool snapVertexWithContext(QgsPoint& point,
-                             QgsGeometryVertexIndex& atVertex,
-			     int& beforeVertexIndex,
-			     int& afterVertexIndex,
-                             int& snappedFeatureId,
-                             QgsGeometry& snappedGeometry,
+                             QgsGeometryVertexIndex& atVertex /Out/,
+			     int& beforeVertexIndex /Out/,
+			     int& afterVertexIndex /Out/,
+                             int& snappedFeatureId /Out/,
+                             QgsGeometry& snappedGeometry /Out/,
                              double tolerance);
 
   /**Snaps a point to the closest line segment if there is one within the snapping tolerance
@@ -215,10 +215,10 @@ public:
      
      TODO: Handle returning multiple lineFeatures if they are coincident
    */
-  bool snapSegmentWithContext(QgsPoint& point,
-                              QgsGeometryVertexIndex& beforeVertex,
-                              int& snappedFeatureId, 
-                              QgsGeometry& snappedGeometry,
+  bool snapSegmentWithContext(QgsPoint& point /In, Out/,
+                              QgsGeometryVertexIndex& beforeVertex /Out/,
+                              int& snappedFeatureId /Out/, 
+                              QgsGeometry& snappedGeometry /Out/,
                               double tolerance);
 
   /**

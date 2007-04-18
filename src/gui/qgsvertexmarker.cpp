@@ -41,7 +41,6 @@ void QgsVertexMarker::setCenter(const QgsPoint& point)
    mCenter = point;
    QPointF pt = toCanvasCoords(mCenter);
    setPos(pt);
-   std::cout << "at " << (int) pt.x() << " " << (int) pt.y() << std::endl;
 }
 
 
