@@ -371,6 +371,7 @@ SET(QGIS_GUI_HDRS
 ../gui/qgsattributetable.h
 ../gui/qgsattributetabledisplay.h
 ../gui/qgsbookmarks.h
+../gui/qgscsexception.h
 ../gui/qgsclipboard.h
 ../gui/qgscolorbutton.h
 ../gui/qgscontinuouscolordialog.h
@@ -457,6 +458,11 @@ SET(QGIS_GUI_HDRS
 ../legend/qgslegendvectorsymbologyitem.h
 
 ../raster/qgsrasterlayer.h
+../raster/qgsrasterbandstats.h
+../raster/qgsrasterviewport.h
+../raster/qgsrasterpyramid.h
+
+../core/qgsdataprovider.h
 
 )
 
