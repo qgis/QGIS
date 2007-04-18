@@ -2417,7 +2417,7 @@ bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point, QgsGeometryVertexIn
       // feature->setGeometry( mChangedGeometries[ feature->featureId() ] );
     }
 
-    minDistSegPoint = feature.geometry()->closestSegmentWithContext(origPoint, beforeVertexTemp, testSqrDist);
+    testSqrDist = feature.geometry()->closestSegmentWithContext(origPoint, minDistSegPoint, beforeVertexTemp);
 
     if (
         (testSqrDist < minSqrDist) ||
@@ -2453,7 +2453,7 @@ bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point, QgsGeometryVertexIn
     }
     else
     {
-      minDistSegPoint = (*iter).geometry()->closestSegmentWithContext(origPoint, beforeVertexTemp, testSqrDist);
+      testSqrDist = (*iter).geometry()->closestSegmentWithContext(origPoint, minDistSegPoint, beforeVertexTemp);
     }
 
     if (
@@ -2478,7 +2478,7 @@ bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point, QgsGeometryVertexIn
   //and also go through the changed geometries, because the spatial filter of the provider did not consider feature changes
   for(QgsGeometryMap::iterator it = mChangedGeometries.begin(); it != mChangedGeometries.end(); ++it)
   {
-    minDistSegPoint = it.value().closestSegmentWithContext(origPoint, beforeVertexTemp, testSqrDist);
+    testSqrDist = it.value().closestSegmentWithContext(origPoint, minDistSegPoint, beforeVertexTemp);
     if (
         (testSqrDist < minSqrDist) ||
         (
