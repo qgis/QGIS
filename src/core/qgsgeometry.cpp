@@ -1978,7 +1978,7 @@ double QgsGeometry::closestVertexWithContext(const QgsPoint& point,
     GEOS_GEOM::CoordinateSequence* sequence = mGeos->getCoordinates();
 	if(sequence)
 	  {
-	    for(int i = 0; i < sequence->getSize(); ++i)
+	    for(unsigned int i = 0; i < sequence->getSize(); ++i)
 	      {
 		double testDist = point.sqrDist(sequence->getAt(i).x, sequence->getAt(i).y);
 		if(testDist < sqrDist)
@@ -3231,7 +3231,7 @@ bool QgsGeometry::exportGeosToWkb()
 	      geometrySize += sizeof(int);
 	      geometrySize += theRing->getNumPoints()*2*sizeof(double);
 	    }
-	  for(int i = 0; i < thePolygon->getNumInteriorRing(); ++i)
+	  for(unsigned int i = 0; i < thePolygon->getNumInteriorRing(); ++i)
 	    {
 	      geometrySize += sizeof(int); //number of points in ring
 	      theRing = thePolygon->getInteriorRingN(i);
@@ -3265,7 +3265,7 @@ bool QgsGeometry::exportGeosToWkb()
 		position += sizeof(int);
 		const GEOS_GEOM::CoordinateSequence* ringSequence = theRing->getCoordinatesRO();
 		//for(int j = 0; j < nPointsInRing; ++j)
-		for(int j = 0; j <ringSequence->getSize(); ++j)
+		for(unsigned int j = 0; j <ringSequence->getSize(); ++j)
 		      {
 			//x = theRing->getPointN(j)->getX();
 			x = ringSequence->getAt(j).x;
@@ -3279,7 +3279,7 @@ bool QgsGeometry::exportGeosToWkb()
 	      }
 
 	    //interior rings after
-	    for(int i = 0; i < thePolygon->getNumInteriorRing(); ++i)
+	    for(unsigned int i = 0; i < thePolygon->getNumInteriorRing(); ++i)
 	      {
 		theRing = thePolygon->getInteriorRingN(i);
 		if(theRing)
