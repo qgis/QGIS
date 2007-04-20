@@ -24,6 +24,10 @@ class QgsVertexMarker : QgsMapCanvasItem
     
     void setIconSize(int iconSize);
     
+    void setColor(const QColor& color);
+    
+    void setPenWidth(int width);
+    
     void paint(QPainter* p);
     
     QRectF boundingRect() const;

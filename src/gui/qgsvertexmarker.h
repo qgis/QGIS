@@ -43,6 +43,10 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
     
     void setIconSize(int iconSize);
     
+    void setColor(const QColor& color);
+    
+    void setPenWidth(int width);
+    
     void paint(QPainter* p);
     
     QRectF boundingRect() const;
@@ -59,6 +63,12 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
 
     //! coordinates of the point in the center
     QgsPoint mCenter;
+    
+    //! color of the marker
+    QColor mColor;
+    
+    //! pen width
+    int mPenWidth;
 };
 
 #endif
