@@ -446,7 +446,7 @@ bool QgsSpatialRefSys::isValid() const
   OGRErr myResult = myOgrSpatialRef.importFromProj4( mySourceCharArrayPointer );
   if (myResult==OGRERR_NONE)
   {
-    QgsDebugMsg("The OGRe says it's a valid SRS with proj4 string: " +  mProj4String);
+    //QgsDebugMsg("The OGRe says it's a valid SRS with proj4 string: " +  mProj4String);
     //srs is valid so nothing more to do...
     return true;
   }
