@@ -15,9 +15,7 @@ email                : morb at ozemail dot com dot au
 /* $Id$ */
 
 #include "qgsgeometryvertexindex.h"
-
-#include <QString>
-#include <iostream>
+#include "qgslogger.h"
 
 
 QgsGeometryVertexIndex::QgsGeometryVertexIndex()
@@ -53,12 +51,13 @@ void QgsGeometryVertexIndex::push_back(int& i)
 int QgsGeometryVertexIndex::back() const
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsGeometryVertexIndex::back: mIndex contains:";
+  QString str;
   for(std::vector<int>::const_iterator it = mIndex.begin(); it != mIndex.end(); ++it)
   {
-    std::cout << " " << (*it);
+    str += " ";
+    str += QString::number(*it);
   }
-  std::cout << "." << std::endl;
+  QgsDebugMsg("mIndex contains:" + str + ".");
 #endif
   return mIndex.back();
 }
@@ -67,12 +66,13 @@ int QgsGeometryVertexIndex::back() const
 int QgsGeometryVertexIndex::get_at(int i) const
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsGeometryVertexIndex::get_at: mIndex contains:";
+  QString str;
   for(std::vector<int>::const_iterator it = mIndex.begin(); it != mIndex.end(); ++it)
   {
-    std::cout << " " << (*it);
+    str += " ";
+    str += QString::number(*it);
   }
-  std::cout << "." << std::endl;
+  QgsDebugMsg("mIndex contains:" + str + ".");
 #endif
   return mIndex[i];
 }
