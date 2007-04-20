@@ -40,7 +40,6 @@ QgsVectorFileWriter::QgsVectorFileWriter(const QString& shapefileName,
                                          const QgsSpatialRefSys* srs)
   : mDS(NULL), mLayer(NULL), mGeom(NULL), mError(NoError)
 {
-
   // save the layer as a shapefile
   QString driverName = "ESRI Shapefile";
   
@@ -142,37 +141,40 @@ QgsVectorFileWriter::QgsVectorFileWriter(const QString& shapefileName,
 
   QgsDebugMsg("Done creating fields");
 
+  mWkbType = geometryType;
+  // create geometry which will be used for import
+  mGeom = createEmptyGeometry(mWkbType);
+}
+
+OGRGeometry* QgsVectorFileWriter::createEmptyGeometry(QGis::WKBTYPE wkbType)
+{
   // create instance of OGR geometry (will be used to import from WKB)
-  switch (geometryType)
+  switch (wkbType)
   {
     case QGis::WKBPoint:
     case QGis::WKBPoint25D:
-      mGeom = new OGRPoint;
-      break;
+      return new OGRPoint;
     case QGis::WKBLineString:
     case QGis::WKBLineString25D:
-      mGeom = new OGRLineString;
-      break;
+      return new OGRLineString;
     case QGis::WKBPolygon:
     case QGis::WKBPolygon25D:
-      mGeom = new OGRPolygon;
-      break;
+      return new OGRPolygon;
     case QGis::WKBMultiPoint:
     case QGis::WKBMultiPoint25D:
-      mGeom = new OGRMultiPoint;
-      break;
+      return new OGRMultiPoint;
     case QGis::WKBMultiLineString:
     case QGis::WKBMultiLineString25D:
-      mGeom = new OGRMultiLineString;
-      break;
+      return new OGRMultiLineString;
     case QGis::WKBMultiPolygon:
     case QGis::WKBMultiPolygon25D:
-      mGeom = new OGRMultiPolygon;
-      break;
+      return new OGRMultiPolygon;
     default:
       assert(0 && "invalid WKB type");
+      return NULL;
   }
 }
+
 
 QgsVectorFileWriter::WriterError QgsVectorFileWriter::hasError()
 {
@@ -220,16 +222,47 @@ bool QgsVectorFileWriter::addFeature(QgsFeature& feature)
         assert(0 && "invalid variant type");
     }
   }
-    
+  
   // build geometry from WKB
   QgsGeometry* geom = feature.geometry();
-  if (mGeom->importFromWkb(geom->wkbBuffer(), geom->wkbSize()) != OGRERR_NONE)
+  
+  if (geom->wkbType() != mWkbType)
   {
-    QgsDebugMsg("Failed to import geometry from WKB");
-  }
+    // there's a problem when layer type is set as wkbtype Polygon
+    // although there are also features of type MultiPolygon
+    // (at least in OGR provider)
+    // If the feature's wkbtype is different from the layer's wkbtype,
+    // try to export it too.
+    //
+    // Btw. OGRGeometry must be exactly of the type of the geometry which it will receive
+    // i.e. Polygons can't be imported to OGRMultiPolygon
     
-  // set geometry (ownership is not passed to OGR)
-  poFeature->SetGeometry(mGeom);
+    OGRGeometry* mGeom2 = createEmptyGeometry(geom->wkbType());
+    
+    OGRErr err = mGeom2->importFromWkb(geom->wkbBuffer(), geom->wkbSize());
+    if (err != OGRERR_NONE)
+    {
+      QgsDebugMsg("Failed to import geometry from WKB: " + QString::number(err));
+      OGRFeature::DestroyFeature(poFeature);
+      return false;
+    }
+    
+    // pass ownership to geometry
+    poFeature->SetGeometryDirectly(mGeom2);
+  }
+  else
+  {
+    OGRErr err = mGeom->importFromWkb(geom->wkbBuffer(), geom->wkbSize());
+    if (err != OGRERR_NONE)
+    {
+      QgsDebugMsg("Failed to import geometry from WKB: " + QString::number(err));
+      OGRFeature::DestroyFeature(poFeature);
+      return false;
+    }
+    
+    // set geometry (ownership is not passed to OGR)
+    poFeature->SetGeometry(mGeom);
+  }
     
   // put the created feature to layer
   if (mLayer->CreateFeature(poFeature) != OGRERR_NONE)
@@ -290,3 +323,4 @@ QgsVectorFileWriter::WriterError
   
   return NoError;
 }
+

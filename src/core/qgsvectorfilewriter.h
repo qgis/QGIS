@@ -74,6 +74,8 @@ class CORE_EXPORT QgsVectorFileWriter
     
   protected:
     
+    OGRGeometry* createEmptyGeometry(QGis::WKBTYPE wkbType);
+    
     OGRDataSource* mDS;
     OGRLayer* mLayer;
     OGRGeometry* mGeom;
@@ -84,6 +86,9 @@ class CORE_EXPORT QgsVectorFileWriter
     WriterError mError;
 
     QTextCodec* mCodec;
+    
+    /** geometry type which is being used */
+    QGis::WKBTYPE mWkbType;
 };
 
 #endif
