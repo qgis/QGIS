@@ -242,8 +242,6 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
     QgsDebugMsg("Field: " + attnum + " maps to " + QString::number(i) + " " + fieldName + ", " 
       + fieldTypeName + " (" + QString::number(fldtyp) + "),  " + fieldSize + ", " + QString::number(fieldModifier));
     
-    attributeFieldsIdMap[attnum.toInt()] = i;
-
     if(fieldName!=geometryColumn)
     {
       QVariant::Type fieldType;
@@ -2121,6 +2119,16 @@ bool QgsPostgresProvider::changeGeometryValues(QgsGeometryMap & geometry_map)
   QgsDebugMsg("exiting.");
   
   return returnvalue;
+}
+
+QgsAttributeList QgsPostgresProvider::allAttributesList()
+{
+	QgsAttributeList attributes;
+	for(QgsFieldMap::iterator it = attributeFields.begin(); it != attributeFields.end(); ++it)
+	{
+		attributes.push_back(it.key());
+	}
+	return attributes;
 }
 
 
