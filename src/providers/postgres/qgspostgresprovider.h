@@ -195,6 +195,8 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     /**Returns true if layer is valid
     */
     bool isValid();
+    
+    QgsAttributeList allAttributesList();
 
     //! get postgis version string
     QString postgisVersion(PGconn *);
@@ -328,7 +330,6 @@ class QgsPostgresProvider:public QgsVectorDataProvider
 
     std::vector < QgsFeature > features;
     QgsFieldMap attributeFields;
-    std::map < int, int > attributeFieldsIdMap;
     QString mDataComment;
 
     //! Data source URI struct for this layer

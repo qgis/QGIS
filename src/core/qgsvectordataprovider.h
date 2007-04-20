@@ -251,7 +251,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       /**
        * Return list of indexes to fetch all attributes in getNextFeature()
        */
-      QgsAttributeList allAttributesList();
+      virtual QgsAttributeList allAttributesList();
 
       /**Returns the names of the numerical types*/
       const QSet<QString>& supportedNativeTypes() const;
