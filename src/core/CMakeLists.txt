@@ -73,7 +73,9 @@ SET_SOURCE_FILES_PROPERTIES(
 SET(QGIS_CORE_MOC_HDRS
 qgscontexthelp.h
 qgscoordinatetransform.h
+qgscsexception.h
 qgsdataprovider.h
+qgsexception.h
 qgshttptransaction.h
 qgsmaplayer.h
 qgsmaplayerregistry.h
