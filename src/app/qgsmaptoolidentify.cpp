@@ -447,6 +447,11 @@ void QgsMapToolIdentify::highlightFeature(int featureId)
     return;
   
   QgsGeometry* g = feat.geometry();
+  
+  // TODO: support multipart geometries
+  if (g->isMultipart())
+    return;
+  
   switch (g->vectorType())
   {
     case QGis::Point:
