@@ -16,7 +16,7 @@ class QgsVertexMarker : QgsMapCanvasItem
       ICON_BOX
     };
 
-    QgsVertexMarker(QgsMapCanvas* mapCanvas);
+    QgsVertexMarker(QgsMapCanvas* mapCanvas /TransferThis/);
     
     void setCenter(const QgsPoint& point);
     

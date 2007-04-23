@@ -8,7 +8,7 @@ class QgsMapCanvasItem : QGraphicsItem
   protected:
     
     //! protected constructor: cannot be constructed directly
-    QgsMapCanvasItem(QgsMapCanvas* mapCanvas);
+    QgsMapCanvasItem(QgsMapCanvas* mapCanvas /TransferThis/);
 
     virtual ~QgsMapCanvasItem();
 
