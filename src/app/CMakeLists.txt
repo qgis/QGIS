@@ -31,7 +31,8 @@ qgsmaptoolidentify.cpp
 qgsmaptoolselect.cpp
 qgsmaptoolvertexedit.cpp
 qgsmarkerdialog.cpp
-qgsmeasure.cpp
+qgsmeasuredialog.cpp
+qgsmeasuretool.cpp
 qgsnewhttpconnection.cpp
 qgsnumericsortlistviewitem.cpp
 qgsoptions.cpp
@@ -100,7 +101,7 @@ qgsludialog.h
 qgsmaplayerinterface.h
 qgsmaptoolidentify.h
 qgsmarkerdialog.h
-qgsmeasure.h
+qgsmeasuredialog.h
 qgsnewhttpconnection.h
 qgsoptions.h
 qgspastetransformations.h

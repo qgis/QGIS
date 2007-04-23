@@ -13,30 +13,25 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSMEASURE_H
-#define QGSMEASURE_H
+
+#ifndef QGSMEASUREDIALOG_H
+#define QGSMEASUREDIALOG_H
 
 #include "ui_qgsmeasurebase.h"
-#include <QWidget>
-#include "qgsmaptool.h"
+
 #include "qgspoint.h"
 
-class QgsDistanceArea;
-class QgsMapCanvas;
-class QgsRubberBand;
-
 class QCloseEvent;
+class QgsMeasureTool;
 
-
-class QgsMeasure:public QDialog, public QgsMapTool, private Ui::QgsMeasureBase
+class QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 {
   Q_OBJECT;
-  public:
+
+public:
 
   //! Constructor
-  QgsMeasure(bool measureArea, QgsMapCanvas *mc, Qt::WFlags f = 0);
-
-  ~QgsMeasure();
+  QgsMeasureDialog(QgsMeasureTool* tool, Qt::WFlags f = 0);
 
   //! Save position
   void saveWindowLocation(void);
@@ -53,42 +48,15 @@ class QgsMeasure:public QDialog, public QgsMapTool, private Ui::QgsMeasureBase
   //! Mouse press
   void mousePress(QgsPoint &point);
   
-  //! returns whether measuring distance or area
-  bool measureArea() { return mMeasureArea; }
-  //! sets whether we're measuring area (and restarts)
-  void setMeasureArea(bool measureArea);
-
-public:
-  
-  // Inherited from QgsMapTool
-  
-  //! Mouse move event for overriding
-  virtual void canvasMoveEvent(QMouseEvent * e);
-
-  //! Mouse press event for overriding
-  virtual void canvasPressEvent(QMouseEvent * e);
-
-  //! Mouse release event for overriding
-  virtual void canvasReleaseEvent(QMouseEvent * e);
-
-  //! called when set as currently active map tool
-  virtual void activate();
-    
-  //! called when map tool is being deactivated
-  virtual void deactivate();
-  
 public slots:
   //! Close
   void close ( void);
 
   //! Reset and start new
-  void restart ( void);
+  void restart ();
 
   //! Close event
   void closeEvent(QCloseEvent *e);
-
-  //! Redraw lines to match current state of canvas
-  void mapCanvasChanged(); 
 
   //! Show the help for the dialog 
   void on_btnHelp_clicked();
@@ -104,20 +72,7 @@ private:
   //! shows/hides table, shows correct units
   void updateUi();
   
-  //! updates the projections we're using 
-  void updateProjection();
-
-  QgsMapCanvas *mMapCanvas;
-  
-  //! distance/area calculator
-  //QgsDistanceArea* mCalc;
-  
-  QList<QgsPoint> mPoints;
-
   double mTotal;
-
-  //! Rubberband widget tracking the lines being drawn
-  QgsRubberBand *mRubberBand;
 
   //! Help context id
   static const int context_id = 687883780;
@@ -125,12 +80,8 @@ private:
   //! indicates whether we're measuring distances or areas
   bool mMeasureArea;
 
-  //! indicates whether we've just done a right mouse click
-  bool mRightMouseClicked;
-
-  //! indicates whether we've recently warned the user about having the wrong 
-  // project projection
-  bool mWrongProjectProjection;
+  //! pointer to measure tool which owns this dialog
+  QgsMeasureTool* mTool;
 };
 
 #endif

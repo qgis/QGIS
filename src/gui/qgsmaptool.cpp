@@ -22,7 +22,7 @@
 #include <QAction>
 
 QgsMapTool::QgsMapTool(QgsMapCanvas* canvas)
-  : mCanvas(canvas), mCursor(Qt::CrossCursor), mAction(NULL)
+  : QObject(canvas), mCanvas(canvas), mCursor(Qt::CrossCursor), mAction(NULL)
 {
 }
 
@@ -79,4 +79,40 @@ void QgsMapTool::deactivate()
 {
   if (mAction)
     mAction->setChecked(false);
+}
+
+void QgsMapTool::setAction(QAction* action)
+{
+  mAction = action;
+}
+
+QAction* QgsMapTool::action()
+{
+  return mAction;
+}
+
+void QgsMapTool::canvasMoveEvent(QMouseEvent *)
+{
+}
+
+void QgsMapTool::canvasPressEvent(QMouseEvent *)
+{
+}
+
+void QgsMapTool::canvasReleaseEvent(QMouseEvent *)
+{
+}
+
+void QgsMapTool::renderComplete()
+{
+}
+
+bool QgsMapTool::isZoomTool()
+{
+  return false;
+}
+
+QgsMapCanvas* QgsMapTool::canvas()
+{
+  return mCanvas;
 }
