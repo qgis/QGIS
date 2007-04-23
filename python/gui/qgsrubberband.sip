@@ -6,7 +6,7 @@ class QgsRubberBand: QgsMapCanvasItem
 %End
 
   public:
-    QgsRubberBand(QgsMapCanvas* mapCanvas, bool isPolygon = false);
+    QgsRubberBand(QgsMapCanvas* mapCanvas /TransferThis/, bool isPolygon = false);
     ~QgsRubberBand();
 
     void setColor(const QColor & color);
