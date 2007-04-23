@@ -150,7 +150,7 @@
 #include "qgsmaptoolselect.h"
 #include "qgsmaptoolvertexedit.h"
 #include "qgsmaptoolzoom.h"
-#include "qgsmeasure.h"
+#include "qgsmeasuretool.h"
 
 //
 // Conditional Includes
@@ -1203,9 +1203,9 @@ void QgisApp::createCanvas()
   mMapTools.mPan->setAction(mActionPan);
   mMapTools.mIdentify = new QgsMapToolIdentify(mMapCanvas);
   mMapTools.mIdentify->setAction(mActionIdentify);
-  mMapTools.mMeasureDist = new QgsMeasure(FALSE /* area */, mMapCanvas);
+  mMapTools.mMeasureDist = new QgsMeasureTool(mMapCanvas, FALSE /* area */);
   mMapTools.mMeasureDist->setAction(mActionMeasure);
-  mMapTools.mMeasureArea = new QgsMeasure(TRUE /* area */, mMapCanvas);
+  mMapTools.mMeasureArea = new QgsMeasureTool(mMapCanvas, TRUE /* area */);
   mMapTools.mMeasureArea->setAction(mActionMeasureArea);
   mMapTools.mCapturePoint = new QgsMapToolCapture(mMapCanvas, QgsMapToolCapture::CapturePoint);
   mMapTools.mCapturePoint->setAction(mActionCapturePoint);

@@ -48,7 +48,6 @@ class QgsMapLayer;
 class QgsMapLayerInterface;
 class QgsLegend;
 class QgsLegendView;
-class QgsMeasure;
 class QgsRubberBand;
 
 class QgsMapRender;

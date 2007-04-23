@@ -37,7 +37,7 @@ class QgsVectorLayer;
   - for vector layers shows feature attributes within search radius
     (allows to edit values when vector layer is in editing mode)
 */
-class QgsMapToolIdentify : public QObject, public QgsMapTool
+class QgsMapToolIdentify : public QgsMapTool
 {
   Q_OBJECT;
 

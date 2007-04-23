@@ -1,5 +1,5 @@
 
-class QgsMapTool
+class QgsMapTool : QObject
 {
 %TypeHeaderCode
 #include <qgsmaptool.h>
@@ -54,7 +54,7 @@ class QgsMapTool
   protected:
 
     //! constructor takes map canvas as a parameter
-    QgsMapTool(QgsMapCanvas* canvas);
+    QgsMapTool(QgsMapCanvas* canvas /TransferThis/);
         
     //! transformation from screen coordinates to map coordinates
     QgsPoint toMapCoords(const QPoint& point);

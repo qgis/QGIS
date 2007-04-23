@@ -19,6 +19,7 @@
 
 #include <QCursor>
 #include <QString>
+#include <QObject>
 
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -29,44 +30,47 @@ class QPoint;
 class QAction;
 
 
-class GUI_EXPORT QgsMapTool
+class GUI_EXPORT QgsMapTool : public QObject
 {
   public:
     
     //! virtual destructor
     virtual ~QgsMapTool();
     
-    //! Mouse move event for overriding
-    virtual void canvasMoveEvent(QMouseEvent * e) { }
+    //! Mouse move event for overriding. Default implementation does nothing.
+    virtual void canvasMoveEvent(QMouseEvent * e);
 
-    //! Mouse press event for overriding
-    virtual void canvasPressEvent(QMouseEvent * e) { }
+    //! Mouse press event for overriding. Default implementation does nothing.
+    virtual void canvasPressEvent(QMouseEvent * e);
 
-    //! Mouse release event for overriding
-    virtual void canvasReleaseEvent(QMouseEvent * e) { }
+    //! Mouse release event for overriding. Default implementation does nothing.
+    virtual void canvasReleaseEvent(QMouseEvent * e);
     
-    //! Called when rendering has finished
-    virtual void renderComplete() {}
+    //! Called when rendering has finished. Default implementation does nothing.
+    virtual void renderComplete();
     
     /** Use this to associate a button, toolbutton, menu entry etc
      * that inherits qaction to this maptool. Then when the setMapTool
      * method of mapcanvas is called the action state will be set to on.
      * Usually this will cause e.g. a toolbutton to appear pressed in and
      * the previously used toolbutton to pop out. */
-    void setAction(QAction* action) { mAction = action; }
+    void setAction(QAction* action);
     
-    QAction* action() { return mAction; }
+    QAction* action();
     
     /** Check whether this MapTool performs a zoom or pan operation.
      * If it does, we will be able to perform the zoom  and then 
      * resume operations with the original / previously used tool.*/
-    virtual bool isZoomTool() { return false;}
+    virtual bool isZoomTool();
     
     //! called when set as currently active map tool
     virtual void activate();
     
     //! called when map tool is being deactivated
     virtual void deactivate();
+    
+    //! returns pointer to the tool's map canvas
+    QgsMapCanvas* canvas();
     
   protected:
 
