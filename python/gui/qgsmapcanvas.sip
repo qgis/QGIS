@@ -47,7 +47,7 @@ class QgsMapCanvas : QGraphicsView
     enum WheelAction { WheelZoom, WheelZoomAndRecenter, WheelNothing };
 
     //! Constructor
-    QgsMapCanvas(QWidget * parent = 0, const char *name = 0);
+    QgsMapCanvas(QWidget * parent /TransferThis/ = 0, const char *name = 0);
 
     //! Destructor
     ~QgsMapCanvas();
