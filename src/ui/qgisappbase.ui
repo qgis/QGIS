@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgisAppBase</class>
  <widget class="QMainWindow" name="QgisAppBase" >
   <property name="geometry" >
@@ -17,18 +14,22 @@
   </property>
   <widget class="QWidget" name="centralWidget" >
    <layout class="QGridLayout" >
-    <property name="margin" >
+    <property name="leftMargin" >
      <number>8</number>
     </property>
-    <property name="spacing" >
-     <number>6</number>
+    <property name="topMargin" >
+     <number>8</number>
+    </property>
+    <property name="rightMargin" >
+     <number>8</number>
+    </property>
+    <property name="bottomMargin" >
+     <number>8</number>
     </property>
     <item row="0" column="0" >
      <widget class="QSplitter" name="canvasLegendSplit" >
       <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>7</hsizetype>
-        <vsizetype>7</vsizetype>
+       <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -47,9 +48,7 @@
       </property>
       <widget class="QSplitter" name="legendOverviewSplit" >
        <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>7</hsizetype>
-         <vsizetype>7</vsizetype>
+        <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -66,8 +65,8 @@
        <widget class="QToolBox" name="toolBox" >
         <property name="font" >
          <font>
-          <family>Arial</family>
-          <pointsize>7</pointsize>
+          <family>Lucida Grande</family>
+          <pointsize>10</pointsize>
           <weight>50</weight>
           <italic>false</italic>
           <bold>false</bold>
@@ -89,8 +88,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>363</width>
-           <height>243</height>
+           <width>437</width>
+           <height>254</height>
           </rect>
          </property>
          <attribute name="label" >
@@ -136,7 +135,6 @@
    </layout>
   </widget>
  </widget>
- <pixmapfunction></pixmapfunction>
  <resources/>
  <connections/>
 </ui>
