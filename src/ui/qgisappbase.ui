@@ -13,23 +13,27 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget" >
+   <property name="sizePolicy" >
+    <sizepolicy>
+     <hsizetype>7</hsizetype>
+     <vsizetype>7</vsizetype>
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <layout class="QGridLayout" >
-    <property name="leftMargin" >
-     <number>8</number>
+    <property name="margin" >
+     <number>9</number>
     </property>
-    <property name="topMargin" >
-     <number>8</number>
-    </property>
-    <property name="rightMargin" >
-     <number>8</number>
-    </property>
-    <property name="bottomMargin" >
-     <number>8</number>
+    <property name="spacing" >
+     <number>6</number>
     </property>
     <item row="0" column="0" >
      <widget class="QSplitter" name="canvasLegendSplit" >
       <property name="sizePolicy" >
-       <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+       <sizepolicy>
+        <hsizetype>7</hsizetype>
+        <vsizetype>7</vsizetype>
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -48,7 +52,9 @@
       </property>
       <widget class="QSplitter" name="legendOverviewSplit" >
        <property name="sizePolicy" >
-        <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+        <sizepolicy>
+         <hsizetype>0</hsizetype>
+         <vsizetype>0</vsizetype>
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -88,8 +94,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>437</width>
-           <height>254</height>
+           <width>386</width>
+           <height>244</height>
           </rect>
          </property>
          <attribute name="label" >
