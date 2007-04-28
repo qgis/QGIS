@@ -49,9 +49,9 @@ email                : tim@linfiniti.com
 // 
 static const char * const ident_ = "$Id: qgslauncherplugin.cpp 3249 2005-04-28 01:20:24Z g_j_m $";
 
-static const char * const name_ = "QgsLauncherPlugin";
+static const char * const name_ = "Launcher";
 static const char * const description_ = "Launches a program or script from within QGIS";
-static const char * const version_ = "Version 0.1";
+static const char * const version_ = "Version 0.2";
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 
 
