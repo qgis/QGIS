@@ -101,12 +101,12 @@ QgsGrassNewMapset::QgsGrassNewMapset ( QgisApp *qgisApp, QgisIface *iface,
     setHelpEnabled ( page(MAPSET), false );
     setHelpEnabled ( page(FINISH), false );
 
-    setTitle ( page(DATABASE), "GRASS database" );
-    setTitle ( page(LOCATION), "GRASS location" );
-    setTitle ( page(PROJECTION), "Projection" );
-    setTitle ( page(REGION), "Default GRASS Region" );
-    setTitle ( page(MAPSET), "Mapset" );
-    setTitle ( page(FINISH), "Create New Mapset" );
+    setTitle ( page(DATABASE), tr("GRASS database") );
+    setTitle ( page(LOCATION), tr("GRASS location") );
+    setTitle ( page(PROJECTION), tr("Projection") );
+    setTitle ( page(REGION), tr("Default GRASS Region") );
+    setTitle ( page(MAPSET), tr("Mapset") );
+    setTitle ( page(FINISH), tr("Create New Mapset") );
 
     setError ( mDatabaseErrorLabel, "" );
     setError ( mLocationErrorLabel, "" );
@@ -135,34 +135,34 @@ QgsGrassNewMapset::QgsGrassNewMapset ( QgisApp *qgisApp, QgisIface *iface,
     // Create example tree structure
     mTreeListView->clear();
     mTreeListView->setSortColumn(-1); // No sorting
-    mTreeListView->setColumnText( 0, "Tree" );
-    mTreeListView->addColumn( "Comment" );
-    Q3ListViewItem *dbi = new Q3ListViewItem( mTreeListView, "OurDatabase", "Database" );
+    mTreeListView->setColumnText( 0, tr("Tree") );
+    mTreeListView->addColumn( tr("Comment") );
+    Q3ListViewItem *dbi = new Q3ListViewItem( mTreeListView, "OurDatabase", tr("Database") );
     dbi->setOpen(true);
     
     // First inserted is last in the view
-    Q3ListViewItem *l = new Q3ListViewItem( dbi, "New Zealand", "Location 2" );
+    Q3ListViewItem *l = new Q3ListViewItem( dbi, "New Zealand", tr("Location 2") );
     l->setOpen(true);
-    Q3ListViewItem *m = new Q3ListViewItem( l, "Cimrman", "User's mapset");
+    Q3ListViewItem *m = new Q3ListViewItem( l, "Cimrman", tr("User's mapset") );
     m->setOpen(true);
-    m = new Q3ListViewItem( l, "PERMANENT", "System mapset" );
+    m = new Q3ListViewItem( l, "PERMANENT", tr("System mapset") );
     m->setOpen(true);
     
-    l = new Q3ListViewItem( dbi, "Mexico", "Location 1" );
+    l = new Q3ListViewItem( dbi, "Mexico", tr("Location 1") );
     m->setOpen(true);
-    m = new Q3ListViewItem( l, "Juan", "User's mapset");
+    m = new Q3ListViewItem( l, "Juan", tr("User's mapset") );
     l->setOpen(true);
-    m = new Q3ListViewItem( l, "Alejandra", "User's mapset");
+    m = new Q3ListViewItem( l, "Alejandra", tr("User's mapset") );
     m->setOpen(true);
-    m = new Q3ListViewItem( l, "PERMANENT", "System mapset" );
+    m = new Q3ListViewItem( l, "PERMANENT", tr("System mapset") );
     m->setOpen(true);
     
     // PROJECTION
 
     // MAPSET
     mMapsetsListView->clear();
-    mMapsetsListView->setColumnText( 0, "Mapset" );
-    mMapsetsListView->addColumn( "Owner" );
+    mMapsetsListView->setColumnText( 0, tr("Mapset") );
+    mMapsetsListView->addColumn( tr("Owner") );
 
     // FINISH
     setFinishEnabled ( page(FINISH), true );
@@ -211,7 +211,7 @@ void QgsGrassNewMapset::databaseChanged()
 
     if ( database.length() == 0 ) 
     {
-        setError ( mDatabaseErrorLabel, "Enter path to GRASS database");
+        setError ( mDatabaseErrorLabel, tr("Enter path to GRASS database") );
         return;
     }
 
@@ -219,7 +219,7 @@ void QgsGrassNewMapset::databaseChanged()
 
     if ( !databaseInfo.exists() )
     {
-	setError ( mDatabaseErrorLabel, "The directory doesn't exist!");
+	setError ( mDatabaseErrorLabel, tr("The directory doesn't exist!") );
         return;
     }
 
@@ -248,8 +248,8 @@ void QgsGrassNewMapset::databaseChanged()
     }
     else
     {
-	setError ( mDatabaseErrorLabel, "No writable "
-	    "locations, the database not writable!");
+	setError ( mDatabaseErrorLabel, tr("No writable "
+	    "locations, the database not writable!") );
     }
 }
 
@@ -347,7 +347,7 @@ void QgsGrassNewMapset::checkLocation()
 	if ( location.length() ==  0 )
 	{
 	    setNextEnabled ( page(LOCATION), false );
-            setError ( mLocationErrorLabel, "Enter location name!");
+            setError ( mLocationErrorLabel, tr("Enter location name!") );
 	}
         else
         {
@@ -360,7 +360,7 @@ void QgsGrassNewMapset::checkLocation()
 		if ( d[i] == location ) 
 		{
 		    setNextEnabled ( page(LOCATION), false );
-                    setError ( mLocationErrorLabel, "The location exists!");
+                    setError ( mLocationErrorLabel, tr("The location exists!") );
 		    break;
 		}
 	    }
@@ -508,7 +508,7 @@ void QgsGrassNewMapset::setGrassProjection()
 
 	if ( !mProjInfo || !mProjUnits )
 	{
-            setError ( mProjErrorLabel, "Selected projection is not supported by GRASS!");
+            setError ( mProjErrorLabel, tr("Selected projection is not supported by GRASS!") );
 	}
     } 
     else // Nothing selected
@@ -554,8 +554,8 @@ void QgsGrassNewMapset::setRegionPage()
             newSrs.createFromSrsId ( mProjectionSelector->getCurrentSRSID() );
 	    if (  ! newSrs.isValid() )
 	    {
-		QMessageBox::warning( 0, "Warning", 
-		       "Cannot create projection." );
+		QMessageBox::warning( 0, tr("Warning"), 
+		       tr("Cannot create projection.") );
 	    }
         }
     }
@@ -602,8 +602,8 @@ void QgsGrassNewMapset::setRegionPage()
         }
         else
         {
-	    QMessageBox::warning( 0, "Warning", "Cannot reproject "
-                  "previously set region, default region set." );
+	    QMessageBox::warning( 0, tr("Warning"), tr("Cannot reproject "
+                  "previously set region, default region set." ) );
 
             setGrassRegionDefaults();
         }
@@ -738,12 +738,12 @@ void QgsGrassNewMapset::checkRegion()
 
     if ( n <= s ) 
     {
-        setError ( mRegionErrorLabel, "North must be greater than south");
+        setError ( mRegionErrorLabel, tr("North must be greater than south") );
 	err = true;
     }	
     if ( e <= w && mCellHead.proj != PROJECTION_LL ) 
     {
-        setError ( mRegionErrorLabel, "East must be greater than west");
+        setError ( mRegionErrorLabel, tr("East must be greater than west") );
 	err = true;
     }	
 
@@ -795,13 +795,13 @@ void QgsGrassNewMapset::loadRegions()
     QFile file ( path );
 
     if ( !file.exists() ) {
-        QMessageBox::warning( 0, "Warning", 
-                   "Regions file (" + path + ") not found." );
+        QMessageBox::warning( 0, tr("Warning"), 
+                   tr("Regions file (") + path + tr(") not found.") );
         return;
     }
     if ( ! file.open( QIODevice::ReadOnly ) ) {
-        QMessageBox::warning( 0, "Warning", 
-                   "Cannot open locations file (" + path +")" );
+        QMessageBox::warning( 0, tr("Warning"), 
+                   tr("Cannot open locations file (") + path +tr(")") );
         return;
     }
 
@@ -810,11 +810,11 @@ void QgsGrassNewMapset::loadRegions()
     int line, column;
 
     if ( !doc.setContent( &file,  &err, &line, &column ) ) {
-        QString errmsg = "Cannot read locations file (" + path + "):\n" 
-                         + err + "\nat line " + QString::number(line) 
-                         + " column " + QString::number(column);
+        QString errmsg = tr("Cannot read locations file (") + path + tr("):\n") 
+                         + err + tr("\nat line ") + QString::number(line) 
+                         + tr(" column ") + QString::number(column);
         std::cerr << errmsg.toLocal8Bit().data() << std::endl;
-        QMessageBox::warning( 0, "Warning", errmsg );
+        QMessageBox::warning( 0, tr("Warning"), errmsg );
         file.close();
         return;
     }
@@ -906,8 +906,8 @@ void QgsGrassNewMapset::setSelectedRegion()
 
 	if ( !source.isValid() ) 
 	{
-	    QMessageBox::warning( 0, "Warning", 
-		       "Cannot create QgsSpatialRefSys" );
+	    QMessageBox::warning( 0, tr("Warning"), 
+		       tr("Cannot create QgsSpatialRefSys" ) );
 	    return;
 	}
 
@@ -916,8 +916,8 @@ void QgsGrassNewMapset::setSelectedRegion()
 
 	if ( !dest.isValid() ) 
 	{
-	    QMessageBox::warning( 0, "Warning", 
-		       "Cannot create QgsSpatialRefSys" );
+	    QMessageBox::warning( 0, tr("Warning"), 
+		       tr("Cannot create QgsSpatialRefSys") );
 	    return;
 	}
 
@@ -946,8 +946,8 @@ void QgsGrassNewMapset::setSelectedRegion()
 
         if ( !ok )
         {
-	    QMessageBox::warning( 0, "Warning", 
-		       "Cannot reproject selected region." );
+	    QMessageBox::warning( 0, tr("Warning"), 
+		      tr( "Cannot reproject selected region.") );
             return;
         }
     }
@@ -1035,7 +1035,7 @@ void QgsGrassNewMapset::setCurrentRegion()
 
         if ( !ok )
         {
-	    QMessageBox::warning( 0, "Warning", "Cannot reproject region" );
+	    QMessageBox::warning( 0, tr("Warning"), tr("Cannot reproject region") );
             return;
         }
     }
@@ -1129,8 +1129,8 @@ void QgsGrassNewMapset::drawRegion()
 
 	if ( !source.isValid() ) 
 	{
-	    QMessageBox::warning( 0, "Warning", 
-		       "Cannot create QgsSpatialRefSys" );
+	    QMessageBox::warning( 0, tr("Warning"), 
+		       tr("Cannot create QgsSpatialRefSys") );
 	    return;
 	}
 
@@ -1138,8 +1138,8 @@ void QgsGrassNewMapset::drawRegion()
 
 	if ( !dest.isValid() ) 
 	{
-	    QMessageBox::warning( 0, "Warning", 
-		       "Cannot create QgsSpatialRefSys" );
+	    QMessageBox::warning( 0, tr("Warning"), 
+		       tr("Cannot create QgsSpatialRefSys") );
 	    return;
 	}
 
@@ -1266,7 +1266,7 @@ void QgsGrassNewMapset::mapsetChanged()
     // TODO?: Check spaces in the name
     if ( mapset.length() == 0 )
     {
-    	setError ( mMapsetErrorLabel, "Enter mapset name.");
+    	setError ( mMapsetErrorLabel, tr("Enter mapset name."));
         return;
     }
 
@@ -1283,7 +1283,7 @@ void QgsGrassNewMapset::mapsetChanged()
 
 	    if ( d[i] == mapset ) 
 	    {
-		setError ( mMapsetErrorLabel, "The mapset already exists");
+		setError ( mMapsetErrorLabel, tr("The mapset already exists") );
 		exists = true;
 		break;
 	    }
@@ -1307,7 +1307,7 @@ void QgsGrassNewMapset::setFinishPage()
     std::cerr << "QgsGrassNewMapset::setFinish()" << std::endl;
 #endif
 
-    mDatabaseLabel->setText ( "Database: " + mDatabaseLineEdit->text() );
+    mDatabaseLabel->setText ( tr("Database: ") + mDatabaseLineEdit->text() );
 
     QString location;
     if ( mSelectLocationRadioButton->isChecked() )
@@ -1318,9 +1318,9 @@ void QgsGrassNewMapset::setFinishPage()
     {
 	location = mLocationLineEdit->text().stripWhiteSpace();
     }
-    mLocationLabel->setText ( "Location: " + location );
+    mLocationLabel->setText ( tr("Location: ") + location );
 
-    mMapsetLabel->setText ( "Mapset: " + mMapsetLineEdit->text() );
+    mMapsetLabel->setText ( tr("Mapset: ") + mMapsetLineEdit->text() );
 
     setFinishEnabled ( page(FINISH), true );
 }
@@ -1351,8 +1351,8 @@ void QgsGrassNewMapset::createMapset()
 
 	if ( ret != 0 )
 	{
-	    QMessageBox::warning (this, "Create location", 
-		         "Cannot create new location: " 
+	    QMessageBox::warning (this, tr("Create location"), 
+		         tr("Cannot create new location: ") 
 			 + QgsGrass::getErrorMessage() );
 	    
 	    return;
@@ -1382,8 +1382,8 @@ void QgsGrassNewMapset::createMapset()
 
 	if ( !d.mkdir(mapset) )
 	{
-	    QMessageBox::warning (this, "Create mapset", 
-		         "Cannot create new mapset dircetory" );
+	    QMessageBox::warning (this, tr("Create mapset"), 
+		         tr("Cannot create new mapset dircetory") );
 	    
 	    return;
 	} 
@@ -1393,14 +1393,14 @@ void QgsGrassNewMapset::createMapset()
         QFile in ( locationPath + "/PERMANENT/DEFAULT_WIND" );
         if ( !in.open( QIODevice::ReadOnly ) ) 
 	{
-	    QMessageBox::warning (this, "Create mapset", "Cannot open DEFAULT_WIND" ); 
+	    QMessageBox::warning (this, tr("Create mapset"), tr("Cannot open DEFAULT_WIND") ); 
 	    return;
 	}
 	    
         QFile out ( locationPath + "/" + mapset + "/WIND" );
         if ( !out.open( QIODevice::WriteOnly ) ) 
 	{
-	    QMessageBox::warning (this, "Create mapset", "Cannot open WIND" ); 
+	    QMessageBox::warning (this, tr("Create mapset"), tr("Cannot open WIND") ); 
 	    return;
 	}
 	QTextStream stream ( &out );
@@ -1421,15 +1421,15 @@ void QgsGrassNewMapset::createMapset()
 
     if ( err.length() > 0 ) 
     {
-        QMessageBox::information ( this, "New mapset",
-	    "New mapset successfully created, but cannot be "
-            "opened: " + err );
+        QMessageBox::information ( this, tr("New mapset"),
+	    tr("New mapset successfully created, but cannot be "
+            "opened: ") + err );
     }
     else
     {
-        QMessageBox::information ( this, "New mapset",
-	    "New mapset successfully created and set "
-            "as current working mapset." );
+        QMessageBox::information ( this, tr("New mapset"),
+	    tr("New mapset successfully created and set "
+            "as current working mapset.") );
         
         mPlugin->mapsetChanged();
     }

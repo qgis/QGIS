@@ -102,7 +102,7 @@ QgsGrassTools::QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface,
     std::cerr << "QgsGrassTools()" << std::endl;
     #endif
 
-   setWindowTitle ( "GRASS Tools" );
+   setWindowTitle ( tr("GRASS Tools") );
 //    setupUi(this);
 
     mQgisApp = qgisApp;
@@ -132,7 +132,7 @@ QgsGrassTools::QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface,
     connect( mModulesListView, SIGNAL(clicked(Q3ListViewItem *)), 
 		         this, SLOT(moduleClicked( Q3ListViewItem *)) );
 
-    QString title = "GRASS Tools: " + QgsGrass::getDefaultLocation()
+    QString title = tr("GRASS Tools: ") + QgsGrass::getDefaultLocation()
                 + "/" + QgsGrass::getDefaultMapset();
     setCaption(title);
 
@@ -219,8 +219,8 @@ void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
 
          if ( !file.exists() ) 
          {
-           QMessageBox::warning( 0, "Warning",
-               "Cannot find MSYS (" + msysPath + ")" );
+           QMessageBox::warning( 0, tr("Warning"),
+               tr("Cannot find MSYS (") + msysPath + ")" );
          } 
          else
          {
@@ -231,8 +231,8 @@ void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
            proc->waitForStarted();
            if ( proc->state() != QProcess::Running )
            {
-             QMessageBox::warning( 0, "Warning",
-                 "Cannot start MSYS (" + msysPath + ")" );
+             QMessageBox::warning( 0, tr("Warning"),
+                 tr("Cannot start MSYS (") + msysPath + ")" );
            }
          }
          return;
@@ -242,7 +242,7 @@ void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
         sh = new QgsGrassShell(this, mTabWidget);
         m = dynamic_cast<QWidget *> ( sh );
     #else
-	QMessageBox::warning( 0, "Warning", "GRASS Shell is not compiled." );
+	QMessageBox::warning( 0, tr("Warning"), tr("GRASS Shell is not compiled.") );
     #endif // HAVE_OPENPTY
 
 #endif // ! WIN32
@@ -291,11 +291,11 @@ bool QgsGrassTools::loadConfig(QString filePath)
     QFile file ( filePath );
 
     if ( !file.exists() ) {
-	QMessageBox::warning( 0, "Warning", "The config file (" + filePath + ") not found." );
+	QMessageBox::warning( 0, tr("Warning"), tr("The config file (") + filePath + tr(") not found.") );
 	return false;
     }
     if ( ! file.open( QIODevice::ReadOnly ) ) {
-	QMessageBox::warning( 0, "Warning", "Cannot open config file (" + filePath + ")" );
+	QMessageBox::warning( 0, tr("Warning"), tr("Cannot open config file (") + filePath + tr(")") );
 	return false;
     }
     
@@ -303,10 +303,10 @@ bool QgsGrassTools::loadConfig(QString filePath)
     QString err;
     int line, column;
     if ( !doc.setContent( &file,  &err, &line, &column ) ) {
-	QString errmsg = "Cannot read config file (" + filePath + "):\n" + err + "\nat line "  
-	                 + QString::number(line) + " column " + QString::number(column);
+	QString errmsg = tr("Cannot read config file (") + filePath + "):\n" + err + tr("\nat line ")  
+	                 + QString::number(line) + tr(" column ") + QString::number(column);
 	std::cerr << errmsg.toLocal8Bit().data() << std::endl;
-	QMessageBox::warning( 0, "Warning", errmsg );
+	QMessageBox::warning( 0, tr("Warning"), errmsg );
 	file.close();
 	return false;
     }
@@ -386,7 +386,7 @@ void QgsGrassTools::mapsetChanged()
     std::cerr << "QgsGrassTools::mapsetChanged()" << std::endl;
     #endif
 
-    QString title = "GRASS Tools: " + QgsGrass::getDefaultLocation()
+    QString title = tr("GRASS Tools: ") + QgsGrass::getDefaultLocation()
                 + "/" + QgsGrass::getDefaultMapset();
     setCaption(title);
 

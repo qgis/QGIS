@@ -176,7 +176,7 @@ void QgsGrassPlugin::initGui()
       tr("Edit Current Grass Region"), this);
   mEditAction = new QAction(QIcon(icon_grass_edit),
       tr("Edit Grass Vector layer"), this);
-  mNewVectorAction = new QAction(QIcon(icon_new_vector_layer),"Create new Grass Vector", this);
+  mNewVectorAction = new QAction(QIcon(icon_new_vector_layer),tr("Create new Grass Vector"), this);
 
   mAddVectorAction->setWhatsThis(tr("Adds a GRASS vector layer to the map canvas"));
   mAddRasterAction->setWhatsThis(tr("Adds a GRASS raster layer to the map canvas"));
@@ -441,7 +441,7 @@ void QgsGrassPlugin::openTools()
 void QgsGrassPlugin::edit()
 {
   if ( QgsGrassEdit::isRunning() ) {
-    QMessageBox::warning( 0, "Warning", "GRASS Edit is already running." );
+    QMessageBox::warning( 0, tr("Warning"), tr("GRASS Edit is already running.") );
     return;
   }
 
@@ -483,7 +483,7 @@ void QgsGrassPlugin::newVector()
 #endif
   
     if ( QgsGrassEdit::isRunning() ) {
-        QMessageBox::warning( 0, "Warning", "GRASS Edit is already running." );
+        QMessageBox::warning( 0, tr("Warning"), tr("GRASS Edit is already running." ) );
         return;
     }
 
@@ -491,8 +491,8 @@ void QgsGrassPlugin::newVector()
     QString name;
 
     QgsGrassElementDialog dialog;
-    name = dialog.getItem ( "vector", "New vector name", 
-                        "New vector name", "", "", &ok );
+    name = dialog.getItem ( "vector", tr("New vector name"), 
+                        tr("New vector name"), "", "", &ok );
 
     if ( !ok ) return;
     
@@ -507,7 +507,7 @@ void QgsGrassPlugin::newVector()
 
     if ( QgsGrass::getError() == QgsGrass::FATAL ) 
     {
-        QMessageBox::warning( 0, "Warning", "Cannot create new vector: "
+        QMessageBox::warning( 0, tr("Warning"), tr("Cannot create new vector: ")
                       + QgsGrass::getErrorMessage() );
         return;
     }
@@ -529,8 +529,8 @@ void QgsGrassPlugin::newVector()
 
     if ( !provider ) 
     {
-        QMessageBox::warning( 0, "Warning", "New vector created "
-                  "but cannot beopened by data provider." );
+        QMessageBox::warning( 0, tr("Warning"), tr("New vector created "
+                  "but cannot be opened by data provider.") );
         return;
     }
 
@@ -542,12 +542,12 @@ void QgsGrassPlugin::newVector()
         ed->show();
         mCanvas->refresh();
     } else {
-        QMessageBox::warning( 0, "Warning", "Cannot start editing." );
+        QMessageBox::warning( 0, tr("Warning"), tr("Cannot start editing." ) );
         delete ed;
     }
 /*
     if ( !(mProvider->startEdit()) ) {
-        QMessageBox::warning( 0, "Warning", "Cannot open vector for update." );
+        QMessageBox::warning( 0, tr("Warning"), tr("Cannot open vector for update.") );
         return;
     }
 */
@@ -578,8 +578,8 @@ void QgsGrassPlugin::displayRegion()
   QString mapset   = QgsGrass::getDefaultMapset();
 
   if ( gisdbase.isEmpty() || location.isEmpty() || mapset.isEmpty() ) {
-    QMessageBox::warning( 0, "Warning", "GISDBASE, LOCATION_NAME or MAPSET is not set, "
-        "cannot display current region." );
+    QMessageBox::warning( 0, tr("Warning"), tr("GISDBASE, LOCATION_NAME or MAPSET is not set, "
+        "cannot display current region.") );
     return;
   }
 
@@ -589,7 +589,7 @@ void QgsGrassPlugin::displayRegion()
   char *err = G__get_window ( &window, "", "WIND", (char *) mapset.latin1() );
 
   if ( err ) {
-    QMessageBox::warning( 0, "Warning", "Cannot read current region: " + QString(err) );
+    QMessageBox::warning( 0, tr("Warning"), tr("Cannot read current region: ") + QString(err) );
     return;
   }
 
@@ -694,7 +694,7 @@ void QgsGrassPlugin::openMapset()
 
     if ( !err.isNull() )
     {
-        QMessageBox::warning( 0, "Warning", "Cannot open the mapset. " + err );
+        QMessageBox::warning( 0, tr("Warning"), tr("Cannot open the mapset. ") + err );
         return;
     }
         
@@ -712,7 +712,7 @@ void QgsGrassPlugin::closeMapset()
 
     if ( !err.isNull() )
     {
-        QMessageBox::warning( 0, "Warning", "Cannot close mapset. " + err );
+        QMessageBox::warning( 0, tr("Warning"), tr("Cannot close mapset. ") + err );
         return;
     }
         
@@ -768,8 +768,8 @@ void QgsGrassPlugin::projectRead()
     QString err = QgsGrass::closeMapset ();
     if ( !err.isNull() )
     {
-	QMessageBox::warning( 0, "Warning", 
-		 "Cannot close current mapset. " + err );
+	QMessageBox::warning( 0, tr("Warning"), 
+		 tr("Cannot close current mapset. ") + err );
 	return;
     }
     mapsetChanged();
@@ -778,7 +778,7 @@ void QgsGrassPlugin::projectRead()
 
     if ( !err.isNull() )
     {
-	QMessageBox::warning( 0, "Warning", "Cannot open GRASS mapset. " + err );
+	QMessageBox::warning( 0, tr("Warning"), tr("Cannot open GRASS mapset. ") + err );
 	return;
     }
 

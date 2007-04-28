@@ -67,8 +67,8 @@ QgsGrassShell::QgsGrassShell ( QgsGrassTools *tools,
     mSkipLines = 2;
 
 #ifdef WIN32
-    QMessageBox::warning( 0, "Warning", 
-              "GRASS Shell is not supported on Windows." );
+    QMessageBox::warning( 0, tr("Warning"), 
+              tr("GRASS Shell is not supported on Windows.") );
     return;
 #else 
 
@@ -87,7 +87,7 @@ QgsGrassShell::QgsGrassShell ( QgsGrassTools *tools,
     //mText->setFocusPolicy ( QWidget::NoFocus ); // To get key press directly
 
 #ifndef HAVE_OPENPTY
-    mText->append ( "GRASS shell is not supported" ); 
+    mText->append ( tr("GRASS shell is not supported") ); 
     return;
 #endif
 
@@ -114,7 +114,7 @@ QgsGrassShell::QgsGrassShell ( QgsGrassTools *tools,
     int ret =  openpty ( &mFdMaster, &fdSlave, NULL, NULL, NULL );
     if ( ret != 0 )
     {
-	QMessageBox::warning( 0, "Warning", "Cannot open pseudo terminal" );
+	QMessageBox::warning( 0, tr("Warning"), tr("Cannot open pseudo terminal") );
 	return;
     }
     fchown( fdSlave, uid, (gid_t)-1);
@@ -144,7 +144,7 @@ QgsGrassShell::QgsGrassShell ( QgsGrassTools *tools,
 #endif
     if ( pid == -1 )
     {
-	QMessageBox::warning( 0, "Warning", "Cannot fork shell" );
+	QMessageBox::warning( 0, tr("Warning"), tr("Cannot fork shell") );
 	return;
     }
 
@@ -166,8 +166,8 @@ QgsGrassShell::QgsGrassShell ( QgsGrassTools *tools,
         int fd = open ( (char*) slaveName.ascii(), O_RDWR);
         if ( fd < 0 ) 
 	{
-	    QMessageBox::warning( 0, "Warning", "Cannot open slave file "
-                                                "in child process" );
+	    QMessageBox::warning( 0, tr("Warning"), tr("Cannot open slave file "
+                                                "in child process") );
 	    return;
 	}
 

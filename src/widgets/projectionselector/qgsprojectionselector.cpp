@@ -492,7 +492,7 @@ void QgsProjectionSelector::applyUserProjList(QSet<QString> * crsFilter)
 
   // User defined coordinate system node
   // Make in an italic font to distinguish them from real projections
-  mUserProjList = new QTreeWidgetItem(lstCoordinateSystems,QStringList("User Defined Coordinate Systems"));
+  mUserProjList = new QTreeWidgetItem(lstCoordinateSystems,QStringList(tr("User Defined Coordinate Systems")));
 
   QFont fontTemp = mUserProjList->font(0);
   fontTemp.setItalic(TRUE);
@@ -568,14 +568,14 @@ void QgsProjectionSelector::applyProjList(QSet<QString> * crsFilter)
   // Make in an italic font to distinguish them from real projections
   //
   // Geographic coordinate system node
-  mGeoList = new QTreeWidgetItem(lstCoordinateSystems,QStringList("Geographic Coordinate Systems"));
+  mGeoList = new QTreeWidgetItem(lstCoordinateSystems,QStringList(tr("Geographic Coordinate Systems")));
 
   QFont fontTemp = mGeoList->font(0);
   fontTemp.setItalic(TRUE);
   mGeoList->setFont(0, fontTemp);
 
   // Projected coordinate system node
-  mProjList = new QTreeWidgetItem(lstCoordinateSystems,QStringList("Projected Coordinate Systems"));
+  mProjList = new QTreeWidgetItem(lstCoordinateSystems,QStringList(tr("Projected Coordinate Systems")));
 
   fontTemp = mProjList->font(0);
   fontTemp.setItalic(TRUE);
