@@ -1764,6 +1764,9 @@ void QgsLegend::readProject(const QDomDocument & doc)
   {
     QDomNode node = nodes.item(0);
     readXML(node);
+    
+    // update canvas layers to match the order defined by legend
+    updateMapCanvasLayerSet();
   }
   else
   {
