@@ -985,17 +985,34 @@ bool QgsGrass::mapRegion( int type, QString gisbase,
     return true;
 }
 
+// GRASS version constants have been changed on 26.4.2007
+// http://freegis.org/cgi-bin/viewcvs.cgi/grass6/include/version.h.in.diff?r1=1.4&r2=1.5
+// The following lines workaround this change
+
 int QgsGrass::versionMajor()
 {
+#ifdef GRASS_VERSION_MAJOR
+    return GRASS_VERSION_MAJOR;
+#else
     return QString(GRASS_VERSION_MAJOR).toInt();
+#endif
 }
 int QgsGrass::versionMinor()
 {
+#ifdef GRASS_VERSION_MINOR
+    return GRASS_VERSION_MINOR;
+#else
     return QString(GRASS_VERSION_MINOR).toInt();
+#endif
 }
 int QgsGrass::versionRelease()
 {
+#ifdef GRASS_VERSION_RELEASE
+    #define QUOTE(x)  #x
+    return QString(QUOTE(GRASS_VERSION_RELEASE)).toInt();
+#else
     return QString(GRASS_VERSION_RELEASE).toInt();
+#endif
 }
 QString QgsGrass::versionString()
 {
