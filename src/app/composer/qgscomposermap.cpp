@@ -112,7 +112,7 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect &extent, QgsMapToPixel *t
   int nlayers = mMapCanvas->layerCount();
     QgsCoordinateTransform* ct;
 
-  for ( int i = 0; i < nlayers; i++ ) {
+  for ( int i = nlayers - 1; i >= 0; i-- ) {
     QgsMapLayer *layer = mMapCanvas->getZpos(i);
       
     if (mMapCanvas->projectionsEnabled())
@@ -123,9 +123,6 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect &extent, QgsMapToPixel *t
     {
       ct = NULL;
     }
-
-    // TODO: what to do with invisible layers
-    //if ( !layer->visible() ) continue;
 
     if ( layer->type() == QgsMapLayer::VECTOR ) {
       QgsVectorLayer *vector = dynamic_cast <QgsVectorLayer*> (layer);
@@ -179,7 +176,7 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect &extent, QgsMapToPixel *t
   }
     
   // Draw vector labels
-  for ( int i = 0; i < nlayers; i++ ) {
+  for ( int i = nlayers - 1; i >= 0; i-- ) {
     QgsMapLayer *layer = mMapCanvas->getZpos(i);
 
     if (mMapCanvas->projectionsEnabled())
@@ -190,9 +187,6 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect &extent, QgsMapToPixel *t
     {
       ct = NULL;
     }
-    
-    // TODO: what to do with invisible layers
-    //if ( !layer->visible() ) continue;
     
     if ( layer->type() == QgsMapLayer::VECTOR ) {
       QgsVectorLayer *vector = dynamic_cast <QgsVectorLayer*> (layer);
