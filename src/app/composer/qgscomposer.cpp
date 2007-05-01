@@ -747,13 +747,12 @@ void QgsComposer::on_mActionExportAsSVG_activated(void)
                            "to PostScript if the SVG output is not "
                            "satisfactory."
                            "</p>"));
-    m->exec();
+    m->showMessage();
 
     if (m->checkBoxState() == Qt::Checked)
       myQSettings.setValue("/UI/displaySVGWarning", false);
     else
       myQSettings.setValue("/UI/displaySVGWarning", true);
-    delete m;
   }
 
   QString myLastUsedFile = myQSettings.readEntry("/UI/lastSaveAsSvgFile","qgis.svg");
