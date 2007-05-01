@@ -215,6 +215,8 @@ void QgsLegendLayer::updateLayerSymbologySettings(const QgsMapLayer* mapLayer)
 	      (*it)->copySymbologySettings(*mapLayer);
 	    }
 	}
+      // source might have changed - e.g. other subset
+      setToolTip(0, mapLayer->publicSource());
     }
 }
 
