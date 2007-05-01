@@ -23,7 +23,6 @@
 #include <QObject>
 
 class QgsIdentifyResults;
-class QgsMessageViewer;
 class QgsMapLayer;
 class QgsRasterLayer;
 class QgsRubberBand;
@@ -95,9 +94,6 @@ class QgsMapToolIdentify : public QgsMapTool
     //! Pointer to the identify results dialog for name/value pairs
     QgsIdentifyResults *mResults;
 
-    //! Pointer to the identify results dialog for WMS XML files
-    QgsMessageViewer * mViewer;
-    
     //! Rubber band for highlighting identified feature
     QgsRubberBand* mRubberBand;
 

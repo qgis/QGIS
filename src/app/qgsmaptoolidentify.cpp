@@ -40,7 +40,6 @@
 QgsMapToolIdentify::QgsMapToolIdentify(QgsMapCanvas* canvas)
   : QgsMapTool(canvas),
     mResults(0),
-    mViewer(0),
     mRubberBand(0)
 {
   // set cursor
@@ -55,11 +54,6 @@ QgsMapToolIdentify::~QgsMapToolIdentify()
     mResults->done(0);
   }
 
-  if (mViewer)
-  {
-    delete mViewer;
-  }
-  
   delete mRubberBand;
 }
 
@@ -179,16 +173,11 @@ void QgsMapToolIdentify::identifyRasterWmsLayer(QgsRasterLayer* layer, const Qgs
     return;
   }
 
-  if (!mViewer)
-  {
-    mViewer = new QgsMessageViewer();
-  }
+  QgsMessageViewer* viewer = new QgsMessageViewer();
+  viewer->setCaption( layer->name() );
+  viewer->setMessageAsPlainText( text );
 
-  mViewer->setCaption( layer->name() );
-  mViewer->setMessageAsPlainText( text );
-
-//  mViewer->exec();
-  mViewer->show();
+  viewer->showMessage(); // deletes itself on close
 }
 
 void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoint& point)
