@@ -63,10 +63,14 @@
 // For bug in GPJ_osr_to_grass()
 #include "grass/version.h"
 // Prevents some compiler warnings from the version.h include
+#ifndef GRASS_VERSION_RELEASE
+// When using newer version of GRASS (cvs >= 26.4.2007),
+// these variables are #defined instead of being static variables.
 QString temp1(GRASS_VERSION_STRING);
 QString temp2(GRASS_VERSION_MAJOR);
 QString temp3(GRASS_VERSION_MINOR);
 QString temp4(GRASS_VERSION_RELEASE);
+#endif
 
 bool QgsGrassNewMapset::mRunning = false;
 
