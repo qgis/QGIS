@@ -14,11 +14,11 @@ MSYS:
 -----
 get this: 
 
-http://qgis.org/uploadfiles/msys/msys.tar.bz2
+http://qgis.org/uploadfiles/msys/msys.tar.gz
 
 and unpack to c:\msys
 
-The file is compressed using bzip2 - you can get a free windows application
+The file is compressed as gzipped tarball - you can get a free windows application
 for creating and decompressing files here:
 
 http://www.7-zip.org/
