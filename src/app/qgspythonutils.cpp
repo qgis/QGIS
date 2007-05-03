@@ -21,8 +21,10 @@
 #include "qgspythonutils.h"
 
 #include "qgsapplication.h"
+#include "qgslogger.h"
 
 #include <QMessageBox>
+
 
 QString QgsPythonUtils::mPluginsPath;
 PyObject* QgsPythonUtils::mMainModule;
@@ -167,6 +169,33 @@ bool QgsPythonUtils::runString(const QString& command)
 }
 
 
+QString QgsPythonUtils::getTypeAsString(PyObject* obj)
+{
+  if (obj == NULL)
+    return NULL;
+
+  if (PyClass_Check(obj))
+  {
+    QgsDebugMsg("got class");
+    return QString(PyString_AsString(((PyClassObject*)obj)->cl_name));
+  }
+  else if (PyType_Check(obj))
+  {
+    QgsDebugMsg("got type");
+	return QString(((PyTypeObject*)obj)->tp_name);
+  }
+  else
+  {
+    QgsDebugMsg("got object");
+    PyObject* s = PyObject_Str(obj);
+    QString str;
+    if (s && PyString_Check(s))
+      str = QString(PyString_AsString(s));
+    Py_XDECREF(s);
+    return str;
+  }
+}
+
 bool QgsPythonUtils::getError(QString& errorClassName, QString& errorText)
 {
   if (!PyErr_Occurred())
@@ -179,9 +208,9 @@ bool QgsPythonUtils::getError(QString& errorClassName, QString& errorText)
   
   // get the exception information
   PyErr_Fetch(&err_type, &err_value, &err_tb);
-    
+  
   // get exception's class name
-  errorClassName = PyString_AS_STRING(((PyClassObject*)err_type)->cl_name);
+  errorClassName = getTypeAsString(err_type);
     
   // get exception's text
   if (err_value != NULL && err_value != Py_None)

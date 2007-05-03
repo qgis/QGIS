@@ -57,6 +57,9 @@ class QgsPythonUtils
     
     static bool evalString(const QString& command, QString& result);
     
+    //! @return object's type name as a string
+    static QString getTypeAsString(PyObject* obj);
+
     //! get information about error to the supplied arguments
     //! @return false if there was no python error
     static bool getError(QString& errorClassName, QString& errorText);
