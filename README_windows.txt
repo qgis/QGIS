@@ -32,6 +32,11 @@ download and install of mingw) from here:
 
 http://www.trolltech.com/developer/downloads/qt/windows
 
+When the installer will ask for MinGW, you don't need to download and install
+it, just point the installer to c:\msys\mingw
+
+When Qt installation is complete:
+
 Edit C:\Qt\4.2.3\bin\qtvars.bat and add the following line:
 
 set PATH=%PATH%;C:\msys\local\bin;c:\msys\local\lib
@@ -54,6 +59,23 @@ Follow this section in case you would like to use Python bindings for QGIS.
    (Binary package includes also SIP - no need to compile it manually)
 
    http://riverbankcomputing.co.uk/pyqt/download.php
+
+
+Subversion:
+-----------
+
+In order to check out QGIS sources from the repository, you need Subversion
+client. This installer should work fine:
+
+http://subversion.tigris.org/files/documents/15/36797/svn-1.4.3-setup.exe
+
+
+CMake:
+------
+
+CMake is build system used by Quantum GIS. Download it from here:
+
+http://www.cmake.org/files/v2.4/cmake-2.4.6-win32-x86.exe
 
 
 QGIS:
