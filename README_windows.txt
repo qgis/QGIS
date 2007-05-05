@@ -1,6 +1,7 @@
        Procedure for setup of a windows build environment for QGIS
                     Tim Sutton and Godofredo Contreras 2006
                     CMake additions Magnus Homann 2007
+                    Python additions Martin Dobias 2007
   With thanks to Tisham Dhar for preparing the initial msys environment
 ---------------------------------------------------------------------------------
 
@@ -49,16 +50,35 @@ Python stuff: (optional)
 -------------
 
 Follow this section in case you would like to use Python bindings for QGIS.
+To be able to compile bindings, you need to compile SIP and PyQt4 from sources
+as their installer doesn't include some development files which are necessary.
 
 *) Download and install Python - use Windows installer
    (It doesn't matter to what folder you'll install it)
 
    http://python.org/download/
 
-*) Download and install PyQt4 - use binary package for Windows
-   (Binary package includes also SIP - no need to compile it manually)
+*) Download SIP and PyQt4 sources
 
-   http://riverbankcomputing.co.uk/pyqt/download.php
+   http://www.riverbankcomputing.com/Downloads/sip4/sip-4.6.zip
+   http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/PyQt-win-gpl-4.2.zip
+
+*) Unpack SIP to a temporary directory, open console (cmd.exe) and compile:
+
+   > c:\Qt\4.2.3\bin\qtvars.bat
+   > python configure.py -p win32-g++
+   > make
+   > make install
+   
+*) Unpack PyQt to a temporary directory, open console (cmd.exe) and compile:
+
+   > c:\Qt\4.2.3\bin\qtvars.bat
+   > python configure.py
+   > make
+   > make install
+
+*) You can delete the directories with unpacked SIP and PyQt4 sources
+   after a successfull install, they're not needed anymore.
 
 
 Subversion:
