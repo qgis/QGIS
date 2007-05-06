@@ -348,6 +348,10 @@ QString QgsGrass::mGisrc;
 QString QgsGrass::mTmp;
 
 int QgsGrass::error_routine ( char *msg, int fatal) {
+  return error_routine((const char*) msg, fatal);
+}
+
+int QgsGrass::error_routine ( const char *msg, int fatal) {
     std::cerr << "error_routine (fatal = " << fatal << "): " << msg << std::endl;
 
     if ( fatal ) error = FATAL;
