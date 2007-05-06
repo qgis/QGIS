@@ -24,16 +24,15 @@ QgsPlugin is an ABC that defines required behaviour your plugin must provide. Se
 What are all the files in my generated plugin directory for?
 -------------------------------------------------------------
 
-Makefile.am  
-This is the generated Makefile specification for your plugin. You will see that specifies c++ include paths (-I) and library linkages -l) to Qt4, GDAL, GEOS, QGIS Core, QGIS Ui, QGIS Gui and QGis Raster. You should add you application specific dependencies and source files to this Makefile.
+CMakeLists.txt
+This is the generated CMake file that builds the plugin. You should add you application specific dependencies and source files to this file.
 
 [pluginlcasename].h
 [pluginlcasename].cpp  
 This is the class that provides the 'glue' between your custom application logic and the QGIS application. You will see that a number of methods are already implemented for you - including some examples of how to add a raster or vector layer to the main application map canvas. This class is a concrete implementation of QgisPlugin (which defines required behaviour for a plugin). In particular, a plugin has a number of static methods and members so that the QgsPluginManager and plugin loader logic can identify each plugin, create an appropriate menu entry for it etc. Note there is nothing stopping you creating multiple toolbar icons and menu entries for a single plugin. By default though a single menu entry and toolbar button is created and its pre-configured to call the run() method in this class when selected. This default implementation provided for you by the plugin builder is well documented, so please refer to the code for further advice.
 
-[pluginlcasename]guibase.ui  
-[pluginlcasename]guibase.ui.h  
-This is an Abstract Base Class implemented in Qt4 fashion as a Qt designer 'ui' file. It defines the look of the default plugin dialog without implementing any application logic. You can modify this form to suite your needs or completely remove it if your plugin does not need to display a user form (e.g. for custom MapTools).
+[pluginlcasename]gui.ui  
+This is a Qt designer 'ui' file. It defines the look of the default plugin dialog without implementing any application logic. You can modify this form to suite your needs or completely remove it if your plugin does not need to display a user form (e.g. for custom MapTools).
 
 
 [pluginlcasename]gui.cpp  
@@ -63,4 +62,4 @@ QGIS is distributed under the Gnu Public License. If you create a useful plugin 
 Have fun and thank you for choosing QGIS.
 
 The QGIS Team
-2006
+2007

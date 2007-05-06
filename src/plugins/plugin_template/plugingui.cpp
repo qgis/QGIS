@@ -28,13 +28,6 @@
 
 void [pluginname]Gui::on_buttonBox_accepted()
 {
-  //
-  // If you have a produced a raster layer using your plugin, you can ask qgis to 
-  // add it to the view using:
-  // emit drawRasterLayer(QString("layername"));
-  // or for a vector layer
-  // emit drawVectorLayer(QString("pathname"),QString("layername"),QString("provider name (either ogr or postgres"));
-  //
   //close the dialog
   accept();
 } 
@@ -48,3 +41,4 @@ void [pluginname]Gui::on_buttonBox_helpRequested()
 {
   QgsContextHelp::run(context_id);
 }
+

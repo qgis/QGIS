@@ -13,12 +13,12 @@
 #define [pluginname]GUI_H
 
 #include <QDialog>
-#include <ui_[pluginlcasename]guibase.h>
+#include <ui_[pluginlcasename]gui.h>
 
 /**
 @author Tim Sutton
 */
-class [pluginname]Gui : public QDialog, private Ui::[pluginname]GuiBase
+class [pluginname]Gui : public QDialog, private Ui::[pluginname]Gui
 {
 Q_OBJECT
 public:
@@ -33,9 +33,6 @@ private slots:
     void on_buttonBox_rejected();
     void on_buttonBox_helpRequested();
 
-signals:
-    void drawRasterLayer(QString);
-    void drawVectorrLayer(QString,QString,QString);
 };
 
 #endif

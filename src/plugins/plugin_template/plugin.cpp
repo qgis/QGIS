@@ -1,7 +1,6 @@
 /***************************************************************************
   [pluginlcasename].cpp 
   [plugindescription]
-
   -------------------
          begin                : [PluginDate]
          copyright            : [(C) Your Name and Date]
@@ -115,9 +114,7 @@ void [pluginname]::run()
 {
   [pluginname]Gui *myPluginGui=new [pluginname]Gui(mQGisIface->getMainWindow(), QgisGui::ModalDialogFlags);
   myPluginGui->setAttribute(Qt::WA_DeleteOnClose);
-  //listen for when the layer has been made so we can draw it
-  connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
-  connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
+  
   myPluginGui->show();
 }
 
@@ -128,33 +125,6 @@ void [pluginname]::unload()
   mQGisIface->removePluginMenu("&[menuname]",mQActionPointer);
   mQGisIface->removeToolBarIcon(mQActionPointer);
   delete mQActionPointer;
-}
-
-//////////////////////////////////////////////////////////////////////
-//
-//                  END OF MANDATORY PLUGIN METHODS
-//
-//////////////////////////////////////////////////////////////////////
-//
-// The following methods are provided to demonstrate how you can 
-// load a vector or raster layer into the main gui. Please delete
-// if you are not intending to use these. Note also that there are
-// ways in which layers can be loaded.
-//
-
-//!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
-//layer
-void [pluginname]::drawRasterLayer(QString theQString)
-{
-  mQGisIface->addRasterLayer(theQString);
-}
-
-//!draw a vector layer in the qui - intended to respond to signal sent by 
-// dialog when it as finished creating a layer. It needs to be given 
-// vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
-void [pluginname]::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
-{
-  mQGisIface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString);
 }
 
 

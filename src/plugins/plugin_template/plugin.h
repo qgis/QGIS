@@ -1,7 +1,6 @@
 /***************************************************************************
-                          plugin.h 
- Functions:
-                             -------------------
+    [pluginlcasename].h 
+    -------------------
     begin                : Jan 21, 2004
     copyright            : (C) 2004 by Tim Sutton
     email                : tim@linfiniti.com
@@ -84,23 +83,6 @@ public slots:
   //! show the help document
   void help();
 
-  //////////////////////////////////////////////////////////////////////
-  //
-  //                  END OF MANDATORY PLUGIN METHODS
-  //
-  //////////////////////////////////////////////////////////////////////
-  //
-  // The following methods are provided to demonstrate how you can 
-  // load a vector or raster layer into the main gui. Please delete
-  // if you are not intending to use these. Note also that there are
-  // other ways in which layers can be loaded.
-  //
-  
-  //!draw a raster layer in the qui
-  void drawRasterLayer(QString);
-  //! Add a vector layer given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
-  void drawVectorLayer(QString,QString,QString);
-  
 private:
 
   ////////////////////////////////////////////////////////////////////
