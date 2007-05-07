@@ -22,27 +22,17 @@
 
 #include <qgisinterface.h>
 #include <qgisgui.h>
-#include <qgsmaplayer.h>
-#include <qgsrasterlayer.h>
+
 #include "[pluginlcasename].h"
-//the gui subclass
 #include "[pluginlcasename]gui.h"
 
 //
 // Qt4 Related Includes
 //
 
-#include <QToolBar>
-#include <QMenuBar>
-#include <QMessageBox>
-#include <QMenu>
-#include <QLineEdit>
 #include <QAction>
-#include <QApplication>
-#include <QCursor>
+#include <QToolBar>
 
-//non qt includes
-#include <iostream>
 
 
 #ifdef WIN32
