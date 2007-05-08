@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>694</width>
-    <height>399</height>
+    <width>691</width>
+    <height>406</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -51,7 +51,7 @@
    <item row="0" column="2" >
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab1" >
       <attribute name="title" >
@@ -230,7 +230,14 @@ p, li { white-space: pre-wrap; }
         </spacer>
        </item>
        <item row="2" column="1" >
-        <widget class="QComboBox" name="cmbIMPFeature" />
+        <widget class="QComboBox" name="cmbIMPFeature" >
+         <property name="minimumSize" >
+          <size>
+           <width>90</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
        </item>
        <item row="2" column="0" >
         <widget class="QLabel" name="textLabel2_3" >
@@ -281,10 +288,23 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item row="1" column="4" >
-        <widget class="QComboBox" name="cmbDLPort" />
+        <widget class="QComboBox" name="cmbDLPort" >
+         <property name="minimumSize" >
+          <size>
+           <width>90</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
        </item>
        <item row="2" column="4" >
         <widget class="QComboBox" name="cmbDLFeatureType" >
+         <property name="minimumSize" >
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
          <item>
           <property name="text" >
            <string>Waypoints</string>
@@ -376,7 +396,14 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item row="1" column="1" >
-        <widget class="QComboBox" name="cmbDLDevice" />
+        <widget class="QComboBox" name="cmbDLDevice" >
+         <property name="minimumSize" >
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
        </item>
        <item row="2" column="1" >
         <widget class="QPushButton" name="pbDLEditDevices" >
@@ -436,7 +463,14 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item row="2" column="1" >
-        <widget class="QComboBox" name="cmbULPort" />
+        <widget class="QComboBox" name="cmbULPort" >
+         <property name="minimumSize" >
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
        </item>
        <item row="2" column="0" >
         <widget class="QLabel" name="textLabel3" >
@@ -446,10 +480,24 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item row="1" column="4" >
-        <widget class="QComboBox" name="cmbULDevice" />
+        <widget class="QComboBox" name="cmbULDevice" >
+         <property name="minimumSize" >
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
        </item>
        <item row="1" column="1" >
-        <widget class="QComboBox" name="cmbULLayer" />
+        <widget class="QComboBox" name="cmbULLayer" >
+         <property name="minimumSize" >
+          <size>
+           <width>90</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
        </item>
        <item row="2" column="4" >
         <widget class="QPushButton" name="pbULEditDevices" >
