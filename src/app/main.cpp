@@ -380,32 +380,24 @@ int main(int argc, char *argv[])
   }
 #endif
 
-  // Check to see if qgis was started from the source directory. 
-  // This is done by looking for a particular file in the directory 
-  // where qgis was started from. If running from the src directory, 
-  // exit gracefully
-  QString appPath = qApp->applicationFilePath();
-  QString appDir = qApp->applicationDirPath();
-  QString testFile = "libqgis_gui.la";
-
 #ifdef Q_WS_WIN
   //for windows lets use plastique syle!
   QApplication::setStyle(new QPlastiqueStyle);
 #endif
 
-  if(appPath.contains("/src/"))
+  // Check to see if qgis was started from the source directory. 
+  // This is done by checking whether qgis binary is in 'src/app'
+  // directory. If running from there, exit gracefully.
+  // (QGIS might work incorrectly when run from the sources)
+  QString appDir = qApp->applicationDirPath();
+
+  if(appDir.endsWith("/src/app"))
   {
-    // check to see if configure is present in the directory
-    
-    QFileInfo fi(appDir + "/" + testFile);
-    if(fi.exists())
-    {
-      QMessageBox::critical(0,"QGIS Not Installed",
+    QMessageBox::critical(0,"QGIS Not Installed",
           "You appear to be running QGIS from the source directory.\n"
           "You must install QGIS using make install and run it from the "
           "installed directory.");
-      exit(1);
-    }
+    exit(1);
   }
 
   
