@@ -192,15 +192,15 @@ QgsGrassRegion::QgsGrassRegion ( QgsGrassPlugin *plugin,  QgisInterface *iface,
     QString mapset   = QgsGrass::getDefaultMapset();
 
     if ( gisdbase.isEmpty() || location.isEmpty() || mapset.isEmpty() ) {
-	QMessageBox::warning( 0, "Warning", "GISDBASE, LOCATION_NAME or MAPSET is not set, "
-		                 "cannot display current region." );
+	QMessageBox::warning( 0, tr("Warning"), tr("GISDBASE, LOCATION_NAME or MAPSET is not set, "
+		                 "cannot display current region." ) );
     }
 
     QgsGrass::setLocation ( gisdbase, location );
     char *err = G__get_window ( &mWindow, "", "WIND", (char *) mapset.latin1() );
 
     if ( err ) {
-	QMessageBox::warning( 0, "Warning", "Cannot read current region: " + QString(err) );
+	QMessageBox::warning( 0, tr("Warning"), tr("Cannot read current region: ") + QString(err) );
 	return;
     }
 	
@@ -457,7 +457,7 @@ void QgsGrassRegion::accept()
     G__setenv( "MAPSET", (char *) QgsGrass::getDefaultMapset().latin1() );
     
     if ( G_put_window(&mWindow) == -1 ) {
-	QMessageBox::warning( 0, "Warning", "Cannot write region" );
+	QMessageBox::warning( 0, tr("Warning"), tr("Cannot write region") );
         return;
     }
 

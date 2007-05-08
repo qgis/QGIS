@@ -239,7 +239,7 @@ QgsGrassMapcalc::QgsGrassMapcalc (
     // Add output object
     mOutput = new QgsGrassMapcalcObject( QgsGrassMapcalcObject::Output);
     mOutput->setId ( nextId() );
-    mOutput->setValue ( "Output" );
+    mOutput->setValue ( tr("Output") );
     mOutput->setCanvas(mCanvas);
     mOutput->setCenter ( (int)(mCanvas->width()-mOutput->width()), (int)(mCanvas->height()/2) ), 
     mCanvas->update();
@@ -1385,7 +1385,7 @@ void QgsGrassMapcalc::load()
 	    }
 
 	    case QgsGrassMapcalcObject::Output :
-		obj->setValue ( "Output" );
+		obj->setValue ( tr("Output") );
 		mOutput = obj;
 		break;
 

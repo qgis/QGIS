@@ -162,13 +162,13 @@ int QgsGrassAttributes::addTab ( const QString & label )
     tb->setRowReadOnly ( 0, TRUE );
     tb->setRowReadOnly ( 1, TRUE );
     
-    tb->horizontalHeader()->setLabel( 0, "Column" );
-    tb->horizontalHeader()->setLabel( 1, "Value" );
-    tb->horizontalHeader()->setLabel( 2, "Type" );  // Internal use
+    tb->horizontalHeader()->setLabel( 0, tr("Column") );
+    tb->horizontalHeader()->setLabel( 1, tr("Value") );
+    tb->horizontalHeader()->setLabel( 2, tr("Type") );  // Internal use
 
     tb->setLeftMargin(0); // hide row labels
 
-    tb->setText ( 0, 0, "Field" );
+    tb->setText ( 0, 0, tr("Field") );
     tb->setText ( 1, 0, "Cat" );
 
     tabCats->addTab ( tb, label );
@@ -310,9 +310,9 @@ void QgsGrassAttributes::updateAttributes ( )
 
       if ( !error->isEmpty() ) {
 	  QMessageBox::warning( 0, tr("Warning"), *error );
-	  resultLabel->setText ( "ERROR" );
+	  resultLabel->setText ( tr("ERROR") );
       } else {
-	  resultLabel->setText ( "OK" );
+	  resultLabel->setText ( tr("OK") );
       }
 
       delete error;
