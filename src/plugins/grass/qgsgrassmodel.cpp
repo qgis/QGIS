@@ -130,19 +130,19 @@ QString QgsGrassModelItem::info()
     switch ( mType ) 
     {
 	case QgsGrassModel::Location:
-	    return "Location: " + mLocation; 
+	    return QObject::tr("Location: ","Metadata in GRASS Browser") + mLocation; 
 	    break;
 	case QgsGrassModel::Mapset:
-	    return "Location: " + mLocation + "<br>Mapset: " + mMapset; 
+	    return QObject::tr("Location: ","Metadata in GRASS Browser") + mLocation + QObject::tr("<br>Mapset: ","Metadata in GRASS Browser") + mMapset; 
 	    break;
 	case QgsGrassModel::Vectors:
 	case QgsGrassModel::Rasters:
-	    return "Location: " + mLocation + "<br>Mapset: " + mMapset; 
+	    return QObject::tr("Location: ") + mLocation + QObject::tr("<br>Mapset: ") + mMapset; 
 	    break;
 	case QgsGrassModel::Raster:
 	  {
 	    QString str = tblStart;
-	    str += htmlTableRow("<b>Raster</b>", "<b>" + mMap + "</b>" );
+	    str += htmlTableRow(QObject::tr("<b>Raster</b>"), "<b>" + mMap + "</b>" );
 	    
 	    struct Cell_head head;
             int rasterType = -1;
@@ -151,18 +151,18 @@ QString QgsGrassModelItem::info()
 	    if( G_get_cellhd( mMap.toLocal8Bit().data(), 
 			      mMapset.toLocal8Bit().data(), &head) != 0 ) 
 	    {
-		str += "<tr><td colspan=2>Cannot open raster header</td></tr>";
+		str += "<tr><td colspan=2>" + QObject::tr("Cannot open raster header") + "</td></tr>";
 	    }
 	    else
 	    {
-		str += htmlTableRow ( "Rows", QString::number(head.rows));
-		str += htmlTableRow ( "Columns", QString::number(head.cols) );
-		str += htmlTableRow ( "N-S resolution", QString::number(head.ns_res) );
-		str += htmlTableRow ( "E-W resolution", QString::number(head.ew_res) );
-		str += htmlTableRow ( "North", QString::number(head.north) );
-		str += htmlTableRow ( "South", QString::number(head.south) );
-		str += htmlTableRow ( "East", QString::number(head.east) );
-		str += htmlTableRow ( "West", QString::number(head.west) );
+		str += htmlTableRow ( QObject::tr("Rows"), QString::number(head.rows));
+		str += htmlTableRow ( QObject::tr("Columns"), QString::number(head.cols) );
+		str += htmlTableRow ( QObject::tr("N-S resolution"), QString::number(head.ns_res) );
+		str += htmlTableRow ( QObject::tr("E-W resolution"), QString::number(head.ew_res) );
+		str += htmlTableRow ( QObject::tr("North"), QString::number(head.north) );
+		str += htmlTableRow ( QObject::tr("South"), QString::number(head.south) );
+		str += htmlTableRow ( QObject::tr("East"), QString::number(head.east) );
+		str += htmlTableRow ( QObject::tr("West"), QString::number(head.west) );
 		
 	        rasterType = G_raster_map_type( mMap.toLocal8Bit().data(),
 		                                mMapset.toLocal8Bit().data() );
@@ -185,7 +185,7 @@ QString QgsGrassModelItem::info()
 		{
 		    format += "unknown";
 		}
-                str += htmlTableRow ( "Format", format );
+                str += htmlTableRow ( QObject::tr("Format"), format );
 	    }
 
             // Range of values
@@ -196,8 +196,8 @@ QString QgsGrassModelItem::info()
 		double min, max;
 		G_get_fp_range_min_max( &range, &min, &max );
 
-		str += htmlTableRow ( "Minimum value", QString::number(min));
-		str += htmlTableRow ( "Maximum value", QString::number(max));
+		str += htmlTableRow ( QObject::tr("Minimum value"), QString::number(min));
+		str += htmlTableRow ( QObject::tr("Maximum value"), QString::number(max));
 	    }
 	    
             // History
@@ -208,12 +208,12 @@ QString QgsGrassModelItem::info()
                 if ( QString(hist.datsrc_1).length() > 0 
                      || QString(hist.datsrc_2).length() > 0 )
                 {
-                    str += htmlTableRow ( "Data source", QString(hist.datsrc_1) + " " 
+                    str += htmlTableRow ( QObject::tr("Data source"), QString(hist.datsrc_1) + " " 
 		                       + QString(hist.datsrc_2) );
                 }
                 if ( QString(hist.keywrd).length() > 0 ) 
                 { 
-		    str += htmlTableRow ( "Data description", QString(hist.keywrd) );
+		    str += htmlTableRow ( QObject::tr("Data description"), QString(hist.keywrd) );
                 }
                 if ( hist.edlinecnt > 0 ) 
                 {
@@ -222,7 +222,7 @@ QString QgsGrassModelItem::info()
 		    {
 			h += QString(hist.edhist[i]) + "<br>";
 		    }
-		    str += htmlTableRow ( "Comments", h);
+		    str += htmlTableRow ( QObject::tr("Comments"), h);
                 }
 	    }
 
@@ -237,7 +237,7 @@ QString QgsGrassModelItem::info()
                 {
 		    if ( Cats.ncats > 0 )
 		    {
-			str += "<tr><td colspan=2>Categories</td></tr>";
+			str += "<tr><td colspan=2>" + QObject::tr("Categories") + "</td></tr>";
 			for ( int i = 0; i < Cats.ncats; i++) 
 			{
 			    str += htmlTableRow ( 
@@ -257,7 +257,7 @@ QString QgsGrassModelItem::info()
 	case QgsGrassModel::Vector:
           {
 	    QString str = tblStart;
-	    str += htmlTableRow("<b>Vector</b>", "<b>" + mMap + "</b>" );
+	    str += htmlTableRow(QObject::tr("<b>Vector</b>"), "<b>" + mMap + "</b>" );
 
 	    QgsGrass::setLocation( mGisbase, mLocation );
 	    
@@ -270,18 +270,18 @@ QString QgsGrassModelItem::info()
                 int is3d = Vect_is_3d (&Map);
 
                 // Number of elements
-                str += htmlTableRow ( "Points", QString::number(Vect_get_num_primitives(&Map, GV_POINT)) );
-                str += htmlTableRow ( "Lines", QString::number(Vect_get_num_primitives(&Map, GV_LINE)) );
-                str += htmlTableRow ( "Boundaries", QString::number(Vect_get_num_primitives(&Map, GV_BOUNDARY)) );
-                str += htmlTableRow ( "Centroids", QString::number(Vect_get_num_primitives(&Map, GV_CENTROID)) );
+                str += htmlTableRow ( QObject::tr("Points"), QString::number(Vect_get_num_primitives(&Map, GV_POINT)) );
+                str += htmlTableRow ( QObject::tr("Lines"), QString::number(Vect_get_num_primitives(&Map, GV_LINE)) );
+                str += htmlTableRow ( QObject::tr("Boundaries"), QString::number(Vect_get_num_primitives(&Map, GV_BOUNDARY)) );
+                str += htmlTableRow ( QObject::tr("Centroids"), QString::number(Vect_get_num_primitives(&Map, GV_CENTROID)) );
                 if ( is3d ) 
                 {
-                    str += htmlTableRow ( "Faces", QString::number( Vect_get_num_primitives(&Map, GV_FACE) ) );
-                    str += htmlTableRow ( "Kernels", QString::number( Vect_get_num_primitives(&Map, GV_KERNEL) ) );
+                    str += htmlTableRow ( QObject::tr("Faces"), QString::number( Vect_get_num_primitives(&Map, GV_FACE) ) );
+                    str += htmlTableRow ( QObject::tr("Kernels"), QString::number( Vect_get_num_primitives(&Map, GV_KERNEL) ) );
                 }
                 
-                str += htmlTableRow ( "Areas", QString::number(Vect_get_num_areas(&Map)) );
-                str += htmlTableRow ( "Islands", QString::number( Vect_get_num_islands(&Map) ) );
+                str += htmlTableRow ( QObject::tr("Areas"), QString::number(Vect_get_num_areas(&Map)) );
+                str += htmlTableRow ( QObject::tr("Islands"), QString::number( Vect_get_num_islands(&Map) ) );
 
 
                 // Box and dimension
@@ -296,27 +296,27 @@ QString QgsGrassModelItem::info()
                 int proj = window.proj;
 
                 G_format_northing (box.N, buffer, proj);
-		str += htmlTableRow ( "North", QString(buffer) );
+		str += htmlTableRow ( QObject::tr("North"), QString(buffer) );
                 G_format_northing (box.S, buffer, proj);
-		str += htmlTableRow ( "South", QString(buffer) );
+		str += htmlTableRow ( QObject::tr("South"), QString(buffer) );
                 G_format_easting (box.E, buffer, proj );
-		str += htmlTableRow ( "East", QString(buffer) );
+		str += htmlTableRow ( QObject::tr("East"), QString(buffer) );
                 G_format_easting (box.W, buffer, proj );
-		str += htmlTableRow ( "West", QString(buffer) );
+		str += htmlTableRow ( QObject::tr("West"), QString(buffer) );
                 if ( is3d ) 
                 {
-		    str += htmlTableRow ( "Top", QString::number(box.T) );
-		    str += htmlTableRow ( "Bottom", QString::number(box.B) );
+		    str += htmlTableRow ( QObject::tr("Top"), QString::number(box.T) );
+		    str += htmlTableRow ( QObject::tr("Bottom"), QString::number(box.B) );
                 }
 
-		str += htmlTableRow ( "3D", is3d ? "yes" : "no" );
+		str += htmlTableRow ( "3D", is3d ? QObject::tr("yes") : QObject::tr("no") );
 
 	        str += "</table>";
 
                 // History
                 Vect_hist_rewind ( &Map );
                 char hbuffer[1001];
-		str += "<p>History<br>";
+		str += "<p>"+ QObject::tr("History<br>");
                 QRegExp rx ( "^-+$" );
                 while ( Vect_hist_read ( hbuffer, 1000, &Map ) != NULL ) {
                     QString row = QString(hbuffer);
@@ -343,8 +343,8 @@ QString QgsGrassModelItem::info()
 	case QgsGrassModel::VectorLayer:
           {
 	    QString str = tblStart;
-	    str += htmlTableRow("<b>Vector</b>", "<b>" + mMap + "</b>" );
-	    str += htmlTableRow("<b>Layer</b>", "<b>" + mLayer + "</b>" );
+	    str += htmlTableRow(QObject::tr("<b>Vector</b>"), "<b>" + mMap + "</b>" );
+	    str += htmlTableRow(QObject::tr("<b>Layer</b>"), "<b>" + mLayer + "</b>" );
 
 	    QgsGrass::setLocation( mGisbase, mLocation );
 	    
@@ -363,7 +363,7 @@ QString QgsGrassModelItem::info()
                     int type = QgsGrassProvider::grassLayerType(mLayer);
                     if (type != -1 )
                     {
-	    		str += htmlTableRow("Features", 
+	    		str += htmlTableRow( QObject::tr("Features"), 
                               QString::number(Vect_cidx_get_type_count(&Map, field, type)) );
                     }
 
@@ -372,10 +372,10 @@ QString QgsGrassModelItem::info()
                     // Database link
                     if ( fi ) 
                     {
-	    		str += htmlTableRow("Driver", QString(fi->driver) );
-	    		str += htmlTableRow("Database", QString(fi->database) );
-	    		str += htmlTableRow("Table", QString(fi->table) );
-	    		str += htmlTableRow("Key column", QString(fi->key) );
+	    		str += htmlTableRow(QObject::tr("Driver"), QString(fi->driver) );
+	    		str += htmlTableRow(QObject::tr("Database"), QString(fi->database) );
+	    		str += htmlTableRow(QObject::tr("Table"), QString(fi->table) );
+	    		str += htmlTableRow(QObject::tr("Key column"), QString(fi->key) );
                     }
                 }
             }            

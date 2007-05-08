@@ -270,8 +270,8 @@ void QgsGrassBrowser::copyMap()
         {
             suggest = map;
         }
-        QString newName = ed.getItem ( element, "New name",
-                          "New name", suggest, source, &ok );
+        QString newName = ed.getItem ( element, tr("New name"),
+                          tr("New name"), suggest, source, &ok );
 
         if ( !ok ) return;
          
@@ -336,8 +336,8 @@ void QgsGrassBrowser::renameMap()
 
         QgsGrassElementDialog ed;
         bool ok;
-        QString newName = ed.getItem ( element, "New name",
-                          "New name", "", map, &ok );
+        QString newName = ed.getItem ( element, tr("New name"),
+                          tr("New name"), "", map, &ok );
 
         if ( !ok ) return;
          

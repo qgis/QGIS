@@ -128,7 +128,7 @@ QString QgsGrassElementDialog::getItem ( QString element,
     mErrorLabel->setMinimumHeight ( mErrorLabel->height()+5 );
 
     mOkButton = new QPushButton ( );
-    mCancelButton = new QPushButton ( "Cancel" );
+    mCancelButton = new QPushButton ( tr("Cancel" ) );
      
     layout->insertLayout( -1, buttonLayout );
     buttonLayout->addWidget( mOkButton );
@@ -159,12 +159,12 @@ void QgsGrassElementDialog::textChanged ()
    QString text = mLineEdit->text().trimmed();
 
    mErrorLabel->setText ( "   " );
-   mOkButton->setText ("Ok");
+   mOkButton->setText ( tr("Ok" ) );
    mOkButton->setEnabled ( true );
 
    if ( text.length() == 0 )
    {
-       mErrorLabel->setText ( "<font color='red'>Enter a name!</font>" );
+       mErrorLabel->setText ( tr( "<font color='red'>Enter a name!</font>" ) );
        mOkButton->setEnabled ( false );
        return;
    }
@@ -175,14 +175,14 @@ void QgsGrassElementDialog::textChanged ()
    if ( !mSource.isNull() && text == mSource )
 #endif
    {
-       mErrorLabel->setText ( "<font color='red'>This is name of the source!</font>" );
+       mErrorLabel->setText ( tr( "<font color='red'>This is name of the source!</font>" ) );
        mOkButton->setEnabled ( false );
        return;
    }
    if ( QgsGrassUtils::itemExists( mElement, text ) )
    {
-       mErrorLabel->setText ( "<font color='red'>Exists!</font>" );
-       mOkButton->setText ("Overwrite");
+       mErrorLabel->setText ( tr( "<font color='red'>Exists!</font>" ) );
+       mOkButton->setText ( tr("Overwrite") );
        return;
    }
 }

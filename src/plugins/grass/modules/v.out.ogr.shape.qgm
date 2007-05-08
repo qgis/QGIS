@@ -4,5 +4,6 @@
 <qgisgrassmodule label="Export vector layer to Shapefile" module="v.out.ogr">
 	<option key="input" layeroption="layer" typeoption="type" />
 	<option key="format" answer="ESRI_Shapefile" hidden="yes" />
+  <flag key="c" answer="on" hidden="no />
 	<file key="dsn" type="new" fileoption="olayer" label="Output Shapefile" filters="Shapefile (*.shp)" />
 </qgisgrassmodule>
