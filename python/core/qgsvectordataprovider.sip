@@ -1,4 +1,12 @@
 
+%ModuleHeaderCode
+// From Python 2.5, some functions use Py_ssize_t instead of int
+// thus this typedef is for maintaining backward compatibility
+// for older versions of Python
+#if (PY_VERSION_HEX < 0x02050000)
+typedef int Py_ssize_t;
+#endif
+%End
 
 %MappedType QSet<int>
 {
@@ -104,13 +112,13 @@ template<TYPE>
     if (!PyDict_Check(sipPy))
       return 0;
 
-    int i = 0;
+    Py_ssize_t i = 0;
     while (PyDict_Next(sipPy, &i, &kobj, &tobj))
     {
       if (!PyDict_Check(tobj))
         return 0;
         
-      int j = 0;
+      Py_ssize_t j = 0;
       while (PyDict_Next(tobj, &j, &kobj2, &tobj2))
       {
         if (!sipCanConvertToInstance(tobj2, sipClass_TYPE, SIP_NOT_NONE))
@@ -124,7 +132,7 @@ template<TYPE>
   QMap<int, QMap<int, TYPE> > *qm = new QMap<int, QMap<int, TYPE> >;
   
 
-  int i = 0;
+  Py_ssize_t i = 0;
   while (PyDict_Next(sipPy, &i, &kobj, &tobj))
   {
     int k = PyInt_AsLong(kobj);
@@ -134,7 +142,7 @@ template<TYPE>
     
     QMap<int, TYPE> qm2;
     
-    int j = 0;
+    Py_ssize_t j = 0;
     while (PyDict_Next(tobj, &j, &kobj2, &tobj2))
     {
       int k2 = PyInt_AsLong(kobj2);
