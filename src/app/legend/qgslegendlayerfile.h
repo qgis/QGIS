@@ -83,6 +83,9 @@ public:
     /**Save as shapefile*/
     void saveAsShapefile();
     
+    /**Save selection as shapefile*/
+    void saveSelectionAsShapefile();
+    
     /**Toggle editing for layer*/
     void toggleEditing();
     
@@ -93,6 +96,9 @@ public:
     void layerNameChanged();
     
  protected:
+
+    /**Save as shapefile (called from saveAsShapefile and saveSelectionAsShapefile)*/
+    void saveAsShapefileGeneral(bool saveOnlySelection);
 
     /** layer identified by its layer id */
     QgsMapCanvasLayer mLyr;

@@ -294,6 +294,16 @@ void QgsLegendLayerFile::closeTable(bool onlyGeometryWasChanged)
 
 void QgsLegendLayerFile::saveAsShapefile()
 {
+  saveAsShapefileGeneral(FALSE);
+}
+
+void QgsLegendLayerFile::saveSelectionAsShapefile()
+{
+  saveAsShapefileGeneral(TRUE);
+}
+
+void QgsLegendLayerFile::saveAsShapefileGeneral(bool saveOnlySelection)
+{
   if (mLyr.layer()->type() != QgsMapLayer::VECTOR)
     return;
 
@@ -333,8 +343,12 @@ void QgsLegendLayerFile::saveAsShapefile()
     shapefileName += ".shp";
   }
   
+  QApplication::setOverrideCursor(Qt::waitCursor);
+  
   QgsVectorFileWriter::WriterError error;
-  error = QgsVectorFileWriter::writeAsShapefile(vlayer, shapefileName, encoding);
+  error = QgsVectorFileWriter::writeAsShapefile(vlayer, shapefileName, encoding, saveOnlySelection);
+  
+  QApplication::restoreOverrideCursor();
   
   switch (error)
   {
@@ -459,6 +473,12 @@ void QgsLegendLayerFile::addToPopupMenu(QMenu& theMenu)
     
     // save as shapefile
     theMenu.addAction(tr("Save as shapefile..."), this, SLOT(saveAsShapefile()));
+
+    QAction* saveSelectionAction = theMenu.addAction(tr("Save selection as shapefile..."), this, SLOT(saveSelectionAsShapefile()));
+    if (vlayer->selectedFeatureCount() == 0)
+    {
+      saveSelectionAction->setEnabled(false);
+    }
 
     theMenu.addSeparator();
   }

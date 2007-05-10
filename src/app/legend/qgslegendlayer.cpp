@@ -513,10 +513,17 @@ void QgsLegendLayer::addToPopupMenu(QMenu& theMenu)
     }
   
     // save as shapefile
-    theMenu.addAction(tr("Save as shapefile..."), this, SLOT(saveAsShapefile()));
+    QAction* saveShpAction = theMenu.addAction(tr("Save as shapefile..."), this, SLOT(saveAsShapefile()));
     if (files.size() != 1)
     {
-      tableAction->setEnabled(false);
+      saveShpAction->setEnabled(false);
+    }
+    
+    // save selection as shapefile
+    QAction* saveSelectionAction = theMenu.addAction(tr("Save selection as shapefile..."), this, SLOT(saveSelectionAsShapefile()));
+    if (files.size() != 1 || theVectorLayer->selectedFeatureCount() == 0)
+    {
+      saveSelectionAction->setEnabled(false);
     }
     
     theMenu.addSeparator();
@@ -596,5 +603,14 @@ void QgsLegendLayer::saveAsShapefile()
   if (maplayers.size() == 1)
   {
     maplayers.front()->saveAsShapefile();
+  }
+}
+
+void QgsLegendLayer::saveSelectionAsShapefile()
+{
+  std::list<QgsLegendLayerFile*> maplayers = legendLayerFiles();
+  if (maplayers.size() == 1)
+  {
+    maplayers.front()->saveSelectionAsShapefile();
   }
 }

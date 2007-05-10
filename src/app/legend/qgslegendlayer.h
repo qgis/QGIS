@@ -91,6 +91,7 @@ public:
     void toggleEditing();
     
     void saveAsShapefile();
+    void saveSelectionAsShapefile();
     
   protected:
     

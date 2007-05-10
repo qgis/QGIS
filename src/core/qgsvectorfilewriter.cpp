@@ -292,7 +292,8 @@ QgsVectorFileWriter::~QgsVectorFileWriter()
 QgsVectorFileWriter::WriterError
     QgsVectorFileWriter::writeAsShapefile(QgsVectorLayer* layer,
                                           const QString& shapefileName,
-                                          const QString& fileEncoding)
+                                          const QString& fileEncoding,
+                                          bool onlySelected)
 {
   
   QgsVectorDataProvider* provider = layer->getDataProvider();
@@ -313,9 +314,14 @@ QgsVectorFileWriter::WriterError
   
   provider->select(allAttr, QgsRect(), true);
 
+  const QgsFeatureIds& ids = layer->selectedFeaturesIds();
+
   // write all features
   while (provider->getNextFeature(fet))
   {
+    if (onlySelected && !ids.contains(fet.featureId()))
+      continue;
+      
     writer->addFeature(fet);
   }
   
@@ -323,4 +329,3 @@ QgsVectorFileWriter::WriterError
   
   return NoError;
 }
-
