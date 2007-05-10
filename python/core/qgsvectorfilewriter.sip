@@ -27,7 +27,8 @@ public:
     /** Write contents of vector layer to a shapefile */
     static WriterError writeAsShapefile(QgsVectorLayer* layer,
                                         const QString& shapefileName,
-                                        const QString& fileEncoding);
+                                        const QString& fileEncoding,
+                                        bool onlySelected = FALSE);
 
 
     /** create shapefile and initialize it */
