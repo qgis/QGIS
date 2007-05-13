@@ -518,6 +518,7 @@ QgsPoint QgsMapRender::outputCoordsToLayerCoords(QgsMapLayer* theLayer, QgsPoint
     catch (QgsCsException &cse)
     {
       qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, cse.what());
+      throw cse; //let client classes know there was a transformation error
     }
   }
   else
@@ -539,6 +540,7 @@ QgsRect QgsMapRender::outputCoordsToLayerCoords(QgsMapLayer* theLayer, QgsRect r
     catch (QgsCsException &cse)
     {
       qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, cse.what());
+      throw cse; //let client classes know there was a transformation error
     }
   }
   return rect;

@@ -50,7 +50,7 @@ class QgsMapToolCapture : public QgsMapTool
     virtual void canvasPressEvent(QMouseEvent * e);
   
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent(QMouseEvent * e);    
+    virtual void canvasReleaseEvent(QMouseEvent * e)=0;    
     
     //! Resize rubber band
     virtual void renderComplete();
@@ -78,6 +78,10 @@ class QgsMapToolCapture : public QgsMapTool
 
     /** List to store the points of digitised lines and polygons */
     std::list<QgsPoint> mCaptureList;
+
+    /**Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
+     @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed*/
+    int addVertex(const QPoint& p);
 
 };
 

@@ -105,7 +105,7 @@ class CORE_EXPORT QgsPoint
   bool operator==(const QgsPoint &other);
     
   //! Inequality operator
-  bool operator!=(const QgsPoint &other);
+  bool operator!=(const QgsPoint &other) const;
     
   //! Assignment
   QgsPoint & operator=(const QgsPoint &other);

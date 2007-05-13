@@ -234,6 +234,11 @@ class CORE_EXPORT QgsGeometry {
                                      QgsPoint& minDistPoint,
                                      QgsGeometryVertexIndex& beforeVertex);
 
+    /**Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
+     @return 0 success (ring added), 1 problem with geometry type, 2 ring not closed, 3 ring is not valid geometry, \
+    4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
+    int addRing(const std::list<QgsPoint>& ring);
+
     /**Returns the bounding box of this feature*/
     QgsRect boundingBox();
 

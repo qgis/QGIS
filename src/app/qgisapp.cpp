@@ -144,7 +144,8 @@
 //
 // Map tools
 //
-#include "qgsmaptoolcapture.h"
+#include "qgsmaptooladdfeature.h"
+#include "qgsmaptooladdring.h"
 #include "qgsmaptoolidentify.h"
 #include "qgsmaptoolpan.h"
 #include "qgsmaptoolselect.h"
@@ -748,6 +749,11 @@ void QgisApp::createActions()
   connect(mActionMoveVertex, SIGNAL(triggered()), this, SLOT(moveVertex()));
   mActionMoveVertex->setEnabled(false);
 
+  mActionAddRing = new QAction(QIcon(myIconPath+"/mActionAddRing.png"), tr("Add Ring"), this);
+  mActionAddRing->setStatusTip(tr("Add Ring"));
+  connect(mActionAddRing, SIGNAL(triggered()), this, SLOT(addRing()));
+  mActionAddRing->setEnabled(false);
+
   mActionEditCut = new QAction(QIcon(myIconPath+"/mActionEditCut.png"), tr("Cut Features"), this);
   mActionEditCut->setStatusTip(tr("Cut selected features"));
   connect(mActionEditCut, SIGNAL(triggered()), this, SLOT(editCut()));
@@ -811,6 +817,8 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction(mActionDeleteVertex);
   mActionMoveVertex->setCheckable(true);
   mMapToolGroup->addAction(mActionMoveVertex);
+  mActionAddRing->setCheckable(true);
+  mMapToolGroup->addAction(mActionAddRing);
 }
 
 void QgisApp::createMenus()
@@ -965,6 +973,7 @@ void QgisApp::createToolBars()
   mDigitizeToolBar->addAction(mActionAddVertex);
   mDigitizeToolBar->addAction(mActionDeleteVertex);
   mDigitizeToolBar->addAction(mActionMoveVertex);
+  mDigitizeToolBar->addAction(mActionAddRing);
   mDigitizeToolBar->addAction(mActionEditCut);
   mDigitizeToolBar->addAction(mActionEditCopy);
   mDigitizeToolBar->addAction(mActionEditPaste);
@@ -1207,11 +1216,11 @@ void QgisApp::createCanvas()
   mMapTools.mMeasureDist->setAction(mActionMeasure);
   mMapTools.mMeasureArea = new QgsMeasureTool(mMapCanvas, TRUE /* area */);
   mMapTools.mMeasureArea->setAction(mActionMeasureArea);
-  mMapTools.mCapturePoint = new QgsMapToolCapture(mMapCanvas, QgsMapToolCapture::CapturePoint);
+  mMapTools.mCapturePoint = new QgsMapToolAddFeature(mMapCanvas, QgsMapToolCapture::CapturePoint);
   mMapTools.mCapturePoint->setAction(mActionCapturePoint);
-  mMapTools.mCaptureLine = new QgsMapToolCapture(mMapCanvas, QgsMapToolCapture::CaptureLine);
+  mMapTools.mCaptureLine = new QgsMapToolAddFeature(mMapCanvas, QgsMapToolCapture::CaptureLine);
   mMapTools.mCaptureLine->setAction(mActionCaptureLine);
-  mMapTools.mCapturePolygon = new QgsMapToolCapture(mMapCanvas, QgsMapToolCapture::CapturePolygon);
+  mMapTools.mCapturePolygon = new QgsMapToolAddFeature(mMapCanvas, QgsMapToolCapture::CapturePolygon);
   mMapTools.mCapturePolygon->setAction(mActionCapturePolygon);
   mMapTools.mSelect = new QgsMapToolSelect(mMapCanvas);
   mMapTools.mSelect->setAction(mActionSelect);
@@ -1221,6 +1230,8 @@ void QgisApp::createCanvas()
   mMapTools.mVertexMove->setAction(mActionMoveVertex);
   mMapTools.mVertexDelete = new QgsMapToolVertexEdit(mMapCanvas, QgsMapToolVertexEdit::DeleteVertex);
   mMapTools.mVertexDelete->setAction(mActionDeleteVertex);
+  mMapTools.mAddRing = new QgsMapToolAddRing(mMapCanvas);
+  //mMapTools.mAddRing->setAction(mActionAddRing);
 }
 
 void QgisApp::createOverview()
@@ -3417,6 +3428,11 @@ void QgisApp::moveVertex()
   mMapCanvas->setMapTool(mMapTools.mVertexMove);
 }
 
+void QgisApp::addRing()
+{
+  mMapCanvas->setMapTool(mMapTools.mAddRing);
+}
+
 
 void QgisApp::deleteVertex()
 {
@@ -4766,6 +4782,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
 	      mActionCapturePolygon->setEnabled(false);
 	      mActionAddVertex->setEnabled(false);
 	      mActionDeleteVertex->setEnabled(false);
+	      mActionAddRing->setEnabled(false);
 	      if(dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries)
 		{
 		  mActionMoveVertex->setEnabled(true);
@@ -4784,6 +4801,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
 		}
 	      mActionCapturePoint->setEnabled(false);
 	      mActionCapturePolygon->setEnabled(false);
+	      mActionAddRing->setEnabled(false);
 	    }
 	  else if(vlayer->vectorType() == QGis::Polygon)
 	    {
@@ -4805,6 +4823,10 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
 	      mActionAddVertex->setEnabled(true);
 	      mActionMoveVertex->setEnabled(true);
 	      mActionDeleteVertex->setEnabled(true);
+	      if(vlayer->vectorType() == QGis::Polygon)
+		{
+		  mActionAddRing->setEnabled(true);
+		}
 	    }
 	  else
 	    {
@@ -4826,6 +4848,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
       mActionCaptureLine->setEnabled(false);
       mActionCapturePolygon->setEnabled(false);
       mActionDeleteSelected->setEnabled(false);
+      mActionAddRing->setEnabled(false);
       mActionAddVertex->setEnabled(false);
       mActionDeleteVertex->setEnabled(false);
       mActionMoveVertex->setEnabled(false);
