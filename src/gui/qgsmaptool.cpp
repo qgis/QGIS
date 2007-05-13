@@ -50,6 +50,11 @@ QgsPoint QgsMapTool::toLayerCoords(QgsMapLayer* layer, const QgsPoint& point)
   return mCanvas->mapRender()->outputCoordsToLayerCoords(layer, point);
 }
 
+QgsPoint QgsMapTool::toMapCoords(QgsMapLayer* layer, const QgsPoint& point)
+{
+  return mCanvas->mapRender()->layerCoordsToOutputCoords(layer, point);
+}
+
 QgsRect QgsMapTool::toLayerCoords(QgsMapLayer* layer, const QgsRect& rect)
 {
   return mCanvas->mapRender()->outputCoordsToLayerCoords(layer, rect);

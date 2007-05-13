@@ -293,6 +293,8 @@ public slots:
   void moveVertex();
   //! activates the delete vertex tool
   void deleteVertex();
+  //! activates the add ring tool
+  void addRing();
 
   //! activates the selection tool
   void select();
@@ -484,6 +486,7 @@ private:
   QAction *mActionAddVertex;
   QAction *mActionDeleteVertex;
   QAction *mActionMoveVertex;
+  QAction *mActionAddRing;
   QAction *mActionEditCut;
   QAction *mActionEditCopy;
   QAction *mActionEditPaste;
@@ -539,6 +542,7 @@ private:
       QgsMapTool* mVertexAdd;
       QgsMapTool* mVertexMove;
       QgsMapTool* mVertexDelete;
+      QgsMapTool* mAddRing;
   } mMapTools;
   
   //!The name of the active theme

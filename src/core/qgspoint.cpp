@@ -69,7 +69,7 @@ bool QgsPoint::operator==(const QgsPoint & other)
     return false;
 }
 
-bool QgsPoint::operator!=(const QgsPoint & other)
+bool QgsPoint::operator!=(const QgsPoint & other) const
 {
   if ((m_x == other.x()) && (m_y == other.y()))
     return false;

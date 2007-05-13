@@ -29,6 +29,7 @@
 #include <iostream>
 #include <limits>
 #include <memory>
+#include <set>
 #include <sstream>
 #include <utility>
 
@@ -1368,6 +1369,120 @@ bool QgsVectorLayer::deleteSelectedFeatures()
   }
 
   return true;
+}
+
+int QgsVectorLayer::addRing(const std::list<QgsPoint>& ring)
+{
+  int addRingReturnCode = 0;
+
+  //calculate bounding box of ring
+  double xMin = std::numeric_limits<double>::max();
+  double xMax = -std::numeric_limits<double>::max();
+  double yMin = std::numeric_limits<double>::max();
+  double yMax = -std::numeric_limits<double>::max();
+
+  for(std::list<QgsPoint>::const_iterator it = ring.begin(); it != ring.end(); ++it)
+    {
+      if(it->x() < xMin)
+	{
+	  xMin = it->x();
+	}
+      if(it->x() > xMax)
+	{
+	  xMax = it->x();
+	}
+      if(it->y() < yMin)
+	{
+	  yMin = it->y();
+	}
+      if(it->y() > yMax)
+	{
+	  yMax = it->y();
+	}
+    }
+
+  QgsRect bBox(xMin, yMin, xMax, yMax);
+  //qWarning("Bounding box of ring is: " + bBox.stringRep());
+
+  std::set<int> idList; //store the ids of the features we already added the ring
+
+  //call addRing for every feature in mChangedFeatures
+  QgsGeometryMap::iterator changedIt;
+  for(changedIt = mChangedGeometries.begin(); changedIt != mChangedGeometries.end(); ++changedIt)
+    {
+      if(changedIt.value().intersects(bBox))
+	{
+	  addRingReturnCode = changedIt.value().addRing(ring);
+	  if(addRingReturnCode == 0) //success. Leave this method
+	    {
+	      setModified(true, true);
+	      return 0;
+	    }
+	  else if(addRingReturnCode > 0 && addRingReturnCode < 5) //pass the error one level up
+	    {
+	      return addRingReturnCode;
+	    }
+	  //else, addRingReturnCode must be 5, so the ring is not contained in this polygon
+	}
+      idList.insert(changedIt.key());
+    }
+ 
+  //call addRing for every feature in mAddedFeatures
+  for(int i = 0; i < mAddedFeatures.size(); ++i)
+    {
+      if(idList.find(mAddedFeatures.at(i).featureId()) == idList.end())
+	{
+	  //if a geometry is not contained in mCachedGeometries, it is not in the view extent and therefore cannot intersect the ring
+	  if(mCachedGeometries.contains(mAddedFeatures.at(i).featureId()))
+	    {
+	      addRingReturnCode = mCachedGeometries[mAddedFeatures.at(i).featureId()].addRing(ring);
+	      if(addRingReturnCode == 0) //success. Leave this method
+		{
+		  mChangedGeometries[mAddedFeatures.at(i).featureId()] = mCachedGeometries[mAddedFeatures.at(i).featureId()];
+		  setModified(true, true);
+		  return 0;
+		}
+	      else if(addRingReturnCode > 0 && addRingReturnCode < 5) //pass the error one level up
+		{
+		  return addRingReturnCode;
+		}
+	      //else, addRingReturnCode must be 5, so the ring is not contained in this polygon
+	    }
+	  idList.insert(mAddedFeatures.at(i).featureId());
+	}
+    }
+  
+  //call addRing for every feature intersecting bounding box
+  mDataProvider->select(QgsAttributeList(), bBox, true, true);
+  QgsFeature currentFeature;
+  QgsGeometry* currentGeometryPtr = 0;
+
+  while(mDataProvider->getNextFeature(currentFeature))
+    {
+      if(idList.find(currentFeature.featureId()) == idList.end())
+	{
+	  currentGeometryPtr = currentFeature.geometry();
+	  if(currentGeometryPtr)
+	    {
+	      QgsGeometry newGeometry(*currentGeometryPtr);
+	      addRingReturnCode = newGeometry.addRing(ring);
+
+	      if(addRingReturnCode == 0)
+		{
+		  //add geometry to mChangedGeometries
+		  mChangedGeometries.insert(currentFeature.featureId(), newGeometry);
+		  setModified(true, true);
+		  return 0;
+		}
+	      else if(addRingReturnCode > 0 && addRingReturnCode < 5) //pass the error one level up
+		{
+		  return addRingReturnCode;
+		}
+	    }
+	}
+    }
+  
+  return 5; //ring not contained in any geometry
 }
 
 QgsLabel * QgsVectorLayer::label()

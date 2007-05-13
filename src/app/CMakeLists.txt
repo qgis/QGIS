@@ -26,6 +26,8 @@ qgslabeldialog.cpp
 qgslinestyledialog.cpp
 qgslinestylewidget.cpp
 qgsludialog.cpp
+qgsmaptooladdfeature.cpp
+qgsmaptooladdring.cpp
 qgsmaptoolcapture.cpp
 qgsmaptoolidentify.cpp
 qgsmaptoolselect.cpp

@@ -83,8 +83,11 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! transformation from screen coordinates to layer's coordinates
     QgsPoint toLayerCoords(QgsMapLayer* layer, const QPoint& point);
     
-    //! trnasformation from map coordinates to layer's coordinates
+    //! trasformation from map coordinates to layer's coordinates
     QgsPoint toLayerCoords(QgsMapLayer* layer, const QgsPoint& point);
+
+    //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
+    QgsPoint toMapCoords(QgsMapLayer* layer, const QgsPoint& point);
     
     //! trnasformation of the rect from map coordinates to layer's coordinates
     QgsRect toLayerCoords(QgsMapLayer* layer, const QgsRect& rect);

@@ -46,6 +46,7 @@
 #include "qgis.h"
 #include "qgisinterface.h"
 #include "qgsapplication.h"
+#include "qgscsexception.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasitem.h"
 #include "qgsmaplayer.h"
@@ -1145,8 +1146,15 @@ double QgsGrassEdit::threshold ( void )
 
   if ( mProjectionEnabled ) 
   {
-      p1 = mCanvas->mapRender()->outputCoordsToLayerCoords(mLayer, p1);
-      p2 = mCanvas->mapRender()->outputCoordsToLayerCoords(mLayer, p2);
+    try
+      {
+	p1 = mCanvas->mapRender()->outputCoordsToLayerCoords(mLayer, p1);
+	p2 = mCanvas->mapRender()->outputCoordsToLayerCoords(mLayer, p2);
+      }
+    catch(QgsCsException& cse)
+      {
+	//error
+      }
   }
 
   double dx = p2.x() - p1.x();
@@ -1731,8 +1739,8 @@ void QgsGrassEdit::displayNode ( int node, const QPen & pen, int size, QPainter 
 
 QgsPoint QgsGrassEdit::transformLayerToCanvas ( QgsPoint point)
 {
-    point = mCanvas->mapRender()->layerCoordsToOutputCoords(mLayer, point);
-    return mTransform->transform(point);
+  point = mCanvas->mapRender()->layerCoordsToOutputCoords(mLayer, point);
+  return mTransform->transform(point);
 }
 
 QgsPoint QgsGrassEdit::transformLayerToMap ( QgsPoint point)
