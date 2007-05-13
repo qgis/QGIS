@@ -341,7 +341,6 @@ void QgsWFSData::characters(const XML_Char* chars, int len)
   QgsWFSData::parseMode theParseMode = mParseModeStack.top();
   if(theParseMode == QgsWFSData::attribute || theParseMode == QgsWFSData::coordinate)
   {
-    //mStringCash = QString::fromUtf8(chars, len);
     mStringCash.append(QString::fromUtf8(chars, len));
   } 
 }
