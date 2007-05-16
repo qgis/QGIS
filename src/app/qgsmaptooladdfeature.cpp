@@ -225,7 +225,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent(QMouseEvent * e)
 		  memcpy(&wkb[1+sizeof(int)],&length, sizeof(int));
 		  int position=1+2*sizeof(int);
 		  double x,y;
-		  for(std::list<QgsPoint>::iterator it=mCaptureList.begin();it!=mCaptureList.end();++it)
+		  for(QList<QgsPoint>::iterator it=mCaptureList.begin();it!=mCaptureList.end();++it)
 		    {
 		      QgsPoint savePoint = *it;
 		      x = savePoint.x();
@@ -260,7 +260,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent(QMouseEvent * e)
 		  memcpy(&wkb[position], &length, sizeof(int));
 		  position += sizeof(int);
 		  double x,y;
-		  for(std::list<QgsPoint>::iterator it=mCaptureList.begin();it!=mCaptureList.end();++it)
+		  for(QList<QgsPoint>::iterator it=mCaptureList.begin();it!=mCaptureList.end();++it)
 		    {
 		      QgsPoint savePoint = *it;
 		      x = savePoint.x();
@@ -289,7 +289,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent(QMouseEvent * e)
 		  memcpy(&wkb[1+2*sizeof(int)],&length, sizeof(int));
 		  int position=1+3*sizeof(int);
 		  double x,y;
-		  std::list<QgsPoint>::iterator it;
+		  QList<QgsPoint>::iterator it;
 		  for(it=mCaptureList.begin();it!=mCaptureList.end();++it)
 		    {
 		      QgsPoint savePoint = *it;
@@ -338,7 +338,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent(QMouseEvent * e)
 		  memcpy(&wkb[position], &length, sizeof(int));
 		  position += sizeof(int);
 		  double x,y;
-		  std::list<QgsPoint>::iterator it;
+		  QList<QgsPoint>::iterator it;
 		  for(it=mCaptureList.begin();it!=mCaptureList.end();++it)//add the captured points to the polygon
 		    {
 		      QgsPoint savePoint = *it;

@@ -2249,7 +2249,7 @@ double QgsGeometry::closestSegmentWithContext(const QgsPoint& point,
   return sqrDist;
 }                 
 
-int QgsGeometry::addRing(const std::list<QgsPoint>& ring)
+int QgsGeometry::addRing(const QList<QgsPoint>& ring)
 {
   //bail out if this geometry is not polygon/multipolygon
   if(vectorType() != QGis::Polygon)
@@ -2257,10 +2257,14 @@ int QgsGeometry::addRing(const std::list<QgsPoint>& ring)
       return 1;
     }
 
+  //test for invalid geometries
+  if(ring.size() < 4)
+    {
+      return 3;
+    }
+
   //ring must be closed
-  std::list<QgsPoint>::const_iterator it1 = ring.begin();
-  std::list<QgsPoint>::const_reverse_iterator it2 = ring.rbegin();
-  if(*it1 != *it2)
+  if(ring.first() != ring.last())
     {
       return 2;
     }
@@ -2302,7 +2306,7 @@ int QgsGeometry::addRing(const std::list<QgsPoint>& ring)
 
   //create new ring
   GEOS_GEOM::DefaultCoordinateSequence* newSequence=new GEOS_GEOM::DefaultCoordinateSequence();
-  for(std::list<QgsPoint>::const_iterator it = ring.begin(); it != ring.end(); ++it)
+  for(QList<QgsPoint>::const_iterator it = ring.begin(); it != ring.end(); ++it)
     {
       newSequence->add(GEOS_GEOM::Coordinate(it->x(),it->y()));
     }

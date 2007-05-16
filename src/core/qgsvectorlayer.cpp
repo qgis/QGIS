@@ -1371,7 +1371,7 @@ bool QgsVectorLayer::deleteSelectedFeatures()
   return true;
 }
 
-int QgsVectorLayer::addRing(const std::list<QgsPoint>& ring)
+int QgsVectorLayer::addRing(const QList<QgsPoint>& ring)
 {
   int addRingReturnCode = 0;
 
@@ -1381,7 +1381,7 @@ int QgsVectorLayer::addRing(const std::list<QgsPoint>& ring)
   double yMin = std::numeric_limits<double>::max();
   double yMax = -std::numeric_limits<double>::max();
 
-  for(std::list<QgsPoint>::const_iterator it = ring.begin(); it != ring.end(); ++it)
+  for(QList<QgsPoint>::const_iterator it = ring.constBegin(); it != ring.constEnd(); ++it)
     {
       if(it->x() < xMin)
 	{

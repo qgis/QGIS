@@ -24,7 +24,7 @@
 class QgsRubberBand;
 
 #include <QPoint>
-#include <list>
+#include <QList>
 
 class QgsMapToolCapture : public QgsMapTool
 {
@@ -77,7 +77,7 @@ class QgsMapToolCapture : public QgsMapTool
     QgsRubberBand* mRubberBand;
 
     /** List to store the points of digitised lines and polygons */
-    std::list<QgsPoint> mCaptureList;
+    QList<QgsPoint> mCaptureList;
 
     /**Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
      @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed*/
