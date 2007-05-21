@@ -145,8 +145,5 @@ class TestQgsApplication: public QObject
 };
 
 QTEST_MAIN(TestQgsApplication)
-#include "testqgsapplication.moc.cpp"
-
-
-
+#include "moc_testqgsapplication.cxx"
 

@@ -4,10 +4,11 @@
 # application test
 
 SET(applicationtest_SRCS testqgsapplication.cpp)
-QT4_GENERATE_MOC(${CMAKE_CURRENT_SOURCE_DIR}/testqgsapplication.cpp testqgsapplication.moc)
-#SET(applicationtest_MOC_CPPS testqgsapplication.cpp)
-#QT4_WRAP_CPP(applicationtest_MOC_SRCS ${applicationtest_MOC_CPPS})
-#ADD_CUSTOM_TARGET(applicationtestmoc ALL DEPENDS ${applicationtest_MOC_SRCS})
+#QT4_GENERATE_MOC(${CMAKE_CURRENT_SOURCE_DIR}/testqgsapplication.cpp testqgsapplication.moc)
+#SET_SOURCE_FILES_PROPERTIES(testqgsapplication.moc PROPERTIES GENERATED TRUE)
+SET(applicationtest_MOC_CPPS testqgsapplication.cpp)
+QT4_WRAP_CPP(applicationtest_MOC_SRCS ${applicationtest_MOC_CPPS})
+ADD_CUSTOM_TARGET(applicationtestmoc ALL DEPENDS ${applicationtest_MOC_SRCS})
 #QT4_GENERATE_MOC(${CMAKE_CURRENT_SOURCE_DIR}/testqgsapplication.cpp moc_testqgsapplication.cxx)
 
 #####################################################
@@ -58,6 +59,7 @@ ENDIF (WIN32)
 ADD_EXECUTABLE(applicationtest 
                ${applicationtest_SRCS} 
                )
+ADD_DEPENDENCIES(applicationtest applicationtestmoc)
 TARGET_LINK_LIBRARIES(applicationtest
     ${QT_LIBRARIES}
     qgis_core
