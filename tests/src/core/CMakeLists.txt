@@ -4,9 +4,10 @@
 # application test
 
 SET(applicationtest_SRCS testqgsapplication.cpp)
-SET(applicationtest_MOC_CPPS testqgsapplication.cpp)
-QT4_WRAP_CPP(applicationtest_MOC_SRCS ${applicationtest_MOC_CPPS})
-ADD_CUSTOM_TARGET(applicationtestmoc ALL DEPENDS ${applicationtest_MOC_SRCS})
+QT4_GENERATE_MOC(${CMAKE_CURRENT_SOURCE_DIR}/testqgsapplication.cpp testqgsapplication.moc)
+#SET(applicationtest_MOC_CPPS testqgsapplication.cpp)
+#QT4_WRAP_CPP(applicationtest_MOC_SRCS ${applicationtest_MOC_CPPS})
+#ADD_CUSTOM_TARGET(applicationtestmoc ALL DEPENDS ${applicationtest_MOC_SRCS})
 #QT4_GENERATE_MOC(${CMAKE_CURRENT_SOURCE_DIR}/testqgsapplication.cpp moc_testqgsapplication.cxx)
 
 #####################################################
