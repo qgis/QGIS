@@ -40,6 +40,9 @@ SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python
 # Compile flag. Make it posible to turn it off.
 SET (PEDANTIC TRUE CACHE BOOL "Determines if we should compile with -Wall -Werror.")
 
+# whether unit tests should be build
+SET (ENABLE_TESTS FALSE CACHE BOOL "Build unit tests?")
+
 # hide this variable because building of python bindings might fail
 # if set to other directory than expected
 MARK_AS_ADVANCED(LIBRARY_OUTPUT_PATH)
@@ -102,6 +105,10 @@ SET( QT_USE_QT3SUPPORT TRUE )
 SET( QT_USE_QTXML      TRUE )
 SET( QT_USE_QTNETWORK  TRUE )
 SET( QT_USE_QTSVG      TRUE )
+IF (ENABLE_TESTS)
+  SET( QT_USE_QTTESTS  TRUE )
+  ENABLE_TESTING()
+ENDIF (ENABLE_TESTS)
 # TODO: should not be needed, report it to CMake devs
 IF (APPLE AND QT_USE_QT3SUPPORT)
   SET( QT_USE_QTSQL    TRUE )
@@ -222,6 +229,9 @@ IF (HAVE_PYTHON)
   SUBDIRS (python)
 ENDIF (HAVE_PYTHON)
 
+IF (ENABLE_TESTS)
+  SUBDIRS(tests)
+ENDIF (ENABLE_TESTS)
 
 #############################################################
 # install stuff
