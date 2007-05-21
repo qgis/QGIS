@@ -76,12 +76,22 @@ class QgsWFSData: public QObject
      @param attr attribute strings
      @return 0 in case of success*/
   int readEpsgFromAttribute(int& epsgNr, const XML_Char** attr) const;
+  /**Reads the 'cs' (coordinate separator) attribute.
+   @return the cs attribute value or the default value ","*/
+  QString readCsFromAttribute(const XML_Char** attr) const;
+  /**Reads the 'ts' (tuple separator) attribute.
+     @return the ts attribute value or the devault value " "*/
+  QString readTsFromAttribute(const XML_Char** attr) const;
   /**Creates a rectangle from a coordinate string.
    @return 0 in case of success*/
   int createBBoxFromCoordinateString(QgsRect* bb, const QString& coordString) const;
   /**Creates a set of points from a coordinate string.
-   @return 0 in case of success*/
-  int pointsFromCoordinateString(std::list<QgsPoint>& points, const QString& coordString) const;
+     @param points list that will contain the created points
+     @param coordString the text containing the coordinates
+     @param cs coortinate separator
+     @param ts tuple separator
+     @return 0 in case of success*/
+  int pointsFromCoordinateString(std::list<QgsPoint>& points, const QString& coordString, const QString& cs, const QString& ts) const;
   int getPointWKB(unsigned char** wkb, int* size, const QgsPoint&) const;
   int getLineWKB(unsigned char** wkb, int* size, const std::list<QgsPoint>& lineCoordinates) const;
   int getRingWKB(unsigned char** wkb, int* size, const std::list<QgsPoint>& ringCoordinates) const;
@@ -128,6 +138,10 @@ class QgsWFSData: public QObject
   int mAttributeIndex;
   QString mTypeName;
   QgsApplication::endian_t mEndian;
+  /**Coordinate separator for coordinate strings. Usually "," */
+  QString mCoordinateSeparator;
+  /**Tuple separator for coordinate strings. Usually " " */
+  QString mTupleSeparator;
 };
 
 #endif
