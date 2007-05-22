@@ -63,6 +63,7 @@ int QgsWFSData::getWFSData()
     }
   mHttp.get(mUri);
 
+
   //loop to read the data
   QByteArray readData;
   int atEnd = 0;
@@ -184,23 +185,27 @@ void QgsWFSData::endElement(const XML_Char* el)
   QString localName = elementName.section(NS_SEPARATOR, 1, 1);
   if(elementName == GML_NAMESPACE + NS_SEPARATOR + "coordinates")
     {
-      //qWarning("Poping coordinate from the stack");
-      mParseModeStack.pop();
+      if(!mParseModeStack.empty())
+	{
+	  mParseModeStack.pop();
+	}
     }
   else if(localName == mAttributeName) 
     {
-      mParseModeStack.pop();
-      //qWarning("adding attribute");
-      //qWarning(mAttributeName.toLocal8Bit().data());
-      //qWarning(mStringCash.toLocal8Bit().data());
-      //mCurrentFeature->addAttribute(mAttributeName, mStringCash);
+      if(!mParseModeStack.empty())
+	{
+	  mParseModeStack.pop();
+	}
+      
       mCurrentFeature->addAttribute(mAttributeIndex, QVariant(mStringCash));
       ++mAttributeIndex;
     }
   else if(localName == mGeometryAttribute)
     {
-      //qWarning("Poping geometry from the stack");
-      mParseModeStack.pop();
+      if(!mParseModeStack.empty())
+	{
+	  mParseModeStack.pop();
+	}
     }
   else if(elementName == GML_NAMESPACE + NS_SEPARATOR + "boundedBy" && mParseModeStack.top() == QgsWFSData::boundingBox)
     {
@@ -209,10 +214,11 @@ void QgsWFSData::endElement(const XML_Char* el)
 	{
 	  qWarning("creation of bounding box failed");
 	}
-      //qWarning("bounding box");
-      //qWarning(mExtent->stringRep().toLocal8Bit().data());
-      //qWarning("Removing boundingBox from stack");
-      mParseModeStack.pop();
+      
+      if(!mParseModeStack.empty())
+	{
+	  mParseModeStack.pop();
+	}
     }
   else if(elementName == GML_NAMESPACE + NS_SEPARATOR + "featureMember")
     {
@@ -318,17 +324,26 @@ void QgsWFSData::endElement(const XML_Char* el)
     }
   else if(elementName == GML_NAMESPACE + NS_SEPARATOR + "MultiPoint")
     {
-      mParseModeStack.pop();
+      if(!mParseModeStack.empty())
+	{
+	  mParseModeStack.pop();
+	}
       createMultiPointFromFragments();
     }
   else if(elementName == GML_NAMESPACE + NS_SEPARATOR + "MultiLineString")
     {
-      mParseModeStack.pop();
+      if(!mParseModeStack.empty())
+	{
+	  mParseModeStack.pop();
+	}
       createMultiLineFromFragments();
     }
   else if(elementName == GML_NAMESPACE + NS_SEPARATOR + "MultiPolygon")
     {
-      mParseModeStack.pop();
+      if(!mParseModeStack.empty())
+	{
+	  mParseModeStack.pop();
+	}
       createMultiPolygonFromFragments();
     }
 }
