@@ -52,15 +52,16 @@ int QgsWFSData::getWFSData()
 
   //separate host from query string
   QUrl requestUrl(mUri);
-  mHttp.setHost(requestUrl.host(), requestUrl.port());
+  int portNr = requestUrl.port();
+  if(portNr != -1)
+    {
+      mHttp.setHost(requestUrl.host(), portNr);
+    }
+  else
+    {
+      mHttp.setHost(requestUrl.host());
+    }
   mHttp.get(mUri);
-
-  //just for a test
-  //QProgressDialog pd;
-  //pd.setWindowModality(Qt::WindowModal);
-  //pd.setMaximum(150000000); //shows busy indocator
-  //QObject::connect(&mHttp, SIGNAL(dataReadProgress(int,int)), &pd, SLOT(setValue(int)));
-  //pd.show();
 
   //loop to read the data
   QByteArray readData;
