@@ -65,7 +65,7 @@ mDirtyGeos( rhs.mDirtyGeos )
 	if(multiPoly)
 	  {
 	    std::vector<GEOS_GEOM::Geometry*> polygonVector;
-	    for(int i = 0; i < multiPoly->getNumGeometries(); ++i)
+	    for(unsigned int i = 0; i < multiPoly->getNumGeometries(); ++i)
 	      {
 		polygonVector.push_back((GEOS_GEOM::Geometry*)(multiPoly->getGeometryN(i)));
 	      }
@@ -187,7 +187,7 @@ QgsGeometry & QgsGeometry::operator=( QgsGeometry const & rhs )
 	if(multiPoly)
 	  {
 	    std::vector<GEOS_GEOM::Geometry*> polygonVector;
-	    for(int i = 0; i < multiPoly->getNumGeometries(); ++i)
+	    for(unsigned int i = 0; i < multiPoly->getNumGeometries(); ++i)
 	      {
 		polygonVector.push_back((GEOS_GEOM::Geometry*)(multiPoly->getGeometryN(i)));
 	      }
@@ -3553,7 +3553,7 @@ bool QgsGeometry::exportGeosToWkb()
 
 	//first determine size of geometry
         int geometrySize = 1 + (2 * sizeof(int)); //endian, type, number of polygons
-	for(int i = 0; i < theMultiPolygon->getNumGeometries(); ++i)
+	for(unsigned int i = 0; i < theMultiPolygon->getNumGeometries(); ++i)
 	  {
 	    GEOS_GEOM::Polygon* thePoly = (GEOS_GEOM::Polygon*)(theMultiPolygon->getGeometryN(i));
 	    geometrySize += (1 + (2 * sizeof(int))); //endian, type, number of rings
@@ -3563,7 +3563,7 @@ bool QgsGeometry::exportGeosToWkb()
 	    geometrySize += (2*sizeof(double)*exRing->getNumPoints());
 
 	    const GEOS_GEOM::LineString* intRing = 0;
-	    for(int j = 0; j < thePoly->getNumInteriorRing(); ++j)
+	    for(unsigned int j = 0; j < thePoly->getNumInteriorRing(); ++j)
 	      {
 		geometrySize += sizeof(int); //number of points in ring
 		intRing = thePoly->getInteriorRingN(j);
@@ -3585,7 +3585,7 @@ bool QgsGeometry::exportGeosToWkb()
 	wkbPosition += sizeof(int);
 
 	//loop over polygons
-	for(int i = 0; i < theMultiPolygon->getNumGeometries(); ++i)
+	for(unsigned int i = 0; i < theMultiPolygon->getNumGeometries(); ++i)
 	  {
 	    GEOS_GEOM::Polygon* thePoly = (GEOS_GEOM::Polygon*)(theMultiPolygon->getGeometryN(i));
 	    memcpy(&mGeometry[wkbPosition], &byteOrder, 1);
@@ -3618,7 +3618,7 @@ bool QgsGeometry::exportGeosToWkb()
 	      }
 	    
 	    //interior rings
-	    for(int j = 0; j < thePoly->getNumInteriorRing(); ++j)
+	    for(unsigned int j = 0; j < thePoly->getNumInteriorRing(); ++j)
 	      {
 		theRing = thePoly->getInteriorRingN(j);
 		nPointsInRing = theRing->getNumPoints();
