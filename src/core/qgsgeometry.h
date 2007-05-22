@@ -27,11 +27,13 @@ email                : morb at ozemail dot com dot au
 #define GEOS_GEOM geos
 #define GEOS_IO geos
 #define GEOS_UTIL geos
+#define GEOS_SIZE_T int
 #define COORD_SEQ_FACTORY DefaultCoordinateSequenceFactory
 #else
 #define GEOS_GEOM geos::geom
 #define GEOS_IO geos::io
 #define GEOS_UTIL geos::util
+#define GEOS_SIZE_T size_t
 #define COORD_SEQ_FACTORY CoordinateArraySequenceFactory
 #endif
 

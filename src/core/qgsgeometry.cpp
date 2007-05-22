@@ -65,7 +65,7 @@ mDirtyGeos( rhs.mDirtyGeos )
 	if(multiPoly)
 	  {
 	    std::vector<GEOS_GEOM::Geometry*> polygonVector;
-	    for(unsigned int i = 0; i < multiPoly->getNumGeometries(); ++i)
+	    for(GEOS_SIZE_T i = 0; i < multiPoly->getNumGeometries(); ++i)
 	      {
 		polygonVector.push_back((GEOS_GEOM::Geometry*)(multiPoly->getGeometryN(i)));
 	      }
@@ -187,7 +187,7 @@ QgsGeometry & QgsGeometry::operator=( QgsGeometry const & rhs )
 	if(multiPoly)
 	  {
 	    std::vector<GEOS_GEOM::Geometry*> polygonVector;
-	    for(unsigned int i = 0; i < multiPoly->getNumGeometries(); ++i)
+	    for(GEOS_SIZE_T i = 0; i < multiPoly->getNumGeometries(); ++i)
 	      {
 		polygonVector.push_back((GEOS_GEOM::Geometry*)(multiPoly->getGeometryN(i)));
 	      }
@@ -2009,7 +2009,7 @@ double QgsGeometry::closestVertexWithContext(const QgsPoint& point,
   GEOS_GEOM::CoordinateSequence* sequence = mGeos->getCoordinates();
   if(sequence)
   {
-    for(int i = 0; i < (int) sequence->getSize(); ++i)
+    for(GEOS_SIZE_T i = 0; i < sequence->getSize(); ++i)
     {
       double testDist = point.sqrDist(sequence->getAt(i).x, sequence->getAt(i).y);
       if(testDist < sqrDist)
@@ -3453,7 +3453,7 @@ bool QgsGeometry::exportGeosToWkb()
             geometrySize += sizeof(int);
             geometrySize += theRing->getNumPoints()*2*sizeof(double);
           }
-          for(int i = 0; i < (int) thePolygon->getNumInteriorRing(); ++i)
+          for(GEOS_SIZE_T i = 0; i < thePolygon->getNumInteriorRing(); ++i)
           {
             geometrySize += sizeof(int); //number of points in ring
             theRing = thePolygon->getInteriorRingN(i);
@@ -3487,7 +3487,7 @@ bool QgsGeometry::exportGeosToWkb()
             position += sizeof(int);
             const GEOS_GEOM::CoordinateSequence* ringSequence = theRing->getCoordinatesRO();
             //for(int j = 0; j < nPointsInRing; ++j)
-            for(int j = 0; j < (int) ringSequence->getSize(); ++j)
+            for(GEOS_SIZE_T j = 0; j < ringSequence->getSize(); ++j)
             {
               //x = theRing->getPointN(j)->getX();
               x = ringSequence->getAt(j).x;
@@ -3501,7 +3501,7 @@ bool QgsGeometry::exportGeosToWkb()
           }
 
           //interior rings after
-          for(int i = 0; i < (int) thePolygon->getNumInteriorRing(); ++i)
+          for(GEOS_SIZE_T i = 0; i < thePolygon->getNumInteriorRing(); ++i)
           {
             theRing = thePolygon->getInteriorRingN(i);
             if(theRing)
@@ -3553,7 +3553,7 @@ bool QgsGeometry::exportGeosToWkb()
 
 	//first determine size of geometry
         int geometrySize = 1 + (2 * sizeof(int)); //endian, type, number of polygons
-	for(unsigned int i = 0; i < theMultiPolygon->getNumGeometries(); ++i)
+	for(GEOS_SIZE_T i = 0; i < theMultiPolygon->getNumGeometries(); ++i)
 	  {
 	    GEOS_GEOM::Polygon* thePoly = (GEOS_GEOM::Polygon*)(theMultiPolygon->getGeometryN(i));
 	    geometrySize += (1 + (2 * sizeof(int))); //endian, type, number of rings
@@ -3563,7 +3563,7 @@ bool QgsGeometry::exportGeosToWkb()
 	    geometrySize += (2*sizeof(double)*exRing->getNumPoints());
 
 	    const GEOS_GEOM::LineString* intRing = 0;
-	    for(unsigned int j = 0; j < thePoly->getNumInteriorRing(); ++j)
+	    for(GEOS_SIZE_T j = 0; j < thePoly->getNumInteriorRing(); ++j)
 	      {
 		geometrySize += sizeof(int); //number of points in ring
 		intRing = thePoly->getInteriorRingN(j);
@@ -3585,7 +3585,7 @@ bool QgsGeometry::exportGeosToWkb()
 	wkbPosition += sizeof(int);
 
 	//loop over polygons
-	for(unsigned int i = 0; i < theMultiPolygon->getNumGeometries(); ++i)
+	for(GEOS_SIZE_T i = 0; i < theMultiPolygon->getNumGeometries(); ++i)
 	  {
 	    GEOS_GEOM::Polygon* thePoly = (GEOS_GEOM::Polygon*)(theMultiPolygon->getGeometryN(i));
 	    memcpy(&mGeometry[wkbPosition], &byteOrder, 1);
@@ -3618,7 +3618,7 @@ bool QgsGeometry::exportGeosToWkb()
 	      }
 	    
 	    //interior rings
-	    for(unsigned int j = 0; j < thePoly->getNumInteriorRing(); ++j)
+	    for(GEOS_SIZE_T j = 0; j < thePoly->getNumInteriorRing(); ++j)
 	      {
 		theRing = thePoly->getInteriorRingN(j);
 		nPointsInRing = theRing->getNumPoints();
