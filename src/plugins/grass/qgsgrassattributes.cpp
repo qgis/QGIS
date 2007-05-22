@@ -241,7 +241,8 @@ void QgsGrassAttributes::addAttribute ( int tab, const QString &name, const QStr
 
     // I have no rational explanation why fromLocal8Bit is necessary, value should be in unicode
     // because QgsGrassProvider::attributes is using mEncoding->toUnicode() 
-    tb->setText ( row, 1, QString::fromLocal8Bit(value) );
+//    tb->setText ( row, 1, QString::fromLocal8Bit(value) );
+    tb->setText ( row, 1, value );
     tb->setText ( row, 2, type );
 
     resetButtons();

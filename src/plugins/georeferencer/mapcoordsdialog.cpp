@@ -32,3 +32,9 @@ void MapCoordsDialog::on_buttonCancel_clicked()
 {
   reject();
 }
+
+void MapCoordsDialog::setXY(QgsPoint & xy)
+{
+ leXCoord->insert(QString::number(xy.x(),'f',7));
+ leYCoord->insert(QString::number(xy.y(),'f',7));
+}

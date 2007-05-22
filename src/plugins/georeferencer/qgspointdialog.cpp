@@ -443,6 +443,7 @@ void QgsPointDialog::showCoordDialog(QgsPoint& pixelCoords)
   MapCoordsDialog* mcd = new MapCoordsDialog(pixelCoords, this);
   connect(mcd, SIGNAL(pointAdded(const QgsPoint&, const QgsPoint&)),
           this, SLOT(addPoint(const QgsPoint&, const QgsPoint&)));
+  connect(mIface->getMapCanvas(),SIGNAL(sendXY(QgsPoint&)),mcd,SLOT(setXY(QgsPoint&)));
   mcd->show();
 }
 
