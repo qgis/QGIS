@@ -30,6 +30,8 @@ public slots:
   void on_buttonOk_clicked();
   void on_buttonCancel_clicked(); 
   
+  void setXY(QgsPoint &);
+  
 private:
   
   QgsPoint mPixelCoords;
