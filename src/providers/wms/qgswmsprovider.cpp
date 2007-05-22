@@ -462,10 +462,13 @@ QImage* QgsWmsProvider::draw(QgsRect  const & viewExtent, int pixelWidth, int pi
   url += "STYLES=" + styles;
   url += "&";
   url += "FORMAT=" + imageMimeType;
-  url += "&";
-  url += "TRANSPARENT=TRUE";
+  if(!imageMimeType.contains("jpeg", Qt::CaseInsensitive) && !imageMimeType.contains("jpg", Qt::CaseInsensitive)) //MH: jpeg does not support transparency and some servers complain if jpg and transparent=true
+    {
+      url += "&";
+      url += "TRANSPARENT=TRUE";
+    }
 
-  //qWarning(url);
+  qWarning(url);
 
   // cache some details for if the user wants to do an identifyAsHtml() later
   mGetFeatureInfoUrlBase = baseUrl;
@@ -488,8 +491,11 @@ QImage* QgsWmsProvider::draw(QgsRect  const & viewExtent, int pixelWidth, int pi
   mGetFeatureInfoUrlBase += "STYLES=" + styles;
   mGetFeatureInfoUrlBase += "&";
   mGetFeatureInfoUrlBase += "FORMAT=" + imageMimeType;
-  mGetFeatureInfoUrlBase += "&";
-  mGetFeatureInfoUrlBase += "TRANSPARENT=TRUE";
+  if(!imageMimeType.contains("jpeg", Qt::CaseInsensitive) && !imageMimeType.contains("jpg", Qt::CaseInsensitive))
+    {
+      mGetFeatureInfoUrlBase += "&";
+      mGetFeatureInfoUrlBase += "TRANSPARENT=TRUE";
+    }
 
 
   QByteArray imagesource;
