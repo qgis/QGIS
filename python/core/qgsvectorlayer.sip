@@ -168,6 +168,11 @@ public:
    */
   bool deleteSelectedFeatures();
 
+  /**Adds a ring to polygon/multipolygon features
+   @return 0 in case of success, 1 problem with feature type, 2 ring not closed, 3 ring not valid, 4 ring crosses \
+existing rings, 5 no feature found where ring can be inserted*/
+  int addRing(const QList<QgsPoint>& ring);
+
   /** Set labels on */
   void setLabelOn( bool on );
 
