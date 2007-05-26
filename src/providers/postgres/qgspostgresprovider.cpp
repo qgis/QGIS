@@ -1546,18 +1546,10 @@ bool QgsPostgresProvider::addFeature(QgsFeature& f, int primaryKeyHighWater)
         //the postgres provided default value
         if(fieldvalue != "NULL" && fieldvalue != getDefaultValue(it.key()).toString() )
         {
-          QString typeName = it->typeName();
-          if (
-              typeName.contains("char",false) > 0 || 
-              typeName == "text"                  ||
-              typeName == "date"                  ||
-              typeName == "interval"              ||
-              typeName.contains("time",false) > 0      // includes time and timestamp
-              )
-          {
-            charactertype=true;
-          }
-        
+          if(it->type() == QVariant::String || it->type() == QVariant::Char)
+	    {
+	      charactertype=true;
+	    }
         }
 
         // important: escape quotes in field value
@@ -1588,6 +1580,7 @@ bool QgsPostgresProvider::addFeature(QgsFeature& f, int primaryKeyHighWater)
 
     insert+=")";
     QgsDebugMsg("insert statement is: "+insert);
+    qWarning("insert statement is: "+insert);
 
     //send INSERT statement and do error handling
     PGresult* result=PQexec(connection, (const char *)(insert.utf8()));

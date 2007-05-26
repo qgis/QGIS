@@ -236,6 +236,13 @@ public:
 existing rings, 5 no feature found where ring can be inserted*/
   int addRing(const QList<QgsPoint>& ring);
 
+  /**Adds a new island polygon to a multipolygon feature
+   @return 0 in case of success, 1 if selected feature is not multipolygon, 2 if ring is not a valid geometry, \
+3if new polygon ring not disjoint with existing rings, 4 if no feature was selected, 5 if several features are selected, \
+6 if selected geometry not found*/
+  int addIsland(const QList<QgsPoint>& ring);
+
+
   /** Set labels on */
   void setLabelOn( bool on );
 

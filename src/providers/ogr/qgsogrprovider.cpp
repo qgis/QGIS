@@ -1296,6 +1296,15 @@ QGISEXTERN bool createEmptyDataSource(const QString& uri,
     case QGis::WKBPolygon:
       OGRvectortype = wkbPolygon;
       break;
+    case QGis::WKBMultiPoint:
+      OGRvectortype = wkbMultiPoint;
+      break;
+    case QGis::WKBMultiLineString:
+      OGRvectortype = wkbMultiLineString;
+      break;
+    case QGis::WKBMultiPolygon:
+      OGRvectortype = wkbMultiPolygon;
+      break;
     default:
       {
         QgsLogger::debug("Unknown vector type of: ", (int)(vectortype), 1, 

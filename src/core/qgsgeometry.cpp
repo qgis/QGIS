@@ -191,6 +191,7 @@ QgsGeometry & QgsGeometry::operator=( QgsGeometry const & rhs )
 	      {
 		polygonVector.push_back((GEOS_GEOM::Geometry*)(multiPoly->getGeometryN(i)));
 	      }
+	    mGeos = QgsGeometry::geosGeometryFactory->createMultiPolygon(polygonVector);
 	  }
       }
     else
@@ -2291,7 +2292,6 @@ int QgsGeometry::addRing(const QList<QgsPoint>& ring)
     }
   else if(this->wkbType() == QGis::WKBMultiPolygon)
     {
-      qWarning(mGeos->getGeometryType().c_str()); //just to test if pointer is valid
       thisMultiPolygon = dynamic_cast<GEOS_GEOM::MultiPolygon*>(mGeos);
       if(!thisMultiPolygon)
 	{
@@ -2319,7 +2319,7 @@ int QgsGeometry::addRing(const QList<QgsPoint>& ring)
   GEOS_GEOM::Polygon* newRingPolygon = geosGeometryFactory->createPolygon(*newRing, dummyVector);
   if(!newRing || !newRingPolygon || !newRing->isValid() || !newRingPolygon->isValid())
     {
-      qWarning("ring is not valid");
+      QgsDebugMsg("ring is not valid");
       delete newRing;
       delete newRingPolygon;
       return 3;
@@ -2347,7 +2347,7 @@ int QgsGeometry::addRing(const QList<QgsPoint>& ring)
 	  //if(existingRing->disjoint(newRing))
 	  if(!existingRingPolygon->disjoint(newRingPolygon)) //does only work with polygons, not linear rings
 	    {
-	      qWarning("new ring not disjoint with existing ring");
+	      QgsDebugMsg("new ring not disjoint with existing ring");
 	      //delete objects wich are no longer needed
 	      delete existingRing;
 	      delete existingRingPolygon;
@@ -2379,7 +2379,7 @@ int QgsGeometry::addRing(const QList<QgsPoint>& ring)
       //if(newRing->within(outerRing))
       if(newRingPolygon->within(outerRingPolygon)) //does only work for polygons, not linear rings
 	{
-	  qWarning("new ring within outer ring");
+	  QgsDebugMsg("new ring within outer ring");
 	  foundPoly = true;
 	  delete outerRingPolygon;
 	  break; //ring is in geometry and does not intersect existing rings -> proceed with adding ring to feature
@@ -2439,6 +2439,78 @@ int QgsGeometry::addRing(const QList<QgsPoint>& ring)
       delete newRing;
       return 5;
     }
+}
+
+int QgsGeometry::addIsland(const QList<QgsPoint>& ring)
+{
+  //bail out if wkbtype is not multipolygon
+  if(wkbType() != QGis::WKBMultiPolygon)
+    {
+      return 1;
+    }
+
+  //create geos geometry from wkb if not already there
+  if(!mGeos || mDirtyGeos)
+    {
+      exportWkbToGeos();
+    }
+
+  //this multipolygon
+  GEOS_GEOM::MultiPolygon* thisMultiPolygon = dynamic_cast<GEOS_GEOM::MultiPolygon*>(mGeos);
+  if(!thisMultiPolygon)
+    {
+      return 1;
+    }
+
+  //create new polygon from ring
+
+  //coordinate sequence first
+  GEOS_GEOM::DefaultCoordinateSequence* newSequence=new GEOS_GEOM::DefaultCoordinateSequence();
+  for(QList<QgsPoint>::const_iterator it = ring.begin(); it != ring.end(); ++it)
+    {
+      newSequence->add(GEOS_GEOM::Coordinate(it->x(),it->y()));
+    }
+  //then linear ring
+  GEOS_GEOM::LinearRing* newRing = geosGeometryFactory->createLinearRing(newSequence);
+  //finally the polygon
+  std::vector<GEOS_GEOM::Geometry*> dummyVector;
+  GEOS_GEOM::Polygon* newPolygon = geosGeometryFactory->createPolygon(*newRing, dummyVector);
+  delete newRing;
+
+  if(!newPolygon || !newPolygon->isValid())
+    {
+      delete newPolygon;
+      return 2;
+    }
+
+  //create new multipolygon
+  std::vector<GEOS_GEOM::Geometry*>* newMultiPolygonVector = new std::vector<GEOS_GEOM::Geometry*>();
+  for(int i = 0; i < thisMultiPolygon->getNumGeometries(); ++i)
+    {
+      const GEOS_GEOM::Geometry* polygonN = thisMultiPolygon->getGeometryN(i);
+      
+      //bail out if new polygon is not disjoint with existing ones
+      if(!polygonN->disjoint(newPolygon))
+	{
+	  delete newPolygon;
+	  for(std::vector<GEOS_GEOM::Geometry*>::iterator it =newMultiPolygonVector->begin(); it != newMultiPolygonVector->end(); ++it)
+	    {
+	      delete *it;
+	    }
+	  delete newMultiPolygonVector;
+	  return 3;
+	}
+      newMultiPolygonVector->push_back(polygonN->clone());
+    }
+  newMultiPolygonVector->push_back(newPolygon);
+  GEOS_GEOM::MultiPolygon* newMultiPolygon = geosGeometryFactory->createMultiPolygon(newMultiPolygonVector);
+  
+  delete mGeos;
+  mGeos = newMultiPolygon;
+
+  mDirtyWkb = true;
+  mDirtyGeos = false;
+  return 0;
 }
 
 QgsRect QgsGeometry::boundingBox()

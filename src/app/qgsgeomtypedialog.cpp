@@ -45,20 +45,19 @@ QgsGeomTypeDialog::~QgsGeomTypeDialog()
 
 QGis::WKBTYPE QgsGeomTypeDialog::selectedType() const
 {
-    if(mPointRadioButton->isChecked())
+  if(mPointRadioButton->isChecked())
     {
-	return QGis::WKBPoint;
+      return QGis::WKBPoint;
     }
-    else if(mLineRadioButton->isChecked())
+  else if(mLineRadioButton->isChecked())
     {
-	return QGis::WKBLineString;
+      return QGis::WKBLineString;
     }
-    else if(mPolygonRadioButton->isChecked())
+  else if(mPolygonRadioButton->isChecked())
     {
-	return QGis::WKBPolygon;
+      return QGis::WKBPolygon;
     }
-
-    return QGis::WKBUnknown;
+  return QGis::WKBUnknown;
 }
 
 void QgsGeomTypeDialog::on_mAddAttributeButton_clicked()
