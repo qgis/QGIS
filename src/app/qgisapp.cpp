@@ -145,6 +145,7 @@
 // Map tools
 //
 #include "qgsmaptooladdfeature.h"
+#include "qgsmaptooladdisland.h"
 #include "qgsmaptooladdring.h"
 #include "qgsmaptoolidentify.h"
 #include "qgsmaptoolpan.h"
@@ -754,6 +755,11 @@ void QgisApp::createActions()
   connect(mActionAddRing, SIGNAL(triggered()), this, SLOT(addRing()));
   mActionAddRing->setEnabled(false);
 
+  mActionAddIsland = new QAction(QIcon(myIconPath+"/mActionAddIsland.png"), tr("Add Island"), this);
+  mActionAddIsland->setStatusTip(tr("Add Island to multipolygon"));
+  connect(mActionAddIsland, SIGNAL(triggered()), this, SLOT(addIsland()));
+  mActionAddIsland->setEnabled(false);
+
   mActionEditCut = new QAction(QIcon(myIconPath+"/mActionEditCut.png"), tr("Cut Features"), this);
   mActionEditCut->setStatusTip(tr("Cut selected features"));
   connect(mActionEditCut, SIGNAL(triggered()), this, SLOT(editCut()));
@@ -819,6 +825,8 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction(mActionMoveVertex);
   mActionAddRing->setCheckable(true);
   mMapToolGroup->addAction(mActionAddRing);
+  mActionAddIsland->setCheckable(true);
+  mMapToolGroup->addAction(mActionAddIsland);
 }
 
 void QgisApp::createMenus()
@@ -974,6 +982,7 @@ void QgisApp::createToolBars()
   mDigitizeToolBar->addAction(mActionDeleteVertex);
   mDigitizeToolBar->addAction(mActionMoveVertex);
   mDigitizeToolBar->addAction(mActionAddRing);
+  mDigitizeToolBar->addAction(mActionAddIsland);
   mDigitizeToolBar->addAction(mActionEditCut);
   mDigitizeToolBar->addAction(mActionEditCopy);
   mDigitizeToolBar->addAction(mActionEditPaste);
@@ -1231,7 +1240,8 @@ void QgisApp::createCanvas()
   mMapTools.mVertexDelete = new QgsMapToolVertexEdit(mMapCanvas, QgsMapToolVertexEdit::DeleteVertex);
   mMapTools.mVertexDelete->setAction(mActionDeleteVertex);
   mMapTools.mAddRing = new QgsMapToolAddRing(mMapCanvas);
-  //mMapTools.mAddRing->setAction(mActionAddRing);
+  mMapTools.mAddRing->setAction(mActionAddRing);
+  mMapTools.mAddIsland = new QgsMapToolAddIsland(mMapCanvas);
 }
 
 void QgisApp::createOverview()
@@ -2612,6 +2622,7 @@ void QgisApp::newVectorLayer()
     createEmptyDataSourceProc createEmptyDataSource=(createEmptyDataSourceProc)myLib->resolve("createEmptyDataSource");
     if(createEmptyDataSource)
     {
+#if 0
       if(geometrytype == QGis::WKBPoint)
       {
         createEmptyDataSource(filename,fileformat, enc, QGis::WKBPoint, attributes);
@@ -2624,13 +2635,18 @@ void QgisApp::newVectorLayer()
       {
         createEmptyDataSource(filename,fileformat, enc, QGis::WKBPolygon, attributes);
       }
-      else
-      {
-#ifdef QGISDEBUG
-        qWarning("QgisApp.cpp: geometry type not recognised");
 #endif
-        return;
-      }
+      if(geometrytype != QGis::WKBUnknown)
+	{
+	  createEmptyDataSource(filename,fileformat, enc, geometrytype, attributes);
+	}
+      else
+	{
+#ifdef QGISDEBUG
+	  qWarning("QgisApp.cpp: geometry type not recognised");
+#endif
+	  return;
+	}
     }
     else
     {
@@ -3431,6 +3447,11 @@ void QgisApp::moveVertex()
 void QgisApp::addRing()
 {
   mMapCanvas->setMapTool(mMapTools.mAddRing);
+}
+
+void QgisApp::addIsland()
+{
+  mMapCanvas->setMapTool(mMapTools.mAddIsland);
 }
 
 
@@ -4783,6 +4804,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
 	      mActionAddVertex->setEnabled(false);
 	      mActionDeleteVertex->setEnabled(false);
 	      mActionAddRing->setEnabled(false);
+	      mActionAddIsland->setEnabled(false);
 	      if(dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries)
 		{
 		  mActionMoveVertex->setEnabled(true);
@@ -4802,6 +4824,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
 	      mActionCapturePoint->setEnabled(false);
 	      mActionCapturePolygon->setEnabled(false);
 	      mActionAddRing->setEnabled(false);
+	      mActionAddIsland->setEnabled(false);
 	    }
 	  else if(vlayer->vectorType() == QGis::Polygon)
 	    {
@@ -4826,6 +4849,9 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
 	      if(vlayer->vectorType() == QGis::Polygon)
 		{
 		  mActionAddRing->setEnabled(true);
+		  //some polygon layers contain also multipolygon features. 
+		  //Therefore, the test for multipolygon is done in QgsGeometry
+		  mActionAddIsland->setEnabled(true);
 		}
 	    }
 	  else
@@ -4849,6 +4875,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
       mActionCapturePolygon->setEnabled(false);
       mActionDeleteSelected->setEnabled(false);
       mActionAddRing->setEnabled(false);
+      mActionAddIsland->setEnabled(false);
       mActionAddVertex->setEnabled(false);
       mActionDeleteVertex->setEnabled(false);
       mActionMoveVertex->setEnabled(false);

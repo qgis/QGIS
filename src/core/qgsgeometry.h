@@ -237,9 +237,14 @@ class CORE_EXPORT QgsGeometry {
                                      QgsGeometryVertexIndex& beforeVertex);
 
     /**Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
-     @return 0 success (ring added), 1 problem with geometry type, 2 ring not closed, 3 ring is not valid geometry, \
-    4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
+     @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed, \
+     3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
     int addRing(const QList<QgsPoint>& ring);
+
+    /**Adds a new island polygon to a multipolygon feature
+     @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring \
+not disjoint with existing polygons of the feature*/
+    int addIsland(const QList<QgsPoint>& ring);
 
     /**Returns the bounding box of this feature*/
     QgsRect boundingBox();
