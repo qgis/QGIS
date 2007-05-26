@@ -75,7 +75,7 @@ public:
     void updateIcon();
   
     /** called to add appropriate menu items to legend's popup menu */
-    void addToPopupMenu(QMenu& theMenu);
+    void addToPopupMenu(QMenu& theMenu, QAction* toggleEditingAction);
     
     /**Determines whether there are layers in overview*/
     bool isInOverview();
@@ -87,8 +87,6 @@ public:
   
     /**Show layer attribute table*/
     void table();
-    
-    void toggleEditing();
     
     void saveAsShapefile();
     void saveSelectionAsShapefile();

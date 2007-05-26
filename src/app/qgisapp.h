@@ -304,11 +304,8 @@ public slots:
   void refreshMapCanvas();
   //! returns pointer to map legend
   QgsLegend *legend() { return mMapLegend; }
-  //! enables the editing mode of the current layer
-  void startEditing();
-  //! disables the editing mode of the current layer
-  void stopEditing();
-  
+  //! starts/stops editing mode of the current layer
+  void toggleEditing();
 
   /** Activates or deactivates actions depending on the current maplayer type.
   Is called from the legend when the current legend item has changed*/
@@ -479,8 +476,7 @@ private:
   QAction *mActionQgisHomePage;
   QAction *mActionHelpAbout;
   QAction *mArawAction;
-  QAction *mActionStartEditing;
-  QAction *mActionStopEditing;
+  QAction *mActionToggleEditing;
   QAction *mActionCapturePoint;
   QAction *mActionCaptureLine;
   QAction *mActionCapturePolygon;

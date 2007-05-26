@@ -702,15 +702,12 @@ void QgisApp::createActions()
   // Digitising Toolbar Items
   //
 
-  mActionStartEditing = new QAction(QIcon(myIconPath+"/mActionStartEditing.png"), 
-                                    tr("Start editing the current layer"), this); 
-  mActionStartEditing->setStatusTip(tr("Start editing the current layer")); 
-  connect(mActionStartEditing, SIGNAL(triggered()), this, SLOT(startEditing()));
-  //
-  mActionStopEditing = new QAction(QIcon(myIconPath+"/mActionStopEditing.png"), 
-                                   tr("Stop editing the current layer"), this);
-  mActionStopEditing->setStatusTip(tr("Stop editing the current layer")); 
-  connect(mActionStopEditing, SIGNAL(triggered()), this, SLOT(stopEditing()));
+  mActionToggleEditing = new QAction(QIcon(myIconPath+"/mActionToggleEditing.png"), 
+                                    tr("Toggle editing"), this);
+  mActionToggleEditing->setStatusTip(tr("Toggles the editing state of the current layer")); 
+  mActionToggleEditing->setCheckable(true);
+  connect(mActionToggleEditing, SIGNAL(triggered()), this, SLOT(toggleEditing()));
+  
   //
   mActionCapturePoint= new QAction(QIcon(myIconPath+"/mActionCapturePoint.png"), tr("Capture Point"), this);
   mActionCapturePoint->setShortcut(tr(".","Capture Points"));
@@ -972,8 +969,7 @@ void QgisApp::createToolBars()
   mDigitizeToolBar = addToolBar(tr("Digitizing"));
   mDigitizeToolBar->setIconSize(QSize(24,24));
   mDigitizeToolBar->setObjectName("Digitizing");
-  mDigitizeToolBar->addAction(mActionStartEditing);
-  mDigitizeToolBar->addAction(mActionStopEditing);
+  mDigitizeToolBar->addAction(mActionToggleEditing);
   mDigitizeToolBar->addAction(mActionCapturePoint);
   mDigitizeToolBar->addAction(mActionCaptureLine);
   mDigitizeToolBar->addAction(mActionCapturePolygon);
@@ -1277,6 +1273,10 @@ void QgisApp::createLegend()
   mMapLegend = new QgsLegend(NULL, "theMapLegend");
   mMapLegend->setObjectName("theMapLegend");
   mMapLegend->setMapCanvas(mMapCanvas);
+
+  //add the toggle editing action also to legend such that right click menu and button show the same state
+  mMapLegend->setToggleEditingAction(mActionToggleEditing);
+
   QWhatsThis::add(mMapLegend, tr("Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties."));
   QVBoxLayout *myLegendLayout = new QVBoxLayout;
   myLegendLayout->addWidget(mMapLegend);
@@ -3541,38 +3541,17 @@ void QgisApp::refreshMapCanvas()
   mMapCanvas->refresh();
 }
 
-void QgisApp::startEditing()
+void QgisApp::toggleEditing()
 {
-  QgsMapLayer* theLayer = mMapLegend->currentLayer();
-  if(!theLayer)
+  QgsLegendLayerFile* currentLayerFile = mMapLegend->currentLayerFile();
+  if(currentLayerFile)
     {
-      return;
+      currentLayerFile->toggleEditing();
     }
-  //only vectorlayers can be edited
-  QgsVectorLayer* theVectorLayer = dynamic_cast<QgsVectorLayer*>(theLayer);
-  if(!theVectorLayer)
+  else
     {
-      return;
+      mActionToggleEditing->setChecked(false);
     }
-  // TODO: make it work [MD]
-  //theVectorLayer->startEditing();
-}
-  
-void QgisApp::stopEditing()
-{
-  QgsMapLayer* theLayer = mMapLegend->currentLayer();
-  if(!theLayer)
-    {
-      return;
-    }
-  //only vectorlayers can be edited
-  QgsVectorLayer* theVectorLayer = dynamic_cast<QgsVectorLayer*>(theLayer);
-  if(!theVectorLayer)
-    {
-      return;
-    }
-  // TODO: make it work [MD]
-  //theVectorLayer->stopEditing();
 }
 
 void QgisApp::showMouseCoordinate(QgsPoint & p)
@@ -4765,14 +4744,13 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
 	  //start editing/stop editing
 	  if(dprovider->capabilities() & QgsVectorDataProvider::AddFeatures)
 	    {
-	      mActionStartEditing->setEnabled(true);
-	      mActionStopEditing->setEnabled(true);
+	      mActionToggleEditing->setEnabled(true);
+	      mActionToggleEditing->setChecked(vlayer->isEditable());
 	      mActionEditPaste->setEnabled(true);
 	    }
 	  else
 	    {
-	      mActionStartEditing->setEnabled(false);
-	      mActionStopEditing->setEnabled(false);
+	      mActionToggleEditing->setEnabled(false);
 	      mActionEditPaste->setEnabled(false);
 	    }
 
@@ -4868,8 +4846,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
     {
       mActionSelect->setEnabled(false);
       mActionOpenTable->setEnabled(false);
-      mActionStartEditing->setEnabled(false);
-      mActionStopEditing->setEnabled(false);
+      mActionToggleEditing->setEnabled(false);
       mActionCapturePoint->setEnabled(false);
       mActionCaptureLine->setEnabled(false);
       mActionCapturePolygon->setEnabled(false);

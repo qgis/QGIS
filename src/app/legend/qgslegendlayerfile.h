@@ -64,7 +64,7 @@ public:
     bool isInOverview();
     
     /** called to add appropriate menu items to legend's popup menu */
-    void addToPopupMenu(QMenu& theMenu);
+    void addToPopupMenu(QMenu& theMenu, QAction* toggleEditingAction);
     
   public slots:
     
