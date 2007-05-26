@@ -1526,6 +1526,7 @@ int QgsVectorLayer::addIsland(const QList<QgsPoint>& ring)
       if(errorCode == 0)
 	{
 	  mChangedGeometries.insert(selectedFeatureId, *cachedIt);
+	  setModified(true, true);
 	}
       return errorCode;
     }

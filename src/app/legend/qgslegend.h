@@ -163,6 +163,9 @@ class QgsLegend : public QTreeWidget
       the given QgsLegendLayerFile */
   void setName(QgsLegendLayerFile* w, QString layerName);
 
+  /**Sets the toggle editing action. Usually called from QgisApp*/
+  void setToggleEditingAction(QAction* editingAction){mToggleEditingAction = editingAction;}
+
   class QgsLegendPixmaps;
   /**Returns structure with legend pixmaps*/
   QgsLegendPixmaps& pixmaps() { return mPixmaps; }
@@ -357,6 +360,9 @@ private:
   /**Stores the layer ordering before a mouse Move. After the move, this is used to
    decide if the mapcanvas really has to be refreshed*/
   std::deque<QString> mLayersPriorToMove;
+
+  /**Action for the legendlayer right click menu*/
+  QAction* mToggleEditingAction;
 
   /*!
    * A fuction sed to determin how far down in the list an item is (starting with one for the first Item.
