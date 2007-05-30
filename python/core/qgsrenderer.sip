@@ -38,6 +38,9 @@ class QgsRenderer /Abstract/
     static void setSelectionColor(QColor color);
     /**Returns true if this renderer returns a pixmap in the render method (e.g. for point data or diagrams)*/
     virtual bool containsPixmap() const;
+    /**Returns true if this renderer uses its own transparency settings, e.g. differentiated by classification.
+     This is a hint for QgsVectorLayer to not use the transparency setting on layer level in this cases*/
+    virtual bool usesTransparency() const;
    
 };
 

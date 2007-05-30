@@ -407,7 +407,12 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
   //
   QPen myTransparentPen = p->pen(); // store current pen
   QColor myColor = myTransparentPen.color();
-  myColor.setAlpha(mTransparencyLevel);
+  //only set transparency from layer level if renderer does not provide
+  //transparency on class level
+  if(!mRenderer->usesTransparency())
+    {
+      myColor.setAlpha(mTransparencyLevel);
+    }
   myTransparentPen.setColor(myColor);
   p->setPen(myTransparentPen);
   p->drawPolyline(pa);
@@ -631,11 +636,23 @@ std::cerr << i << ": " << ring->first[i]
     //
     QBrush myTransparentBrush = p->brush();
     QColor myColor = brush.color();
-    myColor.setAlpha(mTransparencyLevel);
+    
+    //only set transparency from layer level if renderer does not provide
+    //transparency on class level
+    if(!mRenderer->usesTransparency())
+      {
+	myColor.setAlpha(mTransparencyLevel);
+      }
     myTransparentBrush.setColor(myColor);
     QPen myTransparentPen = p->pen(); // store current pen
     myColor = myTransparentPen.color();
-    myColor.setAlpha(mTransparencyLevel);
+    
+    //only set transparency from layer level if renderer does not provide
+    //transparency on class level
+    if(!mRenderer->usesTransparency())
+      {
+	myColor.setAlpha(mTransparencyLevel);
+      }
     myTransparentPen.setColor(myColor);
     
     p->setBrush(myTransparentBrush);

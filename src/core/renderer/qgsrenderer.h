@@ -73,6 +73,9 @@ class CORE_EXPORT QgsRenderer
     static void setSelectionColor(QColor color);
     /**Returns true if this renderer returns a pixmap in the render method (e.g. for point data or diagrams)*/
     virtual bool containsPixmap() const;
+    /**Returns true if this renderer uses its own transparency settings, e.g. differentiated by classification.
+     This is a hint for QgsVectorLayer to not use the transparency setting on layer level in this cases*/
+    virtual bool usesTransparency() const {return false;}
    
  protected:
     /**Color to draw selected features - static so we can change it in proj props and automatically 
