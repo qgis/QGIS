@@ -95,9 +95,6 @@ void QgsMapOverviewCanvas::reflectChangedExtent()
   // show only when valid extent is set
   if (extent.isEmpty())
   {
-#ifdef QGISDEBUG
-    std::cout << "panning: empty extent" << std::endl;
-#endif
     mPanningWidget->hide();
     return;
   }
@@ -246,7 +243,6 @@ void QgsMapOverviewCanvas::refresh()
     painter.setRenderHint(QPainter::Antialiasing);
   
   // render image
-  mMapRender->setExtent(mMapCanvas->fullExtent());
   mMapRender->render(&painter);
   
   painter.end();
@@ -274,9 +270,10 @@ void QgsMapOverviewCanvas::setLayerSet(const QStringList& layerSet)
   mMapRender->setLayerSet(layerSet);
 }
 
-void QgsMapOverviewCanvas::updateFullExtent()
+void QgsMapOverviewCanvas::updateFullExtent(const QgsRect& rect)
 {
-  mMapRender->updateFullExtent();
+  mMapRender->setExtent(rect);
+  reflectChangedExtent();
 }
 
 void QgsMapOverviewCanvas::projectionsEnabled(bool flag)
