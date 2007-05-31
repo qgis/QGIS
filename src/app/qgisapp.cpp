@@ -861,13 +861,11 @@ void QgisApp::createMenus()
   mViewMenu->addAction(mActionShowBookmarks);
   mViewMenu->addAction(mActionNewBookmark);
   mViewMenu->addSeparator();
-  mToolbarMenu = mViewMenu->addMenu(QIcon(myIconPath+"/mActionOptions.png"),
-                                    tr("&Toolbars..."));
 
   //
   // View:toolbars menu
-  mToolbarMenu->addAction(mActionShowAllToolbars);
-  mToolbarMenu->addAction(mActionHideAllToolbars);
+  mViewMenu->addAction(mActionShowAllToolbars);
+  mViewMenu->addAction(mActionHideAllToolbars);
 
   //
   // Layers Menu
@@ -1012,6 +1010,16 @@ void QgisApp::createToolBars()
   mPluginToolBar = addToolBar(tr("Plugins"));
   mPluginToolBar->setIconSize(QSize(24,24));
   mPluginToolBar->setObjectName("Plugins");
+
+  //Add the menu for toolbar visibility here
+  //because createPopupMenu() would return 0
+  //before the toolbars are created
+  QMenu* toolbarVisibilityMenu = createPopupMenu();
+  if(toolbarVisibilityMenu)
+    {
+      toolbarVisibilityMenu->setTitle(tr("Toolbar Visibility..."));
+      mViewMenu->addMenu(toolbarVisibilityMenu);
+    }
 }
 
 void QgisApp::createStatusBar()
