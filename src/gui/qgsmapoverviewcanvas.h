@@ -30,6 +30,7 @@
 class QgsMapCanvas;
 class QgsMapRender;
 class QgsPanningWidget; // defined in .cpp
+class QgsRect;
 
 class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
 {
@@ -56,7 +57,7 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     
     void enableAntiAliasing(bool flag) { mAntiAliasing = flag; }
     
-    void updateFullExtent();
+    void updateFullExtent(const QgsRect& rect);
     
   public slots:
     
