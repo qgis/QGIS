@@ -37,7 +37,7 @@ QgsMapToolZoom::QgsMapToolZoom(QgsMapCanvas* canvas, bool zoomOut)
 
 void QgsMapToolZoom::canvasMoveEvent(QMouseEvent * e)
 {
-  if (e->state() != Qt::LeftButton)
+  if ( ! (e->buttons() & Qt::LeftButton) )
     return;
 
   if (!mDragging)
@@ -54,12 +54,18 @@ void QgsMapToolZoom::canvasMoveEvent(QMouseEvent * e)
 
 void QgsMapToolZoom::canvasPressEvent(QMouseEvent * e)
 {
+  if (e->button() != Qt::LeftButton)
+    return;
+  
   mZoomRect.setRect(0, 0, 0, 0);
 }
 
 
 void QgsMapToolZoom::canvasReleaseEvent(QMouseEvent * e)
 {
+  if (e->button() != Qt::LeftButton)
+    return;
+  
   if (mDragging)
   {
     mDragging = false;
@@ -83,6 +89,12 @@ void QgsMapToolZoom::canvasReleaseEvent(QMouseEvent * e)
     r.setYmax(ur.y());
     r.normalize();
     
+    // prevent zooming to an empty extent
+    if (r.width() == 0 || r.height() == 0)
+    {
+      return;
+    }
+    
     if (mZoomOut)
     {
       QgsPoint cer = r.center();
@@ -91,18 +103,10 @@ void QgsMapToolZoom::canvasReleaseEvent(QMouseEvent * e)
       double sf;
       if (mZoomRect.width() > mZoomRect.height())
       {
-	if(r.width() == 0)//prevent nan map extent
-	  {
-	    return;
-	  }
         sf = extent.width() / r.width();
       }
       else
       {
-	if(r.height() == 0)//prevent nan map extent
-	  {
-	    return;
-	  }
         sf = extent.height() / r.height();
       }
       r.expand(sf);
