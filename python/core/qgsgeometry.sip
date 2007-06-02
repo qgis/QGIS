@@ -50,6 +50,8 @@ template <TYPE>
 %End
 
 %ConvertToTypeCode
+  const sipMappedType* qvector_qgspoint = sipFindMappedType("QVector<QgsPoint>");
+  
   // Check the type if that is all that is required.
   if (sipIsErr == NULL)
   {
@@ -57,13 +59,12 @@ template <TYPE>
       return 0;
 
     for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
-      if (!sipCanConvertToInstance(PyList_GET_ITEM(sipPy, i), sipClass_TYPE, SIP_NOT_NONE))
+      if (!sipCanConvertToMappedType(PyList_GET_ITEM(sipPy, i), qvector_qgspoint, SIP_NOT_NONE))
         return 0;
 
     return 1;
   }
 
-  const sipMappedType* qvector_qgspoint = sipFindMappedType("QVector<QgsPoint>");
   
   QVector< QVector<TYPE> > *ql = new QVector< QVector<TYPE> >;
 
@@ -124,21 +125,22 @@ template <TYPE>
 %End
 
 %ConvertToTypeCode
+  
+  const sipMappedType* qvector_qgspoint = sipFindMappedType("QVector<QVector<QgsPoint> >");
+  
   // Check the type if that is all that is required.
   if (sipIsErr == NULL)
   {
     if (!PyList_Check(sipPy))
       return 0;
 
-    // TODO: this is not correct!
     for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
-      if (!sipCanConvertToInstance(PyList_GET_ITEM(sipPy, i), sipClass_TYPE, SIP_NOT_NONE))
+      if (!sipCanConvertToMappedType(PyList_GET_ITEM(sipPy, i), qvector_qgspoint, SIP_NOT_NONE))
         return 0;
 
     return 1;
   }
 
-  const sipMappedType* qvector_qgspoint = sipFindMappedType("QVector<QVector<QgsPoint> >");
   
   QVector< QVector< QVector<TYPE> > > *ql = new QVector< QVector< QVector<TYPE> > >;
 

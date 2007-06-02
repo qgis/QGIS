@@ -291,11 +291,6 @@ not disjoint with existing polygons of the feature*/
 
   private:
 
-    // Private static members
-
-    //! This is used to create new GEOS variables.
-    static GEOS_GEOM::GeometryFactory* geosGeometryFactory;
-
 
     // Private variables
 
