@@ -56,6 +56,10 @@ class QgsAttributeDialog: public QDialog, private Ui::QgsAttributeDialogBase
 
     void restorePositionAndColumnWidth();
 
+    void resizeEvent(QResizeEvent *event);
+
+    void moveEvent(QMoveEvent *event);
+  
   public slots:
     //! Slot to be called when an attribute value is edited in the table.
     void setAttributeValueChanged(int row, int column);
