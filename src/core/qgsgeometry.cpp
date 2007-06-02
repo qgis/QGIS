@@ -26,7 +26,7 @@ email                : morb at ozemail dot com dot au
 #include "qgsrect.h"
 
 // Set up static GEOS geometry factory
-GEOS_GEOM::GeometryFactory* QgsGeometry::geosGeometryFactory = new GEOS_GEOM::GeometryFactory();
+static GEOS_GEOM::GeometryFactory* geosGeometryFactory = new GEOS_GEOM::GeometryFactory();
 
 
 QgsGeometry::QgsGeometry()
@@ -69,7 +69,7 @@ mDirtyGeos( rhs.mDirtyGeos )
 	      {
 		polygonVector.push_back((GEOS_GEOM::Geometry*)(multiPoly->getGeometryN(i)));
 	      }
-	    mGeos = QgsGeometry::geosGeometryFactory->createMultiPolygon(polygonVector);
+	    mGeos = geosGeometryFactory->createMultiPolygon(polygonVector);
 	  }
       }
     else
@@ -120,24 +120,47 @@ QgsGeometry* QgsGeometry::fromPolyline(const QgsPolyline& polyline)
   return g;
 }
 
-QgsGeometry* QgsGeometry::fromPolygon(const QgsPolygon& polygon)
+static GEOS_GEOM::LinearRing* _createGeosLinearRing(const QgsPolyline& ring)
 {
-  const GEOS_GEOM::CoordinateSequenceFactory* seqFactory = GEOS_GEOM::COORD_SEQ_FACTORY::instance();  
-  const QgsPolyline& ring0 = polygon[0];
+  // LinearRing in GEOS must have the first point the same as the last one
+  bool needRepeatLastPnt = (ring[0] != ring[ring.count()-1]);
 
-  // outer ring
-  GEOS_GEOM::CoordinateSequence* seq = seqFactory->create(ring0.count(), 2);
+  const GEOS_GEOM::CoordinateSequenceFactory* seqFactory = GEOS_GEOM::COORD_SEQ_FACTORY::instance();
+
+  GEOS_GEOM::CoordinateSequence* seq = seqFactory->create(ring.count() + (needRepeatLastPnt ? 1 : 0), 2);
   QgsPolyline::const_iterator it;
   int i = 0;
-  for (it = ring0.begin(); it != ring0.end(); ++it)
+  for (it = ring.begin(); it != ring.end(); ++it)
   {
     seq->setAt(GEOS_GEOM::Coordinate(it->x(), it->y()), i++);
   }
+  
+  // add the first point to close the ring if needed
+  if (needRepeatLastPnt)
+    seq->setAt(GEOS_GEOM::Coordinate(ring[0].x(), ring[0].y()), ring.count());
+  
   // ring takes ownership of the sequence
-  GEOS_GEOM::LinearRing* outerRing = geosGeometryFactory->createLinearRing(seq);
+  GEOS_GEOM::LinearRing* linRing = geosGeometryFactory->createLinearRing(seq);
+  
+  return linRing;
+}
 
-  std::vector<GEOS_GEOM::Geometry*>* holes = new std::vector<GEOS_GEOM::Geometry*>;
-  // TODO: holes
+QgsGeometry* QgsGeometry::fromPolygon(const QgsPolygon& polygon)
+{
+  if (polygon.count() == 0)
+    return NULL;
+  
+  const QgsPolyline& ring0 = polygon[0];
+  
+  // outer ring
+  GEOS_GEOM::LinearRing* outerRing = _createGeosLinearRing(ring0);
+  
+  // holes
+  std::vector<GEOS_GEOM::Geometry*>* holes = new std::vector<GEOS_GEOM::Geometry*> (polygon.count()-1);
+  for (int i = 1; i < polygon.count(); i++)
+  {
+    (*holes)[i-1] = _createGeosLinearRing(polygon[i]);
+  }
 
   // new geometry takes ownership of outerRing and vector of holes
   GEOS_GEOM::Geometry* geom = geosGeometryFactory->createPolygon(outerRing, holes);
@@ -191,7 +214,7 @@ QgsGeometry & QgsGeometry::operator=( QgsGeometry const & rhs )
 	      {
 		polygonVector.push_back((GEOS_GEOM::Geometry*)(multiPoly->getGeometryN(i)));
 	      }
-	    mGeos = QgsGeometry::geosGeometryFactory->createMultiPolygon(polygonVector);
+	    mGeos = geosGeometryFactory->createMultiPolygon(polygonVector);
 	  }
       }
     else
