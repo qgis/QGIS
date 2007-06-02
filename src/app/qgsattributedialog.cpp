@@ -62,7 +62,7 @@ QgsAttributeDialog::QgsAttributeDialog(const QgsFieldMap& fields, const QgsAttri
 
 QgsAttributeDialog::~QgsAttributeDialog()
 {
-  savePositionAndColumnWidth();
+
 }
 
 QString QgsAttributeDialog::value(int row)
@@ -105,6 +105,18 @@ void QgsAttributeDialog::savePositionAndColumnWidth()
   settings.writeEntry(_settingsPath+"h", s.height());
 
 }
+
+void QgsAttributeDialog::resizeEvent(QResizeEvent *event)
+ {
+  savePositionAndColumnWidth();
+  QWidget::resizeEvent(event);
+ }
+
+void QgsAttributeDialog::moveEvent(QMoveEvent *event)
+ {
+  savePositionAndColumnWidth();
+  QWidget::moveEvent(event);
+ }
 
 void QgsAttributeDialog::restorePositionAndColumnWidth()
 {
