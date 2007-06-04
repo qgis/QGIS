@@ -87,6 +87,10 @@ qgsrunprocess.h
 qgsvectorlayer.h
 
 raster/qgsrasterlayer.h
+raster/qgscolortable.h
+raster/qgsrasterpyramid.h
+raster/qgsrasterbandstats.h
+raster/qgsrasterviewport.h
 )
 
 QT4_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
