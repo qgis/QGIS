@@ -445,7 +445,7 @@ QImage* QgsWmsProvider::draw(QgsRect  const & viewExtent, int pixelWidth, int pi
 
   url += "SERVICE=WMS";
   url += "&";
-  url += "VERSION=1.1.1";
+  url += "VERSION=" + mCapabilities.version;
   url += "&";
   url += "REQUEST=GetMap";
   url += "&";
@@ -474,7 +474,7 @@ QImage* QgsWmsProvider::draw(QgsRect  const & viewExtent, int pixelWidth, int pi
   mGetFeatureInfoUrlBase = baseUrl;
   mGetFeatureInfoUrlBase += "SERVICE=WMS";
   mGetFeatureInfoUrlBase += "&";
-  mGetFeatureInfoUrlBase += "VERSION=1.1.1";
+  mGetFeatureInfoUrlBase += "VERSION=" + mCapabilities.version;
   mGetFeatureInfoUrlBase += "&";
   mGetFeatureInfoUrlBase += "REQUEST=GetFeatureInfo";
   mGetFeatureInfoUrlBase += "&";
