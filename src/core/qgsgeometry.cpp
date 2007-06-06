@@ -2508,7 +2508,7 @@ int QgsGeometry::addIsland(const QList<QgsPoint>& ring)
 
   //create new multipolygon
   std::vector<GEOS_GEOM::Geometry*>* newMultiPolygonVector = new std::vector<GEOS_GEOM::Geometry*>();
-  for(unsigned int i = 0; i < thisMultiPolygon->getNumGeometries(); ++i)
+  for(GEOS_SIZE_T i = 0; i < thisMultiPolygon->getNumGeometries(); ++i)
     {
       const GEOS_GEOM::Geometry* polygonN = thisMultiPolygon->getGeometryN(i);
       
