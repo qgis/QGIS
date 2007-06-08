@@ -165,8 +165,45 @@ void QgsMapToolIdentify::identifyRasterWmsLayer(QgsRasterLayer* layer, const Qgs
     return;
   }
 
-  QString text = layer->identifyAsText(point);
+  //if WMS layer does not cover the view origin,
+  //we need to map the view pixel coordinates
+  //to WMS layer pixel coordinates
+  QgsRect viewExtent = mCanvas->extent();
+  double mupp = mCanvas->mupp();
+  if(mupp == 0)
+    {
+      return;
+    }
+  double xMinView = viewExtent.xMin();
+  double yMaxView = viewExtent.yMax();
 
+  QgsRect layerExtent = layer->extent();
+  double xMinLayer = layerExtent.xMin();
+  double yMaxLayer = layerExtent.yMax();
+
+  double i, j;
+
+  if(xMinView < xMinLayer)
+    {
+      i = (int)(point.x() - (xMinLayer - xMinView) / mupp); 
+    }
+  else
+    {
+      i = point.x();
+    }
+
+  if(yMaxView > yMaxLayer)
+    {
+      j = (int)(point.y() - (yMaxView - yMaxLayer) / mupp);
+    }
+  else
+    {
+      j = point.y();
+    }
+  
+
+  QString text = layer->identifyAsText(QgsPoint(i, j));
+  
   if (text.isEmpty())
   {
     showError(layer);
