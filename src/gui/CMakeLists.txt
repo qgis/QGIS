@@ -12,6 +12,7 @@ qgsmapcanvasitem.cpp
 qgsmapcanvasmap.cpp
 qgsmapoverviewcanvas.cpp
 qgsmaptool.cpp
+qgsmaptoolemitpoint.cpp
 qgsmaptoolpan.cpp
 qgsmaptoolzoom.cpp
 qgsmessageviewer.cpp
@@ -26,6 +27,7 @@ qgsencodingfiledialog.h
 qgslayerprojectionselector.h
 qgsmapcanvas.h
 qgsmapoverviewcanvas.h
+qgsmaptoolemitpoint.h
 qgsprojectionselector.h
 )
 
@@ -81,6 +83,7 @@ qgsmapcanvasitem.h
 qgsmapcanvasmap.h
 qgsmapoverviewcanvas.h
 qgsmaptool.h
+qgsmaptoolemitpoint.h
 qgsmaptoolpan.h
 qgsmaptoolzoom.h
 qgsmessageviewer.h
