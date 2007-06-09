@@ -1,10 +1,10 @@
-Installation Notes for Quantum GIS (QGIS) on windows
-Tim Sutton
-%%mtime(%m/%d/%Y)
+                 Installation Notes for Quantum GIS (QGIS) on windows
+                                       Tim Sutton
+                                   %%mtime(%m/%d/%Y)
 
 %!encoding: iso-8859-1
 
-                  =  Introduction  =
+=  Introduction  =
 
 %This document is in text2tags format. You can generate html, plain text and moinmoin
 %formatted documentation by running txt2tags on this document. See the txt2tags home
@@ -17,7 +17,6 @@ Tim Sutton
                    Authors and contributors for this section:
                     Tim Sutton, Godofredo Contreras 2006
                       CMake additions Magnus Homann 2007
-                     Python additions Martin Dobias 2007
   With thanks to Tisham Dhar for preparing the initial msys environment
 ---------------------------------------------------------------------------------
 ```
@@ -71,41 +70,6 @@ C:\Qt\4.3.0\bin\qtvars.bat compile_debug
 
 Get Flex http://sourceforge.net/project/showfiles.php?group_id=23617&package_id=16424 (the zip bin) and extract it into c:\msys\mingw\bin
 
-== Python stuff: (optional) ==
-
-
-Follow this section in case you would like to use Python bindings for QGIS.
-To be able to compile bindings, you need to compile SIP and PyQt4 from sources
-as their installer doesn't include some development files which are necessary.
-
-*) Download and install Python - use Windows installer
-   (It doesn't matter to what folder you'll install it)
-
-   http://python.org/download/
-
-*) Download SIP and PyQt4 sources
-
-   http://www.riverbankcomputing.com/Downloads/sip4/sip-4.6.zip
-   http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/PyQt-win-gpl-4.2.zip
-
-*) Unpack SIP to a temporary directory, open console (cmd.exe) and compile:
-
-   > c:\Qt\4.3.0\bin\qtvars.bat
-   > python configure.py -p win32-g++
-   > make
-   > make install
-   
-*) Unpack PyQt to a temporary directory, open console (cmd.exe) and compile:
-
-   > c:\Qt\4.3.0\bin\qtvars.bat
-   > python configure.py
-   > make
-   > make install
-
-*) You can delete the directories with unpacked SIP and PyQt4 sources
-   after a successfull install, they're not needed anymore.
-
-
 == Subversion: ==
 
 In order to check out QGIS sources from the repository, you need Subversion
@@ -127,8 +91,8 @@ http://www.cmake.org/files/v2.4/cmake-2.4.6-win32-x86.exe
  * Create development directory and move into it
 
 ```
-   > md c:\dev\cpp
-   > cd c:\dev\cpp
+   md c:\dev\cpp
+   cd c:\dev\cpp
 ```
    
  * Check out sources from SVN

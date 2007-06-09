@@ -1,6 +1,6 @@
-Installation Notes for Quantum GIS (QGIS) on windows
-Tim Sutton
-06/09/2007
+                 Installation Notes for Quantum GIS (QGIS) on windows
+                                       Tim Sutton
+                                   06/09/2007
 
 
 ------------------------------------------------------------------------
@@ -11,13 +11,12 @@ Tim Sutton
     2.2. MSYS:
     2.3. Qt4.3
     2.4. Flex and Bison
-    2.5. Python stuff: (optional)
-    2.6. Subversion:
-    2.7. CMake:
-    2.8. QGIS:
-    2.9. Compiling:
-    2.10. Configuration
-    2.11. Create the installation package: (optional)
+    2.5. Subversion:
+    2.6. CMake:
+    2.7. QGIS:
+    2.8. Compiling:
+    2.9. Configuration
+    2.10. Create the installation package: (optional)
 
 
 ------------------------------------------------------------------------
@@ -34,7 +33,6 @@ Tim Sutton
                      Authors and contributors for this section:
                       Tim Sutton, Godofredo Contreras 2006
                         CMake additions Magnus Homann 2007
-                       Python additions Martin Dobias 2007
     With thanks to Tisham Dhar for preparing the initial msys environment
   ---------------------------------------------------------------------------------
 
@@ -93,45 +91,12 @@ C:\Qt\4.3.0\bin\qtvars.bat compile_debug
 	2.4. Flex and Bison
 	===================
 
+!!! I think we can remove this step...? TS
+
 Get Flex http://sourceforge.net/project/showfiles.php?group_id=23617&package_id=16424 (the zip bin) and extract it into c:\msys\mingw\bin
 
 
-	2.5. Python stuff: (optional)
-	=============================
-
-Follow this section in case you would like to use Python bindings for QGIS.
-To be able to compile bindings, you need to compile SIP and PyQt4 from sources
-as their installer doesn't include some development files which are necessary.
-
-*) Download and install Python - use Windows installer
-   (It doesn't matter to what folder you'll install it)
-
-   http://python.org/download/
-
-*) Download SIP and PyQt4 sources
-
-   http://www.riverbankcomputing.com/Downloads/sip4/sip-4.6.zip
-   http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/PyQt-win-gpl-4.2.zip
-
-*) Unpack SIP to a temporary directory, open console (cmd.exe) and compile:
-
-   > c:\Qt\4.3.0\bin\qtvars.bat
-   > python configure.py -p win32-g++
-   > make
-   > make install
-
-*) Unpack PyQt to a temporary directory, open console (cmd.exe) and compile:
-
-   > c:\Qt\4.3.0\bin\qtvars.bat
-   > python configure.py
-   > make
-   > make install
-
-*) You can delete the directories with unpacked SIP and PyQt4 sources
-   after a successfull install, they're not needed anymore.
-
-
-	2.6. Subversion:
+	2.5. Subversion:
 	================
 
 In order to check out QGIS sources from the repository, you need Subversion
@@ -140,7 +105,7 @@ client. This installer should work fine:
 http://subversion.tigris.org/files/documents/15/36797/svn-1.4.3-setup.exe
 
 
-	2.7. CMake:
+	2.6. CMake:
 	===========
 
 CMake is build system used by Quantum GIS. Download it from here:
@@ -148,15 +113,15 @@ CMake is build system used by Quantum GIS. Download it from here:
 http://www.cmake.org/files/v2.4/cmake-2.4.6-win32-x86.exe
 
 
-	2.8. QGIS:
+	2.7. QGIS:
 	==========
 
  * Start a cmd.exe window ( Start -> Run -> cmd.exe )
  * Create development directory and move into it
 
 
-     > md c:\dev\cpp
-     > cd c:\dev\cpp
+     md c:\dev\cpp
+     cd c:\dev\cpp
 
 
  * Check out sources from SVN
@@ -172,7 +137,7 @@ http://www.cmake.org/files/v2.4/cmake-2.4.6-win32-x86.exe
 
 
 
-	2.9. Compiling:
+	2.8. Compiling:
 	===============
 
 As a background read http://wiki.qgis.org/qgiswiki/Building_with_CMake
@@ -193,8 +158,8 @@ As a background read http://wiki.qgis.org/qgiswiki/Building_with_CMake
 
 
 
-	2.10. Configuration
-	===================
+	2.9. Configuration
+	==================
 
 
      cmakesetup ..
@@ -235,7 +200,7 @@ As a background read http://wiki.qgis.org/qgiswiki/Building_with_CMake
    will be used from that place.
 
 
-	2.11. Create the installation package: (optional)
+	2.10. Create the installation package: (optional)
 	=================================================
 
 Downlad and install NSIS from (http://nsis.sourceforge.net/Main_Page)
