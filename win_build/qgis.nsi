@@ -111,6 +111,7 @@ Section "Quantum GIS Application" SEC01
 ;------- qgis Related
   File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\*.dll"
   File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\*.exe"
+  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\libz.dll.1.2.3"
 ;------- proj and gdal Related
   File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\*.csv"
 ;subdirs
