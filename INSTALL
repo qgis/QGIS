@@ -1,229 +1,249 @@
-Copyright (C) 1994, 1995, 1996, 1999, 2000, 2001, 2002 Free Software
-Foundation, Inc.
+Installation Notes for Quantum GIS (QGIS) on windows
+Tim Sutton
+06/09/2007
 
-   This file is free documentation; the Free Software Foundation gives
-unlimited permission to copy, distribute and modify it.
 
-Basic Installation
-==================
+------------------------------------------------------------------------
 
-   These are generic installation instructions.
+  1. Introduction
+  2. Procedure for building under windows build environment using msys
+    2.1. Introduction
+    2.2. MSYS:
+    2.3. Qt4.3
+    2.4. Flex and Bison
+    2.5. Python stuff: (optional)
+    2.6. Subversion:
+    2.7. CMake:
+    2.8. QGIS:
+    2.9. Compiling:
+    2.10. Configuration
+    2.11. Create the installation package: (optional)
 
-   The `configure' shell script attempts to guess correct values for
-various system-dependent variables used during compilation.  It uses
-those values to create a `Makefile' in each directory of the package.
-It may also create one or more `.h' files containing system-dependent
-definitions.  Finally, it creates a shell script `config.status' that
-you can run in the future to recreate the current configuration, and a
-file `config.log' containing compiler output (useful mainly for
-debugging `configure').
 
-   It can also use an optional file (typically called `config.cache'
-and enabled with `--cache-file=config.cache' or simply `-C') that saves
-the results of its tests to speed up reconfiguring.  (Caching is
-disabled by default to prevent problems with accidental use of stale
-cache files.)
+------------------------------------------------------------------------
 
-   If you need to do unusual things to compile the package, please try
-to figure out how `configure' could check whether to do them, and mail
-diffs or instructions to the address given in the `README' so they can
-be considered for the next release.  If you are using the cache, and at
-some point `config.cache' contains results you don't want to keep, you
-may remove or edit it.
 
-   The file `configure.ac' (or `configure.in') is used to create
-`configure' by a program called `autoconf'.  You only need
-`configure.ac' if you want to change it or regenerate `configure' using
-a newer version of `autoconf'.
+  1. Introduction
+  ===============
 
-The simplest way to compile this package is:
 
-  1. `cd' to the directory containing the package's source code and type
-     `./configure' to configure the package for your system.  If you're
-     using `csh' on an old version of System V, you might need to type
-     `sh ./configure' instead to prevent `csh' from trying to execute
-     `configure' itself.
+  2. Procedure for building under windows build environment using msys
+  ====================================================================
 
-     Running `configure' takes awhile.  While running, it prints some
-     messages telling which features it is checking for.
 
-  2. Type `make' to compile the package.
+                     Authors and contributors for this section:
+                      Tim Sutton, Godofredo Contreras 2006
+                        CMake additions Magnus Homann 2007
+                       Python additions Martin Dobias 2007
+    With thanks to Tisham Dhar for preparing the initial msys environment
+  ---------------------------------------------------------------------------------
 
-  3. Optionally, type `make check' to run any self-tests that come with
-     the package.
 
-  4. Type `make install' to install the programs and any data files and
-     documentation.
 
-  5. You can remove the program binaries and object files from the
-     source code directory by typing `make clean'.  To also remove the
-     files that `configure' created (so you can compile the package for
-     a different kind of computer), type `make distclean'.  There is
-     also a `make maintainer-clean' target, but that is intended mainly
-     for the package's developers.  If you use it, you may have to get
-     all sorts of other programs in order to regenerate files that came
-     with the distribution.
+	2.1. Introduction
+	=================
 
-Compilers and Options
-=====================
+This document describes the process you need to follow to get QGIS built directly
+under windows (rather than using a cross compiler under linux).
 
-   Some systems require unusual options for compilation or linking that
-the `configure' script does not know about.  Run `./configure --help'
-for details on some of the pertinent environment variables.
+Note: The process for building under windows is still being sorted out so
+      check this document regularly for updates.
 
-   You can give `configure' initial values for configuration parameters
-by setting variables in the command line or in the environment.  Here
-is an example:
 
-     ./configure CC=c89 CFLAGS=-O2 LIBS=-lposix
+	2.2. MSYS:
+	==========
 
-   *Note Defining Variables::, for more details.
+MSYS provides a unix style build environment under windows. We have created a zip archive that contains just about all dependencies.
 
-Compiling For Multiple Architectures
-====================================
+Get this: 
 
-   You can compile the package for more than one kind of computer at the
-same time, by placing the object files for each architecture in their
-own directory.  To do this, you must use a version of `make' that
-supports the `VPATH' variable, such as GNU `make'.  `cd' to the
-directory where you want the object files and executables to go and run
-the `configure' script.  `configure' automatically checks for the
-source code in the directory that `configure' is in and in `..'.
+http://qgis.org/uploadfiles/msys/msys.tar.gz
 
-   If you have to use a `make' that does not support the `VPATH'
-variable, you have to compile the package for one architecture at a
-time in the source code directory.  After you have installed the
-package for one architecture, use `make distclean' before reconfiguring
-for another architecture.
+and unpack to c:\msys
 
-Installation Names
-==================
+/!\ The file above is compressed as gzipped tarball - you can get a free windows application for creating and decompressing files here:
 
-   By default, `make install' will install the package's files in
-`/usr/local/bin', `/usr/local/man', etc.  You can specify an
-installation prefix other than `/usr/local' by giving `configure' the
-option `--prefix=PATH'.
+http://www.7-zip.org/
 
-   You can specify separate installation prefixes for
-architecture-specific files and architecture-independent files.  If you
-give `configure' the option `--exec-prefix=PATH', the package will use
-PATH as the prefix for installing programs and libraries.
-Documentation and other data files will still use the regular prefix.
 
-   In addition, if you use an unusual directory layout you can give
-options like `--bindir=PATH' to specify different values for particular
-kinds of files.  Run `configure --help' for a list of the directories
-you can set and what kinds of files go in them.
+	2.3. Qt4.3
+	==========
 
-   If the package supports it, you can cause programs to be installed
-with an extra prefix or suffix on their names by giving `configure' the
-option `--program-prefix=PREFIX' or `--program-suffix=SUFFIX'.
+Download qt4.3 opensource precompiled edition exe and install (including the 
+download and install of mingw) from here:
 
-Optional Features
-=================
+http://www.trolltech.com/developer/downloads/qt/windows
 
-   Some packages pay attention to `--enable-FEATURE' options to
-`configure', where FEATURE indicates an optional part of the package.
-They may also pay attention to `--with-PACKAGE' options, where PACKAGE
-is something like `gnu-as' or `x' (for the X Window System).  The
-`README' should mention any `--enable-' and `--with-' options that the
-package recognizes.
+When the installer will ask for MinGW, you don't need to download and install
+it, just point the installer to c:\msys\mingw
 
-   For packages that use the X Window System, `configure' can usually
-find the X include and library files automatically, but if it doesn't,
-you can use the `configure' options `--x-includes=DIR' and
-`--x-libraries=DIR' to specify their locations.
+When Qt installation is complete:
 
-Specifying the System Type
-==========================
+Edit C:\Qt\4.3.0\bin\qtvars.bat and add the following lines:
 
-   There may be some features `configure' cannot figure out
-automatically, but needs to determine by the type of machine the package
-will run on.  Usually, assuming the package is built to be run on the
-_same_ architectures, `configure' can figure that out, but if it prints
-a message saying it cannot guess the machine type, give it the
-`--build=TYPE' option.  TYPE can either be a short name for the system
-type, such as `sun4', or a canonical name which has the form:
+set PATH=%PATH%;C:\msys\local\bin;c:\msys\local\lib
+set PATH=%PATH%;"C:\Program Files\Subversion\bin"
 
-     CPU-COMPANY-SYSTEM
+I suggest you also add C:\Qt\4.3.0\bin\ to your Environment Variables Path in the windows system preferences.
 
-where SYSTEM can have one of these forms:
+If you plan to do some debugging, you'll need to compile debug version of Qt:
+C:\Qt\4.3.0\bin\qtvars.bat compile_debug
 
-     OS KERNEL-OS
 
-   See the file `config.sub' for the possible values of each field.  If
-`config.sub' isn't included in this package, then this package doesn't
-need to know the machine type.
+	2.4. Flex and Bison
+	===================
 
-   If you are _building_ compiler tools for cross-compiling, you should
-use the `--target=TYPE' option to select the type of system they will
-produce code for.
+Get Flex http://sourceforge.net/project/showfiles.php?group_id=23617&package_id=16424 (the zip bin) and extract it into c:\msys\mingw\bin
 
-   If you want to _use_ a cross compiler, that generates code for a
-platform different from the build platform, you should specify the
-"host" platform (i.e., that on which the generated programs will
-eventually be run) with `--host=TYPE'.
 
-Sharing Defaults
-================
+	2.5. Python stuff: (optional)
+	=============================
 
-   If you want to set default values for `configure' scripts to share,
-you can create a site shell script called `config.site' that gives
-default values for variables like `CC', `cache_file', and `prefix'.
-`configure' looks for `PREFIX/share/config.site' if it exists, then
-`PREFIX/etc/config.site' if it exists.  Or, you can set the
-`CONFIG_SITE' environment variable to the location of the site script.
-A warning: not all `configure' scripts look for a site script.
+Follow this section in case you would like to use Python bindings for QGIS.
+To be able to compile bindings, you need to compile SIP and PyQt4 from sources
+as their installer doesn't include some development files which are necessary.
 
-Defining Variables
-==================
+*) Download and install Python - use Windows installer
+   (It doesn't matter to what folder you'll install it)
 
-   Variables not defined in a site shell script can be set in the
-environment passed to `configure'.  However, some packages may run
-configure again during the build, and the customized values of these
-variables may be lost.  In order to avoid this problem, you should set
-them in the `configure' command line, using `VAR=value'.  For example:
+   http://python.org/download/
 
-     ./configure CC=/usr/local2/bin/gcc
+*) Download SIP and PyQt4 sources
 
-will cause the specified gcc to be used as the C compiler (unless it is
-overridden in the site shell script).
+   http://www.riverbankcomputing.com/Downloads/sip4/sip-4.6.zip
+   http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/PyQt-win-gpl-4.2.zip
 
-`configure' Invocation
-======================
+*) Unpack SIP to a temporary directory, open console (cmd.exe) and compile:
 
-   `configure' recognizes the following options to control how it
-operates.
+   > c:\Qt\4.3.0\bin\qtvars.bat
+   > python configure.py -p win32-g++
+   > make
+   > make install
 
-`--help'
-`-h'
-     Print a summary of the options to `configure', and exit.
+*) Unpack PyQt to a temporary directory, open console (cmd.exe) and compile:
 
-`--version'
-`-V'
-     Print the version of Autoconf used to generate the `configure'
-     script, and exit.
+   > c:\Qt\4.3.0\bin\qtvars.bat
+   > python configure.py
+   > make
+   > make install
 
-`--cache-file=FILE'
-     Enable the cache: use and save the results of the tests in FILE,
-     traditionally `config.cache'.  FILE defaults to `/dev/null' to
-     disable caching.
+*) You can delete the directories with unpacked SIP and PyQt4 sources
+   after a successfull install, they're not needed anymore.
 
-`--config-cache'
-`-C'
-     Alias for `--cache-file=config.cache'.
 
-`--quiet'
-`--silent'
-`-q'
-     Do not print messages saying which checks are being made.  To
-     suppress all normal output, redirect it to `/dev/null' (any error
-     messages will still be shown).
+	2.6. Subversion:
+	================
 
-`--srcdir=DIR'
-     Look for the package's source code in directory DIR.  Usually
-     `configure' can determine that directory automatically.
+In order to check out QGIS sources from the repository, you need Subversion
+client. This installer should work fine:
 
-`configure' also accepts some other, not widely useful, options.  Run
-`configure --help' for more details.
+http://subversion.tigris.org/files/documents/15/36797/svn-1.4.3-setup.exe
+
+
+	2.7. CMake:
+	===========
+
+CMake is build system used by Quantum GIS. Download it from here:
+
+http://www.cmake.org/files/v2.4/cmake-2.4.6-win32-x86.exe
+
+
+	2.8. QGIS:
+	==========
+
+ * Start a cmd.exe window ( Start -> Run -> cmd.exe )
+ * Create development directory and move into it
+
+
+     > md c:\dev\cpp
+     > cd c:\dev\cpp
+
+
+ * Check out sources from SVN
+ * For svn head:
+
+
+     svn co https://svn.qgis.org/repos/qgis/trunk/qgis
+
+ * For svn 0.8 branch
+
+
+   * svn co https://svn.qgis.org/repos/qgis/branches/Release-0_8_0 qgis0.8
+
+
+
+	2.9. Compiling:
+	===============
+
+As a background read http://wiki.qgis.org/qgiswiki/Building_with_CMake
+
+ * Start a cmd.exe window ( Start -> Run -> cmd.exe ) if you don't have one already.
+ * Add paths to compiler and our MSYS environment:
+
+
+     c:\Qt\4.3.0\bin\qtvars.bat
+
+ * For ease of use add c:\Qt\4.3.0\bin\ to your system path in system properties so you can just type qtvars.bat when you open the cmd console.
+ * Create build directory and set it as current directory:
+
+
+     cd c:\dev\cpp\qgis
+     md build
+     cd build
+
+
+
+	2.10. Configuration
+	===================
+
+
+     cmakesetup ..
+
+
+ /!\ NOTE: You must include the '..' above.
+
+  * Click 'Configure' button.
+  * When asked, you should choose 'MinGW Makefiles' as generator.
+
+   There's a problem with MinGW Makefiles on Win2K. If you're compiling on this
+   platform, use 'MSYS Makefiles' generator instead.
+
+   All dependencies should be picked up automatically, if you have set
+   up the Paths correctly. The only thing you need to change is the
+   installation destination (CMAKE_INSTALL_PREFIX) and/or set 'Debug'.
+
+   For compatibility with NSIS packaging cripts I recommend to leave the install
+   prefix to its default c:\program files\
+
+   When configuration is done, click 'OK' to exit the setup utility.
+
+*) Compilation and installation
+
+   > make
+   > make install
+
+*) Run qgis.exe from the directory where it's installed (CMAKE_INSTALL_PREFIX)
+
+   Make sure to copy all .dll:s needed to the same directory as the
+   qgis.exe binary is installed to, if not already done so, otherwise
+   QGIS will complain about missing libraries when started.
+
+   The best way to do this is to download both the QGIS current release installer package from http://qgis.org/uploadfiles/testbuilds/ and install it. Now copy the installation dir from C:\Program Files\Quantum GIS into c:\Program Files\qgis-0.8.1 (or whatever the current version is. The name should strictly match the version no. After making this copy you can uninstall the release version of QGIS from your c:\Program Files directory using the provided uninstaller. Double check that the Quantum GIS dir is completely gone under program files afterwards.
+
+   Another possibility is to run qgis.exe when your path contains
+   c:\msys\local\bin and c:\msys\local\lib directories, so the DLLs
+   will be used from that place.
+
+
+	2.11. Create the installation package: (optional)
+	=================================================
+
+Downlad and install NSIS from (http://nsis.sourceforge.net/Main_Page)
+
+Now using windows explorer, enter the win_build directory in your QGIS source tree. Read the READMEfile there and follow the instructions. Next right 
+click on qgis.nsi and choose the option 'Compile NSIS Script'. 
+
+
+
+
 
