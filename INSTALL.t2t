@@ -10,7 +10,7 @@ Tim Sutton
 %formatted documentation by running txt2tags on this document. See the txt2tags home
 %page for more details.
 
-
+This document is for developers and describes the procedure required to compile this version of QGIS.
 
 = Procedure for building under windows build environment using msys =
 ```
@@ -21,13 +21,6 @@ Tim Sutton
   With thanks to Tisham Dhar for preparing the initial msys environment
 ---------------------------------------------------------------------------------
 ```
-
-== Introduction ==
-This document describes the process you need to follow to get QGIS built directly
-under windows (rather than using a cross compiler under linux).
-
-Note: The process for building under windows is still being sorted out so
-      check this document regularly for updates.
 
 == MSYS: ==
 

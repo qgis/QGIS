@@ -7,17 +7,16 @@ Tim Sutton
 
   1. Introduction
   2. Procedure for building under windows build environment using msys
-    2.1. Introduction
-    2.2. MSYS:
-    2.3. Qt4.3
-    2.4. Flex and Bison
-    2.5. Python stuff: (optional)
-    2.6. Subversion:
-    2.7. CMake:
-    2.8. QGIS:
-    2.9. Compiling:
-    2.10. Configuration
-    2.11. Create the installation package: (optional)
+    2.1. MSYS:
+    2.2. Qt4.3
+    2.3. Flex and Bison
+    2.4. Python stuff: (optional)
+    2.5. Subversion:
+    2.6. CMake:
+    2.7. QGIS:
+    2.8. Compiling:
+    2.9. Configuration
+    2.10. Create the installation package: (optional)
 
 
 ------------------------------------------------------------------------
@@ -25,6 +24,8 @@ Tim Sutton
 
   1. Introduction
   ===============
+
+This document is for developers and describes the procedure required to compile this version of QGIS.
 
 
   2. Procedure for building under windows build environment using msys
@@ -40,17 +41,7 @@ Tim Sutton
 
 
 
-	2.1. Introduction
-	=================
-
-This document describes the process you need to follow to get QGIS built directly
-under windows (rather than using a cross compiler under linux).
-
-Note: The process for building under windows is still being sorted out so
-      check this document regularly for updates.
-
-
-	2.2. MSYS:
+	2.1. MSYS:
 	==========
 
 MSYS provides a unix style build environment under windows. We have created a zip archive that contains just about all dependencies.
@@ -66,7 +57,7 @@ and unpack to c:\msys
 http://www.7-zip.org/
 
 
-	2.3. Qt4.3
+	2.2. Qt4.3
 	==========
 
 Download qt4.3 opensource precompiled edition exe and install (including the 
@@ -90,13 +81,13 @@ If you plan to do some debugging, you'll need to compile debug version of Qt:
 C:\Qt\4.3.0\bin\qtvars.bat compile_debug
 
 
-	2.4. Flex and Bison
+	2.3. Flex and Bison
 	===================
 
 Get Flex http://sourceforge.net/project/showfiles.php?group_id=23617&package_id=16424 (the zip bin) and extract it into c:\msys\mingw\bin
 
 
-	2.5. Python stuff: (optional)
+	2.4. Python stuff: (optional)
 	=============================
 
 Follow this section in case you would like to use Python bindings for QGIS.
@@ -131,7 +122,7 @@ as their installer doesn't include some development files which are necessary.
    after a successfull install, they're not needed anymore.
 
 
-	2.6. Subversion:
+	2.5. Subversion:
 	================
 
 In order to check out QGIS sources from the repository, you need Subversion
@@ -140,7 +131,7 @@ client. This installer should work fine:
 http://subversion.tigris.org/files/documents/15/36797/svn-1.4.3-setup.exe
 
 
-	2.7. CMake:
+	2.6. CMake:
 	===========
 
 CMake is build system used by Quantum GIS. Download it from here:
@@ -148,7 +139,7 @@ CMake is build system used by Quantum GIS. Download it from here:
 http://www.cmake.org/files/v2.4/cmake-2.4.6-win32-x86.exe
 
 
-	2.8. QGIS:
+	2.7. QGIS:
 	==========
 
  * Start a cmd.exe window ( Start -> Run -> cmd.exe )
@@ -172,7 +163,7 @@ http://www.cmake.org/files/v2.4/cmake-2.4.6-win32-x86.exe
 
 
 
-	2.9. Compiling:
+	2.8. Compiling:
 	===============
 
 As a background read http://wiki.qgis.org/qgiswiki/Building_with_CMake
@@ -193,8 +184,8 @@ As a background read http://wiki.qgis.org/qgiswiki/Building_with_CMake
 
 
 
-	2.10. Configuration
-	===================
+	2.9. Configuration
+	==================
 
 
      cmakesetup ..
@@ -235,7 +226,7 @@ As a background read http://wiki.qgis.org/qgiswiki/Building_with_CMake
    will be used from that place.
 
 
-	2.11. Create the installation package: (optional)
+	2.10. Create the installation package: (optional)
 	=================================================
 
 Downlad and install NSIS from (http://nsis.sourceforge.net/Main_Page)
