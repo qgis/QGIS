@@ -10,6 +10,8 @@ class QgsMapTool : QObject
     sipClass = sipClass_QgsMapToolZoom;
   else if (dynamic_cast<QgsMapToolPan*>(sipCpp) != NULL)
     sipClass = sipClass_QgsMapToolPan;
+  else if (dynamic_cast<QgsMapToolEmitPoint*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsMapToolEmitPoint;
   else
     sipClass = NULL;
 %End
