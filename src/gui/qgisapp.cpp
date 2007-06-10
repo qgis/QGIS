@@ -1330,39 +1330,25 @@ QString watsNew = "<html><body>" + tr("Version") + " ";
 watsNew += QGis::qgisVersion;
 watsNew += "<h3>" + tr("New features") + "</h3>";
 watsNew += "<ul><li>"
-+ tr("WMS support")
+  + tr("Numerous bug fixes")
 + "<li>"
-+ tr("Improved vector and attribute editing")
++ tr("Improvements in how segment lengths appear in the measure tool.  The current segment length is shown/updated in the list of segments")
 + "<li>"
-+ tr("Map Composer for creating map layouts")
++ tr("Improvement to zoom-in speed for rasters")
 + "<li>"
-+ tr("Improved measure tools with area measuring")
++ tr("Improve line/area measuring behaviour when the user has been informed that they are probably using the wrong projection for the map canvas")
 + "<li>"
-+ tr("Attribute searching")
++ tr("Added tooltips to the scale and coordinate position displays in the status bar")
 + "<li>"
-+ tr("New legend structure")
++ tr("Removed ugly console on WIN32 when not debugging")
 + "<li>"
-+ tr("Refactoring of API to allow the use of QGIS libraries in mapping applications")
++ tr("Added icons to all GRASS tools. All GRASS tools are now on the toolbar")
 + "<li>"
-+ tr("Improved MapServer export tool")
++ tr("New GRASS modules added to the GRASS toolbox")
 + "<li>"
-+ tr("Map canvas background color is customizable")
++ tr("The GRASS plugin is now fully internationalized")
 + "<li>"
-+ tr("Vector layer transparency")
-+ "<li>"
-+ tr("Antialiasing for vector layers")
-+ "<li>"
-+ tr("GRASS support in all platforms")
-+ "<li>"
-+ tr("Enhanced GRASS support and toolbox commands")
-+ "<li>"
-+ tr("Enhanced vector editing, including copy/paste, snapping and vertex editing")
-+ "<li>"
-+ tr("Shapefile/OGR layer editing")
-+ "<li>"
-+ tr("Option to only look in the geometry_columns table when searching for PostGIS layers")
-+ "<li>"
-+ tr("Many user interface improvements")
++ tr("Launcher plugin added to core plugins ")
 + "</ul></body></html>";
 
 
