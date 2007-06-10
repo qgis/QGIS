@@ -96,7 +96,7 @@ class Qgis2Map:
     self.outFile.write("# Map file created from QGIS project file " + self.project + "\n")
     self.outFile.write("# Edit this file to customize for your map interface\n")
     self.outFile.write("MAP\n")
-    self.outFile.write("  NAME " + self.mapName + "\n")
+    self.outFile.write("  NAME '" + self.mapName + "'\n")
     self.outFile.write("  # Map image size\n")
     self.outFile.write("  SIZE " + self.width + " " + self.height + "\n")
     self.outFile.write("  UNITS " + self.units.lower() + "\n")
@@ -364,9 +364,9 @@ class Qgis2Map:
 
     self.outFile.write("    CLASS\n")
 
-    self.outFile.write("       NAME " 
+    self.outFile.write("       NAME '" 
          + layerNode.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8') 
-         + " \n")
+         + "'\n")
 
     self.outFile.write("       STYLE\n")
     # use the point symbol map to lookup the mapserver symbol type
