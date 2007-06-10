@@ -1,6 +1,7 @@
+Compiling QGIS From Source
+Tim Sutton 2007
 %!encoding: iso-8859-1
 
-=  Introduction  =
 
 % These are comments and will not be generated in any output
 % -------------------
@@ -22,6 +23,7 @@
 % -------------------
 
 
+= Introduction =
 
 /!\ ***Note to document writers:*** Please use this document as the central
 place for describing build procefures. Please do not remove this notice. 
