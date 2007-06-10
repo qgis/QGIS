@@ -154,7 +154,8 @@ Start a cmd.exe window ( Start -> Run -> cmd.exe ) Create development
 directory and move into it
 
 ``` 
-md c:\dev\cpp cd c:\dev\cpp 
+md c:\dev\cpp 
+cd c:\dev\cpp 
 ```
    
 Check out sources from SVN For svn head:
@@ -185,7 +186,9 @@ Create build directory and set it as current directory:
 
 
 ``` 
-cd c:\dev\cpp\qgis md build cd build 
+cd c:\dev\cpp\qgis 
+md build 
+cd build 
 ```
 
 == Configuration ==
@@ -194,10 +197,10 @@ cd c:\dev\cpp\qgis md build cd build
 cmakesetup ..  
 ```
 
- /!\ NOTE: You must include the '..' above.
+/!\ NOTE: You must include the '..' above.
 
 Click 'Configure' button.  When asked, you should choose 'MinGW Makefiles'
- as generator.
+as generator.
 
 There's a problem with MinGW Makefiles on Win2K. If you're compiling on this
 platform, use 'MSYS Makefiles' generator instead.
@@ -564,174 +567,174 @@ to you.
 The packages qgis depends on to build are available in the "universe" component
 of Ubuntu. This is not activated by default, so you need to activate it:
 
-  1. Edit your /etc/apt/sources.list file.  2. Uncomment the all the lines
-  starting with "deb"
+1. Edit your /etc/apt/sources.list file.  
+2. Uncomment the all the lines starting with "deb"
 
-    Also you will need to be running (K)Ubuntu 'edgy' in order for all
-    dependencies to be met.
+Also you will need to be running (K)Ubuntu 'edgy' or higher in order for 
+all dependencies to be met.
 
-    Now update your local sources database:
+Now update your local sources database:
 
-    ``` 
-    sudo apt-get update 
-    ```
-
-
-    == Install Qt4 ==
-
-    ``` 
-    sudo apt-get install libqt4-core libqt4-debug libqt4-debug-dev \
-    libqt4-dev libqt4-gui libqt4-qt3support libqt4-sql lsb-qt4 qt4-designer \
-    qt4-dev-tools qt4-doc qt4-qtconfig uim-qt gcc libapt-pkg-perl resolvconf
-    ```
-
-    /!\ ***A Special Note:*** If you are following this set of instructions on
-    a system where you already have Qt3 development tools installed, there will
-    be a conflict between Qt3 tools and Qt4 tools. For example, qmake will
-    point to the Qt3 version not the Qt4. Ubuntu Qt4 and Qt3 packages are
-    designed to live alongside each other. This means that for example if you
-    have them both installed you will have three qmake exe's:
-
-    ``` 
-    /usr/bin/qmake -> /etc/alternatives/qmake 
-    /usr/bin/qmake-qt3
-    /usr/bin/qmake-qt4 
-    ```
-
-    The same applies to all other Qt binaries. You will notice above that the
-    canonical 'qmake' is managed by apt alternatives, so before we start to
-    build QGIS, we need to make Qt4 the default. To return Qt3 to default later
-    you can use this same process.
-
-    You can use apt alternatives to correct this so that the Qt4 version of
-    applications is used in all cases:
-
-    ``` 
-    sudo update-alternatives --config qmake
-    sudo update-alternatives --config uic 
-    sudo update-alternatives --config designer 
-    sudo update-alternatives --config assistant 
-    sudo update-alternatives --config qtconfig 
-    sudo update-alternatives --config moc 
-    sudo update-alternatives --config lupdate 
-    sudo update-alternatives --config lrelease 
-    sudo update-alternatives --config linguist 
-    ```
-
-    Use the simple command line dialog that appears after running each of the
-    above commands to select the Qt4 version of the relevant applications.
-
-    == Install additional software dependencies required by QGIS ==
-
-    ``` 
-    sudo apt-get install gdal-bin libgdal1-dev libgeos-dev proj libtool \
-    libgdal-doc libhdf4g-dev libhdf4g-run autoconf2.13 automake1.9 python-dev \
-    swig libgsl0-dev g++ libjasper-1.701-dev libtiff4-dev  subversion gsl-bin \
-    libsqlite3-dev sqlite3 ccache make libpq-dev flex bison firefox 
-    ```
+``` 
+sudo apt-get update 
+```
 
 
-    == GRASS Specific Steps ==
+== Install Qt4 ==
 
-    /!\ ***Note:*** If you don't need to build with GRASS support,  you can
-    skip this section.
+``` 
+sudo apt-get install libqt4-core libqt4-debug libqt4-debug-dev \
+libqt4-dev libqt4-gui libqt4-qt3support libqt4-sql lsb-qt4 qt4-designer \
+qt4-dev-tools qt4-doc qt4-qtconfig uim-qt gcc libapt-pkg-perl resolvconf
+```
 
-    Now you can install grass from dapper:
+/!\ ***A Special Note:*** If you are following this set of instructions on
+a system where you already have Qt3 development tools installed, there will
+be a conflict between Qt3 tools and Qt4 tools. For example, qmake will
+point to the Qt3 version not the Qt4. Ubuntu Qt4 and Qt3 packages are
+designed to live alongside each other. This means that for example if you
+have them both installed you will have three qmake exe's:
 
-    ```
-    sudo apt-get install grass libgrass-dev libgdal1-grass 
-    ```
+``` 
+/usr/bin/qmake -> /etc/alternatives/qmake 
+/usr/bin/qmake-qt3
+/usr/bin/qmake-qt4 
+```
 
-    == Setup ccache (Optional) ==
+The same applies to all other Qt binaries. You will notice above that the
+canonical 'qmake' is managed by apt alternatives, so before we start to
+build QGIS, we need to make Qt4 the default. To return Qt3 to default later
+you can use this same process.
 
-    You should also setup ccache to speed up compile times:
+You can use apt alternatives to correct this so that the Qt4 version of
+applications is used in all cases:
 
-    ``` 
-    cd /usr/local/bin 
-    sudo ln -s /usr/bin/ccache gcc 
-    sudo ln -s /usr/bin/ccache g++ 
-    ```
+``` 
+sudo update-alternatives --config qmake
+sudo update-alternatives --config uic 
+sudo update-alternatives --config designer 
+sudo update-alternatives --config assistant 
+sudo update-alternatives --config qtconfig 
+sudo update-alternatives --config moc 
+sudo update-alternatives --config lupdate 
+sudo update-alternatives --config lrelease 
+sudo update-alternatives --config linguist 
+```
 
-    == Prepare your development environment ==
+Use the simple command line dialog that appears after running each of the
+above commands to select the Qt4 version of the relevant applications.
 
-    As a convention I do all my development work in $HOME/dev/<language>, so in
-    this case we will create a work environment for C++ development work like
-    this:
+== Install additional software dependencies required by QGIS ==
 
-    ``` 
-    mkdir -p ${HOME}/dev/cpp 
-    cd ${HOME}/dev/cpp 
-    ```
-
-    This directory path will be assumed for all instructions that follow.
+``` 
+sudo apt-get install gdal-bin libgdal1-dev libgeos-dev proj libtool \
+libgdal-doc libhdf4g-dev libhdf4g-run autoconf2.13 automake1.9 python-dev \
+swig libgsl0-dev g++ libjasper-1.701-dev libtiff4-dev  subversion gsl-bin \
+libsqlite3-dev sqlite3 ccache make libpq-dev flex bison firefox 
+```
 
 
-    == Check out the QGIS Source Code ==
+== GRASS Specific Steps ==
 
-    There are two ways the source can be checked out. Use the anonymous method
-    if you do not have edit privaleges for the QGIS source repository, or use
-      the developer checkout if you have permissions to commit source code
-      changes.
+/!\ ***Note:*** If you don't need to build with GRASS support,  you can
+skip this section.
 
-    1. Anonymous Checkout
+Now you can install grass from dapper:
 
-    ``` 
-    cd ${HOME}/dev/cpp 
-    svn co https://svn.qgis.org/repos/qgis/trunk/qgis qgis
-    ```
+```
+sudo apt-get install grass libgrass-dev libgdal1-grass 
+```
 
-    2. Developer Checkout
+== Setup ccache (Optional) ==
 
-    ``` 
-    cd ${HOME}/dev/cpp 
-    svn co --username <yourusername> https://svn.qgis.org/repos/qgis/trunk/qgis qgis 
-    ```
+You should also setup ccache to speed up compile times:
 
-    The first time you check out the source you will be prompted to accept the
-    qgis.org certificate. Press 'p' to accept it permanently:
+``` 
+cd /usr/local/bin 
+sudo ln -s /usr/bin/ccache gcc 
+sudo ln -s /usr/bin/ccache g++ 
+```
 
-    ``` 
-    Error validating server certificate for 'https://svn.qgis.org:443':
-       - The certificate is not issued by a trusted authority. Use the
-         fingerprint to validate the certificate manually!  Certificate
-         information:
-       - Hostname: svn.qgis.org
-       - Valid: from Apr  1 00:30:47 2006 GMT until Mar 21 00:30:47 2008 GMT
-       - Issuer: Developer Team, Quantum GIS, Anchorage, Alaska, US
-       - Fingerprint:
-         2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b (R)eject,
-         accept (t)emporarily or accept (p)ermanently?  
-    ```
+== Prepare your development environment ==
 
-    == Starting the compile ==
+As a convention I do all my development work in $HOME/dev/<language>, so in
+this case we will create a work environment for C++ development work like
+this:
 
-    I compile my development version of QGIS into my ~/apps directory to avoid
-    conflicts with Ubuntu packages that may be under /usr. This way for example
-    you can use the binary packages of QGIS on your system along side with your
-    development version. I suggest you do something similar:
+``` 
+mkdir -p ${HOME}/dev/cpp 
+cd ${HOME}/dev/cpp 
+```
 
-    ``` 
-    mkdir -p ${HOME}/apps 
-    ```
+This directory path will be assumed for all instructions that follow.
 
-    The script will carry on to build QGIS - it may take a little while to go
-    and have a cup of your favourite beverage while you wait...
 
-    == Running QGIS ==
+== Check out the QGIS Source Code ==
 
-    Once the compile is complete it should pop up a page in firefox with unit
-    test results. At the time of writing the unit tests are just stubs - we
-    still need to create the test implementations - so dont worry to much about
-    their output at the moment.
+There are two ways the source can be checked out. Use the anonymous method
+if you do not have edit privaleges for the QGIS source repository, or use
+  the developer checkout if you have permissions to commit source code
+  changes.
 
-    Now you can try to run QGIS:
+1. Anonymous Checkout
 
-    ``` 
-    $HOME/apps/bin/qgis 
-    ```
+``` 
+cd ${HOME}/dev/cpp 
+svn co https://svn.qgis.org/repos/qgis/trunk/qgis qgis
+```
 
-    If all has worked properly the QGIS application should start up and appear
-    on your screen.
+2. Developer Checkout
+
+``` 
+cd ${HOME}/dev/cpp 
+svn co --username <yourusername> https://svn.qgis.org/repos/qgis/trunk/qgis qgis 
+```
+
+The first time you check out the source you will be prompted to accept the
+qgis.org certificate. Press 'p' to accept it permanently:
+
+``` 
+Error validating server certificate for 'https://svn.qgis.org:443':
+   - The certificate is not issued by a trusted authority. Use the
+     fingerprint to validate the certificate manually!  Certificate
+     information:
+   - Hostname: svn.qgis.org
+   - Valid: from Apr  1 00:30:47 2006 GMT until Mar 21 00:30:47 2008 GMT
+   - Issuer: Developer Team, Quantum GIS, Anchorage, Alaska, US
+   - Fingerprint:
+     2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b (R)eject,
+     accept (t)emporarily or accept (p)ermanently?  
+```
+
+== Starting the compile ==
+
+I compile my development version of QGIS into my ~/apps directory to avoid
+conflicts with Ubuntu packages that may be under /usr. This way for example
+you can use the binary packages of QGIS on your system along side with your
+development version. I suggest you do something similar:
+
+``` 
+mkdir -p ${HOME}/apps 
+```
+
+The script will carry on to build QGIS - it may take a little while to go
+and have a cup of your favourite beverage while you wait...
+
+== Running QGIS ==
+
+Once the compile is complete it should pop up a page in firefox with unit
+test results. At the time of writing the unit tests are just stubs - we
+still need to create the test implementations - so dont worry to much about
+their output at the moment.
+
+Now you can try to run QGIS:
+
+``` 
+$HOME/apps/bin/qgis 
+```
+
+If all has worked properly the QGIS application should start up and appear
+on your screen.
 
 
 = Further help and information =
