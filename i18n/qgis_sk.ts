@@ -3,12 +3,12 @@
 <context>
     <name>@default</name>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1481"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1503"/>
         <source>OGR Driver Manager</source>
         <translation>Správca ovládača OGR</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1481"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1503"/>
         <source>unable to get OGRDriverManager</source>
         <translation>nie je možné získať údaje z OGRDriverManager</translation>
     </message>
@@ -44,67 +44,67 @@
 <context>
     <name>Plugin</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Bottom Right</source>
         <translation type="obsolete">Vpravo dole</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Bottom Left</source>
         <translation type="obsolete">Vľavo dole</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Top Left</source>
         <translation type="obsolete">Vľavo hore</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Top Right</source>
         <translation type="obsolete">Vpravo hore</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source> metres/km</source>
         <translation type="obsolete">metre/kilometer</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source> feet</source>
         <translation type="obsolete">stopy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source> degrees</source>
         <translation type="obsolete">stupne</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source> metres</source>
         <translation type="obsolete">metre</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source> km</source>
         <translation type="obsolete">km</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Tick Down</source>
         <translation type="obsolete">Zobáčik dole</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Tick Up</source>
         <translation type="obsolete">Zobáčik hore</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Bar</source>
         <translation type="obsolete">Čiara</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Box</source>
         <translation type="obsolete">Rámik</translation>
     </message>
@@ -112,47 +112,47 @@
 <context>
     <name>PluginGuiBase</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>QGIS Plugin Template</source>
         <translation type="obsolete">QGIS šablóna zásuvného modulu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Input File:</source>
         <translation type="obsolete">Vstupný súbor:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Output (Shape) File:</source>
         <translation type="obsolete">Výstupný súbor (Shapefile):</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Minimum time gap (s):</source>
         <translation type="obsolete">Minimálny časový odstup (s):</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Minimum distance gap (dd):</source>
         <translation type="obsolete">Minimálna vzájomná vzdialenosť (dd):</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>...</source>
         <translation type="obsolete">...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>OK</source>
         <translation type="obsolete">OK</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Graticule Builder</source>
         <translation type="obsolete">Tvorba siete zemepisných súradníc</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/p&gt;
@@ -164,97 +164,97 @@
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Latitude Interval:</source>
         <translation type="obsolete">Interval medzi rovnobežkami: </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Longitude Interval:</source>
         <translation type="obsolete">Interval medzi poludníkmi:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Copyright Label Plugin</source>
         <translation type="obsolete">Zásuvný modul na tvorbu ozančenia copyrightu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Placement</source>
         <translation type="obsolete">Umiestnenie</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Bottom Left</source>
         <translation type="obsolete">Vľavo dole</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Top Left</source>
         <translation type="obsolete">Vľavo hore</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Bottom Right</source>
         <translation type="obsolete">Vpravo dole</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Top Right</source>
         <translation type="obsolete">Vpravo hore</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Orientation</source>
         <translation type="obsolete">Orintácia</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Horizontal</source>
         <translation type="obsolete">Vodorovne</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Vertical</source>
         <translation type="obsolete">Zvisle</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Enable Copyright Label</source>
         <translation type="obsolete">Zapnúť označenie copyrightu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>GPS Tools</source>
         <translation type="obsolete">Nástroje na prácu s GPS</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>File:</source>
         <translation type="obsolete">Súbor:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Feature types:</source>
         <translation type="obsolete">Typy objektov:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Waypoints</source>
         <translation type="obsolete">Cestné body</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Routes</source>
         <translation type="obsolete">Cesty</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Tracks</source>
         <translation type="obsolete">Stopy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Select the GPS download file that you would like to convert to a shapefile and this plugin will do the job for you! &lt;/p&gt;
@@ -270,47 +270,47 @@
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>North Arrow Plugin</source>
         <translation type="obsolete">Zásuvný modul na tvorbu smerovej ružice</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Properties</source>
         <translation type="obsolete">Vlastnosti</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Angle</source>
         <translation type="obsolete">Uhol</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Placement on screen</source>
         <translation type="obsolete">Umiestnenie na obrazovke</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Preview of north arrow</source>
         <translation type="obsolete">Náhľad na smerovú ružicu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Icon</source>
         <translation type="obsolete">Ikona</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New Item</source>
         <translation type="obsolete">Nová položka</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Plugin Template</source>
         <translation type="obsolete">Šablóna zásuvného modulu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This plugin was generated using QGIS internal plugin template. Please modify it according to your needs.&lt;/p&gt;
@@ -326,7 +326,7 @@
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:helvetica&quot;&gt;
 &lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:19pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label.  For example:&lt;/p&gt;
@@ -341,62 +341,62 @@
 </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;OK</source>
         <translation type="obsolete">&amp;OK</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Alt+O</source>
         <translation type="obsolete">Alt+O</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Cancel</source>
         <translation type="obsolete">&amp;Zrušiť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Alt+C</source>
         <translation type="obsolete">Alt+C</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Enable North Arrow</source>
         <translation type="obsolete">Zapnúť smerovú ružicu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Import other file</source>
         <translation type="obsolete">Importovať iný súbor</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>File to import:</source>
         <translation type="obsolete">Súbor na import:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Feature type:</source>
         <translation type="obsolete">Typ objektu:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>GPX output file:</source>
         <translation type="obsolete">GPX výstupný súbor:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Layer name:</source>
         <translation type="obsolete">Názov vrstvy:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Download from GPS</source>
         <translation type="obsolete">Stiahnuť z GPS</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This tool will help you download data from a GPS device. Choose your 
@@ -419,37 +419,37 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
 </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Protocol:</source>
         <translation type="obsolete">Protokol:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Device file:</source>
         <translation type="obsolete">Súbor zariadenia:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Output file:</source>
         <translation type="obsolete">Výstupný súbor:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Garmin</source>
         <translation type="obsolete">Garmin</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Magellan</source>
         <translation type="obsolete">Magellan</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Upload to GPS</source>
         <translation type="obsolete">Nahrať z GPS</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This tool will help you upload data from a GPX layer to a GPS device. 
@@ -470,22 +470,22 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
 </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Data layer:</source>
         <translation type="obsolete">Vrstva údajov:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>General</source>
         <translation type="obsolete">Generell</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Scale Bar Plugin</source>
         <translation type="obsolete">Grafická mierka</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This plugin draws a scale bar on the map. Please note the size option below is a &apos;preferred&apos; size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;
@@ -498,72 +498,72 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
 </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Size of bar:</source>
         <translation type="obsolete">Veľkosť grafickej mierky:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Select Colour</source>
         <translation type="obsolete">Vybrať farbu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Placement:</source>
         <translation type="obsolete">Umiestnenie:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Tick Down</source>
         <translation type="obsolete">Zobáčik dole</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Tick Up</source>
         <translation type="obsolete">Zobáčik hore</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Box</source>
         <translation type="obsolete">Box</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Bar</source>
         <translation type="obsolete">Panel</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Select the style of the scale bar</source>
         <translation type="obsolete">Vybrať štýl grafickej mierky</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Colour of bar:</source>
         <translation type="obsolete">Farba grafickej mierky:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Scale bar style:</source>
         <translation type="obsolete">Vzhľad grafickej mierky:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Enable scale bar</source>
         <translation type="obsolete">Zapnúť grafickú mierku</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Automatically snap to round number on resize</source>
         <translation type="obsolete">Pri zmene veľkosti automaticky skočiť na okrúhle číslo</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Load GPX file</source>
         <translation type="obsolete">Nahrať GPX súbor</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;GPX is the &lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;GPS eXchange file format&lt;/a&gt;, which is used to store information about waypoints, routes, and tracks.&lt;/p&gt;
@@ -577,52 +577,52 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
 &lt;/body&gt;&lt;/html&gt;(new line)</translation>
     </message>
     <message encoding="UTF-8">
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>© QGIS 2004</source>
         <translation type="obsolete">© QGIS 2004</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Origin (Lower Left)</source>
         <translation type="obsolete">Počiatok (ľavý dolný)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Latitude:</source>
         <translation type="obsolete">Geogr. dĺžka:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Longitude:</source>
         <translation type="obsolete">Geogr. šírka:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>End point (Upper Right)</source>
         <translation type="obsolete">Koncový bod (pravý horný)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Output (Shape) File</source>
         <translation type="obsolete">Výstupný (Shape) súbor</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Graticule Size (units in degrees)</source>
         <translation type="obsolete">Veľkosť siete (jednotky v stupňoch)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>QGIS Plugin QGIS Community Registration Plugin</source>
         <translation type="obsolete">QGIS zásuvný modul na registráciu do spoločenstva QGIS používateľov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>qgis.community.org</source>
         <translation type="obsolete">qgis.community.org</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This plugin will register you on the community.qgis.org users map.&lt;/p&gt;
@@ -634,47 +634,47 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Home URL:</source>
         <translation type="obsolete">Domovské URL:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Email:</source>
         <translation type="obsolete">Email:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Place Description:</source>
         <translation type="obsolete">Popis miesta:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Name:</source>
         <translation type="obsolete">Meno:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Longitude (dec. degrees):</source>
         <translation type="obsolete">Zemepisná dĺžka (v stupňoch):</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Country:</source>
         <translation type="obsolete">Krajina:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Image URL (50x50):</source>
         <translation type="obsolete">URL adresa obrázoku (50x50):</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Latitude (dec. degrees):</source>
         <translation type="obsolete">Zemepisná šírka (v stupňoch):</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Get From Map</source>
         <translation type="obsolete">Získať z mapy</translation>
     </message>
@@ -682,32 +682,32 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
 <context>
     <name>QFileDialog</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>open files dialog</source>
         <translation type="obsolete">dialóg otvárania súborov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Save file dialog</source>
         <translation type="obsolete">Dialóg ukladania súborov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Open an OGR Supported Data Source</source>
         <translation type="obsolete">Otvoriť zdroj údajov podporovaný knižnicou OGR</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Choose a QGIS project file to open</source>
         <translation type="obsolete">Vyberte súbor QGIS projektu, ktorý chcete otvoriť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Choose a QGIS project file</source>
         <translation type="obsolete">Vyberte súbor QGIS projektu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>save new vector files dialog</source>
         <translation type="obsolete">dialóg ukladania nových vektorových súborov</translation>
     </message>
@@ -736,52 +736,52 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
         <translation>Žiadne zásuvné moduly na prístup k údajom nie sú k dispozícii. Žiadne vektorové vrstvy nemôžu byť nahraté</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Overwrite File?</source>
         <translation type="obsolete">Prepísať súbor?</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>%1 exists.%2Do you want to overwrite it?</source>
         <translation type="obsolete">%1 existuje. %2Chcete ho prepísať?</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Yes</source>
         <translation type="obsolete">Áno</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>No</source>
         <translation type="obsolete">Nie</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2854"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2876"/>
         <source>QGis files (*.qgs)</source>
         <translation>QGIS súbory (*.qgs)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Choose a QGIS project file to open</source>
         <translation type="obsolete">Vyberte súbor QGIS projektu, ktorý chcete otvoriť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Choose a filename to save</source>
         <translation type="obsolete">Vyberte meno súboru na uloženie</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Choose a QGIS project file</source>
         <translation type="obsolete">Vyberte súbor QGIS projektu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>No oid column in table</source>
         <translation type="obsolete">V tabuľke nie je žiadny stĺpec oid</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>The table has no primary key nor oid column. 
 Qgis requires that the table either has a primary key 
 or has a column containing the PostgreSQL oid.
@@ -794,12 +794,12 @@ Na dosiahnutie lepšieho výkonu by stĺpec mal byť indexovaný
 </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>No suitable key column in view</source>
         <translation type="obsolete">Žiadny vhodný kľúčový stĺpec v aktuálnom pohľade</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>The view has no column suitable for use as a unique key.
 
 Qgis requires that the view have a column that can be
@@ -814,12 +814,12 @@ buď primárny kľúč alebo mať unique constraint on it
 (indexovaný stĺpec dáva lepší výkon).</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>No primary key column in table</source>
         <translation type="obsolete">Žiadny primárny kľúč v tabuľke</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>The table has a primary key that is composed of 
 more than one column. Qgis does not currently 
 support this.</source>
@@ -828,12 +828,12 @@ z viac než jedného stĺpca. Qgis túto vlastnosť
 v súčastnosti nepodporuje.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2263"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2285"/>
         <source>Open an OGR Supported Layer</source>
         <translation>Otvoriť vrstvu podporovanú knižnicou OGR</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Project file read error</source>
         <translation type="obsolete">Chyba pri čítaní súboru projektu</translation>
     </message>
@@ -853,17 +853,17 @@ v súčastnosti nepodporuje.</translation>
         <translation> pre súbor </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>No proj4 projection string. Unable to set map units.</source>
         <translation type="obsolete">Žiaden reťazec zobrazenia proj4. Nie je možné nastaviť mapové jednotky.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Unsupported map units of </source>
         <translation type="obsolete">Nepodporované mapové jednotky </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>The view has no column suitable for use as a unique key.
 
 Qgis requires that the view has a column that can be
@@ -900,7 +900,7 @@ lepší výkon).</translation>
         <translation>Delenie nulou.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Unsupported key column type</source>
         <translation type="obsolete">Nepodporovaný typ kľúčového stĺpca</translation>
     </message>
@@ -1349,82 +1349,82 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="631"/>
         <source> km2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> km2</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="636"/>
         <source> ha</source>
-        <translation type="unfinished"></translation>
+        <translation> ha</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="641"/>
         <source> m2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> m2</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="669"/>
         <source> m</source>
-        <translation type="unfinished"> m</translation>
+        <translation> m</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="654"/>
         <source> km</source>
-        <translation type="unfinished">km</translation>
+        <translation> km</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="659"/>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="664"/>
         <source> cm</source>
-        <translation type="unfinished"> cm</translation>
+        <translation> cm</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="678"/>
         <source> sq mile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> štv. míľ</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="683"/>
         <source> sq ft</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> štv. stôp</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="690"/>
         <source> mile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> míľ</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="696"/>
         <source> foot</source>
-        <translation type="unfinished"> stopa</translation>
+        <translation> stopa</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="698"/>
         <source> feet</source>
-        <translation type="unfinished">stopy</translation>
+        <translation> stopy</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="705"/>
         <source> sq.deg.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> štv. stupň.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="710"/>
         <source> degree</source>
-        <translation type="unfinished"> stupeň</translation>
+        <translation> stupeň</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="712"/>
         <source> degrees</source>
-        <translation type="unfinished">stupne</translation>
+        <translation>stupne</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="716"/>
         <source> unknown</source>
-        <translation type="unfinished"> neznáma</translation>
+        <translation> neznáma</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="266"/>
@@ -1439,27 +1439,27 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="383"/>
         <source>Not connected</source>
-        <translation type="unfinished">Nepripojený</translation>
+        <translation>Nepripojený</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="389"/>
         <source>Looking up &apos;%1&apos;</source>
-        <translation type="unfinished">Hľadá sa &apos;%1&apos;</translation>
+        <translation>Hľadá sa &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="396"/>
         <source>Connecting to &apos;%1&apos;</source>
-        <translation type="unfinished">Pripája sa k &apos;%1&apos;</translation>
+        <translation>Pripája sa k &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="403"/>
         <source>Sending request &apos;%1&apos;</source>
-        <translation type="unfinished">Posiela sa požiadavka na &apos;%1&apos;</translation>
+        <translation>Posiela sa požiadavka na &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="410"/>
         <source>Receiving reply</source>
-        <translation type="unfinished">Prijíma sa odpoveď</translation>
+        <translation>Prijíma sa odpoveď</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="416"/>
@@ -1475,279 +1475,289 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="137"/>
         <source>Location: </source>
         <comment>Metadata in GRASS Browser</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lokalita: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="137"/>
         <source>&lt;br&gt;Mapset: </source>
         <comment>Metadata in GRASS Browser</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;br&gt;Súbor máp: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="141"/>
         <source>Location: </source>
-        <translation type="unfinished"></translation>
+        <translation>Lokalita: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="141"/>
         <source>&lt;br&gt;Mapset: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;br&gt;Súbor máp: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="146"/>
         <source>&lt;b&gt;Raster&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Raster&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="155"/>
         <source>Cannot open raster header</source>
-        <translation type="unfinished"></translation>
+        <translation>Nemožno otvoriť hlavičku rastra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="159"/>
         <source>Rows</source>
-        <translation type="unfinished">Riadky</translation>
+        <translation>Riadkov</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="160"/>
         <source>Columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Stĺpcov</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="161"/>
         <source>N-S resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozlíšenie (S-J)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="162"/>
         <source>E-W resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozlíšenie (V-Z)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="300"/>
         <source>North</source>
-        <translation type="unfinished"></translation>
+        <translation>Sever</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="302"/>
         <source>South</source>
-        <translation type="unfinished"></translation>
+        <translation>Juh</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="304"/>
         <source>East</source>
-        <translation type="unfinished"></translation>
+        <translation>Východ</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="306"/>
         <source>West</source>
-        <translation type="unfinished"></translation>
+        <translation>Západ</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="189"/>
         <source>Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Formát</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="200"/>
         <source>Minimum value</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimálna hodnota</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="201"/>
         <source>Maximum value</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximálna hodnota</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="212"/>
         <source>Data source</source>
-        <translation type="unfinished"></translation>
+        <translation>Zdroj údajov</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="217"/>
         <source>Data description</source>
-        <translation type="unfinished"></translation>
+        <translation>Popis údajov</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="226"/>
         <source>Comments</source>
-        <translation type="unfinished"></translation>
+        <translation>Komentáre</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="241"/>
         <source>Categories</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kategórie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="347"/>
         <source>&lt;b&gt;Vector&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;b&gt;Vektor&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="274"/>
         <source>Points</source>
-        <translation type="unfinished">bodoch</translation>
+        <translation>Body</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="275"/>
         <source>Lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Línie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="276"/>
         <source>Boundaries</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hranice</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="277"/>
         <source>Centroids</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Centroidy</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="280"/>
         <source>Faces</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Faces</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="281"/>
         <source>Kernels</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kernels</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="284"/>
         <source>Areas</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Oblasti</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="285"/>
         <source>Islands</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ostrovy</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="309"/>
         <source>Top</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vrch</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="310"/>
         <source>Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Spodok</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="313"/>
         <source>yes</source>
-        <translation type="unfinished"></translation>
+        <translation>áno</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="313"/>
         <source>no</source>
-        <translation type="unfinished"></translation>
+        <translation>nie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="320"/>
         <source>History&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>História&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="348"/>
         <source>&lt;b&gt;Layer&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Vrstva&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="367"/>
         <source>Features</source>
-        <translation type="unfinished">Objekty</translation>
+        <translation>Objekty</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="376"/>
         <source>Driver</source>
-        <translation type="unfinished"></translation>
+        <translation>Ovládač</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="377"/>
         <source>Database</source>
-        <translation type="unfinished">Databáza</translation>
+        <translation>Databáza</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="378"/>
         <source>Table</source>
-        <translation type="unfinished">Tabuľka</translation>
+        <translation>Tabuľka</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="379"/>
         <source>Key column</source>
-        <translation type="unfinished"></translation>
+        <translation>Stĺpec s kľúčom</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="390"/>
         <source>GISBASE is not set.</source>
-        <translation type="unfinished"></translation>
+        <translation>GISBASE nie je nastavená.</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="395"/>
         <source> is not a GRASS mapset.</source>
-        <translation type="unfinished"></translation>
+        <translation> nie je súbor máp (mapset) GRASSu.</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="413"/>
         <source>Cannot start </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno spustiť </translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="428"/>
         <source>Mapset is already in use.</source>
-        <translation type="unfinished"></translation>
+        <translation>Súbor máp (mapset) sa už používa.</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="443"/>
         <source>Temporary directory </source>
-        <translation type="unfinished"></translation>
+        <translation>Dočasný adresár </translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="443"/>
         <source> exist but is not writable</source>
-        <translation type="unfinished"></translation>
+        <translation> existuje, ale nemožno do neho zapisovať</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="449"/>
         <source>Cannot create temporary directory </source>
-        <translation type="unfinished"></translation>
+        <translation>Nemožno vytvoriť dočasný adresár </translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="465"/>
         <source>Cannot create </source>
-        <translation type="unfinished"></translation>
+        <translation>Nemožno vytvoriť </translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="538"/>
         <source>Cannot remove mapset lock: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno odobrať zámok súboru máp (mapsetu): </translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="978"/>
         <source>Warning</source>
-        <translation type="unfinished">Upozornenie</translation>
+        <translation>Upozornenie</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="926"/>
         <source>Cannot read raster map region</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno čítať región rastrovej mapy</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="943"/>
         <source>Cannot read vector map region</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno čítať región vektorovej mapy</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="979"/>
         <source>Cannot read region</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno čítať región</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsproject.cpp" line="1019"/>
+        <source>Unable to open </source>
+        <translation>Nemožno otvoriť </translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsproject.cpp" line="1140"/>
+        <source>Cannot get extents from </source>
+        <translation type="unfinished">Nemožno získať rozsah z </translation>
     </message>
 </context>
 <context>
     <name>QgisApp</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Layers</source>
         <translation type="obsolete">Vrstvy</translation>
     </message>
@@ -1777,277 +1787,277 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>verzia </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1336"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1358"/>
         <source>Available Data Provider Plugins</source>
         <translation>Dostupné zásuvné moduly na prístup k údajom</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1898"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1920"/>
         <source>is not a valid or recognized data source</source>
         <translation>nie je platný alebo rozpoznaný zdroj údajov</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5017"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5049"/>
         <source>Invalid Data Source</source>
         <translation>Chybný zdroj údajov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>No OGR Provider</source>
         <translation type="obsolete">Žiadny nástroj OGR na prístup k údajom</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>No OGR data provider was found in the QGIS lib directory</source>
         <translation type="obsolete">V adresári QGIS lib nebol nájdený žiadny nástroj OGR na prístup k údajom</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>No PostgreSQL Provider</source>
         <translation type="obsolete">Žiadny nástroj na prísup k údajom v PostgreSQL</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>No PostgreSQL data provider was found in the QGIS lib directory</source>
         <translation type="obsolete">V QGIS lib adresári nebol nájdený žiadny nástroj na prístup k údajom v PostgreSQL</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Quantum GIS -- Untitled</source>
         <translation type="obsolete">Quantum GIS -- Bezmena</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Quantum GIS --</source>
         <translation type="obsolete">Quantum GIS --</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Saved map to:</source>
         <translation type="obsolete">Uložiť mapu do:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3351"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3383"/>
         <source>No Layer Selected</source>
         <translation>Nie je vybratá žiadna vrstva</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3325"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3357"/>
         <source>To open an attribute table, you must select a layer in the legend</source>
         <translation>Pred otvorením tabuľky atribútov je nutné vybrať vrstvu v okne Legenda</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3808"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3840"/>
         <source>No MapLayer Plugins</source>
         <translation>Žiadne zásuvné moduly na prácu s vrstvou</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3808"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3840"/>
         <source>No MapLayer plugins in ../plugins/maplayer</source>
         <translation>Žiadne zásuvné moduly na prácu s vrstvou v adresári ../plugins/maplayer</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3906"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3938"/>
         <source>No Plugins</source>
         <translation>Žiadne zásuvné moduly</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3907"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3939"/>
         <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
         <translation>V adresári ../plugins sa nenašli žiadne zásuvné moduly. Na odskúšanie zásuvných modulov spustite qgis z adresára src</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3949"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3981"/>
         <source>Name</source>
         <translation>Meno</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3949"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3981"/>
         <source>Plugin %1 is named %2</source>
         <translation>Zásuvný modul %1 má názov %2</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3972"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4004"/>
         <source>Plugin Information</source>
         <translation>Informácie o zásuvných moduloch</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3973"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4005"/>
         <source>QGis loaded the following plugin:</source>
         <translation>QGis načítal nasledujúci zásuvný modul:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3973"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4005"/>
         <source>Name: %1</source>
         <translation>Meno: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3973"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4005"/>
         <source>Version: %1</source>
         <translation>Verzia: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3974"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4006"/>
         <source>Description: %1</source>
         <translation>Popis: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3993"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4025"/>
         <source>Unable to Load Plugin</source>
         <translation>Nie je možné nahrať zásuvný modul</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3994"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4026"/>
         <source>QGIS was unable to load the plugin from: %1</source>
         <translation>QGIS nemohol nahrať zásuvný modul z: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4054"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4086"/>
         <source>There is a new version of QGIS available</source>
         <translation>K dispozícii je nová verzia QGIS</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4060"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4092"/>
         <source>You are running a development version of QGIS</source>
         <translation>Používate vývojovú verziu QGIS</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4064"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4096"/>
         <source>You are running the current version of QGIS</source>
         <translation>Používate aktuálnu verziu QGIS</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4069"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4101"/>
         <source>Would you like more information?</source>
         <translation>Prajete si viac informácií?</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4116"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4148"/>
         <source>QGIS Version Information</source>
         <translation>Informácie o verzii QGIS</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4071"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4103"/>
         <source>Yes</source>
         <translation>Áno</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4071"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4103"/>
         <source>No</source>
         <translation>Nie</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4088"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4120"/>
         <source>Unable to get current version information from server</source>
         <translation>Zo servera nie je možné získať informáciu o aktuálnej verzii</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4102"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4134"/>
         <source>Connection refused - server may be down</source>
         <translation>Spojenie odmietnuté - server je zrejme vypnutý</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4105"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4137"/>
         <source>QGIS server was not found</source>
         <translation>Nebol nájdený server QGIS</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/src/gui/qgisapp.cpp" line="4099"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/src/gui/qgisapp.cpp" line="4099"/>
         <source>Error reading from server</source>
         <translation type="obsolete">Chyba pri čítaní zo servera</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/src/gui/qgisapp.cpp" line="4103"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/src/gui/qgisapp.cpp" line="4103"/>
         <source>Unable to connect to the QGIS Version server</source>
         <translation type="obsolete">Nie je možné sa pripojiť na QGIS Version server</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Loading QGIS...</source>
         <translation type="obsolete">Nahrávam QGIS...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Setting up QGIS gui...</source>
         <translation type="obsolete">Nastavujem QGIS grafické používateľské rozhranie...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Loading plugins...</source>
         <translation type="obsolete">Nahrávam zásuvné moduly...</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2005"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2027"/>
         <source>Invalid Layer</source>
         <translation>Chybná vrstva</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2005"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2027"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
         <translation>%1 je chybná vrstva a nemôže byť nahratá.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3766"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3798"/>
         <source>Error Loading Plugin</source>
         <translation>Chyba pri nahrávaní zásuvného modulu</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3766"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3798"/>
         <source>There was an error loading %1.</source>
         <translation>Pri nahrávaní %1 sa vyskytla chyba.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3134"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3166"/>
         <source>Saved map image to</source>
         <translation>Uložiť obrázok mapy do</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>QGIS - Changes in CVS Since Last Release</source>
         <translation type="obsolete">QGIS - zmeny v CVS od posledného vydania</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3089"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3121"/>
         <source>Choose a filename to save the map image as</source>
         <translation>Vyberte meno súboru, do ktorého sa má uložiť obrázok mapy</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4573"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4605"/>
         <source>Extents: </source>
         <translation>Rozsah: </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Web Page: http://qgis.org</source>
         <translation type="obsolete">Web Page: http://qgis.org</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3339"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3371"/>
         <source>Problem deleting features</source>
         <translation>Problém pri mazaní objektov</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3340"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3372"/>
         <source>A problem occured during deletion of features</source>
         <translation>Pri mazaní objektov sa vyskytol problém</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3345"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3377"/>
         <source>No Vector Layer Selected</source>
         <translation>Nie je vybratá žiadna vrstva</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3346"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3378"/>
         <source>Deleting features only works on vector layers</source>
         <translation>Mazanie objektov funguje iba pri vektorových vrstvách</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3352"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3384"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>Na vymazanie objektu je treba vybrať vektorovú vrstvu v okne Legenda</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>QGIS ready</source>
         <translation type="obsolete">QGIS pripravené</translation>
     </message>
@@ -2067,97 +2077,97 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Vykresľovanie</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Setting theme...</source>
         <translation type="obsolete">Nastavujem tému...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>QGIS Ready</source>
         <translation type="obsolete">QGIS pripravený</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>GEOS support in the OGR provider to refine selection of features via identify. This improves over the previous method of feature selection which used a simple MBR intersection check.</source>
         <translation type="obsolete">Podpora GEOS v OGR pre identifikáciu objektov cez ich výber. To zdokonaľuje predchádzajúcu metódu výberu, ktorou bola jednoduchá MBR kontrola prieniku.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>PostGIS editing support in provider</source>
         <translation type="obsolete">Podpora editácie PostGIS</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Vector dialog redesign to improve usability</source>
         <translation type="obsolete">Dialóg Vektorovej vrstvy upravený pre ľepšiu použiteľnosť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Improvement in project handling (loading and saving)</source>
         <translation type="obsolete">Zdokonalenie v obsluhe projektov (nahrávanie a ukladanie)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Scale dependent rendering</source>
         <translation type="obsolete">Vykresľovanie v yávislosti od mierky</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>User option to load layers with out drawing them, thus allowing you to set scale dependency, etc without waiting for the initial draw to complete</source>
         <translation type="obsolete">Uživateľská voľba nahrať vrstvy bez ich vykreslenia, to dovolí nastaviť mierkovú závisloť, atď bez čakania kým sa skončí prvotné vykresľovanie</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Attribute actions - the ability to run an external program based on the contents of an attribute field in a layer</source>
         <translation type="obsolete">Akcie atribútov - schopnosť spúšťať externý program na základe obsahu atribútového poľa vo vrstve</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Create new vector layer (shapefile) for editing</source>
         <translation type="obsolete">Vytvárať novú upravovateľnú vektorovú vrstvu (shapefile)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Windows installer</source>
         <translation type="obsolete">Inštalačný program pre Windows</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Mac OSX binary</source>
         <translation type="obsolete">Binárna verzia pre Mac OSX</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New options in the graticule builder plugin</source>
         <translation type="obsolete">Nové voľby v zásuvnom module na tvorbu siete zemepisných súradníc</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Enhancements to the GPS plugin</source>
         <translation type="obsolete">Rozšírenie možností v yásuvnom module GPS</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Man page</source>
         <translation type="obsolete">Manuálová stránka</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>QGis files (*.qgs)</source>
         <translation type="obsolete">QGIS súbory (*.qgs)</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2776"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2798"/>
         <source>Choose a QGIS project file</source>
         <translation>Vyberte súbor QGIS projektu</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2906"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2929"/>
         <source>Unable to save project</source>
         <translation>Nie je možné uložiť projekt</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2907"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2930"/>
         <source>Unable to save project to </source>
         <translation>Nie je možné uložiť projekt do </translation>
     </message>
@@ -2202,57 +2212,57 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Pokiaľ je políčko zaškrtnuté, mapové vrstvy sú vykresľované v náväznosti na príkazy mapovej navigácie a ďalšie udalosti. Ak nie je zaškrtnuté, nič sa nevykresľuje. To dovoľuje pridať veľké množstvo vrstiev a upraviť ich symboliku ešte pred ich vykreslením.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Save delimited text as shapefile</source>
         <translation type="obsolete">Uložiť oddelený text ako shapefile súbor</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Improved Delimited Text plugin, including preview of text file</source>
         <translation type="obsolete">Zdokonalený zásuvný modul na spracovanie súboru s oddeleným textom, vrátane náhľadu na textový súbor</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Improved SPIT handling of PostgreSQL reserved words and shapefiles with multiple geometry types</source>
         <translation type="obsolete">Zdokonalená obsluha SPIT z PostgreSQL rezervovanými slovami a shapefile súbormi s multiple geometrickými typmi</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Display SQL query used to create a PostGIS layer</source>
         <translation type="obsolete">Zobrazí SQL dopyt použitý na vytvorenie PostGIS vrstvy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>PostgreSQL query builder</source>
         <translation type="obsolete">PostgreSQL tvorba dopytov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ability to redefine the query used for PostgreSQL layers from the layer properties dialog</source>
         <translation type="obsolete">Schopnosť predefinovať požiadavku (dopyt) pre PostgreSQL vrstvy z dialógového okna Vlastnosti vrstvy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>North arrow, scalebar, and copyright plugins save their state in the project file</source>
         <translation type="obsolete">Zásuvné moduly Smerová ružica, Grafická mierka a Nástroj na zápis copyrightu ukladajú svoj stav do súboru projektu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Datasets with UTF8, Kanjii and CJK filenames now load properly</source>
         <translation type="obsolete">Údajové sady s názvami súborov v UTF8, Kanji a CJK sú odteraz načítavané správne</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1695"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1717"/>
         <source>Open an OGR Supported Vector Layer</source>
         <translation>Otvoriť vektorovú vrstvu podporovanú knižnicou OGR</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2722"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2744"/>
         <source>QGIS Project Read Error</source>
         <translation>Chyba pri čítaní QGIS projektu</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4901"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4933"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>Otvoriť rastrový zdroj údajov podporovaný knižnicou GDAL</translation>
     </message>
@@ -2272,7 +2282,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Stav zobrazenia - kliknutím sa otvorí menu mapových zobrazení</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>On the fly projection support to automatically project layers from different coordinate systems</source>
         <translation type="obsolete">Podpora zobrazovania &quot;za jazdy&quot; slúži na automatické premietanie vrstiev z rôznych súradnicových systémov</translation>
     </message>
@@ -2282,221 +2292,221 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation type="obsolete">Skladateľ máp na tvorbu mapových výstupov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Toolbox for running GRASS tools from QGIS. The toolbox can be easily customized to add additional tools</source>
         <translation type="obsolete">Panel nástrojov na spúšťanie nástrojov GRASS-u z QGIS-u. Tento panel je možné ľahko prispôsobiť a pridať ďalšie nástroje</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Handling of spatially enabled tables and views in PostgreSQL has been greatly improved. QGIS can now load any table in the database that contains a geometry column</source>
         <translation type="obsolete">Obsluha priestorovo orientovaných tabuliek a pohľadov v PostgreSQL bola značne zdokonalená. QGIS teraz dokáže nahrať z databázy ľubovoľnú tabuľku, ktorá obsahuje stĺpec s geometriou</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>PostgreSQL views containing a geometry column can be viewed in QGIS</source>
         <translation type="obsolete">V QGIS-e sa dajú prezerať pohľady PostgreSQL, ktoré obsahujú stĺpec s geometriou</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Raster graphing tool to produce a histogram for a raster layer</source>
         <translation type="obsolete">Nástroj na tvorbu grafu rastra dokáže zobraziť pre rastrovú vrstvu stĺpcový graf (histogram) zastúpenia jedotlivých hodnôt</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Raster query using the identify tool allows you to get the pixel values from a raster by making it the active layer and clicking on the point of interest</source>
         <translation type="obsolete">S použitím nástroja identifikácie je možné kliknutím na bod záujmovej oblasti zistiť hodnoty jednotlivých pixelov aktívnej rastrovej vrstvy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>User preferences provides customizable settings for the digitizing line width, color, and selection color</source>
         <translation type="obsolete">Používateľské vlastnosti umožňujú prispôsobiť nastavenie pre hrúbku a farbu digitalizačnej čiary a farbu výberu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New symbols for use with point layers are available from the layer properties dialog</source>
         <translation type="obsolete">Nové symboly použiteľné s vrstvou bodov sú dostupné z dialógu vlastnosti vrstvy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Spatial bookmarks allow you to create and manage bookmarks for an area on the map. Bookmarks are persistent and global; meaning they are available for all projects</source>
         <translation type="obsolete">Priestorové záložky dovoľujú vytvoriť a spravovať záložky pre rôzne oblasti na mape. Záložky sú trvalé a globálne, čo znamená, že sú prístupné pre všetky projekty</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Measure tool allows you to measure distances on the map with both segment length and total length displayed as you click</source>
         <translation type="obsolete">Nástroj na meranie umožňuje zmerať vzdialenosti na mape, pričom sa pri klikaní zobrazuje ako čiastková, tak i celková vzdialenosť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>GPX loading times and memory consumption for large GPX (GPS) files has been drastically reduced</source>
         <translation type="obsolete">Časy a spotreba pamäte potrebná na nahratie GPX (GPS) súborov sa priam drasticky zmenšila</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Many enhancements to the digitizing tools have been made, including the ability to capture data straight into PostgreSQL/PostGIS, and improvements to the definition of attribute tables for newly created layers</source>
         <translation type="obsolete">Prišlo k viacerým rozšíreniam digitalizačných nástrojov vrátane schopnosti vkladať získané údaje priamo do PostgreSQL/PostGIS a k vylepšeniu definovania atribútov tabuliek pre novovytvorené vrstvy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>The Raster Georeferencer plugin can be used to generate a world file for a raster. The plugin allows you to define known control points in the raster coordinate system. Once enough control points are defined, the world file can be generated and the raster properly displayed in QGIS or other GIS applications</source>
         <translation type="obsolete">Zásuvný modul na georeferencovnie rastrov sa dá použiť na vytvorenie world súborov pre rastre. Tento zásuvný modul umožňuje určiť známe body (lícovacie body) v súradnicovom systéme rastra. Keď je určený dostatočný počet bodov, je následne vygenerovaný world súbor, vďaka ktorému je rastrový súbor v QGIS-e alebo inom GIS-e zobrazovaný správne</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Improvements to the Mapserver export tool</source>
         <translation type="obsolete">Zdokonalený nástroj na export pre Mapsever</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2724"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2746"/>
         <source>Try to find missing layers?</source>
         <translation>Pokúsiť sa nájsť chýbajúce vrstvy?</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Overwrite Project?</source>
         <translation type="obsolete">Prepísať projekt?</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>A project named %1 exists.Do you want to overwrite it?</source>
         <translation type="obsolete">Projekt s názvom %1 existuje. Chcete ho prepísať?</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Yes</source>
         <translation type="obsolete">&amp;Áno</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;No</source>
         <translation type="obsolete">&amp;Nie</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Scale</source>
         <translation type="obsolete">Mierka</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2493"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2515"/>
         <source>Save As</source>
         <translation>Uložiť ako</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2592"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2614"/>
         <source>Choose a QGIS project file to open</source>
         <translation>Vyberte súbor QGIS projektu, ktorý chcete otvoriť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Project file exists.</source>
         <translation type="obsolete">Súbor projektu existuje.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>The given project file exists.  Do you wish to over-write it with a new one?</source>
         <translation type="obsolete">Dané meno súboru projektu už existuje.  Želáte si prepísať týmto projektom?</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2899"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2922"/>
         <source>Saved project to:</source>
         <translation>Projekt uložený do:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4190"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4222"/>
         <source>QGIS Browser Selection</source>
         <translation>QGIS Výber prehliadača</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4191"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4223"/>
         <source>Enter the name of a web browser to use (eg. konqueror).
 </source>
         <translation>Vložte meno prehliadača www stránok, ktorý sa má používať (napr. konqueror).
 </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4192"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4224"/>
         <source>Enter the full path if the browser is not in your PATH.
 </source>
         <translation>Vložte úplnú cestu k prehliadaču, ak nie je v premennej PATH.
 </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>You can change this option later by selecting Preferences from the Settings menu.</source>
         <translation type="obsolete">Toto nastavenie je možné neskôr zmeniť v dialógu Vlastnosti z menu Nastavenia.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgisapp.cpp" line="1331"/>
         <source>New features</source>
-        <translation type="obsolete">Nové vlastnosti</translation>
+        <translation>Nové vlastnosti</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Warning</source>
         <translation type="obsolete">Upozornenie</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Writing of the layer failed</source>
         <translation type="obsolete">Zapisovanie vrstvy zlyhalo</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2741"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2763"/>
         <source>Unable to open project</source>
         <translation>Nie je možné otvoriť projekt</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2835"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2936"/>
         <source>Unable to save project </source>
         <translation>Nie je možné uložiť projekt</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2966"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2998"/>
         <source>QGIS: Unable to load project</source>
         <translation>QGIS: Nie je možné načítať projekt</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2967"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2999"/>
         <source>Unable to load project </source>
         <translation>Nemožno načítať projekt</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>No Map Layers</source>
         <translation type="obsolete">Žiadne mapové vrstvy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>No layers to export. You must add at least one layer to the map in order to export the view.</source>
         <translation type="obsolete">Žiadne vrstvy na export. Na to, aby bolo možné exportovať pohľad, je potrebné pridať do mapy aspoň jednu vrstvu.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5130"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5162"/>
         <source>Layer is not valid</source>
         <translation>Neplatná vrstva</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5131"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5163"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>Táto vrstva nie je platnou vrstvou a nemôže byť pridaná do mapy</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4395"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4427"/>
         <source>Save?</source>
         <translation>Uložiť?</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Do you want to save the current project?</source>
         <translation type="obsolete">Uložiť aktuálny projekt?</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Add all layers to the overview map</source>
         <translation type="obsolete">Pridať všetky vrstvy do mapového prehľadu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Remove all layers from the overview map</source>
         <translation type="obsolete">Odobrať všetky vrstvy z mapového prehľadu</translation>
     </message>
@@ -2511,72 +2521,72 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Skryť všetky vrstvy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Capture points</source>
         <translation type="obsolete">Získať body</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Capture lines</source>
         <translation type="obsolete">Získať línie</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Capture polygons</source>
         <translation type="obsolete">Získať polygóny</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Delete selection</source>
         <translation type="obsolete">Vymazať výber</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4856"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4888"/>
         <source>Clipboard contents set to: </source>
         <translation>Obsah schránky uložený do: </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5016"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5048"/>
         <source> is not a valid or recognized raster data source</source>
         <translation>nie je platný, alebo rozpoznaný zdroj údajov</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5205"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5237"/>
         <source> is not a supported raster data source</source>
         <translation>nie je podporovaný zdroj údajov</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5206"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5238"/>
         <source>Unsupported Data Source</source>
         <translation>Nepodporovaný zdroj údajov</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5285"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5317"/>
         <source>New Bookmark</source>
         <translation>Nová záložka</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5286"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5318"/>
         <source>Enter a name for the new bookmark:</source>
         <translation>Vložte meno novej záložky:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5303"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5335"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5303"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5335"/>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
         <translation>Nie je možné vytvoriť záložku. Databáza používateľa chýba, alebo je poškodená</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;New Project...</source>
         <translation type="obsolete">&amp;Nový projekt...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ctrl+N</source>
         <translation type="obsolete">Ctrl+N</translation>
     </message>
@@ -2591,7 +2601,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>&amp;Otvoriť projekt...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ctrl+O</source>
         <translation type="obsolete">Ctrl+O</translation>
     </message>
@@ -2611,7 +2621,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Uložiť projekt &amp;ako...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ctrl+A</source>
         <translation type="obsolete">Ctrl+A</translation>
     </message>
@@ -2621,12 +2631,12 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Uložiť projekt pod novým menom</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Print</source>
         <translation type="obsolete">&amp;Tlačiť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ctrl+P</source>
         <translation type="obsolete">Ctrl+P</translation>
     </message>
@@ -2636,12 +2646,12 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Tlačiť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Save as Image</source>
         <translation type="obsolete">Uložiť ako obrázok</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>I</source>
         <translation type="obsolete">I</translation>
     </message>
@@ -2651,12 +2661,12 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Uložiť mapu ako obrázok</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Export to MapServer Map</source>
         <translation type="obsolete">Exportovať ako mapu pre MapServer</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>M</source>
         <translation type="obsolete">M</translation>
     </message>
@@ -2671,7 +2681,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Koniec</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ctrl+Q</source>
         <translation type="obsolete">Ctrl+Q</translation>
     </message>
@@ -2686,7 +2696,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Pridať vektorovú vrstvu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>V</source>
         <translation type="obsolete">V</translation>
     </message>
@@ -2696,7 +2706,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Pridať rastrovú vrstvu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>R</source>
         <translation type="obsolete">R</translation>
     </message>
@@ -2706,7 +2716,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Pridať vrstvu PostGIS</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>D</source>
         <translation type="obsolete">D</translation>
     </message>
@@ -2716,7 +2726,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Odobrať vrstvu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ctrl+D</source>
         <translation type="obsolete">Ctrl+D</translation>
     </message>
@@ -2726,12 +2736,12 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Odoberie vrstvu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New Vector Layer</source>
         <translation type="obsolete">Nová vektorová vrstva</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>N</source>
         <translation type="obsolete">N</translation>
     </message>
@@ -2746,7 +2756,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Pridať všetky do Prehľadu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>+</source>
         <translation type="obsolete">+</translation>
     </message>
@@ -2761,7 +2771,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Odobrať všetky z Prehľadu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>-</source>
         <translation type="obsolete">-</translation>
     </message>
@@ -2776,7 +2786,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Ukázať všetky vrstvy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>S</source>
         <translation type="obsolete">S</translation>
     </message>
@@ -2786,17 +2796,17 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Skryť všetky vrstvy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>H</source>
         <translation type="obsolete">H</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Project Properties</source>
         <translation type="obsolete">Vlastnosti projektu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Alt+P</source>
         <translation type="obsolete">Alt+P</translation>
     </message>
@@ -2806,12 +2816,12 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Nastaviť vlastnosti projektu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>QGIS Options</source>
         <translation type="obsolete">Vlastnosti QGIS</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Alt+O</source>
         <translation type="obsolete">Alt+O</translation>
     </message>
@@ -2821,12 +2831,12 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Zmeniť rôzne vlastnosti QGIS</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Custom Projection</source>
         <translation type="obsolete">Vlastné zobrazenia</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Alt+I</source>
         <translation type="obsolete">Alt+I</translation>
     </message>
@@ -2841,7 +2851,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Obsah Pomocníka</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>F1</source>
         <translation type="obsolete">F1</translation>
     </message>
@@ -2856,7 +2866,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Domovská stránka Qgis</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ctrl+H</source>
         <translation type="obsolete">Ctrl+H</translation>
     </message>
@@ -2866,17 +2876,17 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Domovská stránka QGIS</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Qgis Sourceforge</source>
         <translation type="obsolete">QGIS na Sourceforge</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Alt+H</source>
         <translation type="obsolete">Alt+H</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Visit QGIS SourceForge page</source>
         <translation type="obsolete">Navštívi stránku QGIS na SourceForge</translation>
     </message>
@@ -2906,7 +2916,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Obnoviť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ctrl+R</source>
         <translation type="obsolete">Ctrl+R</translation>
     </message>
@@ -2921,7 +2931,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Priblížiť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>z</source>
         <translation type="obsolete">z</translation>
     </message>
@@ -2931,7 +2941,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Oddialiť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Z</source>
         <translation type="obsolete">Z</translation>
     </message>
@@ -2941,7 +2951,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Celá mapa</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>f</source>
         <translation type="obsolete">f</translation>
     </message>
@@ -2956,7 +2966,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Na veľkosť výberu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>F</source>
         <translation type="obsolete">F</translation>
     </message>
@@ -3021,7 +3031,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation> Merať vzdialenosť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ctrl+M</source>
         <translation type="obsolete">Ctrl+M</translation>
     </message>
@@ -3036,7 +3046,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Meranie rozlohy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Alt+M</source>
         <translation type="obsolete">Alt+M</translation>
     </message>
@@ -3046,12 +3056,12 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Merať rozlohu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Show Bookmark</source>
         <translation type="obsolete">Ukázať záložky</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ctrl+B</source>
         <translation type="obsolete">Ctrl+B</translation>
     </message>
@@ -3061,12 +3071,12 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Ukázať záložky</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Alt+B</source>
         <translation type="obsolete">Alt+B</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Add Wms Layer</source>
         <translation type="obsolete">Pridať vrstvu WMS</translation>
     </message>
@@ -3086,7 +3096,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Pridať aktívnu vrstvu do Prehľadu mapy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Plugin Manager</source>
         <translation type="obsolete">Správca zásuvných modulov</translation>
     </message>
@@ -3101,7 +3111,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Získať bod</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>.</source>
         <translation type="obsolete">.</translation>
     </message>
@@ -3116,7 +3126,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Získať líniu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>/</source>
         <translation type="obsolete">/</translation>
     </message>
@@ -3131,7 +3141,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Získať polygón</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ctrl+/</source>
         <translation type="obsolete">Ctrl+/</translation>
     </message>
@@ -3206,7 +3216,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Pripravený</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/src/gui/qgisapp.cpp" line="659"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/src/gui/qgisapp.cpp" line="659"/>
         <source>Delete Seleced</source>
         <translation type="obsolete">Zmazať vybrané</translation>
     </message>
@@ -3231,7 +3241,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Premiestniť uzol</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4076"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4108"/>
         <source>QGIS - Changes in SVN Since Last Release</source>
         <translation>QGIS - Zmeny v SVN od ostatného vydania</translation>
     </message>
@@ -3346,7 +3356,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Nedávno &amp;otvorené projekty</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2853"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2875"/>
         <source>Choose a filename to save the QGIS project file as</source>
         <translation>Vyberte meno súboru do ktorého sa uloží súbor projektu QGIS</translation>
     </message>
@@ -3576,7 +3586,7 @@ Chcete zadať cestu (GISBASE) k vašej inštalácii GRASSu?</translation>
         <translation>Ctrl+/</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4193"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4225"/>
         <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
         <translation>Voľbu možno upraviť neskôr vybratím položky Možnosti z menu Nastavenia (záložka Prehliadač Pomocníka).</translation>
     </message>
@@ -3629,7 +3639,7 @@ Kompilované s knižnicou Qt </translation>
         <translation> , spustené na knižnici Qt </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4396"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4428"/>
         <source>&lt;p&gt;Do you want to save the current project?&lt;/p&gt;</source>
         <translation>&lt;p&gt;Prajete si uložiť tento projekt?&lt;/p&gt;</translation>
     </message>
@@ -3639,7 +3649,7 @@ Kompilované s knižnicou Qt </translation>
         <translation>Zobraziť väčšinu panelov s nástrojmi</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="602"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/src/gui/qgisapp.cpp" line="602"/>
         <source>S</source>
         <comment>Show most toolbars</comment>
         <translation type="obsolete">S</translation>
@@ -3650,7 +3660,7 @@ Kompilované s knižnicou Qt </translation>
         <translation>Skryť väčšinu panelov s nástrojmi</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="608"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/src/gui/qgisapp.cpp" line="608"/>
         <source>H</source>
         <comment>Hide most toolbars</comment>
         <translation type="obsolete">H</translation>
@@ -3741,17 +3751,17 @@ Kompilované s knižnicou Qt </translation>
         <translation type="obsolete">Mnohé vylepšenia užívateľského rozhrania</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4108"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4140"/>
         <source>Network error while communicating with server</source>
         <translation>Chyba siete pri komunikácii so serverom</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4111"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4143"/>
         <source>Unknown network socket error</source>
         <translation>Neznáma chyba sieťového spojenia</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4116"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4148"/>
         <source>Unable to communicate with QGIS Version server</source>
         <translation>Nemožno nadviazať spojenie so serverom QGIS Version</translation>
     </message>
@@ -3778,890 +3788,935 @@ Kompilované s knižnicou Qt </translation>
         <translation>Mapové súradnice polohy kurzora myši</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2723"/>
-        <source></source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/gui/qgisapp.cpp" line="1334"/>
+        <source>Numerous bug fixes</source>
+        <translation>množstvo opravených chýb</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="1336"/>
+        <source>Improvements in how segment lengths appear in the measure tool.  The current segment length is shown/updated in the list of segments</source>
+        <translation>vylepšené zobrazovanie úsekov dĺžok zobrazujúcich sa v nástroji na meranie.  Aktuálna dĺžka úseku sa zobrazuje/je aktualizovaná v zozname úsekov</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="1338"/>
+        <source>Improvement to zoom-in speed for rasters</source>
+        <translation>rýchlejšie približovanie rastrov</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="1340"/>
+        <source>Improve line/area measuring behaviour when the user has been informed that they are probably using the wrong projection for the map canvas</source>
+        <translation type="unfinished">zdkokonalené správanie merania línií a plôch &amp;ndash; používateľ je informovaný, že pre mapu na plátne pravdepodobne používa nesprávne mapové zobrazenie</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="1342"/>
+        <source>Added tooltips to the scale and coordinate position displays in the status bar</source>
+        <translation>pridané nástrojové tipy pre mierku a polohu súradníc zobrazujúcu sa v stavovom riadku</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="1344"/>
+        <source>Removed ugly console on WIN32 when not debugging</source>
+        <translation>odstránená nepekná konzola vo WIN32 (okrem režimu Debug)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="1346"/>
+        <source>Added icons to all GRASS tools. All GRASS tools are now on the toolbar</source>
+        <translation>pridané ikony pre všetky nástroje GRASSu. Všetky nástroje sú odteraz v paneli nástrojov</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="1348"/>
+        <source>New GRASS modules added to the GRASS toolbox</source>
+        <translation>do Nástrojov GRASSu boli pridané nové moduly GRASSu</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="1350"/>
+        <source>The GRASS plugin is now fully internationalized</source>
+        <translation>zásuvný modul GRASSu je plne lokalizovateľný</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="1352"/>
+        <source>Launcher plugin added to core plugins </source>
+        <translation>medzi jadrové zásuvné moduly bol pridaný zásuvný modul Spúšťač</translation>
     </message>
 </context>
 <context>
     <name>QgisAppBase</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Quantum GIS</source>
         <translation type="obsolete">Quantum GIS</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Tools</source>
         <translation type="obsolete">&amp;Nástroje</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Help</source>
         <translation type="obsolete">&amp;Pomocník</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>File Management Toolbar</source>
         <translation type="obsolete">Lišta Správa súborov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Data Toolbar</source>
         <translation type="obsolete">Lišta Údaje</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Map Navigation Toolbar</source>
         <translation type="obsolete">Lišta Navigácia na mape</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Attribute Data Toolbar</source>
         <translation type="obsolete">Lišta Atribúty údajov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Open Project</source>
         <translation type="obsolete">Otvoriť projekt</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Exit</source>
         <translation type="obsolete">Koniec</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>E&amp;xit</source>
         <translation type="obsolete">&amp;Koniec</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Export As Image</source>
         <translation type="obsolete">E&amp;xportovať ako obrázok</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Refresh </source>
         <translation type="obsolete">Obnoviť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom to full extent</source>
         <translation type="obsolete">Zoom na plnú veľkosť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Map Navigation Tools</source>
         <translation type="obsolete">Nástroje pre navigáciu na mape</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom &amp;In</source>
         <translation type="obsolete">Z&amp;oom (+)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Pan</source>
         <translation type="obsolete">Posun</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Pan</source>
         <translation type="obsolete">&amp;Posun</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom out</source>
         <translation type="obsolete">Zoom (-)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Identify</source>
         <translation type="obsolete">Identifikovať</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Identify a feature on the active layer</source>
         <translation type="obsolete">Identifikovať objekt v aktívnej vrstve</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>select features</source>
         <translation type="obsolete">Vybrať objekty</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;About Quantum GIS</source>
         <translation type="obsolete">&amp;O programe Quantum GIS</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Test button</source>
         <translation type="obsolete">Testovacie tlačítko</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Add a vector layer (e.g. Shapefile)</source>
         <translation type="obsolete">Pridať vektorovú vrstvu (napr. súbor Shape)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Attribute table</source>
         <translation type="obsolete">Tabuľka atribútov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Open the attribute table for the selected layer</source>
         <translation type="obsolete">Otvoriť tabuľku atribútov pre vybranú vrstvu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Action</source>
         <translation type="obsolete">Akcia</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom to last extent</source>
         <translation type="obsolete">Zoom na naposledy použitú veľkosť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Test plugin functions</source>
         <translation type="obsolete">Otestovať funkcie zásuvného modulu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Save Project</source>
         <translation type="obsolete">Uložiť projekt</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Save Project As...</source>
         <translation type="obsolete">Uložiť projekt ako...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Plugin Manager</source>
         <translation type="obsolete">Správca zásuvných modulov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Check QGIS Version</source>
         <translation type="obsolete">Zistiť novú verziu QGIS</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Add a PostGIS Layer</source>
         <translation type="obsolete">Pridať vrstvu PostGIS</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom to selected features</source>
         <translation type="obsolete">Zoom na veľkosť označených objektov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom to selected features in active layer</source>
         <translation type="obsolete">Zoom na veľkosť označených objektov v aktívnej vrstve</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Add a Vector Layer</source>
         <translation type="obsolete">Pridať vektorovú vrstvu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Start a new QGIS project</source>
         <translation type="obsolete">Začať nový QGIS projekt</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Export to MapServer</source>
         <translation type="obsolete">Export do formátu MapServer</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Add a Raster Layer</source>
         <translation type="obsolete">Pridať rastrovú vrstvu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Contents</source>
         <translation type="obsolete">&amp;Obsah</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>QGIS Help (HTML)</source>
         <translation type="obsolete">QGIS Pomocník (HTML)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Preferences</source>
         <translation type="obsolete">Nastavenia</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>QGIS User Preferences</source>
         <translation type="obsolete">QGIS používateľské nastavenia</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>QGIS Home Page</source>
         <translation type="obsolete">Domovská stánka QGIS</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>QGIS SourceForge Page</source>
         <translation type="obsolete">Stránka QGIS SourceForge</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Help Toolbar</source>
         <translation type="obsolete">Lišta Pomocníka</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Open a previously saved QGIS project file. The layers (raster and vector) stored in the project file will be loaded and displayed on the map canvas</source>
         <translation type="obsolete">Otvorí naposledy uložený QGIS projekt. Vrstvy (rastrové a vektorové) uložené v súbore projektu budú nahraté a zobrazené na mapové plátno</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Close all layers and exit QGIS</source>
         <translation type="obsolete">Zatvorí všetky vrstvy a ukončí prácu s QGIS-om</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Add a PostgreSQL layer to the map. This requires a properly configured and running PostgreSQL database and the PostGIS extensions.</source>
         <translation type="obsolete">Pridá do mapy PostgreSQL vrstvu. To vyžaduje mať správne nakonfigurovanú a spustenú PostgreSQL databázu a rozšírenia PostGIS.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Refresh the map by clearing the map canvas and redrawing all visible layers</source>
         <translation type="obsolete">Obnoví mapu vyčistením mapového plátna a prekreslením všetkých viditeľných vrstiev</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom to the full extent of all layers on the map. This brings everything on the map into full view</source>
         <translation type="obsolete">Nastaví zoom na plnú veľkosť všetkých mapových vrstiev. Tým sa zabezpečí, že sa na mape zobrazí v plnom rozsahu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom in on the map. Drag the mouse (hold down the left button) to draw a rectangle around the area you want to zoom to, then release the mouse.</source>
         <translation type="obsolete">Priblíženie mapy (zoom +). Držaním pravého tlačítka myši je možné vymedziť obdĺžnikovú oblasť, ktorá bude priblížená.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Pan the map view by dragging the mouse (hold down the left button). The area displayed will change after the mouse is released.</source>
         <translation type="obsolete">Posúva mapový pohľad posúvaním myši (držaním ľavého tlačidla). Zobrazovaná oblasť sa zmení po uvoľnení tlačidla myši.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom out to view more of the map. Drag the mouse (hold down the left button) to draw a rectangle around an area. The current view will zoomed out and resized to &quot;fit&quot; in the rectangle.</source>
         <translation type="obsolete">Oddiali (zoom -) mapový pohľad, aby bolo vidno väčšiu časť. Pohybom myši (a držaním ľavého tlačidla) je možné vymedziť obdĺžnikovú oblasť. Aktuálny pohľad bude zmenšený tak aby sa vošiel do vymedzenej oblasti.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom to the extent of selected features on the active layer. The view will be zoomed so that all selected features are visible. If there are no selected features, the view is not changed.</source>
         <translation type="obsolete">Zoom na veľkosť vybraných objektov v aktívnej vrstve. Pohľad bude upravený na veľkosť, pri ktorej budú viditeľné všetky vybraté objekty. Ak nie sú vybraté žiadne objekty, pohľad nebude zmenený.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Identify a feature on the active layer (the active layer is the highlighted layer in the legend). Idenify searches for features near where the mouse is clicked and displays information about the results. The search radius can be customized on the QGIS Preferences dialog.</source>
         <translation type="obsolete">Identifikuje objekt v aktívnej vrstve (aktívna vrstva je vrstva, ktorá je zvýraznená v okne Legenda). Vyhľadá objekty v blízkosti miesta kliknutia myšou a výsledky zobrazí. Polomer hľadania môže byť prispôsobený v QGIS menu Vlastnosti.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Select features on the active layer by dragging the mouse to create a box around the features of interest. When the mouse is released, the features are selected and drawn in a different color (default is yellow)</source>
         <translation type="obsolete">Vyberie objekty v aktívnej vrstve, držaním pravého tlačítka myši je možné označiť oblasť, do ktorej spadajúce objekty budú označené. Vybrané objekty sú vykreslené inou farbou (štandardne žltou)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Display the About QGIS dialog. About QGIS contains information about the current version, contributors, and available data provider plugins.</source>
         <translation type="obsolete">Zobrazí informácie o programe QGIS. Položka obsahuje informácie o používanej vezii, autoroch a dostupných zásuvných moduloch na prístup k údajom.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Add a vector layer to the map canvas. The supported formats are those provided by the OGR library. For a list of supported formats, see http://www.remotesensing.org/gdal/ogr/ogr_formats.html</source>
         <translation type="obsolete">Na mapové plátno pridá vektorovú vrstvu. Podporovanými formátmi sú tie, ktoré dokáže spracovať knižnica OGR. Zoznam podporovaných formátov sa nachádza na  http://www.remotesensing.org/gdal/ogr/ogr_formats.html</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Open the attribute table for the selected vector layer. The rows can be sorted by clicking on the column names in the header row.</source>
         <translation type="obsolete">Otvorí tabuľku atribútov pre vybratú vektorové vrstvu. Riadky tabuľky je možné zoradiť kliknutím na meno stĺpca v hlavičke (prvom riadku tabuľky).</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom to the last view. QGIS stores only one previous view so repeatedly clicking this button swaps the views.</source>
         <translation type="obsolete">Upraví pohľad na posledne použitú veľkosť. QGIS si pamätá len jeden predchádzajúci pohľad takže opakované klikanie bude vymieňať len dva rôzne pohľady.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Open the options dialog to set QGIS preferences like web browser and identify search radius.</source>
         <translation type="obsolete">Otvorí dialóg na nastavenie vlastností QGIS ako sú napr. www prehliadač, či polomer hľadania pri identifikácii.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Save the current map as a QGIS project. A QGIS project can later be opened and all layers and setting will be restored.</source>
         <translation type="obsolete">Uloží aktuálnu mapu ako QGIS projekt. QGIS projekt môže byť neskôr otvorený a všetky vrstvy a nastavenia budú obnovené.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Save the current map as a new QGIS project. A QGIS project can later be opened and all layers and setting will be restored.</source>
         <translation type="obsolete">Uloží aktuálnu mapu ako nový QGIS projekt. QGIS projekt môže byť neskôr otvorený a všetky vrstvy a nastavenia budú obnovené.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Create a new, empty QGIS project. All layers will be removed from the map canvas and a blank canvas will be created.</source>
         <translation type="obsolete">Vytvorí nový, prázdny QGIS projekt. Z mapového plátna budú odobraté všetky vrstvy a ostane čisté.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Opens the Plugin Manager and allows you to view loaded plugins or load a new one. The Plugin Manager lists the available plugins and a description of the features each provides.</source>
         <translation type="obsolete">Otvorí Správcu zásuvných modulov a umožní prezrieť si už nahraté zásuvné moduly, alebo nahrať ďalší. Správca zásuvných modulov obsahuje zoznam všetkých dostupných modulov a popis činnosti každého z nich.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Contacts the QGIS version server and provides information about the current version and any new features/changes available in the development version.</source>
         <translation type="obsolete">Spojí sa s QGIS version serverom a poskytne informácie o aktuálnej verzii a nových vlastnosiach/zmenách v aktuálnej vývojovej verzii.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Creates a Mapserver file (.map) from the current QGIS view. The .map file can be used to create a Mapserver project.</source>
         <translation type="obsolete">Z aktuálneho QGIS pohľadu vytvorí súbor Mapserver (.map). Súbor .map môže byť použitý na vytvorenie Mapserver projektu.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Adds a raster layer to the map canvas. Supported raster formats include most of those provided by the GDAL library. See http://www.remotesensing.org/gdal/formats_list.html</source>
         <translation type="obsolete">Pridá rastrovú vrstvu do Mapového okna. Podporované rastrové formáty zahŕňajú mnohé z tých, čo zabezpečuje knižnica GDAL. Pozri http://www.remotesensing.org/gdal/formats_list.html</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Open the QGIS Help Contents in a web browser</source>
         <translation type="obsolete">Otvorí obsah QGIS pomocníka vo www prehlidači</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Open the QGIS home page in a web browser</source>
         <translation type="obsolete">Otvorí domovskú stránku QGIS</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Open the QGIS SourceForge project page in a web browser</source>
         <translation type="obsolete">Otvorí stránku QGIS projektu na SourceForge </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Save the current map view as a PNG image. The image size will be exactly the same as the size of the map canvas.</source>
         <translation type="obsolete">Uloží aktuálny mapový pohľad ako PNG obrázok. Veľkosť obrázku bude práve taká, ako je veľkosť mapového okna.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Whats this?</source>
         <translation type="obsolete">Čo je to?</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Whats this? - Click this tool and then click on a toolbar button or menu item to get more information</source>
         <translation type="obsolete">Čo je to? - Viac informácií sa dozviete kliknutím na tento nástroj a následným kliknutím na ľubovoľnú položku z panela nástrojov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Project Properties</source>
         <translation type="obsolete">Vlastnosti projektu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Set project properties, including map units</source>
         <translation type="obsolete">Nastaviť vlastnosti projektu, vrátane mapových jednotiek</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Set properties for the current project, including map units</source>
         <translation type="obsolete">Nastaviť vlastnosti aktuálneho projektu, vrátane mapových jednotiek</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;File</source>
         <translation type="obsolete">&amp;Súbor</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Layer</source>
         <translation type="obsolete">&amp;Vrstva</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;View</source>
         <translation type="obsolete">Pohľa&amp;d</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Plugins</source>
         <translation type="obsolete">Zásuvné &amp;moduly</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Open Project</source>
         <translation type="obsolete">&amp;Otvoriť projekt</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ctrl+O</source>
         <translation type="obsolete">Ctrl+O</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Add a &amp;PostGIS Layer</source>
         <translation type="obsolete">Pridať vrstvu &amp;PostGIS</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Refresh </source>
         <translation type="obsolete">&amp;Obnoviť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom to &amp;full extent</source>
         <translation type="obsolete">Zoom na &amp;plnú veľkosť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom in</source>
         <translation type="obsolete">Zoom (+)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom &amp;Out</source>
         <translation type="obsolete">Zoom (&amp;-)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Zoom to selected features</source>
         <translation type="obsolete">&amp;Zoom na veľkosť označených objektov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>I&amp;dentify</source>
         <translation type="obsolete">I&amp;dentifikovať</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Add a &amp;Vector Layer</source>
         <translation type="obsolete">Pridať v&amp;ektorovú vrstvu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Attribute table</source>
         <translation type="obsolete">&amp;Tabuľka atribútov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Previous</source>
         <translation type="obsolete">Predchádzajúci</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom to &amp;previous extent</source>
         <translation type="obsolete">Zoom p&amp;redchádzajúcu veľkosť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Preferences</source>
         <translation type="obsolete">&amp;Vlastnosti</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Save Project</source>
         <translation type="obsolete">&amp;Uložiť projekt</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ctrl+S</source>
         <translation type="obsolete">Ctrl+S</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Save Project &amp;As...</source>
         <translation type="obsolete">Uložiť projekt &amp;ako...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New Project</source>
         <translation type="obsolete">Nový projekt</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;New Project</source>
         <translation type="obsolete">&amp;Nový projekt</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ctrl+N</source>
         <translation type="obsolete">Ctrl+N</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Plugin &amp;Manager</source>
         <translation type="obsolete">Správca zásuvných &amp;modulov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Check QGIS &amp;Version</source>
         <translation type="obsolete">Zistiť QGIS &amp;Verziu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Export As Mapserver file</source>
         <translation type="obsolete">Exportovať ako súbor Mapserver</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Export As &amp;Mapserver file</source>
         <translation type="obsolete">Exportovať ako súbor &amp;Mapserver</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Add a &amp;Raster Layer</source>
         <translation type="obsolete">Pridať &amp;rastrovú vrstvu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Export As Image</source>
         <translation type="obsolete">Exportovať ako obrázok</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>E&amp;xport As Image</source>
         <translation type="obsolete">E&amp;xportovať ako obrázok</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Whats this?</source>
         <translation type="obsolete">Čo je &amp;to?</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Shift+F1</source>
         <translation type="obsolete">Shift+F1</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Project &amp;Properties</source>
         <translation type="obsolete">&amp;Vlastnosti projektu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Properties</source>
         <translation type="obsolete">Vlastnosti</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Properties</source>
         <translation type="obsolete">&amp;Vlastnosti</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Properties for the selected layer</source>
         <translation type="obsolete">Vlastnosti označenej vrstvy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom to layer</source>
         <translation type="obsolete">Zoom na veľkosť vrstvy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom to &amp;layer</source>
         <translation type="obsolete">Zoom na veľkosť &amp;vrstvy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Print</source>
         <translation type="obsolete">Tlačiť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Print</source>
         <translation type="obsolete">&amp;Tlačiť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>P&amp;roject properties</source>
         <translation type="obsolete">&amp;Vlastnosti projektu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ctrl+P</source>
         <translation type="obsolete">Ctrl+P</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>D</source>
         <translation type="obsolete">D</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>V</source>
         <translation type="obsolete">V</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>R</source>
         <translation type="obsolete">R</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Capture Point</source>
         <translation type="obsolete">Uchopiť bod</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Add All To Overview</source>
         <translation type="obsolete">Pridať všetky do Prehľadu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Remove Layer</source>
         <translation type="obsolete">Odobrať vrstvu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>+</source>
         <translation type="obsolete">+</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Remove All From Overview</source>
         <translation type="obsolete">Odobrať všetky z Prehľadu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>-</source>
         <translation type="obsolete">-</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Show All Layers</source>
         <translation type="obsolete">Ukázať všetky vrstvy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>S</source>
         <translation type="obsolete">S</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Hide All Layers</source>
         <translation type="obsolete">Skryť všetky vrstvy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>H</source>
         <translation type="obsolete">H</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Capture Line</source>
         <translation type="obsolete">Získať líniu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Capture Polygon</source>
         <translation type="obsolete">Získať polygón</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Map Edit Tools</source>
         <translation type="obsolete">Nástroje na úpravu mapy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Show all layers</source>
         <translation type="obsolete">Zobraziť všetky vrstvy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Add to overview</source>
         <translation type="obsolete">Pridať do prehľadu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Capture points</source>
         <translation type="obsolete">Získať body</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Plugins Toolbar</source>
         <translation type="obsolete">Lišta Zásuvné moduly</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Settings</source>
         <translation type="obsolete">&amp;Nastavenia</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>P&amp;roject Properties</source>
         <translation type="obsolete">Vlastnosti &amp;projektu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Toggle In Overview</source>
         <translation type="obsolete">Pridať do prehľadu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New Vectorlayer</source>
         <translation type="obsolete">Nová vektorová vrstva</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Measure</source>
         <translation type="obsolete">Vzdialenosť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Debug</source>
         <translation type="obsolete">Ladenie</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>DebugHook</source>
         <translation type="obsolete">LadiaciHák</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>DebugHook to which random stuff can be attached</source>
         <translation type="obsolete">LadiaciHák na ktorý je možné zavesiť náhodný kód</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Custom Projections</source>
         <translation type="obsolete">Vlastné zobrazenia</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Bookmarks Toolbar</source>
         <translation type="obsolete">Lišta Záložky</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Show geospatial bookmarks</source>
         <translation type="obsolete">Ukáže geopriestorové záložky</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Geospatial bookmarks...</source>
         <translation type="obsolete">Geopriestorové záložky...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Create a new geospatial bookmark</source>
         <translation type="obsolete">Vytvoriť novú geopriestorovú záložku</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New geospatial bookmark...</source>
         <translation type="obsolete">Nová geopriestorová záložka...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Create a new geospatial bookmark for the current view</source>
         <translation type="obsolete">Pre aktuálny pohľad vytvorí novú geopriestorovú záložku </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Capture (digitise) a point on the current layer. The layer must be in edit mode.</source>
         <translation type="obsolete">Získať (digitalizovať) bod na aktuálnej vrstve. Vrstva musí byť nastavená ako upravovateľná.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Capture (digitise) a line on the current layer. The layer must be in edit mode.</source>
         <translation type="obsolete">Získať (digitalizovať) líniu na aktuálnej vrstve. Vrstva musí byť nastavená ako upravovateľná.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Capture (digitise) a polygon on the current layer. The layer must be in edit mode.</source>
         <translation type="obsolete">Získať (digitalizovať) polygón na aktuálnej vrstve. Vrstva musí byť nastavená ako upravovateľná.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Measure distances on the map canvas.</source>
         <translation type="obsolete">Merať vzdialenosti na mapovom plátne.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ctrl+M</source>
         <translation type="obsolete">Ctrl+M</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Properties for the selected layer, including rendering and projection settings.</source>
         <translation type="obsolete">Vlastnosti pre vybranú vrstvu, vrátane vykresľovania a nastavenia zobrazenia.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom to the extent of the active layer</source>
         <translation type="obsolete">Zoom na veľkosť aktívnej vrstvy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Open the Map Composer to create and print a map using the current layers and settings.</source>
         <translation type="obsolete">Otvorí Skladateľa máp slúžiaceho na tvorbu a tlač máp s použitím aktuálnych vrstiev a nastavení.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Add all layers to the overview map.</source>
         <translation type="obsolete">Pridá do mapového prehľadu všetky vrstvy.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Remove all layers to the overview map.</source>
         <translation type="obsolete">Odobere z mapového prehľadu všetky vrstvy.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Toggle the visibility of all layers to on and redraw the map.</source>
         <translation type="obsolete">Zapne viditeľnosť všetkých vrstiev a prekreslí mapu.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Toggle the visibility of all layers to off and clear the map.</source>
         <translation type="obsolete">Vypne viditeľnosť všetkých vrstiev a vyčistí mapu.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Remove the active layer from the map.</source>
         <translation type="obsolete">Odoberie z mapy aktívnu vrstvu.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Add or remove the active layer to the Overview map.</source>
         <translation type="obsolete">Pridá alebo odoberie aktívnu vrstvu z Mapového prehľadu.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Create a new vector layer (shapefile) for editing.</source>
         <translation type="obsolete">Vytvorí novú upravovateľnú vektorovú vrstvu (shape súbor).</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Create or manage custom projection definitions.</source>
         <translation type="obsolete">Vytvorí novú, alebo spravuje existujúce definície vlastných definícií kartografických zobrazení.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Show the spatial bookmarks dialog and zoom to a bookmark or delete unwanted bookmarks.</source>
         <translation type="obsolete">Ukáže dialóg pristorových záložiek a upraví pohľad podľa záložky, alebo vymaže nechcené záložky.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ctrl+B</source>
         <translation type="obsolete">Ctrl+B</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Create a new geospatial bookmark for the current view extent.</source>
         <translation type="obsolete">Vytvorí novú geopriestorovú záložku na rozsah aktuálneho pohľadu.</translation>
     </message>
@@ -4689,156 +4744,156 @@ Kompilované s knižnicou Qt </translation>
         <translation>O programe Quantum GIS</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="223"/>
+        <location filename="../src/ui/qgsabout.ui" line="300"/>
         <source>Ok</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="26"/>
+        <location filename="../src/ui/qgsabout.ui" line="32"/>
         <source>About</source>
         <translation>O programe</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="62"/>
+        <location filename="../src/ui/qgsabout.ui" line="86"/>
         <source>Version</source>
         <translation>Verzia</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Quantum GIS (qgis)</source>
         <translation type="obsolete">Quantum GIS (qgis)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="108"/>
+        <location filename="../src/ui/qgsabout.ui" line="132"/>
         <source>What&apos;s New</source>
         <translation>Čo je nového</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>http://www.gnu.org/licenses</source>
         <translation type="obsolete">http://www.gnu.org/licenses</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Contributors</source>
         <translation type="obsolete">Autori</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Plugins</source>
         <translation type="obsolete">Plugins</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;h2&gt;QGIS Contributors&lt;/h2&gt;</source>
         <translation type="obsolete">&lt;h2&gt;Autori QGIS&lt;/h2&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Gary E. Sherman</source>
         <translation type="obsolete">Gary E. Sherman</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Steve Halasz</source>
         <translation type="obsolete">Steve Halasz</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Tim Sutton</source>
         <translation type="obsolete">Tim Sutton</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Marco Hugentobler</source>
         <translation type="obsolete">Marco Hugentobler</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Denis Antipov</source>
         <translation type="obsolete">Denis Antipov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Mark Coletti</source>
         <translation type="obsolete">Mark Coletti</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Jens Oberender</source>
         <translation type="obsolete">Jens Oberender</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Radim Blazek</source>
         <translation type="obsolete">Radim Blazek</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Carl Anderson</source>
         <translation type="obsolete">Carl Anderson</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Masaru Hoshi</source>
         <translation type="obsolete">Masaru Hoshi</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Lars Luthman</source>
         <translation type="obsolete">Lars Luthman</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Peter Brewer</source>
         <translation type="obsolete">Peter Brewer</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="52"/>
+        <location filename="../src/ui/qgsabout.ui" line="76"/>
         <source>&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</source>
         <translation>&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;p align=&quot;center&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;p&gt;
 &lt;p align=&quot;center&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;</source>
         <translation type="obsolete">&lt;p align=&quot;center&quot;&gt;Quantum GIS je pod šírený pod licenciou GNU General Public License&lt;p&gt;
 &lt;p align=&quot;center&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="87"/>
+        <location filename="../src/ui/qgsabout.ui" line="111"/>
         <source>QGIS Home Page</source>
         <translation>Domovská stránka QGIS</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="97"/>
+        <location filename="../src/ui/qgsabout.ui" line="121"/>
         <source>Subscribe to the QGIS-User mailing list</source>
         <translation>Prihlásiť sa do QGIS-User mailing listu (príspevky iba po anglicky)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="178"/>
+        <location filename="../src/ui/qgsabout.ui" line="237"/>
         <source>Providers</source>
         <translation>Prístup k údajom</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;p align=&quot;center&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;p&gt;<byte value="xd"/>
 &lt;p align=&quot;center&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;</source>
         <translation type="obsolete">&lt;p align=&quot;center&quot;&gt;Quantum GIS je pod GNU General Public License licenciou&lt;p&gt;
 &lt;p align=&quot;center&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p align=&apos;center&apos; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;/p&gt;&lt;p align=&apos;center&apos; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p align=&apos;center&apos; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Quantum GIS je šírený pod licenciou GNU General Public License&lt;/p&gt;&lt;p align=&apos;center&apos; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="118"/>
+        <location filename="../src/ui/qgsabout.ui" line="161"/>
         <source>Developers</source>
         <translation>Vývojári</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="170"/>
+        <location filename="../src/ui/qgsabout.ui" line="229"/>
         <source>&lt;h2&gt;QGIS Developers&lt;/h2&gt;</source>
         <translation>&lt;h2&gt;Vývojári QGIS&lt;/h2&gt;</translation>
     </message>
@@ -4848,7 +4903,7 @@ Kompilované s knižnicou Qt </translation>
         <translation>QGIS Výber prehliadača</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Enter the name of a web browser to use (eg. konqueror).
 Enter the full path if the browser is not in your PATH.
 You can change this option later by selection Options from the Tools menu.</source>
@@ -4866,7 +4921,7 @@ Pokiaľ váš prehliadač nie je v v premennej PATH, uveďte k nemu aj úplnú c
 Túto voľbu je možné neskôr upraviť vybratím položky Vlastnosti v menu Nastavenia (záložka Prehliadač pomocníka).</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Arial; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p align=&apos;center&apos; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Sans Serif; font-size:9pt;&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;/p&gt;&lt;p align=&apos;center&apos; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Sans Serif; font-size:9pt;&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Arial; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p align=&apos;center&apos; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Sans Serif; font-size:9pt;&quot;&gt;
 Quantum GIS je šírený pod licenciou GNU General Public License&lt;/p&gt;&lt;p align=&apos;center&apos; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
@@ -4898,21 +4953,12 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Arial&apos;; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Arial&apos;; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Quantum GIS je licencovaný pod GNU General Public License&lt;/p&gt;&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Arial&apos;; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Quantum GIS je licencovaný pod GNU General Public License&lt;/p&gt;&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="188"/>
+        <location filename="../src/ui/qgsabout.ui" line="253"/>
         <source>Sponsors</source>
         <translation>Sponzori</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsabout.ui" line="76"/>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4946,42 +4992,42 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsAdvancedAttrSearchBase</name>
     <message>
-        <location filename="../src/ui/ui_qgsadvancedattrsearchbase.h" line="82"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/src/ui/ui_qgsadvancedattrsearchbase.h" line="82"/>
         <source>Alt+L</source>
         <translation type="obsolete">Alt+P</translation>
     </message>
     <message>
-        <location filename="../src/ui/ui_qgsadvancedattrsearchbase.h" line="84"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/src/ui/ui_qgsadvancedattrsearchbase.h" line="84"/>
         <source>Alt+S</source>
         <translation type="obsolete">Alt+H</translation>
     </message>
     <message>
-        <location filename="../src/ui/ui_qgsadvancedattrsearchbase.h" line="86"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/src/ui/ui_qgsadvancedattrsearchbase.h" line="86"/>
         <source>Alt+A</source>
         <translation type="obsolete">Alt+Z</translation>
     </message>
     <message>
-        <location filename="../src/ui/ui_qgsadvancedattrsearchbase.h" line="80"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/src/ui/ui_qgsadvancedattrsearchbase.h" line="80"/>
         <source>Advanced search</source>
         <translation type="obsolete">Pokročilé hľadanie</translation>
     </message>
     <message>
-        <location filename="../src/ui/ui_qgsadvancedattrsearchbase.h" line="81"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/src/ui/ui_qgsadvancedattrsearchbase.h" line="81"/>
         <source>He&amp;lp</source>
         <translation type="obsolete">&amp;Pomocník</translation>
     </message>
     <message>
-        <location filename="../src/ui/ui_qgsadvancedattrsearchbase.h" line="83"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/src/ui/ui_qgsadvancedattrsearchbase.h" line="83"/>
         <source>&amp;Search</source>
         <translation type="obsolete">&amp;Hľadať</translation>
     </message>
     <message>
-        <location filename="../src/ui/ui_qgsadvancedattrsearchbase.h" line="85"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/src/ui/ui_qgsadvancedattrsearchbase.h" line="85"/>
         <source>C&amp;ancel</source>
         <translation type="obsolete">&amp;Zrušiť</translation>
     </message>
     <message>
-        <location filename="../src/ui/ui_qgsadvancedattrsearchbase.h" line="87"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/src/ui/ui_qgsadvancedattrsearchbase.h" line="87"/>
         <source>Search string:</source>
         <translation type="obsolete">Hľadaný reťazec:</translation>
     </message>
@@ -5018,17 +5064,17 @@ p, li { white-space: pre-wrap; }
         <translation>Akcie</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Name</source>
         <translation type="obsolete">Meno</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Action</source>
         <translation type="obsolete">Akcia</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clikcing on the item.</source>
         <translation type="obsolete">Tento zoznam obsahuje všetky akcie ktoré boli definované pre aktuálnu vrstvu. Pridajte akcie vložením detailov v kontrolkách dole a stlačením tlačítka Vložiť. Akcie je možné upraviť dvojklikom na príslušnú položku.</translation>
     </message>
@@ -5083,7 +5129,7 @@ p, li { white-space: pre-wrap; }
         <translation>Akcia:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will replaced by the value of the field that was selected.</source>
         <translation type="obsolete">Sem vložte akciu. Môže ňou byť akýkoľvek program, skript alebo príkaz ktorý je dostupný vo vašom systéme. Keď je akcia vyvolaná nejakou sadou znakou ktoré začínajú s % a potom meno poľa bude nahradené hodnotou poľa. Špeciálne znaky %% budú nahradené hodnotou vybratého poľa.</translation>
     </message>
@@ -5148,7 +5194,7 @@ p, li { white-space: pre-wrap; }
         <translation>Sem vložte akciu. Môže ňou byť ľubovoľný program, skript, alebo príkaz ktorý je dostupný vo vašom systéme. Keď je vyvolaná akcia, akákoľvek skupina znakov začínajúca so znakom % nasledovaným menom poľa bude nahradená hodnotou poľa. Špeciálne znaky %% budú nahradené hodnotou poľa, ktoré bolo vybraté. Dvojité úvodzovky zoskupia text do jednotlivých argumentov programu, skriptu alebo príkazu. Dvojité úvodzovky budú ignorované pokiaľ je pred nimi spätná lomka</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Capture</source>
         <translation type="obsolete">Sledovať</translation>
     </message>
@@ -5176,12 +5222,12 @@ p, li { white-space: pre-wrap; }
         <translation>Vložiť hodnoty atribútov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>OK</source>
         <translation type="obsolete">OK</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Cancel</source>
         <translation type="obsolete">Zrušiť</translation>
     </message>
@@ -5214,7 +5260,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsAttributeTable</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;center&gt;Run action&lt;/center&gt;</source>
         <translation type="obsolete">&lt;center&gt;Spustiť akciu&lt;/center&gt;</translation>
     </message>
@@ -5232,12 +5278,12 @@ p, li { white-space: pre-wrap; }
         <translation>Tabuľka atribútov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Close</source>
         <translation type="obsolete">Zatvoriť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Stop editing</source>
         <translation type="obsolete">Ukončiť úpravy</translation>
     </message>
@@ -5262,7 +5308,7 @@ p, li { white-space: pre-wrap; }
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/src/ui/qgsattributetablebase.ui" line="216"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/src/ui/qgsattributetablebase.ui" line="216"/>
         <source>Delete attribute</source>
         <translation type="obsolete">Zmazať atribút</translation>
     </message>
@@ -5272,7 +5318,7 @@ p, li { white-space: pre-wrap; }
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/src/ui/qgsattributetablebase.ui" line="200"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/src/ui/qgsattributetablebase.ui" line="200"/>
         <source>New attribute</source>
         <translation type="obsolete">Nový atribút</translation>
     </message>
@@ -5370,32 +5416,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsAttributeTableDisplay</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Add Attribute...</source>
         <translation type="obsolete">&amp;Pridať atribút...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Delete Attributes...</source>
         <translation type="obsolete">&amp;Zmazať atribúty...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Bring selection to top</source>
         <translation type="obsolete">&amp;Výber preniesť hore</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Invert selection</source>
         <translation type="obsolete">&amp;Invertovať výber</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Edit</source>
         <translation type="obsolete">&amp;Upraviť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Selection</source>
         <translation type="obsolete">Vý&amp;ber</translation>
     </message>
@@ -5590,37 +5636,37 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsCommunityRegPluginGuiBase</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>QGIS Plugin QGIS Community Registration Plugin</source>
         <translation type="obsolete">QGIS zásuvný modul na registráciu do spoločenstva používateľov QGIS </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;OK</source>
         <translation type="obsolete">&amp;OK</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Alt+O</source>
         <translation type="obsolete">Alt+O</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Cancel</source>
         <translation type="obsolete">&amp;Zrušiť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Alt+C</source>
         <translation type="obsolete">Alt+Z</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>qgis.community.org</source>
         <translation type="obsolete">qgis.community.org</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This plugin will register you on the community.qgis.org users map.&lt;/p&gt;
@@ -5632,47 +5678,47 @@ p, li { white-space: pre-wrap; }
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Home URL:</source>
         <translation type="obsolete">Domovské URL:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Email:</source>
         <translation type="obsolete">E-mail:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Place Description:</source>
         <translation type="obsolete">Popis miesta:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Name:</source>
         <translation type="obsolete">Meno:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Longitude (dec. degrees):</source>
         <translation type="obsolete">Zemepisná dĺžka (v stupňoch):</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Country:</source>
         <translation type="obsolete">Krajina:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Image URL (50x50):</source>
         <translation type="obsolete">URL adresa obrázku (50x50):</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Latitude (dec. degrees):</source>
         <translation type="obsolete">Zemepisná šírka (v stupňoch):</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Get From Map</source>
         <translation type="obsolete">Získať z mapy</translation>
     </message>
@@ -5700,7 +5746,7 @@ p, li { white-space: pre-wrap; }
         <translation>Chyba pri tlači</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/src/composer/qgscomposer.cpp" line="389"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/src/composer/qgscomposer.cpp" line="389"/>
         <source>Cannot format BoundingBox</source>
         <translation type="obsolete">Nemožno formátovať BoundingBox (obdĺžnik ohraničenia)</translation>
     </message>
@@ -5720,7 +5766,7 @@ p, li { white-space: pre-wrap; }
         <translation>Nemožno nájsť BoundingBox (obdĺžnik ohraničenia)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/src/composer/qgscomposer.cpp" line="444"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/src/composer/qgscomposer.cpp" line="444"/>
         <source>Cannot format translate</source>
         <translation type="obsolete">Nemožno formátovať prevod</translation>
     </message>
@@ -5772,7 +5818,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/composer/qgscomposer.cpp" line="735"/>
         <source>SVG warning</source>
-        <translation type="unfinished">SVG - Upozornenie</translation>
+        <translation>Upozornenie (SVG)</translation>
     </message>
     <message>
         <location filename="../src/composer/qgscomposer.cpp" line="736"/>
@@ -5813,7 +5859,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsComposerBase</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Map Composer</source>
         <translation type="obsolete">Skladateľ máp</translation>
     </message>
@@ -5833,27 +5879,27 @@ p, li { white-space: pre-wrap; }
         <translation>Položka</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;File</source>
         <translation type="obsolete">&amp;Súbor</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Toolbar_2</source>
         <translation type="obsolete">Nástrojová_lišta_2</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Toolbar</source>
         <translation type="obsolete">Nástrojová lišta</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Tools</source>
         <translation type="obsolete">Nástroje</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Open Template</source>
         <translation type="obsolete">Otvoriť šablónu</translation>
     </message>
@@ -5863,12 +5909,12 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;Otvoriť šablónu ...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ctrl+O</source>
         <translation type="obsolete">Ctrl+O</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Save Template As</source>
         <translation type="obsolete">Uložiť šablónu ako</translation>
     </message>
@@ -5878,7 +5924,7 @@ p, li { white-space: pre-wrap; }
         <translation>Uložiť šablónu &amp;ako...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Print</source>
         <translation type="obsolete">Tlačiť</translation>
     </message>
@@ -5888,12 +5934,12 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;Tlačiť...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ctrl+P</source>
         <translation type="obsolete">Ctrl+P</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Action</source>
         <translation type="obsolete">Akcia</translation>
     </message>
@@ -5938,17 +5984,17 @@ p, li { white-space: pre-wrap; }
         <translation>Obnoviť pohľad</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom to full extent</source>
         <translation type="obsolete">Zoom na plnú veľkosť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom in</source>
         <translation type="obsolete">Zoom (+)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom out</source>
         <translation type="obsolete">Zoom (-)</translation>
     </message>
@@ -6009,7 +6055,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsComposerMap</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Map %d</source>
         <translation type="obsolete">Mapa %d</translation>
     </message>
@@ -6057,7 +6103,7 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;b&gt;Mapa&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Calculate</source>
         <translation type="obsolete">Vypočítať</translation>
     </message>
@@ -6297,7 +6343,7 @@ p, li { white-space: pre-wrap; }
         <translation>Stĺpec 1</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New Item</source>
         <translation type="obsolete">Nová položka</translation>
     </message>
@@ -6475,7 +6521,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsConnectionDialog</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>SPIT - Help</source>
         <translation type="obsolete">SPIT - Pomocník</translation>
     </message>
@@ -6595,32 +6641,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsContColDialogBase</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Continuous color</source>
         <translation type="obsolete">Spojitá farba</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Classification Field:</source>
         <translation type="obsolete">Triediace kritérium:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Minimum Value:</source>
         <translation type="obsolete">Minimálna hodnota:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Maximum Value:</source>
         <translation type="obsolete">Maximálna hodnota:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Outline Width:</source>
         <translation type="obsolete">Hrúbka obrysu:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>...</source>
         <translation type="obsolete">...</translation>
     </message>
@@ -6628,17 +6674,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsContextHelpBase</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Help</source>
         <translation type="obsolete">Pomocník</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Close</source>
         <translation type="obsolete">&amp;Zatvoriť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Alt+C</source>
         <translation type="obsolete">Alt+Z</translation>
     </message>
@@ -6651,7 +6697,7 @@ p, li { white-space: pre-wrap; }
         <translation>Spojitá farba</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>...</source>
         <translation type="obsolete">...</translation>
     </message>
@@ -6737,7 +6783,7 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;Doplnky</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;CopyrightLabel</source>
         <translation type="obsolete">&amp;Označenie autorských práv</translation>
     </message>
@@ -6747,7 +6793,7 @@ p, li { white-space: pre-wrap; }
         <translation>Vytvorí označenie autorských práv zobrazujúce sa na mapovom plátne.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Copyright Label</source>
         <translation type="obsolete">Označenie autorských práv</translation>
     </message>
@@ -6770,7 +6816,7 @@ p, li { white-space: pre-wrap; }
         <translation>Zásuvný modul na označenie copyrightu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:helvetica&quot;&gt;
 &lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:19pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label.  For example:&lt;/p&gt;
@@ -6785,7 +6831,7 @@ p, li { white-space: pre-wrap; }
 </translation>
     </message>
     <message encoding="UTF-8">
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>© QGIS 2004</source>
         <translation type="obsolete">© QGIS 2004</translation>
     </message>
@@ -6860,18 +6906,18 @@ p, li { white-space: pre-wrap; }
         <translation>Pomocník</translation>
     </message>
     <message encoding="UTF-8">
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>© QGIS 20056</source>
         <translation type="obsolete">© QGIS 20056</translation>
     </message>
     <message>
-        <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="34"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/src/plugins/copyright_label/pluginguibase.ui" line="34"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Popis&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Do poľa dolu vložte text vášho copyrightu (označenia vlastníckych práv). Tento zásuvný modul podporuje pri formátovaní základné značky jazyka HTML. Napríklad:&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Tučné písmo &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Kurzíva &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(poznámka: &amp;amp;copy; sa používa pre znak copyrightu)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
 </translation>
     </message>
     <message encoding="UTF-8">
-        <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="41"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/src/plugins/copyright_label/pluginguibase.ui" line="41"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;© QGIS 2006&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;© QGIS 2006&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -6960,7 +7006,7 @@ p, li { white-space: pre-wrap; }
         <translation>Northing (posun na sever) a Easting (posun na východ) musia byť vo forme desatinného čísla.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Internal Error (source projection invalid?</source>
         <translation type="obsolete">Vnútorná chyba (chybný zdroj mapového zobrazenia?)</translation>
     </message>
@@ -6983,7 +7029,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsCustomProjectionDialogBase</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Form1</source>
         <translation type="obsolete">Formular1</translation>
     </message>
@@ -6993,17 +7039,17 @@ p, li { white-space: pre-wrap; }
         <translation>Názov:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ellipsoid:</source>
         <translation type="obsolete">Elipsoid:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Projection Family:</source>
         <translation type="obsolete">Rodina zobrazení:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Help</source>
         <translation type="obsolete">Pomocník</translation>
     </message>
@@ -7018,7 +7064,7 @@ p, li { white-space: pre-wrap; }
         <translation>Parametre:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Expected 
 Parameters:</source>
         <translation type="obsolete">Očakávané
@@ -7060,7 +7106,7 @@ parametre:</translation>
         <translation>Uložiť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>OK</source>
         <translation type="obsolete">OK</translation>
     </message>
@@ -7080,7 +7126,7 @@ parametre:</translation>
         <translation>Definovať</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.</source>
         <translation type="obsolete">Tu je možné definovať vlastné (mapové) zobrazenie. Definícia musí zodpovedať proj4 formátu špecifikácie priestorového súradnicového systému.</translation>
     </message>
@@ -7120,18 +7166,18 @@ parametre:</translation>
         <translation>Východ:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.</source>
         <translation type="obsolete">Textové polia dole slúžia na otestovanie definície vytvoreného zobrazenia. Vložte súradnice, ktorých hodnoty v danom zobrazení poznáte (napríklad odčítaním z mapy). Následne stlačením tlačitka Vypočítať, možno overiť, či daná definícia zobrazenia je zadaná správne.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Arial; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Arial; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;
 Tu je možné definovať vlastné (mapové) zobrazenie. Definícia musí zodpovedať proj4 formátu pre určenie priestorového súradnicového systému.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Arial; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Arial; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;
 Tieto textové polia slúžia na odskúšanie definície novovytvoreného zobrazenia. Vložte súradnicu so známou hodnotou zemepisnej dĺžky aj šírky (možno ju zistiť napríklad odčítaním z mapy) a následným stlačením tlačidla Vypočítať si možno overiť, či je daná definícia nového zobrazenia zadaná správne (možno skontrolovať či predpokladané a vypočítané súradnice sú zhodné).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
@@ -7200,12 +7246,12 @@ Tieto textové polia slúžia na odskúšanie definície novovytvoreného zobraz
         <translation>Spojenie zlyhalo</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.</source>
         <translation type="obsolete">Spojenie k % na %2 zlyhalo. Databáza je mimo prevádzky, alebo sú nesprávne vaše nastavenia%3Skontrolujte meno uživateľa a heslo a skúste znova.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4%5</source>
         <translation type="obsolete">Spojenie k databáze %1 na %2 zlyhalo. Databáza je mimo prevádzky, alebo sú nesprávne vaše nastavenia.%3Skontrolujte meno uživateľa a heslo a skúste znova.%4%5</translation>
     </message>
@@ -7397,7 +7443,7 @@ zlyhal. Správa databázy:
         <translation>Zrušiť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New Item</source>
         <translation type="obsolete">Nová položka</translation>
     </message>
@@ -7430,7 +7476,7 @@ zlyhal. Správa databázy:
         <translation>Požadované sú polia X a Y. Tie musia obsahovať súradnice v desiatkových jednotkách.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Add Delimited Text Layer</source>
         <translation type="obsolete">Pridať vrstvu s oddeleného textu</translation>
     </message>
@@ -7481,7 +7527,7 @@ zlyhal. Správa databázy:
         <translation>Zrušiť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Help</source>
         <translation type="obsolete">Pomocník</translation>
     </message>
@@ -7666,7 +7712,7 @@ zlyhal. Správa databázy:
         <translation>Vzorka textu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;<byte value="xd"/>
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;<byte value="xd"/>
 &lt;p&gt;Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you! &lt;/p&gt;<byte value="xd"/>
@@ -7679,7 +7725,7 @@ zlyhal. Správa databázy:
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="260"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="260"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you! &lt;/p&gt;
@@ -7700,7 +7746,7 @@ zlyhal. Správa databázy:
 &lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma or tab). After choosing a delimiter, press the parse button an select the columns containing the x and y values for the layer.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Vyberte súbor s oddeleným textom obsahujúcim x-ové a y-ové súradnice, ktorý chcete použiť ako vrstvu bodov a tento zásuvný modul sa o ostatné už postará sám! &lt;/p&gt;
+        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Popis&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Vyberte súbor s oddeleným textom obsahujúcim x-ové a y-ové súradnice, ktorý chcete použiť ako vrstvu bodov a tento zásuvný modul sa o ostatné už postará sám! &lt;/p&gt;
 &lt;p&gt;Pole Meno vrstvy vrstvy určuje meno novej vrstvy v okne Legenda. Do poľa Oddeľovač sa zadáva znak oddeľovača používaného vo vašom súbore (napr. medzera, čiarka alebo tabulátor). Nezabudnite, že toto políčko akceptuje regulárne výrazy, takže pre tabulátor je potrebné použiť \t . Po zadaní oddeľovača, kliknite na tlačidlo Preskúmať a vyberte stĺpce obsahujúce x-ové a a y-ové hodnoty danej vrstvy.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
 </translation>
     </message>
@@ -7789,7 +7835,7 @@ zlyhal. Správa databázy:
         <translation>&amp;Zrušiť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Buffer Settings:</source>
         <translation type="obsolete">Nastavenie okolia (buffera):</translation>
     </message>
@@ -7852,172 +7898,172 @@ zlyhal. Správa databázy:
 <context>
     <name>QgsDlgVectorLayerProperties</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Single Symbol</source>
         <translation type="obsolete">Jednoduchý symbol</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Graduated Symbol</source>
         <translation type="obsolete">Odstupňovaný symbol</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Continuous Color</source>
         <translation type="obsolete">Spojitá farba</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Single Marker</source>
         <translation type="obsolete">Jednoduchá značka</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Graduated Marker</source>
         <translation type="obsolete">Odstupňovaná značka</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Unique Value</source>
         <translation type="obsolete">Jedinečná hodnota</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Unique Value Marker</source>
         <translation type="obsolete">Značka jedinečnej hodnoty</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>The source of the data (path name or database connection information)</source>
         <translation type="obsolete">Zdroj údajov (cesta k súboru alebo informácie o databázovom spojení)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
         <translation type="obsolete">Týmto tlačítkom sa otvára nástroj na tvorbu dopytov pre PostgreSQL, čo umožňuje vytvoriť na rozdiel od zobrazenia všetkých objektov vrstvy, len určitú podskupinu objektov, ktoré sa zobrazia na mapovom plátne </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button</source>
         <translation type="obsolete">Tu sa zobrazuje dopyt použitý na vymedzenie objektov vo vrstve. V súčasnosti sú dopyty podporované len pre vrstvy PostgreSQL. Zadávať, alebo upravovať dopyt možno kliknitím na tlačítko Tvorba dopytov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>In order for QGIS to support SVG markers under Windows, we need to build QGIS</source>
         <translation type="obsolete">Na to, aby QGIS podporoval pod Windowsom značky vo formáte SVG, je potrebná kompilácia QGIS-u</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source> using the commercial version of Qt. As this project is developed by volunteers</source>
         <translation type="obsolete"> s použitím komerčnej verzie Qt. Keďže tento projekt je vyvíjaný dobrovoľníkmi</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source> donating their time, we don&apos;t have the financial resources to purchase Qt</source>
         <translation type="obsolete"> obetujúcimi svoj čas, nemáme finančné zdroje na zakúpenie </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source> commercial.  If you would like to help us, please visit the QGIS sourceforge</source>
         <translation type="obsolete"> komerčnej verzie Qt.  Ak by ste nám chceli pomôcť, prosím navštívte domovskú stránku</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source> home page to make a donation</source>
         <translation type="obsolete"> QGIS na Sourceforge a darujte príspevok</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>No SVG Support</source>
         <translation type="obsolete">Bez podpory SVG</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>General:</source>
         <translation type="obsolete">Všeobecné:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Geometry type of the features in this layer : </source>
         <translation type="obsolete">Geometrický typ objektov v tejto vrstve: </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>The number of features in this layer : </source>
         <translation type="obsolete">Počet objektov v tejto vrstve: </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Extents:</source>
         <translation type="obsolete">Rozsah:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>In layer spatial reference system units : </source>
         <translation type="obsolete">V jednotkách referenčného priestorového systému vrstvy: </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>xMin,yMin </source>
         <translation type="obsolete">xMin,yMin </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source> : xMax,yMax </source>
         <translation type="obsolete"> : xMax,yMax </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>In project spatial reference system units : </source>
         <translation type="obsolete">V jednotkách priestorového referenčného systému projektu: </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Layer Spatial Reference System:</source>
         <translation type="obsolete">Priestorový referenčný systém:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Project (Output) Spatial Reference System:</source>
         <translation type="obsolete">Referenčný súradnicový systém projektu (výstupný):</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Attribute field info:</source>
         <translation type="obsolete">Informácia o atribútovom poli:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Field</source>
         <translation type="obsolete">Pole</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Type</source>
         <translation type="obsolete">Typ</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Length</source>
         <translation type="obsolete">Dĺžka</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Precision</source>
         <translation type="obsolete">Presnosť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Spatial Index</source>
         <translation type="obsolete">Priestorový index</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Creation of spatial index successfull</source>
         <translation type="obsolete">Vytvorenie priestorového indexu bolo úspešné</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Creation of spatial index failed</source>
         <translation type="obsolete">Vytvorenie priestorového indexu zlyhalo</translation>
     </message>
@@ -8025,242 +8071,242 @@ zlyhal. Správa databázy:
 <context>
     <name>QgsDlgVectorLayerPropertiesBase</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Layer Properties</source>
         <translation type="obsolete">Vlastnosti vrstvy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Apply</source>
         <translation type="obsolete">Použiť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Close</source>
         <translation type="obsolete">Zatvoriť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>General</source>
         <translation type="obsolete">Všeobecné</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Display name</source>
         <translation type="obsolete">Zobraziť meno</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Layer source</source>
         <translation type="obsolete">Zdroj vrstvy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>TextLabel2</source>
         <translation type="obsolete">TextovyPopis2</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Fields</source>
         <translation type="obsolete">Polia</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Field</source>
         <translation type="obsolete">Pole</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Type</source>
         <translation type="obsolete">Typ</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Length</source>
         <translation type="obsolete">Dĺžka</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Precision</source>
         <translation type="obsolete">Presnosť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Features</source>
         <translation type="obsolete">Objekty</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Count</source>
         <translation type="obsolete">Počet</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>count</source>
         <translation type="obsolete">počítať</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Geometry type</source>
         <translation type="obsolete">Geometrický typ</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>geom</source>
         <translation type="obsolete">geom</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Upper right</source>
         <translation type="obsolete">Pravý horný roh</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>ur</source>
         <translation type="obsolete">ph</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>ll</source>
         <translation type="obsolete">ľd</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Lower left</source>
         <translation type="obsolete">Ľavý dolný roh</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Legend</source>
         <translation type="obsolete">Legenda</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Legend type:</source>
         <translation type="obsolete">Druh legendy:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Labels</source>
         <translation type="obsolete">Popisy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Display labels</source>
         <translation type="obsolete">Zobraziť popisy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Help</source>
         <translation type="obsolete">Pomocník</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Cancel</source>
         <translation type="obsolete">Zrušiť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>OK</source>
         <translation type="obsolete">OK</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Symbology</source>
         <translation type="obsolete">Symbolika</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Visibility</source>
         <translation type="obsolete">Viditeľnosť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Use scale dependent rendering</source>
         <translation type="obsolete">Používať vykresľovanie v závislosti od mierky</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Maximum 1:</source>
         <translation type="obsolete">Maximum 1:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Maximum scale at which this layer will be displayed. </source>
         <translation type="obsolete">Maximálna mierka pri ktorej bude táto vrstva zobrazená.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Minimum 1:</source>
         <translation type="obsolete">Minimum 1:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Minimum scale at which this layer will be displayed. </source>
         <translation type="obsolete">Minimálna mierka pri ktorej bude táto vrstva zobrazená.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Display field</source>
         <translation type="obsolete">Zobraziť pole</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Display field for the Identify Results dialog box</source>
         <translation type="obsolete">Pole zobrazované v dialógovom okne Výsledky identifikácie</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>This sets the display field for the Identify Results dialog box</source>
         <translation type="obsolete">Týmto sa nastaví pole zobrazované v dialógovom okne Výsledky identifikácie</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Use this control to set which field is placed at the top level of the Identify Results dialog box.</source>
         <translation type="obsolete">Používa sa na nastavenie poľa, ktoré bude umiestnené na najvyššej úrovni dialógového okna Výsledky identifikácie.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Subset:</source>
         <translation type="obsolete">Podskupina:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Query Builder</source>
         <translation type="obsolete">Tvorba dopytov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Metadata</source>
         <translation type="obsolete">Metadáta</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Actions</source>
         <translation type="obsolete">Akcie</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Spatial Reference System</source>
         <translation type="obsolete">Priestorový referenčný systém</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Change</source>
         <translation type="obsolete">Zmeniť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Spatial Index</source>
         <translation type="obsolete">Priestorový index</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Create Spatial Index</source>
         <translation type="obsolete">Vytvoriť priestorový index</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Create</source>
         <translation type="obsolete">Vytvoriť</translation>
     </message>
@@ -8278,7 +8324,7 @@ zlyhal. Správa databázy:
         <translation>Stav</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Column name</source>
         <translation type="obsolete">Názov stĺca</translation>
     </message>
@@ -8288,7 +8334,7 @@ zlyhal. Správa databázy:
         <translation>Index</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>This shapefile contains reserved words. These may affect the import into PostgreSQL. Edit the column names so none of the reserved words listed at the right are used. You may also change any column name if desired.</source>
         <translation type="obsolete">Tento shape súbor obsahuje rezervované slová. To sa môže dotknúť importu do PostgreSQL. Upravte názvy stĺpcov tak, aby žiaden neobsahoval rezervované slová uvedené napravo. Taktiež je možné, pokiaľ si to želáte, zmeniť meno ľubovoľného stĺpca.</translation>
     </message>
@@ -8418,12 +8464,12 @@ zlyhal. Správa databázy:
         <translation>Názov zariadenia:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Download command:</source>
         <translation type="obsolete">Príkaz na sťahovanie:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>This is the command that will be used to download GPS data from the device. %in and %out will be replaced by the port and the GPX filename, respectively.</source>
         <translation type="obsolete">Toto je príkaz, ktorý bude použitý na stiahnutie údajov z GPS zariadenia.  %in a %out budú zamenené za port, resp. meno GPX súboru.</translation>
     </message>
@@ -8433,17 +8479,17 @@ zlyhal. Správa databázy:
         <translation>Názov zariadenia tak, ako sa bude objavovať v zoznamoch</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>This is the command that will be used to upload GPS data to the device. %in and %out will be replaced by the GPX filename and the port, respectively.</source>
         <translation type="obsolete">Toto je príkaz, ktorý bude použitý na nahratie údajov do GPS zariadenia.  %in a %out budú zamenené za port, resp. meno GPX súboru.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Upload command:</source>
         <translation type="obsolete">Príkaz na nahratie (upload):</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;p&gt;In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;/p&gt;
 &lt;i&gt;%babel&lt;/i&gt; - the path to GPSBabel&lt;br&gt;
 &lt;i&gt;%type&lt;/i&gt; - the flag for the feature type that is being transferred (-w, -r or -t)&lt;br&gt;
@@ -8476,7 +8522,7 @@ zlyhal. Správa databázy:
         <translation>Zatvoriť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;p&gt;In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;/p&gt;
 &lt;i&gt;%babel&lt;/i&gt; - the path to GPSBabel&lt;br&gt;
 &lt;i&gt;%in&lt;/i&gt; - the GPX filename when uploading or the port when downloading&lt;br&gt;
@@ -8581,7 +8627,7 @@ zlyhal. Správa databázy:
         <translation>Vytvorí novú vrstvu GPX a zobrazí ju v mapovom pohľade</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Gps Tools</source>
         <translation type="obsolete">Nástroje GPS</translation>
     </message>
@@ -8758,7 +8804,7 @@ zlyhal. Správa databázy:
         <translation>Nahrať GPX súbor</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;GPX is the &lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;GPS eXchange file format&lt;/a&gt;, which is used to store information about waypoints, routes, and tracks.&lt;/p&gt;
@@ -8807,7 +8853,7 @@ zlyhal. Správa databázy:
         <translation>Importovať iný súbor</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;QGIS can only load GPX files by itself, but many other formats 
@@ -8858,7 +8904,7 @@ dráhy, takže niektoré typy objektov môžu byť pre niektoré formáty súbor
         <translation>Stiahnuť z GPS</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This tool will help you download data from a GPS device. Choose your 
@@ -8906,7 +8952,7 @@ je potrebné zmenieť niektoré nastavenia, je možné tiež upravovať vlastnos
         <translation>Nahrať do GPS</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This tool will help you upload data from a GPX layer to a GPS device. 
@@ -8955,23 +9001,23 @@ je možné upravovať zariadenia (ich nastavenia)
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;GPX is the &lt;/span&gt;&lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;GPS eXchange file format&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;, which is used to store information about waypoints, routes, and tracks.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;Select a GPX file and then select the feature types that you want to load.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;GPX znamená &lt;/span&gt;&lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;GPS eXchange file format&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; (výmenný formát GPS), ktorý sa používa na ukladanie informácií o orientačných bodoch (waypoints), cestách (routes) a stopách (tracks).&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;Vyberte GPX súbor a následne typy objektov, ktoré chcete nahrať.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;QGIS can only load GPX files by itself, but many other formats can be converted to GPX using GPSBabel (&lt;/span&gt;&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;http://gpsbabel.sf.net&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;). This requires that you have GPSBabel installed where QGIS can find it.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;Select a GPS file format and the file that you want to import, the feature type that you want to use, a GPX filename that you want to save the converted file as, and a name for the new layer. All file formats can not store waypoints, routes, and tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;QGIS sám o sebe môže iba nahrávať (načítavať) GPX súbory, ale s použitím nástroja GPSBabel (&lt;/span&gt;&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;http://gpsbabel.sf.net&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;) je možné skonvertovať do GPX mnoho ďalších formátov. Na to je potrebné, aby bol GPSBabel nainštalovaný tam, kde ho môže QGIS nájsť.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;Vyberte formát súboru GPS a súbor, ktorý chcete naimportovať, typ objektov, ktorý chcete použiť, meno GPX súboru, pod ktorým má byť skonvertovaný súbor uložený, a názov novej vrstvy. Vo všetkých súborových formátoch nie je možné mať uložené cestné body (waypoints), cesty (routes), či stopy (tracks), takže niektoré typy objektov môžu byť pre niektoré formáty súborov zakázané.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;This tool will help you download data from a GPS device. Choose your GPS device, the port it is connected to, the feature type you want to download, a name for your new layer, and the GPX file where you want to store the data. If your device isn&apos;t listed, or if you want to change some settings, you can also edit the devices.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;This tool uses the program GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://gpsbabel.sf.net&lt;/span&gt;&lt;/a&gt;) to transfer the data. If you don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Tento nástroj vám pomôže stiahnuť údaje zo zariadenia GPS. Vyberte zariadenie GPS, port ku ktorému je pripojené, typ objektov, ktorý sa má sťahovať, meno novej vrstvy, 
 a GPX súboru, kam sa údaje majú uložiť. Ak vaše zariadenie nie je v zozname, alebo ak je potrebné zmeniť niektoré nastavenia, je možné tento zoznam aj vlastnosti zariadení upraviť (prispôsobiť).&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;Tento nástroj využíva na prenos údajov program GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://gpsbabel.sf.net&lt;/span&gt;&lt;/a&gt;). Tento nástroj nebude fungovať pokiaľ nie je GPSBabel nainštalovaný v adresári dostupnom pre QGIS.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;This tool will help you upload data from a GPX layer to a GPS device. Choose the layer you want to upload, the device you want to upload it to, and the port your device is connected to. If your device isn&apos;t listed, or if you want to change some settings, you can also edit the devices.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;This tool uses the program GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://gpsbabel.sf.net&lt;/span&gt;&lt;/a&gt;) to transfer the data. If you don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Tento nástroj vám pomôže nahrať údaje zo súboru GPX do zariadenia GPS. Vyberte vrstvu, ktorú chcete nahrať, zariadenie do ktorého ju chcete nahrať, a port, ku ktorému je zariadenie pripojené. Ak vaše zariadenie nie je v zozname, alebo ak je potrebné zmeniť niektoré nastavenia, je možné tento zoznam aj vlastnosti zariadení upraviť (prispôsobiť).&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;Tento nástroj využíva na prenos údajov program GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://gpsbabel.sf.net&lt;/span&gt;&lt;/a&gt;). Tento nástroj nebude fungovať pokiaľ nie je GPSBabel nainštalovaný v adresári dostupnom pre QGIS.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -9053,7 +9099,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/gpx/qgsgpxprovider.cpp" line="510"/>
         <source>Warning: access requested to invalid position in QgsGPXProvider::maxValue(..)</source>
-        <translation type="unfinished">Upozornenie: prísup požadovaný na chybnú pozíciu v QgsGPXProvider::maxValue(..)</translation>
+        <translation type="unfinished">Upozornenie: prístup požadovaný na chybnú pozíciu v QgsGPXProvider::maxValue(..)</translation>
     </message>
     <message>
         <location filename="../src/providers/gpx/qgsgpxprovider.cpp" line="831"/>
@@ -9077,7 +9123,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsGeomTypeDialogBase</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Select Geometry type</source>
         <translation type="obsolete">Vyberte geometrický typ</translation>
     </message>
@@ -9132,7 +9178,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Stĺpec 1</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New Item</source>
         <translation type="obsolete">Nová položka</translation>
     </message>
@@ -9183,17 +9229,17 @@ p, li { white-space: pre-wrap; }
         <translation>Vybraný súbor nie je platný rastrový súbor.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>The selected file already seems to have a </source>
         <translation type="obsolete"> Tento vybraný súbor už zrejme má svoj</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>world file! If you want to replace it with a </source>
         <translation type="obsolete"> world súbor! Pokiaľ si ho želáte nahradiť s novým súborom, </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>new world file, remove the old one first.</source>
         <translation type="obsolete">je potrebné najskôr odstrániť starý súbor.</translation>
     </message>
@@ -9246,7 +9292,7 @@ p, li { white-space: pre-wrap; }
         <translation>Rastrový súbor:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Sans Serif&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:13pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This plugin can generate world files for rasters. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p&gt;
@@ -9264,7 +9310,7 @@ p, li { white-space: pre-wrap; }
         <translation>Vložte world súradnice</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:helvetica&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:15pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This plugin can generate world files for rasters. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p&gt;
@@ -9277,7 +9323,7 @@ p, li { white-space: pre-wrap; }
 </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Tahoma&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-size:14pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p dir=&quot;ltr&quot;&gt;This plugin can generate world files for rasters. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p&gt;
@@ -9336,22 +9382,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsGraMaDialogBase</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>graduated Marker</source>
         <translation type="obsolete">odstupňovaná značka</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Mode:</source>
         <translation type="obsolete">Mód:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Classification Field:</source>
         <translation type="obsolete">Triediace kritérium:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Number of Classes:</source>
         <translation type="obsolete">Počet tried:</translation>
     </message>
@@ -9359,27 +9405,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsGraMaExtensionWidget</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Lower</source>
         <translation type="obsolete">Spodná</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Upper</source>
         <translation type="obsolete">Vrchná</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Label</source>
         <translation type="obsolete">Popis</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Image</source>
         <translation type="obsolete">Obrázok</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Scale
 Factor</source>
         <translation type="obsolete">Zväčšenie</translation>
@@ -9388,22 +9434,22 @@ Factor</source>
 <context>
     <name>QgsGraSyDialogBase</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>graduated Symbol</source>
         <translation type="obsolete">stupňovaný symbol</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Number of Classes:</source>
         <translation type="obsolete">Počet tried:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Classification Field:</source>
         <translation type="obsolete">Hodnotiace kritérium:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Mode:</source>
         <translation type="obsolete">Mód:</translation>
     </message>
@@ -9454,17 +9500,17 @@ Factor</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="166"/>
         <source>Column</source>
-        <translation type="unfinished"></translation>
+        <translation>Stĺpec</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="167"/>
         <source>Value</source>
-        <translation type="unfinished">Hodnota</translation>
+        <translation>Hodnota</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="168"/>
         <source>Type</source>
-        <translation type="unfinished">Typ</translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="172"/>
@@ -9474,12 +9520,12 @@ Factor</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="314"/>
         <source>ERROR</source>
-        <translation type="unfinished"></translation>
+        <translation>CHYBA</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="316"/>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -9605,13 +9651,13 @@ Factor</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="339"/>
         <source>New name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nové meno</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassEdit</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New vertex</source>
         <translation type="obsolete">Nový uzol</translation>
     </message>
@@ -9626,62 +9672,62 @@ Factor</source>
         <translation>Nový centroid</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Select vertex</source>
         <translation type="obsolete">Vybrať uzol</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Select line segment</source>
         <translation type="obsolete">Vybrať líniový úsek</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Select position on line</source>
         <translation type="obsolete">Vybrať polohu na línii</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Select element</source>
         <translation type="obsolete">Vybrať element</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Undo last point</source>
         <translation type="obsolete">Posledný bod späť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Close line</source>
         <translation type="obsolete">Uzavrieť líniu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Delete selected / select next</source>
         <translation type="obsolete">Vymazať vybrané / vybrať ďalšie</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Release selected</source>
         <translation type="obsolete">Uvoľniť vybrané</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New location</source>
         <translation type="obsolete">Nová lokalita (location)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Select new position</source>
         <translation type="obsolete">Vybrať novú polohu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New vertex position</source>
         <translation type="obsolete">Nová poloha uzla</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Release</source>
         <translation type="obsolete">Uvoľniť</translation>
     </message>
@@ -9691,22 +9737,22 @@ Factor</source>
         <translation>Vymazať uzol</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Release vertex</source>
         <translation type="obsolete">Uvoľniť uzol</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Split the line</source>
         <translation type="obsolete">Rozdeliť líniu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Release the line</source>
         <translation type="obsolete">Uvoľniť líniu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Select point on line</source>
         <translation type="obsolete">Vybrať bod na línii</translation>
     </message>
@@ -9721,7 +9767,7 @@ Factor</source>
         <translation> Stredné tlačidlo: </translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1832"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/src/plugins/grass/qgsgrassedit.cpp" line="1832"/>
         <source>Rigth: </source>
         <translation type="obsolete"> Pravé tlačidlo: </translation>
     </message>
@@ -9756,12 +9802,12 @@ Factor</source>
         <translation>Rozdeliť líniu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Move line</source>
         <translation type="obsolete">Presunúť líniu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Delete line</source>
         <translation type="obsolete">Vymazať líniu</translation>
     </message>
@@ -9818,17 +9864,17 @@ Factor</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1352"/>
         <source>Cannot check orphan record: </source>
-        <translation type="unfinished">Nemožno skontrolovať osirelý záznam: </translation>
+        <translation>Nemožno skontrolovať osirelý záznam: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1359"/>
         <source>Orphan record was left in attribute table. &lt;br&gt;Delete the record?</source>
-        <translation type="unfinished">V tabuľke atribútov bol ponechaný osirelý záznam. &lt;br&gt;Zmazať tento záznam?</translation>
+        <translation>V tabuľke atribútov ostal osirelý záznam. &lt;br&gt;Zmazať tento záznam?</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1368"/>
         <source>Cannot delete orphan record: </source>
-        <translation type="unfinished">Nemožno zmazať osirelý záznam: </translation>
+        <translation>Nemožno zmazať osirelý záznam: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1396"/>
@@ -9838,126 +9884,126 @@ Factor</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="389"/>
         <source>Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Pozadie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="390"/>
         <source>Highlight</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvýraznenie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="391"/>
         <source>Dynamic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dynamický</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="392"/>
         <source>Point</source>
-        <translation type="unfinished">Bod</translation>
+        <translation>Bod</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="393"/>
         <source>Line</source>
-        <translation type="unfinished">Línia</translation>
+        <translation>Línia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="394"/>
         <source>Boundary (no area)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohraničenie (nie oblasť)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="395"/>
         <source>Boundary (1 area)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohraničenie (1 oblasť)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="396"/>
         <source>Boundary (2 areas)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohraničenie (2 oblasti)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="397"/>
         <source>Centroid (in area)</source>
-        <translation type="unfinished"></translation>
+        <translation>Centroid (v oblasti)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="398"/>
         <source>Centroid (outside area)</source>
-        <translation type="unfinished"></translation>
+        <translation>Centroid (mimo oblasti)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="399"/>
         <source>Centroid (duplicate in area)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Centroid (dvojník v oblasti)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="400"/>
         <source>Node (1 line)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Uzol (1 línia)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="401"/>
         <source>Node (2 lines)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Uzol (2 línie)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="434"/>
         <source>Disp</source>
         <comment>Column title</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zobraz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="436"/>
         <source>Color</source>
         <comment>Column title</comment>
-        <translation type="unfinished">Farba</translation>
+        <translation>Farba</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="438"/>
         <source>Type</source>
         <comment>Column title</comment>
-        <translation type="unfinished">Typ</translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="440"/>
         <source>Index</source>
         <comment>Column title</comment>
-        <translation type="unfinished">Index</translation>
+        <translation>Index</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="470"/>
         <source>Column</source>
-        <translation type="unfinished"></translation>
+        <translation>Stĺpec</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="471"/>
         <source>Type</source>
-        <translation type="unfinished">Typ</translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="472"/>
         <source>Length</source>
-        <translation type="unfinished">Dĺžka</translation>
+        <translation>Dĺžka</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="530"/>
         <source>Next not used</source>
-        <translation type="unfinished"></translation>
+        <translation>Najbližšie nepoužité</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="531"/>
         <source>Manual entry</source>
-        <translation type="unfinished"></translation>
+        <translation>Ručné vkladanie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="532"/>
         <source>No category</source>
-        <translation type="unfinished"></translation>
+        <translation>Bez kategórie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1832"/>
         <source>Right: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pravé: </translation>
     </message>
 </context>
 <context>
@@ -10003,7 +10049,7 @@ Factor</source>
         <translation type="unfinished">Stĺpec 1</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New Item</source>
         <translation type="obsolete">Nová položka</translation>
     </message>
@@ -10023,132 +10069,132 @@ Factor</source>
         <translation>Vytvoriť / vymeniť tabuľku</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Tools</source>
         <translation type="obsolete">Nástroje</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Toolbar</source>
         <translation type="obsolete">Nástrojová lišta</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New line</source>
         <translation type="obsolete">Nová línia</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>F2</source>
         <translation type="obsolete">F2</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Close</source>
         <translation type="obsolete">Zatvoriť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New point</source>
         <translation type="obsolete">Nový bod</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>F1</source>
         <translation type="obsolete">F1</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New boundary</source>
         <translation type="obsolete">Nové ohraničenie</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>F3</source>
         <translation type="obsolete">F3</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New centroid</source>
         <translation type="obsolete">Nový centroid</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>F4</source>
         <translation type="obsolete">F4</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Move vertex</source>
         <translation type="obsolete">Pohnúť uzlovým bodom</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>F5</source>
         <translation type="obsolete">F5</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Add vertex</source>
         <translation type="obsolete">Pridať uzol</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>F6</source>
         <translation type="obsolete">F6</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Delete vertex</source>
         <translation type="obsolete">Vymazať uzol</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>F7</source>
         <translation type="obsolete">F7</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Split line</source>
         <translation type="obsolete">Rozdeliť líniu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>F10</source>
         <translation type="obsolete">F10</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Move line</source>
         <translation type="obsolete">Presunúť líniu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>F9</source>
         <translation type="obsolete">F9</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Delete line</source>
         <translation type="obsolete">Vymazať líniu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>F11</source>
         <translation type="obsolete">F11</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Edit categories</source>
         <translation type="obsolete">Upraviť kategórie</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Edit attributes</source>
         <translation type="obsolete">Upraviť atribúty</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>ActionGroup</source>
         <translation type="obsolete">AkciovaSkupina</translation>
     </message>
@@ -10168,32 +10214,32 @@ Factor</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassutils.cpp" line="129"/>
         <source>Cancel</source>
-        <translation type="unfinished">Zrušiť</translation>
+        <translation>Zrušiť</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassutils.cpp" line="160"/>
         <source>Ok</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassutils.cpp" line="165"/>
         <source>&lt;font color=&apos;red&apos;&gt;Enter a name!&lt;/font&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;font color=&apos;red&apos;&gt;Vložte meno!&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassutils.cpp" line="176"/>
         <source>&lt;font color=&apos;red&apos;&gt;This is name of the source!&lt;/font&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;font color=&apos;red&apos;&gt;Toto je meno zdroja!&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassutils.cpp" line="182"/>
         <source>&lt;font color=&apos;red&apos;&gt;Exists!&lt;/font&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;font color=&apos;red&apos;&gt;Existuje!&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassutils.cpp" line="183"/>
         <source>Overwrite</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Prepísať</translation>
     </message>
 </context>
 <context>
@@ -10326,17 +10372,17 @@ Factor</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="196"/>
         <source>Inverse tangent of x (result is in degrees)</source>
-        <translation type="unfinished">Arkus tangens (výsledok v stupňoch)</translation>
+        <translation>Arkus tangens (výsledok v stupňoch)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="197"/>
         <source>Inverse tangent of y/x (result is in degrees)</source>
-        <translation type="unfinished">Arkus tangens z y/x (výsledok v stupňoch)</translation>
+        <translation>Arkus tangens z y/x (výsledok v stupňoch)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="198"/>
         <source>Current column of moving window (starts with 1)</source>
-        <translation type="unfinished">Aktuálny stĺpec z pohybujúceho sa okna (začína s 1)</translation>
+        <translation>Aktuálny stĺpec z pohybujúceho sa okna (začína s 1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="199"/>
@@ -10356,7 +10402,7 @@ Factor</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="202"/>
         <source>Exponential function of x</source>
-        <translation type="unfinished">Exponenciálna funkcia z x</translation>
+        <translation>Exponenciálna funkcia e na x-tú</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="203"/>
@@ -10519,12 +10565,12 @@ Factor</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1112"/>
         <source>New mapcalc</source>
-        <translation type="unfinished">Nový mapcalc</translation>
+        <translation type="unfinished">Nová schéma pre mapcalc</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1113"/>
         <source>Enter new mapcalc name:</source>
-        <translation type="unfinished">Vložte nové meno pre mapcalc:</translation>
+        <translation type="unfinished">Vložte nové názov schémy pre mapcalc:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1118"/>
@@ -10539,7 +10585,7 @@ Factor</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1164"/>
         <source>Save mapcalc</source>
-        <translation type="unfinished">Uložiť mapcalc</translation>
+        <translation type="unfinished">Uložiť schému mapcalc</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1146"/>
@@ -10597,32 +10643,32 @@ v riadku </translation>
         <translation>Výstup</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Tools</source>
         <translation type="obsolete">Nástroje</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Select item</source>
         <translation type="obsolete">Vybrať položku</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Add new map</source>
         <translation type="obsolete">Pridá novú mapu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Save</source>
         <translation type="obsolete">Uložiť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Save as</source>
         <translation type="obsolete">Uložiť ako</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Open</source>
         <translation type="obsolete">Otvoriť</translation>
     </message>
@@ -10652,144 +10698,146 @@ v riadku </translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1389"/>
         <source>Warning</source>
-        <translation type="unfinished">Upozornenie</translation>
+        <translation>Upozornenie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="215"/>
         <source>The module file (</source>
-        <translation type="unfinished"></translation>
+        <translation>Súbor modulu (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="215"/>
         <source>) not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>) sa nenašiel.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="219"/>
         <source>Cannot open module file (</source>
-        <translation type="unfinished"></translation>
+        <translation>Nemožno otvoriť súbor modulu (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1018"/>
         <source>)</source>
-        <translation type="unfinished"></translation>
+        <translation>)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1013"/>
         <source>Cannot read module file (</source>
-        <translation type="unfinished"></translation>
+        <translation>Nemožno čítať súbor modulu (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1013"/>
         <source>):
 </source>
-        <translation type="unfinished"></translation>
+        <translation>): 
+</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1014"/>
         <source>
 at line </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">
+na riadku </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="255"/>
         <source>Module </source>
-        <translation type="unfinished"></translation>
+        <translation>Modul </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="255"/>
         <source> not found</source>
-        <translation type="unfinished"></translation>
+        <translation> sa nenašiel</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="298"/>
         <source>Cannot find man page </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno nájsť manuálovú stránku </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1004"/>
         <source>Not available, decription not found (</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nedostupné, popis sa nenašiel (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1007"/>
         <source>Not available, cannot open description (</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nedostupné, nemožno otvoriť popis (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1014"/>
         <source> column </source>
-        <translation type="unfinished"> stĺpec </translation>
+        <translation> stĺpec </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1018"/>
         <source>Not available, incorrect description (</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nedostupné, nesprávny popis (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1216"/>
         <source>Cannot get input region</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno získať vstupný región</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1204"/>
         <source>Input </source>
-        <translation type="unfinished"></translation>
+        <translation>Vstup </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1205"/>
         <source> outside current region!</source>
-        <translation type="unfinished"></translation>
+        <translation> je mimo aktuálneho regiónu!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1196"/>
         <source>Use input region</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Použite región vstupu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1206"/>
         <source>Continue</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokračovať</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1206"/>
         <source>Cancel</source>
-        <translation type="unfinished">Zrušiť</translation>
+        <translation>Zrušiť</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1228"/>
         <source>Output </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Výstup </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1229"/>
         <source> exists! Overwrite?</source>
-        <translation type="unfinished"></translation>
+        <translation> esistuje! Prepísať?</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1318"/>
         <source>Cannot find module </source>
-        <translation type="unfinished"></translation>
+        <translation>Nemožno nájsť modul </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1390"/>
         <source>Cannot start module: </source>
-        <translation type="unfinished"></translation>
+        <translation>Nemožno spustiť modul: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1408"/>
         <source>&lt;B&gt;Successfully finished&lt;/B&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;B&gt;Úspešne dokončené&lt;/B&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1414"/>
         <source>&lt;B&gt;Finished with error&lt;/B&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;B&gt;Dokončené s chybami&lt;/B&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1417"/>
         <source>&lt;B&gt;Module crashed or killed&lt;/B&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;B&gt;Modul havaroval alebo bol zabitý&lt;/B&gt;</translation>
     </message>
 </context>
 <context>
@@ -10832,7 +10880,7 @@ at line </source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="74"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">TextLabel</translation>
     </message>
 </context>
 <context>
@@ -10840,7 +10888,7 @@ at line </source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2748"/>
         <source>Attribute field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Atribútové pole</translation>
     </message>
 </context>
 <context>
@@ -10848,17 +10896,17 @@ at line </source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2948"/>
         <source>File</source>
-        <translation type="unfinished">Súbor</translation>
+        <translation>Súbor</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3063"/>
         <source>:&amp;nbsp;missing value</source>
-        <translation type="unfinished"></translation>
+        <translation>:&amp;nbsp;chýbajúca hodnota</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3070"/>
         <source>:&amp;nbsp;directory does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>:&amp;nbsp;adresár neexistuje</translation>
     </message>
 </context>
 <context>
@@ -10866,22 +10914,22 @@ at line </source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2701"/>
         <source>Warning</source>
-        <translation type="unfinished">Upozornenie</translation>
+        <translation>Upozornenie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2579"/>
         <source>Cannot find layeroption </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno nájsť voľbu pre vrstvu </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2705"/>
         <source>PostGIS driver in OGR does not support schemas!&lt;br&gt;Only the table name will be used.&lt;br&gt;It can result in wrong input if more tables of the same name&lt;br&gt;are present in the database.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ovládač PostGIS nepodporuje schémy!&lt;br&gt;Bude použitý iba názov tabuľky.&lt;br&gt;To môže viesť k chybnému výsledku pokiaľ má viacero tabuliek to isté meno&lt;br&gt;v jednej databáze.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2726"/>
         <source>:&amp;nbsp;no input</source>
-        <translation type="unfinished"></translation>
+        <translation>:&amp;nbsp;žiadny vstup</translation>
     </message>
 </context>
 <context>
@@ -10889,42 +10937,42 @@ at line </source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2131"/>
         <source>Warning</source>
-        <translation type="unfinished">Upozornenie</translation>
+        <translation>Upozornenie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2044"/>
         <source>Cannot find typeoption </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno nájsť voľbu type </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2053"/>
         <source>Cannot find values for typeoption </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno nájsť hodnoty pre voľbu typ </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2114"/>
         <source>Cannot find layeroption </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno nájsť voľbu vrstva </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2131"/>
         <source>GRASS element </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GRASS prvok </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2131"/>
         <source> not supported</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> nie je podporovaný</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2155"/>
         <source>Use region of this map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Použite región tejto mapy</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2483"/>
         <source>:&amp;nbsp;no input</source>
-        <translation type="unfinished"></translation>
+        <translation>:&amp;nbsp;žiaden vstup</translation>
     </message>
 </context>
 <context>
@@ -10932,7 +10980,7 @@ at line </source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1956"/>
         <source>:&amp;nbsp;missing value</source>
-        <translation type="unfinished"></translation>
+        <translation>:&amp;nbsp;chýbajúca hodnota</translation>
     </message>
 </context>
 <context>
@@ -10940,7 +10988,7 @@ at line </source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2838"/>
         <source>Attribute field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Atribútové pole</translation>
     </message>
 </context>
 <context>
@@ -10948,34 +10996,36 @@ at line </source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="906"/>
         <source>Warning</source>
-        <translation type="unfinished">Upozornenie</translation>
+        <translation>Upozornenie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="371"/>
         <source>Cannot find module </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno nájsť modul </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="388"/>
         <source>Cannot start module </source>
-        <translation type="unfinished"></translation>
+        <translation>Nemožno spustiť modul </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="401"/>
         <source>Cannot read module description (</source>
-        <translation type="unfinished"></translation>
+        <translation>Nemožno prečítať popis k modulu (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="401"/>
         <source>):
 </source>
-        <translation type="unfinished"></translation>
+        <translation>):
+</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="402"/>
         <source>
 at line </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">
+na riadku </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="402"/>
@@ -10985,17 +11035,17 @@ at line </source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="426"/>
         <source>Cannot find key </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno nájsť kľúč </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="565"/>
         <source>Item with id </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Položka s id </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="565"/>
         <source> not found</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> sa nenašla</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="868"/>
@@ -11005,12 +11055,12 @@ at line </source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="843"/>
         <source>Cannot check region of map </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno skontrolovať región mapy </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="907"/>
         <source>Cannot set region of map </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno nastaviť región mapy </translation>
     </message>
 </context>
 <context>
@@ -11018,164 +11068,166 @@ at line </source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="114"/>
         <source>GRASS database</source>
-        <translation type="unfinished"></translation>
+        <translation>Databáza GRASSu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="115"/>
         <source>GRASS location</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokalita GRASSu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="116"/>
         <source>Projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapové zobrazenie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="117"/>
         <source>Default GRASS Region</source>
-        <translation type="unfinished"></translation>
+        <translation>Predvolený región GRASSu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="174"/>
         <source>Mapset</source>
-        <translation type="unfinished">Mapset</translation>
+        <translation>Súbor máp (mapset)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="119"/>
         <source>Create New Mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Vytvoriť nový súbor máp (mapset)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="148"/>
         <source>Tree</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Strom</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="149"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Komentár</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="150"/>
         <source>Database</source>
-        <translation type="unfinished">Databáza</translation>
+        <translation>Databáza</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="154"/>
         <source>Location 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokalita 2</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="165"/>
         <source>User&apos;s mapset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Uživateľský mapset</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="167"/>
         <source>System mapset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Systémový mapset</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="161"/>
         <source>Location 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokalita 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="175"/>
         <source>Owner</source>
-        <translation type="unfinished"></translation>
+        <translation>Vlastník</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="224"/>
         <source>Enter path to GRASS database</source>
-        <translation type="unfinished"></translation>
+        <translation>Zadajte cestu k databáze GRASSu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="232"/>
         <source>The directory doesn&apos;t exist!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tento adresár neexistuje!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="262"/>
         <source>No writable locations, the database not writable!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Žiadne zapisovateľné lokality, do databázy nemožno zapisovať!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="360"/>
         <source>Enter location name!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zadajte názov lokality!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="373"/>
         <source>The location exists!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Táto lokalita existuje!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="521"/>
         <source>Selected projection is not supported by GRASS!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vybrané mapové zobraznie nie je podporované GRASSom!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1151"/>
         <source>Warning</source>
-        <translation type="unfinished">Upozornenie</translation>
+        <translation>Upozornenie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="568"/>
         <source>Cannot create projection.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno vytvoriť mapové zobrazenie.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="616"/>
         <source>Cannot reproject previously set region, default region set.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno prezobraziť predtým nastavený región, predvolený región bol nastvaený</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="751"/>
         <source>North must be greater than south</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sever musí mať väčšiu hodnotu ako juh</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="756"/>
         <source>East must be greater than west</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Východ musí mať väčšiu hodnotu ako západ</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="809"/>
         <source>Regions file (</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Súbor s regiónom (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="809"/>
         <source>) not found.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">) sa nenašiel.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="814"/>
         <source>Cannot open locations file (</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno otvoriť súbor s lokalitami (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="814"/>
         <source>)</source>
-        <translation type="unfinished"></translation>
+        <translation>)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="823"/>
         <source>Cannot read locations file (</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno čítať súbor s lokalitami (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="824"/>
         <source>):
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">):
+</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="824"/>
         <source>
 at line </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">
+v riadku </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="825"/>
@@ -11185,72 +11237,72 @@ at line </source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1152"/>
         <source>Cannot create QgsSpatialRefSys</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno vytvoriť QgsSpatialRefSys</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="960"/>
         <source>Cannot reproject selected region.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno reprojektovať vybraný región.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1048"/>
         <source>Cannot reproject region</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno prezobraziť región</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1279"/>
         <source>Enter mapset name.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zadajte názov súboru máp (mapsetu)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1296"/>
         <source>The mapset already exists</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Súbor máp (mapset) už existuje</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1320"/>
         <source>Database: </source>
-        <translation type="unfinished"></translation>
+        <translation>Databáza: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1331"/>
         <source>Location: </source>
-        <translation type="unfinished"></translation>
+        <translation>Lokalita: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1333"/>
         <source>Mapset: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Súbor máp (mapset): </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1364"/>
         <source>Create location</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vytvoriť lokalitu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1366"/>
         <source>Cannot create new location: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno vytvoriť novú lokalitu: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1413"/>
         <source>Create mapset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vytvoriť mapset</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1396"/>
         <source>Cannot create new mapset dircetory</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno vytvoriť nový adresár s mapsetmi!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1406"/>
         <source>Cannot open DEFAULT_WIND</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno otvoriť DEFAULT_WIND</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1413"/>
         <source>Cannot open WIND</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno otvoriť WIND</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1440"/>
@@ -11260,12 +11312,12 @@ at line </source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1436"/>
         <source>New mapset successfully created, but cannot be opened: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nový mapset bol úspečšne vytvorený ale nemožno ho otvoriť: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1442"/>
         <source>New mapset successfully created and set as current working mapset.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nový mapset bol úspešne vytvorený a nastavený ako súčasný pracovný mapset.</translation>
     </message>
 </context>
 <context>
@@ -11519,69 +11571,69 @@ at line </source>
         <translation>Vrstva GRASSu</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="179"/>
-        <source>Create new Grass Vector</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="781"/>
         <source>Warning</source>
-        <translation type="unfinished">Upozornenie</translation>
+        <translation>Upozornenie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="486"/>
         <source>GRASS Edit is already running.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="495"/>
-        <source>New vector name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GRASS úpravy už prebiehajú.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="511"/>
         <source>Cannot create new vector: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno vytvoriť nový vektor: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="533"/>
         <source>New vector created but cannot be opened by data provider.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nový vektor vytvorený, ale nemôže byť otvorený správcom údajov.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="545"/>
         <source>Cannot start editing.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno začať upravovať.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="582"/>
         <source>GISDBASE, LOCATION_NAME or MAPSET is not set, cannot display current region.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GISDBASE, LOCATION_NAME alebo MAPSET nie je nastavený, nemožno zobraziť aktuálny región.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="592"/>
         <source>Cannot read current region: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno čítať aktuálny región: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="697"/>
         <source>Cannot open the mapset. </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno otvoriť tento súbopr máp. </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="715"/>
         <source>Cannot close mapset. </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno zavrieť súbor máp. </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="772"/>
         <source>Cannot close current mapset. </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno zavrieť aktuálny súbor máp. </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="781"/>
         <source>Cannot open GRASS mapset. </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno otvoriť súbor máp GRASSu. </translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="179"/>
+        <source>Create new Grass Vector</source>
+        <translation type="unfinished">Vytvoriť novú vektor. vrstvu GRASSu</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="495"/>
+        <source>New vector name</source>
+        <translation type="unfinished">Nové meno vektora</translation>
     </message>
 </context>
 <context>
@@ -11589,22 +11641,22 @@ at line </source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregion.cpp" line="464"/>
         <source>Warning</source>
-        <translation type="unfinished">Upozornenie</translation>
+        <translation>Upozornenie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregion.cpp" line="198"/>
         <source>GISDBASE, LOCATION_NAME or MAPSET is not set, cannot display current region.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GISDBASE, LOCATION_NAME alebo MAPSET nie je nastavený, nemožno zobraziť aktuálny región.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregion.cpp" line="205"/>
         <source>Cannot read current region: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno čítať aktuálny región: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregion.cpp" line="464"/>
         <source>Cannot write region</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno zapísať región</translation>
     </message>
 </context>
 <context>
@@ -11801,32 +11853,32 @@ at line </source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="169"/>
         <source>Warning</source>
-        <translation type="unfinished">Upozornenie</translation>
+        <translation>Upozornenie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="71"/>
         <source>GRASS Shell is not supported on Windows.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GRASS Shell nie je podporovaný pod Windows.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="90"/>
         <source>GRASS shell is not supported</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GRASS shell nie je podporovaný</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="117"/>
         <source>Cannot open pseudo terminal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno otvoriť pseudo terminál</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="147"/>
         <source>Cannot fork shell</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno forknut shell</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="170"/>
         <source>Cannot open slave file in child process</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno otvoriť slave súbor v child procese</translation>
     </message>
 </context>
 <context>
@@ -11852,63 +11904,64 @@ at line </source>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="105"/>
         <source>GRASS Tools</source>
-        <translation type="unfinished">GRASS - nástroje</translation>
+        <translation>Nástroje GRASSu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="389"/>
         <source>GRASS Tools: </source>
-        <translation type="unfinished"></translation>
+        <translation>Nástroje GRASSu: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="309"/>
         <source>Warning</source>
-        <translation type="unfinished">Upozornenie</translation>
+        <translation>Upozornenie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="223"/>
         <source>Cannot find MSYS (</source>
-        <translation type="unfinished"></translation>
+        <translation>Nemožno nájsť MSYS (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="235"/>
         <source>Cannot start MSYS (</source>
-        <translation type="unfinished"></translation>
+        <translation>Nemožno spustiť MSYS (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="245"/>
         <source>GRASS Shell is not compiled.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GRASS Shell nie je skompilovaný.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="294"/>
         <source>The config file (</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfiguračný súbor (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="294"/>
         <source>) not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>) sa nenašiel.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="298"/>
         <source>Cannot open config file (</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno otvoriť konfiguračný súbor (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="298"/>
         <source>)</source>
-        <translation type="unfinished"></translation>
+        <translation>)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="306"/>
         <source>Cannot read config file (</source>
-        <translation type="unfinished"></translation>
+        <translation>Nemožno čítať konfiguračný súbor (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="307"/>
         <source>
 at line </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">
+na riadku </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="307"/>
@@ -11919,57 +11972,57 @@ at line </source>
 <context>
     <name>QgsGrassToolsBase</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>GRASS Tools</source>
         <translation type="obsolete">GRASS - nástroje</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Modules</source>
         <translation type="obsolete">Moduly</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Column 1</source>
         <translation type="obsolete">Stĺpec 1</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New Item</source>
         <translation type="obsolete">Nová položka</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Mapset</source>
         <translation type="obsolete">&amp;Mapset</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New Mapset</source>
         <translation type="obsolete">Nová mapová súprava (Mapset)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;New</source>
         <translation type="obsolete">&amp;Nové</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ctrl+N</source>
         <translation type="obsolete">Ctrl+N</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Open Mapset</source>
         <translation type="obsolete">Otvoriť mapovú súpravu (Mapset)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Open...</source>
         <translation type="obsolete">&amp;Otvoriť...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ctrl+O</source>
         <translation type="obsolete">Ctrl+O</translation>
     </message>
@@ -11982,7 +12035,7 @@ at line </source>
         <translation>&amp;Súradnicové siete</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;GraticuleMaker</source>
         <translation type="obsolete">&amp;Tvorba súradnicovej siete</translation>
     </message>
@@ -11992,7 +12045,7 @@ at line </source>
         <translation>Vytvorí súradnicovú sieť (mriežku) a výsledok uloží ako súbor shape</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Graticule Creator</source>
         <translation type="obsolete">Tvorba súradnicovej siete</translation>
     </message>
@@ -12010,7 +12063,7 @@ at line </source>
         <translation>QGIS - Tvorba siete</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grid_maker/plugingui.cpp" line="52"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/src/plugins/grid_maker/plugingui.cpp" line="52"/>
         <source>Please enter the file name before pressing OK!.</source>
         <translation type="obsolete">Pred kliknutím na OK, zadajte meno súboru!</translation>
     </message>
@@ -12093,7 +12146,7 @@ at line </source>
         <translation>Tvorba siete zemepisných súradníc</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/p&gt;
@@ -12105,7 +12158,7 @@ at line </source>
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Origin (Lower Left)</source>
         <translation type="obsolete">Počiatok (ľavý dolný)</translation>
     </message>
@@ -12120,12 +12173,12 @@ at line </source>
         <translation>Geogr. dĺžka:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>End point (Upper Right)</source>
         <translation type="obsolete">Koncový bod (pravý horný)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Output (Shape) File</source>
         <translation type="obsolete">Výstupný (Shape) súbor</translation>
     </message>
@@ -12135,7 +12188,7 @@ at line </source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Graticule Size (units in degrees)</source>
         <translation type="obsolete">Veľkosť siete (jednotky v stupňoch)</translation>
     </message>
@@ -12150,7 +12203,7 @@ at line </source>
         <translation>Interval medzi poludníkmi:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/p&gt;
@@ -12335,47 +12388,47 @@ Problém môže byť v sieťovom spojení alebo na strane WMS servera.</numerusf
         <translation>HTTP prenos dokončený, avšak vyskytla sa chyba: %1</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Received %1 of %2 bytes</source>
         <translation type="obsolete">Prijatých %1 z %2 bajtov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Received %1 bytes (total unknown)</source>
         <translation type="obsolete">Prijatých %1 (spolu neznáme)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Not connected</source>
         <translation type="obsolete">Nepripojený</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Looking up &apos;%1&apos;</source>
         <translation type="obsolete">Hľadá sa &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Connecting to &apos;%1&apos;</source>
         <translation type="obsolete">Pripája sa k &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Sending request &apos;%1&apos;</source>
         <translation type="obsolete">Posiela sa požiadavka na &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Receiving reply</source>
         <translation type="obsolete">Prijíma sa odpoveď</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Response is complete</source>
         <translation type="obsolete">Odpoveď dokončená</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Closing down connection</source>
         <translation type="obsolete">Zatvára sa spojenie</translation>
     </message>
@@ -12383,7 +12436,7 @@ Problém môže byť v sieťovom spojení alebo na strane WMS servera.</numerusf
 <context>
     <name>QgsIdentifyResults</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;center&gt;Run action&lt;/center&gt;</source>
         <translation type="obsolete">&lt;center&gt;Vykonať akciu&lt;/center&gt;</translation>
     </message>
@@ -12431,17 +12484,17 @@ Problém môže byť v sieťovom spojení alebo na strane WMS servera.</numerusf
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>OK</source>
         <translation type="obsolete">OK</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Feature</source>
         <translation type="obsolete">Objekt</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Value</source>
         <translation type="obsolete">Hodnota</translation>
     </message>
@@ -12493,7 +12546,7 @@ Problém môže byť v sieťovom spojení alebo na strane WMS servera.</numerusf
         <translation>Popisy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Source:</source>
         <translation type="obsolete">Zdroj:</translation>
     </message>
@@ -12528,7 +12581,7 @@ Problém môže byť v sieťovom spojení alebo na strane WMS servera.</numerusf
         <translation>Písmo</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Font size units are in ...</source>
         <translation type="obsolete">Jednotky veľkosti písma sú v ...</translation>
     </message>
@@ -12573,12 +12626,12 @@ Problém môže byť v sieťovom spojení alebo na strane WMS servera.</numerusf
         <translation>Y-ový posun (v bodoch):</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Offset units are in ...</source>
         <translation type="obsolete">Jednotky posunutia sú v ...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Buffer Settings</source>
         <translation type="obsolete">Nastavenie okolia</translation>
     </message>
@@ -12593,7 +12646,7 @@ Problém môže byť v sieťovom spojení alebo na strane WMS servera.</numerusf
         <translation>Veľkosť:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Buffer size is in ...</source>
         <translation type="obsolete">Veľkosť okolia je v ...</translation>
     </message>
@@ -12608,7 +12661,7 @@ Problém môže byť v sieťovom spojení alebo na strane WMS servera.</numerusf
         <translation>Veľkosť je v bodoch</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Alignment</source>
         <translation type="obsolete">Zarovnanie</translation>
     </message>
@@ -12663,7 +12716,7 @@ Problém môže byť v sieťovom spojení alebo na strane WMS servera.</numerusf
         <translation>Uhol (v stupňoch):</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Use best judgement when labels collide</source>
         <translation type="obsolete">Keď popisy kolidujú, použiť najlepšie rozhodnutie</translation>
     </message>
@@ -12713,12 +12766,12 @@ Problém môže byť v sieťovom spojení alebo na strane WMS servera.</numerusf
         <translation>Umiestnenie:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="923"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/src/ui/qgslabeldialogbase.ui" line="923"/>
         <source>&amp;Colour:</source>
         <translation type="obsolete">&amp;Farba:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Font and Alignment</source>
         <translation type="obsolete">Písmo a zarovnanie</translation>
     </message>
@@ -12728,12 +12781,12 @@ Problém môže byť v sieťovom spojení alebo na strane WMS servera.</numerusf
         <translation>°</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Buffer and Position</source>
         <translation type="obsolete">Okolie a poloha</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Advanced Data Defined Style</source>
         <translation type="obsolete">Zložitejší údajmi definovaný štýl</translation>
     </message>
@@ -12890,7 +12943,7 @@ p, li { white-space: pre-wrap; }
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Define this layer&apos;s projection:&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This layer appears to have no projection specification. By default, this layer will now have its projection set to that of the project, but you may override this by selecting a different projection below.&lt;/p&gt;
@@ -12976,17 +13029,17 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;Povoliť úpravy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Layer Name</source>
         <translation type="obsolete">Meno vrstvy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Overview</source>
         <translation type="obsolete">Prehľad</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Editing</source>
         <translation type="obsolete">Úpravy</translation>
     </message>
@@ -12999,17 +13052,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsLegendItemBase</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Form1</source>
         <translation type="obsolete">Formular1</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>CheckBox1</source>
         <translation type="obsolete">CheckBox1</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>TextLabel1</source>
         <translation type="obsolete">TextPopis1</translation>
     </message>
@@ -13073,12 +13126,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsLocationCaptureWidget</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Captured Pos: </source>
         <translation type="obsolete">Sledovaná poloha: </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Current Pos: </source>
         <translation type="obsolete">Aktuálna poloha: </translation>
     </message>
@@ -13086,42 +13139,42 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsLocationCaptureWidgetBase</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Form1</source>
         <translation type="obsolete">Formular1</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>ZoomIn</source>
         <translation type="obsolete">Priblizit</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Pan</source>
         <translation type="obsolete">Pan</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Zoom Out</source>
         <translation type="obsolete">Vzdialit</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Capture Pos</source>
         <translation type="obsolete">Sledovat (uchytit) poziciu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>OK</source>
         <translation type="obsolete">OK</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Captured Pos:</source>
         <translation type="obsolete">Zachytená poz.:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Current Pos:</source>
         <translation type="obsolete">Súčasná poz.:</translation>
     </message>
@@ -13129,22 +13182,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsMapCanvas</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>No active layer</source>
         <translation type="obsolete">Žiadna vrstva nie je aktívna</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>To select features, you must choose an layer active by clicking on its name in the legend</source>
         <translation type="obsolete">Na to, aby bolo možné vybrať objekty je potrebné najskôr vybrať aktívnu vrstvu kliknutím na jej meno v okne Legenda</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>To identify features, you must choose an layer active by clicking on its name in the legend</source>
         <translation type="obsolete">Na to, aby bolo možné identifikovať objekty je potrebné najskôr vybrať aktívnu vrstvu kliknutím na jej meno v okne Legenda</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Error when projecting the view extent, you may need to manually zoom to the region of interest.</source>
         <translation type="obsolete">Chyba pri plánovaní rozsahu (hraníc) tohoto pohľadu, možno bude potrebné nastaviť pohľad na oblasť vášho záujmu ručne.</translation>
     </message>
@@ -13452,22 +13505,22 @@ Do you want to overwrite it?</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Path to the template file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Cesta k súboru šablóny&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Prefix attached to map, scalebar and legend GIF filenames created using this MapFile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Predpona pripojená ku GIF súborom mapy, grafickej mierky a legendy vytvorených s použitím tohoto Map súboru (MapFile)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/tools/mapserver_export/qgsmapserverexportbase.ui" line="453"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/tools/mapserver_export/qgsmapserverexportbase.ui" line="453"/>
         <source>QGIS Project File</source>
         <translation type="obsolete">Súbor projektu pre QGIS</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>QGIS project file to export to MapServer map format</source>
         <translation type="obsolete">Súbor projektu QGIS pre export do mapového formátu MapServer-a</translation>
     </message>
@@ -13546,17 +13599,17 @@ Do you want to overwrite it?</source>
 <context>
     <name>QgsMeasure</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Total</source>
         <translation type="obsolete">Spolu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Increment</source>
         <translation type="obsolete">Prírastok</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Azimuth</source>
         <translation type="obsolete">Azimut</translation>
     </message>
@@ -13578,17 +13631,17 @@ Do you want to overwrite it?</source>
     <message>
         <location filename="../src/gui/qgsmeasure.cpp" line="316"/>
         <source>Segments (in feet)</source>
-        <translation type="unfinished"></translation>
+        <translation>Úseky (v stopách)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmeasure.cpp" line="319"/>
         <source>Segments (in degrees)</source>
-        <translation type="unfinished"></translation>
+        <translation>Úseky (v stupňoch)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmeasure.cpp" line="322"/>
         <source>Segments</source>
-        <translation type="unfinished"></translation>
+        <translation>Úseky</translation>
     </message>
 </context>
 <context>
@@ -13604,7 +13657,7 @@ Do you want to overwrite it?</source>
         <translation>Nové</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Close</source>
         <translation type="obsolete">Zatvoriť</translation>
     </message>
@@ -13645,12 +13698,12 @@ Do you want to overwrite it?</source>
 <context>
     <name>QgsMessageViewerBase</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>SPIT Message</source>
         <translation type="obsolete">SPIT Správa</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Close</source>
         <translation type="obsolete">Zatvoriť</translation>
     </message>
@@ -13739,12 +13792,12 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
         <translation>Vyskúšať spojenie</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsnewconnection.cpp" line="118"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/src/gui/qgsnewconnection.cpp" line="118"/>
         <source>Connection to %1 was successfull</source>
         <translation type="obsolete">Spojenie k databáze %1 bolo úspešné</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Connection failed - Check settings and try again </source>
         <translation type="obsolete">Spojenie zlyhalo - skontrolujte nastavenia a skúste znova</translation>
     </message>
@@ -13994,7 +14047,7 @@ Rozšírené informácie o chybe:
         <translation>&amp;Doplnky</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;NorthArrow</source>
         <translation type="obsolete">Smerová &amp;ružica</translation>
     </message>
@@ -14004,12 +14057,12 @@ Rozšírené informácie o chybe:
         <translation>Vytvoriť smerovú ružicu zobrazujúcu sa na mapovom plátne</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>North Arrow</source>
         <translation type="obsolete">Smerová ružica</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/src/plugins/north_arrow/plugin.cpp" line="241"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/src/plugins/north_arrow/plugin.cpp" line="241"/>
         <source>Pixmap Not Found</source>
         <translation type="obsolete">Obrázok sa nenašiel</translation>
     </message>
@@ -14032,7 +14085,7 @@ Rozšírené informácie o chybe:
 <context>
     <name>QgsNorthArrowPluginGui</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/src/plugins/north_arrow/plugingui.cpp" line="158"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/src/plugins/north_arrow/plugingui.cpp" line="158"/>
         <source>Pixmap Not Found</source>
         <translation type="obsolete">Obrázok sa nenašiel</translation>
     </message>
@@ -14174,7 +14227,7 @@ Rozšírené informácie o chybe:
         <translation>epiphany</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>firebird</source>
         <translation type="obsolete">firefox</translation>
     </message>
@@ -14229,7 +14282,7 @@ Rozšírené informácie o chybe:
         <translation>&amp;Vzhľad</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Splash Screen</source>
         <translation type="obsolete">Úvodná &amp;upútavka</translation>
     </message>
@@ -14259,7 +14312,7 @@ Rozšírené informácie o chybe:
         <translation>Na prehliadanie dokumentov Pomocníka používať program</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; The browser must be in your PATH or you can specify &lt;br&gt;the full path above</source>
         <translation type="obsolete">&lt;b&gt;Poznámka:&lt;/b&gt; K programu na prehliadanie musí byť nastavená cesta (PATH), alebo je potrebné ju určiť v poli nad týmto textom</translation>
     </message>
@@ -14269,7 +14322,7 @@ Rozšírené informácie o chybe:
         <translation>Vy&amp;kresľovanie</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Update During Drawing</source>
         <translation type="obsolete">&amp;Aktualizovať počas vykresľovania</translation>
     </message>
@@ -14294,17 +14347,17 @@ Rozšírené informácie o chybe:
         <translation>(Nastavenie 0 neaktualizuje pohľad pokým nebudú načítané všetky objekty)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Selection</source>
         <translation type="obsolete">Vý&amp;ber</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Search Radius</source>
         <translation type="obsolete">Polomer hľadania</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;
 &lt;b&gt;Note:&lt;/b&gt; Specify the value in thousandths.  The search radius is calculated as:&lt;br&gt;
 &amp;nbsp;&amp;nbsp;&lt;i&gt;(Map View Width) * ( Value/1000.0)&lt;/i&gt;
@@ -14320,17 +14373,17 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ je problém ident
 &lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>SVG Options</source>
         <translation type="obsolete">SVG Možnosti</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>SVG oversampling factor</source>
         <translation type="obsolete">Faktor prevzorkovania SVG</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;b&gt;Note: &lt;/b&gt;A higher value gives smoother SVG symbols, but can slow down rendering</source>
         <translation type="obsolete">&lt;b&gt;Poznámka: &lt;/b&gt;Vyššie hodnoty poskytujú jemnejšie SVG symboly, ale môžu spomaliť vykresľovanie</translation>
     </message>
@@ -14345,12 +14398,12 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ je problém ident
         <translation>Počiatočná viditeľnosť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New layers added to the map are not displayed</source>
         <translation type="obsolete">Nové vrstvy pridané do mapy nie sú zobrazované</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;<byte value="xd"/><byte value="xd"/>
 &lt;b&gt;Note:&lt;/b&gt; Specify the value in thousandths.  The search radius is calculated as:&lt;br&gt;<byte value="xd"/><byte value="xd"/>
 &amp;nbsp;&amp;nbsp;&lt;i&gt;(Map View Width) * ( Value/1000.0)&lt;/i&gt;<byte value="xd"/><byte value="xd"/>
@@ -14366,7 +14419,7 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ máte problém id
 &lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;<byte value="xd"/>
 &lt;b&gt;Note:&lt;/b&gt; Specify the value in thousandths.  The search radius is calculated as:&lt;br&gt;<byte value="xd"/>
 &amp;nbsp;&amp;nbsp;&lt;i&gt;(Map View Width) * ( Value/1000.0)&lt;/i&gt;<byte value="xd"/>
@@ -14382,7 +14435,7 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ je problém ident
 &lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Projection</source>
         <translation type="obsolete">Mapové zobrazenie</translation>
     </message>
@@ -14392,7 +14445,7 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ je problém ident
         <translation>Nastaviť predvolené zobrazenie ...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>When layer is loaded that has no projection information:</source>
         <translation type="obsolete">Keď je nahrávaná vrstva bez informácie o zobrazení:</translation>
     </message>
@@ -14407,7 +14460,7 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ je problém ident
         <translation>Bude použité zobrazenie nastavené vo vlastnostiach projektu.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Global default projection displayed below will be used.</source>
         <translation type="obsolete">Bude použité hlavné zobrazenie uvedené dolu.</translation>
     </message>
@@ -14447,12 +14500,12 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ je problém ident
         <translation>&amp;Aktualizovať počas vykresľovanie</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New la&amp;yers added to the map are not displayed</source>
         <translation type="obsolete">&amp;Nové vrstvy pridané do mapy nie sú zobrazené</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Anti-aliasing</source>
         <translation type="obsolete">Anti-aliasing</translation>
     </message>
@@ -14462,7 +14515,7 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ je problém ident
         <translation>Vyhladiť čiary na úrok nižšieho výkonu vykresľovania </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/src/ui/qgsoptionsbase.ui" line="395"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/src/ui/qgsoptionsbase.ui" line="395"/>
         <source>&amp;Selection &amp;&amp; Measuring</source>
         <translation type="obsolete">&amp;Výber a meranie</translation>
     </message>
@@ -14482,7 +14535,7 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ je problém ident
         <translation>Polomer vyhľadávania</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/src/ui/qgsoptionsbase.ui" line="460"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/src/ui/qgsoptionsbase.ui" line="460"/>
         <source>&lt;html&gt;
 
 &lt;b&gt;Note:&lt;/b&gt; Specify the value in thousandths.  The search radius is calculated as:&lt;br&gt;
@@ -14701,17 +14754,17 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;Geoprocessing</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Buffer Features</source>
         <translation type="obsolete">Vytvoriť okolie (&amp;buffer) objektov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Create a buffer for a PostgreSQL layer. A new layer is created in the database with the buffered features.</source>
         <translation type="obsolete">Vytvoriť okolie (buffer) pre vrstvu PostgreSQL. Nová vrstva je vytvorená v databáze s okolím objektov.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Buffer features</source>
         <translation type="obsolete">Tvorba okolia (buffera) objektov</translation>
     </message>
@@ -15051,12 +15104,12 @@ p, li { white-space: pre-wrap; }
         <translation>Meno knižnice</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Ok</source>
         <translation type="obsolete">OK</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Close</source>
         <translation type="obsolete">Zatvoriť</translation>
     </message>
@@ -15273,12 +15326,12 @@ p, li { white-space: pre-wrap; }
         <translation>Typ transformácie:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Linear</source>
         <translation type="obsolete">Lineárna</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Helmert</source>
         <translation type="obsolete">Helmertova</translation>
     </message>
@@ -15584,12 +15637,12 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Chyba PostGIS</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2198"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/src/providers/postgres/qgspostgresprovider.cpp" line="2198"/>
         <source>An error occured contacting the PostgreSQL databse</source>
         <translation type="obsolete">Nastala chyba pri komunikácii s databázou PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2208"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/src/providers/postgres/qgspostgresprovider.cpp" line="2208"/>
         <source>The PostgreSQL databse returned: </source>
         <translation type="obsolete"> Databáza PostgreSQL vrátila nasledovné hlásenie:</translation>
     </message>
@@ -15631,12 +15684,12 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
 <context>
     <name>QgsProjectProperties</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>QGIS Error</source>
         <translation type="obsolete">QGIS chyba</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>The projections file is not readable. Check you have the neccessary file permissions and try again. Only a small list of projections is currently availiable.</source>
         <translation type="obsolete">Súbor s kartografickým zobrazením nie je čitateľný. Skontrolujte, či máte naň dostatočné práva a skúste znova. V súčasnosti je podporovaných len málo kartografických zobrazení.</translation>
     </message>
@@ -15689,7 +15742,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>&amp;Zrušiť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Title</source>
         <translation type="obsolete">Názov projektu</translation>
     </message>
@@ -15724,7 +15777,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Farba výberu:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Cursor display precision</source>
         <translation type="obsolete">Presnosť zobrazovania polohy kurzora</translation>
     </message>
@@ -15764,7 +15817,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>desatinné miesta</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Digitising Settings</source>
         <translation type="obsolete">Nastavenie digitalizácie</translation>
     </message>
@@ -15794,7 +15847,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Povoliť priamy prevod medzi zobrazeniami</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Coordinate Systems</source>
         <translation type="obsolete">Súradnicové systémy</translation>
     </message>
@@ -15847,24 +15900,24 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Postgis SRID:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Building Projections List...</source>
         <translation type="obsolete">Vytvára sa zoznam zobrazení...</translation>
     </message>
     <message>
         <location filename="../src/widgets/projectionselector/qgsprojectionselector.cpp" line="495"/>
         <source>User Defined Coordinate Systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Súradnicové systémy definované používateľom</translation>
     </message>
     <message>
         <location filename="../src/widgets/projectionselector/qgsprojectionselector.cpp" line="571"/>
         <source>Geographic Coordinate Systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Zemepisné súradnicové systémy</translation>
     </message>
     <message>
         <location filename="../src/widgets/projectionselector/qgsprojectionselector.cpp" line="578"/>
         <source>Projected Coordinate Systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapové súradnicové systémy</translation>
     </message>
 </context>
 <context>
@@ -15880,12 +15933,12 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Zobrazenie</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Coordinate Systems</source>
         <translation type="obsolete">Súradnicové systémy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Spatial Reference Id</source>
         <translation type="obsolete">Id priestorového referenčného systému</translation>
     </message>
@@ -15938,17 +15991,17 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Nenastavené</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Zoom to extent of selected layer</source>
         <translation type="obsolete">&amp;Zoom na veľkosť označenej vrstvy</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Properties</source>
         <translation type="obsolete">&amp;Vlastnosti</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Remove</source>
         <translation type="obsolete">&amp;Odobrať</translation>
     </message>
@@ -15978,7 +16031,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Kanály: </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Projection: </source>
         <translation type="obsolete">Projekcia:</translation>
     </message>
@@ -15993,17 +16046,17 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Veľkosť pixela:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Red</source>
         <translation type="obsolete">Červená</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Green</source>
         <translation type="obsolete">Zelená</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Blue</source>
         <translation type="obsolete">Modrá</translation>
     </message>
@@ -16178,12 +16231,12 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Nemožno rozpoznať typ rastrových údajov.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;center&gt;&lt;b&gt;Raster Layer&lt;/b&gt;&lt;/center&gt;</source>
         <translation type="obsolete">&lt;center&gt;&lt;b&gt;Rastrová vrstva&lt;/b&gt;&lt;/center&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Show In &amp;Overview</source>
         <translation type="obsolete">&amp;Ukázať v náhľade</translation>
     </message>
@@ -16238,12 +16291,12 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Pri tomto type rastra nie je možné zostaviť pyramídy.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Raster Layer</source>
         <translation type="obsolete">Rastrová vrstva</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Convert to...</source>
         <translation type="obsolete">&amp;Konvertovať na...</translation>
     </message>
@@ -16266,7 +16319,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
 <context>
     <name>QgsRasterLayerProperties</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>No Data:</source>
         <translation type="obsolete">Žiadne údaje:</translation>
     </message>
@@ -16301,12 +16354,12 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation type="unfinished">Freak Out</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Columns:</source>
         <translation type="obsolete">Stĺpce:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Rows:</source>
         <translation type="obsolete">Riadky:</translation>
     </message>
@@ -16399,7 +16452,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation> Legenda:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Show debug info as overlay on raster?</source>
         <translation type="obsolete">Ukázať info pre ladenie ako prekryv rastra?</translation>
     </message>
@@ -16414,7 +16467,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Symbolika</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Appearance</source>
         <translation type="obsolete">Vzhľad</translation>
     </message>
@@ -16444,7 +16497,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>0%</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>RGB</source>
         <translation type="obsolete">RGB</translation>
     </message>
@@ -16474,7 +16527,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Farba</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Grayscale</source>
         <translation type="obsolete">Odtiene šedej</translation>
     </message>
@@ -16494,57 +16547,57 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Farebná škála</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Show As</source>
         <translation type="obsolete">Ukázať ako</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Three Band</source>
         <translation type="obsolete">Trojkanálová</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Single Band</source>
         <translation type="obsolete">Jednokanálová</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Advanced Symbology</source>
         <translation type="obsolete">Vyššia symbolika</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Red</source>
         <translation type="obsolete">Červená</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Green</source>
         <translation type="obsolete">Zelená</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Blue</source>
         <translation type="obsolete">Modrá</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Behaviour</source>
         <translation type="obsolete">Prostredie</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Scale histogram to the limits defined above (displays all data)</source>
         <translation type="obsolete">Škálovať histogram vo vyššie uvedenom rozsahu (zobrazí všetky údaje)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Exclude values outside the above ranges (after color mapping)</source>
         <translation type="obsolete">Vyčleniť hodnoty mimo vyššie uvedeného rozsahu (po farebnom mapovaní)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;b&gt;&lt;font color=&quot;#ff0000&quot;&gt;Please Note :&lt;/font&gt; Advanced Symbology not implemented yet!&lt;/b&gt;</source>
         <translation type="obsolete">&lt;b&gt;&lt;font color=&quot;#ff0000&quot;&gt;Neprehliadnite prosím:&lt;/font&gt; Vyššia symbolika - dosiaľ neimplementovaná&lt;/b&gt;</translation>
     </message>
@@ -16554,7 +16607,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Metadáta</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
@@ -16614,7 +16667,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Paleta:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Andale Sans UI&quot;&gt;
 &lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
@@ -16625,7 +16678,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
 </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Andale Sans UI&quot;&gt;
 &lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:21pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
@@ -16640,12 +16693,12 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
 </translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Visibility</source>
         <translation type="obsolete">Viditeľnosť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Use scale dependent rendering</source>
         <translation type="obsolete">Používať vykresľovanie v závislosti od mierky</translation>
     </message>
@@ -16670,7 +16723,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Minimálna mierka pri ktorej bude táto vrstva zobrazená.</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
 &lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
@@ -16680,7 +16733,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
 &lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:22pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
@@ -16729,7 +16782,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Čiarový</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>X Range:</source>
         <translation type="obsolete">X rozsah:</translation>
     </message>
@@ -16749,7 +16802,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Zmeniť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:22pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
@@ -16781,7 +16834,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Farebný obrázok</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:14px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
@@ -16801,7 +16854,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Viditeľnosť v závislosti od mierky</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:18px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p dir=&quot;ltr&quot;&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
@@ -16976,7 +17029,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>&amp;Doplnky</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;ScaleBar</source>
         <translation type="obsolete">&amp;Grafická mierka</translation>
     </message>
@@ -16986,7 +17039,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Vytvorí grafickú mierku zobrazovanú na mapovom plátne</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Scale Bar</source>
         <translation type="obsolete">Grafická mierka</translation>
     </message>
@@ -17024,7 +17077,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Alt+Z</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This plugin draws a scale bar on the map. Please note the size option below is a &apos;preferred&apos; size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;
@@ -17062,7 +17115,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Veľkosť grafickej mierky:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Select Colour</source>
         <translation type="obsolete">Vybrať farbu</translation>
     </message>
@@ -17130,12 +17183,12 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
 <context>
     <name>QgsScanGeometries</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Scanning Geometries</source>
         <translation type="obsolete">Zisťuje sa geometria</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>textLabel1</source>
         <translation type="obsolete">textLabel1</translation>
     </message>
@@ -17215,12 +17268,12 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Vybrať vrstvu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>PNG</source>
         <translation type="obsolete">PNG</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>JPEG</source>
         <translation type="obsolete">JPEG</translation>
     </message>
@@ -17282,7 +17335,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
 <context>
     <name>QgsServerSourceSelectBase</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Connect</source>
         <translation type="obsolete">Spojiť</translation>
     </message>
@@ -17307,17 +17360,17 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Add</source>
         <translation type="obsolete">Pridať</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Close</source>
         <translation type="obsolete">Zatvoriť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Type</source>
         <translation type="obsolete">Typ</translation>
     </message>
@@ -17372,12 +17425,12 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Abstrakt</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Spatial Reference System</source>
         <translation type="obsolete">Priestorový referenčný systém</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>ESPG:4326</source>
         <translation type="obsolete">ESPG:4326</translation>
     </message>
@@ -17449,32 +17502,32 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
 <context>
     <name>QgsSiMaDialogBase</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>QgsSiMaDialogBase</source>
         <translation type="obsolete">QgsSiMaDialogBase</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Image</source>
         <translation type="obsolete">Obrázok</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Directory</source>
         <translation type="obsolete">Adresár</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>...</source>
         <translation type="obsolete">...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New Item</source>
         <translation type="obsolete">Nová položka</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Scale Factor (%)</source>
         <translation type="obsolete">Zväčšenie (%)</translation>
     </message>
@@ -17482,107 +17535,107 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
 <context>
     <name>QgsSiSyDialogBase</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Single Symbol</source>
         <translation type="obsolete">Jednoduchý symbol</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Style</source>
         <translation type="obsolete">Štýl</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Fill color</source>
         <translation type="obsolete">Farba výplne</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Width</source>
         <translation type="obsolete">Hrúbka</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Outline color</source>
         <translation type="obsolete">Farba obrysu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Pattern</source>
         <translation type="obsolete">Vzorka</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Outline</source>
         <translation type="obsolete">Obrys</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>...</source>
         <translation type="obsolete">...</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Fill</source>
         <translation type="obsolete">Vyplniť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Label</source>
         <translation type="obsolete">Popiska</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Label:</source>
         <translation type="obsolete">Popis:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Outline Style:</source>
         <translation type="obsolete">Štýl obrysu:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Fill Color:</source>
         <translation type="obsolete">Farba výplne:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Outline color:</source>
         <translation type="obsolete">Farba obrysu:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Outline Width:</source>
         <translation type="obsolete">Hrúbka obrysu:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Fill Pattern:</source>
         <translation type="obsolete">Vzorka výplne:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Clear</source>
         <translation type="obsolete">Vyčistiť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Fill Patterns:</source>
         <translation type="obsolete">Vzorka výplne:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Point</source>
         <translation type="obsolete">Bod</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Symbol</source>
         <translation type="obsolete">Symbol</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Size</source>
         <translation type="obsolete">Veľkosť</translation>
     </message>
@@ -17620,7 +17673,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Hrúbka obrysu:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>...</source>
         <translation type="obsolete">...</translation>
     </message>
@@ -17900,7 +17953,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>]?</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Relation Exists</source>
         <translation type="obsolete">Relácia existuje</translation>
     </message>
@@ -17910,7 +17963,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Použite tabuľku dole na úpravu názvov stĺpcov. Uistite sa, že názov žiadneho stĺpca neobsahuje rezervované slovo PostgreSQL</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Error</source>
         <translation type="obsolete">Chyba</translation>
     </message>
@@ -18013,27 +18066,27 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Zoznam súborov shape</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>File Name</source>
         <translation type="obsolete">Meno súboru</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Feature Class</source>
         <translation type="obsolete">Trieda objektu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Features</source>
         <translation type="obsolete">Objekty</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>DB Relation Name</source>
         <translation type="obsolete">DB Relation Name</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Schema</source>
         <translation type="obsolete">Schéma</translation>
     </message>
@@ -18156,7 +18209,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Importuje shape súbory do databázy PostgreSQL s rozšírením PostGIS. Schému a názvy polí možno pred importom upraviť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Import Shapefiles to PostgreSQL</source>
         <translation type="obsolete">Import súborov Shape do PostgreSQL</translation>
     </message>
@@ -18169,17 +18222,17 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
 <context>
     <name>QgsUValDialogBase</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Form1</source>
         <translation type="obsolete">Formular1</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Classification Field:</source>
         <translation type="obsolete">Hodnotiace kritérium:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New Item</source>
         <translation type="obsolete">Nová položka</translation>
     </message>
@@ -18187,17 +18240,17 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
 <context>
     <name>QgsUValMaDialogBase</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Form1</source>
         <translation type="obsolete">Formular1</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Classification Field:</source>
         <translation type="obsolete">Hodnotiace kritéruim:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>New Item</source>
         <translation type="obsolete">Nová položka</translation>
     </message>
@@ -18218,12 +18271,12 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
 <context>
     <name>QgsVectorLayer</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>No features found</source>
         <translation type="obsolete">Nenašli sa žiadne objekty</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>No features were found in the active layer at the point you clicked</source>
         <translation type="obsolete">V bode, na ktorý ste klikli v aktívnej vrstve sa nenašli žiadne objekty </translation>
     </message>
@@ -18233,7 +18286,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Tabuľka atribútov -</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Zoom to extent of selected layer</source>
         <translation type="obsolete">&amp;Zoom na veľkosť označenej vrstvy</translation>
     </message>
@@ -18243,27 +18296,27 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Otvoriť &amp;tabuľku atribútov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Properties</source>
         <translation type="obsolete">&amp;Vlastnosti</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&amp;Remove</source>
         <translation type="obsolete">&amp;Odobrať</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;center&gt;&lt;b&gt;Vector Layer&lt;/b&gt;&lt;/center&gt;</source>
         <translation type="obsolete">&lt;center&gt;&lt;b&gt;Vektorová vrstva&lt;/b&gt;&lt;/center&gt;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Show In &amp;Overview</source>
         <translation type="obsolete">&amp;Ukázať v náhľade</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Start editing</source>
         <translation type="obsolete">Začať upravovať</translation>
     </message>
@@ -18293,12 +18346,12 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Vrstva nie je upravovateľná</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>The current layer is not editable. Choose &apos;start editing&apos; in the legend item right click menu</source>
         <translation type="obsolete">Aktuálna vrstva nie je upravovateľná. Z menu, ktoré sa objaví po kliknutí pravého tlačidla v okne legenda, vyberte položku &apos;Začať upravovať&apos;</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>action</source>
         <translation type="obsolete">akcia</translation>
     </message>
@@ -18318,7 +18371,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>&amp;Nie</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Vector Layer</source>
         <translation type="obsolete">Vektorová vrstva</translation>
     </message>
@@ -18343,7 +18396,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Aktuálna vrstva nie je upravovateľná. Vyberte &apos;Povoliť úpravy&apos; z rozbaľovacieho menu, ktoré sa otvorí po kliknutí  pravým tlačidlom myši v okne Legenda.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsvectorlayer.cpp" line="1836"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/src/gui/qgsvectorlayer.cpp" line="1836"/>
         <source>The current layer is not editable. Choose &apos;Allow editing&apos; in the legend item right click menu</source>
         <translation type="obsolete">Aktuálna vrstva nie je upravovateľná. Vyberte &apos;Povoliť úpravy&apos; z rozbaľovacieho menu, ktoré sa otvorí po kliknutí  pravým tlačidlom myši v okne Legenda</translation>
     </message>
@@ -18383,17 +18436,17 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Problémy v priebehu návratu do východzieho stavu (roll back)</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Warning</source>
         <translation type="obsolete">Upozornenie</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Could not change attributes</source>
         <translation type="obsolete">Nemožno zmeniť atribúty</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Could not commit changes to geometries</source>
         <translation type="obsolete">Nemožno odoslať zmeny do geometrií</translation>
     </message>
@@ -18456,17 +18509,17 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
 <context>
     <name>QgsVectorLayerProperties</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>single symbol</source>
         <translation type="obsolete">Jednoduchý symbol</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>graduated symbol</source>
         <translation type="obsolete">Stupňovaný symbol</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>continuous color</source>
         <translation type="obsolete">Spojitá farba</translation>
     </message>
@@ -18496,7 +18549,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Jedinečná hodnota</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>The source of the data (path name or database connection information)</source>
         <translation type="obsolete">Zdroj údajov (cesta k súboru alebo informácie o databázovom spojení)</translation>
     </message>
@@ -18511,17 +18564,17 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation type="unfinished">Tu sa zobrazuje dopyt použitý na vymedzenie objektov vo vrstve. V súčasnosti sú dopyty podporované len pre vrstvy PostgreSQL. Zadávať, alebo upravovať dopyt možno kliknutím na tlačidlo Tvorba dopytov</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Single Marker</source>
         <translation type="obsolete">Jednoduchá značka</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Graduated Marker</source>
         <translation type="obsolete">Odstupňovaná značka</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Unique Value Marker</source>
         <translation type="obsolete">Značka jedinečnej hodnoty</translation>
     </message>
@@ -18654,7 +18707,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Druh legendy:</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Layer source</source>
         <translation type="obsolete">Zdroj vrstvy</translation>
     </message>
@@ -18664,12 +18717,12 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Pomocník</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>F1</source>
         <translation type="obsolete">F1</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Settings</source>
         <translation type="obsolete">Nastavenia</translation>
     </message>
@@ -18684,7 +18737,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Zrušiť</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>TextLabel2</source>
         <translation type="obsolete">TextLabel2</translation>
     </message>
@@ -18837,17 +18890,17 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Max</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Rivers</source>
         <translation type="obsolete">Rieky</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>1000</source>
         <translation type="obsolete">1000</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>10000</source>
         <translation type="obsolete">10000</translation>
     </message>
@@ -18911,7 +18964,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
 <context>
     <name>QgsWFSSourceSelectBase</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/src/plugins/wfs/qgswfssourceselectbase.ui" line="13"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/src/plugins/wfs/qgswfssourceselectbase.ui" line="13"/>
         <source>Dialog</source>
         <translation type="obsolete">Dialóg</translation>
     </message>
@@ -19279,7 +19332,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>WGS 84 vymedzujúci/ohraničujúci obdĺžnik</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2388"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2394"/>
         <source>Layer cannot be queried.</source>
         <translation type="unfinished">Na vrstvu nemožno robiť dopyty.</translation>
     </message>
@@ -19287,12 +19340,12 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
 <context>
     <name>SplashScreen</name>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Quantum GIS - </source>
         <translation type="obsolete">Quantum GIS -</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>Version </source>
         <translation type="obsolete">Verzia </translation>
     </message>
@@ -19310,7 +19363,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>Šablóna zásuvného modulu</translation>
     </message>
     <message>
-        <location filename="build/qgisdev/qgis_unstable/i18n" line="0"/>
+        <location filename="build/qgisdev/qgis_08/Release-0_8_0/i18n/build/qgisdev/qgis_unstable/i18n" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This plugin was generated using QGIS internal plugin template. Please modify it according to your needs.&lt;/p&gt;
