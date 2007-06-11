@@ -748,7 +748,7 @@ bool QgsProject::read()
         imp_->file.close();     // even though we got an error, let's make
                                 // sure it's closed anyway
 
-        throw QgsIOException("Unable to open " + imp_->file.name());
+        throw QgsIOException( QObject::tr("Unable to open ") + imp_->file.name());
 
         return false;           // XXX raise exception? Ok now superfluous
                                 // XXX because of exception.
