@@ -37,6 +37,8 @@ SetCompressor zlib
 ; Components page
 !insertmacro MUI_PAGE_COMPONENTS
 ; Directory page
+
+!define MUI_DIRECTORYPAGE_TEXT_TOP "Note: for full GRASS functionality install in a path with no spaces!"
 !insertmacro MUI_PAGE_DIRECTORY
 ; Start menu page
 var ICONS_GROUP
@@ -49,8 +51,12 @@ var ICONS_GROUP
 ; Instfiles page
 !insertmacro MUI_PAGE_INSTFILES
 ; Finish page
+!insertmacro MUI_PAGE_INSTFILES
+!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\share\qgis\doc\index.html"
 !define MUI_FINISHPAGE_RUN "$INSTDIR\qgis.exe"
 !insertmacro MUI_PAGE_FINISH
+
+
 
 ; Uninstaller pages
 !insertmacro MUI_UNPAGE_INSTFILES
