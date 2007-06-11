@@ -1016,7 +1016,7 @@ bool QgsProject::read()
         imp_->file.close();     // even though we got an error, let's make
                                 // sure it's closed anyway
 
-        throw QgsIOException("Unable to open " + imp_->file.name());
+        throw QgsIOException( QObject::tr("Unable to open ") + imp_->file.name());
 
         return false;           // XXX raise exception? Ok now superfluous
                                 // XXX because of exception.
@@ -1137,7 +1137,7 @@ bool QgsProject::read()
         // doesn't *have* layers -- nor a GUI for that matter -- we'll just
         // leave in the whining and boldly stomp on.
 
-         throw QgsException("Cannot get extents from " + imp_->file.name());
+         throw QgsException( QObject::tr("Cannot get extents from ") + imp_->file.name());
 
          // return false;
     }
