@@ -51,7 +51,6 @@ var ICONS_GROUP
 ; Instfiles page
 !insertmacro MUI_PAGE_INSTFILES
 ; Finish page
-!insertmacro MUI_PAGE_INSTFILES
 !define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\share\qgis\doc\index.html"
 !define MUI_FINISHPAGE_RUN "$INSTDIR\qgis.exe"
 !insertmacro MUI_PAGE_FINISH
