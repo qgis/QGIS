@@ -183,7 +183,7 @@ fi
 AC_MSG_CHECKING([Qt version in $QTVERTEST])
 QT_VER=`grep 'define.*QT_VERSION_STR\W' $QTVERTEST/qglobal.h | perl -p -e 's/\D//g'`
 case "${QT_VER}" in
-  42*)
+  4[[2-9]]*)
     QT_MAJOR="${QT_VER:0:1}"
     QT_MINOR="${QT_VER:1:1}"
     case "${host}" in

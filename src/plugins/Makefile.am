@@ -24,6 +24,7 @@ SUBDIRS = $(GEOPROCESSING) \
 		georeferencer \
 		gps_importer \
 		grid_maker \
+		launcher \
 		north_arrow \
 		copyright_label \
 		scale_bar \
