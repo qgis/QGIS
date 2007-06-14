@@ -28,7 +28,7 @@ dnl 0.7devel1, 0.7devel2, etc.
 dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
 MINOR_VERSION=8
-MICRO_VERSION=0
+MICRO_VERSION=1
 EXTRA_VERSION=0
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
