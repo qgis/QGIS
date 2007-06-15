@@ -28,6 +28,7 @@ otool -L $PREFIX/lib/qgis/gpxprovider.so
 otool -L $PREFIX/lib/qgis/grassplugin.so 
 otool -L $PREFIX/lib/qgis/grassprovider.so 
 otool -L $PREFIX/lib/qgis/gridmakerplugin.so 
+otool -L $PREFIX/lib/qgis/launcherplugin.so
 otool -L $PREFIX/lib/qgis/libwfsprovider.so
 otool -L $PREFIX/lib/qgis/northarrowplugin.so
 otool -L $PREFIX/lib/qgis/ogrprovider.so
@@ -49,12 +50,13 @@ otool -L $PREFIX/lib/QtSvg.framework/Versions/4/QtSvg
 otool -L $PREFIX/lib/QtXml.framework/Versions/4/QtXml
 otool -L $PREFIX/lib/QtDesigner.framework/Versions/4/QtDesigner
 otool -L $PREFIX/lib/QtTest.framework/Versions/4/QtTest
-otool -L $PREFIX/imageformats/libqjpeg.dylib
+otool -L $PREFIX/../plugins/imageformats/libqjpeg.dylib
 
-otool -L $PREFIX/lib/libgdal.1.10.0.dylib
+otool -L $PREFIX/lib/libgdal.1.11.0.dylib
 otool -L $PREFIX/lib/gdalplugins/gdal_GRASS.so
 otool -L $PREFIX/lib/gdalplugins/ogr_GRASS.so
 otool -L $PREFIX/lib/libgeos.2.2.3.dylib
+otool -L $PREFIX/lib/libgeos_c.1.1.1.dylib
 otool -L $PREFIX/lib/libproj.0.5.0.dylib
 otool -L $PREFIX/lib/libsqlite3.0.8.6.dylib
 otool -L $PREFIX/lib/libxerces-c.27.0.dylib

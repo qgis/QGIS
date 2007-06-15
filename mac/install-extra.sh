@@ -57,6 +57,7 @@ for PLUGIN in \
 	qgis/grassplugin.so \
 	qgis/grassprovider.so \
 	qgis/gridmakerplugin.so \
+	qgis/launcherplugin.so \
 	qgis/libwfsprovider.so \
 	qgis/northarrowplugin.so \
 	qgis/ogrprovider.so \

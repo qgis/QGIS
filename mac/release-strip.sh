@@ -27,6 +27,7 @@ strip -x $PREFIX/lib/qgis/gpxprovider.so
 strip -x $PREFIX/lib/qgis/grassplugin.so 
 strip -x $PREFIX/lib/qgis/grassprovider.so 
 strip -x $PREFIX/lib/qgis/gridmakerplugin.so 
+strip -x $PREFIX/lib/qgis/launcherplugin.so
 strip -x $PREFIX/lib/qgis/libwfsprovider.so
 strip -x $PREFIX/lib/qgis/northarrowplugin.so
 strip -x $PREFIX/lib/qgis/ogrprovider.so
@@ -48,12 +49,13 @@ strip -x $PREFIX/lib/QtSvg.framework/Versions/4/QtSvg
 strip -x $PREFIX/lib/QtXml.framework/Versions/4/QtXml
 strip -x $PREFIX/lib/QtDesigner.framework/Versions/4/QtDesigner
 strip -x $PREFIX/lib/QtTest.framework/Versions/4/QtTest
-strip -x $PREFIX/imageformats/libqjpeg.dylib
+strip -x $PREFIX/../plugins/imageformats/libqjpeg.dylib
 
-strip -x $PREFIX/lib/libgdal.1.10.0.dylib
+strip -x $PREFIX/lib/libgdal.1.11.0.dylib
 strip -x $PREFIX/lib/gdalplugins/gdal_GRASS.so
 strip -x $PREFIX/lib/gdalplugins/ogr_GRASS.so
 strip -x $PREFIX/lib/libgeos.2.2.3.dylib
+strip -x $PREFIX/lib/libgeos_c.1.1.1.dylib
 strip -x $PREFIX/lib/libproj.0.5.0.dylib
 strip -x $PREFIX/lib/libsqlite3.0.8.6.dylib
 strip -x $PREFIX/lib/libxerces-c.27.0.dylib

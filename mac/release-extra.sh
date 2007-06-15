@@ -9,10 +9,12 @@ MSEXPORTPREFIX=$PREFIX/bin/msexport.app/Contents/MacOS
 PREFIXBACKTRACK=../../../..
 
 # Edit version when any library is upgraded
-LIBGDAL=libgdal.1.10.0.dylib
+LIBGDAL=libgdal.1.11.0.dylib
 LNKGDAL=libgdal.1.dylib
 LIBGEOS=libgeos.2.2.3.dylib
 LNKGEOS=libgeos.2.dylib
+LIBGEOSC=libgeos_c.1.1.1.dylib
+LNKGEOSC=libgeos_c.1.dylib
 LIBPROJ=libproj.0.5.0.dylib
 LNKPROJ=libproj.0.dylib
 LIBSQLITE3=libsqlite3.0.8.6.dylib
@@ -50,12 +52,20 @@ if test ! -f $LIBGEOS; then
 	ln -s $LIBGEOS $LNKGEOS
 	install_name_tool -id @executable_path/lib/$LNKGEOS $LIBGEOS
 fi
+if test ! -f $LIBGEOSC; then
+	cp /usr/local/lib/$LIBGEOSC $LIBGEOSC
+	ln -s $LIBGEOSC $LNKGEOSC
+	install_name_tool -id @executable_path/lib/$LNKGEOSC $LIBGEOSC
+	# Update path to supporting libraries
+	install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $LIBGEOSC
+fi
 if test ! -f $LIBGDAL; then
 	cp /usr/local/lib/$LIBGDAL $LIBGDAL
 	ln -s $LIBGDAL $LNKGDAL
 	install_name_tool -id @executable_path/lib/$LNKGDAL $LIBGDAL
 	# Update path to supporting libraries
 	install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $LIBGDAL
+	install_name_tool -change /usr/local/lib/$LNKGEOSC @executable_path/lib/$LNKGEOSC $LIBGDAL
 	install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $LIBGDAL
 	install_name_tool -change /usr/local/lib/$LNKXERCESC @executable_path/lib/$LNKXERCESC $LIBGDAL
 	install_name_tool -change /usr/local/lib/$LNKGIF @executable_path/lib/$LNKGIF $LIBGDAL
@@ -190,6 +200,7 @@ cd ../../../../
 # Update application paths to supporting libraries
 install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL $PREFIX/qgis
 install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $PREFIX/qgis
+install_name_tool -change /usr/local/lib/$LNKGEOSC @executable_path/lib/$LNKGEOSC $PREFIX/qgis
 install_name_tool -change /usr/local/lib/$LNKPROJ @executable_path/lib/$LNKPROJ $PREFIX/qgis
 install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $PREFIX/qgis
 install_name_tool -change /usr/local/lib/$LNKXERCESC @executable_path/lib/$LNKXERCESC $PREFIX/qgis
@@ -208,6 +219,7 @@ for LIB in _core.1.0.0 _gui.1.0.0 _raster.1.0.0 grass.1.0.0
 do
 	install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL $PREFIX/lib/libqgis$LIB.dylib
 	install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $PREFIX/lib/libqgis$LIB.dylib
+	install_name_tool -change /usr/local/lib/$LNKGEOSC @executable_path/lib/$LNKGEOSC $PREFIX/lib/libqgis$LIB.dylib
 	install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $PREFIX/lib/libqgis$LIB.dylib
 	install_name_tool -change /usr/local/lib/$LNKXERCESC @executable_path/lib/$LNKXERCESC $PREFIX/lib/libqgis$LIB.dylib
 	install_name_tool -change /usr/local/lib/$LNKGIF @executable_path/lib/$LNKGIF $PREFIX/lib/libqgis$LIB.dylib
@@ -229,6 +241,7 @@ for PLUGIN in \
 	grassplugin.so \
 	grassprovider.so \
 	gridmakerplugin.so \
+	launcherplugin.so \
 	libwfsprovider.so \
 	northarrowplugin.so \
 	ogrprovider.so \
@@ -243,6 +256,7 @@ for PLUGIN in \
 do
 	install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL $PREFIX/lib/qgis/$PLUGIN
 	install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $PREFIX/lib/qgis/$PLUGIN
+	install_name_tool -change /usr/local/lib/$LNKGEOSC @executable_path/lib/$LNKGEOSC $PREFIX/lib/qgis/$PLUGIN
 	install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $PREFIX/lib/qgis/$PLUGIN
 	install_name_tool -change /usr/local/lib/$LNKXERCESC @executable_path/lib/$LNKXERCESC $PREFIX/lib/qgis/$PLUGIN
 	install_name_tool -change /usr/local/lib/$LNKGIF @executable_path/lib/$LNKGIF $PREFIX/lib/qgis/$PLUGIN
@@ -286,7 +300,7 @@ for PLUGIN in \
 	gdalplugins/gdal_GRASS.so \
 	gdalplugins/ogr_GRASS.so
 do
-	for LIB in datetime dbmibase dbmiclient gis gmath gproj I vask vect
+	for LIB in datetime dbmibase dbmiclient dgl dig2 gis gmath gproj I linkm rtree vask vect
 	do
 		install_name_tool -change $GRASSLIB/libgrass_$LIB.dylib \
 			@executable_path/lib/grass/libgrass_$LIB.dylib \
@@ -302,6 +316,7 @@ ln -sf $PREFIXBACKTRACK/lib $HELPPREFIX/lib
 # Update msexport application paths to supporting libraries
 install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL $MSEXPORTPREFIX/msexport
 install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $MSEXPORTPREFIX/msexport
+install_name_tool -change /usr/local/lib/$LNKGEOSC @executable_path/lib/$LNKGEOSC $MSEXPORTPREFIX/msexport
 install_name_tool -change /usr/local/lib/$LNKPROJ @executable_path/lib/$LNKPROJ $MSEXPORTPREFIX/msexport
 install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $MSEXPORTPREFIX/msexport
 install_name_tool -change /usr/local/lib/$LNKXERCESC @executable_path/lib/$LNKXERCESC $MSEXPORTPREFIX/msexport
@@ -312,11 +327,13 @@ install_name_tool -change /usr/local/lib/$LNKTIFF @executable_path/lib/$LNKTIFF 
 install_name_tool -change /usr/local/lib/$LNKGEOTIFF @executable_path/lib/$LNKGEOTIFF $MSEXPORTPREFIX/msexport
 install_name_tool -change /usr/local/lib/$LNKJASPER @executable_path/lib/$LNKJASPER $MSEXPORTPREFIX/msexport
 install_name_tool -change /usr/local/pgsql/lib/$LNKPQ @executable_path/lib/$LNKPQ $MSEXPORTPREFIX/msexport
+ln -sf $PREFIXBACKTRACK/bin $MSEXPORTPREFIX/bin
 ln -sf $PREFIXBACKTRACK/lib $MSEXPORTPREFIX/lib
 
 # Update spit application paths to supporting libraries
 #install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL $PREFIX/bin/spit
 #install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $PREFIX/bin/spit
+#install_name_tool -change /usr/local/lib/$LNKGEOSC @executable_path/lib/$LNKGEOSC $PREFIX/bin/spit
 #install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $PREFIX/bin/spit
 #install_name_tool -change /usr/local/lib/$LNKXERCESC @executable_path/lib/$LNKXERCESC $PREFIX/bin/spit
 #install_name_tool -change /usr/local/lib/$LNKGIF @executable_path/lib/$LNKGIF $PREFIX/bin/spit
@@ -329,6 +346,7 @@ ln -sf $PREFIXBACKTRACK/lib $MSEXPORTPREFIX/lib
 # Update omgui application paths to supporting libraries
 #install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL $PREFIX/bin/omgui
 #install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $PREFIX/bin/omgui
+#install_name_tool -change /usr/local/lib/$LNKGEOSC @executable_path/lib/$LNKGEOSC $PREFIX/bin/omgui
 #install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $PREFIX/bin/omgui
 #install_name_tool -change /usr/local/lib/$LNKXERCESC @executable_path/lib/$LNKXERCESC $PREFIX/bin/omgui
 #install_name_tool -change /usr/local/lib/$LNKEXPAT @executable_path/lib/$LNKEXPAT $PREFIX/bin/omgui
