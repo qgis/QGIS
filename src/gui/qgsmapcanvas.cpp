@@ -645,13 +645,6 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
   mCanvasProperties->mouseButtonDown = true;
   mCanvasProperties->rubberStartPoint = e->pos();
 
-  if (e->button() ==  Qt::RightButton )
-  {
-    QPoint xy = e->pos();
-    QgsPoint coord = getCoordinateTransform()->toMapCoordinates(xy);
-    emit sendXY(coord);
-  }
-        
 } // mousePressEvent
 
 

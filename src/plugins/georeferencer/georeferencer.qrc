@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/" >
-        <file>icon.png</file>
         <file>georef.png</file>
+        <file>icon.png</file>
+        <file>pencil.png</file>
     </qresource>
 </RCC>
