@@ -28,7 +28,7 @@ class QgsPoint;
 class QgsRect;
 class QPoint;
 class QAction;
-
+class QAbstractButton;
 
 class GUI_EXPORT QgsMapTool : public QObject
 {
@@ -49,14 +49,23 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! Called when rendering has finished. Default implementation does nothing.
     virtual void renderComplete();
     
-    /** Use this to associate a button, toolbutton, menu entry etc
-     * that inherits qaction to this maptool. Then when the setMapTool
+    
+    /** Use this to associate a QAction to this maptool. Then when the setMapTool
      * method of mapcanvas is called the action state will be set to on.
      * Usually this will cause e.g. a toolbutton to appear pressed in and
      * the previously used toolbutton to pop out. */
     void setAction(QAction* action);
     
+    /** Return associated action with map tool or NULL if no action is associated */
     QAction* action();
+    
+    /** Use this to associate a button to this maptool. It has the same meaning
+     * as setAction() function except it works with a button instead of an QAction. */
+    void setButton(QAbstractButton* button);
+    
+    /** Return associated button with map tool or NULL if no button is associated */
+    QAbstractButton* button();
+    
     
     /** Check whether this MapTool performs a zoom or pan operation.
      * If it does, we will be able to perform the zoom  and then 
@@ -104,6 +113,10 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! optionally map tool can have pointer to action
     //! which will be used to set that action as active
     QAction* mAction;
+    
+    //! optionally map tool can have pointer to a button
+    //! which will be used to set that action as active
+    QAbstractButton* mButton;
     
 };
 
