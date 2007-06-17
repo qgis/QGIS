@@ -14,6 +14,9 @@
 
 #include <qgspoint.h>
 
+class QgsMapCanvas;
+class QgsMapTool;
+
 #include <ui_mapcoordsdialogbase.h>
 #include <QDialog>
 class MapCoordsDialog : public QDialog, private Ui::MapCoordsDialogBase
@@ -21,7 +24,7 @@ class MapCoordsDialog : public QDialog, private Ui::MapCoordsDialogBase
 Q_OBJECT
 public:
   MapCoordsDialog();
-  MapCoordsDialog(const QgsPoint& pixelCoords,
+  MapCoordsDialog(const QgsPoint& pixelCoords, QgsMapCanvas* qgisCanvas,
 		  QWidget* parent = 0, Qt::WFlags fl = 0);
   ~MapCoordsDialog();
   
@@ -30,11 +33,18 @@ public slots:
   void on_buttonOk_clicked();
   void on_buttonCancel_clicked(); 
   
+  void on_btnPointFromCanvas_clicked();
+  
   void setXY(QgsPoint &);
   
 private:
   
   QgsPoint mPixelCoords;
+  
+  QgsMapTool* mToolEmitPoint;
+  QgsMapTool* mPrevMapTool;
+  
+  QgsMapCanvas* mQgisCanvas;
 
 signals:
 

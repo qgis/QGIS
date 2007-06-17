@@ -1,15 +1,12 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>MapCoordsDialogBase</class>
  <widget class="QDialog" name="MapCoordsDialogBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>290</width>
-    <height>110</height>
+    <width>389</width>
+    <height>203</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -18,77 +15,187 @@
   <property name="sizeGripEnabled" >
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" >
+  <layout class="QVBoxLayout" >
    <property name="margin" >
-    <number>10</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="0" column="0" >
-    <widget class="QLabel" name="textLabel1" >
+   <item>
+    <widget class="QLabel" name="label" >
      <property name="text" >
-      <string>X:</string>
+      <string>Enter X and Y coordinates which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.</string>
+     </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" >
-    <widget class="QLabel" name="textLabel2" >
-     <property name="text" >
-      <string>Y:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1" colspan="3" >
-    <widget class="QLineEdit" name="leYCoord" />
-   </item>
-   <item row="0" column="1" colspan="3" >
-    <widget class="QLineEdit" name="leXCoord" />
-   </item>
-   <item row="2" column="0" colspan="2" >
+   <item>
     <spacer>
      <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Vertical</enum>
      </property>
      <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
+      <enum>QSizePolicy::Fixed</enum>
      </property>
      <property name="sizeHint" >
       <size>
-       <width>90</width>
-       <height>20</height>
+       <width>20</width>
+       <height>10</height>
       </size>
      </property>
     </spacer>
    </item>
-   <item row="2" column="3" >
-    <widget class="QPushButton" name="buttonOk" >
-     <property name="text" >
-      <string>&amp;OK</string>
+   <item>
+    <layout class="QGridLayout" >
+     <property name="margin" >
+      <number>0</number>
      </property>
-     <property name="shortcut" >
-      <string/>
+     <property name="spacing" >
+      <number>6</number>
      </property>
-     <property name="autoDefault" >
-      <bool>true</bool>
-     </property>
-     <property name="default" >
-      <bool>true</bool>
-     </property>
-    </widget>
+     <item row="0" column="1" >
+      <widget class="QLabel" name="textLabel1" >
+       <property name="text" >
+        <string>X:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" >
+      <widget class="QLabel" name="textLabel2" >
+       <property name="text" >
+        <string>Y:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2" >
+      <widget class="QLineEdit" name="leXCoord" />
+     </item>
+     <item row="1" column="2" >
+      <widget class="QLineEdit" name="leYCoord" />
+     </item>
+     <item rowspan="2" row="0" column="3" >
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Minimum</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item rowspan="2" row="0" column="0" >
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Minimum</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
-   <item row="2" column="2" >
-    <widget class="QPushButton" name="buttonCancel" >
-     <property name="text" >
-      <string>&amp;Cancel</string>
+   <item>
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
      </property>
-     <property name="shortcut" >
-      <string/>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>21</height>
+      </size>
      </property>
-     <property name="autoDefault" >
-      <bool>true</bool>
+    </spacer>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
      </property>
-    </widget>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="btnPointFromCanvas" >
+       <property name="text" >
+        <string> from map canvas</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="georeferencer.qrc" >:/pencil.png</iconset>
+       </property>
+       <property name="iconSize" >
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="checkable" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>21</width>
+         <height>27</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonCancel" >
+       <property name="text" >
+        <string>&amp;Cancel</string>
+       </property>
+       <property name="shortcut" >
+        <string/>
+       </property>
+       <property name="autoDefault" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonOk" >
+       <property name="text" >
+        <string>&amp;OK</string>
+       </property>
+       <property name="shortcut" >
+        <string/>
+       </property>
+       <property name="autoDefault" >
+        <bool>true</bool>
+       </property>
+       <property name="default" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -100,6 +207,8 @@
   <tabstop>buttonCancel</tabstop>
   <tabstop>buttonOk</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="georeferencer.qrc" />
+ </resources>
  <connections/>
 </ui>
