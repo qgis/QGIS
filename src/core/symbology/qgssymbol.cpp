@@ -26,6 +26,9 @@
 #include <QPainter>
 #include <QDomNode>
 #include <QDomDocument>
+#include <QImage>
+//#include <QString>
+//do we have to include qstring?
 
 QgsSymbol::QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString label) : 
       mLowerValue(lvalue),
@@ -87,6 +90,7 @@ QgsSymbol::QgsSymbol(const QgsSymbol& s)
     mType = s.mType;
     mPen = s.mPen;
     mBrush = s.mBrush;
+	mTextureFilePath = s.mTextureFilePath;
     mPointSymbolName = s.mPointSymbolName;
     mPointSize = s.mPointSize;
     mPointSymbolImage = s.mPointSymbolImage;
@@ -151,6 +155,20 @@ void QgsSymbol::setFillStyle( Qt::BrushStyle s )
   mBrush.setStyle(s);
   mCacheUpToDate = mCacheUpToDate2 = false;
 }
+
+QString QgsSymbol::customTexture() const
+{
+	return mTextureFilePath;
+}
+
+void QgsSymbol::setCustomTexture( QString path )
+{
+  mTextureFilePath = path;
+  mBrush.setTextureImage(QImage (path));
+  mCacheUpToDate = mCacheUpToDate2 = false;
+}
+
+//should we set the path independently of setting the texture?
 
 void QgsSymbol::setNamedPointSymbol(QString name)
 {
@@ -322,6 +340,11 @@ bool QgsSymbol::writeXML( QDomNode & item, QDomDocument & document ) const
     symbol.appendChild(fillpattern);
     fillpattern.appendChild(fillpatterntxt);
     
+	QDomElement texturepath=document.createElement("texturepath");
+    QDomText texturepathtxt=document.createTextNode(mTextureFilePath);
+    symbol.appendChild(texturepath);
+    texturepath.appendChild(texturepathtxt);
+
     return returnval;
 }
 
@@ -390,6 +413,11 @@ bool QgsSymbol::readXML( QDomNode & synode )
     blue = fillcelement.attribute("blue").toInt();
     setFillColor(QColor(red, green, blue));
 
+    QDomNode texturepathnode = synode.namedItem("texturepath");
+    QDomElement texturepathelement = texturepathnode.toElement();
+    setCustomTexture(texturepathelement.text());
+
+	//run this after setting the custom texture path, so we override the brush if it isn't the custom pattern brush.
     QDomNode fillpnode = synode.namedItem("fillpattern");
     QDomElement fillpelement = fillpnode.toElement();
     setFillStyle(QgsSymbologyUtils::qString2BrushStyle(fillpelement.text()));

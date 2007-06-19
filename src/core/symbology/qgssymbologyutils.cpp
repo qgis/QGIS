@@ -612,6 +612,32 @@ static const char *nobrush[] = {
   ".................................................."
 };
 
+static const char *texturePatternData[] = {
+  "50 20 2 1",
+  "# c #3155c5",
+  ". c #ffffff",
+  "..................................................",
+  "..................#########.......................",
+  "...............##############.....................",
+  "..............####........#####...................",
+  "...........................####...................",
+  "...........................####...................",
+  "...........................####...................",
+  "...........................####...................",
+  "..........................####....................",
+  "..........................####....................",
+  "........................####......................",
+  "......................####........................",
+  "....................####..........................",
+  "...................####...........................",
+  "...................####...........................",
+  "..................................................",
+  "...................####...........................",
+  "...................####...........................",
+  "...................####...........................",
+  ".................................................."
+};
+
 QString QgsSymbologyUtils::penStyle2QString(Qt::PenStyle penstyle)
 {
   if (penstyle == Qt::NoPen)
@@ -779,6 +805,7 @@ Qt::BrushStyle QgsSymbologyUtils::qString2BrushStyle(QString brushString)
       return Qt::TexturePattern;
   } else                        //return a null string
     {
+     qWarning("Brush style \"" + brushString + "\" not found in qString2BrushStyle");
       return Qt::NoBrush;
     }
 }
@@ -861,6 +888,9 @@ QPixmap QgsSymbologyUtils::qString2PatternPixmap(QString patternString)
   } else if (patternString == "DiagCrossPattern")
     {
       return QPixmap(diagCrossData);
+  } else if (patternString == "TexturePattern")
+    {
+      return QPixmap(texturePatternData);
   } else if (patternString == "NoBrush")
     {
       return QPixmap(nobrush);
@@ -1039,7 +1069,10 @@ QPixmap QgsSymbologyUtils::char2PatternPixmap(const char *c)
   } else if (strcmp(c, "DiagCrossPattern") == 0)
     {
       return QPixmap(diagCrossData);
-  } else if (strcmp(c, "NoBrush") == 0)
+  } else if (strcmp(c, "TexturePattern") == 0)
+    {
+      return QPixmap(texturePatternData);
+  }else if (strcmp(c, "NoBrush") == 0)
     {
       return QPixmap(nobrush);
   } else
@@ -1127,10 +1160,10 @@ Qt::BrushStyle QgsSymbologyUtils::char2BrushStyle(const char *c)
   } else if (strcmp(c, "CustomPattern") == 0)
     {
       return Qt::TexturePattern;
-  } else if(strcmp(c, "NoBrush") == 0)
-{
-    return Qt::NoBrush;
-}else                        //return a null string
+  } else if (strcmp(c, "NoBrush") == 0)
+    {
+      return Qt::NoBrush;
+  }else                        //return a null string
     {
       qWarning("Warning, no matching brush style found in QgsSymbologyUtils::char2BrushStyle");
       return Qt::NoBrush;
@@ -1211,6 +1244,9 @@ QPixmap QgsSymbologyUtils::brushStyle2Pixmap(Qt::BrushStyle brushstyle)
       case (Qt::DiagCrossPattern):
         return QPixmap(diagCrossData);
         break;
+      case (Qt::TexturePattern) :
+		return QPixmap(texturePatternData);
+		break;
       case (Qt::NoBrush):
         return QPixmap(nobrush);
       default:

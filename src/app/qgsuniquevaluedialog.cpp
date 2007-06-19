@@ -24,7 +24,6 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
-
 QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVectorLayer(vl), sydialog(vl)
 {
     setupUi(this);
@@ -69,6 +68,7 @@ QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVect
 	    QString symbolvalue=symbol->lowerValue();
 	    QgsSymbol* sym=new QgsSymbol(mVectorLayer->vectorType(), symbol->lowerValue(), symbol->upperValue(), symbol->label());
 	    sym->setPen(symbol->pen());
+        sym->setCustomTexture(symbol->customTexture());
 	    sym->setBrush(symbol->brush());
 	    sym->setNamedPointSymbol(symbol->pointSymbolName());
 	    sym->setPointSize(symbol->pointSize());
@@ -112,6 +112,7 @@ void QgsUniqueValueDialog::apply()
 	QgsSymbol* symbol=it->second;
 	QgsSymbol* newsymbol=new QgsSymbol(mVectorLayer->vectorType(), symbol->lowerValue(), symbol->upperValue(), symbol->label());
 	newsymbol->setPen(symbol->pen());
+    newsymbol->setCustomTexture(symbol->customTexture());
 	newsymbol->setBrush(symbol->brush());
 	newsymbol->setNamedPointSymbol(symbol->pointSymbolName());
 	newsymbol->setPointSize(symbol->pointSize());
@@ -203,7 +204,7 @@ void QgsUniqueValueDialog::changeCurrentValue()
 	if(it!=mValues.end())
 	  {
 	    sydialog.set( it->second);
-	    sydialog.setLabel(it->second->label());
+ 	    sydialog.setLabel(it->second->label());
 	  }
 	else
 	  {
@@ -227,7 +228,7 @@ void QgsUniqueValueDialog::deleteCurrentClass()
   delete (mClassListWidget->takeItem(currentIndex));
   qWarning("numRows: ");
   qWarning(QString::number(mClassListWidget->count()));
-  //
+
   if(mClassListWidget->count() < (currentIndex + 1))
     {
       qWarning("selecting numRows - 1");
