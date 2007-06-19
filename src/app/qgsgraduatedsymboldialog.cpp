@@ -96,6 +96,7 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(QgsVectorLayer * layer): QDia
 		QString classbreak=(*it)->lowerValue()+" - "+(*it)->upperValue();
 		QgsSymbol* sym=new QgsSymbol(mVectorLayer->vectorType(), (*it)->lowerValue(), (*it)->upperValue(), (*it)->label());
 		sym->setPen((*it)->pen());
+		sym->setCustomTexture((*it)->customTexture());
 		sym->setBrush((*it)->brush());
 		sym->setNamedPointSymbol((*it)->pointSymbolName());
 		sym->setPointSize((*it)->pointSize());
@@ -185,6 +186,7 @@ void QgsGraduatedSymbolDialog::apply()
 	  if (mVectorLayer->vectorType() != QGis::Line)
             {
 	      sy->setFillColor(it->second->brush().color());
+	      sy->setCustomTexture(it->second->customTexture());//necessary?
 	      sy->setFillStyle(it->second->brush().style());
             }
 	  

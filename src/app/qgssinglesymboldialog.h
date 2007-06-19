@@ -62,6 +62,7 @@ public slots:
 protected slots:
     void selectOutlineColor();
     void selectFillColor();
+	void selectTextureImage();
 
 private:
     /** Default constructor is private, do not use this */

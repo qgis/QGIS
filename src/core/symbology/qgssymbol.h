@@ -65,6 +65,12 @@ class CORE_EXPORT QgsSymbol{
     virtual void setLineStyle(Qt::PenStyle s);
     /**Set the fill (brush) style*/
     virtual void setFillStyle(Qt::BrushStyle s);
+
+	/**Gets the path to the customs texture image*/
+	virtual QString customTexture() const;
+	/**Sets the path to the custom texture, and sets the brush to use TexturePattern */
+	virtual void setCustomTexture(QString path);
+
     virtual void setLowerValue(QString value);
     virtual QString lowerValue() const;
     virtual void setUpperValue(QString value);
@@ -114,6 +120,7 @@ class CORE_EXPORT QgsSymbol{
 
     QPen mPen;
     QBrush mBrush;
+	QString mTextureFilePath;
     /* Point symbol name */
     QString mPointSymbolName;
     /* Point size */

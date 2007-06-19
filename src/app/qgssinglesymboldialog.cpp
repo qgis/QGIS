@@ -25,6 +25,8 @@
 
 #include <QColorDialog>
 #include <QPainter>
+#include <QImage>
+#include <QFileDialog>
 
 
 QgsSingleSymbolDialog::QgsSingleSymbolDialog(): QDialog(), mVectorLayer(0)
@@ -100,6 +102,7 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog(QgsVectorLayer * layer): QDialog(),
     dense6->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense6Pattern"));
     dense7->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense7Pattern"));
     nopen->setPixmap(QgsSymbologyUtils::char2PatternPixmap("NoBrush"));
+	texture->setPixmap(QgsSymbologyUtils::char2PatternPixmap("TexturePattern"));
 
 
     if (mVectorLayer)
@@ -108,9 +111,9 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog(QgsVectorLayer * layer): QDialog(),
 
         if (renderer)
         {
-	    // Set from the existing renderer
-	    set ( renderer->symbol() );
-	}
+	      // Set from the existing renderer
+	      set ( renderer->symbol() );
+	    }
         else
         {
             // Take values from an example instance
@@ -167,7 +170,8 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog(QgsVectorLayer * layer): QDialog(),
     QObject::connect(dense2, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
     QObject::connect(dense7, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
     QObject::connect(nopen, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-
+    QObject::connect(texture, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+	QObject::connect(textureSelect, SIGNAL(clicked()), this, SLOT(selectTextureImage()));
 }
 
 QgsSingleSymbolDialog::~QgsSingleSymbolDialog()
@@ -199,6 +203,21 @@ void QgsSingleSymbolDialog::selectFillColor()
     }
 
     setActiveWindow();
+}
+
+//should this method have a different name?
+void QgsSingleSymbolDialog::selectTextureImage()
+{
+  QString fileName = QFileDialog::getOpenFileName(this, "Open File",
+                                                textureFilePath->text(),
+                                                "Images (*.png *.xpm *.jpg)"); //should we allow other types of images?
+
+  if(fileName.isNull() == false){ //only process the string if the user clicked OK
+    textureFilePath->setText(fileName);
+    texture->setOn(true); //set the fill style to custom texture
+    texture->setPixmap(QPixmap(fileName)); //Change the button to show the selected image
+    resendSettingsChanged();
+  }
 }
 
 void QgsSingleSymbolDialog::apply( QgsSymbol *sy )
@@ -234,6 +253,10 @@ void QgsSingleSymbolDialog::apply( QgsSymbol *sy )
     //
     // Apply the pattern
     //
+
+    //Store the file path, and set the brush to TexturePattern.  If we have a different button selected,
+    // the below code will override it, but leave the file path alone.
+    sy->setCustomTexture(textureFilePath->text());
 
     if (solid->isOn())
     {
@@ -294,6 +317,10 @@ void QgsSingleSymbolDialog::apply( QgsSymbol *sy )
     else if (nopen->isOn())
     {
         sy->setFillStyle(Qt::NoBrush);
+    }
+    else if (texture->isOn())
+    {
+      //we already set the brush to TexturePattern up above, so don't do anything here
     }
 
     //apply the label
@@ -412,10 +439,22 @@ void QgsSingleSymbolDialog::set ( const QgsSymbol *sy )
 	    case Qt::NoBrush :
 		nopen->setOn(true);
 		break;
+		case Qt::TexturePattern :
+		texture->setOn(true);
+		break;
 	    default :
 		solid->setOn(true);
 		break;
 	}
+    textureFilePath->setText(sy->customTexture()); //get and show the file path, even if we aren't using it.
+    if(sy->customTexture().size() > 0)//if the file path isn't empty, show the image on the button
+    {
+      texture->setPixmap(QPixmap(sy->customTexture())); //show the current texture image
+    }
+	else
+    {
+      texture->setPixmap(QgsSymbologyUtils::char2PatternPixmap("TexturePattern")); //show the default question mark
+    }
 }
 
 void QgsSingleSymbolDialog::setOutlineColor(QColor& c)
@@ -480,6 +519,8 @@ void QgsSingleSymbolDialog::setFillStyle(Qt::BrushStyle fstyle)
         (dense6->setOn(true));
     else if (fstyle==Qt::Dense7Pattern)
         (dense7->setOn(true));
+	else if (fstyle==Qt::TexturePattern)
+		(texture->setOn(true));
     else if (fstyle==Qt::NoBrush)
         (nopen->setOn(true)); //default to no brush
 }
@@ -578,6 +619,10 @@ Qt::BrushStyle QgsSingleSymbolDialog::getFillStyle()
     else if (dense3->isOn())
     {
         return Qt::Dense3Pattern;
+    }
+    else if (texture->isOn())
+    {
+        return Qt::TexturePattern;
     }
     //fall back to transparent
     return Qt::NoBrush;
