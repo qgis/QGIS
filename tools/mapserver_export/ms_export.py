@@ -31,6 +31,7 @@ class Qgis2Map:
     self.header = ''
     self.footer = ''
     self.symbolQueue = {}
+    
 
   # Set the options collected from the GUI
   def setOptions(self, units, image, mapname, width, height, template, header, footer):
@@ -215,15 +216,28 @@ class Qgis2Map:
     pg['table'] = ''
     pg['geom'] = 'the_geom'
     
-    cmp = dataString.split(" ")
+    
+    whereCondition = dataString.split("sql")[1][1:]
+    cmp = dataString.split("sql")[0].split(" ")
+    
     for c in cmp:
       if c[:1] == "(":
         pg['geom'] = c[1:][:-1]
       else:
         kvp = c.split("=")
-        pg[kvp[0]] =  kvp[1]
-
-    return pg
+        if (len(kvp) >= 2):
+          pg[kvp[0]] =  kvp[1]
+    
+    connString = 'host=' + pg['host'] + " user=" + pg['user']
+    
+    if (len(pg['password'].replace("\'", "")) > 0):
+      connString += " password=" + pg['password'].replace("'", "")
+    
+    connString += " dbname=" + pg['dbname']
+     
+    dataString = pg['geom'] + " FROM " + pg['table'].replace("\"", "")
+    filterString = whereCondition.replace("\"", "")
+    return (connString, dataString, filterString)
 
        
   # Write the map layers
@@ -240,7 +254,7 @@ class Qgis2Map:
 
       self.outFile.write("  LAYER\n")
       # write the name of the layer
-      self.outFile.write("    NAME '" + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8') + "'\n")
+      self.outFile.write("    NAME '" + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "") + "'\n")
       if lyr.getAttribute("type").encode('utf-8') == 'vector':  
         self.outFile.write("    TYPE " + lyr.getAttribute("geometry").encode('utf-8').upper() + "\n")
       elif lyr.getAttribute("type").encode('utf-8') == 'raster':  
@@ -264,11 +278,11 @@ class Qgis2Map:
 
       if providerString == 'postgres':
         # it's a postgis layer
-        pg = self.parsePostgisConnection(dataString)
+        (pgConnString, sqlData, sqlFilter) = self.parsePostgisConnection(dataString)
         self.outFile.write("    CONNECTIONTYPE postgis\n")
-        self.outFile.write("    CONNECTION 'host=" + pg['host'] + " dbname=" + pg['dbname'] 
-                            + " password=" + pg['password'] + " user=" + pg['user'] + "'\n")
-        self.outFile.write("    DATA '" + pg['geom'] + " FROM " + pg['table'] + "'\n")
+        self.outFile.write("    CONNECTION '" + pgConnString + "'\n")
+        self.outFile.write("    DATA '" + sqlData + "'\n")
+        self.outFile.write("    FILTER '" + sqlFilter + "'\n")
 
       elif providerString == 'wms' and lyr.getAttribute("type").encode('utf-8').upper() == 'RASTER':
         # it's a WMS layer 
@@ -280,7 +294,7 @@ class Qgis2Map:
         wmsNames = []
         wmsStyles = []
         for wmsLayer in wmsSubLayers: 
-          wmsNames.append( wmsLayer.getElementsByTagName('name')[0].childNodes[0].nodeValue.encode('utf-8') )
+          wmsNames.append( wmsLayer.getElementsByTagName('name')[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "") )
           try: 
             wmsStyles.append( wmsLayer.getElementsByTagName('style')[0].childNodes[0].nodeValue.encode('utf-8') )
           except:
@@ -305,7 +319,7 @@ class Qgis2Map:
       # WMS settings for all layers
       self.outFile.write("    METADATA\n")
       self.outFile.write("      'wms_title' '" 
-           + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8') + "'\n")
+           + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "") + "'\n")
       self.outFile.write("    END\n")
 
       self.outFile.write("    STATUS DEFAULT\n")
@@ -364,9 +378,8 @@ class Qgis2Map:
 
     self.outFile.write("    CLASS\n")
 
-    self.outFile.write("       NAME " 
-         + layerNode.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8') 
-         + " \n")
+    self.outFile.write("       NAME '" 
+         + layerNode.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "") + "' \n")
 
     self.outFile.write("       STYLE\n")
     # use the point symbol map to lookup the mapserver symbol type
