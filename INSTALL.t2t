@@ -1,30 +1,46 @@
-Installation Notes for Quantum GIS (QGIS) on windows
-Tim Sutton
-%%mtime(%m/%d/%Y)
-
+Compiling QGIS From Source
+Tim Sutton 2007
 %!encoding: iso-8859-1
 
-                  =  Introduction  =
 
-%This document is in text2tags format. You can generate html, plain text and moinmoin
-%formatted documentation by running txt2tags on this document. See the txt2tags home
-%page for more details.
+% These are comments and will not be generated in any output
+% -------------------
 
-This document is for developers and describes the procedure required to compile this version of QGIS.
+%This document is in text2tags format. You can generate html, plain text and
+%moinmoin formatted documentation by running txt2tags on this document. See the
+%txt2tags home page for more details.  Please insert manual line breaks in this
+%document as it makes diffing for changes much easier. To do this in vim 
+%automatically, select a section then issue (gq) command. Please dont
+%apply vim formatting to the whol document as it screws up some formatting
+%rather apply it selectively to paragraphs where needed.
 
-= Procedure for building under windows build environment using msys =
-```
-                   Authors and contributors for this section:
-                    Tim Sutton, Godofredo Contreras 2006
-                      CMake additions Magnus Homann 2007
-                     Python additions Martin Dobias 2007
-  With thanks to Tisham Dhar for preparing the initial msys environment
----------------------------------------------------------------------------------
-```
+% To generate teh text version of this document:
+% txt2tags -t txt --toc --enum-title -o INSTALL  INSTALL.t2t
+% To generate the moinmoin version of this document
+% txt2tags -t moin --toc --enum-title -o INSTALL.moin  INSTALL.t2t
+
+% End of comments
+% -------------------
+
+
+= Introduction =
+
+/!\ ***Note to document writers:*** Please use this document as the central
+place for describing build procefures. Please do not remove this notice. 
+
+/!\ ***Note:*** This is a 'cut and paste' tutorial - in most cases you can
+simply copy the commands listed in codeblocks that look like this:
+
+``` somecommand to be pasted ```
+
+
+
+= Building under windows using msys =
 
 == MSYS: ==
 
-MSYS provides a unix style build environment under windows. We have created a zip archive that contains just about all dependencies.
+MSYS provides a unix style build environment under windows. We have created a
+zip archive that contains just about all dependencies.
 
 Get this: 
 
@@ -33,14 +49,15 @@ http://qgis.org/uploadfiles/msys/msys.tar.gz
 and unpack to c:\msys
 
 
-/!\ The file above is compressed as gzipped tarball - you can get a free windows application for creating and decompressing files here:
+/!\ The file above is compressed as gzipped tarball - you can get a free
+windows application for creating and decompressing files here:
 
 http://www.7-zip.org/
 
 
 == Qt4.3 ==
 
-Download qt4.3 opensource precompiled edition exe and install (including the 
+Download qt4.3 opensource precompiled edition exe and install (including the
 download and install of mingw) from here:
 
 http://www.trolltech.com/developer/downloads/qt/windows
@@ -52,52 +69,69 @@ When Qt installation is complete:
 
 Edit C:\Qt\4.3.0\bin\qtvars.bat and add the following lines:
 
-set PATH=%PATH%;C:\msys\local\bin;c:\msys\local\lib
-set PATH=%PATH%;"C:\Program Files\Subversion\bin"
+``` 
+set PATH=%PATH%;C:\msys\local\bin;c:\msys\local\lib 
+set PATH=%PATH%;"C:\Program Files\Subversion\bin" 
+```
 
-I suggest you also add C:\Qt\4.3.0\bin\ to your Environment Variables Path in the windows system preferences.
+I suggest you also add C:\Qt\4.3.0\bin\ to your Environment Variables Path in
+the windows system preferences.
 
 If you plan to do some debugging, you'll need to compile debug version of Qt:
 C:\Qt\4.3.0\bin\qtvars.bat compile_debug
 
 == Flex and Bison ==
 
-Get Flex http://sourceforge.net/project/showfiles.php?group_id=23617&package_id=16424 (the zip bin) and extract it into c:\msys\mingw\bin
+*** Note I think this section can be removed as it should be installed int the
+msys image already. TS
+
+Get Flex
+http://sourceforge.net/project/showfiles.php?group_id=23617&package_id=16424
+(the zip bin) and extract it into c:\msys\mingw\bin
 
 == Python stuff: (optional) ==
 
 
-Follow this section in case you would like to use Python bindings for QGIS.
-To be able to compile bindings, you need to compile SIP and PyQt4 from sources
-as their installer doesn't include some development files which are necessary.
+Follow this section in case you would like to use Python bindings for QGIS.  To
+be able to compile bindings, you need to compile SIP and PyQt4 from sources as
+their installer doesn't include some development files which are necessary.
 
-*) Download and install Python - use Windows installer
-   (It doesn't matter to what folder you'll install it)
+=== Download and install Python - use Windows installer ===
 
-   http://python.org/download/
+(It doesn't matter to what folder you'll install it)
 
-*) Download SIP and PyQt4 sources
+http://python.org/download/
 
-   http://www.riverbankcomputing.com/Downloads/sip4/sip-4.6.zip
-   http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/PyQt-win-gpl-4.2.zip
+=== Download SIP and PyQt4 sources ===
 
-*) Unpack SIP to a temporary directory, open console (cmd.exe) and compile:
+http://www.riverbankcomputing.com/Downloads/sip4/sip-4.6.zip
+http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/PyQt-win-gpl-4.2.zip
 
-   > c:\Qt\4.3.0\bin\qtvars.bat
-   > python configure.py -p win32-g++
-   > make
-   > make install
+Extract each of the above zip files in a temporary directory.
    
-*) Unpack PyQt to a temporary directory, open console (cmd.exe) and compile:
+=== Compile SIP ===
 
-   > c:\Qt\4.3.0\bin\qtvars.bat
-   > python configure.py
-   > make
-   > make install
+``` 
+c:\Qt\4.3.0\bin\qtvars.bat 
+python configure.py -p win32-g++ 
+make 
+make install 
+```
 
-*) You can delete the directories with unpacked SIP and PyQt4 sources
-   after a successfull install, they're not needed anymore.
+=== Compile PyQt ===
 
+``` 
+c:\Qt\4.3.0\bin\qtvars.bat 
+python configure.py 
+make 
+make install 
+```
+
+
+=== Final python notes ===
+
+/!\ You can delete the directories with unpacked SIP and PyQt4 sources after a
+successfull install, they're not needed anymore.
 
 == Subversion: ==
 
@@ -116,83 +150,95 @@ http://www.cmake.org/files/v2.4/cmake-2.4.6-win32-x86.exe
 
 == QGIS: ==
 
- * Start a cmd.exe window ( Start -> Run -> cmd.exe )
- * Create development directory and move into it
+Start a cmd.exe window ( Start -> Run -> cmd.exe ) Create development 
+directory and move into it
 
-```
-   > md c:\dev\cpp
-   > cd c:\dev\cpp
+``` 
+md c:\dev\cpp 
+cd c:\dev\cpp 
 ```
    
- * Check out sources from SVN
- * For svn head:
+Check out sources from SVN For svn head:
+``` 
+svn co https://svn.qgis.org/repos/qgis/trunk/qgis 
 ```
-   svn co https://svn.qgis.org/repos/qgis/trunk/qgis
+For svn 0.8 branch
 ```
- * For svn 0.8 branch
-```
- * svn co https://svn.qgis.org/repos/qgis/branches/Release-0_8_0 qgis0.8
+ svn co https://svn.qgis.org/repos/qgis/branches/Release-0_8_0 qgis0.8
 ```
 
 
 == Compiling: ==
 
-As a background read http://wiki.qgis.org/qgiswiki/Building_with_CMake
+As a background read the generic building with CMake notes at the end of 
+this document.
 
- * Start a cmd.exe window ( Start -> Run -> cmd.exe ) if you don't have one already.
- * Add paths to compiler and our MSYS environment:
+Start a cmd.exe window ( Start -> Run -> cmd.exe ) if you don't have one
+already.  Add paths to compiler and our MSYS environment:
   
 ``` 
-   c:\Qt\4.3.0\bin\qtvars.bat
+c:\Qt\4.3.0\bin\qtvars.bat 
 ```
- * For ease of use add c:\Qt\4.3.0\bin\ to your system path in system properties so you can just type qtvars.bat when you open the cmd console.
- * Create build directory and set it as current directory:
 
-```
-   cd c:\dev\cpp\qgis
-   md build
-   cd build
+For ease of use add c:\Qt\4.3.0\bin\ to your system path in system
+properties so you can just type qtvars.bat when you open the cmd console.
+Create build directory and set it as current directory:
+
+
+``` 
+cd c:\dev\cpp\qgis 
+md build 
+cd build 
 ```
 
 == Configuration ==
 
 ```
-   cmakesetup ..
+cmakesetup ..  
 ```
 
- /!\ NOTE: You must include the '..' above.
+/!\ NOTE: You must include the '..' above.
 
-  * Click 'Configure' button.
-  * When asked, you should choose 'MinGW Makefiles' as generator.
-   
-   There's a problem with MinGW Makefiles on Win2K. If you're compiling on this
-   platform, use 'MSYS Makefiles' generator instead.
+Click 'Configure' button.  When asked, you should choose 'MinGW Makefiles'
+as generator.
 
-   All dependencies should be picked up automatically, if you have set
-   up the Paths correctly. The only thing you need to change is the
-   installation destination (CMAKE_INSTALL_PREFIX) and/or set 'Debug'.
+There's a problem with MinGW Makefiles on Win2K. If you're compiling on this
+platform, use 'MSYS Makefiles' generator instead.
+
+All dependencies should be picked up automatically, if you have set up the
+Paths correctly. The only thing you need to change is the installation
+destination (CMAKE_INSTALL_PREFIX) and/or set 'Debug'.
+
+For compatibility with NSIS packaging cripts I recommend to leave the
+install prefix to its default c:\program files\
+
+When configuration is done, click 'OK' to exit the setup utility.
+
+== Compilation and installation ==
  
-   For compatibility with NSIS packaging cripts I recommend to leave the install
-   prefix to its default c:\program files\
-
-   When configuration is done, click 'OK' to exit the setup utility.
-
-*) Compilation and installation
  
-   > make
-   > make install
+``` 
+ make make install 
+```
 
-*) Run qgis.exe from the directory where it's installed (CMAKE_INSTALL_PREFIX)
+== Run qgis.exe from the directory where it's installed (CMAKE_INSTALL_PREFIX) ==
 
-   Make sure to copy all .dll:s needed to the same directory as the
-   qgis.exe binary is installed to, if not already done so, otherwise
-   QGIS will complain about missing libraries when started.
+Make sure to copy all .dll:s needed to the same directory as the qgis.exe
+binary is installed to, if not already done so, otherwise QGIS will complain
+about missing libraries when started.
 
-   The best way to do this is to download both the QGIS current release installer package from http://qgis.org/uploadfiles/testbuilds/ and install it. Now copy the installation dir from C:\Program Files\Quantum GIS into c:\Program Files\qgis-0.8.1 (or whatever the current version is. The name should strictly match the version no. After making this copy you can uninstall the release version of QGIS from your c:\Program Files directory using the provided uninstaller. Double check that the Quantum GIS dir is completely gone under program files afterwards.
+The best way to do this is to download both the QGIS current release installer
+package from http://qgis.org/uploadfiles/testbuilds/ and install it. Now copy
+the installation dir from C:\Program Files\Quantum GIS into c:\Program
+Files\qgis-0.8.1 (or whatever the current version is. The name should strictly
+match the version no.) After making this copy you can uninstall the release
+version of QGIS from your c:\Program Files directory using the provided
+uninstaller. Double check that the Quantum GIS dir is completely gone under
+program files afterwards.
    
-   Another possibility is to run qgis.exe when your path contains
-   c:\msys\local\bin and c:\msys\local\lib directories, so the DLLs
-   will be used from that place.
+Another possibility is to run qgis.exe when your path contains
+c:\msys\local\bin and c:\msys\local\lib directories, so the DLLs will be
+used from that place.
 
 
 == Create the installation package: (optional) ==
@@ -200,6 +246,527 @@ As a background read http://wiki.qgis.org/qgiswiki/Building_with_CMake
 Downlad and install NSIS from (http://nsis.sourceforge.net/Main_Page)
 
 
-Now using windows explorer, enter the win_build directory in your QGIS source tree. Read the READMEfile there and follow the instructions. Next right 
-click on qgis.nsi and choose the option 'Compile NSIS Script'. 
+Now using windows explorer, enter the win_build directory in your QGIS source
+tree. Read the READMEfile there and follow the instructions. Next right click
+on qgis.nsi and choose the option 'Compile NSIS Script'. 
 
+
+
+= Building on Mac OSX using frameworks and cmake (QGIS > 0.8) =
+
+
+In this approach I will try to avoid as much as possible building dependencies
+from source and rather use frameworks wherever possible.
+
+== Install XCODE ==
+
+I recommend to get the latest xcode dmg from the Apple XDC Web site. Install
+XCODE after the ~941mb download is complete.
+
+== Install Qt4 from .dmg ==
+
+``` 
+ftp://ftp.trolltech.com/qt/source/qt-mac-opensource-4.2.3.dmg 
+```
+
+If you want debug libs, Qt also provide a dmg with these:
+
+``` 
+ftp://ftp.trolltech.com/qt/source/qt-mac-opensource-4.2.3-debug-libs.dmg
+```
+
+I am going to proceed using only release libs at this stage as the download for
+the debug dmg is substantially bigger. If you plan to do any debugging though
+you probably want to get the debug libs dmg. Once downloaded open the dmg and
+run the installer. Note you need admin access to install.
+
+After installing you need to make two small changes:
+
+First edit ``/Library/Frameworks/QtCore.framework/Headers/qconfig.h`` and
+change 
+
+/!\ Note this doesnt seem to be needed since version 4.2.3
+
+``QT_EDITION_UNKNOWN`` to ``QT_EDITION_OPENSOURCE``
+
+Second change the default mkspec symlink so that it points to macx-g++:
+
+```
+cd /usr/local/Qt4.2/mkspecs/ sudo rm default sudo ln -sf macx-g++ default
+```
+
+
+== Install development frameworks for QGIS dependencies ==
+
+Download William Kyngesburye's excellent all in one framework that includes
+proj, gdal, sqlite3 etc
+
+``` 
+http://www.kyngchaos.com/files/software/unixport/AllFrameworks.dmg 
+```
+
+Once downloaded, open and install the frameworks.
+
+William provides an additional installer package for Postgresql/PostGIS. Its
+available here:
+
+``` 
+http://www.kyngchaos.com/software/unixport/postgres 
+```
+
+There are some additional dependencies that at the time of writing are not
+provided as frameworks so we will need to build these from source.
+
+=== Additional Dependencies : GSL ===
+
+Retrieve the Gnu Scientific Library from
+
+``` 
+curl -O ftp://ftp.gnu.org/gnu/gsl/gsl-1.8.tar.gz 
+```
+
+Then extract it and build it to a prefix of /usr/local:
+
+``` 
+tar xvfz gsl-1.8.tar.gz 
+cd gsl-1.8 
+./configure --prefix=/usr/local 
+make
+sudo make install cd ..  
+```
+
+=== Additional Dependencies : Expat ===
+
+Get the expat sources:
+
+``` 
+http://sourceforge.net/project/showfiles.php?group_id=10127 
+```
+
+```
+tar xvfz expat-2.0.0.tar.gz 
+cd expat-2.0.0 
+./configure --prefix=/usr/local
+make 
+sudo make install 
+cd ..  
+```
+
+=== Additional Dependencies : SIP ===
+
+Retrieve the python bindings toolkit SIP from
+
+``` 
+curl -O http://www.riverbankcomputing.com/Downloads/sip4/sip-4.5.2.tar.gz
+```
+
+Then extract and build it to a prefix of /usr/local:
+
+``` 
+tar xvfz sip-4.5.2.tar.gz 
+cd sip-4.5.2 
+python configure.py 
+make 
+sudo make install 
+cd ..  
+```
+
+=== Additional Dependencies : PyQt ===
+
+Retrieve the python bindings toolkit for Qt from
+
+``` 
+curl -O http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/PyQt-mac-gpl-4.1.1.tar.gz
+```
+
+Then extract and build it to a prefix of /usr/local:
+
+``` 
+tar xvfz PyQt-mac-gpl-4.1.1.tar.gz 
+cd PyQt-mac-gpl-4.1.1 
+python configure.py 
+yes 
+make 
+sudo make install 
+cd ..  
+```
+
+=== Additional Dependencies : Bison ===
+
+The version of bison available by default on Mac OSX is too old so you need to
+get a more recent one on your system. Download if from:
+
+``` 
+curl -O http://ftp.gnu.org/gnu/bison/bison-2.3.tar.gz 
+```
+
+Now build and install it to a prefix of /usr/local :
+
+``` 
+tar xvfz bison-2.3.tar.gz 
+cd bison-2.3 
+./configure --prefix=/usr/local 
+make
+sudo make install 
+cd ..  
+```
+
+== Install CMAKE for OSX ==
+
+Get the latest release from here:
+
+``` 
+http://www.cmake.org/HTML/Download.html 
+```
+
+At the time of writing the file I grabbed was:
+
+``` 
+curl -O http://www.cmake.org/files/v2.4/cmake-2.4.6-Darwin-universal.dmg
+```
+
+Once downloaded open the dmg and run the installer
+
+== Install subversion for OSX ==
+
+The [http://sourceforge.net/projects/macsvn/ MacSVN] project has a downloadable
+build of svn. If you are a GUI inclined person you may want to grab their gui
+client too. Get the command line client here:
+
+``` 
+curl -O http://ufpr.dl.sourceforge.net/sourceforge/macsvn/Subversion_1.4.2.zip 
+```
+
+
+Once downloaded open the zip file and run the installer.
+
+You also need to install BerkleyDB available from the same
+[http://sourceforge.net/projects/macsvn/ website]. At the time of writing the
+file was here:
+
+``` 
+curl -O http://ufpr.dl.sourceforge.net/sourceforge/macsvn/Berkeley_DB_4.5.20.zip 
+```
+
+Once again unzip this and run the installer therein.
+
+Lastly we need to ensure that the svn commandline executeable is in the path.
+Add the following line to the end of /etc/bashrc using sudo:
+
+``` 
+sudo vim /etc/bashrc 
+```
+
+And add this line to the bottom before saving and quiting:
+
+``` 
+export PATH=/usr/local/bin:$PATH:/usr/local/pgsql/bin 
+```
+
+/usr/local/bin needs to be first in the path so that the newer bison (that will
+be built from source further down) is found before the bison (which is very
+old) that is installed by MacOSX
+
+
+Now close and reopen your shell to get the updated vars.
+
+== Check out QGIS from SVN ==
+
+Now we are going to check out the sources for QGIS. First we will create a
+directory for working in:
+
+``` 
+mkdir -p ~/dev/cpp cd ~/dev/cpp 
+```
+
+Now we check out the sources:
+
+Trunk:
+``` 
+svn co https://svn.qgis.org/repos/qgis/trunk/qgis qgis 
+```
+
+For svn 0.8 branch
+``` 
+svn co https://svn.qgis.org/repos/qgis/branches/Release-0_8_0 qgis0.8
+```
+
+
+The first time you check out QGIS sources you will probably get a message like
+this:
+
+``` 
+ Error validating server certificate for 'https://svn.qgis.org:443':
+ - The certificate is not issued by a trusted authority. Use the fingerprint to
+   validate the certificate manually!  Certificate information:
+ - Hostname: svn.qgis.org
+ - Valid: from Apr  1 00:30:47 2006 GMT until Mar 21 00:30:47 2008 GMT
+ - Issuer: Developer Team, Quantum GIS, Anchorage, Alaska, US
+ - Fingerprint: 2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b
+   (R)eject, accept (t)emporarily or accept (p)ermanently?  
+```
+
+I suggest you press 'p' to accept the key permanently.
+
+== Configure the build ==
+
+CMake supports out of source build so we will create a 'build' dir for the
+build process
+
+``` 
+cd qgis 
+mkdir build 
+cd build 
+cmake -D CMAKE_INSTALL_PREFIX=$HOME/apps/ -D CMAKE_BUILD_TYPE=Release..
+```
+
+To use a specific GRASS version, You can optionally use the following 
+cmake invocation (with modifications to suite your system (thanks William 
+Kyngesburye for this hint):
+
+```
+cmake -D CMAKE_INSTALL_PREFIX=$HOME/apps/ \
+      -D GRASS_INCLUDE_DIR=/Applications/GRASS-6.3.app/Contents/Resources/include \
+      -D GRASS_PREFIX=/Applications/GRASS-6.3.app/Contents/Resources \
+      -D CMAKE_BUILD_TYPE=Release \
+      ..
+```
+
+== GEOS Issues ==
+
+I had some issues with GEOS headers so I made the following edits:
+
+In file /Library/Frameworks/GEOS.framework/Headers/io.h, comment out line 61
+
+In file /Library/Frameworks/GEOS.framework/Headers/geom.h, comment out line 145
+
+== Building ==
+
+Now we can start the build process:
+
+``` 
+make 
+```
+
+If all built without errors you can then install it:
+
+``` 
+make install 
+```
+
+= Building on GNU/Linux =
+
+== Building QGIS with Qt4.x ==
+
+***Requires:*** Ubuntu Edgy
+
+These notes are for if you want to build QGIS from source. One of the major
+aims here is to show how this can be done using binary packages for ***all***
+dependencies - building only the core QGIS stuff from source. I prefer this
+approach because it means we can leave the business of managing system packages
+to apt and only concern ourselves with coding QGIS! 
+
+This document assumes you have made a fresh install and have a 'clean' system.
+These instructions should work fine if this is a system that has already been
+in use for a while, you may need to just skip those steps which are irrelevant
+to you.
+
+
+
+== Prepare apt ==
+
+The packages qgis depends on to build are available in the "universe" component
+of Ubuntu. This is not activated by default, so you need to activate it:
+
+1. Edit your /etc/apt/sources.list file.  
+2. Uncomment the all the lines starting with "deb"
+
+Also you will need to be running (K)Ubuntu 'edgy' or higher in order for 
+all dependencies to be met.
+
+Now update your local sources database:
+
+``` 
+sudo apt-get update 
+```
+
+
+== Install Qt4 ==
+
+``` 
+sudo apt-get install libqt4-core libqt4-debug libqt4-debug-dev \
+libqt4-dev libqt4-gui libqt4-qt3support libqt4-sql lsb-qt4 qt4-designer \
+qt4-dev-tools qt4-doc qt4-qtconfig uim-qt gcc libapt-pkg-perl resolvconf
+```
+
+/!\ ***A Special Note:*** If you are following this set of instructions on
+a system where you already have Qt3 development tools installed, there will
+be a conflict between Qt3 tools and Qt4 tools. For example, qmake will
+point to the Qt3 version not the Qt4. Ubuntu Qt4 and Qt3 packages are
+designed to live alongside each other. This means that for example if you
+have them both installed you will have three qmake exe's:
+
+``` 
+/usr/bin/qmake -> /etc/alternatives/qmake 
+/usr/bin/qmake-qt3
+/usr/bin/qmake-qt4 
+```
+
+The same applies to all other Qt binaries. You will notice above that the
+canonical 'qmake' is managed by apt alternatives, so before we start to
+build QGIS, we need to make Qt4 the default. To return Qt3 to default later
+you can use this same process.
+
+You can use apt alternatives to correct this so that the Qt4 version of
+applications is used in all cases:
+
+``` 
+sudo update-alternatives --config qmake
+sudo update-alternatives --config uic 
+sudo update-alternatives --config designer 
+sudo update-alternatives --config assistant 
+sudo update-alternatives --config qtconfig 
+sudo update-alternatives --config moc 
+sudo update-alternatives --config lupdate 
+sudo update-alternatives --config lrelease 
+sudo update-alternatives --config linguist 
+```
+
+Use the simple command line dialog that appears after running each of the
+above commands to select the Qt4 version of the relevant applications.
+
+== Install additional software dependencies required by QGIS ==
+
+``` 
+sudo apt-get install gdal-bin libgdal1-dev libgeos-dev proj libtool \
+libgdal-doc libhdf4g-dev libhdf4g-run autoconf2.13 automake1.9 python-dev \
+swig libgsl0-dev g++ libjasper-1.701-dev libtiff4-dev  subversion gsl-bin \
+libsqlite3-dev sqlite3 ccache make libpq-dev flex bison firefox 
+```
+
+
+== GRASS Specific Steps ==
+
+/!\ ***Note:*** If you don't need to build with GRASS support,  you can
+skip this section.
+
+Now you can install grass from dapper:
+
+```
+sudo apt-get install grass libgrass-dev libgdal1-grass 
+```
+
+== Setup ccache (Optional) ==
+
+You should also setup ccache to speed up compile times:
+
+``` 
+cd /usr/local/bin 
+sudo ln -s /usr/bin/ccache gcc 
+sudo ln -s /usr/bin/ccache g++ 
+```
+
+== Prepare your development environment ==
+
+As a convention I do all my development work in $HOME/dev/<language>, so in
+this case we will create a work environment for C++ development work like
+this:
+
+``` 
+mkdir -p ${HOME}/dev/cpp 
+cd ${HOME}/dev/cpp 
+```
+
+This directory path will be assumed for all instructions that follow.
+
+
+== Check out the QGIS Source Code ==
+
+There are two ways the source can be checked out. Use the anonymous method
+if you do not have edit privaleges for the QGIS source repository, or use
+  the developer checkout if you have permissions to commit source code
+  changes.
+
+1. Anonymous Checkout
+
+``` 
+cd ${HOME}/dev/cpp 
+svn co https://svn.qgis.org/repos/qgis/trunk/qgis qgis
+```
+
+2. Developer Checkout
+
+``` 
+cd ${HOME}/dev/cpp 
+svn co --username <yourusername> https://svn.qgis.org/repos/qgis/trunk/qgis qgis 
+```
+
+The first time you check out the source you will be prompted to accept the
+qgis.org certificate. Press 'p' to accept it permanently:
+
+``` 
+Error validating server certificate for 'https://svn.qgis.org:443':
+   - The certificate is not issued by a trusted authority. Use the
+     fingerprint to validate the certificate manually!  Certificate
+     information:
+   - Hostname: svn.qgis.org
+   - Valid: from Apr  1 00:30:47 2006 GMT until Mar 21 00:30:47 2008 GMT
+   - Issuer: Developer Team, Quantum GIS, Anchorage, Alaska, US
+   - Fingerprint:
+     2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b (R)eject,
+     accept (t)emporarily or accept (p)ermanently?  
+```
+
+== Starting the compile ==
+
+I compile my development version of QGIS into my ~/apps directory to avoid
+conflicts with Ubuntu packages that may be under /usr. This way for example
+you can use the binary packages of QGIS on your system along side with your
+development version. I suggest you do something similar:
+
+``` 
+mkdir -p ${HOME}/apps 
+```
+
+The script will carry on to build QGIS - it may take a little while to go
+and have a cup of your favourite beverage while you wait...
+
+== Running QGIS ==
+
+Once the compile is complete it should pop up a page in firefox with unit
+test results. At the time of writing the unit tests are just stubs - we
+still need to create the test implementations - so dont worry to much about
+their output at the moment.
+
+Now you can try to run QGIS:
+
+``` 
+$HOME/apps/bin/qgis 
+```
+
+If all has worked properly the QGIS application should start up and appear
+on your screen.
+
+
+= Further help and information =
+
+    Please visit http://qgis.org for information on joining our mailing lists
+    and getting involved in the project further.
+
+
+= Authors and Acknowledgments =
+
+The follwing people have contributed to this document:
+
+- Windows Section
+ - Tim Sutton, Godofredo Contreras 2006
+ - CMake additions Magnus Homann 2007
+ - Python additions Martin Dobias 2007
+ - With thanks to Tisham Dhar for preparing the initial msys environment
+
+- OSX Section
+ - Tim Sutton, 2007
+ - With special thanks to Tom Elwertowski and William Kyngesburye
+
+- GNU/Linux Section
+ - Tim Sutton 2006
