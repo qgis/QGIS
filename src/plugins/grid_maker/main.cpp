@@ -9,6 +9,7 @@
 #include <QApplication>
 #include <QTranslator>
 #include <QString>
+#include <QTextCodec>
 
 int main(int argc, char *argv[])
 {
