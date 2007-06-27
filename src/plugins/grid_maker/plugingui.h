@@ -22,7 +22,7 @@ class QgsGridMakerPluginGui : public QDialog, private Ui::QgsGridMakerPluginGuiB
 {
   Q_OBJECT
 public:
-  QgsGridMakerPluginGui(QWidget* parent, Qt::WFlags);
+  QgsGridMakerPluginGui(QWidget* parent = 0, Qt::WFlags = 0);
   ~QgsGridMakerPluginGui();
 
 private slots:
