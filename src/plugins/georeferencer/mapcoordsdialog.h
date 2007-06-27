@@ -36,6 +36,7 @@ public slots:
   void on_btnPointFromCanvas_clicked();
   
   void setXY(QgsPoint &);
+  void updateOK();
   
 private:
   
