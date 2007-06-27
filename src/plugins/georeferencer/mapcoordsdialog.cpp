@@ -22,6 +22,10 @@ MapCoordsDialog::MapCoordsDialog(const QgsPoint& pixelCoords, QgsMapCanvas* qgis
   mToolEmitPoint = new QgsMapToolEmitPoint(qgisCanvas);
   mToolEmitPoint->setButton(btnPointFromCanvas);
   connect(mToolEmitPoint, SIGNAL(gotPoint(QgsPoint&,Qt::MouseButton)), this, SLOT(setXY(QgsPoint&)));
+
+  connect(leXCoord, SIGNAL(textChanged(const QString&)), this, SLOT(updateOK()));
+  connect(leYCoord, SIGNAL(textChanged(const QString&)), this, SLOT(updateOK()));
+  updateOK();
 }
 
 
@@ -30,6 +34,11 @@ MapCoordsDialog::~MapCoordsDialog() {
   delete mToolEmitPoint;
 }
 
+void MapCoordsDialog::updateOK()
+{
+  bool enable = (leXCoord->text().size() != 0 && leYCoord->text().size() != 0);
+  buttonOk->setEnabled(enable);
+}
 
 void MapCoordsDialog::on_buttonOk_clicked() {
   QgsPoint mapCoords(leXCoord->text().toDouble(), leYCoord->text().toDouble());
