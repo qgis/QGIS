@@ -104,7 +104,7 @@ bool QgsWFSProvider::getNextFeature(QgsFeature& feature)
 	    }
 	  else
 	    {
-	      return false;
+	      continue; //go for the next feature
 	    }
 	}
       else
