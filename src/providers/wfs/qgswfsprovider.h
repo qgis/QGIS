@@ -119,7 +119,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
   /**Geometry type of the features in this layer*/
   mutable QGis::WKBTYPE mWKBType;
   /**Source SRS*/
-  QgsSpatialRefSys* mSourceSRS;
+  QgsSpatialRefSys mSourceSRS;
   int mFeatureCount;
   /**Flag if provider is valid*/
   bool mValid;

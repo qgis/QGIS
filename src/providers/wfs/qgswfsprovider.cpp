@@ -60,7 +60,6 @@ QgsWFSProvider::QgsWFSProvider(const QString& uri)
 QgsWFSProvider::~QgsWFSProvider()
 {
   delete mSelectedFeatures;
-  delete mSourceSRS;
   for(std::list<std::pair<GEOS_GEOM::Envelope*, QgsFeature*> >::iterator it = mEnvelopesAndFeatures.begin();\
       it != mEnvelopesAndFeatures.end(); ++it)
     {
@@ -146,10 +145,7 @@ void QgsWFSProvider::reset()
 
 QgsSpatialRefSys QgsWFSProvider::getSRS()
 {
-  if (mSourceSRS)
-    return *mSourceSRS;
-  else
-    return QgsSpatialRefSys();
+  return mSourceSRS;
 }
 
 QgsRect QgsWFSProvider::extent()
@@ -291,7 +287,7 @@ int QgsWFSProvider::getFeatureGET(const QString& uri, const QString& geometryAtt
       thematicAttributes.insert(it->name());
     }
   
-  QgsWFSData dataReader(uri, &mExtent, mSourceSRS, &dataFeatures, geometryAttribute, thematicAttributes, &mWKBType);
+  QgsWFSData dataReader(uri, &mExtent, &mSourceSRS, &dataFeatures, geometryAttribute, thematicAttributes, &mWKBType);
   if(dataReader.getWFSData() != 0)
     {
       qWarning("getWFSData returned with error");
@@ -723,12 +719,9 @@ int QgsWFSProvider::setSRSFromGML2(const QDomElement& wfsCollectionElement)
 	}
     }
 
-  mSourceSRS = new QgsSpatialRefSys();
-  if(!mSourceSRS->createFromEpsg(epsgId))
+  if(!mSourceSRS.createFromEpsg(epsgId))
     {
       QgsDebugMsg("Error, creation of QgsSpatialRefSys failed");
-      delete mSourceSRS;
-      mSourceSRS = 0;
       return 6;
     }
   return 0;
