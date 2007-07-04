@@ -156,8 +156,8 @@ QRect QgsComposerScalebar::render ( QPainter *p )
     std::cout << "QgsComposerScalebar::render p = " << p << std::endl;
 
     // Painter can be 0, create dummy to avoid many if below
-    QPainter *painter;
-    QPixmap *pixmap;
+    QPainter *painter = NULL;
+    QPixmap *pixmap = NULL;
     if ( p ) {
 	painter = p;
     } else {
@@ -191,8 +191,8 @@ QRect QgsComposerScalebar::render ( QPainter *p )
     // Not sure about Style Strategy, QFont::PreferMatch?
     font.setStyleStrategy ( (QFont::StyleStrategy) (QFont::PreferOutline | QFont::PreferAntialias) );
 
-    int xmin; // min x
-    int xmax; // max x
+    int xmin = 0; // min x
+    int xmax = 0; // max x
     int ymin; // min y
     int ymax; // max y
 

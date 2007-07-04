@@ -440,9 +440,17 @@ double QgsDistanceArea::computeDistanceBearing(
   double lambda = L;
   double lambdaP = 2*M_PI;
   
-  double sinLambda, cosLambda, sinSigma, cosSigma;
-  double sigma, alpha, cosSqAlpha, cos2SigmaM, C;
-  double tu1, tu2;
+  double sinLambda=0;
+  double cosLambda=0;
+  double sinSigma=0;
+  double cosSigma=0;
+  double sigma=0;
+  double alpha=0;
+  double cosSqAlpha=0; 
+  double cos2SigmaM=0;
+  double C=0;
+  double tu1=0; 
+  double tu2=0;
   
   int iterLimit = 20;
   while (fabs(lambda-lambdaP) > 1e-12 && --iterLimit>0)

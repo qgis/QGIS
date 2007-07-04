@@ -362,7 +362,7 @@ void QgsComposer::on_mActionPrint_activated(void)
       try {
       std::cout << "Print to file" << std::endl;
 
-      QPrinter::PageSize psize;
+      QPrinter::PageSize psize (QPrinter::A4); //default to A4
       
       // WARNING mPrinter->outputFormat() returns always 0 in Qt 4.2.2
       // => we have to check extension

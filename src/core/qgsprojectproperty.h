@@ -186,13 +186,13 @@ private:
 
    Can, itself, contain QgsPropertyKeys and QgsPropertyValues.
 
-   The internal QDict, properties_, maps key names to their respective
+   The internal QDict, mProperties, maps key names to their respective
    QgsPropertyValue or next QgsPropertyKey in the key name sequence.  The key with
    the current name should contain its QgsPropertyValue.
 
    E.g., given the key sequence "/foo/bar", "foo" will have a corresponding
    QgsPropertyKey with a name "foo".  It will contain an element in its
-   properties_ that maps to "bar", which is another QgsPropertyKey.  The "bar"
+   mProperties that maps to "bar", which is another QgsPropertyKey.  The "bar"
    QgsPropertyKey will, in turn, have an element that maps to itself, i.e. "bar",
    that will contain a QgsPropertyValue.
 
@@ -209,10 +209,10 @@ public:
     /// every key has a name
     // @{
     QString const & name() const
-    { return name_; }
+    { return mName; }
 
     QString & name()
-    { return name_; }
+    { return mName; }
     // @}
 
 
@@ -225,16 +225,16 @@ public:
     /// add the given property key
     QgsPropertyKey * addKey( QString const & keyName )
     {
-        properties_.replace( keyName, new QgsPropertyKey(keyName) );
+        mProperties.replace( keyName, new QgsPropertyKey(keyName) );
 
-        return dynamic_cast<QgsPropertyKey*>(properties_.find( keyName ));
+        return dynamic_cast<QgsPropertyKey*>(mProperties.find( keyName ));
     }
 
 
     /// remove the given key
     bool removeKey( QString const & keyName )
     {
-        return properties_.remove( keyName );
+        return mProperties.remove( keyName );
     }
 
     /** set the value associated with this key
@@ -242,9 +242,9 @@ public:
     */
     QgsPropertyValue * setValue( QString const & name, QVariant const & value )
     {
-        properties_.replace( name, new QgsPropertyValue( value ) );
+        mProperties.replace( name, new QgsPropertyValue( value ) );
 
-        return dynamic_cast<QgsPropertyValue*>(properties_.find( name ));
+        return dynamic_cast<QgsPropertyValue*>(mProperties.find( name ));
     }
 
     /** set the value associated with this key
@@ -267,11 +267,11 @@ public:
 
     /// how many elements are contained within this one?
     size_t count() const
-    { return properties_.count(); }
+    { return mProperties.count(); }
 
     /// Does this property not have any subkeys or values?
     /* virtual */ bool isEmpty() const 
-    { return properties_.isEmpty(); }
+    { return mProperties.isEmpty(); }
 
     /** returns true if is a QgsPropertyKey */ 
     virtual bool isKey() const
@@ -297,28 +297,28 @@ public:
     /// reset the QgsProperty key to prestine state
     virtual void clear()
     {
-        name_ = "";
-        properties_.clear();
+        mName = "";
+        mProperties.clear();
     }
 
     /// delete any sub-nodes
     virtual void clearKeys()
     {
-        properties_.clear();
+        mProperties.clear();
     }
 
     QgsProperty * find( QString & propertyName ) 
     {
-        return properties_.find( propertyName );
+        return mProperties.find( propertyName );
     }
 
 private:
 
     /// every key has a name
-    QString name_;
+    QString mName;
 
     /// sub-keys
-    Q3Dict < QgsProperty > properties_;
+    Q3Dict < QgsProperty > mProperties;
 
 }; // class QgsPropertyKey
 

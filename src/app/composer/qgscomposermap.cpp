@@ -383,7 +383,7 @@ void QgsComposerMap::on_mCalculateComboBox_activated( int )
 
 double QgsComposerMap::scaleFromUserScale ( double us ) 
 {
-  double s;
+  double s=0;
     
   switch ( mComposition->mapCanvas()->mapUnits() ) {
     case QGis::METERS :
@@ -402,7 +402,7 @@ double QgsComposerMap::scaleFromUserScale ( double us )
 
 double QgsComposerMap::userScaleFromScale ( double s )
 { 
-  double us;
+  double us=0;
     
   switch ( mComposition->mapCanvas()->mapUnits() ) {
     case QGis::METERS :

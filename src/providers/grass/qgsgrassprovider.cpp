@@ -753,7 +753,7 @@ void QgsGrassProvider::loadAttributes ( GLAYER &layer )
 		    dbColumn *column = db_get_table_column (databaseTable, i);
 
 		    int ctype = db_sqltype_to_Ctype ( db_get_column_sqltype(column) );
-        QVariant::Type qtype;
+        QVariant::Type qtype = QVariant::String; //default to string
                     #ifdef QGISDEBUG
 		    std::cerr << "column = " << db_get_column_name(column) 
 			      << " ctype = " << ctype << std::endl;
@@ -1831,7 +1831,7 @@ std::vector<QgsField> *QgsGrassProvider::columns ( int field )
 
 	int ctype = db_sqltype_to_Ctype( db_get_column_sqltype (column) );
 	QString type;
-  QVariant::Type qtype;
+  QVariant::Type qtype = QVariant::String; //default to string to prevent compiler warnings
 	switch ( ctype ) {
 	    case DB_C_TYPE_INT:
 		type = "int";

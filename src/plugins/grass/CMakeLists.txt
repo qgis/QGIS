@@ -4,6 +4,12 @@ SUBDIRS(config modules themes)
 ADD_DEFINITIONS(-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\")
 ADD_DEFINITIONS(-DHAVE_OPENPTY=${HAVE_OPENPTY})
 
+MESSAGE("providers/grass : -Werror removed for qgsgrassplugin.cpp for now - please get rid of any compiler warnings!")
+# The warnings are caused by multiple definitions of NDEBUG in grass sources
+# I have submitted a bug to teh grass folks in the meantime we need to
+# disable treating warnings as errors for the affected files
+FILE (GLOB files *.cpp)
+SET_SOURCE_FILES_PROPERTIES(${files} PROPERTIES COMPILE_FLAGS -Wno-error )
 ########################################################
 # Files
 
@@ -63,6 +69,20 @@ QT4_WRAP_UI (GRASS_PLUGIN_UIS_H  ${GRASS_PLUGIN_UIS})
 QT4_WRAP_CPP (GRASS_PLUGIN_MOC_SRCS  ${GRASS_PLUGIN_MOC_HDRS})
 
 #QT4_ADD_RESOURCES(GRASS_PLUGIN_RCC_SRCS ${GRASS_PLUGIN_RCCS})
+
+########################################################
+# deal with warnings
+MESSAGE("providers/grass : -Werror removed for qgsgrassplugin.cpp for now - please get rid of any compiler warnings!")
+# The warnings are caused by multiple definitions of NDEBUG in grass sources
+# I have submitted a bug to teh grass folks in the meantime we need to
+# disable treating warnings as errors for the affected files
+FILE (GLOB files *.cpp)
+SET_SOURCE_FILES_PROPERTIES(${files} PROPERTIES COMPILE_FLAGS -Wno-error )
+SET_SOURCE_FILES_PROPERTIES(${GRASS_PLUGIN_MOC_SRCS} PROPERTIES COMPILE_FLAGS -Wno-error )
+
+
+########################################################
+# build lib
 
 ADD_LIBRARY (grassplugin MODULE ${GRASS_PLUGIN_SRCS} ${GRASS_PLUGIN_MOC_SRCS} ${GRASS_PLUGIN_UIS_H})
 

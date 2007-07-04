@@ -352,18 +352,18 @@ bool QgsPropertyValue::writeXML( QString const & nodeName,
 
 
 QgsPropertyKey::QgsPropertyKey( QString const name )
-    : name_( name )
+    : mName( name )
 {
     // since we own our properties, we are responsible for deleting the
     // contents
-    properties_.setAutoDelete(true);
+    mProperties.setAutoDelete(true);
 }
 
 QVariant QgsPropertyKey::value() const
 {
     QgsProperty * foundQgsProperty;
 
-    if ( 0 == ( foundQgsProperty = properties_.find(name()) ) )
+    if ( 0 == ( foundQgsProperty = mProperties.find(name()) ) )
     {                        // recurse down to next key
         return foundQgsProperty->value();
     } else
@@ -386,9 +386,9 @@ void QgsPropertyKey::dump( size_t tabs ) const
     tabs++;
     tabString.fill( '\t', tabs );
 
-    if ( ! properties_.isEmpty() )
+    if ( ! mProperties.isEmpty() )
     {
-        for (Q3DictIterator < QgsProperty > i(properties_); i.current(); ++i)
+        for (Q3DictIterator < QgsProperty > i(mProperties); i.current(); ++i)
         {
             if ( i.current()->isValue() )
             {
@@ -453,11 +453,11 @@ bool QgsPropertyKey::readXML(QDomNode & keyNode)
             subkeys.item(i).isElement() && // and we're an element
             subkeys.item(i).toElement().hasAttribute("type")) // and we have a "type" attribute
         {                   // then we're a key value
-            properties_.replace(subkeys.item(i).nodeName(), new QgsPropertyValue);
+            mProperties.replace(subkeys.item(i).nodeName(), new QgsPropertyValue);
 
             QDomNode subkey = subkeys.item(i);
 
-            if (!properties_[subkeys.item(i).nodeName()]->readXML(subkey))
+            if (!mProperties[subkeys.item(i).nodeName()]->readXML(subkey))
             {
                 qDebug("%s:%d unable to parse key value %s", __FILE__, __LINE__,
                        (const char *) subkeys.item(i).nodeName().utf8());
@@ -469,7 +469,7 @@ bool QgsPropertyKey::readXML(QDomNode & keyNode)
 
             QDomNode subkey = subkeys.item(i);
 
-            if (!properties_[subkeys.item(i).nodeName()]->readXML(subkey))
+            if (!mProperties[subkeys.item(i).nodeName()]->readXML(subkey))
             {
                 qDebug("%s:%d unable to parse subkey %s", __FILE__, __LINE__,
                        (const char *) subkeys.item(i).nodeName().utf8());
@@ -494,9 +494,9 @@ bool QgsPropertyKey::writeXML(QString const &nodeName, QDomElement & element, QD
 
     QDomElement keyElement = document.createElement(nodeName); // DOM element for this property key
 
-    if ( ! properties_.isEmpty() )
+    if ( ! mProperties.isEmpty() )
     {
-        for (Q3DictIterator < QgsProperty > i(properties_); i.current(); ++i)
+        for (Q3DictIterator < QgsProperty > i(mProperties); i.current(); ++i)
         {
             if (!i.current()->writeXML(i.currentKey(), keyElement, document))
             {
@@ -517,7 +517,7 @@ bool QgsPropertyKey::writeXML(QString const &nodeName, QDomElement & element, QD
 void QgsPropertyKey::entryList( QStringList & entries ) const
 {
     // now add any leaf nodes to the entries list
-    for (Q3DictIterator<QgsProperty> i(properties_); i.current(); ++i)
+    for (Q3DictIterator<QgsProperty> i(mProperties); i.current(); ++i)
     {
         // add any of the nodes that have just a single value
         if (i.current()->isLeaf())
@@ -532,7 +532,7 @@ void QgsPropertyKey::entryList( QStringList & entries ) const
 void QgsPropertyKey::subkeyList(QStringList & entries) const
 {
     // now add any leaf nodes to the entries list
-    for (Q3DictIterator < QgsProperty > i(properties_); i.current(); ++i)
+    for (Q3DictIterator < QgsProperty > i(mProperties); i.current(); ++i)
     {
         // add any of the nodes that have just a single value
         if (!i.current()->isLeaf())
@@ -551,7 +551,7 @@ bool QgsPropertyKey::isLeaf() const
     }
     else if (1 == count())
     {
-        Q3DictIterator < QgsProperty > i(properties_);
+        Q3DictIterator < QgsProperty > i(mProperties);
 
         if (i.current() && i.current()->isValue())
         {

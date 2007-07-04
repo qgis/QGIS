@@ -677,7 +677,7 @@ void QgsGrassModel::refreshItem(QgsGrassModelItem *item)
 	case QgsGrassModel::Regions:
 	  {
 	    QStringList list;
-	    int type;
+	    int type = 0; 
 	    if ( item->mType == QgsGrassModel::Vectors )
 	    {
 	        list = QgsGrass::vectors ( item->mGisbase, item->mLocation, 
