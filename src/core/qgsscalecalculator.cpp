@@ -48,8 +48,8 @@ QGis::units QgsScaleCalculator::mapUnits() const
 
 double QgsScaleCalculator::calculate(QgsRect &mapExtent, int canvasWidth)
 {
-  double conversionFactor; 
-  double delta;
+  double conversionFactor = 0; 
+  double delta = 0;
   // calculation is based on the map units and extent, the dpi of the
   // users display, and the canvas width
   switch(mMapUnits)

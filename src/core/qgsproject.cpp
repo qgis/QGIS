@@ -241,8 +241,8 @@ QgsProject * QgsProject::theProject_;
  {
      QgsPropertyKey * currentProperty = &rootProperty;
 
-     QgsProperty * nextProperty;   // link to next property down hiearchy
-     QgsPropertyKey * previousQgsPropertyKey; // link to previous property up hiearchy
+     QgsProperty * nextProperty = NULL;   // link to next property down hiearchy
+     QgsPropertyKey * previousQgsPropertyKey = NULL; // link to previous property up hiearchy
 
      QStringList keySequence = makeKeyTokens_( scope, key );
 
@@ -679,7 +679,7 @@ static std::pair< bool, std::list<QDomNode> > _getMapLayers(QDomDocument const &
 
         QgsDebugMsg("Layer type is " + type);
 
-        QgsMapLayer *mapLayer;
+        QgsMapLayer *mapLayer = NULL;
         
         if (type == "vector")
         {

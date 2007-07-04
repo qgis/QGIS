@@ -1198,8 +1198,9 @@ void QgsGrassEdit::snap (  QgsPoint & point, double startX, double startY )
   if ( startDist <= thresh ) startIn = true;
 
   // Nearest node
-  double nodeX, nodeY;     
-  double nodeDist;
+  double nodeX = 0;
+  double  nodeY = 0;     
+  double nodeDist = 0;
   bool nodeIn = false;
   int node = mProvider->findNode ( x, y, thresh );
 

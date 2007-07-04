@@ -148,8 +148,8 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
   std::cout << "QgsComposerVectorLegend::render p = " << p << std::endl;
 
   // Painter can be 0, create dummy to avoid many if below
-  QPainter *painter;
-  QPixmap *pixmap;
+  QPainter *painter = NULL;
+  QPixmap *pixmap = NULL;
   if ( p ) {
     painter = p;
   } else {
@@ -753,7 +753,7 @@ void QgsComposerVectorLegend::groupLayers ( void )
 
   Q3ListViewItemIterator it( mLayersListView );
   int count = 0;
-  Q3ListViewItem *lastItem;
+  Q3ListViewItem *lastItem = NULL;
   QString id;
   while ( it.current() ) {
     if ( it.current()->isSelected() ) {

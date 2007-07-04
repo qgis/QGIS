@@ -232,7 +232,8 @@ void QgsGraduatedSymbolDialog::adjustClassification()
     mClassListWidget->clear();
     QGis::VectorType m_type = mVectorLayer->vectorType();
     QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider());
-    double minimum, maximum;
+    double minimum = 0;
+    double maximum = 0;
     
     //delete all previous entries
     for(std::map<QString, QgsSymbol*>::iterator it=mEntries.begin();it!=mEntries.end();++it)

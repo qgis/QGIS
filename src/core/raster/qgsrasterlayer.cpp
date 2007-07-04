@@ -2008,7 +2008,7 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter, Q
       bool found = myColorTable->color ( myValDouble, &c1, &c2, &c3 );
       if ( !found ) continue;
 
-      int myInt;
+      int myInt=0;
 
       //check for alternate color mappings
       if (theColorQString == redBandNameQString)
@@ -2343,9 +2343,9 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPor
   }
 
   bool haveTransparencyBand(false);
-  GDALRasterBand *myGdalTransparentBand;
-  GDALDataType myTransparentType;
-  void *myGdalTransparentData;
+  GDALRasterBand *myGdalTransparentBand = NULL;
+  GDALDataType myTransparentType = GDT_Byte; //default to prevent uninitialised var warnings
+  void *myGdalTransparentData = NULL;
 
   if (transparentBandNameQString != tr("Not Set"))
   {

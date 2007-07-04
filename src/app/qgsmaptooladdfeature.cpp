@@ -119,10 +119,10 @@ void QgsMapToolAddFeature::canvasReleaseEvent(QMouseEvent * e)
 	  // snap point to points within the vector layer snapping tolerance
 	  vlayer->snapPoint(savePoint, tolerance);
 	  
-	  int size;
+	  int size = 0;
 	  char end=QgsApplication::endian();
-	  unsigned char *wkb;
-	  int wkbtype;
+	  unsigned char *wkb = NULL;
+	  int wkbtype = 0;
 	  double x = savePoint.x();
 	  double y = savePoint.y();
 	  

@@ -379,7 +379,8 @@ QgsPoint QgsGeometry::closestVertex(const QgsPoint& point, QgsGeometryVertexInde
   int vertexcounter = 0;
   QGis::WKBTYPE wkbType;
   double actdist = std::numeric_limits<double>::max();
-  double x,y;
+  double x=0;
+  double y=0;
   double *tempx,*tempy;
   memcpy(&wkbType, (mGeometry+1), sizeof(int));
   beforeVertex = -1;
@@ -2057,8 +2058,10 @@ double QgsGeometry::closestSegmentWithContext(const QgsPoint& point,
 
   QGis::WKBTYPE wkbType;
   bool hasZValue = false;
-  double *thisx,*thisy;
-  double *prevx,*prevy;
+  double *thisx = NULL;
+  double *thisy = NULL;
+  double *prevx = NULL;
+  double *prevy = NULL;
   double testdist;
   int closestSegmentIndex = 0;
 

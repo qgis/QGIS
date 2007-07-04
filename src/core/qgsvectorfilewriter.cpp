@@ -108,7 +108,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(const QString& shapefileName,
   {
     const QgsField& attrField = fldIt.value();
     
-    OGRFieldType ogrType;
+    OGRFieldType ogrType = OFTString; //default to string
     switch (attrField.type())
     {
       case QVariant::String:

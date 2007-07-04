@@ -468,7 +468,7 @@ bool QgsGrassBrowser::getItemRegion( QModelIndex index, struct Cell_head *window
     QString mapset = mModel->itemMapset(index);
     QString map = mModel->itemMap(index);
 
-    int mapType;
+    int mapType = QgsGrass::Raster; //default in case no case matches
     switch (type) {
         case QgsGrassModel::Raster :
 	    mapType = QgsGrass::Raster;

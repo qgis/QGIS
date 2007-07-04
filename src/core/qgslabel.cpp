@@ -204,7 +204,8 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect &viewExtent,
     QFontMetrics fm ( font );
     int width = fm.width ( text );
     int height = fm.height();
-    int dx, dy;
+    int dx = 0;
+    int dy = 0;
 
     value = fieldValue ( Alignment, feature );
     if ( value.isEmpty() )
