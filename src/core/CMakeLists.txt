@@ -202,6 +202,7 @@ qgsvectorfilewriter.h
 qgsvectorlayer.h
 
 raster/qgscolortable.h
+raster/qgsrasterbandstats.h
 raster/qgsrasterlayer.h
 
 renderer/qgscontinuouscolorrenderer.h
