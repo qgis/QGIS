@@ -37,6 +37,12 @@
  ******************************************************************************
  *
  * $Log$
+ * Revision 1.1  2005/08/17 14:31:55  timlinux
+ * incorporated stuff from locscraper project I made the other weekend
+ *
+ * Revision 1.1  2004/04/24 00:59:39  timlinux
+ * Added shapefile builder libs and start of generic shapefilemaker class that Ill eventually move into qgis core. Modified makefile to build this stuff.
+ *
  * Revision 1.1  2004/04/05 15:39:45  timlinux
  * Initial commit of new plugin to build graticules - not working yet! And thus not added to higher level makefiles yet.
  *
