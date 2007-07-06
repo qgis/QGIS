@@ -130,7 +130,7 @@ class QgsAttributeTable:public Q3Table
       and the value the attribute type*/
     QgsNewAttributesMap mAddedAttributes;
     /**Set containing the attribute names of deleted attributes*/
-    QgsFeatureIds mDeletedAttributes;
+    QgsDeletedAttributesSet mDeletedAttributes;
     /**Nested map containing the changed attribute values. The int is the feature id, 
       the first QString the attribute name and the second QString the new value*/
     QgsChangedAttributesMap mChangedValues;

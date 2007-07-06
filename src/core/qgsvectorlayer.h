@@ -56,6 +56,8 @@ typedef QSet<int> QgsAttributeIds;
 // key = attribute name, value = attribute type
 typedef QMap<QString, QString> QgsNewAttributesMap;
 
+typedef QSet<QString> QgsDeletedAttributesSet;
+
 typedef QMap<int, QgsField> QgsFieldMap;
 
 
@@ -314,7 +316,7 @@ existing rings, 5 no feature found where ring can be inserted*/
                       of attribute values to change
 
    */
-  bool commitAttributeChanges(const QgsAttributeIds& deleted,
+  bool commitAttributeChanges(const QgsDeletedAttributesSet& deleted,
                               const QgsNewAttributesMap& added,
                               const QgsChangedAttributesMap& changed);
 

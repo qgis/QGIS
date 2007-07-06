@@ -1768,16 +1768,20 @@ bool QgsPostgresProvider::addAttributes(const QgsNewAttributesMap & name)
   return returnvalue;
 }
 
-bool QgsPostgresProvider::deleteAttributes(const QgsAttributeIds& name)
+bool QgsPostgresProvider::deleteAttributes(const QgsAttributeIds& ids)
 {
   bool returnvalue=true;
   PQexec(connection,"BEGIN");
-  for(QgsAttributeIds::const_iterator iter=name.begin();iter!=name.end();++iter)
+
+  for(QgsAttributeIds::const_iterator iter=ids.begin();iter != ids.end();++iter)
   {
-    QString column = attributeFields[*iter].name();
+    QgsFieldMap::const_iterator field_it = attributeFields.find(*iter);
+    if(field_it == attributeFields.constEnd())
+      {
+	continue;
+      }
+    QString column = field_it->name();
     QString sql="ALTER TABLE "+mSchemaTableName+" DROP COLUMN "+column;
-    
-    QgsDebugMsg(sql);
     
     //send sql statement and do error handling
     PGresult* result=PQexec(connection, (const char *)(sql.utf8()));

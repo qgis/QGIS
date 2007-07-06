@@ -82,7 +82,7 @@ bool QgsVectorDataProvider::addAttributes(const QgsNewAttributesMap & attributes
   return false;
 }
 
-bool QgsVectorDataProvider::deleteAttributes(const QgsAttributeIds & attributes)
+bool QgsVectorDataProvider::deleteAttributes(const QgsAttributeIds& attributes)
 {
   return false;
 }
@@ -220,15 +220,13 @@ QString QgsVectorDataProvider::capabilitiesString() const
 int QgsVectorDataProvider::indexFromFieldName(const QString& fieldName) const
 {
   const QgsFieldMap& theFields = fields();
-  int counter = 0;
 
   for (QgsFieldMap::const_iterator it = theFields.begin(); it != theFields.end(); ++it)
   {
     if(it->name() == fieldName)
     {
-      return counter;
+      return it.key();
     }
-    ++counter;
   }
   return -1;
 }
