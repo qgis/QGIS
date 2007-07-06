@@ -356,9 +356,7 @@ void QgsAttributeTable::deleteAttribute(const QString& name)
     }
     else
     {
-	QgsDebugMsg("QgsAttributeTable: deleteAttribute " + name);
-  
-  // TODO: [MD] mDeletedAttributes.insert(name);
+	mDeletedAttributes.insert(name); 
 	removeAttrColumn(name);
     }
     mEdited=true;

@@ -190,10 +190,10 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
       /**
        * Deletes existing attributes
-       * @param attributes a set containing indexes of attributes
+       * @param attributes a set containing names of attributes
        * @return true in case of success and false in case of failure
        */
-      virtual bool deleteAttributes(const QgsAttributeIds & attributes);
+      virtual bool deleteAttributes(const QgsAttributeIds& attributes);
 
       /**
        * Changes attribute values of existing features.

@@ -2878,7 +2878,7 @@ void QgsVectorLayer::setCoordinateSystem()
 
 }
 
-bool QgsVectorLayer::commitAttributeChanges(const QgsAttributeIds& deleted,
+bool QgsVectorLayer::commitAttributeChanges(const QgsDeletedAttributesSet& deleted,
                             const QgsNewAttributesMap& added,
                             const QgsChangedAttributesMap& changed)
 {
@@ -2886,19 +2886,28 @@ bool QgsVectorLayer::commitAttributeChanges(const QgsAttributeIds& deleted,
 
   if(mDataProvider)
   {
+
+    QgsAttributeIds attIds;
+    QgsDeletedAttributesSet::const_iterator att_it = deleted.constBegin();
+
+    for(; att_it != deleted.constEnd(); ++att_it)
+      {
+	attIds.insert(mDataProvider->indexFromFieldName(*att_it));
+      }
+
     if(mDataProvider->capabilities()&QgsVectorDataProvider::DeleteAttributes)
     {
       //delete attributes in all not commited features
       for (QgsFeatureList::iterator iter = mAddedFeatures.begin(); iter != mAddedFeatures.end(); ++iter)
       {
-        for (QgsAttributeIds::const_iterator it = deleted.begin(); it != deleted.end(); ++it)
+        for (QgsAttributeIds::const_iterator it = attIds.begin(); it != attIds.end(); ++it)
         {
           (*iter).deleteAttribute(*it);
         }
       }
 
       //and then in the provider
-      if(!mDataProvider->deleteAttributes(deleted))
+      if(!mDataProvider->deleteAttributes(attIds))
       {
         returnvalue=false;
       }
