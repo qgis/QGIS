@@ -412,10 +412,25 @@ bool QgsAttributeTable::commitChanges(QgsVectorLayer* layer)
 
   if(layer)
   {
-    isSuccessful = layer->commitAttributeChanges(
-                            mDeletedAttributes,
-                            mAddedAttributes,
-                            mChangedValues);
+    //convert strings of deleted attributes to ids
+
+    QgsVectorDataProvider* provider = layer->getDataProvider();
+
+    if(provider)
+      {
+
+	QgsAttributeIds deletedIds;
+	QSet<QString>::const_iterator it = mDeletedAttributes.constBegin();
+	
+	for(; it != mDeletedAttributes.constEnd(); ++it)
+	  {
+	    deletedIds.insert(provider->indexFromFieldName(*it));
+	  }
+	
+	isSuccessful = layer->commitAttributeChanges(deletedIds,
+						     mAddedAttributes,
+						     mChangedValues);
+      }
   }
 
   if (isSuccessful)
