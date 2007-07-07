@@ -42,7 +42,6 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(QgsVectorLayer * layer): QDia
     if (provider)
     {
 	const QgsFieldMap & fields = provider->fields();
-	int fieldnumber = 0;
 	QString str;
 	
 	for (QgsFieldMap::const_iterator it = fields.begin(); 
@@ -52,11 +51,9 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(QgsVectorLayer * layer): QDia
 	    QVariant::Type type = (*it).type();
 	    if (type == QVariant::Int || type == QVariant::Double)
             {
-		str = (*it).name();
-		classificationComboBox->insertItem(str);
-		mFieldMap.insert(std::make_pair(str, fieldnumber));
+	      classificationComboBox->insertItem(it->name());
+	      mFieldMap.insert(std::make_pair(it->name(), it.key()));
             }
-	    fieldnumber++;
         }
     } 
     else
