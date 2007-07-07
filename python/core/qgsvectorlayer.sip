@@ -250,7 +250,7 @@ existing rings, 5 no feature found where ring can be inserted*/
                       of attribute values to change
 
    */
-  bool commitAttributeChanges(const QSet<int>& deleted,
+  bool commitAttributeChanges(const QSet<QString>& deleted,
                               const QMap<QString, QString>& added,
                               const QMap<int, QMap<int, QVariant> >& changed);
 
