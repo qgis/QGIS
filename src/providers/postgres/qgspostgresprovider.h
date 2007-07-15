@@ -483,6 +483,20 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     // Function that populates the given cols structure.
     void findColumns(tableCols& cols);
 
+    /**Helper function that collects information about the origin and type of a view column. 
+       Inputs are information about the column in the underlying table 
+       (from information_schema.view_column_usage), the attribute name 
+       in the view and the view definition. For view columns that refer 
+       to other views, this function calls itself until a table entry is found.
+    @param ns namespace of underlying table
+    @param relname name of underlying relation
+    @param attname attribute name in underlying table
+    @param viewDefinition definition of this view
+    @param result 
+    @return 0 in case of success*/
+    int SRCFromViewColumn(const QString& ns, const QString& relname, const QString& attname_table, 
+			  const QString& attname_view, const QString& viewDefinition, SRC& result) const;
+
     bool ready;
     std::ofstream pLog;
 
