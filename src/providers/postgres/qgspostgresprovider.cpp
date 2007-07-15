@@ -1133,12 +1133,126 @@ bool QgsPostgresProvider::uniqueData(QString schemaName,
   return isUnique;
 }
 
+int QgsPostgresProvider::SRCFromViewColumn(const QString& ns, const QString& relname, const QString& attname_table, const QString& attname_view, const QString& viewDefinition, SRC& result) const
+{
+  QString newViewDefSql = "SELECT definition FROM pg_views WHERE schemaname = '" + ns + "' AND viewname = '" + relname + "'";
+  PGresult* newViewDefResult = PQexec(connection, (const char*)(newViewDefSql.utf8()));
+  int numEntries = PQntuples(newViewDefResult);
+  
+  if(numEntries > 0) //relation is a view
+    {
+      QString newViewDefinition(PQgetvalue(newViewDefResult, 0, 0));
+      
+      QString newAttNameView = attname_table;
+      QString newAttNameTable = attname_table;
+      
+      //find out the attribute name of the underlying table/view
+      if (newViewDefinition.contains("AS"))
+        {
+	  QRegExp s("(\\w+) " + QString("AS ") + QRegExp::escape(attname_table));
+          if (s.indexIn(newViewDefinition) != -1)
+          {
+            newAttNameTable = s.cap(1);
+          }
+	}
+      
+      QString viewColumnSql = "SELECT table_schema, table_name, column_name FROM information_schema.view_column_usage WHERE view_schema = '" + ns + "' AND view_name = '" + relname + "' AND column_name = '" + newAttNameTable +"'";
+      PGresult* viewColumnResult = PQexec(connection, (const char*)(viewColumnSql.utf8()));
+      if(PQntuples(viewColumnResult) > 0)
+	{
+	  QString newTableSchema = PQgetvalue(viewColumnResult, 0, 0);
+	  QString newTableName = PQgetvalue(viewColumnResult, 0, 1);
+	  int retvalue = SRCFromViewColumn(newTableSchema, newTableName, newAttNameTable, newAttNameView, newViewDefinition, result);
+	  PQclear(viewColumnResult);
+	  return retvalue;
+	}
+      else
+	{
+	  PQclear(viewColumnResult);
+	  return 1;
+	}
+
+    }
+
+  PQclear(newViewDefResult);
+
+  //relation is table, we just have to add the type
+  QString typeSql = "SELECT pg_type.typname FROM pg_attribute, pg_class, pg_namespace, pg_type WHERE pg_class.relname = '" + relname + "' AND pg_namespace.nspname = '" + ns + "' AND pg_attribute.attname = '" + attname_table + "' AND pg_attribute.attrelid = pg_class.oid AND pg_class.relnamespace = pg_namespace.oid AND pg_attribute.atttypid = pg_type.oid";
+  PGresult* typeSqlResult = PQexec(connection, (const char*)(typeSql.utf8()));
+  if(PQntuples(typeSqlResult) < 1)
+    {
+      return 1;
+    }
+  QString type = PQgetvalue(typeSqlResult, 0, 0);
+  PQclear(typeSqlResult);
+  
+  result.schema=ns;
+  result.relation=relname;
+  result.column=attname_table;
+  result.type=type;
+  return 0;
+}
+
 // This function will return in the cols variable the 
 // underlying view and columns for each column in
 // mSchemaName.mTableName.
 
 void QgsPostgresProvider::findColumns(tableCols& cols)
 {
+  QString viewColumnSql = "SELECT table_schema, table_name, column_name FROM information_schema.view_column_usage WHERE view_schema = '" + mSchemaName + "' AND view_name = '" + mTableName + "'";
+  PGresult* viewColumnResult = PQexec(connection, (const char*)(viewColumnSql.utf8()));
+
+  //find out view definition
+  QString viewDefSql = "SELECT definition FROM pg_views WHERE schemaname = '" + mSchemaName + "' AND viewname = '" + mTableName + "'";
+  PGresult* viewDefResult = PQexec(connection, (const char*)(viewDefSql.utf8()));
+  if(PQntuples(viewDefResult) < 1)
+    {
+      PQclear(viewDefResult);
+      return;
+    }
+  QString viewDefinition(PQgetvalue(viewDefResult, 0, 0));
+  PQclear(viewDefResult);
+  
+  QString ns, relname, attname_table, attname_view;
+  SRC columnInformation;
+
+  for(int i = 0; i < PQntuples(viewColumnResult); ++i)
+    {
+      ns = PQgetvalue(viewColumnResult, i, 0);
+      relname = PQgetvalue(viewColumnResult, i, 1);
+      attname_table = PQgetvalue(viewColumnResult, i, 2);
+
+      //find out original attribute name
+      attname_view = attname_table;
+
+      //examine if the column name has been renamed in the view with AS
+      if (viewDefinition.contains("AS"))
+        {
+          // This regular expression needs more testing. Since the view
+          // definition comes from postgresql and has been 'standardised', we
+          // don't need to deal with everything that the user could put in a view
+          // definition. Does the regexp have to deal with the schema??
+	  
+          QRegExp s(".* \"?" + QRegExp::escape(relname) +
+                    "\"?\\.\"?" + QRegExp::escape(attname_table) +
+                    "\"? AS \"?(\\w+)\"?,* .*");
+	  
+          QgsDebugMsg(viewDefinition + "\n" + s.pattern());
+
+          if (s.indexIn(viewDefinition) != -1)
+          {
+            attname_view = s.cap(1);
+	    qWarning("original view column name was: " + attname_view);
+          }
+        }
+
+      SRCFromViewColumn(ns, relname, attname_table, attname_view, viewDefinition, columnInformation);
+      cols.insert(std::make_pair(attname_view, columnInformation));
+      QgsDebugMsg("Inserting into cols (for key " + attname_view + " ): " + columnInformation.schema + "." + columnInformation.relation + "." + columnInformation.column + "." + columnInformation.type);
+    }
+  PQclear(viewColumnResult);
+
+#if 0
   // This sql is derived from the one that defines the view
   // 'information_schema.view_column_usage' in PostgreSQL, with a few
   // mods to suit our purposes. 
@@ -1339,6 +1453,7 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
     }
   }
   PQclear(result);
+#endif //0
 }
 
 // Returns the minimum value of an attribute
