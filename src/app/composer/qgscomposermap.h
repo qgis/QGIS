@@ -20,7 +20,7 @@
 #include "ui_qgscomposermapbase.h"
 #include "qgscomposeritem.h"
 #include "qgsrect.h"
-#include <Q3CanvasRectangle>
+#include <QGraphicsRectItem>
 #include <QPixmap>
 
 class QgsComposition;
@@ -34,7 +34,7 @@ class QPainter;
  *  \brief Object representing map window. 
  */
 // NOTE: QgsComposerMapBase must be first, otherwise does not compile
-class QgsComposerMap : public QWidget, private Ui::QgsComposerMapBase, public Q3CanvasRectangle, public QgsComposerItem
+class QgsComposerMap : public QWidget, private Ui::QgsComposerMapBase, public QGraphicsRectItem, public QgsComposerItem
 {
     Q_OBJECT
 
@@ -74,8 +74,8 @@ public:
     /** \brief Draw to paint device */
     void draw(QPainter *painter, QgsRect &extent, QgsMapToPixel *transform);
 
-    /** \brief Reimplementation of QCanvasItem::draw - draw on canvas */
-    void draw ( QPainter & painter );
+    /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
+    void paint (QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget);
     
     /** \brief Set extent requested by user */
     void setUserExtent ( QgsRect const & rect);

@@ -18,14 +18,15 @@
 #ifndef QGSCOMPOSERVIEW_H
 #define QGSCOMPOSERVIEW_H
 
-#include <Q3Canvas>
-#include <Q3CanvasView>
+
+#include <QGraphicsScene>
+#include <QGraphicsView>
 
 class QgsComposer;
 class QKeyEvent;
 class QMouseEvent;
 
-class QgsComposerView: public Q3CanvasView
+class QgsComposerView: public QGraphicsView
 {
     Q_OBJECT
 	
@@ -33,9 +34,9 @@ public:
     QgsComposerView (QgsComposer *composer, QWidget* parent=0, const char* name=0, Qt::WFlags f=0);
 
 protected:
-    void contentsMousePressEvent(QMouseEvent*);
-    void contentsMouseReleaseEvent(QMouseEvent*);
-    void contentsMouseMoveEvent(QMouseEvent*);
+    void mousePressEvent(QMouseEvent*);
+    void mouseReleaseEvent(QMouseEvent*);
+    void mouseMoveEvent(QMouseEvent*);
 
     void keyPressEvent ( QKeyEvent * e );
     void resizeEvent ( QResizeEvent *  );

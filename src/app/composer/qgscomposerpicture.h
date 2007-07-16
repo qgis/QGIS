@@ -19,10 +19,10 @@
 
 #include "ui_qgscomposerpicturebase.h"
 #include "qgscomposeritem.h"
-#include <Q3CanvasPolygonalItem>
+#include <QAbstractGraphicsShapeItem>
 #include <QPen>
-#include <Q3Picture>
-#include <Q3PointArray>
+#include <QPicture>
+#include <QPolygonF>
 #include <QRect>
 
 class QgsComposition;
@@ -36,8 +36,7 @@ class QPainter;
 // NOTE: QgsComposerPictureBase must be first, otherwise does not compile
 //                                public QCanvasRectangle, 
 class QgsComposerPicture : public QWidget, private Ui::QgsComposerPictureBase, 
-				public Q3CanvasPolygonalItem,
-                                public QgsComposerItem
+				public QAbstractGraphicsShapeItem, public QgsComposerItem
 {
     Q_OBJECT
 
@@ -68,17 +67,12 @@ public:
 
 
     // Reimplement QCanvasItem::boundingRect
-    QRect boundingRect ( void ) const;
+    QRectF boundingRect ( void ) const;
 
-    Q3PointArray areaPoints() const;
+    QPolygonF areaPoints() const;
 
-    // Reimplemented
-    void moveBy( double x, double y);
-     
-    /** \brief Reimplementation of QCanvasItem::draw - draw on canvas */
-    void draw ( QPainter & painter );
-
-    void drawShape( QPainter & painter );
+    /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
+    void paint ( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
     
     /** \brief Set values in GUI to current values */
     void setOptions ( void );
@@ -88,7 +82,7 @@ public:
 
     // Set box, picture will be inside box, used when placed by mouse.
     // Coordinates do not need to be oriented
-    void setBox ( int x1, int y1, int x2, int y2 );
+    void setSize(double width, double height );
 
     // Picture dialog, returns file name or empty string
     static QString pictureDialog ( void );    
@@ -117,7 +111,7 @@ private:
     QString mPicturePath;
 
     // Picture
-    Q3Picture mPicture;
+    QPicture mPicture;
 
     bool mPictureValid;
 
@@ -127,8 +121,8 @@ private:
     // Coordinates of upper left picture corner
     int mX, mY;
 
-    // Picture width and height in paper
-    int mWidth, mHeight;
+    // Picture width and height in scene units
+    double mWidth, mHeight;
 
     // Scale, number of canvas units / image unit
 
@@ -147,13 +141,13 @@ private:
     /** \brief Calculate size according to current settings */
     void recalculate ( void );
 
-    Q3PointArray mAreaPoints;
+    QPolygonF mAreaPoints;
 
     // Called when picture file is changed
     void pictureChanged ( void );
 
     // Current bounding box
-    QRect mBoundingRect;
+    QRectF mBoundingRect;
 
     // Adjust size so that picture fits to current box
     void adjustPictureSize();
