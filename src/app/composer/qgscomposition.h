@@ -27,9 +27,10 @@ class QgsComposerMap;
 class QgsComposerView;
 class QgsMapCanvas;
 
-class Q3Canvas;
-class Q3CanvasItem;
-class Q3CanvasRectangle;
+class QGraphicsScene;
+class QGraphicsItem;
+class QGraphicsRectItem;
+
 class QDomDocument;
 class QDomNode;
 class QKeyEvent;
@@ -148,16 +149,16 @@ public:
     void setActive ( bool active );
 
     /** \brief returns pointer to canvas */
-    Q3Canvas *canvas(void);
+    QGraphicsScene *canvas(void);
     
-    /** \brief recieves contentsMousePressEvent from view */
-    void contentsMousePressEvent(QMouseEvent*);
+    /** \brief recieves mousePressEvent from view */
+    void mousePressEvent(QMouseEvent*);
     
-    /** \brief recieves contentsMouseReleaseEvent from view */
-    void contentsMouseReleaseEvent(QMouseEvent*);
+    /** \brief recieves mouseReleaseEvent from view */
+    void mouseReleaseEvent(QMouseEvent*);
     
-    /** \brief recieves contentsMouseMoveEvent from view */
-    void contentsMouseMoveEvent(QMouseEvent*);
+    /** \brief recieves mouseMoveEvent from view */
+    void mouseMoveEvent(QMouseEvent*);
     
     /** \brief recieves keyPressEvent from view */
     void keyPressEvent ( QKeyEvent * e );
@@ -188,8 +189,8 @@ public:
     /** \brief Return number screen pixels / canvas point */
     double viewScale( void );
 
-    /** \brief Selection box size in _canvas_ units */
-    int selectionBoxSize ( void );
+    /** \brief Selection box size in _scene_ units */
+    double selectionBoxSize ( void );
     
     /** \brief Selection box pen and brush */
     QPen selectionPen ( void );
@@ -268,7 +269,7 @@ private:
     QgsComposer *mComposer;
 
     /** \brief Canvas. One per composition, created by QgsComposition */
-    Q3Canvas *mCanvas;
+    QGraphicsScene *mCanvas;
 
     /** \brief Pointer to canvas view */
     QgsComposerView *mView;
@@ -276,15 +277,11 @@ private:
     /** \brief List of all composer items */
     std::list<QgsComposerItem*> mItems;
 
-    /** \brief Last position of the mouse in mView */
-    double mLastX;
-    double mLastY;
-
     /** \brief Selected item, 0 if no item is selected */ 
-    Q3CanvasItem* mSelectedItem; 
+    QGraphicsItem* mSelectedItem; 
 
     /** \brief Item representing the paper */
-    Q3CanvasRectangle *mPaperItem;
+    QGraphicsRectItem *mPaperItem;
 
     /** \brief  Plot style */
     PlotStyle mPlotStyle;
@@ -296,10 +293,10 @@ private:
     int mToolStep;
     
     /** \brief Temporary rectangle item used as rectangle drawn by mouse */
-    Q3CanvasRectangle *mRectangleItem;
-    
+    QGraphicsRectItem *mRectangleItem;
+
     /** \brief Temporary item used as pointer to new objecs which must be drawn */ 
-    Q3CanvasItem *mNewCanvasItem; 
+    QGraphicsItem *mNewCanvasItem; 
 
     /** \brief Resolution in DPI */
     int mResolution; 
@@ -310,14 +307,16 @@ private:
     /** \brief id for next new item */
     int mNextItemId;
 
+	QGraphicsRectItem *sizeBox;
+
     /** \brief Create canvas */
     void createCanvas(void);
     
     /** \brief Resize canvas to current paper size */
     void resizeCanvas(void);
 
-    /** \brief first point, set with MousePressEvent */
-    QPoint mLastPoint;
+    /** \brief Grab point, set with MousePressEvent */
+    QPointF mGrabPoint;
 };
 
 #endif

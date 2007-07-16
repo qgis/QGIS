@@ -43,7 +43,9 @@
  
 #include "ui_qgscomposervectorlegendbase.h"
 #include "qgscomposeritem.h"
-#include <Q3CanvasPolygonalItem>
+
+#include <QAbstractGraphicsShapeItem>
+#include <QPen>
 #include <QPixmap>
 #include <map>
 
@@ -63,7 +65,7 @@ class QRect;
 // NOTE: QgsComposerVectorLegendBase must be first, otherwise does not compile
 class QgsComposerVectorLegend : public QWidget,
                                 private Ui::QgsComposerVectorLegendBase, 
-                                public Q3CanvasRectangle, 
+                                public QGraphicsRectItem, 
                                 public QgsComposerItem
 {
     Q_OBJECT
@@ -105,10 +107,10 @@ public:
      *  \param painter painter or 0
      *  \return bounding box 
      */
-    QRect render (QPainter *painter);
+    QRectF render (QPainter *painter);
 
-    /** \brief Reimplementation of QCanvasItem::draw - draw on canvas */
-    void draw ( QPainter & painter );
+    /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
+    void paint ( QPainter*, const QStyleOptionGraphicsItem*, QWidget*);
     
     /** \brief Calculate size according to current settings */
     void recalculate ( void );

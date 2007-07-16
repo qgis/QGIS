@@ -19,10 +19,10 @@
 
 #include "ui_qgscomposerlabelbase.h"
 #include "qgscomposeritem.h"
-#include <Q3CanvasPolygonalItem>
+#include <QAbstractGraphicsShapeItem>
 #include <QFont>
 #include <QPen>
-#include <Q3PointArray>
+#include <QPolygon>
 #include <QRect>
 #include <QString>
 
@@ -35,7 +35,7 @@ class QDomDocument;
  */
 // NOTE: QgsComposerLabelBase must be first, otherwise does not compile
 //class QgsComposerLabel : public QgsComposerLabelBase, public QCanvasRectangle, public QgsComposerItem
-class QgsComposerLabel : public QWidget, private Ui::QgsComposerLabelBase, public Q3CanvasPolygonalItem, public QgsComposerItem
+class QgsComposerLabel : public QWidget, private Ui::QgsComposerLabelBase, public QAbstractGraphicsShapeItem, public QgsComposerItem
 {
     Q_OBJECT
 
@@ -63,13 +63,13 @@ public:
     bool writeXML( QDomNode & node, QDomDocument & document, bool temp = false );
     bool readXML( QDomNode & node );
 
-    QRect boundingRect ( void ) const;
+    QRectF boundingRect ( void ) const; //errors about overriding things?
      
-    /** \brief Reimplementation of QCanvasItem::draw - draw on canvas */
-    void draw ( QPainter & painter );
+    /** \brief Reimplementation of QGraphicsItem::paint() - draw on canvas */
+    void paint ( QPainter*, const QStyleOptionGraphicsItem*, QWidget* );
 
-    void drawShape(QPainter&);
-    Q3PointArray areaPoints() const;
+//    void drawShape(QPainter&, const QStyleOptionGraphicsItem*, QWidget*);
+    QPolygonF areaPoints() const;
     
     /** \brief Set values in GUI to current values */
     void setOptions ( void );

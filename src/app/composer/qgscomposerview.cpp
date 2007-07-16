@@ -29,7 +29,8 @@
 
 // Note: |WRepaintNoErase|WResizeNoErase|WStaticContents doeen't make it faster
 QgsComposerView::QgsComposerView( QgsComposer *composer, QWidget* parent, const char* name, Qt::WFlags f) :
-                                  Q3CanvasView(parent,name,f|Qt::WNoAutoErase|Qt::WResizeNoErase|Qt::WStaticContents)
+                                  QGraphicsView(parent)
+//,name,f|Qt::WNoAutoErase|Qt::WResizeNoErase|Qt::WStaticContents
 {
     mComposer = composer;
 
@@ -37,23 +38,26 @@ QgsComposerView::QgsComposerView( QgsComposer *composer, QWidget* parent, const 
     setEnabled ( true );
     setFocusPolicy ( Qt::StrongFocus );
     setFocusProxy ( 0 );
+
+    setResizeAnchor ( QGraphicsView::AnchorViewCenter );
+
 }
 
-void QgsComposerView::contentsMousePressEvent(QMouseEvent* e)
+void QgsComposerView::mousePressEvent(QMouseEvent* e)
 {
     // TODO: find how to get focus without setFocus
     setFocus ();
-    mComposer->composition()->contentsMousePressEvent(e);
+    mComposer->composition()->mousePressEvent(e);
 }
 
-void QgsComposerView::contentsMouseReleaseEvent(QMouseEvent* e)
+void QgsComposerView::mouseReleaseEvent(QMouseEvent* e)
 {
-    mComposer->composition()->contentsMouseReleaseEvent(e);
+    mComposer->composition()->mouseReleaseEvent(e);
 }
 
-void QgsComposerView::contentsMouseMoveEvent(QMouseEvent* e)
+void QgsComposerView::mouseMoveEvent(QMouseEvent* e)
 {
-    mComposer->composition()->contentsMouseMoveEvent(e);
+    mComposer->composition()->mouseMoveEvent(e);
 }
 
 void QgsComposerView::keyPressEvent ( QKeyEvent * e )
@@ -63,5 +67,13 @@ void QgsComposerView::keyPressEvent ( QKeyEvent * e )
 
 void QgsComposerView::resizeEvent ( QResizeEvent *  )
 {
-    mComposer->zoomFull();
+/* BUG: When QT adds scrollbars because we're zooming in, it causes a resizeEvent.
+ *  If we call zoomFull(), we reset the view size, which keeps us from zooming in.
+ *  Really, we should do something like re-center the window.
+*/
+    //mComposer->zoomFull();
+std::cout << "resize anchor: " << resizeAnchor() << std::endl;
 }
+
+//TODO: add mouse wheel event forwarding
+

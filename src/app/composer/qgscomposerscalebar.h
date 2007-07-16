@@ -18,9 +18,10 @@
 
 #include "ui_qgscomposerscalebarbase.h"
 #include "qgscomposeritem.h"
-#include <Q3CanvasPolygonalItem>
+#include <QAbstractGraphicsShapeItem>
 #include <Q3PointArray>
 #include <QRect>
+#include <QPen>
 
 class QgsMapCanvas;
 class QgsComposition;
@@ -33,10 +34,9 @@ class QPen;
 
 /** \class QgsComposerScalebar
  *  \brief Object representing map window. 
- *         x,y is center of upper side of the bar, the center position depends on scalebar style
  */
 // NOTE: QgsComposerScalebarBase must be first, otherwise does not compile
-class QgsComposerScalebar : public QWidget, private Ui::QgsComposerScalebarBase, public Q3CanvasPolygonalItem, public QgsComposerItem
+class QgsComposerScalebar : public QWidget, private Ui::QgsComposerScalebarBase, public QAbstractGraphicsShapeItem, public QgsComposerItem
 {
     Q_OBJECT
 
@@ -66,19 +66,19 @@ public:
     bool writeXML( QDomNode & node, QDomDocument & document, bool temp = false );
     bool readXML( QDomNode & node );
 
-    QRect boundingRect ( void ) const;
+    QRectF boundingRect ( void ) const;
      
     /** \brief Draw to paint device, internal use 
      *  \param painter painter or 0
      *  \return bounding box 
      */
-    QRect render (QPainter *painter);
+    QRectF render (QPainter *painter);
 
-    /** \brief Reimplementation of QCanvasItem::draw - draw on canvas */
-    void draw ( QPainter & painter );
+    /** \brief Reimplementation of QGraphicsItem::paint - draw on canvas */
+    void paint ( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget);
 
-    void drawShape(QPainter&);
-    Q3PointArray areaPoints() const;
+    //void drawShape(QPainter&);
+    QPolygonF areaPoints() const;
     
     /** \brief Calculate size according to current settings */
     void recalculate ( void );
@@ -87,7 +87,7 @@ public:
     void setOptions ( void );
 
     // Move to position
-    void moveBy ( double x, double y );
+//    void moveBy ( double x, double y );
 
 public slots:
     // Open font dialog
@@ -122,7 +122,7 @@ private:
     std::vector<int> mMaps;
 
     // Current bounding box
-    QRect mBoundingRect;
+    QRectF mBoundingRect;
 
     // Number of map units in scalebar unit
     double mMapUnitsPerUnit;
@@ -134,7 +134,7 @@ private:
     QFont mFont;
 
     // Pen
-    QPen  mPen;
+    QPen mPen;
 
     // Brush
     QBrush mBrush;
@@ -146,7 +146,7 @@ private:
     double mSegmentLength;
 
     // Height of scalebar box in canvas units (box style only)
-    int mHeight;
+    double mHeight;
 
     // Margin
     int mMargin;

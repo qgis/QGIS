@@ -24,16 +24,21 @@
 #include <QPainter>
 #include <QImageWriter>
 #include <QSettings>
+#include <QPolygonF>
+#include <QAbstractGraphicsShapeItem>
+#include <QGraphicsScene>
 
 #include <cmath>
 #include <iostream>
 
 #define PI 3.14159265358979323846
 
+#define QGISDEBUG 1
+
 QgsComposerPicture::QgsComposerPicture ( QgsComposition *composition, 
 					int id, QString file ) 
     : QWidget(composition),
-      Q3CanvasPolygonalItem(0),
+      QAbstractGraphicsShapeItem(0),
       mPicturePath ( file ),
       mPictureValid(false),
       mCX(-10), mCY(-10),
@@ -54,18 +59,18 @@ QgsComposerPicture::QgsComposerPicture ( QgsComposition *composition,
     init();
     loadPicture();
 
-    // Add to canvas
-    setCanvas(mComposition->canvas());
+    // Add to scene
+    mComposition->canvas()->addItem(this);
 
-    Q3CanvasPolygonalItem::show();
-    Q3CanvasPolygonalItem::update();
+    QAbstractGraphicsShapeItem::show();
+    QAbstractGraphicsShapeItem::update();
      
     writeSettings();
 }
 
 QgsComposerPicture::QgsComposerPicture ( QgsComposition *composition, int id ) :
     QWidget(),
-    Q3CanvasPolygonalItem(0),
+    QAbstractGraphicsShapeItem(0),
     mFrame(false),
     mAreaPoints(4),
     mBoundingRect(0,0,0,0)
@@ -86,26 +91,25 @@ QgsComposerPicture::QgsComposerPicture ( QgsComposition *composition, int id ) :
     loadPicture();
     adjustPictureSize();
 
-    // Add to canvas
-    setCanvas(mComposition->canvas());
+    // Add to scene
+    mComposition->canvas()->addItem(this);
 
     recalculate();
 
-    Q3CanvasPolygonalItem::show();
-    Q3CanvasPolygonalItem::update();
+    QAbstractGraphicsShapeItem::show();
+    QAbstractGraphicsShapeItem::update();
 }
 
 void QgsComposerPicture::init ( void ) 
 {
-    mSelected = false;
-    for ( int i = 0; i < 4; i++ ) 
-    {
-	mAreaPoints[i] = QPoint( 0, 0 );
-    }
+  mSelected = false;
+  for ( int i = 0; i < 4; i++ ) 
+  {
+    mAreaPoints[i] = QPoint( 0, 0 );
+  }
 
-    // Rectangle
-    Q3CanvasPolygonalItem::setZ(60);
-    setActive(true);
+  QAbstractGraphicsShapeItem::setZValue(60);
+
 }
 
 void QgsComposerPicture::loadPicture ( void ) 
@@ -113,71 +117,72 @@ void QgsComposerPicture::loadPicture ( void )
 #ifdef QGISDEBUG
     std::cerr << "QgsComposerPicture::loadPicture() mPicturePath = " << mPicturePath.toLocal8Bit().data() << std::endl;
 #endif
-    mPicture = Q3Picture(); 
-    mPictureValid = false;
 
-    if ( !mPicturePath.isNull() ) 
-    {
+  mPicture = QPicture(); 
+  mPictureValid = false;
+
+  if ( !mPicturePath.isNull() ) 
+  {
 	if ( mPicturePath.lower().right(3) == "svg" )
 	{
-	    if ( !mPicture.load ( mPicturePath, "svg" ) )
-	    {
+	  if ( !mPicture.load ( mPicturePath, "svg" ) )
+	  {
 		std::cerr << "Cannot load svg" << std::endl;
-	    }	
-	    else
-	    {
+	  }	
+	  else
+	  {
 		mPictureValid = true;
-	    }
+	  }
 	}
 	else
 	{
-	    QImage image;
-	    if ( !image.load(mPicturePath) )
-	    {
-		std::cerr << "Cannot load raster" << std::endl;
-	    }
-	    else
-	    {	
-		QPainter  p;
-		p.begin( &mPicture );
-		p.drawImage ( 0, 0, image ); 
-		p.end();	
-		mPictureValid = true;
-	    }
-	}
-    }
-
-    if ( !mPictureValid ) 
-    {
-        // Dummy picture
+      QImage image;
+	  if ( !image.load(mPicturePath) )
+	  {
+        std::cerr << "Cannot load raster" << std::endl;
+	  }
+	  else
+	  {	
         QPainter  p;
-	p.begin( &mPicture );
-        QPen pen(QColor(0,0,0));
-        pen.setWidthF(3.0);
-  	p.setPen( pen );
-	p.setBrush( QBrush( QColor( 150, 150, 150) ) );
+        p.begin( &mPicture );
+        p.drawImage ( 0, 0, image ); 
+        p.end();	
+        mPictureValid = true;
+	  }
+	}
+  }
 
-        int w, h; 
-        if ( mWidth > 0 && mHeight > 0 
-             && mWidth/mHeight > 0.001 && mWidth/mHeight < 1000 ) 
+  if ( !mPictureValid ) 
+  {
+    // Dummy picture
+    QPainter  p;
+	p.begin( &mPicture );
+    QPen pen(QColor(0,0,0));
+    pen.setWidthF(3.0);
+    p.setPen( pen );
+    p.setBrush( QBrush( QColor( 150, 150, 150) ) );
+
+    double w, h; 
+    if ( mWidth > 0 && mHeight > 0 
+         && mWidth/mHeight > 0.001 && mWidth/mHeight < 1000 ) 
 	{
-	    w = mWidth;
-	    h = mHeight;
-        }
+	  w = mWidth;
+	  h = mHeight;
+    }
 	else
  	{
-	    w = 100;
-	    h = 100;
+	  w = 100;
+	  h = 100;
 	}
 	
-	p.drawRect ( 0, 0, w, h ); 
-	p.drawLine ( 0, 0, w-1, h-1 );
-	p.drawLine ( w-1, 0, 0, h-1 );
+	p.drawRect (QRectF(0, 0, w, h)); 
+	p.drawLine (QLineF(0, 0, w-1, h-1));
+	p.drawLine (QLineF(w-1, 0, 0, h-1));
 
 	p.end();	
 
- 	mPicture.setBoundingRect ( QRect ( 0, 0, w, h ) ); 
-    }
+ 	mPicture.setBoundingRect ( QRect( 0, 0, (int)w, (int)h ) ); 
+  }//END if(!mPictureValid)
 }
 
 bool QgsComposerPicture::pictureValid ( void )
@@ -190,97 +195,65 @@ QgsComposerPicture::~QgsComposerPicture()
 #ifdef QGISDEBUG
     std::cerr << "QgsComposerPicture::~QgsComposerPicture()" << std::endl;
 #endif
-    Q3CanvasItem::hide();
+    QGraphicsItem::hide();
 }
 
-void QgsComposerPicture::draw ( QPainter & painter )
+void QgsComposerPicture::paint ( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
 #ifdef QGISDEBUG
-    std::cerr << "QgsComposerPicture::draw()" << std::endl;
+    std::cerr << "QgsComposerPicture::paint()" << std::endl;
 #endif
 
-    QRect box = mPicture.boundingRect();
+    QRectF box = mPicture.boundingRect();
     double scale = 1. * mWidth / box.width(); 
     
-    painter.save();
+    painter->save();
 
-    painter.translate ( mX, mY );
-    painter.scale ( scale, scale );
-    painter.rotate ( -mAngle );
+    painter->scale ( scale, scale );
+    painter->rotate ( -mAngle );
     
-    painter.drawPicture ( -box.x(), -box.y(), mPicture );
+    painter->drawPicture (QPointF(-box.width()/2, -box.height()/2), mPicture );
     
-    painter.restore();
+    painter->restore();
 
     if ( mFrame ) {
-	// TODO: rect is not correct, +/- 1 pixle - Qt3?
-  	painter.setPen( QPen(QColor(0,0,0), 1) );
-	painter.setBrush( QBrush( Qt::NoBrush ) );
+	  // TODO: rect is not correct, +/- 1 pixel - Qt3?
+  	  painter->setPen( QPen(QColor(0,0,0), .3) );
+	  painter->setBrush( QBrush( Qt::NoBrush ) );
 
-	painter.save();
-        painter.translate ( mX, mY );
-        painter.rotate ( -mAngle );
+	  painter->save();
+      painter->rotate ( -mAngle );
       
-	painter.drawRect ( 0, 0, mWidth, mHeight ); 
-  	painter.restore();
+      painter->drawRect (QRectF(-mWidth/2, -mHeight/2, mWidth, mHeight));
+
+  	  painter->restore();
     }
 
     // Show selected / Highlight
     if ( mSelected && plotStyle() == QgsComposition::Preview ) {
-        painter.setPen( mComposition->selectionPen() );
-        painter.setBrush( mComposition->selectionBrush() );
+      painter->setPen( mComposition->selectionPen() );
+      painter->setBrush( mComposition->selectionBrush() );
   
-      	int s = mComposition->selectionBoxSize();
+      double s = mComposition->selectionBoxSize();
 
-	for ( int i = 0; i < 4; i++ ) 
-	{
-	    painter.save();
-	    painter.translate ( mAreaPoints.point(i).x(), mAreaPoints.point(i).y() );
-	    painter.rotate ( -mAngle + i * 90 );
-	  
-	    painter.drawRect ( 0, 0, s, s );
-	    painter.restore();
-	}
-    }
+	  for ( int i = 0; i < 4; i++ ) 
+	  {
+	    painter->save();
+	    painter->translate ( mAreaPoints[i].x(), mAreaPoints[i].y() );
+	    painter->rotate ( -mAngle + i * 90 );
+	    painter->drawRect(QRectF(0, 0, s, s));
+	    painter->restore();
+	  }
+    }//END of drawing selected highlight
+
 }
 
-void QgsComposerPicture::drawShape( QPainter & painter )
+void QgsComposerPicture::setSize(double width, double height )
 {
-#ifdef QGISDEBUG
-    std::cout << "QgsComposerPicture::drawShape" << std::endl;
-#endif
-    draw ( painter );
-}
-
-void QgsComposerPicture::setBox ( int x1, int y1, int x2, int y2 )
-{
-    int tmp;
-
-    if ( x1 > x2 ) { tmp = x1; x1 = x2; x2 = tmp; }
-    if ( y1 > y2 ) { tmp = y1; y1 = y2; y2 = tmp; }
-   
-    // Center
-    mCX = (x1 + x2) / 2;
-    mCY = (y1 + y2) / 2;
-
-    QRect box = mPicture.boundingRect();
-    std::cout << "box.width() = " << box.width() << " box.height() = " << box.height() << std::endl;
-
-    mWidth = x2-x1;
-    mHeight = y2-y1;
+    mWidth = width;
+    mHeight = height;
     adjustPictureSize(); 
 
-    recalculate();
-}
-
-void QgsComposerPicture::moveBy( double x, double y )
-{
-#ifdef QGISDEBUG
-    std::cout << "QgsComposerPicture::moveBy()" << std::endl;
-#endif
-
-    mCX += (int) x; 
-    mCY += (int) y; 
     recalculate();
 }
 
@@ -290,11 +263,11 @@ void QgsComposerPicture::recalculate()
     std::cout << "QgsComposerPicture::recalculate" << std::endl;
 #endif
     
-    Q3CanvasPolygonalItem::invalidate();
+    QAbstractGraphicsShapeItem::prepareGeometryChange();
 
-    QRect box = mPicture.boundingRect();
+    QRect box = mPicture.boundingRect(); //size of the image, in pixels
 
-    double angle = PI * mAngle / 180;
+    double angle = PI * mAngle / 180; //convert angle to radians
     
     // Angle between vertical in picture space and the vector 
     // from center to upper left corner of the picture
@@ -311,27 +284,24 @@ void QgsComposerPicture::recalculate()
     int dx = (int) ( r * cos ( anglePaper ) );
     int dy = (int) ( r * sin ( anglePaper ) );
 
-    mX = mCX - dx;
-    mY = mCY - dy;
-    
-    // Area points
-    mAreaPoints[0] = QPoint( mCX-dx, mCY-dy );
-    mAreaPoints[2] = QPoint( mCX+dx, mCY+dy );
 
-    anglePaper = angle + PI / 2 - anglePicture;
+    mAreaPoints[0] = QPointF( -dx, -dy ); //add the top-left point to the polygon
+    mAreaPoints[2] = QPointF( dx, dy ); //bottom-right
+
+    anglePaper = PI / 2 - anglePicture + angle;
     dx = (int) ( r * cos ( anglePaper ) );
     dy = (int) ( r * sin ( anglePaper ) );
-    mAreaPoints[1] = QPoint( mCX+dx, mCY-dy );
-    mAreaPoints[3] = QPoint( mCX-dx, mCY+dy );
+
+    mAreaPoints[1] =  QPointF( dx, -dy ); //top right
+    mAreaPoints[3] = QPointF( -dx, dy ); //bottom left
 
     mBoundingRect = mAreaPoints.boundingRect();
-    
-    Q3CanvasPolygonalItem::canvas()->setChanged(mBoundingRect);
-    Q3CanvasPolygonalItem::update();
-    Q3CanvasPolygonalItem::canvas()->update();
+
+    QAbstractGraphicsShapeItem::update();
+    QAbstractGraphicsShapeItem::scene()->update();
 }
 
-QRect QgsComposerPicture::boundingRect ( void ) const
+QRectF QgsComposerPicture::boundingRect ( void ) const
 {
 #ifdef QGISDEBUG
     std::cout << "QgsComposerPicture::boundingRect" << std::endl;
@@ -339,7 +309,7 @@ QRect QgsComposerPicture::boundingRect ( void ) const
     return mBoundingRect;
 }
 
-Q3PointArray QgsComposerPicture::areaPoints() const
+QPolygonF QgsComposerPicture::areaPoints() const
 {
 #ifdef QGISDEBUG
     std::cout << "QgsComposerPicture::areaPoints" << std::endl;
@@ -351,10 +321,14 @@ Q3PointArray QgsComposerPicture::areaPoints() const
 
 void QgsComposerPicture::on_mFrameCheckBox_stateChanged ( int )
 {
+#ifdef QGISDEBUG
+    std::cout << "QgsComposerPicture::on_mFrameCheckBox_stateChanged" << std::endl;
+#endif
+
     mFrame = mFrameCheckBox->isChecked();
 
-    Q3CanvasPolygonalItem::update();
-    Q3CanvasPolygonalItem::canvas()->update();
+    QAbstractGraphicsShapeItem::update();
+    QAbstractGraphicsShapeItem::scene()->update();
 
     writeSettings();
 }
@@ -364,12 +338,12 @@ void QgsComposerPicture::on_mAngleLineEdit_returnPressed ( )
 #ifdef QGISDEBUG
     std::cout << "QgsComposerPicture::on_mAngleLineEdit_returnPressed()" << std::endl;
 #endif
-
     mAngle = mAngleLineEdit->text().toDouble();
 
     recalculate();
 
     writeSettings();
+
 }
 
 void QgsComposerPicture::on_mWidthLineEdit_returnPressed ( )
@@ -416,7 +390,7 @@ void QgsComposerPicture::pictureChanged ( )
     loadPicture();
 
     if ( !mPictureValid ) {
-        QMessageBox::warning( this, tr("Warning"),
+        QMessageBox::warning( 0, tr("Warning"),
                         tr("Cannot load picture.") );
     }
     else
@@ -447,19 +421,19 @@ void QgsComposerPicture::adjustPictureSize ( )
 
     if ( 1.*box.width()/box.height() > 1.*mWidth/mHeight )
     {
-	mHeight = mWidth*box.height()/box.width();
+	  mHeight = mWidth*box.height()/box.width();
     }
     else
     {
-	mWidth = mHeight*box.width()/box.height();
+      mWidth = mHeight*box.width()/box.height();
     }
 }
 
 void QgsComposerPicture::setOptions ( void )
 { 
     mPictureLineEdit->setText ( mPicturePath );
-    mWidthLineEdit->setText ( QString("%1").arg( mComposition->toMM(mWidth), 0,'g') );
-    mHeightLineEdit->setText ( QString("%1").arg( mComposition->toMM(mHeight), 0,'g') );
+    mWidthLineEdit->setText ( QString("%1").arg( mComposition->toMM((int)mWidth), 0,'g') );
+    mHeightLineEdit->setText ( QString("%1").arg( mComposition->toMM((int)mHeight), 0,'g') );
     mAngleLineEdit->setText ( QString::number ( mAngle ) );
     mFrameCheckBox->setChecked ( mFrame );
 }
@@ -467,7 +441,7 @@ void QgsComposerPicture::setOptions ( void )
 void QgsComposerPicture::setSelected (  bool s ) 
 {
     mSelected = s;
-    Q3CanvasPolygonalItem::update(); // show highlight
+    QAbstractGraphicsShapeItem::update(); // show highlight
 }    
 
 bool QgsComposerPicture::selected( void )
@@ -524,10 +498,10 @@ bool QgsComposerPicture::writeSettings ( void )
 
     QgsProject::instance()->writeEntry( "Compositions", path+"picture", mPicturePath );
 
-    QgsProject::instance()->writeEntry( "Compositions", path+"x", mComposition->toMM(mCX) );
-    QgsProject::instance()->writeEntry( "Compositions", path+"y", mComposition->toMM(mCY) );
-    QgsProject::instance()->writeEntry( "Compositions", path+"width", mComposition->toMM(mWidth) );
-    QgsProject::instance()->writeEntry( "Compositions", path+"height", mComposition->toMM(mHeight) );
+    QgsProject::instance()->writeEntry( "Compositions", path+"x", mComposition->toMM((int)QGraphicsItem::pos().x()) );
+    QgsProject::instance()->writeEntry( "Compositions", path+"y", mComposition->toMM((int)QGraphicsItem::pos().y()) );
+    QgsProject::instance()->writeEntry( "Compositions", path+"width", mComposition->toMM((int)mWidth) );
+    QgsProject::instance()->writeEntry( "Compositions", path+"height", mComposition->toMM((int)mHeight) );
 
     QgsProject::instance()->writeEntry( "Compositions", path+"angle", mAngle );
 
@@ -544,8 +518,10 @@ bool QgsComposerPicture::readSettings ( void )
 
     mPicturePath = QgsProject::instance()->readEntry( "Compositions", path+"picture", "", &ok) ;
 
-    mCX = mComposition->fromMM(QgsProject::instance()->readDoubleEntry( "Compositions", path+"x", 0, &ok));
-    mCY = mComposition->fromMM(QgsProject::instance()->readDoubleEntry( "Compositions", path+"y", 0, &ok));
+    double x = mComposition->fromMM(QgsProject::instance()->readDoubleEntry( "Compositions", path+"x", 0, &ok));
+    double y = mComposition->fromMM(QgsProject::instance()->readDoubleEntry( "Compositions", path+"y", 0, &ok));
+    setPos(x, y);
+
     mWidth = mComposition->fromMM(QgsProject::instance()->readDoubleEntry( "Compositions", path+"width", 0, &ok));
     mHeight = mComposition->fromMM(QgsProject::instance()->readDoubleEntry( "Compositions", path+"height", 0, &ok));
 
@@ -576,4 +552,3 @@ bool QgsComposerPicture::readXML( QDomNode & node )
 {
     return true;
 }
-
