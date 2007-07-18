@@ -1,0 +1,31 @@
+#!/bin/sh
+CMAKE=`which cmake`
+if [ "$CMAKE" = "" ] 
+then
+echo "QGIS now requires CMake to configure and build.
+
+You either don't have CMake installed or it is not in your path.
+First install CMake (you can download it from http://www.cmake.org) and
+then run this script again or see:
+http://wiki.qgis.org/qgiswiki/Building_with_CMake for more information."
+else
+ echo "Congratulations -- You have CMake installed in $CMAKE
+ "
+echo "To build QGIS:
+ mkdir build
+ cd build
+ cmake ..
+ make
+ make install
+ "
+
+echo "If you want to install QGIS in a place other than /usr/local use:
+ cmake -D CMAKE_INSTALL_PREFIX=/you/install/dir ..
+ "
+
+echo "For full control over all the build options, from your build directory use:
+ ccmake .."
+
+echo "
+See http://wiki.qgis.org/qgiswiki/Building_with_CMake for more information."
+fi
