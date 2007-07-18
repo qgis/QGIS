@@ -1,6 +1,27 @@
 #!/bin/sh
-CMAKE=`which cmake`
-if [ "$CMAKE" = "" ] 
+#CMAKE=`which xmake`
+#if [ "$CMAKE" = "" || grep -q "no xmake" "$CMAKE" ]
+NOCMAKE=0
+case $OSTYPE in
+  darwin*)
+  CMAKE=`which cmake|awk '{print $1 $2}'`
+  if [ "$CMAKE" = "nocmake" ]
+  then
+    NOCMAKE=1
+  fi
+  ;;
+
+  *)
+  CMAKE=`which cmake`
+  if [ "$CMAKE" = "" ]
+  then
+    NOCMAKE=1
+  fi
+  ;;
+esac
+#echo "CMAKE IS $CMAKE"
+
+  if [ "$NOCMAKE" = "1" ]
 then
 echo "QGIS now requires CMake to configure and build.
 
@@ -9,7 +30,7 @@ First install CMake (you can download it from http://www.cmake.org) and
 then run this script again or see:
 http://wiki.qgis.org/qgiswiki/Building_with_CMake for more information."
 else
- echo "Congratulations -- You have CMake installed in $CMAKE
+ echo "Congratulations -- CMake is already installed on your system.
  "
 echo "To build QGIS:
  mkdir build
