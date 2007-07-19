@@ -1,6 +1,7 @@
 #!/bin/sh
-#CMAKE=`which xmake`
-#if [ "$CMAKE" = "" || grep -q "no xmake" "$CMAKE" ]
+# Script to check for existence of cmake and then provide
+# some moderately helpful advice on building QGIS with CMake.
+# This script doesn't actually build anything.
 NOCMAKE=0
 case $OSTYPE in
   darwin*)
