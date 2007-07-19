@@ -138,12 +138,14 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect &extent, QgsMapToPixel *t
 
       double widthScale = mWidthScale;
       double symbolScale = mSymbolScale;
-      if (plotStyle() != QgsComposition::Preview)
-      {
-        widthScale /= mComposition->viewScale();
-        symbolScale /= mComposition->viewScale();
-      }
 
+//TODO: attempt to scale cache lines and point symbols to be larger as we zoom in
+/*    if(creating cache pixmap)
+      {
+        widthScale *= (cachePixmap.width / map.rect.width);
+        symbolScale *= (cachePixmap.width / map.rect.width);
+      }
+*/
       QgsRect r1, r2;
       r1 = extent;
       // TODO: revisit later and make this QgsMapRender-aware [MD]
@@ -235,13 +237,15 @@ void QgsComposerMap::setUserExtent ( QgsRect const & rect )
 
 void QgsComposerMap::cache ( void )
 {
+    std::cout << "QgsComposerMap::cache()" << std::endl;
+
     // Create preview on some reasonable size. It was slow with cca 1500x1500 points on 2x1.5GHz 
     // Note: The resolution should also respect the line widths, it means that 
     //       1 pixel in cache should have ia similar size as 1 pixel in canvas
     //       but it can result in big cache -> limit
 
     int w = (int)(QGraphicsRectItem::rect().width() * mComposition->viewScale());
-    w = w < 1000 ? w : 1000;
+    w = w < 1000 ? w : 1000; //limit the cache pixmap to 1000 pixels wide
     int h = (int) ( mExtent.height() * w / mExtent.width() );
     // It can happen that extent is not initialised well -> check 
     if ( h < 1 || h > 10000 ) h = w; 
@@ -258,6 +262,14 @@ void QgsComposerMap::cache ( void )
 
     // WARNING: ymax in QgsMapToPixel is device height!!!
     QgsMapToPixel transform(scale, h, mCacheExtent.yMin(), mCacheExtent.xMin() );
+
+//somthing about this transform isn't really what we want...
+/*Ideally, the cache pixmap wouldn't behave the same as the map canvas.
+* zooming in should make the lines become thicker, and symbols larger, rather than just
+* redrawing them to be n pixels wide.
+* We also want to make sure that changing the composition's resolution has the desired effect 
+* on both the cache, screen render, and print.
+*/
 
     std::cout << "transform = " << transform.showParameters().toLocal8Bit().data() << std::endl;
     
@@ -290,12 +302,12 @@ void QgsComposerMap::paint ( QPainter* painter, const QStyleOptionGraphicsItem* 
   
     // Scale so that the cache fills the map rectangle
     double scale = 1.0 * QGraphicsRectItem::rect().width() / mCachePixmap.width();
+    std::cout << "scale = " << scale << std::endl;
   
     painter->save();
 
     painter->translate(0, 0); //do we need this?
     painter->scale(scale,scale);
-    std::cout << "scale = " << scale << std::endl;
 
     // Note: drawing only a visible part of the pixmap doesn't make it much faster
     painter->drawPixmap(0,0, mCachePixmap);
@@ -310,7 +322,7 @@ void QgsComposerMap::paint ( QPainter* painter, const QStyleOptionGraphicsItem* 
   
     double scale = mExtent.width() / QGraphicsRectItem::rect().width();
     QgsMapToPixel transform(scale, QGraphicsRectItem::rect().height(), mExtent.yMin(), mExtent.xMin() );
-      
+
     painter->save();
     painter->translate(0, 0); //do we need this?
 
@@ -386,7 +398,7 @@ void QgsComposerMap::on_mCalculateComboBox_activated( int )
 double QgsComposerMap::scaleFromUserScale ( double us ) 
 {
   double s=0;
-    
+   
   switch ( mComposition->mapCanvas()->mapUnits() ) {
     case QGis::METERS :
       s = 1000. * mComposition->scale() / us;

@@ -372,8 +372,13 @@ std::cout << "widthScale: " << widthScale << std::endl;
           painter->setBrush ( sym->brush() );
 	    
           if ( vector->vectorType() == QGis::Point ) {
-            double scale = map->symbolScale() * mComposition->scale();
+            double scale = map->symbolScale();// * mComposition->scale();
 
+/*            if (plotStyle() != QgsComposition::Preview)
+            {
+              scale /= mComposition->viewScale();
+            }
+*/
             // Get the picture of appropriate size directly from catalogue
             QPixmap pic = QPixmap::fromImage(sym->getPointSymbolAsImage(widthScale,false,sym->color()));
 
@@ -460,6 +465,7 @@ void QgsComposerVectorLegend::cache ( void )
 
 //typical boundingRect size is 15 units wide,
     mCachePixmap.resize ((int)QGraphicsRectItem::rect().width(), (int)QGraphicsRectItem::rect().height() );
+
 
     QPainter p(&mCachePixmap);
     
