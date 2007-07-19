@@ -205,15 +205,23 @@ void QgsComposerPicture::paint ( QPainter* painter, const QStyleOptionGraphicsIt
 #endif
 
     QRectF box = mPicture.boundingRect();
-    double scale = 1. * mWidth / box.width(); 
-    
+    double scale = 1. * mWidth / box.width();
+
+    if(plotStyle() == QgsComposition::Postscript)
+    {
+      scale *= (96.0 / mComposition->resolution());
+    }
     painter->save();
+
+    painter->translate(-mWidth/2, -mHeight/2);
 
     painter->scale ( scale, scale );
     painter->rotate ( -mAngle );
     
-    painter->drawPicture (QPointF(-box.width()/2, -box.height()/2), mPicture );
-    
+//    painter->drawPicture (QPointF(-box.width()/2, -box.height()/2), mPicture ); //this doesn't work right...
+
+    painter->drawPicture (0, 0, mPicture );
+
     painter->restore();
 
     if ( mFrame ) {
