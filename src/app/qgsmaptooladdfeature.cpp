@@ -223,6 +223,13 @@ void QgsMapToolAddFeature::canvasReleaseEvent(QMouseEvent * e)
 	  delete mRubberBand;
 	  mRubberBand = NULL;
 	  
+	  //bail out if there are not at least two vertices
+	  if(mCaptureList.size() < 2)
+	    {
+	      mCaptureList.clear();
+	      return;
+	    }
+
 	  //create QgsFeature with wkb representation
 	  QgsFeature* f = new QgsFeature(0,"WKBLineString");
 	  unsigned char* wkb;
