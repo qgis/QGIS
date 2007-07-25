@@ -59,8 +59,8 @@ void QgsAttributeAction::doAction(unsigned int index, const std::vector<std::pai
   {
     // The QgsRunProcess instance created by this static function
     // deletes itself when no longer needed.
-    // we don't have to create agument list anymore as with qt3
-    QgsRunProcess::create(action->action(), action->capture());
+    QString expandedAction = expandAction(action->action(), values, defaultValueIndex);
+    QgsRunProcess::create(expandedAction, action->capture());
   }
 }
 
