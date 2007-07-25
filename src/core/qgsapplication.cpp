@@ -224,3 +224,23 @@ void QgsApplication::exitQgis()
   delete QgsMapLayerRegistry::instance();
   delete QgsProviderRegistry::instance();
 }
+
+QString QgsApplication::reportStyleSheet()
+{
+  QString myStyle = ".glossy,h1,h2,h3{ background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #616161, stop: 0.5 #505050, stop: 0.6 #434343, stop:1 #656565); color: white; padding-left: 4px; border: 1px solid #6c6c6c; }";
+  myStyle += "h1 {font-size : 22pt;}";
+  myStyle += "h2 {font-size : 18pt;}";
+  myStyle += "h3 {font-size : 14pt;}";
+  myStyle += ".cellHeader {color:#466aa5; font-size : 12pt;}";
+  myStyle += ".largeCell {color:#000000; font-size : 12pt;}";
+  myStyle += "table "
+  "{"
+  "  border-width: 1px 1px 1px 1px;"
+  "  border-spacing: 2px;"
+  "  border-style: solid solid solid solid;"
+  "  border-color: black black black black;"
+  "  border-collapse: separate;"
+  "  background-color: white;"
+  "}";
+  return myStyle;
+}

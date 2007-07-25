@@ -22,12 +22,6 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
    <item row="0" column="0" >
     <widget class="QTabWidget" name="tabBar" >
      <property name="currentIndex" >
@@ -38,24 +32,12 @@
        <string>Symbology</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
        <item row="0" column="0" colspan="2" >
         <widget class="QGroupBox" name="bgrpShowAs" >
          <property name="title" >
           <string>Display</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
           <item row="2" column="0" colspan="5" >
            <widget class="QLabel" name="textLabel2_4_2" >
             <property name="text" >
@@ -116,9 +98,7 @@
           <item row="3" column="0" colspan="5" >
            <widget class="QSlider" name="sliderTransparency" >
             <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>3</hsizetype>
-              <vsizetype>3</vsizetype>
+             <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -161,15 +141,13 @@
              <bool>true</bool>
             </property>
             <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>1</vsizetype>
+             <sizepolicy vsizetype="Minimum" hsizetype="Expanding" >
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="text" >
-             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style="font-size:9pt;font-family:Sans Serif">
+             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style="font-size:13pt;font-family:Lucida Grande">
 &lt;p style="margin-top:14px" dir="ltr">&lt;span style="font-weight:600">Notes&lt;/span>&lt;/p>
 &lt;/body>&lt;/html>
 </string>
@@ -188,12 +166,6 @@
           <string>Color Image</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
           <item row="3" column="1" >
            <widget class="QComboBox" name="cboBlue" />
           </item>
@@ -292,12 +264,6 @@
           <string>Grayscale Image</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
           <item row="3" column="1" >
            <spacer>
             <property name="orientation" >
@@ -373,20 +339,8 @@
        <string>General</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
        <item row="5" column="0" colspan="3" >
         <layout class="QHBoxLayout" >
-         <property name="margin" >
-          <number>0</number>
-         </property>
-         <property name="spacing" >
-          <number>6</number>
-         </property>
          <item>
           <widget class="Q3GroupBox" name="groupBox10" >
            <property name="title" >
@@ -396,10 +350,22 @@
             <enum>Qt::Vertical</enum>
            </property>
            <layout class="QGridLayout" >
-            <property name="margin" >
+            <property name="leftMargin" >
              <number>0</number>
             </property>
-            <property name="spacing" >
+            <property name="topMargin" >
+             <number>0</number>
+            </property>
+            <property name="rightMargin" >
+             <number>0</number>
+            </property>
+            <property name="bottomMargin" >
+             <number>0</number>
+            </property>
+            <property name="horizontalSpacing" >
+             <number>0</number>
+            </property>
+            <property name="verticalSpacing" >
              <number>0</number>
             </property>
             <item row="0" column="0" >
@@ -446,10 +412,22 @@
             <enum>Qt::Vertical</enum>
            </property>
            <layout class="QGridLayout" >
-            <property name="margin" >
+            <property name="leftMargin" >
              <number>0</number>
             </property>
-            <property name="spacing" >
+            <property name="topMargin" >
+             <number>0</number>
+            </property>
+            <property name="rightMargin" >
+             <number>0</number>
+            </property>
+            <property name="bottomMargin" >
+             <number>0</number>
+            </property>
+            <property name="horizontalSpacing" >
+             <number>0</number>
+            </property>
+            <property name="verticalSpacing" >
              <number>0</number>
             </property>
             <item row="0" column="0" >
@@ -496,10 +474,22 @@
             <enum>Qt::Vertical</enum>
            </property>
            <layout class="QGridLayout" >
-            <property name="margin" >
+            <property name="leftMargin" >
              <number>0</number>
             </property>
-            <property name="spacing" >
+            <property name="topMargin" >
+             <number>0</number>
+            </property>
+            <property name="rightMargin" >
+             <number>0</number>
+            </property>
+            <property name="bottomMargin" >
+             <number>0</number>
+            </property>
+            <property name="horizontalSpacing" >
+             <number>0</number>
+            </property>
+            <property name="verticalSpacing" >
              <number>0</number>
             </property>
             <item row="0" column="0" >
@@ -571,12 +561,6 @@
        </item>
        <item row="2" column="2" >
         <layout class="QHBoxLayout" >
-         <property name="margin" >
-          <number>0</number>
-         </property>
-         <property name="spacing" >
-          <number>6</number>
-         </property>
          <item>
           <widget class="QLabel" name="lblColumns" >
            <property name="text" >
@@ -616,22 +600,16 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
           <item row="0" column="3" >
            <widget class="QSpinBox" name="spinMaximumScale" >
             <property name="toolTip" >
              <string>Maximum scale at which this layer will be displayed. </string>
             </property>
-            <property name="maximum" >
-             <number>100000000</number>
-            </property>
             <property name="minimum" >
              <number>1</number>
+            </property>
+            <property name="maximum" >
+             <number>100000000</number>
             </property>
            </widget>
           </item>
@@ -650,11 +628,11 @@
             <property name="toolTip" >
              <string>Minimum scale at which this layer will be displayed. </string>
             </property>
-            <property name="maximum" >
-             <number>100000000</number>
-            </property>
             <property name="minimum" >
              <number>1</number>
+            </property>
+            <property name="maximum" >
+             <number>100000000</number>
             </property>
            </widget>
           </item>
@@ -677,12 +655,6 @@
           <string>Spatial Reference System</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
           <item row="0" column="1" >
            <widget class="QPushButton" name="pbnChangeSpatialRefSys" >
             <property name="text" >
@@ -707,14 +679,12 @@
        <string>Metadata</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
        <item row="0" column="0" >
-        <widget class="Q3TextBrowser" name="txtbMetadata" />
+        <widget class="QTextBrowser" name="txtbMetadata" >
+         <property name="autoFormatting" >
+          <set>QTextEdit::AutoAll</set>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -723,12 +693,6 @@
        <string>Pyramids</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
        <item row="0" column="1" >
         <widget class="QLabel" name="textLabel5" >
          <property name="text" >
@@ -739,9 +703,7 @@
        <item row="1" column="1" >
         <widget class="Q3ListBox" name="lbxPyramidResolutions" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>5</hsizetype>
-           <vsizetype>7</vsizetype>
+          <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -760,16 +722,14 @@
        <item rowspan="2" row="0" column="0" >
         <widget class="Q3TextEdit" name="textEdit5" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>7</hsizetype>
-           <vsizetype>7</vsizetype>
+          <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
            <horstretch>5</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="text" >
-          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style="font-size:9pt;font-family:Sans Serif">
-&lt;p style="margin-top:18px" dir="ltr">&lt;span style="font-size:15pt;font-weight:600">Description&lt;/span>&lt;/p>
+          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style="font-size:13pt;font-family:Lucida Grande">
+&lt;p style="margin-top:18px" dir="ltr">&lt;span style="font-size:21pt;font-weight:600">Description&lt;/span>&lt;/p>
 &lt;p dir="ltr">Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p>
 &lt;p dir="ltr">&lt;span style="color:#ff0000">Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span>&lt;/p>
 &lt;p dir="ltr">&lt;span style="color:#ff0000">Please note that building pyramids could corrupt your image - always make a backup of your data first!&lt;/span>&lt;/p>
@@ -783,12 +743,6 @@
        </item>
        <item row="2" column="0" colspan="2" >
         <layout class="QHBoxLayout" >
-         <property name="margin" >
-          <number>0</number>
-         </property>
-         <property name="spacing" >
-          <number>6</number>
-         </property>
          <item>
           <spacer>
            <property name="orientation" >
@@ -845,12 +799,6 @@
        <string>Histogram</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
        <item rowspan="2" row="2" column="0" >
         <widget class="Q3ListBox" name="lstHistogramLabels" >
          <property name="maximumSize" >
@@ -870,12 +818,6 @@
           <string>Options</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
           <item row="0" column="0" >
            <widget class="QLabel" name="textLabel1_2" >
             <property name="text" >
@@ -902,11 +844,11 @@
           </item>
           <item row="0" column="1" >
            <widget class="QSpinBox" name="spinHistBinCount" >
-            <property name="maximum" >
-             <number>1024</number>
-            </property>
             <property name="minimum" >
              <number>8</number>
+            </property>
+            <property name="maximum" >
+             <number>1024</number>
             </property>
             <property name="singleStep" >
              <number>8</number>
@@ -925,12 +867,6 @@
           <string>Chart Type</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
           <item row="0" column="1" >
            <widget class="QRadioButton" name="radHistTypeLine" >
             <property name="text" >
@@ -961,9 +897,7 @@
        <item row="0" column="0" colspan="2" >
         <widget class="QLabel" name="pixHistogram" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>7</hsizetype>
-           <vsizetype>5</vsizetype>
+          <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -1004,16 +938,6 @@
  <layoutdefault spacing="6" margin="11" />
  <customwidgets>
   <customwidget>
-   <class>Q3TextEdit</class>
-   <extends>Q3Frame</extends>
-   <header>q3textedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>Q3TextBrowser</class>
-   <extends>Q3TextEdit</extends>
-   <header>Qt3Support/Q3TextBrowser</header>
-  </customwidget>
-  <customwidget>
    <class>Q3GroupBox</class>
    <extends>QGroupBox</extends>
    <header>Qt3Support/Q3GroupBox</header>
@@ -1022,7 +946,12 @@
   <customwidget>
    <class>Q3ListBox</class>
    <extends>Q3Frame</extends>
-   <header>Qt3Support/Q3ListBox</header>
+   <header>q3listbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Q3TextEdit</class>
+   <extends>Q3Frame</extends>
+   <header>q3textedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

@@ -3849,12 +3849,12 @@ cStringList2Q_( char ** stringList )
 
 QString QgsRasterLayer::getMetadata()
 {
-  QString myMetadataQString = "<html><body>";
-  myMetadataQString += "<table width=\"100%\">";
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  QString myMetadataQString ;
+  myMetadataQString += "<table class=\"wide\">";
+  myMetadataQString += "<tr><td class=\"glossy\">";
   myMetadataQString += tr("Driver:");
   myMetadataQString += "</td></tr>";
-  myMetadataQString += "<tr><td bgcolor=\"white\">";
+  myMetadataQString += "<tr><td>";
   if (mProviderKey.isEmpty())
   {
     myMetadataQString += QString(gdalDataset->GetDriver()->GetDescription());
@@ -3877,10 +3877,10 @@ QString QgsRasterLayer::getMetadata()
 
     // my added code (MColetti)
 
-    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += "<tr><td class=\"glossy\">";
     myMetadataQString += tr("Dataset Description");
     myMetadataQString += "</td></tr>";
-    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += "<tr><td>";
     myMetadataQString += QFile::decodeName(gdalDataset->GetDescription());
     myMetadataQString += "</td></tr>";
 
@@ -3927,10 +3927,10 @@ QString QgsRasterLayer::getMetadata()
 
     // end my added code
 
-    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += "<tr><td class=\"glossy\">";
     myMetadataQString += tr("Dimensions:");
     myMetadataQString += "</td></tr>";
-    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += "<tr><td>";
     myMetadataQString += tr("X: ") + QString::number(gdalDataset->GetRasterXSize()) +
       tr(" Y: ") + QString::number(gdalDataset->GetRasterYSize()) + tr(" Bands: ") + QString::number(gdalDataset->GetRasterCount());
     myMetadataQString += "</td></tr>";
@@ -3938,18 +3938,18 @@ QString QgsRasterLayer::getMetadata()
     //just use the first band
     GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(1);
 
-    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += "<tr><td class=\"glossy\">";
     myMetadataQString += tr("No Data Value");
     myMetadataQString += "</td></tr>";
-    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += "<tr><td>";
     myMetadataQString += QString::number(noDataValueDouble);
     myMetadataQString += "</td></tr>";
 
     myMetadataQString += "</td></tr>";
-    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += "<tr><td class=\"glossy\">";
     myMetadataQString += tr("Data Type:");
     myMetadataQString += "</td></tr>";
-    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += "<tr><td>";
     switch (myGdalBand->GetRasterDataType())
     {
       case GDT_Byte:
@@ -3990,10 +3990,10 @@ QString QgsRasterLayer::getMetadata()
     }
     myMetadataQString += "</td></tr>";
 
-    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += "<tr><td class=\"glossy\">";
     myMetadataQString += tr("Pyramid overviews:");
     myMetadataQString += "</td></tr>";
-    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += "<tr><td>";
 
     if( GDALGetOverviewCount(myGdalBand) > 0 )
     {
@@ -4011,20 +4011,20 @@ QString QgsRasterLayer::getMetadata()
     myMetadataQString += "</td></tr>";
   }  // if (mProviderKey.isEmpty())
 
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td class=\"glossy\">";
   myMetadataQString += tr("Layer Spatial Reference System: ");
   myMetadataQString += "</td></tr>";
-  myMetadataQString += "<tr><td bgcolor=\"white\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += mSRS->proj4String();
   myMetadataQString += "</td></tr>";
 
   // output coordinate system
   // TODO: this is not related to layer, to be removed? [MD]
   /*  
-      myMetadataQString += "<tr><td bgcolor=\"gray\">";
+      myMetadataQString += "<tr><td class=\"glossy\">";
       myMetadataQString += tr("Project Spatial Reference System: ");
       myMetadataQString += "</td></tr>";
-      myMetadataQString += "<tr><td bgcolor=\"white\">";
+      myMetadataQString += "<tr><td>";
       myMetadataQString +=  mCoordinateTransform->destSRS().proj4String();
       myMetadataQString += "</td></tr>";
       */
@@ -4039,19 +4039,19 @@ QString QgsRasterLayer::getMetadata()
     }
     else
     {
-      myMetadataQString += "<tr><td bgcolor=\"gray\">";
+      myMetadataQString += "<tr><td class=\"glossy\">";
       myMetadataQString += tr("Origin:");
       myMetadataQString += "</td></tr>";
-      myMetadataQString += "<tr><td bgcolor=\"white\">";
+      myMetadataQString += "<tr><td>";
       myMetadataQString += QString::number(adfGeoTransform[0]);
       myMetadataQString += ",";
       myMetadataQString += QString::number(adfGeoTransform[3]);
       myMetadataQString += "</td></tr>";
 
-      myMetadataQString += "<tr><td bgcolor=\"gray\">";
+      myMetadataQString += "<tr><td class=\"glossy\">";
       myMetadataQString += tr("Pixel Size:");
       myMetadataQString += "</td></tr>";
-      myMetadataQString += "<tr><td bgcolor=\"white\">";
+      myMetadataQString += "<tr><td>";
       myMetadataQString += QString::number(adfGeoTransform[1]);
       myMetadataQString += ",";
       myMetadataQString += QString::number(adfGeoTransform[5]);
@@ -4061,18 +4061,15 @@ QString QgsRasterLayer::getMetadata()
     //
     // Add the stats for each band to the output table
     //
-    myMetadataQString += "<tr><td bgcolor=\"gray\">";
-    myMetadataQString += tr("Band Statistics (if gathered):");
-    myMetadataQString += "</td></tr>";
-    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += "<tr><td>";
 
     // Start a nested table in this trow
-    myMetadataQString += "<table width=\"100%\">";
-    myMetadataQString += "<tr><th bgcolor=\"black\">";
-    myMetadataQString += "<font color=\"white\">" + tr("Property") + "</font>";
-    myMetadataQString += "</th>";
-    myMetadataQString += "<th bgcolor=\"black\">";
-    myMetadataQString += "<font color=\"white\">" + tr("Value") + "</font>";
+    myMetadataQString += "<table class=\"wide\">";
+    myMetadataQString += "<tr><td class=\"glossy\">";
+    myMetadataQString += tr("Property") ;
+    myMetadataQString += "</td>";
+    myMetadataQString += "<td class=\"glossy\">";
+    myMetadataQString += tr("Value");
     myMetadataQString += "</th><tr>";
 
     int myBandCountInt = getBandCount();
@@ -4080,17 +4077,17 @@ QString QgsRasterLayer::getMetadata()
     {
       QgsDebugMsg("Raster properties : checking if band " + QString::number(myIteratorInt) + " has stats? ");
       //band name
-      myMetadataQString += "<tr><td bgcolor=\"gray\">";
+      myMetadataQString += "<tr><td class=\"cellHeader\">";
       myMetadataQString += tr("Band");
       myMetadataQString += "</td>";
-      myMetadataQString += "<td bgcolor=\"gray\">";
+      myMetadataQString += "<td class=\"cellHeader\">";
       myMetadataQString += getRasterBandName(myIteratorInt);
       myMetadataQString += "</td></tr>";
       //band number
-      myMetadataQString += "<tr><td bgcolor=\"white\">";
+      myMetadataQString += "<tr><td>";
       myMetadataQString += tr("Band No");
       myMetadataQString += "</td>";
-      myMetadataQString += "<td bgcolor=\"white\">";
+      myMetadataQString += "<td>";
       myMetadataQString += QString::number(myIteratorInt);
       myMetadataQString += "</td></tr>";
 
@@ -4099,10 +4096,10 @@ QString QgsRasterLayer::getMetadata()
       {
         QgsDebugMsg(".....no");
 
-        myMetadataQString += "<tr><td bgcolor=\"white\">";
+        myMetadataQString += "<tr><td>";
         myMetadataQString += tr("No Stats");
         myMetadataQString += "</td>";
-        myMetadataQString += "<td bgcolor=\"white\">";
+        myMetadataQString += "<td>";
         myMetadataQString += tr("No stats collected yet");
         myMetadataQString += "</td></tr>";
       }
@@ -4112,66 +4109,66 @@ QString QgsRasterLayer::getMetadata()
 
         QgsRasterBandStats myRasterBandStats = getRasterBandStats(myIteratorInt);
         //Min Val
-        myMetadataQString += "<tr><td bgcolor=\"white\">";
+        myMetadataQString += "<tr><td>";
         myMetadataQString += tr("Min Val");
         myMetadataQString += "</td>";
-        myMetadataQString += "<td bgcolor=\"white\">";
+        myMetadataQString += "<td>";
         myMetadataQString += QString::number(myRasterBandStats.minValDouble, 'f',10);
         myMetadataQString += "</td></tr>";
 
         // Max Val
-        myMetadataQString += "<tr><td bgcolor=\"white\">";
+        myMetadataQString += "<tr><td>";
         myMetadataQString += tr("Max Val");
         myMetadataQString += "</td>";
-        myMetadataQString += "<td bgcolor=\"white\">";
+        myMetadataQString += "<td>";
         myMetadataQString += QString::number(myRasterBandStats.maxValDouble, 'f',10);
         myMetadataQString += "</td></tr>";
 
         // Range
-        myMetadataQString += "<tr><td bgcolor=\"white\">";
+        myMetadataQString += "<tr><td>";
         myMetadataQString += tr("Range");
         myMetadataQString += "</td>";
-        myMetadataQString += "<td bgcolor=\"white\">";
+        myMetadataQString += "<td>";
         myMetadataQString += QString::number(myRasterBandStats.rangeDouble, 'f',10);
         myMetadataQString += "</td></tr>";
 
         // Mean
-        myMetadataQString += "<tr><td bgcolor=\"white\">";
+        myMetadataQString += "<tr><td>";
         myMetadataQString += tr("Mean");
         myMetadataQString += "</td>";
-        myMetadataQString += "<td bgcolor=\"white\">";
+        myMetadataQString += "<td>";
         myMetadataQString += QString::number(myRasterBandStats.meanDouble, 'f',10);
         myMetadataQString += "</td></tr>";
 
         //sum of squares
-        myMetadataQString += "<tr><td bgcolor=\"white\">";
+        myMetadataQString += "<tr><td>";
         myMetadataQString += tr("Sum of squares");
         myMetadataQString += "</td>";
-        myMetadataQString += "<td bgcolor=\"white\">";
+        myMetadataQString += "<td>";
         myMetadataQString += QString::number(myRasterBandStats.sumSqrDevDouble, 'f',10);
         myMetadataQString += "</td></tr>";
 
         //standard deviation
-        myMetadataQString += "<tr><td bgcolor=\"white\">";
+        myMetadataQString += "<tr><td>";
         myMetadataQString += tr("Standard Deviation");
         myMetadataQString += "</td>";
-        myMetadataQString += "<td bgcolor=\"white\">";
+        myMetadataQString += "<td>";
         myMetadataQString += QString::number(myRasterBandStats.stdDevDouble, 'f',10);
         myMetadataQString += "</td></tr>";
 
         //sum of all cells
-        myMetadataQString += "<tr><td bgcolor=\"white\">";
+        myMetadataQString += "<tr><td>";
         myMetadataQString += tr("Sum of all cells");
         myMetadataQString += "</td>";
-        myMetadataQString += "<td bgcolor=\"white\">";
+        myMetadataQString += "<td>";
         myMetadataQString += QString::number(myRasterBandStats.sumDouble, 'f',10);
         myMetadataQString += "</td></tr>";
 
         //number of cells
-        myMetadataQString += "<tr><td bgcolor=\"white\">";
+        myMetadataQString += "<tr><td>";
         myMetadataQString += tr("Cell Count");
         myMetadataQString += "</td>";
-        myMetadataQString += "<td bgcolor=\"white\">";
+        myMetadataQString += "<td>";
         myMetadataQString += QString::number(myRasterBandStats.elementCountInt);
         myMetadataQString += "</td></tr>";
       }
@@ -4185,7 +4182,6 @@ QString QgsRasterLayer::getMetadata()
   //
 
   myMetadataQString += "</table>";
-  myMetadataQString += "</body></html>";
   return myMetadataQString;
 }
 
