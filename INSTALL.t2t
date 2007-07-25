@@ -867,12 +867,24 @@ g++ -s gdal_contour.o -o gdal_contour.exe -L/usr/local/lib -lpng -lz -lgdal
 g++ -s gdaltindex.o -o gdaltindex.exe -L/usr/local/lib -lpng -lz -lgdal
 g++ -s gdal_rasterize.o -o gdal_rasterize.exe -L/usr/local/lib -lpng -lz -lgdal
 install gdalinfo.exe gdal_translate.exe gdaladdo.exe gdalwarp.exe gdal_contour.exe gdaltindex.exe gdal_rasterize.exe /usr/local/bin
+
 ```
 
 Finally, manually edit ``gdal-config`` in ``c:\msys\local\bin`` to replace the static library reference with -lgdal:
 ```
 CONFIG_LIBS="-L/usr/local/lib -lpng -lz -lgdal"
 ```
+GDAL build procedure can be greatly simplified to use libtool with a libtool line patch:
+configure gdal as below:
+./configure --with-ngpython --with-xerces=/local/ --with-jasper=/local/ --with-grass=/local/grass-6.3.cvs/ --with-pg=/local/pgsql/bin/pg_config.exe 
+
+Then fix libtool with:
+mv libtool libtool.orig
+cat libtool.orig | sed 's/max_cmd_len=8192/max_cmd_len=32768/g' > libtool
+
+Libtool on windows assumes a line length limit of 8192 for some reason and tries to page the linking and fails miserably. This is a work around.
+
+Make and make install should be hassle free after this.
 
 === GRASS ===
 
