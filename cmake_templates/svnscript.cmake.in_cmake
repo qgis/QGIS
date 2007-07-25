@@ -13,5 +13,5 @@ ELSE (SVNVERSION)
 ENDIF (SVNVERSION)
 
 # Configure the qgssvnversion.h
-CONFIGURE_FILE(@CMAKE_CURRENT_SOURCE_DIR@/qgssvnversion.h.in_cmake
+CONFIGURE_FILE(@CMAKE_CURRENT_SOURCE_DIR@/cmake_templates/qgssvnversion.h.in_cmake
                @CMAKE_CURRENT_BINARY_DIR@/qgssvnversion.h)
