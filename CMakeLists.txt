@@ -193,7 +193,7 @@ ENDIF (WIN32)
 #############################################################
 # create qgsconfig.h
 
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/qgsconfig.h.in ${CMAKE_BINARY_DIR}/qgsconfig.h)
+CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/cmake_templates/qgsconfig.h.in ${CMAKE_BINARY_DIR}/qgsconfig.h)
 INSTALL(FILES ${CMAKE_BINARY_DIR}/qgsconfig.h DESTINATION ${QGIS_INCLUDE_DIR})
 
 INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
@@ -208,7 +208,7 @@ IF (NOT SVN_MARKER)
 ENDIF (NOT SVN_MARKER)
   # Add a custom command to drive the svn script whenever the svn entries
   # file changes.
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/svnscript.cmake.in_cmake
+  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake_templates/svnscript.cmake.in_cmake
                 ${CMAKE_CURRENT_BINARY_DIR}/svnscript.cmake
                 @ONLY)
 
@@ -247,7 +247,7 @@ INSTALL (FILES qgis.man
 #############################################################
 # Uninstall stuff see: http://www.vtk.org/Wiki/CMake_FAQ
 CONFIGURE_FILE(
-  "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake_templates/cmake_uninstall.cmake.in"
   "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
   IMMEDIATE @ONLY)
 
