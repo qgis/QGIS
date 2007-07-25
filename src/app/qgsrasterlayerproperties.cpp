@@ -528,7 +528,9 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   pixmapLegend->setScaledContents(true);
   pixmapLegend->repaint(false);
   //populate the metadata tab's text browser widget with gdal metadata info
-  txtbMetadata->setText(rasterLayer->getMetadata());
+  QString myStyle = QgsApplication::reportStyleSheet();
+  txtbMetadata->setHtml(rasterLayer->getMetadata());
+  txtbMetadata->document()->setDefaultStyleSheet(myStyle);
 }
 
 
@@ -551,7 +553,9 @@ void QgsRasterLayerProperties::sync()
   pixmapThumbnail->setPixmap(myQPixmap);
 
   //populate the metadata tab's text browser widget with gdal metadata info
-  txtbMetadata->setText(rasterLayer->getMetadata());
+  QString myStyle = QgsApplication::reportStyleSheet();
+  txtbMetadata->setHtml(rasterLayer->getMetadata());
+  txtbMetadata->document()->setDefaultStyleSheet(myStyle);
   //tabSymbology->removePage(tabMetadata);
 
   //display the raster dimensions and no data value
