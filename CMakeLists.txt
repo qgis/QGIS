@@ -38,7 +38,7 @@ SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be
 SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
 
 # Compile flag. Make it posible to turn it off.
-SET (PEDANTIC TRUE CACHE BOOL "Determines if we should compile with -Wall -Werror.")
+SET (PEDANTIC FALSE CACHE BOOL "Determines if we should compile with -Wall -Werror.")
 
 # whether unit tests should be build
 SET (ENABLE_TESTS FALSE CACHE BOOL "Build unit tests?")
