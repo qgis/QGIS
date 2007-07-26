@@ -4,7 +4,9 @@ SUBDIRS(config modules themes)
 ADD_DEFINITIONS(-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\")
 ADD_DEFINITIONS(-DHAVE_OPENPTY=${HAVE_OPENPTY})
 
+IF (PEDANTIC)
 MESSAGE("providers/grass : -Werror removed for qgsgrassplugin.cpp for now - please get rid of any compiler warnings!")
+ENDIF (PEDANTIC)
 # The warnings are caused by multiple definitions of NDEBUG in grass sources
 # I have submitted a bug to teh grass folks in the meantime we need to
 # disable treating warnings as errors for the affected files
@@ -72,7 +74,9 @@ QT4_WRAP_CPP (GRASS_PLUGIN_MOC_SRCS  ${GRASS_PLUGIN_MOC_HDRS})
 
 ########################################################
 # deal with warnings
+IF (PEDANTIC)
 MESSAGE("providers/grass : -Werror removed for qgsgrassplugin.cpp for now - please get rid of any compiler warnings!")
+ENDIF (PEDANTIC)
 # The warnings are caused by multiple definitions of NDEBUG in grass sources
 # I have submitted a bug to teh grass folks in the meantime we need to
 # disable treating warnings as errors for the affected files
