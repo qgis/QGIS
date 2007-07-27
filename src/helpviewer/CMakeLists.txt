@@ -6,6 +6,8 @@ SET (HELP_SRCS
      main.cpp
      qgshelpserver.cpp
      qgshelpviewer.cpp
+     ../core/qgsapplication.cpp
+     ../core/qgslogger.cpp
 )
 
 SET (HELP_UIS qgshelpviewerbase.ui)
@@ -30,6 +32,7 @@ QT4_WRAP_CPP (HELP_MOC_SRCS  ${HELP_MOC_HDRS})
 ADD_EXECUTABLE (qgis_help MACOSX_BUNDLE ${HELP_SRCS} ${HELP_MOC_SRCS} ${HELP_UIS_H})
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
+     ${CMAKE_CURRENT_SOURCE_DIR}/../core
      ${CMAKE_CURRENT_BINARY_DIR}
      ${SQLITE3_INCLUDE_DIR}
 )
@@ -37,6 +40,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
 TARGET_LINK_LIBRARIES(qgis_help
   ${QT_LIBRARIES}
   ${SQLITE3_LIBRARY}
+  qgis_core
 )
 
 
