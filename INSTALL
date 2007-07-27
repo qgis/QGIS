@@ -1,5 +1,3 @@
-Compiling QGIS From Source
-Tim Sutton 2007
 %!encoding: iso-8859-1
 
 
@@ -681,7 +679,7 @@ If all built without errors you can then install it:
 	5.1. Building QGIS with Qt4.x
 	=============================
 
-*Requires:* Ubuntu Edgy
+*Requires:* Ubuntu Edgy / Debian derived distro
 
 These notes are for if you want to build QGIS from source. One of the major
 aims here is to show how this can be done using binary packages for *all*
@@ -718,7 +716,7 @@ Now update your local sources database:
 	================
 
 
-  sudo apt-get install libqt4-core libqt4-debug libqt4-debug-dev \
+  sudo apt-get install libqt4-core libqt4-debug  \
   libqt4-dev libqt4-gui libqt4-qt3support libqt4-sql lsb-qt4 qt4-designer \
   qt4-dev-tools qt4-doc qt4-qtconfig uim-qt gcc libapt-pkg-perl resolvconf
 
@@ -765,10 +763,12 @@ above commands to select the Qt4 version of the relevant applications.
 
 
   sudo apt-get install gdal-bin libgdal1-dev libgeos-dev proj libtool \
-  libgdal-doc libhdf4g-dev libhdf4g-run autoconf2.13 automake1.9 python-dev \
+  libgdal-doc libhdf4g-dev libhdf4g-run python-dev \
   swig libgsl0-dev g++ libjasper-1.701-dev libtiff4-dev  subversion gsl-bin \
-  libsqlite3-dev sqlite3 ccache make libpq-dev flex bison firefox 
+  libsqlite3-dev sqlite3 ccache make libpq-dev flex bison
 
+
+/!\ Debian users should use libgdal-dev above rather
 
 
 	5.5. GRASS Specific Steps
@@ -782,6 +782,8 @@ Now you can install grass from dapper:
 
   sudo apt-get install grass libgrass-dev libgdal1-grass 
 
+
+/!\ You may need to explicitly state your grass version e.g. libgdal1-1.3.2-grass
 
 
 	5.6. Setup ccache (Optional)
@@ -862,23 +864,46 @@ development version. I suggest you do something similar:
   mkdir -p ${HOME}/apps 
 
 
-The script will carry on to build QGIS - it may take a little while to go
-and have a cup of your favourite beverage while you wait...
+Now we create a build directory and run ccmake:
+
+
+  cd qgis
+  mkdir build
+  ccmake ..
+
+
+When you run ccmake (note the .. is required!), a menu will appear where 
+you can configure various aspects of the build. If you do not have root
+access or do not want to overwrite existing QGIS installs (by your
+packagemanager for example), set the CMAKE_BUILD_PREFIX to somewhere you
+have write access to (I usually use /home/timlinux/apps). Now press
+'c' to configure, 'e' to dismiss any error messages that may appear.
+and 'g' to generate the make files. Note that sometimes 'c' needs to 
+be pressed several times before the 'g' option becomes available.
+After the 'g' generation is complete, press 'q' to exit the ccmake 
+interactive dialog.
+
+Now on with the build:
+
+
+  make
+  make install
+
+
+It may take a little while to build depending on your platform.
 
 
 	5.10. Running QGIS
 	==================
 
-Once the compile is complete it should pop up a page in firefox with unit
-test results. At the time of writing the unit tests are just stubs - we
-still need to create the test implementations - so dont worry to much about
-their output at the moment.
-
 Now you can try to run QGIS:
 
 
+  export LD_LIBRARY_PATH=/home/apps/lib
   $HOME/apps/bin/qgis 
 
+/!\ Note the export LD_LIBRARY_PATH is only needed if you are installing
+into a path not covered by your system's ld.so.conf.
 
 If all has worked properly the QGIS application should start up and appear
 on your screen.
@@ -1008,6 +1033,7 @@ programs will be dynamically linked to it...
   g++ -s gdaltindex.o -o gdaltindex.exe -L/usr/local/lib -lpng -lz -lgdal
   g++ -s gdal_rasterize.o -o gdal_rasterize.exe -L/usr/local/lib -lpng -lz -lgdal
   install gdalinfo.exe gdal_translate.exe gdaladdo.exe gdalwarp.exe gdal_contour.exe gdaltindex.exe gdal_rasterize.exe /usr/local/bin
+  
 
 
 Finally, manually edit gdal-config in c:\msys\local\bin to replace the static library reference with -lgdal:
@@ -1015,6 +1041,17 @@ Finally, manually edit gdal-config in c:\msys\local\bin to replace the static li
 
   CONFIG_LIBS="-L/usr/local/lib -lpng -lz -lgdal"
 
+GDAL build procedure can be greatly simplified to use libtool with a libtool line patch:
+configure gdal as below:
+./configure --with-ngpython --with-xerces=/local/ --with-jasper=/local/ --with-grass=/local/grass-6.3.cvs/ --with-pg=/local/pgsql/bin/pg_config.exe 
+
+Then fix libtool with:
+mv libtool libtool.orig
+cat libtool.orig | sed 's/max_cmd_len=8192/max_cmd_len=32768/g' > libtool
+
+Libtool on windows assumes a line length limit of 8192 for some reason and tries to page the linking and fails miserably. This is a work around.
+
+Make and make install should be hassle free after this.
 
 
 		5.12.3. GRASS
