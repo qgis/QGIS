@@ -899,11 +899,8 @@ It may take a little while to build depending on your platform.
 Now you can try to run QGIS:
 
 
-  export LD_LIBRARY_PATH=/home/apps/lib
   $HOME/apps/bin/qgis 
 
-/!\ Note the export LD_LIBRARY_PATH is only needed if you are installing
-into a path not covered by your system's ld.so.conf.
 
 If all has worked properly the QGIS application should start up and appear
 on your screen.
