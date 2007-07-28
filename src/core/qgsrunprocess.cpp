@@ -126,7 +126,15 @@ void QgsRunProcess::dialogGone()
   // The dialog has gone, so the user is no longer interested in the
   // output from the process. Since the process will run happily
   // without the QProcess object, this instance and its data can then
-  // go too.
+  // go too, but disconnect the signals to prevent further functions in this
+  // class being called after it has been deleted (Qt seems not to be
+  // disconnecting them itself)
+
+  disconnect(mProcess, SIGNAL(error(QProcess::ProcessError)), this, SLOT(processError(QProcess::ProcessError)));
+ disconnect(mProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(stdoutAvailable()));
+ disconnect(mProcess, SIGNAL(readyReadStandardError()), this, SLOT(stderrAvailable()));
+  disconnect(mProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(processExit(int,QProcess::ExitStatus)));
+
   die();
 }
 
