@@ -149,6 +149,15 @@ the windows system preferences.
 If you plan to do some debugging, you'll need to compile debug version of Qt:
 C:\Qt\4.3.0\bin\qtvars.bat compile_debug
 
+Note: there is a problem when compiling debug version of Qt 4.3, the script ends with
+this message  "mingw32-make: *** No rule to make target `debug'.  Stop.". To 
+compile the debug version you have to go out of src directory and execute the
+following command:
+
+
+  c:\Qt\4.3.0 make 
+
+
 
 	3.3. Flex and Bison
 	===================
