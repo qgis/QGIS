@@ -4,7 +4,7 @@
 #ifndef QGSCONFIG_H
 #define QGSCONFIG_H
 
-#define VERSION "0.9.0-Unstable"
+#define VERSION "0.9.0-Preview-1"
 
 #define PREFIX "${CMAKE_INSTALL_PREFIX}"
 
