@@ -81,9 +81,6 @@ class QgisInterface : QObject
     /** Return a pointer to the toolbox (where additional pages can be inserted) */
     virtual QToolBox* getToolBox()=0;
 
-    /** refresh legend of a layer */
-    virtual void refreshLegend( QgsMapLayer * layer )=0;
-
   signals:
     /** Emited whenever current (selected) layer changes.
      *  The pointer to layer can be null if no layer is selected
