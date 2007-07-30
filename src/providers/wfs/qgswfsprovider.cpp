@@ -751,9 +751,9 @@ int QgsWFSProvider::getFeaturesFromGML2(const QDomElement& wfsCollectionElement,
       layerNameElem = currentFeatureMemberElem.firstChild().toElement();
       //the children are the attributes
       currentAttributeChild = layerNameElem.firstChild();
+      int attr = 0;
       while(!currentAttributeChild.isNull())
 	{
-          int attr = 0;
 	  currentAttributeElement = currentAttributeChild.toElement();
 	  if(currentAttributeElement.localName() != "boundedBy")
 	    {
