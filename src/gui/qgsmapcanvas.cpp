@@ -1017,6 +1017,8 @@ void QgsMapCanvas::updateMap()
   // XXX updating is not possible since we're already in paint loop
 //  mCanvas->update();
 //  QApplication::processEvents();
+  QPainter p(this);
+  p.drawPixmap(0, 0, mMap->pixmap());
 }
 
 
