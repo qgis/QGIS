@@ -22,6 +22,8 @@ SetCompressor zlib
 !include RecursiveDelete.nsh
 ;Added by Tim to support unzipping downloaded sample data automatically
 !include ZipDLL.nsh
+;Added by what_nick to support python
+!include python.nsh
 
 ; MUI Settings
 !define MUI_ABORTWARNING
@@ -147,6 +149,7 @@ Section "Quantum GIS Application" SEC01
 SectionEnd
 
 Section "Development headers" SEC02
+ !insertmacro CHECK_PYTHON
  SetOutPath "$INSTDIR\python"
  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\python"
 SectionEnd
