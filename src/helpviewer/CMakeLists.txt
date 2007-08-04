@@ -6,8 +6,8 @@ SET (HELP_SRCS
      main.cpp
      qgshelpserver.cpp
      qgshelpviewer.cpp
-     ../core/qgsapplication.cpp
-     ../core/qgslogger.cpp
+     #../core/qgsapplication.cpp
+     #../core/qgslogger.cpp
 )
 
 SET (HELP_UIS qgshelpviewerbase.ui)
