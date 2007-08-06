@@ -55,12 +55,6 @@ public:
      */
     const QString & name() const;
 
-    /** Virtual function to calculate the extent of the current layer.
-     * This function must be overridden in all child classes and implemented
-     * based on the layer type
-     */
-    virtual QgsRect calculateExtent();
-
     /** Render the layer, to be overridden in child classes
      * @param painter Painter that to be used for rendered output
      * @param rect Extent of the layer to be drawn

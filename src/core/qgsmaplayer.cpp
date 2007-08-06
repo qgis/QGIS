@@ -119,14 +119,6 @@ const QgsRect QgsMapLayer::extent()
     return mLayerExtent;
 }
 
-QgsRect QgsMapLayer::calculateExtent()
-{
-    //just to prevent any crashes
-    QgsRect rect;
-    
-    rect.setMinimal();
-    return rect;
-}
 
 bool QgsMapLayer::draw(QPainter *, QgsRect &, QgsMapToPixel *, QgsCoordinateTransform *, bool)
 {
