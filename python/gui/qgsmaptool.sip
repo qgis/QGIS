@@ -1,4 +1,13 @@
 
+%ModuleHeaderCode
+// fix to allow compilation with sip 4.7 that for some reason
+// doesn't add these includes to the file where the code from
+// ConvertToSubClassCode goes.
+#include <qgsmaptoolzoom.h>
+#include <qgsmaptoolpan.h>
+#include <qgsmaptoolemitpoint.h>
+%End
+
 class QgsMapTool : QObject
 {
 %TypeHeaderCode
