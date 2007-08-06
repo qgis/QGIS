@@ -123,6 +123,17 @@ bool QgsShapeFile::scanGeometries()
 
     }
   }
+  
+  // a hack to support 2.5D geometries (their wkb is equivalent to 2D variants
+  // except that the highest bit is set also). For now we will ignore 3rd coordinate.
+  hasMoreDimensions = false;
+  if (currentType & 0x80000000)
+  {
+    QgsDebugMsg("Got a shapefile with 2.5D geometry.");
+    currentType &= ~0x80000000;
+    hasMoreDimensions = true;
+  }
+  
   ogrLayer->ResetReading();
   geom_type = geometries[currentType];
   if(multi && (geom_type.find("MULTI") == -1))
@@ -130,6 +141,7 @@ bool QgsShapeFile::scanGeometries()
     geom_type = "MULTI" + geom_type;
   }
   delete sg;
+  
   //  std::cerr << "Geometry type is " << currentType << " (" << geometries[currentType] << ")" << std::endl; 
   return multi;
 }
@@ -363,6 +375,10 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
 
         int num = geom->WkbSize();
         char * geo_temp = new char[num*3];
+        // 'GeometryFromText' supports only 2D coordinates
+        // TODO for proper 2.5D support we would need to use 'GeomFromEWKT'
+        if (hasMoreDimensions)
+          geom->setCoordinateDimension(2);
         geom->exportToWkt(&geo_temp);
         QString geometry(geo_temp);
 

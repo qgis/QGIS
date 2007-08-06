@@ -68,6 +68,7 @@ class QgsShapeFile : public QObject
   bool valid;
   //! Flag to indicate the file contains multiple geometry types
   bool isMulti;
+  bool hasMoreDimensions;
   int features;
   QString filename;
   QString geom_type;
