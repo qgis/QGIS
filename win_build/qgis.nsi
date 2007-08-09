@@ -3,7 +3,7 @@
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Quantum GIS"
 !define PRODUCT_VERSION_NUMBER "0.9.0preview1"
-!define PRODUCT_VERSION_NAME "Grumpy"
+!define PRODUCT_VERSION_NAME "Ganymede"
 !define PRODUCT_VERSION "${PRODUCT_VERSION_NUMBER} ${PRODUCT_VERSION_NAME}"
 !define PRODUCT_PUBLISHER "qgis.org"
 !define PRODUCT_WEB_SITE "http://qgis.org"
@@ -22,6 +22,8 @@ SetCompressor zlib
 !include RecursiveDelete.nsh
 ;Added by Tim to support unzipping downloaded sample data automatically
 !include ZipDLL.nsh
+;Added by what_nick to support python
+!include python.nsh
 
 ; MUI Settings
 !define MUI_ABORTWARNING
@@ -111,13 +113,19 @@ Section "Quantum GIS Application" SEC01
 ;------- qgis Related
   File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\*.dll"
   File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\*.exe"
-  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\libz.dll.1.2.3"
+;--File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\libz.dll.1.2.3"
 ;------- proj and gdal Related
   File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\*.csv"
 ;subdirs
   File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\grass"
-  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\lib"
-  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\share"
+  ;File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\lib"
+  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\doc"
+  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\i18n"
+  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\images"
+  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\man"
+  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\resources"
+  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\svg"
+  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\themes"
   File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\nad"
   File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\msys"
   ;qt plugins
@@ -141,12 +149,18 @@ Section "Quantum GIS Application" SEC01
 SectionEnd
 
 Section "Development headers" SEC02
- SetOutPath "$INSTDIR\include"
+ !insertmacro CHECK_PYTHON
+ SetOutPath "$INSTDIR\python"
+ File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\python"
+SectionEnd
+
+Section "Python Extension" SEC03
+ SetOutPath "$INSTDIR\python"
  File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\include\*.h"
 SectionEnd
 
 ; /o means unchecked by default
-Section /o "Sample Data - Spearfish (GRASS)" SEC03
+Section /o "Sample Data - Spearfish (GRASS)" SEC04
  SetOutPath "$INSTDIR\SampleData\"
  NSISdl::download http://grass.itc.it/sampledata/spearfish_grass60data-0.3.zip spearfish.zip
  !insertmacro ZIPDLL_EXTRACT "$INSTDIR\SampleData\spearfish.zip" "$INSTDIR\SampleData\" "<ALL>"
@@ -161,7 +175,7 @@ Section /o "Sample Data - Spearfish (GRASS)" SEC03
 SectionEnd
 
 ; /o means unchecked by default
-Section /o "Sample Data - Alaska (Non GRASS)" SEC04
+Section /o "Sample Data - Alaska (Non GRASS)" SEC05
  SetOutPath "$INSTDIR\SampleData\Alaska\"
  NSISdl::download http://qgis.org/uploadfiles/qgis_sample_data.zip alaska.zip
  !insertmacro ZIPDLL_EXTRACT "$INSTDIR\SampleData\Alaska\alaska.zip" "$INSTDIR\SampleData\Alaska" "<ALL>"
@@ -199,8 +213,9 @@ SectionEnd
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "Main application files - you really need this!"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Header files for developers."
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "20mb Download of sample data in GRASS format (not required if you have your own data already)"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "20mb Download of sample shapefiles and TIFF data for Alaska (not required if you have your own data already)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Python Scripting Engine."
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "20mb Download of sample data in GRASS format (not required if you have your own data already)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC05} "20mb Download of sample shapefiles and TIFF data for Alaska (not required if you have your own data already)"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 
