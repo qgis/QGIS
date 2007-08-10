@@ -149,14 +149,15 @@ Section "Quantum GIS Application" SEC01
 SectionEnd
 
 Section "Development headers" SEC02
- !insertmacro CHECK_PYTHON
- SetOutPath "$INSTDIR\python"
- File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\python"
+ SetOutPath "$INSTDIR\include"
+ File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\include\*.h"
 SectionEnd
 
 Section "Python Extension" SEC03
- SetOutPath "$INSTDIR\python"
- File "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\include\*.h"
+ !insertmacro CHECK_PYTHON
+ SetOutPath "$INSTDIR"
+ File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\python"
+ pythonskip:
 SectionEnd
 
 ; /o means unchecked by default
