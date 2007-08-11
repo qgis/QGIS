@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label=" Import GDAL raster layer and create a fitted location" module="r.in.gdal">
+	<gdal key="input" label="GDAL raster layer" />
+	<option key="output" />
+	<flag key="e" answer="on" hidden="yes" />
+	<option key="location" />
+</qgisgrassmodule>

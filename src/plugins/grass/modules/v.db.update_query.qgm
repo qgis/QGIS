@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label=" v.db.update - Allows to assign a new value that depends by a query to a column in the attribute table connected to a given map" module="v.db.update">
+	<option key="map" layeroption="layer" />
+	<field key="column" layer="map" type="integer,double" label="Attribute field" />
+	<field key="qcolumn" />
+	<option key="where"/>
+</qgisgrassmodule>

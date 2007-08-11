@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+<qgisgrassmodule label="r.in.poly - Create raster maps from ascii polygon/line data files in the current directory." module="r.in.poly">
+	<file key="input" type="old" />
+    <option key="output" />
+</qgisgrassmodule>
