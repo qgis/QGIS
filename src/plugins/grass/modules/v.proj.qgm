@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label=" v.proj - Allows projection conversion of vector files" module="v.proj">
+	<option key="input" />
+	<option key="dbase" />
+	<option key="location" />
+	<option key="mapset" />
+	<option key="output" />
+</qgisgrassmodule>

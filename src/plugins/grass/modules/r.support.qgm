@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+<qgisgrassmodule label="r.support - Allows creation and/or modification of raster map layer support files. " module="r.support">
+	<option key="map" />
+    <option key="title" />
+    <option key="history" />
+</qgisgrassmodule>
