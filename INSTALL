@@ -49,23 +49,24 @@
     5.8. Check out the QGIS Source Code
     5.9. Starting the compile
     5.10. Running QGIS
-    5.11. Initial setup
-      5.11.1. MSYS
-      5.11.2. MinGW
-      5.11.3. Flex and Bison
-    5.12. Installing dependencies
-      5.12.1. Getting ready
-      5.12.2. GDAL level one
-      5.12.3. GRASS
-      5.12.4. GDAL level two
-      5.12.5. GEOS
-      5.12.6. SQLITE
-      5.12.7. GSL
-      5.12.8. EXPAT
-      5.12.9. POSTGRES
-    5.13. Cleanup
-  6. Further help and information
-  7. Authors and Acknowledgments
+  6. Creation of MSYS environment for compilation of Quantum GIS
+    6.1. Initial setup
+      6.1.1. MSYS
+      6.1.2. MinGW
+      6.1.3. Flex and Bison
+    6.2. Installing dependencies
+      6.2.1. Getting ready
+      6.2.2. GDAL level one
+      6.2.3. GRASS
+      6.2.4. GDAL level two
+      6.2.5. GEOS
+      6.2.6. SQLITE
+      6.2.7. GSL
+      6.2.8. EXPAT
+      6.2.9. POSTGRES
+    6.3. Cleanup
+  7. Further help and information
+  8. Authors and Acknowledgments
 
 
 ------------------------------------------------------------------------
@@ -772,12 +773,16 @@ above commands to select the Qt4 version of the relevant applications.
 
 
   sudo apt-get install gdal-bin libgdal1-dev libgeos-dev proj libtool \
-  libgdal-doc libhdf4g-dev libhdf4g-run python-dev \
-  swig libgsl0-dev g++ libjasper-1.701-dev libtiff4-dev  subversion gsl-bin \
+  libgdal-doc libhdf4g-dev libhdf4g-run python-dev python-qt4-dev sip4 \
+  swig libgsl0-dev g++ libjasper-1.701-dev libtiff4-dev subversion gsl-bin \
   libsqlite3-dev sqlite3 ccache make libpq-dev flex bison
 
 
 /!\ Debian users should use libgdal-dev above rather
+
+/!\ *Note:* For python language bindings SIP >= 4.5 and PyQt4 >= 4.1 is required! Some stable GNU/Linux
+distributions (e.g. Debian or SuSE) only provide SIP < 4.5 and PyQt4 < 4.1. To include support for python 
+language bindings you need to build and install those packages from source.
 
 
 	5.5. GRASS Specific Steps
@@ -914,16 +919,17 @@ Now you can try to run QGIS:
 If all has worked properly the QGIS application should start up and appear
 on your screen.
 
-= Creation of MSYS environment for compilation of Quantum GIS
-(including all dark magic involved) =
+
+  6. Creation of MSYS environment for compilation of Quantum GIS
+  ==============================================================
 
 
-	5.11. Initial setup
-	===================
+	6.1. Initial setup
+	==================
 
 
-		5.11.1. MSYS
-		============
+		6.1.1. MSYS
+		===========
 
 This is the environment that supplies many utilities from UNIX world in Windows and is needed
 by many dependencies to be able to compile.
@@ -937,8 +943,8 @@ Install to c:\msys
 All stuff we're going to compile is going to get to this directory (resp. its subdirs).
 
 
-		5.11.2. MinGW
-		=============
+		6.1.2. MinGW
+		============
 
 Download from here:
 
@@ -949,8 +955,8 @@ Install to c:\msys\mingw
 It suffices to download and install only g++ and mingw-make components.
 
 
-		5.11.3. Flex and Bison
-		======================
+		6.1.3. Flex and Bison
+		=====================
 
 Flex and Bison are tools for generation of parsers, they're needed for GRASS and also QGIS compilation.
 
@@ -965,12 +971,12 @@ Download the following packages:
 Unpack them all to c:\msys\local
 
 
-	5.12. Installing dependencies
-	=============================
+	6.2. Installing dependencies
+	============================
 
 
-		5.12.1. Getting ready
-		=====================
+		6.2.1. Getting ready
+		====================
 
 Paul Kelly did a great job and prepared a package of precompiled libraries for GRASS.
 The package currently includes:
@@ -995,8 +1001,8 @@ Moreover he also left the notes how to compile it (for those interested):
 Unpack the whole package to c:\msys\local
 
 
-		5.12.2. GDAL level one
-		======================
+		6.2.2. GDAL level one
+		=====================
 
 Since Quantum GIS needs GDAL with GRASS support, we need to compile GDAL
 from source - Paul Kelly's package doesn't include GRASS support in GDAL.
@@ -1060,8 +1066,8 @@ Libtool on windows assumes a line length limit of 8192 for some reason and tries
 Make and make install should be hassle free after this.
 
 
-		5.12.3. GRASS
-		=============
+		6.2.3. GRASS
+		============
 
 Grab sources from CVS or use a weekly snapshot, see:
 
@@ -1087,8 +1093,8 @@ By the way, these pages might be useful:
 - http://geni.ath.cx/grass.html
 
 
-		5.12.4. GDAL level two
-		======================
+		6.2.4. GDAL level two
+		=====================
 
 At this stage, we'll use GDAL sources we've used before, only the compilation will be a bit different.
 
@@ -1111,8 +1117,8 @@ Then again, edit gdal-config and change line with CONFIG_LIBS
 Now, GDAL should be able to work also with GRASS raster layers.
 
 
-		5.12.5. GEOS
-		============
+		6.2.5. GEOS
+		===========
 
 Download the sources:
 
@@ -1141,8 +1147,8 @@ Now, in MSYS console, go to the source directory and run:
 
 
 
-		5.12.6. SQLITE
-		==============
+		6.2.6. SQLITE
+		=============
 
 You can use precompiled DLL, no need to compile from source:
 
@@ -1159,8 +1165,8 @@ Then download this archive:
 and copy sqlite3.h to c:\msys\local\include
 
 
-		5.12.7. GSL
-		===========
+		6.2.7. GSL
+		==========
 
 Download sources:
 
@@ -1177,8 +1183,8 @@ Run from MSYS console in the source directory:
 
 
 
-		5.12.8. EXPAT
-		=============
+		6.2.8. EXPAT
+		============
 
 Download sources:
 
@@ -1195,8 +1201,8 @@ Run from MSYS console in the source directory:
 
 
 
-		5.12.9. POSTGRES
-		================
+		6.2.9. POSTGRES
+		===============
 
 We're going to use precompiled binaries. Use the link below for download:
 
@@ -1205,21 +1211,21 @@ We're going to use precompiled binaries. Use the link below for download:
 copy contents of pgsql directory from the archive to c:\msys\local
 
 
-	5.13. Cleanup
-	=============
+	6.3. Cleanup
+	============
 
 We're done with preparation of MSYS environment. Now you can delete all stuff in c:\msys\local\src - it takes quite a lot
 of space and it's not necessary at all.
 
 
-  6. Further help and information
+  7. Further help and information
   ===============================
 
     Please visit http://qgis.org for information on joining our mailing lists
     and getting involved in the project further.
 
 
-  7. Authors and Acknowledgments
+  8. Authors and Acknowledgments
   ==============================
 
 The follwing people have contributed to this document:

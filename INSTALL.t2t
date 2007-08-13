@@ -794,8 +794,7 @@ $HOME/apps/bin/qgis
 If all has worked properly the QGIS application should start up and appear
 on your screen.
 
-= Creation of MSYS environment for compilation of Quantum GIS
-(including all dark magic involved) =
+= Creation of MSYS environment for compilation of Quantum GIS =
 
 == Initial setup ==
 
