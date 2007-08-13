@@ -109,6 +109,7 @@ libqgis_guiHEADERS =							\
 		qgsmapserverexport.h				\
 		qgsmaptool.h						\
 		qgsmaptoolcapture.h				\
+		qgsmaptoolemitpoint.h				\
 		qgsmaptoolidentify.h			\
 		qgsmaptoolpan.h					\
 		qgsmaptoolselect.h				\
@@ -178,6 +179,7 @@ libqgis_gui_la_MOC =							\
 		qgsmapoverviewcanvas.moc.cpp		\
 		qgsmaprender.moc.cpp			\
 		qgsmapserverexport.moc.cpp		\
+		qgsmaptoolemitpoint.moc.cpp		\
 		qgsmaptoolidentify.moc.cpp		\
 		qgsmarkerdialog.moc.cpp			\
 		qgsmeasure.moc.cpp			\
@@ -240,6 +242,7 @@ libqgis_gui_la_SOURCES =						\
 		qgsmapserverexport.cpp		\
 		qgsmaptool.cpp			\
 		qgsmaptoolcapture.cpp			\
+		qgsmaptoolemitpoint.cpp			\
 		qgsmaptoolidentify.cpp		\
 		qgsmaptoolpan.cpp				\
 		qgsmaptoolselect.cpp			\

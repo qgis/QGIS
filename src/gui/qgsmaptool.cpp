@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmaptool.h  -  base class for map canvas tools
+    qgsmaptool.cpp  -  base class for map canvas tools
     ----------------------
     begin                : January 2006
     copyright            : (C) 2006 by Martin Dobias
@@ -21,9 +21,10 @@
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
 #include <QAction>
+#include <QAbstractButton>
 
 QgsMapTool::QgsMapTool(QgsMapCanvas* canvas)
-  : mCanvas(canvas), mCursor(Qt::CrossCursor), mAction(NULL)
+  : mCanvas(canvas), mCursor(Qt::CrossCursor), mAction(NULL), mButton(NULL)
 {
 }
 
@@ -74,9 +75,11 @@ QPoint QgsMapTool::toCanvasCoords(const QgsPoint& point)
 
 void QgsMapTool::activate()
 {
-  // make action active
+  // make action and/or button active
   if (mAction)
     mAction->setChecked(true);
+  if (mButton)
+    mButton->setChecked(true);
   
   // set cursor (map tools usually set it in constructor)
   mCanvas->setCursor(mCursor);
@@ -88,4 +91,17 @@ void QgsMapTool::deactivate()
 {
   if (mAction)
     mAction->setChecked(false);
+  if (mButton)
+    mButton->setChecked(false);
 }
+
+void QgsMapTool::setButton(QAbstractButton* button)
+{
+  mButton = button;
+}
+
+QAbstractButton* QgsMapTool::button()
+{
+  return mButton;
+}
+

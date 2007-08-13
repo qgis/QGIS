@@ -127,6 +127,7 @@ QgsPointDialog::QgsPointDialog(QString layerPath, QgisIface* theQgisInterface,
   mToolDeletePoint = new QgsGeorefTool(mCanvas, this, FALSE /* addPoint */); 
   mToolDeletePoint->setAction(mActionDeletePoint);
   
+  
   // open raster layer
   QgsRasterLayer* layer = new QgsRasterLayer(layerPath, "Raster");
   mLayer = layer;
@@ -191,6 +192,7 @@ QgsPointDialog::~QgsPointDialog()
   delete mToolPan;
   delete mToolAddPoint;
   delete mToolDeletePoint;
+  
 }
 
 
@@ -436,7 +438,7 @@ void QgsPointDialog::deletePoint()
 
 void QgsPointDialog::showCoordDialog(QgsPoint& pixelCoords)
 {
-  MapCoordsDialog* mcd = new MapCoordsDialog(pixelCoords, this);
+  MapCoordsDialog* mcd = new MapCoordsDialog(pixelCoords, mIface->getMapCanvas(), this);
   connect(mcd, SIGNAL(pointAdded(const QgsPoint&, const QgsPoint&)),
           this, SLOT(addPoint(const QgsPoint&, const QgsPoint&)));
   mcd->show();

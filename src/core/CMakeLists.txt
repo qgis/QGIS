@@ -41,6 +41,7 @@ SET(QGIS_GUI_SRCS
 ../gui/qgsmaprender.cpp
 ../gui/qgsmaptoolcapture.cpp
 ../gui/qgsmaptool.cpp
+../gui/qgsmaptoolemitpoint.cpp
 ../gui/qgsmaptoolidentify.cpp
 ../gui/qgsmaptoolpan.cpp
 ../gui/qgsmaptoolselect.cpp
@@ -142,6 +143,7 @@ SET(QGIS_GUI_MOC_HDRS
 ../gui/qgsmapoverviewcanvas.h
 ../gui/qgsmaplayer.h
 ../gui/qgsmaplayerregistry.h
+../gui/qgsmaptoolemitpoint.h
 ../gui/qgsmaptoolidentify.h
 ../gui/qgspointstylewidget.h
 ../widgets/projectionselector/qgsprojectionselector.h
@@ -403,6 +405,7 @@ SET(QGIS_GUI_HDRS
 ../gui/qgsmaprender.h
 ../gui/qgsmaptoolcapture.h
 ../gui/qgsmaptool.h
+../gui/qgsmaptoolemitpoint.h
 ../gui/qgsmaptoolidentify.h
 ../gui/qgsmaptoolpan.h
 ../gui/qgsmaptoolselect.h

@@ -80,6 +80,7 @@ private:
   QgsMapTool* mToolAddPoint;
   QgsMapTool* mToolDeletePoint;
   
+  
 //  std::vector<QgsPoint> mPixelCoords, mMapCoords;
 //  std::vector<QString> mAcetateIDs;
   std::vector<QgsGeorefDataPoint*> mPoints;
