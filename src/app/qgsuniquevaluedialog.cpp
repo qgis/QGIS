@@ -119,8 +119,19 @@ void QgsUniqueValueDialog::apply()
 	renderer->insertValue(it->first,newsymbol);
     }
 
-    renderer->setClassificationField(mClassificationComboBox->currentItem());
-    mVectorLayer->setRenderer(renderer);
+    QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider());
+    if (provider)
+      {
+	int fieldIndex = provider->indexFromFieldName(mClassificationComboBox->currentText());
+	if(fieldIndex > 0)
+	  {
+	    renderer->setClassificationField(fieldIndex);
+	    mVectorLayer->setRenderer(renderer);
+	    return;
+	  }
+      }
+   
+    delete renderer; //something went wrong
 }
 
 void QgsUniqueValueDialog::changeClassificationAttribute()

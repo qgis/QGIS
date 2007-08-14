@@ -1178,6 +1178,9 @@ int QgsPostgresProvider::SRCFromViewColumn(const QString& ns, const QString& rel
 
   //relation is table, we just have to add the type
   QString typeSql = "SELECT pg_type.typname FROM pg_attribute, pg_class, pg_namespace, pg_type WHERE pg_class.relname = '" + relname + "' AND pg_namespace.nspname = '" + ns + "' AND pg_attribute.attname = '" + attname_table + "' AND pg_attribute.attrelid = pg_class.oid AND pg_class.relnamespace = pg_namespace.oid AND pg_attribute.atttypid = pg_type.oid";
+  QgsDebugMsg("***********************************************************************************");
+  QgsDebugMsg(typeSql);
+  QgsDebugMsg("***********************************************************************************");
   PGresult* typeSqlResult = PQexec(connection, (const char*)(typeSql.utf8()));
   if(PQntuples(typeSqlResult) < 1)
     {
