@@ -276,6 +276,8 @@ void QgsPointDialog::on_cmbTransformType_currentIndexChanged(const QString& valu
     QFileInfo file(mLayer->source());
     int pos = filename.size()-file.suffix().size()-1;
     filename.insert(pos, tr("-modified", "Georeferencer:QgsPointDialog.cpp - used to modify a user given filename"));
+    pos = filename.size()-file.suffix().size();
+    filename.replace(pos, filename.size(), "tif");
     
     leSelectModifiedRaster->setText(filename);
     leSelectWorldFile->setText(guessWorldFileName(filename));
@@ -295,6 +297,9 @@ bool QgsPointDialog::generateWorldFile()
   double pixelXSize = 1;
   double pixelYSize = 1;
   double rotation = 0;
+
+  QString outputFileName = leSelectModifiedRaster->text();
+  QString worldFileName = leSelectWorldFile->text();
   
   // create arrays with points from mPoints
   std::vector<QgsPoint> pixelCoords, mapCoords;
@@ -315,18 +320,20 @@ bool QgsPointDialog::generateWorldFile()
     }
     else if (cmbTransformType->currentText() == tr("Helmert"))
     {
-      int res = QMessageBox::warning(this, tr("Warning"),
+      QMessageBox::StandardButton res = QMessageBox::warning(this, tr("Warning"),
 		     tr("<p>A Helmert transform requires modifications in "
 		     "the raster layer.</p><p>The modifed raster will be "
 		     "saved in a new file and a world file will be "
 		     "generated for this new file instead.</p><p>Are you "
-		     "sure that this is what you want?</p>"),
-			     QMessageBox::No, QMessageBox::Yes);
-      if (res == QMessageBox::No)
+		     "sure that this is what you want?</p>") + 
+		     "<p><i>" + tr("Currently all modified files will be written in TIFF format.") + 
+		     "</i><p>", QMessageBox::Ok | QMessageBox::Cancel);
+      if (res == QMessageBox::Cancel)
 	       return false;
 
       QgsLeastSquares::helmert(mapCoords, pixelCoords, origin, pixelXSize, rotation);
-      pixelXSize = pixelYSize;
+      pixelYSize = pixelXSize;
+      
     }
     else if (cmbTransformType->currentText() == tr("Affine"))
     {
@@ -363,16 +370,16 @@ bool QgsPointDialog::generateWorldFile()
     QgsImageWarper::ResamplingMethod resampling;
     QgsImageWarper warper(-rotation);
     d.getWarpOptions(resampling, useZeroForTrans);
-    warper.warp(mLayer->source(), leSelectModifiedRaster->text(), 
+    warper.warp(mLayer->source(), outputFileName, 
 		            xOffset, yOffset, resampling, useZeroForTrans);
   }
 
   // write the world file
-  QFile file(leSelectWorldFile->text());
+  QFile file(worldFileName);
   if (!file.open(QIODevice::WriteOnly))
   {
     QMessageBox::critical(this, tr("Error"), 
-         tr("Could not write to ") + leSelectWorldFile->text());
+         tr("Could not write to ") + worldFileName);
     return false;
   }
   QTextStream stream(&file);
@@ -505,12 +512,12 @@ QString QgsPointDialog::guessWorldFileName(const QString& raster)
 {
   int point = raster.findRev('.');
   QString worldfile = "";
-  if (point != -1 && point != raster.length() - 1) {
-    worldfile = raster.left(point + 1);
-    worldfile += raster.at(point + 1);
-    worldfile += raster.at(raster.length() - 1);
-    worldfile += 'w';
-  }
+  if (point != -1 && point != raster.length() - 1) 
+    {
+      worldfile = raster.left(point + 1);
+      //MH: suffix .wld seems to be fine for most GDAL drivers
+      worldfile += "wld";
+    }
   return worldfile;
 }
 
