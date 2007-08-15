@@ -511,9 +511,8 @@ QString QgsPointDialog::guessWorldFileName(const QString& raster)
   QString worldfile = "";
   if (point != -1 && point != raster.length() - 1) {
     worldfile = raster.left(point + 1);
-    worldfile += raster.at(point + 1);
-    worldfile += raster.at(raster.length() - 1);
-    worldfile += 'w';
+    //MH: suffix .wld seems to be fine for most GDAL drivers
+    worldfile += "wld";
   }
   return worldfile;
 }
