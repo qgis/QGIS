@@ -16,6 +16,16 @@ ng:
 ok:
    MessageBox MB_OK "Python located $9"
 
+IfFileExists $9\Lib\site-packages\PyQt4 pyqtok pyqtng
+
+pyqtng:
+  MessageBox MB_OK "PyQt4 is not installed.$\nPlease install PyQt4 first."
+#copy over bundled pyqt4 instead of skipping
+  goto pythonskip
+pyqtok:
+  MessageBox MB_OK "PyQt4 located"
+
+
 !macroend
 
 !endif
