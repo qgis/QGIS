@@ -66,18 +66,23 @@ void QgsImageWarper::warp(const QString& input, const QString& output,
 		   hSrcDS->GetRasterCount(),
 		   hSrcDS->GetRasterBand(1)->GetRasterDataType(),
 		   papszOptions);
-  for (int i = 0; i < hSrcDS->GetRasterCount(); ++i) {
-    GDALColorTable* cTable = hSrcDS->GetRasterBand(i+1)->GetColorTable();
-    if (cTable)
-      hDstDS->GetRasterBand(i+1)->SetColorTable(cTable);
-    double noData = hSrcDS->GetRasterBand(i+1)->GetNoDataValue();
-    if (noData != -1e10)
-      hDstDS->GetRasterBand(i+1)->SetNoDataValue(noData);
-    else if (useZeroAsTrans) {
-      std::cerr<<"***** Source raster has no NODATA value, using 0"<<std::endl;
-      hDstDS->GetRasterBand(i+1)->SetNoDataValue(0);
+  for (int i = 0; i < hSrcDS->GetRasterCount(); ++i) 
+    {
+      GDALColorTable* cTable = hSrcDS->GetRasterBand(i+1)->GetColorTable();
+      if (cTable)
+	{
+	  hDstDS->GetRasterBand(i+1)->SetColorTable(cTable);
+	}
+      double noData = hSrcDS->GetRasterBand(i+1)->GetNoDataValue();
+      if (noData == -1e10 && useZeroAsTrans) 
+	{
+	  hDstDS->GetRasterBand(i+1)->SetNoDataValue(0);
+	}
+      else
+	{
+	  hDstDS->GetRasterBand(i+1)->SetNoDataValue(noData);
+	}
     }
-  }
   psWarpOptions->hDstDS = hDstDS;
 
   // Initialize and execute the warp operation. 
