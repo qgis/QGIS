@@ -6,14 +6,22 @@ QgsGeorefWarpOptionsDialog::QgsGeorefWarpOptionsDialog(QWidget* parent)
   : QgsGeorefWarpOptionsDialogBase() 
 {
   setupUi(this);
+  QStringList compressionMethods;
+  compressionMethods << "LZW";
+  compressionMethods << "PACKBITS";
+  compressionMethods << "DEFLATE";
+  compressionMethods << "NONE";
+  mCompressionComboBox->addItems(compressionMethods);
 }
 
 
 void QgsGeorefWarpOptionsDialog::
 getWarpOptions(QgsImageWarper::ResamplingMethod& resampling, 
-	       bool& useZeroForTransparency) {
+	       bool& useZeroForTransparency, QString& compression) 
+{
   resampling = this->resampling;
   useZeroForTransparency = this->useZeroAsTransparency;
+  compression = mCompressionComboBox->currentText();
 }
 
 

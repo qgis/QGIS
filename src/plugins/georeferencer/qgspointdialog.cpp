@@ -367,11 +367,12 @@ bool QgsPointDialog::generateWorldFile()
     QgsGeorefWarpOptionsDialog d(this);
     d.exec();
     bool useZeroForTrans;
+    QString compressionMethod;
     QgsImageWarper::ResamplingMethod resampling;
     QgsImageWarper warper(-rotation);
-    d.getWarpOptions(resampling, useZeroForTrans);
+    d.getWarpOptions(resampling, useZeroForTrans, compressionMethod);
     warper.warp(mLayer->source(), outputFileName, 
-		            xOffset, yOffset, resampling, useZeroForTrans);
+		xOffset, yOffset, resampling, useZeroForTrans, compressionMethod);
   }
 
   // write the world file

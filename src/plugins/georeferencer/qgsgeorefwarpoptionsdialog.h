@@ -24,7 +24,7 @@ public:
   
   QgsGeorefWarpOptionsDialog(QWidget* parent);
   void getWarpOptions(QgsImageWarper::ResamplingMethod& resampling, 
-		      bool& useZeroForTransparency);
+		      bool& useZeroForTransparency, QString& compression);
   
 public slots:
 

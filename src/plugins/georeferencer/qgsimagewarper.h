@@ -19,7 +19,7 @@ public:
   
   void warp(const QString& input, const QString& output, 
 	    double& xOffset, double& yOffset, 
-	    ResamplingMethod resampling = Bilinear, bool useZeroAsTrans = true);
+	    ResamplingMethod resampling = Bilinear, bool useZeroAsTrans = true, const QString& compression = "NONE");
   
 private:
   
