@@ -981,6 +981,8 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 		  //remove the whole legendlayer if this is the only legendlayerfile
 		  if(childelem.previousSibling().isNull() && childelem.nextSibling().isNull())
 		    {
+		      collapsed.remove(lastLayer);
+		      expanded.remove(lastLayer);
 		      delete lastLayer;
 		    }
 		}
