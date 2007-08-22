@@ -7,10 +7,10 @@ QgsGeorefWarpOptionsDialog::QgsGeorefWarpOptionsDialog(QWidget* parent)
 {
   setupUi(this);
   QStringList compressionMethods;
-  compressionMethods << "LZW";
-  compressionMethods << "PACKBITS";
-  compressionMethods << "DEFLATE";
   compressionMethods << "NONE";
+  compressionMethods << tr("LZW (unstable)");
+  compressionMethods << tr("PACKBITS (unstable)");
+  compressionMethods << tr("DEFLATE (unstable)");
   mCompressionComboBox->addItems(compressionMethods);
 }
 

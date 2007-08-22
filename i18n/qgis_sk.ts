@@ -16,29 +16,39 @@
 <context>
     <name>MapCoordsDialogBase</name>
     <message>
-        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="16"/>
+        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="13"/>
         <source>Enter map coordinates</source>
         <translation>Vložte mapové súradnice</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="31"/>
+        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="62"/>
         <source>X:</source>
         <translation>X:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="38"/>
+        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="69"/>
         <source>Y:</source>
         <translation>Y:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="67"/>
+        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="185"/>
         <source>&amp;OK</source>
         <translation>&amp;OK</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="83"/>
+        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="172"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Zrušiť</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="28"/>
+        <source>Enter X and Y coordinates which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="137"/>
+        <source> from map canvas</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3836,6 +3846,11 @@ Kompilované s knižnicou Qt </translation>
         <location filename="../src/gui/qgisapp.cpp" line="1352"/>
         <source>Launcher plugin added to core plugins </source>
         <translation>medzi jadrové zásuvné moduly bol pridaný zásuvný modul Spúšťač</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="2745"/>
+        <source></source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9342,41 +9357,64 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsGeorefWarpOptionsDialog</name>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialog.cpp" line="11"/>
+        <source>LZW (unstable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialog.cpp" line="12"/>
+        <source>PACKBITS (unstable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialog.cpp" line="13"/>
+        <source>DEFLATE (unstable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsGeorefWarpOptionsDialogBase</name>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="16"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="13"/>
         <source>Warp options</source>
         <translation type="unfinished">Voľby zakrivenia</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="28"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="35"/>
         <source>Resampling method:</source>
         <translation>Prevzorkovacia metóda:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="39"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="46"/>
         <source>Nearest neighbour</source>
         <translation>Metóda najbližšieho suseda</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="44"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="51"/>
         <source>Linear</source>
         <translation>Lineárna</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="49"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="56"/>
         <source>Cubic</source>
         <translation>Kubická</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="57"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="74"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="67"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="64"/>
         <source>Use 0 for transparency when needed</source>
         <translation>Ak bude treba, použiť 0 pre priehľadnosť</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="28"/>
+        <source>Compression:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15242,75 +15280,75 @@ p, li { white-space: pre-wrap; }
         <translation>Zmazať vybrané</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="487"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="497"/>
         <source>Linear</source>
         <translation>Lineárna</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="314"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="321"/>
         <source>Helmert</source>
         <translation>Helmertova</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="260"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="262"/>
         <source>Choose a name for the world file</source>
         <translation type="unfinished">Vyberte meno world súboru</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="276"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="278"/>
         <source>-modified</source>
         <comment>Georeferencer:QgsPointDialog.cpp - used to modify a user given filename</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="316"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="323"/>
         <source>Warning</source>
         <translation>Upozornenie</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="321"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="329"/>
         <source>&lt;p&gt;A Helmert transform requires modifications in the raster layer.&lt;/p&gt;&lt;p&gt;The modifed raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p&gt;&lt;p&gt;Are you sure that this is what you want?&lt;/p&gt;</source>
         <translation type="unfinished">&lt;p&gt;Helmertova transformácia vyžaduje úpravy v tejto rastrovej vrstve.&lt;/p&gt;&lt;p&gt;Pozmenený raster bude uložený v novom súbore a world súbor bude vygenerovaný pre tento nový súbor.&lt;/p&gt;&lt;p&gt;Ste si istý, že chcete vykonať túto operáciu?&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="329"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="338"/>
         <source>Affine</source>
         <translation>Afinná</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="339"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="348"/>
         <source>Not implemented!</source>
         <translation>Neimplementované!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="334"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="343"/>
         <source>&lt;p&gt;An affine transform requires changing the original raster file. This is not yet supported.&lt;/p&gt;</source>
         <translation>&lt;p&gt;Afinná transformácia vyžaduje zmeniť pôvodný rastrový súbor. Táto funkcia zatiaľ nie je implementovaná.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="341"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="350"/>
         <source>&lt;p&gt;The </source>
         <translation>&lt;p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="342"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="351"/>
         <source> transform is not yet supported.&lt;/p&gt;</source>
         <translation> transformácia nie je zatiaľ podporovaná.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="372"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="382"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="373"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="383"/>
         <source>Could not write to </source>
         <translation>Nemožno zapisovať do </translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="332"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="330"/>
         <source>Currently all modified files will be written in TIFF format.</source>
-        <translation type="obsolete">V súčastnosti všetky zmenené súbory budú uložené vo formáte TIFF.</translation>
+        <translation type="unfinished">V súčastnosti všetky zmenené súbory budú uložené vo formáte TIFF.</translation>
     </message>
 </context>
 <context>
@@ -15986,7 +16024,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
 <context>
     <name>QgsRasterLayer</name>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3183"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3178"/>
         <source>Not Set</source>
         <translation>Nenastavené</translation>
     </message>
@@ -16006,27 +16044,27 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation type="obsolete">&amp;Odobrať</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3865"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3860"/>
         <source>Driver:</source>
         <translation>Ovládač:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3941"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3936"/>
         <source>Dimensions:</source>
         <translation>Rozmery:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3944"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3939"/>
         <source>X: </source>
         <translation>X:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3945"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3940"/>
         <source> Y: </source>
         <translation>Y:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3945"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3940"/>
         <source> Bands: </source>
         <translation>Kanály: </translation>
     </message>
@@ -16036,12 +16074,12 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation type="obsolete">Projekcia:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4051"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4046"/>
         <source>Origin:</source>
         <translation>Počiatok:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4060"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4055"/>
         <source>Pixel Size:</source>
         <translation>Veľkosť pixela:</translation>
     </message>
@@ -16061,102 +16099,102 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation type="obsolete">Modrá</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="2582"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="2577"/>
         <source>Raster Extent: </source>
         <translation>Rozsah rastra:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="2585"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="2580"/>
         <source>Clipped area: </source>
         <translation> Vystrihnutá oblasť:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4004"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3999"/>
         <source>Pyramid overviews:</source>
         <translation>Prehľad pyramíd:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4073"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4068"/>
         <source>Band Statistics (if gathered):</source>
         <translation>Kanálová štatistika (pokiaľ je zozbieraná):</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4080"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4075"/>
         <source>Property</source>
         <translation>Vlastnosť</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4083"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4078"/>
         <source>Value</source>
         <translation>Hodnota</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4964"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4959"/>
         <source>Band</source>
         <translation>Kanál</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4099"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4094"/>
         <source>Band No</source>
         <translation type="unfinished">Kanál č. </translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4111"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4106"/>
         <source>No Stats</source>
         <translation>Žiadna štatistika</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4114"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4109"/>
         <source>No stats collected yet</source>
         <translation>Zatiaľ neboli zozbierané žiadne štatistické údaje</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4124"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4119"/>
         <source>Min Val</source>
         <translation>Minimálna hodnota</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4132"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4127"/>
         <source>Max Val</source>
         <translation>Maximálna hodnota</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4140"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4135"/>
         <source>Range</source>
         <translation>Rozpätie (valencia)</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4148"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4143"/>
         <source>Mean</source>
         <translation>Priemer</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4156"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4151"/>
         <source>Sum of squares</source>
         <translation>Rozptyl</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4164"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4159"/>
         <source>Standard Deviation</source>
         <translation>Štandardná odchýlka</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4172"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4167"/>
         <source>Sum of all cells</source>
         <translation>Suma všetkých buniek</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4180"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4175"/>
         <source>Cell Count</source>
         <translation>Počet buniek</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4210"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4205"/>
         <source>Write access denied</source>
         <translation>Zápis odmietnutý</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4211"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4206"/>
         <source>Write access denied. Adjust the file permissions and try again.
 
 </source>
@@ -16166,67 +16204,67 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
 </translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3960"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3955"/>
         <source>Data Type:</source>
         <translation>Typ údajov:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3966"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3961"/>
         <source>GDT_Byte - Eight bit unsigned integer</source>
         <translation>GDT_Byte - 8 bitový unsigned integer</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3969"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3964"/>
         <source>GDT_UInt16 - Sixteen bit unsigned integer </source>
         <translation>GDT_UInt16 - 16 bitový unsigned integer </translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3972"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3967"/>
         <source>GDT_Int16 - Sixteen bit signed integer </source>
         <translation>GDT_Int16 - 16 bitový signed integer</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3975"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3970"/>
         <source>GDT_UInt32 - Thirty two bit unsigned integer </source>
         <translation>GDT_UInt32 - 32 bitový unsigned integer</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3978"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3973"/>
         <source>GDT_Int32 - Thirty two bit signed integer </source>
         <translation>GDT_Int32 - 32 bitový signed integer</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3981"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3976"/>
         <source>GDT_Float32 - Thirty two bit floating point </source>
         <translation>GDT_Float32 - 32 bitový floating point</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3984"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3979"/>
         <source>GDT_Float64 - Sixty four bit floating point </source>
         <translation>GDT_Float64 - 64 bitový floating point</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3987"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3982"/>
         <source>GDT_CInt16 - Complex Int16 </source>
         <translation>GDT_CInt16 - Complex Int16</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3990"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3985"/>
         <source>GDT_CInt32 - Complex Int32 </source>
         <translation>GDT_CInt32 - Complex Int32</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3993"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3988"/>
         <source>GDT_CFloat32 - Complex Float32 </source>
         <translation>GDT_CFloat32 - Complex Float32</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3996"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3991"/>
         <source>GDT_CFloat64 - Complex Float64 </source>
         <translation>GDT_CFloat64 - Complex Float64</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3999"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3994"/>
         <source>Could not determine raster data type.</source>
         <translation>Nemožno rozpoznať typ rastrových údajov.</translation>
     </message>
@@ -16241,52 +16279,52 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation type="obsolete">&amp;Ukázať v náhľade</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3738"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3733"/>
         <source>&lt;center&gt;&lt;b&gt;Transparency&lt;/b&gt;&lt;/center&gt;</source>
         <translation>&lt;center&gt;&lt;b&gt;Priehľadnosť&lt;/b&gt;&lt;/center&gt;</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4279"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4274"/>
         <source>Average Magphase</source>
         <translation type="unfinished">Priemerná Magphase</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4284"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4279"/>
         <source>Average</source>
         <translation>Priemer</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4026"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4021"/>
         <source>Layer Spatial Reference System: </source>
         <translation>Referenčný priestorový systém vrstvy: </translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4034"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4029"/>
         <source>Project Spatial Reference System: </source>
         <translation>Referenčný priestorový systém projektu: </translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4926"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4921"/>
         <source>out of extent</source>
         <translation>mimo rozsahu</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4958"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4953"/>
         <source>null (no data)</source>
         <translation>null (žiadne údaje)</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4300"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4295"/>
         <source>Building pyramids failed.</source>
         <translation>Tvorba pyramíd zlyhala.</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4232"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4227"/>
         <source>The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again.</source>
         <translation>Súbor nie je zapisovateľný. Niektoré formáty nemožno zapisovať, iba čítať. Skontrolujte práva a skúste znova.</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4301"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4296"/>
         <source>Building pyramid overviews is not supported on this type of raster.</source>
         <translation>Pri tomto type rastra nie je možné zostaviť pyramídy.</translation>
     </message>
@@ -16301,12 +16339,12 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation type="obsolete">&amp;Konvertovať na...</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3891"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3886"/>
         <source>Dataset Description</source>
         <translation>Popis súpravy údajov</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3952"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3947"/>
         <source>No Data Value</source>
         <translation>Údaj bez hodnoty</translation>
     </message>
@@ -19332,7 +19370,7 @@ primárneho kľúča) alebo mala stĺpec PostreSQL oid.
         <translation>WGS 84 vymedzujúci/ohraničujúci obdĺžnik</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2394"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2388"/>
         <source>Layer cannot be queried.</source>
         <translation type="unfinished">Na vrstvu nemožno robiť dopyty.</translation>
     </message>

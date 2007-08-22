@@ -3,12 +3,12 @@
 <context>
     <name>@default</name>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1481"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1503"/>
         <source>OGR Driver Manager</source>
         <translation>OGR Хөтлөгч</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1481"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1503"/>
         <source>unable to get OGRDriverManager</source>
         <translation>OGRХөтлөгч Олдсонгүй</translation>
     </message>
@@ -16,30 +16,40 @@
 <context>
     <name>MapCoordsDialogBase</name>
     <message>
-        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="16"/>
+        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="13"/>
         <source>Enter map coordinates</source>
         <translation>Зургийн координат оруулах
 </translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="31"/>
+        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="62"/>
         <source>X:</source>
         <translation>X:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="38"/>
+        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="69"/>
         <source>Y:</source>
         <translation>Y:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="67"/>
+        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="185"/>
         <source>&amp;OK</source>
         <translation>&amp;OK</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="83"/>
+        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="172"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Хасах</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="28"/>
+        <source>Enter X and Y coordinates which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="137"/>
+        <source> from map canvas</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -66,12 +76,12 @@
         <translation>Өгөгдөл нийлүүлэгч Өргөтгөл алга. Вектор давхарга орохгүй</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2854"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2876"/>
         <source>QGis files (*.qgs)</source>
         <translation>QGIS файл (*.qgs)</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2263"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2285"/>
         <source>Open an OGR Supported Layer</source>
         <translation>OGR Дэмжлэгтэй Вектор Давхарга Нээх</translation>
     </message>
@@ -953,6 +963,16 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <source>Cannot read region</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../src/gui/qgsproject.cpp" line="1019"/>
+        <source>Unable to open </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsproject.cpp" line="1140"/>
+        <source>Cannot get extents from </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisApp</name>
@@ -982,142 +1002,142 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Хувилбар</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1336"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1358"/>
         <source>Available Data Provider Plugins</source>
         <translation>Өгөгдөл нийлүүлэх Өргөтгөл</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1898"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1920"/>
         <source>is not a valid or recognized data source</source>
         <translation>өгөгдлийн эх буруу, эсвэл танигдахгүй байна</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5017"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5049"/>
         <source>Invalid Data Source</source>
         <translation>Өгөгдлийн эх буруу</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3351"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3383"/>
         <source>No Layer Selected</source>
         <translation>Давхарга сонгогдоогүй</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3325"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3357"/>
         <source>To open an attribute table, you must select a layer in the legend</source>
         <translation>Чанарын хүснэгтийг нээхийн тулд давхаргыг нь сонгоõ</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3808"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3840"/>
         <source>No MapLayer Plugins</source>
         <translation>MapLayer Plugins алга</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3808"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3840"/>
         <source>No MapLayer plugins in ../plugins/maplayer</source>
         <translation>.. /plugins/maplayer -д MapLayer plugins алга</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3906"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3938"/>
         <source>No Plugins</source>
         <translation>Plugins алга</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3907"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3939"/>
         <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
         <translation>../өргөтгөл-д Өргөтгөл олдсонгүй. Өргөтгөлийг шалгахын тулд src хавтсаас qgis-ийг эхлүүлэх</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3949"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3981"/>
         <source>Name</source>
         <translation>Нэр</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3949"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3981"/>
         <source>Plugin %1 is named %2</source>
         <translation>Өргөтгөл %1-ийн нэр %2 </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3972"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4004"/>
         <source>Plugin Information</source>
         <translation>Өргөтгөл мэдээлэл</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3973"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4005"/>
         <source>QGis loaded the following plugin:</source>
         <translation>QGIS дараахи Өргөтгөл-д ачаалагдсан:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3973"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4005"/>
         <source>Name: %1</source>
         <translation>Нэр: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3973"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4005"/>
         <source>Version: %1</source>
         <translation>Хувилбар: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3974"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4006"/>
         <source>Description: %1</source>
         <translation>Тайлбар: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3993"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4025"/>
         <source>Unable to Load Plugin</source>
         <translation>Өргөтгөлийг Ачаалах Боломжгүй</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3994"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4026"/>
         <source>QGIS was unable to load the plugin from: %1</source>
         <translation>QGIS нь %1-ээс Өргөтгөлийг ачаалах боломжгүй </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4054"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4086"/>
         <source>There is a new version of QGIS available</source>
         <translation>QGIS-ийн шинэ хувилбар гарлаа</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4060"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4092"/>
         <source>You are running a development version of QGIS</source>
         <translation>QGIS-ийн хөгжүүлэх хувилбар ажиллаж байна</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4064"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4096"/>
         <source>You are running the current version of QGIS</source>
         <translation>QGIS-ийн одоохи хувилбар ажиллаж байна</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4069"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4101"/>
         <source>Would you like more information?</source>
         <translation>Та илүү мэдээлэл авмаар байна уу?</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4116"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4148"/>
         <source>QGIS Version Information</source>
         <translation>QGIS Хувилбарын Мэдээлэл</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4071"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4103"/>
         <source>Yes</source>
         <translation>Тийм</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4071"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4103"/>
         <source>No</source>
         <translation>Үгүй</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4088"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4120"/>
         <source>Unable to get current version information from server</source>
         <translation>Серверээс хувилбарын мэдээлэл авч болохгүй нь </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4102"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4134"/>
         <source>Connection refused - server may be down</source>
         <translation>Холбогдоогүй - сервер унтарсан байх</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4105"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4137"/>
         <source>QGIS server was not found</source>
         <translation>QGIS сервер олдсонгүй</translation>
     </message>
@@ -1132,62 +1152,62 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="obsolete">QGIS Хувилбар сервэртэй холбогдохгүй</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2005"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2027"/>
         <source>Invalid Layer</source>
         <translation>Буруу Давхарга</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2005"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2027"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
         <translation>%1 алдаатай давхарга тул ачаалагдахгүй.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3766"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3798"/>
         <source>Error Loading Plugin</source>
         <translation>Өргөтгөл Ачаалахын Алдаа</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3766"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3798"/>
         <source>There was an error loading %1.</source>
         <translation>%1-ийг ачаалахад алдаа гарав.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3134"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3166"/>
         <source>Saved map image to</source>
         <translation>Зургийн дүрс хадгалсан </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3089"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3121"/>
         <source>Choose a filename to save the map image as</source>
         <translation>Зургийн дүрс хадгалах файлын нэр сонгох</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4573"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4605"/>
         <source>Extents: </source>
         <translation> Өргөтгөл:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3339"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3371"/>
         <source>Problem deleting features</source>
         <translation>Объект хасахад үүсэх асуудал </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3340"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3372"/>
         <source>A problem occured during deletion of features</source>
         <translation>Объект хасах явцад үүссэн асуудал</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3345"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3377"/>
         <source>No Vector Layer Selected</source>
         <translation>Вектор Давхарга Сонгоогүй</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3346"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3378"/>
         <source>Deleting features only works on vector layers</source>
         <translation>Вектор давхарга дээр л объект хасаж болно</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="3352"/>
+        <location filename="../src/gui/qgisapp.cpp" line="3384"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>Объект хасахын тулд вектор давхарга сонговол зохино</translation>
     </message>
@@ -1247,17 +1267,17 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Шалгах явцад зургийн навигацийн команд ба бусад үйлдлээр зургийн давхарга нь орлуулга болно. Шалгалтгүй бол орлуулга байхгүй. Энэ нь орлуулгаас өмнө олон тооны давхарга нэмэх, тэмдэглэх боломж олгоно.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2776"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2798"/>
         <source>Choose a QGIS project file</source>
         <translation>QGIS төслийн файл сонгох</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2906"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2929"/>
         <source>Unable to save project</source>
         <translation>Төсөл хадгалагдаагүй </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2907"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2930"/>
         <source>Unable to save project to </source>
         <translation> Төслийг хадгалаагүй</translation>
     </message>
@@ -1352,54 +1372,54 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="obsolete">Mapserver экспорт хэрэгслийн дэвшил</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="1695"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1717"/>
         <source>Open an OGR Supported Vector Layer</source>
         <translation>Нээлттэй OGR-ийн дэмжлэгтэй вектор давхарга</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2722"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2744"/>
         <source>QGIS Project Read Error</source>
         <translation>QGIS Төсөл Уншихын Алдаа</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2724"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2746"/>
         <source>Try to find missing layers?</source>
         <translation>Орхигдсон давхаргыг хайх уу?</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4901"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4933"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>GDAL Дэмжлэгтэй Растер Өгөгдлийн Эх Нээх</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2493"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2515"/>
         <source>Save As</source>
         <translation>Нэр өгч хадгалах</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2592"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2614"/>
         <source>Choose a QGIS project file to open</source>
         <translation>Нээх QGIS төслийн файлыг сонгох</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2899"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2922"/>
         <source>Saved project to:</source>
         <translation>Төсөл хадгалсан:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4190"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4222"/>
         <source>QGIS Browser Selection</source>
         <translation>QGIS Хайгчийг Сонгох</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4191"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4223"/>
         <source>Enter the name of a web browser to use (eg. konqueror).
 </source>
         <translation>Ашиглах вэб хайгчийн нэрийг оруулах  (konqueror г.м.).
 </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4192"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4224"/>
         <source>Enter the full path if the browser is not in your PATH.
 </source>
         <translation>Хэрэв Хайгч таны ЗАМД байхгүй бол байгаа замынх нь бүтэн нэрийг оруул.
@@ -1991,7 +2011,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Ctrl+B</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5285"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5317"/>
         <source>New Bookmark</source>
         <translation>Шинэ Хавчуулга</translation>
     </message>
@@ -2191,32 +2211,32 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Бэлэн</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
+        <location filename="../src/gui/qgisapp.cpp" line="1331"/>
         <source>New features</source>
-        <translation type="obsolete">Шинэ объект</translation>
+        <translation type="unfinished">Шинэ объект</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2741"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2763"/>
         <source>Unable to open project</source>
         <translation>Төсөл нээгдэхгүй байна</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2835"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2936"/>
         <source>Unable to save project </source>
         <translation> Төсөл хадгалагдахгүй</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2853"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2875"/>
         <source>Choose a filename to save the QGIS project file as</source>
         <translation>QGIS төслийн файлыг хадгалах нэр сонгох</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2966"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2998"/>
         <source>QGIS: Unable to load project</source>
         <translation>QGIS: Төсөл ачаалагдахгүй байна</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2967"/>
+        <location filename="../src/gui/qgisapp.cpp" line="2999"/>
         <source>Unable to load project </source>
         <translation> Төсөл ачаалагдахгүй байна</translation>
     </message>
@@ -2231,62 +2251,62 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="obsolete">Экспортлох давхарга алга. Ядаж нэг давхарга зурагт нэмж байж экспортлогдоно.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4076"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4108"/>
         <source>QGIS - Changes in SVN Since Last Release</source>
         <translation>QGIS - Сүүлчийн хувилбараас хойш SVN-д хийгдсэн өөрчлөлт</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4193"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4225"/>
         <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
         <translation>Тохируулга цэсийн Горим - ийг сонгон үүнийг өөрчилж болно (Тусламж Хайгч таб).</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5130"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5162"/>
         <source>Layer is not valid</source>
         <translation>Давхарга хүчингүй</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5131"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5163"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>Давхарга хүчингүй тул зурагт нэмж болохгүй</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4395"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4427"/>
         <source>Save?</source>
         <translation>Хадгалах уу?</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4856"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4888"/>
         <source>Clipboard contents set to: </source>
         <translation> Гарын агуулга тохируулах: </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5016"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5048"/>
         <source> is not a valid or recognized raster data source</source>
         <translation> Хүчингүй, эсвэл танигдахгүй растер өгөгдлийн эх үүсвэр</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5205"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5237"/>
         <source> is not a supported raster data source</source>
         <translation> растер өгөгдлийн эх үүсвэр дэмжигдэхгүй</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5206"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5238"/>
         <source>Unsupported Data Source</source>
         <translation>Дэмжигдэхгүй өгөгдлийн эх</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5286"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5318"/>
         <source>Enter a name for the new bookmark:</source>
         <translation>Шинэ хавчуулгын нэрийг оруулах:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5303"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5335"/>
         <source>Error</source>
         <translation>Алдаа</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="5303"/>
+        <location filename="../src/gui/qgisapp.cpp" line="5335"/>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
         <translation>Хавчуулга үүсээгүй. Хэрэглэгчийн өгөгдлийн сан байхгүй эсвэл эвдэрсэн</translation>
     </message>
@@ -2327,7 +2347,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Ctrl+?</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4396"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4428"/>
         <source>&lt;p&gt;Do you want to save the current project?&lt;/p&gt;</source>
         <translation>&lt;p&gt;Энэ төслийг хадгалах уу?&lt;p&gt;</translation>
     </message>
@@ -2380,18 +2400,73 @@ Compiled against Qt </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4108"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4140"/>
         <source>Network error while communicating with server</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4111"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4143"/>
         <source>Unknown network socket error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/qgisapp.cpp" line="4116"/>
+        <location filename="../src/gui/qgisapp.cpp" line="4148"/>
         <source>Unable to communicate with QGIS Version server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="1334"/>
+        <source>Numerous bug fixes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="1336"/>
+        <source>Improvements in how segment lengths appear in the measure tool.  The current segment length is shown/updated in the list of segments</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="1338"/>
+        <source>Improvement to zoom-in speed for rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="1340"/>
+        <source>Improve line/area measuring behaviour when the user has been informed that they are probably using the wrong projection for the map canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="1342"/>
+        <source>Added tooltips to the scale and coordinate position displays in the status bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="1344"/>
+        <source>Removed ugly console on WIN32 when not debugging</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="1346"/>
+        <source>Added icons to all GRASS tools. All GRASS tools are now on the toolbar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="1348"/>
+        <source>New GRASS modules added to the GRASS toolbox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="1350"/>
+        <source>The GRASS plugin is now fully internationalized</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="1352"/>
+        <source>Launcher plugin added to core plugins </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="2745"/>
+        <source></source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2421,52 +2496,52 @@ Compiled against Qt </source>
         <translation>QGIS-ийн тухай</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="223"/>
+        <location filename="../src/ui/qgsabout.ui" line="300"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="26"/>
+        <location filename="../src/ui/qgsabout.ui" line="32"/>
         <source>About</source>
         <translation>Тухай</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="62"/>
+        <location filename="../src/ui/qgsabout.ui" line="86"/>
         <source>Version</source>
         <translation>Хувилбар</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="108"/>
+        <location filename="../src/ui/qgsabout.ui" line="132"/>
         <source>What&apos;s New</source>
         <translation>Юу Шинэ вэ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="52"/>
+        <location filename="../src/ui/qgsabout.ui" line="76"/>
         <source>&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</source>
         <translation>&lt;h2&gt;QGIS (emap)&lt;/h2&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="87"/>
+        <location filename="../src/ui/qgsabout.ui" line="111"/>
         <source>QGIS Home Page</source>
         <translation>QGIS Нүүр Хуудас</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="97"/>
+        <location filename="../src/ui/qgsabout.ui" line="121"/>
         <source>Subscribe to the QGIS-User mailing list</source>
         <translation>QGIS-Хэрэглэгчийн жагсаалтанд бүртгүүлэх</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="178"/>
+        <location filename="../src/ui/qgsabout.ui" line="237"/>
         <source>Providers</source>
         <translation>Нийлүүлэгч</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="118"/>
+        <location filename="../src/ui/qgsabout.ui" line="161"/>
         <source>Developers</source>
         <translation>Хөгжүүлэгч</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="170"/>
+        <location filename="../src/ui/qgsabout.ui" line="229"/>
         <source>&lt;h2&gt;QGIS Developers&lt;/h2&gt;</source>
         <translation>&lt;h2&gt;QGIS Хөгжүүлэгч&lt;/h2&gt;</translation>
     </message>
@@ -2510,17 +2585,17 @@ You can change this option later by selection Options from the Settings menu (He
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="76"/>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <location filename="../src/ui/qgsabout.ui" line="253"/>
+        <source>Sponsors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="188"/>
-        <source>Sponsors</source>
+        <location filename="../src/ui/qgsabout.ui" line="100"/>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Arial&apos;; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5794,41 +5869,64 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsGeorefWarpOptionsDialog</name>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialog.cpp" line="11"/>
+        <source>LZW (unstable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialog.cpp" line="12"/>
+        <source>PACKBITS (unstable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialog.cpp" line="13"/>
+        <source>DEFLATE (unstable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsGeorefWarpOptionsDialogBase</name>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="16"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="13"/>
         <source>Warp options</source>
         <translation>Хувиргах горим</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="28"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="35"/>
         <source>Resampling method:</source>
         <translation>Хувиргах арга:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="39"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="46"/>
         <source>Nearest neighbour</source>
         <translation>Ойрын хөрш</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="44"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="51"/>
         <source>Linear</source>
         <translation>Шугаман</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="49"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="56"/>
         <source>Cubic</source>
         <translation>Шоон</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="57"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="74"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="67"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="64"/>
         <source>Use 0 for transparency when needed</source>
         <translation>Нэвт харагдуулахад 0 хэрэглэх</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="28"/>
+        <source>Compression:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10810,69 +10908,74 @@ p, li { white-space: pre-wrap; }
         <translation>Сонгосныг Хасах</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="487"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="497"/>
         <source>Linear</source>
         <translation type="unfinished">Шугаман</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="314"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="321"/>
         <source>Helmert</source>
         <translation type="unfinished">Helmert</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="260"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="262"/>
         <source>Choose a name for the world file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="276"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="278"/>
         <source>-modified</source>
         <comment>Georeferencer:QgsPointDialog.cpp - used to modify a user given filename</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="316"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="323"/>
         <source>Warning</source>
         <translation type="unfinished">Сэрэмжлүүлэг</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="321"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="329"/>
         <source>&lt;p&gt;A Helmert transform requires modifications in the raster layer.&lt;/p&gt;&lt;p&gt;The modifed raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p&gt;&lt;p&gt;Are you sure that this is what you want?&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="329"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="338"/>
         <source>Affine</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="339"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="348"/>
         <source>Not implemented!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="334"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="343"/>
         <source>&lt;p&gt;An affine transform requires changing the original raster file. This is not yet supported.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="341"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="350"/>
         <source>&lt;p&gt;The </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="342"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="351"/>
         <source> transform is not yet supported.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="372"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="382"/>
         <source>Error</source>
         <translation type="unfinished">Алдаа</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="373"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="383"/>
         <source>Could not write to </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="330"/>
+        <source>Currently all modified files will be written in TIFF format.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -11498,142 +11601,142 @@ int4 төрлийн нэг багана байх (анхдагч түлхүүр 
 <context>
     <name>QgsRasterLayer</name>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3183"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3178"/>
         <source>Not Set</source>
         <translation>Тохируулаагүй</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3865"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3860"/>
         <source>Driver:</source>
         <translation>Драйвэр:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3941"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3936"/>
         <source>Dimensions:</source>
         <translation>Хэмжээс:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3944"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3939"/>
         <source>X: </source>
         <translation>X:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3945"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3940"/>
         <source> Y: </source>
         <translation>Y:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3945"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3940"/>
         <source> Bands: </source>
         <translation>  Суваг:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4051"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4046"/>
         <source>Origin:</source>
         <translation>Эхлэл:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4060"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4055"/>
         <source>Pixel Size:</source>
         <translation>Пикселийн хэмжээ:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="2582"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="2577"/>
         <source>Raster Extent: </source>
         <translation> Растер Өргөтгөл:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="2585"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="2580"/>
         <source>Clipped area: </source>
         <translation> Хайчлагдсан талбай:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4004"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3999"/>
         <source>Pyramid overviews:</source>
         <translation>Пирамид үзүүлбэр:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4073"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4068"/>
         <source>Band Statistics (if gathered):</source>
         <translation>Сувгийн Статистик (хэрэв бүрдсэн бол):</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4080"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4075"/>
         <source>Property</source>
         <translation>Мөнчанар</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4083"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4078"/>
         <source>Value</source>
         <translation>Утга</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4964"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4959"/>
         <source>Band</source>
         <translation>Суваг</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4099"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4094"/>
         <source>Band No</source>
         <translation>Сувгийн Дугаар</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4111"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4106"/>
         <source>No Stats</source>
         <translation>Статистик Алга</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4114"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4109"/>
         <source>No stats collected yet</source>
         <translation>Статистик хараахан бүрдээгүй байна</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4124"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4119"/>
         <source>Min Val</source>
         <translation>Бага Утга</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4132"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4127"/>
         <source>Max Val</source>
         <translation>Их Утга</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4140"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4135"/>
         <source>Range</source>
         <translation>Цараа</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4148"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4143"/>
         <source>Mean</source>
         <translation>Дундаж</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4156"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4151"/>
         <source>Sum of squares</source>
         <translation>Квадратын нийлбэр</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4164"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4159"/>
         <source>Standard Deviation</source>
         <translation>Стандарт Хазайц</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4172"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4167"/>
         <source>Sum of all cells</source>
         <translation>Бүх нүдний нийлбэр</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4180"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4175"/>
         <source>Cell Count</source>
         <translation>Нүдний Тоо</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4210"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4205"/>
         <source>Write access denied</source>
         <translation>Бичихээр хандаж болохгүй</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4211"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4206"/>
         <source>Write access denied. Adjust the file permissions and try again.
 
 </source>
@@ -11642,127 +11745,127 @@ int4 төрлийн нэг багана байх (анхдагч түлхүүр 
 </translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3960"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3955"/>
         <source>Data Type:</source>
         <translation>Өгөгдлийн Төрөл:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3966"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3961"/>
         <source>GDT_Byte - Eight bit unsigned integer</source>
         <translation>GDT_Byte - 8 бит тэмдэггүй бүхэл тоо</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3969"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3964"/>
         <source>GDT_UInt16 - Sixteen bit unsigned integer </source>
         <translation> GDT_UInt16 - 16 бит тэмдэггүй бүхэл тоо</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3972"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3967"/>
         <source>GDT_Int16 - Sixteen bit signed integer </source>
         <translation>GDT_Int16 - 16 бит тэмдэгтэй бүхэл тоо</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3975"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3970"/>
         <source>GDT_UInt32 - Thirty two bit unsigned integer </source>
         <translation>GDT_UInt32 - 32 бит тэмдэггүй бүхэл тоо</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3978"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3973"/>
         <source>GDT_Int32 - Thirty two bit signed integer </source>
         <translation>GDT_Int32 - 32 бит тэмдэгтэй бүхэл тоо</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3981"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3976"/>
         <source>GDT_Float32 - Thirty two bit floating point </source>
         <translation>GDT_Float32 - 32 бит бутархай тоо</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3984"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3979"/>
         <source>GDT_Float64 - Sixty four bit floating point </source>
         <translation>GDT_Float64 - 64 бит бутархай тоо</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3987"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3982"/>
         <source>GDT_CInt16 - Complex Int16 </source>
         <translation>GDT_CInt16 - Комплекс Int16</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3990"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3985"/>
         <source>GDT_CInt32 - Complex Int32 </source>
         <translation>GDT_CInt32 - Комплекс Int32</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3993"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3988"/>
         <source>GDT_CFloat32 - Complex Float32 </source>
         <translation>GDT_CFloat32 - Комплекс Float32</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3996"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3991"/>
         <source>GDT_CFloat64 - Complex Float64 </source>
         <translation>GDT_CFloat64 - Комплекс Float64</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3999"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3994"/>
         <source>Could not determine raster data type.</source>
         <translation>Растер өгөгдлийн төрлийг тодорхойлж чадахгүй байна.</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3738"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3733"/>
         <source>&lt;center&gt;&lt;b&gt;Transparency&lt;/b&gt;&lt;/center&gt;</source>
         <translation>&lt;center&gt;&lt;b&gt;Нэвтхаралт&lt;/b&gt;&lt;/center&gt;</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4279"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4274"/>
         <source>Average Magphase</source>
         <translation>Дундаж Magphase</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4284"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4279"/>
         <source>Average</source>
         <translation>Дундаж</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4026"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4021"/>
         <source>Layer Spatial Reference System: </source>
         <translation> Давхаргын Оронзайн Лавлах Систем:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4034"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4029"/>
         <source>Project Spatial Reference System: </source>
         <translation> Төслийн Оронзайн Лавлах Систем:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4926"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4921"/>
         <source>out of extent</source>
         <translation>өргөтгөлийн гадна</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4958"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4953"/>
         <source>null (no data)</source>
         <translation>тэг (өгөгдөл үгүй)</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4300"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4295"/>
         <source>Building pyramids failed.</source>
         <translation>Пирамид байгуулах бүтэлгүйтэв.</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4232"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4227"/>
         <source>The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again.</source>
         <translation>Файлд бичиж болохгүй. Зарим формат бичигдэхгүй, зөвхөн унших. Зөвшөөрлөө шалгаад дахин ороолдоод үзэж болно.</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4301"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4296"/>
         <source>Building pyramid overviews is not supported on this type of raster.</source>
         <translation>Энэ төрлийн растерт пирамид байгуулах үзүүлбэр боломжгүй. </translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3891"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3886"/>
         <source>Dataset Description</source>
         <translation>Багц Өгөгдлийн Тодорхойлолт</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3952"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3947"/>
         <source>No Data Value</source>
         <translation>Өгөгдлийн Утга Алга</translation>
     </message>

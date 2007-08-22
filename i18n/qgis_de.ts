@@ -2701,11 +2701,6 @@ Hide most toolbars</comment>
         <source>Launcher plugin added to core plugins </source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2745"/>
-        <source></source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -6118,7 +6113,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/pluginguibase.ui" line="38"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This plugin can generate world files for rasters. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Dieses Plugin erzeugt World-Files für Rasterdateien. Sie wählen Punkte in der Rasterdatei aus, zu denen Sie Weltkoordinaten aus der Hauptkarte übernehmen oder manuell eingeben. Das Plugin berechnet dann die World-File-Parameter. Je mehr Koordinaten Sie eingeben, desto genauer wird das Ergbenis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Beschreibung&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Dieses Plugin erzeugt World-Files für Rasterdateien. Sie wählen Punkte in der Rasterdatei aus, zu denen Sie Weltkoordinaten aus der Hauptkarte übernehmen oder manuell eingeben. Das Plugin berechnet dann die World-File-Parameter. Je mehr Koordinaten Sie eingeben, desto genauer wird das Ergbenis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="" line="7471221"/>
@@ -6132,41 +6127,64 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsGeorefWarpOptionsDialog</name>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialog.cpp" line="11"/>
+        <source>LZW (unstable)</source>
+        <translation>LZW (instabil)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialog.cpp" line="12"/>
+        <source>PACKBITS (unstable)</source>
+        <translation>PACKBITS (instabil)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialog.cpp" line="13"/>
+        <source>DEFLATE (unstable)</source>
+        <translation>DEFLATE (instabil)</translation>
+    </message>
+</context>
+<context>
     <name>QgsGeorefWarpOptionsDialogBase</name>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="16"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="13"/>
         <source>Warp options</source>
         <translation>Verzerrungsoptionen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="28"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="35"/>
         <source>Resampling method:</source>
         <translation>Stichprobenmethode:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="39"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="46"/>
         <source>Nearest neighbour</source>
         <translation>Nächster Nachbar</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="44"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="51"/>
         <source>Linear</source>
         <translation>Linear</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="49"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="56"/>
         <source>Cubic</source>
         <translation>Kubisch</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="57"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="74"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="67"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="64"/>
         <source>Use 0 for transparency when needed</source>
         <translation>0 für Transparanz verwenden falls benötigt</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="28"/>
+        <source>Compression:</source>
+        <translation>Komprimierung:</translation>
     </message>
 </context>
 <context>
@@ -6174,7 +6192,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsgraduatedsymboldialog.cpp" line="279"/>
         <source>Empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Leer</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsgraduatedsymboldialog.cpp" line="282"/>
@@ -11306,7 +11324,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="79"/>
         <source>Add Point</source>
-        <translation>Addiere Punkt</translation>
+        <translation>Punkt hinzufügen</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="80"/>
@@ -11329,12 +11347,12 @@ p, li { white-space: pre-wrap; }
         <translation>Ausgewahl gelöscht.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="489"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="497"/>
         <source>Linear</source>
         <translation>Linear</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="316"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="321"/>
         <source>Helmert</source>
         <translation>Helmert</translation>
     </message>
@@ -11350,54 +11368,54 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">-modifiziert</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="318"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="323"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="323"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="329"/>
         <source>&lt;p&gt;A Helmert transform requires modifications in the raster layer.&lt;/p&gt;&lt;p&gt;The modifed raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p&gt;&lt;p&gt;Are you sure that this is what you want?&lt;/p&gt;</source>
         <translation>&lt;p&gt;Eine Helmert-Transform wird den Rasterlayer modifizieren.&lt;/p&gt;&lt;p&gt;Die veränderte Rasterdatei wird in einer neuen Datei mit einem dazu passeneden Worldfile gespeichert.&lt;/p&gt;&lt;p&gt;Sind Sie sicher, dass sie das wollen?&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="331"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="338"/>
         <source>Affine</source>
         <translation>Affin</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="341"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="348"/>
         <source>Not implemented!</source>
         <translation>Nicht implementiert!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="336"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="343"/>
         <source>&lt;p&gt;An affine transform requires changing the original raster file. This is not yet supported.&lt;/p&gt;</source>
         <translation>&lt;p&gt;Eine Affin-Transformation wird die Original-Rasterdatei verändern. Dies ist noch nicht implementiert.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="343"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="350"/>
         <source>&lt;p&gt;The </source>
         <translation>&lt;p&gt;Die </translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="344"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="351"/>
         <source> transform is not yet supported.&lt;/p&gt;</source>
         <translation>Transformation wird noch nicht unterstützt.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="374"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="382"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="375"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="383"/>
         <source>Could not write to </source>
         <translation>Kann nicht </translation>
     </message>
     <message>
-        <location filename="" line="7471221"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="330"/>
         <source>Currently all modified files will be written in TIFF format.</source>
-        <translation type="obsolete">Derzeit werden alle modifizierten Dateien im TIFF-Format geschrieben.</translation>
+        <translation type="unfinished">Derzeit werden alle modifizierten Dateien im TIFF-Format geschrieben.</translation>
     </message>
 </context>
 <context>
@@ -12039,232 +12057,232 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsRasterLayer</name>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3183"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3178"/>
         <source>Not Set</source>
         <translation>Nicht gesetzt.</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3865"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3860"/>
         <source>Driver:</source>
         <translation>Treiber:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3941"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3936"/>
         <source>Dimensions:</source>
         <translation>Dimensionen:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3944"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3939"/>
         <source>X: </source>
         <translation>X:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3945"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3940"/>
         <source> Y: </source>
         <translation>Y:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3945"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3940"/>
         <source> Bands: </source>
         <translation>Bänder:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4051"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4046"/>
         <source>Origin:</source>
         <translation>Ursprung:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4060"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4055"/>
         <source>Pixel Size:</source>
         <translation>Pixelgröße:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="2582"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="2577"/>
         <source>Raster Extent: </source>
         <translation>Rasterausmaß:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="2585"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="2580"/>
         <source>Clipped area: </source>
         <translation>Ausschnittsbereich:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4004"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3999"/>
         <source>Pyramid overviews:</source>
         <translation>Pyramiden Überblicke:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4073"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4068"/>
         <source>Band Statistics (if gathered):</source>
         <translation>Band Statistik (wenn gesammelt):</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4080"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4075"/>
         <source>Property</source>
         <translation>Eigenschaft</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4083"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4078"/>
         <source>Value</source>
         <translation>Wert</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4964"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4959"/>
         <source>Band</source>
         <translation>Band</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4099"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4094"/>
         <source>Band No</source>
         <translation>Band Nr</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4111"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4106"/>
         <source>No Stats</source>
         <translation>Keine Statistik</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4114"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4109"/>
         <source>No stats collected yet</source>
         <translation>Noch keine Statistik gesammelt</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4124"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4119"/>
         <source>Min Val</source>
         <translation>Minimalwert</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4132"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4127"/>
         <source>Max Val</source>
         <translation>Maximalwert</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4140"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4135"/>
         <source>Range</source>
         <translation>Bereich</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4148"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4143"/>
         <source>Mean</source>
         <translation>Durchschnitt</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4156"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4151"/>
         <source>Sum of squares</source>
         <translation>Summe der Quadrate</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4164"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4159"/>
         <source>Standard Deviation</source>
         <translation>Standardverteilung</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4172"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4167"/>
         <source>Sum of all cells</source>
         <translation>Summe aller Zellen</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4180"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4175"/>
         <source>Cell Count</source>
         <translation>Zellenanzahl</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3960"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3955"/>
         <source>Data Type:</source>
         <translation>Datentyp:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3966"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3961"/>
         <source>GDT_Byte - Eight bit unsigned integer</source>
         <translation>GDT_Byte - Eight bit unsigned integer</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3969"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3964"/>
         <source>GDT_UInt16 - Sixteen bit unsigned integer </source>
         <translation>GDT_UInt16 - Sixteen bit unsigned integer</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3972"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3967"/>
         <source>GDT_Int16 - Sixteen bit signed integer </source>
         <translation>GDT_Int16 - Sixteen bit signed integer</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3975"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3970"/>
         <source>GDT_UInt32 - Thirty two bit unsigned integer </source>
         <translation>GDT_UInt32 - Thirty two bit unsigned integer</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3978"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3973"/>
         <source>GDT_Int32 - Thirty two bit signed integer </source>
         <translation>GDT_Int32 - Thirty two bit signed integer</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3981"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3976"/>
         <source>GDT_Float32 - Thirty two bit floating point </source>
         <translation>GDT_Float32 - Thirty two bit floating point</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3984"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3979"/>
         <source>GDT_Float64 - Sixty four bit floating point </source>
         <translation>GDT_Float64 - Sixty four bit floating point</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3987"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3982"/>
         <source>GDT_CInt16 - Complex Int16 </source>
         <translation>GDT_CInt16 - Complex Int16</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3990"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3985"/>
         <source>GDT_CInt32 - Complex Int32 </source>
         <translation>GDT_CInt32 - Complex Int32</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3993"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3988"/>
         <source>GDT_CFloat32 - Complex Float32 </source>
         <translation>GDT_CFloat32 - Complex Float32</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3996"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3991"/>
         <source>GDT_CFloat64 - Complex Float64 </source>
         <translation>GDT_CFloat64 - Complex Float64</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3999"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3994"/>
         <source>Could not determine raster data type.</source>
         <translation>Konnte Rasterdatentyp nicht erkennen.</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4279"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4274"/>
         <source>Average Magphase</source>
         <translation>Durchschnittliche Magphase</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4284"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4279"/>
         <source>Average</source>
         <translation>Durchschnitt</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4026"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4021"/>
         <source>Layer Spatial Reference System: </source>
         <translation>Referenzsystem der Ebene:</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4926"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4921"/>
         <source>out of extent</source>
         <translation>ausserhalb der Ausdehnung</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4958"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4953"/>
         <source>null (no data)</source>
         <translation>Null (keine Daten)</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3891"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3886"/>
         <source>Dataset Description</source>
         <translation>Datensatzbeschreibung</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3952"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3947"/>
         <source>No Data Value</source>
         <translation>NODATA Wert</translation>
     </message>
@@ -12274,22 +12292,22 @@ p, li { white-space: pre-wrap; }
         <translation>und alle anderen Dateien</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="3738"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="3733"/>
         <source>&lt;center&gt;&lt;b&gt;Transparency&lt;/b&gt;&lt;/center&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4034"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4029"/>
         <source>Project Spatial Reference System: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4210"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4205"/>
         <source>Write access denied</source>
         <translation type="unfinished">Schreibzugriff verboten</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4211"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4206"/>
         <source>Write access denied. Adjust the file permissions and try again.
 
 </source>
@@ -12297,17 +12315,17 @@ p, li { white-space: pre-wrap; }
 </translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4300"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4295"/>
         <source>Building pyramids failed.</source>
         <translation type="unfinished">Erstellung von Pyramiden fehlgeschlagen.</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4232"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4227"/>
         <source>The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again.</source>
         <translation type="unfinished">Die Datei ist nicht beschreibbar. Einige Formate können nur gelesen werden aber nicht beschrieben. Sie können auch versuchen, die Zugriffsrechte zu überprüfen und es erneut zu probieren.</translation>
     </message>
     <message>
-        <location filename="../src/raster/qgsrasterlayer.cpp" line="4301"/>
+        <location filename="../src/raster/qgsrasterlayer.cpp" line="4296"/>
         <source>Building pyramid overviews is not supported on this type of raster.</source>
         <translation type="unfinished">Für diese Art von Raster können keine Pyramiden erstellt werden. </translation>
     </message>
