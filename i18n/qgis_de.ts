@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="de">
+<defaultcodec></defaultcodec>
 <context>
     <name>@default</name>
     <message>
@@ -2699,6 +2700,11 @@ Hide most toolbars</comment>
     <message>
         <location filename="../src/gui/qgisapp.cpp" line="1352"/>
         <source>Launcher plugin added to core plugins </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgisapp.cpp" line="2745"/>
+        <source></source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6131,17 +6137,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialog.cpp" line="11"/>
         <source>LZW (unstable)</source>
-        <translation>LZW (instabil)</translation>
+        <translation type="obsolete">LZW (instabil)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialog.cpp" line="12"/>
         <source>PACKBITS (unstable)</source>
-        <translation>PACKBITS (instabil)</translation>
+        <translation type="obsolete">PACKBITS (instabil)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialog.cpp" line="13"/>
         <source>DEFLATE (unstable)</source>
-        <translation>DEFLATE (instabil)</translation>
+        <translation type="obsolete">DEFLATE (instabil)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialog.cpp" line="13"/>
+        <source>unstable</source>
+        <translation>instabil</translation>
     </message>
 </context>
 <context>

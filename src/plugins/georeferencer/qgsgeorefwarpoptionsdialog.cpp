@@ -8,9 +8,9 @@ QgsGeorefWarpOptionsDialog::QgsGeorefWarpOptionsDialog(QWidget* parent)
   setupUi(this);
   QStringList compressionMethods;
   compressionMethods << "NONE";
-  compressionMethods << tr("LZW (unstable)");
-  compressionMethods << tr("PACKBITS (unstable)");
-  compressionMethods << tr("DEFLATE (unstable)");
+  compressionMethods << "LZW (" + tr("unstable") + ")";
+  compressionMethods << "PACKBITS (" + tr("unstable") + ")";
+  compressionMethods << "DEFLATE (" + tr("unstable") + ")";
   mCompressionComboBox->addItems(compressionMethods);
 }
 
@@ -21,7 +21,24 @@ getWarpOptions(QgsImageWarper::ResamplingMethod& resampling,
 {
   resampling = this->resampling;
   useZeroForTransparency = this->useZeroAsTransparency;
-  compression = mCompressionComboBox->currentText();
+ 
+  QString compressionString = mCompressionComboBox->currentText();
+  if(compressionString.startsWith("NONE"))
+    {
+      compression = "NONE";
+    }
+  else if(compressionString.startsWith("LZW"))
+    {
+      compression = "LZW";
+    }
+  else if(compressionString.startsWith("PACKBITS"))
+    {
+      compression = "PACKBITS";
+    }
+  else if(compressionString.startsWith("DEFLATE"))
+    {
+      compression = "DEFLATE";
+    }
 }
 
 

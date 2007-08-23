@@ -3736,11 +3736,6 @@ Compiled against Qt </source>
         <source>Launcher plugin added to core plugins </source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="../src/gui/qgisapp.cpp" line="2745"/>
-        <source></source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -9301,18 +9296,8 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsGeorefWarpOptionsDialog</name>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialog.cpp" line="11"/>
-        <source>LZW (unstable)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialog.cpp" line="12"/>
-        <source>PACKBITS (unstable)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialog.cpp" line="13"/>
-        <source>DEFLATE (unstable)</source>
+        <source>unstable</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
