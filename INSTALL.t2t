@@ -668,7 +668,13 @@ libsqlite3-dev sqlite3 ccache make libpq-dev flex bison cmake
 
 /!\ ***Note:*** For python language bindings SIP >= 4.5 and PyQt4 >= 4.1 is required! Some stable GNU/Linux
 distributions (e.g. Debian or SuSE) only provide SIP < 4.5 and PyQt4 < 4.1. To include support for python 
-language bindings you need to build and install those packages from source.
+language bindings you need to build and install those packages from source. You can try to install them
+using:
+
+```
+sudo apt-get install python-qt4 python-qt4-dev python-sip4
+```
+
 
 == GRASS Specific Steps ==
 
