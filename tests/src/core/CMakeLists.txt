@@ -21,10 +21,10 @@ IF (WIN32)
     #next needed for qgis gui includes
     ADD_DEFINITIONS("-DGUI_EXPORT=__declspec(dllexport)")
   ELSE (MSVC)
-    ADD_DEFINITIONS("\"-DCORE_EXPORT=__declspec(dllimport)\"")
+    ADD_DEFINITIONS("-UCORE_EXPORT \"-DCORE_EXPORT=__declspec(dllimport)\"")
     #ADD_DEFINITIONS("\"-DPLUGIN_EXPORT=__declspec(dllimport)\"")
     #next needed for qgis gui includes
-    ADD_DEFINITIONS("\"-DGUI_EXPORT=__declspec(dllexport)\"")
+    ADD_DEFINITIONS("-UGUI_EXPORT \"-DGUI_EXPORT=__declspec(dllexport)\"")
   ENDIF (MSVC)
 ENDIF (WIN32)
 
