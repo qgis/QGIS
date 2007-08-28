@@ -661,7 +661,7 @@ above commands to select the Qt4 version of the relevant applications.
 sudo apt-get install gdal-bin libgdal1-dev libgeos-dev proj libtool \
 libgdal-doc libhdf4g-dev libhdf4g-run python-dev python-qt4-dev sip4 \
 swig libgsl0-dev g++ libjasper-1.701-dev libtiff4-dev subversion gsl-bin \
-libsqlite3-dev sqlite3 ccache make libpq-dev flex bison cmake
+libsqlite3-dev sqlite3 ccache make libpq-dev flex bison cmake txt2tags
 ```
 
 /!\ Debian users should use libgdal-dev above rather
