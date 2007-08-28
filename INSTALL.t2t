@@ -659,21 +659,17 @@ above commands to select the Qt4 version of the relevant applications.
 
 ``` 
 sudo apt-get install gdal-bin libgdal1-dev libgeos-dev proj libtool \
-libgdal-doc libhdf4g-dev libhdf4g-run python-dev python-qt4-dev sip4 \
+libgdal-doc libhdf4g-dev libhdf4g-run python-dev \
 swig libgsl0-dev g++ libjasper-1.701-dev libtiff4-dev subversion gsl-bin \
-libsqlite3-dev sqlite3 ccache make libpq-dev flex bison cmake txt2tags
+libsqlite3-dev sqlite3 ccache make libpq-dev flex bison cmake txt2tags \
+python-qt4 python-qt4-dev python-sip4 sip4
 ```
 
 /!\ Debian users should use libgdal-dev above rather
 
 /!\ ***Note:*** For python language bindings SIP >= 4.5 and PyQt4 >= 4.1 is required! Some stable GNU/Linux
 distributions (e.g. Debian or SuSE) only provide SIP < 4.5 and PyQt4 < 4.1. To include support for python 
-language bindings you need to build and install those packages from source. You can try to install them
-using:
-
-```
-sudo apt-get install python-qt4 python-qt4-dev python-sip4
-```
+language bindings you may need to build and install those packages from source.
 
 
 == GRASS Specific Steps ==
