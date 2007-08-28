@@ -37,7 +37,14 @@ ELSE(WIN32)
       EXEC_PROGRAM(${GDAL_CONFIG}
         ARGS --prefix
         OUTPUT_VARIABLE GDAL_PREFIX)
-      SET(GDAL_INCLUDE_DIR ${GDAL_PREFIX}/include CACHE STRING INTERNAL)
+      #SET(GDAL_INCLUDE_DIR ${GDAL_PREFIX}/include CACHE STRING INTERNAL)
+      FIND_PATH(GDAL_INCLUDE_DIR 
+        gdal.h 
+        ${GDAL_PREFIX}/include/gdal
+        ${GDAL_PREFIX}/include
+        /usr/local/include 
+        /usr/include 
+        )
 
       ## extract link dirs for rpath  
       EXEC_PROGRAM(${GDAL_CONFIG}
