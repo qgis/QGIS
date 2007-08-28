@@ -1454,39 +1454,33 @@ QString watsNew = "<html><body>" + tr("Version") + " ";
 watsNew += QGis::qgisVersion;
 watsNew += "<h3>" + tr("New features") + "</h3>";
 watsNew += "<ul><li>"
-+ tr("WMS support")
++ tr("Python bindings - This is the major focus of this release "
+    "it is now possible to create plugins using python. It is also "
+    "possible to create GIS enabled applications written in python " 
+    "that use the QGIS libraries."
+    )
++ "</li>"
 + "<li>"
-+ tr("Improved vector and attribute editing")
++ tr("Removed automake build system - QGIS now needs CMake for compilation.")
++ "</li>"
 + "<li>"
-+ tr("Map Composer for creating map layouts")
++ tr("Many new GRASS tools added (with thanks to http://faunalia.it/)")
++ "</li>"
 + "<li>"
-+ tr("Improved measure tools with area measuring")
++ tr("Map Composer updates")
++ "</li>"
 + "<li>"
-+ tr("Attribute searching")
++ tr("Crash fix for 2.5D shapefiles")
++ "</li>"
 + "<li>"
-+ tr("New legend structure")
++ tr("The QGIS libraries have been refactored and better organised.")
++ "</li>"
 + "<li>"
-+ tr("Refactoring of API to allow the use of QGIS libraries in mapping applications")
-+ "<li>"
-+ tr("Improved MapServer export tool")
-+ "<li>"
-+ tr("Map canvas background color is customizable")
-+ "<li>"
-+ tr("Vector layer transparency")
-+ "<li>"
-+ tr("Antialiasing for vector layers")
-+ "<li>"
-+ tr("GRASS support in all platforms")
-+ "<li>"
-+ tr("Enhanced GRASS support and toolbox commands")
-+ "<li>"
-+ tr("Enhanced vector editing, including copy/paste, snapping and vertex editing")
-+ "<li>"
-+ tr("Shapefile/OGR layer editing")
-+ "<li>"
-+ tr("Option to only look in the geometry_columns table when searching for PostGIS layers")
-+ "<li>"
-+ tr("Many user interface improvements")
++ tr("Improvements to the GeoReferencer")
++ "</li>"
+//+ "<li>"
+//+ tr("")
+//+ "</li>"
 + "</ul></body></html>";
 
 
