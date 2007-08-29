@@ -158,6 +158,12 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${GDAL_LIBRARY}
   ${PLATFORM_LIBRARIES}
 )
+#work aroud for the fact that qt3 support on mac is linked ot qsql
+IF (APPLE)
+  TARGET_LINK_LIBRARIES(qgis_core
+    ${QT_QTSQL_LIBRARY} 
+    )
+ENDIF (APPLE)
 
 INSTALL(TARGETS qgis_core
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
