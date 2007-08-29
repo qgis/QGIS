@@ -19,7 +19,7 @@ const char* QGis::qgisSvnVersion = QGSSVNVERSION;
 const int QGis::qgisVersionInt =900;
   
 // Release name
-const char* QGis::qgisReleaseName = "Ganymede - Preview 1";
+const char* QGis::qgisReleaseName = "Ganymede";
 
 const char* QGis::qgisVectorGeometryType[] =
 {
