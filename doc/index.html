@@ -10,7 +10,7 @@
   </td>
   <td valign="center">
     <span class="header">Quantum GIS Documentation</span><br>
-    <span class="subheader">Version 0.8 <i>Titan</i></span><br>
+    <span class="subheader">Version 0.9 <i>Ganymede</i></span><br>
     <span class="warning">Please read this entire document for important information about this release.</span>
   </td>
 </tr>
@@ -21,31 +21,35 @@
 -->
 <!-- This documentation describes the Quantum GIS (QGIS) application. More
 information on QGIS is available on the web page at http://qgis.org. -->
-<h2>Whats new in Version 0.8</h2> 
-<table>
-  <tr>
-    <td valign="top" width="50%">
-  <ul class="small">
-<li>WMS support
-<li>Improved vector and attribute editing
-<li>Improved measure tools with area measuring
-<li>Attribute searching
-<li>New legend structure
-<li>Refactoring of API to allow the use of QGIS libraries in mapping applications
-</ul>
-<td valign="top" width="50%">
-  <ul>
-<li>Improved MapServer export tool
-<li>Vector layer transparency and antialiasing
-<li>GRASS support in all platforms
-<li>Enhanced GRASS support and toolbox commands
-<li>Enhanced vector editing, including copy, cut, paste, snapping and vertex editing
-<li>Shapefile/OGR layer editing
+<h2>Whats new in Version 0.9?</h2> 
+<ul>
+  <li>
+Python bindings - This is the major focus of this release 
+it is now possible to create plugins using python. It is also 
+possible to create GIS enabled applications written in python 
+that use the QGIS libraries.
+</li>
+<li>
+Removed automake build system - QGIS now needs CMake for compilation.
+</li>
+<li>
+Many new GRASS tools added (with thanks to http://faunalia.it/)
+</li>
+<li>
+Map Composer updates
+</li>
+<li>
+Crash fix for 2.5D shapefiles
+</li>
+<li>
+The QGIS libraries have been refactored and better organised.
+</li>
+<li>
+Improvements to the GeoReferencer
+</li>
 </ul>
 
-  </td>
-</tr>
-</table>
+
 <dl><dt><span class="subheader">Special Requirements
     <ul class="normal">
       <li><a href="http://www.trolltech.com/developer/downloads/qt/index">Qt 4.2.2</a> is required. 
@@ -62,6 +66,8 @@ information on QGIS is available on the web page at http://qgis.org. -->
     <ul class="normal">
     <li>Project files from previous versions of QGIS will likely not work. 
     <li>Some internationalization (translation) files may be incomplete.
+    <li>QGIS is not bug free - we make no assertions as to its fitness for
+        use for any particular purpose. Use entirely at your own risk.
   </ul>
 
     </dd>
