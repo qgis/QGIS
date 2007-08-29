@@ -180,7 +180,7 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
    * Flag to indicate whether the coordinate systems have been initialised
    * @return true if initialised, otherwise false
    */
-   bool isInitialised() {return mInitialisedFlag;};
+   bool isInitialised() const {return mInitialisedFlag;};
 
    /*! See if the transform short circuits because src and dest are equivalent
     * @return bool True if it short circuits
@@ -263,6 +263,11 @@ inline std::ostream& operator << (std::ostream& os, const QgsCoordinateTransform
 {
   QString mySummary ("\n%%%%%%%%%%%%%%%%%%%%%%%%\nCoordinate Transform def begins:");
   mySummary += "\n\tInitialised? : ";
+  //prevent warnings
+  if (r.isInitialised())
+  {
+    //do nothing this is a dummy
+  }  
 /*
   if (r.isInitialised()) 
   {

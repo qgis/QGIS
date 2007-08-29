@@ -756,7 +756,14 @@ public:
     static QDateTime lastModified ( QString const &  name );
 
     /**Copies the symbology settings from another layer. Returns true in case of success*/
-    bool copySymbologySettings(const QgsMapLayer& other) {return false;} //todo
+    bool copySymbologySettings(const QgsMapLayer& other) {
+      //preventwarnings
+      if (other.type() < 0) 
+      {
+        return false;
+      }
+      return false;
+    } //todo
 
     bool isSymbologyCompatible(const QgsMapLayer& other) const {return false;} //todo
 

@@ -115,6 +115,11 @@ class CORE_EXPORT QgsDataProvider : public QObject
        */
       virtual void setSubsetString(QString subset)
       {
+        //prevent unused var warnings
+        if (subset.isEmpty())
+        {
+          return;
+        }
         // NOP by default
       }
 
@@ -172,6 +177,11 @@ class CORE_EXPORT QgsDataProvider : public QObject
        */
       virtual void setLayerOrder(QStringList layers)
       {
+        //prevent unused var warnings
+        if (layers.count() < 1)
+        {
+          return;
+        }
         // NOOP
       }
 
@@ -181,6 +191,11 @@ class CORE_EXPORT QgsDataProvider : public QObject
        */
       virtual void setSubLayerVisibility(QString name, bool vis)
       {
+        //prevent unused var warnings
+        if (name.isEmpty() || !vis)
+        {
+          return;
+        }
         // NOOP
       }
 

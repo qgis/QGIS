@@ -43,7 +43,15 @@ class CORE_EXPORT QgsRenderer
     virtual ~QgsRenderer();
     /** Determines if a feature will be rendered or not 
 	@param f a pointer to the feature to determine if rendering will happen*/
-    virtual bool willRenderFeature(QgsFeature *f) {return true;}
+    virtual bool willRenderFeature(QgsFeature *f) 
+    {
+      //prevent unused var warnings
+      if (!f)
+      {
+        return true;
+      }
+      return true;
+    }
     /**A vector layer passes features to a renderer object to change the brush and pen of the qpainter
      @param p the painter storing brush and pen
      @param f a pointer to the feature to be rendered
