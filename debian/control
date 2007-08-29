@@ -1,0 +1,68 @@
+Source: qgis
+Section: science
+Priority: extra
+Maintainer: Debian GIS Project <pkg-grass-devel@lists.alioth.debian.org>
+Uploaders: Francesco Paolo Lovergine <frankie@debian.org>
+Build-Depends: debhelper (>= 5.0.0), libgdal1-dev, libpq-dev, 
+ libgeos-dev (>= 2.0.1-1), dpatch, grass-dev, libsqlite3-dev, libgsl0-dev, proj, libexpat1-dev, 
+ libmysqlclient15-dev, flex, bison, python-dev, cmake (>=2.4.3) , python-sip4-dev, python-qt4-dev,
+ sharutils, sip4 (>= 4.7), libqt4-core (>=4.2.0), libqt4-dev (>=4.2.0), libqt4-gui (>=4.2.0),
+ libqt4-qt3support (>=4.2.0), libqt4-sql (>=4.2.0), python-qt4 (>=4.2.0), python-qt4-dev (>=4.2.0)
+Standards-Version: 3.7.2
+
+Package: qgis
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libqgis1
+Suggests: qgis-plugin-grass, python, python-qt4
+Description: Geographic Information System (GIS)
+ A Geographic Information System (GIS) manages,
+ analyzes, and displays databases of geographic
+ information. Quantum GIS (QGIS) supports shapefile
+ viewing and editing, spatial data storage with
+ PostgreSQL/PostGIS, projection on-the-fly, map
+ composition, and a number of other features via
+ a plugin interface. QGIS also supports display
+ of various georeferenced raster and Digital
+ Elevation Model (DEM) formats including
+ GeoTIFF, Arc/Info ASCII Grid, and USGS ASCII DEM.
+ .
+  Home page: http://qgis.org/
+
+Package: libqgis1
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: QGIS Geographic Information System - shared library
+ QGIS is a Geographic Information System (GIS)
+ which manages, analyzes and display databases of
+ geographic information.
+ .
+ This package contains the shared library that
+ provides an interface for plugins.
+ .
+  Home page: http://qgis.org/
+
+Package: libqgis1-dev
+Architecture: any
+Depends: qgis (= ${Source-Version}), libgdal1-dev, libpq-dev | postgresql-dev, libgeos-dev (>= 2.0.1-1), grass-dev, libsqlite3-dev, libgsl0-dev, proj, libexpat1-dev, libqt4-core (>=4.2.0), libqt4-dev (>=4.2.0), libqt4-gui (>=4.2.0), libqt4-qt3support (>=4.2.0), libqt4-sql (>=4.2.0), python-qt4 (>=4.2.0), python-qt4-dev (>=4.2.0), qt4-designer (>=4.2.0)
+Provides: libqgis-dev
+Conflicts: libqgis-dev, qgis-dev
+Replaces: qgis-dev
+Suggests: qt4-designer
+Description: QGIS Geographic Information System - development files
+ QGIS is a Geographic Information System (GIS)
+ which manages, analyzes and display databases of
+ geographic information.
+ .
+ This package contains the headers and libraries
+ needed to develop plugins for QGIS.
+ .
+  Home page: http://qgis.org/
+
+Package: qgis-plugin-grass
+Architecture: any
+Depends: qgis (= ${Source-Version}), libgdal1-1.4.0-grass
+Description: Plugin for accessing GRASS data from QGIS
+ This plugin enables a GRASS data access toolbox in the QGIS
+ geographic data viewer.
+ .
+  Home page: http://qgis.org/
