@@ -90,6 +90,12 @@ public:
                           QString const & user,
                           QString const & pass)
     {
+      //this is mainly to prevent compiler warnings
+      if (host.isEmpty() || port < 1 || user.isEmpty() || pass.isEmpty())
+      {
+        return FALSE;
+      }
+
       return FALSE;
     }
 
