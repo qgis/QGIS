@@ -1,5 +1,16 @@
 /* ChangeLog,v 1.214 2004/11/12 00:42:21 gsherman Exp */
 ------------------------------------------------------------------------------
+Version 0.9 'Ganymede'
+** Python bindings - This is the major focus of this release
+   it is now possible to create plugins using python. It is also
+   possible to create GIS enabled applications written in python 
+   that use the QGIS libraries.
+** Removed automake build system - QGIS now needs CMake for compilation.
+** Many new GRASS tools added (with thanks to http://faunalia.it/)
+** Map Composer updates
+** Crash fix for 2.5D shapefiles
+** The QGIS libraries have been refactored and better organised.
+** Improvements to the GeoReferencer
 
 Version 0.8 'Joesephine' .... development version
 2006-01-23 [timlinux] 0.7.9.10
