@@ -10,9 +10,10 @@ python_path = src_path + '/python'
 gdal_inc_dir = '@GDAL_INCLUDE_DIR@'
 geos_inc_dir = '@GEOS_INCLUDE_DIR@'
 
-qt_libs = ["QtCore","QtGui","QtNetwork","QtSql","QtSvg","QtXml"]
+qt_libs = ["QtCore","QtGui","QtNetwork","QtSvg","QtXml"]
 if sys.platform == 'darwin':
   qt_libs.append("Qt3Support")
+  qt_libs.append("QtSql")
 
 # create paths for temporary files if don't exist
 if not os.path.isdir("./core"):
