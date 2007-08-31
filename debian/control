@@ -3,11 +3,11 @@ Section: science
 Priority: extra
 Maintainer: Debian GIS Project <pkg-grass-devel@lists.alioth.debian.org>
 Uploaders: Francesco Paolo Lovergine <frankie@debian.org>
-Build-Depends: debhelper (>= 5.0.0), libgdal1-dev, libpq-dev, 
+Build-Depends: debhelper (>= 5.0.0), libgdal1-dev | libgdal1-1.3.2-dev , libpq-dev, 
  libgeos-dev (>= 2.0.1-1), dpatch, grass-dev, libsqlite3-dev, libgsl0-dev, proj, libexpat1-dev, 
  flex, bison, python-dev, cmake (>=2.4.3) , python-sip4-dev, python-qt4-dev,
- sharutils, sip4 (>= 4.7), libqt4-core (>=4.2.0), libqt4-dev (>=4.2.0), libqt4-gui (>=4.2.0),
- libqt4-qt3support (>=4.2.0), libqt4-sql (>=4.2.0), python-qt4 (>=4.2.0), python-qt4-dev (>=4.2.0)
+ sharutils, sip4 (>= 4.4), libqt4-core (>=4.2.0), libqt4-dev (>=4.2.0), libqt4-gui (>=4.2.0),
+ libqt4-qt3support (>=4.2.0), libqt4-sql (>=4.2.0), python-qt4 (>=4.0.0), python-qt4-dev (>=4.0.0)
 Standards-Version: 3.7.2
 
 Package: qgis
@@ -43,7 +43,7 @@ Description: QGIS Geographic Information System - shared library
 
 Package: libqgis1-dev
 Architecture: any
-Depends: qgis (= ${Source-Version}), libgdal1-dev, libpq-dev | postgresql-dev, libgeos-dev (>= 2.0.1-1), grass-dev, libsqlite3-dev, libgsl0-dev, proj, libexpat1-dev, libqt4-core (>=4.2.0), libqt4-dev (>=4.2.0), libqt4-gui (>=4.2.0), libqt4-qt3support (>=4.2.0), libqt4-sql (>=4.2.0), python-qt4 (>=4.2.0), python-qt4-dev (>=4.2.0), qt4-designer (>=4.2.0)
+Depends: qgis (= ${Source-Version}), libgdal1-dev , libpq-dev | postgresql-dev, libgeos-dev (>= 2.0.1-1), grass-dev, libsqlite3-dev, libgsl0-dev, proj, libexpat1-dev, libqt4-core (>=4.2.0), libqt4-dev (>=4.2.0), libqt4-gui (>=4.2.0), libqt4-qt3support (>=4.2.0), libqt4-sql (>=4.2.0), python-qt4 (>=4.2.0), python-qt4-dev (>=4.2.0), qt4-designer (>=4.2.0)
 Provides: libqgis-dev
 Conflicts: libqgis-dev, qgis-dev
 Replaces: qgis-dev
@@ -60,7 +60,7 @@ Description: QGIS Geographic Information System - development files
 
 Package: qgis-plugin-grass
 Architecture: any
-Depends: qgis (= ${Source-Version}), libgdal1-1.4.0-grass
+Depends: qgis (= ${Source-Version}), libgdal1-1.4.0-grass | libgdal1-1.3.2-grass
 Description: Plugin for accessing GRASS data from QGIS
  This plugin enables a GRASS data access toolbox in the QGIS
  geographic data viewer.
