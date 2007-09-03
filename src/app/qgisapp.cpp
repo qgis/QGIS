@@ -2355,7 +2355,7 @@ findMissingFile_( QString const & fileFilters, QDomNode & layerNode )
 
   QStringList selectedFiles;
   QString     enc;
-  QString     title( QObject::trUtf8("Open an OGR Supported Layer") );
+  QString     title( QObject::tr("Where is '") + originalDataSource.fileName() + "'? (" + QObject::tr("original location: ") + originalDataSource.absoluteFilePath() + ")");
 
   openFilesRememberingFilter_(memoryQualifier,
       myFileFilters, 
