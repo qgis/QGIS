@@ -147,6 +147,9 @@ class QgsLegend : public QTreeWidget
   /**Updates overview*/
   void updateOverview();
 
+  /**Show/remove all layer in/from overview*/
+  void setOverviewAllLayers(bool inOverview);
+
   /**Adds an entry to mPixmapWidthValues*/
   void addPixmapWidthValue(int width);
 

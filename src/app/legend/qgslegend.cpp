@@ -1356,6 +1356,22 @@ void QgsLegend::updateOverview()
   mMapCanvas->updateOverview();
 }
 
+void QgsLegend::setOverviewAllLayers(bool inOverview)
+{
+  QTreeWidgetItem* theItem = firstItem();
+  while(theItem)
+    {
+      QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(theItem);
+      if(llf)
+	{
+	  llf->setInOverview(inOverview);
+	}
+      theItem = nextItem(theItem);
+    }
+  updateMapCanvasLayerSet();
+  updateOverview();
+}
+
 std::deque<QString> QgsLegend::layerIDs()
 {
   std::deque<QString> layers;
