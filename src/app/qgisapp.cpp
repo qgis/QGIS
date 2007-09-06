@@ -3219,40 +3219,26 @@ void QgisApp::saveMapAsImage(QString theImageFileNameQString, QPixmap * theQPixm
 //reimplements method from base (gui) class
 void QgisApp::addAllToOverview()
 {
-  // TODO: move to legend
-  /*
-  std::map<QString, QgsMapLayer *> myMapLayers = QgsMapLayerRegistry::instance()->mapLayers();
-  std::map<QString, QgsMapLayer *>::iterator myMapIterator;
-  for ( myMapIterator = myMapLayers.begin(); myMapIterator != myMapLayers.end(); ++myMapIterator )
-  {
-    QgsMapLayer * myMapLayer = myMapIterator->second;
-    myMapLayer->inOverview(true); // won't do anything if already in overview
-  }
-  mMapCanvas->updateOverview();
-  
+  if(mMapLegend)
+    {
+      mMapLegend->setOverviewAllLayers(true);
+    }
+ 
   // notify the project we've made a change
   QgsProject::instance()->dirty(true);
-  */
 }
 
 //reimplements method from base (gui) class
 void QgisApp::removeAllFromOverview()
 {
-  // TODO: move to legend
-  /*
-  std::map<QString, QgsMapLayer *> myMapLayers = QgsMapLayerRegistry::instance()->mapLayers();
-  std::map<QString, QgsMapLayer *>::iterator myMapIterator;
-  for ( myMapIterator = myMapLayers.begin(); myMapIterator != myMapLayers.end(); ++myMapIterator )
-  {
-    QgsMapLayer * myMapLayer = myMapIterator->second;
-    myMapLayer->inOverview(false);
-  }
-  mMapCanvas->updateOverview();
-  
+  if(mMapLegend)
+    {
+      mMapLegend->setOverviewAllLayers(false);
+    }
+ 
   // notify the project we've made a change
   QgsProject::instance()->dirty(true);
-  */
-} // QgisApp::removeAllFromOverview()
+}
 
 
 //reimplements method from base (gui) class
