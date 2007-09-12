@@ -49,10 +49,12 @@ ENDIF (APPLE)
 #directly included in the sources
 #and should not be compiled twice. Trying to include
 #them in will cause an error at build time 
-
 #############################################################
 # Tests:
 
+#
+# QgsApplication test
+#
 SET(applicationtest_SRCS testqgsapplication.cpp)
 SET(applicationtest_MOC_CPPS testqgsapplication.cpp)
 QT4_WRAP_CPP(applicationtest_MOC_SRCS ${applicationtest_MOC_CPPS})
@@ -64,5 +66,17 @@ INSTALL(TARGETS applicationtest RUNTIME DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 ADD_TEST(application ${CMAKE_CURRENT_BINARY_DIR}/applicationtest)
 
 #
-##
+# QgsFileWriter test
 #
+SET(filewritertest_SRCS testqgsvectorfilewriter.cpp)
+SET(filewritertest_MOC_CPPS testqgsvectorfilewriter.cpp)
+QT4_WRAP_CPP(filewritertest_MOC_SRCS ${filewritertest_MOC_CPPS})
+ADD_CUSTOM_TARGET(filewritertestmoc ALL DEPENDS ${filewritertest_MOC_SRCS})
+ADD_EXECUTABLE(filewritertest ${filewritertest_SRCS})
+ADD_DEPENDENCIES(filewritertest filewritertestmoc)
+TARGET_LINK_LIBRARIES(filewritertest ${QT_LIBRARIES} qgis_core)
+INSTALL(TARGETS filewritertest RUNTIME DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+ADD_TEST(filewriter ${CMAKE_CURRENT_BINARY_DIR}/filewritertest)
+
+
+
