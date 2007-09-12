@@ -27,7 +27,7 @@ class TestQgsVectorFileWriter: public QObject
       QString qgisPath = QCoreApplication::applicationDirPath ();
       QgsApplication::setPrefixPath(qgisPath, TRUE);
       QgsApplication::setPkgDataPath(QgsApplication::applicationDirPath() +  
-      "/../../../resources/");
+      "/../../../");
 
       std::cout << "Prefix  PATH: " << QgsApplication::prefixPath().toLocal8Bit().data() << std::endl;
       std::cout << "Plugin  PATH: " << QgsApplication::pluginPath().toLocal8Bit().data() << std::endl;
