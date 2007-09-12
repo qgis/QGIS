@@ -71,17 +71,27 @@ class TestQgsVectorFileWriter: public QObject
       QgsGeometry * mypGeometry = QgsGeometry::fromPoint(myPoint);
       QgsFeature myFeature;
       myFeature.setGeometry(mypGeometry);
-      myFeature.addAttribute(0,"HelloWorld");
+      myFeature.addAttribute(1,"HelloWorld");
       //
       // Write the featyre to the filewriter
       //
       myWriter.addFeature(myFeature);
       myError = myWriter.hasError();
-      Q_ASSERT(myError==QgsVectorFileWriter::NoError);
+      if(myError==QgsVectorFileWriter::ErrDriverNotFound)
+      {
+        std::cout << "Driver not found error" << std::endl;
+      }
+      
+      if (myError==QgsVectorFileWriter::ErrCreateDataSource)
+      {
+        std::cout << "Create data source error" << std::endl;
+      }
+      if (myError==QgsVectorFileWriter::ErrCreateLayer)
+      {
+        std::cout << "Create layer error" << std::endl;
+      }
+      QVERIFY(myError==QgsVectorFileWriter::NoError);
       // other possible outcomes...
-      //QgsVectorFileWriter::ErrDriverNotFound:
-      //QgsVectorFileWriter::ErrCreateDataSource:
-      //QgsVectorFileWriter::ErrCreateLayer:
       delete mypGeometry;
     }
 };
