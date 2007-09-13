@@ -23,6 +23,12 @@ class TestQgsVectorFileWriter: public QObject
   private slots:
     void createVectorFile()
     {
+      qDebug("\n\n **************\n"
+          "Note: if you get a message like \n"
+          "ERROR 1: /tmp/testshp.shp is not a directory.\n"
+          "It is caused by the /tmp/testshp.* files already existing\n"
+          "(the ERROR comes from OGR and is not very intuitive)\n"
+          "******************\n");
       // init QGIS's paths - true means that all path will be inited from prefix
       QString qgisPath = QCoreApplication::applicationDirPath ();
       QgsApplication::setPrefixPath(qgisPath, TRUE);
@@ -75,24 +81,22 @@ class TestQgsVectorFileWriter: public QObject
       //
       // Write the featyre to the filewriter
       //
-      myWriter.addFeature(myFeature);
+      QVERIFY(myWriter.addFeature(myFeature));
       myError = myWriter.hasError();
       if(myError==QgsVectorFileWriter::ErrDriverNotFound)
       {
         std::cout << "Driver not found error" << std::endl;
       }
-      
-      if (myError==QgsVectorFileWriter::ErrCreateDataSource)
+      else if (myError==QgsVectorFileWriter::ErrCreateDataSource)
       {
         std::cout << "Create data source error" << std::endl;
       }
-      if (myError==QgsVectorFileWriter::ErrCreateLayer)
+      else if (myError==QgsVectorFileWriter::ErrCreateLayer)
       {
         std::cout << "Create layer error" << std::endl;
       }
       QVERIFY(myError==QgsVectorFileWriter::NoError);
       // other possible outcomes...
-      delete mypGeometry;
     }
 };
 

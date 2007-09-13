@@ -189,6 +189,14 @@ bool QgsSpatialRefSys::createFromSrid(long theSrid)
   // Get the full path name to the sqlite3 spatial reference database.
   QString myDatabaseFileName = QgsApplication::srsDbFilePath();
 
+  QFileInfo myInfo (myDatabaseFileName);
+  if (!myInfo.exists())
+  {
+    QgsDebugMsg("QgsSpatialRefSys::createFromSrid failed : " + myDatabaseFileName + 
+        " does not exist!");
+    return false;
+  }
+
 
   sqlite3      *myDatabase;
   const char   *myTail;
@@ -582,6 +590,13 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
   QgsDebugMsg("QgsSpatialRefSys::getRecord...running query: " + theSql);
   // Get the full path name to the sqlite3 spatial reference database.
   myDatabaseFileName = QgsApplication::srsDbFilePath();
+  QFileInfo myInfo (myDatabaseFileName);
+  if (!myInfo.exists())
+  {
+    QgsDebugMsg("QgsSpatialRefSys::createFromSrid failed : " + myDatabaseFileName + 
+        " does not exist!");
+    return myMap;
+  }
 
   //check the db is available
   myResult = openDb(myDatabaseFileName, &myDatabase);
@@ -594,6 +609,7 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK && sqlite3_step(myPreparedStatement) == SQLITE_ROW)
   {
+    QgsDebugMsg("QgsSpatialRefSys::getRecord...trying system srs.db");
     int myColumnCount = sqlite3_column_count(myPreparedStatement);
     //loop through each column in the record adding its field name and vvalue to the map
     for (int myColNo=0;myColNo < myColumnCount;myColNo++)
@@ -605,7 +621,7 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
   }
   else
   {
-    QgsDebugMsg("QgsSpatialRefSys::getRecord...trying system users.db");
+    QgsDebugMsg("QgsSpatialRefSys::getRecord...trying system qgis.db");
     sqlite3_finalize(myPreparedStatement);
     sqlite3_close(myDatabase);
 
@@ -924,7 +940,8 @@ long QgsSpatialRefSys::findMatchingProj()
       }
     }
   }
-  //std::cout << "QgsSpatialRefSys::findMatchingProj -------> no match found in srs.db, trying user db now!" << std::endl;
+  QgsLogger::warning("QgsSpatialRefSys::findMatchingProj ------->"
+                      "\n no match found in srs.db, trying user db now!");
   // close the sqlite3 statement
   sqlite3_finalize(myPreparedStatement);
   sqlite3_close(myDatabase);
