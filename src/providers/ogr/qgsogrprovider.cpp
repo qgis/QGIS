@@ -688,7 +688,7 @@ bool QgsOgrProvider::addFeatures(QgsFeatureList & flist)
 
   // flush features
   ogrLayer->SyncToDisk();
-
+  numberFeatures = ogrLayer->GetFeatureCount(); //new feature count
   return returnvalue;
 }
 
@@ -872,7 +872,7 @@ bool QgsOgrProvider::deleteFeatures(const QgsFeatureIds & id)
   QString layername=filename.section('.',0,0);
   QString sql="REPACK " + layername;
   ogrDataSource->ExecuteSQL(sql.toLocal8Bit().data(), NULL, NULL);
-  
+  numberFeatures = ogrLayer->GetFeatureCount(); //new feature count
   return returnvalue;
 }
 
