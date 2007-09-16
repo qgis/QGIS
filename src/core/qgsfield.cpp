@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgsfield.cpp - Describes a field in a layer or table
-     --------------------------------------
-    Date                 : 01-Jan-2004
-    Copyright            : (C) 2004 by Gary E.Sherman
-    email                : sherman at mrcc.com
+			    qgsfield.cpp - Describes a field in a layer or table
+			     --------------------------------------
+			    Date                 : 01-Jan-2004
+			    Copyright            : (C) 2004 by Gary E.Sherman
+			    email                : sherman at mrcc.com
     
  ***************************************************************************
  *                                                                         *
