@@ -1,5 +1,5 @@
 /* **************************************************************************
-   qgsrasterlayer.cpp -  description
+					   qgsrasterlayer.cpp -  description
    -------------------
 begin                : Sat Jun 22 2002
 copyright            : (C) 2003 by Tim Sutton, Steve Halasz and Gary E.Sherman
