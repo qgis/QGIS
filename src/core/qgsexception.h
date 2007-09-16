@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsproject.cpp -  description
+                          qgsexception.h
                              -------------------
   begin                : August 31, 2004
   copyright            : (C) 2004 by Mark Coletti
