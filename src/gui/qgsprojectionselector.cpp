@@ -1,4 +1,5 @@
 /***************************************************************************
+ *   qgsprojectionselector.cpp
  *   Copyright (C) 2005 by Tim Sutton                                      *
  *   tim@linfiniti.com                                                     *
  *                                                                         *

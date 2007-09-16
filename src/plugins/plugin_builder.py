@@ -1,8 +1,21 @@
-
+#***************************************************************************
+#    plugin_builder.py
 # A script to automate creation of a new QGIS plugin using the plugin_template
-# Copyright 2007 Martin Dobias
-#
+#    --------------------------------------
+#   Date                 : Sun Sep 16 12:11:04 AKDT 2007
+#   Copyright            : (C) Copyright 2007 Martin Dobias
+#   Email                : 
 # Original authors of Perl version: Gary Sherman and Tim Sutton
+#***************************************************************************
+#*                                                                         *
+#*   This program is free software; you can redistribute it and/or modify  *
+#*   it under the terms of the GNU General Public License as published by  *
+#*   the Free Software Foundation; either version 2 of the License, or     *
+#*   (at your option) any later version.                                   *
+#*                                                                         *
+#***************************************************************************/
+
+
 
 import os, sys, shutil, re
 

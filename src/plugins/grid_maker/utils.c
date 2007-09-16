@@ -1,5 +1,8 @@
 /* Taken from txt2dbf 1.0.2 by Frank Koormann, see
  * http://www.usf.uni-osnabrueck.de/~fkoorman/software/dbftools.en.html
+ * 
+ * Licensed as "The program is free of charge as well as the source" 
+ * but no license is mentioned - 2007-09-16 [gsherman]
  */
 
 /*
