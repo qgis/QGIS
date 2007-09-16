@@ -1,3 +1,17 @@
+#***************************************************************************
+#    runtests.sh
+#    --------------------------------------
+#   Date                 : Sun Sep 16 12:21:45 AKDT 2007
+#   Copyright            : (C) 2007 by Gary E. Sherman
+#   Email                : sherman at mrcc dot com
+#***************************************************************************
+#*                                                                         *
+#*   This program is free software; you can redistribute it and/or modify  *
+#*   it under the terms of the GNU General Public License as published by  *
+#*   the Free Software Foundation; either version 2 of the License, or     *
+#*   (at your option) any later version.                                   *
+#*                                                                         *
+#***************************************************************************/
 #!/bin/bash
 #set -x
 LIST=`ls -lah |grep rwxr-xr-x |grep -v ^d |grep -v pl$ |grep -v ~$ |grep -v .sh$ |awk '{print $8}'|awk '$1=$1' RS=`
