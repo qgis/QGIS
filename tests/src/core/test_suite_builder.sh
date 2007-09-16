@@ -1,3 +1,4 @@
+#!/bin/bash
 #***************************************************************************
 #    test_suite_builder.sh
 #    --------------------------------------
@@ -12,7 +13,7 @@
 #*   (at your option) any later version.                                   *
 #*                                                                         *
 #***************************************************************************/
-#!/bin/bash
+
 LIST=`ls ../../../src/core/ |grep .cpp |grep ^qgs |grep -v ~$ |grep -v moc.cpp$ | sed 's/.cpp//g' |awk '$1=$1' RS= |sort`
 for FILE in $LIST
 do 
