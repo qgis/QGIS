@@ -62,9 +62,13 @@ ADD_CUSTOM_TARGET(applicationtestmoc ALL DEPENDS ${applicationtest_MOC_SRCS})
 ADD_EXECUTABLE(applicationtest ${applicationtest_SRCS})
 ADD_DEPENDENCIES(applicationtest applicationtestmoc)
 TARGET_LINK_LIBRARIES(applicationtest ${QT_LIBRARIES} qgis_core)
-INSTALL(TARGETS applicationtest RUNTIME DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-ADD_TEST(application ${CMAKE_CURRENT_BINARY_DIR}/applicationtest)
-
+IF (APPLE)
+  INSTALL(TARGETS applicationtest RUNTIME DESTINATION ${QGIS_BIN_DIR}/../)
+  ADD_TEST(application ${QGIS_BIN_DIR}/../applicationtest)
+ELSE (APPLE)
+  INSTALL(TARGETS applicationtest RUNTIME DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+  ADD_TEST(application ${CMAKE_CURRENT_BINARY_DIR}/applicationtest)
+ENDIF (APPLE)
 #
 # QgsFileWriter test
 #
@@ -75,8 +79,12 @@ ADD_CUSTOM_TARGET(filewritertestmoc ALL DEPENDS ${filewritertest_MOC_SRCS})
 ADD_EXECUTABLE(filewritertest ${filewritertest_SRCS})
 ADD_DEPENDENCIES(filewritertest filewritertestmoc)
 TARGET_LINK_LIBRARIES(filewritertest ${QT_LIBRARIES} qgis_core)
-INSTALL(TARGETS filewritertest RUNTIME DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-ADD_TEST(filewriter ${CMAKE_CURRENT_BINARY_DIR}/filewritertest)
-
+IF (APPLE)
+  INSTALL(TARGETS filewritertest RUNTIME DESTINATION ${QGIS_BIN_DIR}/../)
+  ADD_TEST(filewriter ${QGIS_BIN_DIR}/../filewritertest)
+ELSE (APPLE)
+  INSTALL(TARGETS filewritertest RUNTIME DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+  ADD_TEST(filewriter ${CMAKE_CURRENT_BINARY_DIR}/filewritertest)
+ENDIF (APPLE)
 
 
