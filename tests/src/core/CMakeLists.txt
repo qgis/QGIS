@@ -79,12 +79,14 @@ ADD_CUSTOM_TARGET(filewritertestmoc ALL DEPENDS ${filewritertest_MOC_SRCS})
 ADD_EXECUTABLE(filewritertest ${filewritertest_SRCS})
 ADD_DEPENDENCIES(filewritertest filewritertestmoc)
 TARGET_LINK_LIBRARIES(filewritertest ${QT_LIBRARIES} qgis_core)
-IF (APPLE)
-  INSTALL(TARGETS filewritertest RUNTIME DESTINATION ${QGIS_BIN_DIR}/../)
-  ADD_TEST(filewriter ${QGIS_BIN_DIR}/../filewritertest)
-ELSE (APPLE)
-  INSTALL(TARGETS filewritertest RUNTIME DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-  ADD_TEST(filewriter ${CMAKE_CURRENT_BINARY_DIR}/filewritertest)
-ENDIF (APPLE)
+
+
+
+#
+# We need to install to a path
+#
+
+INSTALL(TARGETS filewritertest RUNTIME DESTINATION ${QGIS_BIN_DIR}/../)
+ADD_TEST(filewriter ${QGIS_BIN_DIR}/../filewritertest)
 
 
