@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>636</width>
-    <height>629</height>
+    <width>651</width>
+    <height>641</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -23,7 +23,7 @@
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>11</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
@@ -39,7 +39,7 @@
       </attribute>
       <layout class="QGridLayout" >
        <property name="margin" >
-        <number>11</number>
+        <number>9</number>
        </property>
        <property name="spacing" >
         <number>6</number>
@@ -51,97 +51,11 @@
          </property>
          <layout class="QGridLayout" >
           <property name="margin" >
-           <number>11</number>
+           <number>9</number>
           </property>
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item row="0" column="0" >
-           <layout class="QHBoxLayout" >
-            <property name="margin" >
-             <number>11</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item>
-             <widget class="QRadioButton" name="rbtnThreeBand" >
-              <property name="text" >
-               <string>Color Image</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="rbtnSingleBand" >
-              <property name="text" >
-               <string>Grayscale Image</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item rowspan="5" row="0" column="1" >
-           <widget class="Q3TextEdit" name="txtSymologyNotes" >
-            <property name="enabled" >
-             <bool>true</bool>
-            </property>
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>0</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text" >
-             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style="font-size:9pt;font-family:Sans Serif">
-&lt;p style="margin-top:14px" dir="ltr">&lt;span style="font-weight:600">Notes&lt;/span>&lt;/p>
-&lt;/body>&lt;/html>
-</string>
-            </property>
-            <property name="wordWrap" >
-             <enum>Q3TextEdit::WidgetWidth</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" >
-           <widget class="QCheckBox" name="cboxInvertColorMap" >
-            <property name="text" >
-             <string>Invert Color Map</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" >
-           <widget class="QLabel" name="textLabel2_4_2" >
-            <property name="text" >
-             <string>Transparency:</string>
-            </property>
-            <property name="buddy" >
-             <cstring>sliderTransparency</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" >
-           <widget class="QSlider" name="sliderTransparency" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>0</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximum" >
-             <number>255</number>
-            </property>
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="tickInterval" >
-             <number>25</number>
-            </property>
-           </widget>
-          </item>
           <item row="4" column="0" >
            <layout class="QHBoxLayout" >
             <property name="margin" >
@@ -198,6 +112,172 @@
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="3" column="0" >
+           <widget class="QSlider" name="sliderTransparency" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximum" >
+             <number>255</number>
+            </property>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="tickInterval" >
+             <number>25</number>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QLabel" name="textLabel2_4_2" >
+            <property name="text" >
+             <string>Transparency:</string>
+            </property>
+            <property name="buddy" >
+             <cstring>sliderTransparency</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QCheckBox" name="cboxInvertColorMap" >
+            <property name="text" >
+             <string>Invert Color Map</string>
+            </property>
+           </widget>
+          </item>
+          <item rowspan="5" row="0" column="1" >
+           <widget class="Q3TextEdit" name="txtSymologyNotes" >
+            <property name="enabled" >
+             <bool>true</bool>
+            </property>
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>7</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style="font-size:9pt;font-family:Sans Serif">
+&lt;p style="margin-top:14px" dir="ltr">&lt;span style="font-weight:600">Notes&lt;/span>&lt;/p>
+&lt;/body>&lt;/html>
+</string>
+            </property>
+            <property name="wordWrap" >
+             <enum>Q3TextEdit::WidgetWidth</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" >
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>11</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QRadioButton" name="rbtnThreeBand" >
+              <property name="text" >
+               <string>Color Image</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="rbtnSingleBand" >
+              <property name="text" >
+               <string>Grayscale Image</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="1" >
+        <widget class="QGroupBox" name="grpBoxGrayscale" >
+         <property name="title" >
+          <string>Grayscale Image</string>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>11</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="3" column="1" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>20</width>
+              <height>21</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="3" column="0" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>20</width>
+              <height>21</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="2" column="1" >
+           <widget class="QComboBox" name="cboColorMap" />
+          </item>
+          <item row="2" column="0" >
+           <widget class="QLabel" name="textLabel2_6_2_2" >
+            <property name="text" >
+             <string>Color Map</string>
+            </property>
+            <property name="buddy" >
+             <cstring>cboColorMap</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QLabel" name="textLabel2_6_2" >
+            <property name="text" >
+             <string>Std Deviations</string>
+            </property>
+            <property name="buddy" >
+             <cstring>cboStdDev</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" >
+           <widget class="QComboBox" name="cboStdDev" />
+          </item>
+          <item row="0" column="1" >
+           <widget class="QComboBox" name="cboGray" />
+          </item>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="textLabel2_6" >
+            <property name="text" >
+             <string>Gray</string>
+            </property>
+            <property name="buddy" >
+             <cstring>cboGray</cstring>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -302,86 +382,6 @@
           </item>
           <item row="4" column="1" >
            <widget class="QComboBox" name="cboTransparent" />
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="1" column="1" >
-        <widget class="QGroupBox" name="grpBoxGrayscale" >
-         <property name="title" >
-          <string>Grayscale Image</string>
-         </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>11</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="3" column="1" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>20</width>
-              <height>21</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="3" column="0" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>20</width>
-              <height>21</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="2" column="1" >
-           <widget class="QComboBox" name="cboColorMap" />
-          </item>
-          <item row="2" column="0" >
-           <widget class="QLabel" name="textLabel2_6_2_2" >
-            <property name="text" >
-             <string>Color Map</string>
-            </property>
-            <property name="buddy" >
-             <cstring>cboColorMap</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" >
-           <widget class="QLabel" name="textLabel2_6_2" >
-            <property name="text" >
-             <string>Std Deviations</string>
-            </property>
-            <property name="buddy" >
-             <cstring>cboStdDev</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1" >
-           <widget class="QComboBox" name="cboStdDev" />
-          </item>
-          <item row="0" column="1" >
-           <widget class="QComboBox" name="cboGray" />
-          </item>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="textLabel2_6" >
-            <property name="text" >
-             <string>Gray</string>
-            </property>
-            <property name="buddy" >
-             <cstring>cboGray</cstring>
-            </property>
-           </widget>
           </item>
          </layout>
         </widget>
@@ -746,43 +746,13 @@
       <attribute name="title" >
        <string>Pyramids</string>
       </attribute>
-      <widget class="Q3TextEdit" name="textEdit5" >
-       <property name="geometry" >
-        <rect>
-         <x>9</x>
-         <y>9</y>
-         <width>466</width>
-         <height>475</height>
-        </rect>
-       </property>
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>0</hsizetype>
-         <vsizetype>0</vsizetype>
-         <horstretch>5</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text" >
-        <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style="font-size:9pt;font-family:Sans Serif">
-&lt;p style="margin-top:18px" dir="ltr">&lt;span style="font-size:14pt;font-weight:600">Description&lt;/span>&lt;/p>
-&lt;p dir="ltr">Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p>
-&lt;p dir="ltr">&lt;span style="color:#ff0000">Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span>&lt;/p>
-&lt;p dir="ltr">&lt;span style="color:#ff0000">Please note that building pyramids could corrupt your image - always make a backup of your data first!&lt;/span>&lt;/p>
-&lt;/body>&lt;/html>
-</string>
-       </property>
-       <property name="wordWrap" >
-        <enum>Q3TextEdit::WidgetWidth</enum>
-       </property>
-      </widget>
       <widget class="QWidget" name="layoutWidget" >
        <property name="geometry" >
         <rect>
          <x>9</x>
          <y>490</y>
          <width>592</width>
-         <height>49</height>
+         <height>51</height>
         </rect>
        </property>
        <layout class="QHBoxLayout" >
@@ -846,7 +816,7 @@
         <rect>
          <x>481</x>
          <y>9</y>
-         <width>122</width>
+         <width>144</width>
          <height>471</height>
         </rect>
        </property>
@@ -895,6 +865,36 @@
         </item>
        </layout>
       </widget>
+      <widget class="Q3TextEdit" name="textEdit5" >
+       <property name="geometry" >
+        <rect>
+         <x>9</x>
+         <y>9</y>
+         <width>466</width>
+         <height>475</height>
+        </rect>
+       </property>
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>0</hsizetype>
+         <vsizetype>0</vsizetype>
+         <horstretch>5</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text" >
+        <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style="font-size:9pt;font-family:Sans Serif">
+&lt;p style="margin-top:18px" dir="ltr">&lt;span style="font-size:14pt;font-weight:600">Description&lt;/span>&lt;/p>
+&lt;p dir="ltr">Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p>
+&lt;p dir="ltr">&lt;span style="color:#ff0000">Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span>&lt;/p>
+&lt;p dir="ltr">&lt;span style="color:#ff0000">Please note that building pyramids could corrupt your image - always make a backup of your data first!&lt;/span>&lt;/p>
+&lt;/body>&lt;/html>
+</string>
+       </property>
+       <property name="wordWrap" >
+        <enum>Q3TextEdit::WidgetWidth</enum>
+       </property>
+      </widget>
      </widget>
      <widget class="QWidget" name="tabPageHistogram" >
       <attribute name="title" >
@@ -911,7 +911,7 @@
         <widget class="QLabel" name="pixHistogram" >
          <property name="sizePolicy" >
           <sizepolicy>
-           <hsizetype>0</hsizetype>
+           <hsizetype>7</hsizetype>
            <vsizetype>0</vsizetype>
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
@@ -1070,15 +1070,15 @@
  <layoutdefault spacing="6" margin="11" />
  <customwidgets>
   <customwidget>
+   <class>Q3TextEdit</class>
+   <extends>Q3Frame</extends>
+   <header>q3textedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>Q3GroupBox</class>
    <extends>QGroupBox</extends>
    <header>Qt3Support/Q3GroupBox</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3TextEdit</class>
-   <extends>Q3Frame</extends>
-   <header>q3textedit.h</header>
   </customwidget>
   <customwidget>
    <class>Q3ListBox</class>
