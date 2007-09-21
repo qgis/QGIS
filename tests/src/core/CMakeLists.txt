@@ -55,38 +55,26 @@ ENDIF (APPLE)
 #
 # QgsApplication test
 #
-SET(applicationtest_SRCS testqgsapplication.cpp)
-SET(applicationtest_MOC_CPPS testqgsapplication.cpp)
-QT4_WRAP_CPP(applicationtest_MOC_SRCS ${applicationtest_MOC_CPPS})
-ADD_CUSTOM_TARGET(applicationtestmoc ALL DEPENDS ${applicationtest_MOC_SRCS})
-ADD_EXECUTABLE(applicationtest ${applicationtest_SRCS})
-ADD_DEPENDENCIES(applicationtest applicationtestmoc)
-TARGET_LINK_LIBRARIES(applicationtest ${QT_LIBRARIES} qgis_core)
-IF (APPLE)
-  INSTALL(TARGETS applicationtest RUNTIME DESTINATION ${QGIS_BIN_DIR}/../)
-  ADD_TEST(application ${QGIS_BIN_DIR}/../applicationtest)
-ELSE (APPLE)
-  INSTALL(TARGETS applicationtest RUNTIME DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-  ADD_TEST(application ${CMAKE_CURRENT_BINARY_DIR}/applicationtest)
-ENDIF (APPLE)
+SET(qgis_applicationtest_SRCS testqgsapplication.cpp)
+SET(qgis_applicationtest_MOC_CPPS testqgsapplication.cpp)
+QT4_WRAP_CPP(qgis_applicationtest_MOC_SRCS ${qgis_applicationtest_MOC_CPPS})
+ADD_CUSTOM_TARGET(qgis_applicationtestmoc ALL DEPENDS ${qgis_applicationtest_MOC_SRCS})
+ADD_EXECUTABLE(qgis_applicationtest ${qgis_applicationtest_SRCS})
+ADD_DEPENDENCIES(qgis_applicationtest qgis_applicationtestmoc)
+TARGET_LINK_LIBRARIES(qgis_applicationtest ${QT_LIBRARIES} qgis_core)
+INSTALL(TARGETS qgis_applicationtest RUNTIME DESTINATION ${QGIS_BIN_DIR})
+ADD_TEST(qgis_applicationtest ${QGIS_BIN_DIR}/qgis_applicationtest)
 #
 # QgsFileWriter test
 #
-SET(filewritertest_SRCS testqgsvectorfilewriter.cpp)
-SET(filewritertest_MOC_CPPS testqgsvectorfilewriter.cpp)
-QT4_WRAP_CPP(filewritertest_MOC_SRCS ${filewritertest_MOC_CPPS})
-ADD_CUSTOM_TARGET(filewritertestmoc ALL DEPENDS ${filewritertest_MOC_SRCS})
-ADD_EXECUTABLE(filewritertest ${filewritertest_SRCS})
-ADD_DEPENDENCIES(filewritertest filewritertestmoc)
-TARGET_LINK_LIBRARIES(filewritertest ${QT_LIBRARIES} qgis_core)
-
-
-
-#
-# We need to install to a path
-#
-
-INSTALL(TARGETS filewritertest RUNTIME DESTINATION ${QGIS_BIN_DIR}/../)
-ADD_TEST(filewriter ${QGIS_BIN_DIR}/../filewritertest)
+SET(qgis_filewritertest_SRCS testqgsvectorfilewriter.cpp)
+SET(qgis_filewritertest_MOC_CPPS testqgsvectorfilewriter.cpp)
+QT4_WRAP_CPP(qgis_filewritertest_MOC_SRCS ${qgis_filewritertest_MOC_CPPS})
+ADD_CUSTOM_TARGET(qgis_filewritertestmoc ALL DEPENDS ${qgis_filewritertest_MOC_SRCS})
+ADD_EXECUTABLE(qgis_filewritertest ${qgis_filewritertest_SRCS})
+ADD_DEPENDENCIES(qgis_filewritertest qgis_filewritertestmoc)
+TARGET_LINK_LIBRARIES(qgis_filewritertest ${QT_LIBRARIES} qgis_core)
+INSTALL(TARGETS qgis_filewritertest RUNTIME DESTINATION ${QGIS_BIN_DIR})
+ADD_TEST(qgis_filewritertest ${QGIS_BIN_DIR}/qgis_filewritertest)
 
 
