@@ -1408,6 +1408,7 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPor
       maxGrayDouble = 255.0;
   }
 
+  QgsDebugMsg("Starting main render loop");
   // print each point in myGdalScanData with equal parts R, G ,B o make it show as gray
   for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; ++myColumnInt)
   {
@@ -1456,6 +1457,7 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPor
   
   CPLFree ( myGdalScanData );
 
+  QgsDebugMsg("Render done, preparing to copy to canvas");
   //render any inline filters
   filterLayer(&myQImage);
 
