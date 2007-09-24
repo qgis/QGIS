@@ -426,10 +426,29 @@ bool QgsAttributeTable::commitChanges(QgsVectorLayer* layer)
 	  {
 	    deletedIds.insert(provider->indexFromFieldName(*it));
 	  }
+
+	QgsChangedAttributesMap attributeChanges; //convert mChangedValues to QgsChangedAttributesMap
+	int fieldIndex;
+
+	QMap<int, QMap<QString, QString> >::const_iterator att_it = mChangedValues.constBegin();
+	for(; att_it != mChangedValues.constEnd(); ++att_it)
+	  {
+	    QgsAttributeMap newAttMap;
+	    QMap<QString, QString>::const_iterator record_it = att_it->constBegin();
+	    for(; record_it != att_it->constEnd(); ++record_it)
+	      {
+		fieldIndex = provider->indexFromFieldName(record_it.key());
+		if(fieldIndex != -1)
+		  {
+		    newAttMap.insert(fieldIndex, record_it.value());
+		  }
+	      }
+	    attributeChanges.insert(att_it.key(), newAttMap);
+	  } 
 	
 	isSuccessful = layer->commitAttributeChanges(deletedIds,
 						     mAddedAttributes,
-						     mChangedValues);
+						     attributeChanges);
       }
   }
 
@@ -528,52 +547,23 @@ void QgsAttributeTable::putFeatureInTable(int row, QgsFeature& fet)
   }
 }
 
-int QgsAttributeTable::colIndexFromFieldIndex(int fieldId)
-{
-  int colIndex = 1; // index 0 is feature ID
-  QgsFieldMap::const_iterator it;
-  for (it = mFields.begin(); it != mFields.end(); ++it, ++colIndex)
-  {
-    if (it.key() == fieldId)
-      return colIndex;
-  }
-  return -1;
-}
-
-int QgsAttributeTable::fieldIndexFromColIndex(int colIndex)
-{
-  colIndex--; // first one is feature ID
-  QgsFieldMap::const_iterator it;
-  for (it = mFields.begin(); it != mFields.end(); ++it, --colIndex)
-  {
-    if (colIndex == 0)
-      return it.key();
-  }
-  return -1;
-}
-
 void QgsAttributeTable::storeChangedValue(int row, int column)
 {
-    //id column is not editable
-    if(column>0)
+  //id column is not editable
+  if(column>0)
     {
-	//find feature id
-	int id=text(row,0).toInt();
-	int field = fieldIndexFromColIndex(column);
-	
-  QgsDebugMsg("feature id: " + QString::number(id));
-  QgsDebugMsg("attribute: " + QString::number(field) + ": " + mFields[field].name());
-
-  // add empty map for feature if doesn't exist
-  if (!mChangedValues.contains(id))
-  {
-    mChangedValues.insert(id, QgsAttributeMap());
-  }
-  
-  mChangedValues[id].insert(field, QVariant(text(row,column)) );
-  
-	QgsDebugMsg("value: " + text(row,column));
-	mEdited=true;
+      //find feature id
+      int id=text(row,0).toInt();
+      QString field = horizontalHeader()->label(column);
+      
+      // add empty map for feature if doesn't exist
+      if (!mChangedValues.contains(id))
+	{
+	  mChangedValues.insert(id, QMap<QString, QString>());
+	}
+      
+      mChangedValues[id].insert(field, text(row,column));
+      mEdited=true;
     }
 }
 

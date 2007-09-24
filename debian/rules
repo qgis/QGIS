@@ -29,7 +29,10 @@ CMakeCache.txt: CMakeLists.txt
 	dh_testdir
 	# Add here commands to configure the package.
 	uudecode -o $(CURDIR)/src/plugins/georeferencer/pencil.png $(CURDIR)/debian/pencil.uu
-	cmake -D CMAKE_INSTALL_PREFIX=/usr -D GDAL_INCLUDE_DIR=/usr/include/gdal .
+	cmake -D CMAKE_INSTALL_PREFIX=/usr \
+        -D GDAL_INCLUDE_DIR=/usr/include/gdal \
+        -D GDAL_LIBRARY=/usr/lib/libgdal1.3.2.so \
+        .
 
 build: patch build-stamp
 

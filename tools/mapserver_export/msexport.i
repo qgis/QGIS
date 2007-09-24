@@ -1,3 +1,17 @@
+/***************************************************************************
+     msexport.i
+     --------------------------------------
+    Date                 : Sun Sep 16 12:34:12 AKDT 2007
+    Copyright            : (C) 2007 by Gary E. Sherman
+    Email                : sherman at mrcc dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 /* IF YOU REGENERATE THE SWIG WRAPPER FROM THIS INTERFACE FILE, IT PROBABLY
  * WON'T WORK SINCE THERE SEEMS TO BE A BUG IN THE INTERFACE GENERATION CODE
 */
