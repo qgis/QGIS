@@ -48,7 +48,10 @@ QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, 
 
   init();
 
-  // Font and pen 
+  // Font and pen
+  if(fontSize < 6){
+    fontSize = 6;
+  }
   mFont.setPointSize ( fontSize );
     
   // Set map to the first available if any
@@ -160,6 +163,7 @@ QRectF QgsComposerVectorLegend::render ( QPainter *p )
   }
 
   std::cout << "mComposition->scale() = " << mComposition->scale() << std::endl;
+
   // Font size in canvas units
   float titleSize = 25.4 * mComposition->scale() * mTitleFont.pointSizeFloat() / 72;
   float sectionSize = 25.4 * mComposition->scale() * mSectionFont.pointSizeFloat() / 72;
@@ -393,7 +397,7 @@ std::cout << "widthScale: " << widthScale << std::endl;
             painter->drawLine ( mMargin, localHeight+mSymbolHeight/2, 
                                 mMargin+mSymbolWidth, localHeight+mSymbolHeight/2 );
           } else if ( vector->vectorType() == QGis::Polygon ) {
-            pen.setWidth(0); //use a cosmetic pen to outline the fill box
+            //pen.setWidth(0); //use a cosmetic pen to outline the fill box
             pen.setCapStyle(Qt::FlatCap);
             painter->setPen ( pen );
             painter->drawRect ( mMargin, localHeight, mSymbolWidth, mSymbolHeight );
