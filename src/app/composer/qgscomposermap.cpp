@@ -32,8 +32,10 @@
 #include <cmath>
 
 QgsComposerMap::QgsComposerMap ( QgsComposition *composition, int id, int x, int y, int width, int height )
-    : QWidget(), QGraphicsRectItem(x,y,width,height,0)
+    : QWidget(), QGraphicsRectItem(0,0,width,height,0)
 {
+std::cout << "QgsComposerMap::QgsComposerMap()" << std::endl;
+
     setupUi(this);
 
     mComposition = composition;
@@ -47,6 +49,7 @@ QgsComposerMap::QgsComposerMap ( QgsComposition *composition, int id, int x, int
     // Add to scene
     mComposition->canvas()->addItem(this);
 
+    QGraphicsRectItem::setPos(x, y);
     QGraphicsRectItem::show();
 
     writeSettings();

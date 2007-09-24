@@ -674,7 +674,7 @@ void QgsComposer::on_mActionExportAsImage_activated(void)
 
   //find out the last used filter
   QSettings myQSettings;  // where we keep last used filter in persistant state
-  QString myLastUsedFormat = myQSettings.readEntry("/UI/lastSaveAsImageFormat", "PNG" ); //<- BUG #729 is probably here
+  QString myLastUsedFormat = myQSettings.readEntry("/UI/lastSaveAsImageFormat", "png" );
   QString myLastUsedFile = myQSettings.readEntry("/UI/lastSaveAsImageFile","qgis.png");
   QFileInfo file(myLastUsedFile);
 
@@ -686,6 +686,7 @@ void QgsComposer::on_mActionExportAsImage_activated(void)
   {
     QString myFormat=QString(QImageWriter::supportedImageFormats().at( myCounterInt ));
     QString myFilter = myFormat + " " + tr("format") + " (*." + myFormat.lower() + " *." + myFormat.upper() + ")";
+
     if ( myCounterInt > 0 ) myFilters += ";;";
     myFilters += myFilter;
     myFilterMap[myFilter] = myFormat;
