@@ -379,7 +379,7 @@ dataProvider(0)
 {
   userDefinedColorMinMax = false; //defaults needed to bypass stretch
   userDefinedGrayMinMax = false;
-  setColorScalingAlgorithm(QgsRasterLayer::NO_STRETCH); //defaults needed to bypass stretch
+  setColorScalingAlgorithm(QgsRasterLayer::STRETCH_TO_MINMAX); 
 
   // Initialise the affine transform matrix
   adfGeoTransform[0] =  0;
