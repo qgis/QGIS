@@ -410,7 +410,7 @@ bool TestQgsVectorFileWriter::cleanupFile(QString theFileBase)
   myInfo.setFile(theFileBase + ".shx");
   if (myInfo.exists())
   {
-    if(!QFile::remove(theFileBase + ".shx"));
+    if(!QFile::remove(theFileBase + ".shx"))
     {
       qDebug("Removing file failed : " + theFileBase.toLocal8Bit() + ".shx");
       return false;
@@ -419,7 +419,7 @@ bool TestQgsVectorFileWriter::cleanupFile(QString theFileBase)
   myInfo.setFile(theFileBase + ".dbf");
   if (myInfo.exists())
   {
-    if(!QFile::remove(theFileBase + ".dbf"));
+    if(!QFile::remove(theFileBase + ".dbf"))
     {
       qDebug("Removing file failed : " + theFileBase.toLocal8Bit() + ".dbf");
       return false;
@@ -428,7 +428,7 @@ bool TestQgsVectorFileWriter::cleanupFile(QString theFileBase)
   myInfo.setFile(theFileBase + ".prj");
   if (myInfo.exists())
   {
-    if(!QFile::remove(theFileBase + ".prj"));
+    if(!QFile::remove(theFileBase + ".prj"))
     {
       qDebug("Removing file failed : " + theFileBase.toLocal8Bit() + ".prj");
       return false;
