@@ -35,7 +35,6 @@ INCLUDE_DIRECTORIES(
 )
 
 TARGET_LINK_LIBRARIES(delimitedtextplugin
-  ${QT_LIBRARIES}
   qgis_core
   qgis_gui
 )

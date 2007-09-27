@@ -49,7 +49,6 @@ INCLUDE_DIRECTORIES(
 )
 
 TARGET_LINK_LIBRARIES(gridmakerplugin
-  ${QT_LIBRARIES}
   qgis_core
   qgis_gui
 )
