@@ -7,11 +7,11 @@ FIND_PROGRAM(SVNVERSION svnversion)
 
 # Read the version if installed, else set to "unknown"
 IF (SVNVERSION)
-        EXEC_PROGRAM(${SVNVERSION} ARGS @CMAKE_CURRENT_SOURCE_DIR@ OUTPUT_VARIABLE MYVERSION)
+        EXEC_PROGRAM(${SVNVERSION} ARGS "@CMAKE_CURRENT_SOURCE_DIR@" OUTPUT_VARIABLE MYVERSION)
 ELSE (SVNVERSION)
         SET(MYVERSION unknown)
 ENDIF (SVNVERSION)
 
 # Configure the qgssvnversion.h
-CONFIGURE_FILE(@CMAKE_CURRENT_SOURCE_DIR@/cmake_templates/qgssvnversion.h.in_cmake
-               @CMAKE_CURRENT_BINARY_DIR@/qgssvnversion.h)
+CONFIGURE_FILE("@CMAKE_CURRENT_SOURCE_DIR@/cmake_templates/qgssvnversion.h.in_cmake"
+               "@CMAKE_CURRENT_BINARY_DIR@/qgssvnversion.h")

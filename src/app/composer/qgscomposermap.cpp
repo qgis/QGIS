@@ -30,6 +30,10 @@
 #include <QPainter>
 #include <iostream>
 #include <cmath>
+// round isn't defined by default in msvc
+#ifdef _MSC_VER
+ #define round(x)  ((x) >= 0 ? floor((x)+0.5) : floor((x)-0.5))
+#endif
 
 QgsComposerMap::QgsComposerMap ( QgsComposition *composition, int id, int x, int y, int width, int height )
     : QWidget(), QGraphicsRectItem(0,0,width,height,0)

@@ -579,7 +579,13 @@ void Tools::uncompressRLE(
 	if (lin == 0) { *out = 0; lout = 0;	return; }
 
 	byte *data = 0, *pdata = 0, *pin;
+#ifdef _MSC_VER
+	// MSVC doesn't like non-const array initialisers
+	byte* cv = new byte[blockSize];
+	byte* pv = new byte[blockSize];
+#else
 	byte cv[blockSize], pv[blockSize];
+#endif//_MSC_VER
 	byte rl;
 	unsigned long bufferLength = 2 * lin;
 
@@ -610,6 +616,10 @@ void Tools::uncompressRLE(
 			catch(...)
 			{
 				delete[] data;
+#ifdef _MSC_VER
+				delete[] cv;
+				delete[] pv;
+#endif//_MSC_VER
 				throw;
 			}
 
@@ -644,6 +654,10 @@ void Tools::uncompressRLE(
 				catch(...)
 				{
 					delete[] data;
+#ifdef _MSC_VER
+					delete[] cv;
+					delete[] pv;
+#endif//_MSC_VER
 					throw;
 				}
 
@@ -677,11 +691,19 @@ void Tools::uncompressRLE(
 	catch(...)
 	{
 		delete[] data;
+#ifdef _MSC_VER
+		delete[] cv;
+		delete[] pv;
+#endif//_MSC_VER
 		throw;
 	}
 
 	memcpy(*out, data, lout);
 	delete[] data;
+#ifdef _MSC_VER
+	delete[] cv;
+	delete[] pv;
+#endif//_MSC_VER
 }
 
 #if HAVE_GETTIMEOFDAY
@@ -979,12 +1001,24 @@ std::string Tools::trim(const std::string& source, const std::string& t)
 
 char Tools::toLower(char c)
 {
+#ifdef _MSC_VER
+    // MSVC doesn't seem to have std::tolower(char)
+    std::locale loc;
+    return std::tolower(c, loc);
+#else
     return std::tolower(c);
+#endif//_MSC_VER
 }
 
 char Tools::toUpper(char c)
 {
+#ifdef _MSC_VER
+    // MSVC doesn't seem to have std::toupper(char)
+    std::locale loc;
+    return std::toupper(c, loc);
+#else
     return std::toupper(c);
+#endif//_MSC_VER
 }
 
 std::string Tools::toUpperCase(const std::string& s)

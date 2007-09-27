@@ -22,6 +22,10 @@
 #ifndef __tools_h
 #define __tools_h
 
+#ifdef _MSC_VER
+#include <locale>
+#include <limits>
+#endif//_MSC_VER
 #include <stdint.h>
 #include <assert.h>
 #include <iostream>
@@ -402,10 +406,19 @@ namespace Tools
 	private:
 		std::map<std::string, Variant> m_propertySet;
 
+#ifdef _MSC_VER
+		// MSVC's friend function syntax differs slightly from everyone elses:
+		// don't seem to need to qualify function name.
+		friend std::ostream& operator<<(
+			std::ostream& os,
+			const Tools::PropertySet& p
+		);
+#else
 		friend std::ostream& Tools::operator<<(
 			std::ostream& os,
 			const Tools::PropertySet& p
 		);
+#endif//_MSC_VER
 	}; // PropertySet
 
 	std::ostream& operator<<(std::ostream& os, const Tools::PropertySet& p);
@@ -606,10 +619,19 @@ namespace Tools
 		unsigned long long* m_a;
 		unsigned long m_k;
 
+#ifdef _MSC_VER
+		// MSVC's friend function syntax differs slightly from everyone elses
+		// don't seem to need to qualify function name.
+		friend std::ostream& operator<<(
+			std::ostream& os,
+			const Tools::UniversalHash& h
+		);
+#else
 		friend std::ostream& Tools::operator<<(
 			std::ostream& os,
 			const Tools::UniversalHash& h
 		);
+#endif//_MSC_VER
 	}; // UniversalHash
 
 	std::ostream& operator<<(std::ostream& os, const Tools::UniversalHash& h);

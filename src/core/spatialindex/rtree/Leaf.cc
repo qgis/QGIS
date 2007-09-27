@@ -35,7 +35,12 @@ Leaf::~Leaf()
 {
 }
 
+#ifdef _MSC_VER
+// MSVC seems to find RTree* pTree ambiguous
+Leaf::Leaf(SpatialIndex::RTree::RTree* pTree, long id): Node(pTree, id, 0, pTree->m_leafCapacity)
+#else
 Leaf::Leaf(RTree* pTree, long id): Node(pTree, id, 0, pTree->m_leafCapacity)
+#endif//_MSC_VER
 {
 }
 

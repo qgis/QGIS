@@ -170,7 +170,12 @@ bool Tools::Geometry::LineSegment::touchesShape(const IShape& s) const
 
 void Tools::Geometry::LineSegment::getCenter(Point& out) const
 {
+#ifdef _MSC_VER
+	// MSVC doesn't like non-const array initialisers
+	double* coords = new double[m_dimension];
+#else
 	double coords[m_dimension];
+#endif//_MSC_VER
 
 	for (unsigned long cDim = 0; cDim < m_dimension; cDim++)
 	{
@@ -180,6 +185,10 @@ void Tools::Geometry::LineSegment::getCenter(Point& out) const
 	}
 
 	out = Point(coords, m_dimension);
+
+#ifdef _MSC_VER
+	delete[] coords;
+#endif//_MSC_VER
 }
 
 unsigned long Tools::Geometry::LineSegment::getDimension() const
@@ -189,8 +198,14 @@ unsigned long Tools::Geometry::LineSegment::getDimension() const
 
 void Tools::Geometry::LineSegment::getMBR(Region& out) const
 {
+#ifdef _MSC_VER
+	// MSVC doesn't like non-const array initialisers
+	double* low = new double[m_dimension];
+	double* high = new double[m_dimension];
+#else
 	double low[m_dimension];
 	double high[m_dimension];
+#endif//_MSC_VER
 
 	for (unsigned long cDim = 0; cDim < m_dimension; cDim++)
 	{
@@ -199,6 +214,11 @@ void Tools::Geometry::LineSegment::getMBR(Region& out) const
 	}
 
 	out = Region(low, high, m_dimension);
+
+#ifdef _MSC_VER
+	delete[] low;
+	delete[] high;
+#endif//_MSC_VER
 }
 
 double Tools::Geometry::LineSegment::getArea() const

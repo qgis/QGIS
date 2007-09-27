@@ -70,7 +70,13 @@ namespace SpatialIndex
 			unsigned long m_dataLength;
 		}; // Data
 
+#ifdef _MSC_VER
+		// MSVC didn't like the difference in parameter names between declaration
+		// definition
+		extern ISpatialIndex* returnRTree(IStorageManager& sm, Tools::PropertySet& ps);
+#else
 		extern ISpatialIndex* returnRTree(IStorageManager& in, Tools::PropertySet& in);
+#endif//_MSC_VER
 		extern ISpatialIndex* createNewRTree(
 			IStorageManager& sm,
 			double fillFactor,

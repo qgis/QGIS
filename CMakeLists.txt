@@ -145,6 +145,17 @@ IF (WIN32)
   SET (QGIS_PLUGIN_DIR ${CMAKE_INSTALL_PREFIX}/plugins)
   SET (QGIS_INCLUDE_DIR ${CMAKE_INSTALL_PREFIX}/include)
   SET (QGIS_SOURCE_DIR ${CMAKE_SOURCE_DIR})
+  IF(MSVC)
+    # Turn on defines for non standard maths stuff
+    ADD_DEFINITIONS(-D_USE_MATH_DEFINES)
+
+    # Some file access stuff not defined in native win32
+    # environment
+    ADD_DEFINITIONS(-DF_OK=0)
+    ADD_DEFINITIONS(-DX_OK=1)
+    ADD_DEFINITIONS(-DW_OK=2)
+    ADD_DEFINITIONS(-DR_OK=4)
+  ENDIF(MSVC)
 
 ELSE (WIN32)
 
