@@ -217,7 +217,12 @@ Node::Node() :
 {
 }
 
-Node::Node(RTree* pTree, long id, unsigned long level, unsigned long capacity) :
+#ifdef _MSC_VER
+	// MSVC seems to find RTree* pTree ambiguous
+	Node::Node(SpatialIndex::RTree::RTree* pTree, long id, unsigned long level, unsigned long capacity) :
+#else
+	Node::Node(RTree* pTree, long id, unsigned long level, unsigned long capacity) :
+#endif//_MSC_VER
 	m_pTree(pTree),
 	m_level(level),
 	m_identifier(id),

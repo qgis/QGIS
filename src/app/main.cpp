@@ -44,6 +44,13 @@
  #include <fcntl.h> /*  _O_BINARY */
  #undef _fmode
  int _fmode = _O_BINARY;
+ #ifndef _MSC_VER
+  // Only do this if we are not building on windows with msvc.
+  // Recommended method for doing this with msvc is with a call to _set_fmode
+  // which is the first thing we do in main().
+  #undef _fmode
+  int _fmode = _O_BINARY;
+ #endif//_MSC_VER
 #else
  #include <getopt.h>
 #endif
@@ -216,6 +223,9 @@ void myMessageOutput( QtMsgType type, const char *msg )
 
 int main(int argc, char *argv[])
 {
+ #ifdef _MSC_VER
+    _set_fmode(_O_BINARY);
+ #endif 
 
   // Set up the custom qWarning/qDebug custom handler
   qInstallMsgHandler( myMessageOutput );

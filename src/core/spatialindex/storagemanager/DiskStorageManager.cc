@@ -29,6 +29,9 @@
 
 #ifdef WIN32
 #include <io.h>
+#ifdef _MSC_VER
+#include <basetsd.h>
+#endif//_MSC_VER
 #define fsync(fd) _commit(fd)
 #endif
 
@@ -38,6 +41,10 @@ using namespace SpatialIndex;
 using namespace SpatialIndex::StorageManager;
 using std::map;
 using std::vector;
+
+#ifdef _MSC_VER
+typedef SSIZE_T ssize_t;
+#endif//_MSC_VER
 
 SpatialIndex::IStorageManager* SpatialIndex::StorageManager::returnDiskStorageManager(Tools::PropertySet& ps)
 {

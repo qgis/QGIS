@@ -35,7 +35,12 @@ Index::~Index()
 {
 }
 
+#ifdef _MSC_VER
+// MSVC seems to find RTree* pTree ambiguous
+Index::Index(SpatialIndex::RTree::RTree* pTree, long id, unsigned long level) : Node(pTree, id, level, pTree->m_indexCapacity)
+#else
 Index::Index(RTree* pTree, long id, unsigned long level) : Node(pTree, id, level, pTree->m_indexCapacity)
+#endif//_MSC_VER
 {
 }
 

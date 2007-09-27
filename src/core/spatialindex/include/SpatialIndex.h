@@ -183,7 +183,13 @@ namespace SpatialIndex
 		extern IStorageManager* createNewDiskStorageManager(std::string& baseName, unsigned long pageSize);
 		extern IStorageManager* loadDiskStorageManager(std::string& baseName);
 
+#ifdef _MSC_VER
+		// MSVC didn't like the difference in parameter names between declaration
+		// definition
+		extern IBuffer* returnRandomEvictionsBuffer(IStorageManager& sm, Tools::PropertySet& ps);
+#else
 		extern IBuffer* returnRandomEvictionsBuffer(IStorageManager& in, Tools::PropertySet& in);
+#endif//_MSC_VER
 		extern IBuffer* createNewRandomEvictionsBuffer(IStorageManager& in, unsigned int capacity, bool bWriteThrough);
 	}
 

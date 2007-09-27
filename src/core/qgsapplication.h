@@ -114,10 +114,10 @@ class CORE_EXPORT QgsApplication: public QApplication
      */
     static QString reportStyleSheet();
   private:
-    CORE_EXPORT static QString mPrefixPath;
-    CORE_EXPORT static QString mPluginPath;
-    CORE_EXPORT static QString mPkgDataPath;
-    CORE_EXPORT static QString mThemePath;
+    static QString mPrefixPath;
+    static QString mPluginPath;
+    static QString mPkgDataPath;
+    static QString mThemePath;
 };
 
 #endif

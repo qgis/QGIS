@@ -83,7 +83,13 @@ class QTreeWidgetItem;
 class QgsLegend : public QTreeWidget
 {
     Q_OBJECT;
-	
+ private:
+    // Moved here to match access of declaration later in file.
+    // Previous location raised a warning in msvc as the forward
+    // declaration was public while the definition was private
+    class QgsLegendPixmaps;
+   
+
  public:
     /*! Constructor.
    * @param qgis_app link to qgisapp   
@@ -169,7 +175,6 @@ class QgsLegend : public QTreeWidget
   /**Sets the toggle editing action. Usually called from QgisApp*/
   void setToggleEditingAction(QAction* editingAction){mToggleEditingAction = editingAction;}
 
-  class QgsLegendPixmaps;
   /**Returns structure with legend pixmaps*/
   QgsLegendPixmaps& pixmaps() { return mPixmaps; }
   
