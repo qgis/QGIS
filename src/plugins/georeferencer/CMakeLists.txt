@@ -53,7 +53,6 @@ INCLUDE_DIRECTORIES(
 )
 
 TARGET_LINK_LIBRARIES(georefplugin
-  ${QT_LIBRARIES}
   qgis_core
   qgis_gui
   ${GSL_LIBRARIES}
