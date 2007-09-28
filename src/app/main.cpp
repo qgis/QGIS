@@ -42,8 +42,10 @@
 #ifdef WIN32
  // Open files in binary mode
  #include <fcntl.h> /*  _O_BINARY */
+ #ifdef MSVC
  #undef _fmode
- int _fmode = _O_BINARY;
+  int _fmode = _O_BINARY;
+ #endif
  #ifndef _MSC_VER
   // Only do this if we are not building on windows with msvc.
   // Recommended method for doing this with msvc is with a call to _set_fmode
