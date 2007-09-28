@@ -50,7 +50,7 @@ QString QgsApplication::mThemePath;
 QgsApplication::QgsApplication(int & argc, char ** argv, bool GUIenabled)
 : QApplication(argc, argv, GUIenabled)
 {
-#if defined(Q_WS_MACX) || defined(Q_WS_WIN32)
+#if defined(Q_WS_MACX) || defined(Q_WS_WIN32) || defined(WIN32)
   setPrefixPath(applicationDirPath(), TRUE);
 #else
   setPrefixPath(PREFIX, TRUE);
