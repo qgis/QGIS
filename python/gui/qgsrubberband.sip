@@ -14,8 +14,16 @@ class QgsRubberBand: QgsMapCanvasItem
 
     void reset(bool isPolygon = false);
     void addPoint(const QgsPoint & p);
+
+    // ! Remove last point
+    void removePoint(bool update = true);
+
     void movePoint(const QgsPoint & p);
     void movePoint(int index, const QgsPoint& p);
+
+    int size() const;
+    const QList<QgsPoint>& getPoints() const;
+    const QgsPoint& getPoint(int index) const;
 
   protected:
     virtual void paint(QPainter* p);
