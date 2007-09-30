@@ -123,7 +123,7 @@ void QgsUniqueValueDialog::apply()
     if (provider)
       {
 	int fieldIndex = provider->indexFromFieldName(mClassificationComboBox->currentText());
-	if(fieldIndex > 0)
+	if(fieldIndex != -1)
 	  {
 	    renderer->setClassificationField(fieldIndex);
 	    mVectorLayer->setRenderer(renderer);
