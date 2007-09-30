@@ -17,8 +17,8 @@
 #define QGSRUBBERBAND_H
 
 #include "qgsmapcanvasitem.h"
-#include <deque>
 #include <QBrush>
+#include <QList>
 #include <QPen>
 #include <QPolygon>
 class QPaintEvent;
@@ -38,8 +38,15 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     //! If adding more points consider using update=false for better performance
     void addPoint(const QgsPoint & p, bool update = true);
 
+    // ! Remove last point
+    void removePoint(bool update = true);
+
     void movePoint(const QgsPoint & p);
     void movePoint(int index, const QgsPoint& p);
+
+    int size() const;
+    const QList<QgsPoint>& getPoints() const;
+    const QgsPoint& getPoint(int index) const;
 
   protected:
     virtual void paint(QPainter* p);
@@ -50,7 +57,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
   private:
     QBrush mBrush;
     QPen mPen;
-    std::deque<QgsPoint> mPoints;
+    QList<QgsPoint> mPoints;
     bool mIsPolygon;
 };
 
