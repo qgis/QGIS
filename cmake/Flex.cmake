@@ -3,7 +3,11 @@
 # search flex
 MACRO(FIND_FLEX)
     IF(NOT FLEX_EXECUTABLE)
+      IF (MSVC)
+        FIND_PROGRAM(FLEX_EXECUTABLE "C:/dev/cpp/flex/bin/flex.exe")
+      ELSE(MSVC)
         FIND_PROGRAM(FLEX_EXECUTABLE flex)
+      ENDIF (MSVC)
         IF (NOT FLEX_EXECUTABLE)
           MESSAGE(FATAL_ERROR "flex not found - aborting")
         ENDIF (NOT FLEX_EXECUTABLE)

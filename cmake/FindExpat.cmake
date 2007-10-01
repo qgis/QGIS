@@ -8,9 +8,19 @@
 #    EXPAT_LIBRARY
 
 
-FIND_PATH(EXPAT_INCLUDE_DIR expat.h /usr/local/include /usr/include c:/msys/local/include)
-
-FIND_LIBRARY(EXPAT_LIBRARY NAMES expat PATHS /usr/local/lib /usr/lib c:/msys/local/lib)
+FIND_PATH(EXPAT_INCLUDE_DIR expat.h 
+  /usr/local/include 
+  /usr/include 
+  c:/msys/local/include
+  "C:/dev/cpp/Expat 2.0.1/Source/Lib"
+  )
+#libexpat needed for msvc version
+FIND_LIBRARY(EXPAT_LIBRARY NAMES expat libexpat PATHS 
+  /usr/local/lib 
+  /usr/lib 
+  c:/msys/local/lib
+  "C:/dev/cpp/Expat 2.0.1/Bin"
+  )
 
 IF (EXPAT_INCLUDE_DIR AND EXPAT_LIBRARY)
    SET(EXPAT_FOUND TRUE)

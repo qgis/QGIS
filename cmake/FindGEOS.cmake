@@ -7,9 +7,21 @@
 #    GEOS_LIBRARY
 
 
-FIND_PATH(GEOS_INCLUDE_DIR geos.h /usr/local/include /usr/include c:/msys/local/include)
+FIND_PATH(GEOS_INCLUDE_DIR geos.h 
+  /usr/local/include 
+  /usr/include 
+  c:/msys/local/include
+  #MSVC
+  C:/dev/cpp/geos-2.2.1/source/headers
+  )
 
-FIND_LIBRARY(GEOS_LIBRARY NAMES geos PATHS /usr/local/lib /usr/lib c:/msys/local/lib)
+FIND_LIBRARY(GEOS_LIBRARY NAMES geos PATHS 
+  /usr/local/lib 
+  /usr/lib 
+  c:/msys/local/lib
+  #MSVC
+  C:/dev/cpp/geos-2.2.1/source
+  )
 
 IF (GEOS_INCLUDE_DIR AND GEOS_LIBRARY)
    SET(GEOS_FOUND TRUE)

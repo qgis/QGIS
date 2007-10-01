@@ -7,9 +7,21 @@
 #    SQLITE3_LIBRARY
 
 
-FIND_PATH(SQLITE3_INCLUDE_DIR sqlite3.h /usr/local/include /usr/include c:/msys/local/include)
+FIND_PATH(SQLITE3_INCLUDE_DIR sqlite3.h 
+  /usr/local/include 
+  /usr/include 
+  c:/msys/local/include
+  #msvc
+  c:/dev/cpp/sqlite3
+  )
 
-FIND_LIBRARY(SQLITE3_LIBRARY NAMES sqlite3 PATHS /usr/local/lib /usr/lib c:/msys/local/lib)
+FIND_LIBRARY(SQLITE3_LIBRARY NAMES sqlite3 PATHS 
+  /usr/local/lib 
+  /usr/lib 
+  c:/msys/local/lib
+  #msvc
+  c:/dev/cpp/sqlite3
+  )
 
 IF (SQLITE3_INCLUDE_DIR AND SQLITE3_LIBRARY)
    SET(SQLITE3_FOUND TRUE)
