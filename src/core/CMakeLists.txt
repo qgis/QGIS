@@ -141,6 +141,10 @@ ADD_DEPENDENCIES(qgis_core svnversion)
 # because of htonl
 IF (WIN32)
   SET(PLATFORM_LIBRARIES wsock32)
+  IF (MSVC)
+    #needed for linking to gdal which needs odbc
+    SET(PLATFORM_LIBRARIES ${PLATFORM_LIBRARIES} odbc32 odbccp32)
+  ENDIF (MSVC)
 ENDIF (WIN32)
 
 TARGET_LINK_LIBRARIES(qgis_core
@@ -233,3 +237,7 @@ spatialindex/qgsspatialindex.h
 
 INSTALL(CODE "MESSAGE(\"Installing CORE headers...\")")
 INSTALL(FILES ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+IF (MSVC)
+  #install the static lib too for 3rd party app writers to use
+  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/RelWithDebInfo/qgis_core.lib DESTINATION ${QGIS_BIN_DIR})
+ENDIF (MSVC)
