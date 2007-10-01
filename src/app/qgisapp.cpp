@@ -1206,7 +1206,7 @@ void QgisApp::setupConnections()
 void QgisApp::createCanvas()
 {
   // "theMapCanvas" used to find this canonical instance later
-  mMapCanvas = new QgsMapCanvas(NULL, "theMapCanvas" );
+  mMapCanvas = new QgsMapCanvas(this, "theMapCanvas" );
   QWhatsThis::add(mMapCanvas, tr("Map canvas. This is where raster and vector layers are displayed when added to the map"));
   
   mMapCanvas->setMinimumWidth(10);
