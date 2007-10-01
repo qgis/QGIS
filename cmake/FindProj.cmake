@@ -7,9 +7,19 @@
 #    PROJ_LIBRARY
 
 
-FIND_PATH(PROJ_INCLUDE_DIR proj_api.h /usr/local/include /usr/include c:/msys/local/include)
+FIND_PATH(PROJ_INCLUDE_DIR proj_api.h 
+  /usr/local/include 
+  /usr/include 
+  c:/msys/local/include
+  C:/dev/cpp/proj-4.5.0/src
+  )
 
-FIND_LIBRARY(PROJ_LIBRARY NAMES proj PATHS /usr/local/lib /usr/lib c:/msys/local/lib)
+FIND_LIBRARY(PROJ_LIBRARY NAMES proj PATHS 
+  /usr/local/lib 
+  /usr/lib 
+  c:/msys/local/lib
+  C:/dev/cpp/proj-4.5.0/src
+  )
 
 IF (PROJ_INCLUDE_DIR AND PROJ_LIBRARY)
    SET(PROJ_FOUND TRUE)
