@@ -23,6 +23,32 @@
 
 = Introduction =
 
+This document is the original installation guide of the described software 
+Quantum GIS. The software and hardware descriptions named in this 
+document are in most cases registered trademarks and are therefore subject 
+to the legal requirements. Quantum GIS is subject to the GNU General Public 
+License. Find more information on the Quantum GIS Homepage:
+http://www.qgis.org
+
+The details, that are given in this document have been written and verified 
+to the best of knowledge and responsibility of the editors. Nevertheless, 
+mistakes concerning the content are possible. Therefore, all data are not 
+liable to any duties or guarantees. The editors and publishers do not take 
+any responsibility or liability for failures and their consequences. You are 
+always welcome for indicating possible mistakes.
+
+You can download this document as part of the Quantum GIS 'User and 
+Installation Guide' in HTML and PDF format via http://www.qgis.org. A current 
+version is also available at the wiki, see:
+http://wiki.qgis.org/qgiswiki/BuildingFromSource 
+
+Translations of this document can also be downloaded at the documentation area 
+of the Quantum GIS project at http://www.qgis.org. More information is 
+available via http://wiki.qgis.org/qgiswiki/DocumentationWritersCorner. 
+
+Please visit http://qgis.org for information on joining our mailing lists 
+and getting involved in the project further.
+
 /!\ ***Note to document writers:*** Please use this document as the central
 place for describing build procefures. Please do not remove this notice. 
 
@@ -30,7 +56,6 @@ place for describing build procefures. Please do not remove this notice.
 simply copy the commands listed in codeblocks that look like this:
 
 ``` somecommand to be pasted ```
-
 
 = General Build Note =
 
@@ -1050,11 +1075,6 @@ copy contents of pgsql directory from the archive to ``c:\msys\local``
 
 We're done with preparation of MSYS environment. Now you can delete all stuff in ``c:\msys\local\src`` - it takes quite a lot
 of space and it's not necessary at all.
-
-= Further help and information =
-
-    Please visit http://qgis.org for information on joining our mailing lists
-    and getting involved in the project further.
 
 
 = Authors and Acknowledgments =
