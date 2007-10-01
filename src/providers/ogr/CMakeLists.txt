@@ -17,6 +17,10 @@ TARGET_LINK_LIBRARIES(ogrprovider
   ${GEOS_LIBRARY}
   qgis_core
 )
+IF (MSVC)
+  #needed for linking to gdal which needs odbc
+  SET(TARGET_LINK_LIBRARIES ${TARGET_LINK_LIBRARIE} odbc32 odbccp32)
+ENDIF (MSVC)
 
 INSTALL (TARGETS ogrprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
