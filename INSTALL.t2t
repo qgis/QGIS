@@ -379,7 +379,8 @@ tar xvfz gsl-1.8.tar.gz
 cd gsl-1.8 
 ./configure --prefix=/usr/local 
 make
-sudo make install cd ..  
+sudo make install
+cd ..  
 ```
 
 === Additional Dependencies : Expat ===

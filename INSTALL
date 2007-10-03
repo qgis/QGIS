@@ -467,7 +467,8 @@ Then extract it and build it to a prefix of /usr/local:
   cd gsl-1.8 
   ./configure --prefix=/usr/local 
   make
-  sudo make install cd ..  
+  sudo make install
+  cd ..  
 
 
 
