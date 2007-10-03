@@ -311,13 +311,13 @@ XCODE after the ~941mb download is complete.
 == Install Qt4 from .dmg ==
 
 ``` 
-ftp://ftp.trolltech.com/qt/source/qt-mac-opensource-4.2.3.dmg 
+ftp://ftp.trolltech.com/qt/source/qt-mac-opensource-4.3.2.dmg
 ```
 
 If you want debug libs, Qt also provide a dmg with these:
 
 ``` 
-ftp://ftp.trolltech.com/qt/source/qt-mac-opensource-4.2.3-debug-libs.dmg
+ftp://ftp.trolltech.com/qt/source/qt-mac-opensource-4.3.2-debug-libs.dmg
 ```
 
 I am going to proceed using only release libs at this stage as the download for
