@@ -310,6 +310,8 @@ XCODE after the ~941mb download is complete.
 
 == Install Qt4 from .dmg ==
 
+You need a minimum of Qt4.2. I suggest getting the latest (at time of writing).
+
 ``` 
 ftp://ftp.trolltech.com/qt/source/qt-mac-opensource-4.3.2.dmg
 ```
@@ -337,7 +339,7 @@ change
 Second change the default mkspec symlink so that it points to macx-g++:
 
 ```
-cd /usr/local/Qt4.2/mkspecs/ sudo rm default sudo ln -sf macx-g++ default
+cd /usr/local/Qt4.3/mkspecs/ sudo rm default sudo ln -sf macx-g++ default
 ```
 
 
@@ -536,6 +538,10 @@ For svn 0.8 branch
 svn co https://svn.qgis.org/repos/qgis/branches/Release-0_8_0 qgis0.8
 ```
 
+For svn 0.9 branch
+``` 
+svn co https://svn.qgis.org/repos/qgis/branches/Release-0_9_0 qgis0.9
+```
 
 The first time you check out QGIS sources you will probably get a message like
 this:
