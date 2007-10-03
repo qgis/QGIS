@@ -1,3 +1,4 @@
+%!encoding: iso-8859-1
 
 
 ------------------------------------------------------------------------
@@ -64,8 +65,7 @@
       6.2.8. EXPAT
       6.2.9. POSTGRES
     6.3. Cleanup
-  7. Further help and information
-  8. Authors and Acknowledgments
+  7. Authors and Acknowledgments
 
 
 ------------------------------------------------------------------------
@@ -73,6 +73,32 @@
 
   1. Introduction
   ===============
+
+This document is the original installation guide of the described software 
+Quantum GIS. The software and hardware descriptions named in this 
+document are in most cases registered trademarks and are therefore subject 
+to the legal requirements. Quantum GIS is subject to the GNU General Public 
+License. Find more information on the Quantum GIS Homepage:
+http://www.qgis.org
+
+The details, that are given in this document have been written and verified 
+to the best of knowledge and responsibility of the editors. Nevertheless, 
+mistakes concerning the content are possible. Therefore, all data are not 
+liable to any duties or guarantees. The editors and publishers do not take 
+any responsibility or liability for failures and their consequences. You are 
+always welcome for indicating possible mistakes.
+
+You can download this document as part of the Quantum GIS 'User and 
+Installation Guide' in HTML and PDF format via http://www.qgis.org. A current 
+version is also available at the wiki, see:
+http://wiki.qgis.org/qgiswiki/BuildingFromSource 
+
+Translations of this document can also be downloaded at the documentation area 
+of the Quantum GIS project at http://www.qgis.org. More information is 
+available via http://wiki.qgis.org/qgiswiki/DocumentationWritersCorner. 
+
+Please visit http://qgis.org for information on joining our mailing lists 
+and getting involved in the project further.
 
 /!\ *Note to document writers:* Please use this document as the central
 place for describing build procefures. Please do not remove this notice. 
@@ -370,13 +396,13 @@ XCODE after the ~941mb download is complete.
 	==========================
 
 
-  ftp://ftp.trolltech.com/qt/source/qt-mac-opensource-4.2.3.dmg 
+  ftp://ftp.trolltech.com/qt/source/qt-mac-opensource-4.3.2.dmg
 
 
 If you want debug libs, Qt also provide a dmg with these:
 
 
-  ftp://ftp.trolltech.com/qt/source/qt-mac-opensource-4.2.3-debug-libs.dmg
+  ftp://ftp.trolltech.com/qt/source/qt-mac-opensource-4.3.2-debug-libs.dmg
 
 
 I am going to proceed using only release libs at this stage as the download for
@@ -1219,14 +1245,7 @@ We're done with preparation of MSYS environment. Now you can delete all stuff in
 of space and it's not necessary at all.
 
 
-  7. Further help and information
-  ===============================
-
-    Please visit http://qgis.org for information on joining our mailing lists
-    and getting involved in the project further.
-
-
-  8. Authors and Acknowledgments
+  7. Authors and Acknowledgments
   ==============================
 
 The follwing people have contributed to this document:
