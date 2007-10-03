@@ -185,6 +185,7 @@ qgscontexthelp.h
 qgscoordinatetransform.h
 qgsdatasourceuri.h
 qgsdistancearea.h
+qgscsexception.h
 qgsexception.h
 qgsfeature.h
 qgsfield.h
