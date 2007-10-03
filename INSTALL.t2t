@@ -422,6 +422,20 @@ cd ..
 
 === Additional Dependencies : PyQt ===
 
+Make sure you have the latest python fom 
+
+```
+http://www.python.org/download/mac/
+```
+
+If you encounter problems compiling PyQt using the instructions 
+below you can also try adding python from your frameworks dir
+explicitly to your path e.g.
+
+```
+export PATH=/Library/Frameworks/Python.framework/Versions/Current/bin:$PATH$
+```
+
 Retrieve the python bindings toolkit for Qt from
 
 ``` 
