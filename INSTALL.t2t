@@ -149,10 +149,11 @@ http://python.org/download/
 
 === Download SIP and PyQt4 sources ===
 
-http://www.riverbankcomputing.com/Downloads/sip4/sip-4.6.zip
-http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/PyQt-win-gpl-4.2.zip
+http://www.riverbankcomputing.com/Downloads/sip4/
+http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/
 
-Extract each of the above zip files in a temporary directory.
+Extract each of the above zip files in a temporary directory. Make sure
+to get versions that match your current Qt installed version.
    
 === Compile SIP ===
 
@@ -405,14 +406,14 @@ cd ..
 Retrieve the python bindings toolkit SIP from
 
 ``` 
-curl -O http://www.riverbankcomputing.com/Downloads/sip4/sip-4.5.2.tar.gz
+http://www.riverbankcomputing.com/Downloads/sip4/
 ```
 
 Then extract and build it to a prefix of /usr/local:
 
 ``` 
-tar xvfz sip-4.5.2.tar.gz 
-cd sip-4.5.2 
+tar xvfz sip-<version number>.tar.gz 
+cd sip-<version number>
 python configure.py 
 make 
 sudo make install 
@@ -424,14 +425,14 @@ cd ..
 Retrieve the python bindings toolkit for Qt from
 
 ``` 
-curl -O http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/PyQt-mac-gpl-4.1.1.tar.gz
+http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/
 ```
 
 Then extract and build it to a prefix of /usr/local:
 
 ``` 
-tar xvfz PyQt-mac-gpl-4.1.1.tar.gz 
-cd PyQt-mac-gpl-4.1.1 
+tar xvfz PyQt-mac<version number here>
+cd PyQt-mac<version number here>
 python configure.py 
 yes 
 make 
