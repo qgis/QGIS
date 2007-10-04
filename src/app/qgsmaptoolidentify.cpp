@@ -114,7 +114,7 @@ void QgsMapToolIdentify::canvasReleaseEvent(QMouseEvent * e)
   {
     QMessageBox::warning(mCanvas,
       QObject::tr("No active layer"),
-      QObject::tr("To identify features, you must choose an layer active by clicking on its name in the legend"));
+      QObject::tr("To identify features, you must choose an active layer by clicking on its name in the legend"));
   }
 
   
