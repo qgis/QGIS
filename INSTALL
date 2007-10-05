@@ -683,13 +683,17 @@ I suggest you press 'p' to accept the key permanently.
 	========================
 
 CMake supports out of source build so we will create a 'build' dir for the
-build process
+build process . By convention I build my software into a dir called 'apps'
+in my home directory. If you have the correct permissions you may want to 
+build straight into your /Applications folder (although personally I dont 
+really recommend this). The instructions below assume you are building into 
+a pre-existing ${HOME}/apps directory ...
 
 
   cd qgis 
   mkdir build 
   cd build 
-  cmake -D CMAKE_INSTALL_PREFIX=$HOME/apps/ -D CMAKE_BUILD_TYPE=Release..
+  cmake -D CMAKE_INSTALL_PREFIX=$HOME/apps/ -D CMAKE_BUILD_TYPE=Release ..
 
 
 To use a specific GRASS version, You can optionally use the following 
@@ -697,7 +701,7 @@ cmake invocation (with modifications to suite your system (thanks William
 Kyngesburye for this hint):
 
 
-  cmake -D CMAKE_INSTALL_PREFIX=$HOME/apps/ \
+  cmake -D CMAKE_INSTALL_PREFIX=${HOME}/apps/ \
         -D GRASS_INCLUDE_DIR=/Applications/GRASS-6.3.app/Contents/Resources/include \
         -D GRASS_PREFIX=/Applications/GRASS-6.3.app/Contents/Resources \
         -D CMAKE_BUILD_TYPE=Release \
