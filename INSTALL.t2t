@@ -713,7 +713,7 @@ sudo apt-get install gdal-bin libgdal1-dev libgeos-dev proj libtool \
 libgdal-doc libhdf4g-dev libhdf4g-run python-dev \
 swig libgsl0-dev g++ libjasper-1.701-dev libtiff4-dev subversion gsl-bin \
 libsqlite3-dev sqlite3 ccache make libpq-dev flex bison cmake txt2tags \
-python-qt4 python-qt4-dev python-sip4 sip4
+python-qt4 python-qt4-dev python-sip4 sip4 python-sip4-dev
 ```
 
 /!\ Debian users should use libgdal-dev above rather
