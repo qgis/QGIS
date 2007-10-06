@@ -25,11 +25,15 @@
 #include "qgsmaprender.h"
 #include "qgsvectorlayer.h"
 
+#include "qgslabel.h"
+#include "qgslabelattributes.h"
+
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
 #include <QPainter>
 #include <iostream>
 #include <cmath>
+
 // round isn't defined by default in msvc
 #ifdef _MSC_VER
  #define round(x)  ((x) >= 0 ? floor((x)+0.5) : floor((x)-0.5))
@@ -221,7 +225,24 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect &extent, QgsMapToPixel *t
           // should use size metrics.ascent() * 72.0 / mComposition->resolution();
           // We could add a factor for metrics.ascent()/size but it is variable
           // Add a parrameter in drawLables() ?
-          fontScale = 72.0 / mComposition->resolution();
+
+          QFont tempFont;
+          tempFont.setFamily(vector->label()->layerAttributes()->family());
+
+          double size = vector->label()->layerAttributes()->size();
+          size = 25.4 * size / 72;
+
+          tempFont.setPointSizeF(size);
+          QFontMetricsF tempMetrics(tempFont);
+
+          fontScale = tempMetrics.ascent() * 72.0 / mComposition->resolution();
+          //std::cout << "fontScale: " << fontScale << std::endl;
+
+          fontScale *= mFontScale;
+
+          //divide out the font size, since it will be multiplied back in when drawing the labels
+          fontScale /= vector->label()->layerAttributes()->size();
+
         }
         vector->drawLabels (  painter, extent, transform, ct, fontScale );
       }
