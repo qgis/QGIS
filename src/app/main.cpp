@@ -455,7 +455,7 @@ int main(int argc, char *argv[])
   }
   else
   {
-#ifdef Q_OS_MACX
+#if defined(Q_OS_MACX) && QT_VERSION < 0x040300
     //on mac automasking as done below does not work (as of qt 4.2.1)
     //so we do it the old way see bug #387
     qDebug("setting mask for mac");
