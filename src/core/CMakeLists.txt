@@ -238,7 +238,3 @@ spatialindex/qgsspatialindex.h
 
 INSTALL(CODE "MESSAGE(\"Installing CORE headers...\")")
 INSTALL(FILES ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
-IF (MSVC)
-  #install the static lib too for 3rd party app writers to use
-  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/RelWithDebInfo/qgis_core.lib DESTINATION ${QGIS_BIN_DIR})
-ENDIF (MSVC)

@@ -108,8 +108,4 @@ qgsvertexmarker.h
 
 INSTALL(CODE "MESSAGE(\"Installing GUI headers...\")")
 INSTALL(FILES ${QGIS_GUI_HDRS} ${QGIS_GUI_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
-IF (MSVC)
-  #install the static lib too for 3rd party app writers to use
-  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/RelWithDebInfo/qgis_gui.lib DESTINATION ${QGIS_BIN_DIR})
-ENDIF (MSVC)
 
