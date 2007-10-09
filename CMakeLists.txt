@@ -146,6 +146,9 @@ IF (WIN32)
   SET (QGIS_INCLUDE_DIR ${CMAKE_INSTALL_PREFIX}/include)
   SET (QGIS_SOURCE_DIR ${CMAKE_SOURCE_DIR})
   IF(MSVC)
+    #tell msvc compiler to use main instead of winmain as the
+    #application entry point
+    SET(QT_USE_QTMAIN TRUE) 
     # Turn on defines for non standard maths stuff
     ADD_DEFINITIONS(-D_USE_MATH_DEFINES)
 
