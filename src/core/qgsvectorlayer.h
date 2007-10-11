@@ -91,12 +91,6 @@ public:
   /** Returns the primary display field name used in the identify results dialog */
   const QString displayField() const;
 
-  /** bind layer to a specific data provider
-     @param provider should be "postgres", "ogr", or ??
-     @todo XXX should this return bool?  Throw exceptions?
-  */
-  bool setDataProvider( QString const & provider );
-  
   /** Returns the data provider */
   QgsVectorDataProvider* getDataProvider();
 
@@ -413,6 +407,12 @@ private:                       // Private methods
   /** vector layers are not copyable */
   QgsVectorLayer & operator=( QgsVectorLayer const & rhs );
 
+  /** bind layer to a specific data provider
+     @param provider should be "postgres", "ogr", or ??
+     @todo XXX should this return bool?  Throw exceptions?
+  */
+  bool setDataProvider( QString const & provider );
+  
   /** Draws features. May cause projections exceptions to be generated
    *  (i.e., code that calls this function needs to catch them
    */

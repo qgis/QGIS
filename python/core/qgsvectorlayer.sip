@@ -29,12 +29,6 @@ public:
   /** Returns the primary display field name used in the identify results dialog */
   const QString displayField() const;
 
-  /** bind layer to a specific data provider
-     @param provider should be "postgres", "ogr", or ??
-     @todo XXX should this return bool?  Throw exceptions?
-  */
-  bool setDataProvider(const QString & provider );
-  
   /** Returns the data provider */
   QgsVectorDataProvider* getDataProvider();
 
