@@ -10,15 +10,17 @@
 FIND_PATH(PROJ_INCLUDE_DIR proj_api.h 
   /usr/local/include 
   /usr/include 
+  #msvc
+  "$ENV{LIB_DIR}/include/proj"
+  #mingw
   c:/msys/local/include
-  C:/dev/cpp/proj-4.5.0/src
   )
 
 FIND_LIBRARY(PROJ_LIBRARY NAMES proj PATHS 
   /usr/local/lib 
   /usr/lib 
+  "$ENV{LIB_DIR}/lib"
   c:/msys/local/lib
-  C:/dev/cpp/proj-4.5.0/src
   )
 
 IF (PROJ_INCLUDE_DIR AND PROJ_LIBRARY)

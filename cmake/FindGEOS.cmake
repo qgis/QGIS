@@ -10,17 +10,19 @@
 FIND_PATH(GEOS_INCLUDE_DIR geos.h 
   /usr/local/include 
   /usr/include 
-  c:/msys/local/include
   #MSVC
-  C:/dev/cpp/geos-2.2.1/source/headers
+  "$ENV{LIB_DIR}/include"
+  #mingw
+  c:/msys/local/include
   )
 
 FIND_LIBRARY(GEOS_LIBRARY NAMES geos PATHS 
   /usr/local/lib 
   /usr/lib 
-  c:/msys/local/lib
   #MSVC
-  C:/dev/cpp/geos-2.2.1/source
+  "$ENV{LIB_DIR}/lib"
+  #mingw
+  c:/msys/local/lib
   )
 
 IF (GEOS_INCLUDE_DIR AND GEOS_LIBRARY)

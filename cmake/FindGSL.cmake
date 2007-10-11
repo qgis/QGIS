@@ -26,8 +26,7 @@
 IF(WIN32)
 
   SET(GSL_MINGW_PREFIX "c:/msys/local" )
-  SET(GSL_MSVC_PREFIX "C:/dev/cpp/gsl" )
-
+  SET(GSL_MSVC_PREFIX "$ENV{LIB_DIR}")
   FIND_LIBRARY(GSL_LIB gsl PATHS 
     ${GSL_MINGW_PREFIX}/lib 
     ${GSL_MSVC_PREFIX}/lib
@@ -38,7 +37,7 @@ IF(WIN32)
     ${GSL_MSVC_PREFIX}/lib
     )
 
-  FIND_PATH(GSL_INCLUDE_DIR gsl/gsl_version.h 
+  FIND_PATH(GSL_INCLUDE_DIR gsl/gsl_blas.h 
     ${GSL_PREFIX}/include 
     ${GSL_MSVC_PREFIX}/include
     )
