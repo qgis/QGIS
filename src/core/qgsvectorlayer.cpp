@@ -88,6 +88,7 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
     QString providerKey)
 : QgsMapLayer(VECTOR, baseName, vectorLayerPath),
   mUpdateThreshold(0),       // XXX better default value?
+  mDataProvider(NULL),
   mProviderKey(providerKey),
   mEditable(false),
   mModified(false),
