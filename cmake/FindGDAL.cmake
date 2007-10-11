@@ -17,8 +17,15 @@ IF(WIN32)
   ENDIF (MINGW)
 
   IF (MSVC)
-    SET (GDAL_INCLUDE_DIR C:/dev/cpp/gdal/gcore;C:/dev/cpp/gdal/port;C:/dev/cpp/gdal/ogr;C:/dev/cpp/gdal/alg;C:/dev/cpp/gdal/ogr/ogrsf_frmts CACHE STRING INTERNAL)
-    SET (GDAL_LIBRARY C:/dev/cpp/gdal/gdal.lib;odbc32;odbccp32 CACHE STRING INTERNAL)
+    SET (
+       GDAL_INCLUDE_DIR 
+       "$ENV{LIB_DIR}/include/gdal"
+       CACHE STRING INTERNAL
+       )
+    SET (
+       GDAL_LIBRARY 
+       "$ENV{LIB_DIR}/lib/gdal.lib";odbc32;odbccp32 
+       CACHE STRING INTERNAL)
   ENDIF (MSVC)
   
   

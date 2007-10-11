@@ -4,7 +4,7 @@
 MACRO(FIND_BISON)
   IF(NOT BISON_EXECUTABLE)
     IF (MSVC)
-      FIND_PROGRAM(BISON_EXECUTABLE "c:/dev/cpp/bison/bin/bison.exe")
+      FIND_PROGRAM(BISON_EXECUTABLE "$ENV{LIB_DIR}/bin/bison.exe")
     ELSE (MSVC)
       FIND_PROGRAM(BISON_EXECUTABLE bison)
     ENDIF (MSVC)

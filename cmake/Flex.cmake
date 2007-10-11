@@ -4,7 +4,9 @@
 MACRO(FIND_FLEX)
     IF(NOT FLEX_EXECUTABLE)
       IF (MSVC)
-        FIND_PROGRAM(FLEX_EXECUTABLE "C:/dev/cpp/flex/bin/flex.exe")
+        FIND_PROGRAM(FLEX_EXECUTABLE 
+            "$ENV{LIB_DIR}/bin/flex.exe"
+	    )
       ELSE(MSVC)
         FIND_PROGRAM(FLEX_EXECUTABLE flex)
       ENDIF (MSVC)
