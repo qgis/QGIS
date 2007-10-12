@@ -41,59 +41,5 @@ IF (PYTHON_LIBRARIES AND PYTHON_INCLUDE_PATH)
   IF (UNIX AND NOT APPLE)
     SET (PYTHON_LIBRARIES ${PYTHON_LIBRARIES} util)
   ENDIF (UNIX AND NOT APPLE)
-  
-  IF (WITH_BINDINGS)
-    
-    # check for SIP
-    TRY_RUN_PYTHON (HAVE_SIP_MODULE "from sip import wrapinstance")
-    FIND_PROGRAM (SIP_BINARY_PATH sip)
-    
-    IF (HAVE_SIP_MODULE AND SIP_BINARY_PATH)
-      # check for SIP version
-      # minimal version is 4.5
-      SET (SIP_MIN_VERSION 040500)
-      TRY_RUN_PYTHON (RES "import sip\nprint '%x' % sip.SIP_VERSION" SIP_VERSION)
-      IF (SIP_VERSION EQUAL "${SIP_MIN_VERSION}" OR SIP_VERSION GREATER "${SIP_MIN_VERSION}")
-        SET (SIP_IS_GOOD TRUE)
-      ENDIF (SIP_VERSION EQUAL "${SIP_MIN_VERSION}" OR SIP_VERSION GREATER "${SIP_MIN_VERSION}")
-    
-      IF (NOT SIP_IS_GOOD)
-        MESSAGE (STATUS "SIP is required in version 4.5 or later!")
-      ENDIF (NOT SIP_IS_GOOD)
-    ELSE (HAVE_SIP_MODULE AND SIP_BINARY_PATH)
-      MESSAGE (STATUS "SIP not found!")
-    ENDIF (HAVE_SIP_MODULE AND SIP_BINARY_PATH)
-     
-    # check for PyQt4
-    TRY_RUN_PYTHON (HAVE_PYQT4 "from PyQt4 import QtCore, QtGui, QtNetwork, QtSvg, QtXml")
-    
-    IF (HAVE_PYQT4)
-      # check for PyQt4 version
-      # minimal version is 4.1
-      SET (PYQT_MIN_VERSION 040100)
-      TRY_RUN_PYTHON (RES "from PyQt4 import QtCore\nprint '%x' % QtCore.PYQT_VERSION" PYQT_VERSION)
-      IF (PYQT_VERSION EQUAL "${PYQT_MIN_VERSION}" OR PYQT_VERSION GREATER "${PYQT_MIN_VERSION}")
-        SET (PYQT_IS_GOOD TRUE)
-      ENDIF (PYQT_VERSION EQUAL "${PYQT_MIN_VERSION}" OR PYQT_VERSION GREATER "${PYQT_MIN_VERSION}")
-    
-      IF (NOT PYQT_IS_GOOD)
-        MESSAGE (STATUS "PyQt4 is needed in version 4.1 or later!")
-      ENDIF (NOT PYQT_IS_GOOD)
-    ELSE (HAVE_PYQT4)
-      MESSAGE (STATUS "PyQt4 not found!")
-    ENDIF (HAVE_PYQT4)
-    
-    # if SIP and PyQt4 are found, enable bindings
-    IF (SIP_IS_GOOD AND PYQT_IS_GOOD)
-      SET (HAVE_PYTHON TRUE)
-      MESSAGE(STATUS "Python bindings enabled")
-    ELSE (SIP_IS_GOOD AND PYQT_IS_GOOD)
-      SET (HAVE_PYTHON FALSE)
-      MESSAGE(STATUS "Python bindings disabled due dependency problems!")
-    ENDIF (SIP_IS_GOOD AND PYQT_IS_GOOD)
-    
-  ELSE (WITH_BINDINGS)
-    MESSAGE(STATUS "Python bindings disabled")
-  ENDIF (WITH_BINDINGS)
 
 ENDIF (PYTHON_LIBRARIES AND PYTHON_INCLUDE_PATH)
