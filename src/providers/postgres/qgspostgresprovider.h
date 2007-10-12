@@ -546,6 +546,18 @@ class QgsPostgresProvider:public QgsVectorDataProvider
      */
     void customEvent ( QCustomEvent * e );
 
+private:
+    struct Conn {
+	Conn(PGconn *connection) : ref(1), conn(connection) {}
+
+	int ref;
+    	PGconn *conn;
+    };
+
+    PGconn *connectDb(const char *conninfo);
+    void disconnectDb();
+
+    static QMap<QString, Conn *> connections;
 };
 
 #endif
