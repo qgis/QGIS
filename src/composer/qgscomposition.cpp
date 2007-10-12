@@ -236,7 +236,7 @@ void QgsComposition::contentsMousePressEvent(QMouseEvent* e)
   mLastPoint = p;
 
   double x,y;
-  mView->inverseWorldMatrix().map( e->pos().x(), e->pos().y(), &x, &y );
+  mView->inverseWorldMatrix().map( (double) e->pos().x(), (double) e->pos().y(), &x, &y );
 
   switch ( mTool ) {
     case Select:
@@ -395,7 +395,7 @@ void QgsComposition::contentsMouseMoveEvent(QMouseEvent* e)
     case Select:
       if ( mSelectedItem ) {
         double x,y;
-        mView->inverseWorldMatrix().map( e->pos().x(), e->pos().y(), &x, &y );
+        mView->inverseWorldMatrix().map( (double) e->pos().x(), (double) e->pos().y(), &x, &y );
 
         mSelectedItem->moveBy ( x - mLastX, y - mLastY );
 
