@@ -23,9 +23,9 @@ pyqtng:
 #copy over bundled pyqt4 instead of skipping
   goto pythonskip
 pyqtok:
-  MessageBox MB_OK "PyQt4 located"
-
-
+  MessageBox MB_OK "PyQt4 located.$\nNote: Overwriting with included copy."
+  SetOutPath "$9\Lib\site-packages\"
+  File /r    "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\PyQt4"
 !macroend
 
 !endif
