@@ -476,7 +476,11 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
           }
         } 
   
-        mFeatureQueue.push(feature);
+	//don't copy the geometry. Just pass a pointer instead
+	mFeatureQueue.push(QgsFeature());
+	mFeatureQueue.back().setGeometry(feature.geometryAndOwnership());
+	mFeatureQueue.back().setFeatureId(feature.featureId());
+	mFeatureQueue.back().setAttributeMap(feature.attributeMap());
         
       } // for each row in queue
             
@@ -490,7 +494,11 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
     } // if new queue is required
     
     // Now return the next feature from the queue
-    feature = mFeatureQueue.front();
+    //don't copy the geometry. Just pass a pointer instead
+    feature.setGeometry(mFeatureQueue.front().geometryAndOwnership());
+    feature.setFeatureId(mFeatureQueue.front().featureId());
+    feature.setAttributeMap(mFeatureQueue.front().attributeMap());
+   
     mFeatureQueue.pop();
     
   }
