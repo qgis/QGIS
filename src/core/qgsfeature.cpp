@@ -171,6 +171,11 @@ const QgsAttributeMap& QgsFeature::attributeMap() const
   return mAttributes;
 }
 
+void QgsFeature::setAttributeMap(const QgsAttributeMap& attributeMap)
+{
+  mAttributes = attributeMap;
+}
+
 /**
  * Add an attribute to the map
  */

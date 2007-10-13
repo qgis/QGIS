@@ -101,6 +101,9 @@ class CORE_EXPORT QgsFeature {
      */
     const QgsAttributeMap& attributeMap() const;
 
+    /**Sets all the attributes in one go*/
+    void setAttributeMap(const QgsAttributeMap& attributeMap);
+
     /** 
      * Add an attribute to the map
      */
