@@ -44,7 +44,8 @@ IF (PYTHON_LIBRARIES AND PYTHON_INCLUDE_PATH)
   
   IF (WITH_BINDINGS)
     
-    # check for SIP
+    # check for SIP (3 steps)
+    # 1. can import python module?
     TRY_RUN_PYTHON (HAVE_SIP_MODULE "from sip import wrapinstance")
 
     IF (APPLE)
@@ -54,9 +55,13 @@ IF (PYTHON_LIBRARIES AND PYTHON_INCLUDE_PATH)
       /System/Library/Frameworks/Python.framework/Versions/2.3/bin)
     ENDIF (APPLE)
 
+    # 2. is there sip binary? (for creating wrappers)
     FIND_PROGRAM (SIP_BINARY_PATH sip PATHS ${SIP_MAC_PATH})
     
-    IF (HAVE_SIP_MODULE AND SIP_BINARY_PATH)
+    # 3. is there sip include file? (necessary for compilation of bindings)
+    FIND_PATH (SIP_INCLUDE_DIR sip.h ${PYTHON_INCLUDE_PATH})
+    
+    IF (HAVE_SIP_MODULE AND SIP_BINARY_PATH AND SIP_INCLUDE_DIR)
       # check for SIP version
       # minimal version is 4.5
       SET (SIP_MIN_VERSION 040500)
@@ -68,14 +73,30 @@ IF (PYTHON_LIBRARIES AND PYTHON_INCLUDE_PATH)
       IF (NOT SIP_IS_GOOD)
         MESSAGE (STATUS "SIP is required in version 4.5 or later!")
       ENDIF (NOT SIP_IS_GOOD)
-    ELSE (HAVE_SIP_MODULE AND SIP_BINARY_PATH)
-      MESSAGE (STATUS "SIP not found!")
-    ENDIF (HAVE_SIP_MODULE AND SIP_BINARY_PATH)
+    ELSE (HAVE_SIP_MODULE AND SIP_BINARY_PATH AND SIP_INCLUDE_DIR)
+      IF (NOT HAVE_SIP_MODULE)
+        MESSAGE (STATUS "SIP python module is missing!")
+      ENDIF (NOT HAVE_SIP_MODULE)
+      IF (NOT SIP_BINARY_PATH)
+        MESSAGE (STATUS "SIP executable is missing!")
+      ENDIF (NOT SIP_BINARY_PATH)
+      IF (NOT SIP_INCLUDE_DIR)
+        MESSAGE (STATUS "SIP header file is missing!")
+      ENDIF (NOT SIP_INCLUDE_DIR)
+    ENDIF (HAVE_SIP_MODULE AND SIP_BINARY_PATH AND SIP_INCLUDE_DIR)
      
     # check for PyQt4
     TRY_RUN_PYTHON (HAVE_PYQT4 "from PyQt4 import QtCore, QtGui, QtNetwork, QtSvg, QtXml")
     
+    # check whether directory with PyQt4 sip files exists
     IF (HAVE_PYQT4)
+      TRY_RUN_PYTHON (RES "import PyQt4.pyqtconfig\nprint PyQt4.pyqtconfig._pkg_config['pyqt_sip_dir']" PYQT_SIP_DIR)
+      IF (IS_DIRECTORY ${PYQT_SIP_DIR})
+        SET (HAVE_PYQT4_SIP_DIR TRUE)
+      ENDIF (IS_DIRECTORY ${PYQT_SIP_DIR})
+    ENDIF (HAVE_PYQT4)
+    
+    IF (HAVE_PYQT4 AND HAVE_PYQT4_SIP_DIR)
       # check for PyQt4 version
       # minimal version is 4.1
       SET (PYQT_MIN_VERSION 040100)
@@ -87,9 +108,13 @@ IF (PYTHON_LIBRARIES AND PYTHON_INCLUDE_PATH)
       IF (NOT PYQT_IS_GOOD)
         MESSAGE (STATUS "PyQt4 is needed in version 4.1 or later!")
       ENDIF (NOT PYQT_IS_GOOD)
-    ELSE (HAVE_PYQT4)
-      MESSAGE (STATUS "PyQt4 not found!")
-    ENDIF (HAVE_PYQT4)
+    ELSE (HAVE_PYQT4 AND HAVE_PYQT4_SIP_DIR)
+      IF (HAVE_PYQT4)
+        MESSAGE (STATUS "PyQt4 development files are missing!")
+      ELSE (HAVE_PYQT4)
+        MESSAGE (STATUS "PyQt4 not found!")
+      ENDIF (HAVE_PYQT4)
+    ENDIF (HAVE_PYQT4 AND HAVE_PYQT4_SIP_DIR)
     
     # if SIP and PyQt4 are found, enable bindings
     IF (SIP_IS_GOOD AND PYQT_IS_GOOD)
