@@ -407,7 +407,7 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
 	}
       mFirstFetch = false;
       queryResult = PQgetResult(connection);
-      PGresult* bla = PQgetResult(connection); //just to get the 0 pointer...  
+      PQgetResult(connection); //just to get the 0 pointer...  
  
       int rows = PQntuples(queryResult);
 
