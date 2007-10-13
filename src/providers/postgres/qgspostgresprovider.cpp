@@ -68,7 +68,7 @@ const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
 QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
   : QgsVectorDataProvider(uri),
   geomType(QGis::WKBUnknown),
-  mFeatureQueueSize(200),
+    mFeatureQueueSize(200),
   gotPostgisVersion(FALSE)
 {
   // assume this is a valid layer until we determine otherwise
@@ -397,9 +397,18 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
     {
       QString fetch = QString("fetch forward %1 from qgisf")
                          .arg(mFeatureQueueSize);
-                         
-      queryResult = PQexec(connection, (const char *)fetch);
-      
+
+      if(mFirstFetch)
+	{
+	  if(PQsendQuery(connection, (const char *)fetch) == 0) //fetch features in asynchronously
+	    {
+	      qWarning("PQsendQuery failed (1)");
+	    }
+	}
+      mFirstFetch = false;
+      queryResult = PQgetResult(connection);
+      PGresult* bla = PQgetResult(connection); //just to get the 0 pointer...  
+ 
       int rows = PQntuples(queryResult);
 
       if (rows == 0)
@@ -434,7 +443,7 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
 	    char* attribute = PQgetvalue(queryResult, row, PQfnumber(queryResult,*name_it));
 
 	    QString val = QString::fromUtf8(attribute);
-      switch (attributeFields[*index_it].type())
+	    switch (attributeFields[*index_it].type())
 	      {
 	      case QVariant::Int:
 		feature.addAttribute(*index_it, val.toInt());
@@ -463,19 +472,20 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
           }
           else
           {
-            //QgsDebugMsg("Couldn't get the feature geometry in binary form");
+            QgsDebugMsg("Couldn't get the feature geometry in binary form");
           }
-        }
-
-        //QgsDebugMsg(" pushing " + QString::number(f->featureId()); 
+        } 
   
         mFeatureQueue.push(feature);
         
       } // for each row in queue
-      
-      //QgsDebugMsg("retrieved batch of features.");
             
       PQclear(queryResult);
+
+      if(PQsendQuery(connection, (const char *)fetch) == 0) //already fetch the next couple of features asynchronously
+	{
+	  qWarning("PQsendQuery failed (2)");
+	}
       
     } // if new queue is required
     
@@ -486,11 +496,9 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
   }
   else 
   {
-    //QgsDebugMsg("Read attempt on an invalid postgresql data source");
+    QgsDebugMsg("Read attempt on an invalid postgresql data source");
     return false;
   }
-  
-  //QgsDebugMsg("returning feature " + QString::number(feat.featureId())); 
 
   return true;
 }
@@ -583,6 +591,7 @@ void QgsPostgresProvider::select(QgsAttributeList fetchAttributes,
   PQexec(connection, (const char *)(declare.utf8()));
   
   mFeatureQueue.empty();
+  mFirstFetch = true;
 }
 
 bool QgsPostgresProvider::getFeatureAtId(int featureId,
