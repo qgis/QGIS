@@ -328,6 +328,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
 
   private:
 
+    bool mFirstFetch; //true if fetch forward is called the first time after select
     std::vector < QgsFeature > features;
     QgsFieldMap attributeFields;
     QString mDataComment;
