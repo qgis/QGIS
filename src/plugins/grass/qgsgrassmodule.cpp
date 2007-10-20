@@ -2810,7 +2810,7 @@ void QgsGrassModuleField::updateFields()
 
     for ( unsigned int i = 0; i < fields.size(); i++ )
     {
-	if ( mType.contains ( fields[i].type() ) )
+	if ( mType.contains ( fields[i].typeName() ) )
 	{
             mFieldComboBox->insertItem( fields[i].name() );
 	    if ( fields[i].name() == current )
