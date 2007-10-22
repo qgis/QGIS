@@ -1563,14 +1563,13 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
   if (QgsPythonUtils::isEnabled())
   {
   
-    // check for python plugins
-    QDir pluginDir(QgsPythonUtils::pluginsPath(), "*",
-                  QDir::Name | QDir::IgnoreCase, QDir::Dirs | QDir::NoDotAndDotDot);
-  
-    for (uint i = 0; i < pluginDir.count(); i++)
+    // check for python plugins system-wide
+    QStringList pluginList = QgsPythonUtils::pluginList();
+
+    for (int i = 0; i < pluginList.size(); i++)
     {
-      QString packageName = pluginDir[i];
-      
+      QString packageName = pluginList[i];
+   
       // import plugin's package
       if (!QgsPythonUtils::loadPlugin(packageName))
         continue;
@@ -1596,7 +1595,6 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
         loadPythonPlugin(packageName, pluginName);
       }
     }
-  
   }
 #endif
 }

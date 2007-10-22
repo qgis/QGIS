@@ -15,6 +15,7 @@
 /* $Id$ */
 
 #include <QString>
+#include <QStringList>
 
 // forward declaration for PyObject
 #ifndef PyObject_HEAD
@@ -84,7 +85,13 @@ class QgsPythonUtils
     
     //! return current path for python plugins
     static QString pluginsPath();
-    
+
+    //! return current path for home directory python plugins
+    static QString homePluginsPath();
+
+    //! return list of all available python plugins
+    static QStringList pluginList();
+        
     //! load python plugin (import)
     static bool loadPlugin(QString packageName);
     
