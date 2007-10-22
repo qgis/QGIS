@@ -83,14 +83,13 @@ void QgsPluginManager::getPythonPluginDescriptions()
   if (!QgsPythonUtils::isEnabled())
     return;
   
-  // look for plugins
-  QDir pluginDir(QgsPythonUtils::pluginsPath(), "*",
-                 QDir::Name | QDir::IgnoreCase, QDir::Dirs | QDir::NoDotAndDotDot);
-
-  for (uint i = 0; i < pluginDir.count(); i++)
+  // look for plugins systemwide
+  QStringList pluginList = QgsPythonUtils::pluginList();
+  
+  for (int i = 0; i < pluginList.size(); i++)
   {
-    QString packageName = pluginDir[i];
-    
+    QString packageName = pluginList[i];
+
     // import plugin's package
     QgsPythonUtils::loadPlugin(packageName);
     
@@ -125,7 +124,6 @@ void QgsPluginManager::getPythonPluginDescriptions()
         pl->setOn(true);
       }
     }
-  
   }
 #endif
 }

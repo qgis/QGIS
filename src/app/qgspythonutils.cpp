@@ -24,7 +24,8 @@
 #include "qgslogger.h"
 
 #include <QMessageBox>
-
+#include <QStringList>
+#include <QDir>
 
 QString QgsPythonUtils::mPluginsPath;
 PyObject* QgsPythonUtils::mMainModule;
@@ -47,7 +48,7 @@ void QgsPythonUtils::initPython(QgisInterface* interface)
   
   // expect that bindings are installed locally, so add the path to modules
   // also add path to plugins
-  runString("sys.path = [\"" + pythonPath() + "\", \"" + pluginsPath() + "\"] + sys.path");
+  runString("sys.path = [\"" + homePluginsPath()  + "\", \"" + pythonPath() + "\", \"" + pluginsPath() + "\"] + sys.path");
 
   // import SIP
   if (!runString("from sip import wrapinstance, unwrapinstance"))
@@ -282,6 +283,32 @@ QString QgsPythonUtils::pythonPath()
 QString QgsPythonUtils::pluginsPath()
 {
   return pythonPath() + "/plugins";
+}
+
+QString QgsPythonUtils::homePluginsPath()
+{
+  return QgsApplication::qgisSettingsDirPath() + "/python/plugins/";
+}
+
+QStringList QgsPythonUtils::pluginList()
+{
+  QDir pluginDir(QgsPythonUtils::pluginsPath(), "*",
+                 QDir::Name | QDir::IgnoreCase, QDir::Dirs | QDir::NoDotAndDotDot);
+
+  QDir homePluginDir(QgsPythonUtils::homePluginsPath(), "*",
+		     QDir::Name | QDir::IgnoreCase, QDir::Dirs | QDir::NoDotAndDotDot);
+
+  QStringList pluginList = pluginDir.entryList();
+
+  for (uint i = 0; i < homePluginDir.count(); i++)
+  {
+    QString packageName = homePluginDir[i];
+    if(!pluginList.contains(packageName))
+        pluginList.append(packageName); 
+
+  }
+
+  return pluginList;
 }
 
 QString QgsPythonUtils::getPluginMetadata(QString pluginName, QString function)
