@@ -1,24 +1,26 @@
 #!/bin/sh
-# Copy supportibng libraries (except Qt) to qgis bundle
+# Copy supporting libraries (except Qt) to qgis bundle
 # and make search paths for them relative to bundle
 
-PREFIX=qgis.app/Contents/MacOS
+PREFIX=qgis0.9.0.app/Contents/MacOS
 
 HELPPREFIX=$PREFIX/bin/qgis_help.app/Contents/MacOS
 MSEXPORTPREFIX=$PREFIX/bin/msexport.app/Contents/MacOS
 PREFIXBACKTRACK=../../../..
 
 # Edit version when any library is upgraded
-LIBGDAL=libgdal.1.10.0.dylib
+LIBGDAL=libgdal.1.11.2.dylib
 LNKGDAL=libgdal.1.dylib
 LIBGEOS=libgeos.2.2.3.dylib
 LNKGEOS=libgeos.2.dylib
-LIBPROJ=libproj.0.5.0.dylib
+LIBGEOSC=libgeos_c.1.1.1.dylib
+LNKGEOSC=libgeos_c.1.dylib
+LIBPROJ=libproj.0.5.2.dylib
 LNKPROJ=libproj.0.dylib
 LIBSQLITE3=libsqlite3.0.8.6.dylib
 LNKSQLITE3=libsqlite3.0.dylib
-LIBXERCESC=libxerces-c.27.0.dylib
-LNKXERCESC=libxerces-c.27.dylib
+LIBXERCESC=libxerces-c.28.0.dylib
+LNKXERCESC=libxerces-c.28.dylib
 LIBGIF=libgif.4.1.4.dylib
 LNKGIF=libgif.4.dylib
 LIBJPEG=libjpeg.62.0.0.dylib
@@ -41,7 +43,7 @@ LNKEXPAT=libexpat.1.dylib
 #LNKOPENMODELLER=libopenmodeller.0.dylib
 LIBPQ=libpq.5.0.dylib
 LNKPQ=libpq.5.dylib
-GRASSLIB=/usr/local/grass-6.2.1/lib
+GRASSLIB=/usr/local/grass-6.2.2/lib
 
 # Copy supporting libraries to application bundle
 cd $PREFIX/lib
@@ -50,12 +52,20 @@ if test ! -f $LIBGEOS; then
 	ln -s $LIBGEOS $LNKGEOS
 	install_name_tool -id @executable_path/lib/$LNKGEOS $LIBGEOS
 fi
+if test ! -f $LIBGEOSC; then
+	cp /usr/local/lib/$LIBGEOSC $LIBGEOSC
+	ln -s $LIBGEOSC $LNKGEOSC
+	install_name_tool -id @executable_path/lib/$LNKGEOSC $LIBGEOSC
+	# Update path to supporting libraries
+	install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $LIBGEOSC
+fi
 if test ! -f $LIBGDAL; then
 	cp /usr/local/lib/$LIBGDAL $LIBGDAL
 	ln -s $LIBGDAL $LNKGDAL
 	install_name_tool -id @executable_path/lib/$LNKGDAL $LIBGDAL
 	# Update path to supporting libraries
 	install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $LIBGDAL
+	install_name_tool -change /usr/local/lib/$LNKGEOSC @executable_path/lib/$LNKGEOSC $LIBGDAL
 	install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $LIBGDAL
 	install_name_tool -change /usr/local/lib/$LNKXERCESC @executable_path/lib/$LNKXERCESC $LIBGDAL
 	install_name_tool -change /usr/local/lib/$LNKGIF @executable_path/lib/$LNKGIF $LIBGDAL
@@ -192,88 +202,71 @@ install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL 
 install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $PREFIX/qgis
 install_name_tool -change /usr/local/lib/$LNKPROJ @executable_path/lib/$LNKPROJ $PREFIX/qgis
 install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $PREFIX/qgis
-install_name_tool -change /usr/local/lib/$LNKXERCESC @executable_path/lib/$LNKXERCESC $PREFIX/qgis
-install_name_tool -change /usr/local/lib/$LNKGIF @executable_path/lib/$LNKGIF $PREFIX/qgis
-install_name_tool -change /usr/local/lib/$LNKJPEG @executable_path/lib/$LNKJPEG $PREFIX/qgis
-install_name_tool -change /usr/local/lib/$LNKPNG @executable_path/lib/$LNKPNG $PREFIX/qgis
-install_name_tool -change /usr/local/lib/$LNKTIFF @executable_path/lib/$LNKTIFF $PREFIX/qgis
-install_name_tool -change /usr/local/lib/$LNKGEOTIFF @executable_path/lib/$LNKGEOTIFF $PREFIX/qgis
-install_name_tool -change /usr/local/lib/$LNKJASPER @executable_path/lib/$LNKJASPER $PREFIX/qgis
 install_name_tool -change /usr/local/pgsql/lib/$LNKPQ @executable_path/lib/$LNKPQ $PREFIX/qgis
 
 # Update library paths to supporting libraries
-install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $PREFIX/lib/libqgis_core.1.0.0.dylib
-install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $PREFIX/lib/libqgis_core.1.0.0.dylib
-for LIB in _core.1.0.0 _gui.1.0.0 _raster.1.0.0 grass.1.0.0
+for LIB in _core _gui grass
 do
 	install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL $PREFIX/lib/libqgis$LIB.dylib
 	install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $PREFIX/lib/libqgis$LIB.dylib
+	install_name_tool -change /usr/local/lib/$LNKPROJ @executable_path/lib/$LNKPROJ $PREFIX/lib/libqgis$LIB.dylib
 	install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $PREFIX/lib/libqgis$LIB.dylib
-	install_name_tool -change /usr/local/lib/$LNKXERCESC @executable_path/lib/$LNKXERCESC $PREFIX/lib/libqgis$LIB.dylib
-	install_name_tool -change /usr/local/lib/$LNKGIF @executable_path/lib/$LNKGIF $PREFIX/lib/libqgis$LIB.dylib
-	install_name_tool -change /usr/local/lib/$LNKJPEG @executable_path/lib/$LNKJPEG $PREFIX/lib/libqgis$LIB.dylib
-	install_name_tool -change /usr/local/lib/$LNKPNG @executable_path/lib/$LNKPNG $PREFIX/lib/libqgis$LIB.dylib
-	install_name_tool -change /usr/local/lib/$LNKTIFF @executable_path/lib/$LNKTIFF $PREFIX/lib/libqgis$LIB.dylib
-	install_name_tool -change /usr/local/lib/$LNKGEOTIFF @executable_path/lib/$LNKGEOTIFF $PREFIX/lib/libqgis$LIB.dylib
-	install_name_tool -change /usr/local/lib/$LNKJASPER @executable_path/lib/$LNKJASPER $PREFIX/lib/libqgis$LIB.dylib
 done
 
 # Update plugin paths to supporting libraries
 for PLUGIN in \
-	copyrightlabelplugin.so \
-	delimitedtextplugin.so \
-	delimitedtextprovider.so \
-	georefplugin.so \
-	gpsimporterplugin.so \
-	gpxprovider.so \
-	grassplugin.so \
-	grassprovider.so \
-	gridmakerplugin.so \
+	libcopyrightlabelplugin.so \
+	libdelimitedtextplugin.so \
+	libdelimitedtextprovider.so \
+	libgeorefplugin.so \
+	libgpsimporterplugin.so \
+	libgpxprovider.so \
+	libgrassplugin.so \
+	libgrassprovider.so \
+	libgridmakerplugin.so \
 	libwfsprovider.so \
-	northarrowplugin.so \
-	ogrprovider.so \
-	pggeoprocessingplugin.so \
-	postgresprovider.so \
-	scalebarplugin.so \
-	spitplugin.so \
-	wfsplugin.so \
-	wmsprovider.so \
-	libqgsprojectionselector.dylib
+	libnortharrowplugin.so \
+	libogrprovider.so \
+	libpggeoprocessingplugin.so \
+	libpostgresprovider.so \
+	libscalebarplugin.so \
+	libspitplugin.so \
+	libwfsplugin.so \
+	libwmsprovider.so
  	#libopenmodellerplugin.so
 do
 	install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL $PREFIX/lib/qgis/$PLUGIN
 	install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $PREFIX/lib/qgis/$PLUGIN
+	install_name_tool -change /usr/local/lib/$LNKPROJ @executable_path/lib/$LNKPROJ $PREFIX/lib/qgis/$PLUGIN
 	install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $PREFIX/lib/qgis/$PLUGIN
-	install_name_tool -change /usr/local/lib/$LNKXERCESC @executable_path/lib/$LNKXERCESC $PREFIX/lib/qgis/$PLUGIN
-	install_name_tool -change /usr/local/lib/$LNKGIF @executable_path/lib/$LNKGIF $PREFIX/lib/qgis/$PLUGIN
-	install_name_tool -change /usr/local/lib/$LNKJPEG @executable_path/lib/$LNKJPEG $PREFIX/lib/qgis/$PLUGIN
-	install_name_tool -change /usr/local/lib/$LNKPNG @executable_path/lib/$LNKPNG $PREFIX/lib/qgis/$PLUGIN
-	install_name_tool -change /usr/local/lib/$LNKTIFF @executable_path/lib/$LNKTIFF $PREFIX/lib/qgis/$PLUGIN
-	install_name_tool -change /usr/local/lib/$LNKGEOTIFF @executable_path/lib/$LNKGEOTIFF $PREFIX/lib/qgis/$PLUGIN
-	install_name_tool -change /usr/local/lib/$LNKJASPER @executable_path/lib/$LNKJASPER $PREFIX/lib/qgis/$PLUGIN
 done
 
 for PLUGIN in \
-	grassplugin.so \
-	pggeoprocessingplugin.so \
-	postgresprovider.so \
-	spitplugin.so
+	libgpxprovider.so \
+	libwfsprovider.so
+do
+	install_name_tool -change /usr/local/lib/$LNKEXPAT @executable_path/lib/$LNKEXPAT $PREFIX/lib/qgis/$PLUGIN
+done
+
+install_name_tool -change /usr/local/lib/$LNKGSL @executable_path/lib/$LNKGSL $PREFIX/lib/qgis/libgeorefplugin.so
+install_name_tool -change /usr/local/lib/$LNKGSLCBLAS @executable_path/lib/$LNKGSLCBLAS $PREFIX/lib/qgis/libgeorefplugin.so
+
+for PLUGIN in \
+	libpggeoprocessingplugin.so \
+	libpostgresprovider.so \
+	libspitplugin.so
 do
 	install_name_tool -change /usr/local/pgsql/lib/$LNKPQ @executable_path/lib/$LNKPQ $PREFIX/lib/qgis/$PLUGIN
 done
-
-install_name_tool -change /usr/local/lib/$LNKGSL @executable_path/lib/$LNKGSL $PREFIX/lib/qgis/georefplugin.so
-install_name_tool -change /usr/local/lib/$LNKGSLCBLAS @executable_path/lib/$LNKGSLCBLAS $PREFIX/lib/qgis/georefplugin.so
-
-install_name_tool -change /usr/local/lib/$LNKEXPAT @executable_path/lib/$LNKEXPAT $PREFIX/lib/qgis/gpxprovider.so
 
 #install_name_tool -change /usr/local/lib/$LNKEXPAT @executable_path/lib/$LNKEXPAT $PREFIX/lib/qgis/libopenmodellerplugin.so
 #install_name_tool -change /usr/local/lib/$LNKOPENMODELLER @executable_path/lib/$LNKOPENMODELLER $PREFIX/lib/qgis/libopenmodellerplugin.so
 
 # Update GRASS plugins paths to GRASS libraries
 for PLUGIN in \
-	libqgisgrass.1.0.0.dylib \
-	qgis/grassplugin.so
+	libqgisgrass.dylib \
+	qgis/libgrassplugin.so \
+	qgis/libgrassprovider.so
 do
 	for LIB in datetime dbmibase dbmiclient dgl dig2 form gis gproj linkm rtree shape vect
 	do
@@ -286,7 +279,7 @@ for PLUGIN in \
 	gdalplugins/gdal_GRASS.so \
 	gdalplugins/ogr_GRASS.so
 do
-	for LIB in datetime dbmibase dbmiclient gis gmath gproj I vask vect
+	for LIB in datetime dbmibase dbmiclient dgl dig2 gis gmath gproj I linkm rtree vask vect
 	do
 		install_name_tool -change $GRASSLIB/libgrass_$LIB.dylib \
 			@executable_path/lib/grass/libgrass_$LIB.dylib \
@@ -295,8 +288,10 @@ do
 done
 
 # Update qgis_help application paths to supporting libraries
+install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL $HELPPREFIX/qgis_help
+install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $HELPPREFIX/qgis_help
+install_name_tool -change /usr/local/lib/$LNKPROJ @executable_path/lib/$LNKPROJ $HELPPREFIX/qgis_help
 install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $HELPPREFIX/qgis_help
-install_name_tool -change /usr/local/lib/$LNKPNG @executable_path/lib/$LNKPNG $HELPPREFIX/qgis_help
 ln -sf $PREFIXBACKTRACK/lib $HELPPREFIX/lib
 
 # Update msexport application paths to supporting libraries
@@ -304,43 +299,10 @@ install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL 
 install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $MSEXPORTPREFIX/msexport
 install_name_tool -change /usr/local/lib/$LNKPROJ @executable_path/lib/$LNKPROJ $MSEXPORTPREFIX/msexport
 install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $MSEXPORTPREFIX/msexport
-install_name_tool -change /usr/local/lib/$LNKXERCESC @executable_path/lib/$LNKXERCESC $MSEXPORTPREFIX/msexport
-install_name_tool -change /usr/local/lib/$LNKGIF @executable_path/lib/$LNKGIF $MSEXPORTPREFIX/msexport
-install_name_tool -change /usr/local/lib/$LNKJPEG @executable_path/lib/$LNKJPEG $MSEXPORTPREFIX/msexport
-install_name_tool -change /usr/local/lib/$LNKPNG @executable_path/lib/$LNKPNG $MSEXPORTPREFIX/msexport
-install_name_tool -change /usr/local/lib/$LNKTIFF @executable_path/lib/$LNKTIFF $MSEXPORTPREFIX/msexport
-install_name_tool -change /usr/local/lib/$LNKGEOTIFF @executable_path/lib/$LNKGEOTIFF $MSEXPORTPREFIX/msexport
-install_name_tool -change /usr/local/lib/$LNKJASPER @executable_path/lib/$LNKJASPER $MSEXPORTPREFIX/msexport
-install_name_tool -change /usr/local/pgsql/lib/$LNKPQ @executable_path/lib/$LNKPQ $MSEXPORTPREFIX/msexport
+ln -sf $PREFIXBACKTRACK/bin $MSEXPORTPREFIX/bin
 ln -sf $PREFIXBACKTRACK/lib $MSEXPORTPREFIX/lib
-
-# Update spit application paths to supporting libraries
-#install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL $PREFIX/bin/spit
-#install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $PREFIX/bin/spit
-#install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $PREFIX/bin/spit
-#install_name_tool -change /usr/local/lib/$LNKXERCESC @executable_path/lib/$LNKXERCESC $PREFIX/bin/spit
-#install_name_tool -change /usr/local/lib/$LNKGIF @executable_path/lib/$LNKGIF $PREFIX/bin/spit
-#install_name_tool -change /usr/local/lib/$LNKJPEG @executable_path/lib/$LNKJPEG $PREFIX/bin/spit
-#install_name_tool -change /usr/local/lib/$LNKPNG @executable_path/lib/$LNKPNG $PREFIX/bin/spit
-#install_name_tool -change /usr/local/lib/$LNKTIFF @executable_path/lib/$LNKTIFF $PREFIX/bin/spit
-#install_name_tool -change /usr/local/lib/$LNKGEOTIFF @executable_path/lib/$LNKGEOTIFF $PREFIX/bin/spit
-#install_name_tool -change /usr/local/pgsql/lib/$LNKPQ @executable_path/lib/$LNKPQ $PREFIX/bin/spit
-
-# Update omgui application paths to supporting libraries
-#install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL $PREFIX/bin/omgui
-#install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $PREFIX/bin/omgui
-#install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $PREFIX/bin/omgui
-#install_name_tool -change /usr/local/lib/$LNKXERCESC @executable_path/lib/$LNKXERCESC $PREFIX/bin/omgui
-#install_name_tool -change /usr/local/lib/$LNKEXPAT @executable_path/lib/$LNKEXPAT $PREFIX/bin/omgui
-#install_name_tool -change /usr/local/lib/$LNKOPENMODELLER @executable_path/lib/$LNKOPENMODELLER $PREFIX/bin/omgui
-#install_name_tool -change /usr/local/lib/$LNKJPEG @executable_path/lib/$LNKJPEG $PREFIX/bin/omgui
-#install_name_tool -change /usr/local/lib/$LNKPNG @executable_path/lib/$LNKPNG $PREFIX/bin/omgui
-#install_name_tool -change /usr/local/pgsql/lib/$LNKPQ @executable_path/lib/$LNKPQ $PREFIX/bin/omgui
 
 ## Copy openModeller config file for path to non-standard library location
 #if test ! -f $PREFIX/om_config; then
 #	cp mac_build/om_config $PREFIX/om_config
 #fi
-
-# Update unexpected paths to supporting libraries
-install_name_tool -change /usr/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $HELPPREFIX/qgis_help
