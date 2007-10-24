@@ -55,6 +55,7 @@ public:
 	Text = 0,
 	Family,
 	Size,
+	SizeType,
 	Bold,
 	Italic,
 	Underline,
