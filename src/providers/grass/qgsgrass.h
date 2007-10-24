@@ -22,6 +22,8 @@ extern "C" {
 #include <grass/form.h>
 }
 
+#include <setjmp.h>
+
 /*!
    Methods for C library initialization and error handling.
 */
@@ -151,7 +153,10 @@ public:
     static int versionMinor();
     static int versionRelease();
     static QString versionString();
+    
+    static jmp_buf& fatalErrorEnv();
 
+  
 private:
     static int initialized; // Set to 1 after initialization 
     static bool active; // is active mode
@@ -175,7 +180,10 @@ private:
     // Current mapset GISRC file path
     static QString mGisrc;  
     // Temporary directory where GISRC and sockets are stored
-    static QString mTmp;  
+    static QString mTmp;
+      
+    // Context saved before a call to routine that can produce a fatal error
+    static jmp_buf mFatalErrorEnv;
 };
 
 #endif // QGSGRASS_H
