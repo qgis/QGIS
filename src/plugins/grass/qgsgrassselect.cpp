@@ -394,8 +394,19 @@ QStringList QgsGrassSelect::vectorLayers ( QString gisdbase,
     QgsGrass::resetError();
     Vect_set_open_level (2);
     struct Map_info map;
-    int level = Vect_open_old_head (&map, (char *) mapName.ascii(), 
-	                            (char *) mapset.ascii());
+    int level;
+    
+    // Mechanism to recover from fatal errors in GRASS
+    // Since fatal error routine in GRASS >= 6.3 terminates the process,
+    // we use setjmp() to set recovery place in case of a fatal error.
+    // Call to setjmp() returns 0 first time. In case of fatal error,
+    // our error routine uses longjmp() to come back to this context,
+    // this time setjmp() will return non-zero value and we can continue...
+    if (setjmp(QgsGrass::fatalErrorEnv()) == 0)
+    {
+      level = Vect_open_old_head (&map, (char *) mapName.ascii(), 
+                                (char *) mapset.ascii());
+    }
 
     if ( QgsGrass::getError() == QgsGrass::FATAL ) {
 	std::cerr << "Cannot open GRASS vector: " << QgsGrass::getErrorMessage().toLocal8Bit().data() << std::endl;

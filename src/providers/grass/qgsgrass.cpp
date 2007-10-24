@@ -347,6 +347,8 @@ QString QgsGrass::mMapsetLock;
 QString QgsGrass::mGisrc;
 QString QgsGrass::mTmp;
 
+jmp_buf QgsGrass::mFatalErrorEnv;
+
 int QgsGrass::error_routine ( char *msg, int fatal) {
   return error_routine((const char*) msg, fatal);
 }
@@ -354,10 +356,16 @@ int QgsGrass::error_routine ( char *msg, int fatal) {
 int QgsGrass::error_routine ( const char *msg, int fatal) {
     std::cerr << "error_routine (fatal = " << fatal << "): " << msg << std::endl;
 
-    if ( fatal ) error = FATAL;
-    else error = WARNING;
-
     error_message = msg;
+
+    if ( fatal )
+    { 
+      error = FATAL;
+      // we have to do a long jump here, otherwise GRASS >= 6.3 will kill our process
+      longjmp(mFatalErrorEnv, 1);
+    }
+    else
+      error = WARNING;
 
     return 1;
 }
@@ -373,6 +381,12 @@ int QgsGrass::getError ( void ) {
 QString QgsGrass::getErrorMessage ( void ) {
     return error_message;
 }
+
+jmp_buf& QgsGrass::fatalErrorEnv()
+{
+    return mFatalErrorEnv;
+}
+
 
 QString QgsGrass::openMapset ( QString gisdbase, QString location, QString mapset )
 {
