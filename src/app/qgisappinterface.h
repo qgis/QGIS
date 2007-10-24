@@ -104,6 +104,8 @@ class QgisAppInterface : public QgisInterface
         /** Return a pointer to the toolbox (where additional pages can be inserted) */
         virtual QToolBox* getToolBox();
 
+	virtual void refreshLegend(QgsMapLayer *l);
+
     private:
 
         /// QgisInterface aren't copied

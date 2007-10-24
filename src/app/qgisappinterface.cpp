@@ -140,3 +140,11 @@ QToolBox* QgisAppInterface::getToolBox()
 {
   return qgis->toolBox;
 }
+
+void QgisAppInterface::refreshLegend(QgsMapLayer *l)
+{
+  if(l && qgis && qgis->legend())
+    {
+      qgis->legend()->refreshLayerSymbology( l->getLayerID() );
+    }
+}
