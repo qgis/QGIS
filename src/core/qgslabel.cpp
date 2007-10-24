@@ -135,13 +135,26 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect &viewExtent,
     {
         size =  value.toDouble();
     }
-    if (  mLabelAttributes->sizeType() == QgsLabelAttributes::MapUnits )
+    int sizeType;
+    value = fieldValue ( SizeType, feature );
+    if( value.isEmpty() )
+    	sizeType = mLabelAttributes->sizeType();
+    else
+    {
+    	value = value.lower();
+	if( value.compare("mapunits") == 0 )
+		sizeType = QgsLabelAttributes::MapUnits;
+	else
+		sizeType = QgsLabelAttributes::PointUnits;
+    }
+    if ( sizeType == QgsLabelAttributes::MapUnits )
     {
         size *= scale;
     } else {
 	size *= sizeScale;
     }
-    font.setPointSizeFloat ( size );
+    if(size>0.0)
+    	font.setPointSizeFloat ( size );
 
     value = fieldValue ( Color, feature );
     if ( value.isEmpty() )
@@ -215,23 +228,22 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect &viewExtent,
     else
     {
         value = value.lower();
-        alignment = Qt::AlignCenter;
-        if ( value.compare("left") == 0 )
-        {
-            alignment = Qt::AlignLeft | Qt::AlignVCenter;
-        }
-        else if ( value.compare("right") == 0 )
-        {
-            alignment = Qt::AlignRight | Qt::AlignVCenter;
-        }
-        else if ( value.compare("bottom") == 0 )
-        {
-            alignment = Qt::AlignBottom | Qt::AlignHCenter;
-        }
-        else if ( value.compare("top") == 0 )
-        {
-            alignment = Qt::AlignTop | Qt::AlignHCenter;
-        }
+
+	alignment=0;
+
+        if ( value.contains("left") )
+            alignment |= Qt::AlignLeft;
+        else if( value.contains("right") )
+	    alignment |= Qt::AlignRight;
+	else
+	    alignment |= Qt::AlignHCenter;
+
+	if( value.contains("bottom") )
+	    alignment |= Qt::AlignBottom;
+	else if( value.contains("top") )
+	    alignment |= Qt::AlignTop;
+	else
+	    alignment |= Qt::AlignVCenter;
     }
 
     if ( alignment & Qt::AlignLeft )
@@ -689,14 +701,22 @@ void QgsLabel::readXML( const QDomNode& node )
 
     if ( scratchNode.isNull() )
     {
-       QgsDebugMsg("couldn't find QgsLabel ``size'' attribute");
+        QgsDebugMsg("couldn't find QgsLabel ``size'' attribute");
     }
     else
     {
-        el = scratchNode.toElement();
-        type = QgsLabelAttributes::unitsCode( el.attribute("units","") );
-        mLabelAttributes->setSize ( el.attribute("value", "0.0").toDouble(), type );
-        setLabelField ( Size, _elementFieldIndex(el) );
+	el = scratchNode.toElement();
+	if( !el.hasAttribute("unitfield") )
+	{
+	    type = QgsLabelAttributes::unitsCode( el.attribute("units","") );
+	    mLabelAttributes->setSize ( el.attribute("value", "0.0").toDouble(), type );
+	}
+       	else
+	{
+	    QString str = el.attribute("unitfield","");
+	    setLabelField( SizeType, str=="" ? -1 : str.toInt() );
+	}
+	setLabelField ( Size, _elementFieldIndex(el) );
     }
 
     /* Bold */
@@ -940,9 +960,18 @@ void QgsLabel::writeXML(std::ostream& xml)
     {
       if (mLabelFieldIdx[Size] != -1)
       {
+      	if (mLabelFieldIdx[SizeType] != -1)
+	{
+          xml << "\t\t\t<size value=\"" << mLabelAttributes->size()
+              << "\" unitfield=\"" << mLabelFieldIdx[SizeType]
+              << "\" field=\"" << mLabelFieldIdx[Size] << "\" />\n";
+	}
+       	else
+	{
           xml << "\t\t\t<size value=\"" << mLabelAttributes->size()
               << "\" units=\"" << (const char *)QgsLabelAttributes::unitsName(mLabelAttributes->sizeType()).utf8()
               << "\" field=\"" << mLabelFieldIdx[Size] << "\" />\n";
+	}
       }
       else
       {

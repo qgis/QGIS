@@ -114,6 +114,10 @@ void QgsLabelDialog::init ( )
   cboFontSizeField->insertStringList(myFieldStringList); 
   cboFontSizeField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::Size),myFieldStringList));
 
+  cboFontSizeTypeField->clear();
+  cboFontSizeTypeField->insertStringList(myFieldStringList); 
+  cboFontSizeTypeField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::SizeType),myFieldStringList));
+
   cboFontTransparencyField->clear();
   cboFontTransparencyField->insertStringList(myFieldStringList); 
   //cboFontTransparencyField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::FontTransparency),myFieldStringList));
@@ -392,6 +396,7 @@ void QgsLabelDialog::apply()
     mLabel->setLabelField( QgsLabel::Italic,  fieldIndexFromName(cboItalicField->currentText()) );
     mLabel->setLabelField( QgsLabel::Underline,  fieldIndexFromName(cboUnderlineField->currentText()) );
     mLabel->setLabelField( QgsLabel::Size,  fieldIndexFromName(cboFontSizeField->currentText()) );
+    mLabel->setLabelField( QgsLabel::SizeType,  fieldIndexFromName(cboFontSizeTypeField->currentText()) );
     mLabel->setLabelField( QgsLabel::BufferSize,  fieldIndexFromName(cboBufferSizeField->currentText()) );
     //mLabel->setLabelField( QgsLabel::BufferTransparency,  cboBufferTransparencyField->currentText() );
     mLabel->setLabelField( QgsLabel::XCoordinate,  fieldIndexFromName(cboXCoordinateField->currentText()) );
