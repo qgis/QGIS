@@ -913,7 +913,9 @@ CONFIG_LIBS="-L/usr/local/lib -lpng -lz -lgdal"
 ```
 GDAL build procedure can be greatly simplified to use libtool with a libtool line patch:
 configure gdal as below:
-./configure --with-ngpython --with-xerces=/local/ --with-jasper=/local/ --with-grass=/local/grass-6.3.cvs/ --with-pg=/local/pgsql/bin/pg_config.exe 
+CPPFLAGS=-DXML_LIBRARY ./configure --with-ngpython --with-local --with-grass=/lo
+cal/grass-6.3.cvs/ --with-expat=/local/ --with-xerces=/local/ --with-pg=/local/p
+gsql/bin/pg_config.exe
 
 Then fix libtool with:
 mv libtool libtool.orig
@@ -937,6 +939,10 @@ export PATH="/usr/local/bin:/usr/local/lib:$PATH"
 ./configure --prefix=/usr/local --bindir=/usr/local --with-includes=/usr/local/include --with-libs=/usr/local/lib --with-cxx --without-jpeg --without-tiff --without-postgres --with-opengl=windows --with-fftw --with-freetype --with-freetype-includes=/usr/local/include/freetype2 --without-x --without-tcltk --enable-x11=no --enable-shared=yes --with-proj-share=/usr/local/share/proj
 make
 make install
+
+Qgis 0.9.0 Grass Config Line:
+./configure --prefix=/usr/local --bindir=/usr/local --with-includes=/usr/local/include --with-libs=/usr/local/lib --with-cxx --with-postgres=yes --with-postgres-includes=/local/pgsql/include --with-postgres-libs=/local/pgsql/lib --with-opengl=windows --with-fftw --without-x --without-tcltk --with-freetype --with-freetype-includes=/mingw/include/freetype2 --enable-x11=no --enable-shared=yes --with-proj-share=/usr/local/share/proj
+
 ```
 
 It should get installed to ``c:\msys\local\grass-6.3.cvs``
