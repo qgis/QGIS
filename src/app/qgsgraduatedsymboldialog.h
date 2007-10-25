@@ -67,6 +67,8 @@ class QgsGraduatedSymbolDialog: public QDialog, private Ui::QgsGraduatedSymbolDi
 	@param numQuantiles the number of quantiles, e.g. 4 calculates the quantiles for 25%, 50%, 75%, 100%
       @return 0 in case of success*/
      int calculateQuantiles(std::list<double>& result, const std::vector<double>& values, int numQuantiles) const;
+     /**Gets the color value along a specified ramp**/ 
+     QColor getColorFromRamp(QString ramp, int step, int totalSteps); 
 
  protected slots:
      /**Removes a class from the classification*/

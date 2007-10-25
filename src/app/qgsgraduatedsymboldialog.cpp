@@ -275,32 +275,19 @@ void QgsGraduatedSymbolDialog::adjustClassification()
 	QPen pen;
 	QBrush brush;
 
-	//apply a nice color range from red to green as default
-	//todo: make other color ranges available
-	if (i == 0)
-	  {
-	    if (m_type == QGis::Line)
-	      {
-		pen.setColor(QColor(255, 0, 0));
-	      } 
-	    else                //point or polygon
-	      {
-		brush.setColor(QColor(255, 0, 0));
-		pen.setColor(Qt::black);
-	      }
-	  } 
-	else
-	  {
-	    if (m_type == QGis::Line)
-	      {
-		pen.setColor(QColor(255 - (255 / numberofclassesspinbox->value() * (i+1)), 255 / numberofclassesspinbox->value() * (i+1), 0));
-	      } 
-	    else                //point or polygon
-	      {
-		brush.setColor(QColor(255 - (255 / numberofclassesspinbox->value() * (i+1)), 255 / numberofclassesspinbox->value() * (i+1), 0));  
-		pen.setColor(Qt::black);
-	      }
-	  }
+	// todo: These color ramps should come from a dropdown list  
+        QString ramp; 
+        ramp = "red_to_green"; 
+        if (m_type == QGis::Line) 
+        { 
+          pen.setColor(getColorFromRamp(ramp,i, numberofclassesspinbox->value())); 
+        }  
+        else //point or polygon 
+        { 
+          brush.setColor(getColorFromRamp(ramp,i, numberofclassesspinbox->value())); 
+          pen.setColor(Qt::black); 
+        } 
+
 	pen.setWidth(1);
 	brush.setStyle(Qt::SolidPattern);
 	symbol->setPen(pen);
@@ -520,4 +507,26 @@ int QgsGraduatedSymbolDialog::calculateQuantiles(std::list<double>& result, cons
 }
 
 
-
+QColor QgsGraduatedSymbolDialog::getColorFromRamp(QString ramp, int step, int totalSteps) 
+{ 
+  QColor color; 
+  /* To do: 
+     Grab the ramp by name from a file or ramp registry 
+       and apply determine the color for the given step. 
+     Ideally there would be two types of ramps: 
+       - discrete colors: the number of steps would have to match totalSteps 
+       - continuous colors: (eg grass or gmt ramps) would need to code a method 
+          for determining an RGB color for any point along the continuum 
+     Color ramps should be plugin-able; should be defined in a simple text file format 
+       and read from a directory where users can add their own ramps.  
+  */ 
+  if (step == 0) 
+  { 
+    color = QColor(0,255,0); 
+  }  
+  else 
+  { 
+    color = QColor(0,255-((255/totalSteps)*step+1),((255/totalSteps)*step+1));     
+  }  
+  return color; 
+} 
