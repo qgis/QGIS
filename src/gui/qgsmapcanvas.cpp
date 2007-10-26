@@ -1036,8 +1036,9 @@ void QgsMapCanvas::showError(QgsMapLayer * mapLayer)
     mapLayer->errorString()
   );
   mv->exec();
-  delete mv;
-
+  //MH
+  //QgsMessageViewer automatically sets delete on close flag
+  //so deleting mv would lead to a segfault
 }
 
 QPoint QgsMapCanvas::mouseLastXY()
