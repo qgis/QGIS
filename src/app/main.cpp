@@ -229,8 +229,10 @@ int main(int argc, char *argv[])
     _set_fmode(_O_BINARY);
  #endif 
 
+#ifndef _MSC_VER
   // Set up the custom qWarning/qDebug custom handler
   qInstallMsgHandler( myMessageOutput );
+#endif
 
   /////////////////////////////////////////////////////////////////
   // Command line options 'behaviour' flag setup
