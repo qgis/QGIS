@@ -68,9 +68,10 @@ class QgsGeorefPlugin:public QObject, public QgisPlugin
   //////////////////////////////////////////////////////////////////////
 
   /** 
-  * Constructor for a plugin. The QgisInterface pointer is passed by 
+  * Constructor for a plugin. The QgisApp and QgisIface pointers are passed by 
   * QGIS when it attempts to instantiate the plugin.
-  * @param Pointer to the QgisInterface object. 
+  * @param Pointer to the QgisApp object
+  * @param Pointer to the QgisIface object. 
    */
   QgsGeorefPlugin(QgisInterface * );
   //! Destructor

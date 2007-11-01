@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include <QValidator>
 #include <mapcoordsdialog.h>
 
@@ -34,7 +35,8 @@ MapCoordsDialog::MapCoordsDialog(const QgsPoint& pixelCoords, QgsMapCanvas* qgis
 
   mToolEmitPoint = new QgsMapToolEmitPoint(qgisCanvas);
   mToolEmitPoint->setButton(btnPointFromCanvas);
-  connect(mToolEmitPoint, SIGNAL(gotPoint(QgsPoint&,Qt::MouseButton)), this, SLOT(setXY(QgsPoint&)));
+  connect((QgsMapToolEmitPoint*)mToolEmitPoint, SIGNAL(gotPoint(QgsPoint&,Qt::MouseButton)),
+          this, SLOT(setXY(QgsPoint&)));
 
   connect(leXCoord, SIGNAL(textChanged(const QString&)), this, SLOT(updateOK()));
   connect(leYCoord, SIGNAL(textChanged(const QString&)), this, SLOT(updateOK()));
@@ -79,3 +81,4 @@ void MapCoordsDialog::on_btnPointFromCanvas_clicked()
   mPrevMapTool = mQgisCanvas->mapTool();
   mQgisCanvas->setMapTool(mToolEmitPoint);
 }
+

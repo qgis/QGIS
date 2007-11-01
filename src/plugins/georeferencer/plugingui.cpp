@@ -10,6 +10,7 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "plugingui.h"
+#include "qgsgeorefdescriptiondialog.h"
 #include "qgsleastsquares.h"
 #include "qgspointdialog.h"
 #include "qgsrasterlayer.h"
@@ -17,6 +18,8 @@
 #include "qgsproject.h"
 
 //qt includes
+#include <QApplication>
+#include <QDesktopWidget>
 #include <QFileDialog>
 #include <QLineEdit>
 #include <QMessageBox>
@@ -32,20 +35,43 @@ QgsGeorefPluginGui::QgsGeorefPluginGui() : QgsGeorefPluginGuiBase()
 
 QgsGeorefPluginGui::QgsGeorefPluginGui(QgisInterface* theQgisInterface,
                                        QWidget* parent, Qt::WFlags fl)
-  : QDialog(parent, fl), mIface(theQgisInterface)
+  : QDialog(parent, fl), mIface(theQgisInterface), mPluginWindowsArranged(false)
 {
   setupUi(this);
+  setAttribute(Qt::WA_DeleteOnClose);
+  mPointDialog = new QgsPointDialog(mIface, parent);
+  //move point dialog to the left of the screen so that both windows are visible
+  mPointDialog->move(0, mPointDialog->pos().y());
+  mPointDialog->show();
 }  
 
 
 QgsGeorefPluginGui::~QgsGeorefPluginGui()
 {
+  delete mPointDialog;
+
+  //restore size of qgis main window if arrange button was used
+  if(mPluginWindowsArranged)
+    {
+      QWidget* mainWindow = QgsGeorefPluginGui::findMainWindow();
+      if(mainWindow)
+	{
+	  mainWindow->resize(origSize);
+	  mainWindow->move(origPos);
+	}
+    }
 }
 
 
 void QgsGeorefPluginGui::on_pbnClose_clicked()
 {
  close(1);
+}
+
+void QgsGeorefPluginGui::on_pbnDescription_clicked()
+{
+  QgsGeorefDescriptionDialog d(0);
+  d.exec();
 }
 
 
@@ -59,20 +85,13 @@ void QgsGeorefPluginGui::on_pbnSelectRaster_clicked() {
 				 tr("Choose a raster file"),
                  dir,
 				 tr("Raster files (*.*)"));
+
+  if(filename.isNull())
+    {
+      return;
+    }
   leSelectRaster->setText(filename);
-}
 
-
-void QgsGeorefPluginGui::on_pbnEnterWorldCoords_clicked() {
-
-  // Is there a filename
-  if (leSelectRaster->text().isEmpty())
-  {
-    QMessageBox::critical(this, tr("Error"), 
-			  tr("You need to specify a file to georeference first."));
-
-    return;
-  }
   // do we think that this is a valid raster?
   if (!QgsRasterLayer::isValidRasterFileName(leSelectRaster->text())) {
     QMessageBox::critical(this, tr("Error"), 
@@ -94,26 +113,154 @@ void QgsGeorefPluginGui::on_pbnEnterWorldCoords_clicked() {
   QString worldfile;
   if (point != -1 && point != raster.length() - 1) {
     worldfile = raster.left(point + 1);
-    worldfile += raster.at(point + 1);
-    worldfile += raster.at(raster.length() - 1);
-    worldfile += 'w';
+    worldfile += ("wld");
   }
   
   // check if there already is a world file
   if (!worldfile.isEmpty()) {
     if (QFile::exists(worldfile)) {
-      QMessageBox::StandardButton r = QMessageBox::question(this, tr("World file exists"),
+      int r = QMessageBox::question(this, tr("World file exists"),
                        tr("<p>The selected file already seems to have a ")+
                        tr("world file! Do you want to replace it with the ")+
-		               tr("new world file?</p>"),
-                       QMessageBox::Ok | QMessageBox::Cancel);
-      if (r == QMessageBox::Cancel)
+		       tr("new world file?</p>"),
+                       QMessageBox::Yes|QMessageBox::Default, 
+                       QMessageBox::No|QMessageBox::Escape);
+      if (r == QMessageBox::No)
         return;
       else
         QFile::remove(worldfile);
     }
   }
   
-  QgsPointDialog* dlg = new QgsPointDialog(raster, mIface, this);
-  dlg->show();
+  // XXX This is horrible, but it works and I'm tired / ll
+  {
+    QSettings settings;
+    QgsProject* prj = QgsProject::instance();
+    mProjBehaviour = settings.readEntry("/Projections/defaultBehaviour");
+    mProjectSRS = prj->readEntry("SpatialRefSys", "/ProjectSRSProj4String");
+    mProjectSRSID = prj->readNumEntry("SpatialRefSys", "/ProjectSRSID");
+    
+    settings.writeEntry("/Projections/defaultBehaviour", "useProject");
+    prj->writeEntry("SpatialRefSys", "/ProjectSRSProj4String", GEOPROJ4);
+    prj->writeEntry("SpatialRefSys", "/ProjectSRSID", int(GEOSRS_ID));
+    
+    settings.writeEntry("/Projections/defaultBehaviour", mProjBehaviour);
+    prj->writeEntry("SpatialRefSys", "/ProjectSRSProj4String", mProjectSRS);
+    prj->writeEntry("SpatialRefSys", "/ProjectSRSID", mProjectSRSID);
+  }
+
+  mPointDialog->openImageFile(filename);
+  mPointDialog->show();
+}
+
+
+
+void QgsGeorefPluginGui::on_mArrangeWindowsButton_clicked()
+{
+  if(mPointDialog && mIface)
+    {
+      QWidget* mainWindow = QgsGeorefPluginGui::findMainWindow();
+      if(!mainWindow)
+	{
+	  return;
+	}
+      
+      int width, height; //width and height of screen
+      
+      //store initial size and position of qgis window
+      mPluginWindowsArranged = true;
+      origSize = mainWindow->size();
+      origPos = mainWindow->pos();
+      
+      
+      //qt distinguishes between geometry with and without window frame
+      int widthIncrMainWindow, heightIncrMainWindow;
+      int widthIncrPointDialog, heightIncrPointDialog;
+      int widthIncrThis, heightIncrThis;
+      
+      //read the desktop geometry
+      QDesktopWidget* desktop = QApplication::desktop();
+      QRect screenGeometry = desktop->availableGeometry();
+      width = screenGeometry.width();
+      height = screenGeometry.height();
+      
+      int leftRightBorder; //border between plugin/point dialogs on the left and qgis main window on the right
+      int pluginPointDialogBorder; //border on y-axis between plugin dialog and point dialog
+      
+      
+      leftRightBorder = width/3;
+      pluginPointDialogBorder = height/5;
+      
+      //consider minimum heights of plugin dialog and mPointDialog
+      int minPluginDialogHeight = minimumHeight() + (frameSize().height() - this->height()); 
+      int minPointDialogHeight = mPointDialog->minimumHeight() +	\
+	(mPointDialog->frameSize().height() - mPointDialog->height());
+      
+      if((height - pluginPointDialogBorder) < minPointDialogHeight)
+	{
+	  pluginPointDialogBorder = (height - minPointDialogHeight);
+	} 
+      if(pluginPointDialogBorder < minPluginDialogHeight)
+	{
+	  pluginPointDialogBorder = minPluginDialogHeight;
+	}
+      
+      //consider minimum widths of plugin/point dialogs and qgis main window
+      int minPluginDialogWidth = minimumWidth() + (frameSize().width() - this->width());
+      int minPointDialogWidth = mPointDialog->minimumWidth() +		\
+	(mPointDialog->frameSize().width() - mPointDialog->width());
+      int minMainWindowWidth = mainWindow->minimumWidth() +		\
+	(mainWindow->frameSize().width() - mainWindow->width());
+      
+      if(leftRightBorder < minPointDialogWidth)
+	{
+	  leftRightBorder = minPointDialogWidth;
+	}
+      if(leftRightBorder < minPluginDialogWidth)
+	{
+	  leftRightBorder = minPluginDialogWidth;
+	}
+      if((width - leftRightBorder) < minMainWindowWidth)
+	{
+	  leftRightBorder = width - minMainWindowWidth;
+	}
+      
+      //place main window
+      widthIncrMainWindow = (width -leftRightBorder) - mainWindow->frameSize().width();
+      heightIncrMainWindow = height - mainWindow->frameSize().height();
+      mainWindow->setEnabled(false); //avoid getting two resize events for the main canvas
+      mainWindow->resize(mainWindow->width() + widthIncrMainWindow, mainWindow->height() + heightIncrMainWindow);
+      mainWindow->move(leftRightBorder, 0);
+      mainWindow->setEnabled(true);
+      
+      //place point dialog
+      widthIncrPointDialog = leftRightBorder - mPointDialog->frameSize().width();
+      heightIncrPointDialog = height - pluginPointDialogBorder - mPointDialog->frameSize().height();
+      mPointDialog->resize(mPointDialog->width() + widthIncrPointDialog, mPointDialog->height() + heightIncrPointDialog);
+      mPointDialog->move(0, pluginPointDialogBorder);
+      
+      //place this dialog
+      widthIncrThis = leftRightBorder - frameSize().width();
+      heightIncrThis = pluginPointDialogBorder - frameSize().height();
+      resize(this->width() + widthIncrThis, this->height() + heightIncrThis);
+      move(0, 0);
+    }
+}
+
+
+QWidget* QgsGeorefPluginGui::findMainWindow()
+{
+  QWidget* result = 0;
+  
+  QWidgetList topLevelWidgets = qApp->topLevelWidgets();
+  QWidgetList::iterator it = topLevelWidgets.begin();
+  for(; it != topLevelWidgets.end(); ++it)
+    {
+      if((*it)->objectName() == "QgisApp")
+	{
+	  result = *it;
+	  break;
+	}
+    }
+  return result;
 }

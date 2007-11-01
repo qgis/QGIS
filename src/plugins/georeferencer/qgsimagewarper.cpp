@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include <cmath>
 #include <iostream>
 
@@ -28,7 +29,7 @@
 
 void QgsImageWarper::warp(const QString& input, const QString& output,
 			  double& xOffset, double& yOffset, 
-			  ResamplingMethod resampling, bool useZeroAsTrans) {
+			  ResamplingMethod resampling, bool useZeroAsTrans, const QString& compression) {
   // Open input file
   GDALAllRegister();
   GDALDataset* hSrcDS = static_cast<GDALDataset*>(GDALOpen(QFile::encodeName(input).constData(), 
@@ -75,6 +76,7 @@ void QgsImageWarper::warp(const QString& input, const QString& output,
   GDALDriver* driver = static_cast<GDALDriver*>(GDALGetDriverByName("GTiff"));
   char **papszOptions = NULL;
   papszOptions = CSLSetNameValue(papszOptions, "INIT_DEST", "NO_DATA");
+  papszOptions = CSLSetNameValue(papszOptions, "COMPRESS", compression);
   GDALDataset* hDstDS = 
     driver->Create(QFile::encodeName(output).constData(), newXSize, newYSize, 
 		   hSrcDS->GetRasterCount(),

@@ -1,7 +1,7 @@
 /***************************************************************************
      qgsimagewarper.h
      --------------------------------------
-    Date                 : Sun Sep 16 12:03:20 AKDT 2007
+   Date                 : Sun Sep 16 12:03:20 AKDT 2007
     Copyright            : (C) 2007 by Gary E. Sherman
     Email                : sherman at mrcc dot com
  ***************************************************************************
@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef QGSIMAGEWARPER_H
 #define QGSIMAGEWARPER_H
 
@@ -33,7 +34,7 @@ public:
   
   void warp(const QString& input, const QString& output, 
 	    double& xOffset, double& yOffset, 
-	    ResamplingMethod resampling = Bilinear, bool useZeroAsTrans = true);
+	    ResamplingMethod resampling = Bilinear, bool useZeroAsTrans = true, const QString& compression = "NONE");
   
 private:
   
