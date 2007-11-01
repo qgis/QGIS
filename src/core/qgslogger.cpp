@@ -47,7 +47,11 @@ void QgsLogger::debug(const QString& msg, int debuglevel, const char* file, cons
 	}
       else
 	{
+#ifndef _MSC_VER
 	  qDebug("%s: %d: (%s) %s", file, line, function, msg.toLocal8Bit().data());
+#else
+	  qDebug("%s(%d) : (%s) %s", file, line, function, msg.toLocal8Bit().data());
+#endif
 	}
     }
 }

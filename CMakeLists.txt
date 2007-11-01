@@ -152,6 +152,9 @@ IF (WIN32)
     # Turn on defines for non standard maths stuff
     ADD_DEFINITIONS(-D_USE_MATH_DEFINES)
 
+    # Turn off deprecation warnings
+    ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
+    ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_WARNINGS)
     # Some file access stuff not defined in native win32
     # environment
     ADD_DEFINITIONS(-DF_OK=0)
