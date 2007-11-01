@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef QGSLEASTSQUARES_H
 #define QGSLEASTSQUARES_H
 

@@ -9,6 +9,7 @@ SET (GEOREF_SRCS
      qgsimagewarper.cpp
      qgsleastsquares.cpp
      qgspointdialog.cpp
+     qgsgeorefdescriptiondialog.cpp
      qgsgeorefwarpoptionsdialog.cpp
      mapcoordsdialog.cpp
 )
@@ -17,6 +18,7 @@ SET (GEOREF_UIS
      pluginguibase.ui
      qgspointdialogbase.ui
      mapcoordsdialogbase.ui
+     qgsgeorefdescriptiondialogbase.ui
      qgsgeorefwarpoptionsdialogbase.ui
 )
 

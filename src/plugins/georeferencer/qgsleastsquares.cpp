@@ -12,11 +12,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include <cmath>
 #include <stdexcept>
-#include "qgslogger.h"
-#include <gsl/gsl_linalg.h>
 
+#include <gsl/gsl_linalg.h>
 
 #include <QObject>
 
@@ -35,8 +35,6 @@ void QgsLeastSquares::linear(std::vector<QgsPoint> mapCoords,
   double sumPx(0), sumPy(0), sumPx2(0), sumPy2(0), sumPxMx(0), sumPyMy(0),
     sumMx(0), sumMy(0);
   for (int i = 0; i < n; ++i) {
-    QgsDebugMsg("Processing point Pixel(" + QString::number(pixelCoords[i].x()) + ":" + QString::number(pixelCoords[i].y()) +
-		")\n                  Map(" + QString::number(mapCoords[i].x()) + ":" + QString::number(mapCoords[i].y()) + ")\n");
     sumPx += pixelCoords[i].x();
     sumPy += pixelCoords[i].y();
     sumPx2 += std::pow(pixelCoords[i].x(), 2);
@@ -57,6 +55,7 @@ void QgsLeastSquares::linear(std::vector<QgsPoint> mapCoords,
   
   origin.setX(aX);
   origin.setY(aY);
+ 
   pixelXSize = std::abs(bX);
   pixelYSize = std::abs(bY);
 }
@@ -165,3 +164,4 @@ void QgsLeastSquares::affine(std::vector<QgsPoint> mapCoords,
   gsl_permutation_free(p);
 
 }
+

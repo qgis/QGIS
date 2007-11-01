@@ -25,8 +25,8 @@
 class QAction;
 class QActionGroup;
 class QgsGeorefDataPoint;
-class QgisInterface;
 class QgsMapTool;
+class QgisInterface;
 
 class QgsPointDialog : public QDialog, private Ui::QgsPointDialogBase
 {
@@ -34,15 +34,18 @@ Q_OBJECT
 public:
   QgsPointDialog(QString layerPath, QgisInterface* theQgisInterface,
                  QWidget* parent = 0, Qt::WFlags fl = 0);
+
+  QgsPointDialog(QgisInterface* theQgisInterface, QWidget* parent = 0, Qt::WFlags fl = 0);
   ~QgsPointDialog();
 
+  /**Opens a new image file in mCanvas*/
+  void openImageFile(QString layerPath);
   void showCoordDialog(QgsPoint& pixelCoords);
   void deleteDataPoint(QgsPoint& pixelCoords);
 
 public slots:
   
   void addPoint(const QgsPoint& pixelCoords, const QgsPoint& mapCoords);
-  void on_pbnCancel_clicked();
   void on_pbnGenerateWorldFile_clicked();
   void on_pbnGenerateAndLoad_clicked();
   void on_pbnSelectWorldFile_clicked();
@@ -58,6 +61,7 @@ public slots:
    
 private:
 
+  void initialize();
   bool generateWorldFile();
   QString guessWorldFileName(const QString& raster);
 
@@ -85,6 +89,7 @@ private:
 //  std::vector<QString> mAcetateIDs;
   std::vector<QgsGeorefDataPoint*> mPoints;
   QgisInterface* mIface;
+  int mAcetateCounter;
 };
 
 #endif
