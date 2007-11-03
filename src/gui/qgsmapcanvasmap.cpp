@@ -34,7 +34,9 @@ void QgsMapCanvasMap::paint(QPainter* p, const QStyleOptionGraphicsItem*, QWidge
 {
   if (mCanvas->isDirty())
   {
+    setEnabled(false);
     mCanvas->render();
+    setEnabled(true);
   }
   p->drawPixmap(0,0, mPixmap);
 }
