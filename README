@@ -1,4 +1,4 @@
-README for QGIS version 0.8 'Titan'
+README for QGIS version 0.9.1 'Ganymede'
 
 Quantum GIS (QGIS) is an Open Source Geographic Information System. The
 project was born in May of 2002 and was established as a project on
@@ -22,9 +22,6 @@ under this license means that you can (if you want to) inspect and
 modify the source code and guarantees that you, our happy user will
 always have access to a GIS program that is free of cost and can be
 freely modified.
-
-This release adds:
-  * ADD v8 STUFF IN HERE
 
 Supported raster formats include:
   Grass
@@ -61,7 +58,5 @@ SUPPORT -   You can get support in the following ways:
                 Please wait around for a response to your question as many 
                 folks on the channel are doing other things and it may take a 
                 while for them to notice your question.
-     
-      
 
 
