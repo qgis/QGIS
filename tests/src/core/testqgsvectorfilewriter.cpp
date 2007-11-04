@@ -271,19 +271,19 @@ void TestQgsVectorFileWriter::polygonGridTest()
       mFields,
       QGis::WKBPolygon,
       &mSRS);
-  double myInterval=5;
-  for (int i=-180;i<=180;i+=myInterval)
+  double myInterval=5.0;
+  for (double i=-180.0;i<=180.0;i+=myInterval)
   {
-    for (int j=-90;j<=90;j+=myInterval)
+    for (double j=-90.0;j<=90.0;j+=myInterval)
     {
       //
       // Create a polygon feature
       //
       QgsPolyline myPolyline;
-      QgsPoint myPoint1 = QgsPoint(static_cast<float>(i),static_cast<float>(j));
-      QgsPoint myPoint2 = QgsPoint(static_cast<float>(i+myInterval),static_cast<float>(j));
-      QgsPoint myPoint3 = QgsPoint(static_cast<float>(i+myInterval),static_cast<float>(j+myInterval));
-      QgsPoint myPoint4 = QgsPoint(static_cast<float>(i),static_cast<float>(j+myInterval));
+      QgsPoint myPoint1 = QgsPoint(i,j);
+      QgsPoint myPoint2 = QgsPoint(i+myInterval,j);
+      QgsPoint myPoint3 = QgsPoint(i+myInterval,j+myInterval);
+      QgsPoint myPoint4 = QgsPoint(i,j+myInterval);
       myPolyline << myPoint1 << myPoint2 << myPoint3 << myPoint4 << myPoint1;
       QgsPolygon myPolygon;
       myPolygon << myPolyline;
@@ -344,19 +344,19 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
       mFields,
       QGis::WKBPolygon,
       &mSRS);
-  double myInterval=1000; //1km2
-  for (int i=0;i<=10000;i+=myInterval) //10km
+  double myInterval=1000.0; //1km2
+  for (double i=0.0;i<=10000.0;i+=myInterval) //10km
   {
-    for (int j=0;j<=10000;j+=myInterval)//10km
+    for (double j=0.0;j<=10000.0;j+=myInterval)//10km
     {
       //
       // Create a polygon feature
       //
       QgsPolyline myPolyline;
-      QgsPoint myPoint1 = QgsPoint(static_cast<float>(i),static_cast<float>(j));
-      QgsPoint myPoint2 = QgsPoint(static_cast<float>(i+myInterval),static_cast<float>(j));
-      QgsPoint myPoint3 = QgsPoint(static_cast<float>(i+myInterval),static_cast<float>(j+myInterval));
-      QgsPoint myPoint4 = QgsPoint(static_cast<float>(i),static_cast<float>(j+myInterval));
+      QgsPoint myPoint1 = QgsPoint(i,j);
+      QgsPoint myPoint2 = QgsPoint(i+myInterval,j);
+      QgsPoint myPoint3 = QgsPoint(i+myInterval,j+myInterval);
+      QgsPoint myPoint4 = QgsPoint(i,j+myInterval);
       myPolyline << myPoint1 << myPoint2 << myPoint3 << myPoint4 << myPoint1;
       QgsPolygon myPolygon;
       myPolygon << myPolyline;
