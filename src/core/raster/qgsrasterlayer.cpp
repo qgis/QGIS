@@ -4244,6 +4244,10 @@ QString QgsRasterLayer::buildPyramids(RasterPyramidList const & theRasterPyramid
       {
 
         //build the pyramid and show progress to console
+        //NOTE this (magphase) is disabled in teh gui since it tends
+        //to create corrupted images. The images can be repaired
+        //by running one of the other resampling strategies below.
+        //see ticket #284
         if(theResamplingMethod==tr("Average Magphase"))
         {
           myError = gdalDataset->BuildOverviews( "MODE", 1, myOverviewLevelsIntArray, 0, NULL,
