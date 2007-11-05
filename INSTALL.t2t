@@ -1102,16 +1102,185 @@ copy contents of pgsql directory from the archive to ``c:\msys\local``
 We're done with preparation of MSYS environment. Now you can delete all stuff in ``c:\msys\local\src`` - it takes quite a lot
 of space and it's not necessary at all.
 
+= Building with MS Visual Studio =
+
+Note that this does not currently include GRASS or Python plugins.
+
+== Setup Visual Studio ==
+
+This section describes the setup required to allow Visual Studio to be used to build QGIS. 
+
+=== Express Edition ===
+The free Express Edition lacks the platform SDK which contains headers and so on that are needed when building QGIS. The platform SDK can be installed as described here:
+	http://msdn.microsoft.com/vstudio/express/visualc/usingpsdk/
+Once this is done, you will need to edit the <vsinstalldir>\Common7\Tools\vsvars file as follows:
+	Add ``%PlatformSDKDir%\Include\atl`` and ``%PlatformSDKDir%\Include\mfc`` to the ``@set INCLUDE`` entry.
+This will add more headers to the system INCLUDE path. Note that this will only work when you use the Visual Studio command prompt when building. Most of the dependencies will be built with this.
+You will also need to perform the edits described here to remove the need for a library that Visual Studio Express lacks:
+	http://www.codeproject.com/wtl/WTLExpress.asp
+
+=== All Editions ===
+
+You will need stdint.h and unistd.h. unistd.h comes with GnuWin32 version of flex & bison binaries (see later). stdint.h can be found here:
+	http://www.azillionmonkeys.com/qed/pstdint.h.
+Copy both of these to <vsinstalldir>\VC\include.
+
+== Download/Install Dependencies ==
+
+This section describes the downloading and installation of the various QGIS dependencies.
+
+=== Flex and Bison ===
+
+Flex and Bison are tools for generation of parsers, they're needed for GRASS and also QGIS compilation.
+
+Download the following packages and run the installers:
+	http://gnuwin32.sourceforge.net/downlinks/flex.php
+	
+	http://gnuwin32.sourceforge.net/downlinks/bison.php
+
+=== Qt ===
+
+Build Qt following the instructions here:
+	http://wiki.qgis.org/qgiswiki/Building_QT_4_with_Visual_C%2B%2B_2005
+
+=== Proj.4 ===
+
+Get proj.4 source from here:
+	http://proj.maptools.org/
+Using the Visual Studio command prompt (ensures the environment is setup properly), run the following in the src directory:
+
+``` nmake -f makefile.vc
+
+Install by running the following in the top level directory setting PROJ_DIR as appropriate:
+
+```
+set PROJ_DIR=c:\lib\proj
+
+mkdir %PROJ_DIR%\bin
+mkdir %PROJ_DIR%\include
+mkdir %PROJ_DIR%\lib
+
+copy src\*.dll %PROJ_DIR%\bin
+copy src\*.exe %PROJ_DIR%\bin
+copy src\*.h %PROJ_DIR%\include
+copy src\*.lib %PROJ_DIR%\lib 
+``` 
+
+This can also be added to a batch file.
+
+=== GSL ===
+
+Get gsl source from here:
+	http://david.geldreich.free.fr/downloads/gsl-1.9-windows-sources.zip
+Build using the gsl.sln file
+
+=== GEOS ===
+
+Get geos from svn (svn checkout http://svn.refractions.net/geos/trunk geos).
+Edit geos\source\makefile.vc as follows:
+
+Uncomment lines 333 and 334 to allow the copying of version.h.vc to version.h.
+
+Uncomment lines 338 and 339.
+
+Rename geos_c.h.vc to geos_c.h.in on lines 338 and 339 to allow the copying of geos_c.h.in to geos_c.h.
+
+Using the Visual Studio command prompt (ensures the environment is setup properly), run the following in the top level directory:
+
+``` nmake -f makefile.vc 
+
+Run the following in top level directory, setting GEOS_DIR as appropriate:
+
+```
+set GEOS_DIR="c:\lib\geos"
+
+mkdir %GEOS_DIR%\include
+mkdir %GEOS_DIR%\lib
+mkdir %GEOS_DIR%\bin
+
+xcopy /S/Y source\headers\*.h %GEOS_DIR%\include
+copy /Y capi\*.h %GEOS_DIR%\include
+copy /Y source\*.lib %GEOS_DIR%\lib
+copy /Y source\*.dll %GEOS_DIR%\bin
+```
+
+This can also be added to a batch file.
+
+=== GDAL ===
+
+Get gdal from svn (svn checkout https://svn.osgeo.org/gdal/branches/1.4/gdal gdal).
+
+Edit nmake.opt to suit, it's pretty well commented.
+
+Using the Visual Studio command prompt (ensures the environment is setup properly), run the following in the top level directory:
+
+``` nmake -f makefile.vc 
+
+and
+
+``` nmake -f makefile.vc devinstall 
+
+=== PostGIS ===
+
+Get PostGIS and the Windows version of PostgreSQL from here:
+	http://postgis.refractions.net/download/
+Note the warning about not installing the version of PostGIS that comes with the PostgreSQL installer. Simply run the installers.
+
+=== Expat ===
+
+Get expat from here:
+	http://sourceforge.net/project/showfiles.php?group_id=10127
+You'll need expat-win32bin-2.0.1.exe.
+
+Simply run the executable to install expat.
+
+=== CMake ===
+
+Get CMake from here:
+	http://www.cmake.org/HTML/Download.html
+You'll need cmake-<version>-win32-x86.exe. Simply run this to install CMake.
+
+== Building QGIS with CMAKE ==
+
+Get QGIS source from svn (svn co https://svn.qgis.org/repos/qgis/trunk/qgis qgis).
+
+Create a 'Build' directory in the top level QGIS directory. This will be where all the build output will be generated.
+
+Run Start-->All Programs-->CMake-->CMake. 
+
+In the 'Where is the source code:' box, browse to the top level QGIS directory.
+
+In the 'Where to build the binaries:' box, browse to the 'Build' directory you created in the top level QGIS directory.
+
+Fill in the various *_INCLUDE_DIR and *_LIBRARY entries in the 'Cache Values' list.
+
+Click the Configure button. You will be prompted for the type of makefile that will be generated. Select Visual Studio 8 2005 and click OK.
+
+All being well, configuration should complete without errors. If there are errors, it is usually due to an incorrect path to a header or library directory. Failed items will be shown in red in the list.
+
+Once configuration completes without error, click OK to generate the solution and project files.
+
+With Visual Studio 2005, open the qgis.sln file that will have been created in the Build directory you created earlier.
+
+Build the ALL_BUILD project. This will build all the QGIS binaries along with all the plugins.
+ 
+ Install QGIS by building the INSTALL project. By default this will install to c:\Program Files\qgis<version> (this can be changed by changing the CMAKE_INSTALL_PREFIX variable in CMake). 
+ 
+ You will also either need to add all the dependency dlls to the QGIS install directory or add their respective directories to your PATH.
+ 
 
 = Authors and Acknowledgments =
 
 The follwing people have contributed to this document:
 
-- Windows Section
+- Windows MINGW Section
  - Tim Sutton, Godofredo Contreras 2006
  - CMake additions Magnus Homann 2007
  - Python additions Martin Dobias 2007
  - With thanks to Tisham Dhar for preparing the initial msys environment
+
+- Windows MSVC Section
+ - David Willis 2007
 
 - OSX Section
  - Tim Sutton, 2007
