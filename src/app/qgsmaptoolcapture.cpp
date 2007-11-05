@@ -113,6 +113,7 @@ int QgsMapToolCapture::addVertex(const QPoint& p)
     }
   catch(QgsCsException &cse)
     {
+      UNUSED(cse); // unused
       return 2; //cannot reproject point to layer coordinate system
     }
 

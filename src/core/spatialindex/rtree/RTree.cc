@@ -1065,7 +1065,7 @@ void SpatialIndex::RTree::RTree::loadHeader()
 	ptr += sizeof(unsigned long);
 	char c;
 	memcpy(&c, ptr, sizeof(char));
-	m_bTightMBRs = (bool) c;
+	m_bTightMBRs = c!=0;
 	ptr += sizeof(char);
 	memcpy(&(m_stats.m_nodes), ptr, sizeof(unsigned long));
 	ptr += sizeof(unsigned long);

@@ -24,11 +24,6 @@
 
 #include "mIconAddWfsLayer.xpm"
 
-#ifdef WIN32
-#define QGISEXTERN extern "C" __declspec( dllexport )
-#else
-#define QGISEXTERN extern "C"
-#endif
 
 static const QString name_ = QObject::tr("WFS plugin");
 static const QString description_ = QObject::tr("Adds WFS layers to the QGIS canvas");

@@ -30,6 +30,14 @@
 
 #include "BulkLoader.h"
 
+#ifdef _MSC_VER
+// tell MSVC not to complain about exception declarations
+#pragma warning(disable:4290)
+#define UNUSED(symbol) symbol
+#else
+#define UNUSED(symbol)
+#endif
+
 using namespace SpatialIndex::RTree;
 
 BulkLoadSource::BulkLoadSource(
@@ -179,6 +187,7 @@ IData* BulkLoader::TmpFile::getNext()
 	}
 	catch (Tools::EndOfStreamException& e)
 	{
+		UNUSED(e);
 		m_pNext = 0;
 	}
 	catch (...)
@@ -220,6 +229,7 @@ void BulkLoader::TmpFile::rewind()
 	}
 	catch (Tools::EndOfStreamException& e)
 	{
+		UNUSED(e);
 	}
 }
 

@@ -50,7 +50,11 @@
 extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
+#ifndef _MSC_VER
 #include <unistd.h>
+#else
+#include <io.h>
+#endif
 
 #ifndef WIN32
 #ifdef Q_OS_MACX

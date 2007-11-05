@@ -16,13 +16,8 @@
 #include <iostream>
 #include <qmessagebox.h>
 
+#include "qgis.h"
 #include "qgsogrfactory.h"
-
-#ifdef WIN32
-#define QGISEXTERN extern "C" __declspec( dllexport )
-#else
-#define QGISEXTERN extern "C"
-#endif
 
 QgsOGRFactory::QgsOGRFactory()
 {

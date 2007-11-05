@@ -47,11 +47,6 @@ email                : tim@linfiniti.com
 // xpm for creating the toolbar icon
 #include "icon.xpm"
 
-#ifdef WIN32
-#define QGISEXTERN extern "C" __declspec( dllexport )
-#else
-#define QGISEXTERN extern "C"
-#endif
 
 #ifdef _MSC_VER
 #define round(x)  ((x) >= 0 ? floor((x)+0.5) : floor((x)-0.5))
@@ -324,6 +319,7 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
       }
       catch (QgsException &e)
       {
+	UNUSED(e);
 	// just give up
 	return false;
       }

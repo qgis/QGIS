@@ -40,26 +40,25 @@ extern "C" {
 * Class factory to return a pointer to a newly created 
 * QgsGrassProvider object
 */
-extern "C" QgsGrassProvider * classFactory(const QString *uri)
+QGISEXTERN QgsGrassProvider * classFactory(const QString *uri)
 {
     return new QgsGrassProvider(*uri);
 }
 /** Required key function (used to map the plugin to a data store type)
 */
-extern "C" QString providerKey(){
+QGISEXTERN QString providerKey(){
     return QString("grass");
 }
 /**
 * Required description function 
 */
-extern "C" QString description(){
+QGISEXTERN QString description(){
     return QString("GRASS data provider");
 } 
 /**
 * Required isProvider function. Used to determine if this shared library
 * is a data provider plugin
 */
-extern "C" bool isProvider(){
+QGISEXTERN bool isProvider(){
     return true;
 }
-

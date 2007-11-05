@@ -92,7 +92,7 @@ bool QgsShapeFile::scanGeometries()
   qApp->processEvents();
 
   OGRFeature *feat;
-  unsigned int currentType = 0;
+  OGRwkbGeometryType currentType = wkbUnknown;
   bool multi = false;
   while((feat = ogrLayer->GetNextFeature()))
   {
@@ -127,10 +127,10 @@ bool QgsShapeFile::scanGeometries()
   // a hack to support 2.5D geometries (their wkb is equivalent to 2D variants
   // except that the highest bit is set also). For now we will ignore 3rd coordinate.
   hasMoreDimensions = false;
-  if (currentType & 0x80000000)
+  if (currentType & wkb25DBit)
   {
     QgsDebugMsg("Got a shapefile with 2.5D geometry.");
-    currentType &= ~0x80000000;
+    currentType = wkbFlatten(currentType);
     hasMoreDimensions = true;
   }
   

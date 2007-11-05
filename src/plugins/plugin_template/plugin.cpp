@@ -34,13 +34,6 @@
 #include <QToolBar>
 
 
-
-#ifdef WIN32
-#define QGISEXTERN extern "C" __declspec( dllexport )
-#else
-#define QGISEXTERN extern "C"
-#endif
-
 static const char * const sIdent = "$Id$";
 static const QString sName = QObject::tr("[menuitemname]");
 static const QString sDescription = QObject::tr("[plugindescription]");

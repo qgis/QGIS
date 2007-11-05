@@ -1185,7 +1185,7 @@ void QgsGrassModule::run()
 	    QStringList outsideRegion = mOptions->checkRegion();
 	    if ( outsideRegion.size() > 0 )
 	    {
-	      QMessageBox::QMessageBox questionBox( QMessageBox::Question, "Warning", 
+	      QMessageBox questionBox( QMessageBox::Question, "Warning", 
 	        "Input " + outsideRegion.join(",") + " outside current region!",  
 	        QMessageBox::Ok | QMessageBox::Cancel );
 	      QPushButton *resetButton = NULL;

@@ -23,7 +23,7 @@
 class QString;
 class QWidget;
 class Q3ListViewItem;
-class sqlite3;
+struct sqlite3;
 class QgsBookmarks : public QDialog, private Ui::QgsBookmarksBase
 {
   Q_OBJECT

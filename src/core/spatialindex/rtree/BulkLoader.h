@@ -22,6 +22,12 @@
 #ifndef __spatialindex_rtree_bulk_loader_h
 #define __spatialindex_rtree_bulk_loader_h
 
+#ifdef _MSC_VER
+// tell MSVC not to complain about exception declarations
+#pragma warning(push)
+#pragma warning(disable:4290)
+#endif
+
 namespace SpatialIndex
 {
 	namespace RTree
@@ -107,6 +113,11 @@ namespace SpatialIndex
 		};
 	}
 }
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 
 #endif /* __spatialindex_rtree_bulk_loader_h */
 

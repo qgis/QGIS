@@ -43,7 +43,7 @@ QgsMapserverExport::QgsMapserverExport(QWidget * parent, Qt::WFlags fl)
   txtQgisFilePath->setSuffixFilter("qgs");
   // initialize python
   initPy();
-  qDebug("Reading setttings");
+  qDebug("Reading settings");
   QSettings mySettings;
   txtMapFilePath->setText(mySettings.value("mapserverExport/lastMapFile","").toString());
   txtQgisFilePath->setText(mySettings.value("mapserverExport/lastQgsFile","").toString());
@@ -104,7 +104,7 @@ void QgsMapserverExport::on_chkExpLayersOnly_clicked(bool isChecked)
 
 void QgsMapserverExport::apply()
 {
-  qDebug("Writing setttings");
+  qDebug("Writing settings");
   QSettings mySettings;
   mySettings.setValue("mapserverExport/lastMapFile",txtMapFilePath->text());
   mySettings.setValue("mapserverExport/lastQgsFile",txtQgisFilePath->text());
