@@ -108,7 +108,7 @@ struct GMAP
   \class QgsGrassProvider
   \brief Data provider for GRASS vectors
 */
-class QgsGrassProvider : public QgsVectorDataProvider
+class GRASS_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 {
 public:
 

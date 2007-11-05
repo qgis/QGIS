@@ -39,11 +39,6 @@
 #include "../../src/qgsfield.h"
 #include "../../src/qgsrect.h"
 
-#ifdef WIN32
-#define QGISEXTERN extern "C" __declspec( dllexport )
-#else
-#define QGISEXTERN extern "C"
-#endif
 
 
 static const QString TEXT_PROVIDER_KEY = "mysql";

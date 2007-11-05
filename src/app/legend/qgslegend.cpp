@@ -42,6 +42,7 @@
 #include <iostream>
 
 #include <QFont>
+#include <QDomDocument>
 #include <QHeaderView>
 #include <QMenu>
 #include <QMessageBox>

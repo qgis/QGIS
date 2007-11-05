@@ -44,13 +44,6 @@
 #include <QFile>
 #endif
 
-#ifdef WIN32
-#define QGISEXTERN extern "C" __declspec( dllexport )
-#else
-#define QGISEXTERN extern "C"
-#endif
-
-
 static QString WMS_KEY = "wms";
 static QString WMS_DESCRIPTION = "OGC Web Map Service version 1.3 data provider";
 
@@ -1938,6 +1931,7 @@ bool QgsWmsProvider::calculateExtent()
       }
     catch(QgsCsException &cse)
       {
+	UNUSED(cse);
 	continue; //ignore extents of layers which cannot be transformed info the required CRS
       }
 

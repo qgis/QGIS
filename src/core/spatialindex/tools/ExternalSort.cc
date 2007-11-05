@@ -26,6 +26,12 @@
 
 #include "ExternalSort.h"
 
+#ifdef _MSC_VER
+#define UNUSED(symbol) symbol
+#else
+#define UNUSED(symbol)
+#endif
+
 using namespace std;
 
 Tools::ExternalSort::PQEntry::PQEntry(
@@ -202,6 +208,7 @@ void Tools::ExternalSort::mergeRuns()
 			}
 			catch (EndOfStreamException& e)
 			{
+				UNUSED(e);
 				// if there are no more records in the file, do nothing.
 			}
 
@@ -222,6 +229,7 @@ void Tools::ExternalSort::mergeRuns()
 			}
 			catch (EndOfStreamException& e)
 			{
+				UNUSED(e);
 				// if there are no more records in the file, do nothing.
 				delete pqe;
 			}

@@ -48,12 +48,6 @@
 // xpm for creating the toolbar icon
 #include "icon.xpm"
 
-#ifdef WIN32
-#define QGISEXTERN extern "C" __declspec( dllexport )
-#else
-#define QGISEXTERN extern "C"
-#endif
-
 
 static const char * const ident_ = 
   "$Id$";

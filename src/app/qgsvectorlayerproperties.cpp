@@ -500,6 +500,7 @@ QString QgsVectorLayerProperties::getMetadata()
   }
   catch(QgsCsException &cse)
   {
+    UNUSED(cse);
     QgsDebugMsg( cse.what() );
 
     myMetadataQString += "<tr><td bgcolor=\"white\">";

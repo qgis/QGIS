@@ -35,8 +35,8 @@
 // workaround for MSVC compiler which already has defined macro max
 // that interferes with calling std::numeric_limits<int>::max
 #ifdef _MSC_VER
-# ifdef max(x,y)
-#  undef max(x,y)
+# ifdef max
+#  undef max
 # endif
 #endif
 

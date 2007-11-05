@@ -124,4 +124,17 @@ class GUI_EXPORT QgisInterface : public QObject
 
 };
 
+// FIXME: also in core/qgis.h
+#ifndef QGISEXTERN
+#ifdef WIN32
+#  define QGISEXTERN extern "C" __declspec( dllexport )
+#  ifdef _MSC_VER
+// do not warn about C bindings returing QString
+#    pragma warning(disable:4190)
+#  endif
+#else
+#  define QGISEXTERN extern "C"
+#endif
+#endif
+
 #endif //#ifndef QGISINTERFACE_H

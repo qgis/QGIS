@@ -4,14 +4,23 @@ SUBDIRS(config modules themes)
 ADD_DEFINITIONS(-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\")
 ADD_DEFINITIONS(-DHAVE_OPENPTY=${HAVE_OPENPTY})
 
-IF (PEDANTIC)
-MESSAGE("providers/grass : -Werror removed for qgsgrassplugin.cpp for now - please get rid of any compiler warnings!")
-ENDIF (PEDANTIC)
-# The warnings are caused by multiple definitions of NDEBUG in grass sources
-# I have submitted a bug to teh grass folks in the meantime we need to
-# disable treating warnings as errors for the affected files
-FILE (GLOB files *.cpp)
-SET_SOURCE_FILES_PROPERTIES(${files} PROPERTIES COMPILE_FLAGS -Wno-error )
+IF (NOT MSVC)
+  IF (PEDANTIC)
+    MESSAGE("providers/grass : -Werror removed for qgsgrassplugin.cpp for now - please get rid of any compiler warnings!")
+  ENDIF (PEDANTIC)
+  # The warnings are caused by multiple definitions of NDEBUG in grass sources
+  # I have submitted a bug to teh grass folks in the meantime we need to
+  # disable treating warnings as errors for the affected files
+  FILE (GLOB files *.cpp)
+  SET_SOURCE_FILES_PROPERTIES(${files} PROPERTIES COMPILE_FLAGS -Wno-error ) 
+ENDIF (NOT MSVC)
+
+IF (WIN32)
+  ADD_DEFINITIONS("-DGRASS_EXPORT=__declspec(dllimport)")
+ELSE (WIN32)
+  ADD_DEFINITIONS("-DGRASS_EXPORT=")
+ENDIF (WIN32)
+
 ########################################################
 # Files
 
@@ -74,16 +83,17 @@ QT4_WRAP_CPP (GRASS_PLUGIN_MOC_SRCS  ${GRASS_PLUGIN_MOC_HDRS})
 
 ########################################################
 # deal with warnings
-IF (PEDANTIC)
-MESSAGE("providers/grass : -Werror removed for qgsgrassplugin.cpp for now - please get rid of any compiler warnings!")
-ENDIF (PEDANTIC)
-# The warnings are caused by multiple definitions of NDEBUG in grass sources
-# I have submitted a bug to teh grass folks in the meantime we need to
-# disable treating warnings as errors for the affected files
-FILE (GLOB files *.cpp)
-SET_SOURCE_FILES_PROPERTIES(${files} PROPERTIES COMPILE_FLAGS -Wno-error )
-SET_SOURCE_FILES_PROPERTIES(${GRASS_PLUGIN_MOC_SRCS} PROPERTIES COMPILE_FLAGS -Wno-error )
-
+IF (NOT MSVC)
+  IF (PEDANTIC)
+    MESSAGE("providers/grass : -Werror removed for qgsgrassplugin.cpp for now - please get rid of any compiler warnings!")
+  ENDIF (PEDANTIC)
+  # The warnings are caused by multiple definitions of NDEBUG in grass sources
+  # I have submitted a bug to teh grass folks in the meantime we need to
+  # disable treating warnings as errors for the affected files
+  FILE (GLOB files *.cpp)
+  SET_SOURCE_FILES_PROPERTIES(${files} PROPERTIES COMPILE_FLAGS -Wno-error )
+  SET_SOURCE_FILES_PROPERTIES(${GRASS_PLUGIN_MOC_SRCS} PROPERTIES COMPILE_FLAGS -Wno-error )
+ENDIF (NOT MSVC)
 
 ########################################################
 # build lib

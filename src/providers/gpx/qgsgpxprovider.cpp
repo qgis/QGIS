@@ -43,13 +43,6 @@
 #include "gpsdata.h"
 #include "qgslogger.h"
 
-#ifdef WIN32
-#define QGISEXTERN extern "C" __declspec( dllexport )
-#else
-#define QGISEXTERN extern "C"
-#endif
-
-
 const char* QgsGPXProvider::attr[] = { "name", "elevation", "symbol", "number",
 				       "comment", "description", "source", 
 				       "url", "url name" };

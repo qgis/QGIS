@@ -316,6 +316,7 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect & viewExtent, QgsMapToPixe
     }
     catch (QgsCsException &e)
     {
+      UNUSED(e);
       QgsLogger::critical("Error projecting label locations, caught in " + QString(__FILE__) + ", line " +QString(__LINE__));
     }
 

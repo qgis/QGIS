@@ -597,7 +597,8 @@ void QgsGrassNewMapset::setRegionPage()
             }
             catch(QgsCsException &cse)
             {
-		std::cerr << "Cannot transform point" << std::endl;
+                UNUSED(cse);
+                std::cerr << "Cannot transform point" << std::endl;
                 ok = false;
                 break;
             }
@@ -942,7 +943,8 @@ void QgsGrassNewMapset::setSelectedRegion()
             }
             catch(QgsCsException &cse)
             {
-		std::cerr << "Cannot transform point" << std::endl;
+                UNUSED(cse);
+                std::cerr << "Cannot transform point" << std::endl;
                 ok = false;
                 break;
             }
@@ -1031,6 +1033,7 @@ void QgsGrassNewMapset::setCurrentRegion()
             }
             catch(QgsCsException &cse)
             {
+		UNUSED(cse);
 		std::cerr << "Cannot transform point" << std::endl;
                 ok = false;
                 break;
@@ -1176,7 +1179,8 @@ void QgsGrassNewMapset::drawRegion()
             }
             catch(QgsCsException &cse)
             {
-		std::cerr << "Cannot transform point" << std::endl;
+                UNUSED(cse);
+                std::cerr << "Cannot transform point" << std::endl;
                 ok = false;
                 break;
             }

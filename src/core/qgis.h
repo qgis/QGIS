@@ -130,5 +130,24 @@ public:
    *  or user (~/.qgis.qgis.db) defined projection. */
   const int USER_PROJECTION_START_ID=100000;
 
+#ifdef WIN32
+// fake use to make unused variable warnings go away in Visual C++
+#define UNUSED(symbol) symbol
+#else
+#  define UNUSED(symbol)
+#endif
+
+// FIXME: also in qgisinterface.h
+#ifndef QGISEXTERN
+#ifdef WIN32
+#  define QGISEXTERN extern "C" __declspec( dllexport )
+#  ifdef _MSC_VER
+// do not warn about C bindings returing QString
+#    pragma warning(disable:4190)
+#  endif
+#else
+#  define QGISEXTERN extern "C"
+#endif
+#endif
 
 #endif

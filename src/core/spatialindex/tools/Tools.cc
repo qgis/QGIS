@@ -205,7 +205,7 @@ void Tools::PropertySet::loadFromByteArray(const byte* ptr)
 			byte bl;
 			memcpy(&bl, ptr, sizeof(byte));
 			ptr += sizeof(byte);
-			v.m_val.blVal = static_cast<bool>(bl);
+			v.m_val.blVal = bl!=0;
 			break;
 		default:
 			throw IllegalStateException(

@@ -1,9 +1,16 @@
-
 IF (WIN32)
   SET(BINDINGS_CORE_LIB ${CMAKE_CURRENT_BINARY_DIR}/core/core.pyd)
   SET(BINDINGS_GUI_LIB  ${CMAKE_CURRENT_BINARY_DIR}/gui/gui.pyd)
-  SET(QGIS_CORE_LIB     ${CMAKE_BINARY_DIR}/src/core/libqgis_core.dll)
-  SET(QGIS_GUI_LIB      ${CMAKE_BINARY_DIR}/src/gui/libqgis_gui.dll)
+  IF (NOT MSVC)
+    SET(QGIS_CORE_LIB     ${CMAKE_BINARY_DIR}/src/core/libqgis_core.dll)
+    SET(QGIS_GUI_LIB      ${CMAKE_BINARY_DIR}/src/gui/libqgis_gui.dll)
+  ELSE (NOT MSVC)
+    SET(QGIS_CORE_LIB	  ${CMAKE_BINARY_DIR}/src/core/${CMAKE_CFG_INTDIR}/qgis_core.lib)
+    SET(QGIS_GUI_LIB	  ${CMAKE_BINARY_DIR}/src/gui/${CMAKE_CFG_INTDIR}/qgis_gui.lib)
+    GET_FILENAME_COMPONENT(GDAL_LIB_PATH ${GDAL_LIBRARY} PATH)
+    GET_FILENAME_COMPONENT(GDAL_LIB_NAME ${GDAL_LIBRARY} NAME_WE)
+    SET(GDAL_LIB_PATHNAME ${GDAL_LIB_PATH}/${GDAL_LIB_NAME})
+  ENDIF (NOT MSVC)
 ELSE (WIN32)
   SET(BINDINGS_CORE_LIB ${CMAKE_CURRENT_BINARY_DIR}/core/core.so)
   SET(BINDINGS_GUI_LIB  ${CMAKE_CURRENT_BINARY_DIR}/gui/gui.so)
@@ -35,6 +42,12 @@ FILE(GLOB GUI_SIP_FILES  "${CMAKE_CURRENT_SOURCE_DIR}/gui/*.sip")
 # create file configure.py from configure.py.in
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/configure.py.in
                ${CMAKE_CURRENT_BINARY_DIR}/configure.py)
+               
+IF (MSVC)
+  SET(EXPORT "__declspec(dllimport)")
+ELSE (MSVC)
+  SET(EXPORT "")
+ENDIF (MSVC)
 
 # Step 2: during make
 # run python configure.py
@@ -42,7 +55,7 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/configure.py.in
 # should be run everytime core or gui library has been changed
 ADD_CUSTOM_COMMAND(OUTPUT ${BINDINGS_CORE_MAKEFILE} ${BINDINGS_GUI_MAKEFILE} PRE_BUILD
                    COMMAND ${PYTHON_EXECUTABLE}
-                   ARGS ${CMAKE_CURRENT_BINARY_DIR}/configure.py
+                   ARGS ${CMAKE_CURRENT_BINARY_DIR}/configure.py ${CMAKE_CFG_INTDIR} ${EXPORT}
 		   DEPENDS ${QGIS_CORE_LIB} ${QGIS_GUI_LIB}
 		           ${CMAKE_CURRENT_BINARY_DIR}/configure.py
 			   ${CORE_SIP_FILES} ${GUI_SIP_FILES})
