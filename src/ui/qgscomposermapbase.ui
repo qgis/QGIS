@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsComposerMapBase</class>
  <widget class="QWidget" name="QgsComposerMapBase" >
   <property name="geometry" >
@@ -9,13 +6,11 @@
     <x>0</x>
     <y>0</y>
     <width>271</width>
-    <height>650</height>
+    <height>597</height>
    </rect>
   </property>
   <property name="sizePolicy" >
-   <sizepolicy>
-    <hsizetype>7</hsizetype>
-    <vsizetype>7</vsizetype>
+   <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -24,12 +19,6 @@
    <string>Map options</string>
   </property>
   <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>10</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
    <item>
     <widget class="QLabel" name="mNameLabel" >
      <property name="text" >
@@ -66,9 +55,7 @@
       <bool>true</bool>
      </property>
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>0</vsizetype>
+      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -108,49 +95,20 @@
     <widget class="QLineEdit" name="mHeightLineEdit" />
    </item>
    <item>
-    <widget class="Q3GroupBox" name="groupBox2" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>0</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
+    <widget class="QGroupBox" name="groupBox" >
      <property name="title" >
       <string>Scale</string>
      </property>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
      <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>10</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
       <item>
-       <widget class="QLabel" name="textLabel1_6" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>0</hsizetype>
-          <vsizetype>0</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+       <widget class="QLabel" name="label" >
         <property name="text" >
-         <string>1 :</string>
+         <string>1:</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="mScaleLineEdit" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-       </widget>
+       <widget class="QLineEdit" name="mScaleLineEdit" />
       </item>
      </layout>
     </widget>
@@ -158,9 +116,7 @@
    <item>
     <widget class="QPushButton" name="mSetCurrentExtentButton" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>0</vsizetype>
+      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -239,9 +195,7 @@
    <item>
     <widget class="QComboBox" name="mPreviewModeComboBox" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>0</vsizetype>
+      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -258,8 +212,8 @@
      </property>
      <property name="sizeHint" >
       <size>
-       <width>21</width>
-       <height>35</height>
+       <width>251</width>
+       <height>151</height>
       </size>
      </property>
     </spacer>
@@ -268,20 +222,10 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends></extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>mCalculateComboBox</tabstop>
   <tabstop>mWidthLineEdit</tabstop>
   <tabstop>mHeightLineEdit</tabstop>
-  <tabstop>mScaleLineEdit</tabstop>
   <tabstop>mSetCurrentExtentButton</tabstop>
   <tabstop>mWidthScaleLineEdit</tabstop>
   <tabstop>mSymbolScaleLineEdit</tabstop>
