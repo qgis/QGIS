@@ -1331,10 +1331,20 @@ void QgsRasterLayer::draw (QPainter * theQPainter,
         break;
       }
       //a layer containing 2 or more bands, mapped to the three RGBcolors.
-      //In the case of a multiband with only two bands, one band will have to be mapped to more than one color
+      //In the case of a multiband with only two bands, 
+      //one band will have to be mapped to more than one color
     case MULTI_BAND_COLOR:
-      drawMultiBandColor(theQPainter, theRasterViewPort,
-          theQgsMapToPixel);
+      if(redBandNameQString == tr("Not Set") || 
+         greenBandNameQString == tr("Not Set") || 
+         blueBandNameQString == tr("Not Set"))
+      {
+        break;
+      }
+      else
+      {
+        drawMultiBandColor(theQPainter, theRasterViewPort,
+            theQgsMapToPixel);
+      }
       break;
 
     default:
