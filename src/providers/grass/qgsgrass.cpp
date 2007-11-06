@@ -137,8 +137,11 @@ void GRASS_EXPORT QgsGrass::init( void )
     
     // XXX Need to subclass this and add explantory message above to left side
     userGisbase = true;
+    // For Mac, GISBASE folder may be inside GRASS bundle. Use Qt file dialog
+    // since Mac native dialog doesn't allow user to browse inside bundles.
     gisBase = QFileDialog::getExistingDirectory(
-	0, QObject::tr("Choose GRASS installation path (GISBASE)"), gisBase);
+        0, QObject::tr("Choose GRASS installation path (GISBASE)"), gisBase,
+        QFileDialog::DontUseNativeDialog);
     if (gisBase == QString::null)
     {
       // User pressed cancel. No GRASS for you!
