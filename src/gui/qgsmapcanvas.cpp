@@ -822,6 +822,7 @@ void QgsMapCanvas::unsetMapTool(QgsMapTool* tool)
   {
     mMapTool->deactivate();
     mMapTool = NULL;
+    setCursor(Qt::ArrowCursor);
   }
 
   if (mLastNonZoomMapTool && mLastNonZoomMapTool == tool)
