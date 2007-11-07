@@ -389,7 +389,7 @@ public:
     QString getRedBandName()
     {
         return redBandNameQString;
-    };
+    }
     /** \brief Mutator for red band name (allows alternate mappings e.g. map blue as red colour). */
     void setRedBandName(QString const & theBandNameQString);
     // 
@@ -399,7 +399,7 @@ public:
     QString getGreenBandName()
     {
         return greenBandNameQString;
-    };
+    }
     /** \brief Mutator for green band name mapping.  */
     void setGreenBandName(QString const & theBandNameQString);
     //
@@ -409,7 +409,7 @@ public:
     QString getBlueBandName()
     {
         return blueBandNameQString;
-    };
+    }
     /** \brief Mutator for blue band name mapping.  */
     void setBlueBandName(QString const & theBandNameQString);
     //
@@ -419,7 +419,7 @@ public:
     QString getTransparentBandName()
     {
         return transparentBandNameQString;
-    };
+    }
     /** \brief Mutator for transparent band name mapping.  */
     void setTransparentBandName(QString const & theBandNameQString);
     //
@@ -429,7 +429,7 @@ public:
     QString getGrayBandName()
     {
         return grayBandNameQString;
-    };
+    }
     /** \brief Mutator for gray band name mapping.  */
     void setGrayBandName(QString const & theBandNameQString);
     // 
@@ -439,12 +439,12 @@ public:
     bool getShowDebugOverlayFlag()
     {
         return showDebugOverlayFlag;
-    };
+    }
     /** \brief Mutator for a flag that determines whether to show some debug info on the image.  */
     void setShowDebugOverlayFlag(bool theFlag)
     {
         showDebugOverlayFlag=theFlag;
-    };
+    }
     // 
     // Accessor and mutator for min and max red
     // 
@@ -456,7 +456,7 @@ public:
     double getMinRedDouble()
     {
         return minRedDouble;
-    };
+    }
     /** \brief Mutator for minimum clipping range for red.
      *
      * The clipping range can have different interpretations - it can either be used to perform
@@ -466,7 +466,7 @@ public:
     {
         userDefinedColorMinMax = true;
         minRedDouble=theDouble;
-    };
+    }
     /** \brief Accessor for maximum clipping range for red.
      *
      * The clipping range can have different interpretations - it can either be used to perform
@@ -475,7 +475,7 @@ public:
     double getMaxRedDouble()
     {
         return maxRedDouble;
-    };
+    }
     /** \brief Mutator for maximum clipping range for red.
      *
      * The clipping range can have different interpretations - it can either be used to perform
@@ -485,7 +485,7 @@ public:
     {
         userDefinedColorMinMax = true;
         maxRedDouble=theDouble;
-    };
+    }
     // 
     // Accessor and mutator for min and max green
     // 
@@ -497,7 +497,7 @@ public:
     double getMinGreenDouble()
     {
         return minGreenDouble;
-    };
+    }
     /** \brief Mutator for minimum clipping range for green.
      *
      * The clipping range can have different interpretations - it can either be used to perform
@@ -507,7 +507,7 @@ public:
     {
         userDefinedColorMinMax = true;
         minGreenDouble=theDouble;
-    };
+    }
     /** \brief Accessor for maximum clipping range for green.
      *
      * The clipping range can have different interpretations - it can either be used to perform
@@ -516,7 +516,7 @@ public:
     double getMaxGreenDouble()
     {
         return maxGreenDouble;
-    };
+    }
     /** \brief Mutator for maximum clipping range for green.
      *
      * The clipping range can have different interpretations - it can either be used to perform
@@ -526,7 +526,7 @@ public:
     {
         userDefinedColorMinMax = true;
         maxGreenDouble=theDouble;
-    };
+    }
     // 
     // Accessor and mutator for min and max blue
     // 
@@ -539,7 +539,7 @@ public:
     double getMinBlueDouble()
     {
         return minBlueDouble;
-    };
+    }
     /** \brief Mutator for minimum clipping range for blue.
      *
      * The clipping range can have different interpretations - it can either be used to perform
@@ -549,7 +549,7 @@ public:
     {
         userDefinedColorMinMax = true;
         minBlueDouble=theDouble;
-    };
+    }
     /** \brief Accessor for maximum clipping range for blue.
      *
      * The clipping range can have different interpretations - it can either be used to perform
@@ -558,7 +558,7 @@ public:
     double getMaxBlueDouble()
     {
         return maxBlueDouble;
-    };
+    }
     /** \brief Mutator for maximum clipping range for blue.
      *
      * The clipping range can have different interpretations - it can either be used to perform
@@ -568,7 +568,7 @@ public:
     {
         userDefinedColorMinMax = true;
         maxBlueDouble=theDouble;
-    };
+    }
     // 
     // Accessor and mutator for min and max gray
     // 
@@ -580,7 +580,7 @@ public:
     double getMinGrayDouble()
     {
         return minGrayDouble;
-    };
+    }
     /** \brief Mutator for minimum clipping range for gray.
      *
      * The clipping range can have different interpretations - it can either be used to perform
@@ -590,7 +590,7 @@ public:
     {
         userDefinedGrayMinMax = true;
         minGrayDouble=theDouble;
-    };
+    }
     /** \brief Accessor for maximum clipping range for gray.
      *
      * The clipping range can have different interpretations - it can either be used to perform
@@ -599,7 +599,7 @@ public:
     double getMaxGrayDouble()
     {
         return maxGrayDouble;
-    };
+    }
     /** \brief Mutator for maximum clipping range for gray.
      *
      * The clipping range can have different interpretations - it can either be used to perform
@@ -609,7 +609,7 @@ public:
     {
         userDefinedGrayMinMax = true;
         maxGrayDouble=theDouble;
-    };
+    }
     //
     /** \brief This enumerator describes the types of histogram scaling algorithms that can be used.  */
     enum COLOR_SCALING_ALGORITHM
@@ -626,12 +626,12 @@ public:
     COLOR_SCALING_ALGORITHM getColorScalingAlgorithm()
     {
         return colorScalingAlgorithm;
-    };
+    }
     /** \brief Mutator for color scaling algorithm. */
     void setColorScalingAlgorithm(COLOR_SCALING_ALGORITHM theAlgorithm)
     {
         colorScalingAlgorithm=theAlgorithm;
-    };
+    }
     
     /** \brief This enumerator describes the types of histogram colour ramping that can be used.  */
     enum COLOR_RAMPING_TYPE
@@ -646,12 +646,12 @@ public:
     COLOR_RAMPING_TYPE getColorRampingType()
     {
         return colorRampingType;
-    };
+    }
     /** \brief Mutator for color scaling algorithm. */
     void setColorRampingType(COLOR_RAMPING_TYPE theRamping)
     {
         colorRampingType=theRamping;
-    };
+    }
     
     /** \brief This enumerator describes the different kinds of drawing we can do.  */
     enum DRAWING_STYLE
@@ -671,7 +671,7 @@ public:
     // Accessor and mutator for drawing style.
     //
     /** \brief Accessor for drawing style.  */
-    DRAWING_STYLE getDrawingStyle() {return drawingStyle;};
+    DRAWING_STYLE getDrawingStyle() {return drawingStyle;}
     /** \brief Returns a string representation of drawing style.
      *
      * Implementaed mainly for serialisation / deserialisation of settings to xml.
@@ -679,7 +679,7 @@ public:
      * */
     QString getDrawingStyleAsQString();
     /** \brief Mutator for drawing style.  */
-    void setDrawingStyle(DRAWING_STYLE const &  theDrawingStyle) {drawingStyle=theDrawingStyle;};
+    void setDrawingStyle(DRAWING_STYLE const &  theDrawingStyle) {drawingStyle=theDrawingStyle;}
     /** \brief Overloaded version of the above function for convenience when restoring from xml.
      *
      * Implementaed mainly for serialisation / deserialisation of settings to xml.
@@ -701,9 +701,9 @@ public:
     //accessor and for raster layer type (READ ONLY)
     //
     /** \brief  Accessor for raster layer type (which is a read only property) */
-    RASTER_LAYER_TYPE getRasterLayerType() { return rasterLayerType; };
+    RASTER_LAYER_TYPE getRasterLayerType() { return rasterLayerType; }
     /** \brief Accessor for hasPyramidsFlag (READ ONLY) */
-    bool getHasPyramidsFlag() {return hasPyramidsFlag;};
+    bool getHasPyramidsFlag() {return hasPyramidsFlag;}
      
     /** \brief Get a legend image for this layer.  */
     QPixmap getLegendQPixmap();
