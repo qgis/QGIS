@@ -395,7 +395,7 @@ int main(int argc, char *argv[])
 #endif
 
 #ifdef Q_WS_WIN
-  //for windows lets use plastique syle!
+  //for windows lets use plastique style!
   QApplication::setStyle(new QPlastiqueStyle);
 #endif
 
