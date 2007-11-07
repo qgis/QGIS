@@ -138,16 +138,19 @@ bool QgsHttpTransaction::getSynchronously(QByteArray &respondedContent, int redi
   QgsDebugMsg("QgsHttpTransaction::getSynchronously: Starting get with id " + QString::number(httpid) + ".");
   QgsDebugMsg("QgsHttpTransaction::getSynchronously: Setting httpactive = TRUE");
 
+  // let the user know we're going to possibly be taking a while
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
   httpactive = TRUE;
 
   // A little trick to make this function blocking
   while ( httpactive )
   {
     // Do something else, maybe even network processing events
-    qApp->processEvents();
-
-    // TODO: Implement a network timeout
+    qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
   }
+
+  QApplication::restoreOverrideCursor();
 
 #ifdef QGISDEBUG
   QgsDebugMsg("QgsHttpTransaction::getSynchronously: Response received.");
