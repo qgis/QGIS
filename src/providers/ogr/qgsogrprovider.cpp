@@ -629,6 +629,10 @@ bool QgsOgrProvider::addFeature(QgsFeature& f)
   for(QgsAttributeMap::iterator it = attrs.begin(); it != attrs.end(); ++it)
   {
     int targetAttributeId = it.key();
+    
+    // don't try to set field from attribute map if it's not present in layer
+    if (targetAttributeId >= fdef->GetFieldCount())
+      continue;
 
     //if(!s.isEmpty())
     // continue;
