@@ -76,7 +76,11 @@ class CORE_EXPORT QgsLogger
 	}
       else
 	{
+#if defined(_MSC_VER)
+	  qDebug("%s(%d): (%s) %s", file, line, function, os.str().c_str());
+#else
 	  qDebug("%s: %d: (%s) %s", file, line, function, os.str().c_str());
+#endif
 	}
     }
 
