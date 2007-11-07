@@ -78,6 +78,9 @@ QgsGrassEditNewPoint::QgsGrassEditNewPoint(QgsGrassEdit* edit, bool newCentroid)
 
 void QgsGrassEditNewPoint::mouseClick(QgsPoint & point, Qt::ButtonState button)
 {
+    if ( button != Qt::LeftButton)
+      return;
+    
     Vect_reset_line ( e->mEditPoints );
     e->snap ( point ); 
     Vect_append_point ( e->mEditPoints, point.x(), point.y(), 0.0 );
