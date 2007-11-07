@@ -150,17 +150,12 @@ zip archive that contains just about all dependencies.
 
 Get this: 
 
-http://qgis.org/uploadfiles/msys/msys.tar.gz
+http://qgis.org/uploadfiles/msys/msys.zip
 
 and unpack to c:\msys
 
-/!\ The file above is compressed as gzipped tarball - you can get a free
-windows application for creating and decompressing files here:
-
-http://www.7-zip.org/
-
 If you wish to prepare your msys environment yourself rather than using 
-our pre-made one, detailed instructions are provdided elsewhere in this
+our pre-made one, detailed instructions are provided elsewhere in this
 document.
 
 
