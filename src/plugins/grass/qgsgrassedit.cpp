@@ -537,8 +537,6 @@ void QgsGrassEdit::init()
 
   // TODO: how to get keyboard events from canvas (shortcuts)
 
-  newPoint();
-
   restorePosition();
 
   mValid = true; 
@@ -1600,6 +1598,10 @@ void QgsGrassEdit::displayElement ( int line, const QPen & pen, int size, QPaint
 #ifdef QGISDEBUG
   std::cerr << "QgsGrassEdit::displayElement() line = " << line << std::endl;
 #endif
+  
+  // is it a valid line?
+  if (line == 0)
+    return;
 
   if ( !mSymbDisplay[mLineSymb[line]] ) return;
 
