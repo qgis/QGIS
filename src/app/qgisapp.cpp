@@ -1067,7 +1067,7 @@ void QgisApp::createStatusBar()
   mCoordsLabel->setFont(myFont);
   mCoordsLabel->setMargin(3);
   mCoordsLabel->setAlignment(Qt::AlignCenter);
-  QWhatsThis::add(mCoordsLabel, tr("Shows the map coordinates at the current cursor postion. The display is continuously updated as the mouse is moved."));
+  QWhatsThis::add(mCoordsLabel, tr("Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved."));
   QToolTip::add (mCoordsLabel, tr("Map coordinates at mouse cursor position"));
   statusBar()->addWidget(mCoordsLabel, 0, true);
   // render suppression status bar widget
