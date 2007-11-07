@@ -14415,7 +14415,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2043"/>
         <source>WMS Version</source>
-        <translation>WMS Versoin</translation>
+        <translation>WMS Version</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2289"/>
