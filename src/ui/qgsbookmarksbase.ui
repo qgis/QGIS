@@ -64,9 +64,6 @@
    </item>
    <item row="3" column="1" >
     <widget class="QPushButton" name="btnHelp" >
-     <property name="toolTip" >
-      <string>Close the dialog</string>
-     </property>
      <property name="text" >
       <string>Help</string>
      </property>
