@@ -137,7 +137,7 @@ void QgsAttributeTableDisplay::addAttribute()
   {
     if(!table()->addAttribute(dialog.name(),dialog.type()))
     {
-      QMessageBox::information(this,tr("Name conflict"),tr("The attribute could not be inserted. The name already exists in the table"));
+      QMessageBox::information(this,tr("Name conflict"),tr("The attribute could not be inserted. The name already exists in the table."));
     }
   }
 }
