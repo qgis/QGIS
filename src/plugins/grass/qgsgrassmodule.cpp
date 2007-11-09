@@ -998,7 +998,7 @@ QString QgsGrassModule::label ( QString path )
     path.append ( ".qgm" );
     QFile qFile ( path );
     if ( !qFile.exists() ) {
-	return QString ( tr("Not available, decription not found (") + path + tr(")") );
+	return QString ( tr("Not available, description not found (") + path + tr(")") );
     }
     if ( ! qFile.open( QIODevice::ReadOnly ) ) {
 	return QString ( tr("Not available, cannot open description (") + path + tr(")") ) ;

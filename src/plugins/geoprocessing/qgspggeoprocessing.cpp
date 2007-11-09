@@ -42,7 +42,7 @@ email                : sherman at mrcc.com
 
 static const char * const ident_ = "$Id$";
 
-static const QString name_ = QObject::tr("PostgresSQL Geoprocessing");
+static const QString name_ = QObject::tr("PostgreSQL Geoprocessing");
 static const QString description_ = QObject::tr("Geoprocessing functions for working with PostgreSQL/PostGIS layers");
 static const QString version_ = QObject::tr("Version 0.1");
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
