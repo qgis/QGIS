@@ -1391,7 +1391,7 @@ void QgsGrassNewMapset::createMapset()
 	if ( !d.mkdir(mapset) )
 	{
 	    QMessageBox::warning (this, tr("Create mapset"), 
-		         tr("Cannot create new mapset dircetory") );
+		         tr("Cannot create new mapset directory") );
 	    
 	    return;
 	} 
