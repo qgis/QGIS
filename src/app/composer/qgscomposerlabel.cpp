@@ -31,7 +31,7 @@ QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id,
 {
     setupUi(this);
 
-    std::cout << "QgsComposerLabel::QgsComposerLabel()" << std::endl;
+    //std::cout << "QgsComposerLabel::QgsComposerLabel()" << std::endl;
 
     mComposition = composition;
     mId  = id;
@@ -55,7 +55,6 @@ QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id,
     mComposition->canvas()->addItem(this);
 
     QAbstractGraphicsShapeItem::setZValue(100);
-    //setActive(true); //no equivalent
     QAbstractGraphicsShapeItem::show();
     QAbstractGraphicsShapeItem::update();
 
@@ -65,7 +64,7 @@ QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id,
 QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id ) 
     : QAbstractGraphicsShapeItem(0)
 {
-    std::cout << "QgsComposerLabel::QgsComposerLabel()" << std::endl;
+    //std::cout << "QgsComposerLabel::QgsComposerLabel()" << std::endl;
 
     setupUi(this);
 
@@ -80,7 +79,6 @@ QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id )
     // Add to canvas
     mComposition->canvas()->addItem(this);
     QAbstractGraphicsShapeItem::setZValue(100);
-    //setActive(true);//no equivalent
     QAbstractGraphicsShapeItem::show();
     QAbstractGraphicsShapeItem::update();
 
@@ -88,25 +86,18 @@ QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id )
 
 QgsComposerLabel::~QgsComposerLabel()
 {
-    std::cout << "QgsComposerLabel::~QgsComposerLabel" << std::endl;
+    //std::cout << "QgsComposerLabel::~QgsComposerLabel" << std::endl;
     QGraphicsItem::hide();
 }
-/*
-void QgsComposerLabel::drawShape ( QPainter & painter, const QStyleOptionGraphicsItem* item, QWidget* pWidget)
-{
-    std::cout << "QgsComposerLabel::drawShape" << std::endl;
-    paint ( painter, item, pWidget );
-}
-*/
 
+#define FONT_WORKAROUND_SCALE 10
 void QgsComposerLabel::paint ( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
-    std::cout << "QgsComposerLabel::paint" << std::endl;
+    //std::cout << "QgsComposerLabel::paint" << std::endl;
 
     float size =  25.4 * mComposition->scale() * mFont.pointSizeFloat() / 72;
-    mBoxBuffer = (int) ( size / 10 * mComposition->scale() );
+    //mBoxBuffer = size / 10 * mComposition->scale();
     mBoxBuffer = 1;
-
 
     QFont font ( mFont );
     font.setPointSizeFloat ( size );
@@ -114,9 +105,6 @@ void QgsComposerLabel::paint ( QPainter* painter, const QStyleOptionGraphicsItem
 
     // Not sure about Style Strategy, QFont::PreferMatch ?
     //font.setStyleStrategy ( (QFont::StyleStrategy) (QFont::PreferOutline | QFont::PreferAntialias ) );
-
-    painter->setPen ( mPen );
-    painter->setFont ( font );
     
     double w = metrics.width ( mText );
     double h = metrics.height() - metrics.descent();
@@ -126,27 +114,40 @@ void QgsComposerLabel::paint ( QPainter* painter, const QStyleOptionGraphicsItem
     QRectF boxRect;
     if ( mBox ) {
         //I don't know why the top coordinate is -h rather than -(h+mBoxBuffer), but it seems to work better.
-        boxRect.setRect(-mBoxBuffer, -h, w + (2 * mBoxBuffer), h + (2 * mBoxBuffer));
+        boxRect.setRect(-mBoxBuffer, -h, w + (mBoxBuffer * 2), h + (mBoxBuffer * 2));
         QBrush brush ( QColor(255,255,255) );
         painter->setBrush ( brush );
         painter->setPen(QPen(QColor(0, 0, 0), .2));
         painter->drawRect ( boxRect );
     }
-    painter->setPen ( mPen );
     
+
+    /*This code doesn't do anything...?
     // The width is not sufficient in postscript
     QRectF tr = r;
     tr.setWidth ( r.width() );
+    */
+
+    font.setPointSizeFloat ( size * FONT_WORKAROUND_SCALE ); //Hack to work around Qt font bug
+    painter->setFont ( font );
+    painter->setPen ( mPen );
 
     if ( plotStyle() == QgsComposition::Postscript ) 
     {
         // This metrics.ascent() is empirical
-        size = metrics.ascent() * 72.0 / mComposition->resolution(); 
+        size = metrics.ascent() * 72.0 / mComposition->resolution() * FONT_WORKAROUND_SCALE; 
         font.setPointSizeF ( size );
         painter->setFont ( font );
-std::cout << "label using PS render size" << std::endl;
-    } 
+        //std::cout << "label using PS render size" << std::endl;
+    }
+
+    //Hack to work around the Qt font bug
+    painter->save();
+    painter->scale(1./FONT_WORKAROUND_SCALE, 1./FONT_WORKAROUND_SCALE);
+
     painter->drawText(0, 0, mText);
+
+    painter->restore(); //undo our scaling of painter - End of the font workaround
 
     // Show selected / Highlight
     if ( mSelected && plotStyle() == QgsComposition::Preview ) {
@@ -202,10 +203,10 @@ QRectF QgsComposerLabel::boundingRect ( void ) const
 
     QFont font ( mFont );
     font.setPointSizeFloat ( size );
-    QFontMetrics metrics ( font );
+    QFontMetricsF metrics ( font );
 
-    int w = metrics.width ( mText );
-    int h = metrics.height() - metrics.descent();
+    double w = metrics.width ( mText );
+    double h = metrics.height() - metrics.descent();
 
 /*    
     int buf = 0;
@@ -217,11 +218,11 @@ QRectF QgsComposerLabel::boundingRect ( void ) const
     QRectF r ( (int)(x - w/2 - 1.5*buf), (int) (y - h/2 - buf), (int)(w+3*buf), h+2*buf );
 */
 
-QRectF r;
+    QRectF r;
 
     if(mBox){
 		//what happens if we haven't called paint() first?
-        r.setRect(-mBoxBuffer, -h, w + (2 * mBoxBuffer), h + (2 * mBoxBuffer));
+        r.setRect(-mBoxBuffer, -h, w + (mBoxBuffer * 2), h + (mBoxBuffer * 2));
     }
     else{
         r.setRect(0, -h, w, h);
@@ -233,7 +234,7 @@ QRectF r;
 
 QPolygonF QgsComposerLabel::areaPoints() const
 {
-    std::cout << "QgsComposerLabel::areaPoints" << std::endl;
+    //std::cout << "QgsComposerLabel::areaPoints" << std::endl;
     QRectF r = boundingRect();
 
     QPolygonF pa;
@@ -263,7 +264,7 @@ void QgsComposerLabel::on_mTextLineEdit_returnPressed()
 
 void QgsComposerLabel::setSelected (  bool s ) 
 {
-    std::cout << "QgsComposerLabel::setSelected" << std::endl;
+    //std::cout << "QgsComposerLabel::setSelected" << std::endl;
     mSelected = s;
     QAbstractGraphicsShapeItem::update(); // show highlight
             
