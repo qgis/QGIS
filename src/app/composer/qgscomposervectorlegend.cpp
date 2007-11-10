@@ -40,7 +40,7 @@ QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, 
 {
   setupUi(this);
 
-  std::cout << "QgsComposerVectorLegend::QgsComposerVectorLegend()" << std::endl;
+  //std::cout << "QgsComposerVectorLegend::QgsComposerVectorLegend()" << std::endl;
 
   mComposition = composition;
   mId  = id;
@@ -49,8 +49,8 @@ QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, 
   init();
 
   // Font and pen
-  if(fontSize < 6){
-    fontSize = 6;
+  if(fontSize < 10){
+    fontSize = 10;
   }
   mFont.setPointSize ( fontSize );
     
@@ -75,7 +75,7 @@ QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, 
 QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, int id ) 
     : QGraphicsRectItem(0,0,10,10,0)
 {
-    std::cout << "QgsComposerVectorLegend::QgsComposerVectorLegend()" << std::endl;
+    //std::cout << "QgsComposerVectorLegend::QgsComposerVectorLegend()" << std::endl;
 
     setupUi(this);
 
@@ -145,12 +145,13 @@ void QgsComposerVectorLegend::init ( void )
 
 QgsComposerVectorLegend::~QgsComposerVectorLegend()
 {
-    std::cerr << "QgsComposerVectorLegend::~QgsComposerVectorLegend()" << std::endl;
+  //std::cerr << "QgsComposerVectorLegend::~QgsComposerVectorLegend()" << std::endl;
 }
 
+#define FONT_WORKAROUND_SCALE 10
 QRectF QgsComposerVectorLegend::render ( QPainter *p )
 {
-  std::cout << "QgsComposerVectorLegend::render p = " << p << std::endl;
+  //std::cout << "QgsComposerVectorLegend::render p = " << p << std::endl;
 
   // Painter can be 0, create dummy to avoid many if below
   QPainter *painter = NULL;
@@ -162,16 +163,16 @@ QRectF QgsComposerVectorLegend::render ( QPainter *p )
     painter = new QPainter( pixmap );
   }
 
-  std::cout << "mComposition->scale() = " << mComposition->scale() << std::endl;
+  //std::cout << "mComposition->scale() = " << mComposition->scale() << std::endl;
 
   // Font size in canvas units
   float titleSize = 25.4 * mComposition->scale() * mTitleFont.pointSizeFloat() / 72;
   float sectionSize = 25.4 * mComposition->scale() * mSectionFont.pointSizeFloat() / 72;
   float size = 25.4 * mComposition->scale() * mFont.pointSizeFloat() / 72;
 
-  std::cout << "font sizes = " << titleSize << " " << sectionSize << " " << size << std::endl;
+  //std::cout << "font sizes = " << titleSize << " " << sectionSize << " " << size << std::endl;
 
-  // Metrics 
+  // Create fonts 
   QFont titleFont ( mTitleFont );
   QFont sectionFont ( mSectionFont );
   QFont font ( mFont );
@@ -180,32 +181,33 @@ QRectF QgsComposerVectorLegend::render ( QPainter *p )
   sectionFont.setPointSizeFloat ( sectionSize );
   font.setPointSizeFloat ( size );
 
-  QFontMetrics titleMetrics ( titleFont );
-  QFontMetrics sectionMetrics ( sectionFont );
-  QFontMetrics metrics ( font );
-
-  // Fonts for Postscript rendering
-  double psTitleSize = titleMetrics.ascent() * 72.0 / mComposition->resolution(); //What??
-  double psSectionSize = sectionMetrics.ascent() * 72.0 / mComposition->resolution();
-  double psSize = metrics.ascent() * 72.0 / mComposition->resolution();
-    
-  if ( plotStyle() == QgsComposition::Postscript) //do we need seperate PostScript rendering settings?
-  {
-    titleFont.setPointSizeFloat ( psTitleSize );
-    sectionFont.setPointSizeFloat ( psSectionSize );
-    font.setPointSizeFloat ( psSize );
-  }
-  else
-  {
-    titleFont.setPointSizeFloat ( titleSize );
-    sectionFont.setPointSizeFloat ( sectionSize );
-    font.setPointSizeFloat ( size );
-  }
-
   // Not sure about Style Strategy, QFont::PreferMatch?
   titleFont.setStyleStrategy ( (QFont::StyleStrategy) (QFont::PreferOutline | QFont::PreferAntialias) );
   sectionFont.setStyleStrategy ( (QFont::StyleStrategy) (QFont::PreferOutline | QFont::PreferAntialias) );
   font.setStyleStrategy ( (QFont::StyleStrategy) (QFont::PreferOutline | QFont::PreferAntialias) );
+
+
+  QFontMetrics titleMetrics ( titleFont );
+  QFontMetrics sectionMetrics ( sectionFont );
+  QFontMetrics metrics ( font );
+
+  if ( plotStyle() == QgsComposition::Postscript) //do we need seperate PostScript rendering settings?
+  {
+    // Fonts sizes for Postscript rendering
+    double psTitleSize = titleMetrics.ascent() * 72.0 / mComposition->resolution(); //What??
+    double psSectionSize = sectionMetrics.ascent() * 72.0 / mComposition->resolution();
+    double psSize = metrics.ascent() * 72.0 / mComposition->resolution();
+
+    titleFont.setPointSizeFloat ( psTitleSize * FONT_WORKAROUND_SCALE );
+    sectionFont.setPointSizeFloat ( psSectionSize * FONT_WORKAROUND_SCALE );
+    font.setPointSizeFloat ( psSize * FONT_WORKAROUND_SCALE );
+  }
+  else
+  {
+    titleFont.setPointSizeFloat ( titleSize * FONT_WORKAROUND_SCALE );
+    sectionFont.setPointSizeFloat ( sectionSize * FONT_WORKAROUND_SCALE );
+    font.setPointSizeFloat ( size * FONT_WORKAROUND_SCALE );
+  }
 
   int x, y;
 
@@ -214,9 +216,15 @@ QRectF QgsComposerVectorLegend::render ( QPainter *p )
   painter->setPen ( mPen );
   painter->setFont ( titleFont );
 
-  painter->drawText( (int) (2*mMargin), y, mTitle );
 
-//used to keep track of total width and height
+  painter->save(); //Save the painter state so we can undo the scaling later
+  painter->scale(1./FONT_WORKAROUND_SCALE, 1./FONT_WORKAROUND_SCALE); //scale the painter to work around the font bug
+
+  painter->drawText( 2 * mMargin * FONT_WORKAROUND_SCALE, y * FONT_WORKAROUND_SCALE, mTitle );
+
+  painter->restore();
+
+  //used to keep track of total width and height - probably should be changed to float/double
   int width = 4 * mMargin + titleMetrics.width ( mTitle ); 
   int height = mMargin + mSymbolSpace + titleMetrics.height(); // mSymbolSpace?
 
@@ -308,9 +316,9 @@ QRectF QgsComposerVectorLegend::render ( QPainter *p )
 
             if ( itemLabels[icnt].length() == 0 ) {
               if ( sym->label().length() > 0 ) {
-		itemLabels[icnt] = sym->label();
+		            itemLabels[icnt] = sym->label();
               } else {
-		itemLabels[icnt] = sym->lowerValue();
+		            itemLabels[icnt] = sym->lowerValue();
                 if (sym->upperValue().length() > 0)
                   itemLabels[icnt] += " - " + sym->upperValue();
               }
@@ -334,7 +342,11 @@ QRectF QgsComposerVectorLegend::render ( QPainter *p )
         painter->setPen ( mPen );
         painter->setFont ( sectionFont );
 
-        painter->drawText( x, y, sectionTitle );
+        painter->save(); //Save the painter state so we can undo the scaling later
+        painter->scale(1./FONT_WORKAROUND_SCALE, 1./FONT_WORKAROUND_SCALE); //scale the painter to work around the font bug
+
+        painter->drawText( x * FONT_WORKAROUND_SCALE, y * FONT_WORKAROUND_SCALE, sectionTitle );
+        painter->restore();
 
         int w = 3*mMargin + sectionMetrics.width( sectionTitle );
         if ( w > width ) width = w;
@@ -369,20 +381,13 @@ QRectF QgsComposerVectorLegend::render ( QPainter *p )
           QPen pen = sym->pen();
           double widthScale = map->widthScale();
 
-std::cout << "widthScale: " << widthScale << std::endl;
-
           pen.setWidthF( ( widthScale * pen.widthF() ) );
           painter->setPen ( pen );
           painter->setBrush ( sym->brush() );
 	    
           if ( vector->vectorType() == QGis::Point ) {
-            double scale = map->symbolScale();// * mComposition->scale();
+            double scale = map->symbolScale();
 
-/*            if (plotStyle() != QgsComposition::Preview)
-            {
-              scale /= mComposition->viewScale();
-            }
-*/
             // Get the picture of appropriate size directly from catalogue
             QPixmap pic = QPixmap::fromImage(sym->getPointSymbolAsImage(widthScale,false,sym->color()));
 
@@ -417,9 +422,11 @@ std::cout << "widthScale: " << widthScale << std::endl;
           QRect br = metrics.boundingRect ( lab );
           x = (int) ( 2*mMargin + mSymbolWidth );
           y = (int) ( localHeight + symbolHeight/2 + ( metrics.height()/2 - metrics.descent()) );
+  painter->save(); //Save the painter state so we can undo the scaling later
+  painter->scale(1./FONT_WORKAROUND_SCALE, 1./FONT_WORKAROUND_SCALE); //scale the painter to work around the font bug
 
-          painter->drawText( x, y, lab );
-
+          painter->drawText( x * FONT_WORKAROUND_SCALE, y * FONT_WORKAROUND_SCALE, lab );
+  painter->restore();
           int w = 3*mMargin + mSymbolWidth + metrics.width(lab);
           if ( w > width ) width = w;
 
