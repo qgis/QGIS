@@ -26,6 +26,8 @@
 #include <QFileDialog>
 #include <QSettings>
 #include <QColorDialog>
+#include <QLocale>
+#include <QTextCodec>
 
 #include <cassert>
 #include <iostream>
@@ -139,6 +141,21 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   spinZoomFactor->setValue(settings.value("/qgis/zoom_factor", 2).toDouble());
 
   cbxSplitterRedraw->setChecked(settings.value("/qgis/splitterRedraw", QVariant(true)).toBool());
+
+  //
+  // Locale settings 
+  //
+  QString mySystemLocale = QTextCodec::locale();
+  lblSystemLocale->setText(tr("Detected active locale on your system: ") + mySystemLocale);
+  QString myUserLocale = settings.value("locale/userLocale", "").toString();
+  QStringList myI18nList = i18nList();
+  cboLocale->addItems(myI18nList);
+  if (myI18nList.contains(myUserLocale))
+  {
+    cboLocale->setCurrentText(myUserLocale);
+  }
+  bool myLocaleOverrideFlag = settings.value("locale/overrideFlag",false).toBool();
+  grpLocale->setChecked(myLocaleOverrideFlag);
 }
 
 //! Destructor
@@ -245,6 +262,11 @@ void QgsOptions::saveOptions()
   settings.writeEntry("/qgis/zoom_factor", spinZoomFactor->value());
 
   settings.setValue("/qgis/splitterRedraw", cbxSplitterRedraw->isChecked());  
+  //
+  // Locale settings 
+  //
+  settings.setValue("locale/userLocale", cboLocale->currentText());
+  settings.setValue("locale/overrideFlag", grpLocale->isChecked());
 }
 
 
@@ -424,4 +446,20 @@ QString QgsOptions::getEllipsoidName(QString theEllipsoidAcronym)
   sqlite3_close(myDatabase);
   return myName;
 
+}
+
+QStringList QgsOptions::i18nList()
+{
+  QStringList myList;
+  myList << "en_US"; //there is no qm file for this so we add it manually
+  QString myI18nPath = QgsApplication::i18nPath();
+  QDir myDir(myI18nPath,"*.qm");
+  QStringList myFileList = myDir.entryList();
+  QStringListIterator myIterator(myFileList);
+  while (myIterator.hasNext()) 
+  {
+    QString myFileName = myIterator.next();
+    myList << myFileName.replace("qgis_","").replace(".qm","");
+  }
+  return myList;
 }
