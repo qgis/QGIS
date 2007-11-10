@@ -12,11 +12,11 @@ GPJ_get_default_datum_params_by_name
 GPJ_get_ellipsoid_by_name
 GPJ_get_ellipsoid_params
 GPJ_get_equivalent_latlong
-;GPJ_grass_to_osr
-;GPJ_grass_to_wkt
-;GPJ_osr_to_grass
-;GPJ_set_csv_loc
-;GPJ_wkt_to_grass
+GPJ_grass_to_osr
+GPJ_grass_to_wkt
+GPJ_osr_to_grass
+GPJ_set_csv_loc
+GPJ_wkt_to_grass
 free_datum_list
 free_ellps_list
 pj_do_proj

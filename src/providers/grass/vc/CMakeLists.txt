@@ -342,13 +342,14 @@ ADD_LIBRARY(grass_dgl SHARED
 SET_TARGET_PROPERTIES(grass_dgl PROPERTIES LINK_FLAGS "/def:${CMAKE_CURRENT_SOURCE_DIR}/grass_dgl.def")
 
 ADD_LIBRARY (grass_gproj SHARED 
+  ${GRASS_PREFIX}/lib/proj/convert.c
   ${GRASS_PREFIX}/lib/proj/datum.c
   ${GRASS_PREFIX}/lib/proj/do_proj.c
   ${GRASS_PREFIX}/lib/proj/ellipse.c
   ${GRASS_PREFIX}/lib/proj/get_proj.c
 )
 SET_TARGET_PROPERTIES(grass_gproj PROPERTIES LINK_FLAGS "/def:${CMAKE_CURRENT_SOURCE_DIR}/grass_gproj.def")
-TARGET_LINK_LIBRARIES(grass_gproj grass_gis grass_rtree grass_dig2 ${PROJ_LIBRARY})
+TARGET_LINK_LIBRARIES(grass_gproj grass_gis grass_rtree grass_dig2 ${PROJ_LIBRARY} ${GDAL_LIBRARY})
   
 ADD_LIBRARY (grass_dbmibase SHARED 
   ${GRASS_PREFIX}/lib/db/dbmi_base/alloc.c
@@ -450,20 +451,6 @@ ADD_LIBRARY (grass_dbmiclient SHARED
 )
 SET_TARGET_PROPERTIES(grass_dbmiclient PROPERTIES LINK_FLAGS "/def:${CMAKE_CURRENT_SOURCE_DIR}/grass_dbmiclient.def")
 TARGET_LINK_LIBRARIES(grass_dbmiclient grass_dbmibase)
- 
-SET(GRASS_LIBRARIES
-  ${GRASS_LIBRARIES}
-  grass_gis
-  grass_vect
-  grass_proj
-  grass_dbmibase
-  grass_dbmiclient
-  grass_linkm
-  grass_dig2
-  grass_dgl
-  xdr
-  ${GDAL_LIBRARY}
-)
  
 INSTALL(TARGETS
   grass_gis
