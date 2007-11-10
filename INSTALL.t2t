@@ -67,42 +67,6 @@ of cmake and provides some clues to build QGIS.
 For complete information, see the wiki at:
    http://wiki.qgis.org/qgiswiki/Building_with_CMake
 
-= Building under Windows using MSVC Express =
-
-/!\ Note: Building under MSVC is still a work in progress. In particular the
-following dont work yet: python, grass, postgis connections.
-
-== System preparation ==
-
-I started with a clean XP install with Service Pack 2 and all patches applied.
-I have already compiled all the dependencies you need for gdal, expat etc,
-so this tutorial wont cover compiling those from source too. Since compiling 
-these dependencies was a somewhat painful task I hope my precompiled libs 
-will be adequate. If not I suggest you consult the individual projects for
-specific build documentation and support. Lets go over the process in a nutshell 
-before we begin:
-
- * Install XP (I used a Parallels virtual machine)
- * Install Visual Studio Express 2005 sp1
- * Install the Microsoft Platform SDK
- * Install command line subversion client
- * Install library dependencies bundle
- * Install Qt 4.3.2
- * Check out QGIS sources
- * Compile QGIS
- * Create setup.exe installer for QGIS
-
-
-== Install Visual Studio Express 2005 ==
-
-Get this Visual Studio Express 2005 sp1 for C++ here:
-
-
-http://msdn2.microsoft.com/en-us/express/aa975050.aspx
-
-The above page is confusing as it has lots of other stuff on it - just scroll 
-down until you find a link labelled "Download Visual C++ 2005 Express SP1 »"
-
 
 
 
@@ -1139,6 +1103,11 @@ of space and it's not necessary at all.
 
 = Building with MS Visual Studio =
 
+
+/!\ This section describes a process where you build all dependencies yourself. See the section
+after this for a simpler procedure where we have all the dependencies you need pre-packaged
+and we focus just on getting Visual Studio Express set up and building QGIS.
+
 Note that this does not currently include GRASS or Python plugins.
 
 == Setup Visual Studio ==
@@ -1303,6 +1272,45 @@ Build the ALL_BUILD project. This will build all the QGIS binaries along with al
  
  You will also either need to add all the dependency dlls to the QGIS install directory or add their respective directories to your PATH.
  
+= Building under Windows using MSVC Express =
+
+/!\ Note: Building under MSVC is still a work in progress. In particular the
+following dont work yet: python, grass, postgis connections.
+
+/!\ This section of the document is in draft form and is not ready to be used
+yet.
+
+== System preparation ==
+
+I started with a clean XP install with Service Pack 2 and all patches applied.
+I have already compiled all the dependencies you need for gdal, expat etc,
+so this tutorial wont cover compiling those from source too. Since compiling 
+these dependencies was a somewhat painful task I hope my precompiled libs 
+will be adequate. If not I suggest you consult the individual projects for
+specific build documentation and support. Lets go over the process in a nutshell 
+before we begin:
+
+ * Install XP (I used a Parallels virtual machine)
+ * Install Visual Studio Express 2005 sp1
+ * Install the Microsoft Platform SDK
+ * Install command line subversion client
+ * Install library dependencies bundle
+ * Install Qt 4.3.2
+ * Check out QGIS sources
+ * Compile QGIS
+ * Create setup.exe installer for QGIS
+
+
+== Install Visual Studio Express 2005 ==
+
+Get this Visual Studio Express 2005 sp1 for C++ here:
+
+
+http://msdn2.microsoft.com/en-us/express/aa975050.aspx
+
+The above page is confusing as it has lots of other stuff on it - just scroll 
+down until you find a link labelled "Download Visual C++ 2005 Express SP1 »"
+
 
 = Authors and Acknowledgments =
 
