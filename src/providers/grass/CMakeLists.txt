@@ -19,6 +19,20 @@ IF (NOT MSVC)
   SET_SOURCE_FILES_PROPERTIES(provider.cpp PROPERTIES COMPILE_FLAGS -Wno-error )
 ELSE (NOT MSVC)
   SUBDIRS(vc)
+
+  SET(GRASS_LIBRARIES
+    ${GRASS_LIBRARIES}
+    grass_gis
+    grass_vect
+    grass_gproj
+    grass_dbmibase
+    grass_dbmiclient
+    grass_linkm
+    grass_dig2
+    grass_dgl
+    xdr
+    ${GDAL_LIBRARY}
+  )
 ENDIF (NOT MSVC)
 
 ########################################################
