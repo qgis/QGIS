@@ -1,0 +1,11 @@
+LIBRARY grass_linkm.dll
+EXPORTS
+link__get_next
+link__set_next
+link_cleanup
+link_dispose
+link_exit_on_error
+link_init
+link_new
+link_out_of_memory
+link_set_chunk_size

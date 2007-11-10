@@ -17,6 +17,8 @@ IF (NOT MSVC)
   SET_SOURCE_FILES_PROPERTIES(qgsgrassprovider.cpp PROPERTIES COMPILE_FLAGS -Wno-error )
   SET_SOURCE_FILES_PROPERTIES(qgsgrass.cpp PROPERTIES COMPILE_FLAGS -Wno-error )   
   SET_SOURCE_FILES_PROPERTIES(provider.cpp PROPERTIES COMPILE_FLAGS -Wno-error )
+ELSE (NOT MSVC)
+  SUBDIRS(vc)
 ENDIF (NOT MSVC)
 
 ########################################################
