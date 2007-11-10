@@ -85,6 +85,9 @@ class QgsOptions :public QDialog, private Ui::QgsOptionsBase
     QString getEllipsoidName(QString theEllipsoidAcronym);
 
   private:
+    //
+    QStringList i18nList();
+
     //! Pointer to our parent
     QWidget *qparent;
 
