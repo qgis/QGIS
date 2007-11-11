@@ -41,13 +41,13 @@ QgsMapLayer::QgsMapLayer(int type,
         mLayerType(type)
 
 {
-    QgsDebugMsg("QgsMapLayer::QgsMapLayer - lyrname is '" + lyrname);
+    QgsDebugMsg("QgsMapLayer::QgsMapLayer - lyrname is '" + lyrname + "'");
     
     mSRS = new QgsSpatialRefSys();
 
     // Set the display name = internal name
     mLayerName = capitaliseLayerName(lyrname);
-    QgsDebugMsg("QgsMapLayer::QgsMapLayer - layerName is '" + mLayerName);
+    QgsDebugMsg("QgsMapLayer::QgsMapLayer - layerName is '" + mLayerName + "'");
 
     // Generate the unique ID of this layer
     QDateTime dt = QDateTime::currentDateTime();
@@ -87,7 +87,7 @@ QString QgsMapLayer::getLayerID() const
 /** Write property of QString layerName. */
 void QgsMapLayer::setLayerName(const QString & _newVal)
 {
-  QgsDebugMsg("QgsMapLayer::setLayerName: new name is '" + _newVal);
+  QgsDebugMsg("QgsMapLayer::setLayerName: new name is '" + _newVal + "'");
   mLayerName = capitaliseLayerName(_newVal);
   emit layerNameChanged();
 }
@@ -95,7 +95,7 @@ void QgsMapLayer::setLayerName(const QString & _newVal)
 /** Read property of QString layerName. */
 QString const & QgsMapLayer::name() const
 {
-  QgsDebugMsg("QgsMapLayer::name: returning name '" + mLayerName);
+  QgsDebugMsg("QgsMapLayer::name: returning name '" + mLayerName + "'");
   return mLayerName;
 }
 
