@@ -83,6 +83,7 @@ typedef struct DIR {
 static DIR *opendir (const char *dirname);
 static struct dirent *readdir (DIR *dirp);
 static int closedir (DIR *dirp);
+static void rewinddir (DIR *dirp);
 
 
 /* use the new safe string functions introduced in Visual Studio 2005 */
@@ -222,6 +223,31 @@ readdir(
   return &dirp->current;
 }
 
+/*
+ * Rewind the directory
+ *
+ */
+static void
+rewinddir(
+    DIR *dirp)
+{
+  assert (dirp != NULL);
+ 
+  /* release search handle */
+  if (dirp->search_handle != INVALID_HANDLE_VALUE) {
+    FindClose (dirp->search_handle);
+    dirp->search_handle = INVALID_HANDLE_VALUE;
+  }
+
+  /* open stream and retrieve first file */
+  dirp->search_handle = FindFirstFile (dirp->patt, &dirp->current.data);
+  if (dirp->search_handle == INVALID_HANDLE_VALUE) {
+    return;
+  }
+
+  /* there is an un-processed directory entry in memory now */
+  dirp->cached = 1;
+}
 
 /*
  * Close directory stream opened by opendir() function.  Close of the

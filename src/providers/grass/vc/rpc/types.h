@@ -96,4 +96,9 @@ typedef unsigned long u_long;
 typedef unsigned short u_short;
 #endif
 
+#ifdef _MSC_VER
+#include <basetsd.h>
+typedef SSIZE_T ssize_t;
+#endif //_MSC_VER
+
 #endif /* ndef __TYPES_RPC_HEADER__ */

@@ -6,8 +6,9 @@ ADD_DEFINITIONS(
   -I${CMAKE_CURRENT_SOURCE_DIR}
   -I${GRASS_PREFIX}/lib/db/dbmi_base
   -I${ZLIB_INCLUDE_DIR}
-  -D__MINGW32__)
-    
+  -D__MINGW32__
+  -Dpopen=G_popen
+  -Dpclose=G_pclose)
     
 ADD_LIBRARY (xdr STATIC
   xdr.c
@@ -396,6 +397,7 @@ ADD_LIBRARY (grass_dbmibase SHARED
   ${GRASS_PREFIX}/lib/db/dbmi_base/xdrvalue.c
   ${GRASS_PREFIX}/lib/db/dbmi_base/zero.c
 )
+SET_SOURCE_FILES_PROPERTIES(${GRASS_PREFIX}/lib/db/dbmi_base/xdr.c PROPERTIES COMPILE_FLAGS -U__MINGW32__)
 SET_TARGET_PROPERTIES(grass_dbmibase PROPERTIES LINK_FLAGS "/def:${CMAKE_CURRENT_SOURCE_DIR}/grass_dbmibase.def")
 TARGET_LINK_LIBRARIES(grass_dbmibase grass_gis)
     
@@ -408,7 +410,7 @@ ADD_LIBRARY (grass_linkm SHARED
   ${GRASS_PREFIX}/lib/linkm/oom.c
 )
 SET_TARGET_PROPERTIES(grass_linkm PROPERTIES LINK_FLAGS "/def:${CMAKE_CURRENT_SOURCE_DIR}/grass_linkm.def")
-  
+
 ADD_LIBRARY (grass_dbmiclient SHARED
   ${GRASS_PREFIX}/lib/db/dbmi_client/column.c
   ${GRASS_PREFIX}/lib/db/dbmi_client/copy_tab.c
@@ -451,6 +453,46 @@ ADD_LIBRARY (grass_dbmiclient SHARED
 )
 SET_TARGET_PROPERTIES(grass_dbmiclient PROPERTIES LINK_FLAGS "/def:${CMAKE_CURRENT_SOURCE_DIR}/grass_dbmiclient.def")
 TARGET_LINK_LIBRARIES(grass_dbmiclient grass_dbmibase)
+
+ADD_LIBRARY (grass_I SHARED
+  ${GRASS_PREFIX}/lib/imagery/alloc.c
+  ${GRASS_PREFIX}/lib/imagery/ask_group.c
+  ${GRASS_PREFIX}/lib/imagery/c_assign.c
+  ${GRASS_PREFIX}/lib/imagery/c_begin.c
+  ${GRASS_PREFIX}/lib/imagery/c_clear.c
+  ${GRASS_PREFIX}/lib/imagery/c_distinct.c
+  ${GRASS_PREFIX}/lib/imagery/c_exec.c
+  ${GRASS_PREFIX}/lib/imagery/c_execmem.c
+  ${GRASS_PREFIX}/lib/imagery/c_means.c
+  ${GRASS_PREFIX}/lib/imagery/c_merge.c
+  ${GRASS_PREFIX}/lib/imagery/c_nclasses.c
+  ${GRASS_PREFIX}/lib/imagery/c_point.c
+  ${GRASS_PREFIX}/lib/imagery/c_reassign.c
+  ${GRASS_PREFIX}/lib/imagery/c_reclass.c
+  ${GRASS_PREFIX}/lib/imagery/c_sep.c
+  ${GRASS_PREFIX}/lib/imagery/c_sig.c
+  ${GRASS_PREFIX}/lib/imagery/c_sum2.c
+  ${GRASS_PREFIX}/lib/imagery/eol.c
+  ${GRASS_PREFIX}/lib/imagery/find.c
+  ${GRASS_PREFIX}/lib/imagery/fopen.c
+  ${GRASS_PREFIX}/lib/imagery/georef.c
+  ${GRASS_PREFIX}/lib/imagery/group.c
+  ${GRASS_PREFIX}/lib/imagery/list_gp.c
+  ${GRASS_PREFIX}/lib/imagery/list_subgp.c
+  ${GRASS_PREFIX}/lib/imagery/loc_info.c
+  ${GRASS_PREFIX}/lib/imagery/ls_groups.c
+  ${GRASS_PREFIX}/lib/imagery/points.c
+  ${GRASS_PREFIX}/lib/imagery/ref.c
+  ${GRASS_PREFIX}/lib/imagery/sig.c
+  ${GRASS_PREFIX}/lib/imagery/sigfile.c
+  ${GRASS_PREFIX}/lib/imagery/sigset.c
+  ${GRASS_PREFIX}/lib/imagery/sigsetfile.c
+  ${GRASS_PREFIX}/lib/imagery/target.c
+  ${GRASS_PREFIX}/lib/imagery/title.c
+  ${GRASS_PREFIX}/lib/imagery/var.c
+)
+SET_TARGET_PROPERTIES(grass_I PROPERTIES LINK_FLAGS "/def:${CMAKE_CURRENT_SOURCE_DIR}/grass_I.def")
+TARGET_LINK_LIBRARIES(grass_I grass_gis)
  
 INSTALL(TARGETS
   grass_gis
@@ -462,5 +504,6 @@ INSTALL(TARGETS
   grass_dbmibase
   grass_linkm
   grass_dbmiclient
+  grass_I
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   ARCHIVE DESTINATION lib)
