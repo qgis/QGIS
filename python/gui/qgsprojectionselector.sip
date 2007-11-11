@@ -15,7 +15,7 @@ template <TYPE>
     return NULL;
       
   // Set the list elements.
-  int i;
+  int i=0;
   for (QSet<TYPE>::iterator it = sipCpp->begin(); it != sipCpp->end(); ++it, ++i)
   {
     TYPE *t = new TYPE(*it);
