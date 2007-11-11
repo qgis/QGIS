@@ -1,8 +1,5 @@
 LIBRARY grass_gis.dll
 EXPORTS
-;	xdrmem_create @ 1
-;	DllMainCRTStartup@12 @ 2
-;	FindAtomA@4 @ 3 DATA
 	G_3dview_warning @ 4
 	G__ @ 5 DATA
 	G__allocate_null_bits @ 6
@@ -178,7 +175,7 @@ EXPORTS
 	G_color_name @ 175
 	G_color_values @ 176
 	G_colors_count @ 177
-	G_command_history @ 178
+;	G_command_history @ 178
 	G_compare_projections @ 179
 	G_construct_default_range @ 180
 	G_convert_dirseps_from_host @ 181

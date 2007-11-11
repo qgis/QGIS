@@ -27,20 +27,11 @@
 #include "qgsfield.h"
 #include "qgsrect.h"
 
-#ifdef _MSC_VER
-// enables prototype in GRASS headers
-#define __STDC__ 1
-#endif
-
 extern "C" {
 #include <grass/gis.h>
 #include <grass/dbmi.h>
 #include <grass/Vect.h>
 }
-
-#ifdef _MSC_VER
-#undef __STDC__
-#endif
 
 #include "qgsgrass.h"
 #include "qgsgrassprovider.h"
