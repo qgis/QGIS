@@ -44,7 +44,7 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui(QgisInterface * _qI, QWidge
 
   teInstructions->setHtml(tr("<h1>Description</h1>"
 "<p>Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!</p>"
-"<p>Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma or tab). After choosing a delimiter, press the parse button an select the columns containing the x and y values for the layer.</p>"));
+"<p>Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma or tab). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.</p>"));
 
 }  
 QgsDelimitedTextPluginGui::~QgsDelimitedTextPluginGui()
