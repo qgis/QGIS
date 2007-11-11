@@ -136,7 +136,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
 
   QStringList metadataTokens;   // essentially the metadata string delimited by '='
 
-  QString catchallFilter;       // for Any file(*.*), but also for those
+  QStringList catchallFilter;   // for Any file(*.*), but also for those
   // drivers with no specific file filter
 
   GDALDriver *jp2Driver = NULL; // first JPEG2000 driver found
@@ -269,7 +269,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
       }
       else
       {
-        catchallFilter += QString(myGdalDriver->GetDescription()) + " ";
+        catchallFilter << QString(myGdalDriver->GetDescription());
       }
     }
 
@@ -278,7 +278,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
   }                           // each loaded GDAL driver
 
   // can't forget the default case
-  theFileFiltersString += catchallFilter + tr("and all other files") + " (*)";
+  theFileFiltersString += catchallFilter.join(", ") + " " + tr("and all other files") + " (*)";
   QgsDebugMsg("Raster filter list built: " + theFileFiltersString);
 }                               // buildSupportedRasterFileFilter_()
 
@@ -374,8 +374,7 @@ QgsRasterLayer::QgsRasterLayer(QString const & path, QString const & baseName)
   showDebugOverlayFlag(false),
   invertHistogramFlag(false),
   stdDevsToPlotDouble(0),
-dataProvider(0)
-
+  dataProvider(0)
 {
   userDefinedColorMinMax = false; //defaults needed to bypass stretch
   userDefinedGrayMinMax = false;
