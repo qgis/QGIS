@@ -39,7 +39,7 @@
     </message>
     <message>
         <source> from map canvas</source>
-        <translation>aus Karte</translation>
+        <translation> aus Karte</translation>
     </message>
 </context>
 <context>
@@ -1180,7 +1180,7 @@ Die Python-Unterstützung wird abgeschaltet.</translation>
     </message>
     <message>
         <source>Projection status - Click to open projection dialog</source>
-        <translation>Projekction Status - Ein Mausklick öffnet den Projektionendialog</translation>
+        <translation>Projektionsstatus - Ein Mausklick öffnet den Projektionendialog</translation>
     </message>
     <message>
         <source>Map Composer for creating map layouts</source>
@@ -1500,11 +1500,11 @@ Die Python-Unterstützung wird abgeschaltet.</translation>
     </message>
     <message>
         <source>Custom Projection...</source>
-        <translation>Eigene Projektionen...</translation>
+        <translation>Benutzerprojektionen...</translation>
     </message>
     <message>
         <source>Manage custom projections</source>
-        <translation>Verwalte eigenen Projektionen</translation>
+        <translation>Benutzerprojektionen verwalten</translation>
     </message>
     <message>
         <source>Help Contents</source>
@@ -2184,11 +2184,11 @@ Kompiliert gegen QT Version </translation>
     </message>
     <message>
         <source>Python console</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Python-Konsole</translation>
     </message>
     <message>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zeigt die Kartenkoordinate der aktuellen Cursorposition. Die Anzeige wird laufend aktualisiert, während die Maus bewegt wird.</translation>
     </message>
     <message>
         <source></source>
@@ -2199,7 +2199,7 @@ Kompiliert gegen QT Version </translation>
     <name>QgisAppBase</name>
     <message>
         <source>MainWindow</source>
-        <translation>MainWindow</translation>
+        <translation>Hauptfenster</translation>
     </message>
     <message>
         <source>Legend</source>
@@ -2242,7 +2242,7 @@ Kompiliert gegen QT Version </translation>
     </message>
     <message>
         <source>Subscribe to the QGIS-User mailing list</source>
-        <translation>Sich für die QGIS-User-Mailingliste einschreiben</translation>
+        <translation>Die QGIS-User-Mailingliste abonnieren.</translation>
     </message>
     <message>
         <source>Providers</source>
@@ -2448,7 +2448,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Geben Sie hier die Aktion ein. Die kann ein jedes Programm, Skript oder Kommando sein, dass in Ihrem System verfügbar ist.  Wenn die Aktion ausgeführt wird jeder durch % eingeleiteter Feldname durch den Feldwert ersetzt.  Die besondere Zeichenfolge %% wird durch den Wert des gewählten Felds ersetzt.  Mit Anführungszeichen können mehrere Wörter zu einem Argument der Aktion zusammengefaßt werden. Für mit Backslash (\) eingeleitete Anführungszeichen gilt dies nicht.</translation>
     </message>
 </context>
 <context>
@@ -2616,8 +2616,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Found %d matching features.</source>
-        <translation type="obsolete">%d Features gefunden.
-<byte value="x9"/></translation>
+        <translation type="obsolete">%d Features gefunden.</translation>
     </message>
     <message>
         <source>No matching features found.</source>
@@ -2649,7 +2648,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The attribute could not be inserted. The name already exists in the table.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Das Attribut konnte nicht eingefügt werden. Der Name ist bereits vorhanden.</translation>
     </message>
 </context>
 <context>
@@ -3031,7 +3030,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>1:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">1:</translation>
     </message>
 </context>
 <context>
@@ -3606,7 +3605,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>QGIS Custom Projection</source>
-        <translation>QGIS Benutzerdefinierte Projektion</translation>
+        <translation>QGIS benutzerdefinierte Projektion</translation>
     </message>
     <message>
         <source>This proj4 projection definition is not valid. Please correct before pressing save.</source>
@@ -3649,7 +3648,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Custom Projection Definition</source>
-        <translation>Definition der Projektion</translation>
+        <translation>Definition der Benutzerprojektion</translation>
     </message>
     <message>
         <source>Parameters:</source>
@@ -3736,14 +3735,20 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:10pt;&quot;&gt;You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:10pt;&quot;&gt;Sie können hier eigene Benutzerprojektionen definieren. Die Definition muß dem Proj4-Format für räumliche Bezugssysteme genügen.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:10pt;&quot;&gt;Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:10pt;&quot;&gt;Benutzen Sie Textfelder unten, um die Ihre Projektionsdefinition zu testen, die Sie gerade anlegen. Geben Sie eine Koordinate ein zu der Sie sowohl die geographische als auch das projizierte Ergebnis kennen (z.B. indem Sie es von einer Karte ablesen. Drücken Sie dann dann auf &apos;Berechnen&apos;, um zu überprüfen, ob die Projektionsdefinition korrekt ist.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -3993,7 +3998,7 @@ has failed. The database said:
     </message>
     <message>
         <source>&lt;h1&gt;Description&lt;/h1&gt;&lt;p&gt;Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!&lt;/p&gt;&lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma or tab). After choosing a delimiter, press the parse button an select the columns containing the x and y values for the layer.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+	<translation type="unfinished">&lt;h1&gt;Beschreibung&lt;/h1&gt;&lt;p&gt;Wählen Sie eine Textdatei deren x- und y-Koordinaten Sie als Punktlayer verwenden möchten und diese Plugin wird Sie für importieren!&lt;/p&gt;&lt;p&gt;Mit dem Namensfeld können Sie den Namen des Layers festlegen. Im Trennzeichenfeld können Sie die Trennzeichen festlegen, die in Ihrer Datei vorkommen (z.B. Leerzeichen, Komma oder Tabulator). Nachdem Sie Trennzeichen gewählt haben, drücken Sie bitten den &apos;Verarbeiten&apos; und wählen die Spalten aus, die die x- und y-Koordinate für den Layer enthält.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -4783,7 +4788,11 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;GPX is the &lt;/span&gt;&lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;GPS eXchange file format&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;, which is used to store information about waypoints, routes, and tracks.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:10pt;&quot;&gt;Select a GPX file and then select the feature types that you want to load.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;GPX is the &lt;/span&gt;&lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;GPS eXchange Dateiformat&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;, das benutzt wird um Waypoints, Routen und Wege zu speichern.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:10pt;&quot;&gt;Wählen Sie eine GPX-Datei und selektieren Sie den Featuretyp, den Sie laden möchten.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Browse...</source>
@@ -4795,7 +4804,11 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;QGIS can only load GPX files by itself, but many other formats can be converted to GPX using GPSBabel (&lt;/span&gt;&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;http://gpsbabel.sf.net&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;). This requires that you have GPSBabel installed where QGIS can find it.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:10pt;&quot;&gt;Select a GPS file format and the file that you want to import, the feature type that you want to use, a GPX filename that you want to save the converted file as, and a name for the new layer. All file formats can not store waypoints, routes, and tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;QGIS kann nur GPX-Dateien selbstständig laden, viele andere Formate können mit GPSBabel nach GPX konvertiert werden (&lt;/span&gt;&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;http://gpsbabel.sf.net&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;). Hierzu muß GPSBabel allerdings installiert sein, dass QGIS es finden kann.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:10pt;&quot;&gt;Wählen Sie ein GPS-Dateiformat und eine Datei, die Sie importieren möchten, einen Featuretyp, den Sie nutzen möchen und einen GPX-Dateinamen für die konvertierte Datei und eine Namen für den neuen Layer. Es können nicht alle Dateiformate Waypoints, Routen und Wege speichern, einige Featuretyp sind also bei einigen Dateiformaten nicht verfügbar.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Save As...</source>
@@ -4807,7 +4820,11 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;This tool will help you download data from a GPS device. Choose your GPS device, the port it is connected to, the feature type you want to download, a name for your new layer, and the GPX file where you want to store the data. If your device isn&apos;t listed, or if you want to change some settings, you can also edit the devices.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:10pt;&quot;&gt;This tool uses the program GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://gpsbabel.sf.net&lt;/span&gt;&lt;/a&gt;) to transfer the data. If you don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Diese Werkzeug hilft Ihnen beim Herunterladen von Daten aus Ihrem GPS-Gerät. Wählen Sie Ihr GPS-Gerät, die Schnittstelle mit der es verbunden ist, den Featuretyp, den Sie herunterladen möchten, den Namen Ihres neuen Layers und die GPX-Datei in der die Daten gespeichert werden soll. Wenn Ihr Gerät nicht aufgeführt ist oder Sie Einstellungen ändern möchten, können Sie auch die Geräte editieren.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:10pt;&quot;&gt;Diese Werkzeug nutzt das Programm GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://gpsbabel.sf.net&lt;/span&gt;&lt;/a&gt;) um die Daten zu �bertragen. Wenn Sie GPSBabel nicht so installiert haben, da� QGIS nicht finden kann, funktioniert diese Werkzeug nicht.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -4815,7 +4832,11 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;This tool will help you upload data from a GPX layer to a GPS device. Choose the layer you want to upload, the device you want to upload it to, and the port your device is connected to. If your device isn&apos;t listed, or if you want to change some settings, you can also edit the devices.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:10pt;&quot;&gt;This tool uses the program GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://gpsbabel.sf.net&lt;/span&gt;&lt;/a&gt;) to transfer the data. If you don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:12pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Diese Werkzeug unterstützt Sie beim Hochladen eines GPX-Layers auf Ihr GPS-Gerät. Wählen Sie den Layer, den Sie hochladen möchten, das Gerät auf das Sie Hochladen möchten und die Schnittstelle an die es angeschlossen ist. Wenn Ihr Gerät nicht aufgeführt ist oder Sie Einstellungen ändern wollen, können Sie die Geräte auch editieren.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:10pt;&quot;&gt;Diese Werkzeug benutzt das Programm GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://gpsbabel.sf.net&lt;/span&gt;&lt;/a&gt;) um Daten zu transferieren. Wenn GPSBabel nicht so installiert ist, dass QGIS es finden kann, funktioniert dieses Werkzeug nicht.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -7054,8 +7075,7 @@ bei Zeile </translation>
         <source>Network timed out after %1 seconds of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
         <translation type="obsolete">Timeout nach %1 Sekunden Inaktivität.
-<byte value="x9"/><byte value="x9"/><byte value="x9"/>Die könnte Problem mit Ihrer Netzwerkverbindung oder dem WMS-Server sein.&gt;
-<byte value="x9"/><byte value="x9"/></translation>
+Die könnte Problem mit Ihrer Netzwerkverbindung oder dem WMS-Server sein.</translation>
     </message>
     <message>
         <source>HTTP transaction completed, however there was an error: %1</source>
@@ -7679,8 +7699,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <source>- %1 features found</source>
         <comment>Identify results window title</comment>
-        <translation type="obsolete">%1 Features gefunden
-<byte value="x9"/></translation>
+        <translation type="obsolete">- %1 Features gefunden</translation>
     </message>
 </context>
 <context>
@@ -8401,7 +8420,7 @@ Ausführliche Fehlerinformation:</translation>
     <name>QgsOptions</name>
     <message>
         <source>Detected active locale on your system: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Festgestellte Spracheinstellung des Systems: </translation>
     </message>
 </context>
 <context>
@@ -8664,27 +8683,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Locale</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sprache</translation>
     </message>
     <message>
         <source>Force Override System Locale</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Andere Spracheinstellung erzwingen</translation>
     </message>
     <message>
         <source>Locale to use instead</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Stattdessen folgende Spracheinstellungen benutzen</translation>
     </message>
     <message>
         <source>Note: Enabling / changing overide on local requires an application restart.</source>
-        <translation type="unfinished"></translation>
+	<translation type="unfinished">Bemerkung: Die Änderung der Spracheinstellung erfordert einen Neustart der Applikation.</translation>
     </message>
     <message>
         <source>Additional Info</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ergänzende Informationen</translation>
     </message>
     <message>
         <source>Detected active locale on your system:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Festgestellte aktive Spracheinstellung:</translation>
     </message>
 </context>
 <context>
@@ -9696,7 +9715,11 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans Condensed&apos;; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;To access Quantum GIS environment from this python console use object &lt;span style=&quot; font-weight:600;&quot;&gt;iface&lt;/span&gt; from global scope which is an instance of QgisInterface class.&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Usage e.g.: iface.zoomFull()&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans Condensed&apos;; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Um aus dieser Python-Konsole auf die Quantum GIS-Umgebung zuzugreifen, benutzen Sie das globale Objekt &lt;span style=&quot; font-weight:600;&quot;&gt;iface&lt;/span&gt;, welches eine Instanz der Klasse QgisInterface ist.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Beispiel: iface.zoomFull()&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&gt;&gt;&gt;</source>
@@ -10038,7 +10061,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>General</source>
-        <translation>Generell</translation>
+        <translation>Allgemein</translation>
     </message>
     <message>
         <source>Layer Source:</source>
@@ -10510,8 +10533,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsSearchQueryBuilder</name>
     <message>
         <source>Found %d matching features.</source>
-        <translation type="obsolete">%d passende Features gefunden
-<byte value="x9"/></translation>
+        <translation type="obsolete">%d passende Features gefunden</translation>
     </message>
     <message>
         <source>No matching features found.</source>
@@ -10574,8 +10596,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Coordinate Reference System (%1 available)</source>
-        <translation type="obsolete">Koordinatensystem (%1 verfügbar)
-<byte value="x9"/></translation>
+        <translation type="obsolete">Koordinatensystem (%1 verfügbar)</translation>
     </message>
     <message>
         <source>Could not understand the response.  The</source>
@@ -11167,11 +11188,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsVectorAttributesModel</name>
     <message>
         <source>id</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">id</translation>
     </message>
     <message>
         <source>Field %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Feld %1</translation>
     </message>
 </context>
 <context>
