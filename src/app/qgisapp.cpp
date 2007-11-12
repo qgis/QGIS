@@ -962,6 +962,7 @@ void QgisApp::createToolBars()
   mHelpToolBar->setIconSize(QSize(24,24));
   mHelpToolBar->setObjectName("Help");
   mHelpToolBar->addAction(mActionHelpContents);
+  mHelpToolBar->addAction(QWhatsThis::createAction());
   //
   // Digitizing Toolbar
   mDigitizeToolBar = addToolBar(tr("Digitizing"));
