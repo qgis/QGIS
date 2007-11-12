@@ -2016,12 +2016,14 @@ Kompiliert gegen QT Version </translation>
     <message>
       <source>T</source>
       <comment>
+
 Show most toolbars</comment>
       <translation type="unfinished" >Die meisten Werkzeugleisten anzeigen</translation>
     </message>
     <message>
       <source>Ctrl+T</source>
       <comment>
+
 Hide most toolbars</comment>
       <translation type="unfinished" >Ctrl+T</translation>
     </message>
@@ -2140,6 +2142,7 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>Select an action</source>
       <comment>
+
 File dialog window title</comment>
       <translation type="unfinished" >Eine Aktion wählen</translation>
     </message>
@@ -4841,7 +4844,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>Next not used</source>
-      <translation>Folgende nicht genutzte</translation>
+      <translation>Nächst folgender Kategoriewert</translation>
     </message>
     <message>
       <source>Manual entry</source>
@@ -4858,24 +4861,28 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>Disp</source>
       <comment>
+
 Column title</comment>
       <translation type="unfinished" >Anz.</translation>
     </message>
     <message>
       <source>Color</source>
       <comment>
+
 Column title</comment>
       <translation type="unfinished" >Farbe</translation>
     </message>
     <message>
       <source>Type</source>
       <comment>
+
 Column title</comment>
       <translation type="unfinished" >Typ</translation>
     </message>
     <message>
       <source>Index</source>
       <comment>
+
 Column title</comment>
       <translation type="unfinished" >Index</translation>
     </message>
@@ -7023,12 +7030,14 @@ Wollen Sie sie überschreiben?</translation>
     <message>
       <source>MapServer map files (*.map);;All files(*.*)</source>
       <comment>
+
 Filter list for selecting files from a dialog box</comment>
       <translation type="unfinished" >MapServer Mapfiles (*.map);;Alle Dateien (*.*)</translation>
     </message>
     <message>
       <source>QGIS Project Files (*.qgs);;All files (*.*)</source>
       <comment>
+
 Filter list for selecting files from a dialog box</comment>
       <translation type="unfinished" >QGIS-Projektdatei (*.qgs);;Alle Dateien (*.*)</translation>
     </message>
@@ -7036,6 +7045,7 @@ Filter list for selecting files from a dialog box</comment>
       <source> exists. 
 Do you want to overwrite it?</source>
       <comment>
+
 a filename is prepended to this text, and appears in a dialog box</comment>
       <translation type="unfinished" > vorhanden.
 Wollen Sie sie überschreiben?</translation>
@@ -8432,6 +8442,7 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>-modified</source>
       <comment>
+
 Georeferencer:QgsPointDialog.cpp - used to modify a user given filename</comment>
       <translation type="unfinished" >-modifiziert</translation>
     </message>
@@ -9753,6 +9764,7 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>... (rest of SQL trimmed)</source>
       <comment>
+
 is appended to a truncated SQL statement</comment>
       <translation type="unfinished" >... (Rest der Anweisung abgeschnitten)</translation>
     </message>
