@@ -42,9 +42,23 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui(QgisInterface * _qI, QWidge
   QString key = "/Plugin-DelimitedText";
   txtDelimiter->setText(settings.readEntry(key + "/delimiter"));
 
+  // and how to use the delimiter
+  QString delimiterType = settings.value(key + "/delimiterType",
+                                         "plain").toString();
+  if (delimiterType == "plain")
+  {
+    delimiterPlain->setChecked(true);
+    delimiterRegexp->setChecked(false);
+  }
+  else
+  {
+    delimiterPlain->setChecked(false);
+    delimiterRegexp->setChecked(true);
+  }
+
   teInstructions->setHtml(tr("<h1>Description</h1>"
 "<p>Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!</p>"
-"<p>Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma or tab). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.</p>"));
+"<p>Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma, tab or a regular expression in Perl style). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.</p>"));
 
 }  
 QgsDelimitedTextPluginGui::~QgsDelimitedTextPluginGui()
@@ -68,9 +82,14 @@ void QgsDelimitedTextPluginGui::on_buttonBox_accepted()
   if(txtLayerName->text().length() > 0)
   {
     //Build the delimited text URI from the user provided information
-    QString uri = QString("%1?delimiter=%2&xField=%3&yField=%4")
+      QString delimiterType = "plain";
+      if (delimiterRegexp->isChecked())
+        delimiterType = "regexp";
+
+    QString uri = QString("%1?delimiter=%2&delimiterType=%3&xField=%4&yField=%5")
       .arg(txtFilePath->text())
       .arg(txtDelimiter->text())
+      .arg(delimiterType)
       .arg(cmbXField->currentText())
       .arg(cmbYField->currentText());
 
@@ -83,6 +102,11 @@ void QgsDelimitedTextPluginGui::on_buttonBox_accepted()
     settings.writeEntry(key + "/delimiter", txtDelimiter->text());
     QFileInfo fi(txtFilePath->text());
     settings.writeEntry(key + "/text_path", fi.dirPath());
+
+    if (delimiterPlain->isChecked())
+      settings.setValue(key + "/delimiterType", "plain");
+    else
+      settings.setValue(key + "/delimiterType", "regexp");
 
     accept();
   }
@@ -122,10 +146,19 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
 #endif
         QString delimiter = txtDelimiter->text();
         
-        // convert \t to tabulator
-        delimiter.replace("\\t", "\t");
-        
-        QStringList fieldList = QStringList::split(delimiter, line);
+        QStringList fieldList;
+
+        if (delimiterPlain->isChecked())
+        {
+          // convert \t to tabulator
+          delimiter.replace("\\t", "\t");
+          fieldList = line.split(delimiter);
+        }
+        else
+        {
+          QRegExp del(delimiter);
+          fieldList = line.split(QRegExp(delimiter));
+        }
 
 #ifdef QGISDEBUG
         std::cerr << "Split line into " << fieldList.size() << " parts" << std::endl; 

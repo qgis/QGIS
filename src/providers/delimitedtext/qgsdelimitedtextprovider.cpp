@@ -67,18 +67,22 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
   // Decode the parts of the uri. Good if someone entered '=' as a delimiter, for instance.
   mFileName  = QUrl::fromPercentEncoding(mFileName.toUtf8());
   mDelimiter = QUrl::fromPercentEncoding(mDelimiter.toUtf8());
+  mDelimiterType = QUrl::fromPercentEncoding(mDelimiter.toUtf8());
   xField    = QUrl::fromPercentEncoding(xField.toUtf8());
   yField    = QUrl::fromPercentEncoding(yField.toUtf8());
   
   QgsDebugMsg("Data source uri is " + uri);
   QgsDebugMsg("Delimited text file is: " + mFileName);
   QgsDebugMsg("Delimiter is: " + mDelimiter);
+  QgsDebugMsg("Delimiter type is: " + mDelimiterType);
   QgsDebugMsg("xField is: " + xField);
   QgsDebugMsg("yField is: " + yField);
   
   // if delimiter contains some special characters, convert them
-  // (we no longer use delimiter as regexp as it introduces problems with special characters)
-  mDelimiter.replace("\\t", "\t"); // replace "\t" with a real tabulator
+  if (mDelimiterType == "plain")
+    mDelimiter.replace("\\t", "\t"); // replace "\t" with a real tabulator
+  else
+    mDelimiterRegexp = QRegExp(mDelimiter);
   
   // Set the selection rectangle to null
   mSelectionRectangle = QgsRect();
@@ -133,7 +137,11 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
       // fields vector
       QgsDebugMsg("Attempting to split the input line: " + line + " using delimiter " + mDelimiter);
       
-      QStringList fieldList = QStringList::split(mDelimiter, line, true);
+      QStringList fieldList;
+      if (mDelimiterType == "plain")
+        fieldList = QStringList::split(mDelimiter, line, true);
+      else
+        fieldList = line.split(mDelimiterRegexp);
       QgsDebugMsg("Split line into " + QString::number(fieldList.size()) + " parts");
       
       // We don't know anything about a text based field other
@@ -175,7 +183,11 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
       mNumberFeatures++;
       
       // split the line on the delimiter
-      QStringList parts = QStringList::split(mDelimiter, line, true);
+      QStringList parts;
+      if (mDelimiterType == "plain")
+        parts = QStringList::split(mDelimiter, line, true);
+      else
+        parts = line.split(mDelimiterRegexp);
 
       // Skip malformed lines silently. Report line number with getNextFeature()
       if (attributeFields.size() != parts.size())
@@ -279,7 +291,11 @@ bool QgsDelimitedTextProvider::getNextFeature(QgsFeature& feature)
     QString line = mStream->readLine(); // Default local 8 bit encoding
         
     // lex the tokens from the current data line
-    QStringList tokens = QStringList::split(mDelimiter, line, true);
+    QStringList tokens;
+    if (mDelimiterType == "plain")
+      tokens = QStringList::split(mDelimiter, line, true);
+    else
+      tokens = line.split(mDelimiterRegexp);
 
     bool xOk = false;
     bool yOk = false;
@@ -384,9 +400,11 @@ bool QgsDelimitedTextProvider::getNextFeature(QgsFeature& feature)
                           "unable to determine values for the x and y coordinates:\n"),
                         QgsMessageOutput::MessageText);
     
+    output->appendMessage("Start of invalid lines.");
     for (int i = 0; i < mInvalidLines.size(); ++i)
       output->appendMessage(mInvalidLines.at(i));
-    
+    output->appendMessage("End of invalid lines.");
+
     output->showMessage();
 
     // We no longer need these lines.
