@@ -93,6 +93,18 @@ QgsServerSourceSelect::QgsServerSourceSelect(QgisApp * app, QWidget * parent, Qt
   // set up the WMS connections we already know about
   populateConnectionList();
 
+  //set the current project CRS if available
+  long currentSRS = QgsProject::instance()->readNumEntry("SpatialRefSys", "/ProjectSRSID", -1);
+  if(currentSRS != -1)
+    {
+      //convert SRS id to epsg
+      QgsSpatialRefSys currentRefSys(currentSRS, QgsSpatialRefSys::QGIS_SRSID);
+      if(currentRefSys.isValid())
+	{
+	  m_Epsg = currentRefSys.epsg();
+	}
+     }
+
   // set up the default WMS Coordinate Reference System
   labelCoordRefSys->setText( descriptionForEpsg(m_Epsg) );
 }
