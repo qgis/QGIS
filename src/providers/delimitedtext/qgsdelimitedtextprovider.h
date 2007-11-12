@@ -179,6 +179,8 @@ private:
 
   QString mFileName;
   QString mDelimiter;
+  QRegExp mDelimiterRegexp;
+  QString mDelimiterType;
   
   int mXFieldIndex;
   int mYFieldIndex;
