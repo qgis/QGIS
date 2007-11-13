@@ -24,6 +24,8 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
+#include "qgslogger.h"
+
 QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVectorLayer(vl), sydialog(vl)
 {
     setupUi(this);
@@ -56,9 +58,10 @@ QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVect
 	
 	// XXX - mloskot - fix for Ticket #31 (bug)
 	QgsAttributeList attributes = renderer->classificationAttributes();
-  QgsAttributeList::iterator iter = attributes.begin();
+	QgsAttributeList::iterator iter = attributes.begin();
 	int classattr = *iter;
-	mClassificationComboBox->setCurrentItem(classattr);
+	QString field = provider->fields()[ classattr ].name();
+	mClassificationComboBox->setCurrentItem( mClassificationComboBox->findText(field) );
 
 	const QList<QgsSymbol*> list = renderer->symbols();
 	//fill the items of the renderer into mValues
@@ -68,7 +71,7 @@ QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVect
 	    QString symbolvalue=symbol->lowerValue();
 	    QgsSymbol* sym=new QgsSymbol(mVectorLayer->vectorType(), symbol->lowerValue(), symbol->upperValue(), symbol->label());
 	    sym->setPen(symbol->pen());
-        sym->setCustomTexture(symbol->customTexture());
+	    sym->setCustomTexture(symbol->customTexture());
 	    sym->setBrush(symbol->brush());
 	    sym->setNamedPointSymbol(symbol->pointSymbolName());
 	    sym->setPointSize(symbol->pointSize());
@@ -112,7 +115,7 @@ void QgsUniqueValueDialog::apply()
 	QgsSymbol* symbol=it->second;
 	QgsSymbol* newsymbol=new QgsSymbol(mVectorLayer->vectorType(), symbol->lowerValue(), symbol->upperValue(), symbol->label());
 	newsymbol->setPen(symbol->pen());
-    newsymbol->setCustomTexture(symbol->customTexture());
+	newsymbol->setCustomTexture(symbol->customTexture());
 	newsymbol->setBrush(symbol->brush());
 	newsymbol->setNamedPointSymbol(symbol->pointSymbolName());
 	newsymbol->setPointSize(symbol->pointSize());
