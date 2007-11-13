@@ -178,7 +178,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
       QgsDebugMsg("Field count for the delimited text file is " + QString::number(attributeFields.size()));
       hasFields = true;
     }
-    else
+    else if (mXFieldIndex != -1 && mYFieldIndex != -1)
     {
       mNumberFeatures++;
       
