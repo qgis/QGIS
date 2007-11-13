@@ -2828,31 +2828,30 @@ bool QgsGeometry::intersects(const QgsRect& r)
 
 bool QgsGeometry::intersects(QgsGeometry* geometry)
 {
-  // ensure that both geometries have geos geometry
-  exportWkbToGeos();
-  geometry->exportWkbToGeos();
-
-  if (!mGeos || !geometry->mGeos)
-  {
-    QgsDebugMsg("GEOS geometry not available!");
-    return false;
-  }
-
   try // geos might throw exception on error
   {
-    return mGeos->intersects(geometry->mGeos);
+    // ensure that both geometries have geos geometry
+    exportWkbToGeos();
+    geometry->exportWkbToGeos();
+
+    if (!mGeos || !geometry->mGeos)
+    {
+      QgsDebugMsg("GEOS geometry not available!");
+      return false;
+    }
+
+     return mGeos->intersects(geometry->mGeos);
   }
-  catch (GEOS_UTIL::TopologyException* e)
+  catch (GEOS_UTIL::GEOSException &e)
   {
 #if GEOS_VERSION_MAJOR < 3
-    QString error = e->toString().c_str();
+    QString error = e.toString().c_str();
 #else
-    QString error = e->what();
+    QString error = e.what();
 #endif
     QgsLogger::warning("GEOS: " + error);
     return false;
   }
-
 }
 
 
