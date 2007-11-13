@@ -90,8 +90,9 @@ void QgsPluginManager::getPythonPluginDescriptions()
   {
     QString packageName = pluginList[i];
 
-    // import plugin's package
-    QgsPythonUtils::loadPlugin(packageName);
+    // import plugin's package - skip loading it if an error occured
+    if (!QgsPythonUtils::loadPlugin(packageName))
+      continue;
     
     // get information from the plugin
     QString pluginName  = QgsPythonUtils::getPluginMetadata(packageName, "name");
