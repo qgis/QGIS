@@ -1087,7 +1087,7 @@ Die Python-Unterstützung wird abgeschaltet.</translation>
     </message>
     <message>
       <source>Choose a QGIS project file</source>
-      <translation>Eine QGIS Projektdatei wählen</translation>
+      <translation>Eine QGIS-Projektdatei wählen</translation>
     </message>
     <message>
       <source>Unable to save project</source>
@@ -2458,7 +2458,7 @@ File dialog window title</comment>
     </message>
     <message>
       <source> bookmark?</source>
-      <translation> l�schen wollen?</translation>
+      <translation> löschen wollen?</translation>
     </message>
     <message>
       <source>Error deleting bookmark</source>
@@ -3723,7 +3723,7 @@ has failed. The database said:
     </message>
     <message>
       <source>&lt;h1>Description&lt;/h1>&lt;p>Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!&lt;/p>&lt;p>Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma, tab or a regular expression in Perl style). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.&lt;/p></source>
-      <translation>&lt;h1>Beschreibung&lt;/h1>&lt;p>Wählen Sie eine Textdatei mit Textbegrenzern aus, die X- und Y-Koordinaten enthält, die Sie als Punktebene visualisieren möchten und dieses Plugin erledigt diesen Job für Sie!&lt;/p>&lt;p>Benutzen Sie die Trennzeichen-Box und geben ein, welches Trennzeichen in der Tabelle verwendet wird (z.B.: Leerzeichen, Komma, Tabulator oder ein anderer Ausdruck im Perl-Style). Dann geben Sie einen Ebenenamen an, der in der Legende angezeigt werden soll. Nun klicken Sie auf 'Analysieren' und wählen die Spalten, die die X- und Y-Koordinaten enthalten.&lt;/p></translation>
+      <translation>&lt;h1>Beschreibung&lt;/h1>&lt;p>Wählen Sie eine Textdatei mit Textbegrenzern aus, die X- und Y-Koordinaten enthält, die Sie als Punktebene visualisieren möchten und dieses Plugin erledigt diesen Job für Sie!&lt;/p>&lt;p>Geben Sie im Trennzeichenfeld ein, welches Trennzeichen in der Tabelle verwendet wird (z.B. Leerzeichen, Komma, Tabulator oder einen regulären Ausdruck im Perl-Stil). Dann geben Sie einen Ebenennamen an, der in der Legende angezeigt werden soll. Nun klicken Sie auf 'Analysieren' und wählen die Spalten, die die X- und Y-Koordinaten enthalten.&lt;/p></translation>
     </message>
   </context>
   <context>
