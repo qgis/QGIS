@@ -3,7 +3,7 @@
 
 MACRO (CHECK_GRASS G_PREFIX)
 
-  FIND_PATH (GRASS_INCLUDE_DIR grass/gis.h ${G_PREFIX}/include)
+  FIND_PATH (GRASS_INCLUDE_DIR grass/version.h ${G_PREFIX}/include)
 
   SET (GRASS_LIB_NAMES gis vect dig2 dbmiclient dbmibase shape dgl rtree datetime linkm form gproj)
 
@@ -26,17 +26,10 @@ MACRO (CHECK_GRASS G_PREFIX)
   # LIB_PATH is only temporary variable, so hide it (is it possible to delete a variable?)
   MARK_AS_ADVANCED(LIB_PATH)
 
-  IF (NOT MSVC)
-    IF (GRASS_INCLUDE_DIR AND GRASS_LIBRARIES)
-      SET (GRASS_FOUND TRUE)
-      SET (GRASS_PREFIX ${G_PREFIX})
-    ENDIF (GRASS_INCLUDE_DIR AND GRASS_LIBRARIES)
-  ELSE (NOT MSVC)
-    IF (GRASS_INCLUDE_DIR)
-      SET (GRASS_FOUND TRUE)
-      SET (GRASS_LIBRARIES "")
-    ENDIF (GRASS_INCLUDE_DIR)
-  ENDIF (NOT MSVC)
+  IF (GRASS_INCLUDE_DIR AND GRASS_LIBRARIES)
+    SET (GRASS_FOUND TRUE)
+    SET (GRASS_PREFIX ${G_PREFIX})
+  ENDIF (GRASS_INCLUDE_DIR AND GRASS_LIBRARIES)
     
   MARK_AS_ADVANCED (
     GRASS_INCLUDE_DIR
@@ -69,15 +62,8 @@ ENDIF (WITH_GRASS)
 ###################################
 
 IF (GRASS_FOUND)
-
-   IF (NOT WIN32)
-     # read grass version number and remove trailing newline
-     FILE (READ ${GRASS_PREFIX}/etc/VERSIONNUMBER GRASS_VERSION)
-     STRING(REPLACE "\n" "" GRASS_VERSION ${GRASS_VERSION})
-   ELSE (NOT WIN32)
-     # TODO: how to find out grass version on win?
-     SET(GRASS_VERSION "?")
-   ENDIF (NOT WIN32)
+   FILE(READ ${GRASS_INCLUDE_DIR}/grass/version.h VERSIONFILE)
+   STRING(REGEX MATCH "[0-9]+\\.[0-9]+\\.[^ ]+" GRASS_VERSION ${VERSIONFILE})
 
    IF (NOT GRASS_FIND_QUIETLY)
       MESSAGE(STATUS "Found GRASS: ${GRASS_PREFIX} (${GRASS_VERSION})")
