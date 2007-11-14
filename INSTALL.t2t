@@ -1439,7 +1439,8 @@ described elsewhere in this document.
 
 After the SDK is installed, follow the remaining notes on the page link 
 above to get your MSVC Express environment configured correctly. For your 
-convenience, these are summarised again below:
+convenience, these are summarised again below, and I have added a couple 
+more paths that I discovered were needed:
 
 1) open Visual Studio Express IDE
 
@@ -1447,8 +1448,13 @@ convenience, these are summarised again below:
 
 3) Add:
 ```
-Executable files: C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin
-Include files: C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include
+Executable files: 
+  C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin
+
+Include files: 
+  C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include
+  C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include\atl
+  C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include\mfc
 Library files: C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib
 ```
 
@@ -1469,17 +1475,157 @@ AdditionalDependencies="kernel32.lib"
 To read:
 
 ```
-AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib"
+AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib 
+                        advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib"
 ```
 
 The notes go on to show how to build a mswin32 application which you can try if you like - 
 I'm not going to recover that here.
 
+== Edit your vsvars ==
+
+Backup your vsvars32.bat file in 
+
+```
+C:\Program Files\Microsoft Visual Studio 8\Common7\Tools
+```
+
+and replace it with this one:
+
+```
+@SET VSINSTALLDIR=C:\Program Files\Microsoft Visual Studio 8
+@SET VCINSTALLDIR=C:\Program Files\Microsoft Visual Studio 8\VC
+@SET FrameworkDir=C:\WINDOWS\Microsoft.NET\Framework
+@SET FrameworkVersion=v2.0.50727
+@SET FrameworkSDKDir=C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0
+@if "%VSINSTALLDIR%"=="" goto error_no_VSINSTALLDIR
+@if "%VCINSTALLDIR%"=="" goto error_no_VCINSTALLDIR
+
+@echo Setting environment for using Microsoft Visual Studio 2005 x86 tools.
+
+@rem
+@rem Root of Visual Studio IDE installed files.
+@rem
+@set DevEnvDir=C:\Program Files\Microsoft Visual Studio 8\Common7\IDE
+
+@set PATH=C:\Program Files\Microsoft Visual Studio 8\Common7\IDE;C:\Program Files\Microsoft Visual Studio 8\VC\BIN;C:\Program Files\Microsoft Visual Studio 8\Common7\Tools;C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\bin;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727;C:\Program Files\Microsoft Visual Studio 8\VC\VCPackages;%PATH%
+@rem added by Tim
+@set PATH=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin;%PATH%
+@set INCLUDE=C:\Program Files\Microsoft Visual Studio 8\VC\INCLUDE;%INCLUDE%
+@rem added by Tim
+@set INCLUDE=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include;%INCLUDE%
+@set INCLUDE=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include\mfc;%INCLUDE%
+@set LIB=C:\Program Files\Microsoft Visual Studio 8\VC\LIB;C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\lib;%LIB%
+@rem added by Tim
+@set LIB=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib;%LIB%
+@set LIBPATH=C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
+
+@goto end
+
+:error_no_VSINSTALLDIR
+@echo ERROR: VSINSTALLDIR variable is not set. 
+@goto end
+
+:error_no_VCINSTALLDIR
+@echo ERROR: VCINSTALLDIR variable is not set. 
+@goto end
+
+:en
+
+```
 
 == Building Qt4.3.2 ==
 
 You need a minimum of Qt 4.3.2 here since this is the first version to officially 
 support building the open source version of Qt for windows under MSVC.
+
+Download Qt 4.x.x source for windows from
+
+```
+http:\\www.trolltech.com
+```
+
+Unpack the source to 
+
+```
+c:\Qt\4.x.x\
+```
+
+
+
+
+1) open Visual Studio Express IDE
+
+2) Tools -> Options -> Projects and Solutions -> VC++ Directories
+
+3) Add:
+```
+Executable files: 
+  $(QTDIR)\bin
+
+Include files: 
+  $(QTDIR)\include
+  $(QTDIR)\include\Qt
+  $(QTDIR)\include\QtCore
+  $(QTDIR)\include\QtGui
+  $(QTDIR)\include\QtNetwork
+  $(QTDIR)\include\QtSvg
+  $(QTDIR)\include\QtXml
+  $(QTDIR)\include\Qt3Support
+
+Library files: 
+  $(QTDIR)\lib
+
+Source Files:
+  $(QTDIR)\src
+```
+
+== Environment Variables
+
+Right click on 'My computer' then select the 'Advanced' tab. Click environment variables and 
+create or augment the following '''System''' variables:
+
+```
+Variable Name:     Value:
+--------------------------------------------------------------------------
+EDITOR             vim
+INCLUDE            C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include\.
+LIB                C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib\.
+LIB_DIR            C:\dev\cpp\qgislibs-release
+PATH               C:\Program Files\CMake 2.4\bin;%SystemRoot%\system32;
+                   %SystemRoot%;
+                   %SystemRoot%\System32\Wbem;
+                   "c:\Program Files\Microsoft Visual Studio 8\Common7\Tools";
+                   c:\Qt\4.3.2\bin;
+                   C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin\.;
+                   C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin\WinNT\;
+                   C:\Program Files\svn\bin;C:\Program Files\Microsoft Visual Studio 8\VC\bin;
+                   C:\Program Files\Microsoft Visual Studio 8\Common7\IDE;
+                   "C:\Program Files\PuTTY"
+QTDIR              c:\Qt\4.3.2
+SVN_SSH            "C:\\Program Files\\PuTTY\\plink.exe"
+
+  
+
+
+== Install CMake ==
+
+Download and install cmake 2.4.7 or better, making sure to enable the 
+option
+
+```
+Update path for all users
+```
+
+== Install Subversion ==
+
+You '''must''' install the command line version if you want the CMake svn scripts to work.
+Its a bit tricky to find the correct version on the subversion download site as they have 
+som misleadingly named similar downloads. Easiest is to just get this file:
+
+http://subversion.tigris.org/downloads/1.4.5-win32/apache-2.2/svn-win32-1.4.5.zip
+
+
 
 
 
