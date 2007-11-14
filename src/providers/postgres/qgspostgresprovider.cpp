@@ -418,7 +418,6 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
       for (int row = 0; row < rows; row++)
       {
         int oid = *(int *)PQgetvalue(queryResult, row, PQfnumber(queryResult,"\""+primaryKey+"\""));
-        //  QgsDebugMsg("Primary key type is " + QString::number(primaryKeyType)); 
 	
         if (swapEndian)
 	  oid = ntohl(oid); // convert oid to opposite endian
@@ -432,11 +431,17 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
 
 	for(; name_it != mFetchAttributeNames.end(); ++name_it, ++index_it)
 	  {
-	    QString name = *name_it; //just for the debugger
-	    //int number = PQfnumber(queryResult,*name_it); //just for the debugger
-	    char* attribute = PQgetvalue(queryResult, row, PQfnumber(queryResult,*name_it));
+	    QString val;
+	    if( (*name_it) == primaryKey)
+	      {
+		val = QString::number(oid);
+	      }
+	    else
+	      {
+		char* attribute = PQgetvalue(queryResult, row, PQfnumber(queryResult,*name_it));
+		val = QString::fromUtf8(attribute);
+	      }
 
-	    QString val = QString::fromUtf8(attribute);
 	    switch (attributeFields[*index_it].type())
 	      {
 	      case QVariant::Int:
@@ -534,7 +539,10 @@ void QgsPostgresProvider::select(QgsAttributeList fetchAttributes,
     }
   for(std::list<QString>::const_iterator it = mFetchAttributeNames.begin(); it != mFetchAttributeNames.end(); ++it)
     {
-      declare += "," + *it + "::text";
+      if( (*it) != primaryKey) //no need to fetch primary key again
+	{
+	  declare += "," + *it + "::text";
+	}
     }
 
   declare += " ";
@@ -625,7 +633,10 @@ bool QgsPostgresProvider::getFeatureAtId(int featureId,
   }
   for(namesIt = attributeNames.begin(); namesIt != attributeNames.end(); ++namesIt)
   {
-    sql += "," + *namesIt + "::text";
+    if( (*namesIt) != primaryKey) //no need to fetch primary key again
+      {
+	sql += "," + *namesIt + "::text";
+      }
   }
 
   sql += " " + QString("from %1").arg(mSchemaTableName);
@@ -660,10 +671,17 @@ bool QgsPostgresProvider::getFeatureAtId(int featureId,
 
   for(namesIt = attributeNames.begin(); namesIt != attributeNames.end(); ++namesIt, ++it)
   {
-    QString name = *namesIt; //just for the debugger
-    char* attribute = PQgetvalue(res, 0, PQfnumber(res,*namesIt));
+    QString val;
+    if( (*namesIt) == primaryKey)
+      {
+	val = QString::number(oid);
+      }
+    else
+      {
+	char* attribute = PQgetvalue(res, 0, PQfnumber(res,*namesIt));
+	val = QString::fromUtf8(attribute);
+      }
 
-    QString val = QString::fromUtf8(attribute);
     switch (attributeFields[*it].type())
     {
       case QVariant::Int:
