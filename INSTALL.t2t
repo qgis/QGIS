@@ -1297,6 +1297,10 @@ Build the ALL_BUILD project. This will build all the QGIS binaries along with al
  
  You will also either need to add all the dependency dlls to the QGIS install directory or add their respective directories to your PATH.
  
+
+
+
+
 = Building under Windows using MSVC Express =
 
 /!\ Note: Building under MSVC is still a work in progress. In particular the
@@ -1304,6 +1308,8 @@ following dont work yet: python, grass, postgis connections.
 
 /!\ This section of the document is in draft form and is not ready to be used
 yet.
+
+Tim Sutton, 2007
 
 == System preparation ==
 
@@ -1328,23 +1334,62 @@ before we begin:
 
 == Install Visual Studio Express 2005 ==
 
-Get this Visual Studio Express 2005 sp1 for C++ here:
-
+First thing we need to get is MSVC Express from here:
 
 http://msdn2.microsoft.com/en-us/express/aa975050.aspx
 
-The above page is confusing as it has lots of other stuff on it - just scroll 
-down until you find a link labelled "Download Visual C++ 2005 Express SP1 »"
+The page is really confusing so dont feel bad if you cant actually find the 
+download at first! There are six coloured blocks on the page for the various  
+studio family members (vb / c# / j# etc). Simply choose your language under 
+the 'select your language' combo under the yellow C++ block, and your download 
+will begin. Under internet explorer I had to disable popup blocking for the 
+download to be able to commence.
+
+Once the setup commences you will be prompted with various options. Here is what 
+I chose :
+
+ * Send useage information to Microsoft   (No)
+ * Install options:
+   * Graphical IDE                        (Yes)
+   * Microsoft MSDN Express Edition       (No)
+   * Microsoft SQL Server Express Edition (No)
+ * Install to folder: C:\Program Files\Microsoft Visual Studio 8\   (default)
+ 
+It will need to download around 90mb of installation files and reports 
+that the install will consume 554mb of disk space.
 
 
 == Install Microsoft Platform SDK2 ==
 
-Get the Microsoft Platform SDK2 from here:
+Go to this page:
+
+http://msdn2.microsoft.com/en-us/express/aa700755.aspx
+
+Start by using the link provided on the above page to download and install the
+platform SDK2.
+
+The actual SDK download page is once again a bit confusing since the links for 
+downloading are hidden amongst a bunch of other links. Basically look for these 
+three links with their associated 'Download' buttons and choose the correct 
+link for your platform:
+
+```
+PSDK-amd64.exe  1.2 MB  Download 
+PSDK-ia64.exe   1.3 MB  Download 
+PSDK-x86.exe    1.2 MB  Download
+```
 
 
-http://
+When you install make sure to choose 'custom install'. These instructions 
+assume you are installing into the default path of:
 
-When you install make sure to check at least the following options:
+```
+C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\
+```
+
+We will go for the minimal install that will give us a working environment, 
+so on the custom installation screen I made the following choices:
+
 
 ```
 Configuration Options
@@ -1385,6 +1430,17 @@ Debuggin Tools for Windows                      (Yes)
 ```
 
 /!\ Note that you can always come back later to add extra bits if you like.
+
+/!\ Note that installing the SDK requires validation with the 
+Microsoft Genuine Advantage application. Some people have a philosophical 
+objection to installing this software on their computers. If you are one 
+of them you should probably consider using the MINGW build instructions 
+described elsewhere in this document.
+
+After the SDK is installed, follow the remaining notes on the page link 
+above to get your MSVC Express environment configured correctly.
+
+
 
 
 
