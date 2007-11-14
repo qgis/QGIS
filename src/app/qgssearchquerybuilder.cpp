@@ -32,7 +32,7 @@ QgsSearchQueryBuilder::QgsSearchQueryBuilder(QgsVectorLayer* layer,
 {
   setupUi(this);
   
-  setWindowTitle("Search query builder");
+  setWindowTitle(tr("Search query builder"));
   
   // disable unsupported operators
   btnIn->setEnabled(false);
