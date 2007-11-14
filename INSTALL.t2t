@@ -1337,6 +1337,58 @@ The above page is confusing as it has lots of other stuff on it - just scroll
 down until you find a link labelled "Download Visual C++ 2005 Express SP1 »"
 
 
+== Install Microsoft Platform SDK2 ==
+
+Get the Microsoft Platform SDK2 from here:
+
+
+http://
+
+When you install make sure to check at least the following options:
+
+```
+Configuration Options
+  + Register Environmental Variables            (Yes)
+Microsoft Windows Core SDK
+  + Tools                                       (Yes)
+    + Tools (AMD 64 Bit)                        (No unless this applies)
+    + Tools (Intel 64 Bit)                      (No unless this applies)
+  + Build Environment
+    + Build Environment (AMD 64 Bit)            (No unless this applies)
+    + Build Environment (Intel 64 Bit)          (No unless this applies)
+    + Build Environment (x86 32 Bit)            (Yes)
+  + Documentation                               (No)
+  + Redistributable Components                  (Yes)
+  + Sample Code                                 (No)
+  + Source Code                                 (No)
+    + AMD 64 Source                             (No)
+    + Intel 64 Source                           (No)
+Microsoft Web Workshop                          (No)
+Microsoft Internet Information Server (IIS) SDK (No)
+Microsoft Data Access Services (MDAC) SDK
+  + Tools
+    + Tools (AMD 64 Bit)                        (No)
+    + Tools (AMD 64 Bit)                        (No)
+    + Tools (x86 32 Bit)                        (Yes)
+  + Build Environment
+    + Tools (AMD 64 Bit)                        (No)
+    + Tools (AMD 64 Bit)                        (No)
+    + Tools (x86 32 Bit)                        (Yes)
+  + Documentation                               (No)
+  + Sample Code                                 (No)
+Microsodt Installer SDK                         (No)
+Microsoft Table PC SDK                          (No)
+Microsoft Windows Management Instrumentation    (No)
+Microsoft DirectShow SDK                        (No)
+Microsoft Media Services SDK                    (No)
+Debuggin Tools for Windows                      (Yes)
+```
+
+/!\ Note that you can always come back later to add extra bits if you like.
+
+
+
+
 = Authors and Acknowledgments =
 
 The follwing people have contributed to this document:
