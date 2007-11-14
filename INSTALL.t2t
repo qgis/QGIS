@@ -1438,8 +1438,48 @@ of them you should probably consider using the MINGW build instructions
 described elsewhere in this document.
 
 After the SDK is installed, follow the remaining notes on the page link 
-above to get your MSVC Express environment configured correctly.
+above to get your MSVC Express environment configured correctly. For your 
+convenience, these are summarised again below:
 
+1) open Visual Studio Express IDE
+
+2) Tools -> Options -> Projects and Solutions -> VC++ Directories
+
+3) Add:
+```
+Executable files: C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin
+Include files: C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include
+Library files: C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib
+```
+
+4) Close MSVC Express IDE
+
+5) Open the following file with notepad:
+
+```
+C:\Program Files\Microsoft Visual Studio 8\VC\VCProjectDefaults\corewin_express.vsprops
+```
+
+and change the property:
+
+```
+AdditionalDependencies="kernel32.lib"
+```
+
+To read:
+
+```
+AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib"
+```
+
+The notes go on to show how to build a mswin32 application which you can try if you like - 
+I'm not going to recover that here.
+
+
+== Building Qt4.3.2 ==
+
+You need a minimum of Qt 4.3.2 here since this is the first version to officially 
+support building the open source version of Qt for windows under MSVC.
 
 
 
