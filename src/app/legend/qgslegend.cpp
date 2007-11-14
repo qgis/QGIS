@@ -857,19 +857,18 @@ bool QgsLegend::writeXML( QDomNode & legendnode, QDomDocument & document )
 		llf = dynamic_cast<QgsLegendLayerFile*>(item);
 		if(llf)
 		  {
-        QgsMapLayer* layer = llf->layer();
+		    QgsMapLayer* layer = llf->layer();
         
-        // layer id
+		    // layer id
 		    legendlayerfilenode.setAttribute("layerid", layer->getLayerID());
 		    layerfilegroupnode.appendChild(legendlayerfilenode);
 		  
-        // visible flag
-        legendlayerfilenode.setAttribute( "visible", llf->isVisible());
+		    // visible flag
+		    legendlayerfilenode.setAttribute( "visible", llf->isVisible());
 
-        // show in overview flag
-        legendlayerfilenode.setAttribute( "inOverview", llf->isInOverview());
-    
-    }
+		    // show in overview flag
+		    legendlayerfilenode.setAttribute( "inOverview", llf->isInOverview());
+		  }
 		break;
 
 		default: //do nothing for the leaf nodes
@@ -979,12 +978,13 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	      std::map<QString, QgsMapLayer*>::const_iterator iter = mapLayers.find(childelem.attribute("layerid"));
 	      if(iter == mapLayers.end()) //the layer cannot be found (e.g. the file has been moved)
 		{
-		  //remove the whole legendlayer if this is the only legendlayerfile
+		  // remove the whole legendlayer if this is the only legendlayerfile
 		  if(childelem.previousSibling().isNull() && childelem.nextSibling().isNull())
 		    {
 		      collapsed.remove(lastLayer);
 		      expanded.remove(lastLayer);
 		      delete lastLayer;
+		      lastLayer=0;
 		    }
 		}
 	      else if(lastLayerFileGroup)
@@ -992,11 +992,11 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 		  QgsMapLayer* theMapLayer = iter->second;
 		  QgsLegendLayerFile* theLegendLayerFile = new QgsLegendLayerFile(lastLayerFileGroup, QgsLegendLayerFile::nameFromLayer(theMapLayer), theMapLayer);
 
-      // load layer's visibility and 'show in overview' flag
-      theLegendLayerFile->setVisible(atoi(childelem.attribute("visible")));
-      theLegendLayerFile->setInOverview(atoi(childelem.attribute("inOverview")));
+		  // load layer's visibility and 'show in overview' flag
+		  theLegendLayerFile->setVisible(atoi(childelem.attribute("visible")));
+		  theLegendLayerFile->setInOverview(atoi(childelem.attribute("inOverview")));
 		  
-      //set the check state
+		  // set the check state
 		  blockSignals(true);
 		  if(theLegendLayerFile->isVisible())
 		    {
@@ -1016,8 +1016,8 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 		    static_cast<QgsLegendLayer*>(theLegendLayerFile->parent()->parent())->setLayerTypeIcon();
 		  }
     
-      theLegendLayerFile->updateLegendItem();
-      refreshLayerSymbology(theMapLayer->getLayerID());
+		  theLegendLayerFile->updateLegendItem();
+		  refreshLayerSymbology(theMapLayer->getLayerID());
 		}
 	    }
 	  else if(childelem.tagName()=="filegroup")
@@ -1192,7 +1192,11 @@ QTreeWidgetItem* QgsLegend::firstItem()
 QTreeWidgetItem* QgsLegend::nextItem(QTreeWidgetItem* item)
 {
   QgsLegendItem* litem = dynamic_cast<QgsLegendItem*>(item);
-  if(litem->childCount() > 0)
+  if(!litem)
+    {
+      return 0;
+    }
+  else if(litem->childCount() > 0)
     {
       return litem->child(0);
     }
