@@ -153,6 +153,8 @@ void QgsMapToolIdentify::identifyRasterLayer(QgsRasterLayer* layer, const QgsPoi
     mResults->addAttribute(it->first, it->second);
   }
 
+  mResults->addAttribute( tr("(clicked coordinate)"), point.stringRep() );
+
   mResults->showAllAttributes();
   mResults->show();
 }
@@ -212,7 +214,7 @@ void QgsMapToolIdentify::identifyRasterWmsLayer(QgsRasterLayer* layer, const Qgs
 
   QgsMessageViewer* viewer = new QgsMessageViewer();
   viewer->setCaption( layer->name() );
-  viewer->setMessageAsPlainText( text );
+  viewer->setMessageAsPlainText( QString(tr("WMS identify result for %1\n%2")).arg(point.stringRep()).arg(text) );
 
   viewer->showMessage(); // deletes itself on close
 }
@@ -278,6 +280,9 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
     QApplication::setOverrideCursor(Qt::WaitCursor);
     
     int lastFeatureId = 0;
+
+    QTreeWidgetItem *click = mResults->addNode(tr("(clicked coordinate)"));
+    click->setText(1, point.stringRep());
 
     while (dataProvider->getNextFeature(feat))
     {
