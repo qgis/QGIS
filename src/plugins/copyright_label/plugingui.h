@@ -28,12 +28,14 @@ public:
     void setText(QString);
     void setPlacementLabels(QStringList&);
     void setPlacement(int);
+    void setColor(QColor);
     void setEnabled(bool); 
 
 private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();    
     void on_buttonBox_helpRequested();
+    void on_pbnColorChooser_clicked();
      
 private:
     static const int context_id = 32338213;
