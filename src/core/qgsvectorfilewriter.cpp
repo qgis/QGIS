@@ -26,6 +26,7 @@
 #include "qgsvectordataprovider.h"
 
 #include <QFile>
+#include <QFileInfo>
 #include <QTextCodec>
 
 #include <cassert>
@@ -328,4 +329,50 @@ QgsVectorFileWriter::WriterError
   delete writer;
   
   return NoError;
+}
+
+
+bool QgsVectorFileWriter::deleteShapeFile(QString theFileName)
+{
+  //
+  // Remove old copies that may be lying around
+  //
+  QFileInfo myInfo(theFileName);
+  QString myFileBase = theFileName.replace(".shp","");
+  if (myInfo.exists())
+  {
+    if(!QFile::remove(myFileBase + ".shp"))
+    {
+      qDebug("Removing file failed : " + myFileBase.toLocal8Bit() + ".shp");
+      return false;
+    }
+  }
+  myInfo.setFile(myFileBase + ".shx");
+  if (myInfo.exists())
+  {
+    if(!QFile::remove(myFileBase + ".shx"))
+    {
+      qDebug("Removing file failed : " + myFileBase.toLocal8Bit() + ".shx");
+      return false;
+    }
+  }
+  myInfo.setFile(myFileBase + ".dbf");
+  if (myInfo.exists())
+  {
+    if(!QFile::remove(myFileBase + ".dbf"))
+    {
+      qDebug("Removing file failed : " + myFileBase.toLocal8Bit() + ".dbf");
+      return false;
+    }
+  }
+  myInfo.setFile(myFileBase + ".prj");
+  if (myInfo.exists())
+  {
+    if(!QFile::remove(myFileBase + ".prj"))
+    {
+      qDebug("Removing file failed : " + myFileBase.toLocal8Bit() + ".prj");
+      return false;
+    }
+  }
+  return true;
 }

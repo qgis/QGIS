@@ -343,6 +343,16 @@ void QgsLegendLayerFile::saveAsShapefileGeneral(bool saveOnlySelection)
     shapefileName += ".shp";
   }
   
+  // overwrite the file - user will already have been prompted
+  // to verify they want to overwrite by the file dialog above
+  if (QFile::exists(shapefileName))
+  {
+      if (!QgsVectorFileWriter::deleteShapeFile(shapefileName))
+      {
+        return;
+      }
+  }
+  // ok if the file existed it should be deleted now so we can continue...
   QApplication::setOverrideCursor(Qt::waitCursor);
   
   QgsVectorFileWriter::WriterError error;
