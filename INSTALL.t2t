@@ -1551,8 +1551,64 @@ Unpack the source to
 c:\Qt\4.x.x\
 ```
 
+=== To include  PostgreSQL support in Qt ===
+
+If you want to build Qt with PostgreSQL support you need to download
+PostgreSQL, install it and create a library you can later link with Qt.
+
+Download from .../binary/v8.2.5/win32/postgresql-8.2.5-1.zip from an
+PostgreSQL.org Mirror and install.
+
+PostgreSQL is currently build with MinGW and comes with headers and libraries
+for MinGW.  The headers can be used with Visual C++ out of the box, but the library
+is only shipped in DLL and archive (.a) form and therefore cannot be used with
+Visual C++ directly.
+
+To create a library copy following sed script to the file mkdef.sed in
+PostgreSQL lib directory:
+
+```
+/Dump of file / {
+	s/Dump of file \([^	 ]*\)$/LIBRARY \1/p
+	a\
+EXPORTS
+}
+/[ 	]*ordinal hint/,/^[	]*Summary/ {
+ /^[ 	]\+[0-9]\+/ {
+   s/^[ 	]\+[0-9]\+[ 	]\+[0-9A-Fa-f]\+[ 	]\+[0-9A-Fa-f]\+[ 	]\+\([^ 	=]\+\).*$/	\1/p
+ }
+}
+```
+
+and process execute in the Visual Studio C++ command line (from Programs menu):
+
+cd c:\Program Files\PostgreSQL\8.2\bin
+dumpbin /exports ..\bin\libpq.dll | sed -nf ../lib/mkdef.sed >..\lib\libpq.def
+cd ..\lib
+lib /def:libpq.def /machine:x86
+
+You'll need an sed for that to work in your path (e.g. from cygwin or msys).
+
+That's almost it.  You only need to the include and lib path to INCLUDE and LIB
+in vcvars.bat respectively.
 
 
+== Compile Qt ==
+
+Open the Visual Studio C++ command line and cd to c:\Qt\4.x.x where you
+extracted the source and enter:
+
+configure -platform win32-msvc2005
+nmake
+nmake install
+
+Add -qt-sql-odbc -qt-sql-psql to the configure line if your want odbc and
+PostgreSQL support build into Qt.
+
+
+== Configure Visual C++ to use Qt ==
+
+After building configure the Visual Studio Express IDE to use Qt:
 
 1) open Visual Studio Express IDE
 
@@ -1580,7 +1636,25 @@ Source Files:
   $(QTDIR)\src
 ```
 
-== Environment Variables
+Hint:  You can also add
+
+```
+QString = t=<d->data, su>, size=<d->size, i>
+```
+
+to AutoExp.DAT in C:\Program Files\Microsoft Visual Studio 8\Common7\Packages\Debugger in front of
+
+```
+[Visualizer]
+```
+
+That way the Debugger will show the contents of QString when you point at or
+watch a variable in the debugger.  There are probably much more additions -
+feel free to add some - I just needed QString and took the first hit in google
+I could find.
+
+
+== Environment Variables ==
 
 Right click on 'My computer' then select the 'Advanced' tab. Click environment variables and 
 create or augment the following '''System''' variables:
@@ -1606,7 +1680,31 @@ QTDIR              c:\Qt\4.3.2
 SVN_SSH            "C:\\Program Files\\PuTTY\\plink.exe"
 
   
+== Install Python ==
 
+Download http://python.org/ftp/python/2.5.1/python-2.5.1.msi and install it.
+
+== Install SIP ==
+
+Download http://www.riverbankcomputing.com/Downloads/sip4/sip-4.7.1.zip and extract it somewhere.
+From a Visual C++ command line cd to the directory where you extract SIP and run:
+
+```
+c:\Program Files\python25\python configure.sh -p win32-msvc2005
+nmake
+nmake install
+```
+
+== Install PyQt4 ==
+
+Download http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/PyQt-win-gpl-4.3.1.zip and extract it somewhere.
+From a Visual C++ command line cd to the directory where you extracted PyQt4 and run:
+
+```
+c:\Program Files\python25\python configure.sh -p win32-msvc2005
+nmake
+nmake install
+````
 
 == Install CMake ==
 
@@ -1633,7 +1731,7 @@ http://subversion.tigris.org/downloads/1.4.5-win32/apache-2.2/svn-win32-1.4.5.zi
 
 = Authors and Acknowledgments =
 
-The follwing people have contributed to this document:
+The following people have contributed to this document:
 
 - Windows MINGW Section
  - Tim Sutton, Godofredo Contreras 2006
@@ -1643,6 +1741,8 @@ The follwing people have contributed to this document:
 
 - Windows MSVC Section
  - David Willis 2007
+ - MSVC install additions Tim Sutton 2007
+ - PostgreSQL, Qt compile, SIP, Python, AutoExp additions Juergen Fischer 2007
 
 - OSX Section
  - Tim Sutton, 2007
