@@ -30,15 +30,15 @@ email                : tim@linfiniti.com
 
 #include "plugin.h"
 
-#include <Q3Button>
-#include <Q3PaintDeviceMetrics>
-#include <Q3SimpleRichText>
 #include <QPainter>
 #include <QMenu>
 #include <QDate>
+#include <QTextDocument>
+#include <QMatrix>
 
 //non qt includes
 #include <iostream>
+#include <cmath>
 
 //the gui subclass
 #include "plugingui.h"
@@ -102,15 +102,14 @@ void QgsCopyrightLabelPlugin::projectRead()
     QString defString;
 
     now = QDate::currentDate();
-    defString = "&copy QGIS " + now.toString("yyyy");
+    defString = "&copy; QGIS " + now.toString("yyyy");
 
     mQFont.setFamily(QgsProject::instance()->readEntry("CopyrightLabel","/FontName","Sans Serif"));
     mQFont.setPointSize(QgsProject::instance()->readNumEntry("CopyrightLabel","/FontSize",9));
     mLabelQString = QgsProject::instance()->readEntry("CopyrightLabel","/Label", defString);
     mPlacementIndex = QgsProject::instance()->readNumEntry("CopyrightLabel","/Placement",3);
     mEnable = QgsProject::instance()->readBoolEntry("CopyrightLabel","/Enabled",true);
-    // todo - read & store state of font color
-    mLabelQColor = QColor(Qt::black);
+    mLabelQColor.setNamedColor(QgsProject::instance()->readEntry("CopyrightLabel", "/Color", "#000000")); // default color is black
 }
 //method defined in interface
 void QgsCopyrightLabelPlugin::help()
@@ -135,6 +134,7 @@ void QgsCopyrightLabelPlugin::run()
     myPluginGui->setText(mLabelQString);
     myPluginGui->setPlacementLabels(mPlacementLabels);
     myPluginGui->setPlacement(mPlacementIndex);
+    myPluginGui->setColor(mLabelQColor);
     myPluginGui->setEnabled(mEnable);
     myPluginGui->show();
 }
@@ -149,54 +149,52 @@ void QgsCopyrightLabelPlugin::renderLabel(QPainter * theQPainter)
     //Large IF statement to enable/disable copyright label
     if (mEnable)
     {
-        //@todo softcode this!myQSimpleText.height()
         // need width/height of paint device
-        Q3PaintDeviceMetrics myMetrics( theQPainter->device() );
-        int myHeight = myMetrics.height();
-        int myWidth = myMetrics.width();
-        // FIXME: hard coded cludge for getting a colorgroup.  Needs to be replaced
-        Q3Button * myQButton =new Q3Button();
-        QColorGroup myQColorGroup = myQButton->colorGroup();
-        delete myQButton;
+        int myHeight = theQPainter->device()->height();
+        int myWidth = theQPainter->device()->width();
 
-        Q3SimpleRichText myQSimpleText(mLabelQString, mQFont);
-        myQSimpleText.setWidth( theQPainter, myWidth-10 );
+        QTextDocument text;
+        text.setDefaultFont(mQFont);
+        // To set the text colour in a QTextDocument we use a CSS style
+        QString style = "<style type=\"text/css\"> p {color: " + 
+            mLabelQColor.name() + "}</style>";
+        text.setHtml(style + "<p>" + mLabelQString + "</p>");
+        QSizeF size = text.size();
 
-        //Get canvas dimensions
-        int myYOffset = myHeight;
-        int myXOffset = myWidth;
-
+        float myXOffset(0), myYOffset(0);
         //Determine placement of label from form combo box
         switch (mPlacementIndex)
         {
         case 0: // Bottom Left
           //Define bottom left hand corner start point
-          myYOffset = myYOffset - (myQSimpleText.height()+5);
+          myYOffset = myHeight - size.height() + 5;
           myXOffset = 5;
           break;
         case 1: // Top left
           //Define top left hand corner start point
-          myYOffset = 5;
+          myYOffset = 0;;
           myXOffset = 5;
           break;
         case 2: // Top Right
           //Define top right hand corner start point
-          myYOffset = 5;
-          myXOffset = myXOffset - (myQSimpleText.widthUsed()+5);
+          myYOffset = 0;
+          myXOffset = myWidth - (size.width() + 5);
           break;
         case 3: // Bottom Right
           //Define bottom right hand corner start point
-          myYOffset = myYOffset - (myQSimpleText.height()+5);
-          myXOffset = myXOffset - (myQSimpleText.widthUsed()+5);
+          myYOffset = myHeight - size.height() + 5;
+          myXOffset = myWidth - (size.width() + 5);
           break;
         default:
           std::cerr << "Unknown placement index of " << mPlacementIndex << '\n';
         }
 
         //Paint label to canvas
-        QRect myRect(myXOffset,myYOffset,myQSimpleText.widthUsed(),myQSimpleText.height());
-        myQSimpleText.draw (theQPainter, myXOffset, myYOffset, myRect, myQColorGroup);
-
+        QMatrix worldMatrix = theQPainter->worldMatrix();
+        theQPainter->translate(myXOffset, myYOffset);
+        text.drawContents(theQPainter);
+        // Put things back how they were
+        theQPainter->setWorldMatrix(worldMatrix);
     }
 }
 // Unload the plugin by cleaning up the GUI
@@ -235,9 +233,7 @@ void QgsCopyrightLabelPlugin::setLabel(QString theLabelQString)
 void QgsCopyrightLabelPlugin::setColor(QColor theQColor)
 {
     mLabelQColor = theQColor;
-    QgsProject::instance()->writeEntry("CopyrightLabel","/ColorRedPart", mLabelQColor.red());
-    QgsProject::instance()->writeEntry("CopyrightLabel","/ColorGreenPart", mLabelQColor.green());
-    QgsProject::instance()->writeEntry("CopyrightLabel","/ColorBluePart", mLabelQColor.blue());
+    QgsProject::instance()->writeEntry("CopyrightLabel", "/Color", mLabelQColor.name());
     refreshCanvas();
 }
 
