@@ -73,6 +73,11 @@ class CORE_EXPORT QgsVectorFileWriter
     /** close opened shapefile for writing */
     ~QgsVectorFileWriter();
     
+    /** Delete a shapefile (and its accompanying shx / dbf / prf)
+     * @param QString theFileName - /path/to/file.shp
+     * @return bool true if the file was deleted successfully
+     */ 
+    static bool deleteShapeFile(QString theFileName);
   protected:
     
     OGRGeometry* createEmptyGeometry(QGis::WKBTYPE wkbType);
