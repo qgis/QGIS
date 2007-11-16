@@ -3,10 +3,9 @@
 
 <qgisgrassmodule label=" r.proj - Re-project a raster map from one location to the current location" module="r.proj">
 	<option key="input" />
-	<option key="dbase" />
-	<option key="location" />
-	<option key="mapset" />
+	<option key="dbase"/>
+	<option key="location"/>
+	<option key="mapset"/>
 	<option key="method" />
-	<option key="mapset" />
 	<option key="resolution" />
 </qgisgrassmodule>

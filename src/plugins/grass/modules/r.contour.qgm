@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label=" r.contour - Produces a GRASS binary vector map of specified contours from GRASS raster map layer" module="r.contour">
+<qgisgrassmodule label=" r.contour - Produces a contours vector map with specified step from a raster map" module="r.contour">
 	<option key="input" />
 	<option key="step"/>
 	<option key="minlevel" answer="0" hidden="no"/>
+	<option key="maxlevel" answer="5000000" hidden="no"/>
 	<option key="output" />
 </qgisgrassmodule>

@@ -2,8 +2,8 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 <qgisgrassmodule label="r.resamp.interp - Resamples raster map layers using interpolation. " module="r.resamp.interp">
 	<option key="input" />
-    <option key="output" />
-    <option key="method" />
+	<option key="method" />
+	<option key="output" />
 </qgisgrassmodule>
 
 

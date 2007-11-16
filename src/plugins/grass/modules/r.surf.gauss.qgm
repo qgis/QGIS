@@ -2,8 +2,8 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 <qgisgrassmodule label="r.surf.gauss - GRASS module to produce a raster map layer of gaussian deviates whose mean and standard deviation can be expressed by the user." module="r.surf.gauss">
 	<option key="mean" />
-    <option key="sigma" />
-	<option key="out" />
+	<option key="sigma" />
+	<option key="output" />
 </qgisgrassmodule>
 
 

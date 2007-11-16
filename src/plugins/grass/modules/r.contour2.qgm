@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
  <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
- <qgisgrassmodule label="r.contour - Produces a GRASS binary vector map of specified contours from GRASS raster map layer (min max levels) " module="r.contour">
-	<flag key="q" />
-	<flag key="n" />
-	    <option key="input" />
-        <option key="output" />
-        <option key="minlevel" />
-        <option key="maxlevel" />
-        <option key="step" />
-        <option key="cut" />
- </qgisgrassmodule>
+ <qgisgrassmodule label="r.contour - Produces a contours vector map of specified contours from a raster map" module="r.contour">
+	<option key="input" />
+	<option key="list" />
+	<option key="output" />
+</qgisgrassmodule>

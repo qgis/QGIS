@@ -6,4 +6,5 @@
 	<option key="format"/>
 	<file key="dsn" type="new" fileoption="olayer" label="Output vector file" />
 	<flag key="e" answer="on" hidden="yes" />
+	<flag key="c" answer="on" hidden="no" label="Write only features link to a record"/>
 </qgisgrassmodule>
