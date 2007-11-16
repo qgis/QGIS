@@ -81,11 +81,12 @@ extern "C" {
 }
 
 QgsGrassShell::QgsGrassShell ( QgsGrassTools *tools, 
-    QWidget * parent, const char * name  ):
+    QTabWidget * parent, const char * name  ):
 QDialog(parent), QgsGrassShellBase(), mTools(tools)
 {
   mValid = false;
   mSkipLines = 2;
+  mTabWidget = parent;
 
 #ifdef WIN32
   QMessageBox::warning( 0, "Warning", 
@@ -99,6 +100,8 @@ QDialog(parent), QgsGrassShellBase(), mTools(tools)
   mText = new QgsGrassShellText( this, mTextFrame);
   layout->addWidget ( mText, 0 , 0 );
   mText->show();
+  
+  connect(mCloseButton, SIGNAL(clicked()), this, SLOT(closeShell()));
 
   mFont = QFont ( "Courier", 10 );
 
@@ -938,6 +941,17 @@ void QgsGrassShell::resizeTerminal()
 void QgsGrassShell::readStderr()
 {
 }
+
+void QgsGrassShell::closeShell()
+{
+#ifdef QGISDEBUG
+  std::cerr << "QgsGrassShell::closeShell()" << std::endl;
+#endif
+  
+  mTabWidget->removePage (this );
+  delete this;
+}
+
 
 QgsGrassShellText::QgsGrassShellText ( QgsGrassShell *gs, 
     QWidget * parent, const char *name )

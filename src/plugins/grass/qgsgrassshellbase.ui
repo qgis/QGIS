@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsGrassShellBase</class>
  <widget class="QWidget" name="QgsGrassShellBase" >
   <property name="geometry" >
@@ -22,18 +19,10 @@
    <string>GRASS Shell</string>
   </property>
   <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>10</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
    <item>
     <widget class="Q3Frame" name="mTextFrame" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>7</vsizetype>
+      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -47,7 +36,21 @@
     </widget>
    </item>
    <item>
-    <widget class="Q3ProgressBar" name="mProgressBar" />
+    <layout class="QHBoxLayout" >
+     <item>
+      <widget class="Q3ProgressBar" name="mProgressBar" />
+     </item>
+     <item>
+      <widget class="QPushButton" name="mCloseButton" >
+       <property name="focusPolicy" >
+        <enum>Qt::ClickFocus</enum>
+       </property>
+       <property name="text" >
+        <string>Close</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -55,18 +58,16 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Q3ProgressBar</class>
-   <extends>QWidget</extends>
-   <header>q3progressbar.h</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
    <class>Q3Frame</class>
-   <extends></extends>
+   <extends>QFrame</extends>
    <header>Qt3Support/Q3Frame</header>
    <container>1</container>
-   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Q3ProgressBar</class>
+   <extends>QFrame</extends>
+   <header>Qt3Support/Q3ProgressBar</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
