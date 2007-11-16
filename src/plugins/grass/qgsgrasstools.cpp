@@ -362,8 +362,6 @@ void QgsGrassTools::addModules (  QTreeWidgetItem *parent, QDomElement &element 
 		item->setText( 1, name );
 		lastItem = item;
 	    }
-            // Show items during loading
-            mModulesListView->repaint();
 	}
 	n = n.nextSibling();
     }
