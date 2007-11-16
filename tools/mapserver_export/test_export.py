@@ -15,9 +15,17 @@
 #***************************************************************************/
 
 
-# test script to export a sample QGIS project file to mapserver
+# Test script to export a sample QGIS project file to mapserver
+# No template of header/footer information is included in the map file
+# To change units, image type, name, and dimensions, modify the ex.setOptions line
+#
+import sys
 import ms_export
-ex = ms_export.Qgis2Map('./test1.qgs', './test1.map')
-ex.setOptions( 'Meters', 'JPEG', 'TestMap', '800', '600', '', '', '')
-
-ex.writeMapFile()
+if len(sys.argv) == 3:
+  ex = ms_export.Qgis2Map('/home/gsherman/town_test.qgs', './town_test.map')
+  ex.setOptions( 'Meters', 'JPEG', 'TestMap', '800', '600', '', '', '')
+  ex.writeMapFile()
+else:
+  print "Test script to export a QGIS project file to a MapServer map file"
+  print "Specify the QGIS project file and a file name for the map file to be created:"
+  print "  text_export.py my_qgis_project.qgs my_output_map.map"

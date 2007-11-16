@@ -559,7 +559,11 @@ class Qgis2Map:
     for cls in classes:
       self.outFile.write("    CLASS\n")
 
-      lower = cls.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode('utf-8')
+      try:
+        lower = cls.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode('utf-8')
+      except IndexError:
+        # set to blank in the case where the field used for rendering has no value
+        lower = ""
 
       # If there's a label use it, otherwise autogenerate one
       try:
