@@ -12,20 +12,22 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qstring.h>
-#include <q3textedit.h>
-#include <q3process.h>
-#include <qmessagebox.h>
-#include <qsocketnotifier.h>
-#include <q3cstring.h>
+
+#include <Q3CString>
+#include <Q3Process>
+#include <Q3TextEdit>
+#include <QDialog>
+#include <QKeyEvent>
+#include <QMessageBox>
+#include <QMouseEvent>
+#include <QResizeEvent>
+#include <QSocketNotifier>
+#include <QString>
 
 #include "qgsgrasstools.h"
 #include "ui_qgsgrassshellbase.h"
-#include <QDialog>
-//Added by qt3to4:
-#include <QMouseEvent>
-#include <QKeyEvent>
-#include <QResizeEvent>
+
+class QTabWidget;
 
 class QgsGrassShellText;
 
@@ -74,7 +76,7 @@ class QgsGrassShell: public QDialog, private Ui::QgsGrassShellBase
 
 public:
     QgsGrassShell ( QgsGrassTools *tools, 
-                    QWidget * parent = 0, const char * name = 0 );
+                    QTabWidget * parent = 0, const char * name = 0 );
     ~QgsGrassShell();
 
     // Modes 
@@ -146,6 +148,7 @@ public slots:
     void keyPressEvent ( QKeyEvent * e );
     void keyReleaseEvent ( QKeyEvent * e );
     void mousePressEvent(QMouseEvent* e);
+    void closeShell();
 
 signals:
 
@@ -212,6 +215,9 @@ private:
 
     // How many lines to skip, used to skip output of first commands sent to shell
     int mSkipLines; 
+    
+    // pointer to tab widget in which is the shell
+    QTabWidget* mTabWidget;
 };
 
 class QgsGrassShellText : public Q3TextEdit
