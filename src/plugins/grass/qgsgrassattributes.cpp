@@ -168,7 +168,7 @@ int QgsGrassAttributes::addTab ( const QString & label )
 
     tb->setLeftMargin(0); // hide row labels
 
-    tb->setText ( 0, 0, tr("Field") );
+    tb->setText ( 0, 0, tr("Layer") );
     tb->setText ( 1, 0, "Cat" );
 
     tabCats->addTab ( tb, label );

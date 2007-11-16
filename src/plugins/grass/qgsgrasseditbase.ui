@@ -128,7 +128,7 @@
              </sizepolicy>
             </property>
             <property name="text" >
-             <string>Field (layer)</string>
+             <string>Layer</string>
             </property>
            </widget>
           </item>
@@ -407,7 +407,7 @@
             </rect>
            </property>
            <property name="text" >
-            <string>Field (layer)</string>
+            <string>Layer</string>
            </property>
           </widget>
           <widget class="QComboBox" name="mTableField" >
