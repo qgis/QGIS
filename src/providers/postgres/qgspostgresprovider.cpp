@@ -541,7 +541,7 @@ void QgsPostgresProvider::select(QgsAttributeList fetchAttributes,
     {
       if( (*it) != primaryKey) //no need to fetch primary key again
 	{
-	  declare += "," + *it + "::text";
+	  declare += ",\"" + *it + "\"";
 	}
     }
 
@@ -635,7 +635,7 @@ bool QgsPostgresProvider::getFeatureAtId(int featureId,
   {
     if( (*namesIt) != primaryKey) //no need to fetch primary key again
       {
-	sql += "," + *namesIt + "::text";
+	sql += ",\"" + *namesIt + "\"";
       }
   }
 
