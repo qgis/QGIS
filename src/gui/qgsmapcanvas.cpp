@@ -247,16 +247,30 @@ void QgsMapCanvas::setLayerSet(QList<QgsMapCanvasLayer>& layers)
   {
     for (i = 0; i < layerCount(); i++)
     {
-      disconnect(getZpos(i), SIGNAL(repaintRequested()), this, SLOT(refresh()));
-      disconnect(getZpos(i), SIGNAL(selectionChanged()), this, SLOT(refresh()));
+      // Add check if vector layer when disconnecting from selectionChanged slot
+      // Ticket #811 - racicot
+      QgsMapLayer *currentLayer = getZpos(i);
+      disconnect(currentLayer, SIGNAL(repaintRequested()), this, SLOT(refresh()));
+      QgsVectorLayer *isVectLyr = dynamic_cast < QgsVectorLayer * >(currentLayer);
+      if (isVectLyr)
+      {
+	disconnect(currentLayer, SIGNAL(selectionChanged()), this, SLOT(refresh()));
+      }
     }
     
     mMapRender->setLayerSet(layerSet);
   
     for (i = 0; i < layerCount(); i++)
     {
-      connect(getZpos(i), SIGNAL(repaintRequested()), this, SLOT(refresh()));
-      connect(getZpos(i), SIGNAL(selectionChanged()), this, SLOT(refresh()));
+      // Add check if vector layer when connecting to selectionChanged slot
+      // Ticket #811 - racicot
+      QgsMapLayer *currentLayer = getZpos(i);
+      connect(currentLayer, SIGNAL(repaintRequested()), this, SLOT(refresh()));
+      QgsVectorLayer *isVectLyr = dynamic_cast < QgsVectorLayer * >(currentLayer);
+      if (isVectLyr)
+      {
+        connect(currentLayer, SIGNAL(selectionChanged()), this, SLOT(refresh()));
+      }
     }
   }
   

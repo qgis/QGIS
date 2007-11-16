@@ -62,12 +62,17 @@ QgsLegendLayerFile::QgsLegendLayerFile(QTreeWidgetItem * theLegendItem, QString 
   setCheckState(0, Qt::Checked);
   setText(0, theString);
 
-  // get notifications of changed selection - used to update attribute table
-  connect(mLyr.layer(), SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
-
-  // get notifications of modified layer - used to close table as it's out of sync
-  connect(mLyr.layer(), SIGNAL(wasModified(bool)), this, SLOT(closeTable(bool)));
-  
+  // Add check if vector layer when connecting to selectionChanged slot
+  // Ticket #811 - racicot
+  QgsMapLayer *currentLayer = mLyr.layer();
+  QgsVectorLayer *isVectLyr = dynamic_cast < QgsVectorLayer * >(currentLayer);
+  if (isVectLyr)
+  {
+    // get notifications of changed selection - used to update attribute table
+    connect(mLyr.layer(), SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
+    // get notifications of modified layer - used to close table as it's out of sync
+    connect(mLyr.layer(), SIGNAL(wasModified(bool)), this, SLOT(closeTable(bool)));
+  }  
   connect(mLyr.layer(), SIGNAL(layerNameChanged()), this, SLOT(layerNameChanged()));
 }
 
