@@ -20,7 +20,7 @@
 # CHANGES SHOULD NOT BE MADE TO THE writeMapFile METHOD UNLESS YOU
 # ARE CHANGING THE QgsMapserverExport CLASS AND YOU KNOW WHAT YOU ARE
 # DOING
-import sys, string
+import sys, string, os
 from xml.dom import minidom, Node
 
 # symbol map
@@ -69,42 +69,50 @@ class Qgis2Map:
     # write the general map and web settings
     print " --- python : map section "
     self.writeMapSection()
+    logmsg =  "Wrote map section\n"
     print " --- python : map section done"
     # write the projection section
     print " --- python : proj section "
     self.writeProjectionSection()
+    logmsg += "Wrote projection section\n"
     print " --- python : proj section done"
     # write the output format section
     print " --- python : outputformat section "
     self.writeOutputFormat()
+    logmsg += "Wrote output format section\n"
     print " --- python : outputformat section done"
     # write the legend section
     print " --- python : legend section"
     self.writeLegendSection()
+    logmsg += "Wrote legend section\n"
     print " --- python : legend section done"
 
     # write the WEB section
     print " --- python : web section "
     self.writeWebSection()
+    logmsg += "Wrote web section\n"
     print " --- python : web section done"
 
     # write the LAYER sections
     print " --- python : layer section "
     self.writeMapLayers()
+    logmsg += "Wrote map layers\n"
     print " --- python : layer section done"
 
     # write the symbol defs section
     # must happen after layers so we can build a symbol queue
     print " --- python : symbol section "
     self.writeSymbolSection()
+    logmsg += "Wrote symbol section\n"
     print " --- python : symbol section done"
 
     # END and close the map file
     self.outFile.write("END")
     self.outFile.close()
 
-    ret = "Writing the map file using " + self.project + " " + self.mapFile
-    return ret
+    logmsg += "Map file completed for " + os.path.basename(self.project) + "\n"
+    logmsg += "Map file saved as " + os.path.basename(self.mapFile) + "\n"
+    return logmsg
 
   # Write the general parts of the map section
   def writeMapSection(self):
