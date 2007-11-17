@@ -169,7 +169,9 @@ void QgsMapserverExport::apply()
   pstr = PyEval_CallObject(pmeth, pargs);
   // Show the return value
   PyArg_Parse(pstr, "s", &cstr);
-  std::cout << cstr << std::endl;  
+  std::cout << "Result: " << std::endl  << cstr << std::endl;  
+  // Show the results to the user
+  QMessageBox::information(this, "Results of Export", QString(cstr));
 
   Py_DECREF(pstr);
 
