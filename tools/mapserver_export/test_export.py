@@ -22,7 +22,7 @@
 import sys
 import ms_export
 if len(sys.argv) == 3:
-  ex = ms_export.Qgis2Map('/home/gsherman/town_test.qgs', './town_test.map')
+  ex = ms_export.Qgis2Map(sys.argv[1], sys.argv[2])
   ex.setOptions( 'Meters', 'JPEG', 'TestMap', '800', '600', '', '', '')
   ex.writeMapFile()
 else:
