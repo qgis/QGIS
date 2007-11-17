@@ -93,7 +93,7 @@ int QgsWFSData::getWFSData()
 	  readData = mHttp.readAll();
 	  XML_Parse(p, readData.data(), readData.size(), atEnd);
 	}
-      qApp->processEvents();
+      qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
     }
   qWarning("Left loop");
   return 0; //soon
