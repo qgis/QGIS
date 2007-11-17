@@ -9,7 +9,8 @@ build_path = '@CMAKE_BINARY_DIR@'
 python_path = src_path + '/python'
 gdal_inc_dir = '@GDAL_INCLUDE_DIR@'
 geos_inc_dir = '@GEOS_INCLUDE_DIR@'
-gdal_library = '@GDAL_LIB_PATHNAME@'
+gdal_library = '@GDAL_LIB_NAME@'
+gdal_library_path = '@GDAL_LIB_PATH@'
 
 qt_libs = ["QtCore","QtGui","QtNetwork","QtSvg","QtXml"]
 if sys.platform == 'darwin':
@@ -113,6 +114,8 @@ for mk in [ makefile_core, makefile_gui ]:
   if gdal_library!="":
     mk.extra_libs.append(gdal_library)
   mk.extra_lib_dirs = [build_path+"/src/core"+intdir]
+  if gdal_library_path!="":
+    mk.extra_lib_dirs.append(gdal_library_path)
   mk.extra_include_dirs = [src_path+"/src/core",
                            src_path+"/src/core/raster",
                            src_path+"/src/core/renderer",

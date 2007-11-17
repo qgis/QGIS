@@ -7,9 +7,6 @@ IF (WIN32)
   ELSE (NOT MSVC)
     SET(QGIS_CORE_LIB	  ${CMAKE_BINARY_DIR}/src/core/${CMAKE_CFG_INTDIR}/qgis_core.lib)
     SET(QGIS_GUI_LIB	  ${CMAKE_BINARY_DIR}/src/gui/${CMAKE_CFG_INTDIR}/qgis_gui.lib)
-    GET_FILENAME_COMPONENT(GDAL_LIB_PATH ${GDAL_LIBRARY} PATH)
-    GET_FILENAME_COMPONENT(GDAL_LIB_NAME ${GDAL_LIBRARY} NAME_WE)
-    SET(GDAL_LIB_PATHNAME ${GDAL_LIB_PATH}/${GDAL_LIB_NAME})
   ENDIF (NOT MSVC)
 ELSE (WIN32)
   SET(BINDINGS_CORE_LIB ${CMAKE_CURRENT_BINARY_DIR}/core/core.so)
@@ -37,6 +34,10 @@ ADD_DEPENDENCIES (python qgis_core qgis_gui)
 
 FILE(GLOB CORE_SIP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/core/*.sip")
 FILE(GLOB GUI_SIP_FILES  "${CMAKE_CURRENT_SOURCE_DIR}/gui/*.sip")
+
+# Extract GDAL library path and name for configure.py.in
+STRING(REGEX REPLACE "^(.*)/.*$" "\\1" GDAL_LIB_PATH ${GDAL_LIBRARY})
+STRING(REGEX REPLACE "^.*/(lib)?(.*)\\.[^.]+$" "\\2" GDAL_LIB_NAME ${GDAL_LIBRARY})
 
 # Step 1: during configuration
 # create file configure.py from configure.py.in
