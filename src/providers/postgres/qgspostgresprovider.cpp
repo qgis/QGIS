@@ -169,7 +169,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
   // The queries inside this loop could possibly be combined into one
   // single query - this would make the code run faster.
 
-  for (int i = 0; i < PQnfields(result); i++)
+  for (int i=0; i < PQnfields(result); i++)
   {
     QString fieldName = PQfname(result, i);
     int fldtyp = PQftype(result, i);
@@ -199,19 +199,23 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
       fieldComment = PQgetvalue(tresult, 0, 0);
     PQclear(tresult);
 
-    QgsDebugMsg("Field: " + attnum + " maps to " + QString::number(i) + " " + fieldName + ", " 
+    QgsDebugMsg("Field: " + attnum + " maps to " + QString::number( i ) + " " + fieldName + ", " 
       + fieldTypeName + " (" + QString::number(fldtyp) + "),  " + fieldSize + ", " + QString::number(fieldModifier));
-    
+
     if(fieldName!=geometryColumn)
     {
+    
       QVariant::Type fieldType;
       if (fieldTypeName.find("int") != -1 || fieldTypeName.find("serial") != -1)
         fieldType = QVariant::Int;
       else if (fieldTypeName == "real" || fieldTypeName == "double precision" || \
-    fieldTypeName.find("float") != -1)
+        fieldTypeName.find("float") != -1)
         fieldType = QVariant::Double;
-      else
+      else if (fieldTypeName != "bytea" )
         fieldType = QVariant::String;
+      else
+	continue;
+
       attributeFields.insert(i, QgsField(fieldName, fieldType, fieldTypeName, fieldSize.toInt(), fieldModifier, fieldComment));
     }
   }
@@ -541,7 +545,7 @@ void QgsPostgresProvider::select(QgsAttributeList fetchAttributes,
     {
       if( (*it) != primaryKey) //no need to fetch primary key again
 	{
-	  declare += "," + *it + "::text";
+	  declare += ",\"" + *it + "\"::text";
 	}
     }
 
@@ -635,7 +639,7 @@ bool QgsPostgresProvider::getFeatureAtId(int featureId,
   {
     if( (*namesIt) != primaryKey) //no need to fetch primary key again
       {
-	sql += "," + *namesIt + "::text";
+	sql += ",\"" + *namesIt + "\"::text";
       }
   }
 
