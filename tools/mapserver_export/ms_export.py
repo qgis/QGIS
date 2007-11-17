@@ -343,7 +343,11 @@ class Qgis2Map:
       self.outFile.write("    TRANSPARENCY " + str(opacity) + "\n")
 
       self.outFile.write("    PROJECTION\n")
-      proj4Text = lyr.getElementsByTagName("proj4")[0].childNodes[0].nodeValue.encode('utf-8') 
+      # Get the destination srs for this layer and use it to create
+      # the projection section
+      destsrs = self.qgs.getElementsByTagName("destinationsrs")[0] 
+      proj4Text = destsrs.getElementsByTagName("proj4")[0].childNodes[0].nodeValue.encode('utf-8') 
+      # the proj4 text string needs to be reformatted to make mapserver happy
       self.outFile.write(self.formatProj4(proj4Text))
       self.outFile.write("    END\n")
       scaleDependent = lyr.getAttribute("scaleBasedVisibilityFlag").encode('utf-8')
