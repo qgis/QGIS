@@ -1,0 +1,1 @@
+SUBDIRS(plugin_installer)

@@ -1,0 +1,6 @@
+The installer plugin retrieves an xml description of available plugins and shows the a full listing. You can choose to install any given plugin which will download the zip file to your temp directory and extract it into your *local user's* python plugin dir (ie ~/.qgis/python/plugins NOT /usr/share/qgis/python/plugins)
+
+This plugin itself should, however, be installed in the system plugin directory to ensure all users have access to it.
+
+Matthew T. Perry
+perrygeo at gmail.com
