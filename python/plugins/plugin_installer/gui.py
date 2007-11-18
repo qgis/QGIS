@@ -2,11 +2,12 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Sun Oct 21 17:55:51 2007
-#      by: PyQt4 UI code generator 4.3
+# Created: Sat Nov 17 14:57:42 2007
+#      by: PyQt4 UI code generator 4.1.1
 #
 # WARNING! All changes made in this file will be lost!
 
+import sys
 from PyQt4 import QtCore, QtGui
 
 class Ui_Dialog(object):
@@ -44,6 +45,7 @@ class Ui_Dialog(object):
 
         self.treePlugins = QtGui.QTreeWidget(Dialog)
         self.treePlugins.setGeometry(QtCore.QRect(10,50,911,251))
+        self.treePlugins.setAlternatingRowColors(True)
         self.treePlugins.setItemsExpandable(False)
         self.treePlugins.setObjectName("treePlugins")
 
