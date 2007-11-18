@@ -323,13 +323,16 @@ class Qgis2Map:
             wmsStyles.append( '' )
         # Create necesssary wms metadata
         format = rasterProp.getElementsByTagName('wmsFormat')[0].childNodes[0].nodeValue.encode('utf-8')
-        ct = lyr.getElementsByTagName('coordinatetransform')[0]
-        srs = ct.getElementsByTagName('sourcesrs')[0].getElementsByTagName('spatialrefsys')[0]
-        epsg = srs.getElementsByTagName('epsg')[0].childNodes[0].nodeValue.encode('utf-8')
         self.outFile.write("    METADATA\n")
         self.outFile.write("      'wms_name' '" + ','.join(wmsNames) + "'\n")
         self.outFile.write("      'wms_server_version' '1.1.1'\n")
-        self.outFile.write("      'wms_srs' 'EPSG:4326 EPSG:" + epsg + "'\n")
+        try:
+          ct = lyr.getElementsByTagName('coordinatetransform')[0]
+          srs = ct.getElementsByTagName('sourcesrs')[0].getElementsByTagName('spatialrefsys')[0]
+          epsg = srs.getElementsByTagName('epsg')[0].childNodes[0].nodeValue.encode('utf-8')
+          self.outFile.write("      'wms_srs' 'EPSG:4326 EPSG:" + epsg + "'\n")
+        except:
+	  pass
         self.outFile.write("      'wms_format' '" + format + "'\n")
         self.outFile.write("      'wms_style' '" + ','.join(wmsStyles) + "'\n")
         self.outFile.write("    END\n")
@@ -371,9 +374,8 @@ class Qgis2Map:
       
       # Check for label field (ie LABELITEM) and label status
       try:
-        labelOn = lyr.getElementsByTagName("label")[0].childNodes[0].nodeValue.encode('utf-8')
-        labelNode = lyr.getElementsByTagName('labelattributes')[0]
-        labelField = labelNode.getElementsByTagName('label')[0].getAttribute('field').encode('utf-8')
+        labelOn    = lyr.getElementsByTagName(     "label")[0].childNodes[0].nodeValue.encode('utf-8')
+        labelField = lyr.getElementsByTagName("labelfield")[0].childNodes[0].nodeValue.encode('utf-8')
         if labelField != '' and labelField is not None and labelOn == "1":
           self.outFile.write("    LABELITEM '" + labelField + "'\n");
       except:

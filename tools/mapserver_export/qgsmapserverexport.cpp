@@ -119,7 +119,11 @@ void QgsMapserverExport::apply()
 #ifdef Q_WS_MACX
   QString dataPath = prefixPath + "/../../../../share/qgis";
 #elif WIN32
+# ifndef _MSC_VER
   QString dataPath = prefixPath + "/share/qgis";
+# else
+  QString dataPath = prefixPath;
+# endif
 #else
   QString dataPath ( PKGDATAPATH );
 #endif
@@ -133,6 +137,10 @@ void QgsMapserverExport::apply()
   // Import the module
   std::cout << "Importing module" << std::endl; 
   pmod = PyImport_ImportModule("ms_export");
+  if(!pmod) {
+	  QMessageBox::warning(this, "Map Export Error", "ms_export python module not found");
+	  return;
+  }
 
   std::cout << "Getting Qgis2Map constructor as python obj" << std::endl; 
   pclass = PyObject_GetAttrString(pmod, "Qgis2Map");
@@ -167,14 +175,17 @@ void QgsMapserverExport::apply()
   pargs = Py_BuildValue("()");
   // Execute the writeMapFile method to parse the QGIS project file and create the .map file
   pstr = PyEval_CallObject(pmeth, pargs);
-  // Show the return value
-  PyArg_Parse(pstr, "s", &cstr);
-  std::cout << "Result: " << std::endl  << cstr << std::endl;  
-  // Show the results to the user
-  QMessageBox::information(this, "Results of Export", QString(cstr));
+  if(pstr) {
+    // Show the return value
+    PyArg_Parse(pstr, "s", &cstr);
+    std::cout << "Result: " << std::endl  << cstr << std::endl;
 
-  Py_DECREF(pstr);
-
+    // Show the results to the user
+    QMessageBox::information(this, "Results of Export", QString(cstr));
+    Py_DECREF(pstr);
+  } else {
+    QMessageBox::warning(this, "Mapfile Export Error", "method call failed");
+  }
 }
 void QgsMapserverExport::on_buttonBox_helpRequested()
 {
