@@ -64,7 +64,7 @@ class QgsShapeFile : public QObject
   QString table_name;
   OGRDataSource *ogrDataSource;
   OGRLayer * ogrLayer;
-  bool import_cancelled;
+  bool import_canceled;
   bool valid;
   //! Flag to indicate the file contains multiple geometry types
   bool isMulti;
