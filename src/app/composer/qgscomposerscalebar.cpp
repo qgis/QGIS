@@ -80,7 +80,8 @@ QgsComposerScalebar::QgsComposerScalebar ( QgsComposition *composition, int id,
       mSegmentLength = isize * powerOf10;
 
       // the scale bar will take cca 1/4 of the map width
-      mNumSegments = (int) (mapwidth / 4 / mSegmentLength);
+      // But always have at least one segment.
+      mNumSegments = std::max(1, (int) (mapwidth / 4 / mSegmentLength));
 
       int segsize = (int) (mSegmentLength * map->scale());
 
