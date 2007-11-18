@@ -60,6 +60,8 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
   // get the individual parameters and assign values
   QStringList temp = parameters.grep("delimiter=");
   mDelimiter = temp.size()? temp[0].mid(temp[0].find("=") + 1) : "";
+  temp = parameters.grep("delimiterType=");
+  mDelimiterType = temp.size()? temp[0].mid(temp[0].find("=") + 1) : "";
   temp = parameters.grep("xField=");
   QString xField = temp.size()? temp[0].mid(temp[0].find("=") + 1) : "";
   temp = parameters.grep("yField=");
@@ -67,7 +69,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
   // Decode the parts of the uri. Good if someone entered '=' as a delimiter, for instance.
   mFileName  = QUrl::fromPercentEncoding(mFileName.toUtf8());
   mDelimiter = QUrl::fromPercentEncoding(mDelimiter.toUtf8());
-  mDelimiterType = QUrl::fromPercentEncoding(mDelimiter.toUtf8());
+  mDelimiterType = QUrl::fromPercentEncoding(mDelimiterType.toUtf8());
   xField    = QUrl::fromPercentEncoding(xField.toUtf8());
   yField    = QUrl::fromPercentEncoding(yField.toUtf8());
   
@@ -79,10 +81,10 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
   QgsDebugMsg("yField is: " + yField);
   
   // if delimiter contains some special characters, convert them
-  if (mDelimiterType == "plain")
-    mDelimiter.replace("\\t", "\t"); // replace "\t" with a real tabulator
-  else
+  if (mDelimiterType == "regexp")
     mDelimiterRegexp = QRegExp(mDelimiter);
+  else
+    mDelimiter.replace("\\t", "\t"); // replace "\t" with a real tabulator
   
   // Set the selection rectangle to null
   mSelectionRectangle = QgsRect();
@@ -138,10 +140,10 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
       QgsDebugMsg("Attempting to split the input line: " + line + " using delimiter " + mDelimiter);
       
       QStringList fieldList;
-      if (mDelimiterType == "plain")
-        fieldList = QStringList::split(mDelimiter, line, true);
-      else
+      if (mDelimiterType == "regexp")
         fieldList = line.split(mDelimiterRegexp);
+      else
+        fieldList = line.split(mDelimiter);
       QgsDebugMsg("Split line into " + QString::number(fieldList.size()) + " parts");
       
       // We don't know anything about a text based field other
@@ -184,10 +186,10 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
       
       // split the line on the delimiter
       QStringList parts;
-      if (mDelimiterType == "plain")
-        parts = QStringList::split(mDelimiter, line, true);
-      else
+      if (mDelimiterType == "regexp")
         parts = line.split(mDelimiterRegexp);
+      else
+        parts = line.split(mDelimiter);
 
       // Skip malformed lines silently. Report line number with getNextFeature()
       if (attributeFields.size() != parts.size())
@@ -292,10 +294,10 @@ bool QgsDelimitedTextProvider::getNextFeature(QgsFeature& feature)
         
     // lex the tokens from the current data line
     QStringList tokens;
-    if (mDelimiterType == "plain")
-      tokens = QStringList::split(mDelimiter, line, true);
-    else
+    if (mDelimiterType == "regexp")
       tokens = line.split(mDelimiterRegexp);
+    else
+      tokens = line.split(mDelimiter);
 
     bool xOk = false;
     bool yOk = false;
