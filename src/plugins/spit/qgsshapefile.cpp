@@ -29,6 +29,7 @@
 #include <QString>
 #include <QLabel>
 #include <QTextCodec>
+#include <QFileInfo>
 
 #include "qgsdbfbase.h"
 #include "cpl_error.h"
@@ -255,9 +256,8 @@ void QgsShapeFile::setTable(QString new_table){
 }
 
 void QgsShapeFile::setDefaultTable(){
-  QString name(filename);
-  name = name.section('/', -1);
-  table_name = name.section('.', 0, 0);
+  QFileInfo fi(filename);
+  table_name = fi.baseName();
 }
 
 void QgsShapeFile::setColumnNames(QStringList columns)
@@ -273,8 +273,8 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
                                QString srid, PGconn * conn, QProgressDialog& pro, bool &fin,
                                QString& errorText)
 {
-  connect(&pro, SIGNAL(cancelled()), this, SLOT(cancelImport()));
-  import_cancelled = false;
+  connect(&pro, SIGNAL(canceled()), this, SLOT(cancelImport()));
+  import_canceled = false;
   bool result = true;
   // Mangle the table name to make it PG compliant by replacing spaces with 
   // underscores
@@ -338,30 +338,44 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
 
   if(isMulti)
   {
-    // drop the check constraint 
-    // TODO This whole concept needs to be changed to either
-    // convert the geometries to the same type or allow
-    // multiple types in the check constraint. For now, we
-    // just drop the constraint...
-    query = "alter table " + table_name + " drop constraint \"$2\"";
+    query = QString("select constraint_name from information_schema.table_constraints where table_schema='%1' and table_name='%2' and constraint_name in ('$2','enforce_geotype_the_geom')")
+            .arg( schema ).arg( table_name );
 
-    res = PQexec(conn, (const char*)query);
-    if(PQresultStatus(res)!=PGRES_TUPLES_OK){
-      errorText += tr("The database gave an error while executing this SQL:") + "\n";
-      errorText += query + '\n';
-      errorText += tr("The error was:") + "\n";
-      errorText += PQresultErrorMessage(res) + '\n';
-      PQclear(res);
-      return false;
+    QStringList constraints;
+    res = PQexec( conn, query );
+    if( PQresultStatus( res ) == PGRES_TUPLES_OK )
+    {
+      for(int i=0; i<PQntuples(res); i++)
+	constraints.append( PQgetvalue(res, i, 0) );
     }
-    else{
+    PQclear(res);
+
+    if( constraints.size()>0 ) {
+      // drop the check constraint 
+      // TODO This whole concept needs to be changed to either
+      // convert the geometries to the same type or allow
+      // multiple types in the check constraint. For now, we
+      // just drop the constraint...
+      query = "alter table " + table_name + " drop constraint \"" + constraints[0] + "\"";
+
+      res = PQexec(conn, (const char*)query);
+      if(PQresultStatus(res)!=PGRES_COMMAND_OK) {
+        errorText += tr("The database gave an error while executing this SQL:") + "\n";
+        errorText += query + '\n';
+        errorText += tr("The error was:") + "\n";
+        errorText += PQresultErrorMessage(res) + '\n';
+        PQclear(res);
+        return false;
+      }
+
       PQclear(res);
     }
+
   }
       
   //adding the data into the table
   for(int m=0;m<features && result; m++){
-    if(import_cancelled){
+    if(import_canceled){
       fin = true;
       break;
     }
@@ -452,5 +466,5 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
 }
 
 void QgsShapeFile::cancelImport(){
-  import_cancelled = true;
+  import_canceled = true;
 }
