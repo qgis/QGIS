@@ -51,7 +51,9 @@ class InstallerPlugin:
    
  
   def getAvailablePlugins(self):
+    print "getting list of plugins"
     from qgis_plugins import retrieve_list
+    QApplication.setOverrideCursor(Qt.WaitCursor)
     pluginlist = retrieve_list(self.repository)
     output = "QGIS python plugins avialable from \n%s\n" % self.repository
     #for p in pluginlist:
@@ -64,14 +66,27 @@ class InstallerPlugin:
     	a.setText(1,p["version"])
     	a.setText(2,p["desc"])
     	a.setText(3,p["author"])
+    
+    QApplication.restoreOverrideCursor()
 
-    print "getting list of plugins"
+
+    # resize the columns
+    # plugin name
+    self.gui.treePlugins.resizeColumnToContents(0);
+    # version
+    self.gui.treePlugins.resizeColumnToContents(1);
+    # author/contributor
+    self.gui.treePlugins.resizeColumnToContents(3);
+    # description
+    self.gui.treePlugins.setColumnWidth(2, 560);
     return
 
   def installPlugin(self, plugin):
+    QApplication.setOverrideCursor(Qt.WaitCursor)
     from qgis_plugins import retrieve_list, install_plugin
     plugindir = str(QgsApplication.qgisSettingsDirPath()) + "/python/plugins"
     result = install_plugin(plugin, plugindir, self.repository)
+    QApplication.restoreOverrideCursor()
     if result[0]:
         mb=QMessageBox(self.iface.getMainWindow())
         mb.information(mb, "Plugin installed successfully", result[1])

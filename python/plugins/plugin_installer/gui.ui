@@ -109,6 +109,9 @@
      <height>251</height>
     </rect>
    </property>
+   <property name="alternatingRowColors" >
+    <bool>true</bool>
+   </property>
    <property name="itemsExpandable" >
     <bool>false</bool>
    </property>
