@@ -59,7 +59,7 @@
     </message>
     <message>
       <source>No data provider plugins are available. No vector layers can be loaded</source>
-      <translation>Keine Datenlieferanten Plugins verfügbar. Es können keine Vektorlayer geladen werden</translation>
+      <translation>Keine Datenlieferanten-Plugins verfügbar. Es können keine Vektorlayer geladen werden</translation>
     </message>
     <message>
       <source>QGis files (*.qgs)</source>
@@ -111,11 +111,11 @@
     </message>
     <message>
       <source>No features found</source>
-      <translation>Keine Eigenschaften gefunden</translation>
+      <translation>Keine Objekte gefunden</translation>
     </message>
     <message>
       <source>No features were found in the active layer at the point you clicked</source>
-      <translation>Keine Eigenschaften im aktiven Layer am gewählten Punkt gefunden</translation>
+      <translation>Keine Objekte im aktiven Layer am gewählten Punkt gefunden</translation>
     </message>
     <message>
       <source>Could not identify objects on</source>
@@ -284,7 +284,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
       <source>Draws copyright information</source>
-      <translation>Zeigt Copyright Informationen</translation>
+      <translation>Zeichnet Urhebersrechtsinformationen</translation>
     </message>
     <message>
       <source>Version 0.1</source>
@@ -300,7 +300,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
       <source>Add Delimited Text Layer</source>
-      <translation>Lade kommaseparierten (CSV) Textlayer</translation>
+      <translation>Lade Layer aus Textdatei</translation>
     </message>
     <message>
       <source>Georeferencer</source>
@@ -400,7 +400,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
       <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check 'Allow Editing'.</source>
-      <translation>Der Vektorlayer kann nicht geändert werden. Um sie zu bearbeiten, klicken Sie bitte erst mit der rechten Maustaste auf den Dateieintrag des Layers und dann auf 'Bearbeitungsstatus umschalten'.</translation>
+      <translation>Der Vektorlayer kann nicht geändert werden. Um ihn zu bearbeiten, klicken Sie bitte erst mit der rechten Maustaste auf den Dateieintrag des Layers und dann auf 'Bearbeitungsstatus umschalten'.</translation>
     </message>
     <message>
       <source>To select features, you must choose a vector layer by clicking on its name in the legend</source>
@@ -482,7 +482,7 @@ Die Python-Unterstützung wird abgeschaltet.</translation>
     </message>
     <message>
       <source>Cannot add feature. Unknown WKB type</source>
-      <translation type="unfinished" >Konnte Feature nicht hinzufügen. Unbekannter WKB-Typ</translation>
+      <translation type="unfinished" >Konnte Objekt nicht hinzufügen. Unbekannter WKB-Typ</translation>
     </message>
     <message>
       <source>Error, could not add island</source>
@@ -915,11 +915,11 @@ Die Python-Unterstützung wird abgeschaltet.</translation>
     </message>
     <message>
       <source>No MapLayer Plugins</source>
-      <translation>Keine Kartenlayer Plugins</translation>
+      <translation>Keine Kartenlayer-Plugins</translation>
     </message>
     <message>
       <source>No MapLayer plugins in ../plugins/maplayer</source>
-      <translation>Keine Kartenlayer Plugins in ../plugins/maplayer</translation>
+      <translation>Keine Kartenlayer-Plugins in ../plugins/maplayer</translation>
     </message>
     <message>
       <source>No Plugins</source>
@@ -1083,7 +1083,7 @@ Die Python-Unterstützung wird abgeschaltet.</translation>
     </message>
     <message>
       <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
-      <translation>Wenn angewählt, werden die Kartenlayer abhängig von der Bedienung der Navigationsinstrumente, gezeichnet. Wenn die Checkbox leer ist, werden die Layer nicht gezeichnet. Dies erlaubt es, eine grosse Layeranzahl hinzuzufügen und das Aussehen der Layer vor dem Zeichnen zu setzen.</translation>
+      <translation>Wenn angewählt, werden die Kartenlayer abhängig von der Bedienung der Navigationsinstrumente, gezeichnet. Anderenfalls werden die Layer nicht gezeichnet. Dies erlaubt es, eine grosse Layeranzahl hinzuzufügen und das Aussehen der Layer vor dem Zeichnen zu setzen.</translation>
     </message>
     <message>
       <source>Choose a QGIS project file</source>
@@ -1804,7 +1804,7 @@ Die Python-Unterstützung wird abgeschaltet.</translation>
     </message>
     <message>
       <source>The layer is not a valid layer and can not be added to the map</source>
-      <translation>Der Layer ist kein gültiger Layer und kann daher nicht zur Kartenfenster hinzugefügt werden.</translation>
+      <translation>Der Layer ist ungültig und kann daher nicht zur Kartenfenster hinzugefügt werden.</translation>
     </message>
     <message>
       <source>Save?</source>
@@ -3238,11 +3238,11 @@ File dialog window title</comment>
     </message>
     <message>
       <source>&amp;Copyright Label</source>
-      <translation>&amp;Copyright Label</translation>
+      <translation>&amp;Urhebersrechtshinweis</translation>
     </message>
     <message>
       <source>Creates a copyright label that is displayed on the map canvas.</source>
-      <translation>Erzeugt ein Copyright-Schild auf dem Kartenbild.</translation>
+      <translation>Erzeugt einen Urheberrechtshinweis auf dem Kartenbild.</translation>
     </message>
     <message>
       <source>&amp;Decorations</source>
@@ -3253,7 +3253,7 @@ File dialog window title</comment>
     <name>QgsCopyrightLabelPluginGuiBase</name>
     <message>
       <source>Copyright Label Plugin</source>
-      <translation>Copyright Beschriftungs Plugin</translation>
+      <translation>Urhebersrechtsnachweis-Plugin</translation>
     </message>
     <message>
       <source>Placement</source>
@@ -3289,7 +3289,7 @@ File dialog window title</comment>
     </message>
     <message>
       <source>Enable Copyright Label</source>
-      <translation>Copyrightbeschriftung aktivieren</translation>
+      <translation>Urheberrechtshinweis aktivieren</translation>
     </message>
     <message>
       <source>Color</source>
@@ -3310,7 +3310,7 @@ p, li { white-space: pre-wrap; }
 &lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt;&quot;>Beschreibung&lt;/span>&lt;/p>
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Fügen Sie unten eine Copyright-Beschreibung hinzu. Dieses Plugin unterstützt standard HTML 'Markup Tags' für die Formatierung. Zum Beispiel:&lt;/p>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Fügen Sie unten einen Urheberrechtshinweis hinzu. Dieses Plugin unterstützt Standard-HTML 'Markup Tags' für die Formatierung. Zum Beispiel:&lt;/p>
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600;&quot;>&amp;lt;B&amp;gt; Fettgedruckter Text &amp;lt;/B&amp;gt; &lt;/span>&lt;/p>
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;>&lt;span style=&quot; font-weight:400; font-style:italic;&quot;>&amp;lt;I&amp;gt; Kursivschrift &amp;lt;/I&amp;gt;&lt;/span>&lt;/p>
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-style:italic;&quot;>&lt;span style=&quot; font-style:normal;&quot;>(Bemerkung: &amp;amp;copy; stellt ein Copyright Symbol dar)&lt;/span>&lt;/p>&lt;/body>&lt;/html></translation>
@@ -3674,7 +3674,7 @@ has failed. The database said:
     </message>
     <message>
       <source>Add a delimited text file as a map layer. </source>
-      <translation>Eine getrennte Textdatei dem Kartenfenster als Layer hinzufügen.</translation>
+      <translation>Eine Textdatei dem Kartenfenster als Layer hinzufügen.</translation>
     </message>
     <message>
       <source>The file must have a header row containing the field names. </source>
@@ -3682,7 +3682,7 @@ has failed. The database said:
     </message>
     <message>
       <source>X and Y fields are required and must contain coordinates in decimal units.</source>
-      <translation>X- und Y-Spalten sind unbedingt erforderlich und müssen Koordinaten mit dezimalen Einheiten haben.</translation>
+      <translation>X- und Y-Spalten mit dezimalen Koordinaten sind unbedingt erforderlich</translation>
     </message>
     <message>
       <source>&amp;Delimited text</source>
@@ -3690,7 +3690,7 @@ has failed. The database said:
     </message>
     <message>
       <source>DelimitedTextLayer</source>
-      <translation>CSV-Textlayer</translation>
+      <translation>Layer aus Textdatei</translation>
     </message>
   </context>
   <context>
@@ -3701,7 +3701,7 @@ has failed. The database said:
     </message>
     <message>
       <source>Please enter a layer name before adding the layer to the map</source>
-      <translation>Bitte geben Sie einen Laernamen ein, bevor Sie den Layer zum Kartenfenster hinzufügen</translation>
+      <translation>Bitte geben Sie einen Layernamen ein, bevor Sie den Layer zum Kartenfenster hinzufügen</translation>
     </message>
     <message>
       <source>No delimiter</source>
@@ -3721,18 +3721,18 @@ has failed. The database said:
     </message>
     <message>
       <source>&lt;h1>Description&lt;/h1>&lt;p>Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!&lt;/p>&lt;p>Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma, tab or a regular expression in Perl style). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.&lt;/p></source>
-      <translation>&lt;h1>Beschreibung&lt;/h1>&lt;p>Wählen Sie eine Textdatei mit Textbegrenzern aus, die X- und Y-Koordinaten enthält, die Sie als Punktlayer visualisieren möchten und dieses Plugin erledigt diesen Job für Sie!&lt;/p>&lt;p>Geben Sie im Trennzeichenfeld ein, welches Trennzeichen in der Tabelle verwendet wird (z.B. Leerzeichen, Komma, Tabulator oder einen regulären Ausdruck im Perl-Stil). Dann geben Sie einen Layernamen an, der in der Legende angezeigt werden soll. Nun klicken Sie auf 'Analysieren' und wählen die Spalten, die die X- und Y-Koordinaten enthalten.&lt;/p></translation>
+      <translation>&lt;h1>Beschreibung&lt;/h1>&lt;p>Wählen Sie eine Textdatei aus, die X- und Y-Koordinaten enthält, die Sie als Punktlayer visualisieren möchten und dieses Plugin erledigt diesen Job für Sie!&lt;/p>&lt;p>Geben Sie im Trennzeichenfeld ein, welches Trennzeichen in der Tabelle verwendet wird (z.B. Leerzeichen, Komma, Tabulator oder einen regulären Ausdruck im Perl-Stil). Dann geben Sie einen Layernamen an, der in der Legende angezeigt werden soll. Nun klicken Sie auf 'Analysieren' und wählen dann die Spalten, die die X- und Y-Koordinaten enthalten.&lt;/p></translation>
     </message>
   </context>
   <context>
     <name>QgsDelimitedTextPluginGuiBase</name>
     <message>
       <source>Create a Layer from a Delimited Text File</source>
-      <translation>Erstelle einen Layer aus einer Textdatendatei</translation>
+      <translation>Textdatei aus Layer erzeugen</translation>
     </message>
     <message>
       <source>&lt;p align=&quot;right&quot;>X field&lt;/p></source>
-      <translation>&lt;p align=&quot;right&quot;>X Feld&lt;/p></translation>
+      <translation>&lt;p align=&quot;right&quot;>X-Feld&lt;/p></translation>
     </message>
     <message>
       <source>Name of the field containing x values</source>
@@ -3740,7 +3740,7 @@ has failed. The database said:
     </message>
     <message>
       <source>Name of the field containing x values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
-      <translation>Benenne das Feld welches die x Werte enthält. Wähle ein Feld aus der Liste. Diese wird durch verarbeiten der Kopfzeile der Textdatendatei erzeugt.</translation>
+      <translation>Nennen Sie das Feld, das die X-Werte enthält. Wähle ein Feld aus der Liste, die aus der Kopfzeile der Textdatei erzeugt wurde.</translation>
     </message>
     <message>
       <source>&lt;p align=&quot;right&quot;>Y field&lt;/p></source>
@@ -3752,7 +3752,7 @@ has failed. The database said:
     </message>
     <message>
       <source>Name of the field containing y values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
-      <translation>Nenne Sie das Feld, das die y-Werte enthält. Wähle ein Feld aus der Liste. Diese wird durch verarbeiten der Kopfzeile der Textdatendatei erzeugt.</translation>
+      <translation>Nennen Sie das Feld, das die y-Werte enthält. Wähle ein Feld aus der Liste, die aus der Kopfzeile der Textdatei erzeugt wurde.</translation>
     </message>
     <message>
       <source>Layer name</source>
@@ -3772,35 +3772,35 @@ has failed. The database said:
     </message>
     <message>
       <source>Delimiter to use when splitting fields in the text file. The delimiter can be more than one character.</source>
-      <translation>Trennzeichen das zum aufspalten der Felder in der Textdatei verwendet wird. Das Trennzeichen kann mehr als ein Zeichen sein.</translation>
+      <translation>Trennzeichen, das zum Aufspalten der Felder in der Textdatei verwendet wird. Das Trennzeichen kann mehr als ein Zeichen sein.</translation>
     </message>
     <message>
       <source>Delimiter to use when splitting fields in the delimited text file. The delimiter can be 1 or more characters in length.</source>
-      <translation>Trennzeichen das zum aufspalten der Felder in der Textdatendatei verwendet wird. Das Trennzeichen kann 1 oder mehrere Zeichen lang sein.</translation>
+      <translation>Trennzeichen, das zum Aufspalten der Felder in der Textdatei verwendet wird. Das Trennzeichen kann ein oder mehrere Zeichen lang sein.</translation>
     </message>
     <message>
       <source>Delimited Text Layer</source>
-      <translation>Textdatenlayer</translation>
+      <translation>Layer aus Textdatei</translation>
     </message>
     <message>
       <source>Delimited text file</source>
-      <translation>Textdatendatei</translation>
+      <translation>Textdatei</translation>
     </message>
     <message>
       <source>Full path to the delimited text file</source>
-      <translation>Vollständiger Pfad zur Textdatendatei</translation>
+      <translation>Vollständiger Pfad zur Textdatei</translation>
     </message>
     <message>
       <source>Full path to the delimited text file. In order to properly parse the fields in the file, the delimiter must be defined prior to entering the file name. Use the Browse button to the right of this field to choose the input file.</source>
-      <translation>Vollständiger Pfad zur Textdatendatei. Um die Felder in der Datei ordentlich verarbeiten zu können, muß das Trennzeichen vor der Eingabe des Dateinamens definiert sein. Zum Wählen der Eingabedatei den Durchsuchen- Knopf rechts des Feldes verwenden.</translation>
+      <translation>Vollständiger Pfad zur Textdatei. Um die Felder in der Datei ordentlich verarbeiten zu können, muß das Trennzeichen vor der Eingabe des Dateinamens definiert sein. Zum Wählen der Eingabedatei den Durchsuchen- Knopf rechts des Feldes verwenden.</translation>
     </message>
     <message>
       <source>Browse to find the delimited text file to be processed</source>
-      <translation>Durchsuchen zum Finden der zuverarbeitenden Textdatendatei</translation>
+      <translation>Durchsuchen zum Finden der zuverarbeitenden Textdatei</translation>
     </message>
     <message>
       <source>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i>Delimiter&lt;/i> box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</source>
-      <translation>Verwende diesen Knopf zum Durchsuchen nach dem Ort der Textdatendatei. Dieser Knopf ist nicht aktiv bis ein Trennzeichen in der &lt;i>Trennzeichen&lt;/i> Box eingegeben wurde. Wenn die Datei erst einmal gewählt wurde, werden die X und Y Feld Dropdownboxen mit den Feldern aus der Textdatendatei gefüllt.</translation>
+      <translation>Verwende diesen Knopf zum Durchsuchen nach dem Ort der Textdatei. Dieser Knopf ist nicht aktiv bis ein Trennzeichen in der &lt;i>Trennzeichen&lt;/i> Box eingegeben wurde. Wenn die Datei erst einmal gewählt wurde, werden die X- und Y-Feld Dropdownboxen mit den Feldern aus der Textdatei gefüllt.</translation>
     </message>
     <message>
       <source>Sample text</source>
@@ -3878,7 +3878,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>Unique field to use as feature id:</source>
-      <translation>Eindeutiges Feld zur Verwendung als Eigenschafts ID:</translation>
+      <translation>Eindeutiges Feld zur Verwendung als Objekt-ID:</translation>
     </message>
     <message>
       <source>Schema:</source>
@@ -3890,7 +3890,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>&lt;h2>Buffer the features in layer: &lt;/h2></source>
-      <translation>&lt;h2>Gepufferte Eigenschaften im Layer: &lt;/h2></translation>
+      <translation>&lt;h2>Objekte im Layer puffern: &lt;/h2></translation>
     </message>
     <message>
       <source>Parameters</source>
@@ -3992,7 +3992,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsGPSDeviceDialogBase</name>
     <message>
       <source>GPS Device Editor</source>
-      <translation>GPS Geräteeditor</translation>
+      <translation>GPS-Geräteeditor</translation>
     </message>
     <message>
       <source>Device name:</source>
@@ -4601,7 +4601,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>Add new category using settings in GRASS Edit toolbox</source>
-      <translation>Eine neue Kategorie mit den Einstellungen der 'GRASS Digitalisieren'-Toolbox hinzufügen</translation>
+      <translation>Eine neue Kategorie mit den Einstellungen der 'GRASS Digitalisieren'-Werkzeugkiste hinzufügen</translation>
     </message>
     <message>
       <source>Delete</source>
@@ -4624,15 +4624,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>Copy selected map</source>
-      <translation>Kopiere die ausgewählte Karte</translation>
+      <translation>Gewählte Karte kopieren</translation>
     </message>
     <message>
       <source>Rename selected map</source>
-      <translation>Benenne die ausgewählte Karte um</translation>
+      <translation>Gewählte Karte umbenennen</translation>
     </message>
     <message>
       <source>Delete selected map</source>
-      <translation>Lösche die ausgewählte Karte</translation>
+      <translation>Gewählte Karte löschen</translation>
     </message>
     <message>
       <source>Set current region to selected map</source>
@@ -5944,7 +5944,7 @@ bei Zeile </translation>
     </message>
     <message>
       <source>Open GRASS tools</source>
-      <translation>GRASS-Toolbox öffnen</translation>
+      <translation>GRASS-Werkzeugkiste öffnen</translation>
     </message>
     <message>
       <source>Display Current Grass Region</source>
@@ -5988,7 +5988,7 @@ bei Zeile </translation>
     </message>
     <message>
       <source>GRASS layer</source>
-      <translation>GRASS layer</translation>
+      <translation>GRASS-Layer</translation>
     </message>
     <message>
       <source>Create new Grass Vector</source>
@@ -6474,7 +6474,7 @@ bei Zeile </translation>
     </message>
     <message>
       <source>Feature</source>
-      <translation>Eigenschaften</translation>
+      <translation>Objekt</translation>
     </message>
     <message>
       <source>Value</source>
@@ -6539,7 +6539,7 @@ bei Zeile </translation>
     </message>
     <message>
       <source>Default label:</source>
-      <translation>Defualt Label:</translation>
+      <translation>Beschriftungsvorgabe:</translation>
     </message>
     <message>
       <source>Preview:</source>
@@ -6828,7 +6828,7 @@ bei Zeile </translation>
     </message>
     <message>
       <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-      <translation type="unfinished" >Dieser Eintrag enthält weitere Layerdateien. Die Anzeige von mehrern Layer in einer Tabelle wird nicht unterstützt.</translation>
+      <translation type="unfinished" >Dieser Eintrag enthält weitere Layerdateien. Die Anzeige von mehreren Layer in einer Tabelle wird nicht unterstützt.</translation>
     </message>
   </context>
   <context>
@@ -6995,7 +6995,7 @@ bei Zeile </translation>
     <name>QgsMapToolIdentify</name>
     <message>
       <source>No features found</source>
-      <translation>Keine Eigenschaften gefunden</translation>
+      <translation>Keine Objekte gefunden</translation>
     </message>
     <message>
       <source>&lt;p>No features were found within the search radius. Note that it is currently not possible to use the identify tool on unsaved features.&lt;/p></source>
@@ -8062,12 +8062,12 @@ p, li { white-space: pre-wrap; }
       <translation>Keine PostgreSQL/PostGIS-Layer</translation>
     </message>
     <message>
-      <source> is not a PostgreSQL/PosGIS layer.
+      <source> is not a PostgreSQL/PostGIS layer.
 </source>
       <translation> ist keine PostgreSQL/PostGIS-Layer.</translation>
     </message>
     <message>
-      <source>Geoprocessing functions are only available for PostgreSQL/PosGIS Layers</source>
+      <source>Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source>
       <translation>Geodatenverarbeitungsfunktionen sind nur für PostgreSQL/PostGIS-Layer vorgesehen.</translation>
     </message>
     <message>
@@ -8406,8 +8406,8 @@ p, li { white-space: pre-wrap; }
       <translation>Warnung</translation>
     </message>
     <message>
-      <source>&lt;p>A Helmert transform requires modifications in the raster layer.&lt;/p>&lt;p>The modifed raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p>&lt;p>Are you sure that this is what you want?&lt;/p></source>
-      <translation>&lt;p>Eine Helmert-Transform wird den Rasterlayer modifizieren.&lt;/p>&lt;p>Die veränderte Rasterdatei wird in einer neuen Datei mit einem dazu passeneden Worldfile gespeichert.&lt;/p>&lt;p>Sind Sie sicher, dass sie das wollen?&lt;/p></translation>
+      <source>&lt;p>A Helmert transform requires modifications in the raster layer.&lt;/p>&lt;p>The modified raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p>&lt;p>Are you sure that this is what you want?&lt;/p></source>
+      <translation>&lt;p>Eine Helmert-Transformation ändert den Rasterlayer.&lt;/p>&lt;p>Stattdessen wird die veränderte Rasterdatei in einer neuen Datei mit einem dazu passenden Worldfile gespeichert.&lt;/p>&lt;p>Sind Sie sicher, dass Sie das wollen?&lt;/p></translation>
     </message>
     <message>
       <source>Affine</source>
@@ -9821,7 +9821,7 @@ is appended to a truncated SQL statement</comment>
     </message>
     <message>
       <source>Browse:</source>
-      <translation type="unfinished" >Durchsuchen:</translation>
+      <translation type="unfinished" >Andere...</translation>
     </message>
   </context>
   <context>
@@ -9975,7 +9975,7 @@ is appended to a truncated SQL statement</comment>
     </message>
     <message>
       <source>The following fields are duplicates:</source>
-      <translation>Die folgenden Spalten sind dupliziert:</translation>
+      <translation>Die folgenden Spalten kommen doppelt vor:</translation>
     </message>
     <message>
       <source>Import Shapefiles - Relation Exists</source>
@@ -9991,11 +9991,11 @@ is appended to a truncated SQL statement</comment>
     </message>
     <message>
       <source>] relation for its data,</source>
-      <translation>] für ihre Daten benutzen,</translation>
+      <translation>], die bereits vorhanden ist</translation>
     </message>
     <message>
       <source>which already exists and possibly contains data.</source>
-      <translation>, die bereits existiert und ev. Daten enthält.</translation>
+      <translation>und evtl. Daten enthält, für ihre Daten benutzen.</translation>
     </message>
     <message>
       <source>To avoid data loss change the &quot;DB Relation Name&quot;</source>
@@ -10003,15 +10003,15 @@ is appended to a truncated SQL statement</comment>
     </message>
     <message>
       <source>for this Shapefile in the main dialog file list.</source>
-      <translation>der &quot;DB Relation Name&quot; geändert werden.</translation>
+      <translation>der &quot;DB-Relationsname&quot; geändert werden.</translation>
     </message>
     <message>
       <source>Do you want to overwrite the [</source>
-      <translation>Soll die [</translation>
+      <translation>Soll die Relation [</translation>
     </message>
     <message>
       <source>] relation?</source>
-      <translation>] Relation überschrieben werden?</translation>
+      <translation>] überschrieben werden?</translation>
     </message>
     <message>
       <source>Use the table below to edit column names. Make sure that none of the columns are named using a PostgreSQL reserved word</source>
@@ -10023,15 +10023,15 @@ is appended to a truncated SQL statement</comment>
     </message>
     <message>
       <source>Feature Class</source>
-      <translation>Eigenschaftenklasse</translation>
+      <translation>Objektklasse</translation>
     </message>
     <message>
       <source>Features</source>
-      <translation>Eigenschaften</translation>
+      <translation>Objekte</translation>
     </message>
     <message>
       <source>DB Relation Name</source>
-      <translation>DB Relationsname</translation>
+      <translation>DB-Relationsname</translation>
     </message>
     <message>
       <source>Schema</source>
@@ -10290,7 +10290,7 @@ is appended to a truncated SQL statement</comment>
     </message>
     <message>
       <source>Geometry type of the features in this layer : </source>
-      <translation>Geometrietyp der Objekte in diesem Layer: </translation>
+      <translation>Geometrietyp der Objekte dieses Layers: </translation>
     </message>
     <message>
       <source>The number of features in this layer : </source>
@@ -10499,7 +10499,7 @@ is appended to a truncated SQL statement</comment>
     <name>QgsWFSPlugin</name>
     <message>
       <source>&amp;Add WFS layer</source>
-      <translation>&amp;WFS Layer hinzufügen</translation>
+      <translation>&amp;WFS-Layer hinzufügen</translation>
     </message>
   </context>
   <context>
@@ -10708,7 +10708,7 @@ is appended to a truncated SQL statement</comment>
     </message>
     <message>
       <source>Layer Properties: </source>
-      <translation>Layerneigenschaften: </translation>
+      <translation>Layereigenschaften: </translation>
     </message>
     <message>
       <source>Selected</source>
