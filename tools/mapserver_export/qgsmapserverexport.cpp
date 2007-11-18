@@ -29,8 +29,11 @@ email                : sherman at mrcc.com
 #include <qstring.h>
 #include <QWidget>
 #include <QApplication>
-#include "../../src/core/qgscontexthelp.h"
 #include "qgsmapserverexport.h"
+
+// from CORE library
+#include "qgsapplication.h"
+#include "qgscontexthelp.h"
 
 
 // constructor
@@ -114,21 +117,9 @@ void QgsMapserverExport::apply()
   //TODO Need to append the path to the qgis python files using the path to the
   //     Python files in the QGIS install directory
   PyRun_SimpleString("import sys");
-  QString prefixPath = QApplication::applicationDirPath();
-  // Setup up path to the python script directory based on platform
-#ifdef Q_WS_MACX
-  QString dataPath = prefixPath + "/../../../../share/qgis";
-#elif WIN32
-# ifndef _MSC_VER
-  QString dataPath = prefixPath + "/share/qgis";
-# else
-  QString dataPath = prefixPath;
-# endif
-#else
-  QString dataPath ( PKGDATAPATH );
-#endif
-  dataPath = dataPath.trimmed();
-  QString scriptDir = dataPath + QDir::separator() + "python";
+
+  // Setup up path to the python script directory
+  QString scriptDir = QgsApplication::pkgDataPath() + QDir::separator() + "python";
   qDebug("Python scripts directory: " + scriptDir.toLocal8Bit());
   //QString curdir = "/home/gsherman/development/qgis_qt_port/tools/mapserver_export";
   QString sysCmd = QString("sys.path.append('%1')").arg(scriptDir);

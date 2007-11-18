@@ -32,6 +32,8 @@
 
 #include "qgshelpviewer.h"
 
+#include "qgsapplication.h"
+
 QgsHelpViewer::QgsHelpViewer(const QString &contextId, QWidget *parent, 
     Qt::WFlags fl)
 : QDialog(parent, fl)
@@ -63,16 +65,7 @@ void QgsHelpViewer::loadContext(const QString &contextId)
   if(contextId != QString::null)
   {
     // set up the path to the help file
-    QString helpFilesPath =
-#ifdef Q_OS_MACX
-      // remove bin/qgis_help.app/Contents/MacOS to get to share/qgis
-      qApp->applicationDirPath() + "/../../../../share/qgis" +
-#elif WIN32
-      qApp->applicationDirPath() + "/share/qgis"
-#else
-      QString(PKGDATAPATH) +
-#endif
-      "/resources/context_help/";
+    QString helpFilesPath = QgsApplication::pkgDataPath() + "/resources/context_help/";
     /* 
      * determine the locale and create the file name from
      * the context id
@@ -137,16 +130,7 @@ void QgsHelpViewer::loadContextFromSqlite(const QString &contextId)
   if(contextId != QString::null)
   {
     // connect to the database
-    QString helpDbPath =
-#ifdef Q_OS_MACX
-      // remove bin/qgis_help.app/Contents/MacOS to get to share/qgis
-      qApp->applicationDirPath() + "/../../../../share/qgis" +
-#elif WIN32
-      qApp->applicationDirPath() +
-#else
-      QString(PKGDATAPATH) +
-#endif
-      "/resources/qgis_help.db";
+    QString helpDbPath = QgsApplication::pkgDataPath() + "/resources/qgis_help.db";
     int rc = connectDb(helpDbPath);
     // get the help content and title from the database
 
