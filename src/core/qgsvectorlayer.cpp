@@ -1912,10 +1912,13 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
 
   if ( myLabel )
   {
-    dField  = document.createElement( "labelfield" );
-    dFieldText = document.createTextNode( myLabel->labelField(QgsLabel::Text ) ); 
-    dField.appendChild( dFieldText );
-    layer_node.appendChild( dField );
+    QString fieldname = myLabel->labelField(QgsLabel::Text);
+    if(fieldname!="") {
+      dField  = document.createElement( "labelfield" );
+      dFieldText = document.createTextNode( fieldname ); 
+      dField.appendChild( dFieldText );
+      layer_node.appendChild( dField );
+    }
 
     std::stringstream labelXML;
 
