@@ -139,19 +139,12 @@ ENDIF (CMAKE_BUILD_TYPE MATCHES Debug)
 # platform specific stuff
 
 IF (WIN32)
-  SET (QGIS_SOURCE_DIR ${CMAKE_SOURCE_DIR})
-  IF(NOT MSVC)
-    SET (QGIS_BIN_DIR    ${CMAKE_INSTALL_PREFIX})
-    SET (QGIS_DATA_DIR   ${CMAKE_INSTALL_PREFIX})
-    SET (QGIS_PLUGIN_DIR ${CMAKE_INSTALL_PREFIX}/plugins)
-    SET (QGIS_INCLUDE_DIR ${CMAKE_INSTALL_PREFIX}/include)
-  ELSE (NOT MSVC)
-    # FIXME:
-    # . just deals with leading / where these macros are used.
-    SET (QGIS_BIN_DIR    	.)
-    SET (QGIS_DATA_DIR   	.)
-    SET (QGIS_PLUGIN_DIR	plugins)
-    SET (QGIS_INCLUDE_DIR	include)
+  SET (DEFAULT_BIN_SUBDIR     .)
+  SET (DEFAULT_DATA_SUBDIR    .)
+  SET (DEFAULT_PLUGIN_SUBDIR  plugins)
+  SET (DEFAULT_INCLUDE_SUBDIR	include)
+  
+  IF (MSVC)
     #tell msvc compiler to use main instead of winmain as the
     #application entry point
     SET(QT_USE_QTMAIN TRUE) 
@@ -168,11 +161,9 @@ IF (WIN32)
     ADD_DEFINITIONS(-DW_OK=2)
     ADD_DEFINITIONS(-DR_OK=4)
     
-    # ADD_DEFINITIONS(-DQGISDEBUG)
-
     FILE(GLOB files "${CMAKE_SOURCE_DIR}/win_build/vcdeps/*.*")
     INSTALL(FILES ${files} DESTINATION .)
-  ENDIF(NOT MSVC)
+  ENDIF(MSVC)
 ELSE (WIN32)
 
   IF (APPLE)
@@ -183,12 +174,10 @@ ELSE (WIN32)
   ENDIF (APPLE)
 
   # common for MAC and UNIX
-  SET (QGIS_BIN_DIR    ${CMAKE_INSTALL_PREFIX}/bin)
-  SET (QGIS_DATA_DIR   ${CMAKE_INSTALL_PREFIX}/share/qgis)
-  SET (QGIS_PLUGIN_DIR ${CMAKE_INSTALL_PREFIX}/lib/qgis)
-  SET(QGIS_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/qgis")
-  SET (QGIS_SOURCE_DIR ${CMAKE_SOURCE_DIR})
-
+  SET (DEFAULT_BIN_SUBDIR     bin)
+  SET (DEFAULT_DATA_SUBDIR    share/qgis)
+  SET (DEFAULT_PLUGIN_SUBDIR  lib/qgis)
+  SET (DEFAULT_INCLUDE_SUBDIR include/qgis)
 
   IF (UNIX AND NOT APPLE)
     ADD_DEFINITIONS(-DPREFIX=\\"${CMAKE_INSTALL_PREFIX}\\")
@@ -216,6 +205,33 @@ ELSE (WIN32)
   ADD_DEFINITIONS(-DGUI_EXPORT=)
 ENDIF (WIN32)
 
+#############################################################
+# user-changeable settings which can be used to customize
+# layout of QGIS installation
+# (default values are platform-specific)
+
+SET (QGIS_BIN_SUBDIR     ${DEFAULT_BIN_SUBDIR}     CACHE STRING "Subdirectory where executables will be installed")
+SET (QGIS_DATA_SUBDIR    ${DEFAULT_DATA_SUBDIR}    CACHE STRING "Subdirectory where QGIS data will be installed")
+SET (QGIS_PLUGIN_SUBDIR  ${DEFAULT_PLUGIN_SUBDIR}  CACHE STRING "Subdirectory where plugins will be installed")
+SET (QGIS_INCLUDE_SUBDIR ${DEFAULT_INCLUDE_SUBDIR} CACHE STRING "Subdirectory where header files will be installed")
+
+# mark *_SUBDIR variables as advanced as this is not something
+# that an average user would use
+MARK_AS_ADVANCED (QGIS_BIN_SUBDIR QGIS_DATA_SUBDIR QGIS_PLUGIN_SUBDIR QGIS_INCLUDE_SUBDIR)
+
+# full paths for the installation
+SET (QGIS_BIN_DIR     ${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_SUBDIR})
+SET (QGIS_DATA_DIR    ${CMAKE_INSTALL_PREFIX}/${QGIS_DATA_SUBDIR})
+SET (QGIS_PLUGIN_DIR  ${CMAKE_INSTALL_PREFIX}/${QGIS_PLUGIN_SUBDIR})
+SET (QGIS_INCLUDE_DIR ${CMAKE_INSTALL_PREFIX}/${QGIS_INCLUDE_SUBDIR})
+
+# manual page - makes sense only on unix systems
+IF (UNIX)
+  SET (DEFAULT_MANUAL_SUBDIR  man)
+  SET (QGIS_MANUAL_SUBDIR  ${DEFAULT_MANUAL_SUBDIR}  CACHE STRING "Subdirectory where manual files will be installed")
+  MARK_AS_ADVANCED (QGIS_MANUAL_SUBDIR)
+  SET (QGIS_MANUAL_DIR  ${CMAKE_INSTALL_PREFIX}/${QGIS_MANUAL_SUBDIR})
+ENDIF (UNIX)
 
 #############################################################
 # create qgsconfig.h
@@ -266,9 +282,11 @@ ENDIF (ENABLE_TESTS)
 INSTALL (FILES AUTHORS SPONSORS
          DESTINATION ${QGIS_DATA_DIR}/doc)
 
-# manual page... install also on windows?
-INSTALL (FILES qgis.man
-         DESTINATION ${CMAKE_INSTALL_PREFIX}/man/man1)
+# manual page - makes sense only on unix systems
+IF (UNIX)
+  INSTALL (FILES qgis.man
+           DESTINATION ${QGIS_MANUAL_DIR}/man1)
+ENDIF (UNIX)
 
 
 #############################################################

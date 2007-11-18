@@ -65,13 +65,8 @@ void QgsApplication::setPrefixPath(const QString& thePrefixPath, bool useDefault
   mPrefixPath = thePrefixPath;
   if (useDefaultPaths)
   {
-#if defined(Q_WS_WIN32)
-	setPluginPath(mPrefixPath + QString("/plugins"));
-	setPkgDataPath(mPrefixPath);
-#else
-    setPluginPath(mPrefixPath + QString("/lib/qgis"));
-    setPkgDataPath(mPrefixPath + QString("/share/qgis"));
-#endif
+    setPluginPath(mPrefixPath + QString("/") + QString(QGIS_PLUGIN_SUBDIR));
+    setPkgDataPath(mPrefixPath + QString("/") + QString(QGIS_DATA_SUBDIR));
   }
 }
 
