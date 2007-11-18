@@ -1,14 +1,11 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsComposerScalebarBase</class>
  <widget class="QWidget" name="QgsComposerScalebarBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>222</width>
+    <width>261</width>
     <height>487</height>
    </rect>
   </property>
@@ -23,99 +20,150 @@
   <property name="windowTitle" >
    <string>Barscale Options</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QGridLayout" >
    <property name="margin" >
     <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item>
-    <widget class="QLabel" name="textLabel1_3" >
-     <property name="text" >
-      <string>Segment size</string>
+   <item row="2" column="0" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
      </property>
-     <property name="buddy" >
-      <cstring>mSegmentLengthLineEdit</cstring>
+     <property name="spacing" >
+      <number>6</number>
      </property>
-    </widget>
+     <item>
+      <widget class="QLabel" name="textLabel1_4" >
+       <property name="text" >
+        <string>Line width</string>
+       </property>
+       <property name="buddy" >
+        <cstring>mLineWidthSpinBox</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDoubleSpinBox" name="mLineWidthSpinBox" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>7</hsizetype>
+         <vsizetype>0</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimum" >
+        <double>0.010000000000000</double>
+       </property>
+       <property name="singleStep" >
+        <double>0.100000000000000</double>
+       </property>
+       <property name="value" >
+        <double>0.200000000000000</double>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
-   <item>
-    <widget class="QLineEdit" name="mSegmentLengthLineEdit" />
+   <item row="0" column="0" >
+    <layout class="QGridLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item row="0" column="1" colspan="2" >
+      <widget class="QLineEdit" name="mSegmentLengthLineEdit" />
+     </item>
+     <item row="3" column="0" >
+      <widget class="QLabel" name="textLabel1_2" >
+       <property name="text" >
+        <string>Unit label</string>
+       </property>
+       <property name="buddy" >
+        <cstring>mUnitLabelLineEdit</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2" >
+      <widget class="QLineEdit" name="mUnitLabelLineEdit" />
+     </item>
+     <item row="4" column="2" >
+      <widget class="QComboBox" name="mMapComboBox" >
+       <property name="enabled" >
+        <bool>true</bool>
+       </property>
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>7</hsizetype>
+         <vsizetype>0</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0" >
+      <widget class="QLabel" name="textLabel1" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>7</hsizetype>
+         <vsizetype>0</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text" >
+        <string>Map</string>
+       </property>
+       <property name="buddy" >
+        <cstring>mMapComboBox</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" >
+      <widget class="QLabel" name="textLabel1_3" >
+       <property name="text" >
+        <string>Segment size</string>
+       </property>
+       <property name="buddy" >
+        <cstring>mSegmentLengthLineEdit</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2" >
+      <widget class="QLineEdit" name="mNumSegmentsLineEdit" />
+     </item>
+     <item row="2" column="2" >
+      <widget class="QLineEdit" name="mMapUnitsPerUnitLineEdit" />
+     </item>
+     <item row="2" column="0" colspan="2" >
+      <widget class="QLabel" name="textLabel2_2" >
+       <property name="text" >
+        <string>Map units per scalebar unit</string>
+       </property>
+       <property name="buddy" >
+        <cstring>mMapUnitsPerUnitLineEdit</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" colspan="2" >
+      <widget class="QLabel" name="textLabel2" >
+       <property name="text" >
+        <string>Number of segments</string>
+       </property>
+       <property name="buddy" >
+        <cstring>mNumSegmentsLineEdit</cstring>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
-   <item>
-    <widget class="QLabel" name="textLabel2" >
-     <property name="text" >
-      <string>Number of segments</string>
-     </property>
-     <property name="buddy" >
-      <cstring>mNumSegmentsLineEdit</cstring>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLineEdit" name="mNumSegmentsLineEdit" />
-   </item>
-   <item>
-    <widget class="QLabel" name="textLabel2_2" >
-     <property name="text" >
-      <string>Map units per scalebar unit</string>
-     </property>
-     <property name="buddy" >
-      <cstring>mMapUnitsPerUnitLineEdit</cstring>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLineEdit" name="mMapUnitsPerUnitLineEdit" />
-   </item>
-   <item>
-    <widget class="QLabel" name="textLabel1_2" >
-     <property name="text" >
-      <string>Unit label</string>
-     </property>
-     <property name="buddy" >
-      <cstring>mUnitLabelLineEdit</cstring>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLineEdit" name="mUnitLabelLineEdit" />
-   </item>
-   <item>
-    <widget class="QLabel" name="textLabel1" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>0</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text" >
-      <string>Map</string>
-     </property>
-     <property name="buddy" >
-      <cstring>mMapComboBox</cstring>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QComboBox" name="mMapComboBox" >
-     <property name="enabled" >
-      <bool>true</bool>
-     </property>
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>5</hsizetype>
-       <vsizetype>0</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item>
+   <item row="1" column="0" >
     <widget class="QPushButton" name="mFontButton" >
      <property name="sizePolicy" >
       <sizepolicy>
@@ -130,38 +178,7 @@
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="QLabel" name="textLabel1_4" >
-     <property name="text" >
-      <string>Line width</string>
-     </property>
-     <property name="buddy" >
-      <cstring>mLineWidthSpinBox</cstring>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QDoubleSpinBox" name="mLineWidthSpinBox" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>0</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimum" >
-      <double>0.01</double>
-     </property>
-     <property name="singleStep" >
-      <double>0.1</double>
-     </property>
-     <property name="value" >
-      <double>0.2</double>
-     </property>
-    </widget>
-   </item>
-   <item>
+   <item row="3" column="0" >
     <spacer>
      <property name="orientation" >
       <enum>Qt::Vertical</enum>
@@ -171,8 +188,8 @@
      </property>
      <property name="sizeHint" >
       <size>
-       <width>26</width>
-       <height>35</height>
+       <width>204</width>
+       <height>231</height>
       </size>
      </property>
     </spacer>

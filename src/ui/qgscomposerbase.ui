@@ -13,61 +13,24 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget" >
-   <layout class="QGridLayout" >
+   <layout class="QVBoxLayout" >
     <property name="margin" >
      <number>9</number>
     </property>
     <property name="spacing" >
      <number>6</number>
     </property>
-    <item row="0" column="0" colspan="3" >
+    <item>
      <widget class="QSplitter" name="mSplitter" >
-      <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>7</hsizetype>
-        <vsizetype>7</vsizetype>
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="focusPolicy" >
-       <enum>Qt::ClickFocus</enum>
-      </property>
-      <property name="lineWidth" >
-       <number>1</number>
-      </property>
-      <property name="midLineWidth" >
-       <number>0</number>
-      </property>
       <property name="orientation" >
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="Q3Frame" name="mViewFrame" >
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>7</hsizetype>
-         <vsizetype>7</vsizetype>
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize" >
-        <size>
-         <width>10</width>
-         <height>10</height>
-        </size>
-       </property>
-       <property name="focusPolicy" >
-        <enum>Qt::ClickFocus</enum>
-       </property>
+      <widget class="QFrame" name="mViewFrame" >
        <property name="frameShape" >
         <enum>QFrame::StyledPanel</enum>
        </property>
        <property name="frameShadow" >
         <enum>QFrame::Raised</enum>
-       </property>
-       <property name="lineWidth" >
-        <number>1</number>
        </property>
       </widget>
       <widget class="QTabWidget" name="mOptionsTabWidget" >
@@ -91,50 +54,27 @@
          <height>32767</height>
         </size>
        </property>
+       <property name="currentIndex" >
+        <number>0</number>
+       </property>
        <widget class="QWidget" name="tab" >
         <attribute name="title" >
          <string>General</string>
         </attribute>
         <layout class="QGridLayout" >
          <property name="margin" >
-          <number>8</number>
+          <number>9</number>
          </property>
          <property name="spacing" >
           <number>6</number>
          </property>
          <item row="1" column="0" colspan="2" >
-          <widget class="Q3Frame" name="mCompositionOptionsFrame" >
-           <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>7</hsizetype>
-             <vsizetype>7</vsizetype>
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
+          <widget class="QFrame" name="mCompositionOptionsFrame" >
            <property name="frameShape" >
             <enum>QFrame::StyledPanel</enum>
            </property>
            <property name="frameShadow" >
-            <enum>QFrame::Plain</enum>
-           </property>
-           <property name="lineWidth" >
-            <number>0</number>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0" >
-          <widget class="QLabel" name="textLabel1" >
-           <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>7</hsizetype>
-             <vsizetype>5</vsizetype>
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text" >
-            <string>Composition</string>
+            <enum>QFrame::Raised</enum>
            </property>
           </widget>
          </item>
@@ -153,6 +93,21 @@
            </property>
           </widget>
          </item>
+         <item row="0" column="0" >
+          <widget class="QLabel" name="textLabel1" >
+           <property name="sizePolicy" >
+            <sizepolicy>
+             <hsizetype>7</hsizetype>
+             <vsizetype>5</vsizetype>
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text" >
+            <string>Composition</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
        <widget class="QWidget" name="tab_2" >
@@ -161,29 +116,18 @@
         </attribute>
         <layout class="QGridLayout" >
          <property name="margin" >
-          <number>8</number>
+          <number>9</number>
          </property>
          <property name="spacing" >
           <number>6</number>
          </property>
          <item row="0" column="0" >
-          <widget class="Q3Frame" name="mItemOptionsFrame" >
-           <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>7</hsizetype>
-             <vsizetype>7</vsizetype>
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
+          <widget class="QFrame" name="mItemOptionsFrame" >
            <property name="frameShape" >
             <enum>QFrame::StyledPanel</enum>
            </property>
            <property name="frameShadow" >
-            <enum>QFrame::Plain</enum>
-           </property>
-           <property name="lineWidth" >
-            <number>0</number>
+            <enum>QFrame::Raised</enum>
            </property>
           </widget>
          </item>
@@ -192,32 +136,42 @@
       </widget>
      </widget>
     </item>
-    <item row="1" column="2" >
-     <widget class="QPushButton" name="closePButton" >
-      <property name="text" >
-       <string>Close</string>
+    <item>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
       </property>
-     </widget>
-    </item>
-    <item row="1" column="0" >
-     <widget class="QPushButton" name="helpPButton" >
-      <property name="text" >
-       <string>Help</string>
+      <property name="spacing" >
+       <number>6</number>
       </property>
-     </widget>
-    </item>
-    <item row="1" column="1" >
-     <spacer>
-      <property name="orientation" >
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" >
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
+      <item>
+       <widget class="QPushButton" name="helpPButton" >
+        <property name="text" >
+         <string>Help</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="closePButton" >
+        <property name="text" >
+         <string>Close</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
@@ -367,16 +321,7 @@
    </property>
   </action>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <tabstops>
-  <tabstop>mViewFrame</tabstop>
   <tabstop>mOptionsTabWidget</tabstop>
   <tabstop>mCompositionNameComboBox</tabstop>
   <tabstop>mSplitter</tabstop>

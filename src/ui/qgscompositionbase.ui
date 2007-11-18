@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsCompositionBase</class>
  <widget class="QWidget" name="QgsCompositionBase" >
   <property name="geometry" >
@@ -23,155 +20,26 @@
   <property name="windowTitle" >
    <string>Composition</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QGridLayout" >
    <property name="margin" >
-    <number>10</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item>
-    <widget class="Q3GroupBox" name="groupBox1" >
+   <item row="0" column="0" colspan="2" >
+    <widget class="QGroupBox" name="groupBox" >
      <property name="title" >
       <string>Paper</string>
      </property>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <layout class="QVBoxLayout" >
+     <layout class="QGridLayout" >
       <property name="margin" >
-       <number>10</number>
+       <number>9</number>
       </property>
       <property name="spacing" >
        <number>6</number>
       </property>
-      <item>
-       <widget class="QLabel" name="textLabel3" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>5</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text" >
-         <string>Size</string>
-        </property>
-        <property name="buddy" >
-         <cstring>mPaperSizeComboBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="mPaperSizeComboBox" >
-        <property name="enabled" >
-         <bool>true</bool>
-        </property>
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>0</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="textLabel5" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>5</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text" >
-         <string>Units</string>
-        </property>
-        <property name="buddy" >
-         <cstring>mPaperUnitsComboBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="mPaperUnitsComboBox" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>0</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="textLabel4" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>5</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text" >
-         <string>Width</string>
-        </property>
-        <property name="buddy" >
-         <cstring>mPaperWidthLineEdit</cstring>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="mPaperWidthLineEdit" />
-      </item>
-      <item>
-       <widget class="QLabel" name="textLabel6" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>5</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text" >
-         <string>Height</string>
-        </property>
-        <property name="buddy" >
-         <cstring>mPaperHeightLineEdit</cstring>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="mPaperHeightLineEdit" />
-      </item>
-      <item>
-       <widget class="QLabel" name="textLabel7" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>5</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text" >
-         <string>Orientation</string>
-        </property>
-        <property name="buddy" >
-         <cstring>mPaperOrientationComboBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item>
+      <item row="4" column="1" >
        <widget class="QComboBox" name="mPaperOrientationComboBox" >
         <property name="enabled" >
          <bool>true</bool>
@@ -186,14 +54,156 @@
         </property>
        </widget>
       </item>
+      <item row="3" column="1" >
+       <widget class="QLineEdit" name="mPaperHeightLineEdit" />
+      </item>
+      <item row="2" column="1" >
+       <widget class="QLineEdit" name="mPaperWidthLineEdit" />
+      </item>
+      <item row="1" column="1" >
+       <widget class="QComboBox" name="mPaperUnitsComboBox" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>7</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QComboBox" name="mPaperSizeComboBox" >
+        <property name="enabled" >
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>7</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" >
+       <widget class="QLabel" name="textLabel7" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>5</hsizetype>
+          <vsizetype>5</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>Orientation</string>
+        </property>
+        <property name="buddy" >
+         <cstring>mPaperOrientationComboBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" >
+       <widget class="QLabel" name="textLabel6" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>5</hsizetype>
+          <vsizetype>5</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>Height</string>
+        </property>
+        <property name="buddy" >
+         <cstring>mPaperHeightLineEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QLabel" name="textLabel4" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>5</hsizetype>
+          <vsizetype>5</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>Width</string>
+        </property>
+        <property name="buddy" >
+         <cstring>mPaperWidthLineEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="textLabel5" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>5</hsizetype>
+          <vsizetype>5</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>Units</string>
+        </property>
+        <property name="buddy" >
+         <cstring>mPaperUnitsComboBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="textLabel3" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>5</hsizetype>
+          <vsizetype>5</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>Size</string>
+        </property>
+        <property name="buddy" >
+         <cstring>mPaperSizeComboBox</cstring>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
-   <item>
+   <item row="2" column="0" colspan="2" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>223</width>
+       <height>41</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="0" >
     <widget class="QLabel" name="textLabel1" >
      <property name="sizePolicy" >
       <sizepolicy>
-       <hsizetype>7</hsizetype>
+       <hsizetype>5</hsizetype>
        <vsizetype>5</vsizetype>
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
@@ -207,38 +217,13 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item row="1" column="1" >
     <widget class="QLineEdit" name="mResolutionLineEdit" />
-   </item>
-   <item>
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>21</width>
-       <height>26</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends></extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

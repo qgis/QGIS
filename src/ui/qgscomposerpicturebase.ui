@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsComposerPictureBase</class>
  <widget class="QWidget" name="QgsComposerPictureBase" >
   <property name="geometry" >
@@ -23,14 +20,14 @@
   <property name="windowTitle" >
    <string>Picture Options</string>
   </property>
-  <layout class="QGridLayout" >
+  <layout class="QVBoxLayout" >
    <property name="margin" >
-    <number>10</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="0" column="0" >
+   <item>
     <layout class="QHBoxLayout" >
      <property name="margin" >
       <number>0</number>
@@ -39,14 +36,7 @@
       <number>6</number>
      </property>
      <item>
-      <widget class="QLabel" name="textLabel2" >
-       <property name="text" >
-        <string>Picture</string>
-       </property>
-       <property name="buddy" >
-        <cstring>mPictureBrowseButton</cstring>
-       </property>
-      </widget>
+      <widget class="QLineEdit" name="mPictureLineEdit" />
      </item>
      <item>
       <widget class="QPushButton" name="mPictureBrowseButton" >
@@ -65,32 +55,141 @@
         </size>
        </property>
        <property name="text" >
-        <string>...</string>
+        <string>Browse</string>
        </property>
       </widget>
      </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
+    </layout>
+   </item>
+   <item>
+    <layout class="QGridLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item row="0" column="1" >
+      <widget class="QLineEdit" name="mWidthLineEdit" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>7</hsizetype>
+         <vsizetype>5</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
+       <property name="maximumSize" >
         <size>
-         <width>47</width>
-         <height>22</height>
+         <width>32767</width>
+         <height>32767</height>
         </size>
        </property>
-      </spacer>
+      </widget>
+     </item>
+     <item row="2" column="1" >
+      <widget class="QLineEdit" name="mAngleLineEdit" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>7</hsizetype>
+         <vsizetype>5</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize" >
+        <size>
+         <width>32767</width>
+         <height>32767</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" >
+      <widget class="QLabel" name="textLabel3" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>1</hsizetype>
+         <vsizetype>5</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text" >
+        <string>Width</string>
+       </property>
+       <property name="buddy" >
+        <cstring>mWidthLineEdit</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" >
+      <widget class="QLabel" name="textLabel4" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>1</hsizetype>
+         <vsizetype>5</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text" >
+        <string>Height</string>
+       </property>
+       <property name="buddy" >
+        <cstring>mHeightLineEdit</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" >
+      <widget class="QLabel" name="textLabel1" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>1</hsizetype>
+         <vsizetype>5</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text" >
+        <string>Angle</string>
+       </property>
+       <property name="buddy" >
+        <cstring>mAngleLineEdit</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" >
+      <widget class="QLineEdit" name="mHeightLineEdit" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>7</hsizetype>
+         <vsizetype>0</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize" >
+        <size>
+         <width>32767</width>
+         <height>32767</height>
+        </size>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
-   <item row="1" column="0" >
-    <widget class="QLineEdit" name="mPictureLineEdit" />
+   <item>
+    <widget class="QCheckBox" name="mFrameCheckBox" >
+     <property name="text" >
+      <string>Frame</string>
+     </property>
+    </widget>
    </item>
-   <item row="6" column="0" >
+   <item>
     <spacer>
      <property name="orientation" >
       <enum>Qt::Vertical</enum>
@@ -105,204 +204,6 @@
       </size>
      </property>
     </spacer>
-   </item>
-   <item row="5" column="0" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <widget class="QCheckBox" name="mFrameCheckBox" >
-       <property name="text" >
-        <string>Frame</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>115</width>
-         <height>25</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item row="4" column="0" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="textLabel1" >
-       <property name="text" >
-        <string>Angle</string>
-       </property>
-       <property name="buddy" >
-        <cstring>mAngleLineEdit</cstring>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="mAngleLineEdit" >
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>0</hsizetype>
-         <vsizetype>5</vsizetype>
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize" >
-        <size>
-         <width>80</width>
-         <height>32767</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>57</width>
-         <height>28</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item row="2" column="0" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="textLabel3" >
-       <property name="text" >
-        <string>Width</string>
-       </property>
-       <property name="buddy" >
-        <cstring>mWidthLineEdit</cstring>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="mWidthLineEdit" >
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>0</hsizetype>
-         <vsizetype>5</vsizetype>
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize" >
-        <size>
-         <width>80</width>
-         <height>32767</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>63</width>
-         <height>27</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item row="3" column="0" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="textLabel4" >
-       <property name="text" >
-        <string>Height</string>
-       </property>
-       <property name="buddy" >
-        <cstring>mHeightLineEdit</cstring>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="mHeightLineEdit" >
-       <property name="enabled" >
-        <bool>false</bool>
-       </property>
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>0</hsizetype>
-         <vsizetype>0</vsizetype>
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize" >
-        <size>
-         <width>80</width>
-         <height>32767</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>61</width>
-         <height>29</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
    </item>
   </layout>
  </widget>

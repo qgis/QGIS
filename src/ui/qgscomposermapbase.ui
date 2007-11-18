@@ -5,12 +5,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>271</width>
-    <height>597</height>
+    <width>292</width>
+    <height>386</height>
    </rect>
   </property>
   <property name="sizePolicy" >
-   <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+   <sizepolicy>
+    <hsizetype>7</hsizetype>
+    <vsizetype>7</vsizetype>
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -18,105 +20,47 @@
   <property name="windowTitle" >
    <string>Map options</string>
   </property>
-  <layout class="QVBoxLayout" >
-   <item>
-    <widget class="QLabel" name="mNameLabel" >
-     <property name="text" >
-      <string>&lt;b>Map&lt;/b></string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="Line" name="line1" >
-     <property name="frameShape" >
-      <enum>QFrame::HLine</enum>
-     </property>
-     <property name="frameShadow" >
-      <enum>QFrame::Sunken</enum>
-     </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="12" column="2" >
+    <spacer>
      <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Vertical</enum>
      </property>
-    </widget>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
-   <item>
-    <widget class="QLabel" name="textLabel1_3" >
-     <property name="text" >
-      <string>Set</string>
-     </property>
-     <property name="buddy" >
-      <cstring>mCalculateComboBox</cstring>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QComboBox" name="mCalculateComboBox" >
-     <property name="enabled" >
-      <bool>true</bool>
-     </property>
+   <item row="6" column="0" colspan="2" >
+    <widget class="QLabel" name="label_3" >
      <property name="sizePolicy" >
-      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+      <sizepolicy>
+       <hsizetype>7</hsizetype>
+       <vsizetype>5</vsizetype>
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="minimumSize" >
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="textLabel1" >
      <property name="text" >
-      <string>Width</string>
-     </property>
-     <property name="buddy" >
-      <cstring>mWidthLineEdit</cstring>
+      <string/>
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="QLineEdit" name="mWidthLineEdit" />
-   </item>
-   <item>
-    <widget class="QLabel" name="textLabel2" >
-     <property name="text" >
-      <string>Height</string>
-     </property>
-     <property name="buddy" >
-      <cstring>mHeightLineEdit</cstring>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLineEdit" name="mHeightLineEdit" />
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="title" >
-      <string>Scale</string>
-     </property>
-     <layout class="QHBoxLayout" >
-      <item>
-       <widget class="QLabel" name="label" >
-        <property name="text" >
-         <string>1:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="mScaleLineEdit" />
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
+   <item row="6" column="2" >
     <widget class="QPushButton" name="mSetCurrentExtentButton" >
      <property name="sizePolicy" >
-      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+      <sizepolicy>
+       <hsizetype>7</hsizetype>
+       <vsizetype>0</vsizetype>
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -129,17 +73,38 @@
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="QLabel" name="textLabel1_4" >
+   <item row="5" column="1" >
+    <widget class="QLabel" name="label" >
      <property name="text" >
-      <string>Line width scale</string>
+      <string>1:</string>
      </property>
-     <property name="buddy" >
-      <cstring>mWidthScaleLineEdit</cstring>
+     <property name="alignment" >
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </item>
-   <item>
+   <item row="5" column="0" >
+    <widget class="QLabel" name="label_2" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>5</hsizetype>
+       <vsizetype>5</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>Scale:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="2" >
+    <widget class="QLineEdit" name="mFontScaleLineEdit" />
+   </item>
+   <item row="8" column="2" >
+    <widget class="QLineEdit" name="mSymbolScaleLineEdit" />
+   </item>
+   <item row="7" column="2" >
     <widget class="QLineEdit" name="mWidthScaleLineEdit" >
      <property name="enabled" >
       <bool>true</bool>
@@ -149,7 +114,97 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item row="5" column="2" >
+    <widget class="QLineEdit" name="mScaleLineEdit" />
+   </item>
+   <item row="2" column="2" >
+    <widget class="QComboBox" name="mCalculateComboBox" >
+     <property name="enabled" >
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>0</hsizetype>
+       <vsizetype>0</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize" >
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QLabel" name="textLabel1_3" >
+     <property name="text" >
+      <string>Set</string>
+     </property>
+     <property name="buddy" >
+      <cstring>mCalculateComboBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="3" >
+    <widget class="Line" name="line1" >
+     <property name="frameShape" >
+      <enum>QFrame::HLine</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="3" >
+    <widget class="QLabel" name="mNameLabel" >
+     <property name="text" >
+      <string>&lt;b>Map&lt;/b></string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" >
+    <widget class="QLabel" name="textLabel2" >
+     <property name="text" >
+      <string>Height</string>
+     </property>
+     <property name="buddy" >
+      <cstring>mHeightLineEdit</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2" >
+    <widget class="QLineEdit" name="mHeightLineEdit" />
+   </item>
+   <item row="3" column="0" >
+    <widget class="QLabel" name="textLabel1" >
+     <property name="text" >
+      <string>Width</string>
+     </property>
+     <property name="buddy" >
+      <cstring>mWidthLineEdit</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2" >
+    <widget class="QLineEdit" name="mWidthLineEdit" />
+   </item>
+   <item row="7" column="0" colspan="2" >
+    <widget class="QLabel" name="textLabel1_4" >
+     <property name="text" >
+      <string>Line width scale</string>
+     </property>
+     <property name="buddy" >
+      <cstring>mWidthScaleLineEdit</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0" colspan="2" >
     <widget class="QLabel" name="textLabel1_2" >
      <property name="text" >
       <string>Symbol scale</string>
@@ -159,10 +214,7 @@
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="QLineEdit" name="mSymbolScaleLineEdit" />
-   </item>
-   <item>
+   <item row="9" column="0" colspan="2" >
     <widget class="QLabel" name="textLabel2_2" >
      <property name="text" >
       <string>Font size scale</string>
@@ -172,17 +224,14 @@
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="QLineEdit" name="mFontScaleLineEdit" />
-   </item>
-   <item>
+   <item row="10" column="0" colspan="3" >
     <widget class="QCheckBox" name="mFrameCheckBox" >
      <property name="text" >
       <string>Frame</string>
      </property>
     </widget>
    </item>
-   <item>
+   <item row="11" column="0" colspan="2" >
     <widget class="QLabel" name="textLabel1_5" >
      <property name="text" >
       <string>Preview</string>
@@ -192,31 +241,17 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item row="11" column="2" >
     <widget class="QComboBox" name="mPreviewModeComboBox" >
      <property name="sizePolicy" >
-      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+      <sizepolicy>
+       <hsizetype>7</hsizetype>
+       <vsizetype>0</vsizetype>
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
     </widget>
-   </item>
-   <item>
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>251</width>
-       <height>151</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>

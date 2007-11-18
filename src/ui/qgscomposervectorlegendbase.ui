@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsComposerVectorLegendBase</class>
  <widget class="QWidget" name="QgsComposerVectorLegendBase" >
   <property name="geometry" >
@@ -23,28 +20,15 @@
   <property name="windowTitle" >
    <string>Vector Legend Options</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QGridLayout" >
    <property name="margin" >
-    <number>10</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item>
-    <widget class="QLabel" name="textLabel1_2" >
-     <property name="text" >
-      <string>Title</string>
-     </property>
-     <property name="buddy" >
-      <cstring>mTitleLineEdit</cstring>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLineEdit" name="mTitleLineEdit" />
-   </item>
-   <item>
-    <widget class="QLabel" name="textLabel1" >
+   <item row="5" column="2" >
+    <widget class="QComboBox" name="mPreviewModeComboBox" >
      <property name="sizePolicy" >
       <sizepolicy>
        <hsizetype>7</hsizetype>
@@ -53,15 +37,27 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2" >
+    <widget class="QLabel" name="textLabel1_5" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>1</hsizetype>
+       <vsizetype>0</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text" >
-      <string>Map</string>
+      <string>Preview</string>
      </property>
      <property name="buddy" >
-      <cstring>mMapComboBox</cstring>
+      <cstring>mPreviewModeComboBox</cstring>
      </property>
     </widget>
    </item>
-   <item>
+   <item row="1" column="1" colspan="2" >
     <widget class="QComboBox" name="mMapComboBox" >
      <property name="enabled" >
       <bool>true</bool>
@@ -76,7 +72,75 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item row="0" column="1" colspan="2" >
+    <widget class="QLineEdit" name="mTitleLineEdit" />
+   </item>
+   <item row="1" column="0" >
+    <widget class="QLabel" name="textLabel1" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>1</hsizetype>
+       <vsizetype>0</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>Map</string>
+     </property>
+     <property name="buddy" >
+      <cstring>mMapComboBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" >
+    <widget class="QLabel" name="textLabel1_2" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>1</hsizetype>
+       <vsizetype>5</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>Title</string>
+     </property>
+     <property name="buddy" >
+      <cstring>mTitleLineEdit</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="2" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="0" colspan="3" >
+    <widget class="Q3ListView" name="mLayersListView" >
+     <column>
+      <property name="text" >
+       <string>Column 1</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="3" >
+    <widget class="QCheckBox" name="mFrameCheckBox" >
+     <property name="text" >
+      <string>Box</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="3" >
     <widget class="QPushButton" name="mFontButton" >
      <property name="sizePolicy" >
       <sizepolicy>
@@ -91,52 +155,6 @@
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="QCheckBox" name="mFrameCheckBox" >
-     <property name="text" >
-      <string>Box</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="Q3ListView" name="mLayersListView" >
-     <column>
-      <property name="text" >
-       <string>Column 1</string>
-      </property>
-     </column>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="textLabel1_5" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>0</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text" >
-      <string>Preview</string>
-     </property>
-     <property name="buddy" >
-      <cstring>mPreviewModeComboBox</cstring>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QComboBox" name="mPreviewModeComboBox" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>0</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
@@ -144,10 +162,8 @@
  <customwidgets>
   <customwidget>
    <class>Q3ListView</class>
-   <extends></extends>
+   <extends>Q3Frame</extends>
    <header>q3listview.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
   </customwidget>
  </customwidgets>
  <tabstops>
