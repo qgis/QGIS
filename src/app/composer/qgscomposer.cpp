@@ -44,8 +44,6 @@
 #include <QSizeGrip>
 #include <iostream>
 
-#include <Q3ValueList>
-
 QgsComposer::QgsComposer( QgisApp *qgis): QMainWindow()
 {
   setupUi(this);
@@ -936,11 +934,7 @@ void QgsComposer::saveWindowState()
   settings.writeEntry("/Composer/geometry/w", s.width());
   settings.writeEntry("/Composer/geometry/h", s.height());
 
-  Q3ValueList<int> list = mSplitter->sizes();
-  Q3ValueList<int>::Iterator it = list.begin();
-  settings.writeEntry("/Composer/geometry/wiev", (int)(*it) );
-  it++;
-  settings.writeEntry("/Composer/geometry/options", (int)(*it) );
+  settings.setValue("/Composer/geometry/splitter", mSplitter->saveState());
 
 if(this->isMaximized()){
 	std::cout << "maximized!" << std::endl;
@@ -966,14 +960,7 @@ void QgsComposer::restoreWindowState()
 
 //std::cout << "x: " << x << "y: " << y << "w: " << w << "h: " << h << std::endl;
 
-  // This doesn't work
-  Q3ValueList<int> list;
-  w = settings.readNumEntry("/Composer/geometry/view", 300);
-  list.push_back( w );
-  w = settings.readNumEntry("/Composer/geometry/options", 300);
-  list.push_back( w );
-  mSplitter->setSizes ( list );
-
+  mSplitter->restoreState(settings.value("/Composer/geometry/splitter").toByteArray());
 }
 
 void QgsComposer::on_helpPButton_clicked()
