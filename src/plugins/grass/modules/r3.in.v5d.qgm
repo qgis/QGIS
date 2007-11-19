@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label=" r3.in.v5d - import of 3-dimensional Vis5D files (i.e. the v5d file with 1 variable and 1 time step)" module="r3.in.v5d">
-	<file key="input" type="old" label="v5d vector layer" />
-	<option key="output" />
-</qgisgrassmodule>
