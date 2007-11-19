@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label=" v.clean - Remove bridges connecting area and island or 2 islands" module="v.clean">
+	<option key="input" typeoption="type"/>
+	<flag key="tool" answer="rmbridge"/>
+	<option key="output"/>
+</qgisgrassmodule>
