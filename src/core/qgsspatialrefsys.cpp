@@ -566,23 +566,72 @@ bool QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
     {
       mySrsId=myRecord["srs_id"].toLong();
       QgsDebugMsg("QgsSpatialRefSys::createFromProj4 proj4string match search for srsid returned srsid: " \
-+ QString::number(mySrsId));
-      if (mySrsId > 0)
-      {
-        createFromSrsId(mySrsId);
-      }
-    }
-
-    else
-    {
-      QgsDebugMsg("QgsSpatialRefSys::createFromProj4 globbing search for srsid from this proj string");
-      mySrsId = findMatchingProj();
-      QgsDebugMsg("QgsSpatialRefSys::createFromProj4 globbing search for srsid returned srsid: "\
 		  + QString::number(mySrsId));
       if (mySrsId > 0)
       {
         createFromSrsId(mySrsId);
       }
+    }
+    else
+    {
+      // Ticket #722 - aaronr
+      // Check if we can swap the lat_1 and lat_2 params (if they exist) to see if we match...
+      // First we check for lat_1 and lat_2
+      QRegExp myLat1RegExp( "\\+lat_1=\\S+" );
+      QRegExp myLat2RegExp( "\\+lat_2=\\S+" );
+      int myStart1 = 0;
+      int myLength1 = 0;
+      int myStart2 = 0;
+      int myLength2 = 0;
+      QString lat1Str = "";
+      QString lat2Str = "";
+      myStart1 = myLat1RegExp.search(theProj4String, myStart1);
+      myStart2 = myLat2RegExp.search(theProj4String, myStart2);
+      if ((myStart1 != -1) && (myStart2 != -1))
+	{
+	  myLength1 = myLat1RegExp.matchedLength();
+	  myLength2 = myLat2RegExp.matchedLength();
+	  lat1Str = theProj4String.mid(myStart1+LAT_PREFIX_LEN,myLength1-LAT_PREFIX_LEN);
+	  lat2Str = theProj4String.mid(myStart2+LAT_PREFIX_LEN,myLength2-LAT_PREFIX_LEN);
+	}
+      // If we found the lat_1 and lat_2 we need to swap and check to see if we can find it...
+      if ((lat1Str != "") && (lat2Str != ""))
+	{
+	  // Make our new string to check...
+	  QString theProj4StringModified = theProj4String;
+	  // First just swap in the lat_2 value for lat_1 value
+	  theProj4StringModified.replace(myStart1+LAT_PREFIX_LEN,myLength1-LAT_PREFIX_LEN,lat2Str);
+	  // Now we have to find the lat_2 location again since it has potentially moved...
+	  myStart2 = 0;
+	  myStart2 = myLat2RegExp.search(theProj4String, myStart2);
+	  theProj4StringModified.replace(myStart2+LAT_PREFIX_LEN,myLength2-LAT_PREFIX_LEN,lat1Str);
+	  QgsDebugMsg("QgsSpatialRefSys::createFromProj4 - trying proj4string match with swapped lat_1,lat_2");
+	  myRecord = getRecord("select * from tbl_srs where parameters='" + theProj4StringModified.stripWhiteSpace () + "'");
+	  if (!myRecord.empty())
+	    {
+	      // Success!  We have found the proj string by swapping the lat_1 and lat_2
+	      mProj4String = theProj4StringModified;
+	      mySrsId=myRecord["srs_id"].toLong();
+	      QgsDebugMsg("QgsSpatialRefSys::createFromProj4 proj4string match search for srsid returned srsid: " \
+			  + QString::number(mySrsId));
+	      if (mySrsId > 0)
+		{
+		  createFromSrsId(mySrsId);
+		}
+	    }
+	}
+      else
+	{
+	  // Last ditch attempt to piece together what we know of the projection to find a match...
+	  QgsDebugMsg("QgsSpatialRefSys::createFromProj4 globbing search for srsid from this proj string");
+	  mySrsId = findMatchingProj();
+	  QgsDebugMsg("QgsSpatialRefSys::createFromProj4 globbing search for srsid returned srsid: "\
+		      + QString::number(mySrsId));
+	  if (mySrsId > 0)
+	    {
+	      createFromSrsId(mySrsId);
+	    }
+	}
     }
   }
 
