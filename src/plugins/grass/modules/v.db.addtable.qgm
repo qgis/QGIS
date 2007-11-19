@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label=" v.db.addtable - Create and add a new table to a vetor" module="v.db.addtable">
+	<option key="map" layeroption="layer"/>
+	<option key="table"/>
+	<option key="columns"/>
+</qgisgrassmodule>
