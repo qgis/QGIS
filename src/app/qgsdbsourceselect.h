@@ -92,6 +92,14 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
       void setLayerType(QString schema, QString table, QString column,
                         QString type);
  private:
+    enum columns {
+	dbssImport=0,
+	dbssType,
+	dbssImportAs,
+	dbssDetail,
+	dbssSql,
+	dbssColumns,
+    };
 
     typedef std::pair<QString, QString> geomPair;
     typedef std::list<geomPair > geomCol;
@@ -105,6 +113,8 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void setConnectionListPosition();
     // Show the context help for the dialog
     void showHelp();
+    // update 'import as column'
+    void updateImportAsInfo(int row, const QString &type);
     // Combine the schema, table and column data into a single string
     // useful for display to the user
     QString fullDescription(QString schema, QString table, QString column);
