@@ -59,6 +59,10 @@ simply copy the commands listed in codeblocks that look like this:
 somecommand to be pasted 
 ```
 
+% -----------------------------------------------------------------------------
+% ----Please leave this break marker here for clarity - it wont be rendered ---
+% -----------------------------------------------------------------------------
+
 = General Build Notes = 
 
 At version 0.8.1 QGIS no longer uses the autotools for building. QGIS, like a
@@ -95,6 +99,9 @@ For complete information, see the wiki at:
 
 
 
+% -----------------------------------------------------------------------------
+% ----Please leave this break marker here for clarity - it wont be rendered ---
+% -----------------------------------------------------------------------------
 
 = Building under windows using msys =
 
@@ -321,6 +328,9 @@ tree. Read the READMEfile there and follow the instructions. Next right click
 on qgis.nsi and choose the option 'Compile NSIS Script'. 
 
 
+% -----------------------------------------------------------------------------
+% ----Please leave this break marker here for clarity - it wont be rendered ---
+% -----------------------------------------------------------------------------
 
 = Building on Mac OSX using frameworks and cmake (QGIS > 0.8) =
 
@@ -649,6 +659,10 @@ If all built without errors you can then install it:
 make install 
 ```
 
+% -----------------------------------------------------------------------------
+% ----Please leave this break marker here for clarity - it wont be rendered ---
+% -----------------------------------------------------------------------------
+
 = Building on GNU/Linux =
 
 == Building QGIS with Qt4.x ==
@@ -871,6 +885,10 @@ $HOME/apps/bin/qgis
 
 If all has worked properly the QGIS application should start up and appear
 on your screen.
+
+% -----------------------------------------------------------------------------
+% ----Please leave this break marker here for clarity - it wont be rendered ---
+% -----------------------------------------------------------------------------
 
 = Creation of MSYS environment for compilation of Quantum GIS =
 
@@ -1126,6 +1144,13 @@ copy contents of pgsql directory from the archive to ``c:\msys\local``
 We're done with preparation of MSYS environment. Now you can delete all stuff in ``c:\msys\local\src`` - it takes quite a lot
 of space and it's not necessary at all.
 
+
+
+
+% -----------------------------------------------------------------------------
+% ----Please leave this break marker here for clarity - it wont be rendered ---
+% -----------------------------------------------------------------------------
+
 = Building with MS Visual Studio =
 
 
@@ -1166,6 +1191,49 @@ Download the following packages and run the installers:
 	http://gnuwin32.sourceforge.net/downlinks/flex.php
 	
 	http://gnuwin32.sourceforge.net/downlinks/bison.php
+
+=== To include  PostgreSQL support in Qt ===
+
+If you want to build Qt with PostgreSQL support you need to download
+PostgreSQL, install it and create a library you can later link with Qt.
+
+Download from .../binary/v8.2.5/win32/postgresql-8.2.5-1.zip from an
+PostgreSQL.org Mirror and install.
+
+PostgreSQL is currently build with MinGW and comes with headers and libraries
+for MinGW.  The headers can be used with Visual C++ out of the box, but the library
+is only shipped in DLL and archive (.a) form and therefore cannot be used with
+Visual C++ directly.
+
+To create a library copy following sed script to the file mkdef.sed in
+PostgreSQL lib directory:
+
+```
+/Dump of file / {
+	s/Dump of file \([^	 ]*\)$/LIBRARY \1/p
+	a\
+EXPORTS
+}
+/[ 	]*ordinal hint/,/^[	]*Summary/ {
+ /^[ 	]\+[0-9]\+/ {
+   s/^[ 	]\+[0-9]\+[ 	]\+[0-9A-Fa-f]\+[ 	]\+[0-9A-Fa-f]\+[ 	]\+\([^ 	=]\+\).*$/	\1/p
+ }
+}
+```
+
+and process execute in the Visual Studio C++ command line (from Programs menu):
+
+```
+cd c:\Program Files\PostgreSQL\8.2\bin
+dumpbin /exports ..\bin\libpq.dll | sed -nf ../lib/mkdef.sed >..\lib\libpq.def
+cd ..\lib
+lib /def:libpq.def /machine:x86
+```
+
+You'll need an sed for that to work in your path (e.g. from cygwin or msys).
+
+That's almost it.  You only need to the include and lib path to INCLUDE and LIB
+in vcvars.bat respectively.
 
 === Qt ===
 
@@ -1299,6 +1367,9 @@ Build the ALL_BUILD project. This will build all the QGIS binaries along with al
  
 
 
+% -----------------------------------------------------------------------------
+% ----Please leave this break marker here for clarity - it wont be rendered ---
+% -----------------------------------------------------------------------------
 
 
 = Building under Windows using MSVC Express =
@@ -1322,6 +1393,7 @@ specific build documentation and support. Lets go over the process in a nutshell
 before we begin:
 
  * Install XP (I used a Parallels virtual machine)
+ * Install the premade libraries archive I have made for you
  * Install Visual Studio Express 2005 sp1
  * Install the Microsoft Platform SDK
  * Install command line subversion client
@@ -1331,6 +1403,33 @@ before we begin:
  * Compile QGIS
  * Create setup.exe installer for QGIS
 
+== Install the libraries archive ==
+
+Half of the point of this section of the MSVC setup procedure is to make 
+things as simple as possible for you. To that end I have prepared an
+archive that includes all dependencies needed to build QGIS except Qt 
+(which we will build further down). Fetch the archive from:
+
+```
+http://qgis.org/uploadfiles/msvc/qgis_msvc_deps_except_qt4.zip
+```
+
+Create the following directory structure:
+
+```
+c:\dev\cpp\
+```
+
+And then extract the libraries archive into a subdirectory of the above
+directory so that you end up with:
+
+```
+c:\dev\cpp\qgislibs-release
+```
+
+/!\ Note that you are not obliged to use this directory layout, but you 
+should adjust any instructions that follow if you plan to do things 
+differently.
 
 == Install Visual Studio Express 2005 ==
 
@@ -1515,9 +1614,11 @@ and replace it with this one:
 @rem added by Tim
 @set INCLUDE=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include;%INCLUDE%
 @set INCLUDE=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include\mfc;%INCLUDE%
+@set INCLUDE=%INCLUDE%;C:\dev\cpp\qgislibs-release\include\postgres
 @set LIB=C:\Program Files\Microsoft Visual Studio 8\VC\LIB;C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\lib;%LIB%
 @rem added by Tim
 @set LIB=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib;%LIB%
+@set LIB=%LIB%;C:\dev\cpp\qgislibs-release\lib
 @set LIBPATH=C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
 
 @goto end
@@ -1530,9 +1631,35 @@ and replace it with this one:
 @echo ERROR: VCINSTALLDIR variable is not set. 
 @goto end
 
-:en
+:end
 
 ```
+
+== Environment Variables ==
+
+Right click on 'My computer' then select the 'Advanced' tab. Click environment variables and 
+create or augment the following '''System''' variables (if they dont already exist):
+
+```
+Variable Name:     Value:
+--------------------------------------------------------------------------
+EDITOR             vim
+INCLUDE            C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include\.
+LIB                C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib\.
+LIB_DIR            C:\dev\cpp\qgislibs-release
+PATH               C:\Program Files\CMake 2.4\bin;
+                   %SystemRoot%\system32;
+                   %SystemRoot%;
+                   %SystemRoot%\System32\Wbem;
+                   C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin\.;
+                   C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin\WinNT\;
+                   C:\Program Files\svn\bin;C:\Program Files\Microsoft Visual Studio 8\VC\bin;
+                   C:\Program Files\Microsoft Visual Studio 8\Common7\IDE;
+                   "c:\Program Files\Microsoft Visual Studio 8\Common7\Tools";
+                   c:\Qt\4.3.2\bin;
+                   "C:\Program Files\PuTTY"
+QTDIR              c:\Qt\4.3.2
+SVN_SSH            "C:\\Program Files\\PuTTY\\plink.exe"
 
 == Building Qt4.3.2 ==
 
@@ -1551,49 +1678,7 @@ Unpack the source to
 c:\Qt\4.x.x\
 ```
 
-=== To include  PostgreSQL support in Qt ===
-
-If you want to build Qt with PostgreSQL support you need to download
-PostgreSQL, install it and create a library you can later link with Qt.
-
-Download from .../binary/v8.2.5/win32/postgresql-8.2.5-1.zip from an
-PostgreSQL.org Mirror and install.
-
-PostgreSQL is currently build with MinGW and comes with headers and libraries
-for MinGW.  The headers can be used with Visual C++ out of the box, but the library
-is only shipped in DLL and archive (.a) form and therefore cannot be used with
-Visual C++ directly.
-
-To create a library copy following sed script to the file mkdef.sed in
-PostgreSQL lib directory:
-
-```
-/Dump of file / {
-	s/Dump of file \([^	 ]*\)$/LIBRARY \1/p
-	a\
-EXPORTS
-}
-/[ 	]*ordinal hint/,/^[	]*Summary/ {
- /^[ 	]\+[0-9]\+/ {
-   s/^[ 	]\+[0-9]\+[ 	]\+[0-9A-Fa-f]\+[ 	]\+[0-9A-Fa-f]\+[ 	]\+\([^ 	=]\+\).*$/	\1/p
- }
-}
-```
-
-and process execute in the Visual Studio C++ command line (from Programs menu):
-
-cd c:\Program Files\PostgreSQL\8.2\bin
-dumpbin /exports ..\bin\libpq.dll | sed -nf ../lib/mkdef.sed >..\lib\libpq.def
-cd ..\lib
-lib /def:libpq.def /machine:x86
-
-You'll need an sed for that to work in your path (e.g. from cygwin or msys).
-
-That's almost it.  You only need to the include and lib path to INCLUDE and LIB
-in vcvars.bat respectively.
-
-
-== Compile Qt ==
+=== Compile Qt ===
 
 Open the Visual Studio C++ command line and cd to c:\Qt\4.x.x where you
 extracted the source and enter:
@@ -1606,7 +1691,7 @@ Add -qt-sql-odbc -qt-sql-psql to the configure line if your want odbc and
 PostgreSQL support build into Qt.
 
 
-== Configure Visual C++ to use Qt ==
+=== Configure Visual C++ to use Qt ===
 
 After building configure the Visual Studio Express IDE to use Qt:
 
@@ -1654,30 +1739,6 @@ feel free to add some - I just needed QString and took the first hit in google
 I could find.
 
 
-== Environment Variables ==
-
-Right click on 'My computer' then select the 'Advanced' tab. Click environment variables and 
-create or augment the following '''System''' variables:
-
-```
-Variable Name:     Value:
---------------------------------------------------------------------------
-EDITOR             vim
-INCLUDE            C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include\.
-LIB                C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib\.
-LIB_DIR            C:\dev\cpp\qgislibs-release
-PATH               C:\Program Files\CMake 2.4\bin;%SystemRoot%\system32;
-                   %SystemRoot%;
-                   %SystemRoot%\System32\Wbem;
-                   "c:\Program Files\Microsoft Visual Studio 8\Common7\Tools";
-                   c:\Qt\4.3.2\bin;
-                   C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin\.;
-                   C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin\WinNT\;
-                   C:\Program Files\svn\bin;C:\Program Files\Microsoft Visual Studio 8\VC\bin;
-                   C:\Program Files\Microsoft Visual Studio 8\Common7\IDE;
-                   "C:\Program Files\PuTTY"
-QTDIR              c:\Qt\4.3.2
-SVN_SSH            "C:\\Program Files\\PuTTY\\plink.exe"
 
   
 == Install Python ==
