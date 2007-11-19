@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label=" r3.in.ascii - Convert a 3D ASCII raster text file into a (binary) 3D raster map layer" module="r3.in.ascii">
-	<file key="input" type="old" label="3D ascii vector layer" />
-	<option key="output" />
-</qgisgrassmodule>
