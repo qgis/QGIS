@@ -20,6 +20,7 @@ email                : sherman at mrcc.com
 #include "qgsdbsourceselect.h"
 
 #include "qgisapp.h"
+#include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgscontexthelp.h"
 #include "qgsnewconnection.h"
@@ -105,9 +106,11 @@ QgsDbSourceSelect::QgsDbSourceSelect(QgisApp *app, Qt::WFlags fl)
 
   // Do some things that couldn't be done in designer
   lstTables->horizontalHeader()->setStretchLastSection(true);
-  // Set the column count to 3 for the type, name, and sql
-  lstTables->setColumnCount(3);
+  // Set the column count
+  lstTables->setColumnCount(dbssColumns);
+  mColumnLabels += "";
   mColumnLabels += tr("Type"); 
+  mColumnLabels += tr("Import As");
   mColumnLabels += tr("Name"); 
   mColumnLabels += tr("Sql");
   lstTables->setHorizontalHeaderLabels(mColumnLabels);
@@ -155,16 +158,41 @@ void QgsDbSourceSelect::on_cmbConnections_activated(int)
   dbChanged();
 }
 
+void QgsDbSourceSelect::updateImportAsInfo(int row, const QString &type)
+{
+    if(type=="WAITING")
+        return;
+
+    QComboBox *cb = static_cast<QComboBox *>(lstTables->cellWidget(row,dbssImport));
+    if(cb)
+      lstTables->removeCellWidget(row, dbssImportAs);
+    else
+    {
+      QTableWidgetItem *item = lstTables->takeItem(row,dbssImportAs);
+      delete item;
+    }
+	    
+    if( type=="GEOMETRY")
+    {
+      cb = new QComboBox(lstTables);
+      cb->addItem( mLayerIcons.value("POINT").second, mLayerIcons.value("POINT").first);
+      cb->addItem( mLayerIcons.value("LINESTRING").second, mLayerIcons.value("LINESTRING").first);
+      cb->addItem( mLayerIcons.value("POLYGON").second, mLayerIcons.value("POLYGON").first);
+      cb->setCurrentIndex(0);
+      cb->setToolTip( tr("select import type for multi type layer") );
+      lstTables->setCellWidget(row, dbssImportAs, cb);
+    }
+    else
+    {
+      lstTables->setItem(row, dbssImportAs, new QTableWidgetItem(*lstTables->item(row,dbssType)));
+    }
+}
+
 void QgsDbSourceSelect::setLayerType(QString schema, 
                                      QString table, QString column,
                                      QString type)
 {
-#ifdef QGISDEBUG
-  std::cerr << "Received layer type of " << type.toLocal8Bit().data()
-            << " for " 
-            << (schema+'.'+table+'.'+column).toLocal8Bit().data() 
-            << '\n';
-#endif
+  QgsDebugMsg("Received layer type of " + type + " for " + schema + '.' + table + '.' + column);
 
   // Find the right row in the table by searching for the text that
   // was put into the Name column.
@@ -176,7 +204,7 @@ void QgsDbSourceSelect::setLayerType(QString schema,
   if (ii.count() > 0)
   {
     int row = lstTables->row(ii.at(0)); // just use the first one
-    QTableWidgetItem* iconItem = lstTables->item(row, 0);
+    QTableWidgetItem* iconItem = lstTables->item(row, dbssType);
 
     // Get the icon and tooltip text 
     const QIcon* p;
@@ -188,13 +216,15 @@ void QgsDbSourceSelect::setLayerType(QString schema,
     }
     else
     {
-      qDebug(("Unknown geometry type of '" + type + "'.").toLocal8Bit().data());
+      QgsDebugMsg("Unknown geometry type of '" + type + "'.");
       p = &(mLayerIcons.value("UNKNOWN").second);
       toolTipText = mLayerIcons.value("UNKNOWN").first;
     }
 
     iconItem->setIcon(*p);
     iconItem->setToolTip(toolTipText);
+
+    updateImportAsInfo(row, type);
   }
 }
 
@@ -275,13 +305,40 @@ void QgsDbSourceSelect::addTables()
 
   for (int i = 0; i < lstTables->rowCount(); ++i)
   {
-    if (lstTables->isItemSelected(lstTables->item(i, 0)))
+    if ( static_cast<QCheckBox *>(lstTables->cellWidget(i, dbssImport))->isChecked() )
     {
-      QString table = lstTables->item(i,1)->text() + " sql=";
-      QTableWidgetItem* sqlItem = lstTables->item(i,2);
-      if (sqlItem)
-        table += sqlItem->text();
-      m_selectedTables += table;
+      QString table = lstTables->item(i,dbssDetail)->text();
+      QString query = table + " sql=";
+
+      QComboBox *cb = static_cast<QComboBox *>( lstTables->cellWidget(i, dbssImportAs) );
+      if(cb) {
+	      int i = table.find("(");
+	      int j = table.find(")");
+	      QString column = table.mid(i+1,j-i-1);
+
+	      switch(cb->currentIndex() ) {
+	      case 0:
+		      query += QString("GeometryType(\"%1\") IN ('POINT','MULTIPOINT')").arg(column);
+		      break;
+	      case 1:
+		      query += QString("GeometryType(\"%1\") IN ('LINESTRING','MULTILINESTRING')").arg(column);
+		      break;
+	      case 2:
+		      query += QString("GeometryType(\"%1\") IN ('POLYGON','MULTIPOLYGON')").arg(column);
+		      break;
+	      }
+      }
+
+      QTableWidgetItem *sqlItem = lstTables->item(i, dbssSql);
+      if (sqlItem && sqlItem->text()!="" )
+      {
+        if(cb)
+          query += QString(" AND (%1)").arg( sqlItem->text() );
+        else
+          query += sqlItem->text();
+      }
+
+      m_selectedTables += query;
     }
   }
 
@@ -306,7 +363,8 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
   QString database = settings.readEntry(key + "/database");
   connString += database + " port=";
   QString port = settings.readEntry(key + "/port");
-  if(port.length() == 0){
+  if(port.length() == 0)
+  {
     port = "5432";
   }
   connString += port + " user=";
@@ -330,9 +388,9 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
   password.replace('\\', "\\\\");
   password.replace('\'', "\\'");
   connString += " password='" + password + "'";
-#ifdef QGISDEBUG
-  std::cout << "Connection info: " << connString.toLocal8Bit().data() << std::endl;
-#endif
+
+  QgsDebugMsg("Connection info: " + connString);
+
   if (makeConnection)
   {
     m_connInfo = connString;  //host + " " + database + " " + username + " " + password;
@@ -415,21 +473,30 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
           }
           else
           {
-	    qDebug(("Unknown geometry type of '" + iter->second + "'.").toLocal8Bit().data());
+            QgsDebugMsg("Unknown geometry type of '" + iter->second + "'.");
             p = &(mLayerIcons.value("UNKNOWN").second);
             toolTipText = mLayerIcons.value("UNKNOWN").first;
           }
 
           if (p != 0)
           {
+            int row = lstTables->rowCount();
+            lstTables->setRowCount(row+1);
+
+            QCheckBox *cb = new QCheckBox();
+            cb->setToolTip(tr("check to import layer"));
+            lstTables->setCellWidget(row, dbssImport, cb);
+            
             QTableWidgetItem *iconItem = new QTableWidgetItem();
             iconItem->setIcon(*p);
             iconItem->setToolTip(toolTipText);
+            lstTables->setItem(row, dbssType, iconItem);
+            
             QTableWidgetItem *textItem = new QTableWidgetItem(iter->first);
-            int row = lstTables->rowCount();
-            lstTables->setRowCount(row+1);
-            lstTables->setItem(row, 0, iconItem);
-            lstTables->setItem(row, 1, textItem);
+            textItem->setToolTip( tr("double click to open PostgreSQL query builder") );
+            lstTables->setItem(row, dbssDetail, textItem);
+
+            updateImportAsInfo(row, iter->second);
           }
         }
 
@@ -487,9 +554,9 @@ QString QgsDbSourceSelect::connInfo()
 void QgsDbSourceSelect::setSql(QTableWidgetItem *item)
 {
   int row = lstTables->row(item);
-  QString tableText = lstTables->item(row, 1)->text();
+  QString tableText = lstTables->item(row, dbssDetail)->text();
 
-  QTableWidgetItem* sqlItem = lstTables->item(row, 2);
+  QTableWidgetItem* sqlItem = lstTables->item(row, dbssSql);
   QString sqlText;
   if (sqlItem)
     sqlText = sqlItem->text();
@@ -511,13 +578,9 @@ void QgsDbSourceSelect::setSql(QTableWidgetItem *item)
     if (!sqlItem)
     {
       sqlItem = new QTableWidgetItem();
-      lstTables->setItem(row, 2, sqlItem);
+      lstTables->setItem(row, dbssSql, sqlItem);
     }
     sqlItem->setText(pgb->sql());
-    // Ensure that the current row remains selected
-    lstTables->setItemSelected(lstTables->item(row,0), true);
-    lstTables->setItemSelected(lstTables->item(row,1), true);
-    lstTables->setItemSelected(lstTables->item(row,2), true);
   }
   // delete the query builder object
   delete pgb;

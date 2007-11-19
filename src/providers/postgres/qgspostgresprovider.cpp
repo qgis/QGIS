@@ -2525,6 +2525,27 @@ bool QgsPostgresProvider::getGeometryDetails()
   if (!srid.isEmpty() && !fType.isEmpty())
   {
     valid = true;
+    if(fType == "GEOMETRY")
+    {
+        // check to see if there is a unique geometry type
+	sql = QString("select distinct "
+			"case"
+			" when geometrytype(%1) IN ('POINT','MULTIPOINT') THEN 'POINT'"
+			" when geometrytype(%1) IN ('LINESTRING','MULTILINESTRING') THEN 'LINESTRING'"
+			" when geometrytype(%1) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
+			" end "
+		      "from %2").arg(geometryColumn).arg(mSchemaTableName);
+	if(mUri.sql!="")
+		sql += " where " + mUri.sql;
+		       
+	result = executeDbCommand(connection, sql);
+
+	if (PQntuples(result)==1)
+	{
+		fType = PQgetvalue(result, 0, 0);
+	}
+	PQclear(result);
+    }
     if (fType == "POINT")
       {
 	geomType = QGis::WKBPoint;
