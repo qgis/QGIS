@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+ <qgisgrassmodule label="i.gensig - generates statistics for i.maxlic from raster map' layer" module="i.gensig">
+    <option key="trainingmap" />
+	<option key="group" />
+	<option key="subgroup" />
+	<option key="signaturefile" />
+</qgisgrassmodule>
+
