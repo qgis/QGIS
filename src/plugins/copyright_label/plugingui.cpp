@@ -37,7 +37,7 @@ void QgsCopyrightLabelPluginGui::on_buttonBox_accepted()
   //close the dialog
   emit changeFont(txtCopyrightText->currentFont());
   emit changeLabel(txtCopyrightText->text());
-  emit changeColor(txtCopyrightText->color());
+  emit changeColor(pbnColorChooser->color());
   emit changePlacement(cboPlacement->currentIndex());
   emit enableCopyrightLabel(cboxEnabled->isChecked());
 
