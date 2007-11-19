@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<!-- TODO: this is bad -->
-<qgisgrassmodule label="Raster cell values like function of value of cell of several rasters" module="r.series">
-	<option key="input"/>
-	<option key="method"/>
-	<option key="output" />
-</qgisgrassmodule>
