@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label=" v.to.rast3 - Converts a binary GRASS vector map (only points) layer into a 3D GRASS raster map layer" module="v.to.rast3">
-	<option key="input" layeroption="layer" typemask="point"/>
-	<field key="column" layer="input" type="integer,double" label="Attribute field" />
-	<file key="output" type="new" />
-</qgisgrassmodule>
