@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="r.region - Sets region to match a 3dview. " module="r.region">
-	<flag key="c" />
-	<flag key="d" />			
-	<option key="map" />
-    <option key="3dview" />
-</qgisgrassmodule>
