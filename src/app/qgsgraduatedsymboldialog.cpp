@@ -62,9 +62,9 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(QgsVectorLayer * layer): QDia
 	return;
     }
 
-    modeComboBox->insertItem("Equal Interval");
-    modeComboBox->insertItem("Quantiles");
-    modeComboBox->insertItem("Empty");
+    modeComboBox->insertItem(tr("Equal Interval"));
+    modeComboBox->insertItem(tr("Quantiles"));
+    modeComboBox->insertItem(tr("Empty"));
     
     //restore the correct settings
     const QgsGraduatedSymbolRenderer* renderer = dynamic_cast < const QgsGraduatedSymbolRenderer * >(layer->renderer());
@@ -254,7 +254,7 @@ void QgsGraduatedSymbolDialog::adjustClassification()
 
     if (provider)
     {
-	if (modeComboBox->currentText() == "Equal Interval")
+	if (modeComboBox->currentText() == tr("Equal Interval"))
 	{
 	    minimum = provider->minValue(field).toDouble();
 	    maximum = provider->maxValue(field).toDouble();
@@ -296,7 +296,7 @@ void QgsGraduatedSymbolDialog::adjustClassification()
       }
 
     QString listBoxText;
-    if(modeComboBox->currentText() == "Quantiles")
+    if(modeComboBox->currentText() == tr("Quantiles"))
       {
 	//test: insert the values into mClassListWidget
 	std::list<double> quantileBorders;
@@ -319,7 +319,7 @@ void QgsGraduatedSymbolDialog::adjustClassification()
 	    last_it = it;
 	  }
       }
-    else if(modeComboBox->currentText() == "Equal Interval")
+    else if(modeComboBox->currentText() == tr("Equal Interval"))
       {
 	std::list<QgsSymbol*>::const_iterator symbol_it = symbolList.begin();
 	for(int i=0;i<numberofclassesspinbox->value();++i)
@@ -343,7 +343,7 @@ void QgsGraduatedSymbolDialog::adjustClassification()
 	    ++symbol_it;
 	  }
       }
-    else if(modeComboBox->currentText() == "Empty")
+    else if(modeComboBox->currentText() == tr("Empty"))
       {
 	std::list<QgsSymbol*>::const_iterator symbol_it = symbolList.begin();
 	for(int i=0;i<numberofclassesspinbox->value();++i)
