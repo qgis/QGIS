@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<!-- TODO: this is bad -->
-<qgisgrassmodule label="Cross product betwenn raster" module="r.cross">
-	<option key="input"/>
-	<option key="output" />
-</qgisgrassmodule>
