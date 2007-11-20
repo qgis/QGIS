@@ -128,8 +128,10 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QStringList m_selectedTables;
     // Storage for the range of layer type icons
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;
+#if 0
     // minlength of layer type combobox
     int mCbMinLength;
+#endif
     //! Pointer to the qgis application mainwindow
     QgisApp *qgisApp;
     PGconn *pd;

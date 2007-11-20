@@ -159,13 +159,15 @@ void QgsDbSourceSelect::on_cmbConnections_activated(int)
 void QgsDbSourceSelect::updateTypeInfo(int row, QString type)
 {
     QComboBox *cb = static_cast<QComboBox *>(lstTables->cellWidget(row,dbssType));
-    if(cb)
-      lstTables->removeCellWidget(row, dbssType);
-    else
+    if(!cb)
     {
       QTableWidgetItem *item = lstTables->takeItem(row,dbssType);
       delete item;
     }
+#if 0 // Qt 4.3
+    else
+          lstTables->removeCellWidget(row, dbssType);
+#endif
 
     if( type.contains(",") )
     {
@@ -177,8 +179,10 @@ void QgsDbSourceSelect::updateTypeInfo(int row, QString type)
       }
       cb->setCurrentIndex(0);
       cb->setToolTip( tr("select import type for multi type layer") );
+#if 0 // Qt 4.3
       cb->setMinimumContentsLength(mCbMinLength);
       cb->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
+#endif
       lstTables->setCellWidget(row, dbssType, cb);
     }
     else
@@ -442,6 +446,7 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
             qMakePair(tr("Unknown layer type"), 
               QIcon(myThemePath+"/mIconUnknownLayerType.png")));
 
+#if 0 // Qt 4.3
         mCbMinLength = 0;
         QMapIterator <QString, QPair < QString, QIcon > > it(mLayerIcons);
         while( it.hasNext() ) {
@@ -449,6 +454,7 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
           int len = it.value().first.length();;
           mCbMinLength = mCbMinLength<len ? len : mCbMinLength;
         }
+#endif
       }
       //qDebug("Connection succeeded");
       // tell the DB that we want text encoded in UTF8
