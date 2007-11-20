@@ -1,0 +1,523 @@
+%!encoding: iso-8859-1
+
+
+% These are comments and will not be generated in any output
+% -------------------
+
+%This document is in text2tags format. You can generate html, plain text and
+%moinmoin formatted documentation by running txt2tags on this document. See the
+%txt2tags home page for more details.  Please insert manual line breaks in this
+%document as it makes diffing for changes much easier. To do this in vim 
+%automatically, select a section then issue (gq) command. Please dont
+%apply vim formatting to the whole document as it screws up some formatting
+%rather apply it selectively to paragraphs where needed.
+
+% To generate the text version of this document:
+% txt2tags -t txt --toc --enum-title -o CODING  CODING.t2t
+% To generate the moinmoin version of this document
+% txt2tags -t moin --toc --enum-title -o CODING.moin  CODING.t2t
+
+% End of comments
+% -------------------
+
+
+= QGIS Coding Standards =
+
+
+These standards should be followed by all QGIS developers.
+
+== Classes ==
+=== Names ===
+Class in QGIS begin with Qgs and are formed using mixed case. 
+```
+Examples:
+	QgsPoint
+	QgsMapCanvas
+	QgsRasterLayer
+```
+
+=== Members ===
+Class member names begin with a lower case ''m'' and are formed using mixed case.
+```
+	mMapCanvas	
+	mCurrentExtent
+```
+
+All class members should be private.
+'''Public class members are STRONGLY discouraged'''
+=== Accessor Functions ===
+Class member values should be obtained through accesssor functions. The function should be named without a ''get'' prefix. Accessor functions for the two private members above would be: 
+```
+	mapCanvas()
+	currentExtent()
+```
+
+=== Functions ===
+Function names begin with a lowercase letter and are formed using mixed case. The function name should convey something about the purpose of the function.
+```
+	updateMapExtent()
+	setUserOptions()
+```
+
+== Qt Designer ==
+=== Generated Classes ===
+QGIS classes that are generated from Qt Designer (ui) files should have a ''Base'' suffix. This identifies the class as a generated base class.
+```
+Examples:
+	QgsPluginMangerBase
+	QgsUserOptionsBase
+```
+=== Dialogs ===
+All dialogs should implement the following:
+ * Tooltip help for all toolbar icons and other relevant widgets
+ * WhatsThis help for '''all''' widgets on the dialog
+ * An optional (though highly recommended) context sensitive ''Help'' button that directs the user to the appropriate help page by launching their web browser
+== C++ Files ==
+=== Names ===
+C++ implementation and header files should be have a .cpp and .h extension respectively.
+Filename should be all lowercase and, in the case of classes, match the class name.
+```
+Example:
+	Class QgsFeatureAttribute source files are 
+		qgsfeatureattribute.cpp and qgsfeatureattribute.h
+```
+
+=== Standard Header and License ===
+Each source file should contain a header section patterned after the following example:
+```
+/***************************************************************************
+    qgsfield.cpp - Describes a field in a layer or table
+     --------------------------------------
+    Date                 : 01-Jan-2004
+    Copyright            : (C) 2004 by Gary E.Sherman
+    Email                : sherman at mrcc.com
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+```
+
+=== CVS Keyword ===
+Each source file should contain the $Id$ keyword. This will be expanded by CVS to contain useful information about the file, revision, last committer, and date/time of last checkin.
+
+Place the keyword right after the standard header/license that is found at the top of each source file:
+```
+	/* $Id$ */
+```
+
+== Variable Names ==
+Variable names begin with a lower case letter and are formed using mixed case.
+```
+Examples:
+	mapCanvas
+	currentExtent
+```
+
+== Editing ==
+Any text editor/IDE can be used to edit QGIS code, providing the following requirements are met.
+
+=== Tabs ===
+Set your editor to emulate tabs with spaces. Tab spacing should be set to 2 spaces.
+
+=== Indentation ===
+Source code should be indented to improve readability. There is a .indent.pro file in the QGIS src directory that contains the switches to be used when indenting code using the GNU indent program. If you don't use GNU indent, you should emulate these settings.
+
+=== Braces ===
+Braces should start on the line following the expression:
+```
+	if(foo == 1)
+	{
+	  // do stuff
+	  ...
+ 	}else
+	{
+	  // do something else
+	  ...
+	}
+```
+
+
+== Coding Style ==
+
+Here are described some programming hints and tips that will hopefully reduce errors, development time, and maintenance.
+
+
+=== Where-ever Possible Generalize Code ===
+```
+If you are cut-n-pasting code, or otherwise writing the same thing more than once, consider consolidating the code 
+into a single function.
+``` 
+
+This will:
+  * allow changes to be made in one location instead of in multiple places
+  * help prevent code bloat
+  * make it more difficult for multiple copies to evolve differences over time, thus making it harder to understand and 
+maintain for others
+
+=== Prefer Having Constants First in Predicates ===
+
+Prefer to put constants first in predicates. 
+```
+"0 == value" instead of "value == 0"
+```
+
+This will help prevent programmers from accidentally using "=" when they meant to use "==", which can introduce very subtle 
+logic bugs.  The compiler will generate an error if you accidentally use "=" instead of "==" for comparisons since constants 
+inherently cannot be assigned values.
+
+=== Whitespace Can Be Your Friend ===
+
+Adding spaces between operators, statements, and functions makes it easier for humans to parse code.
+
+
+Which is easier to read, this:
+
+```
+if (!a&&b)
+```
+
+or this:
+
+```
+if ( ! a && b )
+```
+
+=== Add Trailing Identifying Comments ===
+
+Adding comments at the end of function, struct and class implementations makes it easier to find them later.
+
+
+Consider that you're at the bottom of a source file and need to find a very long function -- without these kinds of trailing 
+comments you will have to page up past the body of the function to find its name.  Of course this is ok if you wanted to find 
+the beginning of the function; but what if you were interested at code near its end?  You'd have to page up and then back down 
+again to the desired part.
+
+E.g.,
+
+``` 
+void foo::bar()
+{ 
+    // ... imagine a lot of code here 
+ } // foo::bar()
+```
+
+
+=== Use Braces Even for Single Line Statements ===
+
+Using braces for code in if/then blocks or similar code structures even for single line statements means that adding another 
+statement is less likely to generate broken code.
+
+
+Consider:
+
+``` 
+  if (foo)
+    bar();
+ else
+    baz();
+```
+
+Adding code after bar() or baz() without adding enclosing braces would create broken code.  Though most programmers would 
+naturally do that, some may forget to do so in haste.
+
+So, prefer this:
+
+``` 
+ if (foo)
+ {
+   bar();
+ }
+ else
+ { 
+    baz();
+ } 
+```
+
+
+=== Book recommendations ===
+
+ * [http://www.awprofessional.com/title/0321334876 Effective C++], Scott Meyers
+ * [http://www.awprofessional.com/bookstore/product.asp?isbn=020163371X&rl=1 More Effective C++], Scott Meyers
+ * [http://www.awprofessional.com/title/0201749629 Effective STL], Scott Meyers
+ * [http://www.awprofessional.com/title/0201634988 Design Patterns], GoF
+
+
+
+
+
+= SVN Access =
+
+This page describes how to get started using the QGIS Subversion repository
+
+== Accessing the Repository ==
+To check out QGIS HEAD:
+```
+  svn --username [your user name] co https://svn.qgis.org/repos/qgis/trunk/qgis
+```
+
+
+== Anonymous Access ==
+You can use the following commands to perform an anonymous checkout from the QGIS Subversion repository. 
+Note we recommend checking out the trunk (unless you are a developer or really HAVE to have the latest 
+changes and dont mind lots of crashing!).
+
+You must have a subversion client installed prior to checking out the code. See the Subversion website 
+for more information. The Links page contains a good selection of SVN clients for various platforms.
+
+To check out a branch
+```
+  svn co https://svn.qgis.org/repos/qgis/branches/<branch name>
+```
+To check out SVN stable trunk:
+```
+  svn co https://svn.qgis.org/repos/qgis/trunk/qgis qgis_unstable
+```
+
+/!\ '''Note:''' If you are behind a proxy server, edit your ~/subversion/servers file to specify 
+your proxy settings first!
+
+/!\ '''Note:''' In QGIS we keep our most stable code in trunk. Periodically we will tag a release 
+off trunk, and then continue stabilisation and selective incorporation of new features into trunk.
+
+See the INSTALL file in the source tree for specific instructions on building development versions. 
+
+== QGIS documentation sources ==
+
+If you're interested in checking out Quantum GIS documentation sources:
+```
+  svn co https://svn.qgis.org/repos/qgis_docs/trunk qgis_docs
+```
+
+You can also take a look at DocumentationWritersCorner for more information.
+ 
+== Documentation ==
+The repository is organized as follows:
+
+http://wiki.qgis.org/images/repo.png
+
+See the Subversion book http://svnbook.red-bean.com for information on becoming a SVN master.
+
+
+
+
+== Development in branches ==
+
+=== Purpose ===
+The complexity of the QGIS source code has increased considerably during the last years. Therefore it is hard 
+to anticipate the side effects that the addition of a feature will have. In the past, the QGIS project had very 
+long release cycles because it was a lot of work to reetablish the stability of the software system after new 
+features were added. To overcome these problems, QGIS switched to a development model where new features are 
+coded in svn branches first and merged to trunk (the main branch) when they are finished and stable. This section 
+describes the procedure for branching and merging in the QGIS project.
+
+ 
+=== Procedure ===
+ * Initial announcement on mailing list
+Before starting, make an announcement on the developer mailing list to see if another developer is 
+already working on the same feature. Also contact the technical advisor of the project steering committee 
+(PSC). If the new feature requires any changes to the QGIS architecture, a request for comment (RFC) is needed. 
+ * Create a branch
+Create a new svn branch for the development of the new feature (see UsingSubversion for the svn syntax). Now 
+you can start developing.
+ * Merge from trunk regularly
+It is recommended to merge the changes in trunk to the branch on a regular basis. This makes it easier to merge 
+the branch back to trunk later.
+ * Documentation on wiki
+It is also recommended to document the intended changes and the current status of the work on a wiki page.
+ * Testing before merging back to trunk
+When you are finished with the new feature and happy with the stability, make an announcement on the developer list. 
+Before merging back, the changes will be tested by developers and users. Binary packages (especially for OsX and Windows) 
+will be generated to also involve non-developers. In trac, a new Component will be opened to file tickets against. 
+Once there are no remaining issues left, the technical advisor of the PSC merges the changes into trunk.
+
+=== Creating a branch ===
+
+We prefer that new feature developments happen out of trunk so that trunk remains in a 
+stable state. To create a branch use the following command:
+
+```
+svn copy https://svn.qgis.org/repos/qgis/trunk/qgis https://svn.qgis.org/repos/qgis/branches/qgis_newfeature
+svn commit -m "New feature branch"
+```
+
+=== Merge regularly from trunk to branch ===
+
+When working in a branch you should regularly merge trunk into it so that your branch does not diverge more 
+than necessary. In the top level dir of your branch, first type ```svn info``` to determine the revision 
+numbers of your branch which will produce output something like this:
+
+```
+timlinux@timlinux-desktop:~/dev/cpp/qgis_raster_transparency_branch$ svn info
+Caminho: .
+URL: https://svn.qgis.org/repos/qgis/branches/raster_transparency_branch
+Raiz do Repositório: https://svn.qgis.org/repos/qgis
+UUID do repositório: c8812cc2-4d05-0410-92ff-de0c093fc19c
+Revisão: 6546
+Tipo de Nó: diretório
+Agendado: normal
+Autor da Última Mudança: timlinux
+Revisão da Última Mudança: 6495
+Data da Última Mudança: 2007-02-02 09:29:47 -0200 (Sex, 02 Fev 2007)
+Propriedades da Última Mudança: 2007-01-09 11:32:55 -0200 (Ter, 09 Jan 2007)
+```
+
+The second revision number shows the revision number of the start revision of your branch and the first the 
+current revision. You can do a dry run of the merge like this:
+
+```
+svn merge --dry-run -r 6495:6546 https://svn.qgis.org/repos/qgis/trunk/qgis
+```
+
+After you are happy with the changes that will be made do the merge for real like this:
+
+```
+svn merge -r 6495:6546 https://svn.qgis.org/repos/qgis/trunk/qgis
+svn commit -m "Merged upstream changes from trunk to my branch"
+```
+
+
+== Submitting Patches ==
+
+There are a few guidelines that will help you to get your patches into QGIS easily, and help us 
+deal with the patches that are sent to use easily.
+
+=== Patch file naming ===
+
+If the patch is a fix for a specific bug, please name the file with the bug number in it e.g. 
+'''bug777fix.diff''', and attach it to the original bug report in trac (https://svn.qgis.org/trac).
+
+If the bug is an enhancement or new feature, its usually a good idea to create a ticket in 
+trac (https://svn.qgis.org/trac) first and then attach you 
+
+=== Create your patch in the top level QGIS source dir ===
+
+This makes it easier for us to apply the patches since we don't need to navigate to a specific 
+place in the source tree to apply the patch. Also when I receive patches I usually evaluate them 
+using kompare, and having the patch from the top level dir makes this much easier. Below is an 
+example of you you can include multiple changed files into your patch from the top level directory:
+
+```
+cd qgis
+svn diff src/ui/somefile.ui src/app/somefile2.cpp > bug872fix.diff
+```
+
+=== Including non version controlled files in your patch ===
+
+If your improvements include new files that don't yet exist in the repository, you should indicate 
+to svn that they need to be added before generating your patch e.g.
+
+```
+cd qgis
+svn add src/lib/somenewfile.cpp
+svn diff > bug7887fix.diff
+```
+
+=== Getting your patch noticed ===
+
+QGIS developers are busy folk. We do scan the incoming patches on bug reports but sometimes we miss things. 
+Don't be offended or alarmed. Try to identify a developer to help you - using the ["Project Organigram"] and 
+contact them asking them if they can look at your patch. If you dont get any response, you can escalate your 
+query to one of the Project Steering Committee members (contact details also available on the ["Project Organigram"]).
+
+=== Due Diligence ===
+
+QGIS is licensed under the GPL. You should make every effort to ensure you only submit patches which are 
+unencumbered by conflicting intellectual property rights. Also do not submit code that you are not happy to 
+have made available under the GPL.
+
+
+
+== Obtaining SVN Write Access ==
+
+Write access to QGIS source tree is by invitation. Typically when a person submits several (there is no fixed 
+number here) substantial patches that demonstrate basic competance and understanding of C++ and QGIS coding 
+conventions, one of the PSC members or other existing developers can nominate that person to the PSC for granting 
+of write access. The nominator should give a basic promotional paragraph of why they think that person should gain 
+write access. In some cases we will grant write access to non C++ developers e.g. for translators and documentors. 
+In these cases, the person should still have demonstrated ability to submit patches and should ideally have submtted 
+several substantial patches that demonstrate their understanding of modifying the code base without breaking things, etc.
+
+
+
+=== Procedure once you have access ===
+
+
+Checkout the sources:
+
+```
+svn co https://svn.qgis.org/repos/qgis/trunk/qgis qgis
+```
+
+
+Build the sources (see INSTALL document for proper detailed instructions)
+
+```
+cd qgis
+mkdir build
+ccmake ..    (set your preferred options)
+make
+make install  (maybe you need to do with sudo / root perms)
+```
+
+Make your edits
+
+```
+cd ..
+```
+
+Make your changes in sources. Always check that everything compiles before making any commits.
+Try to be aware of possible breakages your commits may cause for people building on other 
+platforms and with older / newer versions of libraries.
+
+
+Add files (if you added any new files). The svn status command can be used to quickly see 
+if you have added new files.
+
+```
+svn status src/pluguns/grass/modules
+```
+
+Files listed with ? in front are not in SVN and possibly need to be added by you:
+
+```
+svn add src/pluguns/grass/modules/foo.xml
+```
+
+Commit your changes
+
+```
+svn commit src/pluguns/grass/modules/foo.xml
+```
+
+Your editor (as defined in $EDITOR environment variable) will appear and you should make a
+ comment at the top of the file (above the area that says 'dont change this'. Put a 
+descriptive comment and rather do several small commits if the changes across a number of 
+files are unrelated. Conversely we prefer you to group related changes into a single commit.
+
+Save and close in your editor. The first time you do this, you should be prompted to 
+put in your username and password. Just use the same ones as your trac account.
+
+
+
+
+
+
+= Authors =
+
+Tim Sutton (author and editor)
+Gary Sherman
+
+
+Original pages from wiki to deprecate:
+
+http://wiki.qgis.org/qgiswiki/CodingGuidelines (./)
+http://wiki.qgis.org/qgiswiki/CodingStandards (./)
+http://wiki.qgis.org/qgiswiki/UsingSubversion (./)
+http://wiki.qgis.org/qgiswiki/DebuggingPlugins
+http://wiki.qgis.org/qgiswiki/DevelopmentInBranches (./)
+http://wiki.qgis.org/qgiswiki/SubmittingPatchesAndSvnAccess (./)
+
