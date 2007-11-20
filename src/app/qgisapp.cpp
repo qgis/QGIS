@@ -2071,9 +2071,11 @@ void QgisApp::addDatabaseLayer()
     // add files to the map canvas
     QStringList tables = dbs->selectedTables();
 
+    QApplication::setOverrideCursor(Qt::waitCursor);
+
     QString connInfo = dbs->connInfo();
     // for each selected table, connect to the database, parse the WKT geometry,
-    // and build a cavnasitem for it
+    // and build a canvasitem for it
     // readWKB(connInfo,tables);
     QStringList::Iterator it = tables.begin();
     while (it != tables.end())
@@ -2086,7 +2088,6 @@ void QgisApp::addDatabaseLayer()
       {
         // register this layer with the central layers registry
         QgsMapLayerRegistry::instance()->addMapLayer(layer);
-
       }
       else
       {
@@ -2097,6 +2098,9 @@ void QgisApp::addDatabaseLayer()
       //qWarning("incrementing iterator");
       ++it;
     }
+
+    QApplication::restoreOverrideCursor();
+
     statusBar()->message(mMapCanvas->extent().stringRep(2));
   }
 

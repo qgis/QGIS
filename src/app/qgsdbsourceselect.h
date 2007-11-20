@@ -42,12 +42,12 @@ class QgisApp;
  * \brief Dialog to create connections and add tables from PostgresQL.
  *
  * This dialog allows the user to define and save connection information
- * for PostGIS enabled PostgresQL databases. The user can then connect and add 
+ * for PostGIS enabled PostgreSQL databases. The user can then connect and add 
  * tables from the database to the map canvas.
  */
 class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase 
 {
-  Q_OBJECT
+ Q_OBJECT
  public:
 
     //! Constructor
@@ -76,7 +76,7 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     // geometry type of a column
     static QString makeGeomQuery(QString schema, QString table, QString column);
 
-    public slots:
+ public slots:
     /*! Connects to the database using the stored connection parameters. 
     * Once connected, available layers are displayed.
     */
@@ -115,11 +115,13 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void setConnectionListPosition();
     // Show the context help for the dialog
     void showHelp();
-    // update type column
-    void updateTypeInfo(int row, QString type);
+    // initialize row
+    void initRow(int row); 
+    // update the row
+    void updateRow(int row, QString detail, QString type);
     // Combine the schema, table and column data into a single string
     // useful for display to the user
-    QString fullDescription(QString schema, QString table, QString column);
+    QString fullDescription(QString schema, QString table, QString column, QString type);
     // The column labels
     QStringList mColumnLabels;
     // Our thread for doing long running queries
@@ -161,12 +163,17 @@ class QgsGeomColumnTypeThread : public QThread
   virtual void run() { getLayerTypes(); }
   void getLayerTypes();
 
-  signals:
+ signals:
   void setLayerType(QString schema, QString table, QString column,
                     QString type);
 
+ public slots:
+  void stop();
+
+
  private:
   QString mConnInfo;
+  bool mStopped;
   std::vector<QString> schemas, tables, columns;
 };
 
