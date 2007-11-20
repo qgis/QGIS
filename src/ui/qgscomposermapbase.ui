@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>292</width>
-    <height>386</height>
+    <height>417</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -96,6 +96,9 @@
      <property name="text" >
       <string>Scale:</string>
      </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item row="9" column="2" >
@@ -143,6 +146,9 @@
      <property name="text" >
       <string>Set</string>
      </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
+     </property>
      <property name="buddy" >
       <cstring>mCalculateComboBox</cstring>
      </property>
@@ -173,6 +179,9 @@
      <property name="text" >
       <string>Height</string>
      </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
+     </property>
      <property name="buddy" >
       <cstring>mHeightLineEdit</cstring>
      </property>
@@ -185,6 +194,9 @@
     <widget class="QLabel" name="textLabel1" >
      <property name="text" >
       <string>Width</string>
+     </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
      </property>
      <property name="buddy" >
       <cstring>mWidthLineEdit</cstring>
@@ -199,6 +211,9 @@
      <property name="text" >
       <string>Line width scale</string>
      </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
+     </property>
      <property name="buddy" >
       <cstring>mWidthScaleLineEdit</cstring>
      </property>
@@ -209,6 +224,9 @@
      <property name="text" >
       <string>Symbol scale</string>
      </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
+     </property>
      <property name="buddy" >
       <cstring>mSymbolScaleLineEdit</cstring>
      </property>
@@ -218,6 +236,9 @@
     <widget class="QLabel" name="textLabel2_2" >
      <property name="text" >
       <string>Font size scale</string>
+     </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
      </property>
      <property name="buddy" >
       <cstring>mFontScaleLineEdit</cstring>
@@ -235,6 +256,9 @@
     <widget class="QLabel" name="textLabel1_5" >
      <property name="text" >
       <string>Preview</string>
+     </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
      </property>
      <property name="buddy" >
       <cstring>mPreviewModeComboBox</cstring>
