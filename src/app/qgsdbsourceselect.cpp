@@ -299,31 +299,32 @@ void QgsDbSourceSelect::addTables()
       QString query = table + " sql=";
 
       QComboBox *cb = static_cast<QComboBox *>( lstTables->cellWidget(i, dbssType) );
-      if(cb) {
-	      int i = table.find("(");
-	      int j = table.find(")");
-	      QString column = table.mid(i+1,j-i-1);
-	      QString type;
+      if(cb) 
+      {
+        int i = table.find("(");
+        int j = table.find(")");
+        QString column = table.mid(i+1,j-i-1);
+        QString type;
 
-	      QMapIterator <QString, QPair<QString, QIcon>> it(mLayerIcons);
-	      while( it.hasNext() ) {
-		      it.next();
+        QMapIterator <QString, QPair < QString, QIcon > > it(mLayerIcons);
+        while( it.hasNext() ) {
+          it.next();
 
-		      if( it.value().first == cb->currentText() ) {
-				type=it.key();
-				break;
-		      }
-	      }
-	      
-	      if( type=="POINT" ) {
-		      query += QString("GeometryType(\"%1\") IN ('POINT','MULTIPOINT')").arg(column);
-	      } else if(type=="LINESTRING") {
-		      query += QString("GeometryType(\"%1\") IN ('LINESTRING','MULTILINESTRING')").arg(column);
-	      } else if(type=="POLYGON") {
-		      query += QString("GeometryType(\"%1\") IN ('POLYGON','MULTIPOLYGON')").arg(column);
-	      } else {
-		      continue;
-	      }
+          if( it.value().first == cb->currentText() ) {
+            type=it.key();
+            break;
+          }
+        }
+
+        if( type=="POINT" ) {
+          query += QString("GeometryType(\"%1\") IN ('POINT','MULTIPOINT')").arg(column);
+        } else if(type=="LINESTRING") {
+          query += QString("GeometryType(\"%1\") IN ('LINESTRING','MULTILINESTRING')").arg(column);
+        } else if(type=="POLYGON") {
+          query += QString("GeometryType(\"%1\") IN ('POLYGON','MULTIPOLYGON')").arg(column);
+        } else {
+          continue;
+        }
       }
 
       QTableWidgetItem *sqlItem = lstTables->item(i, dbssSql);
@@ -407,47 +408,47 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
       {
         QString myThemePath = QgsApplication::themePath();
         mLayerIcons.insert("POINT",
-                           qMakePair(tr("Point layer"), 
-                            QIcon(myThemePath+"/mIconPointLayer.png")));
+            qMakePair(tr("Point layer"), 
+              QIcon(myThemePath+"/mIconPointLayer.png")));
         mLayerIcons.insert("MULTIPOINT", 
-                           qMakePair(tr("Multi-point layer"), 
-                            mLayerIcons.value("POINT").second));
+            qMakePair(tr("Multi-point layer"), 
+              mLayerIcons.value("POINT").second));
 
         mLayerIcons.insert("LINESTRING",
-                           qMakePair(tr("Linestring layer"), 
-                            QIcon(myThemePath+"/mIconLineLayer.png")));
+            qMakePair(tr("Linestring layer"), 
+              QIcon(myThemePath+"/mIconLineLayer.png")));
         mLayerIcons.insert("MULTILINESTRING",
-                           qMakePair(tr("Multi-linestring layer"), 
-                            mLayerIcons.value("LINESTRING").second));
+            qMakePair(tr("Multi-linestring layer"), 
+              mLayerIcons.value("LINESTRING").second));
 
         mLayerIcons.insert("POLYGON",
-                           qMakePair(tr("Polygon layer"), 
-                            QIcon(myThemePath+"/mIconPolygonLayer.png")));
+            qMakePair(tr("Polygon layer"), 
+              QIcon(myThemePath+"/mIconPolygonLayer.png")));
         mLayerIcons.insert("MULTIPOLYGON",
-                           qMakePair(tr("Multi-polygon layer"),
-                            mLayerIcons.value("POLYGON").second));
+            qMakePair(tr("Multi-polygon layer"),
+              mLayerIcons.value("POLYGON").second));
 
         mLayerIcons.insert("GEOMETRY",
-                           qMakePair(tr("Mixed geometry layer"), 
-                            QIcon(myThemePath+"/mIconGeometryLayer.png")));
+            qMakePair(tr("Mixed geometry layer"), 
+              QIcon(myThemePath+"/mIconGeometryLayer.png")));
         mLayerIcons.insert("GEOMETRYCOLLECTION",
-                           qMakePair(tr("Geometry collection layer"), 
-                            mLayerIcons.value("GEOMETRY").second));
+            qMakePair(tr("Geometry collection layer"), 
+              mLayerIcons.value("GEOMETRY").second));
 
         mLayerIcons.insert("WAITING",
-                           qMakePair(tr("Waiting for layer type"), 
-                            QIcon(myThemePath+"/mIconWaitingForLayerType.png")));
+            qMakePair(tr("Waiting for layer type"), 
+              QIcon(myThemePath+"/mIconWaitingForLayerType.png")));
         mLayerIcons.insert("UNKNOWN",
-                           qMakePair(tr("Unknown layer type"), 
-                            QIcon(myThemePath+"/mIconUnknownLayerType.png")));
+            qMakePair(tr("Unknown layer type"), 
+              QIcon(myThemePath+"/mIconUnknownLayerType.png")));
 
-	mCbMinLength = 0;
-        QMapIterator <QString, QPair<QString, QIcon>> it(mLayerIcons);
+        mCbMinLength = 0;
+        QMapIterator <QString, QPair < QString, QIcon > > it(mLayerIcons);
         while( it.hasNext() ) {
           it.next();
-	  int len = it.value().first.length();;
-	  mCbMinLength = mCbMinLength<len ? len : mCbMinLength;
-	}
+          int len = it.value().first.length();;
+          mCbMinLength = mCbMinLength<len ? len : mCbMinLength;
+        }
       }
       //qDebug("Connection succeeded");
       // tell the DB that we want text encoded in UTF8
