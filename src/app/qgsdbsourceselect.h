@@ -93,9 +93,7 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
                         QString type);
  private:
     enum columns {
-	dbssImport=0,
-	dbssType,
-	dbssImportAs,
+	dbssType=0,
 	dbssDetail,
 	dbssSql,
 	dbssColumns,
@@ -108,13 +106,17 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 			       geomCol& details, 
                                bool searchGeometryColumnsOnly,
                                bool searchPublicOnly);
+
+    // queue another query for the thread
+    void addSearchGeometryColumn(const QString &schema, const QString &table, const QString &column);
+
     // Set the position of the database connection list to the last
     // used one. 
     void setConnectionListPosition();
     // Show the context help for the dialog
     void showHelp();
-    // update 'import as column'
-    void updateImportAsInfo(int row, const QString &type);
+    // update type column
+    void updateTypeInfo(int row, QString type);
     // Combine the schema, table and column data into a single string
     // useful for display to the user
     QString fullDescription(QString schema, QString table, QString column);
@@ -126,6 +128,8 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QStringList m_selectedTables;
     // Storage for the range of layer type icons
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;
+    // minlength of layer type combobox
+    int mCbMinLength;
     //! Pointer to the qgis application mainwindow
     QgisApp *qgisApp;
     PGconn *pd;
@@ -145,7 +149,7 @@ class QgsGeomColumnTypeThread : public QThread
  public:
 
   void setConnInfo(QString s);
-  void setGeometryColumn(QString schema, QString table, QString column);
+  void addGeometryColumn(QString schema, QString table, QString column);
 
   // These functions get the layer types and pass that information out
   // by emitting the setLayerType() signal. The getLayerTypes()
