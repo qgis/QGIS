@@ -156,49 +156,6 @@ void QgsDbSourceSelect::on_cmbConnections_activated(int)
   dbChanged();
 }
 
-void QgsDbSourceSelect::updateTypeInfo(int row, QString type)
-{
-    QComboBox *cb = static_cast<QComboBox *>(lstTables->cellWidget(row,dbssType));
-    if(!cb)
-    {
-      QTableWidgetItem *item = lstTables->takeItem(row,dbssType);
-      delete item;
-    }
-#if 0 // Qt 4.3
-    else
-          lstTables->removeCellWidget(row, dbssType);
-#endif
-
-    if( type.contains(",") )
-    {
-      QStringList types = type.split(",");
-
-      cb = new QComboBox(lstTables);
-      for(int i=0; i<types.size(); i++) {
-        cb->addItem( mLayerIcons.value(types[i]).second, mLayerIcons.value(types[i]).first);
-      }
-      cb->setCurrentIndex(0);
-      cb->setToolTip( tr("select import type for multi type layer") );
-#if 0 // Qt 4.3
-      cb->setMinimumContentsLength(mCbMinLength);
-      cb->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
-#endif
-      lstTables->setCellWidget(row, dbssType, cb);
-    }
-    else
-    {
-      if (!mLayerIcons.contains(type))
-        type="UNKNOWN";
-        
-      QTableWidgetItem *iconItem = new QTableWidgetItem();
-      iconItem->setIcon( mLayerIcons.value(type).second );
-      iconItem->setToolTip( mLayerIcons.value(type).first );
-      lstTables->setItem(row, dbssType, iconItem);     
-
-      lstTables->setItem(row, dbssType, new QTableWidgetItem(*lstTables->item(row,dbssType)));
-    }
-}
-
 void QgsDbSourceSelect::setLayerType(QString schema, 
                                      QString table, QString column,
                                      QString type)
@@ -207,14 +164,31 @@ void QgsDbSourceSelect::setLayerType(QString schema,
 
   // Find the right row in the table by searching for the text that
   // was put into the Name column.
-  QString full_desc = fullDescription(schema, table, column);
+  QString full_desc = fullDescription(schema, table, column, "WAITING");
 
   QList<QTableWidgetItem*> ii = lstTables->findItems(full_desc, Qt::MatchExactly);
 
   if (ii.count() > 0)
   {
-    updateTypeInfo( lstTables->row(ii.at(0)), type);
-    lstTables->resizeColumnToContents(dbssType);
+    int row = lstTables->row(ii.at(0));
+
+    if(type!="")
+    {
+      QStringList types = type.split(",");
+      updateRow(row, fullDescription(schema, table, column, "AS " + types[0]), types[0]);
+
+      for(int i=1; i<types.size(); i++) {
+        lstTables->insertRow(row+1);
+        initRow(row+1);
+        updateRow(row+1, fullDescription(schema, table, column, "AS " + types[i]), types[i]);
+      }
+
+      lstTables->resizeColumnsToContents();
+    }
+    else
+    {
+      lstTables->removeRow(row);
+    }
   }
 }
 
@@ -249,7 +223,6 @@ void QgsDbSourceSelect::populateConnectionList()
 }
 void QgsDbSourceSelect::addNewConnection()
 {
-
   QgsNewConnection *nc = new QgsNewConnection(this);
 
   if (nc->exec())
@@ -295,31 +268,21 @@ void QgsDbSourceSelect::addTables()
 {
   //store the table info
 
-  for (int i = 0; i < lstTables->rowCount();)
+  for (int i=0; i<lstTables->rowCount(); i++)
   {
     if ( lstTables->isItemSelected(lstTables->item(i, dbssDetail)) )
     {
       QString table = lstTables->item(i,dbssDetail)->text();
-      QString query = table + " sql=";
+      QString query;
 
-      QComboBox *cb = static_cast<QComboBox *>( lstTables->cellWidget(i, dbssType) );
-      if(cb) 
-      {
+      bool applyFilter = table.contains(") AS ");
+      if( applyFilter ) {
         int i = table.find("(");
         int j = table.find(")");
         QString column = table.mid(i+1,j-i-1);
-        QString type;
-
-        QMapIterator <QString, QPair < QString, QIcon > > it(mLayerIcons);
-        while( it.hasNext() ) {
-          it.next();
-
-          if( it.value().first == cb->currentText() ) {
-            type=it.key();
-            break;
-          }
-        }
-
+	QString type = table.mid(j+5);
+	query += table.left(j+1) + " sql=";
+	
         if( type=="POINT" ) {
           query += QString("GeometryType(\"%1\") IN ('POINT','MULTIPOINT')").arg(column);
         } else if(type=="LINESTRING") {
@@ -330,11 +293,15 @@ void QgsDbSourceSelect::addTables()
           continue;
         }
       }
+      else
+      {
+	query += table + " sql=";
+      }
 
       QTableWidgetItem *sqlItem = lstTables->item(i, dbssSql);
       if (sqlItem && sqlItem->text()!="" )
       {
-        if(cb)
+        if(applyFilter)
           query += QString(" AND (%1)").arg( sqlItem->text() );
         else
           query += sqlItem->text();
@@ -342,19 +309,45 @@ void QgsDbSourceSelect::addTables()
 
       m_selectedTables += query;
     }
-    i++;
   }
 
   // BEGIN CHANGES ECOS
-  if (m_selectedTables.empty() == true)
+  if ( m_selectedTables.empty() )
     QMessageBox::information(this, tr("Select Table"), tr("You must select a table in order to add a Layer."));
   else
     accept();
   // END CHANGES ECOS
 }
 
+void QgsDbSourceSelect::initRow(int row)
+{
+  QTableWidgetItem *iconItem = new QTableWidgetItem();
+  lstTables->setItem(row, dbssType, iconItem);
+
+  QTableWidgetItem *textItem = new QTableWidgetItem();
+  textItem->setToolTip( tr("double click to open PostgreSQL query builder") );
+  lstTables->setItem(row, dbssDetail, textItem);
+}
+
+void QgsDbSourceSelect::updateRow(int row, QString detail, QString type)
+{
+  if (!mLayerIcons.contains(type))
+    type="UNKNOWN";
+
+  QTableWidgetItem *iconItem = lstTables->item(row, dbssType);
+  iconItem->setIcon( mLayerIcons.value(type).second );
+  iconItem->setToolTip( mLayerIcons.value(type).first );
+
+  lstTables->item(row, dbssDetail)->setText( detail );
+}
+
 void QgsDbSourceSelect::on_btnConnect_clicked()
 {
+  if(mColumnTypeThread)
+  {
+    mColumnTypeThread->stop();
+    mColumnTypeThread=0;
+  }
   // populate the table list
   QSettings settings;
 
@@ -445,16 +438,6 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
         mLayerIcons.insert("UNKNOWN",
             qMakePair(tr("Unknown layer type"), 
               QIcon(myThemePath+"/mIconUnknownLayerType.png")));
-
-#if 0 // Qt 4.3
-        mCbMinLength = 0;
-        QMapIterator <QString, QPair < QString, QIcon > > it(mLayerIcons);
-        while( it.hasNext() ) {
-          it.next();
-          int len = it.value().first.length();;
-          mCbMinLength = mCbMinLength<len ? len : mCbMinLength;
-        }
-#endif
       }
       //qDebug("Connection succeeded");
       // tell the DB that we want text encoded in UTF8
@@ -476,14 +459,12 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
         geomCol::const_iterator iter = details.begin();
         for (; iter != details.end(); ++iter)
         {
+          QString type = iter->second;
           int row = lstTables->rowCount();
           lstTables->setRowCount(row+1);
 
-          QTableWidgetItem *textItem = new QTableWidgetItem(iter->first);
-          textItem->setToolTip( tr("double click to open PostgreSQL query builder") );
-          lstTables->setItem(row, dbssDetail, textItem);
-
-          updateTypeInfo(row, iter->second);
+          initRow(row);
+          updateRow(row, iter->first, type);
         }
 
         // And tidy up the columns & rows
@@ -494,19 +475,13 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
         // may take a long time to return
         if (mColumnTypeThread != NULL)
         {
-            connect(mColumnTypeThread, 
-                    SIGNAL(setLayerType(QString,QString,QString,QString)),
-                    this, 
-                    SLOT(setLayerType(QString,QString,QString,QString)));
-            // Do it in a thread. Does not yet cope correctly with the
-            // layer selection dialog box closing before the thread
-            // completes, nor the qgis process ending before the
-            // thread completes, nor does the thread know to stop working
-            // when the user chooses a layer.
-            //mColumnTypeThread->start();
+           connect(mColumnTypeThread, SIGNAL(setLayerType(QString,QString,QString,QString)),
+                   this, SLOT(setLayerType(QString,QString,QString,QString)));
+	   connect(this, SIGNAL(finished()),
+	           mColumnTypeThread, SLOT(stop()) );
 
-            // do it in this process for the moment. 
-            mColumnTypeThread->getLayerTypes();
+            // Do it in a thread.
+            mColumnTypeThread->start();
         }
       }
       else
@@ -590,6 +565,8 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
 {
   bool ok = false;
 
+  QApplication::setOverrideCursor(Qt::waitCursor);
+
   QString sql = "select * from geometry_columns";
   // where f_table_schema ='" + settings.readEntry(key + "/database") + "'";
   sql += " order by f_table_schema,f_table_name";
@@ -620,34 +597,22 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
       {
         QString column = PQgetvalue(result, idx, PQfnumber(result, "f_geometry_column"));
         QString type = PQgetvalue(result, idx, PQfnumber(result, "type"));
-        QString v = "";
-
-        if (schemaName.length() > 0)
-        {
-          v += '"';
-          v += schemaName;
-          v += "\".";
-        }
-
-        v += '"';
-        v += tableName;
-        v += "\" (";
-        v += column;
-        v += ")";
-
         
+	QString as = "";
 	if(type=="GEOMETRY" && !searchGeometryColumnsOnly) {
 	  addSearchGeometryColumn(schemaName, tableName,  column);
-	  type="WAITING";
+	  as=type="WAITING";
 	}
 
-	details.push_back(geomPair(v, type));
+	details.push_back(geomPair(fullDescription(schemaName, tableName, column, as), type));
       }
       PQclear(exists);
     }
     ok = true;
   }
   PQclear(result);
+
+  QApplication::restoreOverrideCursor();
 
   if (searchGeometryColumnsOnly)
     return ok;
@@ -685,11 +650,8 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
     QString column = PQgetvalue(result, i, 2); // attname
     QString relkind = PQgetvalue(result, i, 3); // relation kind
 
-    QString full_desc = fullDescription(schema, table, column);
-
     addSearchGeometryColumn(schema, table, column);
-
-    details.push_back(geomPair(full_desc, "WAITING"));
+    details.push_back(geomPair(fullDescription(schema, table, column, "WAITING"), "WAITING"));
   }
   ok = true;
 
@@ -706,12 +668,12 @@ void QgsDbSourceSelect::showHelp()
   QgsContextHelp::run(context_id);
 }
 QString QgsDbSourceSelect::fullDescription(QString schema, QString table, 
-                                           QString column)
+					   QString column, QString type)
 {
   QString full_desc = "";
   if (schema.length() > 0)
     full_desc = '"' + schema + "\".\"";
-  full_desc += table + "\" (" + column + ")";
+  full_desc += table + "\" (" + column + ") " + type;
   return full_desc;
 }
 void QgsDbSourceSelect::dbChanged()
@@ -765,19 +727,25 @@ void QgsGeomColumnTypeThread::addGeometryColumn(QString schema, QString table, Q
   columns.push_back(column);
 }
 
+void QgsGeomColumnTypeThread::stop()
+{
+  mStopped=true;
+}
+
 void QgsGeomColumnTypeThread::getLayerTypes()
 {
+  mStopped=false;
+
   PGconn *pd = PQconnectdb(mConnInfo.toLocal8Bit().data());
   if (PQstatus(pd) == CONNECTION_OK)
   {
     PQsetClientEncoding(pd, "UNICODE");
 
-    for (uint i = 0; i < schemas.size(); ++i)
+    for (uint i = 0; i<schemas.size(); i++)
     {
       QString query = QgsDbSourceSelect::makeGeomQuery(schemas[i],
                                                        tables[i],
                                                        columns[i]);
-      QgsDebugMsg("Running SQL:" + query);
       PGresult* gresult = PQexec(pd, query.toLocal8Bit().data());
       QString type;
       if (PQresultStatus(gresult) == PGRES_TUPLES_OK) {
@@ -785,12 +753,16 @@ void QgsGeomColumnTypeThread::getLayerTypes()
 
 	for(int j=0; j<PQntuples(gresult); j++) {
 		QString type = PQgetvalue(gresult, j, 0);
-		types += type!="" ? type : "UNKNOWN";
+		if(type!="")
+		  types += type;
 	}
 
 	type = types.join(",");
       }
       PQclear(gresult);
+
+      if(mStopped)
+        break;
 
       // Now tell the layer list dialog box...
       emit setLayerType(schemas[i], tables[i], columns[i], type);
