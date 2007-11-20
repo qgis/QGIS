@@ -21,6 +21,27 @@
 % -------------------
 
 
+%-----------------------------------------------------------------
+% Insert the following preamble on moinmoin generated output
+%-----------------------------------------------------------------
+
+%/!\ '''Note:''' Please do not edit this document directly. 
+%
+%/!\ '''Note:''' Please do not remove this notice. 
+%
+%(!) This document was generated using text2tags from INSTALL.t2t in the QGIS sources. Make your 
+% edits to that file and use t2t to regenerate in moinmoin %format, then paste the procedure in below.
+%I have instated these changes so that we can have a single central document that contains all the 
+%instructions  developers contributing to QGIS. This page should always reflect the most current SVN trunk build 
+%procedure - for release versions the CODING document in the sources will be generated according 
+%to the current build procedure at the time.
+
+%Tim Sutton 2007
+
+%-----------------------------------------------------------------
+% Preamble ends
+%-----------------------------------------------------------------
+
 = QGIS Coding Standards =
 
 
@@ -508,16 +529,16 @@ put in your username and password. Just use the same ones as your trac account.
 
 = Authors =
 
-Tim Sutton (author and editor)
-Gary Sherman
-
+ * Tim Sutton (author and editor)
+ * Gary Sherman
+ * Marco Hugentobler
 
 Original pages from wiki to deprecate:
 
-http://wiki.qgis.org/qgiswiki/CodingGuidelines (./)
-http://wiki.qgis.org/qgiswiki/CodingStandards (./)
-http://wiki.qgis.org/qgiswiki/UsingSubversion (./)
-http://wiki.qgis.org/qgiswiki/DebuggingPlugins
-http://wiki.qgis.org/qgiswiki/DevelopmentInBranches (./)
-http://wiki.qgis.org/qgiswiki/SubmittingPatchesAndSvnAccess (./)
+ * http://wiki.qgis.org/qgiswiki/CodingGuidelines (./)
+ * http://wiki.qgis.org/qgiswiki/CodingStandards (./)
+ * http://wiki.qgis.org/qgiswiki/UsingSubversion (./)
+ * http://wiki.qgis.org/qgiswiki/DebuggingPlugins
+ * http://wiki.qgis.org/qgiswiki/DevelopmentInBranches (./)
+ * http://wiki.qgis.org/qgiswiki/SubmittingPatchesAndSvnAccess (./)
 
