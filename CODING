@@ -636,17 +636,18 @@ put in your username and password. Just use the same ones as your trac account.
   3. Authors
   ==========
 
-Tim Sutton (author and editor)
-Gary Sherman
+ * Tim Sutton (author and editor)
+ * Gary Sherman
+ * Marco Hugentobler
 
 Original pages from wiki to deprecate:
 
-http://wiki.qgis.org/qgiswiki/CodingGuidelines (./)
-http://wiki.qgis.org/qgiswiki/CodingStandards (./)
-http://wiki.qgis.org/qgiswiki/UsingSubversion (./)
-http://wiki.qgis.org/qgiswiki/DebuggingPlugins
-http://wiki.qgis.org/qgiswiki/DevelopmentInBranches (./)
-http://wiki.qgis.org/qgiswiki/SubmittingPatchesAndSvnAccess (./)
+ * http://wiki.qgis.org/qgiswiki/CodingGuidelines (./)
+ * http://wiki.qgis.org/qgiswiki/CodingStandards (./)
+ * http://wiki.qgis.org/qgiswiki/UsingSubversion (./)
+ * http://wiki.qgis.org/qgiswiki/DebuggingPlugins
+ * http://wiki.qgis.org/qgiswiki/DevelopmentInBranches (./)
+ * http://wiki.qgis.org/qgiswiki/SubmittingPatchesAndSvnAccess (./)
 
 
 
