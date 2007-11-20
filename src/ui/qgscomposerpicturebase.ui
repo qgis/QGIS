@@ -42,7 +42,7 @@
       <widget class="QPushButton" name="mPictureBrowseButton" >
        <property name="sizePolicy" >
         <sizepolicy>
-         <hsizetype>0</hsizetype>
+         <hsizetype>5</hsizetype>
          <vsizetype>5</vsizetype>
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
@@ -50,7 +50,7 @@
        </property>
        <property name="maximumSize" >
         <size>
-         <width>50</width>
+         <width>150</width>
          <height>32767</height>
         </size>
        </property>
@@ -118,6 +118,9 @@
        <property name="text" >
         <string>Width</string>
        </property>
+       <property name="wordWrap" >
+        <bool>true</bool>
+       </property>
        <property name="buddy" >
         <cstring>mWidthLineEdit</cstring>
        </property>
@@ -136,6 +139,9 @@
        <property name="text" >
         <string>Height</string>
        </property>
+       <property name="wordWrap" >
+        <bool>true</bool>
+       </property>
        <property name="buddy" >
         <cstring>mHeightLineEdit</cstring>
        </property>
@@ -153,6 +159,9 @@
        </property>
        <property name="text" >
         <string>Angle</string>
+       </property>
+       <property name="wordWrap" >
+        <bool>true</bool>
        </property>
        <property name="buddy" >
         <cstring>mAngleLineEdit</cstring>

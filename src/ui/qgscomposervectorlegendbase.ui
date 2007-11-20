@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>216</width>
+    <width>285</width>
     <height>419</height>
    </rect>
   </property>
@@ -52,6 +52,9 @@
      <property name="text" >
       <string>Preview</string>
      </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
+     </property>
      <property name="buddy" >
       <cstring>mPreviewModeComboBox</cstring>
      </property>
@@ -88,6 +91,9 @@
      <property name="text" >
       <string>Map</string>
      </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
+     </property>
      <property name="buddy" >
       <cstring>mMapComboBox</cstring>
      </property>
@@ -105,6 +111,9 @@
      </property>
      <property name="text" >
       <string>Title</string>
+     </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
      </property>
      <property name="buddy" >
       <cstring>mTitleLineEdit</cstring>
