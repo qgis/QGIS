@@ -77,6 +77,11 @@ QgsMapLayer *
   QgsMapLayerRegistry::addMapLayer( QgsMapLayer * theMapLayer, bool theEmitSignal )
 {
   QgsDebugMsg("QgsMapLayerRegistry::addMaplayer - '" + theMapLayer->name());
+  if( !theMapLayer->isValid() ) {
+    QgsDebugMsg("cannot add invalid layers");
+    return 0;
+  }
+
   //check the layer is not already registered!
   std::map<QString,QgsMapLayer*>::iterator myIterator = mMapLayers.find(theMapLayer->getLayerID());
   //if myIterator returns mMapLayers.end() then it does not exist in registry and its safe to add it
@@ -92,7 +97,7 @@ QgsMapLayer *
   else
   {
     QgsDebugMsg("addMaplayer - " + theMapLayer->name() + " already registered");
-    return 0x0;
+    return 0;
   }
 } //  QgsMapLayerRegistry::addMapLayer
 
