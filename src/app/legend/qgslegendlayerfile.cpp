@@ -243,9 +243,23 @@ void QgsLegendLayerFile::table()
   {
     // display the attribute table
     QApplication::setOverrideCursor(Qt::waitCursor);
+
     // TODO: pointer to QgisApp should be passed instead of NULL
     // but we don't have pointer to it. [MD]
-    mTableDisplay = new QgsAttributeTableDisplay(vlayer, NULL);
+    // but be can get it using this ugly hack. [jef]
+    // TODO: do this cleanly
+    QgisApp *app = NULL;
+    QList<QWidget *> list = QApplication::topLevelWidgets();
+
+    int i;
+    for(i=0; i<list.size(); i++)
+      if( list[i]->windowTitle().startsWith("Quantum GIS") )
+      {
+        app=reinterpret_cast<QgisApp*>(list[i]);
+	break;
+      }
+
+    mTableDisplay = new QgsAttributeTableDisplay(vlayer, app);
     mTableDisplay->table()->fillTable(vlayer);
     mTableDisplay->table()->setSorting(true);
 
