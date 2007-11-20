@@ -69,13 +69,6 @@ QgsPluginManager::~QgsPluginManager()
 {
 }
 
-void QgsPluginManager::on_btnBrowse_clicked()
-{
-  QString s = QFileDialog::getExistingDirectory(this, tr("Choose a directory"));
-  txtPluginDir->setText(s);
-  getPluginDescriptions();
-}
-
 
 void QgsPluginManager::getPythonPluginDescriptions()
 {

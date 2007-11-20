@@ -50,8 +50,6 @@ class QgsPluginManager : public QDialog, private Ui::QgsPluginManagerBase
     void on_btnSelectAll_clicked();
     //! Clear all selections by clearing the plugins checkbox
     void on_btnClearAll_clicked();
-    //! Browse to a location (directory) containing QGIS plugins
-    void on_btnBrowse_clicked();
     //! Close the dialog
     void on_btnClose_clicked();
 
