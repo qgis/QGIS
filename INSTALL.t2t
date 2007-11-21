@@ -1730,6 +1730,7 @@ Include files:
   $(QTDIR)\include\QtSvg
   $(QTDIR)\include\QtXml
   $(QTDIR)\include\Qt3Support
+  $(LIB_DIR)\include   (needed during qgis compile to find stdint.h and unistd.h)
 
 Library files: 
   $(QTDIR)\lib
@@ -1762,24 +1763,28 @@ I could find.
 
 Download http://python.org/ftp/python/2.5.1/python-2.5.1.msi and install it.
 
+
+
 == Install SIP ==
 
-Download http://www.riverbankcomputing.com/Downloads/sip4/sip-4.7.1.zip and extract it somewhere.
+Download http://www.riverbankcomputing.com/Downloads/sip4/sip-4.7.1.zip and extract it 
+into your c:\dev\cpp directory.
 From a Visual C++ command line cd to the directory where you extract SIP and run:
 
 ```
-c:\Program Files\python25\python configure.sh -p win32-msvc2005
+c:\python25\python configure.py -p win32-msvc2005
 nmake
 nmake install
 ```
 
 == Install PyQt4 ==
 
-Download http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/PyQt-win-gpl-4.3.1.zip and extract it somewhere.
+Download http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/PyQt-win-gpl-4.3.1.zip and extract it 
+into your c:\dev\cpp directory.
 From a Visual C++ command line cd to the directory where you extracted PyQt4 and run:
 
 ```
-c:\Program Files\python25\python configure.sh -p win32-msvc2005
+c:\python25\python configure.py -p win32-msvc2005
 nmake
 nmake install
 ````
@@ -1847,7 +1852,11 @@ Press 'p' to accept and the svn checkout will commence.
 
 == Create Makefiles using cmakesetup.exe ==
 
-I wont be giving a detailed description of the build process, because the process is explained in the first section (where you manually build all dependencies) of the windows build notes in this document. Just skip past the parts where you need to build GDAL etc, since this simplified install process does all the dependency provisioning for you.
+I wont be giving a detailed description of the build process, because 
+the process is explained in the first section (where you manually build 
+all dependencies) of the windows build notes in this document. Just skip 
+past the parts where you need to build GDAL etc, since this simplified 
+install process does all the dependency provisioning for you.
 
 ```
 cd qgis
@@ -1879,6 +1888,13 @@ configurations toolbar.
 
 Next right click on ALL_BUILD in the solution browser, and then choose build.
 
+Once the build completes right click on INSTALL in the solution browser and 
+choose build. This will by default install qgis into c:\program files\qgisX.X.X.
+
+== Running and packaging ==
+
+To run QGIS you need to at the minimum copy the dlls from c:\dev\cpp\qgislibs-release\bin 
+into the c:\program files\qgisX.X.X directory.
 
 = Authors and Acknowledgments =
 
