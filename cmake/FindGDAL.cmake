@@ -38,8 +38,10 @@ ELSE(WIN32)
     ENDIF (APPLE)
 
     SET(GDAL_CONFIG_PREFER_PATH "$ENV{GDAL_HOME}/bin" CACHE STRING "preferred path to GDAL (gdal-config)")
+    SET(GDAL_CONFIG_PREFER_FWTOOLS_PATH "$ENV{FWTOOLS_HOME}/bin_safe" CACHE STRING "preferred path to GDAL (gdal-config) from FWTools")
     FIND_PROGRAM(GDAL_CONFIG gdal-config
       ${GDAL_CONFIG_PREFER_PATH}
+      ${GDAL_CONFIG_PREFER_FWTOOLS_PATH}
       ${GDAL_MAC_PATH}
       /usr/local/bin/
       /usr/bin/
