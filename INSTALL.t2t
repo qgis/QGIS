@@ -1507,9 +1507,13 @@ Microsoft Windows Core SDK
   + Source Code                                 (No)
     + AMD 64 Source                             (No)
     + Intel 64 Source                           (No)
-Microsoft Web Workshop                          (No)
+Microsoft Web Workshop                          (Yes) (needed for shlwapi.h)
+  + Build Environment                           (Yes)
+  + Documentation                               (No)
+  + Sample Code                                 (No)
+  + Tools                                       (No)
 Microsoft Internet Information Server (IIS) SDK (No)
-Microsoft Data Access Services (MDAC) SDK
+Microsoft Data Access Services (MDAC) SDK       (Yes) (needed by GDAL for odbc)
   + Tools
     + Tools (AMD 64 Bit)                        (No)
     + Tools (AMD 64 Bit)                        (No)
@@ -1535,6 +1539,15 @@ Microsoft Genuine Advantage application. Some people have a philosophical
 objection to installing this software on their computers. If you are one 
 of them you should probably consider using the MINGW build instructions 
 described elsewhere in this document.
+
+
+The SDK installs a directory called
+
+```
+C:\Office10
+```
+
+Which you can safely remove.
 
 After the SDK is installed, follow the remaining notes on the page link 
 above to get your MSVC Express environment configured correctly. For your 
@@ -1614,7 +1627,7 @@ and replace it with this one:
 @rem added by Tim
 @set INCLUDE=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include;%INCLUDE%
 @set INCLUDE=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include\mfc;%INCLUDE%
-@set INCLUDE=%INCLUDE%;C:\dev\cpp\qgislibs-release\include\postgres
+@set INCLUDE=%INCLUDE%;C:\dev\cpp\qgislibs-release\include\postgresql
 @set LIB=C:\Program Files\Microsoft Visual Studio 8\VC\LIB;C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\lib;%LIB%
 @rem added by Tim
 @set LIB=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib;%LIB%
@@ -1690,6 +1703,10 @@ nmake install
 Add -qt-sql-odbc -qt-sql-psql to the configure line if your want odbc and
 PostgreSQL support build into Qt.
 
+/!\ Note: For me in some cases I got a build error on qscreenshot.pro. If you
+are only interested in having the libraries needed for building Qt apps, you 
+can probably ignore that. Just check in c:\Qt\4.3.2\bin to check all dlls and 
+helper apps (assistant etc) have been made.
 
 === Configure Visual C++ to use Qt ===
 
@@ -1727,7 +1744,7 @@ Hint:  You can also add
 QString = t=<d->data, su>, size=<d->size, i>
 ```
 
-to AutoExp.DAT in C:\Program Files\Microsoft Visual Studio 8\Common7\Packages\Debugger in front of
+to AutoExp.DAT in C:\Program Files\Microsoft Visual Studio 8\Common7\Packages\Debugger before 
 
 ```
 [Visualizer]
@@ -1784,9 +1801,55 @@ som misleadingly named similar downloads. Easiest is to just get this file:
 
 http://subversion.tigris.org/downloads/1.4.5-win32/apache-2.2/svn-win32-1.4.5.zip
 
+Extract the zip file to
+
+```
+C:\Program Files\svn
+```
+
+And then add
+
+```
+C:\Program Files\svn\bin
+```
+
+To your path.
 
 
+== Initial SVN Check out ==
 
+Open a cmd.exe window and do:
+
+
+```
+cd \
+cd dev
+cd cpp
+svn co https://svn.qgis.org/repos/qgis/trunk/qgis 
+```
+
+At this point you will probably get a message like this:
+
+```
+C:\dev\cpp>svn co https://svn.qgis.org/repos/qgis/trunk/qgis
+Error validating server certificate for 'https://svn.qgis.org:443':
+ - The certificate is not issued by a trusted authority. Use the
+   fingerprint to validate the certificate manually!
+Certificate information:
+ - Hostname: svn.qgis.org
+ - Valid: from Sat, 01 Apr 2006 03:30:47 GMT until Fri, 21 Mar 2008 03:30:47 GMT
+ - Issuer: Developer Team, Quantum GIS, Anchorage, Alaska, US
+ - Fingerprint: 2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b
+(R)eject, accept (t)emporarily or accept (p)ermanently?
+```
+
+Press 'p' to accept and the svn checkout will commence.
+
+== Create Makefiles using cmakesetup.exe ==
+
+```
+cd qgis
+```
 
 
 
@@ -1800,10 +1863,15 @@ The following people have contributed to this document:
  - Python additions Martin Dobias 2007
  - With thanks to Tisham Dhar for preparing the initial msys environment
 
-- Windows MSVC Section
+- Windows MSVC Section (Detailed install)
  - David Willis 2007
  - MSVC install additions Tim Sutton 2007
  - PostgreSQL, Qt compile, SIP, Python, AutoExp additions Juergen Fischer 2007
+
+
+- Windows MSVC Section (Simplified install)
+ - Tim Sutton 2007
+ - Juergen Fischer 2007
 
 - OSX Section
  - Tim Sutton, 2007
