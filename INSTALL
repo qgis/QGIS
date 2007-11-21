@@ -72,18 +72,28 @@
       7.1.2. All Editions
     7.2. Download/Install Dependencies
       7.2.1. Flex and Bison
-      7.2.2. Qt
-      7.2.3. Proj.4
-      7.2.4. GSL
-      7.2.5. GEOS
-      7.2.6. GDAL
-      7.2.7. PostGIS
-      7.2.8. Expat
-      7.2.9. CMake
+      7.2.2. To include  PostgreSQL support in Qt
+      7.2.3. Qt
+      7.2.4. Proj.4
+      7.2.5. GSL
+      7.2.6. GEOS
+      7.2.7. GDAL
+      7.2.8. PostGIS
+      7.2.9. Expat
+      7.2.10. CMake
     7.3. Building QGIS with CMAKE
   8. Building under Windows using MSVC Express
     8.1. System preparation
-    8.2. Install Visual Studio Express 2005
+    8.2. Install the libraries archive
+    8.3. Install Visual Studio Express 2005
+    8.4. Install Microsoft Platform SDK2
+    8.5. Edit your vsvars
+    8.6. Environment Variables
+    8.7. Install CMake
+    8.8. Install Subversion
+    8.9. Initial SVN Check out
+    8.10. Create Makefiles using cmakesetup.exe
+    8.11. Running and packaging
   9. Authors and Acknowledgments
 
 
@@ -1371,7 +1381,52 @@ Download the following packages and run the installers:
 	http://gnuwin32.sourceforge.net/downlinks/bison.php
 
 
-		7.2.2. Qt
+		7.2.2. To include  PostgreSQL support in Qt
+		===========================================
+
+If you want to build Qt with PostgreSQL support you need to download
+PostgreSQL, install it and create a library you can later link with Qt.
+
+Download from .../binary/v8.2.5/win32/postgresql-8.2.5-1.zip from an
+PostgreSQL.org Mirror and install.
+
+PostgreSQL is currently build with MinGW and comes with headers and libraries
+for MinGW.  The headers can be used with Visual C++ out of the box, but the library
+is only shipped in DLL and archive (.a) form and therefore cannot be used with
+Visual C++ directly.
+
+To create a library copy following sed script to the file mkdef.sed in
+PostgreSQL lib directory:
+
+
+  /Dump of file / {
+  	s/Dump of file \([^	 ]*\)$/LIBRARY \1/p
+  	a\
+  EXPORTS
+  }
+  /[ 	]*ordinal hint/,/^[	]*Summary/ {
+   /^[ 	]\+[0-9]\+/ {
+     s/^[ 	]\+[0-9]\+[ 	]\+[0-9A-Fa-f]\+[ 	]\+[0-9A-Fa-f]\+[ 	]\+\([^ 	=]\+\).*$/	\1/p
+   }
+  }
+
+
+and process execute in the Visual Studio C++ command line (from Programs menu):
+
+
+  cd c:\Program Files\PostgreSQL\8.2\bin
+  dumpbin /exports ..\bin\libpq.dll | sed -nf ../lib/mkdef.sed >..\lib\libpq.def
+  cd ..\lib
+  lib /def:libpq.def /machine:x86
+
+
+You'll need an sed for that to work in your path (e.g. from cygwin or msys).
+
+That's almost it.  You only need to the include and lib path to INCLUDE and LIB
+in vcvars.bat respectively.
+
+
+		7.2.3. Qt
 		=========
 
 Build Qt following the instructions here:
@@ -1379,7 +1434,7 @@ Build Qt following the instructions here:
 	http://wiki.qgis.org/qgiswiki/Building_QT_4_with_Visual_C%2B%2B_2005
 
 
-		7.2.3. Proj.4
+		7.2.4. Proj.4
 		=============
 
 Get proj.4 source from here:
@@ -1409,7 +1464,7 @@ Install by running the following in the top level directory setting PROJ_DIR as 
 This can also be added to a batch file.
 
 
-		7.2.4. GSL
+		7.2.5. GSL
 		==========
 
 Get gsl source from here:
@@ -1418,7 +1473,7 @@ Get gsl source from here:
 Build using the gsl.sln file
 
 
-		7.2.5. GEOS
+		7.2.6. GEOS
 		===========
 
 Get geos from svn (svn checkout http://svn.refractions.net/geos/trunk geos).
@@ -1454,7 +1509,7 @@ Run the following in top level directory, setting GEOS_DIR as appropriate:
 This can also be added to a batch file.
 
 
-		7.2.6. GDAL
+		7.2.7. GDAL
 		===========
 
 Get gdal from svn (svn checkout https://svn.osgeo.org/gdal/branches/1.4/gdal gdal).
@@ -1474,7 +1529,7 @@ and
 
 
 
-		7.2.7. PostGIS
+		7.2.8. PostGIS
 		==============
 
 Get PostGIS and the Windows version of PostgreSQL from here:
@@ -1483,7 +1538,7 @@ Get PostGIS and the Windows version of PostgreSQL from here:
 Note the warning about not installing the version of PostGIS that comes with the PostgreSQL installer. Simply run the installers.
 
 
-		7.2.8. Expat
+		7.2.9. Expat
 		============
 
 Get expat from here:
@@ -1494,8 +1549,8 @@ You'll need expat-win32bin-2.0.1.exe.
 Simply run the executable to install expat.
 
 
-		7.2.9. CMake
-		============
+		7.2.10. CMake
+		=============
 
 Get CMake from here:
 
@@ -1542,6 +1597,8 @@ following dont work yet: python, grass, postgis connections.
 /!\ This section of the document is in draft form and is not ready to be used
 yet.
 
+Tim Sutton, 2007
+
 
 	8.1. System preparation
 	=======================
@@ -1555,6 +1612,7 @@ specific build documentation and support. Lets go over the process in a nutshell
 before we begin:
 
  * Install XP (I used a Parallels virtual machine)
+ * Install the premade libraries archive I have made for you
  * Install Visual Studio Express 2005 sp1
  * Install the Microsoft Platform SDK
  * Install command line subversion client
@@ -1565,21 +1623,524 @@ before we begin:
  * Create setup.exe installer for QGIS
 
 
-	8.2. Install Visual Studio Express 2005
+	8.2. Install the libraries archive
+	==================================
+
+Half of the point of this section of the MSVC setup procedure is to make 
+things as simple as possible for you. To that end I have prepared an
+archive that includes all dependencies needed to build QGIS except Qt 
+(which we will build further down). Fetch the archive from:
+
+
+  http://qgis.org/uploadfiles/msvc/qgis_msvc_deps_except_qt4.zip
+
+
+Create the following directory structure:
+
+
+  c:\dev\cpp\
+
+
+And then extract the libraries archive into a subdirectory of the above
+directory so that you end up with:
+
+
+  c:\dev\cpp\qgislibs-release
+
+
+/!\ Note that you are not obliged to use this directory layout, but you 
+should adjust any instructions that follow if you plan to do things 
+differently.
+
+
+	8.3. Install Visual Studio Express 2005
 	=======================================
 
-Get this Visual Studio Express 2005 sp1 for C++ here:
+First thing we need to get is MSVC Express from here:
 
 http://msdn2.microsoft.com/en-us/express/aa975050.aspx
 
-The above page is confusing as it has lots of other stuff on it - just scroll 
-down until you find a link labelled "Download Visual C++ 2005 Express SP1 »"
+The page is really confusing so dont feel bad if you cant actually find the 
+download at first! There are six coloured blocks on the page for the various  
+studio family members (vb / c# / j# etc). Simply choose your language under 
+the 'select your language' combo under the yellow C++ block, and your download 
+will begin. Under internet explorer I had to disable popup blocking for the 
+download to be able to commence.
+
+Once the setup commences you will be prompted with various options. Here is what 
+I chose :
+
+ * Send useage information to Microsoft   (No)
+ * Install options:
+   * Graphical IDE                        (Yes)
+   * Microsoft MSDN Express Edition       (No)
+   * Microsoft SQL Server Express Edition (No)
+ * Install to folder: C:\Program Files\Microsoft Visual Studio 8\   (default)
+
+It will need to download around 90mb of installation files and reports 
+that the install will consume 554mb of disk space.
+
+
+	8.4. Install Microsoft Platform SDK2
+	====================================
+
+Go to this page:
+
+http://msdn2.microsoft.com/en-us/express/aa700755.aspx
+
+Start by using the link provided on the above page to download and install the
+platform SDK2.
+
+The actual SDK download page is once again a bit confusing since the links for 
+downloading are hidden amongst a bunch of other links. Basically look for these 
+three links with their associated 'Download' buttons and choose the correct 
+link for your platform:
+
+
+  PSDK-amd64.exe  1.2 MB  Download 
+  PSDK-ia64.exe   1.3 MB  Download 
+  PSDK-x86.exe    1.2 MB  Download
+
+
+When you install make sure to choose 'custom install'. These instructions 
+assume you are installing into the default path of:
+
+
+  C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\
+
+
+We will go for the minimal install that will give us a working environment, 
+so on the custom installation screen I made the following choices:
+
+
+  Configuration Options
+    + Register Environmental Variables            (Yes)
+  Microsoft Windows Core SDK
+    + Tools                                       (Yes)
+      + Tools (AMD 64 Bit)                        (No unless this applies)
+      + Tools (Intel 64 Bit)                      (No unless this applies)
+    + Build Environment
+      + Build Environment (AMD 64 Bit)            (No unless this applies)
+      + Build Environment (Intel 64 Bit)          (No unless this applies)
+      + Build Environment (x86 32 Bit)            (Yes)
+    + Documentation                               (No)
+    + Redistributable Components                  (Yes)
+    + Sample Code                                 (No)
+    + Source Code                                 (No)
+      + AMD 64 Source                             (No)
+      + Intel 64 Source                           (No)
+  Microsoft Web Workshop                          (Yes) (needed for shlwapi.h)
+    + Build Environment                           (Yes)
+    + Documentation                               (No)
+    + Sample Code                                 (No)
+    + Tools                                       (No)
+  Microsoft Internet Information Server (IIS) SDK (No)
+  Microsoft Data Access Services (MDAC) SDK       (Yes) (needed by GDAL for odbc)
+    + Tools
+      + Tools (AMD 64 Bit)                        (No)
+      + Tools (AMD 64 Bit)                        (No)
+      + Tools (x86 32 Bit)                        (Yes)
+    + Build Environment
+      + Tools (AMD 64 Bit)                        (No)
+      + Tools (AMD 64 Bit)                        (No)
+      + Tools (x86 32 Bit)                        (Yes)
+    + Documentation                               (No)
+    + Sample Code                                 (No)
+  Microsodt Installer SDK                         (No)
+  Microsoft Table PC SDK                          (No)
+  Microsoft Windows Management Instrumentation    (No)
+  Microsoft DirectShow SDK                        (No)
+  Microsoft Media Services SDK                    (No)
+  Debuggin Tools for Windows                      (Yes)
+
+
+/!\ Note that you can always come back later to add extra bits if you like.
+
+/!\ Note that installing the SDK requires validation with the 
+Microsoft Genuine Advantage application. Some people have a philosophical 
+objection to installing this software on their computers. If you are one 
+of them you should probably consider using the MINGW build instructions 
+described elsewhere in this document.
+
+The SDK installs a directory called
+
+
+  C:\Office10
+
+
+Which you can safely remove.
+
+After the SDK is installed, follow the remaining notes on the page link 
+above to get your MSVC Express environment configured correctly. For your 
+convenience, these are summarised again below, and I have added a couple 
+more paths that I discovered were needed:
+
+1) open Visual Studio Express IDE
+
+2) Tools -> Options -> Projects and Solutions -> VC++ Directories
+
+3) Add:
+
+
+  Executable files: 
+    C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin
+  
+  Include files: 
+    C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include
+    C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include\atl
+    C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include\mfc
+  Library files: C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib
+
+
+4) Close MSVC Express IDE
+
+5) Open the following file with notepad:
+
+
+  C:\Program Files\Microsoft Visual Studio 8\VC\VCProjectDefaults\corewin_express.vsprops
+
+
+and change the property:
+
+
+  AdditionalDependencies="kernel32.lib"
+
+
+To read:
+
+
+  AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib 
+                          advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib"
+
+
+The notes go on to show how to build a mswin32 application which you can try if you like - 
+I'm not going to recover that here.
+
+
+	8.5. Edit your vsvars
+	=====================
+
+Backup your vsvars32.bat file in 
+
+
+  C:\Program Files\Microsoft Visual Studio 8\Common7\Tools
+
+
+and replace it with this one:
+
+
+  @SET VSINSTALLDIR=C:\Program Files\Microsoft Visual Studio 8
+  @SET VCINSTALLDIR=C:\Program Files\Microsoft Visual Studio 8\VC
+  @SET FrameworkDir=C:\WINDOWS\Microsoft.NET\Framework
+  @SET FrameworkVersion=v2.0.50727
+  @SET FrameworkSDKDir=C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0
+  @if "%VSINSTALLDIR%"=="" goto error_no_VSINSTALLDIR
+  @if "%VCINSTALLDIR%"=="" goto error_no_VCINSTALLDIR
+  
+  @echo Setting environment for using Microsoft Visual Studio 2005 x86 tools.
+  
+  @rem
+  @rem Root of Visual Studio IDE installed files.
+  @rem
+  @set DevEnvDir=C:\Program Files\Microsoft Visual Studio 8\Common7\IDE
+  
+  @set PATH=C:\Program Files\Microsoft Visual Studio 8\Common7\IDE;C:\Program Files\Microsoft Visual Studio 8\VC\BIN;C:\Program Files\Microsoft Visual Studio 8\Common7\Tools;C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\bin;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727;C:\Program Files\Microsoft Visual Studio 8\VC\VCPackages;%PATH%
+  @rem added by Tim
+  @set PATH=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin;%PATH%
+  @set INCLUDE=C:\Program Files\Microsoft Visual Studio 8\VC\INCLUDE;%INCLUDE%
+  @rem added by Tim
+  @set INCLUDE=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include;%INCLUDE%
+  @set INCLUDE=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include\mfc;%INCLUDE%
+  @set INCLUDE=%INCLUDE%;C:\dev\cpp\qgislibs-release\include\postgresql
+  @set LIB=C:\Program Files\Microsoft Visual Studio 8\VC\LIB;C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\lib;%LIB%
+  @rem added by Tim
+  @set LIB=C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib;%LIB%
+  @set LIB=%LIB%;C:\dev\cpp\qgislibs-release\lib
+  @set LIBPATH=C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
+  
+  @goto end
+  
+  :error_no_VSINSTALLDIR
+  @echo ERROR: VSINSTALLDIR variable is not set. 
+  @goto end
+  
+  :error_no_VCINSTALLDIR
+  @echo ERROR: VCINSTALLDIR variable is not set. 
+  @goto end
+  
+  :end
+  
+
+
+
+	8.6. Environment Variables
+	==========================
+
+Right click on 'My computer' then select the 'Advanced' tab. Click environment variables and 
+create or augment the following '''System''' variables (if they dont already exist):
+
+
+  Variable Name:     Value:
+  --------------------------------------------------------------------------
+  EDITOR             vim
+  INCLUDE            C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include\.
+  LIB                C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib\.
+  LIB_DIR            C:\dev\cpp\qgislibs-release
+  PATH               C:\Program Files\CMake 2.4\bin;
+                     %SystemRoot%\system32;
+                     %SystemRoot%;
+                     %SystemRoot%\System32\Wbem;
+                     C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin\.;
+                     C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin\WinNT\;
+                     C:\Program Files\svn\bin;C:\Program Files\Microsoft Visual Studio 8\VC\bin;
+                     C:\Program Files\Microsoft Visual Studio 8\Common7\IDE;
+                     "c:\Program Files\Microsoft Visual Studio 8\Common7\Tools";
+                     c:\Qt\4.3.2\bin;
+                     "C:\Program Files\PuTTY"
+  QTDIR              c:\Qt\4.3.2
+  SVN_SSH            "C:\\Program Files\\PuTTY\\plink.exe"
+  
+  == Building Qt4.3.2 ==
+  
+  You need a minimum of Qt 4.3.2 here since this is the first version to officially 
+  support building the open source version of Qt for windows under MSVC.
+  
+  Download Qt 4.x.x source for windows from
+  
+
+http:\\www.trolltech.com
+
+
+  
+  Unpack the source to 
+  
+
+c:\Qt\4.x.x\
+
+
+  
+  === Compile Qt ===
+  
+  Open the Visual Studio C++ command line and cd to c:\Qt\4.x.x where you
+  extracted the source and enter:
+  
+  configure -platform win32-msvc2005
+  nmake
+  nmake install
+  
+  Add -qt-sql-odbc -qt-sql-psql to the configure line if your want odbc and
+  PostgreSQL support build into Qt.
+  
+  /!\ Note: For me in some cases I got a build error on qscreenshot.pro. If you
+  are only interested in having the libraries needed for building Qt apps, you 
+  can probably ignore that. Just check in c:\Qt\4.3.2\bin to check all dlls and 
+  helper apps (assistant etc) have been made.
+  
+  === Configure Visual C++ to use Qt ===
+  
+  After building configure the Visual Studio Express IDE to use Qt:
+  
+  1) open Visual Studio Express IDE
+  
+  2) Tools -> Options -> Projects and Solutions -> VC++ Directories
+  
+  3) Add:
+
+Executable files: 
+  $(QTDIR)\bin
+
+Include files: 
+  $(QTDIR)\include
+  $(QTDIR)\include\Qt
+  $(QTDIR)\include\QtCore
+  $(QTDIR)\include\QtGui
+  $(QTDIR)\include\QtNetwork
+  $(QTDIR)\include\QtSvg
+  $(QTDIR)\include\QtXml
+  $(QTDIR)\include\Qt3Support
+  $(LIB_DIR)\include   (needed during qgis compile to find stdint.h and unistd.h)
+
+Library files: 
+  $(QTDIR)\lib
+
+Source Files:
+  $(QTDIR)\src
+
+
+  
+  Hint:  You can also add
+  
+
+QString = t=<d->data, su>, size=<d->size, i>
+
+
+  
+  to AutoExp.DAT in C:\Program Files\Microsoft Visual Studio 8\Common7\Packages\Debugger before 
+  
+
+[Visualizer]
+
+
+  
+  That way the Debugger will show the contents of QString when you point at or
+  watch a variable in the debugger.  There are probably much more additions -
+  feel free to add some - I just needed QString and took the first hit in google
+  I could find.
+  
+  
+  
+    
+  == Install Python ==
+  
+  Download http://python.org/ftp/python/2.5.1/python-2.5.1.msi and install it.
+  
+  
+  
+  == Install SIP ==
+  
+  Download http://www.riverbankcomputing.com/Downloads/sip4/sip-4.7.1.zip and extract it 
+  into your c:\dev\cpp directory.
+  From a Visual C++ command line cd to the directory where you extract SIP and run:
+  
+
+c:\python25\python configure.py -p win32-msvc2005
+nmake
+nmake install
+
+
+  
+  == Install PyQt4 ==
+  
+  Download http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/PyQt-win-gpl-4.3.1.zip and extract it 
+  into your c:\dev\cpp directory.
+  From a Visual C++ command line cd to the directory where you extracted PyQt4 and run:
+  
+
+c:\python25\python configure.py -p win32-msvc2005
+nmake
+nmake install
+````
+
+
+	8.7. Install CMake
+	==================
+
+Download and install cmake 2.4.7 or better, making sure to enable the 
+option
+
+
+  Update path for all users
+
+
+
+	8.8. Install Subversion
+	=======================
+
+You '''must''' install the command line version if you want the CMake svn scripts to work.
+Its a bit tricky to find the correct version on the subversion download site as they have 
+som misleadingly named similar downloads. Easiest is to just get this file:
+
+http://subversion.tigris.org/downloads/1.4.5-win32/apache-2.2/svn-win32-1.4.5.zip
+
+Extract the zip file to
+
+
+  C:\Program Files\svn
+
+
+And then add
+
+
+  C:\Program Files\svn\bin
+
+
+To your path.
+
+
+	8.9. Initial SVN Check out
+	==========================
+
+Open a cmd.exe window and do:
+
+
+  cd \
+  cd dev
+  cd cpp
+  svn co https://svn.qgis.org/repos/qgis/trunk/qgis 
+
+
+At this point you will probably get a message like this:
+
+
+  C:\dev\cpp>svn co https://svn.qgis.org/repos/qgis/trunk/qgis
+  Error validating server certificate for 'https://svn.qgis.org:443':
+   - The certificate is not issued by a trusted authority. Use the
+     fingerprint to validate the certificate manually!
+  Certificate information:
+   - Hostname: svn.qgis.org
+   - Valid: from Sat, 01 Apr 2006 03:30:47 GMT until Fri, 21 Mar 2008 03:30:47 GMT
+   - Issuer: Developer Team, Quantum GIS, Anchorage, Alaska, US
+   - Fingerprint: 2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b
+  (R)eject, accept (t)emporarily or accept (p)ermanently?
+
+
+Press 'p' to accept and the svn checkout will commence.
+
+
+	8.10. Create Makefiles using cmakesetup.exe
+	===========================================
+
+I wont be giving a detailed description of the build process, because 
+the process is explained in the first section (where you manually build 
+all dependencies) of the windows build notes in this document. Just skip 
+past the parts where you need to build GDAL etc, since this simplified 
+install process does all the dependency provisioning for you.
+
+
+  cd qgis
+  mkdir build
+  cd build
+  cmakesetup ..
+
+
+Cmakesetup should find all dependencies for you automatically (it uses the 
+LIB_DIR environment to find them all in c:\dev\cpp\qgislibs-release). 
+Press configure again after the cmakesetup gui appears and when all the red 
+fields are gone, and you have made any personalisations to the setup, press 
+ok to close the cmake gui.
+
+Now open Visual Studio Express and do:
+
+File -> Open -> Project / Solution
+
+Now open the cmake generated QGIS solution which should be in :
+
+
+  c:\dev\cpp\qgis\build\qgisX.X.X.sln
+
+
+Where X.X.X represents the current version number of QGIS. Currently I 
+have only made release built dependencies for QGIS (debug versions will follow 
+in future), so you need to be sure to select 'Release' from the solution 
+configurations toolbar.
+
+Next right click on ALL_BUILD in the solution browser, and then choose build.
+
+Once the build completes right click on INSTALL in the solution browser and 
+choose build. This will by default install qgis into c:\program files\qgisX.X.X.
+
+
+	8.11. Running and packaging
+	===========================
+
+To run QGIS you need to at the minimum copy the dlls from c:\dev\cpp\qgislibs-release\bin 
+into the c:\program files\qgisX.X.X directory.
 
 
   9. Authors and Acknowledgments
   ==============================
 
-The follwing people have contributed to this document:
+The following people have contributed to this document:
 
 - Windows MINGW Section
  - Tim Sutton, Godofredo Contreras 2006
@@ -1587,8 +2148,14 @@ The follwing people have contributed to this document:
  - Python additions Martin Dobias 2007
  - With thanks to Tisham Dhar for preparing the initial msys environment
 
-- Windows MSVC Section
+- Windows MSVC Section (Detailed install)
  - David Willis 2007
+ - MSVC install additions Tim Sutton 2007
+ - PostgreSQL, Qt compile, SIP, Python, AutoExp additions Juergen Fischer 2007
+
+- Windows MSVC Section (Simplified install)
+ - Tim Sutton 2007
+ - Juergen Fischer 2007
 
 - OSX Section
  - Tim Sutton, 2007
