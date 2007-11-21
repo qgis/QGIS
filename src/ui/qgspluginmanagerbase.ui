@@ -16,40 +16,19 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
-   <property name="leftMargin" >
-    <number>10</number>
+   <property name="margin" >
+    <number>11</number>
    </property>
-   <property name="topMargin" >
-    <number>10</number>
-   </property>
-   <property name="rightMargin" >
-    <number>10</number>
-   </property>
-   <property name="bottomMargin" >
-    <number>10</number>
-   </property>
-   <property name="horizontalSpacing" >
-    <number>6</number>
-   </property>
-   <property name="verticalSpacing" >
+   <property name="spacing" >
     <number>6</number>
    </property>
    <item row="0" column="0" >
     <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>11</number>
+     </property>
      <property name="spacing" >
       <number>6</number>
-     </property>
-     <property name="leftMargin" >
-      <number>0</number>
-     </property>
-     <property name="topMargin" >
-      <number>0</number>
-     </property>
-     <property name="rightMargin" >
-      <number>0</number>
-     </property>
-     <property name="bottomMargin" >
-      <number>0</number>
      </property>
      <item>
       <widget class="QLabel" name="textLabel1" >
@@ -63,6 +42,9 @@
      </item>
      <item>
       <widget class="QLineEdit" name="txtPluginDir" >
+       <property name="windowModality" >
+        <enum>Qt::NonModal</enum>
+       </property>
        <property name="readOnly" >
         <bool>true</bool>
        </property>
@@ -114,20 +96,11 @@
    </item>
    <item row="3" column="0" >
     <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>11</number>
+     </property>
      <property name="spacing" >
       <number>6</number>
-     </property>
-     <property name="leftMargin" >
-      <number>0</number>
-     </property>
-     <property name="topMargin" >
-      <number>0</number>
-     </property>
-     <property name="rightMargin" >
-      <number>0</number>
-     </property>
-     <property name="bottomMargin" >
-      <number>0</number>
      </property>
      <item>
       <spacer>
