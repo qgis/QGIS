@@ -166,9 +166,12 @@ QgsComposerScalebar::~QgsComposerScalebar()
   QGraphicsItem::hide();
 }
 
+#define FONT_WORKAROUND_SCALE 10
 QRectF QgsComposerScalebar::render(QPainter * p)
 {
-  std::cout << "QgsComposerScalebar::render p = " << p << std::endl;
+#ifdef QGISDEBUG
+  std::cout << "QgsComposerScalebar::render() "<< std::endl;
+#endif
 
   // Painter can be 0, create dummy to avoid many if below
   QPainter *painter;
@@ -181,8 +184,9 @@ QRectF QgsComposerScalebar::render(QPainter * p)
     pixmap = new QPixmap(1, 1);
     painter = new QPainter(pixmap);
   }
-
+#ifdef QGISDEBUG
   std::cout << "mComposition->scale() = " << mComposition->scale() << std::endl;
+#endif
 
   QgsComposerMap *map = mComposition->map(mMap); //Get the topmost map from the composition
 
@@ -242,10 +246,11 @@ QRectF QgsComposerScalebar::render(QPainter * p)
   font.setPointSizeFloat(size);
   QFontMetrics metrics(font);
 
+  font.setPointSizeFloat(size * FONT_WORKAROUND_SCALE); //hack to work around Qt font bug
+
   if (plotStyle() == QgsComposition::Postscript)
   {
-    font.setPointSizeF(metrics.ascent() * 72.0 / mComposition->resolution());
-std::cout << "scalebar using PS font size!" << std::endl;
+    font.setPointSizeF(metrics.ascent() * 72.0 / mComposition->resolution() * FONT_WORKAROUND_SCALE);
   }
 
   painter->setFont(font);
@@ -271,7 +276,11 @@ std::cout << "scalebar using PS font size!" << std::endl;
 
     double x = barLx + (i * segwidth) - shift; //figure out the bottom left corner and draw the text
     double y = -tickSize - offset - metrics.descent();
-    painter->drawText(QPointF(x, y), txt);
+
+    painter->save();
+    painter->scale(1./FONT_WORKAROUND_SCALE, 1./FONT_WORKAROUND_SCALE);
+    painter->drawText(QPointF(x * FONT_WORKAROUND_SCALE, y * FONT_WORKAROUND_SCALE), txt);
+    painter->restore();
 
   }//end of label drawing
 
@@ -289,8 +298,9 @@ return QRectF(barLx - (mPen.widthF()/2), -totalHeight, width + textRightOverhang
 
 void QgsComposerScalebar::paint(QPainter * painter, const QStyleOptionGraphicsItem * itemStyle, QWidget * pWidget)
 {
+#ifdef QGISDEBUG
   std::cout << "draw mPlotStyle = " << plotStyle() << std::endl;
-
+#endif
   mBoundingRect = render(painter);
 
   // Show selected / Highlight
