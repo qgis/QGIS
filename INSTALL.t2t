@@ -1847,10 +1847,37 @@ Press 'p' to accept and the svn checkout will commence.
 
 == Create Makefiles using cmakesetup.exe ==
 
+I wont be giving a detailed description of the build process, because the process is explained in the first section (where you manually build all dependencies) of the windows build notes in this document. Just skip past the parts where you need to build GDAL etc, since this simplified install process does all the dependency provisioning for you.
+
 ```
 cd qgis
+mkdir build
+cd build
+cmakesetup ..
 ```
 
+Cmakesetup should find all dependencies for you automatically (it uses the 
+LIB_DIR environment to find them all in c:\dev\cpp\qgislibs-release). 
+Press configure again after the cmakesetup gui appears and when all the red 
+fields are gone, and you have made any personalisations to the setup, press 
+ok to close the cmake gui.
+
+Now open Visual Studio Express and do:
+
+File -> Open -> Project / Solution
+
+Now open the cmake generated QGIS solution which should be in :
+
+```
+c:\dev\cpp\qgis\build\qgisX.X.X.sln
+```
+
+Where X.X.X represents the current version number of QGIS. Currently I 
+have only made release built dependencies for QGIS (debug versions will follow 
+in future), so you need to be sure to select 'Release' from the solution 
+configurations toolbar.
+
+Next right click on ALL_BUILD in the solution browser, and then choose build.
 
 
 = Authors and Acknowledgments =
