@@ -185,10 +185,10 @@ private:
     // Pen
     QPen  mPen;
 
-    int mMargin;
-    int mSymbolHeight;
-    int mSymbolWidth;
-    int mSymbolSpace;
+    double mMargin;
+    double mSymbolHeight;
+    double mSymbolWidth;
+    double mSymbolSpace;
 
     // Cache used in composer preview
     // NOTE:  QCanvasView is slow with bigger images but the spped does not decrease with image size.
