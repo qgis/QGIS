@@ -144,82 +144,8 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
   calculateExtents();
   getFeatureCount();
 
-  // Get the relation oid for use in later queries
-  sql = "SELECT oid FROM pg_class WHERE relname = '" + mTableName + "' AND relnamespace = ("
-"SELECT oid FROM pg_namespace WHERE nspname = '" + mSchemaName + "')";
-  PGresult *tresult= PQexec(connection, (const char *)(sql.utf8()));
-  QString tableoid = PQgetvalue(tresult, 0, 0);
-  PQclear(tresult);
-
-  // Get the table description
-  sql = "SELECT description FROM pg_description WHERE "
-      "objoid = " + tableoid + " AND objsubid = 0";
-  tresult = PQexec(connection, (const char*) sql.utf8());
-  if (PQntuples(tresult) > 0)
-    mDataComment = PQgetvalue(tresult, 0, 0);
-  PQclear(tresult);
-
-  // Populate the field vector for this layer. The field vector contains
-  // field name, type, length, and precision (if numeric)
-  sql = "select * from " + mSchemaTableName + " limit 0";
-
-  PGresult *result = PQexec(connection, (const char *) (sql.utf8()));
-  //--std::cout << "Field: Name, Type, Size, Modifier:" << std::endl;
-
-  // The queries inside this loop could possibly be combined into one
-  // single query - this would make the code run faster.
-
-  for (int i=0; i < PQnfields(result); i++)
-  {
-    QString fieldName = PQfname(result, i);
-    int fldtyp = PQftype(result, i);
-    QString typOid = QString().setNum(fldtyp);
-    int fieldModifier = PQfmod(result, i);
-    QString fieldComment("");
-
-    sql = "SELECT typname, typlen FROM pg_type WHERE "
-        "oid = (SELECT typelem FROM pg_type WHERE "
-        "typelem = " + typOid + " AND typlen = -1)";
-
-    PGresult* oidResult = PQexec(connection, (const char *) sql);
-    QString fieldTypeName = PQgetvalue(oidResult, 0, 0);
-    QString fieldSize = PQgetvalue(oidResult, 0, 1);
-    PQclear(oidResult);
-
-    sql = "SELECT attnum FROM pg_attribute WHERE "
-        "attrelid = " + tableoid + " AND attname = '" + fieldName + "'";
-    PGresult *tresult = PQexec(connection, (const char *)(sql.utf8()));
-    QString attnum = PQgetvalue(tresult, 0, 0);
-    PQclear(tresult);
-
-    sql = "SELECT description FROM pg_description WHERE "
-        "objoid = " + tableoid + " AND objsubid = " + attnum;
-    tresult = PQexec(connection, (const char*)(sql.utf8()));
-    if (PQntuples(tresult) > 0)
-      fieldComment = PQgetvalue(tresult, 0, 0);
-    PQclear(tresult);
-
-    QgsDebugMsg("Field: " + attnum + " maps to " + QString::number( i ) + " " + fieldName + ", " 
-      + fieldTypeName + " (" + QString::number(fldtyp) + "),  " + fieldSize + ", " + QString::number(fieldModifier));
-
-    if(fieldName!=geometryColumn)
-    {
-    
-      QVariant::Type fieldType;
-      if (fieldTypeName.find("int") != -1 || fieldTypeName.find("serial") != -1)
-        fieldType = QVariant::Int;
-      else if (fieldTypeName == "real" || fieldTypeName == "double precision" || \
-        fieldTypeName.find("float") != -1)
-        fieldType = QVariant::Double;
-      else if (fieldTypeName != "bytea" )
-        fieldType = QVariant::String;
-      else
-	continue;
-
-      attributeFields.insert(i, QgsField(fieldName, fieldType, fieldTypeName, fieldSize.toInt(), fieldModifier, fieldComment));
-    }
-  }
-  PQclear(result);
+  // load the field list
+  loadFields();
 
   // set the primary key
   getPrimaryKey();
@@ -778,6 +704,7 @@ void QgsPostgresProvider::reset()
   QString move = "move 0 in qgisf"; //move cursor to first record
   PQexec(connection, (const char *)(move.utf8()));
   mFeatureQueue.empty();
+  loadFields();
 }
 
 /** @todo XXX Perhaps this should be promoted to QgsDataProvider? */
@@ -794,6 +721,84 @@ QString QgsPostgresProvider::endianString()
     default :
       return QString("UNKNOWN");
   }
+}
+
+void QgsPostgresProvider::loadFields()
+{
+  QgsDebugMsg("Loading fields for table " + mTableName);
+
+  // Get the relation oid for use in later queries
+  QString sql = "SELECT oid FROM pg_class WHERE relname = '" + mTableName + "' AND relnamespace = ("
+              "SELECT oid FROM pg_namespace WHERE nspname = '" + mSchemaName + "')";
+  PGresult *tresult= PQexec(connection, (const char *)(sql.utf8()));
+  QString tableoid = PQgetvalue(tresult, 0, 0);
+  PQclear(tresult);
+
+  // Get the table description
+  sql = "SELECT description FROM pg_description WHERE "
+      "objoid = " + tableoid + " AND objsubid = 0";
+  tresult = PQexec(connection, (const char*) sql.utf8());
+  if (PQntuples(tresult) > 0)
+    mDataComment = PQgetvalue(tresult, 0, 0);
+  PQclear(tresult);
+
+  // Populate the field vector for this layer. The field vector contains
+  // field name, type, length, and precision (if numeric)
+  sql = "select * from " + mSchemaTableName + " limit 0";
+
+  PGresult *result = PQexec(connection, (const char *) (sql.utf8()));
+  //--std::cout << "Field: Name, Type, Size, Modifier:" << std::endl;
+
+  // The queries inside this loop could possibly be combined into one
+  // single query - this would make the code run faster.
+
+  for (int i = 0; i < PQnfields(result); i++)
+  {
+    QString fieldName = PQfname(result, i);
+    int fldtyp = PQftype(result, i);
+    QString typOid = QString().setNum(fldtyp);
+    int fieldModifier = PQfmod(result, i);
+    QString fieldComment("");
+
+    sql = "SELECT typname, typlen FROM pg_type WHERE "
+        "oid = (SELECT typelem FROM pg_type WHERE "
+        "typelem = " + typOid + " AND typlen = -1)";
+
+    PGresult* oidResult = PQexec(connection, (const char *) sql);
+    QString fieldTypeName = PQgetvalue(oidResult, 0, 0);
+    QString fieldSize = PQgetvalue(oidResult, 0, 1);
+    PQclear(oidResult);
+
+    sql = "SELECT attnum FROM pg_attribute WHERE "
+        "attrelid = " + tableoid + " AND attname = '" + fieldName + "'";
+    PGresult *tresult = PQexec(connection, (const char *)(sql.utf8()));
+    QString attnum = PQgetvalue(tresult, 0, 0);
+    PQclear(tresult);
+
+    sql = "SELECT description FROM pg_description WHERE "
+        "objoid = " + tableoid + " AND objsubid = " + attnum;
+    tresult = PQexec(connection, (const char*)(sql.utf8()));
+    if (PQntuples(tresult) > 0)
+      fieldComment = PQgetvalue(tresult, 0, 0);
+    PQclear(tresult);
+
+    QgsDebugMsg("Field: " + attnum + " maps to " + QString::number(i) + " " + fieldName + ", " 
+      + fieldTypeName + " (" + QString::number(fldtyp) + "),  " + fieldSize + ", " + QString::number(fieldModifier));
+    
+    if(fieldName!=geometryColumn)
+    {
+      QVariant::Type fieldType;
+      if (fieldTypeName.find("int") != -1 || fieldTypeName.find("serial") != -1)
+        fieldType = QVariant::Int;
+      else if (fieldTypeName == "real" || fieldTypeName == "double precision" || \
+    fieldTypeName.find("float") != -1)
+        fieldType = QVariant::Double;
+      else
+        fieldType = QVariant::String;
+      attributeFields.insert(i, QgsField(fieldName, fieldType, fieldTypeName, fieldSize.toInt(), fieldModifier, fieldComment));
+    }
+  }
+  PQclear(result);
 }
 
 QString QgsPostgresProvider::getPrimaryKey()
