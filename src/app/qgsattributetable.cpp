@@ -408,7 +408,7 @@ void QgsAttributeTable::copySelectedRows()
 
 bool QgsAttributeTable::commitChanges(QgsVectorLayer* layer)
 {
-  bool isSuccessful = FALSE;
+  bool isSuccessful = false;
 
   if(layer)
   {
@@ -427,28 +427,42 @@ bool QgsAttributeTable::commitChanges(QgsVectorLayer* layer)
 	    deletedIds.insert(provider->indexFromFieldName(*it));
 	  }
 
-	QgsChangedAttributesMap attributeChanges; //convert mChangedValues to QgsChangedAttributesMap
-	int fieldIndex;
-
-	QMap<int, QMap<QString, QString> >::const_iterator att_it = mChangedValues.constBegin();
-	for(; att_it != mChangedValues.constEnd(); ++att_it)
+	isSuccessful = true;
+	if( !mAddedAttributes.empty() )
 	  {
-	    QgsAttributeMap newAttMap;
-	    QMap<QString, QString>::const_iterator record_it = att_it->constBegin();
-	    for(; record_it != att_it->constEnd(); ++record_it)
+	    // add new attributes beforehand, so attribute changes can be applied
+	    isSuccessful = layer->commitAttributeChanges(QgsAttributeIds(), mAddedAttributes, QgsChangedAttributesMap());
+          }
+
+	if(isSuccessful)
+	  {
+	    QgsChangedAttributesMap attributeChanges; //convert mChangedValues to QgsChangedAttributesMap
+	    int fieldIndex;
+
+	    QMap<int, QMap<QString, QString> >::const_iterator att_it = mChangedValues.constBegin();
+	    for(; att_it != mChangedValues.constEnd(); ++att_it)
 	      {
-		fieldIndex = provider->indexFromFieldName(record_it.key());
-		if(fieldIndex != -1)
-		  {
-		    newAttMap.insert(fieldIndex, record_it.value());
-		  }
-	      }
-	    attributeChanges.insert(att_it.key(), newAttMap);
-	  } 
-	
-	isSuccessful = layer->commitAttributeChanges(deletedIds,
-						     mAddedAttributes,
-						     attributeChanges);
+	        QgsAttributeMap newAttMap;
+	        QMap<QString, QString>::const_iterator record_it = att_it->constBegin();
+	        for(; record_it != att_it->constEnd(); ++record_it)
+	          {
+		    fieldIndex = provider->indexFromFieldName(record_it.key());
+		    if(fieldIndex != -1)
+		    {
+		       newAttMap.insert(fieldIndex, record_it.value());
+		    }
+		    else
+		      {
+		        QgsDebugMsg("Changed attribute " + record_it.key() + " not found");
+		      }
+	          }
+	        attributeChanges.insert(att_it.key(), newAttMap);
+	      } 
+
+	    isSuccessful = layer->commitAttributeChanges(deletedIds,
+                                                         QgsNewAttributesMap(),
+                                                         attributeChanges);
+	  }
       }
   }
 
