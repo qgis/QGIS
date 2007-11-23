@@ -405,8 +405,8 @@ void QgsComposerMap::sizeChanged ( void )
     writeSettings();
 }
 
-void QgsComposerMap::on_mWidthLineEdit_returnPressed ( void ) { sizeChanged(); }
-void QgsComposerMap::on_mHeightLineEdit_returnPressed ( void ) { sizeChanged(); }
+void QgsComposerMap::on_mWidthLineEdit_editingFinished ( void ) { sizeChanged(); }
+void QgsComposerMap::on_mHeightLineEdit_editingFinished ( void ) { sizeChanged(); }
 
 void QgsComposerMap::on_mCalculateComboBox_activated( int )
 {
@@ -462,10 +462,10 @@ double QgsComposerMap::userScaleFromScale ( double s )
   return us;
 }
 
-void QgsComposerMap::on_mScaleLineEdit_returnPressed()
+void QgsComposerMap::on_mScaleLineEdit_editingFinished()
 {
 #ifdef QGISDEBUG
-    std::cout << "QgsComposerMap::on_mScaleLineEdit_returnPressed" << std::endl;
+    std::cout << "QgsComposerMap::on_mScaleLineEdit_editingFinished" << std::endl;
 #endif
     mCalculate = mCalculateComboBox->currentItem();
 
@@ -497,9 +497,9 @@ void QgsComposerMap::scaleChanged ( void )
     mComposition->emitMapChanged ( mId );
 }
 
-void QgsComposerMap::on_mFontScaleLineEdit_returnPressed ( void ) { scaleChanged(); }
-void QgsComposerMap::on_mSymbolScaleLineEdit_returnPressed ( void ) { scaleChanged(); }
-void QgsComposerMap::on_mWidthScaleLineEdit_returnPressed ( void ) { scaleChanged(); }
+void QgsComposerMap::on_mFontScaleLineEdit_editingFinished ( void ) { scaleChanged(); }
+void QgsComposerMap::on_mSymbolScaleLineEdit_editingFinished ( void ) { scaleChanged(); }
+void QgsComposerMap::on_mWidthScaleLineEdit_editingFinished ( void ) { scaleChanged(); }
 
 void QgsComposerMap::mapCanvasChanged ( void ) 
 {

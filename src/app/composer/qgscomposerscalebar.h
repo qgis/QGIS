@@ -94,13 +94,13 @@ public slots:
     void on_mFontButton_clicked ( void );
 
     // Title changed
-    void on_mUnitLabelLineEdit_returnPressed ( void );
+    void on_mUnitLabelLineEdit_editingFinished ( void );
 
     // Size changed
     void on_mLineWidthSpinBox_valueChanged ( void );
-    void on_mMapUnitsPerUnitLineEdit_returnPressed ( void );
-    void on_mNumSegmentsLineEdit_returnPressed ( void );
-    void on_mSegmentLengthLineEdit_returnPressed ( void );
+    void on_mMapUnitsPerUnitLineEdit_editingFinished ( void );
+    void on_mNumSegmentsLineEdit_editingFinished ( void );
+    void on_mSegmentLengthLineEdit_editingFinished ( void );
     
     // Called by GUI when map selection changed
     void on_mMapComboBox_activated ( int i );

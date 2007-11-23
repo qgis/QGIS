@@ -89,7 +89,7 @@ public:
 
 public slots:
     // Called when picture file is changed in edit line
-    void on_mPictureLineEdit_returnPressed ( void );
+    void on_mPictureLineEdit_editingFinished ( void );
 
     // Select new picture in dialog box
     void on_mPictureBrowseButton_clicked ( void );
@@ -98,10 +98,10 @@ public slots:
     void on_mFrameCheckBox_stateChanged ( int );
 
     // Angle changed
-    void on_mAngleLineEdit_returnPressed ( void );
+    void on_mAngleLineEdit_editingFinished ( void );
 
     // Width changed
-    void on_mWidthLineEdit_returnPressed ( void );
+    void on_mWidthLineEdit_editingFinished ( void );
 
 private:
     // Pointer to composition

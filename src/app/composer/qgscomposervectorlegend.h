@@ -138,7 +138,7 @@ public slots:
     void on_mFontButton_clicked ( void );
 
     // Title changed
-    void on_mTitleLineEdit_returnPressed ( void );
+    void on_mTitleLineEdit_editingFinished ( void );
     
     // Called by GUI if preview style was changed
     void on_mPreviewModeComboBox_activated ( int i );

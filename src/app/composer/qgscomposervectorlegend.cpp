@@ -549,7 +549,7 @@ void QgsComposerVectorLegend::on_mFontButton_clicked ( void )
   }
 }
 
-void QgsComposerVectorLegend::on_mTitleLineEdit_returnPressed ( void )
+void QgsComposerVectorLegend::on_mTitleLineEdit_editingFinished ( void )
 {
     mTitle = mTitleLineEdit->text();
     recalculate();
