@@ -109,8 +109,8 @@ public:
 
 public slots:
     // Called by GUI if with or height was changed 
-    void on_mWidthLineEdit_returnPressed ( void );
-    void on_mHeightLineEdit_returnPressed ( void );
+    void on_mWidthLineEdit_editingFinished ( void );
+    void on_mHeightLineEdit_editingFinished ( void );
 
     // Set User extent to current map extent
     void on_mSetCurrentExtentButton_clicked ( void );
@@ -119,12 +119,12 @@ public slots:
     void on_mCalculateComboBox_activated ( int i );
 
     // Called by GUI if map scale has changed 
-    void on_mScaleLineEdit_returnPressed ( void );
+    void on_mScaleLineEdit_editingFinished ( void );
 
     // Called by GUI if with  scale was changed 
-    void on_mFontScaleLineEdit_returnPressed ( void );
-    void on_mSymbolScaleLineEdit_returnPressed ( void );
-    void on_mWidthScaleLineEdit_returnPressed ( void );
+    void on_mFontScaleLineEdit_editingFinished ( void );
+    void on_mSymbolScaleLineEdit_editingFinished ( void );
+    void on_mWidthScaleLineEdit_editingFinished ( void );
 
     // Frame settings changed 
     void on_mFrameCheckBox_clicked ( void );

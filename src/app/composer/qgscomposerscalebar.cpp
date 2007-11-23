@@ -340,7 +340,7 @@ void QgsComposerScalebar::on_mFontButton_clicked(void)
     }
 }
 
-void QgsComposerScalebar::on_mUnitLabelLineEdit_returnPressed()
+void QgsComposerScalebar::on_mUnitLabelLineEdit_editingFinished()
 {
   mUnitLabel = mUnitLabelLineEdit->text();
   recalculate();
@@ -384,17 +384,17 @@ void QgsComposerScalebar::on_mLineWidthSpinBox_valueChanged()
   sizeChanged();
 }
 
-void QgsComposerScalebar::on_mMapUnitsPerUnitLineEdit_returnPressed()
+void QgsComposerScalebar::on_mMapUnitsPerUnitLineEdit_editingFinished()
 {
   sizeChanged();
 }
 
-void QgsComposerScalebar::on_mNumSegmentsLineEdit_returnPressed()
+void QgsComposerScalebar::on_mNumSegmentsLineEdit_editingFinished()
 {
   sizeChanged();
 }
 
-void QgsComposerScalebar::on_mSegmentLengthLineEdit_returnPressed()
+void QgsComposerScalebar::on_mSegmentLengthLineEdit_editingFinished()
 {
   sizeChanged();
 }

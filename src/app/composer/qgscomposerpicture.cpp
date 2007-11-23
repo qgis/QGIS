@@ -341,10 +341,10 @@ void QgsComposerPicture::on_mFrameCheckBox_stateChanged ( int )
     writeSettings();
 }
 
-void QgsComposerPicture::on_mAngleLineEdit_returnPressed ( )
+void QgsComposerPicture::on_mAngleLineEdit_editingFinished ( )
 {
 #ifdef QGISDEBUG
-    std::cout << "QgsComposerPicture::on_mAngleLineEdit_returnPressed()" << std::endl;
+    std::cout << "QgsComposerPicture::on_mAngleLineEdit_editingFinished()" << std::endl;
 #endif
     mAngle = mAngleLineEdit->text().toDouble();
 
@@ -354,10 +354,10 @@ void QgsComposerPicture::on_mAngleLineEdit_returnPressed ( )
 
 }
 
-void QgsComposerPicture::on_mWidthLineEdit_returnPressed ( )
+void QgsComposerPicture::on_mWidthLineEdit_editingFinished ( )
 {
 #ifdef QGISDEBUG
-    std::cout << "QgsComposerPicture::on_mWidthLineEdit_returnPressed()" << std::endl;
+    std::cout << "QgsComposerPicture::on_mWidthLineEdit_editingFinished()" << std::endl;
 #endif
 
     mWidth = mComposition->fromMM ( mWidthLineEdit->text().toDouble() );
@@ -409,7 +409,7 @@ void QgsComposerPicture::pictureChanged ( )
     }
 }
 
-void QgsComposerPicture::on_mPictureLineEdit_returnPressed ( )
+void QgsComposerPicture::on_mPictureLineEdit_editingFinished ( )
 {
   pictureChanged();
 }
