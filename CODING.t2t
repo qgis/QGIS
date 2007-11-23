@@ -523,9 +523,65 @@ Save and close in your editor. The first time you do this, you should be prompte
 put in your username and password. Just use the same ones as your trac account.
 
 
+= Unit Testing =
 
+As of November 2007 we require all new features going into trunk to be accompanied with 
+a unit test. Initially we have limited this requirement to qgis_core, and we will extend 
+this requirement to other parts of the code base once people are familiar with the 
+procedures for unit testing explained in the sections that follow.
 
+== The QGIS testing framework  - an overview ==
 
+Unit testing is carried out using a combination of QTestLib (the Qt testing library) and 
+CTest (a framework for compiling and running tests as part of the CMake build process). 
+Lets take an overview of the process before I delve into the details:
+
+ * '''There is some code you want to test''', e.g. a class or function. Extreme programming 
+   advocates suggest that the code should not even be written yet when you start 
+   building your tests, and then as you implement your code you can immediately validate 
+   each new functional part you add with your test. In practive you will probably 
+   need to write tests for pre-existing code in QGIS since we are starting with a testing 
+   framework well after much application logic has already been implemented.
+
+ * '''You create a unit test.''' This happens under <QGIS Source Dir>/tests/src/core 
+   in the case of the core lib. The test is basically a client that creates an instance 
+   of a class and calls some methods on that class. It will check the return from each 
+   method to make sure it matches the expected value. If any one of the calls fails,
+   the unit will fail.
+
+ * '''You include QtTestLib macros in your test class.''' This macro is processed by 
+   the Qt meta object compiler (moc) and expands your test class into a runnable application. 
+
+ * '''You add a section to the CMakeLists.txt''' in your tests directory that will
+   build your test.
+
+ * '''You ensure you have ENABLE_TESTING enabled in ccmake / cmakesetup.''' This 
+   will ensure your tests actually get compiled when you type make.
+
+ * '''You optionally add test data to <QGIS Source Dir>/tests/testdata''' if your 
+   test is data driven (e.g. needs to load a shapefile). These test data should be 
+   as small as possible and wherever possible you should use the existing datasets 
+   already there. Your tests should never modify this data in situ, but rather 
+   may a temporary copy somewhere if needed.
+
+ * '''You compile your sources and install.''' Do this using normal make && (sudo) 
+   make install procedure.
+
+ * '''You run your tests.''' This is normally done simply by doing '''make test''' 
+ after the make install step, though I will explain other aproaches that offer more 
+ fine grained control over running tests.
+
+Right with that overview in mind, I will delve into a bit of detail. I've already 
+done much of the configuration for you in CMake and other places in the source tree 
+so all you need to do are the easy bits - writing unit tests!
+
+== Creating a unit test ==
+
+== Adding your unit test to CMakeLists.txt ==
+
+== Building your unit test ==
+
+== Run your tests ==
 
 = Authors =
 
