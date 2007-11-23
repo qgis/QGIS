@@ -128,9 +128,15 @@ void QgsComposer::open ( void )
   if ( mFirstTime ) {
     mComposition->createDefault();
     mFirstTime = false;
+    show();
+    zoomFull(); // zoomFull() does not work properly until we have called show()
   }
 
-  show();
+  else{
+    show(); //make sure the window is displayed - with a saved project, it's possible to not have already called show()
+            //is that a bug?
+    raise(); //bring the composer window to the front
+  }
 }
 
 void QgsComposer::removeWidgetChildren ( QWidget *w )

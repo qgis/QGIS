@@ -3103,7 +3103,6 @@ myQPainter.end();
 void QgisApp::filePrint()
 {
   mComposer->open();
-  mComposer->zoomFull();
 }
 
 void QgisApp::saveMapAsImage()
