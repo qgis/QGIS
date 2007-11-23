@@ -91,44 +91,39 @@ QgsComposerLabel::~QgsComposerLabel()
 }
 
 #define FONT_WORKAROUND_SCALE 10
+// This partially resolves a problem with the bounding rectangle for the text
+// being too short for most font sizes. 
+#define WIDTH_EXTENSION 1.0
 void QgsComposerLabel::paint ( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
     //std::cout << "QgsComposerLabel::paint" << std::endl;
 
-    float size =  25.4 * mComposition->scale() * mFont.pointSizeFloat() / 72;
+    float size =  25.4 * mComposition->scale() * mFont.pointSizeF() / 72;
+
     //mBoxBuffer = size / 10 * mComposition->scale();
-    mBoxBuffer = 1;
+    mBoxBuffer = 0;
 
     QFont font ( mFont );
-    font.setPointSizeFloat ( size );
-    QFontMetricsF metrics ( font );
+    font.setStyleStrategy ( QFont::StyleStrategy(QFont::PreferOutline | QFont::PreferAntialias) );
+    font.setPointSizeF ( size );
 
-    // Not sure about Style Strategy, QFont::PreferMatch ?
-    //font.setStyleStrategy ( (QFont::StyleStrategy) (QFont::PreferOutline | QFont::PreferAntialias ) );
-    
-    double w = metrics.width ( mText );
-    double h = metrics.height() - metrics.descent();
+    QFontMetricsF metrics ( font );
+    QSizeF textSize = metrics.size(0, mText);
+    qreal w = textSize.width() + WIDTH_EXTENSION;
+    qreal h = textSize.height();
 
     QRectF r (0, -h, w, h); //used as the rectangle to draw the selection boxes on the corners of if there is no box
     
     QRectF boxRect;
     if ( mBox ) {
-        //I don't know why the top coordinate is -h rather than -(h+mBoxBuffer), but it seems to work better.
-        boxRect.setRect(-mBoxBuffer, -h, w + (mBoxBuffer * 2), h + (mBoxBuffer * 2));
+        boxRect.setRect(-mBoxBuffer, -(h+mBoxBuffer), w + (mBoxBuffer * 2)+1, h + (mBoxBuffer * 2));
         QBrush brush ( QColor(255,255,255) );
         painter->setBrush ( brush );
         painter->setPen(QPen(QColor(0, 0, 0), .2));
         painter->drawRect ( boxRect );
     }
     
-
-    /*This code doesn't do anything...?
-    // The width is not sufficient in postscript
-    QRectF tr = r;
-    tr.setWidth ( r.width() );
-    */
-
-    font.setPointSizeFloat ( size * FONT_WORKAROUND_SCALE ); //Hack to work around Qt font bug
+    font.setPointSizeF ( size * FONT_WORKAROUND_SCALE );
     painter->setFont ( font );
     painter->setPen ( mPen );
 
@@ -142,11 +137,14 @@ void QgsComposerLabel::paint ( QPainter* painter, const QStyleOptionGraphicsItem
     }
 
     //Hack to work around the Qt font bug
+
     painter->save();
     painter->scale(1./FONT_WORKAROUND_SCALE, 1./FONT_WORKAROUND_SCALE);
-
-    painter->drawText(0, 0, mText);
-
+    QRectF scaledBox(r.x() * FONT_WORKAROUND_SCALE,
+                     r.y() * FONT_WORKAROUND_SCALE,
+                     (r.width() + WIDTH_EXTENSION) * FONT_WORKAROUND_SCALE,
+                     r.height() * FONT_WORKAROUND_SCALE);
+    painter->drawText(scaledBox, Qt::AlignLeft|Qt::AlignVCenter, mText);
     painter->restore(); //undo our scaling of painter - End of the font workaround
 
     // Show selected / Highlight
@@ -157,6 +155,7 @@ void QgsComposerLabel::paint ( QPainter* painter, const QStyleOptionGraphicsItem
         } else {
             hr = r;
         }
+        hr.setWidth(hr.width() + WIDTH_EXTENSION);
         painter->setPen( mComposition->selectionPen() );
         painter->setBrush( mComposition->selectionBrush() );
 
@@ -202,11 +201,12 @@ QRectF QgsComposerLabel::boundingRect ( void ) const
     float size =  25.4 * mComposition->scale() * mFont.pointSizeFloat() / 72;
 
     QFont font ( mFont );
-    font.setPointSizeFloat ( size );
+    font.setPointSizeF ( size );
     QFontMetricsF metrics ( font );
 
-    double w = metrics.width ( mText );
-    double h = metrics.height() - metrics.descent();
+    QSizeF textSize = metrics.size(0, mText);
+    double w = textSize.width() + WIDTH_EXTENSION;
+    double h = textSize.height();
 
 /*    
     int buf = 0;
@@ -222,7 +222,7 @@ QRectF QgsComposerLabel::boundingRect ( void ) const
 
     if(mBox){
 		//what happens if we haven't called paint() first?
-        r.setRect(-mBoxBuffer, -h, w + (mBoxBuffer * 2), h + (mBoxBuffer * 2));
+        r.setRect(-mBoxBuffer, -(h+mBoxBuffer), w + (mBoxBuffer * 2), h + (mBoxBuffer * 2));
     }
     else{
         r.setRect(0, -h, w, h);
@@ -248,15 +248,15 @@ QPolygonF QgsComposerLabel::areaPoints() const
 
 void QgsComposerLabel::setOptions ( void )
 { 
-    mTextLineEdit->setText ( mText );
+    mTextEdit->setText ( mText );
     mBoxCheckBox->setChecked ( mBox );
     
 }
 
-void QgsComposerLabel::on_mTextLineEdit_returnPressed()
+void QgsComposerLabel::on_mTextEdit_textChanged()
 { 
     QRectF r = boundingRect();
-    mText = mTextLineEdit->text();
+    mText = mTextEdit->text();
     QAbstractGraphicsShapeItem::prepareGeometryChange();
     QAbstractGraphicsShapeItem::update();
     writeSettings();
