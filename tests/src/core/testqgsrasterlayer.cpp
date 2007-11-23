@@ -24,6 +24,7 @@
 
 //qgis includes...
 #include <qgsrasterlayer.h> 
+#include <qgsrasterbandstats.h> 
 #include <qgsapplication.h>
 
 /** \ingroup UnitTests
@@ -39,7 +40,7 @@ class TestQgsRasterLayer: public QObject
     void cleanup(){};// will be called after every testfunction.
 
     void isValid();
-    
+    void checkDimensions(); 
   private:
     QgsRasterLayer * mpLayer;
 };
@@ -70,6 +71,14 @@ void TestQgsRasterLayer::initTestCase()
 void TestQgsRasterLayer::isValid()
 {
   QVERIFY ( mpLayer->isValid() );
+}
+void TestQgsRasterLayer::checkDimensions()
+{
+   QVERIFY ( mpLayer->getRasterXDim() == 10 );
+   QVERIFY ( mpLayer->getRasterYDim() == 10 );
+   // regression check for ticket #832
+   // note getRasterBandStats call is base 1
+   QVERIFY ( mpLayer->getRasterBandStats(1).elementCountInt == 100 );
 }
 
 QTEST_MAIN(TestQgsRasterLayer)
