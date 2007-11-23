@@ -275,6 +275,10 @@ IF (HAVE_PYTHON)
 ENDIF (HAVE_PYTHON)
 
 IF (ENABLE_TESTS)
+  #create a variable to specify where our test data is
+  #so that unit tests can use TEST_DATA_DIR to locate
+  #the test data. See CMakeLists in test dirs for more info
+  SET (TEST_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tests/testdata")
   SUBDIRS(tests)
 ENDIF (ENABLE_TESTS)
 

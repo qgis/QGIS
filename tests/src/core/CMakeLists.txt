@@ -4,13 +4,17 @@
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} 
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/raster
   ${QT_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   )
 
-# expect that classes are being IMPORTED for the exe
+#############################################################
+# Compiler defines
+
+# expect that classes are being IMPORTED for the tests
 IF (WIN32)
   # expect that classes are being imported
   # Note: MSVC doesn't like when the macros are quotes
@@ -27,6 +31,11 @@ IF (WIN32)
     ADD_DEFINITIONS("-UGUI_EXPORT \"-DGUI_EXPORT=__declspec(dllexport)\"")
   ENDIF (MSVC)
 ENDIF (WIN32)
+
+# This define is used for tests that need to locate the test
+# data under tests/testdata in the qgis source tree.
+# the TEST_DATA_DIR variable is set in the top level CMakeLists.txt
+ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
 
 #############################################################
 # libraries
@@ -76,5 +85,18 @@ ADD_DEPENDENCIES(qgis_filewritertest qgis_filewritertestmoc)
 TARGET_LINK_LIBRARIES(qgis_filewritertest ${QT_LIBRARIES} qgis_core)
 INSTALL(TARGETS qgis_filewritertest RUNTIME DESTINATION ${QGIS_BIN_DIR})
 ADD_TEST(qgis_filewritertest ${QGIS_BIN_DIR}/qgis_filewritertest)
+#
+# QgsRasterLayer test
+#
+SET(qgis_rasterlayertest_SRCS testqgsrasterlayer.cpp)
+SET(qgis_rasterlayertest_MOC_CPPS testqgsrasterlayer.cpp)
+QT4_WRAP_CPP(qgis_rasterlayertest_MOC_SRCS ${qgis_rasterlayertest_MOC_CPPS})
+ADD_CUSTOM_TARGET(qgis_rasterlayertestmoc ALL DEPENDS ${qgis_rasterlayertest_MOC_SRCS})
+ADD_EXECUTABLE(qgis_rasterlayertest ${qgis_rasterlayertest_SRCS})
+ADD_DEPENDENCIES(qgis_rasterlayertest qgis_rasterlayertestmoc)
+TARGET_LINK_LIBRARIES(qgis_rasterlayertest ${QT_LIBRARIES} qgis_core)
+INSTALL(TARGETS qgis_rasterlayertest RUNTIME DESTINATION ${QGIS_BIN_DIR})
+ADD_TEST(qgis_rasterlayertest ${QGIS_BIN_DIR}/qgis_rasterlayertest)
+
 
 
