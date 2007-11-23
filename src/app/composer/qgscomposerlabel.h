@@ -77,7 +77,7 @@ public slots:
     // Open font dialog
     void on_mFontButton_clicked();
 
-    void on_mTextLineEdit_returnPressed();
+    void on_mTextEdit_textChanged();
 
     // Box settings changed
     void on_mBoxCheckBox_clicked();

@@ -751,7 +751,7 @@ void QgsComposition::setTool ( Tool tool )
     if ( mNewCanvasItem ) delete mNewCanvasItem;
 
     // Create new object outside the visible area
-    QgsComposerLabel *lab = new QgsComposerLabel ( this, mNextItemId++, -1000, -1000, tr("Label"), (int) (mPaperHeight/40));
+    QgsComposerLabel *lab = new QgsComposerLabel ( this, mNextItemId++, -1000, -1000, tr("Label"), (int) (mPaperHeight/20));
 
     mNewCanvasItem = dynamic_cast <QGraphicsItem *> (lab);
     mComposer->showItemOptions ( lab->options() );

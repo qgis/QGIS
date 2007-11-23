@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsComposerLabelBase</class>
  <widget class="QWidget" name="QgsComposerLabelBase" >
   <property name="geometry" >
@@ -9,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>215</width>
-    <height>151</height>
+    <height>341</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -23,37 +20,21 @@
   <property name="windowTitle" >
    <string>Label Options</string>
   </property>
-  <layout class="QGridLayout" >
+  <layout class="QVBoxLayout" >
    <property name="margin" >
     <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="3" column="0" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>16</width>
-       <height>23</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="2" column="0" >
-    <widget class="QCheckBox" name="mBoxCheckBox" >
-     <property name="text" >
-      <string>Box</string>
+   <item>
+    <widget class="QTextEdit" name="mTextEdit" >
+     <property name="lineWrapMode" >
+      <enum>QTextEdit::NoWrap</enum>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" >
+   <item>
     <widget class="QPushButton" name="mFontButton" >
      <property name="sizePolicy" >
       <sizepolicy>
@@ -68,24 +49,34 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0" >
-    <widget class="QLineEdit" name="mTextLineEdit" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>5</hsizetype>
-       <vsizetype>0</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+   <item>
+    <widget class="QCheckBox" name="mBoxCheckBox" >
+     <property name="text" >
+      <string>Box</string>
      </property>
     </widget>
+   </item>
+   <item>
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>197</width>
+       <height>71</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <tabstops>
-  <tabstop>mTextLineEdit</tabstop>
   <tabstop>mFontButton</tabstop>
   <tabstop>mBoxCheckBox</tabstop>
  </tabstops>
