@@ -22,6 +22,184 @@
    <property name="spacing" >
     <number>6</number>
    </property>
+   <item row="0" column="0" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QToolButton" name="mRemoveSelectionButton" >
+       <property name="toolTip" >
+        <string>Remove selection</string>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="icon" >
+        <iconset>../xpm/remove_selection.xpm</iconset>
+       </property>
+       <property name="shortcut" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mSelectedToTopButton" >
+       <property name="toolTip" >
+        <string>Move selected to top</string>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="icon" >
+        <iconset>../xpm/selected_to_top.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Ctrl+T</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mInvertSelectionButton" >
+       <property name="toolTip" >
+        <string>Invert selection</string>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="icon" >
+        <iconset>../xpm/switch_selection.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Ctrl+S</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mCopySelectedRowsButton" >
+       <property name="toolTip" >
+        <string>Copy selected rows to clipboard (Ctrl+C)</string>
+       </property>
+       <property name="whatsThis" >
+        <string>Copies the selected rows to the clipboard</string>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="icon" >
+        <iconset>../xpm/copy_selection.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Ctrl+C</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mZoomMapToSelectedRowsButton" >
+       <property name="toolTip" >
+        <string>Zoom map to the selected rows (Ctrl-F)</string>
+       </property>
+       <property name="whatsThis" >
+        <string>Zoom map to the selected rows</string>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="shortcut" >
+        <string>Ctrl+F</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mAddAttributeButton" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>0</hsizetype>
+         <vsizetype>0</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip" >
+        <string>New column</string>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="icon" >
+        <iconset>../xpm/new_attribute.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Ctrl+N</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mDeleteAttributeButton" >
+       <property name="toolTip" >
+        <string>Delete column</string>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="icon" >
+        <iconset>../xpm/delete_attribute.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Ctrl+X</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>271</width>
+         <height>25</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnStartEditing" >
+       <property name="text" >
+        <string>Start editing</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnStopEditing" >
+       <property name="text" >
+        <string>Stop editin&amp;g</string>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+G</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QgsAttributeTable" native="1" name="tblAttributes" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>7</hsizetype>
+       <vsizetype>7</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
    <item row="2" column="0" >
     <layout class="QHBoxLayout" >
      <property name="margin" >
@@ -102,160 +280,6 @@
        </property>
        <property name="shortcut" >
         <string>Alt+C</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="0" >
-    <widget class="QgsAttributeTable" native="1" name="tblAttributes" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>7</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <widget class="QToolButton" name="mRemoveSelectionButton" >
-       <property name="toolTip" >
-        <string>Remove selection</string>
-       </property>
-       <property name="text" >
-        <string/>
-       </property>
-       <property name="icon" >
-        <iconset>../xpm/remove_selection.xpm</iconset>
-       </property>
-       <property name="shortcut" >
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mSelectedToTopButton" >
-       <property name="toolTip" >
-        <string>Move selected to top</string>
-       </property>
-       <property name="text" >
-        <string/>
-       </property>
-       <property name="icon" >
-        <iconset>../xpm/selected_to_top.png</iconset>
-       </property>
-       <property name="shortcut" >
-        <string>Ctrl+T</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mInvertSelectionButton" >
-       <property name="toolTip" >
-        <string>Invert selection</string>
-       </property>
-       <property name="text" >
-        <string/>
-       </property>
-       <property name="icon" >
-        <iconset>../xpm/switch_selection.png</iconset>
-       </property>
-       <property name="shortcut" >
-        <string>Ctrl+S</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mCopySelectedRowsButton" >
-       <property name="toolTip" >
-        <string>Copy selected rows to clipboard (Ctrl+C)</string>
-       </property>
-       <property name="whatsThis" >
-        <string>Copies the selected rows to the clipboard</string>
-       </property>
-       <property name="text" >
-        <string/>
-       </property>
-       <property name="icon" >
-        <iconset>../xpm/copy_selection.png</iconset>
-       </property>
-       <property name="shortcut" >
-        <string>Ctrl+C</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mAddAttributeButton" >
-       <property name="toolTip" >
-        <string>New column</string>
-       </property>
-       <property name="text" >
-        <string/>
-       </property>
-       <property name="icon" >
-        <iconset>../xpm/new_attribute.png</iconset>
-       </property>
-       <property name="shortcut" >
-        <string>Ctrl+N</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mDeleteAttributeButton" >
-       <property name="toolTip" >
-        <string>Delete column</string>
-       </property>
-       <property name="text" >
-        <string/>
-       </property>
-       <property name="icon" >
-        <iconset>../xpm/delete_attribute.png</iconset>
-       </property>
-       <property name="shortcut" >
-        <string>Ctrl+X</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>210</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnStartEditing" >
-       <property name="text" >
-        <string>Start editing</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnStopEditing" >
-       <property name="text" >
-        <string>Stop editin&amp;g</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+G</string>
        </property>
       </widget>
      </item>

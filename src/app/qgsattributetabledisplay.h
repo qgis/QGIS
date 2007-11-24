@@ -67,6 +67,7 @@ class QgsAttributeTableDisplay:public QDialog, private Ui::QgsAttributeTableBase
     void invertSelection();
     void removeSelection();
     void copySelectedRowsToClipboard();
+    void zoomMapToSelectedRows();
     void search();
     void advancedSearch();
     void searchShowResultsChanged(int item);
