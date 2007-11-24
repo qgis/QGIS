@@ -49,6 +49,7 @@ QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer, QgisAp
   connect(mSelectedToTopButton, SIGNAL(clicked()), this, SLOT(selectedToTop()));
   connect(mInvertSelectionButton, SIGNAL(clicked()), this, SLOT(invertSelection()));
   connect(mCopySelectedRowsButton, SIGNAL(clicked()), this, SLOT(copySelectedRowsToClipboard()));
+  connect(mZoomMapToSelectedRowsButton, SIGNAL(clicked()), this, SLOT(zoomMapToSelectedRows()));
   connect(mAddAttributeButton, SIGNAL(clicked()), this, SLOT(addAttribute()));
   connect(mDeleteAttributeButton, SIGNAL(clicked()), this, SLOT(deleteAttributes()));
   connect(btnStartEditing, SIGNAL(clicked()), this, SLOT(startEditing()));
@@ -108,6 +109,7 @@ void QgsAttributeTableDisplay::setTheme()
   mSelectedToTopButton->setPixmap(QPixmap(myIconPath+"/mActionSelectedToTop.png"));
   mInvertSelectionButton->setPixmap(QPixmap(myIconPath+"/mActionInvertSelection.png"));
   mCopySelectedRowsButton->setPixmap(QPixmap(myIconPath+"/mActionCopySelected.png"));
+  mZoomMapToSelectedRowsButton->setPixmap(QPixmap(myIconPath+"/mActionZoomToSelected.png"));
   mAddAttributeButton->setPixmap(QPixmap(myIconPath+"/mActionNewAttribute.png"));
   mDeleteAttributeButton->setPixmap(QPixmap(myIconPath+"/mActionDeleteAttribute.png"));
 }
@@ -241,6 +243,11 @@ void QgsAttributeTableDisplay::copySelectedRowsToClipboard()
 
   // Use the Application's copy method instead
   mQgisApp->editCopy(mLayer);
+}
+
+void QgsAttributeTableDisplay::zoomMapToSelectedRows()
+{
+  mQgisApp->zoomToSelected();
 }
 
 void QgsAttributeTableDisplay::search()
