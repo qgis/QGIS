@@ -902,18 +902,23 @@ QString QgsPostgresProvider::getPrimaryKey()
 	  "from pg_namespace where nspname = '" + mSchemaName + "'))";
 	PGresult* types = executeDbCommand(connection, sql);
 
-	assert(PQntuples(types) > 0); // should never happen
+	if( PQntuples(types) > 0 )
+	{
+	  QString columnName = PQgetvalue(types, 0, 0);
+	  QString columnType = PQgetvalue(types, 0, 1);
 
-	QString columnName = PQgetvalue(types, 0, 0);
-	QString columnType = PQgetvalue(types, 0, 1);
-
-	if (columnType != "int4")
-	  log.append(tr("The unique index on column") + 
-                     " '" + columnName + "' " +
-		     tr("is unsuitable because Qgis does not currently support"
-                        " non-int4 type columns as a key into the table.\n"));
+	  if (columnType != "int4")
+	    log.append(tr("The unique index on column") + 
+                       " '" + columnName + "' " +
+		       tr("is unsuitable because Qgis does not currently support"
+                          " non-int4 type columns as a key into the table.\n"));
+	  else
+	    suitableKeyColumns.push_back(std::make_pair(columnName, columnType));
+	}
 	else
-	  suitableKeyColumns.push_back(std::make_pair(columnName, columnType));
+	{
+	  QgsDebugMsg( QString("name and type of %3. column of %1.%2 not found").arg(mSchemaName).arg(mTables).arg(col) );
+	}
 	  
 	PQclear(types);
       }
@@ -2333,39 +2338,45 @@ void QgsPostgresProvider::calculateExtents()
   QgsDebugMsg("Getting extents using schema.table: " + sql);
   
   PGresult *result = PQexec(connection, (const char *) (sql.utf8()));
-  Q_ASSERT(PQntuples(result) == 1);
-  std::string box3d = PQgetvalue(result, 0, 0);
-
-  if (box3d != "")
+  if(PQntuples(result)>0)
   {
-    std::string s;
+    std::string box3d = PQgetvalue(result, 0, 0);
 
-    box3d = box3d.substr(box3d.find_first_of("(")+1);
-    box3d = box3d.substr(box3d.find_first_not_of(" "));
-    s = box3d.substr(0, box3d.find_first_of(" "));
-    double minx = strtod(s.c_str(), NULL);
+    if (box3d != "")
+    {
+      std::string s;
 
-    box3d = box3d.substr(box3d.find_first_of(" ")+1);
-    s = box3d.substr(0, box3d.find_first_of(" "));
-    double miny = strtod(s.c_str(), NULL);
+      box3d = box3d.substr(box3d.find_first_of("(")+1);
+      box3d = box3d.substr(box3d.find_first_not_of(" "));
+      s = box3d.substr(0, box3d.find_first_of(" "));
+      double minx = strtod(s.c_str(), NULL);
 
-    box3d = box3d.substr(box3d.find_first_of(",")+1);
-    box3d = box3d.substr(box3d.find_first_not_of(" "));
-    s = box3d.substr(0, box3d.find_first_of(" "));
-    double maxx = strtod(s.c_str(), NULL);
+      box3d = box3d.substr(box3d.find_first_of(" ")+1);
+      s = box3d.substr(0, box3d.find_first_of(" "));
+      double miny = strtod(s.c_str(), NULL);
 
-    box3d = box3d.substr(box3d.find_first_of(" ")+1);
-    s = box3d.substr(0, box3d.find_first_of(" "));
-    double maxy = strtod(s.c_str(), NULL);
+      box3d = box3d.substr(box3d.find_first_of(",")+1);
+      box3d = box3d.substr(box3d.find_first_not_of(" "));
+      s = box3d.substr(0, box3d.find_first_of(" "));
+      double maxx = strtod(s.c_str(), NULL);
 
-    layerExtent.setXmax(maxx);
-    layerExtent.setXmin(minx);
-    layerExtent.setYmax(maxy);
-    layerExtent.setYmin(miny);
+      box3d = box3d.substr(box3d.find_first_of(" ")+1);
+      s = box3d.substr(0, box3d.find_first_of(" "));
+      double maxy = strtod(s.c_str(), NULL);
 
-    // clear query result
-    PQclear(result);
+      layerExtent.setXmax(maxx);
+      layerExtent.setXmin(minx);
+      layerExtent.setYmax(maxy);
+      layerExtent.setYmin(miny);
+    }
   }
+  else
+  {
+    QgsDebugMsg("extents query failed");
+  }
+
+  // clear query result
+  PQclear(result);
 
 #endif
 
