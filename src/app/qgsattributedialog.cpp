@@ -81,10 +81,11 @@ bool QgsAttributeDialog::queryAttributes(const QgsFieldMap& fields, QgsFeature& 
   QgsAttributeDialog attdialog(fields, featureAttributes);
 
   if (attdialog.exec() == QDialog::Accepted)
-  {
-    for (int i = 0; i < featureAttributes.size(); ++i)
+  { 
+    int i=0;
+    for (QgsAttributeMap::const_iterator it = featureAttributes.begin(); it != featureAttributes.end(); ++it)
     {
-      f.changeAttribute(i, QVariant(attdialog.value(i)) );
+      f.changeAttribute(it.key(), QVariant(attdialog.value(i++)) );
     }
     return true;
   }
