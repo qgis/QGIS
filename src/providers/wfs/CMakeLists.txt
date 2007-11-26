@@ -6,6 +6,7 @@ SET(WFS_SRCS qgswfsprovider.cpp qgswfsdata.cpp)
 
 SET (WFS_MOC_HDRS
      qgswfsdata.h
+     qgswfsprovider.h
 )
 
 IF(NOT MSVC)
