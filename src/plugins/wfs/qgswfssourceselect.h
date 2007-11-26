@@ -51,6 +51,13 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
   QAbstractButton* btnAdd;
   void populateConnectionList();
 
+  /**Returns the best suited CRS from a set of epsg numbers
+     1. project CRS if contained in the set
+     2. WGS84 if contained in the set
+     3. the first entry in the set else
+  @return the epsg number of the crs or -1 in case of error*/
+  long getPreferredCrs(const QSet<long>& crsSet) const;
+
   /**Makes a GetCapabilities and returns the typenamse and crs supported by the server.
      @param typenames a list of layers provided by the server
      @param crs a list of crs supported by the server. The place in the list corresponds to the \
