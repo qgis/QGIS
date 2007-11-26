@@ -263,7 +263,7 @@ bool QgsPointDialog::generateWorldFile()
     {
       QMessageBox::StandardButton res = QMessageBox::warning(this, tr("Warning"),
 		     tr("<p>A Helmert transform requires modifications in "
-		     "the raster layer.</p><p>The modifed raster will be "
+		     "the raster layer.</p><p>The modified raster will be "
 		     "saved in a new file and a world file will be "
 		     "generated for this new file instead.</p><p>Are you "
 		     "sure that this is what you want?</p>") + 
