@@ -44,7 +44,9 @@ class QgsWFSData: public QObject
      @param features the features of the layer
   @return 0 in case of success*/
   int getWFSData();
-  
+  /**Returns a pointer to the internal QHttp object (mainly for the purpose of making singal/slot connections*/
+  const QHttp* http() const {return &mHttp;}
+
   private slots:
   void setFinished(bool error);
 
