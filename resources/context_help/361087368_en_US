@@ -10,17 +10,16 @@ This dialog allows you to set a number of properties related to the <i>Project</
 <td>Map Units</td><td>Choose the map units appropriate for the layers in the project</td>
 </tr>
 <tr>
-<td>Cursor Display Precision</td><td>Use the manual setting  to set the precision of the display in the status bar. As the mouse is moved over the map canvas, the coordinates are updated and displayed in the status bar using the precision you choose. Automatic (the default) results in a default precision based on the map units.</td>
+<td>Cursor Display Precision</td><td>Use the manual setting to set the precision of the display in the status bar. As the mouse is moved over the map canvas, the coordinates are updated and displayed in the status bar using the precision you choose. Automatic (the default) results in a default precision based on the map units.</td>
 </tr>
 <tr>
-<td>Digitising Settings</td><td>This allows you to set the snapping tolerance in pixels, the line width used when digitising, and the color for digitised lines.</td>
+<td>Digitising Settings</td><td>This allows you to set the snapping tolerance in pixels, the line width used when digitising and the color for digitised lines.</td>
 </tr>
 <tr><td>Selection color</td><td>Selected features are displayed on the map using this color.</td>
 </tr>
 </table>
 <a anchor="projections"></a><h4>Projection Tab</h4>
-The Projection tab allows you to set the projection for the current project and enable ont the fly projection. You do not need to have a saved project to setup and enable on the fly projection.<p>
+The Projection tab allows you to set the projection for the current project and enable on the fly projection. You do not need to have a saved project to setup and enable on the fly projection.<p>
 To use on the fly projection, click the <i>Enable on the fly projection</i> checkbox. Then choose the projection for the project (map canvas) from the list of Geographic or Projected coordinate systems.
 <p>
-You can find a coordinate system by entering its PostGIS SRID, EPSG code, or the QGIS SRSRID and clicking the <i>Find</i> button.
- 
+You can find a coordinate system by entering its PostGIS SRID, EPSG code or the QGIS SRSRID and clicking the <i>Find</i> button.
