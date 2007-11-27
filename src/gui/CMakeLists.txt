@@ -27,6 +27,7 @@ qgsencodingfiledialog.h
 qgslayerprojectionselector.h
 qgsmapcanvas.h
 qgsmapoverviewcanvas.h
+qgsmessageviewer.h
 qgsmaptoolemitpoint.h
 qgsprojectionselector.h
 )

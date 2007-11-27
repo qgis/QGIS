@@ -65,6 +65,9 @@ class QgsMapToolVertexEdit : public QgsMapTool
 
     //! current vertex edit tool
     enum Tool mTool;
+
+    //! Displays a warning about the snap tolerance settings
+    void displaySnapToleranceWarning();
     
     /**Searches the closest point within the project tolerance and setx  mSnappedAtFeatureId and mSnappedAtVertex*/
     bool snapVertexWithContext(QgsPoint& point);
