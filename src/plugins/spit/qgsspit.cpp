@@ -36,6 +36,7 @@
 #include "qgspgutil.h"
 #include "qgsspit.h"
 #include "qgsconnectiondialog.h"
+#include "qgsdatasourceuri.h"
 #include "qgseditreservedwordsdialog.h"
 #include "qgsmessageviewer.h"
 #include "spiticon.xpm"
@@ -431,12 +432,14 @@ PGconn* QgsSpit::checkConnection()
   }
   else
   {
-    QString connInfo = "host=" + settings.readEntry( gl_key + connName + "/host" ) +
-                       " dbname=" + settings.readEntry( gl_key + connName + "/database" ) +
-                       " port=" + settings.readEntry( gl_key + connName + "/port" ) +
-                       " user=" + settings.readEntry( gl_key + connName + "/username" ) +
-                       " password=" + settings.readEntry( gl_key + connName + "/password" );
-    pd = PQconnectdb( ( const char * ) connInfo );
+    QgsDataSourceURI uri;
+    uri.setConnection( settings.readEntry( gl_key + connName + "/host" ),
+                       settings.readEntry( gl_key + connName + "/port" ),
+                       settings.readEntry( gl_key + connName + "/database" ),
+                       settings.readEntry( gl_key + connName + "/username" ),
+                       settings.readEntry( gl_key + connName + "/password" ) );
+
+    pd = PQconnectdb( ( const char * ) uri.connInfo() );
 
     if ( PQstatus( pd ) != CONNECTION_OK )
     {

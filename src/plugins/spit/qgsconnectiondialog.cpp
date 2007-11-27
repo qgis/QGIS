@@ -29,6 +29,7 @@ extern "C"
 
 #include "qgsconnectiondialog.h"
 #include "qgsmessageviewer.h"
+#include "qgsdatasourceuri.h"
 
 QgsConnectionDialog::QgsConnectionDialog(QWidget *parent, const QString& connName, Qt::WFlags fl)
 	: QDialog(parent, fl)
@@ -62,17 +63,17 @@ QgsConnectionDialog::~QgsConnectionDialog()
 
 void QgsConnectionDialog::testConnection()
 {
-	QString connInfo = "host=" + txtHost->text() + " dbname=" + txtDatabase->text() + 
-		" port=" + txtPort->text() + " user=" + txtUsername->text() + " password=" + txtPassword->text();
-  PGconn *pd = PQconnectdb((const char *) connInfo);
+  QgsDataSourceURI uri;
+  uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(), txtUsername->text(), txtPassword->text() );
+  PGconn *pd = PQconnectdb((const char *) uri.connInfo() );
 
-	if (PQstatus(pd) == CONNECTION_OK) {
-		// Database successfully opened; we can now issue SQL commands.
-		QMessageBox::information(this, tr("Test connection"), tr("Connection to ") + txtDatabase->text() + tr(" was successfull"));
-	} else {
-		QMessageBox::information(this, tr("Test connection"), tr("Connection failed - Check settings and try again "));
-	}
- 
+  if (PQstatus(pd) == CONNECTION_OK) {
+    // Database successfully opened; we can now issue SQL commands.
+    QMessageBox::information(this, tr("Test connection"), tr("Connection to ") + txtDatabase->text() + tr(" was successfull"));
+  } else {
+    QMessageBox::information(this, tr("Test connection"), tr("Connection failed - Check settings and try again "));
+  }
+
   PQfinish(pd);
 }
 
