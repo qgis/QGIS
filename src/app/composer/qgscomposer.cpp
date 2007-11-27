@@ -776,9 +776,10 @@ void QgsComposer::on_mActionExportAsSVG_activated(void)
 // QT 4 QPicture does not support export to SVG, so we're still using Q3Picture.
 // When QGIS moves to Qt 4.3, we can use QSvgGenerator instead.
 
+  QString myQSettingsLabel = "/UI/displaySVGWarning";
   QSettings myQSettings;
 
-  bool displaySVGWarning = myQSettings.value("/UI/displaySVGWarning", true).toBool();
+  bool displaySVGWarning = myQSettings.value(myQSettingsLabel, true).toBool();
 
   if (displaySVGWarning)
   {
@@ -787,6 +788,7 @@ void QgsComposer::on_mActionExportAsSVG_activated(void)
     m->setCheckBoxText(tr("Don't show this message again"));
     m->setCheckBoxState(Qt::Unchecked);
     m->setCheckBoxVisible(true);
+    m->setCheckBoxQSettingsLabel(myQSettingsLabel);
     m->setMessageAsHtml(tr("<p>The SVG export function in Qgis has several "
                            "problems due to bugs and deficiencies in the "
                            "Qt4 svg code. Of note, text does not "
@@ -799,17 +801,6 @@ void QgsComposer::on_mActionExportAsSVG_activated(void)
                            "satisfactory."
                            "</p>"));
     m->exec();
-
-    if (m->checkBoxState() == Qt::Checked)
-    {
-      myQSettings.setValue("/UI/displaySVGWarning", false); //turn off the warning next time
-    }
-    else
-    {
-      myQSettings.setValue("/UI/displaySVGWarning", true);
-    }
-    //delete m; // this causes a segfault
-
   }
   QString myLastUsedFile = myQSettings.readEntry("/UI/lastSaveAsSvgFile","qgis.svg");
   QFileInfo file(myLastUsedFile);

@@ -24,10 +24,11 @@
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
 #include "qgscursors.h"
+#include "qgsmessageviewer.h"
 #include <QMessageBox>
 #include <QPixmap>
 #include <QCursor>
-
+#include <QSettings>
 
 QgsMapToolVertexEdit::QgsMapToolVertexEdit(QgsMapCanvas* canvas, enum Tool tool)
   : QgsMapTool(canvas), mTool(tool), mRubberBandIndex1(-1), mRubberBandIndex2(-1), mRubberBand(0)
@@ -128,8 +129,7 @@ void QgsMapToolVertexEdit::canvasPressEvent(QMouseEvent * e)
 	//Find nearest segment of the selected line, move that node to the mouse location
 	if (!snapSegmentWithContext(layerPoint))
 	  {
-	    QMessageBox::warning(0, QObject::tr("Error"), 
-				QObject::tr("Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?"));
+            displaySnapToleranceWarning();
 	    return;
 	  }
 	
@@ -170,8 +170,7 @@ void QgsMapToolVertexEdit::canvasPressEvent(QMouseEvent * e)
       {
 	if(!snapVertexWithContext(snapPoint))
 	  {
-	    QMessageBox::warning(0, QObject::tr("Error"), 
-				QObject::tr("Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?"));
+            displaySnapToleranceWarning();
 	    return;
 	  }
       }
@@ -179,8 +178,7 @@ void QgsMapToolVertexEdit::canvasPressEvent(QMouseEvent * e)
       {
 	if (!snapSegmentWithContext(snapPoint))
 	  {
-	    QMessageBox::warning(0, QObject::tr("Error"), 
-				QObject::tr("Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?"));
+            displaySnapToleranceWarning();
 	    return;
 	  }
 	
@@ -258,6 +256,28 @@ double QgsMapToolVertexEdit::tolerance()
   return QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0);
 }
 
+void QgsMapToolVertexEdit::displaySnapToleranceWarning()
+{
+  QSettings myQSettings;
+  QString myQSettingsLabel = "/UI/displaySnapWarning";
+  bool displaySnapWarning = myQSettings.value(myQSettingsLabel, true).toBool();
+
+  if (displaySnapWarning)
+  {
+    QgsMessageViewer* m = new QgsMessageViewer(0);
+    m->setWindowTitle(tr("Snap tolerance"));
+    m->setCheckBoxText(tr("Don't show this message again"));
+    m->setCheckBoxVisible(true);
+    m->setCheckBoxQSettingsLabel(myQSettingsLabel);
+    m->setMessageAsHtml("<p>" + 
+                        tr("Could not snap segment.") +
+                        "</p><p>" +
+                        tr("Have you set the tolerance in "
+                           "Settings > Project Properties > General?") +
+                        "</p>");
+    m->exec();
+  }
+}
 
 bool QgsMapToolVertexEdit::snapSegmentWithContext(QgsPoint& point)
 {

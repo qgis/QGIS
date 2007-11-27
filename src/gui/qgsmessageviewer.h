@@ -22,8 +22,11 @@
 #include <qgisgui.h>
 #include "qgsmessageoutput.h"
 
+#include <QString>
+
 class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, private Ui::QgsMessageViewer
 {
+  Q_OBJECT
   public:
     QgsMessageViewer(QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     ~QgsMessageViewer();
@@ -51,8 +54,16 @@ class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, priv
     void setCheckBoxVisible(bool visible);
     // Sets the check state
     void setCheckBoxState(Qt::CheckState state);
-    // The state of the checkbox
-    Qt::CheckState checkBoxState();
+    // Specifies a QSettings tag to store/retrieve the checkbox
+    // state to/from. Use an empty QString to disable this feature.
+    void setCheckBoxQSettingsLabel(QString label);
+
+ private slots:
+   void on_checkBox_toggled(bool);
+
+
+ private:
+    QString mCheckBoxQSettingsLabel;
 };
 
 #endif

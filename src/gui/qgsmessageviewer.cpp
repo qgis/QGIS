@@ -17,7 +17,7 @@
 /* $Id$ */
 
 #include "qgsmessageviewer.h"
-
+#include <QSettings>
 
 QgsMessageViewer::QgsMessageViewer(QWidget *parent, Qt::WFlags fl)
 : QDialog(parent, fl)
@@ -28,6 +28,8 @@ QgsMessageViewer::QgsMessageViewer(QWidget *parent, Qt::WFlags fl)
   // Default state for the checkbox
   setCheckBoxVisible(false);
   setCheckBoxState(Qt::Unchecked);
+
+  mCheckBoxQSettingsLabel = "";
 }
 
 QgsMessageViewer::~QgsMessageViewer()
@@ -86,7 +88,20 @@ void QgsMessageViewer::setCheckBoxState(Qt::CheckState state)
   checkBox->setCheckState(state);
 }
 
-Qt::CheckState QgsMessageViewer::checkBoxState()
+void QgsMessageViewer::setCheckBoxQSettingsLabel(QString label)
 {
-  return checkBox->checkState();
+  mCheckBoxQSettingsLabel = label;
+}
+
+
+void QgsMessageViewer::on_checkBox_toggled(bool toggled)
+{
+  if (!mCheckBoxQSettingsLabel.isEmpty())
+    {
+      QSettings settings;
+      if (checkBox->checkState() == Qt::Checked)
+        settings.setValue(mCheckBoxQSettingsLabel, false);
+      else
+        settings.setValue(mCheckBoxQSettingsLabel, true);
+    }
 }
