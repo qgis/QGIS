@@ -80,20 +80,17 @@ const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
   mUri = QgsDataSourceURI(uri);
 
   /* populate members from the uri structure */
-  mSchemaName = mUri.schema;
-  mTableName = mUri.table;
-  geometryColumn = mUri.geometryColumn;
-  sqlWhereClause = mUri.sql;
+  mSchemaName = mUri.schema();
+  mTableName = mUri.table();
+  geometryColumn = mUri.geometryColumn();
+  sqlWhereClause = mUri.sql();
 
   // Keep a schema qualified table name for convenience later on.
-  if (mSchemaName.length() > 0)
-    mSchemaTableName = "\"" + mSchemaName + "\".\"" + mTableName + "\"";
-  else
-    mSchemaTableName = "\"" + mTableName + "\"";
+  mSchemaTableName = mUri.quotedTablename();
 
   QgsDebugMsg("Table name is " + mTableName);
   QgsDebugMsg("SQL is " + sqlWhereClause);
-  QgsDebugMsg("Connection info is " + mUri.connInfo);
+  QgsDebugMsg("Connection info is " + mUri.connInfo() );
 
   QgsDebugMsg("Geometry column is: " + geometryColumn);
   QgsDebugMsg("Schema is: " + mSchemaName);
@@ -103,7 +100,7 @@ const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
   //pLog.open((const char *)logFile);
   //QgsDebugMsg("Opened log file for " + mTableName);
 
-  connection = connectDb( (const char *)mUri.connInfo );
+  connection = connectDb( (const char *)mUri.connInfo() );
   if( connection==NULL ) {
     valid = false;
     return;
@@ -2214,15 +2211,14 @@ void QgsPostgresProvider::setSubsetString(QString theSQL)
 {
   sqlWhereClause=theSQL;
   // Update datasource uri too
-  mUri.sql=theSQL;
+  mUri.setSql(theSQL);
   // Update yet another copy of the uri. Why are there 3 copies of the
   // uri? Perhaps this needs some rationalisation.....
-  setDataSourceUri(mUri.text());
+  setDataSourceUri(mUri.connInfo());
 
   // need to recalculate the number of features...
   getFeatureCount();
   calculateExtents();
-
 }
 
 long QgsPostgresProvider::getFeatureCount()
@@ -2551,8 +2547,8 @@ bool QgsPostgresProvider::getGeometryDetails()
           " when geometrytype(%1) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
           " end "
           "from %2").arg(geometryColumn).arg(mSchemaTableName);
-      if(mUri.sql!="")
-        sql += " where " + mUri.sql;
+      if(mUri.sql()!="")
+        sql += " where " + mUri.sql();
 
       result = executeDbCommand(connection, sql);
 

@@ -18,6 +18,7 @@
 /* $Id: qgsdatasourceuri.h 5839 2006-09-19 18:04:21Z wonder $ */
 
 #include "qgsdatasourceuri.h"
+#include "qgslogger.h"
 
 #include <QStringList>
 #include <QRegExp>
@@ -29,150 +30,257 @@ QgsDataSourceURI::QgsDataSourceURI()
 
 QgsDataSourceURI::QgsDataSourceURI(QString uri)
 {
-  // URI looks like this:
-  //  host=192.168.1.5 dbname=test port=5342 user=gsherman password=xxx table=tablename
-  // (optionally at the end there might be: sql=..... )
-  
-  // TODO: improve parsing
-  
-  // A little bit of backwards compability. At r6193 the schema/table 
-  // names became fully quoted, but with the problem that earlier 
-  // project files then didn't load. This bit of code puts in the 
-  // quotes that are now required. 
-  QString uriModified = uri; 
-  int start = uriModified.indexOf("table=\""); 
-  if (start == -1) 
-    { 
-      // Need to put in some "'s 
-      start = uriModified.indexOf("table="); 
-      uriModified.insert(start+6, '"'); 
-      int start_dot = uriModified.indexOf('.', start+7); 
-      if (start_dot != -1) 
-        { 
-          uriModified.insert(start_dot, '"'); 
-          uriModified.insert(start_dot+2, '"'); 
-        } 
-      // and one at the end 
-      int end = uriModified.indexOf(' ',start); 
-      if (end != -1) 
-        uriModified.insert(end, '"'); 
-    }  
-  
-  // Strip the table and sql statement name off and store them
-  int sqlStart = uriModified.find(" sql");
-  int tableStart = uriModified.find("table=");
-  
-  // set table name
-  table = uriModified.mid(tableStart + 6, sqlStart - tableStart -6);
+  int i = 0;
+  while( i<uri.length() )
+  {
+    skipBlanks(uri, i);
 
-  // set sql where clause
-  if(sqlStart > -1)
-  { 
-    sql = uriModified.mid(sqlStart + 5);
+    if( uri[i] == '=' )
+    {
+      QgsDebugMsg("parameter name expected before =");
+      i++;
+      continue;
+    }
+
+    int start = i;
+
+    while( i<uri.length() && uri[i]!='=' && !uri[i].isSpace() )
+      i++;
+
+    QString pname = uri.mid(start, i-start);
+
+    skipBlanks(uri, i);
+
+    if( uri[i]!='=' ) {
+      QgsDebugMsg("= expected after parameter name");
+      return;
+    }
+
+    i++;
+
+    if( pname=="sql" ) {
+      // rest of line is a sql where clause
+      skipBlanks(uri, i);
+      mSql = uri.mid(i);
+      break;
+    } else {
+      QString pval = getValue(uri, i);
+
+      if( pname=="table" ) {
+        if( uri[i] == '.' ) {
+          i++;
+
+          mSchema = pval;
+          mTable = getValue(uri, i);
+        } else {
+          mSchema = "";
+          mTable = pval;
+        }
+
+        if( uri[i] == '(' ) {
+          i++;
+
+          int start = i;
+          QString col;
+          while( i<uri.length() && uri[i]!=')')
+            i++;
+
+          if( i==uri.length() ) {
+            QgsDebugMsg("closing parenthesis missing");
+          }
+
+          mGeometryColumn = uri.mid(start, i-start);
+
+          i++;
+        }
+      } else if( pname=="service" ) {
+        QgsDebugMsg("service keyword ignored");
+      } else if(pname=="user") {
+        mUsername = pval;
+      } else if(pname=="password") {
+        mPassword = pval;
+      } else if(pname=="connect_timeout") {
+        QgsDebugMsg("connection timeout ignored");
+      } else if(pname=="dbname") {
+        mDatabase = pval;
+      } else if(pname=="host") {
+        mHost = pval;
+      } else if(pname=="hostaddr") {
+        QgsDebugMsg("database host ip address ignored");
+      } else if(pname=="port") {
+        mPort = pval;
+      } else if(pname=="tty") {
+        QgsDebugMsg("backend debug tty ignored");
+      } else if(pname=="options") {
+        QgsDebugMsg("backend debug options ignored");
+      } else if(pname=="sslmode") {
+        QgsDebugMsg("sslmode ignored");
+      } else if(pname=="krbsrvname") {
+        QgsDebugMsg("kerberos server name ignored");
+      } else if(pname=="gsslib") {
+        QgsDebugMsg("gsslib ignored");
+      } else {
+        QgsDebugMsg( "invalid connection option \"" + pname + "\" ignored");
+      }
+    }
   }
+}
+
+QString QgsDataSourceURI::username() const
+{
+  return mUsername;
+}
+
+QString QgsDataSourceURI::schema() const
+{
+  return mSchema;
+}
+
+QString QgsDataSourceURI::table() const
+{
+  return mTable;
+}
+
+QString QgsDataSourceURI::sql() const
+{
+  return mSql;
+}
+
+QString QgsDataSourceURI::geometryColumn() const
+{
+  return mGeometryColumn;
+}
+
+void QgsDataSourceURI::setSql(QString sql)
+{
+  mSql = sql;
+}
+
+void QgsDataSourceURI::skipBlanks(const QString &uri, int &i)
+{
+	// skip space before value
+	while( i<uri.length() && uri[i].isSpace() )
+		i++;
+}
+
+QString QgsDataSourceURI::getValue(const QString &uri, int &i)
+{
+  skipBlanks(uri, i);
+
+  // Get the parameter value
+  QString pval;
+  if( uri[i] == '\'' || uri[i]=='"' ) {
+    QChar delim = uri[i];
+
+    i++;
+
+    // value is quoted
+    for (;;)
+    {
+      if( i==uri.length() ) {
+        QgsDebugMsg("unterminated quoted string in connection info string");
+        return pval;
+      }
+
+      if( uri[i] == '\\') {
+        i++;
+        if( i==uri.length() )
+          continue;
+      } else if(uri[i]==delim) {
+        i++;
+        break;
+      }
+
+      pval += uri[i++];
+    }
+  } else {
+    // value is not quoted
+    while( i<uri.length() ) {
+      if( uri[i].isSpace() ) {
+        // end of value
+        break;
+      }
+
+      if( uri[i] == '\\' ) {
+        i++;
+        if( i==uri.length() )
+          break;
+      }
+
+      pval += uri[i++];
+    }
+  }
+
+  skipBlanks(uri, i);
+
+  return pval;
+}
+
+QString QgsDataSourceURI::connInfo() const
+{
+  QString connInfo = "dbname="+mDatabase;
+
+  if( mHost != "" )
+  {
+    connInfo += " host=" + mHost;
+    if( mPort!="" )
+      connInfo += " port=" + mPort;
+  }
+
+  if( mUsername != "" )
+  {
+    connInfo += " user=" + mUsername;
+
+    if( mPassword != "" )
+    {
+      QString p = mPassword; 
+      p.replace('\\', "\\\\");
+      p.replace('\'', "\\'");
+      connInfo += " password='"+p+"'";
+    }
+  }
+
+  return connInfo;
+}
+
+QString QgsDataSourceURI::uri() const
+{ 
+  return connInfo()
+       + QString(" table=\"%1\".\"%2\" (%3) sql=%4")
+                .arg(mSchema)
+                .arg(mTable)
+                .arg(mGeometryColumn)
+                .arg(mSql);
+}
+
+QString QgsDataSourceURI::quotedTablename() const
+{
+  if(mSchema!="")
+    return QString("\"%1\".\"%2\"").arg(mSchema).arg(mTable);
   else
-  {
-    sql = QString::null;
-  }
-  
-  // calculate the schema if specified
-
-  // Pick up some stuff from the uriModified: basically two bits of text 
-  // inside double quote marks, separated by a . 
-  QRegExp reg("\"(.+)\"\\.\"(.+)\".+\\((.+)\\)");
-  reg.indexIn(table); 
-  QStringList stuff = reg.capturedTexts(); 
-
-  schema = stuff[1]; 
-  table = stuff[2]; 
-  geometryColumn = stuff[3]; 
-
-  // set connection info
-  connInfo = uriModified.left(uriModified.find("table="));
-  
-  // parse the connection info
-  QStringList conParts = QStringList::split(" ", connInfo);
-  QStringList parm = QStringList::split("=", conParts[0]);
-  if(parm.size() == 2)
-  {
-    host = parm[1];
-  }
-  parm = QStringList::split("=", conParts[1]);
-  if(parm.size() == 2)
-  {
-    database = parm[1];
-  }
-  parm = QStringList::split("=", conParts[2]);
-  if(parm.size() == 2)
-  {
-    port = parm[1];
-  }
-
-  parm = QStringList::split("=", conParts[3]);
-  if(parm.size() == 2)
-  {
-    username = parm[1];
-  }
-  
-  // The password can have '=' and ' ' characters in it, so we can't 
-  // use the split on '=' and ' ' technique - use indexOf() 
-  // instead. 
-  QString key="password='"; 
-  int i = connInfo.indexOf(key); 
-  if (i != -1) 
-  { 
-    QString pass = connInfo.mid(i+key.length()); 
-    // Now walk through the string till we find a ' character, but 
-    // need to allow for an escaped ' character (which will be the 
-    // \' character pair). 
-    int n = 0; 
-    bool escaped = false; 
-    while (n < pass.length() && (pass[n] != '\'' || escaped)) 
-    { 
-      if (pass[n] == '\\') 
-        escaped = true; 
-      else 
-        escaped = false; 
-      n++; 
-    } 
-    // The -1 is to remove the trailing ' character 
-    password = pass.left(n); 
-  } 
+    return QString("\"%1\"").arg(mTable);
 }
 
-
-QString QgsDataSourceURI::text() const
+void QgsDataSourceURI::setConnection(const QString &host,
+                                     const QString &port,
+                                     const QString &database,
+                                     const QString &username,
+                                     const QString &password)
 {
-  return QString("host=" + host + 
-      " dbname=" + database + 
-      " port=" + port + 
-      " user=" + username + 
-      " password='" + password + 
-      "' table=" + schema + '.' + table + 
-      " (" + geometryColumn + ")" +
-      " sql=" + sql);
-}
-
-void QgsDataSourceURI::setConnection(const QString& aHost,
-                                     const QString& aPort,
-                                     const QString& aDatabase,
-                                     const QString& aUsername,
-                                     const QString& aPassword)
-{
-  host = aHost;
-  database = aDatabase;
-  port = aPort;
-  username = aUsername;
-  password = aPassword;
+  mHost = host;
+  mDatabase = database;
+  mPort = port;
+  mUsername = username;
+  mPassword = password;
 }
   
-void QgsDataSourceURI::setDataSource(const QString& aSchema,
-                                     const QString& aTable,
-                                     const QString& aGeometryColumn,
-                                     const QString& aSql)
+void QgsDataSourceURI::setDataSource(const QString &schema,
+                                     const QString &table,
+                                     const QString &geometryColumn,
+                                     const QString &sql)
 {
-  schema = aSchema;
-  table = aTable;
-  geometryColumn = aGeometryColumn;
-  sql = aSql;
+  mSchema = schema;
+  mTable = table;
+  mGeometryColumn = geometryColumn;
+  mSql = sql;
 }

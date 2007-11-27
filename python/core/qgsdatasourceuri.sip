@@ -19,8 +19,14 @@ public:
   //! constructor which parses input URI
   QgsDataSourceURI(QString uri);
    
-  //! All in a single string
-  QString text() const;
+  //! connection info
+  QString connInfo() const;
+
+  //! complete uri
+  QString uri() const;
+
+  //! quoted table name
+  QString quotedTablename() const;
   
   //! Set all connection related members at once
   void setConnection(const QString& aHost,
@@ -35,28 +41,11 @@ public:
                      const QString& aGeometryColumn,
                      const QString& aSql = QString());
   
-  /* data */
+  QString username() const;
+  QString schema() const;
+  QString table() const;
+  QString sql() const;
+  QString geometryColumn() const;
 
-  //! host name
-  QString host;
-  //! database name
-  QString database;
-  //! port the database server listens on
-  QString port;
-  //! schema
-  QString schema;
-  //! spatial table
-  QString table;
-  //! geometry column
-  QString geometryColumn;
-  //! SQL where clause used to limit features returned from the layer
-  QString sql;
-  //! username 
-  QString username;
-  //! password
-  QString password;
-
-  //! whole connection info (host, db, port, name, pass)
-  QString connInfo;
+  void setSql(QString sql);
 };
-

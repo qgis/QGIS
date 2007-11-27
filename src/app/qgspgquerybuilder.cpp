@@ -34,28 +34,21 @@ QgsPgQueryBuilder::QgsPgQueryBuilder(QgsDataSourceURI *uri,
   setupUi(this);
   // The query builder must make its own connection to the database when
   // using this constructor
-  QString connInfo = QString("host=%1 dbname=%2 port=%3 user=%4 password=%5")
-    .arg(mUri->host)
-    .arg(mUri->database)
-    .arg(mUri->port)
-    .arg(mUri->username)
-    .arg(mUri->password);
-#ifdef QGISDEBUG
-  std::cerr << "Attempting connect using: " << connInfo.toLocal8Bit().data() << std::endl; 
-#endif
+  QString connInfo = mUri->connInfo();
+
+  QgsDebugMsg("Attempting connect using: " + connInfo); 
+
   mPgConnection = PQconnectdb(connInfo.toLocal8Bit().data());
   // check the connection status
   if (PQstatus(mPgConnection) == CONNECTION_OK) {
     QString datasource = QString(tr("Table <b>%1</b> in database <b>%2</b> on host <b>%3</b>, user <b>%4</b>"))
-      .arg(mUri->table)
+      .arg(mUri->table() )
       .arg(PQdb(mPgConnection))
       .arg(PQhost(mPgConnection))
       .arg(PQuser(mPgConnection));
     mOwnConnection = true; // we own this connection since we created it
     // tell the DB that we want text encoded in UTF8
     PQsetClientEncoding(mPgConnection, "UNICODE");
-    // and strip any quotation as this code does it's own quoting.
-    trimQuotation();
 
     lblDataUri->setText(datasource);
     populateFields();
@@ -77,22 +70,12 @@ QgsPgQueryBuilder::QgsPgQueryBuilder(QString tableName, PGconn *con,
 {
   setupUi(this);
   mOwnConnection = false; // we don't own this connection since it was passed to us
-  mUri = new QgsDataSourceURI();
+  mUri = new QgsDataSourceURI( "table=" + tableName);
   QString datasource = QString(tr("Table <b>%1</b> in database <b>%2</b> on host <b>%3</b>, user <b>%4</b>"))
     .arg(tableName)
     .arg(PQdb(mPgConnection))
     .arg(PQhost(mPgConnection))
     .arg(PQuser(mPgConnection));
-  // populate minimum uri fields needed for the populate fields function
-  QRegExp reg("\"(.+)\"\\.\"(.+)\"");
-  reg.indexIn(tableName);
-  QStringList parts = reg.capturedTexts(); // table name contains table and schema
-  mUri->schema = parts[1];
-  // strip whitespace to make sure the table name is clean
-  mUri->table = parts[2];
-
-  // and strip any quotation as this code does it's own quoting.
-  trimQuotation();
 
   lblDataUri->setText(datasource);
   populateFields();
@@ -109,7 +92,7 @@ void QgsPgQueryBuilder::populateFields()
 {
   // Populate the field vector for this layer. The field vector contains
   // field name, type, length, and precision (if numeric)
-  QString sql = "select * from \"" + mUri->schema + "\".\"" + mUri->table + "\" limit 1";
+  QString sql = "select * from " + mUri->quotedTablename() + " limit 1";
   PGresult *result = PQexec(mPgConnection, (const char *) (sql.utf8()));
   QgsLogger::debug("Query executed: " + sql);
   if (PQresultStatus(result) == PGRES_TUPLES_OK) 
@@ -152,28 +135,12 @@ void QgsPgQueryBuilder::populateFields()
       mFieldMap[fieldName] = QgsField(fieldName, type, fieldType);
       lstFields->insertItem(fieldName);
     }
-  }else
+  }
+  else
   {
-#ifdef QGISDEBUG 
-    std::cerr << "Error fetching a row from " << mUri->table.toLocal8Bit().data() << std::endl; 
-#endif 
+    QgsDebugMsg( "Error fetching a row from " + mUri->table() );
   }
   PQclear(result);
-}
-
-void QgsPgQueryBuilder::trimQuotation()
-{
-  // Trim " characters that may be surrounding the table and schema name
-  if (mUri->schema.at(0) == '"')
-    {
-      mUri->schema.remove(mUri->schema.length()-1, 1);
-      mUri->schema.remove(0, 1);
-    }
-  if (mUri->table.at(0) == '"')
-    {
-      mUri->table.remove(mUri->table.length()-1, 1);
-      mUri->table.remove(0, 1);
-    }
 }
 
 void QgsPgQueryBuilder::on_btnSampleValues_clicked()
@@ -183,7 +150,7 @@ void QgsPgQueryBuilder::on_btnSampleValues_clicked()
 
   QString sql = "SELECT DISTINCT \"" + lstFields->currentText() + "\" " +
       "FROM (SELECT \"" + lstFields->currentText() + "\" " +
-      "FROM \"" + mUri->schema + "\".\"" + mUri->table + "\" " +
+      "FROM " + mUri->quotedTablename() + " " +
       "LIMIT 5000) AS foo " +
       "ORDER BY \"" + lstFields->currentText() + "\" "+
       "LIMIT 25";
@@ -224,7 +191,7 @@ void QgsPgQueryBuilder::on_btnGetAllValues_clicked()
       return;
 
   QString sql = "select distinct \"" + lstFields->currentText() 
-    + "\" from \"" + mUri->schema + "\".\"" + mUri->table + "\" order by \"" + lstFields->currentText() + "\"";
+    + "\" from " + mUri->quotedTablename() + " order by \"" + lstFields->currentText() + "\"";
   // clear the values list 
   lstValues->clear();
   // determine the field type
@@ -272,8 +239,8 @@ void QgsPgQueryBuilder::on_btnTest_clicked()
   else
   { 
     QString numRows;
-    QString sql = "select count(*) from \"" + mUri->schema + "\".\"" + mUri->table
-      + "\" where " + txtSQL->text();
+    QString sql = "select count(*) from " + mUri->quotedTablename() 
+      + " where " + txtSQL->text();
     PGresult *result = PQexec(mPgConnection, (const char *)(sql.utf8()));
     if (PQresultStatus(result) == PGRES_TUPLES_OK) 
     {
@@ -297,8 +264,7 @@ void QgsPgQueryBuilder::on_btnTest_clicked()
 // XXX This should really throw an exception
 long QgsPgQueryBuilder::countRecords(QString where) 
 {
-  QString sql = "select count(*) from \"" + mUri->schema + "\".\"" + mUri->table
-      + "\" where " + where;
+  QString sql = "select count(*) from " + mUri->quotedTablename() + " where " + where;
 
   long numRows;
   PGresult *result = PQexec(mPgConnection, (const char *)(sql.utf8()));

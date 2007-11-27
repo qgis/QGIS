@@ -119,11 +119,6 @@ class QgsPgQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase {
    */ 
   void populateFields();
 
-  /*!
-   * Trims surround " characters from the schema and table name
-   */
-  void trimQuotation();
-
   /*! Get the number of records that would be returned by the current SQL
    * @return Number of records or -1 if an error was encountered
    */

@@ -2643,19 +2643,8 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
             {
                 // Construct OGR DSN
                 QgsDataSourceURI dsUri(provider->dataSourceUri());
-                uri = "PG:host=" + dsUri.host 
-                      + " dbname=" + dsUri.database; 
-
-                if ( dsUri.port.length() > 0 ) 
-		    uri += " port=" + dsUri.port;
-
-                if ( dsUri.username.length() > 0 ) 
-		    uri += " user=" + dsUri.username;
-
-                if ( dsUri.password.length() > 0 ) 
-		    uri += " password=" + dsUri.password;
-
-                ogrLayer = dsUri.schema + "." + dsUri.table;
+                uri = "PG:" + dsUri.connInfo();
+                ogrLayer = dsUri.schema() + "." + dsUri.table();
             }
             else
             {

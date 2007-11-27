@@ -25,6 +25,7 @@ email                : sherman at mrcc.com
 #include "qgscontexthelp.h"
 #include "qgsnewconnection.h"
 #include "qgspgquerybuilder.h"
+#include "qgsdatasourceuri.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
@@ -351,45 +352,40 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
   // populate the table list
   QSettings settings;
 
-  QString key = "/PostgreSQL/connections/" + cmbConnections->currentText();
-  QString connString = "host=";
-  QString host = settings.readEntry(key + "/host");
-  connString += host;
-  connString += " dbname=";
-  QString database = settings.readEntry(key + "/database");
-  connString += database + " port=";
-  QString port = settings.readEntry(key + "/port");
-  if(port.length() == 0)
-  {
-    port = "5432";
-  }
-  connString += port + " user=";
-  QString username = settings.readEntry(key + "/username");
-  connString += username;
-  QString password = settings.readEntry(key + "/password");
-  bool searchPublicOnly = settings.readBoolEntry(key + "/publicOnly");
-  bool searchGeometryColumnsOnly = settings.readBoolEntry(key + "/geometryColumnsOnly");
   bool makeConnection = true;
+  QString key = "/PostgreSQL/connections/" + cmbConnections->currentText();
+
+  QString database = settings.readEntry(key + "/database");
+  QString username = settings.readEntry(key + "/username");
+  QString password = settings.readEntry(key + "/password");
+
   if (password == QString::null)
   {
     // get password from user 
     makeConnection = false;
-    QString password = QInputDialog::getText(tr("Password for ") + database + "@" + host,
+    QString password = QInputDialog::getText(tr("Password for ") + username,
         tr("Please enter your password:"),
         QLineEdit::Password, QString::null, &makeConnection, this);
     // allow null password entry in case its valid for the database
   }
 
-  // Need to escape the password to allow for single quotes and backslashes
-  password.replace('\\', "\\\\");
-  password.replace('\'', "\\'");
-  connString += " password='" + password + "'";
+  QgsDataSourceURI uri;
+  uri.setConnection( settings.readEntry(key + "/host"),
+		     settings.readEntry(key + "/port"),
+		     database,
+		     settings.readEntry(key + "/username"),
+		     password );
 
-  QgsDebugMsg("Connection info: " + connString);
+  bool searchPublicOnly = settings.readBoolEntry(key + "/publicOnly");
+  bool searchGeometryColumnsOnly = settings.readBoolEntry(key + "/geometryColumnsOnly");
+
+  // Need to escape the password to allow for single quotes and backslashes
+
+  QgsDebugMsg("Connection info: " + uri.connInfo());
 
   if (makeConnection)
   {
-    m_connInfo = connString;  //host + " " + database + " " + username + " " + password;
+    m_connInfo = uri.connInfo();
     //qDebug(m_connInfo);
     // Tidy up an existing connection if one exists.
     if (pd != 0)
