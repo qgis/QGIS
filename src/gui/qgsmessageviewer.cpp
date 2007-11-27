@@ -88,6 +88,11 @@ void QgsMessageViewer::setCheckBoxState(Qt::CheckState state)
   checkBox->setCheckState(state);
 }
 
+Qt::CheckState QgsMessageViewer::checkBoxState()
+{
+  return checkBox->checkState();
+}
+
 void QgsMessageViewer::setCheckBoxQSettingsLabel(QString label)
 {
   mCheckBoxQSettingsLabel = label;

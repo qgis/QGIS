@@ -54,6 +54,8 @@ class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, priv
     void setCheckBoxVisible(bool visible);
     // Sets the check state
     void setCheckBoxState(Qt::CheckState state);
+    // Get checkbox state
+    Qt::CheckState checkBoxState();
     // Specifies a QSettings tag to store/retrieve the checkbox
     // state to/from. Use an empty QString to disable this feature.
     void setCheckBoxQSettingsLabel(QString label);
