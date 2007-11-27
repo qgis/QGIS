@@ -17,9 +17,9 @@ class QgsContinuousColorRenderer : QgsRenderer
     /**Sets the id of the classification field*/
     void setClassificationField(int id);
     /**Sets the symbol for the minimum value. The symbol has to be created using the new operator and is automatically deleted when inserting a new symbol or when the instance is destroyed*/
-    void setMinimumSymbol(QgsSymbol* sy);
+    void setMinimumSymbol(QgsSymbol* sy /Transfer/);
     /**Sets the symbol for the maximum value. The symbol has to be created using the new operator and is automatically deleted when inserting a new symbol or when the instance is destroyed*/
-    void setMaximumSymbol(QgsSymbol* sy);
+    void setMaximumSymbol(QgsSymbol* sy /Transfer/);
     /** Sets whether to draw the polygon outline*/
     void setDrawPolygonOutline(bool draw);
     /**Returns the symbol for the minimum value*/
@@ -43,6 +43,6 @@ class QgsContinuousColorRenderer : QgsRenderer
     QString name() const;
     /**Return symbology items*/
     const QList<QgsSymbol*> symbols() const;
-    QgsRenderer* clone() const;
+    QgsRenderer* clone() const /Factory/;
 };
 

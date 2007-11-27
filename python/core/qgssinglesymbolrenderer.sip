@@ -10,7 +10,7 @@ class QgsSingleSymbolRenderer : QgsRenderer
     QgsSingleSymbolRenderer(const QgsSingleSymbolRenderer& other);
     virtual ~QgsSingleSymbolRenderer();
     /**Replaces the current mSymbol by sy*/
-    void addSymbol(QgsSymbol* sy);
+    void addSymbol(QgsSymbol* sy /Transfer/);
     /*Returns a pointer to mSymbol*/
     const QgsSymbol* symbol() const;
     /**Renders an OGRFeature*/
@@ -33,6 +33,6 @@ class QgsSingleSymbolRenderer : QgsRenderer
     /**Returns a list containing mSymbol*/
     const QList<QgsSymbol*> symbols() const;
     /**Returns a deep copy of this renderer*/
-    QgsRenderer* clone() const;
+    QgsRenderer* clone() const /Factory/;
 };
 

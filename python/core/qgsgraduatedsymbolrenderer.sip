@@ -11,7 +11,7 @@ class QgsGraduatedSymbolRenderer : QgsRenderer
     virtual ~QgsGraduatedSymbolRenderer();
     /**Adds a new item
     \param sy a pointer to the QgsSymbol to be inserted. It has to be created using the new operator and is automatically destroyed when 'removeItems' is called or when this object is destroyed*/
-    void addSymbol(QgsSymbol* sy);
+    void addSymbol(QgsSymbol* sy /Transfer/);
     /**Returns the number of the classification field*/
     int classificationField() const;
     /**Removes all symbols*/
@@ -43,6 +43,6 @@ class QgsGraduatedSymbolRenderer : QgsRenderer
     /**Returns the symbols of the items*/
     const QList<QgsSymbol*> symbols() const;
     /**Returns a copy of the renderer (a deep copy on the heap)*/
-    QgsRenderer* clone() const;
+    QgsRenderer* clone() const /Factory/;
 };
 

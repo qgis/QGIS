@@ -26,7 +26,7 @@ class QgsUniqueValueRenderer : QgsRenderer
     /**Returns the renderers name*/
     QString name() const;
     /**Inserts an entry into mEntries. The render items have to be created with the new operator and are automatically destroyed if not needed anymore*/
-    void insertValue(QString name, QgsSymbol* symbol);
+    void insertValue(QString name, QgsSymbol* symbol /Transfer/);
     /**Removes all entries from mEntries*/
     void clearValues();
     /**Sets the Field index used for classification*/
@@ -35,6 +35,6 @@ class QgsUniqueValueRenderer : QgsRenderer
     int classificationField();
     /**Return symbology items*/
     const QList<QgsSymbol*> symbols() const;
-    QgsRenderer* clone() const;
+    QgsRenderer* clone() const /Factory/;
 };
 
