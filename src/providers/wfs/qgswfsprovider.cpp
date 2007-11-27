@@ -1387,13 +1387,13 @@ void QgsWFSProvider::handleWFSProgressMessage(int done, int total)
   QString totalString;
   if(total == 0)
     {
-      totalString = "unknown";
+      totalString = tr("unknown");
     }
   else
     {
       totalString = QString::number(total);
     }
-  QString message("received " + QString::number(done) + " bytes from " + totalString);
+  QString message(tr("received %1 bytes from %2").arg(QString::number(done)).arg(totalString));
   emit dataReadProgressMessage(message);
 }
 
