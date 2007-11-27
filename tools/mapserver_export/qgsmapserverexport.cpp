@@ -74,7 +74,7 @@ QString QgsMapserverExport::baseName()
 void QgsMapserverExport::on_btnChooseFile_clicked()
 {
   mapFile = QFileDialog::getSaveFileName(this, tr("Name for the map file"),
-      ".", tr("MapServer map files (*.map);;All files(*.*)","Filter list for selecting files from a dialog box"));
+      ".", tr("MapServer map files (*.map);;All files (*.*)","Filter list for selecting files from a dialog box"));
   txtMapFilePath->setText(mapFile);
 
 }
