@@ -1,0 +1,27 @@
+<h3>Layereigenschaften</h3> 
+Dieser Dialog erlaubt Ihnen die Arbeit mit den Vektorlayereinstellungen und -eigenschaften. 
+Es gibt fünf Reiter: 
+<ol> 
+<li><a href="#symbology">Bezeichnungen</a></li> 
+<li><a href="#general">Allgemein</a></li> 
+<li><a href="#metadata">Metadaten</a></li> 
+<li><a href="#labels">Beschriftungen</a></li> 
+<li><a href="#actions">Aktionen</a></li> 
+</ol> 
+<a name="symbology"> 
+<h4>Symbolik</h4> 
+</a> 
+ 
+<a name="general"> 
+<h4>Allgemein</h4> 
+</a> 
+ 
+<a name="metadata"> 
+<h4>Metadaten</h4> 
+</a> 
+<a name="labels"> 
+<h4>Beschriftung</h4> 
+</a> 
+<a name="actions"> 
+<h4>Aktionen</h4> 
+</a> 
