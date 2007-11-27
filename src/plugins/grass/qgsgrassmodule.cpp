@@ -15,17 +15,7 @@
  ***************************************************************************/
 #include <iostream>
 
-#include <QComboBox>
-#include <QDoubleValidator>
-#include <QFileDialog>
-#include <QGridLayout>
-#include <QGroupBox>
-#include <QHBoxLayout>
-#include <QIntValidator>
-#include <QProcess>
-#include <QPushButton>
-#include <QRegExpValidator>
-#include <QVBoxLayout>
+
 #include <q3cstring.h>
 #include <q3groupbox.h>
 #include <q3listbox.h>
@@ -40,14 +30,20 @@
 #include <q3textbrowser.h>
 #include <qapplication.h>
 #include <qcolordialog.h>
+#include <QComboBox>
 #include <qcursor.h>
 #include <qdir.h>
-#include <qdir.h>
 #include <qdom.h>
+#include <QDoubleValidator>
 #include <qevent.h>
+#include <QFileDialog>
 #include <qfile.h>
+#include <QGridLayout>
+#include <QGroupBox>
+#include <QHBoxLayout>
 #include <qimage.h>
 #include <qinputdialog.h>
+#include <QIntValidator>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qlineedit.h>
@@ -57,8 +53,11 @@
 #include <qpen.h>
 #include <qpixmap.h>
 #include <qpoint.h>
+#include <QProcess>
+#include <QPushButton>
 #include <qpushbutton.h>
 #include <qregexp.h>
+#include <QRegExpValidator>
 #include <qsettings.h>
 #include <qsize.h>
 #include <qspinbox.h>
@@ -66,7 +65,7 @@
 #include <qstringlist.h>
 #include <qtabwidget.h>
 #include <QUrl>
-
+#include <QVBoxLayout>
 #include "qgis.h"
 #include "qgisinterface.h"
 #include "qgsapplication.h"
@@ -92,6 +91,8 @@ extern "C" {
 #include "qgsgrassmapcalc.h"
 #include "qgsgrasstools.h"
 #include "qgsgrassselect.h"
+
+#include <gdal.h>         // to collect version information
 
 bool QgsGrassModule::mExecPathInited = 0;
 QStringList QgsGrassModule::mExecPath;
@@ -2701,26 +2702,30 @@ QStringList QgsGrassModuleGdalInput::options()
 
     if ( !mOgrLayerOption.isNull() && mOgrLayers[current].length() > 0 ) 
     {
-        opt = mOgrLayerOption + "=";
+      opt = mOgrLayerOption + "=";
+#if GDAL_VERSION_NUM >= 1400  //need to check for GRASS >= 6.2 here too...
+      opt += mOgrLayers[current];
+#else
+      // Handle older versions of gdal gracefully
+      // OGR does not support schemas !!!
+      if ( current >=0 && current <  mUri.size() ) 
+      {
+        QStringList l = mOgrLayers[current].split(".");
+        opt += l.at(1);
 
-        // OGR does not support schemas !!!
-        if ( current >=0 && current <  mUri.size() ) { 
-	    QStringList l = mOgrLayers[current].split("."); 
-	    opt += l.at(1);
-
-	    // Currently only PostGIS is using layer
-            //  -> layer -> PostGIS -> warning
-	    if  ( mOgrLayers[current].length() > 0 )
-	    {
-	         QMessageBox::warning( 0, tr("Warning"), 
-                       tr("PostGIS driver in OGR does not support schemas!<br>"
-                       "Only the table name will be used.<br>"
-                       "It can result in wrong input if more tables of the same name<br>"
-                       "are present in the database.") );
-	    }
+        // Currently only PostGIS is using layer
+        //  -> layer -> PostGIS -> warning
+        if  ( mOgrLayers[current].length() > 0 )
+        {
+          QMessageBox::warning( 0, tr("Warning"),
+              tr("PostGIS driver in OGR does not support schemas!<br>"
+                "Only the table name will be used.<br>"
+                "It can result in wrong input if more tables of the same name<br>"
+                "are present in the database.") );
         }
-
-	list.push_back( opt );
+      }
+#endif //GDAL_VERSION_NUM
+      list.push_back( opt );
     }
 
     return list;
