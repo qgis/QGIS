@@ -917,7 +917,7 @@ QString QgsPostgresProvider::getPrimaryKey()
 	}
 	else
 	{
-	  QgsDebugMsg( QString("name and type of %3. column of %1.%2 not found").arg(mSchemaName).arg(mTables).arg(col) );
+	  //QgsDebugMsg( QString("name and type of %3. column of %1.%2 not found").arg(mSchemaName).arg(mTables).arg(col) );
 	}
 	  
 	PQclear(types);
