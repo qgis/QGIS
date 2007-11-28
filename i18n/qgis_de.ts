@@ -12,6 +12,53 @@
     </message>
   </context>
   <context>
+    <name>Dialog</name>
+    <message>
+      <source>QGIS Plugin Installer</source>
+      <translation>QGIS Plugin Installierer</translation>
+    </message>
+    <message>
+      <source>Retrieve the list of available plugins, select one and install it</source>
+      <translation>Durchsuche die Liste vorhandener Plugins, selektiere eines und installiere es</translation>
+    </message>
+    <message>
+      <source>Name of plugin to install</source>
+      <translation>Name des zu installierenden Plugins</translation>
+    </message>
+    <message>
+      <source>Get List</source>
+      <translation>Hole Liste</translation>
+    </message>
+    <message>
+      <source>Done</source>
+      <translation type="unfinished" >Fertig</translation>
+    </message>
+    <message>
+      <source>Install Plugin</source>
+      <translation>Installiere das Plugin</translation>
+    </message>
+    <message>
+      <source>The plugin will be installed to ~/.qgis/python/plugins</source>
+      <translation>Das Plugin wird unter ~/.qgis/python/plugins installiert</translation>
+    </message>
+    <message>
+      <source>Name</source>
+      <translation type="unfinished" >Name</translation>
+    </message>
+    <message>
+      <source>Version</source>
+      <translation type="unfinished" >Version</translation>
+    </message>
+    <message>
+      <source>Description</source>
+      <translation type="unfinished" >Beschreibung</translation>
+    </message>
+    <message>
+      <source>Author</source>
+      <translation>Autor</translation>
+    </message>
+  </context>
+  <context>
     <name>MapCoordsDialogBase</name>
     <message>
       <source>Enter map coordinates</source>
@@ -212,10 +259,6 @@
     <message>
       <source>Area</source>
       <translation>Fläche</translation>
-    </message>
-    <message>
-      <source>Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?</source>
-      <translation>Konnte das Segment nicht schnappen. Haben Sie die Schnappdistanz unter Einstellungen -> Projekteigenschaften -> Allgemein eingestellt?</translation>
     </message>
     <message>
       <source>Could not snap vertex. Have you set the tolerance in Settings > Project Properties > General?</source>
@@ -2383,6 +2426,18 @@ File dialog window title</comment>
       <source>Delete column</source>
       <translation>Lösche Attributspalte</translation>
     </message>
+    <message>
+      <source>Zoom map to the selected rows (Ctrl-F)</source>
+      <translation>Zoome Karte zum ausgewählten Spalteneintrag (Ctrl-F)</translation>
+    </message>
+    <message>
+      <source>Zoom map to the selected rows</source>
+      <translation>Zoome Karte zu den ausgewählten Spalteneinträgen</translation>
+    </message>
+    <message>
+      <source>Ctrl+F</source>
+      <translation type="unfinished" >Ctrl+F</translation>
+    </message>
   </context>
   <context>
     <name>QgsAttributeTableDisplay</name>
@@ -2773,10 +2828,6 @@ File dialog window title</comment>
       <translation>Höhe</translation>
     </message>
     <message>
-      <source>Scale</source>
-      <translation>Massstab</translation>
-    </message>
-    <message>
       <source>Set Extent</source>
       <translation>Ausdehnung setzen</translation>
     </message>
@@ -2812,6 +2863,10 @@ File dialog window title</comment>
       <source>1:</source>
       <translation type="unfinished" >1:</translation>
     </message>
+    <message>
+      <source>Scale:</source>
+      <translation>Massstab:</translation>
+    </message>
   </context>
   <context>
     <name>QgsComposerPicture</name>
@@ -2839,14 +2894,6 @@ File dialog window title</comment>
       <translation>Bild-Optionen</translation>
     </message>
     <message>
-      <source>Picture</source>
-      <translation>Bild</translation>
-    </message>
-    <message>
-      <source>...</source>
-      <translation>...</translation>
-    </message>
-    <message>
       <source>Frame</source>
       <translation>Rahmen</translation>
     </message>
@@ -2861,6 +2908,10 @@ File dialog window title</comment>
     <message>
       <source>Height</source>
       <translation>Höhe</translation>
+    </message>
+    <message>
+      <source>Browse</source>
+      <translation type="unfinished" >Durchsuchen</translation>
     </message>
   </context>
   <context>
@@ -3516,22 +3567,6 @@ p, li { white-space: pre-wrap; }
       <translation>Verbindungsfehler</translation>
     </message>
     <message>
-      <source>Access to relation </source>
-      <translation>Zugriff zur Relation </translation>
-    </message>
-    <message>
-      <source> using sql;
-</source>
-      <translation> mit SQL;
-</translation>
-    </message>
-    <message>
-      <source>
-has failed. The database said:
-</source>
-      <translation> fehlgeschlagen. Die Datenbank meldete:</translation>
-    </message>
-    <message>
       <source>Type</source>
       <translation>Typ</translation>
     </message>
@@ -3586,6 +3621,10 @@ has failed. The database said:
     <message>
       <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4The database said:%5%6</source>
       <translation>Verbindung zu %1 auf %2 ist fehlgeschlagen. Entweder ist die Datenbank abgeschaltet oder Ihre Einstellungen sind falsch. %3 Bitte überprüfen Sie den Benutzernamen und das Passwort und probieren Sie es noch einmal. %4 Die Datenbank meldete folgendes:%5%6.</translation>
+    </message>
+    <message>
+      <source>double click to open PostgreSQL query builder</source>
+      <translation>Doppelklick, um den PostgreSQL Query Builder zu öffnen</translation>
     </message>
   </context>
   <context>
@@ -4516,6 +4555,21 @@ p, li { white-space: pre-wrap; }
     </message>
   </context>
   <context>
+    <name>QgsGraduatedSymbolDialog</name>
+    <message>
+      <source>Equal Interval</source>
+      <translation>Gleiches Intervall</translation>
+    </message>
+    <message>
+      <source>Quantiles</source>
+      <translation>Quantile</translation>
+    </message>
+    <message>
+      <source>Empty</source>
+      <translation>Leer</translation>
+    </message>
+  </context>
+  <context>
     <name>QgsGraduatedSymbolDialogBase</name>
     <message>
       <source>graduated Symbol</source>
@@ -4561,16 +4615,16 @@ p, li { white-space: pre-wrap; }
       <translation type="unfinished" >Typ</translation>
     </message>
     <message>
-      <source>Field</source>
-      <translation type="unfinished" >Feld</translation>
-    </message>
-    <message>
       <source>ERROR</source>
       <translation type="unfinished" >FEHLER</translation>
     </message>
     <message>
       <source>OK</source>
       <translation type="unfinished" >OK</translation>
+    </message>
+    <message>
+      <source>Layer</source>
+      <translation type="unfinished" >Layer</translation>
     </message>
   </context>
   <context>
@@ -4897,10 +4951,6 @@ Column title</comment>
       <translation>Modus</translation>
     </message>
     <message>
-      <source>Field (layer)</source>
-      <translation>Attribut (Layer)</translation>
-    </message>
-    <message>
       <source>Settings</source>
       <translation>Einstellungen</translation>
     </message>
@@ -4935,6 +4985,10 @@ Column title</comment>
     <message>
       <source>Marker size</source>
       <translation>Markergröße</translation>
+    </message>
+    <message>
+      <source>Layer</source>
+      <translation type="unfinished" >Layer</translation>
     </message>
   </context>
   <context>
@@ -6225,6 +6279,10 @@ bei Zeile </translation>
       <source>GRASS Shell</source>
       <translation>GRASS Kommandozeile</translation>
     </message>
+    <message>
+      <source>Close</source>
+      <translation>Schliessen</translation>
+    </message>
   </context>
   <context>
     <name>QgsGrassTools</name>
@@ -7013,6 +7071,25 @@ bei Zeile </translation>
     </message>
   </context>
   <context>
+    <name>QgsMapToolVertexEdit</name>
+    <message>
+      <source>Snap tolerance</source>
+      <translation>Snappingtoleranz</translation>
+    </message>
+    <message>
+      <source>Don't show this message again</source>
+      <translation type="unfinished" >Diese Nachricht nicht mehr anzeigen.</translation>
+    </message>
+    <message>
+      <source>Could not snap segment.</source>
+      <translation>Konnte Segment nicht schnappen.</translation>
+    </message>
+    <message>
+      <source>Have you set the tolerance in Settings > Project Properties > General?</source>
+      <translation>Haben Sie die Snappingtoleranz in Einstellungen > Projekteinstellungen > Allgemein eingestellt?</translation>
+    </message>
+  </context>
+  <context>
     <name>QgsMapserverExport</name>
     <message>
       <source>Name for the map file</source>
@@ -7033,10 +7110,9 @@ Do you want to overwrite it?</source>
 Wollen Sie sie überschreiben?</translation>
     </message>
     <message>
-      <source>MapServer map files (*.map);;All files(*.*)</source>
-      <comment>
-Filter list for selecting files from a dialog box</comment>
-      <translation type="unfinished" >MapServer Mapfiles (*.map);;Alle Dateien (*.*)</translation>
+      <source>MapServer map files (*.map);;All files (*.*)</source>
+      <comment>Filter list for selecting files from a dialog box</comment>
+      <translation type="unfinished" />
     </message>
     <message>
       <source>QGIS Project Files (*.qgs);;All files (*.*)</source>
@@ -7300,8 +7376,8 @@ Wollen Sie sie überschreiben?</translation>
       <translation type="unfinished" >Falsche Messergebnisse</translation>
     </message>
     <message>
-      <source>&lt;p>This map is defined with a geographic coordinate system (latitude/longitude) but the map extents suggest that it is actually a projected coordinate system (e.g., Mercator). If so, the results from line or area measurements will be incorrect.&lt;/p>&lt;p>To fix this, explicitly set an appropriate map coordinate system using the &lt;tt>Settings:Project Properties&lt;/tt> menu.</source>
-      <translation type="unfinished" >&lt;p>Diese Karte ist in einem geographischen Koordinatensystem (Lat/Long) definiert, aber die Kartenausdehnung schlägt ein projiziertes Koordinatensystem (z.B. Mercator) vor. Falls dies so ist, werden Ihre Messergebnisse (Länge und Fläche) fehlerhaft sein.&lt;/p>&lt;p>Um dies zu korrigieren, wählen Sie bitte das richtige Koordinatensysten für die zugrunde liegenden Daten aus dem Menü &lt;tt>Einstellungen: Projekt-Einstellungen&lt;/tt> aus.</translation>
+      <source>&lt;p>This map is defined with a geographic coordinate system (latitude/longitude) but the map extents suggests that it is actually a projected coordinate system (e.g., Mercator). If so, the results from line or area measurements will be incorrect.&lt;/p>&lt;p>To fix this, explicitly set an appropriate map coordinate system using the &lt;tt>Settings:Project Properties&lt;/tt> menu.</source>
+      <translation>&lt;p>Diese Karte ist mit einem geographischen Koordinatensystem definiert (latitude/longitude) aber die Kartenausdehnung zeigt, dass es tatsächlich eine projiziertes Koordinatensystem ist (z.B.: Mercator). Wenn das stimmt, sind die Ergebnisse der Strecken oder Flächenmessung falsch.&lt;/p>&lt;p>Um richtig messen zu können, definieren Sie bitte ein entsprechendes Koordinatensystem in dem Menü &lt;tt>Einstellungen:Projekteinstellungen&lt;/tt>.</translation>
     </message>
   </context>
   <context>
@@ -8058,10 +8134,6 @@ p, li { white-space: pre-wrap; }
       <translation>Pufferfunktion benötigt GEOS-Unterstützung in PostGIS.</translation>
     </message>
     <message>
-      <source>Not a PostgreSQL/PosGIS Layer</source>
-      <translation>Keine PostgreSQL/PostGIS-Layer</translation>
-    </message>
-    <message>
       <source> is not a PostgreSQL/PostGIS layer.
 </source>
       <translation> ist keine PostgreSQL/PostGIS-Layer.</translation>
@@ -8077,6 +8149,10 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>You must select a layer in the legend to buffer</source>
       <translation>Selektieren Sie einen Layer in der Legende, der gepuffert werden soll.</translation>
+    </message>
+    <message>
+      <source>Not a PostgreSQL/PostGIS Layer</source>
+      <translation>Kein PostgreSQL/PostGIS Layer</translation>
     </message>
   </context>
   <context>
@@ -8256,10 +8332,6 @@ p, li { white-space: pre-wrap; }
   <context>
     <name>QgsPluginManager</name>
     <message>
-      <source>Choose a directory</source>
-      <translation>Verzeichnis wählen</translation>
-    </message>
-    <message>
       <source>No Plugins</source>
       <translation>Keine Plugins</translation>
     </message>
@@ -8289,10 +8361,6 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>Plugin Directory</source>
       <translation>Pluginverzeichnis</translation>
-    </message>
-    <message>
-      <source>...</source>
-      <translation>...</translation>
     </message>
     <message>
       <source>To load a plugin, click the checkbox next to the plugin and click Ok</source>
@@ -8757,7 +8825,7 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     </message>
     <message>
       <source>Manual</source>
-      <translation>Manuell</translation>
+      <translation>Hilfe</translation>
     </message>
     <message>
       <source>Sets the number of decimal places to use for the mouse position display</source>
@@ -8817,7 +8885,7 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     </message>
     <message>
       <source>Snapping Tolerance (in map units):</source>
-      <translation type="unfinished" >Fangtoleranz (in Karteneinheiten):</translation>
+      <translation>Snappingtoleranz (in Karteneinheiten):</translation>
     </message>
   </context>
   <context>
@@ -9373,7 +9441,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>Transparent</source>
-      <translation type="unfinished" >Transparent</translation>
+      <translation>Transparenz</translation>
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot;font-size:10pt;font-family:Sans Serif&quot;>
@@ -10500,6 +10568,17 @@ is appended to a truncated SQL statement</comment>
     <message>
       <source>&amp;Add WFS layer</source>
       <translation>&amp;WFS-Layer hinzufügen</translation>
+    </message>
+  </context>
+  <context>
+    <name>QgsWFSProvider</name>
+    <message>
+      <source>unknown</source>
+      <translation>unbekannt</translation>
+    </message>
+    <message>
+      <source>received %1 bytes from %2</source>
+      <translation>%1 von %2 Bytes empfangen</translation>
     </message>
   </context>
   <context>
