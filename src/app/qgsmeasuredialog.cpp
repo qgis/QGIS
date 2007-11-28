@@ -170,6 +170,7 @@ void QgsMeasureDialog::restorePosition()
   resize(ww,wh);
   move(wx,wy);
 //  setUpdatesEnabled(true);
+  updateUi();
   this->show();
 }
 
