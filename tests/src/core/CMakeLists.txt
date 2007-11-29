@@ -97,6 +97,18 @@ ADD_DEPENDENCIES(qgis_rasterlayertest qgis_rasterlayertestmoc)
 TARGET_LINK_LIBRARIES(qgis_rasterlayertest ${QT_LIBRARIES} qgis_core)
 INSTALL(TARGETS qgis_rasterlayertest RUNTIME DESTINATION ${QGIS_BIN_DIR})
 ADD_TEST(qgis_rasterlayertest ${QGIS_BIN_DIR}/qgis_rasterlayertest)
+#
+# QgsMapLayer test
+#
+SET(qgis_maplayertest_SRCS testqgsmaplayer.cpp)
+SET(qgis_maplayertest_MOC_CPPS testqgsmaplayer.cpp)
+QT4_WRAP_CPP(qgis_maplayertest_MOC_SRCS ${qgis_maplayertest_MOC_CPPS})
+ADD_CUSTOM_TARGET(qgis_maplayertestmoc ALL DEPENDS ${qgis_maplayertest_MOC_SRCS})
+ADD_EXECUTABLE(qgis_maplayertest ${qgis_maplayertest_SRCS})
+ADD_DEPENDENCIES(qgis_maplayertest qgis_maplayertestmoc)
+TARGET_LINK_LIBRARIES(qgis_maplayertest ${QT_LIBRARIES} qgis_core)
+INSTALL(TARGETS qgis_maplayertest RUNTIME DESTINATION ${QGIS_BIN_DIR})
+ADD_TEST(qgis_maplayertest ${QGIS_BIN_DIR}/qgis_maplayertest)
 
 
 
