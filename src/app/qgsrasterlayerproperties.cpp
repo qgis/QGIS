@@ -431,7 +431,7 @@ void QgsRasterLayerProperties::apply()
   pixmapThumbnail->setPixmap(myQPixmap);
   
   // update symbology
-  emit refreshLegend(rasterLayer->getLayerID());
+  emit refreshLegend(rasterLayer->getLayerID(), false);
   
   //make sure the layer is redrawn
   rasterLayer->triggerRepaint();

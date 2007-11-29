@@ -650,7 +650,7 @@ void QgsLegend::legendLayerShowProperties()
     else
     {
       rlp = new QgsRasterLayerProperties(ml);
-      connect(rlp, SIGNAL(refreshLegend(QString)), this, SLOT(refreshLayerSymbology(QString)));
+      connect(rlp, SIGNAL(refreshLegend(QString,bool)), this, SLOT(refreshLayerSymbology(QString,bool)));
     }
     rlp->exec();
     delete rlp; // delete since dialog cannot be reused without updating code
@@ -667,7 +667,7 @@ void QgsLegend::legendLayerShowProperties()
     else
     {
       vlp = new QgsVectorLayerProperties(vlayer);
-      connect(vlp, SIGNAL(refreshLegend(QString)), this, SLOT(refreshLayerSymbology(QString)));
+      connect(vlp, SIGNAL(refreshLegend(QString,bool)), this, SLOT(refreshLayerSymbology(QString,bool)));
     }
     vlp->exec();
     delete vlp; // delete since dialog cannot be reused without updating code
@@ -1405,7 +1405,7 @@ std::deque<QString> QgsLegend::layerIDs()
 }
 
 
-void QgsLegend::refreshLayerSymbology(QString key)
+void QgsLegend::refreshLayerSymbology(QString key, bool expandItem)
 {
   QgsLegendLayer* theLegendLayer = findLegendLayer(key);
   if(!theLegendLayer)
@@ -1421,7 +1421,10 @@ void QgsLegend::refreshLayerSymbology(QString key)
   //restore the current item again
   setCurrentItem(theCurrentItem);
   adjustIconSize();
-  setItemExpanded(theLegendLayer, true);//make sure the symbology items are visible
+  if (expandItem)
+    {
+      setItemExpanded(theLegendLayer, true);//make sure the symbology items are visible
+    }
 }
 
 
