@@ -59,6 +59,9 @@ class CORE_EXPORT QgsGeometryVertexIndex {
      */
     int get_at(int i) const;
 
+    /** no elements */
+    bool empty() const;
+
     /** Resets the index */
     void clear();
 
@@ -72,7 +75,7 @@ class CORE_EXPORT QgsGeometryVertexIndex {
     void assign_back(int& i);
 
     /** Returns this index as a string - useful for "printf debugging" */
-    QString toString();
+    QString toString() const;
 
 
   private:
