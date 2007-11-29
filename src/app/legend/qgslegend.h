@@ -188,7 +188,7 @@ public slots:
     void setMapCanvas(QgsMapCanvas * canvas){mMapCanvas = canvas;}
 
     /**Updates symbology items for a layer*/
-    void refreshLayerSymbology(QString key);
+    void refreshLayerSymbology(QString key, bool expandItem = true);
   
  /*!
    * Slot called to clear the tree of all items

@@ -67,7 +67,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
   signals:
     
     /** emitted when changes to layer were saved to update legend */
-    void refreshLegend(QString layerID);
+    void refreshLegend(QString layerID, bool expandItem);
 
   protected:
   QgsVectorLayer *layer;

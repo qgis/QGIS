@@ -312,7 +312,7 @@ void QgsVectorLayerProperties::apply()
   layer->setTransparency(static_cast < unsigned int >(255 - sliderTransparency->value()));
   
   // update symbology
-  emit refreshLegend(layer->getLayerID());
+  emit refreshLegend(layer->getLayerID(), false);
   
   layer->triggerRepaint();
 
