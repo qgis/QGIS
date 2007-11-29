@@ -57,7 +57,6 @@ class TestQgsVectorFileWriter: public QObject
   Q_OBJECT;
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase(){};// will be called after the last testfunction was executed.
     void init(){};// will be called before each testfunction is executed.
     void cleanup(){};// will be called after every testfunction.
 
@@ -118,9 +117,8 @@ void TestQgsVectorFileWriter::createPoint()
   //
   // Remove old copies that may be lying around
   //
-  QString myFileBase = "/tmp/testpt";
-  QVERIFY(cleanupFile(myFileBase));
-  QString myFileName = myFileBase + ".shp";
+  QString myFileName = "/tmp/testpt.shp";
+  QVERIFY(QgsVectorFileWriter::deleteShapeFile(myFileName));
   QgsVectorFileWriter myWriter (myFileName,
       mEncoding,
       mFields,
@@ -163,9 +161,8 @@ void TestQgsVectorFileWriter::createLine()
   //
   // Remove old copies that may be lying around
   //
-  QString myFileBase = "/tmp/testln";
-  QVERIFY(cleanupFile(myFileBase));
-  QString myFileName = myFileBase + ".shp";
+  QString myFileName = "/tmp/testln.shp";
+  QVERIFY(QgsVectorFileWriter::deleteShapeFile(myFileName));
   QgsVectorFileWriter myWriter (myFileName,
       mEncoding,
       mFields,
@@ -212,9 +209,8 @@ void TestQgsVectorFileWriter::createPolygon()
   //
   // Remove old copies that may be lying around
   //
-  QString myFileBase = "/tmp/testply";
-  QVERIFY(cleanupFile(myFileBase));
-  QString myFileName = myFileBase + ".shp";
+  QString myFileName = "/tmp/testply.shp";
+  QVERIFY(QgsVectorFileWriter::deleteShapeFile(myFileName));
   QgsVectorFileWriter myWriter (myFileName,
       mEncoding,
       mFields,
@@ -263,9 +259,8 @@ void TestQgsVectorFileWriter::polygonGridTest()
   //
   // Remove old copies that may be lying around
   //
-  QString myFileBase = "/tmp/testgrid";
-  QVERIFY(cleanupFile(myFileBase));
-  QString myFileName = myFileBase + ".shp";
+  QString myFileName = "/tmp/testgrid.shp";
+  QVERIFY(QgsVectorFileWriter::deleteShapeFile(myFileName));
   QgsVectorFileWriter myWriter (myFileName,
       mEncoding,
       mFields,
@@ -326,9 +321,8 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
   //
   // Remove old copies that may be lying around
   //
-  QString myFileBase = "/tmp/testprjgrid";
-  QVERIFY(cleanupFile(myFileBase));
-  QString myFileName = myFileBase + ".shp";
+  QString myFileName = "/tmp/testprjgrid.shp";
+  QVERIFY(QgsVectorFileWriter::deleteShapeFile(myFileName));
   //
   // We are testing projected coordinate 
   // system vector writing to lets use something fun...
@@ -392,49 +386,6 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
       QVERIFY(mError==QgsVectorFileWriter::NoError);
     }
   }
-}
-bool TestQgsVectorFileWriter::cleanupFile(QString theFileBase)
-{
-  //
-  // Remove old copies that may be lying around
-  //
-  QFileInfo myInfo(theFileBase + ".shp");
-  if (myInfo.exists())
-  {
-    if(!QFile::remove(theFileBase + ".shp"))
-    {
-      qDebug("Removing file failed : " + theFileBase.toLocal8Bit() + ".shp");
-      return false;
-    }
-  }
-  myInfo.setFile(theFileBase + ".shx");
-  if (myInfo.exists())
-  {
-    if(!QFile::remove(theFileBase + ".shx"))
-    {
-      qDebug("Removing file failed : " + theFileBase.toLocal8Bit() + ".shx");
-      return false;
-    }
-  }
-  myInfo.setFile(theFileBase + ".dbf");
-  if (myInfo.exists())
-  {
-    if(!QFile::remove(theFileBase + ".dbf"))
-    {
-      qDebug("Removing file failed : " + theFileBase.toLocal8Bit() + ".dbf");
-      return false;
-    }
-  }
-  myInfo.setFile(theFileBase + ".prj");
-  if (myInfo.exists())
-  {
-    if(!QFile::remove(theFileBase + ".prj"))
-    {
-      qDebug("Removing file failed : " + theFileBase.toLocal8Bit() + ".prj");
-      return false;
-    }
-  }
-  return true;
 }
 
 QTEST_MAIN(TestQgsVectorFileWriter)
