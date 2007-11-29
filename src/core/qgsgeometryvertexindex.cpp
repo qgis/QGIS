@@ -41,7 +41,12 @@ QgsGeometryVertexIndex & QgsGeometryVertexIndex::operator=( QgsGeometryVertexInd
 QgsGeometryVertexIndex::~QgsGeometryVertexIndex()
 {
   // NOOP
-}    
+}
+
+bool QgsGeometryVertexIndex::empty() const
+{
+  return mIndex.empty();
+}
 
 void QgsGeometryVertexIndex::push_back(int& i)
 {
@@ -50,30 +55,14 @@ void QgsGeometryVertexIndex::push_back(int& i)
 
 int QgsGeometryVertexIndex::back() const
 {
-#ifdef QGISDEBUG
-  QString str;
-  for(std::vector<int>::const_iterator it = mIndex.begin(); it != mIndex.end(); ++it)
-  {
-    str += " ";
-    str += QString::number(*it);
-  }
-  QgsDebugMsg("mIndex contains:" + str + ".");
-#endif
+  QgsDebugMsg("mIndex contains: " + toString() );
   return mIndex.back();
 }
 
 
 int QgsGeometryVertexIndex::get_at(int i) const
 {
-#ifdef QGISDEBUG
-  QString str;
-  for(std::vector<int>::const_iterator it = mIndex.begin(); it != mIndex.end(); ++it)
-  {
-    str += " ";
-    str += QString::number(*it);
-  }
-  QgsDebugMsg("mIndex contains:" + str + ".");
-#endif
+  QgsDebugMsg("mIndex contains: " + toString() );
   return mIndex[i];
 }
 
@@ -101,7 +90,7 @@ void QgsGeometryVertexIndex::assign_back(int& i)
   n = i;
 }
 
-QString QgsGeometryVertexIndex::toString()
+QString QgsGeometryVertexIndex::toString() const
 {
   QString s;
   
