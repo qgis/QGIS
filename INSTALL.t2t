@@ -1703,9 +1703,11 @@ c:\Qt\4.x.x\
 Open the Visual Studio C++ command line and cd to c:\Qt\4.x.x where you
 extracted the source and enter:
 
+```
 configure -platform win32-msvc2005
 nmake
 nmake install
+```
 
 Add -qt-sql-odbc -qt-sql-psql to the configure line if your want odbc and
 PostgreSQL support build into Qt.
