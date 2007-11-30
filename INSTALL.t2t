@@ -667,7 +667,10 @@ make install
 
 == Building QGIS with Qt4.x ==
 
-***Requires:*** Ubuntu Edgy / Debian derived distro
+**Requires:** Ubuntu Edgy / Debian derived distro
+
+These notes are current for Ubuntu 7.10 - other versions and Debian derived 
+distros may require slight variations in package names.
 
 These notes are for if you want to build QGIS from source. One of the major
 aims here is to show how this can be done using binary packages for ***all***
@@ -749,7 +752,7 @@ above commands to select the Qt4 version of the relevant applications.
 ``` 
 sudo apt-get install gdal-bin libgdal1-dev libgeos-dev proj \
 libgdal-doc libhdf4g-dev libhdf4g-run python-dev \
-libgsl0-dev g++ libjasper-1.701-dev libtiff4-dev subversion \
+libgsl0-dev g++ libjasper-dev libtiff4-dev subversion \
 libsqlite3-dev sqlite3 ccache make libpq-dev flex bison cmake txt2tags \
 python-qt4 python-qt4-dev python-sip4 sip4 python-sip4-dev
 ```
@@ -769,7 +772,7 @@ skip this section.
 Now you can install grass from dapper:
 
 ```
-sudo apt-get install grass libgrass-dev libgdal1-grass 
+sudo apt-get install grass libgrass-dev libgdal-1.4.0-grass 
 ```
 
 /!\ You may need to explicitly state your grass version e.g. libgdal1-1.3.2-grass
