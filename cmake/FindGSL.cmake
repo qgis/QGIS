@@ -33,12 +33,12 @@ IF(WIN32)
     )
   #MSVC version of the lib is just called 'cblas'
   FIND_LIBRARY(GSLCBLAS_LIB gslcblas cblas PATHS 
-    ${GSL_PREFIX}/lib 
+    ${GSL_MINGW_PREFIX}/lib 
     ${GSL_MSVC_PREFIX}/lib
     )
 
   FIND_PATH(GSL_INCLUDE_DIR gsl/gsl_blas.h 
-    ${GSL_PREFIX}/include 
+    ${GSL_MINGW_PREFIX}/include 
     ${GSL_MSVC_PREFIX}/include
     )
 
