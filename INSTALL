@@ -1,4 +1,5 @@
-%!encoding: iso-8859-1
+Quantum GIS (QGIS)
+Building QGIS from source - step by step
 
 
 ------------------------------------------------------------------------
@@ -89,12 +90,12 @@
     8.4. Install Microsoft Platform SDK2
     8.5. Edit your vsvars
     8.6. Environment Variables
-    8.7. Install CMake
-    8.8. Install Subversion
-    8.9. Initial SVN Check out
-    8.10. Create Makefiles using cmakesetup.exe
-    8.11. Running and packaging
-  9. Authors and Acknowledgments
+    8.7. Building Qt4.3.2
+      8.7.1. Compile Qt
+      8.7.2. Configure Visual C++ to use Qt
+    8.8. Install Python
+    8.9. Install SIP
+    8.10. Install PyQt4
 
 
 ------------------------------------------------------------------------
@@ -792,7 +793,10 @@ If all built without errors you can then install it:
 	5.1. Building QGIS with Qt4.x
 	=============================
 
-*Requires:* Ubuntu Edgy / Debian derived distro
+Requires: Ubuntu Edgy / Debian derived distro
+
+These notes are current for Ubuntu 7.10 - other versions and Debian derived 
+distros may require slight variations in package names.
 
 These notes are for if you want to build QGIS from source. One of the major
 aims here is to show how this can be done using binary packages for *all*
@@ -877,7 +881,7 @@ above commands to select the Qt4 version of the relevant applications.
 
   sudo apt-get install gdal-bin libgdal1-dev libgeos-dev proj \
   libgdal-doc libhdf4g-dev libhdf4g-run python-dev \
-  libgsl0-dev g++ libjasper-1.701-dev libtiff4-dev subversion \
+  libgsl0-dev g++ libjasper-dev libtiff4-dev subversion \
   libsqlite3-dev sqlite3 ccache make libpq-dev flex bison cmake txt2tags \
   python-qt4 python-qt4-dev python-sip4 sip4 python-sip4-dev
 
@@ -898,7 +902,7 @@ skip this section.
 Now you can install grass from dapper:
 
 
-  sudo apt-get install grass libgrass-dev libgdal1-grass 
+  sudo apt-get install grass libgrass-dev libgdal-1.4.0-grass 
 
 
 /!\ You may need to explicitly state your grass version e.g. libgdal1-1.3.2-grass
@@ -1899,270 +1903,270 @@ create or augment the following '''System''' variables (if they dont already exi
                      "C:\Program Files\PuTTY"
   QTDIR              c:\Qt\4.3.2
   SVN_SSH            "C:\\Program Files\\PuTTY\\plink.exe"
-  
-  == Building Qt4.3.2 ==
-  
-  You need a minimum of Qt 4.3.2 here since this is the first version to officially 
-  support building the open source version of Qt for windows under MSVC.
-  
-  Download Qt 4.x.x source for windows from
-  
-
-http:\\www.trolltech.com
 
 
-  
-  Unpack the source to 
-  
 
-c:\Qt\4.x.x\
+	8.7. Building Qt4.3.2
+	=====================
+
+You need a minimum of Qt 4.3.2 here since this is the first version to officially 
+support building the open source version of Qt for windows under MSVC.
+
+Download Qt 4.x.x source for windows from
 
 
+  http:\\www.trolltech.com
+
+
+Unpack the source to 
+
+
+  c:\Qt\4.x.x\
+
+
+
+		8.7.1. Compile Qt
+		=================
+
+Open the Visual Studio C++ command line and cd to c:\Qt\4.x.x where you
+extracted the source and enter:
+
+configure -platform win32-msvc2005
+nmake
+nmake install
+
+Add -qt-sql-odbc -qt-sql-psql to the configure line if your want odbc and
+PostgreSQL support build into Qt.
+
+/!\ Note: For me in some cases I got a build error on qscreenshot.pro. If you
+are only interested in having the libraries needed for building Qt apps, you 
+can probably ignore that. Just check in c:\Qt\4.3.2\bin to check all dlls and 
+helper apps (assistant etc) have been made.
+
+
+		8.7.2. Configure Visual C++ to use Qt
+		=====================================
+
+After building configure the Visual Studio Express IDE to use Qt:
+
+1) open Visual Studio Express IDE
+
+2) Tools -> Options -> Projects and Solutions -> VC++ Directories
+
+3) Add:
+
+
+  Executable files: 
+    $(QTDIR)\bin
   
-  === Compile Qt ===
+  Include files: 
+    $(QTDIR)\include
+    $(QTDIR)\include\Qt
+    $(QTDIR)\include\QtCore
+    $(QTDIR)\include\QtGui
+    $(QTDIR)\include\QtNetwork
+    $(QTDIR)\include\QtSvg
+    $(QTDIR)\include\QtXml
+    $(QTDIR)\include\Qt3Support
+    $(LIB_DIR)\include   (needed during qgis compile to find stdint.h and unistd.h)
   
-  Open the Visual Studio C++ command line and cd to c:\Qt\4.x.x where you
-  extracted the source and enter:
+  Library files: 
+    $(QTDIR)\lib
   
-  configure -platform win32-msvc2005
+  Source Files:
+    $(QTDIR)\src
+
+
+Hint:  You can also add
+
+
+  QString = t=<d->data, su>, size=<d->size, i>
+
+
+to AutoExp.DAT in C:\Program Files\Microsoft Visual Studio 8\Common7\Packages\Debugger before 
+
+
+  [Visualizer]
+
+
+That way the Debugger will show the contents of QString when you point at or
+watch a variable in the debugger.  There are probably much more additions -
+feel free to add some - I just needed QString and took the first hit in google
+I could find.
+
+
+	8.8. Install Python
+	===================
+
+Download http://python.org/ftp/python/2.5.1/python-2.5.1.msi and install it.
+
+
+	8.9. Install SIP
+	================
+
+Download http://www.riverbankcomputing.com/Downloads/sip4/sip-4.7.1.zip and extract it 
+into your c:\dev\cpp directory.
+From a Visual C++ command line cd to the directory where you extract SIP and run:
+
+
+  c:\python25\python configure.py -p win32-msvc2005
   nmake
   nmake install
-  
-  Add -qt-sql-odbc -qt-sql-psql to the configure line if your want odbc and
-  PostgreSQL support build into Qt.
-  
-  /!\ Note: For me in some cases I got a build error on qscreenshot.pro. If you
-  are only interested in having the libraries needed for building Qt apps, you 
-  can probably ignore that. Just check in c:\Qt\4.3.2\bin to check all dlls and 
-  helper apps (assistant etc) have been made.
-  
-  === Configure Visual C++ to use Qt ===
-  
-  After building configure the Visual Studio Express IDE to use Qt:
-  
-  1) open Visual Studio Express IDE
-  
-  2) Tools -> Options -> Projects and Solutions -> VC++ Directories
-  
-  3) Add:
 
-Executable files: 
-  $(QTDIR)\bin
 
-Include files: 
-  $(QTDIR)\include
-  $(QTDIR)\include\Qt
-  $(QTDIR)\include\QtCore
-  $(QTDIR)\include\QtGui
-  $(QTDIR)\include\QtNetwork
-  $(QTDIR)\include\QtSvg
-  $(QTDIR)\include\QtXml
-  $(QTDIR)\include\Qt3Support
-  $(LIB_DIR)\include   (needed during qgis compile to find stdint.h and unistd.h)
 
-Library files: 
-  $(QTDIR)\lib
+	8.10. Install PyQt4
+	===================
 
-Source Files:
-  $(QTDIR)\src
+Download http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/PyQt-win-gpl-4.3.1.zip and extract it 
+into your c:\dev\cpp directory.
+From a Visual C++ command line cd to the directory where you extracted PyQt4 and run:
+
+
+  c:\python25\python configure.py -p win32-msvc2005
+  nmake
+  nmake install
+  ````
+  
+  == Install CMake ==
+  
+  Download and install cmake 2.4.7 or better, making sure to enable the 
+  option
+  
+
+Update path for all users
 
 
   
-  Hint:  You can also add
+  == Install Subversion ==
+  
+  You '''must''' install the command line version if you want the CMake svn scripts to work.
+  Its a bit tricky to find the correct version on the subversion download site as they have 
+  som misleadingly named similar downloads. Easiest is to just get this file:
+  
+  http://subversion.tigris.org/downloads/1.4.5-win32/apache-2.2/svn-win32-1.4.5.zip
+  
+  Extract the zip file to
   
 
-QString = t=<d->data, su>, size=<d->size, i>
-
-
-  
-  to AutoExp.DAT in C:\Program Files\Microsoft Visual Studio 8\Common7\Packages\Debugger before 
-  
-
-[Visualizer]
-
-
-  
-  That way the Debugger will show the contents of QString when you point at or
-  watch a variable in the debugger.  There are probably much more additions -
-  feel free to add some - I just needed QString and took the first hit in google
-  I could find.
-  
-  
-  
-    
-  == Install Python ==
-  
-  Download http://python.org/ftp/python/2.5.1/python-2.5.1.msi and install it.
-  
-  
-  
-  == Install SIP ==
-  
-  Download http://www.riverbankcomputing.com/Downloads/sip4/sip-4.7.1.zip and extract it 
-  into your c:\dev\cpp directory.
-  From a Visual C++ command line cd to the directory where you extract SIP and run:
-  
-
-c:\python25\python configure.py -p win32-msvc2005
-nmake
-nmake install
+C:\Program Files\svn
 
 
   
-  == Install PyQt4 ==
-  
-  Download http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/PyQt-win-gpl-4.3.1.zip and extract it 
-  into your c:\dev\cpp directory.
-  From a Visual C++ command line cd to the directory where you extracted PyQt4 and run:
+  And then add
   
 
-c:\python25\python configure.py -p win32-msvc2005
-nmake
-nmake install
-````
+C:\Program Files\svn\bin
 
 
-	8.7. Install CMake
-	==================
+  
+  To your path.
+  
+  
+  == Initial SVN Check out ==
+  
+  Open a cmd.exe window and do:
+  
+  
 
-Download and install cmake 2.4.7 or better, making sure to enable the 
-option
-
-
-  Update path for all users
-
-
-
-	8.8. Install Subversion
-	=======================
-
-You '''must''' install the command line version if you want the CMake svn scripts to work.
-Its a bit tricky to find the correct version on the subversion download site as they have 
-som misleadingly named similar downloads. Easiest is to just get this file:
-
-http://subversion.tigris.org/downloads/1.4.5-win32/apache-2.2/svn-win32-1.4.5.zip
-
-Extract the zip file to
+cd \
+cd dev
+cd cpp
+svn co https://svn.qgis.org/repos/qgis/trunk/qgis 
 
 
-  C:\Program Files\svn
+  
+  At this point you will probably get a message like this:
+  
 
+C:\dev\cpp>svn co https://svn.qgis.org/repos/qgis/trunk/qgis
+Error validating server certificate for 'https://svn.qgis.org:443':
 
-And then add
+ - The certificate is not issued by a trusted authority. Use the
+   fingerprint to validate the certificate manually!
+Certificate information:
+ - Hostname: svn.qgis.org
+ - Valid: from Sat, 01 Apr 2006 03:30:47 GMT until Fri, 21 Mar 2008 03:30:47 GMT
+ - Issuer: Developer Team, Quantum GIS, Anchorage, Alaska, US
+ - Fingerprint: 2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b
+(R)eject, accept (t)emporarily or accept (p)ermanently?
 
+  
+  Press 'p' to accept and the svn checkout will commence.
+  
+  == Create Makefiles using cmakesetup.exe ==
+  
+  I wont be giving a detailed description of the build process, because 
+  the process is explained in the first section (where you manually build 
+  all dependencies) of the windows build notes in this document. Just skip 
+  past the parts where you need to build GDAL etc, since this simplified 
+  install process does all the dependency provisioning for you.
+  
 
-  C:\Program Files\svn\bin
+cd qgis
+mkdir build
+cd build
+cmakesetup ..
 
+  
+  Cmakesetup should find all dependencies for you automatically (it uses the 
+  LIB_DIR environment to find them all in c:\dev\cpp\qgislibs-release). 
+  Press configure again after the cmakesetup gui appears and when all the red 
+  fields are gone, and you have made any personalisations to the setup, press 
+  ok to close the cmake gui.
+  
+  Now open Visual Studio Express and do:
+  
+  File -> Open -> Project / Solution
+  
+  Now open the cmake generated QGIS solution which should be in :
+  
 
-To your path.
+c:\dev\cpp\qgis\build\qgisX.X.X.sln
 
+  
+  Where X.X.X represents the current version number of QGIS. Currently I 
+  have only made release built dependencies for QGIS (debug versions will follow 
+  in future), so you need to be sure to select 'Release' from the solution 
+  configurations toolbar.
+  
+  Next right click on ALL_BUILD in the solution browser, and then choose build.
+  
+  Once the build completes right click on INSTALL in the solution browser and 
+  choose build. This will by default install qgis into c:\program files\qgisX.X.X.
+  
+  == Running and packaging ==
+  
+  To run QGIS you need to at the minimum copy the dlls from c:\dev\cpp\qgislibs-release\bin 
+  into the c:\program files\qgisX.X.X directory.
+  
+  = Authors and Acknowledgments =
+  
+  The following people have contributed to this document:
+  
+  - Windows MINGW Section
+   - Tim Sutton, Godofredo Contreras 2006
+   - CMake additions Magnus Homann 2007
+   - Python additions Martin Dobias 2007
+   - With thanks to Tisham Dhar for preparing the initial msys environment
+  
+  - Windows MSVC Section (Detailed install)
+   - David Willis 2007
+   - MSVC install additions Tim Sutton 2007
+   - PostgreSQL, Qt compile, SIP, Python, AutoExp additions Juergen Fischer 2007
+  
+  
+  - Windows MSVC Section (Simplified install)
+   - Tim Sutton 2007
+   - Juergen Fischer 2007
+  
+  - OSX Section
+   - Tim Sutton, 2007
+   - With special thanks to Tom Elwertowski and William Kyngesburye
+  
+  - GNU/Linux Section
+   - Tim Sutton 2006
 
-	8.9. Initial SVN Check out
-	==========================
-
-Open a cmd.exe window and do:
-
-
-  cd \
-  cd dev
-  cd cpp
-  svn co https://svn.qgis.org/repos/qgis/trunk/qgis 
-
-
-At this point you will probably get a message like this:
-
-
-  C:\dev\cpp>svn co https://svn.qgis.org/repos/qgis/trunk/qgis
-  Error validating server certificate for 'https://svn.qgis.org:443':
-   - The certificate is not issued by a trusted authority. Use the
-     fingerprint to validate the certificate manually!
-  Certificate information:
-   - Hostname: svn.qgis.org
-   - Valid: from Sat, 01 Apr 2006 03:30:47 GMT until Fri, 21 Mar 2008 03:30:47 GMT
-   - Issuer: Developer Team, Quantum GIS, Anchorage, Alaska, US
-   - Fingerprint: 2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b
-  (R)eject, accept (t)emporarily or accept (p)ermanently?
-
-
-Press 'p' to accept and the svn checkout will commence.
-
-
-	8.10. Create Makefiles using cmakesetup.exe
-	===========================================
-
-I wont be giving a detailed description of the build process, because 
-the process is explained in the first section (where you manually build 
-all dependencies) of the windows build notes in this document. Just skip 
-past the parts where you need to build GDAL etc, since this simplified 
-install process does all the dependency provisioning for you.
-
-
-  cd qgis
-  mkdir build
-  cd build
-  cmakesetup ..
-
-
-Cmakesetup should find all dependencies for you automatically (it uses the 
-LIB_DIR environment to find them all in c:\dev\cpp\qgislibs-release). 
-Press configure again after the cmakesetup gui appears and when all the red 
-fields are gone, and you have made any personalisations to the setup, press 
-ok to close the cmake gui.
-
-Now open Visual Studio Express and do:
-
-File -> Open -> Project / Solution
-
-Now open the cmake generated QGIS solution which should be in :
-
-
-  c:\dev\cpp\qgis\build\qgisX.X.X.sln
-
-
-Where X.X.X represents the current version number of QGIS. Currently I 
-have only made release built dependencies for QGIS (debug versions will follow 
-in future), so you need to be sure to select 'Release' from the solution 
-configurations toolbar.
-
-Next right click on ALL_BUILD in the solution browser, and then choose build.
-
-Once the build completes right click on INSTALL in the solution browser and 
-choose build. This will by default install qgis into c:\program files\qgisX.X.X.
-
-
-	8.11. Running and packaging
-	===========================
-
-To run QGIS you need to at the minimum copy the dlls from c:\dev\cpp\qgislibs-release\bin 
-into the c:\program files\qgisX.X.X directory.
-
-
-  9. Authors and Acknowledgments
-  ==============================
-
-The following people have contributed to this document:
-
-- Windows MINGW Section
- - Tim Sutton, Godofredo Contreras 2006
- - CMake additions Magnus Homann 2007
- - Python additions Martin Dobias 2007
- - With thanks to Tisham Dhar for preparing the initial msys environment
-
-- Windows MSVC Section (Detailed install)
- - David Willis 2007
- - MSVC install additions Tim Sutton 2007
- - PostgreSQL, Qt compile, SIP, Python, AutoExp additions Juergen Fischer 2007
-
-- Windows MSVC Section (Simplified install)
- - Tim Sutton 2007
- - Juergen Fischer 2007
-
-- OSX Section
- - Tim Sutton, 2007
- - With special thanks to Tom Elwertowski and William Kyngesburye
-
-- GNU/Linux Section
- - Tim Sutton 2006
 
 
 

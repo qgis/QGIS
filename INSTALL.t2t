@@ -1,3 +1,6 @@
+Quantum GIS (QGIS)
+Building QGIS from source - step by step
+
 %!encoding: iso-8859-1
 
 
@@ -1676,6 +1679,7 @@ PATH               C:\Program Files\CMake 2.4\bin;
                    "C:\Program Files\PuTTY"
 QTDIR              c:\Qt\4.3.2
 SVN_SSH            "C:\\Program Files\\PuTTY\\plink.exe"
+```
 
 == Building Qt4.3.2 ==
 
