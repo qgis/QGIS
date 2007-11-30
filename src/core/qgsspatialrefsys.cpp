@@ -488,9 +488,12 @@ bool QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
 {
 
   //
-  // Example:
+  // Examples:
   // +proj=tmerc +lat_0=0 +lon_0=-62 +k=0.999500 +x_0=400000 +y_0=0
   // +ellps=clrk80 +towgs84=-255,-15,71,0,0,0,0 +units=m +no_defs
+  //
+  // +proj=lcc +lat_1=46.8 +lat_0=46.8 +lon_0=2.337229166666664 +k_0=0.99987742
+  // +x_0=600000 +y_0=2200000 +a=6378249.2 +b=6356515.000000472 +units=m +no_defs
   //
   mIsValidFlag=false;
 
@@ -514,17 +517,22 @@ bool QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
   myStart= 0;
   myLength=0;
   myStart = myEllipseRegExp.search(theProj4String, myStart);
-  if (myStart==-1)
+  if (myStart!=-1)
   {
-    QgsLogger::warning("QgsSpatialRefSys::createFromProj4 error proj string supplied has no +ellps argument");
+    myLength = myEllipseRegExp.matchedLength();
+    mEllipsoidAcronym = theProj4String.mid(myStart+ELLPS_PREFIX_LEN,myLength-ELLPS_PREFIX_LEN);
+  }
+
+  QRegExp myAxisRegExp( "\\+a=\\S+" );
+  myStart= 0;
+  myLength=0;
+  myStart = myAxisRegExp.search(theProj4String, myStart);
+  if (myStart==-1 && mEllipsoidAcronym.isNull())
+  {
+    QgsLogger::warning("QgsSpatialRefSys::createFromProj4 error proj string supplied has no +ellps or +a argument");
 
     return mIsValidFlag;
   }
-  else
-  {
-    myLength = myEllipseRegExp.matchedLength();
-  }
-  mEllipsoidAcronym = theProj4String.mid(myStart+ELLPS_PREFIX_LEN,myLength-ELLPS_PREFIX_LEN);
   //mproj4string must be set here for the rest of this method to behave in a meaningful way...
   mProj4String = theProj4String;
 
