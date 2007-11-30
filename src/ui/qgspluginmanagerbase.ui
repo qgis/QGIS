@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>QGIS Plugin Manger</string>
+   <string>QGIS Plugin Manager</string>
   </property>
   <property name="modal" >
    <bool>true</bool>
