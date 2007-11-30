@@ -6296,11 +6296,11 @@ bei Zeile </translation>
     </message>
     <message>
       <source>GRASS Tools</source>
-      <translation type="unfinished" >GRASS-Werkzeuge</translation>
+      <translation>GRASS-Werkzeuge </translation>
     </message>
     <message>
       <source>GRASS Tools: </source>
-      <translation type="unfinished" >GRASS-Werkzeuge</translation>
+      <translation>GRASS-Werkzeuge: </translation>
     </message>
     <message>
       <source>Warning</source>
@@ -7112,7 +7112,7 @@ Wollen Sie sie überschreiben?</translation>
     <message>
       <source>MapServer map files (*.map);;All files (*.*)</source>
       <comment>Filter list for selecting files from a dialog box</comment>
-      <translation type="unfinished" />
+      <translation>MapServer map files (*.map);;Alle Dateien (*.*)</translation>
     </message>
     <message>
       <source>QGIS Project Files (*.qgs);;All files (*.*)</source>
@@ -8343,10 +8343,6 @@ p, li { white-space: pre-wrap; }
   <context>
     <name>QgsPluginManagerBase</name>
     <message>
-      <source>QGIS Plugin Manger</source>
-      <translation>QGIS-Pluginmanager</translation>
-    </message>
-    <message>
       <source>Name</source>
       <translation>Name</translation>
     </message>
@@ -8401,6 +8397,10 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>Alt+C</source>
       <translation>Alt+C</translation>
+    </message>
+    <message>
+      <source>QGIS Plugin Manager</source>
+      <translation>QGIS Plugin Manager</translation>
     </message>
   </context>
   <context>
@@ -9889,7 +9889,7 @@ is appended to a truncated SQL statement</comment>
     </message>
     <message>
       <source>Browse:</source>
-      <translation type="unfinished" >Andere...</translation>
+      <translation>Andere:</translation>
     </message>
   </context>
   <context>
