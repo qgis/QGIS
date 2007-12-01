@@ -169,7 +169,7 @@ The [type] part of the variable should be the type class of the variable written
 #include <QVector>
 #include <QList>
 
-
+#include "qgis.h"
 #include "qgspoint.h"
 #include "qgsmaplayer.h"
 
@@ -765,7 +765,11 @@ public:
       return false;
     } //todo
 
-    bool isSymbologyCompatible(const QgsMapLayer& other) const {return false;} //todo
+    bool isSymbologyCompatible(const QgsMapLayer& other) const
+    {
+      UNUSED(other);
+      return false;
+    } //todo
 
     /**
      * If an operation returns 0 (e.g. draw()), this function
