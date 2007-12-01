@@ -4769,7 +4769,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
 	      mActionDeleteVertex->setEnabled(false);
 	      mActionAddRing->setEnabled(false);
 	      mActionAddIsland->setEnabled(false);
-	      if(dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries)
+	      if(vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries)
 		{
 		  mActionMoveVertex->setEnabled(true);
 		}
