@@ -2644,7 +2644,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
                 // Construct OGR DSN
                 QgsDataSourceURI dsUri(provider->dataSourceUri());
                 uri = "PG:" + dsUri.connInfo();
-                ogrLayer = dsUri.schema() + "." + dsUri.table();
+                ogrLayer = dsUri.table();
             }
             else
             {
