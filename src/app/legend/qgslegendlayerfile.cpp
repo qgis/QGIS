@@ -225,15 +225,15 @@ void QgsLegendLayerFile::table()
   if (!vlayer)
   {
     QMessageBox::information(0, tr("Not a vector layer"),
-                             tr("To open an attribute table, you must select a vector layer in the legend"));
+      tr("To open an attribute table, you must select a vector layer in the legend"));
     return;
   }
-  
+
   QgsAttributeAction& actions = *vlayer->actions();
-  
+
   if (mTableDisplay)
   {
-    
+
     mTableDisplay->raise();
 
     // Give the table the most recent copy of the actions for this layer.
@@ -256,37 +256,38 @@ void QgsLegendLayerFile::table()
       if( list[i]->windowTitle().startsWith("Quantum GIS") )
       {
         app=reinterpret_cast<QgisApp*>(list[i]);
-	break;
+        break;
       }
 
-    mTableDisplay = new QgsAttributeTableDisplay(vlayer, app);
-    try
+      mTableDisplay = new QgsAttributeTableDisplay(vlayer, app);
+      try
       {
-	mTableDisplay->table()->fillTable(vlayer);
+        mTableDisplay->table()->fillTable(vlayer);
       }
-    catch(std::bad_alloc& ba)
+      catch(std::bad_alloc& ba)
       {
-	QMessageBox::critical(0, tr("bad_alloc exception"), tr("Filling the attribute table has been stopped because there was no more virtual memory left"));
+        UNUSED(ba);
+        QMessageBox::critical(0, tr("bad_alloc exception"), tr("Filling the attribute table has been stopped because there was no more virtual memory left"));
       }
-    mTableDisplay->table()->setSorting(true);
+      mTableDisplay->table()->setSorting(true);
 
-    connect(mTableDisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDisplay()));
+      connect(mTableDisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDisplay()));
 
-    mTableDisplay->setTitle(tr("Attribute table - ") + name());
-    mTableDisplay->show();
+      mTableDisplay->setTitle(tr("Attribute table - ") + name());
+      mTableDisplay->show();
 
-    // Give the table the most recent copy of the actions for this layer.
-    mTableDisplay->table()->setAttributeActions(actions);
-    
-    // select rows which should be selected
-    selectionChanged();
-    
-    // etablish the necessary connections between the table and the vector layer
-    connect(mTableDisplay->table(), SIGNAL(selected(int, bool)), mLyr.layer(), SLOT(select(int, bool)));
-    connect(mTableDisplay->table(), SIGNAL(selectionRemoved(bool)), mLyr.layer(), SLOT(removeSelection(bool)));
-    connect(mTableDisplay->table(), SIGNAL(repaintRequested()), mLyr.layer(), SLOT(triggerRepaint()));
-    
-    QApplication::restoreOverrideCursor();
+      // Give the table the most recent copy of the actions for this layer.
+      mTableDisplay->table()->setAttributeActions(actions);
+
+      // select rows which should be selected
+      selectionChanged();
+
+      // etablish the necessary connections between the table and the vector layer
+      connect(mTableDisplay->table(), SIGNAL(selected(int, bool)), mLyr.layer(), SLOT(select(int, bool)));
+      connect(mTableDisplay->table(), SIGNAL(selectionRemoved(bool)), mLyr.layer(), SLOT(removeSelection(bool)));
+      connect(mTableDisplay->table(), SIGNAL(repaintRequested()), mLyr.layer(), SLOT(triggerRepaint()));
+
+      QApplication::restoreOverrideCursor();
   }
 
 }
@@ -412,58 +413,58 @@ void QgsLegendLayerFile::toggleEditing()
   QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(mLyr.layer());
   if (!vlayer)
     return;
-  
+
   if (!vlayer->isEditable())
   {
     vlayer->startEditing();
     if(!(vlayer->getDataProvider()->capabilities() & QgsVectorDataProvider::AddFeatures))
-      {
-	QMessageBox::information(0,tr("Start editing failed"),
-				 tr("Provider cannot be opened for editing"));
-      }
+    {
+      QMessageBox::information(0,tr("Start editing failed"),
+        tr("Provider cannot be opened for editing"));
+    }
     else
-      {
-	vlayer->triggerRepaint();
-      }
+    {
+      vlayer->triggerRepaint();
+    }
   }
   else
   {
     if(vlayer->isModified())
-      {
+    {
 
-	// commit or roll back?
-	QMessageBox::StandardButton commit = QMessageBox::information(0,tr("Stop editing"),
-								      tr("Do you want to save the changes?"),
-								      QMessageBox::Save | QMessageBox::Discard);  
-	
-	if(commit==QMessageBox::Save)
-	  {
-	    if(!vlayer->commitChanges())
-	      {
-		QMessageBox::information(0,tr("Error"),tr("Could not commit changes"));
-		
-		// Leave the in-memory editing state alone,
-		// to give the user a chance to enter different values
-		// and try the commit again later
-	      }
-	  }
-	else if(commit==QMessageBox::Discard)
-	  {
-	    if(!vlayer->rollBack())
-	      {
-		QMessageBox::information(0,tr("Error"),
-					 tr("Problems during roll back"));
-	      }
-	  }
-      }
-    else //layer not modified
+      // commit or roll back?
+      QMessageBox::StandardButton commit = QMessageBox::information(0,tr("Stop editing"),
+        tr("Do you want to save the changes?"),
+        QMessageBox::Save | QMessageBox::Discard);  
+
+      if(commit==QMessageBox::Save)
       {
-	vlayer->rollBack();
+        if(!vlayer->commitChanges())
+        {
+          QMessageBox::information(0,tr("Error"),tr("Could not commit changes"));
+
+          // Leave the in-memory editing state alone,
+          // to give the user a chance to enter different values
+          // and try the commit again later
+        }
       }
+      else if(commit==QMessageBox::Discard)
+      {
+        if(!vlayer->rollBack())
+        {
+          QMessageBox::information(0,tr("Error"),
+            tr("Problems during roll back"));
+        }
+      }
+    }
+    else //layer not modified
+    {
+      vlayer->rollBack();
+    }
     vlayer->triggerRepaint();
-    
+
   }
-  
+
   updateLegendItem();
 
 }
