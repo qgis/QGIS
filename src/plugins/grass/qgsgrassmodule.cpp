@@ -79,6 +79,7 @@
 extern "C" {
 #include <grass/gis.h>
 #include <grass/Vect.h>
+// #include <grass/version.h>
 }
 
 
@@ -2483,7 +2484,7 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput (
     QDomElement &gdesc, QDomNode &gnode, QWidget * parent)
       : Q3GroupBox ( 1, Qt::Vertical, parent ),
         QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
-        mType(type), mOgrLayerOption(0)
+        mType(type), mOgrLayerOption(0), mOgrWhereOption(0)
 {
   QString tit;
   if ( mDescription.isEmpty() ) 
@@ -2518,6 +2519,17 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput (
     else 
     {
       mOgrLayerOption = opt;
+    }
+  }
+
+  // Read "whereoption" if defined
+  opt = qdesc.attribute("whereoption");
+  if( !opt.isNull() ) {
+    QDomNode optNode = QgsGrassModule::nodeByKey ( gdesc, opt );
+    if( optNode.isNull() ) {
+      QMessageBox::warning( 0, tr("Warning"), tr("Cannot find whereoption ") + opt );
+    } else {
+      mOgrWhereOption = opt;
     }
   }
 
@@ -2564,12 +2576,15 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
 
       QString uri;
       QString ogrLayer;
+      QString ogrWhere;
       if ( vector->providerType() == "postgres" ) 
       {
         // Construct OGR DSN
         QgsDataSourceURI dsUri(provider->dataSourceUri());
         uri = "PG:" + dsUri.connInfo();
+	// which OGR/GRASS combo actually supports schemas?
         ogrLayer = dsUri.table();
+        ogrWhere = dsUri.sql();
       }
       else
       {
@@ -2586,6 +2601,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
       mUri.push_back ( uri );
 
       mOgrLayers.push_back ( ogrLayer );
+      mOgrWheres.push_back ( ogrWhere );
     } 
     else if ( mType == Gdal && layer->type() == QgsMapLayer::RASTER ) 
     {
@@ -2617,7 +2633,8 @@ QStringList QgsGrassModuleGdalInput::options()
   if ( !mOgrLayerOption.isNull() && mOgrLayers[current].length() > 0 ) 
   {
     opt = mOgrLayerOption + "=";
-#if GDAL_VERSION_NUM >= 1400  //need to check for GRASS >= 6.2 here too...
+// which OGR/GRASS version actually supports schemas?
+#if 1 // GDAL_VERSION_NUM >= 1400 && (GRASS_VERSION_MAJOR>6 || (GRASS_VERSION_MAJOR==6 && GRASS_VERSION_MINOR>=2))
     opt += mOgrLayers[current];
 #else
     // Handle older versions of gdal gracefully
@@ -2640,6 +2657,10 @@ QStringList QgsGrassModuleGdalInput::options()
     }
 #endif //GDAL_VERSION_NUM
     list.push_back( opt );
+
+    if( !mOgrWhereOption.isNull() && mOgrWheres[current].length()>0 ) {
+      list.push_back( mOgrWhereOption + "=" + mOgrWheres[current] );
+    }
   }
 
   return list;

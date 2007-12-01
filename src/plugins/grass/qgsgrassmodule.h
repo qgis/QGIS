@@ -620,6 +620,9 @@ private:
 
     //! Ogr layer option associated with this input
     QString mOgrLayerOption;
+
+    //! Ogr sql option associated with this input
+    QString mOgrWhereOption;
     
     //! Combobox for QGIS layers
     QComboBox *mLayerComboBox;
@@ -629,6 +632,9 @@ private:
 
     //! Ogr layer options
     std::vector<QString> mOgrLayers;
+
+    //! Ogr where clauses
+    std::vector<QString> mOgrWheres;
 };
 
 /*********************** QgsGrassModuleField **********************/
