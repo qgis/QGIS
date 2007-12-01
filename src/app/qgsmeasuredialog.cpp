@@ -144,8 +144,7 @@ void QgsMeasureDialog::addPoint(QgsPoint &point)
 void QgsMeasureDialog::close(void)
 {
     restart();
-    saveWindowLocation();
-    hide();
+    QDialog::close();
 }
 
 void QgsMeasureDialog::closeEvent(QCloseEvent *e)
@@ -157,19 +156,13 @@ void QgsMeasureDialog::closeEvent(QCloseEvent *e)
 void QgsMeasureDialog::restorePosition()
 {
   QSettings settings;
-  int ww = settings.readNumEntry("/Windows/Measure/w", 150);
+  restoreGeometry(settings.value("/Windows/Measure/geometry").toByteArray());
   int wh;
   if (mMeasureArea)
-    wh = settings.readNumEntry("/Windows/Measure/hNoTable", 70);
+    wh = settings.value("/Windows/Measure/hNoTable", 70).toInt();
   else
-    wh = settings.readNumEntry("/Windows/Measure/h", 200);    
-  int wx = settings.readNumEntry("/Windows/Measure/x", 100);
-  int wy = settings.readNumEntry("/Windows/Measure/y", 100);
-//  setUpdatesEnabled(false);
-  adjustSize();
-  resize(ww,wh);
-  move(wx,wy);
-//  setUpdatesEnabled(true);
+    wh = settings.value("/Windows/Measure/h", 200).toInt();    
+  resize(width(), wh);
   updateUi();
   this->show();
 }
@@ -177,15 +170,9 @@ void QgsMeasureDialog::restorePosition()
 void QgsMeasureDialog::saveWindowLocation()
 {
   QSettings settings;
-  QPoint p = this->pos();
-  QSize s = this->size();
-  settings.writeEntry("/Windows/Measure/x", p.x());
-  settings.writeEntry("/Windows/Measure/y", p.y());
-  settings.writeEntry("/Windows/Measure/w", s.width());
-  if (mMeasureArea)
-    settings.writeEntry("/Windows/Measure/hNoTable", s.height());
-  else
-    settings.writeEntry("/Windows/Measure/h", s.height());
+  settings.setValue("/Windows/Measure/geometry", saveGeometry());
+  const QString &key = mMeasureArea ? "/Windows/Measure/hNoTable" : "/Windows/Measure/h";
+  settings.setValue(key, height());
 } 
 
 void QgsMeasureDialog::on_btnHelp_clicked()

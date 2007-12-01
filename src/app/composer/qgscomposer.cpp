@@ -917,47 +917,16 @@ void QgsComposer::resizeEvent ( QResizeEvent *e )
 
 void QgsComposer::saveWindowState()
 {
-#ifdef QGISDEBUG
-  std::cout << "QgsComposer::saveWindowState" << std::endl;
-#endif
-
   QSettings settings;
-
-  QPoint p = this->pos();
-  QSize s = this->size();
-
-  settings.writeEntry("/Composer/geometry/x", p.x());
-  settings.writeEntry("/Composer/geometry/y", p.y());
-  settings.writeEntry("/Composer/geometry/w", s.width());
-  settings.writeEntry("/Composer/geometry/h", s.height());
-
-  settings.setValue("/Composer/geometry/splitter", mSplitter->saveState());
-
-if(this->isMaximized()){
-	std::cout << "maximized!" << std::endl;
-}
+  settings.setValue("/Composer/geometry", saveGeometry());
+  settings.setValue("/Composer/splitterState", mSplitter->saveState());
 }
 
 void QgsComposer::restoreWindowState()
 {
-
   QSettings settings;
-
-  QDesktopWidget *d = QApplication::desktop();
-  int dw = d->width();
-  int dh = d->height();
-  int w = settings.readNumEntry("/Composer/geometry/w", 600);
-  int h = settings.readNumEntry("/Composer/geometry/h", 400);
-  int x = settings.readNumEntry("/Composer/geometry/x", (dw - 600) / 2);
-  int y = settings.readNumEntry("/Composer/geometry/y", (dh - 400) / 2);
-  resize(w, h);
-  move(x, y);
-
-//We also need to save the maximized state
-
-//std::cout << "x: " << x << "y: " << y << "w: " << w << "h: " << h << std::endl;
-
-  mSplitter->restoreState(settings.value("/Composer/geometry/splitter").toByteArray());
+  restoreGeometry(settings.value("/Composer/geometry").toByteArray());
+  mSplitter->restoreState(settings.value("/Composer/splitterState").toByteArray());
 }
 
 void QgsComposer::on_helpPButton_clicked()

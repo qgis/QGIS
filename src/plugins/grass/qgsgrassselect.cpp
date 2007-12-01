@@ -109,23 +109,13 @@ void QgsGrassSelect::restorePosition()
   adjustSize ();
   
   QSettings settings;
-  int ww = settings.readNumEntry("/GRASS/windows/select/w", 500);
-  //int wh = settings.readNumEntry("/GRASS/windows/select/h", 100);
-  int wx = settings.readNumEntry("/GRASS/windows/select/x", 100);
-  int wy = settings.readNumEntry("/GRASS/windows/select/y", 100);
-  resize(ww,height());
-  move(wx,wy);
+  restoreGeometry(settings.value("/GRASS/windows/select/geometry").toByteArray());
 }
 
 void QgsGrassSelect::saveWindowLocation()
 {
   QSettings settings;
-  QPoint p = this->pos();
-  QSize s = this->size();
-  settings.writeEntry("/GRASS/windows/select/x", p.x());
-  settings.writeEntry("/GRASS/windows/select/y", p.y());
-  settings.writeEntry("/GRASS/windows/select/w", s.width());
-  settings.writeEntry("/GRASS/windows/select/h", s.height());
+  settings.setValue("/GRASS/windows/select/geometry", saveGeometry());
 } 
 
 bool QgsGrassSelect::first = true;

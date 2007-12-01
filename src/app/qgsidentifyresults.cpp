@@ -152,24 +152,16 @@ void QgsIdentifyResults::contextMenuEvent(QContextMenuEvent* event)
 // Restore last window position/size and show the window
 void QgsIdentifyResults::restorePosition()
 {
-
   QSettings settings;
-  QPoint pos = settings.value("/Windows/Identify/pos", 
-                              QPoint(100,100)).toPoint();
-QSize size = settings.value("/Windows/Identify/size", 
-                            QSize(281,316)).toSize();
-  //std::cerr << "Setting geometry: " << wx << ", " << wy << ", " << ww << ", " << wh << std::endl;
-  resize(size);
-  move(pos);
+  restoreGeometry(settings.value("/Windows/Identify/geometry").toByteArray());
   show();
-  //std::cerr << "Current geometry: " << x() << ", " << y() << ", " << width() << ", " << height() << std::endl; 
 }
+
 // Save the current window location (store in ~/.qt/qgisrc)
 void QgsIdentifyResults::saveWindowLocation()
 {
   QSettings settings;
-  settings.setValue("/Windows/Identify/pos", this->pos());
-  settings.setValue("/Windows/Identify/size", this->size());
+  settings.setValue("/Windows/Identify/geometry", saveGeometry());
 } 
 
 /** add an attribute and its value to the list */
