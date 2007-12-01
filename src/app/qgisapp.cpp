@@ -4732,7 +4732,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
 	    {
 	      mActionToggleEditing->setEnabled(true);
 	      mActionToggleEditing->setChecked(vlayer->isEditable());
-	      mActionEditPaste->setEnabled(true);
+	      mActionEditPaste->setEnabled(vlayer->isEditable());
 	    }
 	  else
 	    {
@@ -4741,7 +4741,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
 	    }
 
 	  //does provider allow deleting of features?
-	  if(dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures)
+	  if(vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures)
 	    {
 	      mActionDeleteSelected->setEnabled(true);
 	      mActionEditCut->setEnabled(true);
@@ -4755,7 +4755,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
 
 	  if(vlayer->vectorType() == QGis::Point)
 	    {
-	      if(dprovider->capabilities() & QgsVectorDataProvider::AddFeatures)
+	      if(vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::AddFeatures)
 		{
 		  mActionCapturePoint->setEnabled(true);
 		}
@@ -4777,7 +4777,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
 	    }
 	  else if(vlayer->vectorType() == QGis::Line)
 	    {
-	      if(dprovider->capabilities() & QgsVectorDataProvider::AddFeatures)
+	      if(vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::AddFeatures)
 		{
 		  mActionCaptureLine->setEnabled(true);
 		}
@@ -4792,7 +4792,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
 	    }
 	  else if(vlayer->vectorType() == QGis::Polygon)
 	    {
-	      if(dprovider->capabilities() & QgsVectorDataProvider::AddFeatures)
+	      if(vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::AddFeatures)
 		{
 		  mActionCapturePolygon->setEnabled(true);
 		}
@@ -4805,7 +4805,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
 	    }
 
 	  //are add/delete/move vertex supported?
-	  if(dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries)
+	  if(vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries)
 	    {
 	      mActionAddVertex->setEnabled(true);
 	      mActionMoveVertex->setEnabled(true);
