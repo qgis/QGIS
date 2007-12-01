@@ -409,24 +409,14 @@ void QgsGrassTools::closeEvent(QCloseEvent *e)
 void QgsGrassTools::restorePosition()
 {
     QSettings settings;
-    int ww = settings.readNumEntry("/GRASS/windows/tools/w", 250);
-    int wh = settings.readNumEntry("/GRASS/windows/tools/h", 300);
-    int wx = settings.readNumEntry("/GRASS/windows/tools/x", 100);
-    int wy = settings.readNumEntry("/GRASS/windows/tools/y", 100);
-    resize(ww,wh);
-    move(wx,wy);
+    restoreGeometry(settings.value("/GRASS/windows/tools/geometry").toByteArray());
     show();
 }
 
 void QgsGrassTools::saveWindowLocation()
 {
     QSettings settings;
-    QPoint p = this->pos();
-    QSize s = this->size();
-    settings.writeEntry("/GRASS/windows/tools/x", p.x());
-    settings.writeEntry("/GRASS/windows/tools/y", p.y());
-    settings.writeEntry("/GRASS/windows/tools/w", s.width());
-    settings.writeEntry("/GRASS/windows/tools/h", s.height());
+    settings.setValue("/GRASS/windows/tools/geometry", saveGeometry());
 }
 
 void QgsGrassTools::emitRegionChanged()

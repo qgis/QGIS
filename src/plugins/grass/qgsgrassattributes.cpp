@@ -125,15 +125,7 @@ void QgsGrassAttributes::restorePosition()
   std::cerr << "QgsGrassAttributes::restorePosition()" << std::endl;
   #endif
   QSettings settings;
-  int ww = settings.readNumEntry("/GRASS/windows/attributes/w", 250);
-  int wh = settings.readNumEntry("/GRASS/windows/attributes/h", 350);
-  int wx = settings.readNumEntry("/GRASS/windows/attributes/x", 100);
-  int wy = settings.readNumEntry("/GRASS/windows/attributes/y", 100);
-  #ifdef QGISDEBUG
-  std::cerr << "wx = " << wx << " wy = " << wy << std::endl;
-  #endif
-  resize(ww,wh);
-  move(wx,wy);
+  restoreGeometry(settings.value("/GRASS/windows/attributes/geometry").toByteArray());
 }
 
 void QgsGrassAttributes::saveWindowLocation()
@@ -142,12 +134,7 @@ void QgsGrassAttributes::saveWindowLocation()
   std::cerr << "QgsGrassAttributes::saveWindowLocation()" << std::endl;
   #endif
   QSettings settings;
-  QPoint p = this->pos();
-  QSize s = this->size();
-  settings.writeEntry("/GRASS/windows/attributes/x", p.x());
-  settings.writeEntry("/GRASS/windows/attributes/y", p.y());
-  settings.writeEntry("/GRASS/windows/attributes/w", s.width());
-  settings.writeEntry("/GRASS/windows/attributes/h", s.height());
+  settings.setValue("/GRASS/windows/attributes/geometry", saveGeometry());
 } 
 
 int QgsGrassAttributes::addTab ( const QString & label )

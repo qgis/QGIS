@@ -1381,40 +1381,25 @@ void QgisApp::saveWindowState()
   // store window and toolbar positions
   QSettings settings;
   // store the toolbar/dock widget settings using Qt4 settings API
-  settings.setValue("/Geometry/state", this->saveState());
+  settings.setValue("/UI/state", this->saveState());
 
   // store window geometry
-  QPoint p = this->pos();
-  QSize s = this->size();
-  settings.writeEntry("/Geometry/maximized", this->isMaximized());
-  settings.writeEntry("/Geometry/x", p.x());
-  settings.writeEntry("/Geometry/y", p.y());
-  settings.writeEntry("/Geometry/w", s.width());
-  settings.writeEntry("/Geometry/h", s.height());
-  settings.setValue("/Geometry/canvasSplitterState", canvasLegendSplit->saveState());
-  settings.setValue("/Geometry/legendSplitterState", legendOverviewSplit->saveState());
+  settings.setValue("/UI/geometry", saveGeometry());
+  settings.setValue("/UI/canvasSplitterState", canvasLegendSplit->saveState());
+  settings.setValue("/UI/legendSplitterState", legendOverviewSplit->saveState());
 }
 
 void QgisApp::restoreWindowState()
 {
   // restore the toolbar and dock widgets postions using Qt4 settings API
   QSettings settings;
-  QVariant vstate = settings.value("/Geometry/state");
+  QVariant vstate = settings.value("/UI/state");
   this->restoreState(vstate.toByteArray());
 
   // restore window geometry
-  QDesktopWidget *d = QApplication::desktop();
-  int dw = d->width();          // returns desktop width
-  int dh = d->height();         // returns desktop height
-  int w = settings.readNumEntry("/Geometry/w", 600);
-  int h = settings.readNumEntry("/Geometry/h", 400);
-  int x = settings.readNumEntry("/Geometry/x", (dw - 600) / 2);
-  int y = settings.readNumEntry("/Geometry/y", (dh - 400) / 2);
-  resize(w, h);
-  move(x, y);
-
-  canvasLegendSplit->restoreState(settings.value("/Geometry/canvasSplitterState").toByteArray());
-  legendOverviewSplit->restoreState(settings.value("/Geometry/legendSplitterState").toByteArray());
+  restoreGeometry(settings.value("/UI/geometry").toByteArray());
+  canvasLegendSplit->restoreState(settings.value("/UI/canvasSplitterState").toByteArray());
+  legendOverviewSplit->restoreState(settings.value("/UI/legendSplitterState").toByteArray());
 }
 ///////////// END OF GUI SETUP ROUTINES ///////////////
 

@@ -98,13 +98,7 @@ bool QgsAttributeDialog::queryAttributes(const QgsFieldMap& fields, QgsFeature& 
 void QgsAttributeDialog::savePositionAndColumnWidth()
 {
   QSettings settings;
-  QPoint p = this->pos();
-  QSize s = this->size();
-  settings.writeEntry(_settingsPath+"x", p.x());
-  settings.writeEntry(_settingsPath+"y", p.y());
-  settings.writeEntry(_settingsPath+"w", s.width());
-  settings.writeEntry(_settingsPath+"h", s.height());
-
+  settings.setValue(_settingsPath+"geometry", saveGeometry());
 }
 
 void QgsAttributeDialog::resizeEvent(QResizeEvent *event)
@@ -122,13 +116,7 @@ void QgsAttributeDialog::moveEvent(QMoveEvent *event)
 void QgsAttributeDialog::restorePositionAndColumnWidth()
 {
   QSettings settings;
-  int ww = settings.readNumEntry(_settingsPath+"w", 281);
-  int wh = settings.readNumEntry(_settingsPath+"h", 316);
-  int wx = settings.readNumEntry(_settingsPath+"x", 100);
-  int wy = settings.readNumEntry(_settingsPath+"y", 100);
-
-  resize(ww,wh);
-  move(wx,wy);
+  restoreGeometry(settings.value(_settingsPath+"geometry").toByteArray());
 }
 
 void QgsAttributeDialog::setAttributeValueChanged(int row, int column)
