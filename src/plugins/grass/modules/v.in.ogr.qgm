@@ -2,7 +2,7 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="v.in.ogr - Import OGR/PostGIS vector layer" module="v.in.ogr">
-	<ogr key="dsn" layeroption="layer" label="OGR vector layer" />
+	<ogr key="dsn" layeroption="layer" whereoption="where" label="OGR vector layer" />
 	<option key="output" />
 	<flag key="o" answer="on" hidden="yes" />
 </qgisgrassmodule>
