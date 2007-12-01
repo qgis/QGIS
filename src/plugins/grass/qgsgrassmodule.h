@@ -196,7 +196,7 @@ public:
     //! Thaw output vector maps used in QGIS on Windows 
     virtual void thawOutput() { return; }
 
-    //! Check if otpion is ready
+    //! Check if option is ready
     //  Returns empty string or error message
     virtual QStringList ready() { return QStringList() ; }
 
@@ -206,7 +206,7 @@ public:
     //! Has raster input or output
     virtual bool usesRegion() { return false; }
 
-    //! One or more input maps were swithched on to be used as region
+    //! One or more input maps were switched on to be used as region
     virtual bool requestsRegion() { return false; }
 
     //! Check region
@@ -291,7 +291,7 @@ private:
     QStringList mFlagNames;
 
     //! Use of region defined in qgm
-    bool mUsesRegion; 
+    bool mUsesRegion;
 };
 
 /*! \class QgsGrassModuleItem
