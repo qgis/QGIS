@@ -3790,7 +3790,7 @@ void QgisApp::testMapLayerPlugins()
       void *handle = dlopen(("../plugins/maplayer/" + mlpDir[i]).toLocal8Bit().data(), RTLD_LAZY | RTLD_GLOBAL );
       if (!handle)
       {
-        QgsDebugMsg("Error in dlopen: " + dlerror());
+        QgsDebugMsg( QString("Error in dlopen: %1").arg( dlerror() ));
       }
       else
       {
