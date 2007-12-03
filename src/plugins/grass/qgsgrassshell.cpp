@@ -107,7 +107,10 @@ QDialog(parent), QgsGrassShellBase(), mTools(tools)
 
   mAppDir = mTools->appDir();
 
+#ifndef Q_WS_MAC
+  // Qt4.3.2/Mac Q3TextEdit readOnly property causes keys to be processed as keyboard actions
   mText->setReadOnly(TRUE);
+#endif
   //mText->setFocusPolicy ( QWidget::NoFocus ); // To get key press directly
 
 #ifndef HAVE_OPENPTY
@@ -180,7 +183,10 @@ QDialog(parent), QgsGrassShellBase(), mTools(tools)
 #endif
 
     // TODO close all opened file descriptors - close(0)???
+#ifndef Q_OS_DARWIN
+    // Makes child process unusable on Mac
     close ( mFdMaster );
+#endif
 
     //close ( fdSlave ); // -> freeze  
 
