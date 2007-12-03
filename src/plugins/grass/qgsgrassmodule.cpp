@@ -79,9 +79,7 @@
 extern "C" {
 #include <grass/gis.h>
 #include <grass/Vect.h>
-// #include <grass/version.h>
 }
-
 
 #include "../../src/providers/grass/qgsgrass.h"
 #include "../../src/providers/grass/qgsgrassprovider.h"
@@ -2582,8 +2580,21 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
         // Construct OGR DSN
         QgsDataSourceURI dsUri(provider->dataSourceUri());
         uri = "PG:" + dsUri.connInfo();
-	// which OGR/GRASS combo actually supports schemas?
-        ogrLayer = dsUri.table();
+
+        // FIXME:
+        // GDAL prepends the schema only to tables that are not in the
+        // current schema. The default schema is the user schema, if it
+        // exists or public otherwise.
+        // So we need to query current_schema() here like GDAL does (see
+        // OGRPGTableLayer::ReadTableDefinition). But do we want a static
+        // PostgreSQL depencency here?
+        // This workaround makes public tables inaccessible, if a
+        // user schema exists.
+        if( dsUri.schema()!="public" && dsUri.schema()!=dsUri.username() ) {
+          ogrLayer = dsUri.schema() + ".";
+        }
+
+        ogrLayer += dsUri.table();
         ogrWhere = dsUri.sql();
       }
       else
@@ -2633,8 +2644,8 @@ QStringList QgsGrassModuleGdalInput::options()
   if ( !mOgrLayerOption.isNull() && mOgrLayers[current].length() > 0 ) 
   {
     opt = mOgrLayerOption + "=";
-// which OGR/GRASS version actually supports schemas?
-#if 1 // GDAL_VERSION_NUM >= 1400 && (GRASS_VERSION_MAJOR>6 || (GRASS_VERSION_MAJOR==6 && GRASS_VERSION_MINOR>=2))
+    // GDAL 1.4.0 supports schemas (r9998)
+#if GDAL_VERSION_NUM >= 1400
     opt += mOgrLayers[current];
 #else
     // Handle older versions of gdal gracefully
