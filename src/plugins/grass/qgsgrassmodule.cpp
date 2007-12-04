@@ -2581,16 +2581,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
         QgsDataSourceURI dsUri(provider->dataSourceUri());
         uri = "PG:" + dsUri.connInfo();
 
-        // FIXME:
-        // GDAL prepends the schema only to tables that are not in the
-        // current schema. The default schema is the user schema, if it
-        // exists or public otherwise.
-        // So we need to query current_schema() here like GDAL does (see
-        // OGRPGTableLayer::ReadTableDefinition). But do we want a static
-        // PostgreSQL depencency here?
-        // This workaround makes public tables inaccessible, if a
-        // user schema exists.
-        if( dsUri.schema()!="public" && dsUri.schema()!=dsUri.username() ) {
+        if( dsUri.schema()!="" ) {
           ogrLayer = dsUri.schema() + ".";
         }
 
