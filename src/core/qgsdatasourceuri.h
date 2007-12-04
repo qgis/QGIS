@@ -68,6 +68,7 @@ public:
   QString sql() const;
   QString geometryColumn() const;
 
+  void clearSchema();
   void setSql(QString sql);
 
 private:

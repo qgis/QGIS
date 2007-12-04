@@ -156,6 +156,11 @@ void QgsDataSourceURI::setSql(QString sql)
   mSql = sql;
 }
 
+void QgsDataSourceURI::clearSchema()
+{
+  mSchema = "";
+}
+
 void QgsDataSourceURI::skipBlanks(const QString &uri, int &i)
 {
 	// skip space before value
@@ -246,11 +251,10 @@ QString QgsDataSourceURI::connInfo() const
 QString QgsDataSourceURI::uri() const
 { 
   return connInfo()
-       + QString(" table=\"%1\".\"%2\" (%3) sql=%4")
-                .arg(mSchema)
-                .arg(mTable)
-                .arg(mGeometryColumn)
-                .arg(mSql);
+       + QString(" table=%1 (%2) sql=%3")
+                .arg( quotedTablename() )
+                .arg( mGeometryColumn )
+                .arg( mSql );
 }
 
 QString QgsDataSourceURI::quotedTablename() const

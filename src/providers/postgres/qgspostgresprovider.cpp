@@ -126,6 +126,17 @@ const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
   }
   PQclear(testAccess);
 
+  PGresult *schema = PQexec(connection, "SELECT current_schema()");
+  if (PQresultStatus(schema) == PGRES_TUPLES_OK)
+  {
+    mCurrentSchema = PQgetvalue(schema, 0, 0);
+    if(mCurrentSchema==mSchemaName) {
+      mUri.clearSchema();
+      setDataSourceUri( mUri.uri() );
+    }
+  }
+  PQclear(schema);
+
   if (!getGeometryDetails()) // gets srid and geometry type
   {
     // the table is not a geometry table
