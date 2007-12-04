@@ -2225,7 +2225,7 @@ void QgsPostgresProvider::setSubsetString(QString theSQL)
   mUri.setSql(theSQL);
   // Update yet another copy of the uri. Why are there 3 copies of the
   // uri? Perhaps this needs some rationalisation.....
-  setDataSourceUri(mUri.connInfo());
+  setDataSourceUri(mUri.uri());
 
   // need to recalculate the number of features...
   getFeatureCount();
