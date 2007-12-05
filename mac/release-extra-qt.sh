@@ -2,7 +2,7 @@
 # Copy Qt frameworks to qgis bundle
 # and make search paths for them relative to bundle
 
-PREFIX=qgis0.9.0.app/Contents/MacOS
+PREFIX=qgis0.9.1.app/Contents/MacOS
 
 # Edit version when any library is upgraded
 LIBJPEG=libjpeg.62.0.0.dylib

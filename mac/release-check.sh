@@ -2,7 +2,7 @@
 # Display all paths to supporting libraries
 # Output should be visually inspected for paths which haven't been made relative (such as /usr/local)
 
-PREFIX=qgis0.9.0.app/Contents/MacOS
+PREFIX=qgis0.9.1.app/Contents/MacOS
 
 otool -L $PREFIX/qgis
 otool -L $PREFIX/bin/qgis_help.app/Contents/MacOS/qgis_help
@@ -41,7 +41,7 @@ otool -L $PREFIX/lib/QtSvg.framework/Versions/4/QtSvg
 otool -L $PREFIX/lib/QtXml.framework/Versions/4/QtXml
 otool -L $PREFIX/../plugins/imageformats/libqjpeg.dylib
 
-otool -L $PREFIX/lib/libgdal.1.11.2.dylib
+otool -L $PREFIX/lib/libgdal.1.11.4.dylib
 otool -L $PREFIX/lib/gdalplugins/gdal_GRASS.so
 otool -L $PREFIX/lib/gdalplugins/ogr_GRASS.so
 otool -L $PREFIX/lib/libgeos.2.2.3.dylib
@@ -55,7 +55,7 @@ otool -L $PREFIX/lib/libpng.3.1.2.8.dylib
 otool -L $PREFIX/lib/libtiff.3.dylib
 otool -L $PREFIX/lib/libgeotiff.1.2.3.dylib
 otool -L $PREFIX/lib/libjasper-1.701.1.0.0.dylib
-otool -L $PREFIX/lib/libexpat.1.5.0.dylib
+otool -L $PREFIX/lib/libexpat.1.5.2.dylib
 otool -L $PREFIX/lib/libgsl.0.9.0.dylib
 otool -L $PREFIX/lib/libgslcblas.0.0.0.dylib
 #otool -L $PREFIX/lib/libopenmodeller.0.0.0.dylib
@@ -70,13 +70,13 @@ otool -L $PREFIX/lib/libpq.5.0.dylib
 
 for LIBGRASS in datetime dbmibase dbmiclient dgl dig2 form gis gmath gproj I linkm rtree shape vask vect
 do
-	otool -L $PREFIX/lib/grass/libgrass_$LIBGRASS.6.2.2.dylib
+	otool -L $PREFIX/lib/grass/libgrass_$LIBGRASS.6.3.0RC3.dylib
 done
 
 otool -L $PREFIX/share/qgis/python/qgis/core.so
 otool -L $PREFIX/share/qgis/python/qgis/gui.so
 otool -L $PREFIX/share/qgis/python/sip.so
-for LIBPYQT4 in QtCore QtGui QtNetwork QtSql QtSvg QtXml QtAssistant QtOpenGL QtTest
+for LIBPYQT4 in Qt QtCore QtGui QtNetwork QtSql QtSvg QtXml QtAssistant QtDesigner QtOpenGL QtScript QtTest
 do
 	otool -L $PREFIX/share/qgis/python/PyQt4/$LIBPYQT4.so
 done

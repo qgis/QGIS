@@ -1,11 +1,11 @@
-{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf410
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf440
 \readonlydoc1{\fonttbl\f0\fswiss\fcharset77 Helvetica-Bold;\f1\fswiss\fcharset77 Helvetica;\f2\fmodern\fcharset77 Courier;
 }
 {\colortbl;\red255\green255\blue255;}
 \margl1440\margr1440\vieww11100\viewh8700\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\qc
 
-\f0\b\fs24 \cf0 QGIS 0.9.0 Release Notes for Macintosh
+\f0\b\fs24 \cf0 QGIS 0.9.1 Release Notes for Macintosh
 \f1\b0 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural
 \cf0 \
@@ -29,7 +29,7 @@
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural
 
 \f1\b0 \cf0 \
-This release of QGIS requires Mac OS X 10.3.9 or 10.4. A PostgreSQL version 7 or 8 server with PostGIS extensions installed is required if using PostgreSQL features.\
+This release of QGIS requires Mac OS X 10.3.9 or later. A PostgreSQL version 7 or 8 server with PostGIS extensions installed is required if using PostgreSQL features.\
 \
 \
 \
@@ -41,10 +41,10 @@ This release of QGIS requires Mac OS X 10.3.9 or 10.4. A PostgreSQL version 7 or
 \f1\b0 \cf0 \
 The following libraries are included with this distribution of QGIS. If you have other versions of these libraries installed, QGIS will ignore your versions and use these.\
 \
-GDAL 1.4.2 (libgdal.1.11.2.dylib)\
+GDAL 1.4.4 (libgdal.1.11.4.dylib)\
 GEOS 2.2.3 (libgeos.2.2.3.dylib)\
 PROJ 4.5.0 (libproj.0.5.2.dylib)\
-SQLITE3 3.4.2 (libsqlite3.0.8.6.dylib)\
+SQLITE3 3.5.2 (libsqlite3.0.8.6.dylib)\
 Xerces-C++ 2.8.0 (libxerces-c.28.0.dylib)\
 Qt/Mac 4.3.2 (various Qt frameworks)\
 GIF 4.1.4 (libgif.4.1.4.dylib)\
@@ -53,12 +53,12 @@ PNG 1.2.8 (libpng.3.1.2.8.dylib)\
 TIFF 3.8.2 (libtiff.3.dylib)\
 GeoTIFF 1.2.3 (libgeotiff.1.2.3.dylib)\
 JasPer 1.701.0.GEO (libjasper-1.701.1.0.0.dylib)\
-Expat 2.0.0 (libexpat.1.5.0.dylib)\
+Expat 2.0.1 (libexpat.1.5.2.dylib)\
 GSL 1.8 (libgsl.0.9.0.dylib, libgslcblas.0.0.0.dylib)\
 PostgreSQL 8.2.5 (libpq.5.0.dylib) This client can also access a version 7 server.\
-GRASS 6.2.2 (libgrass_*.6.2.2.dylib)\
-SIP 4.5.2\
-PyQt4 4.1.1\
+GRASS 6.3.0RC3 (libgrass_*.6.3.0RC3.dylib)\
+SIP 4.7.1 (sip.so)\
+PyQt4 4.3.1 (Qt*.so)\
 \
 \
 \
@@ -70,9 +70,11 @@ PyQt4 4.1.1\
 \f1\b0 \cf0 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 \cf0 Some dialogs have cosmetic issues with buttons.\
+\
+Maps will not be redrawn correctly if the main window is resized after opening a WMS layer. Therefore adjust the window size first.\
+\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural
-\cf0 \
-To use QGIS with a language other than English, you must change both the Language and Format settings in the International System Preferences. The QGIS application menu uses the Language preference while all other QGIS menus use the Format preference to select the language.\
+\cf0 To use QGIS with a language other than English, you must change both the Language and Format settings in the International System Preferences. The QGIS application menu uses the Language preference while all other QGIS menus use the Format preference to select the language.\
 \
 \
 \
@@ -108,13 +110,16 @@ or add the folder containing GPSBabel to your search path:\
 
 \f1\b0 \cf0 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
-\cf0 To use all the functions of the GRASS plugin, QGIS should be launched from inside GRASS. Some GRASS distributions provide a GRASS menu item to launch QGIS. If GRASS does not contain a QGIS menu item, launch QGIS from the GRASS command-line prompt:\
+\cf0 To enable all the functions of the GRASS plugin, a GRASS mapset must be opened first or else QGIS should be launched from inside GRASS. Some GRASS distributions provide a GRASS menu item to launch QGIS. If GRASS does not contain a QGIS menu item, launch QGIS from the GRASS command-line prompt:\
 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 
-\f2 \cf0 /Applications/qgis-0.9.0/qgis0.9.0.app/Contents/MacOS/qgis\
+\f2 \cf0 /Applications/qgis-0.9.1/qgis0.9.1.app/Contents/MacOS/qgis\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 
 \f1 \cf0 \
-If you try to use the GRASS plugin while not running GRASS, you will be able to open GRASS files but not use GRASS tools. If you have not previously run QGIS with GRASS, you may be prompted for the location of the GRASS directory GISBASE. Because this directory is inside the GRASS application bundle and cannot be directly selected, you should choose Cancel and then run QGIS from inside GRASS. QGIS will remember the GISBASE directory for subsequent launches.\
+If you have not previously run QGIS with GRASS, you may be prompted for the location of the GRASS directory GISBASE. On a Mac, this directory is usually somewhere inside the GRASS bundle (GRASS.app). Select the folder containing a 
+\f2 bin
+\f1  folder containing many files beginning with "d."\
+(d dot).\
 }

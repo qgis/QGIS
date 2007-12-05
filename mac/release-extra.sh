@@ -2,14 +2,14 @@
 # Copy supporting libraries (except Qt) to qgis bundle
 # and make search paths for them relative to bundle
 
-PREFIX=qgis0.9.0.app/Contents/MacOS
+PREFIX=qgis0.9.1.app/Contents/MacOS
 
 HELPPREFIX=$PREFIX/bin/qgis_help.app/Contents/MacOS
 MSEXPORTPREFIX=$PREFIX/bin/msexport.app/Contents/MacOS
 PREFIXBACKTRACK=../../../..
 
 # Edit version when any library is upgraded
-LIBGDAL=libgdal.1.11.2.dylib
+LIBGDAL=libgdal.1.11.4.dylib
 LNKGDAL=libgdal.1.dylib
 LIBGEOS=libgeos.2.2.3.dylib
 LNKGEOS=libgeos.2.dylib
@@ -37,13 +37,13 @@ LIBGSL=libgsl.0.9.0.dylib
 LNKGSL=libgsl.0.dylib
 LIBGSLCBLAS=libgslcblas.0.0.0.dylib
 LNKGSLCBLAS=libgslcblas.0.dylib
-LIBEXPAT=libexpat.1.5.0.dylib
+LIBEXPAT=libexpat.1.5.2.dylib
 LNKEXPAT=libexpat.1.dylib
 #LIBOPENMODELLER=libopenmodeller.0.0.0.dylib
 #LNKOPENMODELLER=libopenmodeller.0.dylib
 LIBPQ=libpq.5.0.dylib
 LNKPQ=libpq.5.dylib
-GRASSLIB=/usr/local/grass-6.2.2/lib
+GRASSLIB=/usr/local/grass-6.3.0RC3/lib
 
 # Copy supporting libraries to application bundle
 cd $PREFIX/lib

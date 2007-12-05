@@ -1,7 +1,7 @@
 #!/bin/sh
 # Strip all non-global symbols
 
-PREFIX=qgis0.9.0.app/Contents/MacOS
+PREFIX=qgis0.9.1.app/Contents/MacOS
 
 strip -x $PREFIX/qgis
 strip -x $PREFIX/bin/qgis_help.app/Contents/MacOS/qgis_help
@@ -40,7 +40,7 @@ strip -x $PREFIX/lib/QtSvg.framework/Versions/4/QtSvg
 strip -x $PREFIX/lib/QtXml.framework/Versions/4/QtXml
 strip -x $PREFIX/../plugins/imageformats/libqjpeg.dylib
 
-strip -x $PREFIX/lib/libgdal.1.11.2.dylib
+strip -x $PREFIX/lib/libgdal.1.11.4.dylib
 strip -x $PREFIX/lib/gdalplugins/gdal_GRASS.so
 strip -x $PREFIX/lib/gdalplugins/ogr_GRASS.so
 strip -x $PREFIX/lib/libgeos.2.2.3.dylib
@@ -54,7 +54,7 @@ strip -x $PREFIX/lib/libpng.3.1.2.8.dylib
 strip -x $PREFIX/lib/libtiff.3.dylib
 strip -x $PREFIX/lib/libgeotiff.1.2.3.dylib
 strip -x $PREFIX/lib/libjasper-1.701.1.0.0.dylib
-strip -x $PREFIX/lib/libexpat.1.5.0.dylib
+strip -x $PREFIX/lib/libexpat.1.5.2.dylib
 strip -x $PREFIX/lib/libgsl.0.9.0.dylib
 strip -x $PREFIX/lib/libgslcblas.0.0.0.dylib
 #strip -x $PREFIX/lib/libopenmodeller.0.0.0.dylib
@@ -69,13 +69,13 @@ strip -x $PREFIX/lib/libpq.5.0.dylib
 
 for LIBGRASS in datetime dbmibase dbmiclient dgl dig2 form gis gmath gproj I linkm rtree shape vask vect
 do
-	strip -x $PREFIX/lib/grass/libgrass_$LIBGRASS.6.2.2.dylib
+	strip -x $PREFIX/lib/grass/libgrass_$LIBGRASS.6.3.0RC3.dylib
 done
 
 strip -x $PREFIX/share/qgis/python/qgis/core.so
 strip -x $PREFIX/share/qgis/python/qgis/gui.so
 strip -x $PREFIX/share/qgis/python/sip.so
-for LIBPYQT4 in QtCore QtGui QtNetwork QtSql QtSvg QtXml QtAssistant QtOpenGL QtTest
+for LIBPYQT4 in Qt QtCore QtGui QtNetwork QtSql QtSvg QtXml QtAssistant QtDesigner QtOpenGL QtScript QtTest
 do
 	strip -x $PREFIX/share/qgis/python/PyQt4/$LIBPYQT4.so
 done
