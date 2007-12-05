@@ -10,6 +10,318 @@
       <source>unable to get OGRDriverManager</source>
       <translation>No se puede conseguir un administrador del controlador OGR</translation>
     </message>
+    <message>
+      <source>Open an OGR Supported Vector Layer</source>
+      <translation>Abrir una capa vectorial soportada por OGR</translation>
+    </message>
+    <message>
+      <source>is not a valid or recognized data source</source>
+      <translation>no es una fuente de datos válida o reconocida</translation>
+    </message>
+    <message>
+      <source>Invalid Data Source</source>
+      <translation>Fuente de datos no válida</translation>
+    </message>
+    <message>
+      <source>Invalid Layer</source>
+      <translation>Capa no válida</translation>
+    </message>
+    <message>
+      <source>%1 is an invalid layer and cannot be loaded.</source>
+      <translation>%1 es una capa no válida y no se puede cargar.</translation>
+    </message>
+    <message>
+      <source>Save As</source>
+      <translation>Guardar como</translation>
+    </message>
+    <message>
+      <source>Choose a QGIS project file to open</source>
+      <translation>Seleccionar un archivo de proyecto de QGIS para abrir</translation>
+    </message>
+    <message>
+      <source>QGIS Project Read Error</source>
+      <translation>Error de lectura de proyecto de QGIS</translation>
+    </message>
+    <message>
+      <source></source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Try to find missing layers?</source>
+      <translation>¿Buscar las capas que faltan?</translation>
+    </message>
+    <message>
+      <source>Unable to open project</source>
+      <translation>No se puede abrir el proyecto</translation>
+    </message>
+    <message>
+      <source>Choose a QGIS project file</source>
+      <translation>Seleccionar un archivo de proyecto de QGIS</translation>
+    </message>
+    <message>
+      <source>Saved project to:</source>
+      <translation>Proyecto guardado a:</translation>
+    </message>
+    <message>
+      <source>Unable to save project</source>
+      <translation>No se puede guardar el proyecto</translation>
+    </message>
+    <message>
+      <source>Unable to save project to </source>
+      <translation>No se puede guardar el proyecto a </translation>
+    </message>
+    <message>
+      <source>Unable to save project </source>
+      <translation>No se puede guardar el proyecto </translation>
+    </message>
+    <message>
+      <source>Choose a filename to save the QGIS project file as</source>
+      <translation>Seleccionar un nombre de archivo para guardar como proyecto de QGIS</translation>
+    </message>
+    <message>
+      <source>QGIS: Unable to load project</source>
+      <translation>QGIS: No puede cargar el proyecto</translation>
+    </message>
+    <message>
+      <source>Unable to load project </source>
+      <translation>No se puede cargar el proyecto </translation>
+    </message>
+    <message>
+      <source>Choose a filename to save the map image as</source>
+      <translation>Seleccionar un nombre de archivo para guardar el mapa como imagen</translation>
+    </message>
+    <message>
+      <source>Saved map image to</source>
+      <translation>Imagen del mapa guardada a</translation>
+    </message>
+    <message>
+      <source>No Layer Selected</source>
+      <translation>Ninguna capa seleccionada</translation>
+    </message>
+    <message>
+      <source>To delete features, you must select a vector layer in the legend</source>
+      <translation>Para borrar objetos espaciales, debe seleccionar una capa vectorial en la leyenda</translation>
+    </message>
+    <message>
+      <source>No Vector Layer Selected</source>
+      <translation>Ninguna capa vectorial seleccionada</translation>
+    </message>
+    <message>
+      <source>Deleting features only works on vector layers</source>
+      <translation>Borrar objetos espaciales solo funciona en capas vectoriales</translation>
+    </message>
+    <message>
+      <source>Provider does not support deletion</source>
+      <translation>El proveedor no soporta el borrado</translation>
+    </message>
+    <message>
+      <source>Data provider does not support deleting features</source>
+      <translation>El proveedor de datos no soporta borrar objetos espaciales</translation>
+    </message>
+    <message>
+      <source>Layer not editable</source>
+      <translation>Capa no editable</translation>
+    </message>
+    <message>
+      <source>The current layer is not editable. Choose 'Start editing' in the digitizing toolbar.</source>
+      <translation>La capa activa no se puede editar. Elegir 'Conmutar edición' en la barra de herramientas Digitalización.</translation>
+    </message>
+    <message>
+      <source>Problem deleting features</source>
+      <translation>Problema al borrar objetos espaciales</translation>
+    </message>
+    <message>
+      <source>A problem occured during deletion of features</source>
+      <translation>Ha ocurrido un problema durante el borrado de objetos espaciales</translation>
+    </message>
+    <message>
+      <source>Invalid scale</source>
+      <translation>Escala no válida</translation>
+    </message>
+    <message>
+      <source>Error Loading Plugin</source>
+      <translation>Error al cargar el complemento</translation>
+    </message>
+    <message>
+      <source>There was an error loading %1.</source>
+      <translation>Ha habido un error cargando %1.</translation>
+    </message>
+    <message>
+      <source>No MapLayer Plugins</source>
+      <translation>No hay complementos de MapLayer</translation>
+    </message>
+    <message>
+      <source>No MapLayer plugins in ../plugins/maplayer</source>
+      <translation>No hay complementos de MapLayer en ../plugins/maplayer</translation>
+    </message>
+    <message>
+      <source>No Plugins</source>
+      <translation>No hay complementos</translation>
+    </message>
+    <message>
+      <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
+      <translation>No se han encontrado complementos en ../plugins. Para probar complementos, inicie qgis desde el directorio src</translation>
+    </message>
+    <message>
+      <source>Name</source>
+      <translation>Nombre</translation>
+    </message>
+    <message>
+      <source>Plugin %1 is named %2</source>
+      <translation>El complemento %1 se llama %2</translation>
+    </message>
+    <message>
+      <source>Plugin Information</source>
+      <translation>Información del complemento</translation>
+    </message>
+    <message>
+      <source>QGis loaded the following plugin:</source>
+      <translation>QGis ha cargado el siguiente complemento:</translation>
+    </message>
+    <message>
+      <source>Name: %1</source>
+      <translation>Nombre: %1</translation>
+    </message>
+    <message>
+      <source>Version: %1</source>
+      <translation>Versión: %1</translation>
+    </message>
+    <message>
+      <source>Description: %1</source>
+      <translation>Descripción: %1</translation>
+    </message>
+    <message>
+      <source>Unable to Load Plugin</source>
+      <translation>No se puede cargar el complemento</translation>
+    </message>
+    <message>
+      <source>QGIS was unable to load the plugin from: %1</source>
+      <translation>QGIS no ha podido cargar el complemento desde: %1</translation>
+    </message>
+    <message>
+      <source>There is a new version of QGIS available</source>
+      <translation>Hay una nueva versión de QGIS disponible</translation>
+    </message>
+    <message>
+      <source>You are running a development version of QGIS</source>
+      <translation>Está utilizando una versión de desarrollo de QGIS</translation>
+    </message>
+    <message>
+      <source>You are running the current version of QGIS</source>
+      <translation>Está utilizando la versión actualizada de QGIS</translation>
+    </message>
+    <message>
+      <source>Would you like more information?</source>
+      <translation>¿Desea más información?</translation>
+    </message>
+    <message>
+      <source>QGIS Version Information</source>
+      <translation>Información de la versión de QGIS</translation>
+    </message>
+    <message>
+      <source>QGIS - Changes in SVN Since Last Release</source>
+      <translation>QGIS - Cambios en el SVN desde la última versión</translation>
+    </message>
+    <message>
+      <source>Unable to get current version information from server</source>
+      <translation>No se puede obtener información de la versión actual del servidor</translation>
+    </message>
+    <message>
+      <source>Connection refused - server may be down</source>
+      <translation>Conexión rehusada - el servidor puede estar fuera de servicio</translation>
+    </message>
+    <message>
+      <source>QGIS server was not found</source>
+      <translation>No se ha encontrado el servidor QGIS</translation>
+    </message>
+    <message>
+      <source>Network error while communicating with server</source>
+      <translation>Error de red mientras se comunicaba con el servidor</translation>
+    </message>
+    <message>
+      <source>Unknown network socket error</source>
+      <translation>Error de socket de red desconocido</translation>
+    </message>
+    <message>
+      <source>Unable to communicate with QGIS Version server</source>
+      <translation>No se puede comunicar con el servidor de versión de QGIS</translation>
+    </message>
+    <message>
+      <source>QGIS Browser Selection</source>
+      <translation>Selección de navegador de QGIS</translation>
+    </message>
+    <message>
+      <source>Enter the name of a web browser to use (eg. konqueror).
+</source>
+      <translation>Introducir el nombre de un navegador web a utilizar (ej. konqueror).
+</translation>
+    </message>
+    <message>
+      <source>Enter the full path if the browser is not in your PATH.
+</source>
+      <translation>Introducir la ruta completa si el navegador no está en la variable de entorno PATH.
+</translation>
+    </message>
+    <message>
+      <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
+      <translation>Puede cambiar esta opción más tarde seleccionadon Opciones desde el menú Configuración (pestaña Navegador de la ayuda).</translation>
+    </message>
+    <message>
+      <source>Layer is not valid</source>
+      <translation>Capa no válida</translation>
+    </message>
+    <message>
+      <source>The layer is not a valid layer and can not be added to the map</source>
+      <translation>La capa no es válida y no se puede añadir al mapa</translation>
+    </message>
+    <message>
+      <source>Save?</source>
+      <translation>¿Guardar?</translation>
+    </message>
+    <message>
+      <source>Do you want to save the current project?</source>
+      <translation>¿Quiere guardar el proyecto actual?</translation>
+    </message>
+    <message>
+      <source>Extents: </source>
+      <translation>Extensiones: </translation>
+    </message>
+    <message>
+      <source>Clipboard contents set to: </source>
+      <translation>Contenido del portapapeles ajustado a: </translation>
+    </message>
+    <message>
+      <source>Open a GDAL Supported Raster Data Source</source>
+      <translation>Abrir una fuente de datos ráster soportada por GDAL</translation>
+    </message>
+    <message>
+      <source> is not a valid or recognized raster data source</source>
+      <translation> no es una fuente de datos ráster válida o reconocida</translation>
+    </message>
+    <message>
+      <source> is not a supported raster data source</source>
+      <translation> no es una fuente de datos ráster soportada</translation>
+    </message>
+    <message>
+      <source>Unsupported Data Source</source>
+      <translation>Fuente de datos no soportada</translation>
+    </message>
+    <message>
+      <source>New Bookmark</source>
+      <translation>Nuevo marcador</translation>
+    </message>
+    <message>
+      <source>Enter a name for the new bookmark:</source>
+      <translation>Introducir un nombre para el nuevo marcador:</translation>
+    </message>
+    <message>
+      <source>Error</source>
+      <translation>Error</translation>
+    </message>
+    <message>
+      <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
+      <translation>No se puede crear el marcador. Puede que falte su base de datos de usuario o esté dañada</translation>
+    </message>
   </context>
   <context>
     <name>Dialog</name>
@@ -175,10 +487,6 @@
     <message>
       <source>because</source>
       <translation>porque</translation>
-    </message>
-    <message>
-      <source>Could not snap segment. Have you set the tolerance in Settings > Project Properties > General?</source>
-      <translation>No se pudieron autoensamblar los segmentos. ¿Ha establecido la tolerancia en Configuración > Propiedades del proyecto > General?</translation>
     </message>
     <message>
       <source>Could not snap vertex. Have you set the tolerance in Settings > Project Properties > General?</source>
@@ -1668,286 +1976,6 @@ Compilado contra Qt </translation>
       <translation>Complementos disponibles de proveedores de datos</translation>
     </message>
     <message>
-      <source>Open an OGR Supported Vector Layer</source>
-      <translation>Abrir una capa vectorial soportada por OGR</translation>
-    </message>
-    <message>
-      <source>is not a valid or recognized data source</source>
-      <translation>no es una fuente de datos válida o reconocida</translation>
-    </message>
-    <message>
-      <source>Invalid Data Source</source>
-      <translation>Fuente de datos no válida</translation>
-    </message>
-    <message>
-      <source>Invalid Layer</source>
-      <translation>Capa no válida</translation>
-    </message>
-    <message>
-      <source>%1 is an invalid layer and cannot be loaded.</source>
-      <translation>%1 es una capa no válida y no se puede cargar.</translation>
-    </message>
-    <message>
-      <source>Save As</source>
-      <translation>Guardar como</translation>
-    </message>
-    <message>
-      <source>Choose a QGIS project file to open</source>
-      <translation>Seleccionar un archivo de proyecto de QGIS para abrir</translation>
-    </message>
-    <message>
-      <source>QGIS Project Read Error</source>
-      <translation>Error de lectura de proyecto de QGIS</translation>
-    </message>
-    <message>
-      <source>Try to find missing layers?</source>
-      <translation>¿Buscar las capas perdidas?</translation>
-    </message>
-    <message>
-      <source>Unable to open project</source>
-      <translation>No se puede abrir el proyecto</translation>
-    </message>
-    <message>
-      <source>Choose a QGIS project file</source>
-      <translation>Seleccionar un archivo de proyecto de QGIS</translation>
-    </message>
-    <message>
-      <source>Saved project to:</source>
-      <translation>Proyecto guardado a:</translation>
-    </message>
-    <message>
-      <source>Unable to save project</source>
-      <translation>No se puede guardar el proyecto</translation>
-    </message>
-    <message>
-      <source>Unable to save project to </source>
-      <translation>No se puede guardar el proyecto a </translation>
-    </message>
-    <message>
-      <source>Unable to save project </source>
-      <translation>No se puede guardar el proyecto </translation>
-    </message>
-    <message>
-      <source>Choose a filename to save the QGIS project file as</source>
-      <translation>Seleccionar un nombre de archivo para guardar como proyecto de QGIS</translation>
-    </message>
-    <message>
-      <source>QGIS: Unable to load project</source>
-      <translation>QGIS: No puede cargar el proyecto</translation>
-    </message>
-    <message>
-      <source>Unable to load project </source>
-      <translation>No se puede cargar el proyecto </translation>
-    </message>
-    <message>
-      <source>Choose a filename to save the map image as</source>
-      <translation>Seleccionar un nombre de archivo para guardar el mapa como imagen</translation>
-    </message>
-    <message>
-      <source>Saved map image to</source>
-      <translation>Imagen del mapa guardada a</translation>
-    </message>
-    <message>
-      <source>No Layer Selected</source>
-      <translation>Ninguna capa seleccionada</translation>
-    </message>
-    <message>
-      <source>Problem deleting features</source>
-      <translation>Problema al borrar objetos espaciales</translation>
-    </message>
-    <message>
-      <source>A problem occured during deletion of features</source>
-      <translation>Ha ocurrido un problema durante el borrado de objetos espaciales</translation>
-    </message>
-    <message>
-      <source>No Vector Layer Selected</source>
-      <translation>Ninguna capa vectorial seleccionada</translation>
-    </message>
-    <message>
-      <source>Deleting features only works on vector layers</source>
-      <translation>Borrar objetos espaciales solo funciona en capas vectoriales</translation>
-    </message>
-    <message>
-      <source>To delete features, you must select a vector layer in the legend</source>
-      <translation>Para borrar objetos espaciales, debe seleccionar una capa vectorial en la leyenda</translation>
-    </message>
-    <message>
-      <source>Error Loading Plugin</source>
-      <translation>Error al cargar el complemento</translation>
-    </message>
-    <message>
-      <source>There was an error loading %1.</source>
-      <translation>Ha habido un error cargando %1.</translation>
-    </message>
-    <message>
-      <source>No MapLayer Plugins</source>
-      <translation>No hay complementos de MapLayer</translation>
-    </message>
-    <message>
-      <source>No MapLayer plugins in ../plugins/maplayer</source>
-      <translation>No hay complementos de MapLayer en ../plugins/maplayer</translation>
-    </message>
-    <message>
-      <source>No Plugins</source>
-      <translation>No hay complementos</translation>
-    </message>
-    <message>
-      <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
-      <translation>No se han encontrado complementos en ../plugins. Para probar complementos, inicie qgis desde el directorio src</translation>
-    </message>
-    <message>
-      <source>Name</source>
-      <translation>Nombre</translation>
-    </message>
-    <message>
-      <source>Plugin %1 is named %2</source>
-      <translation>El complemento %1 se llama %2</translation>
-    </message>
-    <message>
-      <source>Plugin Information</source>
-      <translation>Información del complemento</translation>
-    </message>
-    <message>
-      <source>QGis loaded the following plugin:</source>
-      <translation>QGis ha cargado el siguiente complemento:</translation>
-    </message>
-    <message>
-      <source>Name: %1</source>
-      <translation>Nombre: %1</translation>
-    </message>
-    <message>
-      <source>Version: %1</source>
-      <translation>Versión: %1</translation>
-    </message>
-    <message>
-      <source>Description: %1</source>
-      <translation>Descripción: %1</translation>
-    </message>
-    <message>
-      <source>Unable to Load Plugin</source>
-      <translation>No se puede cargar el complemento</translation>
-    </message>
-    <message>
-      <source>QGIS was unable to load the plugin from: %1</source>
-      <translation>QGIS no ha podido cargar el complemento desde: %1</translation>
-    </message>
-    <message>
-      <source>There is a new version of QGIS available</source>
-      <translation>Hay una nueva versión de QGIS disponible</translation>
-    </message>
-    <message>
-      <source>You are running a development version of QGIS</source>
-      <translation>Está utilizando una versión de desarrollo de QGIS</translation>
-    </message>
-    <message>
-      <source>You are running the current version of QGIS</source>
-      <translation>Está utilizando la versión actualizada de QGIS</translation>
-    </message>
-    <message>
-      <source>Would you like more information?</source>
-      <translation>¿Desea más información?</translation>
-    </message>
-    <message>
-      <source>QGIS Version Information</source>
-      <translation>Información de la versión de QGIS</translation>
-    </message>
-    <message>
-      <source>QGIS - Changes in SVN Since Last Release</source>
-      <translation>QGIS - Cambios en el SVN desde la última versión</translation>
-    </message>
-    <message>
-      <source>Unable to get current version information from server</source>
-      <translation>No se puede obtener información de la versión actual del servidor</translation>
-    </message>
-    <message>
-      <source>Connection refused - server may be down</source>
-      <translation>Conexión rehusada - el servidor puede estar fuera de servicio</translation>
-    </message>
-    <message>
-      <source>QGIS server was not found</source>
-      <translation>No se ha encontrado el servidor QGIS</translation>
-    </message>
-    <message>
-      <source>QGIS Browser Selection</source>
-      <translation>Selección de navegador de QGIS</translation>
-    </message>
-    <message>
-      <source>Enter the name of a web browser to use (eg. konqueror).
-</source>
-      <translation>Introducir el nombre de un navegador web a utilizar (ej. konqueror).
-</translation>
-    </message>
-    <message>
-      <source>Enter the full path if the browser is not in your PATH.
-</source>
-      <translation>Introducir la ruta completa si el navegador no está en la variable de entorno PATH.
-</translation>
-    </message>
-    <message>
-      <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
-      <translation>Puede cambiar esta opción más tarde seleccionadon Opciones desde el menú Configuración (pestaña Navegador de la ayuda).</translation>
-    </message>
-    <message>
-      <source>Layer is not valid</source>
-      <translation>Capa no válida</translation>
-    </message>
-    <message>
-      <source>The layer is not a valid layer and can not be added to the map</source>
-      <translation>La capa no es válida y no se puede añadir al mapa</translation>
-    </message>
-    <message>
-      <source>Save?</source>
-      <translation>¿Guardar?</translation>
-    </message>
-    <message>
-      <source>Extents: </source>
-      <translation>Extensiones: </translation>
-    </message>
-    <message>
-      <source>Clipboard contents set to: </source>
-      <translation>Contenido del portapapeles ajustado a: </translation>
-    </message>
-    <message>
-      <source>Open a GDAL Supported Raster Data Source</source>
-      <translation>Abrir una fuente de datos ráster soportada por GDAL</translation>
-    </message>
-    <message>
-      <source> is not a valid or recognized raster data source</source>
-      <translation> no es una fuente de datos ráster válida o reconocida</translation>
-    </message>
-    <message>
-      <source> is not a supported raster data source</source>
-      <translation> no es una fuente de datos ráster soportada</translation>
-    </message>
-    <message>
-      <source>Unsupported Data Source</source>
-      <translation>Fuente de datos no soportada</translation>
-    </message>
-    <message>
-      <source>Enter a name for the new bookmark:</source>
-      <translation>Introducir un nombre para el nuevo marcador:</translation>
-    </message>
-    <message>
-      <source>Error</source>
-      <translation>Error</translation>
-    </message>
-    <message>
-      <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
-      <translation>No se puede crear el marcador. Puede que falte su base de datos de usuario o esté corrompida</translation>
-    </message>
-    <message>
-      <source>Network error while communicating with server</source>
-      <translation>Error de red mientras se comunicaba con el servidor</translation>
-    </message>
-    <message>
-      <source>Unknown network socket error</source>
-      <translation>Error de socket de red desconocido</translation>
-    </message>
-    <message>
-      <source>Unable to communicate with QGIS Version server</source>
-      <translation>No se puede comunicar con el servidor de versión de QGIS</translation>
-    </message>
-    <message>
       <source>T</source>
       <comment>Show most toolbars</comment>
       <translation>T</translation>
@@ -1971,22 +1999,6 @@ Compilado contra Qt </translation>
     <message>
       <source>Error when reading metadata of plugin </source>
       <translation>Error al leer metadatos del complemento </translation>
-    </message>
-    <message>
-      <source>Provider does not support deletion</source>
-      <translation>El proveedor no soporta para eliminar</translation>
-    </message>
-    <message>
-      <source>Data provider does not support deleting features</source>
-      <translation>El proveedor de datos no soporta eliminar objetos espaciales</translation>
-    </message>
-    <message>
-      <source>Layer not editable</source>
-      <translation>Capa no editable</translation>
-    </message>
-    <message>
-      <source>The current layer is not editable. Choose 'Start editing' in the digitizing toolbar.</source>
-      <translation>La capa activa no se puede editar. Elegir 'Comenzar edición' en la barra de herramientas Digitalización.</translation>
     </message>
     <message>
       <source>Toggle editing</source>
@@ -2025,14 +2037,6 @@ Compilado contra Qt </translation>
       <translation>Coordenadas del mapa en la posición del ratón</translation>
     </message>
     <message>
-      <source>Invalid scale</source>
-      <translation>Escala no válida</translation>
-    </message>
-    <message>
-      <source>Do you want to save the current project?</source>
-      <translation>¿Quiere guardar el proyecto actual?</translation>
-    </message>
-    <message>
       <source>Python bindings - This is the major focus of this release it is now possible to create plugins using python. It is also possible to create GIS enabled applications written in python that use the QGIS libraries.</source>
       <translation>Conexiones de Python - Este es el principal objetivo de esta versión. Ahora es posible crear complementos usando Python. También es posible crear aplicaciones de SIG escritas en python que usen las bibliotecas de QGIS.</translation>
     </message>
@@ -2068,10 +2072,6 @@ Compilado contra Qt </translation>
     <message>
       <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved.</source>
       <translation>Muestra las coordenadas del mapa en la posición actual del cursor. La visualización se actualiza continuamente al mover el ratón.</translation>
-    </message>
-    <message>
-      <source></source>
-      <translation type="unfinished" />
     </message>
   </context>
   <context>
@@ -5614,6 +5614,10 @@ en la línea </translation>
       <source>:&amp;nbsp;no input</source>
       <translation>:&amp;nbsp;ninguna entrada</translation>
     </message>
+    <message>
+      <source>Cannot find whereoption </source>
+      <translation>No se puede encontrar la opción dónde </translation>
+    </message>
   </context>
   <context>
     <name>QgsGrassModuleInput</name>
@@ -7127,6 +7131,14 @@ Esto puede ser debido a un problema en la conexión a red o en el servidor WMS.<
       <source>&amp;Properties</source>
       <translation>&amp;Propiedades</translation>
     </message>
+    <message>
+      <source>bad_alloc exception</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
+      <translation>El relleno de la tabla de atributos se ha detenido porque no quedaba más memoria virtual</translation>
+    </message>
   </context>
   <context>
     <name>QgsLineStyleDialogBase</name>
@@ -7209,6 +7221,25 @@ Esto puede ser debido a un problema en la conexión a red o en el servidor WMS.<
 %2</source>
       <translation>Resultado de identificación WMS para %1
 %2</translation>
+    </message>
+  </context>
+  <context>
+    <name>QgsMapToolVertexEdit</name>
+    <message>
+      <source>Snap tolerance</source>
+      <translation>Tolerancia de autoensamblado</translation>
+    </message>
+    <message>
+      <source>Don't show this message again</source>
+      <translation>No volver a mostrar este mensaje</translation>
+    </message>
+    <message>
+      <source>Could not snap segment.</source>
+      <translation>No se pudo autoensamblar el segmento.</translation>
+    </message>
+    <message>
+      <source>Have you set the tolerance in Settings > Project Properties > General?</source>
+      <translation>¿Ha establecido la tolerancia de autoensamblado en Configuración > Propiedades del proyecto > General?</translation>
     </message>
   </context>
   <context>
@@ -8477,10 +8508,6 @@ p, li { white-space: pre-wrap; }
   <context>
     <name>QgsPluginManagerBase</name>
     <message>
-      <source>QGIS Plugin Manger</source>
-      <translation>Administrador de complementos de QGIS</translation>
-    </message>
-    <message>
       <source>Plugin Directory</source>
       <translation>Directorio de complementos</translation>
     </message>
@@ -8535,6 +8562,10 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>Alt+C</source>
       <translation>Alt+C</translation>
+    </message>
+    <message>
+      <source>QGIS Plugin Manager</source>
+      <translation>Administrador de complementos de QGIS</translation>
     </message>
   </context>
   <context>
@@ -10722,6 +10753,17 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>&amp;Add WFS layer</source>
       <translation>&amp;Añadir capa WFS</translation>
+    </message>
+  </context>
+  <context>
+    <name>QgsWFSProvider</name>
+    <message>
+      <source>unknown</source>
+      <translation>desconocido</translation>
+    </message>
+    <message>
+      <source>received %1 bytes from %2</source>
+      <translation>recibidos %1 bytes de %2</translation>
     </message>
   </context>
   <context>
