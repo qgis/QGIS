@@ -184,7 +184,9 @@
 		<string>id</string>
 		<string>it</string>
 		<string>ja</string>
+		<string>lt</string>
 		<string>lv</string>
+		<string>mn</string>
 		<string>nl</string>
 		<string>pl_PL</string>
 		<string>pt_BR</string>
@@ -192,6 +194,7 @@
 		<string>ru</string>
 		<string>sk</string>
 		<string>sv</string>
+		<string>tr</string>
 		<string>vi</string>
 		<string>zh_CN</string>
 	</array>

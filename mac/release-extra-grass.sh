@@ -2,12 +2,12 @@
 # Copy GRASS supporting libraries to qgis bundle
 # and make search paths for them relative to bundle
 
-PREFIX=qgis0.9.0.app/Contents/MacOS
+PREFIX=qgis0.9.1.app/Contents/MacOS
 
 # Edit version when any library is upgraded
 LNKGDAL=libgdal.1.dylib
 LNKPROJ=libproj.0.dylib
-GRASSVER=6.2.2
+GRASSVER=6.3.0RC3
 GRASSLIB=/usr/local/grass-$GRASSVER/lib
 
 cd $PREFIX/lib
@@ -29,7 +29,7 @@ fi
 install_name_tool -change $GRASSLIB/libgrass_datetime.dylib \
 	@executable_path/lib/grass/libgrass_datetime.dylib \
 	grass/libgrass_gis.$GRASSVER.dylib
-for LIBGRASS in dbmibase dbmiclient dig2 form gmath gproj I
+for LIBGRASS in dbmibase dbmiclient dig2 form gmath gproj I vask
 do
 	install_name_tool -change $GRASSLIB/libgrass_datetime.dylib \
 		@executable_path/lib/grass/libgrass_datetime.dylib \

@@ -5,7 +5,7 @@
 # Edit INSTALLPREFIX to match the value of cmake INSTALL_PREFIX
 INSTALLPREFIX=$PWD
 
-BUNDLE=qgis0.9.0.app/Contents/MacOS
+BUNDLE=qgis0.9.1.app/Contents/MacOS
 BUILDPREFIX=$INSTALLPREFIX/$BUNDLE
 
 QLIBNAMES="core gui"
