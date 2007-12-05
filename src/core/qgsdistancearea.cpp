@@ -363,6 +363,8 @@ unsigned char* QgsDistanceArea::measurePolygon(unsigned char* feature, double* a
         else
           *area -= areaTmp; // interior rings
       }
+
+      points.clear();
     }
   }
   catch (QgsCsException &cse)
