@@ -3483,6 +3483,7 @@ void QgisApp::toggleEditing()
   if(currentLayerFile)
     {
       currentLayerFile->toggleEditing();
+      activateDeactivateLayerRelatedActions( mMapLegend->currentLayer() );
     }
   else
     {
@@ -3794,7 +3795,7 @@ void QgisApp::testMapLayerPlugins()
       }
       else
       {
-        QgsDebugMsg("dlopen suceeded");
+        QgsDebugMsg("dlopen succeeded");
         dlclose(handle);
       }
 
