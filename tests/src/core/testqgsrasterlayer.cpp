@@ -1,9 +1,9 @@
 /***************************************************************************
      testqgsvectorfilewriter.cpp
      --------------------------------------
-    Date                 : Sun Sep 16 12:22:54 AKDT 2007
-    Copyright            : (C) 2007 by Gary E. Sherman
-    Email                : sherman at mrcc dot com
+    Date                 : Frida  Nov 23  2007
+    Copyright            : (C) 2007 by Tim Sutton
+    Email                : tim@linfiniti.com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
