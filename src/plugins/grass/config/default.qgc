@@ -78,7 +78,6 @@
 						<grass name="g.proj.print"/>
 					</section>
 					<section label="Print projection info from a file">
-						<grass name="g.proj.ascii"/>
 						<grass name="g.proj.geo"/>
 						<grass name="g.proj.proj"/>
 					</section>
