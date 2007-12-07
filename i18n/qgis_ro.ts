@@ -9,6 +9,364 @@
         <source>unable to get OGRDriverManager</source>
         <translation>imposibil de accesat OGRDriverManager</translation>
     </message>
+    <message>
+        <source>Open an OGR Supported Vector Layer</source>
+        <translation type="unfinished">Deschide un strat accesat de OGR</translation>
+    </message>
+    <message>
+        <source>is not a valid or recognized data source</source>
+        <translation type="unfinished">nu este o sursa accesibila</translation>
+    </message>
+    <message>
+        <source>Invalid Data Source</source>
+        <translation type="unfinished">Sursa de date corupta</translation>
+    </message>
+    <message>
+        <source>Invalid Layer</source>
+        <translation type="unfinished">Layer corupt</translation>
+    </message>
+    <message>
+        <source>%1 is an invalid layer and cannot be loaded.</source>
+        <translation type="unfinished">%1 este un layer corupt si nu poate fi accesat.</translation>
+    </message>
+    <message>
+        <source>Save As</source>
+        <translation type="unfinished">Salvare Ca</translation>
+    </message>
+    <message>
+        <source>Choose a QGIS project file to open</source>
+        <translation type="unfinished">Alegeţi un fisier de proiect QGIS </translation>
+    </message>
+    <message>
+        <source>QGIS Project Read Error</source>
+        <translation type="unfinished">Eroare de citire a fisierului proiect</translation>
+    </message>
+    <message>
+        <source></source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Try to find missing layers?</source>
+        <translation type="unfinished">inceracti sa gasiti straturi disparute?</translation>
+    </message>
+    <message>
+        <source>Unable to open project</source>
+        <translation type="unfinished">Imposibil de citit proiectul</translation>
+    </message>
+    <message>
+        <source>Choose a QGIS project file</source>
+        <translation type="unfinished">Alegeţi un fisier de proiect QGIS </translation>
+    </message>
+    <message>
+        <source>Saved project to:</source>
+        <translation type="unfinished">Proiect salvat in:</translation>
+    </message>
+    <message>
+        <source>Unable to save project</source>
+        <translation type="unfinished">Imposibil de salvat proiectul</translation>
+    </message>
+    <message>
+        <source>Unable to save project to </source>
+        <translation type="unfinished">Imposibil de salvat proiectul in </translation>
+    </message>
+    <message>
+        <source>Unable to save project </source>
+        <translation type="unfinished">Imposibil de salvat proiectul </translation>
+    </message>
+    <message>
+        <source>Choose a filename to save the QGIS project file as</source>
+        <translation type="unfinished">Alegeţi un nume sub care să salvaţi proiectul</translation>
+    </message>
+    <message>
+        <source>QGIS: Unable to load project</source>
+        <translation type="unfinished">QGIS: Imposibil de citit proiectul</translation>
+    </message>
+    <message>
+        <source>Unable to load project </source>
+        <translation type="unfinished"> Imposibil de citit proiectul</translation>
+    </message>
+    <message>
+        <source>Choose a filename to save the map image as</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saved map image to</source>
+        <translation type="unfinished">Harta salvata in:</translation>
+    </message>
+    <message>
+        <source>No Layer Selected</source>
+        <translation type="unfinished">Nu există nici un layer selectat</translation>
+    </message>
+    <message>
+        <source>To delete features, you must select a vector layer in the legend</source>
+        <translation type="unfinished">Pentru a sterge obiecte, trebuie ales un layer activ apăsînd pe numele lui în legendă</translation>
+    </message>
+    <message>
+        <source>No Vector Layer Selected</source>
+        <translation type="unfinished">Nu este selectat nici un layer tip vector</translation>
+    </message>
+    <message>
+        <source>Deleting features only works on vector layers</source>
+        <translation type="unfinished">Stergerea de obiecte este posibila doar pentru straturi tip vector</translation>
+    </message>
+    <message>
+        <source>Provider does not support deletion</source>
+        <translation type="unfinished">Furnizorul  de date corespunzator acestui layer nu suporta stergerea de obiecte.</translation>
+    </message>
+    <message>
+        <source>Data provider does not support deleting features</source>
+        <translation type="unfinished">Furnizorul  de date corespunzator acestui layer nu suporta stergerea de obiecte.</translation>
+    </message>
+    <message>
+        <source>Layer not editable</source>
+        <translation type="unfinished">Layerul nu este editabil</translation>
+    </message>
+    <message>
+        <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
+        <translation type="unfinished">Layerul curent nu este editabil. Apasati  &apos;Permisiune de Editare&apos; in bara de unelte pentru vectorizare.</translation>
+    </message>
+    <message>
+        <source>Problem deleting features</source>
+        <translation type="unfinished">A apruta o problema la stergerea de obiecte</translation>
+    </message>
+    <message>
+        <source>A problem occured during deletion of features</source>
+        <translation type="unfinished">A apruta o problema la stergerea de obiecte</translation>
+    </message>
+    <message>
+        <source>Invalid scale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error Loading Plugin</source>
+        <translation type="unfinished">Eroare la incarcare plugin-uri</translation>
+    </message>
+    <message>
+        <source>There was an error loading %1.</source>
+        <translation type="unfinished">Eroare la incarcarea %1.</translation>
+    </message>
+    <message>
+        <source>No MapLayer Plugins</source>
+        <translation type="unfinished">Nu există Plugin-uri pentru Straturi Harta</translation>
+    </message>
+    <message>
+        <source>No MapLayer plugins in ../plugins/maplayer</source>
+        <translation type="unfinished">Nu există Plugin-uri pentru Straturi Harta in ../plugins/maplayer</translation>
+    </message>
+    <message>
+        <source>No Plugins</source>
+        <translation type="unfinished">Nu există Plugin-uri</translation>
+    </message>
+    <message>
+        <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
+        <translation type="unfinished">Nu există Plugin-uri in ../plugins. Pentru a le putea testa, porniti QGIS din directorul sursa (src).</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Nume</translation>
+    </message>
+    <message>
+        <source>Plugin %1 is named %2</source>
+        <translation type="unfinished">Pluginul %1 se numeste %2</translation>
+    </message>
+    <message>
+        <source>Plugin Information</source>
+        <translation type="unfinished">Informatii plugin</translation>
+    </message>
+    <message>
+        <source>QGis loaded the following plugin:</source>
+        <translation type="unfinished">QGIS a incarcat dinamic urmatorul plugin:</translation>
+    </message>
+    <message>
+        <source>Name: %1</source>
+        <translation type="unfinished">Nume: %1</translation>
+    </message>
+    <message>
+        <source>Version: %1</source>
+        <translation type="unfinished">Versiune: %1</translation>
+    </message>
+    <message>
+        <source>Description: %1</source>
+        <translation type="unfinished">Descriere: %1</translation>
+    </message>
+    <message>
+        <source>Unable to Load Plugin</source>
+        <translation type="unfinished">Nu se poate incarca acest plugin</translation>
+    </message>
+    <message>
+        <source>QGIS was unable to load the plugin from: %1</source>
+        <translation type="unfinished">QGIS nu a putut incarca dinamic acest plugin din:  %1</translation>
+    </message>
+    <message>
+        <source>There is a new version of QGIS available</source>
+        <translation type="unfinished">O noua versiune QGIS este disponibila</translation>
+    </message>
+    <message>
+        <source>You are running a development version of QGIS</source>
+        <translation type="unfinished">Rulati o versiune QGIS pentru dezvoltatori</translation>
+    </message>
+    <message>
+        <source>You are running the current version of QGIS</source>
+        <translation type="unfinished">Felicitari. Rulati cea mai recenta versiune QGIS.</translation>
+    </message>
+    <message>
+        <source>Would you like more information?</source>
+        <translation type="unfinished">Ati dori mai multe informatii?</translation>
+    </message>
+    <message>
+        <source>QGIS Version Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS - Changes in SVN Since Last Release</source>
+        <translation type="unfinished">Modificari QGIS de la utima versiune</translation>
+    </message>
+    <message>
+        <source>Unable to get current version information from server</source>
+        <translation type="unfinished">Nu se poate obtine legatura cu serverul de informatii</translation>
+    </message>
+    <message>
+        <source>Connection refused - server may be down</source>
+        <translation type="unfinished">Conexiune refuzata - serverul poate fi inactiv</translation>
+    </message>
+    <message>
+        <source>QGIS server was not found</source>
+        <translation type="unfinished">Serverul QGIS nu este disponibil</translation>
+    </message>
+    <message>
+        <source>Network error while communicating with server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown network socket error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to communicate with QGIS Version server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Browser Selection</source>
+        <translation type="unfinished">Selectarea Browser-ului pentru QGIS</translation>
+    </message>
+    <message>
+        <source>Enter the name of a web browser to use (eg. konqueror).
+</source>
+        <translation type="unfinished">Introduceti numele browser-ului de Internet (de exemplu konqueror).
+</translation>
+    </message>
+    <message>
+        <source>Enter the full path if the browser is not in your PATH.
+</source>
+        <translation type="unfinished">Introduceti calea absoluta, daca aplicatia nu se afla in variabila de system PATH</translation>
+    </message>
+    <message>
+        <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
+        <translation type="unfinished">Puteti modifica aceasta optiune mai tarziu selectand Optiuni din meniul de setari.</translation>
+    </message>
+    <message>
+        <source>Layer is not valid</source>
+        <translation type="unfinished">Layer corupt</translation>
+    </message>
+    <message>
+        <source>The layer is not a valid layer and can not be added to the map</source>
+        <translation type="unfinished">Stratul tematic este corupt si nu poate fi adaugat in harta.</translation>
+    </message>
+    <message>
+        <source>Save?</source>
+        <translation type="unfinished">Salvare?</translation>
+    </message>
+    <message>
+        <source>Do you want to save the current project?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extents: </source>
+        <translation type="unfinished">Dimensiuni: </translation>
+    </message>
+    <message>
+        <source>Clipboard contents set to: </source>
+        <translation type="unfinished">Continutul clipboardului setat cu:</translation>
+    </message>
+    <message>
+        <source>Open a GDAL Supported Raster Data Source</source>
+        <translation type="unfinished">Deschide un strat tematic tip raster accesat de GDAL</translation>
+    </message>
+    <message>
+        <source> is not a valid or recognized raster data source</source>
+        <translation type="unfinished"> nu este o sursa raster valida</translation>
+    </message>
+    <message>
+        <source> is not a supported raster data source</source>
+        <translation type="unfinished">  nu este o sursa raster accesibila</translation>
+    </message>
+    <message>
+        <source>Unsupported Data Source</source>
+        <translation type="unfinished">Sursa de Date nu este suportata de QGIS</translation>
+    </message>
+    <message>
+        <source>New Bookmark</source>
+        <translation type="unfinished">Bookmark Nou</translation>
+    </message>
+    <message>
+        <source>Enter a name for the new bookmark:</source>
+        <translation type="unfinished">Introduceţi numele noului bookmark:</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">Eroare</translation>
+    </message>
+    <message>
+        <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
+        <translation type="unfinished">Nu se poate crea acest bookmark.</translation>
+    </message>
+</context>
+<context>
+    <name>Dialog</name>
+    <message>
+        <source>QGIS Plugin Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Retrieve the list of available plugins, select one and install it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of plugin to install</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Get List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Done</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Install Plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The plugin will be installed to ~/.qgis/python/plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Nume</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation type="unfinished">Versiune</translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="unfinished">Descriere:</translation>
+    </message>
+    <message>
+        <source>Author</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>KDChartParams</name>
@@ -229,7 +587,7 @@ Nu a fost găsit nici un Plugin pentru accesarea de date QGIS în</translation>
     </message>
     <message>
         <source>Could not snap segment. Have you set the tolerance in Settings &gt; Project Properties &gt; General?</source>
-        <translation>Nu s-a putut potrivi segmentul. Verificati toleranţa din Setari &gt; Opţiuni Proiect &gt; General?</translation>
+        <translation type="obsolete">Nu s-a putut potrivi segmentul. Verificati toleranţa din Setari &gt; Opţiuni Proiect &gt; General?</translation>
     </message>
     <message>
         <source>Could not snap vertex. Have you set the tolerance in Settings &gt; Project Properties &gt; General?</source>
@@ -1874,87 +2232,87 @@ Compilata cu Qt </translation>
     </message>
     <message>
         <source>Open an OGR Supported Vector Layer</source>
-        <translation>Deschide un strat accesat de OGR</translation>
+        <translation type="obsolete">Deschide un strat accesat de OGR</translation>
     </message>
     <message>
         <source>is not a valid or recognized data source</source>
-        <translation>nu este o sursa accesibila</translation>
+        <translation type="obsolete">nu este o sursa accesibila</translation>
     </message>
     <message>
         <source>Invalid Data Source</source>
-        <translation>Sursa de date corupta</translation>
+        <translation type="obsolete">Sursa de date corupta</translation>
     </message>
     <message>
         <source>Invalid Layer</source>
-        <translation>Layer corupt</translation>
+        <translation type="obsolete">Layer corupt</translation>
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation>%1 este un layer corupt si nu poate fi accesat.</translation>
+        <translation type="obsolete">%1 este un layer corupt si nu poate fi accesat.</translation>
     </message>
     <message>
         <source>Save As</source>
-        <translation>Salvare Ca</translation>
+        <translation type="obsolete">Salvare Ca</translation>
     </message>
     <message>
         <source>Choose a QGIS project file to open</source>
-        <translation>Alegeţi un fisier de proiect QGIS </translation>
+        <translation type="obsolete">Alegeţi un fisier de proiect QGIS </translation>
     </message>
     <message>
         <source>QGIS Project Read Error</source>
-        <translation>Eroare de citire a fisierului proiect</translation>
+        <translation type="obsolete">Eroare de citire a fisierului proiect</translation>
     </message>
     <message>
         <source>Try to find missing layers?</source>
-        <translation>inceracti sa gasiti straturi disparute?</translation>
+        <translation type="obsolete">inceracti sa gasiti straturi disparute?</translation>
     </message>
     <message>
         <source>Unable to open project</source>
-        <translation>Imposibil de citit proiectul</translation>
+        <translation type="obsolete">Imposibil de citit proiectul</translation>
     </message>
     <message>
         <source>Choose a QGIS project file</source>
-        <translation>Alegeţi un fisier de proiect QGIS </translation>
+        <translation type="obsolete">Alegeţi un fisier de proiect QGIS </translation>
     </message>
     <message>
         <source>Saved project to:</source>
-        <translation>Proiect salvat in:</translation>
+        <translation type="obsolete">Proiect salvat in:</translation>
     </message>
     <message>
         <source>Unable to save project</source>
-        <translation>Imposibil de salvat proiectul</translation>
+        <translation type="obsolete">Imposibil de salvat proiectul</translation>
     </message>
     <message>
         <source>Unable to save project to </source>
-        <translation>Imposibil de salvat proiectul in </translation>
+        <translation type="obsolete">Imposibil de salvat proiectul in </translation>
     </message>
     <message>
         <source>Unable to save project </source>
-        <translation>Imposibil de salvat proiectul </translation>
+        <translation type="obsolete">Imposibil de salvat proiectul </translation>
     </message>
     <message>
         <source>Choose a filename to save the QGIS project file as</source>
-        <translation>Alegeţi un nume sub care să salvaţi proiectul</translation>
+        <translation type="obsolete">Alegeţi un nume sub care să salvaţi proiectul</translation>
     </message>
     <message>
         <source>QGIS: Unable to load project</source>
-        <translation>QGIS: Imposibil de citit proiectul</translation>
+        <translation type="obsolete">QGIS: Imposibil de citit proiectul</translation>
     </message>
     <message>
         <source>Unable to load project </source>
-        <translation> Imposibil de citit proiectul</translation>
+        <translation type="obsolete"> Imposibil de citit proiectul</translation>
     </message>
     <message>
         <source>Choose a filename to save the map image as</source>
-        <translation>Alegeţi un nume sub care să salvaţi imaginea hartii</translation>
+        <translation type="obsolete">Alegeţi un nume sub care să salvaţi imaginea hartii</translation>
     </message>
     <message>
         <source>Saved map image to</source>
-        <translation>Harta salvata in:</translation>
+        <translation type="obsolete">Harta salvata in:</translation>
     </message>
     <message>
         <source>No Layer Selected</source>
-        <translation>Nu există nici un layer selectat</translation>
+        <translation type="obsolete">Nu există nici un layer selectat</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a layer in the legend</source>
@@ -1962,103 +2320,99 @@ Compilata cu Qt </translation>
     </message>
     <message>
         <source>Problem deleting features</source>
-        <translation>A apruta o problema la stergerea de obiecte</translation>
+        <translation type="obsolete">A apruta o problema la stergerea de obiecte</translation>
     </message>
     <message>
         <source>A problem occured during deletion of features</source>
-        <translation>A apruta o problema la stergerea de obiecte</translation>
+        <translation type="obsolete">A apruta o problema la stergerea de obiecte</translation>
     </message>
     <message>
         <source>No Vector Layer Selected</source>
-        <translation>Nu este selectat nici un layer tip vector</translation>
+        <translation type="obsolete">Nu este selectat nici un layer tip vector</translation>
     </message>
     <message>
         <source>Deleting features only works on vector layers</source>
-        <translation>Stergerea de obiecte este posibila doar pentru straturi tip vector</translation>
+        <translation type="obsolete">Stergerea de obiecte este posibila doar pentru straturi tip vector</translation>
     </message>
     <message>
         <source>To delete features, you must select a vector layer in the legend</source>
-        <translation>Pentru a sterge obiecte, trebuie ales un layer activ apăsînd pe numele lui în legendă</translation>
+        <translation type="obsolete">Pentru a sterge obiecte, trebuie ales un layer activ apăsînd pe numele lui în legendă</translation>
     </message>
     <message>
         <source>Error Loading Plugin</source>
-        <translation>Eroare la incarcare plugin-uri</translation>
+        <translation type="obsolete">Eroare la incarcare plugin-uri</translation>
     </message>
     <message>
         <source>There was an error loading %1.</source>
-        <translation>Eroare la incarcarea %1.</translation>
+        <translation type="obsolete">Eroare la incarcarea %1.</translation>
     </message>
     <message>
         <source>No MapLayer Plugins</source>
-        <translation>Nu există Plugin-uri pentru Straturi Harta</translation>
+        <translation type="obsolete">Nu există Plugin-uri pentru Straturi Harta</translation>
     </message>
     <message>
         <source>No MapLayer plugins in ../plugins/maplayer</source>
-        <translation>Nu există Plugin-uri pentru Straturi Harta in ../plugins/maplayer</translation>
+        <translation type="obsolete">Nu există Plugin-uri pentru Straturi Harta in ../plugins/maplayer</translation>
     </message>
     <message>
         <source>No Plugins</source>
-        <translation>Nu există Plugin-uri</translation>
+        <translation type="obsolete">Nu există Plugin-uri</translation>
     </message>
     <message>
         <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
-        <translation>Nu există Plugin-uri in ../plugins. Pentru a le putea testa, porniti QGIS din directorul sursa (src).</translation>
+        <translation type="obsolete">Nu există Plugin-uri in ../plugins. Pentru a le putea testa, porniti QGIS din directorul sursa (src).</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Nume</translation>
+        <translation type="obsolete">Nume</translation>
     </message>
     <message>
         <source>Plugin %1 is named %2</source>
-        <translation>Pluginul %1 se numeste %2</translation>
+        <translation type="obsolete">Pluginul %1 se numeste %2</translation>
     </message>
     <message>
         <source>Plugin Information</source>
-        <translation>Informatii plugin</translation>
+        <translation type="obsolete">Informatii plugin</translation>
     </message>
     <message>
         <source>QGis loaded the following plugin:</source>
-        <translation>QGIS a incarcat dinamic urmatorul plugin:</translation>
+        <translation type="obsolete">QGIS a incarcat dinamic urmatorul plugin:</translation>
     </message>
     <message>
         <source>Name: %1</source>
-        <translation>Nume: %1</translation>
+        <translation type="obsolete">Nume: %1</translation>
     </message>
     <message>
         <source>Version: %1</source>
-        <translation>Versiune: %1</translation>
+        <translation type="obsolete">Versiune: %1</translation>
     </message>
     <message>
         <source>Description: %1</source>
-        <translation>Descriere: %1</translation>
+        <translation type="obsolete">Descriere: %1</translation>
     </message>
     <message>
         <source>Unable to Load Plugin</source>
-        <translation>Nu se poate incarca acest plugin</translation>
+        <translation type="obsolete">Nu se poate incarca acest plugin</translation>
     </message>
     <message>
         <source>QGIS was unable to load the plugin from: %1</source>
-        <translation>QGIS nu a putut incarca dinamic acest plugin din:  %1</translation>
+        <translation type="obsolete">QGIS nu a putut incarca dinamic acest plugin din:  %1</translation>
     </message>
     <message>
         <source>There is a new version of QGIS available</source>
-        <translation>O noua versiune QGIS este disponibila</translation>
+        <translation type="obsolete">O noua versiune QGIS este disponibila</translation>
     </message>
     <message>
         <source>You are running a development version of QGIS</source>
-        <translation>Rulati o versiune QGIS pentru dezvoltatori</translation>
+        <translation type="obsolete">Rulati o versiune QGIS pentru dezvoltatori</translation>
     </message>
     <message>
         <source>You are running the current version of QGIS</source>
-        <translation>Felicitari. Rulati cea mai recenta versiune QGIS.</translation>
+        <translation type="obsolete">Felicitari. Rulati cea mai recenta versiune QGIS.</translation>
     </message>
     <message>
         <source>Would you like more information?</source>
-        <translation>Ati dori mai multe informatii?</translation>
-    </message>
-    <message>
-        <source>QGIS Version Information</source>
-        <translation></translation>
+        <translation type="obsolete">Ati dori mai multe informatii?</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -2070,19 +2424,19 @@ Compilata cu Qt </translation>
     </message>
     <message>
         <source>QGIS - Changes in SVN Since Last Release</source>
-        <translation>Modificari QGIS de la utima versiune</translation>
+        <translation type="obsolete">Modificari QGIS de la utima versiune</translation>
     </message>
     <message>
         <source>Unable to get current version information from server</source>
-        <translation>Nu se poate obtine legatura cu serverul de informatii</translation>
+        <translation type="obsolete">Nu se poate obtine legatura cu serverul de informatii</translation>
     </message>
     <message>
         <source>Connection refused - server may be down</source>
-        <translation>Conexiune refuzata - serverul poate fi inactiv</translation>
+        <translation type="obsolete">Conexiune refuzata - serverul poate fi inactiv</translation>
     </message>
     <message>
         <source>QGIS server was not found</source>
-        <translation>Serverul QGIS nu este disponibil</translation>
+        <translation type="obsolete">Serverul QGIS nu este disponibil</translation>
     </message>
     <message>
         <source>Error reading from server</source>
@@ -2094,34 +2448,34 @@ Compilata cu Qt </translation>
     </message>
     <message>
         <source>QGIS Browser Selection</source>
-        <translation>Selectarea Browser-ului pentru QGIS</translation>
+        <translation type="obsolete">Selectarea Browser-ului pentru QGIS</translation>
     </message>
     <message>
         <source>Enter the name of a web browser to use (eg. konqueror).
 </source>
-        <translation>Introduceti numele browser-ului de Internet (de exemplu konqueror).
+        <translation type="obsolete">Introduceti numele browser-ului de Internet (de exemplu konqueror).
 </translation>
     </message>
     <message>
         <source>Enter the full path if the browser is not in your PATH.
 </source>
-        <translation>Introduceti calea absoluta, daca aplicatia nu se afla in variabila de system PATH</translation>
+        <translation type="obsolete">Introduceti calea absoluta, daca aplicatia nu se afla in variabila de system PATH</translation>
     </message>
     <message>
         <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
-        <translation>Puteti modifica aceasta optiune mai tarziu selectand Optiuni din meniul de setari.</translation>
+        <translation type="obsolete">Puteti modifica aceasta optiune mai tarziu selectand Optiuni din meniul de setari.</translation>
     </message>
     <message>
         <source>Layer is not valid</source>
-        <translation>Layer corupt</translation>
+        <translation type="obsolete">Layer corupt</translation>
     </message>
     <message>
         <source>The layer is not a valid layer and can not be added to the map</source>
-        <translation>Stratul tematic este corupt si nu poate fi adaugat in harta.</translation>
+        <translation type="obsolete">Stratul tematic este corupt si nu poate fi adaugat in harta.</translation>
     </message>
     <message>
         <source>Save?</source>
-        <translation>Salvare?</translation>
+        <translation type="obsolete">Salvare?</translation>
     </message>
     <message>
         <source>&lt;p&gt;Do you want to save the current project?&lt;/p&gt;</source>
@@ -2129,51 +2483,39 @@ Compilata cu Qt </translation>
     </message>
     <message>
         <source>Extents: </source>
-        <translation>Dimensiuni: </translation>
+        <translation type="obsolete">Dimensiuni: </translation>
     </message>
     <message>
         <source>Clipboard contents set to: </source>
-        <translation>Continutul clipboardului setat cu:</translation>
+        <translation type="obsolete">Continutul clipboardului setat cu:</translation>
     </message>
     <message>
         <source>Open a GDAL Supported Raster Data Source</source>
-        <translation>Deschide un strat tematic tip raster accesat de GDAL</translation>
+        <translation type="obsolete">Deschide un strat tematic tip raster accesat de GDAL</translation>
     </message>
     <message>
         <source> is not a valid or recognized raster data source</source>
-        <translation> nu este o sursa raster valida</translation>
+        <translation type="obsolete"> nu este o sursa raster valida</translation>
     </message>
     <message>
         <source> is not a supported raster data source</source>
-        <translation>  nu este o sursa raster accesibila</translation>
+        <translation type="obsolete">  nu este o sursa raster accesibila</translation>
     </message>
     <message>
         <source>Unsupported Data Source</source>
-        <translation>Sursa de Date nu este suportata de QGIS</translation>
+        <translation type="obsolete">Sursa de Date nu este suportata de QGIS</translation>
     </message>
     <message>
         <source>Enter a name for the new bookmark:</source>
-        <translation>Introduceţi numele noului bookmark:</translation>
+        <translation type="obsolete">Introduceţi numele noului bookmark:</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>Eroare</translation>
+        <translation type="obsolete">Eroare</translation>
     </message>
     <message>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
-        <translation>Nu se poate crea acest bookmark.</translation>
-    </message>
-    <message>
-        <source>Network error while communicating with server</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unknown network socket error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to communicate with QGIS Version server</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Nu se poate crea acest bookmark.</translation>
     </message>
     <message>
         <source>T</source>
@@ -2207,19 +2549,19 @@ Compilata cu Qt </translation>
     </message>
     <message>
         <source>Provider does not support deletion</source>
-        <translation type="unfinished">Furnizorul  de date corespunzator acestui layer nu suporta stergerea de obiecte.</translation>
+        <translation type="obsolete">Furnizorul  de date corespunzator acestui layer nu suporta stergerea de obiecte.</translation>
     </message>
     <message>
         <source>Data provider does not support deleting features</source>
-        <translation type="unfinished">Furnizorul  de date corespunzator acestui layer nu suporta stergerea de obiecte.</translation>
+        <translation type="obsolete">Furnizorul  de date corespunzator acestui layer nu suporta stergerea de obiecte.</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="unfinished">Layerul nu este editabil</translation>
+        <translation type="obsolete">Layerul nu este editabil</translation>
     </message>
     <message>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
-        <translation type="unfinished">Layerul curent nu este editabil. Apasati  &apos;Permisiune de Editare&apos; in bara de unelte pentru vectorizare.</translation>
+        <translation type="obsolete">Layerul curent nu este editabil. Apasati  &apos;Permisiune de Editare&apos; in bara de unelte pentru vectorizare.</translation>
     </message>
     <message>
         <source>Toggle editing</source>
@@ -2255,14 +2597,6 @@ Compilata cu Qt </translation>
     </message>
     <message>
         <source>Map coordinates at mouse cursor position</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid scale</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Do you want to save the current project?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2690,6 +3024,19 @@ p, li { white-space: pre-wrap; }
         <source>Alt+G</source>
         <translation>Alt+G</translation>
     </message>
+    <message>
+        <source>Zoom map to the selected rows (Ctrl-F)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom map to the selected rows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+F</source>
+        <translation type="unfinished">Ctrl+F
+Apropiere de Selecţie</translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeTableDisplay</name>
@@ -3095,7 +3442,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Scale</source>
-        <translation>Scară</translation>
+        <translation type="obsolete">Scară</translation>
     </message>
     <message>
         <source>1 :</source>
@@ -3137,6 +3484,10 @@ p, li { white-space: pre-wrap; }
         <source>1:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Scale:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerPicture</name>
@@ -3165,11 +3516,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Picture</source>
-        <translation>Imagine</translation>
+        <translation type="obsolete">Imagine</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Frame</source>
@@ -3186,6 +3537,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Height</source>
         <translation>Înălţime</translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation type="unfinished">Selectaţi</translation>
     </message>
 </context>
 <context>
@@ -3665,22 +4020,26 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Alt+C</translation>
     </message>
     <message>
+        <source>Color</source>
+        <translation type="unfinished">Culoare</translation>
+    </message>
+    <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message encoding="UTF-8">
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;© QGIS 2006&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;© QGIS 2006&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3943,18 +4302,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Access to relation </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> using sql;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-has failed. The database said:
-</source>
+        <source>double click to open PostgreSQL query builder</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4090,7 +4438,7 @@ has failed. The database said:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h1&gt;Description&lt;/h1&gt;&lt;p&gt;Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!&lt;/p&gt;&lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma or tab). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.&lt;/p&gt;</source>
+        <source>&lt;h1&gt;Description&lt;/h1&gt;&lt;p&gt;Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!&lt;/p&gt;&lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma, tab or a regular expression in Perl style). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4218,6 +4566,22 @@ has failed. The database said:
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The delimiter is taken as is</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plain characters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The delimiter is a regular expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Regular expression</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4998,6 +5362,21 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsGraduatedSymbolDialog</name>
+    <message>
+        <source>Equal Interval</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Quantiles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsGraduatedSymbolDialogBase</name>
     <message>
         <source>graduated Symbol</source>
@@ -5044,7 +5423,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Field</source>
-        <translation type="unfinished">Atribut</translation>
+        <translation type="obsolete">Atribut</translation>
     </message>
     <message>
         <source>ERROR</source>
@@ -5052,6 +5431,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5375,10 +5758,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Field (layer)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5412,6 +5791,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Create / Alter Table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5946,6 +6329,10 @@ at line </source>
     </message>
     <message>
         <source>:&amp;nbsp;no input</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot find whereoption </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6701,6 +7088,10 @@ Adăugare layer generat de un Serviciu de Hărţi Web (WMS)</translation>
     <message>
         <source>GRASS Shell</source>
         <translation>GRASS Shell</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">Închidere</translation>
     </message>
 </context>
 <context>
@@ -7488,6 +7879,14 @@ Elimină toate straturile tematice din Zona de Previzualizare</translation>
         <source>&amp;Properties</source>
         <translation type="unfinished">Caracteristici</translation>
     </message>
+    <message>
+        <source>bad_alloc exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLineStyleDialogBase</name>
@@ -7573,16 +7972,39 @@ Elimină toate straturile tematice din Zona de Previzualizare</translation>
         <translation type="obsolete">
         </translation>
     </message>
+    <message>
+        <source>(clicked coordinate)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WMS identify result for %1
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolVertexEdit</name>
+    <message>
+        <source>Snap tolerance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t show this message again</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not snap segment.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Have you set the tolerance in Settings &gt; Project Properties &gt; General?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapserverExport</name>
     <message>
         <source>Name for the map file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>MapServer map files (*.map);;All files(*.*)</source>
-        <comment>Filter list for selecting files from a dialog box</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -7615,6 +8037,11 @@ Do you want to overwrite it?</source>
     <message>
         <source> exists. 
 Do you want to overwrite it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MapServer map files (*.map);;All files (*.*)</source>
+        <comment>Filter list for selecting files from a dialog box</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7865,7 +8292,7 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;p&gt;This map is defined with a geographic coordinate system (latitude/longitude) but the map extents suggest that it is actually a projected coordinate system (e.g., Mercator). If so, the results from line or area measurements will be incorrect.&lt;/p&gt;&lt;p&gt;To fix this, explicitly set an appropriate map coordinate system using the &lt;tt&gt;Settings:Project Properties&lt;/tt&gt; menu.</source>
+        <source>&lt;p&gt;This map is defined with a geographic coordinate system (latitude/longitude) but the map extents suggests that it is actually a projected coordinate system (e.g., Mercator). If so, the results from line or area measurements will be incorrect.&lt;/p&gt;&lt;p&gt;To fix this, explicitly set an appropriate map coordinate system using the &lt;tt&gt;Settings:Project Properties&lt;/tt&gt; menu.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8654,24 +9081,24 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Not a PostgreSQL/PosGIS Layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> is not a PostgreSQL/PosGIS layer.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Geoprocessing functions are only available for PostgreSQL/PosGIS Layers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>No Active Layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>You must select a layer in the legend to buffer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not a PostgreSQL/PostGIS Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> is not a PostgreSQL/PostGIS layer.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8853,7 +9280,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginManager</name>
     <message>
         <source>Choose a directory</source>
-        <translation>Alegeti un director</translation>
+        <translation type="obsolete">Alegeti un director</translation>
     </message>
     <message>
         <source>No Plugins</source>
@@ -8868,7 +9295,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginManagerBase</name>
     <message>
         <source>QGIS Plugin Manger</source>
-        <translation>Administrare plugin-uri QGIS</translation>
+        <translation type="obsolete">Administrare plugin-uri QGIS</translation>
     </message>
     <message>
         <source>Plugin Directory</source>
@@ -8876,7 +9303,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Name</source>
@@ -8929,6 +9356,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Alt+C</source>
         <translation>Alt+C</translation>
+    </message>
+    <message>
+        <source>QGIS Plugin Manager</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9009,10 +9440,6 @@ Vectorizare Punct</translation>
         <translation type="unfinished">Atenţie</translation>
     </message>
     <message>
-        <source>&lt;p&gt;A Helmert transform requires modifications in the raster layer.&lt;/p&gt;&lt;p&gt;The modifed raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p&gt;&lt;p&gt;Are you sure that this is what you want?&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Affine</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9042,6 +9469,10 @@ Vectorizare Punct</translation>
     </message>
     <message>
         <source>Currently all modified files will be written in TIFF format.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;A Helmert transform requires modifications in the raster layer.&lt;/p&gt;&lt;p&gt;The modified raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p&gt;&lt;p&gt;Are you sure that this is what you want?&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10351,6 +10782,10 @@ p, li { white-space: pre-wrap; }
         <source>The query you specified results in zero records being returned.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Search query builder</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsServerSourceSelect</name>
@@ -10975,6 +11410,14 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QgsVectorAttributesModel</name>
+    <message>
+        <source>id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayer</name>
@@ -11397,6 +11840,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>&amp;Add WFS layer</source>
         <translation>&amp;Adăugare layer WFS</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWFSProvider</name>
+    <message>
+        <source>unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>received %1 bytes from %2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -9,6 +9,363 @@
         <source>unable to get OGRDriverManager</source>
         <translation>Incapable d&apos;obtenir OGRDriverManager </translation>
     </message>
+    <message>
+        <source>Open an OGR Supported Vector Layer</source>
+        <translation type="unfinished">Ouvrez une couche de vecteur gérée par OGR </translation>
+    </message>
+    <message>
+        <source>is not a valid or recognized data source</source>
+        <translation type="unfinished">ce n&apos;est pas une source de données valide ou reconnue</translation>
+    </message>
+    <message>
+        <source>Invalid Data Source</source>
+        <translation type="unfinished">source de données invalide</translation>
+    </message>
+    <message>
+        <source>Invalid Layer</source>
+        <translation type="unfinished">Couche Invalide</translation>
+    </message>
+    <message>
+        <source>%1 is an invalid layer and cannot be loaded.</source>
+        <translation type="unfinished">%1 est une couche invalide et ne peut être chargée.</translation>
+    </message>
+    <message>
+        <source>Save As</source>
+        <translation type="unfinished">Sauvegarder sous</translation>
+    </message>
+    <message>
+        <source>Choose a QGIS project file to open</source>
+        <translation type="unfinished">Choisissez un fichier projet QGIS à ouvrir</translation>
+    </message>
+    <message>
+        <source>QGIS Project Read Error</source>
+        <translation type="unfinished">Erreur de lecture du Projet QGIS </translation>
+    </message>
+    <message>
+        <source></source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Try to find missing layers?</source>
+        <translation type="unfinished">Essayer de trouver les couches manquantes? </translation>
+    </message>
+    <message>
+        <source>Unable to open project</source>
+        <translation type="unfinished">Impossible d&apos;ouvrir le projet</translation>
+    </message>
+    <message>
+        <source>Choose a QGIS project file</source>
+        <translation type="unfinished">Choisissez un fichier projet QGIS</translation>
+    </message>
+    <message>
+        <source>Saved project to:</source>
+        <translation type="unfinished">Projet sauvegardé sous : </translation>
+    </message>
+    <message>
+        <source>Unable to save project</source>
+        <translation type="unfinished">Impossible de sauvegarder le projet</translation>
+    </message>
+    <message>
+        <source>Unable to save project to </source>
+        <translation type="unfinished">Impossible de sauvegarder le projet sous</translation>
+    </message>
+    <message>
+        <source>Unable to save project </source>
+        <translation type="unfinished">Impossible de sauvegarder le projet</translation>
+    </message>
+    <message>
+        <source>Choose a filename to save the QGIS project file as</source>
+        <translation type="unfinished">Choisissez un nom de fichier pour sauvegarder le projet QGIS sous</translation>
+    </message>
+    <message>
+        <source>QGIS: Unable to load project</source>
+        <translation type="unfinished">QGIS: impossible de charger le projet</translation>
+    </message>
+    <message>
+        <source>Unable to load project </source>
+        <translation type="unfinished">Impossible de charger le projet</translation>
+    </message>
+    <message>
+        <source>Choose a filename to save the map image as</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saved map image to</source>
+        <translation type="unfinished">Carte sauvegardée sous</translation>
+    </message>
+    <message>
+        <source>No Layer Selected</source>
+        <translation type="unfinished">Aucune couche sélectionnée</translation>
+    </message>
+    <message>
+        <source>To delete features, you must select a vector layer in the legend</source>
+        <translation type="unfinished">Pour effacer des données, vous devez sélectionner une couche vecteur dans la légende</translation>
+    </message>
+    <message>
+        <source>No Vector Layer Selected</source>
+        <translation type="unfinished">Aucune couche vecteur sélectionnée</translation>
+    </message>
+    <message>
+        <source>Deleting features only works on vector layers</source>
+        <translation type="unfinished">L&apos;effacement des données ne peut s&apos;appliquer qu&apos;à des couches vectorielles</translation>
+    </message>
+    <message>
+        <source>Provider does not support deletion</source>
+        <translation type="unfinished">Le fournisseur ne supporte pas l&apos;effacement</translation>
+    </message>
+    <message>
+        <source>Data provider does not support deleting features</source>
+        <translation type="unfinished">Le fournisseur de données ne supporte pas l&apos;effacement des propriétés</translation>
+    </message>
+    <message>
+        <source>Layer not editable</source>
+        <translation type="unfinished">Couche non éditable</translation>
+    </message>
+    <message>
+        <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Problem deleting features</source>
+        <translation type="unfinished">Problème lors de l&apos;effacement des données</translation>
+    </message>
+    <message>
+        <source>A problem occured during deletion of features</source>
+        <translation type="unfinished">Un problème est apparu lors de l&apos;effacement des données</translation>
+    </message>
+    <message>
+        <source>Invalid scale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error Loading Plugin</source>
+        <translation type="unfinished">Erreur de chargement de Plugin</translation>
+    </message>
+    <message>
+        <source>There was an error loading %1.</source>
+        <translation type="unfinished">Il y a eu une erreur au chargement de %1.</translation>
+    </message>
+    <message>
+        <source>No MapLayer Plugins</source>
+        <translation type="unfinished">Pas de plugins MapLayer</translation>
+    </message>
+    <message>
+        <source>No MapLayer plugins in ../plugins/maplayer</source>
+        <translation type="unfinished">Aucun plugin MapLayer dans ../plugins/maplayer</translation>
+    </message>
+    <message>
+        <source>No Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
+        <translation type="unfinished">Aucun plugin trouvé dans ../plugins. Pour tester les plugins, démarrez QGIS depuis le répertoire source</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Nom</translation>
+    </message>
+    <message>
+        <source>Plugin %1 is named %2</source>
+        <translation type="unfinished">Plugin %1 est nommé %2</translation>
+    </message>
+    <message>
+        <source>Plugin Information</source>
+        <translation type="unfinished">Information sur le Plugin</translation>
+    </message>
+    <message>
+        <source>QGis loaded the following plugin:</source>
+        <translation type="unfinished">QGIS a chargé le plugin suivant:</translation>
+    </message>
+    <message>
+        <source>Name: %1</source>
+        <translation type="unfinished">Nom: %1</translation>
+    </message>
+    <message>
+        <source>Version: %1</source>
+        <translation type="unfinished">Version: %1</translation>
+    </message>
+    <message>
+        <source>Description: %1</source>
+        <translation type="unfinished">Description: %1</translation>
+    </message>
+    <message>
+        <source>Unable to Load Plugin</source>
+        <translation type="unfinished">Impossible de charger le plugin</translation>
+    </message>
+    <message>
+        <source>QGIS was unable to load the plugin from: %1</source>
+        <translation type="unfinished">QGIS est incapable de charger le plugin à partir de : %1</translation>
+    </message>
+    <message>
+        <source>There is a new version of QGIS available</source>
+        <translation type="unfinished">Une nouvelle version de QGIS est disponible</translation>
+    </message>
+    <message>
+        <source>You are running a development version of QGIS</source>
+        <translation type="unfinished">Vous utilisez une version de développement de QGIS</translation>
+    </message>
+    <message>
+        <source>You are running the current version of QGIS</source>
+        <translation type="unfinished">Vous utilisez la version courante de QGIS</translation>
+    </message>
+    <message>
+        <source>Would you like more information?</source>
+        <translation type="unfinished">Voulez-vous plus d&apos;information?</translation>
+    </message>
+    <message>
+        <source>QGIS Version Information</source>
+        <translation type="unfinished">Information de version de QGIS</translation>
+    </message>
+    <message>
+        <source>QGIS - Changes in SVN Since Last Release</source>
+        <translation type="unfinished">QGIS - Changement de SVN depuis la dernière sortie de version</translation>
+    </message>
+    <message>
+        <source>Unable to get current version information from server</source>
+        <translation type="unfinished">Impossible de récupérer la version courante depuis le serveur</translation>
+    </message>
+    <message>
+        <source>Connection refused - server may be down</source>
+        <translation type="unfinished">Connection refusée - le serveur est peut-être indisponible</translation>
+    </message>
+    <message>
+        <source>QGIS server was not found</source>
+        <translation type="unfinished">Le serveur QGIS n&apos;a pas été trouvé</translation>
+    </message>
+    <message>
+        <source>Network error while communicating with server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown network socket error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to communicate with QGIS Version server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Browser Selection</source>
+        <translation type="unfinished">Sélection du navigateur QGIS</translation>
+    </message>
+    <message>
+        <source>Enter the name of a web browser to use (eg. konqueror).
+</source>
+        <translation type="unfinished">Écrivez le nom d&apos;un navigateur internet à utiliser (par exemple, konqueror). </translation>
+    </message>
+    <message>
+        <source>Enter the full path if the browser is not in your PATH.
+</source>
+        <translation type="unfinished">Entrez le chemin complet si le navigateur n&apos;est pas dans votre PATH.</translation>
+    </message>
+    <message>
+        <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
+        <translation type="unfinished">Vous pouvez modifier cette option plus tard en sélectionnant Options dans le menu Préférences (dans l&apos;Aide).</translation>
+    </message>
+    <message>
+        <source>Layer is not valid</source>
+        <translation type="unfinished">La couche n&apos;est pas valide</translation>
+    </message>
+    <message>
+        <source>The layer is not a valid layer and can not be added to the map</source>
+        <translation type="unfinished">La couche n&apos;est pas une couche valide et ne peut pas être ajoutée à la carte </translation>
+    </message>
+    <message>
+        <source>Save?</source>
+        <translation type="unfinished">Sauvegarder ?</translation>
+    </message>
+    <message>
+        <source>Do you want to save the current project?</source>
+        <translation type="unfinished">Voulez-vous sauvegarder le projet courant ?</translation>
+    </message>
+    <message>
+        <source>Extents: </source>
+        <translation type="unfinished">Emprises:</translation>
+    </message>
+    <message>
+        <source>Clipboard contents set to: </source>
+        <translation type="unfinished"> Contenu du presse-papier réglé sur: </translation>
+    </message>
+    <message>
+        <source>Open a GDAL Supported Raster Data Source</source>
+        <translation type="unfinished">Ouvrez des données raster gérées par GDAL</translation>
+    </message>
+    <message>
+        <source> is not a valid or recognized raster data source</source>
+        <translation type="unfinished">n&apos;est pas une source raster valide ou identifiée  </translation>
+    </message>
+    <message>
+        <source> is not a supported raster data source</source>
+        <translation type="unfinished"> n&apos;est pas une source de données raster gérées</translation>
+    </message>
+    <message>
+        <source>Unsupported Data Source</source>
+        <translation type="unfinished">Source de données non gérée</translation>
+    </message>
+    <message>
+        <source>New Bookmark</source>
+        <translation type="unfinished">Nouveau signet</translation>
+    </message>
+    <message>
+        <source>Enter a name for the new bookmark:</source>
+        <translation type="unfinished">Entrer un nom pour le nouveau signet:</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">Erreur</translation>
+    </message>
+    <message>
+        <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
+        <translation type="unfinished">Impossible de créer le signet.  Votre base de données utilisateur est peut-etre manquante ou corrompue</translation>
+    </message>
+</context>
+<context>
+    <name>Dialog</name>
+    <message>
+        <source>QGIS Plugin Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Retrieve the list of available plugins, select one and install it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of plugin to install</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Get List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Done</source>
+        <translation type="unfinished">Fait</translation>
+    </message>
+    <message>
+        <source>Install Plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The plugin will be installed to ~/.qgis/python/plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Nom</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation type="unfinished">Version</translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="unfinished">Description</translation>
+    </message>
+    <message>
+        <source>Author</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>KDChartParams</name>
@@ -268,10 +625,6 @@
     </message>
     <message>
         <source>Area</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not snap segment. Have you set the tolerance in Settings &gt; Project Properties &gt; General?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -953,15 +1306,15 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>is not a valid or recognized data source</source>
-        <translation>ce n&apos;est pas une source de données valide ou reconnue</translation>
+        <translation type="obsolete">ce n&apos;est pas une source de données valide ou reconnue</translation>
     </message>
     <message>
         <source>Invalid Data Source</source>
-        <translation>source de données invalide</translation>
+        <translation type="obsolete">source de données invalide</translation>
     </message>
     <message>
         <source>No Layer Selected</source>
-        <translation>Aucune couche sélectionnée</translation>
+        <translation type="obsolete">Aucune couche sélectionnée</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a layer in the legend</source>
@@ -969,75 +1322,75 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>No MapLayer Plugins</source>
-        <translation>Pas de plugins MapLayer</translation>
+        <translation type="obsolete">Pas de plugins MapLayer</translation>
     </message>
     <message>
         <source>No MapLayer plugins in ../plugins/maplayer</source>
-        <translation>Aucun plugin MapLayer dans ../plugins/maplayer</translation>
+        <translation type="obsolete">Aucun plugin MapLayer dans ../plugins/maplayer</translation>
     </message>
     <message>
         <source>No Plugins</source>
-        <translation>Pas de plugins</translation>
+        <translation type="obsolete">Pas de plugins</translation>
     </message>
     <message>
         <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
-        <translation>Aucun plugin trouvé dans ../plugins. Pour tester les plugins, démarrez QGIS depuis le répertoire source</translation>
+        <translation type="obsolete">Aucun plugin trouvé dans ../plugins. Pour tester les plugins, démarrez QGIS depuis le répertoire source</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Nom</translation>
+        <translation type="obsolete">Nom</translation>
     </message>
     <message>
         <source>Plugin %1 is named %2</source>
-        <translation>Plugin %1 est nommé %2</translation>
+        <translation type="obsolete">Plugin %1 est nommé %2</translation>
     </message>
     <message>
         <source>Plugin Information</source>
-        <translation>Information sur le Plugin</translation>
+        <translation type="obsolete">Information sur le Plugin</translation>
     </message>
     <message>
         <source>QGis loaded the following plugin:</source>
-        <translation>QGIS a chargé le plugin suivant:</translation>
+        <translation type="obsolete">QGIS a chargé le plugin suivant:</translation>
     </message>
     <message>
         <source>Name: %1</source>
-        <translation>Nom: %1</translation>
+        <translation type="obsolete">Nom: %1</translation>
     </message>
     <message>
         <source>Version: %1</source>
-        <translation>Version: %1</translation>
+        <translation type="obsolete">Version: %1</translation>
     </message>
     <message>
         <source>Description: %1</source>
-        <translation>Description: %1</translation>
+        <translation type="obsolete">Description: %1</translation>
     </message>
     <message>
         <source>Unable to Load Plugin</source>
-        <translation>Impossible de charger le plugin</translation>
+        <translation type="obsolete">Impossible de charger le plugin</translation>
     </message>
     <message>
         <source>QGIS was unable to load the plugin from: %1</source>
-        <translation>QGIS est incapable de charger le plugin à partir de : %1</translation>
+        <translation type="obsolete">QGIS est incapable de charger le plugin à partir de : %1</translation>
     </message>
     <message>
         <source>There is a new version of QGIS available</source>
-        <translation>Une nouvelle version de QGIS est disponible</translation>
+        <translation type="obsolete">Une nouvelle version de QGIS est disponible</translation>
     </message>
     <message>
         <source>You are running a development version of QGIS</source>
-        <translation>Vous utilisez une version de développement de QGIS</translation>
+        <translation type="obsolete">Vous utilisez une version de développement de QGIS</translation>
     </message>
     <message>
         <source>You are running the current version of QGIS</source>
-        <translation>Vous utilisez la version courante de QGIS</translation>
+        <translation type="obsolete">Vous utilisez la version courante de QGIS</translation>
     </message>
     <message>
         <source>Would you like more information?</source>
-        <translation>Voulez-vous plus d&apos;information?</translation>
+        <translation type="obsolete">Voulez-vous plus d&apos;information?</translation>
     </message>
     <message>
         <source>QGIS Version Information</source>
-        <translation>Information de version de QGIS</translation>
+        <translation type="obsolete">Information de version de QGIS</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -1049,15 +1402,15 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Unable to get current version information from server</source>
-        <translation>Impossible de récupérer la version courante depuis le serveur</translation>
+        <translation type="obsolete">Impossible de récupérer la version courante depuis le serveur</translation>
     </message>
     <message>
         <source>Connection refused - server may be down</source>
-        <translation>Connection refusée - le serveur est peut-être indisponible</translation>
+        <translation type="obsolete">Connection refusée - le serveur est peut-être indisponible</translation>
     </message>
     <message>
         <source>QGIS server was not found</source>
-        <translation>Le serveur QGIS n&apos;a pas été trouvé</translation>
+        <translation type="obsolete">Le serveur QGIS n&apos;a pas été trouvé</translation>
     </message>
     <message>
         <source>Error reading from server</source>
@@ -1069,51 +1422,51 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Invalid Layer</source>
-        <translation>Couche Invalide</translation>
+        <translation type="obsolete">Couche Invalide</translation>
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation>%1 est une couche invalide et ne peut être chargée.</translation>
+        <translation type="obsolete">%1 est une couche invalide et ne peut être chargée.</translation>
     </message>
     <message>
         <source>Error Loading Plugin</source>
-        <translation>Erreur de chargement de Plugin</translation>
+        <translation type="obsolete">Erreur de chargement de Plugin</translation>
     </message>
     <message>
         <source>There was an error loading %1.</source>
-        <translation>Il y a eu une erreur au chargement de %1.</translation>
+        <translation type="obsolete">Il y a eu une erreur au chargement de %1.</translation>
     </message>
     <message>
         <source>Saved map image to</source>
-        <translation>Carte sauvegardée sous</translation>
+        <translation type="obsolete">Carte sauvegardée sous</translation>
     </message>
     <message>
         <source>Choose a filename to save the map image as</source>
-        <translation>Choisissez un nom de fichier et sauvegarder l&apos;image de la carte sous</translation>
+        <translation type="obsolete">Choisissez un nom de fichier et sauvegarder l&apos;image de la carte sous</translation>
     </message>
     <message>
         <source>Extents: </source>
-        <translation>Emprises:</translation>
+        <translation type="obsolete">Emprises:</translation>
     </message>
     <message>
         <source>Problem deleting features</source>
-        <translation>Problème lors de l&apos;effacement des données</translation>
+        <translation type="obsolete">Problème lors de l&apos;effacement des données</translation>
     </message>
     <message>
         <source>A problem occured during deletion of features</source>
-        <translation>Un problème est apparu lors de l&apos;effacement des données</translation>
+        <translation type="obsolete">Un problème est apparu lors de l&apos;effacement des données</translation>
     </message>
     <message>
         <source>No Vector Layer Selected</source>
-        <translation>Aucune couche vecteur sélectionnée</translation>
+        <translation type="obsolete">Aucune couche vecteur sélectionnée</translation>
     </message>
     <message>
         <source>Deleting features only works on vector layers</source>
-        <translation>L&apos;effacement des données ne peut s&apos;appliquer qu&apos;à des couches vectorielles</translation>
+        <translation type="obsolete">L&apos;effacement des données ne peut s&apos;appliquer qu&apos;à des couches vectorielles</translation>
     </message>
     <message>
         <source>To delete features, you must select a vector layer in the legend</source>
-        <translation>Pour effacer des données, vous devez sélectionner une couche vecteur dans la légende</translation>
+        <translation type="obsolete">Pour effacer des données, vous devez sélectionner une couche vecteur dans la légende</translation>
     </message>
     <message>
         <source>Quantum GIS is licensed under the GNU General Public License</source>
@@ -1157,15 +1510,15 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Choose a QGIS project file</source>
-        <translation>Choisissez un fichier projet QGIS</translation>
+        <translation type="obsolete">Choisissez un fichier projet QGIS</translation>
     </message>
     <message>
         <source>Unable to save project</source>
-        <translation>Impossible de sauvegarder le projet</translation>
+        <translation type="obsolete">Impossible de sauvegarder le projet</translation>
     </message>
     <message>
         <source>Unable to save project to </source>
-        <translation>Impossible de sauvegarder le projet sous</translation>
+        <translation type="obsolete">Impossible de sauvegarder le projet sous</translation>
     </message>
     <message>
         <source>&amp;Plugins</source>
@@ -1245,45 +1598,45 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Open an OGR Supported Vector Layer</source>
-        <translation>Ouvrez une couche de vecteur gérée par OGR </translation>
+        <translation type="obsolete">Ouvrez une couche de vecteur gérée par OGR </translation>
     </message>
     <message>
         <source>Save As</source>
-        <translation>Sauvegarder sous</translation>
+        <translation type="obsolete">Sauvegarder sous</translation>
     </message>
     <message>
         <source>Choose a QGIS project file to open</source>
-        <translation>Choisissez un fichier projet QGIS à ouvrir</translation>
+        <translation type="obsolete">Choisissez un fichier projet QGIS à ouvrir</translation>
     </message>
     <message>
         <source>QGIS Project Read Error</source>
-        <translation>Erreur de lecture du Projet QGIS </translation>
+        <translation type="obsolete">Erreur de lecture du Projet QGIS </translation>
     </message>
     <message>
         <source>Try to find missing layers?</source>
-        <translation>Essayer de trouver les couches manquantes? </translation>
+        <translation type="obsolete">Essayer de trouver les couches manquantes? </translation>
     </message>
     <message>
         <source>Saved project to:</source>
-        <translation>Projet sauvegardé sous : </translation>
+        <translation type="obsolete">Projet sauvegardé sous : </translation>
     </message>
     <message>
         <source>QGIS Browser Selection</source>
-        <translation>Sélection du navigateur QGIS</translation>
+        <translation type="obsolete">Sélection du navigateur QGIS</translation>
     </message>
     <message>
         <source>Enter the name of a web browser to use (eg. konqueror).
 </source>
-        <translation>Écrivez le nom d&apos;un navigateur internet à utiliser (par exemple, konqueror). </translation>
+        <translation type="obsolete">Écrivez le nom d&apos;un navigateur internet à utiliser (par exemple, konqueror). </translation>
     </message>
     <message>
         <source>Enter the full path if the browser is not in your PATH.
 </source>
-        <translation>Entrez le chemin complet si le navigateur n&apos;est pas dans votre PATH.</translation>
+        <translation type="obsolete">Entrez le chemin complet si le navigateur n&apos;est pas dans votre PATH.</translation>
     </message>
     <message>
         <source>Open a GDAL Supported Raster Data Source</source>
-        <translation>Ouvrez des données raster gérées par GDAL</translation>
+        <translation type="obsolete">Ouvrez des données raster gérées par GDAL</translation>
     </message>
     <message>
         <source>Reading settings</source>
@@ -1739,23 +2092,23 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Unable to open project</source>
-        <translation>Impossible d&apos;ouvrir le projet</translation>
+        <translation type="obsolete">Impossible d&apos;ouvrir le projet</translation>
     </message>
     <message>
         <source>Unable to save project </source>
-        <translation>Impossible de sauvegarder le projet</translation>
+        <translation type="obsolete">Impossible de sauvegarder le projet</translation>
     </message>
     <message>
         <source>Choose a filename to save the QGIS project file as</source>
-        <translation>Choisissez un nom de fichier pour sauvegarder le projet QGIS sous</translation>
+        <translation type="obsolete">Choisissez un nom de fichier pour sauvegarder le projet QGIS sous</translation>
     </message>
     <message>
         <source>QGIS: Unable to load project</source>
-        <translation>QGIS: impossible de charger le projet</translation>
+        <translation type="obsolete">QGIS: impossible de charger le projet</translation>
     </message>
     <message>
         <source>Unable to load project </source>
-        <translation>Impossible de charger le projet</translation>
+        <translation type="obsolete">Impossible de charger le projet</translation>
     </message>
     <message>
         <source>No Map Layers</source>
@@ -1767,51 +2120,51 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>QGIS - Changes in SVN Since Last Release</source>
-        <translation>QGIS - Changement de SVN depuis la dernière sortie de version</translation>
+        <translation type="obsolete">QGIS - Changement de SVN depuis la dernière sortie de version</translation>
     </message>
     <message>
         <source>Layer is not valid</source>
-        <translation>La couche n&apos;est pas valide</translation>
+        <translation type="obsolete">La couche n&apos;est pas valide</translation>
     </message>
     <message>
         <source>The layer is not a valid layer and can not be added to the map</source>
-        <translation>La couche n&apos;est pas une couche valide et ne peut pas être ajoutée à la carte </translation>
+        <translation type="obsolete">La couche n&apos;est pas une couche valide et ne peut pas être ajoutée à la carte </translation>
     </message>
     <message>
         <source>Save?</source>
-        <translation>Sauvegarder ?</translation>
+        <translation type="obsolete">Sauvegarder ?</translation>
     </message>
     <message>
         <source>Do you want to save the current project?</source>
-        <translation type="unfinished">Voulez-vous sauvegarder le projet courant ?</translation>
+        <translation type="obsolete">Voulez-vous sauvegarder le projet courant ?</translation>
     </message>
     <message>
         <source>Clipboard contents set to: </source>
-        <translation> Contenu du presse-papier réglé sur: </translation>
+        <translation type="obsolete"> Contenu du presse-papier réglé sur: </translation>
     </message>
     <message>
         <source> is not a valid or recognized raster data source</source>
-        <translation>n&apos;est pas une source raster valide ou identifiée  </translation>
+        <translation type="obsolete">n&apos;est pas une source raster valide ou identifiée  </translation>
     </message>
     <message>
         <source> is not a supported raster data source</source>
-        <translation> n&apos;est pas une source de données raster gérées</translation>
+        <translation type="obsolete"> n&apos;est pas une source de données raster gérées</translation>
     </message>
     <message>
         <source>Unsupported Data Source</source>
-        <translation>Source de données non gérée</translation>
+        <translation type="obsolete">Source de données non gérée</translation>
     </message>
     <message>
         <source>Enter a name for the new bookmark:</source>
-        <translation>Entrer un nom pour le nouveau signet:</translation>
+        <translation type="obsolete">Entrer un nom pour le nouveau signet:</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>Erreur</translation>
+        <translation type="obsolete">Erreur</translation>
     </message>
     <message>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
-        <translation>Impossible de créer le signet.  Votre base de données utilisateur est peut-etre manquante ou corrompue</translation>
+        <translation type="obsolete">Impossible de créer le signet.  Votre base de données utilisateur est peut-etre manquante ou corrompue</translation>
     </message>
     <message>
         <source>Ctrl+N</source>
@@ -2002,7 +2355,7 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
-        <translation>Vous pouvez modifier cette option plus tard en sélectionnant Options dans le menu Préférences (dans l&apos;Aide).</translation>
+        <translation type="obsolete">Vous pouvez modifier cette option plus tard en sélectionnant Options dans le menu Préférences (dans l&apos;Aide).</translation>
     </message>
     <message>
         <source>Ctrl+?</source>
@@ -2061,18 +2414,6 @@ Compiled against Qt </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Network error while communicating with server</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unknown network socket error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to communicate with QGIS Version server</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>T</source>
         <comment>Show most toolbars</comment>
         <translation type="unfinished"></translation>
@@ -2104,19 +2445,15 @@ Compiled against Qt </source>
     </message>
     <message>
         <source>Provider does not support deletion</source>
-        <translation type="unfinished">Le fournisseur ne supporte pas l&apos;effacement</translation>
+        <translation type="obsolete">Le fournisseur ne supporte pas l&apos;effacement</translation>
     </message>
     <message>
         <source>Data provider does not support deleting features</source>
-        <translation type="unfinished">Le fournisseur de données ne supporte pas l&apos;effacement des propriétés</translation>
+        <translation type="obsolete">Le fournisseur de données ne supporte pas l&apos;effacement des propriétés</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="unfinished">Couche non éditable</translation>
-    </message>
-    <message>
-        <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Couche non éditable</translation>
     </message>
     <message>
         <source>Toggle editing</source>
@@ -2152,10 +2489,6 @@ Compiled against Qt </source>
     </message>
     <message>
         <source>Map coordinates at mouse cursor position</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid scale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2585,6 +2918,18 @@ p, li { white-space: pre-wrap; }
         <source>Delete column</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Zoom map to the selected rows (Ctrl-F)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom map to the selected rows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+F</source>
+        <translation type="unfinished">Zoom sur l&apos;emprise</translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeTableDisplay</name>
@@ -2997,7 +3342,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Scale</source>
-        <translation>Echelle</translation>
+        <translation type="obsolete">Echelle</translation>
     </message>
     <message>
         <source>1 :</source>
@@ -3039,6 +3384,10 @@ p, li { white-space: pre-wrap; }
         <source>1:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Scale:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerPicture</name>
@@ -3067,11 +3416,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Picture</source>
-        <translation>Image</translation>
+        <translation type="obsolete">Image</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Frame</source>
@@ -3088,6 +3437,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Height</source>
         <translation>Hauteur</translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation type="unfinished">Parcourir</translation>
     </message>
 </context>
 <context>
@@ -3569,22 +3922,26 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Aide</translation>
     </message>
     <message>
+        <source>Color</source>
+        <translation type="unfinished">Couleur</translation>
+    </message>
+    <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message encoding="UTF-8">
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;© QGIS 2006&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;© QGIS 2006&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3792,18 +4149,18 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Access to relation </source>
-        <translation> Accédez à la relation </translation>
+        <translation type="obsolete"> Accédez à la relation </translation>
     </message>
     <message>
         <source> using sql;
 </source>
-        <translation> utilisation de sql;</translation>
+        <translation type="obsolete"> utilisation de sql;</translation>
     </message>
     <message>
         <source>
 has failed. The database said:
 </source>
-        <translation>
+        <translation type="obsolete">
 a échoué. La base de données a indiqué:
 </translation>
     </message>
@@ -3862,6 +4219,10 @@ a échoué. La base de données a indiqué:
     <message>
         <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4The database said:%5%6</source>
         <translation>La connexion à %1 et %2 a échoué. Soit la base de données est tombée en rade, soit vos préférences sont incorrectes.%3Vérifiez votre nom d&apos;utilisateur et votre mot de passe et réessayez. %4La base de donnée dit:%5%6</translation>
+    </message>
+    <message>
+        <source>double click to open PostgreSQL query builder</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3996,7 +4357,7 @@ a échoué. La base de données a indiqué:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h1&gt;Description&lt;/h1&gt;&lt;p&gt;Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!&lt;/p&gt;&lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma or tab). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.&lt;/p&gt;</source>
+        <source>&lt;h1&gt;Description&lt;/h1&gt;&lt;p&gt;Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!&lt;/p&gt;&lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma, tab or a regular expression in Perl style). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4176,6 +4537,22 @@ a échoué. La base de données a indiqué:
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The delimiter is taken as is</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plain characters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The delimiter is a regular expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Regular expression</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4986,6 +5363,21 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsGraduatedSymbolDialog</name>
+    <message>
+        <source>Equal Interval</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Quantiles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsGraduatedSymbolDialogBase</name>
     <message>
         <source>graduated Symbol</source>
@@ -5032,7 +5424,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Field</source>
-        <translation type="unfinished">Champ</translation>
+        <translation type="obsolete">Champ</translation>
     </message>
     <message>
         <source>ERROR</source>
@@ -5041,6 +5433,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>OK</source>
         <translation type="unfinished">OK</translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">Couche</translation>
     </message>
 </context>
 <context>
@@ -5368,7 +5764,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Field (layer)</source>
-        <translation>Champ (couche)</translation>
+        <translation type="obsolete">Champ (couche)</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -5405,6 +5801,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Marker size</source>
         <translation>Taille de la marque</translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">Couche</translation>
     </message>
 </context>
 <context>
@@ -5938,6 +6338,10 @@ at line </source>
     </message>
     <message>
         <source>:&amp;nbsp;no input</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot find whereoption </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6687,6 +7091,10 @@ at line </source>
     <message>
         <source>GRASS Shell</source>
         <translation>GRASS Shell</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">Fermer</translation>
     </message>
 </context>
 <context>
@@ -7529,6 +7937,14 @@ Ceci peut être un problème de votre raccordement de réseau ou du serveur WMS.
         <source>&amp;Properties</source>
         <translation type="unfinished">&amp;Propriétés</translation>
     </message>
+    <message>
+        <source>bad_alloc exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLineStyleDialogBase</name>
@@ -7622,16 +8038,39 @@ Ceci peut être un problème de votre raccordement de réseau ou du serveur WMS.
         <translation type="obsolete">
         </translation>
     </message>
+    <message>
+        <source>(clicked coordinate)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WMS identify result for %1
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolVertexEdit</name>
+    <message>
+        <source>Snap tolerance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t show this message again</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not snap segment.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Have you set the tolerance in Settings &gt; Project Properties &gt; General?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapserverExport</name>
     <message>
         <source>Name for the map file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>MapServer map files (*.map);;All files(*.*)</source>
-        <comment>Filter list for selecting files from a dialog box</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -7664,6 +8103,11 @@ Do you want to overwrite it?</source>
     <message>
         <source> exists. 
 Do you want to overwrite it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MapServer map files (*.map);;All files (*.*)</source>
+        <comment>Filter list for selecting files from a dialog box</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7937,7 +8381,7 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;p&gt;This map is defined with a geographic coordinate system (latitude/longitude) but the map extents suggest that it is actually a projected coordinate system (e.g., Mercator). If so, the results from line or area measurements will be incorrect.&lt;/p&gt;&lt;p&gt;To fix this, explicitly set an appropriate map coordinate system using the &lt;tt&gt;Settings:Project Properties&lt;/tt&gt; menu.</source>
+        <source>&lt;p&gt;This map is defined with a geographic coordinate system (latitude/longitude) but the map extents suggests that it is actually a projected coordinate system (e.g., Mercator). If so, the results from line or area measurements will be incorrect.&lt;/p&gt;&lt;p&gt;To fix this, explicitly set an appropriate map coordinate system using the &lt;tt&gt;Settings:Project Properties&lt;/tt&gt; menu.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8771,17 +9215,17 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Not a PostgreSQL/PosGIS Layer</source>
-        <translation>Pas une couche PostgreSQL/PosGIS</translation>
+        <translation type="obsolete">Pas une couche PostgreSQL/PosGIS</translation>
     </message>
     <message>
         <source> is not a PostgreSQL/PosGIS layer.
 </source>
-        <translation> n&apos;est pas une couche PostgreSQL/PostGIS.
+        <translation type="obsolete"> n&apos;est pas une couche PostgreSQL/PostGIS.
 </translation>
     </message>
     <message>
         <source>Geoprocessing functions are only available for PostgreSQL/PosGIS Layers</source>
-        <translation>Les fonctions de Géotraitement sont seulement disponibles pour des couches de PostgreSQL/PosGIS </translation>
+        <translation type="obsolete">Les fonctions de Géotraitement sont seulement disponibles pour des couches de PostgreSQL/PosGIS </translation>
     </message>
     <message>
         <source>No Active Layer</source>
@@ -8794,6 +9238,19 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>&amp;Buffer features</source>
         <translation>&amp;Buffer des données</translation>
+    </message>
+    <message>
+        <source>Not a PostgreSQL/PostGIS Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> is not a PostgreSQL/PostGIS layer.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8974,7 +9431,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginManager</name>
     <message>
         <source>Choose a directory</source>
-        <translation>Choisissez un répertoire</translation>
+        <translation type="obsolete">Choisissez un répertoire</translation>
     </message>
     <message>
         <source>No Plugins</source>
@@ -8989,7 +9446,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginManagerBase</name>
     <message>
         <source>QGIS Plugin Manger</source>
-        <translation>Gestionnaire de Plugin QGIS</translation>
+        <translation type="obsolete">Gestionnaire de Plugin QGIS</translation>
     </message>
     <message>
         <source>Name</source>
@@ -9009,7 +9466,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>To load a plugin, click the checkbox next to the plugin and click Ok</source>
@@ -9050,6 +9507,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Alt+C</source>
         <translation>Alt-F</translation>
+    </message>
+    <message>
+        <source>QGIS Plugin Manager</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9128,10 +9589,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Attention</translation>
     </message>
     <message>
-        <source>&lt;p&gt;A Helmert transform requires modifications in the raster layer.&lt;/p&gt;&lt;p&gt;The modifed raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p&gt;&lt;p&gt;Are you sure that this is what you want?&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Affine</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9161,6 +9618,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Currently all modified files will be written in TIFF format.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;A Helmert transform requires modifications in the raster layer.&lt;/p&gt;&lt;p&gt;The modified raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p&gt;&lt;p&gt;Are you sure that this is what you want?&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10527,6 +10988,10 @@ p, li { white-space: pre-wrap; }
         <source>The query you specified results in zero records being returned.</source>
         <translation>La question que vous avez spécifié ne retourne aucun résulat. </translation>
     </message>
+    <message>
+        <source>Search query builder</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsServerSourceSelect</name>
@@ -11174,6 +11639,14 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QgsVectorAttributesModel</name>
+    <message>
+        <source>id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayer</name>
@@ -11595,6 +12068,17 @@ p, li { white-space: pre-wrap; }
     <name>QgsWFSPlugin</name>
     <message>
         <source>&amp;Add WFS layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsWFSProvider</name>
+    <message>
+        <source>unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>received %1 bytes from %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

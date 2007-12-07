@@ -9,6 +9,365 @@
         <source>unable to get OGRDriverManager</source>
         <translation>OGRХөтлөгч Олдсонгүй</translation>
     </message>
+    <message>
+        <source>Open an OGR Supported Vector Layer</source>
+        <translation type="unfinished">Нээлттэй OGR-ийн дэмжлэгтэй вектор давхарга</translation>
+    </message>
+    <message>
+        <source>is not a valid or recognized data source</source>
+        <translation type="unfinished">өгөгдлийн эх буруу, эсвэл танигдахгүй байна</translation>
+    </message>
+    <message>
+        <source>Invalid Data Source</source>
+        <translation type="unfinished">Өгөгдлийн эх буруу</translation>
+    </message>
+    <message>
+        <source>Invalid Layer</source>
+        <translation type="unfinished">Буруу Давхарга</translation>
+    </message>
+    <message>
+        <source>%1 is an invalid layer and cannot be loaded.</source>
+        <translation type="unfinished">%1 алдаатай давхарга тул ачаалагдахгүй.</translation>
+    </message>
+    <message>
+        <source>Save As</source>
+        <translation type="unfinished">Нэр өгч хадгалах</translation>
+    </message>
+    <message>
+        <source>Choose a QGIS project file to open</source>
+        <translation type="unfinished">Нээх QGIS төслийн файлыг сонгох</translation>
+    </message>
+    <message>
+        <source>QGIS Project Read Error</source>
+        <translation type="unfinished">QGIS Төсөл Уншихын Алдаа</translation>
+    </message>
+    <message>
+        <source></source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Try to find missing layers?</source>
+        <translation type="unfinished">Орхигдсон давхаргыг хайх уу?</translation>
+    </message>
+    <message>
+        <source>Unable to open project</source>
+        <translation type="unfinished">Төсөл нээгдэхгүй байна</translation>
+    </message>
+    <message>
+        <source>Choose a QGIS project file</source>
+        <translation type="unfinished">QGIS төслийн файл сонгох</translation>
+    </message>
+    <message>
+        <source>Saved project to:</source>
+        <translation type="unfinished">Төсөл хадгалсан:</translation>
+    </message>
+    <message>
+        <source>Unable to save project</source>
+        <translation type="unfinished">Төсөл хадгалагдаагүй </translation>
+    </message>
+    <message>
+        <source>Unable to save project to </source>
+        <translation type="unfinished"> Төслийг хадгалаагүй</translation>
+    </message>
+    <message>
+        <source>Unable to save project </source>
+        <translation type="unfinished"> Төсөл хадгалагдахгүй</translation>
+    </message>
+    <message>
+        <source>Choose a filename to save the QGIS project file as</source>
+        <translation type="unfinished">QGIS төслийн файлыг хадгалах нэр сонгох</translation>
+    </message>
+    <message>
+        <source>QGIS: Unable to load project</source>
+        <translation type="unfinished">QGIS: Төсөл ачаалагдахгүй байна</translation>
+    </message>
+    <message>
+        <source>Unable to load project </source>
+        <translation type="unfinished"> Төсөл ачаалагдахгүй байна</translation>
+    </message>
+    <message>
+        <source>Choose a filename to save the map image as</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saved map image to</source>
+        <translation type="unfinished">Зургийн дүрс хадгалсан </translation>
+    </message>
+    <message>
+        <source>No Layer Selected</source>
+        <translation type="unfinished">Давхарга сонгогдоогүй</translation>
+    </message>
+    <message>
+        <source>To delete features, you must select a vector layer in the legend</source>
+        <translation type="unfinished">Объект хасахын тулд вектор давхарга сонговол зохино</translation>
+    </message>
+    <message>
+        <source>No Vector Layer Selected</source>
+        <translation type="unfinished">Вектор Давхарга Сонгоогүй</translation>
+    </message>
+    <message>
+        <source>Deleting features only works on vector layers</source>
+        <translation type="unfinished">Вектор давхарга дээр л объект хасаж болно</translation>
+    </message>
+    <message>
+        <source>Provider does not support deletion</source>
+        <translation type="unfinished">Нийлүүлэгч хасахыг дэмжихгүй </translation>
+    </message>
+    <message>
+        <source>Data provider does not support deleting features</source>
+        <translation type="unfinished">Өгөгдөл нийлүүлэгч объект хасахыг дэмжихгүй</translation>
+    </message>
+    <message>
+        <source>Layer not editable</source>
+        <translation type="unfinished">Давхаргыг засаж болохгүй</translation>
+    </message>
+    <message>
+        <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
+        <translation type="unfinished">Энэ давхарга засагдахгүй. Тоонд оруулах багажийн жагсаалтаас &apos;Засвар эхлэх&apos;-ийг сонго.</translation>
+    </message>
+    <message>
+        <source>Problem deleting features</source>
+        <translation type="unfinished">Объект хасахад үүсэх асуудал </translation>
+    </message>
+    <message>
+        <source>A problem occured during deletion of features</source>
+        <translation type="unfinished">Объект хасах явцад үүссэн асуудал</translation>
+    </message>
+    <message>
+        <source>Invalid scale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error Loading Plugin</source>
+        <translation type="unfinished">Өргөтгөл Ачаалахын Алдаа</translation>
+    </message>
+    <message>
+        <source>There was an error loading %1.</source>
+        <translation type="unfinished">%1-ийг ачаалахад алдаа гарав.</translation>
+    </message>
+    <message>
+        <source>No MapLayer Plugins</source>
+        <translation type="unfinished">MapLayer Plugins алга</translation>
+    </message>
+    <message>
+        <source>No MapLayer plugins in ../plugins/maplayer</source>
+        <translation type="unfinished">.. /plugins/maplayer -д MapLayer plugins алга</translation>
+    </message>
+    <message>
+        <source>No Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
+        <translation type="unfinished">../өргөтгөл-д Өргөтгөл олдсонгүй. Өргөтгөлийг шалгахын тулд src хавтсаас qgis-ийг эхлүүлэх</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Нэр</translation>
+    </message>
+    <message>
+        <source>Plugin %1 is named %2</source>
+        <translation type="unfinished">Өргөтгөл %1-ийн нэр %2 </translation>
+    </message>
+    <message>
+        <source>Plugin Information</source>
+        <translation type="unfinished">Өргөтгөл мэдээлэл</translation>
+    </message>
+    <message>
+        <source>QGis loaded the following plugin:</source>
+        <translation type="unfinished">QGIS дараахи Өргөтгөл-д ачаалагдсан:</translation>
+    </message>
+    <message>
+        <source>Name: %1</source>
+        <translation type="unfinished">Нэр: %1</translation>
+    </message>
+    <message>
+        <source>Version: %1</source>
+        <translation type="unfinished">Хувилбар: %1</translation>
+    </message>
+    <message>
+        <source>Description: %1</source>
+        <translation type="unfinished">Тайлбар: %1</translation>
+    </message>
+    <message>
+        <source>Unable to Load Plugin</source>
+        <translation type="unfinished">Өргөтгөлийг Ачаалах Боломжгүй</translation>
+    </message>
+    <message>
+        <source>QGIS was unable to load the plugin from: %1</source>
+        <translation type="unfinished">QGIS нь %1-ээс Өргөтгөлийг ачаалах боломжгүй </translation>
+    </message>
+    <message>
+        <source>There is a new version of QGIS available</source>
+        <translation type="unfinished">QGIS-ийн шинэ хувилбар гарлаа</translation>
+    </message>
+    <message>
+        <source>You are running a development version of QGIS</source>
+        <translation type="unfinished">QGIS-ийн хөгжүүлэх хувилбар ажиллаж байна</translation>
+    </message>
+    <message>
+        <source>You are running the current version of QGIS</source>
+        <translation type="unfinished">QGIS-ийн одоохи хувилбар ажиллаж байна</translation>
+    </message>
+    <message>
+        <source>Would you like more information?</source>
+        <translation type="unfinished">Та илүү мэдээлэл авмаар байна уу?</translation>
+    </message>
+    <message>
+        <source>QGIS Version Information</source>
+        <translation type="unfinished">QGIS Хувилбарын Мэдээлэл</translation>
+    </message>
+    <message>
+        <source>QGIS - Changes in SVN Since Last Release</source>
+        <translation type="unfinished">QGIS - Сүүлчийн хувилбараас хойш SVN-д хийгдсэн өөрчлөлт</translation>
+    </message>
+    <message>
+        <source>Unable to get current version information from server</source>
+        <translation type="unfinished">Серверээс хувилбарын мэдээлэл авч болохгүй нь </translation>
+    </message>
+    <message>
+        <source>Connection refused - server may be down</source>
+        <translation type="unfinished">Холбогдоогүй - сервер унтарсан байх</translation>
+    </message>
+    <message>
+        <source>QGIS server was not found</source>
+        <translation type="unfinished">QGIS сервер олдсонгүй</translation>
+    </message>
+    <message>
+        <source>Network error while communicating with server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown network socket error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to communicate with QGIS Version server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Browser Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter the name of a web browser to use (eg. konqueror).
+</source>
+        <translation type="unfinished">Ашиглах вэб хайгчийн нэрийг оруулах  (konqueror г.м.).
+</translation>
+    </message>
+    <message>
+        <source>Enter the full path if the browser is not in your PATH.
+</source>
+        <translation type="unfinished">Хэрэв Хайгч таны ЗАМД байхгүй бол байгаа замынх нь бүтэн нэрийг оруул.
+</translation>
+    </message>
+    <message>
+        <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
+        <translation type="unfinished">Тохируулга цэсийн Горим - ийг сонгон үүнийг өөрчилж болно (Тусламж Хайгч таб).</translation>
+    </message>
+    <message>
+        <source>Layer is not valid</source>
+        <translation type="unfinished">Давхарга хүчингүй</translation>
+    </message>
+    <message>
+        <source>The layer is not a valid layer and can not be added to the map</source>
+        <translation type="unfinished">Давхарга хүчингүй тул зурагт нэмж болохгүй</translation>
+    </message>
+    <message>
+        <source>Save?</source>
+        <translation type="unfinished">Хадгалах уу?</translation>
+    </message>
+    <message>
+        <source>Do you want to save the current project?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extents: </source>
+        <translation type="unfinished"> Өргөтгөл:</translation>
+    </message>
+    <message>
+        <source>Clipboard contents set to: </source>
+        <translation type="unfinished"> Гарын агуулга тохируулах: </translation>
+    </message>
+    <message>
+        <source>Open a GDAL Supported Raster Data Source</source>
+        <translation type="unfinished">GDAL Дэмжлэгтэй Растер Өгөгдлийн Эх Нээх</translation>
+    </message>
+    <message>
+        <source> is not a valid or recognized raster data source</source>
+        <translation type="unfinished"> Хүчингүй, эсвэл танигдахгүй растер өгөгдлийн эх үүсвэр</translation>
+    </message>
+    <message>
+        <source> is not a supported raster data source</source>
+        <translation type="unfinished"> растер өгөгдлийн эх үүсвэр дэмжигдэхгүй</translation>
+    </message>
+    <message>
+        <source>Unsupported Data Source</source>
+        <translation type="unfinished">Дэмжигдэхгүй өгөгдлийн эх</translation>
+    </message>
+    <message>
+        <source>New Bookmark</source>
+        <translation type="unfinished">Шинэ Хавчуулга</translation>
+    </message>
+    <message>
+        <source>Enter a name for the new bookmark:</source>
+        <translation type="unfinished">Шинэ хавчуулгын нэрийг оруулах:</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">Алдаа</translation>
+    </message>
+    <message>
+        <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
+        <translation type="unfinished">Хавчуулга үүсээгүй. Хэрэглэгчийн өгөгдлийн сан байхгүй эсвэл эвдэрсэн</translation>
+    </message>
+</context>
+<context>
+    <name>Dialog</name>
+    <message>
+        <source>QGIS Plugin Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Retrieve the list of available plugins, select one and install it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of plugin to install</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Get List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Done</source>
+        <translation type="unfinished">Хийгдсэн</translation>
+    </message>
+    <message>
+        <source>Install Plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The plugin will be installed to ~/.qgis/python/plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Нэр</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation type="unfinished">Хувилбар</translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="unfinished">Тайлбар</translation>
+    </message>
+    <message>
+        <source>Author</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MapCoordsDialogBase</name>
@@ -235,7 +594,7 @@
     </message>
     <message>
         <source>Could not snap segment. Have you set the tolerance in Settings &gt; Project Properties &gt; General?</source>
-        <translation>Хэрчмийг авсангүй. Тохируулга &gt; Төслийн шинж &gt; Ерөнхий-д зөвшөөрөгдөх хэмжээг заасан уу?</translation>
+        <translation type="obsolete">Хэрчмийг авсангүй. Тохируулга &gt; Төслийн шинж &gt; Ерөнхий-д зөвшөөрөгдөх хэмжээг заасан уу?</translation>
     </message>
     <message>
         <source>Could not snap vertex. Have you set the tolerance in Settings &gt; Project Properties &gt; General?</source>
@@ -920,15 +1279,15 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>is not a valid or recognized data source</source>
-        <translation>өгөгдлийн эх буруу, эсвэл танигдахгүй байна</translation>
+        <translation type="obsolete">өгөгдлийн эх буруу, эсвэл танигдахгүй байна</translation>
     </message>
     <message>
         <source>Invalid Data Source</source>
-        <translation>Өгөгдлийн эх буруу</translation>
+        <translation type="obsolete">Өгөгдлийн эх буруу</translation>
     </message>
     <message>
         <source>No Layer Selected</source>
-        <translation>Давхарга сонгогдоогүй</translation>
+        <translation type="obsolete">Давхарга сонгогдоогүй</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a layer in the legend</source>
@@ -936,75 +1295,75 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>No MapLayer Plugins</source>
-        <translation>MapLayer Plugins алга</translation>
+        <translation type="obsolete">MapLayer Plugins алга</translation>
     </message>
     <message>
         <source>No MapLayer plugins in ../plugins/maplayer</source>
-        <translation>.. /plugins/maplayer -д MapLayer plugins алга</translation>
+        <translation type="obsolete">.. /plugins/maplayer -д MapLayer plugins алга</translation>
     </message>
     <message>
         <source>No Plugins</source>
-        <translation>Plugins алга</translation>
+        <translation type="obsolete">Plugins алга</translation>
     </message>
     <message>
         <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
-        <translation>../өргөтгөл-д Өргөтгөл олдсонгүй. Өргөтгөлийг шалгахын тулд src хавтсаас qgis-ийг эхлүүлэх</translation>
+        <translation type="obsolete">../өргөтгөл-д Өргөтгөл олдсонгүй. Өргөтгөлийг шалгахын тулд src хавтсаас qgis-ийг эхлүүлэх</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Нэр</translation>
+        <translation type="obsolete">Нэр</translation>
     </message>
     <message>
         <source>Plugin %1 is named %2</source>
-        <translation>Өргөтгөл %1-ийн нэр %2 </translation>
+        <translation type="obsolete">Өргөтгөл %1-ийн нэр %2 </translation>
     </message>
     <message>
         <source>Plugin Information</source>
-        <translation>Өргөтгөл мэдээлэл</translation>
+        <translation type="obsolete">Өргөтгөл мэдээлэл</translation>
     </message>
     <message>
         <source>QGis loaded the following plugin:</source>
-        <translation>QGIS дараахи Өргөтгөл-д ачаалагдсан:</translation>
+        <translation type="obsolete">QGIS дараахи Өргөтгөл-д ачаалагдсан:</translation>
     </message>
     <message>
         <source>Name: %1</source>
-        <translation>Нэр: %1</translation>
+        <translation type="obsolete">Нэр: %1</translation>
     </message>
     <message>
         <source>Version: %1</source>
-        <translation>Хувилбар: %1</translation>
+        <translation type="obsolete">Хувилбар: %1</translation>
     </message>
     <message>
         <source>Description: %1</source>
-        <translation>Тайлбар: %1</translation>
+        <translation type="obsolete">Тайлбар: %1</translation>
     </message>
     <message>
         <source>Unable to Load Plugin</source>
-        <translation>Өргөтгөлийг Ачаалах Боломжгүй</translation>
+        <translation type="obsolete">Өргөтгөлийг Ачаалах Боломжгүй</translation>
     </message>
     <message>
         <source>QGIS was unable to load the plugin from: %1</source>
-        <translation>QGIS нь %1-ээс Өргөтгөлийг ачаалах боломжгүй </translation>
+        <translation type="obsolete">QGIS нь %1-ээс Өргөтгөлийг ачаалах боломжгүй </translation>
     </message>
     <message>
         <source>There is a new version of QGIS available</source>
-        <translation>QGIS-ийн шинэ хувилбар гарлаа</translation>
+        <translation type="obsolete">QGIS-ийн шинэ хувилбар гарлаа</translation>
     </message>
     <message>
         <source>You are running a development version of QGIS</source>
-        <translation>QGIS-ийн хөгжүүлэх хувилбар ажиллаж байна</translation>
+        <translation type="obsolete">QGIS-ийн хөгжүүлэх хувилбар ажиллаж байна</translation>
     </message>
     <message>
         <source>You are running the current version of QGIS</source>
-        <translation>QGIS-ийн одоохи хувилбар ажиллаж байна</translation>
+        <translation type="obsolete">QGIS-ийн одоохи хувилбар ажиллаж байна</translation>
     </message>
     <message>
         <source>Would you like more information?</source>
-        <translation>Та илүү мэдээлэл авмаар байна уу?</translation>
+        <translation type="obsolete">Та илүү мэдээлэл авмаар байна уу?</translation>
     </message>
     <message>
         <source>QGIS Version Information</source>
-        <translation>QGIS Хувилбарын Мэдээлэл</translation>
+        <translation type="obsolete">QGIS Хувилбарын Мэдээлэл</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -1016,15 +1375,15 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Unable to get current version information from server</source>
-        <translation>Серверээс хувилбарын мэдээлэл авч болохгүй нь </translation>
+        <translation type="obsolete">Серверээс хувилбарын мэдээлэл авч болохгүй нь </translation>
     </message>
     <message>
         <source>Connection refused - server may be down</source>
-        <translation>Холбогдоогүй - сервер унтарсан байх</translation>
+        <translation type="obsolete">Холбогдоогүй - сервер унтарсан байх</translation>
     </message>
     <message>
         <source>QGIS server was not found</source>
-        <translation>QGIS сервер олдсонгүй</translation>
+        <translation type="obsolete">QGIS сервер олдсонгүй</translation>
     </message>
     <message>
         <source>Error reading from server</source>
@@ -1036,51 +1395,51 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Invalid Layer</source>
-        <translation>Буруу Давхарга</translation>
+        <translation type="obsolete">Буруу Давхарга</translation>
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation>%1 алдаатай давхарга тул ачаалагдахгүй.</translation>
+        <translation type="obsolete">%1 алдаатай давхарга тул ачаалагдахгүй.</translation>
     </message>
     <message>
         <source>Error Loading Plugin</source>
-        <translation>Өргөтгөл Ачаалахын Алдаа</translation>
+        <translation type="obsolete">Өргөтгөл Ачаалахын Алдаа</translation>
     </message>
     <message>
         <source>There was an error loading %1.</source>
-        <translation>%1-ийг ачаалахад алдаа гарав.</translation>
+        <translation type="obsolete">%1-ийг ачаалахад алдаа гарав.</translation>
     </message>
     <message>
         <source>Saved map image to</source>
-        <translation>Зургийн дүрс хадгалсан </translation>
+        <translation type="obsolete">Зургийн дүрс хадгалсан </translation>
     </message>
     <message>
         <source>Choose a filename to save the map image as</source>
-        <translation>Зургийн дүрс хадгалах файлын нэр сонгох</translation>
+        <translation type="obsolete">Зургийн дүрс хадгалах файлын нэр сонгох</translation>
     </message>
     <message>
         <source>Extents: </source>
-        <translation> Өргөтгөл:</translation>
+        <translation type="obsolete"> Өргөтгөл:</translation>
     </message>
     <message>
         <source>Problem deleting features</source>
-        <translation>Объект хасахад үүсэх асуудал </translation>
+        <translation type="obsolete">Объект хасахад үүсэх асуудал </translation>
     </message>
     <message>
         <source>A problem occured during deletion of features</source>
-        <translation>Объект хасах явцад үүссэн асуудал</translation>
+        <translation type="obsolete">Объект хасах явцад үүссэн асуудал</translation>
     </message>
     <message>
         <source>No Vector Layer Selected</source>
-        <translation>Вектор Давхарга Сонгоогүй</translation>
+        <translation type="obsolete">Вектор Давхарга Сонгоогүй</translation>
     </message>
     <message>
         <source>Deleting features only works on vector layers</source>
-        <translation>Вектор давхарга дээр л объект хасаж болно</translation>
+        <translation type="obsolete">Вектор давхарга дээр л объект хасаж болно</translation>
     </message>
     <message>
         <source>To delete features, you must select a vector layer in the legend</source>
-        <translation>Объект хасахын тулд вектор давхарга сонговол зохино</translation>
+        <translation type="obsolete">Объект хасахын тулд вектор давхарга сонговол зохино</translation>
     </message>
     <message>
         <source>Quantum GIS is licensed under the GNU General Public License</source>
@@ -1128,15 +1487,15 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Choose a QGIS project file</source>
-        <translation>QGIS төслийн файл сонгох</translation>
+        <translation type="obsolete">QGIS төслийн файл сонгох</translation>
     </message>
     <message>
         <source>Unable to save project</source>
-        <translation>Төсөл хадгалагдаагүй </translation>
+        <translation type="obsolete">Төсөл хадгалагдаагүй </translation>
     </message>
     <message>
         <source>Unable to save project to </source>
-        <translation> Төслийг хадгалаагүй</translation>
+        <translation type="obsolete"> Төслийг хадгалаагүй</translation>
     </message>
     <message>
         <source>Toggle map rendering</source>
@@ -1212,46 +1571,46 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Open an OGR Supported Vector Layer</source>
-        <translation>Нээлттэй OGR-ийн дэмжлэгтэй вектор давхарга</translation>
+        <translation type="obsolete">Нээлттэй OGR-ийн дэмжлэгтэй вектор давхарга</translation>
     </message>
     <message>
         <source>QGIS Project Read Error</source>
-        <translation>QGIS Төсөл Уншихын Алдаа</translation>
+        <translation type="obsolete">QGIS Төсөл Уншихын Алдаа</translation>
     </message>
     <message>
         <source>Try to find missing layers?</source>
-        <translation>Орхигдсон давхаргыг хайх уу?</translation>
+        <translation type="obsolete">Орхигдсон давхаргыг хайх уу?</translation>
     </message>
     <message>
         <source>Open a GDAL Supported Raster Data Source</source>
-        <translation>GDAL Дэмжлэгтэй Растер Өгөгдлийн Эх Нээх</translation>
+        <translation type="obsolete">GDAL Дэмжлэгтэй Растер Өгөгдлийн Эх Нээх</translation>
     </message>
     <message>
         <source>Save As</source>
-        <translation>Нэр өгч хадгалах</translation>
+        <translation type="obsolete">Нэр өгч хадгалах</translation>
     </message>
     <message>
         <source>Choose a QGIS project file to open</source>
-        <translation>Нээх QGIS төслийн файлыг сонгох</translation>
+        <translation type="obsolete">Нээх QGIS төслийн файлыг сонгох</translation>
     </message>
     <message>
         <source>Saved project to:</source>
-        <translation>Төсөл хадгалсан:</translation>
+        <translation type="obsolete">Төсөл хадгалсан:</translation>
     </message>
     <message>
         <source>QGIS Browser Selection</source>
-        <translation>QGIS Хайгчийг Сонгох</translation>
+        <translation type="obsolete">QGIS Хайгчийг Сонгох</translation>
     </message>
     <message>
         <source>Enter the name of a web browser to use (eg. konqueror).
 </source>
-        <translation>Ашиглах вэб хайгчийн нэрийг оруулах  (konqueror г.м.).
+        <translation type="obsolete">Ашиглах вэб хайгчийн нэрийг оруулах  (konqueror г.м.).
 </translation>
     </message>
     <message>
         <source>Enter the full path if the browser is not in your PATH.
 </source>
-        <translation>Хэрэв Хайгч таны ЗАМД байхгүй бол байгаа замынх нь бүтэн нэрийг оруул.
+        <translation type="obsolete">Хэрэв Хайгч таны ЗАМД байхгүй бол байгаа замынх нь бүтэн нэрийг оруул.
 </translation>
     </message>
     <message>
@@ -1895,23 +2254,23 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Unable to open project</source>
-        <translation>Төсөл нээгдэхгүй байна</translation>
+        <translation type="obsolete">Төсөл нээгдэхгүй байна</translation>
     </message>
     <message>
         <source>Unable to save project </source>
-        <translation> Төсөл хадгалагдахгүй</translation>
+        <translation type="obsolete"> Төсөл хадгалагдахгүй</translation>
     </message>
     <message>
         <source>Choose a filename to save the QGIS project file as</source>
-        <translation>QGIS төслийн файлыг хадгалах нэр сонгох</translation>
+        <translation type="obsolete">QGIS төслийн файлыг хадгалах нэр сонгох</translation>
     </message>
     <message>
         <source>QGIS: Unable to load project</source>
-        <translation>QGIS: Төсөл ачаалагдахгүй байна</translation>
+        <translation type="obsolete">QGIS: Төсөл ачаалагдахгүй байна</translation>
     </message>
     <message>
         <source>Unable to load project </source>
-        <translation> Төсөл ачаалагдахгүй байна</translation>
+        <translation type="obsolete"> Төсөл ачаалагдахгүй байна</translation>
     </message>
     <message>
         <source>No Map Layers</source>
@@ -1923,51 +2282,51 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>QGIS - Changes in SVN Since Last Release</source>
-        <translation>QGIS - Сүүлчийн хувилбараас хойш SVN-д хийгдсэн өөрчлөлт</translation>
+        <translation type="obsolete">QGIS - Сүүлчийн хувилбараас хойш SVN-д хийгдсэн өөрчлөлт</translation>
     </message>
     <message>
         <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
-        <translation>Тохируулга цэсийн Горим - ийг сонгон үүнийг өөрчилж болно (Тусламж Хайгч таб).</translation>
+        <translation type="obsolete">Тохируулга цэсийн Горим - ийг сонгон үүнийг өөрчилж болно (Тусламж Хайгч таб).</translation>
     </message>
     <message>
         <source>Layer is not valid</source>
-        <translation>Давхарга хүчингүй</translation>
+        <translation type="obsolete">Давхарга хүчингүй</translation>
     </message>
     <message>
         <source>The layer is not a valid layer and can not be added to the map</source>
-        <translation>Давхарга хүчингүй тул зурагт нэмж болохгүй</translation>
+        <translation type="obsolete">Давхарга хүчингүй тул зурагт нэмж болохгүй</translation>
     </message>
     <message>
         <source>Save?</source>
-        <translation>Хадгалах уу?</translation>
+        <translation type="obsolete">Хадгалах уу?</translation>
     </message>
     <message>
         <source>Clipboard contents set to: </source>
-        <translation> Гарын агуулга тохируулах: </translation>
+        <translation type="obsolete"> Гарын агуулга тохируулах: </translation>
     </message>
     <message>
         <source> is not a valid or recognized raster data source</source>
-        <translation> Хүчингүй, эсвэл танигдахгүй растер өгөгдлийн эх үүсвэр</translation>
+        <translation type="obsolete"> Хүчингүй, эсвэл танигдахгүй растер өгөгдлийн эх үүсвэр</translation>
     </message>
     <message>
         <source> is not a supported raster data source</source>
-        <translation> растер өгөгдлийн эх үүсвэр дэмжигдэхгүй</translation>
+        <translation type="obsolete"> растер өгөгдлийн эх үүсвэр дэмжигдэхгүй</translation>
     </message>
     <message>
         <source>Unsupported Data Source</source>
-        <translation>Дэмжигдэхгүй өгөгдлийн эх</translation>
+        <translation type="obsolete">Дэмжигдэхгүй өгөгдлийн эх</translation>
     </message>
     <message>
         <source>Enter a name for the new bookmark:</source>
-        <translation>Шинэ хавчуулгын нэрийг оруулах:</translation>
+        <translation type="obsolete">Шинэ хавчуулгын нэрийг оруулах:</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>Алдаа</translation>
+        <translation type="obsolete">Алдаа</translation>
     </message>
     <message>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
-        <translation>Хавчуулга үүсээгүй. Хэрэглэгчийн өгөгдлийн сан байхгүй эсвэл эвдэрсэн</translation>
+        <translation type="obsolete">Хавчуулга үүсээгүй. Хэрэглэгчийн өгөгдлийн сан байхгүй эсвэл эвдэрсэн</translation>
     </message>
     <message>
         <source>Cut Features</source>
@@ -2087,39 +2446,19 @@ Compiled against Qt </source>
     </message>
     <message>
         <source>Provider does not support deletion</source>
-        <translation type="unfinished">Нийлүүлэгч хасахыг дэмжихгүй </translation>
+        <translation type="obsolete">Нийлүүлэгч хасахыг дэмжихгүй </translation>
     </message>
     <message>
         <source>Data provider does not support deleting features</source>
-        <translation type="unfinished">Өгөгдөл нийлүүлэгч объект хасахыг дэмжихгүй</translation>
+        <translation type="obsolete">Өгөгдөл нийлүүлэгч объект хасахыг дэмжихгүй</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="unfinished">Давхаргыг засаж болохгүй</translation>
+        <translation type="obsolete">Давхаргыг засаж болохгүй</translation>
     </message>
     <message>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
-        <translation type="unfinished">Энэ давхарга засагдахгүй. Тоонд оруулах багажийн жагсаалтаас &apos;Засвар эхлэх&apos;-ийг сонго.</translation>
-    </message>
-    <message>
-        <source>Invalid scale</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Network error while communicating with server</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unknown network socket error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to communicate with QGIS Version server</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Do you want to save the current project?</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Энэ давхарга засагдахгүй. Тоонд оруулах багажийн жагсаалтаас &apos;Засвар эхлэх&apos;-ийг сонго.</translation>
     </message>
     <message>
         <source>Python bindings - This is the major focus of this release it is now possible to create plugins using python. It is also possible to create GIS enabled applications written in python that use the QGIS libraries.</source>
@@ -2546,6 +2885,18 @@ p, li { white-space: pre-wrap; }
         <source>Delete column</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Zoom map to the selected rows (Ctrl-F)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom map to the selected rows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+F</source>
+        <translation type="unfinished">Ctrl+F</translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeTableDisplay</name>
@@ -2958,7 +3309,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Scale</source>
-        <translation>Хэмжээс</translation>
+        <translation type="obsolete">Хэмжээс</translation>
     </message>
     <message>
         <source>1 :</source>
@@ -3000,6 +3351,10 @@ p, li { white-space: pre-wrap; }
         <source>1:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Scale:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerPicture</name>
@@ -3028,11 +3383,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Picture</source>
-        <translation>Зураг</translation>
+        <translation type="obsolete">Зураг</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Frame</source>
@@ -3049,6 +3404,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Height</source>
         <translation>Өндөр</translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation type="unfinished">Хайх</translation>
     </message>
 </context>
 <context>
@@ -3529,22 +3888,26 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;© QGIS 2006&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
+        <source>Color</source>
+        <translation type="unfinished">Өнгө</translation>
+    </message>
+    <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message encoding="UTF-8">
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;© QGIS 2006&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;© QGIS 2006&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3752,19 +4115,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Access to relation </source>
-        <translation> Хамааралд хандах</translation>
+        <translation type="obsolete"> Хамааралд хандах</translation>
     </message>
     <message>
         <source> using sql;
 </source>
-        <translation> sql ашиглах;
+        <translation type="obsolete"> sql ашиглах;
 </translation>
     </message>
     <message>
         <source>
 has failed. The database said:
 </source>
-        <translation>
+        <translation type="obsolete">
 бүтэлгүйтэв. Өгөгдлийн сангийн мэдээлэл:
 </translation>
     </message>
@@ -3823,6 +4186,10 @@ has failed. The database said:
     <message>
         <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4The database said:%5%6</source>
         <translation>%2 дээр %1-ийн холболт бүтэлгүйтэв. Өгөгдлийн сан хаагдсан, эсвэл таны тохируулга буруу байна.%3Хэрэглэгчийн нэр, нэвтрэх үгийг шалгаад давтан хий. %4Өгөгдлийн сангийн мэдээлэл:%5%6</translation>
+    </message>
+    <message>
+        <source>double click to open PostgreSQL query builder</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3957,7 +4324,7 @@ has failed. The database said:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h1&gt;Description&lt;/h1&gt;&lt;p&gt;Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!&lt;/p&gt;&lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma or tab). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.&lt;/p&gt;</source>
+        <source>&lt;h1&gt;Description&lt;/h1&gt;&lt;p&gt;Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!&lt;/p&gt;&lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma, tab or a regular expression in Perl style). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4138,6 +4505,22 @@ has failed. The database said:
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The delimiter is taken as is</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plain characters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The delimiter is a regular expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Regular expression</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4946,6 +5329,21 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsGraduatedSymbolDialog</name>
+    <message>
+        <source>Equal Interval</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Quantiles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsGraduatedSymbolDialogBase</name>
     <message>
         <source>graduated Symbol</source>
@@ -4988,7 +5386,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Field</source>
-        <translation type="unfinished">Талбар</translation>
+        <translation type="obsolete">Талбар</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -5001,6 +5399,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>OK</source>
         <translation type="unfinished">OK</translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">Давхарга</translation>
     </message>
 </context>
 <context>
@@ -5328,7 +5730,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Field (layer)</source>
-        <translation>Талбар (давхарга)</translation>
+        <translation type="obsolete">Талбар (давхарга)</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -5365,6 +5767,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Marker size</source>
         <translation>Тэмдгийн хэмжээ</translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">Давхарга</translation>
     </message>
 </context>
 <context>
@@ -5898,6 +6304,10 @@ at line </source>
     </message>
     <message>
         <source>:&amp;nbsp;no input</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot find whereoption </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6647,6 +7057,10 @@ at line </source>
     <message>
         <source>GRASS Shell</source>
         <translation>GRASS тавиур</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">Хаах</translation>
     </message>
 </context>
 <context>
@@ -7460,6 +7874,14 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>&amp;Properties</source>
         <translation type="unfinished">&amp;Мөнчанар</translation>
     </message>
+    <message>
+        <source>bad_alloc exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLineStyleDialogBase</name>
@@ -7553,6 +7975,34 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>&lt;p&gt;No features were found within the search radius. Note that it is currently not possible to use the identify tool on unsaved features.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>(clicked coordinate)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WMS identify result for %1
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolVertexEdit</name>
+    <message>
+        <source>Snap tolerance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t show this message again</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not snap segment.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Have you set the tolerance in Settings &gt; Project Properties &gt; General?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapserverExport</name>
@@ -7570,11 +8020,6 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>MapServer map files (*.map);;All files(*.*)</source>
-        <comment>Filter list for selecting files from a dialog box</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Choose the QGIS project file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7587,6 +8032,11 @@ Do you want to overwrite it?</source>
         <source> exists. 
 Do you want to overwrite it?</source>
         <comment>a filename is prepended to this text, and appears in a dialog box</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MapServer map files (*.map);;All files (*.*)</source>
+        <comment>Filter list for selecting files from a dialog box</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7860,7 +8310,7 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;p&gt;This map is defined with a geographic coordinate system (latitude/longitude) but the map extents suggest that it is actually a projected coordinate system (e.g., Mercator). If so, the results from line or area measurements will be incorrect.&lt;/p&gt;&lt;p&gt;To fix this, explicitly set an appropriate map coordinate system using the &lt;tt&gt;Settings:Project Properties&lt;/tt&gt; menu.</source>
+        <source>&lt;p&gt;This map is defined with a geographic coordinate system (latitude/longitude) but the map extents suggests that it is actually a projected coordinate system (e.g., Mercator). If so, the results from line or area measurements will be incorrect.&lt;/p&gt;&lt;p&gt;To fix this, explicitly set an appropriate map coordinate system using the &lt;tt&gt;Settings:Project Properties&lt;/tt&gt; menu.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8696,17 +9146,17 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Not a PostgreSQL/PosGIS Layer</source>
-        <translation>PostgreSQL/PostGIS Давхарга Биш Байна</translation>
+        <translation type="obsolete">PostgreSQL/PostGIS Давхарга Биш Байна</translation>
     </message>
     <message>
         <source> is not a PostgreSQL/PosGIS layer.
 </source>
-        <translation> PostgreSQL/PostGIS давхарга биш байна.
+        <translation type="obsolete"> PostgreSQL/PostGIS давхарга биш байна.
 </translation>
     </message>
     <message>
         <source>Geoprocessing functions are only available for PostgreSQL/PosGIS Layers</source>
-        <translation>Геоболовсруулалтыг зөвхөн PostgreSQL/PostGIS Давхаргад хийж болно</translation>
+        <translation type="obsolete">Геоболовсруулалтыг зөвхөн PostgreSQL/PostGIS Давхаргад хийж болно</translation>
     </message>
     <message>
         <source>No Active Layer</source>
@@ -8715,6 +9165,19 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>You must select a layer in the legend to buffer</source>
         <translation>Муж тогтоохын тулд давхарга сонгох ёстой</translation>
+    </message>
+    <message>
+        <source>Not a PostgreSQL/PostGIS Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> is not a PostgreSQL/PostGIS layer.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8895,7 +9358,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginManager</name>
     <message>
         <source>Choose a directory</source>
-        <translation>Хавтас сонгох</translation>
+        <translation type="obsolete">Хавтас сонгох</translation>
     </message>
     <message>
         <source>No Plugins</source>
@@ -8910,7 +9373,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginManagerBase</name>
     <message>
         <source>QGIS Plugin Manger</source>
-        <translation>QGIS Өргөтгөлийн Менежер</translation>
+        <translation type="obsolete">QGIS Өргөтгөлийн Менежер</translation>
     </message>
     <message>
         <source>Name</source>
@@ -8930,7 +9393,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>To load a plugin, click the checkbox next to the plugin and click Ok</source>
@@ -8971,6 +9434,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Alt+C</source>
         <translation>Alt+C</translation>
+    </message>
+    <message>
+        <source>QGIS Plugin Manager</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9049,10 +9516,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Сэрэмжлүүлэг</translation>
     </message>
     <message>
-        <source>&lt;p&gt;A Helmert transform requires modifications in the raster layer.&lt;/p&gt;&lt;p&gt;The modifed raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p&gt;&lt;p&gt;Are you sure that this is what you want?&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Currently all modified files will be written in TIFF format.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9082,6 +9545,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not write to </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;A Helmert transform requires modifications in the raster layer.&lt;/p&gt;&lt;p&gt;The modified raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p&gt;&lt;p&gt;Are you sure that this is what you want?&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10467,6 +10934,10 @@ p, li { white-space: pre-wrap; }
         <source>The query you specified results in zero records being returned.</source>
         <translation>Таны өгсөн хүсэлтийн хариуд нэг ч бичлэг олдсонгүй.</translation>
     </message>
+    <message>
+        <source>Search query builder</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsServerSourceSelect</name>
@@ -11106,6 +11577,14 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QgsVectorAttributesModel</name>
+    <message>
+        <source>id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayer</name>
@@ -11527,6 +12006,17 @@ p, li { white-space: pre-wrap; }
     <name>QgsWFSPlugin</name>
     <message>
         <source>&amp;Add WFS layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsWFSProvider</name>
+    <message>
+        <source>unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>received %1 bytes from %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

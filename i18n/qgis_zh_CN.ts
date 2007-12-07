@@ -9,6 +9,363 @@
         <source>unable to get OGRDriverManager</source>
         <translation>无法得到OGR管理器</translation>
     </message>
+    <message>
+        <source>Open an OGR Supported Vector Layer</source>
+        <translation type="unfinished">打开一个OGR支持的矢量图层</translation>
+    </message>
+    <message>
+        <source>is not a valid or recognized data source</source>
+        <translation type="unfinished">不是有效或可识别的数据源</translation>
+    </message>
+    <message>
+        <source>Invalid Data Source</source>
+        <translation type="unfinished">无效的数据源</translation>
+    </message>
+    <message>
+        <source>Invalid Layer</source>
+        <translation type="unfinished">无效的图层</translation>
+    </message>
+    <message>
+        <source>%1 is an invalid layer and cannot be loaded.</source>
+        <translation type="unfinished">%1是一个无效的图层，无法加载。</translation>
+    </message>
+    <message>
+        <source>Save As</source>
+        <translation type="unfinished">另存为</translation>
+    </message>
+    <message>
+        <source>Choose a QGIS project file to open</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Project Read Error</source>
+        <translation type="unfinished">QGIS项目读取错误</translation>
+    </message>
+    <message>
+        <source></source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Try to find missing layers?</source>
+        <translation type="unfinished">试着寻找丢失的图层?</translation>
+    </message>
+    <message>
+        <source>Unable to open project</source>
+        <translation type="unfinished">无法打开项目</translation>
+    </message>
+    <message>
+        <source>Choose a QGIS project file</source>
+        <translation type="unfinished">选择一个QGIS项目文件</translation>
+    </message>
+    <message>
+        <source>Saved project to:</source>
+        <translation type="unfinished">项目另存为:</translation>
+    </message>
+    <message>
+        <source>Unable to save project</source>
+        <translation type="unfinished">无法保存项目</translation>
+    </message>
+    <message>
+        <source>Unable to save project to </source>
+        <translation type="unfinished">无法将项目保存为</translation>
+    </message>
+    <message>
+        <source>Unable to save project </source>
+        <translation type="unfinished">无法保存项目</translation>
+    </message>
+    <message>
+        <source>Choose a filename to save the QGIS project file as</source>
+        <translation type="unfinished">选择一个文件名来保存QGIS项目文件</translation>
+    </message>
+    <message>
+        <source>QGIS: Unable to load project</source>
+        <translation type="unfinished">QGIS: 无法加载项目</translation>
+    </message>
+    <message>
+        <source>Unable to load project </source>
+        <translation type="unfinished">无法加载项目</translation>
+    </message>
+    <message>
+        <source>Choose a filename to save the map image as</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saved map image to</source>
+        <translation type="unfinished">地图影像保存为</translation>
+    </message>
+    <message>
+        <source>No Layer Selected</source>
+        <translation type="unfinished">没有选中图层</translation>
+    </message>
+    <message>
+        <source>To delete features, you must select a vector layer in the legend</source>
+        <translation type="unfinished">要删除要素，必须在图例中选择一个矢量图层</translation>
+    </message>
+    <message>
+        <source>No Vector Layer Selected</source>
+        <translation type="unfinished">未选中矢量图层</translation>
+    </message>
+    <message>
+        <source>Deleting features only works on vector layers</source>
+        <translation type="unfinished">删除要素只对矢量图层有效</translation>
+    </message>
+    <message>
+        <source>Provider does not support deletion</source>
+        <translation type="unfinished">供应者不支持删除</translation>
+    </message>
+    <message>
+        <source>Data provider does not support deleting features</source>
+        <translation type="unfinished">数据供应者不支持删除要素</translation>
+    </message>
+    <message>
+        <source>Layer not editable</source>
+        <translation type="unfinished">图层不可编辑</translation>
+    </message>
+    <message>
+        <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Problem deleting features</source>
+        <translation type="unfinished">删除要素出错</translation>
+    </message>
+    <message>
+        <source>A problem occured during deletion of features</source>
+        <translation type="unfinished">删除要素时发生错误</translation>
+    </message>
+    <message>
+        <source>Invalid scale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error Loading Plugin</source>
+        <translation type="unfinished">加载插件出错</translation>
+    </message>
+    <message>
+        <source>There was an error loading %1.</source>
+        <translation type="unfinished">加载%1时出现错误.</translation>
+    </message>
+    <message>
+        <source>No MapLayer Plugins</source>
+        <translation type="unfinished">没有MapLayer插件</translation>
+    </message>
+    <message>
+        <source>No MapLayer plugins in ../plugins/maplayer</source>
+        <translation type="unfinished">在../plugins/maplayer下没有MapLayer插件</translation>
+    </message>
+    <message>
+        <source>No Plugins</source>
+        <translation type="unfinished">没有插件</translation>
+    </message>
+    <message>
+        <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
+        <translation type="unfinished">在../plugins中未发现任何插件。要测试插件，请从src目录启动qgis</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">名称</translation>
+    </message>
+    <message>
+        <source>Plugin %1 is named %2</source>
+        <translation type="unfinished">插件%1命名为%2</translation>
+    </message>
+    <message>
+        <source>Plugin Information</source>
+        <translation type="unfinished">插件信息</translation>
+    </message>
+    <message>
+        <source>QGis loaded the following plugin:</source>
+        <translation type="unfinished">QGis加载了下面的插件:</translation>
+    </message>
+    <message>
+        <source>Name: %1</source>
+        <translation type="unfinished">名称：%1</translation>
+    </message>
+    <message>
+        <source>Version: %1</source>
+        <translation type="unfinished">版本：%1</translation>
+    </message>
+    <message>
+        <source>Description: %1</source>
+        <translation type="unfinished">描述：%1</translation>
+    </message>
+    <message>
+        <source>Unable to Load Plugin</source>
+        <translation type="unfinished">无法加载插件</translation>
+    </message>
+    <message>
+        <source>QGIS was unable to load the plugin from: %1</source>
+        <translation type="unfinished">QGIS无法从%1加载插件</translation>
+    </message>
+    <message>
+        <source>There is a new version of QGIS available</source>
+        <translation type="unfinished">QGIS有新版本</translation>
+    </message>
+    <message>
+        <source>You are running a development version of QGIS</source>
+        <translation type="unfinished">您正在使用QGIS的开发版本</translation>
+    </message>
+    <message>
+        <source>You are running the current version of QGIS</source>
+        <translation type="unfinished">您正在使用QGIS的当前版本</translation>
+    </message>
+    <message>
+        <source>Would you like more information?</source>
+        <translation type="unfinished">您想了解更多的信息吗?</translation>
+    </message>
+    <message>
+        <source>QGIS Version Information</source>
+        <translation type="unfinished">QGIS版本信息</translation>
+    </message>
+    <message>
+        <source>QGIS - Changes in SVN Since Last Release</source>
+        <translation type="unfinished">QGIS - 自上次发布之后在SVN中又有更新</translation>
+    </message>
+    <message>
+        <source>Unable to get current version information from server</source>
+        <translation type="unfinished">无法从服务器得到当前版本的信息</translation>
+    </message>
+    <message>
+        <source>Connection refused - server may be down</source>
+        <translation type="unfinished">连接被拒绝 - 服务器可能出现故障</translation>
+    </message>
+    <message>
+        <source>QGIS server was not found</source>
+        <translation type="unfinished">未找到QGIS服务器</translation>
+    </message>
+    <message>
+        <source>Network error while communicating with server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown network socket error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to communicate with QGIS Version server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Browser Selection</source>
+        <translation type="unfinished">选择QGIS的浏览器</translation>
+    </message>
+    <message>
+        <source>Enter the name of a web browser to use (eg. konqueror).
+</source>
+        <translation type="unfinished">输入您要使用的web浏览器的名称(例如：konqueror).</translation>
+    </message>
+    <message>
+        <source>Enter the full path if the browser is not in your PATH.
+</source>
+        <translation type="unfinished">如果浏览器不在您的PATH环境变量下，请输入完整路径.</translation>
+    </message>
+    <message>
+        <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer is not valid</source>
+        <translation type="unfinished">图层无效</translation>
+    </message>
+    <message>
+        <source>The layer is not a valid layer and can not be added to the map</source>
+        <translation type="unfinished">该图层不是一个有效的图层，无法添加到地图中</translation>
+    </message>
+    <message>
+        <source>Save?</source>
+        <translation type="unfinished">保存?</translation>
+    </message>
+    <message>
+        <source>Do you want to save the current project?</source>
+        <translation type="unfinished">您是否要保存当前的项目?</translation>
+    </message>
+    <message>
+        <source>Extents: </source>
+        <translation type="unfinished">范围:</translation>
+    </message>
+    <message>
+        <source>Clipboard contents set to: </source>
+        <translation type="unfinished">剪贴板的内容设置为:</translation>
+    </message>
+    <message>
+        <source>Open a GDAL Supported Raster Data Source</source>
+        <translation type="unfinished">打开一个GDAL支持的栅格数据源</translation>
+    </message>
+    <message>
+        <source> is not a valid or recognized raster data source</source>
+        <translation type="unfinished">无效或不可识别的栅格数据源</translation>
+    </message>
+    <message>
+        <source> is not a supported raster data source</source>
+        <translation type="unfinished">不支持的栅格数据源</translation>
+    </message>
+    <message>
+        <source>Unsupported Data Source</source>
+        <translation type="unfinished">不支持的数据源</translation>
+    </message>
+    <message>
+        <source>New Bookmark</source>
+        <translation type="unfinished">新的书签</translation>
+    </message>
+    <message>
+        <source>Enter a name for the new bookmark:</source>
+        <translation type="unfinished">新书签的名称:</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">错误</translation>
+    </message>
+    <message>
+        <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
+        <translation type="unfinished">无法创建书签。您的用户数据库丢失或损坏</translation>
+    </message>
+</context>
+<context>
+    <name>Dialog</name>
+    <message>
+        <source>QGIS Plugin Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Retrieve the list of available plugins, select one and install it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of plugin to install</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Get List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Done</source>
+        <translation type="unfinished">完成</translation>
+    </message>
+    <message>
+        <source>Install Plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The plugin will be installed to ~/.qgis/python/plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">名称</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation type="unfinished">版本</translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="unfinished">描述</translation>
+    </message>
+    <message>
+        <source>Author</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>KDChartParams</name>
@@ -656,10 +1013,6 @@ support this.</source>
     </message>
     <message>
         <source>Area</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not snap segment. Have you set the tolerance in Settings &gt; Project Properties &gt; General?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1365,19 +1718,19 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>is not a valid or recognized data source</source>
-        <translation>不是有效或可识别的数据源</translation>
+        <translation type="obsolete">不是有效或可识别的数据源</translation>
     </message>
     <message>
         <source>Invalid Data Source</source>
-        <translation>无效的数据源</translation>
+        <translation type="obsolete">无效的数据源</translation>
     </message>
     <message>
         <source>Invalid Layer</source>
-        <translation>无效的图层</translation>
+        <translation type="obsolete">无效的图层</translation>
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation>%1是一个无效的图层，无法加载。</translation>
+        <translation type="obsolete">%1是一个无效的图层，无法加载。</translation>
     </message>
     <message>
         <source>No PostgreSQL Provider</source>
@@ -1393,15 +1746,15 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Choose a filename to save the map image as</source>
-        <translation>选择一个地图影像保存的名称</translation>
+        <translation type="obsolete">选择一个地图影像保存的名称</translation>
     </message>
     <message>
         <source>Saved map image to</source>
-        <translation>地图影像保存为</translation>
+        <translation type="obsolete">地图影像保存为</translation>
     </message>
     <message>
         <source>No Layer Selected</source>
-        <translation>没有选中图层</translation>
+        <translation type="obsolete">没有选中图层</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a layer in the legend</source>
@@ -1409,83 +1762,83 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Error Loading Plugin</source>
-        <translation>加载插件出错</translation>
+        <translation type="obsolete">加载插件出错</translation>
     </message>
     <message>
         <source>There was an error loading %1.</source>
-        <translation>加载%1时出现错误.</translation>
+        <translation type="obsolete">加载%1时出现错误.</translation>
     </message>
     <message>
         <source>No MapLayer Plugins</source>
-        <translation>没有MapLayer插件</translation>
+        <translation type="obsolete">没有MapLayer插件</translation>
     </message>
     <message>
         <source>No MapLayer plugins in ../plugins/maplayer</source>
-        <translation>在../plugins/maplayer下没有MapLayer插件</translation>
+        <translation type="obsolete">在../plugins/maplayer下没有MapLayer插件</translation>
     </message>
     <message>
         <source>No Plugins</source>
-        <translation>没有插件</translation>
+        <translation type="obsolete">没有插件</translation>
     </message>
     <message>
         <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
-        <translation>在../plugins中未发现任何插件。要测试插件，请从src目录启动qgis</translation>
+        <translation type="obsolete">在../plugins中未发现任何插件。要测试插件，请从src目录启动qgis</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>名称</translation>
+        <translation type="obsolete">名称</translation>
     </message>
     <message>
         <source>Plugin %1 is named %2</source>
-        <translation>插件%1命名为%2</translation>
+        <translation type="obsolete">插件%1命名为%2</translation>
     </message>
     <message>
         <source>Plugin Information</source>
-        <translation>插件信息</translation>
+        <translation type="obsolete">插件信息</translation>
     </message>
     <message>
         <source>QGis loaded the following plugin:</source>
-        <translation>QGis加载了下面的插件:</translation>
+        <translation type="obsolete">QGis加载了下面的插件:</translation>
     </message>
     <message>
         <source>Name: %1</source>
-        <translation>名称：%1</translation>
+        <translation type="obsolete">名称：%1</translation>
     </message>
     <message>
         <source>Version: %1</source>
-        <translation>版本：%1</translation>
+        <translation type="obsolete">版本：%1</translation>
     </message>
     <message>
         <source>Description: %1</source>
-        <translation>描述：%1</translation>
+        <translation type="obsolete">描述：%1</translation>
     </message>
     <message>
         <source>Unable to Load Plugin</source>
-        <translation>无法加载插件</translation>
+        <translation type="obsolete">无法加载插件</translation>
     </message>
     <message>
         <source>QGIS was unable to load the plugin from: %1</source>
-        <translation>QGIS无法从%1加载插件</translation>
+        <translation type="obsolete">QGIS无法从%1加载插件</translation>
     </message>
     <message>
         <source>There is a new version of QGIS available</source>
-        <translation>QGIS有新版本</translation>
+        <translation type="obsolete">QGIS有新版本</translation>
     </message>
     <message>
         <source>You are running a development version of QGIS</source>
-        <translation>您正在使用QGIS的开发版本</translation>
+        <translation type="obsolete">您正在使用QGIS的开发版本</translation>
     </message>
     <message>
         <source>You are running the current version of QGIS</source>
-        <translation>您正在使用QGIS的当前版本</translation>
+        <translation type="obsolete">您正在使用QGIS的当前版本</translation>
     </message>
     <message>
         <source>Would you like more information?</source>
-        <translation>您想了解更多的信息吗?</translation>
+        <translation type="obsolete">您想了解更多的信息吗?</translation>
     </message>
     <message>
         <source>QGIS Version Information</source>
-        <translation>QGIS版本信息</translation>
+        <translation type="obsolete">QGIS版本信息</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -1501,15 +1854,15 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Unable to get current version information from server</source>
-        <translation>无法从服务器得到当前版本的信息</translation>
+        <translation type="obsolete">无法从服务器得到当前版本的信息</translation>
     </message>
     <message>
         <source>Connection refused - server may be down</source>
-        <translation>连接被拒绝 - 服务器可能出现故障</translation>
+        <translation type="obsolete">连接被拒绝 - 服务器可能出现故障</translation>
     </message>
     <message>
         <source>QGIS server was not found</source>
-        <translation>未找到QGIS服务器</translation>
+        <translation type="obsolete">未找到QGIS服务器</translation>
     </message>
     <message>
         <source>Error reading from server</source>
@@ -1521,27 +1874,27 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Extents: </source>
-        <translation>范围:</translation>
+        <translation type="obsolete">范围:</translation>
     </message>
     <message>
         <source>Problem deleting features</source>
-        <translation>删除要素出错</translation>
+        <translation type="obsolete">删除要素出错</translation>
     </message>
     <message>
         <source>A problem occured during deletion of features</source>
-        <translation>删除要素时发生错误</translation>
+        <translation type="obsolete">删除要素时发生错误</translation>
     </message>
     <message>
         <source>No Vector Layer Selected</source>
-        <translation>未选中矢量图层</translation>
+        <translation type="obsolete">未选中矢量图层</translation>
     </message>
     <message>
         <source>Deleting features only works on vector layers</source>
-        <translation>删除要素只对矢量图层有效</translation>
+        <translation type="obsolete">删除要素只对矢量图层有效</translation>
     </message>
     <message>
         <source>To delete features, you must select a vector layer in the legend</source>
-        <translation>要删除要素，必须在图例中选择一个矢量图层</translation>
+        <translation type="obsolete">要删除要素，必须在图例中选择一个矢量图层</translation>
     </message>
     <message>
         <source>Quantum GIS is licensed under the GNU General Public License</source>
@@ -1637,15 +1990,15 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Choose a QGIS project file</source>
-        <translation>选择一个QGIS项目文件</translation>
+        <translation type="obsolete">选择一个QGIS项目文件</translation>
     </message>
     <message>
         <source>Unable to save project</source>
-        <translation>无法保存项目</translation>
+        <translation type="obsolete">无法保存项目</translation>
     </message>
     <message>
         <source>Unable to save project to </source>
-        <translation>无法将项目保存为</translation>
+        <translation type="obsolete">无法将项目保存为</translation>
     </message>
     <message>
         <source>Toggle map rendering</source>
@@ -1721,27 +2074,27 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Open an OGR Supported Vector Layer</source>
-        <translation>打开一个OGR支持的矢量图层</translation>
+        <translation type="obsolete">打开一个OGR支持的矢量图层</translation>
     </message>
     <message>
         <source>QGIS Project Read Error</source>
-        <translation>QGIS项目读取错误</translation>
+        <translation type="obsolete">QGIS项目读取错误</translation>
     </message>
     <message>
         <source>Try to find missing layers?</source>
-        <translation>试着寻找丢失的图层?</translation>
+        <translation type="obsolete">试着寻找丢失的图层?</translation>
     </message>
     <message>
         <source>Open a GDAL Supported Raster Data Source</source>
-        <translation>打开一个GDAL支持的栅格数据源</translation>
+        <translation type="obsolete">打开一个GDAL支持的栅格数据源</translation>
     </message>
     <message>
         <source>Save As</source>
-        <translation>另存为</translation>
+        <translation type="obsolete">另存为</translation>
     </message>
     <message>
         <source>Choose a QGIS project file to open</source>
-        <translation>选择一个QGIS项目文件并打开</translation>
+        <translation type="obsolete">选择一个QGIS项目文件并打开</translation>
     </message>
     <message>
         <source>Project file exists.</source>
@@ -1753,21 +2106,21 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Saved project to:</source>
-        <translation>项目另存为:</translation>
+        <translation type="obsolete">项目另存为:</translation>
     </message>
     <message>
         <source>QGIS Browser Selection</source>
-        <translation>选择QGIS的浏览器</translation>
+        <translation type="obsolete">选择QGIS的浏览器</translation>
     </message>
     <message>
         <source>Enter the name of a web browser to use (eg. konqueror).
 </source>
-        <translation>输入您要使用的web浏览器的名称(例如：konqueror).</translation>
+        <translation type="obsolete">输入您要使用的web浏览器的名称(例如：konqueror).</translation>
     </message>
     <message>
         <source>Enter the full path if the browser is not in your PATH.
 </source>
-        <translation>如果浏览器不在您的PATH环境变量下，请输入完整路径.</translation>
+        <translation type="obsolete">如果浏览器不在您的PATH环境变量下，请输入完整路径.</translation>
     </message>
     <message>
         <source>You can change this option later by selecting Preferences from the Settings menu.</source>
@@ -2363,23 +2716,23 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Unable to open project</source>
-        <translation>无法打开项目</translation>
+        <translation type="obsolete">无法打开项目</translation>
     </message>
     <message>
         <source>Unable to save project </source>
-        <translation>无法保存项目</translation>
+        <translation type="obsolete">无法保存项目</translation>
     </message>
     <message>
         <source>Choose a filename to save the QGIS project file as</source>
-        <translation>选择一个文件名来保存QGIS项目文件</translation>
+        <translation type="obsolete">选择一个文件名来保存QGIS项目文件</translation>
     </message>
     <message>
         <source>QGIS: Unable to load project</source>
-        <translation>QGIS: 无法加载项目</translation>
+        <translation type="obsolete">QGIS: 无法加载项目</translation>
     </message>
     <message>
         <source>Unable to load project </source>
-        <translation>无法加载项目</translation>
+        <translation type="obsolete">无法加载项目</translation>
     </message>
     <message>
         <source>No Map Layers</source>
@@ -2391,51 +2744,51 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>QGIS - Changes in SVN Since Last Release</source>
-        <translation>QGIS - 自上次发布之后在SVN中又有更新</translation>
+        <translation type="obsolete">QGIS - 自上次发布之后在SVN中又有更新</translation>
     </message>
     <message>
         <source>Layer is not valid</source>
-        <translation>图层无效</translation>
+        <translation type="obsolete">图层无效</translation>
     </message>
     <message>
         <source>The layer is not a valid layer and can not be added to the map</source>
-        <translation>该图层不是一个有效的图层，无法添加到地图中</translation>
+        <translation type="obsolete">该图层不是一个有效的图层，无法添加到地图中</translation>
     </message>
     <message>
         <source>Save?</source>
-        <translation>保存?</translation>
+        <translation type="obsolete">保存?</translation>
     </message>
     <message>
         <source>Do you want to save the current project?</source>
-        <translation type="unfinished">您是否要保存当前的项目?</translation>
+        <translation type="obsolete">您是否要保存当前的项目?</translation>
     </message>
     <message>
         <source>Clipboard contents set to: </source>
-        <translation>剪贴板的内容设置为:</translation>
+        <translation type="obsolete">剪贴板的内容设置为:</translation>
     </message>
     <message>
         <source> is not a valid or recognized raster data source</source>
-        <translation>无效或不可识别的栅格数据源</translation>
+        <translation type="obsolete">无效或不可识别的栅格数据源</translation>
     </message>
     <message>
         <source> is not a supported raster data source</source>
-        <translation>不支持的栅格数据源</translation>
+        <translation type="obsolete">不支持的栅格数据源</translation>
     </message>
     <message>
         <source>Unsupported Data Source</source>
-        <translation>不支持的数据源</translation>
+        <translation type="obsolete">不支持的数据源</translation>
     </message>
     <message>
         <source>Enter a name for the new bookmark:</source>
-        <translation>新书签的名称:</translation>
+        <translation type="obsolete">新书签的名称:</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>错误</translation>
+        <translation type="obsolete">错误</translation>
     </message>
     <message>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
-        <translation>无法创建书签。您的用户数据库丢失或损坏</translation>
+        <translation type="obsolete">无法创建书签。您的用户数据库丢失或损坏</translation>
     </message>
     <message>
         <source>Ctrl+N</source>
@@ -2617,10 +2970,6 @@ Python support will be disabled.</source>
         <translation type="unfinished">Ctrl+/</translation>
     </message>
     <message>
-        <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Ctrl+?</source>
         <comment>Help Documentation (Mac)</comment>
         <translation type="unfinished"></translation>
@@ -2672,18 +3021,6 @@ Compiled against Qt </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Network error while communicating with server</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unknown network socket error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to communicate with QGIS Version server</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>T</source>
         <comment>Show most toolbars</comment>
         <translation type="unfinished"></translation>
@@ -2715,19 +3052,15 @@ Compiled against Qt </source>
     </message>
     <message>
         <source>Provider does not support deletion</source>
-        <translation type="unfinished">供应者不支持删除</translation>
+        <translation type="obsolete">供应者不支持删除</translation>
     </message>
     <message>
         <source>Data provider does not support deleting features</source>
-        <translation type="unfinished">数据供应者不支持删除要素</translation>
+        <translation type="obsolete">数据供应者不支持删除要素</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="unfinished">图层不可编辑</translation>
-    </message>
-    <message>
-        <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">图层不可编辑</translation>
     </message>
     <message>
         <source>Toggle editing</source>
@@ -2763,10 +3096,6 @@ Compiled against Qt </source>
     </message>
     <message>
         <source>Map coordinates at mouse cursor position</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid scale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3920,6 +4249,18 @@ p, li { white-space: pre-wrap; }
         <source>Delete column</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Zoom map to the selected rows (Ctrl-F)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom map to the selected rows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+F</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeTableDisplay</name>
@@ -4455,7 +4796,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Scale</source>
-        <translation>比例</translation>
+        <translation type="obsolete">比例</translation>
     </message>
     <message>
         <source>1 :</source>
@@ -4497,6 +4838,10 @@ p, li { white-space: pre-wrap; }
         <source>1:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Scale:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerPicture</name>
@@ -4525,11 +4870,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Picture</source>
-        <translation>图片</translation>
+        <translation type="obsolete">图片</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Frame</source>
@@ -4546,6 +4891,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Height</source>
         <translation>高度</translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation type="unfinished">浏览</translation>
     </message>
 </context>
 <context>
@@ -5074,22 +5423,26 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">帮助</translation>
     </message>
     <message>
+        <source>Color</source>
+        <translation type="unfinished">颜色</translation>
+    </message>
+    <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message encoding="UTF-8">
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;© QGIS 2006&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;© QGIS 2006&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5322,20 +5675,16 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">连接到%1在%2上失败。可能是数据库当机，也可能是您的设置不正确。%3检查您的用户名和密码，然后重试。%4%5</translation>
     </message>
     <message>
-        <source>Access to relation </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source> using sql;
 </source>
-        <translation> 使用sql;
+        <translation type="obsolete"> 使用sql;
 </translation>
     </message>
     <message>
         <source>
 has failed. The database said:
 </source>
-        <translation>失败。数据库回应是:</translation>
+        <translation type="obsolete">失败。数据库回应是:</translation>
     </message>
     <message>
         <source>Type</source>
@@ -5391,6 +5740,10 @@ has failed. The database said:
     </message>
     <message>
         <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4The database said:%5%6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>double click to open PostgreSQL query builder</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5530,7 +5883,7 @@ has failed. The database said:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h1&gt;Description&lt;/h1&gt;&lt;p&gt;Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!&lt;/p&gt;&lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma or tab). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.&lt;/p&gt;</source>
+        <source>&lt;h1&gt;Description&lt;/h1&gt;&lt;p&gt;Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!&lt;/p&gt;&lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma, tab or a regular expression in Perl style). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5711,6 +6064,22 @@ has failed. The database said:
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The delimiter is taken as is</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plain characters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The delimiter is a regular expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Regular expression</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6872,6 +7241,21 @@ Factor</source>
     </message>
 </context>
 <context>
+    <name>QgsGraduatedSymbolDialog</name>
+    <message>
+        <source>Equal Interval</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Quantiles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsGraduatedSymbolDialogBase</name>
     <message>
         <source>graduated Symbol</source>
@@ -6918,7 +7302,7 @@ Factor</source>
     </message>
     <message>
         <source>Field</source>
-        <translation type="unfinished">字段</translation>
+        <translation type="obsolete">字段</translation>
     </message>
     <message>
         <source>ERROR</source>
@@ -6927,6 +7311,10 @@ Factor</source>
     <message>
         <source>OK</source>
         <translation type="unfinished">确定</translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">图层</translation>
     </message>
 </context>
 <context>
@@ -7322,7 +7710,7 @@ Factor</source>
     </message>
     <message>
         <source>Field (layer)</source>
-        <translation>字段(图层)</translation>
+        <translation type="obsolete">字段(图层)</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -7463,6 +7851,10 @@ Factor</source>
     <message>
         <source>Marker size</source>
         <translation>标记的大小</translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">图层</translation>
     </message>
 </context>
 <context>
@@ -7996,6 +8388,10 @@ at line </source>
     </message>
     <message>
         <source>:&amp;nbsp;no input</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot find whereoption </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8745,6 +9141,10 @@ at line </source>
     <message>
         <source>GRASS Shell</source>
         <translation>GRASS Shell</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">关闭</translation>
     </message>
 </context>
 <context>
@@ -9726,6 +10126,14 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>&amp;Properties</source>
         <translation type="unfinished">属性(&amp;P)</translation>
     </message>
+    <message>
+        <source>bad_alloc exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLineStyleDialogBase</name>
@@ -9881,16 +10289,39 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="obsolete">
         </translation>
     </message>
+    <message>
+        <source>(clicked coordinate)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WMS identify result for %1
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolVertexEdit</name>
+    <message>
+        <source>Snap tolerance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t show this message again</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not snap segment.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Have you set the tolerance in Settings &gt; Project Properties &gt; General?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapserverExport</name>
     <message>
         <source>Name for the map file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>MapServer map files (*.map);;All files(*.*)</source>
-        <comment>Filter list for selecting files from a dialog box</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -9923,6 +10354,11 @@ Do you want to overwrite it?</source>
     <message>
         <source> exists. 
 Do you want to overwrite it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MapServer map files (*.map);;All files (*.*)</source>
+        <comment>Filter list for selecting files from a dialog box</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10200,7 +10636,7 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;p&gt;This map is defined with a geographic coordinate system (latitude/longitude) but the map extents suggest that it is actually a projected coordinate system (e.g., Mercator). If so, the results from line or area measurements will be incorrect.&lt;/p&gt;&lt;p&gt;To fix this, explicitly set an appropriate map coordinate system using the &lt;tt&gt;Settings:Project Properties&lt;/tt&gt; menu.</source>
+        <source>&lt;p&gt;This map is defined with a geographic coordinate system (latitude/longitude) but the map extents suggests that it is actually a projected coordinate system (e.g., Mercator). If so, the results from line or area measurements will be incorrect.&lt;/p&gt;&lt;p&gt;To fix this, explicitly set an appropriate map coordinate system using the &lt;tt&gt;Settings:Project Properties&lt;/tt&gt; menu.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -11114,16 +11550,16 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Not a PostgreSQL/PosGIS Layer</source>
-        <translation>不是一个PostgreSQL/PosGIS图层</translation>
+        <translation type="obsolete">不是一个PostgreSQL/PosGIS图层</translation>
     </message>
     <message>
         <source> is not a PostgreSQL/PosGIS layer.
 </source>
-        <translation>不是一个PostgreSQL/PosGIS图层。</translation>
+        <translation type="obsolete">不是一个PostgreSQL/PosGIS图层。</translation>
     </message>
     <message>
         <source>Geoprocessing functions are only available for PostgreSQL/PosGIS Layers</source>
-        <translation>Geoprocessing功能只对PostgreSQL/PosGIS图层有效</translation>
+        <translation type="obsolete">Geoprocessing功能只对PostgreSQL/PosGIS图层有效</translation>
     </message>
     <message>
         <source>No Active Layer</source>
@@ -11135,6 +11571,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Buffer features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not a PostgreSQL/PostGIS Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> is not a PostgreSQL/PostGIS layer.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -11316,7 +11765,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginManager</name>
     <message>
         <source>Choose a directory</source>
-        <translation>选择一个目录</translation>
+        <translation type="obsolete">选择一个目录</translation>
     </message>
     <message>
         <source>No Plugins</source>
@@ -11331,7 +11780,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginManagerBase</name>
     <message>
         <source>QGIS Plugin Manger</source>
-        <translation>QGIS插件管理器</translation>
+        <translation type="obsolete">QGIS插件管理器</translation>
     </message>
     <message>
         <source>Plugin Directory</source>
@@ -11339,7 +11788,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Name</source>
@@ -11392,6 +11841,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Alt+C</source>
         <translation>Alt+C</translation>
+    </message>
+    <message>
+        <source>QGIS Plugin Manager</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11470,10 +11923,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">警告</translation>
     </message>
     <message>
-        <source>&lt;p&gt;A Helmert transform requires modifications in the raster layer.&lt;/p&gt;&lt;p&gt;The modifed raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p&gt;&lt;p&gt;Are you sure that this is what you want?&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Affine</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11503,6 +11952,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Currently all modified files will be written in TIFF format.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;A Helmert transform requires modifications in the raster layer.&lt;/p&gt;&lt;p&gt;The modified raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p&gt;&lt;p&gt;Are you sure that this is what you want?&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -12967,6 +13420,10 @@ p, li { white-space: pre-wrap; }
         <source>The query you specified results in zero records being returned.</source>
         <translation>您指定的查询没有返回任何记录。</translation>
     </message>
+    <message>
+        <source>Search query builder</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsServerSourceSelect</name>
@@ -13733,6 +14190,14 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QgsVectorAttributesModel</name>
+    <message>
+        <source>id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayer</name>
@@ -14216,6 +14681,17 @@ p, li { white-space: pre-wrap; }
     <name>QgsWFSPlugin</name>
     <message>
         <source>&amp;Add WFS layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsWFSProvider</name>
+    <message>
+        <source>unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>received %1 bytes from %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
