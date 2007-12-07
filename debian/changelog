@@ -1,3 +1,15 @@
+qgis (0.9.1) gutsy; urgency=low
+
+  * This is a bug fix release
+  * 70 Bugs closed
+  * Added locale tab to options dialog so that locale can be overridden
+  * Cleanups and additions to GRASS tools
+  * Documentation updates
+  * Improvements for building under MSVC
+  * Progress indicators for WFS and WCS 
+
+ -- Tim Sutton <tim@linfiniti.com>  Fri, 07 Dec 2007 01:36:55 -0200
+
 qgis (0.9.0) gutsy; urgency=low
 
   * Quantum GIS 0.9.0 'Ganymede' release 

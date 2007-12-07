@@ -32,7 +32,7 @@ const char* QGis::qgisVersion = VERSION;
 const char* QGis::qgisSvnVersion = QGSSVNVERSION;
   
 // Version number used for comparing versions using the "Check QGIS Version" function
-const int QGis::qgisVersionInt =900;
+const int QGis::qgisVersionInt =910;
   
 // Release name
 const char* QGis::qgisReleaseName = "Ganymede";

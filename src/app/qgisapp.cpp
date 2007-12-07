@@ -1461,6 +1461,9 @@ watsNew += "<ul><li>"
 + "<li>"
 + tr("Improvements to the GeoReferencer")
 + "</li>"
++ "<li>"
++ tr("Added locale options to options dialog.")
++ "</li>"
 //+ "<li>"
 //+ tr("")
 //+ "</li>"
