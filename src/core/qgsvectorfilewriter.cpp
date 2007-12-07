@@ -122,7 +122,9 @@ QgsVectorFileWriter::QgsVectorFileWriter(const QString& shapefileName,
         ogrType = OFTReal;
         break;
       default:
-        assert(0 && "invalid variant type!");
+        //assert(0 && "invalid variant type!");
+        mError = ErrAttributeTypeUnsupported;
+        return;
     }
 
     // create field definition
@@ -220,7 +222,8 @@ bool QgsVectorFileWriter::addFeature(QgsFeature& feature)
         poFeature->SetField(encAttrName.data(), mCodec->fromUnicode(attrValue.toString()).data());
         break;
       default:
-        assert(0 && "invalid variant type");
+        //assert(0 && "invalid variant type");
+        return false;
     }
   }
   
