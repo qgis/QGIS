@@ -1,5 +1,12 @@
 /* ChangeLog,v 1.214 2004/11/12 00:42:21 gsherman Exp */
 ------------------------------------------------------------------------------
+Version 0.9.1 'Ganymede'
+** This is a bug fix release
+** 70 Bugs closed
+** Added locale tab to options dialog so that locale can be overridden
+** Cleanups and additions to GRASS tools
+** Documentation updates
+** Improvements for building under MSVC
 Version 0.9 'Ganymede'
 ** Python bindings - This is the major focus of this release
    it is now possible to create plugins using python. It is also
