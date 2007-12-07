@@ -1,3 +1,4 @@
+SUBDIRS(plugins)
 IF (WIN32)
   SET(BINDINGS_CORE_LIB ${CMAKE_CURRENT_BINARY_DIR}/core/core.pyd)
   SET(BINDINGS_GUI_LIB  ${CMAKE_CURRENT_BINARY_DIR}/gui/gui.pyd)
@@ -98,3 +99,4 @@ ENDIF (BINDINGS_GLOBAL_INSTALL)
 
 # Step 4: install built libs to python's site packages
 INSTALL(FILES __init__.py ${CMAKE_CURRENT_BINARY_DIR}/qgisconfig.py ${BINDINGS_LIBS} DESTINATION ${SITE_PKG_PATH}/qgis)
+
