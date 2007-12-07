@@ -405,6 +405,10 @@ void QgsLegendLayerFile::saveAsShapefileGeneral(bool saveOnlySelection)
     case QgsVectorFileWriter::ErrCreateLayer:
       QMessageBox::warning(0, tr("Error"), tr("Layer creation failed"));
       break;
+    case QgsVectorFileWriter::ErrAttributeTypeUnsupported:
+      QMessageBox::warning(0, tr("Error"), 
+          tr("Layer attribute table contains unsupported datatype(s)"));
+      break;
   }
 }
 
