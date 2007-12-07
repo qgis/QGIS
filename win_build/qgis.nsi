@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Quantum GIS"
-!define PRODUCT_VERSION_NUMBER "0.9.0"
+!define PRODUCT_VERSION_NUMBER "0.9.1"
 !define PRODUCT_VERSION_NAME "Ganymede"
 !define PRODUCT_VERSION "${PRODUCT_VERSION_NUMBER} ${PRODUCT_VERSION_NAME}"
 !define PRODUCT_PUBLISHER "qgis.org"
