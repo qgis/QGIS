@@ -1,0 +1,6 @@
+TE: 
+I restored the deleted qt_xx.ts files and replaced them with the latest 
+files from Qt 4.3.3.
+QMenuBar is translated for most files. I copied "About," "Options," and 
+"Exit" to es and sv from qgis_xx.ts. I modified de "About" ("Info" to 
+"Über") and fr "Exit" ("Quitter" to "Sortir").
