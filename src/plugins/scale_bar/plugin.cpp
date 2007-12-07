@@ -162,7 +162,7 @@ void QgsScaleBarPlugin::run()
   switch (myUnits)
   {
       case 0: myPluginGui->getSpinSize()->setSuffix(tr(" metres/km")); break;
-      case 1: myPluginGui->getSpinSize()->setSuffix(tr(" feet")); break;
+      case 1: myPluginGui->getSpinSize()->setSuffix(tr(" feet/miles")); break;
       case 2: myPluginGui->getSpinSize()->setSuffix(tr(" degrees")); break;
       default: std::cout << "Error: not picked up map units - actual value = " << myUnits << std::endl;
   };
@@ -237,42 +237,61 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     QString myScaleBarUnitLabel;
     switch (myMapUnits)
     {
-    case QGis::METERS: 
-      if (myActualSize > 1000.0)
-      {
-	myScaleBarUnitLabel=tr(" km");
-	myActualSize = myActualSize/1000;
-      }
-      else if (myActualSize < 0.01)
-      {
-	myScaleBarUnitLabel=tr(" mm");
-	myActualSize = myActualSize*1000;
-      }
-      else if (myActualSize < 0.1)
-      {
-        myScaleBarUnitLabel=tr(" cm");
-        myActualSize = myActualSize*100;
-      }
-      else
-	myScaleBarUnitLabel=tr(" m"); 
-      break;
-    case QGis::FEET:
-      if (myActualSize == 1.0)
-	myScaleBarUnitLabel=tr(" foot"); 
-      else
-	myScaleBarUnitLabel=tr(" feet"); 
-      break;
-    case QGis::DEGREES:
-      if (myActualSize == 1.0)
-	myScaleBarUnitLabel=tr(" degree"); 
-      else
-	myScaleBarUnitLabel=tr(" degrees"); 
-      break;
-    case QGis::UNKNOWN:
-      myScaleBarUnitLabel=tr(" unknown");
-    default: 
-      std::cout << "Error: not picked up map units - actual value = " 
-		<< myMapUnits << std::endl;
+      case QGis::METERS: 
+        if (myActualSize > 1000.0)
+        {
+          myScaleBarUnitLabel=tr(" km");
+          myActualSize = myActualSize/1000;
+        }
+        else if (myActualSize < 0.01)
+        {
+          myScaleBarUnitLabel=tr(" mm");
+          myActualSize = myActualSize*1000;
+        }
+        else if (myActualSize < 0.1)
+        {
+          myScaleBarUnitLabel=tr(" cm");
+          myActualSize = myActualSize*100;
+        }
+        else
+          myScaleBarUnitLabel=tr(" m"); 
+        break;
+      case QGis::FEET:
+        if (myActualSize > 5280.0) //5280 feet to the mile
+        {
+          myScaleBarUnitLabel=tr(" miles");
+          myActualSize = myActualSize/5280;
+        }
+        else if (myActualSize == 5280.0) //5280 feet to the mile
+        {
+          myScaleBarUnitLabel=tr(" mile");
+          myActualSize = myActualSize/5280;
+        }
+        else if (myActualSize < 1)
+        {
+          myScaleBarUnitLabel=tr(" inches");
+          myActualSize = myActualSize*12;
+        }
+        else if (myActualSize == 1.0)
+        {
+          myScaleBarUnitLabel=tr(" foot"); 
+        }
+        else
+        {
+          myScaleBarUnitLabel=tr(" feet"); 
+        }
+        break;
+      case QGis::DEGREES:
+        if (myActualSize == 1.0)
+          myScaleBarUnitLabel=tr(" degree"); 
+        else
+          myScaleBarUnitLabel=tr(" degrees"); 
+        break;
+      case QGis::UNKNOWN:
+        myScaleBarUnitLabel=tr(" unknown");
+      default: 
+        std::cout << "Error: not picked up map units - actual value = " 
+          << myMapUnits << std::endl;
     };
 
     //Set font and calculate width of unit label
