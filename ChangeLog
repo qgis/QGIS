@@ -1,10 +1,12 @@
-/* ChangeLog,v 1.214 2004/11/12 00:42:21 gsherman Exp */
+/* Id */
 ------------------------------------------------------------------------------
 Version 0.9.1 'Ganymede'
 ** This is a bug fix release
 ** 70 Bugs closed
 ** Added locale tab to options dialog so that locale can be overridden
 ** Cleanups and additions to GRASS tools
+** Python Plugin Installer for installing plugins from the PyQGIS
+   repository
 ** Documentation updates
 ** Improvements for building under MSVC
 Version 0.9 'Ganymede'
