@@ -9,6 +9,363 @@
         <source>unable to get OGRDriverManager</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Open an OGR Supported Vector Layer</source>
+        <translation type="unfinished">Mở một lớp vector được OGR hỗ trợ</translation>
+    </message>
+    <message>
+        <source>is not a valid or recognized data source</source>
+        <translation type="unfinished">không phải là nguồn dữ liệu hợp lệ hoặc không nhận diện được</translation>
+    </message>
+    <message>
+        <source>Invalid Data Source</source>
+        <translation type="unfinished">Nguồn Dữ liệu Không hợp lệ</translation>
+    </message>
+    <message>
+        <source>Invalid Layer</source>
+        <translation type="unfinished">Lớp không hợp lệ</translation>
+    </message>
+    <message>
+        <source>%1 is an invalid layer and cannot be loaded.</source>
+        <translation type="unfinished">%1 là một lớp không hợp lệ và không thể nạp được.</translation>
+    </message>
+    <message>
+        <source>Save As</source>
+        <translation type="unfinished">Lưu thành</translation>
+    </message>
+    <message>
+        <source>Choose a QGIS project file to open</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Project Read Error</source>
+        <translation type="unfinished">Lỗi đọc tập tin dự án QGIS</translation>
+    </message>
+    <message>
+        <source></source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Try to find missing layers?</source>
+        <translation type="unfinished">Cố gắng tìm các lớp bị mất?</translation>
+    </message>
+    <message>
+        <source>Unable to open project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a QGIS project file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saved project to:</source>
+        <translation type="unfinished">Lưu dự án vào:</translation>
+    </message>
+    <message>
+        <source>Unable to save project</source>
+        <translation type="unfinished">Không thể lưu dự án</translation>
+    </message>
+    <message>
+        <source>Unable to save project to </source>
+        <translation type="unfinished">Không thể lưu dự án vào</translation>
+    </message>
+    <message>
+        <source>Unable to save project </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a filename to save the QGIS project file as</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS: Unable to load project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to load project </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a filename to save the map image as</source>
+        <translation type="unfinished">Chọn tên tập tin để lưu ảnh bản đồ thành</translation>
+    </message>
+    <message>
+        <source>Saved map image to</source>
+        <translation type="unfinished">Lưu ảnh bản đồ vào</translation>
+    </message>
+    <message>
+        <source>No Layer Selected</source>
+        <translation type="unfinished">Không có lớp nào được chọn</translation>
+    </message>
+    <message>
+        <source>To delete features, you must select a vector layer in the legend</source>
+        <translation type="unfinished">Để xóa các đối tượng, bạn phải chọn một lớp vector trong phần chú giải</translation>
+    </message>
+    <message>
+        <source>No Vector Layer Selected</source>
+        <translation type="unfinished">Không có lớp vector nào được chọn</translation>
+    </message>
+    <message>
+        <source>Deleting features only works on vector layers</source>
+        <translation type="unfinished">Việc xóa các đối tượng chỉ áp dụng được đối với các lớp bản đồ vector</translation>
+    </message>
+    <message>
+        <source>Provider does not support deletion</source>
+        <translation type="unfinished">Trình cung cấp dữ liệu không hỗ trợ việc xóa</translation>
+    </message>
+    <message>
+        <source>Data provider does not support deleting features</source>
+        <translation type="unfinished">Trình cung cấp dữ liệu không hỗ trợ việc xóa các đối tượng</translation>
+    </message>
+    <message>
+        <source>Layer not editable</source>
+        <translation type="unfinished">Lớp không chỉnh sửa được</translation>
+    </message>
+    <message>
+        <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Problem deleting features</source>
+        <translation type="unfinished">Trục trặc khi đang xóa các đối tượng</translation>
+    </message>
+    <message>
+        <source>A problem occured during deletion of features</source>
+        <translation type="unfinished">Có trục trặc xảy ra trong khi xóa các đối tượng</translation>
+    </message>
+    <message>
+        <source>Invalid scale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error Loading Plugin</source>
+        <translation type="unfinished">Lỗi đang nạp plugin</translation>
+    </message>
+    <message>
+        <source>There was an error loading %1.</source>
+        <translation type="unfinished">Có lỗi khi đang nạp %1.</translation>
+    </message>
+    <message>
+        <source>No MapLayer Plugins</source>
+        <translation type="unfinished">Không có plugin MapLayer (Lớp Bản đồ)</translation>
+    </message>
+    <message>
+        <source>No MapLayer plugins in ../plugins/maplayer</source>
+        <translation type="unfinished">Không có plugin MapLayer (lớp bản đồ) trong ../plugins/maplayer</translation>
+    </message>
+    <message>
+        <source>No Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
+        <translation type="unfinished">Không tìm thấy các plugin trong ../plugins. Để kiểm tra plugin, khởi động qgis từ thư mục src</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Tên</translation>
+    </message>
+    <message>
+        <source>Plugin %1 is named %2</source>
+        <translation type="unfinished">Plugin %1 được đặt tên là %2</translation>
+    </message>
+    <message>
+        <source>Plugin Information</source>
+        <translation type="unfinished">Thông tin về plugin</translation>
+    </message>
+    <message>
+        <source>QGis loaded the following plugin:</source>
+        <translation type="unfinished">QGis đã nạp plugin sau:</translation>
+    </message>
+    <message>
+        <source>Name: %1</source>
+        <translation type="unfinished">Tên: %1</translation>
+    </message>
+    <message>
+        <source>Version: %1</source>
+        <translation type="unfinished">Phiên bản: %1</translation>
+    </message>
+    <message>
+        <source>Description: %1</source>
+        <translation type="unfinished">Mô tả: %1</translation>
+    </message>
+    <message>
+        <source>Unable to Load Plugin</source>
+        <translation type="unfinished">Không thể nạp plugin</translation>
+    </message>
+    <message>
+        <source>QGIS was unable to load the plugin from: %1</source>
+        <translation type="unfinished">QGIS không thể nạp plugin từ : %1</translation>
+    </message>
+    <message>
+        <source>There is a new version of QGIS available</source>
+        <translation type="unfinished">Đã có phiên bản mới của QGIS</translation>
+    </message>
+    <message>
+        <source>You are running a development version of QGIS</source>
+        <translation type="unfinished">Bạn đang dùng phiên bản QGIS &quot;phát triển&quot;</translation>
+    </message>
+    <message>
+        <source>You are running the current version of QGIS</source>
+        <translation type="unfinished">Bạn đang dùng phiên bản QGIS hiện tại</translation>
+    </message>
+    <message>
+        <source>Would you like more information?</source>
+        <translation type="unfinished">Bạn có muốn biết thêm thông tin không?</translation>
+    </message>
+    <message>
+        <source>QGIS Version Information</source>
+        <translation type="unfinished">Thông tin về phiên bản QGIS</translation>
+    </message>
+    <message>
+        <source>QGIS - Changes in SVN Since Last Release</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to get current version information from server</source>
+        <translation type="unfinished">Không thể lấy thông tin về phiên bản hiện tại từ Server</translation>
+    </message>
+    <message>
+        <source>Connection refused - server may be down</source>
+        <translation type="unfinished">Liên kết bị từ chối - server có thể bị hỏng</translation>
+    </message>
+    <message>
+        <source>QGIS server was not found</source>
+        <translation type="unfinished">Không tìm thấy server của QGIS</translation>
+    </message>
+    <message>
+        <source>Network error while communicating with server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown network socket error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to communicate with QGIS Version server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Browser Selection</source>
+        <translation type="unfinished">Chọn trình Duyệt QGIS</translation>
+    </message>
+    <message>
+        <source>Enter the name of a web browser to use (eg. konqueror).
+</source>
+        <translation type="unfinished">Nhập tên trình duyệt web bạn muốn dùng (ví dụ konqueror).</translation>
+    </message>
+    <message>
+        <source>Enter the full path if the browser is not in your PATH.
+</source>
+        <translation type="unfinished">Nhập đường dẫn đầy đủ nếu trình duyệt không nằm trong PATH (đường dẫn) của bạn.</translation>
+    </message>
+    <message>
+        <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer is not valid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The layer is not a valid layer and can not be added to the map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to save the current project?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extents: </source>
+        <translation type="unfinished">Phạm vi:</translation>
+    </message>
+    <message>
+        <source>Clipboard contents set to: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open a GDAL Supported Raster Data Source</source>
+        <translation type="unfinished">Mở một nguồn dữ liệu raster được GDAL hỗ trợ</translation>
+    </message>
+    <message>
+        <source> is not a valid or recognized raster data source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> is not a supported raster data source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unsupported Data Source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New Bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter a name for the new bookmark:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">Lỗi</translation>
+    </message>
+    <message>
+        <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Dialog</name>
+    <message>
+        <source>QGIS Plugin Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Retrieve the list of available plugins, select one and install it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of plugin to install</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Get List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Done</source>
+        <translation type="unfinished">Xong</translation>
+    </message>
+    <message>
+        <source>Install Plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The plugin will be installed to ~/.qgis/python/plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Tên</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation type="unfinished">Phiên bản</translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="unfinished">Mô tả</translation>
+    </message>
+    <message>
+        <source>Author</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>KDChartParams</name>
@@ -871,10 +1228,6 @@ Hiện tại QGIS không hỗ trợ điều này.</translation>
         <translation type="obsolete">Để chọn đối tượng, bạn phải chọn một lớp kích hoạt bằng cách nhắp chuột vào tên nó trong phần chú giải</translation>
     </message>
     <message>
-        <source>Could not snap segment. Have you set the tolerance in Settings &gt; Project Properties &gt; General?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Could not snap vertex. Have you set the tolerance in Settings &gt; Project Properties &gt; General?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1641,11 +1994,11 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>is not a valid or recognized data source</source>
-        <translation>không phải là nguồn dữ liệu hợp lệ hoặc không nhận diện được</translation>
+        <translation type="obsolete">không phải là nguồn dữ liệu hợp lệ hoặc không nhận diện được</translation>
     </message>
     <message>
         <source>Invalid Data Source</source>
-        <translation>Nguồn Dữ liệu Không hợp lệ</translation>
+        <translation type="obsolete">Nguồn Dữ liệu Không hợp lệ</translation>
     </message>
     <message>
         <source>No OGR Provider</source>
@@ -1677,7 +2030,7 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>No Layer Selected</source>
-        <translation>Không có lớp nào được chọn</translation>
+        <translation type="obsolete">Không có lớp nào được chọn</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a layer in the legend</source>
@@ -1685,75 +2038,75 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>No MapLayer Plugins</source>
-        <translation>Không có plugin MapLayer (Lớp Bản đồ)</translation>
+        <translation type="obsolete">Không có plugin MapLayer (Lớp Bản đồ)</translation>
     </message>
     <message>
         <source>No MapLayer plugins in ../plugins/maplayer</source>
-        <translation>Không có plugin MapLayer (lớp bản đồ) trong ../plugins/maplayer</translation>
+        <translation type="obsolete">Không có plugin MapLayer (lớp bản đồ) trong ../plugins/maplayer</translation>
     </message>
     <message>
         <source>No Plugins</source>
-        <translation>Không có các plugin</translation>
+        <translation type="obsolete">Không có các plugin</translation>
     </message>
     <message>
         <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
-        <translation>Không tìm thấy các plugin trong ../plugins. Để kiểm tra plugin, khởi động qgis từ thư mục src</translation>
+        <translation type="obsolete">Không tìm thấy các plugin trong ../plugins. Để kiểm tra plugin, khởi động qgis từ thư mục src</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Tên</translation>
+        <translation type="obsolete">Tên</translation>
     </message>
     <message>
         <source>Plugin %1 is named %2</source>
-        <translation>Plugin %1 được đặt tên là %2</translation>
+        <translation type="obsolete">Plugin %1 được đặt tên là %2</translation>
     </message>
     <message>
         <source>Plugin Information</source>
-        <translation>Thông tin về plugin</translation>
+        <translation type="obsolete">Thông tin về plugin</translation>
     </message>
     <message>
         <source>QGis loaded the following plugin:</source>
-        <translation>QGis đã nạp plugin sau:</translation>
+        <translation type="obsolete">QGis đã nạp plugin sau:</translation>
     </message>
     <message>
         <source>Name: %1</source>
-        <translation>Tên: %1</translation>
+        <translation type="obsolete">Tên: %1</translation>
     </message>
     <message>
         <source>Version: %1</source>
-        <translation>Phiên bản: %1</translation>
+        <translation type="obsolete">Phiên bản: %1</translation>
     </message>
     <message>
         <source>Description: %1</source>
-        <translation>Mô tả: %1</translation>
+        <translation type="obsolete">Mô tả: %1</translation>
     </message>
     <message>
         <source>Unable to Load Plugin</source>
-        <translation>Không thể nạp plugin</translation>
+        <translation type="obsolete">Không thể nạp plugin</translation>
     </message>
     <message>
         <source>QGIS was unable to load the plugin from: %1</source>
-        <translation>QGIS không thể nạp plugin từ : %1</translation>
+        <translation type="obsolete">QGIS không thể nạp plugin từ : %1</translation>
     </message>
     <message>
         <source>There is a new version of QGIS available</source>
-        <translation>Đã có phiên bản mới của QGIS</translation>
+        <translation type="obsolete">Đã có phiên bản mới của QGIS</translation>
     </message>
     <message>
         <source>You are running a development version of QGIS</source>
-        <translation>Bạn đang dùng phiên bản QGIS &quot;phát triển&quot;</translation>
+        <translation type="obsolete">Bạn đang dùng phiên bản QGIS &quot;phát triển&quot;</translation>
     </message>
     <message>
         <source>You are running the current version of QGIS</source>
-        <translation>Bạn đang dùng phiên bản QGIS hiện tại</translation>
+        <translation type="obsolete">Bạn đang dùng phiên bản QGIS hiện tại</translation>
     </message>
     <message>
         <source>Would you like more information?</source>
-        <translation>Bạn có muốn biết thêm thông tin không?</translation>
+        <translation type="obsolete">Bạn có muốn biết thêm thông tin không?</translation>
     </message>
     <message>
         <source>QGIS Version Information</source>
-        <translation>Thông tin về phiên bản QGIS</translation>
+        <translation type="obsolete">Thông tin về phiên bản QGIS</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -1769,15 +2122,15 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Unable to get current version information from server</source>
-        <translation>Không thể lấy thông tin về phiên bản hiện tại từ Server</translation>
+        <translation type="obsolete">Không thể lấy thông tin về phiên bản hiện tại từ Server</translation>
     </message>
     <message>
         <source>Connection refused - server may be down</source>
-        <translation>Liên kết bị từ chối - server có thể bị hỏng</translation>
+        <translation type="obsolete">Liên kết bị từ chối - server có thể bị hỏng</translation>
     </message>
     <message>
         <source>QGIS server was not found</source>
-        <translation>Không tìm thấy server của QGIS</translation>
+        <translation type="obsolete">Không tìm thấy server của QGIS</translation>
     </message>
     <message>
         <source>Error reading from server</source>
@@ -1801,19 +2154,19 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Invalid Layer</source>
-        <translation>Lớp không hợp lệ</translation>
+        <translation type="obsolete">Lớp không hợp lệ</translation>
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation>%1 là một lớp không hợp lệ và không thể nạp được.</translation>
+        <translation type="obsolete">%1 là một lớp không hợp lệ và không thể nạp được.</translation>
     </message>
     <message>
         <source>Error Loading Plugin</source>
-        <translation>Lỗi đang nạp plugin</translation>
+        <translation type="obsolete">Lỗi đang nạp plugin</translation>
     </message>
     <message>
         <source>There was an error loading %1.</source>
-        <translation>Có lỗi khi đang nạp %1.</translation>
+        <translation type="obsolete">Có lỗi khi đang nạp %1.</translation>
     </message>
     <message>
         <source>open files dialog</source>
@@ -1821,7 +2174,7 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Saved map image to</source>
-        <translation>Lưu ảnh bản đồ vào</translation>
+        <translation type="obsolete">Lưu ảnh bản đồ vào</translation>
     </message>
     <message>
         <source>QGIS - Changes in CVS Since Last Release</source>
@@ -1829,11 +2182,11 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Choose a filename to save the map image as</source>
-        <translation>Chọn tên tập tin để lưu ảnh bản đồ thành</translation>
+        <translation type="obsolete">Chọn tên tập tin để lưu ảnh bản đồ thành</translation>
     </message>
     <message>
         <source>Extents: </source>
-        <translation>Phạm vi:</translation>
+        <translation type="obsolete">Phạm vi:</translation>
     </message>
     <message>
         <source>Web Page: http://qgis.org</source>
@@ -1841,23 +2194,23 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Problem deleting features</source>
-        <translation>Trục trặc khi đang xóa các đối tượng</translation>
+        <translation type="obsolete">Trục trặc khi đang xóa các đối tượng</translation>
     </message>
     <message>
         <source>A problem occured during deletion of features</source>
-        <translation>Có trục trặc xảy ra trong khi xóa các đối tượng</translation>
+        <translation type="obsolete">Có trục trặc xảy ra trong khi xóa các đối tượng</translation>
     </message>
     <message>
         <source>No Vector Layer Selected</source>
-        <translation>Không có lớp vector nào được chọn</translation>
+        <translation type="obsolete">Không có lớp vector nào được chọn</translation>
     </message>
     <message>
         <source>Deleting features only works on vector layers</source>
-        <translation>Việc xóa các đối tượng chỉ áp dụng được đối với các lớp bản đồ vector</translation>
+        <translation type="obsolete">Việc xóa các đối tượng chỉ áp dụng được đối với các lớp bản đồ vector</translation>
     </message>
     <message>
         <source>To delete features, you must select a vector layer in the legend</source>
-        <translation>Để xóa các đối tượng, bạn phải chọn một lớp vector trong phần chú giải</translation>
+        <translation type="obsolete">Để xóa các đối tượng, bạn phải chọn một lớp vector trong phần chú giải</translation>
     </message>
     <message>
         <source>Quantum GIS is licensed under the GNU General Public License</source>
@@ -2001,15 +2354,15 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Choose a QGIS project file</source>
-        <translation>Hãy chọn một tập tin dự án QGIS</translation>
+        <translation type="obsolete">Hãy chọn một tập tin dự án QGIS</translation>
     </message>
     <message>
         <source>Unable to save project</source>
-        <translation>Không thể lưu dự án</translation>
+        <translation type="obsolete">Không thể lưu dự án</translation>
     </message>
     <message>
         <source>Unable to save project to </source>
-        <translation>Không thể lưu dự án vào</translation>
+        <translation type="obsolete">Không thể lưu dự án vào</translation>
     </message>
     <message>
         <source>Toggle map rendering</source>
@@ -2085,27 +2438,27 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Open an OGR Supported Vector Layer</source>
-        <translation>Mở một lớp vector được OGR hỗ trợ</translation>
+        <translation type="obsolete">Mở một lớp vector được OGR hỗ trợ</translation>
     </message>
     <message>
         <source>QGIS Project Read Error</source>
-        <translation>Lỗi đọc tập tin dự án QGIS</translation>
+        <translation type="obsolete">Lỗi đọc tập tin dự án QGIS</translation>
     </message>
     <message>
         <source>Try to find missing layers?</source>
-        <translation>Cố gắng tìm các lớp bị mất?</translation>
+        <translation type="obsolete">Cố gắng tìm các lớp bị mất?</translation>
     </message>
     <message>
         <source>Open a GDAL Supported Raster Data Source</source>
-        <translation>Mở một nguồn dữ liệu raster được GDAL hỗ trợ</translation>
+        <translation type="obsolete">Mở một nguồn dữ liệu raster được GDAL hỗ trợ</translation>
     </message>
     <message>
         <source>Save As</source>
-        <translation>Lưu thành</translation>
+        <translation type="obsolete">Lưu thành</translation>
     </message>
     <message>
         <source>Choose a QGIS project file to open</source>
-        <translation>Chọn mở một tập tin dự án QGIS</translation>
+        <translation type="obsolete">Chọn mở một tập tin dự án QGIS</translation>
     </message>
     <message>
         <source>Project file exists.</source>
@@ -2117,21 +2470,21 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Saved project to:</source>
-        <translation>Lưu dự án vào:</translation>
+        <translation type="obsolete">Lưu dự án vào:</translation>
     </message>
     <message>
         <source>QGIS Browser Selection</source>
-        <translation>Chọn trình Duyệt QGIS</translation>
+        <translation type="obsolete">Chọn trình Duyệt QGIS</translation>
     </message>
     <message>
         <source>Enter the name of a web browser to use (eg. konqueror).
 </source>
-        <translation>Nhập tên trình duyệt web bạn muốn dùng (ví dụ konqueror).</translation>
+        <translation type="obsolete">Nhập tên trình duyệt web bạn muốn dùng (ví dụ konqueror).</translation>
     </message>
     <message>
         <source>Enter the full path if the browser is not in your PATH.
 </source>
-        <translation>Nhập đường dẫn đầy đủ nếu trình duyệt không nằm trong PATH (đường dẫn) của bạn.</translation>
+        <translation type="obsolete">Nhập đường dẫn đầy đủ nếu trình duyệt không nằm trong PATH (đường dẫn) của bạn.</translation>
     </message>
     <message>
         <source>You can change this option later by selecting Preferences from the Settings menu.</source>
@@ -2808,84 +3161,8 @@ Compiled against Qt </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Unable to open project</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to save project </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose a filename to save the QGIS project file as</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QGIS: Unable to load project</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to load project </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QGIS - Changes in SVN Since Last Release</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Layer is not valid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The layer is not a valid layer and can not be added to the map</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Clipboard contents set to: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> is not a valid or recognized raster data source</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> is not a supported raster data source</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unsupported Data Source</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enter a name for the new bookmark:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Error</source>
-        <translation type="unfinished">Lỗi</translation>
-    </message>
-    <message>
-        <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Network error while communicating with server</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unknown network socket error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to communicate with QGIS Version server</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Lỗi</translation>
     </message>
     <message>
         <source>T</source>
@@ -2919,19 +3196,15 @@ Compiled against Qt </source>
     </message>
     <message>
         <source>Provider does not support deletion</source>
-        <translation type="unfinished">Trình cung cấp dữ liệu không hỗ trợ việc xóa</translation>
+        <translation type="obsolete">Trình cung cấp dữ liệu không hỗ trợ việc xóa</translation>
     </message>
     <message>
         <source>Data provider does not support deleting features</source>
-        <translation type="unfinished">Trình cung cấp dữ liệu không hỗ trợ việc xóa các đối tượng</translation>
+        <translation type="obsolete">Trình cung cấp dữ liệu không hỗ trợ việc xóa các đối tượng</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="unfinished">Lớp không chỉnh sửa được</translation>
-    </message>
-    <message>
-        <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Lớp không chỉnh sửa được</translation>
     </message>
     <message>
         <source>Toggle editing</source>
@@ -2967,14 +3240,6 @@ Compiled against Qt </source>
     </message>
     <message>
         <source>Map coordinates at mouse cursor position</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid scale</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Do you want to save the current project?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4208,6 +4473,18 @@ p, li { white-space: pre-wrap; }
         <source>Delete column</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Zoom map to the selected rows (Ctrl-F)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom map to the selected rows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+F</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeTableDisplay</name>
@@ -4722,7 +4999,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Scale</source>
-        <translation>Tỷ lệ</translation>
+        <translation type="obsolete">Tỷ lệ</translation>
     </message>
     <message>
         <source>1 :</source>
@@ -4764,6 +5041,10 @@ p, li { white-space: pre-wrap; }
         <source>1:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Scale:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerPicture</name>
@@ -4791,12 +5072,8 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Picture</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Frame</source>
@@ -4813,6 +5090,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Height</source>
         <translation type="unfinished">Chiều cao</translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation type="unfinished">Duyệt</translation>
     </message>
 </context>
 <context>
@@ -5328,22 +5609,26 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Alt+C</translation>
     </message>
     <message>
+        <source>Color</source>
+        <translation type="unfinished">Màu</translation>
+    </message>
+    <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message encoding="UTF-8">
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;© QGIS 2006&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;© QGIS 2006&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5581,18 +5866,18 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Access to relation </source>
-        <translation>Truy nhập vào liên hệ</translation>
+        <translation type="obsolete">Truy nhập vào liên hệ</translation>
     </message>
     <message>
         <source> using sql;
 </source>
-        <translation>dùng sql;</translation>
+        <translation type="obsolete">dùng sql;</translation>
     </message>
     <message>
         <source>
 has failed. The database said:
 </source>
-        <translation>đã thất bại. CSDL cho biết:</translation>
+        <translation type="obsolete">đã thất bại. CSDL cho biết:</translation>
     </message>
     <message>
         <source>Type</source>
@@ -5648,6 +5933,10 @@ has failed. The database said:
     </message>
     <message>
         <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4The database said:%5%6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>double click to open PostgreSQL query builder</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5799,7 +6088,7 @@ has failed. The database said:
         <translation type="unfinished">Verarbeite</translation>
     </message>
     <message>
-        <source>&lt;h1&gt;Description&lt;/h1&gt;&lt;p&gt;Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!&lt;/p&gt;&lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma or tab). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.&lt;/p&gt;</source>
+        <source>&lt;h1&gt;Description&lt;/h1&gt;&lt;p&gt;Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!&lt;/p&gt;&lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma, tab or a regular expression in Perl style). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6010,6 +6299,22 @@ has failed. The database said:
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The delimiter is taken as is</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plain characters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The delimiter is a regular expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Regular expression</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7348,6 +7653,21 @@ Muster</translation>
     </message>
 </context>
 <context>
+    <name>QgsGraduatedSymbolDialog</name>
+    <message>
+        <source>Equal Interval</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Quantiles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsGraduatedSymbolDialogBase</name>
     <message>
         <source>graduated Symbol</source>
@@ -7393,16 +7713,16 @@ Muster</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>ERROR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>OK</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">Lớp</translation>
     </message>
 </context>
 <context>
@@ -7798,7 +8118,7 @@ Muster</translation>
     </message>
     <message>
         <source>Field (layer)</source>
-        <translation>Trường (lớp)</translation>
+        <translation type="obsolete">Trường (lớp)</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -7943,6 +8263,10 @@ Muster</translation>
     <message>
         <source>Marker size</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">Lớp</translation>
     </message>
 </context>
 <context>
@@ -8476,6 +8800,10 @@ at line </source>
     </message>
     <message>
         <source>:&amp;nbsp;no input</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot find whereoption </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9228,6 +9556,10 @@ at line </source>
     <name>QgsGrassShellBase</name>
     <message>
         <source>GRASS Shell</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10180,6 +10512,14 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>&amp;Properties</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>bad_alloc exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLineStyleDialogBase</name>
@@ -10331,16 +10671,39 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="obsolete">
         </translation>
     </message>
+    <message>
+        <source>(clicked coordinate)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WMS identify result for %1
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolVertexEdit</name>
+    <message>
+        <source>Snap tolerance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t show this message again</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not snap segment.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Have you set the tolerance in Settings &gt; Project Properties &gt; General?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapserverExport</name>
     <message>
         <source>Name for the map file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>MapServer map files (*.map);;All files(*.*)</source>
-        <comment>Filter list for selecting files from a dialog box</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -10365,6 +10728,11 @@ Do you want to overwrite it?</source>
     <message>
         <source> exists. 
 Do you want to overwrite it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MapServer map files (*.map);;All files (*.*)</source>
+        <comment>Filter list for selecting files from a dialog box</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10630,7 +10998,7 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;p&gt;This map is defined with a geographic coordinate system (latitude/longitude) but the map extents suggest that it is actually a projected coordinate system (e.g., Mercator). If so, the results from line or area measurements will be incorrect.&lt;/p&gt;&lt;p&gt;To fix this, explicitly set an appropriate map coordinate system using the &lt;tt&gt;Settings:Project Properties&lt;/tt&gt; menu.</source>
+        <source>&lt;p&gt;This map is defined with a geographic coordinate system (latitude/longitude) but the map extents suggests that it is actually a projected coordinate system (e.g., Mercator). If so, the results from line or area measurements will be incorrect.&lt;/p&gt;&lt;p&gt;To fix this, explicitly set an appropriate map coordinate system using the &lt;tt&gt;Settings:Project Properties&lt;/tt&gt; menu.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -11547,24 +11915,24 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Not a PostgreSQL/PosGIS Layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> is not a PostgreSQL/PosGIS layer.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Geoprocessing functions are only available for PostgreSQL/PosGIS Layers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>No Active Layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>You must select a layer in the legend to buffer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not a PostgreSQL/PostGIS Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> is not a PostgreSQL/PostGIS layer.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -11746,7 +12114,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginManager</name>
     <message>
         <source>Choose a directory</source>
-        <translation>Chọn thư mục</translation>
+        <translation type="obsolete">Chọn thư mục</translation>
     </message>
     <message>
         <source>No Plugins</source>
@@ -11761,7 +12129,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginManagerBase</name>
     <message>
         <source>QGIS Plugin Manger</source>
-        <translation>Trình Quản lý Plugin của QGIS</translation>
+        <translation type="obsolete">Trình Quản lý Plugin của QGIS</translation>
     </message>
     <message>
         <source>Name</source>
@@ -11789,7 +12157,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>To load a plugin, click the checkbox next to the plugin and click Ok</source>
@@ -11830,6 +12198,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Alt+C</source>
         <translation>Alt+C</translation>
+    </message>
+    <message>
+        <source>QGIS Plugin Manager</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11908,10 +12280,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;p&gt;A Helmert transform requires modifications in the raster layer.&lt;/p&gt;&lt;p&gt;The modifed raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p&gt;&lt;p&gt;Are you sure that this is what you want?&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Affine</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11941,6 +12309,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Currently all modified files will be written in TIFF format.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;A Helmert transform requires modifications in the raster layer.&lt;/p&gt;&lt;p&gt;The modified raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p&gt;&lt;p&gt;Are you sure that this is what you want?&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13454,6 +13826,10 @@ p, li { white-space: pre-wrap; }
         <source>The query you specified results in zero records being returned.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Search query builder</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsServerSourceSelect</name>
@@ -14278,6 +14654,14 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QgsVectorAttributesModel</name>
+    <message>
+        <source>id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayer</name>
@@ -14715,6 +15099,17 @@ p, li { white-space: pre-wrap; }
     <name>QgsWFSPlugin</name>
     <message>
         <source>&amp;Add WFS layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsWFSProvider</name>
+    <message>
+        <source>unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>received %1 bytes from %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
