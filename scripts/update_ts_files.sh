@@ -7,9 +7,16 @@
 # name is reserved for the Windows qmake project file
 # update_ts_files.sh,v 1.3 2004/07/14 18:16:24 gsherman Exp
 
+#first tar the qt_xx.ts files in i18n folder such that lupdate does not 
+#merge the qgis strings to them
+echo Creating qt_ts.tar
+tar -cvf i18n/qt_ts.tar i18n/qt_*.ts
+rm i18n/qt_*.ts
 echo Creating qmake project file
 $QTDIR/bin/qmake -project -o qgis_ts.pro
 echo Updating translation files
 $QTDIR/bin/lupdate -verbose qgis_ts.pro
 echo Removing qmake project file
 rm qgis_ts.pro
+echo Unpacking qt_ts.tar
+tar -xvf i18n/qt_ts.tar
