@@ -7,6 +7,7 @@ Version 0.9.1 'Ganymede'
 ** Cleanups and additions to GRASS tools
 ** Documentation updates
 ** Improvements for building under MSVC
+** Python Plugin installer to install PyQGIS plugins from the repository
 Version 0.9 'Ganymede'
 ** Python bindings - This is the major focus of this release
    it is now possible to create plugins using python. It is also
