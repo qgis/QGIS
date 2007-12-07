@@ -1656,7 +1656,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
   // theoreticaly we can open those files because there exists a
   // driver for them, the user will have to use the "All Files" to
   // open datasets with no explicitly defined file name extension.
-  QgsDebugMsg("Driver count: " + QString::number(driverRegistrar->GetDriverCount());
+  QgsDebugMsg("Driver count: " + QString::number(driverRegistrar->GetDriverCount()));
 
   for (int i = 0; i < driverRegistrar->GetDriverCount(); ++i)
   {
