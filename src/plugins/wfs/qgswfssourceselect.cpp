@@ -133,9 +133,14 @@ int QgsWFSSourceSelect::getCapabilities(const QString& uri, QgsWFSSourceSelect::
   return 1;
 }
 
-int QgsWFSSourceSelect::getCapabilitiesGET(const QString& uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs, std::list<QString>& titles, std::list<QString>& abstracts)
+int QgsWFSSourceSelect::getCapabilitiesGET(QString uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs, std::list<QString>& titles, std::list<QString>& abstracts)
 {
+  if(!(uri.contains("?"))) 
+    {
+      uri.append("?");
+    }
   QString request = uri + "SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.1.1";
+  
   QByteArray result;
   QgsHttpTransaction http(request);
   http.getSynchronously(result);
@@ -330,7 +335,13 @@ void QgsWFSSourceSelect::addLayer()
       return;
     }
   QString typeName = tItem->text(1);
-  qWarning(mUri + "SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=" + typeName);
+
+  QString uri = mUri;
+  if(!(uri.contains("?"))) 
+    {
+      uri.append("?");
+    }
+  qWarning(uri + "SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=" + typeName);
 
   //get CRS
   QString crsString;
@@ -345,8 +356,7 @@ void QgsWFSSourceSelect::addLayer()
   //add a wfs layer to the map
   if(mIface)
     {
-      qWarning(mUri + "SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=" + typeName + crsString);
-      mIface->addVectorLayer(mUri + "SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=" + typeName + crsString, typeName, "WFS");
+      mIface->addVectorLayer(uri + "SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=" + typeName + crsString, typeName, "WFS");
     }
   accept();
 }
