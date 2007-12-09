@@ -27,7 +27,7 @@
 
 static const QString name_ = QObject::tr("WFS plugin");
 static const QString description_ = QObject::tr("Adds WFS layers to the QGIS canvas");
-static const QString version_ = QObject::tr("Version 0.0001");
+static const QString version_ = QObject::tr("Version 0.1");
 
 QgsWFSPlugin::QgsWFSPlugin(QgisInterface* iface)
 : QgisPlugin(name_, description_, version_, QgisPlugin::MAPLAYER), 
