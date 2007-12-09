@@ -125,6 +125,7 @@ bool QgsGPXProvider::getNextFeature(QgsFeature& feature)
   
   QgsAttributeList::const_iterator iter;
   
+  QgsDebugMsg("*** GPX ***");
   if (mFeatureType == WaypointType) 
     {
       // go through the list of waypoints and return the first one that is in
@@ -269,10 +270,19 @@ bool QgsGPXProvider::getNextFeature(QgsFeature& feature)
 	  const Track* trk;
 	  trk = &(*mTrkIter);
 	  
+          QgsLogger::debug("GPX feature track segments: ", trk->segments.size(), __FILE__, __FUNCTION__, __LINE__);
 	  if (trk->segments.size() == 0)
 	    continue;
-	  if (trk->segments[0].points.size() == 0)
+
+          // A track consists of several segments. Add all those segments into one.
+          int totalPoints = 0;;
+          for (int i = 0; i < trk->segments.size(); i ++)
+          {
+            totalPoints += trk->segments[i].points.size();
+          }
+	  if (totalPoints == 0)
 	    continue;
+          QgsDebugMsg("GPX feature track total points: " + QString::number(totalPoints));
 	  const QgsRect& b(*mSelectionRectangle);
 	  if ((trk->xMax >= b.xMin()) && (trk->xMin <= b.xMax()) &&
 	      (trk->yMax >= b.yMin()) && (trk->yMin <= b.yMax())) {
@@ -282,18 +292,29 @@ bool QgsGPXProvider::getNextFeature(QgsFeature& feature)
 	    // some wkb voodoo
 	    if(mFetchGeom)
 	      {
-		int nPoints = trk->segments[0].points.size();
-		char* geo = new char[9 + 16 * nPoints];
-		std::memset(geo, 0, 9 + 16 * nPoints);
+		char* geo = new char[9 + 16 * totalPoints];
+                if (!geo)
+                {
+                  QgsDebugMsg("Too large track!!!");
+                  return false;
+                }
+		std::memset(geo, 0, 9 + 16 * totalPoints);
 		geo[0] = QgsApplication::endian();
 		geo[geo[0] == QgsApplication::NDR ? 1 : 4] = QGis::WKBLineString;
-		std::memcpy(geo + 5, &nPoints, 4);
-		for (int i = 0; i < nPoints; ++i) 
+                std::memcpy(geo + 5, &totalPoints, 4);
+
+                int thisPoint = 0;
+                for(int k = 0; k < trk->segments.size(); k++)
+                {
+                  int nPoints = trk->segments[k].points.size();
+                  for (int i = 0; i < nPoints; ++i) 
 		  {
-		    std::memcpy(geo + 9 + 16 * i, &trk->segments[0].points[i].lon, sizeof(double));
-		    std::memcpy(geo + 9 + 16 * i + 8, &trk->segments[0].points[i].lat, sizeof(double));
+		    std::memcpy(geo + 9 + 16 * thisPoint,     &trk->segments[k].points[i].lon, sizeof(double));
+		    std::memcpy(geo + 9 + 16 * thisPoint + 8, &trk->segments[k].points[i].lat, sizeof(double));
+                    thisPoint++;
 		  }
-		feature.setGeometryAndOwnership((unsigned char *)geo, 9 + 16 * nPoints);
+                }
+		feature.setGeometryAndOwnership((unsigned char *)geo, 9 + 16 * totalPoints);
 	      }
 	    feature.setValid(true);
 	    
