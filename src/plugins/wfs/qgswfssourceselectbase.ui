@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Note: this plugin not considered stable yet. Use it on your own risk</string>
+   <string>Add WFS Layer from a Server</string>
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
