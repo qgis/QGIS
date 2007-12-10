@@ -374,7 +374,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
      */
     QString mCurrentSchema;
     /**
-     * SQL statement used to limit the features retrieved
+     * SQL statement used to limit the features retreived
      */
     QString sqlWhereClause;
     /**
