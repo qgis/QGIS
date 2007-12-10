@@ -137,6 +137,9 @@ const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
   }
   PQclear(schema);
 
+  if(mSchemaName=="")
+    mSchemaName=mCurrentSchema;
+
   if (!getGeometryDetails()) // gets srid and geometry type
   {
     // the table is not a geometry table
@@ -2515,7 +2518,7 @@ bool QgsPostgresProvider::getGeometryDetails()
 
   PGresult *result = executeDbCommand(connection, sql);
 
-  QgsDebugMsg("geometry column query returned " + QString(PQntuples(result)));
+  QgsDebugMsg("geometry column query returned " + QString::number(PQntuples(result)));
   QgsDebugMsg("column number of srid is " + QString::number(PQfnumber(result, "srid")));
 
   if (PQntuples(result) > 0)
