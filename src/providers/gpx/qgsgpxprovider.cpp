@@ -276,7 +276,7 @@ bool QgsGPXProvider::getNextFeature(QgsFeature& feature)
 
           // A track consists of several segments. Add all those segments into one.
           int totalPoints = 0;;
-          for (int i = 0; i < trk->segments.size(); i ++)
+          for (std::vector<TrackSegment>::size_type i = 0; i < trk->segments.size(); i ++)
           {
             totalPoints += trk->segments[i].points.size();
           }
@@ -304,7 +304,7 @@ bool QgsGPXProvider::getNextFeature(QgsFeature& feature)
                 std::memcpy(geo + 5, &totalPoints, 4);
 
                 int thisPoint = 0;
-                for(int k = 0; k < trk->segments.size(); k++)
+                for(std::vector<TrackSegment>::size_type k = 0; k < trk->segments.size(); k++)
                 {
                   int nPoints = trk->segments[k].points.size();
                   for (int i = 0; i < nPoints; ++i) 
