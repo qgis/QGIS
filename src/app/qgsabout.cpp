@@ -18,7 +18,7 @@
 
 #include "qgsabout.h"
 #include "qgsapplication.h"
-#ifdef Q_OS_MACX
+#ifdef Q_WS_MAC
 #include <ApplicationServices/ApplicationServices.h>
 #else
 #include <QInputDialog>
@@ -60,6 +60,9 @@ void QgsAbout::init()
 #endif
   if ( file.open( QIODevice::ReadOnly ) ) {
     QTextStream stream( &file );
+#ifdef Q_OS_DARWIN
+    stream.setCodec("UTF-8");
+#endif
     QString line;
 #ifdef QGISDEBUG 
     int i = 1; 
@@ -219,7 +222,7 @@ void QgsAbout::on_btnQgisHome_clicked()
 
 void QgsAbout::openUrl(QString url)
 {
-#ifdef Q_OS_MACX
+#ifdef Q_WS_MAC
   /* Use Mac OS X Launch Services which uses the user's default browser
    * and will just open a new window if that browser is already running.
    * QProcess creates a new browser process for each invocation and expects a
