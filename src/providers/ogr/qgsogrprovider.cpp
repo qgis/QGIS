@@ -287,7 +287,8 @@ bool QgsOgrProvider::getNextFeature(QgsFeature& feature)
 	      //precise test for intersection with search rectangle
 	      //first make QgsRect from OGRPolygon
 	      OGREnvelope env;
-	      mSelectionRectangle->getEnvelope(&env);
+        if(mSelectionRectangle)
+	        mSelectionRectangle->getEnvelope(&env);
 	      if(env.IsInit()) //if envelope is invalid, skip the precise intersection test
 		{
 		  selectionRect.set(env.MinX, env.MinY, env.MaxX, env.MaxY);
