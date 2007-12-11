@@ -461,6 +461,7 @@ void QgsMapToolIdentify::deactivate()
 {
   if (mResults)
     mResults->done(0); // close the window
+  QgsMapTool::deactivate();
 }
 
 void QgsMapToolIdentify::highlightFeature(int featureId)
