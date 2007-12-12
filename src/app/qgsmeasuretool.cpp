@@ -23,6 +23,7 @@
 
 #include "qgsmeasuredialog.h"
 #include "qgsmeasuretool.h"
+#include "qgscursors.h"
 
 #include <QMessageBox>
 #include <QSettings>
@@ -34,7 +35,8 @@ QgsMeasureTool::QgsMeasureTool(QgsMapCanvas* canvas, bool measureArea)
   
   mRubberBand = new QgsRubberBand(canvas, mMeasureArea);
 
-  mCanvas->setCursor(Qt::CrossCursor);
+  QPixmap myCrossHairQPixmap = QPixmap((const char **) cross_hair_cursor);
+  mCursor = QCursor(myCrossHairQPixmap, 8, 8);
 
   mRightMouseClicked = false;
   
