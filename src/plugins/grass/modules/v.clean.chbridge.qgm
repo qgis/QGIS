@@ -3,6 +3,6 @@
 
 <qgisgrassmodule label=" v.clean - Change the type of bridges connecting area and island or 2 islands from boundary to line" module="v.clean">
 	<option key="input" typeoption="type"/>
-	<flag key="tool" answer="chbridge"/>
+	<option key="tool" answer="chbridge" hidden="yes"/>
 	<option key="output"/>
 </qgisgrassmodule>

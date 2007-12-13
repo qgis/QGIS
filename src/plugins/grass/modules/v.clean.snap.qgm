@@ -3,7 +3,7 @@
 
 <qgisgrassmodule label=" v.clean - Cleaning topology: snap lines to vertex in threshold" module="v.clean">
 	<option key="input" typeoption="type"/>
-	<flag key="tool" answer="snap"/>
+	<option key="tool" answer="snap" hidden="yes"/>
 	<option key="thresh"/>
 	<option key="output"/>
 </qgisgrassmodule>

@@ -3,6 +3,6 @@
 
 <qgisgrassmodule label=" v.clean - Break lines at each intersection of vector map" module="v.clean">
 	<option key="input" typeoption="type"/>
-	<flag key="tool" answer="break"/>
+	<option key="tool" answer="break" hidden="yes"/>
 	<option key="output"/>
 </qgisgrassmodule>

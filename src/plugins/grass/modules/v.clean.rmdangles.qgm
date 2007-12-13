@@ -3,7 +3,7 @@
 
 <qgisgrassmodule label=" v.clean - Cleaning topology: remove dangles" module="v.clean">
 	<option key="input" typeoption="type"/>
-	<flag key="tool" answer="rmdangle"/>
+	<option key="tool" answer="rmdangle" hidden="yes"/>
 	<option key="thresh"/>
 	<option key="output"/>
 </qgisgrassmodule>
