@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>691</width>
+    <width>820</width>
     <height>406</height>
    </rect>
   </property>
@@ -522,6 +522,112 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
+
+     <widget class="QWidget" name="tab5" >
+      <attribute name="title" >
+       <string>GPX Conversions</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item row="0" column="0" colspan="4" >
+        <widget class="QTextEdit" name="teCONVDescription" >
+         <property name="readOnly" >
+          <bool>true</bool>
+         </property>
+         <property name="html" >
+          <string></string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1" colspan="2" >
+        <widget class="QLineEdit" name="leCONVLayer" />
+       </item>
+       <item row="4" column="0" >
+        <widget class="QLabel" name="textLabel5_1" >
+         <property name="text" >
+          <string>Layer name:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="3" >
+        <widget class="QPushButton" name="pbnCONVOutput" >
+         <property name="text" >
+          <string>Save As...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3" >
+        <widget class="QPushButton" name="pbnCONVInput" >
+         <property name="text" >
+          <string>Browse...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1" colspan="2" >
+        <widget class="QLineEdit" name="leCONVOutput" />
+       </item>
+       <item row="3" column="0" >
+        <widget class="QLabel" name="textLabel5_2" >
+         <property name="text" >
+          <string>GPX output file:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::Expanding</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="1" >
+        <widget class="QComboBox" name="cmbCONVType" >
+         <property name="minimumSize" >
+          <size>
+           <width>10</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" >
+        <widget class="QLabel" name="textLabel5_3" >
+         <property name="text" >
+          <string>Conversion:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" colspan="2" >
+        <widget class="QLineEdit" name="leCONVInput" >
+         <property name="enabled" >
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <widget class="QLabel" name="textLabel5_4" >
+         <property name="text" >
+          <string>GPX input file:</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     
     </widget>
    </item>
    <item row="1" column="0" colspan="3" >
