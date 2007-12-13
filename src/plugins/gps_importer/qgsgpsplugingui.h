@@ -51,6 +51,9 @@ public slots:
   
   void on_pbnIMPInput_clicked();
   void on_pbnIMPOutput_clicked();
+
+  void on_pbnCONVInput_clicked();
+  void on_pbnCONVOutput_clicked();
   
   void on_pbnDLOutput_clicked();
 
@@ -60,6 +63,7 @@ private:
   void populateULLayerComboBox();
   void populateIMPBabelFormats();
   void populatePortComboBoxes();
+  void populateCONVDialog();
   
 private slots:
 
@@ -76,6 +80,10 @@ signals:
 		     bool importWaypoints, bool importRoutes, 
 		     bool importTracks, QString outputFilename, 
 		     QString layerName);
+  void convertGPSFile(QString inputFilename,
+                      int convertType,
+                      QString outputFilename, 
+                      QString layerName);
   void downloadFromGPS(QString device, QString port, bool downloadWaypoints, 
 		       bool downloadRoutes, bool downloadTracks, 
 		       QString outputFilename, QString layerName);

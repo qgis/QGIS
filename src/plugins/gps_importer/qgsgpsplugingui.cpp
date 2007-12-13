@@ -37,6 +37,7 @@ QgsGPSPluginGui::QgsGPSPluginGui(const BabelMap& importers,
   populatePortComboBoxes();
   populateULLayerComboBox();
   populateIMPBabelFormats();
+  populateCONVDialog();
   
   connect(pbULEditDevices, SIGNAL(clicked()), this, SLOT(openDeviceEditor()));
   connect(pbDLEditDevices, SIGNAL(clicked()), this, SLOT(openDeviceEditor()));
@@ -52,6 +53,12 @@ QgsGPSPluginGui::QgsGPSPluginGui(const BabelMap& importers,
   connect(leIMPOutput, SIGNAL(textChanged(const QString&)), 
    this, SLOT(enableRelevantControls()));
   connect(leIMPLayer, SIGNAL(textChanged(const QString&)), 
+   this, SLOT(enableRelevantControls()));
+  connect(leCONVInput, SIGNAL(textChanged(const QString&)), 
+   this, SLOT(enableRelevantControls()));
+  connect(leCONVOutput, SIGNAL(textChanged(const QString&)), 
+   this, SLOT(enableRelevantControls()));
+  connect(leCONVLayer, SIGNAL(textChanged(const QString&)), 
    this, SLOT(enableRelevantControls()));
   connect(leDLOutput, SIGNAL(textChanged(const QString&)), 
    this, SLOT(enableRelevantControls()));
@@ -74,38 +81,14 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
 {
   
   // what should we do?
-  switch (tabWidget->currentPageIndex()) {
+  switch (tabWidget->currentPageIndex())
+  {
   // add a GPX layer?
   case 0:
     emit loadGPXFile(leGPXFile->text(), cbGPXWaypoints->isChecked(), 
 		     cbGPXRoutes->isChecked(), cbGPXTracks->isChecked());
     break;
   
-    // or import a download file?
-    /*
-      case 666:
-      //check input file exists
-      //
-      if (!QFile::exists ( leInputFile->text() ))
-      {
-      QMessageBox::warning( this, "GPS Importer",
-      "Unable to find the input file.\n"
-      "Please reselect a valid file." );
-      return;
-      }
-      WayPointToShape *  myWayPointToShape = new  WayPointToShape(leOutputShapeFile->text(),leInputFile->text());
-      //
-      // If you have a produced a raster layer using your plugin, you can ask qgis to 
-      // add it to the view using:
-      // emit drawRasterLayer(QString("layername"));
-      // or for a vector layer
-      // emit drawVectorLayer(QString("pathname"),QString("layername"),QString("provider name (either ogr or postgres"));
-      //
-      delete myWayPointToShape;
-      emit drawVectorLayer(leOutputShapeFile->text(),QString("Waypoints"),QString("ogr"));
-      break;
-    */
-    
     // or import other file?
   case 1: {
     const QString& typeString(cmbDLFeatureType->currentText());
@@ -116,7 +99,6 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
 		       leIMPLayer->text());
     break;
   }
-  
   // or download GPS data from a device?
   case 2: {
     int featureType = cmbDLFeatureType->currentItem();
@@ -125,12 +107,21 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
 			 leDLOutput->text(), leDLBasename->text());
     break;
   }
-  
   // or upload GPS data to a device?
-  case 3:
+  case 3: {
     emit uploadToGPS(mGPXLayers[cmbULLayer->currentItem()], 
 		     cmbULDevice->currentText(), cmbULPort->currentText());
     break;
+  }
+  // or convert between waypoints/tracks=
+  case 4: {
+    int convertType = cmbCONVType->currentItem();
+    emit convertGPSFile(leCONVInput->text(), 
+                        convertType,
+                        leCONVOutput->text(),
+                        leCONVLayer->text());
+    break;
+  }
   }
   accept();
 } 
@@ -196,6 +187,16 @@ void QgsGPSPluginGui::enableRelevantControls()
   // upload to device
   else if (tabWidget->currentPageIndex() == 3) {
     if (cmbULDevice->currentText() == "" || cmbULLayer->currentText() == "")
+      pbnOK->setEnabled(false);
+    else
+      pbnOK->setEnabled(true);
+  }
+
+  // convert between waypoint/routes
+  else if (tabWidget->currentPageIndex() == 4) {
+    
+    if ((leCONVInput->text() == "") || (leCONVOutput->text() == "") ||
+	(leCONVLayer->text() == ""))
       pbnOK->setEnabled(false);
     else
       pbnOK->setEnabled(true);
@@ -400,6 +401,52 @@ void QgsGPSPluginGui::populateIMPBabelFormats() {
     cmbDLDevice->setCurrentItem(d);
 }
 
+void QgsGPSPluginGui::populateCONVDialog() {
+  cmbCONVType->insertItem(tr("Route -> Waypoint"));
+  cmbCONVType->insertItem(tr("Waypoint -> Route"));
+  QString format = QString("<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\"> p, li { white-space: pre-wrap; } </style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:12pt;\"><span style=\" font-size:10pt;\">"\
+"%1"\
+"</span><a href=\"http://gpsbabel.sf.net\"><span style=\" font-size:10pt; text-decoration: underline; color:#0000ff;\">http://gpsbabel.sf.net</span></a><span style=\" font-size:10pt;\">"\
+"%2"\
+"</span></p><p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;\">"\
+"%3"\
+                           "</p></body></html>");
+  QString text = format
+    .arg(tr("QGIS can perform conversions of GPX files, by using GPSBabel ("))
+    .arg(tr(") to perform the conversions. This requires that you have GPSBabel installed where QGIS can find it."))
+    .arg(tr("Select a GPX input file name, the type of conversion you want to perform, a GPX filename that you want to save the converted file as, and a name for the new layer created from the result."));
+
+  teCONVDescription->setHtml(text);
+  QgsDebugMsg(text);
+}
+
+void QgsGPSPluginGui::on_pbnCONVInput_clicked()
+{
+  QString myFileTypeQString;
+  QString myFilterString=tr("GPS eXchange format (*.gpx)");
+  QSettings settings;
+  QString dir = settings.readEntry("/Plugin-GPS/gpxdirectory");
+  if (dir.isEmpty())
+    dir = ".";
+  QString myFileNameQString = QFileDialog::getOpenFileName(
+          this, //parent dialog
+          tr("Select GPX file"), //caption
+          dir, //initial dir
+          myFilterString, //filters to select
+          &myFileTypeQString); //the pointer to store selected filter
+  if (!myFileNameQString.isEmpty())
+    leCONVInput->setText(myFileNameQString);
+}
+
+void QgsGPSPluginGui::on_pbnCONVOutput_clicked() {
+  QString myFileNameQString = 
+    QFileDialog::getSaveFileName(this, //parent dialog
+				 tr("Choose a filename to save under"),
+                 ".", //initial dir
+				 tr("GPS eXchange format (*.gpx)"));
+  if (!myFileNameQString.isEmpty())
+    leCONVOutput->setText(myFileNameQString);
+}
 
 void QgsGPSPluginGui::openDeviceEditor() {
   QgsGPSDeviceDialog* dlg = new QgsGPSDeviceDialog(mDevices);

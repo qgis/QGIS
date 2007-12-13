@@ -63,6 +63,10 @@ public slots:
 		     bool importWaypoints, bool importRoutes, 
 		     bool importTracks, QString outputFilename, 
 		     QString layerName);
+  void convertGPSFile(QString inputFilename,
+                      int convertType,
+                      QString outputFilename, 
+                      QString layerName);
   void downloadFromGPS(QString device, QString port,
 		       bool downloadWaypoints, bool downloadRoutes,
 		       bool downloadTracks, QString outputFilename,
