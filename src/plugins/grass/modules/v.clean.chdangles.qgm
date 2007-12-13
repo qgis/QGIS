@@ -3,7 +3,7 @@
 
 <qgisgrassmodule label=" v.clean - Cleaning topology: change the type of boundary dangle to line" module="v.clean">
 	<option key="input" typemask="area"/>
-	<flag key="tool" answer="chdangle"/>
+	<option key="tool" answer="chdangle" hidden="yes"/>
 	<option key="thresh"/>
 	<option key="output"/>
 </qgisgrassmodule>

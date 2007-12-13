@@ -3,7 +3,7 @@
 
 <qgisgrassmodule label=" v.clean - Remove small areas, the longest boundary with adjacent area is removed" module="v.clean">
 	<option key="input" typeoption="type"/>
-	<flag key="tool" answer="rmarea"/>
+	<option key="tool" answer="rmarea" hidden="yes"/>
 	<option key="thresh"/>
 	<option key="output"/>
 </qgisgrassmodule>

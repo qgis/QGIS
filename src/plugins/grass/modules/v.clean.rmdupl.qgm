@@ -3,6 +3,6 @@
 
 <qgisgrassmodule label=" v.clean - Remove duplicate lines (pay attention to categories!)" module="v.clean">
 	<option key="input" typeoption="type"/>
-	<flag key="tool" answer="rmdupl"/>
+	<option key="tool" answer="rmdupl" hidden="yes"/>
 	<option key="output"/>
 </qgisgrassmodule>

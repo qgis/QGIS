@@ -3,6 +3,6 @@
 
 <qgisgrassmodule label=" v.clean - Remove all lines or boundaries of zero length" module="v.clean">
 	<option key="input" typeoption="type"/>
-	<flag key="tool" answer="rmline"/>
+	<option key="tool" answer="rmline" hidden="yes"/>
 	<option key="output"/>
 </qgisgrassmodule>
