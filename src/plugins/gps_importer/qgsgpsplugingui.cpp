@@ -91,11 +91,11 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
   
     // or import other file?
   case 1: {
-    const QString& typeString(cmbDLFeatureType->currentText());
+    const QString& typeString(cmbIMPFeature->currentText());
     emit importGPSFile(leIMPInput->text(), 
 		       mImporters.find(mImpFormat)->second,
-		       typeString == "Waypoints", typeString == "Routes",
-		       typeString == "Tracks", leIMPOutput->text(),
+		       typeString == tr("Waypoints"), typeString == tr("Routes"),
+		       typeString == tr("Tracks"), leIMPOutput->text(),
 		       leIMPLayer->text());
     break;
   }
@@ -123,7 +123,9 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
     break;
   }
   }
-  accept();
+  // The slots that are called above will emit closeGui() when successfull.
+  // If not succesfull, the user will get another shot without starting from scratch
+  // accept();
 } 
 
 
@@ -253,11 +255,11 @@ void QgsGPSPluginGui::on_pbnIMPInput_clicked() {
       leIMPInput->setText(myFileName);
       cmbIMPFeature->clear();
       if (iter->second->supportsWaypoints())
-        cmbIMPFeature->insertItem("Waypoints");
+        cmbIMPFeature->insertItem(tr("Waypoints"));
       if (iter->second->supportsRoutes())
-        cmbIMPFeature->insertItem("Routes");    
+        cmbIMPFeature->insertItem(tr("Routes"));    
       if (iter->second->supportsTracks())
-        cmbIMPFeature->insertItem("Tracks");
+        cmbIMPFeature->insertItem(tr("Tracks"));
     }
   }
 }
@@ -385,6 +387,7 @@ void QgsGPSPluginGui::populateIMPBabelFormats() {
   BabelMap::const_iterator iter;
   for (iter = mImporters.begin(); iter != mImporters.end(); ++iter)
     mBabelFilter.append((const char*)iter->first).append(" (*.*);;");
+  mBabelFilter.chop(2);   // Remove the trailing ;;, which otherwise leads to an empty filetype
   int u = -1, d = -1;
   std::map<QString, QgsGPSDevice*>::const_iterator iter2;
   for (iter2 = mDevices.begin(); iter2 != mDevices.end(); ++iter2) {

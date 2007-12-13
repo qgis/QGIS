@@ -125,7 +125,6 @@ bool QgsGPXProvider::getNextFeature(QgsFeature& feature)
   
   QgsAttributeList::const_iterator iter;
   
-  QgsDebugMsg("*** GPX ***");
   if (mFeatureType == WaypointType) 
     {
       // go through the list of waypoints and return the first one that is in
