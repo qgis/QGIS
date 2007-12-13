@@ -246,6 +246,9 @@ void QgsGPSPlugin::importGPSFile(QString inputFilename, QgsBabelFormat* importer
   QStringList babelArgs = 
     importer->importCommand(mBabelPath, typeArg, 
 			       inputFilename, outputFilename);
+
+  QgsDebugMsg(QString("Import command: ") + babelArgs.join("|"));
+
   Q3Process babelProcess(babelArgs);
   if (!babelProcess.start()) {
     QMessageBox::warning(NULL, tr("Could not start process"),
@@ -314,7 +317,7 @@ void QgsGPSPlugin::convertGPSFile(QString inputFilename,
   QStringList babelArgs;
   babelArgs << mBabelPath << "-i"<<"gpx"<<"-f"<< inputFilename
             << convertStrings <<"-o"<<"gpx"<<"-F"<< outputFilename;
-  QgsDebugMsg(QString("Conversion command: ") + babelArgs.join("_"));
+  QgsDebugMsg(QString("Conversion command: ") + babelArgs.join("|"));
 
   Q3Process babelProcess(babelArgs);
   if (!babelProcess.start()) {
@@ -394,6 +397,10 @@ void QgsGPSPlugin::downloadFromGPS(QString device, QString port,
 				 tr("of ")) + features + ".");
     return;
   }
+
+
+  QgsDebugMsg(QString("Download command: ") + babelArgs.join("|"));
+
   Q3Process babelProcess(babelArgs);
   if (!babelProcess.start()) {
     QMessageBox::warning(NULL, tr("Could not start process"),
@@ -476,6 +483,9 @@ void QgsGPSPlugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
 			 features + ".");
     return;
   }
+
+  QgsDebugMsg(QString("Upload command: ") + babelArgs.join("|"));
+
   Q3Process babelProcess(babelArgs);
   if (!babelProcess.start()) {
     QMessageBox::warning(NULL, tr("Could not start process"),

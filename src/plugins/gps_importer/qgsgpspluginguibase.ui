@@ -233,7 +233,7 @@ p, li { white-space: pre-wrap; }
         <widget class="QComboBox" name="cmbIMPFeature" >
          <property name="minimumSize" >
           <size>
-           <width>90</width>
+           <width>130</width>
            <height>0</height>
           </size>
          </property>
@@ -243,6 +243,13 @@ p, li { white-space: pre-wrap; }
         <widget class="QLabel" name="textLabel2_3" >
          <property name="text" >
           <string>Feature type:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2" >
+        <widget class="QLabel" name="textLabel2_6" >
+         <property name="text" >
+          <string>(Note: Selecting correct file type in browser dialog important!)</string>
          </property>
         </widget>
        </item>
