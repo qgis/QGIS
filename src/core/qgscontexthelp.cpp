@@ -52,7 +52,7 @@ QgsContextHelp::QgsContextHelp(int contextId)
 #ifdef QGSCONTEXTHELP_REUSE
   // Create socket to communicate with process
   mSocket = new QTcpSocket(this);
-  connect(mProcess, SIGNAL(readyReadStandardoutput()), SLOT(readPort()));
+  connect(mProcess, SIGNAL(readyReadStandardOutput()), SLOT(readPort()));
 #else
   // Placeholder for new process if terminating and restarting
   mNextProcess = NULL;

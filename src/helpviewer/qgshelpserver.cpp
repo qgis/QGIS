@@ -22,9 +22,9 @@
 // See qt/tools/assistant/ main.cpp and lib/qassistantclient.cpp (Qt 3.3.4).
 
 QgsHelpContextServer::QgsHelpContextServer(QObject *parent) :
-   Q3ServerSocket(0x7f01, 0, parent)
+  QTcpServer(parent)
 {
-  // Superclass listens for localhost connection
+  listen(QHostAddress::LocalHost, 0);
 }
 
 QgsHelpContextServer::~QgsHelpContextServer()
@@ -32,20 +32,21 @@ QgsHelpContextServer::~QgsHelpContextServer()
   // Socket is automatically deleted here because it is a QQbject child
 }
 
-void QgsHelpContextServer::newConnection(int socket)
+void QgsHelpContextServer::incomingConnection(int socket)
 {
   // Create socket in response to new connection
   QgsHelpContextSocket *helpSocket = new QgsHelpContextSocket(socket, this);
   // Pass context from socket upwards
   connect(helpSocket, SIGNAL(setContext(const QString&)),
     SIGNAL(setContext(const QString&)));
+  emit newConnection();
 }
 
 QgsHelpContextSocket::QgsHelpContextSocket(int socket, QObject *parent) :
-  Q3Socket(parent, 0)
+  QTcpSocket(parent)
 {
   connect(this, SIGNAL(readyRead()), SLOT(readClient()));
-  setSocket(socket);
+  setSocketDescriptor(socket);
 }
 
 QgsHelpContextSocket::~QgsHelpContextSocket()
