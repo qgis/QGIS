@@ -30,13 +30,14 @@ class QgsBookmarks : public QDialog, private Ui::QgsBookmarksBase
 public:
  QgsBookmarks(QWidget *parent = 0, Qt::WFlags fl = 0);
  ~QgsBookmarks();
-public slots:
+ void restorePosition();
+private slots:
+ void saveWindowLocation();
  void on_btnDelete_clicked();
  void on_btnZoomTo_clicked();
  void on_lstBookmarks_doubleClicked(Q3ListViewItem *);
  void on_btnHelp_clicked();
  void refreshBookmarks();
-
 private:
  QWidget *mParent;
  void initialise();

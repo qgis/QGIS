@@ -5141,6 +5141,7 @@ void QgisApp::showBookmarks()
   {
     bookmarks = new QgsBookmarks(this, Qt::WindowMinMaxButtonsHint);
   }
+  bookmarks->restorePosition();
   bookmarks->show();
   bookmarks->raise();
   bookmarks->setActiveWindow();

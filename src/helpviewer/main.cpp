@@ -18,6 +18,7 @@
 #include <iostream>
 #include <qgsapplication.h>
 #include <qstring.h>
+#include <QSettings>
 #include <QTextCodec>
 #include <QTranslator>
 #include "qgshelpserver.h"
@@ -27,6 +28,12 @@
 int main( int argc, char ** argv )
 {
   QgsApplication a( argc, argv, true );
+
+  // Set up the QSettings environment must be done after qapp is created
+  QCoreApplication::setOrganizationName("QuantumGIS");
+  QCoreApplication::setOrganizationDomain("qgis.org");
+  QCoreApplication::setApplicationName("qgis");
+
   QString context = QString::null;
   QString myTranslationCode="";
 

@@ -31,7 +31,12 @@ class QgsHelpViewer : public QDialog, private Ui::QgsHelpViewerBase
 public slots:
     void setContext(const QString &contextId);
     void fileExit();
+protected:
+    void moveEvent(QMoveEvent *event);
+    void resizeEvent(QResizeEvent *event);
 private:
+    void restorePosition();
+    void saveWindowLocation();
     void loadContext(const QString &contextId);
     void loadContextFromSqlite(const QString &contextId);
   int connectDb(const QString &helpDbPath);

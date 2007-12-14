@@ -78,7 +78,10 @@ class QgsAttributeTableDisplay:public QDialog, private Ui::QgsAttributeTableBase
   private:
     /** Set the icon theme for this dialog */
     void setTheme();
-    
+
+    void restorePosition();
+    void saveWindowLocation();
+
     QString mSearchString;
 
     static const int context_id = 831088384;

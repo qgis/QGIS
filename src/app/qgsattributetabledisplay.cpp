@@ -36,6 +36,7 @@
 #include <QMessageBox>
 #include <QIcon>
 #include <QPixmap>
+#include <QSettings>
 #include <QToolButton>
 
 QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer, QgisApp * qgisApp)
@@ -44,6 +45,7 @@ QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer, QgisAp
   mQgisApp(qgisApp)
 {
   setupUi(this);
+  restorePosition();
   setTheme();
   connect(mRemoveSelectionButton, SIGNAL(clicked()), this, SLOT(removeSelection()));
   connect(mSelectedToTopButton, SIGNAL(clicked()), this, SLOT(selectedToTop()));
@@ -374,10 +376,23 @@ void QgsAttributeTableDisplay::doSearch(const QString& searchString)
 
 void QgsAttributeTableDisplay::closeEvent(QCloseEvent* ev)
 {
+  saveWindowLocation();
   ev->ignore();
   emit deleted();
   delete this;
 }
+
+void QgsAttributeTableDisplay::restorePosition()
+{
+  QSettings settings;
+  restoreGeometry(settings.value("/Windows/AttributeTable/geometry").toByteArray());
+}
+
+void QgsAttributeTableDisplay::saveWindowLocation()
+{
+  QSettings settings;
+  settings.setValue("/Windows/AttributeTable/geometry", saveGeometry());
+} 
 
 void QgsAttributeTableDisplay::on_btnHelp_clicked()
 {
