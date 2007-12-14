@@ -18,20 +18,22 @@
 /* $Id$ */
 #ifndef QGSHELPSERVER_H
 #define QGSHELPSERVER_H
-#include <q3serversocket.h>
-#include <q3socket.h>
+#include <QTcpServer>
+#include <QTcpSocket>
 
 /*!
  * \class QgsHelpContextServer
  * \brief Listens for localhost connection and creates socket.
  */
-class QgsHelpContextServer : public Q3ServerSocket
+class QgsHelpContextServer : public QTcpServer
 {
   Q_OBJECT
 public:
-  QgsHelpContextServer(QObject* parent = 0);
+  QgsHelpContextServer(QObject *parent = 0);
   ~QgsHelpContextServer();
-  virtual void newConnection(int socket);
+
+public slots:
+  void incomingConnection(int socket);
 
 signals:
   void setContext(const QString&);
@@ -41,7 +43,7 @@ signals:
  * \class QgsHelpContextSocket
  * \brief Receives and passes context numbers to viewer.
  */
-class QgsHelpContextSocket : public Q3Socket
+class QgsHelpContextSocket : public QTcpSocket
 {
   Q_OBJECT
 public:

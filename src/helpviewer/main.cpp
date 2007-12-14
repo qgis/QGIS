@@ -34,7 +34,7 @@ int main( int argc, char ** argv )
   {
     context = argv[1];
   }
-#ifdef Q_OS_MACX
+#ifdef Q_WS_MAC
   // If we're on Mac, we have the resource library way above us...
   a.setPkgDataPath(QgsApplication::prefixPath()+"/../../../../share/qgis");
 #endif
@@ -78,7 +78,7 @@ int main( int argc, char ** argv )
   // an additional viewer if one is already running.
   QgsHelpContextServer *helpServer = new QgsHelpContextServer();
   // Make port number available to client
-  std::cout << helpServer->port() << std::endl; 
+  std::cout << helpServer->serverPort() << std::endl; 
   // Pass context request from socket to viewer widget
   QObject::connect(helpServer, SIGNAL(setContext(const QString&)),
       &w, SLOT(setContext(const QString&)));
