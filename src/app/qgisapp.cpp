@@ -1437,6 +1437,29 @@ QString watsNew = "<html><body>" + tr("Version") + " ";
 watsNew += QGis::qgisVersion;
 watsNew += "<h3>" + tr("New features") + "</h3>";
 watsNew += "<ul><li>"
++ tr("This is a bug fix release")
++ "</li>"
++ "<li>"
++ tr("70 Bugs closed")
++ "</li>"
++ "<li>"
++ tr("Added locale tab to options dialog so that locale can be overridden")
++ "</li>"
++ "<li>"
++ tr("Cleanups and additions to GRASS tools")
++ "</li>"
++ "<li>"
++ tr("Python Plugin Installer for installing plugins from the PyQGIS repository")
++ "</li>"
++ "<li>"
++ tr("Documentation updates")
++ "</li>"
++ "<li>"
++ tr("Improvements for building under MSVC")
++ "</li>"
++ "</ul>";
+watsNew += "<h3>" + tr("New features added in 0.9.0") + "</h3>";
+watsNew += "<ul><li>"
 + tr("Python bindings - This is the major focus of this release "
     "it is now possible to create plugins using python. It is also "
     "possible to create GIS enabled applications written in python " 
