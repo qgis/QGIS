@@ -24,6 +24,7 @@
 #include <QApplication>
 #include <QMessageBox>
 #include <QFileInfo>
+#include <QSettings>
 #include <QTextCodec>
 #include <QTextStream>
 #include <QFile>
@@ -39,6 +40,7 @@ QgsHelpViewer::QgsHelpViewer(const QString &contextId, QWidget *parent,
 : QDialog(parent, fl)
 {
   setupUi(this);
+  restorePosition();
   loadContext(contextId);
 }
 QgsHelpViewer::~QgsHelpViewer()
@@ -50,13 +52,45 @@ void QgsHelpViewer::setContext(const QString &contextId)
   setWindowState(windowState() & ~Qt::WindowMinimized);
 #endif
   raise();
-  setActiveWindow();
+  activateWindow();
   loadContext(contextId);
 }
 void QgsHelpViewer::fileExit()
 {
   QApplication::exit();
 }
+
+/*
+ * Window geometry is saved during move and resize events rather then when
+ * the window is closed because HelpViewer is a subprocess which could be
+ * closed by the parent process invoking QProcess::terminate(). When this
+ * happens, the HelpViewer process receives the signal WM_CLOSE on Windows
+ * and SIGTERM on Mac and Unix. There is no way to catch these using Qt;
+ * OS specific code must be written. To avoid OS specific code, the window
+ * geometry is saved as it changes.
+ */
+void QgsHelpViewer::moveEvent(QMoveEvent *event)
+{
+  saveWindowLocation();
+}
+
+void QgsHelpViewer::resizeEvent(QResizeEvent *event)
+{
+  saveWindowLocation();
+}
+
+void QgsHelpViewer::restorePosition()
+{
+  QSettings settings;
+  restoreGeometry(settings.value("/HelpViewer/geometry").toByteArray());
+}
+
+void QgsHelpViewer::saveWindowLocation()
+{
+  QSettings settings;
+  settings.setValue("/HelpViewer/geometry", saveGeometry());
+} 
+
 /*
  * Read the help file and populate the viewer
  */

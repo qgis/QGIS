@@ -25,6 +25,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QSettings>
 
 //standard includes
 #include <iostream>
@@ -37,7 +38,8 @@ QgsBookmarks::QgsBookmarks(QWidget *parent, Qt::WFlags fl)
   mParent(parent)
 {
   setupUi(this);
-  connect(btnClose, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(btnClose, SIGNAL(clicked()), this, SLOT(close()));
+  connect(this, SIGNAL(finished(int)), this, SLOT(saveWindowLocation()));
 
   // user database is created at QGIS startup in QgisApp::createDB
   // we just check whether there is our database [MD]
@@ -116,6 +118,17 @@ void QgsBookmarks::initialise()
   }
 }
 
+void QgsBookmarks::restorePosition()
+{
+  QSettings settings;
+  restoreGeometry(settings.value("/Windows/Bookmarks/geometry").toByteArray());
+}
+
+void QgsBookmarks::saveWindowLocation()
+{
+  QSettings settings;
+  settings.setValue("/Windows/Bookmarks/geometry", saveGeometry());
+} 
 
 void QgsBookmarks::on_btnDelete_clicked()
 {
