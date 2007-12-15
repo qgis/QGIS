@@ -267,6 +267,8 @@ So, prefer this:
  * [Design Patterns http://www.awprofessional.com/title/0201634988], GoF
 
 
+You should also really read this article from Qt Quarterly on 
+[http://doc.trolltech.com/qq/qq13-apis.html designing Qt style APIs]
 
 
 
