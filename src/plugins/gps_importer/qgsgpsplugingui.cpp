@@ -407,17 +407,15 @@ void QgsGPSPluginGui::populateIMPBabelFormats() {
 void QgsGPSPluginGui::populateCONVDialog() {
   cmbCONVType->insertItem(tr("Route -> Waypoint"));
   cmbCONVType->insertItem(tr("Waypoint -> Route"));
-  QString format = QString("<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\"> p, li { white-space: pre-wrap; } </style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:12pt;\"><span style=\" font-size:10pt;\">"\
-"%1"\
-"</span><a href=\"http://gpsbabel.sf.net\"><span style=\" font-size:10pt; text-decoration: underline; color:#0000ff;\">http://gpsbabel.sf.net</span></a><span style=\" font-size:10pt;\">"\
-"%2"\
-"</span></p><p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;\">"\
-"%3"\
-                           "</p></body></html>");
-  QString text = format
-    .arg(tr("QGIS can perform conversions of GPX files, by using GPSBabel ("))
-    .arg(tr(") to perform the conversions. This requires that you have GPSBabel installed where QGIS can find it."))
-    .arg(tr("Select a GPX input file name, the type of conversion you want to perform, a GPX filename that you want to save the converted file as, and a name for the new layer created from the result."));
+
+  QString format = QString("<html><body><p>%1 %2<p>%3</body></html>");
+
+  QString sentence1 = tr("QGIS can perform conversions of GPX files, by using GPSBabel (%1) to perform the conversions.")
+    .arg("<a href=\"http://www.gpsbabel.org\">http://www.gpsbabel.org</a>");
+  QString sentence2 = tr("This requires that you have GPSBabel installed where QGIS can find it.");
+  QString sentence3 = tr("Select a GPX input file name, the type of conversion you want to perform, a GPX filename that you want to save the converted file as, and a name for the new layer created from the result.");
+
+  QString text = format.arg(sentence1).arg(sentence2).arg(sentence3);
 
   teCONVDescription->setHtml(text);
   QgsDebugMsg(text);
