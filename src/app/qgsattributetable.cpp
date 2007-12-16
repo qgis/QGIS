@@ -537,6 +537,9 @@ void QgsAttributeTable::fillTable(QgsVectorLayer* layer)
       row++;
     }
 
+    // Make each column wide enough to show all the contents
+    for (int i = 0; i < numCols(); ++i)
+      adjustColumn(i);
   }
 }
 
