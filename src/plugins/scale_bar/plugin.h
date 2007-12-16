@@ -97,8 +97,6 @@ class QgsScaleBarPlugin:public QObject, public QgisPlugin
   //! The scale bar colour
   QColor mColour;
 
-  //! Pointer to our toolbar
-  QToolBar *toolBarPointer;
   //! Pointer to the QGIS interface object
   QgisInterface *qGisInterface;
   //! Pointer to the QAction object used in the menu and toolbar
