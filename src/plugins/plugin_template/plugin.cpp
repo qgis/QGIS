@@ -70,17 +70,14 @@ void [pluginname]::initGui()
 {
 
   // Create the action for tool
-  mQActionPointer = new QAction(QIcon(":/[pluginlcasename]/[pluginlcasename].png"),"[menuitemname]", this);
+  mQActionPointer = new QAction(QIcon(":/[pluginlcasename]/[pluginlcasename].png"),tr("[menuitemname]"), this);
   // Set the what's this text
   mQActionPointer->setWhatsThis(tr("Replace this with a short description of the what the plugin does"));
   // Connect the action to the run
   connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
-  // Add the toolbar
-  mToolBarPointer = new QToolBar(mQGisIface->getMainWindow(), "[menuname]");
-  mToolBarPointer->setLabel("[menuitemname]");
   // Add the icon to the toolbar
   mQGisIface->addToolBarIcon(mQActionPointer);
-  mQGisIface->addPluginMenu("&[menuname]", mQActionPointer);
+  mQGisIface->addPluginMenu(tr("&[menuname]"), mQActionPointer);
 
 }
 //method defined in interface
