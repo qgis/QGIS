@@ -56,10 +56,13 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui(QgisInterface * _qI, QWidge
     delimiterRegexp->setChecked(true);
   }
 
-  teInstructions->setHtml(tr("<h1>Description</h1>"
-"<p>Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!</p>"
+  teInstructions->setHtml(tr("<h2>Description</h2>"
+"<p>Select a delimited text file containing a header row and one or more rows of x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!</p>"
 "<p>Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma, tab or a regular expression in Perl style). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.</p>"));
-
+  // Force a slightly smaller height for the text sample display. Trying to
+  // this in the .ui file never seems to achieve what it required, hence it's
+  // done here.
+  txtSample->setFixedHeight(120);
 }  
 QgsDelimitedTextPluginGui::~QgsDelimitedTextPluginGui()
 {
