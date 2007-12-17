@@ -169,7 +169,7 @@
     </message>
     <message>
       <source>Special</source>
-      <translation>Fichero especial</translation>
+      <translation>Especial</translation>
     </message>
     <message>
       <source>Open</source>
@@ -430,7 +430,7 @@ a
     </message>
     <message>
       <source>Restore up</source>
-      <translation type="unfinished" />
+      <translation>Restaurar arriba</translation>
     </message>
     <message>
       <source>Minimize</source>
@@ -438,7 +438,7 @@ a
     </message>
     <message>
       <source>Restore down</source>
-      <translation type="unfinished" />
+      <translation>Restaurar abajo</translation>
     </message>
     <message>
       <source>Maximize</source>
@@ -454,19 +454,19 @@ a
     </message>
     <message>
       <source>Puts a minimized back to normal</source>
-      <translation type="unfinished" />
+      <translation>Vuelve una minimizada a normal</translation>
     </message>
     <message>
       <source>Moves the window out of the way</source>
-      <translation type="unfinished" />
+      <translation>Mueve la ventana fuera de la vista</translation>
     </message>
     <message>
       <source>Puts a maximized window back to normal</source>
-      <translation type="unfinished" />
+      <translation>Vuelve una ventana maximizada a normal</translation>
     </message>
     <message>
       <source>Makes the window full screen</source>
-      <translation type="unfinished" />
+      <translation>Pone la ventana a pantalla completa</translation>
     </message>
     <message>
       <source>Closes the window</source>
@@ -474,7 +474,7 @@ a
     </message>
     <message>
       <source>Displays the name of the window and contains controls to manipulate it</source>
-      <translation type="unfinished" />
+      <translation>Muestra el nombre de la ventana y contiene controles para manipularla</translation>
     </message>
   </context>
   <context>
@@ -562,7 +562,7 @@ a
     </message>
     <message>
       <source>Socket is not connected</source>
-      <translation type="unfinished" />
+      <translation>El socket no está conectado</translation>
     </message>
   </context>
   <context>
@@ -608,7 +608,7 @@ a
     <name>QAxSelect</name>
     <message>
       <source>Select ActiveX Control</source>
-      <translation type="unfinished" />
+      <translation>Seleccionar control ActiveX</translation>
     </message>
     <message>
       <source>OK</source>
@@ -620,22 +620,22 @@ a
     </message>
     <message>
       <source>COM &amp;Object:</source>
-      <translation type="unfinished" />
+      <translation>&amp;Objeto COM:</translation>
     </message>
   </context>
   <context>
     <name>QCheckBox</name>
     <message>
       <source>Uncheck</source>
-      <translation type="unfinished" />
+      <translation>Desmarcar</translation>
     </message>
     <message>
       <source>Check</source>
-      <translation type="unfinished" />
+      <translation>Marcar</translation>
     </message>
     <message>
       <source>Toggle</source>
-      <translation type="unfinished" />
+      <translation>Conmutar</translation>
     </message>
   </context>
   <context>
@@ -720,11 +720,11 @@ a
     <name>QDB2Driver</name>
     <message>
       <source>Unable to connect</source>
-      <translation type="unfinished" />
+      <translation>No se puede conectar</translation>
     </message>
     <message>
       <source>Unable to commit transaction</source>
-      <translation type="unfinished" />
+      <translation>No se puede realizar la transacción</translation>
     </message>
     <message>
       <source>Unable to rollback transaction</source>
@@ -739,27 +739,27 @@ a
     <name>QDB2Result</name>
     <message>
       <source>Unable to execute statement</source>
-      <translation type="unfinished" />
+      <translation>No se puede ejecutar la sentencia</translation>
     </message>
     <message>
       <source>Unable to prepare statement</source>
-      <translation type="unfinished" />
+      <translation>No se puede preparar la sentencia</translation>
     </message>
     <message>
       <source>Unable to bind variable</source>
-      <translation type="unfinished" />
+      <translation>No se puede enlazar la variable</translation>
     </message>
     <message>
       <source>Unable to fetch record %1</source>
-      <translation type="unfinished" />
+      <translation>No se puede obtener el registro %1</translation>
     </message>
     <message>
       <source>Unable to fetch next</source>
-      <translation type="unfinished" />
+      <translation>No se puede obtener el siguiente</translation>
     </message>
     <message>
       <source>Unable to fetch first</source>
-      <translation type="unfinished" />
+      <translation>No se puede obtener el primero</translation>
     </message>
   </context>
   <context>
@@ -789,7 +789,7 @@ a
     </message>
     <message>
       <source>SpeedoMeter</source>
-      <translation type="unfinished" />
+      <translation>Medidor de velocidad</translation>
     </message>
     <message>
       <source>SliderHandle</source>
@@ -831,7 +831,7 @@ a
     </message>
     <message>
       <source>Reset</source>
-      <translation type="unfinished" />
+      <translation>Restablecer</translation>
     </message>
     <message>
       <source>Help</source>
@@ -839,11 +839,11 @@ a
     </message>
     <message>
       <source>Don't Save</source>
-      <translation type="unfinished" />
+      <translation>No guardar</translation>
     </message>
     <message>
       <source>Discard</source>
-      <translation type="unfinished" />
+      <translation>Descartar</translation>
     </message>
     <message>
       <source>&amp;Yes</source>
@@ -867,7 +867,7 @@ a
     </message>
     <message>
       <source>Abort</source>
-      <translation type="unfinished" >Interrumpir</translation>
+      <translation>Interrumpir</translation>
     </message>
     <message>
       <source>Retry</source>
@@ -879,11 +879,11 @@ a
     </message>
     <message>
       <source>Restore Defaults</source>
-      <translation type="unfinished" />
+      <translation>Restaurar predeterminados</translation>
     </message>
     <message>
       <source>Close without Saving</source>
-      <translation type="unfinished" />
+      <translation>Cerrar sin guardar</translation>
     </message>
   </context>
   <context>
@@ -908,7 +908,7 @@ a
     </message>
     <message>
       <source>Date Modified</source>
-      <translation type="unfinished" />
+      <translation>Fecha modificación</translation>
     </message>
   </context>
   <context>
@@ -1040,7 +1040,9 @@ Verifique que el nombre del fichero es correcto.</translation>
       <source>
 File not found.
 Please verify the correct file name was given</source>
-      <translation type="unfinished" />
+      <translation>
+No se encuentra el fichero.
+Por favor verifique que el nombre de fichero dado correcto</translation>
     </message>
     <message>
       <source>%1
@@ -1053,15 +1055,16 @@ Verique que el nombre del directorio es correcto.</translation>
     <message>
       <source>'%1' is write protected.
 Do you want to delete it anyway?</source>
-      <translation type="unfinished" />
+      <translation>'%1' está protegido contra escritura.
+¿Quiere borrarlo de todas formas?</translation>
     </message>
     <message>
       <source>Are sure you want to delete '%1'?</source>
-      <translation type="unfinished" />
+      <translation>¿Está seguro de que quiere borrar '%1'?</translation>
     </message>
     <message>
       <source>Could not delete directory.</source>
-      <translation type="unfinished" />
+      <translation>No se pudo borrar el directorio.</translation>
     </message>
     <message>
       <source>All Files (*.*)</source>
@@ -1085,15 +1088,15 @@ Do you want to delete it anyway?</source>
     </message>
     <message>
       <source>Find Directory</source>
-      <translation type="unfinished" >Buscar en el directorio</translation>
+      <translation>Encontrar directorio</translation>
     </message>
     <message>
       <source>Show </source>
-      <translation type="unfinished" />
+      <translation>Mostrar </translation>
     </message>
     <message>
       <source>Forward</source>
-      <translation type="unfinished" >Siguiente</translation>
+      <translation>Siguiente</translation>
     </message>
     <message>
       <source>New Folder</source>
@@ -1105,7 +1108,7 @@ Do you want to delete it anyway?</source>
     </message>
     <message>
       <source>&amp;Choose</source>
-      <translation type="unfinished" />
+      <translation>&amp;Seleccionar</translation>
     </message>
     <message>
       <source>Remove</source>
@@ -1148,11 +1151,11 @@ Do you want to delete it anyway?</source>
     </message>
     <message>
       <source>Invalid filename</source>
-      <translation type="unfinished" />
+      <translation>Nombre de fichero no válido</translation>
     </message>
     <message>
       <source>&lt;b>The name &quot;%1&quot; can not be used.&lt;/b>&lt;p>Try using another name, with fewer characters or no punctuations marks.</source>
-      <translation type="unfinished" />
+      <translation>&lt;b>El nombre &quot;%1&quot; no se puede usar.&lt;/b>&lt;p>Pruebe a usar otro nombre, con menos caracteres o sin signos de puntuación.</translation>
     </message>
     <message>
       <source>Name</source>
@@ -1174,15 +1177,15 @@ Do you want to delete it anyway?</source>
     </message>
     <message>
       <source>Date Modified</source>
-      <translation type="unfinished" />
+      <translation>Fecha modificación</translation>
     </message>
     <message>
       <source>My Computer</source>
-      <translation type="unfinished" >Mi computadora</translation>
+      <translation>Mi equipo</translation>
     </message>
     <message>
       <source>Computer</source>
-      <translation type="unfinished" />
+      <translation>Equipo</translation>
     </message>
   </context>
   <context>
@@ -1415,33 +1418,33 @@ Do you want to delete it anyway?</source>
     </message>
     <message>
       <source>Proxy authentication required</source>
-      <translation type="unfinished" />
+      <translation>Se requiere autenticación proxy</translation>
     </message>
     <message>
       <source>Authentication required</source>
-      <translation type="unfinished" />
+      <translation>Se requiere autenticación</translation>
     </message>
   </context>
   <context>
     <name>QHttpSocketEngine</name>
     <message>
       <source>Authentication required</source>
-      <translation type="unfinished" />
+      <translation>Se requiere autenticación</translation>
     </message>
   </context>
   <context>
     <name>QIBaseDriver</name>
     <message>
       <source>Error opening database</source>
-      <translation type="unfinished" />
+      <translation>Error al abrir la base de datos</translation>
     </message>
     <message>
       <source>Could not start transaction</source>
-      <translation type="unfinished" />
+      <translation>No se pude comenzar la transacción</translation>
     </message>
     <message>
       <source>Unable to commit transaction</source>
-      <translation type="unfinished" />
+      <translation>No se puede realizar la transacción</translation>
     </message>
     <message>
       <source>Unable to rollback transaction</source>
@@ -1452,71 +1455,71 @@ Do you want to delete it anyway?</source>
     <name>QIBaseResult</name>
     <message>
       <source>Unable to create BLOB</source>
-      <translation type="unfinished" />
+      <translation>No se puede crear BLOB</translation>
     </message>
     <message>
       <source>Unable to write BLOB</source>
-      <translation type="unfinished" />
+      <translation>No se puede escribir BLOB</translation>
     </message>
     <message>
       <source>Unable to open BLOB</source>
-      <translation type="unfinished" />
+      <translation>No se puede abrir BLOB</translation>
     </message>
     <message>
       <source>Unable to read BLOB</source>
-      <translation type="unfinished" />
+      <translation>No se puede leer BLOB</translation>
     </message>
     <message>
       <source>Could not find array</source>
-      <translation type="unfinished" />
+      <translation>No se pudo encontrar la matriz</translation>
     </message>
     <message>
       <source>Could not get array data</source>
-      <translation type="unfinished" />
+      <translation>No se pudieron obtener datos de la matriz</translation>
     </message>
     <message>
       <source>Could not get query info</source>
-      <translation type="unfinished" />
+      <translation>No se pudo obtener información de la consulta</translation>
     </message>
     <message>
       <source>Could not start transaction</source>
-      <translation type="unfinished" />
+      <translation>No se pude comenzar la transacción</translation>
     </message>
     <message>
       <source>Unable to commit transaction</source>
-      <translation type="unfinished" />
+      <translation>No se puede realizar la transacción</translation>
     </message>
     <message>
       <source>Could not allocate statement</source>
-      <translation type="unfinished" />
+      <translation>No se pudo asignar la sentencia</translation>
     </message>
     <message>
       <source>Could not prepare statement</source>
-      <translation type="unfinished" />
+      <translation>No se pudo preparar la sentencia</translation>
     </message>
     <message>
       <source>Could not describe input statement</source>
-      <translation type="unfinished" />
+      <translation>No se pudo describir la sentencia de entrada</translation>
     </message>
     <message>
       <source>Could not describe statement</source>
-      <translation type="unfinished" />
+      <translation>No se pudo describir la sentencia</translation>
     </message>
     <message>
       <source>Unable to close statement</source>
-      <translation type="unfinished" />
+      <translation>No se puede cerrar la sentencia</translation>
     </message>
     <message>
       <source>Unable to execute query</source>
-      <translation type="unfinished" />
+      <translation>No se puede ejecutar la consulta</translation>
     </message>
     <message>
       <source>Could not fetch next item</source>
-      <translation type="unfinished" />
+      <translation>No se pudo obtener el siguiente elemento</translation>
     </message>
     <message>
       <source>Could not get statement info</source>
-      <translation type="unfinished" />
+      <translation>No se pudo obtener información de la sentencia</translation>
     </message>
   </context>
   <context>
@@ -1565,15 +1568,15 @@ Do you want to delete it anyway?</source>
     <name>QLibrary</name>
     <message>
       <source>QLibrary::load_sys: Cannot load %1 (%2)</source>
-      <translation type="unfinished" />
+      <translation>QLibrary::load_sys: no se puede cargar %1 (%2)</translation>
     </message>
     <message>
       <source>QLibrary::unload_sys: Cannot unload %1 (%2)</source>
-      <translation type="unfinished" />
+      <translation>QLibrary::unload_sys: no se puede cargar %1 (%2)</translation>
     </message>
     <message>
       <source>QLibrary::resolve_sys: Symbol &quot;%1&quot; undefined in %2 (%3)</source>
-      <translation type="unfinished" />
+      <translation>QLibrary::resolve_sys: símbolo &quot;%1&quot; no definido en %2 (%3)</translation>
     </message>
     <message>
       <source>Could not mmap '%1': %2</source>
@@ -1581,7 +1584,7 @@ Do you want to delete it anyway?</source>
     </message>
     <message>
       <source>Plugin verification data mismatch in '%1'</source>
-      <translation type="unfinished" />
+      <translation>Los datos de verificación del complemento no concuerdan en '%1'</translation>
     </message>
     <message>
       <source>Could not unmap '%1': %2</source>
@@ -1589,11 +1592,11 @@ Do you want to delete it anyway?</source>
     </message>
     <message>
       <source>The plugin '%1' uses incompatible Qt library. (%2.%3.%4) [%5]</source>
-      <translation type="unfinished" />
+      <translation>El complemento '%1' usa bibliotecas Qt incompatibles. (%2.%3.%4) [%5]</translation>
     </message>
     <message>
       <source>The plugin '%1' uses incompatible Qt library. Expected build key &quot;%2&quot;, got &quot;%3&quot;</source>
-      <translation type="unfinished" />
+      <translation>El complemento '%1' usa bibliotecas Qt incompatibles. Clave de compilación esperada &quot;%2&quot;, se obtuvo &quot;%3&quot;</translation>
     </message>
     <message>
       <source>Unknown error</source>
@@ -1601,15 +1604,15 @@ Do you want to delete it anyway?</source>
     </message>
     <message>
       <source>The shared library was not found.</source>
-      <translation type="unfinished" />
+      <translation>No se encontró la biblioteca compartida.</translation>
     </message>
     <message>
       <source>The file '%1' is not a valid Qt plugin.</source>
-      <translation type="unfinished" />
+      <translation>El fichero '%1' no es un complemento Qt válido.</translation>
     </message>
     <message>
       <source>The plugin '%1' uses incompatible Qt library. (Cannot mix debug and release libraries.)</source>
-      <translation type="unfinished" />
+      <translation>El complemento '%1' usa bibliotecas Qt incompatibles. (No se pueden mezclar la bibliotecas de depuración de errores y de lanzamiento.)</translation>
     </message>
   </context>
   <context>
@@ -1647,19 +1650,19 @@ Do you want to delete it anyway?</source>
     <name>QMYSQLDriver</name>
     <message>
       <source>Unable to open database '</source>
-      <translation type="unfinished" />
+      <translation>No se puede abrir la base de datos '</translation>
     </message>
     <message>
       <source>Unable to connect</source>
-      <translation type="unfinished" />
+      <translation>No se puede conectar</translation>
     </message>
     <message>
       <source>Unable to begin transaction</source>
-      <translation type="unfinished" />
+      <translation>No se puede comenzar la transacción</translation>
     </message>
     <message>
       <source>Unable to commit transaction</source>
-      <translation type="unfinished" />
+      <translation>No se puede realizar la transacción</translation>
     </message>
     <message>
       <source>Unable to rollback transaction</source>
@@ -1670,31 +1673,31 @@ Do you want to delete it anyway?</source>
     <name>QMYSQLResult</name>
     <message>
       <source>Unable to fetch data</source>
-      <translation type="unfinished" />
+      <translation>No se pueden obtener datos</translation>
     </message>
     <message>
       <source>Unable to execute query</source>
-      <translation type="unfinished" />
+      <translation>No se puede ejecutar la consulta</translation>
     </message>
     <message>
       <source>Unable to store result</source>
-      <translation type="unfinished" />
+      <translation>No se puede guardar el resultado</translation>
     </message>
     <message>
       <source>Unable to prepare statement</source>
-      <translation type="unfinished" />
+      <translation>No se puede preparar la sentencia</translation>
     </message>
     <message>
       <source>Unable to reset statement</source>
-      <translation type="unfinished" />
+      <translation>No se puede restablecer la sentencia</translation>
     </message>
     <message>
       <source>Unable to bind value</source>
-      <translation type="unfinished" />
+      <translation>No se puede enlazar el valor</translation>
     </message>
     <message>
       <source>Unable to execute statement</source>
-      <translation type="unfinished" />
+      <translation>No se puede ejecutar la sentencia</translation>
     </message>
     <message>
       <source>Unable to bind outvalues</source>
@@ -1702,7 +1705,7 @@ Do you want to delete it anyway?</source>
     </message>
     <message>
       <source>Unable to store statement results</source>
-      <translation type="unfinished" />
+      <translation>No se pueden guardar los resultados de la sentencia</translation>
     </message>
   </context>
   <context>
@@ -1775,7 +1778,7 @@ Do you want to delete it anyway?</source>
     </message>
     <message>
       <source>Config</source>
-      <translation type="unfinished" />
+      <translation>Configurar</translation>
     </message>
     <message>
       <source>Preference</source>
@@ -1791,7 +1794,7 @@ Do you want to delete it anyway?</source>
     </message>
     <message>
       <source>Setup</source>
-      <translation type="unfinished" />
+      <translation>Configurar</translation>
     </message>
     <message>
       <source>Quit</source>
@@ -1815,7 +1818,7 @@ Do you want to delete it anyway?</source>
     </message>
     <message>
       <source>Quit %1</source>
-      <translation type="unfinished" />
+      <translation>Salir de %1</translation>
     </message>
   </context>
   <context>
@@ -1838,37 +1841,37 @@ Do you want to delete it anyway?</source>
     </message>
     <message>
       <source>&lt;h3>About Qt&lt;/h3>%1&lt;p>Qt is a C++ toolkit for cross-platform application development.&lt;/p>&lt;p>Qt provides single-source portability across MS&amp;nbsp;Windows, Mac&amp;nbsp;OS&amp;nbsp;X, Linux, and all major commercial Unix variants. Qt is also available for embedded devices as Qtopia Core.&lt;/p>&lt;p>Qt is a Trolltech product. See &lt;a href=&quot;http://www.trolltech.com/qt/&quot;>www.trolltech.com/qt/&lt;/a> for more information.&lt;/p></source>
-      <translation type="unfinished" />
+      <translation>&lt;h3>Acerca de Qt&lt;/h3>%1&lt;p>Qt es un grupo de herramientas C++ para desarrollo de aplicaciones multiplataforma.&lt;/p>&lt;p>Qt proporciona portabilidad de una sola fuente para MS&amp;nbsp;Windows, Mac&amp;nbsp;OS&amp;nbsp;X, Linux, y todas las variantes comerciales principales de Unix. Qt está también disponible para dispositivos empotrados como Qtopia Core.&lt;/p>&lt;p>Qt es un producto Trolltech. Véase &lt;a href=&quot;http://www.trolltech.com/qt/&quot;>www.trolltech.com/qt/&lt;/a> para más información.&lt;/p></translation>
     </message>
     <message>
       <source>Show Details...</source>
-      <translation type="unfinished" />
+      <translation>Mostrar detalles...</translation>
     </message>
     <message>
       <source>Hide Details...</source>
-      <translation type="unfinished" />
+      <translation>Ocultar detalles...</translation>
     </message>
     <message>
       <source>&lt;p>This program uses Qt Open Source Edition version %1.&lt;/p>&lt;p>Qt Open Source Edition is intended for the development of Open Source applications. You need a commercial Qt license for development of proprietary (closed source) applications.&lt;/p>&lt;p>Please see &lt;a href=&quot;http://www.trolltech.com/company/model/&quot;>www.trolltech.com/company/model/&lt;/a> for an overview of Qt licensing.&lt;/p></source>
-      <translation type="unfinished" />
+      <translation>&lt;p>Este programa usa la versión %1 de Qt Open Source Edition.&lt;/p>&lt;p>Qt Open Source Edition está destinada al desarrollo de aplicaciones de software libre. Necesita una licencia comercial de Qt para el desarrollo de aplicaciones propietarias (fuente cerrada).&lt;/p>&lt;p>Por favor vea &lt;a href=&quot;http://www.trolltech.com/company/model/&quot;>www.trolltech.com/company/model/&lt;/a> para una descripción de la licencia de Qt.&lt;/p></translation>
     </message>
   </context>
   <context>
     <name>QMultiInputContext</name>
     <message>
       <source>Select IM</source>
-      <translation type="unfinished" />
+      <translation>Seleccionar IM</translation>
     </message>
   </context>
   <context>
     <name>QMultiInputContextPlugin</name>
     <message>
       <source>Multiple input method switcher</source>
-      <translation type="unfinished" />
+      <translation>Intercambiador de método de entrada múltiple</translation>
     </message>
     <message>
       <source>Multiple input method switcher that uses the context menu of the text widgets</source>
-      <translation type="unfinished" />
+      <translation>Intercambiador de método de entrada múltiple que usa el menú contextual de los elementos gráficos de texto</translation>
     </message>
   </context>
   <context>
@@ -1959,11 +1962,11 @@ Do you want to delete it anyway?</source>
     </message>
     <message>
       <source>Host unreachable</source>
-      <translation type="unfinished" />
+      <translation>Servidor inalcanzable</translation>
     </message>
     <message>
       <source>Datagram was too large to send</source>
-      <translation type="unfinished" />
+      <translation>El datagrama era demasiado grande para enviarlo</translation>
     </message>
     <message>
       <source>Operation on non-socket</source>
@@ -1978,58 +1981,58 @@ Do you want to delete it anyway?</source>
     <name>QOCIDriver</name>
     <message>
       <source>Unable to logon</source>
-      <translation type="unfinished" />
+      <translation>No se puede conectar</translation>
     </message>
     <message>
       <source>Unable to initialize</source>
       <comment>QOCIDriver</comment>
-      <translation type="unfinished" />
+      <translation>No se puede inicializar</translation>
     </message>
   </context>
   <context>
     <name>QOCIResult</name>
     <message>
       <source>Unable to bind column for batch execute</source>
-      <translation type="unfinished" />
+      <translation>No se puede enlazar la columna para la ejecución por lotes</translation>
     </message>
     <message>
       <source>Unable to execute batch statement</source>
-      <translation type="unfinished" />
+      <translation>No se puede ejecutar la sentencia batch</translation>
     </message>
     <message>
       <source>Unable to goto next</source>
-      <translation type="unfinished" />
+      <translation>No se puede ir al siguiente</translation>
     </message>
     <message>
       <source>Unable to alloc statement</source>
-      <translation type="unfinished" />
+      <translation>No se puede asignar la sentencia</translation>
     </message>
     <message>
       <source>Unable to prepare statement</source>
-      <translation type="unfinished" />
+      <translation>No se puede preparar la sentencia</translation>
     </message>
     <message>
       <source>Unable to bind value</source>
-      <translation type="unfinished" />
+      <translation>No se puede enlazar el valor</translation>
     </message>
     <message>
       <source>Unable to execute select statement</source>
-      <translation type="unfinished" />
+      <translation>No se puede ejecutar la sentencia select</translation>
     </message>
     <message>
       <source>Unable to execute statement</source>
-      <translation type="unfinished" />
+      <translation>No se puede ejecutar la sentencia</translation>
     </message>
   </context>
   <context>
     <name>QODBCDriver</name>
     <message>
       <source>Unable to connect</source>
-      <translation type="unfinished" />
+      <translation>No se puede conectar</translation>
     </message>
     <message>
       <source>Unable to connect - Driver doesn't support all needed functionality</source>
-      <translation type="unfinished" />
+      <translation>No se puede conectar - El controlador no soporta toda la funcionalidad requerida</translation>
     </message>
     <message>
       <source>Unable to disable autocommit</source>
@@ -2037,7 +2040,7 @@ Do you want to delete it anyway?</source>
     </message>
     <message>
       <source>Unable to commit transaction</source>
-      <translation type="unfinished" />
+      <translation>No se puede realizar la transacción</translation>
     </message>
     <message>
       <source>Unable to rollback transaction</source>
@@ -2052,45 +2055,45 @@ Do you want to delete it anyway?</source>
     <name>QODBCResult</name>
     <message>
       <source>QODBCResult::reset: Unable to set 'SQL_CURSOR_STATIC' as statement attribute. Please check your ODBC driver configuration</source>
-      <translation type="unfinished" />
+      <translation>QODBCResult::reset: no se puede establecer 'SQL_CURSOR_STATIC' como atributo de la sentencia. Por favor, compruebe la configuración de su controlador ODBC</translation>
     </message>
     <message>
       <source>Unable to execute statement</source>
-      <translation type="unfinished" />
+      <translation>No se puede ejecutar la sentencia</translation>
     </message>
     <message>
       <source>Unable to fetch next</source>
-      <translation type="unfinished" />
+      <translation>No se puede obtener el siguiente</translation>
     </message>
     <message>
       <source>Unable to prepare statement</source>
-      <translation type="unfinished" />
+      <translation>No se puede preparar la sentencia</translation>
     </message>
     <message>
       <source>Unable to bind variable</source>
-      <translation type="unfinished" />
+      <translation>No se puede enlazar la variable</translation>
     </message>
   </context>
   <context>
     <name>QObject</name>
     <message>
       <source>Home</source>
-      <translation type="unfinished" >Inicio</translation>
+      <translation>Inicio</translation>
     </message>
   </context>
   <context>
     <name>QPSQLDriver</name>
     <message>
       <source>Unable to connect</source>
-      <translation type="unfinished" />
+      <translation>No se puede conectar</translation>
     </message>
     <message>
       <source>Could not begin transaction</source>
-      <translation type="unfinished" />
+      <translation>No se pudo comenzar la transacción</translation>
     </message>
     <message>
       <source>Could not commit transaction</source>
-      <translation type="unfinished" />
+      <translation>No se pudo realizar la transacción</translation>
     </message>
     <message>
       <source>Could not rollback transaction</source>
@@ -2101,7 +2104,7 @@ Do you want to delete it anyway?</source>
     <name>QPSQLResult</name>
     <message>
       <source>Unable to create query</source>
-      <translation type="unfinished" />
+      <translation>No se puede crear la consulta</translation>
     </message>
   </context>
   <context>
@@ -2112,7 +2115,7 @@ Do you want to delete it anyway?</source>
     </message>
     <message>
       <source>The plugin was not loaded.</source>
-      <translation type="unfinished" />
+      <translation>No se cargó el complemento.</translation>
     </message>
   </context>
   <context>
@@ -2323,85 +2326,88 @@ Do you want to delete it anyway?</source>
     </message>
     <message>
       <source>Print dialog</source>
-      <translation type="unfinished" />
+      <translation>Imprimir diálogo</translation>
     </message>
     <message>
       <source>Size:</source>
-      <translation type="unfinished" />
+      <translation>Tamaño:</translation>
     </message>
     <message>
       <source>Properties</source>
-      <translation type="unfinished" />
+      <translation>Propiedades</translation>
     </message>
     <message>
       <source>Printer info:</source>
-      <translation type="unfinished" />
+      <translation>Información de la impresora:</translation>
     </message>
     <message>
       <source>Browse</source>
-      <translation type="unfinished" />
+      <translation>Explorar</translation>
     </message>
     <message>
       <source>Print to file</source>
-      <translation type="unfinished" />
+      <translation>Imprimir a fichero</translation>
     </message>
     <message>
       <source>Pages from</source>
-      <translation type="unfinished" />
+      <translation>Páginas desde</translation>
     </message>
     <message>
       <source>to</source>
-      <translation type="unfinished" />
+      <translation>a</translation>
     </message>
     <message>
       <source>Selection</source>
-      <translation type="unfinished" />
+      <translation>Selección</translation>
     </message>
     <message>
       <source>Copies</source>
-      <translation type="unfinished" />
+      <translation>Copias</translation>
     </message>
     <message>
       <source>Collate</source>
-      <translation type="unfinished" />
+      <translation>Poner en cola</translation>
     </message>
     <message>
       <source>Other</source>
-      <translation type="unfinished" />
+      <translation>Otro</translation>
     </message>
     <message>
       <source>Double side printing</source>
-      <translation type="unfinished" />
+      <translation>Impresión a dos caras</translation>
     </message>
     <message>
       <source>File %1 is not writable.
 Please choose a different file name.</source>
-      <translation type="unfinished" />
+      <translation>El fichero %1 no se puede escribir.
+Por favor elija un nombre de fichero distinto.</translation>
     </message>
     <message>
       <source>%1 already exists.
 Do you want to overwrite it?</source>
-      <translation type="unfinished" />
+      <translation>%1 ya existe.
+¿Quiere sobrescribirlo?</translation>
     </message>
     <message>
       <source>File exists</source>
-      <translation type="unfinished" />
+      <translation>El fichero existe</translation>
     </message>
     <message>
       <source>&lt;qt>Do you want to overwrite it?&lt;/qt></source>
-      <translation type="unfinished" />
+      <translation>&lt;qt>¿Quiere sobrescribirlo?&lt;/qt></translation>
     </message>
     <message>
       <source>%1 is a directory.
 Please choose a different file name.</source>
-      <translation type="unfinished" />
+      <translation>%1 es un directorio.
+Por favor elija un nombre de fichero distinto.</translation>
     </message>
   </context>
   <context>
     <name>QPrintPropertiesDialog</name>
     <message>
       <source>PPD Properties</source>
-      <translation type="unfinished" />
+      <translation>Propiedades PPD</translation>
     </message>
     <message>
       <source>Save</source>
@@ -2430,7 +2436,7 @@ Please choose a different file name.</source>
     <name>QRadioButton</name>
     <message>
       <source>Check</source>
-      <translation type="unfinished" />
+      <translation>Marcar</translation>
     </message>
   </context>
   <context>
@@ -2476,15 +2482,15 @@ Please choose a different file name.</source>
     <name>QSQLite2Driver</name>
     <message>
       <source>Error to open database</source>
-      <translation type="unfinished" />
+      <translation>Error al abrir la base de datos</translation>
     </message>
     <message>
       <source>Unable to begin transaction</source>
-      <translation type="unfinished" />
+      <translation>No se puede comenzar la transacción</translation>
     </message>
     <message>
       <source>Unable to commit transaction</source>
-      <translation type="unfinished" />
+      <translation>No se puede realizar la transacción</translation>
     </message>
     <message>
       <source>Unable to rollback Transaction</source>
@@ -2495,30 +2501,30 @@ Please choose a different file name.</source>
     <name>QSQLite2Result</name>
     <message>
       <source>Unable to fetch results</source>
-      <translation type="unfinished" />
+      <translation>No se pueden obtener los resultados</translation>
     </message>
     <message>
       <source>Unable to execute statement</source>
-      <translation type="unfinished" />
+      <translation>No se puede ejecutar la sentencia</translation>
     </message>
   </context>
   <context>
     <name>QSQLiteDriver</name>
     <message>
       <source>Error opening database</source>
-      <translation type="unfinished" />
+      <translation>Error al abrir la base de datos</translation>
     </message>
     <message>
       <source>Error closing database</source>
-      <translation type="unfinished" />
+      <translation>Error al cerrar la base de datos</translation>
     </message>
     <message>
       <source>Unable to begin transaction</source>
-      <translation type="unfinished" />
+      <translation>No se puede comenzar la transacción</translation>
     </message>
     <message>
       <source>Unable to commit transaction</source>
-      <translation type="unfinished" />
+      <translation>No se puede realizar la transacción</translation>
     </message>
     <message>
       <source>Unable to roll back transaction</source>
@@ -2529,23 +2535,23 @@ Please choose a different file name.</source>
     <name>QSQLiteResult</name>
     <message>
       <source>Unable to fetch row</source>
-      <translation type="unfinished" />
+      <translation>No se puede obtener la fila</translation>
     </message>
     <message>
       <source>Unable to execute statement</source>
-      <translation type="unfinished" />
+      <translation>No se puede ejecutar la sentencia</translation>
     </message>
     <message>
       <source>Unable to reset statement</source>
-      <translation type="unfinished" />
+      <translation>No se puede restablecer la sentencia</translation>
     </message>
     <message>
       <source>Unable to bind parameters</source>
-      <translation type="unfinished" />
+      <translation>No se pueden enlazar los parámetros</translation>
     </message>
     <message>
       <source>Parameter count mismatch</source>
-      <translation type="unfinished" />
+      <translation>El número de parámetros no concuerda</translation>
     </message>
   </context>
   <context>
@@ -2608,11 +2614,11 @@ Please choose a different file name.</source>
     </message>
     <message>
       <source>Position</source>
-      <translation type="unfinished" />
+      <translation>Posición</translation>
     </message>
     <message>
       <source>Line down</source>
-      <translation type="unfinished" />
+      <translation>Una línea abajo</translation>
     </message>
   </context>
   <context>
@@ -2983,30 +2989,30 @@ Please choose a different file name.</source>
     </message>
     <message>
       <source>Home Page</source>
-      <translation type="unfinished" />
+      <translation>Página de inicio</translation>
     </message>
   </context>
   <context>
     <name>QSlider</name>
     <message>
       <source>Page left</source>
-      <translation type="unfinished" >Una página a la izquierda</translation>
+      <translation>Una página a la izquierda</translation>
     </message>
     <message>
       <source>Page up</source>
-      <translation type="unfinished" >Una página hacia arriba</translation>
+      <translation>Una página hacia arriba</translation>
     </message>
     <message>
       <source>Position</source>
-      <translation type="unfinished" />
+      <translation>Posición</translation>
     </message>
     <message>
       <source>Page right</source>
-      <translation type="unfinished" >Una página a la derecha</translation>
+      <translation>Una página a la derecha</translation>
     </message>
     <message>
       <source>Page down</source>
-      <translation type="unfinished" >Una página hacia abajo</translation>
+      <translation>Una página hacia abajo</translation>
     </message>
   </context>
   <context>
@@ -3020,11 +3026,11 @@ Please choose a different file name.</source>
     <name>QSpinBox</name>
     <message>
       <source>More</source>
-      <translation type="unfinished" />
+      <translation>Más</translation>
     </message>
     <message>
       <source>Less</source>
-      <translation type="unfinished" />
+      <translation>Menos</translation>
     </message>
   </context>
   <context>
@@ -3074,11 +3080,11 @@ Please choose a different file name.</source>
     <name>QSslSocket</name>
     <message>
       <source>Unable to write data: %1</source>
-      <translation type="unfinished" />
+      <translation>No se pueden escribir los datos: %1</translation>
     </message>
     <message>
       <source>Error while reading: %1</source>
-      <translation type="unfinished" />
+      <translation>Error al leer: %1</translation>
     </message>
     <message>
       <source>Error during SSL handshake: %1</source>
@@ -3086,57 +3092,57 @@ Please choose a different file name.</source>
     </message>
     <message>
       <source>Error creating SSL context (%1)</source>
-      <translation type="unfinished" />
+      <translation>Error al crear el contexto SSL (%1)</translation>
     </message>
     <message>
       <source>Invalid or empty cipher list (%1)</source>
-      <translation type="unfinished" />
+      <translation>Lista de cifrado no válida o vacía (%1)</translation>
     </message>
     <message>
       <source>Error creating SSL session, %1</source>
-      <translation type="unfinished" />
+      <translation>Error al crear la sesión SSL, %1</translation>
     </message>
     <message>
       <source>Error creating SSL session: %1</source>
-      <translation type="unfinished" />
+      <translation>Error al crear la sesión SSL: %1</translation>
     </message>
     <message>
       <source>Cannot provide a certificate with no key, %1</source>
-      <translation type="unfinished" />
+      <translation>No se puede proporcionar un certificado sin clave, %1</translation>
     </message>
     <message>
       <source>Error loading local certificate, %1</source>
-      <translation type="unfinished" />
+      <translation>Error al cargar el certificado local, %1</translation>
     </message>
     <message>
       <source>Error loading private key, %1</source>
-      <translation type="unfinished" />
+      <translation>Error al cargar la clave privada, %1</translation>
     </message>
     <message>
       <source>Private key do not certificate public key, %1</source>
-      <translation type="unfinished" />
+      <translation>La clave privada no certifica la clave pública, %1</translation>
     </message>
   </context>
   <context>
     <name>QTDSDriver</name>
     <message>
       <source>Unable to open connection</source>
-      <translation type="unfinished" />
+      <translation>No se puede abrir la conexión</translation>
     </message>
     <message>
       <source>Unable to use database</source>
-      <translation type="unfinished" />
+      <translation>No se puede usar la base de datos</translation>
     </message>
   </context>
   <context>
     <name>QTabBar</name>
     <message>
       <source>Scroll Left</source>
-      <translation type="unfinished" />
+      <translation>Desplazar a la izquierda</translation>
     </message>
     <message>
       <source>Scroll Right</source>
-      <translation type="unfinished" />
+      <translation>Desplazar a la derecha</translation>
     </message>
   </context>
   <context>
@@ -3166,7 +3172,7 @@ Please choose a different file name.</source>
     </message>
     <message>
       <source>Copy &amp;Link Location</source>
-      <translation type="unfinished" />
+      <translation>Copiar &amp;localización del enlace</translation>
     </message>
     <message>
       <source>&amp;Paste</source>
@@ -3185,7 +3191,7 @@ Please choose a different file name.</source>
     <name>QToolButton</name>
     <message>
       <source>Press</source>
-      <translation type="unfinished" />
+      <translation>Presionar</translation>
     </message>
     <message>
       <source>Open</source>
@@ -3203,11 +3209,11 @@ Please choose a different file name.</source>
     <name>QUndoGroup</name>
     <message>
       <source>Undo</source>
-      <translation type="unfinished" />
+      <translation>Deshacer</translation>
     </message>
     <message>
       <source>Redo</source>
-      <translation type="unfinished" />
+      <translation>Rehacer</translation>
     </message>
   </context>
   <context>
@@ -3221,54 +3227,54 @@ Please choose a different file name.</source>
     <name>QUndoStack</name>
     <message>
       <source>Undo</source>
-      <translation type="unfinished" />
+      <translation>Deshacer</translation>
     </message>
     <message>
       <source>Redo</source>
-      <translation type="unfinished" />
+      <translation>Rehacer</translation>
     </message>
   </context>
   <context>
     <name>QUnicodeControlCharacterMenu</name>
     <message>
       <source>LRM Left-to-right mark</source>
-      <translation>LRM Left-to-right mark</translation>
+      <translation>LRM Marca izquierda a derecha</translation>
     </message>
     <message>
       <source>RLM Right-to-left mark</source>
-      <translation>RLM Right-to-left mark</translation>
+      <translation>RLM Marca derecha a izquierda</translation>
     </message>
     <message>
       <source>ZWJ Zero width joiner</source>
-      <translation>ZWJ Zero width joiner</translation>
+      <translation>ZWJ Conector de anchura cero</translation>
     </message>
     <message>
       <source>ZWNJ Zero width non-joiner</source>
-      <translation>ZWNJ Zero width non-joiner</translation>
+      <translation>ZWNJ No conector de anchura cero</translation>
     </message>
     <message>
       <source>ZWSP Zero width space</source>
-      <translation>ZWSP Zero width space</translation>
+      <translation>ZWSP Espacio de anchura cero</translation>
     </message>
     <message>
       <source>LRE Start of left-to-right embedding</source>
-      <translation>LRE Start of left-to-right embedding</translation>
+      <translation>LRE Comienzo de empotramiento izquierda a derecha</translation>
     </message>
     <message>
       <source>RLE Start of right-to-left embedding</source>
-      <translation>RLE Start of right-to-left embedding</translation>
+      <translation>RLE Comienzo de empotramiento derecha a izquierda</translation>
     </message>
     <message>
       <source>LRO Start of left-to-right override</source>
-      <translation>LRO Start of left-to-right override</translation>
+      <translation>LRO Comienzo de ignorar izquierda a derecha</translation>
     </message>
     <message>
       <source>RLO Start of right-to-left override</source>
-      <translation>RLO Start of right-to-left override</translation>
+      <translation>RLO Comienzo de ignorar derecha a izquierda</translation>
     </message>
     <message>
       <source>PDF Pop directional formatting</source>
-      <translation>PDF Pop directional formatting</translation>
+      <translation>PDF Formateado direccional pop</translation>
     </message>
     <message>
       <source>Insert Unicode control character</source>
@@ -3293,11 +3299,11 @@ Please choose a different file name.</source>
     <name>QWizard</name>
     <message>
       <source>Go Back</source>
-      <translation type="unfinished" />
+      <translation>Volver</translation>
     </message>
     <message>
       <source>Continue</source>
-      <translation type="unfinished" />
+      <translation>Continuar</translation>
     </message>
     <message>
       <source>Commit</source>
@@ -3305,11 +3311,11 @@ Please choose a different file name.</source>
     </message>
     <message>
       <source>Done</source>
-      <translation type="unfinished" />
+      <translation>Hecho</translation>
     </message>
     <message>
       <source>Quit</source>
-      <translation type="unfinished" />
+      <translation>Salir</translation>
     </message>
     <message>
       <source>Help</source>
@@ -3486,19 +3492,19 @@ Please choose a different file name.</source>
     <name>QXmlStream</name>
     <message>
       <source>Extra content at end of document.</source>
-      <translation type="unfinished" />
+      <translation>Contenido extra al final del documento.</translation>
     </message>
     <message>
       <source>Invalid entity value.</source>
-      <translation type="unfinished" />
+      <translation>Valor de entidad no válido.</translation>
     </message>
     <message>
       <source>Invalid XML character.</source>
-      <translation type="unfinished" />
+      <translation>Carácter XML no válido.</translation>
     </message>
     <message>
       <source>Sequence ']]&gt;' not allowed in content.</source>
-      <translation type="unfinished" />
+      <translation>La secuencia ']]&gt;' no está permitida en el contenido.</translation>
     </message>
     <message>
       <source>Namespace prefix '%1' not declared</source>
@@ -3506,31 +3512,31 @@ Please choose a different file name.</source>
     </message>
     <message>
       <source>Attribute redefined.</source>
-      <translation type="unfinished" />
+      <translation>Atributo redefinido.</translation>
     </message>
     <message>
       <source>Unexpected character '%1' in public id literal.</source>
-      <translation type="unfinished" />
+      <translation>Carácter '%1' inesperado en el literal id público.</translation>
     </message>
     <message>
       <source>Invalid XML version string.</source>
-      <translation type="unfinished" />
+      <translation>Cadena de versión XML no válida.</translation>
     </message>
     <message>
       <source>Unsupported XML version.</source>
-      <translation type="unfinished" />
+      <translation>Versión XML no soportada.</translation>
     </message>
     <message>
       <source>%1 is an invalid encoding name.</source>
-      <translation type="unfinished" />
+      <translation>%1 es un nombre de codificación no válido.</translation>
     </message>
     <message>
       <source>Encoding %1 is unsupported</source>
-      <translation type="unfinished" />
+      <translation>La codificación %1 no está soportada</translation>
     </message>
     <message>
       <source>Invalid XML encoding name.</source>
-      <translation type="unfinished" />
+      <translation>Nombre de codificación XML no válido.</translation>
     </message>
     <message>
       <source>Standalone accepts only yes or no.</source>
@@ -3538,43 +3544,43 @@ Please choose a different file name.</source>
     </message>
     <message>
       <source>Invalid attribute in XML declaration.</source>
-      <translation type="unfinished" />
+      <translation>Atributo no válido en la declaración XML.</translation>
     </message>
     <message>
       <source>Premature end of document.</source>
-      <translation type="unfinished" />
+      <translation>Final prematuro del documento.</translation>
     </message>
     <message>
       <source>Invalid document.</source>
-      <translation type="unfinished" />
+      <translation>Documento no válido.</translation>
     </message>
     <message>
       <source>Expected </source>
-      <translation type="unfinished" />
+      <translation>Se esperaba </translation>
     </message>
     <message>
       <source>, but got '</source>
-      <translation type="unfinished" />
+      <translation>, pero se obtuvo '</translation>
     </message>
     <message>
       <source>Unexpected '</source>
-      <translation type="unfinished" />
+      <translation>Inesperado '</translation>
     </message>
     <message>
       <source>Expected character data.</source>
-      <translation type="unfinished" />
+      <translation>Datos de carácter esperados.</translation>
     </message>
     <message>
       <source>Recursive entity detected.</source>
-      <translation type="unfinished" />
+      <translation>Se detectó una entidad recursiva.</translation>
     </message>
     <message>
       <source>Start tag expected.</source>
-      <translation type="unfinished" />
+      <translation>Se esperaba la etiqueta de inicio.</translation>
     </message>
     <message>
       <source>XML declaration not at start of document.</source>
-      <translation type="unfinished" />
+      <translation>La declaración XML no está al comienzo del documento.</translation>
     </message>
     <message>
       <source>NDATA in parameter entity declaration.</source>
@@ -3582,11 +3588,11 @@ Please choose a different file name.</source>
     </message>
     <message>
       <source>%1 is an invalid processing instruction name.</source>
-      <translation type="unfinished" />
+      <translation>%1 es un nombre de instrucción de procesamiento no válido.</translation>
     </message>
     <message>
       <source>Invalid processing instruction name.</source>
-      <translation type="unfinished" />
+      <translation>Nombre de instrucción de procesamiento no válido.</translation>
     </message>
     <message>
       <source>Illegal namespace declaration.</source>
@@ -3594,31 +3600,31 @@ Please choose a different file name.</source>
     </message>
     <message>
       <source>Invalid XML name.</source>
-      <translation type="unfinished" />
+      <translation>Nombre XML no válido.</translation>
     </message>
     <message>
       <source>Opening and ending tag mismatch.</source>
-      <translation type="unfinished" />
+      <translation>Las etiquetas de inicio y final no se corresponden.</translation>
     </message>
     <message>
       <source>Reference to unparsed entity '%1'.</source>
-      <translation type="unfinished" />
+      <translation>Referencia a la entidad no analizada '%1'.</translation>
     </message>
     <message>
       <source>Entity '%1' not declared.</source>
-      <translation type="unfinished" />
+      <translation>Entidad '%1' no declarada.</translation>
     </message>
     <message>
       <source>Reference to external entity '%1' in attribute value.</source>
-      <translation type="unfinished" />
+      <translation>Referencia a la entidad externa '%1' en el valor del atributo.</translation>
     </message>
     <message>
       <source>Invalid character reference.</source>
-      <translation type="unfinished" />
+      <translation>Referencia de carácter no válida.</translation>
     </message>
     <message>
       <source>Encountered incorrectly encoded content.</source>
-      <translation type="unfinished" />
+      <translation>Se encontró contenido incorrectamente codificado.</translation>
     </message>
     <message>
       <source>The standalone pseudo attribute must appear after the encoding.</source>
@@ -3626,7 +3632,7 @@ Please choose a different file name.</source>
     </message>
     <message>
       <source>%1 is an invalid PUBLIC identifier.</source>
-      <translation type="unfinished" />
+      <translation>%1 es un identificador PÚBLICO no válido.</translation>
     </message>
   </context>
 </TS>
