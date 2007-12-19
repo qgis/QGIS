@@ -16,6 +16,14 @@ qt_libs = ["QtCore","QtGui","QtNetwork","QtSvg","QtXml"]
 if sys.platform == 'darwin':
   qt_libs.append("Qt3Support")
   qt_libs.append("QtSql")
+  # possibility of universal build of bindings
+  osx_archs = '@CMAKE_OSX_ARCHITECTURES@'
+  if osx_archs == 'ppc;i386' or osx_archs == 'i386;ppc':
+    osx_universal = '@CMAKE_OSX_SYSROOT@'
+  else:
+    osx_universal = ''
+else:
+  osx_universal = ''
 
 if len(sys.argv)>1:
   intdir = "/" + sys.argv[1]
@@ -98,7 +106,8 @@ makefile_core = sipconfig.ModuleMakefile(
         build_file=build_file_core,
         installs=installs_core,
         install_dir=mod_dir,
-        dir="core")
+        dir="core",
+        universal=osx_universal)
 
 makefile_gui = sipconfig.ModuleMakefile(
         configuration=config,
@@ -106,7 +115,8 @@ makefile_gui = sipconfig.ModuleMakefile(
         build_file=build_file_gui,
         installs=installs_gui,
         install_dir=mod_dir,
-        dir="gui")
+        dir="gui",
+        universal=osx_universal)
 
 # common settings for both core and gui libs
 for mk in [ makefile_core, makefile_gui ]:
