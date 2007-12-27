@@ -18,6 +18,7 @@
 
 #include "qgsabout.h"
 #include "qgsapplication.h"
+#include "qgslogger.h"
 #ifdef Q_WS_MAC
 #include <ApplicationServices/ApplicationServices.h>
 #else
@@ -194,6 +195,7 @@ void QgsAbout::on_listBox1_currentItemChanged(QListWidgetItem *theItem)
 #endif 
   QString myString = listBox1->currentItem()->text();
   myString = myString.replace(" ","_");
+  myString = QgsAbout::fileSystemSafe(myString);
 #ifdef QGISDEBUG 
   printf ("Loading mug: %s", (const char *)myString.toLocal8Bit().data()); 
 #endif 
@@ -271,4 +273,34 @@ void QgsAbout::openUrl(QString url)
   /*  mHelpViewer = new QgsHelpViewer(this,"helpviewer",false);
       mHelpViewer->showContent(mAppDir +"/share/doc","index.html");
       mHelpViewer->show(); */
+}
+
+/*
+ * The function below makes a name safe for using in most file system
+ * Step 1: Code QString as UTF-8
+ * Step 2: Replace all bytes of the UTF-8 above 0x7f with the hexcode in lower case.
+ * Step 2: Replace all non [a-z][a-Z][0-9] with underscore (backward compatibility)
+ */
+QString QgsAbout::fileSystemSafe(QString filename)
+{
+  QString result;
+  QByteArray utf8 = filename.toUtf8();
+
+  for (int i = 0; i < utf8.size(); i++)
+  {
+     uchar c = utf8[i];
+
+     if (c > 0x7f)
+     {
+       result = result + QString("%1").arg(c, 2, 16, QChar('0'));
+     }
+     else
+     {
+       result = result + QString(c);
+     }
+   }
+  result.replace(QRegExp("[^a-z0-9A-Z]"), "_");
+  QgsDebugMsg(result);
+
+  return result;
 }
