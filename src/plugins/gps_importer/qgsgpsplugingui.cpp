@@ -410,10 +410,10 @@ void QgsGPSPluginGui::populateCONVDialog() {
 
   QString format = QString("<html><body><p>%1 %2<p>%3</body></html>");
 
-  QString sentence1 = tr("QGIS can perform conversions of GPX files, by using GPSBabel (%1) to perform the conversions.","Description")
+  QString sentence1 = tr("QGIS can perform conversions of GPX files, by using GPSBabel (%1) to perform the conversions.")
     .arg("<a href=\"http://www.gpsbabel.org\">http://www.gpsbabel.org</a>");
-  QString sentence2 = tr("This requires that you have GPSBabel installed where QGIS can find it.","Description");
-  QString sentence3 = tr("Select a GPX input file name, the type of conversion you want to perform, a GPX filename that you want to save the converted file as, and a name for the new layer created from the result.","Description");
+  QString sentence2 = tr("This requires that you have GPSBabel installed where QGIS can find it.");
+  QString sentence3 = tr("Select a GPX input file name, the type of conversion you want to perform, a GPX filename that you want to save the converted file as, and a name for the new layer created from the result.");
 
   QString text = format.arg(sentence1).arg(sentence2).arg(sentence3);
 
