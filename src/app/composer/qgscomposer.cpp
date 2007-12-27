@@ -926,7 +926,15 @@ void QgsComposer::restoreWindowState()
 {
   QSettings settings;
   restoreGeometry(settings.value("/Composer/geometry").toByteArray());
-  mSplitter->restoreState(settings.value("/Composer/splitterState").toByteArray());
+  QVariant splitterState = settings.value("/Composer/splitterState");
+  if (splitterState != QVariant::QVariant())
+    mSplitter->restoreState(settings.value("/Composer/splitterState").toByteArray());
+  else
+  {
+    QList<int> defaultSize;
+    defaultSize << 300 << 100;
+    mSplitter->setSizes(defaultSize);
+  }
 }
 
 void QgsComposer::on_helpPButton_clicked()
