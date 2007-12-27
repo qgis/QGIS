@@ -932,7 +932,7 @@ void QgsComposer::restoreWindowState()
   else
   {
     QList<int> defaultSize;
-    defaultSize << 300 << 100;
+    defaultSize << 300 << 100; // page display 300 pixels, details pane 100 pixels
     mSplitter->setSizes(defaultSize);
   }
 }
