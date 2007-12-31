@@ -1,141 +1,122 @@
 <ui version="4.0" >
  <class>Dialog</class>
  <widget class="QDialog" name="Dialog" >
-  <property name="geometry" >
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>937</width>
-    <height>420</height>
-   </rect>
-  </property>
-  <property name="windowTitle" >
-   <string>QGIS Plugin Installer</string>
-  </property>
-  <widget class="QLabel" name="label" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>20</y>
-     <width>501</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>Retrieve the list of available plugins, select one and install it</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_2" >
-   <property name="geometry" >
-    <rect>
-     <x>120</x>
-     <y>320</y>
-     <width>191</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>Name of plugin to install</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="linePlugin" >
-   <property name="geometry" >
-    <rect>
-     <x>290</x>
-     <y>320</y>
-     <width>281</width>
-     <height>25</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="buttonBrowse" >
-   <property name="geometry" >
-    <rect>
-     <x>830</x>
-     <y>10</y>
-     <width>83</width>
-     <height>28</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>Get List</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pbnCancel" >
-   <property name="geometry" >
-    <rect>
-     <x>830</x>
-     <y>370</y>
-     <width>83</width>
-     <height>28</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>Done</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pbnOK" >
-   <property name="geometry" >
-    <rect>
-     <x>590</x>
-     <y>320</y>
-     <width>83</width>
-     <height>28</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>Install Plugin</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_3" >
-   <property name="geometry" >
-    <rect>
-     <x>120</x>
-     <y>360</y>
-     <width>501</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>The plugin will be installed to ~/.qgis/python/plugins</string>
-   </property>
-  </widget>
-  <widget class="QTreeWidget" name="treePlugins" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>50</y>
-     <width>911</width>
-     <height>251</height>
-    </rect>
-   </property>
-   <property name="alternatingRowColors" >
-    <bool>true</bool>
-   </property>
-   <property name="itemsExpandable" >
-    <bool>false</bool>
-   </property>
-   <column>
-    <property name="text" >
-     <string>Name</string>
-    </property>
-   </column>
-   <column>
-    <property name="text" >
-     <string>Version</string>
-    </property>
-   </column>
-   <column>
-    <property name="text" >
-     <string>Description</string>
-    </property>
-   </column>
-   <column>
-    <property name="text" >
-     <string>Author</string>
-    </property>
-   </column>
-  </widget>
+ <property name="geometry" >
+  <rect>
+   <x>0</x>
+   <y>0</y>
+   <width>761</width>
+   <height>471</height>
+  </rect>
+ </property>
+ <property name="windowTitle" >
+  <string>QGIS Plugin Installer</string>
+ </property>
+ <layout class="QVBoxLayout" >
+  <item>
+   <layout class="QVBoxLayout" >
+    <item>
+     <layout class="QHBoxLayout" >
+      <item>
+       <widget class="QLabel" name="label" >
+        <property name="text" >
+         <string>Retrieve the list of available plugins, select one and install it</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="buttonBrowse" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>Get List</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QTreeWidget" name="treePlugins" >
+      <property name="alternatingRowColors" >
+       <bool>true</bool>
+      </property>
+      <property name="itemsExpandable" >
+       <bool>false</bool>
+      </property>
+      <column>
+       <property name="text" >
+        <string>Name</string>
+       </property>
+      </column>
+      <column>
+       <property name="text" >
+        <string>Version</string>
+       </property>
+      </column>
+      <column>
+       <property name="text" >
+        <string>Description</string>
+       </property>
+      </column>
+      <column>
+       <property name="text" >
+        <string>Author</string>
+       </property>
+      </column>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" >
+      <item>
+       <widget class="QLabel" name="label_2" >
+        <property name="text" >
+         <string>Name of plugin to install</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="linePlugin" />
+      </item>
+      <item>
+       <widget class="QPushButton" name="pbnOK" >
+        <property name="text" >
+         <string>Install Plugin</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" >
+      <item>
+       <widget class="QLabel" name="label_3" >
+        <property name="text" >
+         <string>The plugin will be installed to ~/.qgis/python/plugins</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pbnCancel" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>Done</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </item>
+ </layout>
  </widget>
  <resources/>
  <connections/>
