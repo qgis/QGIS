@@ -182,8 +182,6 @@ class QgsMapCanvas : QGraphicsView
     /**Sets dirty=true and calls render()*/
     void refresh();
 
-    virtual void render();
-
     //! Save the convtents of the map canvas to disk as an image
     void saveAsImage(QString theFileName,QPixmap * QPixmap=0, QString="PNG" );
 

@@ -34,7 +34,7 @@ class QWheelEvent;
 class QPixmap;
 class QPaintEvent;
 class QKeyEvent;
-class QResizeEvent;
+class ResizeEvent;
 
 class QColor;
 class QDomDocument;
@@ -235,10 +235,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
   public slots:
 
-    /**Sets dirty=true and calls render()*/
+    /**Repaints the canvas map*/
     void refresh();
-
-    virtual void render();
 
     //! Save the convtents of the map canvas to disk as an image
     void saveAsImage(QString theFileName,QPixmap * QPixmap=0, QString="PNG" );
@@ -372,6 +370,11 @@ private:
     
     //! determines whether user has requested to suppress rendering
     bool mRenderFlag;
+
+    /**Resize events that have been ignored because the canvas is busy with 
+       rendering may put their sizes into this list. The canvas then picks up 
+       the last entry in case a lot of resize events arrive in short time*/
+    QList< QPair<int, int> > mResizeQueue;
     
   /** debugging member
       invoked when a connect() is made to this object

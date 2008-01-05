@@ -249,6 +249,7 @@ void QgsLegendLayerFile::table()
     // but be can get it using this ugly hack. [jef]
     // TODO: do this cleanly
     QgisApp *app = NULL;
+
     QList<QWidget *> list = QApplication::topLevelWidgets();
 
     int i;

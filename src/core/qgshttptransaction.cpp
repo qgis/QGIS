@@ -147,7 +147,7 @@ bool QgsHttpTransaction::getSynchronously(QByteArray &respondedContent, int redi
   while ( httpactive )
   {
     // Do something else, maybe even network processing events
-    qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
+    qApp->processEvents();
   }
 
   QApplication::restoreOverrideCursor();

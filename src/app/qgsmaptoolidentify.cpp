@@ -67,6 +67,11 @@ void QgsMapToolIdentify::canvasPressEvent(QMouseEvent * e)
 
 void QgsMapToolIdentify::canvasReleaseEvent(QMouseEvent * e)
 {
+  if(!mCanvas || mCanvas->isDrawing())
+    {
+      return;
+    }
+
   QgsMapLayer* layer = mCanvas->currentLayer();
   
   // delete rubber band if there was any

@@ -32,12 +32,11 @@ QgsMapCanvasMap::QgsMapCanvasMap(QgsMapCanvas* canvas)
 
 void QgsMapCanvasMap::paint(QPainter* p, const QStyleOptionGraphicsItem*, QWidget*)
 {
-  if (mCanvas->isDirty())
-  {
-    setEnabled(false);
-    mCanvas->render();
-    setEnabled(true);
-  }
+  //refreshes the canvas map with the current offscreen image
+  if (mUseQImageToRender)
+    {
+      mPixmap = QPixmap::fromImage(mImage);
+    }
   p->drawPixmap(0,0, mPixmap);
 }
 
@@ -69,14 +68,14 @@ void QgsMapCanvasMap::render()
   if (mUseQImageToRender)
   {
     // use temporary image for rendering
-    QImage image(boundingRect().size().toSize(), QImage::Format_RGB32);
+    mImage = QImage(boundingRect().size().toSize(), QImage::Format_RGB32);
   
-    image.fill(mBgColor.rgb());
+    mImage.fill(mBgColor.rgb());
 
     QPainter paint;
-    paint.begin(&image);
+    paint.begin(&mImage);
     // Clip drawing to the QImage
-    paint.setClipRect(image.rect());
+    paint.setClipRect(mImage.rect());
 
     // antialiasing
     if (mAntiAliasing)
@@ -87,7 +86,7 @@ void QgsMapCanvasMap::render()
     paint.end();
   
     // convert QImage to QPixmap to acheive faster drawing on screen
-    mPixmap = QPixmap::fromImage(image);
+    //mPixmap = QPixmap::fromImage(image);
   }
   else
   {
@@ -99,4 +98,5 @@ void QgsMapCanvasMap::render()
     mCanvas->mapRender()->render(&paint);
     paint.end();
   }
+  update();
 }
