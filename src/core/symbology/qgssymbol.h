@@ -28,10 +28,10 @@ class QDomNode;
 class QDomDocument;
 
 /**Encapsulates settings for drawing (QPen, QBrush, Point symbol) and classification
- (lower value, upper value)*/
+  (lower value, upper value)*/
 class CORE_EXPORT QgsSymbol{
 
- public:
+  public:
     /**Constructor*/
     QgsSymbol(QGis::VectorType t, QString lvalue="", QString uvalue="", QString label="");
     /**Constructor*/
@@ -66,10 +66,10 @@ class CORE_EXPORT QgsSymbol{
     /**Set the fill (brush) style*/
     virtual void setFillStyle(Qt::BrushStyle s);
 
-	/**Gets the path to the customs texture image*/
-	virtual QString customTexture() const;
-	/**Sets the path to the custom texture, and sets the brush to use TexturePattern */
-	virtual void setCustomTexture(QString path);
+    /**Gets the path to the customs texture image*/
+    virtual QString customTexture() const;
+    /**Sets the path to the custom texture, and sets the brush to use TexturePattern */
+    virtual void setCustomTexture(QString path);
 
     virtual void setLowerValue(QString value);
     virtual QString lowerValue() const;
@@ -94,22 +94,22 @@ class CORE_EXPORT QgsSymbol{
 
     //! Get a little icon for the legend
     virtual QImage getPolygonSymbolAsImage();
-    
+
     /** Get QImage representation of point symbol with current settings
-      */
+    */
     virtual QImage getPointSymbolAsImage( double widthScale = 1., 
-	               bool selected = false, QColor selectionColor = Qt::yellow );
+        bool selected = false, QColor selectionColor = Qt::yellow );
 
     /**Writes the contents of the symbol to a configuration file
-     @ return true in case of success*/
+      @ return true in case of success*/
     virtual bool writeXML( QDomNode & item, QDomDocument & document ) const;
     /**Reads the contents of the symbol from a configuration file
-     @ return true in case of success*/
+      @ return true in case of success*/
     virtual bool readXML( QDomNode & symbol );
     /**Returns if this symbol is point/ line or polygon*/
     QGis::VectorType type() const {return mType;}
 
- protected:
+  protected:
     /**Lower value for classification*/
     QString mLowerValue;
     /**Upper value for classification*/
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsSymbol{
 
     QPen mPen;
     QBrush mBrush;
-	QString mTextureFilePath;
+    QString mTextureFilePath;
     /* Point symbol name */
     QString mPointSymbolName;
     /* Point size */
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsSymbol{
     //
     //
 
-    
+
     /* Point symbol cache  */
     QImage mPointSymbolImage;
 
@@ -146,11 +146,11 @@ class CORE_EXPORT QgsSymbol{
 
     /* Current line width scale used by mPointSymbolVectorImage */
     double mWidthScale;
-    
+
     /* Point symbol cache but with line width scale mWidthScale */
     QImage mPointSymbolImage2;
     QImage mPointSymbolImageSelected2;
-    
+
     /* Create point symbol mPointSymbolImage/mPointSymbolImage cache */
     void cache(  QColor selectionColor );
 
@@ -170,52 +170,52 @@ class CORE_EXPORT QgsSymbol{
 
 inline void QgsSymbol::setBrush(QBrush b)
 {
-    mBrush=b;
+  mBrush=b;
 }
 
 inline const QBrush& QgsSymbol::brush() const
 {
-    return mBrush;
+  return mBrush;
 }
 
 inline void QgsSymbol::setPen(QPen p)
 {
-    mPen=p;
+  mPen=p;
 }
 
 inline const QPen& QgsSymbol::pen() const
 {
-    return mPen;
+  return mPen;
 }
 
 inline void QgsSymbol::setLowerValue(QString value)
 {
-    mLowerValue=value;
+  mLowerValue=value;
 }
 
 inline QString QgsSymbol::lowerValue() const
 {
-    return mLowerValue;
+  return mLowerValue;
 }
 
 inline void QgsSymbol::setUpperValue(QString value)
 {
-    mUpperValue=value;
+  mUpperValue=value;
 }
 
 inline QString QgsSymbol::upperValue() const
 {
-    return mUpperValue;
+  return mUpperValue;
 }
 
 inline void QgsSymbol::setLabel(QString label)
 {
-    mLabel=label;
+  mLabel=label;
 }
 
 inline QString QgsSymbol::label() const
 {
-    return mLabel;
+  return mLabel;
 }
 
 #endif // QGSSYMBOL_H
