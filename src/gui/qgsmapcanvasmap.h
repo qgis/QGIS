@@ -61,6 +61,7 @@ class GUI_EXPORT QgsMapCanvasMap : public QGraphicsRectItem
     bool mUseQImageToRender;
     
     QPixmap mPixmap;
+    QImage mImage;
 
     //QgsMapRender* mRender;
     QgsMapCanvas* mCanvas;

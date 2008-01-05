@@ -231,6 +231,10 @@ signals:
      * @TODO: to be removed - GUI dependency
      */
     void repaintRequested();
+    
+    /**The layer emits this signal when a screen update is requested.
+     This signal should be connected with the slot QgsMapCanvas::updateMap()*/ 
+    void screenUpdateRequested();
 
     /** This is used to send a request that any mapcanvas using this layer update its extents */
     void recalculateExtents();

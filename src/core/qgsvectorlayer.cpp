@@ -37,6 +37,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QPolygonF>
+#include <QSettings> //for update threshold
 #include <QString>
 
 #include "qgsvectorlayer.h"
@@ -110,16 +111,6 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
     // add single symbol renderer as default
     QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer(vectorType());
     setRenderer(renderer);
-
-    // Get the update threshold from user settings. We
-    // do this only on construction to avoid the penality of
-    // fetching this each time the layer is drawn. If the user
-    // changes the threshold from the preferences dialog, it will
-    // have no effect on existing layers
-    // TODO: load this setting somewhere else [MD]
-    //QSettings settings;
-    //mUpdateThreshold = settings.readNumEntry("Map/updateThreshold", 1000);
-    
   }
 } // QgsVectorLayer ctor
 
@@ -697,6 +688,9 @@ bool QgsVectorLayer::draw(QPainter * p,
                           QgsCoordinateTransform* ct,
                           bool drawingToEditingCanvas)
 {
+  //set update threshold before each draw to make sure the current setting is picked up
+  QSettings settings;
+  mUpdateThreshold = settings.readNumEntry("Map/updateThreshold", 0);
   draw ( p, viewExtent, theMapToPixelTransform, ct, drawingToEditingCanvas, 1., 1.);
 
   return TRUE; // Assume success always
@@ -750,11 +744,16 @@ void QgsVectorLayer::draw(QPainter * p,
         //if (mDrawingCancelled) return;
         // If update threshold is greater than 0, check to see if
         // the threshold has been exceeded
+
         if(mUpdateThreshold > 0)
         {
           // signal progress in drawing
           if(0 == featureCount % mUpdateThreshold)
-            emit drawingProgress(featureCount, totalFeatures);
+	    {
+	      emit screenUpdateRequested();
+	      emit drawingProgress(featureCount, totalFeatures);
+	      qApp->processEvents();
+	    }
         }
 
         if (mEditable)
