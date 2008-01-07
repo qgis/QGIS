@@ -3398,6 +3398,11 @@ void QgisApp::deleteSelected()
 
 void QgisApp::capturePoint()
 {
+  if(mMapCanvas && mMapCanvas->isDrawing())
+    {
+      return;
+    }
+  
   // set current map tool to select
   mMapCanvas->setMapTool(mMapTools.mCapturePoint);
   
@@ -3407,11 +3412,20 @@ void QgisApp::capturePoint()
 
 void QgisApp::captureLine()
 {
+  if(mMapCanvas && mMapCanvas->isDrawing())
+    {
+      return;
+    }
+  
   mMapCanvas->setMapTool(mMapTools.mCaptureLine);
 }
 
 void QgisApp::capturePolygon()
 {
+  if(mMapCanvas && mMapCanvas->isDrawing())
+    {
+      return;
+    }
   mMapCanvas->setMapTool(mMapTools.mCapturePolygon);
 }
 
@@ -3423,34 +3437,59 @@ void QgisApp::select()
 
 void QgisApp::addVertex()
 {
+  if(mMapCanvas && mMapCanvas->isDrawing())
+    {
+      return;
+    }
   mMapCanvas->setMapTool(mMapTools.mVertexAdd);
   
 }
 
 void QgisApp::moveVertex()
 {
+  if(mMapCanvas && mMapCanvas->isDrawing())
+    {
+      return;
+    }
   mMapCanvas->setMapTool(mMapTools.mVertexMove);
 }
 
 void QgisApp::addRing()
 {
+ if(mMapCanvas && mMapCanvas->isDrawing())
+    {
+      return;
+    } 
   mMapCanvas->setMapTool(mMapTools.mAddRing);
 }
 
 void QgisApp::addIsland()
 {
+  if(mMapCanvas && mMapCanvas->isDrawing())
+    {
+      return;
+    }
   mMapCanvas->setMapTool(mMapTools.mAddIsland);
 }
 
 
 void QgisApp::deleteVertex()
 {
+  if(mMapCanvas && mMapCanvas->isDrawing())
+    {
+      return;
+    }
   mMapCanvas->setMapTool(mMapTools.mVertexDelete);
 }
 
 
 void QgisApp::editCut(QgsMapLayer * layerContainingSelection)
 {
+  if(mMapCanvas && mMapCanvas->isDrawing())
+    {
+      return;
+    }
+
   QgsMapLayer * selectionLayer = (layerContainingSelection != 0) ?
                                  (layerContainingSelection) :
                                  (activeLayer());
@@ -3472,6 +3511,11 @@ void QgisApp::editCut(QgsMapLayer * layerContainingSelection)
 
 void QgisApp::editCopy(QgsMapLayer * layerContainingSelection)
 {
+  if(mMapCanvas && mMapCanvas->isDrawing())
+    {
+      return;
+    }
+
   QgsMapLayer * selectionLayer = (layerContainingSelection != 0) ?
                                  (layerContainingSelection) :
                                  (activeLayer());
@@ -3492,6 +3536,11 @@ void QgisApp::editCopy(QgsMapLayer * layerContainingSelection)
 
 void QgisApp::editPaste(QgsMapLayer * destinationLayer)
 {
+  if(mMapCanvas && mMapCanvas->isDrawing())
+    {
+      return;
+    }
+
   QgsMapLayer * pasteLayer = (destinationLayer != 0) ?
                              (destinationLayer) :
                              (activeLayer());
@@ -3529,6 +3578,12 @@ void QgisApp::refreshMapCanvas()
 
 void QgisApp::toggleEditing()
 {
+  if(mMapCanvas && mMapCanvas->isDrawing())
+    {
+      mActionToggleEditing->setChecked(!mActionToggleEditing->isChecked());
+      return;
+    }
+
   QgsLegendLayerFile* currentLayerFile = mMapLegend->currentLayerFile();
   if(currentLayerFile)
     {
