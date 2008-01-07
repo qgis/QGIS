@@ -16,19 +16,40 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
+   <property name="leftMargin" >
     <number>11</number>
    </property>
-   <property name="spacing" >
+   <property name="topMargin" >
+    <number>11</number>
+   </property>
+   <property name="rightMargin" >
+    <number>11</number>
+   </property>
+   <property name="bottomMargin" >
+    <number>11</number>
+   </property>
+   <property name="horizontalSpacing" >
+    <number>6</number>
+   </property>
+   <property name="verticalSpacing" >
     <number>6</number>
    </property>
    <item row="0" column="0" >
     <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>11</number>
-     </property>
      <property name="spacing" >
       <number>6</number>
+     </property>
+     <property name="leftMargin" >
+      <number>11</number>
+     </property>
+     <property name="topMargin" >
+      <number>11</number>
+     </property>
+     <property name="rightMargin" >
+      <number>11</number>
+     </property>
+     <property name="bottomMargin" >
+      <number>11</number>
      </property>
      <item>
       <widget class="QLabel" name="textLabel1" >
@@ -52,41 +73,6 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="0" >
-    <widget class="Q3ListView" name="lstPlugins" >
-     <property name="font" >
-      <font>
-       <family>Arial</family>
-       <pointsize>10</pointsize>
-       <weight>50</weight>
-       <italic>false</italic>
-       <bold>false</bold>
-       <underline>false</underline>
-       <strikeout>false</strikeout>
-      </font>
-     </property>
-     <column>
-      <property name="text" >
-       <string>Name</string>
-      </property>
-     </column>
-     <column>
-      <property name="text" >
-       <string>Version</string>
-      </property>
-     </column>
-     <column>
-      <property name="text" >
-       <string>Description</string>
-      </property>
-     </column>
-     <column>
-      <property name="text" >
-       <string>Library Name</string>
-      </property>
-     </column>
-    </widget>
-   </item>
    <item row="1" column="0" >
     <widget class="QLabel" name="textLabel1_2" >
      <property name="text" >
@@ -94,13 +80,22 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0" >
+   <item row="4" column="0" >
     <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>11</number>
-     </property>
      <property name="spacing" >
       <number>6</number>
+     </property>
+     <property name="leftMargin" >
+      <number>11</number>
+     </property>
+     <property name="topMargin" >
+      <number>11</number>
+     </property>
+     <property name="rightMargin" >
+      <number>11</number>
+     </property>
+     <property name="bottomMargin" >
+      <number>11</number>
      </property>
      <item>
       <spacer>
@@ -176,17 +171,20 @@
      </item>
     </layout>
    </item>
+   <item row="2" column="0" >
+    <widget class="QTableView" name="lstPlugins" >
+     <property name="alternatingRowColors" >
+      <bool>true</bool>
+     </property>
+     <property name="sortingEnabled" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3ListView</class>
-   <extends>Q3Frame</extends>
-   <header>q3listview.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
