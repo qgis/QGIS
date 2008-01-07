@@ -3717,6 +3717,7 @@ void QgisApp::zoomToLayerExtent()
 void QgisApp::showPluginManager()
 {
   QgsPluginManager *pm = new QgsPluginManager(this);
+  pm->resizeColumnsToContents(); 
   if (pm->exec())
   {
     // load selected plugins
