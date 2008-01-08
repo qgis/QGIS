@@ -7,7 +7,7 @@ SET ([pluginlcasename]_SRCS
      [pluginlcasename]gui.cpp
 )
 
-SET ([pluginlcasename]_UIS [pluginlcasename]gui.ui)
+SET ([pluginlcasename]_UIS [pluginlcasename]guibase.ui)
 
 SET ([pluginlcasename]_MOC_HDRS
      [pluginlcasename].h
