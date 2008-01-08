@@ -287,7 +287,7 @@ QString QgsPythonUtils::pluginsPath()
 
 QString QgsPythonUtils::homePluginsPath()
 {
-  return QgsApplication::qgisSettingsDirPath() + "/python/plugins/";
+  return QgsApplication::qgisSettingsDirPath() + "/python/plugins";
 }
 
 QStringList QgsPythonUtils::pluginList()
