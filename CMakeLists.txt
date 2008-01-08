@@ -1,5 +1,5 @@
 
-PROJECT(qgis0.9.1)
+PROJECT(qgis0.9.2)
 
 # TODO:
 # - install includes for libs
