@@ -13,12 +13,12 @@
 #define [pluginname]GUI_H
 
 #include <QDialog>
-#include <ui_[pluginlcasename]gui.h>
+#include <ui_[pluginlcasename]guibase.h>
 
 /**
 @author Tim Sutton
 */
-class [pluginname]Gui : public QDialog, private Ui::[pluginname]Gui
+class [pluginname]Gui : public QDialog, private Ui::[pluginname]GuiBase
 {
 Q_OBJECT
 public:

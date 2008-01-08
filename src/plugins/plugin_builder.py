@@ -118,7 +118,7 @@ shutil.copy(template_file('plugin.cpp'),      os.path.join(pluginDir, pluginLCas
 shutil.copy(template_file('plugin.h'),        os.path.join(pluginDir, pluginLCaseName + '.h'))
 shutil.copy(template_file('plugingui.cpp'),   os.path.join(pluginDir, pluginLCaseName + 'gui.cpp'))
 shutil.copy(template_file('plugingui.h'),     os.path.join(pluginDir, pluginLCaseName + 'gui.h'))
-shutil.copy(template_file('plugingui.ui'),    os.path.join(pluginDir, pluginLCaseName + 'gui.ui'))
+shutil.copy(template_file('pluginguibase.ui'),    os.path.join(pluginDir, pluginLCaseName + 'guibase.ui'))
 
 # Substitute the plugin specific vars in the various files
 # This is a brute force approach but its quick and dirty :)
@@ -131,7 +131,7 @@ files = [ plugin_file(pluginDir, 'CMakeLists.txt'),
 	  plugin_file(pluginDir, pluginLCaseName + '.h'),
 	  plugin_file(pluginDir, pluginLCaseName + 'gui.cpp'),
 	  plugin_file(pluginDir, pluginLCaseName + 'gui.h'),
-	  plugin_file(pluginDir, pluginLCaseName + 'gui.ui') ]
+	  plugin_file(pluginDir, pluginLCaseName + 'guibase.ui') ]
 
 # replace occurences of [pluginlcasename], [pluginname], [plugindescription], [menuname], [menutiem]
 # in template with the values from user
