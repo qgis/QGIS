@@ -9,6 +9,9 @@
     <height>368</height>
    </rect>
   </property>
+  <property name="mouseTracking" >
+   <bool>false</bool>
+  </property>
   <property name="windowTitle" >
    <string>QGIS Plugin Manager</string>
   </property>
@@ -16,40 +19,19 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
-   <property name="leftMargin" >
+   <property name="margin" >
     <number>11</number>
    </property>
-   <property name="topMargin" >
-    <number>11</number>
-   </property>
-   <property name="rightMargin" >
-    <number>11</number>
-   </property>
-   <property name="bottomMargin" >
-    <number>11</number>
-   </property>
-   <property name="horizontalSpacing" >
-    <number>6</number>
-   </property>
-   <property name="verticalSpacing" >
+   <property name="spacing" >
     <number>6</number>
    </property>
    <item row="0" column="0" >
     <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>11</number>
+     </property>
      <property name="spacing" >
       <number>6</number>
-     </property>
-     <property name="leftMargin" >
-      <number>11</number>
-     </property>
-     <property name="topMargin" >
-      <number>11</number>
-     </property>
-     <property name="rightMargin" >
-      <number>11</number>
-     </property>
-     <property name="bottomMargin" >
-      <number>11</number>
      </property>
      <item>
       <widget class="QLabel" name="textLabel1" >
@@ -82,20 +64,11 @@
    </item>
    <item row="4" column="0" >
     <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>11</number>
+     </property>
      <property name="spacing" >
       <number>6</number>
-     </property>
-     <property name="leftMargin" >
-      <number>11</number>
-     </property>
-     <property name="topMargin" >
-      <number>11</number>
-     </property>
-     <property name="rightMargin" >
-      <number>11</number>
-     </property>
-     <property name="bottomMargin" >
-      <number>11</number>
      </property>
      <item>
       <spacer>
