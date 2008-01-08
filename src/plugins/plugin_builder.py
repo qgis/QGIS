@@ -125,6 +125,7 @@ shutil.copy(template_file('plugingui.ui'),    os.path.join(pluginDir, pluginLCas
 #
 
 files = [ plugin_file(pluginDir, 'CMakeLists.txt'),
+	  plugin_file(pluginDir, 'README'),
 	  plugin_file(pluginDir, pluginLCaseName + '.qrc'),
 	  plugin_file(pluginDir, pluginLCaseName + '.cpp'),
 	  plugin_file(pluginDir, pluginLCaseName + '.h'),
