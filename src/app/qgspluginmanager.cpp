@@ -77,9 +77,12 @@ void QgsPluginManager::setTable()
   modelPlugins->setHorizontalHeaderItem(1,new QStandardItem(tr("Version")));
   modelPlugins->setHorizontalHeaderItem(2,new QStandardItem(tr("Description")));
   modelPlugins->setHorizontalHeaderItem(3,new QStandardItem(tr("Library name")));
+  
   lstPlugins->setModel(modelPlugins);
   // No vertical headers
   lstPlugins->verticalHeader()->hide();
+  lstPlugins->setSelectionBehavior(QAbstractItemView::SelectRows);
+  lstPlugins->setFocus();
 }
 
 void QgsPluginManager::resizeColumnsToContents()
