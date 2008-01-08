@@ -86,6 +86,15 @@ class unzip:
             if name.endswith('/'):
                 dirs.append(name)
 
+        if len(dirs) == 0:
+          # this means there is no top level directory in the
+          # zip file. We'll assume the first entry contains the
+          # directory and use it
+          entry = zf.namelist()[0]
+          dir = entry.split('/')[0]
+          dir += '/'
+          dirs.append(dir)
+
         dirs.sort()
         return dirs
 
