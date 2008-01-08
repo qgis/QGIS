@@ -50,6 +50,7 @@
 					<grass name="v.out.ogr.gml"/>
 					<grass name="v.out.ogr.mapinfo"/>
 					<grass name="v.out.ascii"/>
+					<grass name="v.out.dxf"/>
 				</section>
 			</section>
 			<section label="Map type conversion">
