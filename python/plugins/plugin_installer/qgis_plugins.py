@@ -132,6 +132,10 @@ def install_plugin(plugin, plugindir, repos):
             return (False, "Failed to download file to %s" % outfile)
             return
 
+        # make sure that the parent directory exists
+        if not os.path.exists(plugindir):
+            os.makedirs(plugindir)
+
         print "Extracting to plugin directory (%s)" % plugindir
         try:
 	    un = unzip()
