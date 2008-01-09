@@ -5,6 +5,8 @@
 %Import QtGui/QtGuimod.sip
 %Import QtXml/QtXmlmod.sip
 
+%Include conversions.sip
+
 // TODO: more files to wrap
 
 %Include qgis.sip
