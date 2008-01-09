@@ -17,6 +17,7 @@ email                : morb at ozemail dot com dot au
 #ifndef QGSGEOMETRY_H
 #define QGSGEOMETRY_H
 
+#include <QMultiMap>
 #include <QString>
 #include <QVector>
 
@@ -261,6 +262,11 @@ not disjoint with existing polygons of the feature*/
     else other error*/
     int splitGeometry(const QList<QgsPoint>& splitLine, QgsGeometry** newGeometry);
 
+    /**Changes this geometry such that it does not intersect the other geometry
+       @param other geometry that should not be intersect
+       @return 0 in case of success*/
+    int difference(QgsGeometry* other);
+
     /**Returns the bounding box of this feature*/
     QgsRect boundingBox();
 
@@ -397,6 +403,11 @@ not disjoint with existing polygons of the feature*/
     /**Finds the vertices next to point where the line is split. If it is split at a vertex, beforeVertex 
      and afterVertex are the same*/
     int findVerticesNextToSplit(const QgsPoint& splitPoint, int& beforeVertex, int& afterVertex);
+    /**Test if a point is a geometry vertex
+       @param p point to test
+       @param vertexNr vertex number (if point is a vertex)
+       @return true if p is vertex of this geometry*/
+    bool vertexContainedInGeometry(const QgsPoint& p, int& vertexNr);
     /**Splits this geometry into two lines*/
     int splitThisLine(const QgsPoint& splitPoint, int beforeVertex, int afterVertex, QgsGeometry** newGeometry);
     /**Splits this geometry into two multilines*/

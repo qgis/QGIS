@@ -99,7 +99,7 @@ class CORE_EXPORT QgsPoint
   double sqrDist(double x, double y) const;
   
   /**Returns the squared distance between this and other point*/
-  double sqrDist(const QgsPoint& other);
+  double sqrDist(const QgsPoint& other) const;
 
   //! equality operator
   bool operator==(const QgsPoint &other);

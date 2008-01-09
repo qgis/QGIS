@@ -47,8 +47,9 @@ class GUI_EXPORT QgsMapCanvasSnapper
      editing from the qgis options.
      @param p start point of the snap (in pixel coordinates)
      @param results list to which the results are appended
-     @param snap_to snap to vertex or to segment*/
-  int snapToCurrentLayer(const QPoint& p, QList<QgsSnappingResult>& results, QgsSnapper::SNAP_TO snap_to);
+     @param snap_to snap to vertex or to segment
+     @param snappingTol snapping tolerance. -1 means that the search radius for vertex edits is taken*/
+  int snapToCurrentLayer(const QPoint& p, QList<QgsSnappingResult>& results, QgsSnapper::SNAP_TO snap_to, double snappingTol = -1);
   /**Snaps to the background layers. This method is usefull to align the features of the 
      edited layers to those of other layers (as described in the project properties). 
      Uses snap mode QgsSnapper::ONE_RESULT. Therefore, only the

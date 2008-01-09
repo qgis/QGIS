@@ -56,6 +56,16 @@ class QgsMapToolEdit: public QgsMapTool
 
   /**Returns the current vector layer of the map canvas or 0*/
   QgsVectorLayer* currentVectorLayer();
+
+  /**Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
+     Note that geom must be a geometry that is not yet inserted into the layer.
+     @param geom a geometry that is to be inserted into the current vector layer
+     @return 0 in case of success*/
+  int addTopologicalPoints(const QList<QgsPoint>& geom);
+  /**Adds topological points for one vertex
+     @param p vertex in layer coordinates
+     @return 0 in case of success*/
+  int addTopologicalPoints(const QgsPoint& p, QgsVectorLayer* vl);
 };
 
 #endif

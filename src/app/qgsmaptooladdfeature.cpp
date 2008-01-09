@@ -19,6 +19,7 @@
 #include "qgsattributedialog.h"
 #include "qgscsexception.h"
 #include "qgsfield.h"
+#include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
@@ -226,15 +227,15 @@ void QgsMapToolAddFeature::canvasReleaseEvent(QMouseEvent * e)
 	  delete mRubberBand;
 	  mRubberBand = NULL;
 
-	  //bail out if there are not at least two vertices
-	  if(mCaptureList.size() < 2)
+	  //lines: bail out if there are not at least two vertices
+	  if(mTool == CaptureLine && mCaptureList.size() < 2)
 	    {
 	      mCaptureList.clear();
 	      return;
 	    }
 	  
-	  //bail out if there are not at least two vertices
-	  if(mCaptureList.size() < 2)
+	  //polygons: bail out if there are not at least two vertices
+	  if(mTool == CapturePolygon && mCaptureList.size() < 3)
 	    {
 	      mCaptureList.clear();
 	      return;
@@ -312,6 +313,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent(QMouseEvent * e)
 		  QMessageBox::critical(0, QObject::tr("Error"), QObject::tr("Cannot add feature. Unknown WKB type"));
 		  return; //unknown wkbtype
 		}
+	      f->setGeometryAndOwnership(&wkb[0],size);
 	    }
 	  else // polygon
 	    {
@@ -404,8 +406,18 @@ void QgsMapToolAddFeature::canvasReleaseEvent(QMouseEvent * e)
 		  QMessageBox::critical(0, QObject::tr("Error"), QObject::tr("Cannot add feature. Unknown WKB type"));
 		  return; //unknown wkbtype
 		}
+	      f->setGeometryAndOwnership(&wkb[0],size);
+	      //is automatic polygon intersection removal activated?
+	      int avoidPolygonIntersections = QgsProject::instance()->readNumEntry("Digitizing", "/AvoidPolygonIntersections", 0);
+
+	      if(avoidPolygonIntersections != 0)
+		{
+		  if(vlayer->removePolygonIntersections(f->geometry()) != 0)
+		    {
+		      QMessageBox::critical(0, QObject::tr("Error"), QObject::tr("Could not remove polygon intersection"));
+		    }
+		}
 	    }
-	  f->setGeometryAndOwnership(&wkb[0],size);
 	  
 	  // add the fields to the QgsFeature
 	  const QgsFieldMap fields = provider->fields();
@@ -416,6 +428,12 @@ void QgsMapToolAddFeature::canvasReleaseEvent(QMouseEvent * e)
 	  
 	  if (QgsAttributeDialog::queryAttributes(fields, *f))
 	    {
+	      //add points to other features to keep topology up-to-date
+	      int topologicalEditing = QgsProject::instance()->readNumEntry("Digitizing", "/TopologicalEditing", 0);
+	      if(topologicalEditing)
+		{
+		  addTopologicalPoints(mCaptureList);
+		}
 	      vlayer->addFeature(*f);
 	    }
 	  delete f;

@@ -19,6 +19,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsfield.h"
 #include "qgslogger.h"
+#include "qgsgeometry.h"
 #include "qgsmaptoolcapture.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprender.h"
@@ -124,8 +125,6 @@ int QgsMapToolCapture::addVertex(const QPoint& p)
 	}
       mRubberBand->addPoint(mapPoint);
       mCaptureList.push_back(layerPoint); 
-      //insert also vertices for adjacent features if topological editing is enabled
-      insertSegmentVerticesForSnap(snapResults, vlayer); 
     }
 
   return 0;

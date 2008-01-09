@@ -21,7 +21,7 @@
 #include "qgsmaptooledit.h"
 #include "qgspoint.h"
 
-
+class QgsGeometry;
 class QgsRubberBand;
 
 #include <QPoint>
