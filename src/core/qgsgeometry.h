@@ -105,8 +105,12 @@ class CORE_EXPORT QgsGeometry {
     static QgsGeometry* fromPoint(const QgsPoint& point);
     /** construct geometry from a polyline */
     static QgsGeometry* fromPolyline(const QgsPolyline& polyline);
+    /** construct geometry from a multipolyline*/
+    static QgsGeometry* fromMultiPolyline(const QgsMultiPolyline& multiline);
     /** construct geometry from a polygon */
     static QgsGeometry* fromPolygon(const QgsPolygon& polygon);
+    /** construct geometry from a multipolygon */
+    static QgsGeometry* fromMultiPolygon(const QgsMultiPolygon& multipoly);
     /** construct geometry from a rectangle */
     static QgsGeometry* fromRect(const QgsRect& rect);
    
@@ -247,6 +251,16 @@ not disjoint with existing polygons of the feature*/
      @return 0 in case of success*/
     int translate(double dx, double dy);
 
+    /**Splits this geometry according to a given line. Note that the geometry is only splitted once. If there are several intersections 
+     between geometry and splitLine, only the first one is considered.
+    @param splitLine the line that splits the geometry
+    @param newGeometry OUT: new geometry or 0 if none
+    @return 0 in case of success, which means the geometry has been split in two parts, \
+    1 if line intersects multiple times but only one split could be done, \ 
+    2 if intersection too complicated to proceed (several polygon intersections), \				\
+    else other error*/
+    int splitGeometry(const QList<QgsPoint>& splitLine, QgsGeometry** newGeometry);
+
     /**Returns the bounding box of this feature*/
     QgsRect boundingBox();
 
@@ -367,6 +381,45 @@ not disjoint with existing polygons of the feature*/
     @param dy translation of y-coordinate
     @param hasZValue 25D type?*/
     void translateVertex(int& wkbPosition, double dx, double dy, bool hasZValue);
+
+    //helper functions for geometry splitting
+
+    /**Splits line/multiline geometries
+     @splitLine the line that splits the feature
+     @newGeometry new geometry if splitting was successful
+     @return 0 in case of success, 1: splitLine intersects several times but only one split \
+    can be done, else other errors*/
+    int splitLinearGeometry(GEOS_GEOM::LineString* splitLine, QgsGeometry** newGeometry);
+    /**Splits polygon/multipolygon geometries
+       @return 0 in case of success, 1 no split because of too complicated intersection, \
+       else other errors*/
+    int splitPolygonGeometry(GEOS_GEOM::LineString* splitLine, QgsGeometry** newGeometry);
+    /**Finds the vertices next to point where the line is split. If it is split at a vertex, beforeVertex 
+     and afterVertex are the same*/
+    int findVerticesNextToSplit(const QgsPoint& splitPoint, int& beforeVertex, int& afterVertex);
+    /**Splits this geometry into two lines*/
+    int splitThisLine(const QgsPoint& splitPoint, int beforeVertex, int afterVertex, QgsGeometry** newGeometry);
+    /**Splits this geometry into two multilines*/
+    int splitThisMultiline(const QgsPoint& splitPoint, int beforeVertex, int afterVertex, QgsGeometry** newGeometry);
+    /**Splits this geometry into two polygons
+     @return 0 in case of success, 1 error because split intersects inner ring, else other error*/
+    int splitThisPolygon(const GEOS_GEOM::CoordinateSequence* splitLine, int beforeVertex1, int afterVertex1, \
+			 int beforeVertex2, int afterVertex2, QgsGeometry** newGeometry);
+    /**Splits this geometry into two multipolygons
+     @return 0 in case of success, 1 error because split intersects inner ring, else other error*/
+    int splitThisMultiPolygon(const GEOS_GEOM::CoordinateSequence* splitLine, int beforeVertex1, int afterVertex1, \
+			 int beforeVertex2, int afterVertex2, QgsGeometry** newGeometry);
+    /**splits a QgsPolyline object. Used by 'splitThisLine' and 'splitThisMultiLine'*/
+    int splitQgsPolyline(const QgsPoint& splitPoint, int beforeVertex, int afterVertex, const QgsPolyline* origLine, QgsPolyline** changedLine, QgsPolyline** newLine) const;
+    /**split a QgsPolygon object. Used by 'splitThisPolygon' and 'splitThisMultiPolygon'
+     @return 0 in case of success, 1 error because split intersects inner ring, else other error*/
+    int splitQgsPolygon(const GEOS_GEOM::CoordinateSequence* splitLine, int beforeVertex1, int afterVertex1, \
+			int beforeVertex2, int afterVertex2, const QgsPolygon* origPoly, QgsPolygon** changedPoly, QgsPolygon** newPoly) const;
+
+    /**Converts a polyline (that represents a polygon boundary or a ring) to geos polygon.
+       The caller function takes ownership of the created object.
+     @return the converted polygon or 0 in case of error*/
+    GEOS_GEOM::Polygon* polylineToGeosPolygon(const QgsPolyline& line) const;
 
     /** return point from wkb */
     QgsPoint asPoint(unsigned char*& ptr, bool hasZValue);

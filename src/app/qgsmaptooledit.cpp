@@ -25,10 +25,6 @@
 QgsMapToolEdit::QgsMapToolEdit(QgsMapCanvas* canvas): QgsMapTool(canvas)
 {
   mSnapper.setMapCanvas(canvas);
-  if(canvas)
-    {
-      connect(mCanvas, SIGNAL(keyPressed(QKeyEvent*)), this, SLOT(keyPress(QKeyEvent*)));
-    }
 }
 
 
@@ -115,12 +111,4 @@ QgsVectorLayer* QgsMapToolEdit::currentVectorLayer()
       return 0;
     }
   return vlayer;
-}
-
-void QgsMapToolEdit::keyPress(QKeyEvent* e)
-{
-  if(e->key() == Qt::Key_Backspace)
-    {
-      undo();
-    }
 }

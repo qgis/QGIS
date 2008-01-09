@@ -18,7 +18,7 @@
 
 
 #include "qgspoint.h"
-
+#include <cmath>
 #include <QTextStream>
 
 
@@ -45,7 +45,7 @@ QString QgsPoint::stringRep(int thePrecision) const
 }
 
 
-QString QgsPoint::wellKnownText()
+QString QgsPoint::wellKnownText() const
 {
   return QString("POINT(%1 %2)").arg(QString::number(m_x, 'f', 18)).arg(QString::number(m_y, 'f', 18));
 }
@@ -92,4 +92,46 @@ void QgsPoint::multiply(const double& scalar)
 {
   m_x *= scalar;
   m_y *= scalar;
+}
+
+int QgsPoint::onSegment(const QgsPoint& a, const QgsPoint& b) const
+{
+  //algorithm from 'graphics GEMS', A. Paeth: 'A Fast 2D Point-on-line test'
+  if(
+     fabs( (b.y() - a.y()) * (m_x - a.x()) - (m_y - a.y()) * (b.x() - a.x())) \
+     >= max( fabs(b.x() - a.x()), fabs(b.y() - a.y()))
+     )
+    {
+      return 0;
+    }
+  if( (b.x() < a.x() && a.x() < m_x) || (b.y() < a.y() && a.y() < m_y))
+    {
+      return 1;
+    }
+  if( (m_x < a.x() && a.x() < b.x()) || (m_y < a.y() && a.y() < b.y()))
+    {
+      return 1;
+    }
+  if( (a.x() < b.x() && b.x() < m_x) || (a.y() < b.y() && b.y() < m_y))
+    {
+      return 3;
+    } 
+  if( (m_x < b.x() && b.x() < a.x()) || (m_y < b.y() && b.y() < a.y()))
+    {
+      return 3;
+    }
+
+  return 2;
+}
+
+double QgsPoint::max(double a, double b) const
+{
+  if(b > a)
+    {
+      return b;
+    }
+  else
+    {
+      return a;
+    }
 }

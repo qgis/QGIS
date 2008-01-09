@@ -37,6 +37,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolmovefeature.cpp
   qgsmaptoolmovevertex.cpp
   qgsmaptoolselect.cpp
+  qgsmaptoolsplitfeatures.cpp
   qgsmaptoolvertexedit.cpp
   qgsmarkerdialog.cpp
   qgsmeasuredialog.cpp
