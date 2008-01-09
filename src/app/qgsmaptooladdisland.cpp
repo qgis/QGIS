@@ -79,13 +79,6 @@ void QgsMapToolAddIsland::canvasReleaseEvent(QMouseEvent * e)
 
       //close polygon
       mCaptureList.push_back(*mCaptureList.begin());
-      
-      //add points to other features to keep topology up-to-date
-      int topologicalEditing = QgsProject::instance()->readNumEntry("Digitizing", "/TopologicalEditing", 0);
-      if(topologicalEditing)
-	{
-	  addTopologicalPoints(mCaptureList);
-	}
 
       int errorCode = vlayer->addIsland(mCaptureList);
       QString errorMessage;
@@ -117,6 +110,15 @@ void QgsMapToolAddIsland::canvasReleaseEvent(QMouseEvent * e)
 	      errorMessage = "Selected geometry could not be found";
 	    }
 	  QMessageBox::critical(0, QObject::tr("Error, could not add island"), errorMessage);
+	}
+      else
+	{
+	  //add points to other features to keep topology up-to-date
+	  int topologicalEditing = QgsProject::instance()->readNumEntry("Digitizing", "/TopologicalEditing", 0);
+	  if(topologicalEditing)
+	    {
+	      addTopologicalPoints(mCaptureList);
+	    }
 	}
 
       mCaptureList.clear();

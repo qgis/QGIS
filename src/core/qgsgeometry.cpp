@@ -107,7 +107,15 @@ QgsGeometry* QgsGeometry::fromWkt(QString wkt)
 QgsGeometry* QgsGeometry::fromPoint(const QgsPoint& point)
 {
   GEOS_GEOM::Coordinate coord = GEOS_GEOM::Coordinate(point.x(), point.y());
-  GEOS_GEOM::Geometry* geom = geosGeometryFactory->createPoint(coord);
+  GEOS_GEOM::Geometry* geom = 0;
+  try
+    {
+      geom = geosGeometryFactory->createPoint(coord);
+    }
+  catch(GEOS_UTIL::GEOSException* e)
+    {
+      delete e; return 0;
+    }
   QgsGeometry* g = new QgsGeometry;
   g->setGeos(geom);
   return g;
@@ -126,7 +134,16 @@ QgsGeometry* QgsGeometry::fromPolyline(const QgsPolyline& polyline)
   }
 
   // new geometry takes ownership of the sequence
-  GEOS_GEOM::Geometry* geom = geosGeometryFactory->createLineString(seq);
+  GEOS_GEOM::Geometry* geom = 0;
+  try
+    {
+      geom = geosGeometryFactory->createLineString(seq);
+    }
+  catch(GEOS_UTIL::GEOSException* e)
+    {
+      delete e; delete seq;
+      return 0;
+    }
   QgsGeometry* g = new QgsGeometry;
   g->setGeos(geom);
   return g;
@@ -146,11 +163,27 @@ QgsGeometry* QgsGeometry::fromMultiPolyline(const QgsMultiPolyline& multiline)
 	{
 	  seq->setAt(GEOS_GEOM::Coordinate(currentLine.at(j).x(), currentLine.at(j).y()), j);
 	}
-      currentLineString = geosGeometryFactory->createLineString(seq);
+      try
+	{
+	  currentLineString = geosGeometryFactory->createLineString(seq);
+	}
+      catch(GEOS_UTIL::GEOSException* e)
+	{
+	  delete lineVector; delete seq; delete e;
+	  return 0;
+	}
       (*lineVector)[i] = currentLineString;
     }
   
-  GEOS_GEOM::Geometry* geom = geosGeometryFactory->createMultiLineString(lineVector);
+  GEOS_GEOM::Geometry* geom = 0;
+  try
+    {
+      geom = geosGeometryFactory->createMultiLineString(lineVector);
+    }
+  catch(GEOS_UTIL::GEOSException* e)
+    {
+      delete e; return 0;
+    }
   QgsGeometry* g = new QgsGeometry;
   g->setGeos(geom);
   return g; 
@@ -176,7 +209,15 @@ static GEOS_GEOM::LinearRing* _createGeosLinearRing(const QgsPolyline& ring)
     seq->setAt(GEOS_GEOM::Coordinate(ring[0].x(), ring[0].y()), ring.count());
   
   // ring takes ownership of the sequence
-  GEOS_GEOM::LinearRing* linRing = geosGeometryFactory->createLinearRing(seq);
+  GEOS_GEOM::LinearRing* linRing = 0;
+  try
+    {
+      linRing = geosGeometryFactory->createLinearRing(seq);
+    }
+  catch(GEOS_UTIL::GEOSException* e)
+    {
+      delete e; return 0;
+    }
   
   return linRing;
 }
@@ -199,7 +240,15 @@ QgsGeometry* QgsGeometry::fromPolygon(const QgsPolygon& polygon)
   }
 
   // new geometry takes ownership of outerRing and vector of holes
-  GEOS_GEOM::Geometry* geom = geosGeometryFactory->createPolygon(outerRing, holes);
+  GEOS_GEOM::Geometry* geom = 0;
+  try
+    {
+      geom = geosGeometryFactory->createPolygon(outerRing, holes);
+    }
+  catch(GEOS_UTIL::GEOSException* e)
+    {
+      delete e; return 0;
+    }
   QgsGeometry* g = new QgsGeometry;
   g->setGeos(geom);
   return g;
@@ -225,11 +274,26 @@ QgsGeometry* QgsGeometry::fromMultiPolygon(const QgsMultiPolygon& multipoly)
 	{
 	  (*currentHoles)[j-1] =  _createGeosLinearRing(multipoly[i].at(j));
 	}
-      currentPolygon = geosGeometryFactory->createPolygon(currentOuterRing, currentHoles);
+      try
+	{
+	  currentPolygon = geosGeometryFactory->createPolygon(currentOuterRing, currentHoles);
+	}
+      catch(GEOS_UTIL::GEOSException* e)
+	{
+	  delete e; delete polygons; return 0;
+	}
       (*polygons)[i] = currentPolygon;
     }
 
-  GEOS_GEOM::Geometry* geom = geosGeometryFactory->createMultiPolygon(polygons);
+  GEOS_GEOM::Geometry* geom = 0;
+  try
+    {
+      geom = geosGeometryFactory->createMultiPolygon(polygons);
+    }
+  catch(GEOS_UTIL::GEOSException* e)
+    {
+      delete e; return 0;
+    }
   QgsGeometry* g = new QgsGeometry;
   g->setGeos(geom);
   return g;
@@ -2788,9 +2852,8 @@ int QgsGeometry::translate(double dx, double dy)
   return 0;   
 }
 
-int QgsGeometry::splitGeometry(const QList<QgsPoint>& splitLine, QgsGeometry** newGeometry)
+int QgsGeometry::splitGeometry(const QList<QgsPoint>& splitLine, QList<QgsGeometry*>& newGeometries)
 {
-  QgsDebugMsg("In QgsGeometry::splitGeometry");
   int returnCode = 0;
 
   //return if this type is point/multipoint
@@ -2815,6 +2878,8 @@ int QgsGeometry::splitGeometry(const QList<QgsPoint>& splitLine, QgsGeometry** n
       return 2;
     }
 
+  newGeometries.clear();
+
   GEOS_GEOM::DefaultCoordinateSequence* splitLineCoords = new GEOS_GEOM::DefaultCoordinateSequence();
   QList<QgsPoint>::const_iterator lineIt;
   for(lineIt = splitLine.constBegin(); lineIt != splitLine.constEnd(); ++lineIt)
@@ -2837,16 +2902,19 @@ int QgsGeometry::splitGeometry(const QList<QgsPoint>& splitLine, QgsGeometry** n
   //for line/multiline: call splitLinearGeometry
   if(vectorType() == QGis::Line)
     {
-      returnCode = splitLinearGeometry(splitLineGeos, newGeometry);
+      QgsGeometry* newGeometry = 0;
+      returnCode = splitLinearGeometry(splitLineGeos, &newGeometry);
       delete splitLineGeos;
       if(returnCode > 1)//return codes 0 and 1 match the return code of this function
 	{
 	  returnCode = 5;
 	}
+      newGeometries.push_back(newGeometry);
     }
   else if(vectorType() == QGis::Polygon)
     {
-      returnCode = splitPolygonGeometry(splitLineGeos, newGeometry);
+      QgsGeometry* newGeometry = 0;
+      returnCode = splitPolygonGeometry(splitLineGeos, &newGeometry);
       delete splitLineGeos;
       if(returnCode == 1) //too complicated spit is return code 2 of this function
 	{
@@ -2856,6 +2924,7 @@ int QgsGeometry::splitGeometry(const QList<QgsPoint>& splitLine, QgsGeometry** n
 	{
 	  returnCode = 5;
 	}
+      newGeometries.push_back(newGeometry);
     }
   else
     {

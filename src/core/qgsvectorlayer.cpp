@@ -1656,7 +1656,7 @@ int QgsVectorLayer::translateFeature(int featureId, double dx, double dy)
   return 1; //geometry not found
 }
 
-int QgsVectorLayer::splitFeatures(const QList<QgsPoint>& splitLine)
+int QgsVectorLayer::splitFeatures(const QList<QgsPoint>& splitLine, bool topologicalEditing)
 {
   QgsGeometry* newGeometry = 0;
   QgsFeatureList newFeatures; //store all the newly created features
@@ -1685,17 +1685,28 @@ int QgsVectorLayer::splitFeatures(const QList<QgsPoint>& splitLine)
 
   for(; select_it != featureList.end(); ++select_it)
     {
-      splitFunctionReturn = select_it->geometry()->splitGeometry(splitLine, &newGeometry);
+      QList<QgsGeometry*> newGeometries;
+      QgsGeometry* newGeometry = 0;
+      splitFunctionReturn = select_it->geometry()->splitGeometry(splitLine, newGeometries);
       if(splitFunctionReturn < 2)
 	{
 	  //change this geometry
 	  mChangedGeometries.insert(select_it->featureId(), *(select_it->geometry()));
+	  
 	  //insert new feature
+	  newGeometry = newGeometries.at(0);
 	  QgsFeature newFeature;
 	  newFeature.setGeometry(newGeometry);
 	  newFeature.setAttributeMap(select_it->attributeMap());
 	  newFeatures.append(newFeature);
 	  setModified(true, true);
+
+	  //add topological points if necessary
+	  if(topologicalEditing)
+	    {
+	      addTopologicalPoints(select_it->geometry());
+	      addTopologicalPoints(newGeometry);
+	    }
 	}
       if(splitFunctionReturn > 0 && splitFunctionReturn < 3)
 	{
@@ -1742,6 +1753,153 @@ int QgsVectorLayer::removePolygonIntersections(QgsGeometry* geom)
 	}
     }
   return returnValue;
+}
+
+int QgsVectorLayer::addTopologicalPoints(QgsGeometry* geom)
+{
+  if(!geom)
+    {
+      return 1;
+    }
+
+  int returnVal = 0;
+
+  QGis::WKBTYPE wkbType = geom->wkbType();
+  
+  switch(wkbType)
+    {
+      //line
+    case QGis::WKBLineString25D:
+    case QGis::WKBLineString:
+      {
+	QgsPolyline theLine = geom->asPolyline();
+	QgsPolyline::const_iterator line_it = theLine.constBegin();
+	for(; line_it != theLine.constEnd(); ++line_it)
+	  {
+	    if(addTopologicalPoints(*line_it) != 0)
+	      {
+		returnVal = 2;
+	      }
+	  }
+	break;
+      }
+
+      //multiline
+    case QGis::WKBMultiLineString25D:
+    case QGis::WKBMultiLineString:
+      {
+	QgsMultiPolyline theMultiLine = geom->asMultiPolyline();
+	QgsPolyline currentPolyline;
+
+	for(int i = 0; i < theMultiLine.size(); ++i)
+	  {
+	    QgsPolyline::const_iterator line_it = currentPolyline.constBegin();
+	    for(; line_it != currentPolyline.constEnd(); ++line_it)
+	      {
+		if(addTopologicalPoints(*line_it) != 0)
+		  {
+		    returnVal = 2;
+		  }
+	      }
+	  }
+	break;
+      }
+ 
+      //polygon
+    case QGis::WKBPolygon25D:
+    case QGis::WKBPolygon:
+      {
+	QgsPolygon thePolygon = geom->asPolygon();
+	QgsPolyline currentRing;
+	
+	for(int i = 0; i < thePolygon.size(); ++i)
+	  {
+	    currentRing = thePolygon.at(i);
+	    QgsPolyline::const_iterator line_it = currentRing.constBegin();
+	    for(; line_it != currentRing.constEnd(); ++line_it)
+	      {
+		if(addTopologicalPoints(*line_it) != 0)
+		  {
+		    returnVal = 2;
+		  }
+	      }
+	  }
+	break;
+      }
+
+      //multipolygon
+    case QGis::WKBMultiPolygon25D:
+    case QGis::WKBMultiPolygon:
+      {
+	QgsMultiPolygon theMultiPolygon = geom->asMultiPolygon();
+	QgsPolygon currentPolygon;
+	QgsPolyline currentRing;
+	
+	for(int i = 0; i < theMultiPolygon.size(); ++i)
+	  {
+	    currentPolygon = theMultiPolygon.at(i);
+	    for(int j = 0; j < currentPolygon.size(); ++j)
+	      {
+		currentRing = currentPolygon.at(j);
+		QgsPolyline::const_iterator line_it = currentRing.constBegin();
+		for(; line_it != currentRing.constEnd(); ++line_it)
+		  {
+		    if(addTopologicalPoints(*line_it) != 0)
+		      {
+			returnVal = 2;
+		      }
+		  }
+	      }
+	  }
+	break;
+      }
+    }
+  return returnVal;
+}
+
+int QgsVectorLayer::addTopologicalPoints(const QgsPoint& p)
+{
+  QMultiMap<double, QgsSnappingResult> snapResults; //results from the snapper object
+  //we also need to snap to vertex to make sure the vertex does not already exist in this geometry
+  QMultiMap<double, QgsSnappingResult> vertexSnapResults;
+
+  QList<QgsSnappingResult> filteredSnapResults; //we filter out the results that are on existing vertices
+
+  const double threshold = 0.00000001;
+
+  if(snapWithContext(p, threshold, snapResults, QgsSnapper::SNAP_TO_SEGMENT) != 0)
+    {
+      return 2;
+    }
+
+  QMultiMap<double, QgsSnappingResult>::const_iterator snap_it = snapResults.constBegin();
+  QMultiMap<double, QgsSnappingResult>::const_iterator vertex_snap_it;
+
+  for(; snap_it != snapResults.constEnd(); ++snap_it)
+    { 
+      //test if p is already a vertex of this geometry. If yes, don't insert it
+      bool vertexAlreadyExists = false;
+      if(snapWithContext(p, threshold, vertexSnapResults, QgsSnapper::SNAP_TO_VERTEX) != 0)
+	{
+	  continue;
+	}
+
+      vertex_snap_it = vertexSnapResults.constBegin();
+      for(; vertex_snap_it != vertexSnapResults.constEnd(); ++vertex_snap_it)
+	{
+	  if(snap_it.value().snappedAtGeometry == vertex_snap_it.value().snappedAtGeometry)
+	    {
+	      vertexAlreadyExists = true; 
+	    }
+	}
+      
+      if(!vertexAlreadyExists)
+	{
+	  filteredSnapResults.push_back(*snap_it);
+	}
+    }
+  insertSegmentVerticesForSnap(filteredSnapResults);
+  return 0;
 }
 
 QgsLabel * QgsVectorLayer::label()
@@ -2664,7 +2822,28 @@ void QgsVectorLayer::snapToGeometry(const QgsPoint& startPoint, int featureId, Q
     }
 }
 
+int QgsVectorLayer::insertSegmentVerticesForSnap(const QList<QgsSnappingResult>& snapResults)
+{
+  int returnval = 0;
+  QgsPoint layerPoint;
+  
+  QList<QgsSnappingResult>::const_iterator it = snapResults.constBegin();
+  for(; it != snapResults.constEnd(); ++it)
+    {
+      if(it->snappedVertexNr == -1) //segment snap
+	{
+	  layerPoint = it->snappedVertex;
+	  if(!insertVertexBefore(layerPoint.x(), layerPoint.y(), it->snappedAtGeometry, it->afterVertexNr))
+	    {
+	      returnval = 3;
+	    }
+	}
+    }
+  return returnval; 
+}
+
 int QgsVectorLayer::boundingBoxFromPointList(const QList<QgsPoint>& list, double& xmin, double& ymin, double& xmax, double& ymax) const
+
 {
   if(list.size() < 1)
     {

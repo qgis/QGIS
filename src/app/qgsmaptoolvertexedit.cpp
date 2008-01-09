@@ -17,6 +17,7 @@
 #include "qgsmaptoolvertexedit.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprender.h"
+#include "qgsmessageviewer.h"
 #include "qgsvertexmarker.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
@@ -25,6 +26,7 @@
 #include "qgscursors.h"
 #include <QCursor>
 #include <QMessageBox>
+#include <QSettings>
 #include <QPixmap>
 
 QgsMapToolVertexEdit::QgsMapToolVertexEdit(QgsMapCanvas* canvas): QgsMapToolEdit(canvas)
@@ -35,4 +37,27 @@ QgsMapToolVertexEdit::QgsMapToolVertexEdit(QgsMapCanvas* canvas): QgsMapToolEdit
 QgsMapToolVertexEdit::~QgsMapToolVertexEdit()
 {
 
+}
+
+void QgsMapToolVertexEdit::displaySnapToleranceWarning()
+{
+  QSettings myQSettings;
+  QString myQSettingsLabel = "/UI/displaySnapWarning";
+  bool displaySnapWarning = myQSettings.value(myQSettingsLabel, true).toBool();
+
+  if (displaySnapWarning)
+  {
+    QgsMessageViewer* m = new QgsMessageViewer(0);
+    m->setWindowTitle(tr("Snap tolerance"));
+    m->setCheckBoxText(tr("Don't show this message again"));
+    m->setCheckBoxVisible(true);
+    m->setCheckBoxQSettingsLabel(myQSettingsLabel);
+    m->setMessageAsHtml("<p>" + 
+                        tr("Could not snap segment.") +
+                        "</p><p>" +
+                        tr("Have you set the tolerance in "
+                           "Settings > Project Properties > General?") +
+                        "</p>");
+    m->exec();
+  }
 }

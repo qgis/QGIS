@@ -301,7 +301,7 @@ class QgsGeometry
     /**
         Returns the squared cartesian distance between the given point
         to the given vertex index*/
-	//double sqrDistToVertexAt(QgsPoint& point /In, int atVertex);
+	double sqrDistToVertexAt(QgsPoint& point /In, int atVertex);
 
 	
 	/**
@@ -320,6 +320,35 @@ class QgsGeometry
      * @return The squared cartesian distance is also returned in sqrDist, negative number on error
      */
     double closestSegmentWithContext(const QgsPoint& point, QgsPoint& minDistPoint /Out/, int& beforeVertex /Out/);
+
+ /**Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
+     @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed, \
+     3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
+    int addRing(const QList<QgsPoint>& ring);
+
+ /**Adds a new island polygon to a multipolygon feature
+     @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring \
+not disjoint with existing polygons of the feature*/
+    int addIsland(const QList<QgsPoint>& ring);
+
+ /**Translate this geometry by dx, dy
+     @return 0 in case of success*/
+    int translate(double dx, double dy);
+
+ /**Splits this geometry according to a given line. Note that the geometry is only splitted once. If there are several intersections 
+     between geometry and splitLine, only the first one is considered.
+    @param splitLine the line that splits the geometry
+    @param newGeometrys OUT: list of new geometries that have been created with the split
+    @return 0 in case of success, which means the geometry has been split in two parts, \
+    1 if line intersects multiple times but only one split could be done, \ 
+    2 if intersection too complicated to proceed (several polygon intersections), \				\
+    else other error*/
+    int splitGeometry(const QList<QgsPoint>& splitLine, QList<QgsGeometry*>& newGeometries);
+
+ /**Changes this geometry such that it does not intersect the other geometry
+       @param other geometry that should not be intersect
+       @return 0 in case of success*/
+    int difference(QgsGeometry* other);	
 
     /**Returns the bounding box of this feature*/
     QgsRect boundingBox();

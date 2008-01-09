@@ -250,15 +250,37 @@ existing rings, 5 no feature found where ring can be inserted*/
 
   /**Splits features cut by the given line
      @param splitLine line that splits the layer features
+     @param topologicalEditing true if topological editing is enabled
      @return 0 in case of success, 1 if several intersections but only 1 split done, \
   2 if intersection too complex to be handled, else other error*/
-  int splitFeatures(const QList<QgsPoint>& splitLine);
+  int splitFeatures(const QList<QgsPoint>& splitLine, bool topologicalEditing = false);
 
   /**Changes the specified geometry such that it has no intersections with other \
      polygon (or multipolygon) geometries in this vector layer
   @param geom geometry to modify
   @return 0 in case of success*/
   int removePolygonIntersections(QgsGeometry* geom);
+
+  /**Adds topological points for every vertex of the 
+   geometry
+  @param geom the geometry where each vertex is added to segments of other features
+  Note: geom is not going to be modified by the function
+  @return 0 in case of success*/
+  int addTopologicalPoints(QgsGeometry* geom);
+
+  /**Adds a vertex to segments which intersect point p but don't 
+   already have a vertex there. If a feature already has a vertex at position p, 
+   no additional vertex is inserted. This method is usefull for topological 
+  editing.
+  @param p position of the vertex
+  @return 0 in case of success*/
+  int addTopologicalPoints(const QgsPoint& p);
+
+   /**Inserts vertices to the snapped segments.
+   This is usefull for topological editing if snap to segment is enabled.
+   @param snapResults results collected from the snapping operation
+   @return 0 in case of success*/
+  int insertSegmentVerticesForSnap(const QList<QgsSnappingResult>& snapResults);
 
   /** Set labels on */
   void setLabelOn( bool on );
