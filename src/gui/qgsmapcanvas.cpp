@@ -646,8 +646,13 @@ void QgsMapCanvas::keyPressEvent(QKeyEvent * e)
 
       default:
         // Pass it on
+	if(mMapTool)
+	  {
+	    mMapTool->keyPressEvent(e);
+	  }
         e->ignore();
         
+	
         QgsDebugMsg("Ignoring key: " + QString::number(e->key()));
 
     }

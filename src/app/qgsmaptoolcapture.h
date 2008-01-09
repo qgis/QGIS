@@ -51,7 +51,9 @@ class QgsMapToolCapture : public QgsMapToolEdit
     virtual void canvasPressEvent(QMouseEvent * e);
   
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent(QMouseEvent * e)=0;    
+    virtual void canvasReleaseEvent(QMouseEvent * e)=0;   
+
+    virtual void keyPressEvent(QKeyEvent* e);
     
     //! Resize rubber band
     virtual void renderComplete();

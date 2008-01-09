@@ -18,6 +18,7 @@
 #include "qgsattributedialog.h"
 #include "qgscoordinatetransform.h"
 #include "qgsfield.h"
+#include "qgslogger.h"
 #include "qgsmaptoolcapture.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprender.h"
@@ -132,11 +133,25 @@ int QgsMapToolCapture::addVertex(const QPoint& p)
 
 void QgsMapToolCapture::undo()
 {
-  //todo: a more sophisticated undo-behaviour is needed...
   if(mRubberBand)
     {
-      //mRubberBand->pop_back();
+      int rubberBandSize = mRubberBand->numberOfVertices();
+      int captureListSize = mCaptureList.size();
+
+      if(rubberBandSize < 1 || captureListSize < 1)
+	{
+	  return;
+	}
+
+      mRubberBand->removeLastPoint();
       mCaptureList.pop_back();
-      mCanvas->refresh();
+    }
+}
+
+void QgsMapToolCapture::keyPressEvent(QKeyEvent* e)
+{
+  if(e->key() == Qt::Key_Backspace)
+    {
+      undo();
     }
 }

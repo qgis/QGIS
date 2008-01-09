@@ -225,6 +225,13 @@ void QgsMapToolAddFeature::canvasReleaseEvent(QMouseEvent * e)
 	  
 	  delete mRubberBand;
 	  mRubberBand = NULL;
+
+	  //bail out if there are not at least two vertices
+	  if(mCaptureList.size() < 2)
+	    {
+	      mCaptureList.clear();
+	      return;
+	    }
 	  
 	  //bail out if there are not at least two vertices
 	  if(mCaptureList.size() < 2)

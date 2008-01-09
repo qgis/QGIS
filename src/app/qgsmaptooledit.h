@@ -26,7 +26,6 @@ class QKeyEvent;
 /**Base class for map tools that edit vector geometry*/
 class QgsMapToolEdit: public QgsMapTool
 {
-  Q_OBJECT
  public:
   QgsMapToolEdit(QgsMapCanvas* canvas);
   virtual ~QgsMapToolEdit();
@@ -57,13 +56,6 @@ class QgsMapToolEdit: public QgsMapTool
 
   /**Returns the current vector layer of the map canvas or 0*/
   QgsVectorLayer* currentVectorLayer();
-
-  /**Default implementation does nothing*/
-  virtual void undo(){}
-
-  public slots:
-  /**Connected with keyPressed signal from QgsMapCanvas*/
-  void keyPress(QKeyEvent* e);
 };
 
 #endif

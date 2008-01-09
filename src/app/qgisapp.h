@@ -289,6 +289,8 @@ public slots:
   void deleteSelected();
   //! activates the move feature tool
   void moveFeature();
+  //! activates the split features tool
+  void splitFeatures();
   //! activates the add vertex tool
   void addVertex();
   //! activates the move vertex tool
@@ -484,6 +486,7 @@ private:
   QAction *mActionCapturePolygon;
   QAction *mActionDeleteSelected;
   QAction *mActionMoveFeature;
+  QAction *mActionSplitFeatures;
   QAction *mActionAddVertex;
   QAction *mActionDeleteVertex;
   QAction *mActionMoveVertex;
@@ -541,6 +544,7 @@ private:
       QgsMapTool* mCaptureLine;
       QgsMapTool* mCapturePolygon;
       QgsMapTool* mMoveFeature;
+      QgsMapTool* mSplitFeatures;
       QgsMapTool* mSelect;
       QgsMapTool* mVertexAdd;
       QgsMapTool* mVertexMove;

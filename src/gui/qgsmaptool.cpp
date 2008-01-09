@@ -124,6 +124,10 @@ void QgsMapTool::canvasReleaseEvent(QMouseEvent *)
 {
 }
 
+void QgsMapTool::keyPressEvent(QKeyEvent* e)
+{
+}
+
 void QgsMapTool::renderComplete()
 {
 }

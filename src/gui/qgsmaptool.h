@@ -23,6 +23,7 @@
 
 class QgsMapLayer;
 class QgsMapCanvas;
+class QKeyEvent;
 class QMouseEvent;
 class QgsPoint;
 class QgsRect;
@@ -45,6 +46,9 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     //! Mouse release event for overriding. Default implementation does nothing.
     virtual void canvasReleaseEvent(QMouseEvent * e);
+
+    //! Key event for overriding. Default implementation does nothing.
+    virtual void keyPressEvent(QKeyEvent* e);
     
     //! Called when rendering has finished. Default implementation does nothing.
     virtual void renderComplete();

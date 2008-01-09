@@ -93,7 +93,7 @@ class CORE_EXPORT QgsPoint
    * The wkt is created without an SRID.
    * @return Well known text in the form POINT(x y)
    */
-  QString wellKnownText();
+  QString wellKnownText() const;
 
   /**Returns the squared distance between this point and x,y*/
   double sqrDist(double x, double y) const;
@@ -112,6 +112,12 @@ class CORE_EXPORT QgsPoint
 
   //! Multiply x and y by the given value
   void multiply(const double& scalar);
+
+  //! Test if this point is on the segment defined by points a, b
+  //! @return 0 if this point is not on the open ray through a and b, 
+  //! 1 if point is on open ray a, 2 if point is within line segment, 
+  //! 3 if point is on open ray b.
+  int onSegment(const QgsPoint& a, const QgsPoint& b) const;
   
  private:
 
@@ -120,6 +126,10 @@ class CORE_EXPORT QgsPoint
 
     //! y coordinate 
     double m_y;
+
+    //! little helper function that returns the maximum of 
+    //! two doubles (or a in case of equality)
+    double max(double a, double b) const;
     
 }; // class QgsPOint
 

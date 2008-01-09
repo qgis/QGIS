@@ -153,6 +153,7 @@
 #include "qgsmaptoolmovevertex.h"
 #include "qgsmaptoolpan.h"
 #include "qgsmaptoolselect.h"
+#include "qgsmaptoolsplitfeatures.h"
 #include "qgsmaptoolvertexedit.h"
 #include "qgsmaptoolzoom.h"
 #include "qgsmeasuretool.h"
@@ -414,6 +415,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mCaptureLine;
   delete mMapTools.mCapturePolygon;
   delete mMapTools.mMoveFeature;
+  delete mMapTools.mSplitFeatures;
   delete mMapTools.mSelect;
   delete mMapTools.mVertexAdd;
   delete mMapTools.mVertexMove;
@@ -743,6 +745,11 @@ void QgisApp::createActions()
   connect(mActionMoveFeature, SIGNAL(triggered()), this, SLOT(moveFeature()));
   mActionMoveFeature->setEnabled(true);
   //
+  mActionSplitFeatures = new QAction(QIcon(myIconPath+"/mActionSplitFeatures.png"), tr("Split Features"), this);
+  mActionSplitFeatures->setStatusTip(tr("Split Features"));
+  connect(mActionSplitFeatures, SIGNAL(triggered()), this, SLOT(splitFeatures()));
+  mActionSplitFeatures->setEnabled(true);
+  //
   mActionAddVertex = new QAction(QIcon(myIconPath+"/mActionAddVertex.png"), tr("Add Vertex"), this);
   mActionAddVertex->setStatusTip(tr("Add Vertex"));
   connect(mActionAddVertex, SIGNAL(triggered()), this, SLOT(addVertex()));
@@ -826,6 +833,8 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction(mActionCapturePolygon);
   mActionMoveFeature->setCheckable(true);
   mMapToolGroup->addAction(mActionMoveFeature);
+  mActionSplitFeatures->setCheckable(true);
+  mMapToolGroup->addAction(mActionSplitFeatures);
   mMapToolGroup->addAction(mActionDeleteSelected);
   mActionAddVertex->setCheckable(true);
   mMapToolGroup->addAction(mActionAddVertex);
@@ -986,6 +995,7 @@ void QgisApp::createToolBars()
   mDigitizeToolBar->addAction(mActionCaptureLine);
   mDigitizeToolBar->addAction(mActionCapturePolygon);
   mDigitizeToolBar->addAction(mActionMoveFeature);
+  mDigitizeToolBar->addAction(mActionSplitFeatures);
   mDigitizeToolBar->addAction(mActionDeleteSelected);
   mDigitizeToolBar->addAction(mActionAddVertex);
   mDigitizeToolBar->addAction(mActionDeleteVertex);
@@ -1252,6 +1262,8 @@ void QgisApp::createCanvas()
   mMapTools.mCapturePolygon->setAction(mActionCapturePolygon);
   mMapTools.mMoveFeature = new QgsMapToolMoveFeature(mMapCanvas);
   mMapTools.mMoveFeature->setAction(mActionMoveFeature);
+  mMapTools.mSplitFeatures = new QgsMapToolSplitFeatures(mMapCanvas);
+  mMapTools.mSplitFeatures->setAction(mActionSplitFeatures);
   mMapTools.mSelect = new QgsMapToolSelect(mMapCanvas);
   mMapTools.mSelect->setAction(mActionSelect);
   mMapTools.mVertexAdd = new QgsMapToolAddVertex(mMapCanvas);
@@ -3416,6 +3428,11 @@ void QgisApp::deleteSelected()
 void QgisApp::moveFeature()
 {
   mMapCanvas->setMapTool(mMapTools.mMoveFeature);
+}
+
+void QgisApp::splitFeatures()
+{
+  mMapCanvas->setMapTool(mMapTools.mSplitFeatures);
 }
 
 void QgisApp::capturePoint()
