@@ -17,7 +17,8 @@
 #ifndef QGSMAPTOOLCAPTURE_H
 #define QGSMAPTOOLCAPTURE_H
 
-#include "qgsmaptool.h"
+#include "qgsmapcanvassnapper.h"
+#include "qgsmaptooledit.h"
 #include "qgspoint.h"
 
 
@@ -26,7 +27,7 @@ class QgsRubberBand;
 #include <QPoint>
 #include <QList>
 
-class QgsMapToolCapture : public QgsMapTool
+class QgsMapToolCapture : public QgsMapToolEdit
 {
   public:
   
@@ -82,6 +83,9 @@ class QgsMapToolCapture : public QgsMapTool
     /**Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
      @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed*/
     int addVertex(const QPoint& p);
+
+    /**Removes the last vertex from mRubberBand and mCaptureList*/
+    void undo();
 
 };
 

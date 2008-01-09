@@ -21,6 +21,9 @@
 #include <QList>
 #include <QPen>
 #include <QPolygon>
+
+class QgsGeometry;
+class QgsVectorLayer;
 class QPaintEvent;
 
 class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
@@ -36,17 +39,21 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 
     //! Add point to rubberband and update canvas
     //! If adding more points consider using update=false for better performance
-    void addPoint(const QgsPoint & p, bool update = true);
+    //! geometryIndex is the index of the feature part (in case of multipart geometries)
+    void addPoint(const QgsPoint & p, bool update = true, int geometryIndex = 0);
 
-    // ! Remove last point
-    void removePoint(bool update = true);
+    void movePoint(const QgsPoint & p, int geometryIndex = 0);
+    void movePoint(int index, const QgsPoint& p, int geometryIndex = 0);
 
-    void movePoint(const QgsPoint & p);
-    void movePoint(int index, const QgsPoint& p);
+    /**Sets this rubber band to the geometry of an existing feature.
+     This is usefull for feature highlighting.
+    @param geom the geometry object
+    @param layer the layer containing the feature (used for coord transformation)
+    @param render the maprender object (used for coord transformation)*/
+    void setToGeometry(QgsGeometry* geom, QgsVectorLayer& layer);
 
-    int size() const;
-    const QList<QgsPoint>& getPoints() const;
-    const QgsPoint& getPoint(int index) const;
+    /**Adds translation to original coordinates (all in map coordinates)*/
+    void setTranslationOffset(double dx, double dy);
 
   protected:
     virtual void paint(QPainter* p);
@@ -57,8 +64,14 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
   private:
     QBrush mBrush;
     QPen mPen;
-    QList<QgsPoint> mPoints;
+
+    /**Nested lists used for multitypes*/
+    QList< QList <QgsPoint> > mPoints;
     bool mIsPolygon;
+    double mTranslationOffsetX;
+    double mTranslationOffsetY;
+
+    QgsRubberBand();
 };
 
 #endif

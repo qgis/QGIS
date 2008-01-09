@@ -1,7 +1,7 @@
 /***************************************************************************
-    qgsmaptooladdring.h  - map tool to cut rings in polygon and multipolygon features
+    qgsmaptoolmovefeature.h  -  map tool for translating features by mouse drag
     ---------------------
-    begin                : April 2007
+    begin                : Juli 2007
     copyright            : (C) 2007 by Marco Hugentobler
     email                : marco dot hugentobler at karto dot baug dot ethz dot ch
  ***************************************************************************
@@ -14,13 +14,36 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include "qgsmaptoolcapture.h"
+#ifndef QGSMAPTOOLMOVEFEATURE_H
+#define QGSMAPTOOLMOVEFEATURE_H
 
-/**A tool to cut holes into polygons and multipolygon features*/
-class QgsMapToolAddRing: public QgsMapToolCapture
+#include "qgsmaptooledit.h"
+
+/**Map tool for translating feature position by mouse drag*/
+class QgsMapToolMoveFeature: public QgsMapToolEdit
 {
  public:
-  QgsMapToolAddRing(QgsMapCanvas* canvas);
-  virtual ~QgsMapToolAddRing();
-  void canvasReleaseEvent(QMouseEvent * e);
+  QgsMapToolMoveFeature(QgsMapCanvas* canvas);
+  virtual ~QgsMapToolMoveFeature();
+
+  virtual void canvasMoveEvent(QMouseEvent * e);
+
+  virtual void canvasPressEvent(QMouseEvent * e);
+
+  virtual void canvasReleaseEvent(QMouseEvent * e);
+
+  //! called when map tool is being deactivated
+  void deactivate();
+
+ private:
+  /**Start point of the move in map coordinates*/
+  QgsPoint mStartPointMapCoords;
+
+  /**Rubberband that shows the feature being moved*/
+  QgsRubberBand* mRubberBand;
+
+  /**Id of moved feature*/
+  int mMovedFeature;
 };
+
+#endif

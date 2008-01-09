@@ -16,10 +16,11 @@
 
 #include "qgsmaptoolcapture.h"
 
+/**A map tool that adds new polygons to multipolygon features*/
 class QgsMapToolAddIsland: public QgsMapToolCapture
 {
  public:
   QgsMapToolAddIsland(QgsMapCanvas* canvas);
-  ~QgsMapToolAddIsland();
+  virtual ~QgsMapToolAddIsland();
   void canvasReleaseEvent(QMouseEvent * e);
 };

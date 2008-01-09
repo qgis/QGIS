@@ -29,6 +29,7 @@
 #include "qgsmaprender.h"
 #include "qgsproject.h"
 #include "qgsrenderer.h"
+#include "qgssnappingdialog.h"
 
 //qt includes
 #include <QColorDialog>
@@ -79,28 +80,11 @@ QgsProjectProperties::QgsProjectProperties(QgsMapCanvas* mapCanvas, QWidget *par
   int dp = QgsProject::instance()->readNumEntry("PositionPrecision", "/DecimalPlaces");
   spinBoxDP->setValue(dp);
 
-  //get the snapping tolerance for digitising and set the control accordingly
-  double mySnapTolerance = QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0);
-  //leSnappingTolerance->setInputMask("000000.000000");
-  leSnappingTolerance->setText(QString::number(mySnapTolerance));
-
-  //get the line width for digitised lines and set the control accordingly
-  int myLineWidth = QgsProject::instance()->readNumEntry("Digitizing","/LineWidth",0);
-  spinDigitisedLineWidth->setValue(myLineWidth);    
-
-  //get the colour of digitising lines and set the button colour accordingly
-  int myRedInt = QgsProject::instance()->readNumEntry("Digitizing","/LineColorRedPart",255);
-  int myGreenInt = QgsProject::instance()->readNumEntry("Digitizing","/LineColorGreenPart",0);
-  int myBlueInt = QgsProject::instance()->readNumEntry("Digitizing","/LineColorBluePart",0);
-  QColor myColour = QColor(myRedInt,myGreenInt,myBlueInt);
-  pbnDigitisedLineColour->setColor(myColour);
-
-
   //get the colour selections and set the button colour accordingly
-  myRedInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorRedPart",255);
-  myGreenInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorGreenPart",255);
-  myBlueInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorBluePart",0);
-  myColour = QColor(myRedInt,myGreenInt,myBlueInt);
+  int myRedInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorRedPart",255);
+  int myGreenInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorGreenPart",255);
+  int myBlueInt = QgsProject::instance()->readNumEntry("Gui","/SelectionColorBluePart",0);
+  QColor myColour = QColor(myRedInt,myGreenInt,myBlueInt);
   pbnSelectionColour->setColor(myColour);
 
   //get the colour for map canvas background and set button colour accordingly (default white)
@@ -109,6 +93,64 @@ QgsProjectProperties::QgsProjectProperties(QgsMapCanvas* mapCanvas, QWidget *par
   myBlueInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorBluePart",255);
   myColour = QColor(myRedInt,myGreenInt,myBlueInt);
   pbnCanvasColor->setColor(myColour);
+
+  //read the digitizing settings
+  int topologicalEditing = QgsProject::instance()->readNumEntry("Digitizing", "/TopologicalEditing", 0);
+  if(topologicalEditing != 0)
+    {
+      mEnableTopologicalEditingCheckBox->setCheckState(Qt::Checked);
+    }
+  else
+    {
+      mEnableTopologicalEditingCheckBox->setCheckState(Qt::Unchecked);
+    }
+
+  bool ok;
+  QStringList layerIdList = QgsProject::instance()->readListEntry("Digitizing", "/LayerSnappingList", &ok);
+  QStringList enabledList = QgsProject::instance()->readListEntry("Digitizing", "/LayerSnappingEnabledList", &ok);
+  QStringList toleranceList = QgsProject::instance()->readListEntry("Digitizing", "/LayerSnappingToleranceList", &ok); 
+  QStringList snapToList = QgsProject::instance()->readListEntry("Digitizing", "/LayerSnapToList", &ok); 
+
+  QStringList::const_iterator idIter = layerIdList.constBegin();
+  QStringList::const_iterator enabledIter = enabledList.constBegin();
+  QStringList::const_iterator tolIter = toleranceList.constBegin();
+  QStringList::const_iterator snapToIter = snapToList.constBegin();
+
+  QgsMapLayer* currentLayer = 0;
+
+  //create the new layer entries
+  for(; idIter != layerIdList.constEnd(); ++idIter, ++enabledIter, ++tolIter, ++snapToIter)
+    {
+      currentLayer = QgsMapLayerRegistry::instance()->mapLayer(*idIter);
+      if(currentLayer)
+	{
+	  LayerEntry newEntry;
+	  newEntry.layerName = currentLayer->name();
+	  if( (*enabledIter) == "enabled")
+	    {
+	      newEntry.checked = true;
+	    }
+	  else
+	    {
+	      newEntry.checked = false;
+	    }
+	  if( (*snapToIter) == "to_vertex")
+	    {
+	      newEntry.snapTo = 0;
+	    }
+	  else if( (*snapToIter) == "to_segment")
+	    {
+	      newEntry.snapTo = 1;
+	    }
+	  else //to vertex and segment
+	    {
+	      newEntry.snapTo = 2;
+	    }
+	  newEntry.tolerance = tolIter->toDouble();
+	  mSnappingLayerSettings.insert(*idIter, newEntry);
+	}
+    }
+  
 }
 
 QgsProjectProperties::~QgsProjectProperties()
@@ -225,20 +267,8 @@ void QgsProjectProperties::apply()
   // Announce that we may have a new display precision setting
   emit displayPrecisionChanged();
 
-  //set the snapping tolerance for digitising (we write as text but read will convert to a num
-  QgsProject::instance()->writeEntry("Digitizing","/Tolerance",leSnappingTolerance->text());
-
-  //set the line width for digitised lines and set the control accordingly
-  QgsProject::instance()->writeEntry("Digitizing","/LineWidth",spinDigitisedLineWidth->value());
-
-  //set the colour of digitising lines
-  QColor myColour = pbnDigitisedLineColour->color();
-  QgsProject::instance()->writeEntry("Digitizing","/LineColorRedPart",myColour.red());
-  QgsProject::instance()->writeEntry("Digitizing","/LineColorGreenPart",myColour.green());
-  QgsProject::instance()->writeEntry("Digitizing","/LineColorBluePart",myColour.blue());
-
   //set the colour for selections
-  myColour = pbnSelectionColour->color();
+  QColor myColour = pbnSelectionColour->color();
   QgsProject::instance()->writeEntry("Gui","/SelectionColorRedPart",myColour.red());
   QgsProject::instance()->writeEntry("Gui","/SelectionColorGreenPart",myColour.green());
   QgsProject::instance()->writeEntry("Gui","/SelectionColorBluePart",myColour.blue()); 
@@ -249,6 +279,49 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry("Gui","/CanvasColorRedPart",myColour.red());
   QgsProject::instance()->writeEntry("Gui","/CanvasColorGreenPart",myColour.green());
   QgsProject::instance()->writeEntry("Gui","/CanvasColorBluePart",myColour.blue()); 
+
+  //write the digitizing settings
+  int topologicalEditingEnabled = (mEnableTopologicalEditingCheckBox->checkState() == Qt::Checked) ? 1:0;
+  QgsProject::instance()->writeEntry("Digitizing", "/TopologicalEditing", topologicalEditingEnabled);
+
+  QMap<QString, LayerEntry>::const_iterator layerEntryIt;
+
+  //store the layer snapping settings as string lists
+  QStringList layerIdList;
+  QStringList snapToList;
+  QStringList toleranceList;
+  QStringList enabledList;
+
+  for(layerEntryIt = mSnappingLayerSettings.constBegin(); layerEntryIt != mSnappingLayerSettings.constEnd(); ++layerEntryIt)
+    {
+      layerIdList << layerEntryIt.key();
+      toleranceList << QString::number(layerEntryIt->tolerance, 'f');
+      if(layerEntryIt->checked)
+	{
+	  enabledList << "enabled";
+	}
+      else
+	{
+	  enabledList << "disabled";
+	}
+      if(layerEntryIt->snapTo == 0)
+	{
+	  snapToList << "to_vertex";
+	}
+      else if(layerEntryIt->snapTo == 1)
+	{
+	  snapToList << "to_segment";
+	}
+      else //to vertex and segment
+	{
+	  snapToList << "to_vertex_and_segment";
+	}
+    }
+  QgsProject::instance()->writeEntry("Digitizing", "/LayerSnappingList", layerIdList);
+  QgsProject::instance()->writeEntry("Digitizing", "/LayerSnapToList", snapToList);
+  QgsProject::instance()->writeEntry("Digitizing", "/LayerSnappingToleranceList", toleranceList);
+  QgsProject::instance()->writeEntry("Digitizing", "/LayerSnappingEnabledList", enabledList);
+
   //todo XXX set canvas colour
   emit refresh();
 }
@@ -261,15 +334,6 @@ bool QgsProjectProperties::isProjected()
 void QgsProjectProperties::showProjectionsTab()
 {
   tabWidget->setCurrentPage(1);
-}
-
-void QgsProjectProperties::on_pbnDigitisedLineColour_clicked()
-{
-  QColor color = QColorDialog::getColor( pbnDigitisedLineColour->color(), this );
-  if (color.isValid())
-  {
-    pbnDigitisedLineColour->setColor(color);
-  }
 }
 
 void QgsProjectProperties::on_pbnSelectionColour_clicked()
@@ -294,4 +358,14 @@ void QgsProjectProperties::on_buttonBox_helpRequested()
 {
   std::cout << "running help" << std::endl; 
   QgsContextHelp::run(context_id);
+}
+
+void QgsProjectProperties::on_mSnappingOptionsPushButton_clicked()
+{
+  QgsSnappingDialog d(mMapCanvas, mSnappingLayerSettings);
+  if(d.exec() == QDialog::Accepted)
+    {
+      //retrieve the new layer snapping settings from the dialog
+      d.layerSettings(mSnappingLayerSettings);
+    }
 }

@@ -19,7 +19,6 @@
 %Include qgsfeature.sip
 %Include qgsfield.sip
 %Include qgsgeometry.sip
-%Include qgsgeometryvertexindex.sip
 %Include qgsgraduatedsymbolrenderer.sip
 %Include qgslabel.sip
 %Include qgslabelattributes.sip

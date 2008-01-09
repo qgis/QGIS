@@ -44,6 +44,7 @@ SET(QGIS_UIS
   qgsrasterlayerpropertiesbase.ui
   qgsserversourceselectbase.ui
   qgssinglesymboldialogbase.ui
+  qgssnappingdialogbase.ui
   qgsuniquevaluedialogbase.ui
   qgsvectorlayerpropertiesbase.ui
   qgsvectorsymbologywidgetbase.ui

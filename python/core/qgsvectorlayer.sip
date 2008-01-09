@@ -141,21 +141,18 @@ public:
    *  in the given ring, item (first number is index 0), and feature
    *  Not meaningful for Point geometries
    */
-  bool insertVertexBefore(double x, double y, int atFeatureId,
-                          QgsGeometryVertexIndex beforeVertex);
+  bool insertVertexBefore(double x, double y, int atFeatureId, int beforeVertex);
 
   /** Moves the vertex at the given position number,
    *  ring and item (first number is index 0), and feature
    *  to the given coordinates
    */
-  bool moveVertexAt(double x, double y, int atFeatureId,
-                    QgsGeometryVertexIndex atVertex);
+  bool moveVertexAt(double x, double y, int atFeatureId, int atVertex);
 
   /** Deletes the vertex at the given position number,
    *  ring and item (first number is index 0), and feature
    */
-  bool deleteVertexAt(int atFeatureId,
-                      QgsGeometryVertexIndex atVertex);
+  bool deleteVertexAt(int atFeatureId, int atVertex);
 
   /** Deletes the selected features
    *  @return true in case of success and false otherwise
@@ -192,39 +189,15 @@ existing rings, 5 no feature found where ring can be inserted*/
      @return true if the position of point has been changed, and false otherwise */
   bool snapPoint(QgsPoint& point /In, Out/, double tolerance);
 
-  /**Snaps a point to the closest vertex if there is one within the snapping tolerance
-     @param atVertex          Set to a vertex index of the snapped-to vertex
-     @param beforeVertexIndex Returns the index of the vertex before atVertex (for rubber band purposes). -1 if no vertex is before
-     @param afterVertexIndex  Returns the index of the vertex after atVertex (for rubber band purposes). -1 if no vertex is after
-     @param snappedFeatureId  Set to the feature ID that where the snapped-to vertex belongs to.
-     @param snappedGeometry   Set to the geometry that the snapped-to vertex belongs to.
-     @param tolerance         The snapping tolerance
-     @return true if the position of the points have been changed, and false otherwise (or not implemented by the provider) 
-     
-     TODO: Handle returning multiple verticies if they are coincident
-   */
-  bool snapVertexWithContext(QgsPoint& point,
-                             QgsGeometryVertexIndex& atVertex /Out/,
-			     int& beforeVertexIndex /Out/,
-			     int& afterVertexIndex /Out/,
-                             int& snappedFeatureId /Out/,
-                             QgsGeometry& snappedGeometry /Out/,
-                             double tolerance);
-
-  /**Snaps a point to the closest line segment if there is one within the snapping tolerance
-     @param beforeVertex      Set to a value where the snapped-to segment is before this vertex index
-     @param snappedFeatureId  Set to the feature ID that where the snapped-to segment belongs to.
-     @param snappedGeometry   Set to the geometry that the snapped-to segment belongs to.
-     @param tolerance         The snapping tolerance
-     @return true if the position of the points have been changed, and false otherwise (or not implemented by the provider) 
-     
-     TODO: Handle returning multiple lineFeatures if they are coincident
-   */
-  bool snapSegmentWithContext(QgsPoint& point /In, Out/,
-                              QgsGeometryVertexIndex& beforeVertex /Out/,
-                              int& snappedFeatureId /Out/, 
-                              QgsGeometry& snappedGeometry /Out/,
-                              double tolerance);
+/**Snaps to segment or vertex within given tolerance
+     @param startPoint point to snap (in layer coordinates)
+     @param snappingTolerance distance tolerance for snapping
+     @param snappingResults snapping results. Key is the distance between startPoint and snapping target
+     @param snap_to to segment / to vertex
+     @return 0 in case of success
+  */
+  //int snapWithContext(const QgsPoint& startPoint, double snappingTolerance, QMultiMap<double, QgsSnappingResult>& snappingResults, \
+	//	      QgsSnapper::SNAP_TO snap_to);
 
   /**
     Commits edited attributes. Depending on the feature id,
