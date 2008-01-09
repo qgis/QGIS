@@ -221,8 +221,7 @@ class QgsVectorDataProvider : QgsDataProvider
       QList<int> allAttributesList();
 
       /**Returns the names of the numerical types*/
-      // TODO: wrap, must wrap QSet<TYPE> first
-      //const QSet<QString>& supportedNativeTypes() const;
+      const QSet<QString>& supportedNativeTypes() const;
       
       /**
        * Set whether provider should return also features that don't have
