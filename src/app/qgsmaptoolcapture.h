@@ -79,7 +79,7 @@ class QgsMapToolCapture : public QgsMapToolEdit
     /** rubber band for polylines and polygons */
     QgsRubberBand* mRubberBand;
 
-    /** List to store the points of digitised lines and polygons */
+    /** List to store the points of digitised lines and polygons (in layer coordinates)*/
     QList<QgsPoint> mCaptureList;
 
     /**Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)

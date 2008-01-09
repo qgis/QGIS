@@ -37,6 +37,9 @@ class QgsMapToolVertexEdit: public QgsMapToolEdit
   /**Snapping results that are collected during the mouse press event 
    (search for vertices/segments to manipulate)*/
   QList<QgsSnappingResult> mRecentSnappingResults;
+
+  //! Displays a warning about the snap tolerance settings
+  void displaySnapToleranceWarning();
 };
 
 #endif

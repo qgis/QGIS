@@ -428,13 +428,15 @@ void QgsMapToolAddFeature::canvasReleaseEvent(QMouseEvent * e)
 	  
 	  if (QgsAttributeDialog::queryAttributes(fields, *f))
 	    {
-	      //add points to other features to keep topology up-to-date
-	      int topologicalEditing = QgsProject::instance()->readNumEntry("Digitizing", "/TopologicalEditing", 0);
-	      if(topologicalEditing)
+	      if(vlayer->addFeature(*f))
 		{
-		  addTopologicalPoints(mCaptureList);
+		  //add points to other features to keep topology up-to-date
+		  int topologicalEditing = QgsProject::instance()->readNumEntry("Digitizing", "/TopologicalEditing", 0);
+		  if(topologicalEditing)
+		    {
+		      addTopologicalPoints(mCaptureList);
+		    }
 		}
-	      vlayer->addFeature(*f);
 	    }
 	  delete f;
 	  

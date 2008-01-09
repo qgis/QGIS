@@ -56,6 +56,10 @@ void QgsMapToolDeleteVertex::canvasPressEvent(QMouseEvent * e)
       mCross->setIconType(QgsVertexMarker::ICON_X);
       mCross->setCenter(markerPoint);
     }
+  else
+    {
+      displaySnapToleranceWarning();
+    }
 }
 
 void QgsMapToolDeleteVertex::canvasReleaseEvent(QMouseEvent * e)
