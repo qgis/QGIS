@@ -482,7 +482,15 @@ void QgsMapToolIdentify::highlightFeature(int featureId)
   QgsFeature feat;
   if (!provider->getFeatureAtId(featureId, feat))
     return;
+
+  if(!feat.geometry())
+    {
+      return;
+    }
+      
+  mRubberBand = new QgsRubberBand(mCanvas, feat.geometry()->vectorType() == QGis::Polygon);
   
+#if 0
   QgsGeometry* g = feat.geometry();
   
   // TODO: support multipart geometries
@@ -523,9 +531,12 @@ void QgsMapToolIdentify::highlightFeature(int featureId)
     default:
       break;
   }
+#endif //0
 
+  
   if (mRubberBand)
   {
+    mRubberBand->setToGeometry(feat.geometry(), *layer);
     mRubberBand->setWidth(2);
     mRubberBand->setColor(Qt::red);
     mRubberBand->show();

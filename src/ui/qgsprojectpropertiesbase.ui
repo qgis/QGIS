@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>583</width>
-    <height>517</height>
+    <width>726</width>
+    <height>579</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -23,21 +23,11 @@
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>9</number>
+    <number>11</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="1" column="0" >
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="0" >
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
@@ -47,21 +37,21 @@
       <attribute name="title" >
        <string>General</string>
       </attribute>
-      <layout class="QVBoxLayout" >
+      <layout class="QGridLayout" >
        <property name="margin" >
-        <number>9</number>
+        <number>11</number>
        </property>
        <property name="spacing" >
         <number>6</number>
        </property>
-       <item>
+       <item row="0" column="0" >
         <widget class="QGroupBox" name="titleBox" >
          <property name="title" >
           <string>Project Title</string>
          </property>
          <layout class="QGridLayout" >
           <property name="margin" >
-           <number>8</number>
+           <number>11</number>
           </property>
           <property name="spacing" >
            <number>6</number>
@@ -79,14 +69,14 @@
          </layout>
         </widget>
        </item>
-       <item>
+       <item row="1" column="0" >
         <widget class="QGroupBox" name="btnGrpMapUnits" >
          <property name="title" >
           <string>Map Units</string>
          </property>
          <layout class="QHBoxLayout" >
           <property name="margin" >
-           <number>9</number>
+           <number>11</number>
           </property>
           <property name="spacing" >
            <number>6</number>
@@ -131,14 +121,14 @@
          </layout>
         </widget>
        </item>
-       <item>
+       <item row="2" column="0" >
         <widget class="QGroupBox" name="btnGrpPrecision" >
          <property name="title" >
           <string>Precision</string>
          </property>
          <layout class="QHBoxLayout" >
           <property name="margin" >
-           <number>9</number>
+           <number>11</number>
           </property>
           <property name="spacing" >
            <number>6</number>
@@ -186,7 +176,7 @@
            <widget class="QLabel" name="textLabel3" >
             <property name="sizePolicy" >
              <sizepolicy>
-              <hsizetype>1</hsizetype>
+              <hsizetype>0</hsizetype>
               <vsizetype>0</vsizetype>
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
@@ -213,95 +203,66 @@
          </layout>
         </widget>
        </item>
-       <item>
+       <item row="3" column="0" >
         <widget class="QGroupBox" name="grpDigitizing" >
          <property name="title" >
           <string>Digitizing</string>
          </property>
          <layout class="QGridLayout" >
           <property name="margin" >
-           <number>9</number>
+           <number>11</number>
           </property>
           <property name="spacing" >
            <number>6</number>
           </property>
           <item row="0" column="0" >
-           <widget class="QLabel" name="textLabel1_2_2" >
-            <property name="text" >
-             <string>Line Width:</string>
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>11</number>
             </property>
-            <property name="buddy" >
-             <cstring>spinDigitisedLineWidth</cstring>
+            <property name="spacing" >
+             <number>6</number>
             </property>
-           </widget>
-          </item>
-          <item row="0" column="1" >
-           <widget class="QSpinBox" name="spinDigitisedLineWidth" >
-            <property name="toolTip" >
-             <string>Line width in pixels</string>
-            </property>
-            <property name="minimum" >
-             <number>1</number>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1" >
-           <widget class="QgsColorButton" name="pbnDigitisedLineColour" >
-            <property name="minimumSize" >
-             <size>
-              <width>100</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text" >
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2" >
-           <widget class="QLabel" name="textLabel1_2_2_2" >
-            <property name="text" >
-             <string>Snapping Tolerance (in map units):</string>
-            </property>
-            <property name="buddy" >
-             <cstring>leSnappingTolerance</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3" >
-           <widget class="QLineEdit" name="leSnappingTolerance" >
-            <property name="maximumSize" >
-             <size>
-              <width>120</width>
-              <height>32767</height>
-             </size>
-            </property>
-            <property name="toolTip" >
-             <string>Snapping tolerance in map units</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" >
-           <widget class="QLabel" name="textLabel1_2" >
-            <property name="text" >
-             <string>Line Colour:</string>
-            </property>
-            <property name="buddy" >
-             <cstring>pbnDigitisedLineColour</cstring>
-            </property>
-           </widget>
+            <item>
+             <widget class="QCheckBox" name="mEnableTopologicalEditingCheckBox" >
+              <property name="text" >
+               <string>Enable topological editing</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer>
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" >
+               <size>
+                <width>91</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="mSnappingOptionsPushButton" >
+              <property name="text" >
+               <string>Snapping options...</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
        </item>
-       <item>
+       <item row="4" column="0" >
         <widget class="QGroupBox" name="groupBox" >
          <property name="title" >
           <string>Map Appearance</string>
          </property>
          <layout class="QHBoxLayout" >
           <property name="margin" >
-           <number>9</number>
+           <number>11</number>
           </property>
           <property name="spacing" >
            <number>6</number>
@@ -384,15 +345,15 @@
          </layout>
         </widget>
        </item>
-       <item>
+       <item row="5" column="0" >
         <spacer>
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
          <property name="sizeHint" >
           <size>
-           <width>31</width>
-           <height>21</height>
+           <width>678</width>
+           <height>31</height>
           </size>
          </property>
         </spacer>
@@ -405,7 +366,7 @@
       </attribute>
       <layout class="QGridLayout" >
        <property name="margin" >
-        <number>9</number>
+        <number>11</number>
        </property>
        <property name="spacing" >
         <number>6</number>
@@ -424,20 +385,30 @@
      </widget>
     </widget>
    </item>
+   <item row="1" column="0" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <customwidgets>
   <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsProjectionSelector</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselector.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -449,9 +420,6 @@
   <tabstop>radAutomatic</tabstop>
   <tabstop>radManual</tabstop>
   <tabstop>spinBoxDP</tabstop>
-  <tabstop>spinDigitisedLineWidth</tabstop>
-  <tabstop>leSnappingTolerance</tabstop>
-  <tabstop>pbnDigitisedLineColour</tabstop>
   <tabstop>pbnSelectionColour</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
   <tabstop>cbxProjectionEnabled</tabstop>

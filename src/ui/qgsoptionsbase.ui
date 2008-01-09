@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>590</width>
-    <height>428</height>
+    <width>848</width>
+    <height>506</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -39,7 +39,7 @@
       </attribute>
       <layout class="QVBoxLayout" >
        <property name="margin" >
-        <number>9</number>
+        <number>11</number>
        </property>
        <property name="spacing" >
         <number>6</number>
@@ -51,7 +51,7 @@
          </property>
          <layout class="QVBoxLayout" >
           <property name="margin" >
-           <number>9</number>
+           <number>11</number>
           </property>
           <property name="spacing" >
            <number>6</number>
@@ -87,7 +87,7 @@
       </attribute>
       <layout class="QVBoxLayout" >
        <property name="margin" >
-        <number>9</number>
+        <number>11</number>
        </property>
        <property name="spacing" >
         <number>6</number>
@@ -99,7 +99,7 @@
          </property>
          <layout class="QGridLayout" >
           <property name="margin" >
-           <number>9</number>
+           <number>11</number>
           </property>
           <property name="spacing" >
            <number>6</number>
@@ -121,7 +121,7 @@
          </property>
          <layout class="QGridLayout" >
           <property name="margin" >
-           <number>9</number>
+           <number>11</number>
           </property>
           <property name="spacing" >
            <number>6</number>
@@ -141,7 +141,7 @@
             <property name="sizePolicy" >
              <sizepolicy>
               <hsizetype>0</hsizetype>
-              <vsizetype>5</vsizetype>
+              <vsizetype>0</vsizetype>
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -189,7 +189,7 @@
          </property>
          <layout class="QHBoxLayout" >
           <property name="margin" >
-           <number>9</number>
+           <number>11</number>
           </property>
           <property name="spacing" >
            <number>6</number>
@@ -276,7 +276,7 @@
          </property>
          <layout class="QVBoxLayout" >
           <property name="margin" >
-           <number>9</number>
+           <number>11</number>
           </property>
           <property name="spacing" >
            <number>6</number>
@@ -312,7 +312,7 @@
       </attribute>
       <layout class="QVBoxLayout" >
        <property name="margin" >
-        <number>9</number>
+        <number>11</number>
        </property>
        <property name="spacing" >
         <number>6</number>
@@ -324,7 +324,7 @@
          </property>
          <layout class="QGridLayout" >
           <property name="margin" >
-           <number>9</number>
+           <number>11</number>
           </property>
           <property name="spacing" >
            <number>6</number>
@@ -376,7 +376,7 @@
          </property>
          <layout class="QGridLayout" >
           <property name="margin" >
-           <number>9</number>
+           <number>11</number>
           </property>
           <property name="spacing" >
            <number>6</number>
@@ -398,7 +398,7 @@
          </property>
          <layout class="QVBoxLayout" >
           <property name="margin" >
-           <number>9</number>
+           <number>11</number>
           </property>
           <property name="spacing" >
            <number>6</number>
@@ -451,7 +451,7 @@
       </attribute>
       <layout class="QGridLayout" >
        <property name="margin" >
-        <number>9</number>
+        <number>11</number>
        </property>
        <property name="spacing" >
         <number>6</number>
@@ -463,7 +463,7 @@
          </property>
          <layout class="QGridLayout" >
           <property name="margin" >
-           <number>9</number>
+           <number>11</number>
           </property>
           <property name="spacing" >
            <number>6</number>
@@ -524,7 +524,7 @@
          </property>
          <layout class="QGridLayout" >
           <property name="margin" >
-           <number>9</number>
+           <number>11</number>
           </property>
           <property name="spacing" >
            <number>6</number>
@@ -588,7 +588,7 @@
          </property>
          <layout class="QGridLayout" >
           <property name="margin" >
-           <number>9</number>
+           <number>11</number>
           </property>
           <property name="spacing" >
            <number>6</number>
@@ -651,13 +651,215 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tabDigitizing" >
+      <attribute name="title" >
+       <string>Digitizing</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item row="0" column="0" >
+        <widget class="QGroupBox" name="mRubberBandGroupBox" >
+         <property name="title" >
+          <string>Rubberband</string>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" >
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="mLineWidthTextLabel" >
+              <property name="text" >
+               <string>Line Width:</string>
+              </property>
+              <property name="buddy" >
+               <cstring>mLineWidthSpinBox</cstring>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="mLineWidthSpinBox" >
+              <property name="toolTip" >
+               <string>Line width in pixels</string>
+              </property>
+              <property name="minimum" >
+               <number>1</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer>
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" >
+               <size>
+                <width>271</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="mLineColourTextLabel" >
+              <property name="text" >
+               <string>Line Colour:</string>
+              </property>
+              <property name="buddy" >
+               <cstring>mLineColourToolButton</cstring>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsColorButton" name="mLineColourToolButton" >
+              <property name="minimumSize" >
+               <size>
+                <width>100</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text" >
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <widget class="QGroupBox" name="mSnappingGroupBox" >
+         <property name="title" >
+          <string>Snapping</string>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" >
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="mDefaultSnappingToleranceTextLabel" >
+              <property name="text" >
+               <string>Default Snapping Tolerance (in layer units):</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer>
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" >
+               <size>
+                <width>241</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="mDefaultSnappingToleranceSpinBox" >
+              <property name="maximum" >
+               <number>1000000000</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0" >
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="mVertexSearchRadiusVertexEditLabel" >
+              <property name="text" >
+               <string>Search radius for vertex edits (in layer units):</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer>
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" >
+               <size>
+                <width>61</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="mSearchRadiusVertexEditSpinBox" >
+              <property name="maximum" >
+               <number>1000000000</number>
+              </property>
+              <property name="minimum" >
+               <number>0</number>
+              </property>
+              <property name="value" >
+               <number>0</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="2" column="0" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>171</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
      <widget class="QWidget" name="tabProjection" >
       <attribute name="title" >
        <string>Pro&amp;jection</string>
       </attribute>
       <layout class="QGridLayout" >
        <property name="margin" >
-        <number>9</number>
+        <number>11</number>
        </property>
        <property name="spacing" >
         <number>6</number>
@@ -692,7 +894,7 @@ p, li { white-space: pre-wrap; }
          </property>
          <layout class="QVBoxLayout" >
           <property name="margin" >
-           <number>9</number>
+           <number>11</number>
           </property>
           <property name="spacing" >
            <number>6</number>
@@ -818,7 +1020,7 @@ p, li { white-space: pre-wrap; }
       </attribute>
       <layout class="QGridLayout" >
        <property name="margin" >
-        <number>9</number>
+        <number>11</number>
        </property>
        <property name="spacing" >
         <number>6</number>

@@ -27,10 +27,15 @@ SET(QGIS_APP_SRCS
   qgslinestylewidget.cpp
   qgsludialog.cpp
   qgsmaptooladdfeature.cpp
+  qgsmaptooladdvertex.cpp
   qgsmaptooladdisland.cpp
   qgsmaptooladdring.cpp
   qgsmaptoolcapture.cpp
+  qgsmaptooldeletevertex.cpp
+  qgsmaptooledit.cpp
   qgsmaptoolidentify.cpp
+  qgsmaptoolmovefeature.cpp
+  qgsmaptoolmovevertex.cpp
   qgsmaptoolselect.cpp
   qgsmaptoolvertexedit.cpp
   qgsmarkerdialog.cpp
@@ -51,6 +56,7 @@ SET(QGIS_APP_SRCS
   qgssearchquerybuilder.cpp
   qgsserversourceselect.cpp
   qgssinglesymboldialog.cpp
+  qgssnappingdialog.cpp
   qgsuniquevaluedialog.cpp
   qgsvectorlayerproperties.cpp
 
@@ -79,7 +85,6 @@ SET(QGIS_APP_SRCS
 
 
 SET (QGIS_APP_MOC_HDRS
-
   qgisapp.h
   qgisappinterface.h
   qgsabout.h
@@ -102,6 +107,7 @@ SET (QGIS_APP_MOC_HDRS
   qgslinestylewidget.h
   qgsludialog.h
   qgsmaplayerinterface.h
+  qgsmaptooledit.h
   qgsmaptoolidentify.h
   qgsmarkerdialog.h
   qgsmeasuredialog.h
@@ -116,6 +122,7 @@ SET (QGIS_APP_MOC_HDRS
   qgssearchquerybuilder.h
   qgsserversourceselect.h
   qgssinglesymboldialog.h
+  qgssnappingdialog.h
   qgsuniquevaluedialog.h
   qgsvectorlayerproperties.h
 

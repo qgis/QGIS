@@ -10,6 +10,7 @@ qgslayerprojectionselector.cpp
 qgsmapcanvas.cpp
 qgsmapcanvasitem.cpp
 qgsmapcanvasmap.cpp
+qgsmapcanvassnapper.cpp
 qgsmapoverviewcanvas.cpp
 qgsmaptool.cpp
 qgsmaptoolemitpoint.cpp
@@ -96,6 +97,7 @@ qgslayerprojectionselector.h
 qgsmapcanvas.h
 qgsmapcanvasitem.h
 qgsmapcanvasmap.h
+qgsmapcanvassnapper.h
 qgsmapoverviewcanvas.h
 qgsmaptool.h
 qgsmaptoolemitpoint.h

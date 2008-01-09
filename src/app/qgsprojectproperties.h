@@ -21,6 +21,7 @@
 #include "ui_qgsprojectpropertiesbase.h"
 #include "qgis.h"
 #include "qgisgui.h"
+#include "qgssnappingdialog.h"
 
 class QgsMapCanvas;
 
@@ -71,11 +72,6 @@ public slots:
    * Slot to show the projections tab when the dialog is opened
    */
   void showProjectionsTab();
-  
-  /*!
-   * Slot to select the digitizing line colour
-   */
-  void on_pbnDigitisedLineColour_clicked();
 
   /*!
    * Slot to select the map selection colour
@@ -92,6 +88,11 @@ public slots:
    */
   void on_buttonBox_helpRequested();
 
+  /*!
+   * Slot to show dialog for advanced editing options
+   */
+  void on_mSnappingOptionsPushButton_clicked();
+
 signals:
   //! Signal used to inform listeners that the mouse display precision may have changed
   void displayPrecisionChanged();
@@ -105,4 +106,8 @@ private:
   
   QgsMapCanvas* mMapCanvas;
 
+  /**Snapping settings to pass/read from QgsSnappingDialog.
+   Key is the layer id, the pair consists of snap to vertex = 0/snap to segment = 1, 
+  snapping tolerance*/
+  QMap<QString, LayerEntry> mSnappingLayerSettings;
 };
