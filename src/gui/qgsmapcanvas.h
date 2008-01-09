@@ -160,6 +160,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     
     /** Write property of QColor bgColor. */
     virtual void setCanvasColor(const QColor & _newVal);
+    /** Read property of QColor bgColor. */
+    virtual QColor canvasColor() const;
 
     /** Emits signal scalChanged to update scale in main window */
     void updateScale();
