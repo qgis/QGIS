@@ -38,7 +38,7 @@ void QgsMapToolAddVertex::canvasMoveEvent(QMouseEvent * e)
       if(mSnapper.snapToBackgroundLayers(e->pos(), snapResults) == 0)
 	{
 	  QgsPoint posMapCoord = snapPointFromResults(snapResults, e->pos());
-	  mRubberBand->movePoint(1, posMapCoord);
+	  mRubberBand->movePoint(2, posMapCoord); //consider that the first rubber band point is added twice
 	}
     }
 }

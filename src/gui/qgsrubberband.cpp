@@ -78,13 +78,12 @@ void QgsRubberBand::reset(bool isPolygon)
 */
 void QgsRubberBand::addPoint(const QgsPoint & p, bool do_update /* = true */, int geometryIndex)
 { 
-  //QgsDebugMsg("Adding point: " + QString::number(p.x()) + QString::number(p.y()));
   if(mPoints.size() < (geometryIndex + 1))
     {
       return;
     }
 
-  //QgsDebugMsg("size of current list: " + QString::number(mPoints[geometryIndex].size()));
+  //we need to set two points at the begin of the ruber band for operations that move the last point
   if(mPoints[geometryIndex].size() == 0)
     {
       mPoints[geometryIndex].push_back(p);
@@ -119,8 +118,6 @@ void QgsRubberBand::removeLastPoint(int geometryIndex)
 */
 void QgsRubberBand::movePoint(const QgsPoint & p, int geometryIndex)
 {
-
-  //QgsDebugMsg("Moving last point");
   if(mPoints.size() < (geometryIndex + 1))
     {
       return;
@@ -130,6 +127,7 @@ void QgsRubberBand::movePoint(const QgsPoint & p, int geometryIndex)
     {
       return;
     }
+
   mPoints[geometryIndex][mPoints.at(geometryIndex).size() - 1] = p;
   
   updateRect();

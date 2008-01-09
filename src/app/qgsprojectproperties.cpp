@@ -105,6 +105,16 @@ QgsProjectProperties::QgsProjectProperties(QgsMapCanvas* mapCanvas, QWidget *par
       mEnableTopologicalEditingCheckBox->setCheckState(Qt::Unchecked);
     }
 
+  int avoidPolygonIntersections = QgsProject::instance()->readNumEntry("Digitizing", "/AvoidPolygonIntersections", 0);
+  if(avoidPolygonIntersections != 0)
+    {
+      mAvoidIntersectionsCheckBox->setCheckState(Qt::Checked);
+    }
+  else
+    {
+      mAvoidIntersectionsCheckBox->setCheckState(Qt::Unchecked);
+    }
+
   bool ok;
   QStringList layerIdList = QgsProject::instance()->readListEntry("Digitizing", "/LayerSnappingList", &ok);
   QStringList enabledList = QgsProject::instance()->readListEntry("Digitizing", "/LayerSnappingEnabledList", &ok);
@@ -283,6 +293,8 @@ void QgsProjectProperties::apply()
   //write the digitizing settings
   int topologicalEditingEnabled = (mEnableTopologicalEditingCheckBox->checkState() == Qt::Checked) ? 1:0;
   QgsProject::instance()->writeEntry("Digitizing", "/TopologicalEditing", topologicalEditingEnabled);
+  int avoidPolygonIntersectionsEnabled = (mAvoidIntersectionsCheckBox->checkState() == Qt::Checked) ? 1:0;
+  QgsProject::instance()->writeEntry("Digitizing", "/AvoidPolygonIntersections", avoidPolygonIntersectionsEnabled);
 
   QMap<QString, LayerEntry>::const_iterator layerEntryIt;
 
