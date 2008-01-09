@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/quickprint/" >
+        <file>quickprint.png</file>
+    </qresource>
+</RCC>
