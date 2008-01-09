@@ -480,7 +480,8 @@ public:
      *
      *  \retval 0 if not using the data provider model (i.e. directly using GDAL)
      */
-  // TODO:  const QgsRasterDataProvider* getDataProvider() const;
+  // PyQGIS: commented out, has the same signature as the function above
+  // const QgsRasterDataProvider* getDataProvider() const;
 
 public slots:    
     /**
@@ -523,8 +524,7 @@ public slots:
      *  \param band number
      *  \return pointer to color table
      */
-    // TODO: not working
-    //QgsColorTable *colorTable ( int theBandNoInt );
+    QgsColorTable *colorTable ( int theBandNoInt );
  protected:
 
     /** reads vector layer specific state from project file DOM node.

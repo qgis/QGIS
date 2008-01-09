@@ -26,7 +26,7 @@ class QgsLogger
   static void debug(const QString& var, int val, int debuglevel = 1, const char* file = NULL, const char* function = NULL, int line = -1);
 
   /**Similar to the previous method, but prints a variable double-value pair*/
-  // TODO: cannot be used has the same python signature as method above
+  // PyQGIS: commented out - has the same python signature as method above
   //static void debug(const QString& var, double val, int debuglevel = 1, const char* file = NULL, const char* function = NULL, int line = -1);
 
   /**Prints out a variable/value pair for types with overloaded operator<<*/
