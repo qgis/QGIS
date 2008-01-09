@@ -941,6 +941,10 @@ void QgsMapCanvas::setCanvasColor(const QColor & theColor)
   mScene->setBackgroundBrush(bgBrush);
 } // setbgColor
 
+QColor QgsMapCanvas::canvasColor() const
+{
+  return mScene->backgroundBrush().color();
+}
 
 int QgsMapCanvas::layerCount() const
 {
