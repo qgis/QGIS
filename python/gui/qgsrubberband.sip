@@ -1,4 +1,3 @@
-
 class QgsRubberBand: QgsMapCanvasItem
 {
 %TypeHeaderCode
@@ -13,7 +12,6 @@ class QgsRubberBand: QgsMapCanvasItem
     void setWidth(int width);
 
     void reset(bool isPolygon = false);
-
     void addPoint(const QgsPoint & p, int geometryIndex);
 
 //!Removes the last point. Most usefull in connection with undo operations
@@ -42,4 +40,7 @@ class QgsRubberBand: QgsMapCanvasItem
     void updateRect();
 
 };
+
+
+
 
