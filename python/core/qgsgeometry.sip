@@ -301,7 +301,7 @@ class QgsGeometry
     /**
         Returns the squared cartesian distance between the given point
         to the given vertex index*/
-	double sqrDistToVertexAt(QgsPoint& point /In, int atVertex);
+	double sqrDistToVertexAt(QgsPoint& point /In/, int atVertex);
 
 	
 	/**

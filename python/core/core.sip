@@ -42,6 +42,7 @@
 %Include qgsrenderer.sip
 %Include qgsscalecalculator.sip
 %Include qgssinglesymbolrenderer.sip
+%Include qgssnapper.sip
 %Include qgsspatialindex.sip
 %Include qgsspatialrefsys.sip
 %Include qgssymbol.sip
