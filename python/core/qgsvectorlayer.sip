@@ -245,8 +245,9 @@ existing rings, 5 no feature found where ring can be inserted*/
      @param snap_to to segment / to vertex
      @return 0 in case of success
   */
-  int snapWithContext(const QgsPoint& startPoint, double snappingTolerance, QMultiMap<double, QgsSnappingResult>& snappingResults, \
-	      QgsSnapper::SNAP_TO snap_to);
+  // TODO: wrap QMultiMap
+  //int snapWithContext(const QgsPoint& startPoint, double snappingTolerance, QMultiMap<double, QgsSnappingResult>& snappingResults,
+	//      QgsSnapper::SNAP_TO snap_to);
 
   /**
     Commits edited attributes. Depending on the feature id,
