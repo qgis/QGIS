@@ -988,7 +988,7 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	      
 	      //set the checkbox of the legend layer to the right state
 	      blockSignals(true);
-	      QString checked = childelem.attribute("checked");
+	      QString checked = childelem.attribute("checked", "Qt::Checked"); // Default is to show
 	      if(checked == "Qt::Checked")
 		{
 		  theLayer->setCheckState(0, Qt::Checked);
@@ -1030,7 +1030,7 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 		  QgsLegendLayerFile* theLegendLayerFile = new QgsLegendLayerFile(lastLayerFileGroup, QgsLegendLayerFile::nameFromLayer(theMapLayer), theMapLayer);
 
 		  // load layer's visibility and 'show in overview' flag
-		  theLegendLayerFile->setVisible(atoi(childelem.attribute("visible")));
+		  theLegendLayerFile->setVisible(atoi(childelem.attribute("visible", "1"))); //Default is visible
 		  theLegendLayerFile->setInOverview(atoi(childelem.attribute("inOverview")));
 		  
 		  // set the check state

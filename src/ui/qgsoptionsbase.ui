@@ -63,6 +63,13 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QCheckBox" name="chbWarnOldProjectVersion" >
+            <property name="text" >
+             <string>Warn me when opening a project file saved with an older verision of QGIS</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
