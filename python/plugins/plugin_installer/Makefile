@@ -6,14 +6,14 @@ PYUIC = /usr/bin/pyuic4
 RC_PY_FILE = resources.py
 UI_PY_FILE = gui.py
 
-all: $(RC_PY_FILE) $(UI_PY_FILE)
+all: $(RC_PY_FILE) $(UI_PY_FILE) repository_ui.py
 
 install: all
 	mkdir -p $(INST_DIR)
 	cp *.py $(INST_DIR)/
 
 clean:
-	rm -f $(RC_PY_FILE) $(UI_PY_FILE)
+	rm -f $(RC_PY_FILE) $(UI_PY_FILE) repository_ui.py
 	rm -f *.pyc
 
 zip:
@@ -25,3 +25,5 @@ $(RC_PY_FILE): resources.qrc
 $(UI_PY_FILE): gui.ui
 	$(PYUIC) -o $(UI_PY_FILE) gui.ui
 
+repository_ui.py: repository.ui
+	$(PYUIC) -o repository_ui.py repository.ui
