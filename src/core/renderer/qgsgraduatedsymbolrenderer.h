@@ -58,8 +58,9 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer: public QgsRenderer
     virtual bool writeXML( QDomNode & layer_node, QDomDocument & document ) const;
     /** Returns true*/
     bool needsAttributes() const;
-    /**Returns a list with the index to the classification field*/
+    /**Returns a list of all needed attributes*/
     QgsAttributeList classificationAttributes() const;
+    void updateSymbolAttributes();
     /**Returns the renderers name*/
     QString name() const;
     /**Returns the symbols of the items*/
@@ -72,6 +73,8 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer: public QgsRenderer
     /**List holding the symbols for the individual classes*/
     QList<QgsSymbol*> mSymbols;
     QgsSymbol* symbolForFeature(const QgsFeature* f);
+    /**Cached copy of all underlying symbols required attribute fields*/
+    QgsAttributeList mSymbolAttributes;
     
 };
 

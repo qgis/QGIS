@@ -43,6 +43,7 @@ class CORE_EXPORT QgsUniqueValueRenderer: public QgsRenderer
     bool needsAttributes() const;
     /**Returns a list with indexes of classification attributes*/
     QgsAttributeList classificationAttributes() const;
+    void updateSymbolAttributes();
     /**Returns the renderers name*/
     QString name() const;
     /**Inserts an entry into mEntries. The render items have to be created with the new operator and are automatically destroyed if not needed anymore*/
@@ -52,7 +53,7 @@ class CORE_EXPORT QgsUniqueValueRenderer: public QgsRenderer
     /**Sets the Field index used for classification*/
     void setClassificationField(int field);
     /**Returns the index of the classification field*/
-    int classificationField();
+    int classificationField() const;
     /**Return symbology items*/
     const QList<QgsSymbol*> symbols() const;
     QgsRenderer* clone() const;
@@ -63,6 +64,8 @@ class CORE_EXPORT QgsUniqueValueRenderer: public QgsRenderer
     QMap<QString, QgsSymbol*> mSymbols;
     /**Returns the symbol for a feature or 0 if there isn't any*/
     QgsSymbol* symbolForFeature(const QgsFeature* f);
+    /**Cached copy of all underlying symbols required attribute fields*/
+    QgsAttributeList mSymbolAttributes;
 };
 
 inline bool QgsUniqueValueRenderer::needsAttributes() const

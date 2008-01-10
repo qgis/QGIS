@@ -71,8 +71,17 @@ ADD_CUSTOM_TARGET(qgis_applicationtestmoc ALL DEPENDS ${qgis_applicationtest_MOC
 ADD_EXECUTABLE(qgis_applicationtest ${qgis_applicationtest_SRCS})
 ADD_DEPENDENCIES(qgis_applicationtest qgis_applicationtestmoc)
 TARGET_LINK_LIBRARIES(qgis_applicationtest ${QT_LIBRARIES} qgis_core)
-INSTALL(TARGETS qgis_applicationtest RUNTIME DESTINATION ${QGIS_BIN_DIR})
-ADD_TEST(qgis_applicationtest ${QGIS_BIN_DIR}/qgis_applicationtest)
+SET_TARGET_PROPERTIES(qgis_applicationtest 
+  PROPERTIES INSTALL_RPATH ${QGIS_LIB_DIR}
+  INSTALL_RPATH_USE_LINK_PATH true)
+IF (APPLE)
+  # For Mac OS X, the executable must be at the root of the bundle's executable folder
+  INSTALL(TARGETS qgis_applicationtest RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
+  ADD_TEST(qgis_applicationtest ${CMAKE_INSTALL_PREFIX}/qgis_applicationtest)
+ELSE (APPLE)
+  INSTALL(TARGETS qgis_applicationtest RUNTIME DESTINATION ${QGIS_BIN_DIR})
+  ADD_TEST(qgis_applicationtest ${QGIS_BIN_DIR}/qgis_applicationtest)
+ENDIF (APPLE)
 #
 # QgsFileWriter test
 #
@@ -83,8 +92,17 @@ ADD_CUSTOM_TARGET(qgis_filewritertestmoc ALL DEPENDS ${qgis_filewritertest_MOC_S
 ADD_EXECUTABLE(qgis_filewritertest ${qgis_filewritertest_SRCS})
 ADD_DEPENDENCIES(qgis_filewritertest qgis_filewritertestmoc)
 TARGET_LINK_LIBRARIES(qgis_filewritertest ${QT_LIBRARIES} qgis_core)
-INSTALL(TARGETS qgis_filewritertest RUNTIME DESTINATION ${QGIS_BIN_DIR})
-ADD_TEST(qgis_filewritertest ${QGIS_BIN_DIR}/qgis_filewritertest)
+SET_TARGET_PROPERTIES(qgis_filewritertest
+  PROPERTIES INSTALL_RPATH ${QGIS_LIB_DIR}
+  INSTALL_RPATH_USE_LINK_PATH true)
+IF (APPLE)
+  # For Mac OS X, the executable must be at the root of the bundle's executable folder
+  INSTALL(TARGETS qgis_filewritertest RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
+  ADD_TEST(qgis_filewritertest ${CMAKE_INSTALL_PREFIX}/qgis_filewritertest)
+ELSE (APPLE)
+  INSTALL(TARGETS qgis_filewritertest RUNTIME DESTINATION ${QGIS_BIN_DIR})
+  ADD_TEST(qgis_filewritertest ${QGIS_BIN_DIR}/qgis_filewritertest)
+ENDIF (APPLE)
 #
 # QgsRasterLayer test
 #
@@ -95,8 +113,17 @@ ADD_CUSTOM_TARGET(qgis_rasterlayertestmoc ALL DEPENDS ${qgis_rasterlayertest_MOC
 ADD_EXECUTABLE(qgis_rasterlayertest ${qgis_rasterlayertest_SRCS})
 ADD_DEPENDENCIES(qgis_rasterlayertest qgis_rasterlayertestmoc)
 TARGET_LINK_LIBRARIES(qgis_rasterlayertest ${QT_LIBRARIES} qgis_core)
-INSTALL(TARGETS qgis_rasterlayertest RUNTIME DESTINATION ${QGIS_BIN_DIR})
-ADD_TEST(qgis_rasterlayertest ${QGIS_BIN_DIR}/qgis_rasterlayertest)
+SET_TARGET_PROPERTIES(qgis_rasterlayertest
+  PROPERTIES INSTALL_RPATH ${QGIS_LIB_DIR}
+  INSTALL_RPATH_USE_LINK_PATH true)
+IF (APPLE)
+  # For Mac OS X, the executable must be at the root of the bundle's executable folder
+  ADD_TEST(qgis_rasterlayertest ${CMAKE_INSTALL_PREFIX}/qgis_rasterlayertest)
+  INSTALL(TARGETS qgis_rasterlayertest RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
+ELSE (APPLE)
+  ADD_TEST(qgis_rasterlayertest ${QGIS_BIN_DIR}/qgis_rasterlayertest)
+  INSTALL(TARGETS qgis_rasterlayertest RUNTIME DESTINATION ${QGIS_BIN_DIR})
+ENDIF (APPLE)
 #
 # QgsMapLayer test
 #
@@ -107,8 +134,38 @@ ADD_CUSTOM_TARGET(qgis_maplayertestmoc ALL DEPENDS ${qgis_maplayertest_MOC_SRCS}
 ADD_EXECUTABLE(qgis_maplayertest ${qgis_maplayertest_SRCS})
 ADD_DEPENDENCIES(qgis_maplayertest qgis_maplayertestmoc)
 TARGET_LINK_LIBRARIES(qgis_maplayertest ${QT_LIBRARIES} qgis_core)
-INSTALL(TARGETS qgis_maplayertest RUNTIME DESTINATION ${QGIS_BIN_DIR})
-ADD_TEST(qgis_maplayertest ${QGIS_BIN_DIR}/qgis_maplayertest)
+SET_TARGET_PROPERTIES(qgis_maplayertest
+  PROPERTIES INSTALL_RPATH ${QGIS_LIB_DIR}
+  INSTALL_RPATH_USE_LINK_PATH true)
+IF (APPLE)
+  # For Mac OS X, the executable must be at the root of the bundle's executable folder
+  INSTALL(TARGETS qgis_maplayertest RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
+  ADD_TEST(qgis_maplayertest ${CMAKE_INSTALL_PREFIX}/qgis_maplayertest)
+ELSE (APPLE)
+  INSTALL(TARGETS qgis_maplayertest RUNTIME DESTINATION ${QGIS_BIN_DIR})
+  ADD_TEST(qgis_maplayertest ${QGIS_BIN_DIR}/qgis_maplayertest)
+ENDIF (APPLE)
+#
+# Qgs Renderers test (qsinglesymbol renderer etc)
+#
+SET(qgis_rendererstest_SRCS testqgsrenderers.cpp)
+SET(qgis_rendererstest_MOC_CPPS testqgsrenderers.cpp)
+QT4_WRAP_CPP(qgis_rendererstest_MOC_SRCS ${qgis_rendererstest_MOC_CPPS})
+ADD_CUSTOM_TARGET(qgis_rendererstestmoc ALL DEPENDS ${qgis_rendererstest_MOC_SRCS})
+ADD_EXECUTABLE(qgis_rendererstest ${qgis_rendererstest_SRCS})
+ADD_DEPENDENCIES(qgis_rendererstest qgis_rendererstestmoc)
+TARGET_LINK_LIBRARIES(qgis_rendererstest ${QT_LIBRARIES} qgis_core)
+SET_TARGET_PROPERTIES(qgis_rendererstest
+  PROPERTIES INSTALL_RPATH ${QGIS_LIB_DIR}
+  INSTALL_RPATH_USE_LINK_PATH true)
+IF (APPLE)
+  # For Mac OS X, the executable must be at the root of the bundle's executable folder
+  INSTALL(TARGETS qgis_rendererstest  RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
+  ADD_TEST(qgis_rendererstest ${CMAKE_INSTALL_PREFIX}/qgis_rendererstest)
+ELSE (APPLE)
+  INSTALL(TARGETS qgis_rendererstest RUNTIME DESTINATION ${QGIS_BIN_DIR})
+  ADD_TEST(qgis_rendererstest ${QGIS_BIN_DIR}/qgis_rendererstest)
+ENDIF (APPLE)
 
 
 

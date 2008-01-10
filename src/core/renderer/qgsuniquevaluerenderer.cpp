@@ -21,7 +21,8 @@
 #include "qgsvectorlayer.h"
 #include "qgssymbol.h"
 #include "qgssymbologyutils.h"
-
+#include "qgslogger.h"
+#include <math.h>
 #include <QDomNode>
 #include <QPainter>
 #include <QImage>
@@ -42,6 +43,7 @@ QgsUniqueValueRenderer::QgsUniqueValueRenderer(const QgsUniqueValueRenderer& oth
 	QgsSymbol* s = new QgsSymbol(* it.value());
 	insertValue(it.key(), s);
     }
+    updateSymbolAttributes();
 }
 
 QgsUniqueValueRenderer& QgsUniqueValueRenderer::operator=(const QgsUniqueValueRenderer& other)
@@ -56,6 +58,7 @@ QgsUniqueValueRenderer& QgsUniqueValueRenderer::operator=(const QgsUniqueValueRe
             QgsSymbol* s = new QgsSymbol(*it.value());
             insertValue(it.key(), s);
         }
+        updateSymbolAttributes();
     }
     return *this;
 }
@@ -81,6 +84,7 @@ const QList<QgsSymbol*> QgsUniqueValueRenderer::symbols() const
 void QgsUniqueValueRenderer::insertValue(QString name, QgsSymbol* symbol)
 {
     mSymbols.insert(name, symbol);
+    updateSymbolAttributes();
 }
 
 void QgsUniqueValueRenderer::setClassificationField(int field)
@@ -88,7 +92,7 @@ void QgsUniqueValueRenderer::setClassificationField(int field)
     mClassificationField=field;
 }
 
-int QgsUniqueValueRenderer::classificationField()
+int QgsUniqueValueRenderer::classificationField() const
 {
     return mClassificationField;
 }
@@ -118,14 +122,26 @@ void QgsUniqueValueRenderer::renderFeature(QPainter* p, QgsFeature& f,QImage* im
   
   // Point 
   if ( img && mVectorType == QGis::Point ) 
+  {
+    double fieldScale = 1.0;
+    double rotation = 0.0;
+
+    if ( symbol->scaleClassificationField() >= 0)
     {
-      *img = symbol->getPointSymbolAsImage(  widthScale, selected, mSelectionColor );
-      if ( scalefactor ) 
-	{
-	  *scalefactor = 1;
-	}
-    } 
-  
+      //first find out the value for the scale classification attribute
+      const QgsAttributeMap& attrs = f.attributeMap();
+      fieldScale = sqrt(fabs(attrs[symbol->scaleClassificationField()].toDouble()));
+      QgsDebugMsg(QString("Feature has field scale factor %1").arg(fieldScale));
+    }
+    if ( symbol->rotationClassificationField() >= 0 )
+    {
+      const QgsAttributeMap& attrs = f.attributeMap();
+      rotation = attrs[symbol->rotationClassificationField()].toDouble();
+      QgsDebugMsg(QString("Feature has rotation factor %1").arg(rotation));
+    }
+    *img = symbol->getPointSymbolAsImage( widthScale, selected, mSelectionColor,
+                                            *scalefactor * fieldScale, rotation);
+}  
   // Line, polygon
   else if ( mVectorType != QGis::Point )
     {
@@ -191,6 +207,30 @@ void QgsUniqueValueRenderer::clearValues()
 	delete it.value();
     }
     mSymbols.clear();
+    updateSymbolAttributes();
+}
+
+void QgsUniqueValueRenderer::updateSymbolAttributes()
+{
+  // This function is only called after changing field specifier in the GUI.
+  // Timing is not so important.
+
+  mSymbolAttributes.clear();
+
+  QMap<QString, QgsSymbol*>::iterator it;
+  for (it = mSymbols.begin(); it != mSymbols.end(); ++it)
+  {
+    int rotationField = (*it)->rotationClassificationField();
+    if ( rotationField >= 0 && !(mSymbolAttributes.contains(rotationField)) )
+    {
+      mSymbolAttributes.append(rotationField);
+    }
+    int scaleField = (*it)->scaleClassificationField(); 
+    if ( scaleField >= 0 && !(mSymbolAttributes.contains(scaleField)) )
+    {
+      mSymbolAttributes.append(scaleField);
+    }
+  }
 }
 
 QString QgsUniqueValueRenderer::name() const
@@ -200,8 +240,11 @@ QString QgsUniqueValueRenderer::name() const
 
 QgsAttributeList QgsUniqueValueRenderer::classificationAttributes() const
 {
-    QgsAttributeList list;
-    list.append(mClassificationField);
+    QgsAttributeList list(mSymbolAttributes);
+    if ( ! list.contains(mClassificationField) )
+    {
+      list.append(mClassificationField);
+    }
     return list;
 }
 

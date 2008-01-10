@@ -20,13 +20,17 @@
 #include <iostream>
 
 #include "qgssymbol.h"
+#include "qgslogger.h"
 #include "qgssymbologyutils.h"
 #include "qgsmarkercatalogue.h"
+#include "qgsapplication.h"
 
 #include <QPainter>
 #include <QDomNode>
 #include <QDomDocument>
 #include <QImage>
+#include <QDir>
+#include <QFileInfo>
 //#include <QString>
 //do we have to include qstring?
 
@@ -36,11 +40,13 @@ QgsSymbol::QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString
       mLabel(label),
       mType(t),
       mPointSymbolName( "hard:circle" ),
-      mPointSize( 6 ),
+      mPointSize( 11 ),
       mPointSymbolImage(1,1, QImage::Format_ARGB32_Premultiplied),
       mWidthScale(1.0),
       mCacheUpToDate( false ),
-      mCacheUpToDate2( false )
+      mCacheUpToDate2( false ),
+      mRotationClassificationField(-1),
+      mScaleClassificationField(-1)
 {}
 
 
@@ -56,7 +62,9 @@ QgsSymbol::QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString
       mPointSymbolImage(1,1, QImage::Format_ARGB32_Premultiplied),
       mWidthScale(1.0),
       mCacheUpToDate( false ),
-      mCacheUpToDate2( false )
+      mCacheUpToDate2( false ),
+      mRotationClassificationField(-1),
+      mScaleClassificationField(-1)
 {}
 
 QgsSymbol::QgsSymbol()
@@ -65,7 +73,9 @@ QgsSymbol::QgsSymbol()
       mPointSymbolImage(1,1, QImage::Format_ARGB32_Premultiplied),
       mWidthScale(1.0),
       mCacheUpToDate( false ),
-      mCacheUpToDate2( false )
+      mCacheUpToDate2( false ),
+      mRotationClassificationField(-1),
+      mScaleClassificationField(-1)
 {}
 
 
@@ -77,7 +87,9 @@ QgsSymbol::QgsSymbol(QColor c)
       mPointSymbolImage(1,1, QImage::Format_ARGB32_Premultiplied),
       mWidthScale(1.0),
       mCacheUpToDate( false ),
-      mCacheUpToDate2( false )
+      mCacheUpToDate2( false ),
+      mRotationClassificationField(-1),
+      mScaleClassificationField(-1)
 {}
 
 QgsSymbol::QgsSymbol(const QgsSymbol& s)
@@ -90,7 +102,7 @@ QgsSymbol::QgsSymbol(const QgsSymbol& s)
     mType = s.mType;
     mPen = s.mPen;
     mBrush = s.mBrush;
-	mTextureFilePath = s.mTextureFilePath;
+    mTextureFilePath = s.mTextureFilePath;
     mPointSymbolName = s.mPointSymbolName;
     mPointSize = s.mPointSize;
     mPointSymbolImage = s.mPointSymbolImage;
@@ -102,6 +114,8 @@ QgsSymbol::QgsSymbol(const QgsSymbol& s)
     mCacheUpToDate2 = s.mCacheUpToDate2;
     mSelectionColor = s.mSelectionColor;
     mSelectionColor2 = s.mSelectionColor2;
+    mRotationClassificationField = s.mRotationClassificationField;
+    mScaleClassificationField = s.mScaleClassificationField;
   }
 }
 
@@ -172,8 +186,40 @@ void QgsSymbol::setCustomTexture( QString path )
 
 void QgsSymbol::setNamedPointSymbol(QString name)
 {
-    mPointSymbolName = name;
-    mCacheUpToDate = mCacheUpToDate2 = false;
+  // do some sanity checking for svgs...
+  QString myTempName = name;
+  myTempName.replace("svg:","");
+  QFile myFile(myTempName);
+  if (!myFile.exists())
+  {
+    QgsDebugMsg("\n\n\n *** Svg Symbol not found on fs ***")
+    QgsDebugMsg("Name: " + name);
+    //see if we can resolve the problem...
+    //by using the qgis svg dir from this local machine
+    //one day when user specified svg are allowed we need 
+    //to adjust this logic probably...
+    QString svgPath = QgsApplication::svgPath();
+    QgsDebugMsg( "SvgPath: " + svgPath);
+    QFileInfo myInfo(myTempName);
+    QString myFileName = myInfo.fileName(); // foo.svg
+    QString myLowestDir = myInfo.dir().dirName();
+    QString myLocalPath = svgPath + QDir::separator() +
+      myLowestDir + QDir::separator() +
+      myFileName;
+    QgsDebugMsg("Alternative svg path: " + myLocalPath);
+    if (QFile(myLocalPath).exists())
+    {
+      name="svg:"+myLocalPath;
+      QgsDebugMsg("Svg found in alternative path"); 
+    }
+    else
+    {
+      //couldnt find the file, no happy ending :-(
+      QgsDebugMsg("Computed alternate path but no svg there either");
+    }
+  }
+  mPointSymbolName = name;
+  mCacheUpToDate = mCacheUpToDate2 = false;
 }
 
 QString QgsSymbol::pointSymbolName() const
@@ -218,27 +264,61 @@ QImage QgsSymbol::getPolygonSymbolAsImage()
    return img; //this is ok because of qts sharing mechanism 
 }
 
-QImage QgsSymbol::getPointSymbolAsImage(  double widthScale,
+QImage QgsSymbol::getCachedPointSymbolAsImage(  double widthScale,
                bool selected, QColor selectionColor )
 {
-
-	if ( !mCacheUpToDate 
-	     || ( selected && mSelectionColor != selectionColor ) )
-	{
-	    if ( selected ) {
-	        cache(  selectionColor );
-	    } else {
-	        cache(  mSelectionColor );
-	    }
-	}
-
-	if ( selected )
+  if ( !mCacheUpToDate 
+       || ( selected && mSelectionColor != selectionColor ) )
   {
-	    return mPointSymbolImageSelected;
-	}
-        
- return mPointSymbolImage;
+    if ( selected ) {
+      cache(  selectionColor );
+    } else {
+      cache(  mSelectionColor );
+    }
+  }
+  
+  if ( selected )
+  {
+    return mPointSymbolImageSelected;
+  }
+  else 
+  {
+    return mPointSymbolImage;
+  }
 }
+
+QImage QgsSymbol::getPointSymbolAsImage(  double widthScale,
+               bool selected, QColor selectionColor, double scale, double rotation )
+{
+  QgsDebugMsg(QString("Symbol scale = %1, and rotation = %2").arg(scale).arg(rotation));
+  if ( 1.0 == scale && 0 == rotation )
+  {
+    // If scale is 1.0 and rotation 0.0, use cached image.
+    return getCachedPointSymbolAsImage( widthScale, selected, selectionColor );
+  }
+
+  QImage preRotateImage;
+
+  if ( selected )
+  {
+    QPen pen = mPen;
+    pen.setColor ( selectionColor ); 
+    QBrush brush = mBrush;
+    preRotateImage = QgsMarkerCatalogue::instance()->imageMarker ( mPointSymbolName, (int)(mPointSize * scale),
+                                                                   pen, mBrush );
+  }
+  else 
+  {
+    preRotateImage = QgsMarkerCatalogue::instance()->imageMarker ( mPointSymbolName, (int)(mPointSize * scale),
+                                                                   mPen, mBrush );
+  }
+
+  QMatrix rotationMatrix;
+  rotationMatrix = rotationMatrix.rotate(rotation);
+
+  return preRotateImage.transformed(rotationMatrix, Qt::SmoothTransformation);
+}
+
 
 void QgsSymbol::cache(  QColor selectionColor )
 {
@@ -316,6 +396,17 @@ bool QgsSymbol::writeXML( QDomNode & item, QDomDocument & document ) const
     symbol.appendChild(pointsize);
     pointsize.appendChild(pointsizetxt);
 
+    QDomElement rotationclassificationfield=document.createElement("rotationclassificationfield");
+    QDomText rotationclassificationfieldtxt=document.createTextNode(QString::number(mRotationClassificationField));
+    rotationclassificationfield.appendChild(rotationclassificationfieldtxt);
+    symbol.appendChild(rotationclassificationfield);
+
+    QDomElement scaleclassificationfield=document.createElement("scaleclassificationfield");
+    QDomText scaleclassificationfieldtxt=document.createTextNode(QString::number(mScaleClassificationField));
+    scaleclassificationfield.appendChild(scaleclassificationfieldtxt);
+    symbol.appendChild(scaleclassificationfield);
+
+
     QDomElement outlinecolor=document.createElement("outlinecolor");
     outlinecolor.setAttribute("red",QString::number(mPen.color().red()));
     outlinecolor.setAttribute("green",QString::number(mPen.color().green()));
@@ -391,6 +482,24 @@ bool QgsSymbol::readXML( QDomNode & synode )
         setPointSize( psizeelement.text().toInt() );
     }
 
+    mRotationClassificationField = -1;
+    mScaleClassificationField = -1;
+
+    QDomNode classnode = synode.namedItem("rotationclassificationfield");
+    if ( !classnode.isNull() )
+    {
+      mRotationClassificationField = classnode.toElement().text().toInt();
+      QgsDebugMsg("Found rotationfield: " + QString::number(rotationClassificationField()));
+    }
+
+    classnode = synode.namedItem("scaleclassificationfield");
+    if ( !classnode.isNull() )
+    {
+      mScaleClassificationField = classnode.toElement().text().toInt();
+      QgsDebugMsg("Found scalefield: " + QString::number(scaleClassificationField()));
+    }
+
+
     QDomNode outlcnode = synode.namedItem("outlinecolor");
     QDomElement oulcelement = outlcnode.toElement();
     int red = oulcelement.attribute("red").toInt();
@@ -424,3 +533,24 @@ bool QgsSymbol::readXML( QDomNode & synode )
 
     return true;
 }
+
+int QgsSymbol::rotationClassificationField() const
+{
+    return mRotationClassificationField;
+}
+
+void QgsSymbol::setRotationClassificationField(int field)
+{
+    mRotationClassificationField = field;
+}
+
+int QgsSymbol::scaleClassificationField() const
+{
+    return mScaleClassificationField;
+}
+
+void QgsSymbol::setScaleClassificationField(int field)
+{
+    mScaleClassificationField = field;
+}
+

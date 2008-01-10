@@ -117,7 +117,8 @@ void TestQgsVectorFileWriter::createPoint()
   //
   // Remove old copies that may be lying around
   //
-  QString myFileName = "/tmp/testpt.shp";
+  QString myFileName = "testpt.shp";
+  myFileName = QDir::tempPath() + myFileName; 
   QVERIFY(QgsVectorFileWriter::deleteShapeFile(myFileName));
   QgsVectorFileWriter myWriter (myFileName,
       mEncoding,
@@ -161,7 +162,8 @@ void TestQgsVectorFileWriter::createLine()
   //
   // Remove old copies that may be lying around
   //
-  QString myFileName = "/tmp/testln.shp";
+  QString myFileName = "/testln.shp";
+  myFileName = QDir::tempPath() + myFileName; 
   QVERIFY(QgsVectorFileWriter::deleteShapeFile(myFileName));
   QgsVectorFileWriter myWriter (myFileName,
       mEncoding,
@@ -209,7 +211,8 @@ void TestQgsVectorFileWriter::createPolygon()
   //
   // Remove old copies that may be lying around
   //
-  QString myFileName = "/tmp/testply.shp";
+  QString myFileName = "/testply.shp";
+  myFileName = QDir::tempPath() + myFileName; 
   QVERIFY(QgsVectorFileWriter::deleteShapeFile(myFileName));
   QgsVectorFileWriter myWriter (myFileName,
       mEncoding,
@@ -259,7 +262,8 @@ void TestQgsVectorFileWriter::polygonGridTest()
   //
   // Remove old copies that may be lying around
   //
-  QString myFileName = "/tmp/testgrid.shp";
+  QString myFileName = "/testgrid.shp";
+  myFileName = QDir::tempPath() + myFileName; 
   QVERIFY(QgsVectorFileWriter::deleteShapeFile(myFileName));
   QgsVectorFileWriter myWriter (myFileName,
       mEncoding,
@@ -321,7 +325,8 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
   //
   // Remove old copies that may be lying around
   //
-  QString myFileName = "/tmp/testprjgrid.shp";
+  QString myFileName = "/testprjgrid.shp";
+  myFileName = QDir::tempPath() + myFileName; 
   QVERIFY(QgsVectorFileWriter::deleteShapeFile(myFileName));
   //
   // We are testing projected coordinate 

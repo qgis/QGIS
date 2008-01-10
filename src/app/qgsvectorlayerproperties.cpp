@@ -17,36 +17,41 @@
  ***************************************************************************/
  /* $Id$ */
 
-#include "qgsvectorlayerproperties.h"
 
 #include "qgsattributeactiondialog.h"
 #include "qgscontexthelp.h"
 #include "qgscontinuouscolordialog.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgraduatedsymboldialog.h"
-#include "qgslabel.h"
 #include "qgslabeldialog.h"
+#include "qgslabel.h"
 #include "qgslayerprojectionselector.h"
 #include "qgslogger.h"
 #include "qgssinglesymboldialog.h"
 #include "qgsuniquevaluedialog.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-
+#include "qgsvectorlayerproperties.h"
 #include "qgsconfig.h"
+
 #ifdef HAVE_POSTGRESQL
 #include "qgspgquerybuilder.h"
 #include "../providers/postgres/qgspostgresprovider.h"
 #endif
 
 #include <QMessageBox>
+#include <QDir>
+#include <QFile>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QSettings>
 
 QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer * lyr, 
-                                                         QWidget * parent, 
-                                                         Qt::WFlags fl)
+    QWidget * parent, 
+    Qt::WFlags fl)
 : QDialog(parent, fl),
-      layer(lyr), 
-      mRendererDialog(0)
+  layer(lyr), 
+  mRendererDialog(0)
 {
   setupUi(this);
   connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
@@ -61,7 +66,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer * lyr,
   layout->addWidget( labelDialog );
   labelOptionsFrame->setLayout(layout);
   connect(labelDialog, SIGNAL(labelSourceSet()), 
-          this, SLOT(setLabelCheckBox()));
+      this, SLOT(setLabelCheckBox()));
 
   // Create the Actions dialog tab
   QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
@@ -69,22 +74,22 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer * lyr,
   actionLayout->setMargin(0);
   QgsFieldMap fields = dp->fields();
   actionDialog = new QgsAttributeActionDialog ( layer->actions(), fields, 
-                                                actionOptionsFrame );
+      actionOptionsFrame );
   actionLayout->addWidget( actionDialog );
 
   reset();
   if(layer->getDataProvider())//enable spatial index button group if supported by provider
   {
-      int capabilities=layer->getDataProvider()->capabilities();
-      if(!(capabilities&QgsVectorDataProvider::CreateSpatialIndex))
-      {
-	  indexGroupBox->setEnabled(false);
-      }
+    int capabilities=layer->getDataProvider()->capabilities();
+    if(!(capabilities&QgsVectorDataProvider::CreateSpatialIndex))
+    {
+      indexGroupBox->setEnabled(false);
+    }
   }
 
   leSpatialRefSys->setText(layer->srs().proj4String());
   leSpatialRefSys->setCursorPosition(0);
-  
+
   connect(sliderTransparency, SIGNAL(valueChanged(int)), this, SLOT(sliderTransparency_valueChanged(int)));
 
 } // QgsVectorLayerProperties ctor
@@ -92,7 +97,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer * lyr,
 QgsVectorLayerProperties::~QgsVectorLayerProperties()
 {
   disconnect(labelDialog, SIGNAL(labelSourceSet()), 
-          this, SLOT(setLabelCheckBox()));  
+      this, SLOT(setLabelCheckBox()));  
 }
 void QgsVectorLayerProperties::sliderTransparency_valueChanged(int theValue)
 {
@@ -109,27 +114,27 @@ void QgsVectorLayerProperties::setLabelCheckBox()
 void QgsVectorLayerProperties::alterLayerDialog(const QString & dialogString)
 {
 
-    widgetStackRenderers->removeWidget(mRendererDialog);
-    delete mRendererDialog;
-    mRendererDialog=0;
-    if(dialogString == tr("Single Symbol"))
-    {
-	mRendererDialog = new QgsSingleSymbolDialog(layer);
-    }
-    else if(dialogString == tr("Graduated Symbol"))
-    {
-	mRendererDialog = new QgsGraduatedSymbolDialog(layer);
-    }
-    else if(dialogString == tr("Continuous Color"))
-    {
-	mRendererDialog = new QgsContinuousColorDialog(layer);
-    }
-    else if(dialogString == tr("Unique Value"))
-    {
-	mRendererDialog = new QgsUniqueValueDialog(layer);
-    }
-    widgetStackRenderers->addWidget(mRendererDialog);
-    widgetStackRenderers->setCurrentWidget(mRendererDialog);  
+  widgetStackRenderers->removeWidget(mRendererDialog);
+  delete mRendererDialog;
+  mRendererDialog=0;
+  if(dialogString == tr("Single Symbol"))
+  {
+    mRendererDialog = new QgsSingleSymbolDialog(layer);
+  }
+  else if(dialogString == tr("Graduated Symbol"))
+  {
+    mRendererDialog = new QgsGraduatedSymbolDialog(layer);
+  }
+  else if(dialogString == tr("Continuous Color"))
+  {
+    mRendererDialog = new QgsContinuousColorDialog(layer);
+  }
+  else if(dialogString == tr("Unique Value"))
+  {
+    mRendererDialog = new QgsUniqueValueDialog(layer);
+  }
+  widgetStackRenderers->addWidget(mRendererDialog);
+  widgetStackRenderers->setCurrentWidget(mRendererDialog);  
 }
 
 void QgsVectorLayerProperties::setLegendType(QString type)
@@ -147,8 +152,12 @@ void QgsVectorLayerProperties::reset( void )
 {
   // populate the general information
   txtDisplayName->setText(layer->name());
-  pbnQueryBuilder->setWhatsThis(tr("This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer"));
-  txtSubsetSQL->setWhatsThis(tr("The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button"));
+  pbnQueryBuilder->setWhatsThis(tr("This button opens the PostgreSQL query "
+        "builder and allows you to create a subset of features to display on "
+        "the map canvas rather than displaying all features in the layer"));
+  txtSubsetSQL->setWhatsThis(tr("The query used to limit the features in the "
+        "layer is shown here. This is currently only supported for PostgreSQL "
+        "layers. To enter or modify the query, click on the Query Builder button"));
 
   //we are dealing with a pg layer here so that we can enable the sql box
   QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
@@ -184,15 +193,15 @@ void QgsVectorLayerProperties::reset( void )
 
   // symbology initialization
   if(legendtypecombobox->count()==0)
+  {
+    legendtypecombobox->insertItem(tr("Single Symbol"));
+    if(myFields.size()>0)
     {
-      legendtypecombobox->insertItem(tr("Single Symbol"));
-      if(myFields.size()>0)
-      {
-	  legendtypecombobox->insertItem(tr("Graduated Symbol"));
-	  legendtypecombobox->insertItem(tr("Continuous Color"));
-	  legendtypecombobox->insertItem(tr("Unique Value"));
-      }
+      legendtypecombobox->insertItem(tr("Graduated Symbol"));
+      legendtypecombobox->insertItem(tr("Continuous Color"));
+      legendtypecombobox->insertItem(tr("Unique Value"));
     }
+  }
 
   //find out the type of renderer in the vectorlayer, create a dialog with these settings and add it to the form
   delete mRendererDialog;
@@ -200,37 +209,38 @@ void QgsVectorLayerProperties::reset( void )
   QString rtype=layer->renderer()->name();
   if(rtype=="Single Symbol")
   {
-      mRendererDialog=new QgsSingleSymbolDialog(layer);
-      legendtypecombobox->setCurrentIndex(0);
+    mRendererDialog=new QgsSingleSymbolDialog(layer);
+    legendtypecombobox->setCurrentIndex(0);
   }
   else if(rtype=="Graduated Symbol")
   {
-      mRendererDialog=new QgsGraduatedSymbolDialog(layer);
-      legendtypecombobox->setCurrentIndex(1);
+    mRendererDialog=new QgsGraduatedSymbolDialog(layer);
+    legendtypecombobox->setCurrentIndex(1);
   }
   else if(rtype=="Continuous Color")
   {
-      mRendererDialog=new QgsContinuousColorDialog(layer);
-      legendtypecombobox->setCurrentIndex(2);
+    mRendererDialog=new QgsContinuousColorDialog(layer);
+    legendtypecombobox->setCurrentIndex(2);
   }
   else if(rtype == "Unique Value")
   {
-      mRendererDialog=new QgsUniqueValueDialog(layer);
-      legendtypecombobox->setCurrentIndex(3);
+    mRendererDialog=new QgsUniqueValueDialog(layer);
+    legendtypecombobox->setCurrentIndex(3);
   }
-  
+
   if(mRendererDialog)
   {
-      widgetStackRenderers->addWidget(mRendererDialog);
-      widgetStackRenderers->setCurrentWidget(mRendererDialog);
+    widgetStackRenderers->addWidget(mRendererDialog);
+    widgetStackRenderers->setCurrentWidget(mRendererDialog);
   }
-  
 
-  QObject::connect(legendtypecombobox, SIGNAL(activated(const QString &)), this, SLOT(alterLayerDialog(const QString &)));
+
+  QObject::connect(legendtypecombobox, SIGNAL(activated(const QString &)), this, 
+      SLOT(alterLayerDialog(const QString &)));
 
   // reset fields in label dialog
   layer->label()->setFields ( layer->getDataProvider()->fields() );
-  
+
   //set the metadata contents
   teMetadata->setText(getMetadata());
   actionDialog->init();
@@ -259,8 +269,6 @@ void QgsVectorLayerProperties::apply()
   // Set up sql subset query if applicable
   //
 #ifdef HAVE_POSTGRESQL
-  // Tim commented out the next line because dp is not actually used anywhere....
-  //QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
   //see if we are dealing with a pg layer here
   if(layer->providerType() == "postgres")
   {
@@ -288,32 +296,36 @@ void QgsVectorLayerProperties::apply()
   layer->setLayerName(displayName());
 
 
-  QgsSingleSymbolDialog *sdialog = dynamic_cast < QgsSingleSymbolDialog * >(widgetStackRenderers->currentWidget());
-  QgsGraduatedSymbolDialog *gdialog = dynamic_cast < QgsGraduatedSymbolDialog * >(widgetStackRenderers->currentWidget());
-  QgsContinuousColorDialog *cdialog = dynamic_cast < QgsContinuousColorDialog * >(widgetStackRenderers->currentWidget());
-  QgsUniqueValueDialog* udialog = dynamic_cast< QgsUniqueValueDialog * >(widgetStackRenderers->currentWidget()); 
+  QgsSingleSymbolDialog *sdialog = 
+    dynamic_cast < QgsSingleSymbolDialog * >(widgetStackRenderers->currentWidget());
+  QgsGraduatedSymbolDialog *gdialog = 
+    dynamic_cast < QgsGraduatedSymbolDialog * >(widgetStackRenderers->currentWidget());
+  QgsContinuousColorDialog *cdialog = 
+    dynamic_cast < QgsContinuousColorDialog * >(widgetStackRenderers->currentWidget());
+  QgsUniqueValueDialog* udialog = 
+    dynamic_cast< QgsUniqueValueDialog * >(widgetStackRenderers->currentWidget()); 
 
   if (sdialog)
-    {
-      sdialog->apply();
-    } 
+  {
+    sdialog->apply();
+  } 
   else if (gdialog)
   {
-      gdialog->apply();
+    gdialog->apply();
   }
   else if (cdialog)
-    {
-      cdialog->apply();
-    }
+  {
+    cdialog->apply();
+  }
   else if(udialog)
   {
-      udialog->apply();
+    udialog->apply();
   }
   layer->setTransparency(static_cast < unsigned int >(255 - sliderTransparency->value()));
-  
+
   // update symbology
   emit refreshLegend(layer->getLayerID(), false);
-  
+
   layer->triggerRepaint();
 
 }
@@ -333,7 +345,7 @@ void QgsVectorLayerProperties::on_pbnQueryBuilder_clicked()
   // and postgres connection from the provider
   QgsDataSourceURI uri(myPGProvider->dataSourceUri());
   QgsPgQueryBuilder *pqb = new QgsPgQueryBuilder(&uri, this);
-       
+
   // Set the sql in the query builder to the same in the prop dialog
   // (in case the user has already changed it)
   pqb->setSql(txtSubsetSQL->text());
@@ -355,55 +367,56 @@ void QgsVectorLayerProperties::on_pbnQueryBuilder_clicked()
 
 void QgsVectorLayerProperties::on_pbnIndex_clicked()
 {
-    QgsVectorDataProvider* pr=layer->getDataProvider();
-    if(pr)
+  QgsVectorDataProvider* pr=layer->getDataProvider();
+  if(pr)
+  {
+    setCursor(Qt::WaitCursor);
+    bool errval=pr->createSpatialIndex();
+    setCursor(Qt::ArrowCursor);
+    if(errval)
     {
-	setCursor(Qt::WaitCursor);
-	bool errval=pr->createSpatialIndex();
-	setCursor(Qt::ArrowCursor);
-	if(errval)
-	{
-	    QMessageBox::information(this, tr("Spatial Index"), tr("Creation of spatial index successfull"));
-	}
-	else
-	{
-           // TODO: Remind the user to use OGR >= 1.2.6 and Shapefile
-	   QMessageBox::information(this, tr("Spatial Index"), tr("Creation of spatial index failed")); 
-	}
+      QMessageBox::information(this, tr("Spatial Index"), 
+          tr("Creation of spatial index successfull"));
     }
+    else
+    {
+      // TODO: Remind the user to use OGR >= 1.2.6 and Shapefile
+      QMessageBox::information(this, tr("Spatial Index"), tr("Creation of spatial index failed")); 
+    }
+  }
 }
 
 QString QgsVectorLayerProperties::getMetadata()
 {
-  QString myMetadataQString = "<html><body>";
-  myMetadataQString += "<table width=\"100%\">";
-  
+  QString myMetedata = "<html><body>";
+  myMetedata += "<table width=\"100%\">";
+
   //-------------
-  
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
-  myMetadataQString += tr("General:");
-  myMetadataQString += "</td></tr>";
+
+  myMetedata += "<tr><td bgcolor=\"gray\">";
+  myMetedata += tr("General:");
+  myMetedata += "</td></tr>";
 
   // data comment
   if (!(layer->dataComment().isEmpty()))
   {
-    myMetadataQString += "<tr><td bgcolor=\"white\">";
-    myMetadataQString += tr("Layer comment: ") + 
-        layer->dataComment();
-    myMetadataQString += "</td></tr>";
+    myMetedata += "<tr><td bgcolor=\"white\">";
+    myMetedata += tr("Layer comment: ") + 
+      layer->dataComment();
+    myMetedata += "</td></tr>";
   }
 
   //storage type
-  myMetadataQString += "<tr><td bgcolor=\"white\">";
-  myMetadataQString += tr("Storage type of this layer : ") + 
-                       layer->storageType();
-  myMetadataQString += "</td></tr>";
+  myMetedata += "<tr><td bgcolor=\"white\">";
+  myMetedata += tr("Storage type of this layer : ") + 
+    layer->storageType();
+  myMetedata += "</td></tr>";
 
   // data source
-  myMetadataQString += "<tr><td bgcolor=\"white\">";
-  myMetadataQString += tr("Source for this layer : ") +
-                       layer->publicSource();
-  myMetadataQString += "</td></tr>";
+  myMetedata += "<tr><td bgcolor=\"white\">";
+  myMetedata += tr("Source for this layer : ") +
+    layer->publicSource();
+  myMetedata += "</td></tr>";
 
   //geom type
 
@@ -411,48 +424,48 @@ QString QgsVectorLayerProperties::getMetadata()
 
   if ( vectorType < 0 || vectorType > QGis::Polygon )
   {
-      QgsDebugMsg( "Invalid vector type" );
+    QgsDebugMsg( "Invalid vector type" );
   }
   else
   {
-      QString vectorTypeString( QGis::qgisVectorGeometryType[layer->vectorType()] );
+    QString vectorTypeString( QGis::qgisVectorGeometryType[layer->vectorType()] );
 
-      myMetadataQString += "<tr><td bgcolor=\"white\">";
-      myMetadataQString += tr("Geometry type of the features in this layer : ") + 
-          vectorTypeString;
-      myMetadataQString += "</td></tr>";
+    myMetedata += "<tr><td bgcolor=\"white\">";
+    myMetedata += tr("Geometry type of the features in this layer : ") + 
+      vectorTypeString;
+    myMetedata += "</td></tr>";
   }
 
 
-      //feature count
-  myMetadataQString += "<tr><td bgcolor=\"white\">";
-  myMetadataQString += tr("The number of features in this layer : ") + 
-                       QString::number(layer->featureCount());
-  myMetadataQString += "</td></tr>";
+  //feature count
+  myMetedata += "<tr><td bgcolor=\"white\">";
+  myMetedata += tr("The number of features in this layer : ") + 
+    QString::number(layer->featureCount());
+  myMetedata += "</td></tr>";
   //capabilities
-  myMetadataQString += "<tr><td bgcolor=\"white\">";
-  myMetadataQString += tr("Editing capabilities of this layer : ") + 
-                       layer->capabilitiesString();
-  myMetadataQString += "</td></tr>";
+  myMetedata += "<tr><td bgcolor=\"white\">";
+  myMetedata += tr("Editing capabilities of this layer : ") + 
+    layer->capabilitiesString();
+  myMetedata += "</td></tr>";
 
   //-------------
 
   QgsRect myExtent = layer->extent();  
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
-  myMetadataQString += tr("Extents:");
-  myMetadataQString += "</td></tr>";
+  myMetedata += "<tr><td bgcolor=\"gray\">";
+  myMetedata += tr("Extents:");
+  myMetedata += "</td></tr>";
   //extents in layer cs  TODO...maybe make a little nested table to improve layout...
-  myMetadataQString += "<tr><td bgcolor=\"white\">";
-  myMetadataQString += tr("In layer spatial reference system units : ") + 
-                       tr("xMin,yMin ") + 
-                       QString::number(myExtent.xMin()) + 
-                       "," + 
-                       QString::number( myExtent.yMin()) +
-                       tr(" : xMax,yMax ") + 
-                       QString::number(myExtent.xMax()) + 
-                       "," + 
-                       QString::number(myExtent.yMax());
-  myMetadataQString += "</td></tr>";
+  myMetedata += "<tr><td bgcolor=\"white\">";
+  myMetedata += tr("In layer spatial reference system units : ") + 
+    tr("xMin,yMin ") + 
+    QString::number(myExtent.xMin()) + 
+    "," + 
+    QString::number( myExtent.yMin()) +
+    tr(" : xMax,yMax ") + 
+    QString::number(myExtent.xMax()) + 
+    "," + 
+    QString::number(myExtent.yMax());
+  myMetedata += "</td></tr>";
 
   //extents in project cs
 
@@ -461,40 +474,40 @@ QString QgsVectorLayerProperties::getMetadata()
     /*    
     // TODO: currently disabled, will revisit later [MD]
     QgsRect myProjectedExtent = coordinateTransform->transformBoundingBox(layer->extent());
-    myMetadataQString += "<tr><td bgcolor=\"white\">";
-    myMetadataQString += tr("In project spatial reference system units : ") + 
-                         tr("xMin,yMin ") + 
-                         QString::number(myProjectedExtent.xMin()) + 
-                         "," + 
-                         QString::number( myProjectedExtent.yMin()) +
-                         tr(" : xMax,yMax ") + 
-                         QString::number(myProjectedExtent.xMax()) + 
-                         "," + 
-                         QString::number(myProjectedExtent.yMax());
-    myMetadataQString += "</td></tr>";
+    myMetedata += "<tr><td bgcolor=\"white\">";
+    myMetedata += tr("In project spatial reference system units : ") + 
+    tr("xMin,yMin ") + 
+    QString::number(myProjectedExtent.xMin()) + 
+    "," + 
+    QString::number( myProjectedExtent.yMin()) +
+    tr(" : xMax,yMax ") + 
+    QString::number(myProjectedExtent.xMax()) + 
+    "," + 
+    QString::number(myProjectedExtent.yMax());
+    myMetedata += "</td></tr>";
     */
 
     // 
     // Display layer spatial ref system
     //
-    myMetadataQString += "<tr><td bgcolor=\"gray\">";
-    myMetadataQString += tr("Layer Spatial Reference System:");
-    myMetadataQString += "</td></tr>";  
-    myMetadataQString += "<tr><td bgcolor=\"white\">";
-    myMetadataQString += layer->srs().proj4String().replace(QRegExp("\"")," \"");                       
-    myMetadataQString += "</td></tr>";
+    myMetedata += "<tr><td bgcolor=\"gray\">";
+    myMetedata += tr("Layer Spatial Reference System:");
+    myMetedata += "</td></tr>";  
+    myMetedata += "<tr><td bgcolor=\"white\">";
+    myMetedata += layer->srs().proj4String().replace(QRegExp("\"")," \"");                       
+    myMetedata += "</td></tr>";
 
     // 
     // Display project (output) spatial ref system
     //  
     /*
     // TODO: disabled for now, will revisit later [MD]
-    myMetadataQString += "<tr><td bgcolor=\"gray\">";
-    myMetadataQString += tr("Project (Output) Spatial Reference System:");
-    myMetadataQString += "</td></tr>";  
-    myMetadataQString += "<tr><td bgcolor=\"white\">";
-    myMetadataQString += coordinateTransform->destSRS().proj4String().replace(QRegExp("\"")," \"");                       
-    myMetadataQString += "</td></tr>";
+    myMetedata += "<tr><td bgcolor=\"gray\">";
+    myMetedata += tr("Project (Output) Spatial Reference System:");
+    myMetedata += "</td></tr>";  
+    myMetedata += "<tr><td bgcolor=\"white\">";
+    myMetedata += coordinateTransform->destSRS().proj4String().replace(QRegExp("\"")," \"");                       
+    myMetedata += "</td></tr>";
     */
 
   }
@@ -503,74 +516,74 @@ QString QgsVectorLayerProperties::getMetadata()
     UNUSED(cse);
     QgsDebugMsg( cse.what() );
 
-    myMetadataQString += "<tr><td bgcolor=\"white\">";
-    myMetadataQString += tr("In project spatial reference system units : ");
-    myMetadataQString += " (Invalid transformation of layer extents) ";
-    myMetadataQString += "</td></tr>";
+    myMetedata += "<tr><td bgcolor=\"white\">";
+    myMetedata += tr("In project spatial reference system units : ");
+    myMetedata += " (Invalid transformation of layer extents) ";
+    myMetedata += "</td></tr>";
 
   }
 
-      
+
   //
   // Add the info about each field in the attribute table
   //
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
-  myMetadataQString += tr("Attribute field info:");
-  myMetadataQString += "</td></tr>";
-  myMetadataQString += "<tr><td bgcolor=\"white\">";
+  myMetedata += "<tr><td bgcolor=\"gray\">";
+  myMetedata += tr("Attribute field info:");
+  myMetedata += "</td></tr>";
+  myMetedata += "<tr><td bgcolor=\"white\">";
 
   // Start a nested table in this trow
-  myMetadataQString += "<table width=\"100%\">";
-  myMetadataQString += "<tr><th bgcolor=\"black\">";
-  myMetadataQString += "<font color=\"white\">" + tr("Field") + "</font>";
-  myMetadataQString += "</th>";
-  myMetadataQString += "<th bgcolor=\"black\">";
-  myMetadataQString += "<font color=\"white\">" + tr("Type") + "</font>";
-  myMetadataQString += "</th>";
-  myMetadataQString += "<th bgcolor=\"black\">";
-  myMetadataQString += "<font color=\"white\">" + tr("Length") + "</font>";
-  myMetadataQString += "</th>";
-  myMetadataQString += "<th bgcolor=\"black\">";
-  myMetadataQString += "<font color=\"white\">" + tr("Precision") + "</font>";
-  myMetadataQString += "</th>";      
-  myMetadataQString += "<th bgcolor=\"black\">";
-  myMetadataQString += "<font color=\"white\">" + tr("Comment") + "</font>";
-  myMetadataQString += "</th>";
- 
+  myMetedata += "<table width=\"100%\">";
+  myMetedata += "<tr><th bgcolor=\"black\">";
+  myMetedata += "<font color=\"white\">" + tr("Field") + "</font>";
+  myMetedata += "</th>";
+  myMetedata += "<th bgcolor=\"black\">";
+  myMetedata += "<font color=\"white\">" + tr("Type") + "</font>";
+  myMetedata += "</th>";
+  myMetedata += "<th bgcolor=\"black\">";
+  myMetedata += "<font color=\"white\">" + tr("Length") + "</font>";
+  myMetedata += "</th>";
+  myMetedata += "<th bgcolor=\"black\">";
+  myMetedata += "<font color=\"white\">" + tr("Precision") + "</font>";
+  myMetedata += "</th>";      
+  myMetedata += "<th bgcolor=\"black\">";
+  myMetedata += "<font color=\"white\">" + tr("Comment") + "</font>";
+  myMetedata += "</th>";
+
   //get info for each field by looping through them
   QgsVectorDataProvider *myDataProvider = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
   const QgsFieldMap& myFields = myDataProvider->fields();
   for (QgsFieldMap::const_iterator it = myFields.begin(); it != myFields.end(); ++it)
   {
     const QgsField& myField = *it;
-    
-    myMetadataQString += "<tr><td bgcolor=\"white\">";
-    myMetadataQString += myField.name();
-    myMetadataQString += "</td>";
-    myMetadataQString += "<td bgcolor=\"white\">";
-    myMetadataQString += myField.typeName();
-    myMetadataQString += "</td>";
-    myMetadataQString += "<td bgcolor=\"white\">";
-    myMetadataQString += QString("%1").arg(myField.length());
-    myMetadataQString += "</td>";
-    myMetadataQString += "<td bgcolor=\"white\">";
-    myMetadataQString += QString("%1").arg(myField.precision());
-    myMetadataQString += "</td>";
-    myMetadataQString += "<td bgcolor=\"white\">";
-    myMetadataQString += QString("%1").arg(myField.comment());
-    myMetadataQString += "</td></tr>";
+
+    myMetedata += "<tr><td bgcolor=\"white\">";
+    myMetedata += myField.name();
+    myMetedata += "</td>";
+    myMetedata += "<td bgcolor=\"white\">";
+    myMetedata += myField.typeName();
+    myMetedata += "</td>";
+    myMetedata += "<td bgcolor=\"white\">";
+    myMetedata += QString("%1").arg(myField.length());
+    myMetedata += "</td>";
+    myMetedata += "<td bgcolor=\"white\">";
+    myMetedata += QString("%1").arg(myField.precision());
+    myMetedata += "</td>";
+    myMetedata += "<td bgcolor=\"white\">";
+    myMetedata += QString("%1").arg(myField.comment());
+    myMetedata += "</td></tr>";
   } 
 
   //close field list
-  myMetadataQString += "</table>"; //end of nested table
-  myMetadataQString += "</td></tr>"; //end of stats container table row
+  myMetedata += "</table>"; //end of nested table
+  myMetedata += "</td></tr>"; //end of stats container table row
   //
   // Close the table
   //
 
-  myMetadataQString += "</table>";
-  myMetadataQString += "</body></html>";
-  return myMetadataQString;
+  myMetedata += "</table>";
+  myMetedata += "</body></html>";
+  return myMetedata;
 
 }
 
@@ -578,19 +591,170 @@ QString QgsVectorLayerProperties::getMetadata()
 
 void QgsVectorLayerProperties::on_pbnChangeSpatialRefSys_clicked()
 {
-    QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector(this);
-    mySelector->setSelectedSRSID(layer->srs().srsid());
-    if(mySelector->exec())
+  QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector(this);
+  mySelector->setSelectedSRSID(layer->srs().srsid());
+  if(mySelector->exec())
+  {
+    QgsSpatialRefSys srs(mySelector->getCurrentSRSID(), QgsSpatialRefSys::QGIS_SRSID);
+    layer->setSrs(srs);
+  }
+  else
+  {
+    QApplication::restoreOverrideCursor();
+  }
+  delete mySelector;
+
+  leSpatialRefSys->setText(layer->srs().proj4String());
+  leSpatialRefSys->setCursorPosition(0);
+}
+
+void QgsVectorLayerProperties::on_pbnLoadDefaultStyle_clicked()
+{
+  bool defaultLoadedFlag = false;
+  QString myMessage = layer->loadDefaultStyle( defaultLoadedFlag );
+  //reset if the default style was loaded ok only
+  if ( defaultLoadedFlag )
+  {
+    reset ();
+  }
+  QMessageBox::information( this, 
+      tr("Default Style"), 
+      myMessage
+      ); 
+}
+
+void QgsVectorLayerProperties::on_pbnSaveDefaultStyle_clicked()
+{
+  // a flag passed by reference
+  bool defaultSavedFlag = false;
+  // after calling this the above flag will be set true for success
+  // or false if the save operation failed
+  QString myMessage = layer->saveDefaultStyle( defaultSavedFlag );
+  QMessageBox::information( this, 
+      tr("Default Style"), 
+      myMessage
+      ); 
+}
+
+
+void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
+{
+  QSettings myQSettings;  // where we keep last used filter in persistant state
+  QString myLastUsedDir = myQSettings.value ( "style/lastStyleDir", "." ).toString();
+
+  //create a file dialog
+  std::auto_ptr < QFileDialog > myFileDialog
+    (
+     new QFileDialog (
+       this,
+       QFileDialog::tr ( "Load layer properties from style file (.qml)" ),
+       myLastUsedDir,
+       tr ( "QGIS Layer Style File (*.qml)" )
+       )
+    );
+  myFileDialog->setFileMode ( QFileDialog::AnyFile );
+  myFileDialog->setAcceptMode ( QFileDialog::AcceptOpen );
+
+  //prompt the user for a filename
+  QString myFileName;
+  if ( myFileDialog->exec() == QDialog::Accepted )
+  {
+    QStringList myFiles = myFileDialog->selectedFiles();
+    if ( !myFiles.isEmpty() )
     {
-      QgsSpatialRefSys srs(mySelector->getCurrentSRSID(), QgsSpatialRefSys::QGIS_SRSID);
-      layer->setSrs(srs);
+      myFileName = myFiles[0];
+    }
+  }
+
+  if ( !myFileName.isEmpty() )
+  {
+    if ( myFileDialog->selectedFilter() == tr ( "QGIS Layer Style File (*.qml)" ) )
+    {
+      //ensure the user never ommitted the extension from the filename
+      if ( !myFileName.toUpper().endsWith ( ".QML" ) )
+      {
+        myFileName += ".qml";
+      }
+      bool defaultLoadedFlag = false;
+      QString myMessage = layer->loadNamedStyle( myFileName, defaultLoadedFlag );
+      //reset if the default style was loaded ok only
+      if ( defaultLoadedFlag )
+      {
+        reset ();
+      }
+      QMessageBox::information( this, 
+          tr("Default Style"), 
+          myMessage
+          ); 
     }
     else
     {
-      QApplication::restoreOverrideCursor();
-    }
-    delete mySelector;
+      QMessageBox::warning ( this, tr ( "QGIS" ), tr ( "Unknown style format: " ) +
+          myFileDialog->selectedFilter() );
 
-    leSpatialRefSys->setText(layer->srs().proj4String());
-    leSpatialRefSys->setCursorPosition(0);
+    }
+    myQSettings.setValue ( "style/lastStyleDir", myFileDialog->directory().absolutePath() );
+  }
+}
+
+
+void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
+{
+
+  QSettings myQSettings;  // where we keep last used filter in persistant state
+  QString myLastUsedDir = myQSettings.value ( "style/lastStyleDir", "." ).toString();
+
+  //create a file dialog
+  std::auto_ptr < QFileDialog > myFileDialog
+    (
+     new QFileDialog (
+       this,
+       QFileDialog::tr ( "Save layer properties as style file (.qml)" ),
+       myLastUsedDir,
+       tr ( "QGIS Layer Style File (*.qml)" )
+       )
+    );
+  myFileDialog->setFileMode ( QFileDialog::AnyFile );
+  myFileDialog->setAcceptMode ( QFileDialog::AcceptSave );
+
+  //prompt the user for a filename
+  QString myOutputFileName;
+  if ( myFileDialog->exec() == QDialog::Accepted )
+  {
+    QStringList myFiles = myFileDialog->selectedFiles();
+    if ( !myFiles.isEmpty() )
+    {
+      myOutputFileName = myFiles[0];
+    }
+  }
+
+  if ( !myOutputFileName.isEmpty() )
+  {
+    if ( myFileDialog->selectedFilter() == tr ( "QGIS Layer Style File (*.qml)" ) )
+    {
+      //ensure the user never ommitted the extension from the filename
+      if ( !myOutputFileName.toUpper().endsWith ( ".QML" ) )
+      {
+        myOutputFileName += ".qml";
+      }
+      bool defaultLoadedFlag = false;
+      QString myMessage = layer->saveNamedStyle( myOutputFileName, defaultLoadedFlag );
+      //reset if the default style was loaded ok only
+      if ( defaultLoadedFlag )
+      {
+        reset ();
+      }
+      QMessageBox::information( this, 
+          tr("Default Style"), 
+          myMessage
+          ); 
+    }
+    else
+    {
+      QMessageBox::warning ( this, tr ( "QGIS" ), tr ( "Unknown style format: " ) +
+          myFileDialog->selectedFilter() );
+
+    }
+    myQSettings.setValue ( "style/lastStyleDir", myFileDialog->directory().absolutePath() );
+  }
 }

@@ -57,10 +57,11 @@ QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVect
 	mClassListWidget->clear();
 	
 	// XXX - mloskot - fix for Ticket #31 (bug)
-	QgsAttributeList attributes = renderer->classificationAttributes();
-	QgsAttributeList::iterator iter = attributes.begin();
-	int classattr = *iter;
-	QString field = provider->fields()[ classattr ].name();
+	//QgsAttributeList attributes = renderer->classificationAttributes();
+	//QgsAttributeList::iterator iter = attributes.begin();
+	//int classattr = *iter;
+	//QString field = provider->fields()[ classattr ].name();
+	QString field = provider->fields()[ renderer->classificationField() ].name();
 	mClassificationComboBox->setCurrentItem( mClassificationComboBox->findText(field) );
 
 	const QList<QgsSymbol*> list = renderer->symbols();
@@ -75,6 +76,8 @@ QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVect
 	    sym->setBrush(symbol->brush());
 	    sym->setNamedPointSymbol(symbol->pointSymbolName());
 	    sym->setPointSize(symbol->pointSize());
+            sym->setScaleClassificationField(symbol->scaleClassificationField());
+            sym->setRotationClassificationField(symbol->rotationClassificationField());
 	    mValues.insert(std::make_pair(symbolvalue,sym));
 	    mClassListWidget->addItem(symbolvalue);
 	}
@@ -119,8 +122,11 @@ void QgsUniqueValueDialog::apply()
 	newsymbol->setBrush(symbol->brush());
 	newsymbol->setNamedPointSymbol(symbol->pointSymbolName());
 	newsymbol->setPointSize(symbol->pointSize());
+        newsymbol->setScaleClassificationField(symbol->scaleClassificationField());
+        newsymbol->setRotationClassificationField(symbol->rotationClassificationField());
 	renderer->insertValue(it->first,newsymbol);
     }
+    renderer->updateSymbolAttributes();
 
     QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider());
     if (provider)
