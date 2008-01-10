@@ -1179,6 +1179,8 @@ bool QgsSpatialRefSys::readXML( QDomNode & theNode )
   QgsDebugMsg("Reading Spatial Ref Sys from xml ------------------------!");
   QDomNode srsNode  = theNode.namedItem( "spatialrefsys" );
 
+  if ( ! srsNode.isNull() )
+  {
      QDomNode myNode = srsNode.namedItem("proj4");
      QDomElement myElement = myNode.toElement();
      setProj4String(myElement.text());
@@ -1218,13 +1220,17 @@ bool QgsSpatialRefSys::readXML( QDomNode & theNode )
        setGeographicFlag(false);
      }
      //make sure the map units have been set
-
      setMapUnits();
 
      //@TODO this srs needs to be validated!!!
      mIsValidFlag=true;//shamelessly hard coded for now
-      
-     return true;
+  }
+  else
+  {
+    // Return default SRS if none was found in the XML.
+    createFromSrsId(GEOSRS_ID);
+  }
+  return true;
 }
 
 bool QgsSpatialRefSys::writeXML( QDomNode & theNode, QDomDocument & theDoc ) const

@@ -23,6 +23,7 @@
 #define QGSPROJECT_H
 
 #include <memory>
+#include "qgsprojectversion.h"
 #include <QObject>
 
 //#include <QDomDocument>
@@ -260,6 +261,9 @@ public:
     
     //! emitted when project is being written
     void writeProject(QDomDocument &);
+
+    //! emitted when an old project file is read.
+    void warnOlderProjectVersion(QString);
 
 private:
 

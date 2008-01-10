@@ -28,6 +28,8 @@ qgsmaptopixel.cpp
 qgsmessageoutput.cpp
 qgspoint.cpp
 qgsproject.cpp
+qgsprojectfiletransform.cpp
+qgsprojectversion.cpp
 qgsprojectproperty.cpp
 qgsprovidercountcalcevent.cpp
 qgsproviderextentcalcevent.cpp
@@ -202,6 +204,7 @@ qgsmaptopixel.h
 qgsmessageoutput.h
 qgspoint.h
 qgsproject.h
+qgsprojectfiletransform.h
 qgsprojectproperty.h
 qgsprovidercountcalcevent.h
 qgsproviderextentcalcevent.h

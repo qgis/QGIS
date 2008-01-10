@@ -30,6 +30,8 @@
 #include "qgsexception.h"
 #include "qgsprojectproperty.h"
 #include "qgslogger.h"
+#include "qgsprojectfiletransform.h"
+#include "qgsprojectversion.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -576,21 +578,21 @@ static void _getTitle(QDomDocument const &doc, QString & title)
 
    @returns the version string or an empty string if none found
  */
-static QString _getVersion(QDomDocument const &doc)
+static QgsProjectVersion _getVersion(QDomDocument const &doc)
 {
-    QDomNodeList nl = doc.elementsByTagName("qgis");
+  QDomNodeList nl = doc.elementsByTagName("qgis");
+  
+  if (!nl.count())
+  {
+    QgsDebugMsg(" unable to find qgis element in project file");
+    return QgsProjectVersion(0, 0, 0, QString(""));
+  }
 
-    if (!nl.count())
-    {
-        QgsDebugMsg(" unable to find qgis element in project file");
-        return "";
-    }
-    
-    QDomNode qgisNode = nl.item(0);  // there should only be one, so zeroth element ok
+  QDomNode qgisNode = nl.item(0);  // there should only be one, so zeroth element ok
 
-    QDomElement qgisElement = qgisNode.toElement(); // qgis node should be element
-
-    return qgisElement.attribute("version");
+  QDomElement qgisElement = qgisNode.toElement(); // qgis node should be element
+  QgsProjectVersion projectVersion(qgisElement.attribute("version"));
+  return projectVersion;
 } // _getVersion
 
 
@@ -782,6 +784,32 @@ bool QgsProject::read()
 
 
     QgsDebugMsg("Opened document " + imp_->file.name());
+    QgsDebugMsg("Project title: " + imp_->title);
+
+    // get project version string, if any
+    QgsProjectVersion fileVersion =  _getVersion(*doc);
+    QgsProjectVersion thisVersion(QGis::qgisVersion);
+
+    if (thisVersion > fileVersion)
+    {
+      QgsLogger::warning("Loading a file that was saved with an older "
+                         "version of qgis (saved in " + fileVersion.text() +
+                         ", loaded in " + QGis::qgisVersion +
+                         "). Problems may occur.");
+
+      QgsProjectFileTransform projectFile(*doc, fileVersion);
+
+      //! Shows a warning when an old project file is read.
+      emit warnOlderProjectVersion(fileVersion.text());
+      QgsDebugMsg("Emitting warnOlderProjectVersion(oldVersion).");
+  
+      projectFile.dump();
+
+      projectFile.updateRevision(thisVersion);
+
+      projectFile.dump();
+
+    }
 
     // before we start loading everything, let's clear out the current set of
     // properties first so that we don't have the properties from the previous
@@ -802,44 +830,6 @@ bool QgsProject::read()
     // now get project title
     _getTitle(*doc, imp_->title);
 
-    // get project version string, if any
-    QString fileVersion = _getVersion(*doc);
-
-    if ( fileVersion.isNull() )
-    {
-        QgsDebugMsg( "project file has no version string" );
-    }
-    else
-    {
-        QgsDebugMsg( "project file has version " + QString(fileVersion) );
-    }
-
-    QStringList fileVersionParts = fileVersion.split(".");
-    QStringList qgisVersionParts = QString(QGis::qgisVersion).split(".");
-
-    QgsDebugMsg("Project title: " + imp_->title);
-    
-    bool older = false;
-
-    if (fileVersionParts.size() != 3 || qgisVersionParts.size() != 3)
-      older = false; // probably an older version
-    else
-    {
-      if (fileVersionParts.at(0) < qgisVersionParts.at(0))
-        older = true;
-      else if (fileVersionParts.at(1) < qgisVersionParts.at(1))
-        older = true;
-      else if (fileVersionParts.at(2) < qgisVersionParts.at(2))
-        older = true;
-    }
-
-    if (older)
-    {
-      QgsLogger::warning("Loading a file that was saved with an older "
-                         "version of qgis (saved in " + fileVersion +
-                         ", loaded in " + QGis::qgisVersion +
-                         "). Problems may occur.");
-    }
 
     // get the map layers
     std::pair< bool, std::list<QDomNode> > getMapLayersResults =  _getMapLayers(*doc);
