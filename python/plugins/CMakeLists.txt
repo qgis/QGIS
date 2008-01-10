@@ -1,1 +1,1 @@
-SUBDIRS(plugin_installer)
+SUBDIRS(plugin_installer mapserver_export)
