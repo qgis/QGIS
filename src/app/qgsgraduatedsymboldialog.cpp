@@ -89,16 +89,18 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(QgsVectorLayer * layer): QDia
 	//fill the items of the renderer into mValues
 	for(QList<QgsSymbol*>::iterator it=list.begin();it!=list.end();++it)
 	{
-	    //todo: make an assignment operator and a copy constructor for QgsSymbol
-		QString classbreak=(*it)->lowerValue()+" - "+(*it)->upperValue();
-		QgsSymbol* sym=new QgsSymbol(mVectorLayer->vectorType(), (*it)->lowerValue(), (*it)->upperValue(), (*it)->label());
-		sym->setPen((*it)->pen());
-		sym->setCustomTexture((*it)->customTexture());
-		sym->setBrush((*it)->brush());
-		sym->setNamedPointSymbol((*it)->pointSymbolName());
-		sym->setPointSize((*it)->pointSize());
-		mEntries.insert(std::make_pair(classbreak,sym));
-		mClassListWidget->addItem(classbreak);
+          //todo: make an assignment operator and a copy constructor for QgsSymbol
+          QString classbreak=(*it)->lowerValue()+" - "+(*it)->upperValue();
+          QgsSymbol* sym=new QgsSymbol(mVectorLayer->vectorType(), (*it)->lowerValue(), (*it)->upperValue(), (*it)->label());
+          sym->setPen((*it)->pen());
+          sym->setCustomTexture((*it)->customTexture());
+          sym->setBrush((*it)->brush());
+          sym->setNamedPointSymbol((*it)->pointSymbolName());
+          sym->setPointSize((*it)->pointSize());
+          sym->setScaleClassificationField((*it)->scaleClassificationField());
+          sym->setRotationClassificationField((*it)->rotationClassificationField());
+          mEntries.insert(std::make_pair(classbreak,sym));
+          mClassListWidget->addItem(classbreak);
 	}
 	
     }
@@ -177,6 +179,8 @@ void QgsGraduatedSymbolDialog::apply()
 	    {
 	      sy->setNamedPointSymbol(it->second->pointSymbolName());
 	      sy->setPointSize(it->second->pointSize());
+              sy->setScaleClassificationField(it->second->scaleClassificationField());
+              sy->setRotationClassificationField(it->second->rotationClassificationField());
 	      
 	    }
 	  
@@ -215,6 +219,7 @@ void QgsGraduatedSymbolDialog::apply()
 	      delete sy;
 	    }
         }
+        renderer->updateSymbolAttributes();
 	
 	std::map<QString,int>::iterator iter=mFieldMap.find(classificationComboBox->currentText());
 	if(iter!=mFieldMap.end())

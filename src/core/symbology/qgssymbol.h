@@ -97,8 +97,17 @@ class CORE_EXPORT QgsSymbol{
 
     /** Get QImage representation of point symbol with current settings
     */
-    virtual QImage getPointSymbolAsImage( double widthScale = 1., 
+    virtual QImage getCachedPointSymbolAsImage( double widthScale = 1., 
         bool selected = false, QColor selectionColor = Qt::yellow );
+
+    /* Get QImage representation of point symbol with current settings
+     * and scaled (can be slow when scale != 1.0)
+     */
+    virtual QImage getPointSymbolAsImage( double widthScale = 1., 
+        bool selected = false,
+        QColor selectionColor = Qt::yellow,
+        double scale = 1.0,
+        double rotation = 1.0);
 
     /**Writes the contents of the symbol to a configuration file
       @ return true in case of success*/
@@ -109,7 +118,18 @@ class CORE_EXPORT QgsSymbol{
     /**Returns if this symbol is point/ line or polygon*/
     QGis::VectorType type() const {return mType;}
 
+    /**Returns the number of the rotation classification field*/
+    int rotationClassificationField() const;
+    /**Sets the number of the rotation classicifation field
+    \param field the number of the field to classify for rotation*/
+    void setRotationClassificationField(int field);
+    /**Returns the number of the scale classification field*/
+    int scaleClassificationField() const;
+    /**Sets the number of the scale classicifation field
+    \param field the number of the field to classify for scale*/
+    void setScaleClassificationField(int field);
   protected:
+
     /**Lower value for classification*/
     QString mLowerValue;
     /**Upper value for classification*/
@@ -166,6 +186,10 @@ class CORE_EXPORT QgsSymbol{
     /* Selection color used in cache */
     QColor mSelectionColor;
     QColor mSelectionColor2;
+
+    /**Index of the classification fields (it must be a numerical field index)*/
+    int mRotationClassificationField;
+    int mScaleClassificationField;
 };
 
 inline void QgsSymbol::setBrush(QBrush b)

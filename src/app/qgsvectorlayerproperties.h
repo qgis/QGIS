@@ -63,6 +63,10 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
   void on_pbnQueryBuilder_clicked();
   void on_pbnIndex_clicked();
   void on_pbnChangeSpatialRefSys_clicked();
+  void on_pbnLoadDefaultStyle_clicked();
+  void on_pbnSaveDefaultStyle_clicked();
+  void on_pbnLoadStyle_clicked();
+  void on_pbnSaveStyleAs_clicked();
   
   signals:
     

@@ -19,15 +19,20 @@
 #include "qgssinglesymboldialog.h"
 #include "qgsmarkercatalogue.h"
 #include "qgssinglesymbolrenderer.h"
+#include "qgsfield.h"
 #include "qgssymbol.h"
 #include "qgssymbologyutils.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgslogger.h"
 
 #include <QColorDialog>
 #include <QPainter>
 #include <QImage>
 #include <QFileDialog>
+#include <QListWidgetItem>
 
+#define DO_NOT_USE_STR "<off>"
 
 QgsSingleSymbolDialog::QgsSingleSymbolDialog(): QDialog(), mVectorLayer(0)
 {
@@ -39,139 +44,164 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog(): QDialog(), mVectorLayer(0)
 
 QgsSingleSymbolDialog::QgsSingleSymbolDialog(QgsVectorLayer * layer): QDialog(), mVectorLayer(layer)
 {
-    setupUi(this);
+  setupUi(this);
 
 #ifdef QGISDEBUG
-    qWarning("constructor QgsSingleSymbolDialog called WITH a layer");
+  qWarning("constructor QgsSingleSymbolDialog called WITH a layer");
 #endif
 
-    //
-    //set point symbol combo box
-    //
+  //
+  //set point symbol list
+  //
 
-    // If this layer doesn't have points, break out of the following
-    // two loops after the first iteration. This gives one point
-    // symbol in the dialog, etc so that other code can rely on such a
-    // fact, but avoids the long time required to load all of the
-    // available symbols when they are not needed.
+  // If this layer doesn't have points, break out of the following
+  // two loops after the first iteration. This gives one point
+  // symbol in the dialog, etc so that other code can rely on such a
+  // fact, but avoids the long time required to load all of the
+  // available symbols when they are not needed.
 
-    QStringList ml = QgsMarkerCatalogue::instance()->list();
-    mMarkers.clear();
+  // NOTE BY Tim: I think the note above and the break out in the 
+  // loops can be removed now with changes I have made to use combo
+  // boxes for line style and fill style...test and remove if poss.
 
-    int size = 18;
-    QPen pen (QColor(0,0,255));
-    QBrush brush ( QColor(220,220,220), Qt::SolidPattern );
 
-    
-    for ( QStringList::iterator it = ml.begin(); it != ml.end(); ++it ) 
+  QPen pen (QColor(0,0,255));
+  QBrush brush ( QColor(220,220,220), Qt::SolidPattern );
+  int size = 18;
+  int myCounter = 0;
+  QStringList ml = QgsMarkerCatalogue::instance()->list();
+  for ( QStringList::iterator it = ml.begin(); it != ml.end(); ++it ) 
+  {
+    QPixmap myPixmap = QPixmap::fromImage(QgsMarkerCatalogue::instance()->imageMarker ( *it, size, pen, brush ));
+    QListWidgetItem * mypItem = new QListWidgetItem(lstSymbols);
+    QIcon myIcon;
+    myIcon.addPixmap ( myPixmap );
+    mypItem->setIcon ( myIcon );
+    mypItem->setText ( "" );
+    //store the symbol offset in the UserData role for later retrieval
+    mypItem->setData ( Qt::UserRole, *it);
+    if (layer->vectorType() != QGis::Point)
     {
-      mMarkers.push_back ( *it );
-      QPixmap pic = QPixmap::fromImage(QgsMarkerCatalogue::instance()->imageMarker ( *it, size, pen, brush ));
-      mPointSymbolComboBox->insertItem ( pic );
-      if (layer->vectorType() != QGis::Point)
-      {
-        break;
-      }
+      break;
     }
+    ++myCounter;
+  }
 
-    //
-    //set outline / line style
-    //
-    pbnLineSolid->setPixmap(QgsSymbologyUtils::char2LinePixmap("SolidLine"));
-    pbnLineDash->setPixmap(QgsSymbologyUtils::char2LinePixmap("DashLine"));
-    pbnLineDot->setPixmap(QgsSymbologyUtils::char2LinePixmap("DotLine"));
-    pbnLineDashDot->setPixmap(QgsSymbologyUtils::char2LinePixmap("DashDotLine"));
-    pbnLineDashDotDot->setPixmap(QgsSymbologyUtils::char2LinePixmap("DashDotDotLine"));
-    pbnLineNoPen->setPixmap(QgsSymbologyUtils::char2LinePixmap("NoPen"));
-
-    //
-    //set pattern button group icons and state
-    //
-    solid->setPixmap(QgsSymbologyUtils::char2PatternPixmap("SolidPattern"));
-    horizontal->setPixmap(QgsSymbologyUtils::char2PatternPixmap("HorPattern"));
-    vertical->setPixmap(QgsSymbologyUtils::char2PatternPixmap("VerPattern"));
-    cross->setPixmap(QgsSymbologyUtils::char2PatternPixmap("CrossPattern"));
-    bdiag->setPixmap(QgsSymbologyUtils::char2PatternPixmap("BDiagPattern"));
-    fdiag->setPixmap(QgsSymbologyUtils::char2PatternPixmap("FDiagPattern"));
-    diagcross->setPixmap(QgsSymbologyUtils::char2PatternPixmap("DiagCrossPattern"));
-    dense1->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense1Pattern"));
-    dense2->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense2Pattern"));
-    dense3->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense3Pattern"));
-    dense4->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense4Pattern"));
-    dense5->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense5Pattern"));
-    dense6->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense6Pattern"));
-    dense7->setPixmap(QgsSymbologyUtils::char2PatternPixmap("Dense7Pattern"));
-    nopen->setPixmap(QgsSymbologyUtils::char2PatternPixmap("NoBrush"));
-	texture->setPixmap(QgsSymbologyUtils::char2PatternPixmap("TexturePattern"));
-
-
-    if (mVectorLayer)
+    // Find out the numerical fields of mVectorLayer, and populate the ComboBox
+    QgsVectorDataProvider *provider = mVectorLayer->getDataProvider();
+    if (provider)
     {
-        const QgsSingleSymbolRenderer *renderer=dynamic_cast<const QgsSingleSymbolRenderer*>(mVectorLayer->renderer());
-
-        if (renderer)
+      const QgsFieldMap & fields = provider->fields();
+      QString str;
+      
+      mRotationClassificationComboBox->insertItem(DO_NOT_USE_STR);
+      mScaleClassificationComboBox->insertItem(DO_NOT_USE_STR);
+      mFieldMap.insert(std::make_pair(DO_NOT_USE_STR, -1));
+      for (QgsFieldMap::const_iterator it = fields.begin(); 
+           it != fields.end(); 
+           ++it)
+      {
+        QVariant::Type type = (*it).type();
+        if (type == QVariant::Int || type == QVariant::Double)
         {
-	      // Set from the existing renderer
-	      set ( renderer->symbol() );
-	    }
-        else
-        {
-            // Take values from an example instance
-            QgsSingleSymbolRenderer exampleRenderer = QgsSingleSymbolRenderer( mVectorLayer->vectorType() );
-            set ( exampleRenderer.symbol() );
+          mRotationClassificationComboBox->insertItem(it->name());
+          mScaleClassificationComboBox->insertItem(it->name());
+          mFieldMap.insert(std::make_pair(it->name(), it.key()));
         }
+      }
+    } 
+    else
+    {
+      qWarning("Warning, data provider is null in QgsSingleSymbolDialog::QgsSingleSymbolDialog(...)");
+      return;
+    }
+  //
+  //set outline / line style
+  //
+  cboOutlineStyle->addItem(QIcon(QgsSymbologyUtils::char2LinePixmap("SolidLine")),tr("Solid Line"),"SolidLine");
+  cboOutlineStyle->addItem(QIcon(QgsSymbologyUtils::char2LinePixmap("DashLine")),tr("Dash Line"),"DashLine");
+  cboOutlineStyle->addItem(QIcon(QgsSymbologyUtils::char2LinePixmap("DotLine")),tr("Dot Line"),"DotLine");
+  cboOutlineStyle->addItem(QIcon(QgsSymbologyUtils::char2LinePixmap("DashDotLine")),tr("Dash Dot Line"),"DashDotLine");
+  cboOutlineStyle->addItem(QIcon(QgsSymbologyUtils::char2LinePixmap("DashDotDotLine")),tr("Dash Dot Dot Line"),"DashDotDotLine");
+  cboOutlineStyle->addItem(QIcon(QgsSymbologyUtils::char2LinePixmap("NoPen")),tr("No Pen"),"NoPen");
 
-        if (mVectorLayer && mVectorLayer->vectorType() == QGis::Line)
-        {
-            btnFillColor->setEnabled(false);
-            grpPattern->setEnabled(false);
-            mGroupPoint->setEnabled(false);
-        }
-	
-        if (mVectorLayer && mVectorLayer->vectorType() == QGis::Polygon) {
-            mGroupPoint->setEnabled(false);
+  //
+  //set pattern icons and state
+  //
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("SolidPattern")),tr("Solid Pattern"),"SolidPattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("HorPattern")),tr("Hor Pattern"),"HorPattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("VerPattern")),tr("Ver Pattern"),"VerPattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("CrossPattern")),tr("Cross Pattern"),"CrossPattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("BDiagPattern")),tr("BDiag Pattern"),"BDiagPattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("FDiagPattern")),tr("FDiag Pattern"),"FDiagPattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("DiagCrossPattern")),tr("Diag Cross Pattern"),"DiagCrossPattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("Dense1Pattern")),tr("Dense1 Pattern"),"Dense1Pattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("Dense2Pattern")),tr("Dense2 Pattern"),"Dense2Pattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("Dense3Pattern")),tr("Dense3 Pattern"),"Dense3Pattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("Dense4Pattern")),tr("Dense4 Pattern"),"Dense4Pattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("Dense5Pattern")),tr("Dense5 Pattern"),"Dense5Pattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("Dense6Pattern")),tr("Dense6 Pattern"),"Dense6Pattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("Dense7Pattern")),tr("Dense7 Pattern"),"Dense7Pattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("NoBrush")),tr("No Brush"),"NoBrush");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("TexturePattern")),tr("Texture Pattern"),"TexturePattern");
 
-        }
-       
+  if (mVectorLayer)
+  {
+    const QgsSingleSymbolRenderer *renderer=dynamic_cast<const QgsSingleSymbolRenderer*>(mVectorLayer->renderer());
+
+    if (renderer)
+    {
+      // Set from the existing renderer
+      set ( renderer->symbols().first() );
     }
     else
     {
-        qWarning("Warning, layer is a null pointer in QgsSingleSymbolDialog::QgsSingleSymbolDialog(QgsVectorLayer)");
+      // Take values from an example instance
+      QgsSingleSymbolRenderer exampleRenderer = QgsSingleSymbolRenderer( mVectorLayer->vectorType() );
+      set ( exampleRenderer.symbols().first() );
     }
 
-     //do the signal/slot connections
-    QObject::connect(btnOutlineColor, SIGNAL(clicked()), this, SLOT(selectOutlineColor()));
-    //QObject::connect(stylebutton, SIGNAL(clicked()), this, SLOT(selectOutlineStyle()));
-    QObject::connect(btnFillColor, SIGNAL(clicked()), this, SLOT(selectFillColor()));
-    QObject::connect(outlinewidthspinbox, SIGNAL(valueChanged(int)), this, SLOT(resendSettingsChanged()));
-    QObject::connect(mLabelEdit, SIGNAL(textChanged(const QString&)), this, SLOT(resendSettingsChanged()));
-    QObject::connect(mPointSymbolComboBox, SIGNAL(activated(int)), this, SLOT(resendSettingsChanged()));
-    QObject::connect(mPointSizeSpinBox, SIGNAL(valueChanged(int)), this, SLOT(resendSettingsChanged()));
+    if (mVectorLayer && mVectorLayer->vectorType() == QGis::Line)
+    {
+      btnFillColor->setEnabled(false);
+      cboFillStyle->setEnabled(false);
+      mGroupPoint->setEnabled(false);
+      mGroupPoint->setVisible(false);
+    }
 
-    //connect fill style and line style buttons
-    QObject::connect(pbnLineSolid, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-    QObject::connect(pbnLineDot, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-    QObject::connect(pbnLineDashDot, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-    QObject::connect(pbnLineDash, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-    QObject::connect(pbnLineDashDotDot, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-    QObject::connect(pbnLineNoPen, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-    QObject::connect(solid, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-    QObject::connect(fdiag, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-    QObject::connect(dense4, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-    QObject::connect(horizontal, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-    QObject::connect(bdiag, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-    QObject::connect(diagcross, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-    QObject::connect(dense5, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-    QObject::connect(vertical, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-    QObject::connect(dense1, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-    QObject::connect(dense3, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-    QObject::connect(dense6, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-    QObject::connect(cross, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-    QObject::connect(dense2, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-    QObject::connect(dense7, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-    QObject::connect(nopen, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-    QObject::connect(texture, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-	QObject::connect(textureSelect, SIGNAL(clicked()), this, SLOT(selectTextureImage()));
+    if (mVectorLayer && mVectorLayer->vectorType() == QGis::Polygon) 
+    {
+      mGroupPoint->setEnabled(false);
+      mGroupPoint->setVisible(false);
+    }
+
+  }
+  else
+  {
+    qWarning("Warning, layer is a null pointer in "
+        "QgsSingleSymbolDialog::QgsSingleSymbolDialog(QgsVectorLayer)");
+  }
+
+  //do the signal/slot connections
+  connect(btnOutlineColor, SIGNAL(clicked()), this, SLOT(selectOutlineColor()));
+  connect(btnFillColor, SIGNAL(clicked()), this, SLOT(selectFillColor()));
+  connect(outlinewidthspinbox, SIGNAL(valueChanged(int)), this, SLOT(resendSettingsChanged()));
+  connect(mLabelEdit, SIGNAL(textChanged(const QString&)), this, SLOT(resendSettingsChanged()));
+  connect (lstSymbols,SIGNAL(currentItemChanged ( QListWidgetItem * , QListWidgetItem * )),
+        this, SLOT (symbolChanged (QListWidgetItem * , QListWidgetItem * )));
+  connect(mPointSizeSpinBox, SIGNAL(valueChanged(int)), this, SLOT(resendSettingsChanged()));
+  connect(mRotationClassificationComboBox, SIGNAL(currentIndexChanged(const QString &)),
+          this, SLOT(resendSettingsChanged()));
+  connect(mScaleClassificationComboBox, SIGNAL(currentIndexChanged(const QString &)),
+          this, SLOT(resendSettingsChanged()));
+  connect(cboOutlineStyle, SIGNAL(
+        currentIndexChanged ( const QString & )), this, SLOT(resendSettingsChanged()));
+  connect(cboFillStyle, SIGNAL(
+        currentIndexChanged ( const QString & )), this, SLOT(resendSettingsChanged()));
+  //need this to deal with when texture fill is selected or deselected
+  connect(cboFillStyle, SIGNAL(
+        currentIndexChanged ( int )), this, SLOT(fillStyleChanged(int)));
+  connect(toolSelectTexture, SIGNAL(clicked()), this, SLOT(selectTextureImage()));
 }
 
 QgsSingleSymbolDialog::~QgsSingleSymbolDialog()
@@ -190,7 +220,7 @@ void QgsSingleSymbolDialog::selectOutlineColor()
         emit settingsChanged();
     }
     
-    setActiveWindow();
+    activateWindow();
 }
 
 void QgsSingleSymbolDialog::selectFillColor()
@@ -202,20 +232,19 @@ void QgsSingleSymbolDialog::selectFillColor()
         emit settingsChanged();
     }
 
-    setActiveWindow();
+    activateWindow();
 }
 
 //should this method have a different name?
 void QgsSingleSymbolDialog::selectTextureImage()
 {
   QString fileName = QFileDialog::getOpenFileName(this, "Open File",
-                                                textureFilePath->text(),
-                                                "Images (*.png *.xpm *.jpg)"); //should we allow other types of images?
+           mTexturePath,
+           "Images (*.png *.xpm *.jpg)"); //should we allow other types of images?
 
-  if(fileName.isNull() == false){ //only process the string if the user clicked OK
-    textureFilePath->setText(fileName);
-    texture->setOn(true); //set the fill style to custom texture
-    texture->setPixmap(QPixmap(fileName)); //Change the button to show the selected image
+  if(fileName.isNull() == false)
+  { //only process the string if the user clicked OK
+    mTexturePath = fileName;
     resendSettingsChanged();
   }
 }
@@ -230,25 +259,33 @@ void QgsSingleSymbolDialog::apply( QgsSymbol *sy )
     //
     // Apply point symbol
     // 
-    sy->setNamedPointSymbol( mMarkers[mPointSymbolComboBox->currentItem()] ) ;
+    if ( lstSymbols->currentItem() )
+    {
+      sy->setNamedPointSymbol( lstSymbols->currentItem()->data(Qt::UserRole).toString() ) ;
+    }
     sy->setPointSize ( mPointSizeSpinBox->value() );
+
+    sy->setRotationClassificationField(-1);
+    sy->setScaleClassificationField(-1);
+
+    std::map<QString,int>::iterator iter=mFieldMap.find(mRotationClassificationComboBox->currentText());
+    if(iter!=mFieldMap.end())
+    {
+      sy->setRotationClassificationField(iter->second);
+    }
+
+    iter = mFieldMap.find(mScaleClassificationComboBox->currentText());
+    if(iter!=mFieldMap.end())
+    {
+      sy->setScaleClassificationField(iter->second);
+    }
     
     //
     // Apply the line style
     //
-    if  (pbnLineNoPen->isOn())
-        (sy->setLineStyle(Qt::NoPen));
-    else if  (pbnLineDash->isOn())
-        (sy->setLineStyle(Qt::DashLine));
-    else if  (pbnLineDot->isOn())
-        (sy->setLineStyle(Qt::DotLine)) ;
-    else if  (pbnLineDashDot->isOn())
-        (sy->setLineStyle(Qt::DashDotLine));
-    else if  (pbnLineDashDotDot->isOn())
-        (sy->setLineStyle(Qt::DashDotDotLine)) ;
-    else
-        (sy->setLineStyle(Qt::SolidLine)); //default to solid
-
+    QString myLineStyle = 
+      cboOutlineStyle->itemData(cboOutlineStyle->currentIndex(),Qt::UserRole).toString();
+     sy->setLineStyle(QgsSymbologyUtils::qString2PenStyle(myLineStyle));
 
     //
     // Apply the pattern
@@ -256,85 +293,26 @@ void QgsSingleSymbolDialog::apply( QgsSymbol *sy )
 
     //Store the file path, and set the brush to TexturePattern.  If we have a different button selected,
     // the below code will override it, but leave the file path alone.
-    sy->setCustomTexture(textureFilePath->text());
+   
+    sy->setCustomTexture(mTexturePath);
 
-    if (solid->isOn())
-    {
-        sy->setFillStyle(Qt::SolidPattern);
-    }
-    else if (fdiag->isOn())
-    {
-        sy->setFillStyle(Qt::FDiagPattern);
-    }
-    else if (dense4->isOn())
-    {
-        sy->setFillStyle(Qt::Dense4Pattern);
-    }
-    else if (horizontal->isOn())
-    {
-        sy->setFillStyle(Qt::HorPattern);
-    }
-    else if (dense5->isOn())
-    {
-        sy->setFillStyle(Qt::Dense5Pattern);
-    }
-    else if (diagcross->isOn())
-    {
-        sy->setFillStyle(Qt::DiagCrossPattern);
-    }
-    else if (dense1->isOn())
-    {
-        sy->setFillStyle(Qt::Dense1Pattern);
-    }
-    else if (dense6->isOn())
-    {
-        sy->setFillStyle(Qt::Dense6Pattern);
-    }
-    else if (vertical->isOn())
-    {
-        sy->setFillStyle(Qt::VerPattern);
-    }
-    else if (dense7->isOn())
-    {
-        sy->setFillStyle(Qt::Dense7Pattern);
-    }
-    else if (cross->isOn())
-    {
-        sy->setFillStyle(Qt::CrossPattern);
-    }
-    else if (dense2->isOn())
-    {
-        sy->setFillStyle(Qt::Dense2Pattern);
-    }
-    else if (bdiag->isOn())
-    {
-        sy->setFillStyle(Qt::BDiagPattern);
-    }
-    else if (dense3->isOn())
-    {
-        sy->setFillStyle(Qt::Dense3Pattern);
-    }
-    else if (nopen->isOn())
-    {
-        sy->setFillStyle(Qt::NoBrush);
-    }
-    else if (texture->isOn())
-    {
-      //we already set the brush to TexturePattern up above, so don't do anything here
-    }
+    QString myFillStyle = 
+      cboFillStyle->itemData(cboFillStyle->currentIndex(),Qt::UserRole).toString();
+    sy->setFillStyle(QgsSymbologyUtils::qString2BrushStyle(myFillStyle));
 
-    //apply the label
     sy->setLabel(mLabelEdit->text());
 }
 
 void QgsSingleSymbolDialog::apply()
 {
-    QgsSymbol* sy = new QgsSymbol(mVectorLayer->vectorType());
-    apply(sy);
+  QgsSymbol* sy = new QgsSymbol(mVectorLayer->vectorType());
+  apply(sy);
+  
+  QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer(mVectorLayer->vectorType());
+  renderer->addSymbol(sy);
+  renderer->updateSymbolAttributes();
 
-    QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer(mVectorLayer->vectorType());
-    renderer->addSymbol(sy);
-    mVectorLayer->setRenderer(renderer);
+  mVectorLayer->setRenderer(renderer);
 }
 
 void QgsSingleSymbolDialog::set ( const QgsSymbol *sy ) 
@@ -343,118 +321,93 @@ void QgsSingleSymbolDialog::set ( const QgsSymbol *sy )
 
   mLabelEdit->setText(sy->label());
 
-	// Set point symbol
-  for ( uint i = 0; i < mMarkers.size(); i++ ) {
-	    if ( mMarkers[i] ==  sy->pointSymbolName() ) {
-	        mPointSymbolComboBox->setCurrentItem ( i );
-		break;
-	    }
-	}
-	mPointSizeSpinBox->setValue ( sy->pointSize() );
-	
-	outlinewidthspinbox->setValue(sy->pen().width());
-
-	//set line width 1 as minimum to avoid confusion between line width 0 and no pen line style
-	// ... but, drawLine is not correct with width > 0 -> until solved set to 0
-	outlinewidthspinbox->setMinValue(0);
-
-    btnFillColor->setColor( sy->brush().color() );
-
-    btnOutlineColor->setColor( sy->pen().color() );
-
-	//stylebutton->setName(QgsSymbologyUtils::penStyle2Char(sy->pen().style()));
-	//stylebutton->setPixmap(QgsSymbologyUtils::char2LinePixmap(stylebutton->name()));
-	//load the icons stored in QgsSymbologyUtils.cpp (to avoid redundancy)
-
-	QPen myPen = sy->pen();
-
-	switch ( myPen.style() )
-	{
-	    case Qt::NoPen :
-		pbnLineNoPen->setOn(true);
-		break;
-	    case Qt::DashLine :
-		pbnLineDash->setOn(true);
-		break;
-	    case Qt::DotLine :
-		pbnLineDot->setOn(true);
-		break;
-	    case Qt::DashDotLine :
-		pbnLineDashDot->setOn(true);
-		break;
-	    case Qt::DashDotDotLine :
-		pbnLineDashDotDot->setOn(true);
-		break;
-	    default :
-		pbnLineSolid->setOn(true); // default to solid
-		break;
-	}
-
-	QBrush myBrush = sy->brush();
-
-	switch ( myBrush.style() )
-	{
-	    case Qt::SolidPattern :
-		solid->setOn(true);
-		break;
-	    case Qt::HorPattern :
-		horizontal->setOn(true);
-		break;
-	    case Qt::VerPattern :
-		vertical->setOn(true);
-		break;
-	    case  Qt::CrossPattern :
-		cross->setOn(true);
-		break;
-	    case Qt::BDiagPattern :
-		bdiag->setOn(true);
-		break;
-	    case Qt::FDiagPattern :
-		fdiag->setOn(true);
-		break;
-	    case Qt::DiagCrossPattern :
-		diagcross->setOn(true);
-		break;
-	    case Qt::Dense1Pattern :
-		dense1->setOn(true);
-		break;
-	    case Qt::Dense2Pattern :
-		dense2->setOn(true);
-		break;
-	    case Qt::Dense3Pattern :
-		dense3->setOn(true);
-		break;
-	    case Qt::Dense4Pattern :
-		dense4->setOn(true);
-		break;
-	    case Qt::Dense5Pattern :
-		dense5->setOn(true);
-		break;
-	    case Qt::Dense6Pattern :
-		dense6->setOn(true);
-		break;
-	    case Qt::Dense7Pattern :
-		dense7->setOn(true);
-		break;
-	    case Qt::NoBrush :
-		nopen->setOn(true);
-		break;
-		case Qt::TexturePattern :
-		texture->setOn(true);
-		break;
-	    default :
-		solid->setOn(true);
-		break;
-	}
-    textureFilePath->setText(sy->customTexture()); //get and show the file path, even if we aren't using it.
-    if(sy->customTexture().size() > 0)//if the file path isn't empty, show the image on the button
+  // Set point symbol
+  QString mySymbolName = sy->pointSymbolName();
+  for ( int i = 0; i < lstSymbols->count(); ++i )
+  {
+    if (lstSymbols->item(i)->data( Qt::UserRole ).toString() == (mySymbolName))
     {
-      texture->setPixmap(QPixmap(sy->customTexture())); //show the current texture image
+      lstSymbols->setCurrentItem ( lstSymbols->item(i) );
+      lstSymbols->item(i)->setBackground( QBrush ( Qt::cyan ) );
+      break;
     }
-	else
+  }
+  mPointSizeSpinBox->setValue ( sy->pointSize() );
+
+  QString rotationclassfield = DO_NOT_USE_STR;
+  QString scaleclassfield = DO_NOT_USE_STR;
+  for(std::map<QString,int>::iterator it=mFieldMap.begin();it!=mFieldMap.end();++it)
+  {
+    if(it->second == sy->rotationClassificationField())
     {
-      texture->setPixmap(QgsSymbologyUtils::char2PatternPixmap("TexturePattern")); //show the default question mark
+      rotationclassfield=it->first;
+      QgsDebugMsg(QString("Found rotation field " + rotationclassfield));
     }
+    if(it->second == sy->scaleClassificationField())
+    {
+      scaleclassfield=it->first;
+      QgsDebugMsg(QString("Found scale field " + scaleclassfield));
+    }
+  }
+  mRotationClassificationComboBox->setCurrentText(rotationclassfield);
+  mScaleClassificationComboBox->setCurrentText(scaleclassfield);
+
+
+  outlinewidthspinbox->setValue(sy->pen().width());
+
+  //set line width 1 as minimum to avoid confusion between line width 0 and no pen line style
+  // ... but, drawLine is not correct with width > 0 -> until solved set to 0
+  outlinewidthspinbox->setMinValue(0);
+
+  btnFillColor->setColor( sy->brush().color() );
+
+  btnOutlineColor->setColor( sy->pen().color() );
+
+  //load the icons stored in QgsSymbologyUtils.cpp (to avoid redundancy)
+
+  //
+  // Set the line style combo
+  //
+  
+  QPen myPen = sy->pen();
+  QString myLineStyle = QgsSymbologyUtils::penStyle2QString(myPen.style());
+  for ( int i = 0; i < cboOutlineStyle->count(); ++i )
+  {
+    if (cboOutlineStyle->itemData(i, Qt::UserRole ).toString() == myLineStyle)
+    {
+      cboOutlineStyle->setCurrentIndex( i );
+      break;
+    }
+  }
+
+  //
+  // Set the brush combo
+  //
+  
+  QBrush myBrush = sy->brush();
+  QString myFillStyle =  QgsSymbologyUtils::brushStyle2QString(myBrush.style());
+  for ( int i = 0; i < cboFillStyle->count(); ++i )
+  {
+    if (cboFillStyle->itemData(i, Qt::UserRole ).toString() == myFillStyle)
+    {
+      cboFillStyle->setCurrentIndex( i );
+      break;
+    }
+  }
+  
+  //get and show the file path, even if we aren't using it.
+  mTexturePath = sy->customTexture(); 
+  //if the file path isn't empty, show the image on the button
+  if(sy->customTexture().size() > 0)
+  {
+    //show the current texture image
+   // texture->setPixmap(QPixmap(sy->customTexture())); 
+  }
+  else
+  {
+    //show the default question mark
+    //texture->setPixmap(QgsSymbologyUtils::char2PatternPixmap("TexturePattern")); 
+  }
 }
 
 void QgsSingleSymbolDialog::setOutlineColor(QColor& c)
@@ -464,19 +417,15 @@ void QgsSingleSymbolDialog::setOutlineColor(QColor& c)
 
 void QgsSingleSymbolDialog::setOutlineStyle(Qt::PenStyle pstyle)
 {
-    // XXX use switch() instead
-    if (pstyle==Qt::NoPen)
-        (pbnLineNoPen->setOn(true));
-    else if (pstyle==Qt::DashLine)
-        (pbnLineDash->setOn(true));
-    else if (pstyle==Qt::DotLine)
-        (pbnLineDot->setOn(true));
-    else if (pstyle==Qt::DashDotLine)
-        (pbnLineDashDot->setOn(true));
-    else if (pstyle==Qt::DashDotDotLine)
-        (pbnLineDashDotDot->setOn(true));
-    else
-        (pbnLineSolid->setOn(true)); //default to solid
+  QString myLineStyle = QgsSymbologyUtils::penStyle2QString(pstyle);
+  for ( int i = 0; i < cboOutlineStyle->count(); ++i )
+  {
+    if (cboOutlineStyle->itemData(i, Qt::UserRole ).toString() == myLineStyle)
+    {
+      cboOutlineStyle->setCurrentIndex( i );
+      break;
+    }
+  }
 }
 
 void QgsSingleSymbolDialog::setFillColor(QColor& c)
@@ -487,42 +436,17 @@ void QgsSingleSymbolDialog::setFillColor(QColor& c)
 void QgsSingleSymbolDialog::setFillStyle(Qt::BrushStyle fstyle)
 {
 #ifdef QGISDEBUG
-    qWarning(("Setting fill style: "+QgsSymbologyUtils::brushStyle2QString(fstyle)).toLocal8Bit().data());
+  qWarning(("Setting fill style: "+QgsSymbologyUtils::brushStyle2QString(fstyle)).toLocal8Bit().data());
 #endif
-
-    // XXX use switch instead
-    if (fstyle==Qt::SolidPattern)
-        (solid->setOn(true));
-    else if (fstyle==Qt::HorPattern)
-        (horizontal->setOn(true));
-    else if (fstyle==Qt::VerPattern)
-        (vertical->setOn(true));
-    else if (fstyle==Qt::CrossPattern)
-        (cross->setOn(true));
-    else if (fstyle==Qt::BDiagPattern)
-        (bdiag->setOn(true));
-    else if (fstyle==Qt::FDiagPattern)
-        (fdiag->setOn(true));
-    else if (fstyle==Qt::DiagCrossPattern)
-        (diagcross->setOn(true));
-    else if (fstyle==Qt::Dense1Pattern)
-        (dense1->setOn(true));
-    else if (fstyle==Qt::Dense2Pattern)
-        (dense2->setOn(true));
-    else if (fstyle==Qt::Dense3Pattern)
-        (dense3->setOn(true));
-    else if (fstyle==Qt::Dense4Pattern)
-        (dense4->setOn(true));
-    else if (fstyle==Qt::Dense5Pattern)
-        (dense5->setOn(true));
-    else if (fstyle==Qt::Dense6Pattern)
-        (dense6->setOn(true));
-    else if (fstyle==Qt::Dense7Pattern)
-        (dense7->setOn(true));
-	else if (fstyle==Qt::TexturePattern)
-		(texture->setOn(true));
-    else if (fstyle==Qt::NoBrush)
-        (nopen->setOn(true)); //default to no brush
+  QString myFillStyle =  QgsSymbologyUtils::brushStyle2QString(fstyle);
+  for ( int i = 0; i < cboFillStyle->count(); ++i )
+  {
+    if (cboFillStyle->itemData(i, Qt::UserRole ).toString() == myFillStyle)
+    {
+      cboFillStyle->setCurrentIndex( i );
+      break;
+    }
+  }
 }
 
 void QgsSingleSymbolDialog::setOutlineWidth(int width)
@@ -537,19 +461,9 @@ QColor QgsSingleSymbolDialog::getOutlineColor()
 
 Qt::PenStyle QgsSingleSymbolDialog::getOutlineStyle()
 {
-    if  (pbnLineNoPen->isOn())
-        return Qt::NoPen;
-    else if  (pbnLineDash->isOn())
-        return Qt::DashLine;
-    else if  (pbnLineDot->isOn())
-        return Qt::DotLine ;
-    else if  (pbnLineDashDot->isOn())
-        return Qt::DashDotLine;
-    else if  (pbnLineDashDotDot->isOn())
-        return Qt::DashDotDotLine ;
-    else
-        return Qt::SolidLine; //default to solid
-
+    QString myLineStyle = 
+      cboOutlineStyle->itemData(cboOutlineStyle->currentIndex(),Qt::UserRole).toString();
+    return QgsSymbologyUtils::qString2PenStyle(myLineStyle);
 }
 
 int QgsSingleSymbolDialog::getOutlineWidth()
@@ -564,69 +478,9 @@ QColor QgsSingleSymbolDialog::getFillColor()
 
 Qt::BrushStyle QgsSingleSymbolDialog::getFillStyle()
 {
-    if (solid->isOn())
-    {
-        return Qt::SolidPattern;
-    }
-    else if (fdiag->isOn())
-    {
-        return Qt::FDiagPattern;
-    }
-    else if (dense4->isOn())
-    {
-        return Qt::Dense4Pattern;
-    }
-    else if (horizontal->isOn())
-    {
-        return Qt::HorPattern;
-    }
-    else if (dense5->isOn())
-    {
-        return Qt::Dense5Pattern;
-    }
-    else if (diagcross->isOn())
-    {
-        return Qt::DiagCrossPattern;
-    }
-    else if (dense1->isOn())
-    {
-        return Qt::Dense1Pattern;
-    }
-    else if (dense6->isOn())
-    {
-        return Qt::Dense6Pattern;
-    }
-    else if (vertical->isOn())
-    {
-        return Qt::VerPattern;
-    }
-    else if (dense7->isOn())
-    {
-        return Qt::Dense7Pattern;
-    }
-    else if (cross->isOn())
-    {
-        return Qt::CrossPattern;
-    }
-    else if (dense2->isOn())
-    {
-        return Qt::Dense2Pattern;
-    }
-    else if (bdiag->isOn())
-    {
-        return Qt::BDiagPattern;
-    }
-    else if (dense3->isOn())
-    {
-        return Qt::Dense3Pattern;
-    }
-    else if (texture->isOn())
-    {
-        return Qt::TexturePattern;
-    }
-    //fall back to transparent
-    return Qt::NoBrush;
-
+    QString myFillStyle = 
+      cboFillStyle->itemData(cboFillStyle->currentIndex(),Qt::UserRole).toString();
+    return QgsSymbologyUtils::qString2BrushStyle(myFillStyle);
 }
 
 void QgsSingleSymbolDialog::resendSettingsChanged()
@@ -644,4 +498,30 @@ void QgsSingleSymbolDialog::setLabel(QString label)
     mLabelEdit->setText(label);
 }
 
+void QgsSingleSymbolDialog::symbolChanged 
+    ( QListWidgetItem * current, QListWidgetItem * previous )
+{
+    current->setBackground( QBrush ( Qt::cyan ) );
+    if (previous)
+    {
+      previous->setBackground( QBrush ( Qt::white ) );
+    }
+    emit settingsChanged();
+}
 
+void QgsSingleSymbolDialog::fillStyleChanged( int theIndex )
+{
+  //if the new style is texture we need to enable the texture
+  //selection button, otherwise disable it
+  QString myFillStyle = 
+      cboFillStyle->itemData( theIndex ,Qt::UserRole ).toString();
+  if ( "TexturePattern" == myFillStyle )
+  {
+    toolSelectTexture->setEnabled( true );
+  }
+  else
+  {
+    toolSelectTexture->setEnabled( false );
+  }
+
+}

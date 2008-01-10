@@ -29,6 +29,7 @@
 #include <QImage>
 #include <QPainter>
 #include <QString>
+#include <math.h>
 
 QgsSingleSymbolRenderer::QgsSingleSymbolRenderer(QGis::VectorType type)
 {
@@ -54,22 +55,25 @@ QgsSingleSymbolRenderer::QgsSingleSymbolRenderer(QGis::VectorType type)
     }
     sy->setLineWidth(1);
     mSymbol=sy;
+    updateSymbolAttributes();
 }
 
 QgsSingleSymbolRenderer::QgsSingleSymbolRenderer(const QgsSingleSymbolRenderer& other)
 {
     mVectorType = other.mVectorType;
     mSymbol = new QgsSymbol(*other.mSymbol);
+    updateSymbolAttributes();
 }
 
 QgsSingleSymbolRenderer& QgsSingleSymbolRenderer::operator=(const QgsSingleSymbolRenderer& other)
 {
     if(this!=&other)
     {
-        mVectorType = other.mVectorType;
-        delete mSymbol;
-        mSymbol = new QgsSymbol(*other.mSymbol);
+      mVectorType = other.mVectorType;
+      delete mSymbol;
+      mSymbol = new QgsSymbol(*other.mSymbol);
     }
+    updateSymbolAttributes();
     return *this;
 }
 
@@ -82,41 +86,60 @@ void QgsSingleSymbolRenderer::addSymbol(QgsSymbol* sy)
 {
     delete mSymbol;
     mSymbol=sy;
+    updateSymbolAttributes();
 }
 
 void QgsSingleSymbolRenderer::renderFeature(QPainter * p, QgsFeature & f, QImage* img, 
-	         double* scalefactor, bool selected, double widthScale)
+					    double* scalefactor, bool selected, double widthScale)
 {
-	// Point 
-	if ( img && mVectorType == QGis::Point) {
-	    *img = mSymbol->getPointSymbolAsImage(  widthScale, 
-					 selected, mSelectionColor );
-	    
-	    if ( scalefactor ) *scalefactor = 1;
-	} 
+  // Point 
+  if ( img && mVectorType == QGis::Point) {
 
-        // Line, polygon
- 	if ( mVectorType != QGis::Point )
-	{
-	    if( !selected ) 
-	    {
-		QPen pen=mSymbol->pen();
-		pen.setWidthF ( widthScale * pen.width() );
-		p->setPen(pen);
-		p->setBrush(mSymbol->brush());
-	    }
-	    else
-	    {
-		QPen pen=mSymbol->pen();
-		pen.setWidthF ( widthScale * pen.width() );
-                if (mVectorType == QGis::Line)
-                  pen.setColor(mSelectionColor);
-		QBrush brush=mSymbol->brush();
-		brush.setColor(mSelectionColor);
-		p->setPen(pen);
-		p->setBrush(brush);
-	    }
-	}
+    // If scale field is non-negative, use it to scale.
+    double fieldScale = 1.0;
+    double rotation = 0.0;
+
+    if ( mSymbol->scaleClassificationField() >= 0)
+    {
+      //first find out the value for the scale classification attribute
+      const QgsAttributeMap& attrs = f.attributeMap();
+      fieldScale = sqrt(fabs(attrs[mSymbol->scaleClassificationField()].toDouble()));
+      QgsDebugMsg(QString("Feature has field scale factor %1").arg(fieldScale));
+    }
+    if ( mSymbol->rotationClassificationField() >= 0 )
+    {
+      const QgsAttributeMap& attrs = f.attributeMap();
+      rotation = attrs[mSymbol->rotationClassificationField()].toDouble();
+      QgsDebugMsg(QString("Feature has rotation factor %1").arg(rotation));
+    }
+
+    *img = mSymbol->getPointSymbolAsImage( widthScale, selected, mSelectionColor,
+                                            *scalefactor * fieldScale, rotation);
+  }
+
+
+  // Line, polygon
+  if ( mVectorType != QGis::Point )
+  {
+    if( !selected ) 
+    {
+      QPen pen=mSymbol->pen();
+      pen.setWidthF ( widthScale * pen.width() );
+      p->setPen(pen);
+      p->setBrush(mSymbol->brush());
+    }
+    else
+    {
+      QPen pen=mSymbol->pen();
+      pen.setWidthF ( widthScale * pen.width() );
+      if (mVectorType == QGis::Line)
+	pen.setColor(mSelectionColor);
+      QBrush brush=mSymbol->brush();
+      brush.setColor(mSelectionColor);
+      p->setPen(pen);
+      p->setBrush(brush);
+    }
+  }
 }
 
 void QgsSingleSymbolRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
@@ -135,6 +158,7 @@ void QgsSingleSymbolRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     {
         sy->readXML ( synode );
     }
+    updateSymbolAttributes();
 
     //create a renderer and add it to the vector layer
     this->addSymbol(sy);
@@ -146,6 +170,7 @@ bool QgsSingleSymbolRenderer::writeXML( QDomNode & layer_node, QDomDocument & do
   bool returnval=false;
   QDomElement singlesymbol=document.createElement("singlesymbol");
   layer_node.appendChild(singlesymbol);
+
   if(mSymbol)
   {
     returnval=mSymbol->writeXML(singlesymbol,document);
@@ -156,7 +181,25 @@ bool QgsSingleSymbolRenderer::writeXML( QDomNode & layer_node, QDomDocument & do
 
 QgsAttributeList QgsSingleSymbolRenderer::classificationAttributes() const
 {
-  return QgsAttributeList(); // return an empty list
+  return mSymbolAttributes;
+}
+
+void QgsSingleSymbolRenderer::updateSymbolAttributes()
+{
+  // This function is only called after changing field specifier in the GUI.
+  // Timing is not so important.
+
+  mSymbolAttributes.clear();
+  int rotationField = mSymbol->rotationClassificationField();
+  if ( rotationField >= 0 && !(mSymbolAttributes.contains(rotationField)) )
+  {
+    mSymbolAttributes.append(rotationField);
+  }
+  int scaleField = mSymbol->scaleClassificationField(); 
+  if ( scaleField >= 0 && !(mSymbolAttributes.contains(scaleField)) )
+  {
+    mSymbolAttributes.append(scaleField);
+  }
 }
 
 QString QgsSingleSymbolRenderer::name() const

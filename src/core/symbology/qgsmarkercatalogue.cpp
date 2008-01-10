@@ -15,6 +15,7 @@ email                : blazek@itc.it
  ***************************************************************************/
 #include <cmath>
 #include <iostream>
+#include <assert.h>
 
 #include <QPen>
 #include <QBrush>
@@ -31,6 +32,9 @@ email                : blazek@itc.it
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsmarkercatalogue.h"
+#include "qgslogger.h"
+
+//#define IMAGEDEBUG
 
 QgsMarkerCatalogue *QgsMarkerCatalogue::mMarkerCatalogue = 0;
 
@@ -89,7 +93,6 @@ QgsMarkerCatalogue *QgsMarkerCatalogue::instance()
 
 QImage QgsMarkerCatalogue::imageMarker ( QString fullName, int size, QPen pen, QBrush brush, bool qtBug )
 {
-  //std::cerr << "QgsMarkerCatalogue::marker " << fullName.toLocal8Bit().data() << " sice:" << size << std::endl;
       
   // 
   // First prepare the paintdevice that the marker will be drawn onto 
@@ -97,9 +100,7 @@ QImage QgsMarkerCatalogue::imageMarker ( QString fullName, int size, QPen pen, Q
   QImage myImage;
   if ( fullName.left(5) == "hard:" )
   {
-    //Note teh +1 offset below is required because the
-    //otherwise the icons are getting clipped
-    myImage = QImage (size+1,size+1, QImage::Format_ARGB32_Premultiplied);
+    myImage = QImage (size, size, QImage::Format_ARGB32_Premultiplied);
   }
   else
   {
@@ -124,6 +125,12 @@ QImage QgsMarkerCatalogue::imageMarker ( QString fullName, int size, QPen pen, Q
   if ( fullName.left(5) == "hard:" )
   {
     hardMarker ( &myPainter, fullName.mid(5), size, pen, brush, qtBug );
+#ifdef IMAGEDEBUG
+    QgsDebugMsg("*** Saving hard marker to hardMarker.png ***");
+#ifdef QGISDEBUG
+    myImage.save("hardMarker.png");
+#endif
+#endif
     return myImage;
   }
   else if ( fullName.left(4) == "svg:" )
@@ -152,7 +159,6 @@ QPicture QgsMarkerCatalogue::pictureMarker ( QString fullName, int size, QPen pe
     // TODO Change this logic so width is size and height is same
     // proportion of scale factor as in oritignal SVG TS XXX
     if (size < 1) size=1;
-    //QPicture myPicture = QPicture(width,height);
     myPicture = QPicture(size);
   }
 
@@ -185,13 +191,16 @@ void QgsMarkerCatalogue::svgMarker ( QPainter * thepPainter, QString filename, i
 
 void QgsMarkerCatalogue::hardMarker (QPainter * thepPainter, QString name, int s, QPen pen, QBrush brush, bool qtBug )
 {
-  // Size of polygon symbols is calculated so that the area is equal to circle with 
-  // diameter mPointSize
+  // Size of polygon symbols is calculated so that the boundingbox is circumscribed
+  // around a circle with diameter mPointSize
 
-  // Size for circle
-  int half = (int)floor(s/2.0); // number of points from center
-  int size = 2*half + 1;  // must be odd
-  double area = 3.14 * (size/2.) * (size/2.);
+  int half = s/2; // number of points from center
+
+  QgsDebugMsg(QString("Hard marker size %1").arg(s));
+
+  // Find out center coordinates.
+  int x_c = s/2;
+  int y_c = x_c;
 
   // Picture
   QPicture picture;
@@ -205,92 +214,77 @@ void QgsMarkerCatalogue::hardMarker (QPainter * thepPainter, QString name, int s
   thepPainter->setBrush( brush);
   QRect box;
 
+  // Circle radius, is used for other figures also, when compensating for line
+  // width is necessary.
+
+  int r = (s-2*lw)/2-1;
+  QgsDebugMsg(QString("Hard marker radius %1").arg(r));
+
   if ( name == "circle" ) 
   {
-    thepPainter->drawEllipse(0, 0, size, size);
+    // "A stroked ellipse has a size of rectangle.size() plus the pen width."
+    // (from Qt doc)
+    // It doesn't seem like it is centered, however. Fudge...
+    // Is this a Qt bug or feature?
+    x_c -= ((lw+5)/4);
+    y_c -= ((lw+5)/4);
+
+    thepPainter->drawEllipse(x_c-r, y_c-r, x_c+r, y_c+r);
   } 
   else if ( name == "rectangle" ) 
   {
-    size = (int) (2*floor(sqrt(area)/2.) + 1);
-    thepPainter->drawRect(0, 0, size, size);
+    // Same fudge as for circle...
+    x_c -= ((lw+5)/4);
+    y_c -= ((lw+5)/4);
+
+    thepPainter->drawRect(x_c-r, y_c-r, x_c+r, y_c+r);
   } 
   else if ( name == "diamond" ) 
   {
-    half = (int) ( sqrt(area/2.) );
     QPolygon pa(4);
-    pa.setPoint ( 0, 0, half);
-    pa.setPoint ( 1, half, 2*half);
-    pa.setPoint ( 2, 2*half, half);
-    pa.setPoint ( 3, half, 0);
+    pa.setPoint ( 0, x_c-r, y_c);
+    pa.setPoint ( 1, x_c, y_c+r);
+    pa.setPoint ( 2, x_c+r, y_c);
+    pa.setPoint ( 3, x_c, y_c-r);
     thepPainter->drawPolygon ( pa );
   }
-  // Warning! if pen width > 0 thepPainter->drawLine(x1,y1,x2,y2) will draw only (x1,y1,x2-1,y2-1) !
-  // It is impossible to draw lines as rectangles because line width scaling would not work
-  // (QPicture is scaled later in QgsVectorLayer)
-  //  -> reset boundingRect for cross, cross2
   else if ( name == "cross" ) 
   {
-    int add;
-    if ( qtBug ) 
-    {
-      add = 1;  // lw always > 0
-    } 
-    else 
-    {
-      add = 0;
-    }
-
-    thepPainter->drawLine(0, half, size-1+add, half); // horizontal
-    thepPainter->drawLine(half, 0, half, size-1+add); // vertical
-    box.setRect ( 0, 0, size, size );
+    thepPainter->drawLine(x_c-half, y_c, x_c+half, y_c); // horizontal
+    thepPainter->drawLine(x_c, y_c-half, x_c, y_c+half); // vertical
   }
   else if ( name == "cross2" ) 
   {
-    half = (int) floor( s/2/sqrt(2.0));
-    size = 2*half + 1;
-
-    int add;
-    if ( qtBug ) {
-      add = 1;  // lw always > 0
-    } else {
-      add = 0;
-    }
-
-    int addwidth = (int) ( 0.5 * lw ); // width correction, cca lw/2 * cos(45)
-
-    thepPainter->drawLine( 0, 0, size-1+add, size-1+add);
-    thepPainter->drawLine( 0, size-1, size-1+add, 0-add);
-
-    box.setRect ( -addwidth, -addwidth, size + 2*addwidth, size + 2*addwidth );	
+    thepPainter->drawLine( x_c-half, y_c-half, x_c+half, y_c+half);
+    thepPainter->drawLine( x_c-half, y_c+half, x_c+half, y_c-half);
   }
   else if ( name == "triangle")
     {
       QPolygon pa(3);
-      pa.setPoint ( 0, 0, size);
-      pa.setPoint ( 1, size, size);
-      pa.setPoint ( 2, half, 0);
+      
+      pa.setPoint ( 0, x_c-r, y_c+r);
+      pa.setPoint ( 1, x_c+r, y_c+r);
+      pa.setPoint ( 2, x_c, y_c-r);
       thepPainter->drawPolygon ( pa );
     }
   else if (name == "star")
     {
-      int oneThird = (int)(floor(size/3+0.5));
-      int twoThird = (int)(floor(size/3*2+0.5));
+      int oneThird = 2*r/3;
+      int twoThird = 4*r/3;
+      int oneSixth = 2*r/6;
+
       QPolygon pa(10);
-      pa.setPoint(0, half, 0);
-      pa.setPoint(1, oneThird, oneThird);
-      pa.setPoint(2, 0, oneThird);
-      pa.setPoint(3, oneThird, half);
-      pa.setPoint(4, 0, size);
-      pa.setPoint(5, half, twoThird);
-      pa.setPoint(6, size, size);
-      pa.setPoint(7, twoThird, half);
-      pa.setPoint(8, size, oneThird);
-      pa.setPoint(9, twoThird, oneThird);
+      pa.setPoint(0, x_c, y_c-half);
+      pa.setPoint(1, x_c-oneSixth, y_c-oneSixth);
+      pa.setPoint(2, x_c-half, y_c-oneSixth);
+      pa.setPoint(3, x_c-oneSixth, y_c);
+      pa.setPoint(4, x_c-half, y_c+half);
+      pa.setPoint(5, x_c, y_c+oneSixth);
+      pa.setPoint(6, x_c+half, y_c+half);
+      pa.setPoint(7, x_c+oneSixth, y_c);
+      pa.setPoint(8, x_c+half, y_c-oneSixth);
+      pa.setPoint(9, x_c+oneSixth, y_c-oneSixth);
       thepPainter->drawPolygon ( pa );
     }
-  if ( name == "cross" || name == "cross2" ) 
-  {
-    picture.setBoundingRect ( box ); 
-  }
   thepPainter->end();
 }

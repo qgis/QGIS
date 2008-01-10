@@ -85,7 +85,8 @@ typedef QgsDataProvider * create_it(const QString* uri);
 
 QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
     QString baseName,
-    QString providerKey)
+    QString providerKey,
+    bool loadDefaultStyleFlag )
 : QgsMapLayer(VECTOR, baseName, vectorLayerPath),
   mUpdateThreshold(0),       // XXX better default value?
   mDataProvider(NULL),
@@ -105,11 +106,37 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
   }
   if(mValid)
   {
-    setCoordinateSystem();
-    
-    // add single symbol renderer as default
-    QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer(vectorType());
-    setRenderer(renderer);
+    // check if there is a default style / propertysheet defined
+    // for this layer and if so apply it
+    //
+    //
+    if ( loadDefaultStyleFlag )
+    {
+      bool defaultLoadedFlag = false;
+      loadDefaultStyle( defaultLoadedFlag );
+      if ( !defaultLoadedFlag )
+      {
+        setCoordinateSystem();
+        // add single symbol renderer as default
+        QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer(vectorType());
+        setRenderer(renderer);
+      }
+    }
+    else  // Otherwise use some very basic defaults
+    {
+      setCoordinateSystem();
+      // add single symbol renderer as default
+      QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer(vectorType());
+      setRenderer(renderer);
+    }
+    // Get the update threshold from user settings. We
+    // do this only on construction to avoid the penality of
+    // fetching this each time the layer is drawn. If the user
+    // changes the threshold from the preferences dialog, it will
+    // have no effect on existing layers
+    // TODO: load this setting somewhere else [MD]
+    //QSettings settings;
+    //mUpdateThreshold = settings.readNumEntry("Map/updateThreshold", 1000);
   }
 } // QgsVectorLayer ctor
 
@@ -716,9 +743,12 @@ void QgsVectorLayer::draw(QPainter * p,
     QPen pen;
     /*Pointer to a marker image*/
     QImage marker;
-    /*Scale factor of the marker image*/
-    double markerScaleFactor=1.;
 
+    /* Scale factor of the marker image*/
+    /* We set this to the symbolScale, and if it is NOT changed, */
+    /* we don't have to do another scaling here */
+    double markerScaleFactor =  symbolScale;
+    
     if(mEditable)
     {
       // Destroy all cached geometries and clear the references to them
@@ -791,9 +821,13 @@ void QgsVectorLayer::draw(QPainter * p,
           sel = FALSE;
         }
 
+	//QgsDebugMsg(QString("markerScale before renderFeature(): %1").arg(markerScaleFactor));
+	// markerScalerFactore reflects the wanted scaling of the marker
         mRenderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel, widthScale );
+	// markerScalerFactore now reflects the actual scaling of the marker that the render performed.
+	//QgsDebugMsg(QString("markerScale after renderFeature(): %1").arg(markerScaleFactor));
 
-        double scale = markerScaleFactor * symbolScale;
+        double scale = symbolScale / markerScaleFactor;
         drawFeature(p,fet,theMapToPixelTransform,ct, &marker, scale, drawingToEditingCanvas);
 
         ++featureCount;
@@ -806,9 +840,14 @@ void QgsVectorLayer::draw(QPainter * p,
         for(; it != mAddedFeatures.end(); ++it)
         {
           bool sel = mSelectedFeatureIds.contains((*it).featureId());
+	  QgsDebugMsg(QString("markerScale before renderFeature(): %1").arg(markerScaleFactor));
+	  // markerScalerFactore reflects the wanted scaling of the marker
           mRenderer->renderFeature(p, *it, &marker, &markerScaleFactor, 
               sel, widthScale);
-          double scale = markerScaleFactor * symbolScale;
+	  // markerScalerFactore now reflects the actual scaling of the marker that the render performed.
+	  QgsDebugMsg(QString("markerScale after renderFeature(): %1").arg(markerScaleFactor));
+
+          double scale = symbolScale / markerScaleFactor;
     
           if (mChangedGeometries.contains((*it).featureId()))
           {
@@ -2915,6 +2954,8 @@ void QgsVectorLayer::drawFeature(QPainter* p,
 #ifdef QGISDEBUG 
         //  std::cout <<"...WKBPoint (" << x << ", " << y << ")" <<std::endl;
 #endif
+
+	QgsDebugMsg(QString("markerScaleFactor = %1").arg(markerScaleFactor));
 
         transformPoint(x, y, theMapToPixelTransform, ct);
         //QPointF pt(x - (marker->width()/2),  y - (marker->height()/2));

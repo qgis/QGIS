@@ -24,40 +24,34 @@
 class QgsProjectVersion
 {
 
- public:
+  public:
 
-  QgsProjectVersion() {} 
-
-  QgsProjectVersion(int major, int minor, int sub, QString name = "");
-
-  QgsProjectVersion(QString string);
-
-  ~QgsProjectVersion() {} 
-
-  int major() { return mMajor;};
-  int minor() { return mMinor;};
-  int sub()   { return mSub;};
-
-  QString text();
-
-  /*! Boolean equal operator
-   */
-  bool operator==(const QgsProjectVersion &other);
+    QgsProjectVersion() {}; 
+    ~QgsProjectVersion() {}; 
+    QgsProjectVersion(int major, int minor, int sub, QString name = "");
+    QgsProjectVersion(QString string);
+    int majorVersion() { return mMajor;};
+    int minorVersion() { return mMinor;};
+    int subVersion()   { return mSub;};
+    QString text();
+    /*! Boolean equal operator
+    */
+    bool operator==(const QgsProjectVersion &other);
 
 
-  /*! Boolean >= operator
-   */
-  bool operator>=(const QgsProjectVersion &other);
+    /*! Boolean >= operator
+    */
+    bool operator>=(const QgsProjectVersion &other);
 
-  /*! Boolean > operator
-   */
-  bool operator>(const QgsProjectVersion &other);
+    /*! Boolean > operator
+    */
+    bool operator>(const QgsProjectVersion &other);
 
- private:
-  int mMajor;
-  int mMinor;
-  int mSub;
-  QString mName;
+  private:
+    int mMajor;
+    int mMinor;
+    int mSub;
+    QString mName;
 };
 
 #endif // QGSPROJECTVERSION_H

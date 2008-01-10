@@ -23,7 +23,7 @@
 #include "qgssymbol.h"
 #include "qgssymbologyutils.h"
 #include "qgsvectorlayer.h"
-
+#include <math.h>
 #include <QDomNode>
 #include <QDomElement>
 #include <QImage>
@@ -44,6 +44,7 @@ QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer(const QgsGraduatedSymbolR
     {
 	addSymbol(new QgsSymbol(**it));
     }
+    updateSymbolAttributes();
 }
 
 QgsGraduatedSymbolRenderer& QgsGraduatedSymbolRenderer::operator=(const QgsGraduatedSymbolRenderer& other)
@@ -58,6 +59,7 @@ QgsGraduatedSymbolRenderer& QgsGraduatedSymbolRenderer::operator=(const QgsGradu
         {
             addSymbol(new QgsSymbol(**it));
         }
+        updateSymbolAttributes();
     }
 
     return *this;
@@ -83,6 +85,7 @@ void QgsGraduatedSymbolRenderer::removeSymbols()
 
     //and remove the pointers then
     mSymbols.clear();
+    updateSymbolAttributes();
 }
 
 bool QgsGraduatedSymbolRenderer::willRenderFeature(QgsFeature *f)
@@ -111,13 +114,26 @@ void QgsGraduatedSymbolRenderer::renderFeature(QPainter * p, QgsFeature & f, QIm
   //set the qpen and qpainter to the right values
   // Point 
   if ( img && mVectorType == QGis::Point ) 
+  {
+    double fieldScale = 1.0;
+    double rotation = 0.0;
+
+    if ( theSymbol->scaleClassificationField() >= 0)
     {
-      *img = theSymbol->getPointSymbolAsImage(  widthScale, selected, mSelectionColor );
-      if ( scalefactor ) 
-	{
-	  *scalefactor = 1;
-	}
-    } 
+      //first find out the value for the scale classification attribute
+      const QgsAttributeMap& attrs = f.attributeMap();
+      fieldScale = sqrt(fabs(attrs[theSymbol->scaleClassificationField()].toDouble()));
+      QgsDebugMsg(QString("Feature has field scale factor %1").arg(fieldScale));
+    }
+    if ( theSymbol->rotationClassificationField() >= 0 )
+    {
+      const QgsAttributeMap& attrs = f.attributeMap();
+      rotation = attrs[theSymbol->rotationClassificationField()].toDouble();
+      QgsDebugMsg(QString("Feature has rotation factor %1").arg(rotation));
+    }
+    *img = theSymbol->getPointSymbolAsImage( widthScale, selected, mSelectionColor,
+                                            *scalefactor * fieldScale, rotation);
+  } 
 
   // Line, polygon
   if ( mVectorType != QGis::Point )
@@ -183,15 +199,41 @@ void QgsGraduatedSymbolRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& 
 
 	symbolnode = symbolnode.nextSibling();
     }
-
+    updateSymbolAttributes();
     vl.setRenderer(this);
 }
 
 QgsAttributeList QgsGraduatedSymbolRenderer::classificationAttributes() const
 {
-    QgsAttributeList list;
+  QgsAttributeList list(mSymbolAttributes);
+  if ( ! list.contains(mClassificationField) )
+  {
     list.append(mClassificationField);
-    return list;
+  }
+  return list;
+}
+
+void QgsGraduatedSymbolRenderer::updateSymbolAttributes()
+{
+  // This function is only called after changing field specifier in the GUI.
+  // Timing is not so important.
+
+  mSymbolAttributes.clear();
+
+  QList<QgsSymbol*>::iterator it;
+  for (it = mSymbols.begin(); it != mSymbols.end(); ++it)
+  {
+    int rotationField = (*it)->rotationClassificationField();
+    if ( rotationField >= 0 && !(mSymbolAttributes.contains(rotationField)) )
+    {
+      mSymbolAttributes.append(rotationField);
+    }
+    int scaleField = (*it)->scaleClassificationField(); 
+    if ( scaleField >= 0 && !(mSymbolAttributes.contains(scaleField)) )
+    {
+      mSymbolAttributes.append(scaleField);
+    }
+  }
 }
 
 QString QgsGraduatedSymbolRenderer::name() const
