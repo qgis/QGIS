@@ -2536,7 +2536,16 @@ bool QgsPostgresProvider::getGeometryDetails()
     sql = "select "
       "srid(\""         + geometryColumn + "\"), "
       "geometrytype(\"" + geometryColumn + "\") from " + 
-      mSchemaTableName + " limit 1";
+      mSchemaTableName;
+
+    //it is possible that the where clause restricts the feature type
+    if(!sqlWhereClause.isEmpty())
+      {
+	sql += " WHERE ";
+	sql += sqlWhereClause;
+      }
+
+    sql += " limit 1";
 
     result = executeDbCommand(connection, sql);
 

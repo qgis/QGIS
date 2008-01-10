@@ -19,6 +19,9 @@
 #define QGSDBSOURCESELECT_H
 #include "ui_qgsdbsourceselectbase.h"
 #include "qgisgui.h"
+#include "qgsdbfilterproxymodel.h"
+#include "qgsdbtablemodel.h"
+
 extern "C"
 {
 #include <libpq-fe.h>
@@ -68,8 +71,6 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QStringList selectedTables();
     //! Connection info (database, host, user, password)
     QString connInfo();
-    //! Return the name of the selected encoding (e.g. UTf-8, ISO-8559-1, etc/)
-    QString encoding();
     // Store the selected database
     void dbChanged();
     // Utility function to construct the query for finding out the
@@ -85,12 +86,18 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
       void on_btnNew_clicked();
       void on_btnEdit_clicked();
       void on_btnDelete_clicked();
-      void on_lstTables_itemDoubleClicked(QTableWidgetItem *);
-      void setSql(QTableWidgetItem *);
+      void on_mSearchOptionsButton_clicked();
+      void on_mSearchTableEdit_textChanged(const QString & text);
+      void on_mSearchColumnComboBox_currentIndexChanged(const QString & text);
+      void on_mSearchModeComboBox_currentIndexChanged(const QString & text);
+      void setSql(const QModelIndex& index);
       void on_btnHelp_clicked();
       void on_cmbConnections_activated(int);
       void setLayerType(QString schema, QString table, QString column,
                         QString type);
+      //!Sets a new regular expression to the model
+      void setSearchExpression(const QString& regexp);
+
  private:
     enum columns {
 	dbssType=0,
@@ -107,6 +114,9 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
                                bool searchGeometryColumnsOnly,
                                bool searchPublicOnly);
 
+    /**Inserts information about the spatial tables into mTableModel*/
+    bool getTableInfo(PGconn *pg, bool searchGeometryColumnsOnly, bool searchPublicOnly);
+
     // queue another query for the thread
     void addSearchGeometryColumn(const QString &schema, const QString &table, const QString &column);
 
@@ -115,10 +125,6 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void setConnectionListPosition();
     // Show the context help for the dialog
     void showHelp();
-    // initialize row
-    void initRow(int row); 
-    // update the row
-    void updateRow(int row, QString detail, QString type);
     // Combine the schema, table and column data into a single string
     // useful for display to the user
     QString fullDescription(QString schema, QString table, QString column, QString type);
@@ -130,14 +136,13 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QStringList m_selectedTables;
     // Storage for the range of layer type icons
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;
-#if 0
-    // minlength of layer type combobox
-    int mCbMinLength;
-#endif
     //! Pointer to the qgis application mainwindow
     QgisApp *qgisApp;
     PGconn *pd;
     static const int context_id = 939347163;
+    //! Model that acts as datasource for mTableTreeWidget
+    QgsDbTableModel mTableModel;
+    QgsDbFilterProxyModel mProxyModel;
 };
 
 

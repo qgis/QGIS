@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>494</width>
-    <height>481</height>
+    <width>472</width>
+    <height>687</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -28,10 +28,76 @@
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="3" column="0" colspan="2" >
+   <item row="2" column="0" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>271</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="0" colspan="2" >
+    <widget class="QTreeView" name="mTablesTreeView" >
+     <property name="selectionMode" >
+      <enum>QAbstractItemView::MultiSelection</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2" >
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>PostgreSQL Connections</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>11</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="1" column="3" >
+       <widget class="QPushButton" name="btnDelete" >
+        <property name="text" >
+         <string>Delete</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" >
+       <widget class="QPushButton" name="btnEdit" >
+        <property name="text" >
+         <string>Edit</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QPushButton" name="btnNew" >
+        <property name="text" >
+         <string>New</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QPushButton" name="btnConnect" >
+        <property name="text" >
+         <string>Connect</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="4" >
+       <widget class="QComboBox" name="cmbConnections" />
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2" >
     <layout class="QHBoxLayout" >
      <property name="margin" >
-      <number>0</number>
+      <number>11</number>
      </property>
      <property name="spacing" >
       <number>6</number>
@@ -99,20 +165,10 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="1" >
-    <widget class="QComboBox" name="mEncodingComboBox" />
-   </item>
-   <item row="2" column="0" >
-    <widget class="QLabel" name="mEncodingLabel" >
-     <property name="text" >
-      <string>Encoding:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="2" >
-    <widget class="QGroupBox" name="groupBox_2" >
+   <item row="3" column="0" colspan="2" >
+    <widget class="QGroupBox" name="mSearchGroupBox" >
      <property name="title" >
-      <string>Tables:</string>
+      <string/>
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
@@ -122,89 +178,43 @@
        <number>6</number>
       </property>
       <item row="0" column="0" >
-       <widget class="QTableWidget" name="lstTables" >
-        <property name="mouseTracking" >
-         <bool>true</bool>
+       <widget class="QLabel" name="mSearchLabel" >
+        <property name="text" >
+         <string>Search:</string>
         </property>
-        <property name="editTriggers" >
-         <set>QAbstractItemView::NoEditTriggers</set>
-        </property>
-        <property name="selectionMode" >
-         <enum>QAbstractItemView::ExtendedSelection</enum>
-        </property>
-        <property name="selectionBehavior" >
-         <enum>QAbstractItemView::SelectRows</enum>
-        </property>
-        <property name="showGrid" >
-         <bool>false</bool>
-        </property>
-        <property name="gridStyle" >
-         <enum>Qt::SolidLine</enum>
-        </property>
-        <column>
-         <property name="text" >
-          <string>Type</string>
-         </property>
-        </column>
-        <column>
-         <property name="text" >
-          <string>Name</string>
-         </property>
-        </column>
-        <column>
-         <property name="text" >
-          <string>Sql</string>
-         </property>
-        </column>
        </widget>
       </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="2" >
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="title" >
-      <string>PostgreSQL Connections</string>
-     </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item row="1" column="3" >
-       <widget class="QPushButton" name="btnDelete" >
+      <item row="2" column="0" colspan="2" >
+       <widget class="QLabel" name="mSearchModeLabel" >
         <property name="text" >
-         <string>Delete</string>
+         <string>Search mode:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2" >
+       <widget class="QComboBox" name="mSearchModeComboBox" />
+      </item>
+      <item row="1" column="0" colspan="2" >
+       <widget class="QLabel" name="mSearchColumnsLabel" >
+        <property name="text" >
+         <string>Search in columns:</string>
         </property>
        </widget>
       </item>
       <item row="1" column="2" >
-       <widget class="QPushButton" name="btnEdit" >
-        <property name="text" >
-         <string>Edit</string>
-        </property>
-       </widget>
+       <widget class="QComboBox" name="mSearchColumnComboBox" />
       </item>
-      <item row="1" column="1" >
-       <widget class="QPushButton" name="btnNew" >
-        <property name="text" >
-         <string>New</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" >
-       <widget class="QPushButton" name="btnConnect" >
-        <property name="text" >
-         <string>Connect</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" colspan="4" >
-       <widget class="QComboBox" name="cmbConnections" />
+      <item row="0" column="1" colspan="2" >
+       <widget class="QLineEdit" name="mSearchTableEdit" />
       </item>
      </layout>
+    </widget>
+   </item>
+   <item row="2" column="1" >
+    <widget class="QPushButton" name="mSearchOptionsButton" >
+     <property name="text" >
+      <string>Search options...</string>
+     </property>
     </widget>
    </item>
   </layout>
@@ -216,8 +226,6 @@
   <tabstop>btnNew</tabstop>
   <tabstop>btnEdit</tabstop>
   <tabstop>btnDelete</tabstop>
-  <tabstop>lstTables</tabstop>
-  <tabstop>mEncodingComboBox</tabstop>
   <tabstop>btnHelp</tabstop>
   <tabstop>btnAdd</tabstop>
   <tabstop>btnCancel</tabstop>
