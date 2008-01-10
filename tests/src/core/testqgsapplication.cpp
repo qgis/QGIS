@@ -33,9 +33,12 @@ class TestQgsApplication: public QObject
 void TestQgsApplication::getPaths()
 {
   // init QGIS's paths - true means that all path will be inited from prefix
-  QString qgisPath = QCoreApplication::applicationDirPath () + "/../";
+  QString qgisPath = QCoreApplication::applicationDirPath ();
   QgsApplication::setPrefixPath(qgisPath, TRUE);
-
+#ifdef Q_OS_LINUX
+  QgsApplication::setPkgDataPath(qgisPath + "/../share/qgis");
+  QgsApplication::setPluginPath(qgisPath + "/../lib/qgis");
+#endif
   std::cout << "Prefix  PATH: " << QgsApplication::prefixPath().toLocal8Bit().data() << std::endl;
   std::cout << "Plugin  PATH: " << QgsApplication::pluginPath().toLocal8Bit().data() << std::endl;
   std::cout << "PkgData PATH: " << QgsApplication::pkgDataPath().toLocal8Bit().data() << std::endl;
@@ -45,8 +48,12 @@ void TestQgsApplication::getPaths()
 
 void TestQgsApplication::checkTheme()
 {
-  QString qgisPath = QCoreApplication::applicationDirPath () + "/../";
+  QString qgisPath = QCoreApplication::applicationDirPath ();
   QgsApplication::setPrefixPath(qgisPath, TRUE);
+#ifdef Q_OS_LINUX
+  QgsApplication::setPkgDataPath(qgisPath + "/../share/qgis");
+  QgsApplication::setPluginPath(qgisPath + "/../lib/qgis");
+#endif
   std::cout << "Prefix  PATH: " << QgsApplication::prefixPath().toLocal8Bit().data() << std::endl;
   std::cout << "Plugin  PATH: " << QgsApplication::pluginPath().toLocal8Bit().data() << std::endl;
   std::cout << "PkgData PATH: " << QgsApplication::pkgDataPath().toLocal8Bit().data() << std::endl;
