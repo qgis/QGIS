@@ -490,10 +490,13 @@ void QgisApp::createActions()
   mActionSaveMapAsImage->setStatusTip(tr("Save map as image"));
   connect(mActionSaveMapAsImage, SIGNAL(triggered()), this, SLOT(saveMapAsImage()));
   //
-  mActionExportMapServer= new QAction(QIcon(myIconPath+"/mActionExportMapServer.png"), tr("Export to MapServer Map..."), this);
+ // TODO: Remove the mActionExportMapServer related code once the mapserver export plugin
+ // is complete and tested.
+ /* mActionExportMapServer= new QAction(QIcon(myIconPath+"/mActionExportMapServer.png"), tr("Export to MapServer Map..."), this);
   mActionExportMapServer->setShortcut(tr("M","Export as MapServer .map file"));
   mActionExportMapServer->setStatusTip(tr("Export as MapServer .map file"));
   connect(mActionExportMapServer, SIGNAL(triggered()), this, SLOT(exportMapServer()));
+  */
   //
   mActionFileExit= new QAction(QIcon(myIconPath+"/mActionFileExit.png"), tr("Exit"), this);
   mActionFileExit->setShortcut(tr("Ctrl+Q","Exit QGIS"));
@@ -866,7 +869,10 @@ void QgisApp::createMenus()
   mFileMenu->addAction(mActionFileSaveAs);
   mFileMenu->addAction(mActionSaveMapAsImage);
   mFileMenu->addSeparator();
+  // TODO: remove the addAction once the mapserver export plugin is complete and tested
+  /*
   mFileMenu->addAction(mActionExportMapServer);
+  */
   mFileMenu->addAction(mActionFilePrint);
   mFileMenu->addSeparator();
   mFileMenu->addAction(mActionFileExit);
@@ -1157,7 +1163,10 @@ void QgisApp::setTheme(QString theThemeName)
   mActionFileOpen->setIconSet(QIcon(QPixmap(myIconPath + "/mActionFileOpen.png")));
   mActionFilePrint->setIconSet(QIcon(QPixmap(myIconPath + "/mActionFilePrint.png")));
   mActionSaveMapAsImage->setIconSet(QIcon(QPixmap(myIconPath + "/mActionSaveMapAsImage.png")));
+  // TODO: Remove the mActionExportMapServer related code once the mapserver export plugin 
+  /*
   mActionExportMapServer->setIconSet(QIcon(QPixmap(myIconPath + "/mActionExportMapServer.png")));
+  */
   mActionFileExit->setIconSet(QIcon(QPixmap(myIconPath + "/mActionFileExit.png")));
   mActionAddNonDbLayer->setIconSet(QIcon(QPixmap(myIconPath + "/mActionAddNonDbLayer.png")));
   mActionAddRasterLayer->setIconSet(QIcon(QPixmap(myIconPath + "/mActionAddRasterLayer.png")));
@@ -3281,6 +3290,8 @@ void QgisApp::showAllLayers()
   legend()->selectAll(true);
 }
 
+// TODO: remove the method once the mapserver export plugin is complete and tested
+/*
 void QgisApp::exportMapServer()
 {
   // check to see if there are any layers to export
@@ -3309,6 +3320,7 @@ void QgisApp::exportMapServer()
   //      tr("No layers to export. You must add at least one layer to the map in order to export the view."));
   //}
 }
+*/
 
 
 

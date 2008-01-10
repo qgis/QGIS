@@ -236,8 +236,12 @@ public slots:
   void hideAllLayers();
   //reimplements method from base (gui) class
   void showAllLayers();
+  // TODO: remove exportMapServer declaration once the mapserver export plugin is complete
+  // and tested
+  /*
   //! Export current view as a mapserver map file
   void exportMapServer();
+  */
   //! Return pointer to the active layer
   QgsMapLayer *activeLayer();
   //! Open the help contents in a browser

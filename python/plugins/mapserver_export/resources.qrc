@@ -1,0 +1,6 @@
+<RCC> 
+  <qresource prefix="/plugins/mapserver_export" > 
+    <file>icon.png</file> 
+  </qresource> 
+</RCC> 
+
