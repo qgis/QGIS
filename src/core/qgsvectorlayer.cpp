@@ -883,10 +883,10 @@ void QgsVectorLayer::select(QgsRect & rect, bool lock)
   QList<QgsFeature>::const_iterator select_it = selectedList.constBegin();
   for(; select_it != selectedList.constEnd(); ++select_it)
     {
-      select(select_it->featureId());
+      select(select_it->featureId(), false); // don't emit signal (not to redraw it everytime)
     }
 								
-  emit selectionChanged();
+  emit selectionChanged(); // now emit signal to redraw layer
 }
 
 void QgsVectorLayer::invertSelection()
