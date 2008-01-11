@@ -20,7 +20,9 @@ extern "C"
 {
 #include <libpq-fe.h>
 }
-
+#include <QStandardItemModel>
+#include <QStandardItem>
+#include <QModelIndex>
 #include "ui_qgspgquerybuilderbase.h"
 #include "qgisgui.h"
 #include "qgsfield.h"
@@ -85,8 +87,8 @@ class QgsPgQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase {
     void on_btnILike_clicked();
     QString sql();
     void setSql( QString sqlStatement);
-    void on_lstFields_doubleClicked( Q3ListBoxItem *item );
-    void on_lstValues_doubleClicked( Q3ListBoxItem *item );
+    void on_lstFields_doubleClicked( const QModelIndex &index );
+    void on_lstValues_doubleClicked( const QModelIndex &index );
     void on_btnLessEqual_clicked();
     void on_btnGreaterEqual_clicked();
     void on_btnNotEqual_clicked();
@@ -118,6 +120,10 @@ class QgsPgQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase {
    * Populate the field list for the selected table
    */ 
   void populateFields();
+  /*! 
+   * Setup models for listviews
+   */ 
+  void setupListViews();
 
   /*! Get the number of records that would be returned by the current SQL
    * @return Number of records or -1 if an error was encountered
@@ -139,6 +145,9 @@ class QgsPgQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase {
   QString mPgErrorMessage;
   //! Flag to indicate if the class owns the connection to the pg database
   bool mOwnConnection;
-
+  //! Model for fields ListView
+  QStandardItemModel *mModelFields;
+  //! Model for values ListView
+  QStandardItemModel *mModelValues;
 };
 #endif //QGSPGQUERYBUILDER_H

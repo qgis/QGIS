@@ -15,8 +15,9 @@
 /* $Id$ */
 
 #include <iostream>
-#include <q3listbox.h>
+#include <QListView>
 #include <QMessageBox>
+#include <QStandardItem>
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgssearchquerybuilder.h"
@@ -31,6 +32,7 @@ QgsSearchQueryBuilder::QgsSearchQueryBuilder(QgsVectorLayer* layer,
   : QDialog(parent, fl), mLayer(layer)
 {
   setupUi(this);
+  setupListViews();
   
   setWindowTitle(tr("Search query builder"));
   
@@ -53,25 +55,49 @@ QgsSearchQueryBuilder::~QgsSearchQueryBuilder()
 
 void QgsSearchQueryBuilder::populateFields()
 {
+#ifdef QGISDEBUG
+  std::cout << "QgsSearchQueryBuilder::populateFields" << std::endl;
+#endif
   const QgsFieldMap& fields = mLayer->getDataProvider()->fields();
   for (QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it)
   {
     QString fieldName = it->name();
-    
     mFieldMap[fieldName] = it.key();
-    lstFields->insertItem(fieldName);
+    QStandardItem *myItem = new QStandardItem(fieldName);
+    myItem->setEditable(false);
+    mModelFields->insertRow(mModelFields->rowCount(),myItem);
   }
+}
+
+void QgsSearchQueryBuilder::setupListViews()
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsSearchQueryBuilder::setupListViews" << std::endl;
+#endif
+  //Models
+  mModelFields = new QStandardItemModel();
+  mModelValues = new QStandardItemModel();
+  lstFields->setModel(mModelFields);
+  lstValues->setModel(mModelValues);
+  // Modes
+  lstFields->setViewMode(QListView::ListMode);
+  lstValues->setViewMode(QListView::ListMode);
+  lstFields->setSelectionBehavior(QAbstractItemView::SelectRows);
+  lstValues->setSelectionBehavior(QAbstractItemView::SelectRows);
+  // Performance tip since Qt 4.1
+  lstFields->setUniformItemSizes(true);
+  lstValues->setUniformItemSizes(true);
 }
 
 void QgsSearchQueryBuilder::getFieldValues(uint limit)
 {
   // clear the values list 
-  lstValues->clear();
+  mModelValues->clear();
   
   QgsVectorDataProvider* provider = mLayer->getDataProvider();
   
   // determine the field type
-  QString fieldName = lstFields->currentText();
+  QString fieldName = mModelFields->data(lstFields->currentIndex()).toString();
   int fieldIndex = mFieldMap[fieldName];
   QgsField field = provider->fields()[fieldIndex];
   bool numeric = (field.type() == QVariant::Int || field.type() == QVariant::Double);
@@ -84,8 +110,13 @@ void QgsSearchQueryBuilder::getFieldValues(uint limit)
   
   provider->select(attrs, QgsRect(), false);
   
+  lstValues->setCursor(Qt::WaitCursor);
+  // Block for better performance
+  mModelValues->blockSignals(true);
+  lstValues->setUpdatesEnabled(false);
+  
   while (provider->getNextFeature(feat) &&
-         (limit == 0 || lstValues->count() != limit))
+         (limit == 0 || mModelValues->rowCount() != limit))
   {
     const QgsAttributeMap& attributes = feat.attributeMap();
     value = attributes[fieldIndex].toString();
@@ -97,10 +128,20 @@ void QgsSearchQueryBuilder::getFieldValues(uint limit)
     }
     
     // add item only if it's not there already
-    if (lstValues->findItem(value) == 0)
-      lstValues->insertItem(value);
-    
+    QList<QStandardItem *> items = mModelValues->findItems(value);
+    if (items.isEmpty())
+    {
+      QStandardItem *myItem = new QStandardItem(value);
+      myItem->setEditable(false);
+      mModelValues->insertRow(mModelValues->rowCount(),myItem);
+    }
   }
+  // Unblock for normal use
+  mModelValues->blockSignals(false);
+  lstValues->setUpdatesEnabled(true);
+  // TODO: already sorted, signal emit to refresh model 
+  mModelValues->sort(0);
+  lstValues->setCursor(Qt::ArrowCursor);
 }
 
 void QgsSearchQueryBuilder::on_btnSampleValues_clicked()
@@ -245,14 +286,14 @@ void QgsSearchQueryBuilder::setSearchString(QString searchString)
   txtSQL->setText(searchString);
 }
 
-void QgsSearchQueryBuilder::on_lstFields_doubleClicked( Q3ListBoxItem *item )
+void QgsSearchQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
 {
-  txtSQL->insert(item->text());
+  txtSQL->insert(mModelFields->data(index).toString());
 }
 
-void QgsSearchQueryBuilder::on_lstValues_doubleClicked( Q3ListBoxItem *item )
+void QgsSearchQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
 {
-  txtSQL->insert(item->text());
+  txtSQL->insert(mModelValues->data(index).toString());
 }
 
 void QgsSearchQueryBuilder::on_btnLessEqual_clicked()

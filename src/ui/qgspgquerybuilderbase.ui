@@ -12,9 +12,7 @@
    </rect>
   </property>
   <property name="sizePolicy" >
-   <sizepolicy>
-    <hsizetype>7</hsizetype>
-    <vsizetype>7</vsizetype>
+   <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -29,10 +27,22 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
+   <property name="leftMargin" >
     <number>9</number>
    </property>
-   <property name="spacing" >
+   <property name="topMargin" >
+    <number>9</number>
+   </property>
+   <property name="rightMargin" >
+    <number>9</number>
+   </property>
+   <property name="bottomMargin" >
+    <number>9</number>
+   </property>
+   <property name="horizontalSpacing" >
+    <number>6</number>
+   </property>
+   <property name="verticalSpacing" >
     <number>6</number>
    </property>
    <item row="2" column="0" colspan="2" >
@@ -41,10 +51,22 @@
       <string>Operators</string>
      </property>
      <layout class="QGridLayout" >
-      <property name="margin" >
+      <property name="leftMargin" >
        <number>11</number>
       </property>
-      <property name="spacing" >
+      <property name="topMargin" >
+       <number>11</number>
+      </property>
+      <property name="rightMargin" >
+       <number>11</number>
+      </property>
+      <property name="bottomMargin" >
+       <number>11</number>
+      </property>
+      <property name="horizontalSpacing" >
+       <number>10</number>
+      </property>
+      <property name="verticalSpacing" >
        <number>10</number>
       </property>
       <item row="0" column="0" >
@@ -150,11 +172,20 @@
    </item>
    <item row="4" column="0" colspan="2" >
     <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
      <property name="spacing" >
       <number>6</number>
+     </property>
+     <property name="leftMargin" >
+      <number>0</number>
+     </property>
+     <property name="topMargin" >
+      <number>0</number>
+     </property>
+     <property name="rightMargin" >
+      <number>0</number>
+     </property>
+     <property name="bottomMargin" >
+      <number>0</number>
      </property>
      <item>
       <spacer>
@@ -230,9 +261,7 @@
    <item row="1" column="1" >
     <widget class="QGroupBox" name="groupBox2" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>7</vsizetype>
+      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -241,28 +270,40 @@
       <string>Values</string>
      </property>
      <layout class="QGridLayout" >
-      <property name="margin" >
+      <property name="leftMargin" >
        <number>10</number>
       </property>
-      <property name="spacing" >
+      <property name="topMargin" >
+       <number>10</number>
+      </property>
+      <property name="rightMargin" >
+       <number>10</number>
+      </property>
+      <property name="bottomMargin" >
+       <number>10</number>
+      </property>
+      <property name="horizontalSpacing" >
        <number>6</number>
       </property>
-      <item row="1" column="1" >
+      <property name="verticalSpacing" >
+       <number>6</number>
+      </property>
+      <item row="2" column="1" >
        <widget class="QPushButton" name="btnGetAllValues" >
         <property name="text" >
          <string>All</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="0" colspan="2" >
-       <widget class="Q3ListBox" name="lstValues" />
-      </item>
-      <item row="1" column="0" >
+      <item row="2" column="0" >
        <widget class="QPushButton" name="btnSampleValues" >
         <property name="text" >
          <string>Sample</string>
         </property>
        </widget>
+      </item>
+      <item rowspan="2" row="0" column="0" colspan="2" >
+       <widget class="QListView" name="lstValues" />
       </item>
      </layout>
     </widget>
@@ -273,14 +314,26 @@
       <string>Fields</string>
      </property>
      <layout class="QGridLayout" >
-      <property name="margin" >
+      <property name="leftMargin" >
        <number>10</number>
       </property>
-      <property name="spacing" >
+      <property name="topMargin" >
+       <number>10</number>
+      </property>
+      <property name="rightMargin" >
+       <number>10</number>
+      </property>
+      <property name="bottomMargin" >
+       <number>10</number>
+      </property>
+      <property name="horizontalSpacing" >
+       <number>6</number>
+      </property>
+      <property name="verticalSpacing" >
        <number>6</number>
       </property>
       <item row="0" column="0" >
-       <widget class="Q3ListBox" name="lstFields" />
+       <widget class="QListView" name="lstFields" />
       </item>
      </layout>
     </widget>
@@ -304,14 +357,26 @@
       <string>SQL where clause</string>
      </property>
      <layout class="QGridLayout" >
-      <property name="margin" >
+      <property name="leftMargin" >
        <number>10</number>
       </property>
-      <property name="spacing" >
+      <property name="topMargin" >
+       <number>10</number>
+      </property>
+      <property name="rightMargin" >
+       <number>10</number>
+      </property>
+      <property name="bottomMargin" >
+       <number>10</number>
+      </property>
+      <property name="horizontalSpacing" >
+       <number>6</number>
+      </property>
+      <property name="verticalSpacing" >
        <number>6</number>
       </property>
       <item row="0" column="0" >
-       <widget class="Q3TextEdit" name="txtSQL" />
+       <widget class="QTextEdit" name="txtSQL" />
       </item>
      </layout>
     </widget>
@@ -319,21 +384,7 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <customwidgets>
-  <customwidget>
-   <class>Q3ListBox</class>
-   <extends>Q3Frame</extends>
-   <header>q3listbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>Q3TextEdit</class>
-   <extends>Q3Frame</extends>
-   <header>q3textedit.h</header>
-  </customwidget>
- </customwidgets>
  <tabstops>
-  <tabstop>lstFields</tabstop>
-  <tabstop>lstValues</tabstop>
   <tabstop>btnSampleValues</tabstop>
   <tabstop>btnGetAllValues</tabstop>
   <tabstop>btnEqual</tabstop>
@@ -350,7 +401,6 @@
   <tabstop>btnAnd</tabstop>
   <tabstop>btnOr</tabstop>
   <tabstop>btnNot</tabstop>
-  <tabstop>txtSQL</tabstop>
   <tabstop>btnClear</tabstop>
   <tabstop>btnTest</tabstop>
   <tabstop>btnOk</tabstop>
