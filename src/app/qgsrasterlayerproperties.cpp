@@ -1,9 +1,9 @@
 /***************************************************************************
   qgsrasterlayerproperties.cpp  -  description
   -------------------
-begin                : 1/1/2004
-copyright            : (C) 2004 Tim Sutton
-email                : tim@linfiniti.com
+      begin                : 1/1/2004
+      copyright            : (C) 2004 Tim Sutton
+      email                : tim@linfiniti.com
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,7 +15,7 @@ email                : tim@linfiniti.com
  *                                                                         *
  ***************************************************************************/
 
-
+#include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
 #include "qgsrasterlayerproperties.h"
@@ -25,21 +25,37 @@ email                : tim@linfiniti.com
 #include "qgsrasterlayer.h"
 #include "qgsrasterpyramid.h"
 #include "qgscontexthelp.h"
+#include "qgsmaplayerregistry.h"
+#include "qgscontrastenhancement.h"
+#include "qgsrastertransparency.h"
+#include "qgscolorrampshader.h"
 
+#include <QTableWidgetItem>
+#include <QHeaderView>
+
+#include <QTextStream>
+#include <QFileDialog>
 #include <QMessageBox>
 #include <QPainter>
-#include <QPolygon>
+#include <QLinearGradient>
+#include <QPainterPath>
+#include <QPolygonF>
+#include <QColorDialog>
+#include <QList>
+
+
 #include <iostream>
 
 const char * const ident = 
-  "$Id$";
+"$Id$";
 
 
 QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *parent, Qt::WFlags fl)
-: QDialog(parent, fl), 
-  rasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
+  : QDialog(parent, fl), 
+rasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
 {
-  
+  ignoreSpinBoxEvent = false; //Short circuit signal loop between min max field and stdDev spin box
+
   if (rasterLayer->getDataProvider() == 0)
   {
     // This is a GDAL-based layer
@@ -55,10 +71,23 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
 
   setupUi(this);
   connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  connect(buttonBox->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this, SLOT(apply()));
   connect(this, SIGNAL(accepted()), this, SLOT(apply()));
+  connect(buttonBox->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this, SLOT(apply()));
+
   connect(sliderTransparency, SIGNAL(valueChanged(int)), this, SLOT(sliderTransparency_valueChanged(int)));
+
+  //clear either stdDev or min max entries depending which is changed
+  connect(sboxSingleBandStdDev, SIGNAL(valueChanged(double)), this, SLOT(sboxSingleBandStdDev_valueChanged(double)));
+  connect(sboxThreeBandStdDev, SIGNAL(valueChanged(double)), this, SLOT(sboxThreeBandStdDev_valueChanged(double)));
+  connect(leGrayMin, SIGNAL(textEdited(QString)), this, SLOT(userDefinedMinMax_textEdited(QString)));
+  connect(leGrayMax, SIGNAL(textEdited(QString)), this, SLOT(userDefinedMinMax_textEdited(QString)));
+  connect(leRedMin, SIGNAL(textEdited(QString)), this, SLOT(userDefinedMinMax_textEdited(QString)));
+  connect(leRedMax, SIGNAL(textEdited(QString)), this, SLOT(userDefinedMinMax_textEdited(QString)));
+  connect(leGreenMin, SIGNAL(textEdited(QString)), this, SLOT(userDefinedMinMax_textEdited(QString)));
+  connect(leGreenMax, SIGNAL(textEdited(QString)), this, SLOT(userDefinedMinMax_textEdited(QString)));
+  connect(leBlueMin, SIGNAL(textEdited(QString)), this, SLOT(userDefinedMinMax_textEdited(QString)));
+  connect(leBlueMax, SIGNAL(textEdited(QString)), this, SLOT(userDefinedMinMax_textEdited(QString)));
+  connect(mColormapTreeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(handleColormapTreeWidgetDoubleClick(QTreeWidgetItem*,int)));
 
   // set up the scale based layer visibility stuff....
   chkUseScaleDependentRendering->setChecked(lyr->scaleBasedVisibility());
@@ -66,31 +95,60 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
   spinMaximumScale->setValue((int)lyr->maxScale());
 
   // build GUI components
+  cboxColorMap->insertItem(tr("Grayscale"));
+  cboxColorMap->insertItem(tr("Pseudocolor"));
+  cboxColorMap->insertItem(tr("Freak Out"));
+  cboxColorMap->insertItem(tr("Custom Colormap"));
 
-  cboColorMap->insertItem(tr("Grayscale"));
-  cboColorMap->insertItem(tr("Pseudocolor"));
-  cboColorMap->insertItem(tr("Freak Out"));
+  //add items to the color stretch combo box
+  cboxContrastEnhancementAlgorithm->insertItem(tr("No Stretch"));
+  cboxContrastEnhancementAlgorithm->insertItem(tr("Stretch To MinMax"));
+  cboxContrastEnhancementAlgorithm->insertItem(tr("Stretch And Clip To MinMax"));
+  cboxContrastEnhancementAlgorithm->insertItem(tr("Clip To MinMax"));
 
-  //set the std deviations to be plotted combo box
-  cboStdDev->insertItem("0");
-  cboStdDev->insertItem("0.5");
-  cboStdDev->insertItem("0.75");
-  cboStdDev->insertItem("1");
-  cboStdDev->insertItem("1.25");
-  cboStdDev->insertItem("1.5");
-  cboStdDev->insertItem("1.75");
-  cboStdDev->insertItem("2");
-  cboStdDev->insertItem("2.25");
-  cboStdDev->insertItem("2.5");
-  cboStdDev->insertItem("2.75");
-  cboStdDev->insertItem("3");
+  //set initial states of all Min Max and StdDev fields and labels to disabled
+  sboxThreeBandStdDev->setEnabled(false);
+  sboxSingleBandStdDev->setEnabled(false);
+  lblGrayMin->setEnabled(false);
+  leGrayMin->setEnabled(false);
+  lblGrayMax->setEnabled(false);
+  leGrayMax->setEnabled(false);
+  lblRedMin->setEnabled(false);
+  leRedMin->setEnabled(false);
+  lblRedMax->setEnabled(false);
+  leRedMax->setEnabled(false);
+  lblGreenMin->setEnabled(false);
+  leGreenMin->setEnabled(false);
+  lblGreenMax->setEnabled(false);
+  leGreenMax->setEnabled(false);
+  lblBlueMin->setEnabled(false);
+  leBlueMin->setEnabled(false);
+  lblBlueMax->setEnabled(false);
+  leBlueMax->setEnabled(false);
+
+  pbtnLoadMinMax->setEnabled(true);
+  
+  //setup custom colormap tab
+  cboxColorInterpolation->insertItem(-1, tr("Discrete"));
+  cboxColorInterpolation->insertItem(-1, tr("Linearly"));
+  cboxClassificationMode->insertItem(-1, tr("Equal interval"));
+  cboxClassificationMode->insertItem(-1, tr("Quantiles"));
+
+  QStringList headerLabels;
+  headerLabels << "Value";
+  headerLabels << "Color";
+  headerLabels << "Label";
+  mColormapTreeWidget->setHeaderLabels(headerLabels);
+
+  //disable Custom colormap tab completely until 'Custom Colormap' is selected (and only for type GRAY_OR_UNDEFINED)
+  tabBar->setTabEnabled(tabBar->indexOf(tabPageColormap), FALSE);
 
   //
   // Set up the combo boxes that contain band lists using the qstring list generated above
   //
 
   if (rasterLayer->getRasterLayerType()
-          == QgsRasterLayer::PALETTE) //paletted layers have hard coded color entries
+      == QgsRasterLayer::PALETTE) //paletted layers have hard coded color entries
   {
     cboRed->insertItem("Red");
     cboGreen->insertItem("Red");
@@ -131,8 +189,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
     std::cout << "Looping though " << myBandCountInt << " image layers to get their names " << std::endl;
 #endif
     for (int myIteratorInt = 1;
-            myIteratorInt <= myBandCountInt;
-            ++myIteratorInt)
+        myIteratorInt <= myBandCountInt;
+        ++myIteratorInt)
     {
       //find out the name of this band
       QString myRasterBandNameQString = rasterLayer->getRasterBandName(myIteratorInt) ;
@@ -179,6 +237,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
         myPixmap.fill( Qt::gray );
       }
       lstHistogramLabels->insertItem(myPixmap,myRasterBandNameQString);
+      mGradientHeight = pixHistogram->height() / 2;
+      mGradientWidth = pixHistogram->width() /2;
       //keep a list of band names for later use
       //! @note band names should not be translated!
       myBandNameQStringList.append(myRasterBandNameQString);
@@ -186,16 +246,16 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
 
     //select all histogram layers list items by default
     for (int myIteratorInt = 1;
-          myIteratorInt <= myBandCountInt;
-          ++myIteratorInt)
+        myIteratorInt <= myBandCountInt;
+        ++myIteratorInt)
     {
       Q3ListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
       lstHistogramLabels->setSelected( myItem,true);
     }
 
     for (QStringList::Iterator myIterator = myBandNameQStringList.begin(); 
-            myIterator != myBandNameQStringList.end(); 
-            ++myIterator)
+        myIterator != myBandNameQStringList.end(); 
+        ++myIterator)
     {
       QString myQString = *myIterator;
 #ifdef QGISDEBUG
@@ -207,41 +267,59 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
       cboRed->insertItem(myQString);
       cboGreen->insertItem(myQString);
       cboBlue->insertItem(myQString);
-      cboTransparent->insertItem(myQString);
     }
+//TODO: Need to handle situations where a band is set to Not Set, currently if you set a band to this it will segfault.
     cboRed->insertItem(tr("Not Set"));
     cboGreen->insertItem(tr("Not Set"));
     cboBlue->insertItem(tr("Not Set"));
-    cboTransparent->insertItem(tr("Not Set"));
     if (cboGray->count() != 1)
       cboGray->insertItem(tr("Not Set"));
+  }
+
+  cboxTransparencyBand->insertItem(tr("Not Set"));
+  cboxTransparencyLayer->insertItem(tr("Not Set"));
+  std::map<QString, QgsMapLayer *> myLayers = QgsMapLayerRegistry::instance()->mapLayers();
+  std::map<QString, QgsMapLayer *>::iterator it;
+  for(it = myLayers.begin(); it != myLayers.end(); it++)
+  {
+    if(QgsMapLayer::RASTER == it->second->type())
+    {
+      cboxTransparencyLayer->insertItem(it->second->name());
+    }
   }
 
   QString myThemePath = QgsApplication::themePath();
   QPixmap myPyramidPixmap(myThemePath + "/mIconPyramid.png");
   QPixmap myNoPyramidPixmap(myThemePath + "/mIconNoPyramid.png");
 
+  pbnAddValuesManually->setIconSet(QIcon(QPixmap(myThemePath + "/mActionNewAttribute.png")));
+  pbnAddValuesFromDisplay->setIconSet(QIcon(QPixmap(myThemePath + "/mActionContextHelp.png")));
+  pbnRemoveSelectedRow->setIconSet(QIcon(QPixmap(myThemePath + "/mActionDeleteAttribute.png")));
+  pbnDefaultValues->setIconSet(QIcon(QPixmap(myThemePath + "/mActionCopySelected.png")));
+  pbnImportTransparentPixelValues->setIconSet(QIcon(QPixmap(myThemePath + "/mActionFileOpen.png")));
+  pbnExportTransparentPixelValues->setIconSet(QIcon(QPixmap(myThemePath + "/mActionFileSave.png")));
+
   // Only do pyramids if dealing directly with GDAL.
   if (rasterLayerIsGdal)
   {
     QgsRasterLayer::RasterPyramidList myPyramidList = rasterLayer->buildRasterPyramidList();
     QgsRasterLayer::RasterPyramidList::iterator myRasterPyramidIterator;
-  
+
     for ( myRasterPyramidIterator=myPyramidList.begin();
-            myRasterPyramidIterator != myPyramidList.end();
-            ++myRasterPyramidIterator )
+        myRasterPyramidIterator != myPyramidList.end();
+        ++myRasterPyramidIterator )
     {
       if ((*myRasterPyramidIterator).existsFlag==true)
       {
         lbxPyramidResolutions->insertItem(myPyramidPixmap,
-                QString::number((*myRasterPyramidIterator).xDimInt) + QString(" x ") + 
-                QString::number((*myRasterPyramidIterator).yDimInt)); 
+            QString::number((*myRasterPyramidIterator).xDim) + QString(" x ") + 
+            QString::number((*myRasterPyramidIterator).yDim)); 
       }
       else
       {
         lbxPyramidResolutions->insertItem(myNoPyramidPixmap,
-                QString::number((*myRasterPyramidIterator).xDimInt) + QString(" x ") + 
-                QString::number((*myRasterPyramidIterator).yDimInt)); 
+            QString::number((*myRasterPyramidIterator).xDim) + QString(" x ") + 
+            QString::number((*myRasterPyramidIterator).yDim)); 
       }
     }
   }
@@ -255,9 +333,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
   }
 
   leSpatialRefSys->setText(rasterLayer->srs().proj4String());
-  
-  //draw the histogram
-  //on_pbnHistRefresh_clicked();
 
   // update based on lyr's current state
   sync();
@@ -268,45 +343,554 @@ QgsRasterLayerProperties::~QgsRasterLayerProperties()
 {
 }
 
-
-void QgsRasterLayerProperties::apply()
+/*
+ *
+ * PUBLIC METHODS
+ *
+ */
+void QgsRasterLayerProperties::populateTransparencyTable()
 {
-  // set up the scale based layer visibility stuff....
-  rasterLayer->setScaleBasedVisibility(chkUseScaleDependentRendering->isChecked());
-  rasterLayer->setMinScale(spinMinimumScale->value());
-  rasterLayer->setMaxScale(spinMaximumScale->value());
-
-  rasterLayer->setTransparency(static_cast < unsigned int >(255 - sliderTransparency->value()));
-  //set the std deviations to be plotted
-  rasterLayer->setStdDevsToPlot(cboStdDev->currentText().toDouble());
-  //set whether the layer histogram should be inverted
-  if (cboxInvertColorMap->isChecked()
-     )
+  //Clear existsing color transparency list
+  //NOTE: May want to just tableTransparency->clearContents() and fill back in after checking to be sure list and table are the same size
+  QString myNumberFormatter;
+  if(rbtnThreeBand->isChecked() && QgsRasterLayer::PALETTED_COLOR != rasterLayer->getDrawingStyle() && 
+                                   QgsRasterLayer::PALETTED_MULTI_BAND_COLOR != rasterLayer->getDrawingStyle())
   {
-    rasterLayer->setInvertHistogramFlag(true);
+    for(int myTableRunner = tableTransparency->rowCount() - 1; myTableRunner >= 0; myTableRunner--)
+    {
+      tableTransparency->removeRow(myTableRunner);
+    }
+
+    tableTransparency->clear();
+    tableTransparency->setColumnCount(4);
+    tableTransparency->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Red")));
+    tableTransparency->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Green")));
+    tableTransparency->setHorizontalHeaderItem(2, new QTableWidgetItem(tr("Blue")));
+    tableTransparency->setHorizontalHeaderItem(3, new QTableWidgetItem(tr("Percent Transparent")));
+
+    //populate three band transparency list
+    QList<QgsRasterTransparency::TransparentThreeValuePixel> myTransparentThreeValuePixelList = rasterLayer->getRasterTransparency()->getTransparentThreeValuePixelList();
+    for(int myListRunner = 0; myListRunner < myTransparentThreeValuePixelList.count(); myListRunner++)
+    {
+      tableTransparency->insertRow(myListRunner);
+      QTableWidgetItem* myRedItem = new QTableWidgetItem(myNumberFormatter.sprintf("%.2f",myTransparentThreeValuePixelList[myListRunner].red));
+      QTableWidgetItem* myGreenItem = new QTableWidgetItem(myNumberFormatter.sprintf("%.2f",myTransparentThreeValuePixelList[myListRunner].green));
+      QTableWidgetItem* myBlueItem = new QTableWidgetItem(myNumberFormatter.sprintf("%.2f",myTransparentThreeValuePixelList[myListRunner].blue));
+      QTableWidgetItem* myPercentTransparentItem = new QTableWidgetItem(myNumberFormatter.sprintf("%.2f", myTransparentThreeValuePixelList[myListRunner].percentTransparent));
+
+      tableTransparency->setItem(myListRunner, 0, myRedItem);
+      tableTransparency->setItem(myListRunner, 1, myGreenItem);
+      tableTransparency->setItem(myListRunner, 2, myBlueItem);
+      tableTransparency->setItem(myListRunner, 3, myPercentTransparentItem);
+    }
   }
   else
   {
-    rasterLayer->setInvertHistogramFlag(false);
+    //Clear existing single band or pallet values gransparency list
+    for(int myTableRunner = tableTransparency->rowCount() - 1; myTableRunner >=0; myTableRunner--)
+    {
+      tableTransparency->removeRow(myTableRunner);
+    }
+
+    tableTransparency->clear();
+    tableTransparency->setColumnCount(2);
+    if(QgsRasterLayer::PALETTED_COLOR != rasterLayer->getDrawingStyle() && 
+       QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY != rasterLayer->getDrawingStyle() && 
+       QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR != rasterLayer->getDrawingStyle() &&
+       QgsRasterLayer::PALETTED_MULTI_BAND_COLOR != rasterLayer->getDrawingStyle())
+    {
+      tableTransparency->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Gray")));
+    }
+    else
+    {
+      tableTransparency->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Indexed Value")));
+    }
+    tableTransparency->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Percent Transparent")));
+
+    //populate gray transparency list
+    QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList = rasterLayer->getRasterTransparency()->getTransparentSingleValuePixelList();
+    for(int myListRunner = 0; myListRunner < myTransparentSingleValuePixelList.count(); myListRunner++)
+    {
+      tableTransparency->insertRow(myListRunner);
+      QTableWidgetItem* myGrayItem = new QTableWidgetItem(myNumberFormatter.sprintf("%.2f",myTransparentSingleValuePixelList[myListRunner].pixelValue));
+      QTableWidgetItem* myPercentTransparentItem = new QTableWidgetItem(myNumberFormatter.sprintf("%.2f", myTransparentSingleValuePixelList[myListRunner].percentTransparent));
+
+      tableTransparency->setItem(myListRunner, 0, myGrayItem);
+      tableTransparency->setItem(myListRunner, 1, myPercentTransparentItem);
+    }
   }
-  //now set the color -> band mapping combos to the correct values
-  rasterLayer->setRedBandName(cboRed->currentText());
-  rasterLayer->setGreenBandName(cboGreen->currentText());
-  rasterLayer->setBlueBandName(cboBlue->currentText());
-  rasterLayer->setGrayBandName(cboGray->currentText());
-  rasterLayer->setTransparentBandName(cboTransparent->currentText());
-  //set the appropriate color ramping type
-  if (cboColorMap->currentText() == tr("Pseudocolor"))
+
+  tableTransparency->resizeColumnsToContents();
+  tableTransparency->resizeRowsToContents();
+}
+
+/**
+  @note moved from ctor
+
+  Previously this dialog was created anew with each right-click pop-up menu
+  invokation.  Changed so that the dialog always exists after first
+  invocation, and is just re-synchronized with its layer's state when
+  re-shown.
+
+*/
+void QgsRasterLayerProperties::sync()
+{
+#ifdef QGISDEBUG
+      QgsDebugMsg("QgsRasterLayerProperties::sync called");
+#endif
+  cboxShowDebugInfo->hide();
+
+#ifdef QGISDEBUG
+      QgsDebugMsg("QgsRasterLayerProperties::sync populate symbology tab");
+#endif
+  /*
+   * Symbology Tab
+   */
+  //decide whether user can change rgb settings
+#ifdef QGISDEBUG
+      QgsDebugMsg("QgsRasterLayerProperties::sync DrawingStyle = " + QString::number(rasterLayer->getDrawingStyle()));
+#endif
+  switch (rasterLayer->getDrawingStyle())
   {
-    rasterLayer->setColorRampingType(QgsRasterLayer::BLUE_GREEN_RED);  
+    case QgsRasterLayer::SINGLE_BAND_GRAY:
+      rbtnThreeBand->setEnabled(false);
+      rbtnSingleBand->setEnabled(true);
+      rbtnSingleBand->setChecked(true);
+      break;
+    case QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR:
+      rbtnThreeBand->setEnabled(false);
+      rbtnSingleBand->setEnabled(true);
+      rbtnSingleBand->setChecked(true);
+      break;
+    case QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY:
+      rbtnThreeBand->setEnabled(true);
+      rbtnSingleBand->setEnabled(true);
+      rbtnSingleBand->setChecked(true);
+      rbtnThreeBandMinMax->setEnabled(false);
+      rbtnThreeBandStdDev->setEnabled(false);
+      pbtnLoadMinMax->setEnabled(false);
+      cboxContrastEnhancementAlgorithm->setEnabled(false);
+      break;
+    case QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR:
+      rbtnThreeBand->setEnabled(true);
+      rbtnSingleBand->setEnabled(true);
+      rbtnSingleBand->setChecked(true);
+      rbtnThreeBandMinMax->setEnabled(false);
+      rbtnThreeBandStdDev->setEnabled(false);
+      pbtnLoadMinMax->setEnabled(false);
+      cboxContrastEnhancementAlgorithm->setEnabled(false);
+      break;
+    case QgsRasterLayer::PALETTED_MULTI_BAND_COLOR:
+      rbtnThreeBand->setEnabled(true);
+      rbtnSingleBand->setEnabled(true);
+      rbtnThreeBand->setChecked(true);
+      rbtnThreeBandMinMax->setEnabled(false);
+      rbtnThreeBandStdDev->setEnabled(false);
+      pbtnLoadMinMax->setEnabled(false);
+      cboxContrastEnhancementAlgorithm->setEnabled(false);
+      break;
+    case QgsRasterLayer::MULTI_BAND_SINGLE_BAND_GRAY:
+      rbtnThreeBand->setEnabled(true);
+      rbtnSingleBand->setEnabled(true);
+      rbtnSingleBand->setChecked(true);
+      break;
+    case QgsRasterLayer::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR:
+      rbtnThreeBand->setEnabled(true);
+      rbtnSingleBand->setEnabled(true);
+      rbtnSingleBand->setChecked(true);
+      break;
+    case QgsRasterLayer::MULTI_BAND_COLOR:
+      rbtnThreeBand->setEnabled(true);
+      rbtnSingleBand->setEnabled(true);
+      rbtnThreeBand->setChecked(true);
+      break;
+    default:
+      break;
   }
-  else if (cboColorMap->currentText() == tr("Freak Out"))
+/*
+  if (rasterLayer->getRasterLayerType() == QgsRasterLayer::MULTIBAND)
   {
-    rasterLayer->setColorRampingType(QgsRasterLayer::FREAK_OUT);  
+    //multiband images can also be rendered as single band (using only one of the bands)
+    txtSymologyNotes->
+      setText(tr
+          ("<h3>Multiband Image Notes</h3><p>This is a multiband image. You can choose to render it as grayscale or color (RGB). For color images, you can associate bands to colors arbitarily. For example, if you have a seven band landsat image, you may choose to render it as:</p><ul><li>Visible Blue (0.45 to 0.52 microns) - not mapped</li><li>Visible Green (0.52 to 0.60 microns) - not mapped</li></li>Visible Red (0.63 to 0.69 microns) - mapped to red in image</li><li>Near Infrared (0.76 to 0.90 microns) - mapped to green in image</li><li>Mid Infrared (1.55 to 1.75 microns) - not mapped</li><li>Thermal Infrared (10.4 to 12.5 microns) - not mapped</li><li>Mid Infrared (2.08 to 2.35 microns) - mapped to blue in image</li></ul>"));
   }
+  else if (rasterLayer->getRasterLayerType() == QgsRasterLayer::PALETTE)
+  {
+    //paletted images (e.g. tif) can only be rendered as three band rgb images
+    txtSymologyNotes->
+      setText(tr
+          ("<h3>Paletted Image Notes</h3> <p>This image uses a fixed color palette. You can remap these colors in different combinations e.g.</p><ul><li>Red - blue in image</li><li>Green - blue in image</li><li>Blue - green in image</li></ul>"));
+  }
+  else                        //only grayscale settings allowed
+  {
+    //grayscale images can only be rendered as singleband
+    txtSymologyNotes->
+      setText(tr
+          ("<h3>Grayscale Image Notes</h3> <p>You can remap these grayscale colors to a pseudocolor image using an automatically generated color ramp.</p>"));
+  }
+*/
+  //
+  // Populate the various controls on the form
+  //
+#ifdef QGISDEBUG
+      QgsDebugMsg("QgsRasterLayerProperties::sync colorShadingAlgorithm = " + QString::number(rasterLayer->getColorShadingAlgorithm()));
+#endif
+  if (rasterLayer->getDrawingStyle() == QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR || 
+      rasterLayer->getDrawingStyle() == QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR || 
+      rasterLayer->getDrawingStyle() == QgsRasterLayer::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR) 
+  {   
+    if(rasterLayer->getColorShadingAlgorithm()==QgsRasterLayer::PSEUDO_COLOR)
+    {
+      cboxColorMap->setCurrentText(tr("Pseudocolor"));
+    }
+    else if(rasterLayer->getColorShadingAlgorithm()==QgsRasterLayer::FREAK_OUT)
+    {
+      cboxColorMap->setCurrentText(tr("Freak Out"));
+    }
+    else if(rasterLayer->getColorShadingAlgorithm()==QgsRasterLayer::COLOR_RAMP)
+    {
+      cboxColorMap->setCurrentText(tr("Custom Colormap"));
+    }
+    else if(rasterLayer->getColorShadingAlgorithm()==QgsRasterLayer::USER_DEFINED)
+    {
+      cboxColorMap->setCurrentText(tr("User Defined"));
+    }
+  }
+  else
+  {
+    cboxColorMap->setCurrentText(tr("Grayscale"));
+  }
+  
+  //set whether the layer histogram should be inverted
+  if (rasterLayer->getInvertHistogramFlag())
+  {
+    cboxInvertColorMap->setChecked(true);
+  }
+  else
+  {
+    cboxInvertColorMap->setChecked(false);
+  }
+
+  //set the transparency slider
+  sliderTransparency->setValue(255 - rasterLayer->getTransparency());
+  //update the transparency percentage label
+  sliderTransparency_valueChanged(255 - rasterLayer->getTransparency());
+
+  //set the combos to the correct values
+  cboRed->setCurrentText(rasterLayer->getRedBandName());
+  cboGreen->setCurrentText(rasterLayer->getGreenBandName());
+  cboBlue->setCurrentText(rasterLayer->getBlueBandName());
+  cboGray->setCurrentText(rasterLayer->getGrayBandName());
+
+  //set the stdDevs and min max values
+  if(rbtnThreeBand->isChecked())
+  {
+    if(rasterLayer->getUserDefinedRGBMinMax())
+    {
+      sboxThreeBandStdDev->setValue(0.0);
+      rbtnThreeBandStdDev->setChecked(false);
+      rbtnThreeBandMinMax->setChecked(true);
+    }
+    else
+    {
+      sboxThreeBandStdDev->setValue(rasterLayer->getStdDevsToPlot());
+      rbtnThreeBandStdDev->setChecked(true);
+      rbtnThreeBandMinMax->setChecked(false);
+    }
+    
+if(QgsRasterLayer::PALETTED_COLOR != rasterLayer->getDrawingStyle() && 
+       QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY != rasterLayer->getDrawingStyle() && 
+       QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR != rasterLayer->getDrawingStyle() &&
+       QgsRasterLayer::PALETTED_MULTI_BAND_COLOR != rasterLayer->getDrawingStyle())
+    {
+      if(rasterLayer->getRedBandName() != tr("Not Set"))
+      {
+        leRedMin->setText(QString::number(rasterLayer->getMinimumValue(rasterLayer->getRedBandName())));
+        leRedMax->setText(QString::number(rasterLayer->getMaximumValue(rasterLayer->getRedBandName())));
+      }
+      if(rasterLayer->getGreenBandName() != tr("Not Set"))
+      {
+        leGreenMin->setText(QString::number(rasterLayer->getMinimumValue(rasterLayer->getGreenBandName())));
+        leGreenMax->setText(QString::number(rasterLayer->getMaximumValue(rasterLayer->getGreenBandName())));
+      }
+      if(rasterLayer->getBlueBandName() != tr("Not Set"))
+      {
+        leBlueMin->setText(QString::number(rasterLayer->getMinimumValue(rasterLayer->getBlueBandName())));
+        leBlueMax->setText(QString::number(rasterLayer->getMaximumValue(rasterLayer->getBlueBandName())));
+      }
+    }
+  }
+  else
+  {
+    if(rasterLayer->getUserDefinedGrayMinMax())
+    {
+      sboxSingleBandStdDev->setValue(0.0);
+      rbtnSingleBandStdDev->setChecked(false);
+      rbtnSingleBandMinMax->setChecked(true);
+    }
+    else
+    {
+      sboxSingleBandStdDev->setValue(rasterLayer->getStdDevsToPlot());
+      rbtnSingleBandStdDev->setChecked(true);
+      rbtnSingleBandMinMax->setChecked(false);
+    }
+
+    if(QgsRasterLayer::PALETTED_COLOR != rasterLayer->getDrawingStyle() && 
+       QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY != rasterLayer->getDrawingStyle() && 
+       QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR != rasterLayer->getDrawingStyle() &&
+       QgsRasterLayer::PALETTED_MULTI_BAND_COLOR != rasterLayer->getDrawingStyle())
+    {
+      if(rasterLayer->getGrayBandName() != tr("Not Set"))
+      {
+        leGrayMin->setText(QString::number(rasterLayer->getMinimumValue(rasterLayer->getGrayBandName())));
+        leGrayMax->setText(QString::number(rasterLayer->getMaximumValue(rasterLayer->getGrayBandName())));
+      }
+    }
+
+  }
+
+  //set color scaling algorithm
+  if(QgsContrastEnhancement::STRETCH_TO_MINMAX == rasterLayer->getContrastEnhancementAlgorithm())
+  {
+    cboxContrastEnhancementAlgorithm->setCurrentText(tr("Stretch To MinMax"));
+  }
+  else if(QgsContrastEnhancement::STRETCH_AND_CLIP_TO_MINMAX == rasterLayer->getContrastEnhancementAlgorithm())
+  {
+    cboxContrastEnhancementAlgorithm->setCurrentText(tr("Stretch And Clip To MinMax"));
+  }
+  else if(QgsContrastEnhancement::CLIP_TO_MINMAX == rasterLayer->getContrastEnhancementAlgorithm())
+  {
+    cboxContrastEnhancementAlgorithm->setCurrentText(tr("Clip To MinMax"));
+  }
+  else if(QgsContrastEnhancement::USER_DEFINED == rasterLayer->getContrastEnhancementAlgorithm())
+  {
+    cboxContrastEnhancementAlgorithm->setCurrentText(tr("User Defined"));
+  }
+  else
+  {
+    cboxContrastEnhancementAlgorithm->setCurrentText(tr("No Scaling"));
+  }
+
+#ifdef QGISDEBUG
+      QgsDebugMsg("QgsRasterLayerProperties::sync populate transparency tab");
+#endif
+  /*
+   * Transparent Pixel Tab
+   */
+  int myIndex = cboxTransparencyLayer->findText(rasterLayer->getTransparentLayerName());
+  if(-1 != myIndex)
+  {
+    cboxTransparencyLayer->setCurrentIndex(myIndex);
+  }
+  else
+  {
+    cboxTransparencyLayer->setCurrentIndex(cboxTransparencyLayer->findText(tr("Not Set")));
+  }
+
+  myIndex = cboxTransparencyBand->findText(rasterLayer->getTransparentBandName());
+  if(-1 != myIndex)
+  {
+    cboxTransparencyBand->setCurrentIndex(myIndex);
+  }
+  else
+  {
+    cboxTransparencyBand->setCurrentIndex(cboxTransparencyBand->findText(tr("Not Set")));
+  }
+  //add current NoDataValue to NoDataValue line edit 
+  if(rasterLayer->isNoDataValueValid())
+  {
+    leNoDataValue->setText(QString::number(rasterLayer->getNoDataValue()));
+  }
+  else
+  {
+    leNoDataValue->setText("");
+  }
+  
+  //restore colormap tab if the layer has custom classification
+  if(cboxColorMap->currentText() == tr("Custom Colormap"))
+  {
+    syncColormapTab();
+  }
+
+#ifdef QGISDEBUG
+      QgsDebugMsg("QgsRasterLayerProperties::sync populate general tab");
+#endif
+  /*
+   * General Tab
+   */
+  cboxShowDebugInfo->hide();
+
+  //these properties (layername and label) are provided by the qgsmaplayer superclass
+  leLayerSource->setText(rasterLayer->source());
+  leDisplayName->setText(rasterLayer->name());
+
+  //update the debug checkbox
+  cboxShowDebugInfo->setChecked(rasterLayer->getShowDebugOverlayFlag());
+
+  //display the raster dimensions and no data value
+  if (rasterLayerIsGdal)
+  {
+    lblColumns->setText(tr("Columns: ") + QString::number(rasterLayer->getRasterXDim()));
+    lblRows->setText(tr("Rows: ") + QString::number(rasterLayer->getRasterYDim()));
+    if(rasterLayer->isNoDataValueValid())
+    {
+      lblNoData->setText(tr("No-Data Value: ") + QString::number(rasterLayer->getNoDataValue()));
+    }
+    else
+    {
+      lblNoData->setText(tr("No-Data Value: Not Set"));
+    }
+  }
+  else if (rasterLayerIsWms)
+  {
+    // TODO: Account for fixedWidth and fixedHeight WMS layers
+    lblColumns->setText(tr("Columns: ") + tr("n/a"));
+    lblRows->setText(tr("Rows: ") + tr("n/a"));
+    lblNoData->setText(tr("No-Data Value: ") + tr("n/a"));
+  }
+
+  //get the thumbnail for the layer
+  QPixmap myQPixmap = QPixmap(pixmapThumbnail->width(),pixmapThumbnail->height());
+  rasterLayer->drawThumbnail(&myQPixmap);
+  pixmapThumbnail->setPixmap(myQPixmap);
+
+  //update the legend pixmap on this dialog
+  pixmapLegend->setPixmap(rasterLayer->getLegendQPixmap());
+  pixmapLegend->setScaledContents(true);
+  pixmapLegend->repaint(false);
+
+  //set the palette pixmap
+  pixmapPalette->setPixmap(rasterLayer->getPaletteAsPixmap());
+  pixmapPalette->setScaledContents(true);
+  pixmapPalette->repaint(false);
+
+#ifdef QGISDEBUG
+      QgsDebugMsg("QgsRasterLayerProperties::sync populate metadata tab");
+#endif
+  /*
+   * Metadata Tab
+   */
+  //populate the metadata tab's text browser widget with gdal metadata info
+  QString myStyle = QgsApplication::reportStyleSheet();
+  txtbMetadata->setHtml(rasterLayer->getMetadata());
+  txtbMetadata->document()->setDefaultStyleSheet(myStyle);
+
+} // QgsRasterLayerProperties::sync()
+
+void QgsRasterLayerProperties::syncColormapTab()
+{
+#ifdef QGISDEBUG
+      QgsDebugMsg("QgsRasterLayerProperties::sync populate color ramp tab");
+#endif
+  if(!rasterLayer)
+  {
+    return;
+  }
+  
+  if(QgsRasterLayer::COLOR_RAMP != rasterLayer->getColorShadingAlgorithm())
+  {
+    return;
+  }
+  
+  QgsColorRampShader* myRasterShaderFunction =  (QgsColorRampShader*)rasterLayer->getRasterShader()->getRasterShaderFunction();
+  if(!myRasterShaderFunction)
+  {
+    return;
+  }
+  //restore the colormap tab if layer has custom symbology
+  QList<QgsColorRampShader::ColorRampItem> myColorRampList = myRasterShaderFunction->getColorRampItemList();
+  if(myColorRampList.size() > 0)
+  {
+    QList<QgsColorRampShader::ColorRampItem>::const_iterator it;
+    for(it = myColorRampList.begin(); it != myColorRampList.end(); ++it)
+    {
+	    //restore state of colormap tab
+	    QTreeWidgetItem* newItem = new QTreeWidgetItem(mColormapTreeWidget);
+	    newItem->setText(0, QString::number(it->value, 'f'));
+	    newItem->setBackground(1, QBrush(it->color));
+	    newItem->setText(2, it->label);
+	  }
+  }
+
+  sboxNumberOfEntries->setValue(myColorRampList.size());
+
+  //restor state of 'color interpolation' combo box
+  if(QgsColorRampShader::DISCRETE == myRasterShaderFunction->getColorRampType())
+  {
+    cboxColorInterpolation->setCurrentIndex(cboxColorInterpolation->findText(tr("Discrete")));
+  }
+  else
+  {
+    cboxColorInterpolation->setCurrentIndex(cboxColorInterpolation->findText(tr("Linearly")));
+  }
+
+}
+
+bool QgsRasterLayerProperties::validUserDefinedMinMax()
+{
+  if(rbtnThreeBand->isChecked())
+  {
+    bool myDoubleOk;
+    leRedMin->text().toDouble(&myDoubleOk);
+    if(myDoubleOk)
+    {
+      leRedMax->text().toDouble(&myDoubleOk);
+      if(myDoubleOk) 
+      {
+        leGreenMin->text().toDouble(&myDoubleOk);
+        if(myDoubleOk)
+        {
+          leGreenMax->text().toDouble(&myDoubleOk);
+          if(myDoubleOk)
+          {
+            leBlueMin->text().toDouble(&myDoubleOk);
+            if(myDoubleOk)
+            {
+              leBlueMax->text().toDouble(&myDoubleOk);
+              if(myDoubleOk)
+              {
+                return true;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  else
+  {
+    bool myDoubleOk;
+    leGrayMin->text().toDouble(&myDoubleOk);
+    if(myDoubleOk)
+    {
+      leGrayMax->text().toDouble(&myDoubleOk);
+      if(myDoubleOk)
+      {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+
+/*
+ *
+ * PUBLIC AND PRIVATE SLOTS
+ *
+ */
+void QgsRasterLayerProperties::apply()
+{
+#ifdef QGISDEBUG
+      QgsDebugMsg("QgsRasterLayerProperties::apply processing symbology tab");
+#endif
+  /*
+   * Symbology Tab
+   */
   //set the appropriate render style
-  if ((grpBoxGrayscale->isEnabled())
-          && (rbtnSingleBand->isChecked()))
+  if (rbtnSingleBand->isChecked())
   {
     //
     // Grayscale
@@ -314,7 +898,7 @@ void QgsRasterLayerProperties::apply()
     if (rasterLayer->rasterLayerType == QgsRasterLayer::GRAY_OR_UNDEFINED)
     {
 
-      if (cboColorMap->currentText() != tr("Grayscale"))
+      if (cboxColorMap->currentText() != tr("Grayscale"))
       {
 #ifdef QGISDEBUG
         std::cout << "Setting Raster Drawing Style to :: SINGLE_BAND_PSEUDO_COLOR" << std::endl;
@@ -336,7 +920,7 @@ void QgsRasterLayerProperties::apply()
     //
     else if (rasterLayer->rasterLayerType == QgsRasterLayer::PALETTE)
     {
-      if (cboColorMap->currentText() != tr("Grayscale"))
+      if (cboxColorMap->currentText() != tr("Grayscale"))
       {
 #ifdef QGISDEBUG
         std::cout << "Setting Raster Drawing Style to :: PALETTED_SINGLE_BAND_PSEUDO_COLOR" << std::endl;
@@ -352,7 +936,7 @@ void QgsRasterLayerProperties::apply()
 #ifdef QGISDEBUG
 
         std::cout << "Combo value : " << cboGray->currentText().toLocal8Bit().data() << " GrayBand Mapping : " << rasterLayer->
-            getGrayBandName().toLocal8Bit().data() << std::endl;
+          getGrayBandName().toLocal8Bit().data() << std::endl;
 #endif
 
         rasterLayer->setDrawingStyle(QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY);
@@ -363,7 +947,7 @@ void QgsRasterLayerProperties::apply()
     //
     else if (rasterLayer->rasterLayerType == QgsRasterLayer::MULTIBAND)
     {
-      if (cboColorMap->currentText() != tr("Grayscale"))
+      if (cboxColorMap->currentText() != tr("Grayscale"))
       {
 #ifdef QGISDEBUG
         std::cout << "Setting Raster Drawing Style to ::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR " << std::endl;
@@ -376,7 +960,7 @@ void QgsRasterLayerProperties::apply()
 #ifdef QGISDEBUG
         std::cout << "Setting Raster Drawing Style to :: MULTI_BAND_SINGLE_BAND_GRAY" << std::endl;
         std::cout << "Combo value : " << cboGray->currentText().toLocal8Bit().data() << " GrayBand Mapping : " << rasterLayer->
-            getGrayBandName().toLocal8Bit().data() << std::endl;
+          getGrayBandName().toLocal8Bit().data() << std::endl;
 #endif
 
         rasterLayer->setDrawingStyle(QgsRasterLayer::MULTI_BAND_SINGLE_BAND_GRAY);
@@ -407,17 +991,383 @@ void QgsRasterLayerProperties::apply()
     }
 
   }
+
+  //set whether the layer histogram should be inverted
+  if (cboxInvertColorMap->isChecked())
+  {
+    rasterLayer->setInvertHistogramFlag(true);
+  }
+  else
+  {
+    rasterLayer->setInvertHistogramFlag(false);
+  }
+
+  //set transparency
+  rasterLayer->setTransparency(static_cast < unsigned int >(255 - sliderTransparency->value()));
+
+  //now set the color -> band mapping combos to the correct values
+  rasterLayer->setRedBandName(cboRed->currentText());
+  rasterLayer->setGreenBandName(cboGreen->currentText());
+  rasterLayer->setBlueBandName(cboBlue->currentText());
+  rasterLayer->setGrayBandName(cboGray->currentText());
+  rasterLayer->setTransparentBandName(cboxTransparencyBand->currentText());
+  rasterLayer->setTransparentLayerName(cboxTransparencyLayer->currentText());
+
+  //set the appropriate color shading type
+  //If USER_DEFINED do nothing, user defined can only be set programatically
+  if (cboxColorMap->currentText() == tr("Pseudocolor"))
+  {
+    rasterLayer->setColorShadingAlgorithm(QgsRasterLayer::PSEUDO_COLOR);  
+  }
+  else if (cboxColorMap->currentText() == tr("Freak Out"))
+  {
+    rasterLayer->setColorShadingAlgorithm(QgsRasterLayer::FREAK_OUT);  
+  }
+  else if (cboxColorMap->currentText() == tr("Custom Colormap"))
+  {
+    rasterLayer->setColorShadingAlgorithm(QgsRasterLayer::COLOR_RAMP);
+  }
+
+  //set the color scaling algorithm
+  //Since the maximum, minimum values are going to be set anyway, pass in false for the second parameter of setContrastEnahancementAlgorithm
+  //so the the look up tables are not generated for each band, since their parameters are about to change anyway.This will also generate the 
+  //lookup tables for the three or one band(s) that are immediately needed
+  if(cboxContrastEnhancementAlgorithm->currentText() == tr("Stretch To MinMax"))
+  {
+    rasterLayer->setContrastEnhancementAlgorithm(QgsContrastEnhancement::STRETCH_TO_MINMAX, false);
+  }
+  else if(cboxContrastEnhancementAlgorithm->currentText() == tr("Stretch And Clip To MinMax"))
+  {
+    rasterLayer->setContrastEnhancementAlgorithm(QgsContrastEnhancement::STRETCH_AND_CLIP_TO_MINMAX, false);
+  }
+  else if(cboxContrastEnhancementAlgorithm->currentText() == tr("Clip To MinMax"))
+  {
+    rasterLayer->setContrastEnhancementAlgorithm(QgsContrastEnhancement::CLIP_TO_MINMAX, false);
+  }
+  else if(QgsContrastEnhancement::USER_DEFINED == rasterLayer->getContrastEnhancementAlgorithm())
+  {
+    //do nothing
+  }
+  else
+  {
+    rasterLayer->setContrastEnhancementAlgorithm(QgsContrastEnhancement::NO_STRETCH, false);
+  }
   
+  //set the std deviations to be plotted and check for user defined Min Max values
+  if(rbtnThreeBand->isChecked())
+  {
+    //Set min max based on user defined values if all are set and stdDev is 0.0
+    if(rbtnThreeBandMinMax->isEnabled() && rbtnThreeBandMinMax->isChecked() && validUserDefinedMinMax())
+    {
+      if(rasterLayer->getRedBandName() != tr("Not Set"))
+      {
+        rasterLayer->setMinimumValue(cboRed->currentText(), leRedMin->text().toDouble(), false);
+        rasterLayer->setMaximumValue(cboRed->currentText(), leRedMax->text().toDouble());
+      }
+      if(rasterLayer->getGreenBandName() != tr("Not Set"))
+      {
+        rasterLayer->setMinimumValue(cboGreen->currentText(), leGreenMin->text().toDouble(), false);
+        rasterLayer->setMaximumValue(cboGreen->currentText(), leGreenMax->text().toDouble());
+      }
+      if(rasterLayer->getBlueBandName() != tr("Not Set"))
+      {
+        rasterLayer->setMinimumValue(cboBlue->currentText(), leBlueMin->text().toDouble(), false);
+        rasterLayer->setMaximumValue(cboBlue->currentText(), leBlueMax->text().toDouble());
+      }
+      rasterLayer->setStdDevsToPlot(0.0);
+      rasterLayer->setUserDefinedRGBMinMax(true);
+    }
+    else if(rbtnThreeBandStdDev->isEnabled() && rbtnThreeBandStdDev->isChecked())
+    {
+      rasterLayer->setStdDevsToPlot(sboxThreeBandStdDev->value());
+      rasterLayer->setUserDefinedRGBMinMax(false);
+    }
+    else
+    {
+      rasterLayer->setStdDevsToPlot(0.0);
+      rasterLayer->setUserDefinedRGBMinMax(false);
+    }
+  }
+  else
+  {
+    //Set min max based on user defined values if all are set and stdDev is 0.0
+    if(rbtnSingleBandMinMax->isEnabled() && rbtnSingleBandMinMax->isChecked() && validUserDefinedMinMax())
+    {
+      if(rasterLayer->getGrayBandName() != tr("Not Set"))
+      {
+        rasterLayer->setMinimumValue(cboGray->currentText(), leGrayMin->text().toDouble(), false);
+        rasterLayer->setMaximumValue(cboGray->currentText(), leGrayMax->text().toDouble());
+      }
+      rasterLayer->setStdDevsToPlot(0.0);
+      rasterLayer->setUserDefinedGrayMinMax(true);
+    }
+    else if(rbtnSingleBandStdDev->isEnabled() && rbtnSingleBandStdDev->isChecked())
+    {
+      rasterLayer->setStdDevsToPlot(sboxSingleBandStdDev->value());
+      rasterLayer->setUserDefinedGrayMinMax(false);
+    }
+    else
+    {
+      rasterLayer->setStdDevsToPlot(0.0);
+      rasterLayer->setUserDefinedGrayMinMax(false);
+    }
+  }
+
+#ifdef QGISDEBUG
+      QgsDebugMsg("QgsRasterLayerProperties::apply processing transparency tab");
+#endif
+  /*
+   * Transparent Pixel Tab
+   */
+  //If reset NoDataValue is checked do this first, will ignore what ever is in the LineEdit
+  if(chkboxResetNoDataValue->isChecked())
+  {
+    rasterLayer->resetNoDataValue();
+    if(rasterLayer->isNoDataValueValid())
+    {
+      leNoDataValue->setText(QString::number(rasterLayer->getNoDataValue()));
+    }
+    else
+    {
+      leNoDataValue->setText("");
+    }
+    chkboxResetNoDataValue->setChecked(false);
+  } 
+   
+  //set NoDataValue
+  bool myDoubleOk = false;
+  if("" != leNoDataValue->text())
+  {
+    double myNoDataValue = leNoDataValue->text().toDouble(&myDoubleOk);
+    if(myDoubleOk)
+    {
+      rasterLayer->setNoDataValue(myNoDataValue);
+    }
+  }
+
+  //Walk through each row in table and test value. If not valid set to 0.0 and continue building transparency list
+  if(rbtnThreeBand->isChecked() && QgsRasterLayer::MULTI_BAND_COLOR == rasterLayer->getDrawingStyle())
+  {
+    double myTransparentValue;
+    double myPercentTransparent;
+    QgsRasterTransparency::TransparentThreeValuePixel myTransparentPixel;
+    QList<QgsRasterTransparency::TransparentThreeValuePixel> myTransparentThreeValuePixelList;
+    for(int myListRunner = 0; myListRunner < tableTransparency->rowCount(); myListRunner++)
+    {
+      if(!tableTransparency->item(myListRunner, 0))
+      {
+        myTransparentPixel.red = 0.0;
+        QTableWidgetItem* newItem = new QTableWidgetItem("0.0");
+        tableTransparency->setItem(myListRunner, 0, newItem);
+      }
+      else 
+      {
+        myTransparentValue = tableTransparency->item(myListRunner, 0)->text().toDouble(&myDoubleOk);
+        if(myDoubleOk)
+        {
+          myTransparentPixel.red = myTransparentValue;
+        }
+        else 
+        {
+          myTransparentPixel.red = 0.0;
+          tableTransparency->item(myListRunner, 0)->setText("0.0");
+        }
+      }
+
+      if(!tableTransparency->item(myListRunner, 1))
+      {
+        myTransparentPixel.green = 0.0;
+        QTableWidgetItem* newItem = new QTableWidgetItem("0.0");
+        tableTransparency->setItem(myListRunner, 1, newItem);
+      }
+      else 
+      {
+        myTransparentValue = tableTransparency->item(myListRunner, 1)->text().toDouble(&myDoubleOk);
+        if(myDoubleOk)
+        {
+          myTransparentPixel.green = myTransparentValue;
+        }
+        else 
+        {
+          myTransparentPixel.green = 0.0;
+          tableTransparency->item(myListRunner, 1)->setText("0.0");
+        }
+      }
+
+      if(!tableTransparency->item(myListRunner, 2))
+      {
+        myTransparentPixel.blue = 0.0;
+        QTableWidgetItem* newItem = new QTableWidgetItem("0.0");
+        tableTransparency->setItem(myListRunner, 2, newItem);
+      }
+      else 
+      {
+        myTransparentValue = tableTransparency->item(myListRunner, 2)->text().toDouble(&myDoubleOk);
+        if(myDoubleOk)
+        {
+          myTransparentPixel.blue = myTransparentValue;
+        }
+        else 
+        {
+          myTransparentPixel.blue = 0.0;
+          tableTransparency->item(myListRunner, 2)->setText("0.0");
+        }
+      }
+
+      if(!tableTransparency->item(myListRunner, 3))
+      {
+        myTransparentPixel.percentTransparent = 100.0;
+        QTableWidgetItem* newItem = new QTableWidgetItem("100.0");
+        tableTransparency->setItem(myListRunner, 3, newItem);
+      }
+      else 
+      {
+        QString myNumberFormatter;
+        myPercentTransparent = tableTransparency->item(myListRunner, 3)->text().toDouble(&myDoubleOk);
+        if(myDoubleOk)
+        {
+          if(myPercentTransparent > 100.0)
+            myTransparentPixel.percentTransparent = 100.0;
+          else if(myPercentTransparent < 0.0)
+            myTransparentPixel.percentTransparent = 0.0;
+          else
+            myTransparentPixel.percentTransparent = myPercentTransparent;
+
+          tableTransparency->item(myListRunner, 3)->setText(myNumberFormatter.sprintf("%.2f",myTransparentPixel.percentTransparent));
+        }
+        else 
+        {
+          myTransparentPixel.percentTransparent = 100.0;
+          tableTransparency->item(myListRunner, 3)->setText("100.0");
+        }
+      }
+
+      myTransparentThreeValuePixelList.append(myTransparentPixel);
+    }
+
+    rasterLayer->getRasterTransparency()->setTransparentThreeValuePixelList(myTransparentThreeValuePixelList);
+  }
+  else
+  {
+    double myTransparentValue;
+    double myPercentTransparent;
+    QgsRasterTransparency::TransparentSingleValuePixel myTransparentPixel;
+    QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList;
+    for(int myListRunner = 0; myListRunner < tableTransparency->rowCount(); myListRunner++)
+    {
+      if(!tableTransparency->item(myListRunner, 0))
+      {
+        myTransparentPixel.pixelValue = 0.0;
+        QTableWidgetItem* newItem = new QTableWidgetItem("0.0");
+        tableTransparency->setItem(myListRunner, 0, newItem);
+      }
+      else 
+      {
+        myTransparentValue = tableTransparency->item(myListRunner, 0)->text().toDouble(&myDoubleOk);
+        if(myDoubleOk)
+        {
+          myTransparentPixel.pixelValue = myTransparentValue;
+        }
+        else 
+        {
+          myTransparentPixel.pixelValue = 0.0;
+          tableTransparency->item(myListRunner, 0)->setText("0.0");
+        }
+      }
+
+      if(!tableTransparency->item(myListRunner, 1))
+      {
+        myTransparentPixel.percentTransparent = 100.0;
+        QTableWidgetItem* newItem = new QTableWidgetItem("100.0");
+        tableTransparency->setItem(myListRunner, 1, newItem);
+      }
+      else 
+      {
+        QString myNumberFormatter;
+        myPercentTransparent = tableTransparency->item(myListRunner, 1)->text().toDouble(&myDoubleOk);
+        if(myDoubleOk)
+        {
+          if(myPercentTransparent > 100.0)
+            myTransparentPixel.percentTransparent = 100.0;
+          else if(myPercentTransparent < 0.0)
+            myTransparentPixel.percentTransparent = 0.0;
+          else
+            myTransparentPixel.percentTransparent = myPercentTransparent;
+
+          tableTransparency->item(myListRunner, 1)->setText(myNumberFormatter.sprintf("%.2f",myTransparentPixel.percentTransparent));
+        }
+        else 
+        {
+          myTransparentPixel.percentTransparent = 100.0;
+          tableTransparency->item(myListRunner, 1)->setText("100.0");
+        }
+      }
+
+      myTransparentSingleValuePixelList.append(myTransparentPixel);
+    }
+
+    rasterLayer->getRasterTransparency()->setTransparentSingleValuePixelList(myTransparentSingleValuePixelList);
+  }
+  
+#ifdef QGISDEBUG
+      QgsDebugMsg("QgsRasterLayerProperties::apply processing Colormap tab");
+#endif
+  /*
+   * ColorMap Tab
+   */
+  if(cboxColorMap->currentText() == tr("Custom Colormap"))
+  {
+    QgsColorRampShader* myRasterShaderFunction =  (QgsColorRampShader*)rasterLayer->getRasterShader()->getRasterShaderFunction();
+    if(myRasterShaderFunction)
+    {
+      //iterate through mColormapTreeWidget and set colormap info of layer
+      QList<QgsColorRampShader::ColorRampItem> mColorRampItems;
+  
+      int myTopLevelItemCount = mColormapTreeWidget->topLevelItemCount();
+      QTreeWidgetItem* myCurrentItem;
+  
+      for(int i = 0; i < myTopLevelItemCount; ++i)
+      {
+        myCurrentItem = mColormapTreeWidget->topLevelItem(i);
+        if(!myCurrentItem)
+        {
+          continue;
+        }
+        QgsColorRampShader::ColorRampItem myNewColorRampItem;
+        myNewColorRampItem.value = myCurrentItem->text(0).toDouble();
+        myNewColorRampItem.color = myCurrentItem->background(1).color();
+        myNewColorRampItem.label = myCurrentItem->text(2);
+        mColorRampItems.push_back(myNewColorRampItem);
+      }
+      myRasterShaderFunction->setColorRampItemList(mColorRampItems);
+  
+      if(cboxColorInterpolation->currentText() == tr("Discrete"))
+      {
+        myRasterShaderFunction->setColorRampType(QgsColorRampShader::DISCRETE);
+      }
+      else
+      {
+        myRasterShaderFunction->setColorRampType(QgsColorRampShader::INTERPOLATED);
+      }
+    }
+    else
+    {
+      #ifdef QGISDEBUG
+        QgsDebugMsg("QgsRasterLayerProperties::apply color ramp was NOT set because RasterShaderFunction was NULL");
+      #endif
+    }
+  }
+  
+#ifdef QGISDEBUG
+      QgsDebugMsg("QgsRasterLayerProperties::apply processing general tab");
+#endif
+  /*
+   * General Tab
+   */
   rasterLayer->setLayerName(leDisplayName->text());
-  
-  //update the legend pixmap
-  pixmapLegend->setPixmap(rasterLayer->getLegendQPixmap());
-  pixmapLegend->setScaledContents(true);
-  pixmapLegend->repaint(false);
-  
+
   //see if the user would like debug overlays
-  if (cboxShowDebugInfo->isChecked()
-          == true)
+  if (cboxShowDebugInfo->isChecked() == true)
   {
     rasterLayer->setShowDebugOverlayFlag(true);
   }
@@ -425,32 +1375,96 @@ void QgsRasterLayerProperties::apply()
   {
     rasterLayer->setShowDebugOverlayFlag(false);
   }
+
+  // set up the scale based layer visibility stuff....
+  rasterLayer->setScaleBasedVisibility(chkUseScaleDependentRendering->isChecked());
+  rasterLayer->setMinScale(spinMinimumScale->value());
+  rasterLayer->setMaxScale(spinMaximumScale->value());
+
+  //update the legend pixmap
+  pixmapLegend->setPixmap(rasterLayer->getLegendQPixmap());
+  pixmapLegend->setScaledContents(true);
+  pixmapLegend->repaint(false);
+
   //get the thumbnail for the layer
   QPixmap myQPixmap = QPixmap(pixmapThumbnail->width(),pixmapThumbnail->height());
   rasterLayer->drawThumbnail(&myQPixmap);
   pixmapThumbnail->setPixmap(myQPixmap);
-  
+
   // update symbology
   emit refreshLegend(rasterLayer->getLayerID(), false);
-  
+
   //make sure the layer is redrawn
   rasterLayer->triggerRepaint();
+
+  //Becuase Min Max values can be set during the redraw if a strech is requested we need to resync after apply
+  if(QgsContrastEnhancement::NO_STRETCH != rasterLayer->getContrastEnhancementAlgorithm())
+  {
+
+    //set the stdDevs and min max values
+    if(rbtnThreeBand->isChecked())
+   {
+      if(rbtnThreeBandStdDev->isEnabled())
+      {
+        sboxThreeBandStdDev->setValue(rasterLayer->getStdDevsToPlot());
+      }
+
+      if(rbtnThreeBandMinMax->isEnabled())
+      {
+        if(rasterLayer->getRedBandName() != tr("Not Set"))
+        {
+          leRedMin->setText(QString::number(rasterLayer->getMinimumValue(rasterLayer->getRedBandName())));
+          leRedMax->setText(QString::number(rasterLayer->getMaximumValue(rasterLayer->getRedBandName())));
+        } 
+        if(rasterLayer->getGreenBandName() != tr("Not Set"))
+        {
+          leGreenMin->setText(QString::number(rasterLayer->getMinimumValue(rasterLayer->getGreenBandName())));
+          leGreenMax->setText(QString::number(rasterLayer->getMaximumValue(rasterLayer->getGreenBandName())));
+        }
+        if(rasterLayer->getBlueBandName() != tr("Not Set"))
+        {
+          leBlueMin->setText(QString::number(rasterLayer->getMinimumValue(rasterLayer->getBlueBandName())));
+          leBlueMax->setText(QString::number(rasterLayer->getMaximumValue(rasterLayer->getBlueBandName())));
+        }
+      }
+    }
+    else
+    {
+      if(rbtnSingleBandStdDev->isEnabled())
+      {
+        sboxSingleBandStdDev->setValue(rasterLayer->getStdDevsToPlot());
+      }
+
+      if(rbtnSingleBandMinMax->isEnabled())
+      {
+        if(rasterLayer->getGrayBandName() != tr("Not Set"))
+        {
+          leGrayMin->setText(QString::number(rasterLayer->getMinimumValue(rasterLayer->getGrayBandName())));
+          leGrayMax->setText(QString::number(rasterLayer->getMaximumValue(rasterLayer->getGrayBandName())));
+        }
+      }
+    }
+  }
+
+  //GUI Cleanup
+  //Once the user has applied the changes, user defined function will not longer be a valid option so it should be
+  //removed from the list
+  if(-1 != cboxColorMap->findText(tr("User Defined")) && tr("User Defined") != cboxColorMap->currentText())
+  {
+    cboxColorMap->removeItem(cboxColorMap->findText(tr("User Defined")));
+  }
+  
+  if(-1 != cboxContrastEnhancementAlgorithm->findText(tr("User Defined")) && tr("User Defined") != cboxContrastEnhancementAlgorithm->currentText())
+  {
+    cboxContrastEnhancementAlgorithm->removeItem(cboxContrastEnhancementAlgorithm->findText(tr("User Defined")));
+  }
+
 }//apply
 
-void QgsRasterLayerProperties::sliderTransparency_valueChanged(int theValue)
+void QgsRasterLayerProperties::on_buttonBox_helpRequested()
 {
-  //set the transparency percentage label to a suitable value
-  int myInt = static_cast < int >((theValue / 255.0) * 100);  //255.0 to prevent integer division
-  lblTransparencyPercent->setText(QString::number(myInt) + "%");
-}//sliderTransparency_valueChanged
-
-
-void QgsRasterLayerProperties::on_rbtnSingleBand_toggled(bool)
-{}
-
-
-void QgsRasterLayerProperties::on_rbtnThreeBand_toggled(bool)
-{}
+  QgsContextHelp::run(context_id);
+}
 
 void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 {
@@ -472,7 +1486,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   //
   // Ask raster layer to build the pyramids
   //
-  
+
   // let the user know we're going to possibly be taking a while
   QApplication::setOverrideCursor(Qt::WaitCursor);
   QString res = rasterLayer->buildPyramids(myPyramidList,cboResamplingMethod->currentText());
@@ -482,21 +1496,21 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
     if (res == "ERROR_WRITE_ACCESS")
     {
       QMessageBox::warning(this, tr("Write access denied"),
-                           tr("Write access denied. Adjust the file permissions and try again.\n\n") );
+          tr("Write access denied. Adjust the file permissions and try again.\n\n") );
     }
     else if (res == "ERROR_WRITE_FORMAT")
     {
       QMessageBox::warning(this, tr("Building pyramids failed."),
-                           tr("The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again.") );
+          tr("The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again.") );
     }
     else if (res == "FAILED_NOT_SUPPORTED")
     {
       QMessageBox::warning(this, tr("Building pyramids failed."),
-                           tr("Building pyramid overviews is not supported on this type of raster.") );
+          tr("Building pyramid overviews is not supported on this type of raster.") );
     }
   }
 
-  
+
   //
   // repopulate the pyramids list
   //
@@ -507,20 +1521,20 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 
   QgsRasterLayer::RasterPyramidList::iterator myRasterPyramidIterator;
   for ( myRasterPyramidIterator=myPyramidList.begin();
-          myRasterPyramidIterator != myPyramidList.end();
-          ++myRasterPyramidIterator )
+      myRasterPyramidIterator != myPyramidList.end();
+      ++myRasterPyramidIterator )
   {
     if ((*myRasterPyramidIterator).existsFlag==true)
     {
       lbxPyramidResolutions->insertItem(myPyramidPixmap,
-              QString::number((*myRasterPyramidIterator).xDimInt) + QString(" x ") + 
-              QString::number((*myRasterPyramidIterator).yDimInt)); 
+          QString::number((*myRasterPyramidIterator).xDim) + QString(" x ") + 
+          QString::number((*myRasterPyramidIterator).yDim)); 
     }
     else
     {
       lbxPyramidResolutions->insertItem(myNoPyramidPixmap,
-              QString::number((*myRasterPyramidIterator).xDimInt) + QString(" x ") + 
-              QString::number((*myRasterPyramidIterator).yDimInt)); 
+          QString::number((*myRasterPyramidIterator).xDim) + QString(" x ") + 
+          QString::number((*myRasterPyramidIterator).yDim)); 
     }
   }
   //update the legend pixmap
@@ -533,183 +1547,243 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   txtbMetadata->document()->setDefaultStyleSheet(myStyle);
 }
 
-
-/**
-  @note moved from ctor
-
-  Previously this dialog was created anew with each right-click pop-up menu
-  invokation.  Changed so that the dialog always exists after first
-  invocation, and is just re-synchronized with its layer's state when
-  re-shown.
-
-*/
-void QgsRasterLayerProperties::sync()
+void QgsRasterLayerProperties::on_cboBlue_currentIndexChanged(const QString& theText)
 {
-  cboxShowDebugInfo->hide();
-
-  //get the thumbnail for the layer
-  QPixmap myQPixmap = QPixmap(pixmapThumbnail->width(),pixmapThumbnail->height());
-  rasterLayer->drawThumbnail(&myQPixmap);
-  pixmapThumbnail->setPixmap(myQPixmap);
-
-  //populate the metadata tab's text browser widget with gdal metadata info
-  QString myStyle = QgsApplication::reportStyleSheet();
-  txtbMetadata->setHtml(rasterLayer->getMetadata());
-  txtbMetadata->document()->setDefaultStyleSheet(myStyle);
-  //tabSymbology->removePage(tabMetadata);
-
-  //display the raster dimensions and no data value
-  if (rasterLayerIsGdal)
+  if(tr("Not Set") != theText)
   {
-    lblColumns->setText(tr("Columns: ") + QString::number(rasterLayer->getRasterXDim()));
-    lblRows->setText(tr("Rows: ") + QString::number(rasterLayer->getRasterYDim()));
-    lblNoData->setText(tr("No-Data Value: ") + QString::number(rasterLayer->getNoDataValue()));
+    leBlueMin->setText(QString::number(rasterLayer->getMinimumValue(theText)));
+    leBlueMax->setText(QString::number(rasterLayer->getMaximumValue(theText)));
   }
-  else if (rasterLayerIsWms)
+}
+
+void QgsRasterLayerProperties::on_cboGray_currentIndexChanged(const QString& theText)
+{
+  if(tr("Not Set") != theText)
   {
-    // TODO: Account for fixedWidth and fixedHeight WMS layers
-    lblColumns->setText(tr("Columns: ") + tr("n/a"));
-    lblRows->setText(tr("Rows: ") + tr("n/a"));
-    lblNoData->setText(tr("No-Data Value: ") + tr("n/a"));
+    leGrayMin->setText(QString::number(rasterLayer->getMinimumValue(theText)));
+    leGrayMax->setText(QString::number(rasterLayer->getMaximumValue(theText)));
   }
+}
 
-  //these properties (layername and label) are provided by the qgsmaplayer superclass
-  leLayerSource->setText(rasterLayer->source());
-  leDisplayName->setText(rasterLayer->name());
-
-  //update the debug checkbox
-  cboxShowDebugInfo->setChecked(rasterLayer->getShowDebugOverlayFlag());
-
-  //update the legend pixmap on this dialog
-  pixmapLegend->setPixmap(rasterLayer->getLegendQPixmap());
-  pixmapLegend->setScaledContents(true);
-  pixmapLegend->repaint(false);
-
-  //set the palette pixmap
-  pixmapPalette->setPixmap(rasterLayer->getPaletteAsPixmap());
-  pixmapPalette->setScaledContents(true);
-  pixmapPalette->repaint(false);
-
-  //set the transparency slider
-  sliderTransparency->setValue(255 - rasterLayer->getTransparency());
-  //update the transparency percentage label
-  sliderTransparency_valueChanged(255 - rasterLayer->getTransparency());
-  //decide whether user can change rgb settings
-
-  switch (rasterLayer->getDrawingStyle())
+void QgsRasterLayerProperties::on_cboGreen_currentIndexChanged(const QString& theText)
+{
+  if(tr("Not Set") != theText)
   {
-      case QgsRasterLayer::SINGLE_BAND_GRAY:
-          rbtnThreeBand->setEnabled(false);
-          rbtnSingleBand->setEnabled(true);
-          rbtnSingleBand->toggle();
-          break;
-      case QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR:
-          rbtnThreeBand->setEnabled(false);
-          rbtnSingleBand->setEnabled(true);
-          rbtnSingleBand->toggle();
-          break;
-      case QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY:
-          rbtnThreeBand->setEnabled(true);
-          rbtnSingleBand->setEnabled(true);
-          rbtnSingleBand->toggle();
-          break;
-      case QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR:
-          rbtnThreeBand->setEnabled(true);
-          rbtnSingleBand->setEnabled(true);
-          rbtnSingleBand->toggle();
-          break;
-      case QgsRasterLayer::PALETTED_MULTI_BAND_COLOR:
-          rbtnThreeBand->setEnabled(true);
-          rbtnSingleBand->setEnabled(true);
-          rbtnThreeBand->toggle();
-          break;
-      case QgsRasterLayer::MULTI_BAND_SINGLE_BAND_GRAY:
-          rbtnThreeBand->setEnabled(true);
-          rbtnSingleBand->setEnabled(true);
-          rbtnSingleBand->toggle();
-          break;
-      case QgsRasterLayer::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR:
-          rbtnThreeBand->setEnabled(true);
-          rbtnSingleBand->setEnabled(true);
-          rbtnSingleBand->toggle();
-          break;
-      case QgsRasterLayer::MULTI_BAND_COLOR:
-          rbtnThreeBand->setEnabled(true);
-          rbtnSingleBand->setEnabled(true);
-          rbtnThreeBand->toggle();
-          break;
-      default:
-          break;
+    leGreenMin->setText(QString::number(rasterLayer->getMinimumValue(theText)));
+    leGreenMax->setText(QString::number(rasterLayer->getMaximumValue(theText)));
   }
+}
 
-
-  if (rasterLayer->getRasterLayerType() == QgsRasterLayer::MULTIBAND)
+void QgsRasterLayerProperties::on_cboRed_currentIndexChanged(const QString& theText)
+{
+  if(tr("Not Set") != theText)
   {
-    //multiband images can also be rendered as single band (using only one of the bands)
-    txtSymologyNotes->
-        setText(tr
-                ("<h3>Multiband Image Notes</h3><p>This is a multiband image. You can choose to render it as grayscale or color (RGB). For color images, you can associate bands to colors arbitarily. For example, if you have a seven band landsat image, you may choose to render it as:</p><ul><li>Visible Blue (0.45 to 0.52 microns) - not mapped</li><li>Visible Green (0.52 to 0.60 microns) - not mapped</li></li>Visible Red (0.63 to 0.69 microns) - mapped to red in image</li><li>Near Infrared (0.76 to 0.90 microns) - mapped to green in image</li><li>Mid Infrared (1.55 to 1.75 microns) - not mapped</li><li>Thermal Infrared (10.4 to 12.5 microns) - not mapped</li><li>Mid Infrared (2.08 to 2.35 microns) - mapped to blue in image</li></ul>"));
+    leRedMin->setText(QString::number(rasterLayer->getMinimumValue(theText)));
+    leRedMax->setText(QString::number(rasterLayer->getMaximumValue(theText)));
   }
-  else if (rasterLayer->getRasterLayerType() == QgsRasterLayer::PALETTE)
-  {
-    //paletted images (e.g. tif) can only be rendered as three band rgb images
-    txtSymologyNotes->
-        setText(tr
-                ("<h3>Paletted Image Notes</h3> <p>This image uses a fixed color palette. You can remap these colors in different combinations e.g.</p><ul><li>Red - blue in image</li><li>Green - blue in image</li><li>Blue - green in image</li></ul>"));
-  }
-  else                        //only grayscale settings allowed
-  {
-    //grayscale images can only be rendered as singleband
-    txtSymologyNotes->
-        setText(tr
-                ("<h3>Grayscale Image Notes</h3> <p>You can remap these grayscale colors to a pseudocolor image using an automatically generated color ramp.</p>"));
-  }
+}
 
+void QgsRasterLayerProperties::on_pbnAddValuesFromDisplay_clicked()
+{
+  QMessageBox::warning(this, "Function Not Available", "This functionality will be added soon");
+}
 
-  //
-  // Populate the various controls on the form
-  //
-  if (rasterLayer->getDrawingStyle() == QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR ||
-          rasterLayer->getDrawingStyle() == QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR ||
-          rasterLayer->getDrawingStyle() == QgsRasterLayer::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR)
+void QgsRasterLayerProperties::on_pbnAddValuesManually_clicked()
+{
+  tableTransparency->insertRow(tableTransparency->rowCount());
+  tableTransparency->setItem(tableTransparency->rowCount() - 1, tableTransparency->columnCount() - 1, new QTableWidgetItem("100.0"));
+}
+
+void QgsRasterLayerProperties::on_pbnChangeSpatialRefSys_clicked()
+{
+
+  QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector(this);
+  mySelector->setSelectedSRSID(rasterLayer->srs().srsid());
+  if(mySelector->exec())
   {
-    if(rasterLayer->getColorRampingType()==QgsRasterLayer::BLUE_GREEN_RED)
+    QgsSpatialRefSys srs(mySelector->getCurrentSRSID(), QgsSpatialRefSys::QGIS_SRSID);
+    rasterLayer->setSrs(srs);
+  }
+  else
+  {
+    QApplication::restoreOverrideCursor();
+  }
+  delete mySelector;
+
+  leSpatialRefSys->setText(rasterLayer->srs().proj4String());
+}
+
+void QgsRasterLayerProperties::on_cboxColorMap_currentIndexChanged(const QString& theText)
+{
+  if(theText == tr("Pseudocolor") || theText == tr("Freak Out"))
+  {
+    tabBar->setTabEnabled(tabBar->indexOf(tabPageColormap), FALSE);
+    rbtnSingleBandMinMax->setEnabled(false);
+    rbtnSingleBandStdDev->setEnabled(true);
+    sboxSingleBandStdDev->setEnabled(true);
+    pbtnLoadMinMax->setEnabled(false);
+    cboxContrastEnhancementAlgorithm->setEnabled(false);
+    labelContrastEnhancement->setEnabled(false);
+  }
+  else if(theText == tr("Custom Colormap"))
+  {
+    tabBar->setTabEnabled(tabBar->indexOf(tabPageColormap), TRUE);
+    rbtnSingleBandMinMax->setEnabled(false);
+    rbtnSingleBandStdDev->setEnabled(false);
+    sboxSingleBandStdDev->setEnabled(false);
+    pbtnLoadMinMax->setEnabled(false);
+    cboxContrastEnhancementAlgorithm->setEnabled(false);
+    labelContrastEnhancement->setEnabled(false);
+  }
+  else if(theText == tr("User Defined"))
+  {
+    tabBar->setTabEnabled(tabBar->indexOf(tabPageColormap), FALSE);
+    rbtnSingleBandMinMax->setEnabled(true);
+    rbtnSingleBandStdDev->setEnabled(true);
+    sboxSingleBandStdDev->setEnabled(true);
+    pbtnLoadMinMax->setEnabled(true);
+    cboxContrastEnhancementAlgorithm->setEnabled(false);
+    labelContrastEnhancement->setEnabled(false);
+  }
+  else
+  {
+    tabBar->setTabEnabled(tabBar->indexOf(tabPageColormap), FALSE);
+    rbtnSingleBandMinMax->setEnabled(true);
+    rbtnSingleBandStdDev->setEnabled(true);
+    sboxSingleBandStdDev->setEnabled(true);
+    pbtnLoadMinMax->setEnabled(true);
+    cboxContrastEnhancementAlgorithm->setEnabled(true);
+    labelContrastEnhancement->setEnabled(true);
+  }
+}
+
+void QgsRasterLayerProperties::on_cboxTransparencyLayer_currentIndexChanged(const QString& theText)
+{
+  if(theText == tr("Not Set"))
+  {
+    cboxTransparencyBand->clear();
+    cboxTransparencyBand->insertItem(tr("Not Set"));
+  }
+  else
+  {
+    std::map<QString, QgsMapLayer *> myLayers = QgsMapLayerRegistry::instance()->mapLayers();
+    std::map<QString, QgsMapLayer *>::iterator it;
+    for(it = myLayers.begin(); it != myLayers.end(); it++)
     {
-      cboColorMap->setCurrentText(tr("Pseudocolor"));
+      if(theText == it->second->name() && QgsMapLayer::RASTER == it->second->type())
+      {
+        QgsRasterLayer* myRasterLayer = (QgsRasterLayer*)it->second;
+        int myBandCount = myRasterLayer->getBandCount();
+        cboxTransparencyBand->clear();
+        cboxTransparencyBand->insertItem(tr("Not Set"));
+        for(int bandRunner = 1; bandRunner <= myBandCount; bandRunner++)
+        {
+          cboxTransparencyBand->insertItem(myRasterLayer->getRasterBandName(bandRunner));
+        }
+        break;
+      }
+    }
+  }
+}
+
+void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
+{
+
+  QString myNumberFormatter;
+  if(rbtnThreeBand->isChecked() && QgsRasterLayer::PALETTED_COLOR != rasterLayer->getDrawingStyle() && 
+                                   QgsRasterLayer::PALETTED_MULTI_BAND_COLOR != rasterLayer->getDrawingStyle())
+  {
+    tableTransparency->clear();
+    tableTransparency->setColumnCount(4);
+    tableTransparency->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Red")));
+    tableTransparency->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Green")));
+    tableTransparency->setHorizontalHeaderItem(2, new QTableWidgetItem(tr("Blue")));
+    tableTransparency->setHorizontalHeaderItem(3, new QTableWidgetItem(tr("Percent Transparent")));
+    if(rasterLayer->isNoDataValueValid())
+    {
+      tableTransparency->insertRow(tableTransparency->rowCount());
+      tableTransparency->setItem(0, 0, new QTableWidgetItem(myNumberFormatter.sprintf("%.2f",rasterLayer->getNoDataValue())));
+      tableTransparency->setItem(0, 1, new QTableWidgetItem(myNumberFormatter.sprintf("%.2f",rasterLayer->getNoDataValue())));
+      tableTransparency->setItem(0, 2, new QTableWidgetItem(myNumberFormatter.sprintf("%.2f",rasterLayer->getNoDataValue())));
+      tableTransparency->setItem(0, 3, new QTableWidgetItem("100.0"));
+    }
+  }
+  else
+  {
+    tableTransparency->clear();
+    tableTransparency->setColumnCount(2);
+    if(QgsRasterLayer::PALETTED_COLOR != rasterLayer->getDrawingStyle() && 
+       QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY != rasterLayer->getDrawingStyle() && 
+       QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR != rasterLayer->getDrawingStyle() &&
+       QgsRasterLayer::PALETTED_MULTI_BAND_COLOR != rasterLayer->getDrawingStyle())
+    {
+      tableTransparency->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Gray")));
     }
     else
     {
-      cboColorMap->setCurrentText(tr("Freak Out"));
+      tableTransparency->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Indexed Value")));
+    }
+    tableTransparency->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Percent Transparent")));
+
+    if(rasterLayer->isNoDataValueValid())
+    {
+      tableTransparency->insertRow(tableTransparency->rowCount());
+      tableTransparency->setItem(0, 0, new QTableWidgetItem(myNumberFormatter.sprintf("%.2f",rasterLayer->getNoDataValue())));
+      tableTransparency->setItem(0, 1, new QTableWidgetItem("100.0"));
     }
 
   }
-  else
+}
+
+void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
+{
+  QString myFilename = QFileDialog::getSaveFileName(this, tr("Save file"), "/", tr("Textfile (*.txt)"));
+  if(!myFilename.isEmpty())
   {
-    cboColorMap->setCurrentText(tr("Grayscale"));
+    if(!myFilename.endsWith(".txt", Qt::CaseInsensitive))
+    {
+      myFilename = myFilename + ".txt";
+    }
+
+    QFile myOutputFile(myFilename);
+    if (myOutputFile.open(QFile::WriteOnly))
+    {
+      QTextStream myOutputStream(&myOutputFile);
+      myOutputStream << "# " << tr("QGIS Generated Transparent Pixel Value Export File") << "\n";
+      if(rbtnThreeBand->isChecked() && QgsRasterLayer::MULTI_BAND_COLOR == rasterLayer->getDrawingStyle())
+      {
+        myOutputStream << "#\n#\n# " << tr("Red") << "\t" << tr("Green") << "\t" << tr("Blue") << "\t" << tr("Percent Transparent");
+        for(int myTableRunner = 0; myTableRunner < tableTransparency->rowCount(); myTableRunner++)
+        {
+          myOutputStream << "\n" << tableTransparency->item(myTableRunner, 0)->text() << "\t" << tableTransparency->item(myTableRunner, 1)->text() << "\t" << tableTransparency->item(myTableRunner, 2)->text() << "\t" << tableTransparency->item(myTableRunner, 3)->text();
+        }
+      }
+      else
+      {
+        if(QgsRasterLayer::PALETTED_COLOR != rasterLayer->getDrawingStyle() && 
+           QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY != rasterLayer->getDrawingStyle() && 
+           QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR != rasterLayer->getDrawingStyle() &&
+           QgsRasterLayer::PALETTED_MULTI_BAND_COLOR != rasterLayer->getDrawingStyle())
+        {
+          myOutputStream << "#\n#\n# " << tr("Gray") << "\t" << tr("Percent Transparent");
+        }
+        else
+        {
+          myOutputStream << "#\n#\n# " << tr("Indexed Value") << "\t" << tr("Percent Transparent");
+        }
+
+        for(int myTableRunner = 0; myTableRunner < tableTransparency->rowCount(); myTableRunner++)
+        {
+          myOutputStream << "\n" << tableTransparency->item(myTableRunner, 0)->text() << "\t" << tableTransparency->item(myTableRunner, 1)->text();
+        }
+      }
+    }
+    else
+    {
+      QMessageBox::warning(this, tr("Write access denied"), tr("Write access denied. Adjust the file permissions and try again.\n\n") );
+    }
   }
-  //set whether the layer histogram should be inverted
-  if (rasterLayer->getInvertHistogramFlag())
-  {
-    cboxInvertColorMap->setChecked(true);
-  }
-  else
-  {
-    cboxInvertColorMap->setChecked(false);
-  }
-
-  double myStdDevsDouble = rasterLayer->getStdDevsToPlot();
-  cboStdDev->setCurrentText(QString::number(myStdDevsDouble));
-
-
-  //now set the combos to the correct values
-  cboRed->setCurrentText(rasterLayer->getRedBandName());
-  cboGreen->setCurrentText(rasterLayer->getGreenBandName());
-  cboBlue->setCurrentText(rasterLayer->getBlueBandName());
-  cboGray->setCurrentText(rasterLayer->getGrayBandName());
-  cboTransparent->setCurrentText(rasterLayer->getTransparentBandName());
-
-
-} // QgsRasterLayerProperties::sync()
+}
 
 void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
 {
@@ -722,8 +1796,8 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   // if needed
   int mySelectionCount=0;
   for (int myIteratorInt = 1;
-          myIteratorInt <= myBandCountInt;
-          ++myIteratorInt)
+      myIteratorInt <= myBandCountInt;
+      ++myIteratorInt)
   {
     QgsRasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);
     Q3ListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
@@ -761,7 +1835,6 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   long myCellCount = rasterLayer->getRasterXDim() * rasterLayer->getRasterYDim();
 #endif
 
-
 #ifdef QGISDEBUG
   std::cout << "Computing histogram minima and maxima" << std::endl;
 #endif
@@ -776,19 +1849,20 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   double myYAxisMin=0;
   int myXAxisMin=0;
   int myXAxisMax=0;
+  bool myFirstItemFlag=true;
   for (int myIteratorInt = 1;
-          myIteratorInt <= myBandCountInt;
-          ++myIteratorInt)
+      myIteratorInt <= myBandCountInt;
+      ++myIteratorInt)
   {
     QgsRasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);
     //calculate the x axis min max
-    if (myRasterBandStats.minValDouble < myXAxisMin || myIteratorInt==1)
+    if (myRasterBandStats.minVal < myXAxisMin || myIteratorInt==1)
     {
-      myXAxisMin=static_cast < unsigned int >(myRasterBandStats.minValDouble);
+      myXAxisMin=static_cast < unsigned int >(myRasterBandStats.minVal);
     }
-    if (myRasterBandStats.maxValDouble < myXAxisMax || myIteratorInt==1)
+    if (myRasterBandStats.maxVal < myXAxisMax || myIteratorInt==1)
     {
-      myXAxisMax=static_cast < unsigned int >(myRasterBandStats.maxValDouble);
+      myXAxisMax=static_cast < unsigned int >(myRasterBandStats.maxVal);
     }
     Q3ListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
     if ( myItem->isSelected() )
@@ -811,7 +1885,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
 #ifdef QGISDEBUG
         std::cout << "Testing if " << myBinValue << " is less than " << myYAxisMin  << "or greater then " <<myYAxisMax  <<  std::endl;
 #endif
-        if ( myBin==0)
+        if ( myBin==0 && myFirstItemFlag)
         {
           myYAxisMin = myBinValue;
           myYAxisMax = myBinValue;
@@ -826,6 +1900,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
           myYAxisMin = myBinValue;
         }
       }
+      myFirstItemFlag=false;
     }
   }
 #ifdef QGISDEBUG
@@ -844,7 +1919,8 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   // in order to make things work in Qt4, doesn't break things in Qt3.
   //QPainter myPainter(&myPixmap, this);
   QPainter myPainter(&myPixmap);
-
+  //anti alias lines in the graph
+  myPainter.setRenderHint(QPainter::Antialiasing);
   //determine labels sizes and draw them
   QFont myQFont("arial", 8, QFont::Normal);
   QFontMetrics myFontMetrics( myQFont );
@@ -870,7 +1946,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   // Now calculate the graph drawable area after the axis labels have been taken
   // into account
   //
-  int myGraphImageWidth =myImageWidth-myYGutterWidth; 
+  int myGraphImageWidth = myImageWidth-myYGutterWidth; 
   int myGraphImageHeight = myImageHeight-myXGutterHeight; 
 
   //find out how wide to draw bars when in bar chart mode
@@ -881,9 +1957,9 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   //now draw actual graphs
   //
   if (rasterLayer->getRasterLayerType()
-          == QgsRasterLayer::PALETTE) //paletted layers have hard coded color entries
+      == QgsRasterLayer::PALETTE) //paletted layers have hard coded color entries
   {
-    QPolygon myPointArray(myLastBinWithData);
+    QPolygonF myPolygon;
     QgsColorTable *myColorTable=rasterLayer->colorTable(1);
 #ifdef QGISDEBUG
     std::cout << "Making paletted image histogram....computing band stats" << std::endl;
@@ -906,66 +1982,80 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
       {  
         myY=static_cast<int>(((double)myBinValue/(double)myYAxisMax)*myGraphImageHeight);
       }
-      
+
       //see wehter to draw something each loop or to save up drawing for after iteration
       if (myGraphType==BAR_CHART)
       {
-	//determin which color to draw the bar
-	int c1, c2, c3;
-	// Take middle of the interval for color
-	// TODO: this is not precise
-	double myInterval = (myXAxisMax - myXAxisMin) / myLastBinWithData;
-	double myMiddle = myXAxisMin + myBin * myInterval + myInterval/2;
+        //determin which color to draw the bar
+        int c1, c2, c3;
+        // Take middle of the interval for color
+        // TODO: this is not precise
+        double myInterval = (myXAxisMax - myXAxisMin) / myLastBinWithData;
+        double myMiddle = myXAxisMin + myBin * myInterval + myInterval/2;
 
 #ifdef QGISDEBUG
-	std::cout << "myMiddle = " << myMiddle << std::endl;
+        std::cout << "myMiddle = " << myMiddle << std::endl;
 #endif
-	
-	bool found = myColorTable->color ( myMiddle, &c1, &c2, &c3 );
-	if ( !found ) {
-	    std::cout << "Color not found" << std::endl;
-	    c1 = c2 = c3 = 180; // grey
-	}
-	  
+
+        bool found = myColorTable->color ( myMiddle, &c1, &c2, &c3 );
+        if ( !found ) {
+          std::cout << "Color not found" << std::endl;
+          c1 = c2 = c3 = 180; // grey
+        }
+
 #ifdef QGISDEBUG
-	std::cout << "c1 = " << c1 << " c2 = " << c2 << " c3 = " << c3 << std::endl;
+        std::cout << "c1 = " << c1 << " c2 = " << c2 << " c3 = " << c3 << std::endl;
 #endif
-	  
+
         //draw the bar
         //QBrush myBrush(QColor(c1,c2,c3));
-	myPainter.setBrush(QColor(c1,c2,c3));
+        myPainter.setBrush(QColor(c1,c2,c3));
         myPainter.setPen(QColor(c1,c2,c3));
 #ifdef QGISDEBUG
         std::cout << "myX = " << myX << " myY = " << myY << std::endl;
         std::cout << "rect: " << myX+myYGutterWidth << ", " << myImageHeight-(myY+myXGutterHeight)
-	          << ", " << myBarWidth << ", " << myY << std::endl;
+          << ", " << myBarWidth << ", " << myY << std::endl;
 #endif
         myPainter.drawRect(myX+myYGutterWidth,myImageHeight-(myY+myXGutterHeight),myBarWidth,myY);
       }
       //store this point in our line too
       myY = myGraphImageHeight - myY;
-      myPointArray.setPoint(myBin, myX+myYGutterWidth, myY-myXGutterHeight);
+      myPolygon << QPointF( myX+myYGutterWidth, myY-myXGutterHeight);
     }
     //draw a line on the graph along the bar peaks; 
     if (myGraphType==LINE_CHART)
     {
+      //close of the point array so it makes a nice polygon
+      //bottom right point
+      myPolygon << QPointF( 
+          myImageWidth, 
+          myImageHeight-myXGutterHeight);
+      //bottom left point
+      myPolygon << QPointF( 
+          myYGutterWidth, 
+          myImageHeight-myXGutterHeight);
       myPainter.setPen( Qt::black );
-      myPainter.drawPolyline(myPointArray);
+      //set a gradient fill for the path
+      QLinearGradient myGradient = greenGradient();
+      myPainter.setBrush(myGradient);
+      QPainterPath myPath;
+      myPath.addPolygon(myPolygon);
+      myPainter.drawPath(myPath);
     }
   }
   else
   {
 
     for (int myIteratorInt = 1;
-            myIteratorInt <= myBandCountInt;
-            ++myIteratorInt)
+        myIteratorInt <= myBandCountInt;
+        ++myIteratorInt)
     {
       QgsRasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);
       Q3ListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
       if ( myItem->isSelected() )
       {
 
-        QPolygon myPointArray(myLastBinWithData);
+        QPolygonF myPolygon;
         for (int myBin = 0; myBin <myLastBinWithData; myBin++)
         {
           double myBinValue = myRasterBandStats.histogramVector->at(myBin);
@@ -1030,48 +2120,71 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
           else //line graph
           {
             myY = myGraphImageHeight - myY;
-            myPointArray.setPoint(myBin, myX+myYGutterWidth, myY);
+            myPolygon << QPointF(myX+myYGutterWidth, myY);
           }
         }
         if (myGraphType==LINE_CHART)
         {
+          QLinearGradient myGradient;
           if (myBandCountInt==1) //draw single band images with black
           {
             myPainter.setPen( Qt::black );
+            myGradient = grayGradient();
           }
           else if (myIteratorInt==1)
           {
             myPainter.setPen( Qt::red );
+            myGradient = redGradient();
           }
           else if (myIteratorInt==2)
           {
             myPainter.setPen( Qt::green );
+            myGradient = greenGradient();
           }
           else if (myIteratorInt==3)
           {
             myPainter.setPen( Qt::blue );
+            myGradient = blueGradient();
           }
           else if (myIteratorInt==4)
           {
             myPainter.setPen( Qt::magenta );
+            myGradient = grayGradient();
           }
           else if (myIteratorInt==5)
           {
             myPainter.setPen( Qt::darkRed );
+            myGradient = grayGradient();
           }
           else if (myIteratorInt==6)
           {
             myPainter.setPen( Qt::darkGreen );
+            myGradient = grayGradient();
           }
           else if (myIteratorInt==7)
           {
             myPainter.setPen( Qt::darkBlue );
+            myGradient = grayGradient();
           }
           else
           {
             myPainter.setPen( Qt::gray );
+            myGradient = grayGradient();
           }
-          myPainter.drawPolyline(myPointArray);
+          //close of the point array so it makes a nice polygon
+          //bottom right point
+          myPolygon << QPointF( 
+              myImageWidth, 
+              myImageHeight-myXGutterHeight);
+          //bottom left point
+          myPolygon << QPointF( 
+              myYGutterWidth, 
+              myImageHeight-myXGutterHeight);
+          myPainter.setPen( Qt::black );
+          myPainter.setBrush(myGradient);
+          QPainterPath myPath;
+          myPath.addPolygon(myPolygon);
+          myPainter.drawPath(myPath);
         }
       }
     }
@@ -1084,12 +2197,12 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   myPainter.setPen( Qt::gray );
   for (int i=0;i<myXDivisions;++i)
   {
-    QPolygon myPointArray(4);
-    myPointArray.setPoint(0,(i*myXDivisions)+myYGutterWidth , myImageHeight-myXGutterHeight);
-    myPointArray.setPoint(1,(i*myXDivisions)+myYGutterWidth , myImageHeight-(myXGutterHeight-5));
-    myPointArray.setPoint(2,(i*myXDivisions)+myYGutterWidth , myImageHeight-myXGutterHeight);
-    myPointArray.setPoint(3,((i+1)*myXDivisions)+myYGutterWidth , myImageHeight-myXGutterHeight);
-    myPainter.drawPolyline(myPointArray);
+    QPolygon myPolygon;
+    myPolygon << QPoint((i*myXDivisions)+myYGutterWidth , myImageHeight-myXGutterHeight);
+    myPolygon << QPoint((i*myXDivisions)+myYGutterWidth , myImageHeight-(myXGutterHeight-5));
+    myPolygon << QPoint((i*myXDivisions)+myYGutterWidth , myImageHeight-myXGutterHeight);
+    myPolygon << QPoint(((i+1)*myXDivisions)+myYGutterWidth , myImageHeight-myXGutterHeight);
+    myPainter.drawPolyline(myPolygon);
   }
   //
   // Now draw interval markers on the y axis
@@ -1099,13 +2212,13 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   for (int i=myYDivisions;i>0;--i)
   {
 
-    QPolygon myPointArray(4);
+    QPolygon myPolygon;
     int myYOrigin = myImageHeight-myXGutterHeight;
-    myPointArray.setPoint(0,myYGutterWidth,myYOrigin-(i*myYDivisions ));
-    myPointArray.setPoint(1,myYGutterWidth-5,myYOrigin-(i*myYDivisions ));
-    myPointArray.setPoint(2,myYGutterWidth,myYOrigin-(i*myYDivisions ));
-    myPointArray.setPoint(3,myYGutterWidth,myYOrigin-((i-1)*myYDivisions ));
-    myPainter.drawPolyline(myPointArray);
+    myPolygon << QPoint(myYGutterWidth,myYOrigin-(i*myYDivisions ));
+    myPolygon << QPoint(myYGutterWidth-5,myYOrigin-(i*myYDivisions ));
+    myPolygon << QPoint(myYGutterWidth,myYOrigin-(i*myYDivisions ));
+    myPolygon << QPoint(myYGutterWidth,myYOrigin-((i-1)*myYDivisions ));
+    myPainter.drawPolyline(myPolygon);
   }
 
   //now draw the axis labels onto the graph
@@ -1121,26 +2234,475 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   pixHistogram->setPixmap(myPixmap);
 }
 
-void QgsRasterLayerProperties::on_pbnChangeSpatialRefSys_clicked()
+void QgsRasterLayerProperties::on_pbnImportTransparentPixelValues_clicked()
 {
-    
-
-    QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector(this);
-    mySelector->setSelectedSRSID(rasterLayer->srs().srsid());
-    if(mySelector->exec())
+  int myLineCounter = 0;
+  bool myImportError = false;
+  QString myBadLines;
+  QString myFilename = QFileDialog::getOpenFileName(this, tr("Open file"), "/", tr("Textfile (*.txt)"));
+  QFile myInputFile(myFilename);
+  if (myInputFile.open(QFile::ReadOnly))
+  {
+    QTextStream myInputStream(&myInputFile);
+    QString myInputLine;
+    if(rbtnThreeBand->isChecked() && QgsRasterLayer::MULTI_BAND_COLOR == rasterLayer->getDrawingStyle())
     {
-      QgsSpatialRefSys srs(mySelector->getCurrentSRSID(), QgsSpatialRefSys::QGIS_SRSID);
-      rasterLayer->setSrs(srs);
+      for(int myTableRunner = tableTransparency->rowCount() - 1; myTableRunner >= 0; myTableRunner--)
+      {
+        tableTransparency->removeRow(myTableRunner);
+      }
+
+      while(!myInputStream.atEnd())
+      {
+        myLineCounter++;
+        myInputLine = myInputStream.readLine();
+        if(!myInputLine.isEmpty())
+        {
+          if(!myInputLine.simplified().startsWith("#"))
+          {
+            QStringList myTokens = myInputLine.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+            if(myTokens.count() != 4)
+            {
+              myImportError = true;
+              myBadLines = myBadLines + QString::number(myLineCounter) + ":\t[" + myInputLine + "]\n";
+            }
+            else
+            {
+              tableTransparency->insertRow(tableTransparency->rowCount());
+              tableTransparency->setItem(tableTransparency->rowCount() - 1, 0, new QTableWidgetItem(myTokens[0]));
+              tableTransparency->setItem(tableTransparency->rowCount() - 1, 1, new QTableWidgetItem(myTokens[1]));
+              tableTransparency->setItem(tableTransparency->rowCount() - 1, 2, new QTableWidgetItem(myTokens[2]));
+              tableTransparency->setItem(tableTransparency->rowCount() - 1, 3, new QTableWidgetItem(myTokens[3]));
+            }
+          }
+        }
+      }
     }
     else
     {
-      QApplication::restoreOverrideCursor();
+      for(int myTableRunner = tableTransparency->rowCount() - 1; myTableRunner >= 0; myTableRunner--)
+      {
+        tableTransparency->removeRow(myTableRunner);
+      }
+
+      while(!myInputStream.atEnd())
+      {
+        myLineCounter++;
+        myInputLine = myInputStream.readLine();
+        if(!myInputLine.isEmpty())
+        {
+          if(!myInputLine.simplified().startsWith("#"))
+          {
+            QStringList myTokens = myInputLine.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+            if(myTokens.count() != 2)
+            {
+              myImportError = true;
+              myBadLines = myBadLines + QString::number(myLineCounter) + ":\t[" + myInputLine + "]\n";
+            }
+            else
+            {
+              tableTransparency->insertRow(tableTransparency->rowCount());
+              tableTransparency->setItem(tableTransparency->rowCount() - 1, 0, new QTableWidgetItem(myTokens[0]));
+              tableTransparency->setItem(tableTransparency->rowCount() - 1, 1, new QTableWidgetItem(myTokens[1]));
+            }
+          }
+        }
+      }
     }
-    delete mySelector;
-    
-    leSpatialRefSys->setText(rasterLayer->srs().proj4String());
+
+    if(myImportError)
+    {
+      QMessageBox::warning(this, tr("Import Error"), tr("The following lines contained errors\n\n") + myBadLines );
+    }
+  }
+  else if(!myFilename.isEmpty())
+  {
+    QMessageBox::warning(this, tr("Read access denied"), tr("Read access denied. Adjust the file permissions and try again.\n\n") );
+  }
 }
-void QgsRasterLayerProperties::on_buttonBox_helpRequested()
+
+void QgsRasterLayerProperties::on_pbnRemoveSelectedRow_clicked() 
 {
-  QgsContextHelp::run(context_id);
+  if(0 < tableTransparency->rowCount())
+  { 
+    tableTransparency->removeRow(tableTransparency->currentRow());
+  }
+}
+
+void QgsRasterLayerProperties::on_rbtnSingleBand_toggled(bool b)
+{
+  if(b)
+  {
+    //--- enable and disable appropriate controls
+    rbtnThreeBand->setChecked(false); 
+    cboxColorMap->setEnabled(true);
+
+    if(cboxColorMap->currentText() == tr("Pseudocolor"))
+    {
+      tabBar->setTabEnabled(tabBar->indexOf(tabPageColormap), true);
+    }
+    
+    if(cboxColorMap->currentText() == tr("Pseudocolor") ||cboxColorMap->currentText() == tr("Color Ramp") || cboxColorMap->currentText() == tr("Freak Out"))
+    {
+      pbtnLoadMinMax->setEnabled(false);
+      labelContrastEnhancement->setEnabled(false);
+      cboxContrastEnhancementAlgorithm->setEnabled(false);
+    }
+    else
+    {
+      pbtnLoadMinMax->setEnabled(true);
+      labelContrastEnhancement->setEnabled(true);
+      cboxContrastEnhancementAlgorithm->setEnabled(true);
+    }
+
+    grpRgbBands->setEnabled(false);
+    grpRgbScaling->setEnabled(false);
+    grpGrayBand->setEnabled(true);
+    grpGrayScaling->setEnabled(true);
+
+    if(rasterLayer->getUserDefinedGrayMinMax())
+    {
+      sboxSingleBandStdDev->setValue(0.0);
+      rbtnSingleBandMinMax->setChecked(true);
+      leGrayMin->setText(QString::number(rasterLayer->getMinimumValue(cboGray->currentText())));
+      leGrayMax->setText(QString::number(rasterLayer->getMaximumValue(cboGray->currentText())));
+    }
+    else
+    {
+      sboxSingleBandStdDev->setValue(rasterLayer->getStdDevsToPlot());
+      rbtnSingleBandStdDev->setChecked(true);
+    }
+
+    // Populate transparency table with single value transparency pixels
+    populateTransparencyTable();
+    // If no band is selected but there are multiple bands, selcet the first as the default
+    if(cboGray->currentText() == tr("Not Set") && 1 < cboGray->count())
+    {
+      cboGray->setCurrentIndex(0);
+    }
+  }
+  else if(!rbtnThreeBand->isEnabled())
+  {
+    rbtnSingleBand->setChecked(true);
+  }
+  else
+  {
+    rbtnThreeBand->setChecked(true);
+  }
+}
+
+void QgsRasterLayerProperties::on_rbtnSingleBandMinMax_toggled(bool b)
+{
+  lblGrayMin->setEnabled(b);
+  leGrayMin->setEnabled(b);
+  lblGrayMax->setEnabled(b);
+  leGrayMax->setEnabled(b);
+}
+
+void QgsRasterLayerProperties::on_rbtnSingleBandStdDev_toggled(bool b)
+{
+  sboxSingleBandStdDev->setEnabled(b);
+}
+
+void QgsRasterLayerProperties::on_rbtnThreeBand_toggled(bool b)
+{
+  if(b)
+  {
+    //--- enable and disable appropriate controls
+    rbtnSingleBand->setChecked(false);
+    cboxColorMap->setEnabled(false);
+    tabBar->setTabEnabled(tabBar->indexOf(tabPageColormap), false);
+
+    grpRgbBands->setEnabled(true);
+    grpRgbScaling->setEnabled(true);
+    grpGrayBand->setEnabled(false);
+    grpGrayScaling->setEnabled(false);
+    
+    pbtnLoadMinMax->setEnabled(true);
+    labelContrastEnhancement->setEnabled(true);
+    cboxContrastEnhancementAlgorithm->setEnabled(true);
+
+    /*
+     *This may seem strange at first, but the single bands need to be include here for switching 
+     *from gray back to color with a multi-band palleted image
+     */
+    if(QgsRasterLayer::PALETTED_COLOR == rasterLayer->getDrawingStyle() ||
+       QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY == rasterLayer->getDrawingStyle() ||
+       QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR == rasterLayer->getDrawingStyle() ||
+       QgsRasterLayer::PALETTED_MULTI_BAND_COLOR == rasterLayer->getDrawingStyle())
+    {
+      cboxContrastEnhancementAlgorithm->setCurrentText(tr("No Stretch"));
+      cboxContrastEnhancementAlgorithm->setEnabled(false);
+      sboxThreeBandStdDev->setEnabled(false);
+    }
+
+    if(rasterLayer->getUserDefinedRGBMinMax())
+    {
+      sboxThreeBandStdDev->setValue(0.0);
+      rbtnThreeBandMinMax->setChecked(true);
+      leRedMin->setText(QString::number(rasterLayer->getMinimumValue(cboRed->currentText())));
+      leRedMax->setText(QString::number(rasterLayer->getMaximumValue(cboRed->currentText())));
+      leGreenMin->setText(QString::number(rasterLayer->getMinimumValue(cboGreen->currentText())));
+      leGreenMax->setText(QString::number(rasterLayer->getMaximumValue(cboGreen->currentText())));
+      leBlueMin->setText(QString::number(rasterLayer->getMinimumValue(cboBlue->currentText())));
+      leBlueMax->setText(QString::number(rasterLayer->getMaximumValue(cboBlue->currentText())));
+    }
+    else
+    {
+      sboxThreeBandStdDev->setValue(rasterLayer->getStdDevsToPlot());
+      rbtnThreeBandStdDev->setChecked(true);
+    }
+
+    // Populate transparency table with single value transparency pixels
+    populateTransparencyTable();
+  }
+  else if(!rbtnSingleBand->isEnabled())
+  {
+    rbtnThreeBand->setChecked(true);
+  }
+  else
+  {
+    rbtnSingleBand->setChecked(true);
+  }
+}
+
+void QgsRasterLayerProperties::on_rbtnThreeBandMinMax_toggled(bool b)
+{
+  lblRedMin->setEnabled(b);
+  leRedMin->setEnabled(b);
+  lblRedMax->setEnabled(b);
+  leRedMax->setEnabled(b);
+  lblGreenMin->setEnabled(b);
+  leGreenMin->setEnabled(b);
+  lblGreenMax->setEnabled(b);
+  leGreenMax->setEnabled(b);
+  lblBlueMin->setEnabled(b);
+  leBlueMin->setEnabled(b);
+  lblBlueMax->setEnabled(b);
+  leBlueMax->setEnabled(b);
+}
+
+void QgsRasterLayerProperties::on_rbtnThreeBandStdDev_toggled(bool b)
+{
+  sboxThreeBandStdDev->setEnabled(b);
+}
+
+void QgsRasterLayerProperties::sboxSingleBandStdDev_valueChanged(double theValue) 
+{
+  if(!ignoreSpinBoxEvent)
+  {
+    leGrayMin->setText("");
+    leGrayMax->setText("");
+  }
+  else 
+    ignoreSpinBoxEvent = false;
+}
+
+void QgsRasterLayerProperties::sboxThreeBandStdDev_valueChanged(double theValue) 
+{
+  if(!ignoreSpinBoxEvent)
+  {
+    leRedMin->setText("");
+    leRedMax->setText("");
+    leGreenMin->setText("");
+    leGreenMax->setText("");
+    leBlueMin->setText("");
+    leBlueMax->setText("");
+  }
+  else
+    ignoreSpinBoxEvent = false;
+}
+
+void QgsRasterLayerProperties::sliderTransparency_valueChanged(int theValue)
+{
+  //set the transparency percentage label to a suitable value
+  int myInt = static_cast < int >((theValue / 255.0) * 100);  //255.0 to prevent integer division
+  lblTransparencyPercent->setText(QString::number(myInt) + "%");
+}//sliderTransparency_valueChanged
+
+void QgsRasterLayerProperties::userDefinedMinMax_textEdited(QString theString)
+{
+  /*
+   * If all min max values are set and valid, then reset stdDev to 0.0
+   */
+  if(rbtnThreeBand->isChecked())
+  {
+    if(validUserDefinedMinMax() && sboxThreeBandStdDev->value() != 0.0)
+    {
+      ignoreSpinBoxEvent = true;
+      sboxThreeBandStdDev->setValue(0.0);
+    }
+  }
+  else
+  {
+    if(validUserDefinedMinMax() && sboxSingleBandStdDev->value() != 0.0)
+    {
+      ignoreSpinBoxEvent = true;
+      sboxSingleBandStdDev->setValue(0.0);
+    }
+  }
+}
+
+void QgsRasterLayerProperties::on_mClassifyButton_clicked()
+{
+  QgsRasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(1);
+  int numberOfEntries = sboxNumberOfEntries->value();
+
+  std::list<double> entryValues;
+  std::list<QColor> entryColors;
+
+  if(cboxClassificationMode->currentText() == tr("Equal interval"))
+    {
+      double currentValue = myRasterBandStats.minVal;
+      double intervalDiff;
+      if(numberOfEntries > 1)
+	{
+	  //because the highest value is also an entry, there are (numberOfEntries - 1)
+	  //intervals
+	  intervalDiff = (myRasterBandStats.maxVal - myRasterBandStats.minVal) / \
+	    (numberOfEntries - 1);
+	}
+      else
+	{
+	  intervalDiff = myRasterBandStats.maxVal - myRasterBandStats.minVal;
+	}
+      
+      for(int i = 0; i < numberOfEntries; ++i)
+	{
+	  entryValues.push_back(currentValue);
+	  currentValue += intervalDiff;
+	}
+    }
+  else if(cboxClassificationMode->currentText() == tr("Quantiles"))
+    {
+      //todo
+    }
+
+  //hard code color range from blue -> red for now. Allow choice of ramps in future
+  int colorDiff = 0;
+  if(numberOfEntries != 0)
+    {
+      colorDiff = (int)(255/numberOfEntries);
+    }
+  
+  for(int i = 0; i < numberOfEntries; ++i)
+    {
+      QColor currentColor;
+      currentColor.setRgb(colorDiff*i ,0, 255 - colorDiff * i);
+      entryColors.push_back(currentColor);
+    }
+  
+  mColormapTreeWidget->clear();
+
+  std::list<double>::const_iterator value_it = entryValues.begin();
+  std::list<QColor>::const_iterator color_it = entryColors.begin();
+
+  for(; value_it != entryValues.end(); ++value_it, ++color_it)
+    {
+      QTreeWidgetItem* newItem = new QTreeWidgetItem(mColormapTreeWidget);
+      newItem->setText(0, QString::number(*value_it, 'f'));
+      newItem->setBackground(1, QBrush(*color_it));
+      newItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
+    }
+}
+
+void QgsRasterLayerProperties::on_mDeleteEntryButton_clicked()
+{
+  QTreeWidgetItem* currentItem = mColormapTreeWidget->currentItem();
+  if(currentItem)
+    {
+      delete currentItem;
+    }
+}
+
+void QgsRasterLayerProperties::handleColormapTreeWidgetDoubleClick(QTreeWidgetItem* item, int column)
+{
+  if(item)
+    {
+      if(column == 1)
+	{
+	  //show color dialog
+	  QColor newColor = QColorDialog::getColor();
+	  if(newColor.isValid())
+	    {
+	      item->setBackground(1, QBrush(newColor));
+	    }
+	}
+    }
+}
+
+void QgsRasterLayerProperties::on_pbtnLoadMinMax_clicked()
+{
+  QgsRasterBandStats myRasterBandStats;
+  if(rbtnThreeBand->isChecked())
+  {
+    rbtnThreeBandMinMax->setChecked(true);
+    myRasterBandStats = rasterLayer->getRasterBandStats(rasterLayer->getRasterBandNumber(cboRed->currentText()));
+    leRedMin->setText(QString::number(myRasterBandStats.minVal));
+    leRedMax->setText(QString::number(myRasterBandStats.maxVal));
+    myRasterBandStats = rasterLayer->getRasterBandStats(rasterLayer->getRasterBandNumber(cboGreen->currentText()));
+    leGreenMin->setText(QString::number(myRasterBandStats.minVal));
+    leGreenMax->setText(QString::number(myRasterBandStats.maxVal));
+    myRasterBandStats = rasterLayer->getRasterBandStats(rasterLayer->getRasterBandNumber(cboBlue->currentText()));
+    leBlueMin->setText(QString::number(myRasterBandStats.minVal));
+    leBlueMax->setText(QString::number(myRasterBandStats.maxVal));
+  }
+  else
+  {
+    rbtnSingleBandMinMax->setChecked(true);
+    myRasterBandStats = rasterLayer->getRasterBandStats(rasterLayer->getRasterBandNumber(cboGray->currentText()));
+    leGrayMin->setText(QString::number(myRasterBandStats.minVal));
+    leGrayMax->setText(QString::number(myRasterBandStats.maxVal));
+  }
+}
+
+QLinearGradient QgsRasterLayerProperties::redGradient()
+{
+  //define a gradient
+  ///@TODO change this to actual polygon dims
+  QLinearGradient myGradient = QLinearGradient(mGradientWidth,0,mGradientWidth,mGradientHeight);
+  myGradient.setColorAt(0.0,QColor(242, 14, 25, 190));
+  myGradient.setColorAt(0.5,QColor(175, 29, 37, 190));
+  myGradient.setColorAt(1.0,QColor(114, 17, 22, 190));
+  return myGradient;
+}
+QLinearGradient QgsRasterLayerProperties::greenGradient()
+{
+  //define a gradient 
+  ///@TODO change this to actual polygon dims
+  QLinearGradient myGradient = QLinearGradient(mGradientWidth,0,mGradientWidth,mGradientHeight);
+  myGradient.setColorAt(0.0,QColor(48, 168, 5, 190));
+  myGradient.setColorAt(0.8,QColor(36, 122, 4, 190));
+  myGradient.setColorAt(1.0,QColor(21, 71, 2, 190));
+  return myGradient;
+}
+QLinearGradient QgsRasterLayerProperties::blueGradient()
+{
+  //define a gradient 
+  ///@TODO change this to actual polygon dims
+  QLinearGradient myGradient = QLinearGradient(mGradientWidth,0,mGradientWidth,mGradientHeight);
+  myGradient.setColorAt(0.0,QColor(30, 0, 106, 190));
+  myGradient.setColorAt(0.2,QColor(30, 72, 128, 190));
+  myGradient.setColorAt(1.0,QColor(30, 223, 196, 190));
+  return myGradient;
+}
+QLinearGradient QgsRasterLayerProperties::grayGradient()
+{
+  //define a gradient 
+  ///@TODO change this to actual polygon dims
+  QLinearGradient myGradient = QLinearGradient(mGradientWidth,0,mGradientWidth,mGradientHeight);
+  myGradient.setColorAt(0.0,QColor(5, 5, 5, 190));
+  myGradient.setColorAt(0.8,QColor(122, 122, 122, 190));
+  myGradient.setColorAt(1.0,QColor(220, 220, 220, 190));
+  return myGradient;
+}
+QLinearGradient QgsRasterLayerProperties::highlightGradient()
+{
+  //define another gradient for the highlight
+  ///@TODO change this to actual polygon dims
+  QLinearGradient myGradient = QLinearGradient(mGradientWidth,0,mGradientWidth,mGradientHeight);
+  myGradient.setColorAt(1.0,QColor(255, 255, 255, 50));
+  myGradient.setColorAt(0.5,QColor(255, 255, 255, 100));
+  myGradient.setColorAt(0.0,QColor(255, 255, 255, 150));
+  return myGradient;
 }

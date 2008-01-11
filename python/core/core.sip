@@ -14,6 +14,8 @@
 %Include qgscolortable.sip
 %Include qgscontexthelp.sip
 %Include qgscontinuouscolorrenderer.sip
+%Include qgscontrastenhancement.sip
+%Include qgscontrastenhancementfunction.sip
 %Include qgscoordinatetransform.sip
 %Include qgsdataprovider.sip
 %Include qgsdatasourceuri.sip
@@ -39,6 +41,9 @@
 %Include qgsrasterdataprovider.sip
 %Include qgsrasterlayer.sip
 %Include qgsrasterpyramid.sip
+%Include qgsrastershader.sip
+%Include qgsrastershaderfunction.sip
+%Include qgsrastertransparency.sip
 %Include qgsrasterviewport.sip
 %Include qgsrect.sip
 %Include qgsrenderer.sip

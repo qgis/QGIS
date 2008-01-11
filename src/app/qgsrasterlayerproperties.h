@@ -44,25 +44,75 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
         void sync();
 
     public slots:
+    //TODO: Verify that these all need to be public
         /** \brief Applies the settings made in the dialog without closing the box */
         void apply();
-        /** \brief slot executed when the transparency level changes. */ 
-        void sliderTransparency_valueChanged( int );
-        /** \brief slot executed when the max red level changes. */
-        void on_rbtnSingleBand_toggled( bool );
-        /** \brief slot executed when the three band radio button is pressed. */
-        void on_rbtnThreeBand_toggled( bool );
         /** \brief this slot asks the rasterlayer to construct pyramids */
         void on_buttonBuildPyramids_clicked();
-        /** \brief slot executed when user wishes to refresh raster histogram */
-        void on_pbnHistRefresh_clicked();
-        /** Override the SRS specified when the layer was loaded */
-        void on_pbnChangeSpatialRefSys_clicked();
+        /** \brief slot executed when user presses "Add Values From Display" button on the transparency page */
+        void on_pbnAddValuesFromDisplay_clicked();
+        /** \brief slot executed when user presses "Add Values Manually" button on the transparency page */
+        void on_pbnAddValuesManually_clicked();
         /** Help button */
         void on_buttonBox_helpRequested();
-        
-  signals:
-    
+        /** Override the SRS specified when the layer was loaded */
+        void on_pbnChangeSpatialRefSys_clicked();
+        /** \brief slot executed when user wishes to reset noNoDataValue and transparencyTable to default value */
+        void on_pbnDefaultValues_clicked();
+        /** \brief slot executed when user wishes to export transparency values */
+        void on_pbnExportTransparentPixelValues_clicked();
+        /** \brief slot executed when user wishes to refresh raster histogram */
+        void on_pbnHistRefresh_clicked();
+        /** \brief slow executed when user wishes to import transparency values */
+        void on_pbnImportTransparentPixelValues_clicked();
+        /** \brief slot executed when user presses "Remove Selected Row" button on the transparency page */
+        void on_pbnRemoveSelectedRow_clicked();
+        /** \brief slot executed when the single band radio button is pressed. */
+        void on_rbtnSingleBand_toggled( bool );
+        /** \brief slot executed when the single band min max radio button is pressed. */
+        void on_rbtnSingleBandMinMax_toggled( bool );
+        /** \brief slot executed when the single band standard deviation radio button is pressed. */
+        void on_rbtnSingleBandStdDev_toggled( bool );
+        /** \brief slot executed when the three band radio button is pressed. */
+        void on_rbtnThreeBand_toggled( bool ); 
+       /** \brief slot executed when the three band min max radio button is pressed. */
+        void on_rbtnThreeBandMinMax_toggled( bool );
+        /** \brief slot executed when the three band standard deviation radio button is pressed. */
+        void on_rbtnThreeBandStdDev_toggled( bool );
+        /** \brief this slot clears min max values from gui */
+        void sboxSingleBandStdDev_valueChanged(double);
+        /** \brief this slot clears min max values from gui */
+        void sboxThreeBandStdDev_valueChanged(double);
+        /** \brief slot executed when the transparency level changes. */ 
+        void sliderTransparency_valueChanged( int );
+        /** \brief this slot sets StdDev switch box to 0.00 when user enters min max values */
+        void userDefinedMinMax_textEdited(QString);
+
+    private slots:
+      /** This slow handles necessary interface modifiations (i.e., loading min max values) */
+      void on_cboBlue_currentIndexChanged(const QString&);
+      /** This slow handles necessary interface modifiations (i.e., loading min max values) */
+      void on_cboGray_currentIndexChanged(const QString&);
+      /** This slow handles necessary interface modifiations (i.e., loading min max values) */
+      void on_cboGreen_currentIndexChanged(const QString&);
+      /** This slow handles necessary interface modifiations (i.e., loading min max values) */
+      void on_cboRed_currentIndexChanged(const QString&); 
+      /**The slot handles necessary interface modifications based when color map selected changes*/
+      void on_cboxColorMap_currentIndexChanged(const QString&);
+      /**The slot handles necessary interface modifications based when transparency band selection changes*/
+      void on_cboxTransparencyLayer_currentIndexChanged(const QString&);
+	    /**This slot calculates classification values and colors for the tree widget on the colormap tab*/
+	    void on_mClassifyButton_clicked();
+	    /**This slot deletes the current class from the tree widget on the colormap tab*/
+	    void on_mDeleteEntryButton_clicked();
+	    /**Callback for double clicks on the colormap entry widget*/
+	    void handleColormapTreeWidgetDoubleClick(QTreeWidgetItem* item, int column);
+      /**This slot loads the minimum and maximum values from the raster band and updates the gui*/
+      void on_pbtnLoadMinMax_clicked(); 
+	
+
+    signals:
+
         /** emitted when changes to layer were saved to update legend */
         void refreshLegend(QString layerID, bool expandItem);
 
@@ -87,6 +137,28 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
 
         /** Id for context help */
         static const int context_id = 394441851;
+
+        /** \brief Clear the current transparency table and populate the table with the correct types for current drawing mode and data type*/
+        void populateTransparencyTable();
+
+        /** \brief Verify values in custom min max line edits */
+        bool validUserDefinedMinMax();
+
+	/**Restores the state of the colormap tab*/
+	void syncColormapTab();
+
+        //Short circuit signal loop between min max field and stdDev spin box
+        bool ignoreSpinBoxEvent;
+
+        //@TODO we should move these gradient generators somewhere more generic
+        //so they can be used generically throughut the app
+        QLinearGradient greenGradient();
+        QLinearGradient redGradient();
+        QLinearGradient blueGradient();
+        QLinearGradient grayGradient();
+        QLinearGradient highlightGradient();
+        qreal mGradientHeight;
+        qreal mGradientWidth;
 };
 
 #endif

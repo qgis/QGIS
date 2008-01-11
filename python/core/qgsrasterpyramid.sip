@@ -7,11 +7,11 @@ class QgsRasterPyramid
 
   public:
   /** \brief The pyramid level as implemented in gdal (level 2 is half orignal raster size etc) */
-  int levelInt;
+  int level;
   /** \brief XDimension for this pyramid layer */
-  int xDimInt;
+  int xDim;
   /** \brief YDimension for this pyramid layer */
-  int yDimInt;
+  int yDim;
   /** \brief Whether the pyramid layer has been built yet */
   bool existsFlag;
 

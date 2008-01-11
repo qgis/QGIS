@@ -49,8 +49,19 @@ qgsvectordataprovider.cpp
 qgsvectorfilewriter.cpp
 qgsvectorlayer.cpp
 
+raster/qgscliptominmaxenhancement.cpp
+raster/qgscolorrampshader.cpp
 raster/qgscolortable.cpp
+raster/qgscontrastenhancement.cpp
+raster/qgscontrastenhancementfunction.cpp
+raster/qgsfreakoutshader.cpp
+raster/qgslinearminmaxenhancement.cpp
+raster/qgslinearminmaxenhancementwithclip.cpp
+raster/qgspseudocolorshader.cpp
 raster/qgsrasterlayer.cpp
+raster/qgsrastertransparency.cpp
+raster/qgsrastershader.cpp
+raster/qgsrastershaderfunction.cpp
 
 renderer/qgscontinuouscolorrenderer.cpp
 renderer/qgsgraduatedsymbolrenderer.cpp
@@ -224,9 +235,20 @@ qgsvectordataprovider.h
 qgsvectorfilewriter.h
 qgsvectorlayer.h
 
+raster/qgscliptominmaxenhancement.h
+raster/qgscolorrampshader.h
 raster/qgscolortable.h
+raster/qgscontrastenhancement.h
+raster/qgscontrastenhancementfunction.h
+raster/qgsfreakoutshader.h
+raster/qgslinearminmaxenhancement.h
+raster/qgslinearminmaxenhancementwithclip.h
+raster/qgspseudocolorshader.h
 raster/qgsrasterbandstats.h
 raster/qgsrasterlayer.h
+raster/qgsrastertransparency.h
+raster/qgsrastershader.h
+raster/qgsrastershaderfunction.h
 
 renderer/qgscontinuouscolorrenderer.h
 renderer/qgsgraduatedsymbolrenderer.h

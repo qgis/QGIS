@@ -1,6 +1,3 @@
-
-  
-  
 /*! \class QgsRasterLayer
  *  \brief This class provides qgis with the ability to render raster datasets
  *  onto the mapcanvas..
@@ -11,17 +8,20 @@ class QgsRasterLayer : QgsMapLayer
 %TypeHeaderCode
 #include <qgsrasterpyramid.h>
 #include <qgsrasterlayer.h>
+#include <qgscontrastenhancement.h>
+#include <qgsrastertransparency.h>
+#include <qgsrastershader.h>
 %End
 
 public:
+
     //
     // Static methods:
     //
-        
     static void buildSupportedRasterFileFilter(QString & fileFilters);
-
     static bool isSupportedRasterDriver(const QString & driverName);
-
+    static void registerGdalDrivers();
+    
     /** This helper checks to see whether the filename appears to be a valid
        raster file name */
     static bool isValidRasterFileName(const QString & theFileNameQString);
@@ -29,7 +29,6 @@ public:
     //
     // Non Static methods:
     //
-        
     /** \brief This is the constructor for the RasterLayer class.
      *
      * The main tasks carried out by the constructor are:
@@ -50,13 +49,13 @@ public:
     /** \brief The destuctor.  */
     ~QgsRasterLayer();
 
-    /** \brief  A vector containing one RasterBandStats struct per raster band in this raster layer.
+    /** \brief  A list containing one RasterBandStats struct per raster band in this raster layer.
      * Note that while very RasterBandStats element will have the name and number of its associated
      * band populated, any additional stats are calculated on a need to know basis.*/
-    typedef QVector<QgsRasterBandStats> RasterStatsVector;
+    typedef QList<QgsRasterBandStats> RasterStatsList;
 
 
-    /** \brief  A list containing one RasterPyramid struct per 
+    /** \brief  A list containing one RasterPyramid struct per raster band in this raster layer.
      * POTENTIAL pyramid layer. How this works is we divide the height
      * and width of the raster by an incrementing number. As soon as the result
      * of the division is <=256 we stop allowing RasterPyramid stracuts
@@ -65,10 +64,13 @@ public:
      * in the raster layer, and if so mark the exists flag as true. */
       
     typedef QList<QgsRasterPyramid> RasterPyramidList;
+    
+    /** \brief A list containing on ContrastEnhancement object per raster band in this raster layer. */
+    typedef QList<QgsContrastEnhancement> ContrastEnhancementList;
 
     /** \brief This typedef is used when the showProgress function is passed to gdal as a function
     pointer. */
-    //  typedef  int (QgsRasterLayer::*showTextProgress)( double theProgressDouble,
+    //  typedef  int (QgsRasterLayer::*showTextProgress)( double theProgress,
     //                                      const char *theMessageCharArray,
     //                                      void *theData);
 
@@ -77,7 +79,7 @@ public:
      * \param point[in]  a coordinate in the CRS of this layer.
      */
     // TODO: wrap
-    //void identify(const QgsPoint& point, std::map<QString,QString>& results);
+    //void identify(const QgsPoint & point, std::map<QString,QString>& results);
 
     /** \brief Identify arbitrary details from the WMS server found on the point position
      *
@@ -88,10 +90,13 @@ public:
      * \note  The arbitraryness of the returned document is enforced by WMS standards
      *        up to at least v1.3.0
      */
-    QString identifyAsText(const QgsPoint& point);
+    QString identifyAsText(const QgsPoint & point);
 
     /** \brief Query gdal to find out the WKT projection string for this layer. This implements the virtual method of the same name defined in QgsMapLayer*/
     QString getProjectionWKT();
+
+    /** \brief Returns the number of raster units per each raster pixel. For rasters with world file, this is normally the first row (without the sign) in that file */
+    double rasterUnitsPerPixel();
 
     /** \brief Draws a thumbnail of the rasterlayer into the supplied pixmap pointer */
      void drawThumbnail(QPixmap * theQPixmap);
@@ -99,7 +104,7 @@ public:
     /** \brief Get an 8x8 pixmap of the colour palette. If the layer has no palette a white pixmap will be returned. */
      QPixmap getPaletteAsPixmap();
      
-    /** \brief This is called when the view on the rasterlayer needs to be refreshed (redrawn).
+    /** \brief This is called when the view on the rasterlayer needs to be refreshed (redrawn).   
          
         \param drawingToEditingCanvas  Are we drawing to an editable canvas? 
                                        currently not used, but retain to be similar to 
@@ -127,26 +132,35 @@ public:
     //
     // Accessor and mutator for no data double
     //
+    /** \brief Is the NoDataValue Valid */
+    bool isNoDataValueValid();
+    
     /** \brief  Accessor that returns the NO_DATA entry for this raster. */
-    const double getNoDataValue();
+    const double getNoDataValue(bool* isValid=0);
 
     /** \brief  Mutator that allows the  NO_DATA entry for this raster to be overridden. */
-    void setNoDataValue(double theNoDataDouble);
+    void setNoDataValue(double theNoData);
 
+    /** \brief Simple reset function that set the noDataValue back to the value stored in the first raster band */
+    void resetNoDataValue();
     //
-    // Accessor and mutator for invertHistogramFlag
+    // Accessor and mutator for mInvertPixelsFlag
     //
     /** \brief Accessor to find out whether the histogram should be inverted.   */
     bool getInvertHistogramFlag();
+    
     /** \brief Mutator to alter the state of the invert histogram flag.  */
     void setInvertHistogramFlag(bool theFlag);
+    
     //
-    // Accessor and mutator for stdDevsToPlotDouble
+    // Accessor and mutator for mStandardDeviations
     //
     /** \brief Accessor to find out how many standard deviations are being plotted.  */
     double getStdDevsToPlot();
+    
     /** \brief Mutator to alter the number of standard deviations that should be plotted.  */
-    void setStdDevsToPlot(double theDouble);
+    void setStdDevsToPlot(double the);
+    
     /** \brief Get the number of bands in this layer  */
     const unsigned int getBandCount();
     /** \brief Get RasterBandStats for a band given its number (read only)  */
@@ -170,6 +184,7 @@ public:
     void filterLayer(QImage * theQImage);
     /** \brief Accessor for red band name (allows alternate mappings e.g. map blue as red colour). */
     QString getRedBandName();
+    
     /** \brief Mutator for red band name (allows alternate mappings e.g. map blue as red colour). */
     void setRedBandName(const QString & theBandNameQString);
     // 
@@ -177,6 +192,7 @@ public:
     // 
     /** \brief Accessor for green band name mapping.  */
     QString getGreenBandName();
+    
     /** \brief Mutator for green band name mapping.  */
     void setGreenBandName(const QString & theBandNameQString);
     //
@@ -184,164 +200,117 @@ public:
     // 
     /** \brief  Accessor for blue band name mapping. */
     QString getBlueBandName();
+    
     /** \brief Mutator for blue band name mapping.  */
     void setBlueBandName(const QString & theBandNameQString);
+    
+    //
+    // Accessor transparency container.
+    //
+    QgsRasterTransparency* getRasterTransparency();
+    
+    //
+    // Accessor and mutator for transparent band name
+    // 
+    /** \brief  Accessor for transparent band name mapping. */
+    QString getTransparentBandName();
+    
+    /** \brief Mutator for transparent band name mapping.  */
+    void setTransparentBandName(const QString & theBandNameQString);
+    //
+    // Accessor and mutator for transparent band name
+    // 
+    /** \brief  Accessor for transparent band name mapping. */
+    QString getTransparentLayerName();
+    
+    /** \brief Mutator for transparent band name mapping.  */
+    void setTransparentLayerName(const QString & theLayerNameQString);
+    
     //
     // Accessor and mutator for gray band name
     //
     /** \brief Accessor for gray band name mapping.  */
     QString getGrayBandName();
+    
     /** \brief Mutator for gray band name mapping.  */
     void setGrayBandName(const QString & theBandNameQString);
     // 
-    // Accessor and mutator for showDebugOverlayFlag
+    // Accessor and mutator for mDebugOverlayFlag
     // 
     /** \brief Accessor for a flag that determines whether to show some debug info on the image.  */
     bool getShowDebugOverlayFlag();
+    
     /** \brief Mutator for a flag that determines whether to show some debug info on the image.  */
     void setShowDebugOverlayFlag(bool theFlag);
-    // 
-    // Accessor and mutator for min and max red
-    // 
-    /** \brief Accessor for minimum clipping range for red.
-     *
-     * The clipping range can have different interpretations - it can either be used to perform
-     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
-     * that falls outside the clipping range.*/
-    double getMinRedDouble();
-    /** \brief Mutator for minimum clipping range for red.
-     *
-     * The clipping range can have different interpretations - it can either be used to perform
-     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
-     * that falls outside the clipping range.*/
-    void setMinRedDouble(double theDouble);
-    /** \brief Accessor for maximum clipping range for red.
-     *
-     * The clipping range can have different interpretations - it can either be used to perform
-     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
-     * that falls outside the clipping range.*/
-    double getMaxRedDouble();
-    /** \brief Mutator for maximum clipping range for red.
-     *
-     * The clipping range can have different interpretations - it can either be used to perform
-     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
-     * that falls outside the clipping range.*/
-    void setMaxRedDouble(double theDouble);
-    // 
-    // Accessor and mutator for min and max green
-    // 
-    /** \brief Accessor for minimum clipping range for green.
-     *
-     * The clipping range can have different interpretations - it can either be used to perform
-     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
-     * that falls outside the clipping range.*/
-    double getMinGreenDouble();
-    /** \brief Mutator for minimum clipping range for green.
-     *
-     * The clipping range can have different interpretations - it can either be used to perform
-     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
-     * that falls outside the clipping range.*/
-    void setMinGreenDouble(double theDouble);
-    /** \brief Accessor for maximum clipping range for green.
-     *
-     * The clipping range can have different interpretations - it can either be used to perform
-     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
-     * that falls outside the clipping range.*/
-    double getMaxGreenDouble();
-    /** \brief Mutator for maximum clipping range for green.
-     *
-     * The clipping range can have different interpretations - it can either be used to perform
-     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
-     * that falls outside the clipping range.*/
-    void setMaxGreenDouble(double theDouble);
-    // 
-    // Accessor and mutator for min and max blue
-    // 
-    /** \brief Accessor for minimum clipping range for blue.
-     *
-     * The clipping range can have different interpretations - it can either be used to perform
-     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
-     * that falls outside the clipping range.*/
-    /** \brief   */
-    double getMinBlueDouble();
-    /** \brief Mutator for minimum clipping range for blue.
-     *
-     * The clipping range can have different interpretations - it can either be used to perform
-     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
-     * that falls outside the clipping range.*/
-    void setMinBlueDouble(double theDouble);
-    /** \brief Accessor for maximum clipping range for blue.
-     *
-     * The clipping range can have different interpretations - it can either be used to perform
-     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
-     * that falls outside the clipping range.*/
-    double getMaxBlueDouble();
-    /** \brief Mutator for maximum clipping range for blue.
-     *
-     * The clipping range can have different interpretations - it can either be used to perform
-     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
-     * that falls outside the clipping range.*/
-    void setMaxBlueDouble(double theDouble);
-    // 
-    // Accessor and mutator for min and max gray
-    // 
-    /** \brief Accessor for minimum clipping range for gray.
-     *
-     * The clipping range can have different interpretations - it can either be used to perform
-     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
-     * that falls outside the clipping range.*/
-    double getMinGrayDouble();
-    /** \brief Mutator for minimum clipping range for gray.
-     *
-     * The clipping range can have different interpretations - it can either be used to perform
-     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
-     * that falls outside the clipping range.*/
-    void setMinGrayDouble(double theDouble);
-    /** \brief Accessor for maximum clipping range for gray.
-     *
-     * The clipping range can have different interpretations - it can either be used to perform
-     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
-     * that falls outside the clipping range.*/
-    double getMaxGrayDouble();
-    /** \brief Mutator for maximum clipping range for gray.
-     *
-     * The clipping range can have different interpretations - it can either be used to perform
-     * a histogram stretch between the minimum and maximum clipping values, or to exclude data
-     * that falls outside the clipping range.*/
-    void setMaxGrayDouble(double theDouble);
+    
+    // Accessor and mutator for min max values 
+    double getMinimumValue(unsigned int theBand);
+
+    double getMinimumValue(QString theBand);
+
+    void setMinimumValue(unsigned int theBand, double theValue);
+
+    void setMinimumValue(QString theBand, double theValue, bool theGenerateLookupTableFlag=true);
+    
+    double getMaximumValue(unsigned int theBand);
+
+    double getMaximumValue(QString theBand);
+    
+    void setMaximumValue(unsigned int theBand, double theValue);
+
+    void setMaximumValue(QString theBand, double theValue, bool theGenerateLookupTableFlag=true);
+
+    QgsContrastEnhancement* getContrastEnhancement(unsigned int theBand);
+
     //
-    /** \brief This enumerator describes the types of histogram scaling algorithms that can be used.  */
-    enum COLOR_SCALING_ALGORITHM
+    // Accessor and mutator for the contrast enhancement algorithm
+    //
+    /** \brief Accessor for contrast enhancement algorithm. */
+    QgsContrastEnhancement::CONTRAST_ENHANCEMENT_ALGORITHM getContrastEnhancementAlgorithm();
+    
+    /** \brief Accessor for contrast enhancement algorithm. */
+    QString getContrastEnhancementAlgorithmAsQString();
+    
+    /** \brief Mutator for contrast enhancement algorithm. */
+    void setContrastEnhancementAlgorithm(QgsContrastEnhancement::CONTRAST_ENHANCEMENT_ALGORITHM theAlgorithm);
+    
+    /** \brief Mutator for contrast enhancement algorithm. */
+    void setContrastEnhancementAlgorithm(QString theAlgorithm, bool theGenerateLookupTableFlag=true);
+    
+    //
+    // Mutator for the contrast enhancement function
+    //
+    /** \brief Mutator for contrast enhancement function. */
+    void setContrastEnhancementFunction(QgsContrastEnhancementFunction* theFunction);
+    
+    /** \brief This enumerator describes the types of shading that can be used.  */
+    enum COLOR_SHADING_ALGORITHM
     {
-        STRETCH_TO_MINMAX, //linear histogram stretch
-        STRETCH_AND_CLIP_TO_MINMAX,
-        CLIP_TO_MINMAX
+        PSEUDO_COLOR, 
+        FREAK_OUT, //it will scare your granny!
+        COLOR_RAMP,
+        USER_DEFINED
     };
+    //
+    // Accessor and mutator for the color shader algorithm
+    //
+    /** \brief Accessor for colour shader algorithm. */
+    COLOR_SHADING_ALGORITHM getColorShadingAlgorithm();
+
+    /** \brief Accessor for colour shader algorithm. */
+    QString getColorShadingAlgorithmAsQString();
     
-    COLOR_SCALING_ALGORITHM colorScalingAlgorithm;
-    //
-    // Accessor and mutator for the color scaling algorithm
-    //
-    /** \brief Accessor for colour scaling algorithm. */
-    COLOR_SCALING_ALGORITHM getColorScalingAlgorithm();
-    /** \brief Mutator for color scaling algorithm. */
-    void setColorScalingAlgorithm(COLOR_SCALING_ALGORITHM theAlgorithm);
+    /** \brief Mutator for color shader algorithm. */
+    void setColorShadingAlgorithm(COLOR_SHADING_ALGORITHM theShaderAlgorithm);
     
-    /** \brief This enumerator describes the types of histogram colour ramping that can be used.  */
-    enum COLOR_RAMPING_TYPE
-    {
-        BLUE_GREEN_RED, 
-        FREAK_OUT //it will scare your granny!
-    };
+    /** \brief Mutator for color shader algorithm. */
+    void setColorShadingAlgorithm(QString theShaderAlgorithm);
     
-    COLOR_RAMPING_TYPE colorRampingType;
-    //
-    // Accessor and mutator for the color ramping type
-    //
-    /** \brief Accessor for colour ramping type. */
-    COLOR_RAMPING_TYPE getColorRampingType();
-    /** \brief Mutator for color scaling algorithm. */
-    void setColorRampingType(COLOR_RAMPING_TYPE theRamping);
+    /** \brief Accessor for raster shader */
+    QgsRasterShader* getRasterShader();
+    
+    /** \brief Set the raster shader function to a user defined function */
+    void setRasterShaderFunction(QgsRasterShaderFunction* theFunction);
     
     /** \brief This enumerator describes the different kinds of drawing we can do.  */
     enum DRAWING_STYLE
@@ -352,12 +321,11 @@ public:
         PALETTED_SINGLE_BAND_GRAY,// a "Palette" layer drawn in gray scale (using only one of the color components)
         PALETTED_SINGLE_BAND_PSEUDO_COLOR, // a "Palette" layer having only one of its color components rendered as psuedo color
         PALETTED_MULTI_BAND_COLOR, // a "Palette" image is decomposed to 3 channels (RGB) and drawn 
-	                           // as multiband 
+                             // as multiband 
         MULTI_BAND_SINGLE_BAND_GRAY, // a layer containing 2 or more bands, but using only one band to produce a grayscale image
         MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR, //a layer containing 2 or more bands, but using only one band to produce a pseudocolor image
         MULTI_BAND_COLOR //a layer containing 2 or more bands, mapped to the three RGBcolors. In the case of a multiband with only two bands, one band will have to be mapped to more than one color
     };
-    
     DRAWING_STYLE drawingStyle;    
     //
     // Accessor and mutator for drawing style.
@@ -370,8 +338,10 @@ public:
      * NOTE: May be deprecated in the future!. Use alternate implementation above rather.
      * */
     QString getDrawingStyleAsQString();
+    
     /** \brief Mutator for drawing style.  */
     void setDrawingStyle(const DRAWING_STYLE &  theDrawingStyle);
+    
     /** \brief Overloaded version of the above function for convenience when restoring from xml.
      *
      * Implementaed mainly for serialisation / deserialisation of settings to xml.
@@ -379,17 +349,13 @@ public:
      * */
     void setDrawingStyle(const QString & theDrawingStyleQString);
 
-
-
-
     /** \brief This enumerator describes the type of raster layer.  */
     enum RASTER_LAYER_TYPE
     {
-        GRAY_OR_UNDEFINED,
-	PALETTE,
-	MULTIBAND    
+      GRAY_OR_UNDEFINED,
+      PALETTE,
+      MULTIBAND    
     };
-    
     RASTER_LAYER_TYPE rasterLayerType;
     //
     //accessor and for raster layer type (READ ONLY)
@@ -415,7 +381,7 @@ public:
      * (Useful for providers that manage their own layers, such as WMS)
      *
      */
-    QStringList subLayers();
+    QStringList subLayers() const;
     
     /**
      * Reorders the *previously selected* sublayers of this layer from bottom to top
@@ -480,8 +446,20 @@ public:
      *
      *  \retval 0 if not using the data provider model (i.e. directly using GDAL)
      */
-  // PyQGIS: commented out, has the same signature as the function above
-  // const QgsRasterDataProvider* getDataProvider() const;
+    // PyQGIS: commented out, has the same signature as the function above
+    // const QgsRasterDataProvider* getDataProvider() const;
+
+     /** \brief Mutator for mUserDefinedRGBMinMaxFlag */
+    void setUserDefinedRGBMinMax(bool theBool);
+
+    /** \brief Accessor for userDefinedMinMax.  */
+    bool getUserDefinedRGBMinMax();
+
+    /** \brief Mutator for mUserDefinedRGBMinMaxFlag */
+    void setUserDefinedGrayMinMax(bool theBool);
+
+    /** \brief Accessor for userDefinedMinMax.  */
+    bool getUserDefinedGrayMinMax();
 
 public slots:    
     /**
@@ -504,7 +482,7 @@ public slots:
     /** \brief Used at the moment by the above function but hopefully will later
     be useable by any operation that needs to notify the user of its progress. */
 /*
-    int showTextProgress( double theProgressDouble,
+    int showTextProgress( double theProgress,
                           const char *theMessageCharArray,
                           void *theData);    
 */
@@ -583,7 +561,6 @@ public:
                         const QString & proxyUser,
                         const QString & proxyPass );
 
-
   //! Does this layer use a provider for setting/retrieving data?
   bool usesProvider();
 
@@ -603,7 +580,6 @@ public:
 public slots:
 
   void showStatusMessage(const QString & theMessage);
-
 
 };
 
