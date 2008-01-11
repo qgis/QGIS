@@ -55,9 +55,9 @@ bool QgsProjectFileTransform::updateRevision(QgsProjectVersion newVersion)
 void QgsProjectFileTransform::dump()
 {
   QgsDebugMsg(QString("Current project file version is %1.%2.%3\n")
-              .arg(mCurrentVersion.major())
-              .arg(mCurrentVersion.minor())
-              .arg(mCurrentVersion.sub()));
+              .arg(mCurrentVersion.majorVersion())
+              .arg(mCurrentVersion.minorVersion())
+              .arg(mCurrentVersion.subVersion()));
 #ifdef QGISDEBUG
   // Using QgsDebugMsg() didn't print the entire mDom...
   std::cout << mDom.toString(2).toLatin1().constData();

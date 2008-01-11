@@ -78,7 +78,7 @@ void TestQgsRasterLayer::checkDimensions()
    QVERIFY ( mpLayer->getRasterYDim() == 10 );
    // regression check for ticket #832
    // note getRasterBandStats call is base 1
-   QVERIFY ( mpLayer->getRasterBandStats(1).elementCountInt == 100 );
+   QVERIFY ( mpLayer->getRasterBandStats(1).elementCount == 100 );
 }
 
 QTEST_MAIN(TestQgsRasterLayer)

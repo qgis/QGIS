@@ -1,3 +1,11 @@
+<<<<<<< .trabalho
+qgis (0.9.1raster+svn20071111) gutsy; urgency=low
+
+  * Initial test build for gutsy 
+
+ -- Tim Sutton <tim@linfiniti.com>  Sun, 11 Nov 2007 13:20:54 -0200
+
+=======
 qgis (0.9.1) gutsy; urgency=low
 
   * This is a bug fix release
@@ -10,6 +18,7 @@ qgis (0.9.1) gutsy; urgency=low
 
  -- Tim Sutton <tim@linfiniti.com>  Fri, 07 Dec 2007 01:36:55 -0200
 
+>>>>>>> .mesclagem-direita.r7786
 qgis (0.9.0) gutsy; urgency=low
 
   * Quantum GIS 0.9.0 'Ganymede' release 
