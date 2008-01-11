@@ -28,8 +28,8 @@ typedef QgsProjectVersion PFV;
 
 QgsProjectFileTransform::transform QgsProjectFileTransform::transformers[] = {
   {PFV(0,8,1), PFV(0,9,0), &QgsProjectFileTransform::transform081to090},
-  {PFV(0,9,0), PFV(0,9,1), &QgsProjectFileTransform::transform090to091},
-  {PFV(0,9,1), PFV(0,9,2), &QgsProjectFileTransform::transformNull}
+  {PFV(0,9,0), PFV(0,9,1), &QgsProjectFileTransform::transformNull},
+  {PFV(0,9,1), PFV(0,9,2), &QgsProjectFileTransform::transform091to092}
 };
 
 bool QgsProjectFileTransform::updateRevision(QgsProjectVersion newVersion)
@@ -174,11 +174,31 @@ void QgsProjectFileTransform::transform081to090()
 
 };
 
-void QgsProjectFileTransform::transform090to091()
+void QgsProjectFileTransform::transform091to092()
 {
   QgsDebugMsg("entering");
   if ( ! mDom.isNull() )
   {
+    // Insert transforms here!
+    QDomNodeList rasterPropertyList = mDom.elementsByTagName("rasterproperties");
+    QgsDebugMsg(QString("Raster properties file entries: ") + QString::number(rasterPropertyList.count())); 
+    for (int i = 0; i < rasterPropertyList.count(); i++)
+    {
+      // Get one rasterproperty element from list, and rename the sub-properties.
+      QDomNode rasterProperty = rasterPropertyList.item(i);
+      // rasterProperty.namedItem("").toElement().setTagName("");
+      
+      rasterProperty.namedItem("stdDevsToPlotDouble").toElement().setTagName("mStandardDeviations");
+
+      rasterProperty.namedItem("invertHistogramFlag").toElement().setTagName("mInvertPixelsFlag");
+      rasterProperty.namedItem("showDebugOverLayFlag").toElement().setTagName("mDebugOverLayFlag");
+
+      rasterProperty.namedItem("redBandNameQString").toElement().setTagName("mRedBandName");
+      rasterProperty.namedItem("blueBandNameQString").toElement().setTagName("mBlueBandName");
+      rasterProperty.namedItem("greenBandNameQString").toElement().setTagName("mGreenBandName");
+      rasterProperty.namedItem("grayBandNameQString").toElement().setTagName("mGrayBandName");
+    }
+
   }
   return;
 

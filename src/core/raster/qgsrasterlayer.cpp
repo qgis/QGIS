@@ -4092,12 +4092,12 @@ double QgsRasterLayer::readValue ( void *data, GDALDataType type, int index )
   <layername>Wynoochee_dem</layername>
   <datasource>/home/mcoletti/mnt/MCOLETTIF8F9/c/Toolkit_Course/Answers/Training_Data/wynoochee_dem.img</datasource>
   <zorder>0</zorder>
+  <transparencyLevelInt>255</transparencyLevelInt>
   <rasterproperties>
   <mDebugOverlayFlag boolean="false"/>
   <drawingStyle>SINGLE_BAND_GRAY</drawingStyle>
   <mInvertPixelsFlag boolean="false"/>
   <mStandardDeviations>0</mStandardDeviations>
-  <transparencyLevel>255</transparencyLevel>
   <mRedBandName>Not Set</mRedBandName>
   <mGreenBandName>Not Set</mGreenBandName>
   <mBlueBandName>Not Set</mBlueBandName>
@@ -4212,12 +4212,12 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
 
   snode = mnl.namedItem("mGrayBandName");
   myElement = snode.toElement();
-  std::cout << __FILE__ << ":" << __LINE__<< " Setting gray band to : " << myElement.text().data() << std::endl;
+  QgsDebugMsg(QString(" Setting gray band to : ") + myElement.text());
   setGrayBandName(myElement.text());
 
   snode = mnl.namedItem("mStandardDeviations");
   myElement = snode.toElement();
-  setStdDevsToPlot(myElement.text().toInt());
+  setStdDevsToPlot(myElement.text().toDouble());
   
   snode = mnl.namedItem("contrastEnhancementAlgorithm");
   myElement = snode.toElement();
@@ -4250,7 +4250,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   snode = mnl.namedItem("mNoDataValue");
   myElement = snode.toElement();
   setNoDataValue(myElement.text().toDouble());
-  if(myElement.attribute("mValidNoDataValue") == "false")
+  if(myElement.attribute("mValidNoDataValue", "false") != "true")
   {
     mValidNoDataValue = false;
   }
