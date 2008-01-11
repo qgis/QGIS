@@ -19,6 +19,8 @@
 
 #include <map>
 #include <vector>
+#include <QStandardItemModel>
+#include <QModelIndex>
 
 #include "ui_qgspgquerybuilderbase.h"
 #include "qgisgui.h"
@@ -59,8 +61,8 @@ class QgsSearchQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase
     void on_btnLike_clicked();
     void on_btnILike_clicked();
     
-    void on_lstFields_doubleClicked( Q3ListBoxItem *item );
-    void on_lstValues_doubleClicked( Q3ListBoxItem *item );
+    void on_lstFields_doubleClicked( const QModelIndex &index );
+    void on_lstValues_doubleClicked( const QModelIndex &index );
     void on_btnLessEqual_clicked();
     void on_btnGreaterEqual_clicked();
     void on_btnNotEqual_clicked();
@@ -93,7 +95,11 @@ class QgsSearchQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase
     /*! 
     * Populate the field list for the selected table
     */ 
-    void populateFields();  
+    void populateFields();
+  /*! 
+     * Setup models for listviews
+   */ 
+    void setupListViews();
 
     /*! Get the number of records that would be returned by the current SQL
      * @return Number of records or -1 if an error was encountered
@@ -109,10 +115,12 @@ class QgsSearchQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase
   private:
     
     //! Layer for which is the query builder opened
-    QgsVectorLayer* mLayer;
-    
+    QgsVectorLayer* mLayer;    
     //! Map that holds field information, keyed by field name
     QMap<QString, int> mFieldMap;
-
+    //! Model for fields ListView
+    QStandardItemModel *mModelFields;
+    //! Model for values ListView
+    QStandardItemModel *mModelValues;
 };
 #endif //QGSSEARCHQUERYBUILDER_H

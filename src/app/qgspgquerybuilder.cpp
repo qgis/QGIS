@@ -14,8 +14,8 @@
  ***************************************************************************/
 /* $Id$ */
 #include <iostream>
-#include <q3listbox.h>
 #include <QMessageBox>
+#include <QListView>
 #include "qgspgquerybuilder.h"
 #include <qgslogger.h>
 #include <QRegExp>
@@ -24,6 +24,7 @@ QgsPgQueryBuilder::QgsPgQueryBuilder(QWidget *parent, Qt::WFlags fl)
 : QDialog(parent, fl)
 {
   setupUi(this);
+  setupListViews();
 }
 // constructor used when the query builder must make its own
 // connection to the database
@@ -32,6 +33,7 @@ QgsPgQueryBuilder::QgsPgQueryBuilder(QgsDataSourceURI *uri,
 : QDialog(parent, fl), mUri(uri)
 {
   setupUi(this);
+  setupListViews();
   // The query builder must make its own connection to the database when
   // using this constructor
   QString connInfo = mUri->connInfo();
@@ -69,6 +71,7 @@ QgsPgQueryBuilder::QgsPgQueryBuilder(QString tableName, PGconn *con,
 : QDialog(parent, fl), mPgConnection(con)
 {
   setupUi(this);
+  setupListViews();
   mOwnConnection = false; // we don't own this connection since it was passed to us
   mUri = new QgsDataSourceURI( "table=" + tableName);
   QString datasource = QString(tr("Table <b>%1</b> in database <b>%2</b> on host <b>%3</b>, user <b>%4</b>"))
@@ -133,7 +136,9 @@ void QgsPgQueryBuilder::populateFields()
 #endif
       QVariant::Type type = QVariant::String; // TODO: should be set correctly [MD]
       mFieldMap[fieldName] = QgsField(fieldName, type, fieldType);
-      lstFields->insertItem(fieldName);
+      QStandardItem *myItem = new QStandardItem(fieldName);
+      myItem->setEditable(false);
+      mModelFields->insertRow(mModelFields->rowCount(),myItem);
     }
   }
   else
@@ -143,21 +148,39 @@ void QgsPgQueryBuilder::populateFields()
   PQclear(result);
 }
 
+void QgsPgQueryBuilder::setupListViews()
+{
+  //Models
+  mModelFields = new QStandardItemModel();
+  mModelValues = new QStandardItemModel();
+  lstFields->setModel(mModelFields);
+  lstValues->setModel(mModelValues);
+  // Modes
+  lstFields->setViewMode(QListView::ListMode);
+  lstValues->setViewMode(QListView::ListMode);
+  lstFields->setSelectionBehavior(QAbstractItemView::SelectRows);
+  lstValues->setSelectionBehavior(QAbstractItemView::SelectRows);
+  // Performance tip since Qt 4.1
+  lstFields->setUniformItemSizes(true);
+  lstValues->setUniformItemSizes(true);
+}
+
 void QgsPgQueryBuilder::on_btnSampleValues_clicked()
 {
-  if (lstFields->currentText().isEmpty())
+  QString myFieldName = mModelFields->data(lstFields->currentIndex()).toString();
+  if (myFieldName.isEmpty())
       return;
 
-  QString sql = "SELECT DISTINCT \"" + lstFields->currentText() + "\" " +
-      "FROM (SELECT \"" + lstFields->currentText() + "\" " +
+  QString sql = "SELECT DISTINCT \"" + myFieldName + "\" " +
+      "FROM (SELECT \"" + myFieldName + "\" " +
       "FROM " + mUri->quotedTablename() + " " +
       "LIMIT 5000) AS foo " +
-      "ORDER BY \"" + lstFields->currentText() + "\" "+
+      "ORDER BY \"" + myFieldName + "\" "+
       "LIMIT 25";
   // clear the values list 
-  lstValues->clear();
+  mModelValues->clear();
   // determine the field type
-  QgsField field = mFieldMap[lstFields->currentText()];
+  QgsField field = mFieldMap[myFieldName];
   bool isCharField = field.typeName().find("char") > -1;
   PGresult *result = PQexec(mPgConnection, (const char *) (sql.utf8()));
 
@@ -169,14 +192,12 @@ void QgsPgQueryBuilder::on_btnSampleValues_clicked()
       QString value = QString::fromUtf8(PQgetvalue(result, i, 0));
       if(isCharField)
       {
-        lstValues->insertItem("'" + value + "'");
+        value = "'" + value + "'";
       }
-      else
-      {
-        lstValues->insertItem(value);
-      }
+      QStandardItem *myItem = new QStandardItem(value);
+      myItem->setEditable(false);
+      mModelValues->insertRow(mModelValues->rowCount(),myItem);
     }
-
   }else
   {
     QMessageBox::warning(this, tr("Database error"), tr("<p>Failed to get sample of field values using SQL:</p><p>") + sql + "</p><p>Error message was: "+ QString(PQerrorMessage(mPgConnection)) + "</p>");
@@ -187,15 +208,16 @@ void QgsPgQueryBuilder::on_btnSampleValues_clicked()
 
 void QgsPgQueryBuilder::on_btnGetAllValues_clicked()
 {
-  if (lstFields->currentText().isEmpty())
+  QString myFieldName = mModelFields->data(lstFields->currentIndex()).toString();
+  if (myFieldName.isEmpty())
       return;
 
-  QString sql = "select distinct \"" + lstFields->currentText() 
-    + "\" from " + mUri->quotedTablename() + " order by \"" + lstFields->currentText() + "\"";
+  QString sql = "select distinct \"" + myFieldName
+      + "\" from " + mUri->quotedTablename() + " order by \"" + myFieldName + "\"";
   // clear the values list 
-  lstValues->clear();
+  mModelValues->clear();
   // determine the field type
-  QgsField field = mFieldMap[lstFields->currentText()];
+  QgsField field = mFieldMap[myFieldName];
   bool isCharField = field.typeName().find("char") > -1;
 
   PGresult *result = PQexec(mPgConnection, (const char *) (sql.utf8()));
@@ -203,20 +225,31 @@ void QgsPgQueryBuilder::on_btnGetAllValues_clicked()
   if (PQresultStatus(result) == PGRES_TUPLES_OK) 
   {
     int rowCount =  PQntuples(result);
+    
+    lstValues->setCursor(Qt::WaitCursor);
+    // Block for better performance
+    mModelValues->blockSignals(true);
+    lstValues->setUpdatesEnabled(false);
+    
     for(int i=0; i < rowCount; i++)
     {
       QString value = QString::fromUtf8(PQgetvalue(result, i, 0));
-
       if(isCharField)
       {
-        lstValues->insertItem("'" + value + "'");
+        value = "'" + value + "'";
       }
-      else
-      {
-        lstValues->insertItem(value);
-      }
+      QStandardItem *myItem = new QStandardItem(value);
+      myItem->setEditable(false);
+      mModelValues->insertRow(mModelValues->rowCount(),myItem);
     }
-
+    
+    // Unblock for normal use
+    mModelValues->blockSignals(false);
+    lstValues->setUpdatesEnabled(true);
+    // TODO: already sorted, signal emit to refresh model 
+    mModelValues->sort(0);
+    lstValues->setCursor(Qt::ArrowCursor);
+    
   }else
   {
     QMessageBox::warning(this, tr("Database error"), tr("Failed to get sample of field values") + QString(PQerrorMessage(mPgConnection)) );
@@ -365,14 +398,14 @@ void QgsPgQueryBuilder::setSql( QString sqlStatement)
   txtSQL->setText(sqlStatement);
 }
 
-void QgsPgQueryBuilder::on_lstFields_doubleClicked( Q3ListBoxItem *item )
+void QgsPgQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
 {
-  txtSQL->insert("\"" + item->text() + "\"");
+  txtSQL->insert("\"" + mModelFields->data(index).toString() + "\"");
 }
 
-void QgsPgQueryBuilder::on_lstValues_doubleClicked( Q3ListBoxItem *item )
+void QgsPgQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
 {
-  txtSQL->insert(item->text());
+  txtSQL->insert(mModelValues->data(index).toString());
 }
 
 void QgsPgQueryBuilder::on_btnLessEqual_clicked()
