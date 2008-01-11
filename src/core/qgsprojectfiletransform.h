@@ -75,7 +75,7 @@ class QgsProjectFileTransform
   // to the transformArray with proper version number
   void transformNull() {}; // Do absolutely nothing
   void transform081to090();
-  void transform090to091();
+  void transform091to092();
 };
 
 
