@@ -1,0 +1,38 @@
+/* **************************************************************************
+              qgslinearminmaxenhancement.cpp -  description
+                       -------------------
+begin                : Fri Nov 16 2007
+copyright            : (C) 2007 by Peter J. Ersts
+email                : ersts@amnh.org
+
+****************************************************************************/
+
+/* **************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+ 
+#include "qgslinearminmaxenhancement.h"
+
+QgsLinearMinMaxEnhancement::QgsLinearMinMaxEnhancement(QgsContrastEnhancement::QgsRasterDataType theQgsRasterDataType, double theMinimumValue, double theMaximumValue) : QgsContrastEnhancementFunction(theQgsRasterDataType, theMinimumValue, theMaximumValue)
+{
+}
+
+int QgsLinearMinMaxEnhancement::enhanceValue(double theValue)
+{
+  int myStretchedValue = static_cast<int>(((theValue - mMinimumValue)/(mMinimumMaximumRange))*255.0);
+  if(myStretchedValue < QgsContrastEnhancement::getMinimumPossibleValue(mQgsRasterDataType))
+  {
+    return 0;
+  }
+  else if(myStretchedValue > QgsContrastEnhancement::getMaximumPossibleValue(mQgsRasterDataType))
+  {
+    return static_cast<int>(QgsContrastEnhancement::getMaximumPossibleValue(mQgsRasterDataType));
+  }
+  
+  return myStretchedValue; 
+}
