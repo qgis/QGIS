@@ -103,6 +103,8 @@ static const char *const mSupportedRasterFormats[] =
 };
 
 
+// Constant that signals property not used.
+const QString QgsRasterLayer::QSTRING_NOT_SET = QString("Not Set");
 
 /**
   Builds the list of file filter strings to later be used by
@@ -598,8 +600,8 @@ bool QgsRasterLayer::readFile( QString const & fileName )
     mRedBandName = "Red"; // sensible default
     mGreenBandName = "Green"; // sensible default
     mBlueBandName = "Blue";// sensible default
-    mTransparencyBandName = tr("Not Set"); // sensible default
-    mGrayBandName = tr("Not Set");  //sensible default
+    mTransparencyBandName = tr(QSTRING_NOT_SET); // sensible default
+    mGrayBandName = tr(QSTRING_NOT_SET);  //sensible default
     drawingStyle = PALETTED_MULTI_BAND_COLOR; //sensible default
   }
   else if (rasterLayerType == MULTIBAND)
@@ -614,7 +616,7 @@ bool QgsRasterLayer::readFile( QString const & fileName )
     }
     else
     {
-      mBlueBandName = tr("Not Set");  // sensible default
+      mBlueBandName = tr(QSTRING_NOT_SET);  // sensible default
     }
 
     //Beacuse the transparent band can be set from a different layer defaulting to the fourth
@@ -624,18 +626,18 @@ bool QgsRasterLayer::readFile( QString const & fileName )
       mTransparencyBandName = getRasterBandName(4);
     else
     */
-    mTransparencyBandName = tr("Not Set");
+    mTransparencyBandName = tr(QSTRING_NOT_SET);
 
-    mGrayBandName = tr("Not Set");  //sensible default
+    mGrayBandName = tr(QSTRING_NOT_SET);  //sensible default
     drawingStyle = MULTI_BAND_COLOR;  //sensible default
   }
   else                        //GRAY_OR_UNDEFINED
   {
     getRasterBandStats(1);
-    mRedBandName = tr("Not Set"); //sensible default
-    mGreenBandName = tr("Not Set"); //sensible default
-    mBlueBandName = tr("Not Set");  //sensible default
-    mTransparencyBandName = tr("Not Set");  //sensible default
+    mRedBandName = tr(QSTRING_NOT_SET); //sensible default
+    mGreenBandName = tr(QSTRING_NOT_SET); //sensible default
+    mBlueBandName = tr(QSTRING_NOT_SET);  //sensible default
+    mTransparencyBandName = tr(QSTRING_NOT_SET);  //sensible default
     drawingStyle = SINGLE_BAND_GRAY;  //sensible default
     mGrayBandName = getRasterBandName(1); // usually gdal will return gray or undefined  
   }
@@ -1291,7 +1293,7 @@ void QgsRasterLayer::draw (QPainter * theQPainter,
     // a "Gray" or "Undefined" layer drawn as a range of gray colors
     case SINGLE_BAND_GRAY:
       //check the band is set!
-      if (mGrayBandName == tr("Not Set"))
+      if (mGrayBandName == tr(QSTRING_NOT_SET))
       {
         break;
       }
@@ -1304,7 +1306,7 @@ void QgsRasterLayer::draw (QPainter * theQPainter,
       // a "Gray" or "Undefined" layer drawn using a pseudocolor algorithm
     case SINGLE_BAND_PSEUDO_COLOR:
       //check the band is set!
-      if (mGrayBandName == tr("Not Set"))
+      if (mGrayBandName == tr(QSTRING_NOT_SET))
       {
         break;
       }
@@ -1317,7 +1319,7 @@ void QgsRasterLayer::draw (QPainter * theQPainter,
       // a "Palette" layer drawn in gray scale (using only one of the color components)
     case PALETTED_SINGLE_BAND_GRAY:
       //check the band is set!
-      if (mGrayBandName == tr("Not Set"))
+      if (mGrayBandName == tr(QSTRING_NOT_SET))
       {
         break;
       }
@@ -1334,7 +1336,7 @@ void QgsRasterLayer::draw (QPainter * theQPainter,
       // a "Palette" layer having only one of its color components rendered as psuedo color
     case PALETTED_SINGLE_BAND_PSEUDO_COLOR:
       //check the band is set!
-      if (mGrayBandName == tr("Not Set"))
+      if (mGrayBandName == tr(QSTRING_NOT_SET))
       {
         break;
       }
@@ -1355,7 +1357,7 @@ void QgsRasterLayer::draw (QPainter * theQPainter,
     case MULTI_BAND_SINGLE_BAND_GRAY:
       QgsDebugMsg("MULTI_BAND_SINGLE_BAND_GRAY drawing type detected...");
       //check the band is set!
-      if (mGrayBandName == tr("Not Set"))
+      if (mGrayBandName == tr(QSTRING_NOT_SET))
       {
         QgsDebugMsg("MULTI_BAND_SINGLE_BAND_GRAY Not Set detected..." + mGrayBandName);
         break;
@@ -1371,7 +1373,7 @@ void QgsRasterLayer::draw (QPainter * theQPainter,
       //a layer containing 2 or more bands, but using only one band to produce a pseudocolor image
     case MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR:
       //check the band is set!
-      if (mGrayBandName == tr("Not Set"))
+      if (mGrayBandName == tr(QSTRING_NOT_SET))
       {
         break;
       }
@@ -1386,9 +1388,9 @@ void QgsRasterLayer::draw (QPainter * theQPainter,
       //In the case of a multiband with only two bands, 
       //one band will have to be mapped to more than one color
     case MULTI_BAND_COLOR:
-      if(mRedBandName == tr("Not Set") || 
-         mGreenBandName == tr("Not Set") || 
-         mBlueBandName == tr("Not Set"))
+      if(mRedBandName == tr(QSTRING_NOT_SET) || 
+         mGreenBandName == tr(QSTRING_NOT_SET) || 
+         mBlueBandName == tr(QSTRING_NOT_SET))
       {
         break;
       }
@@ -2621,9 +2623,10 @@ void QgsRasterLayer::setRedBandName(QString const &  theBandNameQString)
 {
   QgsDebugMsg("setRedBandName :  " + theBandNameQString);
   //check if the band is unset
-  if (theBandNameQString == tr("Not Set"))
+  if (theBandNameQString == tr(QSTRING_NOT_SET) || theBandNameQString == QSTRING_NOT_SET )
   {
-    mRedBandName = theBandNameQString;
+    // Use translated name internally
+    mRedBandName = tr(QSTRING_NOT_SET);
     return;
   }
   //check if the image is paletted
@@ -2646,7 +2649,7 @@ void QgsRasterLayer::setRedBandName(QString const &  theBandNameQString)
   }
 
   //if no matches were found default to not set
-  mRedBandName = tr("Not Set");
+  mRedBandName = tr(QSTRING_NOT_SET);
   return;
 }
 
@@ -2656,9 +2659,10 @@ void QgsRasterLayer::setRedBandName(QString const &  theBandNameQString)
 void QgsRasterLayer::setGreenBandName(QString const &  theBandNameQString)
 {
   //check if the band is unset
-  if (theBandNameQString == tr("Not Set"))
+  if (theBandNameQString == tr(QSTRING_NOT_SET) || theBandNameQString == QSTRING_NOT_SET )
   {
-    mGreenBandName = theBandNameQString;
+    // Use translated name internally
+    mGreenBandName = tr(QSTRING_NOT_SET);
     return;
   }
   //check if the image is paletted
@@ -2681,7 +2685,7 @@ void QgsRasterLayer::setGreenBandName(QString const &  theBandNameQString)
   }
 
   //if no matches were found default to not set
-  mGreenBandName = tr("Not Set");
+  mGreenBandName = tr(QSTRING_NOT_SET);
   return;
 }
 
@@ -2689,9 +2693,10 @@ void QgsRasterLayer::setGreenBandName(QString const &  theBandNameQString)
 void QgsRasterLayer::setBlueBandName(QString const &  theBandNameQString)
 {
   //check if the band is unset
-  if (theBandNameQString == tr("Not Set"))
+  if (theBandNameQString == tr(QSTRING_NOT_SET) || theBandNameQString == QSTRING_NOT_SET)
   {
-    mBlueBandName = theBandNameQString;
+    // Use translated name internally
+    mBlueBandName = tr(QSTRING_NOT_SET);
     return;
   }
   //check if the image is paletted
@@ -2714,7 +2719,7 @@ void QgsRasterLayer::setBlueBandName(QString const &  theBandNameQString)
   }
 
   //if no matches were found default to not set
-  mBlueBandName = tr("Not Set");
+  mBlueBandName = tr(QSTRING_NOT_SET);
   return;
 }
 
@@ -2722,7 +2727,7 @@ void QgsRasterLayer::setBlueBandName(QString const &  theBandNameQString)
 void QgsRasterLayer::setTransparentBandName(QString const &  theBandNameQString)
 {
   //check if the band is unset
-  if (theBandNameQString == tr("Not Set"))
+  if (theBandNameQString == tr(QSTRING_NOT_SET))
   {
     mTransparencyBandName = theBandNameQString;
     return;
@@ -2747,7 +2752,7 @@ void QgsRasterLayer::setTransparentBandName(QString const &  theBandNameQString)
   }
 
   //if no matches were found default to not set
-  mTransparencyBandName = tr("Not Set");
+  mTransparencyBandName = tr(QSTRING_NOT_SET);
   return;
 }
 
@@ -2756,9 +2761,10 @@ void QgsRasterLayer::setTransparentBandName(QString const &  theBandNameQString)
 void QgsRasterLayer::setGrayBandName(QString const &  theBandNameQString)
 {
   //check if the band is unset
-  if (theBandNameQString == tr("Not Set"))
+  if (theBandNameQString == tr(QSTRING_NOT_SET) || theBandNameQString == QSTRING_NOT_SET )
   {
-    mGrayBandName = theBandNameQString;
+    // Use translated name internally
+    mGrayBandName = tr(QSTRING_NOT_SET);
     return;
   }
   //check if the image is paletted
@@ -2783,7 +2789,7 @@ void QgsRasterLayer::setGrayBandName(QString const &  theBandNameQString)
   }
 
   //if no matches were found default to not set
-  mGrayBandName = tr("Not Set");
+  mGrayBandName = tr(QSTRING_NOT_SET);
   return;
 }
 
@@ -4253,8 +4259,9 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   snode = mnl.namedItem("mNoDataValue");
   myElement = snode.toElement();
   setNoDataValue(myElement.text().toDouble());
-  if(myElement.attribute("mValidNoDataValue", "false") != "true")
+  if( myElement.attribute("mValidNoDataValue", "false").compare("true") )
   {
+    // If flag element is not true, set to false.
     mValidNoDataValue = false;
   }
   
@@ -4496,7 +4503,13 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
 
   // <mRedBandName>
   QDomElement mRedBandNameElement = document.createElement( "mRedBandName" );
-  QDomText    mRedBandNameText    = document.createTextNode( getRedBandName() );
+  QString writtenRedBandName =  getRedBandName();
+  if ( writtenRedBandName == tr(QSTRING_NOT_SET) )
+  {
+    // Write english "not set" only.
+    writtenRedBandName = QSTRING_NOT_SET;
+  }
+  QDomText    mRedBandNameText    = document.createTextNode( writtenRedBandName );
 
   mRedBandNameElement.appendChild( mRedBandNameText );
 
@@ -4505,7 +4518,13 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
 
   // <mGreenBandName>
   QDomElement mGreenBandNameElement = document.createElement( "mGreenBandName" );
-  QDomText    mGreenBandNameText    = document.createTextNode( getGreenBandName() );
+  QString writtenGreenBandName =  getGreenBandName();
+  if ( writtenGreenBandName == tr(QSTRING_NOT_SET) )
+  {
+    // Write english "not set" only.
+    writtenGreenBandName = QSTRING_NOT_SET;
+  }
+  QDomText    mGreenBandNameText    = document.createTextNode( writtenGreenBandName );
 
   mGreenBandNameElement.appendChild( mGreenBandNameText );
 
@@ -4514,7 +4533,13 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
 
   // <mBlueBandName>
   QDomElement mBlueBandNameElement = document.createElement( "mBlueBandName" );
-  QDomText    mBlueBandNameText    = document.createTextNode( getBlueBandName() );
+  QString writtenBlueBandName =  getBlueBandName();
+  if ( writtenBlueBandName == tr(QSTRING_NOT_SET) )
+  {
+    // Write english "not set" only.
+    writtenBlueBandName = QSTRING_NOT_SET;
+  }
+  QDomText    mBlueBandNameText    = document.createTextNode( writtenBlueBandName );
 
   mBlueBandNameElement.appendChild( mBlueBandNameText );
 
@@ -4523,7 +4548,13 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
 
   // <mGrayBandName>
   QDomElement mGrayBandNameElement = document.createElement( "mGrayBandName" );
-  QDomText    mGrayBandNameText    = document.createTextNode( getGrayBandName() );
+  QString writtenGrayBandName =  getGrayBandName();
+  if ( writtenGrayBandName == tr(QSTRING_NOT_SET) )
+  {
+    // Write english "not set" only.
+    writtenGrayBandName = QSTRING_NOT_SET;
+  }
+  QDomText    mGrayBandNameText    = document.createTextNode( writtenGrayBandName );
 
   mGrayBandNameElement.appendChild( mGrayBandNameText );
   rasterPropertiesElement.appendChild( mGrayBandNameElement );
