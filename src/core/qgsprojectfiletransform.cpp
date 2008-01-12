@@ -27,6 +27,7 @@ typedef QgsProjectVersion PFV;
 
 
 QgsProjectFileTransform::transform QgsProjectFileTransform::transformers[] = {
+  {PFV(0,8,0), PFV(0,8,1), &QgsProjectFileTransform::transformNull},
   {PFV(0,8,1), PFV(0,9,0), &QgsProjectFileTransform::transform081to090},
   {PFV(0,9,0), PFV(0,9,1), &QgsProjectFileTransform::transformNull},
   {PFV(0,9,1), PFV(0,9,2), &QgsProjectFileTransform::transform091to092}
