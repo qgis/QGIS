@@ -423,8 +423,11 @@ QgsRasterLayer::~QgsRasterLayer()
 
   if (mProviderKey.isEmpty())
   {
-    mGdalBaseDataset->Dereference();
-    GDALClose(mGdalDataset);
+    if ( mGdalBaseDataset )
+    {
+      mGdalBaseDataset->Dereference();
+      GDALClose(mGdalDataset);
+    }
   }  
 }
 
