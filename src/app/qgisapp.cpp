@@ -4821,6 +4821,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
         if(vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries)
         {
           mActionMoveVertex->setEnabled(true);
+          mActionMoveFeature->setEnabled(true);
         }
         return;
       }
@@ -4859,6 +4860,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
         mActionAddVertex->setEnabled(true);
         mActionMoveVertex->setEnabled(true);
         mActionDeleteVertex->setEnabled(true);
+        mActionMoveFeature->setEnabled(true);
         if(vlayer->vectorType() == QGis::Polygon)
         {
           mActionAddRing->setEnabled(true);
@@ -4872,6 +4874,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
         mActionAddVertex->setEnabled(false);
         mActionMoveVertex->setEnabled(false);
         mActionDeleteVertex->setEnabled(false);
+        mActionMoveFeature->setEnabled(false);
       }
       return;
     }
@@ -4891,6 +4894,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
     mActionAddVertex->setEnabled(false);
     mActionDeleteVertex->setEnabled(false);
     mActionMoveVertex->setEnabled(false);
+    mActionMoveFeature->setEnabled(false);
     mActionEditCopy->setEnabled(false);
     mActionEditCut->setEnabled(false);
     mActionEditPaste->setEnabled(false);
