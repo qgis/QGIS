@@ -1,7 +1,6 @@
 #usr/bin/gridmaker
 usr/bin/qgis
 usr/bin/qgis_help
-usr/bin/msexport
 usr/lib/qgis/libcopyrightlabelplugin.so
 usr/lib/qgis/libdelimitedtextplugin.so
 usr/lib/qgis/libdelimitedtextprovider.so
