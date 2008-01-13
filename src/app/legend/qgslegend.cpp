@@ -1754,6 +1754,8 @@ void QgsLegend::legendLayerZoom()
       extent.combineExtentWith(&lyrExtent);
     }
   }
+  // Increase bounding box with 5%, so that layer is a bit inside the borders
+  extent.scale(1.05); 
 
   //zoom to bounding box
   mMapCanvas->setExtent(extent);
