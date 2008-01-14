@@ -95,6 +95,7 @@ qgsmaplayerregistry.h
 qgsmaprender.h
 qgsmessageoutput.h
 qgsproject.h
+qgsprojectversion.h
 qgsrasterdataprovider.h
 qgsrunprocess.h
 qgsvectorlayer.h
