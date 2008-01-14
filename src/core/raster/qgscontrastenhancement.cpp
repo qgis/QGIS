@@ -48,7 +48,7 @@ QgsContrastEnhancement::QgsContrastEnhancement(QgsRasterDataType theDataType)
   //If the data type is larger than 16-bit do not generate a lookup table
   if(mRasterDataTypeRange <= 65535.0)
   {
-     mLookupTable = new int[static_cast <int>(mRasterDataTypeRange)];
+     mLookupTable = new int[static_cast <int>(mRasterDataTypeRange+1)];
   }
   
 }
@@ -175,8 +175,9 @@ bool QgsContrastEnhancement::generateLookupTable()
     QgsDebugMsg("***MinimumValue : "+ QString::number(mMinimumValue));
     QgsDebugMsg("***MaximumValue : "+ QString::number(mMaximumValue));
     QgsDebugMsg("***mLookupTableOffset : "+ QString::number(mLookupTableOffset));
+    QgsDebugMsg("***mRasterDataTypeRange : "+ QString::number(mRasterDataTypeRange));
   #endif
-  for(int myIterator = 0; myIterator < mRasterDataTypeRange; myIterator++)
+  for(int myIterator = 0; myIterator <= mRasterDataTypeRange; myIterator++)
   {
     mLookupTable[myIterator] = mContrastEnhancementFunction->enhanceValue((double)myIterator - mLookupTableOffset);
   }
