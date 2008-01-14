@@ -951,6 +951,8 @@ void QgisApp::createMenus()
 
 void QgisApp::createToolBars()
 {
+  QSize myIconSize ( 24,24 );
+  //QSize myIconSize ( 32,32 ); //large icons
   // Note: we need to set each object name to ensure that
   // qmainwindow::saveState and qmainwindow::restoreState
   // work properly
@@ -958,7 +960,7 @@ void QgisApp::createToolBars()
   //
   // File Toolbar
   mFileToolBar = addToolBar(tr("File"));
-  mFileToolBar->setIconSize(QSize(24,24));
+  mFileToolBar->setIconSize(myIconSize);
   mFileToolBar->setObjectName("FileToolBar");
   mFileToolBar->addAction(mActionFileNew);
   mFileToolBar->addAction(mActionFileNew);
@@ -969,7 +971,7 @@ void QgisApp::createToolBars()
   //
   // Layer Toolbar
   mLayerToolBar = addToolBar(tr("Manage Layers"));
-  mLayerToolBar->setIconSize(QSize(24,24));
+  mLayerToolBar->setIconSize(myIconSize);
   mLayerToolBar->setObjectName("LayerToolBar");
   mLayerToolBar->addAction(mActionAddNonDbLayer);
   mLayerToolBar->addAction(mActionAddRasterLayer);
@@ -987,14 +989,14 @@ void QgisApp::createToolBars()
   //
   // Help Toolbar
   mHelpToolBar = addToolBar(tr("Help"));
-  mHelpToolBar->setIconSize(QSize(24,24));
+  mHelpToolBar->setIconSize(myIconSize);
   mHelpToolBar->setObjectName("Help");
   mHelpToolBar->addAction(mActionHelpContents);
   mHelpToolBar->addAction(QWhatsThis::createAction());
   //
   // Digitizing Toolbar
   mDigitizeToolBar = addToolBar(tr("Digitizing"));
-  mDigitizeToolBar->setIconSize(QSize(24,24));
+  mDigitizeToolBar->setIconSize(myIconSize);
   mDigitizeToolBar->setObjectName("Digitizing");
   mDigitizeToolBar->addAction(mActionToggleEditing);
   mDigitizeToolBar->addAction(mActionCapturePoint);
@@ -1014,7 +1016,7 @@ void QgisApp::createToolBars()
   //
   // Map Navigation Toolbar
   mMapNavToolBar = addToolBar(tr("Map Navigation"));
-  mMapNavToolBar->setIconSize(QSize(24,24));
+  mMapNavToolBar->setIconSize(myIconSize);
   mMapNavToolBar->setObjectName("Map Navigation");
   mMapNavToolBar->addAction(mActionPan);
   mMapNavToolBar->addAction(mActionZoomIn);
@@ -1027,7 +1029,7 @@ void QgisApp::createToolBars()
   //
   // Attributes Toolbar
   mAttributesToolBar = addToolBar(tr("Attributes"));
-  mAttributesToolBar->setIconSize(QSize(24,24));
+  mAttributesToolBar->setIconSize(myIconSize);
   mAttributesToolBar->setObjectName("Attributes");
   mAttributesToolBar->addAction(mActionIdentify);
   mAttributesToolBar->addAction(mActionSelect);
@@ -1039,7 +1041,7 @@ void QgisApp::createToolBars()
   //
   // Plugins Toolbar
   mPluginToolBar = addToolBar(tr("Plugins"));
-  mPluginToolBar->setIconSize(QSize(24,24));
+  mPluginToolBar->setIconSize(myIconSize);
   mPluginToolBar->setObjectName("Plugins");
 
   //Add the menu for toolbar visibility here
