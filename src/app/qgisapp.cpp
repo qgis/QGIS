@@ -5417,25 +5417,25 @@ void QgisApp::warnOlderProjectVersion(QString oldVersion)
   if ( settings.value("/qgis/warnOldProjectVersion", QVariant(true)).toBool() )
   {
     QMessageBox::warning(NULL, tr("Project file is older"),
-                         tr("<p>This project file was saved by an older version "
-                            "of QGIS. When saving this project file, "
-                            "QGIS will update it to the latest version, "
-                            "possibly rendering it useless for older versions of QGIS."
-                            "<p>Even though QGIS developers try to maintain backwards "
-                            "compatibility, some of the information from the old project "
-                            "file might be lost. To improve the quality of QGIS, we appreciate "
-                            "if you file a bug report at "
-                            "<a href=http://svn.qgis.org/trac/wiki>http://svn.qgis.org/trac/wiki</a> "
-                            "Be sure to include the old project file, and state the version of "
-                            "QGIS you used to discover the error."
-                            "<p>To remove this warning when opening an older project file, "
-                            "check the box 'Warn me when opening a project file saved with an "
-                            "older version of QGIS' "
-                            "in the <tt>Settings:Options:General</tt> menu. "
-                            "<p>Version of the project file: %1<br>"
-                            "Current version of QGIS: %2")
+                         (tr("<p>This project file was saved by an older version of QGIS.") +
+                          tr(" When saving this project file, QGIS will update it to the latest version, "
+                             "possibly rendering it useless for older versions of QGIS.") +
+                          tr("<p>Even though QGIS developers try to maintain backwards "
+                             "compatibility, some of the information from the old project "
+                             "file might be lost.") +
+                          tr(" To improve the quality of QGIS, we appreciate "
+                             "if you file a bug report at %3.") +
+                          tr(" Be sure to include the old project file, and state the version of "
+                             "QGIS you used to discover the error.") +
+                          tr("<p>To remove this warning when opening an older project file, "
+                             "uncheck the box '%5' in the %4 menu.") +
+                          tr("<p>Version of the project file: %1<br>Current version of QGIS: %2"))
                          .arg(oldVersion)
-                         .arg(QGis::qgisVersion));
+                         .arg(QGis::qgisVersion)
+                         .arg("<a href=https://svn.qgis.org/trac/wiki>http://svn.qgis.org/trac/wiki</a> ")
+                         .arg(tr("<tt>Settings:Options:General</tt>", "Menu path to setting options"))
+                         .arg(tr("Warn me when opening a project file saved with an older version of QGIS"))
+      );
     
   }  
   return;
