@@ -200,6 +200,35 @@ void QgsProjectFileTransform::transform091to092()
       rasterProperty.namedItem("grayBandNameQString").toElement().setTagName("mGrayBandName");
     }
 
+    // Changing symbol size for hard: symbols
+    QDomNodeList symbolPropertyList = mDom.elementsByTagName("symbol");
+    for (int i = 0; i < symbolPropertyList.count(); i++)
+    {
+      // Get the <poinmtsymbol> to check for 'hard:' for each <symbol>
+      QDomNode symbolProperty = symbolPropertyList.item(i);
+      
+      QDomElement pointSymbol = symbolProperty.firstChildElement("pointsymbol");
+      if ( pointSymbol.text().startsWith("hard:") )
+      {
+        // Get pointsize and line width
+        int lineWidth = symbolProperty.firstChildElement("outlinewidth").text().toInt();
+        int pointSize = symbolProperty.firstChildElement("pointsize").text().toInt();
+        // Just a precaution, checking for 0
+        if (pointSize != 0)
+        {
+          // int r = (s-2*lw)/2-1 --> 2r = (s-2*lw)-2 --> 2r+2 = s-2*lw
+          // --> 2r+2+2*lw = s
+          // where '2r' is the old size.
+          pointSize = pointSize+2+2*lineWidth;
+          QgsDebugMsg(QString("Setting point size to %1").arg(pointSize));
+          QDomElement newPointSizeProperty=mDom.createElement("pointsize");
+          QDomText newPointSizeTxt=mDom.createTextNode( QString::number(pointSize) );
+          newPointSizeProperty.appendChild(newPointSizeTxt);
+          symbolProperty.replaceChild(newPointSizeProperty, pointSymbol);
+        }
+      } 
+    }
+
   }
   return;
 
