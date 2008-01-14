@@ -166,6 +166,27 @@ ELSE (APPLE)
   INSTALL(TARGETS qgis_rendererstest RUNTIME DESTINATION ${QGIS_BIN_DIR})
   ADD_TEST(qgis_rendererstest ${QGIS_BIN_DIR}/qgis_rendererstest)
 ENDIF (APPLE)
+#
+# QgsMapRender test
+#
+SET(qgis_maprendertest_SRCS testqgsmaprender.cpp)
+SET(qgis_maprendertest_MOC_CPPS testqgsmaprender.cpp)
+QT4_WRAP_CPP(qgis_maprendertest_MOC_SRCS ${qgis_maprendertest_MOC_CPPS})
+ADD_CUSTOM_TARGET(qgis_maprendertestmoc ALL DEPENDS ${qgis_maprendertest_MOC_SRCS})
+ADD_EXECUTABLE(qgis_maprendertest ${qgis_maprendertest_SRCS})
+ADD_DEPENDENCIES(qgis_maprendertest qgis_maprendertestmoc)
+TARGET_LINK_LIBRARIES(qgis_maprendertest ${QT_LIBRARIES} qgis_core)
+SET_TARGET_PROPERTIES(qgis_maprendertest 
+  PROPERTIES INSTALL_RPATH ${QGIS_LIB_DIR}
+  INSTALL_RPATH_USE_LINK_PATH true)
+IF (APPLE)
+  # For Mac OS X, the executable must be at the root of the bundle's executable folder
+  INSTALL(TARGETS qgis_maprendertest RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
+  ADD_TEST(qgis_maprendertest ${CMAKE_INSTALL_PREFIX}/qgis_maprendertest)
+ELSE (APPLE)
+  INSTALL(TARGETS qgis_maprendertest RUNTIME DESTINATION ${QGIS_BIN_DIR})
+  ADD_TEST(qgis_maprendertest ${QGIS_BIN_DIR}/qgis_maprendertest)
+ENDIF (APPLE)
 
 
 
