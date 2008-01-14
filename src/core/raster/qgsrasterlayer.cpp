@@ -634,7 +634,8 @@ bool QgsRasterLayer::readFile( QString const & fileName )
   }
   else                        //GRAY_OR_UNDEFINED
   {
-    getRasterBandStats(1);
+    //Disabled automatically generating stats to improve initial load speed.
+    //getRasterBandStats(1);
     mRedBandName = tr(QSTRING_NOT_SET); //sensible default
     mGreenBandName = tr(QSTRING_NOT_SET); //sensible default
     mBlueBandName = tr(QSTRING_NOT_SET);  //sensible default
