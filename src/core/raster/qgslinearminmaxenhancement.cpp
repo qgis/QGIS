@@ -25,13 +25,13 @@ QgsLinearMinMaxEnhancement::QgsLinearMinMaxEnhancement(QgsContrastEnhancement::Q
 int QgsLinearMinMaxEnhancement::enhanceValue(double theValue)
 {
   int myStretchedValue = static_cast<int>(((theValue - mMinimumValue)/(mMinimumMaximumRange))*255.0);
-  if(myStretchedValue < QgsContrastEnhancement::getMinimumPossibleValue(mQgsRasterDataType))
+  if(myStretchedValue < 0)
   {
     return 0;
   }
-  else if(myStretchedValue > QgsContrastEnhancement::getMaximumPossibleValue(mQgsRasterDataType))
+  else if(myStretchedValue > 255)
   {
-    return static_cast<int>(QgsContrastEnhancement::getMaximumPossibleValue(mQgsRasterDataType));
+    return 255;
   }
   
   return myStretchedValue; 
