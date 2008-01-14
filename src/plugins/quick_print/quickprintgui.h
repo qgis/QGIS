@@ -18,9 +18,9 @@
 #define QuickPrintGUI_H
 
 #include <QDialog>
-#include <qgsmaprender.h>
-#include <qgsmapcanvas.h>
 #include <ui_quickprintguibase.h>
+#include "qgsmapcanvas.h"
+
 
 /**
 @author Tim Sutton
@@ -29,47 +29,10 @@ class QuickPrintGui : public QDialog, private Ui::QuickPrintGuiBase
 {
 Q_OBJECT
 public:
-    QuickPrintGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
+    QuickPrintGui( QgsMapCanvas * thepMapCanvas, QWidget* parent = 0,  Qt::WFlags fl = 0 );
     ~QuickPrintGui();
-    void setMapCanvas(QgsMapCanvas * thepCanvas) {mpMapCanvas = thepCanvas;};;
 private:
     static const int context_id = 0;
-
-    enum SymbolScalingType {ScaleUp, ScaleDown};
-    /**
-     * Scale symbols in all layers by the specified amount.
-     * Typically used for printing. Each symbol in 
-     * each layer of the active mapcanvas will be iterated 
-     * to. If the symbol is a point symbol its size 
-     * will be multiplied by the scale factor or divided. In order
-     * to choose an appropriate scale factor, typically
-     * you should divide the print resolution by the 
-     * screen resolution (often 72dpi or 96dpi).
-     * @param theScaleFactor - amount by which symbol sizes
-     * will be multiplied.
-     * @param SymbolScalingType - whether the sizes should
-     * be scaled up or down.
-     * @see scaleTextLabels
-     */
-    void scalePointSymbols( int theScaleFactor, SymbolScalingType theDirection );
-    /**
-     * Scale text labels in all layers by the specified amount.
-     * Typically used for printing. Each label in 
-     * each layer of the active mapcanvas will be iterated 
-     * to. The font point size 
-     * will be multiplied by the scale factor or divided. In order
-     * to choose an appropriate scale factor, typically
-     * you should divide the print resolution by the 
-     * screen resolution (often 72dpi or 96dpi).
-     * @param theScaleFactor - amount by which symbol sizes
-     * will be multiplied.
-     * @param SymbolScalingType - whether the sizes should
-     * be scaled up or down.
-     * @see scalePointSymbols
-     */
-    void scaleTextLabels( int theScaleFactor, SymbolScalingType theDirection);
-
-    void renderPrintScaleBar(QPainter * thepPainter, QgsMapCanvas * thepMapCanvas);
     void readSettings();
     void writeSettings();
     QgsMapCanvas * mpMapCanvas;

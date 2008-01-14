@@ -3,14 +3,14 @@
 # Files
 
 SET (quickprint_SRCS
-     quickprint.cpp
+     quickprintplugin.cpp
      quickprintgui.cpp
 )
 
 SET (quickprint_UIS quickprintguibase.ui)
 
 SET (quickprint_MOC_HDRS
-     quickprint.h
+     quickprintplugin.h
      quickprintgui.h
 )
 
@@ -25,7 +25,11 @@ QT4_WRAP_CPP (quickprint_MOC_SRCS  ${quickprint_MOC_HDRS})
 
 QT4_ADD_RESOURCES(quickprint_RCC_SRCS ${quickprint_RCCS})
 
-ADD_LIBRARY (quickprintplugin MODULE ${quickprint_SRCS} ${quickprint_MOC_SRCS} ${quickprint_RCC_SRCS} ${quickprint_UIS_H})
+ADD_LIBRARY (quickprintplugin MODULE 
+   ${quickprint_SRCS} 
+   ${quickprint_MOC_SRCS} 
+   ${quickprint_RCC_SRCS} 
+   ${quickprint_UIS_H})
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
