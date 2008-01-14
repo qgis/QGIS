@@ -1443,9 +1443,14 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPor
   }
   else if(QgsContrastEnhancement::NO_STRETCH != getContrastEnhancementAlgorithm() && !mUserDefinedGrayMinMaxFlag)
   {
-    myGrayBandStats = getRasterBandStats(theBandNo);
-    setMaximumValue(theBandNo, myGrayBandStats.maxVal);
-    setMinimumValue(theBandNo, myGrayBandStats.minVal);
+    //This case will be true the first time the image is loaded, so just approimate the min max to keep
+    //from calling generate raster band stats
+    double GDALrange[2];
+    GDALComputeRasterMinMax( myGdalBand, 1, GDALrange ); //Approximate
+
+    setMaximumValue(theBandNo, GDALrange[1]);
+    setMinimumValue(theBandNo, GDALrange[0]);
+
   }
 
   QgsDebugMsg("Starting main render loop");
@@ -2078,16 +2083,20 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPor
   }
   else if(QgsContrastEnhancement::NO_STRETCH != getContrastEnhancementAlgorithm() && !mUserDefinedRGBMinMaxFlag)
   {
-    myRedBandStats = getRasterBandStats(myRedBandNo);
-    myGreenBandStats = getRasterBandStats(myGreenBandNo);
-    myBlueBandStats = getRasterBandStats(myBlueBandNo);
+        //This case will be true the first time the image is loaded, so just approimate the min max to keep
+    //from calling generate raster band stats
+    double GDALrange[2];
+    GDALComputeRasterMinMax( myGdalRedBand, 1, GDALrange ); //Approximate
+    setMaximumValue(myRedBandNo, GDALrange[1]);
+    setMinimumValue(myRedBandNo, GDALrange[0]);
 
-    setMaximumValue(myRedBandNo, myRedBandStats.maxVal);
-    setMinimumValue(myRedBandNo, myRedBandStats.minVal);
-    setMaximumValue(myGreenBandNo, myGreenBandStats.maxVal);
-    setMinimumValue(myGreenBandNo, myGreenBandStats.minVal);
-    setMaximumValue(myBlueBandNo, myBlueBandStats.maxVal);
-    setMinimumValue(myBlueBandNo, myBlueBandStats.minVal);
+    GDALComputeRasterMinMax( myGdalGreenBand, 1, GDALrange ); //Approximate
+    setMaximumValue(myGreenBandNo, GDALrange[1]);
+    setMinimumValue(myGreenBandNo, GDALrange[0]);
+    
+    GDALComputeRasterMinMax( myGdalBlueBand, 1, GDALrange ); //Approximate
+    setMaximumValue(myBlueBandNo, GDALrange[1]);
+    setMinimumValue(myBlueBandNo, GDALrange[0]);
   }
 
   //Read and display pixels
