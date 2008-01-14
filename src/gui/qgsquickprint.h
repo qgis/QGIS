@@ -32,7 +32,7 @@
 * \brief A convenience class for quickly printing a map.
 * Prints a map with a map title, scale bar, north arrow, legend etc.
 */
-class QgsQuickPrint:public QObject
+class GUI_EXPORT QgsQuickPrint:public QObject
 {
   Q_OBJECT;
   public:
