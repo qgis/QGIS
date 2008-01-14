@@ -5430,7 +5430,7 @@ void QgisApp::warnOlderProjectVersion(QString oldVersion)
                             "QGIS you used to discover the error."
                             "<p>To remove this warning when opening an older project file, "
                             "check the box 'Warn me when opening a project file saved with an "
-                            "older verision of QGIS' "
+                            "older version of QGIS' "
                             "in the <tt>Settings:Options:General</tt> menu. "
                             "<p>Version of the project file: %1<br>"
                             "Current version of QGIS: %2")
