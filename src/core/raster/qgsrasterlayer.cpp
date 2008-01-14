@@ -392,7 +392,6 @@ QgsRasterLayer::QgsRasterLayer(QString const & path, QString const & baseName)
 {
   mUserDefinedRGBMinMaxFlag = false; //defaults needed to bypass stretch
   mUserDefinedGrayMinMaxFlag = false;
-  setContrastEnhancementAlgorithm(QgsContrastEnhancement::NO_STRETCH); //defaults needed to bypass stretch
 
   mRasterShader = new QgsRasterShader();
 
@@ -578,6 +577,8 @@ bool QgsRasterLayer::readFile( QString const & fileName )
     QgsContrastEnhancement myContrastEnhancement((QgsContrastEnhancement::QgsRasterDataType)myGdalBand->GetRasterDataType());
     mContrastEnhancementList.append(myContrastEnhancement);
   }
+  
+  setContrastEnhancementAlgorithm(QgsContrastEnhancement::STRETCH_TO_MINMAX); //defaults - Needs to be set after the Contrast list has been build
   
   //decide what type of layer this is...
   //note that multiband images can have one or more 'undefindd' bands,
@@ -1440,6 +1441,12 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPor
     setMaximumValue(theBandNo, myGrayBandStats.mean + (mStandardDeviations * myGrayBandStats.stdDev));
     setMinimumValue(theBandNo, myGrayBandStats.mean - (mStandardDeviations * myGrayBandStats.stdDev));
   }
+  else if(QgsContrastEnhancement::NO_STRETCH != getContrastEnhancementAlgorithm() && !mUserDefinedGrayMinMaxFlag)
+  {
+    myGrayBandStats = getRasterBandStats(theBandNo);
+    setMaximumValue(theBandNo, myGrayBandStats.maxVal);
+    setMinimumValue(theBandNo, myGrayBandStats.minVal);
+  }
 
   QgsDebugMsg("Starting main render loop");
   // print each point in myGdalScanData with equal parts R, G ,B o make it show as gray
@@ -2068,6 +2075,19 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPor
     setMinimumValue(myGreenBandNo, myGreenBandStats.mean - (mStandardDeviations * myGreenBandStats.stdDev));
     setMaximumValue(myBlueBandNo, myBlueBandStats.mean + (mStandardDeviations * myBlueBandStats.stdDev));
     setMinimumValue(myBlueBandNo, myBlueBandStats.mean - (mStandardDeviations * myBlueBandStats.stdDev));
+  }
+  else if(QgsContrastEnhancement::NO_STRETCH != getContrastEnhancementAlgorithm() && !mUserDefinedRGBMinMaxFlag)
+  {
+    myRedBandStats = getRasterBandStats(myRedBandNo);
+    myGreenBandStats = getRasterBandStats(myGreenBandNo);
+    myBlueBandStats = getRasterBandStats(myBlueBandNo);
+
+    setMaximumValue(myRedBandNo, myRedBandStats.maxVal);
+    setMinimumValue(myRedBandNo, myRedBandStats.minVal);
+    setMaximumValue(myGreenBandNo, myGreenBandStats.maxVal);
+    setMinimumValue(myGreenBandNo, myGreenBandStats.minVal);
+    setMaximumValue(myBlueBandNo, myBlueBandStats.maxVal);
+    setMinimumValue(myBlueBandNo, myBlueBandStats.minVal);
   }
 
   //Read and display pixels
