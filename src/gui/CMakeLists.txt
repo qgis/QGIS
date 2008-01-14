@@ -18,6 +18,7 @@ qgsmaptoolpan.cpp
 qgsmaptoolzoom.cpp
 qgsmessageviewer.cpp
 qgsprojectionselector.cpp
+qgsquickprint.cpp
 qgsrubberband.cpp
 qgsvertexmarker.cpp
 )
@@ -31,6 +32,7 @@ qgsmapoverviewcanvas.h
 qgsmessageviewer.h
 qgsmaptoolemitpoint.h
 qgsprojectionselector.h
+qgsquickprint.h
 )
 
 QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})

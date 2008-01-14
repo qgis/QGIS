@@ -40,7 +40,9 @@
 #include <QObject>
 
 //QGIS includes
-#include "../qgisplugin.h"
+#include "qgisplugin.h"
+#include <qgsmaprender.h>
+#include <qgsmapcanvas.h>
 
 //forward declarations
 class QAction;
@@ -53,7 +55,7 @@ class QgisInterface;
 * \brief [name] plugin for QGIS
 * [description]
 */
-class QuickPrint:public QObject, public QgisPlugin
+class QuickPrintPlugin:public QObject, public QgisPlugin
 {
   Q_OBJECT;
   public:
@@ -69,9 +71,9 @@ class QuickPrint:public QObject, public QgisPlugin
   * QGIS when it attempts to instantiate the plugin.
   * @param theInterface Pointer to the QgisInterface object. 
    */
-  QuickPrint(QgisInterface * theInterface);
+  QuickPrintPlugin(QgisInterface * theInterface);
   //! Destructor
-  virtual ~QuickPrint();
+  virtual ~QuickPrintPlugin();
 
 public slots:
   //! init the gui
@@ -82,9 +84,10 @@ public slots:
   void unload();
   //! show the help document
   void help();
-
 private:
 
+  QgsMapCanvas * mpMapCanvas;
+  
   ////////////////////////////////////////////////////////////////////
   //
   // MANDATORY PLUGIN PROPERTY DECLARATIONS  .....

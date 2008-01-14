@@ -22,9 +22,9 @@
 
 #include <qgisinterface.h>
 #include <qgisgui.h>
-
-#include "quickprint.h"
+#include "quickprintplugin.h"
 #include "quickprintgui.h"
+#include <qgsapplication.h>
 
 //
 // Qt4 Related Includes
@@ -52,13 +52,14 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
  * an interface object that provides access to exposed functions in QGIS.
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-QuickPrint::QuickPrint(QgisInterface * theQgisInterface):
+QuickPrintPlugin::QuickPrintPlugin(QgisInterface * theQgisInterface):
                  QgisPlugin(sName,sDescription,sPluginVersion,sPluginType),
                  mQGisIface(theQgisInterface)
 {
+  mpMapCanvas = mQGisIface->getMapCanvas();
 }
 
-QuickPrint::~QuickPrint()
+QuickPrintPlugin::~QuickPrintPlugin()
 {
 
 }
@@ -67,7 +68,7 @@ QuickPrint::~QuickPrint()
  * Initialize the GUI interface for the plugin - this is only called once when the plugin is 
  * added to the plugin registry in the QGIS application.
  */
-void QuickPrint::initGui()
+void QuickPrintPlugin::initGui()
 {
 
   // Create the action for tool
@@ -82,7 +83,7 @@ void QuickPrint::initGui()
 
 }
 //method defined in interface
-void QuickPrint::help()
+void QuickPrintPlugin::help()
 {
   //implement me!
 }
@@ -91,17 +92,19 @@ void QuickPrint::help()
 // If you created more menu items / toolbar buttons in initiGui, you should 
 // create a separate handler for each action - this single run() method will
 // not be enough
-void QuickPrint::run()
+void QuickPrintPlugin::run()
 {
-  QuickPrintGui *myPluginGui=new QuickPrintGui(mQGisIface->getMainWindow(), QgisGui::ModalDialogFlags);
-  myPluginGui->setAttribute(Qt::WA_DeleteOnClose);
+  QuickPrintGui *mypPluginGui=new QuickPrintGui(
+      mpMapCanvas,
+      mQGisIface->getMainWindow(),
+      QgisGui::ModalDialogFlags);
+  mypPluginGui->setAttribute(Qt::WA_DeleteOnClose);
+  mypPluginGui->exec(); //gui will decide when to call print
   
-  myPluginGui->setMapCanvas(mQGisIface->getMapCanvas());
-  myPluginGui->show();
 }
 
 // Unload the plugin by cleaning up the GUI
-void QuickPrint::unload()
+void QuickPrintPlugin::unload()
 {
   // remove the GUI
   mQGisIface->removePluginMenu("&Quick Print",mQActionPointer);
@@ -129,7 +132,7 @@ void QuickPrint::unload()
 // Class factory to return a new instance of the plugin class
 QGISEXTERN QgisPlugin * classFactory(QgisInterface * theQgisInterfacePointer)
 {
-  return new QuickPrint(theQgisInterfacePointer);
+  return new QuickPrintPlugin(theQgisInterfacePointer);
 }
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
