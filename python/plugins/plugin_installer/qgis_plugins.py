@@ -40,7 +40,7 @@ class unzip:
         zf = zipfile.ZipFile(file)
 
         # create directory structure to house files
-        print "Creating plugin structure"
+        print "Creating plugin structure:"
         self._createstructure(file, dir)
 
         num_files = len(zf.namelist())
@@ -70,7 +70,7 @@ class unzip:
 
     def _makedirs(self, directories, basedir):
         """ Create any directories that don't currently exist """
-        print "Creating directories contained in the zip file: %s" % directories
+        print "Processing directories contained in the zip file: %s" % directories
         for dir in directories:
             curdir = os.path.join(basedir, dir)
             # normalize the path
@@ -91,7 +91,7 @@ class unzip:
 
         for file in zf.filelist:
           if file.external_attr >> 28 == 4:
-            print "Adding %s to the list of directories to create" % file.filename
+            # print "Adding %s to the list of directories to create" % file.filename
             dirs.append(file.filename)
 
         #for name in zf.namelist():
