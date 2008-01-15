@@ -1420,6 +1420,12 @@ void QgsRasterLayer::draw (QPainter * theQPainter,
 void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort, QgsMapToPixel * theQgsMapToPixel, int theBandNo)
 {
   QgsDebugMsg("QgsRasterLayer::drawSingleBandGray called for layer " + QString::number(theBandNo));
+  //Invalid band number, segfault prevention
+  if(0 >= theBandNo)
+  {
+    return;
+  }
+  
   GDALRasterBand *myGdalBand = mGdalDataset->GetRasterBand(theBandNo);
   GDALDataType myDataType = myGdalBand->GetRasterDataType();
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
@@ -1514,12 +1520,17 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPor
 void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, 
     QgsRasterViewPort * theRasterViewPort,
     QgsMapToPixel * theQgsMapToPixel, 
-    int theBandNoInt)
+    int theBandNo)
 {
   QgsDebugMsg("QgsRasterLayer::drawSingleBandPseudoColor called");
-
-  QgsRasterBandStats myRasterBandStats = getRasterBandStats(theBandNoInt);
-  GDALRasterBand *myGdalBand = mGdalDataset->GetRasterBand(theBandNoInt);
+  //Invalid band number, segfault prevention
+  if(0 >= theBandNo)
+  {
+    return;
+  }
+  
+  QgsRasterBandStats myRasterBandStats = getRasterBandStats(theBandNo);
+  GDALRasterBand *myGdalBand = mGdalDataset->GetRasterBand(theBandNo);
   GDALDataType myDataType = myGdalBand->GetRasterDataType();
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
 
@@ -1616,7 +1627,12 @@ void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, QgsRast
     QgsMapToPixel * theQgsMapToPixel, int theBandNo)
 {
   QgsDebugMsg("QgsRasterLayer::drawPalettedSingleBandColor called");
-
+  //Invalid band number, segfault prevention
+  if(0 >= theBandNo)
+  {
+    return;
+  }
+  
   GDALRasterBand *myGdalBand = mGdalDataset->GetRasterBand(theBandNo);
   GDALDataType myDataType = myGdalBand->GetRasterDataType();
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
@@ -1696,7 +1712,12 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter, QgsRaste
     QString const & theColorQString)
 {
   QgsDebugMsg("QgsRasterLayer::drawPalettedSingleBandGray called");
-
+  //Invalid band number, segfault prevention
+  if(0 >= theBandNo)
+  {
+    return;
+  }
+  
   QgsRasterBandStats myRasterBandStats = getRasterBandStats(theBandNo);
   GDALRasterBand *myGdalBand = mGdalDataset->GetRasterBand(theBandNo);
   GDALDataType myDataType = myGdalBand->GetRasterDataType();
@@ -1790,6 +1811,12 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter, Q
     QString const & theColorQString)
 {
   QgsDebugMsg("QgsRasterLayer::drawPalettedSingleBandPseudoColor called");
+  //Invalid band number, segfault prevention
+  if(0 >= theBandNo)
+  {
+    return;
+  }
+  
   QgsRasterBandStats myRasterBandStats = getRasterBandStats(theBandNo);
   GDALRasterBand *myGdalBand = mGdalDataset->GetRasterBand(theBandNo);
   GDALDataType myDataType = myGdalBand->GetRasterDataType();
@@ -1913,7 +1940,12 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, QgsRaste
     QgsMapToPixel * theQgsMapToPixel, int theBandNo)
 {
   QgsDebugMsg("QgsRasterLayer::drawPalettedMultiBandColor called");
-
+  //Invalid band number, segfault prevention
+  if(0 >= theBandNo)
+  {
+    return;
+  }
+  
   GDALRasterBand *myGdalBand = mGdalDataset->GetRasterBand(theBandNo);
   GDALDataType myDataType = myGdalBand->GetRasterDataType();
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
@@ -2031,10 +2063,26 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPor
     QgsMapToPixel * theQgsMapToPixel)
 {
   QgsDebugMsg("QgsRasterLayer::drawMultiBandColor called");
-
   int myRedBandNo = getRasterBandNumber(mRedBandName);
+  //Invalid band number, segfault prevention
+  if(0 >= myRedBandNo)
+  {
+    return;
+  }
+  
   int myGreenBandNo = getRasterBandNumber(mGreenBandName);
+  //Invalid band number, segfault prevention
+  if(0 >= myGreenBandNo)
+  {
+    return;
+  }
+  
   int myBlueBandNo = getRasterBandNumber(mBlueBandName);
+  //Invalid band number, segfault prevention
+  if(0 >= myBlueBandNo)
+  {
+    return;
+  }
   GDALRasterBand *myGdalRedBand = mGdalDataset->GetRasterBand(myRedBandNo);
   GDALRasterBand *myGdalGreenBand = mGdalDataset->GetRasterBand(myGreenBandNo);
   GDALRasterBand *myGdalBlueBand = mGdalDataset->GetRasterBand(myBlueBandNo);
@@ -2396,7 +2444,9 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNo)
   }
   else if (rasterLayerType==GRAY_OR_UNDEFINED)
   {
-    myRasterBandStats.bandName = myColorerpretation;
+    //PJE 2008-01-14 This function should not be changing the band name, 
+    //The format below is not the same as the constructor
+    //myRasterBandStats.bandName = myColorerpretation;
   }
   else //rasterLayerType is MULTIBAND
   {
