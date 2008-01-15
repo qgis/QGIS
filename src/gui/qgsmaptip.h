@@ -25,7 +25,7 @@ class QString;
  * A maptip is a class to display a tip on a map canvas
  * when a mouse is hovered over a feature.
  */
-class QgsMapTip
+class GUI_EXPORT QgsMapTip
 {
   public:
     /** Default constructor

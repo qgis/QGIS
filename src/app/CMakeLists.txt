@@ -26,7 +26,6 @@ SET(QGIS_APP_SRCS
   qgslinestyledialog.cpp
   qgslinestylewidget.cpp
   qgsludialog.cpp
-  qgsmaptip.cpp
   qgsmaptooladdfeature.cpp
   qgsmaptooladdvertex.cpp
   qgsmaptooladdisland.cpp
