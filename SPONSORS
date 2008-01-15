@@ -8,6 +8,10 @@
 # name|<website>
 # This list should be sorted by first name. The
 # website entry is optional.
+# -------------------------------------------------------
+#
+# ALWAYS USE UTF-8 WHEN WRITING THIS FILE!
+#
 Aaron Racicoti, Ecotrust|www.ecotrust.org 
 Adam Lane
 Albin Blaschka|www.albinblaschka.info 

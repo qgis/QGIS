@@ -10,6 +10,9 @@
 # a blank image will be displayed.
 # Images are read out of $PREFIX/share/qgis/images/developers/
 # ---------------------------------------------------------
+#
+# ALWAYS USE UTF-8 WHEN WRITING THIS FILE!
+#
 Gary E.Sherman	<sherman at mrcc dot com>
 Steve Halasz	<stevehalasz at users.sourceforge.net>
 Marco Hugentobler	<mhugent at users.sourceforge.net>
