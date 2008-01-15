@@ -40,6 +40,7 @@ class unzip:
         zf = zipfile.ZipFile(file)
 
         # create directory structure to house files
+        print "Creating plugin structure"
         self._createstructure(file, dir)
 
         num_files = len(zf.namelist())
@@ -69,10 +70,16 @@ class unzip:
 
     def _makedirs(self, directories, basedir):
         """ Create any directories that don't currently exist """
+        print "Creating directories contained in the zip file: %s" % directories
         for dir in directories:
             curdir = os.path.join(basedir, dir)
+            # normalize the path
+            curdir = os.path.normpath(curdir)
+            print "Checking to see if we should create %s" % curdir
             if not os.path.exists(curdir):
-                os.mkdir(curdir)
+                # use makedirs to create parent directories as well
+                print "Creating %s" % curdir
+                os.makedirs(curdir)
 
     def _listdirs(self, file):
         """ Grabs all the directories in the zip structure
@@ -82,9 +89,22 @@ class unzip:
 
         dirs = []
 
-        for name in zf.namelist():
-            if name.endswith('/'):
-                dirs.append(name)
+        for file in zf.filelist:
+          if file.external_attr >> 28 == 4:
+            print "Adding %s to the list of directories to create" % file.filename
+            dirs.append(file.filename)
+
+        #for name in zf.namelist():
+        #    if name.endswith('/'):
+        #        dirs.append(name)
+
+        ## Check for subdirectories by assuming a file with length 0
+        ## is a directory (this isn't necessarily true but it allows
+        ## plugins with subdirectories to be installed)
+        #for file in zf.filelist:
+        #  if file.file_size == 0:
+        #      dirs.append(file.file_name)
+
 
         if len(dirs) == 0:
           # this means there is no top level directory in the
@@ -115,6 +135,8 @@ def retrieve_list(repos):
     return plugins
 
 def install_plugin(plugin, plugindir, repos):
+    # normalize the path to the users plugin directory
+    plugindir = os.path.normpath(plugindir)
     plugin_list = retrieve_list(repos)
     target = [x for x in plugin_list if x["name"] == plugin]
     if target:
@@ -138,7 +160,7 @@ def install_plugin(plugin, plugindir, repos):
 
         print "Extracting to plugin directory (%s)" % plugindir
         try:
-	    un = unzip()
+            un = unzip()
             un.extract(outfile, plugindir)        
         except:
             return (False, "Failed to unzip file to %s ... check permissions" % plugindir)
