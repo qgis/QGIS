@@ -61,9 +61,8 @@ void QgsAbout::init()
 #endif
   if ( file.open( QIODevice::ReadOnly ) ) {
     QTextStream stream( &file );
-#ifdef Q_OS_DARWIN
+    // Always use UTF-8
     stream.setCodec("UTF-8");
-#endif
     QString line;
 #ifdef QGISDEBUG 
     int i = 1; 
@@ -118,6 +117,8 @@ void QgsAbout::init()
         + "</th><th>" + tr("Name") + "</th><th>" + tr("Website") + "</th></tr>";
       QString website;
       QTextStream sponsorStream( &sponsorFile );
+      // Always use UTF-8
+      sponsorStream.setCodec("UTF-8");
       QString sline;
       int count = 0;
       while ( !sponsorStream.atEnd() ) 
