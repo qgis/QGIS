@@ -90,26 +90,19 @@ class unzip:
         dirs = []
 
         for file in zf.filelist:
+          # It appears that all directories in a zip have a unique
+          # signature in the external_attr of the ZipInfo object. 
+          # Shifting the external_attr by 28 will result in a value of 4
+          # for all directories. This is undocumented in the Python zipfile
+          # module but appears to be a solid way to identify directories
+          # in a zip file.
           if file.external_attr >> 28 == 4:
-            # print "Adding %s to the list of directories to create" % file.filename
             dirs.append(file.filename)
-
-        #for name in zf.namelist():
-        #    if name.endswith('/'):
-        #        dirs.append(name)
-
-        ## Check for subdirectories by assuming a file with length 0
-        ## is a directory (this isn't necessarily true but it allows
-        ## plugins with subdirectories to be installed)
-        #for file in zf.filelist:
-        #  if file.file_size == 0:
-        #      dirs.append(file.file_name)
-
 
         if len(dirs) == 0:
           # this means there is no top level directory in the
           # zip file. We'll assume the first entry contains the
-          # directory and use it
+          # directory and use it, hoping for the best...
           entry = zf.namelist()[0]
           dir = entry.split('/')[0]
           dir += '/'
