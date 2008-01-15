@@ -43,6 +43,7 @@ class QgsHelpViewer;
 class QgsLegend;
 class QgsMapCanvas;
 class QgsMapLayer;
+class QgsMapTip;
 class QgsMapTool;
 class QgsPoint;
 class QgsProviderRegistry;
@@ -57,6 +58,7 @@ class QgsRect;
 #include <QAbstractSocket>
 
 #include "qgsconfig.h"
+#include <qgspoint.h>
 
 /*! \class QgisApp
  * \brief Main window for the Qgis application
@@ -379,6 +381,12 @@ public slots:
   //! Shows a warning when an old project file is read.
   void warnOlderProjectVersion(QString);
 
+  //! Toggle map tips on/off
+  void toggleMapTips();
+
+  //! Show the map tip
+  void showMapTip();
+
 signals:
   /** emitted when a key is pressed and we want non widget sublasses to be able
     to pick up on this (e.g. maplayer) */
@@ -450,6 +458,7 @@ private:
   void createOverview();
   void createCanvas();
   bool createDB();
+  void createMapTips();
   //toolbars ----------------------------------------
   QToolBar *mFileToolBar;
   QToolBar *mLayerToolBar;
@@ -509,6 +518,7 @@ private:
   QAction *mActionZoomLast;
   QAction *mActionZoomToLayer;
   QAction *mActionIdentify;
+  QAction *mActionMapTips;
   QAction *mActionSelect;
   QAction *mActionOpenTable;
   QAction *mActionMeasure;
@@ -638,6 +648,21 @@ private:
     */
   QString mRasterFileFilter;
 
+  /** Timer for map tips
+   */
+  QTimer *mpMapTipsTimer;
+
+  /** Point of last mouse position in map coordinates (used with MapTips)
+   */
+  QgsPoint mLastMapPosition;
+
+  /* Maptip object
+   */
+  QgsMapTip *  mpMaptip;
+  
+  // Flag to indicate if maptips are on or off
+  bool mMapTipsVisible;
+  
 #ifdef HAVE_PYTHON
   QgsPythonDialog* mPythonConsole;
 #endif

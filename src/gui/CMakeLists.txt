@@ -21,6 +21,7 @@ qgsprojectionselector.cpp
 qgsquickprint.cpp
 qgsrubberband.cpp
 qgsvertexmarker.cpp
+qgsmaptip.cpp
 )
 
 SET(QGIS_GUI_MOC_HDRS
