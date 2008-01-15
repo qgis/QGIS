@@ -231,7 +231,7 @@ void QgsGrassPlugin::initGui()
   setEditAction();
   connect ( qGisInterface, SIGNAL(currentLayerChanged(QgsMapLayer *)),
             this, SLOT(setEditAction()) );
-
+  
   // Init Region symbology
   mRegionPen.setColor( QColor ( settings.readEntry ("/GRASS/region/color", "#ff0000" ) ) );
   mRegionPen.setWidth( settings.readNumEntry ("/GRASS/region/width", 0 ) );
@@ -823,6 +823,15 @@ void QgsGrassPlugin::unload()
 
   if ( toolBarPointer )
     delete toolBarPointer;
+
+  // disconnect slots of QgsGrassPlugin so they're not fired also after unload
+  disconnect( mCanvas, SIGNAL(renderComplete(QPainter *)), this, SLOT(postRender(QPainter *)));
+  disconnect ( qGisInterface, SIGNAL(currentLayerChanged(QgsMapLayer *)),
+            this, SLOT(setEditAction()) );
+
+  QWidget* qgis = qGisInterface->getMainWindow();
+  disconnect( qgis, SIGNAL( projectRead() ), this, SLOT( projectRead()));
+  disconnect( qgis, SIGNAL( newProject() ), this, SLOT(newProject()));
 }
 /** 
  * Required extern functions needed  for every plugin 
