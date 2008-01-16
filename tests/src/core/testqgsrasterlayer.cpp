@@ -21,11 +21,17 @@
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
+#include <QPainter>
+#include <QSettings>
+#include <QTime>
+
 
 //qgis includes...
 #include <qgsrasterlayer.h> 
 #include <qgsrasterbandstats.h> 
+#include <qgsmaplayerregistry.h> 
 #include <qgsapplication.h>
+#include <qgsmaprender.h> 
 
 /** \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
@@ -42,7 +48,9 @@ class TestQgsRasterLayer: public QObject
     void isValid();
     void checkDimensions(); 
   private:
+    void render(QString theFileName);
     QgsRasterLayer * mpLayer;
+    QgsMapRender * mpMapRenderer;
 };
 
 void TestQgsRasterLayer::initTestCase()
@@ -66,11 +74,19 @@ void TestQgsRasterLayer::initTestCase()
   QFileInfo myRasterFileInfo ( myFileName );
   mpLayer = new QgsRasterLayer ( myRasterFileInfo.filePath(),
             myRasterFileInfo.completeBaseName() );
+  // Register the layer with the registry
+  QgsMapLayerRegistry::instance()->addMapLayer(mpLayer);
+  // add the test layer to the maprender
+  mpMapRenderer = new QgsMapRender();
+  QStringList myLayers;
+  myLayers << mpLayer->getLayerID();
+  mpMapRenderer->setLayerSet(myLayers);
 }
 
 void TestQgsRasterLayer::isValid()
 {
   QVERIFY ( mpLayer->isValid() );
+  render("raster_test.png");
 }
 void TestQgsRasterLayer::checkDimensions()
 {
@@ -79,6 +95,32 @@ void TestQgsRasterLayer::checkDimensions()
    // regression check for ticket #832
    // note getRasterBandStats call is base 1
    QVERIFY ( mpLayer->getRasterBandStats(1).elementCount == 100 );
+}
+
+void TestQgsRasterLayer::render(QString theFileName)
+{
+
+  //
+  // Now render our layers onto a pixmap 
+  //
+  QPixmap myPixmap( 100,100 );
+  myPixmap.fill ( QColor ( "#98dbf9" ) );
+  QPainter myPainter( &myPixmap );
+  mpMapRenderer->setOutputSize( QSize ( 100,100 ),72 ); 
+  mpMapRenderer->setExtent(mpLayer->extent());
+  qDebug ("Extents set to:");
+  qDebug (mpLayer->extent().stringRep());
+  QTime myTime;
+  myTime.start();
+  mpMapRenderer->render( &myPainter );
+  qDebug ("Elapsed time in ms for render job: " + 
+      QString::number ( myTime.elapsed() ).toLocal8Bit()); 
+  myPainter.end();
+  //
+  // Save the pixmap to disk so the user can make a 
+  // visual assessment if needed
+  //
+  myPixmap.save (QDir::tempPath() + QDir::separator() + theFileName);
 }
 
 QTEST_MAIN(TestQgsRasterLayer)
