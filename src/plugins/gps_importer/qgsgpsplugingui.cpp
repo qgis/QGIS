@@ -405,8 +405,8 @@ void QgsGPSPluginGui::populateIMPBabelFormats() {
 }
 
 void QgsGPSPluginGui::populateCONVDialog() {
-  cmbCONVType->insertItem(tr("Route -> Waypoint"));
-  cmbCONVType->insertItem(tr("Waypoint -> Route"));
+  cmbCONVType->insertItem(tr("Routes") + " -> " + tr("Waypoints"));
+  cmbCONVType->insertItem(tr("Waypoints") + " -> " + tr("Routes"));
 
   QString format = QString("<html><body><p>%1 %2<p>%3</body></html>");
 
