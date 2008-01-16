@@ -46,10 +46,11 @@ class TestQgsRasterLayer: public QObject
     void cleanup(){};// will be called after every testfunction.
 
     void isValid();
+    void pseudoColor();
     void checkDimensions(); 
   private:
     void render(QString theFileName);
-    QgsRasterLayer * mpLayer;
+    QgsRasterLayer * mpRasterLayer;
     QgsMapRender * mpMapRenderer;
 };
 
@@ -72,29 +73,41 @@ void TestQgsRasterLayer::initTestCase()
   QString myFileName (TEST_DATA_DIR); //defined in CmakeLists.txt
   myFileName = myFileName + QDir::separator() + "tenbytenraster.asc";
   QFileInfo myRasterFileInfo ( myFileName );
-  mpLayer = new QgsRasterLayer ( myRasterFileInfo.filePath(),
+  mpRasterLayer = new QgsRasterLayer ( myRasterFileInfo.filePath(),
             myRasterFileInfo.completeBaseName() );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayer(mpLayer);
+  QgsMapLayerRegistry::instance()->addMapLayer(mpRasterLayer);
   // add the test layer to the maprender
   mpMapRenderer = new QgsMapRender();
   QStringList myLayers;
-  myLayers << mpLayer->getLayerID();
+  myLayers << mpRasterLayer->getLayerID();
   mpMapRenderer->setLayerSet(myLayers);
 }
 
 void TestQgsRasterLayer::isValid()
 {
-  QVERIFY ( mpLayer->isValid() );
+  QVERIFY ( mpRasterLayer->isValid() );
   render("raster_test.png");
 }
+
+void TestQgsRasterLayer::pseudoColor()
+{
+   mpRasterLayer->setDrawingStyle(QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR);
+   mpRasterLayer->setColorShadingAlgorithm(QgsRasterLayer::PSEUDO_COLOR);  
+   mpRasterLayer->setContrastEnhancementAlgorithm(
+          QgsContrastEnhancement::STRETCH_TO_MINMAX, false);
+   mpRasterLayer->setMinimumValue(mpRasterLayer->getGrayBandName(),0.0, false);
+   mpRasterLayer->setMaximumValue(mpRasterLayer->getGrayBandName(),0.0);
+   render("raster_pseudo_test.png");
+}
+
 void TestQgsRasterLayer::checkDimensions()
 {
-   QVERIFY ( mpLayer->getRasterXDim() == 10 );
-   QVERIFY ( mpLayer->getRasterYDim() == 10 );
+   QVERIFY ( mpRasterLayer->getRasterXDim() == 10 );
+   QVERIFY ( mpRasterLayer->getRasterYDim() == 10 );
    // regression check for ticket #832
    // note getRasterBandStats call is base 1
-   QVERIFY ( mpLayer->getRasterBandStats(1).elementCount == 100 );
+   QVERIFY ( mpRasterLayer->getRasterBandStats(1).elementCount == 100 );
 }
 
 void TestQgsRasterLayer::render(QString theFileName)
@@ -107,9 +120,9 @@ void TestQgsRasterLayer::render(QString theFileName)
   myPixmap.fill ( QColor ( "#98dbf9" ) );
   QPainter myPainter( &myPixmap );
   mpMapRenderer->setOutputSize( QSize ( 100,100 ),72 ); 
-  mpMapRenderer->setExtent(mpLayer->extent());
+  mpMapRenderer->setExtent(mpRasterLayer->extent());
   qDebug ("Extents set to:");
-  qDebug (mpLayer->extent().stringRep());
+  qDebug (mpRasterLayer->extent().stringRep());
   QTime myTime;
   myTime.start();
   mpMapRenderer->render( &myPainter );
