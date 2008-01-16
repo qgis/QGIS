@@ -11,8 +11,6 @@ qgsclipper.cpp
 qgscontexthelp.cpp
 qgscoordinatetransform.cpp
 qgsdatasourceuri.cpp
-qgsdbfilterproxymodel.cpp
-qgsdbtablemodel.cpp
 qgsdistancearea.cpp
 qgsexception.cpp
 qgsfeature.cpp

@@ -16,6 +16,8 @@ SET(QGIS_APP_SRCS
   qgsclipboard.cpp
   qgscontinuouscolordialog.cpp
   qgscustomprojectiondialog.cpp
+  qgsdbfilterproxymodel.cpp
+  qgsdbtablemodel.cpp
   qgsdelattrdialog.cpp
   qgsfillstylewidget.cpp
   qgsgeomtypedialog.cpp
