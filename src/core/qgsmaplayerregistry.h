@@ -20,7 +20,7 @@
 #ifndef QGSMAPLAYERREGISTRY_H
 #define QGSMAPLAYERREGISTRY_H
 
-#include <map>
+#include <QMap>
 #include <QObject>
 
 class QString;
@@ -52,7 +52,7 @@ public:
  QgsMapLayer * mapLayer(QString theLayerId);
 
  //! Retrieve the mapLayers collection (mainly intended for use by projectio)
- std::map<QString,QgsMapLayer*> & mapLayers();
+ QMap<QString,QgsMapLayer*> & mapLayers();
 
  /** Add a layer to the map of loaded layers 
     @returns NULL if unable to add layer, otherwise pointer to newly added layer
@@ -122,7 +122,7 @@ private:
 
  static QgsMapLayerRegistry* mInstance;
 
- std::map<QString,QgsMapLayer*> mMapLayers;
+ QMap<QString,QgsMapLayer*> mMapLayers;
 
   /** debugging member
       invoked when a connect() is made to this object 

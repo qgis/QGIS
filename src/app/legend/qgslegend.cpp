@@ -1011,9 +1011,8 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	  else if(childelem.tagName()=="legendlayerfile")
 	    {
 	      //find out the legendlayer
-	      std::map<QString,QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
-	      std::map<QString, QgsMapLayer*>::const_iterator iter = mapLayers.find(childelem.attribute("layerid"));
-	      if(iter == mapLayers.end()) //the layer cannot be found (e.g. the file has been moved)
+        QgsMapLayer* theMapLayer = QgsMapLayerRegistry::instance()->mapLayer(childelem.attribute("layerid"));
+	      if(theMapLayer == NULL) //the layer cannot be found (e.g. the file has been moved)
 		{
 		  // remove the whole legendlayer if this is the only legendlayerfile
 		  if(childelem.previousSibling().isNull() && childelem.nextSibling().isNull())
@@ -1026,7 +1025,6 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 		}
 	      else if(lastLayerFileGroup)
 		{
-		  QgsMapLayer* theMapLayer = iter->second;
 		  QgsLegendLayerFile* theLegendLayerFile = new QgsLegendLayerFile(lastLayerFileGroup, QgsLegendLayerFile::nameFromLayer(theMapLayer), theMapLayer);
 
 		  // load layer's visibility and 'show in overview' flag

@@ -113,12 +113,12 @@ void QgsGPSPlugin::run()
 {
   // find all GPX layers
   std::vector<QgsVectorLayer*> gpxLayers;
-  std::map<QString, QgsMapLayer*>::const_iterator iter;
+  QMap<QString, QgsMapLayer*>::const_iterator iter;
   QgsMapLayerRegistry* registry = QgsMapLayerRegistry::instance();
   for (iter =  registry->mapLayers().begin();
        iter != registry->mapLayers().end(); ++iter) {
-    if (iter->second->type() == QgsMapLayer::VECTOR) {
-      QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>(iter->second);
+    if (iter.value()->type() == QgsMapLayer::VECTOR) {
+      QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>(iter.value());
       if (vLayer->providerType() == "gpx")
 	gpxLayers.push_back(vLayer);
     }
