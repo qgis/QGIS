@@ -28,6 +28,7 @@ email                : tim@linfiniti.com
 #include "qgsmaplayer.h"
 #include "plugin.h"
 #include "qgsproject.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprender.h"
 #include "qgsapplication.h"
@@ -35,6 +36,7 @@ email                : tim@linfiniti.com
 // qt includes
 #include <QPainter>
 #include <QMenu>
+#include <QDir>
 
 //non qt includes
 #include <iostream>
@@ -110,15 +112,13 @@ void QgsNorthArrowPlugin::initGui()
 
 void QgsNorthArrowPlugin::projectRead()
 {
-#ifdef QGISDEBUG
-    std::cout << "+++++++++ north arrow plugin - project read slot called...." << std::endl;
-#endif
-    //default text to start with - try to fetch it from qgsproject
+  QgsDebugMsg("+++++++++ north arrow plugin - project read slot called....");
+  //default text to start with - try to fetch it from qgsproject
 
-    mRotationInt = QgsProject::instance()->readNumEntry("NorthArrow","/Rotation",0);
-    mPlacementIndex = QgsProject::instance()->readNumEntry("NorthArrow","/Placement",0);
-    mEnable = QgsProject::instance()->readBoolEntry("NorthArrow","/Enabled",true);
-    mAutomatic = QgsProject::instance()->readBoolEntry("NorthArrow","/Automatic",true);
+  mRotationInt = QgsProject::instance()->readNumEntry("NorthArrow","/Rotation",0);
+  mPlacementIndex = QgsProject::instance()->readNumEntry("NorthArrow","/Placement",0);
+  mEnable = QgsProject::instance()->readBoolEntry("NorthArrow","/Enabled",true);
+  mAutomatic = QgsProject::instance()->readBoolEntry("NorthArrow","/Automatic",true);
 }
 
 //method defined in interface
@@ -156,18 +156,25 @@ void QgsNorthArrowPlugin::refreshCanvas()
 
 void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
 {
-#ifdef QGISDEBUG
-      std::cout << "Rendering n-arrow"  << std::endl;
-#endif
+   
   //Large IF statement controlled by enable check box
   if (mEnable)
   {
+    if (theQPainter->isActive())
+    {
+      QgsDebugMsg("Rendering north arrow on active painter");
+    }
+    else 
+    {
+      QgsDebugMsg("Rendering north arrow on INactive painter!!!");
+    }
+    
     QPixmap myQPixmap; //to store the north arrow image in
 
-    QString myFileNameQString = QgsApplication::pkgDataPath() +
-                                "/images/north_arrows/default.png";
+    QString myFileNameQString = QDir::cleanPath( QgsApplication::pkgDataPath() +
+						 "/images/north_arrows/default.png" );
 
-    //std::cout << "Trying to load " << myFileNameQString << std::cout;
+    QgsDebugMsg("Trying to load " + myFileNameQString);
     if (myQPixmap.load(myFileNameQString))
     {
 
@@ -200,9 +207,8 @@ void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
       int myHeight = theQPainter->device()->height();
       int myWidth = theQPainter->device()->width();
 
-#ifdef QGISDEBUG
-      std::cout << "Rendering n-arrow at " << mPlacementLabels.at(mPlacementIndex).toLocal8Bit().data() << std::endl;
-#endif
+      QgsDebugMsg("Rendering north arrow at " + mPlacementLabels.at(mPlacementIndex));
+
       //Determine placement of label from form combo box
       switch (mPlacementIndex)
       {
@@ -221,8 +227,7 @@ void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
                              myHeight-myQPixmap.height());
 	break;
       default:
-	std::cout << "Unable to determine where to put north arrow so defaulting to top left" 
-		  << std::endl;
+	QgsDebugMsg("Unable to determine where to put north arrow so defaulting to top left");
       }
       //rotate the canvas by the north arrow rotation amount
       theQPainter->rotate( mRotationInt );
@@ -321,6 +326,7 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
       {
 	UNUSED(e);
 	// just give up
+	QgsDebugMsg("Transformation error, quitting");
 	return false;
       }
 
