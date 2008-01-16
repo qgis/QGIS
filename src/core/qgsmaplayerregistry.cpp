@@ -60,15 +60,7 @@ const int QgsMapLayerRegistry::count()
 
 QgsMapLayer * QgsMapLayerRegistry::mapLayer(QString theLayerId)  
 {
-  QgsMapLayer * myMapLayer = mMapLayers[theLayerId];
-  if (myMapLayer)
-  {
-    return myMapLayer;
-  }
-  else
-  {
-    return 0;
-  }
+  return mMapLayers.value(theLayerId);
 }
 
 
@@ -83,7 +75,7 @@ QgsMapLayer *
   }
 
   //check the layer is not already registered!
-  std::map<QString,QgsMapLayer*>::iterator myIterator = mMapLayers.find(theMapLayer->getLayerID());
+  QMap<QString,QgsMapLayer*>::iterator myIterator = mMapLayers.find(theMapLayer->getLayerID());
   //if myIterator returns mMapLayers.end() then it does not exist in registry and its safe to add it
   if (myIterator == mMapLayers.end())
   {
@@ -124,21 +116,17 @@ void QgsMapLayerRegistry::removeAllMapLayers()
                                 // themselves, and then consequently any of
                                 // their map legends
   
-  std::map<QString, QgsMapLayer *>::iterator myMapIterator = mMapLayers.begin();
-  while ( myMapIterator != mMapLayers.end() )
+  QMap<QString, QgsMapLayer *>::iterator it;
+  for (it = mMapLayers.begin(); it != mMapLayers.end() ; ++it )
   {
-      delete myMapIterator->second; // delete the map layer
-
-      mMapLayers.erase( myMapIterator );
-
-      myMapIterator = mMapLayers.begin(); // since iterator invalidated due to
-                                        // erase(), reset to new first element
+      delete it.value(); // delete the map layer
   }
+  mMapLayers.clear();
 
 } // QgsMapLayerRegistry::removeAllMapLayers()
 
 
-std::map<QString,QgsMapLayer*> & QgsMapLayerRegistry::mapLayers()
+QMap<QString,QgsMapLayer*> & QgsMapLayerRegistry::mapLayers()
 {
   QgsDebugMsg("QgsMapLayerRegistry::mapLayers");
   return mMapLayers;

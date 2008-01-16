@@ -278,13 +278,13 @@ mpRasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
 
   cboxTransparencyBand->insertItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
   cboxTransparencyLayer->insertItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
-  std::map<QString, QgsMapLayer *> myLayers = QgsMapLayerRegistry::instance()->mapLayers();
-  std::map<QString, QgsMapLayer *>::iterator it;
+  QMap<QString, QgsMapLayer *> myLayers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString, QgsMapLayer *>::iterator it;
   for(it = myLayers.begin(); it != myLayers.end(); it++)
   {
-    if(QgsMapLayer::RASTER == it->second->type())
+    if(QgsMapLayer::RASTER == it.value()->type())
     {
-      cboxTransparencyLayer->insertItem(it->second->name());
+      cboxTransparencyLayer->insertItem(it.value()->name());
     }
   }
 
@@ -1666,13 +1666,13 @@ void QgsRasterLayerProperties::on_cboxTransparencyLayer_currentIndexChanged(cons
   }
   else
   {
-    std::map<QString, QgsMapLayer *> myLayers = QgsMapLayerRegistry::instance()->mapLayers();
-    std::map<QString, QgsMapLayer *>::iterator it;
+    QMap<QString, QgsMapLayer *> myLayers = QgsMapLayerRegistry::instance()->mapLayers();
+    QMap<QString, QgsMapLayer *>::iterator it;
     for(it = myLayers.begin(); it != myLayers.end(); it++)
     {
-      if(theText == it->second->name() && QgsMapLayer::RASTER == it->second->type())
+      if(theText == it.value()->name() && QgsMapLayer::RASTER == it.value()->type())
       {
-        QgsRasterLayer* myRasterLayer = (QgsRasterLayer*)it->second;
+        QgsRasterLayer* myRasterLayer = (QgsRasterLayer*)it.value();
         int myBandCount = myRasterLayer->getBandCount();
         cboxTransparencyBand->clear();
         cboxTransparencyBand->insertItem(tr(QgsRasterLayer::QSTRING_NOT_SET));

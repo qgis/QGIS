@@ -975,18 +975,18 @@ bool QgsProject::write()
   emit writeProject(*doc);
 
   // within top level node save list of layers
-  std::map<QString,QgsMapLayer*> & layers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString,QgsMapLayer*> & layers = QgsMapLayerRegistry::instance()->mapLayers();
 
   // Iterate over layers in zOrder
   // Call writeXML() on each
   QDomElement projectLayersNode = doc->createElement("projectlayers");
   projectLayersNode.setAttribute("layercount", qulonglong( layers.size() ));
 
-  std::map<QString,QgsMapLayer*>::iterator li = layers.begin();
+  QMap<QString,QgsMapLayer*>::iterator li = layers.begin();
   while (li != layers.end())
   {
     //QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer(*li);
-    QgsMapLayer* ml = li->second;
+    QgsMapLayer* ml = li.value();
 
     if (ml)
     {

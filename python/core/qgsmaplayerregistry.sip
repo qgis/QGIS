@@ -25,8 +25,7 @@ public:
  QgsMapLayer * mapLayer(QString theLayerId);
 
  //! Retrieve the mapLayers collection (mainly intended for use by projectio)
- // TODO: wrap
- //std::map<QString,QgsMapLayer*> & mapLayers();
+ QMap<QString,QgsMapLayer*> & mapLayers();
 
  /** Add a layer to the map of loaded layers 
     @returns NULL if unable to add layer, otherwise pointer to newly added layer

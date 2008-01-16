@@ -32,26 +32,26 @@ QgsPasteTransformations::QgsPasteTransformations()
 {
 
   // Populate the dialog with the loaded layers
-  std::map<QString, QgsMapLayer*> mapLayers =
+  QMap<QString, QgsMapLayer*> mapLayers =
     QgsMapLayerRegistry::instance()->mapLayers();
 
-  for (std::map<QString, QgsMapLayer*>::iterator it  = mapLayers.begin();
+  for (QMap<QString, QgsMapLayer*>::iterator it  = mapLayers.begin();
                                                  it != mapLayers.end();
                                                ++it )
   {
 #ifdef QGISDEBUG
         std::cerr << "QgsPasteTransformations::QgsPasteTransformations: QgsMapLayerRegistry has "
-          << it->second->name().toLocal8Bit().data() << "."
+          << it.value()->name().toLocal8Bit().data() << "."
           << std::endl;
 #endif
 
     // TODO: Test if a VECTOR or DATABASE layer only (not RASTER)
 
-    sourceLayerComboBox     ->insertItem( it->second->name() );
-    destinationLayerComboBox->insertItem( it->second->name() );
+    sourceLayerComboBox     ->insertItem( it.value()->name() );
+    destinationLayerComboBox->insertItem( it.value()->name() );
 
     // store the lookup from the name to the map layer object
-    mMapNameLookup[ it->second->name() ] = it->second;
+    mMapNameLookup[ it.value()->name() ] = it.value();
   }
 
 
