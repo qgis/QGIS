@@ -278,6 +278,10 @@ not disjoint with existing polygons of the feature*/
     /** Test for containment of a point (uses GEOS) */
     bool contains(QgsPoint* p);
 
+    /** Returns a buffer region around this geometry having the given width and with a specified number
+        of segments used to approximate curves */
+    QgsGeometry* buffer(double distance, int segments);
+
     /** Exports the geometry to mWkt
         @return true in case of success and false else
      */

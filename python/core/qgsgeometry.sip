@@ -208,6 +208,10 @@ not disjoint with existing polygons of the feature*/
     /** Test for containment of a point (uses GEOS) */
     bool contains(QgsPoint* p);
 
+    /** Returns a buffer region around this geometry having the given width and with a specified number
+        of segments used to approximate curves */
+    QgsGeometry* buffer(double distance, int segments) /Factory/;
+
     /**Creates a geos geometry from this features geometry. Note, that the returned object needs to be deleted*/
     // TODO: unsupported class... would be possible to use PyGEOS?
     //geos::Geometry* geosGeometry() const;
