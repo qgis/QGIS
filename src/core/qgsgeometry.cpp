@@ -5511,3 +5511,15 @@ double QgsGeometry::distance(QgsGeometry& geom)
 
   return mGeos->distance(geom.mGeos);
 }
+
+
+QgsGeometry* QgsGeometry::buffer(double distance, int segments)
+{
+  if (mGeos == NULL)
+    exportWkbToGeos();
+  GEOS_GEOM::Geometry* geos = mGeos->buffer(distance, segments);
+  QgsGeometry* g = new QgsGeometry;
+  g->setGeos(geos);
+  return g;
+}
+
