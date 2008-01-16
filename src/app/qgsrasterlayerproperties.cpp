@@ -700,7 +700,7 @@ void QgsRasterLayerProperties::sync()
   //add current NoDataValue to NoDataValue line edit 
   if(rasterLayer->isNoDataValueValid())
   {
-    leNoDataValue->setText(QString::number(rasterLayer->getNoDataValue()));
+    leNoDataValue->setText(QString::number(rasterLayer->getNoDataValue(), 'f'));
   }
   else
   {
@@ -1125,7 +1125,7 @@ void QgsRasterLayerProperties::apply()
     rasterLayer->resetNoDataValue();
     if(rasterLayer->isNoDataValueValid())
     {
-      leNoDataValue->setText(QString::number(rasterLayer->getNoDataValue()));
+      leNoDataValue->setText(QString::number(rasterLayer->getNoDataValue(), 'f'));
     }
     else
     {
@@ -1689,7 +1689,6 @@ void QgsRasterLayerProperties::on_cboxTransparencyLayer_currentIndexChanged(cons
 void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
 {
 
-  QString myNumberFormatter;
   if(rbtnThreeBand->isChecked() && QgsRasterLayer::PALETTED_COLOR != rasterLayer->getDrawingStyle() && 
                                    QgsRasterLayer::PALETTED_MULTI_BAND_COLOR != rasterLayer->getDrawingStyle())
   {
@@ -1702,9 +1701,9 @@ void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
     if(rasterLayer->isNoDataValueValid())
     {
       tableTransparency->insertRow(tableTransparency->rowCount());
-      tableTransparency->setItem(0, 0, new QTableWidgetItem(myNumberFormatter.sprintf("%.2f",rasterLayer->getNoDataValue())));
-      tableTransparency->setItem(0, 1, new QTableWidgetItem(myNumberFormatter.sprintf("%.2f",rasterLayer->getNoDataValue())));
-      tableTransparency->setItem(0, 2, new QTableWidgetItem(myNumberFormatter.sprintf("%.2f",rasterLayer->getNoDataValue())));
+      tableTransparency->setItem(0, 0, new QTableWidgetItem(QString::number(rasterLayer->getNoDataValue(), 'f')));
+      tableTransparency->setItem(0, 1, new QTableWidgetItem(QString::number(rasterLayer->getNoDataValue(), 'f')));
+      tableTransparency->setItem(0, 2, new QTableWidgetItem(QString::number(rasterLayer->getNoDataValue(), 'f')));
       tableTransparency->setItem(0, 3, new QTableWidgetItem("100.0"));
     }
   }
@@ -1728,7 +1727,7 @@ void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
     if(rasterLayer->isNoDataValueValid())
     {
       tableTransparency->insertRow(tableTransparency->rowCount());
-      tableTransparency->setItem(0, 0, new QTableWidgetItem(myNumberFormatter.sprintf("%.2f",rasterLayer->getNoDataValue())));
+      tableTransparency->setItem(0, 0, new QTableWidgetItem(QString::number(rasterLayer->getNoDataValue(), 'f')));
       tableTransparency->setItem(0, 1, new QTableWidgetItem("100.0"));
     }
 
