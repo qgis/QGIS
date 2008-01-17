@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qgsmapserverexportbase.ui'
 #
-# Created: Mon Jan  7 17:08:49 2008
+# Created: Thu Jan 17 14:02:57 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!

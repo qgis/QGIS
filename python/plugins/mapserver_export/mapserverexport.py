@@ -78,7 +78,7 @@ class MapServerExport:
     if result == 1: 
       # get the settings from the dialog and export the map file
       print "Creating exporter using %s and %s" % (self.dlg.ui.txtQgisFilePath.text(), self.dlg.ui.txtMapFilePath.text())
-      exporter = Qgis2Map(self.dlg.ui.txtQgisFilePath.text(), self.dlg.ui.txtMapFilePath.text())
+      exporter = Qgis2Map(str(self.dlg.ui.txtQgisFilePath.text()), str(self.dlg.ui.txtMapFilePath.text()))
       print "Setting options"
       exporter.setOptions( 
           self.dlg.ui.cmbMapUnits.currentText(),
