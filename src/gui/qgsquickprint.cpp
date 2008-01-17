@@ -98,7 +98,7 @@ void QgsQuickPrint::setMapCanvas(QgsMapCanvas * thepMapCanvas)
   mpMapCanvas=thepMapCanvas;
 }
 
-void QgsQuickPrint::print()
+void QgsQuickPrint::printMap()
 {
   if ( mOutputFileName.isEmpty() )
   {

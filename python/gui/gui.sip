@@ -20,6 +20,7 @@
 %Include qgsmapoverviewcanvas.sip
 %Include qgsmessageviewer.sip
 %Include qgsprojectionselector.sip
+%Include qgsquickprint.sip
 %Include qgsrubberband.sip
 %Include qgsvertexmarker.sip
 
