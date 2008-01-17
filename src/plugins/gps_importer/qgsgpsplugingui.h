@@ -63,6 +63,10 @@ private:
   void populateULLayerComboBox();
   void populateIMPBabelFormats();
   void populatePortComboBoxes();
+  void populateLoadDialog();
+  void populateDLDialog();
+  void populateULDialog();
+  void populateIMPDialog();
   void populateCONVDialog();
   
 private slots:

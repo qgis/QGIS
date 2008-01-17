@@ -65,7 +65,7 @@
         <number>6</number>
        </property>
        <item row="0" column="0" colspan="2" >
-        <widget class="QTextEdit" name="textEdit" >
+        <widget class="QTextEdit" name="teLoadDescription" >
          <property name="sizePolicy" >
           <sizepolicy>
            <hsizetype>7</hsizetype>
@@ -81,11 +81,7 @@
           <bool>true</bool>
          </property>
          <property name="html" >
-          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:12pt;">&lt;span style=" font-size:10pt;">GPX is the &lt;/span>&lt;a href="http://www.topografix.com/gpx.asp">&lt;span style=" font-size:10pt; text-decoration: underline; color:#0000ff;">GPS eXchange file format&lt;/span>&lt;/a>&lt;span style=" font-size:10pt;">, which is used to store information about waypoints, routes, and tracks.&lt;/span>&lt;/p>
-&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;">Select a GPX file and then select the feature types that you want to load.&lt;/p>&lt;/body>&lt;/html></string>
+          <string></string>
          </property>
         </widget>
        </item>
@@ -166,16 +162,12 @@ p, li { white-space: pre-wrap; }
         <number>6</number>
        </property>
        <item row="0" column="0" colspan="4" >
-        <widget class="QTextEdit" name="textEdit_2" >
+        <widget class="QTextEdit" name="teIMPDescription" >
          <property name="readOnly" >
           <bool>true</bool>
          </property>
          <property name="html" >
-          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:12pt;">&lt;span style=" font-size:10pt;">QGIS can only load GPX files by itself, but many other formats can be converted to GPX using GPSBabel (&lt;/span>&lt;a href="http://gpsbabel.sf.net">&lt;span style=" font-size:10pt; text-decoration: underline; color:#0000ff;">http://gpsbabel.sf.net&lt;/span>&lt;/a>&lt;span style=" font-size:10pt;">). This requires that you have GPSBabel installed where QGIS can find it.&lt;/span>&lt;/p>
-&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;">Select a GPS file format and the file that you want to import, the feature type that you want to use, a GPX filename that you want to save the converted file as, and a name for the new layer. All file formats can not store waypoints, routes, and tracks, so some feature types may be disabled for some file formats.&lt;/p>&lt;/body>&lt;/html></string>
+          <string></string>
          </property>
         </widget>
        </item>
@@ -281,16 +273,12 @@ p, li { white-space: pre-wrap; }
         <number>6</number>
        </property>
        <item row="0" column="0" colspan="5" >
-        <widget class="QTextEdit" name="textEdit_3" >
+        <widget class="QTextEdit" name="teDLDescription" >
          <property name="readOnly" >
           <bool>true</bool>
          </property>
          <property name="html" >
-          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:12pt;">&lt;span style=" font-size:10pt;">This tool will help you download data from a GPS device. Choose your GPS device, the port it is connected to, the feature type you want to download, a name for your new layer, and the GPX file where you want to store the data. If your device isn't listed, or if you want to change some settings, you can also edit the devices.&lt;/span>&lt;/p>
-&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;">This tool uses the program GPSBabel (&lt;a href="http://gpsbabel.sf.net">&lt;span style=" text-decoration: underline; color:#0000ff;">http://gpsbabel.sf.net&lt;/span>&lt;/a>) to transfer the data. If you don't have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p>&lt;/body>&lt;/html></string>
+          <string></string>
          </property>
         </widget>
        </item>
@@ -456,16 +444,12 @@ p, li { white-space: pre-wrap; }
         </spacer>
        </item>
        <item row="0" column="0" colspan="5" >
-        <widget class="QTextEdit" name="textEdit_4" >
+        <widget class="QTextEdit" name="teULDescription" >
          <property name="readOnly" >
           <bool>true</bool>
          </property>
          <property name="html" >
-          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:12pt;">&lt;span style=" font-size:10pt;">This tool will help you upload data from a GPX layer to a GPS device. Choose the layer you want to upload, the device you want to upload it to, and the port your device is connected to. If your device isn't listed, or if you want to change some settings, you can also edit the devices.&lt;/span>&lt;/p>
-&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;">This tool uses the program GPSBabel (&lt;a href="http://gpsbabel.sf.net">&lt;span style=" text-decoration: underline; color:#0000ff;">http://gpsbabel.sf.net&lt;/span>&lt;/a>) to transfer the data. If you don't have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p>&lt;/body>&lt;/html></string>
+          <string></string>
          </property>
         </widget>
        </item>
