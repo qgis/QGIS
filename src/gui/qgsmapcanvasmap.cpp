@@ -100,3 +100,15 @@ void QgsMapCanvasMap::render()
   }
   update();
 }
+
+QPaintDevice& QgsMapCanvasMap::paintDevice()
+{
+  if (mUseQImageToRender)
+    {
+      return mImage;
+    }
+  else
+    {
+      return mPixmap;
+    }
+}
