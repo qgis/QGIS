@@ -53,7 +53,9 @@ public slots:
   void setOutputPdf(QString theFileName);
   void setMapCanvas(QgsMapCanvas * thepMapCanvas);
 private:
-  void renderPrintScaleBar(QPainter * thepPainter, QgsMapCanvas * thepMapCanvas);
+  void renderPrintScaleBar(QPainter * thepPainter, 
+      QgsMapCanvas * thepMapCanvas, 
+      int theMaximumWidth);
   /**
    * Scale symbols in all layers by the specified amount.
    * Typically used for printing. Each symbol in 
