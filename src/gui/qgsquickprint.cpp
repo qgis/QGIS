@@ -615,7 +615,7 @@ void QgsQuickPrint::printMap()
   //
   // Draw the scale bar
   //
-  renderPrintScaleBar(&myPrintPainter, mpMapCanvas);
+  renderPrintScaleBar(&myPrintPainter, mpMapCanvas, myLogoXDim);
 
   //
   // Finish up
@@ -743,7 +743,9 @@ void QgsQuickPrint::scalePointSymbols( int theScaleFactor, SymbolScalingType the
 
 
 
-void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter, QgsMapCanvas * thepMapCanvas)
+void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter, 
+    QgsMapCanvas * thepMapCanvas,
+    int theMaximumWidth)
 {
   //hard coding some options for now
   int myStyleIndex = 1; //tick up
@@ -757,7 +759,7 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter, QgsMapCanvas * t
   int myXMargin=260;
   int myYMargin=180;
   int myCanvasWidth = thepMapCanvas->width();
-  int myPreferredSize = myCanvasWidth;
+  int myPreferredSize = theMaximumWidth;
   double myActualSize=myPreferredSize;
   int myBufferSize=1; //softcode this later
   QColor myBackColor = Qt::white; //used for text
