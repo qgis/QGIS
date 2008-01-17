@@ -2934,7 +2934,7 @@ int QgsGeometry::splitGeometry(const QList<QgsPoint>& splitLine, QList<QgsGeomet
   return returnCode;
 }
 
-int QgsGeometry::difference(QgsGeometry* other)
+int QgsGeometry::makeDifference(QgsGeometry* other)
 {
   //make sure geos geometry is up to date
   if(!mGeos || mDirtyGeos)
@@ -5523,3 +5523,68 @@ QgsGeometry* QgsGeometry::buffer(double distance, int segments)
   return g;
 }
 
+QgsGeometry* QgsGeometry::convexHull()
+{
+  if (mGeos == NULL)
+    exportWkbToGeos();
+  GEOS_GEOM::Geometry* geos = mGeos->convexHull();
+  QgsGeometry* g = new QgsGeometry;
+  g->setGeos(geos);
+  return g;
+}
+
+QgsGeometry* QgsGeometry::intersection(QgsGeometry* geometry)
+{
+  if (geometry == NULL)
+    return NULL;
+  if (mGeos == NULL)
+    exportWkbToGeos();
+  if (geometry->mGeos == NULL)
+    geometry->exportWkbToGeos();
+  GEOS_GEOM::Geometry* geos = mGeos->intersection(geometry->mGeos);
+  QgsGeometry* g = new QgsGeometry;
+  g->setGeos(geos);
+  return g;
+}
+
+QgsGeometry* QgsGeometry::Union(QgsGeometry* geometry)
+{
+  if (geometry == NULL)
+    return NULL;
+  if (mGeos == NULL)
+    exportWkbToGeos();
+  if (geometry->mGeos == NULL)
+    geometry->exportWkbToGeos();
+  GEOS_GEOM::Geometry* geos = mGeos->Union(geometry->mGeos);
+  QgsGeometry* g = new QgsGeometry;
+  g->setGeos(geos);
+  return g;
+}
+
+QgsGeometry* QgsGeometry::difference(QgsGeometry* geometry)
+{
+  if (geometry == NULL)
+    return NULL;
+  if (mGeos == NULL)
+    exportWkbToGeos();
+  if (geometry->mGeos == NULL)
+    geometry->exportWkbToGeos();
+  GEOS_GEOM::Geometry* geos = mGeos->difference(geometry->mGeos);
+  QgsGeometry* g = new QgsGeometry;
+  g->setGeos(geos);
+  return g;
+}
+
+QgsGeometry* QgsGeometry::symDifference(QgsGeometry* geometry)
+{
+  if (geometry == NULL)
+    return NULL;
+  if (mGeos == NULL)
+    exportWkbToGeos();
+  if (geometry->mGeos == NULL)
+    geometry->exportWkbToGeos();
+  GEOS_GEOM::Geometry* geos = mGeos->symDifference(geometry->mGeos);
+  QgsGeometry* g = new QgsGeometry;
+  g->setGeos(geos);
+  return g;
+}

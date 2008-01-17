@@ -195,7 +195,7 @@ not disjoint with existing polygons of the feature*/
  /**Changes this geometry such that it does not intersect the other geometry
        @param other geometry that should not be intersect
        @return 0 in case of success*/
-    int difference(QgsGeometry* other);	
+    int makeDifference(QgsGeometry* other);	
 
     /**Returns the bounding box of this feature*/
     QgsRect boundingBox();
@@ -212,6 +212,21 @@ not disjoint with existing polygons of the feature*/
         of segments used to approximate curves */
     QgsGeometry* buffer(double distance, int segments) /Factory/;
 
+    /** Returns the smallest convex polygon that contains all the points in the geometry. */
+    QgsGeometry* convexHull() /Factory/;
+    
+    /** Returns a geometry representing the points shared by this geometry and other. */
+    QgsGeometry* intersection(QgsGeometry* geometry) /Factory/;
+    
+    /** Returns a geometry representing all the points in this geometry and other. */
+    QgsGeometry* Union(QgsGeometry* geometry) /Factory/;
+    
+    /** Returns a geometry representing the points making up this geometry that do not make up other. */
+    QgsGeometry* difference(QgsGeometry* geometry) /Factory/;
+    
+    /** Returns a Geometry representing the points making up this Geometry that do not make up other. */
+    QgsGeometry* symDifference(QgsGeometry* geometry) /Factory/;
+    
     /**Creates a geos geometry from this features geometry. Note, that the returned object needs to be deleted*/
     // TODO: unsupported class... would be possible to use PyGEOS?
     //geos::Geometry* geosGeometry() const;
