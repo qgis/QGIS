@@ -368,7 +368,7 @@ void QgsMapCanvas::refresh()
 
     // notify any listeners that rendering is complete
     QPainter p;
-    p.begin(&mMap->pixmap());
+    p.begin(&mMap->paintDevice());
     emit renderComplete(&p);
     p.end();
     
