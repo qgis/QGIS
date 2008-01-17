@@ -34,7 +34,7 @@ class Qgis2Map:
     self.project = projectFile
     self.mapFile = mapFile
     # create the DOM 
-    self.qgs = minidom.parse("/home/gsherman/test1.qgs")
+    self.qgs = minidom.parse(projectFile)
     # init the other members that are not set by the constructor
     self.units = ''
     self.imageType = ''
