@@ -72,13 +72,13 @@ QgsPluginManager::~QgsPluginManager()
 void QgsPluginManager::setTable()
 {
   lstPlugins->setAlternatingRowColors(true);
-  modelPlugins= new QStandardItemModel(0,4);
-  modelPlugins->setHorizontalHeaderItem(0,new QStandardItem(tr("Name")));
-  modelPlugins->setHorizontalHeaderItem(1,new QStandardItem(tr("Version")));
-  modelPlugins->setHorizontalHeaderItem(2,new QStandardItem(tr("Description")));
-  modelPlugins->setHorizontalHeaderItem(3,new QStandardItem(tr("Library name")));
+  mModelPlugins= new QStandardItemModel(0,4);
+  mModelPlugins->setHorizontalHeaderItem(0,new QStandardItem(tr("Name")));
+  mModelPlugins->setHorizontalHeaderItem(1,new QStandardItem(tr("Version")));
+  mModelPlugins->setHorizontalHeaderItem(2,new QStandardItem(tr("Description")));
+  mModelPlugins->setHorizontalHeaderItem(3,new QStandardItem(tr("Library name")));
   
-  lstPlugins->setModel(modelPlugins);
+  lstPlugins->setModel(mModelPlugins);
   // No vertical headers
   lstPlugins->verticalHeader()->hide();
   lstPlugins->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -95,7 +95,7 @@ void QgsPluginManager::resizeColumnsToContents()
 void QgsPluginManager::sortModel(int column)
 {
   // Sort column ascending.
-  modelPlugins->sort(column);
+  mModelPlugins->sort(column);
   QgsDebugMsg("QgsPluginManager::sortModel\n");
 }
 
@@ -157,7 +157,7 @@ void QgsPluginManager::getPythonPluginDescriptions()
     // Add items to model
     QList<QStandardItem *> myItems;
     myItems << myName << myVersion << myDesc << myDir;
-    modelPlugins->appendRow(myItems);
+    mModelPlugins->appendRow(myItems);
   }
 #endif
 }
@@ -299,7 +299,7 @@ sharedLibExtension = "*.so*";
     // Add items to model
     QList<QStandardItem *> myItems;
     myItems << myName << myVersion << myDesc << myDir;
-    modelPlugins->appendRow(myItems);
+    mModelPlugins->appendRow(myItems);
 
     delete myLib;
   }
@@ -317,18 +317,18 @@ void QgsPluginManager::unload()
 #ifdef QGISDEBUG
   std::cout << "Checking for plugins to unload" << std::endl;
 #endif
-  for (int row=0;row < modelPlugins->rowCount();row++)
+  for (int row=0;row < mModelPlugins->rowCount();row++)
   {
     // FPV - I want to use index. You can do evrething with item.
-    QModelIndex myIndex=modelPlugins->index(row,0);
-    if (modelPlugins->data(myIndex,Qt::CheckStateRole).toInt() == 0)
+    QModelIndex myIndex=mModelPlugins->index(row,0);
+    if (mModelPlugins->data(myIndex,Qt::CheckStateRole).toInt() == 0)
     {
       // its off -- see if it is loaded and if so, unload it
       QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
 #ifdef QGISDEBUG
-      std::cout << "Checking to see if " << modelPlugins->data(myIndex).toString().toLocal8Bit().data() << " is loaded" << std::endl;
+      std::cout << "Checking to see if " << mModelPlugins->data(myIndex).toString().toLocal8Bit().data() << " is loaded" << std::endl;
 #endif
-      QString pluginName = modelPlugins->data(myIndex).toString();
+      QString pluginName = mModelPlugins->data(myIndex).toString();
       if (pRegistry->isPythonPlugin(pluginName))
       {
 #ifdef HAVE_PYTHON
@@ -358,15 +358,14 @@ std::vector < QgsPluginItem > QgsPluginManager::getSelectedPlugins()
 {
   std::vector < QgsPluginItem > pis;
   // FPV - I want to use item here. You can do everything with index if you want.
-  for (int row=0;row < modelPlugins->rowCount();row++)
+  for (int row=0;row < mModelPlugins->rowCount();row++)
   {
-    QStandardItem *myItem=modelPlugins->item(row,0);
-    if (modelPlugins->item(row,0)->checkState() == Qt::Checked)
+    if (mModelPlugins->item(row,0)->checkState() == Qt::Checked)
     {
-      QString pluginName = modelPlugins->item(row,0)->text();
+      QString pluginName = mModelPlugins->item(row,0)->text();
       bool pythonic = false;
 
-      QString library = modelPlugins->item(row,3)->text();
+      QString library = mModelPlugins->item(row,3)->text();
       if (library.left(7) == "python:")
       {
         library = library.mid(7);
@@ -376,7 +375,7 @@ std::vector < QgsPluginItem > QgsPluginManager::getSelectedPlugins()
       {
         library = txtPluginDir->text() + "/" + library;
       }
-      pis.push_back(QgsPluginItem(pluginName, modelPlugins->item(row,2)->text(), library, 0, pythonic));
+      pis.push_back(QgsPluginItem(pluginName, mModelPlugins->item(row,2)->text(), library, 0, pythonic));
     }
 
   }
@@ -386,9 +385,9 @@ std::vector < QgsPluginItem > QgsPluginManager::getSelectedPlugins()
 void QgsPluginManager::on_btnSelectAll_clicked()
 {
   // select all plugins
-  for (int row=0;row < modelPlugins->rowCount();row++)
+  for (int row=0;row < mModelPlugins->rowCount();row++)
   {
-    QStandardItem *myItem=modelPlugins->item(row,0);
+    QStandardItem *myItem=mModelPlugins->item(row,0);
     myItem->setCheckState(Qt::Checked);
   }
 }
@@ -396,9 +395,9 @@ void QgsPluginManager::on_btnSelectAll_clicked()
 void QgsPluginManager::on_btnClearAll_clicked()
 {
   // clear all selection checkboxes
-  for (int row=0;row < modelPlugins->rowCount();row++)
+  for (int row=0;row < mModelPlugins->rowCount();row++)
   {
-    QStandardItem *myItem=modelPlugins->item(row,0);
+    QStandardItem *myItem=mModelPlugins->item(row,0);
     myItem->setCheckState(Qt::Unchecked);
   }
 }
@@ -406,4 +405,18 @@ void QgsPluginManager::on_btnClearAll_clicked()
 void QgsPluginManager::on_btnClose_clicked()
 {
   reject();
+}
+
+void QgsPluginManager::on_lstPlugins_clicked(const QModelIndex &theIndex )
+{
+  if (theIndex.column() == 0)
+  {
+    int row = theIndex.row();
+    if ( mModelPlugins->item(row,0)->checkState() == Qt::Checked )
+    {
+      mModelPlugins->item(row,0)->setCheckState(Qt::Unchecked);
+    } else {
+      mModelPlugins->item(row,0)->setCheckState(Qt::Checked);
+    }
+  }
 }
