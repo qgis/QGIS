@@ -1781,11 +1781,11 @@ int QgsVectorLayer::removePolygonIntersections(QgsGeometry* geom)
 
   for(; it != featureList.end(); ++it)
     {
-      //call geometry->difference for each feature
+      //call geometry->makeDifference for each feature
       currentGeom = it->geometry();
       if(currentGeom)
 	{
-	  if(geom->difference(it->geometry()) != 0)
+	  if(geom->makeDifference(it->geometry()) != 0)
 	    {
 	      returnValue = 2;
 	    }

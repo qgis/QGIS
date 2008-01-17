@@ -265,7 +265,7 @@ not disjoint with existing polygons of the feature*/
     /**Changes this geometry such that it does not intersect the other geometry
        @param other geometry that should not be intersect
        @return 0 in case of success*/
-    int difference(QgsGeometry* other);
+    int makeDifference(QgsGeometry* other);
 
     /**Returns the bounding box of this feature*/
     QgsRect boundingBox();
@@ -281,6 +281,21 @@ not disjoint with existing polygons of the feature*/
     /** Returns a buffer region around this geometry having the given width and with a specified number
         of segments used to approximate curves */
     QgsGeometry* buffer(double distance, int segments);
+    
+    /** Returns the smallest convex polygon that contains all the points in the geometry. */
+    QgsGeometry* convexHull();
+    
+    /** Returns a geometry representing the points shared by this geometry and other. */
+    QgsGeometry* intersection(QgsGeometry* geometry);
+    
+    /** Returns a geometry representing all the points in this geometry and other. */
+    QgsGeometry* Union(QgsGeometry* geometry);
+    
+    /** Returns a geometry representing the points making up this geometry that do not make up other. */
+    QgsGeometry* difference(QgsGeometry* geometry);
+    
+    /** Returns a Geometry representing the points making up this Geometry that do not make up other. */
+    QgsGeometry* symDifference(QgsGeometry* geometry);
 
     /** Exports the geometry to mWkt
         @return true in case of success and false else
