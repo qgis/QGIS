@@ -43,7 +43,7 @@ class GUI_EXPORT QgsQuickPrint:public QObject
   enum SymbolScalingType {ScaleUp, ScaleDown};
 
 public slots:
-  void print(); 
+  void printMap(); 
   void setTitle(QString theText);
   void setName(QString theText);
   void setCopyright(QString theText);

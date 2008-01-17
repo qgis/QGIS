@@ -105,7 +105,7 @@ void QuickPrintGui::on_buttonBox_accepted()
       myQuickPrint.setLogo1(QgsApplication::iconsPath() + "/qgis-icon.png");
       myQuickPrint.setNorthArrow(myNorthArrowFile);
       myQuickPrint.setOutputPdf(myOutputFileName);
-      myQuickPrint.print();
+      myQuickPrint.printMap();
     }
     else
     {
