@@ -321,19 +321,8 @@
           </property>
           <item row="3" column="3" >
            <widget class="QLabel" name="lblBlueMax" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>0</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="text" >
-             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-weight:600; color:#0000ff;">Max&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+             <string>&lt;b>&lt;font color='blue'>Max&lt;/font>&lt;/b></string>
             </property>
            </widget>
           </item>
@@ -389,10 +378,7 @@ p, li { white-space: pre-wrap; }
              </sizepolicy>
             </property>
             <property name="text" >
-             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-weight:600; color:#008000;">Min&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+             <string>&lt;b>&lt;font color='green'>Min&lt;/font>&lt;/b></string>
             </property>
            </widget>
           </item>
@@ -407,10 +393,7 @@ p, li { white-space: pre-wrap; }
              </sizepolicy>
             </property>
             <property name="text" >
-             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-weight:600; color:#008000;">Max&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+             <string>&lt;b>&lt;font color='green'>Max&lt;/font>&lt;/b></string>
             </property>
            </widget>
           </item>
@@ -425,10 +408,7 @@ p, li { white-space: pre-wrap; }
              </sizepolicy>
             </property>
             <property name="text" >
-             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-weight:600; color:#ff0000;">Min&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+             <string>&lt;b>&lt;font color='red'>Min&lt;/font>&lt;/b></string>
             </property>
            </widget>
           </item>
@@ -483,10 +463,7 @@ p, li { white-space: pre-wrap; }
              </sizepolicy>
             </property>
             <property name="text" >
-             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-weight:600; color:#ff0000;">Max&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+             <string>&lt;b>&lt;font color='red'>Max&lt;/font>&lt;/b></string>
             </property>
            </widget>
           </item>
@@ -568,10 +545,7 @@ p, li { white-space: pre-wrap; }
              </sizepolicy>
             </property>
             <property name="text" >
-             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-weight:600; color:#0000ff;">Min&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+             <string>&lt;b>&lt;font color='blue'>Min&lt;/font>&lt;/b></string>
             </property>
            </widget>
           </item>
@@ -734,7 +708,7 @@ p, li { white-space: pre-wrap; }
           <item row="2" column="0" >
            <widget class="QLabel" name="lblBlue" >
             <property name="text" >
-             <string>&lt;b>&lt;font color="#0000ff">Blue&lt;/font>&lt;/b></string>
+             <string>&lt;b>&lt;font color='blue'>Blue&lt;/font>&lt;/b></string>
             </property>
             <property name="buddy" >
              <cstring>cboBlue</cstring>
@@ -744,7 +718,7 @@ p, li { white-space: pre-wrap; }
           <item row="1" column="0" >
            <widget class="QLabel" name="lblGreen" >
             <property name="text" >
-             <string>&lt;b>&lt;font color="#00ff00">Green&lt;/font>&lt;/b></string>
+             <string>&lt;b>&lt;font color='green'>Green&lt;/font>&lt;/b></string>
             </property>
             <property name="buddy" >
              <cstring>cboGreen</cstring>
@@ -754,10 +728,7 @@ p, li { white-space: pre-wrap; }
           <item row="0" column="0" >
            <widget class="QLabel" name="lblRed" >
             <property name="text" >
-             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-weight:600; color:#ff0000;">Red&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+             <string>&lt;b>&lt;font color='red'>Red&lt;/font>&lt;/b></string>
             </property>
             <property name="buddy" >
              <cstring>cboRed</cstring>
@@ -1757,7 +1728,7 @@ p, li { white-space: pre-wrap; }
         <number>6</number>
        </property>
        <item rowspan="2" row="0" column="0" >
-        <widget class="Q3TextEdit" name="textEdit5" >
+        <widget class="QTextEdit" name="tePyramidDescription" >
          <property name="sizePolicy" >
           <sizepolicy>
            <hsizetype>7</hsizetype>
@@ -1766,17 +1737,8 @@ p, li { white-space: pre-wrap; }
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
-          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style="font-size:9pt;font-family:Sans Serif">
-&lt;p style="margin-top:18px" dir="ltr">&lt;span style="font-size:13pt;font-weight:600">Description&lt;/span>&lt;/p>
-&lt;p dir="ltr">Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p>
-&lt;p dir="ltr">&lt;span style="color:#ff0000">Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span>&lt;/p>
-&lt;p dir="ltr">&lt;span style="color:#ff0000">Please note that building pyramids could corrupt your image - always make a backup of your data first!&lt;/span>&lt;/p>
-&lt;/body>&lt;/html>
-</string>
-         </property>
-         <property name="wordWrap" >
-          <enum>Q3TextEdit::WidgetWidth</enum>
+         <property name="html" >
+          <string></string>
          </property>
         </widget>
        </item>
@@ -2079,7 +2041,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>spinMaximumScale</tabstop>
   <tabstop>leSpatialRefSys</tabstop>
   <tabstop>pbnChangeSpatialRefSys</tabstop>
-  <tabstop>textEdit5</tabstop>
+  <tabstop>tePyramidDescription</tabstop>
   <tabstop>cboResamplingMethod</tabstop>
   <tabstop>buttonBuildPyramids</tabstop>
   <tabstop>radHistTypeBar</tabstop>

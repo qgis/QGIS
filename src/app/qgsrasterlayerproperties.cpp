@@ -334,6 +334,19 @@ mpRasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
 
   leSpatialRefSys->setText(mpRasterLayer->srs().proj4String());
 
+  // Set text for pyramid info box
+  QString pyramidFormat("<h2>%1</h2><p>%2 %3 %4</p><b><font color='red'><p>%5</p><p>%6</p>");
+  QString pyramidHeader    = tr("Description");
+  QString pyramidSentence1 = tr("Large resolution raster layers can slow navigation in QGIS.");
+  QString pyramidSentence2 = tr("By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom.");
+  QString pyramidSentence3 = tr("You must have write access in the directory where the original data is stored to build pyramids.");
+  QString pyramidSentence4 = tr("Please note that building pyramids may alter the original data file and once created they cannot be removed!");
+  QString pyramidSentence5 = tr("Please note that building pyramids could corrupt your image - always make a backup of your data first!");
+
+  tePyramidDescription->setHtml(pyramidFormat.arg(pyramidHeader).arg(pyramidSentence1)
+				.arg(pyramidSentence2).arg(pyramidSentence3)
+				.arg(pyramidSentence4).arg(pyramidSentence5));
+
   // update based on lyr's current state
   sync();
 } // QgsRasterLayerProperties ctor
