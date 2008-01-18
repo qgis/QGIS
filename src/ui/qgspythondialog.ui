@@ -30,7 +30,7 @@
       </sizepolicy>
      </property>
      <property name="text" >
-      <string>To access Quantum GIS environment from this python console use object &lt;span style=" font-weight:600;">iface&lt;/span> from global scope which is an instance of QgisInterface class.<br>Usage e.g.: iface.zoomFull()</string>
+      <string>To access Quantum GIS environment from this python console use object from global scope which is an instance of QgisInterface class.&lt;br>Usage e.g.: iface.zoomFull()</string>
      </property>
      <property name="wordWrap" >
       <bool>true</bool>
