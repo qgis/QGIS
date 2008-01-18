@@ -61,10 +61,10 @@
       <item row="3" column="1" >
        <widget class="QCheckBox" name="cb_publicSchemaOnly" >
         <property name="toolTip" >
-         <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Restrict the search to the public schema for spatial tables not in the geometry_columns table&lt;/p>&lt;/body>&lt;/html></string>
+         <string>Restrict the search to the public schema for spatial tables not in the geometry_columns table</string>
         </property>
         <property name="whatsThis" >
-         <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">When searching for spatial tables that are not in the geometry_columns tables, restrict the search to tables that are in the public schema (for some databases this can save lots of time)&lt;/p>&lt;/body>&lt;/html></string>
+         <string>When searching for spatial tables that are not in the geometry_columns tables, restrict the search to tables that are in the public schema (for some databases this can save lots of time)</string>
         </property>
         <property name="text" >
          <string>Only look in the 'public' schema</string>
@@ -84,10 +84,10 @@
       <item row="2" column="1" >
        <widget class="QCheckBox" name="cb_geometryColumnsOnly" >
         <property name="toolTip" >
-         <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;">Restrict the displayed tables to those that are in the geometry_columns table&lt;/p>&lt;/body>&lt;/html></string>
+         <string>Restrict the displayed tables to those that are in the geometry_columns table</string>
         </property>
         <property name="whatsThis" >
-         <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;">Restricts the displayed tables to those that are in the geometry_columns table. This can speed up the initial display of spatial tables.&lt;/p>&lt;/body>&lt;/html></string>
+         <string>Restricts the displayed tables to those that are in the geometry_columns table. This can speed up the initial display of spatial tables.</string>
         </property>
         <property name="text" >
          <string>Only look in the geometry_columns table</string>

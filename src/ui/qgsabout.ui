@@ -96,13 +96,9 @@
        </item>
        <item row="3" column="0" >
         <widget class="QTextEdit" name="lblUrls" >
-         <property name="html" >
-          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Arial'; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;">Quantum GIS is licensed under the GNU General Public License&lt;/p>
-&lt;p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;">http://www.gnu.org/licenses&lt;/p>&lt;/body>&lt;/html></string>
-         </property>
+	 <property name="html">
+	  <string></string> 
+	 </property>
         </widget>
        </item>
        <item row="2" column="0" >

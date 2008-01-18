@@ -41,10 +41,7 @@
        <item row="1" column="0" colspan="2" >
         <widget class="QTextBrowser" name="textBrowser" >
          <property name="html" >
-          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;">You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.&lt;/p>&lt;/body>&lt;/html></string>
+          <string>You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.</string>
          </property>
         </widget>
        </item>
@@ -177,6 +174,17 @@ p, li { white-space: pre-wrap; }
        </property>
        <item row="0" column="0" colspan="3" >
         <widget class="QLabel" name="textLabel1_2" >
+         <property name="font" >
+          <font>
+           <family>Arial</family>
+           <pointsize>18</pointsize>
+           <weight>50</weight>
+           <italic>false</italic>
+           <bold>false</bold>
+           <underline>false</underline>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
          <property name="text" >
           <string>Transform from WGS84 to the chosen projection</string>
          </property>
@@ -185,10 +193,7 @@ p, li { white-space: pre-wrap; }
        <item row="1" column="0" colspan="3" >
         <widget class="QTextBrowser" name="textBrowser_2" >
          <property name="html" >
-          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;">Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.&lt;/p>&lt;/body>&lt;/html></string>
+          <string>Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.</string>
          </property>
         </widget>
        </item>
@@ -224,7 +229,7 @@ p, li { white-space: pre-wrap; }
        <item row="3" column="2" >
         <widget class="QLabel" name="textLabel2_3" >
          <property name="text" >
-          <string>Projected Corrdinate System</string>
+          <string>Projected Coordinate System</string>
          </property>
         </widget>
        </item>
