@@ -43,7 +43,8 @@ public:
   
   enum COLOR_RAMP_TYPE {
     INTERPOLATED,
-    DISCRETE
+    DISCRETE,
+    EXACT
   };
   
   bool generateShadedValue(double, int*, int*, int*);
@@ -54,12 +55,16 @@ public:
   
   /**Get the color ramp type */
   QgsColorRampShader::COLOR_RAMP_TYPE getColorRampType() {return mColorRampType;}
+  QString getColorRampTypeAsQString();
   
   /**Set custom colormap */
   void setColorRampItemList(const QList<QgsColorRampShader::ColorRampItem>& theList) { mColorRampItemList = theList; }
   
-  /**Set discrete/interpolated colors for custom classification*/
+  /**Set the color ramp type*/
   void setColorRampType(QgsColorRampShader::COLOR_RAMP_TYPE theColorRampType) {mColorRampType = theColorRampType;}
+  
+  /**Set the color ramp type*/
+  void setColorRampType(QString);
   
 
   

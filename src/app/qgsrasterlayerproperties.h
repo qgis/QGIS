@@ -119,7 +119,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
 
     private:
         /** \brief Pointer to the raster layer that this property dilog changes the behaviour of. */
-        QgsRasterLayer * mpRasterLayer;
+        QgsRasterLayer * mRasterLayer;
 
         /** \brief If the underlying raster layer is of GDAL type (i.e. non-provider)
 

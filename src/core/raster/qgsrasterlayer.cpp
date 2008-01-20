@@ -578,7 +578,8 @@ bool QgsRasterLayer::readFile( QString const & fileName )
     mContrastEnhancementList.append(myContrastEnhancement);
   }
   
-  setContrastEnhancementAlgorithm(QgsContrastEnhancement::STRETCH_TO_MINMAX); //defaults - Needs to be set after the Contrast list has been build
+  //defaults - Needs to be set after the Contrast list has been build
+  setContrastEnhancementAlgorithm(QgsContrastEnhancement::STRETCH_TO_MINMAX);
   
   //decide what type of layer this is...
   //note that multiband images can have one or more 'undefindd' bands,
@@ -604,6 +605,7 @@ bool QgsRasterLayer::readFile( QString const & fileName )
     mTransparencyBandName = tr(QSTRING_NOT_SET); // sensible default
     mGrayBandName = tr(QSTRING_NOT_SET);  //sensible default
     drawingStyle = PALETTED_MULTI_BAND_COLOR; //sensible default
+    setContrastEnhancementAlgorithm(QgsContrastEnhancement::NO_STRETCH);
   }
   else if (rasterLayerType == MULTIBAND)
   {
@@ -4278,7 +4280,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   myElement = snode.toElement();
   setDrawingStyle(myElement.text());
   
-  snode = mnl.namedItem("colorShadingAlgorithm");
+  snode = mnl.namedItem("mColorShadingAlgorithm");
   myElement = snode.toElement();
   setColorShadingAlgorithm(myElement.text());
 
@@ -4308,7 +4310,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   myElement = snode.toElement();
   setStdDevsToPlot(myElement.text().toDouble());
   
-  snode = mnl.namedItem("contrastEnhancementAlgorithm");
+  snode = mnl.namedItem("mContrastEnhancementAlgorithm");
   myElement = snode.toElement();
   setContrastEnhancementAlgorithm(myElement.text(), false);
   
@@ -4405,7 +4407,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
     QgsColorRampShader* myColorRampShader = (QgsColorRampShader*) mRasterShader->getRasterShaderFunction();
     
     QDomNode customColorRampTypeNode = customColorRampNode.namedItem("colorRampType");
-    myColorRampShader->setColorRampType((QgsColorRampShader::COLOR_RAMP_TYPE)customColorRampTypeNode.toElement().text().toInt());
+    myColorRampShader->setColorRampType(customColorRampTypeNode.toElement().text());
 
 
     //entries
@@ -4559,7 +4561,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   rasterPropertiesElement.appendChild( drawStyleElement );
 
   // <colorShadingAlgorithm>
-  QDomElement colorShadingAlgorithmElement = document.createElement( "colorShadingAlgorithm" );
+  QDomElement colorShadingAlgorithmElement = document.createElement( "mColorShadingAlgorithm" );
   QDomText    colorShadingAlgorithmText    = document.createTextNode( getColorShadingAlgorithmAsQString() );
 
   colorShadingAlgorithmElement.appendChild( colorShadingAlgorithmText );
@@ -4648,7 +4650,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   rasterPropertiesElement.appendChild( mStandardDeviationsElement );
   
   // <contrastEnhancementAlgorithm>
-  QDomElement contrastEnhancementAlgorithmElement = document.createElement( "contrastEnhancementAlgorithm" );
+  QDomElement contrastEnhancementAlgorithmElement = document.createElement( "mContrastEnhancementAlgorithm" );
   QDomText    contrastEnhancementAlgorithmText    = document.createTextNode( getContrastEnhancementAlgorithmAsQString() );
 
   contrastEnhancementAlgorithmElement.appendChild( contrastEnhancementAlgorithmText );
@@ -4683,7 +4685,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
    */
     // <mNodataValue>
   QDomElement mNoDataValueElement = document.createElement( "mNoDataValue" );
-  QDomText    mNoDataValueText    = document.createTextNode( QString::number(mNoDataValue) );
+  QDomText    mNoDataValueText    = document.createTextNode( QString::number(mNoDataValue, 'f') );
   if(mValidNoDataValue)
   {
     mNoDataValueElement.setAttribute( "mValidNoDataValue", "true" );
@@ -4708,7 +4710,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
     for(it =  myPixelList.begin(); it != myPixelList.end(); ++it)
     {
       QDomElement pixelListElement = document.createElement("pixelListEntry");
-      pixelListElement.setAttribute("pixelValue", QString::number(it->pixelValue));
+      pixelListElement.setAttribute("pixelValue", QString::number(it->pixelValue, 'f'));
       pixelListElement.setAttribute("percentTransparent", QString::number(it->percentTransparent));
            
       singleValuePixelListElement.appendChild(pixelListElement);
@@ -4727,9 +4729,9 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
     for(it =  myPixelList.begin(); it != myPixelList.end(); ++it)
     {
       QDomElement pixelListElement = document.createElement("pixelListEntry");
-      pixelListElement.setAttribute("red", QString::number(it->red));
-      pixelListElement.setAttribute("green", QString::number(it->green));
-      pixelListElement.setAttribute("blue", QString::number(it->blue));
+      pixelListElement.setAttribute("red", QString::number(it->red, 'f'));
+      pixelListElement.setAttribute("green", QString::number(it->green, 'f'));
+      pixelListElement.setAttribute("blue", QString::number(it->blue, 'f'));
       pixelListElement.setAttribute("percentTransparent", QString::number(it->percentTransparent));
            
       threeValuePixelListElement.appendChild(pixelListElement);
@@ -4746,7 +4748,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
     QDomElement customColorRampElement = document.createElement("customColorRamp");
     
     QDomElement customColorRampType = document.createElement("customColorRampType");
-    QDomText customColorRampTypeText = document.createTextNode( QString::number((int)((QgsColorRampShader*)mRasterShader->getRasterShaderFunction())->getColorRampType()));
+    QDomText customColorRampTypeText = document.createTextNode(((QgsColorRampShader*)mRasterShader->getRasterShaderFunction())->getColorRampTypeAsQString());
     customColorRampType.appendChild(customColorRampTypeText);
     customColorRampElement.appendChild(customColorRampType);
 
