@@ -79,15 +79,10 @@ void QgsMapToolSplitFeatures::canvasReleaseEvent(QMouseEvent * e)
       //bring up dialog if a split was not possible (polygon) or only done once (line)
       int topologicalEditing = QgsProject::instance()->readNumEntry("Digitizing", "/TopologicalEditing", 0);
       int returnCode = vlayer->splitFeatures(mCaptureList, topologicalEditing);
-      if(returnCode == 1)
+      if(returnCode != 0)
 	{
 	  //several intersections but only one split (most likely line)
-	  QMessageBox::warning(0, tr("Intersection problem"), tr("One or more geometries are intersected several times by the split lines. Those geometries are only split once."));
-	}
-      else if(returnCode == 2)
-	{
-	  //too complex intersection (most likely several polygon intersections)
-	  QMessageBox::warning(0, tr("Intersection problem"), tr("One or more geometries cannot be split because the intersection is too complex. Note that polygon splits can only be done if the split line intersects the polygon once. Also inner polygon rings cannot be split"));
+	  QMessageBox::warning(0, tr("Split error"), tr("An error occured during feature splitting"));
 	}
       
       mCaptureList.clear();

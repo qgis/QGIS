@@ -252,8 +252,7 @@ existing rings, 5 no feature found where ring can be inserted*/
   /**Splits features cut by the given line
      @param splitLine line that splits the layer features
      @param topologicalEditing true if topological editing is enabled
-     @return 0 in case of success, 1 if several intersections but only 1 split done, \
-  2 if intersection too complex to be handled, else other error*/
+     @return 0 in case of success*/
   int splitFeatures(const QList<QgsPoint>& splitLine, bool topologicalEditing = false);
 
   /**Changes the specified geometry such that it has no intersections with other \

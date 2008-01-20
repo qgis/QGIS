@@ -23,6 +23,10 @@ email                : morb at ozemail dot com dot au
 #include "qgslogger.h"
 #include "qgspoint.h"
 #include "qgsrect.h"
+//#include "geos/operation/polygonize/Polygonizer.h"
+//todo: adapt to geos3
+#include "geos/opPolygonize.h"
+#include "geos/opLinemerge.h"
 
 // Set up static GEOS geometry factory
 static GEOS_GEOM::GeometryFactory* geosGeometryFactory = new GEOS_GEOM::GeometryFactory();
@@ -313,7 +317,6 @@ QgsGeometry* QgsGeometry::fromRect(const QgsRect& rect)
 
   return fromPolygon(polygon);
 }
-
 
 QgsGeometry & QgsGeometry::operator=( QgsGeometry const & rhs )
 {
@@ -2875,62 +2878,53 @@ int QgsGeometry::splitGeometry(const QList<QgsPoint>& splitLine, QList<QgsGeomet
   //make sure splitLine is valid
   if(splitLine.size() < 2)
     {
-      return 2;
+      return 1;
     }
 
   newGeometries.clear();
 
-  GEOS_GEOM::DefaultCoordinateSequence* splitLineCoords = new GEOS_GEOM::DefaultCoordinateSequence();
-  QList<QgsPoint>::const_iterator lineIt;
-  for(lineIt = splitLine.constBegin(); lineIt != splitLine.constEnd(); ++lineIt)
+  try
     {
-      splitLineCoords->add(GEOS_GEOM::Coordinate(lineIt->x(),lineIt->y()));
-    }
-  GEOS_GEOM::LineString* splitLineGeos = geosGeometryFactory->createLineString(splitLineCoords);
-  if(!splitLineGeos)
-    {
-      delete splitLineCoords;
-      return 3;
-    }
-
-  if(!splitLineGeos->isValid() || !splitLineGeos->isSimple())
-    {
-      delete splitLineGeos;
-      return 4;
-    }
-
-  //for line/multiline: call splitLinearGeometry
-  if(vectorType() == QGis::Line)
-    {
-      QgsGeometry* newGeometry = 0;
-      returnCode = splitLinearGeometry(splitLineGeos, &newGeometry);
-      delete splitLineGeos;
-      if(returnCode > 1)//return codes 0 and 1 match the return code of this function
+      GEOS_GEOM::DefaultCoordinateSequence* splitLineCoords = new GEOS_GEOM::DefaultCoordinateSequence();
+      QList<QgsPoint>::const_iterator lineIt;
+      for(lineIt = splitLine.constBegin(); lineIt != splitLine.constEnd(); ++lineIt)
 	{
-	  returnCode = 5;
+	  splitLineCoords->add(GEOS_GEOM::Coordinate(lineIt->x(),lineIt->y()));
 	}
-      newGeometries.push_back(newGeometry);
-    }
-  else if(vectorType() == QGis::Polygon)
-    {
-      QgsGeometry* newGeometry = 0;
-      returnCode = splitPolygonGeometry(splitLineGeos, &newGeometry);
-      delete splitLineGeos;
-      if(returnCode == 1) //too complicated spit is return code 2 of this function
+      GEOS_GEOM::LineString* splitLineGeos = geosGeometryFactory->createLineString(splitLineCoords);
+      if(!splitLineGeos)
 	{
-	  returnCode = 2;
+	  delete splitLineCoords;
+	  return 1;
 	}
-      else if(returnCode != 0)
+      
+      if(!splitLineGeos->isValid() || !splitLineGeos->isSimple())
 	{
-	  returnCode = 5;
+	  delete splitLineGeos;
+	  return 1;
 	}
-      newGeometries.push_back(newGeometry);
+      
+      //for line/multiline: call splitLinearGeometry
+      if(vectorType() == QGis::Line)
+	{
+	  returnCode = splitLinearGeometry(splitLineGeos, newGeometries);
+	  delete splitLineGeos;
+	}
+      else if(vectorType() == QGis::Polygon)
+	{
+	  QgsGeometry* newGeometry = 0;
+	  returnCode = splitPolygonGeometry(splitLineGeos, newGeometries);
+	  delete splitLineGeos;
+	}
+      else
+	{
+	  return 1;
+	}
     }
-  else
+  catch(GEOS_UTIL::GEOSException* e)
     {
-      return 6;
+      delete e; return 2;
     }
-
   return returnCode;
 }
 
@@ -4466,12 +4460,11 @@ void QgsGeometry::translateVertex(int& wkbPosition, double dx, double dy, bool h
     }
 }
 
-int QgsGeometry::splitLinearGeometry(GEOS_GEOM::LineString* splitLine, QgsGeometry** newGeometry)
+int QgsGeometry::splitLinearGeometry(GEOS_GEOM::LineString* splitLine, QList<QgsGeometry*>& newGeometries)
 {
   if(!splitLine)
     {
-      *newGeometry = 0;
-      return 1;
+      return 2;
     }
 
   if(!mGeos || mDirtyGeos)
@@ -4479,94 +4472,73 @@ int QgsGeometry::splitLinearGeometry(GEOS_GEOM::LineString* splitLine, QgsGeomet
       exportWkbToGeos();
     }
 
-  bool severalIntersections = false; //flag that indicates that splitLine intersects more than once
-  bool splitOk = false; //flag if split has been done or not
-  
-  //do geos intersection between geometry and split line
-  GEOS_GEOM::Geometry* intersect_result = 0;
-  GEOS_GEOM::GeometryCollection* collection = dynamic_cast<GEOS_GEOM::GeometryCollection*>(mGeos);
-  if(collection)
-    {
-      //we need to do the intersection for each linestring separately, otherwise geos will throw an exception
-      for(int i = 0; i < collection->getNumGeometries(); ++i)
-	{
-	  if(collection->getGeometryN(i)->intersects(splitLine))
-	    {
-	      intersect_result = collection->getGeometryN(i)->intersection(splitLine);
-	      break;
-	    }
-	}
-    }
-  else
-    {
-      intersect_result = mGeos->intersection(splitLine);
-    }
-
-  if(!intersect_result)
-    {
-      *newGeometry = 0;
-      return 2;
-    }
-  //take only the first intersection point
-  GEOS_GEOM::CoordinateSequence* intersect_sequence = intersect_result->getCoordinates();
-  if(!intersect_sequence || intersect_sequence->getSize() < 1)
-    {
-      delete intersect_result;
-      delete intersect_sequence;
-      return 2;
-    }
-  else if(intersect_sequence->getSize() > 1)
-    {
-      severalIntersections = true;
-    }
-
-  GEOS_GEOM::Coordinate intersect_coord = intersect_sequence->getAt(0);
-  QgsPoint intersPt(intersect_coord.x, intersect_coord.y);
-  delete intersect_result;
-  delete intersect_sequence;
-
-  //find out at or between which vertices the intersection is
-  int beforeVertex, afterVertex;
-  if(findVerticesNextToSplit(intersPt, beforeVertex, afterVertex) != 0)
-    {
-      *newGeometry = 0;
-      return 3;
-    }
-
-  if(wkbType() == QGis::WKBLineString || wkbType() == QGis::WKBLineString25D)
-    {
-      if(splitThisLine(intersPt, beforeVertex, afterVertex, newGeometry) == 0)
-	{
-	  splitOk = true;
-	}
-    }
-  else if(wkbType() == QGis::WKBMultiLineString || wkbType() == QGis::WKBMultiLineString25D)
-    {
-      if(splitThisMultiline(intersPt, beforeVertex, afterVertex, newGeometry) == 0)
-	{
-	  splitOk = true;
-	}
-    }
-
-  if(!splitOk)
-    {
-      //no split found
-      *newGeometry = 0;
-      return 4;
-    }
-
-  if(severalIntersections)
+ //first test if linestring intersects geometry. If not, return straight away
+  if(!splitLine->intersects(mGeos))
     {
       return 1;
     }
+
+  //todo: use the geos polygonizer
+  GEOS_LINEMERGE::LineMerger lineMerger;
+  
+  //first union all the polygon rings together (to get them noded, see JTS developer guide)
+  GEOS_GEOM::Geometry* nodedGeometry = nodeGeometries(splitLine, mGeos);
+  if(!nodedGeometry)
+    {
+      return 3; //an error occured during noding
+    } 
+
+  lineMerger.add(nodedGeometry);
+
+  std::vector<GEOS_GEOM::LineString*>* mergedLineStrings = lineMerger.getMergedLineStrings();
+  if(!mergedLineStrings)
+    {
+      delete nodedGeometry;
+      return 4;
+    }
+
+  QList<GEOS_GEOM::Geometry*> testedGeometries;
+  GEOS_GEOM::Geometry* intersectGeom = 0;
+
+  for(int i = 0; i < mergedLineStrings->size(); ++i)
+    {
+      intersectGeom = mGeos->intersection((*mergedLineStrings)[i]);
+      if(intersectGeom->getLength() > 0.00000001)
+	{
+	  testedGeometries.push_back((*mergedLineStrings)[i]);
+	}
+      else
+	{
+	  delete (*mergedLineStrings)[i];
+	}
+      delete intersectGeom;
+    }
+
+  mergeGeometriesMultiTypeSplit(testedGeometries);
+
+  if(testedGeometries.size() > 0)
+    {
+      delete mGeos;
+      mGeos = testedGeometries.at(0);
+      mDirtyWkb = true;
+    }
+
+  for(int i = 1; i < testedGeometries.size(); ++i)
+    {
+      QgsGeometry* newQgisGeometry = new QgsGeometry();
+      newQgisGeometry->setGeos(testedGeometries[i]);
+      newGeometries.push_back(newQgisGeometry);
+    }
+
+  delete nodedGeometry;
+  delete mergedLineStrings;
   return 0;
 }
 
-int QgsGeometry::splitPolygonGeometry(GEOS_GEOM::LineString* splitLine, QgsGeometry** newGeometry)
+int QgsGeometry::splitPolygonGeometry(GEOS_GEOM::LineString* splitLine, QList<QgsGeometry*>& newGeometries)
 {
   if(!splitLine)
     {
-      *newGeometry = 0;
       return 2;
     }
 
@@ -4575,747 +4547,184 @@ int QgsGeometry::splitPolygonGeometry(GEOS_GEOM::LineString* splitLine, QgsGeome
       exportWkbToGeos();
     }
 
-  //do geos intersection between polygon/multipolygon and split line
-  
-  //catch the case where no intersection happens
-  if(!mGeos->intersects(splitLine))
+  //first test if linestring intersects geometry. If not, return straight away
+  if(!splitLine->intersects(mGeos))
     {
-      *newGeometry = 0;
+      return 1;
+    }
+
+  //todo: use the geos polygonizer
+  GEOS_POLYGONIZE::Polygonizer polygonizer;
+  
+  //first union all the polygon rings together (to get them noded, see JTS developer guide)
+  GEOS_GEOM::Geometry* nodedGeometry = nodeGeometries(splitLine, mGeos);
+  if(!nodedGeometry)
+    {
+      return 2; //an error occured during noding
+    }
+
+  //add to polygonizer
+  polygonizer.add(nodedGeometry);
+
+  //test for cut edge and abort split if they are present
+  std::vector<const GEOS_GEOM::LineString*>* cutEdges = polygonizer.getCutEdges();
+  if(cutEdges && cutEdges->size() > 0)
+    {
       return 3;
     }
 
-  GEOS_GEOM::Geometry* intersect_result = 0;
-  try
+  std::vector<GEOS_GEOM::Polygon*>* polygons = polygonizer.getPolygons();
+  if(!polygons)
     {
-      intersect_result = mGeos->intersection(splitLine);
-    }
-  catch(GEOS_UTIL::GEOSException* e)
-    {
+      delete nodedGeometry;
       return 4;
     }
 
-  if(!intersect_result)
+  //test every polygon if contained in original geometry
+  //include in result if yes
+  QList<GEOS_GEOM::Geometry*> testedGeometries;
+  GEOS_GEOM::Geometry* intersectGeometry = 0;
+  for(int i = 0; i < polygons->size(); ++i)
     {
-      *newGeometry = 0;
-      return 4;
-    }
-
-  if(intersect_result->getGeometryTypeId() != GEOS_GEOM::GEOS_LINESTRING)
-    {
-      return 1; //probably multilinestring, but it cannot be handled because split would be too complex
-    }
-
-  GEOS_GEOM::LineString* intersect_linestring = dynamic_cast<GEOS_GEOM::LineString*>(intersect_result);
-  if(!intersect_linestring)
-    {
-      return 5;
-    }
-
-  //test if both enpoints of the linestring are on the polygon borders
-  GEOS_GEOM::CoordinateSequence* intersect_sequence = intersect_linestring->getCoordinates();
-  if(!intersect_sequence)
-    {
-      return 6;
-    }
-
-  GEOS_GEOM::Coordinate first_inters_coord = intersect_sequence->getAt(0);
-  QgsPoint firstIntersPoint(first_inters_coord.x, first_inters_coord.y);
-  GEOS_GEOM::Coordinate second_inters_coord = intersect_sequence->getAt(intersect_sequence->getSize() - 1);
-  QgsPoint secondIntersPoint(second_inters_coord.x, second_inters_coord.y);
-
-  int beforeVertex1, afterVertex1, beforeVertex2, afterVertex2;
-  if(findVerticesNextToSplit(firstIntersPoint, beforeVertex1, afterVertex1) != 0)
-    {
-      return 7;
-    }
-  if(findVerticesNextToSplit(secondIntersPoint, beforeVertex2, afterVertex2) != 0)
-    {
-      return 8;
-    }
-
-  int splitReturn; //return value of split functions
-  //try to split polygon
-  if(wkbType() == QGis::WKBPolygon || wkbType() == QGis::WKBPolygon25D)
-    { 
-      splitReturn = splitThisPolygon(intersect_sequence, beforeVertex1, afterVertex1, \
-				     beforeVertex2, afterVertex2, newGeometry);
-      if(splitReturn < 2)
+      intersectGeometry = mGeos->intersection((*polygons)[i]);
+      if(intersectGeometry->getArea() > 0.00000000001)
 	{
-	  return splitReturn;
+	  testedGeometries.push_back((*polygons)[i]);
 	}
+      else
+	{
+	  delete (*polygons)[i];
+	}
+      delete intersectGeometry;
     }
-  else if(wkbType() == QGis::WKBMultiPolygon || wkbType() == QGis::WKBMultiPolygon25D)
+
+  mergeGeometriesMultiTypeSplit(testedGeometries);
+
+  if(testedGeometries.size() > 0)
     {
-      splitReturn = splitThisMultiPolygon(intersect_sequence, beforeVertex1, afterVertex1, \
-					  beforeVertex2, afterVertex2, newGeometry);
-      if(splitReturn < 2)
-      {
-	return splitReturn;
-      }
+      delete mGeos;
+      mGeos = testedGeometries.at(0);
+      mDirtyWkb = true;
+    }
+
+  for(int i = 1; i < testedGeometries.size(); ++i)
+    {
+      QgsGeometry* newQgisGeometry = new QgsGeometry();
+      newQgisGeometry->setGeos(testedGeometries[i]);
+      newGeometries.push_back(newQgisGeometry);
     }
   
-  //no split done
-  *newGeometry = 0;
-  return 9;
+  delete nodedGeometry;
+  delete polygons;
+  return 0;
 }
 
-int QgsGeometry::findVerticesNextToSplit(const QgsPoint& splitPoint, int& beforeVertex, int& afterVertex)
+GEOS_GEOM::Geometry* QgsGeometry::nodeGeometries(const GEOS_GEOM::LineString* splitLine, const GEOS_GEOM::Geometry* geom) const
 {
-  QGis::WKBTYPE geomType = wkbType();
-  if(geomType == QGis::WKBPoint || geomType == QGis::WKBPoint25D || \
-     geomType == QGis::WKBMultiPoint || geomType == QGis::WKBMultiPoint25D)
+  if(!splitLine || !geom)
     {
-      return 1; //cannot split points or multipoints
-    }
-
-  if(!mGeos || mDirtyGeos)
-    {
-      exportWkbToGeos();
-    }
-
-  if(!mGeos)
-    {
-      return 2;
-    }
-
-  //first test all the vertices for equality with splitPoint
-  int equalVertexNr;
-  if(vertexContainedInGeometry(splitPoint, equalVertexNr))
-    {
-      beforeVertex = equalVertexNr;
-      afterVertex = equalVertexNr;
       return 0;
     }
 
-  //no vertex equal to splitPoint, now we need to test the segments
-  switch(geomType)
+  const GEOS_GEOM::Geometry* geometryBoundary = 0;
+  bool deleteBoundary = false;
+  if(geom->getGeometryTypeId() == GEOS_GEOM::GEOS_POLYGON || geom->getGeometryTypeId() == GEOS_GEOM::GEOS_MULTIPOLYGON)
     {
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-      {
-	QgsPolyline thisLine = asPolyline();
-	if(thisLine.size() < 2)
-	  {
-	    return 4;
-	  }
-	for(int i = 0; i < thisLine.size() - 1; ++i)
-	  {
-	    if(splitPoint.onSegment(thisLine.at(i), thisLine.at(i + 1)) == 2)
-	      {
-		beforeVertex = i; afterVertex = i + 1;
-		return 0;
-	      }
-	  }
-	break;
-      }
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
-      {
-	QgsMultiPolyline thisMultiLine = asMultiPolyline();
-	int vertexCounter = 0;
-
-	QgsMultiPolyline::const_iterator multiLineIt = thisMultiLine.constBegin();
-	for(; multiLineIt != thisMultiLine.constEnd(); ++multiLineIt)
-	  {
-	    int i;
-	    for(i = 0; i < (multiLineIt->size() - 1); ++i)
-	      {
-		if(splitPoint.onSegment(multiLineIt->at(i), multiLineIt->at(i + 1)) == 2)
-		  {
-		    beforeVertex = vertexCounter + i; afterVertex = vertexCounter + i + 1;
-		    return 0;
-		  }
-	      }
-	    vertexCounter += (i + 1);
-	  }
-	break;
-      }
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
-      {
-	QgsPolygon thisPoly = asPolygon();
-	int vertexCounter = 0;
-	QgsPolygon::const_iterator polyIter = thisPoly.constBegin();
-	for(; polyIter != thisPoly.constEnd(); ++polyIter)
-	  {
-	    int i;
-	    for(i = 0; i < (polyIter->size() - 1); ++i)
-	      {
-		if(splitPoint.onSegment(polyIter->at(i), polyIter->at(i+1)) == 2)
-		  {
-		    beforeVertex = vertexCounter + i; afterVertex = vertexCounter + i + 1;
-		    return 0;
-		  }
-	      }
-	    vertexCounter += i;
-	  }
-	break;
-      }
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
-      {
-	QgsMultiPolygon thisMultiPoly = asMultiPolygon();
-	int vertexCounter = 0;
-	QgsMultiPolygon::const_iterator multiPolyIt = thisMultiPoly.constBegin();
-	for(; multiPolyIt != thisMultiPoly.end(); ++multiPolyIt)
-	  {
-	    for(int i = 0; i < multiPolyIt->size(); ++i)
-	      {
-		QgsPolyline currentLine = multiPolyIt->at(i);
-		int j;
-		for(j = 0; j < (currentLine.size() - 1); ++j)
-		  {
-		    if(splitPoint.onSegment(currentLine.at(j), currentLine.at(j+1)) == 2)
-		      {
-			beforeVertex = vertexCounter + j; afterVertex = vertexCounter + j + 1;
-			return 0;
-		      }
-		  }
-		++j; //consider the point that closes the ring
-		vertexCounter += j;
-	      }
-	  }
-	break;
-      }
-    default:
-      {
-	break;
-      }
+      geometryBoundary = geom->getBoundary();
+      deleteBoundary = true;
+    }
+  else
+    {
+      geometryBoundary = geom;
     }
 
-  return 3; //point not on segment
+  GEOS_GEOM::Geometry* splitLineClone = splitLine->clone();
+  GEOS_GEOM::Geometry* unionGeometry = splitLineClone->Union(geometryBoundary);
+ 
+  delete splitLineClone;
+  if(deleteBoundary)
+    {
+      delete geometryBoundary;
+    }
+ 
+  return unionGeometry;
 }
 
-bool QgsGeometry::vertexContainedInGeometry(const QgsPoint& p, int& vertexNr)
+int QgsGeometry::mergeGeometriesMultiTypeSplit(QList<GEOS_GEOM::Geometry*>& splitResult)
 {
   if(!mGeos || mDirtyGeos)
     {
       exportWkbToGeos();
     }
 
-  if(!mGeos)
+  //convert mGeos to geometry collection
+  GEOS_GEOM::GeometryCollection* collection = dynamic_cast<GEOS_GEOM::GeometryCollection*>(mGeos);
+  if(!collection)
     {
-      return false;
+      return 0;
     }
+  
+  QList<GEOS_GEOM::Geometry*> copyList = splitResult;
+  splitResult.clear();
 
-  //first test all the vertices for equality with splitPoint
-  GEOS_GEOM::CoordinateSequence* vertexSequence = mGeos->getCoordinates();
-  if(!vertexSequence)
+  //collect all the geometries that belong to the initial multifeature
+  std::vector<GEOS_GEOM::Geometry*>* unionGeom = new std::vector<GEOS_GEOM::Geometry*>();
+
+  for(int i = 0; i < copyList.size(); ++i)
     {
-      return false;
-    }
-
-  int seqSize = vertexSequence->getSize();
-  double treshold = 0.0000000000001;
-  GEOS_GEOM::Coordinate currentCoord;
-  QgsPoint testPoint;
-
-  for(int i = 0; i < seqSize; ++i)
-    {
-      currentCoord = vertexSequence->getAt(i);
-      testPoint.setX(currentCoord.x); testPoint.setY(currentCoord.y);
-      if(testPoint.sqrDist(p) < treshold)
+      //is this geometry a part of the original multitype?
+      bool isPart = false;
+      for(int j = 0; j < collection->getNumGeometries(); ++j)
 	{
-	  //vertex is considered to be equal
-	  vertexNr = i;
-	  return true;
-	}
-    }
-  return false;
-}
-
-int QgsGeometry::splitThisLine(const QgsPoint& splitPoint, int beforeVertex, int afterVertex, QgsGeometry** newGeometry)
-{
-  QgsPolyline thisLine = asPolyline();
-
-  QgsPolyline* changedLine;
-  QgsPolyline* newLine;
-  
-  if(splitQgsPolyline(splitPoint, beforeVertex, afterVertex, &thisLine, &changedLine, &newLine) != 0)
-    {
-      (*newGeometry) = 0;
-      return 1;
-    }
-
-  (*newGeometry) = QgsGeometry::fromPolyline(*newLine);
-  delete newLine;
-  
-  QgsGeometry* changedGeometry = QgsGeometry::fromPolyline(*changedLine);
-  delete changedLine;
-  if(!changedGeometry)
-    {
-      return 2;
-    }
-  
-  operator=(*changedGeometry);
-  delete changedGeometry;
-  return 0;
-}
-
-int QgsGeometry::splitThisMultiline(const QgsPoint& splitPoint, int beforeVertex, int afterVertex, QgsGeometry** newGeometry)
-{
-  QgsMultiPolyline thisPolyline = asMultiPolyline();
-  QgsPolyline* newPolyline;
-  QgsPolyline* changedPolyline;
-  int intersectionLine = -1;
-
-  int vertexDiff = 0;
-  int currentVertices = 0;
-
-  for(int i = 0; i < thisPolyline.count(); ++i)
-    {
-      currentVertices = thisPolyline[i].count();
-      if(beforeVertex >= vertexDiff && beforeVertex <= (vertexDiff + currentVertices))
-	{
-	  if(splitQgsPolyline(splitPoint, beforeVertex - vertexDiff, afterVertex - vertexDiff, \
-			      &(thisPolyline.at(i)), &changedPolyline, &newPolyline) == 0)
+	  if(copyList.at(i)->equals(collection->getGeometryN(j)))
 	    {
-	      intersectionLine = i;
+	      isPart = true;
 	      break;
 	    }
 	}
-      vertexDiff += currentVertices;
-    }
 
-  if(intersectionLine == -1)
-    {
-      return 1;
-    }
-
-  QgsMultiPolyline changedMultiPolyline;
-  for(int i = 0; i < thisPolyline.count(); ++i)
-    {
-      if(i == intersectionLine)
+      if(isPart)
 	{
-	  changedMultiPolyline.push_back(*changedPolyline);
+	  unionGeom->push_back(copyList.at(i));
 	}
       else
 	{
-	  changedMultiPolyline.push_back(thisPolyline.at(i));
-	}
-    }
-  QgsMultiPolyline newMultiPolyline;
-  newMultiPolyline.push_back(*newPolyline);
-
-  delete newPolyline;
-  delete changedPolyline;
-
-  //create geometries...
-  (*newGeometry) = QgsGeometry::fromMultiPolyline(newMultiPolyline);
-  
-  QgsGeometry* changedGeometry = QgsGeometry::fromMultiPolyline(changedMultiPolyline);
-  if(!changedGeometry)
-    {
-      return 3;
-    }
-  
-  operator=(*changedGeometry);
-  delete changedGeometry;
-  return 0;
-}
-
-int QgsGeometry::splitQgsPolyline(const QgsPoint& splitPoint, int beforeVertex, int afterVertex, const QgsPolyline* origLine, \
-				  QgsPolyline** changedLine, QgsPolyline** newLine) const
-{
-  if(!origLine)
-    {
-      return 1;
-    }
-
-  bool splitAtVertex = false; //split at already existing vertex?
-  
-  if(beforeVertex == afterVertex)
-    {
-      splitAtVertex = true;
-    }
-
-  if(afterVertex == 0 || beforeVertex < 0 \
-     || (afterVertex > (origLine->size() - 1))) //no split necessary
-    {
-      *newLine = 0;
-      return 2;
-    }
-
-  //create new geometry
-  (*newLine) = new QgsPolyline();
-  for(int i = 0; i <= beforeVertex; ++i)
-    {
-      (*newLine)->append(origLine->at(i));
-    }
-
-  if(!splitAtVertex)
-    {
-      (*newLine)->append(splitPoint);
-    }
-
-  //and create changed geometry
-  (*changedLine) = new QgsPolyline();
-  if(!splitAtVertex)
-    {
-      (*changedLine)->append(splitPoint);
-    }
-
-  for(int i = afterVertex; i < origLine->size(); ++i)
-    {
-      (*changedLine)->append(origLine->at(i));
-    }
-
-  return 0;
-}
-
-int QgsGeometry::splitThisPolygon(const GEOS_GEOM::CoordinateSequence* splitLine, int beforeVertex1, int afterVertex1, \
-int beforeVertex2, int afterVertex2, QgsGeometry** newGeometry)
-{
-  if(!splitLine)
-    {
-      return 2;
-    }
-
-  QgsPolygon thisPolygon = asPolygon();
-  QgsPolygon* changedPolygon;
-  QgsPolygon* newPolygon;
-
-  int splitReturn = splitQgsPolygon(splitLine, beforeVertex1, afterVertex1, beforeVertex2, afterVertex2, \
-				    &thisPolygon, &changedPolygon, &newPolygon);
-  if(splitReturn != 0)
-    {
-      (*newGeometry) = 0;
-      if(splitReturn == 1) //split line intersects inner ring
-	{
-	  return 1;
-	}
-      return 3;
-    }
-
-  (*newGeometry) = QgsGeometry::fromPolygon(*newPolygon);
-  delete newPolygon;
-  
-  QgsGeometry* changedGeometry = QgsGeometry::fromPolygon(*changedPolygon);
-  delete changedPolygon;
-  if(!changedGeometry)
-    {
-      return 4;
-    }
-  
-  operator=(*changedGeometry);
-  delete changedGeometry;
-  return 0;
-}
-
-int QgsGeometry::splitThisMultiPolygon(const GEOS_GEOM::CoordinateSequence* splitLine, int beforeVertex1, int afterVertex1, \
-				       int beforeVertex2, int afterVertex2, QgsGeometry** newGeometry)
-{
-  if(!splitLine)
-    {
-      return 2;
-    }
-
-  QgsMultiPolygon thisMultiPolygon = asMultiPolygon();
-
-  QgsPolygon* changedPolygon;
-  QgsPolygon* newPolygon;
-  int intersectingPoly = -1;
-
-  //counter for the vertices of the previous polygons
-  //this is to map the vertex numbers of the multipolygon
-  //to those of the individual polygons
-  int vertexDiff = 0;
-  int splitReturn = 0; //return value from splitQgsPolygon function
-
-  //take the first intersecting polygon
-  for(int i = 0; i < thisMultiPolygon.size(); ++i)
-    {
-      //calculate number of vertices in this polygon
-      int polyVertexCount = 0;
-      for(int j = 0; j < thisMultiPolygon[i].count(); ++j)
-	{
-	  polyVertexCount += thisMultiPolygon[i][j].count();
-	}
-
-      //we only test afterVertex1, since all vertex indexes should be on the same ring anyway
-      if(beforeVertex1 >= vertexDiff && beforeVertex1 <= (vertexDiff + polyVertexCount))
-	{
-	  splitReturn = splitQgsPolygon(splitLine, beforeVertex1 - vertexDiff, \
-					afterVertex1 - vertexDiff, \
-					beforeVertex2 - vertexDiff, \
-					afterVertex2 - vertexDiff, \
-					&(thisMultiPolygon[i]), &changedPolygon, &newPolygon);
-	  if(splitReturn == 0)
+	  std::vector<GEOS_GEOM::Geometry*>* geomVector = new std::vector<GEOS_GEOM::Geometry*>();
+	  geomVector->push_back(copyList.at(i));
+	  if(mGeos->getGeometryTypeId() == GEOS_GEOM::GEOS_MULTILINESTRING)
 	    {
-	      intersectingPoly = i;
-	      break;
+	      splitResult.push_back(geosGeometryFactory->createMultiLineString(geomVector));
 	    }
-	  else if(splitReturn == 1) //split line intersects inner ring
+	  else if(mGeos->getGeometryTypeId() == GEOS_GEOM::GEOS_MULTIPOLYGON)
 	    {
-	      return 1;
-	    }
-	}
-      vertexDiff += polyVertexCount;
-    }
-
-  if(intersectingPoly == -1)
-    {
-      return 3;
-    }
-
-  QgsMultiPolygon changedMultiPoly;
-  //copy every polygon of original multipoly, with exception of changed polygon
-  for(int i = 0; i < thisMultiPolygon.size(); ++i)
-    {
-      if(i == intersectingPoly)
-	{
-	  changedMultiPoly.push_back(*changedPolygon);
-	}
-      else
-	{
-	  changedMultiPoly.push_back(thisMultiPolygon.at(i));
-	}
-    }
-
-  QgsMultiPolygon newMultiPoly;
-  newMultiPoly.push_back(*newPolygon);
-
-  delete changedPolygon;
-  delete newPolygon;
-
-  (*newGeometry) = QgsGeometry::fromMultiPolygon(newMultiPoly);
-  
-  QgsGeometry* changedGeometry = QgsGeometry::fromMultiPolygon(changedMultiPoly);
-  if(!changedGeometry)
-    {
-      delete (*newGeometry);
-      return 4;
-    }
-  
-  operator=(*changedGeometry);
-  delete changedGeometry;
-  return 0;
-}
-
-int QgsGeometry::splitQgsPolygon(const GEOS_GEOM::CoordinateSequence* splitLine, int beforeVertex1, int afterVertex1, int beforeVertex2, \
-				 int afterVertex2, const QgsPolygon* origPoly, QgsPolygon** changedPoly, QgsPolygon** newPoly) const
-{
-  if(!splitLine || !origPoly)
-    {
-      return 2;
-    }
-
-  //beforeVertex1, afterVertex1, beforeVertex2 and afterVertex2 must be on the first ring,
-  //otherwise, a split is not possible
-
-  int firstRingSize = origPoly->at(0).size();
-  if(!(beforeVertex1 < firstRingSize && afterVertex1 < firstRingSize && beforeVertex2 < firstRingSize \
-       && afterVertex2 < firstRingSize))
-    {
-      return 1;
-    }
-
-  bool splitAtVertex1 = false;
-  bool splitAtVertex2 = false;
-  
-  if(beforeVertex1 == afterVertex1)
-    {
-      splitAtVertex1 = true;
-    }
-
-  if(beforeVertex2 == afterVertex2)
-    {
-      splitAtVertex2 = true;
-    }
-
-  QgsPolyline firstRing = origPoly->at(0); //splits for inner rings cannot be handled
-
-  //find out, if start point or end point of split line is closer to afterVertex2
-  GEOS_GEOM::Coordinate startPoint = splitLine->getAt(0);
-  double startDist = QgsPoint(startPoint.x, startPoint.y).sqrDist(firstRing.at(afterVertex2));
-  GEOS_GEOM::Coordinate endPoint = splitLine->getAt(splitLine->getSize()-1);
-  double endDist = QgsPoint(endPoint.x, endPoint.y).sqrDist(firstRing.at(afterVertex2));
-  
-  bool startPointCloserToAfterVertex2;
-  if(startDist < endDist)
-    {
-      startPointCloserToAfterVertex2 = true;
-    }
-  else
-    {
-      startPointCloserToAfterVertex2 = false;
-    }
-
- 
-  
-  //First create the new polygon
-  (*newPoly) = new QgsPolygon();
-  QgsPolyline newPolyline;
-
-  GEOS_GEOM::Coordinate currentCoord;
-  for(int i = 0; i < splitLine->getSize(); ++i)
-    {
-      currentCoord = splitLine->getAt(i);
-      newPolyline.append(QgsPoint(currentCoord.x, currentCoord.y));
-    }
-
-  if(afterVertex1 != afterVertex2 || !startPointCloserToAfterVertex2) //protection in case both intersections on same line segment 
-    {
-      if(!splitAtVertex2)
-	{
-	  //add afterVertex2
-	  newPolyline.append(firstRing.at(afterVertex2));
-	}
-      
-      //add all the vertices from afterVertex2 to beforeVertex1
-      if(beforeVertex1 >= afterVertex2)
-	{
-	  for(int i = (afterVertex2 + 1); i <= beforeVertex1; ++i)
-	    {
-	      newPolyline.append(firstRing.at(i));
-	    }
-	}
-      else
-	{
-	  //add vertices from afterVertex2 until end of polygon
-	  for(int i = (afterVertex2 + 1); i < firstRing.size(); ++i)
-	    {
-	      newPolyline.append(firstRing.at(i));
-	    }
-	  //add vertices from begin of polygon to beforeVertex1
-	  for(int i = 1; i <= beforeVertex1; ++i)
-	    {
-	      newPolyline.append(firstRing.at(i));
-	    }
-	}
-      
-      //add new split point
-      if(!splitAtVertex1)
-	{
-	  currentCoord = splitLine->getAt(0);
-	  newPolyline.append(QgsPoint(currentCoord.x, currentCoord.y));
-	}
-    } 
-
-  if(newPolyline.size() < 4)
-    {
-      delete (*newPoly);
-      return 3; //invalid new polygon
-    }
-
-  (*newPoly)->append(newPolyline);
-
-  //then change the existing geometry
-  QgsPolyline changedPolyline;
-  (*changedPoly) = new QgsPolygon();
-
-  for(int i = 0; i < splitLine->getSize(); ++i)
-    {
-      currentCoord = splitLine->getAt(i);
-      changedPolyline.append(QgsPoint(currentCoord.x, currentCoord.y));
-    }
-  
-  if (beforeVertex1 != beforeVertex2 || startPointCloserToAfterVertex2) //protection in case both intersections on same line segment 
-    {
-      //else, we have to add the remaining vertices between afterVertex1 to beforeVertex2
-      if(!splitAtVertex2)
-	{
-	  changedPolyline.append(firstRing.at(beforeVertex2));
-	}
-      
-      //add all the vertices from beforeVertex2 to AfterVertex1 (in inverse order)
-      if(afterVertex1 <= beforeVertex2)
-	{
-	  for(int i = (beforeVertex2 - 1); i >= afterVertex1; --i)
-	    {
-	      changedPolyline.append(firstRing.at(i));
-	    }
-	}
-      else
-	{
-	  //add vertices from beforeVertex2 to start of polygon
-	  for(int i = (beforeVertex2 - 1); i >= 0; --i)
-	    {
-	      changedPolyline.append(firstRing.at(i));
-	    }
-	  
-	  //add vertices from end of polygon to AfterVertex1
-	  for(int i = (firstRing.size() - 1); i >= afterVertex1; --i)
-	    {
-	      changedPolyline.append(firstRing.at(i));
-	    }
-	}
-      
-      if(!splitAtVertex1)
-	{
-	  currentCoord = splitLine->getAt(0);
-	  changedPolyline.append(QgsPoint(currentCoord.x, currentCoord.y));
-	}
-    }
-  
-  if(changedPolyline.size() < 4)
-    {
-      delete (*newPoly);
-      delete (*changedPoly);
-      return 4;
-    }
-  
-  (*changedPoly)->append(changedPolyline);
-
-  //existing rings need to be assigned either to newPoly or to changedPoly
-  if(origPoly->size() > 1)
-    {
-      //convert newPoly and all the rings to geos for within test
-      GEOS_GEOM::Polygon* newPolyGeos = polylineToGeosPolygon((*newPoly)->at(0));
-      if(!newPolyGeos)
-	{
-	  return 0;
-	}
-      GEOS_GEOM::Polygon* ringPolyGeos = 0;
-
-      for(int i = 1; i < origPoly->size(); ++i)
-	{
-	  ringPolyGeos = polylineToGeosPolygon(origPoly->at(i));
-	  if(!ringPolyGeos)
-	    {
-	      continue;
-	    }
-	  //if within -> add to newPoly, else to changedPoly
-	  if(newPolyGeos->contains(ringPolyGeos))
-	    {
-	      (*newPoly)->push_back(origPoly->at(i));
+	      splitResult.push_back(geosGeometryFactory->createMultiPolygon(geomVector));
 	    }
 	  else
 	    {
-	      (*changedPoly)->push_back(origPoly->at(i));
+	      delete copyList.at(i);
+	      delete geomVector;
 	    }
-	  delete ringPolyGeos;
-	  ringPolyGeos = 0;
 	}
-      delete newPolyGeos;
     }
+
+  //make multifeature out of unionGeom
+  if(unionGeom->size() > 0)
+    {
+      if(mGeos->getGeometryTypeId() == GEOS_GEOM::GEOS_MULTILINESTRING)
+	{
+	  splitResult.push_front(geosGeometryFactory->createMultiLineString(unionGeom));
+	}
+      else if(mGeos->getGeometryTypeId() == GEOS_GEOM::GEOS_MULTIPOLYGON)
+	{
+	  splitResult.push_front(geosGeometryFactory->createMultiPolygon(unionGeom));
+	}
+    }
+  else
+    {
+      delete unionGeom;
+    }
+
   return 0;
-}
-
-GEOS_GEOM::Polygon* QgsGeometry::polylineToGeosPolygon(const QgsPolyline& line) const
-{
-  //first check if polyline is really a closed ring
-  if(!(line.size() > 2 && line.at(0) == line.at(line.size() - 1)))
-    {
-      return 0;
-    }
-
-  std::vector<GEOS_GEOM::Geometry*>* holes = new std::vector<GEOS_GEOM::Geometry*>(); //no holes
-  
-  //outer ring
-  GEOS_GEOM::DefaultCoordinateSequence* sequence = new GEOS_GEOM::DefaultCoordinateSequence();
-  GEOS_GEOM::Coordinate currentCoord;
-
-  for(QgsPolyline::const_iterator it = line.constBegin(); it != line.constEnd(); ++it)
-    {
-      currentCoord.x = it->x();
-      currentCoord.y = it->y();
-      sequence->add(currentCoord);
-    }
-
-  GEOS_GEOM::LinearRing* outerRing = geosGeometryFactory->createLinearRing(sequence); //todo: catch exceptions
-  GEOS_GEOM::Polygon* poly = geosGeometryFactory->createPolygon(outerRing, holes); //todo: catch exceptions
-  return poly;
 }
 
 QgsPoint QgsGeometry::asPoint(unsigned char*& ptr, bool hasZValue)
