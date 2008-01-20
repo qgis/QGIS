@@ -1710,12 +1710,12 @@ int QgsVectorLayer::splitFeatures(const QList<QgsPoint>& splitLine, bool topolog
     }
   else
     {
-      return 3;
+      return 1;
     }
   
   if(bBox.isEmpty())
     {
-      return 4;
+      return 2;
     }
 
   QList<QgsFeature> featureList;
@@ -1727,29 +1727,35 @@ int QgsVectorLayer::splitFeatures(const QList<QgsPoint>& splitLine, bool topolog
       QList<QgsGeometry*> newGeometries;
       QgsGeometry* newGeometry = 0;
       splitFunctionReturn = select_it->geometry()->splitGeometry(splitLine, newGeometries);
-      if(splitFunctionReturn < 2)
+      if(splitFunctionReturn == 0)
 	{
 	  //change this geometry
 	  mChangedGeometries.insert(select_it->featureId(), *(select_it->geometry()));
 	  
-	  //insert new feature
-	  newGeometry = newGeometries.at(0);
-	  QgsFeature newFeature;
-	  newFeature.setGeometry(newGeometry);
-	  newFeature.setAttributeMap(select_it->attributeMap());
-	  newFeatures.append(newFeature);
+	  //insert new features
+	  for(int i = 0; i < newGeometries.size(); ++i)
+	    {
+	      newGeometry = newGeometries.at(i);
+	      QgsFeature newFeature;
+	      newFeature.setGeometry(newGeometry);
+	      newFeature.setAttributeMap(select_it->attributeMap());
+	      newFeatures.append(newFeature);
+	      if(topologicalEditing) //add topological points for new feature
+		{
+		  addTopologicalPoints(newGeometry);
+		}
+	    }
 	  setModified(true, true);
 
-	  //add topological points if necessary
+	  //add topological points for this geometry if necessary
 	  if(topologicalEditing)
 	    {
 	      addTopologicalPoints(select_it->geometry());
-	      addTopologicalPoints(newGeometry);
 	    }
 	}
-      if(splitFunctionReturn > 0 && splitFunctionReturn < 3)
+      else if(splitFunctionReturn > 1) //1 means no split but also no error
 	{
-	  returnCode = splitFunctionReturn;
+	  returnCode = 3;
 	}
     }
 
