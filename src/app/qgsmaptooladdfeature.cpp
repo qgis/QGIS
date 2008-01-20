@@ -25,6 +25,7 @@
 #include "qgsrubberband.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgslogger.h"
 #include <QMessageBox>
 
 QgsMapToolAddFeature::QgsMapToolAddFeature(QgsMapCanvas* canvas, enum CaptureTool tool): QgsMapToolCapture(canvas, tool)
@@ -96,21 +97,22 @@ void QgsMapToolAddFeature::canvasReleaseEvent(QMouseEvent * e)
       QList<QgsSnappingResult> snapResults;
       QgsPoint savePoint; //point in layer coordinates
       
-	if(mSnapper.snapToBackgroundLayers(e->pos(), snapResults) != 0)
-	{
-	  QgsPoint savePoint = snapPointFromResults(snapResults, e->pos());
-	  try
-	    {
-	      savePoint = toLayerCoords(vlayer, idPoint);
-	    }
-	  catch(QgsCsException &cse)
-	    {
-	      UNUSED(cse);
-	      QMessageBox::information(0, QObject::tr("Coordinate transform error"), \
-				       QObject::tr("Cannot transform the point to the layers coordinate system"));
-	      return;
-	    }
-	}
+      if(mSnapper.snapToBackgroundLayers(e->pos(), snapResults) == 0)
+      {
+        idPoint = snapPointFromResults(snapResults, e->pos());
+        try
+        {
+          savePoint = toLayerCoords(vlayer, idPoint);
+          QgsDebugMsg("savePoint = " + savePoint.stringRep());
+        }
+        catch(QgsCsException &cse)
+        {
+          UNUSED(cse);
+          QMessageBox::information(0, QObject::tr("Coordinate transform error"), \
+                                   QObject::tr("Cannot transform the point to the layers coordinate system"));
+          return;
+        }
+      }
       
       // emit signal - QgisApp can catch it and save point position to clipboard
       // FIXME: is this still actual or something old that's not used anymore?
