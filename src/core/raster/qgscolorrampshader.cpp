@@ -48,6 +48,23 @@ bool QgsColorRampShader::generateShadedValue(double theRedValue, double theGreen
   return false;
 }
 
+QString QgsColorRampShader::getColorRampTypeAsQString()
+{
+  switch(mColorRampType)
+  {
+    case INTERPOLATED:
+      return QString("INTERPOLATED");
+      break;
+    case DISCRETE:
+      return QString("DISCRETE");
+      break;
+    case EXACT:
+      return QString("EXACT");
+      break;
+  }
+  return QString("UNKNOWN");
+}
+
 bool QgsColorRampShader::getDiscreteColor(double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue)
 {
   if(mColorRampItemList.count() <= 0)
@@ -110,4 +127,21 @@ bool QgsColorRampShader::getInterpolatedColor(double theValue, int* theReturnRed
   }
   
   return false;
+}
+
+void QgsColorRampShader::setColorRampType(QString theType)
+{
+  switch(mColorRampType)
+  if(theType == "INTERPOLATED")
+  {
+    mColorRampType = INTERPOLATED;
+  }
+  else if(theType == "DISCRETE")
+  {
+    mColorRampType = DISCRETE;
+  }
+  else
+  {
+    mColorRampType = EXACT;
+  }
 }
