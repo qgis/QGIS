@@ -2,7 +2,7 @@
 <qgis version="0.9.2-Ganymede" >
   <maplayer minScale="1" maxScale="1e+08" scaleBasedVisibilityFlag="0" geometry="Polygon" type="vector" >
     <id>polys20080110101725465</id>
-    <datasource>/Users/timlinux/dev/cpp/qgis_qml/tests/testdata/polys.shp</datasource>
+    <datasource>/Users/tim/dev/cpp/qgis/tests/testdata/polys.shp</datasource>
     <layername>polys</layername>
     <srs>
       <spatialrefsys>
@@ -13,7 +13,7 @@
         <description>Unknown datum based upon the GEM 10C ellipsoid</description>
         <projectionacronym>longlat</projectionacronym>
         <ellipsoidacronym>WGS84</ellipsoidacronym>
-        <geographicflag>true</geographicflag>
+        <geographicflag>false</geographicflag>
       </spatialrefsys>
     </srs>
     <transparencyLevelInt>255</transparencyLevelInt>

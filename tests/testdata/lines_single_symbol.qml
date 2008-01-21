@@ -2,7 +2,7 @@
 <qgis version="0.9.2-Ganymede" >
   <maplayer minScale="1" maxScale="1e+08" scaleBasedVisibilityFlag="0" geometry="Line" type="vector" >
     <id>lines20080110101725388</id>
-    <datasource>/Users/timlinux/dev/cpp/qgis_qml/tests/testdata/lines.shp</datasource>
+    <datasource>/Users/tim/dev/cpp/qgis/tests/testdata/lines.shp</datasource>
     <layername>lines</layername>
     <srs>
       <spatialrefsys>
@@ -13,7 +13,7 @@
         <description>Unknown datum based upon the GEM 10C ellipsoid</description>
         <projectionacronym>longlat</projectionacronym>
         <ellipsoidacronym>WGS84</ellipsoidacronym>
-        <geographicflag>true</geographicflag>
+        <geographicflag>false</geographicflag>
       </spatialrefsys>
     </srs>
     <transparencyLevelInt>255</transparencyLevelInt>
@@ -31,7 +31,7 @@
         <pointsize>11</pointsize>
         <rotationclassificationfield>-1</rotationclassificationfield>
         <scaleclassificationfield>-1</scaleclassificationfield>
-        <outlinecolor red="98" blue="109" green="111" />
+        <outlinecolor red="159" blue="98" green="113" />
         <outlinestyle>DashLine</outlinestyle>
         <outlinewidth>2</outlinewidth>
         <fillcolor red="0" blue="0" green="0" />
