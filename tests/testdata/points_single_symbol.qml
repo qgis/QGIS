@@ -1,8 +1,8 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis version="0.9.2-Ganymede" >
-  <maplayer minScale="0" maxScale="1e+08" scaleBasedVisibilityFlag="0" geometry="Point" type="vector" >
+  <maplayer minScale="1" maxScale="1e+08" scaleBasedVisibilityFlag="0" geometry="Point" type="vector" >
     <id>points20080103150949100</id>
-    <datasource>/Users/timlinux/dev/cpp/qgis_qml/tests/testdata/points.shp</datasource>
+    <datasource>/Users/tim/dev/cpp/qgis/tests/testdata/points.shp</datasource>
     <layername>points</layername>
     <srs>
       <spatialrefsys>
@@ -13,28 +13,30 @@
         <description>Unknown datum based upon the GEM 10C ellipsoid</description>
         <projectionacronym>longlat</projectionacronym>
         <ellipsoidacronym>WGS84</ellipsoidacronym>
-        <geographicflag>false</geographicflag>
+        <geographicflag>true</geographicflag>
       </spatialrefsys>
     </srs>
     <transparencyLevelInt>255</transparencyLevelInt>
     <provider>ogr</provider>
     <encoding>System</encoding>
-    <displayfield>Name</displayfield>
+    <classificationattribute>Heading</classificationattribute>
+    <classificationattribute>Importance</classificationattribute>
+    <displayfield>Class</displayfield>
     <label>0</label>
     <attributeactions/>
     <singlesymbol>
-      <angleclassificationfield>-1</angleclassificationfield>
-      <scaleclassificationfield>-1</scaleclassificationfield>
       <symbol>
         <lowervalue></lowervalue>
         <uppervalue></uppervalue>
         <label></label>
-        <pointsymbol>hard:circle</pointsymbol>
-        <pointsize>6</pointsize>
-        <outlinecolor red="0" blue="0" green="0" />
+        <pointsymbol>hard:triangle</pointsymbol>
+        <pointsize>14</pointsize>
+        <rotationclassificationfield>1</rotationclassificationfield>
+        <scaleclassificationfield>2</scaleclassificationfield>
+        <outlinecolor red="140" blue="60" green="82" />
         <outlinestyle>SolidLine</outlinestyle>
         <outlinewidth>1</outlinewidth>
-        <fillcolor red="1" blue="193" green="34" />
+        <fillcolor red="193" blue="122" green="145" />
         <fillpattern>SolidPattern</fillpattern>
         <texturepath></texturepath>
       </symbol>

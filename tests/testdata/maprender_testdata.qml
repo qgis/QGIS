@@ -1,16 +1,16 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis version="0.9.2-Ganymede" >
-  <maplayer minScale="1" maxScale="1e+08" scaleBasedVisibilityFlag="0" geometry="Point" type="vector" >
-    <id>points20080103150949100</id>
-    <datasource>/Users/tim/dev/cpp/qgis/tests/testdata/points.shp</datasource>
-    <layername>points</layername>
+  <maplayer minScale="1" maxScale="1e+08" scaleBasedVisibilityFlag="0" geometry="Polygon" type="vector" >
+    <id>maprender_testdata20080120093911087</id>
+    <datasource>/tmp/maprender_testdata.shp</datasource>
+    <layername>maprender_testdata</layername>
     <srs>
       <spatialrefsys>
-        <proj4>+proj=longlat +ellps=WGS84 +no_defs</proj4>
-        <srsid>1449</srsid>
-        <srid>4031</srid>
-        <epsg>4031</epsg>
-        <description>Unknown datum based upon the GEM 10C ellipsoid</description>
+        <proj4>+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs</proj4>
+        <srsid>2585</srsid>
+        <srid>4326</srid>
+        <epsg>4326</epsg>
+        <description>WGS 84</description>
         <projectionacronym>longlat</projectionacronym>
         <ellipsoidacronym>WGS84</ellipsoidacronym>
         <geographicflag>true</geographicflag>
@@ -19,50 +19,50 @@
     <transparencyLevelInt>255</transparencyLevelInt>
     <provider>ogr</provider>
     <encoding>System</encoding>
-    <classificationattribute>Importance</classificationattribute>
-    <displayfield>Class</displayfield>
+    <classificationattribute>Value</classificationattribute>
+    <displayfield>Value</displayfield>
     <label>0</label>
     <attributeactions/>
     <continuoussymbol>
-      <classificationfield>2</classificationfield>
+      <classificationfield>0</classificationfield>
       <polygonoutline>1</polygonoutline>
       <lowestsymbol>
         <symbol>
-          <lowervalue>1.000000</lowervalue>
+          <lowervalue>-180.000000</lowervalue>
           <uppervalue></uppervalue>
           <label></label>
           <pointsymbol>hard:circle</pointsymbol>
           <pointsize>10</pointsize>
           <rotationclassificationfield>-1</rotationclassificationfield>
           <scaleclassificationfield>-1</scaleclassificationfield>
-          <outlinecolor red="216" blue="30" green="210" />
+          <outlinecolor red="0" blue="0" green="0" />
           <outlinestyle>SolidLine</outlinestyle>
-          <outlinewidth>1</outlinewidth>
-          <fillcolor red="0" blue="0" green="0" />
-          <fillpattern>NoBrush</fillpattern>
+          <outlinewidth>0</outlinewidth>
+          <fillcolor red="221" blue="77" green="218" />
+          <fillpattern>SolidPattern</fillpattern>
           <texturepath></texturepath>
         </symbol>
       </lowestsymbol>
       <highestsymbol>
         <symbol>
-          <lowervalue>20.000000</lowervalue>
+          <lowervalue>180.000000</lowervalue>
           <uppervalue></uppervalue>
           <label></label>
           <pointsymbol>hard:circle</pointsymbol>
           <pointsize>10</pointsize>
           <rotationclassificationfield>-1</rotationclassificationfield>
           <scaleclassificationfield>-1</scaleclassificationfield>
-          <outlinecolor red="46" blue="206" green="43" />
+          <outlinecolor red="0" blue="0" green="0" />
           <outlinestyle>SolidLine</outlinestyle>
-          <outlinewidth>1</outlinewidth>
-          <fillcolor red="0" blue="0" green="0" />
-          <fillpattern>NoBrush</fillpattern>
+          <outlinewidth>0</outlinewidth>
+          <fillcolor red="187" blue="20" green="27" />
+          <fillpattern>SolidPattern</fillpattern>
           <texturepath></texturepath>
         </symbol>
       </highestsymbol>
     </continuoussymbol>
     <labelattributes>
-      <label field="" text="Label" />
+      <label field="" text="Rótulo" />
       <family field="" name="Lucida Grande" />
       <size field="" units="pt" value="12" />
       <bold field="" on="0" />

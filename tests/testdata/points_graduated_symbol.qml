@@ -2,7 +2,7 @@
 <qgis version="0.9.2-Ganymede" >
   <maplayer minScale="1" maxScale="1e+08" scaleBasedVisibilityFlag="0" geometry="Point" type="vector" >
     <id>points20080103150949100</id>
-    <datasource>/Users/timlinux/dev/cpp/qgis_qml/tests/testdata/points.shp</datasource>
+    <datasource>/Users/tim/dev/cpp/qgis/tests/testdata/points.shp</datasource>
     <layername>points</layername>
     <srs>
       <spatialrefsys>
@@ -13,80 +13,61 @@
         <description>Unknown datum based upon the GEM 10C ellipsoid</description>
         <projectionacronym>longlat</projectionacronym>
         <ellipsoidacronym>WGS84</ellipsoidacronym>
-        <geographicflag>false</geographicflag>
+        <geographicflag>true</geographicflag>
       </spatialrefsys>
     </srs>
     <transparencyLevelInt>255</transparencyLevelInt>
     <provider>ogr</provider>
     <encoding>System</encoding>
-    <classificationattribute>Value</classificationattribute>
-    <displayfield>Name</displayfield>
+    <classificationattribute>Heading</classificationattribute>
+    <classificationattribute>Importance</classificationattribute>
+    <displayfield>Class</displayfield>
     <label>0</label>
     <attributeactions/>
     <graduatedsymbol>
-      <classificationfield>1</classificationfield>
+      <classificationfield>2</classificationfield>
       <symbol>
-        <lowervalue>11.999</lowervalue>
-        <uppervalue>56.200</uppervalue>
+        <lowervalue>0.999</lowervalue>
+        <uppervalue>7.333</uppervalue>
         <label></label>
         <pointsymbol>hard:circle</pointsymbol>
-        <pointsize>20</pointsize>
+        <pointsize>10</pointsize>
+        <rotationclassificationfield>1</rotationclassificationfield>
+        <scaleclassificationfield>2</scaleclassificationfield>
         <outlinecolor red="0" blue="0" green="0" />
         <outlinestyle>SolidLine</outlinestyle>
         <outlinewidth>1</outlinewidth>
-        <fillcolor red="255" blue="202" green="223" />
+        <fillcolor red="0" blue="0" green="255" />
         <fillpattern>SolidPattern</fillpattern>
         <texturepath></texturepath>
       </symbol>
       <symbol>
-        <lowervalue>56.200</lowervalue>
-        <uppervalue>100.400</uppervalue>
+        <lowervalue>7.333</lowervalue>
+        <uppervalue>13.667</uppervalue>
         <label></label>
-        <pointsymbol>hard:circle</pointsymbol>
-        <pointsize>20</pointsize>
+        <pointsymbol>hard:rectangle</pointsymbol>
+        <pointsize>18</pointsize>
+        <rotationclassificationfield>1</rotationclassificationfield>
+        <scaleclassificationfield>2</scaleclassificationfield>
         <outlinecolor red="0" blue="0" green="0" />
         <outlinestyle>SolidLine</outlinestyle>
         <outlinewidth>1</outlinewidth>
-        <fillcolor red="255" blue="80" green="133" />
+        <fillcolor red="169" blue="108" green="102" />
         <fillpattern>SolidPattern</fillpattern>
         <texturepath></texturepath>
       </symbol>
       <symbol>
-        <lowervalue>100.400</lowervalue>
-        <uppervalue>144.600</uppervalue>
+        <lowervalue>13.667</lowervalue>
+        <uppervalue>20.001</uppervalue>
         <label></label>
-        <pointsymbol>hard:circle</pointsymbol>
-        <pointsize>20</pointsize>
+        <pointsymbol>hard:star</pointsymbol>
+        <pointsize>22</pointsize>
+        <rotationclassificationfield>1</rotationclassificationfield>
+        <scaleclassificationfield>2</scaleclassificationfield>
         <outlinecolor red="0" blue="0" green="0" />
         <outlinestyle>SolidLine</outlinestyle>
         <outlinewidth>1</outlinewidth>
-        <fillcolor red="255" blue="4" green="81" />
-        <fillpattern>SolidPattern</fillpattern>
-        <texturepath></texturepath>
-      </symbol>
-      <symbol>
-        <lowervalue>144.600</lowervalue>
-        <uppervalue>188.800</uppervalue>
-        <label></label>
-        <pointsymbol>hard:circle</pointsymbol>
-        <pointsize>20</pointsize>
-        <outlinecolor red="0" blue="0" green="0" />
-        <outlinestyle>SolidLine</outlinestyle>
-        <outlinewidth>1</outlinewidth>
-        <fillcolor red="204" blue="0" green="59" />
-        <fillpattern>SolidPattern</fillpattern>
-        <texturepath></texturepath>
-      </symbol>
-      <symbol>
-        <lowervalue>188.800</lowervalue>
-        <uppervalue>233.001</uppervalue>
-        <label></label>
-        <pointsymbol>hard:circle</pointsymbol>
-        <pointsize>20</pointsize>
-        <outlinecolor red="0" blue="0" green="0" />
-        <outlinestyle>SolidLine</outlinestyle>
-        <outlinewidth>1</outlinewidth>
-        <fillcolor red="133" blue="0" green="38" />
+        <fillcolor red="0" blue="171" green="84" />
         <fillpattern>SolidPattern</fillpattern>
         <texturepath></texturepath>
       </symbol>
