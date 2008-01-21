@@ -55,8 +55,8 @@ bool QgsRenderChecker::runTest( QString theTestName )
   QImage myImage( myExpectedImage.width() , myExpectedImage.height(), QImage::Format_RGB32 );
   QImage myDifferenceImage( myExpectedImage.width() , myExpectedImage.height(), QImage::Format_RGB32);
   QString myResultDiffImage = QDir::tempPath() + QDir::separator() + theTestName + "_result_diff.png";
-  myImage.fill ( QColor ( "#98dbf9" ).pixel() );
-  myDifferenceImage.fill ( QColor ( "#98dbf9" ).pixel() );
+  myImage.fill ( QColor ( 152,219,249  ).pixel() );
+  myDifferenceImage.fill ( QColor ( 152,219,249  ).pixel() );
   QPainter myPainter( &myImage );
   mpMapRenderer->setOutputSize( QSize ( myExpectedImage.width(),myExpectedImage.height() ),72 ); 
   QTime myTime;
