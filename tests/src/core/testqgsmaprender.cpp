@@ -2,8 +2,8 @@
      testqgsvectorfilewriter.cpp
      --------------------------------------
     Date                 : Sun Sep 16 12:22:54 AKDT 2007
-    Copyright            : (C) 2007 by Gary E. Sherman
-    Email                : sherman at mrcc dot com
+    Copyright            : (C) 2007 by Tim Sutton
+    Email                : tim @ linfiniti.com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -23,6 +23,7 @@
 #include <iostream>
 
 #include <QApplication>
+#include <QDesktopServices>
 
 //qgis includes...
 #include <qgsvectorlayer.h> //defines QgsFieldMap 
@@ -41,6 +42,9 @@
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
 
+//qgs unit test utility class
+#include "qgsrenderchecker.h"
+
 /** \ingroup UnitTests
  * This is a unit test for the QgsMapRender class.
  * It will do some performance testing too
@@ -51,6 +55,7 @@ class TestQgsMapRender: public QObject
   Q_OBJECT;
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
     void init(){};// will be called before each testfunction is executed.
     void cleanup(){};// will be called after every testfunction.
 
@@ -64,6 +69,7 @@ class TestQgsMapRender: public QObject
     QgsFieldMap mFields;
     QgsMapRender * mpMapRenderer;
     QgsMapLayer * mpPolysLayer;
+    QString mReport;
 };
 
 void TestQgsMapRender::initTestCase()
@@ -84,7 +90,7 @@ void TestQgsMapRender::initTestCase()
 
   //create some objects that will be used in all tests...
   mEncoding = "UTF-8";
-  QgsField myField1("Field1",QVariant::String,"String",10,0,"Field 1 comment");
+  QgsField myField1("Value",QVariant::Int,"int",10,0,"Value on lon");
   mFields.insert(0, myField1);
   mSRS = QgsSpatialRefSys(GEOWKT);
   //
@@ -94,6 +100,9 @@ void TestQgsMapRender::initTestCase()
   QString myTestDataDir = myDataDir + QDir::separator();
   QString myTmpDir = QDir::tempPath() + QDir::separator() ;
   QString myFileName = myTmpDir +  "maprender_testdata.shp";
+  //copy over the default qml for our generated layer
+  QString myQmlFileName = myTestDataDir +  "maprender_testdata.qml";
+  QFile::copy(myQmlFileName, myTmpDir + "maprender_testdata.qml");
   qDebug ( "Checking test dataset exists...");
   qDebug ( myFileName );
   if (!QFile::exists(myFileName))
@@ -131,7 +140,7 @@ void TestQgsMapRender::initTestCase()
         QgsFeature myFeature;
         myFeature.setTypeName("WKBPolygon");
         myFeature.setGeometry(mypPolygonGeometry);
-        myFeature.addAttribute(0,"HelloWorld");
+        myFeature.addAttribute(0,i);
         //
         // Write the feature to the filewriter
         // and check for errors
@@ -167,32 +176,37 @@ void TestQgsMapRender::initTestCase()
   QStringList myLayers;
   myLayers << mpPolysLayer->getLayerID();
   mpMapRenderer->setLayerSet(myLayers);
+  mReport += "<h1>Map Render Tests</h1>\n";
 }
+
+
+void TestQgsMapRender::cleanupTestCase()
+{
+  QString myReportFile = QDir::tempPath() + QDir::separator() + "maprendertest.html";
+  QFile myFile ( myReportFile);
+  if ( myFile.open ( QIODevice::WriteOnly ) )
+  {
+    QTextStream myQTextStream ( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+    QDesktopServices::openUrl("file://"+myReportFile);
+  }
+  
+}
+
+
 
 void TestQgsMapRender::performanceTest()
 {
-
-  //
-  // Now render our layers onto a pixmap 
-  //
-  QPixmap myPixmap( 1800,900 );
-  myPixmap.fill ( QColor ( "#98dbf9" ) );
-  QPainter myPainter( &myPixmap );
-  mpMapRenderer->setOutputSize( QSize ( 1800,900 ),72 ); 
   mpMapRenderer->setExtent(mpPolysLayer->extent());
-  qDebug ("Extents set to:");
-  qDebug (mpPolysLayer->extent().stringRep());
-  QTime myTime;
-  myTime.start();
-  mpMapRenderer->render( &myPainter );
-  qDebug ("Elapsed time in ms for render job: " + 
-      QString::number ( myTime.elapsed() ).toLocal8Bit()); 
-  myPainter.end();
-  //
-  // Save the pixmap to disk so the user can make a 
-  // visual assessment if needed
-  //
-  myPixmap.save (QDir::tempPath() + QDir::separator() + "maprender_result.png");
+  QString myDataDir (TEST_DATA_DIR); //defined in CmakeLists.txt
+  QString myTestDataDir = myDataDir + QDir::separator();
+  QgsRenderChecker myChecker;
+  myChecker.setExpectedImage ( myTestDataDir + "expected_maprender.png" );
+  myChecker.setMapRenderer ( mpMapRenderer );
+  bool myResultFlag = myChecker.runTest("maprender");
+  mReport += myChecker.report();
+  QVERIFY(myResultFlag);
 }
 
 
