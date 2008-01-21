@@ -18,10 +18,6 @@
       <translation>QGIS Plugin Installierer</translation>
     </message>
     <message>
-      <source>Retrieve the list of available plugins, select one and install it</source>
-      <translation>Durchsuche die Liste vorhandener Plugins, selektiere eines und installiere es</translation>
-    </message>
-    <message>
       <source>Name of plugin to install</source>
       <translation>Name des zu installierenden Plugins</translation>
     </message>
@@ -56,6 +52,30 @@
     <message>
       <source>Author</source>
       <translation>Autor</translation>
+    </message>
+    <message>
+      <source>Select repository, retrieve the list of available plugins, select one and install it</source>
+      <translation>Wähle ein Repository, empfange die Liste mit vorhandenen Plugins und installiere eines davon.</translation>
+    </message>
+    <message>
+      <source>Repository</source>
+      <translation>Repository</translation>
+    </message>
+    <message>
+      <source>Active repository:</source>
+      <translation>Aktives Repository:</translation>
+    </message>
+    <message>
+      <source>Add</source>
+      <translation type="unfinished" >Hinzufügen</translation>
+    </message>
+    <message>
+      <source>Edit</source>
+      <translation type="unfinished" >Bearbeiten</translation>
+    </message>
+    <message>
+      <source>Delete</source>
+      <translation type="unfinished" >Löschen</translation>
     </message>
   </context>
   <context>
@@ -174,6 +194,14 @@
       <source>Save experiment report to portable document format (.pdf)</source>
       <translation>Speichere den vorläufigen Bericht im 'Portable Document Format' (.pdf)</translation>
     </message>
+    <message>
+      <source>Load layer properties from style file (.qml)</source>
+      <translation>Lade Layereigenschaften von der Style-Datei (.qml)</translation>
+    </message>
+    <message>
+      <source>Save layer properties as style file (.qml)</source>
+      <translation>Speicher Layereigenschaften als Style-Datei (.qml)</translation>
+    </message>
   </context>
   <context>
     <name>QObject</name>
@@ -228,7 +256,7 @@
     </message>
     <message>
       <source>Band</source>
-      <translation>Band</translation>
+      <translation>Kanal</translation>
     </message>
     <message>
       <source>action</source>
@@ -994,6 +1022,26 @@ Die Python-Unterstützung wird abgeschaltet.</translation>
     <message>
       <source>Quick Print is a plugin to quickly print a map with minimal effort.</source>
       <translation>Quick Print ist ein Plugin, um mal eben schnell und ohne großen Aufwandt eine Karte zu drucken.</translation>
+    </message>
+    <message>
+      <source>Currently only filebased datasets are supported</source>
+      <translation>Aktuell werden nur filebasierte Daten unterstützt</translation>
+    </message>
+    <message>
+      <source>Loaded default style file from </source>
+      <translation>Standard Style geladen von </translation>
+    </message>
+    <message>
+      <source>The directory containing your dataset needs to be writeable!</source>
+      <translation>Der Ordner mit den Daten muss beschreibbar sein!</translation>
+    </message>
+    <message>
+      <source>Created default style file as </source>
+      <translation>Standard Style-Datei erstellt als </translation>
+    </message>
+    <message>
+      <source>ERROR: Failed to created default style file as </source>
+      <translation>FEHLER: Konnte standard Style-Datei nicht erstellen als </translation>
     </message>
   </context>
   <context>
@@ -1808,15 +1856,15 @@ Die Python-Unterstützung wird abgeschaltet.</translation>
     </message>
     <message>
       <source>Add Vertex</source>
-      <translation>Knickpunkt hinzufügen</translation>
+      <translation>Stützpunkt hinzufügen</translation>
     </message>
     <message>
       <source>Delete Vertex</source>
-      <translation>Knickpunkt löschen</translation>
+      <translation>Stützpunkt löschen</translation>
     </message>
     <message>
       <source>Move Vertex</source>
-      <translation>Knickpunkt verschieben</translation>
+      <translation>Stützpunkt verschieben</translation>
     </message>
     <message>
       <source>&amp;File</source>
@@ -2118,18 +2166,6 @@ Kompiliert gegen QT Version </translation>
       <translation type="unfinished" >Zeigt die Kartenkoordinate der aktuellen Cursorposition. Die Anzeige wird laufend aktualisiert, während die Maus bewegt wird.</translation>
     </message>
     <message>
-      <source>T</source>
-      <comment>
-Show most toolbars</comment>
-      <translation type="unfinished" >Die meisten Werkzeugleisten anzeigen</translation>
-    </message>
-    <message>
-      <source>Ctrl+T</source>
-      <comment>
-Hide most toolbars</comment>
-      <translation type="unfinished" >Ctrl+T</translation>
-    </message>
-    <message>
       <source>Added locale options to options dialog.</source>
       <translation>Sprachoptionen wurden dem Optionen Dialog hinzugefügt.</translation>
     </message>
@@ -2144,6 +2180,73 @@ Hide most toolbars</comment>
     <message>
       <source></source>
       <translation type="unfinished" />
+    </message>
+    <message>
+      <source>T</source>
+      <comment>
+
+Show most toolbars</comment>
+      <translation type="unfinished" >Die meisten Werkzeugleisten anzeigen</translation>
+    </message>
+    <message>
+      <source>Ctrl+T</source>
+      <comment>
+
+Hide most toolbars</comment>
+      <translation type="unfinished" >Ctrl+T</translation>
+    </message>
+    <message>
+      <source>Map Tips</source>
+      <translation>Kartenhinweise</translation>
+    </message>
+    <message>
+      <source>Show information about a feature when the mouse is hovered over it</source>
+      <translation>Zeige Informationen zu einem Objekt, wenn die Maus darüber fährt</translation>
+    </message>
+    <message>
+      <source>Current map scale</source>
+      <translation>Aktueller Kartenmaßstab</translation>
+    </message>
+    <message>
+      <source>Project file is older</source>
+      <translation>Projektdatei ist älter</translation>
+    </message>
+    <message>
+      <source>&lt;p>This project file was saved by an older version of QGIS.</source>
+      <translation>&lt;p>Diese Projektdatei wurde von einer älteren QGIS Version abgespeichert.</translation>
+    </message>
+    <message>
+      <source> When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.</source>
+      <translation> Wenn Sie diese Projektdatei speichern, wird QGIS es auf die neueste Version updaten und dadurch möglicherweise  nutzlos für ältere Versionen machen.</translation>
+    </message>
+    <message>
+      <source>&lt;p>Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost.</source>
+      <translation>&lt;p>Obwohl QGIS-Entwickler versuchen, Rückwärtskompatibilität zu gewährleisten, können einige Informationen der Projektdatei verloren gehen.</translation>
+    </message>
+    <message>
+      <source> To improve the quality of QGIS, we appreciate if you file a bug report at %3.</source>
+      <translation> Um die Qualität von QGIS zu verbessern, möchten wir Sie bitten, einen Fehlerreport zu erstellen unter %3.</translation>
+    </message>
+    <message>
+      <source> Be sure to include the old project file, and state the version of QGIS you used to discover the error.</source>
+      <translation> Stellen Sie sicher, dass die alte Projektdatei und die QGIS Version, bei der der Fehler auftritt angegeben sind, um den Fehler zu finden.</translation>
+    </message>
+    <message>
+      <source>&lt;p>To remove this warning when opening an older project file, uncheck the box '%5' in the %4 menu.</source>
+      <translation>&lt;p>Um diese Warnung beim Öffnen einer alten Projektdatei abzustellen, deaktivieren Sie die Box '%5' im Menü %4.</translation>
+    </message>
+    <message>
+      <source>&lt;p>Version of the project file: %1&lt;br>Current version of QGIS: %2</source>
+      <translation>&lt;p>Version der Projektdatei: %1&lt;br>Aktueller QGIS Version: %2</translation>
+    </message>
+    <message>
+      <source>&lt;tt>Settings:Options:General&lt;/tt></source>
+      <comment>Menu path to setting options</comment>
+      <translation>&lt;tt>Einstellungen:Optionen:Allgemein&lt;/tt></translation>
+    </message>
+    <message>
+      <source>Warn me when opening a project file saved with an older version of QGIS</source>
+      <translation>Warne mich beim Öffnen einer Projektdatei, die mit einer älteren QGIS Version erstellt wurde</translation>
     </message>
   </context>
   <context>
@@ -2208,14 +2311,6 @@ Hide most toolbars</comment>
       <translation>&lt;h2>QGIS-Entwickler&lt;/h2></translation>
     </message>
     <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Arial'; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
-&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;&quot;>Quantum GIS is licensed under the GNU General Public License&lt;/p>
-&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;&quot;>http://www.gnu.org/licenses&lt;/p>&lt;/body>&lt;/html></source>
-      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Arial'; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;&quot;>Quantum GIS ist lizensiert unter der GNU General Public License&lt;/p>&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;&quot;>http://www.gnu.org/licenses&lt;/p>&lt;/body>&lt;/html></translation>
-    </message>
-    <message>
       <source>Sponsors</source>
       <translation>Sponsoren</translation>
     </message>
@@ -2260,6 +2355,7 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>Select an action</source>
       <comment>
+
 File dialog window title</comment>
       <translation type="unfinished" >Eine Aktion wählen</translation>
     </message>
@@ -3444,10 +3540,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-style:italic;&quot;>&lt;span style=&quot; font-style:normal;&quot;>(Bemerkung: &amp;amp;copy; stellt ein Copyright Symbol dar)&lt;/span>&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
     <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:14pt;&quot;>© QGIS 2008&lt;/span>&lt;/p>&lt;/body>&lt;/html></source>
+      <source>© QGIS 2008</source>
       <translation type="unfinished" />
     </message>
   </context>
@@ -3573,10 +3666,6 @@ p, li { white-space: pre-wrap; }
       <translation>Berechnen</translation>
     </message>
     <message>
-      <source>Projected Corrdinate System</source>
-      <translation>Projeziertes Koordinatensystem</translation>
-    </message>
-    <message>
       <source>Geographic / WGS84</source>
       <translation>Geographisch/ WGS84</translation>
     </message>
@@ -3589,24 +3678,16 @@ p, li { white-space: pre-wrap; }
       <translation>Ost:</translation>
     </message>
     <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;&quot;>You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" >&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;&quot;>Sie können hier eigene Benutzerprojektionen definieren. Die Definition muß dem Proj4-Format für räumliche Bezugssysteme genügen.&lt;/p>&lt;/body>&lt;/html></translation>
+      <source>You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.</source>
+      <translation>Sie können hier Ihre eigene Projektion erstellen. Die Definition muss proj4 Format zur Angabe eines Koordinatensystems entsprechen.</translation>
     </message>
     <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;&quot;>Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" >&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;&quot;>Benutzen Sie die Textfelder unten, um die Projektionsdefinition zu testen, die Sie gerade anlegen. Geben Sie eine Koordinate ein zu der Sie sowohl die geographische als auch das projizierte Ergebnis kennen (z.B. indem Sie sie von einer Karte ablesen). Drücken Sie dann dann auf 'Berechnen', um zu überprüfen, ob die Projektionsdefinition korrekt ist.&lt;/p>&lt;/body>&lt;/html></translation>
+      <source>Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.</source>
+      <translation>Nutzen Sie die Textfelder unten, um die Projektion zu testen. Geben Sie Koordinaten an, die in lat/long und Ihrer Projektion bekannt sind (z.B. aus einer Karte). Dann klicken Sie auf Berechnen, um zu sehen, ob die von Ihnen angegebenen Projektionsparameter korrekt sind.</translation>
+    </message>
+    <message>
+      <source>Projected Coordinate System</source>
+      <translation>Projiziertes Koordinatensystem</translation>
     </message>
   </context>
   <context>
@@ -3648,60 +3729,36 @@ p, li { white-space: pre-wrap; }
       <translation>Typ</translation>
     </message>
     <message>
-      <source>Name</source>
-      <translation>Name</translation>
-    </message>
-    <message>
       <source>Sql</source>
       <translation>Sql</translation>
-    </message>
-    <message>
-      <source>Point layer</source>
-      <translation>Punktlayer</translation>
-    </message>
-    <message>
-      <source>Multi-point layer</source>
-      <translation>Multi-Punkt-Layer</translation>
-    </message>
-    <message>
-      <source>Linestring layer</source>
-      <translation>Linienlayer</translation>
-    </message>
-    <message>
-      <source>Multi-linestring layer</source>
-      <translation>Multi-Linienlayer</translation>
-    </message>
-    <message>
-      <source>Polygon layer</source>
-      <translation>Polygonlayer</translation>
-    </message>
-    <message>
-      <source>Multi-polygon layer</source>
-      <translation>Multi-Polygonlayer</translation>
-    </message>
-    <message>
-      <source>Mixed geometry layer</source>
-      <translation>Gemischter Geometrielayer</translation>
-    </message>
-    <message>
-      <source>Geometry collection layer</source>
-      <translation>Geometriekollektionslayer</translation>
-    </message>
-    <message>
-      <source>Waiting for layer type</source>
-      <translation>Warte auf den Layertyp</translation>
-    </message>
-    <message>
-      <source>Unknown layer type</source>
-      <translation>Unbekannter Layertyp</translation>
     </message>
     <message>
       <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4The database said:%5%6</source>
       <translation>Verbindung zu %1 auf %2 ist fehlgeschlagen. Entweder ist die Datenbank abgeschaltet oder Ihre Einstellungen sind falsch. %3 Bitte überprüfen Sie den Benutzernamen und das Passwort und probieren Sie es noch einmal. %4 Die Datenbank meldete folgendes:%5%6.</translation>
     </message>
     <message>
-      <source>double click to open PostgreSQL query builder</source>
-      <translation>Doppelklick, um den PostgreSQL Query Builder zu öffnen</translation>
+      <source>Wildcard</source>
+      <translation>Platzhalter</translation>
+    </message>
+    <message>
+      <source>RegExp</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>All</source>
+      <translation type="unfinished" >Alle</translation>
+    </message>
+    <message>
+      <source>Schema</source>
+      <translation type="unfinished" >Schema</translation>
+    </message>
+    <message>
+      <source>Table</source>
+      <translation type="unfinished" >Tabelle</translation>
+    </message>
+    <message>
+      <source>Geometry column</source>
+      <translation>Geometriespalte</translation>
     </message>
   </context>
   <context>
@@ -3747,24 +3804,67 @@ p, li { white-space: pre-wrap; }
       <translation>PostgreSQL-Verbindungen</translation>
     </message>
     <message>
-      <source>Tables:</source>
-      <translation>Tabellen:</translation>
+      <source>Search:</source>
+      <translation>Suchen:</translation>
+    </message>
+    <message>
+      <source>Search mode:</source>
+      <translation>Suchmodus:</translation>
+    </message>
+    <message>
+      <source>Search in columns:</source>
+      <translation>Suche in Spalten:</translation>
+    </message>
+    <message>
+      <source>Search options...</source>
+      <translation>Suchoptionen...</translation>
+    </message>
+  </context>
+  <context>
+    <name>QgsDbTableModel</name>
+    <message>
+      <source>Schema</source>
+      <translation type="unfinished" >Schema</translation>
+    </message>
+    <message>
+      <source>Table</source>
+      <translation type="unfinished" >Tabelle</translation>
     </message>
     <message>
       <source>Type</source>
-      <translation>Typ</translation>
+      <translation type="unfinished" >Typ</translation>
     </message>
     <message>
-      <source>Name</source>
-      <translation>Name</translation>
+      <source>Geometry column</source>
+      <translation>Geometriespalte</translation>
     </message>
     <message>
       <source>Sql</source>
-      <translation>Sql</translation>
+      <translation type="unfinished" >Sql</translation>
     </message>
     <message>
-      <source>Encoding:</source>
-      <translation>Kodierung:</translation>
+      <source>Point</source>
+      <translation type="unfinished" >Punkt</translation>
+    </message>
+    <message>
+      <source>Multipoint</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Line</source>
+      <translation type="unfinished" >Linie</translation>
+    </message>
+    <message>
+      <source>Multiline</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Polygon</source>
+      <translation type="unfinished" >Polygon</translation>
+    </message>
+    <message>
+      <source>Multipolygon</source>
+      <translation type="unfinished" />
     </message>
   </context>
   <context>
@@ -3786,7 +3886,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsDelimitedTextPlugin</name>
     <message>
       <source>&amp;Add Delimited Text Layer</source>
-      <translation>Getrennten Textdatei hinzufügen</translation>
+      <translation>Getrennte Textdatei hinzufügen</translation>
     </message>
     <message>
       <source>Add a delimited text file as a map layer. </source>
@@ -3836,8 +3936,16 @@ p, li { white-space: pre-wrap; }
       <translation>Analysieren</translation>
     </message>
     <message>
-      <source>&lt;h2>Description&lt;/h2>&lt;p>Select a delimited text file containing a header row and one or more rows of x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!&lt;/p>&lt;p>Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma, tab or a regular expression in Perl style). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.&lt;/p></source>
-      <translation>&lt;h2>Beschreibung&lt;/h2>&lt;p>Wählen Sie eine durch Trennzeichen begrenzte Textdatei, die eine Kopfzeile sowie eine oder mehrere Zeilen mit X- und Y-Koordinaten enthält, die Sie als Punktlayer anzeigen lassen möchten.&lt;/p>&lt;p>Benutzen Sie das Layername-Feld um den Legendennamen des neuen Layers zu definieren. Benutzen Sie das Trennzeichen-Feld, um einzugeben, welches Trennzeichen in Ihrer Textdatei verwendet wird  (z.B. Leerzeichen, Komma, TAB oder ein anderer regulärer Ausdruck im Perl-Stil). Nachdem Sie das Trennzeichen eingetragen haben, drücken Sie auf den Knopf Analysieren, und wählen dann die Spalten mit mit X- und Y-Koordinaten für den Layer aus.&lt;/p></translation>
+      <source>Description</source>
+      <translation>Beschreibung</translation>
+    </message>
+    <message>
+      <source>Select a delimited text file containing a header row and one or more rows of x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!</source>
+      <translation>Wähle eine Textdatei mit Trennzeichen, das eine Kopfzeile, und Spalten mit X- und Y-Koordinaten enthält, die Sie gerne als Punktlayer darstellen möchten und QGIS erledigt das für Sie!</translation>
+    </message>
+    <message>
+      <source>Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma, tab or a regular expression in Perl style). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.</source>
+      <translation>Benutzen Sie die Layername Box, um den Legendennamen des zu erstellenden Layers anzugeben. Benutzen Sie die Trennzeichen Box, um das in der Textdatei verwendete Trennzeichen anzugeben (z.B.: Leerzeichen, Kommar, Tabulator oder ein anderer regulärer Ausdruck im Perl-Stil), Nun drücken Sie den Knopf Analysieren und wählen die Spalten mit den X- und Y-Koordinaten aus.</translation>
     </message>
   </context>
   <context>
@@ -3925,13 +4033,6 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>Browse...</source>
       <translation>Suchen...</translation>
-    </message>
-    <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" />
     </message>
     <message>
       <source>The delimiter is taken as is</source>
@@ -4358,14 +4459,6 @@ p, li { white-space: pre-wrap; }
       <translation type="unfinished" >Spuren</translation>
     </message>
     <message>
-      <source>Route -> Waypoint</source>
-      <translation>Route -> Wegpunkt</translation>
-    </message>
-    <message>
-      <source>Waypoint -> Route</source>
-      <translation>Wegpunkt -> Route</translation>
-    </message>
-    <message>
       <source>QGIS can perform conversions of GPX files, by using GPSBabel (%1) to perform the conversions.</source>
       <translation>QGIS kann GPX-Dateien mit Hilfe von GPSBabel (%1) konvertieren.</translation>
     </message>
@@ -4376,6 +4469,54 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>Select a GPX input file name, the type of conversion you want to perform, a GPX filename that you want to save the converted file as, and a name for the new layer created from the result.</source>
       <translation>Wählen Sie eine GPX-Eingabedatei, die Konvertierung, die Sie durchführen möchten, einen Namen für die Ausgabedatei und einen Namen für den Layer, der aus den Ergebnissen erstellt werden soll.</translation>
+    </message>
+    <message>
+      <source>GPX is the %1, which is used to store information about waypoints, routes, and tracks.</source>
+      <translation>GPX ist das %1, das benutzt wird, um Informationen zu Wegpunkten, Routen und Spuren zu speichern.</translation>
+    </message>
+    <message>
+      <source>GPS eXchange file format</source>
+      <translation>GPS eXchange Dateiformat</translation>
+    </message>
+    <message>
+      <source>Select a GPX file and then select the feature types that you want to load.</source>
+      <translation>Wählen Sie eine GPX Datei und dann die Objekttypen, die Sie laden möchten.</translation>
+    </message>
+    <message>
+      <source>This tool will help you download data from a GPS device.</source>
+      <translation>Dieses Werkzeug hilft Ihnen dabei, Daten von Ihrem GPS-Gerät herunterzuladen.</translation>
+    </message>
+    <message>
+      <source>Choose your GPS device, the port it is connected to, the feature type you want to download, a name for your new layer, and the GPX file where you want to store the data.</source>
+      <translation>Wählen Sie Ihr GPS-Gerät, den Port, an den es angeschlossen ist, den Objekttyp, den Sie herunterladen möchten, einen Namen für den neuen Layer und die GPX-Datei, als die Sie die Daten speichern möchten.</translation>
+    </message>
+    <message>
+      <source>If your device isn't listed, or if you want to change some settings, you can also edit the devices.</source>
+      <translation>Wenn Ihr Gerät nicht aufgelistet ist, oder Sie Einstellungen ändern möchten, können Sie die Geräteeinstellungen editieren.</translation>
+    </message>
+    <message>
+      <source>This tool uses the program GPSBabel (%1) to transfer the data.</source>
+      <translation>Dieses Werkzeug benutzt GPSBabel (%1), um die Daten zu transferieren.</translation>
+    </message>
+    <message>
+      <source>This tool will help you upload data from a GPX layer to a GPS device.</source>
+      <translation>Dieses Werkzeug hilft Ihnen, Daten aus einem GPX-Layer auf ein GPS-Gerät zu spielen.</translation>
+    </message>
+    <message>
+      <source>Choose the layer you want to upload, the device you want to upload it to, and the port your device is connected to.</source>
+      <translation>Wählen Sie einen Layer, den sie hochladen möchten, das GPS-Gerät und den Port, über den das Gerät verbunden ist.</translation>
+    </message>
+    <message>
+      <source>QGIS can only load GPX files by itself, but many other formats can be converted to GPX using GPSBabel (%1).</source>
+      <translation>QGIS selbst kann nur GPX-Dateien laden, aber viele andere Formate können nach GPX konvertiert werden mit  (%1).</translation>
+    </message>
+    <message>
+      <source>Select a GPS file format and the file that you want to import, the feature type that you want to use, a GPX filename that you want to save the converted file as, and a name for the new layer.</source>
+      <translation>Wählen SIe ein GPS-Dateiformat, die Datei, die Sie importieren möchten, den Objekttyp, den Sie benutzen möchten, einen GPX-Dateinamen, unter dem Sie die konvertierten Daten speichern möchten und einen Namen für den neuen Layer.</translation>
+    </message>
+    <message>
+      <source>All file formats can not store waypoints, routes, and tracks, so some feature types may be disabled for some file formats.</source>
+      <translation>Nicht alle Dateiformate können Wegpunkte, Routen und Spuren speichern, daher können einige Objekttypen für verschiedene Formate deaktiviert sein.</translation>
     </message>
   </context>
   <context>
@@ -4450,67 +4591,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>Upload to GPS</source>
-      <translation>In GPS hochladen</translation>
+      <translation>nach GPS hochladen</translation>
     </message>
     <message>
       <source>Data layer:</source>
       <translation>Datenlayer:</translation>
     </message>
     <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:12pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>GPX is the &lt;/span>&lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;>&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;>GPS eXchange file format&lt;/span>&lt;/a>&lt;span style=&quot; font-size:10pt;&quot;>, which is used to store information about waypoints, routes, and tracks.&lt;/span>&lt;/p>
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;&quot;>Select a GPX file and then select the feature types that you want to load.&lt;/p>&lt;/body>&lt;/html></source>
-      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:12pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>GPX is the &lt;/span>&lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;>&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;>GPS eXchange Dateiformat&lt;/span>&lt;/a>&lt;span style=&quot; font-size:10pt;&quot;>, das benutzt wird um Waypoints, Routen und Wege zu speichern.&lt;/span>&lt;/p>
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;&quot;>Wählen Sie eine GPX-Datei und selektieren Sie den Objekttyp, den Sie laden möchten.&lt;/p>&lt;/body>&lt;/html></translation>
-    </message>
-    <message>
       <source>Browse...</source>
       <translation>Suchen...</translation>
     </message>
     <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:12pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>QGIS can only load GPX files by itself, but many other formats can be converted to GPX using GPSBabel (&lt;/span>&lt;a href=&quot;http://gpsbabel.sf.net&quot;>&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;>http://gpsbabel.sf.net&lt;/span>&lt;/a>&lt;span style=&quot; font-size:10pt;&quot;>). This requires that you have GPSBabel installed where QGIS can find it.&lt;/span>&lt;/p>
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;&quot;>Select a GPS file format and the file that you want to import, the feature type that you want to use, a GPX filename that you want to save the converted file as, and a name for the new layer. All file formats can not store waypoints, routes, and tracks, so some feature types may be disabled for some file formats.&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" >&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:12pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>QGIS kann nur GPX-Dateien selbstständig laden, viele andere Formate können mit GPSBabel nach GPX konvertiert werden (&lt;/span>&lt;a href=&quot;http://gpsbabel.sf.net&quot;>&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;>http://gpsbabel.sf.net&lt;/span>&lt;/a>&lt;span style=&quot; font-size:10pt;&quot;>). Hierzu muß GPSBabel allerdings installiert sein, dass QGIS es finden kann.&lt;/span>&lt;/p>
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;&quot;>Wählen Sie ein GPS-Dateiformat und eine Datei, die Sie importieren möchten, einen Featuretyp, den Sie nutzen möchen und einen GPX-Dateinamen für die konvertierte Datei und eine Namen für den neuen Layer. Es können nicht alle Dateiformate Waypoints, Routen und Wege speichern, einige Featuretyp sind also bei einigen Dateiformaten nicht verfügbar.&lt;/p>&lt;/body>&lt;/html></translation>
-    </message>
-    <message>
       <source>Save As...</source>
       <translation type="unfinished" >Speichern unter...</translation>
-    </message>
-    <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:12pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>This tool will help you download data from a GPS device. Choose your GPS device, the port it is connected to, the feature type you want to download, a name for your new layer, and the GPX file where you want to store the data. If your device isn't listed, or if you want to change some settings, you can also edit the devices.&lt;/span>&lt;/p>
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;&quot;>This tool uses the program GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;>&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;>http://gpsbabel.sf.net&lt;/span>&lt;/a>) to transfer the data. If you don't have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p>&lt;/body>&lt;/html></source>
-      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:12pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>Diese Werkzeug hilft Ihnen beim Herunterladen von Daten aus Ihrem GPS-Gerät. Wählen Sie Ihr GPS-Gerät, die Schnittstelle mit der es verbunden ist, den Featuretyp, den Sie herunterladen möchten, den Namen Ihres neuen Layers und die GPX-Datei in der die Daten gespeichert werden soll. Wenn Ihr Gerät nicht aufgeführt ist oder Sie Einstellungen ändern möchten, können Sie die Geräte auch bearbeiten.&lt;/span>&lt;/p>
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;&quot;>Diese Werkzeug nutzt das Programm GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;>&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;>http://gpsbabel.sf.net&lt;/span>&lt;/a>) um die Daten zu übertragen. Wenn Sie GPSBabel nicht so installiert haben, dass QGIS es finden kann, funktioniert dieses Werkzeug nicht.&lt;/p>&lt;/body>&lt;/html></translation>
-    </message>
-    <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:12pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>This tool will help you upload data from a GPX layer to a GPS device. Choose the layer you want to upload, the device you want to upload it to, and the port your device is connected to. If your device isn't listed, or if you want to change some settings, you can also edit the devices.&lt;/span>&lt;/p>
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;&quot;>This tool uses the program GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;>&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;>http://gpsbabel.sf.net&lt;/span>&lt;/a>) to transfer the data. If you don't have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" >&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:12pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>Diese Werkzeug unterstützt Sie beim Hochladen eines GPX-Layers auf Ihr GPS-Gerät. Wählen Sie den Layer, den Sie hochladen möchten, das Gerät auf das Sie Hochladen möchten und die Schnittstelle an die es angeschlossen ist. Wenn Ihr Gerät nicht aufgeführt ist oder Sie Einstellungen ändern wollen, können Sie die Geräte auch bearbeiten.&lt;/span>&lt;/p>
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;&quot;>Diese Werkzeug benutzt das Programm GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;>&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;>http://gpsbabel.sf.net&lt;/span>&lt;/a>) um Daten zu transferieren. Wenn GPSBabel nicht so installiert ist, dass QGIS es finden kann, funktioniert dieses Werkzeug nicht.&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
     <message>
       <source>(Note: Selecting correct file type in browser dialog important!)</source>
@@ -5084,24 +5177,28 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>Disp</source>
       <comment>
+
 Column title</comment>
       <translation type="unfinished" >Anz.</translation>
     </message>
     <message>
       <source>Color</source>
       <comment>
+
 Column title</comment>
       <translation type="unfinished" >Farbe</translation>
     </message>
     <message>
       <source>Type</source>
       <comment>
+
 Column title</comment>
       <translation type="unfinished" >Typ</translation>
     </message>
     <message>
       <source>Index</source>
       <comment>
+
 Column title</comment>
       <translation type="unfinished" >Index</translation>
     </message>
@@ -6538,7 +6635,7 @@ bei Zeile </translation>
     <name>QgsGridMakerPluginGui</name>
     <message>
       <source>QGIS - Grid Maker</source>
-      <translation type="unfinished" />
+      <translation>QGIS - Gitternetzbuilder</translation>
     </message>
     <message>
       <source>Please enter the file name before pressing OK!</source>
@@ -7006,6 +7103,21 @@ bei Zeile </translation>
     </message>
   </context>
   <context>
+    <name>QgsLayerProjectionSelector</name>
+    <message>
+      <source>Define this layer's projection:</source>
+      <translation>Definiere die Projektion des Layers:</translation>
+    </message>
+    <message>
+      <source>This layer appears to have no projection specification.</source>
+      <translation>Dieser Layer scheint keine Projektionsangaben zu besitzen.</translation>
+    </message>
+    <message>
+      <source>By default, this layer will now have its projection set to that of the project, but you may override this by selecting a different projection below.</source>
+      <translation>Als standard wird die Projektion dieses Layers auf die des Projektes gesetzt, aber Sie können es durch auswählen einer anderen Projektion unten überschreiben.</translation>
+    </message>
+  </context>
+  <context>
     <name>QgsLayerProjectionSelectorBase</name>
     <message>
       <source>Layer Projection Selector</source>
@@ -7014,10 +7126,6 @@ bei Zeile </translation>
     <message>
       <source>OK</source>
       <translation>OK</translation>
-    </message>
-    <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;>Define this layer's projection:&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>This layer appears to have no projection specification. By default, this layer will now have its projection set to that of the project, but you may override this by selecting a different projection below.&lt;/p>&lt;/body>&lt;/html></source>
-      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;>Geben Sie die Projektion dieses Layers an:&lt;/span>&lt;/p>&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Dieser Layer scheint keine Projektionsinformationen zu haben. Standardmäßig wird die Projektion des Projekts diesem Layer zugewiesen. Sie können aber auch eine andere Projektion unten auswählen.&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
   </context>
   <context>
@@ -7279,6 +7387,13 @@ bei Zeile </translation>
     </message>
   </context>
   <context>
+    <name>QgsMapLayer</name>
+    <message>
+      <source> Check file permissions and retry.</source>
+      <translation> Prüfe Dateirechte und versuche erneut.</translation>
+    </message>
+  </context>
+  <context>
     <name>QgsMapToolIdentify</name>
     <message>
       <source>No features found</source>
@@ -7302,16 +7417,12 @@ bei Zeile </translation>
   <context>
     <name>QgsMapToolSplitFeatures</name>
     <message>
-      <source>Intersection problem</source>
-      <translation>Verschneidungsproblem</translation>
+      <source>Split error</source>
+      <translation>Trennfehler</translation>
     </message>
     <message>
-      <source>One or more geometries are intersected several times by the split lines. Those geometries are only split once.</source>
-      <translation>Eine oder mehrere Geometrien überschneiden sich mehrfach. Diese Geometrien wurden nur einmal getrennt.</translation>
-    </message>
-    <message>
-      <source>One or more geometries cannot be split because the intersection is too complex. Note that polygon splits can only be done if the split line intersects the polygon once. Also inner polygon rings cannot be split</source>
-      <translation>Eine oder mehrere Geometrien können nicht getrennt werden, da die Überschneidungen zu komplex sind. Beachten Sie, dass Polygone nur getrennt werden können, wenn sie sich einmal überschneiden. Ausserdem können Innere Polygonringe nicht getrennt werden</translation>
+      <source>An error occured during feature splitting</source>
+      <translation>Ein Fehler ist beim Objekttrennen aufgetreten</translation>
     </message>
   </context>
   <context>
@@ -7361,6 +7472,7 @@ Wollen Sie sie überschreiben?</translation>
     <message>
       <source>QGIS Project Files (*.qgs);;All files (*.*)</source>
       <comment>
+
 Filter list for selecting files from a dialog box</comment>
       <translation type="unfinished" >QGIS-Projektdatei (*.qgs);;Alle Dateien (*.*)</translation>
     </message>
@@ -7368,6 +7480,7 @@ Filter list for selecting files from a dialog box</comment>
       <source> exists. 
 Do you want to overwrite it?</source>
       <comment>
+
 a filename is prepended to this text, and appears in a dialog box</comment>
       <translation type="unfinished" > vorhanden.
 Wollen Sie sie überschreiben?</translation>
@@ -7787,28 +7900,28 @@ Ausführliche Fehlerinformation:</translation>
       <translation>5432</translation>
     </message>
     <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;>Restrict the displayed tables to those that are in the geometry_columns table&lt;/p>&lt;/body>&lt;/html></source>
-      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;>Beschränkt die Darstellung der Tabellen auf die in geometry_tables.&lt;/p>&lt;/body>&lt;/html></translation>
-    </message>
-    <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;>Restricts the displayed tables to those that are in the geometry_columns table. This can speed up the initial display of spatial tables.&lt;/p>&lt;/body>&lt;/html></source>
-      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;>Beschränkt die dargestellten Tabellen auf die, die in geometry_tables eingetragen sind. Das kann das erste Anzeigen der Tabellen enorm beschleunigen.&lt;/p>&lt;/body>&lt;/html></translation>
-    </message>
-    <message>
       <source>Only look in the geometry_columns table</source>
       <translation>Nur in geometry_columns nachschauen.</translation>
     </message>
     <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Restrict the search to the public schema for spatial tables not in the geometry_columns table&lt;/p>&lt;/body>&lt;/html></source>
-      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Beschränkt die Suchefür Tabellen, die nicht in der geometry_column stehen, auf das Public Schema.&lt;/p>&lt;/body>&lt;/html></translation>
-    </message>
-    <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>When searching for spatial tables that are not in the geometry_columns tables, restrict the search to tables that are in the public schema (for some databases this can save lots of time)&lt;/p>&lt;/body>&lt;/html></source>
-      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Wenn nach Tabellen mit räumlichen Informationen gesucht werden soll, die nicht in der Tabelle geometry_columns stehen, beschränke die Suche auf die tabelle des public Schemas (Bei einigen Datenbanken kann dies eine Menge Zeit sparen.)&lt;/p>&lt;/body>&lt;/html></translation>
-    </message>
-    <message>
       <source>Only look in the 'public' schema</source>
       <translation>Nur im 'public' Schema nachschauen.</translation>
+    </message>
+    <message>
+      <source>Restrict the search to the public schema for spatial tables not in the geometry_columns table</source>
+      <translation>Beschränke die Suche auf das public Schema für räumliche Tabellen nicht in der geometry_columns Tabelle</translation>
+    </message>
+    <message>
+      <source>When searching for spatial tables that are not in the geometry_columns tables, restrict the search to tables that are in the public schema (for some databases this can save lots of time)</source>
+      <translation>Bei der Suche nach räumlichen Tabellen, die nicht in der Tabelle geometry_columns sind, beschränke die Suche auf Tabellen, die in dem public Schema sind (bei einigen Datenbanken kann es eine Menge Zeit sparen)</translation>
+    </message>
+    <message>
+      <source>Restrict the displayed tables to those that are in the geometry_columns table</source>
+      <translation>Beschränke angezeigte Tabellen auf jene aus der Tabelle geometry_columns</translation>
+    </message>
+    <message>
+      <source>Restricts the displayed tables to those that are in the geometry_columns table. This can speed up the initial display of spatial tables.</source>
+      <translation>Beschränke dargestellte Tabellen auf jene aus der Tabelle geometry_columns. Dies kann die Anzeige räumlicher Tabellen beschleunigen.</translation>
     </message>
   </context>
   <context>
@@ -8036,10 +8149,6 @@ Ausführliche Fehlerinformation:</translation>
       <translation>opera</translation>
     </message>
     <message>
-      <source>Search Radius for Identifying Features</source>
-      <translation>Suchradius für die Objektidentifizierung</translation>
-    </message>
-    <message>
       <source>Hide splash screen at startup</source>
       <translation>Splashscreen beim Start nicht anzeigen</translation>
     </message>
@@ -8184,24 +8293,8 @@ Ausführliche Fehlerinformation:</translation>
       <translation>Zeichne</translation>
     </message>
     <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Selecting this will unselect the 'make lines less' jagged toggle&lt;/p>&lt;/body>&lt;/html></source>
-      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Wenn Sie diese Option auswählen, wird der Knopf 'Linien weniger gezackt zeichnen' deselektiert.&lt;/p>&lt;/body>&lt;/html></translation>
-    </message>
-    <message>
       <source>Fix problems with incorrectly filled polygons</source>
       <translation>Problem mit falsch gefüllten Polygonen beheben.</translation>
-    </message>
-    <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600;&quot;>Note:&lt;/span> Specify the search radius as a percentage of the map width.&lt;/p>
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;/body>&lt;/html></source>
-      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600;&quot;>Beachte:&lt;/span> Den Suchradius als Prozentangabe der Kartebreite angeben.&lt;/p>
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
     <message>
       <source>%</source>
@@ -8310,6 +8403,22 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>Search radius for vertex edits (in layer units):</source>
       <translation>Suchradius für Stützpunkt-Editierung (in Karteneinheiten):</translation>
+    </message>
+    <message>
+      <source>Warn me when opening a project file saved with an older version of QGIS</source>
+      <translation>Warne mich beim Öffnen einer Projektdatei, die mit einer älteren QGIS Version erstellt wurde</translation>
+    </message>
+    <message>
+      <source>Selecting this will unselect the 'make lines less' jagged toggle</source>
+      <translation>Das Auswählen deaktiviert die Option Linien weniger gezackt zeichnen</translation>
+    </message>
+    <message>
+      <source>(Specify the search radius as a percentage of the map width)</source>
+      <translation>(Gebe den Suchradius als Prozentanteil der Kartenbreite an)</translation>
+    </message>
+    <message>
+      <source>Search Radius for Identifying Features and displaying Map Tips</source>
+      <translation>Suchradius zum Abfragen von Objekten und Kartenhinweisen</translation>
     </message>
   </context>
   <context>
@@ -8795,6 +8904,7 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>-modified</source>
       <comment>
+
 Georeferencer:QgsPointDialog.cpp - used to modify a user given filename</comment>
       <translation type="unfinished" >-modifiziert</translation>
     </message>
@@ -9224,27 +9334,63 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
       <translation type="unfinished" >Python-Konsole</translation>
     </message>
     <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'DejaVu Sans Condensed'; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>To access Quantum GIS environment from this python console use object &lt;span style=&quot; font-weight:600;&quot;>iface&lt;/span> from global scope which is an instance of QgisInterface class.&lt;/p>
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Usage e.g.: iface.zoomFull()&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" >&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'DejaVu Sans Condensed'; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Um aus dieser Python-Konsole auf die Quantum GIS-Umgebung zuzugreifen, benutzen Sie das globale Objekt &lt;span style=&quot; font-weight:600;&quot;>iface&lt;/span>, welches eine Instanz der Klasse QgisInterface ist.&lt;/p>
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Beispiel: iface.zoomFull()&lt;/p>&lt;/body>&lt;/html></translation>
-    </message>
-    <message>
       <source>>>></source>
       <translation>>>></translation>
     </message>
     <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'DejaVu Sans Condensed'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;>&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" />
+      <source>To access Quantum GIS environment from this python console use object from global scope which is an instance of QgisInterface class.&lt;br>Usage e.g.: iface.zoomFull()</source>
+      <translation>Um die Quantum GIS Umgebung von dieser Python Konsole aus zu erreichen, benutzen Sie Objekte des global scope, die eine Instanz der QgisInterface Klasse sind.&lt;br>Benutzung z.B.: iface.zoomFull()</translation>
+    </message>
+  </context>
+  <context>
+    <name>QgsQuickPrint</name>
+    <message>
+      <source> km</source>
+      <translation type="unfinished" > km</translation>
+    </message>
+    <message>
+      <source> mm</source>
+      <translation type="unfinished" > mm</translation>
+    </message>
+    <message>
+      <source> cm</source>
+      <translation type="unfinished" > cm</translation>
+    </message>
+    <message>
+      <source> m</source>
+      <translation type="unfinished" > m</translation>
+    </message>
+    <message>
+      <source> miles</source>
+      <translation type="unfinished" > Meilen</translation>
+    </message>
+    <message>
+      <source> mile</source>
+      <translation type="unfinished" > Meile</translation>
+    </message>
+    <message>
+      <source> inches</source>
+      <translation type="unfinished" > Inches</translation>
+    </message>
+    <message>
+      <source> foot</source>
+      <translation type="unfinished" >Fuss</translation>
+    </message>
+    <message>
+      <source> feet</source>
+      <translation type="unfinished" >Fuß</translation>
+    </message>
+    <message>
+      <source> degree</source>
+      <translation type="unfinished" >Grad</translation>
+    </message>
+    <message>
+      <source> degrees</source>
+      <translation type="unfinished" >Grad</translation>
+    </message>
+    <message>
+      <source> unknown</source>
+      <translation type="unfinished" >unbekannt</translation>
     </message>
   </context>
   <context>
@@ -9271,7 +9417,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source> Bands: </source>
-      <translation>Bänder:</translation>
+      <translation>Kanäle: </translation>
     </message>
     <message>
       <source>Origin:</source>
@@ -9303,11 +9449,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>Band</source>
-      <translation>Band</translation>
+      <translation>Kanal</translation>
     </message>
     <message>
       <source>Band No</source>
-      <translation>Band Nr</translation>
+      <translation>Kanal Nr</translation>
     </message>
     <message>
       <source>No Stats</source>
@@ -9433,21 +9579,13 @@ p, li { white-space: pre-wrap; }
       <source>and all other files</source>
       <translation>und alle anderen Dateien</translation>
     </message>
+    <message>
+      <source>NoDataValue not set</source>
+      <translation>NoDataValue nicht gesetzt</translation>
+    </message>
   </context>
   <context>
     <name>QgsRasterLayerProperties</name>
-    <message>
-      <source>&lt;h3>Multiband Image Notes&lt;/h3>&lt;p>This is a multiband image. You can choose to render it as grayscale or color (RGB). For color images, you can associate bands to colors arbitarily. For example, if you have a seven band landsat image, you may choose to render it as:&lt;/p>&lt;ul>&lt;li>Visible Blue (0.45 to 0.52 microns) - not mapped&lt;/li>&lt;li>Visible Green (0.52 to 0.60 microns) - not mapped&lt;/li>&lt;/li>Visible Red (0.63 to 0.69 microns) - mapped to red in image&lt;/li>&lt;li>Near Infrared (0.76 to 0.90 microns) - mapped to green in image&lt;/li>&lt;li>Mid Infrared (1.55 to 1.75 microns) - not mapped&lt;/li>&lt;li>Thermal Infrared (10.4 to 12.5 microns) - not mapped&lt;/li>&lt;li>Mid Infrared (2.08 to 2.35 microns) - mapped to blue in image&lt;/li>&lt;/ul></source>
-      <translation>&lt;h3>Bemerkung zu Multiband-Bild&lt;/h3>&lt;p>Dies ist ein Multibandbild. Man kann wählen, es als Grayscale oder Farbe(RGB) anzuzeigen. Für Farbbilder kann man Farben willkürlich zu den Bändern wählen. Zum Beispiel, wenn man ein Siebenband-Landsat-Bild hat, kann man es folgendermassen anzeigen:&lt;/p>&lt;ul>&lt;li>Sichtbares Blau (0.45 bis 0.52 Microns) - nicht abgebildet&lt;/li>&lt;li>Sichtbares Grün (0.52 bis 0.60 Microns) - nicht abgebildet&lt;/li>&lt;/li>Sichtbares Rot (0.63 bis 0.69 Microns) - im Bild auf Rot abgebildet&lt;/li>&lt;li>Nahes Infrarot (0.76 bis 0.90 Microns) - im Bild auf Grün abgebildet&lt;/li>&lt;li>Mittleres Infrarot (1.55 bis 1.75 Microns) - nicht abgebildet&lt;/li>&lt;li>Thermales Infrarot (10.4 bis 12.5 Microns) - nicht abgebildet&lt;/li>&lt;li>Mittleres Infrarot (2.08 bis 2.35 Microns) - im Bild auf blau abgebildet&lt;/li>&lt;/ul></translation>
-    </message>
-    <message>
-      <source>&lt;h3>Paletted Image Notes&lt;/h3> &lt;p>This image uses a fixed color palette. You can remap these colors in different combinations e.g.&lt;/p>&lt;ul>&lt;li>Red - blue in image&lt;/li>&lt;li>Green - blue in image&lt;/li>&lt;li>Blue - green in image&lt;/li>&lt;/ul></source>
-      <translation>&lt;h3>Bemerkung zu Palettenbild&lt;/h3> &lt;p>Dieses Bild verwendet eine feste Farbpalette. Man kann diese in verschiedenen Kombinationen umabbilden z.B.&lt;/p>&lt;ul>&lt;li>Rot - blau im Bild&lt;/li>&lt;li>Grün - blau im Bild&lt;/li>&lt;li>Blau - grün im Bild&lt;/li>&lt;/ul></translation>
-    </message>
-    <message>
-      <source>&lt;h3>Grayscale Image Notes&lt;/h3> &lt;p>You can remap these grayscale colors to a pseudocolor image using an automatically generated color ramp.&lt;/p></source>
-      <translation>&lt;h3>Bemerkung zu Graustufenbild&lt;/h3> &lt;p>Man kann diese Graustufen umabbilden auf Pseudofarben durch Verwendung einer automatisch erzeugten Farbabstufung.&lt;/p></translation>
-    </message>
     <message>
       <source>Grayscale</source>
       <translation>Graustufen</translation>
@@ -9463,10 +9601,6 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>Palette</source>
       <translation>Palette</translation>
-    </message>
-    <message>
-      <source>Not Set</source>
-      <translation>Nicht gesetzt</translation>
     </message>
     <message>
       <source>Columns: </source>
@@ -9507,6 +9641,142 @@ p, li { white-space: pre-wrap; }
       <source>Building pyramid overviews is not supported on this type of raster.</source>
       <translation type="unfinished" >Für diese Art von Raster können keine Pyramiden erstellt werden. </translation>
     </message>
+    <message>
+      <source>Custom Colormap</source>
+      <translation>Individuelle Farbkarte</translation>
+    </message>
+    <message>
+      <source>No Stretch</source>
+      <translation>Kein Strecken</translation>
+    </message>
+    <message>
+      <source>Stretch To MinMax</source>
+      <translation>Strecke auf MinMax</translation>
+    </message>
+    <message>
+      <source>Stretch And Clip To MinMax</source>
+      <translation>Strecken und Zuschneiden auf MinMax</translation>
+    </message>
+    <message>
+      <source>Clip To MinMax</source>
+      <translation>Zuschneiden auf MinMax</translation>
+    </message>
+    <message>
+      <source>Discrete</source>
+      <translation>Diskret</translation>
+    </message>
+    <message>
+      <source>Linearly</source>
+      <translation>Linear</translation>
+    </message>
+    <message>
+      <source>Equal interval</source>
+      <translation>Gleiches Interval</translation>
+    </message>
+    <message>
+      <source>Quantiles</source>
+      <translation type="unfinished" >Quantile</translation>
+    </message>
+    <message>
+      <source>Description</source>
+      <translation>Beschreibung</translation>
+    </message>
+    <message>
+      <source>Large resolution raster layers can slow navigation in QGIS.</source>
+      <translation>Hochaufgelöste Raster können das Navigieren in QGIS verlangsamen.</translation>
+    </message>
+    <message>
+      <source>By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom.</source>
+      <translation>Durch das Erstellen geringer aufgelöster Kopien der Daten (Pyramiden), kann die Darstellung beschleunigt werden, da QGIS die optimale Auflösung entsprechend der gewählten Zoomeinstellung aussucht</translation>
+    </message>
+    <message>
+      <source>You must have write access in the directory where the original data is stored to build pyramids.</source>
+      <translation>Sie brauchen Schreibrecht in dem Ordner mit den Originaldaten, um Pyramiden zu erstellen.</translation>
+    </message>
+    <message>
+      <source>Please note that building pyramids may alter the original data file and once created they cannot be removed!</source>
+      <translation>Beachten Sie bitte, das Erstellen von Pyramiden kann die Originaldaten unwiderrufich verändern!</translation>
+    </message>
+    <message>
+      <source>Please note that building pyramids could corrupt your image - always make a backup of your data first!</source>
+      <translation>Beachten Sie, das Erstellen von Pyramiden kann Ihre Daten unlesbar machen - erstellen Sie immer erst ein Backup!</translation>
+    </message>
+    <message>
+      <source>Red</source>
+      <translation>Rot</translation>
+    </message>
+    <message>
+      <source>Green</source>
+      <translation>Grün</translation>
+    </message>
+    <message>
+      <source>Blue</source>
+      <translation>Blau</translation>
+    </message>
+    <message>
+      <source>Percent Transparent</source>
+      <translation>Prozent Transparenz</translation>
+    </message>
+    <message>
+      <source>Gray</source>
+      <translation type="unfinished" >Grau</translation>
+    </message>
+    <message>
+      <source>Indexed Value</source>
+      <translation>Indizierter Wert</translation>
+    </message>
+    <message>
+      <source>User Defined</source>
+      <translation>Benutzerdefiniert</translation>
+    </message>
+    <message>
+      <source>No Scaling</source>
+      <translation>Keine Skalierung</translation>
+    </message>
+    <message>
+      <source>No-Data Value: Not Set</source>
+      <translation>No-Data Wert: Nicht gesetzt</translation>
+    </message>
+    <message>
+      <source>Save file</source>
+      <translation>Speichere Datei</translation>
+    </message>
+    <message>
+      <source>Textfile (*.txt)</source>
+      <translation>Textdatei (*.txt)</translation>
+    </message>
+    <message>
+      <source>QGIS Generated Transparent Pixel Value Export File</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Open file</source>
+      <translation>Öffne Datei</translation>
+    </message>
+    <message>
+      <source>Import Error</source>
+      <translation>Importfehler</translation>
+    </message>
+    <message>
+      <source>The following lines contained errors
+
+</source>
+      <translation>Die folgenden Zeilen enthalten Fehler</translation>
+    </message>
+    <message>
+      <source>Read access denied</source>
+      <translation>Lesezugriff verweigert</translation>
+    </message>
+    <message>
+      <source>Read access denied. Adjust the file permissions and try again.
+
+</source>
+      <translation>Lesezugriff verweigert. Passe Dateirechte an und versuche es erneut.</translation>
+    </message>
+    <message>
+      <source>Color Ramp</source>
+      <translation>Farbanstieg</translation>
+    </message>
   </context>
   <context>
     <name>QgsRasterLayerPropertiesBase</name>
@@ -9539,10 +9809,6 @@ p, li { white-space: pre-wrap; }
       <translation>Bezeichnungen</translation>
     </message>
     <message>
-      <source>Transparency:</source>
-      <translation>Transparenz:</translation>
-    </message>
-    <message>
       <source>&lt;p align=&quot;right&quot;>Full&lt;/p></source>
       <translation>&lt;p align=&quot;right&quot;>Voll&lt;/p></translation>
     </message>
@@ -9555,36 +9821,8 @@ p, li { white-space: pre-wrap; }
       <translation>Farben invertieren</translation>
     </message>
     <message>
-      <source>0%</source>
-      <translation>0%</translation>
-    </message>
-    <message>
-      <source>Band</source>
-      <translation>Band</translation>
-    </message>
-    <message>
-      <source>&lt;b>&lt;font color=&quot;#00ff00&quot;>Green&lt;/font>&lt;/b></source>
-      <translation>&lt;b>&lt;font color=&quot;#00ff00&quot;>Grün&lt;/font>&lt;/b></translation>
-    </message>
-    <message>
-      <source>&lt;b>&lt;font color=&quot;#ff0000&quot;>Red&lt;/font>&lt;/b></source>
-      <translation>&lt;b>&lt;font color=&quot;#ff0000&quot;>Rot&lt;/font>&lt;/b></translation>
-    </message>
-    <message>
-      <source>&lt;b>&lt;font color=&quot;#0000ff&quot;>Blue&lt;/font>&lt;/b></source>
-      <translation>&lt;b>&lt;font color=&quot;#0000ff&quot;>Blau&lt;/font>&lt;/b></translation>
-    </message>
-    <message>
-      <source>Color</source>
-      <translation>Farbe</translation>
-    </message>
-    <message>
       <source>Gray</source>
       <translation>Grau</translation>
-    </message>
-    <message>
-      <source>Std Deviations</source>
-      <translation>Standard Abweichung</translation>
     </message>
     <message>
       <source>Color Map</source>
@@ -9664,7 +9902,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>Allow Approximation</source>
-      <translation>Approximation erlauben</translation>
+      <translation>Annäherung erlauben</translation>
     </message>
     <message>
       <source>Chart Type</source>
@@ -9691,18 +9929,6 @@ p, li { white-space: pre-wrap; }
       <translation>Wechseln</translation>
     </message>
     <message>
-      <source>Display</source>
-      <translation>Darstellung</translation>
-    </message>
-    <message>
-      <source>Grayscale Image</source>
-      <translation>Graustufenbild</translation>
-    </message>
-    <message>
-      <source>Color Image</source>
-      <translation>Farbbild</translation>
-    </message>
-    <message>
       <source>DebugInfo</source>
       <translation>DebugInfo</translation>
     </message>
@@ -9715,34 +9941,188 @@ p, li { white-space: pre-wrap; }
       <translation>Spaltenanzahl:</translation>
     </message>
     <message>
-      <source>Transparent</source>
-      <translation>Transparenz</translation>
+      <source>Grayscale Band Scaling</source>
+      <translation>Graustufen Kanal Skalierung</translation>
     </message>
     <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot;font-size:10pt;font-family:Sans Serif&quot;>
-&lt;p style=&quot;margin-top:14px&quot; dir=&quot;ltr&quot;>&lt;span style=&quot;font-weight:600&quot;>Notes&lt;/span>&lt;/p>
-&lt;/body>&lt;/html>
-</source>
-      <translation type="unfinished" >&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot;font-size:10pt;font-family:Sans Serif&quot;>
-&lt;p style=&quot;margin-top:14px&quot; dir=&quot;ltr&quot;>&lt;span style=&quot;font-weight:600&quot;>Anmerkungen&lt;/span>&lt;/p>
-&lt;/body>&lt;/html>
-</translation>
+      <source>Max</source>
+      <translation type="unfinished" >Max</translation>
     </message>
     <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot;font-size:10pt;font-family:Sans Serif&quot;>
-&lt;p style=&quot;margin-top:18px&quot; dir=&quot;ltr&quot;>&lt;span style=&quot;font-size:15pt;font-weight:600&quot;>Description&lt;/span>&lt;/p>
-&lt;p dir=&quot;ltr&quot;>Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p>
-&lt;p dir=&quot;ltr&quot;>&lt;span style=&quot;color:#ff0000&quot;>Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span>&lt;/p>
-&lt;p dir=&quot;ltr&quot;>&lt;span style=&quot;color:#ff0000&quot;>Please note that building pyramids could corrupt your image - always make a backup of your data first!&lt;/span>&lt;/p>
-&lt;/body>&lt;/html>
-</source>
-      <translation type="unfinished" >&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot;font-size:10pt;font-family:Sans Serif&quot;>
-&lt;p style=&quot;margin-top:18px&quot; dir=&quot;ltr&quot;>&lt;span style=&quot;font-size:15pt;font-weight:600&quot;>Beschreibung&lt;/span>&lt;/p>
-&lt;p dir=&quot;ltr&quot;>Hoch aufgelöste Rasterbilder können die Navigation in QGIS verlangsamen. Um die Geschwindigkeit erheblich zu erhöhen, können niedriger aufgelöste Kopien der daten (Pyramiden) erstellt werden. QGIS wählt dann die am besten passende Auflösung für die aktuelle Darstellung aus. Es muss Schreibzugriff für die Daten vorhanden sein, denn die Originaldaten werden mit den Übersichten versehen und müssen neu geschrieben werden. &lt;/p>
-&lt;p dir=&quot;ltr&quot;>&lt;span style=&quot;color:#ff0000&quot;>Bitte beachten Sie, dass das Erstellen von Pyramiden die Originaldatei verändern wird. Sind die Pyramiden einmal erstellt, kann dies nicht rückgängig gemacht werden. &lt;/span>&lt;/p>
-&lt;p dir=&quot;ltr&quot;>&lt;span style=&quot;color:#ff0000&quot;>Bitte beachten Sie weiterhin, dass das Erstellen der Pyramiden Ihre Daten zerstören kann - bitte machen Sie immer vorher eine Sicherungskopie Ihrer Daten!&lt;/span>&lt;/p>
-&lt;/body>&lt;/html>
- {1&quot;?} {10p?} {18p?} {15p?} {600&quot;?} {0000&quot;?} {0000&quot;?}</translation>
+      <source>Std Deviation</source>
+      <translation>Standardabweichung</translation>
+    </message>
+    <message>
+      <source>Custom Min Max Values:</source>
+      <translation>Individuelle Min Max Werte:</translation>
+    </message>
+    <message>
+      <source>Min</source>
+      <translation type="unfinished" >Min</translation>
+    </message>
+    <message>
+      <source>Contrast Enhancement</source>
+      <translation>Kontrastverbesserung</translation>
+    </message>
+    <message>
+      <source>Load Min Max Values From Band(s)</source>
+      <translation>Lade Min Max Werte aus Kanälen</translation>
+    </message>
+    <message>
+      <source>RGB Scaling</source>
+      <translation>RGB Skalierung</translation>
+    </message>
+    <message>
+      <source>&lt;b>&lt;font color='blue'>Max&lt;/font>&lt;/b></source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Custom Min Max Values</source>
+      <translation>Individuelle Min Max Werte</translation>
+    </message>
+    <message>
+      <source>&lt;b>&lt;font color='green'>Min&lt;/font>&lt;/b></source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>&lt;b>&lt;font color='green'>Max&lt;/font>&lt;/b></source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>&lt;b>&lt;font color='red'>Min&lt;/font>&lt;/b></source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>&lt;b>&lt;font color='red'>Max&lt;/font>&lt;/b></source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>&lt;b>&lt;font color='blue'>Min&lt;/font>&lt;/b></source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Grayscale Band Selection</source>
+      <translation>Graustufen Kanal Selektion</translation>
+    </message>
+    <message>
+      <source>RGB Mode Band Selection</source>
+      <translation>RGB Modus Kanal Selektion</translation>
+    </message>
+    <message>
+      <source>&lt;b>&lt;font color='blue'>Blue&lt;/font>&lt;/b></source>
+      <translation>&lt;b>&lt;font color='blue'>Blau&lt;/font>&lt;/b></translation>
+    </message>
+    <message>
+      <source>&lt;b>&lt;font color='green'>Green&lt;/font>&lt;/b></source>
+      <translation>&lt;b>&lt;font color='green'>Grün&lt;/font>&lt;/b></translation>
+    </message>
+    <message>
+      <source>&lt;b>&lt;font color='red'>Red&lt;/font>&lt;/b></source>
+      <translation>&lt;b>&lt;font color='red'>Rot&lt;/font>&lt;/b></translation>
+    </message>
+    <message>
+      <source>Global Transparency</source>
+      <translation>Globale Transparenz</translation>
+    </message>
+    <message>
+      <source> 00%</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Render as</source>
+      <translation>Zeige als</translation>
+    </message>
+    <message>
+      <source>Single Band Gray</source>
+      <translation>Einkanal Grau</translation>
+    </message>
+    <message>
+      <source>Three Band Color</source>
+      <translation>Drei Kanal Farbe</translation>
+    </message>
+    <message>
+      <source>Transparent Pixels</source>
+      <translation>Transparente Pixel</translation>
+    </message>
+    <message>
+      <source>Transparent Band:</source>
+      <translation>Transparenter Kanal:</translation>
+    </message>
+    <message>
+      <source>Custom Transparency List</source>
+      <translation>Individuelle Transparenzliste</translation>
+    </message>
+    <message>
+      <source>Transparency Layer;</source>
+      <translation>Transparenz Layer:</translation>
+    </message>
+    <message>
+      <source>Add Values Manually</source>
+      <translation>Werte manuell hinzufügen</translation>
+    </message>
+    <message>
+      <source>...</source>
+      <translation type="unfinished" >...</translation>
+    </message>
+    <message>
+      <source>Add Values From Display</source>
+      <translation>Werte vom Display hinzufügen</translation>
+    </message>
+    <message>
+      <source>Remove Selected Row</source>
+      <translation>Lösche ausgewählte Zeile</translation>
+    </message>
+    <message>
+      <source>Default Values</source>
+      <translation>Standardwerte</translation>
+    </message>
+    <message>
+      <source>Import From File</source>
+      <translation>Importiere aus Datei</translation>
+    </message>
+    <message>
+      <source>Export To File</source>
+      <translation>Exportieren nach Datei</translation>
+    </message>
+    <message>
+      <source>No Data Value:</source>
+      <translation>No Data Wert:</translation>
+    </message>
+    <message>
+      <source>Reset No Data Value</source>
+      <translation>No Data Wert zurücksetzen</translation>
+    </message>
+    <message>
+      <source>Colormap</source>
+      <translation>Farbkarte</translation>
+    </message>
+    <message>
+      <source>Number of entries:</source>
+      <translation>Anzahl der Einträge:</translation>
+    </message>
+    <message>
+      <source>Delete entry</source>
+      <translation>Lösche Eintrag</translation>
+    </message>
+    <message>
+      <source>Classify</source>
+      <translation>Klassifiziere</translation>
+    </message>
+    <message>
+      <source>1</source>
+      <translation type="unfinished" >1</translation>
+    </message>
+    <message>
+      <source>2</source>
+      <translation type="unfinished" >2</translation>
+    </message>
+    <message>
+      <source>Color interpolation:</source>
+      <translation>Farbinterpolation:</translation>
+    </message>
+    <message>
+      <source>Classification mode:</source>
+      <translation>Klassifiziermodus:</translation>
     </message>
   </context>
   <context>
@@ -10128,8 +10508,100 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>... (rest of SQL trimmed)</source>
       <comment>
+
 is appended to a truncated SQL statement</comment>
       <translation type="unfinished" >... (Rest der Anweisung abgeschnitten)</translation>
+    </message>
+  </context>
+  <context>
+    <name>QgsSingleSymbolDialog</name>
+    <message>
+      <source>Solid Line</source>
+      <translation>durchgängige Linie</translation>
+    </message>
+    <message>
+      <source>Dash Line</source>
+      <translation>Gestrichelte Linie</translation>
+    </message>
+    <message>
+      <source>Dot Line</source>
+      <translation>Gepunktete Linie</translation>
+    </message>
+    <message>
+      <source>Dash Dot Line</source>
+      <translation>Gestrichelt-gepunktete Linie</translation>
+    </message>
+    <message>
+      <source>Dash Dot Dot Line</source>
+      <translation>Gestrichelt-2 x gepunktete Linie</translation>
+    </message>
+    <message>
+      <source>No Pen</source>
+      <translation>Kein Stift</translation>
+    </message>
+    <message>
+      <source>Solid Pattern</source>
+      <translation>durchgängiges Muster</translation>
+    </message>
+    <message>
+      <source>Hor Pattern</source>
+      <translation>Horiz Muster</translation>
+    </message>
+    <message>
+      <source>Ver Pattern</source>
+      <translation>Vertik Muster</translation>
+    </message>
+    <message>
+      <source>Cross Pattern</source>
+      <translation>Kreuzmuster</translation>
+    </message>
+    <message>
+      <source>BDiag Pattern</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>FDiag Pattern</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Diag Cross Pattern</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Dense1 Pattern</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Dense2 Pattern</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Dense3 Pattern</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Dense4 Pattern</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Dense5 Pattern</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Dense6 Pattern</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Dense7 Pattern</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>No Brush</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Texture Pattern</source>
+      <translation>Texturmuster</translation>
     </message>
   </context>
   <context>
@@ -10139,48 +10611,53 @@ is appended to a truncated SQL statement</comment>
       <translation>Einfaches Symbol</translation>
     </message>
     <message>
-      <source>Fill Patterns:</source>
-      <translation>Füllmuster:</translation>
-    </message>
-    <message>
-      <source>Point</source>
-      <translation>Punkt</translation>
-    </message>
-    <message>
       <source>Size</source>
       <translation>Grösse</translation>
     </message>
     <message>
-      <source>Symbol</source>
-      <translation>Symbol</translation>
+      <source>Point Symbol</source>
+      <translation>Punktsymbol </translation>
     </message>
     <message>
-      <source>Outline Width:</source>
-      <translation>Umrandungsbreite:</translation>
+      <source>Area scale field</source>
+      <translation>Flächenmaßstabs Feld</translation>
     </message>
     <message>
-      <source>Fill Color:</source>
-      <translation>Füllfarbe:</translation>
+      <source>Rotation field</source>
+      <translation>Rotationsfeld</translation>
     </message>
     <message>
-      <source>Outline color:</source>
-      <translation>Linienfarbe:</translation>
+      <source>Style Options</source>
+      <translation>Stiloption</translation>
     </message>
     <message>
-      <source>Outline Style:</source>
-      <translation>Linienstil:</translation>
+      <source>...</source>
+      <translation type="unfinished" >...</translation>
     </message>
     <message>
-      <source>Label:</source>
-      <translation>Beschriftung:</translation>
+      <source>Outline style</source>
+      <translation>Randstil</translation>
     </message>
     <message>
-      <source>No Fill</source>
-      <translation>Keine Füllung</translation>
+      <source>Outline color</source>
+      <translation>Randfarbe
+</translation>
     </message>
     <message>
-      <source>Browse:</source>
-      <translation>Andere:</translation>
+      <source>Outline width</source>
+      <translation>Randbreite</translation>
+    </message>
+    <message>
+      <source>Fill color</source>
+      <translation>Füllfarbe</translation>
+    </message>
+    <message>
+      <source>Fill style</source>
+      <translation>Füllstil</translation>
+    </message>
+    <message>
+      <source>Label</source>
+      <translation type="unfinished" >Beschriftung</translation>
     </message>
   </context>
   <context>
@@ -10745,6 +11222,22 @@ is appended to a truncated SQL statement</comment>
       <source>Comment</source>
       <translation type="unfinished" >Kommentar</translation>
     </message>
+    <message>
+      <source>Default Style</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>QGIS Layer Style File (*.qml)</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>QGIS</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Unknown style format: </source>
+      <translation type="unfinished" />
+    </message>
   </context>
   <context>
     <name>QgsVectorLayerPropertiesBase</name>
@@ -10851,6 +11344,22 @@ is appended to a truncated SQL statement</comment>
     <message>
       <source>Actions</source>
       <translation>Aktionen</translation>
+    </message>
+    <message>
+      <source>Restore Default Style</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Save As Default</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Load Style ...</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Save Style ...</source>
+      <translation type="unfinished" />
     </message>
   </context>
   <context>
@@ -11196,21 +11705,6 @@ is appended to a truncated SQL statement</comment>
     </message>
   </context>
   <context>
-    <name>QuickPrint</name>
-    <message>
-      <source>Quick Print</source>
-      <translation type="unfinished" />
-    </message>
-    <message>
-      <source>Replace this with a short description of the what the plugin does</source>
-      <translation type="unfinished" >Diese Notiz mit einer kurzen Beschreibung, was das Plugin macht, ersetzen</translation>
-    </message>
-    <message>
-      <source>&amp;Quick Print</source>
-      <translation type="unfinished" />
-    </message>
-  </context>
-  <context>
     <name>QuickPrintGui</name>
     <message>
       <source>Portable Document Format (*.pdf)</source>
@@ -11223,54 +11717,6 @@ is appended to a truncated SQL statement</comment>
     <message>
       <source>Unknown format: </source>
       <translation>Unbekanntes Format: </translation>
-    </message>
-    <message>
-      <source> km</source>
-      <translation type="unfinished" > km</translation>
-    </message>
-    <message>
-      <source> mm</source>
-      <translation type="unfinished" > mm</translation>
-    </message>
-    <message>
-      <source> cm</source>
-      <translation type="unfinished" > cm</translation>
-    </message>
-    <message>
-      <source> m</source>
-      <translation type="unfinished" > m</translation>
-    </message>
-    <message>
-      <source> miles</source>
-      <translation> Meilen</translation>
-    </message>
-    <message>
-      <source> mile</source>
-      <translation> Meile</translation>
-    </message>
-    <message>
-      <source> inches</source>
-      <translation> Inches</translation>
-    </message>
-    <message>
-      <source> foot</source>
-      <translation type="unfinished" >Fuss</translation>
-    </message>
-    <message>
-      <source> feet</source>
-      <translation type="unfinished" >Fuß</translation>
-    </message>
-    <message>
-      <source> degree</source>
-      <translation type="unfinished" >Grad</translation>
-    </message>
-    <message>
-      <source> degrees</source>
-      <translation type="unfinished" >Grad</translation>
-    </message>
-    <message>
-      <source> unknown</source>
-      <translation type="unfinished" >unbekannt</translation>
     </message>
   </context>
   <context>
@@ -11314,6 +11760,40 @@ is appended to a truncated SQL statement</comment>
     <message>
       <source>Note: If you want more control over the map layout please use the map composer function in QGIS.</source>
       <translation>Bemerkung: Wenn Sie mehr Kontrolle über das Layout haben wollen, benutzen Sie bitte den QGIS Map Composer.</translation>
+    </message>
+  </context>
+  <context>
+    <name>QuickPrintPlugin</name>
+    <message>
+      <source>Quick Print</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Replace this with a short description of the what the plugin does</source>
+      <translation type="unfinished" >Diese Notiz mit einer kurzen Beschreibung, was das Plugin macht, ersetzen</translation>
+    </message>
+    <message>
+      <source>&amp;Quick Print</source>
+      <translation type="unfinished" />
+    </message>
+  </context>
+  <context>
+    <name>RepositoryDetailsDialog</name>
+    <message>
+      <source>Repository details</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Name:</source>
+      <translation type="unfinished" >Name:</translation>
+    </message>
+    <message>
+      <source>URL:</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>http://</source>
+      <translation type="unfinished" />
     </message>
   </context>
   <context>
