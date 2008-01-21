@@ -95,7 +95,16 @@ void QgsQuickPrint::setOutputPdf(QString theFileName)
 }
 void QgsQuickPrint::setMapCanvas(QgsMapCanvas * thepMapCanvas)
 {
-  mpMapCanvas=thepMapCanvas;
+  mpMapRender=thepMapCanvas->mapRender();
+  mMapBackgroundColour = thepMapCanvas->canvasColor();
+}
+void QgsQuickPrint::setMapRender(QgsMapRender * thepMapRender)
+{
+  mpMapRender=thepMapRender;
+}
+void QgsQuickPrint::setMapBackgroundColor(QColor theColor)
+{
+  mMapBackgroundColour = theColor;
 }
 
 void QgsQuickPrint::printMap()
@@ -104,7 +113,7 @@ void QgsQuickPrint::printMap()
   {
     return;
   }
-  if ( mpMapCanvas == NULL )
+  if ( mpMapRender == NULL )
   {
     return;
   }
@@ -222,7 +231,6 @@ void QgsQuickPrint::printMap()
 
   // Background colour for pixmaps
   QColor myLegendBackgroundColour = Qt::white;
-  QColor myMapBackgroundColour = mpMapCanvas->canvasColor();
   //QColor myMapBackgroundColour = "#98dbf9"; // nice blue colour
 
 
@@ -314,20 +322,20 @@ void QgsQuickPrint::printMap()
   int myMapDimensionX = (myDrawableWidth / 100) * myMapHeightPercent;
   int myMapDimensionY = (myDrawableHeight / 100) * myMapWidthPercent;
   QPixmap myMapPixmap ( myMapDimensionX,myMapDimensionY );
-  myMapPixmap.fill ( myMapBackgroundColour );
+  myMapPixmap.fill ( mMapBackgroundColour );
   QPainter myMapPainter;
   myMapPainter.begin( &myMapPixmap );
-  mpMapCanvas->mapRender()->setOutputSize( 
+  mpMapRender->setOutputSize( 
       QSize ( myMapDimensionX, myMapDimensionY ), myPrinter.resolution() ); 
   scalePointSymbols(mySymbolScalingAmount, ScaleUp);
   scaleTextLabels(mySymbolScalingAmount, ScaleUp);
-  mpMapCanvas->mapRender()->render( &myMapPainter );
+  mpMapRender->render( &myMapPainter );
   //maprender has no accessor for output size so 
   //we couldnt store the size before starting the print render
   //so that it can be restored properly so what follows here is a
   //best guess approach
-  mpMapCanvas->mapRender()->setOutputSize( 
-      QSize ( mpMapCanvas->width(), mpMapCanvas->height() ), myScreenResolutionDpi ); 
+  mpMapRender->setOutputSize( 
+      QSize ( mpMapRender->width(), mpMapRender->height() ), myScreenResolutionDpi ); 
   myMapPainter.end();
   //draw the map pixmap onto our pdf print device
   myOriginX = myPrinter.pageRect().left() + myHorizontalSpacing; 
@@ -344,6 +352,8 @@ void QgsQuickPrint::printMap()
   //myPrintPainter.setFont(myLegendFont);
   int myLegendDimensionX = (myDrawableWidth / 100) * myLegendWidthPercent;
   int myLegendDimensionY = (myDrawableHeight / 100) * myLegendHeightPercent;
+  
+  
   // Create a viewport to make coordinate conversions easier
   // The viewport has the same dimensions as the page(otherwise items
   // drawn into it will appear squashed), but a different origin.
@@ -353,15 +363,22 @@ void QgsQuickPrint::printMap()
       myOriginY, 
       myOriginalViewport.width(),
       myOriginalViewport.height());
+  //draw a rectangale around the legend frame 
+  //@TODO make this user settable
+  if (0==1) //put some real logic here
+  {
+    myPrintPainter.drawRect( 0, 0, myLegendDimensionX, myLegendDimensionY );
+  }
+  //get font metric and other vars needed
   QFontMetrics myLegendFontMetrics( myLegendFont, &myPrinter );
   int myLegendFontHeight = myLegendFontMetrics.height();
   int myLegendXPos = 0;
   int myLegendYPos = 0;
-  int myLegendSpacer = myLegendFontHeight; //for vertical and horizontal spacing
+  int myLegendSpacer = myLegendFontHeight/2; //for vertical and horizontal spacing
   int myLegendVerticalSpacer = myLegendFontHeight/3; //for vertical between rows
   int myIconWidth = myLegendFontHeight;
   myPrintPainter.setFont( myLegendFont );
-  QStringList myLayerSet = mpMapCanvas->mapRender()->layerSet();
+  QStringList myLayerSet = mpMapRender->layerSet();
   QStringListIterator myLayerIterator ( myLayerSet );
   while ( myLayerIterator.hasNext() )
   {
@@ -389,7 +406,7 @@ void QgsQuickPrint::printMap()
           QgsSymbol * mypSymbol = mySymbolList.at(0); 
           myPrintPainter.setPen( mypSymbol->pen() );
           myPrintPainter.setBrush( mypSymbol->brush() );
-          myLegendXPos = myLegendSpacer;
+          myLegendXPos = 0 ;
           if ( mypSymbol->type() == QGis::Point )
           {
             QImage myImage;
@@ -410,46 +427,50 @@ void QgsQuickPrint::printMap()
           }
           myLegendXPos += myIconWidth + myLegendSpacer;
           myPrintPainter.setPen( Qt::black );
-          // check if the text will overflow the space we have
           int myMaximumLabelWidth = myLegendDimensionX - myLegendXPos;
-          if (myLayerNameWidth > myMaximumLabelWidth)
+          QStringList myWrappedLayerNameList = wordWrap(myLayerName, 
+              myLegendFontMetrics, 
+              myLegendDimensionX - myIconWidth);
+          //
+          // Loop through wrapped legend label lines
+          //
+          QStringListIterator myLineWrapIterator(myWrappedLayerNameList);
+          while (myLineWrapIterator.hasNext())
           {
-            int myRowCount = (myLayerNameWidth / myMaximumLabelWidth) + 1;
+            QString myLine = myLineWrapIterator.next();
             QRect myLegendItemRect (myLegendXPos,
                 myLegendYPos,
-                myLayerNameWidth, 
-                myLegendFontHeight * myRowCount);
-            QTextOption myTextOption( Qt::AlignCenter );
-            myTextOption.setWrapMode ( 
-                QTextOption::WrapAtWordBoundaryOrAnywhere );
-            myPrintPainter.drawText( 
-                myLegendItemRect, 
-                myLayerName,
-                myTextOption 
-                );
-            myLegendYPos += myLegendVerticalSpacer + (myLegendFontHeight * myRowCount);
-          }
-          else //fits ok on a single line
-          {
-            QRect myLegendItemRect (myLegendXPos,
-                myLegendYPos,
-                myLayerNameWidth, 
+                myLegendDimensionX - myIconWidth, 
                 myLegendFontHeight);
-            myPrintPainter.drawText( myLegendItemRect, Qt::AlignCenter, myLayerName );
+            myPrintPainter.drawText( myLegendItemRect, Qt::AlignLeft, myLine );
             myLegendYPos += myLegendVerticalSpacer + myLegendFontHeight;
           }
         }
         else  //class breaks
         {
           // draw in the layer name first, after we loop for the class breaks
-          myLegendXPos = myIconWidth + myLegendSpacer;
-          QRect myLegendItemRect (myLegendXPos,
-              myLegendYPos,
-              myLayerNameWidth, 
-              myLegendFontHeight);
-          myPrintPainter.setPen( Qt::black );
-          myPrintPainter.drawText( myLegendItemRect, Qt::AlignCenter, myLayerName );
-          myLegendYPos += myLegendVerticalSpacer + myLegendFontHeight;
+          QStringList myWrappedLayerNameList = wordWrap(myLayerName, 
+                                    myLegendFontMetrics, 
+                                    myLegendDimensionX - myIconWidth);
+          //
+          // Loop through wrapped legend label lines
+          //
+          QStringListIterator myLineWrapIterator(myWrappedLayerNameList);
+          while (myLineWrapIterator.hasNext())
+          {
+            QString myLine = myLineWrapIterator.next();
+            myLegendXPos = myIconWidth;
+            QRect myLegendItemRect (myLegendXPos,
+                myLegendYPos,
+                myLegendFontMetrics.width(myLine), 
+                myLegendFontHeight);
+            myPrintPainter.setPen( Qt::black );
+            myPrintPainter.drawText( myLegendItemRect, Qt::AlignLeft, myLine );
+            myLegendYPos += myLegendVerticalSpacer + myLegendFontHeight;
+          }
+          //
+          // Lop through the class breaks
+          //
           QListIterator<QgsSymbol *> myIterator ( mySymbolList );
           while ( myIterator.hasNext() )
           {
@@ -500,41 +521,26 @@ void QgsQuickPrint::printMap()
             myLegendXPos += myIconWidth + myLegendSpacer;
             int myLabelWidth = myLegendFontMetrics.width(myLabel);
             myPrintPainter.setPen( Qt::black );
-            // check if the text will overflow the space we have
-            int myMaximumLabelWidth = myLegendDimensionX - myLegendXPos;
-            if (myLabelWidth > myMaximumLabelWidth)
+            //
+
+            QStringList myWrappedLayerNameList = wordWrap(myLabel, 
+                myLegendFontMetrics, 
+                myLegendDimensionX - myIconWidth);
+            //
+            // Loop through wrapped legend label lines
+            //
+            QStringListIterator myLineWrapIterator(myWrappedLayerNameList);
+            while (myLineWrapIterator.hasNext())
             {
-              int myRowCount = (myLabelWidth / myMaximumLabelWidth) + 1;
+              QString myLine = myLineWrapIterator.next();
+              // check if the text will overflow the space we have
               QRect myLegendItemRect (myLegendXPos,
                   myLegendYPos,
-                  myLabelWidth, 
-                  myLegendFontHeight * myRowCount);
-              QTextOption myTextOption( Qt::AlignLeft );
-              myTextOption.setWrapMode ( 
-                  QTextOption::WordWrap);
-              //QTextOption::WrapAtWordBoundaryOrAnywhere );
-              myPrintPainter.drawText( 
-                  myLegendItemRect, 
-                  myLabel, 
-                  myTextOption
-                  );
-              /*
-                 myPrintPainter.drawText( myLegendItemRect, 
-                 Qt::AlignLeft | Qt::TextWordWrap, 
-                 myLabel );
-                 myPrintPainter.drawRect( myLegendItemRect ), 
-                 */
-              myLegendYPos += myLegendVerticalSpacer + (myLegendFontHeight * myRowCount);
-            }
-            else //fits ok on a single line
-            {
-              QRect myLegendItemRect (myLegendXPos,
-                  myLegendYPos,
-                  myLabelWidth, 
+                  myLegendDimensionX - myIconWidth, 
                   myLegendFontHeight);
-              myPrintPainter.drawText( myLegendItemRect, Qt::AlignCenter, myLabel );
+              myPrintPainter.drawText( myLegendItemRect, Qt::AlignLeft, myLine );
               myLegendYPos += myLegendVerticalSpacer + myLegendFontHeight;
-            }
+            } //wordwrap loop
           } //symbol loop
         } //class breaks
       } //if vectorlayer
@@ -615,7 +621,7 @@ void QgsQuickPrint::printMap()
   //
   // Draw the scale bar
   //
-  renderPrintScaleBar(&myPrintPainter, mpMapCanvas, myLogoXDim);
+  renderPrintScaleBar(&myPrintPainter, mpMapRender, myLogoXDim);
 
   //
   // Finish up
@@ -643,7 +649,7 @@ void QgsQuickPrint::scaleTextLabels( int theScaleFactor, SymbolScalingType theDi
     QgsDebugMsg ("QgsQuickPrintGui::scaleTextLabels invalid scale factor");
     return;
   }
-  QStringList myLayerSet = mpMapCanvas->mapRender()->layerSet();
+  QStringList myLayerSet = mpMapRender->layerSet();
   QStringListIterator myLayerIterator ( myLayerSet );
   while ( myLayerIterator.hasNext() )
   {
@@ -683,7 +689,7 @@ void QgsQuickPrint::scalePointSymbols( int theScaleFactor, SymbolScalingType the
     QgsDebugMsg ("QgsQuickPrintGui::scalePointSymbolsForPrint invalid scale factor");
     return;
   }
-  QStringList myLayerSet = mpMapCanvas->mapRender()->layerSet();
+  QStringList myLayerSet = mpMapRender->layerSet();
   QStringListIterator myLayerIterator ( myLayerSet );
   while ( myLayerIterator.hasNext() )
   {
@@ -744,7 +750,7 @@ void QgsQuickPrint::scalePointSymbols( int theScaleFactor, SymbolScalingType the
 
 
 void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter, 
-    QgsMapCanvas * thepMapCanvas,
+    QgsMapRender * thepMapRender,
     int theMaximumWidth)
 {
   //hard coding some options for now
@@ -758,7 +764,7 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
   int myTextOffsetY=30;
   int myXMargin=260;
   int myYMargin=180;
-  int myCanvasWidth = thepMapCanvas->width();
+  int myCanvasWidth = thepMapRender->width();
   int myPreferredSize = theMaximumWidth;
   double myActualSize=myPreferredSize;
   int myBufferSize=1; //softcode this later
@@ -771,10 +777,10 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
   //Get map units per pixel. This can be negative at times (to do with
   //projections) and that just confuses the rest of the code in this
   //function, so force to a positive number.
-  double myMuppDouble = std::abs(thepMapCanvas->mupp());
+  double myMuppDouble = std::abs(thepMapRender->mupp());
 
   // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
-  int myLayerCount=thepMapCanvas->layerCount();
+  int myLayerCount=thepMapRender->layerSet().count();
   if (!myLayerCount || !myMuppDouble) return;
 
 
@@ -803,7 +809,7 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
   }
 
   //Get type of map units and set scale bar unit label text
-  QGis::units myMapUnits=thepMapCanvas->mapUnits();
+  QGis::units myMapUnits=thepMapRender->mapUnits();
   QString myScaleBarUnitLabel;
   switch (myMapUnits)
   {
@@ -1104,3 +1110,46 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
       myScaleBarUnitLabel
       );
 }
+
+QStringList QgsQuickPrint::wordWrap(QString theString, 
+                                    QFontMetrics theMetrics, 
+                                    int theWidth)
+{
+  //iterate the string 
+  QStringList myList;
+  QString myCumulativeLine="";
+  QString myStringToPreviousSpace="";
+  int myPreviousSpacePos=0;
+  for (int i=0; i < theString.count(); ++i)
+  {
+    QChar myChar = theString.at(i);
+    if (myChar == QChar(' '))
+    {
+      myStringToPreviousSpace = myCumulativeLine;
+      myPreviousSpacePos=i;
+    }
+    myCumulativeLine += myChar;
+    if (theMetrics.width(myCumulativeLine) >= theWidth)
+    {
+      //time to wrap
+      //@todo deal with long strings that have no spaces
+      //forcing a break at current pos...
+      myList << myStringToPreviousSpace.trimmed();
+      i = myPreviousSpacePos;
+      myStringToPreviousSpace = "";
+      myCumulativeLine = "";
+    }
+  }//end of i loop
+  //add whatever is left in the string to the list
+  if (!myCumulativeLine.trimmed().isEmpty())
+  {
+      myList << myCumulativeLine.trimmed();
+  }
+
+  //qDebug("Wrapped legend entry:");
+  //qDebug(theString);
+  //qDebug(myList.join("\n").toLocal8Bit());
+  return myList;
+
+}
+

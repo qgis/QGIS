@@ -21,6 +21,7 @@
 
 //QT4 includes
 #include <QObject>
+#include <QColor>
 
 //QGIS includes
 #include <qgsmaprender.h>
@@ -51,11 +52,18 @@ public slots:
   void setLogo1(QString theFileName);
   void setLogo2(QString theFileName);
   void setOutputPdf(QString theFileName);
+  //! This is just a convenience function to get the
+  //map render from the mapcanvas
   void setMapCanvas(QgsMapCanvas * thepMapCanvas);
+  void setMapRender(QgsMapRender * thepMapRender);
+  void setMapBackgroundColor(QColor theColor);
 private:
   void renderPrintScaleBar(QPainter * thepPainter, 
-      QgsMapCanvas * thepMapCanvas, 
+      QgsMapRender * thepMapRender, 
       int theMaximumWidth);
+  QStringList wordWrap(QString theString, 
+                       QFontMetrics theMetrics, 
+                       int theWidth);
   /**
    * Scale symbols in all layers by the specified amount.
    * Typically used for printing. Each symbol in 
@@ -89,7 +97,7 @@ private:
    */
   void scaleTextLabels( int theScaleFactor, SymbolScalingType theDirection);
 
-  QgsMapCanvas * mpMapCanvas;
+  QgsMapRender * mpMapRender;
   QString mTitleText;
   QString mNameText;
   QString mCopyrightText;
@@ -97,6 +105,7 @@ private:
   QString mLogo1File;
   QString mLogo2File;
   QString mOutputFileName;
+  QColor mMapBackgroundColour;
 };
 
 #endif //QGSQUICKPRINT_H
