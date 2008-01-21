@@ -25,7 +25,7 @@
     <attributeactions/>
     <continuoussymbol>
       <classificationfield>0</classificationfield>
-      <polygonoutline>1</polygonoutline>
+      <polygonoutline>0</polygonoutline>
       <lowestsymbol>
         <symbol>
           <lowervalue>-180.000000</lowervalue>
