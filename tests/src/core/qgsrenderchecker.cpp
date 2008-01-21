@@ -94,11 +94,11 @@ bool QgsRenderChecker::runTest( QString theTestName )
   mReport += "Actual Duration :  " + QString::number(mElapsedTime) + "ms<br>";
   QString myImagesString= "</td></tr>"
     "<tr><td>Test Result:</td><td>Expected Result:</td><td>Difference (all blue is good, any red is bad)</td></tr>\n"
-    "<tr><td><img src=\"" +
+    "<tr><td><img src=\"file://" +
   myResultImage +
-    "\"></td>\n<td><img src=\"" +
+    "\"></td>\n<td><img src=\"file://" +
   mExpectedImageFile +
-    "\"></td><td><img src=\"" +
+    "\"></td><td><img src=\"file://" +
   myResultDiffImage  +
     "\"></td>\n</tr>\n</table>";
   //
