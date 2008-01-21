@@ -2912,7 +2912,6 @@ int QgsGeometry::splitGeometry(const QList<QgsPoint>& splitLine, QList<QgsGeomet
 	}
       else if(vectorType() == QGis::Polygon)
 	{
-	  QgsGeometry* newGeometry = 0;
 	  returnCode = splitPolygonGeometry(splitLineGeos, newGeometries);
 	  delete splitLineGeos;
 	}
@@ -4500,7 +4499,7 @@ int QgsGeometry::splitLinearGeometry(GEOS_GEOM::LineString* splitLine, QList<Qgs
   QList<GEOS_GEOM::Geometry*> testedGeometries;
   GEOS_GEOM::Geometry* intersectGeom = 0;
 
-  for(int i = 0; i < mergedLineStrings->size(); ++i)
+  for(unsigned int i = 0; i < mergedLineStrings->size(); ++i)
     {
       intersectGeom = mGeos->intersection((*mergedLineStrings)[i]);
       if(intersectGeom->getLength() > 0.00000001)
@@ -4584,7 +4583,7 @@ int QgsGeometry::splitPolygonGeometry(GEOS_GEOM::LineString* splitLine, QList<Qg
   //include in result if yes
   QList<GEOS_GEOM::Geometry*> testedGeometries;
   GEOS_GEOM::Geometry* intersectGeometry = 0;
-  for(int i = 0; i < polygons->size(); ++i)
+  for(unsigned int i = 0; i < polygons->size(); ++i)
     {
       intersectGeometry = mGeos->intersection((*polygons)[i]);
       if(intersectGeometry->getArea() > 0.00000000001)
