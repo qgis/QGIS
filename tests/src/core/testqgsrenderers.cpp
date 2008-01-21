@@ -1,9 +1,9 @@
 /***************************************************************************
-     testqgsvectorfilewriter.cpp
+     testqgsrenderers.cpp
      --------------------------------------
-    Date                 : Sun Sep 16 12:22:54 AKDT 2007
-    Copyright            : (C) 2007 by Gary E. Sherman
-    Email                : sherman at mrcc dot com
+    Date                 : 20 Jan 2008
+    Copyright            : (C) 2008 by Tim Sutton
+    Email                : tim @ linfiniti.com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,10 +15,6 @@
 #include <QtTest>
 #include <QObject>
 #include <QString>
-#include <QPainter>
-#include <QPixmap>
-#include <QByteArray>
-#include <QBuffer>
 #include <QStringList>
 #include <QObject>
 #include <QApplication>
@@ -34,6 +30,8 @@
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
+//qgis test includes
+#include "qgsrenderchecker.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the different renderers for vector layers.
@@ -134,6 +132,7 @@ void TestQgsRenderers::initTestCase()
   myLayers << mpPolysLayer->getLayerID();
   myLayers << mpLinesLayer->getLayerID();
   mpMapRenderer->setLayerSet(myLayers);
+  mReport+= "<h1>Vector Renderer Tests</h1>\n";
 }
 void TestQgsRenderers::cleanupTestCase()
 {
@@ -151,28 +150,28 @@ void TestQgsRenderers::cleanupTestCase()
 
 void TestQgsRenderers::singleSymbol()
 {
-  mReport+= "<h1>Single symbol renderer test</h1>\n";
+  mReport+= "<h2>Single symbol renderer test</h2>\n";
   QVERIFY ( setQml("single") );
   QVERIFY ( imageCheck("single"));
 }
 
 void TestQgsRenderers::uniqueValue()
 {
-  mReport+= "<h1>Unique value symbol renderer test</h1>\n";
+  mReport+= "<h2>Unique value symbol renderer test</h2>\n";
   QVERIFY ( setQml("uniquevalue") );
   QVERIFY ( imageCheck("uniquevalue"));
 }
 
 void TestQgsRenderers::graduatedSymbol()
 {
-  mReport+= "<h1>Graduated symbol renderer test</h1>\n";
+  mReport+= "<h2>Graduated symbol renderer test</h2>\n";
   QVERIFY ( setQml("graduated") );
   QVERIFY ( imageCheck("graduated"));
 }
 
 void TestQgsRenderers::continuousSymbol()
 {
-  mReport+= "<h1>Continuous symbol renderer test</h1>\n";
+  mReport+= "<h2>Continuous symbol renderer test</h2>\n";
   QVERIFY ( setQml("continuous") );
   QVERIFY ( imageCheck("continuous"));
 }
@@ -217,72 +216,16 @@ bool TestQgsRenderers::setQml (QString theType)
 
 bool TestQgsRenderers::imageCheck(QString theTestType)
 {
-  //
-  // Now render our layers onto a pixmap 
-  //
-  QPixmap myPixmap( 800,800 );
-  myPixmap.fill ( QColor ( "#98dbf9" ) );
-  QPainter myPainter( &myPixmap );
-  mpMapRenderer->setOutputSize( QSize ( 800,800 ),72 ); 
+  //use the QgsRenderChecker test utility class to 
+  //ensure the rendered output matches our control image
   mpMapRenderer->setExtent(mpPointsLayer->extent());
-  mpMapRenderer->render( &myPainter );
-  myPainter.end();
-  //
-  // Save the pixmap to disk so the user can make a 
-  // visual assessment if needed
-  //
-  myPixmap.save (QDir::tempPath() + QDir::separator() + theTestType + ".png");
-  //
-  // Load the expected result pixmap
-  //
-  QPixmap myExpectedPixmap (mTestDataDir + "expected_" + theTestType + ".png");
-  mReport+= "<table>"
-    "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
-    "<tr><td><img src=\"" +
-    QDir::tempPath() + QDir::separator() + theTestType + ".png" +
-    "\"></td>\n<td><img src=\"" +
-    mTestDataDir + "expected_" + theTestType + ".png" +
-    "\"></td></tr></table>\n";
-  //
-  // Now load the renderered image and the expected image
-  // each into a byte array, and then iterate through them
-  // counting how many dissimilar pixel values there are
-  //
-  QByteArray myResultBytes;
-  QBuffer myResultBuffer(&myResultBytes);
-  myResultBuffer.open(QIODevice::WriteOnly);
-  myPixmap.save(&myResultBuffer, "PNG"); // writes pixmap into bytes in PNG format 
-
-  QByteArray myExpectedBytes;
-  QBuffer myExpectedBuffer(&myExpectedBytes);
-  myExpectedBuffer.open(QIODevice::WriteOnly);
-  myExpectedPixmap.save(&myExpectedBuffer, "PNG"); // writes pixmap into bytes in PNG format 
-
-  if (myExpectedBytes.size() != myResultBytes.size())
-  {
-    qDebug ("Test image and result image for " + theTestType + " are different - FAILING!");
-    return false;
-  }
-  int myMismatchCount = 0;
-  for (int i = 0; i < myExpectedBytes.size(); ++i) 
-  {
-    if (myExpectedBytes.at(i) != myResultBytes.at(i))
-    {
-      ++myMismatchCount;
-    }
-  }
-  qDebug (QString::number(myMismatchCount).toLocal8Bit() + "/" +
-          QString::number(myExpectedBytes.size()).toLocal8Bit() + 
-    " bytes mismatched");; 
-
-  if ( myMismatchCount==0 )
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  QString myExpectedImage = mTestDataDir + "expected_" + theTestType + ".png";
+  QgsRenderChecker myChecker;
+  myChecker.setExpectedImage ( myExpectedImage );
+  myChecker.setMapRenderer ( mpMapRenderer );
+  bool myResultFlag = myChecker.runTest( theTestType );
+  mReport += myChecker.report();
+  return myResultFlag;
 }
 
 QTEST_MAIN(TestQgsRenderers)

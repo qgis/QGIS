@@ -24,6 +24,7 @@
 #include <QPainter>
 #include <QSettings>
 #include <QTime>
+#include <QDesktopServices>
 
 
 //qgis includes...
@@ -33,6 +34,10 @@
 #include <qgsapplication.h>
 #include <qgsmaprender.h> 
 
+//qgis unit test includes
+#include <qgsrenderchecker.h>
+
+
 /** \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
  */
@@ -41,7 +46,7 @@ class TestQgsRasterLayer: public QObject
   Q_OBJECT;
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase(){};// will be called after the last testfunction was executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
     void init(){};// will be called before each testfunction is executed.
     void cleanup(){};// will be called after every testfunction.
 
@@ -49,11 +54,13 @@ class TestQgsRasterLayer: public QObject
     void pseudoColor();
     void checkDimensions(); 
   private:
-    void render(QString theFileName);
+    bool render(QString theFileName);
     QgsRasterLayer * mpRasterLayer;
     QgsMapRender * mpMapRenderer;
+    QString mReport;
 };
 
+//runs before all tests
 void TestQgsRasterLayer::initTestCase()
 {
   // init QGIS's paths - true means that all path will be inited from prefix
@@ -82,12 +89,27 @@ void TestQgsRasterLayer::initTestCase()
   QStringList myLayers;
   myLayers << mpRasterLayer->getLayerID();
   mpMapRenderer->setLayerSet(myLayers);
+  mReport += "<h1>Raster Layer Tests</h1>\n";
+}
+//runs after all tests
+void TestQgsRasterLayer::cleanupTestCase()
+{
+  QString myReportFile = QDir::tempPath() + QDir::separator() + "rastertest.html";
+  QFile myFile ( myReportFile);
+  if ( myFile.open ( QIODevice::WriteOnly ) )
+  {
+    QTextStream myQTextStream ( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+    QDesktopServices::openUrl("file://"+myReportFile);
+  }
+  
 }
 
 void TestQgsRasterLayer::isValid()
 {
   QVERIFY ( mpRasterLayer->isValid() );
-  render("raster_test.png");
+  QVERIFY ( render("raster") );
 }
 
 void TestQgsRasterLayer::pseudoColor()
@@ -98,7 +120,7 @@ void TestQgsRasterLayer::pseudoColor()
           QgsContrastEnhancement::STRETCH_TO_MINMAX, false);
    mpRasterLayer->setMinimumValue(mpRasterLayer->getGrayBandName(),0.0, false);
    mpRasterLayer->setMaximumValue(mpRasterLayer->getGrayBandName(),0.0);
-   render("raster_pseudo_test.png");
+   QVERIFY(render("raster_pseudo"));
 }
 
 void TestQgsRasterLayer::checkDimensions()
@@ -110,30 +132,18 @@ void TestQgsRasterLayer::checkDimensions()
    QVERIFY ( mpRasterLayer->getRasterBandStats(1).elementCount == 100 );
 }
 
-void TestQgsRasterLayer::render(QString theFileName)
+bool TestQgsRasterLayer::render(QString theTestType)
 {
-
-  //
-  // Now render our layers onto a pixmap 
-  //
-  QPixmap myPixmap( 100,100 );
-  myPixmap.fill ( QColor ( "#98dbf9" ) );
-  QPainter myPainter( &myPixmap );
-  mpMapRenderer->setOutputSize( QSize ( 100,100 ),72 ); 
+  mReport += "<h2>" + theTestType + "</h2>\n";
   mpMapRenderer->setExtent(mpRasterLayer->extent());
-  qDebug ("Extents set to:");
-  qDebug (mpRasterLayer->extent().stringRep());
-  QTime myTime;
-  myTime.start();
-  mpMapRenderer->render( &myPainter );
-  qDebug ("Elapsed time in ms for render job: " + 
-      QString::number ( myTime.elapsed() ).toLocal8Bit()); 
-  myPainter.end();
-  //
-  // Save the pixmap to disk so the user can make a 
-  // visual assessment if needed
-  //
-  myPixmap.save (QDir::tempPath() + QDir::separator() + theFileName);
+  QString myDataDir (TEST_DATA_DIR); //defined in CmakeLists.txt
+  QString myTestDataDir = myDataDir + QDir::separator();
+  QgsRenderChecker myChecker;
+  myChecker.setExpectedImage ( myTestDataDir + "expected_" + theTestType + ".png" );
+  myChecker.setMapRenderer ( mpMapRenderer );
+  bool myResultFlag = myChecker.runTest(theTestType);
+  mReport += "\n\n\n" + myChecker.report();
+  return myResultFlag;
 }
 
 QTEST_MAIN(TestQgsRasterLayer)

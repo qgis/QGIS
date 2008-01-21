@@ -1,3 +1,7 @@
+# Standard includes and utils to compile into all tests.
+SET (util_SRCS qgsrenderchecker.cpp)
+
+
 #####################################################
 # Don't forget to include output directory, otherwise
 # the UI file won't be wrapped!
@@ -64,7 +68,7 @@ ENDIF (APPLE)
 #
 # QgsApplication test
 #
-SET(qgis_applicationtest_SRCS testqgsapplication.cpp)
+SET(qgis_applicationtest_SRCS testqgsapplication.cpp ${util_SRCS})
 SET(qgis_applicationtest_MOC_CPPS testqgsapplication.cpp)
 QT4_WRAP_CPP(qgis_applicationtest_MOC_SRCS ${qgis_applicationtest_MOC_CPPS})
 ADD_CUSTOM_TARGET(qgis_applicationtestmoc ALL DEPENDS ${qgis_applicationtest_MOC_SRCS})
@@ -85,7 +89,7 @@ ENDIF (APPLE)
 #
 # QgsFileWriter test
 #
-SET(qgis_filewritertest_SRCS testqgsvectorfilewriter.cpp)
+SET(qgis_filewritertest_SRCS testqgsvectorfilewriter.cpp ${util_SRCS})
 SET(qgis_filewritertest_MOC_CPPS testqgsvectorfilewriter.cpp)
 QT4_WRAP_CPP(qgis_filewritertest_MOC_SRCS ${qgis_filewritertest_MOC_CPPS})
 ADD_CUSTOM_TARGET(qgis_filewritertestmoc ALL DEPENDS ${qgis_filewritertest_MOC_SRCS})
@@ -106,7 +110,7 @@ ENDIF (APPLE)
 #
 # QgsRasterLayer test
 #
-SET(qgis_rasterlayertest_SRCS testqgsrasterlayer.cpp)
+SET(qgis_rasterlayertest_SRCS testqgsrasterlayer.cpp ${util_SRCS})
 SET(qgis_rasterlayertest_MOC_CPPS testqgsrasterlayer.cpp)
 QT4_WRAP_CPP(qgis_rasterlayertest_MOC_SRCS ${qgis_rasterlayertest_MOC_CPPS})
 ADD_CUSTOM_TARGET(qgis_rasterlayertestmoc ALL DEPENDS ${qgis_rasterlayertest_MOC_SRCS})
@@ -127,7 +131,7 @@ ENDIF (APPLE)
 #
 # QgsMapLayer test
 #
-SET(qgis_maplayertest_SRCS testqgsmaplayer.cpp)
+SET(qgis_maplayertest_SRCS testqgsmaplayer.cpp ${util_SRCS})
 SET(qgis_maplayertest_MOC_CPPS testqgsmaplayer.cpp)
 QT4_WRAP_CPP(qgis_maplayertest_MOC_SRCS ${qgis_maplayertest_MOC_CPPS})
 ADD_CUSTOM_TARGET(qgis_maplayertestmoc ALL DEPENDS ${qgis_maplayertest_MOC_SRCS})
@@ -148,7 +152,7 @@ ENDIF (APPLE)
 #
 # Qgs Renderers test (qsinglesymbol renderer etc)
 #
-SET(qgis_rendererstest_SRCS testqgsrenderers.cpp)
+SET(qgis_rendererstest_SRCS testqgsrenderers.cpp ${util_SRCS})
 SET(qgis_rendererstest_MOC_CPPS testqgsrenderers.cpp)
 QT4_WRAP_CPP(qgis_rendererstest_MOC_SRCS ${qgis_rendererstest_MOC_CPPS})
 ADD_CUSTOM_TARGET(qgis_rendererstestmoc ALL DEPENDS ${qgis_rendererstest_MOC_SRCS})
@@ -169,7 +173,7 @@ ENDIF (APPLE)
 #
 # QgsMapRender test
 #
-SET(qgis_maprendertest_SRCS testqgsmaprender.cpp)
+SET(qgis_maprendertest_SRCS testqgsmaprender.cpp ${util_SRCS})
 SET(qgis_maprendertest_MOC_CPPS testqgsmaprender.cpp)
 QT4_WRAP_CPP(qgis_maprendertest_MOC_SRCS ${qgis_maprendertest_MOC_CPPS})
 ADD_CUSTOM_TARGET(qgis_maprendertestmoc ALL DEPENDS ${qgis_maprendertest_MOC_SRCS})
