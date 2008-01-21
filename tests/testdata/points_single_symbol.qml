@@ -30,7 +30,7 @@
         <uppervalue></uppervalue>
         <label></label>
         <pointsymbol>hard:triangle</pointsymbol>
-        <pointsize>14</pointsize>
+        <pointsize>12</pointsize>
         <rotationclassificationfield>1</rotationclassificationfield>
         <scaleclassificationfield>2</scaleclassificationfield>
         <outlinecolor red="140" blue="60" green="82" />
