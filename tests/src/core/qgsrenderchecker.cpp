@@ -55,8 +55,8 @@ bool QgsRenderChecker::runTest( QString theTestName )
   QImage myImage( myExpectedImage.width() , myExpectedImage.height(), QImage::Format_RGB32 );
   QImage myDifferenceImage( myExpectedImage.width() , myExpectedImage.height(), QImage::Format_RGB32);
   QString myResultDiffImage = QDir::tempPath() + QDir::separator() + theTestName + "_result_diff.png";
-  myImage.fill ( QColor ( 152,219,249  ).pixel() );
-  myDifferenceImage.fill ( QColor ( 152,219,249  ).pixel() );
+  myImage.fill ( qRgb( 152,219,249  ) );
+  myDifferenceImage.fill ( qRgb( 152,219,249 ) );
   QPainter myPainter( &myImage );
   mpMapRenderer->setOutputSize( QSize ( myExpectedImage.width(),myExpectedImage.height() ),72 ); 
   QTime myTime;
@@ -133,7 +133,7 @@ bool QgsRenderChecker::runTest( QString theTestName )
       if (myExpectedPixel != myActualPixel)
       {
         ++mMismatchCount;
-        myDifferenceImage.setPixel(x,y,QColor (255,0,0).pixel());
+        myDifferenceImage.setPixel(x,y,qRgb(255,0,0));
       }
     }
   }
