@@ -64,6 +64,9 @@ class CORE_EXPORT QgsMapRender : public QObject
     double scale() const { return mScale; }
     double mupp() const { return mMupp; }
 
+    int width() const { return mSize.width(); };
+    int height() const { return mSize.height(); };
+
     //! Recalculate the map scale
     void updateScale();
 

@@ -33,6 +33,10 @@ class QgsMapRender : QObject
     double scale() const;
     double mupp() const;
 
+    int width() const;
+    int height() const;
+
+
     //! Recalculate the map scale
     void updateScale();
 
