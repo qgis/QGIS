@@ -237,6 +237,7 @@ qgsvectorlayer.h
 raster/qgscliptominmaxenhancement.h
 raster/qgscolorrampshader.h
 raster/qgscolortable.h
+raster/qgscolorrampshader.h
 raster/qgscontrastenhancement.h
 raster/qgscontrastenhancementfunction.h
 raster/qgsfreakoutshader.h
