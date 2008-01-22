@@ -816,7 +816,7 @@ QString QgsRasterLayer::getDrawingStyleAsQString()
       break;
   }
 
-  return QString("INVALID_DRAWING_STYLE"); // XXX I hope this is ok to return
+  return QString("UNDEFINED_DRAWING_STYLE");
 
 }
 
@@ -825,42 +825,38 @@ void QgsRasterLayer::setDrawingStyle(QString const & theDrawingStyleQString)
   if (theDrawingStyleQString == "SINGLE_BAND_GRAY")//no need to tr() this its not shown in ui
   {
     drawingStyle = SINGLE_BAND_GRAY;
-    return;
   }
-  if (theDrawingStyleQString == "SINGLE_BAND_PSEUDO_COLOR")//no need to tr() this its not shown in ui
+  else if (theDrawingStyleQString == "SINGLE_BAND_PSEUDO_COLOR")//no need to tr() this its not shown in ui
   {
     drawingStyle = SINGLE_BAND_PSEUDO_COLOR;
-    return;
   }
-  if (theDrawingStyleQString == "PALETTED_SINGLE_BAND_GRAY")//no need to tr() this its not shown in ui
+  else if (theDrawingStyleQString == "PALETTED_SINGLE_BAND_GRAY")//no need to tr() this its not shown in ui
   {
     drawingStyle = PALETTED_SINGLE_BAND_GRAY;
-    return;
   }
-  if (theDrawingStyleQString == "PALETTED_SINGLE_BAND_PSEUDO_COLOR")//no need to tr() this its not shown in ui
+  else if (theDrawingStyleQString == "PALETTED_SINGLE_BAND_PSEUDO_COLOR")//no need to tr() this its not shown in ui
   {
     drawingStyle = PALETTED_SINGLE_BAND_PSEUDO_COLOR;
-    return;
   }
-  if (theDrawingStyleQString == "PALETTED_MULTI_BAND_COLOR")//no need to tr() this its not shown in ui
+  else if (theDrawingStyleQString == "PALETTED_MULTI_BAND_COLOR")//no need to tr() this its not shown in ui
   {
     drawingStyle = PALETTED_MULTI_BAND_COLOR;
-    return;
   }
-  if (theDrawingStyleQString == "MULTI_BAND_SINGLE_BAND_GRAY")//no need to tr() this its not shown in ui
+  else if (theDrawingStyleQString == "MULTI_BAND_SINGLE_BAND_GRAY")//no need to tr() this its not shown in ui
   {
     drawingStyle = MULTI_BAND_SINGLE_BAND_GRAY;
-    return;
   }
-  if (theDrawingStyleQString == "MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR")//no need to tr() this its not shown in ui
+  else if (theDrawingStyleQString == "MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR")//no need to tr() this its not shown in ui
   {
     drawingStyle = MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR;
-    return;
   }
-  if (theDrawingStyleQString == "MULTI_BAND_COLOR")//no need to tr() this its not shown in ui
+  else if (theDrawingStyleQString == "MULTI_BAND_COLOR")//no need to tr() this its not shown in ui
   {
     drawingStyle = MULTI_BAND_COLOR;
-    return;
+  }
+  else
+  {
+    drawingStyle = UNDEFINED_DRAWING_STYLE;
   }
 }
 
@@ -5309,7 +5305,7 @@ QString QgsRasterLayer::getColorShadingAlgorithmAsQString()
       break;
   }
   
-  return QString("UNKNOWN");
+  return QString("UNDEFINED_SHADING_ALGORITHM");
 }
 
 void QgsRasterLayer::setColorShadingAlgorithm(QString theShaderAlgorithm)
@@ -5326,6 +5322,8 @@ void QgsRasterLayer::setColorShadingAlgorithm(QString theShaderAlgorithm)
     setColorShadingAlgorithm(COLOR_RAMP);
   else if(theShaderAlgorithm == "USER_DEFINED")
     setColorShadingAlgorithm(USER_DEFINED);
+  else
+    setColorShadingAlgorithm(UNDEFINED_SHADING_ALGORITHM);
 }
 
 QString QgsRasterLayer::getContrastEnhancementAlgorithmAsQString()
@@ -5349,7 +5347,7 @@ QString QgsRasterLayer::getContrastEnhancementAlgorithmAsQString()
       break;
   }
   
-  return QString("UNKNOWN");
+  return QString("NO_STRETCH");
 }
 
 void QgsRasterLayer::setContrastEnhancementAlgorithm(QString theAlgorithm, bool theGenerateLookupTableFlag)

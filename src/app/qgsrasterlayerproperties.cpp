@@ -95,16 +95,16 @@ mRasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
   spinMaximumScale->setValue((int)lyr->maxScale());
 
   // build GUI components
-  cboxColorMap->insertItem(tr("Grayscale"));
-  cboxColorMap->insertItem(tr("Pseudocolor"));
-  cboxColorMap->insertItem(tr("Freak Out"));
-  cboxColorMap->insertItem(tr("Custom Colormap"));
+  cboxColorMap->addItem(tr("Grayscale"));
+  cboxColorMap->addItem(tr("Pseudocolor"));
+  cboxColorMap->addItem(tr("Freak Out"));
+  cboxColorMap->addItem(tr("Custom Colormap"));
 
   //add items to the color stretch combo box
-  cboxContrastEnhancementAlgorithm->insertItem(tr("No Stretch"));
-  cboxContrastEnhancementAlgorithm->insertItem(tr("Stretch To MinMax"));
-  cboxContrastEnhancementAlgorithm->insertItem(tr("Stretch And Clip To MinMax"));
-  cboxContrastEnhancementAlgorithm->insertItem(tr("Clip To MinMax"));
+  cboxContrastEnhancementAlgorithm->addItem(tr("No Stretch"));
+  cboxContrastEnhancementAlgorithm->addItem(tr("Stretch To MinMax"));
+  cboxContrastEnhancementAlgorithm->addItem(tr("Stretch And Clip To MinMax"));
+  cboxContrastEnhancementAlgorithm->addItem(tr("Clip To MinMax"));
 
   //set initial states of all Min Max and StdDev fields and labels to disabled
   sboxThreeBandStdDev->setEnabled(false);
@@ -129,10 +129,10 @@ mRasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
   pbtnLoadMinMax->setEnabled(false);
   
   //setup custom colormap tab
-  cboxColorInterpolation->insertItem(-1, tr("Discrete"));
-  cboxColorInterpolation->insertItem(-1, tr("Linearly"));
-  cboxClassificationMode->insertItem(-1, tr("Equal interval"));
-  cboxClassificationMode->insertItem(-1, tr("Quantiles"));
+  cboxColorInterpolation->addItem(tr("Discrete"));
+  cboxColorInterpolation->addItem(tr("Linearly"));
+  cboxClassificationMode->addItem(tr("Equal interval"));
+  cboxClassificationMode->addItem(tr("Quantiles"));
 
   QStringList headerLabels;
   headerLabels << "Value";
@@ -150,26 +150,26 @@ mRasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
   if (mRasterLayer->getRasterLayerType()
       == QgsRasterLayer::PALETTE) //paletted layers have hard coded color entries
   {
-    cboRed->insertItem("Red");
-    cboGreen->insertItem("Red");
-    cboBlue->insertItem("Red");
+    cboRed->addItem("Red");
+    cboGreen->addItem("Red");
+    cboBlue->addItem("Red");
 
-    cboRed->insertItem("Green");
-    cboGreen->insertItem("Green");
-    cboBlue->insertItem("Green");
+    cboRed->addItem("Green");
+    cboGreen->addItem("Green");
+    cboBlue->addItem("Green");
 
-    cboRed->insertItem("Blue");
-    cboGreen->insertItem("Blue");
-    cboBlue->insertItem("Blue");
+    cboRed->addItem("Blue");
+    cboGreen->addItem("Blue");
+    cboBlue->addItem("Blue");
 
-    cboRed->insertItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
-    cboGreen->insertItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
-    cboBlue->insertItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
+    cboRed->addItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
+    cboGreen->addItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
+    cboBlue->addItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
 
-    cboGray->insertItem("Red");
-    cboGray->insertItem("Green");
-    cboGray->insertItem("Blue");
-    cboGray->insertItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
+    cboGray->addItem("Red");
+    cboGray->addItem("Green");
+    cboGray->addItem("Blue");
+    cboGray->addItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
 
     lstHistogramLabels->insertItem(tr("Palette"));
   }
@@ -263,28 +263,28 @@ mRasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
       std::cout << "Inserting : " << myQString.toLocal8Bit().data() << std::endl;
 #endif
 
-      cboGray->insertItem(myQString);
-      cboRed->insertItem(myQString);
-      cboGreen->insertItem(myQString);
-      cboBlue->insertItem(myQString);
+      cboGray->addItem(myQString);
+      cboRed->addItem(myQString);
+      cboGreen->addItem(myQString);
+      cboBlue->addItem(myQString);
     }
 //TODO: Need to handle situations where a band is set to Not Set, currently if you set a band to this it will segfault.
-    cboRed->insertItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
-    cboGreen->insertItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
-    cboBlue->insertItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
+    cboRed->addItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
+    cboGreen->addItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
+    cboBlue->addItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
     if (cboGray->count() != 1)
-      cboGray->insertItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
+      cboGray->addItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
   }
 
-  cboxTransparencyBand->insertItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
-  cboxTransparencyLayer->insertItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
+  cboxTransparencyBand->addItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
+  cboxTransparencyLayer->addItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
   QMap<QString, QgsMapLayer *> myLayers = QgsMapLayerRegistry::instance()->mapLayers();
   QMap<QString, QgsMapLayer *>::iterator it;
   for(it = myLayers.begin(); it != myLayers.end(); it++)
   {
     if(QgsMapLayer::RASTER == it.value()->type())
     {
-      cboxTransparencyLayer->insertItem(it.value()->name());
+      cboxTransparencyLayer->addItem(it.value()->name());
     }
   }
 
@@ -292,12 +292,12 @@ mRasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
   QPixmap myPyramidPixmap(myThemePath + "/mIconPyramid.png");
   QPixmap myNoPyramidPixmap(myThemePath + "/mIconNoPyramid.png");
 
-  pbnAddValuesManually->setIconSet(QIcon(QPixmap(myThemePath + "/mActionNewAttribute.png")));
-  pbnAddValuesFromDisplay->setIconSet(QIcon(QPixmap(myThemePath + "/mActionContextHelp.png")));
-  pbnRemoveSelectedRow->setIconSet(QIcon(QPixmap(myThemePath + "/mActionDeleteAttribute.png")));
-  pbnDefaultValues->setIconSet(QIcon(QPixmap(myThemePath + "/mActionCopySelected.png")));
-  pbnImportTransparentPixelValues->setIconSet(QIcon(QPixmap(myThemePath + "/mActionFileOpen.png")));
-  pbnExportTransparentPixelValues->setIconSet(QIcon(QPixmap(myThemePath + "/mActionFileSave.png")));
+  pbnAddValuesManually->setIcon(QIcon(QPixmap(myThemePath + "/mActionNewAttribute.png")));
+  pbnAddValuesFromDisplay->setIcon(QIcon(QPixmap(myThemePath + "/mActionContextHelp.png")));
+  pbnRemoveSelectedRow->setIcon(QIcon(QPixmap(myThemePath + "/mActionDeleteAttribute.png")));
+  pbnDefaultValues->setIcon(QIcon(QPixmap(myThemePath + "/mActionCopySelected.png")));
+  pbnImportTransparentPixelValues->setIcon(QIcon(QPixmap(myThemePath + "/mActionFileOpen.png")));
+  pbnExportTransparentPixelValues->setIcon(QIcon(QPixmap(myThemePath + "/mActionFileSave.png")));
 
   // Only do pyramids if dealing directly with GDAL.
   if (mRasterLayerIsGdal)
@@ -542,6 +542,7 @@ void QgsRasterLayerProperties::sync()
   if(mRasterLayerIsWms)
   {
     tabBar->setCurrentIndex(tabBar->indexOf(tabPageMetadata));
+    tabBar->removeTab(tabBar->indexOf(tabPageColormap));
     tabBar->removeTab(tabBar->indexOf(tabPageSymbology));
     tabBar->removeTab(tabBar->indexOf(tabPageTransparency));
     tabBar->removeTab(tabBar->indexOf(tabPageHistogram));
@@ -1717,7 +1718,7 @@ void QgsRasterLayerProperties::on_cboxTransparencyLayer_currentIndexChanged(cons
   if(theText == tr(QgsRasterLayer::QSTRING_NOT_SET))
   {
     cboxTransparencyBand->clear();
-    cboxTransparencyBand->insertItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
+    cboxTransparencyBand->addItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
   }
   else
   {
@@ -1730,10 +1731,10 @@ void QgsRasterLayerProperties::on_cboxTransparencyLayer_currentIndexChanged(cons
         QgsRasterLayer* myRasterLayer = (QgsRasterLayer*)it.value();
         int myBandCount = myRasterLayer->getBandCount();
         cboxTransparencyBand->clear();
-        cboxTransparencyBand->insertItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
+        cboxTransparencyBand->addItem(tr(QgsRasterLayer::QSTRING_NOT_SET));
         for(int bandRunner = 1; bandRunner <= myBandCount; bandRunner++)
         {
-          cboxTransparencyBand->insertItem(myRasterLayer->getRasterBandName(bandRunner));
+          cboxTransparencyBand->addItem(myRasterLayer->getRasterBandName(bandRunner));
         }
         break;
       }

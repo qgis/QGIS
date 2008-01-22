@@ -580,6 +580,7 @@ public:
     /** \brief This enumerator describes the types of shading that can be used.  */
     enum COLOR_SHADING_ALGORITHM
     {
+        UNDEFINED_SHADING_ALGORITHM,
         PSEUDO_COLOR, 
         FREAK_OUT, //it will scare your granny!
         COLOR_RAMP,
@@ -629,6 +630,7 @@ public:
     /** \brief This enumerator describes the different kinds of drawing we can do.  */
     enum DRAWING_STYLE
     {
+        UNDEFINED_DRAWING_STYLE,
         SINGLE_BAND_GRAY, // a "Gray" or "Undefined" layer drawn as a range of gray colors
         SINGLE_BAND_PSEUDO_COLOR,// a "Gray" or "Undefined" layer drawn using a pseudocolor algorithm
         PALETTED_COLOR, //a "Palette" image drawn using color table
