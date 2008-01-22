@@ -2235,12 +2235,16 @@ Kompiliert gegen QT Version </translation>
       <comment>
 
 
+
+
 Show most toolbars</comment>
       <translation type="unfinished" >Die meisten Werkzeugleisten anzeigen</translation>
     </message>
     <message>
       <source>Ctrl+T</source>
       <comment>
+
+
 
 
 Hide most toolbars</comment>
@@ -2357,6 +2361,8 @@ Hide most toolbars</comment>
     <message>
       <source>Select an action</source>
       <comment>
+
+
 
 
 File dialog window title</comment>
@@ -5182,12 +5188,16 @@ p, li { white-space: pre-wrap; }
       <comment>
 
 
+
+
 Column title</comment>
       <translation type="unfinished" >Anz.</translation>
     </message>
     <message>
       <source>Color</source>
       <comment>
+
+
 
 
 Column title</comment>
@@ -5198,12 +5208,16 @@ Column title</comment>
       <comment>
 
 
+
+
 Column title</comment>
       <translation type="unfinished" >Typ</translation>
     </message>
     <message>
       <source>Index</source>
       <comment>
+
+
 
 
 Column title</comment>
@@ -6914,11 +6928,11 @@ bei Zeile </translation>
     </message>
     <message>
       <source>Field containing label:</source>
-      <translation>Attribut, welches das Label enthält:</translation>
+      <translation>Attributspalte, welches das Label enthält:</translation>
     </message>
     <message>
       <source>Default label:</source>
-      <translation>Beschriftungsvorgabe:</translation>
+      <translation>Standard Beschriftung:</translation>
     </message>
     <message>
       <source>Preview:</source>
@@ -7481,6 +7495,8 @@ Wollen Sie sie überschreiben?</translation>
       <comment>
 
 
+
+
 Filter list for selecting files from a dialog box</comment>
       <translation type="unfinished" >QGIS-Projektdatei (*.qgs);;Alle Dateien (*.*)</translation>
     </message>
@@ -7488,6 +7504,8 @@ Filter list for selecting files from a dialog box</comment>
       <source> exists. 
 Do you want to overwrite it?</source>
       <comment>
+
+
 
 
 a filename is prepended to this text, and appears in a dialog box</comment>
@@ -8913,6 +8931,8 @@ Ausführliche Fehlerinformation:</translation>
     <message>
       <source>-modified</source>
       <comment>
+
+
 
 
 Georeferencer:QgsPointDialog.cpp - used to modify a user given filename</comment>
@@ -10520,6 +10540,8 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
       <comment>
 
 
+
+
 is appended to a truncated SQL statement</comment>
       <translation type="unfinished" >... (Rest der Anweisung abgeschnitten)</translation>
     </message>
@@ -10532,23 +10554,23 @@ is appended to a truncated SQL statement</comment>
     </message>
     <message>
       <source>Dash Line</source>
-      <translation>Gestrichelte Linie</translation>
+      <translation>gestrichelte Linie</translation>
     </message>
     <message>
       <source>Dot Line</source>
-      <translation>Gepunktete Linie</translation>
+      <translation>gepunktete Linie</translation>
     </message>
     <message>
       <source>Dash Dot Line</source>
-      <translation>Gestrichelt-gepunktete Linie</translation>
+      <translation>gestrichelt-gepunktete Linie</translation>
     </message>
     <message>
       <source>Dash Dot Dot Line</source>
-      <translation>Gestrichelt-2 x gepunktete Linie</translation>
+      <translation>gestrichelt-2mal-gepunktete Linie</translation>
     </message>
     <message>
       <source>No Pen</source>
-      <translation>Kein Stift</translation>
+      <translation>keine Linie</translation>
     </message>
     <message>
       <source>Solid Pattern</source>
@@ -10647,16 +10669,16 @@ is appended to a truncated SQL statement</comment>
     </message>
     <message>
       <source>Outline style</source>
-      <translation>Randstil</translation>
+      <translation>Umrandungsstil</translation>
     </message>
     <message>
       <source>Outline color</source>
-      <translation>Randfarbe
+      <translation>Umrandungsfarbe
 </translation>
     </message>
     <message>
       <source>Outline width</source>
-      <translation>Randbreite</translation>
+      <translation>Umrandungsbreite</translation>
     </message>
     <message>
       <source>Fill color</source>
@@ -11334,7 +11356,7 @@ is appended to a truncated SQL statement</comment>
     </message>
     <message>
       <source>Create Spatial Index</source>
-      <translation>Räumlicher Index erstellen</translation>
+      <translation>Räumlichen Index erstellen</translation>
     </message>
     <message>
       <source>Create</source>
