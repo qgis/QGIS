@@ -4583,10 +4583,16 @@ int QgsGeometry::splitPolygonGeometry(GEOS_GEOM::LineString* splitLine, QList<Qg
   //include in result if yes
   QList<GEOS_GEOM::Geometry*> testedGeometries;
   GEOS_GEOM::Geometry* intersectGeometry = 0;
+  
+  //ratio intersect geometry / geometry. This should be close to 1
+  //if the polygon belongs to the input geometry
+  
+  double areaRatio = 0.0;
   for(unsigned int i = 0; i < polygons->size(); ++i)
     {
       intersectGeometry = mGeos->intersection((*polygons)[i]);
-      if(intersectGeometry->getArea() > 0.00000000001)
+      areaRatio = intersectGeometry->getArea() / (*polygons)[i]->getArea();
+      if(areaRatio > 0.99 && areaRatio < 1.01)
 	{
 	  testedGeometries.push_back((*polygons)[i]);
 	}
