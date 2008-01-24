@@ -52,10 +52,12 @@ class TestQgsRasterLayer: public QObject
 
     void isValid();
     void pseudoColor();
+    void landsatBasic();
     void checkDimensions(); 
   private:
     bool render(QString theFileName);
     QgsRasterLayer * mpRasterLayer;
+    QgsRasterLayer * mpLandsatRasterLayer;
     QgsMapRender * mpMapRenderer;
     QString mReport;
 };
@@ -77,13 +79,18 @@ void TestQgsRasterLayer::initTestCase()
   std::cout << "User DB PATH: " << QgsApplication::qgisUserDbFilePath().toLocal8Bit().data() << std::endl;
 
   //create a raster layer that will be used in all tests...
-  QString myFileName (TEST_DATA_DIR); //defined in CmakeLists.txt
-  myFileName = myFileName + QDir::separator() + "tenbytenraster.asc";
+  QString myTestDir (TEST_DATA_DIR); //defined in CmakeLists.txt
+  QString myFileName = myTestDir + QDir::separator() + "tenbytenraster.asc";
+  QString myLandsatFileName = myTestDir + QDir::separator() + "landsat_clip.tif";
   QFileInfo myRasterFileInfo ( myFileName );
   mpRasterLayer = new QgsRasterLayer ( myRasterFileInfo.filePath(),
             myRasterFileInfo.completeBaseName() );
+  QFileInfo myLandsatRasterFileInfo ( myLandsatFileName );
+  mpLandsatRasterLayer = new QgsRasterLayer ( myLandsatRasterFileInfo.filePath(),
+            myLandsatRasterFileInfo.completeBaseName() );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayer(mpRasterLayer);
+  QgsMapLayerRegistry::instance()->addMapLayer(mpLandsatRasterLayer);
   // add the test layer to the maprender
   mpMapRenderer = new QgsMapRender();
   QStringList myLayers;
@@ -109,20 +116,30 @@ void TestQgsRasterLayer::cleanupTestCase()
 void TestQgsRasterLayer::isValid()
 {
   QVERIFY ( mpRasterLayer->isValid() );
+  mpMapRenderer->setExtent(mpRasterLayer->extent());
   QVERIFY ( render("raster") );
 }
 
 void TestQgsRasterLayer::pseudoColor()
 {
-   mpRasterLayer->setDrawingStyle(QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR);
-   mpRasterLayer->setColorShadingAlgorithm(QgsRasterLayer::PSEUDO_COLOR);  
-   mpRasterLayer->setContrastEnhancementAlgorithm(
-          QgsContrastEnhancement::STRETCH_TO_MINMAX, false);
-   mpRasterLayer->setMinimumValue(mpRasterLayer->getGrayBandName(),0.0, false);
-   mpRasterLayer->setMaximumValue(mpRasterLayer->getGrayBandName(),0.0);
-   QVERIFY(render("raster_pseudo"));
+  mpRasterLayer->setDrawingStyle(QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR);
+  mpRasterLayer->setColorShadingAlgorithm(QgsRasterLayer::PSEUDO_COLOR);  
+  mpRasterLayer->setContrastEnhancementAlgorithm(
+      QgsContrastEnhancement::STRETCH_TO_MINMAX, false);
+  mpRasterLayer->setMinimumValue(mpRasterLayer->getGrayBandName(),0.0, false);
+  mpRasterLayer->setMaximumValue(mpRasterLayer->getGrayBandName(),10.0);
+  mpMapRenderer->setExtent(mpRasterLayer->extent());
+  QVERIFY(render("raster_pseudo"));
 }
 
+void TestQgsRasterLayer::landsatBasic()
+{
+  QStringList myLayers;
+  myLayers << mpLandsatRasterLayer->getLayerID();
+  mpMapRenderer->setLayerSet(myLayers);
+  mpMapRenderer->setExtent(mpLandsatRasterLayer->extent());
+  QVERIFY(render("landsat_basic"));
+}
 void TestQgsRasterLayer::checkDimensions()
 {
    QVERIFY ( mpRasterLayer->getRasterXDim() == 10 );
@@ -135,7 +152,6 @@ void TestQgsRasterLayer::checkDimensions()
 bool TestQgsRasterLayer::render(QString theTestType)
 {
   mReport += "<h2>" + theTestType + "</h2>\n";
-  mpMapRenderer->setExtent(mpRasterLayer->extent());
   QString myDataDir (TEST_DATA_DIR); //defined in CmakeLists.txt
   QString myTestDataDir = myDataDir + QDir::separator();
   QgsRenderChecker myChecker;

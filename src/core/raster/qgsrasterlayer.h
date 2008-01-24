@@ -202,6 +202,8 @@ public:
      *
      * The main tasks carried out by the constructor are:
      *
+     * -Load the rasters default style (.qml) file if it exists
+     *
      * -Populate the RasterStatsVector with initial values for each band.
      *
      * -Calculate the layer extents
@@ -213,7 +215,8 @@ public:
      * -
      * */
     QgsRasterLayer(const QString & path = QString::null, 
-                   const QString &  baseName = QString::null);
+                   const QString &  baseName = QString::null,
+                   bool loadDefaultStyleFlag = true );
 
     /** \brief The destuctor.  */
     ~QgsRasterLayer();
