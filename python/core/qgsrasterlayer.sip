@@ -272,7 +272,7 @@ public:
     QString getContrastEnhancementAlgorithmAsQString();
     
     /** \brief Mutator for contrast enhancement algorithm. */
-    void setContrastEnhancementAlgorithm(QgsContrastEnhancement::CONTRAST_ENHANCEMENT_ALGORITHM theAlgorithm);
+    void setContrastEnhancementAlgorithm(QgsContrastEnhancement::CONTRAST_ENHANCEMENT_ALGORITHM theAlgorithm, bool theGenerateLookupTableFlag=true);
     
     /** \brief Mutator for contrast enhancement algorithm. */
     void setContrastEnhancementAlgorithm(QString theAlgorithm, bool theGenerateLookupTableFlag=true);
