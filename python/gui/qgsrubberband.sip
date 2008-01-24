@@ -12,25 +12,31 @@ class QgsRubberBand: QgsMapCanvasItem
     void setWidth(int width);
 
     void reset(bool isPolygon = false);
-    void addPoint(const QgsPoint & p, int geometryIndex);
 
-//!Removes the last point. Most usefull in connection with undo operations
-    void removeLastPoint(int geometryIndex = 0);	
+    //! Add point to rubberband and update canvas
+    //! If adding more points consider using update=false for better performance
+    //! geometryIndex is the index of the feature part (in case of multipart geometries)
+    void addPoint(const QgsPoint & p, bool update = true, int geometryIndex = 0);
 
-    void movePoint(const QgsPoint & p, int geometryIndex);
-    void movePoint(int index, const QgsPoint& p, int geometryIndex);
+    //!Removes the last point. Most usefull in connection with undo operations
+    void removeLastPoint(int geometryIndex = 0);
 
-/**Sets this rubber band to the geometry of an existing feature.
+    void movePoint(const QgsPoint & p, int geometryIndex = 0);
+    /**Moves the rubber band point specified by index. Note that if the rubber band is 
+     not used to track the last mouse position, the first point of the rubber band has two vertices*/
+    void movePoint(int index, const QgsPoint& p, int geometryIndex = 0);
+
+    /**Sets this rubber band to the geometry of an existing feature.
      This is usefull for feature highlighting.
     @param geom the geometry object
     @param layer the layer containing the feature (used for coord transformation)
     @param render the maprender object (used for coord transformation)*/
     void setToGeometry(QgsGeometry* geom, QgsVectorLayer& layer);
 
-/**Adds translation to original coordinates (all in map coordinates)*/
+    /**Adds translation to original coordinates (all in map coordinates)*/
     void setTranslationOffset(double dx, double dy);
 
- /**Returns count of vertices in all lists of mPoint*/
+    /**Returns count of vertices in all lists of mPoint*/
     int numberOfVertices() const;
 
   protected:
