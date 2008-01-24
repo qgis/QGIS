@@ -1484,69 +1484,69 @@ void QgisApp::about()
      versionString += ")";
 #ifdef HAVE_POSTGRESQL
 
-versionString += tr(" with PostgreSQL support");
+     versionString += tr(" with PostgreSQL support");
 #else
 
-versionString += tr(" (no PostgreSQL support)");
+     versionString += tr(" (no PostgreSQL support)");
 #endif
- versionString += tr("\nCompiled against Qt ") + QT_VERSION_STR
-   + tr(", running against Qt ") + qVersion();
+     versionString += tr("\nCompiled against Qt ") + QT_VERSION_STR
+       + tr(", running against Qt ") + qVersion();
 
 #ifdef WIN32
-  // special version stuff for windows (if required)
-  //  versionString += "\nThis is a Windows preview release - not for production use";
+     // special version stuff for windows (if required)
+     //  versionString += "\nThis is a Windows preview release - not for production use";
 #endif
 
-abt->setVersion(versionString);
-QString urls = "<p align=\"center\">" +
-tr("Quantum GIS is licensed under the GNU General Public License") +
-"</p><p align=\"center\">" +
-tr("http://www.gnu.org/licenses") +
-"</p>";
-abt->setURLs(urls);
-QString watsNew = "<html><body>" + tr("Version") + " ";
-watsNew += QGis::qgisVersion;
-watsNew += "<h3>" + tr("New features") + "</h3>";
-watsNew += "<ul><li>"
-+ tr("Python bindings - This is the major focus of this release "
-    "it is now possible to create plugins using python. It is also "
-    "possible to create GIS enabled applications written in python " 
-    "that use the QGIS libraries."
-    )
-+ "</li>"
-+ "<li>"
-+ tr("Removed automake build system - QGIS now needs CMake for compilation.")
-+ "</li>"
-+ "<li>"
-+ tr("Many new GRASS tools added (with thanks to http://faunalia.it/)")
-+ "</li>"
-+ "<li>"
-+ tr("Map Composer updates")
-+ "</li>"
-+ "<li>"
-+ tr("Crash fix for 2.5D shapefiles")
-+ "</li>"
-+ "<li>"
-+ tr("The QGIS libraries have been refactored and better organised.")
-+ "</li>"
-+ "<li>"
-+ tr("Improvements to the GeoReferencer")
-+ "</li>"
-+ "<li>"
-+ tr("Added locale options to options dialog.")
-+ "</li>"
+     abt->setVersion(versionString);
+     QString urls = "<p align=\"center\">" +
+       tr("Quantum GIS is licensed under the GNU General Public License") +
+       "</p><p align=\"center\">" +
+       tr("http://www.gnu.org/licenses") +
+       "</p>";
+     abt->setURLs(urls);
+     QString watsNew = "<html><body>" + tr("Version") + " ";
+     watsNew += QGis::qgisVersion;
+     watsNew += "<h3>" + tr("New features") + "</h3>";
+     watsNew += "<ul><li>"
+       + tr("Python bindings - This is the major focus of this release "
+	    "it is now possible to create plugins using python. It is also "
+	    "possible to create GIS enabled applications written in python " 
+	    "that use the QGIS libraries."
+	 )
+       + "</li>"
+       + "<li>"
+       + tr("Removed automake build system - QGIS now needs CMake for compilation.")
+       + "</li>"
+       + "<li>"
+       + tr("Many new GRASS tools added (with thanks to http://faunalia.it/)")
+       + "</li>"
+       + "<li>"
+       + tr("Map Composer updates")
+       + "</li>"
+       + "<li>"
+       + tr("Crash fix for 2.5D shapefiles")
+       + "</li>"
+       + "<li>"
+       + tr("The QGIS libraries have been refactored and better organised.")
+       + "</li>"
+       + "<li>"
+       + tr("Improvements to the GeoReferencer")
+       + "</li>"
+       + "<li>"
+       + tr("Added locale options to options dialog.")
+       + "</li>"
 //+ "<li>"
-//+ tr("")
+//+ tr("X")
 //+ "</li>"
-+ "</ul></body></html>";
+       + "</ul></body></html>";
 
 
-abt->setWhatsNew(watsNew);
+     abt->setWhatsNew(watsNew);
 
-  // add the available plugins to the list
-  QString providerInfo = "<b>" + tr("Available Data Provider Plugins") + "</b><br>";
-  abt->setPluginInfo(providerInfo + QgsProviderRegistry::instance()->pluginList(true));
-  QApplication::restoreOverrideCursor();
+     // add the available plugins to the list
+     QString providerInfo = "<b>" + tr("Available Data Provider Plugins") + "</b><br>";
+     abt->setPluginInfo(providerInfo + QgsProviderRegistry::instance()->pluginList(true));
+     QApplication::restoreOverrideCursor();
   }
   abt->show();
   abt->raise();
