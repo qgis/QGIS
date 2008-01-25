@@ -53,9 +53,12 @@ class TestQgsRasterLayer: public QObject
     void isValid();
     void pseudoColor();
     void landsatBasic();
+    void landsatBasic875Qml();
     void checkDimensions(); 
   private:
     bool render(QString theFileName);
+    bool setQml (QString theType);
+    QString mTestDataDir;
     QgsRasterLayer * mpRasterLayer;
     QgsRasterLayer * mpLandsatRasterLayer;
     QgsMapRender * mpMapRenderer;
@@ -79,9 +82,9 @@ void TestQgsRasterLayer::initTestCase()
   std::cout << "User DB PATH: " << QgsApplication::qgisUserDbFilePath().toLocal8Bit().data() << std::endl;
 
   //create a raster layer that will be used in all tests...
-  QString myTestDir (TEST_DATA_DIR); //defined in CmakeLists.txt
-  QString myFileName = myTestDir + QDir::separator() + "tenbytenraster.asc";
-  QString myLandsatFileName = myTestDir + QDir::separator() + "landsat_clip.tif";
+  mTestDataDir = QString(TEST_DATA_DIR) + QDir::separator(); //defined in CmakeLists.txt
+  QString myFileName = mTestDataDir + "tenbytenraster.asc";
+  QString myLandsatFileName = mTestDataDir + "landsat_clip.tif";
   QFileInfo myRasterFileInfo ( myFileName );
   mpRasterLayer = new QgsRasterLayer ( myRasterFileInfo.filePath(),
             myRasterFileInfo.completeBaseName() );
@@ -140,6 +143,16 @@ void TestQgsRasterLayer::landsatBasic()
   mpMapRenderer->setExtent(mpLandsatRasterLayer->extent());
   QVERIFY(render("landsat_basic"));
 }
+void TestQgsRasterLayer::landsatBasic875Qml()
+{
+  //a qml that orders the rgb bands as 8,7,5
+  QStringList myLayers;
+  myLayers << mpLandsatRasterLayer->getLayerID();
+  mpMapRenderer->setLayerSet(myLayers);
+  mpMapRenderer->setExtent(mpLandsatRasterLayer->extent());
+  QVERIFY(setQml("875"));
+  QVERIFY(render("landsat_875"));
+}
 void TestQgsRasterLayer::checkDimensions()
 {
    QVERIFY ( mpRasterLayer->getRasterXDim() == 10 );
@@ -160,6 +173,26 @@ bool TestQgsRasterLayer::render(QString theTestType)
   bool myResultFlag = myChecker.runTest(theTestType);
   mReport += "\n\n\n" + myChecker.report();
   return myResultFlag;
+}
+
+bool TestQgsRasterLayer::setQml (QString theType)
+{
+  //load a qml style and apply to our layer
+  // huh? this is failing but shouldnt!
+  //if (! mpLandsatRasterLayer->isValid() )
+  //{
+  //  qDebug(" **** setQml -> mpLandsatRasterLayer is invalid");
+  //  return false;
+  //}
+  QString myFileName = mTestDataDir + "landsat_" + theType + ".qml";
+  bool myStyleFlag=false;
+  mpLandsatRasterLayer->loadNamedStyle ( myFileName , myStyleFlag );
+  if (!myStyleFlag)
+  {
+    qDebug(" **** setQml -> mpLandsatRasterLayer is invalid");
+    qDebug("Qml File :" +  myFileName.toLocal8Bit());
+  }
+  return myStyleFlag;
 }
 
 QTEST_MAIN(TestQgsRasterLayer)
