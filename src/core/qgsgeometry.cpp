@@ -4122,8 +4122,56 @@ bool QgsGeometry::exportGeosToWkb()
 
     case GEOS_GEOM::GEOS_MULTIPOINT:            // a collection of points
       {
-        // TODO
-        break;
+	GEOS_GEOM::MultiPoint* theMultiPoint = dynamic_cast<GEOS_GEOM::MultiPoint*>(mGeos);
+	if(!theMultiPoint)
+	  {
+	    return false;
+	  }
+	
+	//find out size of geometry
+	int geometrySize = 1 + 2 * sizeof(int);
+	for(GEOS_SIZE_T i = 0; i < theMultiPoint->getNumGeometries(); ++i)
+	  {
+	    geometrySize += (1 + 2 * sizeof(int) + 2 * sizeof(double));
+	  }
+
+	mGeometry = new unsigned char[geometrySize];
+	mGeometrySize = geometrySize;
+	int wkbPosition = 0; //current position in the byte array
+	
+	memcpy(mGeometry, &byteOrder, 1);
+	wkbPosition += 1;
+	int wkbtype=QGis::WKBMultiPoint;
+	memcpy(&mGeometry[wkbPosition],&wkbtype, sizeof(int));
+	wkbPosition += sizeof(int);
+	int numPoints = theMultiPoint->getNumGeometries();
+	memcpy(&mGeometry[wkbPosition], &numPoints, sizeof(int));
+	wkbPosition += sizeof(int);
+
+	int pointType = QGis::WKBPoint;
+	double x, y;
+	GEOS_GEOM::Point* currentPoint = 0;
+
+	for(GEOS_SIZE_T i = 0; i < theMultiPoint->getNumGeometries(); ++i)
+	  {
+	    //copy endian and point type
+	    memcpy(&mGeometry[wkbPosition], &byteOrder, 1); 
+	    wkbPosition += 1;
+	    memcpy(&mGeometry[wkbPosition], &pointType, sizeof(int));
+	    wkbPosition += sizeof(int);
+
+	    currentPoint = (GEOS_GEOM::Point*)(theMultiPoint->getGeometryN(i));
+	    //x
+	    x = currentPoint->getX();
+	    memcpy(&mGeometry[wkbPosition], &x, sizeof(double));
+	    wkbPosition += sizeof(double);
+	    //y
+	    y = currentPoint->getY();
+	    memcpy(&mGeometry[wkbPosition], &y, sizeof(double));
+	    wkbPosition += sizeof(double);
+	  }
+	mDirtyWkb = FALSE;
+	return true;
       } // case GEOS_GEOM::GEOS_MULTIPOINT
 
     case GEOS_GEOM::GEOS_MULTILINESTRING:       // a collection of linestrings
