@@ -16,17 +16,12 @@ email                : morb at ozemail dot com dot au
 
 #include <limits>
 
-
 #include "qgis.h"
 #include "qgsgeometry.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgspoint.h"
 #include "qgsrect.h"
-//#include "geos/operation/polygonize/Polygonizer.h"
-//todo: adapt to geos3
-#include "geos/opPolygonize.h"
-#include "geos/opLinemerge.h"
 
 // Set up static GEOS geometry factory
 static GEOS_GEOM::GeometryFactory* geosGeometryFactory = new GEOS_GEOM::GeometryFactory();
