@@ -1,3 +1,14 @@
+"""
+Copyright (C) 2008 Matthew Perry
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+"""
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -64,11 +75,12 @@ class InstallerPluginGui(QDialog, Ui_Dialog):
     #self.gui.txtAvailable.setText(output)   
     self.treePlugins.clear()
     for p in pluginlist:
-    	a = QTreeWidgetItem(self.treePlugins)
-    	a.setText(0,p["name"])
-    	a.setText(1,p["version"])
-    	a.setText(2,p["desc"])
-    	a.setText(3,p["author"])
+      a = QTreeWidgetItem(self.treePlugins)
+      a.setText(0,p["name"])
+      a.setText(1,p["version"])
+      a.setText(2,p["desc"])
+      a.setText(3,p["author"])
+      a.setToolTip(2, p["desc"])
     
     QApplication.restoreOverrideCursor()
 
