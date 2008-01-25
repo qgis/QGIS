@@ -39,6 +39,8 @@ class QgsGeometry
     
     /** construct geometry from a point */
     static QgsGeometry* fromPoint(const QgsPoint& point) /Factory/;
+    /** construct geometry from a multipoint */
+    static QgsGeometry* fromMultiPoint(const QgsMultiPoint& multipoint) /Factory/;
     /** construct geometry from a polyline */
     static QgsGeometry* fromPolyline(const QgsPolyline& polyline) /Factory/;
     /** construct geometry from a multipolyline*/

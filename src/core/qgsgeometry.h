@@ -112,6 +112,8 @@ class CORE_EXPORT QgsGeometry {
     
     /** construct geometry from a point */
     static QgsGeometry* fromPoint(const QgsPoint& point);
+    /** construct geometry from a multipoint */
+    static QgsGeometry* fromMultiPoint(const QgsMultiPoint& multipoint);
     /** construct geometry from a polyline */
     static QgsGeometry* fromPolyline(const QgsPolyline& polyline);
     /** construct geometry from a multipolyline*/

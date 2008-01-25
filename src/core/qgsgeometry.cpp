@@ -125,6 +125,40 @@ QgsGeometry* QgsGeometry::fromPoint(const QgsPoint& point)
   return g;
 }
 
+QgsGeometry* QgsGeometry::fromMultiPoint(const QgsMultiPoint& multipoint)
+{
+  std::vector<GEOS_GEOM::Geometry*>* pointVector = new std::vector<GEOS_GEOM::Geometry*>(multipoint.size());
+  GEOS_GEOM::Coordinate currentCoord;
+
+  for(int i = 0; i < multipoint.size(); ++i)
+    {
+      currentCoord.x = multipoint.at(i).x();
+      currentCoord.y = multipoint.at(i).y(); 
+      try
+	{ 
+	  (*pointVector)[i] = geosGeometryFactory->createPoint(currentCoord);
+	}
+      catch(GEOS_UTIL::GEOSException* e)
+	{
+	  delete e; delete pointVector; return 0;
+	}
+    }
+
+  GEOS_GEOM::Geometry* geom = 0;
+  try
+    {
+      geom = geosGeometryFactory->createMultiPoint(pointVector);
+    }
+  catch(GEOS_UTIL::GEOSException* e)
+    {
+      delete e; return 0;
+    }
+
+  QgsGeometry* g = new QgsGeometry;
+  g->setGeos(geom);
+  return g;
+}
+
 QgsGeometry* QgsGeometry::fromPolyline(const QgsPolyline& polyline)
 {
   const GEOS_GEOM::CoordinateSequenceFactory* seqFactory = GEOS_GEOM::COORD_SEQ_FACTORY::instance();
