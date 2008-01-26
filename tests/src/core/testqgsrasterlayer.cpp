@@ -84,7 +84,7 @@ void TestQgsRasterLayer::initTestCase()
   //create a raster layer that will be used in all tests...
   mTestDataDir = QString(TEST_DATA_DIR) + QDir::separator(); //defined in CmakeLists.txt
   QString myFileName = mTestDataDir + "tenbytenraster.asc";
-  QString myLandsatFileName = mTestDataDir + "landsat_clip.tif";
+  QString myLandsatFileName = mTestDataDir + "landsat.tif";
   QFileInfo myRasterFileInfo ( myFileName );
   mpRasterLayer = new QgsRasterLayer ( myRasterFileInfo.filePath(),
             myRasterFileInfo.completeBaseName() );
