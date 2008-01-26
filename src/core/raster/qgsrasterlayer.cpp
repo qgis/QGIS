@@ -393,6 +393,11 @@ QgsRasterLayer::QgsRasterLayer(
   mStandardDeviations(0),
   mDataProvider(0)
 {
+  mUserDefinedRGBMinMaxFlag = false; //defaults needed to bypass stretch
+  mUserDefinedGrayMinMaxFlag = false;
+
+  mRasterShader = new QgsRasterShader();
+
   if ( loadDefaultStyleFlag )
   {
     bool defaultLoadedFlag = false;
@@ -402,10 +407,6 @@ QgsRasterLayer::QgsRasterLayer(
       return;
     }
   }
-  mUserDefinedRGBMinMaxFlag = false; //defaults needed to bypass stretch
-  mUserDefinedGrayMinMaxFlag = false;
-
-  mRasterShader = new QgsRasterShader();
 
   // Initialise the affine transform matrix
   mGeoTransform[0] =  0;
