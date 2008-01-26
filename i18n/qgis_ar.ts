@@ -3,117 +3,117 @@
     <name>@default</name>
     <message>
         <source>OGR Driver Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>مدير مُشغل الـ OGR</translation>
     </message>
     <message>
         <source>unable to get OGRDriverManager</source>
-        <translation type="unfinished"></translation>
+        <translation>غير قادر على الحصول على مدير مُشغل الـ OGR</translation>
     </message>
 </context>
 <context>
     <name>Dialog</name>
     <message>
         <source>QGIS Plugin Installer</source>
-        <translation type="unfinished"></translation>
+        <translation>مُثبت البرامج المساعدة لـ QGIS</translation>
     </message>
     <message>
         <source>Select repository, retrieve the list of available plugins, select one and install it</source>
-        <translation type="unfinished"></translation>
+        <translation>اختيار المستودع ، استرجاع قائمة البرامج المساعدة المتاحة ، اختار واحد و قم بتنصيبه</translation>
     </message>
     <message>
         <source>Repository</source>
-        <translation type="unfinished"></translation>
+        <translation>المستودع</translation>
     </message>
     <message>
         <source>Active repository:</source>
-        <translation type="unfinished"></translation>
+        <translation>المستودع النشط :</translation>
     </message>
     <message>
         <source>Get List</source>
-        <translation type="unfinished"></translation>
+        <translation>الحصول على القائمة</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>إضافة</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>تعديل</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>إلغاء</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>اﻷسم</translation>
     </message>
     <message>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation>النسخة</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished"></translation>
+        <translation>الوصف</translation>
     </message>
     <message>
         <source>Author</source>
-        <translation type="unfinished"></translation>
+        <translation>المؤلف</translation>
     </message>
     <message>
         <source>Name of plugin to install</source>
-        <translation type="unfinished"></translation>
+        <translation>اسم البرنامج المساعد المراد تنصيبه</translation>
     </message>
     <message>
         <source>Install Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>تنصيب البرنامج المساعد</translation>
     </message>
     <message>
         <source>The plugin will be installed to ~/.qgis/python/plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>البرنامج المساعد يُنصب فى qgis/python/plugins</translation>
     </message>
     <message>
         <source>Done</source>
-        <translation type="unfinished"></translation>
+        <translation>تم</translation>
     </message>
 </context>
 <context>
     <name>Gui</name>
     <message>
         <source>Welcome to your automatically generated plugin!</source>
-        <translation type="unfinished"></translation>
+        <translation>مرحبا فى برنامجك المساعد المولد تلقائياً ! </translation>
     </message>
     <message>
         <source>This is just a starting point. You now need to modify the code to make it do something useful....read on for a more information to get yourself started.</source>
-        <translation type="unfinished"></translation>
+        <translation>هذه مجرد نقطة البداية . أنت اﻵن فى حاجة لتعديل الشفرة (الكود) ليقوم بعمل شئ نافع .... اكمل القراءة لمزيد من المعلومات لتبدأ بنفسك.</translation>
     </message>
     <message>
         <source>Documentation:</source>
-        <translation type="unfinished"></translation>
+        <translation>التوثيق :</translation>
     </message>
     <message>
         <source>You really need to read the QGIS API Documentation now at:</source>
-        <translation type="unfinished"></translation>
+        <translation>انت فى احتياج لقراءة توثيق الـ QGIS API اﻵن فى : </translation>
     </message>
     <message>
         <source>In particular look at the following classes:</source>
-        <translation type="unfinished"></translation>
+        <translation>بنظرة خاصة على الطبقات التالية :</translation>
     </message>
     <message>
         <source>QgsPlugin is an ABC that defines required behaviour your plugin must provide. See below for more details.</source>
-        <translation type="unfinished"></translation>
+        <translation>-الـ QgsPlugin هو أ ب ت الذى يوضح السلوك المطلوب و الواجب تحقيقه للبرنامج المساعد . انظر باﻷسفل لتفاصيل أكثر.</translation>
     </message>
     <message>
         <source>What are all the files in my generated plugin directory for?</source>
-        <translation type="unfinished"></translation>
+        <translation>ماذا تدَُل جميع الملفات فى برنامجى المساعد المولد ؟</translation>
     </message>
     <message>
         <source>This is the generated CMake file that builds the plugin. You should add you application specific dependencies and source files to this file.</source>
-        <translation type="unfinished"></translation>
+        <translation>هذا هو ملف الـ CMake المولد لتكوين (بناء) البرنامج المساعد . يجب عليك إضافة تطبيق محدد التبعيات و مصادر الملفات لهذا الملف .</translation>
     </message>
     <message>
         <source>This is the class that provides the &apos;glue&apos; between your custom application logic and the QGIS application. You will see that a number of methods are already implemented for you - including some examples of how to add a raster or vector layer to the main application map canvas. This class is a concrete instance of the QgisPlugin interface which defines required behaviour for a plugin. In particular, a plugin has a number of static methods and members so that the QgsPluginManager and plugin loader logic can identify each plugin, create an appropriate menu entry for it etc. Note there is nothing stopping you creating multiple toolbar icons and menu entries for a single plugin. By default though a single menu entry and toolbar button is created and its pre-configured to call the run() method in this class when selected. This default implementation provided for you by the plugin builder is well documented, so please refer to the code for further advice.</source>
-        <translation type="unfinished"></translation>
+        <translation>هذه هى الطبقة التى تزود الصمغ (الطبقة اللازقة) بين منطق تطبيقك و تطبيق الـ QGIS .  سترى ان عدد الأساليب طُبقت لك بالفعل - مشتملاً على بعض اﻷمثلة فى كيفية إضافة طبقة الرسومات المُتسامتة (Raster) او المتجهة (Vector) لواجهة خريطة التطبيق الرئيسية . هذه الطبقة مثال ملموس من واجهة الـ QgisPlugin التى توضح السلوك المطلوب للبرنامج المساعد . باﻷخص ، للبرنامج المساعد عدد من الأساليب الثابتة و اﻷعضاء ليستطيع الـ QgsPluginManager و منطق مُحمل البرنامج المساعد التعرف على اى برنامج مساعد ، إنشاء قائمة دخول مناسبة له و هكذا. ﻻحظ عدم وجود اى شئ يعركلك عن إنشاء عدة ايقونات لشريط اﻷدوات و قائمة مدخلات لبرنامج مساعد واحد. افتراضياً رغم إنشاء قائمة دخول واحدة و زر شريط أدوات و تهيئتها مسبقا لأستدعاء الطريقة run()  فى هذه الطبقة عند اختيارها. هذا التطبيق الأفتراضى مزود لك من مُنشأ البرنامج المساعد و موثق جيدا ، لذلك يرجى الرجوع للشفرة (الكود) لمزيد من النصائح . </translation>
     </message>
     <message>
         <source>This is a Qt designer &apos;ui&apos; file. It defines the look of the default plugin dialog without implementing any application logic. You can modify this form to suite your needs or completely remove it if your plugin does not need to display a user form (e.g. for custom MapTools).</source>
