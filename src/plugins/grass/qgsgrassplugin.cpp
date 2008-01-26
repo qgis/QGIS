@@ -184,16 +184,16 @@ void QgsGrassPlugin::initGui()
   mEditAction->setWhatsThis(tr("Edit the currently selected GRASS vector layer."));
 
   // Connect the action 
-  connect(mAddVectorAction, SIGNAL(activated()), this, SLOT(addVector()));
-  connect(mAddRasterAction, SIGNAL(activated()), this, SLOT(addRaster()));
-  connect(mOpenToolsAction, SIGNAL(activated()), this, SLOT(openTools()));
-  connect(mEditAction, SIGNAL(activated()), this, SLOT(edit()));
-  connect(mNewVectorAction, SIGNAL(activated()), this, SLOT(newVector()));
+  connect(mAddVectorAction, SIGNAL(triggered()), this, SLOT(addVector()));
+  connect(mAddRasterAction, SIGNAL(triggered()), this, SLOT(addRaster()));
+  connect(mOpenToolsAction, SIGNAL(triggered()), this, SLOT(openTools()));
+  connect(mEditAction, SIGNAL(triggered()), this, SLOT(edit()));
+  connect(mNewVectorAction, SIGNAL(triggered()), this, SLOT(newVector()));
   connect(mRegionAction, SIGNAL(toggled(bool)), this, SLOT(switchRegion(bool)));
-  connect(mEditRegionAction, SIGNAL(activated()), this, SLOT(changeRegion()));
-  connect(mOpenMapsetAction, SIGNAL(activated()), this, SLOT(openMapset()));
-  connect(mNewMapsetAction, SIGNAL(activated()), this, SLOT(newMapset()));
-  connect(mCloseMapsetAction, SIGNAL(activated()), this, SLOT(closeMapset()));
+  connect(mEditRegionAction, SIGNAL(triggered()), this, SLOT(changeRegion()));
+  connect(mOpenMapsetAction, SIGNAL(triggered()), this, SLOT(openMapset()));
+  connect(mNewMapsetAction, SIGNAL(triggered()), this, SLOT(newMapset()));
+  connect(mCloseMapsetAction, SIGNAL(triggered()), this, SLOT(closeMapset()));
 
   // Add actions to a GRASS plugin menu
   qGisInterface->addPluginMenu(tr("&GRASS"), mOpenMapsetAction);
@@ -293,7 +293,7 @@ void QgsGrassPlugin::saveMapset()
 			    QgsGrass::getDefaultMapset() );
 }
 
-// Slot called when the "Add GRASS vector layer" menu item is activated
+// Slot called when the "Add GRASS vector layer" menu item is triggered
 void QgsGrassPlugin::addVector()
 {
 #ifdef QGISDEBUG
@@ -375,7 +375,7 @@ void QgsGrassPlugin::addVector()
   }
 }
 
-// Slot called when the "Add GRASS raster layer" menu item is activated
+// Slot called when the "Add GRASS raster layer" menu item is triggered
 void QgsGrassPlugin::addRaster()
 {
 #ifdef QGISDEBUG

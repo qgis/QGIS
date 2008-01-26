@@ -46,7 +46,7 @@ void QgsWFSPlugin::initGui()
   if(mIface)
     {
       mWfsDialogAction = new QAction(QIcon(mIconAddWfsLayer), tr("&Add WFS layer"), 0);
-      QObject::connect(mWfsDialogAction, SIGNAL(activated()), this, SLOT(showSourceDialog()));
+      QObject::connect(mWfsDialogAction, SIGNAL(triggered()), this, SLOT(showSourceDialog()));
       mIface->addToolBarIcon(mWfsDialogAction);
       mIface->addPluginMenu(tr("&Add WFS layer"), mWfsDialogAction);
     }
