@@ -69,14 +69,14 @@ void QgsSpitPlugin::initGui()
     spitAction->setWhatsThis(tr("Import shapefiles into a PostGIS-enabled PostgreSQL database. "
         "The schema and field names can be customized on import")); 
     // Connect the action to the spit slot
-    connect(spitAction, SIGNAL(activated()), this, SLOT(spit()));
+    connect(spitAction, SIGNAL(triggered()), this, SLOT(spit()));
      // Add the icon to the toolbar and to the plugin menu
     qI->addToolBarIcon(spitAction); 
     qI->addPluginMenu(tr("&Spit"), spitAction); 
 
 }
 
-// Slot called when the shapefile to postgres menu item is activated
+// Slot called when the shapefile to postgres menu item is triggered
 void QgsSpitPlugin::spit()
 {
  QgsSpit *spitDlg = new QgsSpit(qgisMainWindow, Qt::Window);

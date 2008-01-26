@@ -39,7 +39,7 @@ void MapLayerTest::initGui(){
         menuId = menu->insertItem( "&PluginMenu", mapLayerPluginMenu );
 	//QAction *zoomPreviousAction = new QAction( "Zoom Previous",QIconSet(icon_matrix), "&Zoom Previous", CTRL+Key_S, qgisMainWindow, "zoomFull" );
 		
-     //   connect( zoomPreviousAction, SIGNAL( activated() ) , this, SLOT( zoomPrevious() ) );
+     //   connect( zoomPreviousAction, SIGNAL( triggered() ) , this, SLOT( zoomPrevious() ) );
 
 }
 void MapLayerTest::unload(){

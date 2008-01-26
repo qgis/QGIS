@@ -74,7 +74,7 @@ void [pluginname]::initGui()
   // Set the what's this text
   mQActionPointer->setWhatsThis(tr("Replace this with a short description of the what the plugin does"));
   // Connect the action to the run
-  connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
+  connect(mQActionPointer, SIGNAL(triggered()), this, SLOT(run()));
   // Add the icon to the toolbar
   mQGisIface->addToolBarIcon(mQActionPointer);
   mQGisIface->addPluginMenu(tr("&[menuname]"), mQActionPointer);
@@ -86,7 +86,7 @@ void [pluginname]::help()
   //implement me!
 }
 
-// Slot called when the menu item is activated
+// Slot called when the menu item is triggered
 // If you created more menu items / toolbar buttons in initiGui, you should 
 // create a separate handler for each action - this single run() method will
 // not be enough

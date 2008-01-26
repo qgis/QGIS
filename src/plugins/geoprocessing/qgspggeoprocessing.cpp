@@ -79,7 +79,7 @@ void QgsPgGeoprocessing::initGui()
   bufferAction->setWhatsThis(tr("Create a buffer for a PostgreSQL layer. " +
       tr("A new layer is created in the database with the buffered features.")));
   // Connect the action to the buffer slot
-  connect(bufferAction, SIGNAL(activated()), this, SLOT(buffer()));
+  connect(bufferAction, SIGNAL(triggered()), this, SLOT(buffer()));
 
   // Add the icon to the toolbar
   qI->addToolBarIcon(bufferAction);
@@ -87,7 +87,7 @@ void QgsPgGeoprocessing::initGui()
 
 }
 
-// Slot called when the buffer menu item is activated
+// Slot called when the buffer menu item is triggered
 void QgsPgGeoprocessing::buffer()
 {
   // need to get a pointer to the current layer

@@ -91,7 +91,7 @@ void QgsGeorefPlugin::initGui()
   mQActionPointer = new QAction(QIcon(":/icon.png"), tr("&Georeferencer"), this);
 
   // Connect the action to the run
-  connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
+  connect(mQActionPointer, SIGNAL(triggered()), this, SLOT(run()));
   
   // Add to the toolbar & menu
   mQGisIface->addToolBarIcon(mQActionPointer);
@@ -104,7 +104,7 @@ void QgsGeorefPlugin::help()
   //implement me!
 }
 
-// Slot called when the buffer menu item is activated
+// Slot called when the buffer menu item is triggered
 void QgsGeorefPlugin::run()
 {
   QgsGeorefPluginGui *myPluginGui=new QgsGeorefPluginGui(mQGisIface, QgsGeorefPluginGui::findMainWindow());
