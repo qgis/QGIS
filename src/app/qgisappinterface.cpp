@@ -18,6 +18,7 @@
 /* $Id$ */
 
 #include <iostream>
+#include <QFileInfo>
 #include <QString>
 #include <QMenu>
 
@@ -56,22 +57,26 @@ void QgisAppInterface::zoomActiveLayer()
   qgis->zoomToLayerExtent();
 }
 
-bool QgisAppInterface::addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey)
+QgsVectorLayer* QgisAppInterface::addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey)
 {
-  qgis->addVectorLayer(vectorLayerPath, baseName, providerKey);
-  //TODO fix this so it returns something meaningfull
-  return true;
+  if (baseName.isEmpty())
+  {
+    QFileInfo fi(vectorLayerPath);
+    baseName = fi.completeBaseName();
+  }
+  return qgis->addVectorLayer(vectorLayerPath, baseName, providerKey);
 }
 
-bool QgisAppInterface::addRasterLayer(QString rasterLayerPath)
+QgsRasterLayer* QgisAppInterface::addRasterLayer(QString rasterLayerPath, QString baseName)
 {
-  return qgis->addRasterLayer( QStringList(rasterLayerPath) );
+  if (baseName.isEmpty())
+  {
+    QFileInfo fi(rasterLayerPath);
+    baseName = fi.completeBaseName();
+  }
+  return qgis->addRasterLayer(rasterLayerPath, baseName);
 }
 
-bool QgisAppInterface::addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRenderFlag)
-{
-  return qgis->addRasterLayer(theRasterLayer, theForceRenderFlag);
-}
 
 bool QgisAppInterface::addProject(QString theProjectName)
 {
@@ -116,16 +121,6 @@ void QgisAppInterface::openURL(QString url, bool useQgisDocDirectory)
   qgis->openURL(url, useQgisDocDirectory);
 }
 
-std::map<QString, int> QgisAppInterface::menuMapByName()
-{
-  return qgis->menuMapByName();
-}
-
-std::map<int, QString> QgisAppInterface::menuMapById()
-{
-  return qgis->menuMapById();
-}
-  
 QgsMapCanvas * QgisAppInterface::getMapCanvas()
 {
   return qgis->getMapCanvas();

@@ -51,11 +51,9 @@ class QgisAppInterface : public QgisInterface
         void zoomActiveLayer();
 
         //! Add a vector layer
-        bool addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey);
+        QgsVectorLayer* addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey);
         //! Add a raster layer given its file name
-        bool addRasterLayer(QString rasterLayerPath);
-        //! Add a raster layer given a raster layer obj
-        bool addRasterLayer(QgsRasterLayer * theRasterLayer,bool theForceRenderFlag=false);
+        QgsRasterLayer* addRasterLayer(QString rasterLayerPath, QString baseName);
 
         //! Add a project
         bool addProject(QString theProjectName);
@@ -80,11 +78,6 @@ class QgisAppInterface : public QgisInterface
          * url to the QGIS documentation directory path (<prefix>/share/doc)
          */
         void openURL(QString url, bool useQgisDocDirectory=true);
-
-        /** Get the menu info mapped by menu name (key is name, value is menu id) */
-        std::map<QString,int> menuMapByName();
-        /** Get the menu info mapped by menu id (key is menu id, value is name) */
-        std::map<int,QString> menuMapById();
 
         /** Return a pointer to the map canvas used by qgisapp */
         QgsMapCanvas * getMapCanvas();	

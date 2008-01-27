@@ -173,8 +173,7 @@ void QgsGrassBrowser::addMap()
         if ( type == QgsGrassModel::Raster )
 	{
             std::cerr << "add raster: " << uri.ascii() << std::endl;
-            QgsRasterLayer *layer = new QgsRasterLayer( uri, map );
-            mIface->addRasterLayer(layer);
+            mIface->addRasterLayer(uri, map);
 	    mapSelected = true;
 	}
 	else if ( type == QgsGrassModel::Vector )

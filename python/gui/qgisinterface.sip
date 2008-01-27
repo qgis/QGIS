@@ -36,11 +36,9 @@ class QgisInterface : QObject
     virtual void zoomActiveLayer()=0;
 
     //! Add a vector layer
-    virtual bool addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey)=0;
+    virtual QgsVectorLayer* addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey)=0;
     //! Add a raster layer given a raster layer file name
-    virtual bool addRasterLayer(QString rasterLayerPath)=0;
-    //! Add a raster layer given a QgsRasterLayer object
-    virtual bool addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRenderFlag=false)=0;
+    virtual QgsRasterLayer* addRasterLayer(QString rasterLayerPath, QString baseName = QString())=0;
 
     //! Add a project
     virtual bool addProject(QString theProject)=0; 
