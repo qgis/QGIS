@@ -1494,8 +1494,7 @@ void QgsGrassModule::viewOutput()
       + QgsGrass::getDefaultMapset() 
       + "/cellhd/" + map;
 
-    QgsRasterLayer *layer = new QgsRasterLayer( uri, map );
-    mIface->addRasterLayer(layer);
+    mIface->addRasterLayer(uri, map);
   }
 }
 

@@ -411,16 +411,8 @@ void QgsGrassPlugin::addRaster()
     pos = uri.findRev('/', pos-1);
     QString name = uri.right( uri.length() - pos - 1 );
     name.replace('/', ' ');
-
-    //qGisInterface->addRasterLayer( uri );
-    QgsRasterLayer *layer = new QgsRasterLayer( uri, sel->map );
-    if( !layer->isValid() ) {
-      // let the user know something went wrong - addRasterLayer cleans up
-      QMessageBox::warning( 0, tr("Warning"), tr("Could not add raster layer: " ) + uri);
-    }
-    qGisInterface->addRasterLayer(layer);
-
-    mCanvas->refresh(); 
+    
+    qGisInterface->addRasterLayer(uri, sel->map);
   }
 }
 
