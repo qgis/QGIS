@@ -13,7 +13,7 @@ Standards-Version: 3.7.2
 Package: qgis
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libqgis1
-Suggests: qgis-plugin-grass, python, python-qt4
+Suggests: qgis-plugin-grass, python, python-qt4, python-sip4
 Description: Geographic Information System (GIS)
  A Geographic Information System (GIS) manages,
  analyzes, and displays databases of geographic
