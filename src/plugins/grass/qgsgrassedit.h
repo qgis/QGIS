@@ -116,10 +116,7 @@ public:
 
     //! Constructor
     QgsGrassEdit ( QgisInterface *iface, 
-	           QWidget * parent = 0, Qt::WFlags f = 0 );
-
-    QgsGrassEdit ( QgisInterface *iface, 
-                   QgsGrassProvider *provider,
+                   QgsMapLayer *layer, bool newMap,
 	           QWidget * parent = 0, Qt::WFlags f = 0 );
 
     // Shared by constructors

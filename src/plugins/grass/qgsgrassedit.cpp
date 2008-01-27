@@ -112,7 +112,7 @@ class QgsGrassEditLayer : public QgsMapCanvasItem
 
 bool QgsGrassEdit::mRunning = false;
 
-QgsGrassEdit::QgsGrassEdit ( QgisInterface *iface, 
+QgsGrassEdit::QgsGrassEdit ( QgisInterface *iface, QgsMapLayer* layer, bool newMap,
     QWidget * parent, Qt::WFlags f )
     :QMainWindow(parent,f), QgsGrassEditBase (), mInited(false), 
      mMapTool(0), mCanvasEdit(0), mRubberBandLine(0), mRubberBandIcon(0)
@@ -128,16 +128,11 @@ QgsGrassEdit::QgsGrassEdit ( QgisInterface *iface,
   mTool = QgsGrassEdit::NONE;
   mSuspend = false;
   mIface = iface;
-  mNewMap = false;
+  mNewMap = newMap;
 
   mProjectionEnabled = (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0);
 
   mCanvas = mIface->getMapCanvas();
-
-  // TODO QGIS: crash if canvas is empty
-
-  // At moment QgisIface::activeLayer() does not work
-  QgsMapLayer *layer = (QgsMapLayer *) mIface->activeLayer();
 
   if ( !isEditable(layer) ) return;
 
@@ -198,33 +193,6 @@ void QgsGrassEdit::keyPress(QKeyEvent *e)
     }
 }
 
-QgsGrassEdit::QgsGrassEdit ( QgisInterface *iface, 
-    QgsGrassProvider *provider,
-    QWidget * parent, Qt::WFlags f )
-    :QMainWindow(parent, 0, f), QgsGrassEditBase (), mInited(false), 
-     mMapTool(0), mCanvasEdit(0), mRubberBandLine(0), mRubberBandIcon(0)
-{
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit()" << std::endl;
-#endif
-
-  setupUi(this);
-
-  mRunning = true;
-  mValid = false;
-  mTool = QgsGrassEdit::NONE;
-  mSuspend = false;
-  mIface = iface;
-  mNewMap = true;
-
-  mProjectionEnabled = (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0);
-
-  mCanvas = mIface->getMapCanvas();
-
-  mProvider = provider;
-
-  init();
-}
 
 void QgsGrassEdit::init()
 {

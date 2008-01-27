@@ -440,7 +440,8 @@ void QgsGrassPlugin::edit()
   }
 
   mEditAction->setEnabled(false);
-  QgsGrassEdit *ed = new QgsGrassEdit( qGisInterface, qGisInterface->getMainWindow(), Qt::WType_Dialog );
+  QgsGrassEdit *ed = new QgsGrassEdit( qGisInterface, qGisInterface->activeLayer(), false,
+                                       qGisInterface->getMainWindow(), Qt::WType_Dialog );
 
   if ( ed->isValid() ) {
     ed->show();
@@ -511,24 +512,22 @@ void QgsGrassPlugin::newVector()
     Vect_close ( &Map );
  
     // Open in GRASS vector provider
-    QgsProviderRegistry *pr = QgsProviderRegistry::instance();
 
     QString uri = QgsGrass::getDefaultGisdbase() + "/" 
                  + QgsGrass::getDefaultLocation() + "/" 
                  + QgsGrass::getDefaultMapset() + "/" 
                  + name + "/0_point";
-
-    QgsGrassProvider *provider = (QgsGrassProvider *) 
-                       pr->getProvider ( "grass", uri );
-
-    if ( !provider ) 
+    
+    QgsVectorLayer* layer = new QgsVectorLayer(uri, name, "grass");
+    
+    if ( !layer ) 
     {
         QMessageBox::warning( 0, tr("Warning"), tr("New vector created "
                   "but cannot be opened by data provider.") );
         return;
     }
 
-    QgsGrassEdit *ed = new QgsGrassEdit(qGisInterface, provider, 
+    QgsGrassEdit *ed = new QgsGrassEdit(qGisInterface, layer, true,
                qGisInterface->getMainWindow(), Qt::WType_Dialog );
 
     if ( ed->isValid() ) {
