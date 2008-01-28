@@ -1704,24 +1704,32 @@ int QgsVectorLayer::splitFeatures(const QList<QgsPoint>& splitLine, bool topolog
   int returnCode = 0;
   int splitFunctionReturn; //return code of QgsGeometry::splitGeometry
 
-  if(boundingBoxFromPointList(splitLine, xMin, yMin, xMax, yMax) == 0)
+  QgsFeatureList featureList;
+  const QgsFeatureIds selectedIds = selectedFeaturesIds();
+  
+  if(selectedIds.size() > 0)//consider only the selected features if there is a selection
     {
-      bBox.setXmin(xMin); bBox.setYmin(yMin); bBox.setXmax(xMax); bBox.setYmax(yMax);
+      featureList = selectedFeatures();
     }
-  else
+  else //else consider all the feature that intersect the bounding box of the split line
     {
-      return 1;
+      if(boundingBoxFromPointList(splitLine, xMin, yMin, xMax, yMax) == 0)
+	{
+	  bBox.setXmin(xMin); bBox.setYmin(yMin); bBox.setXmax(xMax); bBox.setYmax(yMax);
+	}
+      else
+	{
+	  return 1;
+	}
+      
+      if(bBox.isEmpty())
+	{
+	  return 2;
+	}
+      featuresInRectangle(bBox, featureList);
     }
   
-  if(bBox.isEmpty())
-    {
-      return 2;
-    }
-
-  QList<QgsFeature> featureList;
-  featuresInRectangle(bBox, featureList);
-  QList<QgsFeature>::iterator select_it = featureList.begin();
-
+  QgsFeatureList::iterator select_it = featureList.begin();
   for(; select_it != featureList.end(); ++select_it)
     {
       QList<QgsGeometry*> newGeometries;
