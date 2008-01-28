@@ -2203,10 +2203,6 @@ Compilado contra Qt </translation>
       <translation>Escala actual del mapa</translation>
     </message>
     <message>
-      <source></source>
-      <translation type="unfinished" />
-    </message>
-    <message>
       <source>Project file is older</source>
       <translation>El archivo del proyecto es más antiguo</translation>
     </message>
@@ -2312,6 +2308,39 @@ Compilado contra Qt </translation>
     <message>
       <source>Ok</source>
       <translation>Aceptar</translation>
+    </message>
+    <message>
+      <source>Quantum GIS is licensed under the GNU General Public License</source>
+      <translation>Quantum GIS se distribuye bajo la Licencia Pública General GNU</translation>
+    </message>
+    <message>
+      <source>QGIS Sponsors</source>
+      <translation>Patrocinadores de QGIS</translation>
+    </message>
+    <message>
+      <source>The following have sponsored QGIS by contributing money to fund development and other project costs</source>
+      <translation>Los siguientes han patrocinado QGIS aportando dinero para financiar el desarrollo y otros costes del proyecto</translation>
+    </message>
+    <message>
+      <source>Name</source>
+      <translation>Nombre</translation>
+    </message>
+    <message>
+      <source>Website</source>
+      <translation>Página web</translation>
+    </message>
+    <message>
+      <source>QGIS Browser Selection</source>
+      <translation>Selección de navegador de QGIS</translation>
+    </message>
+    <message>
+      <source>Enter the name of a web browser to use (eg. konqueror).
+Enter the full path if the browser is not in your PATH.
+You can change this option later by selection Options from the Settings menu (Help Browser tab).</source>
+      <translation>Introduzca el nombre de un navegador web a utilizar (ej. konqueror).
+Introduzca la ruta completa si el navegador no está en la variable de entorno PATH.
+Puede cambiar esta opción más tarde seleccionadon Opciones desde el menú Configuración (pestaña Navegador de la ayuda).
+</translation>
     </message>
   </context>
   <context>
@@ -2667,6 +2696,10 @@ Compilado contra Qt </translation>
       <source>The attribute could not be inserted. The name already exists in the table.</source>
       <translation>No se pudo insertar el atributo. El nombre ya existe en la tabla.</translation>
     </message>
+    <message>
+      <source>Found %d matching features.</source>
+      <translation>Se han encontrado %d elementos coincidentes.</translation>
+    </message>
   </context>
   <context>
     <name>QgsBookmarks</name>
@@ -2862,7 +2895,7 @@ Compilado contra Qt </translation>
     </message>
     <message>
       <source>Item</source>
-      <translation>Ítem</translation>
+      <translation>Elemento</translation>
     </message>
     <message>
       <source>Close</source>
@@ -2910,7 +2943,7 @@ Compilado contra Qt </translation>
     </message>
     <message>
       <source>Select/Move item</source>
-      <translation>Seleccionar/Mover ítem</translation>
+      <translation>Seleccionar/Mover elemento</translation>
     </message>
     <message>
       <source>Export as image</source>
@@ -5314,11 +5347,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>Select item</source>
-      <translation>Seleccionar ítem</translation>
+      <translation>Seleccionar elemento</translation>
     </message>
     <message>
       <source>Delete selected item</source>
-      <translation>Borrar ítem seleccionado</translation>
+      <translation>Borrar elemento seleccionado</translation>
     </message>
     <message>
       <source>Open</source>
@@ -6372,10 +6405,6 @@ en la línea </translation>
       <source>Cannot open GRASS mapset. </source>
       <translation>No se puede abrir el directorio de mapas de GRASS. </translation>
     </message>
-    <message>
-      <source>Could not add raster layer: </source>
-      <translation>No se pudo añadir la capa ráster: </translation>
-    </message>
   </context>
   <context>
     <name>QgsGrassRegion</name>
@@ -6834,6 +6863,12 @@ en la línea </translation>
       <source>HTTP transaction completed, however there was an error: %1</source>
       <translation>Transacción HTTP completada, sin embargo ha habido un error: %1</translation>
     </message>
+    <message>
+      <source>Network timed out after %1 seconds of inactivity.
+This may be a problem in your network connection or at the WMS server.</source>
+      <translation>La conexión a red expiró después de %1 segundos de inactividad.
+Esto puede ser por un problema en su conexión a red o en el servidor WMS.</translation>
+    </message>
   </context>
   <context>
     <name>QgsIdentifyResults</name>
@@ -7216,7 +7251,7 @@ en la línea </translation>
     </message>
     <message>
       <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-      <translation>Este ítem contiene más archivos de capas. Mostrar más capas en la tabla no está soportado.</translation>
+      <translation>Este elemento contiene más archivos de capas. Mostrar más capas en la tabla no está soportado.</translation>
     </message>
   </context>
   <context>
@@ -7255,7 +7290,7 @@ en la línea </translation>
     </message>
     <message>
       <source>Problems during roll back</source>
-      <translation type="unfinished" >Problemas al desinstalar</translation>
+      <translation type="unfinished" />
     </message>
     <message>
       <source>Not a vector layer</source>
@@ -7417,6 +7452,11 @@ en la línea </translation>
 %2</source>
       <translation>Resultado de identificación WMS para %1
 %2</translation>
+    </message>
+    <message>
+      <source>- %1 features found</source>
+      <comment>Identify results window title</comment>
+      <translation>Encontrados - %1 elementos</translation>
     </message>
   </context>
   <context>
@@ -7682,7 +7722,7 @@ Do you want to overwrite it?</source>
     </message>
     <message>
       <source>New Item</source>
-      <translation>Nuevo ítem</translation>
+      <translation>Nuevo elemento</translation>
     </message>
   </context>
   <context>
@@ -8542,13 +8582,16 @@ Información extensa sobre el error:
       <translation>No es una capa PostgreSQL/PostGIS</translation>
     </message>
     <message>
-      <source> is not a PostgreSQL/PostGIS layer.
-</source>
-      <translation> no es una capa PostgreSQL/PostGIS.</translation>
+      <source>Create a buffer for a PostgreSQL layer. </source>
+      <translation>Crear un área de influencia de una capa PostgreSQL. </translation>
     </message>
     <message>
-      <source>Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source>
-      <translation>Las funciones de geoprocesamiento sólo están disponibles para capas PostgreSQL/PostGIS</translation>
+      <source> is not a PostgreSQL/PostGIS layer. </source>
+      <translation> no es una capa PostgreSQL/PostGIS. </translation>
+    </message>
+    <message>
+      <source>Geoprocessing functions are only available for PostgreSQL/PostGIS Layers.</source>
+      <translation>Las funciones de geoprocesamiento sólo están disponibles para capas PostgreSQL/PostGIS.</translation>
     </message>
   </context>
   <context>
@@ -8572,10 +8615,6 @@ Información extensa sobre el error:
     <message>
       <source>&lt;p>Failed to get sample of field values using SQL:&lt;/p>&lt;p></source>
       <translation>&lt;p>No se pudieron obtener muestras de los valores de los campos utilizando SQL:&lt;/p>&lt;p></translation>
-    </message>
-    <message>
-      <source>Failed to get sample of field values</source>
-      <translation>No se pudieron obtener muestras de los valores de los campos</translation>
     </message>
     <message>
       <source>Query Result</source>
@@ -8723,6 +8762,46 @@ Información extensa sobre el error:
     <message>
       <source>SQL where clause</source>
       <translation>Cláusula &quot;donde&quot; (WHERE) de SQL</translation>
+    </message>
+    <message>
+      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Retrieve &lt;span style=&quot; font-weight:600;&quot;>all&lt;/span> the record in the vector file (&lt;span style=&quot; font-style:italic;&quot;>if the table is big, the operation can consume some time&lt;/span>)&lt;/p>&lt;/body>&lt;/html></source>
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Recuperar &lt;span style=&quot; font-weight:600;&quot;>todos&lt;/span> los registros del archivo vectorial (&lt;span style=&quot; font-style:italic;&quot;>si la tabla es grande, la operación puede llevar un poco de tiempo&lt;/span>)&lt;/p>&lt;/body>&lt;/html></translation>
+    </message>
+    <message>
+      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Take a &lt;span style=&quot; font-weight:600;&quot;>sample&lt;/span> of records in the vector file&lt;/p>&lt;/body>&lt;/html></source>
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Tomar una &lt;span style=&quot; font-weight:600;&quot;>muestra&lt;/span> de los registros del archivo vectorial&lt;/p>&lt;/body>&lt;/html></translation>
+    </message>
+    <message>
+      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>List of values for the current field.&lt;/p>&lt;/body>&lt;/html></source>
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Lista de valores para el campo actual.&lt;/p>&lt;/body>&lt;/html></translation>
+    </message>
+    <message>
+      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>List of fields in this vector file&lt;/p>&lt;/body>&lt;/html></source>
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Lista de campos en este archivo vectorial&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
   </context>
   <context>
@@ -9174,6 +9253,10 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
     <message>
       <source>The PostgreSQL database returned: </source>
       <translation>La base de datos PostgrSQL devolvió: </translation>
+    </message>
+    <message>
+      <source>Qgis was unable to determine the type and srid of column </source>
+      <translation>QGIS no pude determinar el tipo y srid de la columna </translation>
     </message>
   </context>
   <context>
@@ -10093,7 +10176,7 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
     </message>
     <message>
       <source>Export To File</source>
-      <translation>Exporta a archivo</translation>
+      <translation>Exportar a archivo</translation>
     </message>
     <message>
       <source>No Data Value:</source>
@@ -10355,6 +10438,10 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
       <source>Search query builder</source>
       <translation>Constructor de consultas de búsqueda</translation>
     </message>
+    <message>
+      <source>Found %d matching features.</source>
+      <translation>Se han encontrado %d elementos coincidentes.</translation>
+    </message>
   </context>
   <context>
     <name>QgsServerSourceSelect</name>
@@ -10409,6 +10496,10 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
     <message>
       <source>&lt;p>Several WMS servers have been added to the server list. Note that the proxy fields have been left blank and if you access the internet via a web proxy, you will need to individually set the proxy fields with appropriate values.&lt;/p></source>
       <translation>&lt;p>Se han añadido varios servidores WMS la lista de servidores. Los campos proxy se han dejado en blanco y si accede a internet a través de un servidor proxy necesitará rellenar los campos del proxy de manera individual con valores apropiados.&lt;/p></translation>
+    </message>
+    <message>
+      <source>Coordinate Reference System (%1 available)</source>
+      <translation>Sistema de referencia de coordenadas (%1 disponible)</translation>
     </message>
   </context>
   <context>
@@ -11716,98 +11807,7 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
     </message>
   </context>
   <context>
-    <name>QuickPrint</name>
-    <message>
-      <source>Quick Print</source>
-      <translation>Impresión rápida</translation>
-    </message>
-    <message>
-      <source>Replace this with a short description of the what the plugin does</source>
-      <translation>Reemplazar con una breve descripción de lo que hace el complemento</translation>
-    </message>
-    <message>
-      <source>&amp;Quick Print</source>
-      <translation>Impresión &amp;rápida</translation>
-    </message>
-  </context>
-  <context>
     <name>QuickPrintGui</name>
-    <message>
-      <source>Welcome to your automatically generated plugin!</source>
-      <translation>Bienvenido a su complemento generado automáticamente</translation>
-    </message>
-    <message>
-      <source>This is just a starting point. You now need to modify the code to make it do something useful....read on for a more information to get yourself started.</source>
-      <translation>Este es sólo un punto de inicio. Ahora necesita modificar el código para que haga algo útil... continúe leyendo para más información sobre cómo empezar.</translation>
-    </message>
-    <message>
-      <source>Documentation:</source>
-      <translation>Documentación:</translation>
-    </message>
-    <message>
-      <source>You really need to read the QGIS API Documentation now at:</source>
-      <translation>Ahora necesita leer la documentación del API de QGIS en:</translation>
-    </message>
-    <message>
-      <source>In particular look at the following classes:</source>
-      <translation>En particular mire las siguientes clases:</translation>
-    </message>
-    <message>
-      <source>QgsPlugin is an ABC that defines required behaviour your plugin must provide. See below for more details.</source>
-      <translation>QgsPlugin es una ABC que define los comportamientos requeridos que su complemento debe proporcionar. Vea más abajo para más detalles.</translation>
-    </message>
-    <message>
-      <source>What are all the files in my generated plugin directory for?</source>
-      <translation>¿Para qué son todos los archivos generados en mi directorio de complementos?</translation>
-    </message>
-    <message>
-      <source>This is the generated CMake file that builds the plugin. You should add you application specific dependencies and source files to this file.</source>
-      <translation>Este es el archivo CMake que construye el complemento. Debería añadir las dependencias específicas de su aplicación y los archivos fuente a este archivo.</translation>
-    </message>
-    <message>
-      <source>This is the class that provides the 'glue' between your custom application logic and the QGIS application. You will see that a number of methods are already implemented for you - including some examples of how to add a raster or vector layer to the main application map canvas. This class is a concrete instance of the QgisPlugin interface which defines required behaviour for a plugin. In particular, a plugin has a number of static methods and members so that the QgsPluginManager and plugin loader logic can identify each plugin, create an appropriate menu entry for it etc. Note there is nothing stopping you creating multiple toolbar icons and menu entries for a single plugin. By default though a single menu entry and toolbar button is created and its pre-configured to call the run() method in this class when selected. This default implementation provided for you by the plugin builder is well documented, so please refer to the code for further advice.</source>
-      <translation type="unfinished" >Esta el la clase que proporciona el &quot;pegamento&quot; entre la lógica de su aplicación personal y la aplicación QGIS. Verá que ya hay implementados algunos métodos para usted - incluyendo algunos ejemplos de cómo añadir una capa ráster o vectorial a la vista principal del mapa de la aplicación. Esta clase es una instancia concreta de la interfaz QgisPlugin que define el comportamiento requerido para un complemento. En particular, un complemento tiene un número de métodos estáticos y miembros de forma que el QgsPluginManager y la lógica del cargador de complementos puedan identificar cada complemento, crear una entrada de menú apropiada para él, etc. Tenga en cuenta que no hay nada que le pare creando múltiples iconos de barras de herramientas y entradas de menú para un solo complemento. Sin embargo, de forma predeterminada sólo se crea una entrada de menú y un botón de barra de herramientas y está preconfigurado para llamar al método run() de esa clase cuando se selecciona. Esta implementación predeterminada proporcionada por el constructor de complementos está bien documentada, así que acuda al código para más información.</translation>
-    </message>
-    <message>
-      <source>This is a Qt designer 'ui' file. It defines the look of the default plugin dialog without implementing any application logic. You can modify this form to suite your needs or completely remove it if your plugin does not need to display a user form (e.g. for custom MapTools).</source>
-      <translation>Este es un archivo &quot;ui&quot; del diseñador de Qt. Define el aspecto del diálogo predeterminadado del complemento sin implementar ninguna lógica de la aplicación. Puede modificar este formulario para adaptarlo a sus necesidades o eliminarlo por completo si su complemento no necesita mostrar un formulario de usuario (por ej. para personalizar MapTools).</translation>
-    </message>
-    <message>
-      <source>This is the concrete class where application logic for the above mentioned dialog should go. The world is your oyster here really....</source>
-      <translation>Esta es la clase concreta donde debe ir la lógica de la aplicación para el diálogo mencionado anteriormente. Aquí es donde está el quiz de la cuestión...</translation>
-    </message>
-    <message>
-      <source>This is the Qt4 resources file for your plugin. The Makefile generated for your plugin is all set up to compile the resource file so all you need to do is add your additional icons etc using the simple xml file format. Note the namespace used for all your resources e.g. (':/Homann/'). It is important to use this prefix for all your resources. We suggest you include any other images and run time data in this resurce file too.</source>
-      <translation type="unfinished" >Este es el archivo de recursos de Qt4 para su complemento. El Makefile generado para su complemento está configurado por completo para compilar el archivo de recursos, así que todo lo que tiene que hacer es añadir sus iconos adicionales, etc. usando el sencillo formato de archivo xml. Fíjese en el namespace usado para todos sus recursos, ej. (&quot;:/[pluginname]/&quot;). Es importante usar este prefijo para todos sus recursos. Le sugerimos que incluya cualquier otra imagen y datos de tiempo de ejecución también en este archivo de recurso.</translation>
-    </message>
-    <message>
-      <source>This is the icon that will be used for your plugin menu entry and toolbar icon. Simply replace this icon with your own icon to make your plugin disctinctive from the rest.</source>
-      <translation>Este es el icono que se usará para la entrada de menú e icono de barra de herramientas de su complemento. Simplemente sustituya este icono con el suyo para distinguirlo del resto.</translation>
-    </message>
-    <message>
-      <source>This file contains the documentation you are reading now!</source>
-      <translation>¡Este archivo contiene la documentación que está leyendo ahora!</translation>
-    </message>
-    <message>
-      <source>Getting developer help:</source>
-      <translation>Obtener ayuda de los desarrolladores:</translation>
-    </message>
-    <message>
-      <source>For Questions and Comments regarding the plugin builder template and creating your features in QGIS using the plugin interface please contact us via:</source>
-      <translation>Para preguntas y comentarios sobre la plantilla del constructor de complementos y la creación de sus elementos en QGIS usando la interfaz de complementos, por favor póngase en contacto con nosotros via:</translation>
-    </message>
-    <message>
-      <source>&lt;li> the QGIS developers mailing list, or &lt;/li>&lt;li> IRC (#qgis on freenode.net)&lt;/li></source>
-      <translation>&lt;li> la lista de correo de desarrolladores de QGIS o&lt;/li>&lt;li> IRC (#qgis en freenode.net)&lt;/li></translation>
-    </message>
-    <message>
-      <source>QGIS is distributed under the Gnu Public License. If you create a useful plugin please consider contributing it back to the community.</source>
-      <translation>QGIS se distribuye bajo la Licencia Pública Gnu (GPL). Si crea un complemento útil, por favor valore ponerlo a su vez a disposición de la comunidad.</translation>
-    </message>
-    <message>
-      <source>Have fun and thank you for choosing QGIS.</source>
-      <translation>Diviértase y gracias por elegir QGIS.</translation>
-    </message>
     <message>
       <source>Portable Document Format (*.pdf)</source>
       <translation>Formato de documento portátil (*.pdf)</translation>
@@ -11820,65 +11820,9 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
       <source>Unknown format: </source>
       <translation>Formato desconocido: </translation>
     </message>
-    <message>
-      <source> km</source>
-      <translation> km</translation>
-    </message>
-    <message>
-      <source> mm</source>
-      <translation> mm</translation>
-    </message>
-    <message>
-      <source> cm</source>
-      <translation> cm</translation>
-    </message>
-    <message>
-      <source> m</source>
-      <translation> m</translation>
-    </message>
-    <message>
-      <source> miles</source>
-      <translation> millas</translation>
-    </message>
-    <message>
-      <source> mile</source>
-      <translation> milla</translation>
-    </message>
-    <message>
-      <source> inches</source>
-      <translation> pulgadas</translation>
-    </message>
-    <message>
-      <source> foot</source>
-      <translation> pie</translation>
-    </message>
-    <message>
-      <source> feet</source>
-      <translation> pies</translation>
-    </message>
-    <message>
-      <source> degree</source>
-      <translation> grado</translation>
-    </message>
-    <message>
-      <source> degrees</source>
-      <translation> grados</translation>
-    </message>
-    <message>
-      <source> unknown</source>
-      <translation> desconocido</translation>
-    </message>
   </context>
   <context>
     <name>QuickPrintGuiBase</name>
-    <message>
-      <source>QGIS Plugin Template</source>
-      <translation>Plantilla de complementos de QGIS</translation>
-    </message>
-    <message>
-      <source>Plugin Template</source>
-      <translation>Plantilla de complementos</translation>
-    </message>
     <message>
       <source>QGIS Quick Print Plugin</source>
       <translation>Complemento de impresión rápida de QGIS</translation>
