@@ -87,6 +87,7 @@ class QgsPgQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase {
     void on_btnILike_clicked();
     QString sql();
     void setSql( QString sqlStatement);
+    void on_lstFields_clicked( const QModelIndex &index );
     void on_lstFields_doubleClicked( const QModelIndex &index );
     void on_lstValues_doubleClicked( const QModelIndex &index );
     void on_btnLessEqual_clicked();
@@ -123,7 +124,9 @@ class QgsPgQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase {
   /*! 
    * Setup models for listviews
    */ 
-  void setupListViews();
+  void setupGuiViews();
+  void setupLstFieldsModel();
+  void fillValues(QString theSQL);
 
   /*! Get the number of records that would be returned by the current SQL
    * @return Number of records or -1 if an error was encountered
@@ -149,5 +152,9 @@ class QgsPgQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase {
   QStandardItemModel *mModelFields;
   //! Model for values ListView
   QStandardItemModel *mModelValues;
+  //! Actual field char?
+  bool mActualFieldIsChar;
+  //! Previous field row to delete model
+  int mPreviousFieldRow;
 };
 #endif //QGSPGQUERYBUILDER_H
