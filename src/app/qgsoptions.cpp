@@ -165,8 +165,8 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   myGreen = settings.value("/qgis/digitizing/line_color_green", 0).toInt();
   myBlue = settings.value("/qgis/digitizing/line_color_blue", 0).toInt();
   mLineColourToolButton->setColor(QColor(myRed, myGreen, myBlue));
-  mDefaultSnappingToleranceSpinBox->setValue(settings.value("/qgis/digitizing/default_snapping_tolerance", 0).toInt());
-  mSearchRadiusVertexEditSpinBox->setValue(settings.value("/qgis/digitizing/search_radius_vertex_edit", 10).toInt());
+  mDefaultSnappingToleranceSpinBox->setValue(settings.value("/qgis/digitizing/default_snapping_tolerance", 0).toDouble());
+  mSearchRadiusVertexEditSpinBox->setValue(settings.value("/qgis/digitizing/search_radius_vertex_edit", 10).toDouble());
 }
 
 //! Destructor

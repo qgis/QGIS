@@ -28,6 +28,16 @@
    <property name="spacing" >
     <number>6</number>
    </property>
+   <item row="1" column="0" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0" >
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
@@ -787,11 +797,7 @@
              </spacer>
             </item>
             <item>
-             <widget class="QSpinBox" name="mDefaultSnappingToleranceSpinBox" >
-              <property name="maximum" >
-               <number>1000000000</number>
-              </property>
-             </widget>
+             <widget class="QDoubleSpinBox" name="mDefaultSnappingToleranceSpinBox" />
             </item>
            </layout>
           </item>
@@ -824,17 +830,7 @@
              </spacer>
             </item>
             <item>
-             <widget class="QSpinBox" name="mSearchRadiusVertexEditSpinBox" >
-              <property name="maximum" >
-               <number>1000000000</number>
-              </property>
-              <property name="minimum" >
-               <number>0</number>
-              </property>
-              <property name="value" >
-               <number>0</number>
-              </property>
-             </widget>
+             <widget class="QDoubleSpinBox" name="mSearchRadiusVertexEditSpinBox" />
             </item>
            </layout>
           </item>
@@ -1118,16 +1114,6 @@
        </item>
       </layout>
      </widget>
-    </widget>
-   </item>
-   <item row="1" column="0" >
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
-     </property>
     </widget>
    </item>
   </layout>
