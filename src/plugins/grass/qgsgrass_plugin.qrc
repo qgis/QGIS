@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/grass" >
+        <file>add_raster.png</file>                 
+        <file>grass_new_mapset.png</file>           
+        <file>grass_region_edit.png</file>
+        <file>add_vector.png</file>                 
+        <file>grass_new_vector_layer.png</file>     
+        <file>grass_tools.png</file>
+        <file>grass_close_mapset.png</file>         
+        <file>grass_open_mapset.png</file>  
+        <file>world.png</file>
+        <file>grass_edit.png</file>                
+        <file>grass_region.png</file>
+    </qresource>
+</RCC>
+
