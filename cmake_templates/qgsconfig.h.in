@@ -4,7 +4,11 @@
 #ifndef QGSCONFIG_H
 #define QGSCONFIG_H
 
-#define VERSION "0.9.2rc1-Ganymede"
+// Version must be specified according to
+// <int>.<int>.<int>-<any text>.
+// or else upgrading old project file will not work
+// reliably.
+#define VERSION "0.9.2-Ganymede"
 
 #define PREFIX "${CMAKE_INSTALL_PREFIX}"
 
