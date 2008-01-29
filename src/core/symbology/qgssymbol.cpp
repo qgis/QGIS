@@ -290,7 +290,7 @@ QImage QgsSymbol::getCachedPointSymbolAsImage(  double widthScale,
 QImage QgsSymbol::getPointSymbolAsImage(  double widthScale,
                bool selected, QColor selectionColor, double scale, double rotation )
 {
-  QgsDebugMsg(QString("Symbol scale = %1, and rotation = %2").arg(scale).arg(rotation));
+  //QgsDebugMsg(QString("Symbol scale = %1, and rotation = %2").arg(scale).arg(rotation));
   if ( 1.0 == scale && 0 == rotation )
   {
     // If scale is 1.0 and rotation 0.0, use cached image.
