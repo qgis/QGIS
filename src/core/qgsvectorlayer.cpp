@@ -2824,10 +2824,16 @@ void QgsVectorLayer::snapToGeometry(const QgsPoint& startPoint, int featureId, Q
 	{
 	  snappingResultVertex.snappedVertex = snappedPoint;
 	  snappingResultVertex.snappedVertexNr = atVertex;
-	  snappingResultVertex.beforeVertex = geom->vertexAt(beforeVertex);
 	  snappingResultVertex.beforeVertexNr = beforeVertex;
-	  snappingResultVertex.afterVertex = geom->vertexAt(afterVertex);
+	  if(beforeVertex != -1) //make sure the vertex is valid
+	    {
+	      snappingResultVertex.beforeVertex = geom->vertexAt(beforeVertex);
+	    }
 	  snappingResultVertex.afterVertexNr = afterVertex;
+	  if(afterVertex != -1) //make sure the vertex is valid
+	    {
+	      snappingResultVertex.afterVertex = geom->vertexAt(afterVertex);
+	    }
 	  snappingResultVertex.snappedAtGeometry = featureId;
 	  snappingResultVertex.layer = this;
 	}
