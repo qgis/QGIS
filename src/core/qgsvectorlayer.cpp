@@ -888,11 +888,9 @@ void QgsVectorLayer::deleteCachedGeometries()
 
 void QgsVectorLayer::drawVertexMarker(int x, int y, QPainter& p)
 {
-  //todo: let the user configure the size and appearance of the marker 
-  int size = 15;
-  int m = (size-1)/2;
-  p.drawLine(x-m, y+m, x+m, y-m);
-  p.drawLine(x-m, y-m, x+m, y+m);
+  p.setPen(QColor(50, 100, 120, 200));
+  p.setBrush(QColor(200, 200, 210, 120));
+  p.drawEllipse(QRectF(x - 7, y - 7, 14, 14));
 }
 
 void QgsVectorLayer::select(int number, bool emitSignal)
