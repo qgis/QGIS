@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>848</width>
+    <width>868</width>
     <height>506</height>
    </rect>
   </property>
@@ -797,7 +797,11 @@
              </spacer>
             </item>
             <item>
-             <widget class="QDoubleSpinBox" name="mDefaultSnappingToleranceSpinBox" />
+             <widget class="QDoubleSpinBox" name="mDefaultSnappingToleranceSpinBox" >
+              <property name="maximum" >
+               <double>9999.989999999999782</double>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -830,7 +834,11 @@
              </spacer>
             </item>
             <item>
-             <widget class="QDoubleSpinBox" name="mSearchRadiusVertexEditSpinBox" />
+             <widget class="QDoubleSpinBox" name="mSearchRadiusVertexEditSpinBox" >
+              <property name="maximum" >
+               <double>9999.989999999999782</double>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
