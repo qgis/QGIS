@@ -5,6 +5,7 @@ should not be included in release packages.
 
 This file is in MediaWiki format for inclusion on the OSGEO wiki.
 -->
+Note the authoritative copy of this document is stored in the QGIS repository.
 = Committers Past and Present =
  dassau - Otto Dassau
  ersts - Peter Ersts
