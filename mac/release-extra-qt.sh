@@ -2,12 +2,12 @@
 # Copy Qt frameworks to qgis bundle
 # and make search paths for them relative to bundle
 
-PREFIX=qgis0.9.1.app/Contents/MacOS
+PREFIX=qgis0.9.2.app/Contents/MacOS
 
 # Edit version when any library is upgraded
 LIBJPEG=libjpeg.62.0.0.dylib
 LNKJPEG=libjpeg.62.dylib
-LIBPNG=libpng.3.1.2.8.dylib
+LIBPNG=libpng.3.24.0.dylib
 LNKPNG=libpng.3.dylib
 
 QTPREFIX=/usr/local/Qt4.3
@@ -82,7 +82,6 @@ cd ../../
 for FILE in \
 	qgis \
 	bin/qgis_help.app/Contents/MacOS/qgis_help \
-	bin/msexport.app/Contents/MacOS/msexport \
 	lib/libqgis_core.dylib \
 	lib/libqgis_gui.dylib \
 	lib/libqgisgrass.dylib \
@@ -100,12 +99,11 @@ for FILE in \
 	lib/qgis/libogrprovider.so \
 	lib/qgis/libpggeoprocessingplugin.so \
 	lib/qgis/libpostgresprovider.so \
+	lib/qgis/libquickprintplugin.so \
 	lib/qgis/libscalebarplugin.so \
 	lib/qgis/libspitplugin.so \
 	lib/qgis/libwfsplugin.so \
-	lib/qgis/libwmsprovider.so \
-	#bin/omgui \
-	#lib/qgis/libopenmodeller.so
+	lib/qgis/libwmsprovider.so
 do
 	for FRAMEWORK in QtCore QtGui QtNetwork QtSql QtSvg QtXml Qt3Support
 	do

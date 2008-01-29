@@ -5,7 +5,7 @@
 # Edit INSTALLPREFIX to match the value of cmake INSTALL_PREFIX
 INSTALLPREFIX=$PWD
 
-BUNDLE=qgis0.9.1.app/Contents/MacOS
+BUNDLE=qgis0.9.2.app/Contents/MacOS
 BUILDPREFIX=$INSTALLPREFIX/$BUNDLE
 
 QLIBNAMES="core gui"
@@ -19,10 +19,6 @@ do
 	install_name_tool -change $BUILDPREFIX/lib/libqgis_$NAME.dylib \
 		@executable_path/lib/libqgis_$NAME.dylib \
 		$BUILDPREFIX/qgis
-
-	install_name_tool -change $INSTALLPREFIX/src/$NAME/libqgis_$NAME.dylib \
-		@executable_path/lib/libqgis_$NAME.dylib \
-		$BUILDPREFIX/bin/msexport.app/Contents/MacOS/msexport
 
 	install_name_tool -change $INSTALLPREFIX/src/$NAME/libqgis_$NAME.dylib \
 		@executable_path/lib/libqgis_$NAME.dylib \
@@ -50,6 +46,7 @@ for PLUGIN in \
 	qgis/libogrprovider.so \
 	qgis/libpggeoprocessingplugin.so \
 	qgis/libpostgresprovider.so \
+	qgis/libquickprintplugin.so \
 	qgis/libscalebarplugin.so \
 	qgis/libspitplugin.so \
 	qgis/libwfsplugin.so \
