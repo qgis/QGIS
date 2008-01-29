@@ -1,5 +1,18 @@
 /* ChangeLog,v 1.214 2004/11/12 00:42:21 gsherman Exp */
 ------------------------------------------------------------------------------
+Version 0.9.2rc1 'Ganymede'
+** This release candidate includes over 40 bug fixes and enchancements 
+** over the QGIS 0.9.1 release. In addition we have added 
+** the following new features:
+** Imrovements to digitising capabilities.
+** Supporting default and defined styles (.qml) files for file based 
+** vector layers. With styles you can save the symbolisation 
+** and other settings associated with a vector layer and they 
+** will be loaded whenever you load that layer.
+** Improved support for transparency and contrast stretching 
+** in raster layers. Support for color ramps in raster layers. 
+** Support for non-north up rasters. Many other raster 
+** improvements 'under the hood'.
 Version 0.9.1 'Ganymede'
 ** This is a bug fix release
 ** 70 Bugs closed

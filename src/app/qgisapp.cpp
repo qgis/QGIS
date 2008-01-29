@@ -1504,36 +1504,26 @@ void QgisApp::about()
        tr("http://www.gnu.org/licenses") +
        "</p>";
      abt->setURLs(urls);
-     QString watsNew = "<html><body>" + tr("Version") + " ";
-     watsNew += QGis::qgisVersion;
-     watsNew += "<h3>" + tr("New features") + "</h3>";
-     watsNew += "<ul><li>"
-       + tr("Python bindings - This is the major focus of this release "
-	    "it is now possible to create plugins using python. It is also "
-	    "possible to create GIS enabled applications written in python " 
-	    "that use the QGIS libraries."
-	 )
+     QString whatsNew = "<html><body>" + tr("Version") + " ";
+     whatsNew += QGis::qgisVersion;
+     whatsNew += "<h3>" + tr("New features") + "</h3>";
+       + tr("This release candidate includes over 40 bug fixes and enchancements "
+           "over the QGIS 0.9.1 release. In addition we have added "
+           "the following new features:")
+     whatsNew += "<ul><li>"
+       + tr("Imrovements to digitising capabilities.")
        + "</li>"
        + "<li>"
-       + tr("Removed automake build system - QGIS now needs CMake for compilation.")
+       + tr("Supporting default and defined styles (.qml) files for file based "
+           "vector layers. With styles you can save the symbolisation "
+           "and other settings associated with a vector layer and they "
+           "will be loaded whenever you load that layer.")
        + "</li>"
        + "<li>"
-       + tr("Many new GRASS tools added (with thanks to http://faunalia.it/)")
-       + "</li>"
-       + "<li>"
-       + tr("Map Composer updates")
-       + "</li>"
-       + "<li>"
-       + tr("Crash fix for 2.5D shapefiles")
-       + "</li>"
-       + "<li>"
-       + tr("The QGIS libraries have been refactored and better organised.")
-       + "</li>"
-       + "<li>"
-       + tr("Improvements to the GeoReferencer")
-       + "</li>"
-       + "<li>"
-       + tr("Added locale options to options dialog.")
+       + tr("Improved support for transparency and contrast stretching "
+           "in raster layers. Support for color ramps in raster layers. "
+           "Support for non-north up rasters. Many other raster "
+           "improvements 'under the hood'.")
        + "</li>"
 //+ "<li>"
 //+ tr("X")
@@ -1541,7 +1531,7 @@ void QgisApp::about()
        + "</ul></body></html>";
 
 
-     abt->setWhatsNew(watsNew);
+     abt->setWhatsNew(whatsNew);
 
      // add the available plugins to the list
      QString providerInfo = "<b>" + tr("Available Data Provider Plugins") + "</b><br>";
