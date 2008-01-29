@@ -2,12 +2,14 @@
 # Copy GRASS supporting libraries to qgis bundle
 # and make search paths for them relative to bundle
 
-PREFIX=qgis0.9.1.app/Contents/MacOS
+PREFIX=qgis0.9.2.app/Contents/MacOS
 
 # Edit version when any library is upgraded
 LNKGDAL=libgdal.1.dylib
 LNKPROJ=libproj.0.dylib
-GRASSVER=6.3.0RC3
+LIBFFTW=libfftw3.3.1.2.dylib
+LNKFFTW=libfftw3.3.dylib
+GRASSVER=6.3.0RC4
 GRASSLIB=/usr/local/grass-$GRASSVER/lib
 
 cd $PREFIX/lib
@@ -23,6 +25,11 @@ if test ! -d grass; then
 		ln -s $LIB grass/$LNK
 		install_name_tool -id @executable_path/lib/grass/$LNK grass/$LIB
 	done
+fi
+if test ! -f $LIBFFTW; then
+	cp /usr/local/lib/$LIBFFTW $LIBFFTW
+	ln -s $LIBFFTW $LNKFFTW
+	install_name_tool -id @executable_path/lib/$LNKFFTW $LIBFFTW
 fi
 
 # Update library paths to supporting libraries
@@ -63,6 +70,7 @@ do
 		grass/libgrass_vect.$GRASSVER.dylib
 done
 
+install_name_tool -change /usr/local/lib/$LNKFFTW @executable_path/lib/$LNKFFTW grass/libgrass_gmath.$GRASSVER.dylib
 install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL grass/libgrass_gproj.$GRASSVER.dylib
 install_name_tool -change /usr/local/lib/$LNKPROJ @executable_path/lib/$LNKPROJ grass/libgrass_gproj.$GRASSVER.dylib
 install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL grass/libgrass_vect.$GRASSVER.dylib
