@@ -1506,10 +1506,10 @@ void QgisApp::about()
      abt->setURLs(urls);
      QString whatsNew = "<html><body>" + tr("Version") + " ";
      whatsNew += QGis::qgisVersion;
-     whatsNew += "<h3>" + tr("New features") + "</h3>";
-       + tr("This release candidate includes over 40 bug fixes and enchancements "
+     whatsNew += "<h3>" + tr("New features") + "</h3>" +
+       tr("This release candidate includes over 40 bug fixes and enchancements "
            "over the QGIS 0.9.1 release. In addition we have added "
-           "the following new features:")
+           "the following new features:");
      whatsNew += "<ul><li>"
        + tr("Imrovements to digitising capabilities.")
        + "</li>"
