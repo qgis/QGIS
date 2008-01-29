@@ -1821,7 +1821,7 @@ From a Visual C++ command line cd to the directory where you extracted PyQt4 and
 c:\python25\python configure.py -p win32-msvc2005
 nmake
 nmake install
-````
+```
 
 == Install CMake ==
 
