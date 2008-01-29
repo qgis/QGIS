@@ -341,6 +341,8 @@ on qgis.nsi and choose the option 'Compile NSIS Script'.
 In this approach I will try to avoid as much as possible building dependencies
 from source and rather use frameworks wherever possible.
 
+Included are a few notes for building on Mac OS X 10.5 (__Leopard__).
+
 == Install XCODE ==
 
 I recommend to get the latest xcode dmg from the Apple XDC Web site. Install
@@ -387,7 +389,7 @@ Download William Kyngesburye's excellent all in one framework that includes
 proj, gdal, sqlite3 etc
 
 ``` 
-http://www.kyngchaos.com/files/software/unixport/AllFrameworks.dmg 
+http://www.kyngchaos.com/wiki/software:frameworks
 ```
 
 Once downloaded, open and install the frameworks.
@@ -396,7 +398,7 @@ William provides an additional installer package for Postgresql/PostGIS. Its
 available here:
 
 ``` 
-http://www.kyngchaos.com/software/unixport/postgres 
+http://www.kyngchaos.com/wiki/software:postgres 
 ```
 
 There are some additional dependencies that at the time of writing are not
@@ -440,13 +442,21 @@ cd ..
 
 === Additional Dependencies : SIP ===
 
+Make sure you have the latest Python fom 
+
+```
+http://www.python.org/download/mac/
+```
+
+__Leopard note:__ Leopard includes a usable Python 2.5.  Though you can install Python from python.org if preferred.
+
 Retrieve the python bindings toolkit SIP from
 
 ``` 
 http://www.riverbankcomputing.com/Downloads/sip4/
 ```
 
-Then extract and build it to a prefix of /usr/local:
+Then extract and build it (this installs by default into the Python framework):
 
 ``` 
 tar xvfz sip-<version number>.tar.gz 
@@ -457,13 +467,15 @@ sudo make install
 cd ..  
 ```
 
+__Leopard notes__
+
+If building on Leopard, using Leopard's bundled Python, SIP wants to install in the system path -- this is not a good idea.  Use this configure command instead of the basic configure above:
+
+```
+python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin -e /usr/local/include -v /usr/local/share/sip
+```
+
 === Additional Dependencies : PyQt ===
-
-Make sure you have the latest python fom 
-
-```
-http://www.python.org/download/mac/
-```
 
 If you encounter problems compiling PyQt using the instructions 
 below you can also try adding python from your frameworks dir
@@ -479,11 +491,12 @@ Retrieve the python bindings toolkit for Qt from
 http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/
 ```
 
-Then extract and build it to a prefix of /usr/local:
+Then extract and build it (this installs by default into the Python framework):
 
 ``` 
 tar xvfz PyQt-mac<version number here>
 cd PyQt-mac<version number here>
+export QTDIR=/Developer/Applications/Qt
 python configure.py 
 yes 
 make 
@@ -491,7 +504,19 @@ sudo make install
 cd ..  
 ```
 
+__Leopard notes__
+
+If building on Leopard, using Leopard's bundled Python, PyQt wants to install in the system path -- this is not a good idea.  Use this configure command instead of the basic configure above:
+
+```
+python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin
+```
+
+There may be a problem with undefined symbols in QtOpenGL on Leopard.  Edit QtOpenGL/makefile and add ""-undefined dynamic_lookup"" to LFLAGS.
+
 === Additional Dependencies : Bison ===
+
+__Leopard note:__ Leopard includes Bison 2.3, so this step can be skipped on Leopard.
 
 The version of bison available by default on Mac OSX is too old so you need to
 get a more recent one on your system. Download if from:
@@ -528,6 +553,8 @@ curl -O http://www.cmake.org/files/v2.4/cmake-2.4.6-Darwin-universal.dmg
 Once downloaded open the dmg and run the installer
 
 == Install subversion for OSX ==
+
+__Leopard note:__ Leopard includes SVN, so this step can be skipped on Leopard.
 
 The [http://sourceforge.net/projects/macsvn/ MacSVN] project has a downloadable
 build of svn. If you are a GUI inclined person you may want to grab their gui
@@ -628,6 +655,12 @@ cd build
 cmake -D CMAKE_INSTALL_PREFIX=$HOME/apps/ -D CMAKE_BUILD_TYPE=Release ..
 ```
 
+__Leopard note:__ To find the custom install of SIP on Leopard, add ""-D SIP_BINARY_PATH=/usr/local/bin/sip"" to the cmake command above, before the "".."" at the end, ie:
+
+``` 
+cmake -D CMAKE_INSTALL_PREFIX=$HOME/apps/ -D CMAKE_BUILD_TYPE=Release -D SIP_BINARY_PATH=/usr/local/bin/sip ..
+```
+
 To use a specific GRASS version, You can optionally use the following 
 cmake invocation (with modifications to suite your system (thanks William 
 Kyngesburye for this hint):
@@ -639,14 +672,6 @@ cmake -D CMAKE_INSTALL_PREFIX=${HOME}/apps/ \
       -D CMAKE_BUILD_TYPE=Release \
       ..
 ```
-
-== GEOS Issues ==
-
-I had some issues with GEOS headers so I made the following edits:
-
-In file /Library/Frameworks/GEOS.framework/Headers/io.h, comment out line 61
-
-In file /Library/Frameworks/GEOS.framework/Headers/geom.h, comment out line 145
 
 == Building ==
 
