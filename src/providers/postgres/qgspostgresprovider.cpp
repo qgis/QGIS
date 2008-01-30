@@ -57,7 +57,7 @@
 
 const QString POSTGRES_KEY = "postgres";
 const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
-
+int QgsPostgresProvider::providerIds = 0;
 
   QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
 : QgsVectorDataProvider(uri),
@@ -65,6 +65,9 @@ const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
   mFeatureQueueSize(200),
   gotPostgisVersion(FALSE)
 {
+
+  providerId = QString("%1").arg(providerIds++);
+
   // assume this is a valid layer until we determine otherwise
   valid = true;
   /* OPEN LOG FILE */
@@ -330,7 +333,7 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
     // Top up our queue if it is empty
     if (mFeatureQueue.empty())
     {
-      QString fetch = QString("fetch forward %1 from qgisf")
+      QString fetch = QString("fetch forward %1 from qgisf" + providerId)
         .arg(mFeatureQueueSize);
 
       if(mFirstFetch)
@@ -472,7 +475,7 @@ void QgsPostgresProvider::select(QgsAttributeList fetchAttributes,
     }
   }
 
-  QString declare = "declare qgisf binary cursor for select \"" + primaryKey + "\"";
+  QString declare = "declare qgisf" + providerId + " binary cursor for select \"" + primaryKey + "\"";
 
   if(fetchGeometry)
   {
@@ -566,7 +569,7 @@ bool QgsPostgresProvider::getFeatureAtId(int featureId,
     }
   }
 
-  QString sql = "declare qgisfid binary cursor for select \"" + primaryKey + "\"";
+  QString sql = "declare qgisfid" + providerId + " binary cursor for select \"" + primaryKey + "\"";
 
   if(fetchGeometry)
   {
@@ -591,7 +594,7 @@ bool QgsPostgresProvider::getFeatureAtId(int featureId,
   // execute query
   PQexec(connection, (const char *)(sql.utf8()));
 
-  PGresult *res = PQexec(connection, "fetch forward 1 from qgisfid");
+  PGresult *res = PQexec(connection, "fetch forward 1 from qgisfid" + providerId);
 
   int rows = PQntuples(res);
   if (rows == 0)
@@ -712,7 +715,7 @@ QString QgsPostgresProvider::dataComment() const
 
 void QgsPostgresProvider::reset()
 {
-  QString move = "move 0 in qgisf"; //move cursor to first record
+  QString move = "move 0 in qgisf" + providerId; //move cursor to first record
   PQexec(connection, (const char *)(move.utf8()));
   mFeatureQueue.empty();
   loadFields();

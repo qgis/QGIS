@@ -566,6 +566,8 @@ private:
     void disconnectDb();
 
     static QMap<QString, Conn *> connections;
+    static int providerIds;
+    QString providerId;
 };
 
 #endif
