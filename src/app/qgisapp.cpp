@@ -4809,10 +4809,12 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
         if(vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::AddFeatures)
         {
           mActionCapturePoint->setEnabled(true);
+	  mActionMoveFeature->setEnabled(true);
         }
         else
         {
           mActionCapturePoint->setEnabled(false);
+	  mActionMoveFeature->setEnabled(false);
         }
         mActionCaptureLine->setEnabled(false);
         mActionCapturePolygon->setEnabled(false);
@@ -4820,6 +4822,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
         mActionDeleteVertex->setEnabled(false);
         mActionAddRing->setEnabled(false);
         mActionAddIsland->setEnabled(false);
+	mActionSplitFeatures->setEnabled(false);
         if(vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries)
         {
           mActionMoveVertex->setEnabled(true);
@@ -4832,10 +4835,14 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
         if(vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::AddFeatures)
         {
           mActionCaptureLine->setEnabled(true);
+	  mActionSplitFeatures->setEnabled(true);
+	  mActionMoveFeature->setEnabled(true);
         }
         else
         {
           mActionCaptureLine->setEnabled(false);
+	  mActionSplitFeatures->setEnabled(false);
+	  mActionMoveFeature->setEnabled(false);
         }
         mActionCapturePoint->setEnabled(false);
         mActionCapturePolygon->setEnabled(false);
@@ -4847,10 +4854,18 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
         if(vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::AddFeatures)
         {
           mActionCapturePolygon->setEnabled(true);
+	  mActionAddRing->setEnabled(true);
+	  mActionAddIsland->setEnabled(true);
+	  mActionSplitFeatures->setEnabled(true);
+	  mActionMoveFeature->setEnabled(true);
         }
         else
         {
           mActionCapturePolygon->setEnabled(false);
+	  mActionAddRing->setEnabled(false);
+	  mActionAddIsland->setEnabled(false);
+	  mActionSplitFeatures->setEnabled(false);
+	  mActionMoveFeature->setEnabled(false);
         }
         mActionCapturePoint->setEnabled(false);
         mActionCaptureLine->setEnabled(false);
