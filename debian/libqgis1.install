@@ -1,5 +1,9 @@
-#usr/lib/libqgis_composer.so*
-usr/lib/libqgis_core.so*
-/usr/lib/libqgis_gui.so
-#usr/lib/libqgis_legend.so*
-#usr/lib/libqgis_raster.so*
+usr/lib/libqgis_core.so
+usr/lib/libqgis_gui.so
+usr/lib/qgis/libdelimitedtextprovider.so  
+usr/lib/qgis/libogrprovider.so            
+usr/lib/qgis/libwfsprovider.so
+usr/lib/qgis/libwmsprovider.so
+usr/lib/qgis/libpostgresprovider.so
+usr/lib/qgis/libgpxprovider.so            
+usr/share/qgis/resources/srs.db
