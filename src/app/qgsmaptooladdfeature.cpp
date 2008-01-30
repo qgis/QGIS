@@ -436,7 +436,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent(QMouseEvent * e)
 		  int topologicalEditing = QgsProject::instance()->readNumEntry("Digitizing", "/TopologicalEditing", 0);
 		  if(topologicalEditing)
 		    {
-		      addTopologicalPoints(mCaptureList);
+		      vlayer->addTopologicalPoints(f->geometry());
 		    }
 		}
 	    }
