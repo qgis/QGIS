@@ -4576,10 +4576,14 @@ int QgsGeometry::splitLinearGeometry(GEOS_GEOM::LineString* splitLine, QList<Qgs
   QList<GEOS_GEOM::Geometry*> testedGeometries;
   GEOS_GEOM::Geometry* intersectGeom = 0;
 
+  //hardcoded thresholds
+  double bufferDistance = 0.000000001;
+  double intersectThreshold =  0.0000001;
+
   for(unsigned int i = 0; i < mergedLineStrings->size(); ++i)
     {
-      intersectGeom = mGeos->intersection((*mergedLineStrings)[i]);
-      if(intersectGeom->getLength() > 0.00000001)
+      intersectGeom = mGeos->intersection((*mergedLineStrings)[i]->buffer(bufferDistance));
+      if(intersectGeom->getLength() > intersectThreshold)
 	{
 	  testedGeometries.push_back((*mergedLineStrings)[i]);
 	}
