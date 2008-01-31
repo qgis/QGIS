@@ -23,6 +23,39 @@ email                : morb at ozemail dot com dot au
 #include "qgspoint.h"
 #include "qgsrect.h"
 
+#if GEOS_VERSION_MAJOR < 3
+#include <geos/io.h>
+#include <geos/opLinemerge.h>
+#include <geos/opPolygonize.h>
+#include <geos/util.h>
+#define GEOS_IO geos
+#define GEOS_LINEMERGE geos
+#define GEOS_POLYGONIZE geos
+#define GEOS_UTIL geos
+#define GEOS_SIZE_T int
+#define COORD_SEQ_FACTORY DefaultCoordinateSequenceFactory
+#else
+#include <geos/geom/CoordinateArraySequence.h>
+#include <geos/geom/CoordinateArraySequenceFactory.h>
+#include <geos/geom/LineString.h>
+#include <geos/geom/LinearRing.h>
+#include <geos/geom/MultiLineString.h>
+#include <geos/geom/MultiPoint.h>
+#include <geos/geom/MultiPolygon.h>
+#include <geos/geom/Point.h>
+#include <geos/geom/Polygon.h>
+#include <geos/io/WKTReader.h>
+#include <geos/operation/linemerge/LineMerger.h>
+#include <geos/operation/polygonize/Polygonizer.h>
+#include <geos/util/IllegalArgumentException.h>
+#define GEOS_IO geos::io
+#define GEOS_LINEMERGE geos::operation::linemerge
+#define GEOS_POLYGONIZE geos::operation::polygonize
+#define GEOS_UTIL geos::util
+#define GEOS_SIZE_T size_t
+#define COORD_SEQ_FACTORY CoordinateArraySequenceFactory
+#endif
+
 // Set up static GEOS geometry factory
 static GEOS_GEOM::GeometryFactory* geosGeometryFactory = new GEOS_GEOM::GeometryFactory();
 
