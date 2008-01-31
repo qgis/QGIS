@@ -17,45 +17,23 @@ email                : morb at ozemail dot com dot au
 #ifndef QGSGEOMETRY_H
 #define QGSGEOMETRY_H
 
-#include <QMultiMap>
 #include <QString>
 #include <QVector>
 
 #include "qgis.h"
 
-#include <geos.h>
+#include <geos/version.h>
 #if GEOS_VERSION_MAJOR < 3
+#include <geos/geom.h>
 #define GEOS_GEOM geos
-#define GEOS_IO geos
-#define GEOS_LINEMERGE geos
-#define GEOS_POLYGONIZE geos
-#define GEOS_UTIL geos
-#define GEOS_SIZE_T int
-#define COORD_SEQ_FACTORY DefaultCoordinateSequenceFactory
-#include "geos/opPolygonize.h"
-#include "geos/opLinemerge.h"
 #else
+#include <geos/geom/CoordinateSequence.h>
+#include <geos/geom/Geometry.h>
+#include <geos/geom/LineString.h>
 #define GEOS_GEOM geos::geom
-#define GEOS_IO geos::io
-#define GEOS_LINEMERGE geos::operation::linemerge
-#define GEOS_POLYGONIZE geos::operation::polygonize
-#define GEOS_UTIL geos::util
-#define GEOS_SIZE_T size_t
-#define COORD_SEQ_FACTORY CoordinateArraySequenceFactory
-#include "geos/operation/polygonize/Polygonizer.h"
-#include "geos/operation/linemerge/LineMerger.h"
 #endif
 
 #include "qgspoint.h"
-
-namespace geos
-{
-  class CoordinateSequence;
-  class Geometry;
-  class GeometryFactory;
-  class Polygon;
-}
-
 
 /** polyline is represented as a vector of points */
 typedef QVector<QgsPoint> QgsPolyline;
@@ -72,8 +50,6 @@ typedef QVector<QgsPolyline> QgsMultiPolyline;
 /** a collection of QgsPolygons that share a common collection of attributes */
 typedef QVector<QgsPolygon> QgsMultiPolygon;
 
-class QgsGeometryVertexIndex;
-class QgsPoint;
 class QgsRect;
 
 /** 

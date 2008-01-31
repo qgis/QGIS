@@ -19,15 +19,13 @@ email                : sherman at mrcc.com
 #include "qgsrect.h"
 #include "qgsvectordataprovider.h"
 
-#include <geos.h>
+#include <geos/version.h>
 #if GEOS_VERSION_MAJOR < 3
+#include <geos/geom.h>
 #define GEOS_GEOM geos
-#define GEOS_IO geos
-#define GEOS_UTIL geos
 #else
+#include <geos/geom/GeometryFactory.h>
 #define GEOS_GEOM geos::geom
-#define GEOS_IO geos::io
-#define GEOS_UTIL geos::util
 #endif
 
 class QgsFeature;

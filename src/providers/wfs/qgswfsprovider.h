@@ -23,14 +23,17 @@
 #include "qgsrect.h"
 #include "qgsspatialrefsys.h"
 #include "qgsvectordataprovider.h"
-#include <geos.h>
-#include <indexStrtree.h>
+#include <geos/version.h>
 #if GEOS_VERSION_MAJOR < 3 
-#define GEOS_INDEX_STRTREE geos 
+#include <geos/geom.h>
+#include <geos/indexStrtree.h>
 #define GEOS_GEOM geos
+#define GEOS_INDEX_STRTREE geos 
 #else 
-#define GEOS_INDEX_STRTREE geos::index::strtree 
+#include <geos/geom/Envelope.h>
+#include <geos/index/strtree/STRtree.h>
 #define GEOS_GEOM geos::geom
+#define GEOS_INDEX_STRTREE geos::index::strtree 
 #endif 
 
 class QgsRect;
