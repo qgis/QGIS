@@ -493,7 +493,11 @@ void QgsMapCanvas::zoomFullExtent()
   QgsRect extent = fullExtent();
   // If the full extent is an empty set, don't do the zoom
   if (!extent.isEmpty())
+  {
+    // Add a 5% margin around the full extent
+    extent.scale(1.05);
     setExtent(extent);
+  }
   refresh();
 
 } // zoomFullExtent
@@ -561,7 +565,8 @@ void QgsMapCanvas::zoomToSelected()
     {
       // Expand rect to give a bit of space around the selected
       // objects so as to keep them clear of the map boundaries
-      rect.scale(1.1);
+      // The same 5% should apply to all margins.
+      rect.scale(1.05);
       setExtent(rect);
       refresh();
       return;
