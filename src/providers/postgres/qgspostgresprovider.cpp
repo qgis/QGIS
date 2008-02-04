@@ -365,9 +365,10 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
 
         if (swapEndian)
           oid = ntohl(oid); // convert oid to opposite endian
-
+ 
+	mFeatureQueue.push(QgsFeature());
         // set ID
-        feature.setFeatureId(oid);
+        mFeatureQueue.back().setFeatureId(oid);
 
         // fetch attributes
         std::list<QString>::const_iterator name_it = mFetchAttributeNames.begin();
@@ -389,13 +390,13 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
           switch (attributeFields[*index_it].type())
           {
             case QVariant::Int:
-              feature.addAttribute(*index_it, val.toInt());
+              mFeatureQueue.back().addAttribute(*index_it, val.toInt());
               break;
             case QVariant::Double:
-              feature.addAttribute(*index_it, val.toDouble());
+              mFeatureQueue.back().addAttribute(*index_it, val.toDouble());
               break;
             case QVariant::String:
-              feature.addAttribute(*index_it, val);
+              mFeatureQueue.back().addAttribute(*index_it, val);
               break;
             default:
               assert(0 && "unsupported field type");
@@ -411,20 +412,14 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
             unsigned char *featureGeom = new unsigned char[returnedLength + 1];
             memset(featureGeom, '\0', returnedLength + 1);
             memcpy(featureGeom, PQgetvalue(queryResult, row, PQfnumber(queryResult,"qgs_feature_geometry")), returnedLength); 
-            feature.setGeometryAndOwnership(featureGeom, returnedLength + 1);
+            mFeatureQueue.back().setGeometryAndOwnership(featureGeom, returnedLength + 1);
           }
           else
           {
+	    mFeatureQueue.back().setGeometryAndOwnership(0, 0);
             QgsDebugMsg("Couldn't get the feature geometry in binary form");
           }
         } 
-
-        //don't copy the geometry. Just pass a pointer instead
-        mFeatureQueue.push(QgsFeature());
-        mFeatureQueue.back().setGeometry(feature.geometryAndOwnership());
-        mFeatureQueue.back().setFeatureId(feature.featureId());
-        mFeatureQueue.back().setAttributeMap(feature.attributeMap());
-
       } // for each row in queue
 
       PQclear(queryResult);
@@ -437,8 +432,15 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
     } // if new queue is required
 
     // Now return the next feature from the queue
-    //don't copy the geometry. Just pass a pointer instead
-    feature.setGeometry(mFeatureQueue.front().geometryAndOwnership());
+    if(mFetchGeom)
+      {
+	QgsGeometry* featureGeom = mFeatureQueue.front().geometryAndOwnership();
+	feature.setGeometryAndOwnership(featureGeom->wkbBuffer(), featureGeom->wkbSize());
+      }
+    else
+      {
+	feature.setGeometryAndOwnership(0, 0);
+      }
     feature.setFeatureId(mFeatureQueue.front().featureId());
     feature.setAttributeMap(mFeatureQueue.front().attributeMap());
 
