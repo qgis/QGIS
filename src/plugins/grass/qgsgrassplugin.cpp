@@ -190,11 +190,11 @@ void QgsGrassPlugin::initGui()
   qGisInterface->addPluginMenu(tr("&GRASS"), mCloseMapsetAction);
   qGisInterface->addPluginMenu(tr("&GRASS"), mAddVectorAction);
   qGisInterface->addPluginMenu(tr("&GRASS"), mAddRasterAction);
+  qGisInterface->addPluginMenu(tr("&GRASS"), mNewVectorAction);
+  qGisInterface->addPluginMenu(tr("&GRASS"), mEditAction);
   qGisInterface->addPluginMenu(tr("&GRASS"), mOpenToolsAction);
   qGisInterface->addPluginMenu(tr("&GRASS"), mRegionAction);
   qGisInterface->addPluginMenu(tr("&GRASS"), mEditRegionAction);
-  qGisInterface->addPluginMenu(tr("&GRASS"), mEditAction);
-  qGisInterface->addPluginMenu(tr("&GRASS"), mNewVectorAction);
 
   // Add the toolbar to the main window
   toolBarPointer = qGisInterface->addToolBar(tr("GRASS")); 
@@ -202,17 +202,17 @@ void QgsGrassPlugin::initGui()
   toolBarPointer->setObjectName("GRASS");
 
   // Add to the toolbar
+  mOpenMapsetAction->addTo(toolBarPointer);
+  mNewMapsetAction->addTo(toolBarPointer);
+  mCloseMapsetAction->addTo(toolBarPointer);
+  toolBarPointer->addSeparator();
   mAddVectorAction->addTo(toolBarPointer);
   mAddRasterAction->addTo(toolBarPointer);
+  mNewVectorAction->addTo(toolBarPointer);
+  mEditAction->addTo(toolBarPointer);
   mOpenToolsAction->addTo(toolBarPointer);
   mRegionAction->addTo(toolBarPointer);
   mEditRegionAction->addTo(toolBarPointer);
-  mEditAction->addTo(toolBarPointer);
-  toolBarPointer->addSeparator();
-  mOpenMapsetAction->addTo(toolBarPointer);
-  mNewMapsetAction->addTo(toolBarPointer);
-  mNewVectorAction->addTo(toolBarPointer);
-  mCloseMapsetAction->addTo(toolBarPointer);
 
   // Connect display region
   connect( mCanvas, SIGNAL(renderComplete(QPainter *)), this, SLOT(postRender(QPainter *)));
