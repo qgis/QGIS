@@ -377,6 +377,8 @@ public slots:
   //! Show the map tip
   void showMapTip();
 
+  //! Toggle full screen mode
+  void toggleFullScreen();
 signals:
   /** emitted when a key is pressed and we want non widget sublasses to be able
     to pick up on this (e.g. maplayer) */
@@ -520,6 +522,7 @@ private:
   QAction *mActionDraw;
   QAction *mActionShowAllToolbars;
   QAction *mActionHideAllToolbars;
+  QAction *mActionToggleFullScreen;
 #ifdef HAVE_PYTHON
   QAction *mActionShowPythonDialog;
 #endif
@@ -652,6 +655,8 @@ private:
   // Flag to indicate if maptips are on or off
   bool mMapTipsVisible;
   
+  //!flag to indicat wehter we are in fullscreen mode or not
+  bool mFullScreenMode;
 #ifdef HAVE_PYTHON
   QgsPythonDialog* mPythonConsole;
 #endif

@@ -401,6 +401,8 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
   mSplash->showMessage(tr("QGIS Ready!"), Qt::AlignHCenter | Qt::AlignBottom);
 
   mMapTipsVisible = false;
+  mFullScreenMode = false;
+  showNormal();
   qApp->processEvents();
 } // QgisApp ctor
 
@@ -552,6 +554,12 @@ void QgisApp::createActions()
   mActionRemoveAllFromOverview->setShortcut(tr("-","Remove all layers from overview map"));
   mActionRemoveAllFromOverview->setStatusTip(tr("Remove all layers from overview map"));
   connect(mActionRemoveAllFromOverview, SIGNAL(triggered()), this, SLOT(removeAllFromOverview()));
+  //
+  mActionToggleFullScreen = new QAction(QIcon(myIconPath+"/mActionToggleFullScreen.png"), tr("Toggle full screen mode"), this);
+  mActionToggleFullScreen->setShortcut(tr("Ctrl-F","Toggle fullscreen mode"));
+  mActionToggleFullScreen->setStatusTip(tr("Toggle fullscreen mode"));
+  connect(mActionToggleFullScreen, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
+
   //
   mActionShowAllLayers= new QAction(QIcon(myIconPath+"/mActionShowAllLayers.png"), tr("Show All Layers"), this);
   mActionShowAllLayers->setShortcut(tr("S","Show all layers"));
@@ -897,6 +905,7 @@ void QgisApp::createMenus()
   mViewMenu->addAction(mActionZoomToLayer);
   mViewMenu->addAction(mActionZoomLast);
   mViewMenu->addAction(mActionDraw);
+  mViewMenu->addAction(mActionToggleFullScreen);
   mViewMenu->addSeparator();
   mViewMenu->addAction(mActionShowBookmarks);
   mViewMenu->addAction(mActionNewBookmark);
@@ -994,8 +1003,6 @@ void QgisApp::createToolBars()
   mLayerToolBar->addAction(mActionNewVectorLayer);
   mLayerToolBar->addAction(mActionRemoveLayer);
   mLayerToolBar->addAction(mActionInOverview);
-  mLayerToolBar->addAction(mActionAddAllToOverview);
-  mLayerToolBar->addAction(mActionRemoveAllFromOverview);
   mLayerToolBar->addAction(mActionShowAllLayers);
   mLayerToolBar->addAction(mActionHideAllLayers);
   //
@@ -1014,14 +1021,14 @@ void QgisApp::createToolBars()
   mDigitizeToolBar->addAction(mActionCapturePoint);
   mDigitizeToolBar->addAction(mActionCaptureLine);
   mDigitizeToolBar->addAction(mActionCapturePolygon);
+  mDigitizeToolBar->addAction(mActionAddRing);
+  mDigitizeToolBar->addAction(mActionAddIsland);
   mDigitizeToolBar->addAction(mActionMoveFeature);
   mDigitizeToolBar->addAction(mActionSplitFeatures);
   mDigitizeToolBar->addAction(mActionDeleteSelected);
   mDigitizeToolBar->addAction(mActionAddVertex);
   mDigitizeToolBar->addAction(mActionDeleteVertex);
   mDigitizeToolBar->addAction(mActionMoveVertex);
-  mDigitizeToolBar->addAction(mActionAddRing);
-  mDigitizeToolBar->addAction(mActionAddIsland);
   mDigitizeToolBar->addAction(mActionEditCut);
   mDigitizeToolBar->addAction(mActionEditCopy);
   mDigitizeToolBar->addAction(mActionEditPaste);
@@ -3207,6 +3214,19 @@ void QgisApp::removeAllFromOverview()
   QgsProject::instance()->dirty(true);
 }
 
+void QgisApp::toggleFullScreen()
+{
+  if (true == mFullScreenMode)
+  {
+    showNormal();
+    mFullScreenMode = false;
+  }
+  else
+  {
+    showFullScreen();
+    mFullScreenMode = true;
+  }
+}
 
 //reimplements method from base (gui) class
 void QgisApp::hideAllLayers()
