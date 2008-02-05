@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>419</width>
-    <height>443</height>
+    <width>427</width>
+    <height>522</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -16,18 +16,10 @@
    <iconset resource="quickprint.qrc" >:/quickprint/quickprint.png</iconset>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>11</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
    <item row="0" column="0" >
     <widget class="QLabel" name="txtHeading" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>0</hsizetype>
-       <vsizetype>0</vsizetype>
+      <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -91,16 +83,32 @@
     <widget class="QTextEdit" name="teCopyright" />
    </item>
    <item row="7" column="0" >
+    <widget class="QLabel" name="label_2" >
+     <property name="text" >
+      <string>Page Size</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0" >
+    <widget class="QComboBox" name="cboPageSize" />
+   </item>
+   <item row="9" column="0" >
     <widget class="QGroupBox" name="grpOuput" >
      <property name="title" >
       <string>Output</string>
      </property>
      <layout class="QGridLayout" >
-      <property name="margin" >
+      <property name="leftMargin" >
        <number>11</number>
       </property>
-      <property name="spacing" >
-       <number>6</number>
+      <property name="topMargin" >
+       <number>11</number>
+      </property>
+      <property name="rightMargin" >
+       <number>11</number>
+      </property>
+      <property name="bottomMargin" >
+       <number>11</number>
       </property>
       <item row="0" column="0" >
        <widget class="QRadioButton" name="radUseIncrementedFileName" >
@@ -132,7 +140,7 @@
      </layout>
     </widget>
    </item>
-   <item row="8" column="0" >
+   <item row="10" column="0" >
     <widget class="QLabel" name="label" >
      <property name="text" >
       <string>Note: If you want more control over the map layout please use the map composer function in QGIS.</string>
@@ -142,7 +150,7 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="0" >
+   <item row="11" column="0" >
     <widget class="QDialogButtonBox" name="buttonBox" >
      <property name="orientation" >
       <enum>Qt::Horizontal</enum>
