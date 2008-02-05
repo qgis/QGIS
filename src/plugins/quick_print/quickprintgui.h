@@ -21,7 +21,6 @@
 #include <ui_quickprintguibase.h>
 #include "qgsmapcanvas.h"
 
-
 /**
 @author Tim Sutton
 */
