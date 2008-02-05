@@ -13,384 +13,228 @@
  *                                                                         *
  ***************************************************************************/
 #include "graticulecreator.h"
-
-#include <stdio.h>
-#include <cassert>
-#include <iostream>
-#include <fstream>
-
-#include <QTextStream>
-#include <QFileInfo>
-#include <QStringList>
-
-#include <qgis.h>
+#include <qgsfeature.h> //we will need to pass a bunch of these for each rec
+#include <qgsgeometry.h> //each feature needs a geometry
+#include <qgspoint.h> //we will use point geometry
+#include <qgis.h> //defines GEOWKT
 #include <qgslogger.h>
 
-GraticuleCreator::GraticuleCreator(QString theOutputFileName,ShapeType theType)
+#include <QFileInfo>
+GraticuleCreator::GraticuleCreator(QString theOutputFileName)
 {
   QgsLogger::debug("GraticuleCreator constructor called with " + 
-		   theOutputFileName +  " for output file ");
-    /* Open and prepare output files */
-    createDbf(theOutputFileName);
-    createShapeFile(theOutputFileName,theType);
-    writeProjectionFile(theOutputFileName);
+      theOutputFileName +  " for output file ");
+  mEncoding = "UTF-8";
+  QgsField myField1("LabelX",QVariant::Double,"Double",10,4,"X Position for label");
+  QgsField myField2("LabelY",QVariant::Double,"Double",10,4,"Y Position for label");
+  QgsField myField3("LblOffsetX",QVariant::Int,"Int",5,0,"X Offset for label");
+  QgsField myField4("LblOffsetY",QVariant::Int,"int",5,0,"Y Offset for label");
+  QgsField myField5("Label",QVariant::String,"String",10,0,"Label text");
+  mFields.insert(0, myField1);
+  mFields.insert(1, myField2);
+  mFields.insert(2, myField3);
+  mFields.insert(3, myField4);
+  mFields.insert(4, myField5);
+  mSRS = QgsSpatialRefSys(GEOWKT);
+  mFileName = theOutputFileName;
 
 }
 GraticuleCreator::~GraticuleCreator()
 {
-    DBFClose( mDbfHandle );
-    SHPClose( mShapeHandle );
-}
-    
-/* DbfName need not include the file extension. */
-void GraticuleCreator::createDbf (QString mDbfName )
-{
-    //remove the path part of the dbf name
-    QFileInfo myFileInfo( mDbfName );
-    QString myBaseString = myFileInfo.dirPath()+QString("/")+myFileInfo.baseName();  // excludes any extension
-    //create the dbf
-    mDbfHandle = DBFCreate( myBaseString+".dbf" );
-    //create an index field named after the base part of the file name
-
-    DBFAddField( mDbfHandle, myBaseString+"_id", FTInteger, 11, 0 );
-    //create a second arbitary attribute field
-    DBFAddField( mDbfHandle, "Date", FTString, 12, 0 );
-    //close the dbf
-    DBFClose( mDbfHandle );
-    //reopen
-    mDbfHandle = DBFOpen( myBaseString+".dbf", "r+b" );
-    //exit this fn giving
-    return;
 }
 
-void GraticuleCreator::createShapeFile(QString theFileName , ShapeType theType)
-{
-  switch (theType)
-  {
-      case POINT:
-          mShapeHandle = SHPCreate(theFileName, SHPT_POINT );
-          break;
-
-      case LINE:
-          mShapeHandle = SHPCreate(theFileName, SHPT_ARC );
-          break;
-
-      default: //POLYGON
-          mShapeHandle = SHPCreate(theFileName, SHPT_POLYGON);
-  }
-  return;
-}
-
-void GraticuleCreator::writeDbfRecord ( int theRecordIdInt, QString theLabel)
-{
-
-  
-    //std::cerr << "writeDbfRecord : " << theRecordIdInt << " - " << theLabel.toLocal8Bit().data();
-    if (! DBFWriteIntegerAttribute(mDbfHandle, theRecordIdInt, 0, theRecordIdInt))
-    {
-        std::cerr <<  "DBFWriteIntegerAttribute failed. : " <<  theRecordIdInt << " - " << theRecordIdInt << std::endl;
-
-        //exit(ERR_DBFWRITEINTEGERATTRIBUTE);
-    }
-    if (!theLabel.isNull())
-    {
-      if (! DBFWriteStringAttribute(mDbfHandle, theRecordIdInt, 1, theLabel))
-      {
-        std::cerr <<  "DBFWriteStringAttribute failed. : " <<  theRecordIdInt << " - " << theLabel.toLocal8Bit().data() <<std::endl;
-        //exit(ERR_DBFWRITEINTEGERATTRIBUTE);
-      }
-      QgsLogger::debug(" - OK! ");
-    }
-    //DBFWriteIntegerAttribute(mDbfHandle, theRecordIdInt, 0, theRecordIdInt);
-    //DBFWriteStringAttribute(mDbfHandle, theRecordIdInt, 1, theLabel);
-}
-
-void  GraticuleCreator::writeProjectionFile(QString theFileName )
-{
-  // Write a WGS 84 projection file for the shapefile
-  theFileName = theFileName.replace(".shp",".prj");
-  std::ofstream of(theFileName);
-  if(!of.fail())
-  {
-    of << GEOWKT.toLocal8Bit().data()
-      << std::endl; 
-    of.close();
-
-  }
-}
-void GraticuleCreator::writePoint( int theRecordInt, double theXDouble, double theYDouble )
-{
-    SHPObject * myShapeObject;
-    myShapeObject = SHPCreateObject( SHPT_POINT, theRecordInt, 0, NULL, NULL, 1, &theXDouble, &theYDouble, NULL, NULL );
-    SHPWriteObject( mShapeHandle, -1, myShapeObject );
-    SHPDestroyObject( myShapeObject );
-}
-void GraticuleCreator::writePoint(
-        int theRecordInt, 
-        int theCoordinateCountInt, 
-        double * theXArrayDouble, 
-        double * theYArrayDouble ) 
-{
-  SHPObject * myShapeObject;
-  myShapeObject = SHPCreateObject( SHPT_POINT, 
-                                   theRecordInt, 
-                                   0, 
-                                   NULL, 
-                                   NULL,
-                                   theCoordinateCountInt, 
-                                   theXArrayDouble, 
-                                   theYArrayDouble,
-                                   NULL, 
-                                   NULL );
-  SHPWriteObject( mShapeHandle, -1, myShapeObject );
-  SHPDestroyObject( myShapeObject );
-}
-
-void GraticuleCreator::writeLine(
-        int theRecordInt, 
-        int theCoordinateCountInt, 
-        double * theXArrayDouble, 
-        double * theYArrayDouble ) 
-{
-  SHPObject * myShapeObject;
-  myShapeObject = SHPCreateObject( SHPT_ARC, 
-                                   theRecordInt, 
-                                   0, 
-                                   NULL, 
-                                   NULL,
-                                   theCoordinateCountInt, 
-                                   theXArrayDouble, 
-                                   theYArrayDouble,
-                                   NULL, 
-                                   NULL );
-  SHPWriteObject( mShapeHandle, -1, myShapeObject );
-  SHPDestroyObject( myShapeObject );
-}
-
-void GraticuleCreator::writePolygon(
-        int theRecordInt, 
-        int theCoordinateCountInt, 
-        double * theXArrayDouble, 
-        double * theYArrayDouble ) 
-{
-  SHPObject * myShapeObject;
-  myShapeObject = SHPCreateObject( SHPT_POLYGON, 
-                                   theRecordInt, 
-                                   0, 
-                                   NULL, 
-                                   NULL,
-                                   theCoordinateCountInt, 
-                                   theXArrayDouble, 
-                                   theYArrayDouble,
-                                   NULL, 
-                                   NULL );
-  SHPWriteObject( mShapeHandle, -1, myShapeObject );
-  SHPDestroyObject( myShapeObject );
-}
 //TODO: check for rediculous intervals!
 void GraticuleCreator::generatePointGraticule(
-                                         double theXIntervalDouble,
-                                         double theYIntervalDouble,
-                                         double theXOriginDouble,
-                                         double theYOriginDouble,
-                                         double theXEndPointDouble,
-                                         double theYEndPointDouble)
+                                         double theXInterval,
+                                         double theYInterval,
+                                         double theXOrigin,
+                                         double theYOrigin,
+                                         double theXEndPoint,
+                                         double theYEndPoint)
 {
-  
-  int myRecordInt=0;
-  //create the arrays for storing the coordinates
-  double * myXArrayDouble;
-  double * myYArrayDouble;
-  long myXIntersectionCount = 1;
-  long myYIntersectionCount = 1;
-  myXArrayDouble = (double *)malloc(myXIntersectionCount * sizeof(double));
-  myYArrayDouble = (double *)malloc(myYIntersectionCount * sizeof(double));
-  for (double myXDouble = theXOriginDouble;myXDouble <=theXEndPointDouble;myXDouble+=theXIntervalDouble)
+  //
+  // Remove old copies that may be lying around
+  //
+  QgsVectorFileWriter::deleteShapeFile(mFileName);
+  QgsVectorFileWriter myWriter (mFileName,
+      mEncoding,
+      mFields,
+      QGis::WKBPoint,
+      &mSRS);
+  for (double i=theXOrigin;
+      i<=theXEndPoint;
+      i+=theXInterval)
   {
-    for (double myYDouble=theYOriginDouble;myYDouble<=theYEndPointDouble;myYDouble+=theYIntervalDouble)
+    for (double j=-theYOrigin;
+                j<=theYEndPoint;
+                j+=theYInterval)
     {
-      myXArrayDouble[0]=myXDouble;
-      myYArrayDouble[0]=myYDouble;
-      writeDbfRecord(myRecordInt,"testing");
-      writePoint( myRecordInt, myYIntersectionCount, myXArrayDouble, myYArrayDouble); 
+      //
+      // Create a polygon feature
+      //
+      QgsPolyline myPolyline;
+      QgsPoint myPoint = QgsPoint(i,j);
+      //
+      // NOTE: dont delete this pointer again - 
+      // ownership is passed to the feature which will
+      // delete it in its dtor!
+      QgsGeometry * mypPointGeometry = QgsGeometry::fromPoint(myPoint);
+      QgsFeature myFeature;
+      myFeature.setTypeName("WKBPoint");
+      myFeature.setGeometry(mypPointGeometry);
+      if (i==theXOrigin && j==theYOrigin) //labels for bottom left corner
+      {
+        myFeature.addAttribute(0,i);//"LabelX"
+        myFeature.addAttribute(1,j);//"LabelY"
+        myFeature.addAttribute(2,-20);//"LabelOffsetX"
+        myFeature.addAttribute(3,-20);//"LabelOffsetY"
+        myFeature.addAttribute(4,QString::number(i) + "," + QString::number(j));//"Label"
+      }
+      else if (i==theXEndPoint && j==theYEndPoint) //labels for top right corner
+      {
+        myFeature.addAttribute(0,i);//"LabelX"
+        myFeature.addAttribute(1,j);//"LabelY"
+        myFeature.addAttribute(2,20);//"LabelOffsetX"
+        myFeature.addAttribute(3,20);//"LabelOffsetY"
+        myFeature.addAttribute(4,QString::number(i) + "," +  QString::number(j));//"Label"
+      }
+      else if (i==theXOrigin) //labels for left edge
+      {
+        myFeature.addAttribute(0,i);//"LabelX"
+        myFeature.addAttribute(1,j);//"LabelY"
+        myFeature.addAttribute(2,-20);//"LabelOffsetX"
+        myFeature.addAttribute(3,0);//"LabelOffsetY"
+        myFeature.addAttribute(4,QString::number(j));//"Label"
+      }
+      else if (i==theXEndPoint) //labels for right edge
+      {
+        myFeature.addAttribute(0,i);//"LabelX"
+        myFeature.addAttribute(1,j);//"LabelY"
+        myFeature.addAttribute(2,20);//"LabelOffsetX"
+        myFeature.addAttribute(3,0);//"LabelOffsetY"
+        myFeature.addAttribute(4,QString::number(j));//"Label"
+      }
+      else if (j==theYOrigin) //labels for bottom edge
+      {
+        myFeature.addAttribute(0,i);//"LabelX"
+        myFeature.addAttribute(1,j);//"LabelY"
+        myFeature.addAttribute(2,0);//"LabelOffsetX"
+        myFeature.addAttribute(3,-20);//"LabelOffsetY"
+        myFeature.addAttribute(4,QString::number(i));//"Label"
+      }
+      else if (j==theYEndPoint) //labels for top edge
+      {
+        myFeature.addAttribute(0,i);//"LabelX"
+        myFeature.addAttribute(1,j);//"LabelY"
+        myFeature.addAttribute(2,0);//"LabelOffsetX"
+        myFeature.addAttribute(3,20);//"LabelOffsetY"
+        myFeature.addAttribute(4,QString::number(i));//"Label"
+      }
+      
+      //
+      // Write the feature to the filewriter
+      // and check for errors
+      //
+      myWriter.addFeature(myFeature);
+      mError = myWriter.hasError();
+      if(mError==QgsVectorFileWriter::ErrDriverNotFound)
+      {
+        std::cout << "Driver not found error" << std::endl;
+      }
+      else if (mError==QgsVectorFileWriter::ErrCreateDataSource)
+      {
+        std::cout << "Create data source error" << std::endl;
+      }
+      else if (mError==QgsVectorFileWriter::ErrCreateLayer)
+      {
+        std::cout << "Create layer error" << std::endl;
+      }
+      if (mError!=QgsVectorFileWriter::NoError)
+      {
+        return;
+      }
     }
-    ++myRecordInt;
   }
-  delete myXArrayDouble;
-  delete myYArrayDouble;
-
-  // write a proj file for the graticule
-  
 }
 
-//TODO: check for rediculous intervals!
-void GraticuleCreator::generateLineGraticule(double theXIntervalDouble,
-                                         double theYIntervalDouble,
-                                         double theXOriginDouble,
-                                         double theYOriginDouble,
-                                         double theXEndPointDouble,
-                                         double theYEndPointDouble)
-{
-  
-  int myRecordInt=0;
-  //create the arrays for storing the coordinates
-  double * myXArrayDouble;
-  double * myYArrayDouble;
-  //we want out graticule to be made of short line segments rather tban
-  //long ones that imply span xmin <-> xmax
-  //so that when reprojecting the graticule will warp properly
-  //so first we need to work out how many intersections there are...
-  //
-  
-  long myXIntersectionCount = static_cast<long>((theXEndPointDouble - theXOriginDouble) / theXIntervalDouble)+1;
-  long myYIntersectionCount = static_cast<long>((theYEndPointDouble - theYOriginDouble) / theYIntervalDouble)+1;
-  
-  
-  //
-  //Longitude loop
-  //
-  myXArrayDouble = (double *)malloc(myYIntersectionCount * sizeof(double));
-  myYArrayDouble = (double *)malloc(myYIntersectionCount * sizeof(double));
-  for (double myXDouble = theXOriginDouble;myXDouble <=theXEndPointDouble;myXDouble+=theXIntervalDouble)
-  {
-    long myVertexNo=0;
-    for (double myYDouble=theYOriginDouble;myYDouble<=theYEndPointDouble;myYDouble+=theYIntervalDouble)
-    {
-      myXArrayDouble[myVertexNo]=myXDouble;
-      myYArrayDouble[myVertexNo]=myYDouble;
-      ++myVertexNo;
-    }
-    writeDbfRecord(myRecordInt,"testing");
-    writeLine( myRecordInt, myYIntersectionCount, myXArrayDouble, myYArrayDouble); 
-
-    ++myRecordInt;
-  }
-  delete myXArrayDouble;
-  delete myYArrayDouble;
-
-  //
-  //Latitude loop
-  //
-  myXArrayDouble = (double *)malloc(myXIntersectionCount * sizeof(double));
-  myYArrayDouble = (double *)malloc(myXIntersectionCount * sizeof(double));
-  for (double myYDouble=theYOriginDouble;myYDouble<=theYEndPointDouble;myYDouble+=theYIntervalDouble)
-  {
-    long myVertexNo=0;
-    for (double myXDouble=theXOriginDouble;myXDouble<=theXEndPointDouble;myXDouble+=theXIntervalDouble)
-    {
-      myXArrayDouble[myVertexNo]=myXDouble;
-      myYArrayDouble[myVertexNo]=myYDouble;
-      ++myVertexNo;
-    }
-    
-    writeDbfRecord(myRecordInt,"testing");
-    writeLine( myRecordInt,myXIntersectionCount, myXArrayDouble, myYArrayDouble); 
-
-    ++myRecordInt;
-  }
-  
-  delete myXArrayDouble;
-  delete myYArrayDouble;
-  // write a proj file for the graticule
-  
-}
 //TODO: check for rediculous intervals!
 void GraticuleCreator::generatePolygonGraticule(
-                                         double theXIntervalDouble,
-                                         double theYIntervalDouble,
-                                         double theXOriginDouble,
-                                         double theYOriginDouble,
-                                         double theXEndPointDouble,
-                                         double theYEndPointDouble)
+                                         double theXInterval,
+                                         double theYInterval,
+                                         double theXOrigin,
+                                         double theYOrigin,
+                                         double theXEndPoint,
+                                         double theYEndPoint)
 {
-  
-  int myRecordInt=0;
-  //create the arrays for storing the coordinates
-  double * myXArrayDouble;
-  double * myYArrayDouble;
-  //we want out graticule to be made of short line segments rather tban
-  //long ones that imply span xmin <-> xmax
-  //so that when reprojecting the graticule will warp properly
-  //so first we need to work out how many intersections there are...
   //
-  
-  long myXVertexCount = 5; // four vertices of the sqaure for each cell, plus end at start
-  long myYVertexCount = 5;
-  
-  
+  // Remove old copies that may be lying around
   //
-  //Longitude loop
-  //
-  myXArrayDouble = (double *)malloc(myXVertexCount * sizeof(double));
-  myYArrayDouble = (double *)malloc(myYVertexCount * sizeof(double));
-  for (double myXDouble = theXOriginDouble ; myXDouble < theXEndPointDouble ; myXDouble+=theXIntervalDouble)
+  QgsVectorFileWriter::deleteShapeFile(mFileName);
+  QgsVectorFileWriter myWriter (mFileName,
+      mEncoding,
+      mFields,
+      QGis::WKBPolygon,
+      &mSRS);
+  for (double i=theXOrigin;
+      i<=theXEndPoint;
+      i+=theXInterval)
   {
-    for (double myYDouble=theYOriginDouble;myYDouble<=theYEndPointDouble;myYDouble+=theYIntervalDouble)
+    for (double j=-theYOrigin;
+                j<=theYEndPoint;
+                j+=theYInterval)
     {
-      //top left of rect
-      myXArrayDouble[0]=myXDouble;
-      myYArrayDouble[0]=myYDouble;
-      //top right
-      myXArrayDouble[1]=myXDouble+theXIntervalDouble;
-      myYArrayDouble[1]=myYDouble;
-      //bottom right
-      myXArrayDouble[2]=myXDouble+theXIntervalDouble;
-      myYArrayDouble[2]=myYDouble+theYIntervalDouble;
-      //bottom left
-      myXArrayDouble[3]=myXDouble;
-      myYArrayDouble[3]=myYDouble+theYIntervalDouble;
-      //return to top left
-      myXArrayDouble[4]=myXDouble;
-      myYArrayDouble[4]=myYDouble;
-      writeDbfRecord(myRecordInt,"testing");
-      writePolygon( myRecordInt, myYVertexCount, myXArrayDouble, myYArrayDouble); 
-
-      ++myRecordInt;
+      //
+      // Create a polygon feature
+      //
+      QgsPolyline myPolyline;
+      QgsPoint myPoint1 = QgsPoint(i,j);
+      QgsPoint myPoint2 = QgsPoint(i+theXInterval,j);
+      QgsPoint myPoint3 = QgsPoint(i+theXInterval,j+theYInterval);
+      QgsPoint myPoint4 = QgsPoint(i,j+theYInterval);
+      myPolyline << myPoint1 << myPoint2 << myPoint3 << myPoint4 << myPoint1;
+      QgsPolygon myPolygon;
+      myPolygon << myPolyline;
+      //polygon: first item of the list is outer ring, 
+      // inner rings (if any) start from second item 
+      //
+      // NOTE: dont delete this pointer again - 
+      // ownership is passed to the feature which will
+      // delete it in its dtor!
+      QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon(myPolygon);
+      QgsFeature myFeature;
+      myFeature.setTypeName("WKBPolygon");
+      myFeature.setGeometry(mypPolygonGeometry);
+      myFeature.addAttribute(0,i);//"LabelX");
+      myFeature.addAttribute(1,j);//"LabelY");
+      myFeature.addAttribute(2,-20);//"LabelOffsetX");
+      myFeature.addAttribute(3,-20);//"LabelOffsetY");
+      myFeature.addAttribute(4,QString::number(i));//"Label");
+      //
+      // Write the feature to the filewriter
+      // and check for errors
+      //
+      myWriter.addFeature(myFeature);
+      mError = myWriter.hasError();
+      if(mError==QgsVectorFileWriter::ErrDriverNotFound)
+      {
+        std::cout << "Driver not found error" << std::endl;
+      }
+      else if (mError==QgsVectorFileWriter::ErrCreateDataSource)
+      {
+        std::cout << "Create data source error" << std::endl;
+      }
+      else if (mError==QgsVectorFileWriter::ErrCreateLayer)
+      {
+        std::cout << "Create layer error" << std::endl;
+      }
+      if (mError!=QgsVectorFileWriter::NoError)
+      {
+        return;
+      }
     }
   }
-  delete myXArrayDouble;
-  delete myYArrayDouble;
-
-  // write a proj file for the graticule
-  
 }
 
-/* read from fp and generate point shapefile to mDbfHandle/mShapeHandle */
-void GraticuleCreator::generatePoints (QString theInputFileName)
-{
-    QFile myFile( theInputFileName );
-    if ( myFile.open( QIODevice::ReadOnly ) )
-    {
-        QTextStream myStream( &myFile );
-        QString myLineString;
-        int myRecordInt = 0;
-        while ( !myStream.atEnd() )
-        {
-            // line of text excluding '\n'
-            myLineString = myStream.readLine();
-            //tokenise the line so we can get coords and records
-            QStringList myQStringList = QStringList::split("\t",myLineString,true);
-
-            if (myQStringList.size()==4)
-            {
-                QString myDateQString = myQStringList[1];
-                QString myLatQString = myQStringList[2];
-                QString myLongQString = myQStringList[3];
-
-                //convert items 3 and 4 to lat and long...
-                //TODO - continue here...
-                double x=myLongQString.toDouble();
-                double y=myLatQString.toDouble();
-                //create the dbf and shape recs
-                std::cerr << "Writing record: " << myDateQString.toLocal8Bit().data() << " - " << x << " - " << y << std::endl;
-                writeDbfRecord( myRecordInt, myDateQString);
-                writePoint( myRecordInt, x, y);
-                myRecordInt++;
-            }
-        }
-        myFile.close();
-    }
-}
 
 
 

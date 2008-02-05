@@ -39,12 +39,12 @@ void QgsGridMakerPluginGui::on_buttonBox_accepted()
   //
   QgsLogger::debug("GrativuleCreator called with: " +
       leOutputShapeFile->text() + " " +
-      leLongitudeInterval->text() + " " +
-      leLatitudeInterval->text() + " " +
-      leOriginLongitude->text() + " " +
-      leOriginLatitude->text() + " " +
-      leEndPointLongitude->text() + " " +
-      leEndPointLatitude->text());
+      spindblXInterval->text() + " " +
+      spindblYInterval->text() + " " +
+      QString::number(spindblMinX->value()) + " " +
+      QString::number(spindblMinY->value()) + " " +
+      QString::number(spindblMaxX->value()) + " " +
+      QString::number(spindblMaxY->value()));
 
   if (leOutputShapeFile->text().isEmpty())
   {
@@ -53,73 +53,19 @@ void QgsGridMakerPluginGui::on_buttonBox_accepted()
     return;
   }
 
-  bool myFlag=false; //presumed guilty
 
-  double myLongitudeInterval =  leLongitudeInterval->text().toDouble(&myFlag);
-  if (!myFlag)
-  {
-    QMessageBox::warning( 0, tr("QGIS - Grid Maker"),
-            QString(tr("Longitude Interval is invalid - please correct and try again." )));
-    return;
-  }
-  myFlag=false;//reset test flag
-  double myLatitudeInterval =  leLatitudeInterval->text().toDouble(&myFlag);
-  if (!myFlag)
-  {
-    QMessageBox::warning( 0, tr("QGIS - Grid Maker"),
-            QString(tr("Latitude Interval is invalid - please correct and try again." )));
-    return;
-  }
-  myFlag=false;//reset test flag
-  double myLongitudeOrigin =  leOriginLongitude->text().toDouble(&myFlag);
-  if (!myFlag)
-  {
-    QMessageBox::warning( 0, tr("QGIS - Grid Maker"),
-            QString(tr("Longitude Origin is invalid - please correct and try again.." )));
-    return;
-  }
-  myFlag=false;//reset test flag
-  double myLatitudeOrigin =  leOriginLatitude->text().toDouble(&myFlag);
-  if (!myFlag)
-  {
-    QMessageBox::warning( 0, tr("QGIS - Grid Maker"),
-            QString(tr("Latitude Origin is invalid - please correct and try again." )));
-    return;
-  }
-  myFlag=false;//reset test flag
-  double myEndPointLongitude = leEndPointLongitude->text().toDouble(&myFlag);
-  if (!myFlag)
-  {
-    QMessageBox::warning( 0, tr("QGIS - Grid Maker"),
-            QString(tr("End Point Longitude is invalid - please correct and try again." )));
-    return;
-  }
-  myFlag=false;//reset test flag
-  double myEndPointLatitude = leEndPointLatitude->text().toDouble(&myFlag);
-  if (!myFlag)
-  {
-    QMessageBox::warning( 0, tr("QGIS - Grid Maker"),
-            QString(tr("End Point Latitude is invalid - please correct and try again." )));
-    return;
-  }
+  double myLongitudeInterval =  spindblXInterval->value();
+  double myLatitudeInterval =  spindblYInterval->value();
+  double myLongitudeOrigin =  spindblMinX->value();
+  double myLatitudeOrigin =  spindblMinY->value();
+  double myEndPointLongitude = spindblMaxX->value();
+  double myEndPointLatitude = spindblMaxY->value();
 
 
   if (radPoint->isChecked())
   {
-    GraticuleCreator  myGraticuleCreator ( leOutputShapeFile->text(),GraticuleCreator::POINT );
+    GraticuleCreator  myGraticuleCreator ( leOutputShapeFile->text());
     myGraticuleCreator.generatePointGraticule(
-            myLongitudeInterval,
-            myLatitudeInterval,
-            myLongitudeOrigin,
-            myLatitudeOrigin,
-            myEndPointLongitude,
-            myEndPointLatitude
-            );
-  }
-  else if (radLine->isChecked())
-  {
-    GraticuleCreator  myGraticuleCreator ( leOutputShapeFile->text(),GraticuleCreator::LINE );
-    myGraticuleCreator.generateLineGraticule(
             myLongitudeInterval,
             myLatitudeInterval,
             myLongitudeOrigin,
@@ -130,7 +76,7 @@ void QgsGridMakerPluginGui::on_buttonBox_accepted()
   }
   else
   {
-    GraticuleCreator  myGraticuleCreator ( leOutputShapeFile->text(),GraticuleCreator::POLYGON);
+    GraticuleCreator  myGraticuleCreator ( leOutputShapeFile->text());
     myGraticuleCreator.generatePolygonGraticule(
             myLongitudeInterval,
             myLatitudeInterval,

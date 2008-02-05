@@ -5,9 +5,6 @@
 SET (GRID_COMMON_SRCS
      plugingui.cpp
      graticulecreator.cpp
-     utils.c
-     shpopen.c
-     dbfopen.c
 )
 
 SET (GRID_SRCS
@@ -43,7 +40,10 @@ ADD_LIBRARY (gridmakerplugin MODULE ${GRID_SRCS} ${GRID_MOC_SRCS} ${GRID_COMMON_
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
-     ../../core ../../core/raster ../../core/renderer ../../core/symbology
+     ../../core 
+     ../../core/raster 
+     ../../core/renderer 
+     ../../core/symbology
      ../../gui
      ..
 )
