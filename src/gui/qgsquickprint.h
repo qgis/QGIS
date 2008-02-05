@@ -22,6 +22,7 @@
 //QT4 includes
 #include <QObject>
 #include <QColor>
+#include <QPrinter>
 
 //QGIS includes
 #include <qgsmaprender.h>
@@ -52,6 +53,9 @@ public slots:
   void setLogo1(QString theFileName);
   void setLogo2(QString theFileName);
   void setOutputPdf(QString theFileName);
+  void setPageSize(QPrinter::PageSize theSize);
+  static QString pageSizeToString(QPrinter::PageSize theSize);
+  static QPrinter::PageSize stringToPageSize(QString theSize);
   //! This is just a convenience function to get the
   //map render from the mapcanvas
   void setMapCanvas(QgsMapCanvas * thepMapCanvas);
@@ -106,6 +110,7 @@ private:
   QString mLogo2File;
   QString mOutputFileName;
   QColor mMapBackgroundColour;
+  QPrinter::PageSize mPageSize;
 };
 
 #endif //QGSQUICKPRINT_H

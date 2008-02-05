@@ -46,7 +46,6 @@
 #include <QString>
 #include <QSettings>
 #include <QSvgRenderer>
-#include <QPrinter>
 
 //other includes
 #include <cmath>
@@ -57,6 +56,7 @@
 
 QgsQuickPrint::QgsQuickPrint()
 {
+  mPageSize = QPrinter::A4;
 }
 
 QgsQuickPrint::~QgsQuickPrint()
@@ -106,6 +106,10 @@ void QgsQuickPrint::setMapBackgroundColor(QColor theColor)
 {
   mMapBackgroundColour = theColor;
 }
+void QgsQuickPrint::setPageSize (QPrinter::PageSize theSize)
+{
+  mPageSize = theSize;
+}
 
 void QgsQuickPrint::printMap()
 {
@@ -123,18 +127,21 @@ void QgsQuickPrint::printMap()
     mOutputFileName += ".pdf";
   }
 
-  QPrinter myPrinter ( QPrinter::HighResolution ); //1200dpi for ps ( & pdf I think )
-  myPrinter.setPageSize ( QPrinter::Letter );
-  //myPrinter.setPageSize ( QPrinter::A4 );
+  // Initialising the printer this way lets us find out what
+  // the screen resolution is which we store and then 
+  // reset the resolution of the printer after that...
+  QPrinter myPrinter ( QPrinter::ScreenResolution ); 
+  int myScreenResolutionDpi = myPrinter.resolution(); //try to get programmatically
   //
   // Try to force the printer resolution to 300dpi
   // to get past platform specific defaults in printer
   // resolution...
   //
   int myPrintResolutionDpi = 300;
-  int myScreenResolutionDpi = 72; //try to get programmatically
   myPrinter.setResolution( myPrintResolutionDpi );
   myPrinter.setOutputFormat ( QPrinter::PdfFormat );
+  qDebug( "Printing to page size"  +  pageSizeToString(mPageSize).toLocal8Bit());
+  myPrinter.setPageSize ( mPageSize );
   myPrinter.setOutputFileName ( mOutputFileName );
   myPrinter.setOrientation ( QPrinter::Landscape );
   myPrinter.setDocName ( "quickprint Report" );
@@ -621,7 +628,13 @@ void QgsQuickPrint::printMap()
   //
   // Draw the scale bar
   //
+  myOriginY += myLogoYDim/2;
+  myPrintPainter.setViewport(myOriginX,
+      myOriginY, 
+      myOriginalViewport.width(),
+      myOriginalViewport.height());
   renderPrintScaleBar(&myPrintPainter, mpMapRender, myLogoXDim);
+  myPrintPainter.setViewport(myOriginalViewport); 
 
   //
   // Finish up
@@ -754,19 +767,16 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
     int theMaximumWidth)
 {
   //hard coding some options for now
-  int myStyleIndex = 1; //tick up
   bool mySnappingFlag = true;
   QColor mColour = Qt::black;
-  int myPlacementIndex = 3; //br
   // Hard coded sizes
-  int myMajorTickSize=20;
-  int myTextOffsetX=30;
-  int myTextOffsetY=30;
-  int myXMargin=260;
-  int myYMargin=180;
-  int myCanvasWidth = thepMapRender->width();
-  int myPreferredSize = theMaximumWidth;
-  double myActualSize=myPreferredSize;
+  int myMajorTickSize=10;
+  int myTextOffsetX=0;
+  int myTextOffsetY=5;
+  int myXMargin=20;
+  int myYMargin=20;
+  int myPreferredSize = theMaximumWidth - (myXMargin *2);
+  double myActualSize = 0;
   int myBufferSize=1; //softcode this later
   QColor myBackColor = Qt::white; //used for text
   QColor myForeColor = Qt::black; //used for text
@@ -778,23 +788,15 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
   //projections) and that just confuses the rest of the code in this
   //function, so force to a positive number.
   double myMuppDouble = std::abs(thepMapRender->mupp());
-
+  // 
   // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
   int myLayerCount=thepMapRender->layerSet().count();
   if (!myLayerCount || !myMuppDouble) return;
 
-
   //Calculate size of scale bar for preferred number of map units
-  double myScaleBarWidth = myPreferredSize / myMuppDouble;
-
-  //If scale bar is very small reset to 1/4 of the canvas wide
-  if (myScaleBarWidth < 30)
-  {
-    myScaleBarWidth = myCanvasWidth / 4; // pixels
-    myActualSize = myScaleBarWidth * myMuppDouble; // map units
-  };
-
+  double myScaleBarWidth = myPreferredSize;
   myActualSize = myScaleBarWidth * myMuppDouble;
+
 
   // Work out the exponent for the number - e.g, 1234 will give 3,
   // and .001234 will give -3
@@ -884,32 +886,9 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
   //Calculate total width of scale bar and label
   double myTotalScaleBarWidth = myScaleBarWidth + myFontWidth;
 
-  //determine the origin of scale bar depending on placement selected
+  //determine the origin of scale bar (bottom right)
   int myOriginX=myXMargin;
   int myOriginY=myYMargin;
-  switch (myPlacementIndex)
-  {
-    case 0: // Bottom Left
-      myOriginX = myXMargin;
-      myOriginY = thepPainter->device()->height() - myYMargin + myTextOffsetY;
-      break;
-    case 1: // Top Left
-      myOriginX = myXMargin;
-      myOriginY = myYMargin;
-      break;
-    case 2: // Top Right
-      myOriginX = thepPainter->device()->width() - ((int) myTotalScaleBarWidth) - myXMargin;
-      myOriginY = myXMargin;
-      break;
-    case 3: // Bottom Right
-      myOriginX = thepPainter->device()->width() - 
-        ((int) myTotalScaleBarWidth) - 
-        (myXMargin * 2);
-      myOriginY = thepPainter->device()->height() - myYMargin;
-      break;
-    default:
-      QgsDebugMsg( "Unable to determine where to put scale bar so defaulting to top left");
-  }
 
   //Set pen to draw with
   QPen myForegroundPen( mColour, 2 );
@@ -918,120 +897,15 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
   //Cast myScaleBarWidth to int for drawing
   int myScaleBarWidthInt = (int) myScaleBarWidth;
 
-  //Create array of vertices for scale bar depending on style
-  switch (myStyleIndex)
-  {
-    case 0: // Tick Down
-      {
-        QPolygon myTickDownArray(4);
-        //draw a buffer first so bar shows up on dark images
-        thepPainter->setPen( myBackgroundPen );
-        myTickDownArray.putPoints(0,4,
-            myOriginX                    , (myOriginY + myMajorTickSize) ,
-            myOriginX                    ,  myOriginY                    ,
-            (myScaleBarWidthInt + myOriginX),  myOriginY                    ,
-            (myScaleBarWidthInt + myOriginX), (myOriginY + myMajorTickSize)
-            );
-        thepPainter->drawPolyline(myTickDownArray);
-        //now draw the bar itself in user selected color
-        thepPainter->setPen( myForegroundPen );
-        myTickDownArray.putPoints(0,4,
-            myOriginX                    , (myOriginY + myMajorTickSize) ,
-            myOriginX                    ,  myOriginY                    ,
-            (myScaleBarWidthInt + myOriginX),  myOriginY                    ,
-            (myScaleBarWidthInt + myOriginX), (myOriginY + myMajorTickSize)
-            );
-        thepPainter->drawPolyline(myTickDownArray);
-        break;
-      }
-    case 1: // tick up
-      {
-        QPolygon myTickUpArray(4);
-        //draw a buffer first so bar shows up on dark images
-        thepPainter->setPen( myBackgroundPen );
-        myTickUpArray.putPoints(0,4,
-            myOriginX                    ,  myOriginY                    ,
-            myOriginX                    ,  myOriginY + myMajorTickSize  ,
-            (myScaleBarWidthInt + myOriginX),  myOriginY + myMajorTickSize  ,
-            (myScaleBarWidthInt + myOriginX),  myOriginY
-            );
-        thepPainter->drawPolyline(myTickUpArray);
-        //now draw the bar itself in user selected color
-        thepPainter->setPen( myForegroundPen );
-        myTickUpArray.putPoints(0,4,
-            myOriginX                    ,  myOriginY                    ,
-            myOriginX                    ,  myOriginY + myMajorTickSize  ,
-            (myScaleBarWidthInt + myOriginX),  myOriginY + myMajorTickSize  ,
-            (myScaleBarWidthInt + myOriginX),  myOriginY
-            );
-        thepPainter->drawPolyline(myTickUpArray);
-        break;
-      }
-    case 2: // Bar
-      {
-        QPolygon myBarArray(2);
-        //draw a buffer first so bar shows up on dark images
-        thepPainter->setPen( myBackgroundPen );
-        myBarArray.putPoints(0,2,
-            myOriginX,  
-            (myOriginY + (myMajorTickSize/2)),
-            (myScaleBarWidthInt + myOriginX),  (myOriginY + (myMajorTickSize/2))
-            );
-        thepPainter->drawPolyline(myBarArray);
-        //now draw the bar itself in user selected color
-        thepPainter->setPen( myForegroundPen );
-        myBarArray.putPoints(0,2,
-            myOriginX ,  (myOriginY + (myMajorTickSize/2)),
-            (myScaleBarWidthInt + myOriginX),  (myOriginY + (myMajorTickSize/2))
-            );
-        thepPainter->drawPolyline(myBarArray);
-        break;
-      }
-    case 3: // box
-      {
-        // Want square corners for a box
-        myBackgroundPen.setJoinStyle( Qt::MiterJoin );
-        myForegroundPen.setJoinStyle( Qt::MiterJoin );
-        QPolygon myBoxArray(5);
-        //draw a buffer first so bar shows up on dark images
-        thepPainter->setPen( myBackgroundPen );
-        myBoxArray.putPoints(0,5,
-            myOriginX                    ,  myOriginY,
-            (myScaleBarWidthInt + myOriginX),  myOriginY,
-            (myScaleBarWidthInt + myOriginX), (myOriginY+myMajorTickSize),
-            myOriginX                    , (myOriginY+myMajorTickSize),
-            myOriginX                    ,  myOriginY
-            );
-        thepPainter->drawPolyline(myBoxArray);
-        //now draw the bar itself in user selected color
-        thepPainter->setPen( myForegroundPen );
-        thepPainter->setBrush( QBrush( mColour, Qt::SolidPattern) );
-        int midPointX = myScaleBarWidthInt/2 + myOriginX; 
-        myBoxArray.putPoints(0,5,
-            myOriginX                    ,  myOriginY,
-            midPointX,  myOriginY,
-            midPointX, (myOriginY+myMajorTickSize),
-            myOriginX                    , (myOriginY+myMajorTickSize),
-            myOriginX                    ,  myOriginY
-            );
-        thepPainter->drawPolygon(myBoxArray);
-
-        thepPainter->setBrush( Qt::NoBrush );
-        myBoxArray.putPoints(0,5,
-            midPointX                    ,  myOriginY,
-            (myScaleBarWidthInt + myOriginX),  myOriginY,
-            (myScaleBarWidthInt + myOriginX), (myOriginY+myMajorTickSize),
-            midPointX                    , (myOriginY+myMajorTickSize),
-            midPointX                    ,  myOriginY
-            );
-        thepPainter->drawPolygon(myBoxArray);
-        break;
-      }
-    default:
-      std::cerr << "Unknown style\n";
-  }
-
-  //Do actual drawing of scale bar
+  //now draw the bar itself in user selected color
+  //thepPainter->setPen( myBackgroundPen );
+  thepPainter->setPen( myForegroundPen );
+  thepPainter->drawRect( 
+      myOriginX, 
+      myOriginY, 
+      myOriginX + myScaleBarWidthInt,  
+      myOriginY + myMajorTickSize
+      );
 
   //
   //Do drawing of scale bar text
@@ -1098,7 +972,7 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
     for (int j = 0-myBufferSize; j <= myBufferSize; j++)
     {
       thepPainter->drawText( i + (myOriginX+myScaleBarWidthInt+myTextOffsetX),
-          j + (myOriginY+myMajorTickSize) + myTextOffsetY,
+          j + myOriginY + myMajorTickSize + myFontHeight + myTextOffsetY,
           myScaleBarUnitLabel);
     }
   }
@@ -1106,7 +980,7 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
   thepPainter->setPen( myForeColor );
   thepPainter->drawText(
       myOriginX + myScaleBarWidthInt + myTextOffsetX,
-      myOriginY + myMajorTickSize + myTextOffsetY,
+      myOriginY + myMajorTickSize + myFontHeight +  myTextOffsetY,
       myScaleBarUnitLabel
       );
 }
@@ -1152,4 +1026,74 @@ QStringList QgsQuickPrint::wordWrap(QString theString,
   return myList;
 
 }
+QString QgsQuickPrint::pageSizeToString(QPrinter::PageSize theSize)
+{
+  if (theSize==QPrinter::A0) return "QPrinter::A0";
+  if (theSize==QPrinter::A1) return "QPrinter::A1";
+  if (theSize==QPrinter::A2) return "QPrinter::A2";
+  if (theSize==QPrinter::A3) return "QPrinter::A3";
+  if (theSize==QPrinter::A4) return "QPrinter::A4";
+  if (theSize==QPrinter::A5) return "QPrinter::A5";
+  if (theSize==QPrinter::A6) return "QPrinter::A6";
+  if (theSize==QPrinter::A7) return "QPrinter::A7";
+  if (theSize==QPrinter::A8) return "QPrinter::A8";
+  if (theSize==QPrinter::A9) return "QPrinter::A9";
+  if (theSize==QPrinter::B0) return "QPrinter::B0";
+  if (theSize==QPrinter::B1) return "QPrinter::B1";
+  if (theSize==QPrinter::B10) return "QPrinter::B10";
+  if (theSize==QPrinter::B2) return "QPrinter::B2";
+  if (theSize==QPrinter::B3) return "QPrinter::B3";
+  if (theSize==QPrinter::B4) return "QPrinter::B4";
+  if (theSize==QPrinter::B5) return "QPrinter::B5";
+  if (theSize==QPrinter::B6) return "QPrinter::B6";
+  if (theSize==QPrinter::B7) return "QPrinter::B7";
+  if (theSize==QPrinter::B8) return "QPrinter::B8";
+  if (theSize==QPrinter::B9) return "QPrinter::B9";
+  if (theSize==QPrinter::C5E) return "QPrinter::C5E";
+  if (theSize==QPrinter::Comm10E) return "QPrinter::Comm10E";
+  if (theSize==QPrinter::DLE) return "QPrinter::DLE";
+  if (theSize==QPrinter::Executive) return "QPrinter::Executive";
+  if (theSize==QPrinter::Folio) return "QPrinter::Folio";
+  if (theSize==QPrinter::Ledger) return "QPrinter::Ledger";
+  if (theSize==QPrinter::Legal) return "QPrinter::Legal";
+  if (theSize==QPrinter::Letter) return "QPrinter::Letter";
+  //falback
+  return "QPrinter::A4";
 
+}
+
+QPrinter::PageSize QgsQuickPrint::stringToPageSize(QString theSize)
+{
+  if (theSize=="QPrinter::A0") return QPrinter::A0;
+  if (theSize=="QPrinter::A1") return QPrinter::A1;
+  if (theSize=="QPrinter::A2") return QPrinter::A2;
+  if (theSize=="QPrinter::A3") return QPrinter::A3;
+  if (theSize=="QPrinter::A4") return QPrinter::A4;
+  if (theSize=="QPrinter::A5") return QPrinter::A5;
+  if (theSize=="QPrinter::A6") return QPrinter::A6;
+  if (theSize=="QPrinter::A7") return QPrinter::A7;
+  if (theSize=="QPrinter::A8") return QPrinter::A8;
+  if (theSize=="QPrinter::A9") return QPrinter::A9;
+  if (theSize=="QPrinter::B0") return QPrinter::B0;
+  if (theSize=="QPrinter::B1") return QPrinter::B1;
+  if (theSize=="QPrinter::B10") return QPrinter::B10;
+  if (theSize=="QPrinter::B2") return QPrinter::B2;
+  if (theSize=="QPrinter::B3") return QPrinter::B3;
+  if (theSize=="QPrinter::B4") return QPrinter::B4;
+  if (theSize=="QPrinter::B5") return QPrinter::B5;
+  if (theSize=="QPrinter::B6") return QPrinter::B6;
+  if (theSize=="QPrinter::B7") return QPrinter::B7;
+  if (theSize=="QPrinter::B8") return QPrinter::B8;
+  if (theSize=="QPrinter::B9") return QPrinter::B9;
+  if (theSize=="QPrinter::C5E") return QPrinter::C5E;
+  if (theSize=="QPrinter::Comm10E") return QPrinter::Comm10E;
+  if (theSize=="QPrinter::DLE") return QPrinter::DLE;
+  if (theSize=="QPrinter::Executive") return QPrinter::Executive;
+  if (theSize=="QPrinter::Folio") return QPrinter::Folio;
+  if (theSize=="QPrinter::Ledger") return QPrinter::Ledger;
+  if (theSize=="QPrinter::Legal") return QPrinter::Legal;
+  if (theSize=="QPrinter::Letter") return QPrinter::Letter;
+  //falback
+  return QPrinter::A4;
+
+}
