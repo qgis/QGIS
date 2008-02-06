@@ -10,6 +10,8 @@ public:
   QgsQuickPrint();
   //! Destructor
   virtual ~QgsQuickPrint();
+  static QString pageSizeToString(QPrinter::PageSize theSize);
+  static QPrinter::PageSize stringToPageSize(QString theSize);
 
 public slots:
   void printMap(); 
@@ -21,5 +23,6 @@ public slots:
   void setLogo2(QString theFileName);
   void setOutputPdf(QString theFileName);
   void setMapCanvas(QgsMapCanvas * thepMapCanvas);
+  void setPageSize(QPrinter::PageSize theSize);
 };
 
