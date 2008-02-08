@@ -40,6 +40,7 @@ ADD_LIBRARY (gridmakerplugin MODULE ${GRID_SRCS} ${GRID_MOC_SRCS} ${GRID_COMMON_
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
+     ${GEOS_INCLUDE_DIR}
      ../../core 
      ../../core/raster 
      ../../core/renderer 
