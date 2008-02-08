@@ -2,7 +2,7 @@
 usr/bin/qgis
 usr/bin/qgis_help
 usr/lib/qgis/libcopyrightlabelplugin.so
-usr/lib/qgis/libdelimitedtextprovider.so
+usr/lib/qgis/libdelimitedtextplugin.so
 usr/lib/qgis/libgeorefplugin.so
 usr/lib/qgis/libgpsimporterplugin.so
 usr/lib/qgis/libgpxprovider.so
