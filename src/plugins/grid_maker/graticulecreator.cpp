@@ -61,11 +61,28 @@ void GraticuleCreator::generatePointGraticule(
       mFields,
       QGis::WKBPoint,
       &mSRS);
+  // 
+  // Order our loop so that it goes from smallest to biggest
+  //
+  if (theXEndPoint < theXOrigin)
+  {
+    double myBuffer = theXOrigin;
+    theXOrigin = theXEndPoint;
+    theXEndPoint = myBuffer;
+  }
+  if (theYEndPoint < theYOrigin)
+  {
+    double myBuffer = theYOrigin;
+    theYOrigin = theYEndPoint;
+    theYEndPoint = myBuffer;
+  }
+
+
   for (double i=theXOrigin;
       i<=theXEndPoint;
       i+=theXInterval)
   {
-    for (double j=-theYOrigin;
+    for (double j=theYOrigin;
                 j<=theYEndPoint;
                 j+=theYInterval)
     {
@@ -82,6 +99,22 @@ void GraticuleCreator::generatePointGraticule(
       QgsFeature myFeature;
       myFeature.setTypeName("WKBPoint");
       myFeature.setGeometry(mypPointGeometry);
+      if (i==theXOrigin && j==theYEndPoint) //labels for bottom right corner
+      {
+        myFeature.addAttribute(0,i);//"LabelX"
+        myFeature.addAttribute(1,j);//"LabelY"
+        myFeature.addAttribute(2,-20);//"LabelOffsetX"
+        myFeature.addAttribute(3,-20);//"LabelOffsetY"
+        myFeature.addAttribute(4,QString::number(i) + "," + QString::number(j));//"Label"
+      }
+      else if (i==theXEndPoint && j==theYOrigin) //labels for top left corner
+      {
+        myFeature.addAttribute(0,i);//"LabelX"
+        myFeature.addAttribute(1,j);//"LabelY"
+        myFeature.addAttribute(2,20);//"LabelOffsetX"
+        myFeature.addAttribute(3,20);//"LabelOffsetY"
+        myFeature.addAttribute(4,QString::number(i) + "," +  QString::number(j));//"Label"
+      }
       if (i==theXOrigin && j==theYOrigin) //labels for bottom left corner
       {
         myFeature.addAttribute(0,i);//"LabelX"
@@ -175,11 +208,26 @@ void GraticuleCreator::generatePolygonGraticule(
       mFields,
       QGis::WKBPolygon,
       &mSRS);
+  // 
+  // Order our loop so that it goes from smallest to biggest
+  //
+  if (theXEndPoint < theXOrigin)
+  {
+    double myBuffer = theXOrigin;
+    theXOrigin = theXEndPoint;
+    theXEndPoint = myBuffer;
+  }
+  if (theYEndPoint < theYOrigin)
+  {
+    double myBuffer = theYOrigin;
+    theYOrigin = theYEndPoint;
+    theYEndPoint = myBuffer;
+  }
   for (double i=theXOrigin;
       i<=theXEndPoint;
       i+=theXInterval)
   {
-    for (double j=-theYOrigin;
+    for (double j=theYOrigin;
                 j<=theYEndPoint;
                 j+=theYInterval)
     {
