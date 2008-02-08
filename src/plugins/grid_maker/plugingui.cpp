@@ -39,12 +39,12 @@ void QgsGridMakerPluginGui::on_buttonBox_accepted()
   //
   QgsLogger::debug("GrativuleCreator called with: " +
       leOutputShapeFile->text() + " " +
-      spindblXInterval->text() + " " +
-      spindblYInterval->text() + " " +
-      QString::number(spindblMinX->value()) + " " +
-      QString::number(spindblMinY->value()) + " " +
-      QString::number(spindblMaxX->value()) + " " +
-      QString::number(spindblMaxY->value()));
+      leXInterval->text() + " " +
+      leYInterval->text() + " " +
+      leXLowerLeft->text() + " " +
+      leYLowerLeft->text() + " " +
+      leXUpperRight->text() + " " +
+      leYUpperRight->text());
 
   if (leOutputShapeFile->text().isEmpty())
   {
@@ -54,36 +54,36 @@ void QgsGridMakerPluginGui::on_buttonBox_accepted()
   }
 
 
-  double myLongitudeInterval =  spindblXInterval->value();
-  double myLatitudeInterval =  spindblYInterval->value();
-  double myLongitudeOrigin =  spindblMinX->value();
-  double myLatitudeOrigin =  spindblMinY->value();
-  double myEndPointLongitude = spindblMaxX->value();
-  double myEndPointLatitude = spindblMaxY->value();
+  double myXInterval =  leXInterval->text().toDouble();
+  double myYInterval =  leYInterval->text().toDouble();
+  double myXOrigin =  leXLowerLeft->text().toDouble();
+  double myYOrigin =  leYLowerLeft->text().toDouble();
+  double myEndPointX = leXUpperRight->text().toDouble();
+  double myEndPointY = leYUpperRight->text().toDouble();
 
 
   if (radPoint->isChecked())
   {
     GraticuleCreator  myGraticuleCreator ( leOutputShapeFile->text());
     myGraticuleCreator.generatePointGraticule(
-            myLongitudeInterval,
-            myLatitudeInterval,
-            myLongitudeOrigin,
-            myLatitudeOrigin,
-            myEndPointLongitude,
-            myEndPointLatitude
+            myXInterval,
+            myYInterval,
+            myXOrigin,
+            myYOrigin,
+            myEndPointX,
+            myEndPointY
             );
   }
   else
   {
     GraticuleCreator  myGraticuleCreator ( leOutputShapeFile->text());
     myGraticuleCreator.generatePolygonGraticule(
-            myLongitudeInterval,
-            myLatitudeInterval,
-            myLongitudeOrigin,
-            myLatitudeOrigin,
-            myEndPointLongitude,
-            myEndPointLatitude
+            myXInterval,
+            myYInterval,
+            myXOrigin,
+            myYOrigin,
+            myEndPointX,
+            myEndPointY
             );
   }
   //
