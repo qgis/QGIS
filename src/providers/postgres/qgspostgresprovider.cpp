@@ -546,7 +546,10 @@ void QgsPostgresProvider::select(QgsAttributeList fetchAttributes,
   ready = true;
   PQexec(connection, (const char *)(declare.utf8()));
 
-  mFeatureQueue.empty();
+  while(!mFeatureQueue.empty())
+    {
+      mFeatureQueue.pop();
+    }
   mFirstFetch = true;
 }
 

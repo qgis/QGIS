@@ -2669,6 +2669,7 @@ void QgisApp::fileOpen()
     delete openFileDialog;
 
     // clear out any stuff from previous project
+    mMapCanvas->freeze(true);
     removeAllLayers();
 
     QgsProject::instance()->filename( fullPath );
@@ -2704,6 +2705,9 @@ void QgisApp::fileOpen()
           tr("") + "\n" + QString::fromLocal8Bit( e.what() ) );
       QgsDebugMsg("BAD LAYERS FOUND");
     }
+
+    mMapCanvas->freeze(false);
+    mMapCanvas->refresh();
   }
 
 } // QgisApp::fileOpen
