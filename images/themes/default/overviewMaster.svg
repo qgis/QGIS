@@ -17,7 +17,7 @@
    inkscape:version="0.45.1"
    sodipodi:docbase="/home/timlinux/dev/cpp/qgis/images/themes/default"
    sodipodi:docname="overviewMaster.svg"
-   inkscape:export-filename="/home/timlinux/dev/cpp/qgis/src/plugins/grass/add_raster.png"
+   inkscape:export-filename="/tmp/new_layer_icon.png"
    inkscape:export-xdpi="22.5"
    inkscape:export-ydpi="22.5"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
@@ -1735,7 +1735,7 @@
      inkscape:groupmode="layer"
      id="layer27"
      inkscape:label="database"
-     style="display:none">
+     style="display:inline">
     <path
        sodipodi:type="arc"
        style="fill:url(#linearGradient7683);fill-opacity:1;stroke:#020c02;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
@@ -1892,7 +1892,7 @@
      inkscape:groupmode="layer"
      id="layer7"
      inkscape:label="tools"
-     style="display:inline">
+     style="display:none">
     <g
        id="configuration"
        transform="matrix(-1,0,0,1,128.36211,1.4875932)">
@@ -2065,7 +2065,7 @@
      inkscape:groupmode="layer"
      id="layer14"
      inkscape:label="star"
-     style="display:none">
+     style="display:inline">
     <path
        sodipodi:type="star"
        style="opacity:1;fill:#fffd00;fill-opacity:1;stroke:#f8a70a;stroke-width:4.37719059;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;display:inline"
@@ -2253,7 +2253,7 @@
      inkscape:groupmode="layer"
      id="layer1"
      inkscape:label="grass"
-     style="display:inline">
+     style="display:none">
     <g
        id="g3585">
       <path
