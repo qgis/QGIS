@@ -28,7 +28,6 @@ QuickPrintGui::QuickPrintGui( QgsMapCanvas * thepMapCanvas,
 : mpMapCanvas ( thepMapCanvas ), QDialog ( parent, fl ) 
 {
   setupUi(this);
-  readSettings();
   grpOuput->hide();  //until properly implemented
   cboPageSize->addItem("A0 (841 x 1189 mm)","QPrinter::A0");
   cboPageSize->addItem("A1 (594 x 841 mm)","QPrinter::A1");
@@ -59,6 +58,7 @@ QuickPrintGui::QuickPrintGui( QgsMapCanvas * thepMapCanvas,
   cboPageSize->addItem("Ledger (432 x 279 mm)","QPrinter::Ledger");
   cboPageSize->addItem("Legal (8.5 x 14 inches, 216 x 356 mm)","QPrinter::Legal");
   cboPageSize->addItem("Letter (8.5 x 11 inches, 216 x 279 mm)","QPrinter::Letter");
+  readSettings();
 }  
 
 QuickPrintGui::~QuickPrintGui()
@@ -73,6 +73,9 @@ void QuickPrintGui::readSettings()
   bool myIncrementLastFileFlag = mySettings.value("quickprint/incrementLastFile", false).toBool();
   radUseIncrementedFileName->setChecked(myIncrementLastFileFlag);
 
+  QString myPageSize = mySettings.value("quickprint/pageSize",
+            "QPrinter::A4").toString();
+  cboPageSize->setCurrentIndex(cboPageSize->findData(myPageSize));
 }
 
 void QuickPrintGui::writeSettings()
@@ -82,6 +85,8 @@ void QuickPrintGui::writeSettings()
   mySettings.setValue("quickprint/mapName", leMapName->text());
   mySettings.setValue("quickprint/mapCopyright", teCopyright->text());
   mySettings.setValue("quickprint/incrementLastFile", radUseIncrementedFileName->isChecked());
+  mySettings.setValue("quickprint/pageSize", 
+      cboPageSize->itemData(cboPageSize->currentIndex()));
 }
 
 
