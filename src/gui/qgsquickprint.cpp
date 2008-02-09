@@ -229,7 +229,11 @@ void QgsQuickPrint::printMap()
   int myMapDateFontSize = 16;
   int myMapNameFontSize = 32;
   int myLegendFontSize = 12;
-#ifdef WIN32 //this sucks...
+#ifdef Q_OS_LINUX//this sucks...
+  myLegendFontSize -= 2;
+#endif
+
+#ifdef WIN32 //this sucks too...
    myMapTitleFontSize /= 2;
    myMapDateFontSize /= 2;
    myMapNameFontSize /= 2;
@@ -388,7 +392,9 @@ void QgsQuickPrint::printMap()
   myPrintPainter.setFont( myLegendFont );
   QStringList myLayerSet = mpMapRender->layerSet();
   QStringListIterator myLayerIterator ( myLayerSet );
-  while ( myLayerIterator.hasNext() )
+  //second clause below is to prevent legend spilling out the bottom
+  while ( myLayerIterator.hasNext() && 
+      myLegendYPos < myLegendDimensionY )
   {
     QString myLayerId = myLayerIterator.next();
     QgsMapLayer * mypLayer = 
@@ -460,11 +466,20 @@ void QgsQuickPrint::printMap()
           QStringList myWrappedLayerNameList = wordWrap(myLayerName, 
                                     myLegendFontMetrics, 
                                     myLegendDimensionX - myIconWidth);
+          // Check the wrapped layer name wont overrun the space we have
+          // for the legend ...
+          int myLabelHeight = myLegendFontHeight * 
+                  myWrappedLayerNameList.count(); 
+          if (myLegendYPos + myLabelHeight > myLegendDimensionY )
+          {
+            continue;
+          }
+
           //
           // Loop through wrapped legend label lines
           //
           QStringListIterator myLineWrapIterator(myWrappedLayerNameList);
-          while (myLineWrapIterator.hasNext())
+          while (myLineWrapIterator.hasNext()) 
           {
             QString myLine = myLineWrapIterator.next();
             myLegendXPos = myIconWidth;
@@ -477,10 +492,10 @@ void QgsQuickPrint::printMap()
             myLegendYPos += myLegendVerticalSpacer + myLegendFontHeight;
           }
           //
-          // Lop through the class breaks
+          // Loop through the class breaks
           //
           QListIterator<QgsSymbol *> myIterator ( mySymbolList );
-          while ( myIterator.hasNext() )
+          while ( myIterator.hasNext() && myLegendYPos < myLegendDimensionY)
           {
             QgsSymbol * mypSymbol = myIterator.next();
             myPrintPainter.setPen( mypSymbol->pen() );
@@ -502,7 +517,8 @@ void QgsQuickPrint::printMap()
             }
             else //polygon
             {
-              myPrintPainter.drawRect( myLegendXPos, myLegendYPos, myIconWidth, myIconWidth );
+              myPrintPainter.drawRect( 
+                  myLegendXPos, myLegendYPos, myIconWidth, myIconWidth );
             }
             //
             // Now work out the class break label
@@ -533,7 +549,7 @@ void QgsQuickPrint::printMap()
 
             QStringList myWrappedLayerNameList = wordWrap(myLabel, 
                 myLegendFontMetrics, 
-                myLegendDimensionX - myIconWidth);
+                myLegendDimensionX - myLegendXPos);
             //
             // Loop through wrapped legend label lines
             //
@@ -617,19 +633,21 @@ void QgsQuickPrint::printMap()
   // Draw the north arrow
   //
   myOriginX += myHorizontalSpacing + myLogoXDim;
+  // use half the available space for the n.arrow
+  // and the rest for the scale bar (see below)
   QPixmap myNorthArrow ( myLogoYDim/2, myLogoYDim/2 );
   myNorthArrow.fill ( Qt::white );
   QPainter myNorthPainter ( &myNorthArrow );
   QSvgRenderer mySvgRenderer ( mNorthArrowFile );
   mySvgRenderer.render ( &myNorthPainter );
-  myPrintPainter.drawPixmap( myOriginX + ((myLogoXDim/2)-(myLogoYDim/2)) ,
+  myPrintPainter.drawPixmap( myOriginX + ((myLogoXDim/2)) ,
       myOriginY , 
       myNorthArrow); 
 
   //
   // Draw the scale bar
   //
-  myOriginY += myLogoYDim/2;
+  myOriginY += myLogoYDim/2 + myVerticalSpacing;
   myPrintPainter.setViewport(myOriginX,
       myOriginY, 
       myOriginalViewport.width(),
@@ -885,10 +903,13 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
   QString myScaleBarMaxLabel=QString::number(myActualSize);
 
   //Calculate total width of scale bar and label
-  double myTotalScaleBarWidth = myScaleBarWidth + myFontWidth;
+  //we divide by 2 because the max scale label
+  //will be centered over the endpoint of the scale bar
+  double myTotalScaleBarWidth = myScaleBarWidth + (myFontWidth/2);
 
   //determine the origin of scale bar (bottom right)
-  int myOriginX=myXMargin;
+  //for x origin set things up so the scalebar is centered
+  int myOriginX=(theMaximumWidth - myTotalScaleBarWidth)/2;
   int myOriginY=myYMargin;
 
   //Set pen to draw with
@@ -906,17 +927,6 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
   myStops << QGradientStop(0.5,QColor("#505050"));
   myStops << QGradientStop(0.6,QColor("#434343"));
   myStops << QGradientStop(1.0,QColor("#656565"));
-  /** Delete this I think
-  QLinearGradient myGlossyBrush(QPointF(myOriginX,myOriginY), 
-                  QPointF(myOriginX,myOriginY + myMajorTickSize*3));
-  thepPainter->setBrush(myGlossyBrush);
-  thepPainter->drawRect( 
-      myOriginX, 
-      myOriginY, 
-      myOriginX + myScaleBarWidthInt,  
-      myOriginY + myMajorTickSize
-      );
-  */
   //draw again with the brush in the revers direction to complete teh glossiness
   QLinearGradient myReverseGlossyBrush(
                   QPointF(myOriginX,myOriginY +  myMajorTickSize*3), 
