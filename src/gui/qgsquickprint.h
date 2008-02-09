@@ -43,6 +43,8 @@ class GUI_EXPORT QgsQuickPrint:public QObject
   //! Destructor
   virtual ~QgsQuickPrint();
   enum SymbolScalingType {ScaleUp, ScaleDown};
+  static QString pageSizeToString(QPrinter::PageSize theSize);
+  static QPrinter::PageSize stringToPageSize(QString theSize);
 
 public slots:
   void printMap(); 
@@ -54,8 +56,6 @@ public slots:
   void setLogo2(QString theFileName);
   void setOutputPdf(QString theFileName);
   void setPageSize(QPrinter::PageSize theSize);
-  static QString pageSizeToString(QPrinter::PageSize theSize);
-  static QPrinter::PageSize stringToPageSize(QString theSize);
   //! This is just a convenience function to get the
   //map render from the mapcanvas
   void setMapCanvas(QgsMapCanvas * thepMapCanvas);

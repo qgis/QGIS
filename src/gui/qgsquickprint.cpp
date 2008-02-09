@@ -972,7 +972,7 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
     for (int j = 0-myBufferSize; j <= myBufferSize; j++)
     {
       thepPainter->drawText( i + (myOriginX+myScaleBarWidthInt+myTextOffsetX),
-          j + myOriginY + myMajorTickSize + myFontHeight + myTextOffsetY,
+          j + myOriginY + myMajorTickSize + (myFontHeight*2.5) + myTextOffsetY,
           myScaleBarUnitLabel);
     }
   }
@@ -980,7 +980,7 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
   thepPainter->setPen( myForeColor );
   thepPainter->drawText(
       myOriginX + myScaleBarWidthInt + myTextOffsetX,
-      myOriginY + myMajorTickSize + myFontHeight +  myTextOffsetY,
+      myOriginY + myMajorTickSize + (myFontHeight*2.5) +  myTextOffsetY,
       myScaleBarUnitLabel
       );
 }
