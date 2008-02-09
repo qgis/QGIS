@@ -46,6 +46,7 @@
 #include <QString>
 #include <QSettings>
 #include <QSvgRenderer>
+#include <QLinearGradient>
 
 //other includes
 #include <cmath>
@@ -898,8 +899,29 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
   int myScaleBarWidthInt = (int) myScaleBarWidth;
 
   //now draw the bar itself in user selected color
-  //thepPainter->setPen( myBackgroundPen );
   thepPainter->setPen( myForegroundPen );
+  //make a glossygradient for the background
+  QGradientStops myStops;
+  myStops << QGradientStop(0.0,QColor("#616161"));
+  myStops << QGradientStop(0.5,QColor("#505050"));
+  myStops << QGradientStop(0.6,QColor("#434343"));
+  myStops << QGradientStop(1.0,QColor("#656565"));
+  /** Delete this I think
+  QLinearGradient myGlossyBrush(QPointF(myOriginX,myOriginY), 
+                  QPointF(myOriginX,myOriginY + myMajorTickSize*3));
+  thepPainter->setBrush(myGlossyBrush);
+  thepPainter->drawRect( 
+      myOriginX, 
+      myOriginY, 
+      myOriginX + myScaleBarWidthInt,  
+      myOriginY + myMajorTickSize
+      );
+  */
+  //draw again with the brush in the revers direction to complete teh glossiness
+  QLinearGradient myReverseGlossyBrush(
+                  QPointF(myOriginX,myOriginY +  myMajorTickSize*3), 
+                  QPointF(myOriginX,myOriginY));
+  thepPainter->setBrush(myReverseGlossyBrush);
   thepPainter->drawRect( 
       myOriginX, 
       myOriginY, 
@@ -1097,3 +1119,6 @@ QPrinter::PageSize QgsQuickPrint::stringToPageSize(QString theSize)
   return QPrinter::A4;
 
 }
+
+
+
