@@ -35,6 +35,10 @@ void QgsScaleCalculator::setDpi(int dpi)
 {
   mDpi = dpi;
 }
+int QgsScaleCalculator::dpi()
+{
+  return mDpi;
+}
 
 void QgsScaleCalculator::setMapUnits(QGis::units mapUnits)
 {

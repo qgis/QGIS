@@ -48,6 +48,11 @@ class QgsMapRender : QObject
 
     void setOutputSize(QSize size, int dpi);
     
+    //!accessor for output dpi
+    int outputDpi();
+    //!accessor for output size
+    QSize outputSize();
+    
     //! transform extent in layer's SRS to extent in output SRS
     QgsRect layerExtentToOutputExtent(QgsMapLayer* theLayer, QgsRect extent);
     

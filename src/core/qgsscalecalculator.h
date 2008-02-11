@@ -51,6 +51,11 @@ class CORE_EXPORT QgsScaleCalculator
      * @param dpi Dots per inch of monitor resolution
      */
     void setDpi(int dpi);
+    /**
+     * Accessor for dpi used in scale calculations
+     * @return int the dpi used for scale calculations.
+     */
+    int dpi();
 
     /**
      * Set the map units
@@ -70,7 +75,7 @@ class CORE_EXPORT QgsScaleCalculator
     double calculate(QgsRect &mapExtent, int canvasWidth);
 
     /**
-     * Calculate the distance between to points in geographic coordinates.
+     * Calculate the distance between two points in geographic coordinates.
      * Used to calculate scale for map views with geographic (decimal degree)
      * data.
      * @param mapExtent QgsRect containing the current map extent
