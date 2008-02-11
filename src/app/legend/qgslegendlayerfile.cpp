@@ -438,9 +438,7 @@ void QgsLegendLayerFile::toggleEditing()
     {
 
       // commit or roll back?
-      QMessageBox::StandardButton commit = QMessageBox::information(0,tr("Stop editing"),
-        tr("Do you want to save the changes?"),
-        QMessageBox::Save | QMessageBox::Discard);  
+      QMessageBox::StandardButton commit = QMessageBox::information(0,tr("Stop editing"), tr("Do you want to save the changes?"), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);  
 
       if(commit==QMessageBox::Save)
       {
@@ -461,6 +459,10 @@ void QgsLegendLayerFile::toggleEditing()
             tr("Problems during roll back"));
         }
       }
+      else //cancel
+	{
+	  return;
+	}
     }
     else //layer not modified
     {

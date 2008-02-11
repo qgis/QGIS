@@ -192,7 +192,7 @@ void QgsAttributeTableDisplay::stopEditing()
     //commit or roll back?
     QMessageBox::StandardButton commit=QMessageBox::information(this,tr("Stop editing"),
                                         tr("Do you want to save the changes?"),
-                                        QMessageBox::Save | QMessageBox::Discard);
+                                        QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
     if(commit==QMessageBox::Save)
     {
       if(!table()->commitChanges(mLayer))
@@ -200,10 +200,14 @@ void QgsAttributeTableDisplay::stopEditing()
         QMessageBox::information(this,tr("Error"),tr("Could not commit changes"));
       }
     }
-    else
+    else if(commit == QMessageBox::Discard)
     {
       table()->rollBack(mLayer);
     }
+    else //cancel
+      {
+	return;
+      }
   }
   btnStartEditing->setEnabled(true);
   btnStopEditing->setEnabled(false);
