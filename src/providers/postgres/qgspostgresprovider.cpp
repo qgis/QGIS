@@ -435,7 +435,7 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
     if(mFetchGeom)
       {
 	QgsGeometry* featureGeom = mFeatureQueue.front().geometryAndOwnership();
-	feature.setGeometryAndOwnership(featureGeom->wkbBuffer(), featureGeom->wkbSize());
+	feature.setGeometry(featureGeom);
       }
     else
       {
