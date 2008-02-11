@@ -31,6 +31,12 @@ class QgsScaleCalculator
     void setDpi(int dpi);
 
     /**
+     * Accessor for dpi used in scale calculations
+     * @return int the dpi used for scale calculations.
+     */
+    int dpi();
+    
+    /**
      * Set the map units
      * @param mapUnits Units of the data on the map. Must match a value from the
      */

@@ -118,6 +118,14 @@ void QgsMapRender::setOutputSize(QSize size, int dpi)
   mScaleCalculator->setDpi(dpi);
   adjustExtentToSize();
 }
+int QgsMapRender::outputDpi()
+{
+  return mScaleCalculator->dpi();
+}
+QSize QgsMapRender::outputSize()
+{
+  return mSize;
+}
 
 void QgsMapRender::adjustExtentToSize()
 {
