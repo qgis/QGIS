@@ -105,6 +105,7 @@ int QgsMapToolCapture::addVertex(const QPoint& p)
     }
   catch(QgsCsException &cse)
     {
+		  UNUSED(cse);
       return 2;
     }
 
@@ -121,6 +122,7 @@ int QgsMapToolCapture::addVertex(const QPoint& p)
 	}
       catch(QgsCsException &cse)
 	{
+    UNUSED (cse);
 	  return 2;
 	}
       mRubberBand->addPoint(mapPoint);

@@ -1993,7 +1993,7 @@ bool QgisApp::addVectorLayers(QStringList const & theLayerQStringList, const QSt
 
   statusBar()->message(mMapCanvas->extent().stringRep(2));
 
-
+  return true;
 } // QgisApp::addVectorLayer()
 
 
