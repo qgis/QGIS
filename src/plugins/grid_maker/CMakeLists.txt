@@ -12,11 +12,6 @@ SET (GRID_SRCS
      ${GRID_COMMON_SRCS}
 )
 
-SET (GRID_BINARY_SRCS
-     main.cpp
-     ${GRID_COMMON_SRCS}
-)
-
 SET (GRID_UIS pluginguibase.ui)
 
 SET (GRID_COMMON_MOC_HDRS plugingui.h)
@@ -54,18 +49,6 @@ TARGET_LINK_LIBRARIES(gridmakerplugin
   qgis_gui
 )
 
-IF (PLUGINS_ALSO_BINARIES)
-
-  ADD_EXECUTABLE (gridmaker ${GRID_BINARY_SRCS} ${GRID_COMMON_MOC_SRCS} ${GRID_RCC_SRCS})
-
-  TARGET_LINK_LIBRARIES(gridmaker
-    ${QT_LIBRARIES}
-    qgis_core
-    qgis_gui
-  )
-
-ENDIF (PLUGINS_ALSO_BINARIES)
-
 ########################################################
 # Install
 
@@ -73,6 +56,3 @@ INSTALL(TARGETS gridmakerplugin
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 
-IF (PLUGINS_ALSO_BINARIES)
-  INSTALL(TARGETS gridmaker RUNTIME DESTINATION ${QGIS_BIN_DIR})
-ENDIF (PLUGINS_ALSO_BINARIES)
