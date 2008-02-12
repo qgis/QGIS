@@ -337,17 +337,19 @@ void QgsQuickPrint::printMap()
   myMapPixmap.fill ( mMapBackgroundColour );
   QPainter myMapPainter;
   myMapPainter.begin( &myMapPixmap );
+  //
+  // Remember the size and dpi of the maprender
+  // so we can restore it properly
+  //
+  int myOriginalDpi = mpMapRender->outputDpi();
+  QSize myOriginalSize = mpMapRender->outputSize();
+  // Now resize for print
   mpMapRender->setOutputSize( 
       QSize ( myMapDimensionX, myMapDimensionY ), myPrinter.resolution() ); 
   scalePointSymbols(mySymbolScalingAmount, ScaleUp);
   scaleTextLabels(mySymbolScalingAmount, ScaleUp);
   mpMapRender->render( &myMapPainter );
-  //maprender has no accessor for output size so 
-  //we couldnt store the size before starting the print render
-  //so that it can be restored properly so what follows here is a
-  //best guess approach
-  mpMapRender->setOutputSize( 
-      QSize ( mpMapRender->width(), mpMapRender->height() ), myScreenResolutionDpi ); 
+
   myMapPainter.end();
   //draw the map pixmap onto our pdf print device
   myOriginX = myPrinter.pageRect().left() + myHorizontalSpacing; 
@@ -672,6 +674,10 @@ void QgsQuickPrint::printMap()
      mProgressDialog.setWindowModality ( Qt::WindowModal );
      mProgressDialog.setAutoClose ( true );
      */
+  //
+  // Restore the map render to its former glory
+  //
+  mpMapRender->setOutputSize( myOriginalSize, myOriginalDpi); 
 } 
 
 void QgsQuickPrint::scaleTextLabels( int theScaleFactor, SymbolScalingType theDirection)
