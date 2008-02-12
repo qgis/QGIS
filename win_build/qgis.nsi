@@ -154,6 +154,8 @@ Section "Development headers" SEC02
 SectionEnd
 
 Section "Python Extension" SEC03
+;this section is mandatory
+ SectionIn RO
  !insertmacro CHECK_PYTHON
  SetOutPath "$INSTDIR"
  File /r "C:\Program Files\qgis${PRODUCT_VERSION_NUMBER}\python"
