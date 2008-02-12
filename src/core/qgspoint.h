@@ -129,7 +129,7 @@ class CORE_EXPORT QgsPoint
 
     //! little helper function that returns the maximum of 
     //! two doubles (or a in case of equality)
-    double max(double a, double b) const;
+    double maxValue(double a, double b) const;
     
 }; // class QgsPOint
 
