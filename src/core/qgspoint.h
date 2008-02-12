@@ -127,9 +127,6 @@ class CORE_EXPORT QgsPoint
     //! y coordinate 
     double m_y;
 
-    //! little helper function that returns the maximum of 
-    //! two doubles (or a in case of equality)
-    double maxValue(double a, double b) const;
     
 }; // class QgsPOint
 
