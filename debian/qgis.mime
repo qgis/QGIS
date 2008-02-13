@@ -1,0 +1,7 @@
+application/shp; qgis '%s'; edit=qgis '%s'; test=test "$DISPLAY" != ""; priority=2
+application/mif; qgis '%s'; edit=qgis '%s'; test=test "$DISPLAY" != ""; priority=2
+application/jpg; qgis '%s'; edit=qgis '%s'; test=test "$DISPLAY" != ""; priority=2
+application/tif; qgis '%s'; edit=qgis '%s'; test=test "$DISPLAY" != ""; priority=2
+application/aig; qgis '%s'; edit=qgis '%s'; test=test "$DISPLAY" != ""; priority=2
+application/ecw; qgis '%s'; edit=qgis '%s'; test=test "$DISPLAY" != ""; priority=2
+application/sid; qgis '%s'; edit=qgis '%s'; test=test "$DISPLAY" != ""; priority=2

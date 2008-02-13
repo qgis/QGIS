@@ -88,6 +88,7 @@ binary-arch: build install
 	dh_desktop
 	dh_installman -pqgis debian/gridmaker.1
 	dh_installman -plibqgis1-dev debian/qgis-config.1
+	dh_installmime -pqgis
 	dh_link
 	dh_strip
 	dh_compress --exclude=pdf
