@@ -7,7 +7,7 @@ which are not wrapped by PyQt:
 - QSet<TYPE>
 - QMap<int, QMap<int, TYPE> >
 - QMap<TYPE1, TYPE2*>
-
+- QMultiMap<double, TYPE2>
 */
 
 %ModuleHeaderCode
@@ -410,8 +410,6 @@ template<TYPE>
 };
 
 
-
-
 template<TYPE1, TYPE2>
 %MappedType QMap<TYPE1, TYPE2*>
 {
@@ -518,3 +516,118 @@ template<TYPE1, TYPE2>
     return sipGetState(sipTransferObj);
 %End
 };
+
+
+
+template<double, TYPE2>
+%MappedType QMultiMap<double, TYPE2>
+{
+%TypeHeaderCode
+#include <QMultiMap>
+%End
+
+%ConvertFromTypeCode
+    // Create the dictionary.
+    PyObject *d = PyDict_New();
+
+    if (!d)
+        return NULL;
+
+    // Set the dictionary elements.
+    QMultiMap<double, TYPE2>::const_iterator i = sipCpp->constBegin();
+
+    while (i != sipCpp->constEnd())
+    {
+
+      const double t1 = i.key();
+      const TYPE2 * t2 = &i.value();
+      PyObject *t1obj = PyFloat_FromDouble(t1);
+      PyObject *t2obj = sipConvertFromInstance(t2, sipClass_TYPE2, sipTransferObj);
+      if (PyDict_GetItem(d, t1obj) == NULL) {
+       PyObject *lst = PyList_New(0);
+       PyDict_SetItem(d, t1obj, lst);
+       if (lst)
+         Py_DECREF(lst);
+      }
+
+      if (t1obj == NULL || t2obj == NULL ||
+         PyList_Append(PyDict_GetItem(d, t1obj), t2obj) < 0)
+        {
+         Py_DECREF(d);
+         if (t1obj)
+           Py_DECREF(t1obj);
+
+         if (t2obj)
+           Py_DECREF(t2obj);
+
+         return NULL;
+        }
+        Py_DECREF(t1obj);
+        Py_DECREF(t2obj);
+
+        ++i;
+    }
+
+    return d;
+%End
+
+%ConvertToTypeCode
+    PyObject *t1obj, *t2obj;
+#if PY_VERSION_HEX >= 0x02050000
+    Py_ssize_t i = 0;
+#else
+    int i = 0;
+#endif
+
+    // Check the type if that is all that is required.
+    if (sipIsErr == NULL)
+    {
+        if (!PyDict_Check(sipPy))
+            return 0;
+
+        while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
+        {
+         for (int i = 0; i < PyList_GET_SIZE(t2obj); ++i) {
+           if (!sipCanConvertToInstance(PyList_GET_ITEM(t2obj, i),
+                                        sipClass_TYPE2, SIP_NOT_NONE))
+             return 0;
+         }
+        }
+
+        return 1;
+    }
+
+    QMultiMap<double, TYPE2> *qm = new QMultiMap<double, TYPE2>;
+    while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
+    {
+        int state2;
+       double k = PyFloat_AsDouble(t1obj);
+       for (int i = 0; i < PyList_GET_SIZE(t2obj); ++i) {
+         TYPE2 *t2 =
+           reinterpret_cast<TYPE2 *>(sipConvertToInstance(PyList_GET_ITEM(t2obj,
+                                                                          i),
+                                                          sipClass_TYPE2,
+                                                          sipTransferObj,
+                                                          SIP_NOT_NONE,
+                                                          &state2,
+                                                          sipIsErr));
+
+         if (*sipIsErr)
+           {
+             sipReleaseInstance(t2, sipClass_TYPE2, state2);
+
+             delete qm;
+             return 0;
+           }
+
+         qm->insert(k, *t2);
+
+         sipReleaseInstance(t2, sipClass_TYPE2, state2);
+       }
+    }
+
+    *sipCppPtr = qm;
+
+    return sipGetState(sipTransferObj);
+%End
+   };

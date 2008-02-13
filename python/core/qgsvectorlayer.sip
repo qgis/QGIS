@@ -132,7 +132,7 @@ public:
 
 /**Returns the features contained in the rectangle. Considers the changed, added, deleted and permanent features
    @return 0 in case of success*/
-  int featuresInRectangle(const QgsRect& searchRect, QList<QgsFeature>& features, bool fetchGeometries = true, bool fetchAttributes = true);	
+  int featuresInRectangle(const QgsRect& searchRect, QList<QgsFeature>& features /Out/, bool fetchGeometries = true, bool fetchAttributes = true);	
 
 /**Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
    @return 0 in case of success*/
@@ -245,9 +245,8 @@ existing rings, 5 no feature found where ring can be inserted*/
      @param snap_to to segment / to vertex
      @return 0 in case of success
   */
-  // TODO: wrap QMultiMap
-  //int snapWithContext(const QgsPoint& startPoint, double snappingTolerance, QMultiMap<double, QgsSnappingResult>& snappingResults,
-	//      QgsSnapper::SNAP_TO snap_to);
+  int snapWithContext(const QgsPoint& startPoint, double snappingTolerance, QMultiMap<double, QgsSnappingResult>& snappingResults /Out/,
+	      QgsSnapper::SNAP_TO snap_to);
 
   /**
     Commits edited attributes. Depending on the feature id,
