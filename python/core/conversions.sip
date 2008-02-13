@@ -534,13 +534,13 @@ template<double, TYPE2>
         return NULL;
 
     // Set the dictionary elements.
-    QMultiMap<double, TYPE2>::const_iterator i = sipCpp->constBegin();
+    QMultiMap<double, TYPE2>::iterator i = sipCpp->begin();
 
-    while (i != sipCpp->constEnd())
+    while (i != sipCpp->end())
     {
 
       const double t1 = i.key();
-      const TYPE2 * t2 = &i.value();
+      TYPE2 * t2 = &i.value();
       PyObject *t1obj = PyFloat_FromDouble(t1);
       PyObject *t2obj = sipConvertFromInstance(t2, sipClass_TYPE2, sipTransferObj);
       if (PyDict_GetItem(d, t1obj) == NULL) {
