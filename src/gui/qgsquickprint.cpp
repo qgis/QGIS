@@ -222,7 +222,13 @@ void QgsQuickPrint::printMap()
   int myLegendHeightPercent = 65;
   int myLogoWidthPercent = 23;
   int myLogoHeightPercent = 17;
-  int mySymbolScalingAmount = myPrintResolutionDpi / myScreenResolutionDpi; 
+  //
+  // Remember the size and dpi of the maprender
+  // so we can restore it properly
+  //
+  int myOriginalDpi = mpMapRender->outputDpi();
+  QSize myOriginalSize = mpMapRender->outputSize();
+  int mySymbolScalingAmount = myPrintResolutionDpi / myOriginalDpi; 
 
   //define the font sizes and family
   int myMapTitleFontSize = 24;
@@ -337,12 +343,6 @@ void QgsQuickPrint::printMap()
   myMapPixmap.fill ( mMapBackgroundColour );
   QPainter myMapPainter;
   myMapPainter.begin( &myMapPixmap );
-  //
-  // Remember the size and dpi of the maprender
-  // so we can restore it properly
-  //
-  int myOriginalDpi = mpMapRender->outputDpi();
-  QSize myOriginalSize = mpMapRender->outputSize();
   // Now resize for print
   mpMapRender->setOutputSize( 
       QSize ( myMapDimensionX, myMapDimensionY ), myPrinter.resolution() ); 
@@ -795,7 +795,6 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
   bool mySnappingFlag = true;
   QColor mColour = Qt::black;
   // Hard coded sizes
-  int myMajorTickSize=10;
   int myTextOffsetX=0;
   int myTextOffsetY=5;
   int myXMargin=20;
@@ -935,14 +934,14 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
   myStops << QGradientStop(1.0,QColor("#656565"));
   //draw again with the brush in the revers direction to complete teh glossiness
   QLinearGradient myReverseGlossyBrush(
-                  QPointF(myOriginX,myOriginY +  myMajorTickSize*3), 
+                  QPointF(myOriginX,myOriginY +  myFontHeight*3), 
                   QPointF(myOriginX,myOriginY));
   thepPainter->setBrush(myReverseGlossyBrush);
   thepPainter->drawRect( 
       myOriginX, 
       myOriginY, 
       myOriginX + myScaleBarWidthInt,  
-      myOriginY + myMajorTickSize
+      myOriginY + myFontHeight
       );
 
   //
@@ -953,7 +952,6 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
   //Draw the minimum label buffer
   thepPainter->setPen( myBackColor );
   myFontWidth = myFontMetrics.width( "0" );
-  myFontHeight = myFontMetrics.height();
 
   for (int i = 0-myBufferSize; i <= myBufferSize; i++)
   {
@@ -1003,14 +1001,13 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
   //
   thepPainter->setPen( myBackColor );
   myFontWidth = myFontMetrics.width( myScaleBarUnitLabel );
-  myFontHeight = myFontMetrics.height();
   //first the buffer
   for (int i = 0-myBufferSize; i <= myBufferSize; i++)
   {
     for (int j = 0-myBufferSize; j <= myBufferSize; j++)
     {
       thepPainter->drawText( i + (myOriginX+myScaleBarWidthInt+myTextOffsetX),
-          j + myOriginY + myMajorTickSize + (myFontHeight*2.5) + myTextOffsetY,
+          j + myOriginY + myFontHeight + (myFontHeight*2.5) + myTextOffsetY,
           myScaleBarUnitLabel);
     }
   }
@@ -1018,7 +1015,7 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
   thepPainter->setPen( myForeColor );
   thepPainter->drawText(
       myOriginX + myScaleBarWidthInt + myTextOffsetX,
-      myOriginY + myMajorTickSize + (myFontHeight*2.5) +  myTextOffsetY,
+      myOriginY + myFontHeight + (myFontHeight*2.5) +  myTextOffsetY,
       myScaleBarUnitLabel
       );
 }
