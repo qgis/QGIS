@@ -2850,6 +2850,8 @@ void QgsVectorLayer::snapToGeometry(const QgsPoint& startPoint, int featureId, Q
 	    }
 	  snappingResultVertex.snappedAtGeometry = featureId;
 	  snappingResultVertex.layer = this;
+	  snappingResults.insert(sqrt(sqrDistVertexSnap), snappingResultVertex);
+	  return;
 	}
     }
   if(snap_to == QgsSnapper::SNAP_TO_SEGMENT || snap_to == QgsSnapper::SNAP_TO_VERTEX_AND_SEGMENT) //snap to segment
@@ -2868,29 +2870,11 @@ void QgsVectorLayer::snapToGeometry(const QgsPoint& startPoint, int featureId, Q
 	      snappingResultSegment.beforeVertex = geom->vertexAt(afterVertex - 1);
 	      snappingResultSegment.afterVertex = geom->vertexAt(afterVertex);
 	      snappingResultSegment.layer = this;
+	      snappingResults.insert(sqrt(sqrDistSegmentSnap), snappingResultSegment);
 	    }
 	}
     }
   
-  if(snap_to == QgsSnapper::SNAP_TO_VERTEX && sqrDistVertexSnap < sqrSnappingTolerance)
-    {
-      snappingResults.insert(sqrt(sqrDistVertexSnap), snappingResultVertex);
-    }
-  else if(snap_to == QgsSnapper::SNAP_TO_SEGMENT && sqrDistSegmentSnap < sqrSnappingTolerance && vectorType() != QGis::Point)
-    {
-      snappingResults.insert(sqrt(sqrDistSegmentSnap), snappingResultSegment);
-    }
-  else if(snap_to == QgsSnapper::SNAP_TO_VERTEX_AND_SEGMENT) //to vertex and segment
-    {
-      if(sqrDistVertexSnap < sqrSnappingTolerance)
-	{
-	  snappingResults.insert(sqrt(sqrDistVertexSnap), snappingResultVertex);
-	}
-      else if(sqrDistSegmentSnap < sqrSnappingTolerance && vectorType() != QGis::Point)
-	{
-	  snappingResults.insert(sqrt(sqrDistSegmentSnap), snappingResultSegment);
-	}
-    }
 }
 
 int QgsVectorLayer::insertSegmentVerticesForSnap(const QList<QgsSnappingResult>& snapResults)
