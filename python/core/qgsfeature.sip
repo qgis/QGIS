@@ -60,6 +60,10 @@ class QgsFeature
      */
     const QMap<int, QVariant> & attributeMap() const;
 
+
+    /**Sets all the attributes in one go*/
+    void setAttributeMap(const QMap<int, QVariant> & attributeMap);
+    
     /** 
      * Add an attribute to the map
      */
