@@ -69,7 +69,7 @@ install: build
 
 	# Install menu pixmap
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/pixmaps
-	install -o root -g root -m 644 $(CURDIR)/debian/qgis-icon.xpm $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis-icon.xpm
+	install -o root -g root -m 644 $(CURDIR)/debian/qgis-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis-icon.png
 
 # Build architecture-independent files here.
 binary-indep: build install
@@ -84,6 +84,8 @@ binary-arch: build install
 	dh_installexamples
 	dh_install --sourcedir=debian/tmp
 	dh_installmenu
+	dh_icons
+	dh_desktop
 	dh_installman -pqgis debian/gridmaker.1
 	dh_installman -plibqgis1-dev debian/qgis-config.1
 	dh_link

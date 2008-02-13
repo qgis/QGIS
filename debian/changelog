@@ -1,3 +1,9 @@
+qgis (0.9.2test1) gutsy; urgency=low
+
+  * Testing package to see if icons deploy 
+
+ -- Tim Sutton <tim@linfiniti.com>  Tue, 12 Feb 2008 21:18:35 -0200
+
 qgis (0.9.2rc1) gutsy; urgency=low
 
   * This release candidate includes over 40 bug fixes and enchancements 
