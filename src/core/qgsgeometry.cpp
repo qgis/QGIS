@@ -5044,7 +5044,13 @@ double QgsGeometry::distance(QgsGeometry& geom)
 QgsGeometry* QgsGeometry::buffer(double distance, int segments)
 {
   if (mGeos == NULL)
-    exportWkbToGeos();
+    {
+      exportWkbToGeos();
+    }
+  if(!mGeos)
+    {
+      return 0;
+    }
   GEOS_GEOM::Geometry* geos = mGeos->buffer(distance, segments);
   QgsGeometry* g = new QgsGeometry;
   g->setGeos(geos);
@@ -5054,7 +5060,13 @@ QgsGeometry* QgsGeometry::buffer(double distance, int segments)
 QgsGeometry* QgsGeometry::convexHull()
 {
   if (mGeos == NULL)
-    exportWkbToGeos();
+    {
+      exportWkbToGeos();
+    }
+  if(!mGeos)
+    {
+      return 0;
+    }
   GEOS_GEOM::Geometry* geos = mGeos->convexHull();
   QgsGeometry* g = new QgsGeometry;
   g->setGeos(geos);
@@ -5064,11 +5076,21 @@ QgsGeometry* QgsGeometry::convexHull()
 QgsGeometry* QgsGeometry::intersection(QgsGeometry* geometry)
 {
   if (geometry == NULL)
-    return NULL;
+    {
+      return NULL;
+    }
   if (mGeos == NULL)
-    exportWkbToGeos();
+    {
+      exportWkbToGeos();
+    }
   if (geometry->mGeos == NULL)
-    geometry->exportWkbToGeos();
+    {
+      geometry->exportWkbToGeos();
+    }
+  if(!mGeos || !geometry->mGeos)
+    {
+      return 0;
+    }
   GEOS_GEOM::Geometry* geos = mGeos->intersection(geometry->mGeos);
   QgsGeometry* g = new QgsGeometry;
   g->setGeos(geos);
@@ -5078,11 +5100,21 @@ QgsGeometry* QgsGeometry::intersection(QgsGeometry* geometry)
 QgsGeometry* QgsGeometry::Union(QgsGeometry* geometry)
 {
   if (geometry == NULL)
-    return NULL;
+    {
+      return NULL;
+    }
   if (mGeos == NULL)
-    exportWkbToGeos();
+    {
+      exportWkbToGeos();
+    }
   if (geometry->mGeos == NULL)
-    geometry->exportWkbToGeos();
+    {
+      geometry->exportWkbToGeos();
+    }
+  if(!mGeos || !geometry->mGeos)
+    {
+      return 0;
+    }
   GEOS_GEOM::Geometry* geos = mGeos->Union(geometry->mGeos);
   QgsGeometry* g = new QgsGeometry;
   g->setGeos(geos);
@@ -5092,11 +5124,21 @@ QgsGeometry* QgsGeometry::Union(QgsGeometry* geometry)
 QgsGeometry* QgsGeometry::difference(QgsGeometry* geometry)
 {
   if (geometry == NULL)
-    return NULL;
+    {
+      return NULL;
+    }
   if (mGeos == NULL)
-    exportWkbToGeos();
+    {
+      exportWkbToGeos();
+    }
   if (geometry->mGeos == NULL)
-    geometry->exportWkbToGeos();
+    {
+      geometry->exportWkbToGeos();
+    }
+  if(!mGeos || !geometry->mGeos)
+    {
+      return 0;
+    }
   GEOS_GEOM::Geometry* geos = mGeos->difference(geometry->mGeos);
   QgsGeometry* g = new QgsGeometry;
   g->setGeos(geos);
@@ -5106,11 +5148,21 @@ QgsGeometry* QgsGeometry::difference(QgsGeometry* geometry)
 QgsGeometry* QgsGeometry::symDifference(QgsGeometry* geometry)
 {
   if (geometry == NULL)
-    return NULL;
+    {
+      return NULL;
+    }
   if (mGeos == NULL)
-    exportWkbToGeos();
+    {
+      exportWkbToGeos();
+    }
   if (geometry->mGeos == NULL)
-    geometry->exportWkbToGeos();
+    {
+      geometry->exportWkbToGeos();
+    }
+  if(!mGeos || !geometry->mGeos)
+    {
+      return 0;
+    }
   GEOS_GEOM::Geometry* geos = mGeos->symDifference(geometry->mGeos);
   QgsGeometry* g = new QgsGeometry;
   g->setGeos(geos);
