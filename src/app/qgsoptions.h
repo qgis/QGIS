@@ -49,7 +49,6 @@ class QgsOptions :public QDialog, private Ui::QgsOptionsBase
     public slots:
       //! Slot called when user chooses to change the project wide projection.
       void on_pbnSelectProjection_clicked();
-      void on_btnFindBrowser_clicked();
       void on_chkAntiAliasing_stateChanged();
       void on_chkUseQPixmap_stateChanged();
       void saveOptions();

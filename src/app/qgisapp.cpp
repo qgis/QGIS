@@ -31,6 +31,7 @@
 #include <QClipboard>
 #include <QColor>
 #include <QCursor>
+#include <QDesktopServices>
 #include <QDesktopWidget>
 #include <QDialog>
 #include <QDir>
@@ -401,6 +402,10 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
   mSplash->showMessage(tr("QGIS Ready!"), Qt::AlignHCenter | Qt::AlignBottom);
 
   mMapTipsVisible = false;
+
+  // setup drag drop 
+  setAcceptDrops(true);
+
   mFullScreenMode = false;
   showNormal();
   qApp->processEvents();
@@ -438,6 +443,43 @@ QgisApp::~QgisApp()
   // delete map layer registry and provider registry
   QgsApplication::exitQgis();
 }
+
+void QgisApp::dragEnterEvent(QDragEnterEvent *event)
+{
+  if (event->mimeData()->hasUrls())
+  {
+    event->acceptProposedAction();
+  }
+}
+
+void QgisApp::dropEvent(QDropEvent *event)
+{
+  // get the file list
+  QList<QUrl>::iterator i;
+  QList<QUrl>urls = event->mimeData()->urls();
+  for (i = urls.begin(); i != urls.end(); i++)
+  {
+    QUrl mUrl = *i;
+    // seems that some drag and drop operations include an empty url
+    // so we test for length to make sure we have something
+    if( mUrl.path().length() > 0)
+    {
+      // check to see if we are opening a project file
+      QFileInfo fi(mUrl.path());
+      if( fi.completeSuffix() == "qgs" )
+      {
+        QgsDebugMsg("Opening project " + mUrl.path());
+      }
+      else
+      {
+        QgsDebugMsg("Adding " + mUrl.path() + " to the map canvas");
+        openLayer(mUrl.path());
+      }
+    }
+  }
+  event->acceptProposedAction();
+}
+
 
 // restore any application settings stored in QSettings
 void QgisApp::readSettings()
@@ -4259,47 +4301,7 @@ void QgisApp::openURL(QString url, bool useQgisDocDirectory)
   status = 0; //avoid compiler warning
   CFRelease(urlRef);
 #else
-  // find a browser
-  QSettings settings;
-  QString browser = settings.readEntry("/qgis/browser");
-  if (browser.length() == 0)
-  {
-    // ask user for browser and use it
-    bool ok;
-    QString myHeading = tr("QGIS Browser Selection");
-    QString myMessage = tr("Enter the name of a web browser to use (eg. konqueror).\n");
-    myMessage += tr("Enter the full path if the browser is not in your PATH.\n");
-    myMessage += tr("You can change this option later by selecting Options from the Settings menu (Help Browser tab).");
-    QString text = QInputDialog::getText(myHeading,
-        myMessage,
-        QLineEdit::Normal,
-        QString::null, &ok, this);
-    if (ok && !text.isEmpty())
-    {
-      // user entered something and pressed OK
-      browser = text;
-      // save the setting
-      settings.writeEntry("/qgis/browser", browser);
-    }
-    else
-    {
-      browser = "";
-    }
-
-  }
-  if (browser.length() > 0)
-  {
-    // find the installed location of the help files
-    // open index.html using browser
-    //XXX for debug on win32      QMessageBox::information(this,"Help opening...", browser + " - " + url);
-    QProcess *helpProcess = new QProcess(this);
-    QStringList myArgs;
-    myArgs << url;
-    helpProcess->start(browser,myArgs);
-  }
-  /*  mHelpViewer = new QgsHelpViewer(this,"helpviewer",false);
-      mHelpViewer->showContent(QgsApplication::prefixPath() +"/share/doc","index.html");
-      mHelpViewer->show(); */
+  QDesktopServices::openUrl(url);
 #endif
 }
 
