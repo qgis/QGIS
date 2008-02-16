@@ -145,6 +145,10 @@ class QgisApp : public QMainWindow, public Ui::QgisAppBase
   //! Returns a pointer to the internal clipboard
   QgsClipboard * clipboard();
 
+  void dragEnterEvent(QDragEnterEvent *);
+
+  void dropEvent(QDropEvent *);
+
 //private slots:
 public slots:
   //! About QGis

@@ -53,8 +53,6 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   qparent = parent;
   // read the current browser and set it
   QSettings settings;
-  QString browser = settings.readEntry("/qgis/browser");
-  cmbBrowser->setCurrentText(browser);
 #ifdef QGISDEBUG
   std::cout << "Standard Identify radius setting: " << QGis::DEFAULT_IDENTIFY_RADIUS << std::endl;
 #endif
@@ -223,7 +221,6 @@ QString QgsOptions::theme()
 void QgsOptions::saveOptions()
 {
   QSettings settings;
-  settings.writeEntry("/qgis/browser", cmbBrowser->currentText());
   settings.writeEntry("/Map/identifyRadius", spinBoxIdentifyValue->value());
   settings.writeEntry("/qgis/hideSplash",cbxHideSplash->isChecked());
   settings.writeEntry("/qgis/new_layers_visible",chkAddedVisibility->isChecked());
@@ -297,26 +294,6 @@ void QgsOptions::saveOptions()
   //
   settings.setValue("locale/userLocale", cboLocale->currentText());
   settings.setValue("locale/overrideFlag", grpLocale->isChecked());
-}
-
-
-void QgsOptions::on_btnFindBrowser_clicked()
-{
-  QString filter;
-#ifdef WIN32
-  filter = "Applications (*.exe)";
-#else
-  filter = "All Files (*)";
-#endif
-  QString browser = QFileDialog::getOpenFileName(
-          this,
-          "Choose a browser",
-          "./",
-          filter );
-  if(browser.length() > 0)
-  {
-    cmbBrowser->setCurrentText(browser);
-  }
 }
 
 
