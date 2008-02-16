@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>820</width>
+    <width>930</width>
     <height>406</height>
    </rect>
   </property>
@@ -81,7 +81,10 @@
           <bool>true</bool>
          </property>
          <property name="html" >
-          <string></string>
+          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;/p>&lt;/body>&lt;/html></string>
          </property>
         </widget>
        </item>
@@ -167,7 +170,10 @@
           <bool>true</bool>
          </property>
          <property name="html" >
-          <string></string>
+          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;/p>&lt;/body>&lt;/html></string>
          </property>
         </widget>
        </item>
@@ -278,7 +284,10 @@
           <bool>true</bool>
          </property>
          <property name="html" >
-          <string></string>
+          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;/p>&lt;/body>&lt;/html></string>
          </property>
         </widget>
        </item>
@@ -449,7 +458,10 @@
           <bool>true</bool>
          </property>
          <property name="html" >
-          <string></string>
+          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;/p>&lt;/body>&lt;/html></string>
          </property>
         </widget>
        </item>
@@ -513,7 +525,6 @@
        </item>
       </layout>
      </widget>
-
      <widget class="QWidget" name="tab5" >
       <attribute name="title" >
        <string>GPX Conversions</string>
@@ -531,7 +542,10 @@
           <bool>true</bool>
          </property>
          <property name="html" >
-          <string></string>
+          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;/p>&lt;/body>&lt;/html></string>
          </property>
         </widget>
        </item>
@@ -618,7 +632,6 @@
        </item>
       </layout>
      </widget>
-     
     </widget>
    </item>
    <item row="1" column="0" colspan="3" >
@@ -641,6 +654,43 @@
    <header>qgsfiledropedit.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>leGPXFile</tabstop>
+  <tabstop>pbnGPXSelectFile</tabstop>
+  <tabstop>cbGPXWaypoints</tabstop>
+  <tabstop>cbGPXRoutes</tabstop>
+  <tabstop>cbGPXTracks</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>leIMPInput</tabstop>
+  <tabstop>pbnIMPInput</tabstop>
+  <tabstop>cmbIMPFeature</tabstop>
+  <tabstop>leIMPOutput</tabstop>
+  <tabstop>pbnIMPOutput</tabstop>
+  <tabstop>leIMPLayer</tabstop>
+  <tabstop>cmbDLDevice</tabstop>
+  <tabstop>cmbDLPort</tabstop>
+  <tabstop>pbDLEditDevices</tabstop>
+  <tabstop>cmbDLFeatureType</tabstop>
+  <tabstop>leDLOutput</tabstop>
+  <tabstop>pbnDLOutput</tabstop>
+  <tabstop>leDLBasename</tabstop>
+  <tabstop>cmbULLayer</tabstop>
+  <tabstop>cmbULDevice</tabstop>
+  <tabstop>cmbULPort</tabstop>
+  <tabstop>pbULEditDevices</tabstop>
+  <tabstop>leCONVInput</tabstop>
+  <tabstop>pbnCONVInput</tabstop>
+  <tabstop>cmbCONVType</tabstop>
+  <tabstop>leCONVOutput</tabstop>
+  <tabstop>pbnCONVOutput</tabstop>
+  <tabstop>leCONVLayer</tabstop>
+  <tabstop>teCONVDescription</tabstop>
+  <tabstop>teDLDescription</tabstop>
+  <tabstop>teULDescription</tabstop>
+  <tabstop>teLoadDescription</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>teIMPDescription</tabstop>
+ </tabstops>
  <resources>
   <include location="qgsgps_plugin.qrc" />
  </resources>
