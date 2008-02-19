@@ -82,11 +82,11 @@ QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer, QgisAp
   QgsVectorDataProvider* provider = mLayer->getDataProvider();
   if (provider)
   {
-    const QgsFieldMap& fields = provider->fields();
-    int fieldcount = provider->fieldCount();
-    for (int h = 0; h < fieldcount; h++)
+    const QgsFieldMap& xfields = provider->fields();
+    QgsFieldMap::const_iterator fldIt;
+    for (fldIt = xfields.constBegin(); fldIt != xfields.constEnd(); ++fldIt)
     {
-      mSearchColumns->insertItem(fields[h].name());
+      mSearchColumns->insertItem(fldIt->name());
     }
   }
   
