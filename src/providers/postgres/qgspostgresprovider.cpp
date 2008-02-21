@@ -383,7 +383,7 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
           }
           else
           {
-            char* attribute = PQgetvalue(queryResult, row, PQfnumber(queryResult,*name_it));
+            char* attribute = PQgetvalue(queryResult, row, PQfnumber(queryResult,"\""+*name_it+"\""));
             val = QString::fromUtf8(attribute);
           }
 
@@ -1972,7 +1972,7 @@ bool QgsPostgresProvider::addAttributes(const QgsNewAttributesMap & name)
   PQexec(connection,"BEGIN");
   for(QgsNewAttributesMap::const_iterator iter=name.begin();iter!=name.end();++iter)
   {
-    QString sql="ALTER TABLE "+mSchemaTableName+" ADD COLUMN "+iter.key()+" "+iter.value();
+    QString sql="ALTER TABLE "+mSchemaTableName+" ADD COLUMN \""+iter.key()+"\" "+iter.value();
 
     QgsDebugMsg(sql);
 
@@ -2006,7 +2006,7 @@ bool QgsPostgresProvider::deleteAttributes(const QgsAttributeIds& ids)
       continue;
     }
     QString column = field_it->name();
-    QString sql="ALTER TABLE "+mSchemaTableName+" DROP COLUMN "+column;
+    QString sql="ALTER TABLE "+mSchemaTableName+" DROP COLUMN \""+column+"\"";
 
     //send sql statement and do error handling
     PGresult* result=PQexec(connection, (const char *)(sql.utf8()));
@@ -2050,7 +2050,7 @@ bool QgsPostgresProvider::changeAttributeValues(const QgsChangedAttributesMap & 
       // escape quotes
       val.replace("'", "''");
 
-      QString sql="UPDATE "+mSchemaTableName+" SET "+fieldName+"='"+val+"' WHERE \"" +primaryKey+"\"="+QString::number(fid);
+      QString sql="UPDATE "+mSchemaTableName+" SET \""+fieldName+"\"='"+val+"' WHERE \"" +primaryKey+"\"="+QString::number(fid);
       QgsDebugMsg(sql);
 
       // s end sql statement and do error handling
