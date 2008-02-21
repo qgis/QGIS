@@ -69,9 +69,12 @@ QgsBookmarkItem::~QgsBookmarkItem()
     mSrid << ")";
 
 #ifdef QGISDEBUG 
-  std::cout << "Storing bookmark using: " << sql.toLocal8Bit().data() << std::endl; 
+  std::cout << "Storing bookmark using: " << sql.toUtf8().data() << std::endl; 
 #endif 
-  rc = sqlite3_prepare(db, sql.utf8(), sql.length(), &ppStmt, &pzTail);
+
+  QByteArray sqlData = sql.toUtf8();
+  
+  rc = sqlite3_prepare(db, sqlData.constData(), sqlData.size(), &ppStmt, &pzTail);
   // XXX Need to free memory from the error msg if one is set
   if(rc == SQLITE_OK)
   {
