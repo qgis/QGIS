@@ -338,12 +338,12 @@ directory and move into it
 Check out sources from SVN For svn head:
 
 
-  svn co https://svn.qgis.org/repos/qgis/trunk/qgis 
+  svn co https://svn.osgeo.org/qgis/trunk/qgis 
 
 For svn 0.8 branch
 
 
-   svn co https://svn.qgis.org/repos/qgis/branches/Release-0_8_0 qgis0.8
+   svn co https://svn.osgeo.org/qgis/branches/Release-0_8_0 qgis0.8
 
 
 
@@ -730,19 +730,19 @@ Now we check out the sources:
 Trunk:
 
 
-  svn co https://svn.qgis.org/repos/qgis/trunk/qgis qgis 
+  svn co https://svn.osgeo.org/qgis/trunk/qgis qgis 
 
 
 For svn 0.8 branch
 
 
-  svn co https://svn.qgis.org/repos/qgis/branches/Release-0_8_0 qgis0.8
+  svn co https://svn.osgeo.org/qgis/branches/Release-0_8_0 qgis0.8
 
 
 For svn 0.9 branch
 
 
-  svn co https://svn.qgis.org/repos/qgis/branches/Release-0_9_0 qgis0.9
+  svn co https://svn.qgis.org/qgis/branches/Release-0_9_0 qgis0.9
 
 
 The first time you check out QGIS sources you will probably get a message like
@@ -975,14 +975,14 @@ if you do not have edit privaleges for the QGIS source repository, or use
 
 
   cd ${HOME}/dev/cpp 
-  svn co https://svn.qgis.org/repos/qgis/trunk/qgis qgis
+  svn co https://svn.osgeo.org/qgis/trunk/qgis qgis
 
 
 2. Developer Checkout
 
 
   cd ${HOME}/dev/cpp 
-  svn co --username <yourusername> https://svn.qgis.org/repos/qgis/trunk/qgis qgis 
+  svn co --username <yourusername> https://svn.osgeo.org/qgis/trunk/qgis qgis 
 
 
 The first time you check out the source you will be prompted to accept the
@@ -1593,7 +1593,7 @@ You'll need cmake-<version>-win32-x86.exe. Simply run this to install CMake.
 	7.3. Building QGIS with CMAKE
 	=============================
 
-Get QGIS source from svn (svn co https://svn.qgis.org/repos/qgis/trunk/qgis qgis).
+Get QGIS source from svn (svn co https://svn.osgeo.org/qgis/trunk/qgis qgis).
 
 Create a 'Build' directory in the top level QGIS directory. This will be where all the build output will be generated.
 
@@ -2103,13 +2103,13 @@ Open a cmd.exe window and do:
   cd \
   cd dev
   cd cpp
-  svn co https://svn.qgis.org/repos/qgis/trunk/qgis 
+  svn co https://svn.osgeo.org/qgis/trunk/qgis 
 
 
 At this point you will probably get a message like this:
 
 
-  C:\dev\cpp>svn co https://svn.qgis.org/repos/qgis/trunk/qgis
+  C:\dev\cpp>svn co https://svn.osgeo.org/qgis/trunk/qgis
   Error validating server certificate for 'https://svn.qgis.org:443':
    - The certificate is not issued by a trusted authority. Use the
      fingerprint to validate the certificate manually!
