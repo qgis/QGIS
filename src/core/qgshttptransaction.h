@@ -64,11 +64,17 @@ public:
 
   /*!
       The function returns FALSE if there is an error while getting the response.
-      \param[out] respondedContent is replaced with the new content.
-      \param[in]  redirections     is used to measure how many http redirections we've been through.
-                                   Clients typically don't need to set this.
+      @param[out] respondedContent is replaced with the new content.
+      
+      @param[in]  redirections     is used to measure how many http redirections we've been through.
+      Clients typically don't need to set this.
+      
+      @param postData data to send with the http message. This is only used for HTTP POST. If 
+      0 then the request is done with HTTP GET.
+
+      @return true in case of success
    */
-  bool getSynchronously(QByteArray &respondedContent, int redirections = 0);
+  bool getSynchronously(QByteArray &respondedContent, int redirections = 0, const QByteArray* postData = 0);
 
   QString responseContentType();
 
