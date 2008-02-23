@@ -67,7 +67,7 @@ void QgsHttpTransaction::getAsynchronously()
   
 }
 
-bool QgsHttpTransaction::getSynchronously(QByteArray &respondedContent, int redirections)
+bool QgsHttpTransaction::getSynchronously(QByteArray &respondedContent, int redirections, const QByteArray* postData)
 {
 
   httpredirections = redirections;
@@ -106,7 +106,16 @@ bool QgsHttpTransaction::getSynchronously(QByteArray &respondedContent, int redi
   // executing an http GET.
   QString pathAndQuery = httpurl.remove(0, 
                          httpurl.indexOf(qurl.path()));
-  httpid = http->get( pathAndQuery );
+
+  if(!postData) //do request with HTTP GET
+    {
+      httpid = http->get( pathAndQuery );
+    }
+  else //do request with HTTP POST
+    {
+      httpid = http->post(pathAndQuery, *postData);
+    }
+
   connect(http, SIGNAL( requestStarted ( int ) ),
           this,      SLOT( dataStarted ( int ) ) );
 
