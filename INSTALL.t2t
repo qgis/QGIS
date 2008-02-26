@@ -695,7 +695,7 @@ make install
 
 == Building QGIS with Qt4.x ==
 
-**Requires:** Ubuntu Edgy / Debian derived distro
+**Requires:** Ubuntu Gutsy / Debian derived distro
 
 These notes are current for Ubuntu 7.10 - other versions and Debian derived 
 distros may require slight variations in package names.
