@@ -26,6 +26,7 @@
 //qgis includes...
 #include <qgsapplication.h>
 #include <qgsgeometry.h>
+#include <qgspoint.h>
 
 /** \ingroup UnitTests
  * This is a unit test for the different geometry operations on vector features.
@@ -41,6 +42,7 @@ class TestQgsGeometry: public QObject
     void cleanup();// will be called after every testfunction.
 
     void intersectionCheck();
+    void unionCheck();
   private:
     QgsPoint mPoint1; /*     +1  +A          */
     QgsPoint mPoint2; /*    / \ / \          */
@@ -143,6 +145,24 @@ void TestQgsGeometry::intersectionCheck()
   QVERIFY ( !mpPolygonGeometryA->intersects(mpPolygonGeometryC));
 }
 
+void TestQgsGeometry::unionCheck()
+{
+
+  // should be no union as A does not intersect C
+  QgsGeometry * mypUnionGeometry  =  mpPolygonGeometryA->Union(mpPolygonGeometryC);
+  QgsPolyline myPolyline = mypUnionGeometry->asPolyline();
+  QVERIFY (myPolyline.size() == 0); //check that the union failed properly
+  // should be a union as A intersect B
+  mypUnionGeometry  =  mpPolygonGeometryA->Union(mpPolygonGeometryB);
+  myPolyline = mypUnionGeometry->asPolyline();
+  QVERIFY (myPolyline.size() > 0); //check that the union created a feature
+  for (int i = 0; i < myPolyline.size(); i++)
+  {
+    QgsPoint myPoint = myPolyline.at(i);
+    qDebug(myPoint.stringRep());
+  }
+  delete mypUnionGeometry;
+}
 
 QTEST_MAIN(TestQgsGeometry)
 #include "moc_testqgsgeometry.cxx"
