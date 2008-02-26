@@ -191,6 +191,27 @@ ELSE (APPLE)
   INSTALL(TARGETS qgis_maprendertest RUNTIME DESTINATION ${QGIS_BIN_DIR})
   ADD_TEST(qgis_maprendertest ${QGIS_BIN_DIR}/qgis_maprendertest)
 ENDIF (APPLE)
+#
+# QgsGeometry test
+#
+SET(qgis_geometrytest_SRCS testqgsgeometry.cpp ${util_SRCS})
+SET(qgis_geometrytest_MOC_CPPS testqgsgeometry.cpp)
+QT4_WRAP_CPP(qgis_geometrytest_MOC_SRCS ${qgis_geometrytest_MOC_CPPS})
+ADD_CUSTOM_TARGET(qgis_geometrytestmoc ALL DEPENDS ${qgis_geometrytest_MOC_SRCS})
+ADD_EXECUTABLE(qgis_geometrytest ${qgis_geometrytest_SRCS})
+ADD_DEPENDENCIES(qgis_geometrytest qgis_geometrytestmoc)
+TARGET_LINK_LIBRARIES(qgis_geometrytest ${QT_LIBRARIES} qgis_core)
+SET_TARGET_PROPERTIES(qgis_geometrytest 
+  PROPERTIES INSTALL_RPATH ${QGIS_LIB_DIR}
+  INSTALL_RPATH_USE_LINK_PATH true)
+IF (APPLE)
+  # For Mac OS X, the executable must be at the root of the bundle's executable folder
+  INSTALL(TARGETS qgis_geometrytest RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
+  ADD_TEST(qgis_geometrytest ${CMAKE_INSTALL_PREFIX}/qgis_geometrytest)
+ELSE (APPLE)
+  INSTALL(TARGETS qgis_geometrytest RUNTIME DESTINATION ${QGIS_BIN_DIR})
+  ADD_TEST(qgis_geometrytest ${QGIS_BIN_DIR}/qgis_geometrytest)
+ENDIF (APPLE)
 
 
 
