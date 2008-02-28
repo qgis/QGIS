@@ -269,9 +269,9 @@ ADD_CUSTOM_TARGET(svnversion ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversi
 
 SUBDIRS(src doc images resources i18n tools)
 
-IF (HAVE_PYTHON)
+IF (HAVE_PYTHON AND WITH_BINDINGS)
   SUBDIRS (python)
-ENDIF (HAVE_PYTHON)
+ENDIF (HAVE_PYTHON AND WITH_BINDINGS)
 
 IF (ENABLE_TESTS)
   #create a variable to specify where our test data is
