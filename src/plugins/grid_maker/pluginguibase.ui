@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>QGIS Plugin Template</string>
+   <string>QGIS Graticule Creator</string>
   </property>
   <property name="windowIcon" >
    <iconset/>
