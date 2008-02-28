@@ -30,11 +30,17 @@ GraticuleCreator::GraticuleCreator(QString theOutputFileName)
   QgsField myField3("LblOffsetX",QVariant::Int,"Int",5,0,"X Offset for label");
   QgsField myField4("LblOffsetY",QVariant::Int,"int",5,0,"Y Offset for label");
   QgsField myField5("Label",QVariant::String,"String",10,0,"Label text");
+  QgsField myField6("Row",QVariant::String,"String",10,0,"Row");
+  QgsField myField7("Column",QVariant::String,"String",10,0,"Col");
+  QgsField myField8("RowCol",QVariant::String,"String",10,0,"Row and col");
   mFields.insert(0, myField1);
   mFields.insert(1, myField2);
   mFields.insert(2, myField3);
   mFields.insert(3, myField4);
   mFields.insert(4, myField5);
+  mFields.insert(5, myField6);
+  mFields.insert(6, myField7);
+  mFields.insert(7, myField8);
   mSRS = QgsSpatialRefSys(GEOWKT);
   mFileName = theOutputFileName;
 
@@ -77,7 +83,8 @@ void GraticuleCreator::generatePointGraticule(
     theYEndPoint = myBuffer;
   }
 
-
+  int myColumn=0;
+  int myRow=0;
   for (double i=theXOrigin;
       i<=theXEndPoint;
       i+=theXInterval)
@@ -163,7 +170,15 @@ void GraticuleCreator::generatePointGraticule(
         myFeature.addAttribute(3,20);//"LabelOffsetY"
         myFeature.addAttribute(4,QString::number(i));//"Label"
       }
-      
+      //
+      // Set column and row attributes
+      //
+      myFeature.addAttribute(6,QString::number(myRow));
+      myFeature.addAttribute(7,QString::number(myColumn));
+      myFeature.addAttribute(8,QString::number(myRow) + "," + 
+                               QString::number(myColumn));    
+      ++myRow;
+      ++myColumn;
       //
       // Write the feature to the filewriter
       // and check for errors
