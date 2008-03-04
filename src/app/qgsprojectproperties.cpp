@@ -329,10 +329,14 @@ void QgsProjectProperties::apply()
 	  snapToList << "to_vertex_and_segment";
 	}
     }
-  QgsProject::instance()->writeEntry("Digitizing", "/LayerSnappingList", layerIdList);
-  QgsProject::instance()->writeEntry("Digitizing", "/LayerSnapToList", snapToList);
-  QgsProject::instance()->writeEntry("Digitizing", "/LayerSnappingToleranceList", toleranceList);
-  QgsProject::instance()->writeEntry("Digitizing", "/LayerSnappingEnabledList", enabledList);
+
+  if(mSnappingLayerSettings.size() > 0)
+    {
+      QgsProject::instance()->writeEntry("Digitizing", "/LayerSnappingList", layerIdList);
+      QgsProject::instance()->writeEntry("Digitizing", "/LayerSnapToList", snapToList);
+      QgsProject::instance()->writeEntry("Digitizing", "/LayerSnappingToleranceList", toleranceList);
+      QgsProject::instance()->writeEntry("Digitizing", "/LayerSnappingEnabledList", enabledList);
+    }
 
   //todo XXX set canvas colour
   emit refresh();
