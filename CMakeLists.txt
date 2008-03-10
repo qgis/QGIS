@@ -25,16 +25,25 @@ SET (PLUGINS_ALSO_BINARIES FALSE)
 
 # try to configure and build GRASS plugin by default
 SET (WITH_GRASS TRUE CACHE BOOL "Determines whether GRASS plugin should be built")
-SET (GRASS_PREFIX "" CACHE PATH "Path to GRASS base directory")
+IF (WITH_GRASS)
+  SET (GRASS_PREFIX "" CACHE PATH "Path to GRASS base directory")
+ENDIF (WITH_GRASS)
+
+# try to configure and build POSTGRESQL support
+SET (WITH_POSTGRESQL TRUE CACHE BOOL "Determines whether POSTGRESQL support should be built")
+IF (WITH_POSTGRESQL)
+  SET (POSTGRESQL_PREFIX "" CACHE PATH "Path to POSTGRESQL base directory")
+ENDIF (WITH_POSTGRESQL)
 
 # try to configure and build python bindings by default
 SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
-
-# By default bindings will be installed only to QGIS directory
-# Someone might want to install it to python site-packages directory
-# as otherwise user has to use PYTHONPATH environemnt variable to add
-# QGIS bindings to package search path
-SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
+IF (WITH_BINDINGS)
+  # By default bindings will be installed only to QGIS directory
+  # Someone might want to install it to python site-packages directory
+  # as otherwise user has to use PYTHONPATH environemnt variable to add
+  # QGIS bindings to package search path
+  SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
+ENDIF (WITH_BINDINGS)
 
 # Compile flag. Make it posible to turn it off.
 SET (PEDANTIC FALSE CACHE BOOL "Determines if we should compile with -Wall -Werror.")
@@ -76,15 +85,21 @@ FIND_PACKAGE(GEOS)
 FIND_PACKAGE(GDAL)
 
 # optional
-FIND_PACKAGE(Postgres) # PostgreSQL provider, SPIT plugin
+IF (WITH_POSTGRESQL)
+  FIND_PACKAGE(Postgres) # PostgreSQL provider, SPIT plugin
+ENDIF (WITH_POSTGRESQL)
 FIND_PACKAGE(Expat)    # GPS importer plugin
 FIND_PACKAGE(GSL)      # Georeferencer
-FIND_PACKAGE(GRASS)    # GRASS plugin
+IF (WITH_GRASS)
+  FIND_PACKAGE(GRASS)    # GRASS plugin
+ENDIF (WITH_GRASS)
 
-# python support:
-# - mapserver export tool
-# - bindings
-INCLUDE (Python) # file cmake/Python.cmake
+IF (WITH_BINDINGS)
+  # python support:
+  # - mapserver export tool
+  # - bindings
+  INCLUDE (Python) # file cmake/Python.cmake
+ENDIF (WITH_BINDINGS)
 
 
 IF (NOT PROJ_FOUND OR NOT SQLITE3_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
