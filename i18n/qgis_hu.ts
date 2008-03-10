@@ -550,7 +550,7 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source> column </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">oszlop</translation>
     </message>
     <message>
         <source> for file </source>
@@ -1220,7 +1220,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <source>N</source>
         <comment>Create a New Vector Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">É</translation>
     </message>
     <message>
         <source>Create a New Vector Layer</source>
@@ -1272,7 +1272,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <source>S</source>
         <comment>Show all layers</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">D</translation>
     </message>
     <message>
         <source>Show all layers</source>
@@ -1542,7 +1542,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <source>W</source>
         <comment>Add Web Mapping Server Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ny</translation>
     </message>
     <message>
         <source>Add Web Mapping Server Layer</source>
@@ -1778,7 +1778,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Render</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Megjelenít</translation>
     </message>
     <message>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
@@ -1835,7 +1835,7 @@ Compiled against Qt </source>
     </message>
     <message>
         <source>Quantum GIS is licensed under the GNU General Public License</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">A Quantum GIS-re a GNU General Public License érvényes</translation>
     </message>
     <message>
         <source>http://www.gnu.org/licenses</source>
@@ -1871,7 +1871,7 @@ Compiled against Qt </source>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Phyton hiba</translation>
     </message>
     <message>
         <source>Error when reading metadata of plugin </source>
@@ -1951,7 +1951,7 @@ Compiled against Qt </source>
     </message>
     <message>
         <source>Choose a filename to save the map image as</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Válassz egy fájlnevet a kép elmentéséhez</translation>
     </message>
     <message>
         <source>Saved map image to</source>
@@ -1959,7 +1959,7 @@ Compiled against Qt </source>
     </message>
     <message>
         <source>No Layer Selected</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nincs szelektált réteg</translation>
     </message>
     <message>
         <source>To delete features, you must select a vector layer in the legend</source>
@@ -1983,7 +1983,7 @@ Compiled against Qt </source>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">A réteg nem szerkeszthető</translation>
     </message>
     <message>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
@@ -2027,7 +2027,7 @@ Compiled against Qt </source>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Név</translation>
     </message>
     <message>
         <source>Plugin %1 is named %2</source>
@@ -2110,24 +2110,6 @@ Compiled against Qt </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>QGIS Browser Selection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enter the name of a web browser to use (eg. konqueror).
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enter the full path if the browser is not in your PATH.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Layer is not valid</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2173,7 +2155,7 @@ Compiled against Qt </source>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hiba</translation>
     </message>
     <message>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
@@ -2220,6 +2202,23 @@ Compiled against Qt </source>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Toggle full screen mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl-F</source>
+        <comment>Toggle fullscreen mode</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle fullscreen mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source></source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -2240,33 +2239,29 @@ Compiled against Qt </source>
     <name>QgsAbout</name>
     <message>
         <source>Quantum GIS is licensed under the GNU General Public License</source>
-        <translation>A Quantum GIS-re a GNU General Public License érvényes</translation>
+        <translation type="obsolete">A Quantum GIS-re a GNU General Public License érvényes</translation>
     </message>
     <message>
         <source>QGIS Sponsors</source>
-        <translation>QGIS szponzorok</translation>
-    </message>
-    <message>
-        <source>The following have sponsored QGIS by contributing money to fund development and other project costs</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">QGIS szponzorok</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Név</translation>
+        <translation type="obsolete">Név</translation>
     </message>
     <message>
         <source>Website</source>
-        <translation>Honlap</translation>
+        <translation type="obsolete">Honlap</translation>
     </message>
     <message>
         <source>QGIS Browser Selection</source>
-        <translation>QGIS böngésző szelektálás</translation>
+        <translation type="obsolete">QGIS böngésző szelektálás</translation>
     </message>
     <message>
         <source>Enter the name of a web browser to use (eg. konqueror).
 Enter the full path if the browser is not in your PATH.
 You can change this option later by selection Options from the Settings menu (Help Browser tab).</source>
-        <translation>Add meg a használandó böngésző program nevét (pl. konqueror). A teljes elérési utat add meg, ha a böngészó program nincs a PATH-on. Később a Beállítások menü Opciók pontjával módosíthatod ezt.</translation>
+        <translation type="obsolete">Add meg a használandó böngésző program nevét (pl. konqueror). A teljes elérési utat add meg, ha a böngészó program nincs a PATH-on. Később a Beállítások menü Opciók pontjával módosíthatod ezt.</translation>
     </message>
     <message>
         <source>About Quantum GIS</source>
@@ -2364,7 +2359,7 @@ You can change this option later by selection Options from the Settings menu (He
     <name>QgsAttributeActionDialogBase</name>
     <message>
         <source>Form1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form1</translation>
     </message>
     <message>
         <source>Remove the selected action</source>
@@ -2585,7 +2580,7 @@ You can change this option later by selection Options from the Settings menu (He
     </message>
     <message>
         <source>Alt+C</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alt+C</translation>
     </message>
     <message>
         <source>Search for:</source>
@@ -2668,7 +2663,7 @@ You can change this option later by selection Options from the Settings menu (He
     </message>
     <message>
         <source>Found %d matching features.</source>
-        <translation>%d megfelelő elemet találtam.</translation>
+        <translation type="obsolete">%d megfelelő elemet találtam.</translation>
     </message>
     <message>
         <source>No matching features found.</source>
@@ -3150,7 +3145,7 @@ You can change this option later by selection Options from the Settings menu (He
     </message>
     <message>
         <source>Render</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Megjelenít</translation>
     </message>
     <message>
         <source>Rectangle</source>
@@ -4053,7 +4048,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsDelimitedTextProvider</name>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hiba</translation>
     </message>
     <message>
         <source>Note: the following lines were not loaded because Qgis was unable to determine values for the x and y coordinates:
@@ -4124,15 +4119,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Status</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Állapot</translation>
     </message>
     <message>
         <source>Column Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Oszlopnév</translation>
     </message>
     <message>
         <source>Index</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Index</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This shapefile contains reserved words. These may affect the import into PostgreSQL. Edit the column names so none of the reserved words listed at the right are used (click on a Column Name entry to edit). You may also change any other column name if desired.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -4526,7 +4521,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsGPSPluginGuiBase</name>
     <message>
         <source>GPS Tools</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GPS eszközök</translation>
     </message>
     <message>
         <source>Load GPX file</source>
@@ -4546,15 +4541,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Waypoints</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Útpontok</translation>
     </message>
     <message>
         <source>Routes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Útvonalak</translation>
     </message>
     <message>
         <source>Tracks</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Trackek</translation>
     </message>
     <message>
         <source>Import other file</source>
@@ -4566,7 +4561,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save As...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mentés másként...</translation>
     </message>
     <message>
         <source>GPX output file:</source>
@@ -4622,6 +4617,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>GPX input file:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4775,7 +4777,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lezár</translation>
     </message>
 </context>
 <context>
@@ -4817,7 +4819,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">OK</translation>
     </message>
 </context>
 <context>
@@ -6632,27 +6634,27 @@ at line </source>
     </message>
     <message>
         <source>Longitude Interval is invalid - please correct and try again.</source>
-        <translation>Hosszúság intervallum hibás - korrigáld és próbáld újra.</translation>
+        <translation type="obsolete">Hosszúság intervallum hibás - korrigáld és próbáld újra.</translation>
     </message>
     <message>
         <source>Latitude Interval is invalid - please correct and try again.</source>
-        <translation>Szélesség intervallum hibás - korrigáld és próbáld újra.</translation>
+        <translation type="obsolete">Szélesség intervallum hibás - korrigáld és próbáld újra.</translation>
     </message>
     <message>
         <source>Longitude Origin is invalid - please correct and try again..</source>
-        <translation>Hosszúság origó hibás - korrigáld és próbáld újra.</translation>
+        <translation type="obsolete">Hosszúság origó hibás - korrigáld és próbáld újra.</translation>
     </message>
     <message>
         <source>Latitude Origin is invalid - please correct and try again.</source>
-        <translation>Szélesség origó hibás - korrigáld és próbáld újra.</translation>
+        <translation type="obsolete">Szélesség origó hibás - korrigáld és próbáld újra.</translation>
     </message>
     <message>
         <source>End Point Longitude is invalid - please correct and try again.</source>
-        <translation>A végpont hosszúsága hibás - korrigáld és próbáld újra.</translation>
+        <translation type="obsolete">A végpont hosszúsága hibás - korrigáld és próbáld újra.</translation>
     </message>
     <message>
         <source>End Point Latitude is invalid - please correct and try again.</source>
-        <translation>A végpont szélessége hibás - korrigáld és próbáld újra.</translation>
+        <translation type="obsolete">A végpont szélessége hibás - korrigáld és próbáld újra.</translation>
     </message>
     <message>
         <source>Choose a filename to save under</source>
@@ -6667,15 +6669,11 @@ at line </source>
     <name>QgsGridMakerPluginGuiBase</name>
     <message>
         <source>QGIS Plugin Template</source>
-        <translation>QGIS modul sablon</translation>
+        <translation type="obsolete">QGIS modul sablon</translation>
     </message>
     <message>
         <source>Graticule Builder</source>
         <translation>Rács készítő</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:11pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;&gt;Please enter all units in decimal degrees&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Type</source>
@@ -6687,7 +6685,7 @@ at line </source>
     </message>
     <message>
         <source>Line</source>
-        <translation>Vonal</translation>
+        <translation type="obsolete">Vonal</translation>
     </message>
     <message>
         <source>Polygon</source>
@@ -6699,15 +6697,15 @@ at line </source>
     </message>
     <message>
         <source>Latitude:</source>
-        <translation>Szélesség:</translation>
+        <translation type="obsolete">Szélesség:</translation>
     </message>
     <message>
         <source>#000.00000; </source>
-        <translation>#000.00000;</translation>
+        <translation type="obsolete">#000.00000;</translation>
     </message>
     <message>
         <source>Longitude:</source>
-        <translation>Hosszúság:</translation>
+        <translation type="obsolete">Hosszúság:</translation>
     </message>
     <message>
         <source>End point (upper right)</source>
@@ -6715,15 +6713,15 @@ at line </source>
     </message>
     <message>
         <source>Graticle size (units in degrees)</source>
-        <translation>Rács méret (fokokban)</translation>
+        <translation type="obsolete">Rács méret (fokokban)</translation>
     </message>
     <message>
         <source>Latitude Interval:</source>
-        <translation>Szélesség intervallum:</translation>
+        <translation type="obsolete">Szélesség intervallum:</translation>
     </message>
     <message>
         <source>Longitude Interval:</source>
-        <translation>Hosszúság intervallum:</translation>
+        <translation type="obsolete">Hosszúság intervallum:</translation>
     </message>
     <message>
         <source>Output (shape) file</source>
@@ -6732,6 +6730,38 @@ at line </source>
     <message>
         <source>Save As...</source>
         <translation>Mentés másként...</translation>
+    </message>
+    <message>
+        <source>QGIS Graticule Creator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Graticle size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y Interval:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X Interval:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:11pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:10pt;&quot;&gt;Please enter all units in decimal degrees&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6821,7 +6851,7 @@ at line </source>
     <message>
         <source>Network timed out after %1 seconds of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
-        <translation>Hálózati időtúllépés %1 másodperc után.
+        <translation type="obsolete">Hálózati időtúllépés %1 másodperc után.
 A hiba a hálózati kapcsolatodban vagy a WMS szervernél lehet.</translation>
     </message>
 </context>
@@ -7347,7 +7377,7 @@ A hiba a hálózati kapcsolatodban vagy a WMS szervernél lehet.</translation>
     <name>QgsLineStyleWidgetBase</name>
     <message>
         <source>Form2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form2</translation>
     </message>
     <message>
         <source>Outline Style</source>
@@ -7403,7 +7433,7 @@ A hiba a hálózati kapcsolatodban vagy a WMS szervernél lehet.</translation>
     <message>
         <source>- %1 features found</source>
         <comment>Identify results window title</comment>
-        <translation>- %1 elemet találtam</translation>
+        <translation type="obsolete">- %1 elemet találtam</translation>
     </message>
     <message>
         <source>No features found</source>
@@ -7433,7 +7463,7 @@ A hiba a hálózati kapcsolatodban vagy a WMS szervernél lehet.</translation>
     </message>
     <message>
         <source>Don&apos;t show this message again</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ne mutasd többé ezt az üzenetet</translation>
     </message>
     <message>
         <source>Could not snap segment.</source>
@@ -7512,11 +7542,11 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>Map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Térkép</translation>
     </message>
     <message>
         <source>Units</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Egységek</translation>
     </message>
     <message>
         <source>dd</source>
@@ -7576,15 +7606,15 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Szélesség</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Magasság</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Név</translation>
     </message>
     <message>
         <source>Prefix attached to map, scalebar and legend GIF filenames created using this MapFile</source>
@@ -7608,7 +7638,7 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>Save As...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mentés másként...</translation>
     </message>
     <message>
         <source>If checked, only the layer information will be processed</source>
@@ -7624,15 +7654,15 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>F1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">F1</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;OK</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Mégsem</translation>
     </message>
     <message>
         <source>...</source>
@@ -7667,11 +7697,11 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>Ok</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ok</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mégsem</translation>
     </message>
     <message>
         <source>New Item</source>
@@ -7690,7 +7720,7 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Súgó</translation>
     </message>
     <message>
         <source>New</source>
@@ -7739,11 +7769,11 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>Don&apos;t show this message again</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ne mutasd többé ezt az üzenetet</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lezár</translation>
     </message>
 </context>
 <context>
@@ -7774,11 +7804,11 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Save layer as...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Layer mentés másként...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hiba</translation>
     </message>
     <message>
         <source>Error creating field </source>
@@ -7786,19 +7816,19 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Layer creation failed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">A réteg létrehozás nem sikerült</translation>
     </message>
     <message>
         <source>Error creating shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hiba a shape fájl létrehozásában</translation>
     </message>
     <message>
         <source>The shapefile could not be created (</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">A shape fájlt nem tudom létrehozni (</translation>
     </message>
     <message>
         <source>Driver not found</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">A meghajtót nem találom</translation>
     </message>
     <message>
         <source> driver is not available</source>
@@ -7809,7 +7839,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     <name>QgsNewConnection</name>
     <message>
         <source>Test connection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kapcsolat tesztelés</translation>
     </message>
     <message>
         <source>Connection to %1 was successful</source>
@@ -7827,11 +7857,11 @@ Extended error information:
     <name>QgsNewConnectionBase</name>
     <message>
         <source>Create a New PostGIS connection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Új PostGIS kapcsolat létrehozása</translation>
     </message>
     <message>
         <source>Connection Information</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kapcsolat információk</translation>
     </message>
     <message>
         <source>Restrict the search to the public schema for spatial tables not in the geometry_columns table</source>
@@ -7859,59 +7889,59 @@ Extended error information:
     </message>
     <message>
         <source>Save Password</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Jelszó mentése</translation>
     </message>
     <message>
         <source>Test Connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kapcsolat teszt</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Név</translation>
     </message>
     <message>
         <source>Host</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Gép</translation>
     </message>
     <message>
         <source>Database</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Adatbázis</translation>
     </message>
     <message>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Port</translation>
     </message>
     <message>
         <source>Username</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Felhasználó név</translation>
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Jelszó</translation>
     </message>
     <message>
         <source>Name of the new connection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Az új kapcsolat neve</translation>
     </message>
     <message>
         <source>5432</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">5432</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mégsem</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Súgó</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">F1</translation>
     </message>
 </context>
 <context>
@@ -7922,15 +7952,15 @@ Extended error information:
     </message>
     <message>
         <source>Connection Information</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kapcsolat információk</translation>
     </message>
     <message>
         <source>Name of the new connection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Az új kapcsolat neve</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Név</translation>
     </message>
     <message>
         <source>URL</source>
@@ -7974,38 +8004,38 @@ Extended error information:
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mégsem</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Súgó</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">F1</translation>
     </message>
 </context>
 <context>
     <name>QgsNorthArrowPlugin</name>
     <message>
         <source>Bottom Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bal alsó</translation>
     </message>
     <message>
         <source>Top Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bal felső</translation>
     </message>
     <message>
         <source>Top Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Jobb felső</translation>
     </message>
     <message>
         <source>Bottom Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Jobb alsó</translation>
     </message>
     <message>
         <source>&amp;North Arrow</source>
@@ -8017,7 +8047,7 @@ Extended error information:
     </message>
     <message>
         <source>&amp;Decorations</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Dekorációk</translation>
     </message>
     <message>
         <source>North arrow pixmap not found</source>
@@ -8043,11 +8073,11 @@ Extended error information:
     </message>
     <message>
         <source>Angle</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Szög</translation>
     </message>
     <message>
         <source>Placement</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Elhelyezés</translation>
     </message>
     <message>
         <source>Set direction automatically</source>
@@ -8063,19 +8093,19 @@ Extended error information:
     </message>
     <message>
         <source>Top Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bal felső</translation>
     </message>
     <message>
         <source>Top Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Jobb felső</translation>
     </message>
     <message>
         <source>Bottom Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bal alsó</translation>
     </message>
     <message>
         <source>Bottom Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Jobb alsó</translation>
     </message>
     <message>
         <source>Preview of north arrow</source>
@@ -8124,7 +8154,7 @@ Extended error information:
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Általános</translation>
     </message>
     <message>
         <source>Ask to save project changes when required</source>
@@ -8284,11 +8314,11 @@ Extended error information:
     </message>
     <message>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%</translation>
     </message>
     <message>
         <source>Digitizing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Digitalizálás</translation>
     </message>
     <message>
         <source>Rubberband</source>
@@ -8366,50 +8396,6 @@ Extended error information:
         <source>Detected active locale on your system:</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Help &amp;Browser</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Note:&lt;/b&gt; The browser must be in your PATH or you can specify the full path above</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>epiphany</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>firefox</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>mozilla-firefox</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>galeon</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>konqueror</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>mozilla</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>opera</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open help documents with</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsPasteTransformationsBase</name>
@@ -8423,7 +8409,7 @@ Extended error information:
     </message>
     <message>
         <source>Source</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Forrás</translation>
     </message>
     <message>
         <source>Destination</source>
@@ -8435,7 +8421,7 @@ Extended error information:
     </message>
     <message>
         <source>F1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">F1</translation>
     </message>
     <message>
         <source>Add New Transfer</source>
@@ -8443,11 +8429,11 @@ Extended error information:
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;OK</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Mégsem</translation>
     </message>
 </context>
 <context>
@@ -8462,21 +8448,17 @@ Extended error information:
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mégsem</translation>
     </message>
     <message>
         <source>Ok</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ok</translation>
     </message>
 </context>
 <context>
     <name>QgsPgGeoprocessing</name>
     <message>
         <source>&amp;Buffer features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Create a buffer for a PostgreSQL layer. </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -8620,7 +8602,7 @@ Extended error information:
     </message>
     <message>
         <source>&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;</translation>
     </message>
     <message>
         <source>NOT</source>
@@ -8636,7 +8618,7 @@ Extended error information:
     </message>
     <message>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%</translation>
     </message>
     <message>
         <source>IN</source>
@@ -8652,7 +8634,7 @@ Extended error information:
     </message>
     <message>
         <source>&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&gt;</translation>
     </message>
     <message>
         <source>LIKE</source>
@@ -8676,15 +8658,15 @@ Extended error information:
     </message>
     <message>
         <source>Test</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Teszt</translation>
     </message>
     <message>
         <source>Ok</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ok</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mégsem</translation>
     </message>
     <message>
         <source>Values</source>
@@ -8699,7 +8681,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mind</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -8743,15 +8725,15 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginManager</name>
     <message>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Név</translation>
     </message>
     <message>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verzió</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Leírás</translation>
     </message>
     <message>
         <source>Library name</source>
@@ -8806,11 +8788,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Lezár</translation>
     </message>
     <message>
         <source>Alt+C</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alt+C</translation>
     </message>
 </context>
 <context>
@@ -8834,7 +8816,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Figyelmeztetés</translation>
     </message>
     <message>
         <source>&lt;p&gt;A Helmert transform requires modifications in the raster layer.&lt;/p&gt;&lt;p&gt;The modified raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p&gt;&lt;p&gt;Are you sure that this is what you want?&lt;/p&gt;</source>
@@ -8866,7 +8848,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hiba</translation>
     </message>
     <message>
         <source>Could not write to </source>
@@ -8874,7 +8856,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Zoom In</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nagyítás</translation>
     </message>
     <message>
         <source>z</source>
@@ -8882,7 +8864,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Zoom Out</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kicsinyítés</translation>
     </message>
     <message>
         <source>Z</source>
@@ -8890,11 +8872,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Zoom To Layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rétegre nagyítás</translation>
     </message>
     <message>
         <source>Zoom to Layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rétegre nagyítás</translation>
     </message>
     <message>
         <source>Pan Map</source>
@@ -8902,7 +8884,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Pan the map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">A térkép eltolása</translation>
     </message>
     <message>
         <source>Add Point</source>
@@ -8914,7 +8896,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Capture Points</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pont digitalizálás</translation>
     </message>
     <message>
         <source>Delete Point</source>
@@ -8922,7 +8904,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Delete Selected</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Szelektáltak törlése</translation>
     </message>
 </context>
 <context>
@@ -8984,7 +8966,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPointStyleWidgetBase</name>
     <message>
         <source>Form3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form3</translation>
     </message>
     <message>
         <source>Symbol Style</source>
@@ -9168,10 +9150,6 @@ primary key) or has a PostgreSQL oid column.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Qgis was unable to determine the type and srid of column </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>. The database communication log was:
 </source>
         <translation type="unfinished"></translation>
@@ -9189,7 +9167,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Általános</translation>
     </message>
     <message>
         <source>Project Title</source>
@@ -9225,7 +9203,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Manuális</translation>
     </message>
     <message>
         <source>The number of decimal places for the manual option</source>
@@ -9249,7 +9227,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Digitizing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Digitalizálás</translation>
     </message>
     <message>
         <source>Enable topological editing</source>
@@ -9281,7 +9259,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Projection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vetület</translation>
     </message>
     <message>
         <source>Enable on the fly projection</source>
@@ -9307,11 +9285,11 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Projection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vetület</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Keres</translation>
     </message>
     <message>
         <source>Find</source>
@@ -9319,7 +9297,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Név</translation>
     </message>
     <message>
         <source>QGIS SRSID</source>
@@ -9346,7 +9324,7 @@ primary key) or has a PostgreSQL oid column.
     <name>QgsPythonDialog</name>
     <message>
         <source>Python console</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Phyton konzol</translation>
     </message>
     <message>
         <source>To access Quantum GIS environment from this python console use object from global scope which is an instance of QgisInterface class.&lt;br&gt;Usage e.g.: iface.zoomFull()</source>
@@ -9361,19 +9339,19 @@ primary key) or has a PostgreSQL oid column.
     <name>QgsQuickPrint</name>
     <message>
         <source> km</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">km</translation>
     </message>
     <message>
         <source> mm</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">mm</translation>
     </message>
     <message>
         <source> cm</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">cm</translation>
     </message>
     <message>
         <source> m</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">m</translation>
     </message>
     <message>
         <source> miles</source>
@@ -9381,7 +9359,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source> mile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">mérföld</translation>
     </message>
     <message>
         <source> inches</source>
@@ -9389,23 +9367,23 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source> foot</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">láb</translation>
     </message>
     <message>
         <source> feet</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">láb</translation>
     </message>
     <message>
         <source> degree</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">fok</translation>
     </message>
     <message>
         <source> degrees</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">fok</translation>
     </message>
     <message>
         <source> unknown</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ismeretlen</translation>
     </message>
 </context>
 <context>
@@ -9528,11 +9506,11 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Érték</translation>
     </message>
     <message>
         <source>Band</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sáv</translation>
     </message>
     <message>
         <source>Band No</source>
@@ -9647,7 +9625,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Quantiles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Egyenló számú</translation>
     </message>
     <message>
         <source>Palette</source>
@@ -9655,7 +9633,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Leírás</translation>
     </message>
     <message>
         <source>Large resolution raster layers can slow navigation in QGIS.</source>
@@ -9800,7 +9778,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Symbology</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Megjelenés</translation>
     </message>
     <message>
         <source>Grayscale Band Scaling</source>
@@ -9988,15 +9966,15 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Classify</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Osztályoz</translation>
     </message>
     <message>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">1</translation>
     </message>
     <message>
         <source>2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">2</translation>
     </message>
     <message>
         <source>Color interpolation:</source>
@@ -10008,7 +9986,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Általános</translation>
     </message>
     <message>
         <source>Spatial Reference System</source>
@@ -10124,7 +10102,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Opciók</translation>
     </message>
     <message>
         <source>Column Count:</source>
@@ -10147,7 +10125,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Done</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kész</translation>
     </message>
     <message>
         <source>Unable to run command</source>
@@ -10158,19 +10136,19 @@ primary key) or has a PostgreSQL oid column.
     <name>QgsScaleBarPlugin</name>
     <message>
         <source>Bottom Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bal alsó</translation>
     </message>
     <message>
         <source>Top Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bal felső</translation>
     </message>
     <message>
         <source>Top Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Jobb felső</translation>
     </message>
     <message>
         <source>Bottom Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Jobb alsó</translation>
     </message>
     <message>
         <source>Tick Down</source>
@@ -10198,7 +10176,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>&amp;Decorations</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Dekorációk</translation>
     </message>
     <message>
         <source> metres/km</source>
@@ -10210,23 +10188,23 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source> degrees</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">fok</translation>
     </message>
     <message>
         <source> km</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">km</translation>
     </message>
     <message>
         <source> mm</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">mm</translation>
     </message>
     <message>
         <source> cm</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">cm</translation>
     </message>
     <message>
         <source> m</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">m</translation>
     </message>
     <message>
         <source> miles</source>
@@ -10234,7 +10212,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source> mile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">mérföld</translation>
     </message>
     <message>
         <source> inches</source>
@@ -10242,19 +10220,19 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source> foot</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">láb</translation>
     </message>
     <message>
         <source> feet</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">láb</translation>
     </message>
     <message>
         <source> degree</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">fok</translation>
     </message>
     <message>
         <source> unknown</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ismeretlen</translation>
     </message>
 </context>
 <context>
@@ -10281,19 +10259,19 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Top Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bal felső</translation>
     </message>
     <message>
         <source>Top Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Jobb felső</translation>
     </message>
     <message>
         <source>Bottom Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bal alsó</translation>
     </message>
     <message>
         <source>Bottom Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Jobb alsó</translation>
     </message>
     <message>
         <source>Enable scale bar</source>
@@ -10325,7 +10303,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Placement:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Elhelyezés:</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This plugin draws a scale bar on the map. Please note the size option below is a &apos;preferred&apos; size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -10339,20 +10317,16 @@ primary key) or has a PostgreSQL oid column.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Found %d matching features.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>No matching features found.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nem találtam megfelelő elemet.</translation>
     </message>
     <message>
         <source>Search results</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Keresés eredmények</translation>
     </message>
     <message>
         <source>Search string parsing error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Keresési minta hibás</translation>
     </message>
     <message>
         <source>No Records</source>
@@ -10367,15 +10341,15 @@ primary key) or has a PostgreSQL oid column.
     <name>QgsServerSourceSelect</name>
     <message>
         <source>Are you sure you want to remove the </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Biztos, hogy törlöd</translation>
     </message>
     <message>
         <source> connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kapcsolat és minden hozzátartozó beállítást?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Törlés megerősítése</translation>
     </message>
     <message>
         <source>WMS Provider</source>
@@ -10399,10 +10373,6 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>There are no available coordinate reference system for the set of layers you&apos;ve selected.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Coordinate Reference System (%1 available)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -10446,7 +10416,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Szerkeszt</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -10478,7 +10448,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Layers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rétegek</translation>
     </message>
     <message>
         <source>ID</source>
@@ -10486,11 +10456,11 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Név</translation>
     </message>
     <message>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Cím</translation>
     </message>
     <message>
         <source>Abstract</source>
@@ -10502,11 +10472,11 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Súgó</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">F1</translation>
     </message>
     <message>
         <source>C&amp;lose</source>
@@ -10636,7 +10606,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Méret</translation>
     </message>
     <message>
         <source>Area scale field</source>
@@ -10702,11 +10672,11 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Réteg</translation>
     </message>
     <message>
         <source>Mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mód</translation>
     </message>
     <message>
         <source>Tolerance</source>
@@ -10725,7 +10695,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Elem</translation>
     </message>
     <message>
         <source>DB Relation Name</source>
@@ -10733,7 +10703,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Schema</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Séma</translation>
     </message>
     <message>
         <source>New Connection</source>
@@ -10749,7 +10719,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Confirm Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Törlés megerősítése</translation>
     </message>
     <message>
         <source>Add Shapefiles</source>
@@ -10884,7 +10854,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mégsem</translation>
     </message>
     <message>
         <source>Progress</source>
@@ -10979,7 +10949,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hozzáad</translation>
     </message>
     <message>
         <source>Remove the selected shapefile from the import list</source>
@@ -11027,7 +10997,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>PostgreSQL Connections</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">PostgraSQL kapcsolat</translation>
     </message>
     <message>
         <source>Create a new PostGIS connection</source>
@@ -11043,7 +11013,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kapcsolódás</translation>
     </message>
     <message>
         <source>Edit the current PostGIS connection</source>
@@ -11051,7 +11021,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Szerkeszt</translation>
     </message>
 </context>
 <context>
@@ -11073,7 +11043,7 @@ primary key) or has a PostgreSQL oid column.
     <name>QgsUniqueValueDialogBase</name>
     <message>
         <source>Form1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form1</translation>
     </message>
     <message>
         <source>Classification Field:</source>
@@ -11081,11 +11051,11 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Delete class</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Osztály törlés</translation>
     </message>
     <message>
         <source>Classify</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Osztályoz</translation>
     </message>
 </context>
 <context>
@@ -11227,11 +11197,11 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Típus</translation>
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hossz</translation>
     </message>
     <message>
         <source>Precision</source>
@@ -11239,7 +11209,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Megjegyzés</translation>
     </message>
     <message>
         <source>Default Style</source>
@@ -11266,11 +11236,11 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Symbology</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Megjelenés</translation>
     </message>
     <message>
         <source>Transparency:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Átlátszóság:</translation>
     </message>
     <message>
         <source>Legend type:</source>
@@ -11278,7 +11248,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Általános</translation>
     </message>
     <message>
         <source>Display name</source>
@@ -11385,7 +11355,7 @@ primary key) or has a PostgreSQL oid column.
     <name>QgsVectorSymbologyWidgetBase</name>
     <message>
         <source>Form2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form2</translation>
     </message>
     <message>
         <source>Label</source>
@@ -11409,7 +11379,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Mode:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mód:</translation>
     </message>
     <message>
         <source>Field:</source>
@@ -11438,15 +11408,15 @@ primary key) or has a PostgreSQL oid column.
     <name>QgsWFSSourceSelect</name>
     <message>
         <source>Are you sure you want to remove the </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Biztos, hogy törlöd</translation>
     </message>
     <message>
         <source> connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kapcsolat és minden hozzátartozó beállítást?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Törlés megerősítése</translation>
     </message>
 </context>
 <context>
@@ -11457,11 +11427,11 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Cím</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Név</translation>
     </message>
     <message>
         <source>Abstract</source>
@@ -11489,7 +11459,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Szerkeszt</translation>
     </message>
     <message>
         <source>C&amp;onnect</source>
@@ -11600,7 +11570,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Érték</translation>
     </message>
     <message>
         <source>WMS Version</source>
@@ -11608,7 +11578,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Cím</translation>
     </message>
     <message>
         <source>Abstract</source>
@@ -11716,7 +11686,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Név</translation>
     </message>
     <message>
         <source>Layer cannot be queried.</source>
@@ -11746,7 +11716,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Quick Print</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Gyors nyomtatás</translation>
     </message>
     <message>
         <source>Map Title e.g. ACME inc.</source>
@@ -11762,7 +11732,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Output</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Eredmény</translation>
     </message>
     <message>
         <source>Use last filename but incremented.</source>
@@ -11780,16 +11750,20 @@ primary key) or has a PostgreSQL oid column.
         <source>Note: If you want more control over the map layout please use the map composer function in QGIS.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Page Size</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QuickPrintPlugin</name>
     <message>
         <source>Quick Print</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Gyors nyomtatás</translation>
     </message>
     <message>
         <source>Replace this with a short description of the what the plugin does</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Cseréld le ezt a modul rövid leírásával</translation>
     </message>
     <message>
         <source>&amp;Quick Print</source>
@@ -11804,7 +11778,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Név:</translation>
     </message>
     <message>
         <source>URL:</source>
