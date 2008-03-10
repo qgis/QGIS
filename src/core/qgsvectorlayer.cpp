@@ -2971,7 +2971,7 @@ void QgsVectorLayer::drawFeature(QPainter* p,
         //  std::cout <<"...WKBPoint (" << x << ", " << y << ")" <<std::endl;
 #endif
 
-	QgsDebugMsg(QString("markerScaleFactor = %1").arg(markerScaleFactor));
+	//QgsDebugMsg(QString("markerScaleFactor = %1").arg(markerScaleFactor));
 
         transformPoint(x, y, theMapToPixelTransform, ct);
         //QPointF pt(x - (marker->width()/2),  y - (marker->height()/2));
