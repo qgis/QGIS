@@ -89,6 +89,9 @@ public:
     /**Toggle editing for layer*/
     void toggleEditing();
     
+    /**Return editing status for layer*/
+    bool isEditing();
+
     /**Toggle show in overview*/
     void showInOverview();
     
