@@ -476,6 +476,12 @@ void QgsLegendLayerFile::toggleEditing()
 
 }
 
+bool QgsLegendLayerFile::isEditing()
+{
+  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(mLyr.layer());
+  return vlayer && vlayer->isEditable();
+} 
+
 void QgsLegendLayerFile::layerNameChanged()
 {
   QString name = mLyr.layer()->name();

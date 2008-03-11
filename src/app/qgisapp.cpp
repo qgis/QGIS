@@ -3774,6 +3774,11 @@ void QgisApp::inOverview()
 
 void QgisApp::removeLayer()
 {
+  QgsLegendLayerFile* currentLayerFile = mMapLegend->currentLayerFile();
+  if(currentLayerFile && currentLayerFile->isEditing() )
+  {
+    currentLayerFile->toggleEditing();
+  }
   mMapLegend->legendLayerRemove();
 }
 
