@@ -150,6 +150,8 @@ QgsGeometry* QgsGeometry::fromPoint(const QgsPoint& point)
     {
 #if GEOS_VERSION_MAJOR < 3
       delete e;
+#else
+      UNUSED(e);
 #endif
       return 0;
     }
@@ -175,6 +177,8 @@ QgsGeometry* QgsGeometry::fromMultiPoint(const QgsMultiPoint& multipoint)
 	{
 #if GEOS_VERSION_MAJOR < 3
 	  delete e;
+#else
+    UNUSED(e);
 #endif 
 	  delete pointVector; return 0;
 	}
@@ -189,6 +193,8 @@ QgsGeometry* QgsGeometry::fromMultiPoint(const QgsMultiPoint& multipoint)
     {
 #if GEOS_VERSION_MAJOR < 3
       delete e;
+#else
+      UNUSED(e);
 #endif
       return 0;
     }
@@ -220,6 +226,8 @@ QgsGeometry* QgsGeometry::fromPolyline(const QgsPolyline& polyline)
     {
 #if GEOS_VERSION_MAJOR < 3
       delete e;
+#else
+      UNUSED(e);
 #endif
       delete seq;
       return 0;
@@ -251,6 +259,8 @@ QgsGeometry* QgsGeometry::fromMultiPolyline(const QgsMultiPolyline& multiline)
 	{
 #if GEOS_VERSION_MAJOR < 3
 	  delete e;
+#else
+      UNUSED(e);
 #endif
 	  delete lineVector; delete seq;
 	  return 0;
@@ -267,6 +277,8 @@ QgsGeometry* QgsGeometry::fromMultiPolyline(const QgsMultiPolyline& multiline)
     {
 #if GEOS_VERSION_MAJOR < 3
       delete e;
+#else
+      UNUSED(e);
 #endif
       return 0;
     }
@@ -304,6 +316,8 @@ static GEOS_GEOM::LinearRing* _createGeosLinearRing(const QgsPolyline& ring)
     {
 #if GEOS_VERSION_MAJOR < 3
       delete e;
+#else
+      UNUSED(e);
 #endif
       return 0;
     }
@@ -338,6 +352,8 @@ QgsGeometry* QgsGeometry::fromPolygon(const QgsPolygon& polygon)
     {
 #if GEOS_VERSION_MAJOR < 3
       delete e;
+#else
+      UNUSED(e);
 #endif
       return 0;
     }
@@ -374,6 +390,8 @@ QgsGeometry* QgsGeometry::fromMultiPolygon(const QgsMultiPolygon& multipoly)
 	{
 #if GEOS_VERSION_MAJOR < 3
 	  delete e;
+#else
+    UNUSED(e);
 #endif
 	  delete polygons; return 0;
 	}
@@ -389,6 +407,8 @@ QgsGeometry* QgsGeometry::fromMultiPolygon(const QgsMultiPolygon& multipoly)
     {
 #if GEOS_VERSION_MAJOR < 3
       delete e;
+#else
+      UNUSED(e);
 #endif
       return 0;
     }
@@ -2589,6 +2609,8 @@ int QgsGeometry::addRing(const QList<QgsPoint>& ring)
     {
 #if GEOS_VERSION_MAJOR < 3
       delete e;
+#else
+      UNUSED(e);
 #endif
       delete newSequence;
       return 3;
@@ -2781,6 +2803,8 @@ int QgsGeometry::addIsland(const QList<QgsPoint>& ring)
     {
 #if GEOS_VERSION_MAJOR < 3
       delete e;
+#else
+      UNUSED(e);
 #endif
       delete newSequence;
       return 2;
@@ -3022,6 +3046,8 @@ int QgsGeometry::splitGeometry(const QList<QgsPoint>& splitLine, QList<QgsGeomet
     {
 #if GEOS_VERSION_MAJOR < 3
       delete e;
+#else
+      UNUSED(e);
 #endif
       return 2;
     }
@@ -3078,6 +3104,8 @@ int QgsGeometry::makeDifference(QgsGeometry* other)
     {
 #if GEOS_VERSION_MAJOR < 3
       delete e;
+#else
+      UNUSED(e);
 #endif
       return 5;
     }
@@ -3973,6 +4001,8 @@ bool QgsGeometry::exportWkbToGeos()
     {
 #if GEOS_VERSION_MAJOR < 3
       delete e;
+#else
+      UNUSED(e);
 #endif
       return FALSE;
     }
@@ -4278,7 +4308,7 @@ bool QgsGeometry::exportGeosToWkb()
 	//loop over lines
 	int lineType = QGis::WKBLineString;
 	GEOS_GEOM::CoordinateSequence* lineCoordinates = 0;
-	int lineSize;
+	GEOS_SIZE_T lineSize;
 	double x, y;
 
 	for(GEOS_SIZE_T i = 0; i < theMultiLineString->getNumGeometries(); ++i)
@@ -4837,7 +4867,7 @@ int QgsGeometry::mergeGeometriesMultiTypeSplit(QList<GEOS_GEOM::Geometry*>& spli
     {
       //is this geometry a part of the original multitype?
       bool isPart = false;
-      for(int j = 0; j < collection->getNumGeometries(); ++j)
+      for(GEOS_SIZE_T j = 0; j < collection->getNumGeometries(); ++j)
 	{
 	  if(copyList.at(i)->equals(collection->getGeometryN(j)))
 	    {
@@ -5168,6 +5198,8 @@ QgsGeometry* QgsGeometry::Union(QgsGeometry* geometry)
     {
 #if GEOS_VERSION_MAJOR < 3
       delete e;
+#else
+      UNUSED(e);
 #endif
       //return this geometry if union not possible
       return new QgsGeometry(*this);
