@@ -1720,15 +1720,15 @@ int QgsVectorLayer::splitFeatures(const QList<QgsPoint>& splitLine, bool topolog
 	  return 1;
 	}
       
-      if(bBox.isEmpty())
+  if(bBox.isEmpty())
 	{
 	  //if the bbox is a line, try to make a square out of it
-	  if(!bBox.width() > 0.0 && bBox.height() > 0)
+	  if(bBox.width()==0.0 && bBox.height() > 0)
 	    {
 	      bBox.setXmin(bBox.xMin() - bBox.height()/2);
 	      bBox.setXmax(bBox.xMax() + bBox.height()/2);
 	    }
-	  else if(!bBox.height() > 0.0 && bBox.width() > 0)
+	  else if(bBox.height()==0.0 && bBox.width()>0)
 	    {
 	      bBox.setYmin(bBox.yMin() - bBox.width()/2);
 	      bBox.setYmax(bBox.yMax() + bBox.width()/2);

@@ -131,7 +131,6 @@ bool QgsColorRampShader::getInterpolatedColor(double theValue, int* theReturnRed
 
 void QgsColorRampShader::setColorRampType(QString theType)
 {
-  switch(mColorRampType)
   if(theType == "INTERPOLATED")
   {
     mColorRampType = INTERPOLATED;
