@@ -327,6 +327,15 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     void repaintRequested();
 
   private:
+
+    /** Double quote a PostgreSQL identifier for placement in a SQL string.
+     */
+    QString quotedIdentifier( QString ident );
+
+    /** Quote a value for placement in a SQL string.
+     */
+    QString quotedValue( QString value );
+
     /** Load the field list
     */
     void loadFields();
@@ -445,8 +454,8 @@ class QgsPostgresProvider:public QgsVectorDataProvider
 
     // Produces a QMessageBox with the given title and text. Doesn't
     // return until the user has dismissed the dialog box.
-    void showMessageBox(const QString& title, const QString& text);
-    void showMessageBox(const QString& title, const QStringList& text);
+    static void showMessageBox(const QString& title, const QString& text);
+    static void showMessageBox(const QString& title, const QStringList& text);
 
     // A simple class to store the rows of the sql executed in the
     // findColumns() function.
@@ -465,6 +474,36 @@ class QgsPostgresProvider:public QgsVectorDataProvider
       QString column_type;
     };
 
+    struct PGException {
+      PGException(PGresult *r) : result(r)
+      {
+      }
+
+      PGException(const PGException &e) : result(e.result) 
+      {
+      }
+
+      ~PGException()
+      {
+        if(result)
+          PQclear(result);
+      }
+
+      QString errorMessage() const
+      {
+        return result ?
+          QString::fromUtf8(PQresultErrorMessage(result)) :
+          tr("unexpected PostgreSQL error");
+      }
+
+      void showErrorMessage(QString title) const
+      {
+        showMessageBox(title, errorMessage() );
+      }
+
+    private:
+      PGresult *result;
+    };
 
     // A simple class to store four strings
     class SRC 
@@ -472,7 +511,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     public:
       SRC() {};
       SRC(QString s, QString r, QString c, QString t) :
-	schema(s), relation(r), column(c), type(t) {};
+        schema(s), relation(r), column(c), type(t) {};
       QString schema, relation, column, type; 
     };
 
@@ -529,19 +568,14 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     //! PROJ4 capability
     bool projAvailable;
 
+    int enabledCapabilities;
+
     /**Returns the maximum value of the primary key attribute
        @note  You should run this inside of a PostgreSQL transaction
               so that you can safely increment the value returned for
               use in newly added features.
       */
     int maxPrimaryKeyValue();
-
-    /** Writes a single feature 
-        @param primaryKeyHighWater   is the recommended value of the primary key for this new feature. */
-    bool addFeature(QgsFeature& f, int primaryKeyHighWater);
-
-    /**Deletes a feature*/
-    bool deleteFeature(int id);
 
     //! Get the feature count based on the where clause
     long getFeatureCount();
@@ -552,22 +586,15 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     /**
      * Event sink for events from threads
      */
-    void customEvent ( QCustomEvent * e );
+    void customEvent ( QCustomEvent *e );
 
-private:
-    struct Conn {
-	Conn(PGconn *connection) : ref(1), conn(connection) {}
-
-	int ref;
-    	PGconn *conn;
-    };
-
-    PGconn *connectDb(const char *conninfo);
+    PGconn *connectDb(const QString &conninfo);
     void disconnectDb();
 
-    static QMap<QString, Conn *> connections;
-    static int providerIds;
-    QString providerId;
+    bool useWkbHex;
+   
+    void appendGeomString(QgsGeometry *geom, QString &geomParam) const;
+    QByteArray paramValue(QString fieldvalue, const QString &defaultValue) const;
 };
 
 #endif

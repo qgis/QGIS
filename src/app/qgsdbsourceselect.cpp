@@ -181,7 +181,7 @@ QString QgsDbSourceSelect::makeGeomQuery(QString schema,
 		  " when geometrytype(%1) IN ('LINESTRING','MULTILINESTRING') THEN 'LINESTRING'"
 		  " when geometrytype(%1) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
 		  " end "
-		  "from \"%2\".\"%3\"").arg(column).arg(schema).arg(table);
+		  "from \"%2\".\"%3\"").arg("\""+column+"\"").arg(schema).arg(table);
 }
 
 QgsDbSourceSelect::~QgsDbSourceSelect()
@@ -361,11 +361,11 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
   QString username = settings.readEntry(key + "/username");
   QString password = settings.readEntry(key + "/password");
 
-  if (password == QString::null)
+  if ( password.isEmpty() )
   {
     // get password from user 
     makeConnection = false;
-    QString password = QInputDialog::getText(tr("Password for ") + username,
+    password = QInputDialog::getText(tr("Password for ") + username,
         tr("Please enter your password:"),
         QLineEdit::Password, QString::null, &makeConnection, this);
     // allow null password entry in case its valid for the database
@@ -393,13 +393,13 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
     if (pd != 0)
       PQfinish(pd);
 
-    pd = PQconnectdb(m_connInfo.toLocal8Bit().data());
+    pd = PQconnectdb(m_connInfo.toLocal8Bit());		// use what is set based on locale; after connecting, use Utf8
     //  std::cout << pd->ErrorMessage();
     if (PQstatus(pd) == CONNECTION_OK)
     {
       //qDebug("Connection succeeded");
       // tell the DB that we want text encoded in UTF8
-      PQsetClientEncoding(pd, "UNICODE");
+      PQsetClientEncoding(pd, QString("UNICODE").toLocal8Bit());
 
       // get the list of suitable tables and columns and populate the UI
       geomCol details;
@@ -434,7 +434,7 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
       QMessageBox::warning(this, tr("Connection failed"),
           tr
           ("Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4The database said:%5%6").
-          arg(settings.readEntry(key + "/database")).arg(settings.readEntry(key + "/host")).arg("\n\n").arg("\n\n").arg("\n").arg(PQerrorMessage(pd)));
+          arg(settings.readEntry(key + "/database")).arg(settings.readEntry(key + "/host")).arg("\n\n").arg("\n\n").arg("\n").arg(QString::fromLocal8Bit(PQerrorMessage(pd))));
     }
   }
 
@@ -526,43 +526,33 @@ bool QgsDbSourceSelect::getTableInfo(PGconn *pg, bool searchGeometryColumnsOnly,
   bool ok = false;
   QApplication::setOverrideCursor(Qt::waitCursor);
   
-  QString sql = "select * from geometry_columns";
-  sql += " order by f_table_schema,f_table_name";
+    // The following query returns only tables that exist and the user has SELECT privilege on.
+    // Can't use regclass here because table must exist, else error occurs.
+    QString sql = "select * from geometry_columns,pg_class,pg_namespace "
+      "where relname=f_table_name and f_table_schema=nspname "
+      "and pg_namespace.oid = pg_class.relnamespace "
+      "and has_table_privilege('\"'||pg_namespace.nspname||'\".\"'||pg_class.relname||'\"','select')"	// user has select privilege
+      "order by f_table_schema,f_table_name";
 
-  PGresult *result = PQexec(pg, sql.toLocal8Bit().data());
+  PGresult *result = PQexec(pg, sql.toUtf8());
   if (result)
   {
     for (int idx = 0; idx < PQntuples(result); idx++)
     {
-      // Be a bit paranoid and check that the table actually
-      // exists. This is not done as a subquery in the query above
-      // because I can't get it to work correctly when there are tables
-      // with capital letters in the name.
+      QString tableName = QString::fromUtf8(PQgetvalue(result, idx, PQfnumber(result, QString("f_table_name").toUtf8())));
+      QString schemaName = QString::fromUtf8(PQgetvalue(result, idx, PQfnumber(result, QString("f_table_schema").toUtf8())));
 
-      // Take care to deal with tables with the same name but in different schema.
-      QString tableName = PQgetvalue(result, idx, PQfnumber(result, "f_table_name"));
-      QString schemaName = PQgetvalue(result, idx, PQfnumber(result, "f_table_schema"));
-      sql = "select oid from pg_class where relname = '" + tableName + "'";
-      if (schemaName.length() > 0)
-	sql +=" and relnamespace = (select oid from pg_namespace where nspname = '" +
-	  schemaName + "')";
+      QString column = QString::fromUtf8(PQgetvalue(result, idx, PQfnumber(result, QString("f_geometry_column").toUtf8())));
+      QString type = QString::fromUtf8(PQgetvalue(result, idx, PQfnumber(result, QString("type").toUtf8())));
 
-      PGresult* exists = PQexec(pg, sql.toLocal8Bit().data());
-      if (PQntuples(exists) == 1)
+      QString as = "";
+      if(type=="GEOMETRY" && !searchGeometryColumnsOnly) 
       {
-        QString column = PQgetvalue(result, idx, PQfnumber(result, "f_geometry_column"));
-        QString type = PQgetvalue(result, idx, PQfnumber(result, "type"));
-        
-	QString as = "";
-	if(type=="GEOMETRY" && !searchGeometryColumnsOnly) 
-	  {
-	    addSearchGeometryColumn(schemaName, tableName,  column);
-	    as=type="WAITING";
-	  }
-
-	mTableModel.addTableEntry(type, schemaName, tableName, column, "");
+        addSearchGeometryColumn(schemaName, tableName,  column);
+        as=type="WAITING";
       }
-      PQclear(exists);
+
+      mTableModel.addTableEntry(type, schemaName, tableName, column, "");
     }
     ok = true;
   }
@@ -581,20 +571,21 @@ bool QgsDbSourceSelect::getTableInfo(PGconn *pg, bool searchGeometryColumnsOnly,
   // geometry_columns table. This code is specific to postgresql,
   // but an equivalent query should be possible in other
   // databases.
-  sql = "select pg_class.relname, pg_namespace.nspname, pg_attribute.attname, "
-    "pg_class.relkind from "
-    "pg_attribute, pg_class, pg_type, pg_namespace where pg_type.typname = 'geometry' and "
-    "pg_attribute.atttypid = pg_type.oid and pg_attribute.attrelid = pg_class.oid ";
-
+  sql = "select pg_class.relname, pg_namespace.nspname, pg_attribute.attname,  pg_class.relkind "
+    "from pg_attribute, pg_class, pg_namespace "
+    "where pg_namespace.oid = pg_class.relnamespace "
+    "and pg_attribute.atttypid = regtype('geometry') "
+    "and pg_attribute.attrelid = pg_class.oid "
+    "and has_table_privilege('\"'||pg_namespace.nspname||'\".\"'||pg_class.relname||'\"','select') ";
+	// user has select privilege
   if (searchPublicOnly)
     sql += "and pg_namespace.nspname = 'public' ";
 
-  sql += "and cast(pg_class.relname as character varying) not in "
-    "(select f_table_name from geometry_columns) "
-    "and pg_namespace.oid = pg_class.relnamespace "
+  sql += "and pg_namespace.nspname||'.'||pg_class.relname not in "	//  needs to be table and schema
+    "(select f_table_schema||'.'||f_table_name from geometry_columns) "
     "and pg_class.relkind in ('v', 'r')"; // only from views and relations (tables)
   
-  result = PQexec(pg, sql.toLocal8Bit().data());
+  result = PQexec(pg, sql.toUtf8());
 
   for (int i = 0; i < PQntuples(result); i++)
   {
@@ -605,10 +596,10 @@ bool QgsDbSourceSelect::getTableInfo(PGconn *pg, bool searchGeometryColumnsOnly,
     // Make the assumption that the geometry type for the first
     // row is the same as for all other rows. 
 
-    QString table  = PQgetvalue(result, i, 0); // relname
-    QString schema = PQgetvalue(result, i, 1); // nspname
-    QString column = PQgetvalue(result, i, 2); // attname
-    QString relkind = PQgetvalue(result, i, 3); // relation kind
+    QString table  = QString::fromUtf8(PQgetvalue(result, i, 0)); // relname
+    QString schema = QString::fromUtf8(PQgetvalue(result, i, 1)); // nspname
+    QString column = QString::fromUtf8(PQgetvalue(result, i, 2)); // attname
+    QString relkind = QString::fromUtf8(PQgetvalue(result, i, 3)); // relation kind
 
     addSearchGeometryColumn(schema, table, column);
     //details.push_back(geomPair(fullDescription(schema, table, column, "WAITING"), "WAITING"));
@@ -620,6 +611,7 @@ bool QgsDbSourceSelect::getTableInfo(PGconn *pg, bool searchGeometryColumnsOnly,
   return ok;
 }
 
+#if 0	// this function is never called - smizuno
 bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg, 
                 geomCol& details, bool searchGeometryColumnsOnly,
                                               bool searchPublicOnly)
@@ -632,7 +624,7 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
   // where f_table_schema ='" + settings.readEntry(key + "/database") + "'";
   sql += " order by f_table_schema,f_table_name";
   //qDebug("Fetching tables using: " + sql);
-  PGresult *result = PQexec(pg, sql.toLocal8Bit().data());
+  PGresult *result = PQexec(pg, sql.toUtf8());
   if (result)
   {
     QString msg;
@@ -646,18 +638,18 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
       // with capital letters in the name.
 
       // Take care to deal with tables with the same name but in different schema.
-      QString tableName = PQgetvalue(result, idx, PQfnumber(result, "f_table_name"));
-      QString schemaName = PQgetvalue(result, idx, PQfnumber(result, "f_table_schema"));
+      QString tableName = QString::fromUtf8(PQgetvalue(result, idx, PQfnumber(result, "f_table_name")));
+      QString schemaName = QString::fromUtf8(PQgetvalue(result, idx, PQfnumber(result, "f_table_schema")));
       sql = "select oid from pg_class where relname = '" + tableName + "'";
       if (schemaName.length() > 0)
 	sql +=" and relnamespace = (select oid from pg_namespace where nspname = '" +
 	  schemaName + "')";
 
-      PGresult* exists = PQexec(pg, sql.toLocal8Bit().data());
+      PGresult* exists = PQexec(pg, sql.toUtf8());
       if (PQntuples(exists) == 1)
       {
-        QString column = PQgetvalue(result, idx, PQfnumber(result, "f_geometry_column"));
-        QString type = PQgetvalue(result, idx, PQfnumber(result, "type"));
+        QString column = QString::fromUtf8(PQgetvalue(result, idx, PQfnumber(result, "f_geometry_column")));
+        QString type = QString::fromUtf8(PQgetvalue(result, idx, PQfnumber(result, "type")));
         
 	QString as = "";
 	if(type=="GEOMETRY" && !searchGeometryColumnsOnly) {
@@ -695,7 +687,7 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
     "and pg_namespace.oid = pg_class.relnamespace "
     "and pg_class.relkind in ('v', 'r')"; // only from views and relations (tables)
   
-  result = PQexec(pg, sql.toLocal8Bit().data());
+  result = PQexec(pg, sql.toUtf8());
 
   for (int i = 0; i < PQntuples(result); i++)
   {
@@ -706,10 +698,10 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
     // Make the assumption that the geometry type for the first
     // row is the same as for all other rows. 
 
-    QString table  = PQgetvalue(result, i, 0); // relname
-    QString schema = PQgetvalue(result, i, 1); // nspname
-    QString column = PQgetvalue(result, i, 2); // attname
-    QString relkind = PQgetvalue(result, i, 3); // relation kind
+    QString table  = QString::fromUtf8(PQgetvalue(result, i, 0)); // relname
+    QString schema = QString::fromUtf8(PQgetvalue(result, i, 1)); // nspname
+    QString column = QString::fromUtf8(PQgetvalue(result, i, 2)); // attname
+    QString relkind = QString::fromUtf8(PQgetvalue(result, i, 3)); // relation kind
 
     addSearchGeometryColumn(schema, table, column);
     details.push_back(geomPair(fullDescription(schema, table, column, "WAITING"), "WAITING"));
@@ -720,6 +712,7 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
 
   return ok;
 }
+#endif
 
 void QgsDbSourceSelect::showHelp()
 {
@@ -800,23 +793,23 @@ void QgsGeomColumnTypeThread::getLayerTypes()
 {
   mStopped=false;
 
-  PGconn *pd = PQconnectdb(mConnInfo.toLocal8Bit().data());
+  PGconn *pd = PQconnectdb(mConnInfo.toLocal8Bit());
   if (PQstatus(pd) == CONNECTION_OK)
   {
-    PQsetClientEncoding(pd, "UNICODE");
+    PQsetClientEncoding(pd, QString("UNICODE").toLocal8Bit());
 
     for (uint i = 0; i<schemas.size(); i++)
     {
       QString query = QgsDbSourceSelect::makeGeomQuery(schemas[i],
                                                        tables[i],
                                                        columns[i]);
-      PGresult* gresult = PQexec(pd, query.toLocal8Bit().data());
+      PGresult* gresult = PQexec(pd, query.toUtf8());
       QString type;
       if (PQresultStatus(gresult) == PGRES_TUPLES_OK) {
 	QStringList types;
 
 	for(int j=0; j<PQntuples(gresult); j++) {
-		QString type = PQgetvalue(gresult, j, 0);
+		QString type = QString::fromUtf8(PQgetvalue(gresult, j, 0));
 		if(type!="")
 		  types += type;
 	}

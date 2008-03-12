@@ -40,7 +40,7 @@ QgsPgQueryBuilder::QgsPgQueryBuilder(QgsDataSourceURI *uri,
 
   QgsDebugMsg("Attempting connect using: " + connInfo); 
 
-  mPgConnection = PQconnectdb(connInfo.toLocal8Bit().data());
+  mPgConnection = PQconnectdb(connInfo.toLocal8Bit().data());	// use what is set based on locale; after connecting, use Utf8
   // check the connection status
   if (PQstatus(mPgConnection) == CONNECTION_OK) {
     QString datasource = QString(tr("Table <b>%1</b> in database <b>%2</b> on host <b>%3</b>, user <b>%4</b>"))
@@ -57,7 +57,7 @@ QgsPgQueryBuilder::QgsPgQueryBuilder(QgsDataSourceURI *uri,
   }
   else
   {
-    QString err = PQerrorMessage(mPgConnection);
+    QString err = QString::fromLocal8Bit(PQerrorMessage(mPgConnection));
     QMessageBox::critical(this, tr("Connection Failed"), tr("Connection to the database failed:") + "\n" + err);
   }
 }
@@ -96,22 +96,21 @@ void QgsPgQueryBuilder::populateFields()
   // Populate the field vector for this layer. The field vector contains
   // field name, type, length, and precision (if numeric)
   QString sql = "select * from " + mUri->quotedTablename() + " limit 1";
-  PGresult *result = PQexec(mPgConnection, (const char *) (sql.utf8()));
+  PGresult *result = PQexec(mPgConnection, sql.toUtf8());
   QgsLogger::debug("Query executed: " + sql);
   if (PQresultStatus(result) == PGRES_TUPLES_OK) 
   {
     //--std::cout << "Field: Name, Type, Size, Modifier:" << std::endl;
     for (int i = 0; i < PQnfields(result); i++) {
 
-      QString fieldName = PQfname(result, i);
+      QString fieldName = QString::fromUtf8(PQfname(result, i));
       int fldtyp = PQftype(result, i);
       QString typOid = QString().setNum(fldtyp);
       QgsLogger::debug("typOid is: " + typOid); 
       //int fieldModifier = PQfmod(result, i);
       QString sql = "select typelem from pg_type where typelem = " + typOid + " and typlen = -1";
       //  //--std::cout << sql << std::endl;
-      PGresult *oidResult = PQexec(mPgConnection, 
-				   (const char *) (sql.utf8()));
+      PGresult *oidResult = PQexec(mPgConnection, sql.toUtf8());
       if (PQresultStatus(oidResult) == PGRES_TUPLES_OK) 
         QgsLogger::debug("Ok fetching typelem using\n" + sql); 
 
@@ -123,7 +122,7 @@ void QgsPgQueryBuilder::populateFields()
       PQclear(oidResult);
       sql = "select typname, typlen from pg_type where oid = " + poid;
       // //--std::cout << sql << std::endl;
-      oidResult = PQexec(mPgConnection, (const char *) (sql.utf8()));
+      oidResult = PQexec(mPgConnection, sql.toUtf8());
       if (PQresultStatus(oidResult) == PGRES_TUPLES_OK) 
         QgsLogger::debug("Ok fetching typenam,etc\n");
 
@@ -180,9 +179,9 @@ void QgsPgQueryBuilder::fillValues(QString theSQL)
   
   // determine the field type
   QgsField field = mFieldMap[mModelFields->data(lstFields->currentIndex()).toString()];
-  bool mActualFieldIsChar = field.typeName().find("char") > -1;
+  mActualFieldIsChar = field.typeName().contains("char") || field.typeName().contains("text");	// really should be: field.type()==QVariant::String - but is not set correctly above
   
-  PGresult *result = PQexec(mPgConnection, (const char *) (theSQL.utf8()));
+  PGresult *result = PQexec(mPgConnection, theSQL.toUtf8());
 
   if (PQresultStatus(result) == PGRES_TUPLES_OK) 
   {
@@ -196,7 +195,7 @@ void QgsPgQueryBuilder::fillValues(QString theSQL)
     }
   }else
   {
-    QMessageBox::warning(this, tr("Database error"), tr("<p>Failed to get sample of field values using SQL:</p><p>") + theSQL + "</p><p>Error message was: "+ QString(PQerrorMessage(mPgConnection)) + "</p>");
+    QMessageBox::warning(this, tr("Database error"), tr("<p>Failed to get sample of field values using SQL:</p><p>") + theSQL + "</p><p>Error message was: "+ QString::fromUtf8(PQerrorMessage(mPgConnection)) + "</p>");
   }
   // free the result set
   PQclear(result);
@@ -210,7 +209,6 @@ void QgsPgQueryBuilder::on_btnSampleValues_clicked()
       return;
   
   QgsField field = mFieldMap[mModelFields->data(lstFields->currentIndex()).toString()];
-  bool mActualFieldIsChar = field.typeName().find("char") > -1;
   
   QString sql = "SELECT DISTINCT \"" + myFieldName + "\" " +
       "FROM (SELECT \"" + myFieldName + "\" " +
@@ -268,7 +266,7 @@ void QgsPgQueryBuilder::on_btnTest_clicked()
     QString numRows;
     QString sql = "select count(*) from " + mUri->quotedTablename() 
       + " where " + txtSQL->text();
-    PGresult *result = PQexec(mPgConnection, (const char *)(sql.utf8()));
+    PGresult *result = PQexec(mPgConnection, sql.toUtf8());
     if (PQresultStatus(result) == PGRES_TUPLES_OK) 
     {
       numRows = QString::fromUtf8(PQgetvalue(result, 0, 0));
@@ -280,7 +278,7 @@ void QgsPgQueryBuilder::on_btnTest_clicked()
     {
       QMessageBox::warning(this, tr("Query Failed"), 
           tr("An error occurred when executing the query:") 
-          + "\n" + QString(PQresultErrorMessage(result)));
+          + "\n" + QString::fromUtf8(PQresultErrorMessage(result)));
     }
     // free the result set
     PQclear(result);
@@ -294,7 +292,7 @@ long QgsPgQueryBuilder::countRecords(QString where)
   QString sql = "select count(*) from " + mUri->quotedTablename() + " where " + where;
 
   long numRows;
-  PGresult *result = PQexec(mPgConnection, (const char *)(sql.utf8()));
+  PGresult *result = PQexec(mPgConnection, sql.toUtf8());
   if (PQresultStatus(result) == PGRES_TUPLES_OK) 
   {
     QString rowCount = QString::fromUtf8(PQgetvalue(result, 0, 0));
@@ -303,7 +301,7 @@ long QgsPgQueryBuilder::countRecords(QString where)
   else
   {
     numRows = -1;
-    mPgErrorMessage = PQresultErrorMessage(result);
+    mPgErrorMessage = QString::fromUtf8(PQresultErrorMessage(result));
 
   }
   // free the result set
