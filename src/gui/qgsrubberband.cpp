@@ -361,3 +361,11 @@ int QgsRubberBand::numberOfVertices() const
     }
   return count;
 }
+
+const QgsPoint *QgsRubberBand::getPoint(int i, int j) const
+{
+  if( i<mPoints.size() && j<mPoints[i].size() )
+    return &mPoints[i][j];
+  else
+    return 0;
+}
