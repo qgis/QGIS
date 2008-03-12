@@ -32,7 +32,6 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
-#include <iostream>
 #include <stdlib.h>
 
 QgsAttributeTable::QgsAttributeTable(QWidget * parent, const char *name):
@@ -586,14 +585,22 @@ void QgsAttributeTable::storeChangedValue(int row, int column)
     int id=text(row,0).toInt();
     QString field = horizontalHeader()->label(column);
 
-    // add empty map for feature if doesn't exist
-    if (!mChangedValues.contains(id))
+    if(id>=0)
     {
-      mChangedValues.insert(id, QMap<QString, QString>());
-    }
+      // add empty map for feature if doesn't exist
+      if (!mChangedValues.contains(id))
+      {
+        mChangedValues.insert(id, QMap<QString, QString>());
+      }
 
-    mChangedValues[id].insert(field, text(row,column));
-    mEdited=true;
+      mChangedValues[id].insert(field, text(row,column));
+      mEdited=true;
+    }
+    else
+    {
+      // added feature attribute changed
+      emit featureAttributeChanged(row,column);
+    }
   }
 }
 

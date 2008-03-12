@@ -104,15 +104,16 @@ class QgsAttributeTable:public Q3Table
     /** Shows all rows */
     void showAllRows();
 
-    public slots:
-      void columnClicked(int col);
-      void rowClicked(int row);
+  public slots:
+    void columnClicked(int col);
+    void rowClicked(int row);
     // Called when the user requests a popup menu
     void popupMenu(int row, int col, const QPoint& pos);
     // Called when the user chooses an item on the popup menu
     void popupItemSelected(QAction * menuAction);
-    protected slots:
-      void handleChangedSelections();
+
+  protected slots:
+    void handleChangedSelections();
     /**Writes changed values to 'mChangedValues'*/
     void storeChangedValue(int row, int column);
 
@@ -156,14 +157,15 @@ class QgsAttributeTable:public Q3Table
      Also, mLastSelectedRows is updated*/
     bool checkSelectionChanges();
 
-signals:
-
+  signals:
     /**Is emitted when a row was selected*/
     void selected(int, bool);
     /**Is emitted when all rows have been deselected*/
     void selectionRemoved(bool);
-    /**Is emmited when a set of related selection and deselection signals have been emitted*/
+    /**Is emitted when a set of related selection and deselection signals have been emitted*/
     void repaintRequested();
+    /**Is emitted when a attribute of a added feature is changed*/
+    void featureAttributeChanged(int row, int column);
 
   private:
     // Data to do with providing a popup menu of actions that
