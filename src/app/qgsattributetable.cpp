@@ -58,8 +58,8 @@ QgsAttributeTable::QgsAttributeTable(QWidget * parent, const char *name):
 
 QgsAttributeTable::~QgsAttributeTable()
 {
-
 }
+
 void QgsAttributeTable::columnClicked(int col)
 {
   QApplication::setOverrideCursor(Qt::waitCursor);
@@ -67,12 +67,12 @@ void QgsAttributeTable::columnClicked(int col)
   //store the ids of the selected rows in a list
   QList < int >idsOfSelected;
   for (int i = 0; i < numSelections(); i++)
+  {
+    for (int j = selection(i).topRow(); j <= selection(i).bottomRow(); j++)
     {
-      for (int j = selection(i).topRow(); j <= selection(i).bottomRow(); j++)
-        {
-          idsOfSelected.append(text(j, 0).toInt());
-        }
+      idsOfSelected.append(text(j, 0).toInt());
     }
+  }
 
   sortColumn(col, sort_ascending, true);
 
@@ -80,10 +80,10 @@ void QgsAttributeTable::columnClicked(int col)
   rowIdMap.clear();
   int id;
   for (int i = 0; i < numRows(); i++)
-    {
-      id = text(i, 0).toInt();
-      rowIdMap.insert(id, i);
-    }
+  {
+    id = text(i, 0).toInt();
+    rowIdMap.insert(id, i);
+  }
 
   QObject::disconnect(this, SIGNAL(selectionChanged()), this, SLOT(handleChangedSelections()));
   clearSelection(true);
@@ -92,9 +92,9 @@ void QgsAttributeTable::columnClicked(int col)
 
   QList < int >::iterator it;
   for (it = idsOfSelected.begin(); it != idsOfSelected.end(); ++it)
-    {
-      selectRowWithId((*it));
-    }
+  {
+    selectRowWithId((*it));
+  }
   QObject::connect(this, SIGNAL(selectionChanged()), this, SLOT(handleChangedSelections()));
 
   //change the sorting order after each sort
@@ -106,39 +106,39 @@ void QgsAttributeTable::columnClicked(int col)
 void QgsAttributeTable::keyPressEvent(QKeyEvent * ev)
 {
   if (ev->key() == Qt::Key_Control || ev->key() == Qt::Key_Shift)
-    {
-      lockKeyPressed = true;
-    }
+  {
+    lockKeyPressed = true;
+  }
 }
 
 void QgsAttributeTable::keyReleaseEvent(QKeyEvent * ev)
 {
   if (ev->key() == Qt::Key_Control || ev->key() == Qt::Key_Shift)
-    {
-      lockKeyPressed = false;
-    }
+  {
+    lockKeyPressed = false;
+  }
 }
 
 void QgsAttributeTable::handleChangedSelections()
 {
   Q3TableSelection cselection;
   if (lockKeyPressed == false)
-    {
-      //clear the list and evaluate the last selection
-      emit selectionRemoved(false);
-    }
+  {
+    //clear the list and evaluate the last selection
+    emit selectionRemoved(false);
+  }
   //if there is no current selection, there is nothing to do
   if (currentSelection() == -1)
-    {
-      return;
-    }
+  {
+    return;
+  }
 
   cselection = selection(currentSelection());
 
   for (int index = cselection.topRow(); index <= cselection.bottomRow(); index++)
-    {
-      emit selected(text(index, 0).toInt(), false);
-    }
+  {
+    emit selected(text(index, 0).toInt(), false);
+  }
 
   //don't send the signal repaintRequested() from here
   //but in contentsMouseReleaseEvent() and rowClicked(int)
@@ -162,20 +162,21 @@ void QgsAttributeTable::sortColumn(int col, bool ascending, bool wholeRows)
   QString firstentry = text(0, col);
   bool containsletter = false;
   for (int i = 0; i < firstentry.length(); i++)
+  {
+    if (firstentry.ref(i).isLetter())
     {
-      if (firstentry.ref(i).isLetter())
-        {
-          containsletter = true;
-        }
+      containsletter = true;
     }
+  }
 
   if (containsletter)
-    {
-      qsort(0, numRows() - 1, col, ascending, true);
-  } else
-    {
-      qsort(0, numRows() - 1, col, ascending, false);
-    }
+  {
+    qsort(0, numRows() - 1, col, ascending, true);
+  }
+  else
+  {
+    qsort(0, numRows() - 1, col, ascending, false);
+  }
 
   repaintContents();
 }
@@ -187,59 +188,67 @@ void QgsAttributeTable::sortColumn(int col, bool ascending, bool wholeRows)
 int QgsAttributeTable::compareItems(QString s1, QString s2, bool ascending, bool alphanumeric)
 {
   if (alphanumeric)
+  {
+    if (s1 > s2)
     {
-      if (s1 > s2)
-        {
-          if (ascending)
-            {
-              return 1;
-          } else
-            {
-              return -1;
-            }
-      } else if (s1 < s2)
-        {
-          if (ascending)
-            {
-              return -1;
-          } else
-            {
-              return 1;
-            }
-      } else if (s1 == s2)
-        {
-          return 0;
-        }
-  } else                        //numeric
-    {
-      double d1 = s1.toDouble();
-      double d2 = s2.toDouble();
-      if (d1 > d2)
-        {
-          if (ascending)
-            {
-              return 1;
-          } else
-            {
-              return -1;
-            }
-      } else if (d1 < d2)
-        {
-          if (ascending)
-            {
-              return -1;
-          } else
-            {
-              return 1;
-            }
-      } else if (d1 == d2)
-        {
-          return 0;
-        }
+      if (ascending)
+      {
+        return 1;
+      }
+      else
+      {
+        return -1;
+      }
     }
+    else if (s1 < s2)
+    {
+      if (ascending)
+      {
+        return -1;
+      }
+      else
+      {
+        return 1;
+      }
+    }
+    else if (s1 == s2)
+    {
+      return 0;
+    }
+  }
+  else                        //numeric
+  {
+    double d1 = s1.toDouble();
+    double d2 = s2.toDouble();
+    if (d1 > d2)
+    {
+      if (ascending)
+      {
+        return 1;
+      }
+      else
+      {
+        return -1;
+      }
+    }
+    else if (d1 < d2)
+    {
+      if (ascending)
+      {
+        return -1;
+      }
+      else
+      {
+        return 1;
+      }
+    }
+    else if (d1 == d2)
+    {
+      return 0;
+    }
+  }
 
   return 0;                     // XXX has to return something; is this reasonable?
-
 }
 
 void QgsAttributeTable::qsort(int lower, int upper, int col, bool ascending, bool alphanumeric)
@@ -247,27 +256,27 @@ void QgsAttributeTable::qsort(int lower, int upper, int col, bool ascending, boo
   int i, j;
   QString v;
   if (upper > lower)
+  {
+    //chose a random element (this avoids n^2 worst case)
+    int element = int ( (double)rand() / (double)RAND_MAX * (upper - lower) + lower);
+    swapRows(element, upper);
+    v = text(upper, col);
+    i = lower - 1;
+    j = upper;
+    for (;;)
     {
-      //chose a random element (this avoids n^2 worst case)
-      int element = int ( (double)rand() / (double)RAND_MAX * (upper - lower) + lower);
-      swapRows(element, upper);
-      v = text(upper, col);
-      i = lower - 1;
-      j = upper;
-      for (;;)
+      while (compareItems(text(++i, col), v, ascending, alphanumeric) == -1);
+      while (compareItems(text(--j, col), v, ascending, alphanumeric) == 1 && j > 0); //make sure that j does not get negative
+      if (i >= j)
       {
-	  while (compareItems(text(++i, col), v, ascending, alphanumeric) == -1);
-	  while (compareItems(text(--j, col), v, ascending, alphanumeric) == 1 && j > 0); //make sure that j does not get negative
-          if (i >= j)
-            {
-              break;
-            }
-          swapRows(i, j);
-        }
-      swapRows(i, upper);
-      qsort(lower, i - 1, col, ascending, alphanumeric);
-      qsort(i + 1, upper, col, ascending, alphanumeric);
+        break;
+      }
+      swapRows(i, j);
     }
+    swapRows(i, upper);
+    qsort(lower, i - 1, col, ascending, alphanumeric);
+    qsort(i + 1, upper, col, ascending, alphanumeric);
+  }
 }
 
 void QgsAttributeTable::popupMenu(int row, int col, const QPoint& pos)
@@ -324,42 +333,42 @@ void QgsAttributeTable::popupItemSelected(QAction* menuAction)
 
 bool QgsAttributeTable::addAttribute(const QString& name, const QString& type)
 {
-    //first test if an attribute with the same name is already in the table
-    for(int i=0;i<horizontalHeader()->count();++i)
+  //first test if an attribute with the same name is already in the table
+  for(int i=0;i<horizontalHeader()->count();++i)
+  {
+    if(horizontalHeader()->label(i)==name)
     {
-	if(horizontalHeader()->label(i)==name)
-	{
-	    //name conflict
-	    return false;
-	}
+      //name conflict
+      return false;
     }
-    mAddedAttributes.insert(name,type);
-    
-    QgsDebugMsg("inserting attribute " + name + " of type " + type + ", numCols: " + QString::number(numCols()) );
-    
-    //add a new column at the end of the table
-        
-    insertColumns(numCols());
-    horizontalHeader()->setLabel(numCols()-1,name);
-    mEdited=true;
-    return true;
+  }
+  mAddedAttributes.insert(name,type);
+
+  QgsDebugMsg("inserting attribute " + name + " of type " + type + ", numCols: " + QString::number(numCols()) );
+
+  //add a new column at the end of the table
+
+  insertColumns(numCols());
+  horizontalHeader()->setLabel(numCols()-1,name);
+  mEdited=true;
+  return true;
 }
 
 void QgsAttributeTable::deleteAttribute(const QString& name)
 {
-    //check, if there is already an attribute with this name in mAddedAttributes
-    QgsNewAttributesMap::iterator iter = mAddedAttributes.find(name);
-    if(iter!=mAddedAttributes.end())
-    {
-	mAddedAttributes.remove(iter);
-	removeAttrColumn(name);
-    }
-    else
-    {
-	mDeletedAttributes.insert(name); 
-	removeAttrColumn(name);
-    }
-    mEdited=true;
+  //check, if there is already an attribute with this name in mAddedAttributes
+  QgsNewAttributesMap::iterator iter = mAddedAttributes.find(name);
+  if(iter!=mAddedAttributes.end())
+  {
+    mAddedAttributes.remove(iter);
+    removeAttrColumn(name);
+  }
+  else
+  {
+    mDeletedAttributes.insert(name); 
+    removeAttrColumn(name);
+  }
+  mEdited=true;
 }
 
 
@@ -384,7 +393,7 @@ void QgsAttributeTable::copySelectedRows()
     for (int row = sel.topRow(); row < sel.topRow()+sel.numRows(); ++row)
     {
       for (int column = 0; column < numCols(); ++column)
-	toClipboard += text(row, column) + fieldSep;
+        toClipboard += text(row, column) + fieldSep;
       toClipboard += '\n';
     }
   }
@@ -417,53 +426,53 @@ bool QgsAttributeTable::commitChanges(QgsVectorLayer* layer)
     QgsVectorDataProvider* provider = layer->getDataProvider();
 
     if(provider)
+    {
+
+      QgsAttributeIds deletedIds;
+      QSet<QString>::const_iterator it = mDeletedAttributes.constBegin();
+
+      for(; it != mDeletedAttributes.constEnd(); ++it)
       {
-
-	QgsAttributeIds deletedIds;
-	QSet<QString>::const_iterator it = mDeletedAttributes.constBegin();
-	
-	for(; it != mDeletedAttributes.constEnd(); ++it)
-	  {
-	    deletedIds.insert(provider->indexFromFieldName(*it));
-	  }
-
-	isSuccessful = true;
-	if( !mAddedAttributes.empty() )
-	  {
-	    // add new attributes beforehand, so attribute changes can be applied
-	    isSuccessful = layer->commitAttributeChanges(QgsAttributeIds(), mAddedAttributes, QgsChangedAttributesMap());
-          }
-
-	if(isSuccessful)
-	  {
-	    QgsChangedAttributesMap attributeChanges; //convert mChangedValues to QgsChangedAttributesMap
-	    int fieldIndex;
-
-	    QMap<int, QMap<QString, QString> >::const_iterator att_it = mChangedValues.constBegin();
-	    for(; att_it != mChangedValues.constEnd(); ++att_it)
-	      {
-	        QgsAttributeMap newAttMap;
-	        QMap<QString, QString>::const_iterator record_it = att_it->constBegin();
-	        for(; record_it != att_it->constEnd(); ++record_it)
-	          {
-		    fieldIndex = provider->indexFromFieldName(record_it.key());
-		    if(fieldIndex != -1)
-		    {
-		       newAttMap.insert(fieldIndex, record_it.value());
-		    }
-		    else
-		      {
-		        QgsDebugMsg("Changed attribute " + record_it.key() + " not found");
-		      }
-	          }
-	        attributeChanges.insert(att_it.key(), newAttMap);
-	      } 
-
-	    isSuccessful = layer->commitAttributeChanges(deletedIds,
-                                                         QgsNewAttributesMap(),
-                                                         attributeChanges);
-	  }
+        deletedIds.insert(provider->indexFromFieldName(*it));
       }
+
+      isSuccessful = true;
+      if( !mAddedAttributes.empty() )
+      {
+        // add new attributes beforehand, so attribute changes can be applied
+        isSuccessful = layer->commitAttributeChanges(QgsAttributeIds(), mAddedAttributes, QgsChangedAttributesMap());
+      }
+
+      if(isSuccessful)
+      {
+        QgsChangedAttributesMap attributeChanges; //convert mChangedValues to QgsChangedAttributesMap
+        int fieldIndex;
+
+        QMap<int, QMap<QString, QString> >::const_iterator att_it = mChangedValues.constBegin();
+        for(; att_it != mChangedValues.constEnd(); ++att_it)
+        {
+          QgsAttributeMap newAttMap;
+          QMap<QString, QString>::const_iterator record_it = att_it->constBegin();
+          for(; record_it != att_it->constEnd(); ++record_it)
+          {
+            fieldIndex = provider->indexFromFieldName(record_it.key());
+            if(fieldIndex != -1)
+            {
+              newAttMap.insert(fieldIndex, record_it.value());
+            }
+            else
+            {
+              QgsDebugMsg("Changed attribute " + record_it.key() + " not found");
+            }
+          }
+          attributeChanges.insert(att_it.key(), newAttMap);
+        } 
+
+        isSuccessful = layer->commitAttributeChanges(deletedIds,
+          QgsNewAttributesMap(),
+          attributeChanges);
+      }
+    }
   }
 
   if (isSuccessful)
@@ -546,10 +555,10 @@ void QgsAttributeTable::fillTable(QgsVectorLayer* layer)
 void QgsAttributeTable::putFeatureInTable(int row, QgsFeature& fet)
 {
   if(row >= numRows())//prevent a crash if a provider doesn't update the feature count properly
-    {
-      setNumRows(row+1);
-    }
-  
+  {
+    setNumRows(row+1);
+  }
+
   //id-field
   int id = fet.featureId();
   setText(row, 0, QString::number(id));
@@ -568,131 +577,130 @@ void QgsAttributeTable::storeChangedValue(int row, int column)
 {
   //id column is not editable
   if(column>0)
+  {
+    //find feature id
+    int id=text(row,0).toInt();
+    QString field = horizontalHeader()->label(column);
+
+    // add empty map for feature if doesn't exist
+    if (!mChangedValues.contains(id))
     {
-      //find feature id
-      int id=text(row,0).toInt();
-      QString field = horizontalHeader()->label(column);
-      
-      // add empty map for feature if doesn't exist
-      if (!mChangedValues.contains(id))
-	{
-	  mChangedValues.insert(id, QMap<QString, QString>());
-	}
-      
-      mChangedValues[id].insert(field, text(row,column));
-      mEdited=true;
+      mChangedValues.insert(id, QMap<QString, QString>());
     }
+
+    mChangedValues[id].insert(field, text(row,column));
+    mEdited=true;
+  }
 }
 
 void QgsAttributeTable::clearEditingStructures()
 {
-    mDeletedAttributes.clear();
-    mAddedAttributes.clear();
-    mChangedValues.clear();
+  mDeletedAttributes.clear();
+  mAddedAttributes.clear();
+  mChangedValues.clear();
 }
 
 void QgsAttributeTable::removeAttrColumn(const QString& name)
 {
-    Q3Header* header=horizontalHeader();
-    for(int i=0;i<header->count();++i)
+  Q3Header* header=horizontalHeader();
+  for(int i=0;i<header->count();++i)
+  {
+    if(header->label(i)==name)
     {
-	if(header->label(i)==name)
-	{
-	    removeColumn(i);
-	    break;
-	}
+      removeColumn(i);
+      break;
     }
+  }
 }
 
 void QgsAttributeTable::bringSelectedToTop()
 {
-    blockSignals(true);
-    int swaptorow=0;
-    std::list<Q3TableSelection> selections;
-    bool removeselection;
+  blockSignals(true);
+  int swaptorow=0;
+  std::list<Q3TableSelection> selections;
+  bool removeselection;
 
-    for(int i=0;i<numSelections();++i)
+  for(int i=0;i<numSelections();++i)
+  {
+    selections.push_back(selection(i));
+  }
+
+  Q3TableSelection sel;  
+
+  for(std::list<Q3TableSelection>::iterator iter=selections.begin();iter!=selections.end();++iter)
+  {
+    removeselection=true;
+    while(isRowSelected(swaptorow, true))//selections are not necessary stored in ascending order
     {
-	selections.push_back(selection(i));
+      ++swaptorow;
     }
 
-    Q3TableSelection sel;  
+    for(int j=iter->topRow();j<=iter->bottomRow();++j)
+    {   
+      if(j>swaptorow)//selections are not necessary stored in ascending order
+      {
+        swapRows(j,swaptorow);
+        selectRow(swaptorow);
+        ++swaptorow;	
 
-    for(std::list<Q3TableSelection>::iterator iter=selections.begin();iter!=selections.end();++iter)
-    {
-	removeselection=true;
-	while(isRowSelected(swaptorow, true))//selections are not necessary stored in ascending order
-	    {
-		++swaptorow;
-	    }
-	
-	for(int j=iter->topRow();j<=iter->bottomRow();++j)
-	{   
-	    if(j>swaptorow)//selections are not necessary stored in ascending order
-	    {
-		swapRows(j,swaptorow);
-		selectRow(swaptorow);
-		++swaptorow;	
-		
-	    }
-	    else
-	    {
-		removeselection=false;//keep selection
-	    }
-	}
-	if(removeselection)
-	{	    
-	    removeSelection(*iter);
-	}
+      }
+      else
+      {
+        removeselection=false;//keep selection
+      }
     }
-
-    //clear and rebuild rowIdMap.
-    rowIdMap.clear();
-    int id;
-    for (int i = 0; i < numRows(); i++)
-    {
-      id = text(i, 0).toInt();
-      rowIdMap.insert(id, i);
+    if(removeselection)
+    {	    
+      removeSelection(*iter);
     }
+  }
 
-    blockSignals(false);
+  //clear and rebuild rowIdMap.
+  rowIdMap.clear();
+  int id;
+  for (int i = 0; i < numRows(); i++)
+  {
+    id = text(i, 0).toInt();
+    rowIdMap.insert(id, i);
+  }
 
+  blockSignals(false);
 }
 
 void QgsAttributeTable::selectRowsWithId(const QgsFeatureIds& ids)
 {
   /*
   // if selecting rows takes too much time we can use progress dialog
-    QProgressDialog progress( tr("Updating selection..."), tr("Abort"), 0, mSelected.size(), tabledisplay);
-    int i=0;
-    for(std::set<int>::iterator iter=mSelected.begin();iter!=mSelected.end();++iter)
-    {
-      ++i;
-      progress.setValue(i);
-      qApp->processEvents();
-      if(progress.wasCanceled())
-      {
-        //deselect the remaining features if action was canceled
-        mSelected.erase(iter,--mSelected.end());
-        break;
-      }
-      selectRowWithId(*iter);//todo: avoid that the table gets repainted during each selection
-    }
+  QProgressDialog progress( tr("Updating selection..."), tr("Abort"), 0, mSelected.size(), tabledisplay);
+  int i=0;
+  for(std::set<int>::iterator iter=mSelected.begin();iter!=mSelected.end();++iter)
+  {
+  ++i;
+  progress.setValue(i);
+  qApp->processEvents();
+  if(progress.wasCanceled())
+  {
+  //deselect the remaining features if action was canceled
+  mSelected.erase(iter,--mSelected.end());
+  break;
+  }
+  selectRowWithId(*iter);//todo: avoid that the table gets repainted during each selection
+  }
   */
-  
-  
+
+
   // to select more rows at once effectively, we stop sending signals to handleChangedSelections()
   // otherwise it will repaint map everytime row is selected
-  
+
   QObject::disconnect(this, SIGNAL(selectionChanged()), this, SLOT(handleChangedSelections()));
-    
+
   clearSelection(true); 
   QgsFeatureIds::const_iterator it;
   for (it = ids.begin(); it != ids.end(); it++)
   {
     selectRowWithId(*it);
   }
-  
+
   QObject::connect(this, SIGNAL(selectionChanged()), this, SLOT(handleChangedSelections()));
   emit repaintRequested();
 }
@@ -700,18 +708,18 @@ void QgsAttributeTable::selectRowsWithId(const QgsFeatureIds& ids)
 void QgsAttributeTable::showRowsWithId(const QgsFeatureIds& ids)
 {
   setUpdatesEnabled(false);
-  
+
   // hide all rows first
   for (int i = 0; i < numRows(); i++)
     hideRow(i);
-  
+
   // show only matching rows
   QgsFeatureIds::const_iterator it;
   for (it = ids.begin(); it != ids.end(); it++)
   {
     showRow(rowIdMap[*it]);
   }
-  
+
   clearSelection(); // deselect all
   setUpdatesEnabled(true);
   repaintContents();
@@ -726,18 +734,18 @@ void QgsAttributeTable::showAllRows()
 void QgsAttributeTable::rowClicked(int row)
 {
   if(checkSelectionChanges())//only repaint the canvas if the selection has changed
-    {
-      emit repaintRequested();
-    }
+  {
+    emit repaintRequested();
+  }
 }
 
 void QgsAttributeTable::contentsMouseReleaseEvent(QMouseEvent* e)
 {
   Q3Table::contentsMouseReleaseEvent(e);
   if(checkSelectionChanges())//only repaint the canvas if the selection has changed
-    {
-      emit repaintRequested();
-    }
+  {
+    emit repaintRequested();
+  }
 }
 
 bool QgsAttributeTable::checkSelectionChanges()
@@ -746,17 +754,17 @@ bool QgsAttributeTable::checkSelectionChanges()
   Q3TableSelection cselection;
   cselection = selection(currentSelection());
   for (int index = cselection.topRow(); index <= cselection.bottomRow(); index++)
-    {
-      theCurrentSelection.insert(index);
-    }
+  {
+    theCurrentSelection.insert(index);
+  }
 
   if(theCurrentSelection == mLastSelectedRows)
-    {
-      return false;
-    }
+  {
+    return false;
+  }
   else
-    {
-      mLastSelectedRows = theCurrentSelection;
-      return true;
-    }
+  {
+    mLastSelectedRows = theCurrentSelection;
+    return true;
+  }
 }
