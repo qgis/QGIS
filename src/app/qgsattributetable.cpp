@@ -441,6 +441,10 @@ bool QgsAttributeTable::commitChanges(QgsVectorLayer* layer)
       {
         // add new attributes beforehand, so attribute changes can be applied
         isSuccessful = layer->commitAttributeChanges(QgsAttributeIds(), mAddedAttributes, QgsChangedAttributesMap());
+
+        if(isSuccessful)
+          // forget added attributes on successful addition
+          mAddedAttributes.clear();
       }
 
       if(isSuccessful)
