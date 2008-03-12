@@ -63,6 +63,9 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     /**Returns count of vertices in all lists of mPoint*/
     int numberOfVertices() const;
 
+    /**Return vertex*/
+    const QgsPoint *getPoint(int i, int j=0) const;
+
   protected:
     virtual void paint(QPainter* p);
     
