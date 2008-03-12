@@ -73,8 +73,12 @@ class QgsAttributeTableDisplay:public QDialog, private Ui::QgsAttributeTableBase
     void searchShowResultsChanged(int item);
     void on_btnHelp_clicked();
 
+  public slots:
+    void changeFeatureAttribute(int row, int column);
+
   signals:
     void deleted();
+
   private:
     /** Set the icon theme for this dialog */
     void setTheme();
