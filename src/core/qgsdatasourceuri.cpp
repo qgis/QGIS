@@ -223,7 +223,7 @@ QString QgsDataSourceURI::getValue(const QString &uri, int &i)
 
 QString QgsDataSourceURI::connInfo() const
 {
-  QString connInfo = "dbname="+mDatabase;
+  QString connInfo = "dbname='"+mDatabase+"'";
 
   if( mHost != "" )
   {
@@ -234,7 +234,7 @@ QString QgsDataSourceURI::connInfo() const
 
   if( mUsername != "" )
   {
-    connInfo += " user=" + mUsername;
+    connInfo += " user='" + mUsername + "'";	//needs to be escaped
 
     if( mPassword != "" )
     {
