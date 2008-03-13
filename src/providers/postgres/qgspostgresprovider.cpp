@@ -1693,7 +1693,7 @@ QVariant QgsPostgresProvider::getDefaultValue(int fieldId)
       " AND table_name = " + quotedValue(mTableName) +
       " AND column_name = " + quotedValue(fieldName) );
 
-  QVariant defaultValue = QString::null;
+  QVariant defaultValue(QString::null);
 
   PGresult* result = PQexec(connection, sql.toUtf8());
 
