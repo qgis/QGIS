@@ -39,6 +39,9 @@ class QgsRubberBand: QgsMapCanvasItem
     /**Returns count of vertices in all lists of mPoint*/
     int numberOfVertices() const;
 
+    /**Return vertex*/
+    const QgsPoint *getPoint(int i, int j=0) const;
+
   protected:
     virtual void paint(QPainter* p);
     
@@ -46,7 +49,3 @@ class QgsRubberBand: QgsMapCanvasItem
     void updateRect();
 
 };
-
-
-
-
