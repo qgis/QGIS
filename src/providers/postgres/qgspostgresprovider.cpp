@@ -207,7 +207,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
   // Set the postgresql message level so that we don't get the
   // 'there is no transaction in progress' warning.
 #ifndef QGISDEBUG
-  PQexec(connection, QString("set client_min_messages to error").toUtf8());
+  PQexecNR(connection, QString("set client_min_messages to error").toUtf8());
 #endif
 
   // Kick off the long running threads
@@ -369,7 +369,7 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
 
         PQclear(queryResult);
         if (ready)
-          PQexec(connection, QString("end work").toUtf8());
+          PQexecNR(connection, QString("end work").toUtf8());
         ready = false;
         return false;
       }
@@ -393,17 +393,29 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
         for(; name_it != mFetchAttributeNames.end(); ++name_it, ++index_it)
         {
           QString val;
+
           if( (*name_it) == primaryKey)
           {
             val = QString::number(oid);
           }
           else
           {
-            val = QString::fromUtf8(PQgetvalue(queryResult, row, PQfnumber(queryResult,quotedIdentifier(*name_it).toUtf8())));
+            int fn = PQfnumber(queryResult,quotedIdentifier(*name_it).toUtf8());
+
+            if( !PQgetisnull(queryResult, row, fn) )
+              val = QString::fromUtf8(PQgetvalue(queryResult, row, fn));
+            else
+              val = QString::null;
           }
 
-          switch (attributeFields[*index_it].type())
+          if( val.isNull() )
           {
+            mFeatureQueue.back().addAttribute(*index_it, val);
+          }
+          else
+          {
+            switch (attributeFields[*index_it].type())
+            {
             case QVariant::LongLong:
               mFeatureQueue.back().addAttribute(*index_it, val.toLongLong());
               break;
@@ -418,6 +430,7 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
               break;
             default:
               assert(0 && "unsupported field type");
+            }
           }
         }
 
@@ -559,11 +572,11 @@ void QgsPostgresProvider::select(QgsAttributeList fetchAttributes,
 
   // set up the cursor
   if(ready){
-    PQexec(connection, QString("end work").toUtf8());
+    PQexecNR(connection, QString("end work").toUtf8());
   }
-  PQexec(connection,QString("begin work").toUtf8());
+  PQexecNR(connection,QString("begin work").toUtf8());
   ready = true;
-  PQexec(connection, declare.toUtf8());
+  PQexecNR(connection, declare.toUtf8());
 
   while(!mFeatureQueue.empty())
     {
@@ -614,10 +627,10 @@ bool QgsPostgresProvider::getFeatureAtId(int featureId,
 
   QgsDebugMsg("Selecting feature using: " + sql);
 
-  PQexec(connection,QString("begin work").toUtf8());
+  PQexecNR(connection,QString("begin work").toUtf8());
 
   // execute query
-  PQexec(connection, sql.toUtf8());
+  PQexecNR(connection, sql.toUtf8());
 
   PGresult *res = PQexec(connection, QString("fetch forward 1 from qgisfid").toUtf8());
 
@@ -625,7 +638,7 @@ bool QgsPostgresProvider::getFeatureAtId(int featureId,
   if (rows == 0)
   {
     PQclear(res);
-    PQexec(connection, QString("end work").toUtf8());
+    PQexecNR(connection, QString("end work").toUtf8());
     QgsDebugMsg("feature " + QString::number(featureId) + " not found");
     return FALSE;
   }
@@ -642,17 +655,29 @@ bool QgsPostgresProvider::getFeatureAtId(int featureId,
   for(namesIt = attributeNames.begin(); namesIt != attributeNames.end(); ++namesIt, ++it)
   {
     QString val;
+
     if( (*namesIt) == primaryKey)
     {
       val = QString::number(oid);
     }
     else
     {
-      val = QString::fromUtf8(PQgetvalue(res, 0, PQfnumber(res,quotedIdentifier(*namesIt).toUtf8())));
+      int fn = PQfnumber(res,quotedIdentifier(*namesIt).toUtf8());
+
+      if( PQgetisnull(res, 0, fn) )
+        val = QString::fromUtf8(PQgetvalue(res, 0, fn));
+      else
+        val = QString::null;
     }
 
-    switch (attributeFields[*it].type())
+    if( val.isNull() )
     {
+      feature.addAttribute(*it, val);
+    }
+    else
+    {
+      switch (attributeFields[*it].type())
+      {
       case QVariant::LongLong:
         feature.addAttribute(*it, val.toLongLong());
         break;
@@ -667,6 +692,7 @@ bool QgsPostgresProvider::getFeatureAtId(int featureId,
         break;
       default:
         assert(0 && "unsupported field type");
+      }
     }
   }
 
@@ -684,7 +710,7 @@ bool QgsPostgresProvider::getFeatureAtId(int featureId,
   }
 
   PQclear(res);
-  PQexec(connection, QString("end work").toUtf8());
+  PQexecNR(connection, QString("end work").toUtf8());
 
   return TRUE;
 }
@@ -745,7 +771,7 @@ QString QgsPostgresProvider::dataComment() const
 void QgsPostgresProvider::reset()
 {
   QString move = "move 0 in qgisf"; //move cursor to first record
-  PQexec(connection, move.toUtf8());
+  PQexecNR(connection, move.toUtf8());
   mFeatureQueue.empty();
   loadFields();
 }
@@ -1660,19 +1686,21 @@ QVariant QgsPostgresProvider::getDefaultValue(int fieldId)
 
   QString fieldName = attributeFields[fieldId].name();
 
-  QString sql("SELECT column_default FROM "
-      "information_schema.columns WHERE "
-      "column_default IS NOT NULL AND "
-      "table_schema = '" + mSchemaName + "' AND "
-      "table_name = '" + mTableName + "' AND "
-      "column_name = '" + fieldName + "'");
+  QString sql("SELECT column_default FROM"
+      " information_schema.columns WHERE"
+      " column_default IS NOT NULL"
+      " AND table_schema = " + quotedValue(mSchemaName) +
+      " AND table_name = " + quotedValue(mTableName) +
+      " AND column_name = " + quotedValue(fieldName) );
 
-  QString defaultValue("");
+  QVariant defaultValue = QString::null;
 
   PGresult* result = PQexec(connection, sql.toUtf8());
 
-  if (PQntuples(result) == 1)
+  if (PQntuples(result)==1 && !PQgetisnull(result, 0, 0) )
     defaultValue = QString::fromUtf8(PQgetvalue(result, 0, 0));
+
+  QgsDebugMsg( QString("defaultValue for %1 is NULL: %2").arg(fieldId).arg( defaultValue.isNull() ) );
 
   PQclear(result);
 
@@ -1735,14 +1763,20 @@ QString QgsPostgresProvider::postgisVersion(PGconn *connection)
 
 QByteArray QgsPostgresProvider::paramValue(QString fieldValue, const QString &defaultValue) const
 {
-  if( fieldValue=="NULL" )
-    return 0;
+  if( fieldValue.isNull() )
+    return QByteArray(0);  // QByteArray(0).isNull() is true
 
-  if( fieldValue==defaultValue && !defaultValue.isEmpty() )
+  if( fieldValue==defaultValue && !defaultValue.isNull() )
   {
     PGresult *result = PQexec( connection, QString("select %1").arg(defaultValue).toUtf8() );
-    fieldValue = QString::fromUtf8(PQgetvalue(result,0,0));
-    PQclear(result);
+    if( PQgetisnull(result, 0, 0) ) {
+      PQclear(result);
+      return QByteArray(0);  // QByteArray(0).isNull() is true
+    } else {
+      QString val = QString::fromUtf8(PQgetvalue(result,0,0));
+      PQclear(result);
+      return val.toUtf8();
+    }
   }
 
   return fieldValue.toUtf8();
@@ -1756,7 +1790,7 @@ bool QgsPostgresProvider::addFeatures(QgsFeatureList & flist)
   bool returnvalue=true;
 
   try {
-    PQexec(connection,QString("BEGIN").toUtf8());
+    PQexecNR(connection,QString("BEGIN").toUtf8());
 
     // Prepare the INSERT statement
     QString insert = QString("INSERT INTO %1(%2,%3")
@@ -1784,10 +1818,8 @@ bool QgsPostgresProvider::addFeatures(QgsFeatureList & flist)
 
       QgsDebugMsg("Checking field against: " + fieldname);
 
-      if( fieldname.isEmpty() || fieldname==geometryColumn || fieldname==primaryKey || it->isNull() )
+      if( fieldname.isEmpty() || fieldname==geometryColumn || fieldname==primaryKey )
         continue;
-
-      QString fieldvalue = it->toString();
 
       int i;
       for(i=1; i<flist.size(); i++)
@@ -1798,7 +1830,7 @@ bool QgsPostgresProvider::addFeatures(QgsFeatureList & flist)
         if( thisit == attributevec.end() )
           break;
 
-        if( thisit->toString() != fieldvalue )
+        if( *thisit!=*it )
           break;
       }
 
@@ -1808,13 +1840,13 @@ bool QgsPostgresProvider::addFeatures(QgsFeatureList & flist)
 
       if( i==flist.size() )
       {
-        if( fieldvalue=="NULL" || (fieldvalue==defVal && !defVal.isEmpty()) )
+        if( !defVal.isNull() && *it==defVal) {
         {
-          values += "," + fieldvalue;
+          values += "," + defVal;
         }
         else
         {
-          values += "," + quotedValue(fieldvalue);
+          values += "," + quotedValue( it->toString() );
         }
       } 
       else
@@ -1831,6 +1863,8 @@ bool QgsPostgresProvider::addFeatures(QgsFeatureList & flist)
     PGresult *stmt = PQprepare(connection, "addfeatures", insert.toUtf8(), fieldId.size()+2, NULL);
     if(stmt==0 || PQresultStatus(stmt)==PGRES_FATAL_ERROR)
       throw PGException(stmt);
+
+    PQclear(stmt);
 
     int primaryKeyHighWater = maxPrimaryKeyValue();
     const char **param = new const char *[ fieldId.size()+2 ];
@@ -1853,13 +1887,15 @@ bool QgsPostgresProvider::addFeatures(QgsFeatureList & flist)
       for(int i=0; i<fieldId.size(); i++)
       {
         qparam.append( paramValue( attributevec[ fieldId[i] ].toString(), defaultValue[i] ) );
-        param[i+2] = qparam[i+2];
+        if( qparam[i+2].isNull() )
+          param[i+2] = 0;
+        else
+          param[i+2] = qparam[i+2];
       }
 
       PGresult *result = PQexecPrepared(connection, "addfeatures", fieldId.size()+2, param, NULL, NULL, 0);
       if( result==0 || PQresultStatus(result)==PGRES_FATAL_ERROR )
       {
-        PQclear(stmt);
         delete param;
         throw PGException(result);
       }
@@ -1867,13 +1903,14 @@ bool QgsPostgresProvider::addFeatures(QgsFeatureList & flist)
       PQclear(result);
     }
 
-    PQclear(stmt);
+    PQexecNR(connection,QString("COMMIT").toUtf8());
+    PQexecNR(connection,QString("DEALLOCATE addfeatures").toUtf8());
     delete param;
-
-    PQexec(connection,QString("COMMIT").toUtf8());
   } catch(PGException &e) {
     e.showErrorMessage( tr("Error while adding features") );
-    PQexec(connection,QString("ROLLBACK").toUtf8());
+    PQexecNR(connection,QString("ROLLBACK").toUtf8());
+
+    PQexecNR(connection,QString("DEALLOCATE addfeatures").toUtf8());
     returnvalue = false;
   }
 
@@ -1886,7 +1923,7 @@ bool QgsPostgresProvider::deleteFeatures(const QgsFeatureIds & id)
   bool returnvalue=true;
 
   try {
-    PQexec(connection,QString("BEGIN").toUtf8());
+    PQexecNR(connection,QString("BEGIN").toUtf8());
 
     for(QgsFeatureIds::const_iterator it=id.begin();it!=id.end();++it) {
       QString sql("DELETE FROM "+mSchemaTableName+" WHERE "+quotedIdentifier(primaryKey)+"="+QString::number(*it));
@@ -1900,10 +1937,10 @@ bool QgsPostgresProvider::deleteFeatures(const QgsFeatureIds & id)
       PQclear(result);
     }
     
-    PQexec(connection,QString("COMMIT").toUtf8());
+    PQexecNR(connection,QString("COMMIT").toUtf8());
   } catch(PGException &e) {
     e.showErrorMessage( tr("Error while deleting features") );
-    PQexec(connection,QString("ROLLBACK").toUtf8());
+    PQexecNR(connection,QString("ROLLBACK").toUtf8());
     returnvalue = false;
   }
   reset();
@@ -1915,7 +1952,7 @@ bool QgsPostgresProvider::addAttributes(const QgsNewAttributesMap & name)
   bool returnvalue=true;
 
   try {
-    PQexec(connection,QString("BEGIN").toUtf8());
+    PQexecNR(connection,QString("BEGIN").toUtf8());
 
     for(QgsNewAttributesMap::const_iterator iter=name.begin();iter!=name.end();++iter)
     {
@@ -1930,10 +1967,10 @@ bool QgsPostgresProvider::addAttributes(const QgsNewAttributesMap & name)
       PQclear(result);
     }
 
-    PQexec(connection,QString("COMMIT").toUtf8());
+    PQexecNR(connection,QString("COMMIT").toUtf8());
   } catch(PGException &e) {
     e.showErrorMessage( tr("Error while adding attributes") );
-    PQexec(connection,QString("ROLLBACK").toUtf8());
+    PQexecNR(connection,QString("ROLLBACK").toUtf8());
     returnvalue = false;
   }
 
@@ -1946,7 +1983,7 @@ bool QgsPostgresProvider::deleteAttributes(const QgsAttributeIds& ids)
   bool returnvalue=true;
 
   try {
-    PQexec(connection,QString("BEGIN").toUtf8());
+    PQexecNR(connection,QString("BEGIN").toUtf8());
 
     for(QgsAttributeIds::const_iterator iter=ids.begin();iter != ids.end();++iter)
     {
@@ -1967,10 +2004,10 @@ bool QgsPostgresProvider::deleteAttributes(const QgsAttributeIds& ids)
       attributeFields.remove(*iter);
     }
 
-    PQexec(connection,QString("COMMIT").toUtf8());
+    PQexecNR(connection,QString("COMMIT").toUtf8());
   } catch(PGException &e) {
     e.showErrorMessage( tr("Error while deleting attributes") );
-    PQexec(connection,QString("ROLLBACK").toUtf8());
+    PQexecNR(connection,QString("ROLLBACK").toUtf8());
     returnvalue = false;
   }
 
@@ -1983,7 +2020,7 @@ bool QgsPostgresProvider::changeAttributeValues(const QgsChangedAttributesMap & 
   bool returnvalue=true;
 
   try {
-    PQexec(connection,QString("BEGIN").toUtf8());
+    PQexecNR(connection,QString("BEGIN").toUtf8());
 
     // cycle through the features
     for(QgsChangedAttributesMap::const_iterator iter=attr_map.begin();iter!=attr_map.end();++iter)
@@ -2016,10 +2053,10 @@ bool QgsPostgresProvider::changeAttributeValues(const QgsChangedAttributesMap & 
       }
     }
 
-    PQexec(connection,QString("COMMIT").toUtf8());
+    PQexecNR(connection,QString("COMMIT").toUtf8());
   } catch(PGException &e) {
     e.showErrorMessage( tr("Error while changing attributes") );
-    PQexec(connection,QString("ROLLBACK").toUtf8());
+    PQexecNR(connection,QString("ROLLBACK").toUtf8());
     returnvalue = false;
   }
 
@@ -2048,7 +2085,7 @@ bool QgsPostgresProvider::changeGeometryValues(QgsGeometryMap & geometry_map)
 
   try {
     // Start the PostGIS transaction
-    PQexec(connection,QString("BEGIN").toUtf8());
+    PQexecNR(connection,QString("BEGIN").toUtf8());
 
     for(QgsGeometryMap::iterator iter  = geometry_map.begin();
       iter != geometry_map.end();
@@ -2080,10 +2117,10 @@ bool QgsPostgresProvider::changeGeometryValues(QgsGeometryMap & geometry_map)
       } // if (*iter)
     } // for each feature
 
-    PQexec(connection,QString("COMMIT").toUtf8());
+    PQexecNR(connection,QString("COMMIT").toUtf8());
   } catch(PGException &e) {
     e.showErrorMessage( tr("Error while changing attributes") );
-    PQexec(connection,QString("ROLLBACK").toUtf8());
+    PQexecNR(connection,QString("ROLLBACK").toUtf8());
     returnvalue = false;
   }
 
@@ -2364,16 +2401,16 @@ bool QgsPostgresProvider::deduceEndian()
 
   // get the same value using a binary cursor
 
-  PQexec(connection,QString("begin work").toUtf8());
+  PQexecNR(connection,QString("begin work").toUtf8());
   QString oidDeclare = "declare oidcursor binary cursor for select regclass('" + mSchemaTableName + "')::oid";
   // set up the cursor
-  PQexec(connection, oidDeclare.toUtf8());
+  PQexecNR(connection, oidDeclare.toUtf8());
   QString fetch = "fetch forward 1 from oidcursor";
 
   QgsDebugMsg("Fetching a record and attempting to get check endian-ness");
 
   PGresult *fResult = PQexec(connection, fetch.toUtf8());
-  PQexec(connection, QString("end work").toUtf8());
+  PQexecNR(connection, QString("end work").toUtf8());
   swapEndian = true;
   if(PQntuples(fResult) > 0){
     // get the oid value from the binary cursor
@@ -2548,9 +2585,30 @@ QString QgsPostgresProvider::quotedIdentifier( QString ident )
 
 QString QgsPostgresProvider::quotedValue( QString value )
 {
+  if( value.isNull() )
+    return "NULL";
+  
   // FIXME: use PQescapeStringConn
   value.replace("'", "''");
   return value.prepend("'").append("'");
+}
+
+void QgsPostgresProvider::PQexecNR(PGconn *conn, const char *query)
+{
+  PGresult *res = PQexec(conn, query);
+  if(res)
+  {
+    QgsDebugMsg( QString("Query: %1 returned %2 [%3]")
+                   .arg(query)
+                   .arg(PQresStatus(PQresultStatus(res)))
+                   .arg(PQresultErrorMessage(res))
+      );
+    PQclear(res);
+  }
+  else
+  {
+    QgsDebugMsg( QString("Query: %1 returned no result buffer").arg(query) );
+  }
 }
 
 void QgsPostgresProvider::showMessageBox(const QString& title, 

@@ -67,7 +67,11 @@ QgsAttributeDialog::~QgsAttributeDialog()
 
 QString QgsAttributeDialog::value(int row)
 {
-  return mTable->item(row,1)->text();
+  QString val = mTable->item(row,1)->text();
+  if(val=="NULL")
+    return QString::null; 
+  else
+    return mTable->item(row,1)->text();
 }
 
 bool QgsAttributeDialog::isDirty(int row)

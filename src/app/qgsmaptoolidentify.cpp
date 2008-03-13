@@ -303,7 +303,7 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
 	      {
 		featureNode->setText(1, it->toString());
 	      }
-	    mResults->addAttribute(featureNode, fields[it.key()].name(), it->toString());
+	    mResults->addAttribute(featureNode, fields[it.key()].name(), it->isNull() ? "NULL" : it->toString());
 	  }
 	
 	// Calculate derived attributes and insert:
