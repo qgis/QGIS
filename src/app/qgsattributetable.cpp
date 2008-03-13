@@ -461,7 +461,10 @@ bool QgsAttributeTable::commitChanges(QgsVectorLayer* layer)
             fieldIndex = provider->indexFromFieldName(record_it.key());
             if(fieldIndex != -1)
             {
-              newAttMap.insert(fieldIndex, record_it.value());
+              if( record_it.value()=="NULL" )
+                newAttMap.insert(fieldIndex, QVariant(QString::null) );
+              else
+                newAttMap.insert(fieldIndex, record_it.value());
             }
             else
             {
@@ -572,7 +575,7 @@ void QgsAttributeTable::putFeatureInTable(int row, QgsFeature& fet)
   for (it = attr.begin(); it != attr.end(); ++it)
   {
     // get the field values
-    setText(row, h++, it->toString());
+    setText(row, h++, it->isNull() ? "NULL" : it->toString());
   }
 }
 
