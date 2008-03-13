@@ -1840,7 +1840,7 @@ bool QgsPostgresProvider::addFeatures(QgsFeatureList & flist)
 
       if( i==flist.size() )
       {
-        if( !defVal.isNull() && *it==defVal) {
+        if( !defVal.isNull() && *it==defVal)
         {
           values += "," + defVal;
         }
