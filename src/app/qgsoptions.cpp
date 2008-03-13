@@ -163,6 +163,13 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   myGreen = settings.value("/qgis/digitizing/line_color_green", 0).toInt();
   myBlue = settings.value("/qgis/digitizing/line_color_blue", 0).toInt();
   mLineColourToolButton->setColor(QColor(myRed, myGreen, myBlue));
+
+  //default snap mode
+  mDefaultSnapModeComboBox->insertItem(0, tr("to vertex"));
+  mDefaultSnapModeComboBox->insertItem(1, tr("to segment"));
+  mDefaultSnapModeComboBox->insertItem(2, tr("to vertex and segment"));
+  QString defaultSnapString = settings.value("/qgis/digitizing/default_snap_mode", "to vertex").toString();
+  mDefaultSnapModeComboBox->setCurrentIndex(mDefaultSnapModeComboBox->findText(tr(defaultSnapString)));
   mDefaultSnappingToleranceSpinBox->setValue(settings.value("/qgis/digitizing/default_snapping_tolerance", 0).toDouble());
   mSearchRadiusVertexEditSpinBox->setValue(settings.value("/qgis/digitizing/search_radius_vertex_edit", 10).toDouble());
 }
@@ -287,6 +294,22 @@ void QgsOptions::saveOptions()
   settings.setValue("/qgis/digitizing/line_color_red", digitizingColor.red());
   settings.setValue("/qgis/digitizing/line_color_green", digitizingColor.green());
   settings.setValue("/qgis/digitizing/line_color_blue", digitizingColor.blue());
+
+  //default snap mode
+  QString defaultSnapModeString;
+  if(mDefaultSnapModeComboBox->currentText() == tr("to vertex"))
+    {
+      defaultSnapModeString = "to vertex";
+    }
+  else if(mDefaultSnapModeComboBox->currentText() == tr("to segment"))
+    {
+      defaultSnapModeString = "to segment";
+    }
+  else if(mDefaultSnapModeComboBox->currentText() == tr("to vertex and segment"))
+    {
+      defaultSnapModeString = "to vertex and segment";
+    }
+  settings.setValue("/qgis/digitizing/default_snap_mode", defaultSnapModeString);
   settings.setValue("/qgis/digitizing/default_snapping_tolerance", mDefaultSnappingToleranceSpinBox->value());
   settings.setValue("/qgis/digitizing/search_radius_vertex_edit", mSearchRadiusVertexEditSpinBox->value());
   //

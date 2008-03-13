@@ -227,8 +227,24 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers(const QPoint& p, QList<QgsSnappi
 	    }
 	  
 	  vectorLayerList.push_back(currentVectorLayer);
-	  snapTo.push_back(QgsSnapper::SNAP_TO_VERTEX);
 	  QSettings settings;
+
+	  //default snap mode
+	  QString defaultSnapString = settings.value("/qgis/digitizing/default_snap_mode", "to vertex").toString();
+	  if(defaultSnapString == "to segment")
+	    {
+	      snapTo.push_back(QgsSnapper::SNAP_TO_SEGMENT);
+	    }
+	  else if(defaultSnapString == "to vertex and segment")
+	    {
+	      snapTo.push_back(QgsSnapper::SNAP_TO_VERTEX_AND_SEGMENT);
+	    }
+	  else
+	    {
+	      snapTo.push_back(QgsSnapper::SNAP_TO_VERTEX);
+	    }
+	  
+	  //default snapping tolerance
 	  toleranceDoubleList.push_back(settings.value("/qgis/digitizing/default_snapping_tolerance", 0).toDouble());
 	}
 
