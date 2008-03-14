@@ -261,3 +261,11 @@ void QgsDelimitedTextPluginGui::help()
 {
   qI->openURL("plugins/delimited_text/index.html",true);
 }
+
+void QgsDelimitedTextPluginGui::on_txtDelimiter_textChanged(const QString & text)
+{
+  if(!text.isEmpty())
+    {
+      pbnParse->setEnabled(true);
+    }
+}
