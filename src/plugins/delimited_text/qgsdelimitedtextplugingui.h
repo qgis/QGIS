@@ -45,6 +45,7 @@ class QgsDelimitedTextPluginGui : public QDialog, private Ui::QgsDelimitedTextPl
     void on_buttonBox_rejected();
     void on_buttonBox_helpRequested();
     void on_btnBrowseForFile_clicked();
+    void on_txtDelimiter_textChanged(const QString & text);
     void pbnParse_clicked();
 
   signals:
