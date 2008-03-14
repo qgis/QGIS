@@ -23,7 +23,7 @@
 #include <QString>
 #include <QStringList>
 #include <QObject>
-#include <ogrsf_frmts.h>
+#include <ogr_api.h>
 
 class QProgressDialog;
 class QTextCodec;
@@ -62,8 +62,8 @@ class QgsShapeFile : public QObject
 
   private:
   QString table_name;
-  OGRDataSource *ogrDataSource;
-  OGRLayer * ogrLayer;
+  OGRDataSourceH ogrDataSource;
+  OGRLayerH ogrLayer;
   bool import_canceled;
   bool valid;
   //! Flag to indicate the file contains multiple geometry types

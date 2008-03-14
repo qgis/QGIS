@@ -31,7 +31,8 @@
 
 #include <cassert>
 
-#include <ogrsf_frmts.h>
+#include <ogr_api.h>
+#include <ogr_srs_api.h>
 
 
 QgsVectorFileWriter::QgsVectorFileWriter(const QString& shapefileName,
@@ -45,11 +46,9 @@ QgsVectorFileWriter::QgsVectorFileWriter(const QString& shapefileName,
   QString driverName = "ESRI Shapefile";
   
   // find driver in OGR
-  OGRSFDriver *poDriver;
+  OGRSFDriverH poDriver;
   OGRRegisterAll();
-  poDriver =
-      OGRSFDriverRegistrar::GetRegistrar()->
-      GetDriverByName(driverName.toLocal8Bit().data());
+  poDriver = OGRGetDriverByName(driverName.toLocal8Bit().data());
   
   if (poDriver == NULL)
   {
@@ -58,7 +57,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(const QString& shapefileName,
   }
 
   // create the data source
-  mDS = poDriver->CreateDataSource(shapefileName, NULL);
+  mDS = OGR_Dr_CreateDataSource(poDriver,shapefileName, NULL);
   if (mDS == NULL)
   {
     mError = ErrCreateDataSource;
@@ -76,20 +75,22 @@ QgsVectorFileWriter::QgsVectorFileWriter(const QString& shapefileName,
   }
   
   // consider spatial reference system of the layer
-  OGRSpatialReference* ogrRef = NULL;
+  OGRSpatialReferenceH ogrRef = NULL;
   if (srs)
   {
     QString srsWkt = srs->toWkt();
-    ogrRef = new OGRSpatialReference(srsWkt.toLocal8Bit().data());
+    ogrRef = OSRNewSpatialReference(srsWkt.toLocal8Bit().data());
   }
  
   // datasource created, now create the output layer
   QString layerName = shapefileName.left(shapefileName.find(".shp"));
   OGRwkbGeometryType wkbType = static_cast<OGRwkbGeometryType>(geometryType);
-  mLayer = mDS->CreateLayer(QFile::encodeName(layerName).data(), ogrRef, wkbType, NULL);
+  mLayer = OGR_DS_CreateLayer(mDS,QFile::encodeName(layerName).data(), ogrRef, wkbType, NULL);
   
   if (srs)
-    delete ogrRef;
+  {
+    OSRDestroySpatialReference( ogrRef );
+  }
   
   if (mLayer == NULL)
   {
@@ -128,15 +129,15 @@ QgsVectorFileWriter::QgsVectorFileWriter(const QString& shapefileName,
     }
 
     // create field definition
-    OGRFieldDefn fld(mCodec->fromUnicode(attrField.name()), ogrType);
-    fld.SetWidth(attrField.length());
-    fld.SetPrecision(attrField.precision());
+    OGRFieldDefnH fld = OGR_Fld_Create(mCodec->fromUnicode(attrField.name()), ogrType);
+    OGR_Fld_SetWidth(fld,attrField.length());
+    OGR_Fld_SetPrecision(fld,attrField.precision());
 
     // create the field
     QgsDebugMsg("creating field " + attrField.name() +
                 " type " + QString(QVariant::typeToName(attrField.type())) +
                 " width length " + QString::number(attrField.length()));
-    if (mLayer->CreateField(&fld) != OGRERR_NONE)
+    if (OGR_L_CreateField(mLayer,fld,TRUE) != OGRERR_NONE)
     {
       QgsDebugMsg("error creating field " + attrField.name());
     }
@@ -149,33 +150,9 @@ QgsVectorFileWriter::QgsVectorFileWriter(const QString& shapefileName,
   mGeom = createEmptyGeometry(mWkbType);
 }
 
-OGRGeometry* QgsVectorFileWriter::createEmptyGeometry(QGis::WKBTYPE wkbType)
+OGRGeometryH QgsVectorFileWriter::createEmptyGeometry(QGis::WKBTYPE wkbType)
 {
-  // create instance of OGR geometry (will be used to import from WKB)
-  switch (wkbType)
-  {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-      return new OGRPoint;
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-      return new OGRLineString;
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
-      return new OGRPolygon;
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
-      return new OGRMultiPoint;
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
-      return new OGRMultiLineString;
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
-      return new OGRMultiPolygon;
-    default:
-      assert(0 && "invalid WKB type");
-      return NULL;
-  }
+  return OGR_G_CreateGeometry( (OGRwkbGeometryType) wkbType );
 }
 
 
@@ -192,7 +169,7 @@ bool QgsVectorFileWriter::addFeature(QgsFeature& feature)
   QgsAttributeMap::const_iterator it;
 
     // create the feature
-  OGRFeature *poFeature = new OGRFeature(mLayer->GetLayerDefn());
+  OGRFeatureH poFeature = OGR_F_Create(OGR_L_GetLayerDefn(mLayer));
 
     // attribute handling
   const QgsAttributeMap& attributes = feature.attributeMap();
@@ -209,17 +186,18 @@ bool QgsVectorFileWriter::addFeature(QgsFeature& feature)
     QString attrName = mFields[it.key()].name();
     QByteArray encAttrName = mCodec->fromUnicode(attrName);
     const QVariant& attrValue = it.value();
+    int ogrField = OGR_F_GetFieldIndex( poFeature, encAttrName.data() );
 
     switch (attrValue.type())
     {
       case QVariant::Int:
-        poFeature->SetField(encAttrName.data(), attrValue.toInt());
+        OGR_F_SetFieldInteger(poFeature, ogrField, attrValue.toInt());
         break;
       case QVariant::Double:
-        poFeature->SetField(encAttrName.data(), attrValue.toDouble());
+        OGR_F_SetFieldDouble(poFeature, ogrField, attrValue.toDouble());
         break;
       case QVariant::String:
-        poFeature->SetField(encAttrName.data(), mCodec->fromUnicode(attrValue.toString()).data());
+        OGR_F_SetFieldString(poFeature, ogrField, mCodec->fromUnicode(attrValue.toString()).data());
         break;
       default:
         //assert(0 && "invalid variant type");
@@ -241,42 +219,42 @@ bool QgsVectorFileWriter::addFeature(QgsFeature& feature)
     // Btw. OGRGeometry must be exactly of the type of the geometry which it will receive
     // i.e. Polygons can't be imported to OGRMultiPolygon
     
-    OGRGeometry* mGeom2 = createEmptyGeometry(geom->wkbType());
+    OGRGeometryH mGeom2 = createEmptyGeometry(geom->wkbType());
     
-    OGRErr err = mGeom2->importFromWkb(geom->wkbBuffer(), geom->wkbSize());
+    OGRErr err = OGR_G_ImportFromWkb(mGeom2,geom->wkbBuffer(), geom->wkbSize());
     if (err != OGRERR_NONE)
     {
       QgsDebugMsg("Failed to import geometry from WKB: " + QString::number(err));
-      OGRFeature::DestroyFeature(poFeature);
+      OGR_F_Destroy( poFeature );
       return false;
     }
     
     // pass ownership to geometry
-    poFeature->SetGeometryDirectly(mGeom2);
+    OGR_F_SetGeometryDirectly(poFeature,mGeom2);
   }
   else
   {
-    OGRErr err = mGeom->importFromWkb(geom->wkbBuffer(), geom->wkbSize());
+    OGRErr err = OGR_G_ImportFromWkb(mGeom,geom->wkbBuffer(), geom->wkbSize());
     if (err != OGRERR_NONE)
     {
       QgsDebugMsg("Failed to import geometry from WKB: " + QString::number(err));
-      OGRFeature::DestroyFeature(poFeature);
+      OGR_F_Destroy( poFeature );
       return false;
     }
     
     // set geometry (ownership is not passed to OGR)
-    poFeature->SetGeometry(mGeom);
+    OGR_F_SetGeometry(poFeature,mGeom);
   }
     
   // put the created feature to layer
-  if (mLayer->CreateFeature(poFeature) != OGRERR_NONE)
+  if (OGR_L_CreateFeature(mLayer,poFeature) != OGRERR_NONE)
   {
     QgsDebugMsg("Failed to create feature in shapefile");
-    OGRFeature::DestroyFeature(poFeature);
+    OGR_F_Destroy( poFeature );
     return false;
   }
 
-  OGRFeature::DestroyFeature(poFeature);
+  OGR_F_Destroy( poFeature );
   
   return true;
 }
@@ -284,10 +262,14 @@ bool QgsVectorFileWriter::addFeature(QgsFeature& feature)
 QgsVectorFileWriter::~QgsVectorFileWriter()
 {
   if (mGeom)
-    delete mGeom;
+  {
+    OGR_G_DestroyGeometry( mGeom );
+  }
   
   if (mDS)
-    OGRDataSource::DestroyDataSource(mDS);
+  {
+    OGR_DS_Destroy( mDS );
+  }
 }
 
 

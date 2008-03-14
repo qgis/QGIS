@@ -22,7 +22,7 @@
 #include <qstring.h>
 //gdal and ogr includes
 #include <ogr_api.h>
-#include <ogr_spatialref.h>
+#include <ogr_srs_api.h>
 #include <cpl_error.h>
 class ProjectionCsHandlingTest : public CppUnit::TestCase { 
   public: 
@@ -94,9 +94,10 @@ class ProjectionCsHandlingTest : public CppUnit::TestCase {
     void testProjImportWkt() {
       // create a spatial reference system object
       std::cout << "\n\nCreating and OGRSpatialReference object from WKT" << std::endl; 
-      OGRSpatialReference myInputSpatialRefSys;
+      OGRSpatialReferenceH myInputSpatialRefSys = OSRNewSpatialReference(NULL);
       char *pWkt = (char*)wkt.ascii();
-      CPPUNIT_ASSERT(myInputSpatialRefSys.importFromWkt(&pWkt)== OGRERR_NONE);
+      CPPUNIT_ASSERT(OSRImportFromWkt(myInputSpatialRefSys,&pWkt)== OGRERR_NONE);
+      OSRDestroySpatialReference( myInputSpatialRefSys );
     }
     //
     // Test fetch of proj4 parameters from an OGRSpatialReference object
@@ -106,7 +107,7 @@ class ProjectionCsHandlingTest : public CppUnit::TestCase {
     {
       std::cout << "\n\nGetting proj4 parameters from OGRSpatialReference object" << std::endl; 
       // set up the spatial ref
-      OGRSpatialReference myInputSpatialRefSys;
+      OGRSpatialReferenceH myInputSpatialRefSys;
       char *pWkt = (char*)wkt.ascii();
       CPPUNIT_ASSERT(myInputSpatialRefSys.importFromWkt(&pWkt)== OGRERR_NONE);
       // get the proj4 for the projection

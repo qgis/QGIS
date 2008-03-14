@@ -19,9 +19,7 @@
 #include <cpl_conv.h>
 #include <cpl_string.h>
 #include <gdal.h>
-#include <gdal_priv.h>
 #include <gdalwarper.h>
-#include <gdal_frmts.h>
 
 #include <QFile>
 
@@ -32,12 +30,11 @@ void QgsImageWarper::warp(const QString& input, const QString& output,
 			  ResamplingMethod resampling, bool useZeroAsTrans, const QString& compression) {
   // Open input file
   GDALAllRegister();
-  GDALDataset* hSrcDS = static_cast<GDALDataset*>(GDALOpen(QFile::encodeName(input).constData(), 
-							   GA_ReadOnly));
+  GDALDatasetH hSrcDS = GDALOpen(QFile::encodeName(input).constData(),GA_ReadOnly);
   // Setup warp options. 
   GDALWarpOptions *psWarpOptions = GDALCreateWarpOptions();
   psWarpOptions->hSrcDS = hSrcDS;
-  psWarpOptions->nBandCount = hSrcDS->GetRasterCount();
+  psWarpOptions->nBandCount = GDALGetRasterCount(hSrcDS);
   psWarpOptions->panSrcBands = 
     (int *) CPLMalloc(sizeof(int) * psWarpOptions->nBandCount);
   psWarpOptions->panDstBands = 
@@ -52,8 +49,8 @@ void QgsImageWarper::warp(const QString& input, const QString& output,
   
   // check the bounds for the warped raster
   // order: upper right, lower right, lower left (y points down)
-  double x[] = { hSrcDS->GetRasterXSize(), hSrcDS->GetRasterXSize(), 0 };
-  double y[] = { 0, hSrcDS->GetRasterYSize(), hSrcDS->GetRasterYSize() };
+  double x[] = { GDALGetRasterXSize(hSrcDS), GDALGetRasterXSize(hSrcDS), 0 };
+  double y[] = { 0, GDALGetRasterYSize(hSrcDS), GDALGetRasterYSize(hSrcDS) };
   int s[] = { 0, 0, 0 };
   TransformParameters tParam = { mAngle, 0, 0 };
   transform(&tParam, FALSE, 3, x, y, NULL, s);
@@ -73,32 +70,37 @@ void QgsImageWarper::warp(const QString& input, const QString& output,
   psWarpOptions->pTransformerArg = &tParam;
 
   // create the output file
-  GDALDriver* driver = static_cast<GDALDriver*>(GDALGetDriverByName("GTiff"));
+  GDALDriverH driver = GDALGetDriverByName("GTiff");
   char **papszOptions = NULL;
   papszOptions = CSLSetNameValue(papszOptions, "INIT_DEST", "NO_DATA");
   papszOptions = CSLSetNameValue(papszOptions, "COMPRESS", compression);
-  GDALDataset* hDstDS = 
-    driver->Create(QFile::encodeName(output).constData(), newXSize, newYSize, 
-		   hSrcDS->GetRasterCount(),
-		   hSrcDS->GetRasterBand(1)->GetRasterDataType(),
-		   papszOptions);
-  for (int i = 0; i < hSrcDS->GetRasterCount(); ++i) 
+  GDALDatasetH hDstDS = 
+      GDALCreate(driver,
+                 QFile::encodeName(output).constData(), newXSize, newYSize, 
+                 GDALGetRasterCount(hSrcDS),
+                 GDALGetRasterDataType(GDALGetRasterBand(hSrcDS,1)),
+                 papszOptions );
+ 
+  for( int i = 0; i < GDALGetRasterCount(hSrcDS); ++i )
+  {
+    GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS,i+1);
+    GDALRasterBandH hDstBand = GDALGetRasterBand(hDstDS,i+1);
+    GDALColorTableH cTable = GDALGetRasterColorTable(hSrcDS);
+    if (cTable)
     {
-      GDALColorTable* cTable = hSrcDS->GetRasterBand(i+1)->GetColorTable();
-      if (cTable)
-	{
-	  hDstDS->GetRasterBand(i+1)->SetColorTable(cTable);
-	}
-      double noData = hSrcDS->GetRasterBand(i+1)->GetNoDataValue();
-      if (noData == -1e10 && useZeroAsTrans) 
-	{
-	  hDstDS->GetRasterBand(i+1)->SetNoDataValue(0);
-	}
-      else
-	{
-	  hDstDS->GetRasterBand(i+1)->SetNoDataValue(noData);
-	}
+      GDALSetRasterColorTable(hDstDS,cTable);
     }
+
+    double noData = GDALGetRasterNoDataValue(hSrcBand,NULL);
+    if (noData == -1e10 && useZeroAsTrans) 
+    {
+        GDALSetRasterNoDataValue(hDstBand,0);
+    }
+    else
+    {
+        GDALSetRasterNoDataValue(hDstBand,noData);
+    }
+  }
   psWarpOptions->hDstDS = hDstDS;
 
   // Initialize and execute the warp operation. 
@@ -107,8 +109,9 @@ void QgsImageWarper::warp(const QString& input, const QString& output,
   oOperation.ChunkAndWarpImage(0, 0, GDALGetRasterXSize(hDstDS), 
 			       GDALGetRasterYSize(hDstDS));
   GDALDestroyWarpOptions(psWarpOptions);
-  delete hSrcDS;
-  delete hDstDS;
+
+  GDALClose( hSrcDS );
+  GDALClose( hDstDS );
 }
 
 

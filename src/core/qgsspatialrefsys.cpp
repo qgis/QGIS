@@ -33,8 +33,7 @@
 #include <sqlite3.h>
 
 //gdal and ogr includes (needed for == operator)
-#include <ogr_api.h>
-#include <ogr_spatialref.h>
+#include <ogr_srs_api.h>
 #include <cpl_error.h>
 #include <cpl_conv.h>
 
@@ -164,8 +163,12 @@ void QgsSpatialRefSys::validate()
     //this is really ugly but we need to get a QString to a char**
     const char *mySourceCharArrayPointer = mProj4String.latin1();
     //create the sr and populate it from a wkt proj definition
-    OGRSpatialReference myOgrSpatialRef;
-    OGRErr myInputResult = myOgrSpatialRef.importFromProj4( mySourceCharArrayPointer );
+    OGRSpatialReferenceH myOgrSpatialRef = OSRNewSpatialReference(NULL);
+    
+    OGRErr myInputResult = 
+        OSRImportFromProj4( myOgrSpatialRef, mySourceCharArrayPointer );
+
+    OSRDestroySpatialReference( myOgrSpatialRef );
 
     if (myInputResult==OGRERR_NONE)
     {
@@ -187,8 +190,10 @@ void QgsSpatialRefSys::validate()
   //this is really ugly but we need to get a QString to a char**
   const char *mySourceCharArrayPointer = mProj4String.latin1();
   //create the sr and populate it from a wkt proj definition
-  OGRSpatialReference myOgrSpatialRef;
-  OGRErr myInputResult = myOgrSpatialRef.importFromProj4( mySourceCharArrayPointer );
+  OGRSpatialReferenceH myOgrSpatialRef = OSRNewSpatialReference(NULL);
+  OGRErr myInputResult = OSRImportFromProj4( myOgrSpatialRef, mySourceCharArrayPointer );
+
+  OSRDestroySpatialReference( myOgrSpatialRef );
 
   if (! myInputResult==OGRERR_NONE)
   {
@@ -290,9 +295,9 @@ bool QgsSpatialRefSys::createFromWkt(QString theWkt)
      #define OGRERR_UNSUPPORTED_SRS     7 
   */
 
-  OGRSpatialReference myOgrSpatialRef;
+  OGRSpatialReferenceH myOgrSpatialRef = OSRNewSpatialReference( NULL );
 
-  OGRErr myInputResult = myOgrSpatialRef.importFromWkt( &pWkt );
+  OGRErr myInputResult = OSRImportFromWkt( myOgrSpatialRef, &pWkt );
   if (myInputResult != OGRERR_NONE)
   {
     QgsDebugMsg("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
@@ -301,15 +306,19 @@ bool QgsSpatialRefSys::createFromWkt(QString theWkt)
     QgsDebugMsg("INPUT: " + theWkt);
     QgsDebugMsg("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
     mIsValidFlag = false;
+    OSRDestroySpatialReference( myOgrSpatialRef );
     return false;
   }
 
 
   // always morph from esri as it doesn't hurt anything
-  myOgrSpatialRef.morphFromESRI();
+  // FW: Hey, that's not right!  It can screw stuff up! Disable
+  //myOgrSpatialRef.morphFromESRI();
+
   // create the proj4 structs needed for transforming
-  char *proj4src;
-  myOgrSpatialRef.exportToProj4(&proj4src);
+  char *proj4src = NULL;
+  OSRExportToProj4(myOgrSpatialRef, &proj4src);
+  OSRDestroySpatialReference( myOgrSpatialRef );
 
   //now that we have the proj4string, delegate to createFromProj4String so
   // that we can try to fill in the remaining class members...
@@ -467,8 +476,9 @@ bool QgsSpatialRefSys::isValid() const
   //this is really ugly but we need to get a QString to a char**
   const char *mySourceCharArrayPointer = mProj4String.latin1();
   //create the sr and populate it from a wkt proj definition
-  OGRSpatialReference myOgrSpatialRef;
-  OGRErr myResult = myOgrSpatialRef.importFromProj4( mySourceCharArrayPointer );
+  OGRSpatialReferenceH myOgrSpatialRef = OSRNewSpatialReference( NULL );
+  OGRErr myResult = OSRImportFromProj4( myOgrSpatialRef, mySourceCharArrayPointer );
+  OSRDestroySpatialReference( myOgrSpatialRef );
   if (myResult==OGRERR_NONE)
   {
     //QgsDebugMsg("The OGRe says it's a valid SRS with proj4 string: " +  mProj4String);
@@ -903,16 +913,16 @@ void QgsSpatialRefSys::setMapUnits()
   }
 
   char *unitName;
-  OGRSpatialReference myOgrSpatialRef;
-  myOgrSpatialRef.importFromProj4(mProj4String.latin1());
+  OGRSpatialReferenceH myOgrSpatialRef = OSRNewSpatialReference(NULL);
+  OSRImportFromProj4(myOgrSpatialRef, mProj4String.latin1());
 
   // Of interest to us is that this call adds in a unit parameter if
   // one doesn't already exist.
-  myOgrSpatialRef.Fixup();
+  OSRFixup(myOgrSpatialRef);
 
-  if (myOgrSpatialRef.IsProjected())
+  if (OSRIsProjected(myOgrSpatialRef))
   {
-    double toMeter = myOgrSpatialRef.GetLinearUnits(&unitName);
+    double toMeter = OSRGetLinearUnits(myOgrSpatialRef,&unitName);
     QString unit(unitName);
 
     // If the units parameter was created during the Fixup() call
@@ -940,7 +950,7 @@ void QgsSpatialRefSys::setMapUnits()
   }
   else
   {
-    myOgrSpatialRef.GetAngularUnits(&unitName);
+    OSRGetAngularUnits(myOgrSpatialRef, &unitName);
     QString unit(unitName);
     if (unit == "degree")
       mMapUnits = QGis::DEGREES;
@@ -951,6 +961,7 @@ void QgsSpatialRefSys::setMapUnits()
     }
     QgsDebugMsg("Projection has angular units of " + unit);
   }
+  OSRDestroySpatialReference( myOgrSpatialRef );
 }
 
 
@@ -1104,10 +1115,10 @@ bool QgsSpatialRefSys::equals(QString theProj4CharArray)
 
 
   //create the sr and populate it from a wkt proj definition
-  OGRSpatialReference myOgrSpatialRef1;
-  OGRSpatialReference myOgrSpatialRef2;
-  OGRErr myInputResult1 = myOgrSpatialRef1.importFromProj4(  myCharArrayPointer1 );
-  OGRErr myInputResult2 = myOgrSpatialRef2.importFromProj4(  theProj4CharArray.latin1() );
+  OGRSpatialReferenceH myOgrSpatialRef1 = OSRNewSpatialReference( NULL );
+  OGRSpatialReferenceH myOgrSpatialRef2 = OSRNewSpatialReference( NULL );
+  OGRErr myInputResult1 = OSRImportFromProj4( myOgrSpatialRef1, myCharArrayPointer1 );
+  OGRErr myInputResult2 = OSRImportFromProj4( myOgrSpatialRef1, theProj4CharArray.latin1() );
 
   // Could do some error reporting here...
   if (myInputResult1 != OGRERR_NONE)
@@ -1115,62 +1126,45 @@ bool QgsSpatialRefSys::equals(QString theProj4CharArray)
   if (myInputResult2 != OGRERR_NONE)
     {}
 
-  if (myOgrSpatialRef1.IsGeographic() && myOgrSpatialRef2.IsGeographic())
+  if (OSRIsGeographic(myOgrSpatialRef1) && OSRIsGeographic(myOgrSpatialRef2))
   {
 //    qWarning("QgsSpatialRefSys::operator== srs1 and srs2 are geographic ");
-    myMatchFlag = myOgrSpatialRef1.IsSameGeogCS(&myOgrSpatialRef2);
+    myMatchFlag = OSRIsSameGeogCS(myOgrSpatialRef1,myOgrSpatialRef2);
   }
-  else if (myOgrSpatialRef1.IsProjected() && myOgrSpatialRef2.IsProjected())
+  else if (OSRIsProjected(myOgrSpatialRef1) && OSRIsProjected(myOgrSpatialRef2))
   {
 //    qWarning("QgsSpatialRefSys::operator== srs1 and srs2 are projected ");
-    myMatchFlag = myOgrSpatialRef1.IsSame(&myOgrSpatialRef2);
+    myMatchFlag = OSRIsSame(myOgrSpatialRef1,myOgrSpatialRef2);
   } else {
 //    qWarning("QgsSpatialRefSys::operator== srs1 and srs2 are different types ");
     myMatchFlag = false;
   }
 
-  //find out the units:
-  /* Not needed anymore here - keeping here as a note because I am gonna use it elsewhere
-  const char *myUnitsArrayPointer1;
-  const char *myUnitsArrayPointer2;
-  OGRErr myUnitsValid1 = myOgrSpatialRef1.GetLinearUnits(&myUnitsArrayPointer1 );
-  OGRErr myUnitsValid2 = myOgrSpatialRef2.GetLinearUnits(&myUnitsArrayPointer2 );
-  QString myUnitsString1(myUnitsArrayPointer1);
-  QString myUnitsString2(myUnitsArrayPointer2);
-  */
+  OSRDestroySpatialReference( myOgrSpatialRef1 );
+  OSRDestroySpatialReference( myOgrSpatialRef2 );
 
-
-
-
-  //placeholder to be replaced with ogr tests
-  if (myMatchFlag)
-  {
-//    qWarning("QgsSpatialRefSys::operator== result: srs's are equal ");
-  }
-  else
-  {
-//    qWarning("QgsSpatialRefSys::operator== result: srs's are not equal ");
-  }
   return myMatchFlag;
 }
 
 QString QgsSpatialRefSys::toWkt() const
 {
-  OGRSpatialReference myOgrSpatialRef;
-  OGRErr myInputResult = myOgrSpatialRef.importFromProj4(mProj4String.latin1());
+  OGRSpatialReferenceH myOgrSpatialRef = OSRNewSpatialReference(NULL);
+  OGRErr myInputResult = OSRImportFromProj4(myOgrSpatialRef,mProj4String.latin1());
   
   QString myWkt;
 
   if (myInputResult == OGRERR_NONE)
   {
     char* WKT;
-    if(myOgrSpatialRef.exportToWkt(&WKT) == OGRERR_NONE)
+    if(OSRExportToWkt(myOgrSpatialRef,&WKT) == OGRERR_NONE)
     {
       myWkt = WKT;
       OGRFree(WKT);
     }    
   }
-    
+
+  OSRDestroySpatialReference( myOgrSpatialRef );
+
   return myWkt;
 }
 

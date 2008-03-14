@@ -24,9 +24,9 @@
 
 #include <QString>
 
-class OGRDataSource;
-class OGRLayer;
-class OGRGeometry;
+typedef void *OGRDataSourceH;
+typedef void *OGRLayerH;
+typedef void *OGRGeometryH;
 
 class QTextCodec;
 
@@ -81,11 +81,11 @@ class CORE_EXPORT QgsVectorFileWriter
     static bool deleteShapeFile(QString theFileName);
   protected:
     
-    OGRGeometry* createEmptyGeometry(QGis::WKBTYPE wkbType);
+    OGRGeometryH createEmptyGeometry(QGis::WKBTYPE wkbType);
     
-    OGRDataSource* mDS;
-    OGRLayer* mLayer;
-    OGRGeometry* mGeom;
+    OGRDataSourceH mDS;
+    OGRLayerH mLayer;
+    OGRGeometryH mGeom;
     
     QgsFieldMap mFields;
     

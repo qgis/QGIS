@@ -150,7 +150,9 @@
  * END
  */
 
-#include <gdal_priv.h>
+#define CPL_SUPRESS_CPLUSPLUS
+
+#include <gdal.h>
 
 //
 // Forward declarations
@@ -163,9 +165,6 @@ class QgsRasterLayerProperties;
 struct QgsRasterViewPort;
 class QImage;
 class QPixmap;
-
-class GDALDataset;
-class GDALRasterBand;
 class QSlider;
 class QLibrary;
 
@@ -316,10 +315,12 @@ public:
     void resetNoDataValue()
     {
       mNoDataValue = -9999;
-      if(mGdalDataset != NULL && mGdalDataset->GetRasterCount() > 0)
+      if(mGdalDataset != NULL && GDALGetRasterCount(mGdalDataset) > 0)
       {
         int myRequestValid;
-        double myValue = mGdalDataset->GetRasterBand(1)->GetNoDataValue(&myRequestValid);
+        double myValue = GDALGetRasterNoDataValue(
+            GDALGetRasterBand( mGdalDataset, 1 ), &myRequestValid);
+
         if(0 != myRequestValid)
         {
           setNoDataValue(myValue);
@@ -947,13 +948,13 @@ private:
                             QgsMapToPixel * theQgsMapToPixel, QImage* theImage);
 
     /** \brief Read color table from GDAL raster band */
-    void readColorTable ( GDALRasterBand *gdalBand, QgsColorTable *theColorTable );
+    void readColorTable ( GDALRasterBandH gdalBand, QgsColorTable *theColorTable );
 
     /** \brief Allocate memory and load data to that allocated memory, data type is the same
      *         as raster band. The memory must be released later!
      *  \return pointer to the memory
      */
-    void *readData ( GDALRasterBand *gdalBand, QgsRasterViewPort *viewPort );
+    void *readData ( GDALRasterBandH gdalBand, QgsRasterViewPort *viewPort );
 
     /** \brief Read a raster value on given position from memory block created by readData() 
      *  \param index index in memory block
@@ -992,9 +993,9 @@ private:
     /** \brief Flag to indicate whether debug infor overlay should be rendered onto the raster.  */
     bool mDebugOverlayFlag;
     /** \brief Pointer to the gdaldataset.  */
-    GDALDataset * mGdalBaseDataset;
+    GDALDatasetH mGdalBaseDataset;
     /** \brief Pointer to the gdaldataset (possibly warped vrt).  */
-    GDALDataset * mGdalDataset;
+    GDALDatasetH mGdalDataset;
     /** \brief Values for mapping pixel to world coordinates. Contents of
      * this array are the same as the gdal adfGeoTransform */
     double mGeoTransform[6];
