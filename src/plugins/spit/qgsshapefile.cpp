@@ -17,8 +17,7 @@
 /* $Id$ */
 
 #include <QApplication>
-#include <ogrsf_frmts.h>
-#include <ogr_geometry.h>
+#include <ogr_api.h>
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -49,11 +48,11 @@ QgsShapeFile::QgsShapeFile(QString name, QString encoding){
   filename = name;
   features = 0;
   OGRRegisterAll();
-  ogrDataSource = OGRSFDriverRegistrar::Open(QFile::encodeName(filename).constData());
+  ogrDataSource = OGROpen(QFile::encodeName(filename).constData(),FALSE,NULL);
   if (ogrDataSource != NULL){
     valid = true;
-    ogrLayer = ogrDataSource->GetLayer(0);
-    features = ogrLayer->GetFeatureCount();
+    ogrLayer = OGR_DS_GetLayer(ogrDataSource,0);
+    features = OGR_L_GetFeatureCount(ogrLayer,TRUE);
   }
   else
     valid = false;
@@ -68,12 +67,7 @@ QgsShapeFile::QgsShapeFile(QString name, QString encoding){
 }
 
 QgsShapeFile::~QgsShapeFile(){
-  if(ogrDataSource != 0)
-  {
-    // don't delete the layer if the datasource is bad -- (causes crash)
-    delete ogrLayer;
-  }
-  delete ogrDataSource;
+  OGR_DS_Destroy( ogrDataSource );
   delete filename;
   delete geom_type;
 }
@@ -92,26 +86,26 @@ bool QgsShapeFile::scanGeometries()
   sg->show();
   qApp->processEvents();
 
-  OGRFeature *feat;
+  OGRFeatureH feat;
   OGRwkbGeometryType currentType = wkbUnknown;
   bool multi = false;
-  while((feat = ogrLayer->GetNextFeature()))
+  while((feat = OGR_L_GetNextFeature(ogrLayer)))
   {
       qApp->processEvents();
 
     //    feat->DumpReadable(NULL);
-    OGRGeometry *geom = feat->GetGeometryRef();
+    OGRGeometryH geom = OGR_F_GetGeometryRef(feat);
     if(geom)
     {
-      QString gml =  geom->exportToGML();
+      QString gml =  OGR_G_ExportToGML(geom);
       //      std::cerr << gml << std::endl; 
       if(gml.find("gml:Multi") > -1)
       {
         //   std::cerr << "MULTI Part Feature detected" << std::endl; 
         multi = true;
       }
-      OGRFeatureDefn *fDef = feat->GetDefnRef();
-      OGRwkbGeometryType gType = fDef->GetGeomType();
+      OGRFeatureDefnH fDef = OGR_F_GetDefnRef(feat);
+      OGRwkbGeometryType gType = OGR_FD_GetGeomType(fDef);
       //      std::cerr << fDef->GetGeomType() << std::endl; 
       if(gType > currentType)
       {
@@ -135,7 +129,7 @@ bool QgsShapeFile::scanGeometries()
     hasMoreDimensions = true;
   }
   
-  ogrLayer->ResetReading();
+  OGR_L_ResetReading(ogrLayer);
   geom_type = geometries[currentType];
   if(multi && (geom_type.find("MULTI") == -1))
   {
@@ -151,14 +145,14 @@ QString QgsShapeFile::getFeatureClass(){
   // type. 
   qApp->processEvents();
   isMulti = scanGeometries();
-  OGRFeature *feat;
+  OGRFeatureH feat;
   // skip features without geometry
-  while ((feat = ogrLayer->GetNextFeature()) != NULL) {
-    if (feat->GetGeometryRef())
+  while ((feat = OGR_L_GetNextFeature(ogrLayer)) != NULL) {
+    if (OGR_F_GetGeometryRef(feat))
       break;
   }
   if(feat){
-    OGRGeometry *geom = feat->GetGeometryRef();
+    OGRGeometryH geom = OGR_F_GetGeometryRef(feat);
     if(geom){
       /* OGR doesn't appear to report geometry type properly
        * for a layer containing both polygon and multipolygon
@@ -222,18 +216,18 @@ QString QgsShapeFile::getFeatureClass(){
         }
       }
       dbf.close();
-      int numFields = feat->GetFieldCount();
+      int numFields = OGR_F_GetFieldCount(feat);
       for(int n=0; n<numFields; n++)
       {
-        QString s = codec->toUnicode(feat->GetFieldDefnRef(n)->GetNameRef());
+          QString s = codec->toUnicode(OGR_Fld_GetNameRef(OGR_F_GetFieldDefnRef(feat,n)));
         column_names.push_back(s);
       }
       
     }else valid = false;
-    delete feat;
+    OGR_F_Destroy( feat );
   }else valid = false;
   
-  ogrLayer->ResetReading();    
+  OGR_L_ResetReading(ogrLayer);
   return valid?geom_type:QString::null;
 }
 
@@ -380,20 +374,20 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
       break;
     }
 
-    OGRFeature *feat = ogrLayer->GetNextFeature();
+    OGRFeatureH feat = OGR_L_GetNextFeature(ogrLayer);
     if(feat){
-      OGRGeometry *geom = feat->GetGeometryRef();
+      OGRGeometryH geom = OGR_F_GetGeometryRef(feat);
       if(geom){
         query = "INSERT INTO \"" + schema + "\".\"" + table_name + "\"" +
           QString(" VALUES( %1, ").arg(m);
 
-        int num = geom->WkbSize();
+        int num = OGR_G_WkbSize(geom);
         char * geo_temp = new char[num*3];
         // 'GeometryFromText' supports only 2D coordinates
         // TODO for proper 2.5D support we would need to use 'GeomFromEWKT'
         if (hasMoreDimensions)
-          geom->setCoordinateDimension(2);
-        geom->exportToWkt(&geo_temp);
+          OGR_G_SetCoordinateDimension(geom,2);
+        OGR_G_ExportToWkt(geom,&geo_temp);
         QString geometry(geo_temp);
 
         QString quotes;
@@ -409,7 +403,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
           query += quotes;
 
           // escape the string value and cope with blank data
-          QString val = codec->toUnicode(feat->GetFieldAsString(n));
+          QString val = codec->toUnicode(OGR_F_GetFieldAsString(feat,n));
           if (val.isEmpty() && numericType)
           {
             val = "NULL";
@@ -452,7 +446,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
         qApp->processEvents();
         delete[] geo_temp;
       }
-      delete feat;
+      OGR_F_Destroy( feat );
     }
   }
   // create the GIST index if the the load was successful
@@ -461,7 +455,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
     // prompt user to see if they want to build the index and warn
     // them about the potential time-cost
   }
-  ogrLayer->ResetReading();
+  OGR_L_ResetReading(ogrLayer);
   return result;
 }
 

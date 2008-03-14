@@ -28,7 +28,9 @@ email                : tim at linfiniti.com
 #include "qgsrasterviewport.h"
 #include "qgsrect.h"
 #include "qgsspatialrefsys.h"
+
 #include "gdalwarper.h"
+#include "cpl_conv.h"
 
 #include "qgspseudocolorshader.h"
 #include "qgsfreakoutshader.h"
@@ -121,18 +123,10 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
   // first get the GDAL driver manager
   registerGdalDrivers();
 
-  GDALDriverManager *myGdalDriverManager = GetGDALDriverManager();
-
-  if (!myGdalDriverManager)
-  {
-    QgsLogger::warning("unable to get GDALDriverManager");
-    return;                   // XXX good place to throw exception if we
-  }                           // XXX decide to do exceptions
-
   // then iterate through all of the supported drivers, adding the
   // corresponding file filter
 
-  GDALDriver *myGdalDriver;           // current driver
+  GDALDriverH myGdalDriver;           // current driver
 
   char **myGdalDriverMetadata;        // driver metadata strings
 
@@ -145,7 +139,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
   QStringList catchallFilter;   // for Any file(*.*), but also for those
   // drivers with no specific file filter
 
-  GDALDriver *jp2Driver = NULL; // first JPEG2000 driver found
+  GDALDriverH jp2Driver = NULL; // first JPEG2000 driver found
 
   // Grind through all the drivers and their respective metadata.
   // We'll add a file filter for those drivers that have a file
@@ -158,9 +152,9 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
   // driver, which will be found in DMD_LONGNAME, which will have the
   // same form.
 
-  for (int i = 0; i < myGdalDriverManager->GetDriverCount(); ++i)
+  for (int i = 0; i < GDALGetDriverCount(); ++i)
   {
-    myGdalDriver = myGdalDriverManager->GetDriver(i);
+    myGdalDriver = GDALGetDriver(i);
 
     Q_CHECK_PTR(myGdalDriver);
 
@@ -172,17 +166,17 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
     // now we need to see if the driver is for something currently
     // supported; if not, we give it a miss for the next driver
 
-    myGdalDriverDescription = myGdalDriver->GetDescription();
+    myGdalDriverDescription = GDALGetDescription(myGdalDriver);
 
     if (!isSupportedRasterDriver(myGdalDriverDescription))
     {
       // not supported, therefore skip
-      QgsDebugMsg("skipping unsupported driver " + QString(myGdalDriver->GetDescription()));
+      QgsDebugMsg("skipping unsupported driver " + QString(GDALGetDescription(myGdalDriver)));
       continue;
     }
     // std::cerr << "got driver string " << myGdalDriver->GetDescription() << "\n";
 
-    myGdalDriverMetadata = myGdalDriver->GetMetadata();
+    myGdalDriverMetadata = GDALGetMetadata(myGdalDriver,NULL);
 
     // presumably we know we've run out of metadta if either the
     // address is 0, or the first character is null
@@ -275,7 +269,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
       }
       else
       {
-        catchallFilter << QString(myGdalDriver->GetDescription());
+        catchallFilter << QString(GDALGetDescription(myGdalDriver));
       }
     }
 
@@ -439,7 +433,7 @@ QgsRasterLayer::~QgsRasterLayer()
   {
     if ( mGdalBaseDataset )
     {
-      mGdalBaseDataset->Dereference();
+      GDALDereferenceDataset( mGdalBaseDataset );
       GDALClose(mGdalDataset);
     }
   }  
@@ -454,7 +448,7 @@ bool QgsRasterLayer::readFile( QString const & fileName )
   mGdalDataset = NULL;
 
   //open the dataset making sure we handle char encoding of locale properly
-  mGdalBaseDataset = (GDALDataset *) GDALOpen(QFile::encodeName(fileName).constData(), GA_ReadOnly);
+  mGdalBaseDataset = GDALOpen(QFile::encodeName(fileName).constData(), GA_ReadOnly);
 
   if (mGdalBaseDataset == NULL)
   {
@@ -466,23 +460,29 @@ bool QgsRasterLayer::readFile( QString const & fileName )
   mLastModified = lastModified ( fileName );
 
   // Check if we need a warped VRT for this file. 
-  if( (mGdalBaseDataset->GetGeoTransform(mGeoTransform) == CE_None
+  if( (GDALGetGeoTransform(mGdalBaseDataset,mGeoTransform) == CE_None
        && (mGeoTransform[1] < 0.0
            || mGeoTransform[2] != 0.0
            || mGeoTransform[4] != 0.0
            || mGeoTransform[5] > 0.0))
-       || mGdalBaseDataset->GetGCPCount() > 0 )
+       || GDALGetGCPCount(mGdalBaseDataset) > 0 )
   {
       QgsLogger::warning("Creating Warped VRT.");
 
-      mGdalDataset = (GDALDataset *) 
+      mGdalDataset = 
           GDALAutoCreateWarpedVRT( mGdalBaseDataset, NULL, NULL, 
                                    GRA_NearestNeighbour, 0.2, NULL );
+      if( mGdalDataset == NULL )
+      {
+          QgsLogger::warning("Warped VRT Creation failed.");
+          mGdalDataset = mGdalBaseDataset;
+          GDALReferenceDataset( mGdalDataset );
+      }
   }
   else
   {
       mGdalDataset = mGdalBaseDataset;
-      mGdalDataset->Reference();
+      GDALReferenceDataset( mGdalDataset );
   }
 
   //check f this file has pyramids
@@ -532,11 +532,11 @@ bool QgsRasterLayer::readFile( QString const & fileName )
   // Use the affine transform to get geo coordinates for
   // the corners of the raster
   double myXMax = mGeoTransform[0] +
-    mGdalDataset->GetRasterXSize() * mGeoTransform[1] +
-    mGdalDataset->GetRasterYSize() * mGeoTransform[2];
+    GDALGetRasterXSize(mGdalDataset) * mGeoTransform[1] +
+    GDALGetRasterYSize(mGdalDataset) * mGeoTransform[2];
   double myYMin = mGeoTransform[3] +
-    mGdalDataset->GetRasterXSize() * mGeoTransform[4] +
-    mGdalDataset->GetRasterYSize() * mGeoTransform[5];
+    GDALGetRasterXSize(mGdalDataset) * mGeoTransform[4] +
+    GDALGetRasterYSize(mGdalDataset) * mGeoTransform[5];
 
   mLayerExtent.setXmax(myXMax);
   // The affine transform reduces to these values at the
@@ -548,8 +548,8 @@ bool QgsRasterLayer::readFile( QString const & fileName )
   //
   // Set up the x and y dimensions of this raster layer
   //
-  mRasterXDim = mGdalDataset->GetRasterXSize();
-  mRasterYDim = mGdalDataset->GetRasterYSize();
+  mRasterXDim = GDALGetRasterXSize(mGdalDataset);
+  mRasterYDim = GDALGetRasterYSize(mGdalDataset);
 
   //
   // Determin the nodatavalue
@@ -557,7 +557,7 @@ bool QgsRasterLayer::readFile( QString const & fileName )
   mNoDataValue = -9999; //Standard default?
   mValidNoDataValue = false;
   int isValid = false;
-  double myNoDataValue = mGdalDataset->GetRasterBand(1)->GetNoDataValue(&isValid);
+  double myNoDataValue = GDALGetRasterNoDataValue(GDALGetRasterBand(mGdalDataset,1),&isValid);
   if(isValid)
   {
     mNoDataValue = myNoDataValue;
@@ -571,10 +571,10 @@ bool QgsRasterLayer::readFile( QString const & fileName )
   }
 
   //initialise the raster band stats and contrast enhancement vector
-  for (int i = 1; i <= mGdalDataset->GetRasterCount(); i++)
+  for (int i = 1; i <= GDALGetRasterCount(mGdalDataset); i++)
   {
-    GDALRasterBand *myGdalBand = mGdalDataset->GetRasterBand(i);
-    QString myColorQString = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
+    GDALRasterBandH myGdalBand = GDALGetRasterBand(mGdalDataset,i);
+    QString myColorQString = GDALGetColorInterpretationName(GDALGetRasterColorInterpretation(myGdalBand));
     QgsRasterBandStats myRasterBandStats;
     //myRasterBandStats.bandName = myColorQString ;
     myRasterBandStats.bandName=QString::number(i) + " : " + myColorQString;
@@ -587,7 +587,7 @@ bool QgsRasterLayer::readFile( QString const & fileName )
     mRasterStatsList.push_back(myRasterBandStats);
     
     //Build a new contrast enhancement for the band and store in list
-    QgsContrastEnhancement myContrastEnhancement((QgsContrastEnhancement::QgsRasterDataType)myGdalBand->GetRasterDataType());
+    QgsContrastEnhancement myContrastEnhancement((QgsContrastEnhancement::QgsRasterDataType)GDALGetRasterDataType(myGdalBand));
     mContrastEnhancementList.append(myContrastEnhancement);
   }
   
@@ -597,7 +597,7 @@ bool QgsRasterLayer::readFile( QString const & fileName )
   //decide what type of layer this is...
   //note that multiband images can have one or more 'undefindd' bands,
   //so we must do this check first!
-  if ((mGdalDataset->GetRasterCount() > 1))
+  if ((GDALGetRasterCount(mGdalDataset) > 1))
   {
     rasterLayerType = MULTIBAND;
   }
@@ -626,7 +626,7 @@ bool QgsRasterLayer::readFile( QString const & fileName )
     mRedBandName = getRasterBandName(1);  // sensible default
     mGreenBandName = getRasterBandName(2);  // sensible default
     //for the third layer we cant be sure so..
-    if (mGdalDataset->GetRasterCount() > 2)
+    if (GDALGetRasterCount(mGdalDataset) > 2)
     {
       mBlueBandName = getRasterBandName(3); // sensible default
     }
@@ -669,12 +669,12 @@ QString QgsRasterLayer::getProjectionWKT()
 { 
   QString myWKTString;
   QgsSpatialRefSys mySRS;   
-  myWKTString=QString (mGdalDataset->GetProjectionRef());
+  myWKTString=QString (GDALGetProjectionRef(mGdalDataset));
   mySRS.createFromWkt(myWKTString);
   if (!mySRS.isValid())
   {
     //try to get the gcp srs from the raster layer if available
-    myWKTString=QString(mGdalDataset->GetGCPProjection());
+    myWKTString=QString(GDALGetGCPProjection(mGdalDataset));
 
 // What is the purpose of this piece of code?
 // Sideeffects from validate()?
@@ -695,7 +695,7 @@ void QgsRasterLayer::closeDataset()
   if ( !mValid  ) return;
   mValid = FALSE;
 
-  mGdalBaseDataset->Dereference();
+  GDALDereferenceDataset(mGdalBaseDataset);
   mGdalBaseDataset = NULL;
 
   GDALClose(mGdalDataset);
@@ -884,10 +884,10 @@ bool QgsRasterLayer::hasBand(QString const & theBandName)
 {
   QgsDebugMsg("Looking for band : " + theBandName);
 
-  for (int i = 1; i <= mGdalDataset->GetRasterCount(); i++)
+  for (int i = 1; i <= GDALGetRasterCount(mGdalDataset); i++)
   {
-    GDALRasterBand *myGdalBand = mGdalDataset->GetRasterBand(i);
-    QString myColorQString = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
+    GDALRasterBandH myGdalBand = GDALGetRasterBand(mGdalDataset,i);
+    QString myColorQString = GDALGetColorInterpretationName(GDALGetRasterColorInterpretation(myGdalBand));
 #ifdef QGISDEBUG
     QgsLogger::debug("band", i, __FILE__, __FUNCTION__, __LINE__, 2);
 #endif
@@ -951,7 +951,7 @@ QPixmap QgsRasterLayer::getPaletteAsPixmap()
   {
     QgsDebugMsg("....found paletted image");
     QgsColorTable *myColorTable = colorTable ( 1 );
-    GDALRasterBandH myGdalBand = mGdalDataset->GetRasterBand(1);
+    GDALRasterBandH myGdalBand = GDALGetRasterBand(mGdalDataset,1);
     if( GDALGetRasterColorInterpretation(myGdalBand) == GCI_PaletteIndex && myColorTable->defined() )
     {
       QgsDebugMsg("....found GCI_PaletteIndex");
@@ -1437,8 +1437,8 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPor
     return;
   }
   
-  GDALRasterBand *myGdalBand = mGdalDataset->GetRasterBand(theBandNo);
-  GDALDataType myDataType = myGdalBand->GetRasterDataType();
+  GDALRasterBandH myGdalBand = GDALGetRasterBand(mGdalDataset,theBandNo);
+  GDALDataType myDataType = GDALGetRasterDataType(myGdalBand);
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
 
   /* Check for out of memory error */
@@ -1541,8 +1541,8 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter,
   }
   
   QgsRasterBandStats myRasterBandStats = getRasterBandStats(theBandNo);
-  GDALRasterBand *myGdalBand = mGdalDataset->GetRasterBand(theBandNo);
-  GDALDataType myDataType = myGdalBand->GetRasterDataType();
+  GDALRasterBandH myGdalBand = GDALGetRasterBand(mGdalDataset,theBandNo);
+  GDALDataType myDataType = GDALGetRasterDataType(myGdalBand);
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
 
   /* Check for out of memory error */
@@ -1644,8 +1644,8 @@ void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, QgsRast
     return;
   }
   
-  GDALRasterBand *myGdalBand = mGdalDataset->GetRasterBand(theBandNo);
-  GDALDataType myDataType = myGdalBand->GetRasterDataType();
+  GDALRasterBandH myGdalBand = GDALGetRasterBand(mGdalDataset,theBandNo);
+  GDALDataType myDataType = GDALGetRasterDataType(myGdalBand);
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
 
   /* Check for out of memory error */
@@ -1730,8 +1730,8 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter, QgsRaste
   }
   
   QgsRasterBandStats myRasterBandStats = getRasterBandStats(theBandNo);
-  GDALRasterBand *myGdalBand = mGdalDataset->GetRasterBand(theBandNo);
-  GDALDataType myDataType = myGdalBand->GetRasterDataType();
+  GDALRasterBandH myGdalBand = GDALGetRasterBand(mGdalDataset,theBandNo);
+  GDALDataType myDataType = GDALGetRasterDataType(myGdalBand);
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
 
   /* Check for out of memory error */
@@ -1829,8 +1829,8 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter, Q
   }
   
   QgsRasterBandStats myRasterBandStats = getRasterBandStats(theBandNo);
-  GDALRasterBand *myGdalBand = mGdalDataset->GetRasterBand(theBandNo);
-  GDALDataType myDataType = myGdalBand->GetRasterDataType();
+  GDALRasterBandH myGdalBand = GDALGetRasterBand(mGdalDataset,theBandNo);
+  GDALDataType myDataType = GDALGetRasterDataType(myGdalBand);
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
 
   /* Check for out of memory error */
@@ -1957,8 +1957,8 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, QgsRaste
     return;
   }
   
-  GDALRasterBand *myGdalBand = mGdalDataset->GetRasterBand(theBandNo);
-  GDALDataType myDataType = myGdalBand->GetRasterDataType();
+  GDALRasterBandH myGdalBand = GDALGetRasterBand(mGdalDataset,theBandNo);
+  GDALDataType myDataType = GDALGetRasterDataType(myGdalBand);
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
 
   /* Check for out of memory error */
@@ -2094,13 +2094,13 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPor
   {
     return;
   }
-  GDALRasterBand *myGdalRedBand = mGdalDataset->GetRasterBand(myRedBandNo);
-  GDALRasterBand *myGdalGreenBand = mGdalDataset->GetRasterBand(myGreenBandNo);
-  GDALRasterBand *myGdalBlueBand = mGdalDataset->GetRasterBand(myBlueBandNo);
+  GDALRasterBandH myGdalRedBand = GDALGetRasterBand(mGdalDataset,myRedBandNo);
+  GDALRasterBandH myGdalGreenBand = GDALGetRasterBand(mGdalDataset,myGreenBandNo);
+  GDALRasterBandH myGdalBlueBand = GDALGetRasterBand(mGdalDataset,myBlueBandNo);
 
-  GDALDataType myRedType = myGdalRedBand->GetRasterDataType();
-  GDALDataType myGreenType = myGdalGreenBand->GetRasterDataType();
-  GDALDataType myBlueType = myGdalBlueBand->GetRasterDataType();
+  GDALDataType myRedType = GDALGetRasterDataType(myGdalRedBand);
+  GDALDataType myGreenType = GDALGetRasterDataType(myGdalGreenBand);
+  GDALDataType myBlueType = GDALGetRasterDataType(myGdalBlueBand);
 
   void *myGdalRedData = readData ( myGdalRedBand, theRasterViewPort );
   void *myGdalGreenData = readData ( myGdalGreenBand, theRasterViewPort );
@@ -2294,7 +2294,7 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(QString const & theB
 
   //we cant use a vector iterator because the iterator is astruct not a class
   //and the qvector model does not like this.
-  for (int i = 1; i <= mGdalDataset->GetRasterCount(); i++)
+  for (int i = 1; i <= GDALGetRasterCount(mGdalDataset); i++)
   {
     QgsRasterBandStats myRasterBandStats = getRasterBandStats(i);
     if (myRasterBandStats.bandName == theBandNameQString)
@@ -2395,7 +2395,7 @@ That this is a cpu intensive and slow task!
 const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNo)
 {
   // check if we have received a valid band number
-  if ((mGdalDataset->GetRasterCount() < theBandNo) && rasterLayerType != PALETTE)
+  if ((GDALGetRasterCount(mGdalDataset) < theBandNo) && rasterLayerType != PALETTE)
   {
     // invalid band id, return nothing
     QgsRasterBandStats myNullReturnStats;
@@ -2421,10 +2421,10 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNo)
   emit setStatus(QString("Retrieving stats for ")+name());
   qApp->processEvents();
   QgsDebugMsg("QgsRasterLayer::retrieve stats for band " + QString::number(theBandNo));
-  GDALRasterBand *myGdalBand = mGdalDataset->GetRasterBand(theBandNo);
+  GDALRasterBandH myGdalBand = GDALGetRasterBand(mGdalDataset,theBandNo);
 
 
-  QString myColorerpretation = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
+  QString myColorerpretation = GDALGetColorInterpretationName(GDALGetRasterColorInterpretation(myGdalBand));
 
   //declare a colorTable to hold a palette - will only be used if the layer color interp is palette ???
   //get the palette colour table
@@ -2477,13 +2477,13 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNo)
   // let the user know we're going to possibly be taking a while
   //QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
- GDALDataType myDataType = myGdalBand->GetRasterDataType();
+ GDALDataType myDataType = GDALGetRasterDataType(myGdalBand);
 
   int  myNXBlocks, myNYBlocks, myXBlockSize, myYBlockSize;
-  myGdalBand->GetBlockSize( &myXBlockSize, &myYBlockSize );
+  GDALGetBlockSize( myGdalBand, &myXBlockSize, &myYBlockSize );
 
-  myNXBlocks = (myGdalBand->GetXSize() + myXBlockSize - 1) / myXBlockSize;
-  myNYBlocks = (myGdalBand->GetYSize() + myYBlockSize - 1) / myYBlockSize;
+  myNXBlocks = (GDALGetRasterXSize(myGdalBand) + myXBlockSize - 1) / myXBlockSize;
+  myNYBlocks = (GDALGetRasterYSize(myGdalBand) + myYBlockSize - 1) / myYBlockSize;
 
   void *myData = CPLMalloc ( myXBlockSize * myYBlockSize * GDALGetDataTypeSize(myDataType)/8 );
 
@@ -2499,21 +2499,21 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNo)
   //ifdefs below to remove compiler warning about unused vars
 #ifdef QGISDEBUG
   int success;
-  double GDALminimum = myGdalBand->GetMinimum( &success );
+  double GDALminimum = GDALGetRasterMinimum( myGdalBand, &success );
 
   if ( ! success )
   {
     QgsDebugMsg("myGdalBand->GetMinimum() failed");
   }
 
-  double GDALmaximum = myGdalBand->GetMaximum( &success );
+  double GDALmaximum = GDALGetRasterMaximum( myGdalBand, &success );
   
   if ( ! success )
   {
     QgsDebugMsg("myGdalBand->GetMaximum() failed");
   }
 
-  double GDALnodata = myGdalBand->GetNoDataValue( &success );
+  double GDALnodata = GDALGetRasterNoDataValue( myGdalBand, &success );
   
   if ( ! success )
   {
@@ -2538,8 +2538,8 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNo)
   QgsDebugMsg("starting manual stat computation");
 #endif
 
-  int myGdalBandXSize = myGdalBand->GetXSize();
-  int myGdalBandYSize = myGdalBand->GetYSize();
+  int myGdalBandXSize = GDALGetRasterXSize(myGdalBand);
+  int myGdalBandYSize = GDALGetRasterYSize(myGdalBand);
   for( int iYBlock = 0; iYBlock < myNYBlocks; iYBlock++ )
   {
     emit drawingProgress ( iYBlock, myNYBlocks * 2 );
@@ -2547,7 +2547,7 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNo)
     for( int iXBlock = 0; iXBlock < myNXBlocks; iXBlock++ )
     {
       int  nXValid, nYValid;
-      myGdalBand->ReadBlock( iXBlock, iYBlock, myData );
+      GDALReadBlock( myGdalBand, iXBlock, iYBlock, myData );
 
       // Compute the portion of the block that is valid
       // for partial edge blocks.
@@ -2617,8 +2617,8 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNo)
     for( int iXBlock = 0; iXBlock < myNXBlocks; iXBlock++ )
     {
       int  nXValid, nYValid;
-
-      myGdalBand->ReadBlock( iXBlock, iYBlock, myData );
+      
+      GDALReadBlock( myGdalBand, iXBlock, iYBlock, myData );
 
       // Compute the portion of the block that is valid
       // for partial edge blocks.
@@ -2926,8 +2926,8 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
     //
     // Get the adjusted matrix stats
     //
-    GDALRasterBand *myGdalBand = mGdalDataset->GetRasterBand(1);
-    QString myColorerpretation = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
+    GDALRasterBandH myGdalBand = GDALGetRasterBand(mGdalDataset,1);
+    QString myColorerpretation = GDALGetColorInterpretationName(GDALGetRasterColorInterpretation(myGdalBand));
 
 
 
@@ -3178,8 +3178,8 @@ QPixmap QgsRasterLayer::getDetailedLegendQPixmap(int theLabelCount=3)
   //
   // Get the adjusted matrix stats
   //
-  GDALRasterBand *myGdalBand = mGdalDataset->GetRasterBand(1);
-  QString myColorerpretation = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
+  GDALRasterBandH myGdalBand = GDALGetRasterBand(mGdalDataset,1);
+  QString myColorerpretation = GDALGetColorInterpretationName(GDALGetRasterColorInterpretation(myGdalBand));
   QPixmap myLegendQPixmap;      //will be initialised once we know what drawing style is active
   QPainter myQPainter;
   //
@@ -3502,9 +3502,9 @@ QString QgsRasterLayer::getMetadata()
   myMetadataQString += "<tr><td>";
   if (mProviderKey.isEmpty())
   {
-    myMetadataQString += QString(mGdalDataset->GetDriver()->GetDescription());
+    myMetadataQString += QString(GDALGetDescription(GDALGetDatasetDriver(mGdalDataset)));
     myMetadataQString += "<br>";
-    myMetadataQString += QString(mGdalDataset->GetDriver()->GetMetadataItem(GDAL_DMD_LONGNAME));
+    myMetadataQString += QString(GDALGetMetadataItem(GDALGetDatasetDriver(mGdalDataset),GDAL_DMD_LONGNAME,NULL));
   }
   else
   {
@@ -3526,11 +3526,11 @@ QString QgsRasterLayer::getMetadata()
     myMetadataQString += tr("Dataset Description");
     myMetadataQString += "</td></tr>";
     myMetadataQString += "<tr><td>";
-    myMetadataQString += QFile::decodeName(mGdalDataset->GetDescription());
+    myMetadataQString += QFile::decodeName(GDALGetDescription(mGdalDataset));
     myMetadataQString += "</td></tr>";
 
 
-    char ** GDALmetadata = mGdalDataset->GetMetadata();
+    char ** GDALmetadata = GDALGetMetadata(mGdalDataset,NULL);
 
     if ( GDALmetadata )
     {
@@ -3542,9 +3542,10 @@ QString QgsRasterLayer::getMetadata()
       QgsDebugMsg("dataset has no metadata");
     }
 
-    for ( int i = 1; i <= mGdalDataset->GetRasterCount(); ++i )
+    for ( int i = 1; i <= GDALGetRasterCount(mGdalDataset); ++i )
     {
-      mGdalDataset->GetRasterBand(i)->GetMetadata();
+      GDALRasterBandH gdalBand = GDALGetRasterBand(mGdalDataset,i);
+      GDALmetadata = GDALGetMetadata(gdalBand,NULL);
 
       if ( GDALmetadata )
       {
@@ -3556,7 +3557,7 @@ QString QgsRasterLayer::getMetadata()
         QgsDebugMsg("band " + QString::number(i) + "has no metadata"); 
       }
 
-      char ** GDALcategories = mGdalDataset->GetRasterBand(i)->GetCategoryNames();
+      char ** GDALcategories = GDALGetRasterCategoryNames(gdalBand);
 
       if ( GDALcategories )
       {
@@ -3576,12 +3577,12 @@ QString QgsRasterLayer::getMetadata()
     myMetadataQString += tr("Dimensions:");
     myMetadataQString += "</td></tr>";
     myMetadataQString += "<tr><td>";
-    myMetadataQString += tr("X: ") + QString::number(mGdalDataset->GetRasterXSize()) +
-      tr(" Y: ") + QString::number(mGdalDataset->GetRasterYSize()) + tr(" Bands: ") + QString::number(mGdalDataset->GetRasterCount());
+    myMetadataQString += tr("X: ") + QString::number(GDALGetRasterXSize(mGdalDataset)) +
+      tr(" Y: ") + QString::number(GDALGetRasterYSize(mGdalDataset)) + tr(" Bands: ") + QString::number(GDALGetRasterCount(mGdalDataset));
     myMetadataQString += "</td></tr>";
 
     //just use the first band
-    GDALRasterBand *myGdalBand = mGdalDataset->GetRasterBand(1);
+    GDALRasterBandH myGdalBand = GDALGetRasterBand(mGdalDataset,1);
 
     myMetadataQString += "<tr><td class=\"glossy\">";
     myMetadataQString += tr("No Data Value");
@@ -3602,7 +3603,7 @@ QString QgsRasterLayer::getMetadata()
     myMetadataQString += tr("Data Type:");
     myMetadataQString += "</td></tr>";
     myMetadataQString += "<tr><td>";
-    switch (myGdalBand->GetRasterDataType())
+    switch (GDALGetRasterDataType(myGdalBand))
     {
       case GDT_Byte:
         myMetadataQString += tr("GDT_Byte - Eight bit unsigned integer");
@@ -3683,7 +3684,7 @@ QString QgsRasterLayer::getMetadata()
 
   if (mProviderKey.isEmpty())
   {
-    if (mGdalDataset->GetGeoTransform(mGeoTransform) != CE_None)
+    if (GDALGetGeoTransform(mGdalDataset,mGeoTransform) != CE_None)
     {
       // if the raster does not have a valid transform we need to use
       // a pixel size of (1,-1), but GDAL returns (1,1)
@@ -3858,14 +3859,14 @@ QString QgsRasterLayer::buildPyramids(RasterPyramidList const & theRasterPyramid
   registerGdalDrivers();
 
   //close the gdal dataset and reopen it in read / write mode
-  delete mGdalDataset;
-  mGdalDataset = (GDALDataset *) GDALOpen(QFile::encodeName(mDataSource).constData(), GA_Update);
+  GDALClose( mGdalDataset );
+  mGdalDataset = GDALOpen(QFile::encodeName(mDataSource).constData(), GA_Update);
 
   // if the dataset couldn't be opened in read / write mode, tell the user
   if (!mGdalDataset)
   {
     emit drawingProgress(0,0);
-    mGdalDataset = (GDALDataset *) GDALOpen(QFile::encodeName(mDataSource).constData(), GA_ReadOnly);
+    mGdalDataset = GDALOpen(QFile::encodeName(mDataSource).constData(), GA_ReadOnly);
     return "ERROR_WRITE_FORMAT";
   }
 
@@ -3912,26 +3913,26 @@ QString QgsRasterLayer::buildPyramids(RasterPyramidList const & theRasterPyramid
         //see ticket #284
         if(theResamplingMethod==tr("Average Magphase"))
         {
-          myError = mGdalDataset->BuildOverviews( "MODE", 1, myOverviewLevelsArray, 0, NULL,
+          myError = GDALBuildOverviews( mGdalDataset, "MODE", 1, myOverviewLevelsArray, 0, NULL,
               GDALDummyProgress, NULL );
         }
         else if(theResamplingMethod==tr("Average"))
 
         {
-          myError = mGdalDataset->BuildOverviews( "AVERAGE", 1, myOverviewLevelsArray, 0, NULL,
+          myError = GDALBuildOverviews( mGdalDataset, "AVERAGE", 1, myOverviewLevelsArray, 0, NULL,
               GDALDummyProgress, NULL );
         }
         else // fall back to nearest neighbor
         {
-          myError = mGdalDataset->BuildOverviews( "NEAREST", 1, myOverviewLevelsArray, 0, NULL,
+          myError = GDALBuildOverviews( mGdalDataset, "NEAREST", 1, myOverviewLevelsArray, 0, NULL,
               GDALDummyProgress, NULL );
         }
         if (myError == CE_Failure || CPLGetLastErrorNo()==CPLE_NotSupported  )
         {
           //something bad happenend
           //QString myString = QString (CPLGetLastError());
-          delete mGdalDataset;
-          mGdalDataset = (GDALDataset *) GDALOpen(QFile::encodeName(mDataSource).constData(), GA_ReadOnly);
+          GDALClose( mGdalDataset );
+          mGdalDataset = GDALOpen(QFile::encodeName(mDataSource).constData(), GA_ReadOnly);
           emit drawingProgress(0,0);
           return "FAILED_NOT_SUPPORTED";
         }
@@ -3947,8 +3948,8 @@ QString QgsRasterLayer::buildPyramids(RasterPyramidList const & theRasterPyramid
   }
   QgsDebugMsg("Pyramid overviews built");
   //close the gdal dataset and reopen it in read only mode
-  delete mGdalDataset;
-  mGdalDataset = (GDALDataset *) GDALOpen(QFile::encodeName(mDataSource).constData(), GA_ReadOnly);
+  GDALClose( mGdalDataset );
+  mGdalDataset = GDALOpen(QFile::encodeName(mDataSource).constData(), GA_ReadOnly);
   emit drawingProgress(0,0);
   return NULL; // returning null on success
 }
@@ -4043,12 +4044,12 @@ bool QgsRasterLayer::isEditable() const
 
 
 
-void QgsRasterLayer::readColorTable ( GDALRasterBand *gdalBand, QgsColorTable *theColorTable )
+void QgsRasterLayer::readColorTable ( GDALRasterBandH gdalBand, QgsColorTable *theColorTable )
 {
   QgsDebugMsg("QgsRasterLayer::readColorTable()");
 
   // First try to read color table from metadata
-  char **metadata = gdalBand->GetMetadata();
+  char **metadata = GDALGetMetadata(gdalBand,NULL);
   theColorTable->clear();
   bool found = false;
   while ( metadata && metadata[0] )
@@ -4079,15 +4080,15 @@ void QgsRasterLayer::readColorTable ( GDALRasterBand *gdalBand, QgsColorTable *t
   // If no color table was found, try to read it from GDALColorTable
   if ( !found )
   {
-    GDALColorTable *gdalColorTable = gdalBand->GetColorTable();
+    GDALColorTableH gdalColorTable = GDALGetRasterColorTable(gdalBand);
 
     if ( gdalColorTable )
     {
-      int count = gdalColorTable->GetColorEntryCount();
+      int count = GDALGetColorEntryCount(gdalColorTable);
 
       for ( int i = 0; i < count; i++ )
       {
-        const GDALColorEntry *colorEntry = gdalColorTable->GetColorEntry ( i );
+        const GDALColorEntry *colorEntry = GDALGetColorEntry(gdalColorTable,i);
 
         if ( !colorEntry ) continue;
 
@@ -4109,9 +4110,9 @@ QgsColorTable *QgsRasterLayer::colorTable ( int theBandNo )
 }
 
 
-void *QgsRasterLayer::readData ( GDALRasterBand *gdalBand, QgsRasterViewPort *viewPort )
+void *QgsRasterLayer::readData ( GDALRasterBandH gdalBand, QgsRasterViewPort *viewPort )
 {
-  GDALDataType type = gdalBand->GetRasterDataType();
+  GDALDataType type = GDALGetRasterDataType(gdalBand);
   int size = GDALGetDataTypeSize ( type ) / 8;
 
   QgsDebugMsg("QgsRasterLayer::readData: calling RasterIO with " +\
@@ -4131,15 +4132,15 @@ void *QgsRasterLayer::readData ( GDALRasterBand *gdalBand, QgsRasterViewPort *vi
   }
   else
   {
-    CPLErr myErr = gdalBand->RasterIO ( GF_Read,
-                                        viewPort->rectXOffset,
-                                        viewPort->rectYOffset,
-                                        viewPort->clippedWidth,
-                                        viewPort->clippedHeight,
-                                        data,
-                                        viewPort->drawableAreaXDim,
-                                        viewPort->drawableAreaYDim,
-                                        type, 0, 0 );
+    CPLErr myErr = GDALRasterIO( gdalBand, GF_Read,
+                                 viewPort->rectXOffset,
+                                 viewPort->rectYOffset,
+                                 viewPort->clippedWidth,
+                                  viewPort->clippedHeight,
+                                 data,
+                                 viewPort->drawableAreaXDim,
+                                 viewPort->drawableAreaYDim,
+                                 type, 0, 0 );
     if (myErr != CPLE_None)
     {
       QgsLogger::warning("RaterIO error: " + QString(CPLGetLastErrorMsg()));
@@ -4793,7 +4794,7 @@ void QgsRasterLayer::identify(const QgsPoint& point, std::map<QString,QString>& 
   if ( x < mLayerExtent.xMin() || x > mLayerExtent.xMax() || y < mLayerExtent.yMin() || y > mLayerExtent.yMax() )
   {
     // Outside the raster
-    for ( int i = 1; i <= mGdalDataset->GetRasterCount(); i++ )
+    for ( int i = 1; i <= GDALGetRasterCount(mGdalDataset); i++ )
     {
       results[tr("Band") + QString::number(i)] = tr("out of extent");
     }
@@ -4810,14 +4811,15 @@ void QgsRasterLayer::identify(const QgsPoint& point, std::map<QString,QString>& 
 
     QgsDebugMsg( "row = " + QString::number(row) + " col = " + QString::number(col));
 
-    for ( int i = 1; i <= mGdalDataset->GetRasterCount(); i++ )
+    for ( int i = 1; i <= GDALGetRasterCount(mGdalDataset); i++ )
     {
-      GDALRasterBand *gdalBand = mGdalDataset->GetRasterBand(i);
-      GDALDataType type = gdalBand->GetRasterDataType();
+      GDALRasterBandH gdalBand = GDALGetRasterBand(mGdalDataset,i);
+      GDALDataType type = GDALGetRasterDataType(gdalBand);
       int size = GDALGetDataTypeSize ( type ) / 8;
       void *data = CPLMalloc ( size );
 
-      CPLErr err = gdalBand->RasterIO ( GF_Read, col, row, 1, 1, data, 1, 1, type, 0, 0 );
+      CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, 1, 1, 
+                                 data, 1, 1, type, 0, 0 );
 
       if (err != CPLE_None)
       {
@@ -4861,7 +4863,7 @@ QString QgsRasterLayer::identifyAsText(const QgsPoint& point)
 void QgsRasterLayer::populateHistogram(int theBandNo, int theBinCount,bool theIgnoreOutOfRangeFlag,bool theHistogramEstimatedFlag)
 {
 
-  GDALRasterBand *myGdalBand = mGdalDataset->GetRasterBand(theBandNo);
+  GDALRasterBandH myGdalBand = GDALGetRasterBand(mGdalDataset,theBandNo);
   QgsRasterBandStats myRasterBandStats = getRasterBandStats(theBandNo);
   //calculate the histogram for this band
   //we assume that it only needs to be calculated if the lenght of the histogram
@@ -4891,7 +4893,7 @@ void QgsRasterLayer::populateHistogram(int theBandNo, int theBinCount,bool theIg
      *          ) 
      */
     double myerval = (myRasterBandStats.maxVal-myRasterBandStats.minVal)/theBinCount;
-    myGdalBand->GetHistogram( myRasterBandStats.minVal-0.1*myerval, myRasterBandStats.maxVal+0.1*myerval, theBinCount, myHistogramArray ,theIgnoreOutOfRangeFlag ,theHistogramEstimatedFlag , GDALDummyProgress, NULL );
+    GDALGetRasterHistogram( myGdalBand, myRasterBandStats.minVal-0.1*myerval, myRasterBandStats.maxVal+0.1*myerval, theBinCount, myHistogramArray ,theIgnoreOutOfRangeFlag ,theHistogramEstimatedFlag , GDALDummyProgress, NULL );
 
     for (int myBin = 0; myBin <theBinCount; myBin++)
     {

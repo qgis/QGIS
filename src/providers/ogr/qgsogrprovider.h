@@ -30,12 +30,12 @@ email                : sherman at mrcc.com
 
 class QgsFeature;
 class QgsField;
-class OGRDataSource;
-class OGRSFDriver;
-class OGRLayer;
-class OGRFeature;
-class OGREnvelope;
-class OGRPolygon;
+
+typedef void *OGRDataSourceH;
+typedef void *OGRSFDriverH;
+typedef void *OGRLayerH;
+typedef void *OGRFeatureH;
+typedef void *OGRGeometryH;
 
 /**
   \class QgsOgrProvider
@@ -188,7 +188,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     void loadFields();
 
     /**Get an attribute associated with a feature*/
-    void getFeatureAttribute(OGRFeature * ogrFet, QgsFeature & f, int attindex);
+    void getFeatureAttribute(OGRFeatureH ogrFet, QgsFeature & f, int attindex);
 
       /** return a provider name
 
@@ -222,19 +222,20 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
 
   private:
-    unsigned char *getGeometryPointer(OGRFeature * fet);
+    unsigned char *getGeometryPointer(OGRFeatureH fet);
     
     QgsFieldMap mAttributeFields;
 
-    OGRDataSource *ogrDataSource;
-    OGREnvelope *extent_;
+    OGRDataSourceH ogrDataSource;
+    void *extent_;
+
     /**This member variable receives the same value as extent_
      in the method QgsOgrProvider::extent(). The purpose is to prevent a memory leak*/
     QgsRect mExtentRect;
-    OGRLayer *ogrLayer;
+    OGRLayerH ogrLayer;
 
     // OGR Driver that was actually used to open the layer
-    OGRSFDriver *ogrDriver;
+    OGRSFDriverH ogrDriver;
 
     // Friendly name of the OGR Driver that was actually used to open the layer
     QString ogrDriverName;
@@ -246,12 +247,11 @@ class QgsOgrProvider : public QgsVectorDataProvider
     long numberFeatures;
     
     //! Selection rectangle 
-    OGRPolygon * mSelectionRectangle;
+    OGRGeometryH mSelectionRectangle;
     /**Adds one feature*/
     bool addFeature(QgsFeature& f);
     /**Deletes one feature*/
     bool deleteFeature(int id);
     //! The geometry factory
     GEOS_GEOM::GeometryFactory *geometryFactory;
-
 };
