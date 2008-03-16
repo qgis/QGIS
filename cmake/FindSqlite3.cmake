@@ -7,21 +7,27 @@
 #    SQLITE3_LIBRARY
 
 
+# Normally there is no need to specify /usr/... paths because 
+# cmake will look there automatically. However the NO_DEFAULT_PATH
+# prevents this behaviour allowing you to use no standard file
+# locations in preference over standard ones. Note in this case
+# you then need to explicitly add /usr and /usr/local prefixes
+# to the search list. This applies both to FIND_PATH and FIND_LIBRARY
 FIND_PATH(SQLITE3_INCLUDE_DIR sqlite3.h 
+  "$ENV{LIB_DIR}/include/sqlite"
   /usr/local/include 
   /usr/include 
-  #msvc
-  "$ENV{LIB_DIR}/include/sqlite"
   #mingw
   c:/msys/local/include
+  NO_DEFAULT_PATH
   )
 
 FIND_LIBRARY(SQLITE3_LIBRARY NAMES sqlite3 PATHS 
+  "$ENV{LIB_DIR}/lib"
   /usr/local/lib 
   /usr/lib 
   c:/msys/local/lib
-  #msvc
-  "$ENV{LIB_DIR}/lib"
+  NO_DEFAULT_PATH
   )
 
 IF (SQLITE3_INCLUDE_DIR AND SQLITE3_LIBRARY)
