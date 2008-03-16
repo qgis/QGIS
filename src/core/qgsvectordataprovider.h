@@ -153,7 +153,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
        * @param index the index of the attribute
        *
        * Default implementation walks all numeric attributes and caches minimal
-       * and maximal values. If provider has facilities to retreive minimal
+       * and maximal values. If provider has facilities to retrieve minimal
        * value directly, override this function.
        */
       virtual QVariant minValue(int index);
@@ -163,10 +163,19 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
        * @param index the index of the attribute
        *
        * Default implementation walks all numeric attributes and caches minimal
-       * and maximal values. If provider has facilities to retreive maximal
+       * and maximal values. If provider has facilities to retrieve maximal
        * value directly, override this function.
        */
       virtual QVariant maxValue(int index);
+
+      /**
+       * Return unique values of an attribute
+       * @param index the index of the attribute
+       * @param values reference to the list to fill
+       *
+       * Default implementation simply iterates the features 
+       */
+      virtual void getUniqueValues(int index, QStringList &uniqueValues);
 
       /**
        * Adds a list of features

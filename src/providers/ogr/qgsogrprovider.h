@@ -182,6 +182,18 @@ class QgsOgrProvider : public QgsVectorDataProvider
     */
     bool isValid();
 
+    /** Returns the minimum value of an attribute
+     *  @param index the index of the attribute */
+    QVariant minValue(int index);
+
+    /** Returns the maximum value of an attribute
+     *  @param index the index of the attribute */
+    QVariant maxValue(int index);
+
+    /** Return the unique values of an attribute
+     *  @param index the index of the attribute
+     *  @param values reference to the list of unique values */
+    virtual void getUniqueValues(int index, QStringList &uniqueValues);
 
   protected:
     /** loads fields from input file to member attributeFields */

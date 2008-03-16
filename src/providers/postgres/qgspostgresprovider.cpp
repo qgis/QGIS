@@ -334,7 +334,7 @@ void QgsPostgresProvider::disconnectDb()
   connection = 0;
 }
 
-QString QgsPostgresProvider::storageType()
+QString QgsPostgresProvider::storageType() const
 {
   return "PostgreSQL database with PostGIS extension";
 }
@@ -1272,10 +1272,8 @@ bool QgsPostgresProvider::uniqueData(QString schemaName,
 
   PGresult* unique = PQexec(connection, sql.toUtf8());
 
-  if (PQntuples(unique) == 1)
-//    if (strncmp(PQgetvalue(unique, 0, 0),"t", 1) == 0)
-    if (QString::fromUtf8(PQgetvalue(unique, 0, 0)).compare("t") == 0)	//really should compare just first character as original did
-      isUnique = true;
+  if (PQntuples(unique)==1 && QString::fromUtf8(PQgetvalue(unique, 0, 0)).startsWith("t") == 0)
+    isUnique = true;
 
   PQclear(unique);
 
@@ -1634,6 +1632,37 @@ QVariant QgsPostgresProvider::minValue(int index)
   return minValue.toDouble();
 }
 
+// Returns the list of unique values of an attribute
+void QgsPostgresProvider::getUniqueValues(int index, QStringList &uniqueValues)
+{
+  // get the field name 
+  QgsField fld = attributeFields[index];
+  QString sql;
+  if(sqlWhereClause.isEmpty())
+  {
+    sql = QString("select distinct %1 from %2 order by %1")
+            .arg(quotedIdentifier(fld.name()))
+            .arg(mSchemaTableName);
+  }
+  else
+  {
+    sql = QString("select distinct %1 from %2 where %3 order by %1")
+            .arg(quotedIdentifier(fld.name()))
+            .arg(mSchemaTableName)
+            .arg(sqlWhereClause);
+  }
+
+  uniqueValues.clear();
+
+  PGresult *res= PQexec(connection, sql.toUtf8());
+  if (PQresultStatus(res) == PGRES_TUPLES_OK)
+  {
+    for(int i=0; i<PQntuples(res); i++)
+      uniqueValues.append( QString::fromUtf8(PQgetvalue(res,i,0)) );
+  }
+  PQclear(res);
+}
+
 // Returns the maximum value of an attribute
 
 QVariant QgsPostgresProvider::maxValue(int index)
@@ -1700,7 +1729,7 @@ QVariant QgsPostgresProvider::getDefaultValue(int fieldId)
   if (PQntuples(result)==1 && !PQgetisnull(result, 0, 0) )
     defaultValue = QString::fromUtf8(PQgetvalue(result, 0, 0));
 
-  QgsDebugMsg( QString("defaultValue for %1 is NULL: %2").arg(fieldId).arg( defaultValue.isNull() ) );
+  // QgsDebugMsg( QString("defaultValue for %1 is NULL: %2").arg(fieldId).arg( defaultValue.isNull() ) );
 
   PQclear(result);
 
@@ -2391,7 +2420,7 @@ bool QgsPostgresProvider::deduceEndian()
   // version 7.4, binary cursors return data in XDR whereas previous versions
   // return data in the endian of the server
 
-  QString firstOid = "select regclass('" + mSchemaTableName + "')::oid";
+  QString firstOid = "select regclass(" + quotedValue(mSchemaTableName) + ")::oid";
   PGresult * oidResult = PQexec(connection, firstOid.toUtf8());
   // get the int value from a "normal" select
   QString oidValue = QString::fromUtf8(PQgetvalue(oidResult,0,0));
@@ -2577,13 +2606,13 @@ PGresult* QgsPostgresProvider::executeDbCommand(PGconn* connection,
   return result;
 }
 
-QString QgsPostgresProvider::quotedIdentifier( QString ident )
+QString QgsPostgresProvider::quotedIdentifier( QString ident ) const
 {
   ident.replace('"', "\"\"");
   return ident.prepend("\"").append("\"");
 }
 
-QString QgsPostgresProvider::quotedValue( QString value )
+QString QgsPostgresProvider::quotedValue( QString value ) const
 {
   if( value.isNull() )
     return "NULL";

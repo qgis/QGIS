@@ -69,7 +69,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     /**
       *   Returns the permanent storage type for this layer as a friendly name.
       */
-    QString storageType();
+    virtual QString storageType() const;
 
     /*! Get the QgsSpatialRefSys for this layer
      * @note Must be reimplemented by each provider. 
@@ -131,8 +131,6 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     */
     size_t layerCount() const;
 
-
-
     /**
      * Get the number of features in the layer
      */
@@ -184,13 +182,18 @@ class QgsPostgresProvider:public QgsVectorDataProvider
      */
     void reset();
 
-    /** Returns the minimum value of an attributs
+    /** Returns the minimum value of an attribute
      *  @param index the index of the attribute */
     QVariant minValue(int index);
 
-    /** Returns the maximum value of an attributs
+    /** Returns the maximum value of an attribute
      *  @param index the index of the attribute */
     QVariant maxValue(int index);
+
+    /** Return the unique values of an attribute
+     *  @param index the index of the attribute
+     *  @param values reference to the list of unique values */
+    virtual void getUniqueValues(int index, QStringList &uniqueValues);
 
     /**Returns true if layer is valid
     */
@@ -330,11 +333,11 @@ class QgsPostgresProvider:public QgsVectorDataProvider
 
     /** Double quote a PostgreSQL identifier for placement in a SQL string.
      */
-    QString quotedIdentifier( QString ident );
+    QString quotedIdentifier( QString ident ) const;
 
     /** Quote a value for placement in a SQL string.
      */
-    QString quotedValue( QString value );
+    QString quotedValue( QString value ) const;
 
     /** Load the field list
     */

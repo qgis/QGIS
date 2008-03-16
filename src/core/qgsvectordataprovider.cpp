@@ -291,6 +291,21 @@ QVariant QgsVectorDataProvider::maxValue(int index)
   return mCacheMaxValues[index];
 }
 
+void QgsVectorDataProvider::getUniqueValues(int index, QStringList &values)
+{
+  QgsFeature f;
+  QgsAttributeList keys;
+  keys.append(index);
+  select(keys, QgsRect(), false);
+
+  QMap<QString,int> map;
+
+  while( getNextFeature(f) )
+    map.insert( f.attributeMap()[index].toString(), 1);
+
+  values = map.keys();
+}
+
 void QgsVectorDataProvider::fillMinMaxCache()
 {
   const QgsFieldMap& flds = fields();
