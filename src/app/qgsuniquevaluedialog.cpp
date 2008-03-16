@@ -157,33 +157,26 @@ void QgsUniqueValueDialog::changeClassificationAttribute()
   QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider());
   if (provider)
   {
-    QString value;
-    QgsAttributeList attlist;
-
     QgsSymbol* symbol;
     int nr = provider->indexFromFieldName(attributeName);
     if(nr == -1)
     {
       return;
     }
-    attlist.append(nr);	
-
-    provider->select(attlist, QgsRect(), false);
-    QgsFeature feat;
 
     //go through all the features and insert their value into the map and into mClassListWidget
     mClassListWidget->clear();
-    while(provider->getNextFeature(feat))
-    {
-      const QgsAttributeMap& attrs = feat.attributeMap();
-      value = attrs[nr].toString();
 
-      if(mValues.find(value)==mValues.end())
+    QStringList keys;
+    provider->getUniqueValues(nr, keys);
+
+    QStringListIterator it(keys);
+    while( it.hasNext() )
       {
+      QString value = it.next();
         symbol=new QgsSymbol(mVectorLayer->vectorType(), value);
         mValues.insert(std::make_pair(value,symbol));
       }
-    }
 
     //set symbology for all QgsSiSyDialogs
     QColor thecolor;

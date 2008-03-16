@@ -30,6 +30,7 @@ email                : sherman at mrcc.com
 
 #include <QtDebug>
 #include <QFile>
+#include <QDir>
 #include <QFileInfo>
 #include <QMap>
 #include <QString>
@@ -483,7 +484,6 @@ bool QgsOgrProvider::addFeature(QgsFeature& f)
   OGRFeatureH feature= OGR_F_Create(fdef);
   QGis::WKBTYPE ftype = f.geometry()->wkbType();
   unsigned char* wkb = f.geometry()->wkbBuffer();
-  OGRErr err;
 
   if( f.geometry()->wkbSize() > 0 )
   {
@@ -901,8 +901,6 @@ static QString createFileFilter_(QString const &longName, QString const &glob)
 
 
 
-
-
 QGISEXTERN QString fileVectorFilters()
 {
   static QString myFileFilters;
@@ -1217,7 +1215,6 @@ QGISEXTERN bool createEmptyDataSource(const QString& uri,
   return true;
 }
 
-
 QgsSpatialRefSys QgsOgrProvider::getSRS()
 {
   QgsDebugMsg("QgsOgrProvider::getSRS()");
@@ -1245,4 +1242,110 @@ QgsSpatialRefSys QgsOgrProvider::getSRS()
   }
 
   return srs;
+}
+
+void QgsOgrProvider::getUniqueValues(int index, QStringList &uniqueValues)
+{
+  QgsField fld = mAttributeFields[index];
+  QFileInfo fi( dataSourceUri() );
+  if( !fi.exists() )
+    return;
+  
+  QString sql = QString("SELECT DISTINCT %1 FROM %2 ORDER BY %1").arg( fld.name() ).arg( fi.baseName() );
+
+  uniqueValues.clear();
+
+  OGRLayerH l = OGR_DS_ExecuteSQL(ogrDataSource, sql.ascii(), NULL, "SQL");
+  if(l==0)
+    return;
+
+  OGRFeatureH f;
+  while( f=OGR_L_GetNextFeature(l) )
+  {
+    uniqueValues.append( mEncoding->toUnicode(OGR_F_GetFieldAsString(f, 0)) );
+    OGR_F_Destroy(f);
+  }
+
+  OGR_DS_ReleaseResultSet(l, ogrDataSource);
+}
+
+
+
+QVariant QgsOgrProvider::minValue(int index)
+{
+  QgsField fld = mAttributeFields[index];
+  QFileInfo fi( dataSourceUri() );
+  if( !fi.exists() )
+    return QVariant();
+  
+  QString sql = QString("SELECT MIN(%1) FROM %2").arg( fld.name() ).arg( fi.baseName() );
+
+  OGRLayerH l = OGR_DS_ExecuteSQL(ogrDataSource, sql.ascii(), NULL, "SQL");
+
+  if(l==0)
+    return QVariant();
+
+  OGRFeatureH f = OGR_L_GetNextFeature(l);
+  if(f==0)
+  {
+    OGR_DS_ReleaseResultSet(l, ogrDataSource);
+    return QVariant();
+  }
+
+  QString str = mEncoding->toUnicode( mEncoding->toUnicode( OGR_F_GetFieldAsString(f,0) ) );
+  OGR_F_Destroy(f);
+
+  QVariant value;
+ 
+  switch (fld.type())
+  {
+    case QVariant::String: value = QVariant(str); break;
+    case QVariant::Int: value = QVariant(str.toInt()); break;
+    case QVariant::Double: value = QVariant(str.toDouble()); break;
+    //case QVariant::DateTime: value = QVariant(QDateTime::fromString(str)); break;
+    default: assert(NULL && "unsupported field type");
+  }
+  
+  OGR_DS_ReleaseResultSet(l, ogrDataSource);
+
+  return value;
+}
+
+QVariant QgsOgrProvider::maxValue(int index)
+{
+  QgsField fld = mAttributeFields[index];
+  QFileInfo fi( dataSourceUri() );
+  if( !fi.exists() )
+    return QVariant();
+  
+  QString sql = QString("SELECT MAX(%1) FROM %2").arg( fld.name() ).arg( fi.baseName() );
+
+  OGRLayerH l = OGR_DS_ExecuteSQL(ogrDataSource, sql.ascii(), NULL, "SQL");
+  if(l==0)
+    return QVariant();
+
+  OGRFeatureH f = OGR_L_GetNextFeature(l);
+  if(f==0)
+  {
+    OGR_DS_ReleaseResultSet(l, ogrDataSource);
+    return QVariant();
+  }
+
+  QString str = mEncoding->toUnicode( mEncoding->toUnicode( OGR_F_GetFieldAsString(f,0) ) );
+  OGR_F_Destroy(f);
+
+  QVariant value;
+ 
+  switch (fld.type())
+  {
+    case QVariant::String: value = QVariant(str); break;
+    case QVariant::Int: value = QVariant(str.toInt()); break;
+    case QVariant::Double: value = QVariant(str.toDouble()); break;
+    //case QVariant::DateTime: value = QVariant(QDateTime::fromString(str)); break;
+    default: assert(NULL && "unsupported field type");
+  }
+  
+  OGR_DS_ReleaseResultSet(l, ogrDataSource);
+
+  return value;
 }

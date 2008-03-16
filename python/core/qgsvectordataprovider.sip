@@ -135,6 +135,15 @@ class QgsVectorDataProvider : QgsDataProvider
        */
       virtual QVariant maxValue(int index);
 
+     /**
+       * Return unique values of an attribute
+       * @param index the index of the attribute
+       * @param values reference to the list to fill
+       *
+       * Default implementation simply iterates the features 
+       */
+      virtual void getUniqueValues(int index, QStringList &uniqueValues);
+
       /**
        * Adds a list of features
        * @return true in case of success and false in case of failure

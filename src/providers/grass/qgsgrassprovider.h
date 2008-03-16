@@ -119,7 +119,7 @@ public:
   /**
     *   Returns the permanent storage type for this layer as a friendly name.
     */
-  QString storageType() const;
+  virtual QString storageType() const;
 
   
   /** Select features based on a bounding rectangle. Features can be retrieved with calls to getNextFeature.
