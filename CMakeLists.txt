@@ -45,6 +45,9 @@ IF (WITH_BINDINGS)
   SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
 ENDIF (WITH_BINDINGS)
 
+# Optionally allow embedding sqlite3 into the binary (sqlite amalgamation) as 
+# recommended by sqlite developer
+SET (WITH_INTERNAL_SQLITE3 FALSE CACHE BOOL "Compile sqlite3 support directly into the binary")
 # Compile flag. Make it posible to turn it off.
 SET (PEDANTIC FALSE CACHE BOOL "Determines if we should compile with -Wall -Werror.")
 
@@ -80,7 +83,14 @@ ENDIF (NOT BISON_EXECUTABLE)
 
 # required
 FIND_PACKAGE(Proj)
-FIND_PACKAGE(Sqlite3)
+
+#optional since we can use internal sqlite
+IF (NOT WITH_INTERNAL_SQLITE3)
+  FIND_PACKAGE(Sqlite3)
+  IF (NOT SQLITE3_FOUND)
+    MESSAGE (SEND_ERROR "sqlite3 dependency was not found (try compiling with sqlite3 internal)!")
+  ENDIF (NOT SQLITE3_FOUND)
+ENDIF (NOT WITH_INTERNAL_SQLITE3)
 FIND_PACKAGE(GEOS)
 FIND_PACKAGE(GDAL)
 
@@ -102,9 +112,9 @@ IF (WITH_BINDINGS)
 ENDIF (WITH_BINDINGS)
 
 
-IF (NOT PROJ_FOUND OR NOT SQLITE3_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
+IF (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
   MESSAGE (SEND_ERROR "Some dependencies were not found!")
-ENDIF (NOT PROJ_FOUND OR NOT SQLITE3_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
+ENDIF (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
 
 IF (POSTGRES_FOUND)
   # following variable is used in qgsconfig.h

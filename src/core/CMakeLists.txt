@@ -4,75 +4,81 @@
 # sources
 
 SET(QGIS_CORE_SRCS
-qgis.cpp
-qgsapplication.cpp
-qgsattributeaction.cpp
-qgsclipper.cpp
-qgscontexthelp.cpp
-qgscoordinatetransform.cpp
-qgsdatasourceuri.cpp
-qgsdistancearea.cpp
-qgsexception.cpp
-qgsfeature.cpp
-qgsfield.cpp
-qgsgeometry.cpp
-qgshttptransaction.cpp
-qgslabel.cpp
-qgslabelattributes.cpp
-qgsline.cpp
-qgslogger.cpp
-qgsmaplayer.cpp
-qgsmaplayerregistry.cpp
-qgsmaprender.cpp
-qgsmaptopixel.cpp
-qgsmessageoutput.cpp
-qgspoint.cpp
-qgsproject.cpp
-qgsprojectfiletransform.cpp
-qgsprojectversion.cpp
-qgsprojectproperty.cpp
-qgsprovidercountcalcevent.cpp
-qgsproviderextentcalcevent.cpp
-qgsprovidermetadata.cpp
-qgsproviderregistry.cpp
-qgsrasterdataprovider.cpp
-qgsrect.cpp
-qgsrunprocess.cpp
-qgsscalecalculator.cpp
-qgssearchstring.cpp
-qgssearchtreenode.cpp
-qgssnapper.cpp
-qgsspatialrefsys.cpp
-qgsvectordataprovider.cpp
-qgsvectorfilewriter.cpp
-qgsvectorlayer.cpp
+  qgis.cpp
+  qgsapplication.cpp
+  qgsattributeaction.cpp
+  qgsclipper.cpp
+  qgscontexthelp.cpp
+  qgscoordinatetransform.cpp
+  qgsdatasourceuri.cpp
+  qgsdistancearea.cpp
+  qgsexception.cpp
+  qgsfeature.cpp
+  qgsfield.cpp
+  qgsgeometry.cpp
+  qgshttptransaction.cpp
+  qgslabel.cpp
+  qgslabelattributes.cpp
+  qgsline.cpp
+  qgslogger.cpp
+  qgsmaplayer.cpp
+  qgsmaplayerregistry.cpp
+  qgsmaprender.cpp
+  qgsmaptopixel.cpp
+  qgsmessageoutput.cpp
+  qgspoint.cpp
+  qgsproject.cpp
+  qgsprojectfiletransform.cpp
+  qgsprojectversion.cpp
+  qgsprojectproperty.cpp
+  qgsprovidercountcalcevent.cpp
+  qgsproviderextentcalcevent.cpp
+  qgsprovidermetadata.cpp
+  qgsproviderregistry.cpp
+  qgsrasterdataprovider.cpp
+  qgsrect.cpp
+  qgsrunprocess.cpp
+  qgsscalecalculator.cpp
+  qgssearchstring.cpp
+  qgssearchtreenode.cpp
+  qgssnapper.cpp
+  qgsspatialrefsys.cpp
+  qgsvectordataprovider.cpp
+  qgsvectorfilewriter.cpp
+  qgsvectorlayer.cpp
 
-raster/qgscliptominmaxenhancement.cpp
-raster/qgscolorrampshader.cpp
-raster/qgscolortable.cpp
-raster/qgscontrastenhancement.cpp
-raster/qgscontrastenhancementfunction.cpp
-raster/qgsfreakoutshader.cpp
-raster/qgslinearminmaxenhancement.cpp
-raster/qgslinearminmaxenhancementwithclip.cpp
-raster/qgspseudocolorshader.cpp
-raster/qgsrasterlayer.cpp
-raster/qgsrastertransparency.cpp
-raster/qgsrastershader.cpp
-raster/qgsrastershaderfunction.cpp
+  raster/qgscliptominmaxenhancement.cpp
+  raster/qgscolorrampshader.cpp
+  raster/qgscolortable.cpp
+  raster/qgscontrastenhancement.cpp
+  raster/qgscontrastenhancementfunction.cpp
+  raster/qgsfreakoutshader.cpp
+  raster/qgslinearminmaxenhancement.cpp
+  raster/qgslinearminmaxenhancementwithclip.cpp
+  raster/qgspseudocolorshader.cpp
+  raster/qgsrasterlayer.cpp
+  raster/qgsrastertransparency.cpp
+  raster/qgsrastershader.cpp
+  raster/qgsrastershaderfunction.cpp
 
-renderer/qgscontinuouscolorrenderer.cpp
-renderer/qgsgraduatedsymbolrenderer.cpp
-renderer/qgsrenderer.cpp
-renderer/qgssinglesymbolrenderer.cpp
-renderer/qgsuniquevaluerenderer.cpp
+  renderer/qgscontinuouscolorrenderer.cpp
+  renderer/qgsgraduatedsymbolrenderer.cpp
+  renderer/qgsrenderer.cpp
+  renderer/qgssinglesymbolrenderer.cpp
+  renderer/qgsuniquevaluerenderer.cpp
 
-symbology/qgsmarkercatalogue.cpp
-symbology/qgssymbol.cpp
-symbology/qgssymbologyutils.cpp
+  symbology/qgsmarkercatalogue.cpp
+  symbology/qgssymbol.cpp
+  symbology/qgssymbologyutils.cpp
 
-spatialindex/qgsspatialindex.cpp
-)
+  spatialindex/qgsspatialindex.cpp
+  )
+IF (WITH_INTERNAL_SQLITE3)
+  SET(QGIS_CORE_SRCS
+    ${QGIS_CORE_SRCS}
+    sqlite3/sqlite3.c
+    )
+ENDIF (WITH_INTERNAL_SQLITE3)
 
 ADD_FLEX_FILES(QGIS_CORE_SRCS qgssearchstringlexer.ll)
 
@@ -103,14 +109,21 @@ raster/qgsrasterlayer.h
 
 QT4_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} raster renderer symbology
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} 
+  raster 
+  renderer 
+  symbology
   spatialindex/include
   ${QT_QTSVG_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
-  ${SQLITE3_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
 )
+IF (WITH_INTERNAL_SQLITE3)
+  INCLUDE_DIRECTORIES(sqlite3)
+ELSE (WITH_INTERNAL_SQLITE3)
+  INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
+ENDIF (WITH_INTERNAL_SQLITE3)
 
 IF (WIN32)
   IF (MSVC)
@@ -170,7 +183,6 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${QT_QTMAIN_LIBRARY} 
   ${QT_QT3SUPPORT_LIBRARY} 
   ${PROJ_LIBRARY}
-  ${SQLITE3_LIBRARY}
   ${GEOS_LIBRARY}
   ${GDAL_LIBRARY}
   ${PLATFORM_LIBRARIES}
@@ -181,6 +193,10 @@ IF (APPLE)
     ${QT_QTSQL_LIBRARY} 
     )
 ENDIF (APPLE)
+
+IF (NOT WITH_INTERNAL_SQLITE3)
+  TARGET_LINK_LIBRARIES(qgis_core ${SQLITE3_LIBRARY})
+ENDIF (NOT WITH_INTERNAL_SQLITE3)
 
 INSTALL(TARGETS qgis_core
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
@@ -264,4 +280,4 @@ spatialindex/qgsspatialindex.h
 )
 
 INSTALL(CODE "MESSAGE(\"Installing CORE headers...\")")
-INSTALL(FILES ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+
