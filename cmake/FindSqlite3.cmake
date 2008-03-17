@@ -14,7 +14,7 @@
 # you then need to explicitly add /usr and /usr/local prefixes
 # to the search list. This applies both to FIND_PATH and FIND_LIBRARY
 FIND_PATH(SQLITE3_INCLUDE_DIR sqlite3.h 
-  "$ENV{LIB_DIR}/include/sqlite"
+  "$ENV{LIB_DIR}/include"
   /usr/local/include 
   /usr/include 
   #mingw
