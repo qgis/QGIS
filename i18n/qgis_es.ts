@@ -1,17 +1,6 @@
 <!DOCTYPE TS>
 <TS>
   <context>
-    <name>@default</name>
-    <message>
-      <source>OGR Driver Manager</source>
-      <translation>Administrador del controlador OGR</translation>
-    </message>
-    <message>
-      <source>unable to get OGRDriverManager</source>
-      <translation>No se puede conseguir un administrador del controlador OGR</translation>
-    </message>
-  </context>
-  <context>
     <name>Dialog</name>
     <message>
       <source>QGIS Plugin Installer</source>
@@ -1838,34 +1827,6 @@ Compilado contra Qt </translation>
       <translation>Coordenadas del mapa en la posición del ratón</translation>
     </message>
     <message>
-      <source>Python bindings - This is the major focus of this release it is now possible to create plugins using python. It is also possible to create GIS enabled applications written in python that use the QGIS libraries.</source>
-      <translation>Enlaces Python - Este es el principal objetivo de esta versión. Ahora es posible crear complementos usando Python. También es posible crear aplicaciones de SIG escritas en python que usen las bibliotecas de QGIS.</translation>
-    </message>
-    <message>
-      <source>Removed automake build system - QGIS now needs CMake for compilation.</source>
-      <translation>Eliminado el sistema de compilación de automake - QGIs ahora necesita CMake para compilar.</translation>
-    </message>
-    <message>
-      <source>Many new GRASS tools added (with thanks to http://faunalia.it/)</source>
-      <translation>Muchas herramientas de GRASS nuevas añadidas (gracias a http://faunalia.it/)</translation>
-    </message>
-    <message>
-      <source>Map Composer updates</source>
-      <translation>Actualizaciones del diseñador de mapas</translation>
-    </message>
-    <message>
-      <source>Crash fix for 2.5D shapefiles</source>
-      <translation>Resolución de cuelgues con archivos shape 2.5D</translation>
-    </message>
-    <message>
-      <source>The QGIS libraries have been refactored and better organised.</source>
-      <translation>Las bibliotecas de QGIS se han rehecho y organizado mejor.</translation>
-    </message>
-    <message>
-      <source>Improvements to the GeoReferencer</source>
-      <translation>Mejoras en el Georreferenciador</translation>
-    </message>
-    <message>
       <source>Ctrl+T</source>
       <comment>Hide most toolbars</comment>
       <translation>Ctrl+T</translation>
@@ -1873,10 +1834,6 @@ Compilado contra Qt </translation>
     <message>
       <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved.</source>
       <translation>Muestra las coordenadas del mapa en la posición actual del cursor. La visualización se actualiza continuamente al mover el ratón.</translation>
-    </message>
-    <message>
-      <source>Added locale options to options dialog.</source>
-      <translation>Se han añadido las opciones de locale al diálogo de opciones.</translation>
     </message>
     <message>
       <source>Open an OGR Supported Vector Layer</source>
@@ -2111,26 +2068,6 @@ Compilado contra Qt </translation>
       <translation>No se puede comunicar con el servidor de versión de QGIS</translation>
     </message>
     <message>
-      <source>QGIS Browser Selection</source>
-      <translation>Selección de navegador de QGIS</translation>
-    </message>
-    <message>
-      <source>Enter the name of a web browser to use (eg. konqueror).
-</source>
-      <translation>Introducir el nombre de un navegador web a utilizar (ej. konqueror).
-</translation>
-    </message>
-    <message>
-      <source>Enter the full path if the browser is not in your PATH.
-</source>
-      <translation>Introducir la ruta completa si el navegador no está en la variable de entorno PATH.
-</translation>
-    </message>
-    <message>
-      <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
-      <translation>Puede cambiar esta opción más tarde seleccionadon Opciones desde el menú Configuración (pestaña Navegador de la ayuda).</translation>
-    </message>
-    <message>
       <source>Layer is not valid</source>
       <translation>La capa no es válida</translation>
     </message>
@@ -2242,6 +2179,39 @@ Compilado contra Qt </translation>
     <message>
       <source>Warn me when opening a project file saved with an older version of QGIS</source>
       <translation>Avisarme al abrir archivos de proyecto guardados con una versión anterior de QGIS</translation>
+    </message>
+    <message>
+      <source>Toggle full screen mode</source>
+      <translation>Cambiar el modo de pantalla completa</translation>
+    </message>
+    <message>
+      <source>Ctrl-F</source>
+      <comment>Toggle fullscreen mode</comment>
+      <translation>C</translation>
+    </message>
+    <message>
+      <source>Toggle fullscreen mode</source>
+      <translation>Cambiar el modo de pantalla completa</translation>
+    </message>
+    <message>
+      <source>This release candidate includes over 40 bug fixes and enchancements over the QGIS 0.9.1 release. In addition we have added the following new features:</source>
+      <translation>Este candidato de lanzamiento incluye más de 40 correcciones de errores y mejoras en relación a la versión 0.9.1. Además hemos añadido las siguientes funciones nuevas:</translation>
+    </message>
+    <message>
+      <source>Imrovements to digitising capabilities.</source>
+      <translation>Mejora de la capacidad de digitalización.</translation>
+    </message>
+    <message>
+      <source>Supporting default and defined styles (.qml) files for file based vector layers. With styles you can save the symbolisation and other settings associated with a vector layer and they will be loaded whenever you load that layer.</source>
+      <translation>Soporte para archivos (.qml) de estilos predeterminados y definidos, para capas vectoriales basadas en archivos. Con los estilos puede guardar la simbología y otros ajustes asociados a una capa vectorial y se cargarán cada vez que cargue la capa.</translation>
+    </message>
+    <message>
+      <source>Improved support for transparency and contrast stretching in raster layers. Support for color ramps in raster layers. Support for non-north up rasters. Many other raster improvements 'under the hood'.</source>
+      <translation>Soporte mejorado para ajuste de la transparencia y el contraste en capas ráster. Soporte para rampas de color en capas ráster. Soporte para rásters no orientados al norte. Otras muchas mejoras ráster «en la trastienda».</translation>
+    </message>
+    <message>
+      <source></source>
+      <translation type="unfinished" />
     </message>
   </context>
   <context>
@@ -2689,16 +2659,16 @@ Puede cambiar esta opción más tarde seleccionadon Opciones desde el menú Conf
       <translation>Error</translation>
     </message>
     <message>
-      <source>Could not commit changes</source>
-      <translation>No se pudieron guardar los cambios</translation>
-    </message>
-    <message>
       <source>The attribute could not be inserted. The name already exists in the table.</source>
       <translation>No se pudo insertar el atributo. El nombre ya existe en la tabla.</translation>
     </message>
     <message>
       <source>Found %d matching features.</source>
       <translation>Se han encontrado %d elementos coincidentes.</translation>
+    </message>
+    <message>
+      <source>Could not commit changes - changes are still pending</source>
+      <translation>No se pudieron enviar los cambios - los cambios están todavía pendientes</translation>
     </message>
   </context>
   <context>
@@ -4662,6 +4632,13 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>GPX input file:</source>
       <translation>Archivo GPX de entrada:</translation>
+    </message>
+    <message>
+      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;/body>&lt;/html></source>
+      <translation type="unfinished" />
     </message>
   </context>
   <context>
@@ -6672,30 +6649,6 @@ en la línea </translation>
       <translation>QGIS - Creador de cuadrículas</translation>
     </message>
     <message>
-      <source>Longitude Interval is invalid - please correct and try again.</source>
-      <translation>El intervalo de la longitud no es válido - por favor, corríjalo y pruebe de nuevo.</translation>
-    </message>
-    <message>
-      <source>Latitude Interval is invalid - please correct and try again.</source>
-      <translation>El intervalo de la latitud no es válido - Por favor, corríjalo y pruebe de nuevo.</translation>
-    </message>
-    <message>
-      <source>Longitude Origin is invalid - please correct and try again..</source>
-      <translation>El origen de la longitud no es válido - Por favor, corríjalo y pruebe de nuevo.</translation>
-    </message>
-    <message>
-      <source>Latitude Origin is invalid - please correct and try again.</source>
-      <translation>El origen de la latitud no es válido - Por favor, corríjalo y pruebe de nuevo.</translation>
-    </message>
-    <message>
-      <source>End Point Longitude is invalid - please correct and try again.</source>
-      <translation>La longitud del punto final no es válida - Por favor, corríjala y pruebe de nuevo.</translation>
-    </message>
-    <message>
-      <source>End Point Latitude is invalid - please correct and try again.</source>
-      <translation>La latitud del punto final no es válida - Por favor, corríjala y pruebe de nuevo.</translation>
-    </message>
-    <message>
       <source>Choose a filename to save under</source>
       <translation>Seleccione un nombre para guardar el archivo</translation>
     </message>
@@ -6711,16 +6664,8 @@ en la línea </translation>
   <context>
     <name>QgsGridMakerPluginGuiBase</name>
     <message>
-      <source>QGIS Plugin Template</source>
-      <translation>Plantilla de complementos de QGIS</translation>
-    </message>
-    <message>
       <source>Graticule Builder</source>
       <translation>Generador de cuadrículas</translation>
-    </message>
-    <message>
-      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:11pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;>Please enter all units in decimal degrees&lt;/p>&lt;/body>&lt;/html></source>
-      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:11pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>Este complemento le ayudará a construir un archivo shape de cuadrícula que podrá usar como guía en su vista del mapa de QGIS.&lt;/span>&lt;/p>&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:Arial; font-size:10pt;&quot;>Introduzca todas las unidades en grados decimales&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
     <message>
       <source>Type</source>
@@ -6731,10 +6676,6 @@ en la línea </translation>
       <translation>Punto</translation>
     </message>
     <message>
-      <source>Line</source>
-      <translation>Línea</translation>
-    </message>
-    <message>
       <source>Polygon</source>
       <translation>Polígono</translation>
     </message>
@@ -6743,32 +6684,8 @@ en la línea </translation>
       <translation>Origen (esquina inferior izquierda)</translation>
     </message>
     <message>
-      <source>Latitude:</source>
-      <translation>Latitud:</translation>
-    </message>
-    <message>
-      <source>#000.00000; </source>
-      <translation>#000.00000; </translation>
-    </message>
-    <message>
-      <source>Longitude:</source>
-      <translation>Longitud:</translation>
-    </message>
-    <message>
       <source>End point (upper right)</source>
       <translation>Punto final (esquina superior derecha)</translation>
-    </message>
-    <message>
-      <source>Graticle size (units in degrees)</source>
-      <translation>Tamaño de la cuadrícula (unidades en grados)</translation>
-    </message>
-    <message>
-      <source>Latitude Interval:</source>
-      <translation>Intervalo de la latitud:</translation>
-    </message>
-    <message>
-      <source>Longitude Interval:</source>
-      <translation>Intervalo de la longitud:</translation>
     </message>
     <message>
       <source>Output (shape) file</source>
@@ -6777,6 +6694,42 @@ en la línea </translation>
     <message>
       <source>Save As...</source>
       <translation>Guardar como...</translation>
+    </message>
+    <message>
+      <source>QGIS Graticule Creator</source>
+      <translation>Generador de cuadrículas de QGIS</translation>
+    </message>
+    <message>
+      <source>Graticle size</source>
+      <translation>Tamaño de cuadrícula</translation>
+    </message>
+    <message>
+      <source>Y Interval:</source>
+      <translation>Intervalo Y</translation>
+    </message>
+    <message>
+      <source>X Interval:</source>
+      <translation>Intervalo X</translation>
+    </message>
+    <message>
+      <source>Y</source>
+      <translation>Y</translation>
+    </message>
+    <message>
+      <source>X</source>
+      <translation>X</translation>
+    </message>
+    <message>
+      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:11pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/span>&lt;/p>
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;&quot;>Please enter all units in decimal degrees&lt;/p>&lt;/body>&lt;/html></source>
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:11pt;&quot;>&lt;span style=&quot; font-size:10pt;&quot;>Esta complemento le ayudará a construir un archivo shape de cuadrícula que puede usar superpuesto en la vista del mapa de qgis.&lt;/span>&lt;/p>
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-size:10pt;&quot;>Por favor, introduzca todas las unidades en grados decimales.&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
   </context>
   <context>
@@ -7456,7 +7409,7 @@ Esto puede ser por un problema en su conexión a red o en el servidor WMS.</tran
     <message>
       <source>- %1 features found</source>
       <comment>Identify results window title</comment>
-      <translation>Encontrados - %1 elementos</translation>
+      <translation>- Encontrados %1 elementos</translation>
     </message>
   </context>
   <context>
@@ -7823,38 +7776,6 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
 La selección e identificación de objetos espaciales no funcionará correctamente.
 Por favor, instale PostGIS con soporte para GEOS (http://geos.refractions.net)</translation>
     </message>
-    <message>
-      <source>Save layer as...</source>
-      <translation>Guardar capa como...</translation>
-    </message>
-    <message>
-      <source>Error</source>
-      <translation>Error</translation>
-    </message>
-    <message>
-      <source>Error creating field </source>
-      <translation>Error al crear el campo </translation>
-    </message>
-    <message>
-      <source>Layer creation failed</source>
-      <translation>Ha fallado la creación de la capa</translation>
-    </message>
-    <message>
-      <source>Error creating shapefile</source>
-      <translation>Error al crear el archivo shape</translation>
-    </message>
-    <message>
-      <source>The shapefile could not be created (</source>
-      <translation>El archivo shape no se ha podido crear (</translation>
-    </message>
-    <message>
-      <source>Driver not found</source>
-      <translation>No se ha encontrado el controlador</translation>
-    </message>
-    <message>
-      <source> driver is not available</source>
-      <translation> el controlador no está disponible</translation>
-    </message>
   </context>
   <context>
     <name>QgsNewConnection</name>
@@ -8149,21 +8070,22 @@ Información extensa sobre el error:
     </message>
   </context>
   <context>
-    <name>QgsOGRFactory</name>
-    <message>
-      <source>Wrong Path/URI</source>
-      <translation>Ruta/URI errónea</translation>
-    </message>
-    <message>
-      <source>The provided path for the dataset is not valid.</source>
-      <translation>La ruta especificada para el conjunto de datos no es válida.</translation>
-    </message>
-  </context>
-  <context>
     <name>QgsOptions</name>
     <message>
       <source>Detected active locale on your system: </source>
       <translation>Idioma activo detectado en su sistema: </translation>
+    </message>
+    <message>
+      <source>to vertex</source>
+      <translation>a vértice</translation>
+    </message>
+    <message>
+      <source>to segment</source>
+      <translation>a segmento</translation>
+    </message>
+    <message>
+      <source>to vertex and segment</source>
+      <translation>a vértice y segmento</translation>
     </message>
   </context>
   <context>
@@ -8333,50 +8255,6 @@ Información extensa sobre el error:
       <translation>Se usará la proyección global predeterminada &amp;mostrada a continuación.</translation>
     </message>
     <message>
-      <source>Help &amp;Browser</source>
-      <translation>&amp;Navegador de la ayuda</translation>
-    </message>
-    <message>
-      <source>&lt;b>Note:&lt;/b> The browser must be in your PATH or you can specify the full path above</source>
-      <translation>&lt;b>Nota:&lt;/b> El navegador debe estar en la variable PATH o puede especificar la ruta completa arriba</translation>
-    </message>
-    <message>
-      <source>...</source>
-      <translation>...</translation>
-    </message>
-    <message>
-      <source>epiphany</source>
-      <translation>epiphany</translation>
-    </message>
-    <message>
-      <source>firefox</source>
-      <translation>firefox</translation>
-    </message>
-    <message>
-      <source>mozilla-firefox</source>
-      <translation>mozilla-firefox</translation>
-    </message>
-    <message>
-      <source>galeon</source>
-      <translation>galeon</translation>
-    </message>
-    <message>
-      <source>konqueror</source>
-      <translation>konqueror</translation>
-    </message>
-    <message>
-      <source>mozilla</source>
-      <translation>mozilla</translation>
-    </message>
-    <message>
-      <source>opera</source>
-      <translation>opera</translation>
-    </message>
-    <message>
-      <source>Open help documents with</source>
-      <translation>Abrir documentos de ayuda con</translation>
-    </message>
-    <message>
       <source>&amp;General</source>
       <translation>&amp;General</translation>
     </message>
@@ -8463,6 +8341,10 @@ Información extensa sobre el error:
     <message>
       <source>Search radius for vertex edits (in layer units):</source>
       <translation>Radio de búsqueda para edición de vértices (en unidades de la capa):</translation>
+    </message>
+    <message>
+      <source>Default Snap Mode:</source>
+      <translation>Modo de autoensamblado por omisión:</translation>
     </message>
   </context>
   <context>
@@ -9193,30 +9075,6 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
       <translation>No hay una columna de clave adecuada en la vista</translation>
     </message>
     <message>
-      <source>INSERT error</source>
-      <translation>Error al INSERTAR</translation>
-    </message>
-    <message>
-      <source>An error occured during feature insertion</source>
-      <translation>Ha ocurrido un error durante la inserción de objetos espaciales</translation>
-    </message>
-    <message>
-      <source>DELETE error</source>
-      <translation>Error al BORRAR</translation>
-    </message>
-    <message>
-      <source>An error occured during deletion from disk</source>
-      <translation>Ha ocurrido un error durante el borrado del disco</translation>
-    </message>
-    <message>
-      <source>PostGIS error</source>
-      <translation>Error de PostGIS</translation>
-    </message>
-    <message>
-      <source>When trying: </source>
-      <translation>Cuando se intentaba: </translation>
-    </message>
-    <message>
       <source>Unknown geometry type</source>
       <translation>Tipo de geometría desconocido</translation>
     </message>
@@ -9247,16 +9105,36 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
       <translation>No se ha podido obtener el tipo ni el srid del objeto espacial</translation>
     </message>
     <message>
-      <source>An error occured contacting the PostgreSQL database</source>
-      <translation>Ocurrió un error al contactar con la base de datos PostgreSQL</translation>
-    </message>
-    <message>
-      <source>The PostgreSQL database returned: </source>
-      <translation>La base de datos PostgrSQL devolvió: </translation>
-    </message>
-    <message>
       <source>Qgis was unable to determine the type and srid of column </source>
       <translation>QGIS no pude determinar el tipo y srid de la columna </translation>
+    </message>
+    <message>
+      <source>Unable to determine table access privileges for the </source>
+      <translation>No se pueden determinar los privilegios de acceso a tabla para el </translation>
+    </message>
+    <message>
+      <source>Error while adding features</source>
+      <translation>Error al añadir objetos espaciales</translation>
+    </message>
+    <message>
+      <source>Error while deleting features</source>
+      <translation>Error al borrar objetos espaciales</translation>
+    </message>
+    <message>
+      <source>Error while adding attributes</source>
+      <translation>Error al añadir atributos</translation>
+    </message>
+    <message>
+      <source>Error while deleting attributes</source>
+      <translation>Error al borrar atributos</translation>
+    </message>
+    <message>
+      <source>Error while changing attributes</source>
+      <translation>Error al cambiar atributos</translation>
+    </message>
+    <message>
+      <source>unexpected PostgreSQL error</source>
+      <translation>error inesperado de PostgreSQL</translation>
     </message>
   </context>
   <context>
@@ -11862,6 +11740,10 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
     <message>
       <source>Note: If you want more control over the map layout please use the map composer function in QGIS.</source>
       <translation>Nota: si quiere más control sobre la disposición del mapa, por favor use la función Diseñador de mapas de QGIS.</translation>
+    </message>
+    <message>
+      <source>Page Size</source>
+      <translation>Tamaño de página</translation>
     </message>
   </context>
   <context>
