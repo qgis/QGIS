@@ -42,23 +42,29 @@ extern "C" {
 */
 QGISEXTERN QgsGrassProvider * classFactory(const QString *uri)
 {
-    return new QgsGrassProvider(*uri);
+  return new QgsGrassProvider(*uri);
 }
+
 /** Required key function (used to map the plugin to a data store type)
 */
-QGISEXTERN QString providerKey(){
-    return QString("grass");
+QGISEXTERN QString providerKey()
+{
+  return QString("grass");
 }
+
 /**
 * Required description function 
 */
-QGISEXTERN QString description(){
-    return QString("GRASS data provider");
-} 
+QGISEXTERN QString description()
+{
+  return QString("GRASS data provider");
+}
+
 /**
 * Required isProvider function. Used to determine if this shared library
 * is a data provider plugin
 */
-QGISEXTERN bool isProvider(){
-    return true;
+QGISEXTERN bool isProvider()
+{
+  return true;
 }

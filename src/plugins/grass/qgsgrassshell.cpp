@@ -90,7 +90,7 @@ QDialog(parent), QgsGrassShellBase(), mTools(tools)
 
 #ifdef WIN32
   QMessageBox::warning( 0, "Warning", 
-      "GRASS Shell is not supported on Windows." );
+    "GRASS Shell is not supported on Windows." );
   return;
 #else 
 
@@ -100,7 +100,7 @@ QDialog(parent), QgsGrassShellBase(), mTools(tools)
   mText = new QgsGrassShellText( this, mTextFrame);
   layout->addWidget ( mText, 0 , 0 );
   mText->show();
-  
+
   connect(mCloseButton, SIGNAL(clicked()), this, SLOT(closeShell()));
 
   mFont = QFont ( "Courier", 10 );
@@ -197,7 +197,7 @@ QDialog(parent), QgsGrassShellBase(), mTools(tools)
     if ( fd < 0 ) 
     {
       QMessageBox::warning( 0, "Warning", "Cannot open slave file "
-          "in child process" );
+        "in child process" );
       return;
     }
 
@@ -252,11 +252,11 @@ QDialog(parent), QgsGrassShellBase(), mTools(tools)
     //execle ( (char*)shell.ascii(), (char *)si.fileName().ascii(), 
     //         norc, (char *) 0, envar);
     execl ( (char*)shell.ascii(), (char *)si.fileName().ascii(), 
-        norc, (char *) 0);
+      norc, (char *) 0);
 
     // Failed (QMessageBox here does not work)
     fprintf ( stderr, "GRASS_INFO_ERROR(1,1): Cannot start shell %s\n", 
-        (char*)shell.ascii() );
+      (char*)shell.ascii() );
     exit(1);
   }
 
@@ -266,7 +266,7 @@ QDialog(parent), QgsGrassShellBase(), mTools(tools)
   mOutNotifier = new QSocketNotifier ( mFdMaster, QSocketNotifier::Read, this);
 
   QObject::connect ( mOutNotifier, SIGNAL(activated(int)),
-      this, SLOT(readStdout(int)));
+    this, SLOT(readStdout(int)));
 
   // Set tab stops ???
   mTabStop.resize(200);
@@ -295,20 +295,20 @@ QgsGrassShell::~QgsGrassShell()
 #ifndef WIN32
   // This was old trick to write history
   /*
-     write( mFdMaster, "exit\015\012", 6);
-     while ( 1 ) 
-     {
-     readStdout(0);
+  write( mFdMaster, "exit\015\012", 6);
+  while ( 1 ) 
+  {
+  readStdout(0);
 
-     int status;
-     if ( waitpid ( mPid, &status, WNOHANG ) > 0 ) break;
+  int status;
+  if ( waitpid ( mPid, &status, WNOHANG ) > 0 ) break;
 
-     struct timespec t, r;
-     t.tv_sec = 0;
-     t.tv_nsec = 10000000; // 0.01 s
-     nanosleep ( &t, &r );
-     }
-     */
+  struct timespec t, r;
+  t.tv_sec = 0;
+  t.tv_nsec = 10000000; // 0.01 s
+  nanosleep ( &t, &r );
+  }
+  */
 
   // Write history
   if ( kill(mPid,SIGUSR1) == -1 )
@@ -356,25 +356,25 @@ void QgsGrassShell::keyPressEvent( QKeyEvent * e  )
   {
     switch ( e->key() )
     {
-      case Qt::Key_Up :
-        strcpy ( s, "\033[A" );
-        length = 3;
-        break;
+    case Qt::Key_Up :
+      strcpy ( s, "\033[A" );
+      length = 3;
+      break;
 
-      case Qt::Key_Down :
-        strcpy ( s, "\033[B" );
-        length = 3;
-        break;
+    case Qt::Key_Down :
+      strcpy ( s, "\033[B" );
+      length = 3;
+      break;
 
-      case Qt::Key_Right :
-        strcpy ( s, "\033[C" );
-        length = 3;
-        break;
+    case Qt::Key_Right :
+      strcpy ( s, "\033[C" );
+      length = 3;
+      break;
 
-      case Qt::Key_Left :
-        strcpy ( s, "\033[D" );
-        length = 3;
-        break;
+    case Qt::Key_Left :
+      strcpy ( s, "\033[D" );
+      length = 3;
+      break;
     }
   }
 
@@ -512,87 +512,87 @@ void QgsGrassShell::printStdout()
 
             switch ( final )
             {
-              case 'l' : // RM - Reset Mode
-              case 'h' : // SM - Set Mode
+            case 'l' : // RM - Reset Mode
+            case 'h' : // SM - Set Mode
+              {
+                int mode = -1;
+                switch ( rx.cap(2).toInt() )
                 {
-                  int mode = -1;
-                  switch ( rx.cap(2).toInt() )
-                  {
-                    case 4 :
-                      mode = Insert;
-                      break;
+                case 4 :
+                  mode = Insert;
+                  break;
 
-                    default:
-                      std::cerr << "ESC ignored: " << rx.cap(0).local8Bit().data() << std::endl;
-                      break;
-                  }
-                  if ( mode >= 0 )
-                  {
-                    if ( final == 'l' )
-                      resetMode ( mode );
-                    else
-                      setMode ( mode );
-                  }
+                default:
+                  std::cerr << "ESC ignored: " << rx.cap(0).local8Bit().data() << std::endl;
                   break;
                 }
-
-              case 'm' : // SGR - Select Graphic Rendition
-                if ( rx.cap(2).isEmpty() || rx.cap(2).toInt() == 0 )
+                if ( mode >= 0 )
                 {
-                  for ( int i = 0; i < RendetionCount; i++ )
-                  {
-                    mRendetion[i] = false;
-                  }
-                }
-                else
-                {
-                  std::cerr << "ESC SGR ignored: " << rx.cap(0).local8Bit().data() << std::endl;
+                  if ( final == 'l' )
+                    resetMode ( mode );
+                  else
+                    setMode ( mode );
                 }
                 break;
+              }
 
-              case 'P' : // DCH - Delete Character
+            case 'm' : // SGR - Select Graphic Rendition
+              if ( rx.cap(2).isEmpty() || rx.cap(2).toInt() == 0 )
+              {
+                for ( int i = 0; i < RendetionCount; i++ )
                 {
-                  int n = rx.cap(2).toInt();
-                  mText->setSelection ( mParagraph, mIndex, mParagraph, mIndex+n, 0 );
-                  mText->removeSelectedText ( 0 );
-                  break;
+                  mRendetion[i] = false;
                 }
+              }
+              else
+              {
+                std::cerr << "ESC SGR ignored: " << rx.cap(0).local8Bit().data() << std::endl;
+              }
+              break;
 
-              case 'K' : // EL - Erase In Line
-                if ( rx.cap(2).isEmpty() || rx.cap(2).toInt() == 0 )
-                {
-                  //mText->setSelectionAttributes ( 1, QColor(255,255,255), true );  
-                  mText->setSelection ( mParagraph, mIndex, mParagraph, 
-                      mText->paragraphLength(mParagraph), 0 );
-                  mText->removeSelectedText ( 0 );
-                }
+            case 'P' : // DCH - Delete Character
+              {
+                int n = rx.cap(2).toInt();
+                mText->setSelection ( mParagraph, mIndex, mParagraph, mIndex+n, 0 );
+                mText->removeSelectedText ( 0 );
                 break;
+              }
 
-                // TODO: multiple tab stops
-              case 'H' : // Horizontal Tabulation Set (HTS)
-                mTabStop[mIndex] = true;
-                std::cerr << "TAB set on " << mIndex << std::endl;
-                break;
+            case 'K' : // EL - Erase In Line
+              if ( rx.cap(2).isEmpty() || rx.cap(2).toInt() == 0 )
+              {
+                //mText->setSelectionAttributes ( 1, QColor(255,255,255), true );  
+                mText->setSelection ( mParagraph, mIndex, mParagraph, 
+                  mText->paragraphLength(mParagraph), 0 );
+                mText->removeSelectedText ( 0 );
+              }
+              break;
 
-              case 'g' : // Tabulation Clear (TBC)
-                // ESC [ g 	Clears tab stop at the cursor
-                // ESC [ 2 g 	Clears all tab stops in the line
-                // ESC [ 3 g 	Clears all tab stops in the Page
-                std::cerr << "TAB reset" << std::endl;
-                if ( rx.cap(2).isEmpty() || rx.cap(2).toInt() == 0 )
-                {
+              // TODO: multiple tab stops
+            case 'H' : // Horizontal Tabulation Set (HTS)
+              mTabStop[mIndex] = true;
+              std::cerr << "TAB set on " << mIndex << std::endl;
+              break;
+
+            case 'g' : // Tabulation Clear (TBC)
+              // ESC [ g 	Clears tab stop at the cursor
+              // ESC [ 2 g 	Clears all tab stops in the line
+              // ESC [ 3 g 	Clears all tab stops in the Page
+              std::cerr << "TAB reset" << std::endl;
+              if ( rx.cap(2).isEmpty() || rx.cap(2).toInt() == 0 )
+              {
+                mTabStop[mIndex] = false;
+              } 
+              else
+              {
+                for (int i = 0; i < (int)mTabStop.size(); i++ ) 
                   mTabStop[mIndex] = false;
-                } 
-                else
-                {
-                  for (int i = 0; i < (int)mTabStop.size(); i++ ) 
-                    mTabStop[mIndex] = false;
-                }
-                break;
+              }
+              break;
 
-              default:
-                std::cerr << "ESC ignored: " << rx.cap(0).local8Bit().data() << std::endl;
-                break;
+            default:
+              std::cerr << "ESC ignored: " << rx.cap(0).local8Bit().data() << std::endl;
+              break;
             }
 
             mStdoutBuffer.remove ( 0, mlen+1 );
@@ -639,49 +639,49 @@ void QgsGrassShell::printStdout()
         // control character
         switch ( c ) 
         {
-          case '\015' : // CR
-            //std::cerr << "CR" << std::endl;
-            mStdoutBuffer.remove ( 0, 1 );
-            // TODO : back tab stops?
-            mIndex = 0;
-            break;
+        case '\015' : // CR
+          //std::cerr << "CR" << std::endl;
+          mStdoutBuffer.remove ( 0, 1 );
+          // TODO : back tab stops?
+          mIndex = 0;
+          break;
 
-          case '\012' : // NL
-            //std::cerr << "NL" << std::endl;
-            newLine();
-            mStdoutBuffer.remove ( 0, 1 );
-            break;
+        case '\012' : // NL
+          //std::cerr << "NL" << std::endl;
+          newLine();
+          mStdoutBuffer.remove ( 0, 1 );
+          break;
 
-          case '\010' : // BS 
-            //std::cerr << "BS" << std::endl;
-            mIndex--;
-            mStdoutBuffer.remove ( 0, 1 );
-            break;
+        case '\010' : // BS 
+          //std::cerr << "BS" << std::endl;
+          mIndex--;
+          mStdoutBuffer.remove ( 0, 1 );
+          break;
 
-          case '\011' : // HT (tabulator)
+        case '\011' : // HT (tabulator)
+          {
+            //std::cerr << "HT" << std::endl;
+            QString space;
+            for ( int i = mIndex; i < (int)mTabStop.size(); i++ )
             {
-              //std::cerr << "HT" << std::endl;
-              QString space;
-              for ( int i = mIndex; i < (int)mTabStop.size(); i++ )
-              {
-                space.append ( " " );
-                if ( mTabStop[i] ) break;
-              }
-              insert (space);
-              mStdoutBuffer.remove ( 0, 1 );
-              break;
+              space.append ( " " );
+              if ( mTabStop[i] ) break;
             }
-
-          case '>' : // Keypad Numeric Mode 
-            std::cerr << "Keypad Numeric Mode ignored: " 
-              << QString::number(c,8).local8Bit().data() << std::endl;
-            mStdoutBuffer.remove ( 0, 2 );
-            break;
-
-          default : // unknown control, do nothing
-            std::cerr << "UNKNOWN control char ignored: " << QString::number(c,8).local8Bit().data() << std::endl;
+            insert (space);
             mStdoutBuffer.remove ( 0, 1 );
             break;
+          }
+
+        case '>' : // Keypad Numeric Mode 
+          std::cerr << "Keypad Numeric Mode ignored: " 
+            << QString::number(c,8).local8Bit().data() << std::endl;
+          mStdoutBuffer.remove ( 0, 2 );
+          break;
+
+        default : // unknown control, do nothing
+          std::cerr << "UNKNOWN control char ignored: " << QString::number(c,8).local8Bit().data() << std::endl;
+          mStdoutBuffer.remove ( 0, 1 );
+          break;
         }
       }
       continue;
@@ -794,7 +794,7 @@ void QgsGrassShell::printStdout()
 void QgsGrassShell::removeEmptyParagraphs()
 {
   while ( mParagraph >= 0 
-      && mText->text(mParagraph).stripWhiteSpace().length() <= 0 )
+       && mText->text(mParagraph).stripWhiteSpace().length() <= 0 )
   {
     mText->removeParagraph ( mParagraph );
     mParagraph--;
@@ -824,7 +824,7 @@ void QgsGrassShell::insert ( QString s )
   //          to the right
   // mText->setOverwriteMode ( !mMode[Insert] ); // does not work
   if ( !mMode[Insert] && !mNewLine && mParagraph >= 0 &&
-      mText->paragraphLength(mParagraph) > mIndex ) 
+    mText->paragraphLength(mParagraph) > mIndex ) 
   {
 #ifdef QGISDEBUG
     std::cerr << "erase old " << mIndex+s.length() << " chars "  << std::endl;
@@ -953,7 +953,7 @@ void QgsGrassShell::closeShell()
 #ifdef QGISDEBUG
   std::cerr << "QgsGrassShell::closeShell()" << std::endl;
 #endif
-  
+
   mTabWidget->removePage (this );
   delete this;
 }
