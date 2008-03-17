@@ -47,36 +47,36 @@ extern "C" {
 
 void GRASS_EXPORT QgsGrass::init( void ) 
 {
-    // Warning!!! 
-    // G_set_error_routine() once called from plugin
-    // is not valid in provider -> call it always 
+  // Warning!!! 
+  // G_set_error_routine() once called from plugin
+  // is not valid in provider -> call it always 
 
-    // Set error function
-    G_set_error_routine ( &error_routine );
+  // Set error function
+  G_set_error_routine ( &error_routine );
 
-    if ( initialized ) return;
+  if ( initialized ) return;
 
-    QSettings settings;
+  QSettings settings;
 
-    // Is it active mode ?
-    if ( getenv ("GISRC") ) {
-	active = true; 
-	// Store default values
-	defaultGisdbase = G_gisdbase();
-	defaultLocation = G_location();
-	defaultMapset = G_mapset();
-    } else {
-	active = false;
-    }
-    
-    // Don't use GISRC file and read/write GRASS variables (from location G_VAR_GISRC) to memory only.
-    G_set_gisrc_mode ( G_GISRC_MODE_MEMORY ); 
+  // Is it active mode ?
+  if ( getenv ("GISRC") ) {
+    active = true; 
+    // Store default values
+    defaultGisdbase = G_gisdbase();
+    defaultLocation = G_location();
+    defaultMapset = G_mapset();
+  } else {
+    active = false;
+  }
 
-    // Init GRASS libraries (required)
-    G_no_gisinit();  // Doesn't check write permissions for mapset compare to G_gisinit("libgrass++"); 
+  // Don't use GISRC file and read/write GRASS variables (from location G_VAR_GISRC) to memory only.
+  G_set_gisrc_mode ( G_GISRC_MODE_MEMORY ); 
 
-    // Set program name
-    G_set_program_name ("QGIS");
+  // Init GRASS libraries (required)
+  G_no_gisinit();  // Doesn't check write permissions for mapset compare to G_gisinit("libgrass++"); 
+
+  // Set program name
+  G_set_program_name ("QGIS");
 
   // Require GISBASE to be set. This should point to the location of
   // the GRASS installation. The GRASS libraries use it to know
@@ -122,26 +122,26 @@ void GRASS_EXPORT QgsGrass::init( void )
   bool userGisbase = false;
   bool valid = false;
   while ( !(valid = isValidGrassBaseDir(gisBase)) ) {
-    
+
     // ask user if he wants to specify GISBASE
     QMessageBox::StandardButton res = QMessageBox::warning(0, QObject::tr("GRASS plugin"),
-                    QObject::tr("QGIS couldn't find your GRASS installation.\n"
-                    "Would you like to specify path (GISBASE) to your GRASS installation?"),
-                 QMessageBox::Ok | QMessageBox::Cancel);
-    
+      QObject::tr("QGIS couldn't find your GRASS installation.\n"
+      "Would you like to specify path (GISBASE) to your GRASS installation?"),
+      QMessageBox::Ok | QMessageBox::Cancel);
+
     if (res != QMessageBox::Ok)
     {
       userGisbase = false;
       break;
     }
-    
+
     // XXX Need to subclass this and add explantory message above to left side
     userGisbase = true;
     // For Mac, GISBASE folder may be inside GRASS bundle. Use Qt file dialog
     // since Mac native dialog doesn't allow user to browse inside bundles.
     gisBase = QFileDialog::getExistingDirectory(
-        0, QObject::tr("Choose GRASS installation path (GISBASE)"), gisBase,
-        QFileDialog::DontUseNativeDialog);
+      0, QObject::tr("Choose GRASS installation path (GISBASE)"), gisBase,
+      QFileDialog::DontUseNativeDialog);
     if (gisBase == QString::null)
     {
       // User pressed cancel. No GRASS for you!
@@ -149,17 +149,17 @@ void GRASS_EXPORT QgsGrass::init( void )
       break;
     }
   }
-  
+
   if (!valid)
   {
     // warn user
     QMessageBox::information(0, QObject::tr("GRASS plugin"),
-                             QObject::tr("GRASS data won't be available if GISBASE is not specified."));
+      QObject::tr("GRASS data won't be available if GISBASE is not specified."));
   }
 
   if ( userGisbase )
   {
-      settings.writeEntry("/GRASS/gisbase", gisBase);
+    settings.writeEntry("/GRASS/gisbase", gisBase);
   }
 
 #ifdef QGISDEBUG
@@ -171,87 +171,87 @@ void GRASS_EXPORT QgsGrass::init( void )
   strcpy ( gisBaseEnvChar, const_cast<char *>(gisBaseEnv.ascii()) ); 
   putenv( gisBaseEnvChar );
 
-    // Add path to GRASS modules
+  // Add path to GRASS modules
 #ifdef WIN32
-    QString sep = ";";
+  QString sep = ";";
 #else
-    QString sep = ":";
+  QString sep = ":";
 #endif
-    QString path = "PATH=" + gisBase + "/bin";
-    path.append ( sep + gisBase + "/scripts" );
+  QString path = "PATH=" + gisBase + "/bin";
+  path.append ( sep + gisBase + "/scripts" );
 
-    // On windows the GRASS libraries are in 
-    // QgsApplication::prefixPath(), we have to add them
-    // to PATH to enable running of GRASS modules 
-    // and database drivers
+  // On windows the GRASS libraries are in 
+  // QgsApplication::prefixPath(), we have to add them
+  // to PATH to enable running of GRASS modules 
+  // and database drivers
 #ifdef WIN32
-    // It seems that QgsApplication::prefixPath() 
-    // is not initialized at this point
-    path.append ( sep + QCoreApplication::applicationDirPath() );
+  // It seems that QgsApplication::prefixPath() 
+  // is not initialized at this point
+  path.append ( sep + QCoreApplication::applicationDirPath() );
 #endif
 
 #ifdef WIN32
-    // Add path to MSYS bin
-    // Warning: MSYS sh.exe will translate this path to '/bin'
-    path.append ( sep + QCoreApplication::applicationDirPath() 
-                  + "/msys/bin/" );
+  // Add path to MSYS bin
+  // Warning: MSYS sh.exe will translate this path to '/bin'
+  path.append ( sep + QCoreApplication::applicationDirPath() 
+    + "/msys/bin/" );
 #endif
 
-    QString p = getenv ("PATH");
-    path.append ( sep + p );
+  QString p = getenv ("PATH");
+  path.append ( sep + p );
 
-    #ifdef QGISDEBUG
-    std::cerr << "set PATH: " << path.toLocal8Bit().data() << std::endl;
-    #endif
-    char *pathEnvChar = new char[path.length()+1];
-    strcpy ( pathEnvChar, const_cast<char *>(path.ascii()) );
-    putenv( pathEnvChar );
+#ifdef QGISDEBUG
+  std::cerr << "set PATH: " << path.toLocal8Bit().data() << std::endl;
+#endif
+  char *pathEnvChar = new char[path.length()+1];
+  strcpy ( pathEnvChar, const_cast<char *>(path.ascii()) );
+  putenv( pathEnvChar );
 
-    // Set GRASS_PAGER if not set, it is necessary for some 
-    // modules printing to terminal, e.g. g.list
-    // We use 'cat' because 'more' is not present in MSYS (Win)
-    // and it doesn't work well in built in shell (Unix/Mac) 
-    // and 'less' is not user friendly (for example user must press
-    // 'q' to quit which is definitely difficult for normal user)
-    // Also scroling can be don in scrollable window in both 
-    // MSYS terminal and built in shell.
-    if ( !getenv ("GRASS_PAGER") ) 
+  // Set GRASS_PAGER if not set, it is necessary for some 
+  // modules printing to terminal, e.g. g.list
+  // We use 'cat' because 'more' is not present in MSYS (Win)
+  // and it doesn't work well in built in shell (Unix/Mac) 
+  // and 'less' is not user friendly (for example user must press
+  // 'q' to quit which is definitely difficult for normal user)
+  // Also scroling can be don in scrollable window in both 
+  // MSYS terminal and built in shell.
+  if ( !getenv ("GRASS_PAGER") ) 
+  {
+    QString pager;
+    QStringList pagers;
+    //pagers << "more" << "less" << "cat"; // se notes above
+    pagers << "cat";
+
+    for ( int i = 0; i < pagers.size(); i++ ) 
     {
-	QString pager;
-	QStringList pagers;
-	//pagers << "more" << "less" << "cat"; // se notes above
-	pagers << "cat";
-	    
-	for ( int i = 0; i < pagers.size(); i++ ) 
-	{
-	    int state;
+      int state;
 
-	    QProcess p;
-	    p.start ( pagers.at(i) );
-	    p.waitForStarted();
-            state = p.state();
-            p.write("\004"); // Ctrl-D
-            p.closeWriteChannel();
-            p.waitForFinished(1000);
-	    p.kill();
+      QProcess p;
+      p.start ( pagers.at(i) );
+      p.waitForStarted();
+      state = p.state();
+      p.write("\004"); // Ctrl-D
+      p.closeWriteChannel();
+      p.waitForFinished(1000);
+      p.kill();
 
-	    if ( state == QProcess::Running )
-	    {
-	        pager = pagers.at(i);
-		break;
-	    }
-	}
-
-	if ( pager.length() > 0 )
-	{
-	    pager.prepend ( "GRASS_PAGER=" );
-	    char *pagerEnvChar = new char[pager.length()+1];
-	    strcpy ( pagerEnvChar, const_cast<char *>(pager.ascii()) );
-	    putenv( pagerEnvChar );
-	}
+      if ( state == QProcess::Running )
+      {
+        pager = pagers.at(i);
+        break;
+      }
     }
 
-    initialized = 1;
+    if ( pager.length() > 0 )
+    {
+      pager.prepend ( "GRASS_PAGER=" );
+      char *pagerEnvChar = new char[pager.length()+1];
+      strcpy ( pagerEnvChar, const_cast<char *>(pager.ascii()) );
+      putenv( pagerEnvChar );
+    }
+  }
+
+  initialized = 1;
 }
 
 /*
@@ -266,78 +266,81 @@ bool QgsGrass::isValidGrassBaseDir(QString const gisBase)
   {
     return FALSE;
   }
- 
+
   /* TODO: G_is_gisbase() was added to GRASS 6.1 06-05-24,
            enable its use after some period (others do update) */ 
   /*
   if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 ) 
   {
-      if ( G_is_gisbase( gisBase.toLocal8Bit().constData() ) ) return TRUE;
+  if ( G_is_gisbase( gisBase.toLocal8Bit().constData() ) ) return TRUE;
   } 
   else
   {
   */
-      QFileInfo gbi ( gisBase + "/etc/element_list" );
-      if ( gbi.exists() ) return TRUE;
+  QFileInfo gbi ( gisBase + "/etc/element_list" );
+  if ( gbi.exists() ) return TRUE;
   //}
   return FALSE;
 }
 
 bool QgsGrass::activeMode( void )
 {
-    init();
-    return active;
+  init();
+  return active;
 }
 
-QString QgsGrass::getDefaultGisdbase ( void ) {
-    init();
-    return defaultGisdbase;
+QString QgsGrass::getDefaultGisdbase ( void )
+{
+  init();
+  return defaultGisdbase;
 }
 
-QString QgsGrass::getDefaultLocation ( void ) {
-    init();
-    return defaultLocation;
+QString QgsGrass::getDefaultLocation ( void )
+{
+  init();
+  return defaultLocation;
 }
 
-QString QgsGrass::getDefaultMapset ( void ) {
-    init();
-    return defaultMapset;
+QString QgsGrass::getDefaultMapset ( void )
+{
+  init();
+  return defaultMapset;
 }
 
 void QgsGrass::setLocation( QString gisdbase, QString location )
 {
-    #ifdef QGISDEBUG
-    std::cerr << "QgsGrass::setLocation(): gisdbase = " << gisdbase.toLocal8Bit().data() << " location = "
-	      << location.toLocal8Bit().data() << std::endl;
-    #endif
-    init();
+#ifdef QGISDEBUG
+  std::cerr << "QgsGrass::setLocation(): gisdbase = " << gisdbase.toLocal8Bit().data() << " location = "
+    << location.toLocal8Bit().data() << std::endl;
+#endif
+  init();
 
-    // Set principal GRASS variables (in memory)
-    G__setenv( "GISDBASE", (char *) gisdbase.ascii() );        
-    G__setenv( "LOCATION_NAME", (char *) location.ascii() );
-    G__setenv( "MAPSET", "PERMANENT"); // PERMANENT must always exist
+  // Set principal GRASS variables (in memory)
+  G__setenv( "GISDBASE", (char *) gisdbase.ascii() );        
+  G__setenv( "LOCATION_NAME", (char *) location.ascii() );
+  G__setenv( "MAPSET", "PERMANENT"); // PERMANENT must always exist
 
-    // Add all available mapsets to search path
-    char **ms = G_available_mapsets();
-    for ( int i = 0; ms[i]; i++ )  G_add_mapset_to_search_path ( ms[i] );
+  // Add all available mapsets to search path
+  char **ms = G_available_mapsets();
+  for ( int i = 0; ms[i]; i++ )  G_add_mapset_to_search_path ( ms[i] );
 }
 
 void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
 {
-    #ifdef QGISDEBUG
-    std::cerr << "QgsGrass::setLocation(): gisdbase = " << gisdbase.toLocal8Bit().data() << " location = "
-	      << location.toLocal8Bit().data() << " mapset = " << mapset.toLocal8Bit().data() << std::endl;
-    #endif
-    init();
+#ifdef QGISDEBUG
+  std::cerr << "QgsGrass::setLocation(): gisdbase = " << gisdbase.toLocal8Bit().data() << " location = "
+    << location.toLocal8Bit().data() << " mapset = " << mapset.toLocal8Bit().data() << std::endl;
+#endif
+  init();
 
-    // Set principal GRASS variables (in memory)
-    G__setenv( "GISDBASE", (char *) gisdbase.ascii() );        
-    G__setenv( "LOCATION_NAME", (char *) location.ascii() );
-    G__setenv( "MAPSET", (char *) mapset.ascii() ); 
+  // Set principal GRASS variables (in memory)
+  G__setenv( "GISDBASE", (char *) gisdbase.ascii() );        
+  G__setenv( "LOCATION_NAME", (char *) location.ascii() );
+  G__setenv( "MAPSET", (char *) mapset.ascii() ); 
 
-    // Add all available mapsets to search path
-    char **ms = G_available_mapsets();
-    for ( int i = 0; ms[i]; i++ )  G_add_mapset_to_search_path ( ms[i] );
+  // Add all available mapsets to search path
+  char **ms = G_available_mapsets();
+  for ( int i = 0; ms[i]; i++ )  G_add_mapset_to_search_path ( ms[i] );
 }
 
 int QgsGrass::initialized = 0;
@@ -358,551 +361,556 @@ QString QgsGrass::mTmp;
 
 jmp_buf QgsGrass::mFatalErrorEnv;
 
-int QgsGrass::error_routine ( char *msg, int fatal) {
+int QgsGrass::error_routine ( char *msg, int fatal)
+{
   return error_routine((const char*) msg, fatal);
 }
 
-int QgsGrass::error_routine ( const char *msg, int fatal) {
-    std::cerr << "error_routine (fatal = " << fatal << "): " << msg << std::endl;
+int QgsGrass::error_routine ( const char *msg, int fatal)
+{
+  std::cerr << "error_routine (fatal = " << fatal << "): " << msg << std::endl;
 
-    error_message = msg;
+  error_message = msg;
 
-    if ( fatal )
-    { 
-      error = FATAL;
-      // we have to do a long jump here, otherwise GRASS >= 6.3 will kill our process
-      longjmp(mFatalErrorEnv, 1);
-    }
-    else
-      error = WARNING;
+  if ( fatal )
+  { 
+    error = FATAL;
+    // we have to do a long jump here, otherwise GRASS >= 6.3 will kill our process
+    longjmp(mFatalErrorEnv, 1);
+  }
+  else
+    error = WARNING;
 
-    return 1;
+  return 1;
 }
 
-void GRASS_EXPORT QgsGrass::resetError ( void ) {
-    error = OK;
+void GRASS_EXPORT QgsGrass::resetError ( void )
+{
+  error = OK;
 }
 
-int GRASS_EXPORT QgsGrass::getError ( void ) {
-    return error;
+int GRASS_EXPORT QgsGrass::getError ( void )
+{
+  return error;
 }
 
-QString GRASS_EXPORT QgsGrass::getErrorMessage ( void ) {
-    return error_message;
+QString GRASS_EXPORT QgsGrass::getErrorMessage ( void )
+{
+  return error_message;
 }
 
 jmp_buf GRASS_EXPORT &QgsGrass::fatalErrorEnv()
 {
-    return mFatalErrorEnv;
+  return mFatalErrorEnv;
 }
 
 
 QString GRASS_EXPORT QgsGrass::openMapset ( QString gisdbase, QString location, QString mapset )
 {
 #ifdef QGISDEBUG
-    std::cerr << "QgsGrass::openMapset" << std::endl;
-    std::cerr << "gisdbase = " << gisdbase.local8Bit().data() << std::endl;
-    std::cerr << "location = " << location.local8Bit().data() << std::endl;
-    std::cerr << "mapset = " << mapset.local8Bit().data() << std::endl;
+  std::cerr << "QgsGrass::openMapset" << std::endl;
+  std::cerr << "gisdbase = " << gisdbase.local8Bit().data() << std::endl;
+  std::cerr << "location = " << location.local8Bit().data() << std::endl;
+  std::cerr << "mapset = " << mapset.local8Bit().data() << std::endl;
 #endif
 
-    QString mapsetPath = gisdbase + "/" + location + "/" + mapset;
-    
-    // Check if the mapset is in use
-    QString gisBase = getenv("GISBASE");
-    if ( gisBase.isNull() ) return QObject::tr("GISBASE is not set.");
-     
-    QFileInfo fi( mapsetPath+ "/WIND" );
-    if ( !fi.exists() )
-    {
-        return mapsetPath + QObject::tr(" is not a GRASS mapset.");
-    }
-    
-    QString lock = mapsetPath + "/.gislock";
-    QFile lockFile ( lock );
-    Q3Process *process = new Q3Process();
-    process->addArgument ( gisBase + "/etc/lock" ); // lock program
-    process->addArgument ( lock ); // lock file
+  QString mapsetPath = gisdbase + "/" + location + "/" + mapset;
 
-    // TODO: getpid() probably is not portable
+  // Check if the mapset is in use
+  QString gisBase = getenv("GISBASE");
+  if ( gisBase.isNull() ) return QObject::tr("GISBASE is not set.");
+
+  QFileInfo fi( mapsetPath+ "/WIND" );
+  if ( !fi.exists() )
+  {
+    return mapsetPath + QObject::tr(" is not a GRASS mapset.");
+  }
+
+  QString lock = mapsetPath + "/.gislock";
+  QFile lockFile ( lock );
+  Q3Process *process = new Q3Process();
+  process->addArgument ( gisBase + "/etc/lock" ); // lock program
+  process->addArgument ( lock ); // lock file
+
+  // TODO: getpid() probably is not portable
 #ifndef _MSC_VER
-    int pid = getpid();
+  int pid = getpid();
 #else
-	int pid = GetCurrentProcessId();
+  int pid = GetCurrentProcessId();
 #endif
 #ifdef QGISDEBUG
-    std::cerr << "pid = " << pid << std::endl;
+  std::cerr << "pid = " << pid << std::endl;
 #endif
-    process->addArgument ( QString::number(pid) ); 
+  process->addArgument ( QString::number(pid) ); 
 
-    if ( !process->start() ) 
-    {
-	return QObject::tr("Cannot start ") + gisBase + "/etc/lock";
-    }
-    
-    // TODO better wait 
-    while ( process->isRunning () ) { }
+  if ( !process->start() ) 
+  {
+    return QObject::tr("Cannot start ") + gisBase + "/etc/lock";
+  }
+
+  // TODO better wait 
+  while ( process->isRunning () ) { }
 
 #ifndef WIN32
-    int status = process->exitStatus ();
+  int status = process->exitStatus ();
 #ifdef QGISDEBUG
-    std::cerr << "status = " << status << std::endl;
+  std::cerr << "status = " << status << std::endl;
 #endif
 #endif
-    delete process;
+  delete process;
 
 
-// TODO WIN32 (lock.exe does not work properly?)
+  // TODO WIN32 (lock.exe does not work properly?)
 #ifndef WIN32
-    if ( status > 0 ) return QObject::tr("Mapset is already in use.");
+  if ( status > 0 ) return QObject::tr("Mapset is already in use.");
 #endif
 
-    // Create temporary directory
-    QFileInfo info ( mapsetPath );
-    QString user = info.owner();
+  // Create temporary directory
+  QFileInfo info ( mapsetPath );
+  QString user = info.owner();
 
-    mTmp = QDir::tempPath () + "/grass6-" + user + "-" + QString::number(pid);
-    QDir dir ( mTmp );
-    if ( dir.exists() )
+  mTmp = QDir::tempPath () + "/grass6-" + user + "-" + QString::number(pid);
+  QDir dir ( mTmp );
+  if ( dir.exists() )
+  {
+    QFileInfo dirInfo(mTmp);
+    if ( !dirInfo.isWritable() )
     {
-        QFileInfo dirInfo(mTmp);
-        if ( !dirInfo.isWritable() )
-        {
-            lockFile.remove();
-	    return QObject::tr("Temporary directory ") + mTmp + QObject::tr(" exist but is not writable");
-        }
+      lockFile.remove();
+      return QObject::tr("Temporary directory ") + mTmp + QObject::tr(" exist but is not writable");
     }
-    else if ( !dir.mkdir( mTmp ) )
-    {
-        lockFile.remove();
-	return QObject::tr("Cannot create temporary directory ") + mTmp;
-    }
-   
-    // Create GISRC file 
-    QString globalGisrc =  QDir::home().path() + "/.grassrc6";
-    mGisrc = mTmp + "/gisrc";
+  }
+  else if ( !dir.mkdir( mTmp ) )
+  {
+    lockFile.remove();
+    return QObject::tr("Cannot create temporary directory ") + mTmp;
+  }
+
+  // Create GISRC file 
+  QString globalGisrc =  QDir::home().path() + "/.grassrc6";
+  mGisrc = mTmp + "/gisrc";
 
 #ifdef QGISDEBUG
-    std::cerr << "globalGisrc = " << globalGisrc.local8Bit().data() << std::endl;
-    std::cerr << "mGisrc = " << mGisrc.local8Bit().data() << std::endl;
+  std::cerr << "globalGisrc = " << globalGisrc.local8Bit().data() << std::endl;
+  std::cerr << "mGisrc = " << mGisrc.local8Bit().data() << std::endl;
 #endif
 
-    QFile out ( mGisrc );
-    if ( !out.open( QIODevice::WriteOnly ) ) 
-    {
-        lockFile.remove();
-	return QObject::tr("Cannot create ") + mGisrc; 
-    }
-    QTextStream stream ( &out );
+  QFile out ( mGisrc );
+  if ( !out.open( QIODevice::WriteOnly ) ) 
+  {
+    lockFile.remove();
+    return QObject::tr("Cannot create ") + mGisrc; 
+  }
+  QTextStream stream ( &out );
 
-    QFile in ( globalGisrc );
-    QString line;
-    char buf[1000];
-    if ( in.open( QIODevice::ReadOnly ) ) 
+  QFile in ( globalGisrc );
+  QString line;
+  char buf[1000];
+  if ( in.open( QIODevice::ReadOnly ) ) 
+  {
+    while ( in.readLine( buf, 1000 ) != -1 ) 
     {
-	while ( in.readLine( buf, 1000 ) != -1 ) 
-	{
       line = buf;
-	    if ( line.contains("GISDBASE:") || 
-		 line.contains("LOCATION_NAME:") ||
-	         line.contains("MAPSET:") )
-	    {
-		continue;
-	    }
-	    stream << line;
-	}
-        in.close();
+      if ( line.contains("GISDBASE:") || 
+        line.contains("LOCATION_NAME:") ||
+        line.contains("MAPSET:") )
+      {
+        continue;
+      }
+      stream << line;
     }
-    line = "GISDBASE: " + gisdbase + "\n";
-    stream << line;
-    line = "LOCATION_NAME: " + location + "\n";
-    stream << line;
-    line = "MAPSET: " + mapset + "\n";
-    stream << line;
-	
-    out.close();
+    in.close();
+  }
+  line = "GISDBASE: " + gisdbase + "\n";
+  stream << line;
+  line = "LOCATION_NAME: " + location + "\n";
+  stream << line;
+  line = "MAPSET: " + mapset + "\n";
+  stream << line;
 
-    // Set GISRC enviroment variable
+  out.close();
 
-    /* _Correct_ putenv() implementation is not making copy! */
-    QString gisrcEnv = "GISRC=" + mGisrc;
-    char *gisrcEnvChar = new char[gisrcEnv.length()+1];
-    strcpy ( gisrcEnvChar, const_cast<char *>(gisrcEnv.ascii()) );
-    putenv( gisrcEnvChar );
-    
-    // Reinitialize GRASS 
-    G__setenv( "GISRC", const_cast<char *>(gisrcEnv.ascii()) );        
-    G__setenv( "GISDBASE", const_cast<char *>(gisdbase.ascii()) );        
-    G__setenv( "LOCATION_NAME", const_cast<char *>(location.ascii()) );
-    G__setenv( "MAPSET", const_cast<char *>(mapset.ascii()) );
-    defaultGisdbase = gisdbase;
-    defaultLocation = location;
-    defaultMapset = mapset;
+  // Set GISRC enviroment variable
 
-    active = true; 
+  /* _Correct_ putenv() implementation is not making copy! */
+  QString gisrcEnv = "GISRC=" + mGisrc;
+  char *gisrcEnvChar = new char[gisrcEnv.length()+1];
+  strcpy ( gisrcEnvChar, const_cast<char *>(gisrcEnv.ascii()) );
+  putenv( gisrcEnvChar );
 
-    // Close old mapset
-    if ( mMapsetLock.length() > 0 )
-    {
-        QFile file ( mMapsetLock );
-        file.remove();
-    }
-    
-    mMapsetLock = lock;
+  // Reinitialize GRASS 
+  G__setenv( "GISRC", const_cast<char *>(gisrcEnv.ascii()) );        
+  G__setenv( "GISDBASE", const_cast<char *>(gisdbase.ascii()) );        
+  G__setenv( "LOCATION_NAME", const_cast<char *>(location.ascii()) );
+  G__setenv( "MAPSET", const_cast<char *>(mapset.ascii()) );
+  defaultGisdbase = gisdbase;
+  defaultLocation = location;
+  defaultMapset = mapset;
 
-    return NULL;
+  active = true; 
+
+  // Close old mapset
+  if ( mMapsetLock.length() > 0 )
+  {
+    QFile file ( mMapsetLock );
+    file.remove();
+  }
+
+  mMapsetLock = lock;
+
+  return NULL;
 }
 
 QString QgsGrass::closeMapset ( )
 {
 #ifdef QGISDEBUG
-    std::cerr << "QgsGrass::closeMapset" << std::endl;
+  std::cerr << "QgsGrass::closeMapset" << std::endl;
 #endif
 
-    if ( mMapsetLock.length() > 0 )
+  if ( mMapsetLock.length() > 0 )
+  {
+    QFile file ( mMapsetLock );
+    if ( !file.remove() )
     {
-        QFile file ( mMapsetLock );
-        if ( !file.remove() )
-        {
-	    return QObject::tr("Cannot remove mapset lock: ") + mMapsetLock;
-        }
-        mMapsetLock = "";
-
-	putenv( "GISRC" );
-	
-	// Reinitialize GRASS 
-	G__setenv( "GISRC", "" );        
-	G__setenv( "GISDBASE", "" );        
-	G__setenv( "LOCATION_NAME", "" );
-	G__setenv( "MAPSET", "" );
-	defaultGisdbase = "";
-	defaultLocation = "";
-	defaultMapset = "";
-        active = 0;
-
-        // Delete temporary dir
-        
-        // To be sure that we dont delete '/' for example
-        if ( mTmp.left(4) == "/tmp" ) 
-        {
-	    QDir dir ( mTmp );
-	    for ( unsigned int i = 0; i < dir.count(); i++ )
-	    {
-		if ( dir[i] == "." || dir[i] == ".." ) continue;
-
-		dir.remove(dir[i]); 
-		if ( dir.remove(dir[i]) )
-		{
-		    std::cerr << "Cannot remove temporary file " << dir[i].local8Bit().data() << std::endl;
-		}
-	    }
-             
-            if ( !dir.rmdir(mTmp) )
-            {
-                std::cerr << "Cannot remove temporary directory " << mTmp.local8Bit().data() << std::endl;
-            }
-        } 
+      return QObject::tr("Cannot remove mapset lock: ") + mMapsetLock;
     }
+    mMapsetLock = "";
 
-    return NULL;
+    putenv( "GISRC" );
+
+    // Reinitialize GRASS 
+    G__setenv( "GISRC", "" );        
+    G__setenv( "GISDBASE", "" );        
+    G__setenv( "LOCATION_NAME", "" );
+    G__setenv( "MAPSET", "" );
+    defaultGisdbase = "";
+    defaultLocation = "";
+    defaultMapset = "";
+    active = 0;
+
+    // Delete temporary dir
+
+    // To be sure that we dont delete '/' for example
+    if ( mTmp.left(4) == "/tmp" ) 
+    {
+      QDir dir ( mTmp );
+      for ( unsigned int i = 0; i < dir.count(); i++ )
+      {
+        if ( dir[i] == "." || dir[i] == ".." ) continue;
+
+        dir.remove(dir[i]); 
+        if ( dir.remove(dir[i]) )
+        {
+          std::cerr << "Cannot remove temporary file " << dir[i].local8Bit().data() << std::endl;
+        }
+      }
+
+      if ( !dir.rmdir(mTmp) )
+      {
+        std::cerr << "Cannot remove temporary directory " << mTmp.local8Bit().data() << std::endl;
+      }
+    } 
+  }
+
+  return NULL;
 }
 
 QStringList GRASS_EXPORT QgsGrass::locations ( QString gisbase )
 {
-    #ifdef QGISDEBUG
-    std::cerr << "QgsGrass::locations gisbase = " 
-	      << gisbase.ascii() << std::endl;
-    #endif
+#ifdef QGISDEBUG
+  std::cerr << "QgsGrass::locations gisbase = " 
+    << gisbase.ascii() << std::endl;
+#endif
 
-    QStringList list;
+  QStringList list;
 
-    if ( gisbase.isEmpty() ) return list;
-    
-    QDir d = QDir( gisbase );
-    d.setFilter(QDir::NoDotAndDotDot|QDir::Dirs);
+  if ( gisbase.isEmpty() ) return list;
 
-    for ( unsigned int i = 0; i < d.count(); i++ ) 
+  QDir d = QDir( gisbase );
+  d.setFilter(QDir::NoDotAndDotDot|QDir::Dirs);
+
+  for ( unsigned int i = 0; i < d.count(); i++ ) 
+  {
+    if ( QFile::exists ( gisbase + "/" + d[i] 
+    + "/PERMANENT/DEFAULT_WIND" ) )
     {
-        if ( QFile::exists ( gisbase + "/" + d[i] 
-		             + "/PERMANENT/DEFAULT_WIND" ) )
-	{
-    	    list.append(QString(d[i]));
-	}
+      list.append(QString(d[i]));
     }
-    return list;
+  }
+  return list;
 }
 
 QStringList GRASS_EXPORT QgsGrass::mapsets ( QString gisbase, QString locationName )
 {
-    #ifdef QGISDEBUG
-    std::cerr << "QgsGrass::mapsets gisbase = " << gisbase.ascii() 
-	      << " locationName = " << locationName.ascii() << std::endl;
-    #endif
-    
-    if ( gisbase.isEmpty() || locationName.isEmpty() )
-	return QStringList();
+#ifdef QGISDEBUG
+  std::cerr << "QgsGrass::mapsets gisbase = " << gisbase.ascii() 
+    << " locationName = " << locationName.ascii() << std::endl;
+#endif
 
-    return QgsGrass::mapsets ( gisbase + "/" + locationName );
+  if ( gisbase.isEmpty() || locationName.isEmpty() )
+    return QStringList();
+
+  return QgsGrass::mapsets ( gisbase + "/" + locationName );
 }
 
 QStringList GRASS_EXPORT QgsGrass::mapsets ( QString locationPath )
 {
-    #ifdef QGISDEBUG
-    std::cerr << "QgsGrass::mapsets locationPath = " 
-	      << locationPath.ascii() << std::endl;
-    #endif
+#ifdef QGISDEBUG
+  std::cerr << "QgsGrass::mapsets locationPath = " 
+    << locationPath.ascii() << std::endl;
+#endif
 
-    QStringList list;
+  QStringList list;
 
-    if ( locationPath.isEmpty() ) return list;
-    
-    QDir d = QDir( locationPath );
-    d.setFilter(QDir::NoDotAndDotDot|QDir::Dirs);
+  if ( locationPath.isEmpty() ) return list;
 
-    for ( unsigned int i = 0; i < d.count(); i++ ) 
+  QDir d = QDir( locationPath );
+  d.setFilter(QDir::NoDotAndDotDot|QDir::Dirs);
+
+  for ( unsigned int i = 0; i < d.count(); i++ ) 
+  {
+    if ( QFile::exists ( locationPath + "/" + d[i] + "/WIND" ) )
     {
-        if ( QFile::exists ( locationPath + "/" + d[i] + "/WIND" ) )
-	{
-    	    list.append(d[i]);
-	}
+      list.append(d[i]);
     }
-    return list;
+  }
+  return list;
 }
 
 QStringList GRASS_EXPORT QgsGrass::vectors ( QString gisbase, QString locationName,
 	                         QString mapsetName)
 {
-    std::cerr << "QgsGrass::vectors()" << std::endl;
+  std::cerr << "QgsGrass::vectors()" << std::endl;
 
-    if ( gisbase.isEmpty() || locationName.isEmpty() || mapsetName.isEmpty() )
-	return QStringList();
+  if ( gisbase.isEmpty() || locationName.isEmpty() || mapsetName.isEmpty() )
+    return QStringList();
 
-    /* TODO: G_list() was added to GRASS 6.1 06-05-24,
-             enable its use after some period (others do update) */ 
-    /*
-    if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 ) 
-    {
-	QStringList list;
+  /* TODO: G_list() was added to GRASS 6.1 06-05-24,
+  enable its use after some period (others do update) */ 
+  /*
+  if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 ) 
+  {
+  QStringList list;
 
-	char **glist = G_list( G_ELEMENT_VECTOR, 
-			      gisbase.toLocal8Bit().constData(), 
-			      locationName.toLocal8Bit().constData(), 
-			      mapsetName.toLocal8Bit().constData() );
+  char **glist = G_list( G_ELEMENT_VECTOR, 
+  gisbase.toLocal8Bit().constData(), 
+  locationName.toLocal8Bit().constData(), 
+  mapsetName.toLocal8Bit().constData() );
 
-	int i = 0;
+  int i = 0;
 
-	while ( glist[i] )
-	{
-	    list.append( QString(glist[i]) );
-	    i++;
-	}
+  while ( glist[i] )
+  {
+  list.append( QString(glist[i]) );
+  i++;
+  }
 
-	G_free_list ( glist );
+  G_free_list ( glist );
 
-	return list;
-    } 
-    */
+  return list;
+  } 
+  */
 
-    return QgsGrass::vectors ( gisbase + "/" + locationName + "/" + mapsetName );
+  return QgsGrass::vectors ( gisbase + "/" + locationName + "/" + mapsetName );
 }
 
 QStringList GRASS_EXPORT QgsGrass::vectors ( QString mapsetPath )
 {
-    #ifdef QGISDEBUG
-    std::cerr << "QgsGrass::vectors mapsetPath = " 
-	      << mapsetPath.ascii() << std::endl;
-    #endif
+#ifdef QGISDEBUG
+  std::cerr << "QgsGrass::vectors mapsetPath = " 
+    << mapsetPath.ascii() << std::endl;
+#endif
 
-    QStringList list;
+  QStringList list;
 
-    if ( mapsetPath.isEmpty() ) return list;
-    
-    QDir d = QDir( mapsetPath + "/vector" );
-    d.setFilter(QDir::NoDotAndDotDot|QDir::Dirs);
+  if ( mapsetPath.isEmpty() ) return list;
 
-    for ( unsigned int i = 0; i < d.count(); i++ ) 
+  QDir d = QDir( mapsetPath + "/vector" );
+  d.setFilter(QDir::NoDotAndDotDot|QDir::Dirs);
+
+  for ( unsigned int i = 0; i < d.count(); i++ ) 
+  {
+    /*
+    if ( QFile::exists ( mapsetPath + "/vector/" + d[i] + "/head" ) )
     {
-        /*
-        if ( QFile::exists ( mapsetPath + "/vector/" + d[i] + "/head" ) )
-	{
-    	    list.append(d[i]);
-	}
-        */
-    	list.append(d[i]);
+    list.append(d[i]);
     }
-    return list;
+    */
+    list.append(d[i]);
+  }
+  return list;
 }
 
 QStringList GRASS_EXPORT QgsGrass::rasters ( QString gisbase, QString locationName,
 	                         QString mapsetName)
 {
-    std::cerr << "QgsGrass::rasters()" << std::endl;
+  std::cerr << "QgsGrass::rasters()" << std::endl;
 
-    if ( gisbase.isEmpty() || locationName.isEmpty() || mapsetName.isEmpty() )
-	return QStringList();
+  if ( gisbase.isEmpty() || locationName.isEmpty() || mapsetName.isEmpty() )
+    return QStringList();
 
 
-    /* TODO: G_list() was added to GRASS 6.1 06-05-24,
-             enable its use after some period (others do update) */ 
-    /*
-    if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 ) 
-    {
-	QStringList list;
+  /* TODO: G_list() was added to GRASS 6.1 06-05-24,
+  enable its use after some period (others do update) */ 
+  /*
+  if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 ) 
+  {
+  QStringList list;
 
-	char **glist = G_list( G_ELEMENT_RASTER, 
-			      gisbase.toLocal8Bit().constData(), 
-			      locationName.toLocal8Bit().constData(), 
-			      mapsetName.toLocal8Bit().constData() );
+  char **glist = G_list( G_ELEMENT_RASTER, 
+  gisbase.toLocal8Bit().constData(), 
+  locationName.toLocal8Bit().constData(), 
+  mapsetName.toLocal8Bit().constData() );
 
-	int i = 0;
+  int i = 0;
 
-	while ( glist[i] )
-	{
-	    list.append( QString(glist[i]) );
-	    i++;
-	}
+  while ( glist[i] )
+  {
+  list.append( QString(glist[i]) );
+  i++;
+  }
 
-	G_free_list ( glist );
+  G_free_list ( glist );
 
-	return list;
-    } 
-    */
-	
-    return QgsGrass::rasters ( gisbase + "/" + locationName + "/" + mapsetName );
+  return list;
+  } 
+  */
+
+  return QgsGrass::rasters ( gisbase + "/" + locationName + "/" + mapsetName );
 }
 
 QStringList GRASS_EXPORT QgsGrass::rasters ( QString mapsetPath )
 {
-    #ifdef QGISDEBUG
-    std::cerr << "QgsGrass::rasters mapsetPath = " 
-	      << mapsetPath.ascii() << std::endl;
-    #endif
+#ifdef QGISDEBUG
+  std::cerr << "QgsGrass::rasters mapsetPath = " 
+    << mapsetPath.ascii() << std::endl;
+#endif
 
-    QStringList list;
+  QStringList list;
 
-    if ( mapsetPath.isEmpty() ) return list;
-    
-    QDir d = QDir( mapsetPath + "/cellhd" );
-    d.setFilter(QDir::Files);
+  if ( mapsetPath.isEmpty() ) return list;
 
-    for ( unsigned int i = 0; i < d.count(); i++ ) 
-    {
-        list.append(d[i]);
-    }
-    return list;
+  QDir d = QDir( mapsetPath + "/cellhd" );
+  d.setFilter(QDir::Files);
+
+  for ( unsigned int i = 0; i < d.count(); i++ ) 
+  {
+    list.append(d[i]);
+  }
+  return list;
 }
 
 QStringList GRASS_EXPORT QgsGrass::elements ( QString gisbase, QString locationName,
 	                         QString mapsetName, QString element)
 {
-    if ( gisbase.isEmpty() || locationName.isEmpty() || mapsetName.isEmpty() )
-	return QStringList();
+  if ( gisbase.isEmpty() || locationName.isEmpty() || mapsetName.isEmpty() )
+    return QStringList();
 
-    return QgsGrass::elements ( gisbase + "/" + locationName + "/" + mapsetName, 
-                                element );
+  return QgsGrass::elements ( gisbase + "/" + locationName + "/" + mapsetName, 
+    element );
 }
 
 QStringList GRASS_EXPORT QgsGrass::elements ( QString mapsetPath, QString element )
 {
-    #ifdef QGISDEBUG
-    std::cerr << "QgsGrass::elements mapsetPath = " 
-	      << mapsetPath.ascii() << std::endl;
-    #endif
+#ifdef QGISDEBUG
+  std::cerr << "QgsGrass::elements mapsetPath = " 
+    << mapsetPath.ascii() << std::endl;
+#endif
 
-    QStringList list;
+  QStringList list;
 
-    if ( mapsetPath.isEmpty() ) return list;
-    
-    QDir d = QDir( mapsetPath + "/" + element );
-    d.setFilter(QDir::Files);
+  if ( mapsetPath.isEmpty() ) return list;
 
-    for ( unsigned int i = 0; i < d.count(); i++ ) 
-    {
-        list.append(d[i]);
-    }
-    return list;
+  QDir d = QDir( mapsetPath + "/" + element );
+  d.setFilter(QDir::Files);
+
+  for ( unsigned int i = 0; i < d.count(); i++ ) 
+  {
+    list.append(d[i]);
+  }
+  return list;
 }
 
 QString GRASS_EXPORT QgsGrass::regionString( struct Cell_head *window )
 {
-    QString reg;
-    int fmt;
-    char buf[1024];
+  QString reg;
+  int fmt;
+  char buf[1024];
 
-    fmt = window->proj;    
+  fmt = window->proj;    
 
-    // TODO 3D
+  // TODO 3D
 
-    reg = "proj:" + QString::number(window->proj) + ";" ;
-    reg += "zone:" + QString::number(window->zone) + ";" ;
+  reg = "proj:" + QString::number(window->proj) + ";" ;
+  reg += "zone:" + QString::number(window->zone) + ";" ;
 
-    G_format_northing (window->north,buf,fmt);
-    reg += "north:" + QString(buf) + ";" ;
+  G_format_northing (window->north,buf,fmt);
+  reg += "north:" + QString(buf) + ";" ;
 
-    G_format_northing (window->south,buf,fmt);
-    reg += "south:" + QString(buf) + ";" ;
+  G_format_northing (window->south,buf,fmt);
+  reg += "south:" + QString(buf) + ";" ;
 
-    G_format_easting (window->east,buf,fmt);
-    reg += "east:" + QString(buf) + ";" ;
+  G_format_easting (window->east,buf,fmt);
+  reg += "east:" + QString(buf) + ";" ;
 
-    G_format_easting (window->west,buf,fmt);
-    reg += "west:" + QString(buf) + ";" ;
+  G_format_easting (window->west,buf,fmt);
+  reg += "west:" + QString(buf) + ";" ;
 
-    reg += "cols:" + QString::number(window->cols) + ";" ;
-    reg += "rows:" + QString::number(window->rows) + ";" ;
+  reg += "cols:" + QString::number(window->cols) + ";" ;
+  reg += "rows:" + QString::number(window->rows) + ";" ;
 
-    G_format_resolution (window->ew_res,buf,fmt);
-    reg += "e-w resol:" + QString(buf) + ";" ;
+  G_format_resolution (window->ew_res,buf,fmt);
+  reg += "e-w resol:" + QString(buf) + ";" ;
 
-    G_format_resolution (window->ns_res,buf,fmt);
-    reg += "n-s resol:" + QString(buf) + ";" ;
+  G_format_resolution (window->ns_res,buf,fmt);
+  reg += "n-s resol:" + QString(buf) + ";" ;
 
-    return reg;
+  return reg;
 }
 
-bool GRASS_EXPORT QgsGrass::region( QString gisbase, 
-           QString location, QString mapset,
-           struct Cell_head *window )
+bool GRASS_EXPORT QgsGrass::region( QString gisbase,
+                                    QString location, QString mapset,
+                                    struct Cell_head *window )
 {
-    QgsGrass::setLocation( gisbase, location );
+  QgsGrass::setLocation( gisbase, location );
 
-    if ( G__get_window ( window, "", "WIND", mapset.toLocal8Bit().data() ) )
-    {
-        return false;
-    }
-    return true;
+  if ( G__get_window ( window, "", "WIND", mapset.toLocal8Bit().data() ) )
+  {
+    return false;
+  }
+  return true;
 }
 
-bool GRASS_EXPORT QgsGrass::writeRegion( QString gisbase, 
-           QString location, QString mapset,
-           struct Cell_head *window )
+bool GRASS_EXPORT QgsGrass::writeRegion( QString gisbase,
+                                         QString location, QString mapset,
+                                         struct Cell_head *window )
 {
-    std::cerr << "QgsGrass::writeRegion()" << std::endl;
-    std::cerr << "n = " << window->north << " s = " << window->south << std::endl;
-    std::cerr << "e = " << window->east << " w = " << window->west << std::endl;
+  std::cerr << "QgsGrass::writeRegion()" << std::endl;
+  std::cerr << "n = " << window->north << " s = " << window->south << std::endl;
+  std::cerr << "e = " << window->east << " w = " << window->west << std::endl;
 
-    QgsGrass::setMapset( gisbase, location, mapset );
+  QgsGrass::setMapset( gisbase, location, mapset );
 
-    if ( G_put_window(window) == -1 ) {
-        return false;
-    }
+  if ( G_put_window(window) == -1 ) {
+    return false;
+  }
 
-    return true;
+  return true;
 }
 
 void GRASS_EXPORT QgsGrass::copyRegionExtent( struct Cell_head *source,
-           struct Cell_head *target )
+                                              struct Cell_head *target )
 {
-    target->north = source->north;
-    target->south = source->south;
-    target->east = source->east;
-    target->west = source->west;
-    target->top = source->top;
-    target->bottom = source->bottom;
+  target->north = source->north;
+  target->south = source->south;
+  target->east = source->east;
+  target->west = source->west;
+  target->top = source->top;
+  target->bottom = source->bottom;
 }
 
 void GRASS_EXPORT QgsGrass::copyRegionResolution( struct Cell_head *source,
-           struct Cell_head *target )
+                                                  struct Cell_head *target )
 {
     target->ns_res = source->ns_res;
     target->ew_res = source->ew_res;
@@ -912,104 +920,104 @@ void GRASS_EXPORT QgsGrass::copyRegionResolution( struct Cell_head *source,
 }
 
 void GRASS_EXPORT QgsGrass::extendRegion( struct Cell_head *source,
-           struct Cell_head *target )
+                                          struct Cell_head *target )
 {
-    if ( source->north > target->north )
-	target->north = source->north;
+  if ( source->north > target->north )
+    target->north = source->north;
 
-    if ( source->south < target->south )
-	target->south = source->south;
+  if ( source->south < target->south )
+    target->south = source->south;
 
-    if ( source->east > target->east )
-	target->east = source->east;
+  if ( source->east > target->east )
+    target->east = source->east;
 
-    if ( source->west < target->west )
-	target->west = source->west;
+  if ( source->west < target->west )
+    target->west = source->west;
 
-    if ( source->top > target->top )
-	target->top = source->top;
+  if ( source->top > target->top )
+    target->top = source->top;
 
-    if ( source->bottom < target->bottom )
-	target->bottom = source->bottom;
+  if ( source->bottom < target->bottom )
+    target->bottom = source->bottom;
 }
 
-bool GRASS_EXPORT QgsGrass::mapRegion( int type, QString gisbase, 
-           QString location, QString mapset, QString map,
-           struct Cell_head *window )
+bool GRASS_EXPORT QgsGrass::mapRegion( int type, QString gisbase,
+                                       QString location, QString mapset, QString map,
+                                       struct Cell_head *window )
 {
-    #ifdef QGISDEBUG
-    std::cerr << "QgsGrass::mapRegion()" << std::endl;
-    std::cerr << "map = " << map.toLocal8Bit().data() << std::endl;
-    std::cerr << "mapset = " << mapset.toLocal8Bit().data() << std::endl;
-    #endif
+#ifdef QGISDEBUG
+  std::cerr << "QgsGrass::mapRegion()" << std::endl;
+  std::cerr << "map = " << map.toLocal8Bit().data() << std::endl;
+  std::cerr << "mapset = " << mapset.toLocal8Bit().data() << std::endl;
+#endif
 
-    QgsGrass::setLocation( gisbase, location );
+  QgsGrass::setLocation( gisbase, location );
 
-    if ( type == Raster )
+  if ( type == Raster )
+  {
+
+    if ( G_get_cellhd ( map.toLocal8Bit().data(), 
+      mapset.toLocal8Bit().data(), window) < 0 )
     {
-
-	if ( G_get_cellhd ( map.toLocal8Bit().data(), 
-		      mapset.toLocal8Bit().data(), window) < 0 )
-	{
-	    QMessageBox::warning( 0, QObject::tr("Warning"), 
-		     QObject::tr("Cannot read raster map region" )); 
-	    return false;
-	}
+      QMessageBox::warning( 0, QObject::tr("Warning"), 
+        QObject::tr("Cannot read raster map region" )); 
+      return false;
     }
-    else if ( type == Vector )
-    {
-        // Get current projection
-        region( gisbase, location, mapset, window );
+  }
+  else if ( type == Vector )
+  {
+    // Get current projection
+    region( gisbase, location, mapset, window );
 
-	struct Map_info Map;
+    struct Map_info Map;
 
-	int level = Vect_open_old_head ( &Map, 
-	      map.toLocal8Bit().data(), mapset.toLocal8Bit().data());
+    int level = Vect_open_old_head ( &Map, 
+      map.toLocal8Bit().data(), mapset.toLocal8Bit().data());
 
-	if ( level < 2 ) 
-	{ 
-	    QMessageBox::warning( 0, QObject::tr("Warning"), 
-		     QObject::tr("Cannot read vector map region" ) ); 
-	    return false;
-	}
-
-	BOUND_BOX box;
-	Vect_get_map_box (&Map, &box );
-	window->north = box.N;
-	window->south = box.S;
-	window->west  = box.W;
-	window->east  = box.E;
-	window->top  = box.T;
-	window->bottom  = box.B;
-
-        // Is this optimal ?
-        window->ns_res = (window->north-window->south)/1000;
-        window->ew_res = window->ns_res;
-        if ( window->top > window->bottom ) 
-        { 
-            window->tb_res = (window->top-window->bottom)/10;
-        }
-        else
-        {
-            window->top = window->bottom + 1;
-            window->tb_res = 1;
-        }
-        G_adjust_Cell_head3 ( window, 0, 0, 0 );
-	
-	Vect_close (&Map);
-    } 
-    else if ( type == Region )
-    {
-	if (  G__get_window (window, "windows", 
-		  map.toLocal8Bit().data(), 
-		  mapset.toLocal8Bit().data() ) != NULL )
-	{
-	    QMessageBox::warning( 0, QObject::tr("Warning"), 
-		     QObject::tr("Cannot read region" )); 
-	    return false;
-	}
+    if ( level < 2 ) 
+    { 
+      QMessageBox::warning( 0, QObject::tr("Warning"), 
+        QObject::tr("Cannot read vector map region" ) ); 
+      return false;
     }
-    return true;
+
+    BOUND_BOX box;
+    Vect_get_map_box (&Map, &box );
+    window->north = box.N;
+    window->south = box.S;
+    window->west  = box.W;
+    window->east  = box.E;
+    window->top  = box.T;
+    window->bottom  = box.B;
+
+    // Is this optimal ?
+    window->ns_res = (window->north-window->south)/1000;
+    window->ew_res = window->ns_res;
+    if ( window->top > window->bottom ) 
+    { 
+      window->tb_res = (window->top-window->bottom)/10;
+    }
+    else
+    {
+      window->top = window->bottom + 1;
+      window->tb_res = 1;
+    }
+    G_adjust_Cell_head3 ( window, 0, 0, 0 );
+
+    Vect_close (&Map);
+  } 
+  else if ( type == Region )
+  {
+    if (  G__get_window (window, "windows", 
+      map.toLocal8Bit().data(), 
+      mapset.toLocal8Bit().data() ) != NULL )
+    {
+      QMessageBox::warning( 0, QObject::tr("Warning"), 
+        QObject::tr("Cannot read region" )); 
+      return false;
+    }
+  }
+  return true;
 }
 
 // GRASS version constants have been changed on 26.4.2007
@@ -1019,49 +1027,50 @@ bool GRASS_EXPORT QgsGrass::mapRegion( int type, QString gisbase,
 int GRASS_EXPORT QgsGrass::versionMajor()
 {
 #ifdef GRASS_VERSION_MAJOR
-    return GRASS_VERSION_MAJOR;
+  return GRASS_VERSION_MAJOR;
 #else
-    return QString(GRASS_VERSION_MAJOR).toInt();
+  return QString(GRASS_VERSION_MAJOR).toInt();
 #endif
 }
+
 int GRASS_EXPORT QgsGrass::versionMinor()
 {
 #ifdef GRASS_VERSION_MINOR
-    return GRASS_VERSION_MINOR;
+  return GRASS_VERSION_MINOR;
 #else
-    return QString(GRASS_VERSION_MINOR).toInt();
+  return QString(GRASS_VERSION_MINOR).toInt();
 #endif
 }
+
 int GRASS_EXPORT QgsGrass::versionRelease()
 {
 #ifdef GRASS_VERSION_RELEASE
-    #define QUOTE(x)  #x
-    return QString(QUOTE(GRASS_VERSION_RELEASE)).toInt();
+#define QUOTE(x)  #x
+  return QString(QUOTE(GRASS_VERSION_RELEASE)).toInt();
 #else
-    return QString(GRASS_VERSION_RELEASE).toInt();
+  return QString(GRASS_VERSION_RELEASE).toInt();
 #endif
 }
 QString GRASS_EXPORT QgsGrass::versionString()
 {
-    return QString(GRASS_VERSION_STRING);
+  return QString(GRASS_VERSION_STRING);
 }
 
 bool GRASS_EXPORT QgsGrass::isMapset ( QString path )
 {
-    /* TODO: G_is_mapset() was added to GRASS 6.1 06-05-24,
-             enable its use after some period (others do update) */
-    /*
-    if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 )
-    {
-        if ( G_is_mapset( path.toLocal8Bit().constData() ) ) return true;
-    }
-    else
-    {
-    */
-        QString windf = path + "/WIND";
-        if ( QFile::exists ( windf ) ) return true;
-    //}
+  /* TODO: G_is_mapset() was added to GRASS 6.1 06-05-24,
+  enable its use after some period (others do update) */
+  /*
+  if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 )
+  {
+  if ( G_is_mapset( path.toLocal8Bit().constData() ) ) return true;
+  }
+  else
+  {
+  */
+  QString windf = path + "/WIND";
+  if ( QFile::exists ( windf ) ) return true;
+  //}
 
-    return false;
+  return false;
 }
-
