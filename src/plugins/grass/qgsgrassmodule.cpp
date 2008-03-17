@@ -145,8 +145,8 @@ QString QgsGrassModule::findExec ( QString file )
 
 bool QgsGrassModule::inExecPath ( QString file )
 {
-    if ( findExec(file).isNull() ) return false;
-    return true;
+  if ( findExec(file).isNull() ) return false;
+  return true;
 }
 
 QStringList QgsGrassModule::execArguments ( QString module )
@@ -353,7 +353,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
   if ( arguments.size() == 0 ) 
   {
     QMessageBox::warning( 0, tr("Warning"), tr("Cannot find module ") 
-        + mXName );
+      + mXName );
     return;
   }
 
@@ -367,13 +367,13 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
   // ? Does binary on Win need .exe extention ?
   // Return code 255 (-1) was correct in GRASS < 6.1.0
   if ( !process.waitForFinished() 
-      || (process.exitCode() != 0 && process.exitCode() != 255) )
+    || (process.exitCode() != 0 && process.exitCode() != 255) )
   {
     QgsDebugMsg("process.exitCode() = " + QString::number(process.exitCode()) );
     QMessageBox::warning( 0, tr("Warning"), tr("Cannot start module ") + mXName + "<br>"
-        + cmd + " " + arguments.join(" ") + "<br>"
-        + QString(process.readAllStandardOutput()) + "<br>"
-        + QString(process.readAllStandardError()) );
+      + cmd + " " + arguments.join(" ") + "<br>"
+      + QString(process.readAllStandardOutput()) + "<br>"
+      + QString(process.readAllStandardError()) );
     return;
   }
   QByteArray gDescArray = process.readAllStandardOutput();
@@ -384,7 +384,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
   int line, column;
   if ( !gDoc.setContent( (QByteArray)gDescArray, &err, &line, &column ) ) {
     QString errmsg = tr("Cannot read module description (") + mXName + tr("):\n") + err + tr("\nat line ")
-                     + QString::number(line) + tr(" column ") + QString::number(column);
+      + QString::number(line) + tr(" column ") + QString::number(column);
     QgsDebugMsg(errmsg);
     QgsDebugMsg(QString(gDescArray));
     QgsDebugMsg(QString(errArray));
@@ -424,7 +424,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
           //QgsDebugMsg("element = " + element + " age = " + age);
           if ( age == "old" && ( element == "vector" || element == "cell") ) {
             QgsGrassModuleInput *mi = new QgsGrassModuleInput ( 
-                mModule, this, key, e, gDocElem, gnode, mParent );
+              mModule, this, key, e, gDocElem, gnode, mParent );
 
             layout->addWidget ( mi );
             created = true;
@@ -434,7 +434,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
 
         if ( !created ) {
           QgsGrassModuleOption *so = new QgsGrassModuleOption ( 
-              mModule, key, e, gDocElem, gnode, mParent );
+            mModule, key, e, gDocElem, gnode, mParent );
 
           layout->addWidget ( so );
           created = true;
@@ -444,46 +444,46 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
       else if ( optionType == "ogr" ) 
       {
         QgsGrassModuleGdalInput *mi = new QgsGrassModuleGdalInput ( 
-            mModule, QgsGrassModuleGdalInput::Ogr, key, e, 
-            gDocElem, gnode, mParent );
+          mModule, QgsGrassModuleGdalInput::Ogr, key, e, 
+          gDocElem, gnode, mParent );
         layout->addWidget ( mi );
         mItems.push_back(mi);
       } 
       else if ( optionType == "gdal" ) 
       {
         QgsGrassModuleGdalInput *mi = new QgsGrassModuleGdalInput ( 
-            mModule, QgsGrassModuleGdalInput::Gdal, key, e, 
-            gDocElem, gnode, mParent );
+          mModule, QgsGrassModuleGdalInput::Gdal, key, e, 
+          gDocElem, gnode, mParent );
         layout->addWidget ( mi );
         mItems.push_back(mi);
       } 
       else if ( optionType == "field" ) 
       {
         QgsGrassModuleField *mi = new QgsGrassModuleField ( 
-            mModule, this, key, e, 
-            gDocElem, gnode, mParent );
+          mModule, this, key, e, 
+          gDocElem, gnode, mParent );
         layout->addWidget ( mi );
         mItems.push_back(mi);
       } 
       else if ( optionType == "selection" ) 
       {
         QgsGrassModuleSelection *mi = new QgsGrassModuleSelection ( 
-            mModule, this, key, e, 
-            gDocElem, gnode, mParent );
+          mModule, this, key, e, 
+          gDocElem, gnode, mParent );
         layout->addWidget ( mi );
         mItems.push_back(mi);
       } 
       else if ( optionType == "file" ) 
       {
         QgsGrassModuleFile *mi = new QgsGrassModuleFile ( 
-            mModule, key, e, gDocElem, gnode, mParent );
+          mModule, key, e, gDocElem, gnode, mParent );
         layout->addWidget ( mi );
         mItems.push_back(mi);
       } 
       else if ( optionType == "flag" )  
       {
         QgsGrassModuleFlag *flag = new QgsGrassModuleFlag ( 
-            mModule, key, e, gDocElem, gnode, mParent );
+          mModule, key, e, gDocElem, gnode, mParent );
 
         layout->addWidget ( flag );
         mItems.push_back(flag);
@@ -854,11 +854,11 @@ bool QgsGrassModuleStandardOptions::inputRegion ( struct Cell_head *window, bool
     int mapType;
     switch ( item->type() ) {
     case QgsGrassModuleInput::Raster :
-              mapType = QgsGrass::Raster;
-              break;
-            case QgsGrassModuleInput::Vector :
-              mapType = QgsGrass::Vector;
-              break;
+      mapType = QgsGrass::Raster;
+      break;
+    case QgsGrassModuleInput::Vector :
+      mapType = QgsGrass::Vector;
+      break;
     }
 
     QStringList mm = item->currentMap().split("@");
@@ -972,7 +972,7 @@ QString QgsGrassModule::label ( QString path )
   int line, column;
   if ( !qDoc.setContent( &qFile,  &err, &line, &column ) ) {
     QString errmsg = tr("Cannot read module file (") + path + tr("):\n") + err + tr("\nat line ")
-                                                                     + QString::number(line) + tr(" column ") + QString::number(column);
+      + QString::number(line) + tr(" column ") + QString::number(column);
     QgsDebugMsg(errmsg);
     QMessageBox::warning( 0, tr("Warning"), errmsg );
     qFile.close();
@@ -1146,8 +1146,8 @@ void QgsGrassModule::run()
       if ( outsideRegion.size() > 0 )
       {
         QMessageBox questionBox( QMessageBox::Question, "Warning", 
-            "Input " + outsideRegion.join(",") + " outside current region!",  
-            QMessageBox::Ok | QMessageBox::Cancel );
+          "Input " + outsideRegion.join(",") + " outside current region!",  
+          QMessageBox::Ok | QMessageBox::Cancel );
         QPushButton *resetButton = NULL;
         if  ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMajor() == 6 && QgsGrass::versionMinor() >= 1 )
         {
@@ -1163,7 +1163,7 @@ void QgsGrassModule::run()
           if ( !mOptions->inputRegion ( &tempWindow, true ) )
           {
             QMessageBox::warning ( 0, tr("Warning"), 
-                tr("Cannot get input region" ) );
+              tr("Cannot get input region" ) );
             return;
           }
         }
@@ -1175,9 +1175,9 @@ void QgsGrassModule::run()
     if ( outputExists.size() > 0 )
     {
       QMessageBox::StandardButton ret = QMessageBox::question ( 0, "Warning", 
-          "Output " + outputExists.join(",")
-          + " exists! Overwrite?",  
-          QMessageBox::Ok | QMessageBox::Cancel );
+        "Output " + outputExists.join(",")
+        + " exists! Overwrite?",  
+        QMessageBox::Ok | QMessageBox::Cancel );
 
       if ( ret == QMessageBox::Cancel ) return;
 
@@ -1220,12 +1220,12 @@ void QgsGrassModule::run()
     }
 
     /* WARNING - TODO: there was a bug in GRASS 6.0.0 / 6.1.CVS (< 2005-04-29):
-     * db_start_driver set GISRC_MODE_MEMORY eviroment variable to 1 if 
-     * G_get_gisrc_mode() == G_GISRC_MODE_MEMORY but the variable wasn't unset 
-     * if  G_get_gisrc_mode() == G_GISRC_MODE_FILE. Because QGIS GRASS provider starts drivers in 
-     * G_GISRC_MODE_MEMORY mode, the variable remains set in variable when a module is run
-     * -> unset GISRC_MODE_MEMORY. Remove later once 6.1.x / 6.0.1 is widespread.
-     */
+    * db_start_driver set GISRC_MODE_MEMORY eviroment variable to 1 if 
+    * G_get_gisrc_mode() == G_GISRC_MODE_MEMORY but the variable wasn't unset 
+    * if  G_get_gisrc_mode() == G_GISRC_MODE_FILE. Because QGIS GRASS provider starts drivers in 
+    * G_GISRC_MODE_MEMORY mode, the variable remains set in variable when a module is run
+    * -> unset GISRC_MODE_MEMORY. Remove later once 6.1.x / 6.0.1 is widespread.
+    */
     putenv ( "GISRC_MODE_MEMORY" );  // unset
 
     mOutputTextBrowser->clear();
@@ -1265,7 +1265,7 @@ void QgsGrassModule::run()
     if ( execArguments.size() == 0 ) 
     {
       QMessageBox::warning( 0, tr("Warning"), tr("Cannot find module ") 
-          + mXName );
+        + mXName );
       return;
     }
 
@@ -1337,7 +1337,7 @@ void QgsGrassModule::run()
     if ( mProcess.state() != QProcess::Running )
     {
       QMessageBox::warning( 0, tr("Warning"), tr("Cannot start module: ") 
-          + mProcess.errorString() );
+        + mProcess.errorString() );
       return;
     }
 
@@ -1452,9 +1452,9 @@ void QgsGrassModule::viewOutput()
     QString map = mOutputVector.at(i);
 
     QStringList layers = QgsGrassSelect::vectorLayers (
-        QgsGrass::getDefaultGisdbase(), 
-        QgsGrass::getDefaultLocation(),
-        QgsGrass::getDefaultMapset(), map );
+      QgsGrass::getDefaultGisdbase(), 
+      QgsGrass::getDefaultLocation(),
+      QgsGrass::getDefaultMapset(), map );
 
     // check whether there are 1_* layers
     // if so, 0_* layers won't be added
@@ -2065,24 +2065,24 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module,
   QHBoxLayout *l = new QHBoxLayout (this);
   mLayerComboBox = new QComboBox ();
   mLayerComboBox->setSizePolicy (QSizePolicy::Expanding, 
-      QSizePolicy:: Preferred );
+    QSizePolicy:: Preferred );
   l->addWidget ( mLayerComboBox );
 
   QString region = qdesc.attribute("region");
   if ( mType == Raster
-      && QgsGrass::versionMajor() >= 6 && QgsGrass::versionMinor() >= 1
-      && region != "no"
-     )
+    && QgsGrass::versionMajor() >= 6 && QgsGrass::versionMinor() >= 1
+    && region != "no"
+    )
   {
     QString iconPath = QgsApplication::themePath() + "/grass/";
 
     mRegionButton = new QPushButton( 
-        QIcon(iconPath+"grass_set_region.png"), "" );
+      QIcon(iconPath+"grass_set_region.png"), "" );
 
     mRegionButton->setToolTip ( tr("Use region of this map") );
     mRegionButton->setCheckable ( true );
     mRegionButton->setSizePolicy (QSizePolicy::Minimum, 
-        QSizePolicy:: Preferred );
+      QSizePolicy:: Preferred );
     l->addWidget ( mRegionButton );
   }
 
@@ -2185,9 +2185,9 @@ void QgsGrassModuleInput::updateQgisLayers()
       int geomType = provider->geometryType();
 
       if ( (geomType == QGis::WKBPoint && !(mVectorTypeMask & GV_POINT) ) ||
-          (geomType == QGis::WKBLineString && !(mVectorTypeMask & GV_LINE) ) ||
-          (geomType == QGis::WKBPolygon && !(mVectorTypeMask & GV_AREA) )
-         )
+        (geomType == QGis::WKBLineString && !(mVectorTypeMask & GV_LINE) ) ||
+        (geomType == QGis::WKBPolygon && !(mVectorTypeMask & GV_AREA) )
+        )
       {
         continue;
       }
@@ -2403,7 +2403,7 @@ QString QgsGrassModuleInput::currentMap()
 
 void QgsGrassModuleInput::changed(int i)
 {
-    emit valueChanged();
+  emit valueChanged();
 }
 
 QString QgsGrassModuleInput::ready()
@@ -2567,7 +2567,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
     {
       QgsVectorLayer *vector = (QgsVectorLayer*)layer;
       if ( vector->providerType() != "ogr"
-          && vector->providerType() != "postgres" ) continue;
+        && vector->providerType() != "postgres" ) continue;
 
       QgsDataProvider *provider = vector->getDataProvider();
 
@@ -2650,10 +2650,10 @@ QStringList QgsGrassModuleGdalInput::options()
       if  ( mOgrLayers[current].length() > 0 )
       {
         QMessageBox::warning( 0, tr("Warning"),
-            tr("PostGIS driver in OGR does not support schemas!<br>"
-              "Only the table name will be used.<br>"
-              "It can result in wrong input if more tables of the same name<br>"
-              "are present in the database.") );
+          tr("PostGIS driver in OGR does not support schemas!<br>"
+          "Only the table name will be used.<br>"
+          "It can result in wrong input if more tables of the same name<br>"
+          "are present in the database.") );
       }
     }
 #endif //GDAL_VERSION_NUM
@@ -2761,12 +2761,12 @@ void QgsGrassModuleField::updateFields()
 
 QStringList QgsGrassModuleField::options()
 {
-    QStringList list;
+  QStringList list;
 
-    QString opt(mKey + "=" + mFieldComboBox->currentText() );
-    list.push_back( opt );
+  QString opt(mKey + "=" + mFieldComboBox->currentText() );
+  list.push_back( opt );
 
-    return list;
+  return list;
 }
 
 QgsGrassModuleField::~QgsGrassModuleField()
@@ -2875,12 +2875,12 @@ void QgsGrassModuleSelection::updateSelection()
 
 QStringList QgsGrassModuleSelection::options()
 {
-    QStringList list;
+  QStringList list;
 
-    QString opt(mKey + "=" + mLineEdit->text() );
-    list.push_back( opt );
+  QString opt(mKey + "=" + mLineEdit->text() );
+  list.push_back( opt );
 
-    return list;
+  return list;
 }
 
 QgsGrassModuleSelection::~QgsGrassModuleSelection()
@@ -2946,7 +2946,7 @@ QgsGrassModuleFile::QgsGrassModuleFile (
   l->addWidget ( mBrowseButton );
 
   connect ( mBrowseButton, SIGNAL(clicked()), 
-      this, SLOT(browse()) );
+    this, SLOT(browse()) );
 }
 
 QStringList QgsGrassModuleFile::options()
@@ -2976,7 +2976,7 @@ QStringList QgsGrassModuleFile::options()
 void QgsGrassModuleFile::browse()
 {
   // TODO: unfortunately QFileDialog does not support 'new' directory
-  QFileDialog *fd = new QFileDialog ( this, NULL, mLineEdit->text() );
+  QFileDialog *fd = new QFileDialog( this, NULL, mLineEdit->text());
 
   fd->setDirectory ( QDir::current() );
 
