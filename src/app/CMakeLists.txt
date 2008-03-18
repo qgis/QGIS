@@ -110,7 +110,6 @@ SET (QGIS_APP_MOC_HDRS
   qgslinestylewidget.h
   qgsludialog.h
   qgsmaplayerinterface.h
-  qgsmaptooledit.h
   qgsmaptoolidentify.h
   qgsmarkerdialog.h
   qgsmeasuredialog.h
