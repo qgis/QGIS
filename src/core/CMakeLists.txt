@@ -99,7 +99,6 @@ qgsmaplayerregistry.h
 qgsmaprender.h
 qgsmessageoutput.h
 qgsproject.h
-qgsprojectversion.h
 qgsrunprocess.h
 qgsvectorlayer.h
 
