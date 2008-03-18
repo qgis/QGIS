@@ -101,7 +101,7 @@ qgsmessageoutput.h
 qgsproject.h
 qgsrunprocess.h
 qgsvectorlayer.h
-
+qgsrasterdataprovider.h
 raster/qgsrasterlayer.h
 )
 
