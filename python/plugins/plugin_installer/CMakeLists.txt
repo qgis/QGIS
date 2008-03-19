@@ -11,4 +11,4 @@ resources.py
 repository_ui.py
 repository_dialog.py
 )
-INSTALL(FILES ${INSTALLER_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/qgis/python/plugins/plugin_installer)
+INSTALL(FILES ${INSTALLER_FILES} DESTINATION ${DEFAULT_DATA_SUBDIR}/python/plugins/plugin_installer)
