@@ -67,49 +67,41 @@ public:
  QgsMapLayer *  addMapLayer(QgsMapLayer * theMapLayer, bool theEmitSignal = TRUE);
 
  /** Remove a layer from qgis
-
     @note
-
     As a side-effect QgsProject is made dirty.
-
     Any canvases using that layer will need to remove it
- 
     theEmitSignal - see addMapLayer()
+    The layer being removed is deleted as well as the registry
+    table entry.
  */
  void removeMapLayer(QString theLayerId, bool theEmitSignal = TRUE);
 
  /** Remove all registered layers 
-
     @note raises removedAll()
-
     As a side-effect QgsProject is made dirty.
-
+    @note The layers are deleted as the registry is cleared!
  */
  void removeAllMapLayers();
 
 signals:
 
     /** emitted when a layer is removed from the registry
-
        connected to main map canvas and overview map canvas remove()
     */
  void layerWillBeRemoved(QString theLayerId);
 
     /** emitted when a layer is added to the registry
-
        connected to main map canvas and overview map canvas addLayer()
     */
  void layerWasAdded(QgsMapLayer * theMapLayer);
 
  /** emitted when ALL layers are removed at once
-
     This could have been implemented by iteratively signalling
     layerWillBeRemoved() for each layer as it is removed.  However, this
     generally causes a cascade of effects that are unnecessary if we're
     ultimately removing all layers.  E.g., removing the legend item
     corresponding to the layer.  Why bother doing that when you're just going
     to clear everything anyway?
-
   */
  void removedAll();
 
