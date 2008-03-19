@@ -177,31 +177,28 @@ void QgsDbTableModel::setGeometryTypesForTable(const QString& schema, const QStr
       continue;
     }
 
-    if(itemFromIndex(currentTableIndex)->text() == table)
+    if(itemFromIndex(currentTableIndex)->text() == table &&
+       (geomColText==attribute || geomColText.startsWith( attribute + " AS ") ) )
     {
       if(typeIsEmpty)
       {
         removeRow(i, indexFromItem(schemaItem));
         return;
       }
-      for(int j = 0; j < typeList.size(); ++j)
+
+      QGis::WKBTYPE wkbType = qgisTypeFromDbType(typeList.at(0));
+      QString iconPath = iconFilePathForType(wkbType);
+      itemFromIndex(currentTypeIndex)->setText(typeList.at(0)); //todo: add other rows
+      itemFromIndex(currentTypeIndex)->setIcon(QIcon(iconPath));
+      if(!geomColText.contains(" AS "))
       {
-        if( j==0 )
-        {
-          QGis::WKBTYPE wkbType = qgisTypeFromDbType(typeList.at(0));
-          QString iconPath = iconFilePathForType(wkbType);
-          itemFromIndex(currentTypeIndex)->setText(typeList.at(0)); //todo: add other rows
-          itemFromIndex(currentTypeIndex)->setIcon(QIcon(iconPath));
-          if(!geomColText.contains(" AS "))
-          {
-            itemFromIndex(currentGeomColumnIndex)->setText(geomColText + " AS " + typeList.at(0));
-          }
-        }
-        else
-        {
-          //todo: add correct type
-          addTableEntry(typeList.at(j), schema, table, geomColText + " AS " + typeList.at(j), ""); 
-        }
+        itemFromIndex(currentGeomColumnIndex)->setText(geomColText + " AS " + typeList.at(0));
+      }
+
+      for(int j = 1; j < typeList.size(); ++j)
+      {
+        //todo: add correct type
+        addTableEntry(typeList.at(j), schema, table, geomColText + " AS " + typeList.at(j), ""); 
       }
     }
   }
