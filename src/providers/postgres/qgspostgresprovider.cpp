@@ -1272,7 +1272,7 @@ bool QgsPostgresProvider::uniqueData(QString schemaName,
 
   PGresult* unique = PQexec(connection, sql.toUtf8());
 
-  if (PQntuples(unique)==1 && QString::fromUtf8(PQgetvalue(unique, 0, 0)).startsWith("t") == 0)
+  if (PQntuples(unique)==1 && QString::fromUtf8(PQgetvalue(unique, 0, 0)).startsWith("t"))
     isUnique = true;
 
   PQclear(unique);
