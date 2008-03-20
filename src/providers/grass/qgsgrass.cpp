@@ -41,8 +41,14 @@ extern "C" {
 #include <grass/version.h>
 }
 
-#if defined(_MSC_VER)
-#include <windows.h>  // for GetCurrentProcessId()
+#if defined(WIN32)
+#include <windows.h>
+static QString getShortPath(const QString &path)
+{
+  TCHAR buf[MAX_PATH];
+  GetShortPathName( path.ascii(), buf, MAX_PATH);
+  return buf;
+}
 #endif
 
 void GRASS_EXPORT QgsGrass::init( void ) 
@@ -104,7 +110,7 @@ void GRASS_EXPORT QgsGrass::init( void )
 
 #ifdef WIN32
     // Use the applicationDirPath()/grass
-    gisBase = QCoreApplication::applicationDirPath() + "/grass";
+    gisBase = getShortPath( QCoreApplication::applicationDirPath() + "/grass" );
 #ifdef QGISDEBUG
     std::cerr << "GRASS gisBase = " << gisBase.ascii() << std::endl;
 #endif
@@ -148,6 +154,9 @@ void GRASS_EXPORT QgsGrass::init( void )
       userGisbase = false;
       break;
     }
+#if defined(WIN32)
+    gisBase = getShortPath(gisBase);
+#endif
   }
 
   if (!valid)
@@ -187,14 +196,11 @@ void GRASS_EXPORT QgsGrass::init( void )
 #ifdef WIN32
   // It seems that QgsApplication::prefixPath() 
   // is not initialized at this point
-  path.append ( sep + QCoreApplication::applicationDirPath() );
-#endif
+  path.append ( sep + getShortPath(QCoreApplication::applicationDirPath()) );
 
-#ifdef WIN32
   // Add path to MSYS bin
   // Warning: MSYS sh.exe will translate this path to '/bin'
-  path.append ( sep + QCoreApplication::applicationDirPath() 
-    + "/msys/bin/" );
+  path.append ( sep + getShortPath(QCoreApplication::applicationDirPath() + "/msys/bin/") );
 #endif
 
   QString p = getenv ("PATH");
@@ -262,7 +268,8 @@ bool QgsGrass::isValidGrassBaseDir(QString const gisBase)
 #ifdef QGISDEBUG
   std::cerr << "isValidGrassBaseDir()" << std::endl;
 #endif
-  if ( gisBase.isEmpty() )
+  // GRASS currently doesn't handle paths with blanks
+  if ( gisBase.isEmpty() || gisBase.contains(" ") )
   {
     return FALSE;
   }
@@ -316,7 +323,11 @@ void QgsGrass::setLocation( QString gisdbase, QString location )
   init();
 
   // Set principal GRASS variables (in memory)
-  G__setenv( "GISDBASE", (char *) gisdbase.ascii() );        
+#if defined(WIN32)
+  G__setenv( "GISDBASE", (char *) getShortPath(gisdbase).ascii() );
+#else
+  G__setenv( "GISDBASE", (char *) gisdbase.ascii() );
+#endif
   G__setenv( "LOCATION_NAME", (char *) location.ascii() );
   G__setenv( "MAPSET", "PERMANENT"); // PERMANENT must always exist
 
@@ -334,7 +345,11 @@ void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
   init();
 
   // Set principal GRASS variables (in memory)
-  G__setenv( "GISDBASE", (char *) gisdbase.ascii() );        
+#if defined(WIN32)
+  G__setenv( "GISDBASE", (char *) getShortPath(gisdbase).ascii() );
+#else
+  G__setenv( "GISDBASE", (char *) gisdbase.ascii() );
+#endif
   G__setenv( "LOCATION_NAME", (char *) location.ascii() );
   G__setenv( "MAPSET", (char *) mapset.ascii() ); 
 
@@ -539,8 +554,12 @@ QString GRASS_EXPORT QgsGrass::openMapset ( QString gisdbase, QString location, 
   putenv( gisrcEnvChar );
 
   // Reinitialize GRASS 
-  G__setenv( "GISRC", const_cast<char *>(gisrcEnv.ascii()) );        
-  G__setenv( "GISDBASE", const_cast<char *>(gisdbase.ascii()) );        
+  G__setenv( "GISRC", const_cast<char *>(gisrcEnv.ascii()) );    
+#if defined(WIN32)
+  G__setenv( "GISDBASE", const_cast<char *>(getShortPath(gisdbase).ascii()) );
+#else
+  G__setenv( "GISDBASE", const_cast<char *>(gisdbase.ascii()) );
+#endif
   G__setenv( "LOCATION_NAME", const_cast<char *>(location.ascii()) );
   G__setenv( "MAPSET", const_cast<char *>(mapset.ascii()) );
   defaultGisdbase = gisdbase;

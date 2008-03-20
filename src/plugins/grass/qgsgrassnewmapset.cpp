@@ -72,6 +72,16 @@ QString temp3(GRASS_VERSION_MINOR);
 QString temp4(GRASS_VERSION_RELEASE);
 #endif
 
+#if defined(WIN32)
+#include <windows.h>
+static QString getShortPath(const QString &path)
+{
+  TCHAR buf[MAX_PATH];
+  GetShortPathName( path.ascii(), buf, MAX_PATH);
+  return buf;
+}
+#endif
+
 bool QgsGrassNewMapset::mRunning = false;
 
 QgsGrassNewMapset::QgsGrassNewMapset ( QgisInterface *iface,
@@ -1348,7 +1358,11 @@ void QgsGrassNewMapset::createMapset()
     // TODO: add QgsGrass::setLocation or G_make_location with
     //       database path
     QgsGrass::activeMode(); // because it calls private gsGrass::init()
+#if defined(WIN32)
+    G__setenv( "GISDBASE", (char *) getShortPath(mDatabaseLineEdit->text()).ascii() );
+#else
     G__setenv( "GISDBASE", (char *) mDatabaseLineEdit->text().ascii() );
+#endif
 
     QgsGrass::resetError();
     int ret = G_make_location( (char *) location.ascii(), &mCellHead,
