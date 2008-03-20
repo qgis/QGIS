@@ -71,6 +71,16 @@ extern "C" {
 #include "qgsgrassmodel.h"
 #include "qgsgrassbrowser.h"
 
+#if defined(WIN32)
+#include <windows.h>
+static QString getShortPath(const QString &path)
+{
+  TCHAR buf[MAX_PATH];
+  GetShortPathName( path.ascii(), buf, MAX_PATH);
+  return buf;
+}
+#endif
+
 QgsGrassToolsTabWidget::QgsGrassToolsTabWidget( QWidget * parent ): 
   QTabWidget(parent)
 {
@@ -391,7 +401,11 @@ QgsGrassTools::~QgsGrassTools()
 
 QString QgsGrassTools::appDir(void)
 {
+#if defined(WIN32)
+  return getShortPath(QgsApplication::applicationDirPath());
+#else
   return QgsApplication::applicationDirPath();
+#endif
 }
 
 void QgsGrassTools::close(void)

@@ -91,6 +91,16 @@ extern "C" {
 
 #include <gdal.h>         // to collect version information
 
+#if defined(WIN32)
+#include <windows.h>
+static QString getShortPath(const QString &path)
+{
+  TCHAR buf[MAX_PATH];
+  GetShortPathName( path.ascii(), buf, MAX_PATH);
+  return buf;
+}
+#endif
+
 bool QgsGrassModule::mExecPathInited = 0;
 QStringList QgsGrassModule::mExecPath;
 
@@ -107,10 +117,11 @@ QString QgsGrassModule::findExec ( QString file )
 
 #ifdef WIN32
     mExecPath = path.split ( ";" );
+    mExecPath.prepend ( getShortPath(QgsApplication::applicationDirPath()) );
 #else
     mExecPath = path.split ( ":" );
-#endif
     mExecPath.prepend ( QgsApplication::applicationDirPath() );
+#endif
     mExecPathInited = true;
   }
 
@@ -168,7 +179,7 @@ QStringList QgsGrassModule::execArguments ( QString module )
   }
   else // script
   {
-    QString cmd = QgsApplication::applicationDirPath() + "/msys/bin/sh";
+    QString cmd = getShortPath(QgsApplication::applicationDirPath()) + "/msys/bin/sh";
     arguments.append ( cmd );
 
     // Important! Otherwise it does not find DLL even if it is in PATH
