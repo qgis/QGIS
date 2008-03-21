@@ -274,7 +274,7 @@ void QgsLegendLayerFile::table()
 
       connect(mTableDisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDisplay()));
 
-      mTableDisplay->setTitle(tr("Attribute table - ") + name());
+      mTableDisplay->setTitle(tr("Attribute table - ") + vlayer->name());
       mTableDisplay->show();
 
       // Give the table the most recent copy of the actions for this layer.
