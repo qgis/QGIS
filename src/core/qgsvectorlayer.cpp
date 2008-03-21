@@ -24,6 +24,7 @@
 #include <cassert>
 #include <cfloat>
 #include <cstring>
+#include <climits>
 #include <cmath>
 #include <iosfwd>
 #include <iostream>

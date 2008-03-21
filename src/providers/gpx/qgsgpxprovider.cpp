@@ -21,6 +21,7 @@
 #include <algorithm>
 #include <iostream>
 #include <limits>
+#include <cstring>
 #include <cmath>
 
 // Changed #include <qapp.h> to <qapplication.h>. Apparently some

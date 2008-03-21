@@ -46,7 +46,7 @@ public:
    **
    ** It seems like there should be a better way to do this...
    */
-  typedef enum QgsRasterDataType {
+  enum QgsRasterDataType {
     QGS_Unknown = 0,
     /*! Eight bit unsigned integer */           QGS_Byte = 1,
     /*! Sixteen bit unsigned integer */         QGS_UInt16 = 2,

@@ -61,7 +61,7 @@ class QgisPlugin
 
        @todo XXX this may be a hint that there should be subclasses
        */
-    typedef enum PLUGINTYPE
+    enum PLUGINTYPE
     {
       UI = 1,                     /* user interface plug-in */
       MAPLAYER,                    /* map layer plug-in */

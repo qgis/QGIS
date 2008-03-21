@@ -26,6 +26,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
+#include <cstring>
 
 #ifdef WIN32
 #include <io.h>
@@ -194,7 +195,7 @@ DiskStorageManager::DiskStorageManager(Tools::PropertySet& ps) : m_pageSize(0), 
 
 	// create buffer.
 	m_buffer = new byte[m_pageSize];
-	bzero(m_buffer, m_pageSize);
+	memset(m_buffer, 0, m_pageSize);
 
 	if (bOverwrite == false)
 	{

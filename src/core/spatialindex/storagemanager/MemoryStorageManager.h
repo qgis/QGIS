@@ -22,6 +22,8 @@
 #ifndef __storagemanager_memorystoragemanager_h
 #define __storagemanager_memorystoragemanager_h
 
+#include <cstring>
+
 namespace SpatialIndex
 {
 	namespace StorageManager
