@@ -17,6 +17,7 @@
  ***************************************************************************/
  /* $Id$ */
 
+#include <memory>
 
 #include "qgsattributeactiondialog.h"
 #include "qgscontexthelp.h"

@@ -18,6 +18,7 @@
 /* $Id$ */
 
 #include <fstream>
+#include <cstdlib>
 
 #include <QString>
 

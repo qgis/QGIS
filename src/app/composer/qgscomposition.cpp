@@ -13,6 +13,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <typeinfo>
+
 #include "qgscomposition.h"
 
 #include "qgscomposer.h"

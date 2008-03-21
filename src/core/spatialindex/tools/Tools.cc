@@ -19,6 +19,9 @@
 //  Email:
 //    mhadji@gmail.com
 
+#include <cstring>
+#include <limits>
+#include <cfloat>
 #include <Tools.h>
 #include "ExternalSort.h"
 //#include "SHA1.h"

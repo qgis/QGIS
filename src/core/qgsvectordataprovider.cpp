@@ -17,6 +17,7 @@
 #include <QTextCodec>
 
 #include <cfloat> // for DBL_MAX
+#include <climits>
 
 #include "qgsvectordataprovider.h"
 #include "qgsfeature.h"

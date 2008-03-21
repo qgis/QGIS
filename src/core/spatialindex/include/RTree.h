@@ -75,7 +75,7 @@ namespace SpatialIndex
 		// definition
 		extern ISpatialIndex* returnRTree(IStorageManager& sm, Tools::PropertySet& ps);
 #else
-		extern ISpatialIndex* returnRTree(IStorageManager& in, Tools::PropertySet& in);
+		extern ISpatialIndex* returnRTree(IStorageManager& in0, Tools::PropertySet& in1);
 #endif//_MSC_VER
 		extern ISpatialIndex* createNewRTree(
 			IStorageManager& sm,

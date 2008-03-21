@@ -76,6 +76,8 @@
 #include "qgsfield.h"
 #include "qgsfeature.h"
 
+#include <typeinfo>
+
 extern "C" {
 #include <grass/gis.h>
 #include <grass/Vect.h>
@@ -303,7 +305,7 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QString moduleName, QgisI
   connect ( &mProcess, SIGNAL(readyReadStandardError()), this, SLOT(readStderr()));
   connect ( &mProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(finished(int,QProcess::ExitStatus)));
 
-  char *env = "GRASS_MESSAGE_FORMAT=gui";
+  const char *env = "GRASS_MESSAGE_FORMAT=gui";
   char *envstr = new char[strlen(env)+1];
   strcpy ( envstr, env );
   putenv( envstr );
@@ -1237,7 +1239,7 @@ void QgsGrassModule::run()
     * G_GISRC_MODE_MEMORY mode, the variable remains set in variable when a module is run
     * -> unset GISRC_MODE_MEMORY. Remove later once 6.1.x / 6.0.1 is widespread.
     */
-    putenv ( "GISRC_MODE_MEMORY" );  // unset
+    putenv ( (char*) "GISRC_MODE_MEMORY" );  // unset
 
     mOutputTextBrowser->clear();
 

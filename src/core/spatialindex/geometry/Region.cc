@@ -17,6 +17,8 @@
 //  Email:
 //    mhadji@gmail.com
 
+#include <cstring>
+#include <limits>
 #include <Tools.h>
 
 Tools::Geometry::Region::Region()

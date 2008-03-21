@@ -17,6 +17,7 @@
 
 #include <limits>
 #include <stdexcept>
+#include <cstring>
 
 #include <QFile>
 #include <QTextStream>

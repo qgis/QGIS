@@ -1097,7 +1097,7 @@ void SpatialIndex::RTree::RTree::insertData_impl(unsigned long dataLength, byte*
 		NodePtr root = readNode(m_rootID);
 
 		overflowTable = new byte[root->m_level];
-		bzero(overflowTable, root->m_level);
+		memset(overflowTable, 0, root->m_level);
 
 		NodePtr l = root->chooseSubtree(mbr, 0, pathBuffer);
 		if (l.get() == root.get())

@@ -13,6 +13,7 @@
  *                                                                       *
  *************************************************************************/
 #include <iostream>
+#include <typeinfo>
 
 #include <qapplication.h>
 #include <qstringlist.h>

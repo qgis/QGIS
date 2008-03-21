@@ -592,7 +592,7 @@ void Node::rtreeSplit(unsigned long dataLength, byte* pData, Region& mbr, long i
 
 	// use this mask array for marking visited entries.
 	byte* mask = new byte[m_capacity + 1];
-	bzero(mask, m_capacity + 1);
+	memset(mask, 0, m_capacity + 1);
 
 	// insert new data in the node for easier manipulation. Data arrays are always
 	// by one larger than node capacity.

@@ -31,7 +31,7 @@
 #include <queue>
 #include <set>
 #include <cmath>
-#include <string>
+#include <cstring>
 #include <sstream>
 
 #include "Tools.h"
@@ -188,7 +188,7 @@ namespace SpatialIndex
 		// definition
 		extern IBuffer* returnRandomEvictionsBuffer(IStorageManager& sm, Tools::PropertySet& ps);
 #else
-		extern IBuffer* returnRandomEvictionsBuffer(IStorageManager& in, Tools::PropertySet& in);
+		extern IBuffer* returnRandomEvictionsBuffer(IStorageManager& in0, Tools::PropertySet& in1);
 #endif//_MSC_VER
 		extern IBuffer* createNewRandomEvictionsBuffer(IStorageManager& in, unsigned int capacity, bool bWriteThrough);
 	}
