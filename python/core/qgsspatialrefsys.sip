@@ -20,6 +20,8 @@ class QgsSpatialRefSys
         
         //! Default constructor
         QgsSpatialRefSys();
+
+        ~QgsSpatialRefSys();
         
         /*! 
          * Constructs a SRS object from a WKT string
@@ -33,7 +35,6 @@ class QgsSpatialRefSys
          * @param theType One of the types described in QgsSpatialRefSys::SRS_TYPE
          */
         QgsSpatialRefSys(const long theId, SRS_TYPE theType=POSTGIS_SRID);
-
 
         // Misc helper functions -----------------------
 

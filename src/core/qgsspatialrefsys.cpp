@@ -45,13 +45,14 @@ QgsSpatialRefSys::QgsSpatialRefSys()
   : mMapUnits(QGis::UNKNOWN),
     mIsValidFlag(0)
 {
-  // NOOP
+  mSRS = OSRNewSpatialReference(NULL);
 }
 
 QgsSpatialRefSys::QgsSpatialRefSys(QString theWkt)
   : mMapUnits(QGis::UNKNOWN),
     mIsValidFlag(0)
 {
+  mSRS = OSRNewSpatialReference(NULL);
   createFromWkt(theWkt);
 }
 
@@ -60,7 +61,13 @@ QgsSpatialRefSys::QgsSpatialRefSys(const long theId, SRS_TYPE theType)
   : mMapUnits(QGis::UNKNOWN),
     mIsValidFlag(0)
 {
+  mSRS = OSRNewSpatialReference(NULL);
   createFromId(theId, theType);
+}
+
+QgsSpatialRefSys::~QgsSpatialRefSys()
+{
+  OSRDestroySpatialReference( mSRS );
 }
 
 void QgsSpatialRefSys::createFromId(const long theId, SRS_TYPE theType)
@@ -80,9 +87,7 @@ void QgsSpatialRefSys::createFromId(const long theId, SRS_TYPE theType)
     //THIS IS BAD...THIS PART OF CODE SHOULD NEVER BE REACHED...
     QgsLogger::critical("Unexpected case reached in " + QString(__FILE__) + " : " + QString(__LINE__));
   };
-
 }
-
 
 bool QgsSpatialRefSys::createFromOgcWmsCrs(QString theCrs)
 {
@@ -111,6 +116,11 @@ bool QgsSpatialRefSys::createFromOgcWmsCrs(QString theCrs)
   return TRUE;
 }
 
+QgsSpatialRefSys::QgsSpatialRefSys(const QgsSpatialRefSys &srs)
+{
+  mSRS = OSRNewSpatialReference(NULL);
+  *this = srs;
+}
 
 // Assignment operator
 QgsSpatialRefSys& QgsSpatialRefSys::operator=(const QgsSpatialRefSys& srs)
@@ -121,12 +131,18 @@ QgsSpatialRefSys& QgsSpatialRefSys::operator=(const QgsSpatialRefSys& srs)
     mDescription = srs.mDescription;
     mProjectionAcronym = srs.mProjectionAcronym;
     mEllipsoidAcronym = srs.mEllipsoidAcronym;
-    mProj4String = srs.mProj4String;
     mGeoFlag = srs.mGeoFlag;
     mMapUnits = srs.mMapUnits;
     mSRID = srs.mSRID;
     mEpsg = srs.mEpsg;
     mIsValidFlag = srs.mIsValidFlag;
+    if(mIsValidFlag)
+    {
+      char *proj4src = NULL;
+      OSRExportToProj4(srs.mSRS, &proj4src);
+      OSRImportFromProj4(mSRS, proj4src);
+      CPLFree(proj4src);
+    }
   }
   return *this;
 }
@@ -136,99 +152,55 @@ QgsSpatialRefSys& QgsSpatialRefSys::operator=(const QgsSpatialRefSys& srs)
 
 void QgsSpatialRefSys::validate()
 {
-  QgsDebugMsg("QgsSpatialRefSys::validate");
-  //dont bother trying to do an initial test with gdal if
-  //the proj4String is not even populated
-  if (QString::null!=mProj4String && !mProj4String.isEmpty())
-  {
-    //first of all use gdal to test if this is an ok srs already
-    //if not we will prompt the user for and srs
-    //then retest using gdal
-    //if the retest fails we will then set  this srs to the GEOCS/WGS84 default
-    QgsDebugMsg("Use GDAL to vaildate");
-
-    /* Here are the possible OGR error codes :
-       typedef int OGRErr;
-
-       #define OGRERR_NONE                0
-       #define OGRERR_NOT_ENOUGH_DATA     1    --> not enough data to deserialize
-       #define OGRERR_NOT_ENOUGH_MEMORY   2
-       #define OGRERR_UNSUPPORTED_GEOMETRY_TYPE 3
-       #define OGRERR_UNSUPPORTED_OPERATION 4
-       #define OGRERR_CORRUPT_DATA        5
-       #define OGRERR_FAILURE             6
-       #define OGRERR_UNSUPPORTED_SRS     7 */
-
-    //get the wkt into ogr
-    //this is really ugly but we need to get a QString to a char**
-    const char *mySourceCharArrayPointer = mProj4String.latin1();
-    //create the sr and populate it from a wkt proj definition
-    OGRSpatialReferenceH myOgrSpatialRef = OSRNewSpatialReference(NULL);
-    
-    OGRErr myInputResult = 
-        OSRImportFromProj4( myOgrSpatialRef, mySourceCharArrayPointer );
-
-    OSRDestroySpatialReference( myOgrSpatialRef );
-
-    if (myInputResult==OGRERR_NONE)
-    {
-      //srs is valid so nothing more to do...
-      createFromProj4(mProj4String);
-      return;
-    }
-  }
+  if(mIsValidFlag)
+    return;
 
   // try to validate using custom validation routines
   if (mCustomSrsValidation)
     mCustomSrsValidation(this);
 
-  //
-  // This is the second check after the user assigned SRS has been retrieved
-  // If it still does not work, we will simply use the QgsSpatialRefSys const GEOPROJ4 for the job
-  //
-
-  //this is really ugly but we need to get a QString to a char**
-  const char *mySourceCharArrayPointer = mProj4String.latin1();
-  //create the sr and populate it from a wkt proj definition
-  OGRSpatialReferenceH myOgrSpatialRef = OSRNewSpatialReference(NULL);
-  OGRErr myInputResult = OSRImportFromProj4( myOgrSpatialRef, mySourceCharArrayPointer );
-
-  OSRDestroySpatialReference( myOgrSpatialRef );
-
-  if (! myInputResult==OGRERR_NONE)
-  {
-    //default to proj 4..if all else fails we will use that for this srs
-    mProj4String = GEOPROJ4;
-  }
-  createFromProj4(mProj4String);  
-
+  if(!mIsValidFlag)
+    // set the default
+    createFromProj4(GEOPROJ4);  
 }
 
-bool QgsSpatialRefSys::createFromSrid(long theSrid)
+bool QgsSpatialRefSys::createFromSrid(long id)
 {
-  QgsDebugMsg("QgsSpatialRefSys::createFromSrid");
+  return loadFromDb( QgsApplication::srsDbFilePath(), "srid", id);
+}
 
-  // Get the full path name to the sqlite3 spatial reference database.
-  QString myDatabaseFileName = QgsApplication::srsDbFilePath();
+bool QgsSpatialRefSys::createFromEpsg(long id)
+{
+  return loadFromDb( QgsApplication::srsDbFilePath(), "epsg", id);
+}
 
-  QFileInfo myInfo (myDatabaseFileName);
-  if (!myInfo.exists())
+bool QgsSpatialRefSys::createFromSrsId(long id)
+{
+  return loadFromDb( id<100000 ? QgsApplication::srsDbFilePath() : QgsApplication::qgisUserDbFilePath(), "srs_id", id);
+}
+
+bool QgsSpatialRefSys::loadFromDb(QString db, QString field, long id)
+{
+  QgsDebugMsg("load SRS from " + db + " where " + field + " is " + QString::number(id));
+  mIsValidFlag=false;
+
+  QFileInfo myInfo(db);
+  if(!myInfo.exists())
   {
-    QgsDebugMsg("QgsSpatialRefSys::createFromSrid failed : " + myDatabaseFileName + 
-        " does not exist!");
-    return false;
+    QgsDebugMsg("failed : " + db + " does not exist!");
+    return mIsValidFlag;
   }
-
 
   sqlite3      *myDatabase;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = openDb(myDatabaseFileName, &myDatabase);
+  myResult = openDb(db, &myDatabase);
   if(myResult)
   {
-      return false;
+    QgsDebugMsg("failed : " + db + " could not be opened!");
+    return mIsValidFlag;
   }
 
   /*
@@ -242,7 +214,7 @@ bool QgsSpatialRefSys::createFromSrid(long theSrid)
     is_geo integer NOT NULL);
   */
 
-  QString mySql = "select srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,epsg,is_geo from tbl_srs where srid='" + QString::number(theSrid) + "'";
+  QString mySql = "select srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,epsg,is_geo from tbl_srs where " + field + "='" + QString::number(id) + "'";
   myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK && sqlite3_step(myPreparedStatement) == SQLITE_ROW)
@@ -251,19 +223,18 @@ bool QgsSpatialRefSys::createFromSrid(long theSrid)
     mDescription = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1));
     mProjectionAcronym = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
     mEllipsoidAcronym = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
-    mProj4String = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4));
+    QString proj4String = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4));
     mSRID = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,5)).toLong();
     mEpsg = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,6)).toLong();
     int geo = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,7)).toInt();
     mGeoFlag = (geo == 0 ? false : true);
     setMapUnits();
     mIsValidFlag = true;
-
+    OSRImportFromProj4( mSRS, (const char *)proj4String.latin1() );
   }
   else
   {
-    QgsDebugMsg("QgsSpatialRefSys::createFromSrid failed : " + mySql);
-    mIsValidFlag = false;
+    QgsDebugMsg("failed : " + mySql);
   }
   sqlite3_finalize(myPreparedStatement);
   sqlite3_close(myDatabase);
@@ -272,32 +243,20 @@ bool QgsSpatialRefSys::createFromSrid(long theSrid)
 
 bool QgsSpatialRefSys::createFromWkt(QString theWkt)
 {
+  mIsValidFlag = false;
+
   if (theWkt.isEmpty())
   {
     QgsDebugMsg("QgsSpatialRefSys::createFromWkt -- theWkt is uninitialised, operation failed")
     QgsLogger::critical("QgsSpatialRefSys::createFromWkt -- theWkt is uninitialised, operation failed");
-    mIsValidFlag = false;
-    return false;
+    return mIsValidFlag;
   }
   QgsDebugMsg("QgsSpatialRefSys::createFromWkt(QString theWkt) using: " + theWkt);
   //this is really ugly but we need to get a QString to a char**
-  const char *myCharArrayPointer = theWkt.latin1(); //Why doesn't it work with toLocal8Bit().data()?
-  char *pWkt = (char *)myCharArrayPointer;
-  /* Here are the possible OGR error codes :
-     typedef int OGRErr;
-     #define OGRERR_NONE                0
-     #define OGRERR_NOT_ENOUGH_DATA     1    --> not enough data to deserialize 
-     #define OGRERR_NOT_ENOUGH_MEMORY   2
-     #define OGRERR_UNSUPPORTED_GEOMETRY_TYPE 3
-     #define OGRERR_UNSUPPORTED_OPERATION 4
-     #define OGRERR_CORRUPT_DATA        5
-     #define OGRERR_FAILURE             6
-     #define OGRERR_UNSUPPORTED_SRS     7 
-  */
+  char *pWkt = (char *)theWkt.latin1();
 
-  OGRSpatialReferenceH myOgrSpatialRef = OSRNewSpatialReference( NULL );
+  OGRErr myInputResult = OSRImportFromWkt( mSRS, &pWkt );
 
-  OGRErr myInputResult = OSRImportFromWkt( myOgrSpatialRef, &pWkt );
   if (myInputResult != OGRERR_NONE)
   {
     QgsDebugMsg("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
@@ -305,11 +264,8 @@ bool QgsSpatialRefSys::createFromWkt(QString theWkt)
     QgsDebugMsg("This SRS could *** NOT *** be set from the supplied WKT ");
     QgsDebugMsg("INPUT: " + theWkt);
     QgsDebugMsg("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-    mIsValidFlag = false;
-    OSRDestroySpatialReference( myOgrSpatialRef );
-    return false;
+    return mIsValidFlag;
   }
-
 
   // always morph from esri as it doesn't hurt anything
   // FW: Hey, that's not right!  It can screw stuff up! Disable
@@ -317,8 +273,7 @@ bool QgsSpatialRefSys::createFromWkt(QString theWkt)
 
   // create the proj4 structs needed for transforming
   char *proj4src = NULL;
-  OSRExportToProj4(myOgrSpatialRef, &proj4src);
-  OSRDestroySpatialReference( myOgrSpatialRef );
+  OSRExportToProj4(mSRS, &proj4src);
 
   //now that we have the proj4string, delegate to createFromProj4String so
   // that we can try to fill in the remaining class members...
@@ -330,173 +285,18 @@ bool QgsSpatialRefSys::createFromWkt(QString theWkt)
   //setMapunits will be called by createfromproj above
 }
 
-bool QgsSpatialRefSys::createFromEpsg(long theEpsg)
-{
-  QgsDebugMsg("QgsSpatialRefSys::createFromEpsg with " + QString::number(theEpsg));
-  // Get the full path name to the sqlite3 spatial reference database.
-  QString myDatabaseFileName = QgsApplication::srsDbFilePath();
-
-
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-  //check the db is available
-  myResult = openDb(myDatabaseFileName, &myDatabase);
-  if(myResult)
-  {
-      return false;
-  }
-
-  /*
-    srs_id INTEGER PRIMARY KEY,
-    description text NOT NULL,
-    projection_acronym text NOT NULL,
-    ellipsoid_acronym NOT NULL,
-    parameters text NOT NULL,
-    srid integer NOT NULL,
-    epsg integer NOT NULL,
-    is_geo integer NOT NULL);
-  */
-
-  QString mySql = "select srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,epsg,is_geo from tbl_srs where epsg='" + QString::number(theEpsg) + "'";
-  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
-  // XXX Need to free memory from the error msg if one is set
-  if(myResult == SQLITE_OK && sqlite3_step(myPreparedStatement) == SQLITE_ROW)
-  {
-    mSrsId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0)).toLong();
-    mDescription = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1));
-    mProjectionAcronym = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
-    mEllipsoidAcronym = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
-    mProj4String = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4));
-    mSRID = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,5)).toLong();
-    mEpsg = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,6)).toLong();
-    int geo = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,7)).toInt();
-    mGeoFlag = (geo == 0 ? false : true);
-    setMapUnits();
-    mIsValidFlag = true;
-
-  }
-  else
-  {
-    QgsLogger::critical(" QgsSpatialRefSys::createFromEpsg failed :  " + mySql);
-    mIsValidFlag = false;
-  }
-  sqlite3_finalize(myPreparedStatement);
-  sqlite3_close(myDatabase);
-  return mIsValidFlag;
-}
-
-
-bool QgsSpatialRefSys::createFromSrsId (long theSrsId)
-{
-  QgsDebugMsg("QgsSpatialRefSys::createFromSrsId");
-  QString myDatabaseFileName;
-  //
-  // Determine if this is a user projection or a system on
-  // user projection defs all have srs_id >= 100000
-  //
-  if (theSrsId>= USER_PROJECTION_START_ID)
-  {
-    myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
-    QFileInfo myFileInfo;
-    myFileInfo.setFile(myDatabaseFileName);
-    if ( !myFileInfo.exists( ) )
-    {
-      mIsValidFlag = false;
-      QgsLogger::warning("QgsSpatialRefSys::createFromSrid failed :  users qgis.db not found");
-      return mIsValidFlag;
-    }
-  }
-  else //must be  a system projection then
-  {
-    // Get the full path name to the sqlite3 spatial reference database.
-    myDatabaseFileName = QgsApplication::srsDbFilePath();
-  }
-
-
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-  //check the db is available
-  myResult = openDb(myDatabaseFileName, &myDatabase);
-  if(myResult)
-  {
-      return false;
-  }
-
-  /*
-    srs_id INTEGER PRIMARY KEY,
-    description text NOT NULL,
-    projection_acronym text NOT NULL,
-    ellipsoid_acronym NOT NULL,
-    parameters text NOT NULL,
-    srid integer NOT NULL,
-    epsg integer NOT NULL,
-    is_geo integer NOT NULL);
-  */
-
-  QString mySql = "select srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,epsg,is_geo from tbl_srs where srs_id='" + QString::number(theSrsId) + "'";
-  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
-  // XXX Need to free memory from the error msg if one is set
-  if(myResult == SQLITE_OK && sqlite3_step(myPreparedStatement) == SQLITE_ROW)
-  {
-    mSrsId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0)).toLong();
-    mDescription = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1));
-    mProjectionAcronym = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
-    mEllipsoidAcronym = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
-    mProj4String = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4));
-    mSRID = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,5)).toLong();
-    mEpsg = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,6)).toLong();
-    int geo = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,7)).toInt();
-    mGeoFlag = (geo == 0 ? false : true);
-    setMapUnits();
-    mIsValidFlag = true;
-  }
-  else
-  {
-    QgsLogger::warning("QgsSpatialRefSys::createFromSrsId failed :  " + mySql);
-    mIsValidFlag = false;
-  }
-  sqlite3_finalize(myPreparedStatement);
-  sqlite3_close(myDatabase);
-  return mIsValidFlag;
-}
-
-
-
-
-
 bool QgsSpatialRefSys::isValid() const
 {
-  if (mProj4String.isEmpty())
-    return false;
-
-  //this is really ugly but we need to get a QString to a char**
-  const char *mySourceCharArrayPointer = mProj4String.latin1();
-  //create the sr and populate it from a wkt proj definition
-  OGRSpatialReferenceH myOgrSpatialRef = OSRNewSpatialReference( NULL );
-  OGRErr myResult = OSRImportFromProj4( myOgrSpatialRef, mySourceCharArrayPointer );
-  OSRDestroySpatialReference( myOgrSpatialRef );
-  if (myResult==OGRERR_NONE)
-  {
-    //QgsDebugMsg("The OGRe says it's a valid SRS with proj4 string: " +  mProj4String);
-    //srs is valid so nothing more to do...
+  if (mIsValidFlag)
     return true;
-  }
-  else
-  {
-    QgsDebugMsg("The OGRe says it's an invalid SRS (OGRErr = "
-                + QString::number(myResult)
-                + ") with proj4 string: " + mProj4String);
-    return false;
-  }
+
+  QgsDebugMsg("It's an invalid SRS without valid proj4 string");
+
+  return false;
 }
 
 bool QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
 {
-
   //
   // Examples:
   // +proj=tmerc +lat_0=0 +lon_0=-62 +k=0.999500 +x_0=400000 +y_0=0
@@ -513,7 +313,7 @@ bool QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
   myStart = myProjRegExp.search(theProj4String, myStart);
   if (myStart==-1)
   {
-    QgsLogger::warning("QgsSpatialRefSys::createFromProj4 error proj string supplied has no +proj argument");
+    QgsDebugMsg("error proj string supplied has no +proj argument");
     return mIsValidFlag;
   }
   else
@@ -540,12 +340,8 @@ bool QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
   if (myStart==-1 && mEllipsoidAcronym.isNull())
   {
     QgsLogger::warning("QgsSpatialRefSys::createFromProj4 error proj string supplied has no +ellps or +a argument");
-
     return mIsValidFlag;
   }
-  //mproj4string must be set here for the rest of this method to behave in a meaningful way...
-  mProj4String = theProj4String;
-
 
   /*
   * We try to match the proj string to and srsid using the following logic: 
@@ -559,15 +355,18 @@ bool QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
   QgsSpatialRefSys::RecordMap myRecord;
   if (!mDescription.stripWhiteSpace ().isEmpty())
   {
-     myRecord = getRecord("select * from tbl_srs where description='" + mDescription.stripWhiteSpace () + "'");
+    myRecord = getRecord("select * from tbl_srs where description='" + mDescription.stripWhiteSpace () + "'");
   }
-//  if (!myRecord.empty())
-// What if descriptions aren't unique?
-  if (false)
+
+  /*
+  * - if the above does not match perform a whole text search on proj4 string (if not null)
+  */
+  QgsDebugMsg("QgsSpatialRefSys::createFromProj4 wholetext match on name failed, trying proj4string match");
+  myRecord = getRecord("select * from tbl_srs where parameters='" + theProj4String.stripWhiteSpace () + "'");
+  if (!myRecord.empty())
   {
     mySrsId=myRecord["srs_id"].toLong();
-    QgsDebugMsg("QgsSpatialRefSys::createFromProj4 Projection Description match search for srsid returned srsid: "\
-		+ QString::number(mySrsId));
+    QgsDebugMsg("QgsSpatialRefSys::createFromProj4 proj4string match search for srsid returned srsid: " + QString::number(mySrsId));
     if (mySrsId > 0)
     {
       createFromSrsId(mySrsId);
@@ -575,93 +374,70 @@ bool QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
   }
   else
   {
-    /*
-    * - if the above does not match perform a whole text search on proj4 string (if not null)
-    */
-    QgsDebugMsg("QgsSpatialRefSys::createFromProj4 wholetext match on name failed, trying proj4string match");
-    myRecord = getRecord("select * from tbl_srs where parameters='" + mProj4String.stripWhiteSpace () + "'");
-    if (!myRecord.empty())
+    // Ticket #722 - aaronr
+    // Check if we can swap the lat_1 and lat_2 params (if they exist) to see if we match...
+    // First we check for lat_1 and lat_2
+    QRegExp myLat1RegExp( "\\+lat_1=\\S+" );
+    QRegExp myLat2RegExp( "\\+lat_2=\\S+" );
+    int myStart1 = 0;
+    int myLength1 = 0;
+    int myStart2 = 0;
+    int myLength2 = 0;
+    QString lat1Str = "";
+    QString lat2Str = "";
+    myStart1 = myLat1RegExp.search(theProj4String, myStart1);
+    myStart2 = myLat2RegExp.search(theProj4String, myStart2);
+    if ((myStart1 != -1) && (myStart2 != -1))
     {
-      mySrsId=myRecord["srs_id"].toLong();
-      QgsDebugMsg("QgsSpatialRefSys::createFromProj4 proj4string match search for srsid returned srsid: " \
-		  + QString::number(mySrsId));
+      myLength1 = myLat1RegExp.matchedLength();
+      myLength2 = myLat2RegExp.matchedLength();
+      lat1Str = theProj4String.mid(myStart1+LAT_PREFIX_LEN,myLength1-LAT_PREFIX_LEN);
+      lat2Str = theProj4String.mid(myStart2+LAT_PREFIX_LEN,myLength2-LAT_PREFIX_LEN);
+    }
+    // If we found the lat_1 and lat_2 we need to swap and check to see if we can find it...
+    if ((lat1Str != "") && (lat2Str != ""))
+    {
+      // Make our new string to check...
+      QString theProj4StringModified = theProj4String;
+      // First just swap in the lat_2 value for lat_1 value
+      theProj4StringModified.replace(myStart1+LAT_PREFIX_LEN,myLength1-LAT_PREFIX_LEN,lat2Str);
+      // Now we have to find the lat_2 location again since it has potentially moved...
+      myStart2 = 0;
+      myStart2 = myLat2RegExp.search(theProj4String, myStart2);
+      theProj4StringModified.replace(myStart2+LAT_PREFIX_LEN,myLength2-LAT_PREFIX_LEN,lat1Str);
+      QgsDebugMsg("QgsSpatialRefSys::createFromProj4 - trying proj4string match with swapped lat_1,lat_2");
+      myRecord = getRecord("select * from tbl_srs where parameters='" + theProj4StringModified.stripWhiteSpace () + "'");
+      if (!myRecord.empty())
+      {
+        // Success!  We have found the proj string by swapping the lat_1 and lat_2
+        OSRImportFromProj4(mSRS, (const char *)theProj4StringModified.latin1() );
+        mySrsId=myRecord["srs_id"].toLong();
+        QgsDebugMsg("QgsSpatialRefSys::createFromProj4 proj4string match search for srsid returned srsid: " + QString::number(mySrsId));
+        if (mySrsId > 0)
+        {
+          createFromSrsId(mySrsId);
+        }
+      }
+    }
+    else
+    {
+      // Last ditch attempt to piece together what we know of the projection to find a match...
+      QgsDebugMsg("QgsSpatialRefSys::createFromProj4 globbing search for srsid from this proj string");
+      mySrsId = findMatchingProj();
+      QgsDebugMsg("QgsSpatialRefSys::createFromProj4 globbing search for srsid returned srsid: " + QString::number(mySrsId));
       if (mySrsId > 0)
       {
         createFromSrsId(mySrsId);
       }
     }
-    else
-    {
-      // Ticket #722 - aaronr
-      // Check if we can swap the lat_1 and lat_2 params (if they exist) to see if we match...
-      // First we check for lat_1 and lat_2
-      QRegExp myLat1RegExp( "\\+lat_1=\\S+" );
-      QRegExp myLat2RegExp( "\\+lat_2=\\S+" );
-      int myStart1 = 0;
-      int myLength1 = 0;
-      int myStart2 = 0;
-      int myLength2 = 0;
-      QString lat1Str = "";
-      QString lat2Str = "";
-      myStart1 = myLat1RegExp.search(theProj4String, myStart1);
-      myStart2 = myLat2RegExp.search(theProj4String, myStart2);
-      if ((myStart1 != -1) && (myStart2 != -1))
-	{
-	  myLength1 = myLat1RegExp.matchedLength();
-	  myLength2 = myLat2RegExp.matchedLength();
-	  lat1Str = theProj4String.mid(myStart1+LAT_PREFIX_LEN,myLength1-LAT_PREFIX_LEN);
-	  lat2Str = theProj4String.mid(myStart2+LAT_PREFIX_LEN,myLength2-LAT_PREFIX_LEN);
-	}
-      // If we found the lat_1 and lat_2 we need to swap and check to see if we can find it...
-      if ((lat1Str != "") && (lat2Str != ""))
-	{
-	  // Make our new string to check...
-	  QString theProj4StringModified = theProj4String;
-	  // First just swap in the lat_2 value for lat_1 value
-	  theProj4StringModified.replace(myStart1+LAT_PREFIX_LEN,myLength1-LAT_PREFIX_LEN,lat2Str);
-	  // Now we have to find the lat_2 location again since it has potentially moved...
-	  myStart2 = 0;
-	  myStart2 = myLat2RegExp.search(theProj4String, myStart2);
-	  theProj4StringModified.replace(myStart2+LAT_PREFIX_LEN,myLength2-LAT_PREFIX_LEN,lat1Str);
-	  QgsDebugMsg("QgsSpatialRefSys::createFromProj4 - trying proj4string match with swapped lat_1,lat_2");
-	  myRecord = getRecord("select * from tbl_srs where parameters='" + theProj4StringModified.stripWhiteSpace () + "'");
-	  if (!myRecord.empty())
-	    {
-	      // Success!  We have found the proj string by swapping the lat_1 and lat_2
-	      mProj4String = theProj4StringModified;
-	      mySrsId=myRecord["srs_id"].toLong();
-	      QgsDebugMsg("QgsSpatialRefSys::createFromProj4 proj4string match search for srsid returned srsid: " \
-			  + QString::number(mySrsId));
-	      if (mySrsId > 0)
-		{
-		  createFromSrsId(mySrsId);
-		}
-	    }
-	}
-      else
-	{
-	  // Last ditch attempt to piece together what we know of the projection to find a match...
-	  QgsDebugMsg("QgsSpatialRefSys::createFromProj4 globbing search for srsid from this proj string");
-	  mySrsId = findMatchingProj();
-	  QgsDebugMsg("QgsSpatialRefSys::createFromProj4 globbing search for srsid returned srsid: "\
-		      + QString::number(mySrsId));
-	  if (mySrsId > 0)
-	    {
-	      createFromSrsId(mySrsId);
-	    }
-	}
-    }
   }
 
-  /* If its still empty after all the above steps then all we can do is keep the proj string
-  * with what was passed in and hope for the best...If its not empty we can fill other member details in 
-    from the record*/
+  // NOTE: if its still empty after all the above steps then, the projection string is lost. Is that bad?
   return mIsValidFlag;
 }
 
 QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
 {
-
   QString myDatabaseFileName;
   QgsSpatialRefSys::RecordMap myMap;
   QString myFieldName;
@@ -826,14 +602,16 @@ QString QgsSpatialRefSys::ellipsoidAcronym () const
  */
 QString QgsSpatialRefSys::proj4String() const
 {
-  if (mProj4String.isNull())
-  {
+  if(!mIsValidFlag)
     return "";
-  }
-  else
-  {
-    return mProj4String;
-  }
+
+  QString proj4String;
+  char *proj4src = NULL;
+  OSRExportToProj4(mSRS, &proj4src);
+  proj4String = proj4src;
+  CPLFree(proj4src);
+
+  return proj4String;
 }
 /*! Get this Geographic? flag
  * @return  bool theGeoFlag Whether this is a geographic or projected coordinate system
@@ -882,7 +660,7 @@ void QgsSpatialRefSys::setDescription (QString theDescription)
 }
 void QgsSpatialRefSys::setProj4String (QString theProj4String)
 {
-  mProj4String = theProj4String;
+  mIsValidFlag = OSRImportFromProj4(mSRS, (const char *)theProj4String.latin1())==OGRERR_NONE;
 }
 void QgsSpatialRefSys::setGeographicFlag (bool theGeoFlag)
 {
@@ -905,24 +683,22 @@ void  QgsSpatialRefSys::setEllipsoidAcronym(QString theEllipsoidAcronym)
  */
 void QgsSpatialRefSys::setMapUnits()
 {
-  if (mProj4String.isEmpty())
+  if (!mIsValidFlag)
   {
-    QgsLogger::warning("No proj4 projection string. Unable to set map units.");
+    QgsLogger::warning("No valid projection. Unable to set map units.");
     mMapUnits = QGis::UNKNOWN;
     return;
   }
 
   char *unitName;
-  OGRSpatialReferenceH myOgrSpatialRef = OSRNewSpatialReference(NULL);
-  OSRImportFromProj4(myOgrSpatialRef, mProj4String.latin1());
 
   // Of interest to us is that this call adds in a unit parameter if
   // one doesn't already exist.
-  OSRFixup(myOgrSpatialRef);
+  OSRFixup(mSRS);
 
-  if (OSRIsProjected(myOgrSpatialRef))
+  if (OSRIsProjected(mSRS))
   {
-    double toMeter = OSRGetLinearUnits(myOgrSpatialRef,&unitName);
+    double toMeter = OSRGetLinearUnits(mSRS,&unitName);
     QString unit(unitName);
 
     // If the units parameter was created during the Fixup() call
@@ -950,7 +726,7 @@ void QgsSpatialRefSys::setMapUnits()
   }
   else
   {
-    OSRGetAngularUnits(myOgrSpatialRef, &unitName);
+    OSRGetAngularUnits(mSRS, &unitName);
     QString unit(unitName);
     if (unit == "degree")
       mMapUnits = QGis::DEGREES;
@@ -961,9 +737,7 @@ void QgsSpatialRefSys::setMapUnits()
     }
     QgsDebugMsg("Projection has angular units of " + unit);
   }
-  OSRDestroySpatialReference( myOgrSpatialRef );
 }
-
 
 /*
 *    check if srs is a geocs or a proj cs (using ogr isGeographic)
@@ -977,7 +751,7 @@ void QgsSpatialRefSys::setMapUnits()
 long QgsSpatialRefSys::findMatchingProj()
 {
   QgsDebugMsg("QgsSpatialRefSys::findMatchingProj...");
-  if (mEllipsoidAcronym.isNull() ||  mProjectionAcronym.isNull() || mProj4String.isNull())
+  if (mEllipsoidAcronym.isNull() ||  mProjectionAcronym.isNull() || !mIsValidFlag)
   {
     QgsLogger::warning("QgsSpatialRefSys::findMatchingProj will only work if prj acr ellipsoid acr and proj4string are set!...");
     return 0;
@@ -993,7 +767,6 @@ long QgsSpatialRefSys::findMatchingProj()
                            mProjectionAcronym + "' and ellipsoid_acronym='" + mEllipsoidAcronym + "'");
   // Get the full path name to the sqlite3 spatial reference database.
   QString myDatabaseFileName = QgsApplication::srsDbFilePath();
-
 
   //check the db is available
   myResult = openDb(myDatabaseFileName, &myDatabase);
@@ -1011,9 +784,9 @@ long QgsSpatialRefSys::findMatchingProj()
     {
       QString mySrsId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
       QString myProj4String = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 1));
-      if (this->equals(myProj4String))
+      if (equals(myProj4String))
       {
-	QgsDebugMsg("QgsSpatialRefSys::findMatchingProj -------> MATCH FOUND in srs.db srsid: " + mySrsId);
+        QgsDebugMsg("QgsSpatialRefSys::findMatchingProj -------> MATCH FOUND in srs.db srsid: " + mySrsId);
         // close the sqlite3 statement
         sqlite3_finalize(myPreparedStatement);
         sqlite3_close(myDatabase);
@@ -1051,9 +824,9 @@ long QgsSpatialRefSys::findMatchingProj()
     {
       QString mySrsId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
       QString myProj4String = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 1));
-      if (this->equals(myProj4String))
+      if (equals(myProj4String))
       {
-	QgsDebugMsg("QgsSpatialRefSys::findMatchingProj -------> MATCH FOUND in user qgis.db srsid: " + mySrsId);
+        QgsDebugMsg("QgsSpatialRefSys::findMatchingProj -------> MATCH FOUND in user qgis.db srsid: " + mySrsId);
         // close the sqlite3 statement
         sqlite3_finalize(myPreparedStatement);
         sqlite3_close(myDatabase);
@@ -1071,15 +844,28 @@ long QgsSpatialRefSys::findMatchingProj()
   sqlite3_finalize(myPreparedStatement);
   sqlite3_close(myDatabase);
   return 0;
-
 }
 
 bool QgsSpatialRefSys::operator==(const QgsSpatialRefSys &theSrs)
 {
-  //qWarning("QgsSpatialRefSys::operator==(const QgsSpatialRefSys &theSrs) called ");
-  //simply delegate to the overloaded == operator  below...
-  return this->equals(theSrs.mProj4String);
-
+  if (!mIsValidFlag || !theSrs.mIsValidFlag)
+  {
+    return false;
+  }
+  else if (OSRIsGeographic(mSRS) && OSRIsGeographic(theSrs.mSRS))
+  {
+    // qWarning("QgsSpatialRefSys::operator== srs1 and srs2 are geographic ");
+    return OSRIsSameGeogCS(mSRS,theSrs.mSRS);
+  }
+  else if (OSRIsProjected(mSRS) && OSRIsProjected(theSrs.mSRS))
+  {
+    // qWarning("QgsSpatialRefSys::operator== srs1 and srs2 are projected ");
+    return OSRIsSame(mSRS, theSrs.mSRS);
+  }
+  else
+  {
+    return false;
+  }
 }
 
 bool QgsSpatialRefSys::operator!=(const QgsSpatialRefSys &theSrs)
@@ -1087,83 +873,22 @@ bool QgsSpatialRefSys::operator!=(const QgsSpatialRefSys &theSrs)
   return  ! (*this == theSrs);
 }
 
-
-bool QgsSpatialRefSys::equals(QString theProj4CharArray)
+bool QgsSpatialRefSys::equals(QString theProj4String)
 {
-  //qWarning("QgsSpatialRefSys::operator==(const char *theProj4CharArray) called ");
-  bool myMatchFlag = false; //guilty until proven innocent
-
-  /* Here are the possible OGR error codes :
-     typedef int OGRErr;
-
-     #define OGRERR_NONE                0
-     #define OGRERR_NOT_ENOUGH_DATA     1    --> not enough data to deserialize
-     #define OGRERR_NOT_ENOUGH_MEMORY   2
-     #define OGRERR_UNSUPPORTED_GEOMETRY_TYPE 3
-     #define OGRERR_UNSUPPORTED_OPERATION 4
-     #define OGRERR_CORRUPT_DATA        5
-     #define OGRERR_FAILURE             6
-     #define OGRERR_UNSUPPORTED_SRS     7 */
-
-  //get the wkt into ogr
-  //this is really ugly but we need to get a QString to a char**
-  const char *myCharArrayPointer1 = mProj4String.latin1();
-
-  //note that the proj strings above do not neccessarily need to be exactly the
-  //same for the projections they define to be equivalent, which is why I dont just
-  //compare the proj parameter strings and return the result
-
-
-  //create the sr and populate it from a wkt proj definition
-  OGRSpatialReferenceH myOgrSpatialRef1 = OSRNewSpatialReference( NULL );
-  OGRSpatialReferenceH myOgrSpatialRef2 = OSRNewSpatialReference( NULL );
-  OGRErr myInputResult1 = OSRImportFromProj4( myOgrSpatialRef1, myCharArrayPointer1 );
-  OGRErr myInputResult2 = OSRImportFromProj4( myOgrSpatialRef1, theProj4CharArray.latin1() );
-
-  // Could do some error reporting here...
-  if (myInputResult1 != OGRERR_NONE)
-    {}
-  if (myInputResult2 != OGRERR_NONE)
-    {}
-
-  if (OSRIsGeographic(myOgrSpatialRef1) && OSRIsGeographic(myOgrSpatialRef2))
-  {
-//    qWarning("QgsSpatialRefSys::operator== srs1 and srs2 are geographic ");
-    myMatchFlag = OSRIsSameGeogCS(myOgrSpatialRef1,myOgrSpatialRef2);
-  }
-  else if (OSRIsProjected(myOgrSpatialRef1) && OSRIsProjected(myOgrSpatialRef2))
-  {
-//    qWarning("QgsSpatialRefSys::operator== srs1 and srs2 are projected ");
-    myMatchFlag = OSRIsSame(myOgrSpatialRef1,myOgrSpatialRef2);
-  } else {
-//    qWarning("QgsSpatialRefSys::operator== srs1 and srs2 are different types ");
-    myMatchFlag = false;
-  }
-
-  OSRDestroySpatialReference( myOgrSpatialRef1 );
-  OSRDestroySpatialReference( myOgrSpatialRef2 );
-
-  return myMatchFlag;
+  QgsSpatialRefSys r;
+  r.setProj4String(theProj4String);
+  return *this==r;
 }
 
 QString QgsSpatialRefSys::toWkt() const
 {
-  OGRSpatialReferenceH myOgrSpatialRef = OSRNewSpatialReference(NULL);
-  OGRErr myInputResult = OSRImportFromProj4(myOgrSpatialRef,mProj4String.latin1());
-  
   QString myWkt;
-
-  if (myInputResult == OGRERR_NONE)
+  char* WKT;
+  if(OSRExportToWkt(mSRS,&WKT) == OGRERR_NONE)
   {
-    char* WKT;
-    if(OSRExportToWkt(myOgrSpatialRef,&WKT) == OGRERR_NONE)
-    {
-      myWkt = WKT;
-      OGRFree(WKT);
-    }    
-  }
-
-  OSRDestroySpatialReference( myOgrSpatialRef );
+    myWkt = WKT;
+    OGRFree(WKT);
+  }    
 
   return myWkt;
 }
@@ -1294,8 +1019,7 @@ QString QgsSpatialRefSys::getProj4FromSrsId(const int theSrsId)
       mySql += QString::number(theSrsId);
 
       QgsDebugMsg("QgsSpatialRefSys::getProj4FromSrsId :  mySrsId = " + QString::number(theSrsId));
-      QgsDebugMsg("QgsSpatialRefSys::getProj4FromSrsId :  USER_PROJECTION_START_ID = " +\
-QString::number(USER_PROJECTION_START_ID));
+      QgsDebugMsg("QgsSpatialRefSys::getProj4FromSrsId :  USER_PROJECTION_START_ID = " + QString::number(USER_PROJECTION_START_ID));
       QgsDebugMsg("QgsSpatialRefSys::getProj4FromSrsId :Selection sql : " + mySql);
 	  
       //
@@ -1380,6 +1104,6 @@ void QgsSpatialRefSys::debugPrint()
   QgsDebugMsg("***SpatialRefSystem***");
   QgsDebugMsg("* Valid : " + (mIsValidFlag?QString("true"):QString("false")));
   QgsDebugMsg("* SrsId : " + QString::number(mSrsId));
-  QgsDebugMsg("* Proj4 : " + mProj4String);
+  QgsDebugMsg("* Proj4 : " + proj4String() );
   QgsDebugMsg("* Desc. : " + mDescription);
 }
