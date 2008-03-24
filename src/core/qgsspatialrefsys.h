@@ -53,6 +53,8 @@ class CORE_EXPORT QgsSpatialRefSys
         
         //! Default constructor
         QgsSpatialRefSys();
+
+        ~QgsSpatialRefSys();
         
         /*! 
          * Constructs a SRS object from a WKT string
@@ -67,6 +69,8 @@ class CORE_EXPORT QgsSpatialRefSys
          */
         QgsSpatialRefSys(const long theId, SRS_TYPE theType=POSTGIS_SRID);
 
+        //! copy constructor
+        QgsSpatialRefSys(const QgsSpatialRefSys& srs);
 
         //! Assignment operator
         QgsSpatialRefSys& operator=(const QgsSpatialRefSys& srs);
@@ -158,14 +162,15 @@ class CORE_EXPORT QgsSpatialRefSys
 
         /*! Find out whether this SRS is correctly initialised and useable */
         bool isValid() const;
-        /*! Perform some validation on this SRS. If the sts doesnt validate the
-         *  default behaviour settings for layers with unknown SRS will be 
+
+        /*! Perform some validation on this SRS. If the sts doesn't validate the
+         * default behaviour settings for layers with unknown SRS will be 
          * consulted and acted on accordingly. By hell or high water this
          * method will do its best to make sure that this SRS is valid - even
          * if that involves resorting to a hard coded default of geocs:wgs84.
          *
          * @note It is not usually neccessary to use this function, unless you
-         * are trying to force theis srs to be valid.
+         * are trying to force this srs to be valid.
          */
         void validate();
 
@@ -330,7 +335,7 @@ class CORE_EXPORT QgsSpatialRefSys
 
         /*! Print the description if debugging
          */
-	void debugPrint();
+        void debugPrint();
     private:
         // Open SQLite db and show message if ccannot be opened
         // returns the same code as sqlite3_open
@@ -344,8 +349,6 @@ class CORE_EXPORT QgsSpatialRefSys
         QString mProjectionAcronym ;
         //!The official proj4 acronym for the ellipoid
         QString mEllipsoidAcronym;
-        //!Proj4 format specifies (excluding proj and ellips) that define this srs.
-        QString mProj4String ;
         //!Whether this is a geographic or projected coordinate system
         bool    mGeoFlag;
         //! The map units
@@ -359,6 +362,10 @@ class CORE_EXPORT QgsSpatialRefSys
 
         //! Work out the projection units and set the appropriate local variable
         void setMapUnits();
+
+        void *mSRS;
+
+        bool loadFromDb(QString db, QString field, long id);
         
         static CUSTOM_SRS_VALIDATION mCustomSrsValidation;
 };
