@@ -31,6 +31,7 @@
 QgsUniqueValueRenderer::QgsUniqueValueRenderer(QGis::VectorType type): mClassificationField(0)
 {
   mVectorType = type;
+  mSymbolAttributesDirty = false;
 }
 
 QgsUniqueValueRenderer::QgsUniqueValueRenderer(const QgsUniqueValueRenderer& other)
@@ -84,7 +85,7 @@ const QList<QgsSymbol*> QgsUniqueValueRenderer::symbols() const
 void QgsUniqueValueRenderer::insertValue(QString name, QgsSymbol* symbol)
 {
   mSymbols.insert(name, symbol);
-  updateSymbolAttributes();
+  mSymbolAttributesDirty=true;
 }
 
 void QgsUniqueValueRenderer::setClassificationField(int field)
@@ -105,6 +106,11 @@ bool QgsUniqueValueRenderer::willRenderFeature(QgsFeature *f)
 void QgsUniqueValueRenderer::renderFeature(QPainter* p, QgsFeature& f,QImage* img, 
 	double* scalefactor, bool selected, double widthScale)
 {
+  if(mSymbolAttributesDirty) {
+    QgsDebugMsg("Missed updateSymbolAttributes() call - doing it now");
+    updateSymbolAttributes();
+  }
+    
   QgsSymbol* symbol = symbolForFeature(&f);
   if(!symbol) //no matching symbol
   {
@@ -131,13 +137,13 @@ void QgsUniqueValueRenderer::renderFeature(QPainter* p, QgsFeature& f,QImage* im
       //first find out the value for the scale classification attribute
       const QgsAttributeMap& attrs = f.attributeMap();
       fieldScale = sqrt(fabs(attrs[symbol->scaleClassificationField()].toDouble()));
-      QgsDebugMsg(QString("Feature has field scale factor %1").arg(fieldScale));
+      QgsDebugMsgLevel(QString("Feature has field scale factor %1").arg(fieldScale), 3);
     }
     if ( symbol->rotationClassificationField() >= 0 )
     {
       const QgsAttributeMap& attrs = f.attributeMap();
       rotation = attrs[symbol->rotationClassificationField()].toDouble();
-      QgsDebugMsg(QString("Feature has rotation factor %1").arg(rotation));
+      QgsDebugMsgLevel(QString("Feature has rotation factor %1").arg(rotation), 3);
     }
     *img = symbol->getPointSymbolAsImage( widthScale, selected, mSelectionColor,
       *scalefactor * fieldScale, rotation);
@@ -194,10 +200,11 @@ void QgsUniqueValueRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
   {
     QgsSymbol* msy = new QgsSymbol(mVectorType);
     msy->readXML ( symbolnode );
-    this->insertValue(msy->lowerValue(),msy);
+    insertValue(msy->lowerValue(),msy);
     symbolnode = symbolnode.nextSibling();
-    vl.setRenderer(this);
   }
+  updateSymbolAttributes();
+  vl.setRenderer(this);
 }
 
 void QgsUniqueValueRenderer::clearValues()
@@ -212,8 +219,7 @@ void QgsUniqueValueRenderer::clearValues()
 
 void QgsUniqueValueRenderer::updateSymbolAttributes()
 {
-  // This function is only called after changing field specifier in the GUI.
-  // Timing is not so important.
+  mSymbolAttributesDirty = false;
 
   mSymbolAttributes.clear();
 

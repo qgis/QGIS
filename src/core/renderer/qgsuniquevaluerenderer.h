@@ -46,7 +46,8 @@ class CORE_EXPORT QgsUniqueValueRenderer: public QgsRenderer
     void updateSymbolAttributes();
     /**Returns the renderers name*/
     QString name() const;
-    /**Inserts an entry into mEntries. The render items have to be created with the new operator and are automatically destroyed if not needed anymore*/
+    /**Inserts an entry into mEntries. The render items have to be created with the new operator and
+       are automatically destroyed if not needed anymore */
     void insertValue(QString name, QgsSymbol* symbol);
     /**Removes all entries from mEntries*/
     void clearValues();
@@ -66,6 +67,7 @@ class CORE_EXPORT QgsUniqueValueRenderer: public QgsRenderer
     QgsSymbol* symbolForFeature(const QgsFeature* f);
     /**Cached copy of all underlying symbols required attribute fields*/
     QgsAttributeList mSymbolAttributes;
+    bool mSymbolAttributesDirty;  // insertValue was called
 };
 
 inline bool QgsUniqueValueRenderer::needsAttributes() const
