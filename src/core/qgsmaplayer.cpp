@@ -428,62 +428,64 @@ QString QgsMapLayer::loadNamedStyle ( const QString theURI , bool & theResultFla
     return QObject::tr( "Currently only filebased datasets are supported" );
   }
   QFile myFile ( theURI );
-  if ( myFile.open(QFile::ReadOnly ) )
+  if ( !myFile.open(QFile::ReadOnly ) )
   {
-    QDomDocument myDocument ( "qgis" );
-    // location of problem associated with errorMsg
-    int line, column;
-    QString myErrorMessage;
-    if ( !myDocument.setContent ( &myFile, &myErrorMessage, &line, &column ) )
+    return QObject::tr( "File could not been opened." );
+  }
+
+  QDomDocument myDocument ( "qgis" );
+  // location of problem associated with errorMsg
+  int line, column;
+  QString myErrorMessage;
+  if ( !myDocument.setContent ( &myFile, &myErrorMessage, &line, &column ) )
+  {
+    myFile.close();
+    return myErrorMessage + " at line " + QString::number( line ) +
+      " column " + QString::number( column );
+  }
+  else //dom parsed in ok
+  {
+    myFile.close();
+
+    // now get the layer node out and pass it over to the layer
+    // to deserialise...
+    QDomElement myRoot = myDocument.firstChildElement("qgis");
+    if (myRoot.isNull())
     {
-      myFile.close();
-      return myErrorMessage + " at line " + QString::number( line ) +
-	" column " + QString::number( column );
+      myErrorMessage = "Error: qgis element could not be found in " + theURI;
+      return myErrorMessage;
     }
-    else //dom parsed in ok
+
+    QDomElement myLayer = myRoot.firstChildElement("maplayer");
+    if (myLayer.isNull())
     {
-      myFile.close();
-
-      // now get the layer node out and pass it over to the layer
-      // to deserialise...
-      QDomElement myRoot = myDocument.firstChildElement("qgis");
-      if (myRoot.isNull())
-      {
-	myErrorMessage = "Error: qgis element could not be found in " + theURI;
-	return myErrorMessage;
-      }
-
-      QDomElement myLayer = myRoot.firstChildElement("maplayer");
-      if (myLayer.isNull())
-      {
-	myErrorMessage = "Error: maplayer element could not be found in " + theURI;
-	return myErrorMessage;
-      }
-
-      //
-      // we need to ensure the data source matches the layers
-      // current datasource not the one specified in the qml
-      //
-      QDomElement myDataSource = myLayer.firstChildElement("datasource");
-      if (myDataSource.isNull())
-      {
-	myErrorMessage = "Error: datasource element could not be found in " + theURI;
-	return myErrorMessage;
-      }
-      QDomElement myNewDataSource = myDocument.createElement( "datasource" );
-      QDomText myDataSourceText = myDocument.createTextNode( source() );
-      myNewDataSource.appendChild( myDataSourceText );
-      myLayer.replaceChild( myNewDataSource ,
-	  myLayer.firstChildElement("datasource") );
-
-      //
-      // Now go on to parse the xml (QDomElement inherits QDomNode
-      // so we can just pass along the element to readXML)
-      //
-      theResultFlag = readXML ( myLayer );
-
-      return QObject::tr( "Loaded default style file from " ) + theURI;
+      myErrorMessage = "Error: maplayer element could not be found in " + theURI;
+      return myErrorMessage;
     }
+
+    //
+    // we need to ensure the data source matches the layers
+    // current datasource not the one specified in the qml
+    //
+    QDomElement myDataSource = myLayer.firstChildElement("datasource");
+    if (myDataSource.isNull())
+    {
+      myErrorMessage = "Error: datasource element could not be found in " + theURI;
+      return myErrorMessage;
+    }
+    QDomElement myNewDataSource = myDocument.createElement( "datasource" );
+    QDomText myDataSourceText = myDocument.createTextNode( source() );
+    myNewDataSource.appendChild( myDataSourceText );
+    myLayer.replaceChild( myNewDataSource ,
+      myLayer.firstChildElement("datasource") );
+
+    //
+    // Now go on to parse the xml (QDomElement inherits QDomNode
+    // so we can just pass along the element to readXML)
+    //
+    theResultFlag = readXML ( myLayer );
+
+    return QObject::tr( "Loaded default style file from " ) + theURI;
   }
 }
 QString QgsMapLayer::saveDefaultStyle ( bool & theResultFlag )
@@ -497,7 +499,6 @@ QString QgsMapLayer::saveDefaultStyle ( bool & theResultFlag )
 }
 QString QgsMapLayer::saveNamedStyle ( const QString theURI , bool & theResultFlag )
 {
-
   QFileInfo myFileInfo ( theURI );
   //now check if we can write to the dir where the layer
   //exists...
