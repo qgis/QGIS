@@ -489,6 +489,11 @@
             </item>
             <item>
              <property name="text" >
+              <string>Zoom to mouse cursor</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
               <string>Nothing</string>
              </property>
             </item>

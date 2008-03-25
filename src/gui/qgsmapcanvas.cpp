@@ -819,12 +819,30 @@ void QgsMapCanvas::wheelEvent(QWheelEvent *e)
       // zoom without changing extent
       zoom(e->delta() > 0);
       break;
-      
+
     case WheelZoomAndRecenter:
       // zoom and don't change extent
       zoomWithCenter(e->x(), e->y(), e->delta() > 0);
       break;
-      
+
+    case WheelZoomToMouseCursor:
+    {
+      // zoom map to mouse cursor
+      double scaleFactor = e->delta() > 0 ? 1 / mWheelZoomFactor : mWheelZoomFactor;
+
+      QgsPoint oldCenter(mMapRender->extent().center());
+      QgsPoint mousePos(getCoordinateTransform()->toMapPoint(e->x(), e->y()));
+      QgsPoint newCenter(mousePos.x() + ((oldCenter.x() - mousePos.x()) * scaleFactor), 
+        mousePos.y() + ((oldCenter.y() - mousePos.y()) * scaleFactor));
+
+      // same as zoomWithCenter (no coordinate transformations are needed)
+      QgsRect extent = mMapRender->extent();
+      extent.scale(scaleFactor, &newCenter);
+      setExtent(extent);
+      refresh();
+      break;
+    }
+
     case WheelNothing:
       // well, nothing!
       break;
