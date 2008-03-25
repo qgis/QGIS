@@ -2116,6 +2116,19 @@ bool QgsPostgresProvider::changeGeometryValues(QgsGeometryMap & geometry_map)
     // Start the PostGIS transaction
     PQexecNR(connection,QString("BEGIN").toUtf8());
 
+    QString update = QString("UPDATE %1 SET %2=GeomFromWKB($1%3,%4) WHERE %5=$2")
+                       .arg( mSchemaTableName )
+                       .arg( quotedIdentifier(geometryColumn) )
+                       .arg( useWkbHex ? "" : "::bytea" )
+                       .arg( srid )
+                       .arg( quotedIdentifier(primaryKey) );
+
+    PGresult *stmt = PQprepare(connection, "updatefeatures", update.toUtf8(), 2, NULL);
+    if(stmt==0 || PQresultStatus(stmt)==PGRES_FATAL_ERROR)
+      throw PGException(stmt);
+
+    PQclear(stmt);
+
     for(QgsGeometryMap::iterator iter  = geometry_map.begin();
       iter != geometry_map.end();
       ++iter)
@@ -2127,29 +2140,32 @@ bool QgsPostgresProvider::changeGeometryValues(QgsGeometryMap & geometry_map)
       {
         QgsDebugMsg("iterating over feature id " + QString::number(iter.key()));
 
-        QString sql = QString("UPDATE %1 SET %2=GeomFromWKB('")
-                        .arg( mSchemaTableName )
-                        .arg( quotedIdentifier(geometryColumn) );
-        appendGeomString(&*iter, sql);
-        sql += QString("'%1,%2) WHERE %3=%4")
-                 .arg( useWkbHex ? "::bytea" : "" )
-                 .arg( srid )
-                 .arg( quotedIdentifier(primaryKey) )
-                 .arg( iter.key() );
+        QString geomParam;
+        appendGeomString(&*iter, geomParam);
 
-        QgsDebugMsg("Updating with: " + sql);
+        QList<QByteArray> qparam;
+        qparam.append( geomParam.toUtf8() );
+        qparam.append( QString("%1").arg( iter.key() ).toUtf8() );
 
-        PGresult* result=PQexec(connection, sql.toUtf8());
+        const char *param[2];
+        param[0] = qparam[0];
+        param[1] = qparam[1];
+
+        PGresult *result = PQexecPrepared(connection, "updatefeatures", 2, param, NULL, NULL, 0);
         if( result==0 || PQresultStatus(result)==PGRES_FATAL_ERROR )
           throw PGException(result);
+
         PQclear(result);
       } // if (*iter)
+
     } // for each feature
 
     PQexecNR(connection,QString("COMMIT").toUtf8());
+    PQexecNR(connection,QString("DEALLOCATE updatefeatures").toUtf8());
   } catch(PGException &e) {
-    e.showErrorMessage( tr("Error while changing attributes") );
+    e.showErrorMessage( tr("Error while changing geometry values") );
     PQexecNR(connection,QString("ROLLBACK").toUtf8());
+    PQexecNR(connection,QString("DEALLOCATE updatefeatures").toUtf8());
     returnvalue = false;
   }
 
