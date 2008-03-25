@@ -95,7 +95,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
   public:
     
-    enum WheelAction { WheelZoom, WheelZoomAndRecenter, WheelNothing };
+    enum WheelAction { WheelZoom, WheelZoomAndRecenter, WheelZoomToMouseCursor, WheelNothing };
         
     //! Constructor
     QgsMapCanvas(QWidget * parent = 0, const char *name = 0);
