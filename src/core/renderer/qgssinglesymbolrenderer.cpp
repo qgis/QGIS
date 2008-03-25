@@ -33,60 +33,60 @@
 
 QgsSingleSymbolRenderer::QgsSingleSymbolRenderer(QGis::VectorType type)
 {
-    mVectorType=type;
-  
-    //initial setting based on random color
-    QgsSymbol* sy = new QgsSymbol(mVectorType);
-  
-    //random fill colors for points and polygons and pen colors for lines
-    int red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
-    int green = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
-    int blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+  mVectorType=type;
 
-    if (type == QGis::Line)
-    {
-	sy->setColor(QColor(red, green, blue));
-    } 
-    else
-    {
-	sy->setFillColor(QColor(red, green, blue));
-	sy->setFillStyle(Qt::SolidPattern);
-	sy->setColor(QColor(0, 0, 0));
-    }
-    sy->setLineWidth(1);
-    mSymbol=sy;
-    updateSymbolAttributes();
+  //initial setting based on random color
+  QgsSymbol* sy = new QgsSymbol(mVectorType);
+
+  //random fill colors for points and polygons and pen colors for lines
+  int red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+  int green = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+  int blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+
+  if (type == QGis::Line)
+  {
+    sy->setColor(QColor(red, green, blue));
+  } 
+  else
+  {
+    sy->setFillColor(QColor(red, green, blue));
+    sy->setFillStyle(Qt::SolidPattern);
+    sy->setColor(QColor(0, 0, 0));
+  }
+  sy->setLineWidth(1);
+  mSymbol=sy;
+  updateSymbolAttributes();
 }
 
 QgsSingleSymbolRenderer::QgsSingleSymbolRenderer(const QgsSingleSymbolRenderer& other)
 {
-    mVectorType = other.mVectorType;
-    mSymbol = new QgsSymbol(*other.mSymbol);
-    updateSymbolAttributes();
+  mVectorType = other.mVectorType;
+  mSymbol = new QgsSymbol(*other.mSymbol);
+  updateSymbolAttributes();
 }
 
 QgsSingleSymbolRenderer& QgsSingleSymbolRenderer::operator=(const QgsSingleSymbolRenderer& other)
 {
-    if(this!=&other)
-    {
-      mVectorType = other.mVectorType;
-      delete mSymbol;
-      mSymbol = new QgsSymbol(*other.mSymbol);
-    }
-    updateSymbolAttributes();
-    return *this;
+  if(this!=&other)
+  {
+    mVectorType = other.mVectorType;
+    delete mSymbol;
+    mSymbol = new QgsSymbol(*other.mSymbol);
+  }
+  updateSymbolAttributes();
+  return *this;
 }
 
 QgsSingleSymbolRenderer::~QgsSingleSymbolRenderer()
 {
-    delete mSymbol;
+  delete mSymbol;
 }
 
 void QgsSingleSymbolRenderer::addSymbol(QgsSymbol* sy)
 {
-    delete mSymbol;
-    mSymbol=sy;
-    updateSymbolAttributes();
+  delete mSymbol;
+  mSymbol=sy;
+  updateSymbolAttributes();
 }
 
 void QgsSingleSymbolRenderer::renderFeature(QPainter * p, QgsFeature & f, QImage* img, 
@@ -145,25 +145,25 @@ void QgsSingleSymbolRenderer::renderFeature(QPainter * p, QgsFeature & f, QImage
 
 void QgsSingleSymbolRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 {
-    mVectorType = vl.vectorType();
-    QgsSymbol* sy = new QgsSymbol(mVectorType);
+  mVectorType = vl.vectorType();
+  QgsSymbol* sy = new QgsSymbol(mVectorType);
 
-    QDomNode synode = rnode.namedItem("symbol");
-    
-    if ( synode.isNull() )
-    {
-        QgsDebugMsg("No symbol node in project file's renderitem DOM");
-        // XXX abort?
-    }
-    else
-    {
-        sy->readXML ( synode );
-    }
-    updateSymbolAttributes();
+  QDomNode synode = rnode.namedItem("symbol");
 
-    //create a renderer and add it to the vector layer
-    this->addSymbol(sy);
-    vl.setRenderer(this);
+  if ( synode.isNull() )
+  {
+    QgsDebugMsg("No symbol node in project file's renderitem DOM");
+    // XXX abort?
+  }
+  else
+  {
+    sy->readXML ( synode );
+  }
+  updateSymbolAttributes();
+
+  //create a renderer and add it to the vector layer
+  this->addSymbol(sy);
+  vl.setRenderer(this);
 }
 
 bool QgsSingleSymbolRenderer::writeXML( QDomNode & layer_node, QDomDocument & document ) const

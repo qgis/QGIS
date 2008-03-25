@@ -49,29 +49,29 @@ QgsMapLayer::QgsMapLayer(int type,
         mLayerType(type)
 
 {
-    QgsDebugMsg("QgsMapLayer::QgsMapLayer - lyrname is '" + lyrname + "'");
-    
-    mSRS = new QgsSpatialRefSys();
+  QgsDebugMsg("QgsMapLayer::QgsMapLayer - lyrname is '" + lyrname + "'");
 
-    // Set the display name = internal name
-    mLayerName = capitaliseLayerName(lyrname);
-    QgsDebugMsg("QgsMapLayer::QgsMapLayer - layerName is '" + mLayerName + "'");
+  mSRS = new QgsSpatialRefSys();
 
-    // Generate the unique ID of this layer
-    QDateTime dt = QDateTime::currentDateTime();
-    mID = lyrname + dt.toString("yyyyMMddhhmmsszzz");
-    // Tidy the ID up to avoid characters that may cause problems
-    // elsewhere (e.g in some parts of XML). Replaces every non-word
-    // character (word characters are the alphabet, numbers and
-    // underscore) with an underscore. 
-    // Note that the first backslashe in the regular expression is
-    // there for the compiler, so the pattern is actually \W
-    mID.replace(QRegExp("[\\W]"), "_");
+  // Set the display name = internal name
+  mLayerName = capitaliseLayerName(lyrname);
+  QgsDebugMsg("QgsMapLayer::QgsMapLayer - layerName is '" + mLayerName + "'");
 
-    //set some generous  defaults for scale based visibility
-    mMinScale = 0;
-    mMaxScale = 100000000;
-    mScaleBasedVisibility = false;
+  // Generate the unique ID of this layer
+  QDateTime dt = QDateTime::currentDateTime();
+  mID = lyrname + dt.toString("yyyyMMddhhmmsszzz");
+  // Tidy the ID up to avoid characters that may cause problems
+  // elsewhere (e.g in some parts of XML). Replaces every non-word
+  // character (word characters are the alphabet, numbers and
+  // underscore) with an underscore. 
+  // Note that the first backslashe in the regular expression is
+  // there for the compiler, so the pattern is actually \W
+  mID.replace(QRegExp("[\\W]"), "_");
+
+  //set some generous  defaults for scale based visibility
+  mMinScale = 0;
+  mMaxScale = 100000000;
+  mScaleBasedVisibility = false;
 }
 
 
@@ -83,13 +83,13 @@ QgsMapLayer::~QgsMapLayer()
 
 int QgsMapLayer::type() const
 {
-    return mLayerType;
+  return mLayerType;
 }
 
 /** Get this layer's unique ID */
 QString QgsMapLayer::getLayerID() const
 {
-    return mID;
+  return mID;
 }
 
 /** Write property of QString layerName. */
@@ -119,168 +119,168 @@ QString QgsMapLayer::publicSource() const
 
 QString const & QgsMapLayer::source() const
 {
-    return mDataSource;
+  return mDataSource;
 }
 
 const QgsRect QgsMapLayer::extent()
 {
-    return mLayerExtent;
+  return mLayerExtent;
 }
 
 
 bool QgsMapLayer::draw(QPainter *, QgsRect &, QgsMapToPixel *, QgsCoordinateTransform *, bool)
 {
-    //  std::cout << "In QgsMapLayer::draw" << std::endl;
-    return false;
+  //  std::cout << "In QgsMapLayer::draw" << std::endl;
+  return false;
 }
 
 void QgsMapLayer::drawLabels(QPainter *, QgsRect &, QgsMapToPixel *, QgsCoordinateTransform *)
 {
-    //  std::cout << "In QgsMapLayer::draw" << std::endl;
+  //  std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
 bool QgsMapLayer::readXML( QDomNode & layer_node )
 {
-    QDomElement element = layer_node.toElement();
+  QDomElement element = layer_node.toElement();
 
-    // XXX not needed? QString type = element.attribute("type");
+  // XXX not needed? QString type = element.attribute("type");
 
-    // set data source
-    QDomNode mnl = layer_node.namedItem("datasource");
-    QDomElement mne = mnl.toElement();
-    mDataSource = mne.text();
+  // set data source
+  QDomNode mnl = layer_node.namedItem("datasource");
+  QDomElement mne = mnl.toElement();
+  mDataSource = mne.text();
 
-    // Set the SRS so that we don't ask the user.
-    // Make it the saved SRS to have WMS layer projected correctly.
-    // We will still overwrite whatever GDAL etc picks up anyway
-    // further down this function.
-    QDomNode srsNode = layer_node.namedItem("srs");
-    mSRS->readXML(srsNode);
+  // Set the SRS so that we don't ask the user.
+  // Make it the saved SRS to have WMS layer projected correctly.
+  // We will still overwrite whatever GDAL etc picks up anyway
+  // further down this function.
+  QDomNode srsNode = layer_node.namedItem("srs");
+  mSRS->readXML(srsNode);
 
-    // now let the children grab what they need from the DOM node.
-    if (!readXML_( layer_node ))
-    {
-      return false;
-    }
+  // now let the children grab what they need from the DOM node.
+  if (!readXML_( layer_node ))
+  {
+    return false;
+  }
 
-    // the internal name is just the data source basename
-    QFileInfo dataSourceFileInfo( mDataSource );
-    //internalName = dataSourceFileInfo.baseName();
+  // the internal name is just the data source basename
+  QFileInfo dataSourceFileInfo( mDataSource );
+  //internalName = dataSourceFileInfo.baseName();
 
-    // set ID
-    mnl = layer_node.namedItem("id");
-    if ( ! mnl.isNull() ) 
-    {
-        mne = mnl.toElement();
-        if ( ! mne.isNull() && mne.text().length() > 10 ) // should be at least 17 (yyyyMMddhhmmsszzz)
-        {
-            mID = mne.text();
-        }
-    }
-
-    // use scale dependent visibility flag
-    QString scaleBasedVisibility = element.attribute("scaleBasedVisibilityFlag");
-    if ( "1" == scaleBasedVisibility )
-    {
-        setScaleBasedVisibility(true);
-    }
-    else
-    {
-        setScaleBasedVisibility(false);
-    }
-    setMinScale(element.attribute("minScale").toFloat());
-    setMaxScale(element.attribute("maxScale").toFloat());
-
-    // set name
-    mnl = layer_node.namedItem("layername");
+  // set ID
+  mnl = layer_node.namedItem("id");
+  if ( ! mnl.isNull() ) 
+  {
     mne = mnl.toElement();
-    setLayerName( mne.text() );
-
-    // overwrite srs
-    // FIXME: is this necessary?
-    mSRS->readXML(srsNode);
-    
-    //read transparency level
-    QDomNode transparencyNode = layer_node.namedItem("transparencyLevelInt");
-    if ( ! transparencyNode.isNull() )
+    if ( ! mne.isNull() && mne.text().length() > 10 ) // should be at least 17 (yyyyMMddhhmmsszzz)
     {
-      // set transparency level only if it's in project
-      // (otherwise it sets the layer transparent)
-      QDomElement myElement = transparencyNode.toElement();
-      setTransparency(myElement.text().toInt());
+      mID = mne.text();
     }
+  }
 
-    return true;
+  // use scale dependent visibility flag
+  QString scaleBasedVisibility = element.attribute("scaleBasedVisibilityFlag");
+  if ( "1" == scaleBasedVisibility )
+  {
+    setScaleBasedVisibility(true);
+  }
+  else
+  {
+    setScaleBasedVisibility(false);
+  }
+  setMinScale(element.attribute("minScale").toFloat());
+  setMaxScale(element.attribute("maxScale").toFloat());
+
+  // set name
+  mnl = layer_node.namedItem("layername");
+  mne = mnl.toElement();
+  setLayerName( mne.text() );
+
+  // overwrite srs
+  // FIXME: is this necessary?
+  mSRS->readXML(srsNode);
+
+  //read transparency level
+  QDomNode transparencyNode = layer_node.namedItem("transparencyLevelInt");
+  if ( ! transparencyNode.isNull() )
+  {
+    // set transparency level only if it's in project
+    // (otherwise it sets the layer transparent)
+    QDomElement myElement = transparencyNode.toElement();
+    setTransparency(myElement.text().toInt());
+  }
+
+  return true;
 } // void QgsMapLayer::readXML
 
 
 bool QgsMapLayer::readXML_( QDomNode & layer_node )
 {
-    // NOP by default; children will over-ride with behavior specific to them
+  // NOP by default; children will over-ride with behavior specific to them
 
-    return true;
+  return true;
 } // void QgsMapLayer::readXML_
 
 
 
 bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
 {
-    // general layer metadata
-    QDomElement maplayer = document.createElement( "maplayer" );
+  // general layer metadata
+  QDomElement maplayer = document.createElement( "maplayer" );
 
-    // use scale dependent visibility flag
-    if ( scaleBasedVisibility() )
-    {
-        maplayer.setAttribute( "scaleBasedVisibilityFlag", 1 );
-    }
-    else
-    {
-        maplayer.setAttribute( "scaleBasedVisibilityFlag", 0 );
-    }
-    maplayer.setAttribute( "minScale", minScale() );
-    maplayer.setAttribute( "maxScale", maxScale() );
+  // use scale dependent visibility flag
+  if ( scaleBasedVisibility() )
+  {
+    maplayer.setAttribute( "scaleBasedVisibilityFlag", 1 );
+  }
+  else
+  {
+    maplayer.setAttribute( "scaleBasedVisibilityFlag", 0 );
+  }
+  maplayer.setAttribute( "minScale", minScale() );
+  maplayer.setAttribute( "maxScale", maxScale() );
 
-    // ID 
-    QDomElement id = document.createElement( "id" );
-    QDomText idText = document.createTextNode( getLayerID() );
-    id.appendChild( idText );
+  // ID 
+  QDomElement id = document.createElement( "id" );
+  QDomText idText = document.createTextNode( getLayerID() );
+  id.appendChild( idText );
 
-    maplayer.appendChild( id );
+  maplayer.appendChild( id );
 
-    // data source
-    QDomElement dataSource = document.createElement( "datasource" );
-    QDomText dataSourceText = document.createTextNode( source() );
-    dataSource.appendChild( dataSourceText );
+  // data source
+  QDomElement dataSource = document.createElement( "datasource" );
+  QDomText dataSourceText = document.createTextNode( source() );
+  dataSource.appendChild( dataSourceText );
 
-    maplayer.appendChild( dataSource );
+  maplayer.appendChild( dataSource );
 
 
-    // layer name
-    QDomElement layerName = document.createElement( "layername" );
-    QDomText layerNameText = document.createTextNode( name() );
-    layerName.appendChild( layerNameText );
+  // layer name
+  QDomElement layerName = document.createElement( "layername" );
+  QDomText layerNameText = document.createTextNode( name() );
+  layerName.appendChild( layerNameText );
 
-    maplayer.appendChild( layerName );
+  maplayer.appendChild( layerName );
 
-    // zorder
-    // This is no longer stored in the project file. It is superflous since the layers
-    // are written and read in the proper order.
+  // zorder
+  // This is no longer stored in the project file. It is superflous since the layers
+  // are written and read in the proper order.
 
-    // spatial reference system id
-    QDomElement mySrsElement = document.createElement( "srs" );
-    mSRS->writeXML(mySrsElement, document);
-    maplayer.appendChild(mySrsElement);
-    
-    // <transparencyLevelInt>
-    QDomElement transparencyLevelIntElement = document.createElement( "transparencyLevelInt" );
-    QDomText    transparencyLevelIntText    = document.createTextNode( QString::number(getTransparency()) );
-    transparencyLevelIntElement.appendChild( transparencyLevelIntText );
-    maplayer.appendChild( transparencyLevelIntElement );
-    // now append layer node to map layer node
+  // spatial reference system id
+  QDomElement mySrsElement = document.createElement( "srs" );
+  mSRS->writeXML(mySrsElement, document);
+  maplayer.appendChild(mySrsElement);
 
-    layer_node.appendChild( maplayer );
+  // <transparencyLevelInt>
+  QDomElement transparencyLevelIntElement = document.createElement( "transparencyLevelInt" );
+  QDomText    transparencyLevelIntText    = document.createTextNode( QString::number(getTransparency()) );
+  transparencyLevelIntElement.appendChild( transparencyLevelIntText );
+  maplayer.appendChild( transparencyLevelIntElement );
+  // now append layer node to map layer node
 
-    return writeXML_( maplayer, document );
+  layer_node.appendChild( maplayer );
+
+  return writeXML_( maplayer, document );
 
 } // bool QgsMapLayer::writeXML
 
@@ -288,9 +288,9 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
 
 bool QgsMapLayer::writeXML_( QDomNode & layer_node, QDomDocument & document )
 {
-    // NOP by default; children will over-ride with behavior specific to them
+  // NOP by default; children will over-ride with behavior specific to them
 
-    return true;
+  return true;
 } // void QgsMapLayer::writeXML_
 
 
@@ -298,7 +298,7 @@ bool QgsMapLayer::writeXML_( QDomNode & layer_node, QDomDocument & document )
 
 bool QgsMapLayer::isValid()
 {
-    return mValid;
+  return mValid;
 }
 
 
@@ -321,7 +321,7 @@ QString QgsMapLayer::errorString()
 
 void QgsMapLayer::connectNotify( const char * signal )
 {
-    QgsDebugMsg("QgsMapLayer connected to " + QString(signal));
+  QgsDebugMsg("QgsMapLayer connected to " + QString(signal));
 } //  QgsMapLayer::connectNotify
 
 
@@ -365,12 +365,12 @@ QStringList QgsMapLayer::subLayers()
     
 void QgsMapLayer::setLayerOrder(QStringList layers)
 {
-      // NOOP
+  // NOOP
 }
 
 void QgsMapLayer::setSubLayerVisibility(QString name, bool vis)
 {
-      // NOOP
+  // NOOP
 }
 
 const QgsSpatialRefSys& QgsMapLayer::srs()
@@ -410,7 +410,6 @@ QString QgsMapLayer::capitaliseLayerName(const QString name)
 
 QString QgsMapLayer::loadDefaultStyle ( bool & theResultFlag )
 {
-
   QString myURI = publicSource();
   QFileInfo myFileInfo ( myURI );
   //get the file name for our .qml style file
@@ -426,7 +425,7 @@ QString QgsMapLayer::loadNamedStyle ( const QString theURI , bool & theResultFla
   QFileInfo myFileInfo ( theURI );
   if ( !myFileInfo.isFile() )
   {
-     return QObject::tr( "Currently only filebased datasets are supported" );
+    return QObject::tr( "Currently only filebased datasets are supported" );
   }
   QFile myFile ( theURI );
   if ( myFile.open(QFile::ReadOnly ) )
@@ -439,7 +438,7 @@ QString QgsMapLayer::loadNamedStyle ( const QString theURI , bool & theResultFla
     {
       myFile.close();
       return myErrorMessage + " at line " + QString::number( line ) +
-          " column " + QString::number( column );
+	" column " + QString::number( column );
     }
     else //dom parsed in ok
     {
@@ -450,17 +449,17 @@ QString QgsMapLayer::loadNamedStyle ( const QString theURI , bool & theResultFla
       QDomElement myRoot = myDocument.firstChildElement("qgis");
       if (myRoot.isNull())
       {
-        myErrorMessage = "Error: qgis element could not be found in " + theURI;
-        return myErrorMessage;
+	myErrorMessage = "Error: qgis element could not be found in " + theURI;
+	return myErrorMessage;
       }
 
       QDomElement myLayer = myRoot.firstChildElement("maplayer");
       if (myLayer.isNull())
       {
-        myErrorMessage = "Error: maplayer element could not be found in " + theURI;
-        return myErrorMessage;
+	myErrorMessage = "Error: maplayer element could not be found in " + theURI;
+	return myErrorMessage;
       }
-      
+
       //
       // we need to ensure the data source matches the layers
       // current datasource not the one specified in the qml
@@ -468,14 +467,14 @@ QString QgsMapLayer::loadNamedStyle ( const QString theURI , bool & theResultFla
       QDomElement myDataSource = myLayer.firstChildElement("datasource");
       if (myDataSource.isNull())
       {
-        myErrorMessage = "Error: datasource element could not be found in " + theURI;
-        return myErrorMessage;
+	myErrorMessage = "Error: datasource element could not be found in " + theURI;
+	return myErrorMessage;
       }
       QDomElement myNewDataSource = myDocument.createElement( "datasource" );
       QDomText myDataSourceText = myDocument.createTextNode( source() );
       myNewDataSource.appendChild( myDataSourceText );
       myLayer.replaceChild( myNewDataSource ,
-          myLayer.firstChildElement("datasource") );
+	  myLayer.firstChildElement("datasource") );
 
       //
       // Now go on to parse the xml (QDomElement inherits QDomNode
@@ -489,7 +488,6 @@ QString QgsMapLayer::loadNamedStyle ( const QString theURI , bool & theResultFla
 }
 QString QgsMapLayer::saveDefaultStyle ( bool & theResultFlag )
 {
-
   QString myURI = publicSource();
   QFileInfo myFileInfo ( myURI );
   //get the file name for our .qml style file
@@ -537,5 +535,4 @@ QString QgsMapLayer::saveNamedStyle ( const QString theURI , bool & theResultFla
     return QObject::tr( "ERROR: Failed to created default style file as " ) + myFileName + 
       tr( " Check file permissions and retry." );
   }
-
 }
