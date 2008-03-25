@@ -443,17 +443,23 @@ void QgsMapCanvas::updateFullExtent()
 void QgsMapCanvas::setExtent(QgsRect const & r)
 {
   if(mDrawing)
-    {
-      return;
-    }
+  {
+    return;
+  }
+
+  QgsRect current = extent();
 
   if (r.isEmpty())
   {
-    QgsDebugMsg("Setting empty extent!");
+    QgsDebugMsg("Empty extent - keeping old extent with new center!");
+    QgsRect e( QgsPoint( r.center().x()-current.width()/2.0, r.center().y()-current.height()/2.0 ), 
+               QgsPoint( r.center().x()+current.width()/2.0, r.center().y()+current.height()/2.0 ) );
+    mMapRender->setExtent(e);
   }
-  
-  QgsRect current = extent();
-  mMapRender->setExtent(r);
+  else
+  {
+    mMapRender->setExtent(r);
+  }
   emit extentsChanged();
   updateScale();
   if (mMapOverview)
