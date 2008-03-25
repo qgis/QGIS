@@ -278,4 +278,4 @@ spatialindex/qgsspatialindex.h
 )
 
 INSTALL(CODE "MESSAGE(\"Installing CORE headers...\")")
-
+INSTALL(FILES ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR}) 
