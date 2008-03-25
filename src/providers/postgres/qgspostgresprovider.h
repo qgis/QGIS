@@ -290,7 +290,6 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     */
     QString name() const;
 
-
     /** return description
 
     Return a terse string describing what the provider is.
@@ -304,12 +303,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     */
     QString description() const;
 
-
-
-
-
-
-    signals:
+  signals:
     /** 
      *   This is emitted whenever the worker thread has fully calculated the
      *   PostGIS extents for this layer, and its event has been received by this
@@ -330,6 +324,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     void repaintRequested();
 
   private:
+    int providerId; // id to append to provider specific identified (like cursors)
 
     /** Double quote a PostgreSQL identifier for placement in a SQL string.
      */
@@ -343,7 +338,8 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     */
     void loadFields();
 
-    bool mFirstFetch; //true if fetch forward is called the first time after select
+    bool mFetching;   // true if a cursor was declared
+    bool mFirstFetch; // true if fetch forward is called the first time after select
     std::vector < QgsFeature > features;
     QgsFieldMap attributeFields;
     QString mDataComment;
@@ -547,9 +543,6 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     int SRCFromViewColumn(const QString& ns, const QString& relname, const QString& attname_table, 
 			  const QString& attname_view, const QString& viewDefinition, SRC& result) const;
 
-    bool ready;
-    std::ofstream pLog;
-
     //! PostGIS version string
     QString postgisVersionInfo;
 
@@ -601,6 +594,16 @@ class QgsPostgresProvider:public QgsVectorDataProvider
 
     // run a query and free result buffer
     static void PQexecNR(PGconn *conn, const char *query);
+
+    struct Conn
+    {
+      Conn(PGconn *connection) : ref(1), conn(connection) {}
+
+      int ref;
+      PGconn *conn;
+    };
+    static QMap<QString, Conn *> connections;
+    static int providerIds;
 };
 
 #endif
