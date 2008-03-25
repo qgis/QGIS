@@ -30,71 +30,71 @@
 
 QgsUniqueValueRenderer::QgsUniqueValueRenderer(QGis::VectorType type): mClassificationField(0)
 {
-    mVectorType = type;
+  mVectorType = type;
 }
 
 QgsUniqueValueRenderer::QgsUniqueValueRenderer(const QgsUniqueValueRenderer& other)
 {
-    mVectorType = other.mVectorType;
-    mClassificationField = other.mClassificationField;
-    QMap<QString, QgsSymbol*> s = other.mSymbols;
-    for(QMap<QString, QgsSymbol*>::iterator it=s.begin(); it!=s.end(); ++it)
-    {
-	QgsSymbol* s = new QgsSymbol(* it.value());
-	insertValue(it.key(), s);
-    }
-    updateSymbolAttributes();
+  mVectorType = other.mVectorType;
+  mClassificationField = other.mClassificationField;
+  QMap<QString, QgsSymbol*> s = other.mSymbols;
+  for(QMap<QString, QgsSymbol*>::iterator it=s.begin(); it!=s.end(); ++it)
+  {
+    QgsSymbol* s = new QgsSymbol(* it.value());
+    insertValue(it.key(), s);
+  }
+  updateSymbolAttributes();
 }
 
 QgsUniqueValueRenderer& QgsUniqueValueRenderer::operator=(const QgsUniqueValueRenderer& other)
 {
-    if(this != &other)
+  if(this != &other)
+  {
+    mVectorType = other.mVectorType;
+    mClassificationField = other.mClassificationField;
+    clearValues();
+    for(QMap<QString, QgsSymbol*>::iterator it=mSymbols.begin(); it!=mSymbols.end(); ++it)
     {
-        mVectorType = other.mVectorType;
-        mClassificationField = other.mClassificationField;
-        clearValues();
-        for(QMap<QString, QgsSymbol*>::iterator it=mSymbols.begin(); it!=mSymbols.end(); ++it)
-        {
-            QgsSymbol* s = new QgsSymbol(*it.value());
-            insertValue(it.key(), s);
-        }
-        updateSymbolAttributes();
+      QgsSymbol* s = new QgsSymbol(*it.value());
+      insertValue(it.key(), s);
     }
-    return *this;
+    updateSymbolAttributes();
+  }
+  return *this;
 }
 
 QgsUniqueValueRenderer::~QgsUniqueValueRenderer()
 {
-    for(QMap<QString,QgsSymbol*>::iterator it=mSymbols.begin();it!=mSymbols.end();++it)
-    {
-	delete it.value();
-    }
+  for(QMap<QString,QgsSymbol*>::iterator it=mSymbols.begin();it!=mSymbols.end();++it)
+  {
+    delete it.value();
+  }
 }
 
 const QList<QgsSymbol*> QgsUniqueValueRenderer::symbols() const
 {
-    QList <QgsSymbol*> symbollist;
-    for(QMap<QString, QgsSymbol*>::const_iterator it = mSymbols.begin(); it!=mSymbols.end(); ++it)
-    {
-	symbollist.append(it.value());
-    }
-    return symbollist;
+  QList <QgsSymbol*> symbollist;
+  for(QMap<QString, QgsSymbol*>::const_iterator it = mSymbols.begin(); it!=mSymbols.end(); ++it)
+  {
+    symbollist.append(it.value());
+  }
+  return symbollist;
 }
 
 void QgsUniqueValueRenderer::insertValue(QString name, QgsSymbol* symbol)
 {
-    mSymbols.insert(name, symbol);
-    updateSymbolAttributes();
+  mSymbols.insert(name, symbol);
+  updateSymbolAttributes();
 }
 
 void QgsUniqueValueRenderer::setClassificationField(int field)
 {
-    mClassificationField=field;
+  mClassificationField=field;
 }
 
 int QgsUniqueValueRenderer::classificationField() const
 {
-    return mClassificationField;
+  return mClassificationField;
 }
 
 bool QgsUniqueValueRenderer::willRenderFeature(QgsFeature *f)
@@ -107,19 +107,19 @@ void QgsUniqueValueRenderer::renderFeature(QPainter* p, QgsFeature& f,QImage* im
 {
   QgsSymbol* symbol = symbolForFeature(&f);
   if(!symbol) //no matching symbol
+  {
+    if ( img && mVectorType == QGis::Point )
     {
-      if ( img && mVectorType == QGis::Point )
-	{
-	  img->fill(0);
-	}
-      else if ( mVectorType != QGis::Point )
-	{
-	  p->setPen(Qt::NoPen);
-	  p->setBrush(Qt::NoBrush);
-	}
-      return;
+      img->fill(0);
     }
-  
+    else if ( mVectorType != QGis::Point )
+    {
+      p->setPen(Qt::NoPen);
+      p->setBrush(Qt::NoBrush);
+    }
+    return;
+  }
+
   // Point 
   if ( img && mVectorType == QGis::Point ) 
   {
@@ -140,29 +140,29 @@ void QgsUniqueValueRenderer::renderFeature(QPainter* p, QgsFeature& f,QImage* im
       QgsDebugMsg(QString("Feature has rotation factor %1").arg(rotation));
     }
     *img = symbol->getPointSymbolAsImage( widthScale, selected, mSelectionColor,
-                                            *scalefactor * fieldScale, rotation);
-}  
+      *scalefactor * fieldScale, rotation);
+  }  
   // Line, polygon
   else if ( mVectorType != QGis::Point )
+  {
+    if( !selected ) 
     {
-      if( !selected ) 
-	{
-	  QPen pen=symbol->pen();
-	  pen.setWidthF ( widthScale * pen.width() );
-	  p->setPen(pen);
-	  p->setBrush(symbol->brush());
-	}
-      else
-	{
-	  QPen pen=symbol->pen();
-	  pen.setWidthF ( widthScale * pen.width() );
-	  pen.setColor(mSelectionColor);
-	  QBrush brush=symbol->brush();
-		brush.setColor(mSelectionColor);
-		p->setPen(pen);
-		p->setBrush(brush);
-	}
+      QPen pen=symbol->pen();
+      pen.setWidthF ( widthScale * pen.width() );
+      p->setPen(pen);
+      p->setBrush(symbol->brush());
     }
+    else
+    {
+      QPen pen=symbol->pen();
+      pen.setWidthF ( widthScale * pen.width() );
+      pen.setColor(mSelectionColor);
+      QBrush brush=symbol->brush();
+      brush.setColor(mSelectionColor);
+      p->setPen(pen);
+      p->setBrush(brush);
+    }
+  }
 }
 
 QgsSymbol* QgsUniqueValueRenderer::symbolForFeature(const QgsFeature* f)
@@ -170,44 +170,44 @@ QgsSymbol* QgsUniqueValueRenderer::symbolForFeature(const QgsFeature* f)
   //first find out the value
   const QgsAttributeMap& attrs = f->attributeMap();
   QString value = attrs[mClassificationField].toString();
-  
+
   QMap<QString,QgsSymbol*>::iterator it=mSymbols.find(value);
   if(it == mSymbols.end())
-    {
-      return 0;
-    }
+  {
+    return 0;
+  }
   else
-    {
-      return it.value();
-    }
+  {
+    return it.value();
+  }
 }
 
 void QgsUniqueValueRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 {
-    mVectorType = vl.vectorType();
-    QDomNode classnode = rnode.namedItem("classificationfield");
-    int classificationfield = classnode.toElement().text().toInt();
-    this->setClassificationField(classificationfield);
+  mVectorType = vl.vectorType();
+  QDomNode classnode = rnode.namedItem("classificationfield");
+  int classificationfield = classnode.toElement().text().toInt();
+  this->setClassificationField(classificationfield);
 
-    QDomNode symbolnode = rnode.namedItem("symbol");
-    while (!symbolnode.isNull())
-    {
-	QgsSymbol* msy = new QgsSymbol(mVectorType);
-	msy->readXML ( symbolnode );
-	this->insertValue(msy->lowerValue(),msy);
-	symbolnode = symbolnode.nextSibling();
+  QDomNode symbolnode = rnode.namedItem("symbol");
+  while (!symbolnode.isNull())
+  {
+    QgsSymbol* msy = new QgsSymbol(mVectorType);
+    msy->readXML ( symbolnode );
+    this->insertValue(msy->lowerValue(),msy);
+    symbolnode = symbolnode.nextSibling();
     vl.setRenderer(this);
-    }
+  }
 }
 
 void QgsUniqueValueRenderer::clearValues()
 {
-    for(QMap<QString,QgsSymbol*>::iterator it=mSymbols.begin();it!=mSymbols.end();++it)
-    {
-	delete it.value();
-    }
-    mSymbols.clear();
-    updateSymbolAttributes();
+  for(QMap<QString,QgsSymbol*>::iterator it=mSymbols.begin();it!=mSymbols.end();++it)
+  {
+    delete it.value();
+  }
+  mSymbols.clear();
+  updateSymbolAttributes();
 }
 
 void QgsUniqueValueRenderer::updateSymbolAttributes()
@@ -240,35 +240,35 @@ QString QgsUniqueValueRenderer::name() const
 
 QgsAttributeList QgsUniqueValueRenderer::classificationAttributes() const
 {
-    QgsAttributeList list(mSymbolAttributes);
-    if ( ! list.contains(mClassificationField) )
-    {
-      list.append(mClassificationField);
-    }
-    return list;
+  QgsAttributeList list(mSymbolAttributes);
+  if ( ! list.contains(mClassificationField) )
+  {
+    list.append(mClassificationField);
+  }
+  return list;
 }
 
 bool QgsUniqueValueRenderer::writeXML( QDomNode & layer_node, QDomDocument & document ) const
 {
-    bool returnval=true;
-    QDomElement uniquevalue=document.createElement("uniquevalue");
-    layer_node.appendChild(uniquevalue);
-    QDomElement classificationfield=document.createElement("classificationfield");
-    QDomText classificationfieldtxt=document.createTextNode(QString::number(mClassificationField));
-    classificationfield.appendChild(classificationfieldtxt);
-    uniquevalue.appendChild(classificationfield);
-    for(QMap<QString,QgsSymbol*>::const_iterator it=mSymbols.begin();it!=mSymbols.end();++it)
+  bool returnval=true;
+  QDomElement uniquevalue=document.createElement("uniquevalue");
+  layer_node.appendChild(uniquevalue);
+  QDomElement classificationfield=document.createElement("classificationfield");
+  QDomText classificationfieldtxt=document.createTextNode(QString::number(mClassificationField));
+  classificationfield.appendChild(classificationfieldtxt);
+  uniquevalue.appendChild(classificationfield);
+  for(QMap<QString,QgsSymbol*>::const_iterator it=mSymbols.begin();it!=mSymbols.end();++it)
+  {
+    if(!(it.value()->writeXML(uniquevalue,document)))
     {
-	if(!(it.value()->writeXML(uniquevalue,document)))
-	{
-	    returnval=false;  
-	}
+      returnval=false;  
     }
-    return returnval;
+  }
+  return returnval;
 }
 
 QgsRenderer* QgsUniqueValueRenderer::clone() const
 {
-    QgsUniqueValueRenderer* r = new QgsUniqueValueRenderer(*this);
-    return r;
+  QgsUniqueValueRenderer* r = new QgsUniqueValueRenderer(*this);
+  return r;
 }
