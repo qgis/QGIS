@@ -37,7 +37,11 @@
 #include <QSettings>
 #include <QIcon>
 #include <QPixmap>
+#if QT_VERSION < 0x040300
 #include <Q3Picture>
+#else
+#include <QSvgGenerator>
+#endif
 #include <QToolBar>
 #include <QImageWriter>
 #include <QCheckBox>
@@ -773,9 +777,6 @@ QRectF renderArea(0,0,(mComposition->paperWidth() * mComposition->scale()),(mCom
 void QgsComposer::on_mActionExportAsSVG_activated(void)
 {
 
-// QT 4 QPicture does not support export to SVG, so we're still using Q3Picture.
-// When QGIS moves to Qt 4.3, we can use QSvgGenerator instead.
-
   QString myQSettingsLabel = "/UI/displaySVGWarning";
   QSettings myQSettings;
 
@@ -791,10 +792,16 @@ void QgsComposer::on_mActionExportAsSVG_activated(void)
     m->setCheckBoxQSettingsLabel(myQSettingsLabel);
     m->setMessageAsHtml(tr("<p>The SVG export function in Qgis has several "
                            "problems due to bugs and deficiencies in the "
+#if QT_VERSION < 0x040300
                            "Qt4 svg code. Of note, text does not "
                            "appear in the SVG file and there are problems "
                            "with the map bounding box clipping other items "
                            "such as the legend or scale bar.</p>"
+#else
+                           "Qt4 svg code. In particular, there are problems "
+                           "with layers not being clipped to the map"
+                           "bounding box.</p>"
+#endif
                            "If you require a vector-based output file from "
                            "Qgis it is suggested that you try printing "
                            "to PostScript if the SVG output is not "
@@ -822,20 +829,30 @@ void QgsComposer::on_mActionExportAsSVG_activated(void)
   mView->setScene(0);//don't redraw the scene on the display while we render
   mComposition->setPlotStyle ( QgsComposition::Print );
 
+#if QT_VERSION < 0x040300
   Q3Picture pic;
   QPainter p(&pic);
   QRectF renderArea(0,0, (mComposition->paperWidth() * mComposition->scale()), (mComposition->paperHeight() * mComposition->scale()) );
-
+#else
+  QSvgGenerator generator;
+  generator.setFileName(myOutputFileNameQString);
+  generator.setSize(QSize( (int)mComposition->paperWidth(), (int)mComposition->paperHeight() ));
+  generator.setResolution((int)(mComposition->resolution() / 25.4)); //because the rendering is done in mm, convert the dpi
+ 
+  QPainter p(&generator);
+  QRectF renderArea(0,0, mComposition->paperWidth(), mComposition->paperHeight());
+#endif
   mComposition->canvas()->render(&p, renderArea);
   p.end();
 
   mComposition->setPlotStyle ( QgsComposition::Preview );
   mView->setScene(mComposition->canvas()); //now that we're done, set the view to show the scene again
 
+#if QT_VERSION < 0x040300
   QRect br = pic.boundingRect();
 
   pic.save ( myOutputFileNameQString, "svg" );
-
+#endif
 }
 
 
