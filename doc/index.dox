@@ -5,7 +5,7 @@
 /*! \mainpage Quantum GIS
 
 \section index_intro Introduction
-\htmlonly<img src="qgis_icon_small.png" alt="QGIS"><a href="http://qgis.org">Quantum GIS</a>\endhtmlonly\latexonly Quantum GIS \endlatexonly  (QGIS) is a user friendly Open Source Geographic Information System (GIS) that runs on Linux, Unix, Mac OSX, and Windows. QGIS supports vector, raster, and database formats. QGIS is licensed under the GNU General Public License. QGIS lets you browse and create map data on your computer. It supports many common spatial data formats (e.g. ESRI ShapeFile, geotiff). QGIS supports plugins to do things like display tracks from your GPS. QGIS is Open Source software and its free of cost (download here). We welcome contributions from our user community in the form of code contributions, bug fixes, bug reports, contributed documentation, advocacy and supporting other users on our mailing lists and forums. Financial contributions are also welcome.
+\htmlonly<img src="http://download.qgis.org/qgis-icon-60x60.png" alt="QGIS" align="left"><a href="http://qgis.org">Quantum GIS</a>\endhtmlonly\latexonly Quantum GIS \endlatexonly  (QGIS) is a user friendly Open Source Geographic Information System (GIS) that runs on Linux, Unix, Mac OSX, and Windows. QGIS supports vector, raster, and database formats. QGIS is licensed under the GNU General Public License. QGIS lets you browse and create map data on your computer. It supports many common spatial data formats (e.g. ESRI ShapeFile, geotiff). QGIS supports plugins to do things like display tracks from your GPS. QGIS is Open Source software and its free of cost (download here). We welcome contributions from our user community in the form of code contributions, bug fixes, bug reports, contributed documentation, advocacy and supporting other users on our mailing lists and forums. Financial contributions are also welcome.
 
 \section index_maillist Mailing Lists
 <ul>
@@ -21,8 +21,6 @@ Some QGIS users and developers can also often be found in the
 
 \htmlonly
 <p>
-$Id:$
-</p>
 \endhtmlonly
 
 */
