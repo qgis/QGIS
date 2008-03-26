@@ -79,6 +79,8 @@ void QgsContinuousColorRenderer::renderFeature(QPainter * p, QgsFeature & f, QIm
   {
     //first find out the value for the classification attribute
     const QgsAttributeMap& attrs = f.attributeMap();
+    if( attrs[mClassificationField].isNull() )
+      return;
     double fvalue = attrs[mClassificationField].toDouble();
 
     //double fvalue = vec[mClassificationField].fieldValue().toDouble();
