@@ -229,7 +229,15 @@ ELSE (WIN32)
 ENDIF (WIN32)
 
 TARGET_LINK_LIBRARIES(qgis
-  ${QT_LIBRARIES}
+  ${QT_QTCORE_LIBRARY} 
+  ${QT_QTGUI_LIBRARY} 
+  ${QT_QTXML_LIBRARY} 
+  #${QT_QTSQL_LIBRARY} 
+  ${QT_QTSVG_LIBRARY} 
+  ${QT_QTNETWORK_LIBRARY} 
+  #should only be needed for win
+  ${QT_QTMAIN_LIBRARY} 
+  ${QT_QT3SUPPORT_LIBRARY} 
   qgis_core
   qgis_gui
   )
