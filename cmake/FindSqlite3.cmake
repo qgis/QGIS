@@ -15,6 +15,7 @@
 # to the search list. This applies both to FIND_PATH and FIND_LIBRARY
 FIND_PATH(SQLITE3_INCLUDE_DIR sqlite3.h 
   "$ENV{LIB_DIR}/include"
+  "$ENV{LIB_DIR}/include/sqlite"
   /usr/local/include 
   /usr/include 
   #mingw
