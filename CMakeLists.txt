@@ -196,6 +196,8 @@ ELSE (WIN32)
     SET (CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/MacOS)
     # path for library references
     SET (CMAKE_INSTALL_NAME_DIR @executable_path/lib)
+    #this will define ${APP_SERVICES_LIBRARY}
+    FIND_LIBRARY(APP_SERVICES_LIBRARY ApplicationServices )
   ENDIF (APPLE)
 
   # common for MAC and UNIX
