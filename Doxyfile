@@ -17,13 +17,15 @@
 # The PROJECT_NAME tag is a single word (or a sequence of words surrounded 
 # by quotes) that should identify the project.
 
-PROJECT_NAME           = "Quantum GIS"
+PROJECT_NAME           = "Quantum GIS API Documentation"
 
-# The PROJECT_NUMBER tag can be used to enter a project or revision number. 
+# The PROJECT NUMBER
 # This could be handy for archiving the generated documentation or 
-# if some version control system is used.
+# if some version control system is used. The svn revision number is
+# automatically updated by the documentation process. If you run doxygen
+# manually, the revision number may not reflect the current revision.
 
-PROJECT_NUMBER         = HEAD-$id:$
+PROJECT_NUMBER = HEAD-r8279
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 
