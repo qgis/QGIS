@@ -1,0 +1,4 @@
+/** @defgroup library */
+/** @defgroup gui */
+/** @defgroup core*/
+/** @defgroup UnitTests*/
