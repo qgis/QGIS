@@ -536,30 +536,39 @@ bool QgsDbSourceSelect::getTableInfo(PGconn *pg, bool searchGeometryColumnsOnly,
   PGresult *result = PQexec(pg, sql.toUtf8());
   if (result)
   {
-    for (int idx = 0; idx < PQntuples(result); idx++)
+    if( PQntuples(result)==0 )
     {
-      QString tableName = QString::fromUtf8(PQgetvalue(result, idx, PQfnumber(result, QString("f_table_name").toUtf8())));
-      QString schemaName = QString::fromUtf8(PQgetvalue(result, idx, PQfnumber(result, QString("f_table_schema").toUtf8())));
-
-      QString column = QString::fromUtf8(PQgetvalue(result, idx, PQfnumber(result, QString("f_geometry_column").toUtf8())));
-      QString type = QString::fromUtf8(PQgetvalue(result, idx, PQfnumber(result, QString("type").toUtf8())));
-
-      QString as = "";
-      if(type=="GEOMETRY" && !searchGeometryColumnsOnly) 
+      QMessageBox::warning(this, tr("No accessible tables found"),
+        tr
+        ("Database connection was successful, but no accessible tables were found.\n\n"
+         "Please verify that you have SELECT privilege on a PostGIS' geometry_columns\n"
+         "table and at least one table carrying PostGIS geometry."));
+    }
+    else 
+    {
+      for (int idx = 0; idx < PQntuples(result); idx++)
       {
-        addSearchGeometryColumn(schemaName, tableName,  column);
-        as=type="WAITING";
-      }
+        QString tableName = QString::fromUtf8(PQgetvalue(result, idx, PQfnumber(result, QString("f_table_name").toUtf8())));
+        QString schemaName = QString::fromUtf8(PQgetvalue(result, idx, PQfnumber(result, QString("f_table_schema").toUtf8())));
 
-      mTableModel.addTableEntry(type, schemaName, tableName, column, "");
+        QString column = QString::fromUtf8(PQgetvalue(result, idx, PQfnumber(result, QString("f_geometry_column").toUtf8())));
+        QString type = QString::fromUtf8(PQgetvalue(result, idx, PQfnumber(result, QString("type").toUtf8())));
+
+        QString as = "";
+        if(type=="GEOMETRY" && !searchGeometryColumnsOnly) 
+        {
+          addSearchGeometryColumn(schemaName, tableName,  column);
+          as=type="WAITING";
+        }
+
+        mTableModel.addTableEntry(type, schemaName, tableName, column, "");
+      }
     }
     ok = true;
   }
   PQclear(result);
 
   //search for geometry columns in tables that are not in the geometry_columns metatable
-
-
   QApplication::restoreOverrideCursor();
   if (searchGeometryColumnsOnly)
   {
