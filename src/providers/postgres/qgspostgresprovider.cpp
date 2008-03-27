@@ -367,108 +367,121 @@ QString QgsPostgresProvider::storageType() const
   return "PostgreSQL database with PostGIS extension";
 }
 
-void QgsPostgresProvider::declareCursor(const QString &cursorName,
+bool QgsPostgresProvider::declareCursor(const QString &cursorName,
                                         const QgsAttributeList &fetchAttributes,
                                         bool fetchGeometry,
-                                        QString whereClause,
-                                        QStringList &attributeNames)
+                                        QString whereClause)
 {
-  QString declare = QString("declare %1 binary cursor with hold for select %2")
-                      .arg(cursorName).arg(quotedIdentifier(primaryKey));
-
-  if(fetchGeometry)
+  try
   {
-    declare += QString(",asbinary(%1,'%2') as qgs_feature_geometry")
-                 .arg( quotedIdentifier(geometryColumn) )
-                 .arg( endianString() ); 
-  }
+    QString declare = QString("declare %1 binary cursor with hold for select %2")
+      .arg(cursorName).arg(quotedIdentifier(primaryKey));
 
-  QgsFieldMap attributeMap = fields();
-  for (QgsAttributeList::const_iterator it = fetchAttributes.constBegin(); it != fetchAttributes.constEnd(); ++it)
-  {
-    QgsFieldMap::const_iterator fieldIt = attributeMap.find(*it);
-    if(fieldIt != attributeMap.end())
+    if(fetchGeometry)
     {
-      const QString &fieldname = fieldIt.value().name();
+      declare += QString(",asbinary(%1,'%2') as qgs_feature_geometry")
+        .arg( quotedIdentifier(geometryColumn) )
+        .arg( endianString() ); 
+    }
 
-      if( fieldname != primaryKey ) 
+    for (QgsAttributeList::const_iterator it = fetchAttributes.constBegin(); it != fetchAttributes.constEnd(); ++it)
+    {
+      const QgsField &fld = field(*it);
+
+      const QString &fieldname = fld.name();
+      if( fieldname == primaryKey )
+        continue;
+
+      const QString &type = fld.typeName();
+      if( type == "money" || type.startsWith("_") )
       {
-        if( fieldIt.value().typeName() == "money" || fieldIt.value().typeName().startsWith("_") )
-        {
-          // money and arrays don't support cast to text, but return text
-          // TODO: check other types
-          declare += "," + quotedIdentifier( fieldname );
-        }
-        else if( fieldIt.value().typeName() == "bool" )
-        {
-          // bool doesn't support cast to text either and even doesn't return text.
-          // (even text() doesn't work with binary cursors)
-          declare += QString(",CASE WHEN %1 THEN 't' WHEN NOT %1 THEN 'f' ELSE NULL END AS %1")
-                       .arg( quotedIdentifier(fieldname) );
-        }
-        else
-        {
-          declare += "," + quotedIdentifier( fieldname ) + "::text";
-        }
+        // money and arrays don't support cast to text, but return text
+        // TODO: check other types
+        declare += "," + quotedIdentifier( fieldname );
       }
-
-      attributeNames << fieldname;
-    }
-  }
-
-  declare += " from " + mSchemaTableName;
-  
-  if( !whereClause.isEmpty() )
-    declare += QString(" where %1").arg(whereClause);
-
-  QgsDebugMsg("Binary cursor: " + declare);
-
-  PQexecNR(connection, declare.toUtf8());
-}
-
-void QgsPostgresProvider::getFeature(PGresult *queryResult, int row, bool fetchGeometry,
-                                     QgsFeature &feature,
-                                     const QStringList &attributeNames,
-                                     const QgsAttributeList &fetchAttributes)
-{  
-  int oid = *(int *)PQgetvalue(queryResult, row, PQfnumber(queryResult,quotedIdentifier(primaryKey).toUtf8()));
-  if (swapEndian)
-    oid = ntohl(oid); // convert oid to opposite endian
-
-  feature.setFeatureId(oid);
-
-  // fetch attributes
-  QgsAttributeList::const_iterator it = fetchAttributes.constBegin();
-  for(QStringList::const_iterator namesIt = attributeNames.begin(); namesIt != attributeNames.end(); ++namesIt, ++it)
-  {
-    QString val;
-
-    if( (*namesIt) == primaryKey)
-    {
-      val = QString::number(oid);
-    }
-    else
-    {
-      int fn = PQfnumber(queryResult,quotedIdentifier(*namesIt).toUtf8());
-
-      if( !PQgetisnull(queryResult, row, fn) )
+      else if( type == "bool" )
       {
-        val = QString::fromUtf8(PQgetvalue(queryResult, row, fn));
+        // bool doesn't support cast to text either and even doesn't return text.
+        // (even text() doesn't work with binary cursors)
+        declare += QString(",CASE WHEN %1 THEN 't' WHEN NOT %1 THEN 'f' ELSE NULL END AS %1")
+          .arg( quotedIdentifier(fieldname) );
       }
       else
       {
-        val = QString::null;
+        declare += "," + quotedIdentifier( fieldname ) + "::text";
       }
     }
 
-    if( val.isNull() )
+    declare += " from " + mSchemaTableName;
+
+    if( !whereClause.isEmpty() )
+      declare += QString(" where %1").arg(whereClause);
+
+    QgsDebugMsg("Binary cursor: " + declare);
+
+    return PQexecNR(connection, declare.toUtf8());
+  }
+  catch(PGFieldNotFound)
+  {
+    return false;
+  }
+}
+
+bool QgsPostgresProvider::getFeature(PGresult *queryResult, int row, bool fetchGeometry,
+                                     QgsFeature &feature,
+                                     const QgsAttributeList &fetchAttributes)
+{  
+  try
+  {
+    int oid = *(int *)PQgetvalue(queryResult, row, 0);
+    if (swapEndian)
+      oid = ntohl(oid); // convert oid to opposite endian
+
+    feature.setFeatureId(oid);
+
+    int col;  // first attribute column
+
+    if (fetchGeometry)
     {
-      feature.addAttribute(*it, val);
+      int returnedLength = PQgetlength(queryResult, row, 1); 
+      if(returnedLength > 0)
+      {
+        unsigned char *featureGeom = new unsigned char[returnedLength + 1];
+        memset(featureGeom, '\0', returnedLength + 1);
+        memcpy(featureGeom, PQgetvalue(queryResult, row, PQfnumber(queryResult,QString("qgs_feature_geometry").toUtf8())), returnedLength); 
+        feature.setGeometryAndOwnership(featureGeom, returnedLength + 1);
+      }
+      else
+      {
+        feature.setGeometryAndOwnership(0, 0);
+        QgsDebugMsg("Couldn't get the feature geometry in binary form");
+      }
+
+      col = 2;
     }
     else
     {
-      switch (attributeFields[*it].type())
+      col = 1;
+    }
+
+    // iterate attributes
+    for(QgsAttributeList::const_iterator it=fetchAttributes.constBegin(); it!=fetchAttributes.constEnd(); it++)
+    {
+      const QgsField &fld = field(*it);
+
+      if( fld.name() == primaryKey )
       {
+        // primary key was already processed
+        feature.addAttribute(*it, QString::number(oid) );
+        continue;
+      }
+
+      if( !PQgetisnull(queryResult, row, col) )
+      {
+        QString val = QString::fromUtf8(PQgetvalue(queryResult, row, col));
+
+        switch (fld.type())
+        {
         case QVariant::LongLong:
           feature.addAttribute(*it, val.toLongLong());
           break;
@@ -483,26 +496,22 @@ void QgsPostgresProvider::getFeature(PGresult *queryResult, int row, bool fetchG
           break;
         default:
           assert(0 && "unsupported field type");
+        }
       }
-    }
-  }
+      else
+      {
+        feature.addAttribute(*it, QVariant(QString::null));
+      }
 
-  if (fetchGeometry)
+      col++;
+    }
+
+    return true;
+  }
+  catch(PGFieldNotFound)
   {
-    int returnedLength = PQgetlength(queryResult, row, PQfnumber(queryResult,"qgs_feature_geometry")); 
-    if(returnedLength > 0)
-    {
-      unsigned char *featureGeom = new unsigned char[returnedLength + 1];
-      memset(featureGeom, '\0', returnedLength + 1);
-      memcpy(featureGeom, PQgetvalue(queryResult, row, PQfnumber(queryResult,QString("qgs_feature_geometry").toUtf8())), returnedLength); 
-      feature.setGeometryAndOwnership(featureGeom, returnedLength + 1);
-    }
-    else
-    {
-      feature.setGeometryAndOwnership(0, 0);
-      QgsDebugMsg("Couldn't get the feature geometry in binary form");
-    }
-  } 
+    return false;
+  }
 }
 
 void QgsPostgresProvider::select(QgsAttributeList fetchAttributes, QgsRect rect, bool fetchGeometry, bool useIntersect)
@@ -552,8 +561,9 @@ void QgsPostgresProvider::select(QgsAttributeList fetchAttributes, QgsRect rect,
 
   mFetchGeom = fetchGeometry;
   mAttributesToFetch = fetchAttributes;
-  declareCursor( cursorName, fetchAttributes, fetchGeometry, whereClause, mFetchAttributeNames );
-
+  if( !declareCursor( cursorName, fetchAttributes, fetchGeometry, whereClause ) )
+    return;
+  
   mFetching = true;
   mFirstFetch = true;
 }
@@ -594,7 +604,7 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
     for (int row = 0; row < rows; row++)
     {
       mFeatureQueue.push(QgsFeature());
-      getFeature(queryResult, row, mFetchGeom, mFeatureQueue.back(), mFetchAttributeNames, mAttributesToFetch);
+      getFeature(queryResult, row, mFetchGeom, mFeatureQueue.back(), mAttributesToFetch);
     } // for each row in queue
 
     PQclear(queryResult);
@@ -625,9 +635,9 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
 
 bool QgsPostgresProvider::getFeatureAtId(int featureId, QgsFeature& feature, bool fetchGeometry, QgsAttributeList fetchAttributes)
 {
-  QStringList attributeNames;
   QString cursorName = QString("qgisfid%1").arg(providerId);
-  declareCursor( cursorName, fetchAttributes, fetchGeometry, QString("%2=%3").arg(quotedIdentifier(primaryKey)).arg(featureId), attributeNames );
+  if( !declareCursor( cursorName, fetchAttributes, fetchGeometry, QString("%2=%3").arg(quotedIdentifier(primaryKey)).arg(featureId) ) )
+    return false;
 
   PGresult *queryResult = PQexec(connection, QString("fetch forward 1 from %1").arg(cursorName).toUtf8());
   if(queryResult==0)
@@ -646,12 +656,13 @@ bool QgsPostgresProvider::getFeatureAtId(int featureId, QgsFeature& feature, boo
     QgsDebugMsg( QString("found %1 features instead of just one.").arg(rows) );
   }
 
-  getFeature(queryResult, 0, fetchGeometry, feature, attributeNames, fetchAttributes);
+  bool gotit = getFeature(queryResult, 0, fetchGeometry, feature, fetchAttributes);
 
   PQclear(queryResult);
 
   PQexecNR(connection, QString("CLOSE %1").arg(cursorName).toUtf8());
-  return true;
+
+  return gotit;
 }
 
 
@@ -688,6 +699,18 @@ QGis::WKBTYPE QgsPostgresProvider::geometryType() const
 long QgsPostgresProvider::featureCount() const
 {
   return numberFeatures;
+}
+
+const QgsField &QgsPostgresProvider::field(int index) const
+{
+  QgsFieldMap::const_iterator it = attributeFields.find(index);
+
+  if( it==attributeFields.constEnd() ) {
+    QgsDebugMsg("Field " + QString::number(index) + " not found.");
+    throw PGFieldNotFound();
+  }
+
+  return it.value();
 }
 
 /**
@@ -1577,83 +1600,103 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
 // Returns the minimum value of an attribute
 QVariant QgsPostgresProvider::minValue(int index)
 {
-  // get the field name 
-  QgsField fld = attributeFields[index];
-  QString sql;
-  if(sqlWhereClause.isEmpty())
+  try
   {
-    sql = QString("select min(%1) from %2")
-            .arg(quotedIdentifier(fld.name()))
-            .arg(mSchemaTableName);
+    // get the field name 
+    const QgsField &fld = field(index);
+    QString sql;
+    if(sqlWhereClause.isEmpty())
+    {
+      sql = QString("select min(%1) from %2")
+        .arg(quotedIdentifier(fld.name()))
+        .arg(mSchemaTableName);
+    }
+    else
+    {
+      sql = QString("select min(%1) from %2 where %3")
+        .arg(quotedIdentifier(fld.name()))
+        .arg(mSchemaTableName)
+        .arg(sqlWhereClause);
+    }
+    PGresult *rmin = PQexec(connection, sql.toUtf8());
+    QString minValue = QString::fromUtf8(PQgetvalue(rmin,0,0));
+    PQclear(rmin);
+    return minValue.toDouble();
   }
-  else
+  catch(PGFieldNotFound)
   {
-    sql = QString("select min(%1) from %2 where %3")
-            .arg(quotedIdentifier(fld.name()))
-            .arg(mSchemaTableName)
-            .arg(sqlWhereClause);
+    return QVariant(QString::null);
   }
-  PGresult *rmin = PQexec(connection, sql.toUtf8());
-  QString minValue = QString::fromUtf8(PQgetvalue(rmin,0,0));
-  PQclear(rmin);
-  return minValue.toDouble();
 }
 
 // Returns the list of unique values of an attribute
 void QgsPostgresProvider::getUniqueValues(int index, QStringList &uniqueValues)
 {
-  // get the field name 
-  QgsField fld = attributeFields[index];
-  QString sql;
-  if(sqlWhereClause.isEmpty())
-  {
-    sql = QString("select distinct %1 from %2 order by %1")
-            .arg(quotedIdentifier(fld.name()))
-            .arg(mSchemaTableName);
-  }
-  else
-  {
-    sql = QString("select distinct %1 from %2 where %3 order by %1")
-            .arg(quotedIdentifier(fld.name()))
-            .arg(mSchemaTableName)
-            .arg(sqlWhereClause);
-  }
-
   uniqueValues.clear();
 
-  PGresult *res= PQexec(connection, sql.toUtf8());
-  if (PQresultStatus(res) == PGRES_TUPLES_OK)
+  try
   {
-    for(int i=0; i<PQntuples(res); i++)
-      uniqueValues.append( QString::fromUtf8(PQgetvalue(res,i,0)) );
+    // get the field name 
+    const QgsField &fld = field(index);
+    QString sql;
+    if(sqlWhereClause.isEmpty())
+    {
+      sql = QString("select distinct %1 from %2 order by %1")
+        .arg(quotedIdentifier(fld.name()))
+        .arg(mSchemaTableName);
+    }
+    else
+    {
+      sql = QString("select distinct %1 from %2 where %3 order by %1")
+        .arg(quotedIdentifier(fld.name()))
+        .arg(mSchemaTableName)
+        .arg(sqlWhereClause);
+    }
+
+    PGresult *res= PQexec(connection, sql.toUtf8());
+    if (PQresultStatus(res) == PGRES_TUPLES_OK)
+    {
+      for(int i=0; i<PQntuples(res); i++)
+        uniqueValues.append( QString::fromUtf8(PQgetvalue(res,i,0)) );
+    }
+    PQclear(res);
   }
-  PQclear(res);
+  catch(PGFieldNotFound)
+  { 
+  }
 }
 
 // Returns the maximum value of an attribute
 
 QVariant QgsPostgresProvider::maxValue(int index)
 {
-  // get the field name 
-  QgsField fld = attributeFields[index];
-  QString sql;
-  if(sqlWhereClause.isEmpty())
+  try
   {
-    sql = QString("select max(%1) from %2")
-            .arg(quotedIdentifier(fld.name()))
-            .arg(mSchemaTableName);
+    // get the field name 
+    const QgsField &fld = field(index);
+    QString sql;
+    if(sqlWhereClause.isEmpty())
+    {
+      sql = QString("select max(%1) from %2")
+        .arg(quotedIdentifier(fld.name()))
+        .arg(mSchemaTableName);
+    }
+    else
+    {
+      sql = QString("select max(%1) from %2 where %3")
+        .arg(quotedIdentifier(fld.name()))
+        .arg(mSchemaTableName)
+        .arg(sqlWhereClause);
+    } 
+    PGresult *rmax = PQexec(connection, sql.toUtf8());
+    QString maxValue = QString::fromUtf8(PQgetvalue(rmax,0,0));
+    PQclear(rmax);
+    return maxValue.toDouble();
   }
-  else
+  catch(PGFieldNotFound)
   {
-    sql = QString("select max(%1) from %2 where %3")
-            .arg(quotedIdentifier(fld.name()))
-            .arg(mSchemaTableName)
-            .arg(sqlWhereClause);
-  } 
-  PGresult *rmax = PQexec(connection, sql.toUtf8());
-  QString maxValue = QString::fromUtf8(PQgetvalue(rmax,0,0));
-  PQclear(rmax);
-  return maxValue.toDouble();
+    return QVariant(QString::null);
+  }
 }
 
 
@@ -1679,33 +1722,39 @@ bool QgsPostgresProvider::isValid(){
 
 QVariant QgsPostgresProvider::getDefaultValue(int fieldId)
 {
-  // Get the default column value from the Postgres information
-  // schema. If there is no default we return an empty string.
+  try
+  {
+    // Get the default column value from the Postgres information
+    // schema. If there is no default we return an empty string.
 
-  // Maintaining a cache of the results of this query would be quite
-  // simple and if this query is called lots, could save some time.
+    // Maintaining a cache of the results of this query would be quite
+    // simple and if this query is called lots, could save some time.
+    QString fieldName = field(fieldId).name();
 
-  QString fieldName = attributeFields[fieldId].name();
-
-  QString sql("SELECT column_default FROM"
+    QString sql("SELECT column_default FROM"
       " information_schema.columns WHERE"
       " column_default IS NOT NULL"
       " AND table_schema = " + quotedValue(mSchemaName) +
       " AND table_name = " + quotedValue(mTableName) +
       " AND column_name = " + quotedValue(fieldName) );
 
-  QVariant defaultValue(QString::null);
+    QVariant defaultValue(QString::null);
 
-  PGresult* result = PQexec(connection, sql.toUtf8());
+    PGresult* result = PQexec(connection, sql.toUtf8());
 
-  if (PQntuples(result)==1 && !PQgetisnull(result, 0, 0) )
-    defaultValue = QString::fromUtf8(PQgetvalue(result, 0, 0));
+    if (PQntuples(result)==1 && !PQgetisnull(result, 0, 0) )
+      defaultValue = QString::fromUtf8(PQgetvalue(result, 0, 0));
 
-  // QgsDebugMsg( QString("defaultValue for %1 is NULL: %2").arg(fieldId).arg( defaultValue.isNull() ) );
+    // QgsDebugMsg( QString("defaultValue for %1 is NULL: %2").arg(fieldId).arg( defaultValue.isNull() ) );
 
-  PQclear(result);
+    PQclear(result);
 
-  return defaultValue;
+    return defaultValue;
+  }
+  catch(PGFieldNotFound)
+  {
+    return QVariant(QString::null);
+  }
 }
 
 /**
@@ -2035,20 +2084,27 @@ bool QgsPostgresProvider::changeAttributeValues(const QgsChangedAttributesMap & 
       // cycle through the changed attributes of the feature
       for(QgsAttributeMap::const_iterator siter = attrs.begin(); siter != attrs.end(); ++siter)
       {
-        QString fieldName = attributeFields[siter.key()].name();
+        try {
+          QString fieldName = field(siter.key()).name();
 
-        QString sql = QString("UPDATE %1 SET %2=%3 WHERE %4=%5")
-                        .arg( mSchemaTableName )
-                        .arg( quotedIdentifier(fieldName) )
-                        .arg( quotedValue( siter->toString() ) )
-                        .arg( quotedIdentifier(primaryKey) )
-                        .arg( fid );
-        QgsDebugMsg(sql);
+          QString sql = QString("UPDATE %1 SET %2=%3 WHERE %4=%5")
+                          .arg( mSchemaTableName )
+                          .arg( quotedIdentifier(fieldName) )
+                          .arg( quotedValue( siter->toString() ) )
+                          .arg( quotedIdentifier(primaryKey) )
+                          .arg( fid );
+          QgsDebugMsg(sql);
 
-        PGresult* result=PQexec(connection, sql.toUtf8());
-        if( result==0 || PQresultStatus(result)==PGRES_FATAL_ERROR )
-          throw PGException(result);
-        PQclear(result);
+          PGresult* result=PQexec(connection, sql.toUtf8());
+          if( result==0 || PQresultStatus(result)==PGRES_FATAL_ERROR )
+            throw PGException(result);
+         
+          PQclear(result);
+        }
+        catch(PGFieldNotFound)
+        {
+          // Field was missing - shouldn't happen
+        }
       }
     }
 
@@ -2149,7 +2205,7 @@ bool QgsPostgresProvider::changeGeometryValues(QgsGeometryMap & geometry_map)
 QgsAttributeList QgsPostgresProvider::allAttributesList()
 {
   QgsAttributeList attributes;
-  for(QgsFieldMap::iterator it = attributeFields.begin(); it != attributeFields.end(); ++it)
+  for(QgsFieldMap::const_iterator it = attributeFields.constBegin(); it != attributeFields.constEnd(); ++it)
   {
     attributes.push_back(it.key());
   }
@@ -2607,21 +2663,25 @@ QString QgsPostgresProvider::quotedValue( QString value ) const
   return value.prepend("'").append("'");
 }
 
-void QgsPostgresProvider::PQexecNR(PGconn *conn, const char *query)
+bool QgsPostgresProvider::PQexecNR(PGconn *conn, const char *query)
 {
   PGresult *res = PQexec(conn, query);
   if(res)
   {
+    int errorStatus = PQresultStatus(res);
     QgsDebugMsgLevel( QString("Query: %1 returned %2 [%3]")
                         .arg(query)
-                        .arg(PQresStatus(PQresultStatus(res)))
+                        .arg(errorStatus)
                         .arg(PQresultErrorMessage(res)), 3 );
     PQclear(res);
+
+    return errorStatus==PGRES_COMMAND_OK;
   }
   else
   {
     QgsDebugMsgLevel( QString("Query: %1 returned no result buffer").arg(query), 3 );
   }
+  return false;
 }
 
 void QgsPostgresProvider::showMessageBox(const QString& title, const QString& text)
