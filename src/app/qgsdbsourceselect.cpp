@@ -536,13 +536,21 @@ bool QgsDbSourceSelect::getTableInfo(PGconn *pg, bool searchGeometryColumnsOnly,
   PGresult *result = PQexec(pg, sql.toUtf8());
   if (result)
   {
-    if( PQntuples(result)==0 )
+    if( PQresultStatus(result) != PGRES_TUPLES_OK) 
+    {
+      QMessageBox::warning(this,
+                           tr("Accessible tables could not be determined"),
+                           QString ( tr("Database connection was successful, but the accessible tables could not be determined.\n\n"
+                                      "The error message from the database was:\n%1\n" ) )
+                              .arg( QString::fromUtf8(PQresultErrorMessage(result)) ) );
+    }
+    else if( PQntuples(result)==0 )
     {
       QMessageBox::warning(this, tr("No accessible tables found"),
         tr
         ("Database connection was successful, but no accessible tables were found.\n\n"
-         "Please verify that you have SELECT privilege on a PostGIS' geometry_columns\n"
-         "table and at least one table carrying PostGIS geometry."));
+         "Please verify that you have SELECT privilege on a table carrying PostGIS\n"
+         "geometry."));
     }
     else 
     {
