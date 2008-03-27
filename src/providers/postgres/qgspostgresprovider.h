@@ -110,17 +110,6 @@ class QgsPostgresProvider:public QgsVectorDataProvider
                                 bool fetchGeometry = true,
                                 QgsAttributeList fetchAttributes = QgsAttributeList());
 
-    void declareCursor(const QString &cursorName,
-                       const QgsAttributeList &fetchAttributes,
-                       bool fetchGeometry,
-                       QString whereClause,
-                       QStringList &attributeNames);
-
-    void getFeature(PGresult *queryResult, int row, bool fetchGeometry,
-                    QgsFeature &feature,
-                    const QStringList &attributeNames,
-                    const QgsAttributeList &fetchAttributes);
-    
     /** Get the feature type. This corresponds to
      * WKBPoint,
      * WKBLineString,
@@ -336,6 +325,17 @@ class QgsPostgresProvider:public QgsVectorDataProvider
   private:
     int providerId; // id to append to provider specific identified (like cursors)
 
+    bool declareCursor(const QString &cursorName,
+                       const QgsAttributeList &fetchAttributes,
+                       bool fetchGeometry,
+                       QString whereClause);
+
+    bool getFeature(PGresult *queryResult, int row, bool fetchGeometry,
+                    QgsFeature &feature,
+                    const QgsAttributeList &fetchAttributes);
+
+    const QgsField &field(int index) const;
+
     /** Double quote a PostgreSQL identifier for placement in a SQL string.
      */
     QString quotedIdentifier( QString ident ) const;
@@ -453,9 +453,6 @@ class QgsPostgresProvider:public QgsVectorDataProvider
      */
     bool swapEndian;
 
-    /**Stores the names of the attributes to fetch*/
-    QStringList mFetchAttributeNames;
-
     bool deduceEndian();
     bool getGeometryDetails();
 
@@ -481,6 +478,9 @@ class QgsPostgresProvider:public QgsVectorDataProvider
       QString column_name;
       QString table_type;
       QString column_type;
+    };
+
+    struct PGFieldNotFound {
     };
 
     struct PGException {
@@ -603,7 +603,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     QByteArray paramValue(QString fieldvalue, const QString &defaultValue) const;
 
     // run a query and free result buffer
-    static void PQexecNR(PGconn *conn, const char *query);
+    static bool PQexecNR(PGconn *conn, const char *query);
 
     struct Conn
     {
