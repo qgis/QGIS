@@ -110,6 +110,16 @@ class QgsPostgresProvider:public QgsVectorDataProvider
                                 bool fetchGeometry = true,
                                 QgsAttributeList fetchAttributes = QgsAttributeList());
 
+    void declareCursor(const QString &cursorName,
+                       const QgsAttributeList &fetchAttributes,
+                       bool fetchGeometry,
+                       QString whereClause,
+                       QStringList &attributeNames);
+
+    void getFeature(PGresult *queryResult, int row, bool fetchGeometry,
+                    QgsFeature &feature,
+                    const QStringList &attributeNames,
+                    const QgsAttributeList &fetchAttributes);
     
     /** Get the feature type. This corresponds to
      * WKBPoint,
@@ -444,7 +454,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     bool swapEndian;
 
     /**Stores the names of the attributes to fetch*/
-    std::list<QString> mFetchAttributeNames;
+    QStringList mFetchAttributeNames;
 
     bool deduceEndian();
     bool getGeometryDetails();
