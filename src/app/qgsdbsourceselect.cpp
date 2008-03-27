@@ -530,7 +530,8 @@ bool QgsDbSourceSelect::getTableInfo(PGconn *pg, bool searchGeometryColumnsOnly,
   QString sql = "select * from geometry_columns,pg_class,pg_namespace "
     "where relname=f_table_name and f_table_schema=nspname "
     "and pg_namespace.oid = pg_class.relnamespace "
-    "and has_table_privilege('\"'||pg_namespace.nspname||'\".\"'||pg_class.relname||'\"','select')"	// user has select privilege
+    "and has_schema_privilege(pg_namespace.nspname,'usage') "
+    "and has_table_privilege('\"'||pg_namespace.nspname||'\".\"'||pg_class.relname||'\"','select') "	// user has select privilege
     "order by f_table_schema,f_table_name";
 
   PGresult *result = PQexec(pg, sql.toUtf8());
@@ -587,11 +588,12 @@ bool QgsDbSourceSelect::getTableInfo(PGconn *pg, bool searchGeometryColumnsOnly,
   // geometry_columns table. This code is specific to postgresql,
   // but an equivalent query should be possible in other
   // databases.
-  sql = "select pg_class.relname, pg_namespace.nspname, pg_attribute.attname,  pg_class.relkind "
+  sql = "select pg_class.relname,pg_namespace.nspname,pg_attribute.attname,pg_class.relkind "
     "from pg_attribute, pg_class, pg_namespace "
     "where pg_namespace.oid = pg_class.relnamespace "
     "and pg_attribute.atttypid = regtype('geometry') "
     "and pg_attribute.attrelid = pg_class.oid "
+    "and has_schema_privilege(pg_namespace.nspname,'usage') "
     "and has_table_privilege('\"'||pg_namespace.nspname||'\".\"'||pg_class.relname||'\"','select') ";
   // user has select privilege
   if (searchPublicOnly)
