@@ -170,6 +170,17 @@ IF (WIN32)
   SET (DEFAULT_INCLUDE_SUBDIR	include)
   
   IF (MSVC)
+    # Python parts need to be build with nmake not vcexpress
+    # if you dont add this clause, extra blank msvc projects
+    # will pop up mid way through the build process and block
+    # the build, plus the python bindings wont build correctly
+    SET (CMAKE_MAKE_PROGRAM nmake)
+    # put all the build products into a single directory
+    # under build (doesnt affect install target) to make for
+    # easier debugging.
+    SET(OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+    SET(EXECUTABLE_OUTPUT_PATH ${OUTPUT_DIR})
+    SET(LIBRARY_OUTPUT_PATH ${OUTPUT_DIR})
     #tell msvc compiler to use main instead of winmain as the
     #application entry point
     SET(QT_USE_QTMAIN TRUE) 
