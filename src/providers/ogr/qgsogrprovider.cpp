@@ -1292,7 +1292,7 @@ QVariant QgsOgrProvider::minValue(int index)
     return QVariant();
   }
 
-  QString str = mEncoding->toUnicode( mEncoding->toUnicode( OGR_F_GetFieldAsString(f,0) ) );
+  QString str = mEncoding->toUnicode( OGR_F_GetFieldAsString(f,0) );
   OGR_F_Destroy(f);
 
   QVariant value;
@@ -1331,7 +1331,7 @@ QVariant QgsOgrProvider::maxValue(int index)
     return QVariant();
   }
 
-  QString str = mEncoding->toUnicode( mEncoding->toUnicode( OGR_F_GetFieldAsString(f,0) ) );
+  QString str = mEncoding->toUnicode( OGR_F_GetFieldAsString(f,0) );
   OGR_F_Destroy(f);
 
   QVariant value;
