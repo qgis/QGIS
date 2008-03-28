@@ -45,7 +45,7 @@ class QgsShapeFile : public QObject
   ~QgsShapeFile();
   int getFeatureCount();
   QString getFeatureClass();
-  bool insertLayer(QString dbname, QString schema, QString geom_col, 
+  bool insertLayer(QString dbname, QString schema, QString primary_key, QString geom_col, 
                    QString srid, PGconn * conn, QProgressDialog& pro, 
                    bool &fin, QString& errorText);
     

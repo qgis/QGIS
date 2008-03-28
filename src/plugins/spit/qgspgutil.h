@@ -33,12 +33,7 @@ class QgsPgUtil
     //! Instance function to return a pointer to the one and
     //only QgsPgUtil object (QgsPgUtil is a Singleton)
     static QgsPgUtil* instance();
-    /*! Checks to see if word is a PG reserved word.
-     * The comparison is case-insensitive.
-     * @param word Word to check
-     * @return True if word is a PG reserved word
-     */
-    bool isReserved(QString word);
+    
     /*!
      * Set the connection to be used in database operations
      * @param con Pointer to an active PostgreSQL connection
@@ -49,10 +44,15 @@ class QgsPgUtil
      * @return Pointer to the PostgreSQL connection object
      */
     PGconn *connection();
-    /*!
-     * Get the reserved word list
+
+        /** Double quote a PostgreSQL identifier for placement in a SQL string.
      */
-    const QStringList & reservedWords();
+    static QString quotedIdentifier( QString ident );
+
+    /** Quote a value for placement in a SQL string.
+     */
+    static QString quotedValue( QString value );
+    
   protected:
     //! Protected constructor
     QgsPgUtil();
