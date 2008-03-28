@@ -7,7 +7,6 @@ SET (SPIT_SRCS
      qgsconnectiondialog.cpp
      qgspgutil.cpp
      qgsshapefile.cpp
-     qgseditreservedwordsdialog.cpp
 )
 
 SET (SPIT_PLUGIN_SRCS
@@ -23,14 +22,12 @@ SET (SPIT_EXE_SRCS
 SET (SPIT_UIS
      qgsconnectiondialogbase.ui
      qgsspitbase.ui
-     qgseditreservedwordsbase.ui
      ../../ui/qgsmessageviewer.ui
 )
 
 SET (SPIT_EXE_MOC_HDRS
      qgsspit.h
      qgsshapefile.h
-     qgseditreservedwordsdialog.h
      qgsconnectiondialog.h
 )
 

@@ -37,7 +37,6 @@
 #include "qgsspit.h"
 #include "qgsconnectiondialog.h"
 #include "qgsdatasourceuri.h"
-#include "qgseditreservedwordsdialog.h"
 #include "qgsmessageviewer.h"
 #include "spiticon.xpm"
 #include "qgslogger.h"
@@ -68,7 +67,7 @@ QgsSpit::QgsSpit( QWidget *parent, Qt::WFlags fl ) : QDialog( parent, fl )
   tblShapefiles->setColumnCount(5);
   QStringList headerText;
   headerText << tr("File Name") << tr("Feature Class") << tr("Features") 
-	     << tr("DB Relation Name") << tr("Schema");
+    << tr("DB Relation Name") << tr("Schema");
   tblShapefiles->setHorizontalHeaderLabels(headerText);
   tblShapefiles->verticalHeader()->hide();
   tblShapefiles->horizontalHeader()->setStretchLastSection(true);
@@ -82,6 +81,8 @@ QgsSpit::QgsSpit( QWidget *parent, Qt::WFlags fl ) : QDialog( parent, fl )
   chkUseDefaultGeom->setChecked( true );
   useDefaultSrid();
   useDefaultGeom();
+
+  txtPrimaryKeyName->setText("gid");
 
   schema_list << "public";
   gl_key = "/PostgreSQL/connections/";
@@ -100,7 +101,8 @@ QgsSpit::QgsSpit( QWidget *parent, Qt::WFlags fl ) : QDialog( parent, fl )
 }
 
 QgsSpit::~QgsSpit()
-{}
+{
+}
 
 void QgsSpit::populateConnectionList()
 {
@@ -167,12 +169,12 @@ void QgsSpit::addFile()
   QSettings settings;
 
   QgsEncodingFileDialog dlg(this,
-                        tr("Add Shapefiles"),
-                        settings.readEntry( "/Plugin-Spit/last_directory" ),
-                        tr("Shapefiles (*.shp);;All files (*.*)"),
-                        settings.readEntry( "/Plugin-Spit/last_encoding" ) );
+    tr("Add Shapefiles"),
+    settings.readEntry( "/Plugin-Spit/last_directory" ),
+    tr("Shapefiles (*.shp);;All files (*.*)"),
+    settings.readEntry( "/Plugin-Spit/last_encoding" ) );
   dlg.setMode(QFileDialog::ExistingFiles);
-  
+
   if (dlg.exec() != QDialog::Accepted)
     return;
   QStringList files = dlg.selectedFiles();
@@ -192,7 +194,7 @@ void QgsSpit::addFile()
 
     // Check to ensure that we don't insert the same file twice
     QList<QTableWidgetItem*> items = tblShapefiles->findItems(*it, 
-							Qt::MatchExactly);
+                                                              Qt::MatchExactly);
     if (items.count() > 0)
     {
       exist = true;
@@ -223,69 +225,27 @@ void QgsSpit::addFile()
           QString featureClass = file->getFeatureClass();
           fileList.push_back( file );
 
-	  QTableWidgetItem *filenameItem       = new QTableWidgetItem( name );
-	  QTableWidgetItem *featureClassItem   = new QTableWidgetItem( featureClass );
-	  QTableWidgetItem *featureCountItem   = new QTableWidgetItem( QString( "%1" ).arg( file->getFeatureCount() ) );
+          QTableWidgetItem *filenameItem       = new QTableWidgetItem( name );
+          QTableWidgetItem *featureClassItem   = new QTableWidgetItem( featureClass );
+          QTableWidgetItem *featureCountItem   = new QTableWidgetItem( QString( "%1" ).arg( file->getFeatureCount() ) );
           // Sanitize the relation name to make it pg friendly
           QString relName = file->getTable().replace(QRegExp("\\s"), "_");
-	  QTableWidgetItem *dbRelationNameItem = new QTableWidgetItem( relName );
-	  QTableWidgetItem *dbSchemaNameItem   = new QTableWidgetItem( cmbSchema->currentText() );
+          QTableWidgetItem *dbRelationNameItem = new QTableWidgetItem( relName );
+          QTableWidgetItem *dbSchemaNameItem   = new QTableWidgetItem( cmbSchema->currentText() );
 
-	  // All items are editable except for these two
-	  filenameItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-	  featureCountItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+          // All items are editable except for these two
+          filenameItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+          featureCountItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
           int row = tblShapefiles->rowCount();
           tblShapefiles->insertRow( row );
-	  tblShapefiles->setItem( row, ColFILENAME, filenameItem );
-	  tblShapefiles->setItem( row, ColFEATURECLASS, featureClassItem );
-	  tblShapefiles->setItem( row, ColFEATURECOUNT, featureCountItem );
-	  tblShapefiles->setItem( row, ColDBRELATIONNAME, dbRelationNameItem );
+          tblShapefiles->setItem( row, ColFILENAME, filenameItem );
+          tblShapefiles->setItem( row, ColFEATURECLASS, featureClassItem );
+          tblShapefiles->setItem( row, ColFEATURECOUNT, featureCountItem );
+          tblShapefiles->setItem( row, ColDBRELATIONNAME, dbRelationNameItem );
           tblShapefiles->setItem( row, ColDBSCHEMA, dbSchemaNameItem );
 
           total_features += file->getFeatureCount();
-
-          // check for postgresql reserved words
-          // First get an instance of the PG utility class
-          QgsPgUtil *pgu = QgsPgUtil::instance();
-          bool hasReservedWords = false;
-          // if a reserved word is found, set the flag so the "adjustment"
-          // dialog can be presented to the user
-	  hasReservedWords = false;
-          for ( std::vector<QString>::size_type i = 0; i < file->column_names.size(); i++ )
-          {
-            if ( pgu->isReserved( file->column_names[ i ] ) )
-            {
-              hasReservedWords = true;
-            }
-          }
-          // Why loop through all of them and then turn around and test
-          // the flag? Because if there are reserved words, we want to
-          // add all columns to the listview so the user can have the
-          // opportunity to change them.
-          if ( hasReservedWords )
-          {
-            // show the dialog for adjusting reserved words. Reserved
-            // words are displayed differently so they are easy to spot
-            QgsEditReservedWordsDialog * srw = new QgsEditReservedWordsDialog( this );
-            srw->setCaption( file->getTable().upper() + tr(" - Edit Column Names") );
-            // load the reserved words list
-            srw->setReservedWords( pgu->reservedWords() );
-            // load the columns and set their status
-            for ( std::vector<QString>::size_type i = 0; i < file->column_names.size(); i++ )
-            {
-              srw->addColumn( file->column_names[ i ],
-                              pgu->isReserved( file->column_names[ i ] ), i );
-            }
-            if ( srw->exec() )
-            {
-              // get the new column specs from the listview control
-              // and replace the existing column spec for the shapefile
-              file->setColumnNames( srw->columnNames() );
-            }
-          }
-
-
         }
         else
         {
@@ -340,12 +300,12 @@ void QgsSpit::removeFile()
       }
     }
 
-  for ( int i = temp.size()-1; i >= 0; --i )
-    tblShapefiles->removeRow( temp[ i ] );
+    for ( int i = temp.size()-1; i >= 0; --i )
+      tblShapefiles->removeRow( temp[ i ] );
 
-  QList<QTableWidgetItem*> selected = tblShapefiles->selectedItems();
-  for (int i = 0; i < selected.count(); ++i)
-    selected[i]->setSelected(false);
+    QList<QTableWidgetItem*> selected = tblShapefiles->selectedItems();
+    for (int i = 0; i < selected.count(); ++i)
+      selected[i]->setSelected(false);
 }
 
 void QgsSpit::removeAllFiles()
@@ -393,27 +353,27 @@ void QgsSpit::helpInfo()
 {
   QString message = tr("General Interface Help:") + "\n\n";
   message += QString(
-               tr("PostgreSQL Connections:") + "\n" ) + QString(
-               "----------------------------------------------------------------------------------------\n" ) + QString(
-               tr("[New ...] - create a new connection") + "\n" ) + QString(
-               tr("[Edit ...] - edit the currently selected connection") + "\n" ) + QString(
-               tr("[Remove] - remove the currently selected connection") + "\n" ) + QString(
-               tr("-you need to select a connection that works (connects properly) in order to import files") + "\n" ) + QString(
-               tr("-when changing connections Global Schema also changes accordingly") + "\n\n" ) + QString(
-               tr("Shapefile List:") + "\n" ) + QString(
-               "----------------------------------------------------------------------------------------\n" ) + QString(
-               tr("[Add ...] - open a File dialog and browse to the desired file(s) to import") + "\n" ) + QString(
-               tr("[Remove] - remove the currently selected file(s) from the list") + "\n" ) + QString(
-               tr("[Remove All] - remove all the files in the list") + "\n" ) + QString(
-               tr("[SRID] - Reference ID for the shapefiles to be imported") + "\n" ) + QString(
-               tr("[Use Default (SRID)] - set SRID to -1") + "\n" ) + QString(
-               tr("[Geometry Column Name] - name of the geometry column in the database") + "\n" ) + QString(
-               tr("[Use Default (Geometry Column Name)] - set column name to \'the_geom\'") + "\n" ) + QString(
-               tr("[Glogal Schema] - set the schema for all files to be imported into") + "\n\n" ) + QString(
-               "----------------------------------------------------------------------------------------\n" ) + QString(
-               tr("[Import] - import the current shapefiles in the list") + "\n" ) + QString(
-               tr("[Quit] - quit the program\n") ) + QString(
-               tr("[Help] - display this help dialog") + "\n\n" );
+    tr("PostgreSQL Connections:") + "\n" ) + QString(
+    "----------------------------------------------------------------------------------------\n" ) + QString(
+    tr("[New ...] - create a new connection") + "\n" ) + QString(
+    tr("[Edit ...] - edit the currently selected connection") + "\n" ) + QString(
+    tr("[Remove] - remove the currently selected connection") + "\n" ) + QString(
+    tr("-you need to select a connection that works (connects properly) in order to import files") + "\n" ) + QString(
+    tr("-when changing connections Global Schema also changes accordingly") + "\n\n" ) + QString(
+    tr("Shapefile List:") + "\n" ) + QString(
+    "----------------------------------------------------------------------------------------\n" ) + QString(
+    tr("[Add ...] - open a File dialog and browse to the desired file(s) to import") + "\n" ) + QString(
+    tr("[Remove] - remove the currently selected file(s) from the list") + "\n" ) + QString(
+    tr("[Remove All] - remove all the files in the list") + "\n" ) + QString(
+    tr("[SRID] - Reference ID for the shapefiles to be imported") + "\n" ) + QString(
+    tr("[Use Default (SRID)] - set SRID to -1") + "\n" ) + QString(
+    tr("[Geometry Column Name] - name of the geometry column in the database") + "\n" ) + QString(
+    tr("[Use Default (Geometry Column Name)] - set column name to \'the_geom\'") + "\n" ) + QString(
+    tr("[Glogal Schema] - set the schema for all files to be imported into") + "\n\n" ) + QString(
+    "----------------------------------------------------------------------------------------\n" ) + QString(
+    tr("[Import] - import the current shapefiles in the list") + "\n" ) + QString(
+    tr("[Quit] - quit the program\n") ) + QString(
+    tr("[Help] - display this help dialog") + "\n\n" );
   QgsMessageViewer * e = new QgsMessageViewer( this );
   e->setMessageAsPlainText( message );
   e->exec(); // deletes itself on close
@@ -434,10 +394,10 @@ PGconn* QgsSpit::checkConnection()
   {
     QgsDataSourceURI uri;
     uri.setConnection( settings.readEntry( gl_key + connName + "/host" ),
-                       settings.readEntry( gl_key + connName + "/port" ),
-                       settings.readEntry( gl_key + connName + "/database" ),
-                       settings.readEntry( gl_key + connName + "/username" ),
-                       settings.readEntry( gl_key + connName + "/password" ) );
+      settings.readEntry( gl_key + connName + "/port" ),
+      settings.readEntry( gl_key + connName + "/database" ),
+      settings.readEntry( gl_key + connName + "/username" ),
+      settings.readEntry( gl_key + connName + "/password" ) );
 
     pd = PQconnectdb( ( const char * ) uri.connInfo() );
 
@@ -446,17 +406,20 @@ PGconn* QgsSpit::checkConnection()
       QMessageBox::warning( this, tr("Import Shapefiles"), tr("Connection failed - Check settings and try again") );
       result = false;
     }
-  
-#ifdef QGISDEBUG
-    int errcode = PQsetClientEncoding(pd, "UNICODE");
-    if(errcode==0)
-      qWarning("encoding successfully set");
-    else if(errcode==-1)
-      qWarning("error in setting encoding");
-    else
-      qWarning("undefined return value from encoding setting");
-#endif
-  
+
+    int errcode=PQsetClientEncoding(pd, QString("UNICODE").toLocal8Bit());
+    if(errcode==0) 
+    {
+      QgsDebugMsg("encoding successfully set");
+    } 
+    else if(errcode==-1) 
+    {
+      QgsDebugMsg("error in setting encoding");
+    } 
+    else 
+    {
+      QgsDebugMsg("undefined return value from encoding setting");
+    }
   }
 
   if (result )
@@ -465,18 +428,18 @@ PGconn* QgsSpit::checkConnection()
     QString sql1 = "SELECT postgis_lib_version()"; // available from v 0.9.0 onwards
     QString sql2 = "SELECT postgis_version()"; // depreciated 
 
-    PGresult* ver = PQexec(pd, sql1.toLocal8Bit().data());
+    PGresult* ver = PQexec(pd, sql1.toUtf8() );
     if ( PQresultStatus(ver) != PGRES_TUPLES_OK)
     {
       // In case the version of postgis is older than 0.9.0, try the
       // depreciated call before erroring out.
       PQclear(ver);
-      ver = PQexec(pd, sql2.toLocal8Bit().data());
+      ver = PQexec(pd, sql2.toUtf8() );
       if ( PQresultStatus(ver) != PGRES_TUPLES_OK)
       {
         QMessageBox::warning( this, tr("PostGIS not available"),
-                              tr("<p>The chosen database does not have PostGIS installed, "
-                                 "but this is required for storage of spatial data.</p>"));
+          tr("<p>The chosen database does not have PostGIS installed, "
+          "but this is required for storage of spatial data.</p>"));
         return NULL;
       }
     }
@@ -496,8 +459,9 @@ void QgsSpit::getSchema()
   {
     QString connName = cmbConnections->currentText();
     QString user = settings.readEntry( gl_key + connName + "/username" );
-    QString schemaSql = QString( "select nspname from pg_namespace,pg_user where nspowner = usesysid and usename = '%1'" ).arg( user );
-    PGresult *schemas = PQexec( pd, ( const char * ) schemaSql );
+    QString schemaSql = QString( "select nspname from pg_namespace,pg_user where nspowner=usesysid and usename=%1" )
+                          .arg( QgsPgUtil::quotedValue(user) );
+    PGresult *schemas = PQexec( pd, schemaSql.toUtf8() );
     // get the schema names
     if ( PQresultStatus( schemas ) == PGRES_TUPLES_OK )
     {
@@ -547,13 +511,13 @@ void QgsSpit::import()
   if ( total_features == 0 )
   {
     QMessageBox::warning( this, tr("Import Shapefiles"), 
-                         tr("You need to add shapefiles to the list first") );
+      tr("You need to add shapefiles to the list first") );
   }
   else if ( pd != NULL )
   {
     PGresult * res;
     QProgressDialog pro( tr("Importing files"), tr("Cancel"), 
-			 0, total_features, this);
+      0, total_features, this);
 
     pro.setValue( 0 );
     pro.setLabelText(tr("Progress"));
@@ -561,18 +525,20 @@ void QgsSpit::import()
     //pro->show();
     qApp->processEvents();
 
+    int count=fileList.size(), successes=0;
+
     for ( std::vector<QgsShapeFile*>::size_type i = 0; i < fileList.size() ; i++ )
     {
       QString error = tr("Problem inserting features from file:") + "\n" + 
-                      tblShapefiles->item( i, ColFILENAME )->text();
-                      
+        tblShapefiles->item( i, ColFILENAME )->text();
+
       // if a name starts with invalid character
       if ( ! tblShapefiles->item( i, ColDBRELATIONNAME )->text()[ 0 ].isLetter() )
       {
         QMessageBox::warning( &pro, tr("Import Shapefiles"), 
-                             error + "\n" + tr("Invalid table name.") );
+          error + "\n" + tr("Invalid table name.") );
         pro.setValue( pro.value() 
-                      + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
+          + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         continue;
       }
 
@@ -580,14 +546,17 @@ void QgsSpit::import()
       if ( ( fileList[ i ] ->column_names ).size() == 0 )
       {
         QMessageBox::warning( &pro, tr("Import Shapefiles"), 
-                            error + "\n" + tr("No fields detected.") );
+          error + "\n" + tr("No fields detected.") );
         pro.setValue( pro.value() + 
-                      tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
+          tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         continue;
       }
 
       // duplicate field check
       std::vector<QString> names_copy = fileList[ i ] ->column_names;
+      names_copy.push_back( txtPrimaryKeyName->text() );
+      names_copy.push_back( txtGeomName->text() );
+
       QString dupl = "";
       std::sort( names_copy.begin(), names_copy.end() );
 
@@ -597,11 +566,12 @@ void QgsSpit::import()
         if ( names_copy[ k ] == names_copy[ k - 1 ] )
           dupl += names_copy[ k ] + "\n";
       }
+
       // if duplicate field names exist
       if ( dupl != "" )
       {
         QMessageBox::warning( &pro, tr("Import Shapefiles"), error +
-                              "\n" + tr("The following fields are duplicates:") + "\n" + dupl );
+          "\n" + tr("The following fields are duplicates:") + "\n" + dupl );
         pro.setValue( pro.value() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         continue;
       }
@@ -609,23 +579,22 @@ void QgsSpit::import()
       // Check and set destination table 
       fileList[ i ] ->setTable( tblShapefiles->item( i, ColDBRELATIONNAME )->text() );
       pro.setLabelText( tr("Importing files") + "\n" 
-                      + tblShapefiles->item(i, ColFILENAME)->text() );
+        + tblShapefiles->item(i, ColFILENAME)->text() );
       bool rel_exists1 = false;
       bool rel_exists2 = false;
-      query = "SELECT f_table_name FROM geometry_columns WHERE f_table_name=\'" 
-              + tblShapefiles->item( i, ColDBRELATIONNAME )->text() +
-              "\' AND f_table_schema=\'" 
-              + tblShapefiles->item( i, ColDBSCHEMA )->text() + "\'";
-      res = PQexec( pd, ( const char * ) query );
+      query = QString("SELECT f_table_name FROM geometry_columns WHERE f_table_name=%1 AND f_table_schema=%2")
+                .arg( QgsPgUtil::quotedValue( tblShapefiles->item( i, ColDBRELATIONNAME )->text()) )
+                .arg( QgsPgUtil::quotedValue( tblShapefiles->item( i, ColDBSCHEMA )->text()) );
+      res = PQexec( pd, query.toUtf8() );
       rel_exists1 = ( PQntuples( res ) > 0 );
 
       if ( PQresultStatus( res ) != PGRES_TUPLES_OK )
       {
         QString err = PQresultErrorMessage( res );
         QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
-                              tr("<p>Error while executing the SQL:</p><p>") +
-                              query + tr("</p><p>The database said:") +
-                              err + "</p>" );
+          tr("<p>Error while executing the SQL:</p><p>") +
+          query + tr("</p><p>The database said:") +
+          err + "</p>" );
         pro.setValue( pro.value() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         PQclear(res);
         continue;
@@ -633,9 +602,10 @@ void QgsSpit::import()
 
       PQclear( res );
 
-      query = "SELECT tablename FROM pg_tables WHERE tablename=\'" + tblShapefiles->item( i, ColDBRELATIONNAME )->text() + "\' AND schemaname=\'" +
-              tblShapefiles->item( i, ColDBSCHEMA )->text() + "\'";
-      res = PQexec( pd, ( const char * ) query );
+      query = QString("SELECT tablename FROM pg_tables WHERE tablename=%1  AND schemaname=%2")
+                .arg( QgsPgUtil::quotedValue( tblShapefiles->item( i, ColDBRELATIONNAME )->text() ) )
+                .arg( QgsPgUtil::quotedValue( tblShapefiles->item( i, ColDBSCHEMA )->text() ) );
+      res = PQexec( pd, query.toUtf8() );
 
       rel_exists2 = ( PQntuples( res ) > 0 );
 
@@ -643,9 +613,9 @@ void QgsSpit::import()
       {
         QString err = PQresultErrorMessage( res );
         QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
-                              tr("<p>Error while executing the SQL:</p><p>") +
-                              query + tr("</p><p>The database said:") +
-                              err + "</p>" );
+          tr("<p>Error while executing the SQL:</p><p>") +
+          query + tr("</p><p>The database said:") +
+          err + "</p>" );
 
         pro.setValue( pro.value() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         PQclear(res);
@@ -658,14 +628,14 @@ void QgsSpit::import()
 
       // begin session
       query = "BEGIN";
-      res = PQexec( pd, query );
+      res = PQexec( pd, query.toUtf8() );
       if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
       {
         QString err = PQresultErrorMessage( res );
         QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
-                              tr("<p>Error while executing the SQL:</p><p>") +
-                              query + tr("</p><p>The database said:") +
-                              err + "</p>" );
+          tr("<p>Error while executing the SQL:</p><p>") +
+          query + tr("</p><p>The database said:") +
+          err + "</p>" );
         pro.setValue( pro.value() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         PQclear(res);
         continue;
@@ -675,20 +645,19 @@ void QgsSpit::import()
         PQclear( res );
       }
 
-      query = "SET SEARCH_PATH TO \'";
-      if ( tblShapefiles->item( i, ColDBSCHEMA )->text() == "public" )
-        query += "public\'";
-      else
-        query += tblShapefiles->item( i, ColDBSCHEMA )->text() + "\', \'public\'";
-      res = PQexec( pd, query );
+      query = "SET SEARCH_PATH TO ";
+      if ( tblShapefiles->item( i, ColDBSCHEMA )->text() != "public" )
+        query += QgsPgUtil::quotedValue( tblShapefiles->item( i, ColDBSCHEMA )->text() ) + ",";
+      query += QgsPgUtil::quotedValue( "public" );
+      res = PQexec( pd, query.toUtf8() );
 
       if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
       {
         QString err = PQresultErrorMessage( res );
         QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
-                              tr("<p>Error while executing the SQL:</p><p>") +
-                              query + tr("</p><p>The database said:") +
-                              err + "</p>" );
+          tr("<p>Error while executing the SQL:</p><p>") +
+          query + tr("</p><p>The database said:") +
+          err + "</p>" );
         pro.setValue( pro.value() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         PQclear(res);
         continue;
@@ -701,27 +670,28 @@ void QgsSpit::import()
       if ( rel_exists1 || rel_exists2 )
       {
         QMessageBox::StandardButton del_confirm = QMessageBox::warning( this,
-                                       tr("Import Shapefiles - Relation Exists"),
-                                       tr("The Shapefile:" ) + "\n" + tblShapefiles->item( i, 0 )->text() + "\n" + tr("will use [") +
-                                       tblShapefiles->item( i, ColDBRELATIONNAME )->text() + tr("] relation for its data,") + "\n" + tr("which already exists and possibly contains data.") + "\n" +
-                                       tr("To avoid data loss change the \"DB Relation Name\"") + "\n" + tr("for this Shapefile in the main dialog file list.") + "\n\n" +
-                                       tr("Do you want to overwrite the [") + tblShapefiles->item( i, ColDBRELATIONNAME )->text() + tr("] relation?"),
-                                       QMessageBox::Ok | QMessageBox::Cancel );
+          tr("Import Shapefiles - Relation Exists"),
+          tr("The Shapefile:" ) + "\n" + tblShapefiles->item( i, 0 )->text() + "\n" + tr("will use [") +
+          tblShapefiles->item( i, ColDBRELATIONNAME )->text() + tr("] relation for its data,") + "\n" + tr("which already exists and possibly contains data.") + "\n" +
+          tr("To avoid data loss change the \"DB Relation Name\"") + "\n" + tr("for this Shapefile in the main dialog file list.") + "\n\n" +
+          tr("Do you want to overwrite the [") + tblShapefiles->item( i, ColDBRELATIONNAME )->text() + tr("] relation?"),
+          QMessageBox::Ok | QMessageBox::Cancel );
 
         if ( del_confirm == QMessageBox::Ok )
         {
           if ( rel_exists2 )
           {
-            query = "DROP TABLE " + tblShapefiles->item( i, ColDBRELATIONNAME )->text();
+            query = QString("DROP TABLE %1")
+                      .arg( QgsPgUtil::quotedIdentifier( tblShapefiles->item( i, ColDBRELATIONNAME )->text() ) );
 
-            res = PQexec( pd, ( const char * ) query );
+            res = PQexec( pd, query.toUtf8() );
             if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
             {
               QString err = PQresultErrorMessage( res );
               QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
-                                    tr("<p>Error while executing the SQL:</p><p>") +
-                                    query + tr("</p><p>The database said:") +
-                                    err + "</p>" );
+                tr("<p>Error while executing the SQL:</p><p>") +
+                query + tr("</p><p>The database said:") +
+                err + "</p>" );
               pro.setValue( pro.value() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
               PQclear(res);
               continue;
@@ -734,56 +704,56 @@ void QgsSpit::import()
 
           if ( rel_exists1 )
           {
-	    query = QString("SELECT f_geometry_column FROM geometry_columns WHERE f_table_schema='%1' AND f_table_name='%2'")
-		    .arg( tblShapefiles->item( i, ColDBSCHEMA )->text() )
-		    .arg( tblShapefiles->item( i, ColDBRELATIONNAME )->text() );
+            query = QString("SELECT f_geometry_column FROM geometry_columns WHERE f_table_schema=%1 AND f_table_name=%2")
+              .arg( QgsPgUtil::quotedValue( tblShapefiles->item( i, ColDBSCHEMA )->text()) )
+              .arg( QgsPgUtil::quotedValue( tblShapefiles->item( i, ColDBRELATIONNAME )->text()) );
 
-	    QStringList columns;
-	    res = PQexec( pd, query );
-	    if( PQresultStatus( res ) != PGRES_TUPLES_OK )
-	    {
-	      for(int i=0; i<PQntuples(res); i++)
-		columns.append( PQgetvalue(res, i, 0) );
-	    }
+            QStringList columns;
+            res = PQexec( pd, query.toUtf8() );
+            if( PQresultStatus( res ) != PGRES_TUPLES_OK )
+            {
+              for(int i=0; i<PQntuples(res); i++)
+                columns.append( PQgetvalue(res, i, 0) );
+            }
             PQclear(res);
 
-	    for(int i=0; i<columns.size(); i++)
-	    {
-	      query = QString("SELECT DropGeometryColumn('%1','%2','%3')")
-	              .arg( tblShapefiles->item( i, ColDBSCHEMA )->text() )
-	              .arg( tblShapefiles->item( i, ColDBRELATIONNAME )->text() )
-                      .arg( columns[i] );
+            for(int i=0; i<columns.size(); i++)
+            {
+              query = QString("SELECT DropGeometryColumn(%1,%2,%3)")
+                .arg( QgsPgUtil::quotedValue( tblShapefiles->item( i, ColDBSCHEMA )->text() ) )
+                .arg( QgsPgUtil::quotedValue( tblShapefiles->item( i, ColDBRELATIONNAME )->text() ) )
+                .arg( QgsPgUtil::quotedValue( columns[i] ) );
 
-              res = PQexec( pd, ( const char * ) query );
+              res = PQexec( pd, query.toUtf8() );
               if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
               {
                 QString err = PQresultErrorMessage( res );
-		QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
-			              tr("<p>Error while executing the SQL:</p><p>") +
-				      query + tr("</p><p>The database said:") + 
-				      err + "</p>" );
-		pro.setValue( pro.value() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
-	      }
-	      
-	      PQclear(res);
+                QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
+                  tr("<p>Error while executing the SQL:</p><p>") +
+                  query + tr("</p><p>The database said:") + 
+                  err + "</p>" );
+                pro.setValue( pro.value() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
+              }
+
+              PQclear(res);
             }
-	  }
+          }
         }
         else
         {
           query = "ROLLBACK";
-          res = PQexec( pd, query );
+          res = PQexec( pd, query.toUtf8() );
           if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
           {
             QString err = PQresultErrorMessage( res );
             QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
-                                  tr("<p>Error while executing the SQL:</p><p>") +
-                                  query + tr("</p><p>The database said:") +
-                                  err + "</p>" );
-	  }
+              tr("<p>Error while executing the SQL:</p><p>") +
+              query + tr("</p><p>The database said:") +
+              err + "</p>" );
+          }
           PQclear(res);
-         
-	  pro.setValue( pro.value() + tblShapefiles->item( i, 2 )->text().toInt() );
+
+          pro.setValue( pro.value() + tblShapefiles->item( i, 2 )->text().toInt() );
           continue;
         }
       }
@@ -797,24 +767,23 @@ void QgsSpit::import()
       QString srid = QString( "%1" ).arg( spinSrid->value() );
       QString errorText;
 
-      bool layerInserted = fileList[ i ] ->insertLayer( dbname, schema, txtGeomName->text(), 
-                                                        srid, pd, pro, canceled, errorText );
+      bool layerInserted = fileList[i]->insertLayer(dbname, schema, txtPrimaryKeyName->text(), txtGeomName->text(), srid, pd, pro, canceled, errorText );
       if ( layerInserted && !canceled )
       { // if file has been imported successfully
         query = "COMMIT";
-        res = PQexec( pd, query );
+        res = PQexec( pd, query.toUtf8() );
         if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
         {
           QString err = PQresultErrorMessage( res );
           QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
-                                tr("<p>Error while executing the SQL:</p><p>") +
-                                query + tr("</p><p>The database said:") +
-                                err + "</p>" );
+            tr("<p>Error while executing the SQL:</p><p>") +
+            query + tr("</p><p>The database said:") +
+            err + "</p>" );
           PQclear(res);
           continue;
         }
 
-	PQclear( res );
+        PQclear( res );
 
         // remove file
         for ( int j = 0; j < tblShapefiles->rowCount(); j++ )
@@ -828,6 +797,7 @@ void QgsSpit::import()
           }
         }
 
+        successes++;
       }
       else if ( !canceled )
       { // if problem importing file occured
@@ -835,17 +805,17 @@ void QgsSpit::import()
         QString errTxt = error + "\n" + errorText;
         QMessageBox::warning( this, tr("Import Shapefiles"), errTxt );
         query = "ROLLBACK";
-        res = PQexec( pd, query );
+        res = PQexec( pd, query.toUtf8() );
         if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
         {
           QString err = PQresultErrorMessage( res );
           QMessageBox::warning( &pro, tr("Import Shapefiles"), error + "\n" +
-                                tr("<p>Error while executing the SQL:</p><p>") +
-                                query + tr("</p><p>The database said:") +
-                                err + "</p>" );
+            tr("<p>Error while executing the SQL:</p><p>") +
+            query + tr("</p><p>The database said:") +
+            err + "</p>" );
         }
-      
-	PQclear( res );
+
+        PQclear( res );
       }
       else
       { // if import was actually canceled
@@ -853,35 +823,12 @@ void QgsSpit::import()
       }
     }
     PQfinish( pd );
-    accept();
+
+    if(successes==count)
+      accept();
+    else
+      QMessageBox::information( &pro, tr("Import Shapefiles"), QString( tr("%1 of %2 shapefiles could not be imported.") ).arg(count-successes).arg(count) );
   }
-}
-void QgsSpit::editColumns( int row, int col, int button, const QPoint &mousePos )
-{
-  // get the shapefile - table row maps directly to the fileList array
-  QgsPgUtil * pgu = QgsPgUtil::instance();
-  // show the dialog for adjusting reserved words. Reserved
-  // words are displayed differently so they are easy to spot
-  QgsEditReservedWordsDialog *srw = new QgsEditReservedWordsDialog( this );
-  srw->setCaption( fileList[ row ] ->getTable().upper() + tr(" - Edit Column Names") );
-  // set the description to indicate that we are editing column names, not
-  // necessarily dealing with reserved words (although that is a possibility too)
-  srw->setDescription(tr("Use the table below to edit column names. Make sure that none of the columns are named using a PostgreSQL reserved word"));
-  // load the reserved words list
-  srw->setReservedWords( pgu->reservedWords() );
-  // load the columns and set their status
-  for ( std::vector<QString>::size_type i = 0; i < fileList[ row ] ->column_names.size(); i++ )
-  {
-    srw->addColumn( fileList[ row ] ->column_names[ i ],
-                    pgu->isReserved( fileList[ row ] ->column_names[ i ] ), i );
-  }
-  if ( srw->exec() )
-  {
-    // get the new column specs from the listview control
-    // and replace the existing column spec for the shapefile
-    fileList[ row ] ->setColumnNames( srw->columnNames() );
-  }
-  delete srw;
 }
 
 void QgsSpit::editShapefile(int row, int col, int button, const QPoint& mousePos)
@@ -890,7 +837,7 @@ void QgsSpit::editShapefile(int row, int col, int button, const QPoint& mousePos
   /*
   if (ColFEATURECLASS == col || ColDBRELATIONNAME == col)
   {
-    tblShapefiles->editCell(row, col, FALSE);
+  tblShapefiles->editCell(row, col, FALSE);
   }
   */
 }
@@ -978,4 +925,3 @@ void ShapefileTableDelegate::updateEditorGeometry(QWidget *editor,
 {
   editor->setGeometry(option.rect);
 }
-

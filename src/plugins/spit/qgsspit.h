@@ -72,8 +72,6 @@ public:
   void updateSchema();
   //! Import shapefiles into PostgreSQL
   void import();
-  //! Edit the column names for a shapefile in the queue
-  void editColumns( int, int, int, const QPoint & );
   //! Edit import properties of a shapefile in the queue
   void editShapefile( int, int, int, const QPoint & );
 
