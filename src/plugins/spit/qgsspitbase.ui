@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>662</width>
-    <height>487</height>
+    <width>695</width>
+    <height>520</height>
    </rect>
   </property>
   <property name="baseSize" >
@@ -22,571 +22,13 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
-   <property name="leftMargin" >
+   <property name="margin" >
     <number>9</number>
    </property>
-   <property name="topMargin" >
-    <number>9</number>
-   </property>
-   <property name="rightMargin" >
-    <number>9</number>
-   </property>
-   <property name="bottomMargin" >
-    <number>9</number>
-   </property>
-   <property name="horizontalSpacing" >
+   <property name="spacing" >
     <number>6</number>
    </property>
-   <property name="verticalSpacing" >
-    <number>6</number>
-   </property>
-   <item row="0" column="2" >
-    <widget class="QLabel" name="txtHeading" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="font" >
-      <font>
-       <family>Sans Serif</family>
-       <pointsize>20</pointsize>
-       <weight>50</weight>
-       <italic>false</italic>
-       <bold>false</bold>
-       <underline>false</underline>
-       <strikeout>false</strikeout>
-      </font>
-     </property>
-     <property name="text" >
-      <string>Shapefile to PostGIS Import Tool</string>
-     </property>
-     <property name="alignment" >
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2" >
-    <widget class="QGroupBox" name="groupBox_2" >
-     <property name="title" >
-      <string>Shapefile List</string>
-     </property>
-     <layout class="QGridLayout" >
-      <property name="leftMargin" >
-       <number>9</number>
-      </property>
-      <property name="topMargin" >
-       <number>9</number>
-      </property>
-      <property name="rightMargin" >
-       <number>9</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>9</number>
-      </property>
-      <property name="horizontalSpacing" >
-       <number>6</number>
-      </property>
-      <property name="verticalSpacing" >
-       <number>6</number>
-      </property>
-      <item row="0" column="0" >
-       <layout class="QHBoxLayout" >
-        <property name="spacing" >
-         <number>6</number>
-        </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QPushButton" name="btnAddFile" >
-          <property name="toolTip" >
-           <string>Add a shapefile to the list of files to be imported</string>
-          </property>
-          <property name="whatsThis" >
-           <string>Add a shapefile to the list of files to be imported</string>
-          </property>
-          <property name="text" >
-           <string>Add</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnRemoveFile" >
-          <property name="toolTip" >
-           <string>Remove the selected shapefile from the import list</string>
-          </property>
-          <property name="whatsThis" >
-           <string>Remove the selected shapefile from the import list</string>
-          </property>
-          <property name="text" >
-           <string>Remove</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnRemoveAll" >
-          <property name="toolTip" >
-           <string>Remove all the shapefiles from the import list</string>
-          </property>
-          <property name="whatsThis" >
-           <string>Remove all the shapefiles from the import list</string>
-          </property>
-          <property name="text" >
-           <string>Remove All</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer>
-          <property name="orientation" >
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType" >
-           <enum>QSizePolicy::Expanding</enum>
-          </property>
-          <property name="sizeHint" >
-           <size>
-            <width>200</width>
-            <height>31</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </item>
-      <item row="1" column="0" >
-       <widget class="Line" name="line1" >
-        <property name="frameShape" >
-         <enum>QFrame::HLine</enum>
-        </property>
-        <property name="frameShadow" >
-         <enum>QFrame::Sunken</enum>
-        </property>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" >
-       <layout class="QHBoxLayout" >
-        <property name="spacing" >
-         <number>6</number>
-        </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
-         <number>0</number>
-        </property>
-        <item>
-         <layout class="QVBoxLayout" >
-          <item>
-           <widget class="QLabel" name="label" >
-            <property name="text" >
-             <string>Primary Key Column Name</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="txtPrimaryKeyName" />
-          </item>
-         </layout>
-        </item>
-        <item>
-         <spacer>
-          <property name="orientation" >
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" >
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <layout class="QGridLayout" >
-          <property name="leftMargin" >
-           <number>0</number>
-          </property>
-          <property name="topMargin" >
-           <number>0</number>
-          </property>
-          <property name="rightMargin" >
-           <number>0</number>
-          </property>
-          <property name="bottomMargin" >
-           <number>0</number>
-          </property>
-          <property name="horizontalSpacing" >
-           <number>6</number>
-          </property>
-          <property name="verticalSpacing" >
-           <number>6</number>
-          </property>
-          <item row="1" column="1" >
-           <layout class="QHBoxLayout" >
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <property name="leftMargin" >
-             <number>0</number>
-            </property>
-            <property name="topMargin" >
-             <number>0</number>
-            </property>
-            <property name="rightMargin" >
-             <number>0</number>
-            </property>
-            <property name="bottomMargin" >
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="textLabel1_2" >
-              <property name="text" >
-               <string>SRID</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="spinSrid" >
-              <property name="minimum" >
-               <number>-1</number>
-              </property>
-              <property name="maximum" >
-               <number>1000000</number>
-              </property>
-              <property name="value" >
-               <number>-1</number>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="0" column="1" >
-           <widget class="QCheckBox" name="chkUseDefaultSrid" >
-            <property name="toolTip" >
-             <string>Set the SRID to the default value</string>
-            </property>
-            <property name="whatsThis" >
-             <string>Set the SRID to the default value</string>
-            </property>
-            <property name="text" >
-             <string>Use Default SRID</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QGridLayout" >
-          <property name="leftMargin" >
-           <number>0</number>
-          </property>
-          <property name="topMargin" >
-           <number>0</number>
-          </property>
-          <property name="rightMargin" >
-           <number>0</number>
-          </property>
-          <property name="bottomMargin" >
-           <number>0</number>
-          </property>
-          <property name="horizontalSpacing" >
-           <number>6</number>
-          </property>
-          <property name="verticalSpacing" >
-           <number>6</number>
-          </property>
-          <item row="0" column="0" >
-           <widget class="QCheckBox" name="chkUseDefaultGeom" >
-            <property name="toolTip" >
-             <string>Set the geometry column name to the default value</string>
-            </property>
-            <property name="whatsThis" >
-             <string>Set the geometry column name to the default value</string>
-            </property>
-            <property name="text" >
-             <string>Use Default Geometry Column Name</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" >
-           <layout class="QHBoxLayout" >
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <property name="leftMargin" >
-             <number>0</number>
-            </property>
-            <property name="topMargin" >
-             <number>0</number>
-            </property>
-            <property name="rightMargin" >
-             <number>0</number>
-            </property>
-            <property name="bottomMargin" >
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="textLabel1_3" >
-              <property name="text" >
-               <string>Geometry Column Name</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="txtGeomName" />
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </item>
-      <item row="3" column="0" >
-       <widget class="Line" name="line3" >
-        <property name="frameShape" >
-         <enum>QFrame::HLine</enum>
-        </property>
-        <property name="frameShadow" >
-         <enum>QFrame::Sunken</enum>
-        </property>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0" >
-       <layout class="QHBoxLayout" >
-        <property name="spacing" >
-         <number>6</number>
-        </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
-         <number>0</number>
-        </property>
-        <item>
-         <spacer>
-          <property name="orientation" >
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType" >
-           <enum>QSizePolicy::Expanding</enum>
-          </property>
-          <property name="sizeHint" >
-           <size>
-            <width>140</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" >
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <property name="leftMargin" >
-           <number>0</number>
-          </property>
-          <property name="topMargin" >
-           <number>0</number>
-          </property>
-          <property name="rightMargin" >
-           <number>0</number>
-          </property>
-          <property name="bottomMargin" >
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QLabel" name="textLabel1_4" >
-            <property name="text" >
-             <string>Global Schema</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="cmbSchema" >
-            <property name="minimumSize" >
-             <size>
-              <width>200</width>
-              <height>24</height>
-             </size>
-            </property>
-            <property name="toolTip" >
-             <string/>
-            </property>
-            <property name="duplicatesEnabled" >
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </item>
-      <item row="5" column="0" >
-       <widget class="QTableWidget" name="tblShapefiles" >
-        <property name="selectionMode" >
-         <enum>QAbstractItemView::MultiSelection</enum>
-        </property>
-        <property name="selectionBehavior" >
-         <enum>QAbstractItemView::SelectRows</enum>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="2" >
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="title" >
-      <string>PostgreSQL Connections</string>
-     </property>
-     <layout class="QGridLayout" >
-      <property name="leftMargin" >
-       <number>9</number>
-      </property>
-      <property name="topMargin" >
-       <number>9</number>
-      </property>
-      <property name="rightMargin" >
-       <number>9</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>9</number>
-      </property>
-      <property name="horizontalSpacing" >
-       <number>6</number>
-      </property>
-      <property name="verticalSpacing" >
-       <number>6</number>
-      </property>
-      <item row="0" column="0" >
-       <layout class="QGridLayout" >
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
-         <number>0</number>
-        </property>
-        <property name="horizontalSpacing" >
-         <number>6</number>
-        </property>
-        <property name="verticalSpacing" >
-         <number>6</number>
-        </property>
-        <item row="1" column="1" >
-         <widget class="QPushButton" name="btnNew" >
-          <property name="toolTip" >
-           <string>Create a new PostGIS connection</string>
-          </property>
-          <property name="whatsThis" >
-           <string>Create a new PostGIS connection</string>
-          </property>
-          <property name="text" >
-           <string>New</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="3" >
-         <widget class="QPushButton" name="btnRemove" >
-          <property name="toolTip" >
-           <string>Remove the current PostGIS connection</string>
-          </property>
-          <property name="whatsThis" >
-           <string>Remove the current PostGIS connection</string>
-          </property>
-          <property name="text" >
-           <string>Remove</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2" >
-         <widget class="QPushButton" name="btnEdit" >
-          <property name="toolTip" >
-           <string>Edit the current PostGIS connection</string>
-          </property>
-          <property name="whatsThis" >
-           <string>Edit the current PostGIS connection</string>
-          </property>
-          <property name="text" >
-           <string>Edit</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0" colspan="4" >
-         <widget class="QComboBox" name="cmbConnections" >
-          <property name="minimumSize" >
-           <size>
-            <width>200</width>
-            <height>0</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item rowspan="3" row="0" column="0" >
-    <widget class="QLabel" name="pixmapLabel1" >
-     <property name="pixmap" >
-      <pixmap resource="spit.qrc" >:/spit.png</pixmap>
-     </property>
-     <property name="scaledContents" >
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item rowspan="3" row="0" column="1" >
-    <widget class="Line" name="line12" >
-     <property name="frameShape" >
-      <enum>QFrame::VLine</enum>
-     </property>
-     <property name="frameShadow" >
-      <enum>QFrame::Sunken</enum>
-     </property>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0" colspan="3" >
+   <item row="2" column="0" colspan="2" >
     <widget class="QDialogButtonBox" name="buttonBox" >
      <property name="orientation" >
       <enum>Qt::Horizontal</enum>
@@ -596,9 +38,271 @@
      </property>
     </widget>
    </item>
+   <item rowspan="2" row="0" column="0" >
+    <widget class="QLabel" name="pixmapLabel1" >
+     <property name="pixmap" >
+      <pixmap resource="spit.qrc" >:/spit.png</pixmap>
+     </property>
+     <property name="scaledContents" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" >
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>PostgreSQL Connections</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="1" column="0" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="0" colspan="4" >
+       <widget class="QComboBox" name="cmbConnections" >
+        <property name="minimumSize" >
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" >
+       <widget class="QPushButton" name="btnEdit" >
+        <property name="toolTip" >
+         <string>Edit the current PostGIS connection</string>
+        </property>
+        <property name="whatsThis" >
+         <string>Edit the current PostGIS connection</string>
+        </property>
+        <property name="text" >
+         <string>Edit</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3" >
+       <widget class="QPushButton" name="btnRemove" >
+        <property name="toolTip" >
+         <string>Remove the current PostGIS connection</string>
+        </property>
+        <property name="whatsThis" >
+         <string>Remove the current PostGIS connection</string>
+        </property>
+        <property name="text" >
+         <string>Remove</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QPushButton" name="btnNew" >
+        <property name="toolTip" >
+         <string>Create a new PostGIS connection</string>
+        </property>
+        <property name="whatsThis" >
+         <string>Create a new PostGIS connection</string>
+        </property>
+        <property name="text" >
+         <string>New</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="1" >
+    <widget class="QGroupBox" name="groupBox_2" >
+     <property name="title" >
+      <string>Import options and shapefile list</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="5" column="0" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="5" column="1" colspan="2" >
+       <widget class="QPushButton" name="btnAddFile" >
+        <property name="toolTip" >
+         <string>Add a shapefile to the list of files to be imported</string>
+        </property>
+        <property name="whatsThis" >
+         <string>Add a shapefile to the list of files to be imported</string>
+        </property>
+        <property name="text" >
+         <string>Add</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="3" colspan="2" >
+       <widget class="QPushButton" name="btnRemoveFile" >
+        <property name="toolTip" >
+         <string>Remove the selected shapefile from the import list</string>
+        </property>
+        <property name="whatsThis" >
+         <string>Remove the selected shapefile from the import list</string>
+        </property>
+        <property name="text" >
+         <string>Remove</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="5" >
+       <widget class="QPushButton" name="btnRemoveAll" >
+        <property name="toolTip" >
+         <string>Remove all the shapefiles from the import list</string>
+        </property>
+        <property name="whatsThis" >
+         <string>Remove all the shapefiles from the import list</string>
+        </property>
+        <property name="text" >
+         <string>Remove All</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="6" >
+       <widget class="QTableWidget" name="tblShapefiles" >
+        <property name="selectionMode" >
+         <enum>QAbstractItemView::MultiSelection</enum>
+        </property>
+        <property name="selectionBehavior" >
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4" colspan="2" >
+       <widget class="QLineEdit" name="txtGeomName" />
+      </item>
+      <item row="1" column="0" colspan="2" >
+       <widget class="QCheckBox" name="chkUseDefaultSrid" >
+        <property name="toolTip" >
+         <string>Set the SRID to the default value</string>
+        </property>
+        <property name="whatsThis" >
+         <string>Set the SRID to the default value</string>
+        </property>
+        <property name="text" >
+         <string>Use Default SRID or specify here</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="4" >
+       <widget class="QCheckBox" name="chkUseDefaultGeom" >
+        <property name="toolTip" >
+         <string>Set the geometry column name to the default value</string>
+        </property>
+        <property name="whatsThis" >
+         <string>Set the geometry column name to the default value</string>
+        </property>
+        <property name="text" >
+         <string>Use Default Geometry Column Name or specify here</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" colspan="4" >
+       <widget class="QSpinBox" name="spinSrid" >
+        <property name="maximum" >
+         <number>1000000</number>
+        </property>
+        <property name="minimum" >
+         <number>-1</number>
+        </property>
+        <property name="value" >
+         <number>-1</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2" colspan="4" >
+       <widget class="QLineEdit" name="txtPrimaryKeyName" />
+      </item>
+      <item row="2" column="0" >
+       <widget class="QLabel" name="label" >
+        <property name="text" >
+         <string>Primary Key Column Name</string>
+        </property>
+        <property name="buddy" >
+         <cstring>txtPrimaryKeyName</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" >
+       <widget class="QLabel" name="textLabel1_4" >
+        <property name="text" >
+         <string>Global Schema</string>
+        </property>
+        <property name="buddy" >
+         <cstring>cmbSchema</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="5" >
+       <widget class="QComboBox" name="cmbSchema" >
+        <property name="minimumSize" >
+         <size>
+          <width>200</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string/>
+        </property>
+        <property name="duplicatesEnabled" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
+ <tabstops>
+  <tabstop>cmbConnections</tabstop>
+  <tabstop>btnNew</tabstop>
+  <tabstop>btnEdit</tabstop>
+  <tabstop>btnRemove</tabstop>
+  <tabstop>chkUseDefaultGeom</tabstop>
+  <tabstop>txtGeomName</tabstop>
+  <tabstop>chkUseDefaultSrid</tabstop>
+  <tabstop>spinSrid</tabstop>
+  <tabstop>txtPrimaryKeyName</tabstop>
+  <tabstop>cmbSchema</tabstop>
+  <tabstop>tblShapefiles</tabstop>
+  <tabstop>btnAddFile</tabstop>
+  <tabstop>btnRemoveFile</tabstop>
+  <tabstop>btnRemoveAll</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources>
   <include location="spit.qrc" />
  </resources>
