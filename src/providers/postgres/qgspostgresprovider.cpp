@@ -379,7 +379,7 @@ bool QgsPostgresProvider::declareCursor(const QString &cursorName,
 
     if(fetchGeometry)
     {
-      declare += QString(",asbinary(%1,'%2') as qgs_feature_geometry")
+      declare += QString(",asbinary(%1,'%2')")
         .arg( quotedIdentifier(geometryColumn) )
         .arg( endianString() ); 
     }
@@ -393,22 +393,21 @@ bool QgsPostgresProvider::declareCursor(const QString &cursorName,
         continue;
 
       const QString &type = fld.typeName();
-      if( type == "money" || type.startsWith("_") )
+      if( type == "money" )
       {
-        // money and arrays don't support cast to text, but return text
-        // TODO: check other types
-        declare += "," + quotedIdentifier( fieldname );
+        declare += QString(",cash_out(%1)").arg( quotedIdentifier(fieldname) );
+      }
+      else if( type.startsWith("_") )
+      {
+        declare += QString(",array_out(%1)").arg( quotedIdentifier(fieldname) );
       }
       else if( type == "bool" )
       {
-        // bool doesn't support cast to text either and even doesn't return text.
-        // (even text() doesn't work with binary cursors)
-        declare += QString(",CASE WHEN %1 THEN 't' WHEN NOT %1 THEN 'f' ELSE NULL END AS %1")
-          .arg( quotedIdentifier(fieldname) );
+        declare += QString(",boolout(%1)").arg( quotedIdentifier(fieldname) );
       }
       else
       {
-        declare += "," + quotedIdentifier( fieldname ) + "::text";
+        declare += "," + quotedIdentifier(fieldname) + "::text";
       }
     }
 
@@ -439,7 +438,7 @@ bool QgsPostgresProvider::getFeature(PGresult *queryResult, int row, bool fetchG
 
     feature.setFeatureId(oid);
 
-    int col;  // first attribute column
+    int col;  // first attribute column after geometry
 
     if (fetchGeometry)
     {
@@ -448,7 +447,7 @@ bool QgsPostgresProvider::getFeature(PGresult *queryResult, int row, bool fetchG
       {
         unsigned char *featureGeom = new unsigned char[returnedLength + 1];
         memset(featureGeom, '\0', returnedLength + 1);
-        memcpy(featureGeom, PQgetvalue(queryResult, row, PQfnumber(queryResult,QString("qgs_feature_geometry").toUtf8())), returnedLength); 
+        memcpy(featureGeom, PQgetvalue(queryResult, row, 1), returnedLength); 
         feature.setGeometryAndOwnership(featureGeom, returnedLength + 1);
       }
       else
