@@ -308,7 +308,8 @@ class Qgis2Map:
         self.outFile.write("    CONNECTIONTYPE postgis\n")
         self.outFile.write("    CONNECTION '" + pgConnString + "'\n")
         self.outFile.write("    DATA '" + sqlData + "'\n")
-        self.outFile.write("    FILTER '" + sqlFilter + "'\n")
+        if sqlFilter:
+          self.outFile.write("    FILTER '" + sqlFilter + "'\n")
 
       elif providerString == 'wms' and lyr.getAttribute("type").encode('utf-8').upper() == 'RASTER':
         # it's a WMS layer 
