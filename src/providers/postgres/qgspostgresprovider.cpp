@@ -24,16 +24,11 @@
 #include <netinet/in.h>
 #endif
 
-#include <fstream>
-#include <iostream>
 #include <cassert>
 
-#include <QStringList>
 #include <QApplication>
 #include <QEvent>
 #include <QCustomEvent>
-#include <QTextOStream>
-
 
 #include <qgis.h>
 #include <qgsapplication.h>
@@ -494,7 +489,12 @@ bool QgsPostgresProvider::getFeature(PGresult *queryResult, int row, bool fetchG
           feature.addAttribute(*it, val);
           break;
         default:
-          assert(0 && "unsupported field type");
+          QgsDebugMsg( QString("feature %1, field %2, value '%3': unexpected variant type %4 considered as NULL")
+                         .arg( oid )
+                         .arg( fld.name() )
+                         .arg( val )
+                         .arg( fld.type() ) );
+          feature.addAttribute(*it, QVariant(QString::null));
         }
       }
       else
@@ -762,14 +762,13 @@ void QgsPostgresProvider::loadFields()
   QgsDebugMsg("Loading fields for table " + mTableName);
 
   // Get the relation oid for use in later queries
-  QString sql = "SELECT regclass(" + quotedValue(mSchemaTableName) + ")::oid";
+  QString sql = QString("SELECT regclass(%1)::oid").arg( quotedValue(mSchemaTableName) );
   PGresult *tresult= PQexec(connection, sql.toUtf8());
   QString tableoid = QString::fromUtf8(PQgetvalue(tresult, 0, 0));
   PQclear(tresult);
 
   // Get the table description
-  sql = "SELECT description FROM pg_description WHERE "
-    "objoid = " + tableoid + " AND objsubid = 0";
+  sql = QString("SELECT description FROM pg_description WHERE objoid=%1 AND objsubid=0").arg( tableoid );
   tresult = PQexec(connection, sql.toUtf8());
   if (PQntuples(tresult) > 0)
     mDataComment = QString::fromUtf8(PQgetvalue(tresult, 0, 0));
@@ -777,7 +776,7 @@ void QgsPostgresProvider::loadFields()
 
   // Populate the field vector for this layer. The field vector contains
   // field name, type, length, and precision (if numeric)
-  sql = "select * from " + mSchemaTableName + " limit 0";
+  sql = QString("select * from %1 limit 0").arg ( mSchemaTableName );
 
   PGresult *result = PQexec(connection, sql.toUtf8());
   //--std::cout << "Field: Name, Type, Size, Modifier:" << std::endl;
@@ -794,24 +793,26 @@ void QgsPostgresProvider::loadFields()
     int fieldModifier = PQfmod(result, i);
     QString fieldComment("");
 
-    sql = "SELECT typname, typlen FROM pg_type WHERE " 
-      "oid="+typOid;	// just oid; needs more work to support array type
-//      "oid = (SELECT Distinct typelem FROM pg_type WHERE "	//needs DISTINCT to guard against 2 or more rows on int2
-//      "typelem = " + typOid + " AND typlen = -1)";
+    sql = QString("SELECT typname,typlen FROM pg_type WHERE oid=%1").arg(typOid);
+    // just oid; needs more work to support array type
+    //      "oid = (SELECT Distinct typelem FROM pg_type WHERE "	//needs DISTINCT to guard against 2 or more rows on int2
+    //      "typelem = " + typOid + " AND typlen = -1)";
 
     PGresult* oidResult = PQexec(connection, sql.toUtf8());
     QString fieldTypeName = QString::fromUtf8(PQgetvalue(oidResult, 0, 0));
     QString fieldSize = QString::fromUtf8(PQgetvalue(oidResult, 0, 1));
     PQclear(oidResult);
 
-    sql = "SELECT attnum FROM pg_attribute WHERE "
-      "attrelid = " + tableoid + " AND attname = " + quotedValue(fieldName);
+    sql = QString("SELECT attnum FROM pg_attribute WHERE attrelid=%1 AND attname=%2")
+            .arg( tableoid ).arg( quotedValue(fieldName) );
+      
     PGresult *tresult = PQexec(connection, sql.toUtf8());
     QString attnum = QString::fromUtf8(PQgetvalue(tresult, 0, 0));
     PQclear(tresult);
 
-    sql = "SELECT description FROM pg_description WHERE "
-      "objoid = " + tableoid + " AND objsubid = " + attnum;
+    sql = QString("SELECT description FROM pg_description WHERE objoid=%1 AND objsubid=%2")
+            .arg( tableoid ).arg( attnum );
+
     tresult = PQexec(connection, sql.toUtf8());
     if (PQntuples(tresult) > 0)
       fieldComment = QString::fromUtf8(PQgetvalue(tresult, 0, 0));
@@ -864,8 +865,8 @@ QString QgsPostgresProvider::getPrimaryKey()
   // can be used as a key into the table. Primary keys are always
   // unique indices, so we catch them as well.
 
-  QString sql ="select indkey from pg_index where indisunique = 't' and "
-    "indrelid = regclass(" + quotedValue(mSchemaTableName) + ")::oid";
+  QString sql = QString("select indkey from pg_index where indisunique='t' and indrelid=regclass(%1)::oid")
+                  .arg( quotedValue(mSchemaTableName) );
 
   QgsDebugMsg("Getting unique index using '" + sql + "'");
 
@@ -885,7 +886,8 @@ QString QgsPostgresProvider::getPrimaryKey()
     // If the relation is a view try to find a suitable column to use as
     // the primary key.
 
-    sql = "SELECT relkind FROM pg_class WHERE oid = regclass(" + quotedValue(mSchemaTableName) + ")::oid";
+    sql = QString("SELECT relkind FROM pg_class WHERE oid=regclass(%1)::oid")
+            .arg( quotedValue(mSchemaTableName) );
     PGresult* tableType = executeDbCommand(connection, sql);
     QString type = QString::fromUtf8(PQgetvalue(tableType, 0, 0));
     PQclear(tableType);
@@ -898,8 +900,8 @@ QString QgsPostgresProvider::getPrimaryKey()
 
       // If there is an oid on the table, use that instead,
       // otherwise give up
-      sql = "SELECT attname FROM pg_attribute WHERE attname = 'oid' AND "
-        "attrelid = regclass(" + quotedValue(mSchemaTableName) + ")";
+      sql = QString("SELECT attname FROM pg_attribute WHERE attname='oid' AND attrelid=regclass(%1)")
+              .arg( quotedValue(mSchemaTableName) );
 
       PGresult* oidCheck = executeDbCommand(connection, sql);
 
@@ -947,9 +949,8 @@ QString QgsPostgresProvider::getPrimaryKey()
       if (columns.count() == 1)
       {
         // Get the column name and data type
-        sql = "select attname, pg_type.typname from pg_attribute, pg_type where "
-          "atttypid = pg_type.oid and attnum = " +
-          col + " and attrelid = regclass(" + quotedValue(mSchemaTableName) + ")";
+        sql = QString("select attname,pg_type.typname from pg_attribute,pg_type where atttypid=pg_type.oid and attnum=%1 and attrelid=regclass(%2)")
+                .arg( col ).arg( quotedValue(mSchemaTableName) );
         PGresult* types = executeDbCommand(connection, sql);
 
         if( PQntuples(types) > 0 )
@@ -974,10 +975,10 @@ QString QgsPostgresProvider::getPrimaryKey()
       }
       else
       {
-        sql = "select attname from pg_attribute, pg_type where "
-          "atttypid = pg_type.oid and attnum in (" +
-          col.replace(" ", ",") 
-          + ") and attrelid = regclass(" + quotedValue(mSchemaTableName) + ")::oid";
+        sql = QString("select attname from pg_attribute, pg_type where atttypid=pg_type.oid and attnum in (%1) and attrelid=regclass(%2)::oid")
+                .arg( col.replace(" ", ",") )
+                .arg( quotedValue(mSchemaTableName) );
+
         PGresult* types = executeDbCommand(connection, sql);
         QString colNames;
         int numCols = PQntuples(types);
@@ -1011,8 +1012,7 @@ QString QgsPostgresProvider::getPrimaryKey()
     {
       // If there is an oid on the table, use that instead,
       // otherwise give up
-      sql = "select attname from pg_attribute where attname = 'oid' and "
-        "attrelid = regclass('" + mSchemaTableName + "')::oid";
+      sql = QString("select attname from pg_attribute where attname='oid' and attrelid=regclass(%1)::oid").arg( quotedValue(mSchemaTableName) );
       PGresult* oidCheck = executeDbCommand(connection, sql);
 
       if (PQntuples(oidCheck) != 0)
@@ -1079,7 +1079,7 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
 
     // Get the oid from pg_class for the given schema.relation for use
     // in subsequent queries.
-    sql = "select regclass('" + quotedIdentifier(schemaName) + "." + quotedIdentifier(tableName) + "')::oid";
+    sql = QString("select regclass(%1)::oid").arg( quotedValue( quotedIdentifier(schemaName) + "." + quotedIdentifier(tableName) ) );
     PGresult* result = PQexec(connection, sql.toUtf8());
     QString rel_oid;
     if (PQntuples(result) == 1)
@@ -1093,7 +1093,8 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
       QgsDebugMsg("Relation " + schemaName + "." + tableName +
           " doesn't exist in the pg_class table."
           "This shouldn't happen and is odd.");
-      assert(0);
+      PQclear(result);
+      continue;
     }
     PQclear(result);
 
@@ -1105,12 +1106,10 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
     //    on it.
     // 3) the constraint applies just to the column of interest (i.e.,
     //    it isn't a constraint over multiple columns.
-    sql = "select * from pg_constraint where conkey[1] = "
-      "(select attnum from pg_attribute where attname = '" + tableCol + "' "
-      "and attrelid = " + rel_oid + ")"
-      "and conrelid = " + rel_oid + " "
-      "and (contype = 'p' or contype = 'u') "
-      "and array_dims(conkey) = '[1:1]'";
+    sql = QString("select * from pg_constraint where "
+                  "conkey[1]=(select attnum from pg_attribute where attname=%1 and attrelid=%2) "
+                  "and conrelid=%2 and (contype='p' or contype='u') "
+                  "and array_dims(conkey)='[1:1]'").arg( quotedValue(tableCol) ).arg( rel_oid );
 
     result = PQexec(connection, sql.toUtf8());
     if (PQntuples(result) == 1 && colType == "int4")
@@ -1168,9 +1167,9 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
     // Get the relation oid from our cache.
     QString rel_oid = relOid[i->first];
     // And see if the column has an index
-    sql = "select * from pg_index where indrelid = " + rel_oid +
-      " and indkey[0] = (select attnum from pg_attribute where "
-      "attrelid = " +	rel_oid + " and attname = '" + i->second.column + "')";
+    sql = QString( "select * from pg_index where indrelid=%1 and indkey[0]=(select attnum from pg_attribute where attrelid=%1 and attname=%2)")
+                    .arg( rel_oid )
+                    .arg( quotedValue( i->second.column ) );
     PGresult* result = PQexec(connection, sql.toUtf8());
 
     if (PQntuples(result) > 0 && uniqueData(mSchemaName, mTableName, i->first))
@@ -1252,7 +1251,10 @@ bool QgsPostgresProvider::uniqueData(QString schemaName,
 
   bool isUnique = false;
 
-  QString sql = "select count(distinct " + quotedIdentifier(colName) + ") = count(" +  quotedIdentifier(colName) + ") from " + quotedIdentifier(schemaName) + "." + quotedIdentifier(tableName);
+  QString sql = QString("select count(distinct %1)=count(%1) from %2.%3") 
+                  .arg( quotedIdentifier(colName) )
+                  .arg( quotedIdentifier(schemaName) )
+                  .arg( quotedIdentifier(tableName) );
 
   PGresult* unique = PQexec(connection, sql.toUtf8());
 
@@ -1266,7 +1268,8 @@ bool QgsPostgresProvider::uniqueData(QString schemaName,
 
 int QgsPostgresProvider::SRCFromViewColumn(const QString& ns, const QString& relname, const QString& attname_table, const QString& attname_view, const QString& viewDefinition, SRC& result) const
 {
-  QString newViewDefSql = "SELECT definition FROM pg_views WHERE schemaname = '" + ns + "' AND viewname = '" + relname + "'";
+  QString newViewDefSql = QString("SELECT definition FROM pg_views WHERE schemaname=%1 AND viewname=%2")
+                            .arg( quotedValue(ns) ).arg( quotedValue(relname) );
   PGresult* newViewDefResult = PQexec(connection, newViewDefSql.toUtf8());
   int numEntries = PQntuples(newViewDefResult);
 
@@ -1278,19 +1281,71 @@ int QgsPostgresProvider::SRCFromViewColumn(const QString& ns, const QString& rel
     QString newAttNameTable = attname_table;
 
     //find out the attribute name of the underlying table/view
-    if (newViewDefinition.contains("AS"))
+    if (newViewDefinition.contains(" AS "))
     {
-      QRegExp s("(\\w+) " + QString("AS ") + QRegExp::escape(attname_table));
+      QRegExp s("(\\w+)" + QString(" AS ") + QRegExp::escape(attname_table));
       if (s.indexIn(newViewDefinition) != -1)
       {
         newAttNameTable = s.cap(1);
       }
     }
 
-    QString viewColumnSql = "SELECT table_schema, table_name, column_name FROM (SELECT DISTINCT current_database()::information_schema.sql_identifier AS view_catalog, nv.nspname::information_schema.sql_identifier AS view_schema, v.relname::information_schema.sql_identifier AS view_name, current_database()::information_schema.sql_identifier AS table_catalog, nt.nspname::information_schema.sql_identifier AS table_schema, t.relname::information_schema.sql_identifier AS table_name, a.attname::information_schema.sql_identifier AS column_name "
-" FROM pg_namespace nv, pg_class v, pg_depend dv, pg_depend dt, pg_class t, pg_namespace nt, pg_attribute a "
-" WHERE nv.oid = v.relnamespace AND v.relkind = 'v'::\"char\" AND v.oid = dv.refobjid AND dv.refclassid = 'pg_class'::regclass::oid AND dv.classid = 'pg_rewrite'::regclass::oid AND dv.deptype = 'i'::\"char\" AND dv.objid = dt.objid AND dv.refobjid <> dt.refobjid AND dt.classid = 'pg_rewrite'::regclass::oid AND dt.refclassid = 'pg_class'::regclass::oid AND dt.refobjid = t.oid AND t.relnamespace = nt.oid AND (t.relkind = ANY (ARRAY['r'::\"char\", 'v'::\"char\"])) AND t.oid = a.attrelid AND dt.refobjsubid = a.attnum "
-"ORDER BY current_database()::information_schema.sql_identifier, nv.nspname::information_schema.sql_identifier, v.relname::information_schema.sql_identifier, current_database()::information_schema.sql_identifier, nt.nspname::information_schema.sql_identifier, t.relname::information_schema.sql_identifier, a.attname::information_schema.sql_identifier) x WHERE view_schema = '" + ns + "' AND view_name = '" + relname + "' AND column_name = '" + newAttNameTable +"'";
+    QString viewColumnSql =
+      QString("SELECT "
+                 "table_schema,"
+                 "table_name,"
+                 "column_name"
+              " FROM "
+                "("
+                  "SELECT DISTINCT "
+                    "current_database()::information_schema.sql_identifier AS view_catalog,"
+                    "nv.nspname::information_schema.sql_identifier AS view_schema,"
+                    "v.relname::information_schema.sql_identifier AS view_name,"
+                    "current_database()::information_schema.sql_identifier AS table_catalog,"
+                    "nt.nspname::information_schema.sql_identifier AS table_schema,"
+                    "t.relname::information_schema.sql_identifier AS table_name,"
+                    "a.attname::information_schema.sql_identifier AS column_name"
+                  " FROM "
+                    "pg_namespace nv,"
+                    "pg_class v,"
+                    "pg_depend dv,"
+                    "pg_depend dt,"
+                    "pg_class t,"
+                    "pg_namespace nt,"
+                    "pg_attribute a"
+                  " WHERE "
+                    "nv.oid=v.relnamespace AND "
+                    "v.relkind='v'::\"char\" AND "
+                    "v.oid=dv.refobjid AND "
+                    "dv.refclassid='pg_class'::regclass::oid AND "
+                    "dv.classid='pg_rewrite'::regclass::oid AND "
+                    "dv.deptype='i'::\"char\" AND "
+                    "dv.objid = dt.objid AND "
+                    "dv.refobjid<>dt.refobjid AND "
+                    "dt.classid='pg_rewrite'::regclass::oid AND "
+                    "dt.refclassid='pg_class'::regclass::oid AND "
+                    "dt.refobjid=t.oid AND "
+                    "t.relnamespace = nt.oid AND "
+                    "(t.relkind=ANY (ARRAY['r'::\"char\", 'v'::\"char\"])) AND "
+                    "t.oid=a.attrelid AND "
+                    "dt.refobjsubid=a.attnum"
+                  " ORDER BY "
+                    "current_database()::information_schema.sql_identifier,"
+                    "nv.nspname::information_schema.sql_identifier,"
+                    "v.relname::information_schema.sql_identifier,"
+                    "current_database()::information_schema.sql_identifier,"
+                    "nt.nspname::information_schema.sql_identifier,"
+                    "t.relname::information_schema.sql_identifier,"
+                    "a.attname::information_schema.sql_identifier"
+                ") x"
+               " WHERE "
+                 "view_schema=%1 AND "
+                 "view_name=%2 AND "
+                 "column_name=%3")
+             .arg( quotedValue(ns) )
+             .arg( quotedValue(relname) )
+             .arg( quotedValue(newAttNameTable) );
+
     PGresult* viewColumnResult = PQexec(connection, viewColumnSql.toUtf8());
     if(PQntuples(viewColumnResult) > 0)
     {
@@ -1311,10 +1366,24 @@ int QgsPostgresProvider::SRCFromViewColumn(const QString& ns, const QString& rel
   PQclear(newViewDefResult);
 
   //relation is table, we just have to add the type
-  QString typeSql = "SELECT pg_type.typname FROM pg_attribute, pg_class, pg_namespace, pg_type WHERE pg_class.relname = '" + relname + "' AND pg_namespace.nspname = '" + ns + "' AND pg_attribute.attname = '" + attname_table + "' AND pg_attribute.attrelid = pg_class.oid AND pg_class.relnamespace = pg_namespace.oid AND pg_attribute.atttypid = pg_type.oid";
-  QgsDebugMsg("***********************************************************************************");
-  QgsDebugMsg(typeSql);
-  QgsDebugMsg("***********************************************************************************");
+  QString typeSql = QString("SELECT "
+                              "pg_type.typname"
+                            " FROM "
+                              "pg_attribute,"
+                              "pg_class,"
+                              "pg_namespace,"
+                              "pg_type"
+                            " WHERE "
+                              "pg_class.relname=%1 AND "
+                              "pg_namespace.nspname=%2 AND "
+                              "pg_attribute.attname=%3 AND "
+                              "pg_attribute.attrelid=pg_class.oid AND "
+                              "pg_class.relnamespace=pg_namespace.oid AND "
+                              "pg_attribute.atttypid=pg_type.oid")
+                      .arg( quotedValue(relname ) )
+                      .arg( quotedValue(ns) )
+                      .arg( quotedValue(attname_table) );
+  
   PGresult* typeSqlResult = PQexec(connection, typeSql.toUtf8());
   if(PQntuples(typeSqlResult) < 1)
   {
@@ -1336,14 +1405,64 @@ int QgsPostgresProvider::SRCFromViewColumn(const QString& ns, const QString& rel
 
 void QgsPostgresProvider::findColumns(tableCols& cols)
 {
-  QString viewColumnSql = "SELECT table_schema, table_name, column_name FROM (SELECT DISTINCT current_database() AS view_catalog, nv.nspname AS view_schema, v.relname AS view_name, current_database() AS table_catalog, nt.nspname AS table_schema, t.relname AS table_name, a.attname AS column_name "
-" FROM pg_namespace nv, pg_class v, pg_depend dv, pg_depend dt, pg_class t, pg_namespace nt, pg_attribute a "
-" WHERE nv.oid = v.relnamespace AND v.relkind = 'v'::\"char\" AND v.oid = dv.refobjid AND dv.refclassid = 'pg_class'::regclass::oid AND dv.classid = 'pg_rewrite'::regclass::oid AND dv.deptype = 'i'::\"char\" AND dv.objid = dt.objid AND dv.refobjid <> dt.refobjid AND dt.classid = 'pg_rewrite'::regclass::oid AND dt.refclassid = 'pg_class'::regclass::oid AND dt.refobjid = t.oid AND t.relnamespace = nt.oid AND (t.relkind = ANY (ARRAY['r'::\"char\", 'v'::\"char\"])) AND t.oid = a.attrelid AND dt.refobjsubid = a.attnum "
-"ORDER BY current_database(), nv.nspname, v.relname, current_database(), nt.nspname, t.relname, a.attname) x WHERE view_schema = '" + mSchemaName + "' AND view_name = '" + mTableName + "'";
+  QString viewColumnSql =
+    QString("SELECT "
+              "table_schema,"
+              "table_name,"
+              "column_name"
+            " FROM "
+              "("
+                "SELECT DISTINCT "
+                  "current_database() AS view_catalog,"
+                  "nv.nspname AS view_schema,"
+                  "v.relname AS view_name,"
+                  "current_database() AS table_catalog,"
+                  "nt.nspname AS table_schema,"
+                  "t.relname AS table_name,"
+                  "a.attname AS column_name"
+                " FROM "
+                  "pg_namespace nv,"
+                  "pg_class v,"
+                  "pg_depend dv,"
+                  "pg_depend dt,"
+                  "pg_class t,"
+                  "pg_namespace nt,"
+                  "pg_attribute a"
+                " WHERE "
+                  "nv.oid=v.relnamespace AND "
+                  "v.relkind='v'::\"char\" AND "
+                  "v.oid=dv.refobjid AND "
+                  "dv.refclassid='pg_class'::regclass::oid AND "
+                  "dv.classid='pg_rewrite'::regclass::oid AND "
+                  "dv.deptype='i'::\"char\" AND "
+                  "dv.objid=dt.objid AND "
+                  "dv.refobjid<>dt.refobjid AND "
+                  "dt.classid='pg_rewrite'::regclass::oid AND "
+                  "dt.refclassid='pg_class'::regclass::oid AND "
+                  "dt.refobjid=t.oid AND "
+                  "t.relnamespace=nt.oid AND "
+                  "(t.relkind = ANY (ARRAY['r'::\"char\",'v'::\"char\"])) AND "
+                  "t.oid=a.attrelid AND "
+                  "dt.refobjsubid=a.attnum"
+                " ORDER BY "
+                  "current_database(),"
+                  "nv.nspname,"
+                  "v.relname,"
+                  "current_database(),"
+                  "nt.nspname,"
+                  "t.relname,"
+                  "a.attname"
+                ") x"
+              " WHERE "
+                "view_schema=%1 AND view_name=%2")
+              .arg( quotedValue(mSchemaName) )
+              .arg( quotedValue(mTableName) );
   PGresult* viewColumnResult = PQexec(connection, viewColumnSql.toUtf8());
 
   //find out view definition
-  QString viewDefSql = "SELECT definition FROM pg_views WHERE schemaname = '" + mSchemaName + "' AND viewname = '" + mTableName + "'";
+  QString viewDefSql = QString("SELECT definition FROM pg_views WHERE schemaname=%1 AND viewname=%2")
+                         .arg( quotedValue( mSchemaName ) )
+                         .arg( quotedValue( mTableName ) );
   PGresult* viewDefResult = PQexec(connection, viewDefSql.toUtf8());
   if(PQntuples(viewDefResult) < 1)
   {
@@ -1366,7 +1485,7 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
     attname_view = attname_table;
 
     //examine if the column name has been renamed in the view with AS
-    if (viewDefinition.contains("AS"))
+    if (viewDefinition.contains(" AS "))
     {
       // This regular expression needs more testing. Since the view
       // definition comes from postgresql and has been 'standardised', we
@@ -1392,208 +1511,6 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
   }
   PQclear(viewColumnResult);
 
-#if 0
-  // This sql is derived from the one that defines the view
-  // 'information_schema.view_column_usage' in PostgreSQL, with a few
-  // mods to suit our purposes. 
-  QString sql = ""
-    "SELECT DISTINCT "
-    "	nv.nspname AS view_schema, "
-    "	v.relname AS view_name, "
-    "	a.attname AS view_column_name, "
-    "	nt.nspname AS table_schema, "
-    "	t.relname AS table_name, "
-    "	a.attname AS column_name, "
-    "	t.relkind AS table_type, "
-    "	typ.typname AS column_type, "
-    "   vs.definition AS view_definition "
-    "FROM "
-    "	pg_namespace nv, "
-    "	pg_class v, "
-    "	pg_depend dv,"
-    "	pg_depend dt, "
-    "	pg_class t, "
-    "	pg_namespace nt, "
-    "	pg_attribute a,"
-    "	pg_user u, "
-    "	pg_type typ, "
-    "   pg_views vs "
-    "WHERE "
-    "	nv.oid = v.relnamespace AND "
-    "	v.relkind = 'v'::\"char\" AND "
-    "	v.oid = dv.refobjid AND "
-    "	dv.refclassid = 'pg_class'::regclass::oid AND "
-    "	dv.classid = 'pg_rewrite'::regclass::oid AND "
-    "	dv.deptype = 'i'::\"char\" AND "
-    "	dv.objid = dt.objid AND "
-    "	dv.refobjid <> dt.refobjid AND "
-    "	dt.classid = 'pg_rewrite'::regclass::oid AND "
-    "	dt.refclassid = 'pg_class'::regclass::oid AND "
-    "	dt.refobjid = t.oid AND "
-    "	t.relnamespace = nt.oid AND "
-    "	(t.relkind = 'r'::\"char\" OR t.relkind = 'v'::\"char\") AND "
-    "	t.oid = a.attrelid AND "
-    "	dt.refobjsubid = a.attnum AND "
-    "	nv.nspname NOT IN ('pg_catalog', 'information_schema' ) AND "
-    "	a.atttypid = typ.oid AND "
-    "   nv.nspname = vs.schemaname AND "
-    "   v.relname = vs.viewname";
-
-  // A structure to store the results of the above sql.
-  typedef std::map<QString, TT> columnRelationsType;
-  columnRelationsType columnRelations;
-
-  // A structure to cache the query results that return the view 
-  // definition. 
-  typedef QMap<QString, QString> viewDefCache; 
-  viewDefCache viewDefs; 
-
-  PGresult* result = PQexec(connection, (const char*)(sql.utf8()));
-  // Store the results of the query for convenient access 
-
-  for (int i = 0; i < PQntuples(result); ++i)
-  {
-    TT temp;
-    temp.view_schema      = PQgetvalue(result, i, 0);
-    temp.view_name        = PQgetvalue(result, i, 1);
-    temp.view_column_name = PQgetvalue(result, i, 2);
-    temp.table_schema     = PQgetvalue(result, i, 3);
-    temp.table_name       = PQgetvalue(result, i, 4);
-    temp.column_name      = PQgetvalue(result, i, 5);
-    temp.table_type       = PQgetvalue(result, i, 6);
-    temp.column_type      = PQgetvalue(result, i, 7);
-    QString viewDef       = PQgetvalue(result, i, 8);
-
-    // BUT, the above SQL doesn't always give the correct value for the view 
-    // column name (that's because that information isn't available directly 
-    // from the database), mainly when the view column name has been renamed 
-    // using 'AS'. To fix this we need to look in the view definition and 
-    // adjust the view column name if necessary. 
-
-    // Now pick the view definiton apart, looking for
-    // temp.column_name to the left of an 'AS'.
-
-    if (!viewDef.isEmpty())
-    {
-      // Compiling and executing the regexp for each row from the above query
-      // can take quite a while - a database can easily have hundreds of
-      // rows. Working on the premise that we are only doing this to catch the
-      // cases where the view column has been renamed using the AS construct,
-      // we'll check for that first before doing the potentially
-      // time-consuming regular expression.
-
-      if (viewDef.contains("AS"))
-      {
-        // This regular expression needs more testing. Since the view
-        // definition comes from postgresql and has been 'standardised', we
-        // don't need to deal with everything that the user could put in a view
-        // definition. Does the regexp have to deal with the schema??
-
-        QRegExp s(".* \"?" + QRegExp::escape(temp.table_name) +
-            "\"?\\.\"?" + QRegExp::escape(temp.column_name) +
-            "\"? AS \"?(\\w+)\"?,* .*");
-
-        QgsDebugMsg(viewDef + "\n" + s.pattern());
-
-        if (s.indexIn(viewDef) != -1)
-        {
-          temp.view_column_name = s.cap(1);
-        }
-      }
-    }
-
-    QgsDebugMsg(temp.view_schema + "." 
-        + temp.view_name + "." 
-        + temp.view_column_name + " <- " 
-        + temp.table_schema + "." 
-        + temp.table_name + "." 
-        + temp.column_name + " is a '" 
-        + temp.table_type + "' of type " 
-        + temp.column_type);
-
-    columnRelations[temp.view_schema + '.' +
-      temp.view_name + '.' +
-      temp.view_column_name] = temp;
-  }
-  PQclear(result);
-
-  // Loop over all columns in the view in question. 
-
-  sql = "SELECT pg_namespace.nspname || '.' || "
-    "pg_class.relname || '.' || pg_attribute.attname "
-    "FROM pg_attribute, pg_class, pg_namespace "
-    "WHERE pg_class.relname = '" + mTableName + "' "
-    "AND pg_namespace.nspname = '" + mSchemaName + "' "
-    "AND pg_attribute.attrelid = pg_class.oid "
-    "AND pg_class.relnamespace = pg_namespace.oid";
-
-  result = PQexec(connection, (const char*)(sql.utf8()));
-
-  // Loop over the columns in mSchemaName.mTableName and find out the
-  // underlying schema, table, and column name.
-  for (int i = 0; i < PQntuples(result); ++i)
-  {
-    columnRelationsType::const_iterator 
-      ii = columnRelations.find(PQgetvalue(result, i, 0));
-    columnRelationsType::const_iterator start_iter = ii;
-
-    if (ii == columnRelations.end())
-      continue;
-
-    int count = 0;
-    const int max_loops = 100;
-
-    while (ii->second.table_type != "r" && count < max_loops)
-    {
-      QgsDebugMsg("Searching for the column that " +
-          ii->second.table_schema + '.'+
-          ii->second.table_name + "." +
-          ii->second.column_name + " refers to.");
-
-      columnRelationsType::const_iterator 
-        jj = columnRelations.find(QString(ii->second.table_schema + '.' +
-              ii->second.table_name + '.' +
-              ii->second.column_name));
-
-      if (jj == columnRelations.end())
-      {
-        QgsDebugMsg("WARNING: Failed to find the column that " +
-            ii->second.table_schema + "." +
-            ii->second.table_name + "." +
-            ii->second.column_name + " refers to.");
-        break;
-      }
-
-      ii = jj;
-      ++count;
-    }
-
-    if (count >= max_loops)
-    {
-      QgsDebugMsg("Search for the underlying table.column for view column " +
-          ii->second.table_schema + "." + 
-          ii->second.table_name + "." +
-          ii->second.column_name + " failed: exceeded maximum "
-          "interation limit (" + QString::number(max_loops) + ")");
-
-      cols[ii->second.view_column_name] = SRC("","","","");
-    }
-    else if (ii != columnRelations.end())
-    {
-      cols[start_iter->second.view_column_name] = 
-        SRC(ii->second.table_schema, 
-            ii->second.table_name, 
-            ii->second.column_name, 
-            ii->second.column_type);
-
-      QgsDebugMsg( QString(PQgetvalue(result, i, 0)) + " derives from " +
-          ii->second.table_schema + "." +
-          ii->second.table_name + "." +
-          ii->second.column_name);
-    }
-  }
-  PQclear(result);
-#endif //0
 }
 
 // Returns the minimum value of an attribute
@@ -2078,6 +1995,9 @@ bool QgsPostgresProvider::changeAttributeValues(const QgsChangedAttributesMap & 
       if(fid<0)
         continue;
 
+      QString sql = QString("UPDATE %1 SET ").arg( mSchemaTableName );
+      bool first = true;
+
       const QgsAttributeMap& attrs = iter.value();
 
       // cycle through the changed attributes of the feature
@@ -2086,25 +2006,30 @@ bool QgsPostgresProvider::changeAttributeValues(const QgsChangedAttributesMap & 
         try {
           QString fieldName = field(siter.key()).name();
 
-          QString sql = QString("UPDATE %1 SET %2=%3 WHERE %4=%5")
-                          .arg( mSchemaTableName )
-                          .arg( quotedIdentifier(fieldName) )
-                          .arg( quotedValue( siter->toString() ) )
-                          .arg( quotedIdentifier(primaryKey) )
-                          .arg( fid );
-          QgsDebugMsg(sql);
+          if(!first)
+            sql += ",";
+          else
+            first=false;
 
-          PGresult* result=PQexec(connection, sql.toUtf8());
-          if( result==0 || PQresultStatus(result)==PGRES_FATAL_ERROR )
-            throw PGException(result);
-         
-          PQclear(result);
+          sql += QString("%1=%2")
+                   .arg( quotedIdentifier(fieldName) )
+                   .arg( quotedValue( siter->toString() ) );
         }
         catch(PGFieldNotFound)
         {
           // Field was missing - shouldn't happen
         }
       }
+
+      sql += QString(" WHERE %1=%2")
+               .arg( quotedIdentifier(primaryKey) )
+               .arg( fid );
+      
+      PGresult* result=PQexec(connection, sql.toUtf8());
+      if( result==0 || PQresultStatus(result)==PGRES_FATAL_ERROR )
+        throw PGException(result);
+         
+      PQclear(result);
     }
 
     PQexecNR(connection,QString("COMMIT").toUtf8());
@@ -2239,12 +2164,10 @@ long QgsPostgresProvider::getFeatureCount()
   // a thread the task of getting the full count.
 
 #ifdef POSTGRESQL_THREADS
-  QString sql = "select reltuples from pg_catalog.pg_class where relname = '" + 
-    tableName + "'";
-
+  QString sql = QString("select reltuples from pg_catalog.pg_class where relname=%1").arg( quotedValue(tableName) );
   QgsDebugMsg("Running SQL: " + sql);
 #else                 
-  QString sql = "select count(*) from " + mSchemaTableName + "";
+  QString sql = QString("select count(*) from %1").arg( mSchemaTableName );
 
   if(sqlWhereClause.length() > 0)
   {
@@ -2270,26 +2193,27 @@ long QgsPostgresProvider::getFeatureCount()
 void QgsPostgresProvider::calculateExtents()
 {
 #ifdef POSTGRESQL_THREADS
-  // get the approximate extent by retreiving the bounding box
+  // get the approximate extent by retrieving the bounding box
   // of the first few items with a geometry
 
-  QString sql = "select box3d(" + quotedIdentifier(geometryColumn) + ") from " 
-    + mSchemaTableName + " where ";
+  QString sql = QString("select box3d(%1) from %2 where ")
+                  .arg( quotedIdentifier(geometryColumn) )
+                  .arg( mSchemaTableName );
 
   if(sqlWhereClause.length() > 0)
   {
-    sql += "(" + sqlWhereClause + ") and ";
+    sql += QString("(%1) and ").arg( sqlWhereClause );
   }
 
-  sql += "not IsEmpty(" + quotedIdentifier(geometryColumn) + ") limit 5";
-
+  sql += QString("not IsEmpty(%1) limit 5").arg( quotedIdentifier(geometryColumn) );
 
 #if WASTE_TIME
-  sql = "select xmax(extent(" + quotedIdentifier(geometryColumn) + ")) as xmax,"
-    "xmin(extent(" + quotedIdentifier(geometryColumn) + ")) as xmin,"
-    "ymax(extent(" + quotedIdentifier(geometryColumn) + ")) as ymax," 
-    "ymin(extent(" + quotedIdentifier(geometryColumn) + ")) as ymin" 
-    " from " + mSchemaTableName;
+  sql = QString("select "
+                  "xmax(extent(%1)) as xmax,"
+                  "xmin(extent(%1)) as xmin,"
+                  "ymax(extent(%1)) as ymax,"
+                  "ymin(extent(%1)) as ymin" 
+                " from %2").arg( quotedIdentifier(geometryColumn).arg( mSchemaTableName );
 #endif
 
   QgsDebugMsg("Getting approximate extent using: '" + sql + "'");
@@ -2326,19 +2250,22 @@ void QgsPostgresProvider::calculateExtents()
 
   // get the extents
 
-  QString sql = "select extent(" + quotedIdentifier(geometryColumn) + ") from " + 
-    mSchemaTableName;
+  QString sql = QString("select extent(%1) from %2")
+                  .arg( quotedIdentifier(geometryColumn) )
+                  .arg( mSchemaTableName );
+
   if(sqlWhereClause.length() > 0)
   {
     sql += " where " + sqlWhereClause;
   }
 
 #if WASTE_TIME
-  sql = "select xmax(extent(" + quotedIdentifier(geometryColumn) + ")) as xmax,"
-    "xmin(extent(" + quotedIdentifier(geometryColumn) + ")) as xmin,"
-    "ymax(extent(" + quotedIdentifier(geometryColumn) + ")) as ymax," 
-    "ymin(extent(" + quotedIdentifier(geometryColumn) + ")) as ymin" 
-    " from " + mSchemaTableName;
+  sql = QString("select "
+                  "xmax(extent(%1)) as xmax,"
+                  "xmin(extent(%1)) as xmin,"
+                  "ymax(extent(%1)) as ymax," 
+                  "ymin(extent(%1)) as ymin" 
+                " from %2").arg( quotedIdentifier(geometryColumn) ).arg( mSchemaTableName );
 #endif
 
   QgsDebugMsg("Getting extents using schema.table: " + sql);
@@ -2461,7 +2388,7 @@ bool QgsPostgresProvider::deduceEndian()
   // version 7.4, binary cursors return data in XDR whereas previous versions
   // return data in the endian of the server
 
-  QString firstOid = "select regclass(" + quotedValue(mSchemaTableName) + ")::oid";
+  QString firstOid = QString("select regclass(%1)::oid").arg( quotedValue(mSchemaTableName) );
   PGresult * oidResult = PQexec(connection, firstOid.toUtf8());
   // get the int value from a "normal" select
   QString oidValue = QString::fromUtf8(PQgetvalue(oidResult,0,0));
@@ -2471,7 +2398,7 @@ bool QgsPostgresProvider::deduceEndian()
 
   // get the same value using a binary cursor
 
-  QString oidDeclare = "declare oidcursor binary cursor with hold for select regclass('" + mSchemaTableName + "')::oid";
+  QString oidDeclare = QString("declare oidcursor binary cursor with hold for select regclass(%1)::oid").arg( quotedValue(mSchemaTableName) );
   // set up the cursor
   PQexecNR(connection, oidDeclare.toUtf8());
   QString fetch = "fetch forward 1 from oidcursor";
@@ -2503,21 +2430,22 @@ bool QgsPostgresProvider::getGeometryDetails()
   valid = false;
   QStringList log;
 
-  QString sql = "select f_geometry_column,type,srid from geometry_columns"
-    " where f_table_name='" + mTableName + "' and f_geometry_column = '" + 
-    geometryColumn + "' and f_table_schema = '" + mSchemaName + "'";
+  QString sql = QString("select type,srid from geometry_columns"
+                        " where f_table_name=%1 and f_geometry_column=%2 and f_table_schema=%3")
+                  .arg( quotedValue(mTableName) )
+                  .arg( quotedValue(geometryColumn) )
+                  .arg( quotedValue(mSchemaName) );
 
   QgsDebugMsg("Getting geometry column: " + sql);
 
   PGresult *result = executeDbCommand(connection, sql);
 
   QgsDebugMsg("geometry column query returned " + QString::number(PQntuples(result)));
-  QgsDebugMsg("column number of srid is " + QString::number(PQfnumber(result, "srid")));
 
   if (PQntuples(result) > 0)
   {
-    srid = QString::fromUtf8(PQgetvalue(result, 0, PQfnumber(result, QString("srid").toUtf8())));
-    fType = QString::fromUtf8(PQgetvalue(result, 0, PQfnumber(result, QString("type").toUtf8())));
+    fType = QString::fromUtf8(PQgetvalue(result, 0, 0));
+    srid = QString::fromUtf8(PQgetvalue(result, 0, 1));
     PQclear(result);
   }
   else
@@ -2526,17 +2454,15 @@ bool QgsPostgresProvider::getGeometryDetails()
     // get stuff from the relevant column instead. This may (will?) 
     // fail if there is no data in the relevant table.
     PQclear(result); // for the query just before the if() statement
-    sql = "select "
-      "srid(" + quotedIdentifier(geometryColumn) + "), "
-      "geometrytype(" + quotedIdentifier(geometryColumn) + ") from " + 
-      mSchemaTableName;
+    sql = QString("select srid(%1),geometrytype(%1) from %2" )
+            .arg( quotedIdentifier(geometryColumn) )
+            .arg( mSchemaTableName );
 
     //it is possible that the where clause restricts the feature type
     if(!sqlWhereClause.isEmpty())
-      {
-	sql += " WHERE ";
-	sql += sqlWhereClause;
-      }
+    {
+      sql += " WHERE " + sqlWhereClause;
+    }
 
     sql += " limit 1";
 
@@ -2544,8 +2470,8 @@ bool QgsPostgresProvider::getGeometryDetails()
 
     if (PQntuples(result) > 0)
     {
-      srid = QString::fromUtf8(PQgetvalue(result, 0, PQfnumber(result, QString("srid").toUtf8())));
-      fType = QString::fromUtf8(PQgetvalue(result, 0, PQfnumber(result, QString("geometrytype").toUtf8())));
+      srid = QString::fromUtf8(PQgetvalue(result, 0, 0));
+      fType = QString::fromUtf8(PQgetvalue(result, 0, 1));
     }
     PQclear(result);
   }
@@ -2662,18 +2588,44 @@ QString QgsPostgresProvider::quotedValue( QString value ) const
   return value.prepend("'").append("'");
 }
 
+PGresult *QgsPostgresProvider::PQexec(PGconn *conn, const char *query)
+{
+  PGresult *res = ::PQexec(conn, query);
+
+#ifdef QGISDEBUG
+  if(res) {
+    int errorStatus = PQresultStatus(res);
+    if( errorStatus!=PGRES_COMMAND_OK && errorStatus!=PGRES_TUPLES_OK ) 
+    {
+      QString err = QString("Errornous query: %1 returned %2 [%3]")
+                          .arg(query)
+                          .arg(errorStatus)
+                          .arg(PQresultErrorMessage(res));
+      QgsDebugMsgLevel( err, 3 );
+    }
+  }
+#endif
+
+  return res;
+}
+
 bool QgsPostgresProvider::PQexecNR(PGconn *conn, const char *query)
 {
-  PGresult *res = PQexec(conn, query);
+  PGresult *res = ::PQexec(conn, query);
   if(res)
   {
     int errorStatus = PQresultStatus(res);
-    QgsDebugMsgLevel( QString("Query: %1 returned %2 [%3]")
+#ifdef QGISDEBUG
+    if( errorStatus!=PGRES_COMMAND_OK ) 
+    {
+      QString err = QString("Query: %1 returned %2 [%3]")
                         .arg(query)
                         .arg(errorStatus)
-                        .arg(PQresultErrorMessage(res)), 3 );
+                        .arg(PQresultErrorMessage(res));
+      QgsDebugMsgLevel( err, 3 );
+    }
+#endif
     PQclear(res);
-
     return errorStatus==PGRES_COMMAND_OK;
   }
   else
