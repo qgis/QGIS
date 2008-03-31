@@ -230,7 +230,6 @@ qgsmaptopixel.h
 qgsmessageoutput.h
 qgspoint.h
 qgsproject.h
-qgsprojectversion.h
 qgsprojectfiletransform.h
 qgsprojectproperty.h
 qgsprojectversion.h
