@@ -233,6 +233,7 @@ qgsproject.h
 qgsprojectversion.h
 qgsprojectfiletransform.h
 qgsprojectproperty.h
+qgsprojectversion.h
 qgsprovidercountcalcevent.h
 qgsproviderextentcalcevent.h
 qgsprovidermetadata.h
