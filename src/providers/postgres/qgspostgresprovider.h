@@ -602,6 +602,9 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     void appendGeomString(QgsGeometry *geom, QString &geomParam) const;
     QByteArray paramValue(QString fieldvalue, const QString &defaultValue) const;
 
+    // run a query and check for errors
+    static PGresult *PQexec(PGconn *conn, const char *query);
+
     // run a query and free result buffer
     static bool PQexecNR(PGconn *conn, const char *query);
 
