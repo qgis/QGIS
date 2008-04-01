@@ -379,7 +379,9 @@ change
 Second change the default mkspec symlink so that it points to macx-g++:
 
 ```
-cd /usr/local/Qt4.3/mkspecs/ sudo rm default sudo ln -sf macx-g++ default
+cd /usr/local/Qt4.3/mkspecs/ 
+sudo rm default 
+sudo ln -sf macx-g++ default
 ```
 
 
