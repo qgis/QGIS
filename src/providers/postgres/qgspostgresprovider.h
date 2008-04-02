@@ -349,7 +349,6 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     void loadFields();
 
     bool mFetching;   // true if a cursor was declared
-    bool mFirstFetch; // true if fetch forward is called the first time after select
     std::vector < QgsFeature > features;
     QgsFieldMap attributeFields;
     QString mDataComment;
@@ -364,13 +363,6 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     //! Child thread for calculating count.
     QgsPostgresCountThread mCountThread;
 
-
-    /**
-     * Pointer to the PostgreSQL query result object. If this pointer is 0,
-     * there is no current selection set. Any future getNextFeature requests
-     * will require execution of the select query to recreate the result set.
-     */
-    PGresult *queryResult;
     /**
      * Flag indicating if the layer data source is a valid PostgreSQL layer
      */
