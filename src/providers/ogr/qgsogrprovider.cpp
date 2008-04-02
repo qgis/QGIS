@@ -440,18 +440,22 @@ void QgsOgrProvider::getFeatureAttribute(OGRFeatureH ogrFet, QgsFeature & f, int
     return;
   }
 
-  //QString fld = mEncoding->toUnicode(fldDef->GetNameRef());
-  QByteArray cstr(OGR_F_GetFieldAsString(ogrFet,attindex));
-  QString str = mEncoding->toUnicode(cstr);
   QVariant value;
 
-  switch (mAttributeFields[attindex].type())
+  if( OGR_F_IsFieldSet(ogrFet, attindex) )
   {
-  case QVariant::String: value = QVariant(str); break;
-  case QVariant::Int: value = QVariant(str.toInt()); break;
-  case QVariant::Double: value = QVariant(str.toDouble()); break;
-    //case QVariant::DateTime: value = QVariant(QDateTime::fromString(str)); break;
-  default: assert(NULL && "unsupported field type");
+    switch (mAttributeFields[attindex].type())
+    {
+    case QVariant::String: value = QVariant( mEncoding->toUnicode( OGR_F_GetFieldAsString(ogrFet,attindex) ) ); break;
+    case QVariant::Int: value = QVariant( OGR_F_GetFieldAsInteger( ogrFet, attindex ) ); break;
+    case QVariant::Double: value = QVariant( OGR_F_GetFieldAsDouble( ogrFet, attindex ) ); break;
+      //case QVariant::DateTime: value = QVariant(QDateTime::fromString(str)); break;
+    default: assert(NULL && "unsupported field type");
+    }
+  }
+  else
+  {
+    value = QVariant( QString::null );
   }
 
   f.addAttribute(attindex, value);
@@ -511,30 +515,38 @@ bool QgsOgrProvider::addFeature(QgsFeature& f)
 
     //if(!s.isEmpty())
     // continue;
-
+    //
     OGRFieldDefnH fldDef = OGR_FD_GetFieldDefn( fdef, targetAttributeId );
+    OGRFieldType type = OGR_Fld_GetType( fldDef );
 
-    switch( OGR_Fld_GetType(fldDef) )
+    if( it->isNull() || (type!=OFTString && it->toString().isEmpty()) )
     {
-    case OFTInteger:
-      OGR_F_SetFieldInteger(feature,targetAttributeId,it->toInt());
-      break;
+      OGR_F_UnsetField(feature, targetAttributeId);
+    }
+    else
+    {
+      switch( type )
+      {
+        case OFTInteger:
+          OGR_F_SetFieldInteger(feature,targetAttributeId,it->toInt());
+          break;
 
-    case OFTReal:
-      OGR_F_SetFieldDouble(feature,targetAttributeId,it->toDouble());
-      break;
+        case OFTReal:
+          OGR_F_SetFieldDouble(feature,targetAttributeId,it->toDouble());
+          break;
 
-    case OFTString:
-      QgsDebugMsg( QString("Writing string attribute %1 with %2, encoding %3")
-        .arg( targetAttributeId )
-        .arg( it->toString() )
-        .arg( mEncoding->name().data() ) );
-      OGR_F_SetFieldString(feature,targetAttributeId,mEncoding->fromUnicode(it->toString()).constData());
-      break;
+        case OFTString:
+          QgsDebugMsg( QString("Writing string attribute %1 with %2, encoding %3")
+              .arg( targetAttributeId )
+              .arg( it->toString() )
+              .arg( mEncoding->name().data() ) );
+          OGR_F_SetFieldString(feature,targetAttributeId,mEncoding->fromUnicode(it->toString()).constData());
+          break;
 
-    default:
-      QgsLogger::warning("QgsOgrProvider::addFeature, no type found");
-      break;
+        default:
+          QgsLogger::warning("QgsOgrProvider::addFeature, no type found");
+          break;
+      }
     }
   }
 
@@ -633,22 +645,30 @@ bool QgsOgrProvider::changeAttributeValues(const QgsChangedAttributesMap & attr_
       }
 
       OGRFieldType type = OGR_Fld_GetType( fd );
-      switch ( type )
-      {
-      case OFTInteger:
-        OGR_F_SetFieldInteger ( of, f, it2->toInt() );
-        break;
-      case OFTReal:
-        OGR_F_SetFieldDouble ( of, f, it2->toDouble() );
-        break;
-      case OFTString:
-        OGR_F_SetFieldString ( of, f, mEncoding->fromUnicode(it2->toString()).constData() );
-        break;
-      default:
-        QgsLogger::warning("QgsOgrProvider::changeAttributeValues, Unknown field type, cannot change attribute");
-        break;
-      }
 
+      if( it2->isNull() || (type!=OFTString && it2->toString().isEmpty()) )
+      {
+        OGR_F_UnsetField( of, f);
+      }
+      else
+      {
+        
+        switch ( type )
+        {
+          case OFTInteger:
+            OGR_F_SetFieldInteger ( of, f, it2->toInt() );
+            break;
+          case OFTReal:
+            OGR_F_SetFieldDouble ( of, f, it2->toDouble() );
+            break;
+          case OFTString:
+            OGR_F_SetFieldString ( of, f, mEncoding->fromUnicode(it2->toString()).constData() );
+            break;
+          default:
+            QgsLogger::warning("QgsOgrProvider::changeAttributeValues, Unknown field type, cannot change attribute");
+            break;
+        }
+      }
     }
 
     OGR_L_SetFeature( ogrLayer, of );
