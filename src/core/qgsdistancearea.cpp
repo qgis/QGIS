@@ -648,7 +648,7 @@ QString QgsDistanceArea::textUnit(double value, int decimals, QGis::units u, boo
 	unitLabel = QObject::tr(" km2");
 	value = value / 1000000.0;
       }
-      else if (fabs(value) > 1000.0)
+      else if (fabs(value) > 10000.0)
       {
 	unitLabel = QObject::tr(" ha");
 	value = value / 10000.0;
