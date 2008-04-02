@@ -564,7 +564,6 @@ void QgsPostgresProvider::select(QgsAttributeList fetchAttributes, QgsRect rect,
     return;
   
   mFetching = true;
-  mFirstFetch = true;
 }
 
 bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
@@ -577,43 +576,37 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature& feature)
     return false;
   }
 
-  // Top up our queue if it is empty
-  if (mFeatureQueue.empty())
+  if( mFeatureQueue.empty() )
   {
     QString fetch = QString("fetch forward %1 from %2").arg(mFeatureQueueSize).arg(cursorName);
-    if(mFirstFetch)
+    if(PQsendQuery(connection, fetch.toUtf8()) == 0) //fetch features in asynchronously
     {
-      if(PQsendQuery(connection, fetch.toUtf8()) == 0) //fetch features in asynchronously
+      qWarning("PQsendQuery failed (1)");
+    }
+
+    PGresult *queryResult;
+    while( (queryResult = PQgetResult(connection)) )
+    {
+      int rows = PQntuples(queryResult);
+      if (rows == 0)
+        continue;
+
+      for (int row = 0; row < rows; row++)
       {
-        qWarning("PQsendQuery failed (1)");
-      }
-    }
-    mFirstFetch = false;
-    queryResult = PQgetResult(connection);
-    PQgetResult(connection); //just to get the 0 pointer...  
+        mFeatureQueue.push(QgsFeature());
+        getFeature(queryResult, row, mFetchGeom, mFeatureQueue.back(), mAttributesToFetch);
+      } // for each row in queue
 
-    int rows = PQntuples(queryResult);
-    if (rows == 0)
-    {
-      QgsDebugMsg("End of features");
       PQclear(queryResult);
-      return false;
     }
+  }
 
-    for (int row = 0; row < rows; row++)
-    {
-      mFeatureQueue.push(QgsFeature());
-      getFeature(queryResult, row, mFetchGeom, mFeatureQueue.back(), mAttributesToFetch);
-    } // for each row in queue
-
-    PQclear(queryResult);
-
-    if(PQsendQuery(connection, fetch.toUtf8()) == 0) //already fetch the next couple of features asynchronously
-    {
-      qWarning("PQsendQuery failed (2)");
-    }
-  } // if new queue is required
-
+  if( mFeatureQueue.empty() )
+  {
+    QgsDebugMsg("End of features");
+    return false;
+  }
+ 
   // Now return the next feature from the queue
   if(mFetchGeom)
   {
@@ -1890,8 +1883,10 @@ bool QgsPostgresProvider::deleteFeatures(const QgsFeatureIds & id)
     PQexecNR(connection,QString("BEGIN").toUtf8());
 
     for(QgsFeatureIds::const_iterator it=id.begin();it!=id.end();++it) {
-      QString sql("DELETE FROM "+mSchemaTableName+" WHERE "+quotedIdentifier(primaryKey)+"="+QString::number(*it));
-
+      QString sql = QString("DELETE FROM %1 WHERE %2=%3")
+                      .arg(mSchemaTableName)
+                      .arg(quotedIdentifier(primaryKey))
+                      .arg(*it);
       QgsDebugMsg("delete sql: "+sql);
 
       //send DELETE statement and do error handling
@@ -1920,8 +1915,10 @@ bool QgsPostgresProvider::addAttributes(const QgsNewAttributesMap & name)
 
     for(QgsNewAttributesMap::const_iterator iter=name.begin();iter!=name.end();++iter)
     {
-      QString sql="ALTER TABLE "+mSchemaTableName+" ADD COLUMN "+quotedIdentifier(iter.key())+" " +iter.value();
-
+      QString sql = QString("ALTER TABLE %1 ADD COLUMN %2 %3")
+                      .arg(mSchemaTableName)
+                      .arg(quotedIdentifier(iter.key()))
+                      .arg(iter.value());
       QgsDebugMsg(sql);
 
       //send sql statement and do error handling
@@ -1956,7 +1953,9 @@ bool QgsPostgresProvider::deleteAttributes(const QgsAttributeIds& ids)
         continue;
     
       QString column = field_it->name();
-      QString sql="ALTER TABLE "+mSchemaTableName+" DROP COLUMN "+quotedIdentifier(column);
+      QString sql = QString("ALTER TABLE %1 DROP COLUMN %2")
+                      .arg(mSchemaTableName)
+                      .arg(quotedIdentifier(column));
 
       //send sql statement and do error handling
       PGresult* result=PQexec(connection, sql.toUtf8());
