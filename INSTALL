@@ -450,6 +450,15 @@ Included are a few notes for building on Mac OS X 10.5 (Leopard).
 I recommend to get the latest xcode dmg from the Apple XDC Web site. Install
 XCODE after the ~941mb download is complete.
 
+/!\ Note: It may be that you need to create some symlinks after installing 
+the XCODE SDK (in particular if you are using XCODE 2.5 on tiger):
+
+
+  cd /Developer/SDKs/MacOSX10.4u.sdk/usr/
+  sudo mv local/ local_
+  sudo ln -s /usr/local/ local
+
+
 
 	4.2. Install Qt4 from .dmg
 	==========================
