@@ -10,4 +10,4 @@ resources.py
 ui_mapserverexport.py
 )
 
-INSTALL(FILES ${INSTALLER_FILES} DESTINATION ${DEFAULT_DATA_SUBDIR}/python/plugins/mapserver_export)
+INSTALL(FILES ${INSTALLER_FILES} DESTINATION ${QGIS_DATA_DIR}/python/plugins/mapserver_export)
