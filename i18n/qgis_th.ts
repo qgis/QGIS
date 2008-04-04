@@ -97,6 +97,104 @@
     </message>
 </context>
 <context>
+    <name>Geoprocessing</name>
+    <message>
+        <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="21"/>
+        <source>Geoprocessing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="63"/>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="70"/>
+        <source>Exit</source>
+        <translation type="unfinished">ออก</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="118"/>
+        <source>Layer B:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="168"/>
+        <source>Parameter:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="189"/>
+        <source>0.0</source>
+        <translation type="unfinished">0.0</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="206"/>
+        <source>Layer A:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="235"/>
+        <source>Function:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="251"/>
+        <source>Select a function ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="256"/>
+        <source>Buffer</source>
+        <translation type="unfinished">แนวกันชน</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="261"/>
+        <source>Convex Hull</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="266"/>
+        <source>Difference A - B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="271"/>
+        <source>Intersection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="276"/>
+        <source>SymDifference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="281"/>
+        <source>Union</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="327"/>
+        <source>Add Layer to Map?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="360"/>
+        <source>Save as:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="370"/>
+        <source>Browse</source>
+        <translation type="unfinished">แสดง</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="413"/>
+        <source>use selected Objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Gui</name>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="55"/>
@@ -268,6 +366,127 @@
         <location filename="" line="6851227"/>
         <source>Alt+C</source>
         <translation type="obsolete">Alt+C</translation>
+    </message>
+</context>
+<context>
+    <name>NewPostgisLayer</name>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="13"/>
+        <source>Create new PostGIS layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="52"/>
+        <source>Available PostgreSQL connections</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="79"/>
+        <source>Delete</source>
+        <translation type="unfinished">ลบ</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="89"/>
+        <source>Edit</source>
+        <translation type="unfinished">แก้ไข</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="99"/>
+        <source>New</source>
+        <translation type="unfinished">ใหม่</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="109"/>
+        <source>Connect</source>
+        <translation type="unfinished">เชื่อมต่อ</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="128"/>
+        <source>New layer definition</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="152"/>
+        <source>Schema name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="162"/>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="172"/>
+        <source>New layer name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="189"/>
+        <source>Index column:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="199"/>
+        <source>gid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="206"/>
+        <source>Geometry column:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="216"/>
+        <source>the_geom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="223"/>
+        <source>Geometry type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="234"/>
+        <source>MULTIPOINT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="239"/>
+        <source>MULTILINESTRING</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="244"/>
+        <source>MULTIPOLYGON</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="252"/>
+        <source>SRID number:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="295"/>
+        <source>Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="298"/>
+        <source>F1</source>
+        <translation type="unfinished">F1</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="327"/>
+        <source>Ok</source>
+        <translation type="unfinished">ตกลง</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="343"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1391,6 +1610,76 @@ Python support will be disabled.</source>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="433"/>
         <source>File could not been opened.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="47"/>
+        <source>Dxf2Shp Converter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="49"/>
+        <source>Converts from dxf to shp file format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evis.cpp" line="87"/>
+        <source>eVis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evis.cpp" line="88"/>
+        <source>An event visualization pluigin for QGIS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evis.cpp" line="89"/>
+        <source>Version 0.7</source>
+        <translation type="unfinished">รุ่น 0.7</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/eviseventidtool.cpp" line="70"/>
+        <source>This tool only supports vector data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/eviseventidtool.cpp" line="75"/>
+        <source>No active layers found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/interpolation/qgsgridfilewriter.cpp" line="61"/>
+        <source>Interpolating...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/interpolation/qgsgridfilewriter.cpp" line="61"/>
+        <source>Abort</source>
+        <translation type="unfinished">Abortar</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="24"/>
+        <source>Interpolation plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="25"/>
+        <source>A plugin for interpolation based on vertices of a vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="26"/>
+        <source>Version 0.001</source>
+        <translation type="unfinished">รุ่น 0.001</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/sos/qgssosplugin.cpp" line="25"/>
+        <source>SOS plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/sos/qgssosplugin.cpp" line="26"/>
+        <source>Adds layers from Sensor Observation Service (SOS) to the QGIS canvas</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3041,6 +3330,11 @@ Compiled against Qt </source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1576"/>
         <source>Improved support for transparency and contrast stretching in raster layers. Support for color ramps in raster layers. Support for non-north up rasters. Many other raster improvements &apos;under the hood&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2791"/>
+        <source></source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5819,29 +6113,29 @@ geometry.</source>
 <context>
     <name>QgsEditReservedWordsBase</name>
     <message>
-        <location filename="" line="6851227"/>
+        <location filename="../build/src/plugins/spit/ui_qgseditreservedwordsbase.h" line="103"/>
         <source>Edit Reserved Words</source>
-        <translation type="obsolete">แก้ไขคำสงวน</translation>
+        <translation type="unfinished">แก้ไขคำสงวน</translation>
     </message>
     <message>
-        <location filename="" line="6851227"/>
+        <location filename="../build/src/plugins/spit/ui_qgseditreservedwordsbase.h" line="118"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Double click the Column Name column to change the name of the column.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Pulsar dos veces sobre &quot;Nombre de Columna&quot; para cambiar el nombre de la columna.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Pulsar dos veces sobre &quot;Nombre de Columna&quot; para cambiar el nombre de la columna.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="" line="6851227"/>
+        <location filename="../build/src/plugins/spit/ui_qgseditreservedwordsbase.h" line="108"/>
         <source>Status</source>
-        <translation type="obsolete">สถานะ</translation>
+        <translation type="unfinished">สถานะ</translation>
     </message>
     <message>
-        <location filename="" line="6851227"/>
+        <location filename="../build/src/plugins/spit/ui_qgseditreservedwordsbase.h" line="112"/>
         <source>Column Name</source>
-        <translation type="obsolete">ชื่อช่อง</translation>
+        <translation type="unfinished">ชื่อช่อง</translation>
     </message>
     <message>
-        <location filename="" line="6851227"/>
+        <location filename="../build/src/plugins/spit/ui_qgseditreservedwordsbase.h" line="116"/>
         <source>Index</source>
-        <translation type="obsolete">ดัชนี</translation>
+        <translation type="unfinished">ดัชนี</translation>
     </message>
     <message>
         <location filename="" line="6851227"/>
@@ -5864,14 +6158,14 @@ geometry.</source>
         <translation type="obsolete">&amp;Cancelar</translation>
     </message>
     <message>
-        <location filename="" line="6851227"/>
+        <location filename="../build/src/plugins/spit/ui_qgseditreservedwordsbase.h" line="119"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This shapefile contains reserved words. These may affect the import into PostgreSQL. Edit the column names so none of the reserved words listed at the right are used (click on a Column Name entry to edit). You may also change any other column name if desired.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Este archivo shape contiene palabras reservadas. Esto puede incidir en la importación a PostgreSQL. Editar los nombres de columna para que no se emplee ninguna de las palabras reservadas listadas a la derecha (pulsar sobre &quot;Nombre de Columna&quot; para editar). Si lo desea también puede cambiar cualquier otro nombre de columna.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Este archivo shape contiene palabras reservadas. Esto puede incidir en la importación a PostgreSQL. Editar los nombres de columna para que no se emplee ninguna de las palabras reservadas listadas a la derecha (pulsar sobre &quot;Nombre de Columna&quot; para editar). Si lo desea también puede cambiar cualquier otro nombre de columna.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="" line="6851227"/>
+        <location filename="../build/src/plugins/spit/ui_qgseditreservedwordsbase.h" line="120"/>
         <source>Reserved Words</source>
-        <translation type="obsolete">คำสงวน</translation>
+        <translation type="unfinished">คำสงวน</translation>
     </message>
 </context>
 <context>
@@ -9459,6 +9753,72 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
 </context>
 <context>
+    <name>QgsInterpolationDialogBase</name>
+    <message>
+        <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="19"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="31"/>
+        <source>Input</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="39"/>
+        <source>Input vector layer:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="51"/>
+        <source>Use z-Coordinate for interpolation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="60"/>
+        <source>Interpolation attribute: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="81"/>
+        <source>Output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="89"/>
+        <source>Interpolation method:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="103"/>
+        <source>Number of columns:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="121"/>
+        <source>Number of rows:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="139"/>
+        <source>Output File: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="149"/>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+</context>
+<context>
+    <name>QgsInterpolationPlugin</name>
+    <message>
+        <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="45"/>
+        <source>&amp;Interpolation</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsLUDialogBase</name>
     <message>
         <location filename="../src/ui/qgsludialogbase.ui" line="13"/>
@@ -12437,12 +12797,12 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="918"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="911"/>
         <source>No suitable key column in table</source>
         <translation>ไม่พบ key ที่เหมาะสม</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="922"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="915"/>
         <source>The table has no column suitable for use as a key.
 
 Qgis requires that the table either has a column of type
@@ -12456,105 +12816,105 @@ int4 ที่ไม่ซำ้ (ประกอบด้วย key พื้�
 หรือมี ช่อง oid PostgreSQL.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="963"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="956"/>
         <source>The unique index on column</source>
         <translation>ดัชนีแบบไม่ซำ้</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="965"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="958"/>
         <source>is unsuitable because Qgis does not currently support non-int4 type columns as a key into the table.
 </source>
         <translation type="unfinished">ไม่เหมาะสมเพราะ QGIS ยังไม่รองรับ non-int4 แบบ key ในฐานข้อมูล
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="988"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="981"/>
         <source>and </source>
         <translation>และ</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="994"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="987"/>
         <source>The unique index based on columns </source>
         <translation type="unfinished">ดัชนีที่ไม่ซำขึ้นอยู่กับช่อง</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="996"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="989"/>
         <source> is unsuitable because Qgis does not currently support multiple columns as a key into the table.
 </source>
         <translation type="unfinished">ไม่เหมาะสมเพราะ QGIS ยังไม่รองรับ multiple columns เป็น key ในตาราง </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1039"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1032"/>
         <source>Unable to find a key column</source>
         <translation>ไม่พบช่อง key</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1119"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1112"/>
         <source> derives from </source>
         <translation>ได้รับจาก</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1123"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1116"/>
         <source>and is suitable.</source>
         <translation type="unfinished">และเหมาะสม</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1127"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1120"/>
         <source>and is not suitable </source>
         <translation>และไม่เหมาะสม</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1128"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1121"/>
         <source>type is </source>
         <translation>คือชนิด</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1130"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1123"/>
         <source> and has a suitable constraint)</source>
         <translation>และมีส่วนที่เหมาะสม)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1132"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1125"/>
         <source> and does not have a suitable constraint)</source>
         <translation>และไม่มีส่วนที่เหมาะสม)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1218"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1211"/>
         <source>Note: </source>
         <translation>Note:</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1220"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1213"/>
         <source>initially appeared suitable but does not contain unique data, so is not suitable.
 </source>
         <translation type="unfinished">ตัวเริ่มต้นเหมาะสม แต่ไม่มีข้อมูลที่ไม่ซำ้ ดังนั้นจึงไม่เหมาะสม
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1232"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1225"/>
         <source>The view you selected has the following columns, none of which satisfy the above conditions:</source>
         <translation type="unfinished">กรอบภาพที่เลือกไม่มีช่องทีเชื่อถือได้</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1238"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1231"/>
         <source>Qgis requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
 </source>
         <translation type="unfinished">QGIS ต้องการ กรอบภาพที่มีช่องที่สามารถใช้เป็น key ที่ไม่ซำ้  ช่องนั้นควรเป็นช่องชนิด init4 และเป็น key พื้นฐาน</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1239"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1232"/>
         <source>The view </source>
         <translation>ตัวแสดงผล</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1240"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1233"/>
         <source>has no column suitable for use as a unique key.
 </source>
         <translation type="unfinished">ไม่มีช่องที่เหมาะสมที่จะใช้เป็น key ที่ไม่ซำ้
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1241"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1234"/>
         <source>No suitable key column in view</source>
         <translation>ไม่มีช่องข้อมูลที่เหมาะสม</translation>
     </message>
@@ -12613,44 +12973,44 @@ int4 ที่ไม่ซำ้ (ประกอบด้วย key พื้�
         <translation type="obsolete">เมื่อกำลังทำงาน:</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2529"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2528"/>
         <source>Unknown geometry type</source>
         <translation>เป็นรูปร่างที่ไม่รู้จัก</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2530"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2529"/>
         <source>Column </source>
         <translation>ช่อง</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2540"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2539"/>
         <source> in </source>
         <translation>ใน</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2532"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2531"/>
         <source> has a geometry type of </source>
         <translation>เป็นรูปร่างที่รู้จัก</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2532"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2531"/>
         <source>, which Qgis does not currently support.</source>
         <translation>, Qgis ยังไม่รองรับ.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2539"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2538"/>
         <source>Qgis was unable to determine the type and srid of column </source>
         <translation type="unfinished">Qgis ไม่สามารถจำแนก ชนิด และ srid ของช่อง</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2541"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2540"/>
         <source>. The database communication log was:
 </source>
         <translation>. การบันทึกประวัติของฐานข้อมูล:
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2542"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2541"/>
         <source>Unable to get feature type and srid</source>
         <translation>ไม่สามารถตรวจสอบ ชนิด และ srid ของข้อมูลได้</translation>
     </message>
@@ -12670,37 +13030,37 @@ int4 ที่ไม่ซำ้ (ประกอบด้วย key พื้�
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1874"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1867"/>
         <source>Error while adding features</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1906"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1901"/>
         <source>Error while deleting features</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1936"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1933"/>
         <source>Error while adding attributes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1973"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1972"/>
         <source>Error while deleting attributes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2037"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2036"/>
         <source>Error while changing attributes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2116"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2115"/>
         <source>Error while changing geometry values</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.h" line="505"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.h" line="497"/>
         <source>unexpected PostgreSQL error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -14200,6 +14560,110 @@ int4 ที่ไม่ซำ้ (ประกอบด้วย key พื้�
         <location filename="../src/core/qgsrunprocess.cpp" line="115"/>
         <source>Done</source>
         <translation>เสร็จ</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSOSPlugin</name>
+    <message>
+        <location filename="../src/plugins/sos/qgssosplugin.cpp" line="46"/>
+        <source>&amp;Add Sensor layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsSOSSourceSelect</name>
+    <message>
+        <location filename="../src/plugins/sos/qgssossourceselect.cpp" line="92"/>
+        <source>Offering not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/sos/qgssossourceselect.cpp" line="92"/>
+        <source>An problem occured adding the layer. The information about the selected offering could not be found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/sos/qgssossourceselect.cpp" line="219"/>
+        <source>Are you sure you want to remove the </source>
+        <translation type="unfinished">คุณแน่ใจนะที่จะเอาออก</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/sos/qgssossourceselect.cpp" line="219"/>
+        <source> connection and all associated settings?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/sos/qgssossourceselect.cpp" line="220"/>
+        <source>Confirm Delete</source>
+        <translation type="unfinished">ยืนยันการลบ</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSOSSourceSelectBase</name>
+    <message>
+        <location filename="../src/plugins/sos/qgssossourceselectbase.ui" line="13"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/sos/qgssossourceselectbase.ui" line="25"/>
+        <source>Server Connections</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/sos/qgssossourceselectbase.ui" line="49"/>
+        <source>&amp;New</source>
+        <translation type="unfinished">&amp;ใหม่</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/sos/qgssossourceselectbase.ui" line="59"/>
+        <source>Delete</source>
+        <translation type="unfinished">ลบ</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/sos/qgssossourceselectbase.ui" line="69"/>
+        <source>Edit</source>
+        <translation type="unfinished">แก้ไข</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/sos/qgssossourceselectbase.ui" line="95"/>
+        <source>C&amp;onnect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/sos/qgssossourceselectbase.ui" line="108"/>
+        <source>Offerings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/sos/qgssossourceselectbase.ui" line="118"/>
+        <source>Name</source>
+        <translation type="unfinished">ชื่อ</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/sos/qgssossourceselectbase.ui" line="123"/>
+        <source>Id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/sos/qgssossourceselectbase.ui" line="134"/>
+        <source>Optional settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/sos/qgssossourceselectbase.ui" line="142"/>
+        <source>Observed properties...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/sos/qgssossourceselectbase.ui" line="162"/>
+        <source>Procedures...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/sos/qgssossourceselectbase.ui" line="182"/>
+        <source>Features of interest...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16695,6 +17159,786 @@ int4 ที่ไม่ซำ้ (ประกอบด้วย key พื้�
         <location filename="" line="6851227"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Welcome to your automatically generated plugin!&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This is just a starting point. You now need to modify the code to make it do something useful....read on for a more information to get yourself started.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Documentation:&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;You really need to read the QGIS API Documentation now at:&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;http://svn.qgis.org/api_doc/html/&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In particular look at the following classes:&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QGisInterface&lt;/span&gt; : http://svn.qgis.org/api_doc/html/classQgisInterface.html&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QGisIface&lt;/span&gt;        :  http://svn.qgis.org/api_doc/html/classQgisIface.html&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QgsMapTool&lt;/span&gt;   : http://svn.qgis.org/api_doc/html/classQgsMapTool.html&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QgsPlugin&lt;/span&gt;       : http://svn.qgis.org/api_doc/html/classQgisPlugin.html&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;QGisIface is an abstract base class (ABC) that specifies what publicly available features of QGIS are exposed to third party code and plugins. QgisInterface is an concrete implementation of this ABC. The preferred way to carry out operations on QGIS is via the QGisInterface. An instance of the QgisInterface is passed to the plugin when it loads. Please consult the QGIS development team if there is functionality required in the QGisInterface that is not available.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;QgsPlugin is an ABC that defines required behaviour your plugin must provide. See below for more details.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;What are all the files in my generated plugin directory for?&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;Makefile.am  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This is the generated Makefile specification for your plugin. You will see that specifies c++ include paths (-I) and library linkages -l) to Qt4, GDAL, GEOS, QGIS Core, QGIS Ui, QGIS Gui and QGis Raster. You should add you application specific dependencies and source files to this Makefile.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename].h&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename].cpp  &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This is the class that provides the &apos;glue&apos; between your custom application logic and the QGIS application. You will see that a number of methods are already implemented for you - including some examples of how to add a raster or vector layer to the main application map canvas. This class is a concrete instance of the QgisPlugin interface which defines required behaviour for a plugin. In particular, a plugin has a number of static methods and members so that the QgsPluginManager and plugin loader logic can identify each plugin, create an appropriate menu entry for it etc. Note there is nothing stopping you creating multiple toolbar icons and menu entries for a single plugin. By default though a single menu entry and toolbar button is created and its pre-configured to call the run() method in this class when selected. This default implementation provided for you by the plugin builder is well documented, so please refer to the code for further advice.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename]guibase.ui  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename]guibase.ui.h&lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt;  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This is an Abstract Base Class implemented in Qt4 fashion as a Qt designer &apos;ui&apos; file. It defines the look of the default plugin dialog without implementing any application logic. You can modify this form to suite your needs or completely remove it if your plugin does not need to display a user form (e.g. for custom MapTools).&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename]gui.cpp  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename]gui.h &lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt; &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This is the concrete class where application logic for the above mentioned dialog should go. The world is your oyster here really....&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename].qrc  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;&lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt;This is the Qt4 resources file for your plugin. The Makefile generated for your plugin is all set up to compile the resource file so all you need to do is add your additional icons etc using the simple xml file format. Note the namespace used for all your resources e.g. (&quot;:/[pluginname]/&quot;). It is important to use this prefix for all your resources. We suggest you include any other images and run time data in this resurce file too.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename].png  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;&lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt;This is the icon that will be used for your plugin menu entry and toolbar icon. Simply replace this icon with your own icon to make your plugin disctinctive from the rest.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;README&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This file contains the documentation you are reading now!&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Getting developer help:&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;For Questions and Comments regarding the plugin builder template and creating your features in QGIS using the plugin interface please contact us via:&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; * the QGIS developers mailing list, or&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; * IRC (#qgis on freenode.net)&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;QGIS is distributed under the Gnu Public License. If you create a useful plugin please consider contributing it back to the community.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Have fun and thank you for choosing QGIS.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;The QGIS Team&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;2006&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;¡Bienvenido a su generador automático de extensiones!&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Este solo es un punto de arranque. Primero necesita modificar el código para hacer de él algo útil....continúe leyendo para obtener más información.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Documentación:&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Es necesario que lea la documentación de la API de QGIS en el vínculo:&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;http://svn.qgis.org/api_doc/html/&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;En particular fíjese en las siguientes clases:&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QGisInterface&lt;/span&gt; : http://svn.qgis.org/api_doc/html/classQgisInterface.html&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QGisIface&lt;/span&gt;        :  http://svn.qgis.org/api_doc/html/classQgisIface.html&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QgsMapTool&lt;/span&gt;   : http://svn.qgis.org/api_doc/html/classQgsMapTool.html&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QgsPlugin&lt;/span&gt;       : http://svn.qgis.org/api_doc/html/classQgisPlugin.html&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;QGisIface es una clase básica abstracta (ABC) que especifica qué características de QGIS están disponibles públicamente para código de terceros y extensiones. QgisInterface es una implementación concreta de esta ABC. La mejor manera de realizar operaciones en QGIS es vía QGisInterface. Una instancia del QgisInterface se pasa a la extensión en el momento en que se carga. Consulte al equipo de desarrollo de QGIS si se requiere una funcionalidad de QGisInterface que no esté disponible.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;QgsPlugin es una ABC que define la conducta que debe seguir su extensión. Siga leyendo para más detalles.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;¿Para qué sirven todos los archivos generados en el directorio de mi extensión?&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;Makefile.am  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Este es el Makefile que se ha generado con las especificaciones de su extensión. Como puede ver especifica c++ incluidas las rutas (-I) y enlaces a librerías -l) a Qt4, GDAL, GEOS, QGIS Core, QGIS Ui, QGIS Gui y QGis Raster. Debería añadir su aplicación y su código fuente y dependencias específicas a este Makefile.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename].h&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename].cpp  &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Esta es la clase que &quot;encola&quot; su aplicación con QGIS. Como puede ver, ya existe un numeroso número de métodos implementados - incluyendo algunos ejemplos de cómo añadir capas raster o vectoriales a la Vista del Mapa de la aplicación principal. Esta clase es una concreción del interfaz QgisPlugin que es el que define el comportamiento requerido para una extensión. En particular, una extensión tiene un número de métodos estáticos y miembros, así que el QgsPluginManager el Administrado de Extensiones pueden identificar cada extensión, crear las entradas de menú apropiadas para él, etc. Dese cuenta que nada le impide crear múltiples barras de herramientas, iconos y entradas de menú para una extensión. Por defecto, se crea una entrada de menu y un botón en la barra de heramientas preconfigurado para llamar a la aplicación (run() method) de esta clase cuando se pulsa. Esta implementación facilitada por el Generador de Extensiones está bien documentada, por lo que puede ver el código para una mejor comprensión.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename]guibase.ui  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename]guibase.ui.h&lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt;  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Esta es una ABC implementada en Qt4 como un archivo de diseño de interfaz de usuario. Define la apariencia del menú de la extensión por defecto sin implementar ninguna aplicación lógica. Puede modificar este formulario para ajustarse a sus necesidades o puede eliminarlo si la extensión no necesita ningún menú (por ej. herramientas personalizadas).&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename]gui.cpp  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename]gui.h &lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt; &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Esta es la clase en donde debería ir el diálogo de la aplicación lógica mencionada antes.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename].qrc  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;&lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt;Este es el archivo de recursos Qt4 para su extensión. El archivo Make (Makefile) generado para su extensión está configurado para compilar el archivo de recursos, así que todo lo que necesita es añadir sus iconos adicionales utilizando un sencillo archivo en formato xml. Anote el espacio del cuadro del nombre de todos sus recursos, por ej.(&quot;:/[pluginname]/&quot;). Es importante utilizar el mismo prefijo para todos sus recursos. Le sugerimos que incluya también cualquier otra imagen y datos extra en este archivo de recursos.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename].png  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;&lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt;Este es el icono que se utilizará para el menú de su extensión y para su barra de herramientas. Simplemente reemplace este icono por el suyo para distinguir su extensión del resto.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;README&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Este archivo contiene la documentación que está leyendo&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Obteniendo ayuda para el desarrollo:&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Para cuestiones y comentarios relativos a la plantilla del Constructor de Extensiones y crear sus propios objetos en QGIS utilizando la interfaz de extensiones, contacte con nosotros vía:&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; * lista de correo de desarrolladores de QGIS, o&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; * IRC (#qgis en freenode.net)&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;QGIS se rige bajo la Gnu Public License. Si crea una extensión útil tenga en cuenta que puede contribuir con ella a la comunidad.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Diviértase y gracias por escoger QGIS.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;El Equipo QGIS&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;2006&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+</context>
+<context>
+    <name>dxf2shpConverter</name>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="84"/>
+        <source>Converts DXF files in Shapefile format</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>dxf2shpConverterGui</name>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="144"/>
+        <source>Choose a delimited text file to open</source>
+        <translation type="unfinished">โปรดเลือกตัวคั่น</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="13"/>
+        <source>QGIS Plugin Template</source>
+        <translation type="unfinished">ต้นแบบโปรแกรมเพิ่มเติม QGIS</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="49"/>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:22pt;&quot;&gt;Dxf to Shp Converter&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="81"/>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Output Shp file:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="91"/>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Input DXF file:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="286"/>
+        <source>Browse</source>
+        <translation type="unfinished">แสดง</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="144"/>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Shp output file type:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="175"/>
+        <source>Polyline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="198"/>
+        <source>Polygon</source>
+        <translation type="unfinished">รูปปิด</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="218"/>
+        <source>Point</source>
+        <translation type="unfinished">จุด</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="253"/>
+        <source>Export text labels</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>eVis</name>
+    <message>
+        <location filename="../src/plugins/evis/evis.cpp" line="128"/>
+        <source>Create layer from database query</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evis.cpp" line="129"/>
+        <source>Tool for selecting indiviudual points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evis.cpp" line="130"/>
+        <source>Open an Even Browser to explore the current layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>eVisDatabaseConnectionGui</name>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectiongui.cpp" line="207"/>
+        <source>Undefined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectiongui.cpp" line="68"/>
+        <source>No predefined queries loaded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectiongui.cpp" line="444"/>
+        <source>Open File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectiongui.cpp" line="204"/>
+        <source>New Database connection requested...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectiongui.cpp" line="209"/>
+        <source>Error: You must select a database type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectiongui.cpp" line="217"/>
+        <source>Error: No host name entered</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectiongui.cpp" line="223"/>
+        <source>Error: No username entered</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectiongui.cpp" line="229"/>
+        <source>Error: No password entered</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectiongui.cpp" line="236"/>
+        <source>Error: No database name entered</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectiongui.cpp" line="279"/>
+        <source>Connection to [</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectiongui.cpp" line="274"/>
+        <source>] established.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectiongui.cpp" line="275"/>
+        <source>connected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectiongui.cpp" line="279"/>
+        <source>] failed: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectiongui.cpp" line="293"/>
+        <source>XML (*.xml)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectiongui.cpp" line="401"/>
+        <source>Error: Parse error at line %1, column %2: %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectiongui.cpp" line="406"/>
+        <source>Error: Unabled to open file [</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectiongui.cpp" line="442"/>
+        <source>MSAccess (*.mdb)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectiongui.cpp" line="444"/>
+        <source>Sqlite (*.db)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectiongui.cpp" line="462"/>
+        <source>Error: Query failed: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectiongui.cpp" line="517"/>
+        <source>Error: Counld not create temporary file, process halted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectiongui.cpp" line="524"/>
+        <source>Error: A database connection is not currently established</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>eVisDatabaseConnectionGuiBase</name>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="175"/>
+        <source>Database Connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="58"/>
+        <source>Predfined Queries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="88"/>
+        <source>Load predefined queries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="91"/>
+        <source>Loads an XML file with predefined queries. Use the Open File window to locate the XML file that contains one or more predefined queries using the format described in the user guide.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="120"/>
+        <source>The description of the selected query.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="130"/>
+        <source>Select the predefined query you want to use from the drop-down list containing queries identified form the file loaded using the Open File icon above. To run the query you need to click on the SQL Query tab. The query will be automatically entered in the query window.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="199"/>
+        <source>not connected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="209"/>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Connection Status: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="219"/>
+        <source>Database Host</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message encoding="UTF-8">
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="226"/>
+        <source>Enter the database host. If the database resides on your desktop you should enter ¨localhost¨. If you selected ¨MSAccess¨ as the database type this option will not be available. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="236"/>
+        <source>Password to access the database.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="246"/>
+        <source>Enter the name of the database.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="266"/>
+        <source>Username</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="273"/>
+        <source>Enter the port through which the database must be accessed if a MYSQL database is used.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="283"/>
+        <source>Connect to the database using the parameters selected above. If the connection was successful a message will be displayed in the Output Console below saying the connection was established. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="286"/>
+        <source>Connect</source>
+        <translation type="unfinished">เชื่อมต่อ</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="296"/>
+        <source>User name to access the database.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="303"/>
+        <source>Select the type of database from the list of supported databases in the drop-down menu.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="323"/>
+        <source>Database Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="330"/>
+        <source>Password</source>
+        <translation type="unfinished">ระหัสผ่าน</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="337"/>
+        <source>Database Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="344"/>
+        <source>Port</source>
+        <translation type="unfinished">พอร์ท</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="383"/>
+        <source>SQL Query</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="420"/>
+        <source>Run the query entered above. The status of the query will be displayed in the Output  Console below.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="423"/>
+        <source>Run Query</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="433"/>
+        <source>Enter the query you want to run in this window.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="480"/>
+        <source>A window for status messages to be displayed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaseconnectionguibase.ui" line="503"/>
+        <source>Output Console</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>eVisDatabaseLayerFieldSelectionGuiBase</name>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaselayerfieldselectionguibase.ui" line="16"/>
+        <source>Database File Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaselayerfieldselectionguibase.ui" line="53"/>
+        <source>The name of the field that contains the Y coordinate of the points.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaselayerfieldselectionguibase.ui" line="66"/>
+        <source>The name of the field that contains the X coordinate of the points.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaselayerfieldselectionguibase.ui" line="76"/>
+        <source>Enter the name for the new layer that will be created and displayed in QGIS.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaselayerfieldselectionguibase.ui" line="83"/>
+        <source>Y Coordinate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaselayerfieldselectionguibase.ui" line="90"/>
+        <source>X Coordinate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisdatabaselayerfieldselectionguibase.ui" line="97"/>
+        <source>Name of New Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>eVisGenericEventBrowserGui</name>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowsergui.cpp" line="140"/>
+        <source>Generic Event Browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowsergui.cpp" line="164"/>
+        <source>Field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowsergui.cpp" line="164"/>
+        <source>Value</source>
+        <translation type="unfinished">ค่า</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowsergui.cpp" line="248"/>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowsergui.cpp" line="242"/>
+        <source>This tool only supports vector data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowsergui.cpp" line="248"/>
+        <source>No active layers found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowsergui.cpp" line="319"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowsergui.cpp" line="254"/>
+        <source>Unable to connecto to either the map canvas or application interface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowsergui.cpp" line="319"/>
+        <source>NULL was returned instead of a valid feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/plugins/evis/evisgenericeventbrowsergui.cpp" line="359"/>
+        <source>Generic Event Browser - Displaying records 01 of 0%n</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/plugins/evis/evisgenericeventbrowsergui.cpp" line="363"/>
+        <source>Generic Event Browser - Displaying records 01 of %n</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowsergui.cpp" line="885"/>
+        <source>Attribute Contents</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowsergui.cpp" line="1127"/>
+        <source>Generic Event Browser - Displaying records </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowsergui.cpp" line="1127"/>
+        <source>of</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowsergui.cpp" line="1199"/>
+        <source>Select Application</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowsergui.cpp" line="1199"/>
+        <source>All (*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>eVisGenericEventBrowserGuiBase</name>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="38"/>
+        <source>Display</source>
+        <translation type="unfinished">แสดง</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="82"/>
+        <source>Use the Previous button to display the previous photo when more than one photo is available for display.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="85"/>
+        <source>Previous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="101"/>
+        <source>Use the Next button to display the next photo when more than one photo is available for display.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="104"/>
+        <source>Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message encoding="UTF-8">
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="138"/>
+        <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="142"/>
+        <source>1</source>
+        <translation type="unfinished">1</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="156"/>
+        <source>Image display area</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="159"/>
+        <source>Display area for the image.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="190"/>
+        <source>Options</source>
+        <translation type="unfinished">เงื่อนไข</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="209"/>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Save?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="232"/>
+        <source>Attribute Containing Path to File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="261"/>
+        <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message encoding="UTF-8">
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="271"/>
+        <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.  </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="274"/>
+        <source>Path Is Relative</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="315"/>
+        <source>If checked, the relative path values will be saved for the next session.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="912"/>
+        <source>Reset to default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="461"/>
+        <source>Resets the values on this line to the default setting.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="364"/>
+        <source>If checked an arrow pointing in the direction defined by the attribute in the field selected from the drop-down list to the right will be displayed in the QGIS window on top of the point for this image.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="367"/>
+        <source>Display Compass Bearing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="396"/>
+        <source>Use the drop-down list to select the field containing the compass bearing for the image. This bearing usually references the direction the camera was pointing when the image was acquired. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="437"/>
+        <source>If checked, the Display Compass Bearing values will be saved for the next session.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="480"/>
+        <source>Compass Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="501"/>
+        <source>A value to be added to the compass bearing. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="523"/>
+        <source>Define the compass offset using a field from the vector layer attribute table.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="526"/>
+        <source> From Attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="555"/>
+        <source>Use the drop-down list to select the field containing the compass bearing offset. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="565"/>
+        <source>Define the compass offset manually.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="568"/>
+        <source>Manual</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="612"/>
+        <source>If checked, the compass offset values will be saved for the next session.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="636"/>
+        <source>Resets the compass offset values to the default settings.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message encoding="UTF-8">
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="681"/>
+        <source>The base path or url from which images and documents can be “relative”</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="690"/>
+        <source>Base Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="703"/>
+        <source>Base path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="706"/>
+        <source>The Base Path onto which the relative path defined above will be appended.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="736"/>
+        <source>If checked, the Base Path will be saved for the next session.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message encoding="UTF-8">
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="760"/>
+        <source>Enters the default “Base Path” which is the  path to the directory of the vector layer containing the image information.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="782"/>
+        <source>If checked, the Base Path will append only the file name instead of the entire relative path (defined above) to create the full directory path to the file. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="785"/>
+        <source>Replace entire path/url stored in image path attribute with user defined
+Base Path (i.e. keep only filename from attribute)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="891"/>
+        <source>If checked, the  current check-box setting will be saved for the next session.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="915"/>
+        <source>Clears the check-box on this line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="860"/>
+        <source>If checked, the same path rules that are defined  for images will be used for non-image documents such as movies, text documents, and sound files. If not checked the path rules will only apply to images and other documents will ignore the Base Path parameter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="863"/>
+        <source>Apply Path to Image rules when loading docs in external applications</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message encoding="UTF-8">
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="970"/>
+        <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="981"/>
+        <source>Configure External Applications</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="1002"/>
+        <source>File extension and external application in which to load a document of that type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="1027"/>
+        <source>A table containing file types that can be opened using eVis. Each file type needs a file extension and the path to an application that can open that type of file. This provides the capability of opening a broad range of files such as movies, sound recording, and text documents instead of only images. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="1031"/>
+        <source>Extension</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="1036"/>
+        <source>Application</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="1046"/>
+        <source>Add new file type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="1049"/>
+        <source>Add a new file type with a unique extension and the path for the application that can open the file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="1062"/>
+        <source>Delete current row</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisgenericeventbrowserguibase.ui" line="1065"/>
+        <source>Delete the file type highlighted in the table and defined by a file extension and a path to an associated application.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>eVisImageDisplayWidget</name>
+    <message>
+        <location filename="../src/plugins/evis/evisimagedisplaywidget.cpp" line="50"/>
+        <source>Zoom in</source>
+        <translation type="unfinished">ขยายเข้า</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisimagedisplaywidget.cpp" line="51"/>
+        <source>Zoom in to see more detal.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisimagedisplaywidget.cpp" line="52"/>
+        <source>Zoom out</source>
+        <translation type="unfinished">ขยายออก</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisimagedisplaywidget.cpp" line="53"/>
+        <source>Zoom out to see more area.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisimagedisplaywidget.cpp" line="54"/>
+        <source>Zoom to full extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/evis/evisimagedisplaywidget.cpp" line="55"/>
+        <source>Zoom to display the entire image.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
