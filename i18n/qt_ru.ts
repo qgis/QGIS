@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1">
+<!DOCTYPE TS><TS version="1.1" language="ru">
+<defaultcodec></defaultcodec>
 <context>
     <name>PPDOptionsModel</name>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="1595"/>
         <source>Name</source>
-        <translation type="unfinished">Имя</translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="1597"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Значение</translation>
     </message>
 </context>
 <context>
@@ -31,27 +32,27 @@
     <message>
         <location filename="../src/qt3support/sql/q3datatable.cpp" line="253"/>
         <source>True</source>
-        <translation type="unfinished">True</translation>
+        <translation>True</translation>
     </message>
     <message>
         <location filename="../src/qt3support/sql/q3datatable.cpp" line="254"/>
         <source>False</source>
-        <translation type="unfinished">False</translation>
+        <translation>False</translation>
     </message>
     <message>
         <location filename="../src/qt3support/sql/q3datatable.cpp" line="766"/>
         <source>Insert</source>
-        <translation type="unfinished">Вставить</translation>
+        <translation>Вставить</translation>
     </message>
     <message>
         <location filename="../src/qt3support/sql/q3datatable.cpp" line="767"/>
         <source>Update</source>
-        <translation type="unfinished">Обновить</translation>
+        <translation>Обновить</translation>
     </message>
     <message>
         <location filename="../src/qt3support/sql/q3datatable.cpp" line="768"/>
         <source>Delete</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation>Удалить</translation>
     </message>
 </context>
 <context>
@@ -59,316 +60,316 @@
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="834"/>
         <source>Copy or Move a File</source>
-        <translation type="unfinished">Копировать или переместить файл</translation>
+        <translation>Копировать или переместить файл</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="842"/>
         <source>Read: %1</source>
-        <translation type="unfinished">Открытие: %1</translation>
+        <translation>Открытие: %1</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="878"/>
         <source>Write: %1</source>
-        <translation type="unfinished">Запись: %1</translation>
+        <translation>Запись: %1</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2470"/>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog_mac.cpp" line="80"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">Все файлы (*)</translation>
+        <translation>Все файлы (*)</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2426"/>
         <source>Name</source>
-        <translation type="unfinished">Имя</translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2427"/>
         <source>Size</source>
-        <translation type="unfinished">Размер</translation>
+        <translation>Размер</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2429"/>
         <source>Type</source>
-        <translation type="unfinished">Тип</translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2430"/>
         <source>Date</source>
-        <translation type="unfinished">Дата</translation>
+        <translation>Дата</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2431"/>
         <source>Attributes</source>
-        <translation type="unfinished">Атрибуты</translation>
+        <translation>Атрибуты</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4530"/>
         <source>&amp;OK</source>
-        <translation type="unfinished">&amp;OK</translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2506"/>
         <source>Look &amp;in:</source>
-        <translation type="unfinished">&amp;Смотреть в:</translation>
+        <translation>&amp;Смотреть в:</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4537"/>
         <source>File &amp;name:</source>
-        <translation type="unfinished">&amp;Имя файла:</translation>
+        <translation>&amp;Имя файла:</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2508"/>
         <source>File &amp;type:</source>
-        <translation type="unfinished">&amp;Тип файла:</translation>
+        <translation>&amp;Тип файла:</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2515"/>
         <source>Back</source>
-        <translation type="unfinished">Назад</translation>
+        <translation>Назад</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2522"/>
         <source>One directory up</source>
-        <translation type="unfinished">Вверх на один уровень</translation>
+        <translation>Вверх на один уровень</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2531"/>
         <source>Create New Folder</source>
-        <translation type="unfinished">Создать новый каталог</translation>
+        <translation>Создать новый каталог</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2549"/>
         <source>List View</source>
-        <translation type="unfinished">Список</translation>
+        <translation>Список</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2557"/>
         <source>Detail View</source>
-        <translation type="unfinished">Детальный вид</translation>
+        <translation>Детальный вид</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2566"/>
         <source>Preview File Info</source>
-        <translation type="unfinished">Предпросмотр информации о файле</translation>
+        <translation>Предпросмотр информации о файле</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2589"/>
         <source>Preview File Contents</source>
-        <translation type="unfinished">Предпросмотр содержимого файла</translation>
+        <translation>Предпросмотр содержимого файла</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2677"/>
         <source>Read-write</source>
-        <translation type="unfinished">Чтение-запись</translation>
+        <translation>Чтение-запись</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2678"/>
         <source>Read-only</source>
-        <translation type="unfinished">Только чтение</translation>
+        <translation>Только чтение</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2679"/>
         <source>Write-only</source>
-        <translation type="unfinished">Только запись</translation>
+        <translation>Только запись</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2680"/>
         <source>Inaccessible</source>
-        <translation type="unfinished">Нет доступа</translation>
+        <translation>Нет доступа</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2682"/>
         <source>Symlink to File</source>
-        <translation type="unfinished">Ссылка на файл</translation>
+        <translation>Ссылка на файл</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2683"/>
         <source>Symlink to Directory</source>
-        <translation type="unfinished">Ссылка на каталог</translation>
+        <translation>Ссылка на каталог</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2684"/>
         <source>Symlink to Special</source>
-        <translation type="unfinished">Ссылка на спецфайл</translation>
+        <translation>Ссылка на спецфайл</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2685"/>
         <source>File</source>
-        <translation type="unfinished">Файл</translation>
+        <translation>Файл</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2686"/>
         <source>Dir</source>
-        <translation type="unfinished">Каталог</translation>
+        <translation>Каталог</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2687"/>
         <source>Special</source>
-        <translation type="unfinished">Спецфайл</translation>
+        <translation>Спецфайл</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog_win.cpp" line="308"/>
         <source>Open</source>
-        <translation type="unfinished">Открыть</translation>
+        <translation>Открыть</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog_win.cpp" line="392"/>
         <source>Save As</source>
-        <translation type="unfinished">Сохранить как</translation>
+        <translation>Сохранить как</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4536"/>
         <source>&amp;Open</source>
-        <translation type="unfinished">&amp;Открыть</translation>
+        <translation>&amp;Открыть</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4520"/>
         <source>&amp;Save</source>
-        <translation type="unfinished">&amp;Сохранить</translation>
+        <translation>&amp;Сохранить</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4179"/>
         <source>&amp;Rename</source>
-        <translation type="unfinished">&amp;Переименовать</translation>
+        <translation>&amp;Переименовать</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4180"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Удалить</translation>
+        <translation>&amp;Удалить</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4200"/>
         <source>R&amp;eload</source>
-        <translation type="unfinished">О&amp;бновить</translation>
+        <translation>О&amp;бновить</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4204"/>
         <source>Sort by &amp;Name</source>
-        <translation type="unfinished">По &amp;имени</translation>
+        <translation>По &amp;имени</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4206"/>
         <source>Sort by &amp;Size</source>
-        <translation type="unfinished">По &amp;размеру</translation>
+        <translation>По &amp;размеру</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4207"/>
         <source>Sort by &amp;Date</source>
-        <translation type="unfinished">По &amp;дате</translation>
+        <translation>По &amp;дате</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4209"/>
         <source>&amp;Unsorted</source>
-        <translation type="unfinished">&amp;Не упорядочивать</translation>
+        <translation>&amp;Не упорядочивать</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4224"/>
         <source>Sort</source>
-        <translation type="unfinished">Упорядочить</translation>
+        <translation>Упорядочить</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4228"/>
         <source>Show &amp;hidden files</source>
-        <translation type="unfinished">Показать &amp;скрытые файлы</translation>
+        <translation>Показать &amp;скрытые файлы</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4259"/>
         <source>the file</source>
-        <translation type="unfinished">файл</translation>
+        <translation>файл</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4261"/>
         <source>the directory</source>
-        <translation type="unfinished">каталог</translation>
+        <translation>каталог</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4263"/>
         <source>the symlink</source>
-        <translation type="unfinished">ссылку</translation>
+        <translation>ссылку</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4266"/>
         <source>Delete %1</source>
-        <translation type="unfinished">Удалить %1</translation>
+        <translation>Удалить %1</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4268"/>
         <source>&lt;qt&gt;Are you sure you wish to delete %1 &quot;%2&quot;?&lt;/qt&gt;</source>
-        <translation type="unfinished">&lt;qt&gt;Вы действительно хотите удалить %1 &quot;%2&quot;?&lt;/qt&gt;</translation>
+        <translation>&lt;qt&gt;Вы действительно хотите удалить %1 &quot;%2&quot;?&lt;/qt&gt;</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4269"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished">&amp;Да</translation>
+        <translation>&amp;Да</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4269"/>
         <source>&amp;No</source>
-        <translation type="unfinished">&amp;Нет</translation>
+        <translation>&amp;Нет</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4305"/>
         <source>New Folder 1</source>
-        <translation type="unfinished">Новый каталог 1</translation>
+        <translation>Новый каталог 1</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4310"/>
         <source>New Folder</source>
-        <translation type="unfinished">Новый каталог</translation>
+        <translation>Новый каталог</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4315"/>
         <source>New Folder %1</source>
-        <translation type="unfinished">Новый каталог %1</translation>
+        <translation>Новый каталог %1</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4420"/>
         <source>Find Directory</source>
-        <translation type="unfinished">Найти каталог</translation>
+        <translation>Найти каталог</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4533"/>
         <source>Directories</source>
-        <translation type="unfinished">Каталоги</translation>
+        <translation>Каталоги</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4531"/>
         <source>Directory:</source>
-        <translation type="unfinished">Каталог:</translation>
+        <translation>Каталог:</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="5716"/>
         <source>Error</source>
-        <translation type="unfinished">Ошибка</translation>
+        <translation>Ошибка</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4572"/>
         <source>%1
 File not found.
 Check path and filename.</source>
-        <translation type="unfinished">%1
+        <translation>%1
 Файл не найден.
 Проверьте правильность пути и имени файла.</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog_win.cpp" line="103"/>
         <source>All Files (*.*)</source>
-        <translation type="unfinished">Все файлы (*.*)</translation>
+        <translation>Все файлы (*.*)</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog_win.cpp" line="478"/>
         <source>Open </source>
-        <translation type="unfinished">Открыть</translation>
+        <translation>Открыть</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog_win.cpp" line="633"/>
         <source>Select a Directory</source>
-        <translation type="unfinished">Выбрать каталог</translation>
+        <translation>Выбрать каталог</translation>
     </message>
 </context>
 <context>
@@ -377,21 +378,21 @@ Check path and filename.</source>
         <location filename="../src/qt3support/network/q3localfs.cpp" line="113"/>
         <source>Could not read directory
 %1</source>
-        <translation type="unfinished">Невозможно просмотреть каталог
+        <translation>Невозможно просмотреть каталог
 %1</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3localfs.cpp" line="158"/>
         <source>Could not create directory
 %1</source>
-        <translation type="unfinished">Невозможно создать каталог
+        <translation>Невозможно создать каталог
 %1</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3localfs.cpp" line="192"/>
         <source>Could not remove file or directory
 %1</source>
-        <translation type="unfinished">Невозможно удалить файл или каталог
+        <translation>Невозможно удалить файл или каталог
 %1</translation>
     </message>
     <message>
@@ -400,7 +401,7 @@ Check path and filename.</source>
 %1
 to
 %2</source>
-        <translation type="unfinished">Невозможно переименовать
+        <translation>Невозможно переименовать
 %1
 в
 %2</translation>
@@ -409,14 +410,14 @@ to
         <location filename="../src/qt3support/network/q3localfs.cpp" line="244"/>
         <source>Could not open
 %1</source>
-        <translation type="unfinished">Невозможно открыть
+        <translation>Невозможно открыть
 %1</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3localfs.cpp" line="312"/>
         <source>Could not write
 %1</source>
-        <translation type="unfinished">Невозможно записать
+        <translation>Невозможно записать
 %1</translation>
     </message>
 </context>
@@ -425,12 +426,12 @@ to
     <message>
         <location filename="../src/qt3support/widgets/q3mainwindow.cpp" line="2050"/>
         <source>Line up</source>
-        <translation type="unfinished">Выровнять</translation>
+        <translation>Выровнять</translation>
     </message>
     <message>
         <location filename="../src/qt3support/widgets/q3mainwindow.cpp" line="2052"/>
         <source>Customize...</source>
-        <translation type="unfinished">Настроить...</translation>
+        <translation>Настроить...</translation>
     </message>
 </context>
 <context>
@@ -438,7 +439,7 @@ to
     <message>
         <location filename="../src/qt3support/network/q3networkprotocol.cpp" line="827"/>
         <source>Operation stopped by the user</source>
-        <translation type="unfinished">Операция прервана пользователем</translation>
+        <translation>Операция прервана пользователем</translation>
     </message>
 </context>
 <context>
@@ -446,7 +447,7 @@ to
     <message>
         <location filename="../src/qt3support/dialogs/q3progressdialog.cpp" line="292"/>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
 </context>
 <context>
@@ -454,27 +455,27 @@ to
     <message>
         <location filename="../src/qt3support/dialogs/q3tabdialog.cpp" line="973"/>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3tabdialog.cpp" line="617"/>
         <source>Apply</source>
-        <translation type="unfinished">Применить</translation>
+        <translation>Применить</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3tabdialog.cpp" line="660"/>
         <source>Help</source>
-        <translation type="unfinished">Справка</translation>
+        <translation>Справка</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3tabdialog.cpp" line="705"/>
         <source>Defaults</source>
-        <translation type="unfinished">По умолчанию</translation>
+        <translation>По умолчанию</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3tabdialog.cpp" line="755"/>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
 </context>
 <context>
@@ -482,37 +483,37 @@ to
     <message>
         <location filename="../src/qt3support/text/q3textedit.cpp" line="5424"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished">&amp;Отменить</translation>
+        <translation>&amp;Отменить</translation>
     </message>
     <message>
         <location filename="../src/qt3support/text/q3textedit.cpp" line="5425"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished">&amp;Повторить</translation>
+        <translation>&amp;Повторить</translation>
     </message>
     <message>
         <location filename="../src/qt3support/text/q3textedit.cpp" line="5430"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">&amp;Вырезать</translation>
+        <translation>&amp;Вырезать</translation>
     </message>
     <message>
         <location filename="../src/qt3support/text/q3textedit.cpp" line="5431"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">&amp;Копировать</translation>
+        <translation>&amp;Копировать</translation>
     </message>
     <message>
         <location filename="../src/qt3support/text/q3textedit.cpp" line="5433"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">&amp;Вставить</translation>
+        <translation>&amp;Вставить</translation>
     </message>
     <message>
         <location filename="../src/qt3support/text/q3textedit.cpp" line="5436"/>
         <source>Clear</source>
-        <translation type="unfinished">Очистить</translation>
+        <translation>Очистить</translation>
     </message>
     <message>
         <location filename="../src/qt3support/text/q3textedit.cpp" line="5442"/>
         <source>Select All</source>
-        <translation type="unfinished">Выделить все</translation>
+        <translation>Выделить все</translation>
     </message>
 </context>
 <context>
@@ -530,7 +531,7 @@ to
     <message>
         <location filename="../src/plugins/accessible/compat/q3complexwidgets.cpp" line="220"/>
         <source>Minimize</source>
-        <translation type="unfinished">Свернуть</translation>
+        <translation>Свернуть</translation>
     </message>
     <message>
         <location filename="../src/plugins/accessible/compat/q3complexwidgets.cpp" line="223"/>
@@ -540,12 +541,12 @@ to
     <message>
         <location filename="../src/plugins/accessible/compat/q3complexwidgets.cpp" line="224"/>
         <source>Maximize</source>
-        <translation type="unfinished">Развернуть</translation>
+        <translation>Развернуть</translation>
     </message>
     <message>
         <location filename="../src/plugins/accessible/compat/q3complexwidgets.cpp" line="226"/>
         <source>Close</source>
-        <translation type="unfinished">Закрыть</translation>
+        <translation>Закрыть</translation>
     </message>
     <message>
         <location filename="../src/plugins/accessible/compat/q3complexwidgets.cpp" line="244"/>
@@ -596,47 +597,47 @@ to
     <message>
         <location filename="../src/qt3support/network/q3urloperator.cpp" line="624"/>
         <source>The protocol `%1&apos; is not supported</source>
-        <translation type="unfinished">Протокол `%1&apos; не поддерживается</translation>
+        <translation>Протокол `%1&apos; не поддерживается</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3urloperator.cpp" line="364"/>
         <source>The protocol `%1&apos; does not support listing directories</source>
-        <translation type="unfinished">Протокол `%1&apos; не поддерживает просмотр каталогов</translation>
+        <translation>Протокол `%1&apos; не поддерживает просмотр каталогов</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3urloperator.cpp" line="367"/>
         <source>The protocol `%1&apos; does not support creating new directories</source>
-        <translation type="unfinished">Протокол `%1&apos; не поддерживает создание новых каталогов</translation>
+        <translation>Протокол `%1&apos; не поддерживает создание новых каталогов</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3urloperator.cpp" line="370"/>
         <source>The protocol `%1&apos; does not support removing files or directories</source>
-        <translation type="unfinished">Протокол `%1&apos; не поддерживает удаление файлов или каталогов</translation>
+        <translation>Протокол `%1&apos; не поддерживает удаление файлов или каталогов</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3urloperator.cpp" line="373"/>
         <source>The protocol `%1&apos; does not support renaming files or directories</source>
-        <translation type="unfinished">Протокол `%1&apos; не поддерживает переименование файлов или каталогов</translation>
+        <translation>Протокол `%1&apos; не поддерживает переименование файлов или каталогов</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3urloperator.cpp" line="376"/>
         <source>The protocol `%1&apos; does not support getting files</source>
-        <translation type="unfinished">Протокол `%1&apos; не поддерживает доставку файлов</translation>
+        <translation>Протокол `%1&apos; не поддерживает доставку файлов</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3urloperator.cpp" line="379"/>
         <source>The protocol `%1&apos; does not support putting files</source>
-        <translation type="unfinished">Протокол `%1&apos; не поддерживает отправку файлов</translation>
+        <translation>Протокол `%1&apos; не поддерживает отправку файлов</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3urloperator.cpp" line="626"/>
         <source>The protocol `%1&apos; does not support copying or moving files or directories</source>
-        <translation type="unfinished">Протокол `%1&apos; не поддерживает копирование или перемещение файлов и каталогов</translation>
+        <translation>Протокол `%1&apos; не поддерживает копирование или перемещение файлов и каталогов</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3urloperator.cpp" line="881"/>
         <source>(unknown)</source>
-        <translation type="unfinished">(неизвестно)</translation>
+        <translation>(неизвестно)</translation>
     </message>
 </context>
 <context>
@@ -644,27 +645,27 @@ to
     <message>
         <location filename="../src/qt3support/dialogs/q3wizard.cpp" line="145"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">&amp;Отмена</translation>
+        <translation>&amp;Отмена</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3wizard.cpp" line="146"/>
         <source>&lt; &amp;Back</source>
-        <translation type="unfinished">&lt; &amp;Назад</translation>
+        <translation>&lt; &amp;Назад</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3wizard.cpp" line="147"/>
         <source>&amp;Next &gt;</source>
-        <translation type="unfinished">&amp;Вперед &gt;</translation>
+        <translation>&amp;Вперед &gt;</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3wizard.cpp" line="148"/>
         <source>&amp;Finish</source>
-        <translation type="unfinished">&amp;Финиш</translation>
+        <translation>&amp;Готово</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3wizard.cpp" line="149"/>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Справка</translation>
+        <translation>&amp;Справка</translation>
     </message>
 </context>
 <context>
@@ -677,7 +678,7 @@ to
     <message>
         <location filename="../src/network/qhttpsocketengine.cpp" line="479"/>
         <source>Connection refused</source>
-        <translation type="unfinished">Отказано в соединении</translation>
+        <translation>Отказано в соединении</translation>
     </message>
     <message>
         <location filename="../src/network/qabstractsocket.cpp" line="1449"/>
@@ -747,12 +748,12 @@ to
     <message>
         <location filename="../src/activeqt/container/ui_qaxselect.h" line="124"/>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../src/activeqt/container/ui_qaxselect.h" line="125"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">&amp;Отмена</translation>
+        <translation>&amp;Отмена</translation>
     </message>
     <message>
         <location filename="../src/activeqt/container/ui_qaxselect.h" line="126"/>
@@ -856,22 +857,22 @@ to
     <message>
         <location filename="../src/plugins/accessible/widgets/complexwidgets.cpp" line="1394"/>
         <source>Open</source>
-        <translation type="unfinished">Открыть</translation>
+        <translation>Открыть</translation>
     </message>
     <message>
         <location filename="../src/gui/itemviews/qitemeditorfactory.cpp" line="515"/>
         <source>False</source>
-        <translation type="unfinished">False</translation>
+        <translation>False</translation>
     </message>
     <message>
         <location filename="../src/gui/itemviews/qitemeditorfactory.cpp" line="516"/>
         <source>True</source>
-        <translation type="unfinished">True</translation>
+        <translation>True</translation>
     </message>
     <message>
         <location filename="../src/plugins/accessible/widgets/complexwidgets.cpp" line="1394"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрыть</translation>
     </message>
 </context>
 <context>
@@ -984,77 +985,77 @@ to
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="525"/>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="528"/>
         <source>Save</source>
-        <translation type="unfinished">Сохранить</translation>
+        <translation>Сохранить</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="531"/>
         <source>Open</source>
-        <translation type="unfinished">Открыть</translation>
+        <translation>Открыть</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="534"/>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="537"/>
         <source>Close</source>
-        <translation type="unfinished">Закрыть</translation>
+        <translation>Закрыть</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="540"/>
         <source>Apply</source>
-        <translation type="unfinished">Применить</translation>
+        <translation>Применить</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="543"/>
         <source>Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Сбросить</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="546"/>
         <source>Help</source>
-        <translation type="unfinished">Справка</translation>
+        <translation>Справка</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="550"/>
         <source>Don&apos;t Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Не сохранять</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="554"/>
         <source>Discard</source>
-        <translation type="unfinished"></translation>
+        <translation>Отклонить</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="557"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished">&amp;Да</translation>
+        <translation>&amp;Да</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="560"/>
         <source>Yes to &amp;All</source>
-        <translation type="unfinished"></translation>
+        <translation>Да для &amp;всех</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="563"/>
         <source>&amp;No</source>
-        <translation type="unfinished">&amp;Нет</translation>
+        <translation>&amp;Нет</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="566"/>
         <source>N&amp;o to All</source>
-        <translation type="unfinished"></translation>
+        <translation>Н&amp;ет для всех</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="569"/>
         <source>Save All</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить все</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="572"/>
@@ -1074,12 +1075,12 @@ to
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="581"/>
         <source>Restore Defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Восстановить по умолчанию</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="552"/>
         <source>Close without Saving</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрыть без сохранения</translation>
     </message>
 </context>
 <context>
@@ -1087,29 +1088,29 @@ to
     <message>
         <location filename="../src/gui/itemviews/qdirmodel.cpp" line="419"/>
         <source>Name</source>
-        <translation type="unfinished">Имя</translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="../src/gui/itemviews/qdirmodel.cpp" line="420"/>
         <source>Size</source>
-        <translation type="unfinished">Размер</translation>
+        <translation>Размер</translation>
     </message>
     <message>
         <location filename="../src/gui/itemviews/qdirmodel.cpp" line="423"/>
         <source>Kind</source>
         <comment>Match OS X Finder</comment>
-        <translation type="unfinished"></translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <location filename="../src/gui/itemviews/qdirmodel.cpp" line="425"/>
         <source>Type</source>
         <comment>All other platforms</comment>
-        <translation type="unfinished">Тип</translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <location filename="../src/gui/itemviews/qdirmodel.cpp" line="431"/>
         <source>Date Modified</source>
-        <translation type="unfinished"></translation>
+        <translation>Дата изменения</translation>
     </message>
 </context>
 <context>
@@ -1117,7 +1118,7 @@ to
     <message>
         <location filename="../src/plugins/accessible/widgets/qaccessiblewidgets.cpp" line="1198"/>
         <source>Close</source>
-        <translation type="unfinished">Закрыть</translation>
+        <translation>Закрыть</translation>
     </message>
     <message>
         <location filename="../src/plugins/accessible/widgets/qaccessiblewidgets.cpp" line="1201"/>
@@ -1181,22 +1182,22 @@ to
     <message>
         <location filename="../src/gui/ui_qfiledialog.h" line="257"/>
         <source>Back</source>
-        <translation type="unfinished">Назад</translation>
+        <translation>Назад</translation>
     </message>
     <message>
         <location filename="../src/gui/ui_qfiledialog.h" line="261"/>
         <source>List View</source>
-        <translation type="unfinished">Список</translation>
+        <translation>Список</translation>
     </message>
     <message>
         <location filename="../src/gui/ui_qfiledialog.h" line="262"/>
         <source>Detail View</source>
-        <translation type="unfinished">Детальный вид</translation>
+        <translation>Детальный вид</translation>
     </message>
     <message>
         <location filename="../src/gui/itemviews/qfileiconprovider.cpp" line="336"/>
         <source>File</source>
-        <translation type="unfinished">Файл</translation>
+        <translation>Файл</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.cpp" line="416"/>
@@ -1206,7 +1207,7 @@ to
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.cpp" line="418"/>
         <source>Save As</source>
-        <translation type="unfinished">Сохранить как</translation>
+        <translation>Сохранить как</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.cpp" line="784"/>
@@ -1221,27 +1222,27 @@ to
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.cpp" line="442"/>
         <source>&amp;Rename</source>
-        <translation type="unfinished">&amp;Переименовать</translation>
+        <translation>&amp;Переименовать</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.cpp" line="443"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Удалить</translation>
+        <translation>&amp;Удалить</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.cpp" line="444"/>
         <source>Show &amp;hidden files</source>
-        <translation type="unfinished">Показать &amp;скрытые файлы</translation>
+        <translation>Показать &amp;скрытые файлы</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.cpp" line="1997"/>
         <source>New Folder</source>
-        <translation type="unfinished">Новый каталог</translation>
+        <translation>Новый каталог</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.cpp" line="420"/>
         <source>Find Directory</source>
-        <translation type="unfinished">Найти каталог</translation>
+        <translation>Найти каталог</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.cpp" line="747"/>
@@ -1251,75 +1252,79 @@ to
     <message>
         <location filename="../src/gui/dialogs/qfiledialog_win.cpp" line="105"/>
         <source>All Files (*.*)</source>
-        <translation type="unfinished">Все файлы (*.*)</translation>
+        <translation>Все файлы (*.*)</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.cpp" line="749"/>
         <source>Directory:</source>
-        <translation type="unfinished">Каталог:</translation>
+        <translation>Каталог:</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.cpp" line="1557"/>
         <source>%1 already exists.
 Do you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 уже существует.
+Вы хотите заменить его?</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.cpp" line="1575"/>
         <source>%1
 File not found.
 Please verify the correct file name was given.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1
+Файл не найден.
+Убедитесь, что указано верное имя файла.</translation>
     </message>
     <message>
         <location filename="../src/gui/itemviews/qdirmodel.cpp" line="823"/>
         <source>My Computer</source>
-        <translation type="unfinished"></translation>
+        <translation>Мой компьютер</translation>
     </message>
     <message>
         <location filename="../src/gui/ui_qfiledialog.h" line="259"/>
         <source>Parent Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Родительский каталог</translation>
     </message>
     <message>
         <location filename="../src/gui/ui_qfiledialog.h" line="263"/>
         <source>Files of type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлы типа:</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.cpp" line="1518"/>
         <source>
 File not found.
 Please verify the correct file name was given</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл не найден.Убедитесь, что указано верное имя файла</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.cpp" line="2269"/>
         <source>%1
 Directory not found.
 Please verify the correct directory name was given.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1Каталог не найден.Убедитесь, что указано верное имя каталога.</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.cpp" line="2104"/>
         <source>&apos;%1&apos; is write protected.
 Do you want to delete it anyway?</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; защищён от записи.
+Вы уверены, что хотите удалить его?</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.cpp" line="2109"/>
         <source>Are sure you want to delete &apos;%1&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы действительно хотите удалить &apos;%1&apos;?</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.cpp" line="2120"/>
         <source>Could not delete directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось удалить каталог.</translation>
     </message>
     <message>
         <location filename="../src/gui/itemviews/qfileiconprovider.cpp" line="332"/>
         <source>Drive</source>
-        <translation type="unfinished"></translation>
+        <translation>Диск</translation>
     </message>
     <message>
         <location filename="../src/gui/itemviews/qfileiconprovider.cpp" line="365"/>
@@ -1334,37 +1339,37 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/gui/ui_qfiledialog.h" line="258"/>
         <source>Forward</source>
-        <translation type="unfinished">Вперед</translation>
+        <translation>Вперед</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.cpp" line="445"/>
         <source>&amp;New Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Новый каталог</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.cpp" line="782"/>
         <source>&amp;Choose</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Выбрать</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qsidebar.cpp" line="376"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.cpp" line="752"/>
         <source>File &amp;name:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Имя файла:</translation>
     </message>
     <message>
         <location filename="../src/gui/ui_qfiledialog.h" line="256"/>
         <source>Look in:</source>
-        <translation type="unfinished"></translation>
+        <translation>Смотреть в:</translation>
     </message>
     <message>
         <location filename="../src/gui/ui_qfiledialog.h" line="260"/>
         <source>Create New Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать новую папку</translation>
     </message>
 </context>
 <context>
@@ -1372,32 +1377,32 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="479"/>
         <source>%1 TB</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ТБ</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="481"/>
         <source>%1 GB</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ГБ</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="483"/>
         <source>%1 MB</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 МБ</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="485"/>
         <source>%1 KB</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 КБ</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="486"/>
         <source>%1 bytes</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 байт</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="560"/>
         <source>Invalid filename</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое имя файла</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="562"/>
@@ -1407,39 +1412,39 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="607"/>
         <source>Name</source>
-        <translation type="unfinished">Имя</translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="609"/>
         <source>Size</source>
-        <translation type="unfinished">Размер</translation>
+        <translation>Размер</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="613"/>
         <source>Kind</source>
         <comment>Match OS X Finder</comment>
-        <translation type="unfinished"></translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="615"/>
         <source>Type</source>
         <comment>All other platforms</comment>
-        <translation type="unfinished">Тип</translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="622"/>
         <source>Date Modified</source>
-        <translation type="unfinished"></translation>
+        <translation>Дата изменения</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfilesystemmodel_p.h" line="261"/>
         <source>My Computer</source>
-        <translation type="unfinished"></translation>
+        <translation>Мой компьютер</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfilesystemmodel_p.h" line="263"/>
         <source>Computer</source>
-        <translation type="unfinished"></translation>
+        <translation>Компьютер</translation>
     </message>
 </context>
 <context>
@@ -1495,12 +1500,12 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/qt3support/network/q3ftp.cpp" line="2325"/>
         <source>Host %1 found</source>
-        <translation type="unfinished">Обнаружен узел %1</translation>
+        <translation>Обнаружен узел %1</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3ftp.cpp" line="2332"/>
         <source>Host found</source>
-        <translation type="unfinished">Узел обнаружен</translation>
+        <translation>Узел обнаружен</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3ftp.cpp" line="2327"/>
@@ -1510,12 +1515,12 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/qt3support/network/q3ftp.cpp" line="2334"/>
         <source>Connected to host</source>
-        <translation type="unfinished">Соединение с узлом установлено</translation>
+        <translation>Соединение с узлом установлено</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3ftp.cpp" line="2329"/>
         <source>Connection to %1 closed</source>
-        <translation type="unfinished">Соединение с узлом %1 разорвано</translation>
+        <translation>Соединение с узлом %1 разорвано</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3ftp.cpp" line="2336"/>
@@ -1616,7 +1621,7 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/network/qhostinfo_p.h" line="136"/>
         <source>Unknown error</source>
-        <translation type="unfinished">Неизвестная ошибка</translation>
+        <translation>Неизвестная ошибка</translation>
     </message>
 </context>
 <context>
@@ -1624,17 +1629,17 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/network/qhostinfo_win.cpp" line="207"/>
         <source>Host not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Узел не найден</translation>
     </message>
     <message>
         <location filename="../src/network/qhostinfo_win.cpp" line="202"/>
         <source>Unknown address type</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестный тип адреса</translation>
     </message>
     <message>
         <location filename="../src/network/qhostinfo_win.cpp" line="210"/>
         <source>Unknown error</source>
-        <translation type="unfinished">Неизвестная ошибка</translation>
+        <translation>Неизвестная ошибка</translation>
     </message>
 </context>
 <context>
@@ -1662,32 +1667,32 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/qt3support/network/q3http.cpp" line="2314"/>
         <source>Host %1 found</source>
-        <translation type="unfinished">Обнаружен узел %1</translation>
+        <translation>Обнаружен узел %1</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3http.cpp" line="2328"/>
         <source>Host found</source>
-        <translation type="unfinished">Узел обнаружен</translation>
+        <translation>Узел обнаружен</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3http.cpp" line="2317"/>
         <source>Connected to host %1</source>
-        <translation type="unfinished">Установлено соединение с узлом %1</translation>
+        <translation>Установлено соединение с узлом %1</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3http.cpp" line="2331"/>
         <source>Connected to host</source>
-        <translation type="unfinished">Соединение с узлом установлено</translation>
+        <translation>Соединение с узлом установлено</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3http.cpp" line="2320"/>
         <source>Connection to %1 closed</source>
-        <translation type="unfinished">Соединение с узлом %1 разорвано</translation>
+        <translation>Соединение с узлом %1 разорвано</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3http.cpp" line="2334"/>
         <source>Connection closed</source>
-        <translation type="unfinished">Соединение разорвано</translation>
+        <translation>Соединение разорвано</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3http.cpp" line="1749"/>
@@ -2140,17 +2145,17 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/plugins/accessible/widgets/qaccessiblemenu.cpp" line="345"/>
         <source>Close</source>
-        <translation type="unfinished">Закрыть</translation>
+        <translation>Закрыть</translation>
     </message>
     <message>
         <location filename="../src/plugins/accessible/widgets/qaccessiblemenu.cpp" line="346"/>
         <source>Open</source>
-        <translation type="unfinished">Открыть</translation>
+        <translation>Открыть</translation>
     </message>
     <message>
         <location filename="../src/plugins/accessible/widgets/qaccessiblemenu.cpp" line="399"/>
         <source>Execute</source>
-        <translation type="unfinished"></translation>
+        <translation>Выполнить</translation>
     </message>
 </context>
 <context>
@@ -2158,42 +2163,42 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/gui/widgets/qmenu_mac.cpp" line="308"/>
         <source>About</source>
-        <translation type="unfinished">О программе</translation>
+        <translation>О программе</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qmenu_mac.cpp" line="314"/>
         <source>Config</source>
-        <translation type="unfinished">Конфигурация</translation>
+        <translation>Конфигурация</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qmenu_mac.cpp" line="315"/>
         <source>Preference</source>
-        <translation type="unfinished">Настройки</translation>
+        <translation>Настройки</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qmenu_mac.cpp" line="316"/>
         <source>Options</source>
-        <translation type="unfinished">Параметры</translation>
+        <translation>Параметры</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qmenu_mac.cpp" line="317"/>
         <source>Setting</source>
-        <translation type="unfinished">Настройки</translation>
+        <translation>Настройки</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qmenu_mac.cpp" line="318"/>
         <source>Setup</source>
-        <translation type="unfinished">Настройки</translation>
+        <translation>Настройки</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qmenu_mac.cpp" line="320"/>
         <source>Quit</source>
-        <translation type="unfinished">Выход</translation>
+        <translation>Выход</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qmenu_mac.cpp" line="321"/>
         <source>Exit</source>
-        <translation type="unfinished">Выход</translation>
+        <translation>Выход</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qmenu_mac.cpp" line="356"/>
@@ -2226,12 +2231,12 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/gui/dialogs/qmessagebox.cpp" line="1456"/>
         <source>About Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>О библиотеке Qt</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qdialog.cpp" line="585"/>
         <source>Help</source>
-        <translation type="unfinished">Справка</translation>
+        <translation>Справка</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qmessagebox.cpp" line="1636"/>
@@ -2598,57 +2603,57 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/gui/dialogs/qpagesetupdialog_unix.cpp" line="155"/>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qpagesetupdialog_unix.cpp" line="156"/>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog.ui" line="460"/>
         <source>Print in color if available</source>
-        <translation type="unfinished">Цветная печать</translation>
+        <translation>Цветная печать</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="1050"/>
         <source>Printer</source>
-        <translation type="unfinished">Принтер</translation>
+        <translation>Принтер</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog_qws.cpp" line="345"/>
         <source>Print all</source>
-        <translation type="unfinished">Печатать все</translation>
+        <translation>Печатать все</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog_qws.cpp" line="347"/>
         <source>Print range</source>
-        <translation type="unfinished">Печатать диапазон</translation>
+        <translation>Печатать диапазон</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog.ui" line="430"/>
         <source>Print last page first</source>
-        <translation type="unfinished">Начать с последней страницы</translation>
+        <translation>Начать с последней страницы</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog.ui" line="388"/>
         <source>Number of copies:</source>
-        <translation type="unfinished">Число копий:</translation>
+        <translation>Число копий:</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog.ui" line="37"/>
         <source>Paper format</source>
-        <translation type="unfinished">Формат бумаги</translation>
+        <translation>Формат бумаги</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="947"/>
         <source>Portrait</source>
-        <translation type="unfinished">Портрет</translation>
+        <translation>Портрет</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="948"/>
         <source>Landscape</source>
-        <translation type="unfinished">Альбом</translation>
+        <translation>Альбом</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="776"/>
@@ -2803,97 +2808,97 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/gui/dialogs/qpagesetupdialog_unix.cpp" line="130"/>
         <source>Page size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер страницы:</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog.ui" line="56"/>
         <source>Orientation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ориентация:</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qpagesetupdialog_unix.cpp" line="141"/>
         <source>Paper source:</source>
-        <translation type="unfinished"></translation>
+        <translation>Источник бумаги:</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="951"/>
         <source>Print</source>
-        <translation type="unfinished">Print</translation>
+        <translation>Печать</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="1025"/>
         <source>File</source>
-        <translation type="unfinished">Файл</translation>
+        <translation>Файл</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="1136"/>
         <source>Print To File ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Печать в файл...</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog.ui" line="25"/>
         <source>Print dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Печать</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog.ui" line="49"/>
         <source>Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер:</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog.ui" line="162"/>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Свойства</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog.ui" line="179"/>
         <source>Printer info:</source>
-        <translation type="unfinished"></translation>
+        <translation>Принтер:</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog.ui" line="239"/>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>Обзор</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog.ui" line="259"/>
         <source>Print to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Печать в файл</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog.ui" line="307"/>
         <source>Pages from</source>
-        <translation type="unfinished"></translation>
+        <translation>Страницы от</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog.ui" line="321"/>
         <source>to</source>
-        <translation type="unfinished"></translation>
+        <translation>до</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog.ui" line="350"/>
         <source>Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Выделение</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog.ui" line="368"/>
         <source>Copies</source>
-        <translation type="unfinished"></translation>
+        <translation>Копий</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog.ui" line="423"/>
         <source>Collate</source>
-        <translation type="unfinished"></translation>
+        <translation>Разобрать</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog.ui" line="448"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Прочее</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog.ui" line="470"/>
         <source>Double side printing</source>
-        <translation type="unfinished"></translation>
+        <translation>Двухсторонняя печать</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="1178"/>
@@ -2934,17 +2939,17 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/gui/dialogs/qprintpropertiesdialog.ui" line="27"/>
         <source>PPD Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Свойства PPD</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintpropertiesdialog.ui" line="54"/>
         <source>Save</source>
-        <translation type="unfinished">Сохранить</translation>
+        <translation>Сохранить</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintpropertiesdialog.ui" line="74"/>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -2960,7 +2965,7 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/plugins/accessible/widgets/simplewidgets.cpp" line="80"/>
         <source>Open</source>
-        <translation type="unfinished">Открыть</translation>
+        <translation>Открыть</translation>
     </message>
 </context>
 <context>
@@ -3856,22 +3861,22 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/gui/text/qtextcontrol.cpp" line="1861"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished">&amp;Отменить</translation>
+        <translation>&amp;Отменить</translation>
     </message>
     <message>
         <location filename="../src/gui/text/qtextcontrol.cpp" line="1863"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished">&amp;Повторить</translation>
+        <translation>&amp;Повторить</translation>
     </message>
     <message>
         <location filename="../src/gui/text/qtextcontrol.cpp" line="1867"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">&amp;Вырезать</translation>
+        <translation>&amp;Вырезать</translation>
     </message>
     <message>
         <location filename="../src/gui/text/qtextcontrol.cpp" line="1872"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">&amp;Копировать</translation>
+        <translation>&amp;Копировать</translation>
     </message>
     <message>
         <location filename="../src/gui/text/qtextcontrol.cpp" line="1879"/>
@@ -3881,17 +3886,17 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/gui/text/qtextcontrol.cpp" line="1885"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">&amp;Вставить</translation>
+        <translation>&amp;Вставить</translation>
     </message>
     <message>
         <location filename="../src/gui/text/qtextcontrol.cpp" line="1888"/>
         <source>Delete</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <location filename="../src/gui/text/qtextcontrol.cpp" line="1895"/>
         <source>Select All</source>
-        <translation type="unfinished">Выделить все</translation>
+        <translation>Выделить все</translation>
     </message>
 </context>
 <context>
@@ -3920,12 +3925,12 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/gui/util/qundogroup.cpp" line="341"/>
         <source>Undo</source>
-        <translation type="unfinished">Отменить</translation>
+        <translation>Отменить</translation>
     </message>
     <message>
         <location filename="../src/gui/util/qundogroup.cpp" line="369"/>
         <source>Redo</source>
-        <translation type="unfinished">Повторить</translation>
+        <translation>Повторить</translation>
     </message>
 </context>
 <context>
@@ -3941,12 +3946,12 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/gui/util/qundostack.cpp" line="816"/>
         <source>Undo</source>
-        <translation type="unfinished">Отменить</translation>
+        <translation>Отменить</translation>
     </message>
     <message>
         <location filename="../src/gui/util/qundostack.cpp" line="843"/>
         <source>Redo</source>
-        <translation type="unfinished">Повторить</translation>
+        <translation>Повторить</translation>
     </message>
 </context>
 <context>
@@ -4012,7 +4017,7 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/gui/kernel/qwhatsthis.cpp" line="486"/>
         <source>What&apos;s This?</source>
-        <translation type="unfinished">Что это?</translation>
+        <translation>Что это?</translation>
     </message>
 </context>
 <context>
@@ -4028,52 +4033,52 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/gui/dialogs/qwizard.cpp" line="561"/>
         <source>&lt; &amp;Back</source>
-        <translation type="unfinished">&lt; &amp;Назад</translation>
+        <translation>&lt; &amp;Назад</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qwizard.cpp" line="566"/>
         <source>&amp;Finish</source>
-        <translation type="unfinished">&amp;Финиш</translation>
+        <translation>&amp;Готово</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qwizard.cpp" line="568"/>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Справка</translation>
+        <translation>&amp;Справка</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qwizard.cpp" line="554"/>
         <source>Go Back</source>
-        <translation type="unfinished"></translation>
+        <translation>Назад</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qwizard.cpp" line="555"/>
         <source>Continue</source>
-        <translation type="unfinished"></translation>
+        <translation>Продолжить</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qwizard.cpp" line="565"/>
         <source>Commit</source>
-        <translation type="unfinished"></translation>
+        <translation>Зафиксировать</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qwizard.cpp" line="557"/>
         <source>Done</source>
-        <translation type="unfinished"></translation>
+        <translation>Готово</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qwizard.cpp" line="558"/>
         <source>Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>Выйти</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qwizard.cpp" line="559"/>
         <source>Help</source>
-        <translation type="unfinished">Справка</translation>
+        <translation>Справка</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qwizard.cpp" line="567"/>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
 </context>
 <context>
@@ -4081,42 +4086,42 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/gui/widgets/qworkspace.cpp" line="1061"/>
         <source>&amp;Restore</source>
-        <translation type="unfinished">&amp;Восстановить</translation>
+        <translation>&amp;Восстановить</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qworkspace.cpp" line="1062"/>
         <source>&amp;Move</source>
-        <translation type="unfinished">&amp;Переместить</translation>
+        <translation>&amp;Переместить</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qworkspace.cpp" line="1063"/>
         <source>&amp;Size</source>
-        <translation type="unfinished">&amp;Размер</translation>
+        <translation>&amp;Размер</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qworkspace.cpp" line="1065"/>
         <source>Mi&amp;nimize</source>
-        <translation type="unfinished">&amp;Свернуть</translation>
+        <translation>&amp;Свернуть</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qworkspace.cpp" line="1067"/>
         <source>Ma&amp;ximize</source>
-        <translation type="unfinished">Р&amp;азвернуть</translation>
+        <translation>Р&amp;азвернуть</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qworkspace.cpp" line="1070"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Закрыть</translation>
+        <translation>&amp;Закрыть</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qworkspace.cpp" line="1075"/>
         <source>Stay on &amp;Top</source>
-        <translation type="unfinished">Всегда &amp;наверху</translation>
+        <translation>Всегда &amp;наверху</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qworkspace.cpp" line="2137"/>
         <source>Sh&amp;ade</source>
-        <translation type="unfinished">Свернуть в за&amp;головок</translation>
+        <translation>Свернуть в за&amp;головок</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qworkspace.cpp" line="1919"/>
@@ -4126,22 +4131,22 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/gui/widgets/qworkspace.cpp" line="85"/>
         <source>Minimize</source>
-        <translation type="unfinished">Свернуть</translation>
+        <translation>Свернуть</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qworkspace.cpp" line="87"/>
         <source>Restore Down</source>
-        <translation type="unfinished">Восстановить</translation>
+        <translation>Восстановить</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qworkspace.cpp" line="83"/>
         <source>Close</source>
-        <translation type="unfinished">Закрыть</translation>
+        <translation>Закрыть</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qworkspace.cpp" line="2133"/>
         <source>&amp;Unshade</source>
-        <translation type="unfinished">Восстановить из за&amp;головка</translation>
+        <translation>Восстановить из за&amp;головка</translation>
     </message>
 </context>
 <context>
