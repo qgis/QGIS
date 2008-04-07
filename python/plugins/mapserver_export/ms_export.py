@@ -280,7 +280,11 @@ class Qgis2Map:
 
       self.outFile.write("  LAYER\n")
       # write the name of the layer
-      self.outFile.write("    NAME '" + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "") + "'\n")
+      # first check to see if there is a name
+      if len(lyr.getElementsByTagName("layername")[0].childNodes) > 0:
+        self.outFile.write("    NAME '" + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "") + "'\n")
+      else:
+        self.outFile.write("    NAME 'LAYER%s'\n" % count)
       if lyr.getAttribute("type").encode('utf-8') == 'vector':  
         self.outFile.write("    TYPE " + lyr.getAttribute("geometry").encode('utf-8').upper() + "\n")
       elif lyr.getAttribute("type").encode('utf-8') == 'raster':  
@@ -348,8 +352,12 @@ class Qgis2Map:
       
       # WMS settings for all layers
       self.outFile.write("    METADATA\n")
-      self.outFile.write("      'wms_title' '" 
+      if len(lyr.getElementsByTagName("layername")[0].childNodes) > 0:
+        self.outFile.write("      'wms_title' '" 
            + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "") + "'\n")
+      else:
+        self.outFile.write("      'wms_title' 'LAYER%s'\n"  % count)
+
       self.outFile.write("    END\n")
 
       self.outFile.write("    STATUS DEFAULT\n")
