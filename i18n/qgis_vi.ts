@@ -11,7 +11,7 @@
     </message>
     <message>
         <source>Open an OGR Supported Vector Layer</source>
-        <translation>Mở một lớp vector được OGR hỗ trợ</translation>
+        <translation>Mở lớp vector được OGR hỗ trợ</translation>
     </message>
     <message>
         <source>is not a valid or recognized data source</source>
@@ -1947,7 +1947,7 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
     </message>
     <message>
         <source>To identify features, you must choose an active layer by clicking on its name in the legend</source>
-        <translation>Để nhận diện các thuộc tính, bạn phải chọn một lớp bản đồ kích hoạt bằng cách nhắp chuột vào tên nó trong phần chú giải</translation>
+        <translation>Để nhận diện các đối tượng, bạn phải chọn một lớp bản đồ kích hoạt bằng cách nhắp chuột vào tên nó trong phần chú giải</translation>
     </message>
     <message>
         <source>PostgreSQL Geoprocessing</source>
@@ -6816,7 +6816,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Reserved Words</source>
-        <translation>Các từ đã được dùng</translation>
+        <translation>Các từ đặc biệt</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Double click the Column Name column to change the name of the column.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -8116,7 +8116,7 @@ Muster</translation>
     <message>
         <source>Disp</source>
         <comment>Column title</comment>
-        <translation></translation>
+        <translation>Tr_bày</translation>
     </message>
     <message>
         <source>Color</source>
@@ -8147,7 +8147,7 @@ Muster</translation>
     </message>
     <message>
         <source>Next not used</source>
-        <translation>Mục kế không sử dụng</translation>
+        <translation>Mục tiếp không sử dụng</translation>
     </message>
     <message>
         <source>Manual entry</source>
@@ -8787,7 +8787,7 @@ tại dòng </translation>
     </message>
     <message>
         <source>Not available, description not found (</source>
-        <translation>Không có, mô tả không tìm thấy (</translation>
+        <translation>Không có, không tìm thấy mô tả (</translation>
     </message>
 </context>
 <context>
@@ -8859,7 +8859,7 @@ tại dòng </translation>
     </message>
     <message>
         <source>PostGIS driver in OGR does not support schemas!&lt;br&gt;Only the table name will be used.&lt;br&gt;It can result in wrong input if more tables of the same name&lt;br&gt;are present in the database.</source>
-        <translation>Trình điều khiển PostGIS không hỗ trợ schema!&lt;br&gt;Chỉ có tên bảng được sử dụng.&lt;br&gt;Nó có thể làm đầu vào sai nếu nhiều bảng trùng tên&lt;br&gt; có trong CSDL.</translation>
+        <translation>Trình điều khiển PostGIS không hỗ trợ schema!&lt;br&gt;Chỉ có tên bảng được sử dụng.&lt;br&gt;Nó có thể khiến cho đầu vào bị sai nếu nhiều bảng trùng tên&lt;br&gt; có trong CSDL.</translation>
     </message>
     <message>
         <source>:&amp;nbsp;no input</source>
@@ -9778,7 +9778,7 @@ tại dòng </translation>
     </message>
     <message>
         <source>#000.00000; </source>
-        <translation></translation>
+        <translation>#000.00000; </translation>
     </message>
     <message>
         <source>Latitude:</source>
@@ -10201,7 +10201,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>&amp;Bold:</source>
-        <translation>&amp;Đậm:</translation>
+        <translation>Đậ&amp;m:</translation>
     </message>
     <message>
         <source>&amp;Size:</source>
@@ -10597,7 +10597,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Styles</source>
-        <translation>Các kiểu</translation>
+        <translation>Kiểu</translation>
     </message>
     <message>
         <source>Ok</source>
@@ -10632,7 +10632,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>col</source>
-        <translation></translation>
+        <translation>cột</translation>
     </message>
 </context>
 <context>
@@ -11159,7 +11159,7 @@ Vui lòng cài đặt PostGIS có sự hỗ trợ của GEOS (http://geos.refrac
     </message>
     <message>
         <source> driver is not available</source>
-        <translation> không có</translation>
+        <translation> không có trình điều khiển</translation>
     </message>
 </context>
 <context>
@@ -11301,23 +11301,23 @@ Thông tin bổ sung về lỗi:</translation>
     </message>
     <message>
         <source>URL</source>
-        <translation></translation>
+        <translation>URL</translation>
     </message>
     <message>
         <source>Proxy Host</source>
-        <translation></translation>
+        <translation>Máy chủ proxy</translation>
     </message>
     <message>
         <source>Proxy Port</source>
-        <translation></translation>
+        <translation>Cổng proxy</translation>
     </message>
     <message>
         <source>Proxy User</source>
-        <translation></translation>
+        <translation>Người dùng proxy</translation>
     </message>
     <message>
         <source>Proxy Password</source>
-        <translation></translation>
+        <translation>mật mã proxy</translation>
     </message>
     <message>
         <source>Your user name for the HTTP proxy (optional)</source>
@@ -11353,7 +11353,7 @@ Thông tin bổ sung về lỗi:</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation>phím F1</translation>
+        <translation>F1</translation>
     </message>
 </context>
 <context>
@@ -11388,7 +11388,7 @@ Thông tin bổ sung về lỗi:</translation>
     </message>
     <message>
         <source>North arrow pixmap not found</source>
-        <translation>Không tìm thấy mũi tên chỉ hướng Bắc pixmap</translation>
+        <translation>Không tìm thấy pixmap mũi tên chỉ hướng Bắc</translation>
     </message>
 </context>
 <context>
@@ -11667,7 +11667,7 @@ Theo mặc định QGIS dùng giá trị là 5. Tăng giá trị nếu bạn g�
     </message>
     <message>
         <source>Initial Visibility</source>
-        <translation>Vùng nhìn ban đầu</translation>
+        <translation>Vùng xem ban đầu</translation>
     </message>
     <message>
         <source>New layers added to the map are not displayed</source>
@@ -11760,7 +11760,7 @@ nhận diện các tính chất mà không phóng bản đồ lên rất lớn.(
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Selecting this will unselect the &apos;make lines less&apos; jagged toggle&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Chọn mục này sẽ khử chọn lệnh bật/tắt &apos;làm cho đường bớt&apos; răng cưa&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Chọn mục này sẽ khử chọn lệnh bật/tắt &apos;làm cho đường bớt răng cưa&apos;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Fix problems with incorrectly filled polygons</source>
@@ -11934,7 +11934,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Hủy bỏ</translation>
+        <translation>Hủy</translation>
     </message>
     <message>
         <source>Ok</source>
@@ -13041,7 +13041,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Sum of all cells</source>
-        <translation>Tổng tất cả các ô</translation>
+        <translation>Tổng các ô</translation>
     </message>
     <message>
         <source>Cell Count</source>
@@ -13718,31 +13718,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source> km</source>
-        <translation></translation>
+        <translation> km</translation>
     </message>
     <message>
         <source> mm</source>
-        <translation></translation>
+        <translation> mm</translation>
     </message>
     <message>
         <source> cm</source>
-        <translation></translation>
+        <translation> cm</translation>
     </message>
     <message>
         <source> m</source>
-        <translation></translation>
+        <translation> m</translation>
     </message>
     <message>
         <source> foot</source>
-        <translation>bộ Anh</translation>
+        <translation> bộ Anh</translation>
     </message>
     <message>
         <source> degree</source>
-        <translation>độ</translation>
+        <translation> độ</translation>
     </message>
     <message>
         <source> unknown</source>
-        <translation>không biết</translation>
+        <translation> không biết</translation>
     </message>
     <message>
         <source>Top Left</source>
@@ -14700,7 +14700,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Spit</source>
-        <translation>&amp;Cắt</translation>
+        <translation>&amp;SPIT</translation>
     </message>
 </context>
 <context>
@@ -14974,11 +14974,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>xMin,yMin </source>
-        <translation>x Nhỏ nhất, y Nhỏ nhất </translation>
+        <translation>x.Nhỏ.nhất, y.Nhỏ.nhất </translation>
     </message>
     <message>
         <source> : xMax,yMax </source>
-        <translation> : x Lớn nhất, y Lớn nhất </translation>
+        <translation> : x.Lớn.nhất,y.Lớn.nhất </translation>
     </message>
     <message>
         <source>In project spatial reference system units : </source>
@@ -15303,7 +15303,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not get WMS capabilities: %1 at line %2 column %3</source>
-        <translation>Không thể lấy &apos;năng lực&apos; của WMS: %1 tại dòng %2 cột %3</translation>
+        <translation>Không thể lấy &apos;WMS capabiities&apos;: %1 tại dòng %2 cột %3</translation>
     </message>
     <message>
         <source>This is probably due to an incorrect WMS Server URL.</source>
@@ -15351,163 +15351,163 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number.</source>
-        <translation type="unfinished">Giá trị của tham số UpdateSequence (tùy chọn) trong yêu cầu GetCapabilities lớn hơn giá trị hiện tại của</translation>
+        <translation>Giá trị của tham số UpdateSequence (tùy chọn) trong yêu cầu GetCapabilities lớn hơn giá trị hiện tại của số hiệu trình tự cập nhật metadata.</translation>
     </message>
     <message>
         <source>Request does not include a sample dimension value, and the server did not declare a default value for that dimension.</source>
-        <translation type="unfinished"></translation>
+        <translation>Yêu cầu không có một giá trị kích thước mẫu, và máy chủ không khai báo giá trị mặc định cho kích thước đó.</translation>
     </message>
     <message>
         <source>Request contains an invalid sample dimension value.</source>
-        <translation type="unfinished"></translation>
+        <translation>Yêu cầu có giá trị kích thước mẫu không hợp lệ.</translation>
     </message>
     <message>
         <source>Request is for an optional operation that is not supported by the server.</source>
-        <translation type="unfinished"></translation>
+        <translation>Yêu cầu đối với một lệnh tùy chọn không được máy chủ hỗ trợ.</translation>
     </message>
     <message>
         <source>(Unknown error code from a post-1.3 WMS server)</source>
-        <translation type="unfinished"></translation>
+        <translation>(mã lỗi không rõ từ máy chủ WMS post-1.3)</translation>
     </message>
     <message>
         <source>The WMS vendor also reported: </source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Nhà cung cấp&apos; WMS báo cáo: </translation>
     </message>
     <message>
         <source>This is probably due to a bug in the QGIS program.  Please report this error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Điều này có thể do một lỗi trong chương trình QGIS. Hãy thông báo lỗi này.</translation>
     </message>
     <message>
         <source>Server Properties:</source>
-        <translation type="unfinished"></translation>
+        <translation>Các đặc điểm của máy chủ:</translation>
     </message>
     <message>
         <source>Property</source>
-        <translation type="unfinished">Đặc điểm</translation>
+        <translation>Đặc điểm</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Giá trị</translation>
     </message>
     <message>
         <source>WMS Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Phiên bản WMS</translation>
     </message>
     <message>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiêu đề</translation>
     </message>
     <message>
         <source>Abstract</source>
-        <translation type="unfinished"></translation>
+        <translation>Tóm tắt</translation>
     </message>
     <message>
         <source>Keywords</source>
-        <translation type="unfinished"></translation>
+        <translation>Các từ khóa</translation>
     </message>
     <message>
         <source>Online Resource</source>
-        <translation type="unfinished"></translation>
+        <translation>Tài nguyên trực tuyến</translation>
     </message>
     <message>
         <source>Contact Person</source>
-        <translation type="unfinished"></translation>
+        <translation>Người liên hệ</translation>
     </message>
     <message>
         <source>Fees</source>
-        <translation type="unfinished"></translation>
+        <translation>Lệ phí</translation>
     </message>
     <message>
         <source>Access Constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>Các giới hạn truy cập</translation>
     </message>
     <message>
         <source>Image Formats</source>
-        <translation type="unfinished"></translation>
+        <translation>Định dạng ảnh</translation>
     </message>
     <message>
         <source>Identify Formats</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhận diện các định dạng</translation>
     </message>
     <message>
         <source>Layer Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Đếm lớp</translation>
     </message>
     <message>
         <source>Layer Properties: </source>
-        <translation type="unfinished"></translation>
+        <translation>Các tính chất của lớp: </translation>
     </message>
     <message>
         <source>Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Được chọn</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>Có</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>Không</translation>
     </message>
     <message>
         <source>Visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Khả năng xem</translation>
     </message>
     <message>
         <source>Visible</source>
-        <translation type="unfinished"></translation>
+        <translation>Xem được</translation>
     </message>
     <message>
         <source>Hidden</source>
-        <translation type="unfinished"></translation>
+        <translation>Ẩn</translation>
     </message>
     <message>
         <source>n/a</source>
-        <translation type="unfinished"></translation>
+        <translation>n/a</translation>
     </message>
     <message>
         <source>Can Identify</source>
-        <translation type="unfinished"></translation>
+        <translation>Có thể nhận diện</translation>
     </message>
     <message>
         <source>Can be Transparent</source>
-        <translation type="unfinished"></translation>
+        <translation>Có thể trong suốt</translation>
     </message>
     <message>
         <source>Can Zoom In</source>
-        <translation type="unfinished"></translation>
+        <translation>Có thể phóng lớn</translation>
     </message>
     <message>
         <source>Cascade Count</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Đếm theo tầng&apos;</translation>
     </message>
     <message>
         <source>Fixed Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiều ngang cố định</translation>
     </message>
     <message>
         <source>Fixed Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiều đứng cố định</translation>
     </message>
     <message>
         <source>WGS 84 Bounding Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Khung giới hạn WGS 84</translation>
     </message>
     <message>
         <source>Available in CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Dùng được theo CRS</translation>
     </message>
     <message>
         <source>Available in style</source>
-        <translation type="unfinished"></translation>
+        <translation>Dùng được theo kiểu</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Tên</translation>
+        <translation>Tên</translation>
     </message>
     <message>
         <source>Layer cannot be queried.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp không thể truy vấn được.</translation>
     </message>
 </context>
 <context>
@@ -15596,7 +15596,70 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;The QGIS Team&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-weight:600;&quot;&gt;2007&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;(new line)
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans Condensed&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Chào mừng bạn đến với trình tạo phần mở rộng tự động!&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;Đây chỉ là điểm khởi đầu. Bạn cần phải điều chỉnh mã để khiến cho nó có thể làm một điều gì có nghĩa...hãy đọc tiếp để có thêm thông tin để bạn có thể bắt đầu.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Tài liệu:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;Nhất thiết bạn phải đọc tài liệu về API của QGIS hiện có tại:&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;http://svn.qgis.org/api_doc/html/&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;Đặc biệt hãy xem các phần sau:&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;Giao diện QGIS&lt;/span&gt;: http://svn.qgis.org/api_doc/html/classQgisInterface.html&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QgsMapCanvas &lt;/span&gt; : http://svn.qgis.org/api_doc/html/classQgsMapCanvas.html&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QgsMapTool&lt;/span&gt;: http://svn.qgis.org/api_doc/html/classQgsMapTool.html&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QgsPlugin&lt;/span&gt;: http://svn.qgis.org/api_doc/html/classQgisPlugin.html&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;QGisInterface (Giao diện QGIS) là một lớp cơ bản tóm tắt (ABC) chỉ định các đặc điểm khả dụng công cộng của QGIS mà các mã và phần mở rộng của bên thứ ba thấy được. Một tình huống của QgisInterface được truyền đến phần mở rộng khi nó được nạp. Hãy tham khảo ý kiến của nhóm phát triển QGIS nếu có một chứa năng nào cần thiết trong QgisInterface nhưng chưa có.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;QgsPlugin (phần mở rộng của QGIS) là một ABC định nghĩa hoạt động cần thiết mà phần mở rộng của bạn phải cung cấp. Xem chi tiết tiếp theo ở phần dưới đây.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Những tập tin trong thư mục phần mở rộng của tôi có tác dụng gì?&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;CMakeLists.txt&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;Đây là tập tin CMake được tạo ra để xây dựng phần mở rộng. Bạn phải thêm các phần phụ thuộc đặc thù cho ứng dụng của bạn cũng như các tập tin nguồn vào tập tin này.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename].h&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename].cpp&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;Đây là lớp cung cấp &apos;chất kết dính&apos; giữa &apos;luân lý&apos; ứng dụng tự tạo của bạn với ứng dụng QGIS. Bạn sẽ thấy rằng một số phương pháp đã được thực thi cho bạn - bao gồm cả một số ví dụ về việc thêm một lớp raster hay vector vào khung bản đồ ứng dụng chính như thế nào. Lớp này là một &apos;instance&apos; cơ bản của giao diện QgisPlugin để định nghĩa hoạt động cần thiết của một phần mở rộng. Đặc biệt là một phần mở rộng có một số phương pháp và &apos;thành viên&apos; &apos;tĩnh&apos; sao cho QgsPluginManager (trình quản lý phần mở rộng) và &apos;luân lý&apos; trình nạp phần mở rộng có thể nhận diện mỗi phần mở rộng, tạo ra một menu thích hợp cho nó... Lưu ý rằng không có gì hạn chế việc bạn tạo các biểu tượng thanh công cụ và các mục menu nhiều cấp cho một phần mở rộng. Theo mặc định mặc dù chỉ có một mục menu và một nút thanh công cụ duy nhất được tạo ra và thiết lập định sẵn của nó để gọi phương pháp run() trong lớp này khi được chọn. Lệnh thực thi mặc định này được trình xây dưng phần mở rộng cung cấp cho bạn được hướng dẫn kỹ càng, vì thế hãy xem mã để có thêm hướng dẫn.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename]gui.ui&lt;/span&gt;&lt;/p&gt;(new line)
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-weight:600; color:#000000;&quot;&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;Đây là tập tin &apos;ui&apos; (giao diện người dùng) của trình thiết kế Qt. Nó định nghĩa diện mạo mặc định của hộp thoại của phần mở rộng mà không thực thi một &apos;luân lý&apos; ứng dụng nào. Bạn có thể thay đổi mẫu này cho phù hợp với nhu cầu của bạn hoặc có thể loại bỏ nó hoàn toàn nếu phần mở rộng của bạn không cần trình bày một biểu mẫu cho người dùng (ví dụ như MapTools tự tạo).&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; color:#000000;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename]gui.cpp &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename]gui.h &lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt; &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;Đây là lớp cơ bản nơi &apos;luân lý&apos; ứng cho hộp thoại đã đề cập ở trên. Phần này hoàn toàn do quyền quyết định của bạn...&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename].qrc(sp)(sp)&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-weight:600; color:#dc143c;&quot;&gt;&lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt;Đây là tập tin tài nguyên của Qt4 cho phần mở rộng của bạn. Makefile được tạo ra cho phần mở rộng của bạn được thiết lập tất cả để biên dịch tập tin tài nguyên sao cho tất cả những gì bạn cần làm là thêm các biểu tượn bổ sung của bạn... bằng cách dùng định dạng tập tin xml đơn giản. Lưu ý namespace dùng cho tất cả tài nguyên của bạn, ví dụ (&quot;:/[pluginname]/&quot;). Điều quan trọng là phải dùng prefix (tiếp đầu ngữ) này cho tất cả các tài nguyên của bạn. Chúng tôi khuyến nghị bạn đưa vào luôn bất kỳ hình ảnh cũng như dữ liệu chạy chương trình (run time data) vào tập tin tài nguyên này.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;(new line)
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;[pluginlcasename].png(sp)(sp)&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-weight:600; color:#dc143c;&quot;&gt;&lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt;Đây là biểu tượng sẽ được dùng cho menu phần mở rộng và biểu tượng thanh công cụ của bạn. Chỉ cần đơn giản đưa biểu tượng này cùng với biểu tượng của riêng bạn để làm cho phần mở rộng của bạn phân biệt được với các phần mở rộng khác.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-weight:600; color:#dc143c;&quot;&gt;&lt;/p&gt;(new line)
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;README&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;Tập tin này chứa tài liệu mà bạn hiện đang đọc!&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Getting developer help:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;Về các thắc mắc và nhận xét liên quan đến mẫu của trình xây dựng phần mở rộng và việc tạo các đối tượng của bạn, hãy liên hệ với chúng tôi qua:&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt; * danh sách thư tín những người phát triển QGIS, hoặc&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt; * IRC (#qgis on freenode.net)&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;QGIS được phát hành dưới Giấy phép Công cộng GNU. Nếu bạn viết một phần mở rộng có ích, hãy xem xét việc đóng góp nó cho cộng đồng.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;(new line)
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;Chúc bạn vui vẻ và cám ơn bạn đã chọn QGIS.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Nhóm phát triển QGIS&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-weight:600;&quot;&gt;2007&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
