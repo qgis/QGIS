@@ -12377,34 +12377,37 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>Select the predefined query you want to use from the drop-down list containing queries identified form the file loaded using the Open File icon above. To run the query you need to click on the SQL Query tab. The query will be automatically entered in the query window.</source>
-      <translation type="unfinished" />
+      <translation>Seleccione la consulta predefinida que quiere usar de la lista desplegable que contiene las consultas identificadas en el archivo cargado usando el icono Abrir archivo de arriba. Para ejecutar la consulta necesita pulsar en la pestaña Consulta SQL. La consulta se introducirá automáticamente en la ventana de consultas.</translation>
     </message>
     <message>
       <source>not connected</source>
-      <translation type="unfinished" />
+      <translation>no conectado</translation>
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
 p, li { white-space: pre-wrap; }
 &lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-style:italic;&quot;>Connection Status: &lt;/span>&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" />
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-style:italic;&quot;>Estado de la conexión: &lt;/span>&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
     <message>
       <source>Database Host</source>
-      <translation type="unfinished" />
+      <translation>Servidor de bases de datos</translation>
     </message>
     <message>
       <source>Enter the database host. If the database resides on your desktop you should enter ¨localhost¨. If you selected ¨MSAccess¨ as the database type this option will not be available. </source>
-      <translation type="unfinished" />
+      <translation>Introduzca el servidor de bases de datos. Si la base de datos está en su equipo deberá introducir ¨localhost¨. Si seleccionó ¨MSAccess¨ como tipo de base de datos esta opción no estará disponible.</translation>
     </message>
     <message>
       <source>Password to access the database.</source>
-      <translation type="unfinished" />
+      <translation>Contraseña para acceder a la base de datos.</translation>
     </message>
     <message>
       <source>Enter the name of the database.</source>
-      <translation type="unfinished" />
+      <translation>Introduzca el nombre de la base de datos.</translation>
     </message>
     <message>
       <source>Username</source>
@@ -12412,11 +12415,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>Enter the port through which the database must be accessed if a MYSQL database is used.</source>
-      <translation type="unfinished" />
+      <translation>Introduzca el puerto a través del cual se debe acceder a la base de datos si se usa una base de datos MYSQL.</translation>
     </message>
     <message>
       <source>Connect to the database using the parameters selected above. If the connection was successful a message will be displayed in the Output Console below saying the connection was established. </source>
-      <translation type="unfinished" />
+      <translation>Conectar a la base de datos usando los parámetros seleccionados arriba. Si la conexión tuvo éxito se mostrará un mensaje en la consola de salida inferior diciendo que se ha establecido la conexión. </translation>
     </message>
     <message>
       <source>Connect</source>
@@ -12424,15 +12427,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>User name to access the database.</source>
-      <translation type="unfinished" />
+      <translation>Nombre de usuario para acceder a la base de datos.</translation>
     </message>
     <message>
       <source>Select the type of database from the list of supported databases in the drop-down menu.</source>
-      <translation type="unfinished" />
+      <translation>Seleccione el tipo de base de datos de la lista de bases de datos soportadas en el menú desplegable.</translation>
     </message>
     <message>
       <source>Database Name</source>
-      <translation type="unfinished" />
+      <translation>Nombre de la base de datos</translation>
     </message>
     <message>
       <source>Password</source>
@@ -12440,7 +12443,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>Database Type</source>
-      <translation type="unfinished" />
+      <translation>Tipo de base de datos</translation>
     </message>
     <message>
       <source>Port</source>
@@ -12448,65 +12451,65 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>SQL Query</source>
-      <translation type="unfinished" />
+      <translation>Consulta SQL</translation>
     </message>
     <message>
       <source>Run the query entered above. The status of the query will be displayed in the Output  Console below.</source>
-      <translation type="unfinished" />
+      <translation>Ejecutar la consulta introducida arriba. El estado de la consulta se mostrará en la consola de salida de abajo.</translation>
     </message>
     <message>
       <source>Run Query</source>
-      <translation type="unfinished" />
+      <translation>Ejecutar consulta</translation>
     </message>
     <message>
       <source>Enter the query you want to run in this window.</source>
-      <translation type="unfinished" />
+      <translation>Introduzca la consulta que desea ejecutar en esta ventana.</translation>
     </message>
     <message>
       <source>A window for status messages to be displayed.</source>
-      <translation type="unfinished" />
+      <translation>Una ventana para mostrar los mensajes de estado.</translation>
     </message>
     <message>
       <source>Output Console</source>
-      <translation type="unfinished" />
+      <translation>Consola de salida</translation>
     </message>
   </context>
   <context>
     <name>eVisDatabaseLayerFieldSelectionGuiBase</name>
     <message>
       <source>Database File Selection</source>
-      <translation type="unfinished" />
+      <translation>Selección de archivo de base de datos</translation>
     </message>
     <message>
       <source>The name of the field that contains the Y coordinate of the points.</source>
-      <translation type="unfinished" />
+      <translation>El nombre del campo que contiene la coordenada Y de los puntos.</translation>
     </message>
     <message>
       <source>The name of the field that contains the X coordinate of the points.</source>
-      <translation type="unfinished" />
+      <translation>El nombre del campo que contiene la coordenada X de los puntos.</translation>
     </message>
     <message>
       <source>Enter the name for the new layer that will be created and displayed in QGIS.</source>
-      <translation type="unfinished" />
+      <translation>Introduzca el nombre para la capa nueva que se creará y mostrará en QGIS.</translation>
     </message>
     <message>
       <source>Y Coordinate</source>
-      <translation type="unfinished" />
+      <translation>Coordenada Y</translation>
     </message>
     <message>
       <source>X Coordinate</source>
-      <translation type="unfinished" />
+      <translation>Coordenada X</translation>
     </message>
     <message>
       <source>Name of New Layer</source>
-      <translation type="unfinished" />
+      <translation>Nombre de la capa nueva</translation>
     </message>
   </context>
   <context>
     <name>eVisGenericEventBrowserGui</name>
     <message>
       <source>Generic Event Browser</source>
-      <translation type="unfinished" />
+      <translation>Explorador de eventos genérico</translation>
     </message>
     <message>
       <source>Field</source>
@@ -12522,11 +12525,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>This tool only supports vector data</source>
-      <translation type="unfinished" />
+      <translation>Esta herramienta sólo soporta datos vectoriales</translation>
     </message>
     <message>
       <source>No active layers found</source>
-      <translation type="unfinished" />
+      <translation>No se ha encontrado ninguna capa activa</translation>
     </message>
     <message>
       <source>Error</source>
@@ -12534,66 +12537,66 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>Unable to connecto to either the map canvas or application interface</source>
-      <translation type="unfinished" />
+      <translation>No se puede conectar con la vista del mapa ni con la interfaz de la aplicación</translation>
     </message>
     <message>
       <source>NULL was returned instead of a valid feature</source>
-      <translation type="unfinished" />
+      <translation>Se devolvió NULO en vez de un objeto espacial válido</translation>
     </message>
     <message>
       <source>Generic Event Browser - Displaying records 01 of 0%n</source>
-      <translation type="unfinished" />
+      <translation>Explorador de eventos genérico - Mostrando registros 01 de 0%n</translation>
     </message>
     <message>
       <source>Generic Event Browser - Displaying records 01 of %n</source>
-      <translation type="unfinished" />
+      <translation>Explorador de eventos genérico - Mostrando registros 01 de %n</translation>
     </message>
     <message>
       <source>Attribute Contents</source>
-      <translation type="unfinished" />
+      <translation>Contenidos de los atributos</translation>
     </message>
     <message>
       <source>Generic Event Browser - Displaying records </source>
-      <translation type="unfinished" />
+      <translation>Explorador de eventos genérico - Mostrando registros </translation>
     </message>
     <message>
       <source>of</source>
-      <translation type="unfinished" />
+      <translation>de</translation>
     </message>
     <message>
       <source>Select Application</source>
-      <translation type="unfinished" />
+      <translation>Seleccionar aplicación</translation>
     </message>
     <message>
       <source>All (*)</source>
-      <translation type="unfinished" />
+      <translation>Todos (*)</translation>
     </message>
   </context>
   <context>
     <name>eVisGenericEventBrowserGuiBase</name>
     <message>
       <source>Display</source>
-      <translation type="unfinished" />
+      <translation>Visualizar</translation>
     </message>
     <message>
       <source>Use the Previous button to display the previous photo when more than one photo is available for display.</source>
-      <translation type="unfinished" />
+      <translation>Usar el botón Anterior para mostrar la foto anterior cuando haya más de una disponible para visualizar.</translation>
     </message>
     <message>
       <source>Previous</source>
-      <translation type="unfinished" />
+      <translation>Anterior</translation>
     </message>
     <message>
       <source>Use the Next button to display the next photo when more than one photo is available for display.</source>
-      <translation type="unfinished" />
+      <translation>Usar el botón Siguiente para mostrar la siguiente foto cuando haya más de una disponible para visualizar.</translation>
     </message>
     <message>
       <source>Next</source>
-      <translation type="unfinished" />
+      <translation>Siguiente</translation>
     </message>
     <message>
       <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
-      <translation type="unfinished" />
+      <translation>Toda la información de los atributos del punto asociada con la foto que se está viendo se muestra aquí. Si el tipo de archivo que se está referenciando en el registro visualizado no es una imagen pero es de un tipo definido en la pestaña “Configurar aplicaciones externas”, entonces cuando pulse dos veces en el valor del campo que contiene la ruta al archivo se lanzará la aplicación que lo abre para verlo u oír su contenido. Si la extensión del archivo es reconocida, los datos de los atributos se mostrarán en verde.</translation>
     </message>
     <message>
       <source>1</source>
@@ -12601,11 +12604,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>Image display area</source>
-      <translation type="unfinished" />
+      <translation>Área de visualización de imágenes</translation>
     </message>
     <message>
       <source>Display area for the image.</source>
-      <translation type="unfinished" />
+      <translation>Área de visualización para la imagen.</translation>
     </message>
     <message>
       <source>Options</source>
@@ -12616,35 +12619,38 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;>
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600;&quot;>Save?&lt;/span>&lt;/p>&lt;/body>&lt;/html></source>
-      <translation type="unfinished" />
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;span style=&quot; font-weight:600;&quot;>¿Guardar?&lt;/span>&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
     <message>
       <source>Attribute Containing Path to File</source>
-      <translation type="unfinished" />
+      <translation>Atributo que contiene la ruta al archivo</translation>
     </message>
     <message>
       <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
-      <translation type="unfinished" />
+      <translation>Use la lista desplegable para seleccionar el campo que contiene la ruta al directorio de la imagen. Puede ser una ruta absoluta o relativa.</translation>
     </message>
     <message>
       <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.  </source>
-      <translation type="unfinished" />
+      <translation>Si se marca la ruta a la imagen se definirá añadiendo los atributos del campo seleccionado en la lista desplegable “Atributo que contiene la ruta al archivo“ a la “Ruta base“ definida abajo.</translation>
     </message>
     <message>
       <source>Path Is Relative</source>
-      <translation type="unfinished" />
+      <translation>La ruta es relativa</translation>
     </message>
     <message>
       <source>If checked, the relative path values will be saved for the next session.</source>
-      <translation type="unfinished" />
+      <translation>Si se marca, los valores de ruta relativa se guardarán para la próxima sesión.</translation>
     </message>
     <message>
       <source>Reset to default</source>
-      <translation type="unfinished" />
+      <translation>Restablecer a predeterminado</translation>
     </message>
     <message>
       <source>Resets the values on this line to the default setting.</source>
-      <translation type="unfinished" />
+      <translation>Restablece los valores de esta línea a la configuración predeterminada.</translation>
     </message>
     <message>
       <source>If checked an arrow pointing in the direction defined by the attribute in the field selected from the drop-down list to the right will be displayed in the QGIS window on top of the point for this image.</source>
@@ -12712,11 +12718,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>The Base Path onto which the relative path defined above will be appended.</source>
-      <translation type="unfinished" />
+      <translation>La ruta base a la que se añadirá la ruta relativa definida arriba.</translation>
     </message>
     <message>
       <source>If checked, the Base Path will be saved for the next session.</source>
-      <translation type="unfinished" />
+      <translation>Si está marcado, la ruta base se guardará para la próxima sesión.</translation>
     </message>
     <message>
       <source>Enters the default “Base Path” which is the  path to the directory of the vector layer containing the image information.</source>
@@ -12777,7 +12783,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
       <source>Add a new file type with a unique extension and the path for the application that can open the file.</source>
-      <translation type="unfinished" />
+      <translation>Añadir un tipo de archivo nuevo con una extensión única y la ruta a la aplicación que abre el archivo.</translation>
     </message>
     <message>
       <source>Delete current row</source>
