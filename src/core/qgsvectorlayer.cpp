@@ -2195,7 +2195,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
       {
         QgsDebugMsg("Beautifying layer name " + name());
         // adjust the display name for postgres layers
-        QRegExp reg("\".+\"\\.\"(.+)\"");
+        QRegExp reg("\"[^\"]+\"\\.\"([^\"]+)\"");
         reg.indexIn(name());
         QStringList stuff = reg.capturedTexts();
         QString lName = stuff[1];
