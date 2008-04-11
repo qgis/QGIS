@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="  Creates a new map layer whose category values are based upon the user's reclassification of categories in an existing raster map layer" module="r.reclass.file">
+<qgisgrassmodule label="Creates a new map layer whose category values are based upon the user's reclassification of categories in an existing raster map layer" module="r.reclass.file">
 	<option key="input"/>
 	<file key="rules_file" type="new" fileoption="olayer" label="Text file" filters="Txt (*.txt), Csv (*.csv)" />
 	<option key="output" />

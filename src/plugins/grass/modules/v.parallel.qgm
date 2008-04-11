@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label=" v.parallel - Create parallel line to input lines" module="v.parallel">
+<qgisgrassmodule label="Create parallel line to input lines" module="v.parallel">
 	<option key="input" typemask="line" />
 	<option key="distance"/>
 	<option key="output" />

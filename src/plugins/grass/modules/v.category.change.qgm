@@ -2,7 +2,7 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <!-- TODO: this is bad -->
-<qgisgrassmodule label="v.category - Change layer number" module="v.category">
+<qgisgrassmodule label="Change layer number" module="v.category">
 	<option key="input" typeoption="type"/>
 	<option key="layer"/>
 	<option key="output" />

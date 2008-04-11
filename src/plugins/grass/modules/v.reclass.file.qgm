@@ -2,7 +2,7 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <!-- TODO: this is bad -->
-<qgisgrassmodule label=" v.reclass - Reclass category values using a rules file" module="v.reclass">
+<qgisgrassmodule label="Reclass category values using a rules file" module="v.reclass">
 	<option key="input" typeoption="type" layeroption="layer"/>
 	<file key="rules" type="new" fileoption="olayer" label="Text file" filters="Txt (*.txt), Csv (*.csv)" />
 	<option key="output" />

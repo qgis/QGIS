@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="r.in.ascii - Convert an ASCII raster text file into a (binary) raster map layer." module="r.in.ascii">
+
+<qgisgrassmodule label="Convert an ASCII raster text file into a (binary) raster map layer" module="r.in.ascii">
 	<file key="input" type="old" />
-       <option key="mult" />
-       <option key="nv" />
+	<option key="mult" />
+	<option key="nv" />
 	<flag key="i" />
 	<flag key="f" />
 	<flag key="d" />
 	<flag key="s" />
 	<option key="output" />
 </qgisgrassmodule>
-

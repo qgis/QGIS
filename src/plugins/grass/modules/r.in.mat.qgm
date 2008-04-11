@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="r.in.mat - Import a binary MAT-File(v4) to a GRASS raster. " module="r.in.mat">
-	   <file key="input" type="old" />
-       <option key="output" />
+
+<qgisgrassmodule label="Import a binary MAT-File(v4) to a GRASS raster" module="r.in.mat">
+	<file key="input" type="old" />
+	<option key="output" />
 </qgisgrassmodule>

@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="r.quant - This routine produces the quantization file for a floating-point map." module="r.quant">
+
+<qgisgrassmodule label="This routine produces the quantization file for a floating-point map" module="r.quant">
 	<option key="input" />
 	<option key="basemap" />
-    <option key="fprange" />
-    <option key="range" />
+	<option key="fprange" />
+	<option key="range" />
 	<flag key="t" />
 	<flag key="r" />
 </qgisgrassmodule>
-
-
-
-
-
-
-
-

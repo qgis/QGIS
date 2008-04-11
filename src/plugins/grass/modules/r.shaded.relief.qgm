@@ -2,7 +2,7 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <!-- TODO: this is bad -->
-<qgisgrassmodule label=" r.shaded.relief - Create shaded map" module="r.shaded.relief">
+<qgisgrassmodule label="Create shaded map" module="r.shaded.relief">
 	<option key="map"/>
 	<option key="shadedmap" />
 	<option key="altitude" />

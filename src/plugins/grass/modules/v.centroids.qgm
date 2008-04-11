@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label=" v.centroids - Add missing centroids to closed boundaries" module="v.centroids">
+<qgisgrassmodule label="Add missing centroids to closed boundaries" module="v.centroids">
 	<option key="input" layermask="0" typemask="area"/>
 	<option key="output"/>
 	<option key="option" answer="add" hidden="yes"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label=" v.to.points - Create points along input lines" module="v.to.points">
+<qgisgrassmodule label="Create points along input lines" module="v.to.points">
 	<option key="input" layeroption="llayer" typeoption="type" />
 	<file key="output" type="new" />
 	<option key="dmax" answer="100" hidden="no"/>

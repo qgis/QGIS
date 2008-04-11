@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label=" v.out.ogr - Export vector layer to various formats (OGR library)" module="v.out.ogr">
+<qgisgrassmodule label="Export vector layer to various formats (OGR library)" module="v.out.ogr">
 	<option key="input" layeroption="layer" typeoption="type" />
 	<option key="format"/>
 	<file key="dsn" type="new" fileoption="olayer" label="Output vector file" />

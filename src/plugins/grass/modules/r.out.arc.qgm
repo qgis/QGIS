@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="r.out.arc - Converts a raster map layer into an ESRI ARCGRID file." module="r.out.arc">
-       <option key="input" />
-		<option key="dp" answer="2"/>
-		<flag key="h" />
-		<flag key="1" />
-       <file key="output" type="new" />
+
+<qgisgrassmodule label="Converts a raster map layer into an ESRI ARCGRID file" module="r.out.arc">
+	<option key="input" />
+	<option key="dp" answer="2"/>
+	<flag key="h" />
+	<flag key="1" />
+	<file key="output" type="new" />
 </qgisgrassmodule>

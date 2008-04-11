@@ -2,7 +2,7 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <!-- TODO: this is bad -->
-<qgisgrassmodule label=" r.neighbors - Raster neighbors analyses" module="r.neighbors">
+<qgisgrassmodule label="Raster neighbors analyses" module="r.neighbors">
 	<option key="input"/>
 	<option key="method"/>
 	<option key="size"/>

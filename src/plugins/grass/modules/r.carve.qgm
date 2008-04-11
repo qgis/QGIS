@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="r.carve - Takes vector stream data, transforms it to raster, and subtracts depth from the output DEM" module="r.carve">
+
+<qgisgrassmodule label="Takes vector stream data, transforms it to raster, and subtracts depth from the output DEM" module="r.carve">
 	<option key="rast" />
 	<option key="vect" />
 	<option key="width" />
@@ -9,6 +10,3 @@
 	<option key="output" />
 	<option key="points" />
 </qgisgrassmodule>
-
-
-

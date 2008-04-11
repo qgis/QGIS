@@ -215,7 +215,7 @@
 		</section>
 		<section label="Reports and statistics">
 			<section label="Reports">
-				<grass name="r.cats"/>
+				<grass name="r.category"/>
 			</section>
 			<section label="Statistics">
 				<grass name="r.sum"/>

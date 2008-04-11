@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="m.proj - Convert coordinates from one projection to another (cs2cs frontend)." module="m.proj">
+
+<qgisgrassmodule label="Convert coordinates from one projection to another (cs2cs frontend)" module="m.proj">
 	<flag key="i" />
 	<flag key="o" />
 	<flag key="d" />

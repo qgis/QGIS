@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="v.hull - Convex hull" module="v.hull">
+<qgisgrassmodule label="Convex hull" module="v.hull">
 	<option key="input"/>
 	<option key="output" />
 	<flag key="a" answer="on" hidden="yes" />

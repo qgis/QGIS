@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="i.tasscap - Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 7 data" module="i.tasscap">
+
+<qgisgrassmodule label="Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 7 data" module="i.tasscap">
 	<flag key="7" />
 	<option key="band1" />
 	<option key="band2" />

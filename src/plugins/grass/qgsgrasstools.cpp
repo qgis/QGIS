@@ -367,7 +367,7 @@ void QgsGrassTools::addModules (  QTreeWidgetItem *parent, QDomElement &element 
         QString label = QgsGrassModule::label ( path );
         QPixmap pixmap = QgsGrassModule::pixmap ( path, 25 ); 
 
-        item->setText( 0, label );
+        item->setText( 0, name + " - " + label );
         item->setIcon( 0, QIcon(pixmap) );
         item->setText( 1, name );
         lastItem = item;

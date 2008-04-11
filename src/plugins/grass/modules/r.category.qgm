@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Outputs a covariance/correlation matrix for user-specified raster map layer(s)" module="r.covar">
+<qgisgrassmodule label="Prints category values and labels associated with user-specified raster map layers" module="r.category">
 	<option key="map" />
 </qgisgrassmodule>

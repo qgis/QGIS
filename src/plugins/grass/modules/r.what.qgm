@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="r.what - Queries raster map layers on their category values and category labels." module="r.what">
-    <flag key="f" />
-    <flag key="c" />
-    <flag key="i" />
-	<option key="input" />
-    <option key="cache" />
-    <option key="null" />
-    <option key="east_north" />
-</qgisgrassmodule>
 
+<qgisgrassmodule label="Queries raster map layers on their category values and category labels" module="r.what">
+	<flag key="f" />
+	<flag key="c" />
+	<flag key="i" />
+	<option key="input" />
+	<option key="cache" />
+	<option key="null" />
+	<option key="east_north" />
+</qgisgrassmodule>

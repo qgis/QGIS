@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="r.surf.contour - Surface generation program from rasterized contours." module="r.surf.contour">
+
+<qgisgrassmodule label="Surface generation program from rasterized contours" module="r.surf.contour">
 	<option key="input" />
-    <option key="output" />
+	<option key="output" />
 </qgisgrassmodule>

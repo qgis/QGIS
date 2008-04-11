@@ -1,18 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="r.resamp.stats - Resamples raster map layers using aggregation." module="r.resamp.stats">
+
+<qgisgrassmodule label="Resamples raster map layers using aggregation" module="r.resamp.stats">
 	<option key="input" />
 	<option key="method" />
 	<option key="output" />
 	<flag key="n" />
 	<flag key="w" />
 </qgisgrassmodule>
-
-
-
-
-
-
-
-
-

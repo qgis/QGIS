@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="r.mfilter - Raster file matrix filter. " module="r.mfilter">
+
+<qgisgrassmodule label="Raster file matrix filter" module="r.mfilter">
 	<flag key="z" />
 	<option key="input" />
-       <option key="output" />
-       <option key="filter" />
-       <option key="repeat" />
-       <option key="title" />
+	<option key="output" />
+	<option key="filter" />
+	<option key="repeat" />
+	<option key="title" />
 </qgisgrassmodule>

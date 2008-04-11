@@ -1,30 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="r.bilinear - Bilinear interpolation utility for raster map layers. " module="r.bilinear">
-       <option key="input" />
-       <option key="output" />
+
+<qgisgrassmodule label="Bilinear interpolation utility for raster map layers" module="r.bilinear">
+	<option key="input" />
+	<option key="output" />
 </qgisgrassmodule>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

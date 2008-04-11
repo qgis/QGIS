@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
- <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
- <qgisgrassmodule label="g.proj - print projection information. " module="g.proj">
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="print projection information" module="g.proj">
 	<flag key="p" />
 	<flag key="d" />
 	<flag key="j" />
 	<flag key="w" />
 	<flag key="e" />
 	<flag key="f" />
- </qgisgrassmodule>
-
+</qgisgrassmodule>

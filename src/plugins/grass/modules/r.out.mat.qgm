@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="r.out.mat -  Exports a GRASS raster to a binary MAT-File." module="r.out.mat">
+
+<qgisgrassmodule label="Exports a GRASS raster to a binary MAT-File" module="r.out.mat">
 	<option key="input" />
-       <file key="output" type="new" />
+	<file key="output" type="new" />
 </qgisgrassmodule>

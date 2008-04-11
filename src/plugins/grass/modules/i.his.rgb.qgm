@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
- <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
- <qgisgrassmodule label="i.his.rgb - hue-intensity-saturation (his) to red-green-blue (rgb) raster map color transform function" module="i.his.rgb">
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="hue-intensity-saturation (his) to red-green-blue (rgb) raster map color transform function" module="i.his.rgb">
 	<option key="hue_input" />
 	<option key="intensity_input" />
 	<option key="saturation_input" />

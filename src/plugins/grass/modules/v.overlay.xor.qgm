@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="v.overlay - Vector non-intersection" module="v.overlay">
+<qgisgrassmodule label="Vector non-intersection" module="v.overlay">
 	<option key="ainput" typeoption="atype" layeroption="alayer" typemask="area,line" />
 	<option key="binput" typeoption="btype" layeroption="blayer" />
 	<option key="output" />

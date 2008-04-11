@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
- <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
- <qgisgrassmodule label="g.transform - computes a coordinate transformation based on the control points" module="g.transform">
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="computes a coordinate transformation based on the control points" module="g.transform">
 	<flag key="s" />
-    <option key="group" />
+	<option key="group" />
 	<option key="order" />
 	<option key="format" />
- </qgisgrassmodule>
-
+</qgisgrassmodule>

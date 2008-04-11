@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
- <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
- <qgisgrassmodule label="r.contour - Produces a contours vector map of specified contours from a raster map" module="r.contour">
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Produces a contours vector map of specified contours from a raster map" module="r.contour">
 	<option key="input" />
 	<option key="levels" />
 	<option key="output" />

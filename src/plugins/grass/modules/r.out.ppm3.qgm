@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="r.out.ppm3 - Converts 3 GRASS raster layers (R,G,B) to a PPM image file at the pixel resolution of the CURRENTLY DEFINED REGION. " module="r.out.ppm3">
+
+<qgisgrassmodule label="Converts 3 GRASS raster layers (R,G,B) to a PPM image file at the pixel resolution of the CURRENTLY DEFINED REGION" module="r.out.ppm3">
 	<flag key="c" hidden="yes" />
 	<option key="red" />
-       <option key="green" />
-       <option key="blue" />
-       <file key="output" type="new" />
+	<option key="green" />
+	<option key="blue" />
+	<file key="output" type="new" />
 </qgisgrassmodule>

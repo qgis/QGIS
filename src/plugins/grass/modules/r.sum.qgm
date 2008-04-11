@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
- <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
- <qgisgrassmodule label="r.sum - Sums up the raster cell values. " module="r.sum">
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Sums up the raster cell values" module="r.sum">
 	<option key="rast" />
- </qgisgrassmodule>
+</qgisgrassmodule>
