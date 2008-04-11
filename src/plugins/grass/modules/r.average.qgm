@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd"> <qgisgrassmodule label="r.average - Finds the average of values in a cover map within areas assigned the same category value in a user-specified base map. " module="r.average">
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Finds the average of values in a cover map within areas assigned the same category value in a user-specified base map" module="r.average">
 	<option key="base" />
-        <option key="cover" />
-		<flag key="c" />
-        <option key="output" />
+	<option key="cover" />
+	<flag key="c" />
+	<option key="output" />
 </qgisgrassmodule>

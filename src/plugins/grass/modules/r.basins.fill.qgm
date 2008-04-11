@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="r.basins.fill - Generates a raster map layer showing watershed subbasins. " module="r.basins.fill">
-        <option key="number" />
-        <option key="c_map" />
-        <option key="t_map" />
-        <option key="result" />
+
+<qgisgrassmodule label="Generates a raster map layer showing watershed subbasins" module="r.basins.fill">
+	<option key="number" />
+	<option key="c_map" />
+	<option key="t_map" />
+	<option key="result" />
 </qgisgrassmodule>

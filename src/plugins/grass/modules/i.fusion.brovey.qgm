@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
- <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
- <qgisgrassmodule label="i.fusion.brovey - brovey transform to merge multispectral and high-res pancromatic channels" module="i.fusion.brovey">
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="brovey transform to merge multispectral and high-res pancromatic channels" module="i.fusion.brovey">
 	<flag key="l" />
 	<flag key="q" />
 	<flag key="s" />
-    <option key="ms1" />
+	<option key="ms1" />
 	<option key="ms2" />
 	<option key="ms3" />
 	<option key="pan" />

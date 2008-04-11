@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label=" v.what.vect - Uploads map for wich to edit attribute table" module="v.what.vect">
+<qgisgrassmodule label="Uploads map for which to edit attribute table" module="v.what.vect">
 	<option key="vector" layeroption="layer"/>
 	<field key="column" layer="vector" type="integer,double,varchar"/>
 	<option key="qvector" layeroption="layer"/>

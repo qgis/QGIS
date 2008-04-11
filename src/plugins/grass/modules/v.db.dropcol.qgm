@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label=" v.db.dropcol -  Drops a column from the attribute table connected to a given vector map" module="v.db.dropcol">
+<qgisgrassmodule label="Drops a column from the attribute table connected to a given vector map" module="v.db.dropcol">
 	<option key="map" layeroption="layer" />
 	<field key="column" layer="map" label="Attribute field"  type="integer,double,varchar,string"/>
 </qgisgrassmodule>

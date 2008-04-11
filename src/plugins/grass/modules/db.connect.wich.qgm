@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label=" db.connect - Prints general DB connection mapset" module="db.connect">
+<qgisgrassmodule label="Prints general DB connection mapset" module="db.connect">
 	<flag key="p" answer="on" hidden="yes"/>
 </qgisgrassmodule>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label=" r.report - Reports statistics for raster map layers" module="r.report">
+<qgisgrassmodule label="Reports statistics for raster map layers" module="r.report">
 	<option key="map" />
 	<option key="units"/>
 </qgisgrassmodule>

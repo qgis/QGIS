@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label=" v.in.db - Import vector point from table dbf format" module="v.in.db">
+<qgisgrassmodule label="Import vector point from table dbf format" module="v.in.db">
 	<option key="driver" answer="dbf" hidden="yes"/>
 	<file key="database" type="old" fileoption="table" label="Input table" filters="dbf (*.dbf)" />
 	<option key="x"/>

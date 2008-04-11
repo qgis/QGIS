@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="r.region - Sets the boundary definitions for a raster map. " module="r.region">
+
+<qgisgrassmodule label="Sets the boundary definitions for a raster map" module="r.region">
 	<flag key="c" />
 	<flag key="d" />			
 	<option key="map" />
-    <option key="region" />
-    <option key="raster" />
-    <option key="vector" />
+	<option key="region" />
+	<option key="raster" />
+	<option key="vector" />
 </qgisgrassmodule>

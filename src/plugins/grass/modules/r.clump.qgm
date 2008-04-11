@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label=" r.clump - Recategorizes into unique categories contiguos cells" module="r.clump">
+<qgisgrassmodule label="Recategorizes into unique categories contiguous cells" module="r.clump">
 	<option key="input"/>
 	<option key="output"/>
 </qgisgrassmodule>

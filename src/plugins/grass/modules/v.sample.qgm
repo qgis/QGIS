@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label=" v.sample - Sample a raster file at site locations" module="v.sample">
+<qgisgrassmodule label="Sample a raster file at site locations" module="v.sample">
 	<option key="input" typemask="point"/>
 	<field key="column" layer="vector" type="integer,double"/>
 	<option key="raster"/>

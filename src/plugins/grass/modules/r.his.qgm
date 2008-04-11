@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="  r.his - Generates red, green and blue raster map layers combining hue, intensity, and saturation (his) values from user-specified input raster map layers" module="r.his">
+<qgisgrassmodule label="Generates red, green and blue raster map layers combining hue, intensity, and saturation (his) values from user-specified input raster map layers" module="r.his">
 	<option key="h_map"/>
 	<option key="i_map"/>
 	<option key="s_map"/>

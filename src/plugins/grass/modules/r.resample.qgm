@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label=" r.resample - GRASS raster map layer data resampling capability. Before you must set new resolution" module="r.resample">
+<qgisgrassmodule label="GRASS raster map layer data resampling capability. Before you must set new resolution" module="r.resample">
 	<option key="input"/>
 	<option key="output"/>
 </qgisgrassmodule>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label=" v.transform - Performs an affine transformation (shift, scale and rotate, or GPCs) on vector map" module="v.transform">
+<qgisgrassmodule label="Performs an affine transformation (shift, scale and rotate, or GPCs) on vector map" module="v.transform">
 	<option key="input" layeroption="layer"/>
 	<option key="xshift"/>
 	<option key="yshift"/>

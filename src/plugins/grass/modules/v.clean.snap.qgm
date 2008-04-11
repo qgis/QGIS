@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label=" v.clean - Cleaning topology: snap lines to vertex in threshold" module="v.clean">
+<qgisgrassmodule label="Cleaning topology: snap lines to vertex in threshold" module="v.clean">
 	<option key="input" typeoption="type"/>
 	<option key="tool" answer="snap" hidden="yes"/>
 	<option key="thresh"/>

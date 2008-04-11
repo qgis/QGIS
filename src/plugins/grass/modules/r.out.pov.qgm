@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="r.out.pov -  Converts a raster map layer into a height-field file for POVRAY." module="r.out.pov">
+
+<qgisgrassmodule label="Converts a raster map layer into a height-field file for POVRAY" module="r.out.pov">
 	<option key="map" />
-       <option key="hftype" />
-       <option key="bias" />
-       <option key="scale" />
-       <file key="tga" type="new" />
+	<option key="hftype" />
+	<option key="bias" />
+	<option key="scale" />
+	<file key="tga" type="new" />
 </qgisgrassmodule>

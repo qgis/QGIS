@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="v.in.dxf - Import only same layers of a DXF vector" module="v.in.dxf">
+<qgisgrassmodule label="Import only same layers of a DXF vector" module="v.in.dxf">
 	<ogr key="input" label="DXF vector layer" />
 	<option key="layers" />
 	<option key="output" />

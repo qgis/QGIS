@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="r.out.xyz - Export a raster map to a text file as x,y,z values based on cell centers" module="r.out.xyz">
+
+<qgisgrassmodule label="Export a raster map to a text file as x,y,z values based on cell centers" module="r.out.xyz">
 	<option key="input" />
 	<option key="output" />
 	<option key="fs" />

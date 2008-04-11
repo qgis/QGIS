@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
- <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
- <qgisgrassmodule label="g.proj - Converts coordinate system descriptions (i.e. projection information) between PROJ INORMATION and produce a NEW LOCATION " module="g.proj">
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Converts coordinate system descriptions (i.e. projection information) between PROJ INFORMATION and produce a NEW LOCATION" module="g.proj">
 	<file key="proj4" type="new"/>
 	<option key="location" />
- </qgisgrassmodule>
-
-	
+</qgisgrassmodule>

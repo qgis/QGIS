@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label=" v.db.update - Allows to assign a new costant value to a column only if the result of a query is TRUE" module="v.db.update">
+<qgisgrassmodule label="Allows to assign a new constant value to a column only if the result of a query is TRUE" module="v.db.update">
 	<option key="map" layeroption="layer" />
 	<field key="column" layer="map" type="integer,double,varchar,string" label="Attribute field" />
 	<option key="value"/>

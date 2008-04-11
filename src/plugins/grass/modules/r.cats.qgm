@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label=" r.cats - Prints category values and labels associated with user-specified raster map layers" module="r.cats">
-	<option key="map" />
-</qgisgrassmodule>

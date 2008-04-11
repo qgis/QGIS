@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label=" r.recode - Recode a categorical raster using a reclassification rules file" module="r.recode">
+<qgisgrassmodule label="Recode a categorical raster using a reclassification rules file" module="r.recode">
 	<option key="input"/>
 	<file key="rules" type="old" filters="Txt (*.txt), Csv (*.csv)" />
 	<option key="output" />

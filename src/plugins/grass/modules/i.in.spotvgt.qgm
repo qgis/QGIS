@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-<qgisgrassmodule label="i.in.spotvgt - Import of SPOT VGT NDVI file into a raster map" module="i.in.spotvgt">
+
+<qgisgrassmodule label="Import of SPOT VGT NDVI file into a raster map" module="i.in.spotvgt">
 	<file key="file" type="new" />
 	<flag key="a" />
 	<option key="rast" />

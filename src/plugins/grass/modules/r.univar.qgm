@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label=" r.univar - Calculates univariate statistics from the non-null cells of a raster map" module="r.univar">
+<qgisgrassmodule label="Calculates univariate statistics from the non-null cells of a raster map" module="r.univar">
 	<option key="map" />
 </qgisgrassmodule>
