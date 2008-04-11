@@ -362,7 +362,7 @@ void QgsPgQueryBuilder::on_btnGreaterThan_clicked()
 
 void QgsPgQueryBuilder::on_btnPct_clicked()
 {
-  txtSQL->insert(" % ");
+  txtSQL->insert("%");
 }
 
 void QgsPgQueryBuilder::on_btnIn_clicked()
