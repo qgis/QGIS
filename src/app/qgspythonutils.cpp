@@ -346,11 +346,26 @@ bool QgsPythonUtils::loadPlugin(QString packageName)
        "  reload(" + packageName + ")\n"
        "  __main__.__plugin_result = 'OK'\n"
        "except:\n"
-       "  qgis_except_hook_msg(sys.exc_type, sys.exc_value, sys.exc_traceback, "
-       "                       'Couldn\\'t load plugin \"" + packageName + "\"')\n"
        "  __main__.__plugin_result = 'ERROR'\n");
-  
-  return (getVariableFromMain("__plugin_result") == "OK");
+
+  if( getVariableFromMain("__plugin_result") == "OK" )
+    return true;
+
+  // snake in the grass, we know it's there
+  runString("sys.path_importer_cache.clear()");
+
+  // retry
+  runString(
+       "try:\n"
+       "  import " + packageName + "\n"
+       "  reload(" + packageName + ")\n"
+       "  __main__.__plugin_result = 'OK'\n"
+       "except:\n"
+       "  qgis_except_hook_msg(sys.exc_type, sys.exc_value, sys.exc_traceback, "
+            "'Couldn\\'t load plugin \"" + packageName + "\" from [\\'' + '\\', \\''.join(sys.path) + '\\']')\n"
+       "  __main__.__plugin_result = 'ERROR'\n");
+
+  return getVariableFromMain("__plugin_result") == "OK";
 }
 
 
