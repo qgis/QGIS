@@ -1,5 +1,5 @@
 /* XPM */
-static char *icon[]={
+static const char *icon[]={
 "22 22 234 2",
 ".# c None",
 "Qt c None",
