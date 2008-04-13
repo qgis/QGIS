@@ -1,5 +1,5 @@
 /* XPM */
-static char *mIconAddWfsLayer[]={
+static const char *mIconAddWfsLayer[]={
 "22 22 274 2",
 "Qt c None",
 ".Q c None",

@@ -1,5 +1,5 @@
 /* XPM */
-static char *add_point[] = {
+static const char *add_point[] = {
 "16 16 3 1",
 "- c None",
 ". c #000000",

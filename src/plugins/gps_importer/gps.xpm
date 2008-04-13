@@ -1,5 +1,5 @@
 /* XPM */
-static char * gps_xpm[] = {
+static const char * gps_xpm[] = {
 "174 350 10969 3",
 "   	c None",
 ".  	c #FFFFFF",
