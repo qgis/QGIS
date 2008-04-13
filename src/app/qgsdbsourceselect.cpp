@@ -433,7 +433,7 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
       QMessageBox::warning(this, tr("Connection failed"),
         tr
         ("Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4The database said:%5%6").
-        arg(settings.readEntry(key + "/database")).arg(settings.readEntry(key + "/host")).arg("\n\n").arg("\n\n").arg("\n").arg(QString::fromLocal8Bit(PQerrorMessage(pd))));
+        arg(settings.readEntry(key + "/database")).arg(settings.readEntry(key + "/host")).arg("\n\n").arg("\n\n").arg("\n").arg(QString::fromUtf8(PQerrorMessage(pd))));
     }
   }
 
