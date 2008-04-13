@@ -125,6 +125,9 @@ QgsSpatialRefSys::QgsSpatialRefSys(const QgsSpatialRefSys &srs)
 // Assignment operator
 QgsSpatialRefSys& QgsSpatialRefSys::operator=(const QgsSpatialRefSys& srs)
 {
+  OSRDestroySpatialReference( mSRS );
+  mSRS = OSRNewSpatialReference(NULL);
+  
   if (&srs != this)
   {
     mSrsId = srs.mSrsId;
