@@ -1,3 +1,9 @@
+qgis (0.9.2test2) unstable; urgency=low
+
+  * fixed various packaging bugs
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Sun, 13 Apr 2008 03:51:14 +0200
+
 qgis (0.9.2test1) gutsy; urgency=low
 
   * Testing package to see if icons deploy 
