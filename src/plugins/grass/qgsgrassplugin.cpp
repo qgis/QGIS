@@ -565,7 +565,7 @@ void QgsGrassPlugin::displayRegion()
   QgsGrass::setLocation ( gisdbase, location );
 
   struct Cell_head window;
-  char *err = G__get_window ( &window, "", "WIND", (char *) mapset.latin1() );
+  char *err = G__get_window ( &window, (char *)"", (char *)"WIND", (char *) mapset.latin1() );
 
   if ( err ) {
     QMessageBox::warning( 0, tr("Warning"), tr("Cannot read current region: ") + QString(err) );

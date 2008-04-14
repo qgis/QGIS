@@ -216,7 +216,7 @@ QDialog(parent), QgsGrassShellBase(), mTools(tools)
       shell = "/bin/bash";
     }
 
-    char *norc = "";
+    const char *norc = "";
     QFileInfo si(shell);
     if ( si.fileName() ==  "bash" || si.fileName() ==  "sh" )
     { 
@@ -229,12 +229,12 @@ QDialog(parent), QgsGrassShellBase(), mTools(tools)
 
     // Warning: execle + --norc will not inherit not given variables
     // -> overwrite here
-    char *env = "GRASS_MESSAGE_FORMAT=gui";
+    const char *env = "GRASS_MESSAGE_FORMAT=gui";
     char *envstr = new char[strlen(env)+1];
     strcpy ( envstr, env );
     putenv( envstr );
 
-    putenv ( "GISRC_MODE_MEMORY" );  // unset
+    putenv ( (char *) "GISRC_MODE_MEMORY" );  // unset
 
     env = "PS1=GRASS > ";
     envstr = new char[strlen(env)+1];
