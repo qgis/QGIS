@@ -178,6 +178,10 @@
 #include <dlfcn.h>
 #endif
 
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 using namespace std;
 class QTreeWidgetItem;
 
@@ -3783,7 +3787,6 @@ void QgisApp::zoomToLayerExtent()
   mMapLegend->legendLayerZoom();
 }
 
-
 void QgisApp::showPluginManager()
 {
   QgsPluginManager *pm = new QgsPluginManager(this);
@@ -4293,6 +4296,11 @@ void QgisApp::openURL(QString url, bool useQgisDocDirectory)
   OSStatus status = LSOpenCFURLRef(urlRef, NULL);
   status = 0; //avoid compiler warning
   CFRelease(urlRef);
+#elif defined(WIN32)
+  if(url.startsWith("file://", Qt::CaseInsensitive))
+    ShellExecute(0, 0, url.mid(7).toLocal8Bit().constData(), 0, 0, SW_SHOWNORMAL);
+  else
+    QDesktopServices::openUrl(url);
 #else
   QDesktopServices::openUrl(url);
 #endif
