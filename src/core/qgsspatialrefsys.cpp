@@ -125,9 +125,6 @@ QgsSpatialRefSys::QgsSpatialRefSys(const QgsSpatialRefSys &srs)
 // Assignment operator
 QgsSpatialRefSys& QgsSpatialRefSys::operator=(const QgsSpatialRefSys& srs)
 {
-  OSRDestroySpatialReference( mSRS );
-  mSRS = OSRNewSpatialReference(NULL);
-  
   if (&srs != this)
   {
     mSrsId = srs.mSrsId;
@@ -141,10 +138,8 @@ QgsSpatialRefSys& QgsSpatialRefSys::operator=(const QgsSpatialRefSys& srs)
     mIsValidFlag = srs.mIsValidFlag;
     if(mIsValidFlag)
     {
-      char *proj4src = NULL;
-      OSRExportToProj4(srs.mSRS, &proj4src);
-      OSRImportFromProj4(mSRS, proj4src);
-      CPLFree(proj4src);
+      OSRDestroySpatialReference(mSRS);
+      mSRS = OSRClone(srs.mSRS);
     }
   }
   return *this;
