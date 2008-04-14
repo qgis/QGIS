@@ -324,12 +324,12 @@ void QgsGrass::setLocation( QString gisdbase, QString location )
 
   // Set principal GRASS variables (in memory)
 #if defined(WIN32)
-  G__setenv( "GISDBASE", (char *) getShortPath(gisdbase).ascii() );
+  G__setenv( (char *)"GISDBASE", (char *) getShortPath(gisdbase).ascii() );
 #else
-  G__setenv( "GISDBASE", (char *) gisdbase.ascii() );
+  G__setenv( (char *)"GISDBASE", (char *) gisdbase.ascii() );
 #endif
-  G__setenv( "LOCATION_NAME", (char *) location.ascii() );
-  G__setenv( "MAPSET", "PERMANENT"); // PERMANENT must always exist
+  G__setenv( (char *)"LOCATION_NAME", (char *) location.ascii() );
+  G__setenv( (char *)"MAPSET", (char *)"PERMANENT"); // PERMANENT must always exist
 
   // Add all available mapsets to search path
   char **ms = G_available_mapsets();
@@ -346,12 +346,12 @@ void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
 
   // Set principal GRASS variables (in memory)
 #if defined(WIN32)
-  G__setenv( "GISDBASE", (char *) getShortPath(gisdbase).ascii() );
+  G__setenv( (char *)"GISDBASE", (char *) getShortPath(gisdbase).ascii() );
 #else
-  G__setenv( "GISDBASE", (char *) gisdbase.ascii() );
+  G__setenv( (char *)"GISDBASE", (char *) gisdbase.ascii() );
 #endif
-  G__setenv( "LOCATION_NAME", (char *) location.ascii() );
-  G__setenv( "MAPSET", (char *) mapset.ascii() ); 
+  G__setenv( (char *)"LOCATION_NAME", (char *) location.ascii() );
+  G__setenv( (char *)"MAPSET", (char *) mapset.ascii() ); 
 
   // Add all available mapsets to search path
   char **ms = G_available_mapsets();
@@ -554,14 +554,14 @@ QString GRASS_EXPORT QgsGrass::openMapset ( QString gisdbase, QString location, 
   putenv( gisrcEnvChar );
 
   // Reinitialize GRASS 
-  G__setenv( "GISRC", const_cast<char *>(gisrcEnv.ascii()) );    
+  G__setenv( (char *)"GISRC", const_cast<char *>(gisrcEnv.ascii()) );    
 #if defined(WIN32)
-  G__setenv( "GISDBASE", const_cast<char *>(getShortPath(gisdbase).ascii()) );
+  G__setenv( (char *)"GISDBASE", const_cast<char *>(getShortPath(gisdbase).ascii()) );
 #else
-  G__setenv( "GISDBASE", const_cast<char *>(gisdbase.ascii()) );
+  G__setenv( (char *)"GISDBASE", const_cast<char *>(gisdbase.ascii()) );
 #endif
-  G__setenv( "LOCATION_NAME", const_cast<char *>(location.ascii()) );
-  G__setenv( "MAPSET", const_cast<char *>(mapset.ascii()) );
+  G__setenv( (char *)"LOCATION_NAME", const_cast<char *>(location.ascii()) );
+  G__setenv( (char *)"MAPSET", const_cast<char *>(mapset.ascii()) );
   defaultGisdbase = gisdbase;
   defaultLocation = location;
   defaultMapset = mapset;
@@ -595,13 +595,13 @@ QString QgsGrass::closeMapset ( )
     }
     mMapsetLock = "";
 
-    putenv( "GISRC" );
+    putenv( (char *)"GISRC" );
 
     // Reinitialize GRASS 
-    G__setenv( "GISRC", "" );        
-    G__setenv( "GISDBASE", "" );        
-    G__setenv( "LOCATION_NAME", "" );
-    G__setenv( "MAPSET", "" );
+    G__setenv( (char *)"GISRC", (char *)"" );        
+    G__setenv( (char *)"GISDBASE", (char *)"" );        
+    G__setenv( (char *)"LOCATION_NAME", (char *)"" );
+    G__setenv( (char *)"MAPSET", (char *)"" );
     defaultGisdbase = "";
     defaultLocation = "";
     defaultMapset = "";
@@ -893,7 +893,7 @@ bool GRASS_EXPORT QgsGrass::region( QString gisbase,
 {
   QgsGrass::setLocation( gisbase, location );
 
-  if ( G__get_window ( window, "", "WIND", mapset.toLocal8Bit().data() ) )
+  if ( G__get_window ( window, (char *)"", (char *)"WIND", mapset.toLocal8Bit().data() ) )
   {
     return false;
   }
@@ -1027,7 +1027,7 @@ bool GRASS_EXPORT QgsGrass::mapRegion( int type, QString gisbase,
   } 
   else if ( type == Region )
   {
-    if (  G__get_window (window, "windows", 
+    if (  G__get_window (window, (char *)"windows", 
       map.toLocal8Bit().data(), 
       mapset.toLocal8Bit().data() ) != NULL )
     {

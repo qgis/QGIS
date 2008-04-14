@@ -733,7 +733,7 @@ void QgsGrassProvider::loadAttributes ( GLAYER &layer )
 #endif
       dbString dbstr; 
       db_init_string (&dbstr);
-      db_set_string (&dbstr, "select * from ");
+      db_set_string (&dbstr, (char *)"select * from ");
       db_append_string (&dbstr, layer.fieldInfo->table);
 
 #ifdef QGISDEBUG
@@ -1076,7 +1076,7 @@ void QgsGrassProvider::updateMap ( int mapId )
 
   // TODO: Should be done better / in other place ?
   // TODO: Is it necessary for close ?
-  G__setenv( "MAPSET", (char *) map->mapset.ascii() );
+  G__setenv( (char *)"MAPSET", (char *) map->mapset.ascii() );
 
   if ( closeMap ) Vect_close ( map->map );
 
@@ -1402,7 +1402,7 @@ bool QgsGrassProvider::startEdit ( void )
 
   // Set current mapset (mapset was previously checked by isGrassEditable() )
   // TODO: Should be done better / in other place ?
-  G__setenv( "MAPSET", (char *) map->mapset.ascii() );
+  G__setenv( (char *)"MAPSET", (char *) map->mapset.ascii() );
 
   Vect_close ( map->map );
 
@@ -1472,7 +1472,7 @@ bool QgsGrassProvider::closeEdit ( bool newMap )
   // Set current mapset (mapset was previously checked by isGrassEditable() )
   // TODO: Should be done better / in other place ?
   // TODO: Is it necessary for build/close ?
-  G__setenv( "MAPSET", (char *) map->mapset.ascii() );
+  G__setenv( (char *)"MAPSET", (char *) map->mapset.ascii() );
 
   Vect_build_partial ( map->map, GV_BUILD_NONE, NULL);
   Vect_build ( map->map, stderr );
