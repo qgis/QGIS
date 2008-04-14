@@ -25,20 +25,25 @@ ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
 endif
 
-CMakeCache.txt: CMakeLists.txt
+debian/build/CMakeCache.txt: CMakeLists.txt
 	dh_testdir
 	# Add here commands to configure the package.
 	uudecode -o $(CURDIR)/src/plugins/georeferencer/pencil.png $(CURDIR)/debian/pencil.uu
-	cmake -D CMAKE_INSTALL_PREFIX=/usr \
-        .
+	[ -d debian/build ] || mkdir debian/build
+	[ ! -e CMakeCache.txt ] || rm CMakeCache.txt
+	cd debian/build; cmake \
+		-D CMAKE_INSTALL_PREFIX=/usr \
+		-D CMAKE_SKIP_RPATH=TRUE \
+		-D BINDINGS_GLOBAL_INSTALL=TRUE \
+	        ../..
 
 build: patch build-stamp
 
-build-stamp: CMakeCache.txt
+build-stamp: debian/build/CMakeCache.txt
 	dh_testdir
 
 	# Add here commands to compile the package.
-	$(MAKE)
+	$(MAKE) -C debian/build
 
 	touch build-stamp
 
@@ -51,9 +56,8 @@ clean-patched:
 	rm -rf debian/tmp
 
 	# Add here commands to clean up after the build process.
-	-$(MAKE) clean
+	rm -rf debian/build
 
-	rm -f CMakeCache.txt
 	rm -f $(CURDIR)/src/plugins/georeferencer/pencil.png
 
 	dh_clean 
@@ -65,11 +69,11 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/tmp.
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
+	$(MAKE) -C debian/build install DESTDIR=$(CURDIR)/debian/tmp
 
 	# Install menu pixmap
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/pixmaps
-	install -o root -g root -m 644 $(CURDIR)/debian/qgis-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis-icon.png
+	install -o root -g root -m 644 $(CURDIR)/debian/qgis-icon.xpm $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis-icon.xpm
 
 # Build architecture-independent files here.
 binary-indep: build install
@@ -83,11 +87,12 @@ binary-arch: build install
 	dh_installdocs
 	dh_installexamples
 	dh_install --sourcedir=debian/tmp
+	dh_pycentral
 	dh_installmenu
 	dh_icons
 	dh_desktop
-	dh_installman -pqgis debian/gridmaker.1
-	dh_installman -plibqgis1-dev debian/qgis-config.1
+	dh_installman -pqgis qgis.man
+	dh_installman -pqgis qgis_help.man
 	dh_installmime -pqgis
 	dh_link
 	dh_strip

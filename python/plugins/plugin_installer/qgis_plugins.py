@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 qgis_plugins.py
 author: Matthew Perry
