@@ -35,6 +35,7 @@
 
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgslogger.h"
 
 extern "C" {
 #include <grass/gis.h>
@@ -463,7 +464,7 @@ QgsGrassModelItem *QgsGrassModelItem::child ( int i )
 
 void QgsGrassModelItem::populate()
 {
-  std::cerr << "QgsGrassModelItem::populate()" << std::endl;
+  QgsDebugMsg("called.");
 
   if ( mPopulated ) return;
 
@@ -475,9 +476,7 @@ void QgsGrassModelItem::populate()
 QgsGrassModel::QgsGrassModel ( QObject * parent )
              : QAbstractItemModel ( parent  )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassModel()" << std::endl;
-#endif
+  QgsDebugMsg("called.");
 
   // Icons
   QStyle *style = QApplication::style();
@@ -509,9 +508,7 @@ QgsGrassModel::~QgsGrassModel() { }
 
 void QgsGrassModel::refresh() 
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassModel::refresh()" << std::endl;
-#endif
+  QgsDebugMsg("called.");
 
   //mRoot->refresh(); 
   refreshItem(mRoot); 
@@ -550,7 +547,7 @@ void QgsGrassModel::removeItems(QgsGrassModelItem *item, QStringList list)
   {
     if ( !list.contains(item->mChildren[i]->name()) )
     {
-      //std::cerr << "remove " << item->mChildren[i]->name().ascii() << std::endl;
+      QgsDebugMsg( QString("remove %1").arg( item->mChildren[i]->name() ) );
       beginRemoveRows( index, i, i );
       delete item->mChildren[i];
       item->mChildren.remove(i);
@@ -592,7 +589,7 @@ void QgsGrassModel::addItems(QgsGrassModelItem *item, QStringList list, int type
 
     if ( insertAt >= 0 )
     {
-      std::cerr << "insert " << name.ascii() << " at " << insertAt << std::endl;
+      QgsDebugMsg( QString("insert %1 at %2").arg(name).arg(insertAt) );;
       beginInsertRows( index, insertAt, insertAt );
       QgsGrassModelItem *newItem = new QgsGrassModelItem();
       item->mChildren.insert( insertAt, newItem );
@@ -629,8 +626,10 @@ void QgsGrassModel::addItems(QgsGrassModelItem *item, QStringList list, int type
 
 void QgsGrassModel::refreshItem(QgsGrassModelItem *item)
 {
-  std::cerr << "QgsGrassModel::refreshItem() item->mType = " << item->mType << std::endl;
+  QgsDebugMsg( QString("called with item type %1").arg(item->mType) );
 
+  // to avoid and endless recusion with Qt 4.4 let's pretend we already have populated 
+  item->mPopulated = true;
 
   switch ( item->mType ) 
   {
@@ -639,7 +638,6 @@ void QgsGrassModel::refreshItem(QgsGrassModelItem *item)
       QStringList list = QgsGrass::mapsets ( item->mGisbase, item->mLocation );
       removeItems(item, list);
       addItems(item, list, QgsGrassModel::Mapset );
-
     }
     break;
 
@@ -730,8 +728,6 @@ void QgsGrassModel::refreshItem(QgsGrassModelItem *item)
       refreshItem( item->mChildren[i] );
     }
   }
-
-  item->mPopulated = true;
 }
 
 QModelIndex QgsGrassModel::index( int row, int column, 

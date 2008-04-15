@@ -56,6 +56,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsdataprovider.h"
 #include "qgsfield.h"
+#include "qgslogger.h"
 
 extern "C" {
 #include <grass/gis.h>
@@ -352,7 +353,7 @@ void QgsGrassTools::addModules (  QTreeWidgetItem *parent, QDomElement &element 
 
       if ( e.tagName() == "section" ) {
         QString label = e.attribute("label");
-        std::cout << "label = " << label.toLocal8Bit().data() << std::endl;
+        QgsDebugMsg( QString("label = %1").arg(label) );
         item->setText( 0, label );
         item->setExpanded(true); // for debuging to spare one click
 
@@ -361,7 +362,7 @@ void QgsGrassTools::addModules (  QTreeWidgetItem *parent, QDomElement &element 
         lastItem = item;
       } else if ( e.tagName() == "grass" ) { // GRASS module
         QString name = e.attribute("name");
-        std::cout << "name = " << name.toLocal8Bit().data() << std::endl;
+        QgsDebugMsg( QString("name = %1").arg(name) );
 
         QString path = QgsApplication::pkgDataPath() + "/grass/modules/" + name;
         QString label = QgsGrassModule::label ( path );
