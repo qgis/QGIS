@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="fast fourier transform (FFT) for image processing" module="i.fft">
+<qgisgrassmodule label="Fast Fourier Transform (FFT) for image processing" module="i.fft">
 	<option key="input_image" />
 	<option key="real_image" />
 	<option key="imaginary_image" />
