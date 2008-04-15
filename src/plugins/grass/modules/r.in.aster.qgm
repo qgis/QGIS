@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="georeferencing, rectification, and import of Terra-ASTER imagery and relative DEM's using gdalwarp" module="r.in.aster">
+<qgisgrassmodule label="Georeferencing, rectification, and import of Terra-ASTER imagery and relative DEM's using gdalwarp" module="r.in.aster">
 	<file key="input" type="old" />
 	<option key="proctype" />
 	<option key="band" />

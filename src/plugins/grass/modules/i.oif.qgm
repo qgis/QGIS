@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="calculates optimal index factor table for landsat tm bands" module="i.oif">
+<qgisgrassmodule label="Calculates optimal index factor table for landsat tm bands" module="i.oif">
 	<option key="image1" />
 	<option key="image2" />
 	<option key="image3" />
