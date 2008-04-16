@@ -159,7 +159,7 @@ void QgsServerSourceSelect::on_btnEdit_clicked()
 
   if (nc->exec())
   {
-    nc->saveConnection();
+    populateConnectionList();
   }
 }
 

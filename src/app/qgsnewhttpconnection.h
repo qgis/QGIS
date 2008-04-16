@@ -40,6 +40,7 @@ class QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpConnectionBas
     void on_btnHelp_clicked();
  private:
     QString mBaseKey;
+    QString mOriginalConnName; //store initial name to delete entry in case of rename
     static const int context_id = 308026563;
 };
 

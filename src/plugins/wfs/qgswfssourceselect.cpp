@@ -246,9 +246,8 @@ void QgsWFSSourceSelect::modifyEntryOfServerList()
 
   if (nc.exec())
   {
-    nc.saveConnection();
+    populateConnectionList();
   }
-  populateConnectionList();
 }
 
 void QgsWFSSourceSelect::deleteEntryOfServerList()

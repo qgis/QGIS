@@ -19,7 +19,7 @@
 #include "qgscontexthelp.h"
 #include <QSettings>
 
-QgsNewHttpConnection::QgsNewHttpConnection(QWidget *parent, const QString& baseKey, const QString& connName, Qt::WFlags fl): QDialog(parent, fl), mBaseKey(baseKey)
+QgsNewHttpConnection::QgsNewHttpConnection(QWidget *parent, const QString& baseKey, const QString& connName, Qt::WFlags fl): QDialog(parent, fl), mBaseKey(baseKey), mOriginalConnName(connName)
 {
   setupUi(this);
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
@@ -58,6 +58,12 @@ void QgsNewHttpConnection::saveConnection()
 {
   QSettings settings; 
   QString key = mBaseKey + txtName->text();
+  
+  //delete original entry first
+  if(!mOriginalConnName.isNull() && mOriginalConnName != key)
+    {
+      settings.remove(mBaseKey + mOriginalConnName);
+    }
   settings.writeEntry(key + "/url", txtUrl->text().trimmed());
   settings.writeEntry(key + "/proxyhost", txtProxyHost->text().trimmed());
   settings.writeEntry(key + "/proxyport", txtProxyPort->text().trimmed());
