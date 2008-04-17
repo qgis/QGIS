@@ -8,7 +8,12 @@
 // <int>.<int>.<int>-<any text>.
 // or else upgrading old project file will not work
 // reliably.
-#define VERSION "0.9.2-Ganymede"
+#define VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}-${RELEASE_NAME}"
+
+//used in vim src/core/qgis.cpp
+#define VERSION_INT ${CPACK_PACKAGE_VERSION_MAJOR}${CPACK_PACKAGE_VERSION_MINOR}${CPACK_PACKAGE_VERSION_PATCH}
+//used in main.cpp and anywhere else where the release name is needed
+#define RELEASE_NAME "${RELEASE_NAME}"
 
 #define PREFIX "${CMAKE_INSTALL_PREFIX}"
 

@@ -3,7 +3,7 @@
 # create Info.plist
 
 ADD_CUSTOM_TARGET(Info.plist ALL
-                  VERSION=`grep VERSION ${CMAKE_BINARY_DIR}/qgsconfig.h |
+                  VERSION=`grep VERSION ${CMAKE_BINARY_DIR}/qgsconfig.h | head -1 |
                            sed -e "s/#define VERSION //"
                                -e "s/\\\"//g"` &&
                   SVNVERSION=`grep QGSSVNVERSION ${CMAKE_BINARY_DIR}/qgssvnversion.h |
