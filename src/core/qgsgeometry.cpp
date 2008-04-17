@@ -1443,9 +1443,10 @@ bool QgsGeometry::deleteVertexAt(int atVertex)
     case QGis::WKBLineString:
       {
         int* nPoints = (int*)ptr;
-        if((*nPoints) < 3 || vertexnr > (*nPoints)-1 || vertexnr < 0)
+        if((*nPoints) < 3 || vertexnr > (*nPoints)-1 || vertexnr < 0) //line needs at least 2 vertices
         {
-          break;
+	  delete newbuffer;
+          return;
         }
         int newNPoints = (*nPoints)-1; //new number of points
         memcpy(newBufferPtr, &newNPoints, sizeof(int));
@@ -1498,9 +1499,10 @@ bool QgsGeometry::deleteVertexAt(int atVertex)
           //find out if the vertex is in this line
           if(vertexnr >= pointindex && vertexnr < pointindex + (*nPoints))
           {
-            if(*nPoints < 3)
+            if(*nPoints < 3) //line needs at least 2 vertices
             {
-              break;
+	      delete newbuffer;
+              return false;
             }
             newNPoint = (*nPoints)-1;
           }
@@ -1557,7 +1559,8 @@ bool QgsGeometry::deleteVertexAt(int atVertex)
           {
             if(*nPoints < 5) //a ring has at least 3 points
             {
-              break;
+	      delete newbuffer;
+              return false;
             }
             newNPoints = *nPoints - 1;
           }
@@ -1634,7 +1637,8 @@ bool QgsGeometry::deleteVertexAt(int atVertex)
             {
               if(*nPoints < 5) //a ring has at least 3 points
               {
-                break;
+		delete newbuffer;
+                return false;
               }
               newNPoints = *nPoints - 1;
             }
