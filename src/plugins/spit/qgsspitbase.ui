@@ -55,7 +55,7 @@
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
-       <number>9</number>
+       <number>11</number>
       </property>
       <property name="spacing" >
        <number>6</number>
@@ -119,6 +119,19 @@
         </property>
         <property name="text" >
          <string>New</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QPushButton" name="btnConnect" >
+        <property name="toolTip" >
+         <string>Connect to PostGIS</string>
+        </property>
+        <property name="whatsThis" >
+         <string>Connect to PostGIS</string>
+        </property>
+        <property name="text" >
+         <string>Connect</string>
         </property>
        </widget>
       </item>

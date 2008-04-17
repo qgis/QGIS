@@ -44,7 +44,7 @@ public:
   //! Populate the list of available database connections
   void populateConnectionList();
   //! Connect to the selected database
-  void dbConnect() {};
+  void dbConnect();
   //! Return a list of selected tables
   QStringList selectedTables();
   //! Return the connection info
@@ -67,13 +67,8 @@ public:
   void useDefaultGeom();
   //! Show brief help
   void helpInfo();
-  //! Get schemas available in the database
-  void getSchema();
-  void updateSchema();
   //! Import shapefiles into PostgreSQL
   void import();
-  //! Edit import properties of a shapefile in the queue
-  void editShapefile( int, int, int, const QPoint & );
 
 public slots:
 
@@ -95,7 +90,6 @@ public slots:
   void on_tblShapefiles_itemClicked(QTableWidgetItem* item) 
     { tblShapefiles->editItem(item); }
   // When the user changes the selected connection, update the schema list
-  void on_cmbConnections_activated(int) { getSchema(); }
   void on_chkUseDefaultSrid_toggled(bool) { useDefaultSrid(); }
   void on_chkUseDefaultGeom_toggled(bool) { useDefaultGeom(); }
 
@@ -120,7 +114,7 @@ private:
   QString defGeom;
   int defaultSridValue;
   QString defaultGeomValue;
-  QString gl_key;
+  PGconn *conn;
 };
 
 // We want to provide combo boxes in the table of shape files to
