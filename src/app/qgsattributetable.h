@@ -157,6 +157,8 @@ class QgsAttributeTable:public Q3Table
      Also, mLastSelectedRows is updated*/
     bool checkSelectionChanges();
 
+    virtual QWidget *createEditor(int row, int col, bool initFromCell ) const;
+
   signals:
     /**Is emitted when a row was selected*/
     void selected(int, bool);
