@@ -525,6 +525,12 @@ QGis::WKBTYPE QgsGeometry::wkbType()
 
 QGis::VectorType QgsGeometry::vectorType()
 {
+  if (mDirtyWkb)
+    {
+      // convert from GEOS
+      exportGeosToWkb();
+    }
+
   QGis::WKBTYPE type = wkbType();
   if (type == QGis::WKBPoint || type == QGis::WKBPoint25D ||
       type == QGis::WKBMultiPoint || type == QGis::WKBMultiPoint25D)
@@ -541,6 +547,12 @@ QGis::VectorType QgsGeometry::vectorType()
 
 bool QgsGeometry::isMultipart()
 {
+  if (mDirtyWkb)
+    {
+      // convert from GEOS
+      exportGeosToWkb();
+    }
+
   QGis::WKBTYPE type = wkbType();
   if (type == QGis::WKBMultiPoint ||
       type == QGis::WKBMultiPoint25D ||
@@ -3020,7 +3032,17 @@ int QgsGeometry::makeDifference(QgsGeometry* other)
   {
     if(mGeos->intersects(other->mGeos))
     {
+      //check if multitype before and after
+      bool multiType = isMultipart();
+ 
       mGeos = mGeos->difference(other->mGeos);
+      mDirtyWkb = true;
+
+      if(multiType && !isMultipart())
+	{
+	  convertToMultiType();
+	  exportWkbToGeos();
+	}
     }
     else
     {
@@ -3035,8 +3057,6 @@ int QgsGeometry::makeDifference(QgsGeometry* other)
     return 6;
   }
 
-  //set wkb dirty to true
-  mDirtyWkb = true;
   return 0;
 }
 
