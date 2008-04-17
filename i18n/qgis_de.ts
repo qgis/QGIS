@@ -101,7 +101,7 @@
     <message>
         <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="21"/>
         <source>Geoprocessing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Geoverarbeitung</translation>
     </message>
     <message>
         <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="63"/>
@@ -116,12 +116,12 @@
     <message>
         <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="118"/>
         <source>Layer B:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Layer B:</translation>
     </message>
     <message>
         <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="168"/>
         <source>Parameter:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Parameter:</translation>
     </message>
     <message>
         <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="189"/>
@@ -131,17 +131,17 @@
     <message>
         <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="206"/>
         <source>Layer A:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Layer A:</translation>
     </message>
     <message>
         <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="235"/>
         <source>Function:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Funktion:</translation>
     </message>
     <message>
         <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="251"/>
         <source>Select a function ...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Funktion wählen...</translation>
     </message>
     <message>
         <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="256"/>
@@ -151,17 +151,17 @@
     <message>
         <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="261"/>
         <source>Convex Hull</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Konvexe Hülle</translation>
     </message>
     <message>
         <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="266"/>
         <source>Difference A - B</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unterschied A - B</translation>
     </message>
     <message>
         <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="271"/>
         <source>Intersection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Schnittfläche</translation>
     </message>
     <message>
         <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="276"/>
@@ -176,12 +176,12 @@
     <message>
         <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="327"/>
         <source>Add Layer to Map?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Layer der Karte hinzufügen?</translation>
     </message>
     <message>
         <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="360"/>
         <source>Save as:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Speichern unter:</translation>
     </message>
     <message>
         <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="370"/>
@@ -191,7 +191,7 @@
     <message>
         <location filename="../python/plugins/geoprocessing/geoprocessing.ui" line="413"/>
         <source>use selected Objects</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">gewählte Objekte nutzen</translation>
     </message>
 </context>
 <context>
@@ -335,12 +335,12 @@
     <message>
         <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="13"/>
         <source>Create new PostGIS layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Neuen PostGIS-Layer erzeugen</translation>
     </message>
     <message>
         <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="52"/>
         <source>Available PostgreSQL connections</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verfügbare PostGIS-Verbindungen</translation>
     </message>
     <message>
         <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="79"/>
@@ -365,12 +365,12 @@
     <message>
         <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="128"/>
         <source>New layer definition</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Neue Layerdefinition</translation>
     </message>
     <message>
         <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="152"/>
         <source>Schema name:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Schemaname</translation>
     </message>
     <message>
         <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="162"/>
@@ -383,12 +383,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="172"/>
         <source>New layer name:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Neuer Layername</translation>
     </message>
     <message>
         <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="189"/>
         <source>Index column:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Index-Spalte:</translation>
     </message>
     <message>
         <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="199"/>
@@ -408,7 +408,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="223"/>
         <source>Geometry type:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Geometrietyp</translation>
     </message>
     <message>
         <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="234"/>
@@ -428,7 +428,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="252"/>
         <source>SRID number:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SRID-Nummer:</translation>
     </message>
     <message>
         <location filename="../python/plugins/create_postgis_layer/main_gui.ui" line="295"/>
@@ -1519,7 +1519,7 @@ Die Python-Unterstützung wird abgeschaltet.</translation>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="433"/>
         <source>File could not been opened.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Datei konnte nicht geöffnet werden.</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="47"/>
@@ -1602,17 +1602,17 @@ Die Python-Unterstützung wird abgeschaltet.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1529"/>
         <source>Version </source>
-        <translation>Version</translation>
+        <translation>Version </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1536"/>
         <source> with PostgreSQL support</source>
-        <translation>mit PostgreSQL Unterstützung</translation>
+        <translation> mit PostgreSQL Unterstützung</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1539"/>
         <source> (no PostgreSQL support)</source>
-        <translation>(keine PostgreSQL Unterstützung)</translation>
+        <translation> (keine PostgreSQL Unterstützung)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1556"/>
@@ -3089,18 +3089,18 @@ Hide most toolbars</comment>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="600"/>
         <source>Toggle full screen mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vollbildmodus umschalten</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="601"/>
         <source>Ctrl-F</source>
         <comment>Toggle fullscreen mode</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vollbildmodus umschalten</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="602"/>
         <source>Toggle fullscreen mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vollbildmodus umschalten</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="732"/>
@@ -3121,7 +3121,7 @@ Hide most toolbars</comment>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1564"/>
-        <source>Imrovements to digitising capabilities.</source>
+        <source>Improvements to digitising capabilities.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3228,12 +3228,12 @@ Hide most toolbars</comment>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="118"/>
         <source>QGIS Sponsors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">QGIS-Sponsoren</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="121"/>
         <source>The following have sponsored QGIS by contributing money to fund development and other project costs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">QGIS wurde mit Geld für die Entwicklung oder andere Projektkosten unterstützt durch:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="125"/>
@@ -3255,7 +3255,10 @@ Hide most toolbars</comment>
         <source>Enter the name of a web browser to use (eg. konqueror).
 Enter the full path if the browser is not in your PATH.
 You can change this option later by selection Options from the Settings menu (Help Browser tab).</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bitte für den zu benutzenden Webbrowser (z.B. Konqueror) eingeben.
+Falls der Browser nicht in Ihrem PATH ist, müssen Sie den vollen Pfadnamen angeben.
+Sie können die Einstellung später in den Optionen aus dem Einstellungen-Menü ändern.
+</translation>
     </message>
 </context>
 <context>
@@ -3708,14 +3711,14 @@ File dialog window title</comment>
     <message>
         <location filename="../src/app/qgsattributetabledisplay.cpp" line="201"/>
         <source>Could not commit changes - changes are still pending</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Konnten Änderungen nicht commiten - Die Änderungen wurden noch nicht durchgeführt.</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgsattributetabledisplay.cpp" line="376"/>
         <source>Found %d matching features.</source>
         <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>%d passende Objekte gefunden</numerusform>
+            <numerusform>%d passende Objekte gefunden</numerusform>
         </translation>
     </message>
 </context>
@@ -5066,7 +5069,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdbsourceselect.cpp" line="543"/>
         <source>Accessible tables could not be determined</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zugreifbare Tabellen konnten nicht festgestellt werden</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdbsourceselect.cpp" line="545"/>
@@ -5075,12 +5078,16 @@ p, li { white-space: pre-wrap; }
 The error message from the database was:
 %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Die Datenbankverbindung war erfolgreich, jedoch konnten die zugänglichen Tabelle nicht bestimmt werden.
+	
+Die Fehlermeldung der Datenbank war:
+%1
+</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdbsourceselect.cpp" line="550"/>
         <source>No accessible tables found</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Keine zugänglichen Tabellen gefunden</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdbsourceselect.cpp" line="554"/>
@@ -5088,7 +5095,10 @@ The error message from the database was:
 
 Please verify that you have SELECT privilege on a table carrying PostGIS
 geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Die Datenbankverbindung war erfolgreich, jedoch wurden keine zugänglichen Tabellen gefunden.
+	
+Bitte stellen Sie sicher, dass Sie das SELECT-Privileg für eine Tabelle
+mit PostGIS-Geometrie haben.</translation>
     </message>
 </context>
 <context>
@@ -8958,8 +8968,10 @@ p, li { white-space: pre-wrap; }
         <source>Network timed out after %1 seconds of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
         <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>Netzwerk-Timeout nach %1 Sekunden ohne Aktivität.
+Dies könnte auf ein Problem mit Netzwerkverbindung oder WMS-Server hindeuten.</numerusform>
+            <numerusform>Netzwerk-Timeout nach %1 Sekunden ohne Aktivität.
+Dies könnte auf ein Problem mit Netzwerkverbindung oder WMS-Server hindeuten.</numerusform>
         </translation>
     </message>
 </context>
@@ -9752,8 +9764,8 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>- %1 features found</source>
         <comment>Identify results window title</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>%1 Objekte gefunden</numerusform>
+            <numerusform>%1 Objekte gefunden</numerusform>
         </translation>
     </message>
 </context>
@@ -11033,12 +11045,12 @@ Ausführliche Fehlerinformation:</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="492"/>
         <source>Zoom to mouse cursor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zur Mouseposition zoomen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="709"/>
         <source>Default Snap Mode:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Voreingestellter Fang-Modus</translation>
     </message>
 </context>
 <context>
@@ -11198,7 +11210,7 @@ Ausführliche Fehlerinformation:</translation>
     <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="80"/>
         <source>Create a buffer for a PostgreSQL layer. </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Puffer für einen PostGIS-Layer erzeugen</translation>
     </message>
 </context>
 <context>
@@ -12006,47 +12018,47 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="133"/>
         <source>Unable to determine table access privileges for the </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Konnte Tabellenzugriffrechte für die Tabelle </translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1867"/>
         <source>Error while adding features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler beim Hinzufügen von Objekten</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1901"/>
         <source>Error while deleting features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler beim Löschen von Objekten</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1933"/>
         <source>Error while adding attributes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler beim Hinzufügen von Attributen</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1972"/>
         <source>Error while deleting attributes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler beim Löschen von Attributen</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2036"/>
         <source>Error while changing attributes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler beim Ändern von Attributen</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2115"/>
         <source>Error while changing geometry values</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler beim Ändern von Geometrien</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2538"/>
         <source>Qgis was unable to determine the type and srid of column </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">QGIS konnte Typ und SRID der Spalte </translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.h" line="497"/>
         <source>unexpected PostgreSQL error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nicht erwarteter PostgeSQL-Fehler</translation>
     </message>
 </context>
 <context>
@@ -13619,8 +13631,8 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="167"/>
         <source>Found %d matching features.</source>
         <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>%d passende Objekte gefunden</numerusform>
+            <numerusform>%d passende Objekte gefunden</numerusform>
         </translation>
     </message>
 </context>
@@ -13695,8 +13707,8 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
         <location filename="../src/app/qgsserversourceselect.cpp" line="588"/>
         <source>Coordinate Reference System (%1 available)</source>
         <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>Koordinatensystem (%1 verfügbar)</numerusform>
+            <numerusform>Koordinatensystem (%1 verfügbar)</numerusform>
         </translation>
     </message>
 </context>
@@ -14379,7 +14391,7 @@ is appended to a truncated SQL statement</comment>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="830"/>
         <source>%1 of %2 shapefiles could not be imported.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1 von %2 Shape-Dateien konnte nicht importiert werden.</translation>
     </message>
 </context>
 <context>
@@ -14502,22 +14514,22 @@ is appended to a truncated SQL statement</comment>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="131"/>
         <source>Import options and shapefile list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Importoptionen und Shape-Dateiliste</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="214"/>
         <source>Use Default SRID or specify here</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Eingestellte SRID nutzen</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="227"/>
         <source>Use Default Geometry Column Name or specify here</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Eingestellten Spaltennamen nutzen</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="250"/>
         <source>Primary Key Column Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Primärschlüsselspalte</translation>
     </message>
 </context>
 <context>
@@ -15421,7 +15433,7 @@ is appended to a truncated SQL statement</comment>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="93"/>
         <source>Page Size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Seitengröße</translation>
     </message>
 </context>
 <context>
