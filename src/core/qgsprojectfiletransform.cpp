@@ -30,7 +30,7 @@ QgsProjectFileTransform::transform QgsProjectFileTransform::transformers[] = {
   {PFV(0,8,0), PFV(0,8,1), &QgsProjectFileTransform::transformNull},
   {PFV(0,8,1), PFV(0,9,0), &QgsProjectFileTransform::transform081to090},
   {PFV(0,9,0), PFV(0,9,1), &QgsProjectFileTransform::transformNull},
-  {PFV(0,9,1), PFV(0,9,2), &QgsProjectFileTransform::transform091to092}
+  {PFV(0,9,1), PFV(0,10,0), &QgsProjectFileTransform::transform091to0100}
 };
 
 bool QgsProjectFileTransform::updateRevision(QgsProjectVersion newVersion)
@@ -175,7 +175,7 @@ void QgsProjectFileTransform::transform081to090()
 
 };
 
-void QgsProjectFileTransform::transform091to092()
+void QgsProjectFileTransform::transform091to0100()
 {
   QgsDebugMsg("entering");
   if ( ! mDom.isNull() )

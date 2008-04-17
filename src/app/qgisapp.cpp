@@ -1560,7 +1560,7 @@ void QgisApp::about()
      QString whatsNew = "<html><body>" + tr("Version") + " ";
      whatsNew += QGis::qgisVersion;
      whatsNew += "<h3>" + tr("New features") + "</h3>" +
-       tr("This release candidate includes over 40 bug fixes and enchancements "
+       tr("This release candidate includes over 120 bug fixes and enchancements "
            "over the QGIS 0.9.1 release. In addition we have added "
            "the following new features:");
      whatsNew += "<ul><li>"
@@ -1577,6 +1577,12 @@ void QgisApp::about()
            "in raster layers. Support for color ramps in raster layers. "
            "Support for non-north up rasters. Many other raster "
            "improvements 'under the hood'.")
+       + "</li>"
+       + "<li>"
+       + tr("Updated icons for improved visual consistancy.")
+       + "</li>"
+       + "<li>"
+       + tr("Support for migration of old projects to work in newer QGIS versions.")
        + "</li>"
 //+ "<li>"
 //+ tr("X")
