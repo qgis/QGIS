@@ -24,6 +24,8 @@
 #include <QClipboard>
 #include <QAction>
 #include <QMenu>
+#include <QLineEdit>
+#include <QValidator>
 
 #include "qgsattributetable.h"
 #include "qgsfeature.h"
@@ -57,6 +59,22 @@ QgsAttributeTable::QgsAttributeTable(QWidget * parent, const char *name):
 
 QgsAttributeTable::~QgsAttributeTable()
 {
+}
+
+QWidget *QgsAttributeTable::createEditor(int row, int col, bool initFromCell ) const
+{
+  QLineEdit *le = static_cast<QLineEdit*>(Q3Table::createEditor(row, col, initFromCell));
+
+  if( mFields[col-1].type()==QVariant::Int )
+  {
+    le->setValidator( new QIntValidator(le) );
+  }
+  else if( mFields[col-1].type()==QVariant::Double )
+  {
+    le->setValidator( new QDoubleValidator(le) );
+  }
+
+  return le;
 }
 
 void QgsAttributeTable::columnClicked(int col)
@@ -461,7 +479,10 @@ bool QgsAttributeTable::commitChanges(QgsVectorLayer* layer)
             fieldIndex = provider->indexFromFieldName(record_it.key());
             if(fieldIndex != -1)
             {
-              if( record_it.value()=="NULL" )
+              if( record_it.value()=="NULL" ||
+                  ( record_it.value().isEmpty() &&
+                    (provider->fields()[fieldIndex].type()==QVariant::Int ||
+                     provider->fields()[fieldIndex].type()==QVariant::Double) ) )
                 newAttMap.insert(fieldIndex, QVariant(QString::null) );
               else
                 newAttMap.insert(fieldIndex, record_it.value());
@@ -573,9 +594,22 @@ void QgsAttributeTable::putFeatureInTable(int row, QgsFeature& fet)
   QgsAttributeMap::const_iterator it;
   int h = 1;
   for (it = attr.begin(); it != attr.end(); ++it)
-  {
+  { 
+    QString value;
+
     // get the field values
-    setText(row, h++, it->isNull() ? "NULL" : it->toString());
+    if( it->isNull() )
+    {
+      if( mFields[h-1].type()==QVariant::Int || mFields[h-1].type()==QVariant::Double )
+        value="";
+      else
+        value="NULL";
+    } else {
+      value = it->toString();
+    }
+
+    clearCellWidget(row, h);
+    setText(row, h++, value);
   }
 }
 

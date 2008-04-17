@@ -38,9 +38,6 @@ class QgsAttributeDialog: public QDialog, private Ui::QgsAttributeDialogBase
 
     ~QgsAttributeDialog();
 
-    /** Returns the field value of a row */
-    QString value(int row);
-
     /** Returns if the field value of a row was edited since this dialog opened */
     bool isDirty(int row);
 
@@ -66,6 +63,9 @@ class QgsAttributeDialog: public QDialog, private Ui::QgsAttributeDialogBase
 
   private:
     QString _settingsPath;
+
+    /** Returns the field value of a row */
+    QString value(int row);
 
     std::vector<bool> mRowIsDirty;
 };
