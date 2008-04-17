@@ -1208,6 +1208,7 @@ QGISEXTERN bool createEmptyDataSource(const QString& uri,
     else if(it->second == "Integer")
     {
       OGRFieldDefnH field = OGR_Fld_Create(codec->fromUnicode(it->first).data(), OFTInteger);
+      OGR_Fld_SetWidth(field,10); // limit to 10.  otherwise OGR sets it to 11 and recognizes as OFTDouble later
       if(OGR_L_CreateField(layer,field,TRUE) != OGRERR_NONE)
       {
         QgsLogger::warning("creation of OFTInteger field failed");
