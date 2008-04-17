@@ -1445,7 +1445,7 @@ bool QgsGeometry::deleteVertexAt(int atVertex)
         int* nPoints = (int*)ptr;
         if((*nPoints) < 3 || vertexnr > (*nPoints)-1 || vertexnr < 0) //line needs at least 2 vertices
         {
-          delete newbuffer;
+	  delete newbuffer;
           return false;
         }
         int newNPoints = (*nPoints)-1; //new number of points
