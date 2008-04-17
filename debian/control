@@ -15,7 +15,7 @@ Homepage: http://qgis.org/
 Package: qgis
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libqgis-core0.10, libqgis-gui0.10
-Suggests: qgis-plugin-grass, python-qgis
+Suggests: qgis-plugin-grass
 XB-Python-Version: ${python:Versions}
 Description: Geographic Information System (GIS)
  A Geographic Information System (GIS) manages,
