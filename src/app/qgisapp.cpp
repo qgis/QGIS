@@ -4853,6 +4853,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
         mActionCapturePolygon->setEnabled(false);
         mActionAddVertex->setEnabled(false);
         mActionDeleteVertex->setEnabled(false);
+	mActionMoveVertex->setEnabled(false);
         mActionAddRing->setEnabled(false);
         mActionAddIsland->setEnabled(false);
 	mActionSplitFeatures->setEnabled(false);
