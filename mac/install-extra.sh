@@ -5,7 +5,8 @@
 # Edit INSTALLPREFIX to match the value of cmake INSTALL_PREFIX
 INSTALLPREFIX=$PWD
 
-BUNDLE=qgis0.9.2.app/Contents/MacOS
+VER=0.10
+BUNDLE=qgis$VER.0.app/Contents/MacOS
 BUILDPREFIX=$INSTALLPREFIX/$BUNDLE
 
 QLIBNAMES="core gui"
@@ -20,9 +21,17 @@ do
 		@executable_path/lib/libqgis_$NAME.dylib \
 		$BUILDPREFIX/qgis
 
-	install_name_tool -change $INSTALLPREFIX/src/$NAME/libqgis_$NAME.dylib \
+	install_name_tool -change $INSTALLPREFIX/src/$NAME/libqgis_$NAME.$VER.dylib \
 		@executable_path/lib/libqgis_$NAME.dylib \
 		$BUILDPREFIX/bin/qgis_help.app/Contents/MacOS/qgis_help
+
+	install_name_tool -change $INSTALLPREFIX/src/$NAME/libqgis_$NAME.$VER.dylib \
+		@executable_path/lib/libqgis_$NAME.dylib \
+		$BUILDPREFIX/share/qgis/python/qgis/core.so
+
+	install_name_tool -change $INSTALLPREFIX/src/$NAME/libqgis_$NAME.$VER.dylib \
+		@executable_path/lib/libqgis_$NAME.dylib \
+		$BUILDPREFIX/share/qgis/python/qgis/gui.so
 done
 
 # Update libqgis_gui client of libqgis_*
