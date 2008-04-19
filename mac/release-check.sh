@@ -2,7 +2,7 @@
 # Display all paths to supporting libraries
 # Output should be visually inspected for paths which haven't been made relative (such as /usr/local)
 
-PREFIX=qgis0.9.2.app/Contents/MacOS
+PREFIX=qgis0.10.0.app/Contents/MacOS
 
 otool -L $PREFIX/qgis
 otool -L $PREFIX/bin/qgis_help.app/Contents/MacOS/qgis_help
@@ -49,19 +49,19 @@ otool -L $PREFIX/lib/libsqlite3.0.8.6.dylib
 otool -L $PREFIX/lib/libxerces-c.28.0.dylib
 otool -L $PREFIX/lib/libgif.4.1.6.dylib
 otool -L $PREFIX/lib/libjpeg.62.0.0.dylib
-otool -L $PREFIX/lib/libpng.3.24.0.dylib
+otool -L $PREFIX/lib/libpng12.0.24.0.dylib
 otool -L $PREFIX/lib/libtiff.3.dylib
 otool -L $PREFIX/lib/libgeotiff.1.2.4.dylib
-otool -L $PREFIX/lib/libjasper-1.701.1.0.0.dylib
+otool -L $PREFIX/lib/libjasper.1.0.0.dylib
 otool -L $PREFIX/lib/libexpat.1.5.2.dylib
 otool -L $PREFIX/lib/libfftw3.3.1.2.dylib
-otool -L $PREFIX/lib/libgsl.0.9.0.dylib
-otool -L $PREFIX/lib/libgslcblas.0.0.0.dylib
-otool -L $PREFIX/lib/libpq.5.0.dylib
+otool -L $PREFIX/lib/libgsl.0.dylib
+otool -L $PREFIX/lib/libgslcblas.0.dylib
+otool -L $PREFIX/lib/libpq.5.1.dylib
 
 for LIBGRASS in datetime dbmibase dbmiclient dgl dig2 form gis gmath gproj I linkm rtree shape vask vect
 do
-	otool -L $PREFIX/lib/grass/libgrass_$LIBGRASS.6.3.0RC4.dylib
+	otool -L $PREFIX/lib/grass/libgrass_$LIBGRASS.6.3.0RC6.dylib
 done
 
 otool -L $PREFIX/share/qgis/python/qgis/core.so

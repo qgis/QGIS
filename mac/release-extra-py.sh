@@ -2,10 +2,7 @@
 # Copy Py supporting libraries to qgis bundle
 # and make search paths for them relative to bundle
 
-# Edit INSTALLPREFIX to match the value of cmake INSTALL_PREFIX
-INSTALLPREFIX=$PWD
-
-BUNDLE=qgis0.9.2.app/Contents/MacOS
+BUNDLE=qgis0.10.0.app/Contents/MacOS
 SITEPKG=/Library/Python/2.3/site-packages
 
 LNKGDAL=libgdal.1.dylib
@@ -49,12 +46,6 @@ fi
 # Update path to supporting libraries
 for LIBQGIS in core gui
 do
-	install_name_tool -change $INSTALLPREFIX/src/$LIBQGIS/libqgis_$LIBQGIS.dylib \
-		@executable_path/lib/libqgis_$LIBQGIS.dylib \
-		qgis/$LIBQGIS.so
-	install_name_tool -change $INSTALLPREFIX/src/core/libqgis_core.dylib \
-		@executable_path/lib/libqgis_core.dylib \
-		qgis/$LIBQGIS.so
 	install_name_tool -change /usr/local/lib/$LNKGDAL \
 		@executable_path/lib/$LNKGDAL \
 		qgis/$LIBQGIS.so

@@ -2,7 +2,7 @@
 # Copy supporting libraries (except Qt) to qgis bundle
 # and make search paths for them relative to bundle
 
-PREFIX=qgis0.9.2.app/Contents/MacOS
+PREFIX=qgis0.10.0.app/Contents/MacOS
 
 HELPPREFIX=$PREFIX/bin/qgis_help.app/Contents/MacOS
 PREFIXBACKTRACK=../../../..
@@ -24,23 +24,23 @@ LIBGIF=libgif.4.1.6.dylib
 LNKGIF=libgif.4.dylib
 LIBJPEG=libjpeg.62.0.0.dylib
 LNKJPEG=libjpeg.62.dylib
-LIBPNG=libpng.3.24.0.dylib
-LNKPNG=libpng.3.dylib
+LIBPNG=libpng12.0.24.0.dylib
+LNKPNG=libpng12.0.dylib
 LIBTIFF=libtiff.3.dylib
 LNKTIFF=libtiff.3.dylib
 LIBGEOTIFF=libgeotiff.1.2.4.dylib
 LNKGEOTIFF=libgeotiff.1.dylib
-LIBJASPER=libjasper-1.701.1.0.0.dylib
-LNKJASPER=libjasper-1.701.1.dylib
-LIBGSL=libgsl.0.9.0.dylib
+LIBJASPER=libjasper.1.0.0.dylib
+LNKJASPER=libjasper.1.dylib
+LIBGSL=libgsl.0.dylib
 LNKGSL=libgsl.0.dylib
-LIBGSLCBLAS=libgslcblas.0.0.0.dylib
+LIBGSLCBLAS=libgslcblas.0.dylib
 LNKGSLCBLAS=libgslcblas.0.dylib
 LIBEXPAT=libexpat.1.5.2.dylib
 LNKEXPAT=libexpat.1.dylib
-LIBPQ=libpq.5.0.dylib
+LIBPQ=libpq.5.1.dylib
 LNKPQ=libpq.5.dylib
-GRASSLIB=/usr/local/grass-6.3.0RC4/lib
+GRASSLIB=/usr/local/grass-6.3.0RC6/lib
 
 # Copy supporting libraries to application bundle
 cd $PREFIX/lib
@@ -142,12 +142,12 @@ if test ! -f $LIBJASPER; then
 fi
 if test ! -f $LIBGSL; then
 	cp /usr/local/lib/$LIBGSL $LIBGSL
-	ln -s $LIBGSL $LNKGSL
+	#ln -s $LIBGSL $LNKGSL
 	install_name_tool -id @executable_path/lib/$LNKGSL $LIBGSL
 fi
 if test ! -f $LIBGSLCBLAS; then
 	cp /usr/local/lib/$LIBGSLCBLAS $LIBGSLCBLAS
-	ln -s $LIBGSLCBLAS $LNKGSLCBLAS
+	#ln -s $LIBGSLCBLAS $LNKGSLCBLAS
 	install_name_tool -id @executable_path/lib/$LNKGSLCBLAS $LIBGSLCBLAS
 fi
 if test ! -f $LIBEXPAT; then
@@ -199,7 +199,6 @@ for PLUGIN in \
 	libspitplugin.so \
 	libwfsplugin.so \
 	libwmsprovider.so
- 	#libopenmodellerplugin.so
 do
 	install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL $PREFIX/lib/qgis/$PLUGIN
 	install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $PREFIX/lib/qgis/$PLUGIN

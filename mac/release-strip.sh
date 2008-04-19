@@ -1,7 +1,7 @@
 #!/bin/sh
 # Strip all non-global symbols
 
-PREFIX=qgis0.9.2.app/Contents/MacOS
+PREFIX=qgis0.10.0.app/Contents/MacOS
 
 strip -x $PREFIX/qgis
 strip -x $PREFIX/bin/qgis_help.app/Contents/MacOS/qgis_help
@@ -49,19 +49,19 @@ strip -x $PREFIX/lib/libsqlite3.0.8.6.dylib
 strip -x $PREFIX/lib/libxerces-c.28.0.dylib
 strip -x $PREFIX/lib/libgif.4.1.6.dylib
 strip -x $PREFIX/lib/libjpeg.62.0.0.dylib
-strip -x $PREFIX/lib/libpng.3.24.0.dylib
+strip -x $PREFIX/lib/libpng12.0.24.0.dylib
 strip -x $PREFIX/lib/libtiff.3.dylib
 strip -x $PREFIX/lib/libgeotiff.1.2.4.dylib
-strip -x $PREFIX/lib/libjasper-1.701.1.0.0.dylib
+strip -x $PREFIX/lib/libjasper.1.0.0.dylib
 strip -x $PREFIX/lib/libexpat.1.5.2.dylib
 strip -x $PREFIX/lib/libfftw3.3.1.2.dylib
-strip -x $PREFIX/lib/libgsl.0.9.0.dylib
-strip -x $PREFIX/lib/libgslcblas.0.0.0.dylib
-strip -x $PREFIX/lib/libpq.5.0.dylib
+strip -x $PREFIX/lib/libgsl.0.dylib
+strip -x $PREFIX/lib/libgslcblas.0.dylib
+strip -x $PREFIX/lib/libpq.5.1.dylib
 
 for LIBGRASS in datetime dbmibase dbmiclient dgl dig2 form gis gmath gproj I linkm rtree shape vask vect
 do
-	strip -x $PREFIX/lib/grass/libgrass_$LIBGRASS.6.3.0RC4.dylib
+	strip -x $PREFIX/lib/grass/libgrass_$LIBGRASS.6.3.0RC6.dylib
 done
 
 strip -x $PREFIX/share/qgis/python/qgis/core.so
