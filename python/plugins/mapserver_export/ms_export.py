@@ -16,6 +16,7 @@
 # All the work is done in the writeMapFile method. The msexport binary
 # presents a Qt based GUI that collects the needed information for this
 # script. 
+# Matthew Perry contributed major portions of this work.
 #
 # CHANGES SHOULD NOT BE MADE TO THE writeMapFile METHOD UNLESS YOU
 # ARE CHANGING THE QgsMapserverExport CLASS AND YOU KNOW WHAT YOU ARE
@@ -266,34 +267,46 @@ class Qgis2Map:
     return (connString, dataString, filterString)
 
        
-  # Write the map layers
+  # Write the map layers - we have to defer writing to disk so we
+  # can invert the order of the layes, since they are opposite in QGIS 
+  # compared to mapserver
   def writeMapLayers(self):
+    # get the list of legend nodes so the layers can be written in the
+    # proper order
+    legend_nodes = self.qgs.getElementsByTagName("legendlayer")
+    self.z_order = list()
+    for legend_node in legend_nodes:
+        self.z_order.append(legend_node.getAttribute("name").encode('utf-8').replace("\"", ""))
+
     # get the list of maplayer nodes
     maplayers = self.qgs.getElementsByTagName("maplayer")
     print "Processing ", len(maplayers), " layers"
     count = 0
+    layer_list = dict()
     for lyr in maplayers:
       count += 1
       print "Processing layer ", count 
       # The attributes of the maplayer tag contain the scale dependent settings,
       # visibility, and layer type
-
-      self.outFile.write("  LAYER\n")
-      # write the name of the layer
+      layer_def = "  LAYER\n"
+      # store name of the layer
+      layer_name = lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "")
       # first check to see if there is a name
       if len(lyr.getElementsByTagName("layername")[0].childNodes) > 0:
-        self.outFile.write("    NAME '" + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "") + "'\n")
+        layer_def += "    NAME '" + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "") + "'\n"
       else:
-        self.outFile.write("    NAME 'LAYER%s'\n" % count)
+        # if no name for the layer, manufacture one  
+        layer_def += "    NAME 'LAYER%s'\n" % count
+
       if lyr.getAttribute("type").encode('utf-8') == 'vector':  
-        self.outFile.write("    TYPE " + lyr.getAttribute("geometry").encode('utf-8').upper() + "\n")
+        layer_def += "    TYPE " + lyr.getAttribute("geometry").encode('utf-8').upper() + "\n"
       elif lyr.getAttribute("type").encode('utf-8') == 'raster':  
-        self.outFile.write("    TYPE " + lyr.getAttribute("type").encode('utf-8').upper() + "\n")
+        layer_def += "    TYPE " + lyr.getAttribute("type").encode('utf-8').upper() + "\n"
  
       # Set min/max scales
       if lyr.getAttribute('scaleBasedVisibilityFlag').encode('utf-8') == 1:
-        self.outFile.write("    MINSCALE " + lyr.getAttribute('minScale').encode('utf-8') + "\n")
-        self.outFile.write("    MAXSCALE " + lyr.getAttribute('maxScale').encode('utf-8') + "\n")
+        layer_def += "    MINSCALE " + lyr.getAttribute('minScale').encode('utf-8') + "\n"
+        layer_def += "    MAXSCALE " + lyr.getAttribute('maxScale').encode('utf-8') + "\n"
 
       # data
       dataString = lyr.getElementsByTagName("datasource")[0].childNodes[0].nodeValue.encode('utf-8')
@@ -309,16 +322,17 @@ class Qgis2Map:
       if providerString == 'postgres':
         # it's a postgis layer
         (pgConnString, sqlData, sqlFilter) = self.parsePostgisConnection(dataString)
-        self.outFile.write("    CONNECTIONTYPE postgis\n")
-        self.outFile.write("    CONNECTION '" + pgConnString + "'\n")
-        self.outFile.write("    DATA '" + sqlData + "'\n")
+        layer_def += "    CONNECTIONTYPE postgis\n"
+        layer_def += "    CONNECTION '" + pgConnString + "'\n"
+        layer_def += "    DATA '" + sqlData + "'\n"
+        # don't write the filter keyword if there isn't one
         if sqlFilter:
-          self.outFile.write("    FILTER '" + sqlFilter + "'\n")
+          layer_def += "    FILTER '" + sqlFilter + "'\n"
 
       elif providerString == 'wms' and lyr.getAttribute("type").encode('utf-8').upper() == 'RASTER':
         # it's a WMS layer 
-        self.outFile.write("    CONNECTIONTYPE WMS\n")
-        self.outFile.write("    CONNECTION '" + dataString + "'\n")
+        layer_def += "    CONNECTIONTYPE WMS\n"
+        layer_def += "    CONNECTION '" + dataString + "'\n"
         rasterProp = lyr.getElementsByTagName("rasterproperties")[0]
         # loop thru wmsSubLayers  
         wmsSubLayers = rasterProp.getElementsByTagName('wmsSublayer')
@@ -332,57 +346,52 @@ class Qgis2Map:
             wmsStyles.append( '' )
         # Create necesssary wms metadata
         format = rasterProp.getElementsByTagName('wmsFormat')[0].childNodes[0].nodeValue.encode('utf-8')
-        self.outFile.write("    METADATA\n")
-        self.outFile.write("      'wms_name' '" + ','.join(wmsNames) + "'\n")
-        self.outFile.write("      'wms_server_version' '1.1.1'\n")
+        layer_def += "    METADATA\n"
+        layer_def += "      'wms_name' '" + ','.join(wmsNames) + "'\n"
+        layer_def += "      'wms_server_version' '1.1.1'\n"
         try:
           ct = lyr.getElementsByTagName('coordinatetransform')[0]
           srs = ct.getElementsByTagName('sourcesrs')[0].getElementsByTagName('spatialrefsys')[0]
           epsg = srs.getElementsByTagName('epsg')[0].childNodes[0].nodeValue.encode('utf-8')
-          self.outFile.write("      'wms_srs' 'EPSG:4326 EPSG:" + epsg + "'\n")
+          layer_def += "      'wms_srs' 'EPSG:4326 EPSG:" + epsg + "'\n"
         except:
 	  pass
-        self.outFile.write("      'wms_format' '" + format + "'\n")
-        self.outFile.write("      'wms_style' '" + ','.join(wmsStyles) + "'\n")
-        self.outFile.write("    END\n")
+        layer_def += "      'wms_format' '" + format + "'\n"
+        layer_def += "      'wms_style' '" + ','.join(wmsStyles) + "'\n"
+        layer_def += "    END\n"
 
       else: 
         # its a standard ogr, gdal or grass layer
-        self.outFile.write("    DATA '" + dataString + "'\n")
+        layer_def += "    DATA '" + dataString + "'\n"
       
       # WMS settings for all layers
-      self.outFile.write("    METADATA\n")
-      if len(lyr.getElementsByTagName("layername")[0].childNodes) > 0:
-        self.outFile.write("      'wms_title' '" 
-           + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "") + "'\n")
-      else:
-        self.outFile.write("      'wms_title' 'LAYER%s'\n"  % count)
+      layer_def += "    METADATA\n"
+      layer_def += "      'wms_title' '" + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "") + "'\n"
+      layer_def += "    END\n"
 
-      self.outFile.write("    END\n")
-
-      self.outFile.write("    STATUS DEFAULT\n")
+      layer_def += "    STATUS DEFAULT\n"
 
       opacity = int ( 100.0 * 
            float(lyr.getElementsByTagName("transparencyLevelInt")[0].childNodes[0].nodeValue.encode('utf-8')) / 255.0 ) 
-      self.outFile.write("    TRANSPARENCY " + str(opacity) + "\n")
+      layer_def += "    TRANSPARENCY " + str(opacity) + "\n"
 
-      self.outFile.write("    PROJECTION\n")
+      layer_def += "    PROJECTION\n"
       # Get the destination srs for this layer and use it to create
       # the projection section
       destsrs = self.qgs.getElementsByTagName("destinationsrs")[0] 
       proj4Text = destsrs.getElementsByTagName("proj4")[0].childNodes[0].nodeValue.encode('utf-8') 
       # the proj4 text string needs to be reformatted to make mapserver happy
-      self.outFile.write(self.formatProj4(proj4Text))
-      self.outFile.write("    END\n")
+      layer_def += self.formatProj4(proj4Text)
+      layer_def += "    END\n"
       scaleDependent = lyr.getAttribute("scaleBasedVisibilityFlag").encode('utf-8')
       if scaleDependent == '1':
         # get the min and max scale settings
         minscale = lyr.getAttribute("minScale").encode('utf-8')
         maxscale = lyr.getAttribute("maxScale").encode('utf-8')
         if minscale > '':
-          self.outFile.write("    MINSCALE " + minscale + "\n")
+          layer_def += "    MINSCALE " + minscale + "\n"
         if maxscale > '':
-          self.outFile.write("    MAXSCALE " + maxscale + "\n")
+          layer_def += "    MAXSCALE " + maxscale + "\n"
 
       
       # Check for label field (ie LABELITEM) and label status
@@ -390,7 +399,7 @@ class Qgis2Map:
         labelOn    = lyr.getElementsByTagName(     "label")[0].childNodes[0].nodeValue.encode('utf-8')
         labelField = lyr.getElementsByTagName("labelfield")[0].childNodes[0].nodeValue.encode('utf-8')
         if labelField != '' and labelField is not None and labelOn == "1":
-          self.outFile.write("    LABELITEM '" + labelField + "'\n");
+          layer_def += "    LABELITEM '" + labelField + "'\n"
       except:
         # no labels
         pass
@@ -399,16 +408,26 @@ class Qgis2Map:
       # First see if there is a single symbol renderer
       if lyr.getElementsByTagName("singlesymbol").length > 0:
         symbolNode = lyr.getElementsByTagName("singlesymbol")[0].getElementsByTagName('symbol')[0] 
-        self.simpleRenderer(lyr, symbolNode)
+        layer_def += self.simpleRenderer(lyr, symbolNode)
       elif lyr.getElementsByTagName("graduatedsymbol").length > 0:
-        self.graduatedRenderer(lyr, lyr.getElementsByTagName("graduatedsymbol")[0].getElementsByTagName('symbol')[0] )
+        layer_def += self.graduatedRenderer(lyr, lyr.getElementsByTagName("graduatedsymbol")[0].getElementsByTagName('symbol')[0] )
       elif lyr.getElementsByTagName("continuoussymbol").length > 0:
-        self.continuousRenderer(lyr, lyr.getElementsByTagName("continuoussymbol")[0] )
+        layer_def += self.continuousRenderer(lyr, lyr.getElementsByTagName("continuoussymbol")[0] )
       elif lyr.getElementsByTagName("uniquevalue").length > 0:
-        self.uniqueRenderer(lyr, lyr.getElementsByTagName("uniquevalue")[0].getElementsByTagName('symbol')[0] )
+        layer_def += self.uniqueRenderer(lyr, lyr.getElementsByTagName("uniquevalue")[0].getElementsByTagName('symbol')[0] )
 
       # end of LAYER
-      self.outFile.write("  END\n\n")
+      layer_def += "  END\n\n"
+
+      # add the layer to the list
+      layer_list[layer_name] = layer_def
+    # all layers have been processed, reverse the list and write
+    # not necessary since z-order is mapped by the legend list order
+    self.z_order.reverse()
+    for layer in self.z_order:
+      self.outFile.write(layer_list[layer])
+
+
 
 
   # Simple renderer ouput
@@ -417,40 +436,31 @@ class Qgis2Map:
     # get the layers geometry type
     geometry = layerNode.getAttribute("geometry").encode('utf-8').upper()
 
-    self.outFile.write("    CLASS\n")
+    class_def = "    CLASS\n"
 
-    self.outFile.write("       NAME '" 
-         + layerNode.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "") + "' \n")
+    class_def += "       NAME '" + layerNode.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "") + "' \n"
 
-    self.outFile.write("       STYLE\n")
+    class_def += "       STYLE\n"
     # use the point symbol map to lookup the mapserver symbol type
     symbol = self.msSymbol( geometry, symbolNode )
-    self.outFile.write("         SYMBOL " + symbol + " \n")
-    self.outFile.write("         SIZE " 
-        + symbolNode.getElementsByTagName('pointsize')[0].childNodes[0].nodeValue.encode('utf-8')  
-        + " \n")
+    class_def += "         SYMBOL " + symbol + " \n"
+    class_def += "         SIZE " + symbolNode.getElementsByTagName('pointsize')[0].childNodes[0].nodeValue.encode('utf-8')  + " \n"
 
     # outline color
     outlineNode = symbolNode.getElementsByTagName('outlinecolor')[0]
-    self.outFile.write("         OUTLINECOLOR " 
-        + outlineNode.getAttribute('red') + ' '
-        + outlineNode.getAttribute('green') + ' '
-        + outlineNode.getAttribute('blue')
-        + "\n")
+    class_def += "         OUTLINECOLOR " + outlineNode.getAttribute('red') + ' ' + outlineNode.getAttribute('green') + ' ' + outlineNode.getAttribute('blue') + "\n"
     # color
     colorNode = symbolNode.getElementsByTagName('fillcolor')[0]
-    self.outFile.write("         COLOR " 
-        + colorNode.getAttribute('red') + ' '
-        + colorNode.getAttribute('green') + ' '
-        + colorNode.getAttribute('blue')
-        + "\n")
+    class_def += "         COLOR " + colorNode.getAttribute('red') + ' ' + colorNode.getAttribute('green') + ' ' + colorNode.getAttribute('blue') + "\n"
 
-    self.outFile.write("       END\n")
+    class_def += "       END\n"
 
-    self.outFile.write( self.msLabel( layerNode ) )
+    class_def += self.msLabel( layerNode ) 
 
     # end of CLASS  
-    self.outFile.write("    END\n")
+    class_def += "    END\n"
+
+    return class_def
         
 
   # Graduated symbol renderer output
@@ -461,12 +471,12 @@ class Qgis2Map:
     # get the renderer field for building up the classes
     classField = layerNode.getElementsByTagName('classificationattribute')[0].childNodes[0].nodeValue.encode('utf-8')  
     # write the render item
-    self.outFile.write("    CLASSITEM '" + classField + "'\n")
+    class_def = "    CLASSITEM '" + classField + "'\n"
 
     # write the rendering info for each class
     classes = layerNode.getElementsByTagName('symbol')
     for cls in classes:
-      self.outFile.write("    CLASS\n")
+      class_def += "    CLASS\n"
 
       lower = cls.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode('utf-8')
       upper = cls.getElementsByTagName('uppervalue')[0].childNodes[0].nodeValue.encode('utf-8')
@@ -474,45 +484,36 @@ class Qgis2Map:
       # If there's a label use it, otherwise autogenerate one
       try:
         label = cls.getElementsByTagName('label')[0].childNodes[0].nodeValue.encode('utf-8')
-        self.outFile.write("      NAME '" + label + "'\n") 
+        class_def += "      NAME '" + label + "'\n"
       except: 
-        self.outFile.write("      NAME '" + lower + " < " + classField + " < " + upper + "'\n") 
+        class_def += "      NAME '" + lower + " < " + classField + " < " + upper + "'\n"
 
-      self.outFile.write("      EXPRESSION ( ([" + classField + "] >= " + lower 
-                           + ") AND ([" + classField + "] <= " + upper + ") )\n") 
+      class_def += "      EXPRESSION ( ([" + classField + "] >= " + lower + ") AND ([" + classField + "] <= " + upper + ") )\n"
 
-      self.outFile.write("      STYLE\n")
+      class_def += "      STYLE\n"
       symbol = self.msSymbol( geometry, symbolNode )
-      self.outFile.write("        SYMBOL " + symbol + "\n")
+      class_def += "        SYMBOL " + symbol + "\n"
 
       # Symbol size 
       if geometry == 'POINT' or geometry == 'LINE':
-        self.outFile.write("        SIZE " 
-            + cls.getElementsByTagName('pointsize')[0].childNodes[0].nodeValue.encode('utf-8')  
-            + " \n")
+        class_def += "        SIZE " + cls.getElementsByTagName('pointsize')[0].childNodes[0].nodeValue.encode('utf-8')  + " \n"
 
       # outline color
       outlineNode = cls.getElementsByTagName('outlinecolor')[0]
-      self.outFile.write("          OUTLINECOLOR " 
-            + outlineNode.getAttribute('red') + ' '
-            + outlineNode.getAttribute('green') + ' '
-            + outlineNode.getAttribute('blue')
-            + "\n")
+      class_def += "          OUTLINECOLOR " + outlineNode.getAttribute('red') + ' ' + outlineNode.getAttribute('green') + ' ' + outlineNode.getAttribute('blue') + "\n"
       # color
       colorNode = cls.getElementsByTagName('fillcolor')[0]
-      self.outFile.write("          COLOR " 
-            + colorNode.getAttribute('red') + ' '
-            + colorNode.getAttribute('green') + ' '
-            + colorNode.getAttribute('blue')
-            + "\n")
+      class_def += "          COLOR " + colorNode.getAttribute('red') + ' ' + colorNode.getAttribute('green') + ' ' + colorNode.getAttribute('blue') + "\n"
 
-      self.outFile.write("        END\n")
+      class_def += "        END\n"
 
       # label
-      self.outFile.write( self.msLabel( layerNode ) )
+      class_def += self.msLabel( layerNode ) 
 
       # end of CLASS  
-      self.outFile.write("    END\n")
+      class_def += "    END\n"
+
+    return class_def
 
   # Continuous symbol renderer output
   def continuousRenderer(self, layerNode, symbolNode):
@@ -523,7 +524,7 @@ class Qgis2Map:
     classField = layerNode.getElementsByTagName('classificationattribute')[0].childNodes[0].nodeValue.encode('utf-8')  
 
     # write the rendering info for each class
-    self.outFile.write("    CLASS\n")
+    class_def += "    CLASS\n"
 
     # Class name irrelevant for color ramps since mapserver can't render their legend
     #self.outFile.write("      NAME '" + classField + "'\n")
@@ -537,37 +538,28 @@ class Qgis2Map:
     # outline color
     outlineNode = lower.getElementsByTagName('outlinecolor')[0]
 
-    self.outFile.write("      STYLE\n")
+    class_def += "      STYLE\n"
     
     # The first and last color of the ramp ( r g b r g b )
-    self.outFile.write("        COLORRANGE " 
-          + lowerColor.getAttribute('red') + " " 
-          + lowerColor.getAttribute('green') + " " 
-          + lowerColor.getAttribute('blue') + " " 
-          + upperColor.getAttribute('red') + " " 
-          + upperColor.getAttribute('green') + " " 
-          + upperColor.getAttribute('blue') + "\n")
+    class_def += "        COLORRANGE " + lowerColor.getAttribute('red') + " " + lowerColor.getAttribute('green') + " " + lowerColor.getAttribute('blue') + " " + upperColor.getAttribute('red') + " " + upperColor.getAttribute('green') + " " + upperColor.getAttribute('blue') + "\n"
 
     # The range of values over which to ramp the colors
-    self.outFile.write("        DATARANGE "
-         + lower.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode('utf-8') + ' '
-         + upper.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode('utf-8') + '\n')
+    class_def += "        DATARANGE " + lower.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode('utf-8') + ' ' + upper.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode('utf-8') + '\n'
 
-    self.outFile.write("        RANGEITEM '" + classField + "'\n")                                        
-    self.outFile.write("      END\n")
+    class_def += "        RANGEITEM '" + classField + "'\n"
+    class_def += "      END\n"
 
-    self.outFile.write("      STYLE\n")
-    self.outFile.write("        OUTLINECOLOR "
-          + outlineNode.getAttribute('red') + " " 
-          + outlineNode.getAttribute('green') + " " 
-          + outlineNode.getAttribute('blue') + "\n") 
-    self.outFile.write("      END\n")
+    class_def += "      STYLE\n"
+    class_def += "        OUTLINECOLOR " + outlineNode.getAttribute('red') + " " + outlineNode.getAttribute('green') + " " + outlineNode.getAttribute('blue') + "\n"
+    class_def += "      END\n"
 
     # label
-    self.outFile.write( self.msLabel( layerNode ))
+    class_def +=  self.msLabel( layerNode )
 
     # end of CLASS  
-    self.outFile.write("    END\n")
+    class_def += "    END\n"
+
+    return class_def
     
 
   # Unique value renderer output
@@ -579,12 +571,12 @@ class Qgis2Map:
     geometry = layerNode.getAttribute("geometry").encode('utf-8').upper()
     
     # write the render item
-    self.outFile.write("    CLASSITEM '" + classField + "'\n")
+    class_def = "    CLASSITEM '" + classField + "'\n"
 
     # write the rendering info for each class
     classes = layerNode.getElementsByTagName('symbol')
     for cls in classes:
-      self.outFile.write("    CLASS\n")
+      class_def += "    CLASS\n"
 
       try:
         lower = cls.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode('utf-8')
@@ -595,46 +587,48 @@ class Qgis2Map:
       # If there's a label use it, otherwise autogenerate one
       try:
         label = cls.getElementsByTagName('label')[0].childNodes[0].nodeValue.encode('utf-8')
-        self.outFile.write("      NAME '" + label + "'\n") 
+        class_def += "      NAME '" + label + "'\n"
       except:
-        self.outFile.write("      NAME '" + classField + " = " + lower + "' \n") 
+        class_def += "      NAME '" + classField + " = " + lower + "' \n"
 
-      self.outFile.write("      EXPRESSION '" + lower + "' \n") 
+      class_def += "      EXPRESSION '" + lower + "' \n"
 
       # Get the symbol name
       symbol = self.msSymbol( geometry, symbolNode )  
       
-      self.outFile.write("      STYLE\n")
-      self.outFile.write("        SYMBOL " + symbol + "\n")
+      class_def += "      STYLE\n"
+      class_def += "        SYMBOL " + symbol + "\n"
 
       # Symbol size 
       if geometry == 'POINT' or geometry == 'LINE':
-        self.outFile.write("        SIZE " 
-            + cls.getElementsByTagName('pointsize')[0].childNodes[0].nodeValue.encode('utf-8')  
-            + " \n")
+        class_def += "        SIZE " \
+            + cls.getElementsByTagName('pointsize')[0].childNodes[0].nodeValue.encode('utf-8') \
+            + " \n"
 
       # outline color
       outlineNode = cls.getElementsByTagName('outlinecolor')[0]
-      self.outFile.write("         OUTLINECOLOR " 
-            + outlineNode.getAttribute('red') + ' '
-            + outlineNode.getAttribute('green') + ' '
-            + outlineNode.getAttribute('blue')
-            + "\n")
+      class_def += "         OUTLINECOLOR "  \
+            + outlineNode.getAttribute('red') + ' ' \
+            + outlineNode.getAttribute('green') + ' ' \
+            + outlineNode.getAttribute('blue') \
+            + "\n"
 
       # color
       colorNode = cls.getElementsByTagName('fillcolor')[0]
-      self.outFile.write("         COLOR " 
-            + colorNode.getAttribute('red') + ' '
-            + colorNode.getAttribute('green') + ' '
-            + colorNode.getAttribute('blue')
-            + "\n")
-      self.outFile.write("       END\n")
+      class_def += "         COLOR "  \
+            + colorNode.getAttribute('red') + ' ' \
+            + colorNode.getAttribute('green') + ' ' \
+            + colorNode.getAttribute('blue') \
+            + "\n"
+      class_def += "       END\n"
 
       # label
-      self.outFile.write( self.msLabel( layerNode ))
+      class_def +=  self.msLabel( layerNode )
       
       # end of CLASS  
-      self.outFile.write("    END\n")
+      class_def += "    END\n"
+
+    return class_def
     
   # Utility method to format a proj4 text string into mapserver format
   def formatProj4(self, proj4text):
