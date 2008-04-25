@@ -1,4 +1,4 @@
-qgis (0.10.0) unstable; urgency=low
+qgis (0.10.0) gutsy; urgency=low
 
   * This release includes over 120 bug fixes and enchancements 
   * over the QGIS 0.9.1 release. In addition we have added 
