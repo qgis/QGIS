@@ -806,12 +806,12 @@ void QgisApp::createActions()
   mActionMoveFeature = new QAction(QIcon(myIconPath+"/mActionMoveFeature.png"), tr("Move Feature"), this);
   mActionMoveFeature->setStatusTip(tr("Move Feature"));
   connect(mActionMoveFeature, SIGNAL(triggered()), this, SLOT(moveFeature()));
-  mActionMoveFeature->setEnabled(true);
+  mActionMoveFeature->setEnabled(false);
   //
   mActionSplitFeatures = new QAction(QIcon(myIconPath+"/mActionSplitFeatures.png"), tr("Split Features"), this);
   mActionSplitFeatures->setStatusTip(tr("Split Features"));
   connect(mActionSplitFeatures, SIGNAL(triggered()), this, SLOT(splitFeatures()));
-  mActionSplitFeatures->setEnabled(true);
+  mActionSplitFeatures->setEnabled(false);
   //
   mActionAddVertex = new QAction(QIcon(myIconPath+"/mActionAddVertex.png"), tr("Add Vertex"), this);
   mActionAddVertex->setStatusTip(tr("Add Vertex"));
