@@ -1,3 +1,14 @@
+qgis (0.10.0-1) gutsy; urgency=low
+  
+  * updated Maintainer field
+  * updated version for sip build dependency and removed old libgdal<1.5
+    dependencies.
+  * removed explicit shared library dependency for qgis and qgis-grass-plugin.
+  * removed recommends for qt4-designer on libqgis1-dev, because there's also
+    a depends.
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Mon, 28 Apr 2008 22:21:53 +0200
+
 qgis (0.10.0) gutsy; urgency=low
 
   * This release includes over 120 bug fixes and enchancements 
