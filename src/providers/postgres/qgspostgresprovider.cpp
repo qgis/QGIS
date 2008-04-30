@@ -100,6 +100,19 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
     return;
   }
 
+  /* Check to see if we have GEOS support and if not, warn the user about
+     the problems they will see :) */
+  QgsDebugMsg("Checking for GEOS support");
+
+  if(!hasGEOS(connection))
+  {
+    showMessageBox(tr("No GEOS Support!"),
+        tr("Your PostGIS installation has no GEOS support.\n"
+          "Feature selection and identification will not "
+          "work properly.\nPlease install PostGIS with " 
+          "GEOS support (http://geos.refractions.net)"));
+  }
+
   QgsDebugMsg("Checking for permissions on the relation");
 
   // Check that we can read from the table (i.e., we have
@@ -312,19 +325,6 @@ PGconn *QgsPostgresProvider::connectDb(const QString & conninfo)
     QgsDebugMsg("undefined return value from encoding setting");
   }
 
-  /* Check to see if we have GEOS support and if not, warn the user about
-     the problems they will see :) */
-  QgsDebugMsg("Checking for GEOS support");
-
-  if(!hasGEOS(pd))
-  {
-    showMessageBox(tr("No GEOS Support!"),
-        tr("Your PostGIS installation has no GEOS support.\n"
-          "Feature selection and identification will not "
-          "work properly.\nPlease install PostGIS with " 
-          "GEOS support (http://geos.refractions.net)"));
-  }
-  
   QgsDebugMsg("Connection to the database was successful");
   
   Conn *conn = new Conn(pd);
