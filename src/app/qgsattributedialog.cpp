@@ -96,25 +96,30 @@ bool QgsAttributeDialog::queryAttributes(const QgsFieldMap& fields, QgsFeature& 
   QgsAttributeDialog attdialog(fields, featureAttributes);
 
   if (attdialog.exec() == QDialog::Accepted)
-  { 
+  {
     int i=0;
-    for (QgsAttributeMap::const_iterator it = featureAttributes.begin(); it != featureAttributes.end(); ++it)
+    for (QgsAttributeMap::const_iterator it = featureAttributes.begin(); it != featureAttributes.end(); ++it, i++)
     {
-      QString value = attdialog.value(i++);
+      QString value = attdialog.value(i);
 
-      switch( fields[it.key()].type() )
+      if( attdialog.isDirty(i) )
       {
-      case QVariant::Int:
-        f.changeAttribute(it.key(), value=="" ? QVariant( QString::null ) : QVariant( value.toInt() ) );
-        break;
+        switch( fields[it.key()].type() )
+        {
+        case QVariant::Int:
+          f.changeAttribute(it.key(), value=="" ? QVariant( QString::null ) : QVariant( value.toInt() ) );
+          break;
 
-      case QVariant::Double:
-        f.changeAttribute(it.key(), value=="" ? QVariant( QString::null ) : QVariant( value.toDouble() ) );
-        break;
+        case QVariant::Double:
+          f.changeAttribute(it.key(), value=="" ? QVariant( QString::null ) : QVariant( value.toDouble() ) );
+          break;
 
-      default:
-        f.changeAttribute(it.key(), value=="NULL" ? QVariant(QString::null) : QVariant(value) );
-        break;
+        default:
+          f.changeAttribute(it.key(), value=="NULL" ? QVariant(QString::null) : QVariant(value) );
+          break;
+        }
+      } else {
+        f.changeAttribute(it.key(), QVariant(value) );
       }
     }
     return true;
