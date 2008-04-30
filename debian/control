@@ -72,7 +72,7 @@ Description: QGIS Geographic Information System - development files
 
 Package: qgis-plugin-grass
 Architecture: any
-Depends: qgis (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, libgdal1-1.5.0-grass
+Depends: qgis (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, libgdal1-1.4.0-grass | libgdal1-1.5.0-grass
 Description: Plugin for accessing GRASS data from QGIS
  This plugin enables a GRASS data access toolbox in the QGIS
  geographic data viewer.

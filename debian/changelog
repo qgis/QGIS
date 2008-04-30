@@ -1,3 +1,9 @@
+qgis (0.10.0-2) gutsy; urgency=low
+  
+  * fix libgdal1 grass depenency for ubuntu gutsy/hardy (1.4.0 | 1.5.0)
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Wed, 30 Apr 2008 22:35:42 +0200
+
 qgis (0.10.0-1) gutsy; urgency=low
   
   * updated Maintainer field
