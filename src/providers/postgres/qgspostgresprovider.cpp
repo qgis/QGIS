@@ -1794,17 +1794,21 @@ bool QgsPostgresProvider::addFeatures(QgsFeatureList & flist)
       }
 
       insert += "," + quotedIdentifier(fieldname);
-      
+
       QString defVal = getDefaultValue( it.key() ).toString();
 
       if( i==flist.size() )
       {
-        if( !defVal.isNull() && *it==defVal)
+        if( *it==defVal )
         {
-          values += "," + defVal;
+          if( defVal.isNull() ) {
+            values += ",NULL";
+          } else {
+            values += "," + defVal;
+          }
         }
-        else
-        {
+        else 
+	{
           values += "," + quotedValue( it->toString() );
         }
       } 
@@ -1819,6 +1823,7 @@ bool QgsPostgresProvider::addFeatures(QgsFeatureList & flist)
 
     insert += values + ")";
 
+    QgsDebugMsg( QString("prepare addfeatures: %1").arg(insert) );
     PGresult *stmt = PQprepare(connection, "addfeatures", insert.toUtf8(), fieldId.size()+2, NULL);
     if(stmt==0 || PQresultStatus(stmt)==PGRES_FATAL_ERROR)
       throw PGException(stmt);
