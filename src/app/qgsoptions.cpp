@@ -172,6 +172,20 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   mDefaultSnapModeComboBox->setCurrentIndex(mDefaultSnapModeComboBox->findText(tr(defaultSnapString)));
   mDefaultSnappingToleranceSpinBox->setValue(settings.value("/qgis/digitizing/default_snapping_tolerance", 0).toDouble());
   mSearchRadiusVertexEditSpinBox->setValue(settings.value("/qgis/digitizing/search_radius_vertex_edit", 10).toDouble());
+
+  //vertex marker
+  mMarkerStyleComboBox->addItem(tr("Semi transparent circle"));
+  mMarkerStyleComboBox->addItem(tr("Cross"));
+
+  QString markerStyle = settings.value("/qgis/digitizing/marker_style", "SemiTransparentCircle").toString();
+  if(markerStyle == "SemiTransparentCircle")
+    {
+      mMarkerStyleComboBox->setCurrentIndex(mMarkerStyleComboBox->findText(tr("Semi transparent circle")));
+    }
+  else if(markerStyle == "Cross")
+    {
+      mMarkerStyleComboBox->setCurrentIndex(mMarkerStyleComboBox->findText(tr("Cross")));
+    }
 }
 
 //! Destructor
@@ -312,6 +326,17 @@ void QgsOptions::saveOptions()
   settings.setValue("/qgis/digitizing/default_snap_mode", defaultSnapModeString);
   settings.setValue("/qgis/digitizing/default_snapping_tolerance", mDefaultSnappingToleranceSpinBox->value());
   settings.setValue("/qgis/digitizing/search_radius_vertex_edit", mSearchRadiusVertexEditSpinBox->value());
+
+  QString markerComboText = mMarkerStyleComboBox->currentText();
+  if(markerComboText == tr("Semi transparent circle"))
+    {
+      settings.setValue("/qgis/digitizing/marker_style", "SemiTransparentCircle");
+    }
+  else if(markerComboText == tr("Cross"))
+    {
+      settings.setValue("/qgis/digitizing/marker_style", "Cross");
+    }
+
   //
   // Locale settings 
   //
