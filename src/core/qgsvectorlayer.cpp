@@ -38,7 +38,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QPolygonF>
-#include <QSettings> //for update threshold
+#include <QSettings>
 #include <QString>
 
 #include "qgsvectorlayer.h"
@@ -443,12 +443,14 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
       (drawingToEditingCanvas)
      )
   {
-      std::vector<double>::const_iterator xIt;
-      std::vector<double>::const_iterator yIt;
-      for(xIt = x.begin(), yIt = y.begin(); xIt != x.end(); ++xIt, ++yIt)
-	{
-	  drawVertexMarker((int)(*xIt), (int)(*yIt), *p);
-	}
+    QgsVectorLayer::VertexMarkerType markerType = currentVertexMarkerType();
+    
+    std::vector<double>::const_iterator xIt;
+    std::vector<double>::const_iterator yIt;
+    for(xIt = x.begin(), yIt = y.begin(); xIt != x.end(); ++xIt, ++yIt)
+      {
+	drawVertexMarker((int)(*xIt), (int)(*yIt), *p, markerType);
+      }
     }
 
   //restore the pen
@@ -690,10 +692,13 @@ std::cerr << i << ": " << ring->first[i]
         (drawingToEditingCanvas)
        )
       {
+
+	QgsVectorLayer::VertexMarkerType markerType = currentVertexMarkerType();
+
 	for(int i = 0; i < path.elementCount(); ++i)
 	  {
             const QPainterPath::Element & e = path.elementAt(i);
-	    drawVertexMarker((int)e.x, (int)e.y, *p);
+	    drawVertexMarker((int)e.x, (int)e.y, *p, markerType);
 	  }
       }
 
@@ -887,11 +892,22 @@ void QgsVectorLayer::deleteCachedGeometries()
   mCachedGeometries.clear();
 }
 
-void QgsVectorLayer::drawVertexMarker(int x, int y, QPainter& p)
+void QgsVectorLayer::drawVertexMarker(int x, int y, QPainter& p, QgsVectorLayer::VertexMarkerType type)
 {
-  p.setPen(QColor(50, 100, 120, 200));
-  p.setBrush(QColor(200, 200, 210, 120));
-  p.drawEllipse(QRectF(x - 7, y - 7, 14, 14));
+  if(type == QgsVectorLayer::SemiTransparentCircle)
+    {
+      p.setPen(QColor(50, 100, 120, 200));
+      p.setBrush(QColor(200, 200, 210, 120));
+      p.drawEllipse(QRectF(x - 7, y - 7, 14, 14));
+    }
+  else
+    {
+      int size = 15;
+      int m = (size-1)/2;
+      p.setPen(QColor(255, 0, 0));
+      p.drawLine(x-m, y+m, x+m, y-m);
+      p.drawLine(x-m, y-m, x+m, y+m);
+    }
 }
 
 void QgsVectorLayer::select(int number, bool emitSignal)
@@ -2932,6 +2948,20 @@ int QgsVectorLayer::boundingBoxFromPointList(const QList<QgsPoint>& list, double
     }
 
   return 0;
+}
+
+QgsVectorLayer::VertexMarkerType QgsVectorLayer::currentVertexMarkerType()
+{
+  QSettings settings;
+  QString markerTypeString = settings.value("/qgis/digitizing/marker_style", "SemiTransparentCircle").toString();
+  if(markerTypeString == "Cross")
+    {
+      return QgsVectorLayer::Cross;
+    }
+  else
+    {
+      return QgsVectorLayer::SemiTransparentCircle;
+    }
 }
 
 void QgsVectorLayer::drawFeature(QPainter* p,

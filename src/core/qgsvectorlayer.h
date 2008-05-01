@@ -422,6 +422,12 @@ signals:
 
 private:                       // Private methods
 
+  enum VertexMarkerType
+    {
+      SemiTransparentCircle,
+      Cross
+    };
+
   /** vector layers are not copyable */
   QgsVectorLayer( QgsVectorLayer const & rhs );
 
@@ -475,8 +481,9 @@ private:                       // Private methods
 
   /**Deletes the geometries in mCachedGeometries*/
   void deleteCachedGeometries();
+
   /** Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.) */
-  void drawVertexMarker(int x, int y, QPainter& p);
+  void drawVertexMarker(int x, int y, QPainter& p, QgsVectorLayer::VertexMarkerType type);
 
   /**Snaps to a geometry and adds the result to the multimap if it is within the snapping result
    @param startPoint start point of the snap
@@ -491,6 +498,9 @@ private:                       // Private methods
    /**Little helper function that gives bounding box from a list of points.
    @return 0 in case of success*/
   int boundingBoxFromPointList(const QList<QgsPoint>& list, double& xmin, double& ymin, double& xmax, double& ymax) const;
+
+  /**Reads vertex marker type from settings*/
+  QgsVectorLayer::VertexMarkerType currentVertexMarkerType();
 
 
 private:                       // Private attributes
