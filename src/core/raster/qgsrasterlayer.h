@@ -180,9 +180,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 {
     Q_OBJECT
 public:
-    // Static constant defining flag for XML
-    static const QString QSTRING_NOT_SET;
-
     //
     // Static methods:
     //
@@ -1006,6 +1003,9 @@ private:
     //
     // Private member vars
     //
+    /** \brief  Static constant defining flag for XML and a constant that signals property not used */
+    static const QString QSTRING_NOT_SET;
+    
     /** \brief  Raster width. */
     int mRasterXDim;
     /** \brief  Raster Height. */
