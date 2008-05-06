@@ -106,7 +106,7 @@ static const char *const mSupportedRasterFormats[] =
 
 
 // Constant that signals property not used.
-const QString QgsRasterLayer::QSTRING_NOT_SET = QString("Not Set");
+const QString QgsRasterLayer::QSTRING_NOT_SET = "Not Set";
 
 /**
   Builds the list of file filter strings to later be used by
@@ -387,6 +387,7 @@ QgsRasterLayer::QgsRasterLayer(
   mStandardDeviations(0),
   mDataProvider(0)
 {
+
   mUserDefinedRGBMinMaxFlag = false; //defaults needed to bypass stretch
   mUserDefinedGrayMinMaxFlag = false;
 

@@ -120,6 +120,9 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
 
 
     private:
+        /** \brief  A constant that signals property not used */
+        static const QString QSTRING_NOT_SET;
+        
         /** \brief Pointer to the raster layer that this property dilog changes the behaviour of. */
         QgsRasterLayer * mRasterLayer;
 
