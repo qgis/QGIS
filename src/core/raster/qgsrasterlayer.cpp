@@ -60,7 +60,7 @@ email                : tim at linfiniti.com
 #include <QPixmap>
 #include <QRegExp>
 #include <QSlider>
-
+#include <QSettings>
 // workaround for MSVC compiler which already has defined macro max
 // that interferes with calling std::numeric_limits<int>::max
 #ifdef _MSC_VER
@@ -592,7 +592,9 @@ bool QgsRasterLayer::readFile( QString const & fileName )
   }
   
   //defaults - Needs to be set after the Contrast list has been build
-  setContrastEnhancementAlgorithm(QgsContrastEnhancement::STRETCH_TO_MINMAX);
+  //Try to read the default contrast enhancement from the config file
+  QSettings myQSettings;
+  setContrastEnhancementAlgorithm(myQSettings.value("/Raster/defaultContrastEnhancementAlgorithm", "NO_STRETCH").toString());
   
   //decide what type of layer this is...
   //note that multiband images can have one or more 'undefindd' bands,
@@ -4320,6 +4322,16 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   myElement = snode.toElement();
   setStdDevsToPlot(myElement.text().toDouble());
   
+  snode = mnl.namedItem("mUserDefinedRGBMinMaxFlag");
+  myElement = snode.toElement();
+  myQVariant = (QVariant) myElement.attribute("boolean");
+  setUserDefinedRGBMinMax(myQVariant.toBool());
+  
+  snode = mnl.namedItem("mUserDefinedGrayMinMaxFlag");
+  myElement = snode.toElement();
+  myQVariant = (QVariant) myElement.attribute("boolean");
+  setUserDefinedGrayMinMax(myQVariant.toBool());
+  
   snode = mnl.namedItem("mContrastEnhancementAlgorithm");
   myElement = snode.toElement();
   setContrastEnhancementAlgorithm(myElement.text(), false);
@@ -4658,6 +4670,34 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   mStandardDeviationsElement.appendChild( mStandardDeviationsText );
 
   rasterPropertiesElement.appendChild( mStandardDeviationsElement );
+  
+  // <mUserDefinedRGBMinMaxFlag>
+  QDomElement userDefinedRGBMinMaxFlag = document.createElement( "mUserDefinedRGBMinMaxFlag" );
+
+  if ( getUserDefinedRGBMinMax() )
+  {
+    userDefinedRGBMinMaxFlag.setAttribute( "boolean", "true" );
+  }
+  else
+  {
+    userDefinedRGBMinMaxFlag.setAttribute( "boolean", "false" );
+  }
+
+  rasterPropertiesElement.appendChild( userDefinedRGBMinMaxFlag );
+  
+  // <mUserDefinedGrayMinMaxFlag>
+  QDomElement userDefinedGrayMinMaxFlag = document.createElement( "mUserDefinedGrayMinMaxFlag" );
+
+  if ( getUserDefinedGrayMinMax() )
+  {
+    userDefinedGrayMinMaxFlag.setAttribute( "boolean", "true" );
+  }
+  else
+  {
+    userDefinedGrayMinMaxFlag.setAttribute( "boolean", "false" );
+  }
+
+  rasterPropertiesElement.appendChild( userDefinedGrayMinMaxFlag );
   
   // <contrastEnhancementAlgorithm>
   QDomElement contrastEnhancementAlgorithmElement = document.createElement( "mContrastEnhancementAlgorithm" );
@@ -5390,5 +5430,9 @@ void QgsRasterLayer::setContrastEnhancementAlgorithm(QString theAlgorithm, bool 
   else if(theAlgorithm == "USER_DEFINED")
   {
     setContrastEnhancementAlgorithm(QgsContrastEnhancement::USER_DEFINED, theGenerateLookupTableFlag);
+  }
+  else
+  {
+    setContrastEnhancementAlgorithm(QgsContrastEnhancement::NO_STRETCH, theGenerateLookupTableFlag);
   }
 }

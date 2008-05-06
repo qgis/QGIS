@@ -260,6 +260,12 @@ public:
 
     void setMaximumValue(QString theBand, double theValue, bool theGenerateLookupTableFlag=true);
 
+    /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option */
+    void computeMinimumMaximumEstimates(int theBand, double* theMinMax);
+
+    /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option */
+    void computeMinimumMaximumEstimates(QString theBand, double* theMinMax);
+
     QgsContrastEnhancement* getContrastEnhancement(unsigned int theBand);
 
     //

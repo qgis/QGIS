@@ -108,7 +108,9 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
 	    /**Callback for double clicks on the colormap entry widget*/
 	    void handleColormapTreeWidgetDoubleClick(QTreeWidgetItem* item, int column);
       /**This slot loads the minimum and maximum values from the raster band and updates the gui*/
-      void on_pbtnLoadMinMax_clicked(); 
+      void on_pbtnLoadMinMax_clicked();
+      /**This slot save the current contrast enhancement algorithm as the default algorithm */
+      void on_pbtnMakeContrastEnhancementAlgorithmDefault_clicked();
 	
 
     signals:
