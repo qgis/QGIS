@@ -19,6 +19,7 @@
 /* $Id$ */
 #ifndef QGSRASTERLAYERPROPERTIES_H
 #define QGSRASTERLAYERPROPERTIES_H
+
 #include "ui_qgsrasterlayerpropertiesbase.h"
 #include "qgisgui.h"
 class QgsMapLayer;
@@ -119,10 +120,10 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
         void refreshLegend(QString layerID, bool expandItem);
 
 
-    private:
+    private:        
         /** \brief  A constant that signals property not used */
         static const QString QSTRING_NOT_SET;
-        
+    
         /** \brief Pointer to the raster layer that this property dilog changes the behaviour of. */
         QgsRasterLayer * mRasterLayer;
 

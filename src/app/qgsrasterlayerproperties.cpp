@@ -50,7 +50,7 @@ const char * const ident =
 "$Id$";
 
 // Constant that signals property not used.
-const QString QgsRasterLayerProperties::QSTRING_NOT_SET = "Not Set";
+const QString QgsRasterLayerProperties::QSTRING_NOT_SET = QT_TR_NOOP("Not Set");
 
 QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *parent, Qt::WFlags fl)
   : QDialog(parent, fl), 
