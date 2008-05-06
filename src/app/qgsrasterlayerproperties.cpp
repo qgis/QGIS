@@ -2704,17 +2704,21 @@ void QgsRasterLayerProperties::on_mDeleteEntryButton_clicked()
 void QgsRasterLayerProperties::handleColormapTreeWidgetDoubleClick(QTreeWidgetItem* item, int column)
 {
   if(item)
-    {
-      if(column == 1)
-	{
-	  //show color dialog
-	  QColor newColor = QColorDialog::getColor();
-	  if(newColor.isValid())
+  {
+    if(column == 1)
+	  {
+	    //show color dialog
+	    QColor newColor = QColorDialog::getColor();
+	    if(newColor.isValid())
 	    {
 	      item->setBackground(1, QBrush(newColor));
 	    }
-	}
     }
+    else
+    {
+      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
+    } 
+	}
 }
 
 void QgsRasterLayerProperties::on_pbtnLoadMinMax_clicked()
