@@ -106,7 +106,7 @@ static const char *const mSupportedRasterFormats[] =
 
 
 // Constant that signals property not used.
-const QString QgsRasterLayer::QSTRING_NOT_SET = "Not Set";
+const QString QgsRasterLayer::QSTRING_NOT_SET = QT_TR_NOOP("Not Set");
 
 /**
   Builds the list of file filter strings to later be used by
