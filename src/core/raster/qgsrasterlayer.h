@@ -463,6 +463,7 @@ public:
     
     // Accessor and mutator for minimum maximum values 
     //TODO: Move these out of the header file...
+    /** \brief Accessor for minimum value user for contrast enhancement */
     double getMinimumValue(unsigned int theBand) 
     { 
       if(0 < theBand && theBand <= getBandCount()) 
@@ -473,11 +474,13 @@ public:
       return 0.0;
     }
     
+    /** \brief Accessor for minimum value user for contrast enhancement */
     double getMinimumValue(QString theBand)
     { 
       return getMinimumValue(getRasterBandNumber(theBand));
     }
     
+    /** \brief Mutator for setting the minimum value for contrast enhancement */
     void setMinimumValue(unsigned int theBand, double theValue, bool theGenerateLookupTableFlag=true)
     { 
       if(0 < theBand && theBand <= getBandCount())
@@ -486,6 +489,7 @@ public:
       } 
     }
     
+    /** \brief Mutator for setting the minimum value for contrast enhancement */
     void setMinimumValue(QString theBand, double theValue, bool theGenerateLookupTableFlag=true)
     { 
       if(theBand != tr("Not Set"))
@@ -495,6 +499,7 @@ public:
       
     }
     
+    /** \brief Accessor for maximum value user for contrast enhancement */
     double getMaximumValue(unsigned int theBand)
     {
       if(0 < theBand && theBand <= getBandCount())
@@ -505,6 +510,7 @@ public:
       return 0.0;
     }
     
+    /** \brief Accessor for maximum value user for contrast enhancement */
     double getMaximumValue(QString theBand)
     { 
       if(theBand != tr("Not Set"))
@@ -515,6 +521,7 @@ public:
       return 0.0;
     }
     
+    /** \brief Mutator for setting the maximum value for contrast enhancement */
     void setMaximumValue(unsigned int theBand, double theValue, bool theGenerateLookupTableFlag=true)
     { 
       if(0 < theBand && theBand <= getBandCount()) 
@@ -523,12 +530,29 @@ public:
       } 
     }
     
+    /** \brief Mutator for setting the maximum value for contrast enhancement */
     void setMaximumValue(QString theBand, double theValue, bool theGenerateLookupTableFlag=true) 
     { 
       if(theBand != tr("Not Set"))
       {
         setMaximumValue(getRasterBandNumber(theBand),theValue, theGenerateLookupTableFlag);
       }
+    }
+    
+    /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option */
+    void computeMinimumMaximumEstimates(int theBand, double* theMinMax)
+    {
+      if(0 < theBand && theBand <= getBandCount())
+      {
+        GDALRasterBandH myGdalBand = GDALGetRasterBand(mGdalDataset,theBand);
+        GDALComputeRasterMinMax( myGdalBand, 1, theMinMax );
+      }
+    }
+    
+    /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option */
+    void computeMinimumMaximumEstimates(QString theBand, double* theMinMax)
+    {
+      computeMinimumMaximumEstimates(getRasterBandNumber(theBand), theMinMax);
     }
     
     QgsContrastEnhancement* getContrastEnhancement(unsigned int theBand)

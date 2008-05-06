@@ -42,7 +42,7 @@
 #include <QPolygonF>
 #include <QColorDialog>
 #include <QList>
-
+#include <QSettings>
 
 #include <iostream>
 
@@ -298,6 +298,7 @@ mRasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
   pbnDefaultValues->setIcon(QIcon(QPixmap(myThemePath + "/mActionCopySelected.png")));
   pbnImportTransparentPixelValues->setIcon(QIcon(QPixmap(myThemePath + "/mActionFileOpen.png")));
   pbnExportTransparentPixelValues->setIcon(QIcon(QPixmap(myThemePath + "/mActionFileSave.png")));
+  pbtnMakeContrastEnhancementAlgorithmDefault->setIcon(QIcon(QPixmap(myThemePath + "/mActionFileSave.png")));
 
   // Only do pyramids if dealing directly with GDAL.
   if (mRasterLayerIsGdal)
@@ -613,11 +614,6 @@ void QgsRasterLayerProperties::sync()
     cboxInvertColorMap->setChecked(false);
   }
 
-  //set the transparency slider
-  sliderTransparency->setValue(255 - mRasterLayer->getTransparency());
-  //update the transparency percentage label
-  sliderTransparency_valueChanged(255 - mRasterLayer->getTransparency());
-
   //set the combos to the correct values
   cboRed->setCurrentText(mRasterLayer->getRedBandName());
   cboGreen->setCurrentText(mRasterLayer->getGreenBandName());
@@ -712,6 +708,32 @@ void QgsRasterLayerProperties::sync()
   {
     cboxContrastEnhancementAlgorithm->setCurrentText(tr("No Scaling"));
   }
+  
+  //Display the current default contrast enhancement algorithm
+  QSettings myQSettings;
+  QString myDefaultAlgorithm = myQSettings.value("/Raster/defaultContrastEnhancementAlgorithm", "NO_STRETCH").toString();
+  if(myDefaultAlgorithm == "NO_STRETCH")
+  {
+    labelDefaultContrastEnhancementAlgorithm->setText(tr("No Scaling"));
+  }
+  if(myDefaultAlgorithm == "STRETCH_TO_MINMAX")
+  {
+    labelDefaultContrastEnhancementAlgorithm->setText(tr("Stretch To MinMax"));
+  }
+  else if(myDefaultAlgorithm == "STRETCH_AND_CLIP_TO_MINMAX")
+  {
+    labelDefaultContrastEnhancementAlgorithm->setText(tr("Stretch And Clip To MinMax"));
+  }
+  else if(myDefaultAlgorithm == "CLIP_TO_MINMAX")
+  {
+    labelDefaultContrastEnhancementAlgorithm->setText(tr("Clip To MinMax"));
+  }
+  else
+  {
+    labelDefaultContrastEnhancementAlgorithm->setText(tr("No Scaling"));
+  }
+
+
 
 #ifdef QGISDEBUG
       QgsDebugMsg("QgsRasterLayerProperties::sync populate transparency tab");
@@ -719,6 +741,12 @@ void QgsRasterLayerProperties::sync()
   /*
    * Transparent Pixel Tab
    */
+  
+  //set the transparency slider
+  sliderTransparency->setValue(255 - mRasterLayer->getTransparency());
+  //update the transparency percentage label
+  sliderTransparency_valueChanged(255 - mRasterLayer->getTransparency());
+   
   int myIndex = cboxTransparencyLayer->findText(mRasterLayer->getTransparentLayerName());
   if(-1 != myIndex)
   {
@@ -2697,22 +2725,87 @@ void QgsRasterLayerProperties::on_pbtnLoadMinMax_clicked()
     if(rbtnThreeBand->isChecked())
     {
       rbtnThreeBandMinMax->setChecked(true);
-      myRasterBandStats = mRasterLayer->getRasterBandStats(mRasterLayer->getRasterBandNumber(cboRed->currentText()));
-      leRedMin->setText(QString::number(myRasterBandStats.minVal));
-      leRedMax->setText(QString::number(myRasterBandStats.maxVal));
-      myRasterBandStats = mRasterLayer->getRasterBandStats(mRasterLayer->getRasterBandNumber(cboGreen->currentText()));
-      leGreenMin->setText(QString::number(myRasterBandStats.minVal));
-      leGreenMax->setText(QString::number(myRasterBandStats.maxVal));
-      myRasterBandStats = mRasterLayer->getRasterBandStats(mRasterLayer->getRasterBandNumber(cboBlue->currentText()));
-      leBlueMin->setText(QString::number(myRasterBandStats.minVal));
-      leBlueMax->setText(QString::number(myRasterBandStats.maxVal));
+      
+      if(rbtnActualMinMax->isChecked())
+      {
+        myRasterBandStats = mRasterLayer->getRasterBandStats(mRasterLayer->getRasterBandNumber(cboRed->currentText()));
+        leRedMin->setText(QString::number(myRasterBandStats.minVal));
+        leRedMax->setText(QString::number(myRasterBandStats.maxVal));
+        myRasterBandStats = mRasterLayer->getRasterBandStats(mRasterLayer->getRasterBandNumber(cboGreen->currentText()));
+        leGreenMin->setText(QString::number(myRasterBandStats.minVal));
+        leGreenMax->setText(QString::number(myRasterBandStats.maxVal));
+        myRasterBandStats = mRasterLayer->getRasterBandStats(mRasterLayer->getRasterBandNumber(cboBlue->currentText()));
+        leBlueMin->setText(QString::number(myRasterBandStats.minVal));
+        leBlueMax->setText(QString::number(myRasterBandStats.maxVal));
+      }
+      else
+      {
+        rbtnEstimateMinMax->setChecked(true);
+        double myMinimumMaximum[2];
+        mRasterLayer->computeMinimumMaximumEstimates(mRasterLayer->getRasterBandNumber(cboRed->currentText()), myMinimumMaximum);
+        leRedMin->setText(QString::number(myMinimumMaximum[0]));
+        leRedMax->setText(QString::number(myMinimumMaximum[1]));
+        mRasterLayer->computeMinimumMaximumEstimates(mRasterLayer->getRasterBandNumber(cboGreen->currentText()), myMinimumMaximum);
+        leGreenMin->setText(QString::number(myMinimumMaximum[0]));
+        leGreenMax->setText(QString::number(myMinimumMaximum[1]));
+        mRasterLayer->computeMinimumMaximumEstimates(mRasterLayer->getRasterBandNumber(cboBlue->currentText()), myMinimumMaximum);
+        leBlueMin->setText(QString::number(myMinimumMaximum[0]));
+        leBlueMax->setText(QString::number(myMinimumMaximum[1]));
+      }
+
     }
     else
     {
       rbtnSingleBandMinMax->setChecked(true);
-      myRasterBandStats = mRasterLayer->getRasterBandStats(mRasterLayer->getRasterBandNumber(cboGray->currentText()));
-      leGrayMin->setText(QString::number(myRasterBandStats.minVal));
-      leGrayMax->setText(QString::number(myRasterBandStats.maxVal));
+      if(rbtnActualMinMax->isChecked())
+      {
+        myRasterBandStats = mRasterLayer->getRasterBandStats(mRasterLayer->getRasterBandNumber(cboGray->currentText()));
+        leGrayMin->setText(QString::number(myRasterBandStats.minVal));
+        leGrayMax->setText(QString::number(myRasterBandStats.maxVal));
+      }
+      else
+      {
+        rbtnEstimateMinMax->setChecked(true);
+        double myMinimumMaximum[2];
+        mRasterLayer->computeMinimumMaximumEstimates(mRasterLayer->getRasterBandNumber(cboGray->currentText()), myMinimumMaximum);
+        leGrayMin->setText(QString::number(myMinimumMaximum[0]));
+        leGrayMax->setText(QString::number(myMinimumMaximum[1]));
+      }
+    }
+  }
+}
+
+void QgsRasterLayerProperties::on_pbtnMakeContrastEnhancementAlgorithmDefault_clicked()
+{
+  //Like some of the other functionality in the raster properties GUI this deviated a little from the 
+  //best practice of GUI design as this pressing cancel will not undo setting the default 
+  //contrast enhancement algorithm
+  if(cboxContrastEnhancementAlgorithm->currentText() != tr("User Defined"))
+  {
+    QSettings myQSettings;
+    if(cboxContrastEnhancementAlgorithm->currentText() == tr("No Stretch"))
+    {
+      myQSettings.setValue("/Raster/defaultContrastEnhancementAlgorithm", "NO_STRETCH");
+      labelDefaultContrastEnhancementAlgorithm->setText(cboxContrastEnhancementAlgorithm->currentText());
+    }
+    else if(cboxContrastEnhancementAlgorithm->currentText() == tr("Stretch To MinMax"))
+    {
+      myQSettings.setValue("/Raster/defaultContrastEnhancementAlgorithm", "STRETCH_TO_MINMAX");
+      labelDefaultContrastEnhancementAlgorithm->setText(cboxContrastEnhancementAlgorithm->currentText());
+    }
+    else if(cboxContrastEnhancementAlgorithm->currentText() == tr("Stretch And Clip To MinMax"))
+    {
+      myQSettings.setValue("/Raster/defaultContrastEnhancementAlgorithm", "STRETCH_AND_CLIP_TO_MINMAX");
+      labelDefaultContrastEnhancementAlgorithm->setText(cboxContrastEnhancementAlgorithm->currentText());
+    }
+    else if(cboxContrastEnhancementAlgorithm->currentText() == tr("Clip To MinMax"))
+    {
+      myQSettings.setValue("/Raster/defaultContrastEnhancementAlgorithm", "CLIP_TO_MINMAX");
+      labelDefaultContrastEnhancementAlgorithm->setText(cboxContrastEnhancementAlgorithm->currentText());
+    }
+    else
+    {
+      //do nothing
     }
   }
 }
