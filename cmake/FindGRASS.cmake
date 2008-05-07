@@ -46,7 +46,10 @@ SET (GRASS_PATHS ${GRASS_PREFIX} /usr/lib/grass c:/msys/local)
 
 # mac-specific path
 IF (APPLE)
-  SET (GRASS_PATHS ${GRASS_PATHS} /Applications/GRASS.app/Contents/Resources)
+  SET (GRASS_PATHS ${GRASS_PATHS}
+    /Applications/GRASS-6.3.app/Contents/MacOS
+    /Applications/GRASS.app/Contents/Resources
+  )
 ENDIF (APPLE)
 
 IF (WITH_GRASS)
