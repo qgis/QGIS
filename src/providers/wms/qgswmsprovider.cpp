@@ -334,13 +334,44 @@ QImage* QgsWmsProvider::draw(QgsRect  const & viewExtent, int pixelWidth, int pi
 
   // Bounding box in WMS format
   QString bbox;
+
+  //according to the WMS spec for 1.3, the order of x - and y - coordinates is inverted for geographical CRS
+  bool changeXY = false;
+  if(mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3")
+    {
+      //create CRS from string
+      bool conversionOk;
+      int epsgNr = imageCrs.section(":", 1, 1).toInt(&conversionOk);
+      if(conversionOk)
+	{
+	  QgsSpatialRefSys theSrs;
+	  theSrs.createFromEpsg(epsgNr);
+	  if(theSrs.geographicFlag())
+	    {
+	      changeXY = true;
+	    }
+	}
+    }
+ 
+
   // Warning: does not work with scientific notation
-  bbox = QString("%1,%2,%3,%4").
-          arg(viewExtent.xMin(),0,'f').
-          arg(viewExtent.yMin(),0,'f').
-          arg(viewExtent.xMax(),0,'f').
-          arg(viewExtent.yMax(),0,'f');
-          
+  if(changeXY)
+    {
+      bbox = QString("%1,%2,%3,%4").
+	arg(viewExtent.yMin(),0,'f').
+	arg(viewExtent.xMin(),0,'f').
+	arg(viewExtent.yMax(),0,'f').
+	arg(viewExtent.xMax(),0,'f');
+    }
+  else
+    {
+      bbox = QString("%1,%2,%3,%4").
+	arg(viewExtent.xMin(),0,'f').
+	arg(viewExtent.yMin(),0,'f').
+	arg(viewExtent.xMax(),0,'f').
+	arg(viewExtent.yMax(),0,'f');
+    }        
+  
   // Width in WMS format
   QString width;
   width = width.setNum(pixelWidth);
