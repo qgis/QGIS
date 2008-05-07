@@ -824,6 +824,9 @@
             </item>
             <item>
              <widget class="QDoubleSpinBox" name="mSearchRadiusVertexEditSpinBox" >
+              <property name="decimals" >
+               <number>5</number>
+              </property>
               <property name="maximum" >
                <double>9999.989999999999782</double>
               </property>
@@ -861,6 +864,9 @@
             </item>
             <item>
              <widget class="QDoubleSpinBox" name="mDefaultSnappingToleranceSpinBox" >
+              <property name="decimals" >
+               <number>5</number>
+              </property>
               <property name="maximum" >
                <double>9999.989999999999782</double>
               </property>
