@@ -71,7 +71,7 @@ void QgsMapToolMoveFeature::canvasPressEvent(QMouseEvent * e)
   //find first geometry under mouse cursor and store iterator to it
   QgsPoint layerCoords = toLayerCoords((QgsMapLayer*)vlayer, e->pos());
   QSettings settings;
-  int searchRadius = settings.value("/qgis/digitizing/search_radius_vertex_edit", 10).toInt();
+  double searchRadius = settings.value("/qgis/digitizing/search_radius_vertex_edit", 10).toDouble();
   QgsRect selectRect(layerCoords.x()-searchRadius, layerCoords.y()-searchRadius, \
 		     layerCoords.x()+searchRadius, layerCoords.y()+searchRadius);
 
