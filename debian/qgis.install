@@ -1,6 +1,13 @@
 usr/bin/qgis
 usr/bin/qgis_help
-usr/share/qgis/doc/AUTHORS usr/share/qgis/doc/SPONSORS usr/share/qgis/doc/CODING usr/share/qgis/doc/favicon.ico usr/share/qgis/doc/index.html usr/share/qgis/doc/qgisdoc.css usr/share/qgis/doc/userguide.pdf usr/share/qgis/doc/images usr/share/doc/qgis
+usr/share/qgis/doc/CODING
+usr/share/qgis/doc/favicon.ico 
+usr/share/qgis/doc/index.html
+usr/share/qgis/doc/qgisdoc.css
+usr/share/qgis/doc/AUTHORS
+usr/share/qgis/doc/SPONSORS
+usr/share/qgis/doc/images
+usr/share/qgis/doc/userguide.pdf usr/share/doc/qgis
 usr/share/pixmaps/*
 usr/share/qgis/i18n/*
 usr/share/qgis/images/*
@@ -24,3 +31,7 @@ usr/lib/qgis/libspitplugin.so
 usr/lib/qgis/libwfsplugin.so
 usr/lib/qgis/libwfsprovider.so
 usr/lib/qgis/libwmsprovider.so
+usr/share/qgis/python/*
+usr/lib/python*/site-packages/qgis/__init__.py
+usr/lib/python*/site-packages/qgis/qgisconfig.py
+usr/lib/python*/site-packages/qgis/*.so
