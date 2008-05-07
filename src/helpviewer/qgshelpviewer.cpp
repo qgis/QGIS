@@ -22,10 +22,10 @@
 
 #include <QString>
 #include <QApplication>
+#include <QLocale>
 #include <QMessageBox>
 #include <QFileInfo>
 #include <QSettings>
-#include <QTextCodec>
 #include <QTextStream>
 #include <QFile>
 
@@ -104,7 +104,7 @@ void QgsHelpViewer::loadContext(const QString &contextId)
      * determine the locale and create the file name from
      * the context id
      */
-    QString lang(QTextCodec::locale());
+    QString lang(QLocale::system().name());
     /*
      * If the language isn't set on the system, assume en_US,
      * otherwise we get the banner at the top of the help file 
@@ -175,7 +175,7 @@ void QgsHelpViewer::loadContextFromSqlite(const QString &contextId)
       // build the sql statement
       QString sql = "select content,title from context_helps where context_id = " 
         + contextId;
-      rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
+      rc = sqlite3_prepare(db, sql.toUtf8(), sql.length(), &ppStmt, &pzTail);
       if(rc == SQLITE_OK)
       {
         if(sqlite3_step(ppStmt) == SQLITE_ROW){

@@ -894,7 +894,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
   myFileInfo.setFile(myDatabaseFileName);
   if ( !myFileInfo.exists( ) ) //its not critical if this happens
   {
-    qDebug(myDatabaseFileName);
+    qDebug(myDatabaseFileName.toUtf8());
     qDebug("User db does not exist");
     return ;
   }

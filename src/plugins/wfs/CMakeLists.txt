@@ -37,7 +37,6 @@ INCLUDE_DIRECTORIES(
      ..
      ../../app # for QgsNewHttpConnection
      ${GEOS_INCLUDE_DIR}
-     ${GEOS_INCLUDE_DIR}/geos
 )
 
 TARGET_LINK_LIBRARIES(wfsplugin

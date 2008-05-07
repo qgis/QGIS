@@ -270,7 +270,6 @@ void QgsLegendLayerFile::table()
         UNUSED(ba);
         QMessageBox::critical(0, tr("bad_alloc exception"), tr("Filling the attribute table has been stopped because there was no more virtual memory left"));
       }
-      mTableDisplay->table()->setSorting(true);
 
       connect(mTableDisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDisplay()));
 
@@ -358,7 +357,7 @@ void QgsLegendLayerFile::saveAsShapefileGeneral(bool saveOnlySelection)
     
   
   QString encoding = openFileDialog->encoding();
-  QString shapefileName = openFileDialog->selectedFile();
+  QString shapefileName = openFileDialog->selectedFiles().first();
   settings.writeEntry("/UI/lastShapefileDir", QFileInfo(shapefileName).absolutePath());
   
   

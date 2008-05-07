@@ -534,11 +534,11 @@ void QgsPointDialog::initialize()
   
   // set up the canvas
   QHBoxLayout* layout = new QHBoxLayout(canvasFrame);
-  layout->setAutoAdd(true);
   mCanvas = new QgsMapCanvas(canvasFrame, "georefCanvas");
   mCanvas->setBackgroundColor(Qt::white);
   mCanvas->setMinimumWidth(400);
   //mCanvas->freeze(true);
+  layout->addWidget(mCanvas);
   
   // set up map tools
   mToolZoomIn = new QgsMapToolZoom(mCanvas, FALSE /* zoomOut */); 

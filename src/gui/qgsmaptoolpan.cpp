@@ -25,8 +25,8 @@ QgsMapToolPan::QgsMapToolPan(QgsMapCanvas* canvas)
   : QgsMapTool(canvas), mDragging(FALSE)
 {
   // set cursor
-  QBitmap panBmp(16, 16, pan_bits, true);
-  QBitmap panBmpMask(16, 16, pan_mask_bits, true);
+  QBitmap panBmp = QBitmap::fromData( QSize(16, 16), pan_bits);
+  QBitmap panBmpMask = QBitmap::fromData( QSize(16, 16), pan_mask_bits);
   mCursor = QCursor(panBmp, panBmpMask, 5, 5);
 }
 

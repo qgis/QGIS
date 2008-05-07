@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsAttributeDialogBase</class>
  <widget class="QDialog" name="QgsAttributeDialogBase" >
   <property name="geometry" >
@@ -77,7 +74,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <tabstops>
   <tabstop>mTable</tabstop>
   <tabstop>mOkButton</tabstop>

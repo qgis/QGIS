@@ -57,7 +57,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(const QString& shapefileName,
   }
 
   // create the data source
-  mDS = OGR_Dr_CreateDataSource(poDriver,shapefileName, NULL);
+  mDS = OGR_Dr_CreateDataSource(poDriver, shapefileName.toLocal8Bit().data(), NULL);
   if (mDS == NULL)
   {
     mError = ErrCreateDataSource;

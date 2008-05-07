@@ -32,10 +32,11 @@ class QgsPanningWidget : public QWidget
 {
 public:
   QgsPanningWidget(QWidget* parent)
-  : QWidget(parent, "panningWidget")
+  : QWidget(parent)
   {
+    setObjectName("panningWidget");
     setMinimumSize(5,5);
-    setBackgroundMode(Qt::NoBackground);
+    setAttribute(Qt::WA_NoSystemBackground);
   }
 
   void resizeEvent(QResizeEvent* r)

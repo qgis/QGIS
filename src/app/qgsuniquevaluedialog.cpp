@@ -247,7 +247,7 @@ void QgsUniqueValueDialog::deleteCurrentClass()
   mValues.erase(classValue);
   delete (mClassListWidget->takeItem(currentIndex));
   qWarning("numRows: ");
-  qWarning(QString::number(mClassListWidget->count()));
+  qWarning(QString::number(mClassListWidget->count()).toUtf8());
 
   if(mClassListWidget->count() < (currentIndex + 1))
   {

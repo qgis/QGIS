@@ -110,7 +110,7 @@ public slots:
     void on_btnHelp_clicked();
 
     //! Signaled when a layer selection is changed.  Ensures that only one style is selected per layer.
-    void on_lstLayers_selectionChanged();
+    void on_lstLayers_itemSelectionChanged();
 
     //! Set status message to theMessage
     void showStatusMessage(QString const & theMessage);

@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsHelpViewerBase</class>
  <widget class="QDialog" name="QgsHelpViewerBase" >
   <property name="geometry" >
@@ -93,7 +90,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <tabstops>
   <tabstop>textBrowser</tabstop>
   <tabstop>buttonHome</tabstop>

@@ -1003,8 +1003,9 @@ private:
     //
     // Private member vars
     //
-    /** \brief  Static constant defining flag for XML and a constant that signals property not used */
-    static const QString QSTRING_NOT_SET;
+    /** \brief  Constant defining flag for XML and a constant that signals property not used */
+    const QString QSTRING_NOT_SET;
+    const QString TRSTRING_NOT_SET;
     
     /** \brief  Raster width. */
     int mRasterXDim;

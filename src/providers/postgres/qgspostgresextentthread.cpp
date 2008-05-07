@@ -20,13 +20,14 @@
 #include <fstream>
 #include <QEvent>
 #include <QApplication>
-#include <QCustomEvent>
+#include <QEvent>
 
 #include "qgis.h"
 #include "qgsrect.h"
 
 
 #include "qgspostgresextentthread.h"
+#include "qgsproviderextentcalcevent.h"
 
 
 /*
@@ -78,7 +79,7 @@ void QgsPostgresExtentThread::run()
   std::cout << "QgsPostgresExtentThread: Started running." << std::endl;
 
   // Open another connection to the database
-  PGconn *connection = PQconnectdb((const char *) connInfo);
+  PGconn *connection = PQconnectdb(connInfo.toUtf8());
 
   // get the extents
 
@@ -95,13 +96,13 @@ void QgsPostgresExtentThread::run()
 #endif
 
 #ifdef QGISDEBUG 
-  qDebug("+++++++++QgsPostgresExtentThread::run -  Getting extents using schema.table: " + sql);
+  qDebug("+++++++++QgsPostgresExtentThread::run -  Getting extents using schema.table: " + sql.toUtf8());
 #endif
 
 
   std::cout << "QgsPostgresExtentThread: About to issue query." << std::endl;
 
-  PGresult *result = PQexec(connection, (const char *) sql);
+  PGresult *result = PQexec(connection, sql.toUtf8());
   
   std::cout << "QgsPostgresExtentThread: Query completed." << std::endl;
 
@@ -156,8 +157,7 @@ void QgsPostgresExtentThread::run()
 
   std::cout << "QgsPostgresExtentThread: About to create and dispatch event " << QGis::ProviderExtentCalcEvent << " to callback" << std::endl;
   
-  QCustomEvent * e1 = new QCustomEvent ( QGis::ProviderExtentCalcEvent );
-  e1->setData(layerExtent);
+  QgsProviderExtentCalcEvent * e1 = new QgsProviderExtentCalcEvent ( layerExtent );
   QApplication::postEvent( (QObject *)callbackObject, e1);
   
 //  QApplication::postEvent(qApp->mainWidget(), e1);

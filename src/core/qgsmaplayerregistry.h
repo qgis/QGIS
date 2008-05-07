@@ -108,7 +108,7 @@ signals:
 protected:
 
  //! protected constructor
- QgsMapLayerRegistry( QObject * parent = 0, const char * name = 0 );
+ QgsMapLayerRegistry( QObject * parent = 0 );
 
 private:
 

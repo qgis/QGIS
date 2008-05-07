@@ -31,7 +31,6 @@
 #include <QStringList> 
 #include <QStyle>
 #include <QPlastiqueStyle>
-#include <QTextCodec>
 #include <QTranslator>
 
 #include <iostream>
@@ -59,6 +58,9 @@
 
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
+#if MAC_OS_X_VERSION_MAX_ALLOWED < 1050
+typedef SInt32 SRefCon;
+#endif
 #endif
 
 #include "qgisapp.h"
@@ -117,7 +119,7 @@ static QStringList myFileList;
  * May be called at startup before application is initialized as well as
  * at any time while the application is running.
  */
-short openDocumentsAEHandler(const AppleEvent *event, AppleEvent *reply, long refCon)
+OSErr openDocumentsAEHandler(const AppleEvent *event, AppleEvent *reply, SRefCon refCon)
 {
   AEDescList docs;
   if (AEGetParamDesc(event, keyDirectObject, typeAEList, &docs) == noErr)
@@ -154,18 +156,23 @@ short openDocumentsAEHandler(const AppleEvent *event, AppleEvent *reply, long re
     }
 
     // Open files now if application has been initialized
-    QgisApp *qgis = dynamic_cast<QgisApp *>(qApp->mainWidget());
-    if (qgis)
+    QWidgetList wl = QApplication::topLevelWidgets();
+    for (QWidgetList::iterator it = wl.begin(); it != wl.end(); ++it)
     {
-      if (!myProjectFileName.isEmpty())
+      QgisApp *qgis = dynamic_cast<QgisApp *>(*it);
+      if (qgis && qgis->objectName() == "QgisApp")
       {
-        qgis->openProject(myProjectFileName);
-      }
-      for (QStringList::Iterator myIterator = myFileList.begin();
-           myIterator != myFileList.end(); ++myIterator ) 
-      {
-        QString fileName = *myIterator;
-        qgis->openLayer(fileName);
+        if (!myProjectFileName.isEmpty())
+        {
+          qgis->openProject(myProjectFileName);
+        }
+        for (QStringList::Iterator myIterator = myFileList.begin();
+             myIterator != myFileList.end(); ++myIterator ) 
+        {
+          QString fileName = *myIterator;
+          qgis->openLayer(fileName);
+        }
+        break;
       }
     }
   }
@@ -390,7 +397,7 @@ int main(int argc, char *argv[])
   QString gdalPlugins(QCoreApplication::applicationDirPath().append("/lib/gdalplugins"));
   if (QFile::exists(gdalPlugins) && !getenv("GDAL_DRIVER_PATH"))
   {
-    setenv("GDAL_DRIVER_PATH", gdalPlugins, 1);
+    setenv("GDAL_DRIVER_PATH", gdalPlugins.toUtf8(), 1);
   }
 #endif
 
@@ -444,7 +451,7 @@ int main(int argc, char *argv[])
   {
     if (!myLocaleOverrideFlag || myUserLocale.isEmpty())
     {
-      myTranslationCode = QTextCodec::locale();
+      myTranslationCode = QLocale::system().name();
     }
     else
     {
@@ -498,7 +505,7 @@ int main(int argc, char *argv[])
 
 
   QgisApp *qgis = new QgisApp(mypSplash); // "QgisApp" used to find canonical instance
-  qgis->setName( "QgisApp" );
+  qgis->setObjectName( "QgisApp" );
   
 
   /////////////////////////////////////////////////////////////////////

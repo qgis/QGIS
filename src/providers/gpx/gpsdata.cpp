@@ -308,7 +308,7 @@ void GPSData::removeTracks(const QgsFeatureIds & ids) {
 
 
 void GPSData::writeXML(QTextStream& stream) {
-  stream.setEncoding(QTextStream::UnicodeUTF8);
+  stream.setCodec(QTextCodec::codecForName("UTF8"));
   stream<<"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
   <<"<gpx version=\"1.0\" creator=\"Quantum GIS\">\n";
   for (WaypointIterator wIter = waypoints.begin(); 

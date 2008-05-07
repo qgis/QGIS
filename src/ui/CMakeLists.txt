@@ -1,4 +1,12 @@
 
+# TODO: delete from SVN
+#   qgslinestyledialog.ui
+#   qgslinestylewidget.ui
+#   qgsmarkerdialog.ui
+#   qgspatterndialog.ui
+#   qgspointstylewidget.ui
+#   qgsvectorsymbologywidget.ui
+
 SET(QGIS_UIS
   qgisappbase.ui
   qgsabout.ui
@@ -25,20 +33,15 @@ SET(QGIS_UIS
   qgsidentifyresultsbase.ui
   qgslabeldialogbase.ui
   qgslayerprojectionselectorbase.ui
-  qgslinestyledialogbase.ui
-  qgslinestylewidgetbase.ui
   qgsludialogbase.ui
-  qgsmarkerdialogbase.ui
   qgsmeasurebase.ui
   qgsmessageviewer.ui
   qgsnewconnectionbase.ui
   qgsnewhttpconnectionbase.ui
   qgsoptionsbase.ui
   qgspastetransformationsbase.ui
-  qgspatterndialogbase.ui
   qgspgquerybuilderbase.ui
   qgspluginmanagerbase.ui
-  qgspointstylewidgetbase.ui
   qgsprojectionselectorbase.ui
   qgsprojectpropertiesbase.ui
   qgsrasterlayerpropertiesbase.ui
@@ -47,7 +50,6 @@ SET(QGIS_UIS
   qgssnappingdialogbase.ui
   qgsuniquevaluedialogbase.ui
   qgsvectorlayerpropertiesbase.ui
-  qgsvectorsymbologywidgetbase.ui
 )
 
 IF (PYTHON_FOUND)

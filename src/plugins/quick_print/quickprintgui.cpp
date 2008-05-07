@@ -20,6 +20,10 @@
 #include <QSettings>
 #include <QPrinter>
 
+#if QT_VERSION < 0x040300
+#define toPlainText() text()
+#endif
+
 
 //standard includes
 
@@ -83,7 +87,7 @@ void QuickPrintGui::writeSettings()
   QSettings mySettings;
   mySettings.setValue("quickprint/mapTitle", leMapTitle->text());
   mySettings.setValue("quickprint/mapName", leMapName->text());
-  mySettings.setValue("quickprint/mapCopyright", teCopyright->text());
+  mySettings.setValue("quickprint/mapCopyright", teCopyright->toPlainText());
   mySettings.setValue("quickprint/incrementLastFile", radUseIncrementedFileName->isChecked());
   mySettings.setValue("quickprint/pageSize", 
       cboPageSize->itemData(cboPageSize->currentIndex()));
@@ -136,7 +140,7 @@ void QuickPrintGui::on_buttonBox_accepted()
       myQuickPrint.setMapCanvas(mpMapCanvas);
       myQuickPrint.setTitle(leMapTitle->text());
       myQuickPrint.setName(leMapName->text());
-      myQuickPrint.setCopyright(teCopyright->text());
+      myQuickPrint.setCopyright(teCopyright->toPlainText());
       myQuickPrint.setLogo1(QgsApplication::iconsPath() + "/qgis-icon.png");
       myQuickPrint.setNorthArrow(myNorthArrowFile);
       myQuickPrint.setOutputPdf(myOutputFileName);

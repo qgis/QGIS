@@ -390,7 +390,7 @@ void QgsGPSPluginGui::populateIMPBabelFormats() {
   QString lastULDevice = settings.readEntry("/Plugin-GPS/lastuldevice", "");
   BabelMap::const_iterator iter;
   for (iter = mImporters.begin(); iter != mImporters.end(); ++iter)
-    mBabelFilter.append((const char*)iter->first).append(" (*.*);;");
+    mBabelFilter.append(iter->first).append(" (*.*);;");
   mBabelFilter.chop(2);   // Remove the trailing ;;, which otherwise leads to an empty filetype
   int u = -1, d = -1;
   std::map<QString, QgsGPSDevice*>::const_iterator iter2;

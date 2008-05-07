@@ -256,7 +256,11 @@ void QgsComposerLabel::setOptions ( void )
 void QgsComposerLabel::on_mTextEdit_textChanged()
 { 
     QRectF r = boundingRect();
+#if QT_VERSION < 0x040300
     mText = mTextEdit->text();
+#else
+    mText = mTextEdit->toPlainText();
+#endif
     QAbstractGraphicsShapeItem::prepareGeometryChange();
     QAbstractGraphicsShapeItem::update();
     writeSettings();

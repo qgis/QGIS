@@ -20,12 +20,8 @@
 #ifndef QGSPROVIDEREXTENTCALCEVENT_H
 #define QGSPROVIDEREXTENTCALCEVENT_H
 
-#include <qevent.h>
-
-#include "qgis.h"
-#include "qgsrect.h"
-//Added by qt3to4:
-#include <QCustomEvent>
+#include <QEvent>
+class QgsRect;
 
 /*!
  * \brief   A custom event that is designed to be fired when a layer extent has been fully calculated.
@@ -33,7 +29,7 @@
    \date    March 2005
 
    
-   This QCustomEvent is designed to be fired when the full extent of a layer has been calculated.
+   This custom QEvent is designed to be fired when the full extent of a layer has been calculated.
    It was initially included in QGIS to help the QgsPostgresProvider provide the asynchronous
    calculation of PostgreSQL layer extents.
    
@@ -44,7 +40,7 @@
 
 // TODO: Add the pg table this is a extent OF.
 
-class CORE_EXPORT QgsProviderExtentCalcEvent : public QCustomEvent
+class CORE_EXPORT QgsProviderExtentCalcEvent : public QEvent
 {
 
 public:

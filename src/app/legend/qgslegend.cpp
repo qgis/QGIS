@@ -1028,8 +1028,8 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 		  QgsLegendLayerFile* theLegendLayerFile = new QgsLegendLayerFile(lastLayerFileGroup, QgsLegendLayerFile::nameFromLayer(theMapLayer), theMapLayer);
 
 		  // load layer's visibility and 'show in overview' flag
-		  theLegendLayerFile->setVisible(atoi(childelem.attribute("visible", "1"))); //Default is visible
-		  theLegendLayerFile->setInOverview(atoi(childelem.attribute("inOverview")));
+		  theLegendLayerFile->setVisible(atoi(childelem.attribute("visible", "1").toUtf8())); //Default is visible
+		  theLegendLayerFile->setInOverview(atoi(childelem.attribute("inOverview").toUtf8()));
 		  
 		  // set the check state
 		  blockSignals(true);
@@ -1432,7 +1432,7 @@ std::deque<QString> QgsLegend::layerIDs()
   qWarning("QgsLegend::layerIDs()");
   for(std::deque<QString>::iterator it = layers.begin(); it != layers.end(); ++it)
     {
-      qWarning(*it);
+      qWarning((*it).toUtf8());
     }
 #endif
 

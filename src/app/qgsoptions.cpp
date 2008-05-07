@@ -27,7 +27,6 @@
 #include <QSettings>
 #include <QColorDialog>
 #include <QLocale>
-#include <QTextCodec>
 
 #include <cassert>
 #include <iostream>
@@ -144,7 +143,7 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   //
   // Locale settings 
   //
-  QString mySystemLocale = QTextCodec::locale();
+  QString mySystemLocale = QLocale::system().name();
   lblSystemLocale->setText(tr("Detected active locale on your system: ") + mySystemLocale);
   QString myUserLocale = settings.value("locale/userLocale", "").toString();
   QStringList myI18nList = i18nList();
@@ -168,8 +167,8 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   mDefaultSnapModeComboBox->insertItem(0, tr("to vertex"));
   mDefaultSnapModeComboBox->insertItem(1, tr("to segment"));
   mDefaultSnapModeComboBox->insertItem(2, tr("to vertex and segment"));
-  QString defaultSnapString = settings.value("/qgis/digitizing/default_snap_mode", "to vertex").toString();
-  mDefaultSnapModeComboBox->setCurrentIndex(mDefaultSnapModeComboBox->findText(tr(defaultSnapString)));
+  QString defaultSnapString = settings.value("/qgis/digitizing/default_snap_mode", tr("to vertex")).toString();
+  mDefaultSnapModeComboBox->setCurrentIndex(mDefaultSnapModeComboBox->findText(defaultSnapString));
   mDefaultSnappingToleranceSpinBox->setValue(settings.value("/qgis/digitizing/default_snapping_tolerance", 0).toDouble());
   mSearchRadiusVertexEditSpinBox->setValue(settings.value("/qgis/digitizing/search_radius_vertex_edit", 10).toDouble());
 
@@ -425,7 +424,7 @@ void QgsOptions::getEllipsoidList()
 
   // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
   QString mySql = "select * from tbl_ellipsoid order by name";
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
@@ -457,7 +456,7 @@ QString QgsOptions::getEllipsoidAcronym(QString theEllipsoidName)
   }
   // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
   QString mySql = "select acronym from tbl_ellipsoid where name='" + theEllipsoidName + "'";
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
@@ -489,7 +488,7 @@ QString QgsOptions::getEllipsoidName(QString theEllipsoidAcronym)
   }
   // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
   QString mySql = "select name from tbl_ellipsoid where acronym='" + theEllipsoidAcronym + "'";
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {

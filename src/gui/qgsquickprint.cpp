@@ -597,7 +597,7 @@ void QgsQuickPrint::printMap()
   int myLogoYDim = ( myDrawableHeight / 100 ) * myLogoHeightPercent;
   QPixmap myLogo1;
   qDebug("Logo1:");
-  qDebug(mLogo1File);
+  qDebug(mLogo1File.toLocal8Bit());
   myLogo1.fill ( Qt::white );
   myLogo1.load ( mLogo1File ); 
   myLogo1 = myLogo1.scaled ( myLogoXDim,myLogoYDim, Qt::KeepAspectRatio);

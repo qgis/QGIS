@@ -18,56 +18,33 @@
 
 /* $Id$ */
 
-#include <fstream>
-#include <iostream>
-
 #include "qgsnumericsortlistviewitem.h"
 
 
-QgsNumericSortListViewItem::QgsNumericSortListViewItem(Q3ListView * parent)
-  : Q3ListViewItem(parent)
+QgsNumericSortTreeWidgetItem::QgsNumericSortTreeWidgetItem(QTreeWidget * parent)
+  : QTreeWidgetItem(parent, UserType)
 {
   // NOOP
 }
 
-QgsNumericSortListViewItem::QgsNumericSortListViewItem(Q3ListViewItem  * parent)
-  : Q3ListViewItem(parent)
+QgsNumericSortTreeWidgetItem::QgsNumericSortTreeWidgetItem(QTreeWidgetItem * parent)
+  : QTreeWidgetItem(parent, UserType)
 {
   // NOOP
 }
 
-QgsNumericSortListViewItem::~QgsNumericSortListViewItem()
+QgsNumericSortTreeWidgetItem::~QgsNumericSortTreeWidgetItem()
 {
   // NOOP
 }
 
-int QgsNumericSortListViewItem::compare(Q3ListViewItem * i, int col, bool ascending) const
+bool QgsNumericSortTreeWidgetItem::operator<(const QTreeWidgetItem &other) const
 {
-  if (col == 0)  // The ID column
+  int column = treeWidget() ? treeWidget()->sortColumn() : 0;
+  if (column == 0)  // The ID column
   {
-    uint a = text(col).toUInt();
-    uint b = i->text(col).toUInt();
-
-    if (a < b)
-    {
-      return -1;
-    }
-    else if (a > b)
-    {
-      return +1;
-    }
-    else
-    {
-      return 0;
-    }
+    return text(column).toUInt() < other.text(column).toUInt();
   }
   else
-  {
-    // Pass-through to the QListViewItem implementation
-    return Q3ListViewItem::compare(i, col, ascending);
-  }
+    return text(column) < other.text(column);
 }
-
-
-
-

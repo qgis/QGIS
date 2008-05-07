@@ -26,12 +26,9 @@
     <number>6</number>
    </property>
    <item row="0" column="0" >
-    <widget class="Q3GroupBox" name="GroupBox1" >
+    <widget class="QGroupBox" name="GroupBox1" >
      <property name="title" >
       <string>Connection Information</string>
-     </property>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
@@ -286,15 +283,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>txtName</tabstop>
   <tabstop>txtUrl</tabstop>

@@ -74,7 +74,7 @@
     </widget>
    </item>
    <item rowspan="4" row="5" column="0" colspan="6" >
-    <widget class="Q3Table" name="attributeActionTable" >
+    <widget class="QTableWidget" name="attributeActionTable" >
      <property name="sizePolicy" >
       <sizepolicy>
        <hsizetype>7</hsizetype>
@@ -86,24 +86,30 @@
      <property name="whatsThis" >
       <string>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</string>
      </property>
-     <property name="resizePolicy" >
-      <enum>Q3ScrollView::Default</enum>
+     <property name="selectionMode" >
+      <enum>QAbstractItemView::SingleSelection</enum>
      </property>
-     <property name="numRows" >
-      <number>0</number>
+     <property name="selectionBehavior" >
+      <enum>QAbstractItemView::SelectRows</enum>
      </property>
-     <property name="numCols" >
+     <property name="columnCount" >
       <number>3</number>
      </property>
-     <property name="readOnly" >
-      <bool>false</bool>
-     </property>
-     <property name="selectionMode" >
-      <enum>Q3Table::SingleRow</enum>
-     </property>
-     <property name="focusStyle" >
-      <enum>Q3Table::FollowStyle</enum>
-     </property>
+     <column>
+      <property name="text" >
+       <string>Name</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Action</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Capture</string>
+      </property>
+     </column>
     </widget>
    </item>
    <item row="4" column="0" colspan="8" >
@@ -238,14 +244,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3Table</class>
-   <extends>Q3Frame</extends>
-   <header>q3table.h</header>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>moveUpButton</tabstop>
   <tabstop>moveDownButton</tabstop>

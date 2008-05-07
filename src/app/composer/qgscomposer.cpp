@@ -68,11 +68,14 @@ QgsComposer::QgsComposer( QgisApp *qgis): QMainWindow()
   mView = new QgsComposerView ( this, mViewFrame);
   mPrinter = 0;
 
-  QGridLayout *l = new QGridLayout(mViewFrame, 1, 1 );
+  QGridLayout *l = new QGridLayout(mViewFrame );
+  l->setMargin(0);
   l->addWidget( mView, 0, 0 );
 
-  mCompositionOptionsLayout = new QGridLayout( mCompositionOptionsFrame, 1, 1 );
-  mItemOptionsLayout = new QGridLayout( mItemOptionsFrame, 1, 1 );
+  mCompositionOptionsLayout = new QGridLayout( mCompositionOptionsFrame );
+  mCompositionOptionsLayout->setMargin(0);
+  mItemOptionsLayout = new QGridLayout( mItemOptionsFrame );
+  mItemOptionsLayout->setMargin(0);
 
   mCompositionNameComboBox->insertItem( tr("Map 1") );
 
@@ -322,7 +325,6 @@ void QgsComposer::on_mActionPrint_activated(void)
 
     // There is a bug in Qt<=4.2.2 (dialog is not correct) if output is set to file
     // => disable until they fix it
-    //mPrinter->setOutputToFile (true ) ;
     //mPrinter->setOutputFileName ( QDir::convertSeparators ( QDir::home().path() + "/" + "qgis.eps") );
 #endif
     mPrinter->setColorMode(QPrinter::Color);
@@ -331,7 +333,7 @@ void QgsComposer::on_mActionPrint_activated(void)
   {
     // Because of bug in Qt<=4.2.2 (dialog is not correct) we have to reset always
     // to printer otherwise print to file is checked but printer combobox is in dialog
-    mPrinter->setOutputToFile(false);
+    mPrinter->setOutputFileName(NULL);
   }
 
   //set the resolution and paper orientation each time we call up the dialog, not just the first time we run it
@@ -426,7 +428,7 @@ void QgsComposer::on_mActionPrint_activated(void)
                 std::cout << "Overwrite the bounding box" << std::endl;
                 if (!f.open(QIODevice::ReadWrite))
                   {
-                    throw QgsIOException(tr("Couldn't open " + f.name() + tr(" for read/write")));
+                    throw QgsIOException(tr("Couldn't open ") + f.name() + tr(" for read/write"));
                   }
                 Q_LONG offset = 0;
                 Q_LONG size;
@@ -740,7 +742,7 @@ void QgsComposer::on_mActionExportAsImage_activated(void)
   
   if ( result != QDialog::Accepted) return;
 
-  myOutputFileNameQString = myQFileDialog->selectedFile();
+  myOutputFileNameQString = myQFileDialog->selectedFiles().first();
   QString myFilterString = myQFileDialog->selectedFilter();
 #ifdef QGISDEBUG
   std::cout << "Selected filter: " << myFilterString.toLocal8Bit().data() << std::endl;
@@ -799,7 +801,7 @@ void QgsComposer::on_mActionExportAsSVG_activated(void)
                            "such as the legend or scale bar.</p>"
 #else
                            "Qt4 svg code. In particular, there are problems "
-                           "with layers not being clipped to the map"
+                           "with layers not being clipped to the map "
                            "bounding box.</p>"
 #endif
                            "If you require a vector-based output file from "
@@ -821,7 +823,7 @@ void QgsComposer::on_mActionExportAsSVG_activated(void)
   raise ();
   if ( result != QDialog::Accepted) return;
 
-  QString myOutputFileNameQString = myQFileDialog->selectedFile();
+  QString myOutputFileNameQString = myQFileDialog->selectedFiles().first();
   if ( myOutputFileNameQString == "" ) return;
 
   myQSettings.writeEntry("/UI/lastSaveAsSvgFile", myOutputFileNameQString);

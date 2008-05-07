@@ -20,11 +20,7 @@
 #ifndef QGSPROVIDERCOUNTCALCEVENT_H
 #define QGSPROVIDERCOUNTCALCEVENT_H
 
-#include <qevent.h>
-
-#include "qgis.h"
-//Added by qt3to4:
-#include <QCustomEvent>
+#include <QEvent>
 
 /*!
  * \brief   A custom event that is designed to be fired when a layer count has been fully calculated.
@@ -32,7 +28,7 @@
    \date    March 2005
 
    
-   This QCustomEvent is designed to be fired when the full item count of a layer has been calculated.
+   This custom QEvent is designed to be fired when the full item count of a layer has been calculated.
    It was initially included in QGIS to help the QgsPostgresProvider provide the asynchronous
    calculation of PostgreSQL layer counts.
    
@@ -43,7 +39,7 @@
 
 // TODO: Add the pg table this is a count OF.
 
-class CORE_EXPORT QgsProviderCountCalcEvent : public QCustomEvent
+class CORE_EXPORT QgsProviderCountCalcEvent : public QEvent
 {
 
 public:

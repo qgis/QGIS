@@ -65,7 +65,11 @@ void QgsPythonDialog::on_edtCmdLine_returnPressed()
   }
    
   QString str = "<b><font color=\"green\">>>></font> " + escapeHtml(command) + "</b><br>" + output;
+#if QT_VERSION < 0x040300
   txtHistory->setText(txtHistory->text() + str);
+#else
+  txtHistory->setPlainText(txtHistory->toPlainText() + str);
+#endif
   edtCmdLine->setText("");
   
   txtHistory->moveCursor(QTextCursor::End);

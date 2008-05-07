@@ -22,8 +22,6 @@
 //
 // QT4 includes make sure to use the new <CamelCase> style!
 //
-#include <Q3ListViewItem>
-#include <Q3PopupMenu>
 #include <QAction>
 #include <QApplication>
 #include <QBitmap>
@@ -60,7 +58,6 @@
 #include <QTcpSocket>
 #include <QTextStream>
 #include <QToolButton>
-#include <QToolTip>
 #include <QVBoxLayout>
 #include <QWhatsThis>
 #include <QtGlobal>
@@ -339,7 +336,7 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
   mQgisInterface = new QgisAppInterface(this); // create the interfce
 
   // set application's icon
-  setIcon(QPixmap(qgis_xpm));
+  setWindowIcon(QPixmap(qgis_xpm));
 
   // set application's caption
   QString caption = tr("Quantum GIS - ");
@@ -1130,7 +1127,7 @@ void QgisApp::createStatusBar()
   mProgressBar = new QProgressBar(statusBar());
   mProgressBar->setMaximumWidth(100);
   mProgressBar->hide();
-  QWhatsThis::add(mProgressBar, tr("Progress bar that displays the status of rendering layers and other time-intensive operations"));
+  mProgressBar->setWhatsThis(tr("Progress bar that displays the status of rendering layers and other time-intensive operations"));
   statusBar()->addWidget(mProgressBar, 1,true);
   // Bumped the font up one point size since 8 was too 
   // small on some platforms. A point size of 9 still provides
@@ -1144,7 +1141,7 @@ void QgisApp::createStatusBar()
   mScaleLabel->setAlignment(Qt::AlignCenter);
   mScaleLabel->setFrameStyle(QFrame::NoFrame);
   mScaleLabel->setText(tr("Scale "));
-  QToolTip::add (mScaleLabel, tr("Current map scale"));
+  mScaleLabel->setToolTip(tr("Current map scale"));
   statusBar()->addWidget(mScaleLabel, 0,true);
 
   mScaleEdit = new QLineEdit(QString(),statusBar());
@@ -1156,8 +1153,8 @@ void QgisApp::createStatusBar()
   QRegExp validator("\\d+\\.?\\d*:\\d+\\.?\\d*");
   mScaleEditValidator = new QRegExpValidator(validator, mScaleEdit);
   mScaleEdit->setValidator(mScaleEditValidator);
-  QWhatsThis::add(mScaleEdit, tr("Displays the current map scale"));
-  QToolTip::add (mScaleEdit, tr("Current map scale (formatted as x:y)"));
+  mScaleEdit->setWhatsThis(tr("Displays the current map scale"));
+  mScaleEdit->setToolTip(tr("Current map scale (formatted as x:y)"));
   statusBar()->addWidget(mScaleEdit, 0,true);
   connect(mScaleEdit, SIGNAL(editingFinished()), this, SLOT(userScale()));
 
@@ -1167,15 +1164,15 @@ void QgisApp::createStatusBar()
   mCoordsLabel->setFont(myFont);
   mCoordsLabel->setMargin(3);
   mCoordsLabel->setAlignment(Qt::AlignCenter);
-  QWhatsThis::add(mCoordsLabel, tr("Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved."));
-  QToolTip::add (mCoordsLabel, tr("Map coordinates at mouse cursor position"));
+  mCoordsLabel->setWhatsThis(tr("Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved."));
+  mCoordsLabel->setToolTip(tr("Map coordinates at mouse cursor position"));
   statusBar()->addWidget(mCoordsLabel, 0, true);
   // render suppression status bar widget
   mRenderSuppressionCBox = new QCheckBox(tr("Render"),statusBar());
   mRenderSuppressionCBox->setChecked(true);
   mRenderSuppressionCBox->setFont(myFont);
-  QWhatsThis::add(mRenderSuppressionCBox, tr("When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering."));
-  QToolTip::add( mRenderSuppressionCBox, tr("Toggle map rendering") );
+  mRenderSuppressionCBox->setWhatsThis(tr("When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering."));
+  mRenderSuppressionCBox->setToolTip(tr("Toggle map rendering") );
   statusBar()->addWidget(mRenderSuppressionCBox,0,true);
   // On the fly projection status bar icon
   // Changed this to a tool button since a QPushButton is
@@ -1190,8 +1187,8 @@ void QgisApp::createStatusBar()
   myProjPixmap.load(myIconPath+"/mIconProjectionDisabled.png");
   mOnTheFlyProjectionStatusButton->setPixmap(myProjPixmap);
   assert(!myProjPixmap.isNull());
-  QWhatsThis::add(mOnTheFlyProjectionStatusButton, tr("This icon shows whether on the fly projection is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour."));
-  QToolTip::add( mOnTheFlyProjectionStatusButton, tr("Projection status - Click to open projection dialog"));
+  mOnTheFlyProjectionStatusButton->setWhatsThis(tr("This icon shows whether on the fly projection is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour."));
+  mOnTheFlyProjectionStatusButton->setToolTip(tr("Projection status - Click to open projection dialog"));
   connect(mOnTheFlyProjectionStatusButton, SIGNAL(clicked()),
       this, SLOT(projectPropertiesProjections()));//bring up the project props dialog when clicked
   statusBar()->addWidget(mOnTheFlyProjectionStatusButton,0,true);
@@ -1315,7 +1312,7 @@ void QgisApp::createCanvas()
 {
   // "theMapCanvas" used to find this canonical instance later
   mMapCanvas = new QgsMapCanvas(this, "theMapCanvas" );
-  QWhatsThis::add(mMapCanvas, tr("Map canvas. This is where raster and vector layers are displayed when added to the map"));
+  mMapCanvas->setWhatsThis(tr("Map canvas. This is where raster and vector layers are displayed when added to the map"));
   
   mMapCanvas->setMinimumWidth(10);
   QVBoxLayout *myCanvasLayout = new QVBoxLayout;
@@ -1364,10 +1361,10 @@ void QgisApp::createOverview()
 {
   // overview canvas
   QgsMapOverviewCanvas* overviewCanvas = new QgsMapOverviewCanvas(NULL, mMapCanvas);
-  QWhatsThis::add(overviewCanvas, tr("Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas."));
+  overviewCanvas->setWhatsThis(tr("Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas."));
         
-  QBitmap overviewPanBmp(16, 16, pan_bits, true);
-  QBitmap overviewPanBmpMask(16, 16, pan_mask_bits, true);
+  QBitmap overviewPanBmp = QBitmap::fromData(QSize(16, 16), pan_bits);
+  QBitmap overviewPanBmpMask = QBitmap::fromData(QSize(16, 16), pan_mask_bits);
   mOverviewMapCursor = new QCursor(overviewPanBmp, overviewPanBmpMask, 5, 5);
   overviewCanvas->setCursor(*mOverviewMapCursor);
   QVBoxLayout *myOverviewLayout = new QVBoxLayout;
@@ -1397,7 +1394,7 @@ void QgisApp::createLegend()
   //add the toggle editing action also to legend such that right click menu and button show the same state
   mMapLegend->setToggleEditingAction(mActionToggleEditing);
 
-  QWhatsThis::add(mMapLegend, tr("Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties."));
+  mMapLegend->setWhatsThis(tr("Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties."));
   QVBoxLayout *myLegendLayout = new QVBoxLayout;
   myLegendLayout->addWidget(mMapLegend);
   toolBox->widget(0)->setLayout(myLegendLayout);
@@ -2600,7 +2597,7 @@ void QgisApp::newVectorLayer()
     return;
   }
 
-  filename = openFileDialog->selectedFile();
+  filename = openFileDialog->selectedFiles().first();
   enc = openFileDialog->encoding();
 
   // If the file exists, delete it otherwise we'll end up loading that
@@ -2620,7 +2617,7 @@ void QgisApp::newVectorLayer()
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
   QString ogrlib = pReg->library("ogr");
   // load the data provider
-  QLibrary* myLib = new QLibrary((const char *) ogrlib);
+  QLibrary* myLib = new QLibrary(ogrlib);
   bool loaded = myLib->load();
   if (loaded)
   {
@@ -2693,7 +2690,7 @@ void QgisApp::fileOpen()
       // Fix by Tim - getting the dirPath from the dialog
       // directly truncates the last node in the dir path.
       // This is a workaround for that
-      fullPath = openFileDialog->selectedFile();
+      fullPath = openFileDialog->selectedFiles().first();
       QFileInfo myFI(fullPath);
       QString myPath = myFI.dirPath();
       // Persist last used project dir
@@ -2863,7 +2860,7 @@ bool QgisApp::fileSave()
 
     if (saveFileDialog->exec() == QDialog::Accepted)
     {
-      fullPath.setFile( saveFileDialog->selectedFile() );
+      fullPath.setFile( saveFileDialog->selectedFiles().first() );
     }
     else 
     {
@@ -2945,7 +2942,7 @@ void QgisApp::fileSaveAs()
     // Fix by Tim - getting the dirPath from the dialog
     // directly truncates the last node in the dir path.
     // This is a workaround for that
-    fullPath.setFile(saveFileDialog->selectedFile());
+    fullPath.setFile(saveFileDialog->selectedFiles().first());
     QString myPath = fullPath.dirPath();
     // Persist last used project dir
     settings.writeEntry("/UI/lastProjectDir", myPath);
@@ -3188,7 +3185,7 @@ void QgisApp::saveMapAsImage()
   QString myOutputFileNameQString; // = myQFileDialog->getSaveFileName(); //delete this
   if (myQFileDialog->exec() == QDialog::Accepted)
   {
-    myOutputFileNameQString = myQFileDialog->selectedFile();
+    myOutputFileNameQString = myQFileDialog->selectedFiles().first();
   }
 
   QString myFilterString = myQFileDialog->selectedFilter()+";;";
@@ -4477,42 +4474,6 @@ void QgisApp::whatsThis()
 {
   QWhatsThis::enterWhatsThisMode();
 } // QgisApp::whatsThis()
-
-
-std::map<QString, int> QgisApp::menuMapByName()
-{
-  // Must populate the maps with each call since menus might have been
-  // added or deleted
-  populateMenuMaps();
-  // Return the menu items mapped by name (key is name, value is menu id)
-  return mMenuMapByName;
-}
-std::map<int, QString> QgisApp::menuMapById()
-{
-  // Must populate the maps with each call since menus might have been
-  // added or deleted
-  populateMenuMaps();
-  // Return the menu items mapped by menu id (key is menu id, value is name)
-  return mMenuMapById;
-}
-void QgisApp::populateMenuMaps()
-{
-  // Populate the two menu maps by iterating through the menu bar
-  mMenuMapByName.clear();
-  mMenuMapById.clear();
-  int idx = 0;
-  int menuId;
-  // Loop until we get an id of -1, which indicates there are no more
-  // items.
-  do
-  {
-    menuId = menuBar()->idAt(idx++);
-    std::cout << "Menu id " << menuId << " is " << menuBar()->text(menuId).toLocal8Bit().data() << std::endl;
-    mMenuMapByName[menuBar()->text(menuId)] = menuId;
-    mMenuMapById[menuId] = menuBar()->text(menuId);
-  }
-  while(menuId != -1);
-}
 
 QMenu* QgisApp::getPluginMenu(QString menuName)
 {

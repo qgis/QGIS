@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsPointStyleWidgetBase</class>
  <widget class="QWidget" name="QgsPointStyleWidgetBase" >
   <property name="geometry" >
@@ -23,7 +20,7 @@
     <number>6</number>
    </property>
    <item row="0" column="0" >
-    <widget class="Q3GroupBox" name="grpSymbol" >
+    <widget class="QGroupBox" name="grpSymbol" >
      <property name="sizePolicy" >
       <sizepolicy>
        <hsizetype>7</hsizetype>
@@ -34,9 +31,6 @@
      </property>
      <property name="title" >
       <string>Symbol Style</string>
-     </property>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
@@ -75,15 +69,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends></extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>comboBox8</tabstop>
   <tabstop>spbSymbolScale</tabstop>

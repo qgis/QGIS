@@ -94,13 +94,13 @@ void GRASS_EXPORT QgsGrass::init( void )
   // This value should always take precedence.
   QString gisBase = getenv("GISBASE");
 #ifdef QGISDEBUG
-  qDebug( "%s:%d GRASS gisBase from GISBASE env var is: %s", __FILE__, __LINE__, (const char*)gisBase );
+  qDebug( "%s:%d GRASS gisBase from GISBASE env var is: %s", __FILE__, __LINE__, gisBase.toAscii().constData() );
 #endif
   if ( !isValidGrassBaseDir(gisBase) ) {
     // Look for gisbase in QSettings
     gisBase = settings.readEntry("/GRASS/gisbase", "");
 #ifdef QGISDEBUG
-    qDebug( "%s:%d GRASS gisBase from QSettings is: %s", __FILE__, __LINE__, (const char*)gisBase );
+    qDebug( "%s:%d GRASS gisBase from QSettings is: %s", __FILE__, __LINE__, gisBase.toAscii().constData() );
 #endif
   }
 
@@ -119,7 +119,7 @@ void GRASS_EXPORT QgsGrass::init( void )
     // Use the location specified --with-grass during configure
     gisBase = GRASS_BASE;
 #ifdef QGISDEBUG
-    qDebug( "%s:%d GRASS gisBase from configure is: %s", __FILE__, __LINE__, (const char*)gisBase );
+    qDebug( "%s:%d GRASS gisBase from configure is: %s", __FILE__, __LINE__, gisBase.toAscii().constData() );
 #endif
 
 #endif
@@ -172,7 +172,7 @@ void GRASS_EXPORT QgsGrass::init( void )
   }
 
 #ifdef QGISDEBUG
-  qDebug( "%s:%d Valid GRASS gisBase is: %s", __FILE__, __LINE__, (const char*)gisBase );
+  qDebug( "%s:%d Valid GRASS gisBase is: %s", __FILE__, __LINE__, gisBase.toAscii().constData() );
 #endif
   QString gisBaseEnv = "GISBASE=" + gisBase;
   /* _Correct_ putenv() implementation is not making copy! */ 

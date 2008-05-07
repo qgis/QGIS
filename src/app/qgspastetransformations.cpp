@@ -132,8 +132,8 @@ void QgsPasteTransformations::addTransfer(const QString& sourceSelectedFieldName
 // TODO: Do not add the transfer if neither the sourceSelectedFieldName nor the destinationSelectedFieldName could be found.
 
   // For some reason Qt4's uic3 only outputs generic names for layout items
-  QComboBox* newSourceFields      = new QComboBox(FALSE, gridLayout->mainWidget() );
-  QComboBox* newDestinationFields = new QComboBox(FALSE, gridLayout->mainWidget() );
+  QComboBox* newSourceFields      = new QComboBox(gridLayout->mainWidget() );
+  QComboBox* newDestinationFields = new QComboBox(gridLayout->mainWidget() );
 
   int count = 0;
 

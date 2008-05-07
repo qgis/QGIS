@@ -286,7 +286,7 @@ void QgsComposerMap::cache ( void )
     mCacheExtent.setXmax ( mCacheExtent.xMin() + w * scale );
     mCacheExtent.setYmax ( mCacheExtent.yMin() + h * scale );
       
-    mCachePixmap.resize( w, h );
+    mCachePixmap = QPixmap( w, h );
 
     // WARNING: ymax in QgsMapToPixel is device height!!!
     QgsMapToPixel transform(scale, h, mCacheExtent.yMin(), mCacheExtent.xMin() );

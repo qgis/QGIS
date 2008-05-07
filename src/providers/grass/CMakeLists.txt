@@ -45,9 +45,16 @@ ENDIF (WIN32)
 TARGET_LINK_LIBRARIES (qgisgrass
   ${QT_QTCORE_LIBRARY} 
   ${QT_QTXML_LIBRARY} 
+  ${QT_QT3SUPPORT_LIBRARY} 
   ${GRASS_LIBRARIES}
   qgis_core
 )
+#work aroud for the fact that qt3support on mac is linked to qtsql
+IF (APPLE)
+  TARGET_LINK_LIBRARIES (qgisgrass
+    ${QT_QTSQL_LIBRARY} 
+    )
+ENDIF (APPLE)
 
 ADD_LIBRARY (grassprovider MODULE ${GRASS_PROVIDER_SRCS})
 

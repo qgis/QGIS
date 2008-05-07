@@ -1494,7 +1494,7 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
       if (s.indexIn(viewDefinition) != -1)
       {
         attname_view = s.cap(1);
-        qWarning("original view column name was: " + attname_view);
+        qWarning("original view column name was: " + attname_view.toUtf8());
       }
     }
 
@@ -2540,9 +2540,9 @@ bool QgsPostgresProvider::getGeometryDetails()
   else // something went wrong...
   {
     log.prepend(tr("Qgis was unable to determine the type and srid of "
-          "column " + geometryColumn + tr(" in ") +
+          "column ") + geometryColumn + tr(" in ") +
           mSchemaTableName + 
-          tr(". The database communication log was:\n")));
+          tr(". The database communication log was:\n"));
     showMessageBox(tr("Unable to get feature type and srid"), log);
   }
 

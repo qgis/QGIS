@@ -47,6 +47,11 @@
 #include <QFileInfo>
 #include <QSettings>
 
+#if QT_VERSION < 0x040300
+#define toPlainText() text()
+#endif
+
+
 QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer * lyr, 
     QWidget * parent, 
     Qt::WFlags fl)
@@ -275,7 +280,7 @@ void QgsVectorLayerProperties::apply()
   {
     grpSubset->setEnabled(true);
     // set the subset sql for the layer
-    layer->setSubsetString(txtSubsetSQL->text());   
+    layer->setSubsetString(txtSubsetSQL->toPlainText());   
     // update the metadata with the updated sql subset
     teMetadata->setText(getMetadata());
     // update the extents of the layer (fetched from the provider)
@@ -349,7 +354,7 @@ void QgsVectorLayerProperties::on_pbnQueryBuilder_clicked()
 
   // Set the sql in the query builder to the same in the prop dialog
   // (in case the user has already changed it)
-  pqb->setSql(txtSubsetSQL->text());
+  pqb->setSql(txtSubsetSQL->toPlainText());
   // Open the query builder
   if(pqb->exec())
   {

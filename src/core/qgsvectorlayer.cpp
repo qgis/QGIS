@@ -2227,7 +2227,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
     }
     else
     {
-      QgsDebugMsg("Invalid provider plugin " + QString(mDataSource.ascii()));
+      QgsDebugMsg("Invalid provider plugin " + QString(mDataSource.toUtf8()));
       return false;
     }
   }

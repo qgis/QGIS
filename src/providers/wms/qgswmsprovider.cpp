@@ -409,7 +409,7 @@ QImage* QgsWmsProvider::draw(QgsRect  const & viewExtent, int pixelWidth, int pi
       url += "TRANSPARENT=TRUE";
     }
 
-  qWarning(url);
+  qWarning(url.toUtf8());
 
   // cache some details for if the user wants to do an identifyAsHtml() later
   mGetFeatureInfoUrlBase = baseUrl;

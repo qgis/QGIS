@@ -486,7 +486,7 @@ void QgsDbSourceSelect::setSql(const QModelIndex& index)
   QString schemaName = mTableModel.itemFromIndex(mProxyModel.mapToSource(schemaSibling))->text();
   QString tableName = mTableModel.itemFromIndex(mProxyModel.mapToSource(tableSibling))->text(); 
   QString tableString = "\"" + schemaName + "\".\"" + tableName + "\"";
-  qWarning(tableString);
+  qWarning(tableString.toUtf8());
 
   QString currentSql;
   QModelIndex sqlSibling = index.sibling(index.row(), 4);

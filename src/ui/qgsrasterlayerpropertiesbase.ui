@@ -1569,12 +1569,9 @@
           <number>11</number>
          </property>
          <item>
-          <widget class="Q3GroupBox" name="groupBox10" >
+          <widget class="QGroupBox" name="groupBox10" >
            <property name="title" >
             <string>Thumbnail</string>
-           </property>
-           <property name="orientation" >
-            <enum>Qt::Vertical</enum>
            </property>
            <layout class="QGridLayout" >
             <property name="margin" >
@@ -1619,12 +1616,9 @@
           </widget>
          </item>
          <item>
-          <widget class="Q3GroupBox" name="groupBox9" >
+          <widget class="QGroupBox" name="groupBox9" >
            <property name="title" >
             <string>Legend:</string>
-           </property>
-           <property name="orientation" >
-            <enum>Qt::Vertical</enum>
            </property>
            <layout class="QGridLayout" >
             <property name="margin" >
@@ -1669,12 +1663,9 @@
           </widget>
          </item>
          <item>
-          <widget class="Q3GroupBox" name="groupBox8" >
+          <widget class="QGroupBox" name="groupBox8" >
            <property name="title" >
             <string>Palette:</string>
-           </property>
-           <property name="orientation" >
-            <enum>Qt::Vertical</enum>
            </property>
            <layout class="QGridLayout" >
             <property name="margin" >
@@ -1773,7 +1764,7 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item row="1" column="1" >
-        <widget class="Q3ListBox" name="lbxPyramidResolutions" >
+        <widget class="QListWidget" name="lbxPyramidResolutions" >
          <property name="sizePolicy" >
           <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
            <horstretch>0</horstretch>
@@ -1787,7 +1778,7 @@ p, li { white-space: pre-wrap; }
           </size>
          </property>
          <property name="selectionMode" >
-          <enum>Q3ListBox::Multi</enum>
+          <enum>QAbstractItemView::MultiSelection</enum>
          </property>
         </widget>
        </item>
@@ -1987,7 +1978,7 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item rowspan="2" row="2" column="0" >
-        <widget class="Q3ListBox" name="lstHistogramLabels" >
+        <widget class="QListWidget" name="lstHistogramLabels" >
          <property name="maximumSize" >
           <size>
            <width>99999</width>
@@ -1995,7 +1986,7 @@ p, li { white-space: pre-wrap; }
           </size>
          </property>
          <property name="selectionMode" >
-          <enum>Q3ListBox::Multi</enum>
+          <enum>QAbstractItemView::MultiSelection</enum>
          </property>
         </widget>
        </item>
@@ -2016,19 +2007,6 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3ListBox</class>
-   <extends>Q3Frame</extends>
-   <header>q3listbox.h</header>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>tabBar</tabstop>
   <tabstop>cboxInvertColorMap</tabstop>

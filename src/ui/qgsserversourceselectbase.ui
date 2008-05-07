@@ -210,7 +210,7 @@
        <number>6</number>
       </property>
       <item>
-       <widget class="Q3ListView" name="lstLayers" >
+       <widget class="QTreeWidget" name="lstLayers" >
         <property name="sizePolicy" >
          <sizepolicy>
           <hsizetype>7</hsizetype>
@@ -220,15 +220,9 @@
          </sizepolicy>
         </property>
         <property name="selectionMode" >
-         <enum>Q3ListView::Multi</enum>
+         <enum>QAbstractItemView::MultiSelection</enum>
         </property>
         <property name="allColumnsShowFocus" >
-         <bool>true</bool>
-        </property>
-        <property name="showSortIndicator" >
-         <bool>true</bool>
-        </property>
-        <property name="rootIsDecorated" >
          <bool>true</bool>
         </property>
         <column>
@@ -325,13 +319,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <customwidgets>
-  <customwidget>
-   <class>Q3ListView</class>
-   <extends>Q3Frame</extends>
-   <header>q3listview.h</header>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>cmbConnections</tabstop>
   <tabstop>btnConnect</tabstop>

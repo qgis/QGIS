@@ -21,21 +21,20 @@
 #ifndef QGSNUMERICSORTLISTVIEWITEM_H
 #define QGSNUMERICSORTLISTVIEWITEM_H
 
-#include <Q3ListView>
-#include <Q3ListViewItem>
+#include <QTreeWidgetItem>
 
 /**
 
-  \brief  QListViewItem that can sort numerically (as opposed to just lexigraphically)
+  \brief  QTreeWidgetItem that can sort numerically (as opposed to just lexigraphically)
 
-  This class extends the Qt QListViewItem concept by 
-  reimplementing QListViewItem::compare to allow numeric comparisons
+  This class extends the Qt QTreeWidgetItem concept by 
+  reimplementing QTreeWidgetItem::operator< to allow numeric comparisons
 
   TODO: Make it work
 
 */
 
-class QgsNumericSortListViewItem : public Q3ListViewItem
+class QgsNumericSortTreeWidgetItem : public QTreeWidgetItem
 {
 
 //  Q_OBJECT
@@ -44,13 +43,13 @@ public:
   /**
   * Constructor.
   */
-  QgsNumericSortListViewItem ( Q3ListView * parent );
-  QgsNumericSortListViewItem ( Q3ListViewItem * parent );
+  QgsNumericSortTreeWidgetItem ( QTreeWidget * parent );
+  QgsNumericSortTreeWidgetItem ( QTreeWidgetItem * parent );
 
   //! Destructor
-  virtual ~QgsNumericSortListViewItem ();
+  virtual ~QgsNumericSortTreeWidgetItem ();
 
-  virtual int compare ( Q3ListViewItem * i, int col, bool ascending ) const;
+  virtual bool operator<(const QTreeWidgetItem &other) const;
 
 };
 

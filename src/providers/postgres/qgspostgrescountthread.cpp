@@ -78,7 +78,7 @@ void QgsPostgresCountThread::run()
   std::cout << "QgsPostgresCountThread: Started running." << std::endl;
 
   // Open another connection to the database
-  PGconn *connection = PQconnectdb((const char *) connInfo);
+  PGconn *connection = PQconnectdb(connInfo.toUtf8());
 
   // get the extents
 
@@ -91,7 +91,7 @@ void QgsPostgresCountThread::run()
 
   std::cout << "QgsPostgresCountThread: About to issue query." << std::endl;
 
-  PGresult *result = PQexec(connection, (const char *) sql);
+  PGresult *result = PQexec(connection, sql.toUtf8());
   
   std::cout << "QgsPostgresCountThread: Query completed." << std::endl;
   

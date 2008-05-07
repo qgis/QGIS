@@ -52,8 +52,6 @@ class QgsRasterLayer;
 class QgsRect;
 class QgsVectorLayer;
 
-#include <map>
-
 #include <ui_qgisappbase.h>
 #include <QMainWindow>
 #include <QAbstractSocket>
@@ -254,12 +252,6 @@ public slots:
   void options();
   //! Whats-this help slot
   void whatsThis();
-  //! Get the Menu map (key is name, value is menu id)
-  std::map<QString, int> menuMapByName();
-  //! Get the Menu map (key is menu id, value is name)
-  std::map<int, QString> menuMapById();
-  //! Populate the menu maps
-  void populateMenuMaps();
   void socketConnected();
   void socketConnectionClosed();
   void socketReadyRead();
@@ -618,10 +610,6 @@ private:
   QSplashScreen *mSplash;
   //! help viewer
   QgsHelpViewer *mHelpViewer;
-  //! menu map (key is name, value is menu id)
-  std::map<QString, int>mMenuMapByName;
-  //! menu map (key is menu id, value is name)
-  std::map<int, QString>mMenuMapById;
   //! list of recently opened/saved project files
   QStringList mRecentProjectPaths;
   //! Map composer

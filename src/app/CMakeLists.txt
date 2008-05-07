@@ -1,5 +1,11 @@
 
-# TODO: delete qgsvectorsymbologywidget.cpp and qgsvectorsymbologywidget.h from SVN
+# TODO: delete from SVN
+#   qgslinestyledialog.(cpp|h)
+#   qgslinestylewidget.(cpp|h)
+#   qgsmarkerdialog.(cpp|h)
+#   qgspatterndialog.(cpp|h)
+#   qgspointstylewidget.(cpp|h)
+#   qgsvectorsymbologywidget.(cpp|h)
 
 SET(QGIS_APP_SRCS
   main.cpp
@@ -25,8 +31,6 @@ SET(QGIS_APP_SRCS
   qgshelpviewer.cpp
   qgsidentifyresults.cpp
   qgslabeldialog.cpp
-  qgslinestyledialog.cpp
-  qgslinestylewidget.cpp
   qgsludialog.cpp
   qgsmaptooladdfeature.cpp
   qgsmaptooladdvertex.cpp
@@ -41,19 +45,16 @@ SET(QGIS_APP_SRCS
   qgsmaptoolselect.cpp
   qgsmaptoolsplitfeatures.cpp
   qgsmaptoolvertexedit.cpp
-  qgsmarkerdialog.cpp
   qgsmeasuredialog.cpp
   qgsmeasuretool.cpp
   qgsnewhttpconnection.cpp
   qgsnumericsortlistviewitem.cpp
   qgsoptions.cpp
   qgspastetransformations.cpp
-  qgspatterndialog.cpp
   qgspluginitem.cpp
   qgspluginmanager.cpp
   qgspluginmetadata.cpp
   qgspluginregistry.cpp
-  qgspointstylewidget.cpp
   qgsprojectproperties.cpp
   qgsrasterlayerproperties.cpp
   qgssearchquerybuilder.cpp
@@ -106,19 +107,14 @@ SET (QGIS_APP_MOC_HDRS
   qgshelpviewer.h
   qgsidentifyresults.h
   qgslabeldialog.h
-  qgslinestyledialog.h
-  qgslinestylewidget.h
   qgsludialog.h
   qgsmaplayerinterface.h
   qgsmaptoolidentify.h
-  qgsmarkerdialog.h
   qgsmeasuredialog.h
   qgsnewhttpconnection.h
   qgsoptions.h
   qgspastetransformations.h
-  qgspatterndialog.h
   qgspluginmanager.h
-  qgspointstylewidget.h
   qgsprojectproperties.h
   qgsrasterlayerproperties.h
   qgssearchquerybuilder.h
@@ -232,19 +228,19 @@ TARGET_LINK_LIBRARIES(qgis
   ${QT_QTCORE_LIBRARY} 
   ${QT_QTGUI_LIBRARY} 
   ${QT_QTXML_LIBRARY} 
-  #${QT_QTSQL_LIBRARY} 
   ${QT_QTSVG_LIBRARY} 
   ${QT_QTNETWORK_LIBRARY} 
   #should only be needed for win
   ${QT_QTMAIN_LIBRARY} 
-  ${QT_QT3SUPPORT_LIBRARY} 
   qgis_core
   qgis_gui
   )
-IF (MSVC)
-  #This resolves issues like cant find winmain etc
-  TARGET_LINK_LIBRARIES(qgis qtmain)
-ENDIF (MSVC)
+IF (${QTVERSION} STRLESS "4.3.0")
+  TARGET_LINK_LIBRARIES(qgis ${QT_QT3SUPPORT_LIBRARY} )
+  IF (APPLE)
+    TARGET_LINK_LIBRARIES(qgis ${QT_QTSQL_LIBRARY} )
+  ENDIF (APPLE)
+ENDIF (${QTVERSION} STRLESS "4.3.0")
 
 IF (APPLE)
   TARGET_LINK_LIBRARIES(qgis ${APP_SERVICES_LIBRARY} )

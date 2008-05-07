@@ -147,8 +147,8 @@ void QgsCoordinateTransform::initialise()
   }
 
   // init the projections (destination and source)
-  mDestinationProjection = pj_init_plus(mDestSRS.proj4String());
-  mSourceProjection = pj_init_plus(mSourceSRS.proj4String());
+  mDestinationProjection = pj_init_plus(mDestSRS.proj4String().toUtf8());
+  mSourceProjection = pj_init_plus(mSourceSRS.proj4String().toUtf8());
 
   mInitialisedFlag = true;
   if ( mDestinationProjection == NULL )
@@ -561,7 +561,7 @@ const char *finder( const char *name )
     proj = QApplication::applicationDirPath() 
            + "/share/proj/" + QString(name);
 #endif
-    return proj.ascii(); 
+    return proj.toUtf8(); 
 }
 
 void QgsCoordinateTransform::setFinder()

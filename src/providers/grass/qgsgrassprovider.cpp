@@ -2335,7 +2335,7 @@ QString *QgsGrassProvider::isOrphan ( int field, int cat, int *orphan)
   if ( db_open_select_cursor(driver, &dbstr, &cursor, DB_SCROLL) != DB_OK )
   {
     db_close_database_shutdown_driver ( driver );
-    error->setAscii("Cannot query database: " + query );
+    error->append("Cannot query database: ").append(query);
     return error;
   }
   int nRecords = db_get_num_rows ( &cursor );

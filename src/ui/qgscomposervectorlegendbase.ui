@@ -134,10 +134,29 @@
     </spacer>
    </item>
    <item row="4" column="0" colspan="3" >
-    <widget class="Q3ListView" name="mLayersListView" >
+    <widget class="QTreeWidget" name="mLayersListView" >
+     <property name="selectionMode" >
+      <enum>QAbstractItemView::ExtendedSelection</enum>
+     </property>
+     <property name="rootIsDecorated" >
+      <bool>false</bool>
+     </property>
+     <property name="columnCount" >
+      <number>3</number>
+     </property>
      <column>
       <property name="text" >
-       <string>Column 1</string>
+       <string>Layers</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Group</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>ID</string>
       </property>
      </column>
     </widget>
@@ -167,14 +186,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3ListView</class>
-   <extends>Q3Frame</extends>
-   <header>q3listview.h</header>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>mTitleLineEdit</tabstop>
   <tabstop>mMapComboBox</tabstop>

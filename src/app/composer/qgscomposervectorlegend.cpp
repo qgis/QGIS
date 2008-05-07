@@ -26,10 +26,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QFontDialog>
-#include <QPainter>
-#include <Q3PopupMenu>
 #include <QGraphicsScene>
-
+#include <QHeaderView>
+#include <QMenu>
+#include <QPainter>
+#include <QTreeWidgetItem>
 
 #include <iostream>
 #include <vector>
@@ -114,21 +115,11 @@ void QgsComposerVectorLegend::init ( void )
 //    setActive(true);
 
     // Layers list view
-    mLayersListView->setColumnText(0,tr("Layers"));
-    mLayersListView->addColumn(tr("Group"));
-    mLayersListView->setSorting(-1);
-    mLayersListView->setResizeMode(Q3ListView::AllColumns);
-    mLayersListView->setSelectionMode(Q3ListView::Extended);
+//x    mLayersListView->setResizeMode(QTreeView::AllColumns);
+    mLayersListView->setColumnHidden(2, true);
 
-    mLayersPopupMenu = new Q3PopupMenu( );
-
-    mLayersPopupMenu->insertItem( tr("Combine selected layers"), this, SLOT(groupLayers()) );
-
-    connect ( mLayersListView, SIGNAL(clicked(Q3ListViewItem *)), 
-                         this, SLOT(layerChanged(Q3ListViewItem *)));
-
-    connect ( mLayersListView, SIGNAL(rightButtonClicked(Q3ListViewItem *, const QPoint &, int)), 
-                    this, SLOT( showLayersPopupMenu(Q3ListViewItem *, const QPoint &, int)) );
+    connect ( mLayersListView, SIGNAL(itemClicked(QTreeWidgetItem *, int)), 
+                         this, SLOT(layerChanged(QTreeWidgetItem *)));
 
     // Plot style
     setPlotStyle ( QgsComposition::Preview );
@@ -475,7 +466,7 @@ void QgsComposerVectorLegend::cache ( void )
     std::cout << "QgsComposerVectorLegend::cache()" << std::endl;
 
 //typical boundingRect size is 15 units wide,
-    mCachePixmap.resize ((int)QGraphicsRectItem::rect().width(), (int)QGraphicsRectItem::rect().height() );
+    mCachePixmap = QPixmap((int)QGraphicsRectItem::rect().width(), (int)QGraphicsRectItem::rect().height() );
 
 
     QPainter p(&mCachePixmap);
@@ -666,24 +657,25 @@ void QgsComposerVectorLegend::setOptions ( void )
       int nlayers = mMapCanvas->layerCount();
       for ( int i = 0; i < nlayers; i++ ) {
         QgsMapLayer *layer = mMapCanvas->getZpos(i);
-    
+
 //        if ( !layer->visible() ) continue;
         //if ( layer->type() != QgsMapLayer::VECTOR ) continue;
 
-        Q3CheckListItem *li = new Q3CheckListItem ( mLayersListView, layer->name(), Q3CheckListItem::CheckBox );
+        QTreeWidgetItem *item = new QTreeWidgetItem(mLayersListView);
+
+        item->setText(0, layer->name() );
 
         QString id = layer->getLayerID();
-        li->setText(2, id );
+        item->setText(2, id );
 
-        li->setOn ( layerOn(id) );
-    
+        item->setCheckState(0, layerOn(id) ? Qt::Checked : Qt::Unchecked);
+
         int group = layerGroup(id);
         if ( group > 0 ) {
-          li->setText(1, QString::number(group) );
+          item->setText(1, QString::number(group) );
         }
-
-        mLayersListView->insertItem ( li );
       }
+      mLayersListView->header()->resizeSections(QHeaderView::Stretch);
     }
   }
 
@@ -701,11 +693,13 @@ bool QgsComposerVectorLegend::selected( void )
     return mSelected;
 }
 
-void QgsComposerVectorLegend::showLayersPopupMenu ( Q3ListViewItem * lvi, const QPoint & pt, int )
+void QgsComposerVectorLegend::contextMenuEvent( QContextMenuEvent *event)
 {
-    std::cout << "QgsComposerVectorLegend::showLayersPopupMenu" << std::endl;
+  std::cout << "QgsComposerVectorLegend::contextMenuEvent" << std::endl;
 
-    mLayersPopupMenu->exec(pt);
+  QMenu layersPopupMenu( this);
+  layersPopupMenu.addAction( tr("Combine selected layers"), this, SLOT(groupLayers()) );
+  layersPopupMenu.exec( event->globalPos());
 }
 
 bool QgsComposerVectorLegend::layerOn ( QString id ) 
@@ -752,15 +746,14 @@ void QgsComposerVectorLegend::setLayerGroup ( QString id, int group )
   }
 }
 
-void QgsComposerVectorLegend::layerChanged ( Q3ListViewItem *lvi )
+void QgsComposerVectorLegend::layerChanged ( QTreeWidgetItem *lvi )
 {
     std::cout << "QgsComposerVectorLegend::layerChanged" << std::endl;
 
     if ( lvi == 0 ) return; 
     
     QString id = lvi->text(2);
-    Q3CheckListItem *cli = dynamic_cast <Q3CheckListItem *>(lvi);
-    setLayerOn ( id, cli->isOn() );
+    setLayerOn(id, lvi->checkState(0) == Qt::Checked);
 
     writeSettings();
 
@@ -773,18 +766,18 @@ void QgsComposerVectorLegend::groupLayers ( void )
 {
   std::cout << "QgsComposerVectorLegend::groupLayers" << std::endl;
 
-  Q3ListViewItemIterator it( mLayersListView );
+  QTreeWidgetItemIterator it( mLayersListView );
   int count = 0;
-  Q3ListViewItem *lastItem = NULL;
+  QTreeWidgetItem *lastItem = NULL;
   QString id;
-  while ( it.current() ) {
-    if ( it.current()->isSelected() ) {
-      std::cout << "selected: " << it.current()->text(0).toLocal8Bit().data() << " " << it.current()->text(2).toLocal8Bit().data() << std::endl;
+  while ( *it ) {
+    if ( (*it)->isSelected() ) {
+      std::cout << "selected: " << (*it)->text(0).toLocal8Bit().data() << " " << (*it)->text(2).toLocal8Bit().data() << std::endl;
 
-      id = it.current()->text(2);
+      id = (*it)->text(2);
       setLayerGroup ( id, mNextLayerGroup );
-      it.current()->setText(1,QString::number(mNextLayerGroup) );
-      lastItem = it.current();
+      (*it)->setText(1,QString::number(mNextLayerGroup) );
+      lastItem = *it;
       count++;
     }
     ++it;

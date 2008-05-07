@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsFillStyleWidgetBase</class>
  <widget class="QWidget" name="QgsFillStyleWidgetBase" >
   <property name="geometry" >
@@ -80,7 +77,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <tabstops>
   <tabstop>fptFillPattern</tabstop>
   <tabstop>colFillColour</tabstop>

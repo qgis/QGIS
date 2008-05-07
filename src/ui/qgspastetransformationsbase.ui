@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsPasteTransformationsBase</class>
  <widget class="QDialog" name="QgsPasteTransformationsBase" >
   <property name="geometry" >
@@ -189,7 +186,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <tabstops>
   <tabstop>sourceLayerComboBox</tabstop>
   <tabstop>destinationLayerComboBox</tabstop>

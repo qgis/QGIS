@@ -18,11 +18,10 @@
 /* $Id$ */
 
 #include "qgsprovidercountcalcevent.h"
-//Added by qt3to4:
-#include <QCustomEvent>
+#include "qgis.h"
 
 QgsProviderCountCalcEvent::QgsProviderCountCalcEvent( long numberFeatures )
-    : QCustomEvent( QGis::ProviderCountCalcEvent ),
+    : QEvent( static_cast<QEvent::Type>(QGis::ProviderCountCalcEvent) ),
       n( numberFeatures )
 {
   // NO-OP

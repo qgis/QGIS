@@ -745,7 +745,7 @@ void QgsGrassShell::printStdout()
         msg.replace ( " ", "&nbsp;" );
 
         mText->setTextFormat(Qt::RichText);
-        mText->append ( "<img src=\"" + img + "\">" + QString::fromLocal8Bit( msg ) );
+        mText->append ( "<img src=\"" + img + "\">" + msg );
         mParagraph++;
         mNewLine = true;
         mStdoutBuffer.remove ( 0, mlen );
@@ -781,7 +781,7 @@ void QgsGrassShell::printStdout()
       std::cerr << "TXT: '" << out.local8Bit().data()<< "'" << std::endl;
 #endif
 
-      insert ( QString::fromLocal8Bit( out ) );
+      insert ( out );
 
       mStdoutBuffer.remove ( 0, length );
     }

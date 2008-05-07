@@ -942,8 +942,8 @@ bool QgsProject::write()
     // even though we got an error, let's make
     // sure it's closed anyway
     imp_->file.close();         
-    throw QgsIOException(imp_->file.name() + QObject::tr(QString(" is not writeable.")
-            + QString("Please adjust permissions (if possible) and try again.")));
+    throw QgsIOException(imp_->file.name() + QObject::tr(" is not writeable.")
+            + QObject::tr("Please adjust permissions (if possible) and try again."));
     // XXX raise exception? Ok now superfluous
     return false;               
    
@@ -1116,7 +1116,7 @@ QgsProject::readListEntry(QString const & scope,
 
     if (valid)
     {
-        return value.asStringList();
+        return value.toStringList();
     }
 
     return QStringList();
