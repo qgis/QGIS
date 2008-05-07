@@ -25,6 +25,7 @@ back to QgsVectorLayer.
 #include "qgsattributeaction.h"
 
 #include <QFileDialog>
+#include <QHeaderView>
 
 
 QgsAttributeActionDialog::QgsAttributeActionDialog(QgsAttributeAction* actions,
@@ -33,8 +34,17 @@ QgsAttributeActionDialog::QgsAttributeActionDialog(QgsAttributeAction* actions,
   QWidget(parent), mActions(actions)
 {
   setupUi(this);
-  connect(attributeActionTable, SIGNAL(clicked(int,int,int,const QPoint&)),
-    this, SLOT(rowSelected(int,int,int,const QPoint&)));
+  QHeaderView *header = attributeActionTable->horizontalHeader();
+  header->setHighlightSections(false);
+  header->setStretchLastSection(true);
+  attributeActionTable->setColumnWidth(0, 100);
+  attributeActionTable->setColumnWidth(1, 230);
+#if QT_VERSION >= 0x040300
+  attributeActionTable->setCornerButtonEnabled(false);
+#endif
+
+  connect(attributeActionTable, SIGNAL(itemSelectionChanged()),
+    this, SLOT(itemSelectionChanged()));
   connect(moveUpButton, SIGNAL(clicked()), this, SLOT(moveUp()));
   connect(moveDownButton, SIGNAL(clicked()), this, SLOT(moveDown()));
   connect(removeButton, SIGNAL(clicked()), this, SLOT(remove()));
@@ -53,18 +63,8 @@ QgsAttributeActionDialog::QgsAttributeActionDialog(QgsAttributeAction* actions,
 
 void QgsAttributeActionDialog::init()
 {
-  Q3Header* header = attributeActionTable->horizontalHeader();
-  header->setLabel(0, tr("Name") );
-  header->setLabel(1, tr("Action") );
-  header->setLabel(2, tr("Capture") );
-
-  attributeActionTable->setColumnStretchable(0, true);
-  attributeActionTable->setColumnStretchable(1, true);
-  attributeActionTable->setColumnStretchable(2, true);
-
   // Start from a fresh slate.
-  for (int i = attributeActionTable->numRows()-1; i >= 0; --i)
-    attributeActionTable->removeRow(i);
+  attributeActionTable->setRowCount(0);
 
   // Populate with our actions.
   QgsAttributeAction::AttributeActions::const_iterator 
@@ -72,18 +72,19 @@ void QgsAttributeActionDialog::init()
   int i = 0;
   for (; iter != mActions->end(); ++iter, ++i)
   {
-    attributeActionTable->insertRows(i);
-    attributeActionTable->setText(i, 0, iter->name());
-    attributeActionTable->setText(i, 1, iter->action());
-    Q3CheckTableItem* cp = new Q3CheckTableItem(attributeActionTable, "");
-    cp->setEnabled(false);
-    if (iter->capture())
-      cp->setChecked(true);
-    else
-      cp->setChecked(false);
-
-    attributeActionTable->setItem(i, 2, cp);
+    insertRow(i, iter->name(), iter->action(), iter->capture());
   }
+}
+
+void QgsAttributeActionDialog::insertRow(int row, const QString &name, const QString &action, bool capture)
+{
+  attributeActionTable->insertRow(row);
+  attributeActionTable->setItem(row, 0, new QTableWidgetItem(name));
+  attributeActionTable->setItem(row, 1, new QTableWidgetItem(action));
+  QTableWidgetItem* item = new QTableWidgetItem();
+  item->setFlags(item->flags() & ~Qt::ItemIsEditable | Qt::ItemIsUserCheckable);
+  item->setCheckState(capture ? Qt::Checked : Qt::Unchecked);
+  attributeActionTable->setItem(row, 2, item);
 }
 
 void QgsAttributeActionDialog::moveUp()
@@ -91,20 +92,18 @@ void QgsAttributeActionDialog::moveUp()
   // Swap the selected row with the one above
 
   int row1 = -1, row2 = -1;
-  for (int i = 0; i < attributeActionTable->numRows(); ++i)
-    if (attributeActionTable->isRowSelected(i))
-      row1 = i;
+  QList<QTableWidgetItem *> selection = attributeActionTable->selectedItems();
+  if (!selection.isEmpty())
+  {
+    row1 = attributeActionTable->row(selection.first());
+  }
 
   if (row1 > 0)
     row2 = row1 - 1;
   
   if (row1 != -1 && row2 != -1)
   {
-    for (int i = 0; i < attributeActionTable->numSelections(); ++i)
-      attributeActionTable->removeSelection(i);
-
-    attributeActionTable->swapRows(row1, row2);
-    attributeActionTable->updateContents();
+    swapRows(row1, row2);
     // Move the selection to follow
     attributeActionTable->selectRow(row2);
   }
@@ -114,22 +113,31 @@ void QgsAttributeActionDialog::moveDown()
 {
   // Swap the selected row with the one below
   int row1 = -1, row2 = -1;
-  for (int i = 0; i < attributeActionTable->numRows(); ++i)
-    if (attributeActionTable->isRowSelected(i))
-      row1 = i;
+  QList<QTableWidgetItem *> selection = attributeActionTable->selectedItems();
+  if (!selection.isEmpty())
+  {
+    row1 = attributeActionTable->row(selection.first());
+  }
 
-  if (row1 < attributeActionTable->numRows()-1)
+  if (row1 < attributeActionTable->rowCount()-1)
     row2 = row1 + 1;
   
   if (row1 != -1 && row2 != -1)
   {
-    for (int i = 0; i < attributeActionTable->numSelections(); ++i)
-      attributeActionTable->removeSelection(i);
-
-    attributeActionTable->swapRows(row1, row2);
-    attributeActionTable->updateContents();
+    swapRows(row1, row2);
     // Move the selection to follow
     attributeActionTable->selectRow(row2);
+  }
+}
+
+void QgsAttributeActionDialog::swapRows(int row1, int row2)
+{
+  int colCount = attributeActionTable->columnCount();
+  for (int col = 0; col < colCount; col++)
+  {
+    QTableWidgetItem *item = attributeActionTable->takeItem(row1, col);
+    attributeActionTable->setItem(row1, col, attributeActionTable->takeItem(row2, col));
+    attributeActionTable->setItem(row2, col, item);
   }
 }
 
@@ -147,29 +155,16 @@ void QgsAttributeActionDialog::browse()
 
 void QgsAttributeActionDialog::remove()
 {
-  // Remove the selected row. Remember which row was selected.
-  int row = -1;
-  for (int i = 0; i < attributeActionTable->numRows(); ++i)
-    if (attributeActionTable->isRowSelected(i))
-    {
-      row = i;
-      break;
-    }
-
-  if (row != -1)
+  QList<QTableWidgetItem *> selection = attributeActionTable->selectedItems();
+  if (!selection.isEmpty())
   {
+    // Remove the selected row.
+    int row = attributeActionTable->row(selection.first());
     attributeActionTable->removeRow(row);
-    attributeActionTable->clearSelection();
 
-    // And select the row below the one that was selected or the last
-    // one, or none.
-    // Note something is not quite right here. The highlight in the
-    // QTable isn't turning on when a row is selected. Don't
-    // understand why. Needs a bit more investigation.
-    if (row < attributeActionTable->numRows())
-      attributeActionTable->selectRow(row);
-    else if (attributeActionTable->numRows() > 0)
-      attributeActionTable->selectRow(attributeActionTable->numRows()-1);
+    // And select the row below the one that was selected or the last one.
+    if (row >= attributeActionTable->rowCount()) row = attributeActionTable->rowCount() - 1;
+    attributeActionTable->selectRow(row);
   }
 }
 
@@ -177,7 +172,7 @@ void QgsAttributeActionDialog::insert()
 {
   // Add the action details as a new row in the table. 
 
-  int pos = attributeActionTable->numRows();
+  int pos = attributeActionTable->rowCount();
   insert(pos);
 }
 
@@ -190,39 +185,38 @@ void QgsAttributeActionDialog::insert(int pos)
   // given pos, don't make the new name unique (because we're
   // replacing it).
 
+  int numRows = attributeActionTable->rowCount();
   QString name;
-  if (actionName->text() == attributeActionTable->text(pos, 0))
+  if (pos < numRows && actionName->text() == attributeActionTable->item(pos, 0)->text())
     name = actionName->text();
   else
     name = uniqueName(actionName->text());
 
-  // Expand the table to have a row with index pos
-  int numRows = attributeActionTable->numRows();
   if (pos >= numRows)
-    attributeActionTable->insertRows(numRows, pos-numRows+1);
-
-  attributeActionTable->setText(pos, 0, name);
-  attributeActionTable->setText(pos, 1, actionAction->text());
-  Q3CheckTableItem* cp = new Q3CheckTableItem(attributeActionTable, "");
-  cp->setEnabled(false);
-  if (captureCB->isChecked())
-    cp->setChecked(true);
+  {
+    // Expand the table to have a row with index pos
+    insertRow(pos, name, actionAction->text(), captureCB->isChecked());
+  }
   else
-    cp->setChecked(false);
-
-  attributeActionTable->setItem(pos, 2, cp);
+  {
+    // Update existing row
+    attributeActionTable->item(pos, 0)->setText(name);
+    attributeActionTable->item(pos, 1)->setText(actionAction->text());
+    attributeActionTable->item(pos, 2)->setCheckState(
+      captureCB->isChecked() ? Qt::Checked : Qt::Unchecked);
+  }
 }
 
 void QgsAttributeActionDialog::update()
 {
   // Updates the action that is selected with the
   // action details.
-  for (int i = 0; i < attributeActionTable->numRows(); ++i)
-    if (attributeActionTable->isRowSelected(i))
-    {
-      insert(i);
-      break;
-    }
+  QList<QTableWidgetItem *> selection = attributeActionTable->selectedItems();
+  if (!selection.isEmpty())
+  {
+    int i = attributeActionTable->row(selection.first());
+    insert(i);
+  }
 }
 
 void QgsAttributeActionDialog::insertField()
@@ -243,33 +237,50 @@ void QgsAttributeActionDialog::apply()
   // Update the contents of mActions from the UI.
 
   mActions->clearActions();
-  for (int i = 0; i < attributeActionTable->numRows(); ++i)
+  for (int i = 0; i < attributeActionTable->rowCount(); ++i)
   {
-    if (!attributeActionTable->text(i, 0).isEmpty() &&
-	!attributeActionTable->text(i, 1).isEmpty())
+    const QString &name = attributeActionTable->item(i, 0)->text();
+    const QString &action = attributeActionTable->item(i, 1)->text();
+    if (!name.isEmpty() && !action.isEmpty())
     {
-      Q3CheckTableItem* cp = (Q3CheckTableItem*) (attributeActionTable->item(i, 2));
-      mActions->addAction(attributeActionTable->text(i, 0),
-			  attributeActionTable->text(i, 1),
-			  cp->isChecked());
+      QTableWidgetItem *item = attributeActionTable->item(i, 2);
+      mActions->addAction(name, action, item->checkState() == Qt::Checked);
     }
   }
 }
 
-void QgsAttributeActionDialog::rowSelected(int row, int col, int button, 
-					   const QPoint& pos)
+void QgsAttributeActionDialog::itemSelectionChanged()
+{
+  QList<QTableWidgetItem *> selection = attributeActionTable->selectedItems();
+  if (!selection.isEmpty())
+  {
+#if QT_VERSION < 0x040400
+    // Supress multiple selection and select row where mouse release occurs.
+    // Workaround for Qt 4.3 bug which allows multiple rows to be selected if
+    // the user presses the mouse in one row header and releases in another.
+    if (attributeActionTable->row(selection.first()) != attributeActionTable->row(selection.last()))
+    {
+      attributeActionTable->selectRow(attributeActionTable->currentRow());
+      selection = attributeActionTable->selectedItems();
+    }
+#endif
+    rowSelected(attributeActionTable->row(selection.first()));
+  }
+}
+
+void QgsAttributeActionDialog::rowSelected(int row)
 {
   // The user has selected a row. We take the contents of that row and
   // populate the edit section of the dialog so that they can change
   // the row if desired.
 
-  Q3CheckTableItem* cp = (Q3CheckTableItem*) (attributeActionTable->item(row, 2));
-  if ( cp )
+  QTableWidgetItem *item = attributeActionTable->item(row, 2);
+  if ( item )
   {
     // Only if a populated row was selected
-    actionName->setText(attributeActionTable->text(row, 0));
-    actionAction->setText(attributeActionTable->text(row, 1));
-    captureCB->setChecked(cp->isChecked());
+    actionName->setText(attributeActionTable->item(row, 0)->text());
+    actionAction->setText(attributeActionTable->item(row, 1)->text());
+    captureCB->setChecked(item->checkState() == Qt::Checked);
   }
 }
 
@@ -278,12 +289,12 @@ QString QgsAttributeActionDialog::uniqueName(QString name)
   // Make sure that the given name is unique, adding a numerical
   // suffix if necessary.
 
-  int pos = attributeActionTable->numRows();
+  int pos = attributeActionTable->rowCount();
   bool unique = true;
 
   for (int i = 0; i < pos; ++i)
   {
-    if (attributeActionTable->text(i, 0) == name)
+    if (attributeActionTable->item(i, 0)->text() == name)
       unique = false;
   }
 
@@ -297,7 +308,7 @@ QString QgsAttributeActionDialog::uniqueName(QString name)
       new_name = name + "_" + suffix;
       unique = true;
       for (int i = 0; i < pos; ++i)
-	if (attributeActionTable->text(i, 0) == new_name)
+	if (attributeActionTable->item(i, 0)->text() == new_name)
 	  unique = false;
       ++suffix_num;
     }
@@ -305,4 +316,3 @@ QString QgsAttributeActionDialog::uniqueName(QString name)
   }
   return name;
 }
-

@@ -23,9 +23,8 @@
 #ifndef QGSPROJECTPROPERTY_H
 #define QGSPROJECTPROPERTY_H
 
-#include <qvariant.h>
-#include <qstring.h>
-#include <q3dict.h>
+#include <QHash>
+#include <QVariant>
 
 class QDomNode;
 class QDomElement;
@@ -104,7 +103,7 @@ public:
        embedded QVariant, _value.  For QgsPropertyKey, this means returning
        the QgsPropertyValue _value that is keyed by its name, if it exists;
        i.e., QgsPropertyKey "foo" will return the property value mapped to its
-       name, "foo", in its QDict of QProperties.
+       name, "foo", in its QHash of QProperties.
 
      */
     virtual QVariant value() const = 0;
@@ -186,7 +185,7 @@ private:
 
    Can, itself, contain QgsPropertyKeys and QgsPropertyValues.
 
-   The internal QDict, mProperties, maps key names to their respective
+   The internal QHash, mProperties, maps key names to their respective
    QgsPropertyValue or next QgsPropertyKey in the key name sequence.  The key with
    the current name should contain its QgsPropertyValue.
 
@@ -203,8 +202,7 @@ public:
 
     QgsPropertyKey( QString const name = "" );
 
-    virtual ~ QgsPropertyKey()
-    { }
+    virtual ~ QgsPropertyKey();
 
     /// every key has a name
     // @{
@@ -225,16 +223,17 @@ public:
     /// add the given property key
     QgsPropertyKey * addKey( QString const & keyName )
     {
-        mProperties.replace( keyName, new QgsPropertyKey(keyName) );
+        delete mProperties.take( keyName );
+        mProperties.insert( keyName, new QgsPropertyKey(keyName) );
 
-        return dynamic_cast<QgsPropertyKey*>(mProperties.find( keyName ));
+        return dynamic_cast<QgsPropertyKey*>(mProperties.value( keyName ));
     }
 
 
     /// remove the given key
-    bool removeKey( QString const & keyName )
+    void removeKey( QString const & keyName )
     {
-        return mProperties.remove( keyName );
+        delete mProperties.take( keyName );
     }
 
     /** set the value associated with this key
@@ -242,9 +241,10 @@ public:
     */
     QgsPropertyValue * setValue( QString const & name, QVariant const & value )
     {
-        mProperties.replace( name, new QgsPropertyValue( value ) );
+        delete mProperties.take( name );
+        mProperties.insert( name, new QgsPropertyValue( value ) );
 
-        return dynamic_cast<QgsPropertyValue*>(mProperties.find( name ));
+        return dynamic_cast<QgsPropertyValue*>(mProperties.value( name ));
     }
 
     /** set the value associated with this key
@@ -298,18 +298,19 @@ public:
     virtual void clear()
     {
         mName = "";
-        mProperties.clear();
+        clearKeys();
     }
 
     /// delete any sub-nodes
     virtual void clearKeys()
     {
+        qDeleteAll(mProperties);
         mProperties.clear();
     }
 
     QgsProperty * find( QString & propertyName ) 
     {
-        return mProperties.find( propertyName );
+        return mProperties.value( propertyName );
     }
 
 private:
@@ -318,7 +319,7 @@ private:
     QString mName;
 
     /// sub-keys
-    Q3Dict < QgsProperty > mProperties;
+    QHash < QString, QgsProperty* > mProperties;
 
 }; // class QgsPropertyKey
 

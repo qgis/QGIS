@@ -17,17 +17,10 @@
 
 #include "qgsprojectproperty.h"
 
-
-#include <qdom.h>
-#include <qglobal.h>
-
-// Qt4-only includes to go here
+#include <QDomDocument>
 #include <QStringList>
 
-
 static const char * const ident_ = "$Id$";
-
-
 
 
 void QgsPropertyValue::dump( size_t tabs ) const
@@ -209,28 +202,28 @@ bool QgsPropertyValue::readXML(QDomNode & keyNode)
             break;
 
         case QVariant::Int:
-            value_ = QVariant(subkeyElement.text()).asInt();
+            value_ = QVariant(subkeyElement.text()).toInt();
 
             break;
 
         case QVariant::UInt:
-            value_ = QVariant(subkeyElement.text()).asUInt();
+            value_ = QVariant(subkeyElement.text()).toUInt();
 
             break;
 
         case QVariant::Bool:
-            value_ = QVariant(subkeyElement.text()).asBool();
+            value_ = QVariant(subkeyElement.text()).toBool();
 
             break;
 
         case QVariant::Double:
-            value_ = QVariant(subkeyElement.text()).asDouble();
+            value_ = QVariant(subkeyElement.text()).toDouble();
 
             break;
 
         // in Qt4 this is equivalent to case QVariant::ByteArray
         case QVariant::CString:
-            value_ = QVariant(subkeyElement.text()).asCString();
+            value_ = QVariant(subkeyElement.text()).toCString();
 
             break;
 
@@ -288,11 +281,11 @@ bool QgsPropertyValue::readXML(QDomNode & keyNode)
             //
             /*
               case QVariant::LongLong :
-              value_ = QVariant(subkeyElement.text()).asLongLong();
+              value_ = QVariant(subkeyElement.text()).toLongLong();
               break;
 
               case QVariant::ULongLong :
-              value_ = QVariant(subkeyElement.text()).asULongLong();
+              value_ = QVariant(subkeyElement.text()).toULongLong();
               break;
             */
         default :
@@ -324,7 +317,7 @@ bool QgsPropertyValue::writeXML( QString const & nodeName,
     // XXX Not the most elegant way to handle string lists?
     if ( QVariant::StringList == value_.type() )
     {
-        QStringList sl = value_.asStringList();
+        QStringList sl = value_.toStringList();
 
         for ( QStringList::iterator i = sl.begin();
               i != sl.end();
@@ -353,17 +346,18 @@ bool QgsPropertyValue::writeXML( QString const & nodeName,
 
 QgsPropertyKey::QgsPropertyKey( QString const name )
     : mName( name )
+{}
+
+QgsPropertyKey::~QgsPropertyKey()
 {
-    // since we own our properties, we are responsible for deleting the
-    // contents
-    mProperties.setAutoDelete(true);
+    clearKeys();
 }
 
 QVariant QgsPropertyKey::value() const
 {
     QgsProperty * foundQgsProperty;
 
-    if ( 0 == ( foundQgsProperty = mProperties.find(name()) ) )
+    if ( 0 == ( foundQgsProperty = mProperties.value(name()) ) )
     {                        // recurse down to next key
         return foundQgsProperty->value();
     } else
@@ -388,18 +382,19 @@ void QgsPropertyKey::dump( size_t tabs ) const
 
     if ( ! mProperties.isEmpty() )
     {
-        for (Q3DictIterator < QgsProperty > i(mProperties); i.current(); ++i)
+        QHashIterator < QString, QgsProperty* > i(mProperties);
+        while (i.hasNext())
         {
-            if ( i.current()->isValue() )
+            if ( i.next().value()->isValue() )
             {
                 QgsPropertyValue * propertyValue = 
-                    dynamic_cast<QgsPropertyValue*>( i.current() );
+                    dynamic_cast<QgsPropertyValue*>( i.value() );
 
                 if ( QVariant::StringList == propertyValue->value().type() )
                 {
                     qDebug("%skey: <%s>  value:", 
                            tabString.toLocal8Bit().data(), 
-                           i.currentKey().toLocal8Bit().data() );
+                           i.key().toLocal8Bit().data() );
 
                     propertyValue->dump( tabs + 1 );
                 }
@@ -407,7 +402,7 @@ void QgsPropertyKey::dump( size_t tabs ) const
                 {
                     qDebug("%skey: <%s>  value: %s", 
                            tabString.toLocal8Bit().data(), 
-                           i.currentKey().toLocal8Bit().data(), 
+                           i.key().toLocal8Bit().data(), 
                            propertyValue->value().toString().toLocal8Bit().data() );
                 }
             }
@@ -415,21 +410,21 @@ void QgsPropertyKey::dump( size_t tabs ) const
             {
                 qDebug("%skey: <%s>  subkey: <%s>", 
                        tabString.toLocal8Bit().data(), 
-                       i.currentKey().toLocal8Bit().data(),
-                       dynamic_cast<QgsPropertyKey*>(i.current())->name().toLocal8Bit().data() );
+                       i.key().toLocal8Bit().data(),
+                       dynamic_cast<QgsPropertyKey*>(i.value())->name().toLocal8Bit().data() );
 
-                i.current()->dump( tabs + 1 );
+                i.value()->dump( tabs + 1 );
             }
 
 //              qDebug("<%s>", (const char *) name().utf8());
-//              if ( i.current()->isValue() )
+//              if ( i.value()->isValue() )
 //              {
-//                  qDebug("   <%s>", (const char*) i.currentKey().utf8() );
+//                  qDebug("   <%s>", (const char*) i.key().utf8() );
 //              }
-//              i.current()->dump();
-//              if ( i.current()->isValue() )
+//              i.value()->dump();
+//              if ( i.value()->isValue() )
 //              {
-//                  qDebug("   </%s>", (const char*) i.currentKey().utf8() );
+//                  qDebug("   </%s>", (const char*) i.key().utf8() );
 //              }
 //              qDebug("</%s>", (const char *) name().utf8());
         }
@@ -453,7 +448,8 @@ bool QgsPropertyKey::readXML(QDomNode & keyNode)
             subkeys.item(i).isElement() && // and we're an element
             subkeys.item(i).toElement().hasAttribute("type")) // and we have a "type" attribute
         {                   // then we're a key value
-            mProperties.replace(subkeys.item(i).nodeName(), new QgsPropertyValue);
+            delete mProperties.take(subkeys.item(i).nodeName());
+            mProperties.insert(subkeys.item(i).nodeName(), new QgsPropertyValue);
 
             QDomNode subkey = subkeys.item(i);
 
@@ -496,9 +492,11 @@ bool QgsPropertyKey::writeXML(QString const &nodeName, QDomElement & element, QD
 
     if ( ! mProperties.isEmpty() )
     {
-        for (Q3DictIterator < QgsProperty > i(mProperties); i.current(); ++i)
+        QHashIterator < QString, QgsProperty* > i(mProperties);
+        while (i.hasNext())
         {
-            if (!i.current()->writeXML(i.currentKey(), keyElement, document))
+            i.next();
+            if (!i.value()->writeXML(i.key(), keyElement, document))
             {
                 return false;
             }
@@ -517,12 +515,13 @@ bool QgsPropertyKey::writeXML(QString const &nodeName, QDomElement & element, QD
 void QgsPropertyKey::entryList( QStringList & entries ) const
 {
     // now add any leaf nodes to the entries list
-    for (Q3DictIterator<QgsProperty> i(mProperties); i.current(); ++i)
+    QHashIterator < QString, QgsProperty* > i(mProperties);
+    while (i.hasNext())
     {
         // add any of the nodes that have just a single value
-        if (i.current()->isLeaf())
+        if (i.next().value()->isLeaf())
         {
-            entries.append(i.currentKey());
+            entries.append(i.key());
         }
     }
 } // QgsPropertyKey::entryList
@@ -532,12 +531,13 @@ void QgsPropertyKey::entryList( QStringList & entries ) const
 void QgsPropertyKey::subkeyList(QStringList & entries) const
 {
     // now add any leaf nodes to the entries list
-    for (Q3DictIterator < QgsProperty > i(mProperties); i.current(); ++i)
+    QHashIterator < QString, QgsProperty* > i(mProperties);
+    while (i.hasNext())
     {
         // add any of the nodes that have just a single value
-        if (!i.current()->isLeaf())
+        if (!i.next().value()->isLeaf())
         {
-            entries.append(i.currentKey());
+            entries.append(i.key());
         }
     }
 } // QgsPropertyKey::subkeyList
@@ -551,9 +551,9 @@ bool QgsPropertyKey::isLeaf() const
     }
     else if (1 == count())
     {
-        Q3DictIterator < QgsProperty > i(mProperties);
+        QHashIterator < QString, QgsProperty* > i(mProperties);
 
-        if (i.current() && i.current()->isValue())
+        if (i.hasNext() && i.next().value()->isValue())
         {
             return true;
         }
@@ -561,6 +561,3 @@ bool QgsPropertyKey::isLeaf() const
 
     return false;
 } // QgsPropertyKey::isLeaf
-
-
-

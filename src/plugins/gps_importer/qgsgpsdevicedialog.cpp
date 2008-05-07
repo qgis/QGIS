@@ -25,6 +25,7 @@ QgsGPSDeviceDialog::QgsGPSDeviceDialog(std::map<QString, QgsGPSDevice*>&
   
 {
   setupUi(this);
+  setAttribute(Qt::WA_DeleteOnClose);
   // Manually set the relative size of the two main parts of the
   // device dialog box. 
   QList<int> split;
@@ -183,5 +184,5 @@ void QgsGPSDeviceDialog::writeDeviceSettings() {
 
 void QgsGPSDeviceDialog::on_pbnClose_clicked()
 {
-  close(1);
+  close();
 }

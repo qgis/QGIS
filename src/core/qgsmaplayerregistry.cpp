@@ -40,7 +40,7 @@ QgsMapLayerRegistry *QgsMapLayerRegistry::instance()
 // Main class begins now...
 //
 
-QgsMapLayerRegistry::QgsMapLayerRegistry(QObject *parent, const char *name) : QObject(parent,name) 
+QgsMapLayerRegistry::QgsMapLayerRegistry(QObject *parent) : QObject(parent) 
 {
   QgsDebugMsg("QgsMapLayerRegistry created!");
   // constructor does nothing

@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsMeasureBase</class>
  <widget class="QDialog" name="QgsMeasureBase" >
   <property name="geometry" >
@@ -74,108 +71,73 @@
     </widget>
    </item>
    <item row="0" column="0" colspan="3" >
-    <widget class="Q3Table" name="mTable" >
-     <property name="resizePolicy" >
-      <enum>Q3ScrollView::Manual</enum>
+    <widget class="QTreeWidget" name="mTable" >
+     <property name="editTriggers" >
+      <set>QAbstractItemView::NoEditTriggers</set>
      </property>
-     <property name="numRows" >
-      <number>0</number>
+     <property name="rootIsDecorated" >
+      <bool>false</bool>
      </property>
-     <property name="numCols" >
+     <property name="columnCount" >
       <number>1</number>
      </property>
-     <property name="showGrid" >
-      <bool>true</bool>
-     </property>
-     <property name="readOnly" >
-      <bool>true</bool>
-     </property>
+     <column>
+      <property name="text" >
+       <string>Segments</string>
+      </property>
+     </column>
     </widget>
    </item>
    <item row="2" column="0" colspan="3" >
-    <widget class="Q3Frame" name="frame4" >
-     <property name="minimumSize" >
-      <size>
-       <width>150</width>
-       <height>0</height>
-      </size>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>4</number>
      </property>
-     <property name="frameShape" >
-      <enum>QFrame::StyledPanel</enum>
+     <property name="spacing" >
+      <number>6</number>
      </property>
-     <property name="frameShadow" >
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="lineWidth" >
-      <number>0</number>
-     </property>
-     <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>4</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item>
-       <widget class="QPushButton" name="btnHelp" >
-        <property name="text" >
-         <string>Help</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>30</width>
-          <height>26</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="mRestartButton" >
-        <property name="text" >
-         <string>New</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="mCloseButton" >
-        <property name="text" >
-         <string>Cl&amp;ose</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
+     <item>
+      <widget class="QPushButton" name="btnHelp" >
+       <property name="text" >
+        <string>Help</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>30</width>
+         <height>26</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mRestartButton" >
+       <property name="text" >
+        <string>New</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mCloseButton" >
+       <property name="text" >
+        <string>Cl&amp;ose</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3Table</class>
-   <extends>Q3Frame</extends>
-   <header>q3table.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

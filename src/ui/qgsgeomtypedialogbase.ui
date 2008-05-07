@@ -112,10 +112,18 @@
     </widget>
    </item>
    <item row="4" column="0" colspan="4" >
-    <widget class="Q3ListView" name="mAttributeView" >
+    <widget class="QTreeWidget" name="mAttributeView" >
+     <property name="rootIsDecorated" >
+      <bool>false</bool>
+     </property>
      <column>
       <property name="text" >
-       <string>Column 1</string>
+       <string>Name</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Type</string>
       </property>
      </column>
     </widget>
@@ -133,14 +141,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3ListView</class>
-   <extends>Q3Frame</extends>
-   <header>q3listview.h</header>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>mPointRadioButton</tabstop>
   <tabstop>mLineRadioButton</tabstop>

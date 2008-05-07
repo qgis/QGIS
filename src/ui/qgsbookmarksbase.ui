@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsBookmarksBase</class>
  <widget class="QDialog" name="QgsBookmarksBase" >
   <property name="geometry" >
@@ -39,7 +36,16 @@
     </spacer>
    </item>
    <item rowspan="5" row="0" column="0" >
-    <widget class="Q3ListView" name="lstBookmarks" >
+    <widget class="QTreeWidget" name="lstBookmarks" >
+     <property name="rootIsDecorated" >
+      <bool>false</bool>
+     </property>
+     <property name="sortingEnabled" >
+      <bool>true</bool>
+     </property>
+     <property name="columnCount" >
+      <number>4</number>
+     </property>
      <column>
       <property name="text" >
        <string>Name</string>
@@ -102,16 +108,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3ListView</class>
-   <extends></extends>
-   <header>q3listview.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>btnZoomTo</tabstop>
   <tabstop>btnDelete</tabstop>

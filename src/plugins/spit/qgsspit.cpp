@@ -62,7 +62,7 @@ QgsSpit::QgsSpit( QWidget *parent, Qt::WFlags fl ) : QDialog( parent, fl )
   setupUi(this);
   QPixmap icon;
   icon = QPixmap( spitIcon );
-  setIcon( icon );
+  setWindowIcon( icon );
 
   // Set up the table column headers
   tblShapefiles->setColumnCount(5);
@@ -418,7 +418,7 @@ void QgsSpit::dbConnect()
       settings.readEntry(key + "/username"),
       password );
   
-    conn = PQconnectdb( ( const char * ) uri.connInfo() );
+    conn = PQconnectdb( uri.connInfo().toUtf8() );
   }
 
   if( conn==NULL || PQstatus(conn)!=CONNECTION_OK )

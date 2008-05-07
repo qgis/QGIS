@@ -54,11 +54,16 @@ class QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDi
   void insertField();
   void apply();
   void update();
-  void rowSelected(int, int, int, const QPoint&);
+  void itemSelectionChanged();
 
  private:
- 
+
+  void insertRow(int row, const QString &name, const QString &action, bool capture);
+  void swapRows(int row1, int row2);
+
   void insert(int pos);
+
+  void rowSelected(int row);
 
   QString uniqueName(QString name);
 

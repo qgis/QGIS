@@ -26,6 +26,10 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
+#if QT_VERSION < 0x040300
+#define toPlainText() text()
+#endif
+
 
 QgsSearchQueryBuilder::QgsSearchQueryBuilder(QgsVectorLayer* layer,
                                              QWidget *parent, Qt::WFlags fl)
@@ -156,7 +160,7 @@ void QgsSearchQueryBuilder::on_btnGetAllValues_clicked()
 
 void QgsSearchQueryBuilder::on_btnTest_clicked()
 {
-  long count = countRecords(txtSQL->text());
+  long count = countRecords(txtSQL->toPlainText());
   
   // error?
   if (count == -1)
@@ -164,7 +168,7 @@ void QgsSearchQueryBuilder::on_btnTest_clicked()
 
   QString str;
   if (count)
-    str.sprintf(tr("Found %d matching features.","",count), count);
+    str.sprintf(tr("Found %d matching features.","",count).toUtf8(), count);
   else
     str = tr("No matching features found.");
   QMessageBox::information(this, tr("Search results"), str);
@@ -218,14 +222,14 @@ long QgsSearchQueryBuilder::countRecords(QString searchString)
 void QgsSearchQueryBuilder::on_btnOk_clicked()
 {
   // if user hits Ok and there is no query, skip the validation
-  if(txtSQL->text().stripWhiteSpace().length() > 0)
+  if(txtSQL->toPlainText().stripWhiteSpace().length() > 0)
   {
     accept();
     return;
   }
 
   // test the query to see if it will result in a valid layer
-  long numRecs = countRecords(txtSQL->text());
+  long numRecs = countRecords(txtSQL->toPlainText());
   if (numRecs == -1)
   {
     // error shown in countRecords
@@ -278,7 +282,7 @@ void QgsSearchQueryBuilder::on_btnLike_clicked()
 
 QString QgsSearchQueryBuilder::searchString()
 {
-  return txtSQL->text();
+  return txtSQL->toPlainText();
 }
 
 void QgsSearchQueryBuilder::setSearchString(QString searchString)

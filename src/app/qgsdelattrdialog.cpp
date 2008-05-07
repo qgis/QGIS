@@ -17,9 +17,9 @@
 
 #include "qgsdelattrdialog.h"
 #include "qgsfield.h"
-#include <Q3Header>
+#include <QHeaderView>
 
-QgsDelAttrDialog::QgsDelAttrDialog(Q3Header* header): QDialog()
+QgsDelAttrDialog::QgsDelAttrDialog(QHeaderView* header): QDialog()
 {
   setupUi(this);
   QObject::connect(mOkButton, SIGNAL(clicked(bool)), this, SLOT(accept()));
@@ -29,22 +29,21 @@ QgsDelAttrDialog::QgsDelAttrDialog(Q3Header* header): QDialog()
   if(header)
     {
       listBox2->clear();
+      QAbstractItemModel *model = header->model();
       for(int i=1;i<header->count();++i)
-	{
-	  listBox2->insertItem(header->label(i));
-	}
+      {
+        listBox2->addItem(model->headerData(i, Qt::Horizontal).toString());
+      }
     }
 }
 
 const std::list<QString>* QgsDelAttrDialog::selectedAttributes()
 {
     mSelectedItems.clear();
-    for(int i=0;i<listBox2->numRows();++i)
+    QListIterator<QListWidgetItem *> selection(listBox2->selectedItems());
+    while (selection.hasNext())
     {
-	if(listBox2->isSelected(i))
-	{
-	    mSelectedItems.push_back(listBox2->text(i));
-	}
+      mSelectedItems.push_back(selection.next()->text());
     }
     return &mSelectedItems;
 }

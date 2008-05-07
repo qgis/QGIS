@@ -73,7 +73,7 @@ void QgsImageWarper::warp(const QString& input, const QString& output,
   GDALDriverH driver = GDALGetDriverByName("GTiff");
   char **papszOptions = NULL;
   papszOptions = CSLSetNameValue(papszOptions, "INIT_DEST", "NO_DATA");
-  papszOptions = CSLSetNameValue(papszOptions, "COMPRESS", compression);
+  papszOptions = CSLSetNameValue(papszOptions, "COMPRESS", compression.toAscii());
   GDALDatasetH hDstDS = 
       GDALCreate(driver,
                  QFile::encodeName(output).constData(), newXSize, newYSize, 

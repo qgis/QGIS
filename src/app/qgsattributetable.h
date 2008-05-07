@@ -19,42 +19,45 @@
 #ifndef QGSATTRIBUTETABLE_H
 #define QGSATTRIBUTETABLE_H
 
-#include <Q3Table>
-#include <QMap>
-
-#include <map>
-#include <set>
-
-class QgsVectorLayer;
-class QgsFeature;
-class QMouseEvent;
-class QKeyEvent;
-class QAction;
-class QMenu;
-
 #include "qgsattributeaction.h"
 #include "qgsvectorlayer.h"
 
-#include <vector>
-#include <utility>
+#include <QItemDelegate>
+#include <QTableWidget>
+
+#include <set>
+
 /**
  *@author Gary E.Sherman
  */
 
-class QgsAttributeTable:public Q3Table
+class QgsAttributeTableItemDelegate: public QItemDelegate
 {
-  Q_OBJECT 
+  Q_OBJECT
 
   public:
-    QgsAttributeTable(QWidget * parent = 0, const char *name = 0);
+    QgsAttributeTableItemDelegate(const QgsFieldMap & fields, QObject * parent = 0);
+    QWidget * createEditor(QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+  private:
+    const QgsFieldMap & mFields;
+};
+
+class QgsAttributeTable:public QTableWidget
+{
+  Q_OBJECT
+
+  public:
+    QgsAttributeTable(QWidget * parent = 0);
     ~QgsAttributeTable();
 
+    void setReadOnly(bool b);
+    void setColumnReadOnly(int col, bool ro);
     /**Inserts the feature with the specified id into rowIdMap. This function has to be called (e.g. from QgsShapeFileLayer) when a row is inserted into the table*/
     void insertFeatureId(int id, int row);
     /**Selects the row which belongs to the feature with the specified id*/
     void selectRowWithId(int id);
-    /**Sorts a column. This method replaces the one from QTable to allow numeric sorting*/
-    virtual void sortColumn(int col, bool ascending=true, bool wholeRows=false);
+    /**Sorts a column. If the first entry contains a letter, sort alphanumerically, otherwise numerically.*/
+    void sortColumn(int col, bool ascending);
     /* Use this to give this class the current attribute actions,
        which are used when the user requests a popup menu */
     void setAttributeActions(const QgsAttributeAction& actions)
@@ -107,8 +110,6 @@ class QgsAttributeTable:public Q3Table
   public slots:
     void columnClicked(int col);
     void rowClicked(int row);
-    // Called when the user requests a popup menu
-    void popupMenu(int row, int col, const QPoint& pos);
     // Called when the user chooses an item on the popup menu
     void popupItemSelected(QAction * menuAction);
 
@@ -122,8 +123,6 @@ class QgsAttributeTable:public Q3Table
     bool lockKeyPressed;
     /**Search tree to find a row corresponding to a feature id*/
     QMap<int,int> rowIdMap;
-    /**Flag indicating, which sorting order should be used*/
-    bool sort_ascending;
     bool mEditable;
     /**True if table has been edited and contains uncommited changes*/
     bool mEdited;
@@ -145,6 +144,8 @@ class QgsAttributeTable:public Q3Table
     void keyReleaseEvent(QKeyEvent* ev);
     /**Method used by sortColumn (implementation of a quicksort)*/
     void qsort(int lower, int upper, int col, bool ascending, bool alphanumeric);
+    /**Called when the user requests a popup menu*/
+    void contextMenuEvent(QContextMenuEvent* event);
     /**Clears mAddedAttributes, mDeletedAttributes and mChangedValues*/
     void clearEditingStructures();
     /**Removes the column belonging to an attribute from the table
@@ -152,12 +153,10 @@ class QgsAttributeTable:public Q3Table
     void removeAttrColumn(const QString& name);
     /** puts attributes of feature to the chosen table row */
     void putFeatureInTable(int row, QgsFeature& fet);
-    void contentsMouseReleaseEvent(QMouseEvent* e);
+    void mouseReleaseEvent(QMouseEvent* e);
     /**This function compares the current selection and the selection of the last repaint. Returns true if there are differences in the selection.
      Also, mLastSelectedRows is updated*/
     bool checkSelectionChanges();
-
-    virtual QWidget *createEditor(int row, int col, bool initFromCell ) const;
 
   signals:
     /**Is emitted when a row was selected*/
@@ -170,13 +169,20 @@ class QgsAttributeTable:public Q3Table
     void featureAttributeChanged(int row, int column);
 
   private:
+    void swapRows(int row1, int row2);
+
     // Data to do with providing a popup menu of actions that
     std::vector<std::pair<QString, QString> > mActionValues;
     int mClickedOnValue;
     QMenu* mActionPopup;
     QgsAttributeAction mActions;
-    
+
+    QgsAttributeTableItemDelegate *mDelegate;
+
     QgsFieldMap mFields;
+
+    // Track previous columm for QTableView sortIndicator wrong direction workaround
+    int mPreviousSortIndicatorColumn;
 };
 
 #endif

@@ -72,9 +72,9 @@ QgsProviderRegistry::QgsProviderRegistry(QString pluginPath)
   mLibraryDirectory.setFilter( QDir::Files | QDir::NoSymLinks );
 
 #ifdef WIN32
-  mLibraryDirectory.setNameFilter( "*.dll" );
+  mLibraryDirectory.setNameFilters( QStringList("*.dll") );
 #else
-  mLibraryDirectory.setNameFilter( "*.so" );
+  mLibraryDirectory.setNameFilters( QStringList("*.so") );
 #endif
 
 #ifdef QGISDEBUG
@@ -316,7 +316,7 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
   QString lib = library(providerKey);
 
 #ifdef TESTPROVIDERLIB
-  const char *cLib = (const char *) lib;
+  const char *cLib = lib.toUtf8();
 
   // test code to help debug provider loading problems
   //  void *handle = dlopen(cLib, RTLD_LAZY);
@@ -334,7 +334,7 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
 #endif
 
   // load the data provider
-  QLibrary* myLib = new QLibrary((const char *) lib);
+  QLibrary* myLib = new QLibrary(lib);
 
 #ifdef QGISDEBUG
   QgsDebugMsg("QgsProviderRegistry::getRasterProvider: Library name is " + myLib->library());

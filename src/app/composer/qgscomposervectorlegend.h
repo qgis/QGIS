@@ -44,20 +44,14 @@
 #include "ui_qgscomposervectorlegendbase.h"
 #include "qgscomposeritem.h"
 
-#include <QAbstractGraphicsShapeItem>
+#include <QGraphicsRectItem>
 #include <QPen>
-#include <QPixmap>
-#include <map>
 
 class QgsComposition;
 class QgsMapCanvas;
 class QDomNode;
 class QDomDocument;
-class QFont;
-class QPainter;
-class QPen;
-class Q3PopupMenu;
-class QRect;
+class QTreeWidgetItem;
 
 /** \class QgsComposerVectorLegend 
  *  \brief Object representing map window. 
@@ -149,17 +143,18 @@ public slots:
     // Called when map was changed
     void mapChanged ( int id );
 
-    // Show popup menu
-    void showLayersPopupMenu ( Q3ListViewItem * lvi, const QPoint & pt, int );
-
     // Layer status changed
-    void layerChanged ( Q3ListViewItem *lvi );
+    void layerChanged ( QTreeWidgetItem *lvi );
 
     // Combine selected layers
     void groupLayers( void );
 
     // Frame settings changed
     void on_mFrameCheckBox_stateChanged ( int i );
+
+protected:
+    // Show popup menu
+    void contextMenuEvent ( QContextMenuEvent * event );
 
 private:
     // Pointer to composition
@@ -213,9 +208,6 @@ private:
 
     /** \brief new layer group id */
     int mNextLayerGroup;
-
-    /** \brief Layers list popup menu */
-    Q3PopupMenu *mLayersPopupMenu;
 
     /** \brief Draw frame  */
     bool mFrame;

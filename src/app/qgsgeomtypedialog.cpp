@@ -22,25 +22,21 @@
 QgsGeomTypeDialog::QgsGeomTypeDialog(QWidget *parent, Qt::WFlags fl)
 : QDialog(parent, fl)
 {
-    setupUi(this);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  setupUi(this);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
-    mPointRadioButton->setChecked(true);
-    mAttributeView->removeColumn(0);
-    mAttributeView->addColumn(tr("Name"));
-    mAttributeView->addColumn(tr("Type"));
-    mFileFormatComboBox->insertItem("ESRI Shapefile");
-    /*mFileFormatComboBox->insertItem("Comma Separated Value");
-    mFileFormatComboBox->insertItem("GML");
-    mFileFormatComboBox->insertItem("Mapinfo File");*/
-    mOkButton = buttonBox->button(QDialogButtonBox::Ok);
-	mOkButton->setEnabled(false);
+  mPointRadioButton->setChecked(true);
+  mFileFormatComboBox->insertItem("ESRI Shapefile");
+  /*mFileFormatComboBox->insertItem("Comma Separated Value");
+  mFileFormatComboBox->insertItem("GML");
+  mFileFormatComboBox->insertItem("Mapinfo File");*/
+  mOkButton = buttonBox->button(QDialogButtonBox::Ok);
+  mOkButton->setEnabled(false);
 }
 
 QgsGeomTypeDialog::~QgsGeomTypeDialog()
 {
-
 }
 
 QGis::WKBTYPE QgsGeomTypeDialog::selectedType() const
@@ -62,29 +58,28 @@ QGis::WKBTYPE QgsGeomTypeDialog::selectedType() const
 
 void QgsGeomTypeDialog::on_mAddAttributeButton_clicked()
 {
-    std::list<QString> types;
-    types.push_back("Real");
-    types.push_back("Integer");
-    types.push_back("String");
-    QgsAddAttrDialog d(types, this);
-    if(d.exec()==QDialog::Accepted)
-    {
-      new Q3ListViewItem(mAttributeView, d.name(), d.type());
-    }
-    if(mAttributeView->childCount()>0)
-    {
-	mOkButton->setEnabled(true);
-    }
+  std::list<QString> types;
+  types.push_back("Real");
+  types.push_back("Integer");
+  types.push_back("String");
+  QgsAddAttrDialog d(types, this);
+  if(d.exec()==QDialog::Accepted)
+  {
+    mAttributeView->addTopLevelItem(new QTreeWidgetItem(QStringList() << d.name() << d.type()));
+  }
+  if(mAttributeView->topLevelItemCount()>0)
+  {
+    mOkButton->setEnabled(true);
+  }
 }
 
 void QgsGeomTypeDialog::on_mRemoveAttributeButton_clicked()
 {
-    delete(mAttributeView->currentItem());
-    if(mAttributeView->childCount()==0)
-    {
-	mOkButton->setEnabled(false);	
-    }
-    
+  delete(mAttributeView->currentItem());
+  if(mAttributeView->topLevelItemCount()==0)
+  {
+    mOkButton->setEnabled(false);	
+  }
 }
 
 void QgsGeomTypeDialog::on_buttonBox_helpRequested()
@@ -94,19 +89,19 @@ void QgsGeomTypeDialog::on_buttonBox_helpRequested()
 
 void QgsGeomTypeDialog::attributes(std::list<std::pair<QString, QString> >& at) const
 {
-    Q3ListViewItemIterator it(mAttributeView);
-    while ( it.current() ) 
-    {
-	Q3ListViewItem *item = it.current();
-	at.push_back(std::make_pair(item->text(0), item->text(1)));
+  QTreeWidgetItemIterator it(mAttributeView);
+  while ( *it ) 
+  {
+    QTreeWidgetItem *item = *it;
+    at.push_back(std::make_pair(item->text(0), item->text(1)));
 #ifdef QGISDEBUG
-	qWarning(("appending "+item->text(0)+"//"+item->text(1)).toLocal8Bit().data());
+    qWarning(("appending "+item->text(0)+"//"+item->text(1)).toLocal8Bit().data());
 #endif	
-	++it;
-    }
+    ++it;
+  }
 }
 
 QString QgsGeomTypeDialog::selectedFileFormat() const
 {
-    return mFileFormatComboBox->currentText();
+  return mFileFormatComboBox->currentText();
 }

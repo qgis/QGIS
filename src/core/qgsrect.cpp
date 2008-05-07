@@ -231,7 +231,7 @@ QString QgsRect::asPolygon() const
    QTextOStream foo( &rep );
 
    foo.precision(8);
-   foo.setf(QTextStream::fixed);
+   foo.setRealNumberNotation(QTextStream::FixedNotation);
    // NOTE: a polygon isn't a polygon unless its closed. In the case of 
    //       a rectangle, that means 5 points (last == first)
    foo <<  xmin << " " <<  ymin << ", " 

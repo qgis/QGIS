@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>457</width>
-    <height>422</height>
+    <height>424</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -200,12 +200,10 @@
         </widget>
        </item>
        <item row="1" column="0" colspan="2" >
-        <widget class="Q3IconView" name="iconView" >
-         <item>
-          <property name="text" >
-           <string>New Item</string>
-          </property>
-         </item>
+        <widget class="QListView" name="iconView" >
+         <property name="viewMode" >
+          <enum>QListView::IconMode</enum>
+         </property>
         </widget>
        </item>
       </layout>
@@ -283,13 +281,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <customwidgets>
-  <customwidget>
-   <class>Q3IconView</class>
-   <extends>Q3Frame</extends>
-   <header>q3iconview.h</header>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="northarrow_plugin.qrc" />
  </resources>

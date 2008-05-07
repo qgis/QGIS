@@ -16,10 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 #include <iostream>
-#include <qgsapplication.h>
-#include <qstring.h>
+#include <QLocale>
 #include <QSettings>
-#include <QTextCodec>
 #include <QTranslator>
 #include "qgshelpserver.h"
 #include "qgshelpviewer.h"
@@ -49,7 +47,7 @@ int main( int argc, char ** argv )
   QString i18nPath = QgsApplication::i18nPath();
   if (myTranslationCode.isEmpty())
   {
-    myTranslationCode = QTextCodec::locale();
+    myTranslationCode = QLocale::system().name();
   }
 #ifdef QGISDEBUG
   std::cout << "Setting translation to "

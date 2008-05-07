@@ -209,12 +209,11 @@ bool QgsServerSourceSelect::populateLayerList(QgsWmsProvider* wmsProvider)
 
     layerAndStyleCount++;
 
-    QgsNumericSortListViewItem *lItem = new QgsNumericSortListViewItem(lstLayers);
+    QgsNumericSortTreeWidgetItem *lItem = new QgsNumericSortTreeWidgetItem(lstLayers);
     lItem->setText(0, QString::number(layerAndStyleCount));
     lItem->setText(1, layer->name.simplifyWhiteSpace());
     lItem->setText(2, layer->title.simplifyWhiteSpace());
     lItem->setText(3, layer->abstract.simplifyWhiteSpace());
-    lstLayers->insertItem(lItem);
 
     // Also insert the styles
     // Layer Styles
@@ -226,20 +225,18 @@ bool QgsServerSourceSelect::populateLayerList(QgsWmsProvider* wmsProvider)
 
       layerAndStyleCount++;
 
-      QgsNumericSortListViewItem *lItem2 = new QgsNumericSortListViewItem(lItem);
+      QgsNumericSortTreeWidgetItem *lItem2 = new QgsNumericSortTreeWidgetItem(lItem);
       lItem2->setText(0, QString::number(layerAndStyleCount));
       lItem2->setText(1, layer->style[j].name.simplifyWhiteSpace());
       lItem2->setText(2, layer->style[j].title.simplifyWhiteSpace());
       lItem2->setText(3, layer->style[j].abstract.simplifyWhiteSpace());
-
-      lItem->insertItem(lItem2);
 
     }
 
   }
 
   // If we got some layers, let the user add them to the map
-  if (lstLayers->childCount() > 0)
+  if (lstLayers->topLevelItemCount() > 0)
   {
     btnAdd->setEnabled(TRUE);
   }
@@ -518,7 +515,7 @@ void QgsServerSourceSelect::on_btnChangeSpatialRefSys_clicked()
  * 2. Ensure that only one style is selected per layer.
  *    If more than one is found, the most recently selected style wins.
  */
-void QgsServerSourceSelect::on_lstLayers_selectionChanged()
+void QgsServerSourceSelect::on_lstLayers_itemSelectionChanged()
 {
   QString layerName = "";
 
@@ -528,10 +525,10 @@ void QgsServerSourceSelect::on_lstLayers_selectionChanged()
   std::map<QString, QString> newSelectedStyleIdForLayer;
 
   // Iterate through the layers
-  Q3ListViewItemIterator it( lstLayers );
-  while ( it.current() )
+  QTreeWidgetItemIterator it( lstLayers );
+  while ( *it )
   {
-    Q3ListViewItem *item = it.current();
+    QTreeWidgetItem *item = *it;
 
     // save the name of the layer (in case only one of its styles was
     // selected)
@@ -564,7 +561,7 @@ void QgsServerSourceSelect::on_lstLayers_selectionChanged()
           )
       {
         // Remove old style selection
-        lstLayers->findItem(m_selectedStyleIdForLayer[layerName], 0)->setSelected(FALSE);
+        lstLayers->findItems(m_selectedStyleIdForLayer[layerName], 0).first()->setSelected(FALSE);
       }
 
 #ifdef QGISDEBUG
@@ -599,7 +596,7 @@ void QgsServerSourceSelect::on_lstLayers_selectionChanged()
         
         if (parts.at(0) == "EPSG")
         {
-          long epsg = atol(parts.at(1));
+          long epsg = atol(parts.at(1).toUtf8());
           if (epsg == m_Epsg)
           {
             isThere = true;

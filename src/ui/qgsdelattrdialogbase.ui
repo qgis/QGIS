@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsDelAttrDialogBase</class>
  <widget class="QDialog" name="QgsDelAttrDialogBase" >
   <property name="geometry" >
@@ -79,25 +76,15 @@
     </layout>
    </item>
    <item row="0" column="0" >
-    <widget class="Q3ListBox" name="listBox2" >
+    <widget class="QListWidget" name="listBox2" >
      <property name="selectionMode" >
-      <enum>Q3ListBox::Multi</enum>
+      <enum>QAbstractItemView::MultiSelection</enum>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3ListBox</class>
-   <extends></extends>
-   <header>q3listbox.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

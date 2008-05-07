@@ -32,30 +32,19 @@ QgsMeasureDialog::QgsMeasureDialog(QgsMeasureTool* tool, Qt::WFlags f)
   : QDialog(tool->canvas()->topLevelWidget(), f), mTool(tool)
 {
     setupUi(this);
-#ifdef Q_WS_MAC
-    // Mac buttons are larger than X11 and require a larger minimum width to be drawn correctly
-    frame4->setMinimumSize(QSize(224, 0));
-#endif
     connect(mRestartButton, SIGNAL(clicked()), this, SLOT(restart()));
     connect(mCloseButton, SIGNAL(clicked()), this, SLOT(close()));
 
     mMeasureArea = tool->measureArea();
     mTotal = 0.;
 
-    mTable->setLeftMargin(0); // hide row labels
-
     // Set one cell row where to update current distance
     // If measuring area, the table doesn't get shown
-    mTable->setNumRows(1);
-    mTable->setText(0, 0, QString::number(0, 'f',1));
+    QTreeWidgetItem* item = new QTreeWidgetItem(QStringList(QString::number(0, 'f', 1)));
+    item->setTextAlignment(0, Qt::AlignRight);
+    mTable->addTopLevelItem(item);
 
-    //mTable->horizontalHeader()->setLabel( 0, tr("Segments (in meters)") );
-    //mTable->horizontalHeader()->setLabel( 1, tr("Total") );
-    //mTable->horizontalHeader()->setLabel( 2, tr("Azimuth") );
-
-    mTable->setColumnStretchable ( 0, true );
-    //mTable->setColumnStretchable ( 1, true );
-    //mTable->setColumnStretchable ( 2, true );
+    //mTable->setHeaderLabels(QStringList() << tr("Segments (in meters)") << tr("Total") << tr("Azimuth") );
 
     updateUi();
 }
@@ -67,8 +56,10 @@ void QgsMeasureDialog::restart()
   
     // Set one cell row where to update current distance
     // If measuring area, the table doesn't get shown
-    mTable->setNumRows(1);
-    mTable->setText(0, 0, QString::number(0, 'f',1));
+    mTable->clear();
+    QTreeWidgetItem* item = new QTreeWidgetItem(QStringList(QString::number(0, 'f', 1)));
+    item->setTextAlignment(0, Qt::AlignRight);
+    mTable->addTopLevelItem(item);
     mTotal = 0.;
     
     updateUi();
@@ -105,8 +96,8 @@ void QgsMeasureDialog::mouseMove(QgsPoint &point)
     QgsPoint p1 = tmpPoints[last], p2 = tmpPoints[last+1];
 
     double d = mTool->canvas()->mapRender()->distArea()->measureLine(p1,p2);
-    //mTable->setText(last, 0, QString::number(d, 'f',1));
-    mTable->setText(last, 0, QLocale::system().toString(d, 'f', 2));
+    QTreeWidgetItem *item = mTable->topLevelItem(mTable->topLevelItemCount()-1);
+    item->setText(0, QLocale::system().toString(d, 'f', 2));
     editTotal->setText(formatDistance(mTotal + d));
   }
 }
@@ -129,14 +120,14 @@ void QgsMeasureDialog::addPoint(QgsPoint &point)
             
       mTotal += d;
       editTotal->setText(formatDistance(mTotal));
-	
 
-      int row = numPoints-2;
-      mTable->setText(row, 0, QLocale::system().toString(d, 'f', 2));
-      mTable->setNumRows ( numPoints );
-      
-      mTable->setText(row + 1, 0, QLocale::system().toString(0.0, 'f', 2));
-      mTable->ensureCellVisible(row + 1,0);
+      QTreeWidgetItem *item = mTable->topLevelItem(mTable->topLevelItemCount()-1);
+      item->setText(0, QLocale::system().toString(d, 'f', 2));
+
+      item = new QTreeWidgetItem(QStringList(QLocale::system().toString(0.0, 'f', 2)));
+      item->setTextAlignment(0, Qt::AlignRight);
+      mTable->addTopLevelItem(item);
+      mTable->scrollToItem(item);
     }
 }
 
@@ -203,16 +194,16 @@ void QgsMeasureDialog::updateUi()
   switch (myMapUnits)
   {
     case QGis::METERS: 
-      mTable->horizontalHeader()->setLabel( 0, tr("Segments (in meters)") );
+      mTable->setHeaderLabels( QStringList( tr("Segments (in meters)") ) );
       break;
     case QGis::FEET:
-      mTable->horizontalHeader()->setLabel( 0, tr("Segments (in feet)") );
+      mTable->setHeaderLabels( QStringList( tr("Segments (in feet)") ) );
       break;
     case QGis::DEGREES:
-      mTable->horizontalHeader()->setLabel( 0, tr("Segments (in degrees)") );
+      mTable->setHeaderLabels( QStringList( tr("Segments (in degrees)") ) );
       break;
     case QGis::UNKNOWN:
-      mTable->horizontalHeader()->setLabel( 0, tr("Segments") );
+      mTable->setHeaderLabels( QStringList( tr("Segments") ) );
   };
 
   if (mMeasureArea)

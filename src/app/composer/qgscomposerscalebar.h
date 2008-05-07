@@ -19,7 +19,6 @@
 #include "ui_qgscomposerscalebarbase.h"
 #include "qgscomposeritem.h"
 #include <QAbstractGraphicsShapeItem>
-#include <Q3PointArray>
 #include <QRect>
 #include <QPen>
 

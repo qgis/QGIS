@@ -49,12 +49,11 @@
 const char * const ident = 
 "$Id$";
 
-// Constant that signals property not used.
-const QString QgsRasterLayerProperties::QSTRING_NOT_SET = QT_TR_NOOP("Not Set");
-
 QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *parent, Qt::WFlags fl)
   : QDialog(parent, fl), 
-mRasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
+  mRasterLayer( dynamic_cast<QgsRasterLayer*>(lyr)),
+  // Constant that signals property not used.
+  TRSTRING_NOT_SET( tr("Not Set"))
 {
   ignoreSpinBoxEvent = false; //Short circuit signal loop between min max field and stdDev spin box
 
@@ -164,16 +163,16 @@ mRasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
     cboGreen->addItem(tr("Blue"));
     cboBlue->addItem(tr("Blue"));
 
-    cboRed->addItem(tr(QSTRING_NOT_SET));
-    cboGreen->addItem(tr(QSTRING_NOT_SET));
-    cboBlue->addItem(tr(QSTRING_NOT_SET));
+    cboRed->addItem(TRSTRING_NOT_SET);
+    cboGreen->addItem(TRSTRING_NOT_SET);
+    cboBlue->addItem(TRSTRING_NOT_SET);
 
     cboGray->addItem(tr("Red"));
     cboGray->addItem(tr("Green"));
     cboGray->addItem(tr("Blue"));
-    cboGray->addItem(tr(QSTRING_NOT_SET));
+    cboGray->addItem(TRSTRING_NOT_SET);
 
-    lstHistogramLabels->insertItem(tr("Palette"));
+    lstHistogramLabels->addItem(tr("Palette"));
   }
   else                   // all other layer types use band name entries only
   {
@@ -238,7 +237,7 @@ mRasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
       {
         myPixmap.fill( Qt::gray );
       }
-      lstHistogramLabels->insertItem(myPixmap,myRasterBandNameQString);
+      lstHistogramLabels->addItem(new QListWidgetItem( myPixmap, myRasterBandNameQString));
       mGradientHeight = pixHistogram->height() / 2;
       mGradientWidth = pixHistogram->width() /2;
       //keep a list of band names for later use
@@ -251,8 +250,8 @@ mRasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
         myIteratorInt <= myBandCountInt;
         ++myIteratorInt)
     {
-      Q3ListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
-      lstHistogramLabels->setSelected( myItem,true);
+      QListWidgetItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
+      myItem->setSelected(true);
     }
 
     for (QStringList::Iterator myIterator = myBandNameList.begin(); 
@@ -271,14 +270,14 @@ mRasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
       cboBlue->addItem(myQString);
     }
 
-    cboRed->addItem(tr(QSTRING_NOT_SET));
-    cboGreen->addItem(tr(QSTRING_NOT_SET));
-    cboBlue->addItem(tr(QSTRING_NOT_SET));
-    cboGray->addItem(tr(QSTRING_NOT_SET));
+    cboRed->addItem(TRSTRING_NOT_SET);
+    cboGreen->addItem(TRSTRING_NOT_SET);
+    cboBlue->addItem(TRSTRING_NOT_SET);
+    cboGray->addItem(TRSTRING_NOT_SET);
   }
 
-  cboxTransparencyBand->addItem(tr(QSTRING_NOT_SET));
-  cboxTransparencyLayer->addItem(tr(QSTRING_NOT_SET));
+  cboxTransparencyBand->addItem(TRSTRING_NOT_SET);
+  cboxTransparencyLayer->addItem(TRSTRING_NOT_SET);
   QMap<QString, QgsMapLayer *> myLayers = QgsMapLayerRegistry::instance()->mapLayers();
   QMap<QString, QgsMapLayer *>::iterator it;
   for(it = myLayers.begin(); it != myLayers.end(); it++)
@@ -313,15 +312,15 @@ mRasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
     {
       if ((*myRasterPyramidIterator).existsFlag==true)
       {
-        lbxPyramidResolutions->insertItem(myPyramidPixmap,
+        lbxPyramidResolutions->addItem(new QListWidgetItem(myPyramidPixmap,
             QString::number((*myRasterPyramidIterator).xDim) + QString(" x ") + 
-            QString::number((*myRasterPyramidIterator).yDim)); 
+            QString::number((*myRasterPyramidIterator).yDim))); 
       }
       else
       {
-        lbxPyramidResolutions->insertItem(myNoPyramidPixmap,
+        lbxPyramidResolutions->addItem(new QListWidgetItem(myNoPyramidPixmap,
             QString::number((*myRasterPyramidIterator).xDim) + QString(" x ") + 
-            QString::number((*myRasterPyramidIterator).yDim)); 
+            QString::number((*myRasterPyramidIterator).yDim))); 
       }
     }
   }
@@ -642,17 +641,17 @@ void QgsRasterLayerProperties::sync()
        QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR != mRasterLayer->getDrawingStyle() &&
        QgsRasterLayer::PALETTED_MULTI_BAND_COLOR != mRasterLayer->getDrawingStyle())
     {
-      if(mRasterLayer->getRedBandName() != tr(QSTRING_NOT_SET))
+      if(mRasterLayer->getRedBandName() != TRSTRING_NOT_SET)
       {
         leRedMin->setText(QString::number(mRasterLayer->getMinimumValue(mRasterLayer->getRedBandName())));
         leRedMax->setText(QString::number(mRasterLayer->getMaximumValue(mRasterLayer->getRedBandName())));
       }
-      if(mRasterLayer->getGreenBandName() != tr(QSTRING_NOT_SET))
+      if(mRasterLayer->getGreenBandName() != TRSTRING_NOT_SET)
       {
         leGreenMin->setText(QString::number(mRasterLayer->getMinimumValue(mRasterLayer->getGreenBandName())));
         leGreenMax->setText(QString::number(mRasterLayer->getMaximumValue(mRasterLayer->getGreenBandName())));
       }
-      if(mRasterLayer->getBlueBandName() != tr(QSTRING_NOT_SET))
+      if(mRasterLayer->getBlueBandName() != TRSTRING_NOT_SET)
       {
         leBlueMin->setText(QString::number(mRasterLayer->getMinimumValue(mRasterLayer->getBlueBandName())));
         leBlueMax->setText(QString::number(mRasterLayer->getMaximumValue(mRasterLayer->getBlueBandName())));
@@ -679,7 +678,7 @@ void QgsRasterLayerProperties::sync()
        QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR != mRasterLayer->getDrawingStyle() &&
        QgsRasterLayer::PALETTED_MULTI_BAND_COLOR != mRasterLayer->getDrawingStyle())
     {
-      if(mRasterLayer->getGrayBandName() != tr(QSTRING_NOT_SET))
+      if(mRasterLayer->getGrayBandName() != TRSTRING_NOT_SET)
       {
         leGrayMin->setText(QString::number(mRasterLayer->getMinimumValue(mRasterLayer->getGrayBandName())));
         leGrayMax->setText(QString::number(mRasterLayer->getMaximumValue(mRasterLayer->getGrayBandName())));
@@ -755,7 +754,7 @@ void QgsRasterLayerProperties::sync()
   }
   else
   {
-    cboxTransparencyLayer->setCurrentIndex(cboxTransparencyLayer->findText(tr(QSTRING_NOT_SET)));
+    cboxTransparencyLayer->setCurrentIndex(cboxTransparencyLayer->findText(TRSTRING_NOT_SET));
   }
 
   myIndex = cboxTransparencyBand->findText(mRasterLayer->getTransparentBandName());
@@ -765,7 +764,7 @@ void QgsRasterLayerProperties::sync()
   }
   else
   {
-    cboxTransparencyBand->setCurrentIndex(cboxTransparencyBand->findText(tr(QSTRING_NOT_SET)));
+    cboxTransparencyBand->setCurrentIndex(cboxTransparencyBand->findText(TRSTRING_NOT_SET));
   }
   //add current NoDataValue to NoDataValue line edit 
   if(mRasterLayer->isNoDataValueValid())
@@ -1134,17 +1133,17 @@ void QgsRasterLayerProperties::apply()
     //Set min max based on user defined values if all are set and stdDev is 0.0
     if(rbtnThreeBandMinMax->isEnabled() && rbtnThreeBandMinMax->isChecked() && validUserDefinedMinMax())
     {
-      if(mRasterLayer->getRedBandName() != tr(QSTRING_NOT_SET))
+      if(mRasterLayer->getRedBandName() != TRSTRING_NOT_SET)
       {
         mRasterLayer->setMinimumValue(cboRed->currentText(), leRedMin->text().toDouble(), false);
         mRasterLayer->setMaximumValue(cboRed->currentText(), leRedMax->text().toDouble());
       }
-      if(mRasterLayer->getGreenBandName() != tr(QSTRING_NOT_SET))
+      if(mRasterLayer->getGreenBandName() != TRSTRING_NOT_SET)
       {
         mRasterLayer->setMinimumValue(cboGreen->currentText(), leGreenMin->text().toDouble(), false);
         mRasterLayer->setMaximumValue(cboGreen->currentText(), leGreenMax->text().toDouble());
       }
-      if(mRasterLayer->getBlueBandName() != tr(QSTRING_NOT_SET))
+      if(mRasterLayer->getBlueBandName() != TRSTRING_NOT_SET)
       {
         mRasterLayer->setMinimumValue(cboBlue->currentText(), leBlueMin->text().toDouble(), false);
         mRasterLayer->setMaximumValue(cboBlue->currentText(), leBlueMax->text().toDouble());
@@ -1168,7 +1167,7 @@ void QgsRasterLayerProperties::apply()
     //Set min max based on user defined values if all are set and stdDev is 0.0
     if(rbtnSingleBandMinMax->isEnabled() && rbtnSingleBandMinMax->isChecked() && validUserDefinedMinMax())
     {
-      if(mRasterLayer->getGrayBandName() != tr(QSTRING_NOT_SET))
+      if(mRasterLayer->getGrayBandName() != TRSTRING_NOT_SET)
       {
         mRasterLayer->setMinimumValue(cboGray->currentText(), leGrayMin->text().toDouble(), false);
         mRasterLayer->setMaximumValue(cboGray->currentText(), leGrayMax->text().toDouble());
@@ -1486,17 +1485,17 @@ void QgsRasterLayerProperties::apply()
 
       if(rbtnThreeBandMinMax->isEnabled())
       {
-        if(mRasterLayer->getRedBandName() != tr(QSTRING_NOT_SET))
+        if(mRasterLayer->getRedBandName() != TRSTRING_NOT_SET)
         {
           leRedMin->setText(QString::number(mRasterLayer->getMinimumValue(mRasterLayer->getRedBandName())));
           leRedMax->setText(QString::number(mRasterLayer->getMaximumValue(mRasterLayer->getRedBandName())));
         } 
-        if(mRasterLayer->getGreenBandName() != tr(QSTRING_NOT_SET))
+        if(mRasterLayer->getGreenBandName() != TRSTRING_NOT_SET)
         {
           leGreenMin->setText(QString::number(mRasterLayer->getMinimumValue(mRasterLayer->getGreenBandName())));
           leGreenMax->setText(QString::number(mRasterLayer->getMaximumValue(mRasterLayer->getGreenBandName())));
         }
-        if(mRasterLayer->getBlueBandName() != tr(QSTRING_NOT_SET))
+        if(mRasterLayer->getBlueBandName() != TRSTRING_NOT_SET)
         {
           leBlueMin->setText(QString::number(mRasterLayer->getMinimumValue(mRasterLayer->getBlueBandName())));
           leBlueMax->setText(QString::number(mRasterLayer->getMaximumValue(mRasterLayer->getBlueBandName())));
@@ -1512,7 +1511,7 @@ void QgsRasterLayerProperties::apply()
 
       if(rbtnSingleBandMinMax->isEnabled())
       {
-        if(mRasterLayer->getGrayBandName() != tr(QSTRING_NOT_SET))
+        if(mRasterLayer->getGrayBandName() != TRSTRING_NOT_SET)
         {
           leGrayMin->setText(QString::number(mRasterLayer->getMinimumValue(mRasterLayer->getGrayBandName())));
           leGrayMax->setText(QString::number(mRasterLayer->getMaximumValue(mRasterLayer->getGrayBandName())));
@@ -1551,7 +1550,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   QgsRasterLayer::RasterPyramidList myPyramidList = mRasterLayer->buildRasterPyramidList();
   for ( unsigned int myCounterInt = 0; myCounterInt < lbxPyramidResolutions->count(); myCounterInt++ )
   {
-    Q3ListBoxItem *myItem = lbxPyramidResolutions->item( myCounterInt );
+    QListWidgetItem *myItem = lbxPyramidResolutions->item( myCounterInt );
     if ( myItem->isSelected() )
     {
       //mark to be pyramided
@@ -1601,15 +1600,15 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   {
     if ((*myRasterPyramidIterator).existsFlag==true)
     {
-      lbxPyramidResolutions->insertItem(myPyramidPixmap,
+      lbxPyramidResolutions->addItem(new QListWidgetItem(myPyramidPixmap,
           QString::number((*myRasterPyramidIterator).xDim) + QString(" x ") + 
-          QString::number((*myRasterPyramidIterator).yDim)); 
+          QString::number((*myRasterPyramidIterator).yDim))); 
     }
     else
     {
-      lbxPyramidResolutions->insertItem(myNoPyramidPixmap,
+      lbxPyramidResolutions->addItem(new QListWidgetItem(myNoPyramidPixmap,
           QString::number((*myRasterPyramidIterator).xDim) + QString(" x ") + 
-          QString::number((*myRasterPyramidIterator).yDim)); 
+          QString::number((*myRasterPyramidIterator).yDim))); 
     }
   }
   //update the legend pixmap
@@ -1624,7 +1623,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 
 void QgsRasterLayerProperties::on_cboBlue_currentIndexChanged(const QString& theText)
 {
-  if(mRasterLayerIsGdal && tr(QSTRING_NOT_SET) != theText)
+  if(mRasterLayerIsGdal && TRSTRING_NOT_SET != theText)
   {
     leBlueMin->setText(QString::number(mRasterLayer->getMinimumValue(theText)));
     leBlueMax->setText(QString::number(mRasterLayer->getMaximumValue(theText)));
@@ -1633,7 +1632,7 @@ void QgsRasterLayerProperties::on_cboBlue_currentIndexChanged(const QString& the
 
 void QgsRasterLayerProperties::on_cboGray_currentIndexChanged(const QString& theText)
 {
-  if(mRasterLayerIsGdal && tr(QSTRING_NOT_SET) != theText)
+  if(mRasterLayerIsGdal && TRSTRING_NOT_SET != theText)
   {
     leGrayMin->setText(QString::number(mRasterLayer->getMinimumValue(theText)));
     leGrayMax->setText(QString::number(mRasterLayer->getMaximumValue(theText)));
@@ -1642,7 +1641,7 @@ void QgsRasterLayerProperties::on_cboGray_currentIndexChanged(const QString& the
 
 void QgsRasterLayerProperties::on_cboGreen_currentIndexChanged(const QString& theText)
 {
-  if(mRasterLayerIsGdal && tr(QSTRING_NOT_SET) != theText)
+  if(mRasterLayerIsGdal && TRSTRING_NOT_SET != theText)
   {
     leGreenMin->setText(QString::number(mRasterLayer->getMinimumValue(theText)));
     leGreenMax->setText(QString::number(mRasterLayer->getMaximumValue(theText)));
@@ -1651,7 +1650,7 @@ void QgsRasterLayerProperties::on_cboGreen_currentIndexChanged(const QString& th
 
 void QgsRasterLayerProperties::on_cboRed_currentIndexChanged(const QString& theText)
 {
-  if(mRasterLayerIsGdal && tr(QSTRING_NOT_SET) != theText)
+  if(mRasterLayerIsGdal && TRSTRING_NOT_SET != theText)
   {
     leRedMin->setText(QString::number(mRasterLayer->getMinimumValue(theText)));
     leRedMax->setText(QString::number(mRasterLayer->getMaximumValue(theText)));
@@ -1744,10 +1743,10 @@ void QgsRasterLayerProperties::on_cboxColorMap_currentIndexChanged(const QString
 
 void QgsRasterLayerProperties::on_cboxTransparencyLayer_currentIndexChanged(const QString& theText)
 {
-  if(theText == tr(QSTRING_NOT_SET))
+  if(theText == TRSTRING_NOT_SET)
   {
     cboxTransparencyBand->clear();
-    cboxTransparencyBand->addItem(tr(QSTRING_NOT_SET));
+    cboxTransparencyBand->addItem(TRSTRING_NOT_SET);
   }
   else
   {
@@ -1760,7 +1759,7 @@ void QgsRasterLayerProperties::on_cboxTransparencyLayer_currentIndexChanged(cons
         QgsRasterLayer* myRasterLayer = (QgsRasterLayer*)it.value();
         int myBandCount = myRasterLayer->getBandCount();
         cboxTransparencyBand->clear();
-        cboxTransparencyBand->addItem(tr(QSTRING_NOT_SET));
+        cboxTransparencyBand->addItem(TRSTRING_NOT_SET);
         for(int bandRunner = 1; bandRunner <= myBandCount; bandRunner++)
         {
           cboxTransparencyBand->addItem(myRasterLayer->getRasterBandName(bandRunner));
@@ -1884,7 +1883,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
       ++myIteratorInt)
   {
     QgsRasterBandStats myRasterBandStats = mRasterLayer->getRasterBandStats(myIteratorInt);
-    Q3ListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
+    QListWidgetItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
     if ( myItem->isSelected() )
     {
       mySelectionCount++;
@@ -1948,7 +1947,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
     {
       myXAxisMax=static_cast < unsigned int >(myRasterBandStats.maxVal);
     }
-    Q3ListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
+    QListWidgetItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
     if ( myItem->isSelected() )
     {
 #ifdef QGISDEBUG
@@ -2135,7 +2134,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
         ++myIteratorInt)
     {
       QgsRasterBandStats myRasterBandStats = mRasterLayer->getRasterBandStats(myIteratorInt);
-      Q3ListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
+      QListWidgetItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
       if ( myItem->isSelected() )
       {
 
@@ -2460,7 +2459,7 @@ void QgsRasterLayerProperties::on_rbtnSingleBand_toggled(bool theState)
     // Populate transparency table with single value transparency pixels
     populateTransparencyTable();
     // If no band is selected but there are multiple bands, selcet the first as the default
-    if(cboGray->currentText() == tr(QSTRING_NOT_SET) && 1 < cboGray->count())
+    if(cboGray->currentText() == TRSTRING_NOT_SET && 1 < cboGray->count())
     {
       cboGray->setCurrentIndex(0);
     }

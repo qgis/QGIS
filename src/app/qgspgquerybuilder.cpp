@@ -13,12 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#include <iostream>
-#include <QMessageBox>
-#include <QListView>
 #include "qgspgquerybuilder.h"
-#include <qgslogger.h>
+#include "qgslogger.h"
+#include <iostream>
+#include <QListView>
+#include <QMessageBox>
 #include <QRegExp>
+
+#if QT_VERSION < 0x040300
+#define toPlainText() text()
+#endif
+
+
 // default constructor
 QgsPgQueryBuilder::QgsPgQueryBuilder(QWidget *parent, Qt::WFlags fl)
 : QDialog(parent, fl)
@@ -257,7 +263,7 @@ void QgsPgQueryBuilder::on_btnTest_clicked()
   // returned
 
   // if there is no sql, issue a warning
-  if(txtSQL->text().isEmpty())
+  if(txtSQL->toPlainText().isEmpty())
   {
     QMessageBox::information(this, tr("No Query"), tr("You must create a query before you can test it"));
   }
@@ -265,7 +271,7 @@ void QgsPgQueryBuilder::on_btnTest_clicked()
   { 
     QString numRows;
     QString sql = "select count(*) from " + mUri->quotedTablename() 
-      + " where " + txtSQL->text();
+      + " where " + txtSQL->toPlainText();
     PGresult *result = PQexec(mPgConnection, sql.toUtf8());
     if (PQresultStatus(result) == PGRES_TUPLES_OK) 
     {
@@ -318,10 +324,10 @@ void QgsPgQueryBuilder::setConnection(PGconn *con)
 void QgsPgQueryBuilder::on_btnOk_clicked()
 {
   // if user hits Ok and there is no query, skip the validation
-  if(txtSQL->text().stripWhiteSpace().length() > 0)
+  if(txtSQL->toPlainText().stripWhiteSpace().length() > 0)
   {
     // test the query to see if it will result in a valid layer
-    long numRecs = countRecords(txtSQL->text());
+    long numRecs = countRecords(txtSQL->toPlainText());
     if(numRecs == -1)
     {
       //error in query - show the problem
@@ -382,7 +388,7 @@ void QgsPgQueryBuilder::on_btnLike_clicked()
 
 QString QgsPgQueryBuilder::sql()
 {
-  return txtSQL->text();
+  return txtSQL->toPlainText();
 }
 
 void QgsPgQueryBuilder::setSql( QString sqlStatement)

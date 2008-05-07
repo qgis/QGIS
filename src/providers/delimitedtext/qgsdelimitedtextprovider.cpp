@@ -336,7 +336,7 @@ bool QgsDelimitedTextProvider::getNextFeature(QgsFeature& feature)
     feature.setFeatureId( mFid );
 
     QByteArray  buffer;
-    QDataStream s( &buffer, QIODevice::WriteOnly ); // open on buffers's data
+    QDataStream s( &buffer, static_cast<QIODevice::OpenMode>(QIODevice::WriteOnly) ); // open on buffers's data
 
     switch ( QgsApplication::endian() )
     {

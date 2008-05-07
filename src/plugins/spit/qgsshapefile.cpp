@@ -70,8 +70,6 @@ QgsShapeFile::QgsShapeFile(QString name, QString encoding){
 
 QgsShapeFile::~QgsShapeFile(){
   OGR_DS_Destroy( ogrDataSource );
-  delete filename;
-  delete geom_type;
 }
 
 int QgsShapeFile::getFeatureCount(){
@@ -169,7 +167,7 @@ QString QgsShapeFile::getFeatureClass(){
       //geom_type = "GEOMETRY";
       QgsDebugMsg("Preparing to escape " + geom_type);
       char * esc_str = new char[geom_type.length()*2+1];
-      PQescapeString(esc_str, (const char *)geom_type, geom_type.length());
+      PQescapeString(esc_str, geom_type.toUtf8(), geom_type.length());
       geom_type = QString(esc_str);
       QgsDebugMsg("After escaping, geom_type is : " + geom_type);
       delete[] esc_str;
@@ -177,7 +175,7 @@ QString QgsShapeFile::getFeatureClass(){
       QString file(filename);
       file.replace(file.length()-3, 3, "dbf");
       // open the dbf file
-      std::ifstream dbf((const char*)file, std::ios::in | std::ios::binary);
+      std::ifstream dbf(file.toUtf8(), std::ios::in | std::ios::binary);
       // read header
       DbaseHeader dbh;
       dbf.read((char *)&dbh, sizeof(dbh));

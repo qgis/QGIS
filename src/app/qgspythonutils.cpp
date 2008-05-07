@@ -242,7 +242,7 @@ QString QgsPythonUtils::getVariableFromMain(QString name)
   QString output;
   
   // get the result
-  obj = PyDict_GetItemString(mMainDict, name); // obj is borrowed reference
+  obj = PyDict_GetItemString(mMainDict, name.toUtf8()); // obj is borrowed reference
   
   if (obj != NULL && obj != Py_None)
   {
@@ -255,7 +255,7 @@ QString QgsPythonUtils::getVariableFromMain(QString name)
   }
     
   // erase result
-  PyDict_SetItemString(mMainDict, name, Py_None);
+  PyDict_SetItemString(mMainDict, name.toUtf8(), Py_None);
   
   return output;
 }

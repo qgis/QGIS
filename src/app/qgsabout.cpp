@@ -165,8 +165,8 @@ void QgsAbout::init()
       txtSponsors->setAcceptRichText(true);
       txtSponsors->setHtml(sponsorHTML);
       #ifdef QGISDEBUG
-       std::cout << "sponsorHTML:" << sponsorHTML.ascii() << std::endl;
-       std::cout << "txtSponsors:" << txtSponsors->toHtml().ascii() << std::endl;
+       std::cout << "sponsorHTML:" << sponsorHTML.toAscii().constData() << std::endl;
+       std::cout << "txtSponsors:" << txtSponsors->toHtml().toAscii().constData() << std::endl;
       #endif
     }
 }

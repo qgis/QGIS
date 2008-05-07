@@ -38,10 +38,22 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(qgis_help
-  ${QT_LIBRARIES}
   ${SQLITE3_LIBRARY}
   qgis_core
 )
+IF (${QTVERSION} STRLESS "4.3.0")
+  TARGET_LINK_LIBRARIES(qgis_help
+    ${QT_LIBRARIES} 
+    )
+ELSE (${QTVERSION} STRLESS "4.3.0")
+  TARGET_LINK_LIBRARIES(qgis_help
+  ${QT_QTCORE_LIBRARY} 
+  ${QT_QTGUI_LIBRARY} 
+  ${QT_QTNETWORK_LIBRARY} 
+  ${QT_QTSVG_LIBRARY} 
+  ${QT_QTXML_LIBRARY} 
+    )
+ENDIF (${QTVERSION} STRLESS "4.3.0")
 
 
 ########################################################

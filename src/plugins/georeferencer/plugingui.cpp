@@ -65,7 +65,7 @@ QgsGeorefPluginGui::~QgsGeorefPluginGui()
 
 void QgsGeorefPluginGui::on_pbnClose_clicked()
 {
- close(1);
+  close();
 }
 
 void QgsGeorefPluginGui::on_pbnDescription_clicked()

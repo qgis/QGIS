@@ -78,18 +78,9 @@ TARGET_LINK_LIBRARIES(qgis_gui
   ${QT_QTSVG_LIBRARY} 
   ${QT_QTNETWORK_LIBRARY} 
   ${QT_QTMAIN_LIBRARY} 
-  ${QT_QT3SUPPORT_LIBRARY} 
   ${SQLITE3_LIBRARIES}
   qgis_core
 )
-
-#work aroud for the fact that qt3 support on mac is linked ot qsql
-IF (APPLE)
-  TARGET_LINK_LIBRARIES(qgis_gui
-    ${QT_QTSQL_LIBRARY} 
-    )
-ENDIF (APPLE)
-
 
 INSTALL(TARGETS qgis_gui
   RUNTIME DESTINATION ${QGIS_BIN_DIR}

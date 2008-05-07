@@ -373,7 +373,7 @@ void QgsAttributeTableDisplay::doSearch(const QString& searchString)
    
   QString str;
   if (mSearchIds.size())
-    str.sprintf(tr("Found %d matching features.","", mSearchIds.size()), mSearchIds.size());
+    str.sprintf(tr("Found %d matching features.","", mSearchIds.size()).toUtf8(), mSearchIds.size());
   else
     str = tr("No matching features found.");
   QMessageBox::information(this, tr("Search results"), str);
@@ -413,7 +413,7 @@ void QgsAttributeTableDisplay::changeFeatureAttribute(int row, int column)
 {
   QgsFeatureList &flist = mLayer->addedFeatures();
 
-  int id = table()->text(row,0).toInt();
+  int id = table()->item(row,0)->text().toInt();
 
   int i;
   for(i=0; i<flist.size() && flist[i].featureId()!=id; i++)
@@ -422,5 +422,5 @@ void QgsAttributeTableDisplay::changeFeatureAttribute(int row, int column)
   if(i==flist.size())
     return;
 
-  flist[i].changeAttribute(column-1, table()->text(row,column));
+  flist[i].changeAttribute(column-1, table()->item(row,column)->text());
 }
