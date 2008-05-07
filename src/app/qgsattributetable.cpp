@@ -172,11 +172,7 @@ void QgsAttributeTable::keyReleaseEvent(QKeyEvent * ev)
 
 void QgsAttributeTable::handleChangedSelections()
 {
-  if (lockKeyPressed == false)
-  {
-    //clear the list and evaluate the last selection
     emit selectionRemoved(false);
-  }
 
   QList<QTableWidgetSelectionRange> selectedItemRanges = selectedRanges();
   QList<QTableWidgetSelectionRange>::const_iterator range_it = selectedItemRanges.constBegin();
