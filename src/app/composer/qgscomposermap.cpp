@@ -42,8 +42,9 @@
 QgsComposerMap::QgsComposerMap ( QgsComposition *composition, int id, int x, int y, int width, int height )
     : QWidget(), QGraphicsRectItem(0,0,width,height,0)
 {
-std::cout << "QgsComposerMap::QgsComposerMap()" << std::endl;
-
+#ifdef QGISDEBUG
+    std::cout << "QgsComposerMap::QgsComposerMap()" << std::endl;
+#endif
     setupUi(this);
 
     mComposition = composition;
@@ -119,7 +120,9 @@ void QgsComposerMap::init ()
 
 QgsComposerMap::~QgsComposerMap()
 {
+#ifdef QGISDEBUG
      std::cerr << "QgsComposerMap::~QgsComposerMap" << std::endl;
+#endif
 }
 
 /* This function is called by paint() and cache() to render the map.  It does not override any functions
@@ -265,7 +268,9 @@ void QgsComposerMap::setUserExtent ( QgsRect const & rect )
 
 void QgsComposerMap::cache ( void )
 {
+#ifdef QGISDEBUG
     std::cout << "QgsComposerMap::cache()" << std::endl;
+#endif
 
     // Create preview on some reasonable size. It was slow with cca 1500x1500 points on 2x1.5GHz 
     // Note: The resolution should also respect the line widths, it means that 
@@ -278,8 +283,10 @@ void QgsComposerMap::cache ( void )
     // It can happen that extent is not initialised well -> check 
     if ( h < 1 || h > 10000 ) h = w; 
 
+#ifdef QGISDEBUG
     std::cout << "extent = " << mExtent.width() <<  " x " << mExtent.height() << std::endl;
     std::cout << "cache = " << w <<  " x " << h << std::endl;
+#endif
 
     mCacheExtent = QgsRect ( mExtent );
     double scale = mExtent.width() / w;
@@ -299,7 +306,9 @@ void QgsComposerMap::cache ( void )
 * on both the cache, screen render, and print.
 */
 
+#ifdef QGISDEBUG
     std::cout << "transform = " << transform.showParameters().toLocal8Bit().data() << std::endl;
+#endif
     
     mCachePixmap.fill(QColor(255,255,255));
 
@@ -317,12 +326,12 @@ void QgsComposerMap::paint ( QPainter* painter, const QStyleOptionGraphicsItem* 
   if ( mDrawing ) return; 
   mDrawing = true;
 
+#ifdef QGISDEBUG
   std::cout << "QgsComposerMapt::paint mPlotStyle = " << plotStyle() 
             << " mPreviewMode = " << mPreviewMode << std::endl;
+#endif
     
   if ( plotStyle() == QgsComposition::Preview &&  mPreviewMode == Cache ) { // Draw from cache
-    std::cout << "use cache" << std::endl;
-
     if ( !mCacheUpdated || mMapCanvas->layerCount() != mNumCachedLayers ) 
     {
       cache();
@@ -330,8 +339,10 @@ void QgsComposerMap::paint ( QPainter* painter, const QStyleOptionGraphicsItem* 
   
     // Scale so that the cache fills the map rectangle
     double scale = 1.0 * QGraphicsRectItem::rect().width() / mCachePixmap.width();
+    #ifdef QGISDEBUG
     std::cout << "scale = " << scale << std::endl;
-  
+    #endif
+
     painter->save();
 
     painter->translate(0, 0); //do we need this?
@@ -346,7 +357,9 @@ void QgsComposerMap::paint ( QPainter* painter, const QStyleOptionGraphicsItem* 
             plotStyle() == QgsComposition::Print ||
             plotStyle() == QgsComposition::Postscript ) 
   {
+    #ifdef QGISDEBUG
     std::cout << "render" << std::endl;
+    #endif
   
     double scale = mExtent.width() / QGraphicsRectItem::rect().width();
     QgsMapToPixel transform(scale, QGraphicsRectItem::rect().height(), mExtent.yMin(), mExtent.xMin() );
@@ -503,8 +516,9 @@ void QgsComposerMap::on_mWidthScaleLineEdit_editingFinished ( void ) { scaleChan
 
 void QgsComposerMap::mapCanvasChanged ( void ) 
 {
+#ifdef QGISDEBUG
     std::cout << "QgsComposerMap::canvasChanged" << std::endl;
-
+#endif
     mCacheUpdated = false;
     QGraphicsRectItem::update();
 }
@@ -562,9 +576,11 @@ void QgsComposerMap::recalculate ( void )
     mExtent.setYmax ( yc + height/2  );
   }
 
+#ifdef QGISDEBUG
   std::cout << "mUserExtent = " << mUserExtent.stringRep().toLocal8Bit().data() << std::endl;
   std::cout << "mScale = " << mScale << std::endl;
   std::cout << "mExtent = " << mExtent.stringRep().toLocal8Bit().data() << std::endl;
+#endif
 
   setOptions();
   mCacheUpdated = false;
@@ -581,8 +597,10 @@ void QgsComposerMap::on_mFrameCheckBox_clicked ( )
 
 
 void QgsComposerMap::setOptions ( void )
-{ 
+{
+#ifdef QGISDEBUG
   std::cout << "QgsComposerMap::setOptions" << std::endl;
+#endif
     
   mNameLabel->setText ( mName );
     

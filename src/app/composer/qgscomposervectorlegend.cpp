@@ -41,7 +41,9 @@ QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, 
 {
   setupUi(this);
 
-  //std::cout << "QgsComposerVectorLegend::QgsComposerVectorLegend()" << std::endl;
+#ifdef QGISDEBUG
+  std::cout << "QgsComposerVectorLegend::QgsComposerVectorLegend()" << std::endl;
+#endif
 
   mComposition = composition;
   mId  = id;
@@ -76,7 +78,9 @@ QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, 
 QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, int id ) 
     : QGraphicsRectItem(0,0,10,10,0)
 {
-    //std::cout << "QgsComposerVectorLegend::QgsComposerVectorLegend()" << std::endl;
+#ifdef QGISDEBUG
+    std::cout << "QgsComposerVectorLegend::QgsComposerVectorLegend()" << std::endl;
+#endif
 
     setupUi(this);
 
@@ -142,7 +146,9 @@ QgsComposerVectorLegend::~QgsComposerVectorLegend()
 #define FONT_WORKAROUND_SCALE 10
 QRectF QgsComposerVectorLegend::render ( QPainter *p )
 {
-  //std::cout << "QgsComposerVectorLegend::render p = " << p << std::endl;
+#ifdef QGISDEBUG
+  std::cout << "QgsComposerVectorLegend::render p = " << p << std::endl;
+#endif
 
   // Painter can be 0, create dummy to avoid many if below
   QPainter *painter = NULL;
@@ -350,7 +356,7 @@ QRectF QgsComposerVectorLegend::render ( QPainter *p )
       double groupStartHeight = height;
       for ( int j = groupLayers.size()-1; j >= 0; j-- )
       {
-	    std::cout << "layer = " << groupLayers[j] << std::endl;
+	    //std::cout << "layer = " << groupLayers[j] << std::endl;
 
 	    double localHeight = groupStartHeight;
 	
@@ -463,9 +469,11 @@ QRectF QgsComposerVectorLegend::render ( QPainter *p )
 
 void QgsComposerVectorLegend::cache ( void )
 {
+#ifdef QGISDEBUG
     std::cout << "QgsComposerVectorLegend::cache()" << std::endl;
+#endif
 
-//typical boundingRect size is 15 units wide,
+    //typical boundingRect size is 15 units wide,
     mCachePixmap = QPixmap((int)QGraphicsRectItem::rect().width(), (int)QGraphicsRectItem::rect().height() );
 
 
@@ -552,7 +560,9 @@ void QgsComposerVectorLegend::on_mTitleLineEdit_editingFinished ( void )
 void QgsComposerVectorLegend::on_mPreviewModeComboBox_activated ( int i )
 {
     mPreviewMode = (PreviewMode) i;
+#ifdef QGISDEBUG
     std::cout << "mPreviewMode = " << mPreviewMode << std::endl;
+#endif
     writeSettings();
 }
 
@@ -586,7 +596,9 @@ void QgsComposerVectorLegend::on_mFrameCheckBox_stateChanged ( int )
 
 void QgsComposerVectorLegend::recalculate ( void ) 
 {
+#ifdef QGISDEBUG
     std::cout << "QgsComposerVectorLegend::recalculate" << std::endl;
+#endif
     
     // Recalculate sizes according to current font size
     
@@ -596,9 +608,6 @@ void QgsComposerVectorLegend::recalculate ( void )
     mSectionFont = mFont;
     mSectionFont.setPointSizeFloat ( 1.2 * mFont.pointSizeFloat() );
     
-    std::cout << "font size = " << mFont.pointSizeFloat() << std::endl;
-    std::cout << "title font size = " << mTitleFont.pointSizeFloat() << std::endl;
-
     // Font size in canvas units
     float size = 25.4 * mComposition->scale() * mFont.pointSizeFloat() / 72;
 
@@ -607,9 +616,14 @@ void QgsComposerVectorLegend::recalculate ( void )
     mSymbolWidth = 3.5 * size;
     mSymbolSpace = 0.4 * size;
 
+#ifdef QGISDEBUG
+    std::cout << "font size = " << mFont.pointSizeFloat() << std::endl;
+    std::cout << "title font size = " << mTitleFont.pointSizeFloat() << std::endl;
+
     std::cout << "mMargin = " << mMargin << " mSymbolHeight = " << mSymbolHeight
               << "mSymbolWidth = " << mSymbolWidth << " mSymbolSpace = " << mSymbolSpace << std::endl;
-     
+#endif
+
     QRectF r = render(0);
 
     QGraphicsRectItem::setRect(0, 0, r.width(), r.height() );
@@ -695,7 +709,9 @@ bool QgsComposerVectorLegend::selected( void )
 
 void QgsComposerVectorLegend::contextMenuEvent( QContextMenuEvent *event)
 {
+#ifdef QGISDEBUG
   std::cout << "QgsComposerVectorLegend::contextMenuEvent" << std::endl;
+#endif
 
   QMenu layersPopupMenu( this);
   layersPopupMenu.addAction( tr("Combine selected layers"), this, SLOT(groupLayers()) );
@@ -748,7 +764,9 @@ void QgsComposerVectorLegend::setLayerGroup ( QString id, int group )
 
 void QgsComposerVectorLegend::layerChanged ( QTreeWidgetItem *lvi )
 {
+#ifdef QGISDEBUG
     std::cout << "QgsComposerVectorLegend::layerChanged" << std::endl;
+#endif
 
     if ( lvi == 0 ) return; 
     
@@ -764,7 +782,9 @@ void QgsComposerVectorLegend::layerChanged ( QTreeWidgetItem *lvi )
 
 void QgsComposerVectorLegend::groupLayers ( void ) 
 {
+#ifdef QGISDEBUG
   std::cout << "QgsComposerVectorLegend::groupLayers" << std::endl;
+#endif
 
   QTreeWidgetItemIterator it( mLayersListView );
   int count = 0;
@@ -772,7 +792,9 @@ void QgsComposerVectorLegend::groupLayers ( void )
   QString id;
   while ( *it ) {
     if ( (*it)->isSelected() ) {
+      #ifdef QGISDEBUG
       std::cout << "selected: " << (*it)->text(0).toLocal8Bit().data() << " " << (*it)->text(2).toLocal8Bit().data() << std::endl;
+      #endif
 
       id = (*it)->text(2);
       setLayerGroup ( id, mNextLayerGroup );
@@ -787,11 +809,13 @@ void QgsComposerVectorLegend::groupLayers ( void )
     lastItem->setText(1,"" );
   }
 
+#ifdef QGISDEBUG
   std::cout << "Groups:" << std::endl;
 
   for ( std::map<QString,int>::iterator it3 = mLayersGroups.begin(); it3 != mLayersGroups.end(); ++it3 ) {
     std::cout << "layer: " << (it3->first).toLocal8Bit().data() << " group: " << it3->second << std::endl;
   }
+#endif
     
   mNextLayerGroup++;
     
@@ -810,7 +834,10 @@ QWidget *QgsComposerVectorLegend::options ( void )
 
 bool QgsComposerVectorLegend::writeSettings ( void )  
 {
+#ifdef QGISDEBUG
   std::cout << "QgsComposerVectorLegend::writeSettings" << std::endl;
+#endif
+
   QString path;
   path.sprintf("/composition_%d/vectorlegend_%d/", mComposition->id(), mId ); 
 

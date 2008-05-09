@@ -33,8 +33,6 @@
 
 #define PI 3.14159265358979323846
 
-#define QGISDEBUG 1
-
 QgsComposerPicture::QgsComposerPicture ( QgsComposition *composition, 
 					int id, QString file ) 
     : QWidget(composition),

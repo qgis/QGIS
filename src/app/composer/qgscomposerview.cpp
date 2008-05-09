@@ -72,7 +72,9 @@ void QgsComposerView::resizeEvent ( QResizeEvent *  )
  *  Really, we should do something like re-center the window.
 */
     //mComposer->zoomFull();
-std::cout << "resize anchor: " << resizeAnchor() << std::endl;
+#ifdef QGISDEBUG
+  std::cout << "resize anchor: " << resizeAnchor() << std::endl;
+#endif
 }
 
 //TODO: add mouse wheel event forwarding

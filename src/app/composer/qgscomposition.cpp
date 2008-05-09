@@ -388,10 +388,9 @@ void QgsComposition::mousePressEvent(QMouseEvent* e)
 void QgsComposition::mouseMoveEvent(QMouseEvent* e)
 {
 #ifdef QGISDEBUG
-#endif
   std::cerr << "QgsComposition::mouseMoveEvent() mTool = " << mTool << " mToolStep = "
     << mToolStep << std::endl;
-
+#endif
 
   QPointF p = mView->mapToScene(e->pos());
 
