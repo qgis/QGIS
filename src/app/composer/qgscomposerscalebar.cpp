@@ -36,7 +36,10 @@ QgsComposerScalebar::QgsComposerScalebar ( QgsComposition *composition, int id,
 {
   setupUi(this);
 
+#ifdef QGISDEBUG
   std::cout << "QgsComposerScalebar::QgsComposerScalebar()" << std::endl;
+#endif
+
   mId = id;
   mSelected = false;
 
@@ -120,7 +123,9 @@ QgsComposerScalebar::QgsComposerScalebar ( QgsComposition *composition, int id )
     mMap(0),
     mBrush(QColor(150,150,150))
 {
+#ifdef QGISDEBUG
   std::cout << "QgsComposerScalebar::QgsComposerScalebar()" << std::endl;
+#endif
 
   setupUi(this);
 
@@ -410,7 +415,9 @@ void QgsComposerScalebar::moveBy(double x, double y)
 
 void QgsComposerScalebar::recalculate(void)
 {
+#ifdef QGISDEBUG
   std::cout << "QgsComposerScalebar::recalculate" << std::endl;
+#endif
 
   // !!! prepareGeometryChange() MUST BE called before the value returned by areaPoints() changes
   //Is this still true after the port to GraphicsView?
@@ -423,13 +430,17 @@ void QgsComposerScalebar::recalculate(void)
 
 QRectF QgsComposerScalebar::boundingRect(void) const
 {
+#ifdef QGISDEBUG
   std::cout << "QgsComposerScalebar::boundingRect" << std::endl;
+#endif
   return mBoundingRect;
 }
 
 QPolygonF QgsComposerScalebar::areaPoints(void) const
 {
+#ifdef QGISDEBUG
   std::cout << "QgsComposerScalebar::areaPoints" << std::endl;
+#endif
 
   QRectF r = boundingRect();
   QPolygonF pa;
@@ -496,7 +507,10 @@ QWidget *QgsComposerScalebar::options(void)
 
 bool QgsComposerScalebar::writeSettings(void)
 {
+#ifdef QGISDEBUG
   std::cout << "QgsComposerScalebar::writeSettings" << std::endl;
+#endif
+
   QString path;
   path.sprintf("/composition_%d/scalebar_%d/", mComposition->id(), mId);
 

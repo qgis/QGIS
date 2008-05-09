@@ -31,7 +31,9 @@ QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id,
 {
     setupUi(this);
 
-    //std::cout << "QgsComposerLabel::QgsComposerLabel()" << std::endl;
+#ifdef QGISDEBUG
+    std::cout << "QgsComposerLabel::QgsComposerLabel()" << std::endl;
+#endif
 
     mComposition = composition;
     mId  = id;
@@ -64,7 +66,9 @@ QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id,
 QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id ) 
     : QAbstractGraphicsShapeItem(0)
 {
-    //std::cout << "QgsComposerLabel::QgsComposerLabel()" << std::endl;
+#ifdef QGISDEBUG
+    std::cout << "QgsComposerLabel::QgsComposerLabel()" << std::endl;
+#endif
 
     setupUi(this);
 
@@ -86,7 +90,10 @@ QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id )
 
 QgsComposerLabel::~QgsComposerLabel()
 {
-    //std::cout << "QgsComposerLabel::~QgsComposerLabel" << std::endl;
+#ifdef QGISDEBUG
+    std::cout << "QgsComposerLabel::~QgsComposerLabel" << std::endl;
+#endif
+    //make ourselves disappear so there aren't any interesting effects when we get destroyed
     QGraphicsItem::hide();
 }
 
@@ -96,7 +103,9 @@ QgsComposerLabel::~QgsComposerLabel()
 #define WIDTH_EXTENSION 1.0
 void QgsComposerLabel::paint ( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
-    //std::cout << "QgsComposerLabel::paint" << std::endl;
+#ifdef QGISDEBUG
+    std::cout << "QgsComposerLabel::paint" << std::endl;
+#endif
 
     float size =  25.4 * mComposition->scale() * mFont.pointSizeF() / 72;
 
@@ -234,7 +243,9 @@ QRectF QgsComposerLabel::boundingRect ( void ) const
 
 QPolygonF QgsComposerLabel::areaPoints() const
 {
-    //std::cout << "QgsComposerLabel::areaPoints" << std::endl;
+#ifdef QGISDEBUG
+    std::cout << "QgsComposerLabel::areaPoints" << std::endl;
+#endif
     QRectF r = boundingRect();
 
     QPolygonF pa;
@@ -268,11 +279,12 @@ void QgsComposerLabel::on_mTextEdit_textChanged()
 
 void QgsComposerLabel::setSelected (  bool s ) 
 {
-    //std::cout << "QgsComposerLabel::setSelected" << std::endl;
+#ifdef QGISDEBUG
+    std::cout << "QgsComposerLabel::setSelected" << std::endl;
+#endif
+
     mSelected = s;
     QAbstractGraphicsShapeItem::update(); // show highlight
-            
-    std::cout << "mSelected = " << mSelected << std::endl;
 }    
 
 bool QgsComposerLabel::selected( void )
