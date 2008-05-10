@@ -1287,7 +1287,7 @@ void QgsOgrProvider::getUniqueValues(int index, QStringList &uniqueValues)
     OGR_F_Destroy(f);
   }
 
-  OGR_DS_ReleaseResultSet(l, ogrDataSource);
+  OGR_DS_ReleaseResultSet(ogrDataSource, l);
 }
 
 
@@ -1309,7 +1309,7 @@ QVariant QgsOgrProvider::minValue(int index)
   OGRFeatureH f = OGR_L_GetNextFeature(l);
   if(f==0)
   {
-    OGR_DS_ReleaseResultSet(l, ogrDataSource);
+    OGR_DS_ReleaseResultSet(ogrDataSource, l);
     return QVariant();
   }
 
@@ -1327,7 +1327,7 @@ QVariant QgsOgrProvider::minValue(int index)
     default: assert(NULL && "unsupported field type");
   }
   
-  OGR_DS_ReleaseResultSet(l, ogrDataSource);
+  OGR_DS_ReleaseResultSet(ogrDataSource, l);
 
   return value;
 }
@@ -1348,7 +1348,7 @@ QVariant QgsOgrProvider::maxValue(int index)
   OGRFeatureH f = OGR_L_GetNextFeature(l);
   if(f==0)
   {
-    OGR_DS_ReleaseResultSet(l, ogrDataSource);
+    OGR_DS_ReleaseResultSet(ogrDataSource, l);
     return QVariant();
   }
 
@@ -1366,7 +1366,7 @@ QVariant QgsOgrProvider::maxValue(int index)
     default: assert(NULL && "unsupported field type");
   }
   
-  OGR_DS_ReleaseResultSet(l, ogrDataSource);
+  OGR_DS_ReleaseResultSet(ogrDataSource, l);
 
   return value;
 }
