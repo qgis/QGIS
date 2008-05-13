@@ -116,7 +116,7 @@ bool QgsRenderChecker::runTest( QString theTestName )
 
   if (mMatchTarget!= myPixelCount )
   {
-    qDebug ("Test image and result image for " + theTestName + " are different - FAILING!");
+    qDebug ( QString("Test image and result image for %1 are different - FAILING!").arg(theTestName).toLocal8Bit() );
     mReport += "<tr><td colspan=3>";
     mReport += "<font color=red>Expected image and result image for " + theTestName + " are different dimensions - FAILING!</font>";
     mReport += "</td></tr>";
