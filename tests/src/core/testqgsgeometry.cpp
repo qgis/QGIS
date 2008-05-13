@@ -159,7 +159,7 @@ void TestQgsGeometry::unionCheck()
   for (int i = 0; i < myPolyline.size(); i++)
   {
     QgsPoint myPoint = myPolyline.at(i);
-    qDebug(myPoint.stringRep());
+    qDebug(myPoint.stringRep().toLocal8Bit());
   }
   delete mypUnionGeometry;
 }
