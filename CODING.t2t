@@ -1066,6 +1066,30 @@ check for regressions. Some aspects of the test system (in particular the
 CMakeLists.txt parts) are still being worked on so that the testing framework 
 works in a truly platform way. I will update this document as things progress.
 
+= HIG (Human Interface Guidelines) =
+
+In order for all graphical user interface elements to appear consistant and 
+to all the user to instinctively use dialogs, it is important that the following 
+guidelines are followed in layout and design of GUIs.
+
+ + Group related elements using group boxes:
+   Try to identify elements that can be grouped together and then use 
+   group boxes with a label identify the topic of that group. 
+ + Capitalise first letter only in group box labels:
+   Group box labels should be written as a phrase with leading capital letter,
+   and all remaing words written with lower case first letters 
+ + Do not end labels for widgets or group boxes with a colon:
+   Adding a colon causes visual noise and does not impart additional meaning,
+   so dont use them.
+ + Keep harmful actions away from harmless ones:
+   If you have actions for 'delete', 'remove' etc, try to impose adequate 
+   space between the harmful action and innocuous actions so that the users 
+   is less likely to inadvertantly click on the harmful action.
+ + Always use a QButtonBox for 'Ok', 'Cancel' etc buttons:
+   Using a button box will ensure that the order of 'Ok' and 'Cancel' etc, 
+   buttons is consistent with the operating system / locale / desktop 
+   environment that the user is using.
+
 = Authors =
 
  * Tim Sutton (author and editor)
