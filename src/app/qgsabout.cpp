@@ -24,7 +24,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QImageReader>
-#include <QtSql/QSqlDatabase>
+#include <QSqlDatabase>
 #include <iostream>
 
 /* Uncomment this block to use preloaded images
