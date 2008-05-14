@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>508</width>
+    <width>552</width>
     <height>600</height>
    </rect>
   </property>
@@ -25,12 +25,6 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
    <item row="0" column="0" >
     <widget class="QTabWidget" name="tabWidget" >
      <property name="tabShape" >
@@ -44,14 +38,74 @@
        <string>Symbology</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item row="1" column="1" >
+       <item row="0" column="0" >
+        <widget class="QLabel" name="legendtypelabel" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize" >
+          <size>
+           <width>32767</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="text" >
+          <string>Legend type</string>
+         </property>
+         <property name="buddy" >
+          <cstring>legendtypecombobox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" >
+        <widget class="QComboBox" name="legendtypecombobox" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Maximum" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize" >
+          <size>
+           <width>0</width>
+           <height>26</height>
+          </size>
+         </property>
+         <property name="maximumSize" >
+          <size>
+           <width>32767</width>
+           <height>22</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2" >
+        <widget class="QLabel" name="lblTransparencyPercent" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text" >
+          <string>Transparency</string>
+         </property>
+         <property name="buddy" >
+          <cstring>sliderTransparency</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3" >
         <widget class="QSlider" name="sliderTransparency" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="maximum" >
           <number>255</number>
          </property>
@@ -63,57 +117,19 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0" >
-        <widget class="QLabel" name="lblTransparencyPercent" >
-         <property name="text" >
-          <string>Transparency:</string>
-         </property>
-         <property name="buddy" >
-          <cstring>sliderTransparency</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0" >
-        <widget class="QLabel" name="legendtypelabel" >
-         <property name="maximumSize" >
-          <size>
-           <width>32767</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="text" >
-          <string>Legend type:</string>
-         </property>
-         <property name="buddy" >
-          <cstring>legendtypecombobox</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1" >
-        <widget class="QComboBox" name="legendtypecombobox" >
-         <property name="minimumSize" >
-          <size>
-           <width>270</width>
-           <height>24</height>
-          </size>
-         </property>
-         <property name="maximumSize" >
-          <size>
-           <width>32767</width>
-           <height>22</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0" colspan="2" >
+       <item row="1" column="0" colspan="4" >
         <widget class="QStackedWidget" name="widgetStackRenderers" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>7</hsizetype>
-           <vsizetype>7</vsizetype>
+          <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="frameShape" >
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow" >
+          <enum>QFrame::Sunken</enum>
          </property>
          <property name="currentIndex" >
           <number>1</number>
@@ -129,49 +145,73 @@
        <string>General</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="margin" >
-        <number>11</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
        <item row="0" column="0" >
-        <widget class="QLabel" name="textLabel3" >
-         <property name="text" >
-          <string>Display name</string>
+        <widget class="QGroupBox" name="indexGroupBox" >
+         <property name="title" >
+          <string>Options</string>
          </property>
-         <property name="buddy" >
-          <cstring>txtDisplayName</cstring>
-         </property>
+         <layout class="QGridLayout" >
+          <item row="0" column="0" >
+           <widget class="QLabel" name="textLabel3" >
+            <property name="text" >
+             <string>Display name</string>
+            </property>
+            <property name="buddy" >
+             <cstring>txtDisplayName</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="2" >
+           <widget class="QLineEdit" name="txtDisplayName" />
+          </item>
+          <item row="1" column="0" >
+           <widget class="QLabel" name="textLabel2" >
+            <property name="toolTip" >
+             <string>Display field for the Identify Results dialog box</string>
+            </property>
+            <property name="whatsThis" >
+             <string>This sets the display field for the Identify Results dialog box</string>
+            </property>
+            <property name="text" >
+             <string>Display field</string>
+            </property>
+            <property name="buddy" >
+             <cstring>displayFieldComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="2" >
+           <widget class="QComboBox" name="displayFieldComboBox" >
+            <property name="whatsThis" >
+             <string>Use this control to set which field is placed at the top level of the Identify Results dialog box.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="3" >
+           <widget class="QLineEdit" name="leSpatialRefSys" >
+            <property name="readOnly" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" >
+           <widget class="QPushButton" name="pbnIndex" >
+            <property name="text" >
+             <string>Create Spatial Index</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2" >
+           <widget class="QPushButton" name="pbnChangeSpatialRefSys" >
+            <property name="text" >
+             <string>Change SRS</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
-       <item row="0" column="2" >
-        <widget class="QLabel" name="textLabel2" >
-         <property name="toolTip" >
-          <string>Display field for the Identify Results dialog box</string>
-         </property>
-         <property name="whatsThis" >
-          <string>This sets the display field for the Identify Results dialog box</string>
-         </property>
-         <property name="text" >
-          <string>Display field</string>
-         </property>
-         <property name="buddy" >
-          <cstring>displayFieldComboBox</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="3" >
-        <widget class="QComboBox" name="displayFieldComboBox" >
-         <property name="whatsThis" >
-          <string>Use this control to set which field is placed at the top level of the Identify Results dialog box.</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1" >
-        <widget class="QLineEdit" name="txtDisplayName" />
-       </item>
-       <item row="1" column="0" colspan="4" >
+       <item row="1" column="0" >
         <widget class="QGroupBox" name="chkUseScaleDependentRendering" >
          <property name="title" >
           <string>Use scale dependent rendering</string>
@@ -180,16 +220,22 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
+          <property name="leftMargin" >
            <number>11</number>
           </property>
-          <property name="spacing" >
-           <number>6</number>
+          <property name="topMargin" >
+           <number>11</number>
+          </property>
+          <property name="rightMargin" >
+           <number>11</number>
+          </property>
+          <property name="bottomMargin" >
+           <number>11</number>
           </property>
           <item row="0" column="2" >
            <widget class="QLabel" name="textLabel1_2_2" >
             <property name="text" >
-             <string>Maximum 1:</string>
+             <string>Maximum</string>
             </property>
             <property name="buddy" >
              <cstring>spinMaximumScale</cstring>
@@ -199,7 +245,7 @@
           <item row="0" column="0" >
            <widget class="QLabel" name="textLabel1" >
             <property name="text" >
-             <string>Minimum 1:</string>
+             <string>Minimum</string>
             </property>
             <property name="buddy" >
              <cstring>spinMinimumScale</cstring>
@@ -211,11 +257,11 @@
             <property name="toolTip" >
              <string>Minimum scale at which this layer will be displayed. </string>
             </property>
-            <property name="maximum" >
-             <number>100000000</number>
-            </property>
             <property name="minimum" >
              <number>1</number>
+            </property>
+            <property name="maximum" >
+             <number>100000000</number>
             </property>
            </widget>
           </item>
@@ -224,105 +270,34 @@
             <property name="toolTip" >
              <string>Maximum scale at which this layer will be displayed. </string>
             </property>
-            <property name="maximum" >
-             <number>100000000</number>
-            </property>
             <property name="minimum" >
              <number>1</number>
             </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="2" column="0" colspan="4" >
-        <widget class="QGroupBox" name="indexGroupBox" >
-         <property name="title" >
-          <string>Spatial Index</string>
-         </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>11</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="indexLabel" >
-            <property name="text" >
-             <string>Create Spatial Index</string>
-            </property>
-            <property name="buddy" >
-             <cstring>pbnIndex</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2" >
-           <widget class="QPushButton" name="pbnIndex" >
-            <property name="text" >
-             <string>Create</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType" >
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>141</width>
-              <height>21</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="3" column="0" colspan="4" >
-        <widget class="QGroupBox" name="grpSRS" >
-         <property name="title" >
-          <string>Spatial Reference System</string>
-         </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>11</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="0" column="0" >
-           <widget class="QLineEdit" name="leSpatialRefSys" >
-            <property name="readOnly" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" >
-           <widget class="QPushButton" name="pbnChangeSpatialRefSys" >
-            <property name="text" >
-             <string>Change</string>
+            <property name="maximum" >
+             <number>100000000</number>
             </property>
            </widget>
           </item>
          </layout>
         </widget>
        </item>
-       <item row="4" column="0" colspan="4" >
+       <item row="2" column="0" >
         <widget class="QGroupBox" name="grpSubset" >
          <property name="title" >
           <string>Subset</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
+          <property name="leftMargin" >
            <number>11</number>
           </property>
-          <property name="spacing" >
-           <number>6</number>
+          <property name="topMargin" >
+           <number>11</number>
+          </property>
+          <property name="rightMargin" >
+           <number>11</number>
+          </property>
+          <property name="bottomMargin" >
+           <number>11</number>
           </property>
           <item row="0" column="0" colspan="2" >
            <widget class="QTextEdit" name="txtSubsetSQL" >
@@ -370,16 +345,25 @@
        <string>Metadata</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="margin" >
+       <property name="leftMargin" >
         <number>11</number>
        </property>
-       <property name="spacing" >
-        <number>6</number>
+       <property name="topMargin" >
+        <number>11</number>
+       </property>
+       <property name="rightMargin" >
+        <number>11</number>
+       </property>
+       <property name="bottomMargin" >
+        <number>11</number>
        </property>
        <item row="0" column="0" >
         <widget class="QTextEdit" name="teMetadata" >
          <property name="lineWidth" >
           <number>2</number>
+         </property>
+         <property name="readOnly" >
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -390,18 +374,10 @@
        <string>Labels</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
        <item row="0" column="0" >
         <widget class="QCheckBox" name="labelCheckBox" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>7</hsizetype>
-           <vsizetype>0</vsizetype>
+          <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -414,9 +390,7 @@
        <item row="1" column="0" >
         <widget class="QFrame" name="labelOptionsFrame" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>7</hsizetype>
-           <vsizetype>7</vsizetype>
+          <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -436,18 +410,22 @@
        <string>Actions</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="margin" >
+       <property name="leftMargin" >
         <number>11</number>
        </property>
-       <property name="spacing" >
-        <number>6</number>
+       <property name="topMargin" >
+        <number>11</number>
+       </property>
+       <property name="rightMargin" >
+        <number>11</number>
+       </property>
+       <property name="bottomMargin" >
+        <number>11</number>
        </property>
        <item row="0" column="0" >
         <widget class="QFrame" name="actionOptionsFrame" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>0</hsizetype>
-           <vsizetype>0</vsizetype>
+          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -466,11 +444,20 @@
    </item>
    <item row="1" column="0" >
     <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>1</number>
-     </property>
      <property name="spacing" >
       <number>3</number>
+     </property>
+     <property name="leftMargin" >
+      <number>1</number>
+     </property>
+     <property name="topMargin" >
+      <number>1</number>
+     </property>
+     <property name="rightMargin" >
+      <number>1</number>
+     </property>
+     <property name="bottomMargin" >
+      <number>1</number>
      </property>
      <item>
       <widget class="QPushButton" name="pbnLoadDefaultStyle" >
@@ -516,18 +503,26 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <tabstops>
-  <tabstop>tabWidget</tabstop>
   <tabstop>legendtypecombobox</tabstop>
   <tabstop>sliderTransparency</tabstop>
   <tabstop>txtDisplayName</tabstop>
   <tabstop>displayFieldComboBox</tabstop>
+  <tabstop>leSpatialRefSys</tabstop>
+  <tabstop>pbnIndex</tabstop>
+  <tabstop>pbnChangeSpatialRefSys</tabstop>
+  <tabstop>chkUseScaleDependentRendering</tabstop>
   <tabstop>spinMinimumScale</tabstop>
   <tabstop>spinMaximumScale</tabstop>
-  <tabstop>pbnIndex</tabstop>
-  <tabstop>leSpatialRefSys</tabstop>
-  <tabstop>pbnChangeSpatialRefSys</tabstop>
+  <tabstop>txtSubsetSQL</tabstop>
   <tabstop>pbnQueryBuilder</tabstop>
+  <tabstop>teMetadata</tabstop>
   <tabstop>labelCheckBox</tabstop>
+  <tabstop>pbnLoadDefaultStyle</tabstop>
+  <tabstop>pbnSaveDefaultStyle</tabstop>
+  <tabstop>pbnLoadStyle</tabstop>
+  <tabstop>pbnSaveStyleAs</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>tabWidget</tabstop>
  </tabstops>
  <resources/>
  <connections/>

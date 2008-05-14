@@ -128,22 +128,22 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog(QgsVectorLayer * layer): QDialog(),
   //
   //set pattern icons and state
   //
-  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("SolidPattern")),tr("Solid Pattern"),"SolidPattern");
-  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("HorPattern")),tr("Hor Pattern"),"HorPattern");
-  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("VerPattern")),tr("Ver Pattern"),"VerPattern");
-  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("CrossPattern")),tr("Cross Pattern"),"CrossPattern");
-  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("BDiagPattern")),tr("BDiag Pattern"),"BDiagPattern");
-  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("FDiagPattern")),tr("FDiag Pattern"),"FDiagPattern");
-  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("DiagCrossPattern")),tr("Diag Cross Pattern"),"DiagCrossPattern");
-  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("Dense1Pattern")),tr("Dense1 Pattern"),"Dense1Pattern");
-  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("Dense2Pattern")),tr("Dense2 Pattern"),"Dense2Pattern");
-  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("Dense3Pattern")),tr("Dense3 Pattern"),"Dense3Pattern");
-  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("Dense4Pattern")),tr("Dense4 Pattern"),"Dense4Pattern");
-  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("Dense5Pattern")),tr("Dense5 Pattern"),"Dense5Pattern");
-  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("Dense6Pattern")),tr("Dense6 Pattern"),"Dense6Pattern");
-  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("Dense7Pattern")),tr("Dense7 Pattern"),"Dense7Pattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("SolidPattern")),tr("Solid"),"SolidPattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("HorPattern")),tr("Horizontal"),"HorPattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("VerPattern")),tr("Vertical"),"VerPattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("CrossPattern")),tr("Cross"),"CrossPattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("BDiagPattern")),tr("BDiagonal"),"BDiagPattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("FDiagPattern")),tr("FDiagonal"),"FDiagPattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("DiagCrossPattern")),tr("Diagonal X"),"DiagCrossPattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("Dense1Pattern")),tr("Dense1"),"Dense1Pattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("Dense2Pattern")),tr("Dense2"),"Dense2Pattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("Dense3Pattern")),tr("Dense3"),"Dense3Pattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("Dense4Pattern")),tr("Dense4"),"Dense4Pattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("Dense5Pattern")),tr("Dense5"),"Dense5Pattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("Dense6Pattern")),tr("Dense6"),"Dense6Pattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("Dense7Pattern")),tr("Dense7"),"Dense7Pattern");
   cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("NoBrush")),tr("No Brush"),"NoBrush");
-  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("TexturePattern")),tr("Texture Pattern"),"TexturePattern");
+  cboFillStyle->addItem(QIcon(QgsSymbologyUtils::char2PatternPixmap("TexturePattern")),tr("Texture"),"TexturePattern");
 
   if (mVectorLayer)
   {

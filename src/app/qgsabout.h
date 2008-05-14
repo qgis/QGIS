@@ -27,12 +27,11 @@ class QgsAbout : public QDialog, private Ui::QgsAbout
     QgsAbout();
     ~QgsAbout();
     void setVersion(QString v);
-    void setURLs(QString urls);
     void setWhatsNew(QString txt);
-    void setPluginInfo(QString txt);
     static QString fileSystemSafe(QString string);
 
   private:
+    void setPluginInfo();
     void init();
     void openUrl(QString url);
 

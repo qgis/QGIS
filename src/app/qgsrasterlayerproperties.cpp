@@ -842,8 +842,8 @@ void QgsRasterLayerProperties::sync()
    */
   //populate the metadata tab's text browser widget with gdal metadata info
   QString myStyle = QgsApplication::reportStyleSheet();
-  txtbMetadata->setHtml(mRasterLayer->getMetadata());
   txtbMetadata->document()->setDefaultStyleSheet(myStyle);
+  txtbMetadata->setHtml(mRasterLayer->getMetadata());
 
 } // QgsRasterLayerProperties::sync()
 

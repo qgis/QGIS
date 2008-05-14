@@ -5,30 +5,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>425</width>
-    <height>155</height>
+    <width>306</width>
+    <height>205</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Continuous color</string>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>8</number>
+   <property name="leftMargin" >
+    <number>0</number>
    </property>
-   <property name="spacing" >
-    <number>6</number>
+   <property name="rightMargin" >
+    <number>0</number>
    </property>
-   <item row="3" column="1" >
-    <widget class="QSpinBox" name="outlinewidthspinbox" />
-   </item>
-   <item row="3" column="2" >
-    <widget class="QCheckBox" name="cb_polygonOutline" >
-     <property name="text" >
-      <string>Draw polygon outline</string>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="0" >
     <widget class="QLabel" name="classvarlabel" >
      <property name="minimumSize" >
@@ -38,10 +28,20 @@
       </size>
      </property>
      <property name="text" >
-      <string>Classification Field:</string>
+      <string>Classification field</string>
      </property>
      <property name="buddy" >
       <cstring>classificationComboBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" >
+    <widget class="QComboBox" name="classificationComboBox" >
+     <property name="minimumSize" >
+      <size>
+       <width>0</width>
+       <height>20</height>
+      </size>
      </property>
     </widget>
    </item>
@@ -54,31 +54,15 @@
       </size>
      </property>
      <property name="text" >
-      <string>Minimum Value:</string>
+      <string>Minimum value</string>
      </property>
      <property name="buddy" >
       <cstring>btnMinValue</cstring>
      </property>
     </widget>
    </item>
-   <item row="3" column="0" >
-    <widget class="QLabel" name="outlinewidthlabel" >
-     <property name="minimumSize" >
-      <size>
-       <width>0</width>
-       <height>20</height>
-      </size>
-     </property>
-     <property name="text" >
-      <string>Outline Width:</string>
-     </property>
-     <property name="buddy" >
-      <cstring>outlinewidthspinbox</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1" >
-    <widget class="QgsColorButton" name="btnMaxValue" >
+   <item row="1" column="1" >
+    <widget class="QgsColorButton" name="btnMinValue" >
      <property name="minimumSize" >
       <size>
        <width>100</width>
@@ -96,15 +80,15 @@
       </size>
      </property>
      <property name="text" >
-      <string>Maximum Value:</string>
+      <string>Maximum value</string>
      </property>
      <property name="buddy" >
       <cstring>btnMaxValue</cstring>
      </property>
     </widget>
    </item>
-   <item row="1" column="1" >
-    <widget class="QgsColorButton" name="btnMinValue" >
+   <item row="2" column="1" >
+    <widget class="QgsColorButton" name="btnMaxValue" >
      <property name="minimumSize" >
       <size>
        <width>100</width>
@@ -113,15 +97,44 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1" >
-    <widget class="QComboBox" name="classificationComboBox" >
+   <item row="3" column="0" colspan="2" >
+    <widget class="QCheckBox" name="cb_polygonOutline" >
+     <property name="text" >
+      <string>Draw polygon outlines</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" >
+    <widget class="QLabel" name="outlinewidthlabel" >
      <property name="minimumSize" >
       <size>
        <width>0</width>
        <height>20</height>
       </size>
      </property>
+     <property name="text" >
+      <string>Outline width</string>
+     </property>
+     <property name="buddy" >
+      <cstring>outlinewidthspinbox</cstring>
+     </property>
     </widget>
+   </item>
+   <item row="4" column="1" >
+    <widget class="QSpinBox" name="outlinewidthspinbox" />
+   </item>
+   <item row="5" column="0" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>

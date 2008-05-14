@@ -5,80 +5,205 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>513</width>
-    <height>432</height>
+    <width>596</width>
+    <height>560</height>
    </rect>
   </property>
   <property name="sizePolicy" >
-   <sizepolicy>
-    <hsizetype>5</hsizetype>
-    <vsizetype>5</vsizetype>
+   <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
   <property name="windowTitle" >
-   <string>Form1</string>
+   <string>Attribute Actions</string>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>0</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
-   <item row="8" column="6" colspan="2" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
+   <item row="0" column="0" colspan="2" >
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>Action properties</string>
      </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>85</width>
-       <height>141</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="7" column="7" >
-    <widget class="QPushButton" name="removeButton" >
-     <property name="toolTip" >
-      <string>Remove the selected action</string>
-     </property>
-     <property name="text" >
-      <string>Remove</string>
-     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="textLabel1" >
+        <property name="whatsThis" >
+         <string>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</string>
+        </property>
+        <property name="text" >
+         <string>Name</string>
+        </property>
+        <property name="buddy" >
+         <cstring>actionName</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2" >
+       <widget class="QLineEdit" name="actionName" >
+        <property name="toolTip" >
+         <string>Enter the action name here</string>
+        </property>
+        <property name="whatsThis" >
+         <string>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Maximum</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="textLabel2" >
+        <property name="whatsThis" >
+         <string>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</string>
+        </property>
+        <property name="text" >
+         <string>Action</string>
+        </property>
+        <property name="buddy" >
+         <cstring>actionAction</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2" >
+       <widget class="QLineEdit" name="actionAction" >
+        <property name="toolTip" >
+         <string>Enter the action command here</string>
+        </property>
+        <property name="whatsThis" >
+         <string>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3" >
+       <widget class="QToolButton" name="browseButton" >
+        <property name="toolTip" >
+         <string>Browse for action</string>
+        </property>
+        <property name="statusTip" >
+         <string>Click to browse for an action</string>
+        </property>
+        <property name="whatsThis" >
+         <string>Clicking the buttone will let you select an application to use as the action</string>
+        </property>
+        <property name="text" >
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Maximum</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="2" column="1" >
+       <widget class="QComboBox" name="fieldComboBox" >
+        <property name="toolTip" >
+         <string>The valid attribute names for this layer</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2" >
+       <widget class="QPushButton" name="insertFieldButton" >
+        <property name="toolTip" >
+         <string>Inserts the selected field into the action, prepended with a %</string>
+        </property>
+        <property name="text" >
+         <string>Insert field</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Maximum</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="3" column="0" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Maximum</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="3" column="1" colspan="2" >
+       <widget class="QCheckBox" name="captureCB" >
+        <property name="toolTip" >
+         <string>Captures any output from the action</string>
+        </property>
+        <property name="whatsThis" >
+         <string>Captures the standard output or error generated by the action and displays it in a dialog box</string>
+        </property>
+        <property name="text" >
+         <string>Capture output</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Maximum</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="6" column="7" >
-    <widget class="QPushButton" name="moveDownButton" >
-     <property name="toolTip" >
-      <string>Move the selected action down</string>
-     </property>
-     <property name="text" >
-      <string>Move down</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="7" >
-    <widget class="QPushButton" name="moveUpButton" >
-     <property name="toolTip" >
-      <string>Move the selected action up</string>
-     </property>
-     <property name="text" >
-      <string>Move up</string>
-     </property>
-    </widget>
-   </item>
-   <item rowspan="4" row="5" column="0" colspan="6" >
+   <item rowspan="7" row="1" column="0" >
     <widget class="QTableWidget" name="attributeActionTable" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>7</vsizetype>
+      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -112,67 +237,7 @@
      </column>
     </widget>
    </item>
-   <item row="4" column="0" colspan="8" >
-    <widget class="Line" name="line" >
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="5" colspan="3" >
-    <widget class="QComboBox" name="fieldComboBox" >
-     <property name="toolTip" >
-      <string>The valid attribute names for this layer</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="7" >
-    <widget class="QPushButton" name="browseButton" >
-     <property name="toolTip" >
-      <string>Browse for action commands</string>
-     </property>
-     <property name="text" >
-      <string>Browse</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="4" >
-    <widget class="QPushButton" name="insertFieldButton" >
-     <property name="toolTip" >
-      <string>Inserts the selected field into the action, prepended with a %</string>
-     </property>
-     <property name="text" >
-      <string>Insert field</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="3" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>51</width>
-       <height>29</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="3" column="2" >
-    <widget class="QPushButton" name="updateButton" >
-     <property name="toolTip" >
-      <string>Update the selected action</string>
-     </property>
-     <property name="text" >
-      <string>Update action</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0" colspan="2" >
+   <item row="1" column="1" >
     <widget class="QPushButton" name="insertButton" >
      <property name="toolTip" >
       <string>Inserts the action into the list above</string>
@@ -182,62 +247,75 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="3" >
-    <widget class="QCheckBox" name="captureCB" >
+   <item row="2" column="1" >
+    <widget class="QPushButton" name="updateButton" >
      <property name="toolTip" >
-      <string>Captures any output from the action</string>
-     </property>
-     <property name="whatsThis" >
-      <string>Captures the standard output or error generated by the action and displays it in a dialog box</string>
+      <string>Update the selected action</string>
      </property>
      <property name="text" >
-      <string>Capture output</string>
+      <string>Update action</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1" colspan="6" >
-    <widget class="QLineEdit" name="actionAction" >
+   <item row="3" column="1" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>85</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="1" >
+    <widget class="QPushButton" name="moveUpButton" >
      <property name="toolTip" >
-      <string>Enter the action command here</string>
-     </property>
-     <property name="whatsThis" >
-      <string>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" >
-    <widget class="QLabel" name="textLabel2" >
-     <property name="whatsThis" >
-      <string>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</string>
+      <string>Move the selected action up</string>
      </property>
      <property name="text" >
-      <string>Action:</string>
-     </property>
-     <property name="buddy" >
-      <cstring>actionAction</cstring>
+      <string>Move up</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1" colspan="6" >
-    <widget class="QLineEdit" name="actionName" >
+   <item row="5" column="1" >
+    <widget class="QPushButton" name="moveDownButton" >
      <property name="toolTip" >
-      <string>Enter the action name here</string>
-     </property>
-     <property name="whatsThis" >
-      <string>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" >
-    <widget class="QLabel" name="textLabel1" >
-     <property name="whatsThis" >
-      <string>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</string>
+      <string>Move the selected action down</string>
      </property>
      <property name="text" >
-      <string>Name:</string>
+      <string>Move down</string>
      </property>
-     <property name="buddy" >
-      <cstring>actionName</cstring>
+    </widget>
+   </item>
+   <item row="6" column="1" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>85</width>
+       <height>41</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="7" column="1" >
+    <widget class="QPushButton" name="removeButton" >
+     <property name="toolTip" >
+      <string>Remove the selected action</string>
+     </property>
+     <property name="text" >
+      <string>Remove</string>
      </property>
     </widget>
    </item>
@@ -245,17 +323,18 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <tabstops>
-  <tabstop>moveUpButton</tabstop>
-  <tabstop>moveDownButton</tabstop>
-  <tabstop>removeButton</tabstop>
   <tabstop>actionName</tabstop>
   <tabstop>actionAction</tabstop>
   <tabstop>browseButton</tabstop>
+  <tabstop>fieldComboBox</tabstop>
+  <tabstop>insertFieldButton</tabstop>
   <tabstop>captureCB</tabstop>
   <tabstop>insertButton</tabstop>
   <tabstop>updateButton</tabstop>
-  <tabstop>insertFieldButton</tabstop>
-  <tabstop>fieldComboBox</tabstop>
+  <tabstop>moveUpButton</tabstop>
+  <tabstop>moveDownButton</tabstop>
+  <tabstop>attributeActionTable</tabstop>
+  <tabstop>removeButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

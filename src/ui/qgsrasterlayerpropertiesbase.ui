@@ -22,12 +22,6 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
    <item row="0" column="0" >
     <widget class="QTabWidget" name="tabBar" >
      <property name="currentIndex" >
@@ -44,23 +38,17 @@
           <string>Render as</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="0" column="1" >
-           <widget class="QRadioButton" name="rbtnSingleBand" >
-            <property name="text" >
-             <string>Single Band Gray</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0" >
            <widget class="QRadioButton" name="rbtnThreeBand" >
             <property name="text" >
-             <string>Three Band Color</string>
+             <string>Three band color</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QRadioButton" name="rbtnSingleBand" >
+            <property name="text" >
+             <string>Single band gray</string>
             </property>
            </widget>
           </item>
@@ -70,15 +58,9 @@
        <item row="0" column="1" >
         <widget class="QGroupBox" name="groupBox_5" >
          <property name="title" >
-          <string>Color Map</string>
+          <string>Color map</string>
          </property>
          <layout class="QVBoxLayout" >
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <property name="margin" >
-           <number>9</number>
-          </property>
           <item>
            <widget class="QComboBox" name="cboxColorMap" >
             <property name="sizePolicy" >
@@ -98,7 +80,7 @@
           <item>
            <widget class="QCheckBox" name="cboxInvertColorMap" >
             <property name="text" >
-             <string>Invert Color Map</string>
+             <string>Invert color map</string>
             </property>
            </widget>
           </item>
@@ -115,15 +97,9 @@
        <item rowspan="2" row="2" column="0" >
         <widget class="QGroupBox" name="grpRgbBands" >
          <property name="title" >
-          <string>RGB Mode Band Selection</string>
+          <string>RGB mode band selection</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
           <item row="2" column="0" >
            <widget class="QLabel" name="lblBlue" >
             <property name="text" >
@@ -239,10 +215,13 @@
        <item row="3" column="1" >
         <widget class="QGroupBox" name="grpGrayBand" >
          <property name="title" >
-          <string>Grayscale Band Selection</string>
+          <string>Grayscale band selection</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="spacing" >
+          <property name="horizontalSpacing" >
+           <number>6</number>
+          </property>
+          <property name="verticalSpacing" >
            <number>6</number>
           </property>
           <item row="0" column="0" >
@@ -280,15 +259,9 @@
        <item rowspan="2" row="4" column="0" >
         <widget class="QGroupBox" name="grpRgbScaling" >
          <property name="title" >
-          <string>RGB Scaling</string>
+          <string>RGB scaling</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
           <item row="3" column="3" >
            <widget class="QLabel" name="lblBlueMax" >
             <property name="text" >
@@ -299,14 +272,14 @@
           <item row="4" column="0" colspan="2" >
            <widget class="QRadioButton" name="rbtnThreeBandStdDev" >
             <property name="text" >
-             <string>Std Deviation</string>
+             <string>Std. deviation</string>
             </property>
            </widget>
           </item>
           <item row="0" column="0" colspan="5" >
            <widget class="QRadioButton" name="rbtnThreeBandMinMax" >
             <property name="text" >
-             <string>Custom Min Max Values</string>
+             <string>Custom min / max values</string>
             </property>
            </widget>
           </item>
@@ -596,15 +569,9 @@
        <item row="4" column="1" >
         <widget class="QGroupBox" name="grpGrayScaling" >
          <property name="title" >
-          <string>Grayscale Band Scaling</string>
+          <string>Grayscale band scaling</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
           <item row="3" column="0" colspan="5" >
            <widget class="QLabel" name="lblMinMaxEstimateWarning" >
             <property name="sizePolicy" >
@@ -710,14 +677,14 @@
           <item row="2" column="0" colspan="2" >
            <widget class="QRadioButton" name="rbtnSingleBandStdDev" >
             <property name="text" >
-             <string>Std Deviation</string>
+             <string>Std. deviation</string>
             </property>
            </widget>
           </item>
           <item row="0" column="0" colspan="5" >
            <widget class="QRadioButton" name="rbtnSingleBandMinMax" >
             <property name="text" >
-             <string>Custom Min Max Values:</string>
+             <string>Custom min / max values</string>
             </property>
            </widget>
           </item>
@@ -773,7 +740,7 @@
        <item row="7" column="0" >
         <widget class="QGroupBox" name="groupBox_2" >
          <property name="title" >
-          <string>Load Min Max Values From Band</string>
+          <string>Load min / max values from band</string>
          </property>
          <layout class="QGridLayout" >
           <item rowspan="2" row="0" column="0" >
@@ -829,10 +796,13 @@
        <item row="7" column="1" >
         <widget class="QGroupBox" name="groupBox_8" >
          <property name="title" >
-          <string>Contrast Enhancement</string>
+          <string>Contrast enhancement</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="spacing" >
+          <property name="horizontalSpacing" >
+           <number>-1</number>
+          </property>
+          <property name="verticalSpacing" >
            <number>-1</number>
           </property>
           <item row="0" column="0" >
@@ -910,7 +880,7 @@
        <item row="0" column="0" >
         <widget class="QGroupBox" name="groupBox_4" >
          <property name="title" >
-          <string>Global Transparency</string>
+          <string>Global transparency</string>
          </property>
          <layout class="QGridLayout" >
           <item row="0" column="0" colspan="5" >
@@ -991,7 +961,7 @@
        <item row="0" column="1" >
         <widget class="QGroupBox" name="groupBox_7" >
          <property name="title" >
-          <string>No Data Value</string>
+          <string>No data value</string>
          </property>
          <layout class="QVBoxLayout" >
           <item>
@@ -1000,7 +970,7 @@
           <item>
            <widget class="QCheckBox" name="chkboxResetNoDataValue" >
             <property name="text" >
-             <string>Reset No Data Value</string>
+             <string>Reset no data value</string>
             </property>
            </widget>
           </item>
@@ -1010,20 +980,20 @@
        <item row="1" column="0" colspan="2" >
         <widget class="QGroupBox" name="groupBox_6" >
          <property name="title" >
-          <string>Custom Transparency Options</string>
+          <string>Custom transparency options</string>
          </property>
          <layout class="QGridLayout" >
           <item row="0" column="0" >
            <widget class="QLabel" name="lblTransarent" >
             <property name="text" >
-             <string>Transparency Band:</string>
+             <string>Transparency band</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1" >
            <widget class="QLabel" name="label_3" >
             <property name="text" >
-             <string>Transparency Layer;</string>
+             <string>Transparency layer;</string>
             </property>
            </widget>
           </item>
@@ -1082,7 +1052,7 @@
           <item row="3" column="0" colspan="3" >
            <widget class="QLabel" name="label_2" >
             <property name="text" >
-             <string>Transparent Pixel List</string>
+             <string>Transparent pixel list</string>
             </property>
            </widget>
           </item>
@@ -1113,16 +1083,22 @@
           </item>
           <item row="4" column="3" >
            <layout class="QVBoxLayout" >
-            <property name="spacing" >
-             <number>6</number>
+            <property name="leftMargin" >
+             <number>11</number>
             </property>
-            <property name="margin" >
+            <property name="topMargin" >
+             <number>11</number>
+            </property>
+            <property name="rightMargin" >
+             <number>11</number>
+            </property>
+            <property name="bottomMargin" >
              <number>11</number>
             </property>
             <item>
              <widget class="QToolButton" name="pbnAddValuesManually" >
               <property name="toolTip" >
-               <string>Add Values Manually</string>
+               <string>Add values manually</string>
               </property>
               <property name="text" >
                <string>...</string>
@@ -1138,7 +1114,7 @@
                <bool>false</bool>
               </property>
               <property name="toolTip" >
-               <string>Add Values From Display</string>
+               <string>Add Values from display</string>
               </property>
               <property name="text" >
                <string>...</string>
@@ -1151,7 +1127,7 @@
             <item>
              <widget class="QToolButton" name="pbnRemoveSelectedRow" >
               <property name="toolTip" >
-               <string>Remove Selected Row</string>
+               <string>Remove selected row</string>
               </property>
               <property name="text" >
                <string>...</string>
@@ -1164,7 +1140,7 @@
             <item>
              <widget class="QToolButton" name="pbnDefaultValues" >
               <property name="toolTip" >
-               <string>Default Values</string>
+               <string>Default values</string>
               </property>
               <property name="text" >
                <string>...</string>
@@ -1190,7 +1166,7 @@
             <item>
              <widget class="QToolButton" name="pbnImportTransparentPixelValues" >
               <property name="toolTip" >
-               <string>Import From File</string>
+               <string>Import from file</string>
               </property>
               <property name="text" >
                <string>...</string>
@@ -1203,7 +1179,7 @@
             <item>
              <widget class="QToolButton" name="pbnExportTransparentPixelValues" >
               <property name="toolTip" >
-               <string>Export To File</string>
+               <string>Export to file</string>
               </property>
               <property name="text" >
                <string>...</string>
@@ -1238,11 +1214,17 @@
        <string>Colormap</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="margin" >
+       <property name="leftMargin" >
         <number>11</number>
        </property>
-       <property name="spacing" >
-        <number>6</number>
+       <property name="topMargin" >
+        <number>11</number>
+       </property>
+       <property name="rightMargin" >
+        <number>11</number>
+       </property>
+       <property name="bottomMargin" >
+        <number>11</number>
        </property>
        <item row="0" column="2" >
         <spacer>
@@ -1272,16 +1254,22 @@
        </item>
        <item row="0" column="0" colspan="2" >
         <layout class="QHBoxLayout" >
-         <property name="spacing" >
-          <number>6</number>
+         <property name="leftMargin" >
+          <number>11</number>
          </property>
-         <property name="margin" >
+         <property name="topMargin" >
+          <number>11</number>
+         </property>
+         <property name="rightMargin" >
+          <number>11</number>
+         </property>
+         <property name="bottomMargin" >
           <number>11</number>
          </property>
          <item>
           <widget class="QLabel" name="mNumberOfEntriesLabel" >
            <property name="text" >
-            <string>Number of entries:</string>
+            <string>Number of entries</string>
            </property>
           </widget>
          </item>
@@ -1348,16 +1336,22 @@
        </item>
        <item row="0" column="3" >
         <layout class="QHBoxLayout" >
-         <property name="spacing" >
-          <number>6</number>
+         <property name="leftMargin" >
+          <number>11</number>
          </property>
-         <property name="margin" >
+         <property name="topMargin" >
+          <number>11</number>
+         </property>
+         <property name="rightMargin" >
+          <number>11</number>
+         </property>
+         <property name="bottomMargin" >
           <number>11</number>
          </property>
          <item>
           <widget class="QLabel" name="mColorInterpolationLabel" >
            <property name="text" >
-            <string>Color interpolation:</string>
+            <string>Color interpolation</string>
            </property>
           </widget>
          </item>
@@ -1368,16 +1362,22 @@
        </item>
        <item row="1" column="3" >
         <layout class="QHBoxLayout" >
-         <property name="spacing" >
-          <number>6</number>
+         <property name="leftMargin" >
+          <number>11</number>
          </property>
-         <property name="margin" >
+         <property name="topMargin" >
+          <number>11</number>
+         </property>
+         <property name="rightMargin" >
+          <number>11</number>
+         </property>
+         <property name="bottomMargin" >
           <number>11</number>
          </property>
          <item>
           <widget class="QLabel" name="mClassificationModeLabel" >
            <property name="text" >
-            <string>Classification mode:</string>
+            <string>Classification mode</string>
            </property>
           </widget>
          </item>
@@ -1393,23 +1393,35 @@
        <string>General</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="margin" >
+       <property name="leftMargin" >
         <number>11</number>
        </property>
-       <property name="spacing" >
-        <number>6</number>
+       <property name="topMargin" >
+        <number>11</number>
+       </property>
+       <property name="rightMargin" >
+        <number>11</number>
+       </property>
+       <property name="bottomMargin" >
+        <number>11</number>
        </property>
        <item row="4" column="0" colspan="3" >
         <widget class="QGroupBox" name="grpSRS" >
          <property name="title" >
-          <string>Spatial Reference System</string>
+          <string>Spatial reference system</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
+          <property name="leftMargin" >
            <number>11</number>
           </property>
-          <property name="spacing" >
-           <number>6</number>
+          <property name="topMargin" >
+           <number>11</number>
+          </property>
+          <property name="rightMargin" >
+           <number>11</number>
+          </property>
+          <property name="bottomMargin" >
+           <number>11</number>
           </property>
           <item row="0" column="1" >
            <widget class="QPushButton" name="pbnChangeSpatialRefSys" >
@@ -1431,17 +1443,23 @@
        <item row="3" column="0" colspan="3" >
         <widget class="QGroupBox" name="chkUseScaleDependentRendering" >
          <property name="title" >
-          <string>Scale Dependent Visibility</string>
+          <string>Scale dependent visibility</string>
          </property>
          <property name="checkable" >
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
+          <property name="leftMargin" >
            <number>11</number>
           </property>
-          <property name="spacing" >
-           <number>6</number>
+          <property name="topMargin" >
+           <number>11</number>
+          </property>
+          <property name="rightMargin" >
+           <number>11</number>
+          </property>
+          <property name="bottomMargin" >
+           <number>11</number>
           </property>
           <item row="0" column="3" >
            <widget class="QSpinBox" name="spinMaximumScale" >
@@ -1459,7 +1477,7 @@
           <item row="0" column="2" >
            <widget class="QLabel" name="textLabel1_2_2_2" >
             <property name="text" >
-             <string>Maximum 1:</string>
+             <string>Maximum</string>
             </property>
             <property name="buddy" >
              <cstring>spinMaximumScale</cstring>
@@ -1482,7 +1500,7 @@
           <item row="0" column="0" >
            <widget class="QLabel" name="textLabel1_3" >
             <property name="text" >
-             <string>Minimum 1:</string>
+             <string>Minimum</string>
             </property>
             <property name="buddy" >
              <cstring>spinMinimumScale</cstring>
@@ -1495,16 +1513,22 @@
        <item row="2" column="0" colspan="2" >
         <widget class="QCheckBox" name="cboxShowDebugInfo" >
          <property name="text" >
-          <string>DebugInfo</string>
+          <string>Show debug info</string>
          </property>
         </widget>
        </item>
        <item row="2" column="2" >
         <layout class="QHBoxLayout" >
-         <property name="spacing" >
-          <number>6</number>
+         <property name="leftMargin" >
+          <number>11</number>
          </property>
-         <property name="margin" >
+         <property name="topMargin" >
+          <number>11</number>
+         </property>
+         <property name="rightMargin" >
+          <number>11</number>
+         </property>
+         <property name="bottomMargin" >
           <number>11</number>
          </property>
          <item>
@@ -1533,7 +1557,7 @@
        <item row="1" column="0" >
         <widget class="QLabel" name="lblLayerSource" >
          <property name="text" >
-          <string>Layer Source:</string>
+          <string>Layer source</string>
          </property>
          <property name="buddy" >
           <cstring>leLayerSource</cstring>
@@ -1553,7 +1577,7 @@
        <item row="0" column="0" >
         <widget class="QLabel" name="lblDisplayName" >
          <property name="text" >
-          <string>Display Name:</string>
+          <string>Display name</string>
          </property>
          <property name="buddy" >
           <cstring>leDisplayName</cstring>
@@ -1562,10 +1586,16 @@
        </item>
        <item row="5" column="0" colspan="3" >
         <layout class="QHBoxLayout" >
-         <property name="spacing" >
-          <number>6</number>
+         <property name="leftMargin" >
+          <number>11</number>
          </property>
-         <property name="margin" >
+         <property name="topMargin" >
+          <number>11</number>
+         </property>
+         <property name="rightMargin" >
+          <number>11</number>
+         </property>
+         <property name="bottomMargin" >
           <number>11</number>
          </property>
          <item>
@@ -1574,11 +1604,17 @@
             <string>Thumbnail</string>
            </property>
            <layout class="QGridLayout" >
-            <property name="margin" >
+            <property name="leftMargin" >
              <number>11</number>
             </property>
-            <property name="spacing" >
-             <number>6</number>
+            <property name="topMargin" >
+             <number>11</number>
+            </property>
+            <property name="rightMargin" >
+             <number>11</number>
+            </property>
+            <property name="bottomMargin" >
+             <number>11</number>
             </property>
             <item row="0" column="0" >
              <spacer>
@@ -1621,11 +1657,17 @@
             <string>Legend:</string>
            </property>
            <layout class="QGridLayout" >
-            <property name="margin" >
+            <property name="leftMargin" >
              <number>11</number>
             </property>
-            <property name="spacing" >
-             <number>6</number>
+            <property name="topMargin" >
+             <number>11</number>
+            </property>
+            <property name="rightMargin" >
+             <number>11</number>
+            </property>
+            <property name="bottomMargin" >
+             <number>11</number>
             </property>
             <item row="0" column="0" >
              <spacer>
@@ -1668,11 +1710,17 @@
             <string>Palette:</string>
            </property>
            <layout class="QGridLayout" >
-            <property name="margin" >
+            <property name="leftMargin" >
              <number>11</number>
             </property>
-            <property name="spacing" >
-             <number>6</number>
+            <property name="topMargin" >
+             <number>11</number>
+            </property>
+            <property name="rightMargin" >
+             <number>11</number>
+            </property>
+            <property name="bottomMargin" >
+             <number>11</number>
             </property>
             <item row="0" column="0" >
              <spacer>
@@ -1718,11 +1766,17 @@
        <string>Metadata</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="margin" >
+       <property name="leftMargin" >
         <number>11</number>
        </property>
-       <property name="spacing" >
-        <number>6</number>
+       <property name="topMargin" >
+        <number>11</number>
+       </property>
+       <property name="rightMargin" >
+        <number>11</number>
+       </property>
+       <property name="bottomMargin" >
+        <number>11</number>
        </property>
        <item row="0" column="0" >
         <widget class="QTextBrowser" name="txtbMetadata" />
@@ -1734,12 +1788,6 @@
        <string>Pyramids</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
        <item rowspan="2" row="0" column="0" >
         <widget class="QTextEdit" name="tePyramidDescription" >
          <property name="sizePolicy" >
@@ -1751,15 +1799,15 @@
          <property name="html" >
           <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;">
-&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;/p>&lt;/body>&lt;/html></string>
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;">
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;">&lt;/p>&lt;/body>&lt;/html></string>
          </property>
         </widget>
        </item>
        <item row="0" column="1" >
         <widget class="QLabel" name="textLabel5" >
          <property name="text" >
-          <string>Pyramid Resolutions</string>
+          <string>Pyramid resolutions</string>
          </property>
         </widget>
        </item>
@@ -1784,10 +1832,16 @@ p, li { white-space: pre-wrap; }
        </item>
        <item row="2" column="0" colspan="2" >
         <layout class="QHBoxLayout" >
-         <property name="spacing" >
-          <number>6</number>
+         <property name="leftMargin" >
+          <number>11</number>
          </property>
-         <property name="margin" >
+         <property name="topMargin" >
+          <number>11</number>
+         </property>
+         <property name="rightMargin" >
+          <number>11</number>
+         </property>
+         <property name="bottomMargin" >
           <number>11</number>
          </property>
          <item>
@@ -1809,7 +1863,7 @@ p, li { white-space: pre-wrap; }
          <item>
           <widget class="QLabel" name="textLabel4_2" >
            <property name="text" >
-            <string>Resampling Method</string>
+            <string>Resampling method</string>
            </property>
            <property name="buddy" >
             <cstring>cboResamplingMethod</cstring>
@@ -1833,7 +1887,7 @@ p, li { white-space: pre-wrap; }
          <item>
           <widget class="QPushButton" name="buttonBuildPyramids" >
            <property name="text" >
-            <string>Build Pyramids</string>
+            <string>Build pyramids</string>
            </property>
           </widget>
          </item>
@@ -1846,11 +1900,17 @@ p, li { white-space: pre-wrap; }
        <string>Histogram</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="margin" >
+       <property name="leftMargin" >
         <number>11</number>
        </property>
-       <property name="spacing" >
-        <number>6</number>
+       <property name="topMargin" >
+        <number>11</number>
+       </property>
+       <property name="rightMargin" >
+        <number>11</number>
+       </property>
+       <property name="bottomMargin" >
+        <number>11</number>
        </property>
        <item row="0" column="0" colspan="2" >
         <widget class="QLabel" name="pixHistogram" >
@@ -1889,16 +1949,22 @@ p, li { white-space: pre-wrap; }
           <string>Chart Type</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
+          <property name="leftMargin" >
            <number>11</number>
           </property>
-          <property name="spacing" >
-           <number>6</number>
+          <property name="topMargin" >
+           <number>11</number>
+          </property>
+          <property name="rightMargin" >
+           <number>11</number>
+          </property>
+          <property name="bottomMargin" >
+           <number>11</number>
           </property>
           <item row="0" column="1" >
            <widget class="QRadioButton" name="radHistTypeLine" >
             <property name="text" >
-             <string>Line Graph</string>
+             <string>Line graph</string>
             </property>
             <property name="checked" >
              <bool>true</bool>
@@ -1908,7 +1974,7 @@ p, li { white-space: pre-wrap; }
           <item row="0" column="0" >
            <widget class="QRadioButton" name="radHistTypeBar" >
             <property name="text" >
-             <string>Bar Chart</string>
+             <string>Bar chart</string>
             </property>
            </widget>
           </item>
@@ -1928,30 +1994,36 @@ p, li { white-space: pre-wrap; }
           <string>Options</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
+          <property name="leftMargin" >
            <number>11</number>
           </property>
-          <property name="spacing" >
-           <number>6</number>
+          <property name="topMargin" >
+           <number>11</number>
+          </property>
+          <property name="rightMargin" >
+           <number>11</number>
+          </property>
+          <property name="bottomMargin" >
+           <number>11</number>
           </property>
           <item row="0" column="0" >
            <widget class="QLabel" name="textLabel1_2" >
             <property name="text" >
-             <string>Column Count:</string>
+             <string>Column count</string>
             </property>
            </widget>
           </item>
           <item row="1" column="0" colspan="2" >
            <widget class="QCheckBox" name="chkHistIgnoreOutOfRange" >
             <property name="text" >
-             <string>Out Of Range OK?</string>
+             <string>Out of range OK?</string>
             </property>
            </widget>
           </item>
           <item row="2" column="0" colspan="2" >
            <widget class="QCheckBox" name="chkHistAllowApproximation" >
             <property name="text" >
-             <string>Allow Approximation</string>
+             <string>Allow approximation</string>
             </property>
             <property name="checked" >
              <bool>true</bool>

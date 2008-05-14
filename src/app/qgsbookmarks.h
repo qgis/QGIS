@@ -36,7 +36,7 @@ private slots:
  void on_btnDelete_clicked();
  void on_btnZoomTo_clicked();
  void on_lstBookmarks_doubleClicked(QTreeWidgetItem *);
- void on_btnHelp_clicked();
+ void helpRequested();
  void refreshBookmarks();
 private:
  QWidget *mParent;

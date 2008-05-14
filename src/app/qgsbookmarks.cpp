@@ -26,6 +26,7 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QSettings>
+#include <QPushButton>
 
 //standard includes
 #include <iostream>
@@ -38,9 +39,6 @@ QgsBookmarks::QgsBookmarks(QWidget *parent, Qt::WFlags fl)
   mParent(parent)
 {
   setupUi(this);
-  connect(btnClose, SIGNAL(clicked()), this, SLOT(close()));
-  connect(this, SIGNAL(finished(int)), this, SLOT(saveWindowLocation()));
-
   // user database is created at QGIS startup in QgisApp::createDB
   // we just check whether there is our database [MD]
   QFileInfo myFileInfo;
@@ -55,13 +53,29 @@ QgsBookmarks::QgsBookmarks(QWidget *parent, Qt::WFlags fl)
   // Note proper queens english on next line
   initialise();
 
+  //
+  // Create the zoomto and delete buttons and add them to the 
+  // toolbar
+  //
+  QPushButton * btnDelete = new QPushButton(tr("&Delete"));
+  QPushButton * btnZoomTo = new QPushButton(tr("&Zoom to"));
+  btnZoomTo->setDefault(true);
+  buttonBox->addButton(btnDelete, QDialogButtonBox::ActionRole);
+  buttonBox->addButton(btnZoomTo, QDialogButtonBox::ActionRole);
+  // connect the slot up to catch when a bookmark is deleted 
+  connect(btnDelete, SIGNAL(clicked()), this, SLOT(on_btnDelete_clicked()));
+  // connect the slot up to catch when a bookmark is zoomed to
+  connect(btnZoomTo, SIGNAL(clicked()), this, SLOT(on_btnZoomTo_clicked()));
   // connect the slot up to catch when a new bookmark is added
   connect(mParent, SIGNAL(bookmarkAdded()), this, SLOT(refreshBookmarks()));
+  //and for help requested
+  connect(buttonBox, SIGNAL(helpRequested()), this, SLOT(helpRequested()));
 }
 
 // Destructor
 QgsBookmarks::~QgsBookmarks()
 {
+  saveWindowLocation();
 }
 
 void QgsBookmarks::refreshBookmarks()
@@ -248,7 +262,7 @@ int QgsBookmarks::connectDb()
   return rc;
 }
 
-void QgsBookmarks::on_btnHelp_clicked()
+void QgsBookmarks::helpRequested()
 {
   QgsContextHelp::run(context_id);
 }

@@ -35,6 +35,7 @@ class QMenu;
 class QPixmap;
 class QSplashScreen;
 class QValidator;
+class QActionGroup;
 
 class QgisAppInterface;
 class QgsClipboard;
@@ -52,7 +53,6 @@ class QgsRasterLayer;
 class QgsRect;
 class QgsVectorLayer;
 
-#include <ui_qgisappbase.h>
 #include <QMainWindow>
 #include <QAbstractSocket>
 
@@ -62,7 +62,7 @@ class QgsVectorLayer;
 /*! \class QgisApp
  * \brief Main window for the Qgis application
  */
-class QgisApp : public QMainWindow, public Ui::QgisAppBase
+class QgisApp : public QMainWindow
 {
   Q_OBJECT;
   public:
@@ -535,7 +535,10 @@ private:
   QMenu *mSettingsMenu;
   QMenu *mHelpMenu;
 
-  class Tools
+  QDockWidget *mLegendDock;
+  QDockWidget *mOverviewDock;
+
+class Tools
   {
     public:
       QgsMapTool* mZoomIn;

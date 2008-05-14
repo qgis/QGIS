@@ -29,8 +29,7 @@
 QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVectorLayer(vl), sydialog(vl)
 {
   setupUi(this);
-  setSizeGripEnabled(true); 
-
+  setOrientation(Qt::Vertical);
   //find out the fields of mVectorLayer
   QgsVectorDataProvider *provider;
   if ((provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider())))

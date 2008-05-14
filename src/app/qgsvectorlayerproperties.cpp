@@ -19,6 +19,7 @@
 
 #include <memory>
 
+#include "qgsapplication.h"
 #include "qgsattributeactiondialog.h"
 #include "qgscontexthelp.h"
 #include "qgscontinuouscolordialog.h"
@@ -248,7 +249,10 @@ void QgsVectorLayerProperties::reset( void )
   layer->label()->setFields ( layer->getDataProvider()->fields() );
 
   //set the metadata contents
-  teMetadata->setText(getMetadata());
+  QString myStyle = QgsApplication::reportStyleSheet(); 
+  teMetadata->clear();
+  teMetadata->document()->setDefaultStyleSheet(myStyle);
+  teMetadata->setHtml(getMetadata());
   actionDialog->init();
   labelDialog->init();
   labelCheckBox->setChecked(layer->labelOn());
@@ -282,7 +286,10 @@ void QgsVectorLayerProperties::apply()
     // set the subset sql for the layer
     layer->setSubsetString(txtSubsetSQL->toPlainText());   
     // update the metadata with the updated sql subset
-    teMetadata->setText(getMetadata());
+    QString myStyle = QgsApplication::reportStyleSheet(); 
+    teMetadata->clear();
+    teMetadata->document()->setDefaultStyleSheet(myStyle);
+    teMetadata->setHtml(getMetadata());
     // update the extents of the layer (fetched from the provider)
     layer->updateExtents(); 
   }
@@ -399,27 +406,27 @@ QString QgsVectorLayerProperties::getMetadata()
 
   //-------------
 
-  myMetedata += "<tr><td bgcolor=\"gray\">";
+  myMetedata += "<tr><td class=\"glossyBlue\">";
   myMetedata += tr("General:");
   myMetedata += "</td></tr>";
 
   // data comment
   if (!(layer->dataComment().isEmpty()))
   {
-    myMetedata += "<tr><td bgcolor=\"white\">";
+    myMetedata += "<tr><td>";
     myMetedata += tr("Layer comment: ") + 
       layer->dataComment();
     myMetedata += "</td></tr>";
   }
 
   //storage type
-  myMetedata += "<tr><td bgcolor=\"white\">";
+  myMetedata += "<tr><td>";
   myMetedata += tr("Storage type of this layer : ") + 
     layer->storageType();
   myMetedata += "</td></tr>";
 
   // data source
-  myMetedata += "<tr><td bgcolor=\"white\">";
+  myMetedata += "<tr><td>";
   myMetedata += tr("Source for this layer : ") +
     layer->publicSource();
   myMetedata += "</td></tr>";
@@ -436,7 +443,7 @@ QString QgsVectorLayerProperties::getMetadata()
   {
     QString vectorTypeString( QGis::qgisVectorGeometryType[layer->vectorType()] );
 
-    myMetedata += "<tr><td bgcolor=\"white\">";
+    myMetedata += "<tr><td>";
     myMetedata += tr("Geometry type of the features in this layer : ") + 
       vectorTypeString;
     myMetedata += "</td></tr>";
@@ -444,12 +451,12 @@ QString QgsVectorLayerProperties::getMetadata()
 
 
   //feature count
-  myMetedata += "<tr><td bgcolor=\"white\">";
+  myMetedata += "<tr><td>";
   myMetedata += tr("The number of features in this layer : ") + 
     QString::number(layer->featureCount());
   myMetedata += "</td></tr>";
   //capabilities
-  myMetedata += "<tr><td bgcolor=\"white\">";
+  myMetedata += "<tr><td>";
   myMetedata += tr("Editing capabilities of this layer : ") + 
     layer->capabilitiesString();
   myMetedata += "</td></tr>";
@@ -457,11 +464,11 @@ QString QgsVectorLayerProperties::getMetadata()
   //-------------
 
   QgsRect myExtent = layer->extent();  
-  myMetedata += "<tr><td bgcolor=\"gray\">";
+  myMetedata += "<tr><td class=\"glossyBlue\">";
   myMetedata += tr("Extents:");
   myMetedata += "</td></tr>";
   //extents in layer cs  TODO...maybe make a little nested table to improve layout...
-  myMetedata += "<tr><td bgcolor=\"white\">";
+  myMetedata += "<tr><td>";
   myMetedata += tr("In layer spatial reference system units : ") + 
     tr("xMin,yMin ") + 
     QString::number(myExtent.xMin()) + 
@@ -480,7 +487,7 @@ QString QgsVectorLayerProperties::getMetadata()
     /*    
     // TODO: currently disabled, will revisit later [MD]
     QgsRect myProjectedExtent = coordinateTransform->transformBoundingBox(layer->extent());
-    myMetedata += "<tr><td bgcolor=\"white\">";
+    myMetedata += "<tr><td>";
     myMetedata += tr("In project spatial reference system units : ") + 
     tr("xMin,yMin ") + 
     QString::number(myProjectedExtent.xMin()) + 
@@ -496,10 +503,10 @@ QString QgsVectorLayerProperties::getMetadata()
     // 
     // Display layer spatial ref system
     //
-    myMetedata += "<tr><td bgcolor=\"gray\">";
+    myMetedata += "<tr><td class=\"glossyBlue\">";
     myMetedata += tr("Layer Spatial Reference System:");
     myMetedata += "</td></tr>";  
-    myMetedata += "<tr><td bgcolor=\"white\">";
+    myMetedata += "<tr><td>";
     myMetedata += layer->srs().proj4String().replace(QRegExp("\"")," \"");                       
     myMetedata += "</td></tr>";
 
@@ -511,7 +518,7 @@ QString QgsVectorLayerProperties::getMetadata()
     myMetedata += "<tr><td bgcolor=\"gray\">";
     myMetedata += tr("Project (Output) Spatial Reference System:");
     myMetedata += "</td></tr>";  
-    myMetedata += "<tr><td bgcolor=\"white\">";
+    myMetedata += "<tr><td>";
     myMetedata += coordinateTransform->destSRS().proj4String().replace(QRegExp("\"")," \"");                       
     myMetedata += "</td></tr>";
     */
@@ -522,7 +529,7 @@ QString QgsVectorLayerProperties::getMetadata()
     UNUSED(cse);
     QgsDebugMsg( cse.what() );
 
-    myMetedata += "<tr><td bgcolor=\"white\">";
+    myMetedata += "<tr><td>";
     myMetedata += tr("In project spatial reference system units : ");
     myMetedata += " (Invalid transformation of layer extents) ";
     myMetedata += "</td></tr>";
@@ -533,27 +540,27 @@ QString QgsVectorLayerProperties::getMetadata()
   //
   // Add the info about each field in the attribute table
   //
-  myMetedata += "<tr><td bgcolor=\"gray\">";
+  myMetedata += "<tr><td class=\"glossyBlue\">";
   myMetedata += tr("Attribute field info:");
   myMetedata += "</td></tr>";
-  myMetedata += "<tr><td bgcolor=\"white\">";
+  myMetedata += "<tr><td>";
 
   // Start a nested table in this trow
   myMetedata += "<table width=\"100%\">";
-  myMetedata += "<tr><th bgcolor=\"black\">";
-  myMetedata += "<font color=\"white\">" + tr("Field") + "</font>";
+  myMetedata += "<tr><th>";
+  myMetedata += tr("Field");
   myMetedata += "</th>";
-  myMetedata += "<th bgcolor=\"black\">";
-  myMetedata += "<font color=\"white\">" + tr("Type") + "</font>";
+  myMetedata += "<th>";
+  myMetedata += tr("Type");
   myMetedata += "</th>";
-  myMetedata += "<th bgcolor=\"black\">";
-  myMetedata += "<font color=\"white\">" + tr("Length") + "</font>";
+  myMetedata += "<th>";
+  myMetedata += tr("Length");
   myMetedata += "</th>";
-  myMetedata += "<th bgcolor=\"black\">";
-  myMetedata += "<font color=\"white\">" + tr("Precision") + "</font>";
+  myMetedata += "<th>";
+  myMetedata += tr("Precision");
   myMetedata += "</th>";      
-  myMetedata += "<th bgcolor=\"black\">";
-  myMetedata += "<font color=\"white\">" + tr("Comment") + "</font>";
+  myMetedata += "<th>";
+  myMetedata += tr("Comment");
   myMetedata += "</th>";
 
   //get info for each field by looping through them
@@ -563,19 +570,19 @@ QString QgsVectorLayerProperties::getMetadata()
   {
     const QgsField& myField = *it;
 
-    myMetedata += "<tr><td bgcolor=\"white\">";
+    myMetedata += "<tr><td>";
     myMetedata += myField.name();
     myMetedata += "</td>";
-    myMetedata += "<td bgcolor=\"white\">";
+    myMetedata += "<td>";
     myMetedata += myField.typeName();
     myMetedata += "</td>";
-    myMetedata += "<td bgcolor=\"white\">";
+    myMetedata += "<td>";
     myMetedata += QString("%1").arg(myField.length());
     myMetedata += "</td>";
-    myMetedata += "<td bgcolor=\"white\">";
+    myMetedata += "<td>";
     myMetedata += QString("%1").arg(myField.precision());
     myMetedata += "</td>";
-    myMetedata += "<td bgcolor=\"white\">";
+    myMetedata += "<td>";
     myMetedata += QString("%1").arg(myField.comment());
     myMetedata += "</td></tr>";
   } 

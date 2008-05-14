@@ -35,7 +35,6 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(QgsVectorLayer * layer): QDia
 #endif
 
   setOrientation(Qt::Vertical);
-  setSizeGripEnabled(true);
 
   //find out the numerical fields of mVectorLayer
   QgsVectorDataProvider *provider = mVectorLayer->getDataProvider();
