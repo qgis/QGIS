@@ -21,12 +21,19 @@
 #include "qgslegendsymbologyitem.h"
 
 QgsLegendSymbologyItem::QgsLegendSymbologyItem(QTreeWidgetItem * theItem,QString theString, int pixmapWidth, int pixmapHeight)
-  : QgsLegendItem(theItem, theString), mPixmapWidth(pixmapWidth), mPixmapHeight(pixmapHeight), mLegend(0)
+  : QgsLegendItem(theItem, theString), 
+    mPixmapWidth(pixmapWidth), 
+    mPixmapHeight(pixmapHeight), 
+    mLegend(0)
 {
   mType = LEGEND_SYMBOL_ITEM;
 }
 
-QgsLegendSymbologyItem::QgsLegendSymbologyItem(int pixmapWidth, int pixmapHeight): QgsLegendItem(), mPixmapWidth(pixmapWidth), mPixmapHeight(pixmapHeight), mLegend(0)
+QgsLegendSymbologyItem::QgsLegendSymbologyItem(int pixmapWidth, int pixmapHeight)
+ : QgsLegendItem(), 
+   mPixmapWidth(pixmapWidth), 
+   mPixmapHeight(pixmapHeight), 
+   mLegend(0)
 {
   mType = LEGEND_SYMBOL_ITEM;
 }

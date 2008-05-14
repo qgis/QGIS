@@ -20,7 +20,6 @@
 #include "qgslegenditem.h"
 #include <iostream>
 #include <QCoreApplication>
-#include <QIcon>
 #include "qgslegend.h"
 
 

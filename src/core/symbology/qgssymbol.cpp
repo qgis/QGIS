@@ -245,23 +245,60 @@ int QgsSymbol::pointSize() const
 
 QImage QgsSymbol::getLineSymbolAsImage()
 {
-    QImage img(15, 15, QImage::Format_ARGB32_Premultiplied);
-    img.fill(QColor(255,255,255,0).rgba());
-    QPainter p(&img);
-    p.setPen(mPen);
-    p.drawLine(0, 0, 15, 15);
-    return img; //this is ok because of qts sharing mechanism
+  //Note by Tim: dont use premultiplied - it causes
+  //artifacts on the output icon!
+  QImage img(15, 15,QImage::Format_ARGB32 );//QImage::Format_ARGB32_Premultiplied);
+  img.fill(QColor(255,255,255,255).rgba());
+  QPainter p(&img);
+  p.setRenderHints(QPainter::Antialiasing);
+  p.setPen(mPen);
+
+
+  QPainterPath myPath;
+  myPath.moveTo(0, 0);
+  myPath.cubicTo(15, 0, 5, 7, 15, 15);
+  p.drawPath(myPath);
+  //p.drawLine(0, 0, 15, 15);
+  return img; //this is ok because of qts sharing mechanism
 }
 
 QImage QgsSymbol::getPolygonSymbolAsImage()
 {
-   QImage img(15, 15, QImage::Format_ARGB32_Premultiplied);
-   img.fill(QColor(255,255,255,0).rgba());
-   QPainter p(&img);
-   p.setPen(mPen);
-   p.setBrush(mBrush);
-   p.drawRect(0, 0, 15, 15);
-   return img; //this is ok because of qts sharing mechanism 
+  //Note by Tim: dont use premultiplied - it causes
+  //artifacts on the output icon!
+  QImage img(15, 15,QImage::Format_ARGB32); //, QImage::Format_ARGB32_Premultiplied);
+  img.fill(QColor(255,255,255,255).rgba());
+  QPainter p(&img);
+  p.setRenderHints(QPainter::Antialiasing);
+  p.setPen(mPen);
+  p.setBrush(mBrush);
+  QPolygon myPolygon; 
+  //leave a little white space around so
+  //dont draw at 0,0,15,15 
+  myPolygon << QPoint(2, 2)
+    << QPoint(1, 5)
+    << QPoint(1, 10)
+    << QPoint(2, 12)
+    << QPoint(5, 13)
+    << QPoint(6, 13) 
+    << QPoint(8, 12)
+    << QPoint(8, 12)
+    << QPoint(10, 12)
+    << QPoint(12, 13)
+    << QPoint(13, 11)
+    << QPoint(12, 8)
+    << QPoint(11, 6)
+    << QPoint(12, 5) 
+    << QPoint(13, 2)
+    << QPoint(11, 1)
+    << QPoint(10, 1)
+    << QPoint(8, 2)
+    << QPoint(6, 4)
+    << QPoint(4, 2)
+    ;
+  p.drawPolygon(myPolygon); 
+  //p.drawRect(1, 1, 14, 14); 
+  return img; //this is ok because of qts sharing mechanism 
 }
 
 QImage QgsSymbol::getCachedPointSymbolAsImage(  double widthScale,
