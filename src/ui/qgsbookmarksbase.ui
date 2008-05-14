@@ -5,37 +5,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>344</width>
-    <height>263</height>
+    <width>440</width>
+    <height>370</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Geospatial Bookmarks</string>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
-   <item row="4" column="1" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>85</width>
-       <height>109</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item rowspan="5" row="0" column="0" >
+   <item row="0" column="0" >
     <widget class="QTreeWidget" name="lstBookmarks" >
      <property name="rootIsDecorated" >
       <bool>false</bool>
@@ -68,40 +46,10 @@
      </column>
     </widget>
    </item>
-   <item row="3" column="1" >
-    <widget class="QPushButton" name="btnHelp" >
-     <property name="text" >
-      <string>Help</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1" >
-    <widget class="QPushButton" name="btnClose" >
-     <property name="toolTip" >
-      <string>Close the dialog</string>
-     </property>
-     <property name="text" >
-      <string>Close</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1" >
-    <widget class="QPushButton" name="btnDelete" >
-     <property name="toolTip" >
-      <string>Delete the currently selected bookmark</string>
-     </property>
-     <property name="text" >
-      <string>Delete</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1" >
-    <widget class="QPushButton" name="btnZoomTo" >
-     <property name="toolTip" >
-      <string>Zoom to the currently selected bookmark</string>
-     </property>
-     <property name="text" >
-      <string>Zoom To</string>
+   <item row="1" column="0" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Help|QDialogButtonBox::NoButton</set>
      </property>
     </widget>
    </item>
@@ -109,11 +57,26 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <tabstops>
-  <tabstop>btnZoomTo</tabstop>
-  <tabstop>btnDelete</tabstop>
-  <tabstop>btnClose</tabstop>
-  <tabstop>btnHelp</tabstop>
+  <tabstop>lstBookmarks</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsBookmarksBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>211</x>
+     <y>342</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>274</x>
+     <y>256</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

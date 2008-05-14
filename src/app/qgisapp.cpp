@@ -33,6 +33,7 @@
 #include <QDesktopWidget>
 #include <QDialog>
 #include <QDir>
+#include <QDockWidget>
 #include <QEvent>
 #include <QFile>
 #include <QFileInfo>
@@ -214,7 +215,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters);
 static void setTitleBarText_( QWidget & qgisApp )
 {
   QString caption = QgisApp::tr("Quantum GIS - ");
-  caption += QString("%1 ('%2') ").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName) + " ";
+  caption += QString("%1 ").arg(QGis::qgisVersion) + " ";
 
   if ( QgsProject::instance()->title().isEmpty() )
   {
@@ -305,7 +306,8 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
 : QMainWindow(parent,fl),
   mSplash(splash)
 {
-  setupUi(this);
+//  setupUi(this);
+  resize(640, 480);
 
   mSplash->showMessage(tr("Checking database"), Qt::AlignHCenter | Qt::AlignBottom);
   qApp->processEvents();
@@ -327,8 +329,8 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
   setTheme(mThemeName);
   updateRecentProjectPaths();
   createCanvas();
-  createOverview();
   createLegend();
+  createOverview();
   createMapTips();
 
   mComposer = new QgsComposer(this); // Map composer
@@ -378,7 +380,7 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
 
   // now build raster file filter
   QgsRasterLayer::buildSupportedRasterFileFilter( mRasterFileFilter );
-  
+/*  
   // Set the background colour for toolbox and overview as they default to 
   // white instead of the window color
   QPalette myPalette = toolBox->palette();
@@ -389,7 +391,7 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
   myPalette.setColor(QPalette::Button, myPalette.window().color());
   mMapLegend->setPalette(myPalette);
   //and for overview control this is done in createOverView method
-  
+*/  
   // Do this last in the ctor to ensure that all members are instantiated properly
   setupConnections();
   //
@@ -493,12 +495,12 @@ void QgisApp::readSettings()
 
   // Add the recently accessed project file paths to the File menu
   mRecentProjectPaths = settings.readListEntry("/UI/recentProjectsList");
-
+/*
   // Set the behaviour when the map splitters are resized
   bool splitterRedraw = settings.value("/qgis/splitterRedraw", true).toBool();
   canvasLegendSplit->setOpaqueResize(splitterRedraw);
   legendOverviewSplit->setOpaqueResize(splitterRedraw);
-}
+*/}
 
 
 //////////////////////////////////////////////////////////////////////
@@ -1314,10 +1316,11 @@ void QgisApp::createCanvas()
   mMapCanvas = new QgsMapCanvas(this, "theMapCanvas" );
   mMapCanvas->setWhatsThis(tr("Map canvas. This is where raster and vector layers are displayed when added to the map"));
   
-  mMapCanvas->setMinimumWidth(10);
-  QVBoxLayout *myCanvasLayout = new QVBoxLayout;
-  myCanvasLayout->addWidget(mMapCanvas);
-  tabWidget->widget(0)->setLayout(myCanvasLayout);
+//  mMapCanvas->setMinimumWidth(10);
+//  QVBoxLayout *myCanvasLayout = new QVBoxLayout;
+//  myCanvasLayout->addWidget(mMapCanvas);
+//  tabWidget->widget(0)->setLayout(myCanvasLayout);
+  setCentralWidget(mMapCanvas);
   // set the focus to the map canvas
   mMapCanvas->setFocus();
 
@@ -1367,10 +1370,16 @@ void QgisApp::createOverview()
   QBitmap overviewPanBmpMask = QBitmap::fromData(QSize(16, 16), pan_mask_bits);
   mOverviewMapCursor = new QCursor(overviewPanBmp, overviewPanBmpMask, 5, 5);
   overviewCanvas->setCursor(*mOverviewMapCursor);
-  QVBoxLayout *myOverviewLayout = new QVBoxLayout;
-  myOverviewLayout->addWidget(overviewCanvas);
-  overviewFrame->setLayout(myOverviewLayout);
-  
+//  QVBoxLayout *myOverviewLayout = new QVBoxLayout;
+//  myOverviewLayout->addWidget(overviewCanvas);
+//  overviewFrame->setLayout(myOverviewLayout);
+  mOverviewDock = new QDockWidget(tr("Overview"), this);
+  mOverviewDock->setObjectName("Overview");
+  mOverviewDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+  mOverviewDock->setWidget(overviewCanvas);
+  addDockWidget(Qt::LeftDockWidgetArea, mOverviewDock);
+  mViewMenu->addAction(mOverviewDock->toggleViewAction());
+
   mMapCanvas->setOverview(overviewCanvas);
   
   // moved here to set anti aliasing to both map canvas and overview
@@ -1395,9 +1404,16 @@ void QgisApp::createLegend()
   mMapLegend->setToggleEditingAction(mActionToggleEditing);
 
   mMapLegend->setWhatsThis(tr("Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties."));
-  QVBoxLayout *myLegendLayout = new QVBoxLayout;
-  myLegendLayout->addWidget(mMapLegend);
-  toolBox->widget(0)->setLayout(myLegendLayout);
+//  QVBoxLayout *myLegendLayout = new QVBoxLayout;
+//  myLegendLayout->addWidget(mMapLegend);
+//  toolBox->widget(0)->setLayout(myLegendLayout);
+  mLegendDock = new QDockWidget(tr("Legend"), this);
+  mLegendDock->setObjectName("Legend");
+  mLegendDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+//  mLegendDock->setFeatures(mLegendDock->features() & ~QDockWidget::DockWidgetClosable);
+  mLegendDock->setWidget(mMapLegend);
+  addDockWidget(Qt::LeftDockWidgetArea, mLegendDock);
+  mViewMenu->addAction(mLegendDock->toggleViewAction());
   return;
 }
 
@@ -1503,8 +1519,8 @@ void QgisApp::saveWindowState()
 
   // store window geometry
   settings.setValue("/UI/geometry", saveGeometry());
-  settings.setValue("/UI/canvasSplitterState", canvasLegendSplit->saveState());
-  settings.setValue("/UI/legendSplitterState", legendOverviewSplit->saveState());
+//  settings.setValue("/UI/canvasSplitterState", canvasLegendSplit->saveState());
+//  settings.setValue("/UI/legendSplitterState", legendOverviewSplit->saveState());
 }
 
 void QgisApp::restoreWindowState()
@@ -1516,8 +1532,8 @@ void QgisApp::restoreWindowState()
 
   // restore window geometry
   restoreGeometry(settings.value("/UI/geometry").toByteArray());
-  canvasLegendSplit->restoreState(settings.value("/UI/canvasSplitterState").toByteArray());
-  legendOverviewSplit->restoreState(settings.value("/UI/legendSplitterState").toByteArray());
+//  canvasLegendSplit->restoreState(settings.value("/UI/canvasSplitterState").toByteArray());
+//  legendOverviewSplit->restoreState(settings.value("/UI/legendSplitterState").toByteArray());
 }
 ///////////// END OF GUI SETUP ROUTINES ///////////////
 
@@ -1527,20 +1543,20 @@ void QgisApp::about()
   if (!abt) {
      QApplication::setOverrideCursor(Qt::WaitCursor);
      abt = new QgsAbout();
-     QString versionString = tr("Version ");
-     versionString += QGis::qgisVersion;
-     versionString += " (";
-     versionString += QGis::qgisSvnVersion;
-     versionString += ")";
+     QString versionString = tr("You are using QGIS version %1 built against code revision %2.")
+       .arg(QGis::qgisVersion)
+       .arg(QGis::qgisSvnVersion);
 #ifdef HAVE_POSTGRESQL
 
-     versionString += tr(" with PostgreSQL support");
+     versionString += tr(" This copy of QGIS has been built with PostgreSQL support.");
 #else
 
-     versionString += tr(" (no PostgreSQL support)");
+     versionString += tr(" This copy of QGIS has been built without PostgreSQL support.");
 #endif
-     versionString += tr("\nCompiled against Qt ") + QT_VERSION_STR
-       + tr(", running against Qt ") + qVersion();
+     versionString += tr("\nThis binary was compiled against Qt %1,"
+         "and is currently running against Qt %2") 
+       .arg(QT_VERSION_STR)
+       .arg(qVersion());
 
 #ifdef WIN32
      // special version stuff for windows (if required)
@@ -1548,12 +1564,6 @@ void QgisApp::about()
 #endif
 
      abt->setVersion(versionString);
-     QString urls = "<p align=\"center\">" +
-       tr("Quantum GIS is licensed under the GNU General Public License") +
-       "</p><p align=\"center\">" +
-       tr("http://www.gnu.org/licenses") +
-       "</p>";
-     abt->setURLs(urls);
      QString whatsNew = "<html><body>" + tr("Version") + " ";
      whatsNew += QGis::qgisVersion;
      whatsNew += "<h3>" + tr("New features") + "</h3>" +
@@ -1589,9 +1599,6 @@ void QgisApp::about()
 
      abt->setWhatsNew(whatsNew);
 
-     // add the available plugins to the list
-     QString providerInfo = "<b>" + tr("Available Data Provider Plugins") + "</b><br>";
-     abt->setPluginInfo(providerInfo + QgsProviderRegistry::instance()->pluginList(true));
      QApplication::restoreOverrideCursor();
   }
   abt->show();
@@ -4264,9 +4271,9 @@ void QgisApp::options()
     double zoomFactor = mySettings.value("/qgis/zoom_factor", 2).toDouble();
     mMapCanvas->setWheelAction((QgsMapCanvas::WheelAction) action, zoomFactor);
 
-    bool splitterRedraw = mySettings.value("/qgis/splitterRedraw", true).toBool();
-    canvasLegendSplit->setOpaqueResize(splitterRedraw);
-    legendOverviewSplit->setOpaqueResize(splitterRedraw);
+//    bool splitterRedraw = mySettings.value("/qgis/splitterRedraw", true).toBool();
+//    canvasLegendSplit->setOpaqueResize(splitterRedraw);
+//    legendOverviewSplit->setOpaqueResize(splitterRedraw);
   }
 }
 

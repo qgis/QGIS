@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>303</width>
-    <height>171</height>
+    <width>312</width>
+    <height>132</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -16,70 +16,18 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
-   <item row="2" column="0" colspan="2" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
+   <item row="0" column="0" >
+    <widget class="QLabel" name="textLabel1" >
+     <property name="text" >
+      <string>Name:</string>
      </property>
-     <property name="spacing" >
-      <number>6</number>
+     <property name="buddy" >
+      <cstring>mNameEdit</cstring>
      </property>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mOkButton" >
-       <property name="text" >
-        <string>OK</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mCancelButton" >
-       <property name="text" >
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>60</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
+    </widget>
    </item>
-   <item row="1" column="1" >
-    <widget class="QComboBox" name="mTypeBox" />
+   <item row="0" column="1" >
+    <widget class="QLineEdit" name="mNameEdit" />
    </item>
    <item row="1" column="0" >
     <widget class="QLabel" name="textLabel2" >
@@ -91,16 +39,13 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1" >
-    <widget class="QLineEdit" name="mNameEdit" />
+   <item row="1" column="1" >
+    <widget class="QComboBox" name="mTypeBox" />
    </item>
-   <item row="0" column="0" >
-    <widget class="QLabel" name="textLabel1" >
-     <property name="text" >
-      <string>Name:</string>
-     </property>
-     <property name="buddy" >
-      <cstring>mNameEdit</cstring>
+   <item row="2" column="0" colspan="2" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -110,9 +55,40 @@
  <tabstops>
   <tabstop>mNameEdit</tabstop>
   <tabstop>mTypeBox</tabstop>
-  <tabstop>mOkButton</tabstop>
-  <tabstop>mCancelButton</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>QgsAddAttrDialogBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>260</x>
+     <y>109</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>307</x>
+     <y>68</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsAddAttrDialogBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>196</x>
+     <y>106</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>6</x>
+     <y>77</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

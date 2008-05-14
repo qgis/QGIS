@@ -18,16 +18,13 @@
 
 #include "qgsabout.h"
 #include "qgsapplication.h"
+#include "qgsproviderregistry.h"
 #include "qgslogger.h"
-#ifdef Q_WS_MAC
-#include <ApplicationServices/ApplicationServices.h>
-#else
-#include <QInputDialog>
-#include <QProcess>
-#include <QSettings>
-#endif
+#include <QDesktopServices>
 #include <QFile>
 #include <QTextStream>
+#include <QImageReader>
+#include <QSqlDatabase>
 #include <iostream>
 
 /* Uncomment this block to use preloaded images
@@ -48,17 +45,12 @@ QgsAbout::~QgsAbout()
 
 void QgsAbout::init()
 {
-
-  // Set up text in dialog.
-  QString format("<p align=center>%1</p><p align=center><a href=%2>%3</a></p>");
-  QString sentence1 = tr("Quantum GIS is licensed under the GNU General Public License");
-  QString link("http://www.gnu.org/licenses");
-  lblUrls->setHtml(format.arg(sentence1).arg(link).arg(link));
-  QgsDebugMsg(format.arg(sentence1).arg(link).arg(link));
+  setPluginInfo();
 
   // set the 60x60 icon pixmap
   QPixmap icon(QgsApplication::iconsPath() + "qgis-icon-60x60.png");
   qgisIcon->setPixmap(icon);
+  
   //read the authors file to populate the contributors list
   QStringList lines;
 
@@ -114,27 +106,23 @@ void QgsAbout::init()
         ".............................................\n").toLocal8Bit().data());
   #endif
     if ( sponsorFile.open( QIODevice::ReadOnly ) ) {
-      QString sponsorHTML = "<html><body><h2>"
-        + tr("QGIS Sponsors") + "</h2><center>"
-
-        + tr("The following have sponsored QGIS by contributing money to fund development and other project costs")
-        + "</center><hr>"
-        + "<table border='1' cellpadding='1' width='100%'>"
-        + "<tr><th>" + tr("Name") + "</th><th>" + tr("Website") + "</th>"
-        + "<th></th>"
-        + "</th><th>" + tr("Name") + "</th><th>" + tr("Website") + "</th></tr>";
+      QString sponsorHTML = ""
+        + tr("<p>The following have sponsored QGIS by contributing "
+            "money to fund development and other project costs</p>")
+        + "<hr>"
+        "<table width='100%'>"
+        "<tr><th>" + tr("Name") + "</th>"
+        "<th>" + tr("Website") + "</th></tr>";
       QString website;
       QTextStream sponsorStream( &sponsorFile );
       // Always use UTF-8
       sponsorStream.setCodec("UTF-8");
       QString sline;
-      int count = 0;
       while ( !sponsorStream.atEnd() ) 
       {
         sline = sponsorStream.readLine(); // line of text excluding '\n'
         //ignore the line if it starts with a hash....
         if (sline.left(1)=="#") continue;
-        count++;
         QStringList myTokens = QStringList::split("|",sline);
         if(myTokens.size() > 1)
         {
@@ -144,25 +132,16 @@ void QgsAbout::init()
         { 
           website = "&nbsp;";
         }
-        if(count == 1){
-          sponsorHTML += "<tr>";
-        }
-        if(count == 2)
-        {
-          // a spacer between donator columns
-          sponsorHTML += "<td></td>";
-        }
+        sponsorHTML += "<tr>";
         sponsorHTML += "<td>" + myTokens[0] + "</td><td>" + website + "</td>";
-        if(count == 2){
-          // close the row 
-          sponsorHTML += "</tr>";
-          count = 0;
-        }
-        
+        // close the row 
+        sponsorHTML += "</tr>";
       }
-      sponsorHTML += "</table></body></html>";
+      sponsorHTML += "</table>";
 
-      txtSponsors->setAcceptRichText(true);
+      QString myStyle = QgsApplication::reportStyleSheet(); 
+      txtSponsors->clear();
+      txtSponsors->document()->setDefaultStyleSheet(myStyle);
       txtSponsors->setHtml(sponsorHTML);
       #ifdef QGISDEBUG
        std::cout << "sponsorHTML:" << sponsorHTML.toAscii().constData() << std::endl;
@@ -176,19 +155,43 @@ void QgsAbout::setVersion(QString v)
   lblVersion->setText(v);
 }
 
-void QgsAbout::setURLs(QString urls)
-{
-  lblUrls->setText(urls);
-}
-
 void QgsAbout::setWhatsNew(QString txt)
 {
-  txtWhatsNew->setText(txt);
+  QString myStyle = QgsApplication::reportStyleSheet(); 
+  txtWhatsNew->clear();
+  txtWhatsNew->document()->setDefaultStyleSheet(myStyle);
+  txtWhatsNew->setHtml(txt);
 }
 
-void QgsAbout::setPluginInfo(QString txt)
+void QgsAbout::setPluginInfo()
 {
-  txtBrowserPlugins->setText(txt);
+  QString myString;
+  //provide info about the plugins available
+  myString += "<b>" + tr("Available QGIS Data Provider Plugins") + "</b><br>";
+  myString += QgsProviderRegistry::instance()->pluginList(true);
+  //qt database plugins
+  myString += "<b>" + tr("Available Qt Database Plugins") + "</b><br>";
+  myString += "<ol>\n<li>\n";
+  QStringList myDbDriverList = QSqlDatabase::drivers ();
+  myString += myDbDriverList.join("</li>\n<li>");
+  myString += "</li>\n</ol>\n";
+  //qt image plugins
+  myString += "<b>" + tr("Available Qt Image Plugins") + "</b><br>";
+  myString += "<ol>\n<li>\n";
+  QList<QByteArray> myImageFormats = QImageReader::supportedImageFormats();
+  QList<QByteArray>::const_iterator myIterator = myImageFormats.begin();
+  while( myIterator != myImageFormats.end() )
+  {
+    QString myFormat = (*myIterator).data();
+    myString += myFormat + "</li>\n<li>";
+    ++myIterator;
+  }
+  myString += "</li>\n</ol>\n";
+
+  QString myStyle = QgsApplication::reportStyleSheet(); 
+  txtBrowserPlugins->clear();
+  txtBrowserPlugins->document()->setDefaultStyleSheet(myStyle);
+  txtBrowserPlugins->setText(myString);
 }
 
 void QgsAbout::on_buttonCancel_clicked()
@@ -213,7 +216,7 @@ void QgsAbout::on_listBox1_currentItemChanged(QListWidgetItem *theItem)
   printf ("Loading mug: %s\n", (const char *)myString.toLocal8Bit().data()); 
 #endif 
   QPixmap *pixmap = new QPixmap(myString);
-  pixAuthorMug->setPixmap(*pixmap);
+  //pixAuthorMug->setPixmap(*pixmap);
   /* Uncomment this block to use preloaded images
   pixAuthorMug->setPixmap(mugs[myString]);
   */
@@ -233,55 +236,8 @@ void QgsAbout::on_btnQgisHome_clicked()
 
 void QgsAbout::openUrl(QString url)
 {
-#ifdef Q_WS_MAC
-  /* Use Mac OS X Launch Services which uses the user's default browser
-   * and will just open a new window if that browser is already running.
-   * QProcess creates a new browser process for each invocation and expects a
-   * commandline application rather than a bundled application.
-   */
-  CFURLRef urlRef = CFURLCreateWithBytes(kCFAllocatorDefault,
-      reinterpret_cast<const UInt8*>(url.utf8().data()), url.length(),
-      kCFStringEncodingUTF8, NULL);
-  OSStatus status = LSOpenCFURLRef(urlRef, NULL);
-  status = 0; // avoid compiler warnings
-  CFRelease(urlRef);
-#else
-  QSettings settings;
-  QString browser = settings.readEntry("/qgis/browser");
-  if (browser.length() == 0)
-  {
-    // ask user for browser and use it
-    bool ok;
-    QString text = QInputDialog::getText(tr("QGIS Browser Selection"),
-	 tr("Enter the name of a web browser to use (eg. konqueror).\n"
-	    "Enter the full path if the browser is not in your PATH.\n"
-            "You can change this option later by selection Options from"
-	    " the Settings menu (Help Browser tab)."),
-        QLineEdit::Normal,
-        QString::null, &ok, this);
-    if (ok && !text.isEmpty())
-    {
-      // user entered something and pressed OK
-      browser = text;
-      // save the setting
-      settings.writeEntry("/qgis/browser", browser);
-    } else
-    {
-      browser = "";
-    }
-  }
-  if (browser.length() > 0)
-  {
-    // find the installed location of the help files
-    // open index.html using browser
-    //XXX for debug on win32    QMessageBox::information(this, "Help opening...", browser + " - " + url);
-    QProcess *helpProcess = new QProcess(this);
-    helpProcess->start(browser, QStringList() << url);
-  }
-#endif
-  /*  mHelpViewer = new QgsHelpViewer(this,"helpviewer",false);
-      mHelpViewer->showContent(mAppDir +"/share/doc","index.html");
-      mHelpViewer->show(); */
+  //use the users default browser
+  QDesktopServices::openUrl(url);
 }
 
 /*

@@ -222,18 +222,46 @@ void QgsApplication::exitQgis()
 
 QString QgsApplication::reportStyleSheet()
 {
-  QString myStyle = ".glossy,h1,h2,h3{ background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #616161, stop: 0.5 #505050, stop: 0.6 #434343, stop:1 #656565); color: white; padding-left: 4px; border: 1px solid #6c6c6c; }";
-  myStyle += "h1 {font-size : 22pt;}";
-  myStyle += "h2 {font-size : 18pt;}";
-  myStyle += "h3 {font-size : 14pt;}";
-  myStyle += ".cellHeader {color:#466aa5; font-size : 12pt;}";
-  myStyle += ".largeCell {color:#000000; font-size : 12pt;}";
-  myStyle += "table "
+  QString myStyle;
+  myStyle = ".glossy{ background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #616161, stop: 0.5 #505050, stop: 0.6 #434343, stop:1 #656565);"
+    "color: white;"
+    "padding-left: 4px;"
+    "padding-top: 20px;"
+    "padding-bottom: 8px;"
+    "border: 1px solid #6c6c6c;"
+    "}"
+  ".glossyBlue{ background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #3087d3, stop: 0.5 #3794e2, stop: 0.6 #43a6f9, stop:1 #2f87d1);"
+    "color: white;"
+    "padding-left: 4px;"
+    "padding-top: 20px;"
+    "padding-bottom: 8px;"
+    "border: 1px solid #44a7fb;"
+    "}"
+  "h1 {font-size : 22pt; }"
+  "h2 {font-size : 18pt; }"
+  "h3 {font-size : 14pt; }"
+  ".glossyh3{ "
+    "background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #616161, stop: 0.5 #505050, stop: 0.6 #434343, stop:1 #656565);"
+    "color: white; "
+    "padding-left: 4px; "
+    "padding-top: 20px;"
+    "padding-bottom: 8px;  "
+    "border: 1px solid #6c6c6c; }"
+  ".headerCell, th {color:#466aa5; "
+    "font-size : 12pt; "
+    "font-weight: bold; "
+    "width: 100%;"
+    "align: left;"
+    "}"
+  ".parameterHeader {font-weight: bold;}"
+  ".largeCell {color:#000000; font-size : 12pt;}"
+  ".alternateCell {font-weight: bold;}"
+  ".rocTable "
   "{"
   "  border-width: 1px 1px 1px 1px;"
   "  border-spacing: 2px;"
-  "  border-style: solid solid solid solid;"
-  "  border-color: black black black black;"
+  "  border-style: solid solid solid solid;" //unsupported
+  "  border-color: black black black black;" //unsupported
   "  border-collapse: separate;"
   "  background-color: white;"
   "}";

@@ -133,7 +133,7 @@ QWidget * QgisAppInterface::getMainWindow()
 
 QToolBox* QgisAppInterface::getToolBox()
 {
-  return qgis->toolBox;
+  return NULL;
 }
 
 void QgisAppInterface::refreshLegend(QgsMapLayer *l)
