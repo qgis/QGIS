@@ -44,6 +44,12 @@ QgsAttributeDialog::QgsAttributeDialog(const QgsFieldMap& fields, const QgsAttri
       myFieldItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
       mTable->setItem(index, 0, myFieldItem);
 
+#if QT_VERSION >= 0x040400
+      // set attribute value
+      QTableWidgetItem * myValueItem = new QTableWidgetItem((*it).toString());
+      mTable->setItem(index, 1, myValueItem);
+#endif
+
       QLineEdit *le = new QLineEdit();
 
       le->setFrame(false);
@@ -57,7 +63,9 @@ QgsAttributeDialog::QgsAttributeDialog(const QgsFieldMap& fields, const QgsAttri
         le->setValidator( new QDoubleValidator(le) );
       }
 
+#if QT_VERSION < 0x040400
       le->setText((*it).toString());
+#endif
 
       mTable->setCellWidget(index, 1, le);
 
