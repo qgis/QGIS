@@ -46,6 +46,7 @@
 %Include qgsrastertransparency.sip
 %Include qgsrasterviewport.sip
 %Include qgsrect.sip
+%Include qgsrendercontext.sip
 %Include qgsrenderer.sip
 %Include qgsscalecalculator.sip
 %Include qgssinglesymbolrenderer.sip

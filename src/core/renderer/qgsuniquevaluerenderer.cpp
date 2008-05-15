@@ -102,30 +102,24 @@ bool QgsUniqueValueRenderer::willRenderFeature(QgsFeature *f)
 {
   return (symbolForFeature(f) != 0);
 }
-    
-void QgsUniqueValueRenderer::renderFeature(QPainter* p, QgsFeature& f,QImage* img, 
-	double* scalefactor, bool selected, double widthScale)
+
+void QgsUniqueValueRenderer::renderFeature(QPainter* p, QgsFeature& f,QImage* img, bool selected, double widthScale, double rasterScaleFactor)
 {
-  if(mSymbolAttributesDirty) {
-    QgsDebugMsg("Missed updateSymbolAttributes() call - doing it now");
-    updateSymbolAttributes();
-  }
-    
   QgsSymbol* symbol = symbolForFeature(&f);
   if(!symbol) //no matching symbol
-  {
-    if ( img && mVectorType == QGis::Point )
     {
-      img->fill(0);
+      if ( img && mVectorType == QGis::Point )
+	{
+	  img->fill(0);
+	}
+      else if ( mVectorType != QGis::Point )
+	{
+	  p->setPen(Qt::NoPen);
+	  p->setBrush(Qt::NoBrush);
+	}
+      return;
     }
-    else if ( mVectorType != QGis::Point )
-    {
-      p->setPen(Qt::NoPen);
-      p->setBrush(Qt::NoBrush);
-    }
-    return;
-  }
-
+  
   // Point 
   if ( img && mVectorType == QGis::Point ) 
   {
@@ -137,38 +131,38 @@ void QgsUniqueValueRenderer::renderFeature(QPainter* p, QgsFeature& f,QImage* im
       //first find out the value for the scale classification attribute
       const QgsAttributeMap& attrs = f.attributeMap();
       fieldScale = sqrt(fabs(attrs[symbol->scaleClassificationField()].toDouble()));
-      QgsDebugMsgLevel(QString("Feature has field scale factor %1").arg(fieldScale), 3);
+      QgsDebugMsg(QString("Feature has field scale factor %1").arg(fieldScale));
     }
     if ( symbol->rotationClassificationField() >= 0 )
     {
       const QgsAttributeMap& attrs = f.attributeMap();
       rotation = attrs[symbol->rotationClassificationField()].toDouble();
-      QgsDebugMsgLevel(QString("Feature has rotation factor %1").arg(rotation), 3);
+      QgsDebugMsg(QString("Feature has rotation factor %1").arg(rotation));
     }
     *img = symbol->getPointSymbolAsImage( widthScale, selected, mSelectionColor,
-      *scalefactor * fieldScale, rotation);
-  }  
+                                            rasterScaleFactor * fieldScale, rotation);
+}  
   // Line, polygon
   else if ( mVectorType != QGis::Point )
-  {
-    if( !selected ) 
     {
-      QPen pen=symbol->pen();
-      pen.setWidthF ( widthScale * pen.width() );
-      p->setPen(pen);
-      p->setBrush(symbol->brush());
+      if( !selected ) 
+	{
+	  QPen pen=symbol->pen();
+	  pen.setWidthF ( widthScale * pen.widthF() );
+	  p->setPen(pen);
+	  p->setBrush(symbol->brush());
+	}
+      else
+	{
+	  QPen pen=symbol->pen();
+	  pen.setWidthF ( widthScale * pen.widthF() );
+	  pen.setColor(mSelectionColor);
+	  QBrush brush=symbol->brush();
+		brush.setColor(mSelectionColor);
+		p->setPen(pen);
+		p->setBrush(brush);
+	}
     }
-    else
-    {
-      QPen pen=symbol->pen();
-      pen.setWidthF ( widthScale * pen.width() );
-      pen.setColor(mSelectionColor);
-      QBrush brush=symbol->brush();
-      brush.setColor(mSelectionColor);
-      p->setPen(pen);
-      p->setBrush(brush);
-    }
-  }
 }
 
 QgsSymbol* QgsUniqueValueRenderer::symbolForFeature(const QgsFeature* f)

@@ -105,16 +105,8 @@ public:
      QPixmap getPaletteAsPixmap();
      
     /** \brief This is called when the view on the rasterlayer needs to be refreshed (redrawn).   
-         
-        \param drawingToEditingCanvas  Are we drawing to an editable canvas? 
-                                       currently not used, but retain to be similar to 
-                                       the QgsVectorLayer interface 
      */
-    bool draw(QPainter * theQPainter,
-              QgsRect & theViewExtent, 
-              QgsMapToPixel * theQgsMapToPixel,
-              QgsCoordinateTransform* ct,
-              bool drawingToEditingCanvas);
+    bool draw(QgsRenderContext& renderContext);
 
     /** \brief This is an overloaded version of the above function that is called by both draw above and drawThumbnail */
     void draw(QPainter * theQPainter, QgsRasterViewPort * myRasterViewPort,

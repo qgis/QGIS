@@ -28,7 +28,7 @@ class QgsMapRender : QObject
     //! returns current extent
     QgsRect extent();
     
-    QgsMapToPixel* coordXForm();
+    const QgsMapToPixel* coordXForm();
     
     double scale() const;
     double mupp() const;

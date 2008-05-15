@@ -68,7 +68,7 @@ public:
     void updateCheckState();
 
     /**Updates symbology of the layer and copies symbology to other layer files in the group*/
-    void refreshSymbology(const QString& key);
+    void refreshSymbology(const QString& key, double widthScale = 1.0);
 
     /**Goes through all the legendlayerfiles and adds editing/overview pixmaps to the icon. If not all layer files
     have the same editing/overview state, a tristate is applied*/
@@ -94,7 +94,7 @@ public:
   protected:
     
     /** Prepare and change symbology for vector layer */
-    void vectorLayerSymbology(const QgsVectorLayer* mapLayer);
+    void vectorLayerSymbology(const QgsVectorLayer* mapLayer, double widthScale = 1.0);
     
     /** Prepare and change symbology for raster layer */
     void rasterLayerSymbology(QgsRasterLayer* mapLayer);

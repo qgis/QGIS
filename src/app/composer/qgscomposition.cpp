@@ -551,7 +551,12 @@ void QgsComposition::keyPressEvent ( QKeyEvent * e )
   std::cout << "QgsComposition::keyPressEvent() key = " << e->key() << std::endl;
 #endif
 
-  if ( e->key() == Qt::Key_Delete && mSelectedItem ) { // delete
+  if(!mSelectedItem)
+    {
+      return;
+    }
+
+  if ( e->key() == Qt::Key_Delete) { // delete
 
     QgsComposerItem *coi = dynamic_cast <QgsComposerItem *> (mSelectedItem);
     coi->setSelected ( false );
@@ -568,6 +573,22 @@ void QgsComposition::keyPressEvent ( QKeyEvent * e )
     mSelectedItem = 0;
     mCanvas->update();
   }
+  else if(e->key() == Qt::Key_Left)
+    {
+      mSelectedItem->moveBy(-1.0, 0.0);
+    }
+  else if(e->key() == Qt::Key_Right)
+    {
+      mSelectedItem->moveBy(1.0, 0.0);
+    }
+  else if(e->key() == Qt::Key_Down)
+    {
+      mSelectedItem->moveBy(0.0, 1.0);
+    }
+  else if(e->key() == Qt::Key_Up)
+    {
+      mSelectedItem->moveBy(0.0, -1.0);
+    }
 }
 
 void QgsComposition::paperSizeChanged ( void )

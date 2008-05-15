@@ -53,9 +53,9 @@ class CORE_EXPORT QgsSymbol{
     /**Sets the fill color*/
     virtual void setFillColor(QColor c);
     /**Get the line width*/
-    virtual int lineWidth() const;
+    virtual double lineWidth() const;
     /**Sets the line width*/
-    virtual void setLineWidth(int w);
+    virtual void setLineWidth(double w);
     /**Sets the pen*/
     virtual void setPen(QPen p);
     /**Gets a reference to m_pen. Don't use the pen to change color/style  */
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsSymbol{
         bool selected = false,
         QColor selectionColor = Qt::yellow,
         double scale = 1.0,
-        double rotation = 1.0);
+        double rotation = 0.0);
 
     /**Writes the contents of the symbol to a configuration file
       @ return true in case of success*/

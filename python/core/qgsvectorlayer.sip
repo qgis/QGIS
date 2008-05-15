@@ -273,31 +273,15 @@ existing rings, 5 no feature found where ring can be inserted*/
   /** Draws the layer using coordinate transformation
    *  @return FALSE if an error occurred during drawing
    */
-  bool draw(QPainter * p,
-            QgsRect & viewExtent,
-            QgsMapToPixel * cXf,
-            QgsCoordinateTransform* ct,
-            bool drawingToEditingCanvas);
+  bool draw(QgsRenderContext& renderContext);
 
   /** Draws the layer labels using coordinate transformation */
-  void drawLabels(QPainter * p, QgsRect & viewExtent, QgsMapToPixel * cXf, QgsCoordinateTransform* ct);
-
-  /** \brief Draws the layer using coordinate transformation
-   *  \param widthScale line width scale
-   *  \param symbolScale symbol scale
-   */
-  void draw(QPainter * p,
-            QgsRect & viewExtent,
-            QgsMapToPixel * cXf,
-            QgsCoordinateTransform* ct,
-            bool drawingToEditingCanvas,
-            double widthScale,
-            double symbolScale);
+  void drawLabels(QgsRenderContext& renderContext);
 
   /** \brief Draws the layer labels using coordinate transformation
    *  \param scale size scale, applied to all values in pixels
    */
-  void drawLabels(QPainter * p, QgsRect & viewExtent, QgsMapToPixel * cXf, QgsCoordinateTransform* ct, double scale);
+  void drawLabels(QPainter * p, const QgsRect& viewExtent, const QgsMapToPixel* cXf, const QgsCoordinateTransform* ct, double scale);
 
   /** returns array of added features */
   QList<QgsFeature>& addedFeatures();

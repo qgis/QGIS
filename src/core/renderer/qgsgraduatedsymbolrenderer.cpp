@@ -93,23 +93,22 @@ bool QgsGraduatedSymbolRenderer::willRenderFeature(QgsFeature *f)
   return (symbolForFeature(f) != 0);
 }
 
-void QgsGraduatedSymbolRenderer::renderFeature(QPainter * p, QgsFeature & f, QImage* img, 
-	double* scalefactor, bool selected, double widthScale)
+void QgsGraduatedSymbolRenderer::renderFeature(QPainter * p, QgsFeature & f, QImage* img, bool selected, double widthScale, double rasterScaleFactor)
 {
   QgsSymbol* theSymbol = symbolForFeature(&f);
   if(!theSymbol)
-  {
-    if ( img && mVectorType == QGis::Point )
     {
-      img->fill(0);
+      if ( img && mVectorType == QGis::Point )
+	{
+	  img->fill(0);
+	}
+      else if ( mVectorType != QGis::Point )
+	{
+	  p->setPen(Qt::NoPen);
+	  p->setBrush(Qt::NoBrush);
+	}
+      return;
     }
-    else if ( mVectorType != QGis::Point )
-    {
-      p->setPen(Qt::NoPen);
-      p->setBrush(Qt::NoBrush);
-    }
-    return;
-  }
 
   //set the qpen and qpainter to the right values
   // Point 
@@ -132,32 +131,31 @@ void QgsGraduatedSymbolRenderer::renderFeature(QPainter * p, QgsFeature & f, QIm
       QgsDebugMsg(QString("Feature has rotation factor %1").arg(rotation));
     }
     *img = theSymbol->getPointSymbolAsImage( widthScale, selected, mSelectionColor,
-      *scalefactor * fieldScale, rotation);
+                                            rasterScaleFactor * fieldScale, rotation);
   } 
 
   // Line, polygon
   if ( mVectorType != QGis::Point )
-  {
-    if( !selected ) 
     {
-      QPen pen=theSymbol->pen();
-      pen.setWidthF ( widthScale * pen.width() );
-      p->setPen(pen);
-      p->setBrush(theSymbol->brush());
+      if( !selected ) 
+	{
+	  QPen pen=theSymbol->pen();
+	  pen.setWidthF ( widthScale * pen.widthF() );
+	  p->setPen(pen);
+	  p->setBrush(theSymbol->brush());
+	}
+      else
+	{
+	  QPen pen=theSymbol->pen();
+	  pen.setColor(mSelectionColor);
+	  pen.setWidthF ( widthScale * pen.widthF() );
+	  QBrush brush=theSymbol->brush();
+	  brush.setColor(mSelectionColor);
+	  p->setPen(pen);
+	  p->setBrush(brush);
+	}
     }
-    else
-    {
-      QPen pen=theSymbol->pen();
-      pen.setColor(mSelectionColor);
-      pen.setWidthF ( widthScale * pen.width() );
-      QBrush brush=theSymbol->brush();
-      brush.setColor(mSelectionColor);
-      p->setPen(pen);
-      p->setBrush(brush);
-    }
-  }
 }
-
 
 QgsSymbol* QgsGraduatedSymbolRenderer::symbolForFeature(const QgsFeature* f)
 {

@@ -100,7 +100,7 @@ void QgsMapOverviewCanvas::reflectChangedExtent()
     return;
   }
   
-  QgsMapToPixel* cXf = mMapRender->coordXForm();
+  const QgsMapToPixel* cXf = mMapRender->coordXForm();
   QgsPoint ll(extent.xMin(), extent.yMin());
   QgsPoint ur(extent.xMax(), extent.yMax());
   if(cXf)
@@ -184,7 +184,7 @@ void QgsMapOverviewCanvas::mouseReleaseEvent(QMouseEvent * e)
   if ((e->state() && Qt::LeftButton) == Qt::LeftButton)
   {
     // set new extent
-    QgsMapToPixel* cXf = mMapRender->coordXForm();
+    const QgsMapToPixel* cXf = mMapRender->coordXForm();
     QRect rect = mPanningWidget->geometry();
     
     QgsPoint center = cXf->toMapCoordinates(rect.center());

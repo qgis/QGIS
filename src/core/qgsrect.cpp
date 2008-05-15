@@ -127,7 +127,7 @@ void QgsRect::expand(double scaleFactor, const QgsPoint * cp)
   ymax = centerY + newHeight;
 }
 
-QgsRect QgsRect::intersect(QgsRect * rect)
+QgsRect QgsRect::intersect(QgsRect * rect) const
 {
   QgsRect intersection = QgsRect();
   

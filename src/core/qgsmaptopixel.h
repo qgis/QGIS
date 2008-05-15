@@ -47,15 +47,15 @@ class CORE_EXPORT QgsMapToPixel{
     * @param p Point to transform
     * @return QgsPoint in device coordinates
     */
-    QgsPoint transform(const QgsPoint& p);
-    void transform(QgsPoint* p);
+    QgsPoint transform(const QgsPoint& p) const;
+    void transform(QgsPoint* p) const;
     /*! Transform the point specified by x,y from map (world) 
      * coordinates to device coordinates
      * @param x x cordinate o point to transform
      * @param y y coordinate of point to transform
      * @return QgsPoint in device coordinates
     */
-    QgsPoint transform(double x, double y);
+    QgsPoint transform(double x, double y) const;
        /*! Tranform device coordinates to map (world)  coordinates
     * @param x x coordinate of point to be converted to map cooordinates
     * @param y y coordinate of point to be converted to map cooordinates
@@ -65,29 +65,29 @@ class CORE_EXPORT QgsMapToPixel{
     /* Transform device coordinates to map coordinates. Modifies the
        given coordinates in place. Intended as a fast way to do the
        transform. */ 
-    void transformInPlace(double& x, double& y);
+    void transformInPlace(double& x, double& y) const;
 
     /* Transform device coordinates to map coordinates. Modifies the
        given coordinates in place. Intended as a fast way to do the
        transform. */ 
     void transformInPlace(std::vector<double>& x, 
-			  std::vector<double>& y);
+			  std::vector<double>& y) const;
 
-    QgsPoint toMapCoordinates(int x, int y);
+    QgsPoint toMapCoordinates(int x, int y) const;
      /*! Tranform device coordinates to map (world)  coordinates
     * @param p Point to be converted to map cooordinates
     * @return QgsPoint in map coorndiates
     */
-    QgsPoint toMapCoordinates(QPoint p);
+    QgsPoint toMapCoordinates(QPoint p) const;
     
-    QgsPoint toMapPoint(int x, int y);
+    QgsPoint toMapPoint(int x, int y) const;
     /*! Set map units per pixel
     * @param mupp Map units per pixel
     */
     void setMapUnitsPerPixel(double mupp);
     
     //! Return current map units per pixel
-    double mapUnitsPerPixel();
+    double mapUnitsPerPixel() const;
 
     //! Set maximum y value
     void setYmax(double ymax);

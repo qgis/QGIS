@@ -154,77 +154,75 @@ void QgsGraduatedSymbolDialog::apply()
   }
 
   QgsGraduatedSymbolRenderer* renderer = new QgsGraduatedSymbolRenderer(mVectorLayer->vectorType());
-
   for (int item=0;item<mClassListWidget->count();++item)
-  {
-    QString classbreak=mClassListWidget->item(item)->text();
-    std::map<QString,QgsSymbol*>::iterator it=mEntries.find(classbreak);
-    if(it==mEntries.end())
     {
-      continue;
+      QString classbreak=mClassListWidget->item(item)->text();
+      std::map<QString,QgsSymbol*>::iterator it=mEntries.find(classbreak);
+      if(it==mEntries.end())
+	{
+	  continue;
+	}
+	  
+      QString lower_bound=it->second->lowerValue();
+      QString upper_bound=it->second->upperValue();
+      QString label=it->second->label();
+      
+      QgsSymbol* sy = new QgsSymbol(mVectorLayer->vectorType(), lower_bound, upper_bound, label);
+      
+      sy->setColor(it->second->pen().color());
+      sy->setLineStyle(it->second->pen().style());
+      sy->setLineWidth(it->second->pen().widthF());
+      
+      if (mVectorLayer->vectorType() == QGis::Point)
+	{
+	  sy->setNamedPointSymbol(it->second->pointSymbolName());
+	  sy->setPointSize(it->second->pointSize());
+	  sy->setScaleClassificationField(it->second->scaleClassificationField());
+	  sy->setRotationClassificationField(it->second->rotationClassificationField());
+	}
+      
+      if (mVectorLayer->vectorType() != QGis::Line)
+	{
+	  sy->setFillColor(it->second->brush().color());
+	  sy->setCustomTexture(it->second->customTexture());//necessary?
+	  sy->setFillStyle(it->second->brush().style());
+	}
+	  
+      //test, if lower_bound is numeric or not (making a subclass of QString would be the proper solution)
+      bool lbcontainsletter = false;
+      for (int j = 0; j < lower_bound.length(); j++)
+	{
+	  if (lower_bound.ref(j).isLetter())
+	    {
+	      lbcontainsletter = true;
+	    }
+	}
+      
+      //test, if upper_bound is numeric or not (making a subclass of QString would be the proper solution)
+      bool ubcontainsletter = false;
+      for (int j = 0; j < upper_bound.length(); j++)
+	{
+	  if (upper_bound.ref(j).isLetter())
+	    {
+	      ubcontainsletter = true;
+	    }
+	}
+      if (lbcontainsletter == false && ubcontainsletter == false && lower_bound.length() > 0 && upper_bound.length() > 0) //only add the item if the value bounds do not contain letters and are not null strings
+	{
+	  renderer->addSymbol(sy);
+	}
+      else
+	{
+	  delete sy;
+	}
     }
-
-    QString lower_bound=it->second->lowerValue();
-    QString upper_bound=it->second->upperValue();
-    QString label=it->second->label();
-
-    QgsSymbol* sy = new QgsSymbol(mVectorLayer->vectorType(), lower_bound, upper_bound, label);
-
-    sy->setColor(it->second->pen().color());
-    sy->setLineStyle(it->second->pen().style());
-    sy->setLineWidth(it->second->pen().width());
-
-    if (mVectorLayer->vectorType() == QGis::Point)
-    {
-      sy->setNamedPointSymbol(it->second->pointSymbolName());
-      sy->setPointSize(it->second->pointSize());
-      sy->setScaleClassificationField(it->second->scaleClassificationField());
-      sy->setRotationClassificationField(it->second->rotationClassificationField());
-
-    }
-
-    if (mVectorLayer->vectorType() != QGis::Line)
-    {
-      sy->setFillColor(it->second->brush().color());
-      sy->setCustomTexture(it->second->customTexture());//necessary?
-      sy->setFillStyle(it->second->brush().style());
-    }
-
-    //test, if lower_bound is numeric or not (making a subclass of QString would be the proper solution)
-    bool lbcontainsletter = false;
-    for (int j = 0; j < lower_bound.length(); j++)
-    {
-      if (lower_bound.ref(j).isLetter())
-      {
-        lbcontainsletter = true;
-      }
-    }
-
-    //test, if upper_bound is numeric or not (making a subclass of QString would be the proper solution)
-    bool ubcontainsletter = false;
-    for (int j = 0; j < upper_bound.length(); j++)
-    {
-      if (upper_bound.ref(j).isLetter())
-      {
-        ubcontainsletter = true;
-      }
-    }
-    if (lbcontainsletter == false && ubcontainsletter == false && lower_bound.length() > 0 && upper_bound.length() > 0) //only add the item if the value bounds do not contain letters and are not null strings
-    {
-      renderer->addSymbol(sy);
-    }
-    else
-    {
-      delete sy;
-    }
-  }
   renderer->updateSymbolAttributes();
-
+  
   std::map<QString,int>::iterator iter=mFieldMap.find(classificationComboBox->currentText());
   if(iter!=mFieldMap.end())
-  {
-    renderer->setClassificationField(iter->second);
-  }
+    {
+      renderer->setClassificationField(iter->second);
+    }
   mVectorLayer->setRenderer(renderer);
 }
 
@@ -292,7 +290,7 @@ void QgsGraduatedSymbolDialog::adjustClassification()
       pen.setColor(Qt::black); 
     } 
 
-    pen.setWidth(1);
+    pen.setWidth(0.4);
     brush.setStyle(Qt::SolidPattern);
     symbol->setPen(pen);
     symbol->setBrush(brush);

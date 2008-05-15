@@ -213,7 +213,7 @@ bool QgsMapCanvas::isDrawing()
 
 // return the current coordinate transform based on the extents and
 // device size
-QgsMapToPixel * QgsMapCanvas::getCoordinateTransform()
+const QgsMapToPixel * QgsMapCanvas::getCoordinateTransform()
 {
   return mMapRender->coordXForm();
 }
@@ -586,7 +586,7 @@ void QgsMapCanvas::keyPressEvent(QKeyEvent * e)
 
   if(mDrawing)
     {
-      return;
+      e->ignore();
     }
 
   emit keyPressed(e);
@@ -766,7 +766,19 @@ void QgsMapCanvas::resizeEvent(QResizeEvent * e)
   
   lastSize = e->size();
 
-  if (isAlreadyIn || mDrawing) return;
+  if (isAlreadyIn || mDrawing)
+    {
+      //cancel current render progress
+      if(mMapRender)
+	{
+	  QgsRenderContext* theRenderContext = mMapRender->renderContext();
+	  if(theRenderContext)
+	    {
+	      theRenderContext->setRenderingStopped(true);
+	    }
+	}
+      return;
+    }
   isAlreadyIn = true;
 
   while (lastSize != QSize(-1,-1))
@@ -1038,6 +1050,15 @@ QGis::units QgsMapCanvas::mapUnits() const
 void QgsMapCanvas::setRenderFlag(bool theFlag)
 {
   mRenderFlag = theFlag;
+  if(mMapRender)
+    {
+      QgsRenderContext* rc = mMapRender->renderContext();
+      if(rc)
+	{
+	  rc->setRenderingStopped(!theFlag);
+	}
+    }
+
   if(mRenderFlag)
     {
       refresh();

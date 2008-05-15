@@ -76,7 +76,7 @@ void QgsMapToolZoom::canvasReleaseEvent(QMouseEvent * e)
     mZoomRect.setRight(e->pos().x());
     mZoomRect.setBottom(e->pos().y());
     
-    QgsMapToPixel *coordXForm = mCanvas->getCoordinateTransform();
+    const QgsMapToPixel* coordXForm = mCanvas->getCoordinateTransform();
     
     // set the extent to the zoomBox  
     QgsPoint ll = coordXForm->toMapCoordinates(mZoomRect.left(), mZoomRect.bottom());

@@ -330,7 +330,7 @@ private:
     //QPixmap *mBackgroundPixmap;
 
     //! Transformation
-    QgsMapToPixel *mTransform;
+    const QgsMapToPixel* mTransform;
 
     //! Last point where user clicked (map units)
     QgsPoint mLastPoint;

@@ -81,7 +81,7 @@ void QgsMapToolSelect::canvasReleaseEvent(QMouseEvent * e)
   mSelectRect.setRight(e->pos().x());
   mSelectRect.setBottom(e->pos().y());
 
-  QgsMapToPixel* transform = mCanvas->getCoordinateTransform();
+  const QgsMapToPixel* transform = mCanvas->getCoordinateTransform();
   QgsPoint ll = transform->toMapCoordinates(mSelectRect.left(), mSelectRect.bottom());
   QgsPoint ur = transform->toMapCoordinates(mSelectRect.right(), mSelectRect.top());
 
