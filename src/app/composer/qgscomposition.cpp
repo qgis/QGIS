@@ -296,7 +296,6 @@ void QgsComposition::mousePressEvent(QMouseEvent* e)
         mRectangleItem->setBrush( Qt::NoBrush );
         mRectangleItem->setPen( QPen(QColor(0,0,0), 0) );
         mRectangleItem->setZValue(100);
-        //mRectangleItem->setActive(false);
         mRectangleItem->show();
         mToolStep = 1;
       }
@@ -496,6 +495,7 @@ void QgsComposition::mouseReleaseEvent(QMouseEvent* e)
           mToolStep = 0;
         }
         mCanvas->update();
+        mView->unsetCursor();
       }
       break;
 
@@ -525,6 +525,7 @@ void QgsComposition::mouseReleaseEvent(QMouseEvent* e)
         } else {
             mToolStep = 0;
         }
+        mView->unsetCursor();
       }
       break;
 
