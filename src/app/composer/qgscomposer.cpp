@@ -24,6 +24,7 @@
 #include "qgsproject.h"
 #include "qgsmessageviewer.h"
 #include "qgscontexthelp.h"
+#include "qgscursors.h"
 
 #include <QDesktopWidget>
 #include <QFileDialog>
@@ -858,6 +859,7 @@ void QgsComposer::on_mActionAddNewMap_activated(void)
   mComposition->setTool ( QgsComposition::AddMap );
   setToolActionsOff();
   mActionAddNewMap->setOn ( true );
+  mView->setCursor(QCursor(cross_hair_cursor));
 }
 
 void QgsComposer::on_mActionAddNewVectLegend_activated(void)
@@ -886,6 +888,7 @@ void QgsComposer::on_mActionAddImage_activated(void)
   mComposition->setTool ( QgsComposition::AddPicture );
   setToolActionsOff();
   mActionAddImage->setOn ( true );
+  mView->setCursor(QCursor(cross_hair_cursor));
 }
 
 void QgsComposer::moveEvent ( QMoveEvent *e ) { saveWindowState(); }
