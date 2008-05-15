@@ -78,8 +78,7 @@ public:
      *
      * \param point[in]  a coordinate in the CRS of this layer.
      */
-    // TODO: wrap
-    //void identify(const QgsPoint & point, std::map<QString,QString>& results);
+    void identify(const QgsPoint & point, QMap<QString,QString>& results /Out/);
 
     /** \brief Identify arbitrary details from the WMS server found on the point position
      *

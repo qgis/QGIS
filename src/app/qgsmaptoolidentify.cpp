@@ -131,7 +131,7 @@ void QgsMapToolIdentify::identifyRasterLayer(QgsRasterLayer* layer, const QgsPoi
   if (!layer)
     return;
   
-  std::map<QString, QString> attributes;
+  QMap<QString, QString> attributes;
   layer->identify(point, attributes);
   
   if(!mResults)
@@ -152,10 +152,10 @@ void QgsMapToolIdentify::identifyRasterLayer(QgsRasterLayer* layer, const QgsPoi
   mResults->setTitle( layer->name() );
   mResults->setColumnText ( 0, QObject::tr("Band") );
 
-  std::map<QString, QString>::iterator it;
+  QMap<QString, QString>::iterator it;
   for (it = attributes.begin(); it != attributes.end(); it++)
   {
-    mResults->addAttribute(it->first, it->second);
+    mResults->addAttribute(it.key(), it.value());
   }
 
   mResults->addAttribute( tr("(clicked coordinate)"), point.stringRep() );

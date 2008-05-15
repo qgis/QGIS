@@ -4804,7 +4804,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
 
 
 
-void QgsRasterLayer::identify(const QgsPoint& point, std::map<QString,QString>& results)
+void QgsRasterLayer::identify(const QgsPoint& point, QMap<QString,QString>& results)
 {
   double x = point.x();
   double y = point.y();
