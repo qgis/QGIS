@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#include <qstring.h>
 #include "qgspluginitem.h"
 
 QgsPluginItem::QgsPluginItem(QString _name, QString _description, QString _fullPath, QString _type, bool _python):

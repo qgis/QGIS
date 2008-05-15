@@ -21,7 +21,7 @@
 #define QGSPROVIDERMETADATA_H
 
 
-#include <qstring.h>
+#include <QString>
 
 
 /** holds data provider key, description, and associated shared library file information

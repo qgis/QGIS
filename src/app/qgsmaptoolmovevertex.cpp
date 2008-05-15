@@ -20,6 +20,7 @@
 #include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
+#include <QMouseEvent>
 
 QgsMapToolMoveVertex::QgsMapToolMoveVertex(QgsMapCanvas* canvas): QgsMapToolVertexEdit(canvas)
 {

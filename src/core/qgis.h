@@ -29,7 +29,8 @@
 * This API documentation provides information about all classes that make up QGIS.
 */
 
-#include <qevent.h>
+#include <QEvent>
+#include <QString>
 
 class CORE_EXPORT QGis
 { 

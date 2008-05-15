@@ -18,8 +18,7 @@
  /* $Id$ */
 #include <iostream>
 #include <sqlite3.h>
-#include <qstring.h>
-#include <qtextstream.h>
+#include <QTextStream>
 
 #include <cassert>
 

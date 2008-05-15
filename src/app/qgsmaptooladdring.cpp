@@ -21,6 +21,7 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include <QMessageBox>
+#include <QMouseEvent>
 
 QgsMapToolAddRing::QgsMapToolAddRing(QgsMapCanvas* canvas): QgsMapToolCapture(canvas, QgsMapToolCapture::CapturePolygon)
 {

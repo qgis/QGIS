@@ -24,8 +24,9 @@
 #include "qgsmaprender.h"
 #include "qgsspatialrefsys.h"
 
-#include <QSettings>
+#include <QCloseEvent>
 #include <QLocale>
+#include <QSettings>
 
 
 QgsMeasureDialog::QgsMeasureDialog(QgsMeasureTool* tool, Qt::WFlags f)

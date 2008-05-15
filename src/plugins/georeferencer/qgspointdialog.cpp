@@ -18,6 +18,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QMouseEvent>
 #include <QPainter>
 #include <QTextStream>
 

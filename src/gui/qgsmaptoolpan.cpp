@@ -19,6 +19,7 @@
 #include "qgscursors.h"
 #include <QBitmap>
 #include <QCursor>
+#include <QMouseEvent>
 
 
 QgsMapToolPan::QgsMapToolPan(QgsMapCanvas* canvas)

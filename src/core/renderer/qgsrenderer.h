@@ -27,6 +27,7 @@ class QDomDocument;
 class QColor;
 
 #include "qgis.h"
+#include <QList>
 
 class QgsSymbol;
 

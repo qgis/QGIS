@@ -16,7 +16,7 @@
 #ifndef QGSPGUTIL_H
 #define QGSPGUTIL_H
 #include <map>
-#include <qstringlist.h>
+#include <QStringList>
 extern "C"
 {
   #include <libpq-fe.h>

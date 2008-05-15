@@ -22,8 +22,6 @@
 
 #include <iostream>
 
-#include <qstring.h>
-
 #include "qgspoint.h"
 
 /*! \class QgsLine

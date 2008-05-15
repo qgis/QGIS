@@ -26,6 +26,7 @@
 #include "qgscursors.h"
 
 #include <QMessageBox>
+#include <QMouseEvent>
 #include <QSettings>
 
 QgsMeasureTool::QgsMeasureTool(QgsMapCanvas* canvas, bool measureArea)

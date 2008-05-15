@@ -20,6 +20,7 @@
 #include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
+#include <QMouseEvent>
 
 QgsMapToolAddVertex::QgsMapToolAddVertex(QgsMapCanvas* canvas): QgsMapToolVertexEdit(canvas), mRubberBand(0)
 {

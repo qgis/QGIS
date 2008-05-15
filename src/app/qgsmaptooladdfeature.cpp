@@ -27,6 +27,7 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include <QMessageBox>
+#include <QMouseEvent>
 
 QgsMapToolAddFeature::QgsMapToolAddFeature(QgsMapCanvas* canvas, enum CaptureTool tool): QgsMapToolCapture(canvas, tool)
 {

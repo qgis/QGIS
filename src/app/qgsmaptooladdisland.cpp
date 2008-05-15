@@ -21,6 +21,7 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include <QMessageBox>
+#include <QMouseEvent>
 
 QgsMapToolAddIsland::QgsMapToolAddIsland(QgsMapCanvas* canvas): QgsMapToolCapture(canvas, QgsMapToolCapture::CapturePolygon)
 {

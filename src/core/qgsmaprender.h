@@ -17,6 +17,7 @@
 #ifndef QGSMAPRENDER_H
 #define QGSMAPRENDER_H
 
+#include <QSize>
 #include <QStringList>
 
 #include "qgis.h"

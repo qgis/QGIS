@@ -19,9 +19,8 @@
 
 #include <iostream>
 
-#include <QSettings>
 #include <QComboBox>
-#include <qglobal.h>
+#include <QSettings>
 
 #include "qgsfield.h"
 #include "qgspastetransformations.h"

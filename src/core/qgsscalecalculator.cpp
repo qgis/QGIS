@@ -19,7 +19,6 @@
 
 #include <assert.h>
 #include <math.h>
-#include <qstring.h>
 #include "qgslogger.h"
 #include "qgsrect.h"
 #include "qgsscalecalculator.h"

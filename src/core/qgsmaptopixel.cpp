@@ -15,10 +15,9 @@
  *                                                                         *
  ***************************************************************************/
  /* $Id$ */
-#include <qstring.h>
-#include <qtextstream.h>
-#include <qpoint.h>
 #include "qgsmaptopixel.h"
+#include <QPoint>
+#include <QTextStream>
 
 QgsMapToPixel::QgsMapToPixel(double mupp, 
 				    double ymax,

@@ -40,6 +40,7 @@
 #include <qspinbox.h>
 #include <qglobal.h>
 
+#include <QMouseEvent>
 #include <QRubberBand>
 
 #include <qgsrasterlayer.h>

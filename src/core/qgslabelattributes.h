@@ -17,8 +17,6 @@
 #ifndef QGSLABELATTRIBUTES_H
 #define QGSLABELATTRIBUTES_H
 
-#include <qnamespace.h>
-
 #include <QBrush>
 #include <QFont>
 #include <QPen>

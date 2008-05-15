@@ -17,7 +17,7 @@
 /* $Id$ */
 #ifndef QGSPLUGINITEM_H
 #define QGSPLUGINITEM_H
-class QString;
+#include <QString>
 /**
 Class to contain information about a loadable plugin, including its name, description and the full path to the shared library
 

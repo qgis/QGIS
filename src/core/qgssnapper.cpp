@@ -20,6 +20,7 @@
 #include "qgsmaptopixel.h"
 #include "qgsvectorlayer.h"
 #include <QMultiMap>
+#include <QPoint>
 #include <cmath>
 
 
