@@ -225,52 +225,14 @@ QgsComposition *QgsComposer::composition(void)
 
 void QgsComposer::zoomFull(void)
 {
-//can we just use QGraphicsView::fitInView with the "paper" rect?
-
-  QMatrix m;
-
-  // scale
-  double xscale = 1.0 * (mView->width()-10) / mComposition->canvas()->width();
-  double yscale = 1.0 * (mView->height()-10) / mComposition->canvas()->height();
-  double scale = ( xscale < yscale ? xscale : yscale );
-
-  // translate
-  double dx = ( mView->width() - scale * mComposition->canvas()->width() ) / 2;
-  double dy = ( mView->height() - scale * mComposition->canvas()->height() ) / 2;
-
-  m.translate ( dx, dy );
-  m.scale( scale, scale );
-
-  mView->setMatrix( m );
-//  mView->repaintContents(); //needed?
-
+  mView->fitInView(0, 0, mComposition->paperWidth(), mComposition->paperHeight(), Qt::KeepAspectRatio);
 }
 
 void QgsComposer::on_mActionZoomAll_activated(void)
 {
   zoomFull();
 }
-/*
-QMatrix QgsComposer::updateMatrix(double scaleChange)
-{
 
-  double scale = mView->matrix().m11() * scaleChange; // get new scale
-
-  double dx = ( mView->width() - scale * mComposition->canvas()->width() ) / 2;
-  double dy = ( mView->height() - scale * mComposition->canvas()->height() ) / 2;
-
-  // don't translate if composition is bigger than view
-  if (dx < 0) dx = 0;
-  if (dy < 0) dy = 0;
-  
-  // create new world matrix:  
-  QMatrix m;
-  m.translate ( dx, dy );
-  m.scale ( scale, scale );
-  return m;
-
-}
-*/
 void QgsComposer::on_mActionZoomIn_activated(void)
 {
   mView->scale(2, 2);
