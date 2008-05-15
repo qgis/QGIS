@@ -591,17 +591,20 @@ bool QgsDbSourceSelect::getTableInfo(PGconn *pg, bool searchGeometryColumnsOnly,
   sql = "select pg_class.relname,pg_namespace.nspname,pg_attribute.attname,pg_class.relkind "
     "from pg_attribute, pg_class, pg_namespace "
     "where pg_namespace.oid = pg_class.relnamespace "
-    "and pg_attribute.atttypid = regtype('geometry') "
     "and pg_attribute.attrelid = pg_class.oid "
+    "and ("
+      "pg_attribute.atttypid = regtype('geometry')"
+      " or "
+      "pg_attribute.atttypid IN (select oid FROM pg_type WHERE typbasetype=regtype('geometry'))"
+    ") "
     "and has_schema_privilege(pg_namespace.nspname,'usage') "
     "and has_table_privilege('\"'||pg_namespace.nspname||'\".\"'||pg_class.relname||'\"','select') ";
   // user has select privilege
   if (searchPublicOnly)
     sql += "and pg_namespace.nspname = 'public' ";
 
-  sql += "and pg_namespace.nspname||'.'||pg_class.relname not in "	//  needs to be table and schema
-    "(select f_table_schema||'.'||f_table_name from geometry_columns) "
-    "and pg_class.relkind in ('v', 'r')"; // only from views and relations (tables)
+  sql += "and not exists (select * from geometry_columns WHERE pg_namespace.nspname=f_table_schema AND pg_class.relname=f_table_name) "
+          "and pg_class.relkind in ('v', 'r')"; // only from views and relations (tables)
 
   result = PQexec(pg, sql.toUtf8());
 
