@@ -20,6 +20,7 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include <QMessageBox>
+#include <QMouseEvent>
 
 QgsMapToolSplitFeatures::QgsMapToolSplitFeatures(QgsMapCanvas* canvas): QgsMapToolCapture(canvas, QgsMapToolCapture::CaptureLine)
 {

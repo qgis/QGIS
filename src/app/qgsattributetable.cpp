@@ -29,6 +29,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QHeaderView>
+#include <QKeyEvent>
 #include <QMenu>
 
 

@@ -17,10 +17,6 @@
  ***************************************************************************/
 /* $Id$ */
 
-
-#include <iostream>
-
-#include <qstring.h>
 #include "qgsline.h"
 
 QgsLine::QgsLine()

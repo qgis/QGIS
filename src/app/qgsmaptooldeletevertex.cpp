@@ -19,6 +19,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsvertexmarker.h"
 #include "qgsvectorlayer.h"
+#include <QMouseEvent>
 
 QgsMapToolDeleteVertex::QgsMapToolDeleteVertex(QgsMapCanvas* canvas): QgsMapToolVertexEdit(canvas), mCross(0)
 {

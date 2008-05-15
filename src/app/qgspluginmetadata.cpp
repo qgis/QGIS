@@ -17,7 +17,6 @@
  ***************************************************************************/
  /* $Id$ */
 
-#include <qstring.h>
 #include "../plugins/qgisplugin.h"
 #include "qgspluginmetadata.h"
 QgsPluginMetadata::QgsPluginMetadata(QString _libraryPath, 

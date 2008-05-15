@@ -22,8 +22,7 @@
 #include <string>
 #include <list>
 
-#include <qdom.h> 
-#include <qstring.h>
+#include <QDomNode> 
 
 /**
    Defines a qgis exception class

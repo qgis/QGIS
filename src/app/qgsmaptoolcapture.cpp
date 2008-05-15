@@ -33,6 +33,7 @@
 #include <QCursor>
 #include <QPixmap>
 #include <QMessageBox>
+#include <QMouseEvent>
 
 
 QgsMapToolCapture::QgsMapToolCapture(QgsMapCanvas* canvas, enum CaptureTool tool)

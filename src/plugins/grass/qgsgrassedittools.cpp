@@ -23,6 +23,7 @@
 #include "qgsgrassattributes.h"
 #include "../../src/providers/grass/qgsgrassprovider.h"
 #include "qgsvertexmarker.h"
+#include <QMouseEvent>
 
 extern "C" {
 #include <grass/gis.h>

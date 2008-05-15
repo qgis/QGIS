@@ -15,11 +15,7 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include <iostream>
 #include "qgsfield.h"
-
-#include <qstring.h>
-#include <iostream>
 
 static const char * const ident_ = 
    "$Id$";

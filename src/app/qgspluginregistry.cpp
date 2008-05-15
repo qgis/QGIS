@@ -17,14 +17,8 @@
  ***************************************************************************/
  /* $Id$ */
 
-#include <iostream>
-#include <qmessagebox.h>
-#include <qstring.h>
-#include <qdir.h>
-#include <qlibrary.h>
-#include <qapplication.h>
-#include "qgsprovidermetadata.h"
 #include "qgspluginregistry.h"
+#include "qgspluginmetadata.h"
 
 QgsPluginRegistry *QgsPluginRegistry::_instance = 0;
 QgsPluginRegistry *QgsPluginRegistry::instance()

@@ -25,6 +25,7 @@
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 
+#include <QContextMenuEvent>
 #include <QFontDialog>
 #include <QGraphicsScene>
 #include <QHeaderView>

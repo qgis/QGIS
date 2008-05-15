@@ -19,8 +19,6 @@
 #ifndef QGSPASTETRANSFORMATIONS_H
 #define QGSPASTETRANSFORMATIONS_H
 #include "ui_qgspastetransformationsbase.h"
-#include <QDialog>
-#include <qstring.h>
 
 #include "qgsmaplayer.h"
 

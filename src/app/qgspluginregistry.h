@@ -20,7 +20,6 @@
 #ifndef QGSPLUGINREGISTRY_H
 #define QGSPLUGINREGISTRY_H
 #include <map>
-#include "qgspluginmetadata.h"
 class QgsPluginMetadata;
 class QgisPlugin;
 class QString;
