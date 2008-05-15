@@ -185,7 +185,7 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog(QgsVectorLayer * layer): QDialog(),
   //do the signal/slot connections
   connect(btnOutlineColor, SIGNAL(clicked()), this, SLOT(selectOutlineColor()));
   connect(btnFillColor, SIGNAL(clicked()), this, SLOT(selectFillColor()));
-  connect(outlinewidthspinbox, SIGNAL(valueChanged(int)), this, SLOT(resendSettingsChanged()));
+  connect(outlinewidthspinbox, SIGNAL(valueChanged(double)), this, SLOT(resendSettingsChanged()));
   connect(mLabelEdit, SIGNAL(textChanged(const QString&)), this, SLOT(resendSettingsChanged()));
   connect (lstSymbols,SIGNAL(currentItemChanged ( QListWidgetItem * , QListWidgetItem * )),
         this, SLOT (symbolChanged (QListWidgetItem * , QListWidgetItem * )));
@@ -353,11 +353,11 @@ void QgsSingleSymbolDialog::set ( const QgsSymbol *sy )
   mScaleClassificationComboBox->setCurrentText(scaleclassfield);
 
 
-  outlinewidthspinbox->setValue(sy->pen().width());
+  outlinewidthspinbox->setValue(sy->pen().widthF());
 
   //set line width 1 as minimum to avoid confusion between line width 0 and no pen line style
   // ... but, drawLine is not correct with width > 0 -> until solved set to 0
-  outlinewidthspinbox->setMinValue(0);
+  outlinewidthspinbox->setMinimum(0);
 
   btnFillColor->setColor( sy->brush().color() );
 
@@ -449,7 +449,7 @@ void QgsSingleSymbolDialog::setFillStyle(Qt::BrushStyle fstyle)
   }
 }
 
-void QgsSingleSymbolDialog::setOutlineWidth(int width)
+void QgsSingleSymbolDialog::setOutlineWidth(double width)
 {
     outlinewidthspinbox->setValue(width);
 }
@@ -466,7 +466,7 @@ Qt::PenStyle QgsSingleSymbolDialog::getOutlineStyle()
     return QgsSymbologyUtils::qString2PenStyle(myLineStyle);
 }
 
-int QgsSingleSymbolDialog::getOutlineWidth()
+double QgsSingleSymbolDialog::getOutlineWidth()
 {
     return outlinewidthspinbox->value();
 }

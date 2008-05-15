@@ -35,12 +35,12 @@ public:
     ~QgsSingleSymbolDialog();
     QColor getOutlineColor();
     Qt::PenStyle getOutlineStyle();
-    int getOutlineWidth();
+    double getOutlineWidth();
     QColor getFillColor();
     Qt::BrushStyle getFillStyle();
     void setOutlineColor(QColor& c);
     void setOutlineStyle(Qt::PenStyle pstyle);
-    void setOutlineWidth(int width);
+    void setOutlineWidth(double width);
     void setFillColor(QColor& c);
     void setFillStyle(Qt::BrushStyle fstyle);
     void setLabel(QString label);

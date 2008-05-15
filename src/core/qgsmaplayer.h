@@ -26,8 +26,7 @@
 
 #include "qgsrect.h"
 
-class QgsCoordinateTransform;
-class QgsMapToPixel;
+class QgsRenderContext;
 class QgsSpatialRefSys;
 
 class QDomNode;
@@ -72,18 +71,12 @@ public:
      */
     QString const & name() const;
 
-    /** Render the layer, to be overridden in child classes
-     * @param painter Painter that to be used for rendered output
-     * @param rect Extent of the layer to be drawn
-     * @param mtp Transformation class
-     * @return FALSE if an error occurred during drawing
-     */
-    virtual bool draw(QPainter* painter, QgsRect& rect, QgsMapToPixel* mtp, QgsCoordinateTransform* ct, bool);
-    
+    virtual bool draw(QgsRenderContext& renderContext);
+
     /** Draw labels
      * @TODO to be removed: used only in vector layers
      */
-    virtual void drawLabels(QPainter* painter, QgsRect& rect, QgsMapToPixel* mtp, QgsCoordinateTransform* ct);
+    virtual void drawLabels(QgsRenderContext& renderContext);
 
     /** Return the extent of the layer as a QRect */
     const QgsRect extent();

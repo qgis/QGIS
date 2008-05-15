@@ -185,6 +185,10 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
     {
       mMarkerStyleComboBox->setCurrentIndex(mMarkerStyleComboBox->findText(tr("Cross")));
     }
+
+#ifdef Q_WS_MAC //MH: disable incremental update on Mac for now to avoid problems with resizing 
+  groupBox_5->setEnabled(false);
+#endif //Q_WS_MAC
 }
 
 //! Destructor

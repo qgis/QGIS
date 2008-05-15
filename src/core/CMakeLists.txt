@@ -36,6 +36,7 @@ SET(QGIS_CORE_SRCS
   qgsprovidermetadata.cpp
   qgsproviderregistry.cpp
   qgsrasterdataprovider.cpp
+  qgsrendercontext.cpp
   qgsrect.cpp
   qgsrunprocess.cpp
   qgsscalecalculator.cpp

@@ -28,6 +28,7 @@
 #include "qgslegendlayerfile.h"
 #include "qgslegendlayerfilegroup.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapcanvasmap.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprender.h"
@@ -1451,7 +1452,13 @@ void QgsLegend::refreshLayerSymbology(QString key, bool expandItem)
   //store the current item
   QTreeWidgetItem* theCurrentItem = currentItem();
 
-  theLegendLayer->refreshSymbology(key);
+  double widthScale = 1.0;
+  if(mMapCanvas && mMapCanvas->map())
+    {
+      widthScale = mMapCanvas->map()->paintDevice().logicalDpiX()/25.4;
+    }
+
+  theLegendLayer->refreshSymbology(key, widthScale);
   
   //restore the current item again
   setCurrentItem(theCurrentItem);

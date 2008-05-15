@@ -158,6 +158,7 @@
 // Forward declarations
 //
 class QgsColorTable;
+class QgsMapToPixel;
 class QgsRect;
 class QgsRasterBandStats;
 class QgsRasterPyramid;
@@ -272,20 +273,12 @@ public:
      QPixmap getPaletteAsPixmap();
      
     /** \brief This is called when the view on the rasterlayer needs to be refreshed (redrawn).   
-         
-        \param drawingToEditingCanvas  Are we drawing to an editable canvas? 
-                                       currently not used, but retain to be similar to 
-                                       the QgsVectorLayer interface 
      */
-    bool draw(QPainter * theQPainter,
-              QgsRect & theViewExtent, 
-              QgsMapToPixel * theQgsMapToPixel,
-              QgsCoordinateTransform* ct,
-              bool drawingToEditingCanvas);
+    bool draw(QgsRenderContext& renderContext);
 
     /** \brief This is an overloaded version of the above function that is called by both draw above and drawThumbnail */
     void draw(QPainter * theQPainter, QgsRasterViewPort * myRasterViewPort,
-              QgsMapToPixel * theQgsMapToPixel = 0);
+              const QgsMapToPixel* theQgsMapToPixel = 0);
     
     //
     // Accessors for image height and width
@@ -903,13 +896,13 @@ private:
     /** \brief Drawing routine for single band grayscale image.  */
     void drawSingleBandGray(QPainter * theQPainter, 
                             QgsRasterViewPort * theRasterViewPort,
-                            QgsMapToPixel * theQgsMapToPixel,
+                            const QgsMapToPixel* theQgsMapToPixel,
                             int theBandNoInt);
 
     /** \brief Drawing routine for single band grayscale image, rendered in pseudocolor.  */
     void drawSingleBandPseudoColor(QPainter * theQPainter, 
                                    QgsRasterViewPort * theRasterViewPort,
-                                   QgsMapToPixel * theQgsMapToPixel,
+                                   const QgsMapToPixel* theQgsMapToPixel,
                                    int theBandNoInt);
 
 
@@ -920,27 +913,27 @@ private:
     /** \brief Drawing routine for paletted image, rendered as a single band image in color.  */
     void drawPalettedSingleBandColor(QPainter * theQPainter,
                                      QgsRasterViewPort * theRasterViewPort,
-                                     QgsMapToPixel * theQgsMapToPixel,
+                                     const QgsMapToPixel* theQgsMapToPixel,
                                      int theBandNoInt);
     
     /** \brief Drawing routine for paletted image, rendered as a single band image in grayscale.  */
     void drawPalettedSingleBandGray(QPainter * theQPainter,
                                     QgsRasterViewPort * theRasterViewPort,
-                                    QgsMapToPixel * theQgsMapToPixel,
+                                    const QgsMapToPixel* theQgsMapToPixel,
                                     int theBandNoInt,
                                     const QString &  theColorQString);
 
     /** \brief Drawing routine for paletted image, rendered as a single band image in pseudocolor.  */
     void drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
                                            QgsRasterViewPort * theRasterViewPort,
-                                           QgsMapToPixel * theQgsMapToPixel,
+                                           const QgsMapToPixel* theQgsMapToPixel,
                                            int theBandNoInt,
                                            const QString &  theColorQString);
 
     /** \brief Drawing routine for paletted multiband image.  */
     void drawPalettedMultiBandColor(QPainter * theQPainter,
                                     QgsRasterViewPort * theRasterViewPort,
-                                    QgsMapToPixel * theQgsMapToPixel,                                
+                                    const QgsMapToPixel* theQgsMapToPixel,                                
                                     int theBandNoInt);
 
     //
@@ -950,23 +943,23 @@ private:
     /** \brief Drawing routine for multiband image, rendered as a single band image in grayscale.  */
     void drawMultiBandSingleBandGray(QPainter * theQPainter,
                                      QgsRasterViewPort * theRasterViewPort, 
-                                     QgsMapToPixel * theQgsMapToPixel,
+                                     const QgsMapToPixel* theQgsMapToPixel,
                                      int theBandNoInt);
 
     /** \brief Drawing routine for multiband image, rendered as a single band image in pseudocolor.  */
     void drawMultiBandSingleBandPseudoColor(QPainter * theQPainter, 
                                             QgsRasterViewPort * theRasterViewPort, 
-                                            QgsMapToPixel * theQgsMapToPixel,
+                                            const QgsMapToPixel* theQgsMapToPixel,
                                             int theBandNoInt);
 
     /** \brief Drawing routine for multiband image  */
     void drawMultiBandColor(QPainter * theQPainter, 
                             QgsRasterViewPort * theRasterViewPort,
-                            QgsMapToPixel * theQgsMapToPixel);
+                            const QgsMapToPixel* theQgsMapToPixel);
 
     /** \brief Places the rendered image onto the canvas */
     void paintImageToCanvas(QPainter* theQPainter, QgsRasterViewPort * theRasterViewPort,
-                            QgsMapToPixel * theQgsMapToPixel, QImage* theImage);
+                            const QgsMapToPixel* theQgsMapToPixel, QImage* theImage);
 
     /** \brief Read color table from GDAL raster band */
     void readColorTable ( GDALRasterBandH gdalBand, QgsColorTable *theColorTable );

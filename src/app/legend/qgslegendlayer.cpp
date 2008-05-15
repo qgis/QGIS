@@ -249,7 +249,7 @@ void QgsLegendLayer::updateCheckState()
     }
 }
 
-void QgsLegendLayer::refreshSymbology(const QString& key)
+void QgsLegendLayer::refreshSymbology(const QString& key, double widthScale)
 {
   QgsMapLayer* theMapLayer = QgsMapLayerRegistry::instance()->mapLayer(key);
   if(!theMapLayer)
@@ -260,7 +260,7 @@ void QgsLegendLayer::refreshSymbology(const QString& key)
   if (theMapLayer->type() == QgsMapLayer::VECTOR) // VECTOR
   {
     QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(theMapLayer);
-    vectorLayerSymbology(vlayer); // get and change symbology
+    vectorLayerSymbology(vlayer, widthScale); // get and change symbology
   }
   else // RASTER
   {
@@ -308,7 +308,7 @@ void QgsLegendLayer::changeSymbologySettings(const QgsMapLayer* theMapLayer,
 
 
 
-void QgsLegendLayer::vectorLayerSymbology(const QgsVectorLayer* layer)
+void QgsLegendLayer::vectorLayerSymbology(const QgsVectorLayer* layer, double widthScale)
 {
   SymbologyList itemList;
 
@@ -322,7 +322,7 @@ void QgsLegendLayer::vectorLayerSymbology(const QgsVectorLayer* layer)
     QImage img;
     if((*it)->type() == QGis::Point)
     {
-      img = (*it)->getPointSymbolAsImage();
+      img = (*it)->getPointSymbolAsImage(widthScale);
     }
     else if((*it)->type() == QGis::Line)
     {

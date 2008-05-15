@@ -81,7 +81,7 @@ class CORE_EXPORT QgsRect
     //! Expand the rectangle to support zoom out scaling
     void expand(double, const QgsPoint *c = 0);
     //! return the intersection with the given rectangle
-    QgsRect intersect(QgsRect *rect);
+    QgsRect intersect(QgsRect *rect) const;
     //! expand the rectangle so that covers both the original rectangle and the given rectangle
     void combineExtentWith(QgsRect *rect);
     //! expand the rectangle so that covers both the original rectangle and the given point

@@ -101,20 +101,27 @@ QgsContinuousColorDialog::QgsContinuousColorDialog(QgsVectorLayer * layer)
       btnMaxValue->setColor( maxsymbol->brush().color() );
     }
 
-    outlinewidthspinbox->setMinValue(0);
-    outlinewidthspinbox->setValue(minsymbol->pen().width());
+    outlinewidthspinbox->setMinimum(0);
+    outlinewidthspinbox->setValue(minsymbol->pen().widthF());
 
     if (renderer->drawPolygonOutline()) 
-      cb_polygonOutline->setCheckState(Qt::Checked);
+      {
+	cb_polygonOutline->setCheckState(Qt::Checked);
+      }
     else
-      cb_polygonOutline->setCheckState(Qt::Unchecked);
+      {
+	cb_polygonOutline->setCheckState(Qt::Unchecked);
+      }
+    
     if (mVectorLayer->vectorType() != QGis::Polygon)
-      cb_polygonOutline->setVisible(false);
+      {
+	cb_polygonOutline->setVisible(false);
+      }
   }
   else
   {
     cb_polygonOutline->setCheckState(Qt::Checked);
-    outlinewidthspinbox->setValue(1);
+    outlinewidthspinbox->setValue(0.4);
     if (mVectorLayer->vectorType() != QGis::Polygon)
       cb_polygonOutline->setVisible(false);
 
@@ -144,63 +151,69 @@ QgsContinuousColorDialog::~QgsContinuousColorDialog()
 
 void QgsContinuousColorDialog::apply()
 {
-  int comboIndex = classificationComboBox->currentIndex();
-  if (comboIndex == -1)    //don't do anything, if there is no classification field
-  {
-    return;
-  }
-  std::map < int, int >::iterator iter = mFieldMap.find(comboIndex);
-  // Should never happen...
-  assert(iter != mFieldMap.end());
+    int comboIndex = classificationComboBox->currentIndex();
+    if (comboIndex == -1)    //don't do anything, if there is no classification field
+    {
+	return;
+    }
+    std::map < int, int >::iterator iter = mFieldMap.find(comboIndex);
+    // Should never happen...
+    assert(iter != mFieldMap.end());
 
-  int classfield = iter->second;
+    int classfield = iter->second;
 
-  //find the minimum and maximum for the classification variable
-  double minimum, maximum;
-  QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider*>(mVectorLayer->getDataProvider());
-  if (provider)
-  {
-    minimum = provider->minValue(classfield).toDouble();
-    maximum = provider->maxValue(classfield).toDouble();
-  } 
-  else
-  {
-    qWarning("Warning, provider is null in QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(...)");
-    return;
-  }
+    //find the minimum and maximum for the classification variable
+    double minimum, maximum;
+    QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider*>(mVectorLayer->getDataProvider());
+    if (provider)
+    {
+	minimum = provider->minValue(classfield).toDouble();
+	maximum = provider->maxValue(classfield).toDouble();
+    } 
+    else
+    {
+	qWarning("Warning, provider is null in QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(...)");
+	return;
+    }
 
 
-  //create the render items for minimum and maximum value
-  QgsSymbol* minsymbol = new QgsSymbol(mVectorLayer->vectorType(), QString::number(minimum, 'f'), "", "");
-  if (mVectorLayer->vectorType() == QGis::Line || mVectorLayer->vectorType() == QGis::Point)
-  {
-    minsymbol->setPen(QPen(btnMinValue->color(), outlinewidthspinbox->value()));
-  } 
-  else
-  {
-    minsymbol->setBrush(QBrush(btnMinValue->color()));
-    minsymbol->setPen(QPen(QColor(0, 0, 0), outlinewidthspinbox->value()));
-  }
-
-  QgsSymbol* maxsymbol = new QgsSymbol(mVectorLayer->vectorType(), QString::number(maximum, 'f'), "", "");
-  if (mVectorLayer->vectorType() == QGis::Line || mVectorLayer->vectorType() == QGis::Point)
-  {
-    maxsymbol->setPen(QPen(btnMaxValue->color(), outlinewidthspinbox->value()));
-  } 
-  else
-  {
-    maxsymbol->setBrush(QBrush(btnMaxValue->color()));
-    maxsymbol->setPen(QPen(QColor(0, 0, 0), outlinewidthspinbox->value()));
-  }
-
-  QgsContinuousColorRenderer* renderer = new QgsContinuousColorRenderer(mVectorLayer->vectorType());
-  mVectorLayer->setRenderer(renderer);
-
-  renderer->setMinimumSymbol(minsymbol);
-  renderer->setMaximumSymbol(maxsymbol);
-  renderer->setClassificationField(classfield);
-  bool drawOutline = (cb_polygonOutline->checkState() == Qt::Checked) ? true:false; 
-  renderer->setDrawPolygonOutline(drawOutline);
+    //create the render items for minimum and maximum value
+    QgsSymbol* minsymbol = new QgsSymbol(mVectorLayer->vectorType(), QString::number(minimum, 'f'), "", "");
+    QPen minPen;
+    minPen.setColor(btnMinValue->color());
+    minPen.setWidthF(outlinewidthspinbox->value());
+    if (mVectorLayer->vectorType() == QGis::Line || mVectorLayer->vectorType() == QGis::Point)
+    {
+	minsymbol->setPen(minPen);
+    } 
+    else
+    {
+	minsymbol->setBrush(QBrush(btnMinValue->color()));
+        minsymbol->setPen(minPen);
+    }
+    
+    QgsSymbol* maxsymbol = new QgsSymbol(mVectorLayer->vectorType(), QString::number(maximum, 'f'), "", "");
+    QPen maxPen;
+    maxPen.setColor(btnMaxValue->color());
+    maxPen.setWidthF(outlinewidthspinbox->value());
+    if (mVectorLayer->vectorType() == QGis::Line || mVectorLayer->vectorType() == QGis::Point)
+    {
+	maxsymbol->setPen(maxPen);
+    } 
+    else
+    {
+	maxsymbol->setBrush(QBrush(btnMaxValue->color()));
+	maxsymbol->setPen(maxPen);
+    }
+  
+    QgsContinuousColorRenderer* renderer = new QgsContinuousColorRenderer(mVectorLayer->vectorType());
+    mVectorLayer->setRenderer(renderer);
+    
+    renderer->setMinimumSymbol(minsymbol);
+    renderer->setMaximumSymbol(maxsymbol);
+    renderer->setClassificationField(classfield);
+    bool drawOutline = (cb_polygonOutline->checkState() == Qt::Checked) ? true:false; 
+    renderer->setDrawPolygonOutline(drawOutline);
 }
 
 void QgsContinuousColorDialog::selectMinimumColor()

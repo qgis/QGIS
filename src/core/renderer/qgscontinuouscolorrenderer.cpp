@@ -72,8 +72,7 @@ void QgsContinuousColorRenderer::setMaximumSymbol(QgsSymbol* sy)
   mMaximumSymbol = sy;
 }
 
-void QgsContinuousColorRenderer::renderFeature(QPainter * p, QgsFeature & f, QImage* img, 
-	double* scalefactor, bool selected, double widthScale)
+void QgsContinuousColorRenderer::renderFeature(QPainter * p, QgsFeature & f, QImage* img, bool selected, double widthScale, double rasterScaleFactor)
 {
   if ((mMinimumSymbol && mMaximumSymbol))
   {
@@ -129,7 +128,7 @@ void QgsContinuousColorRenderer::renderFeature(QPainter * p, QgsFeature & f, QIm
       // later add support for both pen and brush to dialog
       QPen pen = mMinimumSymbol->pen();
       pen.setColor ( QColor(red, green, blue) );
-      pen.setWidthF ( widthScale * pen.width() );
+      pen.setWidthF ( widthScale * pen.widthF() );
 
       QBrush brush = mMinimumSymbol->brush();
 
@@ -143,13 +142,13 @@ void QgsContinuousColorRenderer::renderFeature(QPainter * p, QgsFeature & f, QIm
 
       *img = QgsMarkerCatalogue::instance()->imageMarker ( mMinimumSymbol->pointSymbolName(), mMinimumSymbol->pointSize(),
           pen, brush);
-
-      if ( scalefactor ) *scalefactor = 1;
     } 
     else if ( mVectorType == QGis::Line )
     {
-      p->setPen( QPen(QColor(red, green, blue),
-            (int)(widthScale*mMinimumSymbol->pen().width()) ));//make sure the correct line width is used
+      QPen linePen;
+      linePen.setColor(QColor(red, green, blue));
+      linePen.setWidthF(widthScale*mMinimumSymbol->pen().widthF());
+      p->setPen(linePen);
     } 
     else
     {
@@ -158,7 +157,7 @@ void QgsContinuousColorRenderer::renderFeature(QPainter * p, QgsFeature & f, QIm
       {
         QPen pen;
         pen.setColor(QColor(0,0,0));
-        pen.setWidthF(widthScale*mMinimumSymbol->pen().width());
+        pen.setWidthF(widthScale*mMinimumSymbol->pen().widthF());
         p->setPen(pen);
       }
       else

@@ -148,67 +148,74 @@ void QgsUniqueValueDialog::changeClassificationAttribute()
 
   //delete old entries
   for(std::map<QString,QgsSymbol*>::iterator it=mValues.begin();it!=mValues.end();++it)
-  {
-    delete it->second;
-  }
+    {
+      delete it->second;
+    }
   mValues.clear();
-
+  
   QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider());
   if (provider)
-  {
-    QgsSymbol* symbol;
-    int nr = provider->indexFromFieldName(attributeName);
-    if(nr == -1)
     {
-      return;
+      QString value;
+      QgsAttributeList attlist;
+     
+      QgsSymbol* symbol;
+      int nr = provider->indexFromFieldName(attributeName);
+      if(nr == -1)
+	{
+	  return;
+	}
+      attlist.append(nr);	
+      
+      provider->select(attlist, QgsRect(), false);
+      QgsFeature feat;
+      
+      //go through all the features and insert their value into the map and into mClassListWidget
+      mClassListWidget->clear();
+      while(provider->getNextFeature(feat))
+	{
+	  const QgsAttributeMap& attrs = feat.attributeMap();
+	  value = attrs[nr].toString();
+	  
+	  if(mValues.find(value)==mValues.end())
+	    {
+	      symbol=new QgsSymbol(mVectorLayer->vectorType(), value);
+	      mValues.insert(std::make_pair(value,symbol));
+	    }
+	}
+      
+      //set symbology for all QgsSiSyDialogs
+      QColor thecolor;
+      
+      for(std::map<QString,QgsSymbol*>::iterator it=mValues.begin();it!=mValues.end();++it)
+	{
+	  //insert a random color
+	  int red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+	  int green = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+	  int blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+	  thecolor.setRgb(red, green, blue);
+	  mClassListWidget->addItem(it->first);
+	  QgsSymbol* sym=it->second;
+	  QPen pen;
+	  QBrush brush;
+	  if(mVectorLayer->vectorType() == QGis::Line)
+	    {
+	      pen.setColor(thecolor);
+	      pen.setStyle(Qt::SolidLine);
+	      pen.setWidthF(0.4);
+	    }
+	  else
+	    {
+	      brush.setColor(thecolor);
+	      brush.setStyle(Qt::SolidPattern);
+	      pen.setColor(Qt::black);
+	      pen.setStyle(Qt::SolidLine);
+	      pen.setWidthF(0.4);
+	    }
+	  sym->setPen(pen);
+	  sym->setBrush(brush);
+	}
     }
-
-    //go through all the features and insert their value into the map and into mClassListWidget
-    mClassListWidget->clear();
-
-    QStringList keys;
-    provider->getUniqueValues(nr, keys);
-
-    QStringListIterator it(keys);
-    while( it.hasNext() )
-      {
-      QString value = it.next();
-        symbol=new QgsSymbol(mVectorLayer->vectorType(), value);
-        mValues.insert(std::make_pair(value,symbol));
-      }
-
-    //set symbology for all QgsSiSyDialogs
-    QColor thecolor;
-
-    for(std::map<QString,QgsSymbol*>::iterator it=mValues.begin();it!=mValues.end();++it)
-    {
-      //insert a random color
-      int red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
-      int green = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
-      int blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
-      thecolor.setRgb(red, green, blue);
-      mClassListWidget->addItem(it->first);
-      QgsSymbol* sym=it->second;
-      QPen pen;
-      QBrush brush;
-      if(mVectorLayer->vectorType() == QGis::Line)
-      {
-        pen.setColor(thecolor);
-        pen.setStyle(Qt::SolidLine);
-        pen.setWidth(1);
-      }
-      else
-      {
-        brush.setColor(thecolor);
-        brush.setStyle(Qt::SolidPattern);
-        pen.setColor(Qt::black);
-        pen.setStyle(Qt::SolidLine);
-        pen.setWidth(1);
-      }
-      sym->setPen(pen);
-      sym->setBrush(brush);
-    }
-  }
   mClassListWidget->setCurrentRow(0);
 }
 

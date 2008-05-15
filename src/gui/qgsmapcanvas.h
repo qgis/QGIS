@@ -198,7 +198,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QGis::units mapUnits() const;
 
     //! Get the current coordinate transform
-    QgsMapToPixel * getCoordinateTransform();
+    const QgsMapToPixel* getCoordinateTransform();
 
     //! true if canvas currently drawing
     bool isDrawing();

@@ -33,6 +33,7 @@ class QToolButton;
 class QKeyEvent;
 class QMenu;
 class QPixmap;
+class QPushButton;
 class QSplashScreen;
 class QValidator;
 class QActionGroup;
@@ -375,6 +376,10 @@ public slots:
 
   //! Toggle full screen mode
   void toggleFullScreen();
+
+  //! Stops rendering of the main map
+  void stopRendering();
+
 signals:
   /** emitted when a key is pressed and we want non widget sublasses to be able
     to pick up on this (e.g. maplayer) */
@@ -575,6 +580,8 @@ class Tools
   QProgressBar * mProgressBar;
   //! Widget used to suppress rendering
   QCheckBox * mRenderSuppressionCBox;
+  //! Button used to stop rendering
+  QPushButton* mStopRenderButton;
   //! Widget in status bar used to show status of on the fly projection
   QToolButton * mOnTheFlyProjectionStatusButton;
   //! Popup menu

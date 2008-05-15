@@ -40,7 +40,7 @@ QgsSymbol::QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString
       mLabel(label),
       mType(t),
       mPointSymbolName( "hard:circle" ),
-      mPointSize( 10 ),
+      mPointSize( 3 ),
       mPointSymbolImage(1,1, QImage::Format_ARGB32_Premultiplied),
       mWidthScale(1.0),
       mCacheUpToDate( false ),
@@ -58,7 +58,7 @@ QgsSymbol::QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString
       mPen( c ),
       mBrush( c ),
       mPointSymbolName( "hard:circle" ),
-      mPointSize( 6 ),
+      mPointSize( 3 ),
       mPointSymbolImage(1,1, QImage::Format_ARGB32_Premultiplied),
       mWidthScale(1.0),
       mCacheUpToDate( false ),
@@ -69,7 +69,7 @@ QgsSymbol::QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString
 
 QgsSymbol::QgsSymbol()
     : mPointSymbolName( "hard:circle" ),
-      mPointSize( 6 ),
+      mPointSize( 3 ),
       mPointSymbolImage(1,1, QImage::Format_ARGB32_Premultiplied),
       mWidthScale(1.0),
       mCacheUpToDate( false ),
@@ -83,7 +83,7 @@ QgsSymbol::QgsSymbol(QColor c)
     : mPen( c ),
       mBrush( c ),
       mPointSymbolName( "hard:circle" ),
-      mPointSize( 6 ),
+      mPointSize( 3 ),
       mPointSymbolImage(1,1, QImage::Format_ARGB32_Premultiplied),
       mWidthScale(1.0),
       mCacheUpToDate( false ),
@@ -147,14 +147,14 @@ void QgsSymbol::setFillColor(QColor c)
   mCacheUpToDate = mCacheUpToDate2 = false;
 }
 
-int QgsSymbol::lineWidth() const
+double QgsSymbol::lineWidth() const
 {
-  return mPen.width();
+  return mPen.widthF();
 }
 
-void QgsSymbol::setLineWidth(int w)
+void QgsSymbol::setLineWidth(double w)
 {
-  mPen.setWidth(w);
+  mPen.setWidthF(w);
   mCacheUpToDate = mCacheUpToDate2 = false;
 }
 
@@ -304,23 +304,23 @@ QImage QgsSymbol::getPolygonSymbolAsImage()
 QImage QgsSymbol::getCachedPointSymbolAsImage(  double widthScale,
                bool selected, QColor selectionColor )
 {
-  if ( !mCacheUpToDate 
+  if ( !mCacheUpToDate2 
        || ( selected && mSelectionColor != selectionColor ) )
   {
     if ( selected ) {
-      cache(  selectionColor );
+      cache2( widthScale, selectionColor );
     } else {
-      cache(  mSelectionColor );
+      cache2( widthScale, mSelectionColor );
     }
   }
   
   if ( selected )
   {
-    return mPointSymbolImageSelected;
+    return mPointSymbolImageSelected2;
   }
   else 
   {
-    return mPointSymbolImage;
+    return mPointSymbolImage2;
   }
 }
 
@@ -335,19 +335,21 @@ QImage QgsSymbol::getPointSymbolAsImage(  double widthScale,
   }
 
   QImage preRotateImage;
+  QPen pen = mPen;
+  double newWidth = mPen.widthF() * widthScale * scale;
+  pen.setWidth(mPen.widthF() * widthScale * scale);
 
   if ( selected )
   {
-    QPen pen = mPen;
     pen.setColor ( selectionColor ); 
     QBrush brush = mBrush;
-    preRotateImage = QgsMarkerCatalogue::instance()->imageMarker ( mPointSymbolName, (int)(mPointSize * scale),
+    preRotateImage = QgsMarkerCatalogue::instance()->imageMarker ( mPointSymbolName, (int)(mPointSize * scale * widthScale),
                                                                    pen, mBrush );
   }
   else 
   {
-    preRotateImage = QgsMarkerCatalogue::instance()->imageMarker ( mPointSymbolName, (int)(mPointSize * scale),
-                                                                   mPen, mBrush );
+    preRotateImage = QgsMarkerCatalogue::instance()->imageMarker ( mPointSymbolName, (int)(mPointSize * scale * widthScale),
+                                                                   pen, mBrush );
   }
 
   QMatrix rotationMatrix;
@@ -385,7 +387,7 @@ void QgsSymbol::cache2( double widthScale, QColor selectionColor )
     pen.setWidth ( (int) ( widthScale * pen.width() ) );
 
     
-    mPointSymbolImage2 = QgsMarkerCatalogue::instance()->imageMarker ( mPointSymbolName, mPointSize,
+    mPointSymbolImage2 = QgsMarkerCatalogue::instance()->imageMarker ( mPointSymbolName, mPointSize * widthScale,
 	                        pen, mBrush, false );
 
     QBrush brush = mBrush;
@@ -393,7 +395,7 @@ void QgsSymbol::cache2( double widthScale, QColor selectionColor )
     pen.setColor ( selectionColor ); 
 
     mPointSymbolImageSelected2 = QgsMarkerCatalogue::instance()->imageMarker ( 
-	               mPointSymbolName, mPointSize, pen, brush,  false );
+	               mPointSymbolName, mPointSize * widthScale, pen, brush,  false );
 
     mSelectionColor2 = selectionColor;
     
@@ -454,7 +456,7 @@ bool QgsSymbol::writeXML( QDomNode & item, QDomDocument & document ) const
     outlinestyle.appendChild(outlinestyletxt);
     symbol.appendChild(outlinestyle);
     QDomElement outlinewidth=document.createElement("outlinewidth");
-    QDomText outlinewidthtxt=document.createTextNode(QString::number(mPen.width()));
+    QDomText outlinewidthtxt=document.createTextNode(QString::number(mPen.widthF()));
     outlinewidth.appendChild(outlinewidthtxt);
     symbol.appendChild(outlinewidth);
     QDomElement fillcolor=document.createElement("fillcolor");
@@ -550,7 +552,7 @@ bool QgsSymbol::readXML( QDomNode & synode )
 
     QDomNode outlwnode = synode.namedItem("outlinewidth");
     QDomElement outlwelement = outlwnode.toElement();
-    setLineWidth(outlwelement.text().toInt());
+    setLineWidth(outlwelement.text().toDouble());
 
     QDomNode fillcnode = synode.namedItem("fillcolor");
     QDomElement fillcelement = fillcnode.toElement();

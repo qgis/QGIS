@@ -1126,6 +1126,9 @@ void QgisApp::createStatusBar()
   // Add a panel to the status bar for the scale, coords and progress
   // And also rendering suppression checkbox
   //
+
+  
+
   mProgressBar = new QProgressBar(statusBar());
   mProgressBar->setMaximumWidth(100);
   mProgressBar->hide();
@@ -1135,6 +1138,13 @@ void QgisApp::createStatusBar()
   // small on some platforms. A point size of 9 still provides
   // plenty of display space on 1024x768 resolutions
   QFont myFont( "Arial", 9 );
+
+  mStopRenderButton = new QPushButton(tr("Stop rendering"), statusBar());
+#ifdef Q_WS_MAC //MH: disable the button on Mac for now to avoid problems with resizing
+  mStopRenderButton->setEnabled(false);
+#endif //Q_WS_MAC
+  statusBar()->addWidget(mStopRenderButton, 0, true);
+
   statusBar()->setFont(myFont);
   mScaleLabel = new QLabel(QString(),statusBar());
   mScaleLabel->setFont(myFont);
@@ -1304,6 +1314,7 @@ void QgisApp::setupConnections()
   connect(mMapCanvas, SIGNAL(scaleChanged(double)), this, SLOT(updateMouseCoordinatePrecision()));
 
   connect(mRenderSuppressionCBox, SIGNAL(toggled(bool )), mMapCanvas, SLOT(setRenderFlag(bool)));
+  connect(mStopRenderButton, SIGNAL(clicked()), this, SLOT(stopRendering()));
 
   // Connect warning dialog from project reading
   connect(QgsProject::instance(), SIGNAL(warnOlderProjectVersion(QString)),
@@ -3274,6 +3285,22 @@ void QgisApp::toggleFullScreen()
     showFullScreen();
     mFullScreenMode = true;
   }
+}
+
+void QgisApp::stopRendering()
+{
+  if(mMapCanvas)
+    {
+      QgsMapRender* mapRender = mMapCanvas->mapRender();
+      if(mapRender)
+	{
+	  QgsRenderContext* renderContext = mapRender->renderContext();
+	  if(renderContext)
+	    {
+	      renderContext->setRenderingStopped(true);
+	    }
+	}
+    }
 }
 
 //reimplements method from base (gui) class
@@ -5300,9 +5327,29 @@ void QgisApp::keyPressEvent ( QKeyEvent * e )
   // commented out for now. [gsherman]
   //    std::cout << e->text().toLocal8Bit().data() << " (keypress recevied)" << std::endl;
   emit keyPressed (e);
-  e->ignore();
-
+  
+  //cancel rendering progress with esc key
+  if(e->key() == Qt::Key_Escape)
+    {
+      if(mMapCanvas)
+	{
+	  QgsMapRender* theMapRender = mMapCanvas->mapRender();
+	  if(theMapRender)
+	    {
+	      QgsRenderContext* theRenderContext = theMapRender->renderContext();
+	      if(theRenderContext)
+		{
+		  theRenderContext->setRenderingStopped(true);
+		}
+	    }
+	}
+    }
+  else
+    {
+      e->ignore();
+    }
 }
+    
 // Debug hook - used to output diagnostic messages when evoked (usually from the menu)
 /* Temporarily disabled...
    void QgisApp::debugHook()

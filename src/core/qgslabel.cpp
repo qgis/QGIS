@@ -83,9 +83,9 @@ QString QgsLabel::fieldValue ( int attr, QgsFeature &feature )
     }
 }
 
-void QgsLabel::renderLabel( QPainter * painter, QgsRect &viewExtent,
-                            QgsCoordinateTransform* coordTransform,
-                            QgsMapToPixel *transform,
+void QgsLabel::renderLabel( QPainter * painter, const QgsRect& viewExtent,
+                            const QgsCoordinateTransform* coordTransform,
+                            const QgsMapToPixel *transform,
                             QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes,
        			    double sizeScale )
 {
@@ -336,8 +336,8 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect &viewExtent,
 }
 
 void QgsLabel::renderLabel(QPainter* painter, QgsPoint point, 
-                           QgsCoordinateTransform* coordTransform,
-                           QgsMapToPixel* transform,
+                           const QgsCoordinateTransform* coordTransform,
+                           const QgsMapToPixel* transform,
                            QString text, QFont font, QPen pen,
                            int dx, int dy, 
                            double xoffset, double yoffset, 

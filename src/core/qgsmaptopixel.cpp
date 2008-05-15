@@ -35,20 +35,20 @@ QgsMapToPixel::~QgsMapToPixel()
 {
 }
 
-QgsPoint QgsMapToPixel::toMapPoint(int x, int y)
+QgsPoint QgsMapToPixel::toMapPoint(int x, int y) const
 {
   double mx = x * mMapUnitsPerPixel + xMin;
   double my = -1 * ((y - yMax) * mMapUnitsPerPixel - yMin);
   return QgsPoint(mx, my);
 }
 
-QgsPoint QgsMapToPixel::toMapCoordinates(QPoint p)
+QgsPoint QgsMapToPixel::toMapCoordinates(QPoint p) const
 {
   QgsPoint mapPt = toMapPoint(p.x(), p.y());
   return QgsPoint(mapPt);
 }
 
-QgsPoint QgsMapToPixel::toMapCoordinates(int x, int y)
+QgsPoint QgsMapToPixel::toMapCoordinates(int x, int y) const
 {
   return toMapPoint(x, y);
 }
@@ -58,7 +58,7 @@ void QgsMapToPixel::setMapUnitsPerPixel(double mupp)
   mMapUnitsPerPixel = mupp;
 }
 
-double QgsMapToPixel::mapUnitsPerPixel()
+double QgsMapToPixel::mapUnitsPerPixel() const
 {
   return mMapUnitsPerPixel;
 }
@@ -97,13 +97,13 @@ QString QgsMapToPixel::showParameters()
 }
 
 
-QgsPoint QgsMapToPixel::transform(double x, double y)
+QgsPoint QgsMapToPixel::transform(double x, double y) const
 {
   transformInPlace(x,y);
   return QgsPoint(x,y);
 }
 
-QgsPoint QgsMapToPixel::transform(const QgsPoint& p)
+QgsPoint QgsMapToPixel::transform(const QgsPoint& p) const
 {
   double dx = p.x();
   double dy = p.y();
@@ -113,7 +113,7 @@ QgsPoint QgsMapToPixel::transform(const QgsPoint& p)
   return QgsPoint(dx, dy);
 }
 
-void QgsMapToPixel::transform(QgsPoint* p)
+void QgsMapToPixel::transform(QgsPoint* p) const
 {   
   double x = p->x();
   double y = p->y();
@@ -125,14 +125,14 @@ void QgsMapToPixel::transform(QgsPoint* p)
   p->set(x,y);
 }
 
-void QgsMapToPixel::transformInPlace(double& x, double& y)
+void QgsMapToPixel::transformInPlace(double& x, double& y) const
 {
   x = (x - xMin) / mMapUnitsPerPixel;
   y = yMax - (y - yMin) / mMapUnitsPerPixel;
 }
 
 void QgsMapToPixel::transformInPlace(std::vector<double>& x, 
-					    std::vector<double>& y)
+					    std::vector<double>& y) const
 {
   assert(x.size() == y.size());
   for (unsigned int i = 0; i < x.size(); ++i)
