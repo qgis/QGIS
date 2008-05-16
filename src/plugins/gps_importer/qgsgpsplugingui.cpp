@@ -106,9 +106,15 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
   // or download GPS data from a device?
   case 2: {
     int featureType = cmbDLFeatureType->currentItem();
+
+    QString fileName = leDLOutput->text();
+    if(fileName.right(4) != ".gpx"){
+      fileName += ".gpx";
+    }
+
     emit downloadFromGPS(cmbDLDevice->currentText(), cmbDLPort->currentText(),
 			 featureType == 0, featureType == 1, featureType == 2, 
-			 leDLOutput->text(), leDLBasename->text());
+			 fileName, leDLBasename->text());
     break;
   }
   // or upload GPS data to a device?
