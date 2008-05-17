@@ -130,8 +130,7 @@ void QgsGraduatedSymbolRenderer::renderFeature(QPainter * p, QgsFeature & f, QIm
       rotation = attrs[theSymbol->rotationClassificationField()].toDouble();
       QgsDebugMsg(QString("Feature has rotation factor %1").arg(rotation));
     }
-    *img = theSymbol->getPointSymbolAsImage( widthScale, selected, mSelectionColor,
-                                            rasterScaleFactor * fieldScale, rotation);
+    *img = theSymbol->getPointSymbolAsImage( widthScale, selected, mSelectionColor, fieldScale, rotation, rasterScaleFactor);
   } 
 
   // Line, polygon

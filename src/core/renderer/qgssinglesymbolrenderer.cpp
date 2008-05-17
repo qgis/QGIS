@@ -112,8 +112,7 @@ void QgsSingleSymbolRenderer::renderFeature(QPainter * p, QgsFeature & f, QImage
       QgsDebugMsg(QString("Feature has rotation factor %1").arg(rotation));
     }
 
-    *img = mSymbol->getPointSymbolAsImage( widthScale, selected, mSelectionColor,
-                                            rasterScaleFactor * fieldScale, rotation);
+    *img = mSymbol->getPointSymbolAsImage( widthScale, selected, mSelectionColor, fieldScale, rotation, rasterScaleFactor);
   }
 
 
