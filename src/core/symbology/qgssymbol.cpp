@@ -384,8 +384,7 @@ void QgsSymbol::cache2( double widthScale, QColor selectionColor )
     //std::cerr << "QgsSymbol::cache2 widthScale = " << widthScale << std::endl;
 
     QPen pen = mPen;
-    pen.setWidth ( (int) ( widthScale * pen.width() ) );
-
+    pen.setWidthF(widthScale * pen.widthF());
     
     mPointSymbolImage2 = QgsMarkerCatalogue::instance()->imageMarker ( mPointSymbolName, mPointSize * widthScale,
 	                        pen, mBrush, false );
