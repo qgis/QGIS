@@ -25,7 +25,7 @@
 class QPainter;
 
 /**Contains information about the context of a rendering operation*/
-class QgsRenderContext
+class CORE_EXPORT QgsRenderContext
 {
  public:
   QgsRenderContext();
