@@ -105,9 +105,10 @@ class CORE_EXPORT QgsSymbol{
      */
     virtual QImage getPointSymbolAsImage( double widthScale = 1., 
         bool selected = false,
-        QColor selectionColor = Qt::yellow,
+        QColor selectionColor = Qt::yellow,				  
         double scale = 1.0,
-        double rotation = 0.0);
+	double rotation = 0.0,
+	double rasterScaleFactor = 1.0);
 
     /**Writes the contents of the symbol to a configuration file
       @ return true in case of success*/

@@ -324,11 +324,11 @@ QImage QgsSymbol::getCachedPointSymbolAsImage(  double widthScale,
   }
 }
 
-QImage QgsSymbol::getPointSymbolAsImage(  double widthScale,
-               bool selected, QColor selectionColor, double scale, double rotation )
+QImage QgsSymbol::getPointSymbolAsImage(  double widthScale, bool selected, QColor selectionColor, double scale, \
+					  double rotation, double rasterScaleFactor)
 {
   //QgsDebugMsg(QString("Symbol scale = %1, and rotation = %2").arg(scale).arg(rotation));
-  if ( 1.0 == scale && 0 == rotation )
+  if ( 1.0 == (scale * rasterScaleFactor) && 0 == rotation )
   {
     // If scale is 1.0 and rotation 0.0, use cached image.
     return getCachedPointSymbolAsImage( widthScale, selected, selectionColor );
@@ -336,19 +336,19 @@ QImage QgsSymbol::getPointSymbolAsImage(  double widthScale,
 
   QImage preRotateImage;
   QPen pen = mPen;
-  double newWidth = mPen.widthF() * widthScale * scale;
+  double newWidth = mPen.widthF() * widthScale * rasterScaleFactor;
   pen.setWidth(newWidth);
 
   if ( selected )
   {
     pen.setColor ( selectionColor ); 
     QBrush brush = mBrush;
-    preRotateImage = QgsMarkerCatalogue::instance()->imageMarker ( mPointSymbolName, (int)(mPointSize * scale * widthScale),
+    preRotateImage = QgsMarkerCatalogue::instance()->imageMarker ( mPointSymbolName, (int)(mPointSize * scale * widthScale * rasterScaleFactor),
                                                                    pen, mBrush );
   }
   else 
   {
-    preRotateImage = QgsMarkerCatalogue::instance()->imageMarker ( mPointSymbolName, (int)(mPointSize * scale * widthScale),
+    preRotateImage = QgsMarkerCatalogue::instance()->imageMarker ( mPointSymbolName, (int)(mPointSize * scale * widthScale * rasterScaleFactor),
                                                                    pen, mBrush );
   }
 
