@@ -202,11 +202,6 @@ void QgsMarkerCatalogue::hardMarker (QPainter * thepPainter, QString name, doubl
   double x_c = s/2;
   double y_c = x_c;
 
-  // Picture
-  QPicture picture;
-  thepPainter->begin(&picture);
-  thepPainter->setRenderHint(QPainter::Antialiasing);
-
   // Also width must be odd otherwise there are discrepancies visible in canvas!
   double lw = pen.widthF();//(int)(2*floor((double)pen.widthF()/2)+1); // -> lw > 0
   pen.setWidthF(lw);
@@ -217,7 +212,7 @@ void QgsMarkerCatalogue::hardMarker (QPainter * thepPainter, QString name, doubl
   // Circle radius, is used for other figures also, when compensating for line
   // width is necessary.
 
-  double r = (s-2*lw)/2-1;
+  int r = (s-2*lw)/2 - 1;
   QgsDebugMsg(QString("Hard marker radius %1").arg(r));
 
   if ( name == "circle" ) 
@@ -229,7 +224,7 @@ void QgsMarkerCatalogue::hardMarker (QPainter * thepPainter, QString name, doubl
     x_c -= ((lw+5)/4);
     y_c -= ((lw+5)/4);
 
-    thepPainter->drawEllipse(x_c-r, y_c-r, x_c+r, y_c+r);
+    thepPainter->drawEllipse(QRectF(x_c-r, y_c-r, x_c+r, y_c+r));
   } 
   else if ( name == "rectangle" ) 
   {
