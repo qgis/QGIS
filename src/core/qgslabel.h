@@ -133,7 +133,7 @@ private:
     void labelPoint ( std::vector<QgsPoint>&, QgsFeature & feature );
 
     /** Get label point for the given feature in wkb format. */
-    unsigned char* labelPoint( QgsPoint& point, unsigned char* wkb);
+    unsigned char* labelPoint( QgsPoint& point, unsigned char* wkb, size_t wkblen);
 
     /** Color to draw selected features */
     QColor mSelectionColor;
