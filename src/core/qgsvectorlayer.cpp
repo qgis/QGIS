@@ -819,13 +819,13 @@ bool QgsVectorLayer::draw(QgsRenderContext& renderContext)
           sel = FALSE;
         }
 
-	//QgsDebugMsg(QString("markerScale before renderFeature(): %1").arg(markerScaleFactor));
-	// markerScalerFactore reflects the wanted scaling of the marker
+        //QgsDebugMsg(QString("markerScale before renderFeature(): %1").arg(markerScaleFactor));
+	      // markerScalerFactore reflects the wanted scaling of the marker
         mRenderer->renderFeature(renderContext.painter(), fet, &marker, sel, renderContext.scaleFactor(), renderContext.rasterScaleFactor());
-	// markerScalerFactore now reflects the actual scaling of the marker that the render performed.
-	//QgsDebugMsg(QString("markerScale after renderFeature(): %1").arg(markerScaleFactor));
+        // markerScalerFactore now reflects the actual scaling of the marker that the render performed.
+        //QgsDebugMsg(QString("markerScale after renderFeature(): %1").arg(markerScaleFactor));
 
-        double scale = renderContext.scaleFactor() /  markerScaleFactor;
+        //double scale = renderContext.scaleFactor() /  markerScaleFactor;
         drawFeature(renderContext.painter() , fet, &(renderContext.mapToPixel()), renderContext.coordTransform(), &marker, renderContext.scaleFactor(), renderContext.rasterScaleFactor(), renderContext.drawEditingInformation());
 
         ++featureCount;
@@ -838,12 +838,11 @@ bool QgsVectorLayer::draw(QgsRenderContext& renderContext)
         for(; it != mAddedFeatures.end(); ++it)
         {
           bool sel = mSelectedFeatureIds.contains((*it).featureId());
-	  QgsDebugMsg(QString("markerScale before renderFeature(): %1").arg(markerScaleFactor));
-	  // markerScalerFactore reflects the wanted scaling of the marker
-          mRenderer->renderFeature(renderContext.painter(), *it, &marker, &markerScaleFactor, 
-				   sel, renderContext.scaleFactor());
-	  // markerScalerFactore now reflects the actual scaling of the marker that the render performed.
-	  QgsDebugMsg(QString("markerScale after renderFeature(): %1").arg(markerScaleFactor));
+          //QgsDebugMsg(QString("markerScale before renderFeature(): %1").arg(markerScaleFactor));
+          // markerScalerFactore reflects the wanted scaling of the marker
+          mRenderer->renderFeature(renderContext.painter(), *it, &marker, sel, renderContext.scaleFactor(), renderContext.rasterScaleFactor());
+          // markerScalerFactore now reflects the actual scaling of the marker that the render performed.
+          //QgsDebugMsg(QString("markerScale after renderFeature(): %1").arg(markerScaleFactor));
 
           //double scale = renderContext.scaleFactor() / markerScaleFactor;
     
@@ -2797,7 +2796,7 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
 }
 
 
-int QgsVectorLayer::snapWithContext(const QgsPoint& startPoint, double snappingTolerance, QMultiMap<double, QgsSnappingResult>& snappingResults, \
+int QgsVectorLayer::snapWithContext(const QgsPoint& startPoint, double snappingTolerance, QMultiMap<double, QgsSnappingResult>& snappingResults,
 		      QgsSnapper::SNAP_TO snap_to)
 {
   if (snappingTolerance<=0 || !mDataProvider)
@@ -2806,7 +2805,7 @@ int QgsVectorLayer::snapWithContext(const QgsPoint& startPoint, double snappingT
     }
   
   QList<QgsFeature> featureList;
-  QgsRect searchRect(startPoint.x()-snappingTolerance, startPoint.y()-snappingTolerance, \
+  QgsRect searchRect(startPoint.x()-snappingTolerance, startPoint.y()-snappingTolerance,
 		     startPoint.x()+snappingTolerance, startPoint.y()+snappingTolerance);
   double sqrSnappingTolerance = snappingTolerance * snappingTolerance;
 
@@ -2824,7 +2823,7 @@ int QgsVectorLayer::snapWithContext(const QgsPoint& startPoint, double snappingT
   return 0;	    
 }
 
-void QgsVectorLayer::snapToGeometry(const QgsPoint& startPoint, int featureId, QgsGeometry* geom, double sqrSnappingTolerance, \
+void QgsVectorLayer::snapToGeometry(const QgsPoint& startPoint, int featureId, QgsGeometry* geom, double sqrSnappingTolerance,
 				    QMultiMap<double, QgsSnappingResult>& snappingResults, QgsSnapper::SNAP_TO snap_to) const
 {
   if(!geom)
