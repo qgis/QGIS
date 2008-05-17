@@ -5123,7 +5123,6 @@ QgsRasterLayer* QgisApp::addRasterLayer(QString const & rasterFile, QString cons
           + tr(" is not a valid or recognized raster data source"));
       QMessageBox::critical(this, tr("Invalid Data Source"), msg);
     }
-    delete layer;
     return NULL;
   }
   else
