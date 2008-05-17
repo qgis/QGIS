@@ -32,12 +32,12 @@
         <uppervalue></uppervalue>
         <label></label>
         <pointsymbol>svg:/Applications/qgis0.9.2.app/Contents/MacOS/share/qgis/svg/gpsicons/plane.svg</pointsymbol>
-        <pointsize>18</pointsize>
+        <pointsize>6</pointsize>
         <rotationclassificationfield>1</rotationclassificationfield>
         <scaleclassificationfield>2</scaleclassificationfield>
         <outlinecolor red="0" blue="0" green="0" />
         <outlinestyle>SolidLine</outlinestyle>
-        <outlinewidth>1</outlinewidth>
+        <outlinewidth>0.4</outlinewidth>
         <fillcolor red="231" blue="132" green="129" />
         <fillpattern>SolidPattern</fillpattern>
         <texturepath></texturepath>
@@ -47,12 +47,12 @@
         <uppervalue></uppervalue>
         <label></label>
         <pointsymbol>svg:/Applications/qgis0.9.2.app/Contents/MacOS/share/qgis/svg/gpsicons/plane_orange.svg</pointsymbol>
-        <pointsize>14</pointsize>
+        <pointsize>5</pointsize>
         <rotationclassificationfield>1</rotationclassificationfield>
         <scaleclassificationfield>2</scaleclassificationfield>
         <outlinecolor red="0" blue="0" green="0" />
         <outlinestyle>SolidLine</outlinestyle>
-        <outlinewidth>1</outlinewidth>
+        <outlinewidth>0.4</outlinewidth>
         <fillcolor red="82" blue="126" green="252" />
         <fillpattern>SolidPattern</fillpattern>
         <texturepath></texturepath>
@@ -62,12 +62,12 @@
         <uppervalue></uppervalue>
         <label></label>
         <pointsymbol>svg:/Applications/qgis0.9.2.app/Contents/MacOS/share/qgis/svg/gpsicons/plane.svg</pointsymbol>
-        <pointsize>14</pointsize>
+        <pointsize>5</pointsize>
         <rotationclassificationfield>1</rotationclassificationfield>
         <scaleclassificationfield>2</scaleclassificationfield>
         <outlinecolor red="0" blue="0" green="0" />
         <outlinestyle>SolidLine</outlinestyle>
-        <outlinewidth>1</outlinewidth>
+        <outlinewidth>0.4</outlinewidth>
         <fillcolor red="68" blue="242" green="24" />
         <fillpattern>SolidPattern</fillpattern>
         <texturepath></texturepath>

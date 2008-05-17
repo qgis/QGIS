@@ -33,7 +33,7 @@
         <scaleclassificationfield>-1</scaleclassificationfield>
         <outlinecolor red="159" blue="98" green="113" />
         <outlinestyle>DashLine</outlinestyle>
-        <outlinewidth>2</outlinewidth>
+        <outlinewidth>0.8</outlinewidth>
         <fillcolor red="0" blue="0" green="0" />
         <fillpattern>NoBrush</fillpattern>
         <texturepath></texturepath>

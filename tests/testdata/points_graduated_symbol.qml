@@ -31,12 +31,12 @@
         <uppervalue>7.333</uppervalue>
         <label></label>
         <pointsymbol>hard:circle</pointsymbol>
-        <pointsize>10</pointsize>
+        <pointsize>4</pointsize>
         <rotationclassificationfield>1</rotationclassificationfield>
         <scaleclassificationfield>2</scaleclassificationfield>
         <outlinecolor red="0" blue="0" green="0" />
         <outlinestyle>SolidLine</outlinestyle>
-        <outlinewidth>1</outlinewidth>
+        <outlinewidth>0.4</outlinewidth>
         <fillcolor red="0" blue="0" green="255" />
         <fillpattern>SolidPattern</fillpattern>
         <texturepath></texturepath>
@@ -46,12 +46,12 @@
         <uppervalue>13.667</uppervalue>
         <label></label>
         <pointsymbol>hard:rectangle</pointsymbol>
-        <pointsize>18</pointsize>
+        <pointsize>7</pointsize>
         <rotationclassificationfield>1</rotationclassificationfield>
         <scaleclassificationfield>2</scaleclassificationfield>
         <outlinecolor red="0" blue="0" green="0" />
         <outlinestyle>SolidLine</outlinestyle>
-        <outlinewidth>1</outlinewidth>
+        <outlinewidth>0.4</outlinewidth>
         <fillcolor red="169" blue="108" green="102" />
         <fillpattern>SolidPattern</fillpattern>
         <texturepath></texturepath>
@@ -61,12 +61,12 @@
         <uppervalue>20.001</uppervalue>
         <label></label>
         <pointsymbol>hard:star</pointsymbol>
-        <pointsize>22</pointsize>
+        <pointsize>9</pointsize>
         <rotationclassificationfield>1</rotationclassificationfield>
         <scaleclassificationfield>2</scaleclassificationfield>
         <outlinecolor red="0" blue="0" green="0" />
         <outlinestyle>SolidLine</outlinestyle>
-        <outlinewidth>1</outlinewidth>
+        <outlinewidth>0.4</outlinewidth>
         <fillcolor red="0" blue="171" green="84" />
         <fillpattern>SolidPattern</fillpattern>
         <texturepath></texturepath>

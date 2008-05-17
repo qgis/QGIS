@@ -35,7 +35,7 @@
         <scaleclassificationfield>-1</scaleclassificationfield>
         <outlinecolor red="13" blue="166" green="110" />
         <outlinestyle>SolidLine</outlinestyle>
-        <outlinewidth>1</outlinewidth>
+        <outlinewidth>0.4</outlinewidth>
         <fillcolor red="124" blue="221" green="186" />
         <fillpattern>Dense1Pattern</fillpattern>
         <texturepath></texturepath>
@@ -50,7 +50,7 @@
         <scaleclassificationfield>-1</scaleclassificationfield>
         <outlinecolor red="26" blue="177" green="173" />
         <outlinestyle>SolidLine</outlinestyle>
-        <outlinewidth>1</outlinewidth>
+        <outlinewidth>0.4</outlinewidth>
         <fillcolor red="95" blue="188" green="144" />
         <fillpattern>SolidPattern</fillpattern>
         <texturepath></texturepath>
@@ -65,7 +65,7 @@
         <scaleclassificationfield>-1</scaleclassificationfield>
         <outlinecolor red="152" blue="93" green="84" />
         <outlinestyle>SolidLine</outlinestyle>
-        <outlinewidth>1</outlinewidth>
+        <outlinewidth>0.4</outlinewidth>
         <fillcolor red="171" blue="136" green="130" />
         <fillpattern>SolidPattern</fillpattern>
         <texturepath></texturepath>

@@ -30,12 +30,12 @@
         <uppervalue></uppervalue>
         <label></label>
         <pointsymbol>hard:triangle</pointsymbol>
-        <pointsize>12</pointsize>
+        <pointsize>5</pointsize>
         <rotationclassificationfield>1</rotationclassificationfield>
         <scaleclassificationfield>2</scaleclassificationfield>
         <outlinecolor red="140" blue="60" green="82" />
         <outlinestyle>SolidLine</outlinestyle>
-        <outlinewidth>1</outlinewidth>
+        <outlinewidth>0.4</outlinewidth>
         <fillcolor red="193" blue="122" green="145" />
         <fillpattern>SolidPattern</fillpattern>
         <texturepath></texturepath>
