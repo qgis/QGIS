@@ -337,7 +337,7 @@ QImage QgsSymbol::getPointSymbolAsImage(  double widthScale,
   QImage preRotateImage;
   QPen pen = mPen;
   double newWidth = mPen.widthF() * widthScale * scale;
-  pen.setWidth(mPen.widthF() * widthScale * scale);
+  pen.setWidth(newWidth);
 
   if ( selected )
   {

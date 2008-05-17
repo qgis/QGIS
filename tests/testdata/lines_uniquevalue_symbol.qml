@@ -35,7 +35,7 @@
         <scaleclassificationfield>-1</scaleclassificationfield>
         <outlinecolor red="165" blue="74" green="36" />
         <outlinestyle>DashLine</outlinestyle>
-        <outlinewidth>5</outlinewidth>
+        <outlinewidth>2</outlinewidth>
         <fillcolor red="0" blue="0" green="0" />
         <fillpattern>NoBrush</fillpattern>
         <texturepath></texturepath>
@@ -50,7 +50,7 @@
         <scaleclassificationfield>-1</scaleclassificationfield>
         <outlinecolor red="12" blue="96" green="151" />
         <outlinestyle>SolidLine</outlinestyle>
-        <outlinewidth>7</outlinewidth>
+        <outlinewidth>2.8</outlinewidth>
         <fillcolor red="0" blue="0" green="0" />
         <fillpattern>NoBrush</fillpattern>
         <texturepath></texturepath>

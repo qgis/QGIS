@@ -32,12 +32,12 @@
           <uppervalue></uppervalue>
           <label></label>
           <pointsymbol>hard:circle</pointsymbol>
-          <pointsize>10</pointsize>
+          <pointsize>4</pointsize>
           <rotationclassificationfield>-1</rotationclassificationfield>
           <scaleclassificationfield>-1</scaleclassificationfield>
           <outlinecolor red="216" blue="30" green="210" />
           <outlinestyle>SolidLine</outlinestyle>
-          <outlinewidth>1</outlinewidth>
+          <outlinewidth>0.4</outlinewidth>
           <fillcolor red="0" blue="0" green="0" />
           <fillpattern>NoBrush</fillpattern>
           <texturepath></texturepath>
@@ -49,12 +49,12 @@
           <uppervalue></uppervalue>
           <label></label>
           <pointsymbol>hard:circle</pointsymbol>
-          <pointsize>10</pointsize>
+          <pointsize>4</pointsize>
           <rotationclassificationfield>-1</rotationclassificationfield>
           <scaleclassificationfield>-1</scaleclassificationfield>
           <outlinecolor red="46" blue="206" green="43" />
           <outlinestyle>SolidLine</outlinestyle>
-          <outlinewidth>1</outlinewidth>
+          <outlinewidth>0.4</outlinewidth>
           <fillcolor red="0" blue="0" green="0" />
           <fillpattern>NoBrush</fillpattern>
           <texturepath></texturepath>

@@ -37,7 +37,7 @@
           <scaleclassificationfield>-1</scaleclassificationfield>
           <outlinecolor red="0" blue="0" green="0" />
           <outlinestyle>SolidLine</outlinestyle>
-          <outlinewidth>1</outlinewidth>
+          <outlinewidth>0.4</outlinewidth>
           <fillcolor red="94" blue="213" green="172" />
           <fillpattern>SolidPattern</fillpattern>
           <texturepath></texturepath>
@@ -54,7 +54,7 @@
           <scaleclassificationfield>-1</scaleclassificationfield>
           <outlinecolor red="0" blue="0" green="0" />
           <outlinestyle>SolidLine</outlinestyle>
-          <outlinewidth>1</outlinewidth>
+          <outlinewidth>0.4</outlinewidth>
           <fillcolor red="59" blue="134" green="49" />
           <fillpattern>SolidPattern</fillpattern>
           <texturepath></texturepath>
