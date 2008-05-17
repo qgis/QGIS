@@ -14,7 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <math.h> //needed for win32 build (ts)
+#include <cmath>
+#include <limits>
 
 #include <QString>
 #include <QFont>
@@ -45,10 +46,8 @@
 static const char * const ident_ =
     "$Id$";
 
-
 QgsLabel::QgsLabel( const QgsFieldMap & fields )
 {
-
     mField = fields;
     mLabelFieldIdx.resize ( LabelFieldCount );
     for ( int i = 0; i < LabelFieldCount; i++ )
@@ -459,8 +458,8 @@ void QgsLabel::labelPoint ( std::vector<QgsPoint>& points, QgsFeature & feature 
 {
   QgsGeometry* geometry = feature.geometry();
   unsigned char *geom = geometry->wkbBuffer();
+  size_t geomlen = geometry->wkbSize();
   QGis::WKBTYPE wkbType = geometry->wkbType();
-  
   QgsPoint point;
 
   switch (wkbType)
@@ -472,10 +471,11 @@ void QgsLabel::labelPoint ( std::vector<QgsPoint>& points, QgsFeature & feature 
   case QGis::WKBPolygon25D:
   case QGis::WKBPolygon:
     {
-      labelPoint(point, geom);
+      labelPoint(point, geom, geomlen);
       points.push_back(point);
     }
     break;
+
   case QGis::WKBMultiPoint25D:
   case QGis::WKBMultiPoint:
   case QGis::WKBMultiLineString25D:
@@ -484,11 +484,15 @@ void QgsLabel::labelPoint ( std::vector<QgsPoint>& points, QgsFeature & feature 
   case QGis::WKBMultiPolygon:
     // Return a position for each individual in the multi-feature
     {
-      int numFeatures = (int)(*(geom + 5));
-      geom += 9; // now points to start of array of WKB's
-      for (int i = 0; i < numFeatures; ++i)
+      assert( 1+sizeof(wkbType)+sizeof(int)<=geomlen );
+      geom += 1+sizeof(wkbType);
+      int nFeatures = *(unsigned int *)geom;
+      geom += sizeof(int);
+
+      unsigned char *feature = geom;
+      for (int i = 0; i<nFeatures && feature; ++i)
       {
-        geom = labelPoint(point, geom);
+        feature = labelPoint(point, feature, geom+geomlen-feature);
         points.push_back(point);
       }
     }
@@ -498,156 +502,126 @@ void QgsLabel::labelPoint ( std::vector<QgsPoint>& points, QgsFeature & feature 
   }
 }
 
-unsigned char* QgsLabel::labelPoint ( QgsPoint& point, unsigned char* geom)
+unsigned char* QgsLabel::labelPoint ( QgsPoint& point, unsigned char *geom, size_t geomlen)
 {
-    // Number of bytes that ints and doubles take in the WKB format.
-    static const unsigned int sizeOfInt = 4;
-    static const unsigned int sizeOfDouble = 8;
+  // verify that local types match sizes as WKB spec
+  assert( sizeof(int) == 4 );
+  assert( sizeof(QGis::WKBTYPE) == 4 );
+  assert( sizeof(double) == 8 );
 
-    QGis::WKBTYPE wkbType;
-    bool hasZValue = false;
-    double *x, *y;
-    unsigned char *ptr;
-    int *nPoints;
-    // Upon return from this function, this variable will contain a
-    // pointer to the first byte beyond the current feature.
-    unsigned char *nextFeature = geom;
+  if(geom==NULL) {
+    QgsDebugMsg("empty wkb");
+    return NULL;
+  }
 
-    memcpy(&wkbType, (geom+1), sizeof(wkbType));
+  QGis::WKBTYPE wkbType;
+  unsigned char *geomend = geom+geomlen;
 
-    switch (wkbType)
+  assert( geom+1+sizeof(wkbType)<=geomend );
+
+  geom++; // skip endianess
+  memcpy(&wkbType, geom, sizeof(wkbType));
+  geom += sizeof(wkbType);
+
+  int dims = 2;
+
+  switch (wkbType)
+  {
+  case QGis::WKBPoint25D:
+  case QGis::WKBPoint:
     {
-    case QGis::WKBPoint25D:
-    case QGis::WKBPoint:
-      {
-        x = (double *) (geom + 5);
-        y = (double *) (geom + 5 + sizeof(double));
-        point.set(*x, *y);
-        nextFeature += 1 + sizeOfInt + sizeOfDouble*2;
-      }
-      break;
-    case QGis::WKBLineString25D:
-      hasZValue = true;
-    case QGis::WKBLineString: // Line center
-      {
-        double dx, dy, tl, l;
-        ptr = geom + 5;
-        nPoints = (int *)ptr;
-	if(hasZValue)
-	  {
-	    nextFeature += 1 + sizeOfInt*2 + (*nPoints)*sizeOfDouble*3;
-	  }
-	else
-	  {
-	    nextFeature += 1 + sizeOfInt*2 + (*nPoints)*sizeOfDouble*2;
-	  }
-        ptr = geom + 1 + 2 * sizeof(int);
-
-        tl = 0;
-        for (int i = 1; i < *nPoints; i++)
-        {
-	  if(hasZValue)
-	    {
-	      dx = ((double *)ptr)[3*i] - ((double *)ptr)[3*i-3];
-	      dy = ((double *)ptr)[3*i+1] - ((double *)ptr)[3*i-2];
-	    }
-	  else
-	    {
-	      dx = ((double *)ptr)[2*i] - ((double *)ptr)[2*i-2];
-	      dy = ((double *)ptr)[2*i+1] - ((double *)ptr)[2*i-1];
-	    }
-            tl += sqrt(dx*dx + dy*dy);
-        }
-        tl /= 2;
-
-        l = 0;
-        for (int i = 1; i < *nPoints; i++)
-        {
-            double dl;
-	    if(hasZValue)
-	      {
-		dx = ((double *)ptr)[3*i] - ((double *)ptr)[3*i-3];
-		dy = ((double *)ptr)[3*i+1] - ((double *)ptr)[3*i-2];
-	      }
-	    else
-	      {
-		dx = ((double *)ptr)[2*i] - ((double *)ptr)[2*i-2];
-		dy = ((double *)ptr)[2*i+1] - ((double *)ptr)[2*i-1];
-	      }
-            dl = sqrt(dx*dx + dy*dy);
-
-            if ( l+dl > tl )
-            {
-                l = tl - l;
-                double k = l/dl;
-
-		if(hasZValue)
-		  {
-		    point.setX ( ((double *)ptr)[3*i-3] +  k * dx  );
-		    point.setY ( ((double *)ptr)[3*i-2] + k * dy );
-		  }
-		else
-		  {
-		    point.setX ( ((double *)ptr)[2*i-2] +  k * dx  );
-		    point.setY ( ((double *)ptr)[2*i-1] + k * dy );
-		  }
-                break;
-            }
-            l += dl;
-        }
-      }
-      break;
-
-    case QGis::WKBPolygon25D:
-      hasZValue = true;
-    case QGis::WKBPolygon:
-      {
-        double sx, sy;
-        ptr = geom + 1 + 2 * sizeof(int); // set pointer to the first ring
-        nPoints = (int *) ptr;
-        ptr += 4;
-        sx = sy = 0;
-        for (int i = 0; i < *nPoints-1; i++)
-        {
-	  if(hasZValue)
-	    {
-	      sx += ((double *)ptr)[3*i];
-	      sy += ((double *)ptr)[3*i+1];
-	    }
-	  else
-	    {
-	      sx += ((double *)ptr)[2*i];
-	      sy += ((double *)ptr)[2*i+1];
-	    }
-        }
-        point.setX ( sx/(*nPoints-1) );
-        point.setY ( sy/(*nPoints-1) );
-        // Work out a pointer to the next feature after this one.
-        int numRings = (int)(*(geom+1+sizeOfInt));
-        unsigned char* nextRing = nextFeature + 1 + 2*sizeOfInt; 
-        for (int i = 0; i < numRings; ++i)
-        {
-          int numPoints = (int)(*nextRing);
-          // get the start of the next ring
-	  if(hasZValue)
-	    {
-	      nextRing += sizeOfInt + numPoints*sizeOfDouble*3;
-	    }
-	  else
-	    {
-	      nextRing += sizeOfInt + numPoints*sizeOfDouble*2;
-	    }
-        }
-        nextFeature = nextRing;
-      }
-      break;
-
-    default:
-      // To get here is a bug because our caller should be filtering
-      // on wkb type.
-      break;
+      assert( geom+2*sizeof(double)<=geomend );
+      double *pts = (double *)geom;
+      point.set( pts[0], pts[1] );
+      geom += 2*sizeof(double);
     }
-    return nextFeature;
+    break;
+
+  case QGis::WKBLineString25D:
+    dims=3;
+  case QGis::WKBLineString: // Line center
+    {
+      assert( geom+sizeof(int)<=geomend );
+      int nPoints = *(unsigned int *)geom;
+      geom += sizeof(int);
+
+      assert( geom+nPoints*sizeof(double)*dims<=geomend );
+
+      // get line center
+      double *pts = (double *)geom;
+      double tl = 0.0;
+      for (int i = 1; i < nPoints; i++)
+      {
+        double dx = pts[dims*i]   - pts[dims*(i-1)];
+        double dy = pts[dims*i+1] - pts[dims*(i-1)+1];
+        tl += sqrt(dx*dx + dy*dy);
+      }
+      tl /= 2.0;
+
+      // find line center
+      double l = 0.0;
+      for (int i=1; i < nPoints; i++)
+      {
+        double dx = pts[dims*i]   - pts[dims*(i-1)];
+        double dy = pts[dims*i+1] - pts[dims*(i-1)+1];
+        double dl = sqrt(dx*dx + dy*dy);
+
+        if ( l+dl > tl )
+        {
+          double k = (tl-l)/dl;
+
+          point.set( pts[dims*(i-1)]   + k * dx, 
+                     pts[dims*(i-1)+1] + k * dy);
+          break;
+        }
+
+        l += dl;
+      }
+
+      geom += nPoints*sizeof(double)*dims;
+    }
+    break;
+
+  case QGis::WKBPolygon25D:
+    dims = 3;
+  case QGis::WKBPolygon: // centroid of outer ring
+    {
+      assert( geom+sizeof(int)<=geomend);
+      int nRings = *(unsigned int *)geom;
+      geom += sizeof(int);
+
+      for (int i=0; i<nRings; ++i) 
+      {
+        assert( geom+sizeof(int)<=geomend );
+        int nPoints = *(unsigned int *)geom;
+        geom += sizeof(int);
+
+        assert( geom+nPoints*sizeof(double)*dims<=geomend );
+
+        if( i==0 ) {
+          double sx=0.0, sy=0.0;
+          double *pts = (double*) geom;
+          for (int j=0; j<nPoints-1; j++) {
+            sx += pts[dims*j];
+            sy += pts[dims*j+1];
+          }
+          point.set( sx/(nPoints-1),
+                     sy/(nPoints-1) );
+        }
+
+        geom += nPoints*sizeof(double)*dims;
+      }
+    }
+    break;
+
+  default:
+    // To get here is a bug because our caller should be filtering
+    // on wkb type.
+    QgsDebugMsg("unsupported wkb type");
+    return NULL;
+  }
+
+  return geom;
 }
 
 static int _elementFieldIndex(QDomElement& el)
