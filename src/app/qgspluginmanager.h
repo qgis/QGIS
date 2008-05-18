@@ -56,8 +56,6 @@ class QgsPluginManager : public QDialog, private Ui::QgsPluginManagerBase
     //! Sort model by column ascending
     void sortModel(int );
   public slots:
-    //! Enable disable checkbox
-    void on_lstPlugins_clicked(const QModelIndex & );
     //! Load selected plugins and close the dialog
     void on_btnOk_clicked();
     //! Select all plugins by setting their checkbox on
