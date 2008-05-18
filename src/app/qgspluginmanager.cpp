@@ -407,16 +407,3 @@ void QgsPluginManager::on_btnClose_clicked()
   reject();
 }
 
-void QgsPluginManager::on_lstPlugins_clicked(const QModelIndex &theIndex )
-{
-  if (theIndex.column() == 0)
-  {
-    int row = theIndex.row();
-    if ( mModelPlugins->item(row,0)->checkState() == Qt::Checked )
-    {
-      mModelPlugins->item(row,0)->setCheckState(Qt::Unchecked);
-    } else {
-      mModelPlugins->item(row,0)->setCheckState(Qt::Checked);
-    }
-  }
-}
