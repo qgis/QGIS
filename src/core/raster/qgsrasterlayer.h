@@ -186,7 +186,6 @@ public:
     // Static methods:
     //
     static void buildSupportedRasterFileFilter(QString & fileFilters);
-    static bool isSupportedRasterDriver(const QString & driverName);
     static void registerGdalDrivers();
 
     /** This helper checks to see whether the filename appears to be a valid
