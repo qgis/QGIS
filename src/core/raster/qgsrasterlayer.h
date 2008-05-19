@@ -532,7 +532,7 @@ public:
     /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option */
     void computeMinimumMaximumEstimates(int theBand, double* theMinMax)
     {
-      if(0 < theBand && theBand <= getBandCount())
+      if(0 < theBand && theBand <= (int) getBandCount())
       {
         GDALRasterBandH myGdalBand = GDALGetRasterBand(mGdalDataset,theBand);
         GDALComputeRasterMinMax( myGdalBand, 1, theMinMax );
