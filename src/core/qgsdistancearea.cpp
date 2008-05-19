@@ -282,7 +282,7 @@ double QgsDistanceArea::measureLine(const QList<QgsPoint>& points)
   }
   catch (QgsCsException &cse)
   {
-    UNUSED(cse);
+    Q_UNUSED(cse);
     QgsLogger::warning(QObject::tr("Caught a coordinate system exception while trying to transform a point. Unable to calculate line length."));
     return 0.0;
   }
@@ -307,7 +307,7 @@ double QgsDistanceArea::measureLine(const QgsPoint& p1, const QgsPoint& p2)
   }
   catch (QgsCsException &cse)
   {
-    UNUSED(cse);
+    Q_UNUSED(cse);
     QgsLogger::warning(QObject::tr("Caught a coordinate system exception while trying to transform a point. Unable to calculate line length."));
     return 0.0;
   }
@@ -369,7 +369,7 @@ unsigned char* QgsDistanceArea::measurePolygon(unsigned char* feature, double* a
   }
   catch (QgsCsException &cse)
   {
-    UNUSED(cse);
+    Q_UNUSED(cse);
     QgsLogger::warning(QObject::tr("Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area."));
   }
   
@@ -398,7 +398,7 @@ double QgsDistanceArea::measurePolygon(const QList<QgsPoint>& points)
   }
   catch (QgsCsException &cse)
   {
-    UNUSED(cse);
+    Q_UNUSED(cse);
     QgsLogger::warning(QObject::tr("Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area."));
     return 0.0;
   }

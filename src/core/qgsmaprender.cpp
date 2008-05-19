@@ -541,7 +541,7 @@ bool QgsMapRender::splitLayersExtent(QgsMapLayer* layer, QgsRect& extent, QgsRec
     }
     catch (QgsCsException &cse)
     {
-      UNUSED(cse);
+      Q_UNUSED(cse);
       QgsLogger::warning("Transform error caught in " + QString(__FILE__) + ", line " + QString::number(__LINE__));
       extent = QgsRect(-DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX);
       r2     = QgsRect(-DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX);

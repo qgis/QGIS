@@ -623,7 +623,7 @@ void QgsComposition::paperSizeChanged ( void )
   }
   catch (std::bad_alloc& ba)
   {
-    UNUSED(ba);
+    Q_UNUSED(ba);
     // A better solution here would be to set the canvas back to the
     // original size and carry on, but for the moment this will
     // prevent a crash due to an uncaught exception.

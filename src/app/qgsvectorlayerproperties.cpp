@@ -526,7 +526,7 @@ QString QgsVectorLayerProperties::getMetadata()
   }
   catch(QgsCsException &cse)
   {
-    UNUSED(cse);
+    Q_UNUSED(cse);
     QgsDebugMsg( cse.what() );
 
     myMetedata += "<tr><td>";
