@@ -21,6 +21,7 @@
 #include <QDir>
 
 #include <qgsconfig.h>
+#include <qgslogger.h>
 
 // for htonl
 #ifdef WIN32
@@ -50,42 +51,69 @@ QString QgsApplication::mThemePath;
 QgsApplication::QgsApplication(int & argc, char ** argv, bool GUIenabled)
 : QApplication(argc, argv, GUIenabled)
 {
+  QgsDebugMsg("\n**********************************");
+  QgsDebugMsg("\nInitialising QgsApplication...");
 #if defined(Q_WS_MACX) || defined(Q_WS_WIN32) || defined(WIN32)
-  setPrefixPath(applicationDirPath(), TRUE);
+  setPrefixPath(applicationDirPath(), true);
 #else
-  setPrefixPath(PREFIX, TRUE);
+  QDir myDir(applicationDirPath());
+  myDir.cdUp();
+  QString myPrefix = myDir.absolutePath();
+  QgsDebugMsg("Prefix: " +  myPrefix.toLocal8Bit());
+  setPrefixPath(myPrefix, true);
 #endif
+  QgsDebugMsg("\nPlugin Path:" + mPluginPath);
+  QgsDebugMsg("\nPkgData Path:" + mPkgDataPath);
+  QgsDebugMsg("\nTheme Path:" + mThemePath);
+  QgsDebugMsg("\n**********************************\n");
 }
 
 QgsApplication::~QgsApplication()
 {}
 
-void QgsApplication::setPrefixPath(const QString& thePrefixPath, bool useDefaultPaths)
+void QgsApplication::setPrefixPath(const QString thePrefixPath, bool useDefaultPaths)
 {
   mPrefixPath = thePrefixPath;
   if (useDefaultPaths)
   {
-    setPluginPath(mPrefixPath + QString("/") + QString(QGIS_PLUGIN_SUBDIR));
-    setPkgDataPath(mPrefixPath + QString("/") + QString(QGIS_DATA_SUBDIR));
+    setPluginPath(mPrefixPath + QDir::separator() + QString(QGIS_PLUGIN_SUBDIR));
+    setPkgDataPath(mPrefixPath + QDir::separator() + QString(QGIS_DATA_SUBDIR));
   }
 }
 
-void QgsApplication::setPluginPath(const QString& thePluginPath)
+void QgsApplication::setPluginPath(const QString thePluginPath)
 {
   mPluginPath = thePluginPath;
+  QgsDebugMsg("\n\n\n\n\n +++++++++++++++++++++++\n plugin path changed\n" + mPluginPath + "\n +++++++++++++++++ \n\n\n\n");
 }
 
-void QgsApplication::setPkgDataPath(const QString& thePkgDataPath)
+void QgsApplication::setPkgDataPath(const QString thePkgDataPath)
 {
   mPkgDataPath = thePkgDataPath;
   mThemePath = mPkgDataPath + QString("/themes/default/");
 }
 
+const QString QgsApplication::prefixPath() 
+{ 
+  return mPrefixPath; 
+}
+const QString QgsApplication::pluginPath() 
+{ 
+  return mPluginPath; 
+}
+const QString QgsApplication::pkgDataPath() 
+{ 
+  return mPkgDataPath; 
+}
+const QString QgsApplication::themePath() 
+{ 
+  return mThemePath; 
+}
 
 /*!
   Set the theme path to the specified theme.
 */
-void QgsApplication::selectTheme(const QString& theThemeName)
+void QgsApplication::selectTheme(const QString theThemeName)
 {
   mThemePath = mPkgDataPath + QString("/themes/") + theThemeName + QString("/");
 }

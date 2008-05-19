@@ -15,8 +15,6 @@
 //used in main.cpp and anywhere else where the release name is needed
 #define RELEASE_NAME "${RELEASE_NAME}"
 
-#define PREFIX "${CMAKE_INSTALL_PREFIX}"
-
 #define QGIS_PLUGIN_SUBDIR "${QGIS_PLUGIN_SUBDIR}"
 #define QGIS_DATA_SUBDIR "${QGIS_DATA_SUBDIR}"
 

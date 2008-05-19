@@ -1198,7 +1198,14 @@ void QgisApp::createStatusBar()
   QString myIconPath = QgsApplication::themePath();
   myProjPixmap.load(myIconPath+"/mIconProjectionDisabled.png");
   mOnTheFlyProjectionStatusButton->setPixmap(myProjPixmap);
-  assert(!myProjPixmap.isNull());
+  QgsDebugMsg("Icon Path: " + myIconPath.toLocal8Bit());
+  if (myProjPixmap.isNull())
+  {
+    QMessageBox::critical(this, tr("Resource Location Error"), 
+        tr("Error reading icon resources from: \n %1\n Quitting...").arg(myIconPath));
+
+    exit(0);
+  }
   mOnTheFlyProjectionStatusButton->setWhatsThis(tr("This icon shows whether on the fly projection is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour."));
   mOnTheFlyProjectionStatusButton->setToolTip(tr("Projection status - Click to open projection dialog"));
   connect(mOnTheFlyProjectionStatusButton, SIGNAL(clicked()),
@@ -1624,6 +1631,7 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
 {
   QSettings mySettings;
 
+  QgsDebugMsg("\n\n*************************************************");
   QgsDebugMsg("Restoring plugins from last session " + thePluginDirString);
   
 #ifdef WIN32
@@ -1663,6 +1671,10 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
             QgsDebugMsg("Loading plugin: " + myEntryName);
 
             loadPlugin(myName(), myDescription(), myFullPath);
+          }
+          else
+          {
+            QgsDebugMsg("Plugin was not active last session, leaving disabled: " + myEntryName);
           }
         }
         else
@@ -1718,6 +1730,8 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
     }
   }
 #endif
+  QgsDebugMsg("Loading plugins completed");
+  QgsDebugMsg("*************************************************\n\n");
 }
 
 
