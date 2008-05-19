@@ -3056,7 +3056,7 @@ void QgisApp::openProject(const QString & fileName)
     }
     catch ( QgsIOException & io_exception )
     {
-      UNUSED(io_exception);
+      Q_UNUSED(io_exception);
       QMessageBox::critical( this, 
           tr("QGIS: Unable to load project"), 
           tr("Unable to load project ") + fileName );
