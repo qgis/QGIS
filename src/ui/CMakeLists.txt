@@ -26,6 +26,7 @@ SET(QGIS_UIS
   qgscustomprojectiondialogbase.ui
   qgsdbsourceselectbase.ui
   qgsdelattrdialogbase.ui
+  qgsdetaileditemwidgetbase.ui
   qgsfillstylewidgetbase.ui
   qgsgeomtypedialogbase.ui
   qgsgraduatedsymboldialogbase.ui
