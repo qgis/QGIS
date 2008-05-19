@@ -1752,14 +1752,14 @@ bool QgsWmsProvider::calculateExtent()
 
     // Convert to the user's CRS as required
     try
-      {
-	extent = mCoordinateTransform->transformBoundingBox(extent, QgsCoordinateTransform::FORWARD);
-      }
+    {
+      extent = mCoordinateTransform->transformBoundingBox(extent, QgsCoordinateTransform::FORWARD);
+    }
     catch(QgsCsException &cse)
-      {
-	UNUSED(cse);
-	continue; //ignore extents of layers which cannot be transformed info the required CRS
-      }
+    {
+      Q_UNUSED(cse);
+      continue; //ignore extents of layers which cannot be transformed info the required CRS
+    }
 
     //make sure extent does not contain 'inf' or 'nan'
     if (!extent.isFinite())
