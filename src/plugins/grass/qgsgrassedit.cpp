@@ -1105,7 +1105,7 @@ double QgsGrassEdit::threshold ( void )
     }
     catch(QgsCsException& cse)
     {
-      UNUSED(cse);
+      Q_UNUSED(cse);
       //error
     }
   }

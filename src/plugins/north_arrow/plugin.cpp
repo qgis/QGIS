@@ -319,15 +319,15 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
       // project p1 and p2 to geographic coords
       try
       {        
-	p1 = transform.transform(p1);
-	p2 = transform.transform(p2);
+        p1 = transform.transform(p1);
+        p2 = transform.transform(p2);
       }
       catch (QgsException &e)
       {
-	UNUSED(e);
-	// just give up
-	QgsDebugMsg("Transformation error, quitting");
-	return false;
+        Q_UNUSED(e);
+        // just give up
+        QgsDebugMsg("Transformation error, quitting");
+        return false;
       }
 
       // Work out the value of the initial heading one takes to go
