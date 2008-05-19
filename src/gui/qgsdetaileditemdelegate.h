@@ -24,7 +24,7 @@
 class QCheckBox;
 class QgsDetailedItemWidget;
 
-class QgsDetailedItemDelegate : 
+class GUI_EXPORT QgsDetailedItemDelegate : 
      public QAbstractItemDelegate 
 {
   Q_OBJECT;
