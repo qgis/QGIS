@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>564</width>
-    <height>368</height>
+    <width>551</width>
+    <height>377</height>
    </rect>
   </property>
   <property name="mouseTracking" >
@@ -19,147 +19,113 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>11</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
-   <item row="0" column="0" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>11</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="textLabel1" >
-       <property name="text" >
-        <string>Plugin Directory</string>
-       </property>
-       <property name="buddy" >
-        <cstring>txtPluginDir</cstring>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="txtPluginDir" >
-       <property name="windowModality" >
-        <enum>Qt::NonModal</enum>
-       </property>
-       <property name="readOnly" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="0" >
+   <item row="0" column="0" colspan="3" >
     <widget class="QLabel" name="textLabel1_2" >
      <property name="text" >
-      <string>To load a plugin, click the checkbox next to the plugin and click Ok</string>
+      <string>To enable / disable a plugin, click its checkbox or description</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>11</number>
+   <item row="1" column="0" colspan="3" >
+    <widget class="QListView" name="vwPlugins" >
+     <property name="selectionMode" >
+      <enum>QAbstractItemView::SingleSelection</enum>
      </property>
-     <property name="spacing" >
-      <number>6</number>
+     <property name="selectionBehavior" >
+      <enum>QAbstractItemView::SelectItems</enum>
      </property>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>100</width>
-         <height>21</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnSelectAll" >
-       <property name="text" >
-        <string>&amp;Select All</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+S</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnClearAll" >
-       <property name="text" >
-        <string>C&amp;lear All</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+L</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnOk" >
-       <property name="text" >
-        <string>&amp;Ok</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+O</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnClose" >
-       <property name="text" >
-        <string>&amp;Close</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+C</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>100</width>
-         <height>21</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
+     <property name="wordWrap" >
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
    <item row="2" column="0" >
-    <widget class="QTableView" name="lstPlugins" >
-     <property name="alternatingRowColors" >
+    <widget class="QLabel" name="lblFilter" >
+     <property name="text" >
+      <string>&amp;Filter</string>
+     </property>
+     <property name="buddy" >
+      <cstring>leFilter</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="2" >
+    <widget class="QLineEdit" name="leFilter" />
+   </item>
+   <item row="3" column="0" colspan="2" >
+    <widget class="QLabel" name="textLabel1" >
+     <property name="text" >
+      <string>Plugin Directory:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2" >
+    <widget class="QLabel" name="lblPluginDir" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>Directory</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+     <property name="wordWrap" >
       <bool>true</bool>
      </property>
-     <property name="selectionMode" >
-      <enum>QAbstractItemView::NoSelection</enum>
-     </property>
-     <property name="sortingEnabled" >
-      <bool>true</bool>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="3" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
+ <tabstops>
+  <tabstop>vwPlugins</tabstop>
+  <tabstop>leFilter</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>QgsPluginManagerBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>511</x>
+     <y>305</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>561</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsPluginManagerBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>447</x>
+     <y>304</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>479</x>
+     <y>341</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

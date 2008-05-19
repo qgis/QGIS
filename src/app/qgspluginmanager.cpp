@@ -25,15 +25,22 @@
 #include <QMessageBox>
 #include <QLibrary>
 #include <QSettings>
-#include "qgisplugin.h"
-#include "qgslogger.h"
+#include <QStandardItem>
+#include <QPushButton>
+#include <QRegExp>
+
 #include "qgspluginmanager.h"
-#include "qgspluginitem.h"
-#include "qgsproviderregistry.h"
-#include "qgspluginregistry.h"
+#include <qgisplugin.h>
+#include <qgslogger.h>
+#include <qgspluginitem.h>
+#include <qgsproviderregistry.h>
+#include <qgspluginregistry.h>
+#include <qgsdetaileditemdelegate.h>
+#include <qgsdetaileditemwidget.h>
+#include <qgsdetaileditemdata.h>
 
 #ifdef HAVE_PYTHON
-#include "qgspythonutils.h"
+#include <qgspythonutils.h>
 #endif
 
 #define TESTLIB
@@ -58,37 +65,47 @@ QgsPluginManager::QgsPluginManager(QWidget * parent, Qt::WFlags fl)
      QString baseDir = appDir.left(bin);
      QString libDir = baseDir + "/lib"; */
 
-  txtPluginDir->setText(pr->libraryDirectory().path());
+  lblPluginDir->setText(pr->libraryDirectory().path());
   setTable();
   getPluginDescriptions();
   getPythonPluginDescriptions();
+  //
+  // Create the select all and clear all buttons and add them to the 
+  // buttonBox
+  //
+  QPushButton * btnSelectAll = new QPushButton(tr("&Select All"));
+  QPushButton * btnClearAll = new QPushButton(tr("&Clear All"));
+  btnSelectAll->setDefault(true);
+  buttonBox->addButton(btnSelectAll, QDialogButtonBox::ActionRole);
+  buttonBox->addButton(btnClearAll, QDialogButtonBox::ActionRole);
+  // connect the slot up to catch when a bookmark is deleted 
+  connect(btnSelectAll, SIGNAL(clicked()), this, SLOT(selectAll()));
+  // connect the slot up to catch when a bookmark is zoomed to
+  connect(btnClearAll, SIGNAL(clicked()), this, SLOT(clearAll()));
+  
 }
 
 
 QgsPluginManager::~QgsPluginManager()
 {
+  delete mModelProxy;
+  delete mModelPlugins;
 }
 
 void QgsPluginManager::setTable()
 {
-  lstPlugins->setAlternatingRowColors(true);
-  mModelPlugins= new QStandardItemModel(0,4);
-  mModelPlugins->setHorizontalHeaderItem(0,new QStandardItem(tr("Name")));
-  mModelPlugins->setHorizontalHeaderItem(1,new QStandardItem(tr("Version")));
-  mModelPlugins->setHorizontalHeaderItem(2,new QStandardItem(tr("Description")));
-  mModelPlugins->setHorizontalHeaderItem(3,new QStandardItem(tr("Library name")));
-  
-  lstPlugins->setModel(mModelPlugins);
-  // No vertical headers
-  lstPlugins->verticalHeader()->hide();
-  lstPlugins->setSelectionBehavior(QAbstractItemView::SelectRows);
-  lstPlugins->setFocus();
+  mModelPlugins= new QStandardItemModel(0,1);
+  mModelProxy = new QSortFilterProxyModel(this);
+  mModelProxy->setSourceModel(mModelPlugins);
+  //mModelProxy->setFilterKeyColumn(0);
+  vwPlugins->setModel(mModelProxy);
+  vwPlugins->setFocus();
+  vwPlugins->setItemDelegateForColumn(0,new QgsDetailedItemDelegate());
 }
 
 void QgsPluginManager::resizeColumnsToContents()
 {
   // Resize columns to contents.
-  lstPlugins->resizeColumnsToContents();
   QgsDebugMsg("QgsPluginManager::resizeColumnsToContents\n");
 }
 
@@ -124,18 +141,24 @@ void QgsPluginManager::getPythonPluginDescriptions()
     if (pluginName == "???" || description == "???" || version == "???")
       continue;
 
-    //create the items
-    QStandardItem *myName=new QStandardItem(pluginName);
-    QStandardItem *myVersion=new QStandardItem(version);
-    QStandardItem *myDesc=new QStandardItem(description);
-    QStandardItem *myDir=new QStandardItem("python:" + packageName);
+    // We will create two items for each row:
+    // The first has the following roles :
+    // - DisplayRole : the name and version of the version of the plugin e.g. Plugin Foo (version 1.0)
+    // - UserRole : the description of the plugin.
+    // And the second has these roles :
+    // - DisplayRole : the library name (without path) for the plugin e.g. libfoo.so
+    // - UserRole : the name of the plugin without version e.g. plugin foor
+    // The plugin name without version is used elsewhere in this class to match
+    // aganst plugins loaded in the plugin registry
+    QStandardItem * mypDetailItem = new QStandardItem(
+        pluginName + " (" + version + ")");
+    mypDetailItem->setData(description,Qt::UserRole);
+    QString myLibraryName = "python:" + packageName;;
+    QStandardItem * mypLibraryNameItem = new QStandardItem(myLibraryName);
+    mypLibraryNameItem->setData(pluginName,Qt::UserRole);
     // myName have a checkbox
-    myName->setCheckable(true);
-    //read only
-    myName->setEditable(false);
-    myVersion->setEditable(false);
-    myDesc->setEditable(false);
-    myDir->setEditable(false);
+    mypDetailItem->setCheckable(true);
+    mypDetailItem->setEditable(false);
 
     // check to see if the plugin is loaded and set the checkbox accordingly
     QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
@@ -151,12 +174,12 @@ void QgsPluginManager::getPythonPluginDescriptions()
       if (libName == packageName)
       {
         // set the checkbox
-        myName->setCheckState(Qt::Checked);
+        mypDetailItem->setCheckState(Qt::Checked);
       }
     }
     // Add items to model
     QList<QStandardItem *> myItems;
-    myItems << myName << myVersion << myDesc << myDir;
+    myItems << mypDetailItem << mypLibraryNameItem;
     mModelPlugins->appendRow(myItems);
   }
 #endif
@@ -173,18 +196,18 @@ sharedLibExtension = "*.so*";
 #endif
 
 // check all libs in the current plugin directory and get name and descriptions
-  QDir pluginDir(txtPluginDir->text(), sharedLibExtension, QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
+  QDir pluginDir(lblPluginDir->text(), sharedLibExtension, QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
 
   if (pluginDir.count() == 0)
   {
-      QMessageBox::information(this, tr("No Plugins"), tr("No QGIS plugins found in ") + txtPluginDir->text());
+      QMessageBox::information(this, tr("No Plugins"), tr("No QGIS plugins found in ") + lblPluginDir->text());
       return;
   }
 
   QgsDebugMsg("PLUGIN MANAGER:");
   for (uint i = 0; i < pluginDir.count(); i++)
   {
-    QString lib = QString("%1/%2").arg(txtPluginDir->text()).arg(pluginDir[i]);
+    QString lib = QString("%1/%2").arg(lblPluginDir->text()).arg(pluginDir[i]);
 
 #ifdef TESTLIB
           // This doesn't work on WIN32 and causes problems with plugins
@@ -263,18 +286,40 @@ sharedLibExtension = "*.so*";
       continue;
     }
 
-    //create the items
-    QStandardItem *myName=new QStandardItem(pName());
-    QStandardItem *myVersion=new QStandardItem(pVersion());
-    QStandardItem *myDesc=new QStandardItem(pDesc());
-    QStandardItem *myDir=new QStandardItem(pluginDir[i]);
+    // We will create two items for each row:
+    // The first has the following roles :
+    // - DisplayRole : the name and version of the version of the plugin e.g. Plugin Foo (version 1.0)
+    // - UserRole : the description of the plugin.
+    // And the second has these roles :
+    // - DisplayRole : the library name (without path) for the plugin e.g. libfoo.so
+    // - UserRole : the name of the plugin without version e.g. plugin foor
+    // The plugin name without version is used elsewhere in this class to match
+    // aganst plugins loaded in the plugin registry
+        
+    QStandardItem * mypDetailItem = new QStandardItem(
+        pName() + " (" + pVersion() + ")");
+    //
+    // Uncommnet this block to render item using simple painter technique
+    // 
+    mypDetailItem->setData(pDesc(),Qt::UserRole);
+    //
+    //Uncomment this block to used widget based detail items (experimental)
+    //
+    //QgsDetailedItemData myData;
+    //myData.setTitle(pName());
+    //myData.setDetail(pDesc());
+    //QVariant myVariant = qVariantFromValue(myData);
+    //round trip test - delete this...no need to uncomment
+    //QgsDetailedItemData myData2 = qVariantValue<QgsDetailedItemData>(myVariant);
+    //Q_ASSERT(myData.title() == myData2.title());
+    //round trip test ends
+    //mypDetailItem->setData(myVariant,Qt::UserRole);
+    QString myLibraryName = pluginDir[i];
+    QStandardItem * mypLibraryNameItem = new QStandardItem(myLibraryName);
+    mypLibraryNameItem->setData(pName(),Qt::UserRole);
     // myName have a checkbox
-    myName->setCheckable(true);
-    //read only
-    myName->setEditable(false);
-    myVersion->setEditable(false);
-    myDesc->setEditable(false);
-    myDir->setEditable(false);
+    mypDetailItem->setCheckable(true);
+    mypDetailItem->setEditable(false);
 
     QgsDebugMsg("Getting an instance of the QgsPluginRegistry");
 
@@ -293,22 +338,22 @@ sharedLibExtension = "*.so*";
       if (libName == myLib->library())
       {
         // set the checkbox
-        myName->setCheckState(Qt::Checked);
+        mypDetailItem->setCheckState(Qt::Checked);
       }
     }
     // Add items to model
     QList<QStandardItem *> myItems;
-    myItems << myName << myVersion << myDesc << myDir;
+    myItems << mypDetailItem << mypLibraryNameItem;
     mModelPlugins->appendRow(myItems);
 
     delete myLib;
   }
 }
 
-void QgsPluginManager::on_btnOk_clicked()
+void QgsPluginManager::accept()
 {
   unload();
-  accept();
+  done(1);
 }
 
 void QgsPluginManager::unload()
@@ -323,12 +368,15 @@ void QgsPluginManager::unload()
     QModelIndex myIndex=mModelPlugins->index(row,0);
     if (mModelPlugins->data(myIndex,Qt::CheckStateRole).toInt() == 0)
     {
+      // Get the second col index now since it stores the 
+      // plugin name without version string in its data UserRole [ts]
+      myIndex=mModelPlugins->index(row,1);
       // its off -- see if it is loaded and if so, unload it
       QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
 #ifdef QGISDEBUG
-      std::cout << "Checking to see if " << mModelPlugins->data(myIndex).toString().toLocal8Bit().data() << " is loaded" << std::endl;
+      std::cout << "Checking to see if " << mModelPlugins->data(myIndex, Qt::UserRole).toString().toLocal8Bit().data() << " is loaded" << std::endl;
 #endif
-      QString pluginName = mModelPlugins->data(myIndex).toString();
+      QString pluginName = mModelPlugins->data(myIndex,Qt::UserRole).toString();
       if (pRegistry->isPythonPlugin(pluginName))
       {
 #ifdef HAVE_PYTHON
@@ -362,10 +410,10 @@ std::vector < QgsPluginItem > QgsPluginManager::getSelectedPlugins()
   {
     if (mModelPlugins->item(row,0)->checkState() == Qt::Checked)
     {
-      QString pluginName = mModelPlugins->item(row,0)->text();
+      QString pluginName = mModelPlugins->item(row,1)->data(Qt::UserRole).toString();
       bool pythonic = false;
 
-      QString library = mModelPlugins->item(row,3)->text();
+      QString library = mModelPlugins->item(row,1)->text();
       if (library.left(7) == "python:")
       {
         library = library.mid(7);
@@ -373,16 +421,16 @@ std::vector < QgsPluginItem > QgsPluginManager::getSelectedPlugins()
       }
       else // C++ plugin
       {
-        library = txtPluginDir->text() + "/" + library;
+        library = lblPluginDir->text() + QDir::separator() + library;
       }
-      pis.push_back(QgsPluginItem(pluginName, mModelPlugins->item(row,2)->text(), library, 0, pythonic));
+      pis.push_back(QgsPluginItem(pluginName, mModelPlugins->item(row,0)->text(), library, 0, pythonic));
     }
 
   }
   return pis;
 }
 
-void QgsPluginManager::on_btnSelectAll_clicked()
+void QgsPluginManager::selectAll()
 {
   // select all plugins
   for (int row=0;row < mModelPlugins->rowCount();row++)
@@ -392,7 +440,7 @@ void QgsPluginManager::on_btnSelectAll_clicked()
   }
 }
 
-void QgsPluginManager::on_btnClearAll_clicked()
+void QgsPluginManager::clearAll()
 {
   // clear all selection checkboxes
   for (int row=0;row < mModelPlugins->rowCount();row++)
@@ -402,8 +450,33 @@ void QgsPluginManager::on_btnClearAll_clicked()
   }
 }
 
-void QgsPluginManager::on_btnClose_clicked()
+void QgsPluginManager::on_vwPlugins_clicked(const QModelIndex &theIndex )
 {
-  reject();
+  if (theIndex.column() == 0)
+  {
+    //
+    // If the model has been filtered, the index row in the proxy wont match 
+    // the index row in the underlying model so we need to jump through this 
+    // little hoop to get the correct item
+    //
+    QStandardItem * mypItem = 
+      mModelPlugins->findItems(theIndex.data(Qt::DisplayRole).toString()).first();
+    if ( mypItem->checkState() == Qt::Checked )
+    {
+      mypItem->setCheckState(Qt::Unchecked);
+    } 
+    else 
+    {
+      mypItem->setCheckState(Qt::Checked);
+    }
+  }
 }
 
+void QgsPluginManager::on_leFilter_textChanged(QString theText)
+{
+  QgsDebugMsg("PluginManager filter changed to :" + theText);
+  QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax(QRegExp::RegExp);
+  Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
+  QRegExp myRegExp(theText, myCaseSensitivity, mySyntax);
+  mModelProxy->setFilterRegExp(myRegExp);
+}

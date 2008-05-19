@@ -4,6 +4,9 @@ qgisgui.cpp
 qgisinterface.cpp
 qgscolorbutton.cpp
 qgscursors.cpp
+qgsdetaileditemdelegate.cpp
+qgsdetaileditemwidget.cpp
+qgsdetaileditemdata.cpp
 qgsencodingfiledialog.cpp
 qgsfiledropedit.cpp
 qgslayerprojectionselector.cpp
@@ -12,6 +15,7 @@ qgsmapcanvasitem.cpp
 qgsmapcanvasmap.cpp
 qgsmapcanvassnapper.cpp
 qgsmapoverviewcanvas.cpp
+qgsmaptip.cpp
 qgsmaptool.cpp
 qgsmaptoolemitpoint.cpp
 qgsmaptoolpan.cpp
@@ -21,17 +25,19 @@ qgsprojectionselector.cpp
 qgsquickprint.cpp
 qgsrubberband.cpp
 qgsvertexmarker.cpp
-qgsmaptip.cpp
 )
 
 SET(QGIS_GUI_MOC_HDRS
+qgsdetaileditemdelegate.h
+qgsdetaileditemwidget.h
+qgsdetaileditemdata.h
 qgisinterface.h
 qgsencodingfiledialog.h
 qgslayerprojectionselector.h
 qgsmapcanvas.h
 qgsmapoverviewcanvas.h
-qgsmessageviewer.h
 qgsmaptoolemitpoint.h
+qgsmessageviewer.h
 qgsprojectionselector.h
 qgsquickprint.h
 )

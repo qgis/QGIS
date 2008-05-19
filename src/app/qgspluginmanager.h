@@ -21,6 +21,7 @@
 #include <vector>
 #include <QTableView>
 #include <QStandardItemModel>
+#include <QSortFilterProxyModel>
 #include <QStandardItem>
 #include <QHeaderView>
 #include "ui_qgspluginmanagerbase.h"
@@ -56,16 +57,19 @@ class QgsPluginManager : public QDialog, private Ui::QgsPluginManagerBase
     //! Sort model by column ascending
     void sortModel(int );
   public slots:
+    //! Enable disable checkbox
+    void on_vwPlugins_clicked(const QModelIndex & );
     //! Load selected plugins and close the dialog
-    void on_btnOk_clicked();
+    void accept();
     //! Select all plugins by setting their checkbox on
-    void on_btnSelectAll_clicked();
+    void selectAll();
     //! Clear all selections by clearing the plugins checkbox
-    void on_btnClearAll_clicked();
-    //! Close the dialog
-    void on_btnClose_clicked();
+    void clearAll();
+    //! Update the filter when user changes the filter expression
+    void on_leFilter_textChanged(QString theText);
   private:
     QStandardItemModel *mModelPlugins;
+    QSortFilterProxyModel * mModelProxy;
 };
 
 #endif
