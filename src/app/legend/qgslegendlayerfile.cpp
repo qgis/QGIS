@@ -267,7 +267,7 @@ void QgsLegendLayerFile::table()
       }
       catch(std::bad_alloc& ba)
       {
-        UNUSED(ba);
+        Q_UNUSED(ba);
         QMessageBox::critical(0, tr("bad_alloc exception"), tr("Filling the attribute table has been stopped because there was no more virtual memory left"));
       }
 
