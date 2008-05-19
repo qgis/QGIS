@@ -13,7 +13,7 @@ cd $FRAMEWORKPREFIX
 # Edit version when any library is upgraded
 UNIVERSAL_LIBS_PREFIX=/usr/local/qgis_universal_deps
 QTPREFIX=${UNIVERSAL_LIBS_PREFIX}/lib
-QTFRAMEWORKS="QtCore QtGui QtNetwork QtSql QtSvg QtXml"
+QTFRAMEWORKS="QtCore QtGui QtNetwork QtSql QtSvg QtXml QtDesigner"
 
 #
 # Copy supporting frameworks to application bundle
@@ -55,7 +55,7 @@ cd $MACOS_PREFIX
 FILES="qgis
   lib/libqgis_core.dylib
   lib/libqgis_gui.dylib
-  lib/libomg_widgets.dylib
+  lib/qgis/libcatalogue.so
   lib/qgis/libcopyrightlabelplugin.so
   lib/qgis/libgpxprovider.so
   lib/qgis/libscalebarplugin.so
@@ -75,7 +75,6 @@ for FILE in ${FILES}
 do
  for FRAMEWORK in QtCore QtGui QtNetwork QtSql QtSvg QtXml
 	do
-    set -x
 		install_name_tool -change ${QTPREFIX}/${FRAMEWORK}.framework/Versions/4/$FRAMEWORK \
 			@executable_path/../Frameworks/$FRAMEWORK.framework/Versions/4/$FRAMEWORK \
 			$MACOS_PREFIX/$FILE
@@ -141,3 +140,16 @@ if test ! -f $LIBSQLITE; then
 fi
 
 popd
+
+#
+# Strip the qt libs
+#
+
+strip -x ${FRAMEWORKPREFIX}/QtGui.framework/Versions/4/QtGui 
+strip -x ${FRAMEWORKPREFIX}/QtCore.framework/Versions/4/QtCore 
+strip -x ${FRAMEWORKPREFIX}/Qt3Support.framework/Versions/4/Qt3Support 
+strip -x ${FRAMEWORKPREFIX}/QtSql.framework/Versions/4/QtSql 
+strip -x ${FRAMEWORKPREFIX}/QtSvg.framework/Versions/4/QtSvg 
+strip -x ${FRAMEWORKPREFIX}/QtXml.framework/Versions/4/QtXml 
+strip -x ${FRAMEWORKPREFIX}/QtNetwork.framework/Versions/4/QtNetwork 
+strip -x ${FRAMEWORKPREFIX}/QtDesigner.framework/Versions/4/QtDesigner

@@ -4,7 +4,8 @@
 
 APP_PREFIX=/Applications/qgis0.11.0.app
 BUNDLE_DIR=${APP_PREFIX}/Contents/MacOS
-LIB_DIR=/usr/local/qgis_universal_deps/lib
+DEPS_BASE=/usr/local/qgis_universal_deps
+LIB_DIR=${DEPS_BASE}/lib
 #set -x
 cp -r ${LIB_DIR}/libexpat.dylib  ${BUNDLE_DIR}/lib
 cp -r ${LIB_DIR}/libgdal.1.dylib  ${BUNDLE_DIR}/lib
@@ -22,14 +23,14 @@ ln -s libgslcblas.dylib libgslcblas.0.dylib
 #ln -s libsqlite3.0.dylib libsqlite3.dylib
 popd
 
-
+set -x
 install_name_tool -change ${LIB_DIR}/libgdal.1.dylib \
                    @executable_path/lib/libgdal.1.dylib \
                    ${BUNDLE_DIR}/qgis
 install_name_tool -change ${LIB_DIR}/libproj.dylib \
                    @executable_path/lib/libproj.dylib \
                    ${BUNDLE_DIR}/qgis
-
+set +x
 
 LIBS="lib/libqgis_core.dylib \
       lib/libqgis_gui.dylib \
@@ -105,4 +106,22 @@ do
   #otool -L ${BUNDLE_DIR}/lib/qgis/${LIB}
   #echo "----------------------------------"
 done
+
+#
+# Strip binaries - disable for debugging
+#
+#pushd .
+#cd ${APP_PREFIX}
+#for FILE in `find . -name *.dylib`; do echo "Stripping $FILE"; strip -x $FILE;  done 
+#for FILE in `find . -name *.so`; do echo "Stripping $FILE"; strip -x $FILE;  done
+#strip -x ${APP_PREFIX}/Contents/MacOS/qgis
+#popd
+
+#
+# Install GDAL and Proj support files
+# 
+cp -r ${DEPS_BASE}/share/proj ${APP_PREFIX}/Contents/MacOS/share/
+cp -r ${DEPS_BASE}/share/*.wkt ${APP_PREFIX}/Contents/MacOS/share/
+cp -r ${DEPS_BASE}/share/*.csv ${APP_PREFIX}/Contents/MacOS/share/
+cp -r ${DEPS_BASE}/share/*.dgn ${APP_PREFIX}/Contents/MacOS/share/
 
