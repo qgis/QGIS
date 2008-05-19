@@ -108,7 +108,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent(QMouseEvent * e)
         }
         catch(QgsCsException &cse)
         {
-          UNUSED(cse);
+          Q_UNUSED(cse);
           QMessageBox::information(0, QObject::tr("Coordinate transform error"), \
                                    QObject::tr("Cannot transform the point to the layers coordinate system"));
           return;
