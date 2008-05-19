@@ -32,6 +32,7 @@
 #include <QStyle>
 #include <QPlastiqueStyle>
 #include <QTranslator>
+#include <QImageReader>
 
 #include <iostream>
 #include <cstdio>
@@ -501,6 +502,50 @@ int main(int argc, char *argv[])
     mypSplash->show();
   }
 
+  // For non static builds on mac and win (static builds are not supported)
+  // we need to be sure we can find the qt image
+  // plugins. In mac be sure to look in the
+  // application bundle...
+#ifdef Q_WS_WIN
+  QCoreApplication::addLibraryPath( QApplication::applicationDirPath() 
+      + QDir::separator() + "plugins" );
+#endif
+#ifdef Q_OS_MACX
+  //qDebug("Adding qt image plugins to plugin search path...");
+  CFURLRef myBundleRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
+  CFStringRef myMacPath = CFURLCopyFileSystemPath(myBundleRef, kCFURLPOSIXPathStyle);
+  const char *mypPathPtr = CFStringGetCStringPtr(myMacPath,CFStringGetSystemEncoding());
+  CFRelease(myBundleRef);
+  CFRelease(myMacPath);
+  QString myPath(mypPathPtr);
+  // if we are not in a bundle assume that the app is built
+  // as a non bundle app and that image plugins will be
+  // in system Qt frameworks. If the app is a bundle
+  // lets try to set the qt plugin search path...
+  QFileInfo myInfo(myPath);
+  if (myInfo.isBundle())
+  {
+    // First clear the plugin search paths so we can be sure
+    // only plugins from the bundle are being used
+    QStringList myPathList;
+    QCoreApplication::setLibraryPaths(myPathList);
+    // Now set the paths inside the bundle
+    myPath += "/Contents/plugins";
+    QCoreApplication::addLibraryPath( myPath );
+    //next two lines should not be needed, testing only
+    //QCoreApplication::addLibraryPath( myPath + "/imageformats" );
+    //QCoreApplication::addLibraryPath( myPath + "/sqldrivers" );
+    //foreach (myPath, a.libraryPaths())
+    //{
+      //qDebug("Path:" + myPath.toLocal8Bit());
+    //}
+    //qDebug( "Added %s to plugin search path", qPrintable( myPath ) );
+    //QList<QByteArray> myFormats = QImageReader::supportedImageFormats();
+    //for ( int x = 0; x < myFormats.count(); ++x ) {
+    //  qDebug("Format: " + myFormats[x]);
+    //} 
+  }
+#endif
 
 
 
