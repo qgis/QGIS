@@ -76,43 +76,12 @@ email                : tim at linfiniti.com
 //
 /////////////////////////////////////////////////////////
 /**
-  Static member variable storing the subset of GDAL formats
-  that we currently support.
-
-  @note
-
-  Some day this won't be necessary as there'll be a time when
-  theoretically we'll support everything that GDAL can throw at us.
-
-  These are GDAL driver description strings.
-  */
-static const char *const mSupportedRasterFormats[] =
-{
-  "AAIGrid",
-  "AIG",
-  "DTED",
-  "ECW",
-  "GRASS",
-  "GTiff",
-  "HFA",
-  "JP2ECW",
-  "JP2KAK",
-  "JP2MrSID",
-  "JPEG2000",
-  "MrSID",
-  "SDTS",
-  "USGSDEM",
-  ""   // used to indicate end of list
-};
-
-
-/**
   Builds the list of file filter strings to later be used by
   QgisApp::addRasterLayer()
 
   We query GDAL for a list of supported raster formats; we then build
   a list of file filter strings from that list.  We return a string
-  that contains this list that is suitable for use in a a
+  that contains this list that is suitable for use in a 
   QFileDialog::getOpenFileNames() call.
 
 */
@@ -166,12 +135,6 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
 
     myGdalDriverDescription = GDALGetDescription(myGdalDriver);
 
-    if (!isSupportedRasterDriver(myGdalDriverDescription))
-    {
-      // not supported, therefore skip
-      QgsDebugMsg("skipping unsupported driver " + QString(GDALGetDescription(myGdalDriver)));
-      continue;
-    }
     // std::cerr << "got driver string " << myGdalDriver->GetDescription() << "\n";
 
     myGdalDriverMetadata = GDALGetMetadata(myGdalDriver,NULL);
@@ -290,39 +253,6 @@ void QgsRasterLayer::registerGdalDrivers()
         GDALAllRegister();
 }
 
-/**
-  returns true if the given raster driver name is one currently
-  supported, otherwise it returns false
-
-  @param theDriverName GDAL driver description string
-  */
-bool QgsRasterLayer::isSupportedRasterDriver(QString const &theDriverName)
-{
-  size_t i = 0;
-
-  while (mSupportedRasterFormats[i][0]) // while not end of string list
-  {
-    // If we've got a case-insensitive match for a GDAL aware driver
-    // description, then we've got a match.  Why case-insensitive?
-    // I'm just being paranoid in that I can envision a situation
-    // whereby GDAL slightly changes driver description string case,
-    // in which case we'd catch it here.  Not that that would likely
-    // happen, but if it does, we'll already compensate.
-    // GS - At Qt 3.1.2, the case sensitive argument. So we change the
-    // driverName to lower case before testing
-    QString format = mSupportedRasterFormats[i];
-    if (theDriverName.lower().startsWith(format.lower()))
-    {
-      return true;
-    }
-
-    i++;
-  }
-
-  return false;
-}   // isSupportedRasterDriver
-
-
 
 /** This helper checks to see whether the filename appears to be a valid raster file name */
 bool QgsRasterLayer::isValidRasterFileName(QString const & theFileNameQString)
@@ -377,7 +307,6 @@ QgsRasterLayer::QgsRasterLayer(
     QString const & baseName, 
     bool loadDefaultStyleFlag)
   : QgsMapLayer(RASTER, baseName, path),
-  // XXX where is this? popMenu(0), //popMenu is the contextmenu obtained by right clicking on the legend
   mRasterXDim( std::numeric_limits<int>::max() ),
   mRasterYDim( std::numeric_limits<int>::max() ),
   mDebugOverlayFlag(false),
