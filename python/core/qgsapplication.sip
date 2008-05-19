@@ -83,7 +83,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     virtual ~QgsApplication();
 
     //! Set the theme path to the specified theme.
-    static void selectTheme(const QString& theThemeName);
+    static void selectTheme(const QString theThemeName);
 
     //! Returns the path to the authors file.
     static const QString authorsFilePath();
@@ -122,22 +122,22 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static const QString svgPath();
 
     //! Returns the path to the application prefix directory.
-    static const QString& prefixPath();
+    static const QString prefixPath();
 
     //! Returns the path to the application plugin directory.
-    static const QString& pluginPath();
+    static const QString pluginPath();
 
     //! Returns the common root path of all application data directories.
-    static const QString& pkgDataPath();
+    static const QString pkgDataPath();
 
     //! Returns the path to the current theme directory.
-    static const QString& themePath();
+    static const QString themePath();
     
     //! Alters prefix path - used by 3rd party apps
     static void setPrefixPath(const QString& thePrefixPath, bool useDefaultPaths = FALSE);
     
     //! Alters plugin path - used by 3rd party apps
-    static void setPluginPath(const QString& thePluginPath);
+    static void setPluginPath(const QString thePluginPath);
 
     //! Alters pkg data path - used by 3rd party apps
     static void setPkgDataPath(const QString& thePkgDataPath);
