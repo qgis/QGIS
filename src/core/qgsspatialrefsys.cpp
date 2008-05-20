@@ -250,10 +250,10 @@ bool QgsSpatialRefSys::createFromWkt(QString theWkt)
     return mIsValidFlag;
   }
   QgsDebugMsg("QgsSpatialRefSys::createFromWkt(QString theWkt) using: " + theWkt);
-  //this is really ugly but we need to get a QString to a char**
-  char *pWkt = theWkt.toLatin1().data();
+  QByteArray ba = theWkt.toLatin1();
+  const char *pWkt = ba;
 
-  OGRErr myInputResult = OSRImportFromWkt( mSRS, &pWkt );
+  OGRErr myInputResult = OSRImportFromWkt( mSRS, (char **)&pWkt );
 
   if (myInputResult != OGRERR_NONE)
   {
@@ -522,12 +522,12 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
   sqlite3_close(myDatabase);
 
 #ifdef QGISDEBUG
-	 QgsDebugMsg("QgsSpatialRefSys::getRecord retrieved:  " + theSql);
-	 RecordMap::Iterator it;
-	 for ( it = myMap.begin(); it != myMap.end(); ++it )
-	   {
-	     QgsDebugMsgLevel(it.key() + " => " + it.data(), 2);
-	   }
+  QgsDebugMsg("QgsSpatialRefSys::getRecord retrieved:  " + theSql);
+  RecordMap::Iterator it;
+  for ( it = myMap.begin(); it != myMap.end(); ++it )
+  {
+    QgsDebugMsgLevel(it.key() + " => " + it.data(), 2);
+  }
 #endif
 
   return myMap;
@@ -1019,7 +1019,7 @@ QString QgsSpatialRefSys::getProj4FromSrsId(const int theSrsId)
       QgsDebugMsg("QgsSpatialRefSys::getProj4FromSrsId :  mySrsId = " + QString::number(theSrsId));
       QgsDebugMsg("QgsSpatialRefSys::getProj4FromSrsId :  USER_PROJECTION_START_ID = " + QString::number(USER_PROJECTION_START_ID));
       QgsDebugMsg("QgsSpatialRefSys::getProj4FromSrsId :Selection sql : " + mySql);
-	  
+
       //
       // Determine if this is a user projection or a system on
       // user projection defs all have srs_id >= 100000
@@ -1031,7 +1031,7 @@ QString QgsSpatialRefSys::getProj4FromSrsId(const int theSrsId)
         myFileInfo.setFile(myDatabaseFileName);
         if ( !myFileInfo.exists( ) ) //its unlikely that this condition will ever be reached
         {
-	  QgsLogger::critical("QgsSpatialRefSys::getProj4FromSrsId :  users qgis.db not found");
+          QgsLogger::critical("QgsSpatialRefSys::getProj4FromSrsId :  users qgis.db not found");
           return NULL;
         }
       }
@@ -1046,7 +1046,7 @@ QString QgsSpatialRefSys::getProj4FromSrsId(const int theSrsId)
       rc = openDb(myDatabaseFileName, &db);
       if(rc)
       {
-	return QString();
+        return QString();
       }
       // prepare the sql statement
       const char *pzTail;
