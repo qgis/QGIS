@@ -235,6 +235,7 @@ qgsprovidermetadata.h
 qgsproviderregistry.h
 qgsrasterdataprovider.h
 qgsrect.h
+qgsrendercontext.h
 qgsrunprocess.h
 qgsscalecalculator.h
 qgssearchstring.h
