@@ -397,6 +397,7 @@ QStringList QgsGrassSelect::vectorLayers ( QString gisdbase,
     level = Vect_open_old_head (&map, (char *) mapName.ascii(), 
       (char *) mapset.ascii());
   }
+  QgsGrass::clearErrorEnv();
 
   if ( QgsGrass::getError() == QgsGrass::FATAL ) {
     std::cerr << "Cannot open GRASS vector: " << QgsGrass::getErrorMessage().toLocal8Bit().data() << std::endl;

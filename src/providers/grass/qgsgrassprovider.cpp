@@ -1250,8 +1250,24 @@ QgsSpatialRefSys QgsGrassProvider::getSRS()
 
   struct Cell_head cellhd;
 
+  QgsGrass::resetError();
   QgsGrass::setLocation ( mGisdbase, mLocation ); 
-  G_get_default_window(&cellhd);
+
+  char *oldlocale = setlocale(LC_ALL, NULL);
+  setlocale(LC_ALL, "C");
+
+  if ( setjmp(QgsGrass::fatalErrorEnv()) == 0 )
+  {
+    G_get_default_window(&cellhd);
+  }
+  QgsGrass::clearErrorEnv();
+
+  if ( QgsGrass::getError() == QgsGrass::FATAL ) {
+    setlocale(LC_ALL, oldlocale);
+    QgsDebugMsg(QString("Cannot get default window: %1").arg(QgsGrass::getErrorMessage()));
+    return QgsSpatialRefSys();
+  }
+
   if (cellhd.proj != PROJECTION_XY) {
     struct Key_Value *projinfo = G_get_projinfo();
     struct Key_Value *projunits = G_get_projunits();
@@ -1259,6 +1275,8 @@ QgsSpatialRefSys QgsGrassProvider::getSRS()
     WKT = QString(wkt);
     free ( wkt);
   }
+
+  setlocale(LC_ALL, oldlocale);
 
   QgsSpatialRefSys srs;
   srs.createFromWkt(WKT);
