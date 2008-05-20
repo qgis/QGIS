@@ -16,6 +16,7 @@
 /* $Id$ */
 
 #include <iostream>
+#include <qgslogger.h>
 
 #include "QString"
 #include "q3process.h"
@@ -375,6 +376,7 @@ QString QgsGrass::mGisrc;
 QString QgsGrass::mTmp;
 
 jmp_buf QgsGrass::mFatalErrorEnv;
+bool QgsGrass::mFatalErrorEnvActive=false;
 
 int QgsGrass::error_routine ( char *msg, int fatal)
 {
@@ -383,15 +385,21 @@ int QgsGrass::error_routine ( char *msg, int fatal)
 
 int QgsGrass::error_routine ( const char *msg, int fatal)
 {
-  std::cerr << "error_routine (fatal = " << fatal << "): " << msg << std::endl;
+  QgsDebugMsg(QString("error_routine (fatal = %1): %2").arg(fatal).arg(msg));
 
   error_message = msg;
 
   if ( fatal )
-  { 
+  {
     error = FATAL;
     // we have to do a long jump here, otherwise GRASS >= 6.3 will kill our process
-    longjmp(mFatalErrorEnv, 1);
+    if( mFatalErrorEnvActive )
+      longjmp(mFatalErrorEnv, 1);
+    else
+    {
+      QMessageBox::warning( 0, QObject::tr("Uncatched fatal GRASS error"), msg );
+      abort();
+    }
   }
   else
     error = WARNING;
@@ -416,9 +424,18 @@ QString GRASS_EXPORT QgsGrass::getErrorMessage ( void )
 
 jmp_buf GRASS_EXPORT &QgsGrass::fatalErrorEnv()
 {
+  if(mFatalErrorEnvActive)
+    QgsDebugMsg("fatal error environment already active.");
+  mFatalErrorEnvActive = true;
   return mFatalErrorEnv;
 }
 
+void GRASS_EXPORT QgsGrass::clearErrorEnv()
+{
+  if(!mFatalErrorEnvActive)
+    QgsDebugMsg("fatal error environment already deactive.");
+  mFatalErrorEnvActive = false;
+}
 
 QString GRASS_EXPORT QgsGrass::openMapset ( QString gisdbase, QString location, QString mapset )
 {

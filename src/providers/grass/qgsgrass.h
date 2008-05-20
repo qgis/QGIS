@@ -155,6 +155,7 @@ public:
     static GRASS_EXPORT QString versionString();
     
     static GRASS_EXPORT jmp_buf& fatalErrorEnv();
+    static GRASS_EXPORT void clearErrorEnv();
 
   
 private:
@@ -184,6 +185,7 @@ private:
       
     // Context saved before a call to routine that can produce a fatal error
     static jmp_buf mFatalErrorEnv;
+    static bool mFatalErrorEnvActive;
 };
 
 #endif // QGSGRASS_H
