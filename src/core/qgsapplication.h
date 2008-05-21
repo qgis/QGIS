@@ -113,6 +113,9 @@ class CORE_EXPORT QgsApplication: public QApplication
      * the gradient fills for backgrounds.
      */
     static QString reportStyleSheet();
+    /** Print to stdout the paths used in this application instance.
+     * useful for debugging mainly.*/
+    static void showSettings();
   private:
     static QString mPrefixPath;
     static QString mPluginPath;

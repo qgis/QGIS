@@ -51,21 +51,16 @@ QString QgsApplication::mThemePath;
 QgsApplication::QgsApplication(int & argc, char ** argv, bool GUIenabled)
 : QApplication(argc, argv, GUIenabled)
 {
-  QgsDebugMsg("\n**********************************");
-  QgsDebugMsg("\nInitialising QgsApplication...");
 #if defined(Q_WS_MACX) || defined(Q_WS_WIN32) || defined(WIN32)
   setPrefixPath(applicationDirPath(), true);
 #else
   QDir myDir(applicationDirPath());
   myDir.cdUp();
   QString myPrefix = myDir.absolutePath();
-  QgsDebugMsg("Prefix: " +  myPrefix.toLocal8Bit());
   setPrefixPath(myPrefix, true);
 #endif
-  QgsDebugMsg("\nPlugin Path:" + mPluginPath);
-  QgsDebugMsg("\nPkgData Path:" + mPkgDataPath);
-  QgsDebugMsg("\nTheme Path:" + mThemePath);
-  QgsDebugMsg("\n**********************************\n");
+  //for debuggin
+  showSettings();
 }
 
 QgsApplication::~QgsApplication()
@@ -84,7 +79,6 @@ void QgsApplication::setPrefixPath(const QString thePrefixPath, bool useDefaultP
 void QgsApplication::setPluginPath(const QString thePluginPath)
 {
   mPluginPath = thePluginPath;
-  QgsDebugMsg("\n\n\n\n\n +++++++++++++++++++++++\n plugin path changed\n" + mPluginPath + "\n +++++++++++++++++ \n\n\n\n");
 }
 
 void QgsApplication::setPkgDataPath(const QString thePkgDataPath)
@@ -248,6 +242,17 @@ void QgsApplication::exitQgis()
   delete QgsProviderRegistry::instance();
 }
 
+void QgsApplication::showSettings()
+{
+  qDebug("\n**********************************");
+  qDebug("QgsApplication state:");
+  qDebug("Prefix       :" + mPrefixPath.toLocal8Bit());
+  qDebug("Plugin Path  :" + mPluginPath.toLocal8Bit());
+  qDebug("PkgData Path :" + mPkgDataPath.toLocal8Bit());
+  qDebug("Theme Path   :" + mThemePath.toLocal8Bit());
+  qDebug("**********************************\n");
+}
+
 QString QgsApplication::reportStyleSheet()
 {
   QString myStyle;
@@ -295,3 +300,5 @@ QString QgsApplication::reportStyleSheet()
   "}";
   return myStyle;
 }
+
+
