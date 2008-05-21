@@ -379,7 +379,7 @@ int main(int argc, char *argv[])
     std::cerr << "QGIS starting in non-interactive mode not supported.\n You are seeing this message most likely because you have no DISPLAY environment variable set." << std::endl;
     exit(1); //exit for now until a version of qgis is capabable of running non interactive
   }
-  QgsApplication a(argc, argv, myUseGuiFlag );
+  QgsApplication myApp(argc, argv, myUseGuiFlag );
   //  
   // Set up the QSettings environment must be done after qapp is created
   QCoreApplication::setOrganizationName("QuantumGIS");
@@ -423,7 +423,7 @@ int main(int argc, char *argv[])
   }
 
   
-  // a.setFont(QFont("helvetica", 11));
+  // myApp.setFont(QFont("helvetica", 11));
 
   QString i18nPath = QgsApplication::i18nPath();
 
@@ -467,7 +467,7 @@ int main(int argc, char *argv[])
   QTranslator qgistor(0);
   if (qgistor.load(QString("qgis_") + myTranslationCode, i18nPath))
   {
-    a.installTranslator(&qgistor);
+    myApp.installTranslator(&qgistor);
   }
   /* Translation file for Qt.
    * The strings from the QMenuBar context section are used by Qt/Mac to shift
@@ -477,7 +477,7 @@ int main(int argc, char *argv[])
   QTranslator qttor(0);
   if (qttor.load(QString("qt_") + myTranslationCode, i18nPath))
   {
-    a.installTranslator(&qttor);
+    myApp.installTranslator(&qttor);
   }
 
   //set up splash screen 
@@ -535,7 +535,7 @@ int main(int argc, char *argv[])
     //next two lines should not be needed, testing only
     //QCoreApplication::addLibraryPath( myPath + "/imageformats" );
     //QCoreApplication::addLibraryPath( myPath + "/sqldrivers" );
-    //foreach (myPath, a.libraryPaths())
+    //foreach (myPath, myApp.libraryPaths())
     //{
       //qDebug("Path:" + myPath.toLocal8Bit());
     //}
@@ -662,11 +662,11 @@ int main(int argc, char *argv[])
       qApp->processEvents(), grab the pixmap, save it, hide the window and exit.
       */
     //qgis->show();
-    a.processEvents();
+    myApp.processEvents();
     QPixmap * myQPixmap = new QPixmap(800,600);
     myQPixmap->fill();
     qgis->saveMapAsImage(mySnapshotFileName,myQPixmap);
-    a.processEvents();
+    myApp.processEvents();
     qgis->hide();
     return 1;
   }
@@ -676,10 +676,10 @@ int main(int argc, char *argv[])
   // Continue on to interactive gui...
   /////////////////////////////////////////////////////////////////////
   qgis->show();
-  a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
+  myApp.connect(&myApp, SIGNAL(lastWindowClosed()), &myApp, SLOT(quit()));
 
   mypSplash->finish(qgis);
   delete mypSplash;
-  return a.exec();
+  return myApp.exec();
 
 }
