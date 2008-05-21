@@ -22,6 +22,7 @@
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsmessageoutput.h"
 
 #include <QMessageBox>
 #include <QStringList>
@@ -51,32 +52,25 @@ void QgsPythonUtils::initPython(QgisInterface* interface)
   runString("sys.path = [\"" + homePluginsPath()  + "\", \"" + pythonPath() + "\", \"" + pluginsPath() + "\"] + sys.path");
 
   // import SIP
-  if (!runString("from sip import wrapinstance, unwrapinstance"))
+  if (!runString("from sip import wrapinstance, unwrapinstance",
+       QObject::tr("Couldn't load SIP module.") + "\n" + QObject::tr("Python support will be disabled.")))
   {
-    QMessageBox::warning(0, QObject::tr("Python error"),
-                         QObject::tr("Couldn't load SIP module.\nPython support will be disabled."));
-    PyErr_Clear();
     exitPython();
     return;
   }
   
   // import Qt bindings
-  if (!runString("from PyQt4 import QtCore, QtGui"))
+  if (!runString("from PyQt4 import QtCore, QtGui",
+       QObject::tr("Couldn't load PyQt4.") + "\n" + QObject::tr("Python support will be disabled.")))
   {
-    QMessageBox::warning(0, QObject::tr("Python error"),
-                         QObject::tr("Couldn't load PyQt bindings.\nPython support will be disabled."));
-    PyErr_Clear();
     exitPython();
     return;
   }
   
   // import QGIS bindings
-  if (!runString("from qgis.core import *") ||
-      !runString("from qgis.gui import *"))
+  QString error_msg = QObject::tr("Couldn't load PyQGIS.") + "\n" + QObject::tr("Python support will be disabled.");
+  if (!runString("from qgis.core import *", error_msg) || !runString("from qgis.gui import *", error_msg))
   {
-    QMessageBox::warning(0, QObject::tr("Python error"),
-                         QObject::tr("Couldn't load QGIS bindings.\nPython support will be disabled."));
-    PyErr_Clear();
     exitPython();
     return;
   }
@@ -162,11 +156,41 @@ void QgsPythonUtils::uninstallConsoleHooks()
 }
 
 
-bool QgsPythonUtils::runString(const QString& command)
+bool QgsPythonUtils::runStringUnsafe(const QString& command)
 {
   PyRun_String(command.toLocal8Bit().data(), Py_single_input, mMainDict, mMainDict);
-  
   return (PyErr_Occurred() == 0);
+}
+
+bool QgsPythonUtils::runString(const QString& command, QString msgOnError)
+{
+  bool res = runStringUnsafe(command);
+  if (res)
+    return true;
+    
+  // an error occured
+  // fetch error details and show it
+  QString err_type, err_value;
+  getError(err_type, err_value);
+  
+  if (msgOnError.isEmpty())
+  {
+    // use some default message if custom hasn't been specified
+    msgOnError = QObject::tr("An error occured during execution of following code:") + "\n<tt>" + command + "</tt>";
+  }
+  msgOnError.replace("\n", "<br>");
+  QString str = msgOnError + "<br><br>" + QObject::tr("Error details:") + "<br>"
+      + QObject::tr("Type:")  + " <b>" + err_type + "</b><br>"
+      + QObject::tr("Value:") + " <b>" + err_value + "</b>";
+  
+  // TODO: show sys.path, local variables, traceback
+  
+  QgsMessageOutput* msg = QgsMessageOutput::createMessageOutput();
+  msg->setTitle(QObject::tr("Python error"));
+  msg->setMessage(str, QgsMessageOutput::MessageHtml);
+  msg->showMessage();
+  
+  return res;
 }
 
 
@@ -207,7 +231,7 @@ bool QgsPythonUtils::getError(QString& errorClassName, QString& errorText)
   PyObject* err_value;
   PyObject* err_tb;
   
-  // get the exception information
+  // get the exception information and clear error
   PyErr_Fetch(&err_type, &err_value, &err_tb);
   
   // get exception's class name
@@ -223,8 +247,10 @@ bool QgsPythonUtils::getError(QString& errorClassName, QString& errorText)
   else
     errorText.clear();
   
-  // clear exception
-  PyErr_Clear();
+  // cleanup
+  Py_XDECREF(err_type);
+  Py_XDECREF(err_value);
+  Py_XDECREF(err_tb);
   
   return true;
 }
@@ -373,29 +399,16 @@ bool QgsPythonUtils::startPlugin(QString packageName)
 {
   QString pluginPythonVar = "plugins['" + packageName + "']";
   
-  // create an instance of the plugin
-  if (!runString(pluginPythonVar + " = " + packageName + ".classFactory(iface)"))
-  {
-    PyErr_Print(); // just print to console
-    PyErr_Clear();
+  QString errMsg = QObject::tr("Couldn't load plugin ") + packageName;
     
-    QMessageBox::warning(0, QObject::tr("Python error"),
-                         QObject::tr("Couldn't load plugin ") + packageName +
-                         QObject::tr(" due an error when calling its classFactory() method"));
+  // create an instance of the plugin
+  if (!runString(pluginPythonVar + " = " + packageName + ".classFactory(iface)",
+                 errMsg + QObject::tr(" due an error when calling its classFactory() method")))
     return false;
-  }
   
   // initGui
-  if (!runString(pluginPythonVar + ".initGui()"))
-  {
-    PyErr_Print(); // just print to console
-    PyErr_Clear();
-    
-    QMessageBox::warning(0, QObject::tr("Python error"),
-                         QObject::tr("Couldn't load plugin ") + packageName +
-                         QObject::tr(" due an error when calling its initGui() method"));
+  if (!runString(pluginPythonVar + ".initGui()", errMsg + QObject::tr(" due an error when calling its initGui() method")))
     return false;
-  }
   
   return true;
 }
@@ -406,16 +419,12 @@ bool QgsPythonUtils::unloadPlugin(QString packageName)
   // unload and delete plugin!
   QString varName = "plugins['" + packageName + "']";
   
-  if (!runString(varName + ".unload()") ||
-      !runString("del " + varName))
-  {
-    PyErr_Print(); // just print to console
-    PyErr_Clear();
-    
-    QMessageBox::warning(0, QObject::tr("Python error"),
-                         QObject::tr("Error while unloading plugin ") + packageName);
+  QString errMsg = QObject::tr("Error while unloading plugin ") + packageName;
+  
+  if (!runString(varName + ".unload()", errMsg))
     return false;
-  }
+  if (!runString("del " + varName, errMsg))
+    return false;
   
   return true;
 }
