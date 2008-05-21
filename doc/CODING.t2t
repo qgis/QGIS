@@ -1,6 +1,14 @@
-%!encoding: iso-8859-1
+Quantum GIS (QGIS)
 
+Developers guide for QGIS
 
+%! target       : html
+%! style        : style.css
+%! Options      : --toc --toc-level 3 --enum-title --css-sugar --css-inside
+%! preproc      : TUT_URL   https://qgis.org
+%! PostProc(html): '(?i)(<pre>)' '<div class="code">\1'
+%! PostProc(html): '(?i)(</pre>)' '\1</div>'
+%! encoding: iso-8859-1
 % These are comments and will not be generated in any output
 % -------------------
 
@@ -9,14 +17,16 @@
 %txt2tags home page for more details.  Please insert manual line breaks in this
 %document as it makes diffing for changes much easier. To do this in vim 
 %automatically, select a section then issue (gq) command. Please dont
-%apply vim formatting to the whole document as it screws up some formatting
+%apply vim formatting to the whol document as it screws up some formatting
 %rather apply it selectively to paragraphs where needed.
 
 % To generate the text version of this document:
-% txt2tags -t txt --toc --enum-title -o CODING  CODING.t2t
+% txt2tags -t txt -o CODING CODING.t2t
 % To generate the moinmoin version of this document
-% txt2tags -t moin --toc --enum-title -o CODING.moin  CODING.t2t
-
+% txt2tags -t moin CODING.moin  CODING.t2t
+% To generate the html version of this document
+% txt2tags -t html CODING.html  CODING.t2t
+%
 % End of comments
 % -------------------
 
@@ -1075,20 +1085,23 @@ guidelines are followed in layout and design of GUIs.
  + Group related elements using group boxes:
    Try to identify elements that can be grouped together and then use 
    group boxes with a label identify the topic of that group. 
+   Avoid using group boxes with only a single widget / item inside.
  + Capitalise first letter only in group box labels:
    Group box labels should be written as a phrase with leading capital letter,
    and all remaing words written with lower case first letters 
  + Do not end labels for widgets or group boxes with a colon:
    Adding a colon causes visual noise and does not impart additional meaning,
-   so dont use them.
+   so dont use them. An exception to this rule is when you have two labels 
+   next to each other e.g.: Label1 [Plugin Path:] Label2 [/path/to/plugins]
  + Keep harmful actions away from harmless ones:
    If you have actions for 'delete', 'remove' etc, try to impose adequate 
    space between the harmful action and innocuous actions so that the users 
    is less likely to inadvertantly click on the harmful action.
- + Always use a QButtonBox for 'Ok', 'Cancel' etc buttons:
-   Using a button box will ensure that the order of 'Ok' and 'Cancel' etc, 
+ + Always use a QButtonBox for 'OK', 'Cancel' etc buttons:
+   Using a button box will ensure that the order of 'OK' and 'Cancel' etc, 
    buttons is consistent with the operating system / locale / desktop 
    environment that the user is using.
+ 
 
 = Authors =
 
