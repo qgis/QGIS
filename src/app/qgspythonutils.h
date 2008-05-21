@@ -53,8 +53,13 @@ class QgsPythonUtils
     
     //! run a statement (wrapper for PyRun_String)
     //! this command is more advanced as enables error checking etc.
+    //! when an exception is raised, it shows dialog with exception details
     //! @return true if no error occured
-    static bool runString(const QString& command);
+    static bool runString(const QString& command, QString msgOnError = QString());
+    
+    //! run a statement, error reporting is not done
+    //! @return true if no error occured
+    static bool runStringUnsafe(const QString& command);
     
     static bool evalString(const QString& command, QString& result);
     

@@ -43,7 +43,7 @@ void QgsPythonDialog::on_edtCmdLine_returnPressed()
   
   // when using Py_single_input the return value will be always null
   // we're using custom hooks for output and exceptions to show output in console
-  if (QgsPythonUtils::runString(command))
+  if (QgsPythonUtils::runStringUnsafe(command))
   {
     QgsPythonUtils::evalString("sys.stdout.data", output);
     QgsPythonUtils::runString("sys.stdout.data = ''");
