@@ -54,7 +54,6 @@ void QgsDetailedItemDelegate::paint(QPainter * thepPainter,
     mpWidget->setData(myData);
     mpWidget->resize(theOption.rect.width(),mpWidget->height());
     mpWidget->setAutoFillBackground(false);
-    mpWidget->show();
     mpWidget->repaint();
 
     if (theOption.state & QStyle::State_Selected)
@@ -71,8 +70,7 @@ void QgsDetailedItemDelegate::paint(QPainter * thepPainter,
       myGradient.setColorAt(1, myColor2);
       thepPainter->fillRect(theOption.rect, QBrush(myGradient));
     }
-    QPixmap myPixmap(mpWidget->size());
-    mpWidget->render(&myPixmap);
+    QPixmap myPixmap = QPixmap::grabWidget(mpWidget);
     thepPainter->drawPixmap(theOption.rect.x(),
         theOption.rect.y(), 
         myPixmap);
