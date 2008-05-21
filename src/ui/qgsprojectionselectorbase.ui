@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsProjectionSelectorBase</class>
  <widget class="QWidget" name="QgsProjectionSelectorBase" >
   <property name="geometry" >
@@ -13,9 +10,7 @@
    </rect>
   </property>
   <property name="sizePolicy" >
-   <sizepolicy>
-    <hsizetype>7</hsizetype>
-    <vsizetype>5</vsizetype>
+   <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -27,18 +22,28 @@
    <iconset/>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>9</number>
+   <property name="leftMargin" >
+    <number>0</number>
    </property>
-   <property name="spacing" >
-    <number>6</number>
+   <property name="topMargin" >
+    <number>0</number>
+   </property>
+   <property name="rightMargin" >
+    <number>0</number>
+   </property>
+   <property name="bottomMargin" >
+    <number>0</number>
+   </property>
+   <property name="horizontalSpacing" >
+    <number>0</number>
+   </property>
+   <property name="verticalSpacing" >
+    <number>0</number>
    </property>
    <item row="0" column="0" >
     <widget class="QGroupBox" name="groupBox_2" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>7</vsizetype>
+      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -47,18 +52,28 @@
       <string>Projection</string>
      </property>
      <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>9</number>
+      <property name="leftMargin" >
+       <number>12</number>
       </property>
-      <property name="spacing" >
-       <number>6</number>
+      <property name="topMargin" >
+       <number>12</number>
+      </property>
+      <property name="rightMargin" >
+       <number>12</number>
+      </property>
+      <property name="bottomMargin" >
+       <number>12</number>
+      </property>
+      <property name="horizontalSpacing" >
+       <number>0</number>
+      </property>
+      <property name="verticalSpacing" >
+       <number>0</number>
       </property>
       <item row="2" column="0" >
        <widget class="QGroupBox" name="groupBox" >
         <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>3</hsizetype>
-          <vsizetype>1</vsizetype>
+         <sizepolicy vsizetype="Minimum" hsizetype="MinimumExpanding" >
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -67,11 +82,23 @@
          <string>Search</string>
         </property>
         <layout class="QGridLayout" >
-         <property name="margin" >
+         <property name="leftMargin" >
           <number>2</number>
          </property>
-         <property name="spacing" >
-          <number>0</number>
+         <property name="topMargin" >
+          <number>2</number>
+         </property>
+         <property name="rightMargin" >
+          <number>2</number>
+         </property>
+         <property name="bottomMargin" >
+          <number>2</number>
+         </property>
+         <property name="horizontalSpacing" >
+          <number>3</number>
+         </property>
+         <property name="verticalSpacing" >
+          <number>3</number>
          </property>
          <item row="1" column="3" >
           <widget class="QPushButton" name="pbnFind" >
@@ -153,9 +180,7 @@
       <item row="1" column="0" >
        <widget class="QTextEdit" name="teProjection" >
         <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>7</vsizetype>
+         <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -209,7 +234,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
  <resources/>
  <connections/>
 </ui>
