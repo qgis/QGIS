@@ -112,6 +112,13 @@ public:
     void updateLayerSymbologySettings(const QgsMapLayer* mapLayer);
 
     QPixmap getOriginalPixmap() const;
+
+  private:
+    /** Helper method to make the font bold from all ctors.
+     *  Not to be confused with setFont() which is inherited 
+     *  from the QTreeWidgetItem base class.
+     */
+    void setupFont();
 };
 
 #endif
