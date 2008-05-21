@@ -1,9 +1,14 @@
 Quantum GIS (QGIS)
+
 Building QGIS from source - step by step
 
-%!encoding: iso-8859-1
-
-
+%! target       : html
+%! style        : style.css
+%! Options      : --toc --toc-level 3 --enum-title --css-sugar --css-inside
+%! preproc      : TUT_URL   https://qgis.org
+%! PostProc(html): '(?i)(<pre>)' '<div class="code">\1'
+%! PostProc(html): '(?i)(</pre>)' '\1</div>'
+%! encoding: iso-8859-1
 % These are comments and will not be generated in any output
 % -------------------
 
@@ -16,9 +21,11 @@ Building QGIS from source - step by step
 %rather apply it selectively to paragraphs where needed.
 
 % To generate teh text version of this document:
-% txt2tags -t txt --toc --enum-title -o INSTALL  INSTALL.t2t
+% txt2tags -t txt -o INSTALL INSTALL.t2t
 % To generate the moinmoin version of this document
-% txt2tags -t moin --toc --enum-title -o INSTALL.moin  INSTALL.t2t
+% txt2tags -t moin INSTALL.moin  INSTALL.t2t
+% To generate the html version of this document
+% txt2tags -t html INSTALL.html  INSTALL.t2t
 
 % End of comments
 % -------------------
@@ -83,7 +90,7 @@ For complete information, see the wiki at:
  * Flex, Bison
 
 '''Required runtime deps:'''
- * Qt >= 4.2.0
+ * Qt >= 4.3.0
  * Proj >= ? (known to work with 4.4.x)
  * GEOS >= 2.2 (3.0 is supported, maybe 2.1.x works too)
  * Sqlite3 >= ? (probably 3.0.0)
