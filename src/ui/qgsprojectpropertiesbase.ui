@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>750</width>
-    <height>615</height>
+    <width>452</width>
+    <height>495</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -22,12 +22,6 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
    <item row="0" column="0" >
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
@@ -38,25 +32,20 @@
        <string>General</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
        <item row="0" column="0" >
         <widget class="QGroupBox" name="titleBox" >
          <property name="title" >
-          <string>Project Title</string>
+          <string>Title and colors</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>11</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
           <item row="0" column="0" >
+           <widget class="QLabel" name="label_2" >
+            <property name="text" >
+             <string>Project title</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="3" >
            <widget class="QLineEdit" name="titleEdit" >
             <property name="toolTip" >
              <string>Descriptive project name</string>
@@ -66,127 +55,17 @@
             </property>
            </widget>
           </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="2" column="0" >
-        <widget class="QGroupBox" name="btnGrpPrecision" >
-         <property name="title" >
-          <string>Precision</string>
-         </property>
-         <layout class="QHBoxLayout" >
-          <property name="margin" >
-           <number>11</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item>
-           <widget class="QRadioButton" name="radAutomatic" >
-            <property name="toolTip" >
-             <string>Automatically sets the number of decimal places in the mouse position display</string>
-            </property>
-            <property name="whatsThis" >
-             <string>The number of decimal places that are used when displaying the mouse position is automatically set to be enough so that moving the mouse by one pixel gives a change in the position display</string>
-            </property>
-            <property name="text" >
-             <string>Automatic</string>
-            </property>
-            <property name="checked" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="radManual" >
-            <property name="toolTip" >
-             <string>Sets the number of decimal places to use for the mouse position display</string>
-            </property>
-            <property name="whatsThis" >
-             <string>Sets the number of decimal places to use for the mouse position display</string>
-            </property>
-            <property name="text" >
-             <string>Manual</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="spinBoxDP" >
-            <property name="toolTip" >
-             <string>The number of decimal places for the manual option</string>
-            </property>
-            <property name="whatsThis" >
-             <string>The number of decimal places for the manual option</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="textLabel3" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>0</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text" >
-             <string>decimal places</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="4" column="0" >
-        <widget class="QGroupBox" name="groupBox" >
-         <property name="title" >
-          <string>Map Appearance</string>
-         </property>
-         <layout class="QHBoxLayout" >
-          <property name="margin" >
-           <number>11</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item>
+          <item row="1" column="0" >
            <widget class="QLabel" name="textLabel1" >
             <property name="text" >
-             <string>Selection Color:</string>
+             <string>Selection color</string>
             </property>
             <property name="buddy" >
              <cstring>pbnSelectionColour</cstring>
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QgsColorButton" name="pbnSelectionColour" >
-            <property name="minimumSize" >
-             <size>
-              <width>100</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text" >
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item>
+          <item row="1" column="2" >
            <spacer>
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
@@ -202,18 +81,8 @@
             </property>
            </spacer>
           </item>
-          <item>
-           <widget class="QLabel" name="label" >
-            <property name="text" >
-             <string>Background Color:</string>
-            </property>
-            <property name="buddy" >
-             <cstring>pbnCanvasColor</cstring>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QgsColorButton" name="pbnCanvasColor" >
+          <item row="1" column="3" >
+           <widget class="QgsColorButton" name="pbnSelectionColour" >
             <property name="minimumSize" >
              <size>
               <width>100</width>
@@ -225,7 +94,17 @@
             </property>
            </widget>
           </item>
-          <item>
+          <item row="2" column="0" colspan="2" >
+           <widget class="QLabel" name="label" >
+            <property name="text" >
+             <string>Background color</string>
+            </property>
+            <property name="buddy" >
+             <cstring>pbnCanvasColor</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2" >
            <spacer>
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
@@ -238,74 +117,39 @@
             </property>
            </spacer>
           </item>
+          <item row="2" column="3" >
+           <widget class="QgsColorButton" name="pbnCanvasColor" >
+            <property name="minimumSize" >
+             <size>
+              <width>100</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text" >
+             <string/>
+            </property>
+           </widget>
+          </item>
          </layout>
-        </widget>
-       </item>
-       <item row="3" column="0" >
-        <widget class="QGroupBox" name="grpDigitizing" >
-         <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>5</hsizetype>
-           <vsizetype>7</vsizetype>
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="title" >
-          <string>Digitizing</string>
-         </property>
-         <widget class="QCheckBox" name="mEnableTopologicalEditingCheckBox" >
-          <property name="geometry" >
-           <rect>
-            <x>11</x>
-            <y>21</y>
-            <width>371</width>
-            <height>31</height>
-           </rect>
-          </property>
-          <property name="text" >
-           <string>Enable topological editing</string>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="mSnappingOptionsPushButton" >
-          <property name="geometry" >
-           <rect>
-            <x>11</x>
-            <y>95</y>
-            <width>194</width>
-            <height>36</height>
-           </rect>
-          </property>
-          <property name="text" >
-           <string>Snapping options...</string>
-          </property>
-         </widget>
-         <widget class="QCheckBox" name="mAvoidIntersectionsCheckBox" >
-          <property name="geometry" >
-           <rect>
-            <x>11</x>
-            <y>58</y>
-            <width>371</width>
-            <height>31</height>
-           </rect>
-          </property>
-          <property name="text" >
-           <string>Avoid intersections of new polygons</string>
-          </property>
-         </widget>
         </widget>
        </item>
        <item row="1" column="0" >
         <widget class="QGroupBox" name="btnGrpMapUnits" >
          <property name="title" >
-          <string>Map Units</string>
+          <string>Map units</string>
          </property>
          <layout class="QHBoxLayout" >
-          <property name="margin" >
+          <property name="leftMargin" >
            <number>11</number>
           </property>
-          <property name="spacing" >
-           <number>6</number>
+          <property name="topMargin" >
+           <number>11</number>
+          </property>
+          <property name="rightMargin" >
+           <number>11</number>
+          </property>
+          <property name="bottomMargin" >
+           <number>11</number>
           </property>
           <item>
            <widget class="QRadioButton" name="radMeters" >
@@ -331,18 +175,102 @@
             </property>
            </widget>
           </item>
-          <item>
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
+         </layout>
+        </widget>
+       </item>
+       <item row="2" column="0" >
+        <widget class="QGroupBox" name="btnGrpPrecision" >
+         <property name="title" >
+          <string>Precision</string>
+         </property>
+         <layout class="QGridLayout" >
+          <item row="0" column="0" >
+           <widget class="QRadioButton" name="radAutomatic" >
+            <property name="toolTip" >
+             <string>Automatically sets the number of decimal places in the mouse position display</string>
             </property>
-            <property name="sizeHint" >
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
+            <property name="whatsThis" >
+             <string>The number of decimal places that are used when displaying the mouse position is automatically set to be enough so that moving the mouse by one pixel gives a change in the position display</string>
             </property>
-           </spacer>
+            <property name="text" >
+             <string>Automatic</string>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
+           <widget class="QRadioButton" name="radManual" >
+            <property name="toolTip" >
+             <string>Sets the number of decimal places to use for the mouse position display</string>
+            </property>
+            <property name="whatsThis" >
+             <string>Sets the number of decimal places to use for the mouse position display</string>
+            </property>
+            <property name="text" >
+             <string>Manual</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2" >
+           <widget class="QSpinBox" name="spinBoxDP" >
+            <property name="toolTip" >
+             <string>The number of decimal places for the manual option</string>
+            </property>
+            <property name="whatsThis" >
+             <string>The number of decimal places for the manual option</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3" >
+           <widget class="QLabel" name="textLabel3" >
+            <property name="sizePolicy" >
+             <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>decimal places</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="3" column="0" >
+        <widget class="QGroupBox" name="grpDigitizing" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title" >
+          <string>Digitizing</string>
+         </property>
+         <layout class="QGridLayout" >
+          <item row="0" column="0" >
+           <widget class="QCheckBox" name="mEnableTopologicalEditingCheckBox" >
+            <property name="text" >
+             <string>Enable topological editing</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QCheckBox" name="mAvoidIntersectionsCheckBox" >
+            <property name="text" >
+             <string>Avoid intersections of new polygons</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QPushButton" name="mSnappingOptionsPushButton" >
+            <property name="text" >
+             <string>Snapping options...</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -354,11 +282,17 @@
        <string>Projection</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="margin" >
+       <property name="leftMargin" >
         <number>11</number>
        </property>
-       <property name="spacing" >
-        <number>6</number>
+       <property name="topMargin" >
+        <number>11</number>
+       </property>
+       <property name="rightMargin" >
+        <number>11</number>
+       </property>
+       <property name="bottomMargin" >
+        <number>11</number>
        </property>
        <item row="0" column="0" >
         <widget class="QCheckBox" name="cbxProjectionEnabled" >
@@ -401,18 +335,87 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>tabWidget</tabstop>
   <tabstop>titleEdit</tabstop>
+  <tabstop>pbnSelectionColour</tabstop>
+  <tabstop>pbnCanvasColor</tabstop>
   <tabstop>radMeters</tabstop>
   <tabstop>radFeet</tabstop>
   <tabstop>radDecimalDegrees</tabstop>
   <tabstop>radAutomatic</tabstop>
   <tabstop>radManual</tabstop>
   <tabstop>spinBoxDP</tabstop>
-  <tabstop>pbnSelectionColour</tabstop>
-  <tabstop>pbnCanvasColor</tabstop>
+  <tabstop>mEnableTopologicalEditingCheckBox</tabstop>
+  <tabstop>mAvoidIntersectionsCheckBox</tabstop>
+  <tabstop>mSnappingOptionsPushButton</tabstop>
   <tabstop>cbxProjectionEnabled</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>radManual</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>spinBoxDP</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>229</x>
+     <y>280</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>416</x>
+     <y>286</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radManual</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>textLabel3</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>240</x>
+     <y>281</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>583</x>
+     <y>290</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radAutomatic</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>spinBoxDP</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>100</x>
+     <y>290</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>395</x>
+     <y>285</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radAutomatic</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>textLabel3</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>87</x>
+     <y>284</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>589</x>
+     <y>285</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
