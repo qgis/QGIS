@@ -48,16 +48,18 @@ class GUI_EXPORT QgsMapCanvasSnapper
      @param p start point of the snap (in pixel coordinates)
      @param results list to which the results are appended
      @param snap_to snap to vertex or to segment
-     @param snappingTol snapping tolerance. -1 means that the search radius for vertex edits is taken*/
-  int snapToCurrentLayer(const QPoint& p, QList<QgsSnappingResult>& results, QgsSnapper::SNAP_TO snap_to, double snappingTol = -1);
+     @param snappingTol snapping tolerance. -1 means that the search radius for vertex edits is taken
+     @param excludePoints a list with (map coordinate) points that should be excluded in the snapping result. Useful e.g. for vertex moves where a vertex should not be snapped to its original position*/
+  int snapToCurrentLayer(const QPoint& p, QList<QgsSnappingResult>& results, QgsSnapper::SNAP_TO snap_to, double snappingTol = -1, const QList<QgsPoint>& excludePoints = QList<QgsPoint>());
   /**Snaps to the background layers. This method is usefull to align the features of the 
      edited layers to those of other layers (as described in the project properties). 
      Uses snap mode QgsSnapper::ONE_RESULT. Therefore, only the
      closest result is returned.
      @param p start point of the snap (in pixel coordinates)
      @param result snapped point
+     @param excludePoints a list with (map coordinate) points that should be excluded in the snapping result. Useful e.g. for vertex moves where a vertex should not be snapped to its original position
      @return 0 in case of success*/
-  int snapToBackgroundLayers(const QPoint& p, QList<QgsSnappingResult>& results);
+  int snapToBackgroundLayers(const QPoint& p, QList<QgsSnappingResult>& results, const QList<QgsPoint>& excludePoints = QList<QgsPoint>());
 
   void setMapCanvas(QgsMapCanvas* canvas);
 

@@ -39,7 +39,7 @@ QgsSnapper::~QgsSnapper()
   
 }
 
-int QgsSnapper::snapPoint(const QPoint& startPoint, QList<QgsSnappingResult>& snappingResult)
+int QgsSnapper::snapPoint(const QPoint& startPoint, QList<QgsSnappingResult>& snappingResult, const QList<QgsPoint>& excludePoints)
 {
   snappingResult.clear();
 
@@ -84,6 +84,9 @@ int QgsSnapper::snapPoint(const QPoint& startPoint, QList<QgsSnappingResult>& sn
 	  snappingResultList.insert(sqrt(newResult.snappedVertex.sqrDist(mapCoordPoint)), newResult);
 	}
     }
+
+  //excluded specific points from result
+  cleanResultList(snappingResultList, excludePoints);
   
   //evaluate results according to snap mode
   QMultiMap<double, QgsSnappingResult>::iterator evalIt =  snappingResultList.begin();
@@ -136,4 +139,31 @@ void QgsSnapper::setSnapToList(const QList<QgsSnapper::SNAP_TO>& snapToList)
 void QgsSnapper::setSnapMode(QgsSnapper::SNAP_MODE snapMode)
 {
   mSnapMode = snapMode;
+}
+
+void QgsSnapper::cleanResultList(QMultiMap<double, QgsSnappingResult>& list, const QList<QgsPoint>& excludeList) const
+{
+  QgsPoint currentResultPoint;
+  QgsSnappingResult currentSnappingResult;
+  QList<double> keysToRemove;
+
+  QMultiMap<double, QgsSnappingResult>::iterator result_it = list.begin();
+  for(; result_it != list.end(); ++result_it)
+    {
+      currentSnappingResult = result_it.value();
+      if(currentSnappingResult.snappedVertexNr != -1)
+	{
+	  currentResultPoint = currentSnappingResult.snappedVertex;
+	  if(excludeList.contains(currentResultPoint))
+	    {
+	      keysToRemove.push_back(result_it.key());
+	    }
+	}
+    }
+
+  QList<double>::const_iterator remove_it = keysToRemove.constBegin();
+  for(; remove_it != keysToRemove.constEnd(); ++remove_it)
+    {
+      list.remove(*remove_it);
+    }
 }

@@ -58,7 +58,7 @@ void QgsMapCanvasSnapper::setMapCanvas(QgsMapCanvas* canvas)
     }
 }
 
-int QgsMapCanvasSnapper::snapToCurrentLayer(const QPoint& p, QList<QgsSnappingResult>& results, QgsSnapper::SNAP_TO snap_to, double snappingTol)
+int QgsMapCanvasSnapper::snapToCurrentLayer(const QPoint& p, QList<QgsSnappingResult>& results, QgsSnapper::SNAP_TO snap_to, double snappingTol, const QList<QgsPoint>& excludePoints)
 {
   results.clear();
   
@@ -112,7 +112,7 @@ int QgsMapCanvasSnapper::snapToCurrentLayer(const QPoint& p, QList<QgsSnappingRe
       mSnapper->setTolerances(toleranceList);
       mSnapper->setSnapToList(snapToList);
 
-      if(mSnapper->snapPoint(p, results) != 0)
+      if(mSnapper->snapPoint(p, results, excludePoints) != 0)
 	{
 	  return 4;
 	}
@@ -125,7 +125,7 @@ int QgsMapCanvasSnapper::snapToCurrentLayer(const QPoint& p, QList<QgsSnappingRe
     }
 }
 
-int QgsMapCanvasSnapper::snapToBackgroundLayers(const QPoint& p, QList<QgsSnappingResult>& results)
+int QgsMapCanvasSnapper::snapToBackgroundLayers(const QPoint& p, QList<QgsSnappingResult>& results, const QList<QgsPoint>& excludePoints)
 {
   results.clear();
 
@@ -252,7 +252,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers(const QPoint& p, QList<QgsSnappi
       mSnapper->setTolerances(toleranceDoubleList);
       mSnapper->setSnapToList(snapTo);
 
-      if(mSnapper->snapPoint(p, results) != 0)
+      if(mSnapper->snapPoint(p, results, excludePoints) != 0)
 	{
 	  return 4;
 	}
