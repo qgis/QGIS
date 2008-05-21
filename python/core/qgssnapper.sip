@@ -63,7 +63,7 @@ public:
    @param startPoint the start point for snapping (in pixel coordinates)
   @param snappingResult the list where the results are inserted (everything in map coordinate system)
   @return 0 in case of success*/
-  int snapPoint(const QPoint& startPoint, QList<QgsSnappingResult>& snappingResult);
+  int snapPoint(const QPoint& startPoint, QList<QgsSnappingResult>& snappingResult, const QList<QgsPoint>& excludeList);
 
   //setters
   void setLayersToSnap(const QList<QgsVectorLayer*>& layerList);

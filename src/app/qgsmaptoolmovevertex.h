@@ -46,6 +46,9 @@ class QgsMapToolMoveVertex: public QgsMapToolVertexEdit
   that no point should be moved*/
   QList<int> mRubberBandMovingPoints;
 
+  /**The position of the vertex to move (in map coordinates) to exclude later from snapping*/
+  QList<QgsPoint> mExcludePoint;
+
   /**Deletes the rubber band pointers
    and clears mRubberBands*/
   void removeRubberBands();
