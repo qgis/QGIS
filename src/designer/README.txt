@@ -5,8 +5,8 @@ Notes on the useage of the QGIS custom designer plugins
 
 Introduction:
 
-The purpose of the QGIS designer plugins is to all third
-party developers to create GIS enabled QT4 based applications
+The purpose of the QGIS designer plugins is to enable all third
+party developers to create GIS enabled Qt4 based applications
 with minimal programming. The idea being that you use the 
 standard Qt4 Designer GUI design tool to create your user
 interface and then add map canvas, legend, projection selector
@@ -41,6 +41,6 @@ plugins at startup:
 Additional Notes:
 
 If you built Qt4 in debug mode then the designer plugins must also 
-be build in debug mode or they will be ignored. The converse is also
+be built in debug mode or they will be ignored. The converse is also
 true.
 
