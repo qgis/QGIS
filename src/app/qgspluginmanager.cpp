@@ -299,25 +299,27 @@ sharedLibExtension = "*.so*";
     QStandardItem * mypDetailItem = new QStandardItem(
         pName() + " (" + pVersion() + ")");
     //
-    // Uncommnet this block to render item using simple painter technique
+    // Uncomment this block to render item using simple painter technique
     // 
     mypDetailItem->setData(pDesc(),Qt::UserRole);
     //
     //Uncomment this block to used widget based detail items (experimental)
     //
-    //QgsDetailedItemData myData;
-    //myData.setTitle(pName());
-    //myData.setDetail(pDesc());
-    //QVariant myVariant = qVariantFromValue(myData);
+    /*
+    QgsDetailedItemData myData;
+    myData.setTitle(pName());
+    myData.setDetail(pDesc());
+    QVariant myVariant = qVariantFromValue(myData);
     //round trip test - delete this...no need to uncomment
     //QgsDetailedItemData myData2 = qVariantValue<QgsDetailedItemData>(myVariant);
     //Q_ASSERT(myData.title() == myData2.title());
     //round trip test ends
-    //mypDetailItem->setData(myVariant,Qt::UserRole);
+    mypDetailItem->setData(myVariant,Qt::UserRole);
+    */
     QString myLibraryName = pluginDir[i];
     QStandardItem * mypLibraryNameItem = new QStandardItem(myLibraryName);
     mypLibraryNameItem->setData(pName(),Qt::UserRole);
-    // myName have a checkbox
+    // Let the first col  have a checkbox
     mypDetailItem->setCheckable(true);
     mypDetailItem->setEditable(false);
 
