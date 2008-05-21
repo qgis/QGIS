@@ -581,7 +581,7 @@ class Tools
   //! Widget used to suppress rendering
   QCheckBox * mRenderSuppressionCBox;
   //! Button used to stop rendering
-  QPushButton* mStopRenderButton;
+  QToolButton* mStopRenderButton;
   //! Widget in status bar used to show status of on the fly projection
   QToolButton * mOnTheFlyProjectionStatusButton;
   //! Popup menu

@@ -1068,15 +1068,15 @@ void QgisApp::createToolBars()
   mDigitizeToolBar->addAction(mActionCapturePolygon);
   mDigitizeToolBar->addAction(mActionAddRing);
   mDigitizeToolBar->addAction(mActionAddIsland);
-  mDigitizeToolBar->addAction(mActionMoveFeature);
-  mDigitizeToolBar->addAction(mActionSplitFeatures);
   mDigitizeToolBar->addAction(mActionDeleteSelected);
-  mDigitizeToolBar->addAction(mActionAddVertex);
-  mDigitizeToolBar->addAction(mActionDeleteVertex);
-  mDigitizeToolBar->addAction(mActionMoveVertex);
   mDigitizeToolBar->addAction(mActionEditCut);
   mDigitizeToolBar->addAction(mActionEditCopy);
   mDigitizeToolBar->addAction(mActionEditPaste);
+  mDigitizeToolBar->addAction(mActionSplitFeatures);
+  mDigitizeToolBar->addAction(mActionMoveFeature);
+  mDigitizeToolBar->addAction(mActionMoveVertex);
+  mDigitizeToolBar->addAction(mActionAddVertex);
+  mDigitizeToolBar->addAction(mActionDeleteVertex);
   //
   // Map Navigation Toolbar
   mMapNavToolBar = addToolBar(tr("Map Navigation"));
@@ -1126,29 +1126,23 @@ void QgisApp::createStatusBar()
   // Add a panel to the status bar for the scale, coords and progress
   // And also rendering suppression checkbox
   //
-
-  
-
   mProgressBar = new QProgressBar(statusBar());
   mProgressBar->setMaximumWidth(100);
   mProgressBar->hide();
-  mProgressBar->setWhatsThis(tr("Progress bar that displays the status of rendering layers and other time-intensive operations"));
+  mProgressBar->setWhatsThis(tr("Progress bar that displays the status"
+        "of rendering layers and other time-intensive operations"));
   statusBar()->addWidget(mProgressBar, 1,true);
   // Bumped the font up one point size since 8 was too 
   // small on some platforms. A point size of 9 still provides
   // plenty of display space on 1024x768 resolutions
   QFont myFont( "Arial", 9 );
 
-  mStopRenderButton = new QPushButton(tr("Stop rendering"), statusBar());
-#ifdef Q_WS_MAC //MH: disable the button on Mac for now to avoid problems with resizing
-  mStopRenderButton->setEnabled(false);
-#endif //Q_WS_MAC
-  statusBar()->addWidget(mStopRenderButton, 0, true);
 
   statusBar()->setFont(myFont);
   mScaleLabel = new QLabel(QString(),statusBar());
   mScaleLabel->setFont(myFont);
   mScaleLabel->setMinimumWidth(10);
+  mScaleLabel->setMaximumHeight(20);
   mScaleLabel->setMargin(3);
   mScaleLabel->setAlignment(Qt::AlignCenter);
   mScaleLabel->setFrameStyle(QFrame::NoFrame);
@@ -1160,6 +1154,7 @@ void QgisApp::createStatusBar()
   mScaleEdit->setFont(myFont);
   mScaleEdit->setMinimumWidth(10);
   mScaleEdit->setMaximumWidth(100);
+  mScaleEdit->setMaximumHeight(20);
   mScaleEdit->setMargin(0);
   mScaleEdit->setAlignment(Qt::AlignLeft);
   QRegExp validator("\\d+\\.?\\d*:\\d+\\.?\\d*");
@@ -1173,17 +1168,31 @@ void QgisApp::createStatusBar()
   //coords status bar widget
   mCoordsLabel = new QLabel(QString(), statusBar());
   mCoordsLabel->setMinimumWidth(10);
+  mCoordsLabel->setMaximumHeight(20);
   mCoordsLabel->setFont(myFont);
   mCoordsLabel->setMargin(3);
   mCoordsLabel->setAlignment(Qt::AlignCenter);
-  mCoordsLabel->setWhatsThis(tr("Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved."));
+  mCoordsLabel->setWhatsThis(tr("Shows the map coordinates at the"
+        "current cursor position. The display is continuously updated "
+        "as the mouse is moved."));
   mCoordsLabel->setToolTip(tr("Map coordinates at mouse cursor position"));
   statusBar()->addWidget(mCoordsLabel, 0, true);
+  //stop rendering status bar widget
+  mStopRenderButton = new QToolButton( statusBar() );
+  mStopRenderButton->setMaximumWidth(20);
+  mStopRenderButton->setMaximumHeight(20);
+//#ifdef Q_WS_MAC //MH: disable the button on Mac for now to avoid problems with resizing
+  mStopRenderButton->setEnabled(false);
+//#endif //Q_WS_MAC
+  statusBar()->addWidget(mStopRenderButton, 0, true);
   // render suppression status bar widget
   mRenderSuppressionCBox = new QCheckBox(tr("Render"),statusBar());
   mRenderSuppressionCBox->setChecked(true);
   mRenderSuppressionCBox->setFont(myFont);
-  mRenderSuppressionCBox->setWhatsThis(tr("When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering."));
+  mRenderSuppressionCBox->setWhatsThis(tr("When checked, the map layers "
+        "are rendered in response to map navigation commands and other "
+        "events. When not checked, no rendering is done. This allows you "
+        "to add a large number of layers and symbolize them before rendering."));
   mRenderSuppressionCBox->setToolTip(tr("Toggle map rendering") );
   statusBar()->addWidget(mRenderSuppressionCBox,0,true);
   // On the fly projection status bar icon
@@ -1203,11 +1212,13 @@ void QgisApp::createStatusBar()
   {
     QMessageBox::critical(this, tr("Resource Location Error"), 
         tr("Error reading icon resources from: \n %1\n Quitting...").arg(myIconPath));
-
     exit(0);
   }
-  mOnTheFlyProjectionStatusButton->setWhatsThis(tr("This icon shows whether on the fly projection is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour."));
-  mOnTheFlyProjectionStatusButton->setToolTip(tr("Projection status - Click to open projection dialog"));
+  mOnTheFlyProjectionStatusButton->setWhatsThis(tr("This icon shows whether "
+        "on the fly projection is enabled or not. Click the icon to bring up "
+        "the project properties dialog to alter this behaviour."));
+  mOnTheFlyProjectionStatusButton->setToolTip(tr("Projection status - Click "
+        "to open projection dialog"));
   connect(mOnTheFlyProjectionStatusButton, SIGNAL(clicked()),
       this, SLOT(projectPropertiesProjections()));//bring up the project props dialog when clicked
   statusBar()->addWidget(mOnTheFlyProjectionStatusButton,0,true);
@@ -1305,7 +1316,6 @@ void QgisApp::setupConnections()
           mMapLegend, SLOT(removeAll()));
   connect(QgsMapLayerRegistry::instance(), SIGNAL(layerWasAdded(QgsMapLayer*)),
           mMapLegend, SLOT(addLayer(QgsMapLayer *)));
-  
   connect(mMapLegend, SIGNAL(currentLayerChanged(QgsMapLayer*)),
           this, SLOT(activateDeactivateLayerRelatedActions(QgsMapLayer*)));
 
@@ -1321,6 +1331,9 @@ void QgisApp::setupConnections()
   connect(mMapCanvas, SIGNAL(scaleChanged(double)), this, SLOT(updateMouseCoordinatePrecision()));
 
   connect(mRenderSuppressionCBox, SIGNAL(toggled(bool )), mMapCanvas, SLOT(setRenderFlag(bool)));
+  //
+  // Do we really need this ??? - its already connected to the esc key...TS
+  //
   connect(mStopRenderButton, SIGNAL(clicked()), this, SLOT(stopRendering()));
 
   // Connect warning dialog from project reading
@@ -1332,7 +1345,8 @@ void QgisApp::createCanvas()
 {
   // "theMapCanvas" used to find this canonical instance later
   mMapCanvas = new QgsMapCanvas(this, "theMapCanvas" );
-  mMapCanvas->setWhatsThis(tr("Map canvas. This is where raster and vector layers are displayed when added to the map"));
+  mMapCanvas->setWhatsThis(tr("Map canvas. This is where raster and vector"
+        "layers are displayed when added to the map"));
   
 //  mMapCanvas->setMinimumWidth(10);
 //  QVBoxLayout *myCanvasLayout = new QVBoxLayout;
@@ -1631,6 +1645,7 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
 {
   QSettings mySettings;
 
+  QgsApplication::showSettings();
   QgsDebugMsg("\n\n*************************************************");
   QgsDebugMsg("Restoring plugins from last session " + thePluginDirString);
   
@@ -3304,17 +3319,17 @@ void QgisApp::toggleFullScreen()
 void QgisApp::stopRendering()
 {
   if(mMapCanvas)
+  {
+    QgsMapRender* mypMapRender = mMapCanvas->mapRender();
+    if(mypMapRender)
     {
-      QgsMapRender* mapRender = mMapCanvas->mapRender();
-      if(mapRender)
-	{
-	  QgsRenderContext* renderContext = mapRender->renderContext();
-	  if(renderContext)
-	    {
-	      renderContext->setRenderingStopped(true);
-	    }
-	}
+      QgsRenderContext* mypRenderContext = mypMapRender->renderContext();
+      if(mypRenderContext)
+      {
+        mypRenderContext->setRenderingStopped(true);
+      }
     }
+  }
 }
 
 //reimplements method from base (gui) class
@@ -5340,27 +5355,16 @@ void QgisApp::keyPressEvent ( QKeyEvent * e )
   // commented out for now. [gsherman]
   //    std::cout << e->text().toLocal8Bit().data() << " (keypress recevied)" << std::endl;
   emit keyPressed (e);
-  
+
   //cancel rendering progress with esc key
   if(e->key() == Qt::Key_Escape)
-    {
-      if(mMapCanvas)
-	{
-	  QgsMapRender* theMapRender = mMapCanvas->mapRender();
-	  if(theMapRender)
-	    {
-	      QgsRenderContext* theRenderContext = theMapRender->renderContext();
-	      if(theRenderContext)
-		{
-		  theRenderContext->setRenderingStopped(true);
-		}
-	    }
-	}
-    }
+  {
+    stopRendering();
+  }
   else
-    {
-      e->ignore();
-    }
+  {
+    e->ignore();
+  }
 }
     
 // Debug hook - used to output diagnostic messages when evoked (usually from the menu)
