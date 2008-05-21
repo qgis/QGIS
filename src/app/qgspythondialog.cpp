@@ -17,7 +17,6 @@
 #include "qgspythondialog.h"
 #include "qgspythonutils.h"
 
-
 QgsPythonDialog::QgsPythonDialog(QgisInterface* pIface, QWidget *parent)
   : QDialog(parent)
 {
@@ -64,14 +63,12 @@ void QgsPythonDialog::on_edtCmdLine_returnPressed()
     output = "<font color=\"red\">" + escapeHtml(className) + ": " + escapeHtml(errorText) + "</font><br>";
   }
    
-  QString str = "<b><font color=\"green\">>>></font> " + escapeHtml(command) + "</b><br>" + output;
-#if QT_VERSION < 0x040300
-  txtHistory->setText(txtHistory->text() + str);
-#else
-  txtHistory->setPlainText(txtHistory->toPlainText() + str);
-#endif
+  QString str = "<b><font color=\"green\">&gt;&gt;&gt;</font> " + escapeHtml(command) + "</b><br>" + output;
+  
   edtCmdLine->setText("");
   
+  txtHistory->moveCursor(QTextCursor::End);
+  txtHistory->insertHtml(str);
   txtHistory->moveCursor(QTextCursor::End);
   txtHistory->ensureCursorVisible();
 }
