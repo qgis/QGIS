@@ -34,26 +34,33 @@ class QgsUniqueValueDialog: public QDialog, private Ui::QgsUniqueValueDialogBase
     ~QgsUniqueValueDialog();
 
  public slots:
-     void apply();
+    void apply();
+    void itemChanged(QListWidgetItem *item);
+    void randomizeColors();
+    void resetColors();
 
  protected:
     /**Pointer to the associated vector layer*/
     QgsVectorLayer* mVectorLayer;
     /**Set to store the already entered values*/
-    std::map<QString,QgsSymbol*> mValues;
+    QMap<QString,QgsSymbol*> mValues;
     QgsSingleSymbolDialog sydialog;
-    /**Value for which symbology settings are displayed*/
-    QString currentValue;
 
  protected slots:
     /**Set new attribut for classification*/
     void changeClassificationAttribute();
-    /**Changes the display of the single symbol dialog*/
-    void changeCurrentValue();
-    /**Removes a class from the classification*/
-    void deleteCurrentClass();
+    /**update single symbol dialog after selection changed*/
+    void selectionChanged();
+    /**add a new classes to the classification*/
+    void addClass(QString value = QString::null);
+    /**Removes the selected classes from the classification*/
+    void deleteSelectedClasses();
     /**Writes changes in the single symbol dialog to the corresponding QgsSymbol*/
     void applySymbologyChanges();
+
+private:
+    QColor randomColor();
+    void setSymbolColor(QgsSymbol *symbol, QColor thecolor);
 };
 
 #endif
