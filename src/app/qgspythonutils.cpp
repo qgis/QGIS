@@ -51,7 +51,7 @@ void QgsPythonUtils::initPython(QgisInterface* interface)
   
   // expect that bindings are installed locally, so add the path to modules
   // also add path to plugins
-  runString("sys.path = [\"" + homePluginsPath()  + "\", \"" + pythonPath() + "\", \"" + pluginsPath() + "\"] + sys.path");
+  runString("sys.path = [\"" + pythonPath() + "\", \"" + homePluginsPath()  + "\", \"" + pluginsPath() + "\"] + sys.path");
 
   // import SIP
   if (!runString("from sip import wrapinstance, unwrapinstance",
