@@ -134,13 +134,13 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static const QString themePath();
     
     //! Alters prefix path - used by 3rd party apps
-    static void setPrefixPath(const QString& thePrefixPath, bool useDefaultPaths = FALSE);
+    static void setPrefixPath(const QString thePrefixPath, bool useDefaultPaths = FALSE);
     
     //! Alters plugin path - used by 3rd party apps
     static void setPluginPath(const QString thePluginPath);
 
     //! Alters pkg data path - used by 3rd party apps
-    static void setPkgDataPath(const QString& thePkgDataPath);
+    static void setPkgDataPath(const QString thePkgDataPath);
     
     //! loads providers
     static void initQgis();
