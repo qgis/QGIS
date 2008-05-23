@@ -21,6 +21,7 @@
 
 class QgisInterface;
 class QCloseEvent;
+class QShowEvent;
 
 class QgsPythonDialog : public QDialog, private Ui::QgsPythonDialog
 {
@@ -40,7 +41,8 @@ class QgsPythonDialog : public QDialog, private Ui::QgsPythonDialog
   protected:
     
     void closeEvent(QCloseEvent* event);
-    
+    void showEvent(QShowEvent* event);
+        
   private:
     
     QgisInterface* mIface;

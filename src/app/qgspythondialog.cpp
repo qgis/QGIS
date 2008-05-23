@@ -17,6 +17,7 @@
 #include "qgspythondialog.h"
 #include "qgspythonutils.h"
 
+#include <QShowEvent>
 #include <QCloseEvent>
 
 QgsPythonDialog::QgsPythonDialog(QgisInterface* pIface, QWidget *parent)
@@ -24,8 +25,6 @@ QgsPythonDialog::QgsPythonDialog(QgisInterface* pIface, QWidget *parent)
 {
   setupUi(this);
   mIface = pIface;
-  
-  QgsPythonUtils::installConsoleHooks();
 }
 
 QgsPythonDialog::~QgsPythonDialog()
@@ -46,8 +45,7 @@ void QgsPythonDialog::on_edtCmdLine_returnPressed()
   // we're using custom hooks for output and exceptions to show output in console
   if (QgsPythonUtils::runStringUnsafe(command))
   {
-    QgsPythonUtils::evalString("sys.stdout.data", output);
-    QgsPythonUtils::runString("sys.stdout.data = ''");
+    QgsPythonUtils::evalString("sys.stdout.get_and_clean_data()", output);
     QString result = QgsPythonUtils::getResult();
     // escape the result so python objects display properly and
     // we can still use html output to get nicely formatted display
@@ -72,6 +70,13 @@ void QgsPythonDialog::on_edtCmdLine_returnPressed()
   txtHistory->insertHtml(str);
   txtHistory->moveCursor(QTextCursor::End);
   txtHistory->ensureCursorVisible();
+}
+
+void QgsPythonDialog::showEvent(QShowEvent* event)
+{
+  QDialog::showEvent(event);
+  
+  QgsPythonUtils::installConsoleHooks();
 }
 
 void QgsPythonDialog::closeEvent(QCloseEvent* event)

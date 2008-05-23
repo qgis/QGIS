@@ -97,6 +97,16 @@ void QgsPythonUtils::initPython(QgisInterface* interface)
   runString(
       "def qgis_except_hook(type, value, tb):\n"
       "  qgis_except_hook_msg(type, value, tb, None)\n");
+  runString(
+      "class QgisOutputCatcher:\n"
+      "  def __init__(self):\n"
+      "    self.data = ''\n"
+      "  def write(self, stuff):\n"
+      "    self.data += stuff\n"
+      "  def get_and_clean_data(self):\n"
+      "    tmp = self.data\n"
+      "    self.data = ''\n"
+      "    return tmp\n");
   
   // hook for python console so all output will be redirected
   // and then shown in console
@@ -135,15 +145,8 @@ void QgsPythonUtils::installConsoleHooks()
 {
   runString("sys.displayhook = console_display_hook\n");
   
-  runString(
-    "class MyOutputCatcher:\n"
-    "  def __init__(self):\n"
-    "    self.data = ''\n"
-    "  def write(self, stuff):\n"
-    "    self.data += stuff\n");
   runString("_old_stdout = sys.stdout\n");
-  runString("sys.stdout = MyOutputCatcher()\n");
-  
+  runString("sys.stdout = QgisOutputCatcher()\n");
 }
 
 void QgsPythonUtils::uninstallConsoleHooks()
