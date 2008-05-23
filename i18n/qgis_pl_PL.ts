@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="pl_PL">
+<!DOCTYPE TS><TS>
 <defaultcodec></defaultcodec>
 <context>
     <name>Dialog</name>
@@ -551,21 +550,6 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Couldn&apos;t load SIP module.
-Python support will be disabled.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t load PyQt bindings.
-Python support will be disabled.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t load QGIS bindings.
-Python support will be disabled.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Couldn&apos;t load plugin </source>
         <translation>Nie można wczytać wtyczki</translation>
     </message>
@@ -1035,6 +1019,50 @@ Python support will be disabled.</source>
         <source>File could not been opened.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Couldn&apos;t load SIP module.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python support will be disabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t load PyQt4.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t load PyQGIS.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>An error occured during execution of following code:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error details:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type:</source>
+        <translation type="unfinished">Typ:</translation>
+    </message>
+    <message>
+        <source>Value:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> is not writeable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please adjust permissions (if possible) and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uncatched fatal GRASS error</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisApp</name>
@@ -1052,11 +1080,11 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
-        <translation>Okno mapy. Tutaj wyświetlane są warstwy rastrowe i wektorowe, które zostały dodane do mapy</translation>
+        <translation type="obsolete">Okno mapy. Tutaj wyświetlane są warstwy rastrowe i wektorowe, które zostały dodane do mapy</translation>
     </message>
     <message>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
-        <translation>Pasek postępu informuje o postępie rysowania warstw oraz innych czasochłonnych operacji</translation>
+        <translation type="obsolete">Pasek postępu informuje o postępie rysowania warstw oraz innych czasochłonnych operacji</translation>
     </message>
     <message>
         <source>Displays the current map scale</source>
@@ -1072,23 +1100,23 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Version </source>
-        <translation>Wersja </translation>
+        <translation type="obsolete">Wersja </translation>
     </message>
     <message>
         <source> with PostgreSQL support</source>
-        <translation> z obsługą PostgreSQL</translation>
+        <translation type="obsolete"> z obsługą PostgreSQL</translation>
     </message>
     <message>
         <source> (no PostgreSQL support)</source>
-        <translation> (bez obsługi PostgreSQL)</translation>
+        <translation type="obsolete"> (bez obsługi PostgreSQL)</translation>
     </message>
     <message>
         <source>Quantum GIS is licensed under the GNU General Public License</source>
-        <translation>Quantum GIS jest rozpowszechniany na zasadach określonych w Powszechnej Licencji Publicznej GNU</translation>
+        <translation type="obsolete">Quantum GIS jest rozpowszechniany na zasadach określonych w Powszechnej Licencji Publicznej GNU</translation>
     </message>
     <message>
         <source>http://www.gnu.org/licenses</source>
-        <translation>http://www.gnu.org/licenses</translation>
+        <translation type="obsolete">http://www.gnu.org/licenses</translation>
     </message>
     <message>
         <source>Version</source>
@@ -1096,7 +1124,7 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Available Data Provider Plugins</source>
-        <translation>Dostępne wtyczki źródeł danych</translation>
+        <translation type="obsolete">Dostępne wtyczki źródeł danych</translation>
     </message>
     <message>
         <source>is not a valid or recognized data source</source>
@@ -2004,15 +2032,6 @@ Zapisz projekt pod nową nazwą</translation>
         <translation>Wklej zaznaczone obiekty</translation>
     </message>
     <message>
-        <source>
-Compiled against Qt </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>, running against Qt </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>T</source>
         <comment>Show most toolbars</comment>
         <translation>T</translation>
@@ -2022,7 +2041,7 @@ Compiled against Qt </source>
         <comment>
 
 Hide most toolbars</comment>
-        <translation>Ctrl+T</translation>
+        <translation type="obsolete">Ctrl+T</translation>
     </message>
     <message>
         <source>Checking provider plugins</source>
@@ -2090,10 +2109,6 @@ Hide most toolbars</comment>
     </message>
     <message>
         <source>Map coordinates at mouse cursor position</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2226,6 +2241,58 @@ Hide most toolbars</comment>
         <source>Support for migration of old projects to work in newer QGIS versions.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Ctrl+T</source>
+        <comment>Hide most toolbars</comment>
+        <translation type="unfinished">Ctrl+T</translation>
+    </message>
+    <message>
+        <source>Progress bar that displays the statusof rendering layers and other time-intensive operations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shows the map coordinates at thecurrent cursor position. The display is continuously updated as the mouse is moved.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resource Location Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error reading icon resources from: 
+ %1
+ Quitting...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map canvas. This is where raster and vectorlayers are displayed when added to the map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Legend</source>
+        <translation type="unfinished">Legenda</translation>
+    </message>
+    <message>
+        <source>You are using QGIS version %1 built against code revision %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> This copy of QGIS has been built with PostgreSQL support.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> This copy of QGIS has been built without PostgreSQL support.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+This binary was compiled against Qt %1,and is currently running against Qt %2</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -2262,7 +2329,7 @@ Hide most toolbars</comment>
     </message>
     <message>
         <source>Subscribe to the QGIS-User mailing list</source>
-        <translation>Subskrybuj listę QGIS-User</translation>
+        <translation type="obsolete">Subskrybuj listę QGIS-User</translation>
     </message>
     <message>
         <source>Version</source>
@@ -2278,7 +2345,7 @@ Hide most toolbars</comment>
     </message>
     <message>
         <source>&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</source>
-        <translation>&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</translation>
+        <translation type="obsolete">&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>Developers</source>
@@ -2286,11 +2353,30 @@ Hide most toolbars</comment>
     </message>
     <message>
         <source>&lt;h2&gt;QGIS Developers&lt;/h2&gt;</source>
-        <translation>&lt;h2&gt;Programiści QGIS&lt;/h2&gt;</translation>
+        <translation type="obsolete">&lt;h2&gt;Programiści QGIS&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>Sponsors</source>
         <translation>Sponsorzy</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:x-large;&quot;&gt;Quantum GIS (QGIS)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Quantum GIS is licensed under the GNU General Public License</source>
+        <translation type="unfinished">Quantum GIS jest rozpowszechniany na zasadach określonych w Powszechnej Licencji Publicznej GNU</translation>
+    </message>
+    <message>
+        <source>http://www.gnu.org/licenses</source>
+        <translation type="unfinished">http://www.gnu.org/licenses</translation>
+    </message>
+    <message>
+        <source>Join our user mailing list</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2309,26 +2395,22 @@ Hide most toolbars</comment>
     </message>
     <message>
         <source>OK</source>
-        <translation>OK</translation>
+        <translation type="obsolete">OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Anuluj</translation>
+        <translation type="obsolete">Anuluj</translation>
     </message>
 </context>
 <context>
     <name>QgsAttributeActionDialog</name>
     <message>
         <source>Name</source>
-        <translation>Nazwa</translation>
+        <translation type="obsolete">Nazwa</translation>
     </message>
     <message>
         <source>Action</source>
-        <translation>Akcja</translation>
-    </message>
-    <message>
-        <source>Capture</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Akcja</translation>
     </message>
     <message>
         <source>Select an action</source>
@@ -2340,7 +2422,7 @@ Hide most toolbars</comment>
     <name>QgsAttributeActionDialogBase</name>
     <message>
         <source>Form1</source>
-        <translation>Form1</translation>
+        <translation type="obsolete">Form1</translation>
     </message>
     <message>
         <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</source>
@@ -2372,7 +2454,7 @@ Hide most toolbars</comment>
     </message>
     <message>
         <source>Name:</source>
-        <translation>Nazwa:</translation>
+        <translation type="obsolete">Nazwa:</translation>
     </message>
     <message>
         <source>Enter the action name here</source>
@@ -2380,7 +2462,7 @@ Hide most toolbars</comment>
     </message>
     <message>
         <source>Action:</source>
-        <translation>Akcja:</translation>
+        <translation type="obsolete">Akcja:</translation>
     </message>
     <message>
         <source>Enter the action command here</source>
@@ -2388,7 +2470,7 @@ Hide most toolbars</comment>
     </message>
     <message>
         <source>Browse</source>
-        <translation>Przeglądaj</translation>
+        <translation type="obsolete">Przeglądaj</translation>
     </message>
     <message>
         <source>Insert action</source>
@@ -2408,10 +2490,6 @@ Hide most toolbars</comment>
     </message>
     <message>
         <source>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Browse for action commands</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2442,6 +2520,42 @@ Hide most toolbars</comment>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Attribute Actions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Action properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Nazwa</translation>
+    </message>
+    <message>
+        <source>Action</source>
+        <translation type="unfinished">Akcja</translation>
+    </message>
+    <message>
+        <source>Browse for action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Click to browse for an action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clicking the buttone will let you select an application to use as the action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Capture</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeDialogBase</name>
@@ -2463,11 +2577,11 @@ Hide most toolbars</comment>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation>&amp;OK</translation>
+        <translation type="obsolete">&amp;OK</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation>&amp;Anuluj</translation>
+        <translation type="obsolete">&amp;Anuluj</translation>
     </message>
 </context>
 <context>
@@ -2674,6 +2788,14 @@ Hide most toolbars</comment>
 </source>
         <translation> z bazy danych. Komunikat bazy danych:</translation>
     </message>
+    <message>
+        <source>&amp;Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Zoom to</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsBookmarksBase</name>
@@ -2699,31 +2821,31 @@ Hide most toolbars</comment>
     </message>
     <message>
         <source>Zoom To</source>
-        <translation>Powiększ do</translation>
+        <translation type="obsolete">Powiększ do</translation>
     </message>
     <message>
         <source>Zoom to the currently selected bookmark</source>
-        <translation>Powiększ do wybranej zakładki</translation>
+        <translation type="obsolete">Powiększ do wybranej zakładki</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation>Usuń</translation>
+        <translation type="obsolete">Usuń</translation>
     </message>
     <message>
         <source>Delete the currently selected bookmark</source>
-        <translation>Usuń wybraną zakładkę</translation>
+        <translation type="obsolete">Usuń wybraną zakładkę</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Zamknij</translation>
+        <translation type="obsolete">Zamknij</translation>
     </message>
     <message>
         <source>Close the dialog</source>
-        <translation>Zamknij okno</translation>
+        <translation type="obsolete">Zamknij okno</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation>Pomoc</translation>
+        <translation type="obsolete">Pomoc</translation>
     </message>
 </context>
 <context>
@@ -3098,11 +3220,11 @@ Hide most toolbars</comment>
     <name>QgsComposerVectorLegend</name>
     <message>
         <source>Layers</source>
-        <translation>Warstwy</translation>
+        <translation type="obsolete">Warstwy</translation>
     </message>
     <message>
         <source>Group</source>
-        <translation>Grupa</translation>
+        <translation type="obsolete">Grupa</translation>
     </message>
     <message>
         <source>Combine selected layers</source>
@@ -3149,11 +3271,23 @@ Hide most toolbars</comment>
     </message>
     <message>
         <source>Column 1</source>
-        <translation>Kolumna 1</translation>
+        <translation type="obsolete">Kolumna 1</translation>
     </message>
     <message>
         <source>Preview</source>
         <translation>Podgląd</translation>
+    </message>
+    <message>
+        <source>Layers</source>
+        <translation type="unfinished">Warstwy</translation>
+    </message>
+    <message>
+        <source>Group</source>
+        <translation type="unfinished">Grupa</translation>
+    </message>
+    <message>
+        <source>ID</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3431,7 +3565,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&#xa9; QGIS 2008</source>
-        <translation>© QGIS 2008</translation>
+        <translation type="obsolete">© QGIS 2008</translation>
+    </message>
+    <message encoding="UTF-8">
+        <source>© QGIS 2008</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3501,7 +3639,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Parameters:</source>
-        <translation>Parametry:</translation>
+        <translation type="obsolete">Parametry:</translation>
     </message>
     <message>
         <source>|&lt;</source>
@@ -3525,23 +3663,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>New</source>
-        <translation>Nowy</translation>
+        <translation type="obsolete">Nowy</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation>Zapisz</translation>
+        <translation type="obsolete">Zapisz</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation>Usuń</translation>
+        <translation type="obsolete">Usuń</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Zamknij</translation>
+        <translation type="obsolete">Zamknij</translation>
     </message>
     <message>
         <source>Name:</source>
-        <translation>Nazwa:</translation>
+        <translation type="obsolete">Nazwa:</translation>
     </message>
     <message>
         <source>Test</source>
@@ -3549,7 +3687,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Transform from WGS84 to the chosen projection</source>
-        <translation>Przekształć z WGS84 do wybranego układu współrzędnych</translation>
+        <translation type="obsolete">Przekształć z WGS84 do wybranego układu współrzędnych</translation>
     </message>
     <message>
         <source>Calculate</source>
@@ -3561,11 +3699,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>North:</source>
-        <translation>Północ:</translation>
+        <translation type="obsolete">Północ:</translation>
     </message>
     <message>
         <source>East:</source>
-        <translation>Wschód:</translation>
+        <translation type="obsolete">Wschód:</translation>
     </message>
     <message>
         <source>You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.</source>
@@ -3578,6 +3716,34 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Projected Coordinate System</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Nazwa</translation>
+    </message>
+    <message>
+        <source>Parameters</source>
+        <translation type="unfinished">Parametry</translation>
+    </message>
+    <message>
+        <source>*</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S</source>
+        <translation type="unfinished">S</translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>North</source>
+        <translation type="unfinished">Północ</translation>
+    </message>
+    <message>
+        <source>East</source>
+        <translation type="unfinished">Wschód</translation>
     </message>
 </context>
 <context>
@@ -3945,7 +4111,7 @@ geometry.</source>
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Przeglądaj...</translation>
     </message>
     <message>
         <source>The delimiter is taken as is</source>
@@ -3974,6 +4140,17 @@ geometry.</source>
     <message>
         <source>Error</source>
         <translation>Błąd</translation>
+    </message>
+</context>
+<context>
+    <name>QgsDetailedItemWidgetBase</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Heading Label</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4519,11 +4696,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsGeomTypeDialog</name>
     <message>
         <source>Name</source>
-        <translation>Nazwa</translation>
+        <translation type="obsolete">Nazwa</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation>Typ</translation>
+        <translation type="obsolete">Typ</translation>
     </message>
 </context>
 <context>
@@ -4550,7 +4727,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Attributes:</source>
-        <translation>Atrybuty:</translation>
+        <translation type="obsolete">Atrybuty:</translation>
     </message>
     <message>
         <source>Add</source>
@@ -4558,7 +4735,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Column 1</source>
-        <translation>Kolumna 1</translation>
+        <translation type="obsolete">Kolumna 1</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -4566,7 +4743,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>File Format:</source>
-        <translation>Format pliku:</translation>
+        <translation type="obsolete">Format pliku:</translation>
+    </message>
+    <message>
+        <source>File format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attributes</source>
+        <translation type="unfinished">Atrybuty</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Nazwa</translation>
     </message>
 </context>
 <context>
@@ -4630,7 +4819,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsGeorefPluginGuiBase</name>
     <message>
         <source>Georeferencer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Georeferencer</translation>
     </message>
     <message>
         <source>Close</source>
@@ -4718,15 +4907,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Classification Field:</source>
-        <translation>Pole klasyfikacji:</translation>
+        <translation type="obsolete">Pole klasyfikacji:</translation>
     </message>
     <message>
         <source>Mode:</source>
-        <translation>Tryb:</translation>
+        <translation type="obsolete">Tryb:</translation>
     </message>
     <message>
         <source>Number of Classes:</source>
-        <translation>Liczba klas:</translation>
+        <translation type="obsolete">Liczba klas:</translation>
     </message>
     <message>
         <source>Delete class</source>
@@ -4735,6 +4924,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Classify</source>
         <translation>Klasyfikuj</translation>
+    </message>
+    <message>
+        <source>Classification field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mode</source>
+        <translation type="unfinished">Tryb</translation>
+    </message>
+    <message>
+        <source>Number of classes</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5035,7 +5236,7 @@ p, li { white-space: pre-wrap; }
 
 
 Column title</comment>
-        <translation type="unfinished">Kolor</translation>
+        <translation type="obsolete">Kolor</translation>
     </message>
     <message>
         <source>Type</source>
@@ -5043,7 +5244,7 @@ Column title</comment>
 
 
 Column title</comment>
-        <translation type="unfinished">Typ</translation>
+        <translation type="obsolete">Typ</translation>
     </message>
     <message>
         <source>Index</source>
@@ -5051,7 +5252,7 @@ Column title</comment>
 
 
 Column title</comment>
-        <translation type="unfinished">Indeks</translation>
+        <translation type="obsolete">Indeks</translation>
     </message>
     <message>
         <source>Column</source>
@@ -5080,6 +5281,21 @@ Column title</comment>
     <message>
         <source>Right: </source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <comment>Column title</comment>
+        <translation type="unfinished">Kolor</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <comment>Column title</comment>
+        <translation type="unfinished">Typ</translation>
+    </message>
+    <message>
+        <source>Index</source>
+        <comment>Column title</comment>
+        <translation type="unfinished">Indeks</translation>
     </message>
 </context>
 <context>
@@ -5943,7 +6159,7 @@ at line </source>
     </message>
     <message>
         <source>Location: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lokalizacja: </translation>
     </message>
     <message>
         <source>Mapset: </source>
@@ -6185,7 +6401,7 @@ at line </source>
     </message>
     <message>
         <source>GRASS layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warstwa GRASS</translation>
     </message>
     <message>
         <source>Create new Grass Vector</source>
@@ -6549,7 +6765,7 @@ at line </source>
     </message>
     <message>
         <source>Save As...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zapisz jako...</translation>
     </message>
     <message>
         <source>QGIS Graticule Creator</source>
@@ -6822,7 +7038,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&#xb0;</source>
-        <translation>°</translation>
+        <translation type="obsolete">°</translation>
     </message>
     <message>
         <source>Buffer Labels?</source>
@@ -6938,6 +7154,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Size Units:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message encoding="UTF-8">
+        <source>°</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7077,7 +7297,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Czy chcesz zapisać zmiany?</translation>
     </message>
     <message>
         <source>Error</source>
@@ -7482,11 +7702,11 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Przeglądaj...</translation>
     </message>
     <message>
         <source>Save As...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zapisz jako...</translation>
     </message>
 </context>
 <context>
@@ -7537,6 +7757,10 @@ Do you want to overwrite it?</source>
     <message>
         <source>Total:</source>
         <translation>Ogółem:</translation>
+    </message>
+    <message>
+        <source>Segments</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7731,7 +7955,7 @@ Rozszerzona informacja o błędzie:
     </message>
     <message>
         <source>Connection Information</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Informacja o połączeniu</translation>
     </message>
     <message>
         <source>Name</source>
@@ -7896,11 +8120,11 @@ Rozszerzona informacja o błędzie:
     </message>
     <message>
         <source>New Item</source>
-        <translation>Nowy</translation>
+        <translation type="obsolete">Nowy</translation>
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Przeglądaj...</translation>
     </message>
 </context>
 <context>
@@ -7938,7 +8162,7 @@ Rozszerzona informacja o błędzie:
     </message>
     <message>
         <source>&amp;Appearance</source>
-        <translation>&amp;Wygląd</translation>
+        <translation type="obsolete">&amp;Wygląd</translation>
     </message>
     <message>
         <source>Hide splash screen at startup</source>
@@ -7946,11 +8170,11 @@ Rozszerzona informacja o błędzie:
     </message>
     <message>
         <source>&amp;Icon Theme</source>
-        <translation>&amp;Temat ikon</translation>
+        <translation type="obsolete">&amp;Temat ikon</translation>
     </message>
     <message>
         <source>Theme</source>
-        <translation>Temat</translation>
+        <translation type="obsolete">Temat</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note: &lt;/b&gt;Theme changes take effect the next time QGIS is started</source>
@@ -7962,7 +8186,7 @@ Rozszerzona informacja o błędzie:
     </message>
     <message>
         <source>Update display after reading</source>
-        <translation>Odśwież mapę po odczytaniu</translation>
+        <translation type="obsolete">Odśwież mapę po odczytaniu</translation>
     </message>
     <message>
         <source>Map display will be updated (drawn) after this many features have been read from the data source</source>
@@ -7970,16 +8194,16 @@ Rozszerzona informacja o błędzie:
     </message>
     <message>
         <source>features</source>
-        <translation>obiektów</translation>
+        <translation type="obsolete">obiektów</translation>
     </message>
     <message>
         <source>(Set to 0 to not update the display until all features have been read)</source>
-        <translation>(Podanie wartości 0 sprawi, że ekran nie będzie aktualizowany aż do zakończenia
+        <translation type="obsolete">(Podanie wartości 0 sprawi, że ekran nie będzie aktualizowany aż do zakończenia
 odczytu ze źródła danych)</translation>
     </message>
     <message>
         <source>Initial Visibility</source>
-        <translation>Widoczność początkowa</translation>
+        <translation type="obsolete">Widoczność początkowa</translation>
     </message>
     <message>
         <source>Select Global Default ...</source>
@@ -7987,35 +8211,35 @@ odczytu ze źródła danych)</translation>
     </message>
     <message>
         <source>Prompt for projection.</source>
-        <translation>Pytaj o układ współrzędnych.</translation>
+        <translation type="obsolete">Pytaj o układ współrzędnych.</translation>
     </message>
     <message>
         <source>Project wide default projection will be used.</source>
-        <translation>Użyj domyślnego układu współrzędnych projektu.</translation>
+        <translation type="obsolete">Użyj domyślnego układu współrzędnych projektu.</translation>
     </message>
     <message>
         <source>&amp;Splash screen</source>
-        <translation>&amp;Ekran powitalny</translation>
+        <translation type="obsolete">&amp;Ekran powitalny</translation>
     </message>
     <message>
         <source>Default Map Appearance (Overridden by project properties)</source>
-        <translation>Domyślny wygląd mapy (podrzędny do właściwości projektu)</translation>
+        <translation type="obsolete">Domyślny wygląd mapy (podrzędny do właściwości projektu)</translation>
     </message>
     <message>
         <source>Background Color:</source>
-        <translation>Kolor tła:</translation>
+        <translation type="obsolete">Kolor tła:</translation>
     </message>
     <message>
         <source>Selection Color:</source>
-        <translation>Kolor zaznaczenia:</translation>
+        <translation type="obsolete">Kolor zaznaczenia:</translation>
     </message>
     <message>
         <source>Appearance</source>
-        <translation>Wygląd</translation>
+        <translation type="obsolete">Wygląd</translation>
     </message>
     <message>
         <source>Capitalise layer name</source>
-        <translation>Nazwa warstwy od dużej litery</translation>
+        <translation type="obsolete">Nazwa warstwy od dużej litery</translation>
     </message>
     <message>
         <source>Make lines appear less jagged at the expense of some drawing performance</source>
@@ -8027,7 +8251,7 @@ odczytu ze źródła danych)</translation>
     </message>
     <message>
         <source>&amp;Update during drawing</source>
-        <translation>&amp;Odświeżanie podczas rysowania</translation>
+        <translation type="obsolete">&amp;Odświeżanie podczas rysowania</translation>
     </message>
     <message>
         <source>Measure tool</source>
@@ -8035,7 +8259,7 @@ odczytu ze źródła danych)</translation>
     </message>
     <message>
         <source>Ellipsoid for distance calculations:</source>
-        <translation>Elipsoida do kalkulacji odległości:</translation>
+        <translation type="obsolete">Elipsoida do kalkulacji odległości:</translation>
     </message>
     <message>
         <source>Search radius</source>
@@ -8051,11 +8275,11 @@ odczytu ze źródła danych)</translation>
     </message>
     <message>
         <source>Global default projection displa&amp;yed below will be used.</source>
-        <translation>Użyj globalnego dom&amp;yślnego układu współrzędnych, wyświetlonego poniżej.</translation>
+        <translation type="obsolete">Użyj globalnego dom&amp;yślnego układu współrzędnych, wyświetlonego poniżej.</translation>
     </message>
     <message>
         <source>Rendering</source>
-        <translation type="unfinished">Renderowanie</translation>
+        <translation type="obsolete">Renderowanie</translation>
     </message>
     <message>
         <source>Fix problems with incorrectly filled polygons</source>
@@ -8090,43 +8314,19 @@ odczytu ze źródła danych)</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Zoom factor:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mouse wheel action:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&amp;General</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">Ogólne</translation>
-    </message>
-    <message>
-        <source>Ask to save project changes when required</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rubberband color:</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Ogólne</translation>
     </message>
     <message>
         <source>Locale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Force Override System Locale</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Locale to use instead</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Note: Enabling / changing overide on local requires an application restart.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -8138,19 +8338,7 @@ odczytu ze źródła danych)</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Warn me when opening a project file saved with an older version of QGIS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Selecting this will unselect the &apos;make lines less&apos; jagged toggle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>(Specify the search radius as a percentage of the map width)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Search Radius for Identifying Features and displaying Map Tips</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -8163,7 +8351,7 @@ odczytu ze źródła danych)</translation>
     </message>
     <message>
         <source>Line Width:</source>
-        <translation type="unfinished">Szerokość linii:</translation>
+        <translation type="obsolete">Szerokość linii:</translation>
     </message>
     <message>
         <source>Line width in pixels</source>
@@ -8171,18 +8359,10 @@ odczytu ze źródła danych)</translation>
     </message>
     <message>
         <source>Line Colour:</source>
-        <translation type="unfinished">Kolor linii:</translation>
+        <translation type="obsolete">Kolor linii:</translation>
     </message>
     <message>
         <source>Snapping</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Default Snapping Tolerance (in layer units):</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Search radius for vertex edits (in layer units):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -8190,15 +8370,136 @@ odczytu ze źródła danych)</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Default Snap Mode:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Vertex markers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Marker style:</source>
+        <source>Project files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prompt to save project changes when required</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warn when opening a project file saved with an older version of QGIS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default Map Appearance (overridden by project properties)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selection color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Background color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Application</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Icon theme</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Capitalise layer names in legend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rendering behavior</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of features to draw before updating the display</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; Use zero to prevent display updates until all features have been rendered&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rendering quality</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom factor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mouse wheel action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rubberband color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ellipsoid for distance calculations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; Specify the search radius as a percentage of the map width&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search radius for identifying features and displaying map tips</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line width</source>
+        <translation type="unfinished">Szerokość linii</translation>
+    </message>
+    <message>
+        <source>Line colour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default snap mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default snapping tolerance in layer units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search radius for vertex edits in layer units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Marker style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prompt for projection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Project wide default projection will be used</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Global default projection displa&amp;yed below will be used</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Override system locale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; Enabling / changing overide on local requires an application restart&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8327,6 +8628,10 @@ odczytu ze źródła danych)</translation>
         <source>Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Create a buffer for a PostgreSQL layer. </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsPgQueryBuilder</name>
@@ -8431,7 +8736,7 @@ odczytu ze źródła danych)</translation>
     </message>
     <message>
         <source>Datasource:</source>
-        <translation>Źródło danych:</translation>
+        <translation type="obsolete">Źródło danych:</translation>
     </message>
     <message>
         <source>Operators</source>
@@ -8525,6 +8830,10 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;List of fields in this vector file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Datasource</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsPluginManager</name>
@@ -8538,18 +8847,22 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nazwa</translation>
+        <translation type="obsolete">Nazwa</translation>
     </message>
     <message>
         <source>Version</source>
-        <translation type="unfinished">Wersja</translation>
+        <translation type="obsolete">Wersja</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished">Opis</translation>
+        <translation type="obsolete">Opis</translation>
     </message>
     <message>
-        <source>Library name</source>
+        <source>&amp;Select All</source>
+        <translation type="unfinished">&amp;Zaznacz wszystko</translation>
+    </message>
+    <message>
+        <source>&amp;Clear All</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8557,47 +8870,63 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginManagerBase</name>
     <message>
         <source>Plugin Directory</source>
-        <translation>Katalog wtyczek</translation>
+        <translation type="obsolete">Katalog wtyczek</translation>
     </message>
     <message>
         <source>To load a plugin, click the checkbox next to the plugin and click Ok</source>
-        <translation>Aby wczytać wtyczkę, zaznacz pole wyboru obok nazwy wtyczki i kliknij OK</translation>
+        <translation type="obsolete">Aby wczytać wtyczkę, zaznacz pole wyboru obok nazwy wtyczki i kliknij OK</translation>
     </message>
     <message>
         <source>&amp;Select All</source>
-        <translation>&amp;Zaznacz wszystko</translation>
+        <translation type="obsolete">&amp;Zaznacz wszystko</translation>
     </message>
     <message>
         <source>Alt+S</source>
-        <translation>Alt+S</translation>
+        <translation type="obsolete">Alt+S</translation>
     </message>
     <message>
         <source>C&amp;lear All</source>
-        <translation>&amp;Odznacz wszystko</translation>
+        <translation type="obsolete">&amp;Odznacz wszystko</translation>
     </message>
     <message>
         <source>Alt+L</source>
-        <translation>Alt+L</translation>
+        <translation type="obsolete">Alt+L</translation>
     </message>
     <message>
         <source>&amp;Ok</source>
-        <translation>&amp;OK</translation>
+        <translation type="obsolete">&amp;OK</translation>
     </message>
     <message>
         <source>Alt+O</source>
-        <translation>Alt+O</translation>
+        <translation type="obsolete">Alt+O</translation>
     </message>
     <message>
         <source>&amp;Close</source>
-        <translation>&amp;Zamknij</translation>
+        <translation type="obsolete">&amp;Zamknij</translation>
     </message>
     <message>
         <source>Alt+C</source>
-        <translation>Alt+C</translation>
+        <translation type="obsolete">Alt+C</translation>
     </message>
     <message>
         <source>QGIS Plugin Manager</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To enable / disable a plugin, click its checkbox or description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin Directory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Directory</source>
+        <translation type="unfinished">Katalog</translation>
     </message>
 </context>
 <context>
@@ -8656,7 +8985,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Linear</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Liniowa</translation>
     </message>
     <message>
         <source>Helmert</source>
@@ -8963,6 +9292,10 @@ primary key) or has a PostgreSQL oid column.
         <source>unexpected PostgreSQL error</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Qgis was unable to determine the type and srid of column </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsProjectPropertiesBase</name>
@@ -8976,7 +9309,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Map Units</source>
-        <translation>Jednostki mapy</translation>
+        <translation type="obsolete">Jednostki mapy</translation>
     </message>
     <message>
         <source>Meters</source>
@@ -9024,15 +9357,15 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Map Appearance</source>
-        <translation>Wygląd mapy</translation>
+        <translation type="obsolete">Wygląd mapy</translation>
     </message>
     <message>
         <source>Selection Color:</source>
-        <translation>Kolor zaznaczenia:</translation>
+        <translation type="obsolete">Kolor zaznaczenia:</translation>
     </message>
     <message>
         <source>Project Title</source>
-        <translation>Tytuł projektu</translation>
+        <translation type="obsolete">Tytuł projektu</translation>
     </message>
     <message>
         <source>Projection</source>
@@ -9044,7 +9377,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Background Color:</source>
-        <translation>Kolor tła:</translation>
+        <translation type="obsolete">Kolor tła:</translation>
     </message>
     <message>
         <source>Precision</source>
@@ -9069,6 +9402,26 @@ primary key) or has a PostgreSQL oid column.
     <message>
         <source>Avoid intersections of new polygons</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Title and colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Project title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selection color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Background color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map units</source>
+        <translation type="unfinished">jednostkach mapy</translation>
     </message>
 </context>
 <context>
@@ -9160,15 +9513,15 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source> miles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">mile</translation>
     </message>
     <message>
         <source> mile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">mila</translation>
     </message>
     <message>
         <source> inches</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">cale</translation>
     </message>
     <message>
         <source> foot</source>
@@ -9176,7 +9529,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source> feet</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">stopy</translation>
     </message>
     <message>
         <source> degree</source>
@@ -9291,11 +9644,11 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Property</source>
-        <translation>Właściwość</translation>
+        <translation type="obsolete">Właściwość</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation>Wartość</translation>
+        <translation type="obsolete">Wartość</translation>
     </message>
     <message>
         <source>Band</source>
@@ -9379,6 +9732,10 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>NoDataValue not set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Band %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9574,6 +9931,10 @@ primary key) or has a PostgreSQL oid column.
         <source>Color Ramp</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Not Set</source>
+        <translation type="unfinished">Brak</translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterLayerPropertiesBase</name>
@@ -9594,16 +9955,8 @@ primary key) or has a PostgreSQL oid column.
         <translation>Brak</translation>
     </message>
     <message>
-        <source>Invert Color Map</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Gray</source>
         <translation>Szary</translation>
-    </message>
-    <message>
-        <source>Color Map</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>General</source>
@@ -9635,7 +9988,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Maximum 1:</source>
-        <translation>Maksymalna 1:</translation>
+        <translation type="obsolete">Maksymalna 1:</translation>
     </message>
     <message>
         <source>Maximum scale at which this layer will be displayed. </source>
@@ -9643,7 +9996,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Minimum 1:</source>
-        <translation>Minimalna 1:</translation>
+        <translation type="obsolete">Minimalna 1:</translation>
     </message>
     <message>
         <source>Minimum scale at which this layer will be displayed. </source>
@@ -9651,11 +10004,11 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Layer Source:</source>
-        <translation>Źródło warstwy:</translation>
+        <translation type="obsolete">Źródło warstwy:</translation>
     </message>
     <message>
         <source>Display Name:</source>
-        <translation>Nazwa wyświetlana:</translation>
+        <translation type="obsolete">Nazwa wyświetlana:</translation>
     </message>
     <message>
         <source>Metadata</source>
@@ -9666,28 +10019,12 @@ primary key) or has a PostgreSQL oid column.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Resampling Method</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Average</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Nearest Neighbour</source>
         <translation>Najbliższe sąsiedztwo</translation>
-    </message>
-    <message>
-        <source>Build Pyramids</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Pyramid Resolutions</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Spatial Reference System</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Change</source>
@@ -9703,78 +10040,26 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Out Of Range OK?</source>
-        <translation>Poza zakresem OK?</translation>
-    </message>
-    <message>
-        <source>Allow Approximation</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Poza zakresem OK?</translation>
     </message>
     <message>
         <source>Chart Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Bar Chart</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Line Graph</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Refresh</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>DebugInfo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Scale Dependent Visibility</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Column Count:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Grayscale Band Scaling</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Odśwież</translation>
     </message>
     <message>
         <source>Max</source>
         <translation type="unfinished">Max</translation>
     </message>
     <message>
-        <source>Std Deviation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Custom Min Max Values:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Min</source>
         <translation type="unfinished">Min</translation>
     </message>
     <message>
-        <source>Contrast Enhancement</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Load Min Max Values From Band(s)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>RGB Scaling</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;b&gt;&lt;font color=&apos;blue&apos;&gt;Max&lt;/font&gt;&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Custom Min Max Values</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -9798,14 +10083,6 @@ primary key) or has a PostgreSQL oid column.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Grayscale Band Selection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>RGB Mode Band Selection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;b&gt;&lt;font color=&apos;blue&apos;&gt;Blue&lt;/font&gt;&lt;/b&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9818,10 +10095,6 @@ primary key) or has a PostgreSQL oid column.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Global Transparency</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source> 00%</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9830,71 +10103,11 @@ primary key) or has a PostgreSQL oid column.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Single Band Gray</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Three Band Color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Transparent Pixels</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Transparent Band:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Custom Transparency List</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Transparency Layer;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add Values Manually</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>...</source>
         <translation type="unfinished">...</translation>
     </message>
     <message>
-        <source>Add Values From Display</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Remove Selected Row</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Default Values</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Import From File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Export To File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No Data Value:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Reset No Data Value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Colormap</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of entries:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -9903,7 +10116,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Classify</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Klasyfikuj</translation>
     </message>
     <message>
         <source>1</source>
@@ -9914,11 +10127,218 @@ primary key) or has a PostgreSQL oid column.
         <translation type="unfinished">2</translation>
     </message>
     <message>
-        <source>Color interpolation:</source>
+        <source>Three band color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Classification mode:</source>
+        <source>Single band gray</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invert color map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RGB mode band selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grayscale band selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RGB scaling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Std. deviation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Custom min / max values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grayscale band scaling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load min / max values from band</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Estimate (faster)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Actual (slower)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Contrast enhancement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save current contrast enhancement algorithm as default. This setting will be persistent between QGIS sessions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saves current contrast enhancement algorithm as a default. This setting will be persistent between QGIS sessions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Global transparency</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No data value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset no data value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Custom transparency options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transparency band</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transparency layer;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transparent pixel list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add values manually</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Values from display</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected row</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import from file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of entries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color interpolation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Classification mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spatial reference system</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale dependent visibility</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show debug info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display name</source>
+        <translation type="unfinished">Nazwa wyświetlana</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pyramid resolutions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resampling method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Build pyramids</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line graph</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bar chart</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Column count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Out of range OK?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Allow approximation</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9934,7 +10354,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Done</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zamknij</translation>
     </message>
 </context>
 <context>
@@ -10335,67 +10755,67 @@ primary key) or has a PostgreSQL oid column.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Solid Pattern</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Hor Pattern</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ver Pattern</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cross Pattern</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>BDiag Pattern</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>FDiag Pattern</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Diag Cross Pattern</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dense1 Pattern</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dense2 Pattern</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dense3 Pattern</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dense4 Pattern</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dense5 Pattern</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dense6 Pattern</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dense7 Pattern</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>No Brush</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Texture Pattern</source>
+        <source>Solid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Horizontal</source>
+        <translation type="unfinished">Poziomo</translation>
+    </message>
+    <message>
+        <source>Vertical</source>
+        <translation type="unfinished">Pionowo</translation>
+    </message>
+    <message>
+        <source>Cross</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>BDiagonal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FDiagonal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Diagonal X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dense1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dense2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dense3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dense4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dense5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dense6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dense7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Texture</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10848,15 +11268,35 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Classification Field:</source>
-        <translation>Pole klasyfikacji:</translation>
+        <translation type="obsolete">Pole klasyfikacji:</translation>
     </message>
     <message>
         <source>Delete class</source>
-        <translation>Usuń klasę</translation>
+        <translation type="obsolete">Usuń klasę</translation>
     </message>
     <message>
         <source>Classify</source>
         <translation>Klasyfikuj</translation>
+    </message>
+    <message>
+        <source>Classification field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add class</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete classes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Randomize Colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset Colors</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11037,7 +11477,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Legend type:</source>
-        <translation>Rodzaj legendy:</translation>
+        <translation type="obsolete">Rodzaj legendy:</translation>
     </message>
     <message>
         <source>Symbology</source>
@@ -11045,7 +11485,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Transparency:</source>
-        <translation>Przeźroczystość:</translation>
+        <translation type="obsolete">Przeźroczystość:</translation>
     </message>
     <message>
         <source>General</source>
@@ -11057,11 +11497,11 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Maximum 1:</source>
-        <translation>Maksymalna 1:</translation>
+        <translation type="obsolete">Maksymalna 1:</translation>
     </message>
     <message>
         <source>Minimum 1:</source>
-        <translation>Minimalna 1:</translation>
+        <translation type="obsolete">Minimalna 1:</translation>
     </message>
     <message>
         <source>Minimum scale at which this layer will be displayed. </source>
@@ -11080,12 +11520,8 @@ primary key) or has a PostgreSQL oid column.
         <translation>Użyj tego narzędzia aby ustawić pola wyświetlane na górze w oknie wyników identyfikacji.</translation>
     </message>
     <message>
-        <source>Spatial Reference System</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Change</source>
-        <translation>Zmień</translation>
+        <translation type="obsolete">Zmień</translation>
     </message>
     <message>
         <source>Display field for the Identify Results dialog box</source>
@@ -11108,15 +11544,7 @@ primary key) or has a PostgreSQL oid column.
         <translation>Kreator zapytań</translation>
     </message>
     <message>
-        <source>Spatial Index</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Create Spatial Index</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Create</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -11150,6 +11578,30 @@ primary key) or has a PostgreSQL oid column.
     <message>
         <source>Save Style ...</source>
         <translation>Zapisz styl ...</translation>
+    </message>
+    <message>
+        <source>Legend type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation type="unfinished">Opcje</translation>
+    </message>
+    <message>
+        <source>Change SRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
