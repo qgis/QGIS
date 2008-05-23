@@ -44,6 +44,16 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog(QWidget *parent, Qt::WFlags
 {
   setupUi(this);
 
+  QString myThemePath = QgsApplication::themePath();
+  pbnFirst->setPixmap(QPixmap(myThemePath+"mIconFirst.png"));
+  QString myString = "Setting first button to : " + myThemePath+"mIconFirst.png";
+  qDebug(myString.toLocal8Bit());
+  pbnPrevious->setPixmap(QPixmap(myThemePath+"mIconPrevious.png"));
+  pbnNext->setPixmap(QPixmap(myThemePath+"mIconNext.png"));
+  pbnLast->setPixmap(QPixmap(myThemePath+"mIconLast.png"));
+  pbnNew->setPixmap(QPixmap(myThemePath+"mIconNew.png"));
+  pbnSave->setPixmap(QPixmap(myThemePath+"mActionFileSave.png"));
+  pbnDelete->setPixmap(QPixmap(myThemePath+"mIconDelete.png"));
   // user database is created at QGIS startup in QgisApp::createDB
   // we just check whether there is our database [MD]
   QFileInfo myFileInfo;
@@ -414,18 +424,18 @@ void QgsCustomProjectionDialog::on_pbnFirst_clicked()
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
-      if (sqlite3_step(myPreparedStatement) == SQLITE_ROW)
-      {
-	mCurrentRecordId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
-	leName->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1)));
-	//QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
-	//cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
-	//QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
-	//cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
-	leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4)));
-	mCurrentRecordLong=1; 
-	lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
-      }
+    if (sqlite3_step(myPreparedStatement) == SQLITE_ROW)
+    {
+      mCurrentRecordId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
+      leName->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1)));
+      //QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
+      //cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
+      //QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
+      //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
+      leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4)));
+      mCurrentRecordLong=1; 
+      lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
+    }
   }
   else
   {
@@ -450,13 +460,13 @@ void QgsCustomProjectionDialog::on_pbnFirst_clicked()
   {
     pbnNext->setEnabled(false);
     pbnLast->setEnabled(false);
-    pbnDelete->setEnabled(false);
+    pbnDelete->setEnabled(true);
   }
   else
   {
     pbnNext->setEnabled(true);
     pbnLast->setEnabled(true);
-    pbnDelete->setEnabled(false);
+    pbnDelete->setEnabled(true);
   }
 }
 
@@ -688,23 +698,16 @@ void QgsCustomProjectionDialog::on_pbnLast_clicked()
 
 void QgsCustomProjectionDialog::on_pbnNew_clicked()
 {
-#ifdef QGISDEBUG
-  if (pbnNew->text()==tr("Abort")) 
-  {
-    std::cout << "QgsCustomProjectionDialog::on_pbnNew_clicked() - abort requested" << std::endl;
-  }
-  else
-  {
-   std::cout << "QgsCustomProjectionDialog::on_pbnNew_clicked() - new requested" << std::endl;
-  }
-#endif
   if (pbnNew->text()==tr("Abort")) 
   {
     //if we get here, user has aborted add record
+    QString myThemePath = QgsApplication::themePath();
+    pbnNew->setPixmap(QPixmap(myThemePath+"mIconNew.png"));
+    //next line needed for new/abort logic
     pbnNew->setText(tr("New"));
     //get back to the last used record before insert was pressed
-   if (mCurrentRecordId.isEmpty())
-   {
+    if (mCurrentRecordId.isEmpty())
+    {
       on_pbnFirst_clicked();
     }
     else
@@ -721,6 +724,9 @@ void QgsCustomProjectionDialog::on_pbnNew_clicked()
     pbnNext->setEnabled(false);
     pbnLast->setEnabled(false);
     pbnDelete->setEnabled(false);
+    QString myThemePath = QgsApplication::themePath();
+    pbnNew->setPixmap(QPixmap(myThemePath+"mIconNew.png"));
+    //next line needed for new/abort logic
     pbnNew->setText(tr("Abort"));
     //clear the controls
     leName->setText("");
