@@ -440,7 +440,6 @@ bool QgsPythonUtils::loadPlugin(QString packageName)
   runString(
        "try:\n"
        "  import " + packageName + "\n"
-       "  reload(" + packageName + ")\n"
        "  __main__.__plugin_result = 'OK'\n"
        "except:\n"
        "  __main__.__plugin_result = 'ERROR'\n");
