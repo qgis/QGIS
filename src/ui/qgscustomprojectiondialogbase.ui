@@ -65,12 +65,18 @@
           <property name="text" >
            <string>|&lt;</string>
           </property>
+          <property name="icon" >
+           <iconset>../../images/themes/default/mIconFirst.png</iconset>
+          </property>
          </widget>
         </item>
         <item>
          <widget class="QToolButton" name="pbnPrevious" >
           <property name="text" >
            <string>&lt;</string>
+          </property>
+          <property name="icon" >
+           <iconset>../../images/themes/default/mIconPrevious.png</iconset>
           </property>
          </widget>
         </item>
@@ -89,12 +95,18 @@
           <property name="text" >
            <string>></string>
           </property>
+          <property name="icon" >
+           <iconset>../../images/themes/default/mIconNext.png</iconset>
+          </property>
          </widget>
         </item>
         <item>
          <widget class="QToolButton" name="pbnLast" >
           <property name="text" >
            <string>>|</string>
+          </property>
+          <property name="icon" >
+           <iconset>../../images/themes/default/mIconLast.png</iconset>
           </property>
          </widget>
         </item>
@@ -103,6 +115,9 @@
           <property name="text" >
            <string>*</string>
           </property>
+          <property name="icon" >
+           <iconset>../../images/themes/default/mIconNew.png</iconset>
+          </property>
          </widget>
         </item>
         <item>
@@ -110,12 +125,18 @@
           <property name="text" >
            <string>S</string>
           </property>
+          <property name="icon" >
+           <iconset>../../images/themes/default/mActionFileSave.png</iconset>
+          </property>
          </widget>
         </item>
         <item>
          <widget class="QToolButton" name="pbnDelete" >
           <property name="text" >
            <string>X</string>
+          </property>
+          <property name="icon" >
+           <iconset>../../images/themes/default/mIconDelete.png</iconset>
           </property>
          </widget>
         </item>
