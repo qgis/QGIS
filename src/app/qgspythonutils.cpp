@@ -44,8 +44,10 @@ void QgsPythonUtils::initPython(QgisInterface* interface)
   mMainModule = PyImport_AddModule("__main__"); // borrowed reference
   mMainDict = PyModule_GetDict(mMainModule); // borrowed reference
   
-  // import sys module
-  runString("import sys");
+  runString("import sys"); // import sys module (for display / exception hooks)
+  runString("import traceback"); // for formatting stack traces
+  runString("import __main__"); // to access explicitly global variables
+  
   
   // expect that bindings are installed locally, so add the path to modules
   // also add path to plugins
@@ -75,23 +77,22 @@ void QgsPythonUtils::initPython(QgisInterface* interface)
     return;
   }
   
-  runString("import __main__");
-  runString("import traceback"); // for formatting stack traces
-  
   // hook that will show information and traceback in message box
   runString(
       "def qgis_except_hook_msg(type, value, tb, msg):\n"
       "  lst = traceback.format_exception(type, value, tb)\n"
-      "  if msg == None: msg = 'An error has occured while executing Python code:'\n"
-      "  str = '<font color=\"red\">'+msg+'</font><br><br>'\n"
+      "  if msg == None: msg = '" + QObject::tr("An error has occured while executing Python code:") + "'\n"
+      "  txt = '<font color=\"red\">'+msg+'</font><br><br>'\n"
       "  for s in lst:\n"
-      "    str += s\n"
-      "  str = str.replace('\\n', '<br>')\n"
-      "  str = str.replace('  ', '&nbsp;')\n" // preserve whitespaces for nicer output
+      "    txt += s\n"
+      "  txt += '<br>" + QObject::tr("Python version:") + "<br>' + sys.version + '<br><br>'\n"
+      "  txt += '"+QObject::tr("Python path:") + "' + str(sys.path)\n"
+      "  txt = txt.replace('\\n', '<br>')\n"
+      "  txt = txt.replace('  ', '&nbsp; ')\n" // preserve whitespaces for nicer output
       "  \n"
       "  msg = QgsMessageOutput.createMessageOutput()\n"
-      "  msg.setTitle('Error')\n"
-      "  msg.setMessage(str, QgsMessageOutput.MessageHtml)\n"
+      "  msg.setTitle('" + QObject::tr("Python error") + "')\n"
+      "  msg.setMessage(txt, QgsMessageOutput.MessageHtml)\n"
       "  msg.showMessage()\n");
   runString(
       "def qgis_except_hook(type, value, tb):\n"
@@ -168,22 +169,21 @@ bool QgsPythonUtils::runString(const QString& command, QString msgOnError)
   if (res)
     return true;
     
-  // an error occured
-  // fetch error details and show it
-  QString err_type, err_value;
-  getError(err_type, err_value);
-  
   if (msgOnError.isEmpty())
   {
     // use some default message if custom hasn't been specified
     msgOnError = QObject::tr("An error occured during execution of following code:") + "\n<tt>" + command + "</tt>";
   }
-  msgOnError.replace("\n", "<br>");
-  QString str = msgOnError + "<br><br>" + QObject::tr("Error details:") + "<br>"
-      + QObject::tr("Type:")  + " <b>" + err_type + "</b><br>"
-      + QObject::tr("Value:") + " <b>" + err_value + "</b>";
   
-  // TODO: show sys.path, local variables, traceback
+  QString traceback = getTraceback();
+  QString path, version;
+  evalString("str(sys.path)", path);
+  evalString("sys.version", version);
+  
+  QString str = "<font color=\"red\">"+ msgOnError + "</font><br><br>" + traceback + "<br>" +
+      QObject::tr("Python version:") + "<br>" + version + "<br><br>" +
+      QObject::tr("Python path:") + "<br>" + path;
+  str.replace("\n","<br>").replace("  ", "&nbsp; ");
   
   QgsMessageOutput* msg = QgsMessageOutput::createMessageOutput();
   msg->setTitle(QObject::tr("Python error"));
@@ -193,6 +193,78 @@ bool QgsPythonUtils::runString(const QString& command, QString msgOnError)
   return res;
 }
 
+
+QString QgsPythonUtils::getTraceback()
+{
+#define TRACEBACK_FETCH_ERROR(what) {errMsg = what; goto done;}
+
+
+    QString errMsg;
+    QString result;
+
+    PyObject *modStringIO = NULL;
+    PyObject *modTB = NULL;
+    PyObject *obStringIO = NULL;
+    PyObject *obResult = NULL;
+
+    PyObject *type, *value, *traceback;
+
+    PyErr_Fetch(&type, &value, &traceback);
+    PyErr_NormalizeException(&type, &value, &traceback);
+        
+    modStringIO = PyImport_ImportModule("cStringIO");
+    if (modStringIO==NULL)
+      TRACEBACK_FETCH_ERROR("can't import cStringIO");
+
+    obStringIO = PyObject_CallMethod(modStringIO, (char*) "StringIO", NULL);
+
+    /* Construct a cStringIO object */
+    if (obStringIO==NULL)
+      TRACEBACK_FETCH_ERROR("cStringIO.StringIO() failed");
+
+    modTB = PyImport_ImportModule("traceback");
+    if (modTB==NULL)
+      TRACEBACK_FETCH_ERROR("can't import traceback");
+
+    obResult = PyObject_CallMethod(modTB, (char*) "print_exception",
+                                   (char*) "OOOOO",
+                                   type, value ? value : Py_None,
+                                   traceback ? traceback : Py_None,
+                                   Py_None,
+                                   obStringIO);
+                                    
+    if (obResult==NULL) 
+      TRACEBACK_FETCH_ERROR("traceback.print_exception() failed");
+    Py_DECREF(obResult);
+
+    obResult = PyObject_CallMethod(obStringIO, (char*) "getvalue", NULL);
+    if (obResult==NULL) 
+      TRACEBACK_FETCH_ERROR("getvalue() failed.");
+
+    /* And it should be a string all ready to go - duplicate it. */
+    if (!PyString_Check(obResult))
+      TRACEBACK_FETCH_ERROR("getvalue() did not return a string");
+
+    result = PyString_AsString(obResult);
+    
+done:
+        
+  // All finished - first see if we encountered an error
+  if (result.isEmpty() && !errMsg.isEmpty())
+  {
+    result = errMsg;
+  }
+
+  Py_XDECREF(modStringIO);
+  Py_XDECREF(modTB);
+  Py_XDECREF(obStringIO);
+  Py_XDECREF(obResult);
+  Py_XDECREF(value);
+  Py_XDECREF(traceback);
+  Py_XDECREF(type);
+
+  return result;
+}
 
 QString QgsPythonUtils::getTypeAsString(PyObject* obj)
 {

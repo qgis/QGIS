@@ -114,7 +114,8 @@ class QgsPythonUtils
     
     static void installErrorHook();
 
-    
+    static QString getTraceback();
+
     //! path where 
     static QString mPluginsPath;
     
