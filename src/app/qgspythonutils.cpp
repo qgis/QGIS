@@ -150,10 +150,6 @@ void QgsPythonUtils::uninstallConsoleHooks()
 {
   runString("sys.displayhook = sys.__displayhook__");
   runString("sys.stdout = _old_stdout");
-  
-  // TODO: uninstalling stdout redirection doesn't work
-
-  //installErrorHook();
 }
 
 
