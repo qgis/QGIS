@@ -20,6 +20,7 @@
 #include "ui_qgspythondialog.h"
 
 class QgisInterface;
+class QCloseEvent;
 
 class QgsPythonDialog : public QDialog, private Ui::QgsPythonDialog
 {
@@ -35,6 +36,10 @@ class QgsPythonDialog : public QDialog, private Ui::QgsPythonDialog
   public slots:
     
     void on_edtCmdLine_returnPressed();
+    
+  protected:
+    
+    void closeEvent(QCloseEvent* event);
     
   private:
     

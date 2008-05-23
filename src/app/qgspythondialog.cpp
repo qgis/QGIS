@@ -17,6 +17,8 @@
 #include "qgspythondialog.h"
 #include "qgspythonutils.h"
 
+#include <QCloseEvent>
+
 QgsPythonDialog::QgsPythonDialog(QgisInterface* pIface, QWidget *parent)
   : QDialog(parent)
 {
@@ -28,7 +30,6 @@ QgsPythonDialog::QgsPythonDialog(QgisInterface* pIface, QWidget *parent)
 
 QgsPythonDialog::~QgsPythonDialog()
 {
-  QgsPythonUtils::uninstallConsoleHooks();
 }
 
 QString QgsPythonDialog::escapeHtml(QString text)
@@ -71,4 +72,11 @@ void QgsPythonDialog::on_edtCmdLine_returnPressed()
   txtHistory->insertHtml(str);
   txtHistory->moveCursor(QTextCursor::End);
   txtHistory->ensureCursorVisible();
+}
+
+void QgsPythonDialog::closeEvent(QCloseEvent* event)
+{
+  QgsPythonUtils::uninstallConsoleHooks();
+  
+  QDialog::closeEvent(event);
 }
