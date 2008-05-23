@@ -431,7 +431,6 @@ int main(int argc, char *argv[])
   /* Translation file for QGIS.
    */
   QSettings mySettings;
-  QString mySystemLocale = QLocale::languageToString(QLocale::system().language());
   QString myUserLocale = mySettings.value("locale/userLocale", "").toString();
   bool myLocaleOverrideFlag = mySettings.value("locale/overrideFlag",false).toBool();
   QString myLocale;
@@ -453,6 +452,9 @@ int main(int argc, char *argv[])
     if (!myLocaleOverrideFlag || myUserLocale.isEmpty())
     {
       myTranslationCode = QLocale::system().name();
+      //setting the locale/userLocale when the --lang= option is not set will allow third party 
+      //plugins to always use the same locale as the QGIS, otherwise they can be out of sync
+      mySettings.setValue("locale/userLocale", myTranslationCode);
     }
     else
     {
