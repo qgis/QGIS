@@ -28,10 +28,25 @@
 #include <QStringList>
 #include <QDir>
 
-QString QgsPythonUtils::mPluginsPath;
-PyObject* QgsPythonUtils::mMainModule;
-PyObject* QgsPythonUtils::mMainDict;
-bool QgsPythonUtils::mPythonEnabled = false;
+QgsPythonUtils* QgsPythonUtils::mInstance = NULL;
+
+QgsPythonUtils::QgsPythonUtils()
+{
+  mMainModule = NULL;
+  mMainDict = NULL;
+  mPythonEnabled = false;
+}
+
+QgsPythonUtils::~QgsPythonUtils()
+{
+}
+
+QgsPythonUtils* QgsPythonUtils::instance()
+{
+  if (mInstance == NULL)
+    mInstance = new QgsPythonUtils();
+  return mInstance;
+}
 
 
 void QgsPythonUtils::initPython(QgisInterface* interface)

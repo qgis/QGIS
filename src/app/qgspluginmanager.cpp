@@ -119,24 +119,26 @@ void QgsPluginManager::sortModel(int column)
 void QgsPluginManager::getPythonPluginDescriptions()
 {
 #ifdef HAVE_PYTHON
-  if (!QgsPythonUtils::isEnabled())
+  QgsPythonUtils* pythonUtils = QgsPythonUtils::instance();
+  
+  if (!pythonUtils->isEnabled())
     return;
   
   // look for plugins systemwide
-  QStringList pluginList = QgsPythonUtils::pluginList();
+  QStringList pluginList = pythonUtils->pluginList();
   
   for (int i = 0; i < pluginList.size(); i++)
   {
     QString packageName = pluginList[i];
 
     // import plugin's package - skip loading it if an error occured
-    if (!QgsPythonUtils::loadPlugin(packageName))
+    if (!pythonUtils->loadPlugin(packageName))
       continue;
     
     // get information from the plugin
-    QString pluginName  = QgsPythonUtils::getPluginMetadata(packageName, "name");
-    QString description = QgsPythonUtils::getPluginMetadata(packageName, "description");
-    QString version     = QgsPythonUtils::getPluginMetadata(packageName, "version");
+    QString pluginName  = pythonUtils->getPluginMetadata(packageName, "name");
+    QString description = pythonUtils->getPluginMetadata(packageName, "description");
+    QString version     = pythonUtils->getPluginMetadata(packageName, "version");
     
     if (pluginName == "???" || description == "???" || version == "???")
       continue;
@@ -383,7 +385,7 @@ void QgsPluginManager::unload()
       {
 #ifdef HAVE_PYTHON
         QString packageName = pRegistry->library(pluginName);
-        QgsPythonUtils::unloadPlugin(packageName);
+        QgsPythonUtils::instance()->unloadPlugin(packageName);
           //disable it to the qsettings file
         settings.setValue("/PythonPlugins/" + packageName, false);
 #endif

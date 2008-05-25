@@ -41,12 +41,14 @@ void QgsPythonDialog::on_edtCmdLine_returnPressed()
   QString command = edtCmdLine->text();
   QString output;
   
+  QgsPythonUtils* pythonUtils = QgsPythonUtils::instance();
+  
   // when using Py_single_input the return value will be always null
   // we're using custom hooks for output and exceptions to show output in console
-  if (QgsPythonUtils::runStringUnsafe(command))
+  if (pythonUtils->runStringUnsafe(command))
   {
-    QgsPythonUtils::evalString("sys.stdout.get_and_clean_data()", output);
-    QString result = QgsPythonUtils::getResult();
+    pythonUtils->evalString("sys.stdout.get_and_clean_data()", output);
+    QString result = pythonUtils->getResult();
     // escape the result so python objects display properly and
     // we can still use html output to get nicely formatted display
     output = escapeHtml(output) + escapeHtml(result);
@@ -57,7 +59,7 @@ void QgsPythonDialog::on_edtCmdLine_returnPressed()
   else
   {
     QString className, errorText;
-    QgsPythonUtils::getError(className, errorText);
+    pythonUtils->getError(className, errorText);
     
     output = "<font color=\"red\">" + escapeHtml(className) + ": " + escapeHtml(errorText) + "</font><br>";
   }
@@ -76,12 +78,12 @@ void QgsPythonDialog::showEvent(QShowEvent* event)
 {
   QDialog::showEvent(event);
   
-  QgsPythonUtils::installConsoleHooks();
+  QgsPythonUtils::instance()->installConsoleHooks();
 }
 
 void QgsPythonDialog::closeEvent(QCloseEvent* event)
 {
-  QgsPythonUtils::uninstallConsoleHooks();
+  QgsPythonUtils::instance()->uninstallConsoleHooks();
   
   QDialog::closeEvent(event);
 }
