@@ -167,9 +167,10 @@
 #include "qgsdbsourceselect.h"
 #endif
 
-#ifdef HAVE_PYTHON
 #include "qgspythondialog.h"
 #include "qgspythonutils.h"
+#ifdef HAVE_PYTHON
+#include "qgspythonutilsimpl.h"
 #endif
 
 #ifndef WIN32
@@ -304,7 +305,8 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
 // constructor starts here
   QgisApp::QgisApp(QSplashScreen *splash, QWidget * parent, Qt::WFlags fl)
 : QMainWindow(parent,fl),
-  mSplash(splash)
+  mSplash(splash),
+  mPythonUtils(NULL), mPythonConsole(NULL)
 {
 //  setupUi(this);
   resize(640, 480);
@@ -361,11 +363,14 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
 #ifdef HAVE_PYTHON
   mSplash->showMessage(tr("Starting Python"), Qt::AlignHCenter | Qt::AlignBottom);
   qApp->processEvents();
-  QgsPythonUtils::instance()->initPython(mQgisInterface);
-
-  if (!QgsPythonUtils::instance()->isEnabled())
-    mActionShowPythonDialog->setEnabled(false);
+  
+  mPythonUtils = QgsPythonUtilsImpl::instance();
+  
+  mPythonUtils->initPython(mQgisInterface);
 #endif
+
+  if (!mPythonUtils || !mPythonUtils->isEnabled())
+    mActionShowPythonDialog->setEnabled(false);
 
   // Create the plugin registry and load plugins
   // load any plugins that were running in the last session
@@ -439,9 +444,8 @@ QgisApp::~QgisApp()
   delete mMapTools.mAddRing;
   delete mMapTools.mAddIsland;
 
-#ifdef HAVE_PYTHON
   delete mPythonConsole;
-#endif
+  delete mPythonUtils;
   
   // delete map layer registry and provider registry
   QgsApplication::exitQgis();
@@ -858,20 +862,18 @@ void QgisApp::createActions()
   connect ( mActionMapTips, SIGNAL ( triggered() ), this, SLOT ( toggleMapTips() ) );
   mActionMapTips->setCheckable(true);
   
-#ifdef HAVE_PYTHON  
   mActionShowPythonDialog = new QAction(tr("Python console"), this);
   connect(mActionShowPythonDialog, SIGNAL(triggered()), this, SLOT(showPythonDialog()));
-  mPythonConsole = NULL;
-#endif
 }
 
 void QgisApp::showPythonDialog()
 {
-#ifdef HAVE_PYTHON
+  if (!mPythonUtils || !mPythonUtils->isEnabled())
+    return;
+  
   if (mPythonConsole == NULL)
-    mPythonConsole = new QgsPythonDialog(mQgisInterface);
+    mPythonConsole = new QgsPythonDialog(mQgisInterface, mPythonUtils);
   mPythonConsole->show();
-#endif
 }
 
 void QgisApp::createActionGroups()
@@ -992,9 +994,7 @@ void QgisApp::createMenus()
   // Plugins Menu
   mPluginMenu = menuBar()->addMenu(tr("&Plugins"));
   mPluginMenu->addAction(mActionShowPluginManager);
-#ifdef HAVE_PYTHON
   mPluginMenu->addAction(mActionShowPythonDialog);
-#endif
   mPluginMenu->addSeparator();
 
   // Add the plugin manager action to it
@@ -1705,33 +1705,30 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
     delete myLib;
   }
 
-#ifdef HAVE_PYTHON
   QString pluginName, description, version;
   
-  QgsPythonUtils* pythonUtils = QgsPythonUtils::instance();
-  
-  if (pythonUtils->isEnabled())
+  if (mPythonUtils && mPythonUtils->isEnabled())
   {
   
     // check for python plugins system-wide
-    QStringList pluginList = pythonUtils->pluginList();
+    QStringList pluginList = mPythonUtils->pluginList();
 
     for (int i = 0; i < pluginList.size(); i++)
     {
       QString packageName = pluginList[i];
    
       // import plugin's package
-      if (!pythonUtils->loadPlugin(packageName))
+      if (!mPythonUtils->loadPlugin(packageName))
         continue;
       
       // get information from the plugin
       // if there are some problems, don't continue with metadata retreival
-      pluginName = pythonUtils->getPluginMetadata(packageName, "name");
+      pluginName = mPythonUtils->getPluginMetadata(packageName, "name");
       if (pluginName != "__error__")
       {
-        description = pythonUtils->getPluginMetadata(packageName, "description");
+        description = mPythonUtils->getPluginMetadata(packageName, "description");
         if (description != "__error__")
-          version = pythonUtils->getPluginMetadata(packageName, "version");
+          version = mPythonUtils->getPluginMetadata(packageName, "version");
       }
       
       if (pluginName == "__error__" || description == "__error__" || version == "__error__")
@@ -1746,7 +1743,7 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
       }
     }
   }
-#endif
+  
   QgsDebugMsg("Loading plugins completed");
   QgsDebugMsg("*************************************************\n\n");
 }
@@ -3857,7 +3854,7 @@ void QgisApp::zoomToLayerExtent()
 
 void QgisApp::showPluginManager()
 {
-  QgsPluginManager *pm = new QgsPluginManager(this);
+  QgsPluginManager *pm = new QgsPluginManager(mPythonUtils, this);
   pm->resizeColumnsToContents(); 
   if (pm->exec())
   {
@@ -3882,11 +3879,11 @@ void QgisApp::showPluginManager()
 
 void QgisApp::loadPythonPlugin(QString packageName, QString pluginName)
 {
-#ifdef HAVE_PYTHON
-  QgsPythonUtils* pythonUtils = QgsPythonUtils::instance();
-  
-  if (!pythonUtils->isEnabled())
+  if (!mPythonUtils || !mPythonUtils->isEnabled())
+  {
+    QgsDebugMsg("Python is not enabled in QGIS.");
     return;
+  }
   
   QgsDebugMsg("I should load python plugin: " + pluginName + " (package: " + packageName + ")");
   
@@ -3895,8 +3892,8 @@ void QgisApp::loadPythonPlugin(QString packageName, QString pluginName)
   // is loaded already?
   if (pRegistry->library(pluginName).isEmpty())
   {
-    pythonUtils->loadPlugin(packageName);
-    pythonUtils->startPlugin(packageName);
+    mPythonUtils->loadPlugin(packageName);
+    mPythonUtils->startPlugin(packageName);
   
     // TODO: test success
   
@@ -3907,11 +3904,6 @@ void QgisApp::loadPythonPlugin(QString packageName, QString pluginName)
     QSettings settings;
     settings.writeEntry("/PythonPlugins/" + packageName, true);
   }
-  
-
-#else
-  QgsDebugMsg("Python is not enabled in QGIS.");
-#endif
 }
 
 void QgisApp::loadPlugin(QString name, QString description, QString theFullPathName)

@@ -55,6 +55,7 @@ SET(QGIS_APP_SRCS
   qgspluginmanager.cpp
   qgspluginmetadata.cpp
   qgspluginregistry.cpp
+  qgspythondialog.cpp
   qgsprojectproperties.cpp
   qgsrasterlayerproperties.cpp
   qgssearchquerybuilder.cpp
@@ -115,6 +116,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsoptions.h
   qgspastetransformations.h
   qgspluginmanager.h
+  qgspythondialog.h
   qgsprojectproperties.h
   qgsrasterlayerproperties.h
   qgssearchquerybuilder.h
@@ -153,8 +155,7 @@ ENDIF (POSTGRES_FOUND)
 
 # Python support
 IF (PYTHON_FOUND)
-  SET (QGIS_APP_SRCS ${QGIS_APP_SRCS} qgspythondialog.cpp qgspythonutils.cpp)
-  SET (QGIS_APP_MOC_HDRS ${QGIS_APP_MOC_HDRS} qgspythondialog.h)
+  SET (QGIS_APP_SRCS ${QGIS_APP_SRCS} qgspythonutils.cpp)
 ENDIF (PYTHON_FOUND)
 
 QT4_WRAP_CPP(QGIS_APP_MOC_SRCS ${QGIS_APP_MOC_HDRS})

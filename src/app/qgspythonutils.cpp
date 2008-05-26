@@ -18,7 +18,7 @@
 // otherwise issues some warnings
 #include <Python.h>
 
-#include "qgspythonutils.h"
+#include "qgspythonutilsimpl.h"
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -28,28 +28,28 @@
 #include <QStringList>
 #include <QDir>
 
-QgsPythonUtils* QgsPythonUtils::mInstance = NULL;
+QgsPythonUtilsImpl* QgsPythonUtilsImpl::mInstance = NULL;
 
-QgsPythonUtils::QgsPythonUtils()
+QgsPythonUtilsImpl::QgsPythonUtilsImpl()
 {
   mMainModule = NULL;
   mMainDict = NULL;
   mPythonEnabled = false;
 }
 
-QgsPythonUtils::~QgsPythonUtils()
+QgsPythonUtilsImpl::~QgsPythonUtilsImpl()
 {
 }
 
-QgsPythonUtils* QgsPythonUtils::instance()
+QgsPythonUtilsImpl* QgsPythonUtilsImpl::instance()
 {
   if (mInstance == NULL)
-    mInstance = new QgsPythonUtils();
+    mInstance = new QgsPythonUtilsImpl();
   return mInstance;
 }
 
 
-void QgsPythonUtils::initPython(QgisInterface* interface)
+void QgsPythonUtilsImpl::initPython(QgisInterface* interface)
 {
   // initialize python
   Py_Initialize();
@@ -137,7 +137,7 @@ void QgsPythonUtils::initPython(QgisInterface* interface)
 
 }
 
-void QgsPythonUtils::exitPython()
+void QgsPythonUtilsImpl::exitPython()
 {  
   Py_Finalize();
   mMainModule = NULL;
@@ -146,17 +146,17 @@ void QgsPythonUtils::exitPython()
 }
 
 
-bool QgsPythonUtils::isEnabled()
+bool QgsPythonUtilsImpl::isEnabled()
 {
   return mPythonEnabled;
 }
 
-void QgsPythonUtils::installErrorHook()
+void QgsPythonUtilsImpl::installErrorHook()
 {
   runString("sys.excepthook = qgis_except_hook");
 }
 
-void QgsPythonUtils::installConsoleHooks()
+void QgsPythonUtilsImpl::installConsoleHooks()
 {
   runString("sys.displayhook = console_display_hook\n");
   
@@ -164,20 +164,20 @@ void QgsPythonUtils::installConsoleHooks()
   runString("sys.stdout = QgisOutputCatcher()\n");
 }
 
-void QgsPythonUtils::uninstallConsoleHooks()
+void QgsPythonUtilsImpl::uninstallConsoleHooks()
 {
   runString("sys.displayhook = sys.__displayhook__");
   runString("sys.stdout = _old_stdout");
 }
 
 
-bool QgsPythonUtils::runStringUnsafe(const QString& command)
+bool QgsPythonUtilsImpl::runStringUnsafe(const QString& command)
 {
   PyRun_String(command.toLocal8Bit().data(), Py_single_input, mMainDict, mMainDict);
   return (PyErr_Occurred() == 0);
 }
 
-bool QgsPythonUtils::runString(const QString& command, QString msgOnError)
+bool QgsPythonUtilsImpl::runString(const QString& command, QString msgOnError)
 {
   bool res = runStringUnsafe(command);
   if (res)
@@ -208,7 +208,7 @@ bool QgsPythonUtils::runString(const QString& command, QString msgOnError)
 }
 
 
-QString QgsPythonUtils::getTraceback()
+QString QgsPythonUtilsImpl::getTraceback()
 {
 #define TRACEBACK_FETCH_ERROR(what) {errMsg = what; goto done;}
 
@@ -280,7 +280,7 @@ done:
   return result;
 }
 
-QString QgsPythonUtils::getTypeAsString(PyObject* obj)
+QString QgsPythonUtilsImpl::getTypeAsString(PyObject* obj)
 {
   if (obj == NULL)
     return NULL;
@@ -307,7 +307,7 @@ QString QgsPythonUtils::getTypeAsString(PyObject* obj)
   }
 }
 
-bool QgsPythonUtils::getError(QString& errorClassName, QString& errorText)
+bool QgsPythonUtilsImpl::getError(QString& errorClassName, QString& errorText)
 {
   if (!PyErr_Occurred())
     return false;
@@ -341,12 +341,12 @@ bool QgsPythonUtils::getError(QString& errorClassName, QString& errorText)
   return true;
 }
 
-QString QgsPythonUtils::getResult()
+QString QgsPythonUtilsImpl::getResult()
 {
   return getVariableFromMain("__result");
 }
 
-QString QgsPythonUtils::getVariableFromMain(QString name)
+QString QgsPythonUtilsImpl::getVariableFromMain(QString name)
 {
   PyObject* obj;
   PyObject* obj_str;
@@ -372,7 +372,7 @@ QString QgsPythonUtils::getVariableFromMain(QString name)
   return output;
 }
 
-bool QgsPythonUtils::evalString(const QString& command, QString& result)
+bool QgsPythonUtilsImpl::evalString(const QString& command, QString& result)
 {
   PyObject* res = PyRun_String(command.toLocal8Bit().data(), Py_eval_input, mMainDict, mMainDict);
   
@@ -387,27 +387,27 @@ bool QgsPythonUtils::evalString(const QString& command, QString& result)
 }
 
 
-QString QgsPythonUtils::pythonPath()
+QString QgsPythonUtilsImpl::pythonPath()
 {
   return QgsApplication::pkgDataPath() + "/python";
 }
 
-QString QgsPythonUtils::pluginsPath()
+QString QgsPythonUtilsImpl::pluginsPath()
 {
   return pythonPath() + "/plugins";
 }
 
-QString QgsPythonUtils::homePluginsPath()
+QString QgsPythonUtilsImpl::homePluginsPath()
 {
   return QgsApplication::qgisSettingsDirPath() + "/python/plugins";
 }
 
-QStringList QgsPythonUtils::pluginList()
+QStringList QgsPythonUtilsImpl::pluginList()
 {
-  QDir pluginDir(QgsPythonUtils::pluginsPath(), "*",
+  QDir pluginDir(QgsPythonUtilsImpl::pluginsPath(), "*",
                  QDir::Name | QDir::IgnoreCase, QDir::Dirs | QDir::NoDotAndDotDot);
 
-  QDir homePluginDir(QgsPythonUtils::homePluginsPath(), "*",
+  QDir homePluginDir(QgsPythonUtilsImpl::homePluginsPath(), "*",
 		     QDir::Name | QDir::IgnoreCase, QDir::Dirs | QDir::NoDotAndDotDot);
 
   QStringList pluginList = pluginDir.entryList();
@@ -423,7 +423,7 @@ QStringList QgsPythonUtils::pluginList()
   return pluginList;
 }
 
-QString QgsPythonUtils::getPluginMetadata(QString pluginName, QString function)
+QString QgsPythonUtilsImpl::getPluginMetadata(QString pluginName, QString function)
 {
   QString command = pluginName + "." + function + "()";
   QString retval = "???";
@@ -449,7 +449,7 @@ QString QgsPythonUtils::getPluginMetadata(QString pluginName, QString function)
 }
 
 
-bool QgsPythonUtils::loadPlugin(QString packageName)
+bool QgsPythonUtilsImpl::loadPlugin(QString packageName)
 {
   // load plugin's package and ensure that plugin is reloaded when changed
   runString(
@@ -480,7 +480,7 @@ bool QgsPythonUtils::loadPlugin(QString packageName)
 }
 
 
-bool QgsPythonUtils::startPlugin(QString packageName)
+bool QgsPythonUtilsImpl::startPlugin(QString packageName)
 {
   QString pluginPythonVar = "plugins['" + packageName + "']";
   
@@ -499,7 +499,7 @@ bool QgsPythonUtils::startPlugin(QString packageName)
 }
 
 
-bool QgsPythonUtils::unloadPlugin(QString packageName)
+bool QgsPythonUtilsImpl::unloadPlugin(QString packageName)
 {
   // unload and delete plugin!
   QString varName = "plugins['" + packageName + "']";
