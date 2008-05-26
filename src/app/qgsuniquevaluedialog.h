@@ -59,6 +59,11 @@ class QgsUniqueValueDialog: public QDialog, private Ui::QgsUniqueValueDialogBase
     void applySymbologyChanges();
 
 private:
+    /** Update the list widget item icon with a preview for the symbol.
+     * @param QgsSymbol * - symbol holding the style info.
+     * @param QListWidgetItem * - item to get its icon updated.
+     */
+    void updateEntryIcon(QgsSymbol * thepSymbol,QListWidgetItem * thepItem);
     QColor randomColor();
     void setSymbolColor(QgsSymbol *symbol, QColor thecolor);
 };

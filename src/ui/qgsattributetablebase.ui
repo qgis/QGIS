@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>686</width>
-    <height>547</height>
+    <width>687</width>
+    <height>583</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -16,20 +16,14 @@
    <iconset/>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>9</number>
+   <property name="horizontalSpacing" >
+    <number>2</number>
    </property>
-   <property name="spacing" >
-    <number>6</number>
+   <property name="verticalSpacing" >
+    <number>2</number>
    </property>
    <item row="0" column="0" >
     <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
      <item>
       <widget class="QToolButton" name="mRemoveSelectionButton" >
        <property name="toolTip" >
@@ -116,9 +110,7 @@
      <item>
       <widget class="QToolButton" name="mAddAttributeButton" >
        <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>0</hsizetype>
-         <vsizetype>0</vsizetype>
+        <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -191,9 +183,7 @@
    <item row="1" column="0" >
     <widget class="QgsAttributeTable" native="1" name="tblAttributes" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>7</vsizetype>
+      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -202,26 +192,10 @@
    </item>
    <item row="2" column="0" >
     <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <widget class="QPushButton" name="btnHelp" >
-       <property name="text" >
-        <string>&amp;Help</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+C</string>
-       </property>
-      </widget>
-     </item>
      <item>
       <widget class="QLabel" name="textLabel1" >
        <property name="text" >
-        <string>Search for:</string>
+        <string>Search for</string>
        </property>
        <property name="buddy" >
         <cstring>mSearchText</cstring>
@@ -244,9 +218,7 @@
      <item>
       <widget class="QComboBox" name="mSearchColumns" >
        <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>7</hsizetype>
-         <vsizetype>0</vsizetype>
+        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -273,17 +245,14 @@
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QPushButton" name="btnClose" >
-       <property name="text" >
-        <string>&amp;Close</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+C</string>
-       </property>
-      </widget>
-     </item>
     </layout>
+   </item>
+   <item row="3" column="0" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Help|QDialogButtonBox::NoButton</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -300,6 +269,7 @@
   <tabstop>mSelectedToTopButton</tabstop>
   <tabstop>mInvertSelectionButton</tabstop>
   <tabstop>mCopySelectedRowsButton</tabstop>
+  <tabstop>mZoomMapToSelectedRowsButton</tabstop>
   <tabstop>mAddAttributeButton</tabstop>
   <tabstop>mDeleteAttributeButton</tabstop>
   <tabstop>btnStartEditing</tabstop>
@@ -309,8 +279,25 @@
   <tabstop>mSearchButton</tabstop>
   <tabstop>mSearchShowResults</tabstop>
   <tabstop>btnAdvancedSearch</tabstop>
-  <tabstop>btnClose</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>QgsAttributeTableBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>645</x>
+     <y>560</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>682</x>
+     <y>529</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

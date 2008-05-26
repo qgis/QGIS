@@ -19,7 +19,6 @@
 #ifndef QGSPLUGINMANAGER_H
 #define QGSPLUGINMANAGER_H
 #include <vector>
-#include <QTableView>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QStandardItem>

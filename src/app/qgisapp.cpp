@@ -1018,7 +1018,7 @@ void QgisApp::createMenus()
 void QgisApp::createToolBars()
 {
   QSize myIconSize ( 24,24 );
-  //QSize myIconSize ( 32,32 ); //large icons
+  // QSize myIconSize ( 32,32 ); //large icons
   // Note: we need to set each object name to ensure that
   // qmainwindow::saveState and qmainwindow::restoreState
   // work properly

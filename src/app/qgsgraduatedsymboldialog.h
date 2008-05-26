@@ -75,6 +75,11 @@ class QgsGraduatedSymbolDialog: public QDialog, private Ui::QgsGraduatedSymbolDi
      void deleteCurrentClass();
 
  private:
+    /** Update the list widget item icon with a preview for the symbol.
+     * @param QgsSymbol * - symbol holding the style info.
+     * @param QListWidgetItem * - item to get its icon updated.
+     */
+    void updateEntryIcon(QgsSymbol * thepSymbol,QListWidgetItem * thepItem);
      /**Default constructor is privat to not use is*/
      QgsGraduatedSymbolDialog();
 };
