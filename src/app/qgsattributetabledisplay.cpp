@@ -59,7 +59,9 @@ QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer, QgisAp
   connect(mSearchButton, SIGNAL(clicked()), this, SLOT(search()));
   connect(mSearchShowResults, SIGNAL(activated(int)), this, SLOT(searchShowResultsChanged(int)));
   connect(btnAdvancedSearch, SIGNAL(clicked()), this, SLOT(advancedSearch()));
-  connect(btnClose, SIGNAL(clicked()), this, SLOT(close()));
+  connect(buttonBox, SIGNAL(helpRequested()), this, SLOT(showHelp()));
+  connect(buttonBox->button(QDialogButtonBox::Close), SIGNAL(clicked()), 
+      this, SLOT(close()));
   connect(tblAttributes, SIGNAL(featureAttributeChanged(int,int)), this, SLOT(changeFeatureAttribute(int,int)));
   
   //disable those buttons until start editing has been pressed and provider supports it
@@ -175,7 +177,7 @@ void QgsAttributeTableDisplay::startEditing()
     {
       btnStartEditing->setEnabled(false);
       btnStopEditing->setEnabled(true);
-      btnClose->setEnabled(false);
+      buttonBox->button(QDialogButtonBox::Close)->setEnabled(false);
       //make the dialog modal when in editable
       //otherwise map editing and table editing
       //may disturb each other
@@ -213,7 +215,7 @@ void QgsAttributeTableDisplay::stopEditing()
   }
   btnStartEditing->setEnabled(true);
   btnStopEditing->setEnabled(false);
-  btnClose->setEnabled(true);
+  buttonBox->button(QDialogButtonBox::Close)->setEnabled(true);
   mAddAttributeButton->setEnabled(false);
   mDeleteAttributeButton->setEnabled(false);
   table()->setReadOnly(true);
@@ -400,10 +402,6 @@ void QgsAttributeTableDisplay::saveWindowLocation()
   settings.setValue("/Windows/AttributeTable/geometry", saveGeometry());
 } 
 
-void QgsAttributeTableDisplay::on_btnHelp_clicked()
-{
-  showHelp();
-}
 void QgsAttributeTableDisplay::showHelp()
 {
   QgsContextHelp::run(context_id);
