@@ -215,30 +215,27 @@ void QgsUniqueValueDialog::addClass(QString value)
   mClassListWidget->addItem(item);
 
   setSymbolColor(symbol, randomColor() );
+  updateEntryIcon(symbol, item);
 }
 
 void QgsUniqueValueDialog::randomizeColors()
 {
   QList<QListWidgetItem *> selection = mClassListWidget->selectedItems();
-  if(selection.size()>0) {
-    for(int i=0; i<selection.size(); i++)
-    {
-      QListWidgetItem *item=selection[i];
-      if(!item)
-        continue;
+  if(selection.size()==0)
+    selection = mClassListWidget->findItems("", Qt::MatchContains);
 
-      if( !mValues.contains( item->text() ) )
-        continue;
-
-      setSymbolColor( mValues[ item->text() ], randomColor() );
-    }
-  }
-  else
+  for(int i=0; i<selection.size(); i++)
   {
-    for(QMap<QString, QgsSymbol *>::iterator it = mValues.begin(); it!=mValues.end(); it++)
-    {
-      setSymbolColor( it.value(), randomColor() );
-    }
+    QListWidgetItem *item=selection[i];
+    if(!item)
+      continue;
+
+    if( !mValues.contains( item->text() ) )
+      continue;
+
+    QgsSymbol *symbol = mValues[ item->text() ];
+    setSymbolColor( symbol, randomColor() );
+    updateEntryIcon(symbol, item);
   }
 
   selectionChanged();
@@ -250,23 +247,21 @@ void QgsUniqueValueDialog::resetColors()
   white.setRgb(255.0, 255.0, 255.0);
 
   QList<QListWidgetItem *> selection = mClassListWidget->selectedItems();
-  if(selection.size()>0) {
-    for(int i=0; i<selection.size(); i++)
-    {
-      QListWidgetItem *item=selection[i];
-      if( !item ) continue;
+  if(selection.size()==0)
+    selection = mClassListWidget->findItems("", Qt::MatchContains);
 
-      if( !mValues.contains( item->text() ) )continue;
-
-      setSymbolColor( mValues[ item->text() ], white);
-    }
-  }
-  else
+  for(int i=0; i<selection.size(); i++)
   {
-    for(QMap<QString, QgsSymbol *>::iterator it = mValues.begin(); it!=mValues.end(); it++)
-    {
-      setSymbolColor( it.value(), white);
-    }
+    QListWidgetItem *item=selection[i];
+    if( !item )
+      continue;
+
+    if( !mValues.contains( item->text() ) )
+      continue;
+
+    QgsSymbol *symbol = mValues[ item->text() ];
+    setSymbolColor( symbol, white);
+    updateEntryIcon(symbol, item);
   }
 
   selectionChanged();
