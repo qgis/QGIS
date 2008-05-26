@@ -32,6 +32,7 @@ QgsDetailedItemDelegate::QgsDetailedItemDelegate(QObject * parent) :
        mpCheckBox(new QCheckBox())
        
 {
+  //mpWidget->setFixedHeight(80);
   mpCheckBox->resize(16,16);
 }
 
@@ -86,21 +87,24 @@ void QgsDetailedItemDelegate::paint(QPainter * thepPainter,
     QString myDetailString = theIndex.model()->data(theIndex, Qt::UserRole).toString();
     bool myCheckState = theIndex.model()->data(theIndex, Qt::CheckStateRole).toBool();
     mpCheckBox->setChecked(myCheckState);
-    QPixmap myPixmap(mpCheckBox->size());
-    mpCheckBox->render(&myPixmap); //we will draw this onto the widget further down
+    QPixmap myCbxPixmap(mpCheckBox->size());
+    mpCheckBox->render(&myCbxPixmap); //we will draw this onto the widget further down
+    QPixmap myDecoPixmap;
 
     //
     // Calculate the widget height and other metrics
     //
     QFont myFont = theOption.font;
-    QFont myBoldFont = myFont;
-    myBoldFont.setBold(true);
-    myBoldFont.setPointSize(myFont.pointSize() + 3);
-    QFontMetrics myMetrics(myBoldFont);
+    QFont myTitleFont = myFont;
+    myTitleFont.setBold(true);
+    myTitleFont.setPointSize(myFont.pointSize() + 3);
+    QFontMetrics myTitleMetrics(myTitleFont);
+    QFontMetrics myDetailMetrics(myFont);
     int myVerticalSpacer = 3; //spacing between title and description
     int myHorizontalSpacer = 5; //spacing between checkbox / icon and description
-    int myTextStartX = theOption.rect.x() + myPixmap.width() + myHorizontalSpacer;
-    int myHeight = myMetrics.height() + myVerticalSpacer;
+    int myTextStartX = theOption.rect.x() + myHorizontalSpacer;
+    int myTextStartY= theOption.rect.y() + myVerticalSpacer;
+    int myHeight = myTitleMetrics.height() + myVerticalSpacer;
 
     //
     // Draw the item background with a gradient if its highlighted
@@ -110,7 +114,7 @@ void QgsDetailedItemDelegate::paint(QPainter * thepPainter,
       QColor myColor1 = theOption.palette.highlight();
       QColor myColor2 = myColor1;
       myColor2 = myColor2.lighter(110); //10% lighter
-      int myHeight = myMetrics.height() + myVerticalSpacer;
+      int myHeight = myTitleMetrics.height() + myVerticalSpacer;
       QLinearGradient myGradient(QPointF(0,theOption.rect.y()),
           QPointF(0,theOption.rect.y() + myHeight*2));
       myGradient.setColorAt(0, myColor1);
@@ -124,19 +128,61 @@ void QgsDetailedItemDelegate::paint(QPainter * thepPainter,
     //
     // Draw the checkbox
     //
-    thepPainter->drawPixmap(theOption.rect.x(),
-        theOption.rect.y() + mpCheckBox->height(), 
-        myPixmap);
-
+    bool myCheckableFlag = true;
+    if (theIndex.flags() == Qt::ItemIsUserCheckable)
+    {
+      myCheckableFlag = false;
+    }
+    if (myCheckableFlag)
+    {
+      thepPainter->drawPixmap(theOption.rect.x(),
+          theOption.rect.y() + mpCheckBox->height(), 
+          myCbxPixmap);
+      myTextStartX = theOption.rect.x() + myCbxPixmap.width() + myHorizontalSpacer;
+    }
     //
-    // Draw the title and description
+    // Draw the decoration (pixmap)
     //
-    thepPainter->setFont(myBoldFont);
-    thepPainter->drawText( myTextStartX ,theOption.rect.y() + myHeight, myString);
+    bool myIconFlag = false;
+    if (!theIndex.model()->data(theIndex, Qt::DecorationRole).isNull())
+    {
+      myDecoPixmap = theIndex.model()->data(theIndex, Qt::DecorationRole).value<QPixmap>();
+      thepPainter->drawPixmap(myTextStartX,
+          myTextStartY + (myDecoPixmap.height() / 2), 
+          myDecoPixmap);
+      myTextStartX += myDecoPixmap.width() + myHorizontalSpacer;
+    }
+    //
+    // Draw the title 
+    //
+    myTextStartY += myHeight/2;
+    thepPainter->setFont(myTitleFont);
+    thepPainter->drawText( myTextStartX ,
+        myTextStartY , 
+        myString);
+    //
+    // Draw the description with word wrapping if needed
+    //
     thepPainter->setFont(myFont); //return to original font set by client
-    thepPainter->drawText( myTextStartX, 
-        theOption.rect.y() + (myHeight *2) - myVerticalSpacer, 
-        myDetailString);
+    if (myIconFlag)
+    {
+          myTextStartY += myVerticalSpacer;
+    }
+    else
+    {
+          myTextStartY +=  myDetailMetrics.height() + myVerticalSpacer;
+    }
+    QStringList myList = 
+      wordWrap( myDetailString, myDetailMetrics, theOption.rect.width() - myTextStartX );
+    QStringListIterator myLineWrapIterator(myList);
+    while (myLineWrapIterator.hasNext())
+    {
+      QString myLine = myLineWrapIterator.next();
+      thepPainter->drawText( myTextStartX, 
+          myTextStartY,
+          myLine);
+      myTextStartY += myDetailMetrics.height() - myVerticalSpacer;
+    }
     thepPainter->restore();
   }
 }
@@ -152,14 +198,70 @@ QSize QgsDetailedItemDelegate::sizeHint(
   else // fall back to hand calculated & hand drawn item
   {
     QFont myFont = theOption.font;
-    QFont myBoldFont = myFont;
-    myBoldFont.setBold(true);
-    myBoldFont.setPointSize(myFont.pointSize() + 3);
-    QFontMetrics myMetrics(myBoldFont);
+    QFont myTitleFont = myFont;
+    myTitleFont.setBold(true);
+    myTitleFont.setPointSize(myFont.pointSize() + 3);
+    QFontMetrics myTitleMetrics(myTitleFont);
+    QFontMetrics myDetailMetrics(myFont);
     int myVerticalSpacer = 3; //spacing between title and description
     int myHorizontalSpacer = 5; //spacing between checkbox / icon and description
-    int myHeight = myMetrics.height() + myVerticalSpacer;
-    return QSize(50,
-        myHeight *2 + myVerticalSpacer);
+    int myHeight = myTitleMetrics.height() + myVerticalSpacer;
+    QString myDetailString = theIndex.model()->data(theIndex, Qt::UserRole).toString();
+    QStringList myList = wordWrap( myDetailString, 
+                                   myDetailMetrics, 
+                                   theOption.rect.width() - (mpCheckBox->width() + myHorizontalSpacer));
+    myHeight += (myList.count() + 1) * (myDetailMetrics.height() - myVerticalSpacer);
+#ifdef Q_OS_MACX
+    //for some reason itmes are non selectable if using rect.width() on osx
+    return QSize(50, myHeight + myVerticalSpacer);
+#else
+    return QSize(theOption.rect.width(), myHeight + myVerticalSpacer);
+#endif
   }
+}
+
+QStringList QgsDetailedItemDelegate::wordWrap(QString theString, 
+                                    QFontMetrics theMetrics, 
+                                    int theWidth) const
+{
+  if ( theString.isEmpty() ) return QStringList();
+  if ( 50 >= theWidth ) return QStringList() << theString;
+  QString myDebug = QString("Word wrapping: %1 into %2 pixels").arg(theString).arg(theWidth);
+  qDebug(myDebug.toLocal8Bit());
+  //iterate the string 
+  QStringList myList;
+  QString myCumulativeLine="";
+  QString myStringToPreviousSpace="";
+  int myPreviousSpacePos=0;
+  for (int i=0; i < theString.count(); ++i)
+  {
+    QChar myChar = theString.at(i);
+    if (myChar == QChar(' '))
+    {
+      myStringToPreviousSpace = myCumulativeLine;
+      myPreviousSpacePos=i;
+    }
+    myCumulativeLine += myChar;
+    if (theMetrics.width(myCumulativeLine) >= theWidth)
+    {
+      //time to wrap
+      //@todo deal with long strings that have no spaces
+      //forcing a break at current pos...
+      myList << myStringToPreviousSpace.trimmed();
+      i = myPreviousSpacePos;
+      myStringToPreviousSpace = "";
+      myCumulativeLine = "";
+    }
+  }//end of i loop
+  //add whatever is left in the string to the list
+  if (!myCumulativeLine.trimmed().isEmpty())
+  {
+      myList << myCumulativeLine.trimmed();
+  }
+
+  //qDebug("Wrapped legend entry:");
+  //qDebug(theString);
+  //qDebug(myList.join("\n").toLocal8Bit());
+  return myList;
+
 }

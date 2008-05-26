@@ -31,7 +31,10 @@ QgsDetailedItemWidget::~QgsDetailedItemWidget()
 void QgsDetailedItemWidget::setData(QgsDetailedItemData theData)
 {
   lblTitle->setText(theData.title());
-  tbDetail->setText(theData.detail());
+  lblDetail->setText(theData.detail());
+  cbx->setVisible(theData.isCheckable());
+  cbx->setChecked(theData.isChecked());
+  lblIcon->setPixmap(theData.icon());
 }
 
 void QgsDetailedItemWidget::setChecked(bool theFlag)
