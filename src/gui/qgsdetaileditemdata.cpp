@@ -35,6 +35,19 @@ void QgsDetailedItemData::setDetail(QString theDetail)
   mDetail=theDetail;
 }
 
+void QgsDetailedItemData::setIcon(QPixmap theIcon)
+{
+  mPixmap = theIcon;
+}
+void QgsDetailedItemData::setCheckable(bool theFlag)
+{
+  mCheckableFlag = theFlag;
+}
+void QgsDetailedItemData::setChecked(bool theFlag)
+{
+  mCheckedFlag = theFlag;
+}
+
 QString QgsDetailedItemData::title()
 {
   return mTitle;
@@ -43,4 +56,19 @@ QString QgsDetailedItemData::title()
 QString QgsDetailedItemData::detail()
 {
   return mDetail;
+}
+
+QPixmap QgsDetailedItemData::icon()
+{
+  return mPixmap;
+}
+
+bool QgsDetailedItemData::isCheckable()
+{
+  return mCheckableFlag;
+}
+
+bool QgsDetailedItemData::isChecked()
+{
+  return mCheckedFlag;
 }

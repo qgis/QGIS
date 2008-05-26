@@ -23,6 +23,7 @@
 
 class QCheckBox;
 class QgsDetailedItemWidget;
+class QFontMetrics;
 
 class GUI_EXPORT QgsDetailedItemDelegate : 
      public QAbstractItemDelegate 
@@ -37,6 +38,9 @@ class GUI_EXPORT QgsDetailedItemDelegate :
     QSize sizeHint( const QStyleOptionViewItem & theOption, 
                const QModelIndex & theIndex ) const;
   private:
+    QStringList wordWrap(QString theString, 
+                         QFontMetrics theMetrics, 
+                         int theWidth) const;
     QgsDetailedItemWidget * mpWidget;
     QCheckBox * mpCheckBox;
 };

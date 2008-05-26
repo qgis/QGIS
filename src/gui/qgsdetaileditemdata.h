@@ -21,6 +21,7 @@
 
 #include <QMetaType>
 #include <QString>
+#include <QPixmap>
 
 /** This class is the data only representation of a 
  * QgsDetailedItemWidget, designed to be used in custom views.
@@ -32,13 +33,23 @@ class QgsDetailedItemData
     ~QgsDetailedItemData();
     void setTitle(QString theTitle);
     void setDetail(QString theDetail);
+    void setIcon(QPixmap theIcon);
+    void setCheckable(bool theFlag);
+    void setChecked(bool theFlag);
+
     QString title();
     QString detail();
+    QPixmap icon();
+    bool isCheckable();
+    bool isChecked();
+
   private:
     QString mTitle;
     QString mDetail;
     QString mLibraryName;
-    bool mCheckBoxEnabled;
+    QPixmap mPixmap;
+    bool mCheckableFlag;
+    bool mCheckedFlag;
 };
 
 // Make QVariant aware of this data type (see qtdocs star 
