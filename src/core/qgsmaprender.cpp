@@ -215,12 +215,12 @@ void QgsMapRender::render(QPainter* painter)
 
   QPaintDevice* thePaintDevice = painter->device();
   if(!thePaintDevice)
-    {
-      return;
-    }
-  
+  {
+    return;
+  }
+
   mDrawing = true;
-  
+
   QgsCoordinateTransform* ct;
 
 #ifdef QGISDEBUG
@@ -250,13 +250,13 @@ void QgsMapRender::render(QPainter* painter)
   li.toBack();
 
   QgsRect r1, r2;
-  
+
   while (li.hasPrevious())
   {
     if(mRenderContext.renderingStopped())
-      {
-	break;
-      }
+    {
+      break;
+    }
 
     QString layerId = li.previous();
 
@@ -278,8 +278,8 @@ void QgsMapRender::render(QPainter* painter)
       QgsLogger::warning("Layer not found in registry!");
       continue;
     }
-        
-		QgsDebugMsg("Rendering layer " + ml->name());
+
+    QgsDebugMsg("Rendering layer " + ml->name());
     QgsDebugMsg("  Layer minscale " + QString("%1").arg(ml->minScale()) );
     QgsDebugMsg("  Layer maxscale " + QString("%1").arg(ml->maxScale()) );
     QgsDebugMsg("  Scale dep. visibility enabled? " + QString("%1").arg(ml->scaleBasedVisibility()) );
@@ -289,20 +289,20 @@ void QgsMapRender::render(QPainter* painter)
         || (!ml->scaleBasedVisibility()))
     {
       connect(ml, SIGNAL(drawingProgress(int,int)), this, SLOT(onDrawingProgress(int,int)));        
-      
+
       //
-                  // Now do the call to the layer that actually does
-                  // the rendering work!
+      // Now do the call to the layer that actually does
+      // the rendering work!
       //
 
       bool split = false;
-      
+
       if (projectionsEnabled())
       {
-	r1 = mExtent;
-	split = splitLayersExtent(ml, r1, r2);
+        r1 = mExtent;
+        split = splitLayersExtent(ml, r1, r2);
         ct = new QgsCoordinateTransform(ml->srs(), *mDestSRS);
-	mRenderContext.setExtent(r1);
+        mRenderContext.setExtent(r1);
       }
       else
       {
@@ -318,53 +318,53 @@ void QgsMapRender::render(QPainter* painter)
       QgsMapToPixel bk_mapToPixel;
       double debug = fabs(rasterScaleFactor - 1.0);
       if(ml->type() == QgsMapLayer::RASTER && fabs(rasterScaleFactor - 1.0) > 0.000001)
-	{
-	  scaleRaster = true;
-	}
+      {
+        scaleRaster = true;
+      }
 
 
       if(scaleRaster)
-	{
-	  bk_mapToPixel = mRenderContext.mapToPixel();
-	  rasterMapToPixel = mRenderContext.mapToPixel();
-	  rasterMapToPixel.setMapUnitsPerPixel(mRenderContext.mapToPixel().mapUnitsPerPixel() / rasterScaleFactor);
-	  rasterMapToPixel.setYmax(mSize.height() * rasterScaleFactor);
-	  mRenderContext.setMapToPixel(rasterMapToPixel);
-	  mRenderContext.painter()->save();
-	  mRenderContext.painter()->scale(1.0/rasterScaleFactor, 1.0/rasterScaleFactor);
-	}
+      {
+        bk_mapToPixel = mRenderContext.mapToPixel();
+        rasterMapToPixel = mRenderContext.mapToPixel();
+        rasterMapToPixel.setMapUnitsPerPixel(mRenderContext.mapToPixel().mapUnitsPerPixel() / rasterScaleFactor);
+        rasterMapToPixel.setYmax(mSize.height() * rasterScaleFactor);
+        mRenderContext.setMapToPixel(rasterMapToPixel);
+        mRenderContext.painter()->save();
+        mRenderContext.painter()->scale(1.0/rasterScaleFactor, 1.0/rasterScaleFactor);
+      }
 
       if (!ml->draw(mRenderContext))
-	{
-	  emit drawError(ml);
-	}
-      
+      {
+        emit drawError(ml);
+      }
+
       if (split)
       {
-	mRenderContext.setExtent(r2);
+        mRenderContext.setExtent(r2);
         if (!ml->draw(mRenderContext))
-	  {
-	    emit drawError(ml);
-	  }
+        {
+          emit drawError(ml);
+        }
       }
 
       if(scaleRaster)
-	{
-	  mRenderContext.setMapToPixel(bk_mapToPixel);
-	  mRenderContext.painter()->restore();
-	}
-      
+      {
+        mRenderContext.setMapToPixel(bk_mapToPixel);
+        mRenderContext.painter()->restore();
+      }
+
       disconnect(ml, SIGNAL(drawingProgress(int,int)), this, SLOT(onDrawingProgress(int,int)));
     }
     else
     {
       QgsDebugMsg("Layer not rendered because it is not within the defined "
-                  "visibility scale range");
+          "visibility scale range");
     }
 
   } // while (li.hasPrevious())
-      
-    QgsDebugMsg("Done rendering map layers");
+
+  QgsDebugMsg("Done rendering map layers");
 
   if (!mOverview)
   {
@@ -373,15 +373,15 @@ void QgsMapRender::render(QPainter* painter)
     while (li.hasPrevious())
     {
       if(mRenderContext.renderingStopped())
-	{
-	  break;
-	}
+      {
+        break;
+      }
 
       QString layerId = li.previous();
 
       // TODO: emit drawingProgress((myRenderCounter++),zOrder.size());
       QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer(layerId);
-  
+
       if (ml && (ml->type() != QgsMapLayer::RASTER))
       {
         // only make labels if the layer is visible
@@ -393,24 +393,24 @@ void QgsMapRender::render(QPainter* painter)
 
           if (projectionsEnabled())
           {
-	    QgsRect r1 = mExtent;
-	    split = splitLayersExtent(ml, r1, r2);
+            QgsRect r1 = mExtent;
+            split = splitLayersExtent(ml, r1, r2);
             ct = new QgsCoordinateTransform(ml->srs(), *mDestSRS);
-	    mRenderContext.setExtent(r1);
+            mRenderContext.setExtent(r1);
           }
           else
           {
             ct = NULL;
           }
-      
-	  mRenderContext.setCoordTransform(ct);
-          
-	  ml->drawLabels(mRenderContext);
+
+          mRenderContext.setCoordTransform(ct);
+
+          ml->drawLabels(mRenderContext);
           if (split)
-	    {
-	      mRenderContext.setExtent(r2);
-	      ml->drawLabels(mRenderContext);
-	    }
+          {
+            mRenderContext.setExtent(r2);
+            ml->drawLabels(mRenderContext);
+          }
         }
       }
     }
@@ -418,7 +418,7 @@ void QgsMapRender::render(QPainter* painter)
 
   // make sure progress bar arrives at 100%!
   emit drawingProgress(1,1);      
-      
+
 #ifdef QGISDEBUG
   QgsDebugMsg("Rendering done in (seconds): " + QString("%1").arg(renderTime.elapsed() / 1000.0) );
 #endif
