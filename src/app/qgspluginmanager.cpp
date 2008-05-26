@@ -39,9 +39,7 @@
 #include <qgsdetaileditemwidget.h>
 #include <qgsdetaileditemdata.h>
 
-#ifdef HAVE_PYTHON
 #include <qgspythonutils.h>
-#endif
 
 #define TESTLIB
 #ifdef TESTLIB
@@ -52,10 +50,13 @@
 #include <dlfcn.h>
 #endif
 #endif
-QgsPluginManager::QgsPluginManager(QWidget * parent, Qt::WFlags fl)
+QgsPluginManager::QgsPluginManager(QgsPythonUtils* pythonUtils, QWidget * parent, Qt::WFlags fl)
 : QDialog(parent, fl)
 {
   setupUi(this);
+  
+  mPythonUtils = pythonUtils;
+  
   // set the default lib dir to the qgis install directory/lib (this info is
   // available from the provider registry so we use it here)
   QgsProviderRegistry *pr = QgsProviderRegistry::instance();
@@ -118,27 +119,24 @@ void QgsPluginManager::sortModel(int column)
 
 void QgsPluginManager::getPythonPluginDescriptions()
 {
-#ifdef HAVE_PYTHON
-  QgsPythonUtils* pythonUtils = QgsPythonUtils::instance();
-  
-  if (!pythonUtils->isEnabled())
+  if (!mPythonUtils || !mPythonUtils->isEnabled())
     return;
   
   // look for plugins systemwide
-  QStringList pluginList = pythonUtils->pluginList();
+  QStringList pluginList = mPythonUtils->pluginList();
   
   for (int i = 0; i < pluginList.size(); i++)
   {
     QString packageName = pluginList[i];
 
     // import plugin's package - skip loading it if an error occured
-    if (!pythonUtils->loadPlugin(packageName))
+    if (!mPythonUtils->loadPlugin(packageName))
       continue;
     
     // get information from the plugin
-    QString pluginName  = pythonUtils->getPluginMetadata(packageName, "name");
-    QString description = pythonUtils->getPluginMetadata(packageName, "description");
-    QString version     = pythonUtils->getPluginMetadata(packageName, "version");
+    QString pluginName  = mPythonUtils->getPluginMetadata(packageName, "name");
+    QString description = mPythonUtils->getPluginMetadata(packageName, "description");
+    QString version     = mPythonUtils->getPluginMetadata(packageName, "version");
     
     if (pluginName == "???" || description == "???" || version == "???")
       continue;
@@ -184,7 +182,6 @@ void QgsPluginManager::getPythonPluginDescriptions()
     myItems << mypDetailItem << mypLibraryNameItem;
     mModelPlugins->appendRow(myItems);
   }
-#endif
 }
 
 
@@ -383,12 +380,13 @@ void QgsPluginManager::unload()
       QString pluginName = mModelPlugins->data(myIndex,Qt::UserRole).toString();
       if (pRegistry->isPythonPlugin(pluginName))
       {
-#ifdef HAVE_PYTHON
-        QString packageName = pRegistry->library(pluginName);
-        QgsPythonUtils::instance()->unloadPlugin(packageName);
-          //disable it to the qsettings file
-        settings.setValue("/PythonPlugins/" + packageName, false);
-#endif
+        if (mPythonUtils && mPythonUtils->isEnabled())
+        {
+          QString packageName = pRegistry->library(pluginName);
+          mPythonUtils->unloadPlugin(packageName);
+            //disable it to the qsettings file
+          settings.setValue("/PythonPlugins/" + packageName, false);
+        }
       }
       else // C++ plugin
       {

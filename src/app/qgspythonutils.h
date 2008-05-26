@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgspythonutils.h - routines for interfacing Python
+    qgspythonutils.h - abstract interface for Python routines
     ---------------------
     begin                : October 2006
     copyright            : (C) 2006 by Martin Dobias
@@ -14,14 +14,12 @@
  ***************************************************************************/
 /* $Id$ */
 
+#ifndef QGSPYTHONUTILS_H
+#define QGSPYTHONUTILS_H
+
 #include <QString>
 #include <QStringList>
 
-// forward declaration for PyObject
-#ifndef PyObject_HEAD
-struct _object;
-typedef _object PyObject;
-#endif
 
 class QgisInterface;
 
@@ -34,103 +32,62 @@ class QgisInterface;
  - QgsApplication::pkgDataPath() + "/python/plugins"
 
  */
+
 class QgsPythonUtils
 {
   public:
     
-    QgsPythonUtils();
+    virtual ~QgsPythonUtils() {}
     
-    ~QgsPythonUtils();
-        
-    static QgsPythonUtils* instance();
-    
-    /* general purpose functions */
-
+    //! returns true if python support is ready to use (must be inited first)
+    virtual bool isEnabled() = 0;
+  
     //! initialize python and import bindings
-    void initPython(QgisInterface* interface);
+    virtual void initPython(QgisInterface* interface) = 0;
     
     //! close python interpreter
-    void exitPython();
+    virtual void exitPython() = 0;
 
-    //! returns true if python support is ready to use (must be inited first)
-    bool isEnabled();
-    
-    //! returns path where QGIS python stuff is located
-    QString pythonPath();
-    
-    //! run a statement (wrapper for PyRun_String)
-    //! this command is more advanced as enables error checking etc.
-    //! when an exception is raised, it shows dialog with exception details
-    //! @return true if no error occured
-    bool runString(const QString& command, QString msgOnError = QString());
+    /* console */
     
     //! run a statement, error reporting is not done
     //! @return true if no error occured
-    bool runStringUnsafe(const QString& command);
+    virtual bool runStringUnsafe(const QString& command) = 0;
     
-    bool evalString(const QString& command, QString& result);
-    
-    //! @return object's type name as a string
-    QString getTypeAsString(PyObject* obj);
-
-    //! get information about error to the supplied arguments
-    //! @return false if there was no python error
-    bool getError(QString& errorClassName, QString& errorText);
-    
-    //! get variable from main dictionary
-    QString getVariableFromMain(QString name);
-
-    /* python console related functions */
+    virtual bool evalString(const QString& command, QString& result) = 0;
     
     //! change displayhook and excepthook
     //! our hooks will just save the result to special variables
     //! and those can be used in the program
-    void installConsoleHooks();
+    virtual void installConsoleHooks() = 0;
     
     //! get back to the original settings (i.e. write output to stdout)
-    void uninstallConsoleHooks();
+    virtual void uninstallConsoleHooks() = 0;
     
     //! get result from the last statement as a string
-    QString getResult();
+    virtual QString getResult() = 0;
 
-    /* plugins related functions */
+    //! get information about error to the supplied arguments
+    //! @return false if there was no python error
+    virtual bool getError(QString& errorClassName, QString& errorText) = 0;
     
-    //! return current path for python plugins
-    QString pluginsPath();
-
-    //! return current path for home directory python plugins
-    QString homePluginsPath();
-
+    /* plugins */
+    
     //! return list of all available python plugins
-    QStringList pluginList();
-        
+    virtual QStringList pluginList() = 0;
+    
     //! load python plugin (import)
-    bool loadPlugin(QString packageName);
+    virtual bool loadPlugin(QString packageName) = 0;
     
     //! start plugin: add to active plugins and call initGui()
-    bool startPlugin(QString packageName);
+    virtual bool startPlugin(QString packageName) = 0;
     
     //! helper function to get some information about plugin
     //! @param function one of these strings: name, tpye, version, description
-    QString getPluginMetadata(QString pluginName, QString function);
+    virtual QString getPluginMetadata(QString pluginName, QString function) = 0;
 
     //! unload plugin
-    bool unloadPlugin(QString packageName);
-
-  protected:
-    
-    void installErrorHook();
-
-    QString getTraceback();
-
-    //! reference to module __main__
-    PyObject* mMainModule;
-    
-    //! dictionary of module __main__
-    PyObject* mMainDict;
-    
-    //! flag determining that python support is enabled
-    bool mPythonEnabled;
-    
-    static QgsPythonUtils* mInstance;
+    virtual bool unloadPlugin(QString packageName) = 0;
 };
+
+#endif

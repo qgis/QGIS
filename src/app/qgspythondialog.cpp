@@ -20,11 +20,12 @@
 #include <QShowEvent>
 #include <QCloseEvent>
 
-QgsPythonDialog::QgsPythonDialog(QgisInterface* pIface, QWidget *parent)
+QgsPythonDialog::QgsPythonDialog(QgisInterface* pIface, QgsPythonUtils* pythonUtils, QWidget *parent)
   : QDialog(parent)
 {
   setupUi(this);
   mIface = pIface;
+  mPythonUtils = pythonUtils;
 }
 
 QgsPythonDialog::~QgsPythonDialog()
@@ -41,14 +42,13 @@ void QgsPythonDialog::on_edtCmdLine_returnPressed()
   QString command = edtCmdLine->text();
   QString output;
   
-  QgsPythonUtils* pythonUtils = QgsPythonUtils::instance();
   
   // when using Py_single_input the return value will be always null
   // we're using custom hooks for output and exceptions to show output in console
-  if (pythonUtils->runStringUnsafe(command))
+  if (mPythonUtils->runStringUnsafe(command))
   {
-    pythonUtils->evalString("sys.stdout.get_and_clean_data()", output);
-    QString result = pythonUtils->getResult();
+    mPythonUtils->evalString("sys.stdout.get_and_clean_data()", output);
+    QString result = mPythonUtils->getResult();
     // escape the result so python objects display properly and
     // we can still use html output to get nicely formatted display
     output = escapeHtml(output) + escapeHtml(result);
@@ -59,7 +59,7 @@ void QgsPythonDialog::on_edtCmdLine_returnPressed()
   else
   {
     QString className, errorText;
-    pythonUtils->getError(className, errorText);
+    mPythonUtils->getError(className, errorText);
     
     output = "<font color=\"red\">" + escapeHtml(className) + ": " + escapeHtml(errorText) + "</font><br>";
   }
@@ -78,12 +78,12 @@ void QgsPythonDialog::showEvent(QShowEvent* event)
 {
   QDialog::showEvent(event);
   
-  QgsPythonUtils::instance()->installConsoleHooks();
+  mPythonUtils->installConsoleHooks();
 }
 
 void QgsPythonDialog::closeEvent(QCloseEvent* event)
 {
-  QgsPythonUtils::instance()->uninstallConsoleHooks();
+  mPythonUtils->uninstallConsoleHooks();
   
   QDialog::closeEvent(event);
 }

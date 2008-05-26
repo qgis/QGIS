@@ -50,6 +50,7 @@ class QgsMapTool;
 class QgsPoint;
 class QgsProviderRegistry;
 class QgsPythonDialog;
+class QgsPythonUtils;
 class QgsRasterLayer;
 class QgsRect;
 class QgsVectorLayer;
@@ -524,9 +525,8 @@ private:
   QAction *mActionShowAllToolbars;
   QAction *mActionHideAllToolbars;
   QAction *mActionToggleFullScreen;
-#ifdef HAVE_PYTHON
   QAction *mActionShowPythonDialog;
-#endif
+  
   //
   //tool groups -------------------------------------
   QActionGroup *mMapToolGroup;
@@ -659,9 +659,8 @@ class Tools
   
   //!flag to indicat wehter we are in fullscreen mode or not
   bool mFullScreenMode;
-#ifdef HAVE_PYTHON
   QgsPythonDialog* mPythonConsole;
-#endif
+  QgsPythonUtils* mPythonUtils;
 };
 
 #endif
