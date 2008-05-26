@@ -113,6 +113,14 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
       /**This slot save the current contrast enhancement algorithm as the default algorithm */
       void on_pbtnMakeContrastEnhancementAlgorithmDefault_clicked();
 	
+      /** Load the default style when appriate button is pressed. */
+      void on_pbnLoadDefaultStyle_clicked();
+      /** Save the default style when appriate button is pressed. */
+      void on_pbnSaveDefaultStyle_clicked();
+      /** Load a saved  style when appriate button is pressed. */
+      void on_pbnLoadStyle_clicked();
+      /** Save a style when appriate button is pressed. */
+      void on_pbnSaveStyleAs_clicked();
 
     signals:
 

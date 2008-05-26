@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>299</width>
-    <height>159</height>
+    <width>295</width>
+    <height>68</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -14,22 +14,22 @@
   </property>
   <layout class="QGridLayout" >
    <property name="leftMargin" >
-    <number>3</number>
+    <number>2</number>
    </property>
    <property name="topMargin" >
-    <number>3</number>
+    <number>2</number>
    </property>
    <property name="rightMargin" >
-    <number>3</number>
+    <number>2</number>
    </property>
    <property name="bottomMargin" >
-    <number>3</number>
+    <number>2</number>
    </property>
    <property name="horizontalSpacing" >
-    <number>3</number>
+    <number>2</number>
    </property>
    <property name="verticalSpacing" >
-    <number>3</number>
+    <number>2</number>
    </property>
    <item row="0" column="0" >
     <layout class="QHBoxLayout" >
@@ -106,7 +106,26 @@
     </layout>
    </item>
    <item row="1" column="0" >
-    <widget class="QTextBrowser" name="tbDetail" />
+    <widget class="QLabel" name="lblDetail" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="MinimumExpanding" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>Detail label</string>
+     </property>
+     <property name="scaledContents" >
+      <bool>false</bool>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+     </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

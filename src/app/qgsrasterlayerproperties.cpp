@@ -2417,6 +2417,7 @@ void QgsRasterLayerProperties::on_rbtnSingleBand_toggled(bool theState)
   if(theState)
   {
     //--- enable and disable appropriate controls
+    stackedWidget->setCurrentIndex(1);
     rbtnThreeBand->setChecked(false); 
     cboxColorMap->setEnabled(true);
 
@@ -2439,9 +2440,6 @@ void QgsRasterLayerProperties::on_rbtnSingleBand_toggled(bool theState)
     }
 
     grpRgbBands->setEnabled(false);
-    grpRgbScaling->setEnabled(false);
-    grpGrayBand->setEnabled(true);
-    grpGrayScaling->setEnabled(true);
 
     if(mRasterLayer->getUserDefinedGrayMinMax())
     {
@@ -2492,14 +2490,12 @@ void QgsRasterLayerProperties::on_rbtnThreeBand_toggled(bool theState)
   if(theState)
   {
     //--- enable and disable appropriate controls
+    stackedWidget->setCurrentIndex(0);
     rbtnSingleBand->setChecked(false);
     cboxColorMap->setEnabled(false);
     tabBar->setTabEnabled(tabBar->indexOf(tabPageColormap), false);
 
     grpRgbBands->setEnabled(true);
-    grpRgbScaling->setEnabled(true);
-    grpGrayBand->setEnabled(false);
-    grpGrayScaling->setEnabled(false);
     
     pbtnLoadMinMax->setEnabled(true);
     labelContrastEnhancement->setEnabled(true);
@@ -2863,4 +2859,162 @@ QLinearGradient QgsRasterLayerProperties::highlightGradient()
   myGradient.setColorAt(0.5,QColor(255, 255, 255, 100));
   myGradient.setColorAt(0.0,QColor(255, 255, 255, 150));
   return myGradient;
+}
+
+
+
+//
+//
+// Next four methods for saving and restoring qml style state
+//
+//
+void QgsRasterLayerProperties::on_pbnLoadDefaultStyle_clicked()
+{
+  bool defaultLoadedFlag = false;
+  QString myMessage = mRasterLayer->loadDefaultStyle( defaultLoadedFlag );
+  //reset if the default style was loaded ok only
+  if ( defaultLoadedFlag )
+  {
+    sync();
+  }
+  QMessageBox::information( this, 
+      tr("Default Style"), 
+      myMessage
+      ); 
+}
+
+void QgsRasterLayerProperties::on_pbnSaveDefaultStyle_clicked()
+{
+  // a flag passed by reference
+  bool defaultSavedFlag = false;
+  // after calling this the above flag will be set true for success
+  // or false if the save operation failed
+  QString myMessage = mRasterLayer->saveDefaultStyle( defaultSavedFlag );
+  QMessageBox::information( this, 
+      tr("Default Style"), 
+      myMessage
+      ); 
+}
+
+
+void QgsRasterLayerProperties::on_pbnLoadStyle_clicked()
+{
+  QSettings myQSettings;  // where we keep last used filter in persistant state
+  QString myLastUsedDir = myQSettings.value ( "style/lastStyleDir", "." ).toString();
+
+  //create a file dialog
+  std::auto_ptr < QFileDialog > myFileDialog
+    (
+     new QFileDialog (
+       this,
+       QFileDialog::tr ( "Load layer properties from style file (.qml)" ),
+       myLastUsedDir,
+       tr ( "QGIS Layer Style File (*.qml)" )
+       )
+    );
+  myFileDialog->setFileMode ( QFileDialog::AnyFile );
+  myFileDialog->setAcceptMode ( QFileDialog::AcceptOpen );
+
+  //prompt the user for a filename
+  QString myFileName;
+  if ( myFileDialog->exec() == QDialog::Accepted )
+  {
+    QStringList myFiles = myFileDialog->selectedFiles();
+    if ( !myFiles.isEmpty() )
+    {
+      myFileName = myFiles[0];
+    }
+  }
+
+  if ( !myFileName.isEmpty() )
+  {
+    if ( myFileDialog->selectedFilter() == tr ( "QGIS Layer Style File (*.qml)" ) )
+    {
+      //ensure the user never ommitted the extension from the filename
+      if ( !myFileName.toUpper().endsWith ( ".QML" ) )
+      {
+        myFileName += ".qml";
+      }
+      bool defaultLoadedFlag = false;
+      QString myMessage = mRasterLayer->loadNamedStyle( myFileName, defaultLoadedFlag );
+      //reset if the default style was loaded ok only
+      if ( defaultLoadedFlag )
+      {
+        sync();
+      }
+      QMessageBox::information( this, 
+          tr("Default Style"), 
+          myMessage
+          ); 
+    }
+    else
+    {
+      QMessageBox::warning ( this, tr ( "QGIS" ), tr ( "Unknown style format: " ) +
+          myFileDialog->selectedFilter() );
+
+    }
+    myQSettings.setValue ( "style/lastStyleDir", myFileDialog->directory().absolutePath() );
+  }
+}
+
+
+void QgsRasterLayerProperties::on_pbnSaveStyleAs_clicked()
+{
+
+  QSettings myQSettings;  // where we keep last used filter in persistant state
+  QString myLastUsedDir = myQSettings.value ( "style/lastStyleDir", "." ).toString();
+
+  //create a file dialog
+  std::auto_ptr < QFileDialog > myFileDialog
+    (
+     new QFileDialog (
+       this,
+       QFileDialog::tr ( "Save layer properties as style file (.qml)" ),
+       myLastUsedDir,
+       tr ( "QGIS Layer Style File (*.qml)" )
+       )
+    );
+  myFileDialog->setFileMode ( QFileDialog::AnyFile );
+  myFileDialog->setAcceptMode ( QFileDialog::AcceptSave );
+
+  //prompt the user for a filename
+  QString myOutputFileName;
+  if ( myFileDialog->exec() == QDialog::Accepted )
+  {
+    QStringList myFiles = myFileDialog->selectedFiles();
+    if ( !myFiles.isEmpty() )
+    {
+      myOutputFileName = myFiles[0];
+    }
+  }
+
+  if ( !myOutputFileName.isEmpty() )
+  {
+    if ( myFileDialog->selectedFilter() == tr ( "QGIS Layer Style File (*.qml)" ) )
+    {
+      //ensure the user never ommitted the extension from the filename
+      if ( !myOutputFileName.toUpper().endsWith ( ".QML" ) )
+      {
+        myOutputFileName += ".qml";
+      }
+      bool defaultLoadedFlag = false;
+      QString myMessage = mRasterLayer->saveNamedStyle( myOutputFileName, defaultLoadedFlag );
+      //reset if the default style was loaded ok only
+      if ( defaultLoadedFlag )
+      {
+        sync();
+      }
+      QMessageBox::information( this, 
+          tr("Default Style"), 
+          myMessage
+          ); 
+    }
+    else
+    {
+      QMessageBox::warning ( this, tr ( "QGIS" ), tr ( "Unknown style format: " ) +
+          myFileDialog->selectedFilter() );
+
+    }
+    myQSettings.setValue ( "style/lastStyleDir", myFileDialog->directory().absolutePath() );
+  }
 }

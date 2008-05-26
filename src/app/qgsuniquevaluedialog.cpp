@@ -85,6 +85,7 @@ QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVect
 
       QListWidgetItem *item = new QListWidgetItem(symbolvalue);
       mClassListWidget->addItem(item);
+      updateEntryIcon(symbol,item);
       item->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEditable|Qt::ItemIsEnabled);
       item->setData( Qt::UserRole, symbol->lowerValue() );
       item->setToolTip(symbol->label());
@@ -253,11 +254,9 @@ void QgsUniqueValueDialog::resetColors()
     for(int i=0; i<selection.size(); i++)
     {
       QListWidgetItem *item=selection[i];
-      if(!item)
-        continue;
+      if( !item ) continue;
 
-      if( !mValues.contains( item->text() ) )
-        continue;
+      if( !mValues.contains( item->text() ) )continue;
 
       setSymbolColor( mValues[ item->text() ], white);
     }
@@ -325,6 +324,7 @@ void QgsUniqueValueDialog::itemChanged( QListWidgetItem *item )
     mValues.insert(newValue, sy);
     sy->setLowerValue(newValue);
     item->setData( Qt::UserRole, newValue );
+    updateEntryIcon(sy,item);
   }
   else
     item->setText(oldValue);
@@ -423,5 +423,27 @@ void QgsUniqueValueDialog::applySymbologyChanges()
 
     item->setToolTip(sydialog.label());
     item->setData( Qt::UserRole, value);
+    updateEntryIcon(symbol,item);
+  }
+}
+
+void QgsUniqueValueDialog::updateEntryIcon(QgsSymbol * thepSymbol, 
+    QListWidgetItem * thepItem)
+{
+  QGis::VectorType myType = mVectorLayer->vectorType();
+  switch (myType) 
+  {
+    case QGis::Point:
+      thepItem->setIcon(QIcon(QPixmap::fromImage(thepSymbol->getPointSymbolAsImage())));
+      break;
+    case QGis::Line:
+      thepItem->setIcon(QIcon(QPixmap::fromImage(thepSymbol->getLineSymbolAsImage())));
+      break;
+    case QGis::Polygon:
+      thepItem->setIcon(QIcon(QPixmap::fromImage(thepSymbol->getPolygonSymbolAsImage())));
+      break;
+    default: //unknown
+      QgsDebugMsg("Vector layer type unknown");
+      //do nothing
   }
 }
