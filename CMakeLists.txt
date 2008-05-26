@@ -1,11 +1,9 @@
-PROJECT(qgis0.11.0)
 SET(CPACK_PACKAGE_VERSION_MAJOR "0")
 SET(CPACK_PACKAGE_VERSION_MINOR "11")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
+SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})^
 SET(RELEASE_NAME "Metis")
-
-SET(PROJECT_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
-
+SET(PROJECT_VERSION ${COMPLETE_VERSION})
 PROJECT(qgis${PROJECT_VERSION})
 
 
@@ -14,7 +12,9 @@ PROJECT(qgis${PROJECT_VERSION})
 # - nice output when configured
 # - rename *.ui files to have the same filename as their implementation
 #   e.g. instead of blahblahbase.ui use blahblah.ui
-#   because it's more common in Qt4
+#   because it's more common in Qt4 
+# Note on last point above by Tim Sutton - I prefer to have the base suffix
+# as it indicates the ui generated class will be a base class for the widget.
 
 #############################################################
 # CMake settings
@@ -360,7 +360,7 @@ SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Quantum GIS")
 SET(CPACK_PACKAGE_VENDOR "Open Source Geospatial Foundation")
 SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
-SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Quantum GIS ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
+SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Quantum GIS ${COMPLETE_VERSION}")
 IF(WIN32 AND NOT UNIX)
   # There is a bug in NSI that does not handle full unix paths properly. Make
   # sure there is at least one set of four (4) backslashes.
