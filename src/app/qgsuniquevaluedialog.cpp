@@ -301,7 +301,6 @@ void QgsUniqueValueDialog::changeClassificationAttribute()
       addClass(value);
     }
   }
-  mClassListWidget->setCurrentRow(0);
 }
 
 void QgsUniqueValueDialog::itemChanged( QListWidgetItem *item )
