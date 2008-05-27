@@ -102,7 +102,7 @@ class InstallerPluginGui(QDialog, Ui_Dialog):
     if not repository:
       return
     repository_url = str(repository[1])
-    plugindir = str(QgsApplication.qgisSettingsDirPath()) + "/python/plugins"
+    plugindir = unicode(QgsApplication.qgisSettingsDirPath(),'utf-8') + "/python/plugins"
     
     QApplication.setOverrideCursor(Qt.WaitCursor)
     from qgis_plugins import retrieve_list, install_plugin
