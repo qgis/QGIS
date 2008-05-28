@@ -173,7 +173,6 @@ ENDIF (CMAKE_BUILD_TYPE MATCHES Debug)
 # platform specific stuff
 
 IF (WIN32)
-  SET (DEFAULT_BIN_SUBDIR     .)
   SET (DEFAULT_LIB_SUBDIR     lib)
   SET (DEFAULT_DATA_SUBDIR    .)
   SET (DEFAULT_PLUGIN_SUBDIR  plugins)
@@ -185,6 +184,7 @@ IF (WIN32)
     # will pop up mid way through the build process and block
     # the build, plus the python bindings wont build correctly
     SET (CMAKE_MAKE_PROGRAM nmake)
+    SET (DEFAULT_BIN_SUBDIR bin)
     # put all the build products into a single directory
     # under build (doesnt affect install target) to make for
     # easier debugging.
@@ -210,6 +210,8 @@ IF (WIN32)
     ADD_DEFINITIONS(-DQGISDEBUG=1)
 
     INSTALL(DIRECTORY ${CMAKE_SOURCE_DIR}/win_build/vcdeps/. DESTINATION .)
+  ELSE(MSVC)
+    SET (DEFAULT_BIN_SUBDIR     .)
   ENDIF(MSVC)
 ELSE (WIN32)
 
@@ -239,9 +241,11 @@ IF (WIN32)
   IF (MSVC)
     ADD_DEFINITIONS("-DCORE_EXPORT=__declspec(dllimport)")
     ADD_DEFINITIONS("-DGUI_EXPORT=__declspec(dllimport)")
+    ADD_DEFINITIONS("-DPYTHON_EXPORT=__declspec(dllimport)")
   ELSE (MSVC)
     ADD_DEFINITIONS("\"-DCORE_EXPORT=__declspec(dllimport)\"")
     ADD_DEFINITIONS("\"-DGUI_EXPORT=__declspec(dllimport)\"")
+    ADD_DEFINITIONS("\"-DPYTHON_EXPORT=__declspec(dllimport)\"")
   ENDIF (MSVC)
 ELSE (WIN32)
   # other compilers don't use that MSVC construct

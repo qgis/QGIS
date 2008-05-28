@@ -33,7 +33,7 @@ class QgisInterface;
 
  */
 
-class QgsPythonUtils
+class PYTHON_EXPORT QgsPythonUtils
 {
   public:
     
