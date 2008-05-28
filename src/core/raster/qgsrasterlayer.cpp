@@ -3425,7 +3425,7 @@ cStringList2Q_( char ** stringList )
 QString QgsRasterLayer::getMetadata()
 {
   QString myMetadata ;
-  myMetadata += "<p class=\"glossyBlue\">" + tr("Driver:") + "</p>\n";
+  myMetadata += "<p class=\"glossy\">" + tr("Driver:") + "</p>\n";
   myMetadata += "<p>";
   if (mProviderKey.isEmpty())
   {
@@ -3449,7 +3449,7 @@ QString QgsRasterLayer::getMetadata()
 
     // my added code (MColetti)
 
-    myMetadata += "<p class=\"glossyBlue\">";
+    myMetadata += "<p class=\"glossy\">";
     myMetadata += tr("Dataset Description");
     myMetadata += "</p>\n";
     myMetadata += "<p>";
@@ -3471,7 +3471,7 @@ QString QgsRasterLayer::getMetadata()
 
     for ( int i = 1; i <= GDALGetRasterCount(mGdalDataset); ++i )
     {
-      myMetadata += "<p class=\"glossyBlue\">" + tr("Band %1").arg(i) + "</p>\n";
+      myMetadata += "<p class=\"glossy\">" + tr("Band %1").arg(i) + "</p>\n";
       GDALRasterBandH gdalBand = GDALGetRasterBand(mGdalDataset,i);
       GDALmetadata = GDALGetMetadata(gdalBand,NULL);
 
@@ -3501,7 +3501,7 @@ QString QgsRasterLayer::getMetadata()
 
     // end my added code
 
-    myMetadata += "<p class=\"glossyBlue\">";
+    myMetadata += "<p class=\"glossy\">";
     myMetadata += tr("Dimensions:");
     myMetadata += "</p>\n";
     myMetadata += "<p>";
@@ -3512,7 +3512,7 @@ QString QgsRasterLayer::getMetadata()
     //just use the first band
     GDALRasterBandH myGdalBand = GDALGetRasterBand(mGdalDataset,1);
 
-    myMetadata += "<p class=\"glossyBlue\">";
+    myMetadata += "<p class=\"glossy\">";
     myMetadata += tr("No Data Value");
     myMetadata += "</p>\n";
     myMetadata += "<p>";
@@ -3527,7 +3527,7 @@ QString QgsRasterLayer::getMetadata()
     myMetadata += "</p>\n";
 
     myMetadata += "</p>\n";
-    myMetadata += "<p class=\"glossyBlue\">";
+    myMetadata += "<p class=\"glossy\">";
     myMetadata += tr("Data Type:");
     myMetadata += "</p>\n";
     myMetadata += "<p>";
@@ -3571,7 +3571,7 @@ QString QgsRasterLayer::getMetadata()
     }
     myMetadata += "</p>\n";
 
-    myMetadata += "<p class=\"glossyBlue\">";
+    myMetadata += "<p class=\"glossy\">";
     myMetadata += tr("Pyramid overviews:");
     myMetadata += "</p>\n";
     myMetadata += "<p>";
@@ -3592,7 +3592,7 @@ QString QgsRasterLayer::getMetadata()
     myMetadata += "</p>\n";
   }  // if (mProviderKey.isEmpty())
 
-  myMetadata += "<p class=\"glossyBlue\">";
+  myMetadata += "<p class=\"glossy\">";
   myMetadata += tr("Layer Spatial Reference System: ");
   myMetadata += "</p>\n";
   myMetadata += "<p>";
@@ -3620,7 +3620,7 @@ QString QgsRasterLayer::getMetadata()
     }
     else
     {
-      myMetadata += "<p class=\"glossyBlue\">";
+      myMetadata += "<p class=\"glossy\">";
       myMetadata += tr("Origin:");
       myMetadata += "</p>\n";
       myMetadata += "<p>";
@@ -3629,7 +3629,7 @@ QString QgsRasterLayer::getMetadata()
       myMetadata += QString::number(mGeoTransform[3]);
       myMetadata += "</p>\n";
 
-      myMetadata += "<p class=\"glossyBlue\">";
+      myMetadata += "<p class=\"glossy\">";
       myMetadata += tr("Pixel Size:");
       myMetadata += "</p>\n";
       myMetadata += "<p>";
@@ -3647,7 +3647,7 @@ QString QgsRasterLayer::getMetadata()
     {
       QgsDebugMsg("Raster properties : checking if band " + QString::number(myIteratorInt) + " has stats? ");
       //band name
-      myMetadata += "<p class=\"glossyBlue\">\n";
+      myMetadata += "<p class=\"glossy\">\n";
       myMetadata += tr("Band");
       myMetadata += "</p>\n";
       myMetadata += "<p>";

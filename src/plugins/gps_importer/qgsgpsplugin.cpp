@@ -32,6 +32,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QAction>
+#include <QToolBar>
 #include <QProcess>
 #include <QProgressDialog>
 #include <QSettings>
@@ -97,7 +98,7 @@ void QgsGPSPlugin::initGui()
   connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   connect(mCreateGPXAction, SIGNAL(activated()), this, SLOT(createGPX()));
 
-  mQGisInterface->addToolBarIcon(mQActionPointer);
+  mQGisInterface->fileToolBar()->addAction(mQActionPointer);
   mQGisInterface->addPluginMenu(tr("&Gps"), mQActionPointer);
   mQGisInterface->addPluginMenu(tr("&Gps"), mCreateGPXAction);
 }

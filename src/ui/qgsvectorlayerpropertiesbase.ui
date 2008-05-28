@@ -410,22 +410,10 @@
        <string>Actions</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="leftMargin" >
-        <number>11</number>
-       </property>
-       <property name="topMargin" >
-        <number>11</number>
-       </property>
-       <property name="rightMargin" >
-        <number>11</number>
-       </property>
-       <property name="bottomMargin" >
-        <number>11</number>
-       </property>
        <item row="0" column="0" >
         <widget class="QFrame" name="actionOptionsFrame" >
          <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+          <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>

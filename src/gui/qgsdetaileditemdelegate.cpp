@@ -68,7 +68,7 @@ void QgsDetailedItemDelegate::paint(QPainter * thepPainter,
       myGradient.setColorAt(0.1, myColor2);
       myGradient.setColorAt(0.5, myColor1);
       myGradient.setColorAt(0.9, myColor2);
-      myGradient.setColorAt(1, myColor2);
+      myGradient.setColorAt(1, myColor1);
       thepPainter->fillRect(theOption.rect, QBrush(myGradient));
     }
     QPixmap myPixmap = QPixmap::grabWidget(mpWidget);
@@ -211,12 +211,9 @@ QSize QgsDetailedItemDelegate::sizeHint(
                                    myDetailMetrics, 
                                    theOption.rect.width() - (mpCheckBox->width() + myHorizontalSpacer));
     myHeight += (myList.count() + 1) * (myDetailMetrics.height() - myVerticalSpacer);
-#ifdef Q_OS_MACX
-    //for some reason itmes are non selectable if using rect.width() on osx
+    //for some reason itmes are non selectable if using rect.width() on osx and win
     return QSize(50, myHeight + myVerticalSpacer);
-#else
-    return QSize(theOption.rect.width(), myHeight + myVerticalSpacer);
-#endif
+    //return QSize(theOption.rect.width(), myHeight + myVerticalSpacer);
   }
 }
 
@@ -226,8 +223,8 @@ QStringList QgsDetailedItemDelegate::wordWrap(QString theString,
 {
   if ( theString.isEmpty() ) return QStringList();
   if ( 50 >= theWidth ) return QStringList() << theString;
-  QString myDebug = QString("Word wrapping: %1 into %2 pixels").arg(theString).arg(theWidth);
-  qDebug(myDebug.toLocal8Bit());
+  //QString myDebug = QString("Word wrapping: %1 into %2 pixels").arg(theString).arg(theWidth);
+  //qDebug(myDebug.toLocal8Bit());
   //iterate the string 
   QStringList myList;
   QString myCumulativeLine="";
@@ -265,3 +262,4 @@ QStringList QgsDetailedItemDelegate::wordWrap(QString theString,
   return myList;
 
 }
+

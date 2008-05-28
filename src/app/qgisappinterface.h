@@ -69,6 +69,10 @@ class QgisAppInterface : public QgisInterface
         void removeToolBarIcon(QAction *qAction);
         //! Add toolbar with specified name
         QToolBar* addToolBar(QString name);
+        /** Get the file toolbar - intended for use with plugins which
+         *   add a new file type handler.
+         */
+        QToolBar * fileToolBar();
 
         /** Open a url in the users browser. By default the QGIS doc directory is used
          * as the base for the URL. To open a URL that is not relative to the installed

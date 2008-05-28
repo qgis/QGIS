@@ -45,27 +45,12 @@ QgsLabelDialog::QgsLabelDialog ( QgsLabel *label,  QWidget *parent )
 
     init();
 
-    connect( sliderFontTransparency, SIGNAL(sliderMoved(int)),
-        spinFontTransparency, SLOT(setValue(int)) );
-    connect( spinFontTransparency, SIGNAL(valueChanged(int)),
-        sliderFontTransparency, SLOT(setValue(int)) );
-    connect( sliderAngle, SIGNAL(valueChanged(int)),
-        spinAngle, SLOT(setValue(int)) );
-    connect( spinAngle, SIGNAL(valueChanged(int)),
-        sliderAngle, SLOT(setValue(int)) );
-    connect( sliderBufferTransparency, SIGNAL(sliderMoved(int)),
-        spinBufferTransparency, SLOT(setValue(int)) );
-    connect( spinBufferTransparency, SIGNAL(valueChanged(int)),
-        sliderBufferTransparency, SLOT(setValue(int)) );
     connect( btnDefaultFont, SIGNAL(clicked()),
         this, SLOT(changeFont()) );
     connect( pbnDefaultBufferColor_2, SIGNAL(clicked()),
         this, SLOT(changeBufferColor()) );
     connect( pbnDefaultFontColor, SIGNAL(clicked()),
         this, SLOT(changeFontColor()) );
-    //added by Tim to force scrolling of tab bar on Mac
-    tabWidget2->setElideMode(Qt::ElideNone);
-    tabWidget2->setUsesScrollButtons(true);
 }
 
 

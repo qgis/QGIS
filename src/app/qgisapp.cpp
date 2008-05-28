@@ -52,19 +52,19 @@
 #include <QPrinter>
 #include <QProcess>
 #include <QProgressBar>
+#include <QRegExp>
+#include <QRegExpValidator>
 #include <QSettings>
 #include <QSplashScreen>
 #include <QStatusBar>
 #include <QStringList>
 #include <QTcpSocket>
 #include <QTextStream>
+#include <QTimer>
 #include <QToolButton>
 #include <QVBoxLayout>
 #include <QWhatsThis>
 #include <QtGlobal>
-#include <QRegExp>
-#include <QRegExpValidator>
-#include <QTimer>
 //
 // Mac OS X Includes
 // Must include before GEOS 3 due to unqualified use of 'Point'
@@ -359,7 +359,6 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
   
   mSplash->showMessage(tr("Starting Python"), Qt::AlignHCenter | Qt::AlignBottom);
   qApp->processEvents();
-
   // try to load python support
   QLibrary pythonlib("qgispython");
   // It's necessary to set these two load hints, otherwise Python library won't work correctly
@@ -586,10 +585,10 @@ void QgisApp::createActions()
   //
   // Layer Menu Related Items
   //
-  mActionAddNonDbLayer= new QAction(QIcon(myIconPath+"/mActionAddNonDbLayer.png"), tr("Add a Vector Layer..."), this);
-  mActionAddNonDbLayer->setShortcut(tr("V","Add a Vector Layer"));
-  mActionAddNonDbLayer->setStatusTip(tr("Add a Vector Layer"));
-  connect(mActionAddNonDbLayer, SIGNAL(triggered()), this, SLOT(addVectorLayer()));
+  mActionAddOgrLayer= new QAction(QIcon(myIconPath+"/mActionAddOgrLayer.png"), tr("Add a Vector Layer..."), this);
+  mActionAddOgrLayer->setShortcut(tr("V","Add a Vector Layer"));
+  mActionAddOgrLayer->setStatusTip(tr("Add a Vector Layer"));
+  connect(mActionAddOgrLayer, SIGNAL(triggered()), this, SLOT(addVectorLayer()));
   //
   mActionAddRasterLayer= new QAction(QIcon(myIconPath+"/mActionAddRasterLayer.png"), tr("Add a Raster Layer..."), this);
   mActionAddRasterLayer->setShortcut(tr("R","Add a Raster Layer"));
@@ -990,7 +989,7 @@ void QgisApp::createMenus()
   //
   // Layers Menu
   mLayerMenu = menuBar()->addMenu(tr("&Layer"));
-  mLayerMenu->addAction(mActionAddNonDbLayer);
+  mLayerMenu->addAction(mActionAddOgrLayer);
   mLayerMenu->addAction(mActionAddRasterLayer);
 #ifdef HAVE_POSTGRESQL
   mLayerMenu->addAction(mActionAddLayer);
@@ -1058,29 +1057,22 @@ void QgisApp::createToolBars()
   mFileToolBar->addAction(mActionFileSaveAs);
   mFileToolBar->addAction(mActionFileOpen);
   mFileToolBar->addAction(mActionFilePrint);
+  mFileToolBar->addAction(mActionAddOgrLayer);
+  mFileToolBar->addAction(mActionAddRasterLayer);
+#ifdef HAVE_POSTGRESQL
+  mFileToolBar->addAction(mActionAddLayer);
+#endif
+  mFileToolBar->addAction(mActionAddWmsLayer);
   //
   // Layer Toolbar
   mLayerToolBar = addToolBar(tr("Manage Layers"));
   mLayerToolBar->setIconSize(myIconSize);
   mLayerToolBar->setObjectName("LayerToolBar");
-  mLayerToolBar->addAction(mActionAddNonDbLayer);
-  mLayerToolBar->addAction(mActionAddRasterLayer);
-#ifdef HAVE_POSTGRESQL
-  mLayerToolBar->addAction(mActionAddLayer);
-#endif
-  mLayerToolBar->addAction(mActionAddWmsLayer);
   mLayerToolBar->addAction(mActionNewVectorLayer);
   mLayerToolBar->addAction(mActionRemoveLayer);
   mLayerToolBar->addAction(mActionInOverview);
   mLayerToolBar->addAction(mActionShowAllLayers);
   mLayerToolBar->addAction(mActionHideAllLayers);
-  //
-  // Help Toolbar
-  mHelpToolBar = addToolBar(tr("Help"));
-  mHelpToolBar->setIconSize(myIconSize);
-  mHelpToolBar->setObjectName("Help");
-  mHelpToolBar->addAction(mActionHelpContents);
-  mHelpToolBar->addAction(QWhatsThis::createAction());
   //
   // Digitizing Toolbar
   mDigitizeToolBar = addToolBar(tr("Digitizing"));
@@ -1132,6 +1124,13 @@ void QgisApp::createToolBars()
   mPluginToolBar = addToolBar(tr("Plugins"));
   mPluginToolBar->setIconSize(myIconSize);
   mPluginToolBar->setObjectName("Plugins");
+  //
+  // Help Toolbar
+  mHelpToolBar = addToolBar(tr("Help"));
+  mHelpToolBar->setIconSize(myIconSize);
+  mHelpToolBar->setObjectName("Help");
+  mHelpToolBar->addAction(mActionHelpContents);
+  mHelpToolBar->addAction(QWhatsThis::createAction());
 
   //Add the menu for toolbar visibility here
   //because createPopupMenu() would return 0
@@ -1288,7 +1287,7 @@ void QgisApp::setTheme(QString theThemeName)
   mActionExportMapServer->setIconSet(QIcon(QPixmap(myIconPath + "/mActionExportMapServer.png")));
   */
   mActionFileExit->setIconSet(QIcon(QPixmap(myIconPath + "/mActionFileExit.png")));
-  mActionAddNonDbLayer->setIconSet(QIcon(QPixmap(myIconPath + "/mActionAddNonDbLayer.png")));
+  mActionAddOgrLayer->setIconSet(QIcon(QPixmap(myIconPath + "/mActionAddOgrLayer.png")));
   mActionAddRasterLayer->setIconSet(QIcon(QPixmap(myIconPath + "/mActionAddRasterLayer.png")));
   mActionAddLayer->setIconSet(QIcon(QPixmap(myIconPath + "/mActionAddLayer.png")));
   mActionRemoveLayer->setIconSet(QIcon(QPixmap(myIconPath + "/mActionRemoveLayer.png")));
@@ -3353,6 +3352,11 @@ void QgisApp::stopRendering()
       }
     }
   }
+}
+
+QToolBar * QgisApp::fileToolBar()
+{
+  return mFileToolBar;
 }
 
 //reimplements method from base (gui) class

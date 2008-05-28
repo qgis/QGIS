@@ -110,6 +110,7 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   // but the checkbox is true to use QPixmap
   chkUseQPixmap->setChecked(!(settings.value("/qgis/use_qimage_to_render", true).toBool()));
   chkAddedVisibility->setChecked(settings.value("/qgis/new_layers_visible",true).toBool());
+  cbxLegendClassifiers->setChecked(settings.value("/qgis/showLegendClassifiers",false).toBool());
   cbxHideSplash->setChecked(settings.value("/qgis/hideSplash",false).toBool());
 
   //set the colour for selections
@@ -246,6 +247,7 @@ void QgsOptions::saveOptions()
 {
   QSettings settings;
   settings.writeEntry("/Map/identifyRadius", spinBoxIdentifyValue->value());
+  settings.writeEntry("/qgis/showLegendClassifiers",cbxLegendClassifiers->isChecked());
   settings.writeEntry("/qgis/hideSplash",cbxHideSplash->isChecked());
   settings.writeEntry("/qgis/new_layers_visible",chkAddedVisibility->isChecked());
   settings.writeEntry("/qgis/enable_anti_aliasing",chkAntiAliasing->isChecked());

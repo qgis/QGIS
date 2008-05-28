@@ -22,7 +22,8 @@
 #include "qgsvectorlayer.h"
 #include "qgswfsplugin.h"
 
-#include "mIconAddWfsLayer.xpm"
+#include <QToolBar>
+
 
 
 static const QString name_ = QObject::tr("WFS plugin");
@@ -44,12 +45,12 @@ QgsWFSPlugin::~QgsWFSPlugin()
 void QgsWFSPlugin::initGui()
 {
   if(mIface)
-    {
-      mWfsDialogAction = new QAction(QIcon(mIconAddWfsLayer), tr("&Add WFS layer"), 0);
-      QObject::connect(mWfsDialogAction, SIGNAL(triggered()), this, SLOT(showSourceDialog()));
-      mIface->addToolBarIcon(mWfsDialogAction);
-      mIface->addPluginMenu(tr("&Add WFS layer"), mWfsDialogAction);
-    }
+  {
+    mWfsDialogAction = new QAction(QIcon(":/mIconAddWfsLayer.png"), tr("&Add WFS layer"), 0);
+    QObject::connect(mWfsDialogAction, SIGNAL(triggered()), this, SLOT(showSourceDialog()));
+    mIface->fileToolBar()->addAction(mWfsDialogAction);
+    mIface->addPluginMenu(tr("&Add WFS layer"), mWfsDialogAction);
+  }
 }
 
 void QgsWFSPlugin::unload()

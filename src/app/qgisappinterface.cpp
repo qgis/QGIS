@@ -116,6 +116,10 @@ QToolBar* QgisAppInterface::addToolBar(QString name)
 {
   return qgis->addToolBar(name);
 }
+QToolBar * QgisAppInterface::fileToolBar()
+{
+  return qgis->fileToolBar();
+}
 void QgisAppInterface::openURL(QString url, bool useQgisDocDirectory)
 {
   qgis->openURL(url, useQgisDocDirectory);

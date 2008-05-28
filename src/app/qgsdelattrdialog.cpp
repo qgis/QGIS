@@ -22,8 +22,6 @@
 QgsDelAttrDialog::QgsDelAttrDialog(QHeaderView* header): QDialog()
 {
   setupUi(this);
-  QObject::connect(mOkButton, SIGNAL(clicked(bool)), this, SLOT(accept()));
-  QObject::connect(mCancelButton, SIGNAL(clicked(bool)), this, SLOT(reject()));
 
   //insert attribute names into the QListView
   if(header)

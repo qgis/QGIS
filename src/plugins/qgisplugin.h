@@ -23,7 +23,7 @@
  * <li>description
  * </ul>
  *
- * All QGis plugins must inherit from the abstract base class QgisPlugin. A
+ * All QGis plugins must inherit from the abstract base class QgisPlugin.
  * This list will grow as the API is expanded.
  * 
  * In addition, a plugin must implement the classFactory and unload
