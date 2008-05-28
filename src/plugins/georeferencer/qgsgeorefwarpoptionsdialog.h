@@ -12,6 +12,8 @@
 #ifndef QGSGEOREFWARPOPTIONSDIALOG_H
 #define QGSGEOREFWARPOPTIONSDIALOG_H
 
+#include <cstdio>
+
 #include "qgsimagewarper.h"
 
 #include "ui_qgsgeorefwarpoptionsdialogbase.h"
