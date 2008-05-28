@@ -69,6 +69,12 @@ QgsApplication::~QgsApplication()
 void QgsApplication::setPrefixPath(const QString thePrefixPath, bool useDefaultPaths)
 {
   mPrefixPath = thePrefixPath;
+#if defined(_MSC_VER)
+  if( mPrefixPath.endsWith("/bin") )
+  {
+    mPrefixPath.chop(4);
+  }
+#endif
   if (useDefaultPaths)
   {
     setPluginPath(mPrefixPath + QDir::separator() + QString(QGIS_PLUGIN_SUBDIR));
