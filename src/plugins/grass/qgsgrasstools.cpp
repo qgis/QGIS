@@ -150,7 +150,7 @@ QgsGrassTools::QgsGrassTools ( QgisInterface *iface,
   mypListTabLayout->addWidget(mListView);
   mFilterInput = new QLineEdit(this);
   mypListTabLayout->addWidget(mFilterInput);
-  mTabWidget->addTab( mypBase, tr("Modules List") );
+  //mTabWidget->addTab( mypBase, tr("Modules List") );
   connect( mFilterInput, SIGNAL(textChanged(QString)), 
     this, SLOT(filterChanged(QString)) );
   connect( mListView, SIGNAL(clicked(const QModelIndex)), 
