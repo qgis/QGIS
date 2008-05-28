@@ -251,6 +251,7 @@ ELSE (WIN32)
   # other compilers don't use that MSVC construct
   ADD_DEFINITIONS(-DCORE_EXPORT=)
   ADD_DEFINITIONS(-DGUI_EXPORT=)
+  ADD_DEFINITIONS(-DPYTHON_EXPORT=)
 ENDIF (WIN32)
 
 #############################################################
