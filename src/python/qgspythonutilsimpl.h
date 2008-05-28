@@ -35,8 +35,6 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     
     virtual ~QgsPythonUtilsImpl();
         
-    static QgsPythonUtilsImpl* instance();
-    
     /* general purpose functions */
 
     //! initialize python and import bindings
@@ -124,8 +122,6 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     
     //! flag determining that python support is enabled
     bool mPythonEnabled;
-    
-    static QgsPythonUtilsImpl* mInstance;
 };
 
 
