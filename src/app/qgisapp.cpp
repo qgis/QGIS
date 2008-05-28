@@ -387,12 +387,11 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
   
   if (mPythonUtils && mPythonUtils->isEnabled())
   {
+    mActionShowPythonDialog = new QAction(tr("Python console"), this);
+    connect(mActionShowPythonDialog, SIGNAL(triggered()), this, SLOT(showPythonDialog()));
+
+    mPluginMenu->addAction(mActionShowPythonDialog);
     QgsDebugMsg("Python support ENABLED :-)");
-  }
-  else
-  {
-    mActionShowPythonDialog->setEnabled(false);
-    QgsDebugMsg("Python support DISABLED :-(");
   }
 
   // Create the plugin registry and load plugins
@@ -616,6 +615,7 @@ void QgisApp::createActions()
   mActionRemoveLayer->setShortcut(tr("Ctrl+D","Remove a Layer"));
   mActionRemoveLayer->setStatusTip(tr("Remove a Layer"));
   connect(mActionRemoveLayer, SIGNAL(triggered()), this, SLOT(removeLayer()));
+  mActionRemoveLayer->setEnabled(false);
   //
   mActionAddAllToOverview= new QAction(QIcon(myIconPath+"/mActionAddAllToOverview.png"), tr("Add All To Overview"), this);
   mActionAddAllToOverview->setShortcut(tr("+","Show all layers in the overview map"));
@@ -784,6 +784,7 @@ void QgisApp::createActions()
   mActionInOverview->setShortcut(tr("O","Add current layer to overview map"));
   mActionInOverview->setStatusTip(tr("Add current layer to overview map"));
   connect(mActionInOverview, SIGNAL(triggered()), this, SLOT(inOverview()));
+  mActionInOverview->setEnabled(false);
   //
   // Plugin Menu Related Items
   //
@@ -804,6 +805,7 @@ void QgisApp::createActions()
   mActionToggleEditing->setStatusTip(tr("Toggles the editing state of the current layer")); 
   mActionToggleEditing->setCheckable(true);
   connect(mActionToggleEditing, SIGNAL(triggered()), this, SLOT(toggleEditing()));
+  mActionToggleEditing->setEnabled(false);
   
   //
   mActionCapturePoint= new QAction(QIcon(myIconPath+"/mActionCapturePoint.png"), tr("Capture Point"), this);
@@ -884,9 +886,6 @@ void QgisApp::createActions()
   mActionMapTips->setStatusTip(tr("Show information about a feature when the mouse is hovered over it"));
   connect ( mActionMapTips, SIGNAL ( triggered() ), this, SLOT ( toggleMapTips() ) );
   mActionMapTips->setCheckable(true);
-  
-  mActionShowPythonDialog = new QAction(tr("Python console"), this);
-  connect(mActionShowPythonDialog, SIGNAL(triggered()), this, SLOT(showPythonDialog()));
 }
 
 void QgisApp::showPythonDialog()
@@ -1017,7 +1016,6 @@ void QgisApp::createMenus()
   // Plugins Menu
   mPluginMenu = menuBar()->addMenu(tr("&Plugins"));
   mPluginMenu->addAction(mActionShowPluginManager);
-  mPluginMenu->addAction(mActionShowPythonDialog);
   mPluginMenu->addSeparator();
 
   // Add the plugin manager action to it
@@ -1084,15 +1082,15 @@ void QgisApp::createToolBars()
   mDigitizeToolBar->addAction(mActionCapturePolygon);
   mDigitizeToolBar->addAction(mActionAddRing);
   mDigitizeToolBar->addAction(mActionAddIsland);
-  mDigitizeToolBar->addAction(mActionDeleteSelected);
-  mDigitizeToolBar->addAction(mActionEditCut);
-  mDigitizeToolBar->addAction(mActionEditCopy);
-  mDigitizeToolBar->addAction(mActionEditPaste);
   mDigitizeToolBar->addAction(mActionSplitFeatures);
   mDigitizeToolBar->addAction(mActionMoveFeature);
   mDigitizeToolBar->addAction(mActionMoveVertex);
   mDigitizeToolBar->addAction(mActionAddVertex);
   mDigitizeToolBar->addAction(mActionDeleteVertex);
+  mDigitizeToolBar->addAction(mActionDeleteSelected);
+  mDigitizeToolBar->addAction(mActionEditCut);
+  mDigitizeToolBar->addAction(mActionEditCopy);
+  mDigitizeToolBar->addAction(mActionEditPaste);
   //
   // Map Navigation Toolbar
   mMapNavToolBar = addToolBar(tr("Map Navigation"));
@@ -4843,8 +4841,16 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
 {
   if(!layer)
   {
+    mActionToggleEditing->setEnabled(false);
+    mActionRemoveLayer->setEnabled(false);
+    mActionInOverview->setEnabled(false);
+    mActionEditCopy->setEnabled(false);
     return;
   }
+
+  mActionToggleEditing->setEnabled(true);
+  mActionRemoveLayer->setEnabled(true);
+  mActionInOverview->setEnabled(true);
 
   /***********Vector layers****************/
   if(layer->type() == QgsMapLayer::VECTOR)
@@ -4890,28 +4896,28 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
         if(vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::AddFeatures)
         {
           mActionCapturePoint->setEnabled(true);
-	  mActionMoveFeature->setEnabled(true);
+          mActionMoveFeature->setEnabled(true);
         }
         else
         {
           mActionCapturePoint->setEnabled(false);
-	  mActionMoveFeature->setEnabled(false);
+          mActionMoveFeature->setEnabled(false);
         }
         mActionCaptureLine->setEnabled(false);
         mActionCapturePolygon->setEnabled(false);
         mActionAddVertex->setEnabled(false);
         mActionDeleteVertex->setEnabled(false);
-	mActionMoveVertex->setEnabled(false);
+        mActionMoveVertex->setEnabled(false);
         mActionAddRing->setEnabled(false);
         mActionAddIsland->setEnabled(false);
-	mActionSplitFeatures->setEnabled(false);
+        mActionSplitFeatures->setEnabled(false);
         if(vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries)
         {
-	  //don't enable vertex move for single point
-	  if(vlayer->geometryType() != QGis::WKBPoint && vlayer->geometryType() != QGis::WKBPoint25D)
-	    {
-	      mActionMoveVertex->setEnabled(true);
-	    }
+          //don't enable vertex move for single point
+          if(vlayer->geometryType() != QGis::WKBPoint && vlayer->geometryType() != QGis::WKBPoint25D)
+          {
+            mActionMoveVertex->setEnabled(true);
+          }
           mActionMoveFeature->setEnabled(true);
         }
         return;
@@ -4921,14 +4927,14 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
         if(vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::AddFeatures)
         {
           mActionCaptureLine->setEnabled(true);
-	  mActionSplitFeatures->setEnabled(true);
-	  mActionMoveFeature->setEnabled(true);
+          mActionSplitFeatures->setEnabled(true);
+          mActionMoveFeature->setEnabled(true);
         }
         else
         {
           mActionCaptureLine->setEnabled(false);
-	  mActionSplitFeatures->setEnabled(false);
-	  mActionMoveFeature->setEnabled(false);
+          mActionSplitFeatures->setEnabled(false);
+          mActionMoveFeature->setEnabled(false);
         }
         mActionCapturePoint->setEnabled(false);
         mActionCapturePolygon->setEnabled(false);
@@ -4940,18 +4946,18 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
         if(vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::AddFeatures)
         {
           mActionCapturePolygon->setEnabled(true);
-	  mActionAddRing->setEnabled(true);
-	  mActionAddIsland->setEnabled(true);
-	  mActionSplitFeatures->setEnabled(true);
-	  mActionMoveFeature->setEnabled(true);
+          mActionAddRing->setEnabled(true);
+          mActionAddIsland->setEnabled(true);
+          mActionSplitFeatures->setEnabled(true);
+          mActionMoveFeature->setEnabled(true);
         }
         else
         {
           mActionCapturePolygon->setEnabled(false);
-	  mActionAddRing->setEnabled(false);
-	  mActionAddIsland->setEnabled(false);
-	  mActionSplitFeatures->setEnabled(false);
-	  mActionMoveFeature->setEnabled(false);
+          mActionAddRing->setEnabled(false);
+          mActionAddIsland->setEnabled(false);
+          mActionSplitFeatures->setEnabled(false);
+          mActionMoveFeature->setEnabled(false);
         }
         mActionCapturePoint->setEnabled(false);
         mActionCaptureLine->setEnabled(false);
