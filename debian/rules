@@ -32,6 +32,7 @@ debian/build/CMakeCache.txt: CMakeLists.txt
 	[ -d debian/build ] || mkdir debian/build
 	[ ! -e CMakeCache.txt ] || rm CMakeCache.txt
 	cd debian/build; cmake \
+	  -Wno-dev \
 		-D CMAKE_INSTALL_PREFIX=/usr \
 		-D CMAKE_SKIP_RPATH=TRUE \
 		-D BINDINGS_GLOBAL_INSTALL=TRUE \

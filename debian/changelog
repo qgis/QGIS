@@ -1,3 +1,12 @@
+qgis (0.11.0test1) experimental; urgency=low
+
+  * raised abi from 0.10 to 0.11
+  * separate packages for python support
+  * raised dependency from python-qt4* from 4.0.0 to 4.1.0
+  * call cmake with -Wno-dev
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Thu, 29 May 2008 00:23:14 +0200
+
 qgis (0.10.0-2) gutsy; urgency=low
   
   * fix libgdal1 grass depenency for ubuntu gutsy/hardy (1.4.0 | 1.5.0)

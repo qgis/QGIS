@@ -31,7 +31,3 @@ usr/lib/qgis/libspitplugin.so
 usr/lib/qgis/libwfsplugin.so
 usr/lib/qgis/libwfsprovider.so
 usr/lib/qgis/libwmsprovider.so
-usr/share/qgis/python/*
-usr/lib/python*/site-packages/qgis/__init__.py
-usr/lib/python*/site-packages/qgis/qgisconfig.py
-usr/lib/python*/site-packages/qgis/*.so
