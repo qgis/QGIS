@@ -72,6 +72,19 @@ extern "C" {
 #include "qgsgrassmodel.h"
 #include "qgsgrassbrowser.h"
 
+
+//
+// For experimental model view alternative ui by Tim
+//
+//
+#include <QStandardItem>
+#include <QRegExp>
+#include <qgsdetaileditemdelegate.h>
+#include <qgsdetaileditemwidget.h>
+#include <qgsdetaileditemdata.h>
+
+
+
 #if defined(WIN32)
 #include <windows.h>
 static QString getShortPath(const QString &path)
@@ -120,9 +133,34 @@ QgsGrassTools::QgsGrassTools ( QgisInterface *iface,
   QVBoxLayout *layout1 = new QVBoxLayout(this);
   layout1->addWidget(mTabWidget);
 
+  //
+  // Tims experimental list view with filter
+  //
+  mModelTools= new QStandardItemModel(0,1);
+  mModelProxy = new QSortFilterProxyModel(this);
+  mModelProxy->setSourceModel(mModelTools);
+  mModelProxy->setFilterRole(Qt::UserRole + 2);
+  mListView = new QListView();
+  mListView->setModel(mModelProxy);
+  mListView->setFocus();
+  mListView->setItemDelegateForColumn(0,new QgsDetailedItemDelegate());
+  mListView->setUniformItemSizes(false);
+  QWidget * mypBase = new QWidget(this);
+  QVBoxLayout * mypListTabLayout = new QVBoxLayout(mypBase);
+  mypListTabLayout->addWidget(mListView);
+  mFilterInput = new QLineEdit(this);
+  mypListTabLayout->addWidget(mFilterInput);
+  mTabWidget->addTab( mypBase, tr("Modules List") );
+  connect( mFilterInput, SIGNAL(textChanged(QString)), 
+    this, SLOT(filterChanged(QString)) );
+  connect( mListView, SIGNAL(clicked(const QModelIndex)), 
+    this, SLOT(listItemClicked(const QModelIndex)));
+  //
+  // End of Tims experimental bit
+  //
 
   mModulesListView = new QTreeWidget();
-  mTabWidget->addTab( mModulesListView, tr("Modules") );
+  mTabWidget->addTab( mModulesListView, tr("Modules Tree") );
   mModulesListView->setColumnCount(1);
   QStringList headers;
   headers << tr("Modules");
@@ -174,7 +212,11 @@ void QgsGrassTools::moduleClicked( QTreeWidgetItem * item, int column )
 #ifdef QGISDEBUG
   std::cerr << "name = " << name.ascii() << std::endl;
 #endif
+  runModule(name);
+}
 
+void QgsGrassTools::runModule(QString name)
+{
   if ( name.length() == 0 ) return;  // Section
 
 #ifndef WIN32
@@ -335,23 +377,30 @@ void QgsGrassTools::addModules (  QTreeWidgetItem *parent, QDomElement &element 
 
   QTreeWidgetItem *item;
   QTreeWidgetItem *lastItem = 0;
-  while( !n.isNull() ) {
+  while( !n.isNull() ) 
+  {
     QDomElement e = n.toElement();
-    if( !e.isNull() ) {
+    if( !e.isNull() ) 
+    {
       //std::cout << "tag = " << e.tagName() << std::endl;
 
-      if ( e.tagName() == "section" && e.tagName() == "grass" ) {
+      if ( e.tagName() == "section" && e.tagName() == "grass" ) 
+      {
         std::cout << "Unknown tag: " << e.tagName().toLocal8Bit().data() << std::endl;
         continue;
       }
 
-      if ( parent ) {
+      if ( parent ) 
+      {
         item = new QTreeWidgetItem( parent, lastItem );
-      } else {
+      } 
+      else 
+      {
         item = new QTreeWidgetItem( mModulesListView, lastItem );
       }
 
-      if ( e.tagName() == "section" ) {
+      if ( e.tagName() == "section" ) 
+      {
         QString label = e.attribute("label");
         QgsDebugMsg( QString("label = %1").arg(label) );
         item->setText( 0, label );
@@ -360,7 +409,9 @@ void QgsGrassTools::addModules (  QTreeWidgetItem *parent, QDomElement &element 
         addModules ( item, e );
 
         lastItem = item;
-      } else if ( e.tagName() == "grass" ) { // GRASS module
+      } 
+      else if ( e.tagName() == "grass" ) 
+      { // GRASS module
         QString name = e.attribute("name");
         QgsDebugMsg( QString("name = %1").arg(name) );
 
@@ -372,6 +423,37 @@ void QgsGrassTools::addModules (  QTreeWidgetItem *parent, QDomElement &element 
         item->setIcon( 0, QIcon(pixmap) );
         item->setText( 1, name );
         lastItem = item;
+
+
+        //
+        // Experimental work by Tim - add this item to our list model
+        // 
+        QStandardItem * mypDetailItem = new QStandardItem( name );
+        mypDetailItem->setData(name,Qt::UserRole + 1); //for calling runModule later
+        QString mySearchText = name + " - " + label;
+        mypDetailItem->setData(mySearchText ,Qt::UserRole + 2); //for filtering later
+        mypDetailItem->setData(pixmap,Qt::DecorationRole);
+        mypDetailItem->setCheckable(false);
+        mypDetailItem->setEditable(false);
+
+      
+        // Render items using widget based detail items (experimental)
+        // Calling setData in the delegate with a variantised QgsDetailedItemData
+        // will cause the widget based mode to be enabled
+        //QgsDetailedItemData myData;
+        //myData.setTitle(name);
+        //myData.setDetail(label);
+        //myData.setIcon(pixmap);
+        //myData.setCheckable(false);
+        //QVariant myVariant = qVariantFromValue(myData);
+        //mypDetailItem->setData(myVariant,Qt::UserRole);
+        
+        //alternate invocation method using simple drawing code
+        mypDetailItem->setData(label,Qt::UserRole);
+        mModelTools->appendRow(mypDetailItem);
+        //
+        // End of experimental work by Tim 
+        // 
       }
     }
     n = n.nextSibling();
@@ -454,3 +536,35 @@ void QgsGrassTools::closeTools()
     mTabWidget->removeTab(i);
   }
 }
+
+
+
+//
+// Helper function for Tim's experimental model list
+//
+
+void QgsGrassTools::filterChanged(QString theText)
+{
+  QgsDebugMsg("PluginManager filter changed to :" + theText);
+  QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax(QRegExp::RegExp);
+  Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
+  QRegExp myRegExp(theText, myCaseSensitivity, mySyntax);
+  mModelProxy->setFilterRegExp(myRegExp);
+}
+
+void QgsGrassTools::listItemClicked(const QModelIndex &theIndex )
+{
+  if (theIndex.column() == 0)
+  {
+    //
+    // If the model has been filtered, the index row in the proxy wont match 
+    // the index row in the underlying model so we need to jump through this 
+    // little hoop to get the correct item
+    //
+    QStandardItem * mypItem = 
+      mModelTools->findItems(theIndex.data(Qt::DisplayRole).toString()).first();
+    QString myModuleName = mypItem->data(Qt::UserRole +1).toString();
+    runModule(myModuleName);
+  }
+}
+

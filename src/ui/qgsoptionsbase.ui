@@ -200,6 +200,13 @@
            </widget>
           </item>
           <item row="3" column="0" colspan="2" >
+           <widget class="QCheckBox" name="cbxLegendClassifiers" >
+            <property name="text" >
+             <string>Display classification attribute names in legend</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" colspan="2" >
            <widget class="QCheckBox" name="cbxHideSplash" >
             <property name="text" >
              <string>Hide splash screen at startup</string>
@@ -217,7 +224,7 @@
          <property name="sizeHint" >
           <size>
            <width>547</width>
-           <height>91</height>
+           <height>51</height>
           </size>
          </property>
         </spacer>
@@ -268,10 +275,7 @@
           <item row="2" column="0" colspan="2" >
            <widget class="QLabel" name="textLabel3" >
             <property name="text" >
-             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-weight:600;">Note:&lt;/span> Use zero to prevent display updates until all features have been rendered&lt;/p>&lt;/body>&lt;/html></string>
+             <string>&lt;b>Note:&lt;/b> Use zero to prevent display updates until all features have been rendered</string>
             </property>
            </widget>
           </item>
@@ -518,10 +522,7 @@ p, li { white-space: pre-wrap; }
           <item row="1" column="0" colspan="2" >
            <widget class="QLabel" name="textLabel2" >
             <property name="text" >
-             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-weight:600;">Note:&lt;/span> Specify the search radius as a percentage of the map width&lt;/p>&lt;/body>&lt;/html></string>
+             <string>&lt;b>Note:&lt;/b> Specify the search radius as a percentage of the map width</string>
             </property>
             <property name="wordWrap" >
              <bool>true</bool>
@@ -896,10 +897,7 @@ p, li { white-space: pre-wrap; }
           <item row="1" column="0" colspan="2" >
            <widget class="QLabel" name="label_7" >
             <property name="text" >
-             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-weight:600;">Note:&lt;/span> Enabling / changing overide on local requires an application restart&lt;/p>&lt;/body>&lt;/html></string>
+             <string>&lt;b>Note:&lt;/b> Enabling / changing overide on local requires an application restart</string>
             </property>
             <property name="wordWrap" >
              <bool>true</bool>

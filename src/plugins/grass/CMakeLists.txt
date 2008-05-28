@@ -9,8 +9,8 @@ IF (NOT MSVC)
     MESSAGE("providers/grass : -Werror removed for qgsgrassplugin.cpp for now - please get rid of any compiler warnings!")
   ENDIF (PEDANTIC)
   # The warnings are caused by multiple definitions of NDEBUG in grass sources
-  # I have submitted a bug to teh grass folks in the meantime we need to
-  # disable treating warnings as errors for the affected files
+  # I have submitted a bug to the grass folks in the meantime we need to
+  # disable treating warnings as errors for the affected files TS
   FILE (GLOB files *.cpp)
   SET_SOURCE_FILES_PROPERTIES(${files} PROPERTIES COMPILE_FLAGS -Wno-error ) 
 ENDIF (NOT MSVC)
@@ -98,14 +98,23 @@ ENDIF (NOT MSVC)
 ########################################################
 # build lib
 
-ADD_LIBRARY (grassplugin MODULE ${GRASS_PLUGIN_SRCS} ${GRASS_PLUGIN_MOC_SRCS} ${GRASS_PLUGIN_UIS_H} ${GRASS_PLUGIN_RCC_SRCS})
+ADD_LIBRARY (grassplugin MODULE 
+  ${GRASS_PLUGIN_SRCS} 
+  ${GRASS_PLUGIN_MOC_SRCS} 
+  ${GRASS_PLUGIN_UIS_H} 
+  ${GRASS_PLUGIN_RCC_SRCS}
+  )
 
 INCLUDE_DIRECTORIES(
      .
-     ${CMAKE_CURRENT_BINARY_DIR}
-     ../../core ../../core/raster ../../core/renderer ../../core/symbology
-     ../../gui
      ..
+     ${CMAKE_CURRENT_BINARY_DIR}
+     ../../core 
+     ../../core/raster 
+     ../../core/renderer 
+     ../../core/symbology
+     ../../gui
+     ${CMAKE_CURRENT_BINARY_DIR}/../../ui
      ${GRASS_INCLUDE_DIR}
      ${GDAL_INCLUDE_DIR}
      ${PROJ_INCLUDE_DIR}

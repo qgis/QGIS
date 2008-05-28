@@ -86,8 +86,11 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Remove an action (icon) from the plugin toolbar
     virtual void removeToolBarIcon(QAction *qAction) = 0;
     //! Add toolbar with specified name
-    virtual QToolBar* addToolBar(QString name)=0;
-
+    virtual QToolBar * addToolBar(QString name)=0;
+    /** Get the file toolbar - intended for use with plugins which
+    *   add a new file type handler.
+    */
+    virtual QToolBar * fileToolBar()=0;
     // TODO: is this deprecated in favour of QgsContextHelp?
     /** Open a url in the users browser. By default the QGIS doc directory is used
      * as the base for the URL. To open a URL that is not relative to the installed

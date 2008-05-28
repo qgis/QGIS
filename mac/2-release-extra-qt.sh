@@ -147,7 +147,6 @@ popd
 
 strip -x ${FRAMEWORKPREFIX}/QtGui.framework/Versions/4/QtGui 
 strip -x ${FRAMEWORKPREFIX}/QtCore.framework/Versions/4/QtCore 
-strip -x ${FRAMEWORKPREFIX}/Qt3Support.framework/Versions/4/Qt3Support 
 strip -x ${FRAMEWORKPREFIX}/QtSql.framework/Versions/4/QtSql 
 strip -x ${FRAMEWORKPREFIX}/QtSvg.framework/Versions/4/QtSvg 
 strip -x ${FRAMEWORKPREFIX}/QtXml.framework/Versions/4/QtXml 

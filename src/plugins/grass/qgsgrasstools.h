@@ -34,6 +34,14 @@ class QgsMapCanvas;
 #include <QDialog>
 #include <QTabWidget>
 
+//
+// For experimental filterable list model by Tim
+//
+#include <QListView>
+#include <QLineEdit>
+#include <QStandardItemModel>
+#include <QSortFilterProxyModel>
+
 class QgsGrassToolsTabWidget: public QTabWidget
 {
     Q_OBJECT;
@@ -99,6 +107,12 @@ public slots:
     //! Close open tabs with tools
     void closeTools();
 
+    //! Update the regex used to filter the modules list 
+    void filterChanged(QString theText);
+    //! Run a module when its entry is clicked in the list view
+    void listItemClicked(const QModelIndex &theIndex );
+    //! Run a module given its module name e.g. r.in.gdal
+    void runModule(QString name);
 signals:
     void regionChanged();
 
@@ -114,6 +128,16 @@ private:
 
     QgsGrassToolsTabWidget *mTabWidget;
     QTreeWidget *mModulesListView;
+
+
+    //
+    // For experimental model & filtered model by Tim
+    //
+    QListView * mListView;
+    QStandardItemModel * mModelTools;
+    QSortFilterProxyModel * mModelProxy;
+    QLineEdit * mFilterInput;
+
 };
 
 #endif // QGSGRASSTOOLS_H

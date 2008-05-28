@@ -54,6 +54,10 @@ class QgisInterface : QObject
     virtual void removeToolBarIcon(QAction *qAction) = 0;
     //! Add toolbar with specified name
     virtual QToolBar* addToolBar(QString name)=0 /Factory/;
+    /** Get the file toolbar - intended for use with plugins which
+    *   add a new file type handler.
+    */
+    virtual QToolBar * fileToolBar()=0;
 
     // TODO: is this deprecated in favour of QgsContextHelp?
     /** Open a url in the users browser. By default the QGIS doc directory is used
