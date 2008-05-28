@@ -1,3 +1,13 @@
+IF (WIN32)
+  IF (MSVC)
+    ADD_DEFINITIONS("-DPYTHON_EXPORT=__declspec(dllexport)")
+  ELSE (MSVC)
+    ADD_DEFINITIONS("\"-DPYTHON_EXPORT=__declspec(dllexport)\"")
+  ENDIF (MSVC)
+ELSE (WIN32)
+  # other compilers don't use that MSVC construct
+  ADD_DEFINITIONS(-DPYTHON_EXPORT=)
+ENDIF (WIN32)
 
 SET(QGISPYTHON_SRCS qgispython.cpp qgspythonutilsimpl.cpp)
 
@@ -18,6 +28,7 @@ TARGET_LINK_LIBRARIES(qgispython
   ${QT_QTCORE_LIBRARY} 
   ${QT_QTGUI_LIBRARY} 
   ${PYTHON_LIBRARIES}
+  qgis_core
 )
 
 INSTALL(TARGETS qgispython
