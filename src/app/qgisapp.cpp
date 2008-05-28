@@ -169,9 +169,6 @@
 
 #include "qgspythondialog.h"
 #include "qgspythonutils.h"
-#ifdef HAVE_PYTHON
-#include "qgspythonutilsimpl.h"
-#endif
 
 #ifndef WIN32
 #include <dlfcn.h>
@@ -360,17 +357,44 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
   qApp->processEvents();
   QgsApplication::initQgis();
   
-#ifdef HAVE_PYTHON
   mSplash->showMessage(tr("Starting Python"), Qt::AlignHCenter | Qt::AlignBottom);
   qApp->processEvents();
-  
-  mPythonUtils = QgsPythonUtilsImpl::instance();
-  
-  mPythonUtils->initPython(mQgisInterface);
-#endif
 
-  if (!mPythonUtils || !mPythonUtils->isEnabled())
+  // try to load python support
+  QLibrary pythonlib("qgispython");
+  // It's necessary to set these two load hints, otherwise Python library won't work correctly
+  // see http://lists.kde.org/?l=pykde&m=117190116820758&w=2
+  pythonlib.setLoadHints(QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint);
+  if (pythonlib.load())
+  {
+    QgsDebugMsg("Python support library loaded successfully.");
+    typedef QgsPythonUtils* (*inst)();
+    inst pythonlib_inst = (inst) pythonlib.resolve("instance");
+    if (pythonlib_inst)
+    {
+      QgsDebugMsg("Python support library's instance() symbol resolved.");
+      mPythonUtils = pythonlib_inst();
+      mPythonUtils->initPython(mQgisInterface);
+    }
+    else
+    {
+      QgsDebugMsg("Couldn't resolve python support library's instance() symbol.");
+    }
+  }
+  else
+  {
+    QgsDebugMsg("Couldn't load Python support library.");
+  }
+  
+  if (mPythonUtils && mPythonUtils->isEnabled())
+  {
+    QgsDebugMsg("Python support ENABLED :-)");
+  }
+  else
+  {
     mActionShowPythonDialog->setEnabled(false);
+    QgsDebugMsg("Python support DISABLED :-(");
+  }
 
   // Create the plugin registry and load plugins
   // load any plugins that were running in the last session

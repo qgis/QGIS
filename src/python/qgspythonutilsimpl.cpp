@@ -28,7 +28,6 @@
 #include <QStringList>
 #include <QDir>
 
-QgsPythonUtilsImpl* QgsPythonUtilsImpl::mInstance = NULL;
 
 QgsPythonUtilsImpl::QgsPythonUtilsImpl()
 {
@@ -40,14 +39,6 @@ QgsPythonUtilsImpl::QgsPythonUtilsImpl()
 QgsPythonUtilsImpl::~QgsPythonUtilsImpl()
 {
 }
-
-QgsPythonUtilsImpl* QgsPythonUtilsImpl::instance()
-{
-  if (mInstance == NULL)
-    mInstance = new QgsPythonUtilsImpl();
-  return mInstance;
-}
-
 
 void QgsPythonUtilsImpl::initPython(QgisInterface* interface)
 {
@@ -62,7 +53,6 @@ void QgsPythonUtilsImpl::initPython(QgisInterface* interface)
   runString("import sys"); // import sys module (for display / exception hooks)
   runString("import traceback"); // for formatting stack traces
   runString("import __main__"); // to access explicitly global variables
-  
   
   // expect that bindings are installed locally, so add the path to modules
   // also add path to plugins
