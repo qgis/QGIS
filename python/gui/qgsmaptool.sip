@@ -33,6 +33,9 @@ class QgsMapTool : QObject
     //! Mouse move event for overriding
     virtual void canvasMoveEvent(QMouseEvent * e);
 
+    //! Mouse double click event for overriding
+    virtual void canvasDoubleClickEvent(QMouseEvent * e);
+
     //! Mouse press event for overriding
     virtual void canvasPressEvent(QMouseEvent * e);
 

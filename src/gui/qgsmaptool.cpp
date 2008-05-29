@@ -116,6 +116,10 @@ void QgsMapTool::canvasMoveEvent(QMouseEvent *)
 {
 }
 
+void QgsMapTool::canvasDoubleClickEvent(QMouseEvent *)
+{
+}
+
 void QgsMapTool::canvasPressEvent(QMouseEvent *)
 {
 }
