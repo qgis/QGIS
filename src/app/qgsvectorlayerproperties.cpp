@@ -90,7 +90,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer * lyr,
     int capabilities=layer->getDataProvider()->capabilities();
     if(!(capabilities&QgsVectorDataProvider::CreateSpatialIndex))
     {
-      indexGroupBox->setEnabled(false);
+      pbnIndex->setEnabled(false);
     }
   }
 
@@ -192,6 +192,7 @@ void QgsVectorLayerProperties::reset( void )
   {
     displayFieldComboBox->insertItem( it->name() );
   }   
+  displayFieldComboBox->setCurrentText( layer->displayField() );
 
   // set up the scale based layer visibility stuff....
   chkUseScaleDependentRendering->setChecked(layer->scaleBasedVisibility());
