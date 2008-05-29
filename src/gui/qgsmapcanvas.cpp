@@ -703,6 +703,19 @@ void QgsMapCanvas::keyReleaseEvent(QKeyEvent * e)
 } //keyReleaseEvent()
 
 
+void QgsMapCanvas::mouseDoubleClickEvent(QMouseEvent * e)
+{
+  if(mDrawing)
+  {
+    return;
+  }
+
+  // call handler of current map tool
+  if (mMapTool)
+     mMapTool->canvasDoubleClickEvent(e);  
+} // mouseDoubleClickEvent
+
+
 void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
 {
   if(mDrawing)
@@ -899,7 +912,6 @@ void QgsMapCanvas::zoomWithCenter(int x, int y, bool zoomIn)
   setExtent(r);
   refresh();
 }
-
 
 void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 {

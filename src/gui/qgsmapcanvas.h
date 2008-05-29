@@ -307,6 +307,9 @@ protected:
     //! Overridden key release event
     void keyReleaseEvent(QKeyEvent * e);
 
+    //! Overridden mouse double click event
+    void mouseDoubleClickEvent(QMouseEvent * e);
+
     //! Overridden mouse move event
     void mouseMoveEvent(QMouseEvent * e);
 
