@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>340</width>
-    <height>159</height>
+    <width>324</width>
+    <height>133</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -16,15 +16,24 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>10</number>
+   <property name="leftMargin" >
+    <number>4</number>
    </property>
-   <property name="spacing" >
-    <number>6</number>
+   <property name="topMargin" >
+    <number>4</number>
    </property>
-   <item row="1" column="0" >
-    <widget class="QLineEdit" name="mLowerEdit" />
-   </item>
+   <property name="rightMargin" >
+    <number>4</number>
+   </property>
+   <property name="bottomMargin" >
+    <number>4</number>
+   </property>
+   <property name="horizontalSpacing" >
+    <number>-1</number>
+   </property>
+   <property name="verticalSpacing" >
+    <number>-1</number>
+   </property>
    <item row="0" column="0" >
     <widget class="QLabel" name="mLowerLabel" >
      <property name="text" >
@@ -46,10 +55,23 @@
      <property name="sizeHint" >
       <size>
        <width>16</width>
-       <height>21</height>
+       <height>49</height>
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="0" column="2" >
+    <widget class="QLabel" name="mUpperLabel" >
+     <property name="text" >
+      <string>Upper value</string>
+     </property>
+     <property name="buddy" >
+      <cstring>mUpperEdit</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QLineEdit" name="mLowerEdit" />
    </item>
    <item row="1" column="1" >
     <widget class="QLabel" name="mBetweenLabel" >
@@ -65,68 +87,9 @@
     <widget class="QLineEdit" name="mUpperEdit" />
    </item>
    <item row="2" column="0" colspan="3" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>100</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mOkButton" >
-       <property name="text" >
-        <string>OK</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mCancelButton" >
-       <property name="text" >
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>31</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="2" >
-    <widget class="QLabel" name="mUpperLabel" >
-     <property name="text" >
-      <string>Upper value</string>
-     </property>
-     <property name="buddy" >
-      <cstring>mUpperEdit</cstring>
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -134,5 +97,38 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>QgsLUDialogBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>285</x>
+     <y>120</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>321</x>
+     <y>35</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsLUDialogBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>209</x>
+     <y>116</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>151</x>
+     <y>7</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

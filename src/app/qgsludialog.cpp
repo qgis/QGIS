@@ -23,8 +23,6 @@ QgsLUDialog::QgsLUDialog(QWidget *parent, Qt::WFlags fl)
 : QDialog(parent, fl)
 {
     setupUi(this);
-    connect(mOkButton, SIGNAL(clicked()), this, SLOT(accept()));
-    connect(mCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 }
 
 QgsLUDialog::~QgsLUDialog()
