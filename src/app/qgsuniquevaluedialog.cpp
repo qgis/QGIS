@@ -26,6 +26,8 @@
 
 #include "qgslogger.h"
 
+#include <QMessageBox>
+
 QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVectorLayer(vl), sydialog(vl, true)
 {
   setupUi(this);
@@ -65,6 +67,7 @@ QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVect
     //int classattr = *iter;
     //QString field = provider->fields()[ classattr ].name();
     QString field = provider->fields()[ renderer->classificationField() ].name();
+    mOldClassificationAttribute = field;
     mClassificationComboBox->setCurrentItem( mClassificationComboBox->findText(field) );
 
     const QList<QgsSymbol*> list = renderer->symbols();
@@ -272,6 +275,19 @@ void QgsUniqueValueDialog::changeClassificationAttribute()
 {
   QgsDebugMsg("called.");
   QString attributeName = mClassificationComboBox->currentText();
+  
+  if( !mOldClassificationAttribute.isEmpty() &&
+      attributeName!=mOldClassificationAttribute &&
+      QMessageBox::question(this,
+                            tr("Confirm Delete"),
+      			    tr("The classification field was changed from '%1' to '%2'.\n"
+			       "Should the existing classes be deleted before classification?")
+			     .arg(mOldClassificationAttribute).arg(attributeName),
+			     QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok )
+  {
+    deleteSelectedClasses();
+  }
+  mOldClassificationAttribute=attributeName;
 
   QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider());
   if (provider)
@@ -376,6 +392,9 @@ void QgsUniqueValueDialog::deleteSelectedClasses()
 {
   QgsDebugMsg("called.");
   QList<QListWidgetItem *> selection = mClassListWidget->selectedItems();
+  if(selection.size()==0)
+    selection = mClassListWidget->findItems("", Qt::MatchContains);
+
   for(int i=0; i<selection.size(); i++) 
   {
     QListWidgetItem* currentItem = selection[i];
