@@ -43,7 +43,7 @@ class QgsGeomTypeDialog: public QDialog, private Ui::QgsGeomTypeDialogBase
   void on_buttonBox_helpRequested();
 
   private:
-  QAbstractButton *mOkButton;
+  QPushButton * mOkButton;
   static const int context_id = 165149618;
   
 };
