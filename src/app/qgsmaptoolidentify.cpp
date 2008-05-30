@@ -14,7 +14,7 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include "qgsattributedialog.h"
+//#include "qgsattributedialog.h"
 #include "qgscursors.h"
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
