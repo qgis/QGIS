@@ -1,12 +1,3 @@
-
-# TODO: delete from SVN
-#   qgslinestyledialog.(cpp|h)
-#   qgslinestylewidget.(cpp|h)
-#   qgsmarkerdialog.(cpp|h)
-#   qgspatterndialog.(cpp|h)
-#   qgspointstylewidget.(cpp|h)
-#   qgsvectorsymbologywidget.(cpp|h)
-
 SET(QGIS_APP_SRCS
   main.cpp
   qgisapp.cpp
@@ -25,7 +16,6 @@ SET(QGIS_APP_SRCS
   qgsdbfilterproxymodel.cpp
   qgsdbtablemodel.cpp
   qgsdelattrdialog.cpp
-  qgsfillstylewidget.cpp
   qgsgeomtypedialog.cpp
   qgsgraduatedsymboldialog.cpp
   qgshelpviewer.cpp
@@ -102,7 +92,6 @@ SET (QGIS_APP_MOC_HDRS
   qgscontinuouscolordialog.h
   qgscustomprojectiondialog.h
   qgsdelattrdialog.h
-  qgsfillstylewidget.h
   qgsgeomtypedialog.h
   qgsgraduatedsymboldialog.h
   qgshelpviewer.h

@@ -1,12 +1,3 @@
-
-# TODO: delete from SVN
-#   qgslinestyledialog.ui
-#   qgslinestylewidget.ui
-#   qgsmarkerdialog.ui
-#   qgspatterndialog.ui
-#   qgspointstylewidget.ui
-#   qgsvectorsymbologywidget.ui
-
 SET(QGIS_UIS
   qgisappbase.ui
   qgsabout.ui
@@ -27,7 +18,6 @@ SET(QGIS_UIS
   qgsdbsourceselectbase.ui
   qgsdelattrdialogbase.ui
   qgsdetaileditemwidgetbase.ui
-  qgsfillstylewidgetbase.ui
   qgsgeomtypedialogbase.ui
   qgsgraduatedsymboldialogbase.ui
   qgshelpviewerbase.ui
@@ -51,11 +41,8 @@ SET(QGIS_UIS
   qgssnappingdialogbase.ui
   qgsuniquevaluedialogbase.ui
   qgsvectorlayerpropertiesbase.ui
+  qgspythondialog.ui
 )
-
-IF (PYTHON_FOUND)
-  SET (QGIS_UIS ${QGIS_UIS} ../ui/qgspythondialog.ui)
-ENDIF (PYTHON_FOUND)
 
 QT4_WRAP_UI(QGIS_UIS_H ${QGIS_UIS})
 
