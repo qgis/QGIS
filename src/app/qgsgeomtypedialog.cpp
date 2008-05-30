@@ -17,14 +17,19 @@
 /* $Id$ */
 
 #include "qgsgeomtypedialog.h"
-#include "qgsaddattrdialog.h"
+#include "qgsapplication.h"
+#include <QPushButton>
 
 QgsGeomTypeDialog::QgsGeomTypeDialog(QWidget *parent, Qt::WFlags fl)
 : QDialog(parent, fl)
 {
   setupUi(this);
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  QString myThemePath = QgsApplication::themePath();
+  mAddAttributeButton->setIcon(QIcon(QPixmap(myThemePath + "/mActionNewAttribute.png")));
+  mRemoveAttributeButton->setIcon(QIcon(QPixmap(myThemePath + "/mActionDeleteAttribute.png")));
+  mTypeBox->addItem(tr("Real"),"Real");
+  mTypeBox->addItem(tr("Integer"),"Integer");;
+  mTypeBox->addItem(tr("String"),"String");
 
   mPointRadioButton->setChecked(true);
   mFileFormatComboBox->insertItem("ESRI Shapefile");
@@ -58,19 +63,15 @@ QGis::WKBTYPE QgsGeomTypeDialog::selectedType() const
 
 void QgsGeomTypeDialog::on_mAddAttributeButton_clicked()
 {
-  std::list<QString> types;
-  types.push_back("Real");
-  types.push_back("Integer");
-  types.push_back("String");
-  QgsAddAttrDialog d(types, this);
-  if(d.exec()==QDialog::Accepted)
-  {
-    mAttributeView->addTopLevelItem(new QTreeWidgetItem(QStringList() << d.name() << d.type()));
-  }
+  QString myName = mNameEdit->text();
+  //use userrole to avoid translated type string
+  QString myType = mTypeBox->itemData ( mTypeBox->currentIndex(),Qt::UserRole ).toString();
+  mAttributeView->addTopLevelItem(new QTreeWidgetItem( QStringList() << myName << myType ));
   if(mAttributeView->topLevelItemCount()>0)
   {
     mOkButton->setEnabled(true);
   }
+  mNameEdit->clear();
 }
 
 void QgsGeomTypeDialog::on_mRemoveAttributeButton_clicked()
