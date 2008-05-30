@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>329</width>
-    <height>330</height>
+    <width>447</width>
+    <height>343</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -14,28 +14,16 @@
   </property>
   <layout class="QGridLayout" >
    <item row="0" column="0" >
-    <widget class="QTableWidget" name="mTable" >
-     <property name="columnCount" >
-      <number>2</number>
+    <widget class="QFrame" name="mFrame" >
+     <property name="frameShape" >
+      <enum>QFrame::StyledPanel</enum>
      </property>
-     <row>
-      <property name="text" >
-       <string>1</string>
-      </property>
-     </row>
-     <column>
-      <property name="text" >
-       <string>Attribute</string>
-      </property>
-     </column>
-     <column>
-      <property name="text" >
-       <string>Value</string>
-      </property>
-     </column>
+     <property name="frameShadow" >
+      <enum>QFrame::Raised</enum>
+     </property>
     </widget>
    </item>
-   <item row="1" column="0" >
+   <item row="2" column="0" >
     <widget class="QDialogButtonBox" name="buttonBox" >
      <property name="standardButtons" >
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
@@ -45,9 +33,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <tabstops>
-  <tabstop>mTable</tabstop>
- </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -58,7 +43,7 @@
    <hints>
     <hint type="sourcelabel" >
      <x>277</x>
-     <y>305</y>
+     <y>318</y>
     </hint>
     <hint type="destinationlabel" >
      <x>325</x>
