@@ -66,6 +66,8 @@ private:
     void updateEntryIcon(QgsSymbol * thepSymbol,QListWidgetItem * thepItem);
     QColor randomColor();
     void setSymbolColor(QgsSymbol *symbol, QColor thecolor);
+
+    QString mOldClassificationAttribute;
 };
 
 #endif
