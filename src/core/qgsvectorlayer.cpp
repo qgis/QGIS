@@ -284,7 +284,7 @@ void QgsVectorLayer::drawLabels(QgsRenderContext& renderContext)
     {
       return;
     }
-  drawLabels(thePainter, renderContext.extent(), &(renderContext.mapToPixel()), renderContext.coordTransform(), renderContext.scaleFactor());
+  drawLabels(thePainter, renderContext.extent(), &(renderContext.mapToPixel()), renderContext.coordTransform(), 1.0 / renderContext.rasterScaleFactor());
 }
 
 // NOTE this is a temporary method added by Tim to prevent label clipping
