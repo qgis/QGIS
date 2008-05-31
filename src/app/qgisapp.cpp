@@ -437,7 +437,7 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
   setAcceptDrops(true);
 
   mFullScreenMode = false;
-  showNormal();
+  show();
   qApp->processEvents();
 } // QgisApp ctor
 
