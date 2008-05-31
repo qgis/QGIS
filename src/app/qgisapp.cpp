@@ -360,7 +360,11 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
   mSplash->showMessage(tr("Starting Python"), Qt::AlignHCenter | Qt::AlignBottom);
   qApp->processEvents();
   // try to load python support
-  QLibrary pythonlib("qgispython");
+  QString pythonlibName("qgispython");
+#ifdef Q_WS_MAC
+  pythonlibName.prepend(QgsApplication::prefixPath() + "/lib/");
+#endif
+  QLibrary pythonlib(pythonlibName);
   // It's necessary to set these two load hints, otherwise Python library won't work correctly
   // see http://lists.kde.org/?l=pykde&m=117190116820758&w=2
   pythonlib.setLoadHints(QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint);
