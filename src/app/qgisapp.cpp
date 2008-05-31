@@ -1150,7 +1150,7 @@ void QgisApp::createStatusBar()
   mProgressBar = new QProgressBar(statusBar());
   mProgressBar->setMaximumWidth(100);
   mProgressBar->hide();
-  mProgressBar->setWhatsThis(tr("Progress bar that displays the status"
+  mProgressBar->setWhatsThis(tr("Progress bar that displays the status "
         "of rendering layers and other time-intensive operations"));
   statusBar()->addWidget(mProgressBar, 1,true);
   // Bumped the font up one point size since 8 was too 
@@ -1193,7 +1193,7 @@ void QgisApp::createStatusBar()
   mCoordsLabel->setFont(myFont);
   mCoordsLabel->setMargin(3);
   mCoordsLabel->setAlignment(Qt::AlignCenter);
-  mCoordsLabel->setWhatsThis(tr("Shows the map coordinates at the"
+  mCoordsLabel->setWhatsThis(tr("Shows the map coordinates at the "
         "current cursor position. The display is continuously updated "
         "as the mouse is moved."));
   mCoordsLabel->setToolTip(tr("Map coordinates at mouse cursor position"));
