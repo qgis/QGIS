@@ -2,6 +2,7 @@
 # Copy supportibng libraries (except Qt) to openModeller bundle
 # and make search paths for them relative to bundle
 
+
 APP_PREFIX=/Applications/qgis0.11.0.app
 BUNDLE_DIR=${APP_PREFIX}/Contents/MacOS
 DEPS_BASE=/usr/local/qgis_universal_deps
@@ -30,6 +31,7 @@ install_name_tool -change ${LIB_DIR}/libgdal.1.dylib \
 install_name_tool -change ${LIB_DIR}/libproj.dylib \
                    @executable_path/lib/libproj.dylib \
                    ${BUNDLE_DIR}/qgis
+
 set +x
 
 LIBS="lib/libqgis_core.dylib \
@@ -106,6 +108,43 @@ do
   #otool -L ${BUNDLE_DIR}/lib/qgis/${LIB}
   #echo "----------------------------------"
 done
+
+# Python libs need some special care
+LIBS="share/qgis/python/qgis/core.so
+      share/qgis/python/qgis/gui.so
+      lib/libqgispython.dylib"
+for LIB in $LIBS
+do
+  install_name_tool -id @executable_path/${LIB} ${BUNDLE_DIR}/${LIB}
+  # for debugging only
+  for LIBPATH in `otool -L ${BUNDLE_DIR}/${LIB} \
+                  | sed 's/(\([a-zA-Z0-9\., ]*\))//g' \
+                  | grep  $LIB_DIR \
+                  | grep -v framework` #frameworks (in particular qt frameworks) get
+                                       #dealt with in another script
+  do 
+    #echo "------------"
+    #echo $LIBPATH 
+    #echo "------------"
+    BASELIB=`basename "$LIBPATH"`
+    #echo $BASELIB
+    install_name_tool -change ${LIBPATH} @executable_path/lib/${BASELIB} ${BUNDLE_DIR}/${LIB}
+  done
+  # Change the search path for qgis libs in python libs
+
+  CORELIBPATH=/`otool -L ${BUNDLE_DIR}/${LIB} |grep -o "\b[/A-Za-z0-9]*libqgis_core.[0-9.]*.dylib\b"`
+  CORELIB=`echo "${CORELIBPATH}" | grep -o "libqgis_core.[0-9.]*.dylib"`
+  install_name_tool -change ${CORELIBPATH} @executable_path/lib/${CORELIB} ${BUNDLE_DIR}/${LIB}
+  GUILIBPATH=/`otool -L ${BUNDLE_DIR}/${LIB} |grep -o "\b[/A-Za-z0-9]*libqgis_gui.[0-9.]*.dylib\b"`
+  GUILIB=`echo "${CORELIBPATH}" | grep -o "libqgis_gui.[0-9.]*.dylib"`
+  install_name_tool -change ${GUILIBPATH} @executable_path/lib/${GUILIB} ${BUNDLE_DIR}/${LIB}
+  echo $LIB
+  #otool -L ${BUNDLE_DIR}/lib/qgis/${LIB}
+  #echo "----------------------------------"
+done
+
+
+/Users/timlinux/dev/cpp/qgis/build/src/core/libqgis_core.0.11.dylib
 
 #
 # Strip binaries - disable for debugging
