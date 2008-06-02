@@ -550,24 +550,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
       <translation>Error de Python</translation>
     </message>
     <message>
-      <source>Couldn't load SIP module.
-Python support will be disabled.</source>
-      <translation>No se pudo cargar el módulo SIP.
-El soporte para Python estará deshabilitado.</translation>
-    </message>
-    <message>
-      <source>Couldn't load PyQt bindings.
-Python support will be disabled.</source>
-      <translation>No se pudieron cargar las conexiones de PyQt.
-El soporte para Python estará deshabilitado.</translation>
-    </message>
-    <message>
-      <source>Couldn't load QGIS bindings.
-Python support will be disabled.</source>
-      <translation>No se pudieron cargar las conexiones de QGIS.
-El soporte para Python estará deshabilitado.</translation>
-    </message>
-    <message>
       <source>Couldn't load plugin </source>
       <translation>No se pudo cargar el complemento </translation>
     </message>
@@ -1044,6 +1026,42 @@ El soporte para Python estará deshabilitado.</translation>
     <message>
       <source>Please adjust permissions (if possible) and try again.</source>
       <translation>Por favor, ajuste los permisos (si es posible) y vuelva a intentarlo.</translation>
+    </message>
+    <message>
+      <source>Couldn't load SIP module.</source>
+      <translation>No se pudo cargar el módulo SIP.</translation>
+    </message>
+    <message>
+      <source>Python support will be disabled.</source>
+      <translation>El soporte para Python estará deshabilitado.</translation>
+    </message>
+    <message>
+      <source>Couldn't load PyQt4.</source>
+      <translation>No se pudo cargar PyQt4.</translation>
+    </message>
+    <message>
+      <source>Couldn't load PyQGIS.</source>
+      <translation>No se pudo cargar PyQGIS.</translation>
+    </message>
+    <message>
+      <source>An error has occured while executing Python code:</source>
+      <translation>Ha ocurrido un error mientras se ejecutaba el código de Python:</translation>
+    </message>
+    <message>
+      <source>Python version:</source>
+      <translation>Versión de Python:</translation>
+    </message>
+    <message>
+      <source>Python path:</source>
+      <translation>Ruta de Python:</translation>
+    </message>
+    <message>
+      <source>An error occured during execution of following code:</source>
+      <translation>Ocurrió un error durante la ejecución del siguiente código:</translation>
+    </message>
+    <message>
+      <source>Uncatched fatal GRASS error</source>
+      <translation>Error fatal de GRASS no detectado</translation>
     </message>
   </context>
   <context>
@@ -1692,10 +1710,6 @@ El soporte para Python estará deshabilitado.</translation>
       <translation>Complementos</translation>
     </message>
     <message>
-      <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
-      <translation>Barra de progreso que muestra el estado de representación de las capas y otras operaciones pesadas</translation>
-    </message>
-    <message>
       <source>Displays the current map scale</source>
       <translation>Muestra la escala del mapa actual</translation>
     </message>
@@ -1724,10 +1738,6 @@ El soporte para Python estará deshabilitado.</translation>
       <translation>Preparado</translation>
     </message>
     <message>
-      <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
-      <translation>Vista del mapa. Aquí es donde se muestran las capas ráster y vectoriales cuando son añadidas al mapa</translation>
-    </message>
-    <message>
       <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
       <translation>Localizador del mapa. Esta vista puede usarse para visualizar un mapa de localización que muestra la extensión de la vista del mapa. La extensión actual se muestra como un rectángulo rojo. Cualquier capa del mapa se puede añadir al localizador.</translation>
     </message>
@@ -1736,46 +1746,12 @@ El soporte para Python estará deshabilitado.</translation>
       <translation>Leyenda del mapa que muestra todas la capas actualmente en la vista del mapa. Marcar la casilla para conmutar su vista. Pulsar dos veces sobre una capa en la leyenda para personalizar su apariencia y ajustar otras propiedades.</translation>
     </message>
     <message>
-      <source>Version </source>
-      <translation>Versión </translation>
-    </message>
-    <message>
-      <source> with PostgreSQL support</source>
-      <translation> con soporte para PostgreSQL</translation>
-    </message>
-    <message>
-      <source> (no PostgreSQL support)</source>
-      <translation> (sin soporte para PostgreSQL)</translation>
-    </message>
-    <message>
-      <source>
-Compiled against Qt </source>
-      <translation>
-Compilado contra Qt </translation>
-    </message>
-    <message>
-      <source>, running against Qt </source>
-      <translation>, ejecutándose contra Qt </translation>
-    </message>
-    <message>
-      <source>Quantum GIS is licensed under the GNU General Public License</source>
-      <translation>Quantum GIS se distribuye bajo la Licencia Pública General GNU</translation>
-    </message>
-    <message>
-      <source>http://www.gnu.org/licenses</source>
-      <translation>http://www.gnu.org/licenses</translation>
-    </message>
-    <message>
       <source>Version</source>
       <translation>Versión</translation>
     </message>
     <message>
       <source>New features</source>
       <translation>Nuevos objetos espaciales</translation>
-    </message>
-    <message>
-      <source>Available Data Provider Plugins</source>
-      <translation>Complementos disponibles de proveedores de datos</translation>
     </message>
     <message>
       <source>T</source>
@@ -1842,10 +1818,6 @@ Compilado contra Qt </translation>
       <source>Ctrl+T</source>
       <comment>Hide most toolbars</comment>
       <translation>Ctrl+T</translation>
-    </message>
-    <message>
-      <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved.</source>
-      <translation>Muestra las coordenadas del mapa en la posición actual del cursor. La visualización se actualiza continuamente al mover el ratón.</translation>
     </message>
     <message>
       <source>Open an OGR Supported Vector Layer</source>
@@ -2233,6 +2205,56 @@ Compilado contra Qt </translation>
       <source>Support for migration of old projects to work in newer QGIS versions.</source>
       <translation>Soporte para la migración de proyectos antiguos, para que funcionen en versiones más recientes de QGIS.</translation>
     </message>
+    <message>
+      <source>Progress bar that displays the statusof rendering layers and other time-intensive operations</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Shows the map coordinates at thecurrent cursor position. The display is continuously updated as the mouse is moved.</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Resource Location Error</source>
+      <translation>Error en la localización de recursos</translation>
+    </message>
+    <message>
+      <source>Error reading icon resources from: 
+ %1
+ Quitting...</source>
+      <translation>Error al leer recursos de iconos de: 
+ %1
+ Saliendo...</translation>
+    </message>
+    <message>
+      <source>Map canvas. This is where raster and vectorlayers are displayed when added to the map</source>
+      <translation type="unfinished" >Vista del mapa. Aquí es do</translation>
+    </message>
+    <message>
+      <source>Overview</source>
+      <translation>Localizador</translation>
+    </message>
+    <message>
+      <source>Legend</source>
+      <translation>Leyenda</translation>
+    </message>
+    <message>
+      <source>You are using QGIS version %1 built against code revision %2.</source>
+      <translation>Está usando la versión %1 de QGIS compilada contra la revisión %2 del código.</translation>
+    </message>
+    <message>
+      <source> This copy of QGIS has been built with PostgreSQL support.</source>
+      <translation> Esta copia de QGIS se ha compilado con soporte para PostgreSQL.</translation>
+    </message>
+    <message>
+      <source> This copy of QGIS has been built without PostgreSQL support.</source>
+      <translation> Esta copia de QGIS se ha compilado sin soporte para PostgreSQL.</translation>
+    </message>
+    <message>
+      <source>
+This binary was compiled against Qt %1,and is currently running against Qt %2</source>
+      <translation>
+Este binario se compiló contra Qt %1 y se está ejecutando contra Qt %2</translation>
+    </message>
   </context>
   <context>
     <name>QgisAppBase</name>
@@ -2260,10 +2282,6 @@ Compilado contra Qt </translation>
       <translation>Acerca de</translation>
     </message>
     <message>
-      <source>&lt;h2>Quantum GIS (qgis)&lt;/h2></source>
-      <translation>&lt;h2>Quantum GIS (qgis)&lt;/h2></translation>
-    </message>
-    <message>
       <source>Version</source>
       <translation>Versión</translation>
     </message>
@@ -2272,20 +2290,12 @@ Compilado contra Qt </translation>
       <translation>Página web de QGIS</translation>
     </message>
     <message>
-      <source>Subscribe to the QGIS-User mailing list</source>
-      <translation>Suscribirse a la lista de correo QGIS-User</translation>
-    </message>
-    <message>
       <source>What's New</source>
       <translation>Novedades</translation>
     </message>
     <message>
       <source>Developers</source>
       <translation>Desarrolladores</translation>
-    </message>
-    <message>
-      <source>&lt;h2>QGIS Developers&lt;/h2></source>
-      <translation>&lt;h2>Desarrolladores de QGIS&lt;/h2></translation>
     </message>
     <message>
       <source>Providers</source>
@@ -2299,20 +2309,34 @@ Compilado contra Qt </translation>
       <source>Ok</source>
       <translation>Aceptar</translation>
     </message>
+    <message>
+      <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;>
+&lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;>&lt;span style=&quot; font-size:x-large;&quot;>Quantum GIS (QGIS)&lt;/span>&lt;/p>&lt;/body>&lt;/html></source>
+      <translation>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;>
+&lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;>&lt;span style=&quot; font-size:x-large;&quot;>Quantum GIS (QGIS)&lt;/span>&lt;/p>&lt;/body>&lt;/html></translation>
+    </message>
+    <message>
+      <source>Quantum GIS is licensed under the GNU General Public License</source>
+      <translation>Quantum GIS se distribuye bajo la Licencia Pública General GNU</translation>
+    </message>
+    <message>
+      <source>http://www.gnu.org/licenses</source>
+      <translation>http://www.gnu.org/licenses</translation>
+    </message>
+    <message>
+      <source>Join our user mailing list</source>
+      <translation>Únase a nuestra lista de correo de usuarios</translation>
+    </message>
   </context>
   <context>
     <name>QgsAddAttrDialogBase</name>
     <message>
       <source>Add Attribute</source>
       <translation>Añadir atributo</translation>
-    </message>
-    <message>
-      <source>OK</source>
-      <translation>Aceptar</translation>
-    </message>
-    <message>
-      <source>Cancel</source>
-      <translation>Cancelar</translation>
     </message>
     <message>
       <source>Type:</source>
@@ -2333,10 +2357,6 @@ Compilado contra Qt </translation>
   </context>
   <context>
     <name>QgsAttributeActionDialogBase</name>
-    <message>
-      <source>Form1</source>
-      <translation>Formulario1</translation>
-    </message>
     <message>
       <source>Remove the selected action</source>
       <translation>Eliminar la acción seleccionada</translation>
@@ -2368,14 +2388,6 @@ Compilado contra Qt </translation>
     <message>
       <source>The valid attribute names for this layer</source>
       <translation>Los nombres de atributo válidos para esta capa</translation>
-    </message>
-    <message>
-      <source>Browse for action commands</source>
-      <translation>Buscar comandos de acción</translation>
-    </message>
-    <message>
-      <source>Browse</source>
-      <translation>Buscar</translation>
     </message>
     <message>
       <source>Inserts the selected field into the action, prepended with a %</source>
@@ -2418,20 +2430,12 @@ Compilado contra Qt </translation>
       <translation>Introduzca aquí el comando de acción</translation>
     </message>
     <message>
-      <source>Action:</source>
-      <translation>Acción:</translation>
-    </message>
-    <message>
       <source>Enter the action name here</source>
       <translation>Introduzca el nombre de la acción aquí</translation>
     </message>
     <message>
       <source>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</source>
       <translation>Introduzca el nombre de la acción aquí. El nombre debe ser único (QGIS lo hará único si es necesario).</translation>
-    </message>
-    <message>
-      <source>Name:</source>
-      <translation>Nombre:</translation>
     </message>
     <message>
       <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</source>
@@ -2449,32 +2453,51 @@ Compilado contra Qt </translation>
       <source>Capture</source>
       <translation>Capturar</translation>
     </message>
+    <message>
+      <source>Attribute Actions</source>
+      <translation>Acciones de atributos</translation>
+    </message>
+    <message>
+      <source>Action properties</source>
+      <translation>Propiedades de acciones</translation>
+    </message>
+    <message>
+      <source>Browse for action</source>
+      <translation>Explorar acciones</translation>
+    </message>
+    <message>
+      <source>Click to browse for an action</source>
+      <translation>Pulse para explorar en busca de una acción</translation>
+    </message>
+    <message>
+      <source>Clicking the buttone will let you select an application to use as the action</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <source>...</source>
+      <translation>...</translation>
+    </message>
+  </context>
+  <context>
+    <name>QgsAttributeDialog</name>
+    <message>
+      <source> (int)</source>
+      <translation> (int)</translation>
+    </message>
+    <message>
+      <source> (dbl)</source>
+      <translation> (dbl)</translation>
+    </message>
+    <message>
+      <source> (txt)</source>
+      <translation> (txt)</translation>
+    </message>
   </context>
   <context>
     <name>QgsAttributeDialogBase</name>
     <message>
       <source>Enter Attribute Values</source>
       <translation>Introducir valores de los atributos</translation>
-    </message>
-    <message>
-      <source>1</source>
-      <translation>1</translation>
-    </message>
-    <message>
-      <source>Attribute</source>
-      <translation>Atributo</translation>
-    </message>
-    <message>
-      <source>Value</source>
-      <translation>Valor</translation>
-    </message>
-    <message>
-      <source>&amp;OK</source>
-      <translation>&amp;Aceptar</translation>
-    </message>
-    <message>
-      <source>&amp;Cancel</source>
-      <translation>&amp;Cancelar</translation>
     </message>
   </context>
   <context>
@@ -2491,18 +2514,6 @@ Compilado contra Qt </translation>
       <translation>Tabla de atributos</translation>
     </message>
     <message>
-      <source>&amp;Help</source>
-      <translation>A&amp;yuda</translation>
-    </message>
-    <message>
-      <source>Alt+C</source>
-      <translation>Alt+C</translation>
-    </message>
-    <message>
-      <source>Search for:</source>
-      <translation>Buscar:</translation>
-    </message>
-    <message>
       <source>in</source>
       <translation>en</translation>
     </message>
@@ -2517,10 +2528,6 @@ Compilado contra Qt </translation>
     <message>
       <source>Alt+N</source>
       <translation>Alt+N</translation>
-    </message>
-    <message>
-      <source>&amp;Close</source>
-      <translation>&amp;Cerrar</translation>
     </message>
     <message>
       <source>Remove selection</source>
@@ -2593,6 +2600,10 @@ Compilado contra Qt </translation>
     <message>
       <source>Ctrl+F</source>
       <translation>Ctrl+F</translation>
+    </message>
+    <message>
+      <source>Search for</source>
+      <translation>Buscar</translation>
     </message>
   </context>
   <context>
@@ -2681,6 +2692,14 @@ Compilado contra Qt </translation>
 </source>
       <translation> de la base de datos. La base de datos ha dicho:</translation>
     </message>
+    <message>
+      <source>&amp;Delete</source>
+      <translation>&amp;Borrar</translation>
+    </message>
+    <message>
+      <source>&amp;Zoom to</source>
+      <translation>&amp;Zum a</translation>
+    </message>
   </context>
   <context>
     <name>QgsBookmarksBase</name>
@@ -2703,34 +2722,6 @@ Compilado contra Qt </translation>
     <message>
       <source>Id</source>
       <translation>Id</translation>
-    </message>
-    <message>
-      <source>Close the dialog</source>
-      <translation>Cerrar el cuadro de diálogo</translation>
-    </message>
-    <message>
-      <source>Help</source>
-      <translation>Ayuda</translation>
-    </message>
-    <message>
-      <source>Close</source>
-      <translation>Cerrar</translation>
-    </message>
-    <message>
-      <source>Delete the currently selected bookmark</source>
-      <translation>Borrar el marcador seleccionado</translation>
-    </message>
-    <message>
-      <source>Delete</source>
-      <translation>Borrar</translation>
-    </message>
-    <message>
-      <source>Zoom to the currently selected bookmark</source>
-      <translation>Zum al marcador seleccionado</translation>
-    </message>
-    <message>
-      <source>Zoom To</source>
-      <translation>Zum a</translation>
     </message>
   </context>
   <context>
@@ -3515,10 +3506,6 @@ p, li { white-space: pre-wrap; }
       <translation>Definición</translation>
     </message>
     <message>
-      <source>Parameters:</source>
-      <translation>Parámetros:</translation>
-    </message>
-    <message>
       <source>|&lt;</source>
       <translation>|&lt;</translation>
     </message>
@@ -3539,44 +3526,12 @@ p, li { white-space: pre-wrap; }
       <translation>>|</translation>
     </message>
     <message>
-      <source>New</source>
-      <translation>Nueva</translation>
-    </message>
-    <message>
-      <source>Save</source>
-      <translation>Guardar</translation>
-    </message>
-    <message>
-      <source>Delete</source>
-      <translation>Borrar</translation>
-    </message>
-    <message>
-      <source>Close</source>
-      <translation>Cerrar</translation>
-    </message>
-    <message>
-      <source>Name:</source>
-      <translation>Nombre:</translation>
-    </message>
-    <message>
       <source>Test</source>
       <translation>Probar</translation>
     </message>
     <message>
-      <source>Transform from WGS84 to the chosen projection</source>
-      <translation>Transformar de WGS84 a la proyección elegida</translation>
-    </message>
-    <message>
       <source>Geographic / WGS84</source>
       <translation>Geográficas / WGS84</translation>
-    </message>
-    <message>
-      <source>East:</source>
-      <translation>Este:</translation>
-    </message>
-    <message>
-      <source>North:</source>
-      <translation>Norte:</translation>
     </message>
     <message>
       <source>Calculate</source>
@@ -3593,6 +3548,34 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>Projected Coordinate System</source>
       <translation>Sistema de coordenadas proyectado</translation>
+    </message>
+    <message>
+      <source>Name</source>
+      <translation>Nombre</translation>
+    </message>
+    <message>
+      <source>Parameters</source>
+      <translation>Parámetros</translation>
+    </message>
+    <message>
+      <source>*</source>
+      <translation>*</translation>
+    </message>
+    <message>
+      <source>S</source>
+      <translation>S</translation>
+    </message>
+    <message>
+      <source>X</source>
+      <translation>X</translation>
+    </message>
+    <message>
+      <source>North</source>
+      <translation>Norte</translation>
+    </message>
+    <message>
+      <source>East</source>
+      <translation>Este</translation>
     </message>
   </context>
   <context>
@@ -3806,14 +3789,6 @@ Por favor, verifique que tiene privilegios para SELECT sobre una tabla que lleve
       <source>Delete Attributes</source>
       <translation>Borrar atributos</translation>
     </message>
-    <message>
-      <source>OK</source>
-      <translation>Aceptar</translation>
-    </message>
-    <message>
-      <source>Cancel</source>
-      <translation>Cancelar</translation>
-    </message>
   </context>
   <context>
     <name>QgsDelimitedTextPlugin</name>
@@ -3998,6 +3973,21 @@ Por favor, verifique que tiene privilegios para SELECT sobre una tabla que lleve
     </message>
   </context>
   <context>
+    <name>QgsDetailedItemWidgetBase</name>
+    <message>
+      <source>Form</source>
+      <translation>Formulario</translation>
+    </message>
+    <message>
+      <source>Heading Label</source>
+      <translation>Etiqueta de cabecera</translation>
+    </message>
+    <message>
+      <source>Detail label</source>
+      <translation>Etiqueta de detalle</translation>
+    </message>
+  </context>
+  <context>
     <name>QgsDlgPgBufferBase</name>
     <message>
       <source>Buffer features</source>
@@ -4053,29 +4043,6 @@ Por favor, verifique que tiene privilegios para SELECT sobre una tabla que lleve
     <message>
       <source>Encoding:</source>
       <translation>Codificación:</translation>
-    </message>
-  </context>
-  <context>
-    <name>QgsFillStyleWidgetBase</name>
-    <message>
-      <source>Form1</source>
-      <translation>Form1</translation>
-    </message>
-    <message>
-      <source>Fill Style</source>
-      <translation>Estilo de relleno</translation>
-    </message>
-    <message>
-      <source>col</source>
-      <translation>col</translation>
-    </message>
-    <message>
-      <source>Colour:</source>
-      <translation>Color:</translation>
-    </message>
-    <message>
-      <source>PolyStyleWidget</source>
-      <translation>Estilo del polígono (PolyStyleWidget)</translation>
     </message>
   </context>
   <context>
@@ -4540,26 +4507,25 @@ p, li { white-space: pre-wrap; }
     </message>
   </context>
   <context>
+    <name>QgsGeomTypeDialog</name>
+    <message>
+      <source>Real</source>
+      <translation>Real</translation>
+    </message>
+    <message>
+      <source>Integer</source>
+      <translation>Entero</translation>
+    </message>
+    <message>
+      <source>String</source>
+      <translation>Cadena</translation>
+    </message>
+  </context>
+  <context>
     <name>QgsGeomTypeDialogBase</name>
     <message>
       <source>New Vector Layer</source>
       <translation>Nueva capa vectorial</translation>
-    </message>
-    <message>
-      <source>File Format:</source>
-      <translation>Formato de archivo:</translation>
-    </message>
-    <message>
-      <source>Remove</source>
-      <translation>Eliminar</translation>
-    </message>
-    <message>
-      <source>Attributes:</source>
-      <translation>Atributos:</translation>
-    </message>
-    <message>
-      <source>Add</source>
-      <translation>Añadir</translation>
     </message>
     <message>
       <source>Type</source>
@@ -4580,6 +4546,26 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>Name</source>
       <translation>Nombre</translation>
+    </message>
+    <message>
+      <source>File format</source>
+      <translation>Formato de archivo</translation>
+    </message>
+    <message>
+      <source>Attributes</source>
+      <translation>Atributos</translation>
+    </message>
+    <message>
+      <source>Remove selected row</source>
+      <translation>Eliminar la fila seleccionada</translation>
+    </message>
+    <message>
+      <source>...</source>
+      <translation>...</translation>
+    </message>
+    <message>
+      <source>Add values manually</source>
+      <translation>Añadir valores manualmente</translation>
     </message>
   </context>
   <context>
@@ -4734,24 +4720,24 @@ p, li { white-space: pre-wrap; }
       <translation>Símbolo graduado</translation>
     </message>
     <message>
-      <source>Classification Field:</source>
-      <translation>Campo de clasificación:</translation>
-    </message>
-    <message>
-      <source>Mode:</source>
-      <translation>Modo:</translation>
-    </message>
-    <message>
-      <source>Number of Classes:</source>
-      <translation>Número de clases:</translation>
-    </message>
-    <message>
       <source>Delete class</source>
       <translation>Borrar clase</translation>
     </message>
     <message>
       <source>Classify</source>
       <translation>Clasificar</translation>
+    </message>
+    <message>
+      <source>Classification field</source>
+      <translation>Falló la clasificación</translation>
+    </message>
+    <message>
+      <source>Mode</source>
+      <translation>Modo</translation>
+    </message>
+    <message>
+      <source>Number of classes</source>
+      <translation>Número de clases</translation>
     </message>
   </context>
   <context>
@@ -6498,6 +6484,10 @@ en la línea </translation>
       <source> column </source>
       <translation> columna </translation>
     </message>
+    <message>
+      <source>Modules Tree</source>
+      <translation>Árbol de módulos</translation>
+    </message>
   </context>
   <context>
     <name>QgsGridMakerPlugin</name>
@@ -6746,14 +6736,6 @@ p, li { white-space: pre-wrap; }
       <translation>-</translation>
     </message>
     <message>
-      <source>OK</source>
-      <translation>Aceptar</translation>
-    </message>
-    <message>
-      <source>Cancel</source>
-      <translation>Cancelar</translation>
-    </message>
-    <message>
       <source>Upper value</source>
       <translation>Valor más alto</translation>
     </message>
@@ -6763,10 +6745,6 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>Form1</source>
       <translation>Form1</translation>
-    </message>
-    <message>
-      <source>Font Style</source>
-      <translation>Estilo de fuente</translation>
     </message>
     <message>
       <source>Font size units</source>
@@ -6789,16 +6767,8 @@ p, li { white-space: pre-wrap; }
       <translation>Fuente</translation>
     </message>
     <message>
-      <source>Colour</source>
-      <translation>Color</translation>
-    </message>
-    <message>
       <source>%</source>
       <translation>%</translation>
-    </message>
-    <message>
-      <source>Font Alignment</source>
-      <translation>Alineación de fuente</translation>
     </message>
     <message>
       <source>Placement</source>
@@ -6841,10 +6811,6 @@ p, li { white-space: pre-wrap; }
       <translation>Abajo izquierda</translation>
     </message>
     <message>
-      <source>Angle (deg):</source>
-      <translation>Ángulo (grados):</translation>
-    </message>
-    <message>
       <source>Buffer</source>
       <translation>Margen</translation>
     </message>
@@ -6865,72 +6831,12 @@ p, li { white-space: pre-wrap; }
       <translation>Tamaño:</translation>
     </message>
     <message>
-      <source>Buffer Labels?</source>
-      <translation>¿Poner margen a las etiquetas?</translation>
-    </message>
-    <message>
       <source>Position</source>
       <translation>Posición</translation>
     </message>
     <message>
       <source>Offset units</source>
       <translation>Unidades de desplazamiento</translation>
-    </message>
-    <message>
-      <source>X Offset (pts):</source>
-      <translation>Desplazamiento en X (pts):</translation>
-    </message>
-    <message>
-      <source>Y Offset (pts):</source>
-      <translation>Desplazamiento en Y (pts):</translation>
-    </message>
-    <message>
-      <source>Data Defined Style</source>
-      <translation>Estilo de los datos definidos</translation>
-    </message>
-    <message>
-      <source>&amp;Italic:</source>
-      <translation>&amp;Cursiva:</translation>
-    </message>
-    <message>
-      <source>&amp;Size:</source>
-      <translation>&amp;Tamaño:</translation>
-    </message>
-    <message>
-      <source>&amp;Bold:</source>
-      <translation>&amp;Negrita:</translation>
-    </message>
-    <message>
-      <source>&amp;Underline:</source>
-      <translation>&amp;Subrayado:</translation>
-    </message>
-    <message>
-      <source>&amp;Font family:</source>
-      <translation>Familia de la &amp;fuente:</translation>
-    </message>
-    <message>
-      <source>Data Defined Alignment</source>
-      <translation>Alineación de los datos definidos</translation>
-    </message>
-    <message>
-      <source>Placement:</source>
-      <translation>Ubicación:</translation>
-    </message>
-    <message>
-      <source>Data Defined Buffer</source>
-      <translation>Margen de los datos definidos</translation>
-    </message>
-    <message>
-      <source>Data Defined Position</source>
-      <translation>Posición de los datos definidos</translation>
-    </message>
-    <message>
-      <source>X Coordinate:</source>
-      <translation>Coordenada X:</translation>
-    </message>
-    <message>
-      <source>Y Coordinate:</source>
-      <translation>Coordenada Y:</translation>
     </message>
     <message>
       <source>Preview:</source>
@@ -6941,24 +6847,96 @@ p, li { white-space: pre-wrap; }
       <translation>¡QGIS Avanza!</translation>
     </message>
     <message>
-      <source>Source</source>
-      <translation>Fuente</translation>
+      <source>Field containing label</source>
+      <translation>Campo que contiene la etiqueta</translation>
     </message>
     <message>
-      <source>Field containing label:</source>
-      <translation>Campo que contiene la etiqueta:</translation>
+      <source>Default label</source>
+      <translation>Etiqueta predeterminada</translation>
     </message>
     <message>
-      <source>Default label:</source>
-      <translation>Etiqueta predeterminada:</translation>
+      <source>Data defined style</source>
+      <translation>Estilo definido por datos</translation>
     </message>
     <message>
-      <source>Size Units:</source>
-      <translation>Unidades de tamaño:</translation>
+      <source>Data defined alignment</source>
+      <translation>Alineación definida por datos</translation>
+    </message>
+    <message>
+      <source>Data defined buffer</source>
+      <translation>Buffer definido por datos</translation>
+    </message>
+    <message>
+      <source>Data defined position</source>
+      <translation>Posición definida por datos</translation>
+    </message>
+    <message>
+      <source>Font transparency</source>
+      <translation>Transparencia de tipo de letra</translation>
+    </message>
+    <message>
+      <source>Color</source>
+      <translation>Color</translation>
+    </message>
+    <message>
+      <source>Angle (deg)</source>
+      <translation>Ángulo (grados)</translation>
     </message>
     <message>
       <source>°</source>
       <translation>°</translation>
+    </message>
+    <message>
+      <source>Buffer labels?</source>
+      <translation>¿Hacer buffer de etiquetas?</translation>
+    </message>
+    <message>
+      <source>Buffer size</source>
+      <translation>Tamaño de buffer</translation>
+    </message>
+    <message>
+      <source>Transparency</source>
+      <translation>Transparencia</translation>
+    </message>
+    <message>
+      <source>X Offset (pts)</source>
+      <translation>Desplazamiento X (pts)</translation>
+    </message>
+    <message>
+      <source>Y Offset (pts)</source>
+      <translation>Desplazamiento Y (pts)</translation>
+    </message>
+    <message>
+      <source>&amp;Font family</source>
+      <translation>&amp;Familia del tipo de letra</translation>
+    </message>
+    <message>
+      <source>&amp;Bold</source>
+      <translation>&amp;Negrita</translation>
+    </message>
+    <message>
+      <source>&amp;Italic</source>
+      <translation>&amp;Cursiva</translation>
+    </message>
+    <message>
+      <source>&amp;Underline</source>
+      <translation>&amp;Subrayado</translation>
+    </message>
+    <message>
+      <source>&amp;Size</source>
+      <translation>&amp;Tamaño</translation>
+    </message>
+    <message>
+      <source>Size units</source>
+      <translation>Unidades de tamaño</translation>
+    </message>
+    <message>
+      <source>X Coordinate</source>
+      <translation>Coordenada X</translation>
+    </message>
+    <message>
+      <source>Y Coordinate</source>
+      <translation>Coordenada Y</translation>
     </message>
   </context>
   <context>
@@ -7186,52 +7164,6 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>Layer attribute table contains unsupported datatype(s)</source>
       <translation>La tabla de atributos de la capa contiene tipos de datos no soportados</translation>
-    </message>
-  </context>
-  <context>
-    <name>QgsLineStyleDialogBase</name>
-    <message>
-      <source>Select a line style</source>
-      <translation>Seleccionar estilo de línea</translation>
-    </message>
-    <message>
-      <source>Styles</source>
-      <translation>Estilos</translation>
-    </message>
-    <message>
-      <source>Ok</source>
-      <translation>Aceptar</translation>
-    </message>
-    <message>
-      <source>Cancel</source>
-      <translation>Cancelar</translation>
-    </message>
-  </context>
-  <context>
-    <name>QgsLineStyleWidgetBase</name>
-    <message>
-      <source>Form2</source>
-      <translation>Form2</translation>
-    </message>
-    <message>
-      <source>Outline Style</source>
-      <translation>Estilo del borde</translation>
-    </message>
-    <message>
-      <source>Width:</source>
-      <translation>Anchura:</translation>
-    </message>
-    <message>
-      <source>Colour:</source>
-      <translation>Color:</translation>
-    </message>
-    <message>
-      <source>LineStyleWidget</source>
-      <translation>Estilo de la línea (LineStyleWidget)</translation>
-    </message>
-    <message>
-      <source>col</source>
-      <translation>col</translation>
     </message>
   </context>
   <context>
@@ -7510,33 +7442,6 @@ Do you want to overwrite it?</source>
     <message>
       <source>Save As...</source>
       <translation>Guardar como...</translation>
-    </message>
-  </context>
-  <context>
-    <name>QgsMarkerDialogBase</name>
-    <message>
-      <source>Choose a marker symbol</source>
-      <translation>Seleccionar un símbolo de marcador</translation>
-    </message>
-    <message>
-      <source>Directory</source>
-      <translation>Directorio</translation>
-    </message>
-    <message>
-      <source>...</source>
-      <translation>...</translation>
-    </message>
-    <message>
-      <source>Ok</source>
-      <translation>Aceptar</translation>
-    </message>
-    <message>
-      <source>Cancel</source>
-      <translation>Cancelar</translation>
-    </message>
-    <message>
-      <source>New Item</source>
-      <translation>Nuevo elemento</translation>
     </message>
   </context>
   <context>
@@ -7964,84 +7869,24 @@ Información extensa sobre el error:
       <translation>Opciones de QGIS</translation>
     </message>
     <message>
-      <source>&amp;Appearance</source>
-      <translation>&amp;Apariencia</translation>
-    </message>
-    <message>
-      <source>&amp;Splash screen</source>
-      <translation>Pantalla de &amp;bienvenida</translation>
-    </message>
-    <message>
       <source>Hide splash screen at startup</source>
       <translation>Ocultar la pantalla de bienvenida al iniciar la aplicación</translation>
-    </message>
-    <message>
-      <source>&amp;Icon Theme</source>
-      <translation>Tema de &amp;iconos</translation>
     </message>
     <message>
       <source>&lt;b>Note: &lt;/b>Theme changes take effect the next time QGIS is started</source>
       <translation>&lt;b>Nota: &lt;/b>Los cambios de tema tendrán efecto la próxima vez que inicie QGIS</translation>
     </message>
     <message>
-      <source>Theme</source>
-      <translation>Tema</translation>
-    </message>
-    <message>
-      <source>Default Map Appearance (Overridden by project properties)</source>
-      <translation>Apariencia predeterminada del mapa (anulada por las propiedades del proyecto)</translation>
-    </message>
-    <message>
-      <source>Selection Color:</source>
-      <translation>Color de selección:</translation>
-    </message>
-    <message>
-      <source>Background Color:</source>
-      <translation>Color de fondo:</translation>
-    </message>
-    <message>
-      <source>Appearance</source>
-      <translation>Apariencia</translation>
-    </message>
-    <message>
-      <source>Capitalise layer name</source>
-      <translation>Comenzar el nombre de la capa por mayúscula</translation>
-    </message>
-    <message>
       <source>&amp;Rendering</source>
       <translation>&amp;Representación</translation>
-    </message>
-    <message>
-      <source>&amp;Update during drawing</source>
-      <translation>&amp;Actualizar durante el dibujado</translation>
-    </message>
-    <message>
-      <source>features</source>
-      <translation>objetos espaciales</translation>
     </message>
     <message>
       <source>Map display will be updated (drawn) after this many features have been read from the data source</source>
       <translation>La vista del mapa se actualizará después de que todos estos objetos espaciales sean leídos de la fuente de datos</translation>
     </message>
     <message>
-      <source>Update display after reading</source>
-      <translation>Actualizar visualización después de leer</translation>
-    </message>
-    <message>
-      <source>(Set to 0 to not update the display until all features have been read)</source>
-      <translation>(Poner a 0 para no actualizar la visualización hasta que todos los objetos espaciales se hayan leído)</translation>
-    </message>
-    <message>
-      <source>Initial Visibility</source>
-      <translation>Visibilidad inicial</translation>
-    </message>
-    <message>
       <source>By default new la&amp;yers added to the map should be displayed</source>
       <translation>Por omisión, las nuevas &amp;capas añadidas al mapa se deben visualizar</translation>
-    </message>
-    <message>
-      <source>Rendering</source>
-      <translation>Representación</translation>
     </message>
     <message>
       <source>Make lines appear less jagged at the expense of some drawing performance</source>
@@ -8072,10 +7917,6 @@ Información extensa sobre el error:
       <translation>Herramienta de medida</translation>
     </message>
     <message>
-      <source>Ellipsoid for distance calculations:</source>
-      <translation>Elipsoide para el cálculo de distancias:</translation>
-    </message>
-    <message>
       <source>Panning and zooming</source>
       <translation>Desplazar y zum</translation>
     </message>
@@ -8092,14 +7933,6 @@ Información extensa sobre el error:
       <translation>Nada</translation>
     </message>
     <message>
-      <source>Zoom factor:</source>
-      <translation>Factor de zum:</translation>
-    </message>
-    <message>
-      <source>Mouse wheel action:</source>
-      <translation>Acción de la rueda del ratón:</translation>
-    </message>
-    <message>
       <source>Pro&amp;jection</source>
       <translation>Pro&amp;yección</translation>
     </message>
@@ -8112,48 +7945,16 @@ Información extensa sobre el error:
       <translation>Cuando se carga una capa que no tiene información sobre la proyección</translation>
     </message>
     <message>
-      <source>Prompt for projection.</source>
-      <translation>Preguntar sobre la proyección.</translation>
-    </message>
-    <message>
-      <source>Project wide default projection will be used.</source>
-      <translation>Se va a utilizar la proyección amplia predeterminada del proyecto.</translation>
-    </message>
-    <message>
-      <source>Global default projection displa&amp;yed below will be used.</source>
-      <translation>Se usará la proyección global predeterminada &amp;mostrada a continuación.</translation>
-    </message>
-    <message>
       <source>&amp;General</source>
       <translation>&amp;General</translation>
-    </message>
-    <message>
-      <source>General</source>
-      <translation>General</translation>
-    </message>
-    <message>
-      <source>Ask to save project changes when required</source>
-      <translation>Preguntar si guardar los cambios del proyecto cuando sea necesario</translation>
-    </message>
-    <message>
-      <source>Rubberband color:</source>
-      <translation>Color de la banda de medida:</translation>
     </message>
     <message>
       <source>Locale</source>
       <translation>Idioma</translation>
     </message>
     <message>
-      <source>Force Override System Locale</source>
-      <translation>Forzar a ignorar el idioma del sistema</translation>
-    </message>
-    <message>
       <source>Locale to use instead</source>
       <translation>Idioma a usar en su lugar</translation>
-    </message>
-    <message>
-      <source>Note: Enabling / changing overide on local requires an application restart.</source>
-      <translation>Nota: activar / cambiar ignorar idioma requiere reiniciar la aplicación.</translation>
     </message>
     <message>
       <source>Additional Info</source>
@@ -8164,20 +7965,8 @@ Información extensa sobre el error:
       <translation>Idioma activo detectado en su sistema:</translation>
     </message>
     <message>
-      <source>Warn me when opening a project file saved with an older version of QGIS</source>
-      <translation>Avisarme cuando se abra un proyecto guardado con una versión anterior de QGIS.</translation>
-    </message>
-    <message>
       <source>Selecting this will unselect the 'make lines less' jagged toggle</source>
       <translation>Con esta opción desactivará el &quot;hacer las líneas menos quebradas&quot;</translation>
-    </message>
-    <message>
-      <source>(Specify the search radius as a percentage of the map width)</source>
-      <translation>(Especificar el radio de búsqueda como porcentaje de la anchura del mapa)</translation>
-    </message>
-    <message>
-      <source>Search Radius for Identifying Features and displaying Map Tips</source>
-      <translation>Radio de búsqueda para identificar objetos espaciales y mostrar avisos del mapa</translation>
     </message>
     <message>
       <source>Digitizing</source>
@@ -8188,32 +7977,12 @@ Información extensa sobre el error:
       <translation>Banda elástica</translation>
     </message>
     <message>
-      <source>Line Width:</source>
-      <translation>Anchura de línea:</translation>
-    </message>
-    <message>
       <source>Line width in pixels</source>
       <translation>Anchura de la línea en píxeles</translation>
     </message>
     <message>
-      <source>Line Colour:</source>
-      <translation>Color de línea:</translation>
-    </message>
-    <message>
       <source>Snapping</source>
       <translation>Autoensamblado</translation>
-    </message>
-    <message>
-      <source>Default Snapping Tolerance (in layer units):</source>
-      <translation>Tolerancia de autoensamblado predeterminada (en unidades de la capa):</translation>
-    </message>
-    <message>
-      <source>Search radius for vertex edits (in layer units):</source>
-      <translation>Radio de búsqueda para edición de vértices (en unidades de la capa):</translation>
-    </message>
-    <message>
-      <source>Default Snap Mode:</source>
-      <translation>Modo de autoensamblado por omisión:</translation>
     </message>
     <message>
       <source>Zoom to mouse cursor</source>
@@ -8224,8 +7993,128 @@ Información extensa sobre el error:
       <translation>Marcadores de vértices</translation>
     </message>
     <message>
-      <source>Marker style:</source>
-      <translation>Estilo de marcador:</translation>
+      <source>Project files</source>
+      <translation>Archivos de proyecto</translation>
+    </message>
+    <message>
+      <source>Prompt to save project changes when required</source>
+      <translation>Preguntar si guardar cambios en el proyecto cuando sea necesario</translation>
+    </message>
+    <message>
+      <source>Warn when opening a project file saved with an older version of QGIS</source>
+      <translation>Avisar cuando se abra un proyecto guardado con una versión anterior de QGIS</translation>
+    </message>
+    <message>
+      <source>Default Map Appearance (overridden by project properties)</source>
+      <translation>Apariencia predeterminada del mapa (anulada por las propiedades del proyecto)</translation>
+    </message>
+    <message>
+      <source>Selection color</source>
+      <translation>Color de selección</translation>
+    </message>
+    <message>
+      <source>Background color</source>
+      <translation>Color de fondo</translation>
+    </message>
+    <message>
+      <source>&amp;Application</source>
+      <translation>&amp;Aplicación</translation>
+    </message>
+    <message>
+      <source>Icon theme</source>
+      <translation>Tema de iconos</translation>
+    </message>
+    <message>
+      <source>Capitalise layer names in legend</source>
+      <translation>Comenzar el nombre de las capas con mayúsculas en la leyenda</translation>
+    </message>
+    <message>
+      <source>Display classification attribute names in legend</source>
+      <translation>Mostrar nombre de atributos de clasificación en la leyenda</translation>
+    </message>
+    <message>
+      <source>Rendering behavior</source>
+      <translation>Comportamiento de la representación</translation>
+    </message>
+    <message>
+      <source>Number of features to draw before updating the display</source>
+      <translation>Número de objetos espaciales a dibujar antes de actualizar la visualización</translation>
+    </message>
+    <message>
+      <source>&lt;b>Note:&lt;/b> Use zero to prevent display updates until all features have been rendered</source>
+      <translation>&lt;b>Nota:&lt;/b> Usar cero para evitar actualizaciones de la visualización hasta que todos los objetos espaciales se hayan representado</translation>
+    </message>
+    <message>
+      <source>Rendering quality</source>
+      <translation>Calidad de representación</translation>
+    </message>
+    <message>
+      <source>Zoom factor</source>
+      <translation>Factor de zum</translation>
+    </message>
+    <message>
+      <source>Mouse wheel action</source>
+      <translation>Acción de la rueda del ratón</translation>
+    </message>
+    <message>
+      <source>Rubberband color</source>
+      <translation>Color de la banda de medida</translation>
+    </message>
+    <message>
+      <source>Ellipsoid for distance calculations</source>
+      <translation>Elipsoide para el cálculo de distancias</translation>
+    </message>
+    <message>
+      <source>&lt;b>Note:&lt;/b> Specify the search radius as a percentage of the map width</source>
+      <translation>&lt;b>Nota:&lt;/b> Especifique el radio de búsqueda como porcentaje de la anchura del mapa</translation>
+    </message>
+    <message>
+      <source>Search radius for identifying features and displaying map tips</source>
+      <translation>Radio de búsqueda para identificar objetos espaciales y mostrar avisos del mapa</translation>
+    </message>
+    <message>
+      <source>Line width</source>
+      <translation>Ancho de línea</translation>
+    </message>
+    <message>
+      <source>Line colour</source>
+      <translation>Color de línea</translation>
+    </message>
+    <message>
+      <source>Default snap mode</source>
+      <translation>Modo de autoensamblado por omisión</translation>
+    </message>
+    <message>
+      <source>Default snapping tolerance in layer units</source>
+      <translation>Tolerancia de autoensamblado predeterminada en unidades de la capa</translation>
+    </message>
+    <message>
+      <source>Search radius for vertex edits in layer units</source>
+      <translation>Radio de búsqueda para edición de vértices en unidades de la capa</translation>
+    </message>
+    <message>
+      <source>Marker style</source>
+      <translation>Estilo de marcadores</translation>
+    </message>
+    <message>
+      <source>Prompt for projection</source>
+      <translation>Preguntar por la proyección</translation>
+    </message>
+    <message>
+      <source>Project wide default projection will be used</source>
+      <translation>Usar la proyección amplia predeterminada del proyecto</translation>
+    </message>
+    <message>
+      <source>Global default projection displa&amp;yed below will be used</source>
+      <translation>Usar la proyección global predeterminada &amp;mostrada a continuación</translation>
+    </message>
+    <message>
+      <source>Override system locale</source>
+      <translation>Ignorar el idioma del sistema</translation>
+    </message>
+    <message>
+      <source>&lt;b>Note:&lt;/b> Enabling / changing overide on local requires an application restart</source>
+      <translation>&lt;b>Nota:&lt;/b> Activar / cambiar ignorar el idioma requiere reiniciar la aplicación</translation>
     </message>
   </context>
   <context>
@@ -8265,25 +8154,6 @@ Información extensa sobre el error:
     <message>
       <source>&amp;Cancel</source>
       <translation>&amp;Cancelar</translation>
-    </message>
-  </context>
-  <context>
-    <name>QgsPatternDialogBase</name>
-    <message>
-      <source>Select a fill pattern</source>
-      <translation>Seleccionar un patrón de relleno</translation>
-    </message>
-    <message>
-      <source>No Fill</source>
-      <translation>Sin relleno</translation>
-    </message>
-    <message>
-      <source>Cancel</source>
-      <translation>Cancelar</translation>
-    </message>
-    <message>
-      <source>Ok</source>
-      <translation>Aceptar</translation>
     </message>
   </context>
   <context>
@@ -8460,10 +8330,6 @@ Información extensa sobre el error:
       <translation>Campos</translation>
     </message>
     <message>
-      <source>Datasource:</source>
-      <translation>Fuente de datos:</translation>
-    </message>
-    <message>
       <source>Operators</source>
       <translation>Operadores</translation>
     </message>
@@ -8567,6 +8433,10 @@ p, li { white-space: pre-wrap; }
 &lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;>
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Lista de campos en este archivo vectorial&lt;/p>&lt;/body>&lt;/html></translation>
     </message>
+    <message>
+      <source>Datasource</source>
+      <translation>Origen de datos</translation>
+    </message>
   </context>
   <context>
     <name>QgsPluginManager</name>
@@ -8579,67 +8449,35 @@ p, li { white-space: pre-wrap; }
       <translation>No se han econtrado complementos de QGIS en </translation>
     </message>
     <message>
-      <source>Name</source>
-      <translation>Nombre</translation>
+      <source>&amp;Select All</source>
+      <translation>&amp;Seleccionar todos</translation>
     </message>
     <message>
-      <source>Version</source>
-      <translation>Versión</translation>
-    </message>
-    <message>
-      <source>Description</source>
-      <translation>Descripción</translation>
-    </message>
-    <message>
-      <source>Library name</source>
-      <translation>Nombre de la biblioteca</translation>
+      <source>&amp;Clear All</source>
+      <translation>&amp;Limpiar todos</translation>
     </message>
   </context>
   <context>
     <name>QgsPluginManagerBase</name>
     <message>
-      <source>Plugin Directory</source>
-      <translation>Directorio de complementos</translation>
-    </message>
-    <message>
-      <source>To load a plugin, click the checkbox next to the plugin and click Ok</source>
-      <translation>Para cargar un complemento, marque la casilla correspondiente y pulse Aceptar</translation>
-    </message>
-    <message>
-      <source>&amp;Select All</source>
-      <translation>&amp;Seleccionar todos</translation>
-    </message>
-    <message>
-      <source>Alt+S</source>
-      <translation>Alt+S</translation>
-    </message>
-    <message>
-      <source>C&amp;lear All</source>
-      <translation>&amp;Deseleccionar todos</translation>
-    </message>
-    <message>
-      <source>Alt+L</source>
-      <translation>Alt+D</translation>
-    </message>
-    <message>
-      <source>&amp;Ok</source>
-      <translation>&amp;Aceptar</translation>
-    </message>
-    <message>
-      <source>Alt+O</source>
-      <translation>Alt+A</translation>
-    </message>
-    <message>
-      <source>&amp;Close</source>
-      <translation>&amp;Cerrar</translation>
-    </message>
-    <message>
-      <source>Alt+C</source>
-      <translation>Alt+C</translation>
-    </message>
-    <message>
       <source>QGIS Plugin Manager</source>
       <translation>Administrador de complementos de QGIS</translation>
+    </message>
+    <message>
+      <source>To enable / disable a plugin, click its checkbox or description</source>
+      <translation>Para activar /desactivar un complemento, pulse en su casilla o descripción</translation>
+    </message>
+    <message>
+      <source>&amp;Filter</source>
+      <translation>&amp;Filtrar</translation>
+    </message>
+    <message>
+      <source>Plugin Directory:</source>
+      <translation>Directorio de complementos:</translation>
+    </message>
+    <message>
+      <source>Directory</source>
+      <translation>Directorio</translation>
     </message>
   </context>
   <context>
@@ -8807,21 +8645,6 @@ p, li { white-space: pre-wrap; }
     <message>
       <source>Create and load layer</source>
       <translation>Crear y cargar capa</translation>
-    </message>
-  </context>
-  <context>
-    <name>QgsPointStyleWidgetBase</name>
-    <message>
-      <source>Form3</source>
-      <translation>Form3</translation>
-    </message>
-    <message>
-      <source>Symbol Style</source>
-      <translation>Estilo del símbolo</translation>
-    </message>
-    <message>
-      <source>Scale</source>
-      <translation>Escala</translation>
     </message>
   </context>
   <context>
@@ -9034,20 +8857,12 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
       <translation>General</translation>
     </message>
     <message>
-      <source>Project Title</source>
-      <translation>Título del proyecto</translation>
-    </message>
-    <message>
       <source>Default project title</source>
       <translation>Título del proyecto por omisión</translation>
     </message>
     <message>
       <source>Descriptive project name</source>
       <translation>Nombre descriptivo del proyecto</translation>
-    </message>
-    <message>
-      <source>Map Units</source>
-      <translation>Unidades del mapa</translation>
     </message>
     <message>
       <source>Meters</source>
@@ -9098,18 +8913,6 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
       <translation>Digitalización</translation>
     </message>
     <message>
-      <source>Map Appearance</source>
-      <translation>Aspecto del mapa</translation>
-    </message>
-    <message>
-      <source>Selection Color:</source>
-      <translation>Color de selección:</translation>
-    </message>
-    <message>
-      <source>Background Color:</source>
-      <translation>Color de fondo:</translation>
-    </message>
-    <message>
       <source>Projection</source>
       <translation>Proyección</translation>
     </message>
@@ -9128,6 +8931,26 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
     <message>
       <source>Avoid intersections of new polygons</source>
       <translation>Evitar intersecciones de nuevos polígonos</translation>
+    </message>
+    <message>
+      <source>Title and colors</source>
+      <translation>Título y colores</translation>
+    </message>
+    <message>
+      <source>Project title</source>
+      <translation>Título del proyecto</translation>
+    </message>
+    <message>
+      <source>Selection color</source>
+      <translation>Color de selección</translation>
+    </message>
+    <message>
+      <source>Background color</source>
+      <translation>Color de fondo</translation>
+    </message>
+    <message>
+      <source>Map units</source>
+      <translation>Unidades del mapa</translation>
     </message>
   </context>
   <context>
@@ -9365,14 +9188,6 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
       <translation>Tamaño de píxel:</translation>
     </message>
     <message>
-      <source>Property</source>
-      <translation>Propiedad</translation>
-    </message>
-    <message>
-      <source>Value</source>
-      <translation>Valor</translation>
-    </message>
-    <message>
       <source>Band</source>
       <translation>Banda</translation>
     </message>
@@ -9439,6 +9254,10 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
     <message>
       <source>NoDataValue not set</source>
       <translation>No se ha establecido el valor sin datos (NoDataValue)</translation>
+    </message>
+    <message>
+      <source>Band %1</source>
+      <translation>Banda %1</translation>
     </message>
   </context>
   <context>
@@ -9639,6 +9458,22 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
       <source>Not Set</source>
       <translation>No establecido</translation>
     </message>
+    <message>
+      <source>Default Style</source>
+      <translation>Estilo predeterminado</translation>
+    </message>
+    <message>
+      <source>QGIS Layer Style File (*.qml)</source>
+      <translation>Archivo de estilo de capa de QGIS (*.qml)</translation>
+    </message>
+    <message>
+      <source>QGIS</source>
+      <translation>QGIS</translation>
+    </message>
+    <message>
+      <source>Unknown style format: </source>
+      <translation>Formato de estilo desconocido: </translation>
+    </message>
   </context>
   <context>
     <name>QgsRasterLayerPropertiesBase</name>
@@ -9659,18 +9494,6 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
       <translation>Nada</translation>
     </message>
     <message>
-      <source>Invert Color Map</source>
-      <translation>Invertir colores del mapa</translation>
-    </message>
-    <message>
-      <source>Color Map</source>
-      <translation>Mapa en color</translation>
-    </message>
-    <message>
-      <source>Gray</source>
-      <translation>Gris</translation>
-    </message>
-    <message>
       <source>General</source>
       <translation>General</translation>
     </message>
@@ -9687,14 +9510,6 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
       <translation>Paleta:</translation>
     </message>
     <message>
-      <source>Display Name:</source>
-      <translation>Mostrar nombre:</translation>
-    </message>
-    <message>
-      <source>Layer Source:</source>
-      <translation>Fuente de la capa:</translation>
-    </message>
-    <message>
       <source>Columns:</source>
       <translation>Columnas:</translation>
     </message>
@@ -9707,32 +9522,12 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
       <translation>Sin datos:</translation>
     </message>
     <message>
-      <source>DebugInfo</source>
-      <translation>Información de depurado</translation>
-    </message>
-    <message>
-      <source>Scale Dependent Visibility</source>
-      <translation>Visibilidad según la escala</translation>
-    </message>
-    <message>
       <source>Maximum scale at which this layer will be displayed. </source>
       <translation>Escala máxima a la que se mostrará esta capa. </translation>
     </message>
     <message>
-      <source>Maximum 1:</source>
-      <translation>Máximo 1:</translation>
-    </message>
-    <message>
       <source>Minimum scale at which this layer will be displayed. </source>
       <translation>Escala mínima a la que se mostrará esta capa. </translation>
-    </message>
-    <message>
-      <source>Minimum 1:</source>
-      <translation>Mínimo 1:</translation>
-    </message>
-    <message>
-      <source>Spatial Reference System</source>
-      <translation>Sistema de referencia espacial</translation>
     </message>
     <message>
       <source>Change</source>
@@ -9747,24 +9542,12 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
       <translation>Pirámides</translation>
     </message>
     <message>
-      <source>Pyramid Resolutions</source>
-      <translation>Resolución de las pirámides</translation>
-    </message>
-    <message>
-      <source>Resampling Method</source>
-      <translation>Método de remuestreo</translation>
-    </message>
-    <message>
       <source>Average</source>
       <translation>Media</translation>
     </message>
     <message>
       <source>Nearest Neighbour</source>
       <translation>Vecino más próximo</translation>
-    </message>
-    <message>
-      <source>Build Pyramids</source>
-      <translation>Construir pirámides</translation>
     </message>
     <message>
       <source>Histogram</source>
@@ -9775,112 +9558,20 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
       <translation>Opciones</translation>
     </message>
     <message>
-      <source>Column Count:</source>
-      <translation>Número de columnas:</translation>
-    </message>
-    <message>
-      <source>Out Of Range OK?</source>
-      <translation>¿Permitir valores fuera de rango?</translation>
-    </message>
-    <message>
-      <source>Allow Approximation</source>
-      <translation>Permitir aproximación</translation>
-    </message>
-    <message>
       <source>Chart Type</source>
       <translation>Tipo de gráfico</translation>
-    </message>
-    <message>
-      <source>Line Graph</source>
-      <translation>Gráfico de líneas</translation>
-    </message>
-    <message>
-      <source>Bar Chart</source>
-      <translation>Gráfico de barras</translation>
     </message>
     <message>
       <source>Refresh</source>
       <translation>Actualizar</translation>
     </message>
     <message>
-      <source>Grayscale Band Scaling</source>
-      <translation>Escalado de banda de escala de grises</translation>
-    </message>
-    <message>
       <source>Max</source>
       <translation>Máx</translation>
     </message>
     <message>
-      <source>Std Deviation</source>
-      <translation>Desviación estándar</translation>
-    </message>
-    <message>
-      <source>Custom Min Max Values:</source>
-      <translation>Valores mínimo y máximo personalizados:</translation>
-    </message>
-    <message>
       <source>Min</source>
       <translation>Mín</translation>
-    </message>
-    <message>
-      <source>Contrast Enhancement</source>
-      <translation>Mejora de contraste</translation>
-    </message>
-    <message>
-      <source>RGB Scaling</source>
-      <translation>Escalado RGB</translation>
-    </message>
-    <message>
-      <source>&lt;b>&lt;font color='blue'>Max&lt;/font>&lt;/b></source>
-      <translation>&lt;b>&lt;font color='blue'>Max&lt;/font>&lt;/b></translation>
-    </message>
-    <message>
-      <source>Custom Min Max Values</source>
-      <translation>Valores mínimo y máximo personalizados</translation>
-    </message>
-    <message>
-      <source>&lt;b>&lt;font color='green'>Min&lt;/font>&lt;/b></source>
-      <translation>&lt;b>&lt;font color='green'>Mín&lt;/font>&lt;/b></translation>
-    </message>
-    <message>
-      <source>&lt;b>&lt;font color='green'>Max&lt;/font>&lt;/b></source>
-      <translation>&lt;b>&lt;font color='green'>Max&lt;/font>&lt;/b></translation>
-    </message>
-    <message>
-      <source>&lt;b>&lt;font color='red'>Min&lt;/font>&lt;/b></source>
-      <translation>&lt;b>&lt;font color='red'>Mín&lt;/font>&lt;/b></translation>
-    </message>
-    <message>
-      <source>&lt;b>&lt;font color='red'>Max&lt;/font>&lt;/b></source>
-      <translation>&lt;b>&lt;font color='red'>Max&lt;/font>&lt;/b></translation>
-    </message>
-    <message>
-      <source>&lt;b>&lt;font color='blue'>Min&lt;/font>&lt;/b></source>
-      <translation>&lt;b>&lt;font color='blue'>Mín&lt;/font>&lt;/b></translation>
-    </message>
-    <message>
-      <source>Grayscale Band Selection</source>
-      <translation>Selección de banda de escala de grises</translation>
-    </message>
-    <message>
-      <source>RGB Mode Band Selection</source>
-      <translation>Selección de banda de modo RGB</translation>
-    </message>
-    <message>
-      <source>&lt;b>&lt;font color='blue'>Blue&lt;/font>&lt;/b></source>
-      <translation>&lt;b>&lt;font color='blue'>Azul&lt;/font>&lt;/b></translation>
-    </message>
-    <message>
-      <source>&lt;b>&lt;font color='green'>Green&lt;/font>&lt;/b></source>
-      <translation>&lt;b>&lt;font color='green'>Verde&lt;/font>&lt;/b></translation>
-    </message>
-    <message>
-      <source>&lt;b>&lt;font color='red'>Red&lt;/font>&lt;/b></source>
-      <translation>&lt;b>&lt;font color='red'>Rojo&lt;/font>&lt;/b></translation>
-    </message>
-    <message>
-      <source>Global Transparency</source>
-      <translation>Transparencia global</translation>
     </message>
     <message>
       <source> 00%</source>
@@ -9891,56 +9582,12 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
       <translation>Representar como</translation>
     </message>
     <message>
-      <source>Single Band Gray</source>
-      <translation>Gris de una banda</translation>
-    </message>
-    <message>
-      <source>Three Band Color</source>
-      <translation>Color de tres bandas</translation>
-    </message>
-    <message>
-      <source>Transparency Layer;</source>
-      <translation>Capa de transparencia:</translation>
-    </message>
-    <message>
-      <source>Add Values Manually</source>
-      <translation>Añadir valores manualmente</translation>
-    </message>
-    <message>
       <source>...</source>
       <translation>...</translation>
     </message>
     <message>
-      <source>Add Values From Display</source>
-      <translation>Añadir valores desde la visualización</translation>
-    </message>
-    <message>
-      <source>Remove Selected Row</source>
-      <translation>Eliminar las filas seleccionadas</translation>
-    </message>
-    <message>
-      <source>Default Values</source>
-      <translation>Valores predeterminados</translation>
-    </message>
-    <message>
-      <source>Import From File</source>
-      <translation>Importar desde archivo</translation>
-    </message>
-    <message>
-      <source>Export To File</source>
-      <translation>Exportar a archivo</translation>
-    </message>
-    <message>
-      <source>Reset No Data Value</source>
-      <translation>Restablecer valor de sin datos</translation>
-    </message>
-    <message>
       <source>Colormap</source>
       <translation>Mapa de color</translation>
-    </message>
-    <message>
-      <source>Number of entries:</source>
-      <translation>Número de entradas:</translation>
     </message>
     <message>
       <source>Delete entry</source>
@@ -9957,18 +9604,6 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
     <message>
       <source>2</source>
       <translation>2</translation>
-    </message>
-    <message>
-      <source>Color interpolation:</source>
-      <translation>Interpolación de color:</translation>
-    </message>
-    <message>
-      <source>Classification mode:</source>
-      <translation>Modo de clasificación:</translation>
-    </message>
-    <message>
-      <source>Load Min Max Values From Band</source>
-      <translation>Cargar valores min-max de la banda</translation>
     </message>
     <message>
       <source>Estimate (faster)</source>
@@ -10007,27 +9642,239 @@ clave primaria) o que tenga una columna oid de PostgreSQL.</translation>
       <translation>Transparencia</translation>
     </message>
     <message>
-      <source>No Data Value</source>
-      <translation>Valor sin datos</translation>
+      <source>Single band gray</source>
+      <translation>Gris de una banda</translation>
     </message>
     <message>
-      <source>Custom Transparency Options</source>
-      <translation>Opciones de transparencia personalizadas</translation>
+      <source>Three band color</source>
+      <translation>Color de tres bandas</translation>
     </message>
     <message>
-      <source>Transparency Band:</source>
-      <translation>Banda de transparencia:</translation>
+      <source>RGB mode band selection and scaling</source>
+      <translation>Selección de banda del modo RGB y escalado</translation>
     </message>
     <message>
-      <source>Transparent Pixel List</source>
-      <translation>Lista de píxeles transparentes</translation>
+      <source>Red band</source>
+      <translation>Banda roja</translation>
+    </message>
+    <message>
+      <source>Green band</source>
+      <translation>Banda verde</translation>
+    </message>
+    <message>
+      <source>Blue band</source>
+      <translation>Banda azul</translation>
+    </message>
+    <message>
+      <source>Custom min / max values</source>
+      <translation>Valores mínimo / máximo personalizados</translation>
+    </message>
+    <message>
+      <source>Red min</source>
+      <translation>Mínimo de rojo</translation>
+    </message>
+    <message>
+      <source>Red max</source>
+      <translation>Máximo de rojo</translation>
+    </message>
+    <message>
+      <source>Green min</source>
+      <translation>Mínimo de verde</translation>
+    </message>
+    <message>
+      <source>Green max</source>
+      <translation>Máximo de verde</translation>
+    </message>
+    <message>
+      <source>Blue min</source>
+      <translation>Mínimo de azul</translation>
+    </message>
+    <message>
+      <source>Blue max</source>
+      <translation>Máximo de azul</translation>
+    </message>
+    <message>
+      <source>Std. deviation</source>
+      <translation>Desviación estándar</translation>
+    </message>
+    <message>
+      <source>Single band properties</source>
+      <translation>Propiedades de banda única</translation>
+    </message>
+    <message>
+      <source>Gray band</source>
+      <translation>Banda gris</translation>
+    </message>
+    <message>
+      <source>Color map</source>
+      <translation>Mapa de color</translation>
+    </message>
+    <message>
+      <source>Invert color map</source>
+      <translation>Invertir mapa de color</translation>
+    </message>
+    <message>
+      <source>Use standard deviation</source>
+      <translation>Usar desviación estándar</translation>
+    </message>
+    <message>
+      <source>Estimate note:</source>
+      <translation>Estimar nota:</translation>
+    </message>
+    <message>
+      <source>Load min / max values from band</source>
+      <translation>Cargar valores min / max de la banda</translation>
+    </message>
+    <message>
+      <source>Contrast enhancement</source>
+      <translation>Mejora de contraste</translation>
+    </message>
+    <message>
+      <source>Global transparency</source>
+      <translation>Transparencia global</translation>
+    </message>
+    <message>
+      <source>No data value</source>
+      <translation>Valor de sin datos</translation>
+    </message>
+    <message>
+      <source>Reset no data value</source>
+      <translation>Restablecer valor de sin datos</translation>
+    </message>
+    <message>
+      <source>Custom transparency options</source>
+      <translation>Opciones de transparencia personalizada</translation>
+    </message>
+    <message>
+      <source>Transparency band</source>
+      <translation>Banda de transparencia</translation>
+    </message>
+    <message>
+      <source>Transparency layer;</source>
+      <translation>Capa de transparencia:</translation>
+    </message>
+    <message>
+      <source>Transparent pixel list</source>
+      <translation>Lista de píxeles de transparentes</translation>
+    </message>
+    <message>
+      <source>Add values manually</source>
+      <translation>Añadir valores manualmente</translation>
+    </message>
+    <message>
+      <source>Add Values from display</source>
+      <translation>Añadir valores desde la visualización</translation>
+    </message>
+    <message>
+      <source>Remove selected row</source>
+      <translation>Eliminar la fila seleccionada</translation>
+    </message>
+    <message>
+      <source>Default values</source>
+      <translation>Valores predeterminados</translation>
+    </message>
+    <message>
+      <source>Import from file</source>
+      <translation>Importar de archivo</translation>
+    </message>
+    <message>
+      <source>Export to file</source>
+      <translation>Exporta a archivo</translation>
+    </message>
+    <message>
+      <source>Number of entries</source>
+      <translation>Número de entradas</translation>
+    </message>
+    <message>
+      <source>Color interpolation</source>
+      <translation>Interpolación de color</translation>
+    </message>
+    <message>
+      <source>Classification mode</source>
+      <translation>Modo de clasificación</translation>
+    </message>
+    <message>
+      <source>Spatial reference system</source>
+      <translation>Sistema de referencia espacial</translation>
+    </message>
+    <message>
+      <source>Scale dependent visibility</source>
+      <translation>Visibilidad dependiente de la escala</translation>
+    </message>
+    <message>
+      <source>Maximum</source>
+      <translation>Máximo</translation>
+    </message>
+    <message>
+      <source>Minimum</source>
+      <translation>Mínimo</translation>
+    </message>
+    <message>
+      <source>Show debug info</source>
+      <translation>Mostrar información de depuración</translation>
+    </message>
+    <message>
+      <source>Layer source</source>
+      <translation>Fuente de la capa</translation>
+    </message>
+    <message>
+      <source>Display name</source>
+      <translation>Nombre a visualizar</translation>
     </message>
     <message>
       <source>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;>
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;/p>&lt;/body>&lt;/html></source>
+&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;>
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;&quot;>&lt;/p>&lt;/body>&lt;/html></source>
       <translation type="unfinished" />
+    </message>
+    <message>
+      <source>Pyramid resolutions</source>
+      <translation>Resoluciones de pirámides</translation>
+    </message>
+    <message>
+      <source>Resampling method</source>
+      <translation>Método de remuestreo</translation>
+    </message>
+    <message>
+      <source>Build pyramids</source>
+      <translation>Construir pirámides</translation>
+    </message>
+    <message>
+      <source>Line graph</source>
+      <translation>Gráfico de líneas</translation>
+    </message>
+    <message>
+      <source>Bar chart</source>
+      <translation>Gráfico de barras</translation>
+    </message>
+    <message>
+      <source>Column count</source>
+      <translation>Cuenta de columnas</translation>
+    </message>
+    <message>
+      <source>Out of range OK?</source>
+      <translation>¿Aceptar fuera de intervalo?</translation>
+    </message>
+    <message>
+      <source>Allow approximation</source>
+      <translation>Permitir aproximación</translation>
+    </message>
+    <message>
+      <source>Restore Default Style</source>
+      <translation>Restaurar estilo predeterminado</translation>
+    </message>
+    <message>
+      <source>Save As Default</source>
+      <translation>Guardar como predeterminado</translation>
+    </message>
+    <message>
+      <source>Load Style ...</source>
+      <translation>Cargar estilo...</translation>
+    </message>
+    <message>
+      <source>Save Style ...</source>
+      <translation>Guardar estilo...</translation>
     </message>
   </context>
   <context>
@@ -10443,68 +10290,68 @@ p, li { white-space: pre-wrap; }
       <translation>Sin dibujo</translation>
     </message>
     <message>
-      <source>Solid Pattern</source>
-      <translation>Patrón sólido</translation>
-    </message>
-    <message>
-      <source>Hor Pattern</source>
-      <translation>Patrón horizontal</translation>
-    </message>
-    <message>
-      <source>Ver Pattern</source>
-      <translation>Patrón vertical</translation>
-    </message>
-    <message>
-      <source>Cross Pattern</source>
-      <translation>Patrón cruzado</translation>
-    </message>
-    <message>
-      <source>BDiag Pattern</source>
-      <translation>Patrón diagonal /</translation>
-    </message>
-    <message>
-      <source>FDiag Pattern</source>
-      <translation>Patrón diagonal \</translation>
-    </message>
-    <message>
-      <source>Diag Cross Pattern</source>
-      <translation>Patrón diag. cruzado</translation>
-    </message>
-    <message>
-      <source>Dense1 Pattern</source>
-      <translation>Patrón denso 1</translation>
-    </message>
-    <message>
-      <source>Dense2 Pattern</source>
-      <translation>Patrón denso 2</translation>
-    </message>
-    <message>
-      <source>Dense3 Pattern</source>
-      <translation>Patrón denso 3</translation>
-    </message>
-    <message>
-      <source>Dense4 Pattern</source>
-      <translation>Patrón denso 4</translation>
-    </message>
-    <message>
-      <source>Dense5 Pattern</source>
-      <translation>Patrón denso 5</translation>
-    </message>
-    <message>
-      <source>Dense6 Pattern</source>
-      <translation>Patrón denso 6</translation>
-    </message>
-    <message>
-      <source>Dense7 Pattern</source>
-      <translation>Patrón denso 7</translation>
-    </message>
-    <message>
       <source>No Brush</source>
       <translation>Ningún pincel</translation>
     </message>
     <message>
-      <source>Texture Pattern</source>
-      <translation>Patrón de textura</translation>
+      <source>Solid</source>
+      <translation>Sólido</translation>
+    </message>
+    <message>
+      <source>Horizontal</source>
+      <translation>Horizontal</translation>
+    </message>
+    <message>
+      <source>Vertical</source>
+      <translation>Vertical</translation>
+    </message>
+    <message>
+      <source>Cross</source>
+      <translation>Cruz</translation>
+    </message>
+    <message>
+      <source>BDiagonal</source>
+      <translation>Diagonal atrás</translation>
+    </message>
+    <message>
+      <source>FDiagonal</source>
+      <translation>Diagonal adelante</translation>
+    </message>
+    <message>
+      <source>Diagonal X</source>
+      <translation>Diagonal X</translation>
+    </message>
+    <message>
+      <source>Dense1</source>
+      <translation>Denso 1</translation>
+    </message>
+    <message>
+      <source>Dense2</source>
+      <translation>Denso 2</translation>
+    </message>
+    <message>
+      <source>Dense3</source>
+      <translation>Denso 3</translation>
+    </message>
+    <message>
+      <source>Dense4</source>
+      <translation>Denso 4</translation>
+    </message>
+    <message>
+      <source>Dense5</source>
+      <translation>Denso 5</translation>
+    </message>
+    <message>
+      <source>Dense6</source>
+      <translation>Denso 6</translation>
+    </message>
+    <message>
+      <source>Dense7</source>
+      <translation>Denso 7</translation>
+    </message>
+    <message>
+      <source>Texture</source>
+      <translation>Textura</translation>
     </message>
   </context>
   <context>
@@ -10952,22 +10799,47 @@ p, li { white-space: pre-wrap; }
     </message>
   </context>
   <context>
+    <name>QgsUniqueValueDialog</name>
+    <message>
+      <source>Confirm Delete</source>
+      <translation>Confirmar borrado</translation>
+    </message>
+    <message>
+      <source>The classification field was changed from '%1' to '%2'.
+Should the existing classes be deleted before classification?</source>
+      <translation>El campo de clasificación se cambió de '%1' a '%2'.
+¿Deben borrarse las clases existentes antes de la clasificación?</translation>
+    </message>
+  </context>
+  <context>
     <name>QgsUniqueValueDialogBase</name>
     <message>
       <source>Form1</source>
       <translation>Form1</translation>
     </message>
     <message>
-      <source>Classification Field:</source>
-      <translation>Campo de clasificación:</translation>
-    </message>
-    <message>
-      <source>Delete class</source>
-      <translation>Borrar clase</translation>
-    </message>
-    <message>
       <source>Classify</source>
       <translation>Clasificar</translation>
+    </message>
+    <message>
+      <source>Classification field</source>
+      <translation>Campo de clasificación</translation>
+    </message>
+    <message>
+      <source>Add class</source>
+      <translation>Añadir clase</translation>
+    </message>
+    <message>
+      <source>Delete classes</source>
+      <translation>Borrar clases</translation>
+    </message>
+    <message>
+      <source>Randomize Colors</source>
+      <translation>Colores aleatorios</translation>
+    </message>
+    <message>
+      <source>Reset Colors</source>
+      <translation>Restablecer colores</translation>
     </message>
   </context>
   <context>
@@ -11151,14 +11023,6 @@ p, li { white-space: pre-wrap; }
       <translation>Simbología</translation>
     </message>
     <message>
-      <source>Legend type:</source>
-      <translation>Tipo de leyenda:</translation>
-    </message>
-    <message>
-      <source>Transparency:</source>
-      <translation>Transparencia:</translation>
-    </message>
-    <message>
       <source>General</source>
       <translation>General</translation>
     </message>
@@ -11187,14 +11051,6 @@ p, li { white-space: pre-wrap; }
       <translation>Utilizar represenación dependiente de la escala</translation>
     </message>
     <message>
-      <source>Maximum 1:</source>
-      <translation>Máximo 1:</translation>
-    </message>
-    <message>
-      <source>Minimum 1:</source>
-      <translation>Mínimo 1:</translation>
-    </message>
-    <message>
       <source>Minimum scale at which this layer will be displayed. </source>
       <translation>Escala mínima a la que se mostrará esta capa. </translation>
     </message>
@@ -11203,24 +11059,8 @@ p, li { white-space: pre-wrap; }
       <translation>Escala máxima a la que se mostrará esta capa. </translation>
     </message>
     <message>
-      <source>Spatial Index</source>
-      <translation>Índice espacial</translation>
-    </message>
-    <message>
       <source>Create Spatial Index</source>
       <translation>Crear índice espacial</translation>
-    </message>
-    <message>
-      <source>Create</source>
-      <translation>Crear</translation>
-    </message>
-    <message>
-      <source>Spatial Reference System</source>
-      <translation>Sistema de referencia espacial</translation>
-    </message>
-    <message>
-      <source>Change</source>
-      <translation>Cambiar</translation>
     </message>
     <message>
       <source>Subset</source>
@@ -11262,40 +11102,29 @@ p, li { white-space: pre-wrap; }
       <source>Save Style ...</source>
       <translation>Guardar estilo...</translation>
     </message>
-  </context>
-  <context>
-    <name>QgsVectorSymbologyWidgetBase</name>
     <message>
-      <source>Form2</source>
-      <translation>Form2</translation>
+      <source>Legend type</source>
+      <translation>Tipo de leyenda</translation>
     </message>
     <message>
-      <source>Label</source>
-      <translation>Etiqueta</translation>
+      <source>Transparency</source>
+      <translation>Transparencia</translation>
     </message>
     <message>
-      <source>Min</source>
-      <translation>Mín</translation>
+      <source>Options</source>
+      <translation>Opciones</translation>
     </message>
     <message>
-      <source>Max</source>
-      <translation>Máx</translation>
+      <source>Change SRS</source>
+      <translation>Cambiar sistema de referencia espacial</translation>
     </message>
     <message>
-      <source>Symbol Classes:</source>
-      <translation>Clases de símbolos:</translation>
+      <source>Maximum</source>
+      <translation>Máximo</translation>
     </message>
     <message>
-      <source>Count:</source>
-      <translation>Cuenta:</translation>
-    </message>
-    <message>
-      <source>Mode:</source>
-      <translation>Modo:</translation>
-    </message>
-    <message>
-      <source>Field:</source>
-      <translation>Campo:</translation>
+      <source>Minimum</source>
+      <translation>Mínimo</translation>
     </message>
   </context>
   <context>
