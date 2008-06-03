@@ -554,6 +554,8 @@ bool QgsOgrProvider::addFeature(QgsFeature& f)
   {
     QgsLogger::warning("Writing of the feature failed");
     returnValue = false;
+  } else {
+    f.setFeatureId( OGR_F_GetFID(feature) );
   }
   ++numberFeatures;
   OGR_F_Destroy( feature );
