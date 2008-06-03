@@ -1843,6 +1843,7 @@ bool QgsPostgresProvider::addFeatures(QgsFeatureList & flist)
       QList<QByteArray> qparam;
       qparam.append( geomParam.toUtf8() );
       qparam.append( QString("%1").arg( ++primaryKeyHighWater ).toUtf8() );
+      features->setFeatureId( primaryKeyHighWater );
       param[0] = qparam[0];
       param[1] = qparam[1];
 
