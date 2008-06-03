@@ -82,6 +82,25 @@ public:
     sipRes = PyString_FromString(str.toLocal8Bit().data());
 %End
 
+  int __len__();
+%MethodCode
+    sipRes = 2;
+%End
+
+
+  SIP_PYOBJECT __getitem__(int);
+%MethodCode    
+    if (a0 == 0) {
+        sipRes = Py_BuildValue("d",sipCpp->x());
+    } else if (a0 == 1) {
+        sipRes = Py_BuildValue("d",sipCpp->y());
+    } else {
+        QString msg = QString("Bad index: %1").arg(a0);
+        PyErr_SetString(PyExc_IndexError, msg.toAscii().constData());
+    }
+%End
+
+
   
 }; // class QgsPOint
 
