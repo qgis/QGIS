@@ -148,7 +148,7 @@ class QgsVectorDataProvider : QgsDataProvider
        * Adds a list of features
        * @return true in case of success and false in case of failure
        */
-      virtual bool addFeatures(QList<QgsFeature> & flist);
+      virtual bool addFeatures(QList<QgsFeature> & flist /In,Out/);
 
       /** 
        * Deletes a feature
