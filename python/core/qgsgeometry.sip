@@ -59,9 +59,13 @@ class QgsGeometry
        Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
        This class will take ownership of the buffer.
     */
-    // SIP: buffer will be transferred from python to C++
-    // TODO: create pythonic interface that will receive wkb as a string
-    void setWkbAndOwnership(unsigned char * wkb /Transfer, Array/, size_t length /ArraySize/);
+    void setWkbAndOwnership(unsigned char * wkb /Array/, size_t length /ArraySize/);
+%MethodCode
+  // create copy of Python's string and pass it to setWkbAndOwnership()
+  unsigned char * copy = new unsigned char[a1];
+  memcpy(copy, a0, a1);
+  sipCpp->setWkbAndOwnership(copy, a1);
+%End
     
     /** 
        Returns the buffer containing this geometry in WKB format.
