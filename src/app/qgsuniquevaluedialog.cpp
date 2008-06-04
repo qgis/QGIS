@@ -292,29 +292,19 @@ void QgsUniqueValueDialog::changeClassificationAttribute()
   QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider());
   if (provider)
   {
-    QString value;
-    QgsAttributeList attlist;
-
     int nr = provider->indexFromFieldName(attributeName);
     if(nr == -1)
     {
       return;
     }
-    attlist.append(nr);
 
-    provider->select(attlist, QgsRect(), false);
-    QgsFeature feat;
+    QStringList values;
+    provider->getUniqueValues(nr, values);
 
-    //go through all the features and insert their value into the map and into mClassListWidget
-    while(provider->getNextFeature(feat)) 
+    for(int i=0; i<values.size(); i++)
     {
-      const QgsAttributeMap& attrs = feat.attributeMap();
-      value = attrs[nr].toString();
-
-      if( mValues.contains(value) )
-        continue;
-
-      addClass(value);
+      if( !mValues.contains(values[i]) )
+        addClass(values[i]);
     }
   }
 }
