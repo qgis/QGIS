@@ -247,6 +247,14 @@ void QgsDbSourceSelect::addTables()
 {
   m_selectedTables.clear();
 
+  QString currentSchema;
+  QString sql = "select current_schema()";
+  PGresult *result = PQexec(pd, sql.toUtf8());
+  if (result && PQresultStatus(result)==PGRES_TUPLES_OK && PQntuples(result)==1 )
+  {
+    currentSchema = QString::fromUtf8(PQgetvalue(result, 0, 0));
+  }
+
   typedef QMap<int, QVector<QString> > schemaInfo;
   QMap<QString, schemaInfo> dbInfo;
 
@@ -282,7 +290,7 @@ void QgsDbSourceSelect::addTables()
   }
 
   //now traverse all the schemas and table infos
-  QString schemaName, tableName, geomColumnName, sql;
+  QString schemaName, tableName, geomColumnName;
   QString query;
 
   QMap<QString, schemaInfo>::const_iterator schema_it = dbInfo.constBegin();
@@ -324,7 +332,14 @@ void QgsDbSourceSelect::addTables()
           continue;
         }
       }
-      query = "\"" + schemaName + "\".\"" + tableName + "\" " + "(" + geomColumnName + ") sql=" + sql;
+
+      if(schemaName!=currentSchema)
+      {
+	 query += "\"" + schemaName + "\".";
+      }
+
+      query += "\"" + tableName + "\" " + "(" + geomColumnName + ") sql=" + sql;
+
       m_selectedTables.push_back(query);
     }
   }
