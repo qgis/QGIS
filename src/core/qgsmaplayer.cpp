@@ -30,13 +30,14 @@
 #include <QDomImplementation>
 #include <QTextStream>
 
+#include <sqlite3.h>
 
 #include "qgslogger.h"
 #include "qgsrect.h"
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
 #include "qgsspatialrefsys.h"
-
+#include "qgsapplication.h"
 
 QgsMapLayer::QgsMapLayer(int type,
                          QString lyrname,
@@ -409,104 +410,125 @@ QString QgsMapLayer::loadDefaultStyle ( bool & theResultFlag )
 {
   QString myURI = publicSource();
   QFileInfo myFileInfo ( myURI );
-  //get the file name for our .qml style file
-  QString myFileName = myFileInfo.path() + QDir::separator() + 
-    myFileInfo.completeBaseName () + ".qml";
-  return loadNamedStyle ( myFileName, theResultFlag );
+  QString key;
+  if( myFileInfo.exists() ) {
+    // get the file name for our .qml style file
+    key = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName () + ".qml";
+  } else {
+    key = myURI;
+  }
+  return loadNamedStyle ( key, theResultFlag );
 }
+
 QString QgsMapLayer::loadNamedStyle ( const QString theURI , bool & theResultFlag )
 {
   theResultFlag = false;
-  //first check if its a file - we will add support for
-  //database etc uris later
-  QFileInfo myFileInfo ( theURI );
-  if ( !myFileInfo.isFile() )
-  {
-    return QObject::tr( "Currently only filebased datasets are supported" );
-  }
-  QFile myFile ( theURI );
-  if ( !myFile.open(QFile::ReadOnly ) )
-  {
-    return QObject::tr( "File could not been opened." );
-  }
 
   QDomDocument myDocument ( "qgis" );
+
   // location of problem associated with errorMsg
   int line, column;
   QString myErrorMessage;
-  if ( !myDocument.setContent ( &myFile, &myErrorMessage, &line, &column ) )
-  {
+
+  QFile myFile ( theURI );
+  if ( myFile.open(QFile::ReadOnly ) )
+  { 
+    // read file
+    theResultFlag = myDocument.setContent ( &myFile, &myErrorMessage, &line, &column );
+    if(!theResultFlag)
+      myErrorMessage = tr("%1 at line %2 column %3").arg( myErrorMessage ).arg( line ).arg(column);
     myFile.close();
-    return myErrorMessage + " at line " + QString::number( line ) +
-      " column " + QString::number( column );
   }
-  else //dom parsed in ok
+  else
   {
-    myFile.close();
-
-    // now get the layer node out and pass it over to the layer
-    // to deserialise...
-    QDomElement myRoot = myDocument.firstChildElement("qgis");
-    if (myRoot.isNull())
+    // read from database
+    sqlite3 *myDatabase; 
+    sqlite3_stmt *myPreparedStatement;
+    const char *myTail;
+    int myResult;
+    
+    myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase);
+    if (myResult)
     {
-      myErrorMessage = "Error: qgis element could not be found in " + theURI;
-      return myErrorMessage;
+      return tr("could not open user database");
     }
 
-    QDomElement myLayer = myRoot.firstChildElement("maplayer");
-    if (myLayer.isNull())
+    QString mySql = "select qml from tbl_styles where style=?";
+    myResult = sqlite3_prepare(myDatabase, mySql.toUtf8().data(), mySql.length(), &myPreparedStatement, &myTail);
+    if (myResult==SQLITE_OK)
     {
-      myErrorMessage = "Error: maplayer element could not be found in " + theURI;
-      return myErrorMessage;
+      QByteArray param = theURI.toUtf8();
+
+      if( sqlite3_bind_text(myPreparedStatement, 1, param.data(), param.length(), SQLITE_STATIC)==SQLITE_OK &&
+          sqlite3_step(myPreparedStatement)==SQLITE_ROW ) 
+      {
+        QString qml = QString::fromUtf8( (char *)sqlite3_column_text(myPreparedStatement, 0) );
+        theResultFlag = myDocument.setContent ( qml, &myErrorMessage, &line, &column );
+	if(!theResultFlag)
+	  myErrorMessage = tr("%1 at line %2 column %3").arg( myErrorMessage ).arg( line ).arg(column);
+      }
+    }
+    else
+    {
+      theResultFlag = false;
+      myErrorMessage = tr("style %1 not found in database").arg(theURI);
     }
 
-    //
-    // we need to ensure the data source matches the layers
-    // current datasource not the one specified in the qml
-    //
-    QDomElement myDataSource = myLayer.firstChildElement("datasource");
-    if (myDataSource.isNull())
-    {
-      myErrorMessage = "Error: datasource element could not be found in " + theURI;
-      return myErrorMessage;
-    }
-    QDomElement myNewDataSource = myDocument.createElement( "datasource" );
-    QDomText myDataSourceText = myDocument.createTextNode( source() );
-    myNewDataSource.appendChild( myDataSourceText );
-    myLayer.replaceChild( myNewDataSource ,
-      myLayer.firstChildElement("datasource") );
-
-    //
-    // Now go on to parse the xml (QDomElement inherits QDomNode
-    // so we can just pass along the element to readXML)
-    //
-    theResultFlag = readXML ( myLayer );
-
-    return QObject::tr( "Loaded default style file from " ) + theURI;
+    sqlite3_finalize(myPreparedStatement);
+    sqlite3_close(myDatabase);
   }
+
+  if(!theResultFlag)
+    return myErrorMessage;
+
+  // now get the layer node out and pass it over to the layer
+  // to deserialise...
+  QDomElement myRoot = myDocument.firstChildElement("qgis");
+  if (myRoot.isNull())
+  {
+    myErrorMessage = "Error: qgis element could not be found in " + theURI;
+    return myErrorMessage;
+  }
+
+  QDomElement myLayer = myRoot.firstChildElement("maplayer");
+  if (myLayer.isNull())
+  {
+    myErrorMessage = "Error: maplayer element could not be found in " + theURI;
+    return myErrorMessage;
+  }
+
+  //
+  // we need to ensure the data source matches the layers
+  // current datasource not the one specified in the qml
+  //
+  QDomElement myDataSource = myLayer.firstChildElement("datasource");
+  if (myDataSource.isNull())
+  {
+    myErrorMessage = "Error: datasource element could not be found in " + theURI;
+    return myErrorMessage;
+  }
+  QDomElement myNewDataSource = myDocument.createElement( "datasource" );
+  QDomText myDataSourceText = myDocument.createTextNode( source() );
+  myNewDataSource.appendChild( myDataSourceText );
+  myLayer.replaceChild( myNewDataSource, myLayer.firstChildElement("datasource") );
+  
+  //
+  // Now go on to parse the xml (QDomElement inherits QDomNode
+  // so we can just pass along the element to readXML)
+  //
+  theResultFlag = readXML ( myLayer );
+
+  return QObject::tr( "Loaded default style file from " ) + theURI;
 }
+
 QString QgsMapLayer::saveDefaultStyle ( bool & theResultFlag )
 {
-  QString myURI = publicSource();
-  QFileInfo myFileInfo ( myURI );
-  //get the file name for our .qml style file
-  QString myFileName = myFileInfo.path() + QDir::separator() + 
-    myFileInfo.completeBaseName () + ".qml";
-  return saveNamedStyle ( myFileName, theResultFlag );
+  return saveNamedStyle ( publicSource(), theResultFlag );
 }
-QString QgsMapLayer::saveNamedStyle ( const QString theURI , bool & theResultFlag )
+
+QString QgsMapLayer::saveNamedStyle ( const QString theURI, bool & theResultFlag )
 {
-  QFileInfo myFileInfo ( theURI );
-  //now check if we can write to the dir where the layer
-  //exists...
-  QFileInfo myDirInfo ( myFileInfo.path() ); //excludes filename
-  if ( !myDirInfo.isWritable() )
-  {
-    return QObject::tr( "The directory containing your dataset needs to be writeable!" );
-  }
-  //now construct the file name for our .qml style file
-  QString myFileName = myFileInfo.path() + QDir::separator() + 
-                       myFileInfo.completeBaseName () + ".qml";
+  QString myErrorMessage;
 
   QDomImplementation DOMImplementation;
   QDomDocumentType documentType =
@@ -518,19 +540,114 @@ QString QgsMapLayer::saveNamedStyle ( const QString theURI , bool & theResultFla
   myDocument.appendChild( myRootNode );
   writeXML( myRootNode, myDocument );
 
-
-  QFile myFile ( myFileName );
-  if ( myFile.open(QFile::WriteOnly | QFile::Truncate ) )
+  // check if the uri is a file or ends with .qml,
+  // which indicates that it should become one
+  // everything else goes to the database.
+  QFileInfo myFileInfo ( theURI );
+  if ( myFileInfo.exists() || theURI.endsWith(".qml", Qt::CaseInsensitive) )
   {
-    QTextStream myFileStream( &myFile );
-    // save as utf-8 with 2 spaces for indents
-    myDocument.save( myFileStream, 2 );  
-    myFile.close();
-    return QObject::tr( "Created default style file as " ) + myFileName;
+    QFileInfo myDirInfo ( myFileInfo.path() ); //excludes filename
+    if ( !myDirInfo.isWritable() )
+    {
+      return QObject::tr( "The directory containing your dataset needs to be writeable!" );
+    }
+
+    // now construct the file name for our .qml style file
+    QString myFileName = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName () + ".qml";
+
+    QFile myFile ( myFileName );
+    if ( myFile.open(QFile::WriteOnly | QFile::Truncate ) )
+    {
+      QTextStream myFileStream( &myFile );
+      // save as utf-8 with 2 spaces for indents
+      myDocument.save( myFileStream, 2 );  
+      myFile.close();
+      return QObject::tr( "Created default style file as " ) + myFileName;
+    }
+    else
+    {
+      return QObject::tr( "ERROR: Failed to created default style file as %1 Check file permissions and retry." ).arg(myFileName); 
+    }
   }
   else
   {
-    return QObject::tr( "ERROR: Failed to created default style file as " ) + myFileName + 
-      tr( " Check file permissions and retry." );
+    QString qml = myDocument.toString();
+    
+    // read from database
+    sqlite3 *myDatabase; 
+    sqlite3_stmt *myPreparedStatement;
+    const char *myTail;
+    int myResult;
+    
+    myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase);
+    if (myResult)
+    {
+      return tr("User database could not be opened.");
+    }
+
+    QByteArray param0 = theURI.toUtf8();
+    QByteArray param1 = qml.toUtf8();
+
+    QString mySql = "create table if not exists tbl_styles(style varchar primary key,qml varchar)";
+    myResult = sqlite3_prepare(myDatabase, mySql.toUtf8().data(), mySql.length(), &myPreparedStatement, &myTail);
+    if (myResult==SQLITE_OK)
+    {
+      if( sqlite3_step(myPreparedStatement)!=SQLITE_DONE ) 
+      {
+        sqlite3_finalize(myPreparedStatement);
+	sqlite3_close(myDatabase);
+        return tr("The style table could not be created.");
+      }
+    }
+
+    sqlite3_finalize(myPreparedStatement);
+
+    mySql = "insert into tbl_styles(style,qml) values (?,?)";
+    myResult = sqlite3_prepare(myDatabase, mySql.toUtf8().data(), mySql.length(), &myPreparedStatement, &myTail);
+    if (myResult==SQLITE_OK)
+    {
+      if( sqlite3_bind_text(myPreparedStatement, 1, param0.data(), param0.length(), SQLITE_STATIC)==SQLITE_OK &&
+          sqlite3_bind_text(myPreparedStatement, 2, param1.data(), param1.length(), SQLITE_STATIC)==SQLITE_OK &&
+          sqlite3_step(myPreparedStatement)==SQLITE_DONE ) 
+      {
+        theResultFlag = true;
+	myErrorMessage = tr("The style %1 was saved to database").arg(theURI);
+      }
+    }
+
+    sqlite3_finalize(myPreparedStatement);
+
+    if(!theResultFlag)
+    { 
+      QString mySql = "update tbl_styles set qml=? where style=?";
+      myResult = sqlite3_prepare(myDatabase, mySql.toUtf8().data(), mySql.length(), &myPreparedStatement, &myTail);
+      if (myResult==SQLITE_OK)
+      {
+        if( sqlite3_bind_text(myPreparedStatement, 2, param0.data(), param0.length(), SQLITE_STATIC)==SQLITE_OK &&
+            sqlite3_bind_text(myPreparedStatement, 1, param1.data(), param1.length(), SQLITE_STATIC)==SQLITE_OK &&
+            sqlite3_step(myPreparedStatement)==SQLITE_DONE ) 
+        {
+          theResultFlag = true;
+	  myErrorMessage = tr("The style %1 was updated in the database.").arg(theURI);
+        }
+	else
+	{
+          theResultFlag = true;
+	  myErrorMessage = tr("The style %1 could not be updated in the database.").arg(theURI);
+	}
+      }
+      else
+      {
+        // try an update
+        theResultFlag = false;
+        myErrorMessage = tr("The style %1 could not be inserted into database.").arg(theURI);
+      }
+
+      sqlite3_finalize(myPreparedStatement);
+    }
+    
+    sqlite3_close(myDatabase);
   }
+
+  return myErrorMessage;
 }
