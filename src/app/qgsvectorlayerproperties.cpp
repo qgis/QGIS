@@ -154,7 +154,7 @@ void QgsVectorLayerProperties::setDisplayField(QString name)
   displayFieldComboBox->setCurrentText(name);
 }
 
-//! @note in raster props, this metho d is called sync()
+//! @note in raster props, this method is called sync()
 void QgsVectorLayerProperties::reset( void )
 {
   // populate the general information
@@ -639,6 +639,8 @@ void QgsVectorLayerProperties::on_pbnLoadDefaultStyle_clicked()
 
 void QgsVectorLayerProperties::on_pbnSaveDefaultStyle_clicked()
 {
+  apply(); // make sure the qml to save is uptodate
+
   // a flag passed by reference
   bool defaultSavedFlag = false;
   // after calling this the above flag will be set true for success
@@ -685,7 +687,7 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
     if ( myFileDialog->selectedFilter() == tr ( "QGIS Layer Style File (*.qml)" ) )
     {
       //ensure the user never ommitted the extension from the filename
-      if ( !myFileName.toUpper().endsWith ( ".QML" ) )
+      if ( !myFileName.endsWith( ".qml", Qt::CaseInsensitive ) )
       {
         myFileName += ".qml";
       }
@@ -714,7 +716,6 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
 
 void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
 {
-
   QSettings myQSettings;  // where we keep last used filter in persistant state
   QString myLastUsedDir = myQSettings.value ( "style/lastStyleDir", "." ).toString();
 
@@ -746,11 +747,14 @@ void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
   {
     if ( myFileDialog->selectedFilter() == tr ( "QGIS Layer Style File (*.qml)" ) )
     {
+      apply(); // make sure the qml to save is uptodate
+
       //ensure the user never ommitted the extension from the filename
-      if ( !myOutputFileName.toUpper().endsWith ( ".QML" ) )
+      if ( !myOutputFileName.endsWith ( ".qml", Qt::CaseInsensitive ) )
       {
         myOutputFileName += ".qml";
       }
+
       bool defaultLoadedFlag = false;
       QString myMessage = layer->saveNamedStyle( myOutputFileName, defaultLoadedFlag );
       //reset if the default style was loaded ok only
