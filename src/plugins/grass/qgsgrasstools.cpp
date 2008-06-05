@@ -134,30 +134,10 @@ QgsGrassTools::QgsGrassTools ( QgisInterface *iface,
   layout1->addWidget(mTabWidget);
 
   //
-  // Tims experimental list view with filter
+  // Radims original tree view code.
   //
-  mModelTools= new QStandardItemModel(0,1);
-  mModelProxy = new QSortFilterProxyModel(this);
-  mModelProxy->setSourceModel(mModelTools);
-  mModelProxy->setFilterRole(Qt::UserRole + 2);
-  mListView = new QListView();
-  mListView->setModel(mModelProxy);
-  mListView->setFocus();
-  mListView->setItemDelegateForColumn(0,new QgsDetailedItemDelegate());
-  mListView->setUniformItemSizes(false);
-  QWidget * mypBase = new QWidget(this);
-  QVBoxLayout * mypListTabLayout = new QVBoxLayout(mypBase);
-  mypListTabLayout->addWidget(mListView);
-  mFilterInput = new QLineEdit(this);
-  mypListTabLayout->addWidget(mFilterInput);
-  //mTabWidget->addTab( mypBase, tr("Modules List") );
-  connect( mFilterInput, SIGNAL(textChanged(QString)), 
-    this, SLOT(filterChanged(QString)) );
-  connect( mListView, SIGNAL(clicked(const QModelIndex)), 
-    this, SLOT(listItemClicked(const QModelIndex)));
-  //
-  // End of Tims experimental bit
-  //
+  // Warning: if the tree is not the first page modules are 
+  // displayed over the other pages on first load
 
   mModulesListView = new QTreeWidget();
   mTabWidget->addTab( mModulesListView, tr("Modules Tree") );
@@ -178,13 +158,42 @@ QgsGrassTools::QgsGrassTools ( QgisInterface *iface,
   QString title = tr("GRASS Tools: ") + QgsGrass::getDefaultLocation()
     + "/" + QgsGrass::getDefaultMapset();
   setCaption(title);
-
-  QString conf = QgsApplication::pkgDataPath() + "/grass/config/default.qgc";
-
-  restorePosition();
-
-  // Show before loadConfig() so that user can see loading
   mModulesListView->show(); 
+
+
+  //
+  // Tims experimental list view with filter
+  //
+  mModelTools= new QStandardItemModel(0,1);
+  mModelProxy = new QSortFilterProxyModel(this);
+  mModelProxy->setSourceModel(mModelTools);
+  mModelProxy->setFilterRole(Qt::UserRole + 2);
+  mListView = new QListView();
+  mListView->setModel(mModelProxy);
+  mListView->setFocus();
+  mListView->setItemDelegateForColumn(0,new QgsDetailedItemDelegate());
+  mListView->setUniformItemSizes(false);
+  mListView->show();
+  QWidget * mypBase = new QWidget(this);
+  QVBoxLayout * mypListTabLayout = new QVBoxLayout(mypBase);
+  mypListTabLayout->addWidget(mListView);
+  mFilterInput = new QLineEdit(this);
+  mypListTabLayout->addWidget(mFilterInput);
+  mTabWidget->addTab( mypBase, tr("Modules List") );
+  connect( mFilterInput, SIGNAL(textChanged(QString)), 
+    this, SLOT(filterChanged(QString)) );
+  connect( mListView, SIGNAL(clicked(const QModelIndex)), 
+    this, SLOT(listItemClicked(const QModelIndex)));
+  //
+  // End of Tims experimental bit
+  //
+
+  //
+  // Load the modules lists
+  //
+  // Show before loadConfig() so that user can see loading
+  QString conf = QgsApplication::pkgDataPath() + "/grass/config/default.qgc";
+  restorePosition();
 
   QApplication::setOverrideCursor(Qt::waitCursor);
   loadConfig ( conf );
@@ -192,8 +201,6 @@ QgsGrassTools::QgsGrassTools ( QgisInterface *iface,
   //statusBar()->hide();
 
   // Add map browser 
-  // Warning: if browser is on the first page modules are 
-  // displayed over the browser
   mBrowser = new QgsGrassBrowser ( mIface, this );
   mTabWidget->addTab( mBrowser, tr("Browser") );
 
