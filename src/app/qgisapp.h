@@ -96,7 +96,7 @@ class QgisApp : public QMainWindow
    *  Note this is included to support WMS layers only at this stage,
    *  GDAL layer support via a Provider is not yet implemented.
    */
-  void addRasterLayer(QString const & rasterLayerPath,
+  QgsRasterLayer* addRasterLayer(QString const & rasterLayerPath,
       QString const & baseName,
       QString const & providerKey,
       QStringList const & layers,
