@@ -54,6 +54,9 @@ class QgisAppInterface : public QgisInterface
         QgsVectorLayer* addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey);
         //! Add a raster layer given its file name
         QgsRasterLayer* addRasterLayer(QString rasterLayerPath, QString baseName);
+	//! Add a WMS layer
+	QgsRasterLayer* addRasterLayer(const QString& url, const QString& baseName, const QString& providerKey, \
+				       const QStringList& layers, const QStringList& styles, const QString& format, const QString& crs);
 
         //! Add a project
         bool addProject(QString theProjectName);

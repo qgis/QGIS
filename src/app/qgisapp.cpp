@@ -5216,7 +5216,7 @@ QgsRasterLayer* QgisApp::addRasterLayer(QString const & rasterFile, QString cons
   \note   Copied from the equivalent addVectorLayer function in this file
   TODO    Make it work for rasters specifically.
   */
-void QgisApp::addRasterLayer(QString const & rasterLayerPath,
+QgsRasterLayer* QgisApp::addRasterLayer(QString const & rasterLayerPath,
     QString const & baseName,
     QString const & providerKey,
     QStringList const & layers,
@@ -5232,7 +5232,7 @@ void QgisApp::addRasterLayer(QString const & rasterLayerPath,
 
   if(mMapCanvas && mMapCanvas->isDrawing())
     {
-      return;
+      return 0;
     }
 
   mMapCanvas->freeze();
@@ -5278,6 +5278,7 @@ void QgisApp::addRasterLayer(QString const & rasterLayerPath,
   // draw the map
   mMapCanvas->freeze(false);
   mMapCanvas->refresh();
+  return layer;
 
 // Let render() do its own cursor management
 //  QApplication::restoreOverrideCursor();
