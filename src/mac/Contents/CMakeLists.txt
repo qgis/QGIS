@@ -3,20 +3,11 @@
 # create Info.plist
 
 ADD_CUSTOM_TARGET(Info.plist ALL
-                  VERSION=`grep VERSION ${CMAKE_BINARY_DIR}/qgsconfig.h | head -1 |
-                           sed -e "s/#define VERSION //"
-                               -e "s/\\\"//g"` &&
-                  SVNVERSION=`grep QGSSVNVERSION ${CMAKE_BINARY_DIR}/qgssvnversion.h |
-                              sed -e "s/#define QGSSVNVERSION //"
-                                  -e "s/\\\"//g"` &&
-                  sed -e "s/@VERSION/$$VERSION/"
-                      -e "s/@SHORTVERSION/$$VERSION/"
-                      -e "s/@SVNVERSION/$$SVNVERSION/"
-                      < ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in > Info.plist
-                  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in
-                          ${CMAKE_BINARY_DIR}/qgsconfig.h)
-
-ADD_DEPENDENCIES(Info.plist svnversion)
+  DEPENDS ${SVN_MARKER}
+  COMMAND ${CMAKE_COMMAND}
+    -D CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+    -D VERSION=${COMPLETE_VERSION}-${RELEASE_NAME}
+    -P ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.cmake)
 
 #############################################################
 # process subdirs
