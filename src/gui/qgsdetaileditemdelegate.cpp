@@ -193,27 +193,36 @@ QSize QgsDetailedItemDelegate::sizeHint(
 {
   if (qVariantCanConvert<QgsDetailedItemData>(theIndex.data(Qt::UserRole))) 
   {
-    return QSize(378,mpWidget->height());
+    QgsDetailedItemData myData = 
+      qVariantValue<QgsDetailedItemData>(theIndex.data(Qt::UserRole));
+    if (myData.isRenderedAsWidget())
+    {
+      return QSize(378,mpWidget->height());
+    }
+    else // fall back to hand calculated & hand drawn item
+    {
+      QFont myFont = theOption.font;
+      QFont myTitleFont = myFont;
+      myTitleFont.setBold(true);
+      myTitleFont.setPointSize(myFont.pointSize() + 3);
+      QFontMetrics myTitleMetrics(myTitleFont);
+      QFontMetrics myDetailMetrics(myFont);
+      int myVerticalSpacer = 3; //spacing between title and description
+      int myHorizontalSpacer = 5; //spacing between checkbox / icon and description
+      int myHeight = myTitleMetrics.height() + myVerticalSpacer;
+      QString myDetailString = theIndex.model()->data(theIndex, Qt::UserRole).toString();
+      QStringList myList = wordWrap( myDetailString, 
+          myDetailMetrics, 
+          theOption.rect.width() - (mpCheckBox->width() + myHorizontalSpacer));
+      myHeight += (myList.count() + 1) * (myDetailMetrics.height() - myVerticalSpacer);
+      //for some reason itmes are non selectable if using rect.width() on osx and win
+      return QSize(50, myHeight + myVerticalSpacer);
+      //return QSize(theOption.rect.width(), myHeight + myVerticalSpacer);
+    }
   }
-  else // fall back to hand calculated & hand drawn item
+  else //cant convert to qgsdetaileditemdata
   {
-    QFont myFont = theOption.font;
-    QFont myTitleFont = myFont;
-    myTitleFont.setBold(true);
-    myTitleFont.setPointSize(myFont.pointSize() + 3);
-    QFontMetrics myTitleMetrics(myTitleFont);
-    QFontMetrics myDetailMetrics(myFont);
-    int myVerticalSpacer = 3; //spacing between title and description
-    int myHorizontalSpacer = 5; //spacing between checkbox / icon and description
-    int myHeight = myTitleMetrics.height() + myVerticalSpacer;
-    QString myDetailString = theIndex.model()->data(theIndex, Qt::UserRole).toString();
-    QStringList myList = wordWrap( myDetailString, 
-                                   myDetailMetrics, 
-                                   theOption.rect.width() - (mpCheckBox->width() + myHorizontalSpacer));
-    myHeight += (myList.count() + 1) * (myDetailMetrics.height() - myVerticalSpacer);
-    //for some reason itmes are non selectable if using rect.width() on osx and win
-    return QSize(50, myHeight + myVerticalSpacer);
-    //return QSize(theOption.rect.width(), myHeight + myVerticalSpacer);
+    return QSize(50,50); //fallback
   }
 }
 
