@@ -11,11 +11,11 @@
 	<key>CFBundleSignature</key>
 	<string>QGIS</string>
 	<key>CFBundleGetInfoString</key>
-	<string>QGIS @VERSION (@SVNVERSION), © 2002-2008 QGIS Development Team</string>
+	<string>QGIS @VERSION@ (@REVISION@), © 2002-2008 QGIS Development Team</string>
 	<key>CFBundleShortVersionString</key>
-	<string>@SHORTVERSION (@SVNVERSION)</string>
+	<string>@VERSION@ (@REVISION@)</string>
 	<key>CFBundleVersion</key>
-	<string>@VERSION</string>
+	<string>@VERSION@ (@REVISION@)</string>
 	<key>CFBundleIconFile</key>
 	<string>qgis.icns</string>
 	<key>CFBundleDocumentTypes</key>
@@ -176,15 +176,17 @@
 	</array>
 	<key>CFBundleLocalizations</key>
 	<array>
-		<string>ar</string>
 		<string>en</string>
+		<string>ar</string>
 		<string>cs_CZ</string>
 		<string>de</string>
 		<string>es</string>
 		<string>fr</string>
+		<string>hu</string>
 		<string>id</string>
 		<string>it</string>
 		<string>ja</string>
+		<string>lo</string>
 		<string>lt</string>
 		<string>lv</string>
 		<string>mn</string>
