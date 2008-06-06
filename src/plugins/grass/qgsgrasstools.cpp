@@ -442,21 +442,15 @@ void QgsGrassTools::addModules (  QTreeWidgetItem *parent, QDomElement &element 
         mypDetailItem->setData(pixmap,Qt::DecorationRole);
         mypDetailItem->setCheckable(false);
         mypDetailItem->setEditable(false);
-
-      
-        // Render items using widget based detail items (experimental)
-        // Calling setData in the delegate with a variantised QgsDetailedItemData
-        // will cause the widget based mode to be enabled
-        //QgsDetailedItemData myData;
-        //myData.setTitle(name);
-        //myData.setDetail(label);
-        //myData.setIcon(pixmap);
-        //myData.setCheckable(false);
-        //QVariant myVariant = qVariantFromValue(myData);
-        //mypDetailItem->setData(myVariant,Qt::UserRole);
-        
-        //alternate invocation method using simple drawing code
-        mypDetailItem->setData(label,Qt::UserRole);
+        // setData in the delegate with a variantised QgsDetailedItemData
+        QgsDetailedItemData myData;
+        myData.setTitle(name);
+        myData.setDetail(label);
+        myData.setIcon(pixmap);
+        myData.setCheckable(false);
+        myData.setRenderAsWidget(true);
+        QVariant myVariant = qVariantFromValue(myData);
+        mypDetailItem->setData(myVariant,Qt::UserRole);
         mModelTools->appendRow(mypDetailItem);
         //
         // End of experimental work by Tim 

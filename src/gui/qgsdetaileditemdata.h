@@ -36,12 +36,20 @@ class QgsDetailedItemData
     void setIcon(QPixmap theIcon);
     void setCheckable(bool theFlag);
     void setChecked(bool theFlag);
+    /** This is a hint to the delegate to render using 
+     * a widget rather than manually painting every 
+     * part of the list item.
+     * @note the delegate may completely ignore this 
+     * depending on the delegate implementation.
+     */
+    void setRenderAsWidget(bool theFlag);
 
     QString title();
     QString detail();
     QPixmap icon();
     bool isCheckable();
     bool isChecked();
+    bool isRenderedAsWidget();
 
   private:
     QString mTitle;
@@ -50,6 +58,7 @@ class QgsDetailedItemData
     QPixmap mPixmap;
     bool mCheckableFlag;
     bool mCheckedFlag;
+    bool mRenderAsWidgetFlag;
 };
 
 // Make QVariant aware of this data type (see qtdocs star 

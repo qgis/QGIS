@@ -19,6 +19,7 @@
 #include "qgsdetaileditemdata.h"
 QgsDetailedItemData::QgsDetailedItemData() 
 {
+  mRenderAsWidgetFlag=false;
 }
 
 QgsDetailedItemData::~QgsDetailedItemData()
@@ -47,6 +48,10 @@ void QgsDetailedItemData::setChecked(bool theFlag)
 {
   mCheckedFlag = theFlag;
 }
+void QgsDetailedItemData::setRenderAsWidget(bool theFlag)
+{
+  mRenderAsWidgetFlag = theFlag;
+}
 
 QString QgsDetailedItemData::title()
 {
@@ -72,3 +77,9 @@ bool QgsDetailedItemData::isChecked()
 {
   return mCheckedFlag;
 }
+
+bool QgsDetailedItemData::isRenderedAsWidget()
+{
+  return mRenderAsWidgetFlag;
+}
+
