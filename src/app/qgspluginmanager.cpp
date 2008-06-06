@@ -76,6 +76,7 @@ QgsPluginManager::QgsPluginManager(QgsPythonUtils* pythonUtils, QWidget * parent
   setTable();
   getPluginDescriptions();
   getPythonPluginDescriptions();
+  mModelProxy->sort(0,Qt::AscendingOrder);
   //
   // Create the select all and clear all buttons and add them to the 
   // buttonBox
