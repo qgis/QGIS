@@ -2009,9 +2009,8 @@ bool QgsVectorLayer::startEditing()
   
 bool QgsVectorLayer::readXML_( QDomNode & layer_node )
 {
-#ifdef QGISDEBUG
-  std::cerr << "Datasource in QgsVectorLayer::readXML_: " << mDataSource.toLocal8Bit().data() << std::endl;
-#endif
+  QgsDebugMsg(QString("Datasource in QgsVectorLayer::readXML_: ") + mDataSource.toLocal8Bit().data());
+
   // process the attribute actions
   mActions->readXML(layer_node);
 
@@ -2131,17 +2130,14 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
     setLabelOn(true);
   }
 
-#ifdef QGISDEBUG
-  std::cout << "Testing if qgsvectorlayer can call label readXML routine" << std::endl;
-#endif
+  QgsDebugMsg("Testing if qgsvectorlayer can call label readXML routine")
+
 
   QDomNode labelattributesnode = layer_node.namedItem("labelattributes");
 
   if(!labelattributesnode.isNull())
   {
-#ifdef QGISDEBUG
-    std::cout << "qgsvectorlayer calling label readXML routine" << std::endl;
-#endif
+    QgsDebugMsg("qgsvectorlayer calling label readXML routine")
     mLabel->readXML(labelattributesnode);
   }
 
