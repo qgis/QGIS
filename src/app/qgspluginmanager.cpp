@@ -55,7 +55,6 @@
 const int PLUGIN_DATA_ROLE=Qt::UserRole;
 const int PLUGIN_LIBRARY_ROLE=Qt::UserRole + 1;
 const int PLUGIN_LIBRARY_NAME_ROLE=Qt::UserRole + 2;
-const int PLUGIN_FILTER_ROLE=Qt::UserRole + 3;
 
 QgsPluginManager::QgsPluginManager(QgsPythonUtils* pythonUtils, QWidget * parent, Qt::WFlags fl)
 : QDialog(parent, fl)
@@ -146,12 +145,12 @@ void QgsPluginManager::getPythonPluginDescriptions()
     
     if (pluginName == "???" || description == "???" || version == "???") continue;
 
-    QStandardItem * mypDetailItem = new QStandardItem( pluginName );
+    // filtering will be done on the display role so give it name and desription
+    // user wont see this text since we are using a custome delegate
+    QStandardItem * mypDetailItem = new QStandardItem( pluginName + " - " + description);
     QString myLibraryName = "python:" + packageName;;
     mypDetailItem->setData(myLibraryName, PLUGIN_LIBRARY_ROLE); //for loading libs later
     mypDetailItem->setData(pluginName, PLUGIN_LIBRARY_NAME_ROLE); //for matching in registry later
-    QString mySearchText = pluginName + " - " + description;
-    mypDetailItem->setData(mySearchText , PLUGIN_FILTER_ROLE); //for filtering later
     mypDetailItem->setCheckable(false);
     mypDetailItem->setEditable(false);
     // setData in the delegate with a variantised QgsDetailedItemData
@@ -296,7 +295,9 @@ sharedLibExtension = "*.so*";
     }
 
     QString myLibraryName = pluginDir[i];
-    QStandardItem * mypDetailItem = new QStandardItem(myLibraryName);
+    // filtering will be done on the display role so give it name and desription
+    // user wont see this text since we are using a custome delegate
+    QStandardItem * mypDetailItem = new QStandardItem(pName() + " - " + pDesc());
     mypDetailItem->setData(myLibraryName,PLUGIN_LIBRARY_ROLE);
     mypDetailItem->setData(pName(), PLUGIN_LIBRARY_NAME_ROLE); //for matching in registry later
     QgsDetailedItemData myData;
@@ -422,7 +423,7 @@ std::vector < QgsPluginItem > QgsPluginManager::getSelectedPlugins()
       //              QString type=0, 
       //              bool python=false);
       pis.push_back(QgsPluginItem(pluginName, 
-            mModelPlugins->item(row,0)->data(PLUGIN_FILTER_ROLE).toString(), 
+            mModelPlugins->item(row,0)->data(Qt::DisplayRole).toString(), //display role 
             library, 0, pythonic));
     }
 
