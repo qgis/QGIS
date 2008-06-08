@@ -1,7 +1,0 @@
-This directory will contain the QGIS data provider for MySQL 5.0. The provider
-will intially not support proper relationship calculations (eg.
-intersects/contains) due to limitations in the MySQL implementation of the OGC
-functions. This will impact the use of identify and select functions in QGIS
-for a MySQL layer. 
-
-NOTE - THIS CODE DOES NOTHING YET!
