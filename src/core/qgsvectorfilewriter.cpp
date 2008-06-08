@@ -200,7 +200,7 @@ bool QgsVectorFileWriter::addFeature(QgsFeature& feature)
         OGR_F_SetFieldString(poFeature, ogrField, mCodec->fromUnicode(attrValue.toString()).data());
         break;
       default:
-        //assert(0 && "invalid variant type");
+        QgsDebugMsg("Invalid variant type for field "+QString::number(ogrField)+": "+QString::number(attrValue.type()));
         return false;
     }
   }
@@ -321,43 +321,25 @@ bool QgsVectorFileWriter::deleteShapeFile(QString theFileName)
 {
   //
   // Remove old copies that may be lying around
+  // TODO: should be case-insensitive
   //
-  QFileInfo myInfo(theFileName);
   QString myFileBase = theFileName.replace(".shp","");
-  if (myInfo.exists())
+  bool ok = TRUE;
+
+  const char* suffixes[] = { ".shp", ".shx", ".dbf", ".prj", ".qix" };
+  for (int i = 0; i < sizeof(suffixes) / sizeof(char*); i++)
   {
-    if(!QFile::remove(myFileBase + ".shp"))
+    QString file = myFileBase + suffixes[i];
+    QFileInfo myInfo(file);
+    if (myInfo.exists())
     {
-      qDebug("Removing file failed : " + myFileBase.toLocal8Bit() + ".shp");
-      return false;
+      if(!QFile::remove(file))
+      {
+        QgsDebugMsg("Removing file failed : " + file);
+        ok = FALSE;
+      }
     }
   }
-  myInfo.setFile(myFileBase + ".shx");
-  if (myInfo.exists())
-  {
-    if(!QFile::remove(myFileBase + ".shx"))
-    {
-      qDebug("Removing file failed : " + myFileBase.toLocal8Bit() + ".shx");
-      return false;
-    }
-  }
-  myInfo.setFile(myFileBase + ".dbf");
-  if (myInfo.exists())
-  {
-    if(!QFile::remove(myFileBase + ".dbf"))
-    {
-      qDebug("Removing file failed : " + myFileBase.toLocal8Bit() + ".dbf");
-      return false;
-    }
-  }
-  myInfo.setFile(myFileBase + ".prj");
-  if (myInfo.exists())
-  {
-    if(!QFile::remove(myFileBase + ".prj"))
-    {
-      qDebug("Removing file failed : " + myFileBase.toLocal8Bit() + ".prj");
-      return false;
-    }
-  }
-  return true;
+  
+  return ok;
 }
