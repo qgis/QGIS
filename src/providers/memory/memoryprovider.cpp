@@ -34,11 +34,11 @@ QgsMemoryProvider::QgsMemoryProvider(QString uri)
     mWkbType = QGis::WKBLineString;
   else if (uri == "Polygon")
     mWkbType = QGis::WKBPolygon;
-  else if (uri == "WKBMultiPoint")
+  else if (uri == "MultiPoint")
     mWkbType = QGis::WKBMultiPoint;
-  else if (uri == "WKBMultiLineString")
+  else if (uri == "MultiLineString")
     mWkbType = QGis::WKBMultiLineString;
-  else if (uri == "WKBMultiPolygon")
+  else if (uri == "MultiPolygon")
     mWkbType = QGis::WKBMultiPolygon;
   else
     mWkbType = QGis::WKBUnknown;
