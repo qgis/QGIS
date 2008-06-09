@@ -207,14 +207,6 @@ public:
     
     /** \brief Mutator for transparent band name mapping.  */
     void setTransparentBandName(const QString & theBandNameQString);
-    //
-    // Accessor and mutator for transparent band name
-    // 
-    /** \brief  Accessor for transparent band name mapping. */
-    QString getTransparentLayerName();
-    
-    /** \brief Mutator for transparent band name mapping.  */
-    void setTransparentLayerName(const QString & theLayerNameQString);
     
     //
     // Accessor and mutator for gray band name
@@ -450,13 +442,13 @@ public:
      /** \brief Mutator for mUserDefinedRGBMinMaxFlag */
     void setUserDefinedRGBMinMax(bool theBool);
 
-    /** \brief Accessor for userDefinedMinMax.  */
+    /** \brief Accessor for mUserDefinedRGBMinMaxFlag.  */
     bool getUserDefinedRGBMinMax();
 
-    /** \brief Mutator for mUserDefinedRGBMinMaxFlag */
+    /** \brief Mutator for mUserDefinedGrayMinMaxFlag */
     void setUserDefinedGrayMinMax(bool theBool);
 
-    /** \brief Accessor for userDefinedMinMax.  */
+    /** \brief Accessor for mUserDefinedGrayMinMaxFlag.  */
     bool getUserDefinedGrayMinMax();
 
 public slots:    

@@ -413,19 +413,6 @@ public:
     }
     /** \brief Mutator for transparent band name mapping.  */
     void setTransparentBandName(const QString & theBandNameQString);
-    //
-    // Accessor and mutator for transparent band name
-    // 
-    /** \brief  Accessor for transparent band name mapping. */
-    QString getTransparentLayerName()
-    {
-        return mTransparentLayerName;
-    }
-    /** \brief Mutator for transparent band name mapping.  */
-    void setTransparentLayerName(const QString & theLayerNameQString)
-    {
-      mTransparentLayerName = theLayerNameQString;
-    }
     
     //
     // Accessor and mutator for gray band name
@@ -793,28 +780,53 @@ public:
      */
     const QgsRasterDataProvider* getDataProvider() const;
 
-     /** \brief Mutator for mUserDefinedRGBMinMaxFlag */
+    /** \brief Mutator for mUserDefinedRGBMinMaxFlag */
     void setUserDefinedRGBMinMax(bool theBool)
     {
       mUserDefinedRGBMinMaxFlag = theBool;
     } 
 
-    /** \brief Accessor for userDefinedMinMax.  */
+    /** \brief Accessor for mUserDefinedRGBMinMaxFlag.  */
     bool getUserDefinedRGBMinMax()
     {
       return mUserDefinedRGBMinMaxFlag;
     }
+    
+    /** \brief Mutator for mRGBActualMinimumMaximum */
+    void setActualRGBMinMaxFlag(bool theBool)
+    {
+      mRGBActualMinimumMaximum = theBool;
+    } 
 
-    /** \brief Mutator for mUserDefinedRGBMinMaxFlag */
+    /** \brief Accessor for mRGBActualMinimumMaximum.  */
+    bool getActualRGBMinMaxFlag()
+    {
+      return mRGBActualMinimumMaximum;
+    }
+    
+
+    /** \brief Mutator for mUserDefinedGrayMinMaxFlag */
     void setUserDefinedGrayMinMax(bool theBool)
     {
       mUserDefinedGrayMinMaxFlag = theBool;
     } 
 
-    /** \brief Accessor for userDefinedMinMax.  */
+    /** \brief Accessor for mUserDefinedGrayMinMaxFlag.  */
     bool getUserDefinedGrayMinMax()
     {
       return mUserDefinedGrayMinMaxFlag;
+    }
+    
+    /** \brief Mutator for mGrayActualMinimumMaximum */
+    void setActualGrayMinMaxFlag(bool theBool)
+    {
+      mGrayActualMinimumMaximum = theBool;
+    } 
+
+    /** \brief Accessor for mGrayActualMinimumMaximum.  */
+    bool getActualGrayMinMaxFlag()
+    {
+      return mGrayActualMinimumMaximum;
     }
 
 public slots:    
@@ -1043,16 +1055,18 @@ private:
     QgsRasterTransparency mRasterTransparency;
     /** \brief The band to be associated with transparency.  */
     QString mTransparencyBandName;
-    /** \brief The Layer to be associated with transparency.  */
-    QString mTransparentLayerName;
     /** \brief The band to be associated with the grayscale only ouput - usually 1.  */
     QString mGrayBandName;
     /** \brief Whether this raster has overviews / pyramids or not */
     bool hasPyramidsFlag;
     /** \brief Flag to indicate if the user entered custom min max values */
     bool mUserDefinedRGBMinMaxFlag;
+    /** \brief Flag to indicate of the min max values are actual or estimates/user defined */
+    bool mRGBActualMinimumMaximum;
     /** \brief Flag to indicate if the user entered custom min max values */
     bool mUserDefinedGrayMinMaxFlag;
+    /** \brief Flag to indicate of the min max values are actual or estimates/user defined */
+    bool mGrayActualMinimumMaximum;
     /** \brief This list holds a series of RasterPyramid structs
      * which store infomation for each potential pyramid level for this raster.*/
     RasterPyramidList mPyramidList;

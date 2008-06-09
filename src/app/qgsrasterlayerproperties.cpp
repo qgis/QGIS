@@ -56,7 +56,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
   TRSTRING_NOT_SET( tr("Not Set"))
 {
   ignoreSpinBoxEvent = false; //Short circuit signal loop between min max field and stdDev spin box
-
+  mGrayActualMinimumMaximum = false;
+  mRGBActualMinimumMaximum = false;
+  
   if (mRasterLayer->getDataProvider() == 0)
   {
     // This is a GDAL-based layer
@@ -277,16 +279,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
   }
 
   cboxTransparencyBand->addItem(TRSTRING_NOT_SET);
-  cboxTransparencyLayer->addItem(TRSTRING_NOT_SET);
-  QMap<QString, QgsMapLayer *> myLayers = QgsMapLayerRegistry::instance()->mapLayers();
-  QMap<QString, QgsMapLayer *>::iterator it;
-  for(it = myLayers.begin(); it != myLayers.end(); it++)
-  {
-    if(QgsMapLayer::RASTER == it.value()->type())
-    {
-      cboxTransparencyLayer->addItem(it.value()->name());
-    }
-  }
 
   QString myThemePath = QgsApplication::themePath();
   QPixmap myPyramidPixmap(myThemePath + "/mIconPyramid.png");
@@ -438,6 +430,29 @@ void QgsRasterLayerProperties::populateTransparencyTable()
   tableTransparency->resizeRowsToContents();
 }
 
+/** Set the message indicating if any min max values are estimates */
+void QgsRasterLayerProperties::setMinimumMaximumEstimateWarning()
+{
+  bool myActualComputedValues = false;
+  if(rbtnThreeBand->isChecked())
+  {
+    myActualComputedValues = mRGBActualMinimumMaximum;
+  }
+  else
+  {
+    myActualComputedValues = mGrayActualMinimumMaximum;
+  }
+  
+  if(myActualComputedValues)
+  {
+    lblMinMaxEstimateWarning->setText("Note: Minimum Maximum values are actual values computed from the band(s)");
+  }
+  else
+  {
+    lblMinMaxEstimateWarning->setText("Note: Minimum Maximum values are estimates or user defined");
+  }
+}
+
 /**
   @note moved from ctor
 
@@ -584,24 +599,24 @@ void QgsRasterLayerProperties::sync()
   {   
     if(mRasterLayer->getColorShadingAlgorithm()==QgsRasterLayer::PSEUDO_COLOR)
     {
-      cboxColorMap->setCurrentText(tr("Pseudocolor"));
+      cboxColorMap->setCurrentIndex(cboxColorMap->findText(tr("Pseudocolor")));
     }
     else if(mRasterLayer->getColorShadingAlgorithm()==QgsRasterLayer::FREAK_OUT)
     {
-      cboxColorMap->setCurrentText(tr("Freak Out"));
+      cboxColorMap->setCurrentIndex(cboxColorMap->findText(tr("Freak Out")));
     }
     else if(mRasterLayer->getColorShadingAlgorithm()==QgsRasterLayer::COLOR_RAMP)
     {
-      cboxColorMap->setCurrentText(tr("Custom Colormap"));
+      cboxColorMap->setCurrentIndex(cboxColorMap->findText(tr("Custom Colormap")));
     }
     else if(mRasterLayer->getColorShadingAlgorithm()==QgsRasterLayer::USER_DEFINED)
     {
-      cboxColorMap->setCurrentText(tr("User Defined"));
+      cboxColorMap->setCurrentIndex(cboxColorMap->findText(tr("User Defined")));
     }
   }
   else
   {
-    cboxColorMap->setCurrentText(tr("Grayscale"));
+    cboxColorMap->setCurrentIndex(cboxColorMap->findText(tr("Grayscale")));
   }
   
   //set whether the layer histogram should be inverted
@@ -615,14 +630,15 @@ void QgsRasterLayerProperties::sync()
   }
 
   //set the combos to the correct values
-  cboRed->setCurrentText(mRasterLayer->getRedBandName());
-  cboGreen->setCurrentText(mRasterLayer->getGreenBandName());
-  cboBlue->setCurrentText(mRasterLayer->getBlueBandName());
-  cboGray->setCurrentText(mRasterLayer->getGrayBandName());
+  cboRed->setCurrentIndex(cboRed->findText(mRasterLayer->getRedBandName()));
+  cboGreen->setCurrentIndex(cboGreen->findText(mRasterLayer->getGreenBandName()));
+  cboBlue->setCurrentIndex(cboBlue->findText(mRasterLayer->getBlueBandName()));
+  cboGray->setCurrentIndex(cboGray->findText(mRasterLayer->getGrayBandName()));
 
   //set the stdDevs and min max values
   if(mRasterLayerIsGdal && rbtnThreeBand->isChecked())
   {
+    mRGBActualMinimumMaximum = mRasterLayer->getActualRGBMinMaxFlag();
     if(mRasterLayer->getUserDefinedRGBMinMax())
     {
       sboxThreeBandStdDev->setValue(0.0);
@@ -656,10 +672,12 @@ void QgsRasterLayerProperties::sync()
         leBlueMin->setText(QString::number(mRasterLayer->getMinimumValue(mRasterLayer->getBlueBandName())));
         leBlueMax->setText(QString::number(mRasterLayer->getMaximumValue(mRasterLayer->getBlueBandName())));
       }
+      setMinimumMaximumEstimateWarning();
     }
   }
   else if(mRasterLayerIsGdal)
   {
+    mGrayActualMinimumMaximum = mRasterLayer->getActualGrayMinMaxFlag();
     if(mRasterLayer->getUserDefinedGrayMinMax())
     {
       sboxSingleBandStdDev->setValue(0.0);
@@ -684,29 +702,29 @@ void QgsRasterLayerProperties::sync()
         leGrayMax->setText(QString::number(mRasterLayer->getMaximumValue(mRasterLayer->getGrayBandName())));
       }
     }
-
+    setMinimumMaximumEstimateWarning();
   }
 
   //set color scaling algorithm
   if(QgsContrastEnhancement::STRETCH_TO_MINMAX == mRasterLayer->getContrastEnhancementAlgorithm())
   {
-    cboxContrastEnhancementAlgorithm->setCurrentText(tr("Stretch To MinMax"));
+    cboxContrastEnhancementAlgorithm->setCurrentIndex(cboxContrastEnhancementAlgorithm->findText(tr("Stretch To MinMax")));
   }
   else if(QgsContrastEnhancement::STRETCH_AND_CLIP_TO_MINMAX == mRasterLayer->getContrastEnhancementAlgorithm())
   {
-    cboxContrastEnhancementAlgorithm->setCurrentText(tr("Stretch And Clip To MinMax"));
+    cboxContrastEnhancementAlgorithm->setCurrentIndex(cboxContrastEnhancementAlgorithm->findText(tr("Stretch And Clip To MinMax")));
   }
   else if(QgsContrastEnhancement::CLIP_TO_MINMAX == mRasterLayer->getContrastEnhancementAlgorithm())
   {
-    cboxContrastEnhancementAlgorithm->setCurrentText(tr("Clip To MinMax"));
+    cboxContrastEnhancementAlgorithm->setCurrentIndex(cboxContrastEnhancementAlgorithm->findText(tr("Clip To MinMax")));
   }
   else if(QgsContrastEnhancement::USER_DEFINED == mRasterLayer->getContrastEnhancementAlgorithm())
   {
-    cboxContrastEnhancementAlgorithm->setCurrentText(tr("User Defined"));
+    cboxContrastEnhancementAlgorithm->setCurrentIndex(cboxContrastEnhancementAlgorithm->findText(tr("User Defined")));
   }
   else
   {
-    cboxContrastEnhancementAlgorithm->setCurrentText(tr("No Scaling"));
+    cboxContrastEnhancementAlgorithm->setCurrentIndex(cboxContrastEnhancementAlgorithm->findText(tr("No Stretch")));
   }
   
   //Display the current default contrast enhancement algorithm
@@ -714,7 +732,7 @@ void QgsRasterLayerProperties::sync()
   QString myDefaultAlgorithm = myQSettings.value("/Raster/defaultContrastEnhancementAlgorithm", "NO_STRETCH").toString();
   if(myDefaultAlgorithm == "NO_STRETCH")
   {
-    labelDefaultContrastEnhancementAlgorithm->setText(tr("No Scaling"));
+    labelDefaultContrastEnhancementAlgorithm->setText(tr("No Stretch"));
   }
   if(myDefaultAlgorithm == "STRETCH_TO_MINMAX")
   {
@@ -730,7 +748,7 @@ void QgsRasterLayerProperties::sync()
   }
   else
   {
-    labelDefaultContrastEnhancementAlgorithm->setText(tr("No Scaling"));
+    labelDefaultContrastEnhancementAlgorithm->setText(tr("No Stretch"));
   }
 
 
@@ -746,18 +764,8 @@ void QgsRasterLayerProperties::sync()
   sliderTransparency->setValue(255 - mRasterLayer->getTransparency());
   //update the transparency percentage label
   sliderTransparency_valueChanged(255 - mRasterLayer->getTransparency());
-   
-  int myIndex = cboxTransparencyLayer->findText(mRasterLayer->getTransparentLayerName());
-  if(-1 != myIndex)
-  {
-    cboxTransparencyLayer->setCurrentIndex(myIndex);
-  }
-  else
-  {
-    cboxTransparencyLayer->setCurrentIndex(cboxTransparencyLayer->findText(TRSTRING_NOT_SET));
-  }
 
-  myIndex = cboxTransparencyBand->findText(mRasterLayer->getTransparentBandName());
+  int myIndex = cboxTransparencyBand->findText(mRasterLayer->getTransparentBandName());
   if(-1 != myIndex)
   {
     cboxTransparencyBand->setCurrentIndex(myIndex);
@@ -1085,7 +1093,6 @@ void QgsRasterLayerProperties::apply()
   mRasterLayer->setBlueBandName(cboBlue->currentText());
   mRasterLayer->setGrayBandName(cboGray->currentText());
   mRasterLayer->setTransparentBandName(cboxTransparencyBand->currentText());
-  mRasterLayer->setTransparentLayerName(cboxTransparencyLayer->currentText());
 
   //set the appropriate color shading type
   //If USER_DEFINED do nothing, user defined can only be set programatically
@@ -1133,6 +1140,7 @@ void QgsRasterLayerProperties::apply()
     //Set min max based on user defined values if all are set and stdDev is 0.0
     if(rbtnThreeBandMinMax->isEnabled() && rbtnThreeBandMinMax->isChecked() && validUserDefinedMinMax())
     {
+      mRasterLayer->setActualRGBMinMaxFlag(mRGBActualMinimumMaximum);
       if(mRasterLayer->getRedBandName() != TRSTRING_NOT_SET)
       {
         mRasterLayer->setMinimumValue(cboRed->currentText(), leRedMin->text().toDouble(), false);
@@ -1167,6 +1175,7 @@ void QgsRasterLayerProperties::apply()
     //Set min max based on user defined values if all are set and stdDev is 0.0
     if(rbtnSingleBandMinMax->isEnabled() && rbtnSingleBandMinMax->isChecked() && validUserDefinedMinMax())
     {
+      mRasterLayer->setActualGrayMinMaxFlag(mGrayActualMinimumMaximum);
       if(mRasterLayer->getGrayBandName() != TRSTRING_NOT_SET)
       {
         mRasterLayer->setMinimumValue(cboGray->currentText(), leGrayMin->text().toDouble(), false);
@@ -1474,7 +1483,6 @@ void QgsRasterLayerProperties::apply()
   //Becuase Min Max values can be set during the redraw if a strech is requested we need to resync after apply
   if(mRasterLayerIsGdal && QgsContrastEnhancement::NO_STRETCH != mRasterLayer->getContrastEnhancementAlgorithm())
   {
-
     //set the stdDevs and min max values
     if(rbtnThreeBand->isChecked())
    {
@@ -1485,6 +1493,7 @@ void QgsRasterLayerProperties::apply()
 
       if(rbtnThreeBandMinMax->isEnabled())
       {
+        mRGBActualMinimumMaximum = mRasterLayer->getActualRGBMinMaxFlag();
         if(mRasterLayer->getRedBandName() != TRSTRING_NOT_SET)
         {
           leRedMin->setText(QString::number(mRasterLayer->getMinimumValue(mRasterLayer->getRedBandName())));
@@ -1500,6 +1509,7 @@ void QgsRasterLayerProperties::apply()
           leBlueMin->setText(QString::number(mRasterLayer->getMinimumValue(mRasterLayer->getBlueBandName())));
           leBlueMax->setText(QString::number(mRasterLayer->getMaximumValue(mRasterLayer->getBlueBandName())));
         }
+        setMinimumMaximumEstimateWarning();
       }
     }
     else
@@ -1511,11 +1521,13 @@ void QgsRasterLayerProperties::apply()
 
       if(rbtnSingleBandMinMax->isEnabled())
       {
+        mGrayActualMinimumMaximum = mRasterLayer->getActualGrayMinMaxFlag();
         if(mRasterLayer->getGrayBandName() != TRSTRING_NOT_SET)
         {
           leGrayMin->setText(QString::number(mRasterLayer->getMinimumValue(mRasterLayer->getGrayBandName())));
           leGrayMax->setText(QString::number(mRasterLayer->getMaximumValue(mRasterLayer->getGrayBandName())));
         }
+        setMinimumMaximumEstimateWarning();
       }
     }
   }
@@ -1738,35 +1750,6 @@ void QgsRasterLayerProperties::on_cboxColorMap_currentIndexChanged(const QString
       labelContrastEnhancement->setEnabled(false);
     }
 
-  }
-}
-
-void QgsRasterLayerProperties::on_cboxTransparencyLayer_currentIndexChanged(const QString& theText)
-{
-  if(theText == TRSTRING_NOT_SET)
-  {
-    cboxTransparencyBand->clear();
-    cboxTransparencyBand->addItem(TRSTRING_NOT_SET);
-  }
-  else
-  {
-    QMap<QString, QgsMapLayer *> myLayers = QgsMapLayerRegistry::instance()->mapLayers();
-    QMap<QString, QgsMapLayer *>::iterator it;
-    for(it = myLayers.begin(); it != myLayers.end(); it++)
-    {
-      if(theText == it.value()->name() && QgsMapLayer::RASTER == it.value()->type())
-      {
-        QgsRasterLayer* myRasterLayer = (QgsRasterLayer*)it.value();
-        int myBandCount = myRasterLayer->getBandCount();
-        cboxTransparencyBand->clear();
-        cboxTransparencyBand->addItem(TRSTRING_NOT_SET);
-        for(int bandRunner = 1; bandRunner <= myBandCount; bandRunner++)
-        {
-          cboxTransparencyBand->addItem(myRasterLayer->getRasterBandName(bandRunner));
-        }
-        break;
-      }
-    }
   }
 }
 
@@ -2512,7 +2495,7 @@ void QgsRasterLayerProperties::on_rbtnThreeBand_toggled(bool theState)
        mRasterLayer->getRasterLayerType() == QgsRasterLayer::PALETTE)
     {
       pbtnLoadMinMax->setEnabled(false);
-      cboxContrastEnhancementAlgorithm->setCurrentText(tr("No Stretch"));
+      cboxContrastEnhancementAlgorithm->setCurrentIndex(cboxContrastEnhancementAlgorithm->findText(tr("No Stretch")));
       cboxContrastEnhancementAlgorithm->setEnabled(false);
       labelContrastEnhancement->setEnabled(false);
       sboxThreeBandStdDev->setEnabled(false);
@@ -2614,6 +2597,7 @@ void QgsRasterLayerProperties::userDefinedMinMax_textEdited(QString theString)
       ignoreSpinBoxEvent = true;
       sboxThreeBandStdDev->setValue(0.0);
     }
+    mRGBActualMinimumMaximum = false;
   }
   else
   {
@@ -2622,7 +2606,9 @@ void QgsRasterLayerProperties::userDefinedMinMax_textEdited(QString theString)
       ignoreSpinBoxEvent = true;
       sboxSingleBandStdDev->setValue(0.0);
     }
+    mGrayActualMinimumMaximum = false;
   }
+  setMinimumMaximumEstimateWarning();
 }
 
 void QgsRasterLayerProperties::on_mClassifyButton_clicked()
@@ -2737,6 +2723,7 @@ void QgsRasterLayerProperties::on_pbtnLoadMinMax_clicked()
         myRasterBandStats = mRasterLayer->getRasterBandStats(mRasterLayer->getRasterBandNumber(cboBlue->currentText()));
         leBlueMin->setText(QString::number(myRasterBandStats.minVal));
         leBlueMax->setText(QString::number(myRasterBandStats.maxVal));
+        mRGBActualMinimumMaximum = true;
       }
       else
       {
@@ -2751,6 +2738,7 @@ void QgsRasterLayerProperties::on_pbtnLoadMinMax_clicked()
         mRasterLayer->computeMinimumMaximumEstimates(mRasterLayer->getRasterBandNumber(cboBlue->currentText()), myMinimumMaximum);
         leBlueMin->setText(QString::number(myMinimumMaximum[0]));
         leBlueMax->setText(QString::number(myMinimumMaximum[1]));
+        mRGBActualMinimumMaximum = false;
       }
 
     }
@@ -2762,6 +2750,7 @@ void QgsRasterLayerProperties::on_pbtnLoadMinMax_clicked()
         myRasterBandStats = mRasterLayer->getRasterBandStats(mRasterLayer->getRasterBandNumber(cboGray->currentText()));
         leGrayMin->setText(QString::number(myRasterBandStats.minVal));
         leGrayMax->setText(QString::number(myRasterBandStats.maxVal));
+        mGrayActualMinimumMaximum = true;
       }
       else
       {
@@ -2770,8 +2759,10 @@ void QgsRasterLayerProperties::on_pbtnLoadMinMax_clicked()
         mRasterLayer->computeMinimumMaximumEstimates(mRasterLayer->getRasterBandNumber(cboGray->currentText()), myMinimumMaximum);
         leGrayMin->setText(QString::number(myMinimumMaximum[0]));
         leGrayMax->setText(QString::number(myMinimumMaximum[1]));
+        mGrayActualMinimumMaximum = false;
       }
     }
+    setMinimumMaximumEstimateWarning();
   }
 }
 

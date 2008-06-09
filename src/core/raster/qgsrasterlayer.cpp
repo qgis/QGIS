@@ -321,6 +321,8 @@ QgsRasterLayer::QgsRasterLayer(
 
   mUserDefinedRGBMinMaxFlag = false; //defaults needed to bypass stretch
   mUserDefinedGrayMinMaxFlag = false;
+  mRGBActualMinimumMaximum = false;
+  mGrayActualMinimumMaximum = false;
 
   mRasterShader = new QgsRasterShader();
 
@@ -569,15 +571,7 @@ bool QgsRasterLayer::readFile( QString const & fileName )
       mBlueBandName = TRSTRING_NOT_SET;  // sensible default
     }
 
-    //Beacuse the transparent band can be set from a different layer defaulting to the fourth
-    //is not a sensible default P.Ersts 2007-05-14
-    /*
-    if (mGdalDataset->GetRasterCount() > 3)
-      mTransparencyBandName = getRasterBandName(4);
-    else
-    */
     mTransparencyBandName = TRSTRING_NOT_SET;
-
     mGrayBandName = TRSTRING_NOT_SET;  //sensible default
     drawingStyle = MULTI_BAND_COLOR;  //sensible default
   }
@@ -1391,6 +1385,7 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPor
 
   if(QgsContrastEnhancement::NO_STRETCH != getContrastEnhancementAlgorithm() && !mUserDefinedGrayMinMaxFlag && mStandardDeviations > 0)
   {
+    mGrayActualMinimumMaximum = true;
     myGrayBandStats = getRasterBandStats(theBandNo);
     setMaximumValue(theBandNo, myGrayBandStats.mean + (mStandardDeviations * myGrayBandStats.stdDev));
     setMinimumValue(theBandNo, myGrayBandStats.mean - (mStandardDeviations * myGrayBandStats.stdDev));
@@ -1401,7 +1396,7 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPor
     //from calling generate raster band stats
     double GDALrange[2];
     GDALComputeRasterMinMax( myGdalBand, 1, GDALrange ); //Approximate
-
+    mGrayActualMinimumMaximum = false;
     setMaximumValue(theBandNo, GDALrange[1]);
     setMinimumValue(theBandNo, GDALrange[0]);
 
@@ -2063,7 +2058,7 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPor
     myRedBandStats = getRasterBandStats(myRedBandNo);
     myGreenBandStats = getRasterBandStats(myGreenBandNo);
     myBlueBandStats = getRasterBandStats(myBlueBandNo);
-
+    mRGBActualMinimumMaximum = true;
     setMaximumValue(myRedBandNo, myRedBandStats.mean + (mStandardDeviations * myRedBandStats.stdDev));
     setMinimumValue(myRedBandNo, myRedBandStats.mean - (mStandardDeviations * myRedBandStats.stdDev));
     setMaximumValue(myGreenBandNo, myGreenBandStats.mean + (mStandardDeviations * myGreenBandStats.stdDev));
@@ -2076,6 +2071,8 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPor
         //This case will be true the first time the image is loaded, so just approimate the min max to keep
     //from calling generate raster band stats
     double GDALrange[2];
+    mRGBActualMinimumMaximum = false;
+    
     GDALComputeRasterMinMax( myGdalRedBand, 1, GDALrange ); //Approximate
     setMaximumValue(myRedBandNo, GDALrange[1]);
     setMinimumValue(myRedBandNo, GDALrange[0]);
@@ -4236,10 +4233,20 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   myQVariant = (QVariant) myElement.attribute("boolean");
   setUserDefinedRGBMinMax(myQVariant.toBool());
   
+  snode = mnl.namedItem("mRGBActualMinimumMaximum");
+  myElement = snode.toElement();
+  myQVariant = (QVariant) myElement.attribute("boolean");
+  setActualRGBMinMaxFlag(myQVariant.toBool());
+  
   snode = mnl.namedItem("mUserDefinedGrayMinMaxFlag");
   myElement = snode.toElement();
   myQVariant = (QVariant) myElement.attribute("boolean");
   setUserDefinedGrayMinMax(myQVariant.toBool());
+  
+  snode = mnl.namedItem("mGrayActualMinimumMaximum");
+  myElement = snode.toElement();
+  myQVariant = (QVariant) myElement.attribute("boolean");
+  setActualGrayMinMaxFlag(myQVariant.toBool());
   
   snode = mnl.namedItem("mContrastEnhancementAlgorithm");
   myElement = snode.toElement();
@@ -4594,6 +4601,20 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
 
   rasterPropertiesElement.appendChild( userDefinedRGBMinMaxFlag );
   
+  // <mRGBActualMinimumMaximum>
+  QDomElement RGBActualMinimumMaximum = document.createElement( "mRGBActualMinimumMaximum" );
+
+  if ( getActualRGBMinMaxFlag() )
+  {
+    RGBActualMinimumMaximum.setAttribute( "boolean", "true" );
+  }
+  else
+  {
+    RGBActualMinimumMaximum.setAttribute( "boolean", "false" );
+  }
+
+  rasterPropertiesElement.appendChild( RGBActualMinimumMaximum );
+  
   // <mUserDefinedGrayMinMaxFlag>
   QDomElement userDefinedGrayMinMaxFlag = document.createElement( "mUserDefinedGrayMinMaxFlag" );
 
@@ -4607,6 +4628,20 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   }
 
   rasterPropertiesElement.appendChild( userDefinedGrayMinMaxFlag );
+  
+  // <mGrayActualMinimumMaximum>
+  QDomElement GrayActualMinimumMaximum = document.createElement( "mGrayActualMinimumMaximum" );
+
+  if ( getActualGrayMinMaxFlag() )
+  {
+    GrayActualMinimumMaximum.setAttribute( "boolean", "true" );
+  }
+  else
+  {
+    GrayActualMinimumMaximum.setAttribute( "boolean", "false" );
+  }
+
+  rasterPropertiesElement.appendChild( GrayActualMinimumMaximum );
   
   // <contrastEnhancementAlgorithm>
   QDomElement contrastEnhancementAlgorithmElement = document.createElement( "mContrastEnhancementAlgorithm" );

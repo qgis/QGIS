@@ -100,8 +100,6 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
       void on_cboRed_currentIndexChanged(const QString&); 
       /**The slot handles necessary interface modifications based when color map selected changes*/
       void on_cboxColorMap_currentIndexChanged(const QString&);
-      /**The slot handles necessary interface modifications based when transparency band selection changes*/
-      void on_cboxTransparencyLayer_currentIndexChanged(const QString&);
 	    /**This slot calculates classification values and colors for the tree widget on the colormap tab*/
 	    void on_mClassifyButton_clicked();
 	    /**This slot deletes the current class from the tree widget on the colormap tab*/
@@ -131,7 +129,19 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     private:        
         /** \brief  A constant that signals property not used */
         const QString TRSTRING_NOT_SET;
-    
+        
+        /** Id for context help */
+        static const int context_id = 394441851;
+        
+        /** \brief Internal flag used to short circuit signal loop between min max field and stdDev spin box */
+        bool ignoreSpinBoxEvent;
+        
+        /** \brief Flag to indicate if Gray minimum maximum values are actual minimum maximum values */
+        bool mGrayActualMinimumMaximum;
+        
+        /** \brief Flag to indicate if RGB minimum maximum values are actual minimum maximum values */
+        bool mRGBActualMinimumMaximum;
+        
         /** \brief Pointer to the raster layer that this property dilog changes the behaviour of. */
         QgsRasterLayer * mRasterLayer;
 
@@ -149,22 +159,19 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
          */
         bool mRasterLayerIsWms;
 
-        /** Id for context help */
-        static const int context_id = 394441851;
-
         /** \brief Clear the current transparency table and populate the table with the correct types for current drawing mode and data type*/
         void populateTransparencyTable();
+        
+        /** \brief Set the message indicating if any min max values are estimates */
+        void setMinimumMaximumEstimateWarning();
+        
+        /**Restores the state of the colormap tab*/
+        void syncColormapTab();
 
         /** \brief Verify values in custom min max line edits */
         bool validUserDefinedMinMax();
 
-	/**Restores the state of the colormap tab*/
-	void syncColormapTab();
-
-        //Short circuit signal loop between min max field and stdDev spin box
-        bool ignoreSpinBoxEvent;
-
-        //@TODO we should move these gradient generators somewhere more generic
+	      //@TODO we should move these gradient generators somewhere more generic
         //so they can be used generically throughut the app
         QLinearGradient greenGradient();
         QLinearGradient redGradient();
