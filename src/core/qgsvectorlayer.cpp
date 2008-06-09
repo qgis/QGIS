@@ -1273,10 +1273,30 @@ int QgsVectorLayer::featuresInRectangle(const QgsRect& searchRect, QList<QgsFeat
 	    }
 	  if(fetchAttributes)
 	    {
-	      QgsFeature tmpFeature;
-	      mDataProvider->getFeatureAtId(changedIt.key(), tmpFeature, false, mDataProvider->allAttributesList());
-	      newFeature.setAttributeMap(tmpFeature.attributeMap());
-	      
+	      if(changedIt.key()<0)
+		{
+		  //The feature is in mAddedFeature's list because its id<0
+		  bool findMyFeature = false;
+		  for (QgsFeatureList::iterator iter = mAddedFeatures.begin(); iter != mAddedFeatures.end(); ++iter)
+		    {
+		      if(iter->featureId()==changedIt.key())
+			{
+			   findMyFeature = true;
+			   newFeature.setAttributeMap(iter->attributeMap());
+			   break;
+			}
+		    }
+		  if(!findMyFeature)
+		    {
+		      QgsLogger::warning("No attribute for the feature");
+		    }
+		}
+	      else
+		{
+		  QgsFeature tmpFeature;
+		  mDataProvider->getFeatureAtId(changedIt.key(), tmpFeature, false, mDataProvider->allAttributesList());
+		  newFeature.setAttributeMap(tmpFeature.attributeMap());
+		}
 	    }
 	  features.push_back(newFeature);
 	}
