@@ -316,7 +316,7 @@ void QgsMapRender::render(QPainter* painter)
       bool scaleRaster = false;
       QgsMapToPixel rasterMapToPixel;
       QgsMapToPixel bk_mapToPixel;
-      double debug = fabs(rasterScaleFactor - 1.0);
+    
       if(ml->type() == QgsMapLayer::RASTER && fabs(rasterScaleFactor - 1.0) > 0.000001)
       {
         scaleRaster = true;
