@@ -517,60 +517,47 @@ void QgsServerSourceSelect::on_btnChangeSpatialRefSys_clicked()
  */
 void QgsServerSourceSelect::on_lstLayers_itemSelectionChanged()
 {
-  QString layerName = "";
-
   QStringList newSelectedLayers;
   QStringList newSelectedStylesForSelectedLayers;
 
   std::map<QString, QString> newSelectedStyleIdForLayer;
 
   // Iterate through the layers
-  QTreeWidgetItemIterator it( lstLayers );
-  while ( *it )
+  QList<QTreeWidgetItem *> selected( lstLayers->selectedItems() );
+  QList<QTreeWidgetItem *>::iterator it;
+  for (it = selected.begin(); it != selected.end(); ++it)
   {
     QTreeWidgetItem *item = *it;
+    QString layerName;
 
-    // save the name of the layer (in case only one of its styles was
-    // selected)
-    if (item->parent() == 0)
+    if (item->parent() != 0)
+    {
+      layerName = item->parent()->text(1);
+      newSelectedStylesForSelectedLayers += item->text(1);
+    }
+    else
     {
       layerName = item->text(1);
+      newSelectedStylesForSelectedLayers += "";
     }
 
-    if ( item->isSelected() )
+    newSelectedLayers += layerName;
+    newSelectedStyleIdForLayer[layerName] = item->text(0);
+
+    // Check if multiple styles have now been selected
+    if (
+        (!(m_selectedStyleIdForLayer[layerName].isNull())) &&  // not just isEmpty()
+        (newSelectedStyleIdForLayer[layerName] != m_selectedStyleIdForLayer[layerName])
+        )
     {
-      newSelectedLayers += layerName;
-
-      // save the name of the style selected for the layer, if appropriate
-
-      if (item->parent() != 0)
-      {
-        newSelectedStylesForSelectedLayers += item->text(1);
-      }
-      else
-      {
-        newSelectedStylesForSelectedLayers += "";
-      }
-
-      newSelectedStyleIdForLayer[layerName] = item->text(0);
-
-      // Check if multiple styles have now been selected
-      if (
-          (!(m_selectedStyleIdForLayer[layerName].isNull())) &&  // not just isEmpty()
-          (newSelectedStyleIdForLayer[layerName] != m_selectedStyleIdForLayer[layerName])
-          )
-      {
-        // Remove old style selection
-        lstLayers->findItems(m_selectedStyleIdForLayer[layerName], 0).first()->setSelected(FALSE);
-      }
+      // Remove old style selection
+      lstLayers->findItems(m_selectedStyleIdForLayer[layerName], Qt::MatchRecursive).first()->setSelected(false);
+    }
 
 #ifdef QGISDEBUG
   std::cout << "QgsServerSourceSelect::addLayers: Added " << item->text(0).toLocal8Bit().data() << std::endl;
 #endif
-    
-    }
 
-    ++it;
   }
 
   // If we got some selected items, let the user play with projections
