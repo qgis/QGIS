@@ -36,7 +36,7 @@ void QgsScaleBarPluginGui::on_buttonBox_accepted()
   emit changePreferredSize(spnSize->value());
   emit changeSnapping(chkSnapping->isChecked());
   emit changeEnabled(chkEnable->isChecked());
-  emit changeStyle(cboStyle->currentItem());
+  emit changeStyle(cboStyle->currentIndex());
   emit changeColour(pbnChangeColour->color());
   emit refreshCanvas();
   accept();
@@ -88,7 +88,7 @@ void QgsScaleBarPluginGui::setStyleLabels(QStringList& labels)
 
 void QgsScaleBarPluginGui::setStyle(int styleIndex)
 {
-  cboStyle->setCurrentItem(styleIndex);
+  cboStyle->setCurrentIndex(styleIndex);
 }
 
 void QgsScaleBarPluginGui::setColour(QColor theQColor)

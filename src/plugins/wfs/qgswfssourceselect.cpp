@@ -58,14 +58,16 @@ QgsWFSSourceSelect::~QgsWFSSourceSelect()
 void QgsWFSSourceSelect::populateConnectionList()
 {
   QSettings settings;
-  QStringList keys = settings.subkeyList("/Qgis/connections-wfs");
+  settings.beginGroup("/Qgis/connections-wfs");
+  QStringList keys = settings.childGroups();
   QStringList::Iterator it = keys.begin();
   cmbConnections->clear();
   while (it != keys.end())
   {
-    cmbConnections->insertItem(*it);
+    cmbConnections->addItem(*it);
     ++it;
   }
+  settings.endGroup();
 
   if (keys.begin() != keys.end())
   {
@@ -260,7 +262,7 @@ void QgsWFSSourceSelect::deleteEntryOfServerList()
   if (result == QMessageBox::Ok)
   {
     settings.remove(key);
-    cmbConnections->removeItem(cmbConnections->currentItem());
+    cmbConnections->removeItem(cmbConnections->currentIndex());
   }
 }
 

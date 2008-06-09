@@ -324,7 +324,7 @@ void QgsPgQueryBuilder::setConnection(PGconn *con)
 void QgsPgQueryBuilder::on_btnOk_clicked()
 {
   // if user hits Ok and there is no query, skip the validation
-  if(txtSQL->toPlainText().stripWhiteSpace().length() > 0)
+  if(txtSQL->toPlainText().trimmed().length() > 0)
   {
     // test the query to see if it will result in a valid layer
     long numRecs = countRecords(txtSQL->toPlainText());
@@ -353,37 +353,37 @@ void QgsPgQueryBuilder::on_btnOk_clicked()
 
 void QgsPgQueryBuilder::on_btnEqual_clicked()
 {
-  txtSQL->insert(" = ");
+  txtSQL->insertPlainText(" = ");
 }
 
 void QgsPgQueryBuilder::on_btnLessThan_clicked()
 {
-  txtSQL->insert(" < ");
+  txtSQL->insertPlainText(" < ");
 }
 
 void QgsPgQueryBuilder::on_btnGreaterThan_clicked()
 {
-  txtSQL->insert(" > ");
+  txtSQL->insertPlainText(" > ");
 }
 
 void QgsPgQueryBuilder::on_btnPct_clicked()
 {
-  txtSQL->insert("%");
+  txtSQL->insertPlainText("%");
 }
 
 void QgsPgQueryBuilder::on_btnIn_clicked()
 {
-  txtSQL->insert(" IN ");
+  txtSQL->insertPlainText(" IN ");
 }
 
 void QgsPgQueryBuilder::on_btnNotIn_clicked()
 {
-  txtSQL->insert(" NOT IN ");
+  txtSQL->insertPlainText(" NOT IN ");
 }
 
 void QgsPgQueryBuilder::on_btnLike_clicked()
 {
-  txtSQL->insert(" LIKE ");
+  txtSQL->insertPlainText(" LIKE ");
 }
 
 QString QgsPgQueryBuilder::sql()
@@ -404,7 +404,7 @@ void QgsPgQueryBuilder::on_lstFields_clicked( const QModelIndex &index )
     
     // If type is gemetry .. normal users don't want to get values?
     QgsField field = mFieldMap[mModelFields->data(lstFields->currentIndex()).toString()];
-    if (field.typeName().find("geometry") > -1)
+    if (field.typeName().indexOf("geometry") > -1)
     {
       btnSampleValues->setEnabled(false);
       btnGetAllValues->setEnabled(false); 
@@ -419,48 +419,48 @@ void QgsPgQueryBuilder::on_lstFields_clicked( const QModelIndex &index )
 
 void QgsPgQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
 {
-  txtSQL->insert("\"" + mModelFields->data(index).toString() + "\"");
+  txtSQL->insertPlainText("\"" + mModelFields->data(index).toString() + "\"");
 }
 
 void QgsPgQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
 {
   if (mActualFieldIsChar)
   {
-    txtSQL->insert("'" + mModelValues->data(index).toString() + "'");
+    txtSQL->insertPlainText("'" + mModelValues->data(index).toString() + "'");
   }else
   {
-    txtSQL->insert(mModelValues->data(index).toString());
+    txtSQL->insertPlainText(mModelValues->data(index).toString());
   }
 }
 
 void QgsPgQueryBuilder::on_btnLessEqual_clicked()
 {
-  txtSQL->insert(" <= ");
+  txtSQL->insertPlainText(" <= ");
 }
 
 void QgsPgQueryBuilder::on_btnGreaterEqual_clicked()
 {
-  txtSQL->insert(" >= ");
+  txtSQL->insertPlainText(" >= ");
 }
 
 void QgsPgQueryBuilder::on_btnNotEqual_clicked()
 {
-  txtSQL->insert(" != ");
+  txtSQL->insertPlainText(" != ");
 }
 
 void QgsPgQueryBuilder::on_btnAnd_clicked()
 {
-  txtSQL->insert(" AND ");
+  txtSQL->insertPlainText(" AND ");
 }
 
 void QgsPgQueryBuilder::on_btnNot_clicked()
 {
-  txtSQL->insert(" NOT ");
+  txtSQL->insertPlainText(" NOT ");
 }
 
 void QgsPgQueryBuilder::on_btnOr_clicked()
 {
-  txtSQL->insert(" OR ");
+  txtSQL->insertPlainText(" OR ");
 }
 
 void QgsPgQueryBuilder::on_btnClear_clicked()
@@ -470,7 +470,7 @@ void QgsPgQueryBuilder::on_btnClear_clicked()
 
 void QgsPgQueryBuilder::on_btnILike_clicked()
 {
-  txtSQL->insert(" ILIKE ");
+  txtSQL->insertPlainText(" ILIKE ");
 }
 void QgsPgQueryBuilder::setDatasourceDescription(QString uri)
 {

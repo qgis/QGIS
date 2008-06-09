@@ -20,7 +20,6 @@
 */
 #include <QObject>
 #include "qgisapp.h"
-class Q3MainWindow;
 
 class QgsMapLayerInterface: public QObject{
 	Q_OBJECT

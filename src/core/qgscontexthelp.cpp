@@ -98,7 +98,7 @@ void QgsContextHelp::readPort()
 #ifdef QGSCONTEXTHELP_REUSE
   // Get port and connect socket to process
   QString p = mProcess->readAllStandardOutput();
-  Q_UINT16 port = p.toUShort();
+  quint16 port = p.toUShort();
   mSocket->connectToHost("localhost", port);
   disconnect(mProcess, SIGNAL(readyReadStandardOutput()), this, 
                        SLOT(readPort()));

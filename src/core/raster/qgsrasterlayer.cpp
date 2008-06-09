@@ -143,7 +143,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
     // address is 0, or the first character is null
     while (myGdalDriverMetadata && '\0' != myGdalDriverMetadata[0])
     {
-      metadataTokens = QStringList::split("=", *myGdalDriverMetadata);
+      metadataTokens = QString(*myGdalDriverMetadata).split("=", QString::SkipEmptyParts);
       // std::cerr << "\t" << *myGdalDriverMetadata << "\n";
 
       // XXX add check for malformed metadataTokens
@@ -188,7 +188,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
           }
           else break;               // skip if already found a JP2 driver
         }
-        theFileFiltersString += myGdalDriverLongName + " (" + glob.lower() + " " + glob.upper() + ");;";
+        theFileFiltersString += myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
 
         break;            // ... to next driver, if any.
       }
@@ -214,19 +214,19 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
       if (myGdalDriverDescription.startsWith("USGSDEM"))
       {
         QString glob = "*.dem";
-        theFileFiltersString += myGdalDriverLongName + " (" + glob.lower() + " " + glob.upper() + ");;";
+        theFileFiltersString += myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
       }
       else if (myGdalDriverDescription.startsWith("DTED"))
       {
         // DTED use "*.dt0"
         QString glob = "*.dt0";
-        theFileFiltersString += myGdalDriverLongName + " (" + glob.lower() + " " + glob.upper() + ");;";
+        theFileFiltersString += myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
       }
       else if (myGdalDriverDescription.startsWith("MrSID"))
       {
         // MrSID use "*.sid"
         QString glob = "*.sid";
-        theFileFiltersString += myGdalDriverLongName + " (" + glob.lower() + " " + glob.upper() + ");;";
+        theFileFiltersString += myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
       }
       else
       {
@@ -278,7 +278,7 @@ bool QgsRasterLayer::isValidRasterFileName(QString const & theFileNameQString)
    * cater for filetypes such as grass rasters that dont
    * have a predictable file extension.
    *
-   QString name = theFileNameQString.lower();
+   QString name = theFileNameQString.toLower();
    return (name.endsWith(".adf") ||
    name.endsWith(".asc") ||
    name.endsWith(".grd") ||
@@ -663,7 +663,7 @@ QDateTime QgsRasterLayer::lastModified ( QString const & name )
   // Check also color table for GRASS
   if ( name.contains( "cellhd" ) > 0 )
   { // most probably GRASS
-    QString dir = fi.dirPath();
+    QString dir = fi.path();
     QString map = fi.fileName();
     fi.setFile ( dir + "/../colr/" + map );
 
@@ -683,13 +683,13 @@ QDateTime QgsRasterLayer::lastModified ( QString const & name )
       QFile f ( name + "/REF" );
       if ( f.open ( QIODevice::ReadOnly ) )
       {
-        QString dir = fi.dirPath() + "/../../../";
+        QString dir = fi.path() + "/../../../";
 
         char buf[101];
         while ( f.readLine(buf,100) != -1 )
         {
           QString ln = QString(buf);
-          QStringList sl = QStringList::split ( ' ', ln.stripWhiteSpace() );
+          QStringList sl = ln.trimmed().split ( ' ', QString::SkipEmptyParts);
           QString map = sl.first();
           sl.pop_front();
           QString mapset = sl.first();
@@ -2836,13 +2836,13 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
     myLegendQPixmap = QPixmap(3, 1);
     myQPainter.begin(&myLegendQPixmap);
     //draw legend red part
-    myQPainter.setPen(QPen(QColor(255,   0,   0, QColor::Rgb), 0));
+    myQPainter.setPen(QPen(QColor(255,   0,   0), 0));
     myQPainter.drawPoint(0, 0);
     //draw legend green part
-    myQPainter.setPen(QPen(QColor(  0, 255,   0, QColor::Rgb), 0));
+    myQPainter.setPen(QPen(QColor(  0, 255,   0), 0));
     myQPainter.drawPoint(1, 0);
     //draw legend blue part
-    myQPainter.setPen(QPen(QColor(  0,   0, 255, QColor::Rgb), 0));
+    myQPainter.setPen(QPen(QColor(  0,   0, 255), 0));
     myQPainter.drawPoint(2, 0);
 
   }
@@ -2873,12 +2873,12 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
         {
           //draw legend as grayscale
           int myGray = static_cast < int >(my);
-          myQPainter.setPen(QPen(QColor(myGray, myGray, myGray, QColor::Rgb), 0));
+          myQPainter.setPen(QPen(QColor(myGray, myGray, myGray), 0));
         } else                //histogram is inverted
         {
           //draw legend as inverted grayscale
           int myGray = 255 - static_cast < int >(my);
-          myQPainter.setPen(QPen(QColor(myGray, myGray, myGray, QColor::Rgb), 0));
+          myQPainter.setPen(QPen(QColor(myGray, myGray, myGray), 0));
         }                   //end of invert histogram  check
         myQPainter.drawPoint(myPos++, 0);
       }
@@ -2918,7 +2918,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
             {
               myRed=255-myGreen;
             }
-            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue, QColor::Rgb), 0));
+            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue), 0));
           }
           //check if we are in the second class break
           else if ((my >= myClassBreakMin2) && (my < myClassBreakMax2))
@@ -2931,7 +2931,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
             {
               myGreen=myBlue;
             }
-            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue, QColor::Rgb), 0));
+            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue), 0));
           }
           //otherwise we must be in the third classbreak
           else
@@ -2945,7 +2945,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
               myRed=myGreen;
               myGreen=255-myGreen;
             }
-            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue, QColor::Rgb), 0));
+            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue), 0));
           }
         }                   //end of invert histogram == false check
         else                  //invert histogram toggle is off
@@ -2961,7 +2961,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
             {
               myRed=255-myGreen;
             }
-            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue, QColor::Rgb), 0));
+            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue), 0));
           }
           //check if we are in the second class break
           else if ((my >= myClassBreakMin2) && (my < myClassBreakMax2))
@@ -2974,7 +2974,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
             {
               myGreen=myBlue;
             }
-            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue, QColor::Rgb), 0));
+            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue), 0));
           }
           //otherwise we must be in the third classbreak
           else
@@ -2987,7 +2987,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
             {
               myRed=255-myGreen;
             }
-            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue, QColor::Rgb), 0));
+            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue), 0));
           }
 
         }                   //end of invert histogram check
@@ -3004,13 +3004,13 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
       myLegendQPixmap = QPixmap(3, 1);
       myQPainter.begin(&myLegendQPixmap);
       //draw legend red part
-      myQPainter.setPen(QPen(QColor(224, 103, 103, QColor::Rgb), 0));
+      myQPainter.setPen(QPen(QColor(224, 103, 103), 0));
       myQPainter.drawPoint(0, 0);
       //draw legend green part
-      myQPainter.setPen(QPen(QColor(132, 224, 127, QColor::Rgb), 0));
+      myQPainter.setPen(QPen(QColor(132, 224, 127), 0));
       myQPainter.drawPoint(1, 0);
       //draw legend blue part
-      myQPainter.setPen(QPen(QColor(127, 160, 224, QColor::Rgb), 0));
+      myQPainter.setPen(QPen(QColor(127, 160, 224), 0));
       myQPainter.drawPoint(2, 0);
     }
   }
@@ -3044,7 +3044,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
       myQWMatrix.scale(1.8, myHeight);
     }
     //apply the matrix
-    QPixmap myQPixmap2 = myLegendQPixmap.xForm(myQWMatrix);
+    QPixmap myQPixmap2 = myLegendQPixmap.transformed(myQWMatrix);
     QPainter myQPainter(&myQPixmap2);
 
     //load  up the pyramid icons
@@ -3125,12 +3125,12 @@ QPixmap QgsRasterLayer::getDetailedLegendQPixmap(int theLabelCount=3)
       {
         //draw legend as grayscale
         int myGray = static_cast < int >(my);
-        myQPainter.setPen(QPen(QColor(myGray, myGray, myGray, QColor::Rgb), 0));
+        myQPainter.setPen(QPen(QColor(myGray, myGray, myGray), 0));
       } else                //histogram is inverted
       {
         //draw legend as inverted grayscale
         int myGray = 255 - static_cast < int >(my);
-        myQPainter.setPen(QPen(QColor(myGray, myGray, myGray, QColor::Rgb), 0));
+        myQPainter.setPen(QPen(QColor(myGray, myGray, myGray), 0));
       }                   //end of invert histogram  check
       myQPainter.drawPoint(0,myPos++);
     }
@@ -3172,7 +3172,7 @@ QPixmap QgsRasterLayer::getDetailedLegendQPixmap(int theLabelCount=3)
             {
               myRed=255-myGreen;
             }
-            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue, QColor::Rgb), 0));
+            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue), 0));
           }
           //check if we are in the second class break
           else if ((my >= myClassBreakMin2) && (my < myClassBreakMax2))
@@ -3185,7 +3185,7 @@ QPixmap QgsRasterLayer::getDetailedLegendQPixmap(int theLabelCount=3)
             {
               myGreen=myBlue;
             }
-            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue, QColor::Rgb), 0));
+            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue), 0));
           }
           //otherwise we must be in the third classbreak
           else
@@ -3199,7 +3199,7 @@ QPixmap QgsRasterLayer::getDetailedLegendQPixmap(int theLabelCount=3)
               myRed=myGreen;
               myGreen=255-myGreen;
             }
-            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue, QColor::Rgb), 0));
+            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue), 0));
           }
         }                   //end of invert histogram == false check
         else                  //invert histogram toggle is off
@@ -3215,7 +3215,7 @@ QPixmap QgsRasterLayer::getDetailedLegendQPixmap(int theLabelCount=3)
             {
               myRed=255-myGreen;
             }
-            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue, QColor::Rgb), 0));
+            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue), 0));
           }
           //check if we are in the second class break
           else if ((my >= myClassBreakMin2) && (my < myClassBreakMax2))
@@ -3228,7 +3228,7 @@ QPixmap QgsRasterLayer::getDetailedLegendQPixmap(int theLabelCount=3)
             {
               myGreen=myBlue;
             }
-            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue, QColor::Rgb), 0));
+            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue), 0));
           }
           //otherwise we must be in the third classbreak
           else
@@ -3241,7 +3241,7 @@ QPixmap QgsRasterLayer::getDetailedLegendQPixmap(int theLabelCount=3)
             {
               myRed=255-myGreen;
             }
-            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue, QColor::Rgb), 0));
+            myQPainter.setPen(QPen(QColor(myRed, myGreen, myBlue), 0));
           }
 
         }                   //end of invert histogram check
@@ -3258,13 +3258,13 @@ QPixmap QgsRasterLayer::getDetailedLegendQPixmap(int theLabelCount=3)
     myLegendQPixmap = QPixmap(1, 3);
     myQPainter.begin(&myLegendQPixmap);
     //draw legend red part
-    myQPainter.setPen(QPen(QColor(224, 103, 103, QColor::Rgb), 0));
+    myQPainter.setPen(QPen(QColor(224, 103, 103), 0));
     myQPainter.drawPoint(0, 0);
     //draw legend green part
-    myQPainter.setPen(QPen(QColor(132, 224, 127, QColor::Rgb), 0));
+    myQPainter.setPen(QPen(QColor(132, 224, 127), 0));
     myQPainter.drawPoint(0,1);
     //draw legend blue part
-    myQPainter.setPen(QPen(QColor(127, 160, 224, QColor::Rgb), 0));
+    myQPainter.setPen(QPen(QColor(127, 160, 224), 0));
     myQPainter.drawPoint(0,2);
   }
 
@@ -3289,7 +3289,7 @@ QPixmap QgsRasterLayer::getDetailedLegendQPixmap(int theLabelCount=3)
     myQWMatrix.scale(myColourBarWidth,2);
   }
   //apply the matrix
-  QPixmap myQPixmap2 = myLegendQPixmap.xForm(myQWMatrix);
+  QPixmap myQPixmap2 = myLegendQPixmap.transformed(myQWMatrix);
   QPainter myQPainter2(&myQPixmap2);
   //
   // Overlay the layername
@@ -3962,7 +3962,7 @@ void QgsRasterLayer::readColorTable ( GDALRasterBandH gdalBand, QgsColorTable *t
   bool found = false;
   while ( metadata && metadata[0] )
   {
-    QStringList metadataTokens = QStringList::split("=", *metadata );
+    QStringList metadataTokens = QString(*metadata).split("=", QString::SkipEmptyParts );
 
     if (metadataTokens.count() < 2 ) continue;
 
@@ -5018,7 +5018,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
 
   // load the data provider
   mLib = new QLibrary(ogrlib);
-  QgsDebugMsg("QgsRasterLayer::setDataProvider: Library name is " + mLib->library());
+  QgsDebugMsg("QgsRasterLayer::setDataProvider: Library name is " + mLib->fileName());
   bool loaded = mLib->load();
 
   if (loaded)

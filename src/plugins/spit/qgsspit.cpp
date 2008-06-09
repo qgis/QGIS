@@ -109,14 +109,16 @@ QgsSpit::~QgsSpit()
 void QgsSpit::populateConnectionList()
 {
   QSettings settings;
-  QStringList keys = settings.subkeyList( "/PostgreSQL/connections" );
+  settings.beginGroup( "/PostgreSQL/connections" );
+  QStringList keys = settings.childGroups();
   QStringList::Iterator it = keys.begin();
   cmbConnections->clear();
   while ( it != keys.end() )
   {
-    cmbConnections->insertItem( *it );
+    cmbConnections->addItem( *it );
     ++it;
   }
+  settings.endGroup();
 }
 
 void QgsSpit::newConnection()
@@ -147,14 +149,14 @@ void QgsSpit::removeConnection()
   QMessageBox::StandardButton result = QMessageBox::information( this, tr("Confirm Delete"), msg, QMessageBox::Ok | QMessageBox::Cancel);
   if ( result == QMessageBox::Ok )
   {
-    settings.removeEntry( key + "/host" );
-    settings.removeEntry( key + "/database" );
-    settings.removeEntry( key + "/port" );
-    settings.removeEntry( key + "/username" );
-    settings.removeEntry( key + "/password" );
-    settings.removeEntry( key + "/save" );
+    settings.remove( key + "/host" );
+    settings.remove( key + "/database" );
+    settings.remove( key + "/port" );
+    settings.remove( key + "/username" );
+    settings.remove( key + "/password" );
+    settings.remove( key + "/save" );
 
-    cmbConnections->removeItem( cmbConnections->currentItem() );  
+    cmbConnections->removeItem( cmbConnections->currentIndex() );  
   }
 }
 
@@ -168,10 +170,10 @@ void QgsSpit::addFile()
 
   QgsEncodingFileDialog dlg(this,
     tr("Add Shapefiles"),
-    settings.readEntry( "/Plugin-Spit/last_directory" ),
+    settings.value( "/Plugin-Spit/last_directory" ).toString(),
     tr("Shapefiles (*.shp);;All files (*.*)"),
-    settings.readEntry( "/Plugin-Spit/last_encoding" ) );
-  dlg.setMode(QFileDialog::ExistingFiles);
+    settings.value( "/Plugin-Spit/last_encoding" ).toString() );
+  dlg.setFileMode(QFileDialog::ExistingFiles);
 
   if (dlg.exec() != QDialog::Accepted)
     return;
@@ -181,8 +183,8 @@ void QgsSpit::addFile()
   {
     // Save the directory for future use
     QFileInfo fi( files[ 0 ] );
-    settings.writeEntry( "/Plugin-Spit/last_directory", fi.dirPath( true ) );
-    settings.writeEntry( "/Plugin-Spit/last_encoding", dlg.encoding());
+    settings.setValue( "/Plugin-Spit/last_directory", fi.absolutePath() );
+    settings.setValue( "/Plugin-Spit/last_encoding", dlg.encoding());
   }
   // Process the files
   for ( QStringList::Iterator it = files.begin(); it != files.end(); ++it )
@@ -394,28 +396,28 @@ void QgsSpit::dbConnect()
   }
 
   QString key = "/PostgreSQL/connections/" + connName;
-  QString database = settings.readEntry(key + "/database");
-  QString username = settings.readEntry(key + "/username");
-  QString password = settings.readEntry(key + "/password");
+  QString database = settings.value(key + "/database").toString();
+  QString username = settings.value(key + "/username").toString();
+  QString password = settings.value(key + "/password").toString();
 
   bool makeConnection = true;
 
   if ( password.isEmpty() )
   {
     // get password from user 
-    password = QInputDialog::getText(tr("Password for ") + username,
+    password = QInputDialog::getText(this, tr("Password for ") + username,
       tr("Please enter your password:"),
-      QLineEdit::Password, QString::null, &makeConnection, this);
+      QLineEdit::Password, QString::null, &makeConnection);
   }
 
   if(makeConnection)
   {
     // allow null password entry in case its valid for the database
     QgsDataSourceURI uri;
-    uri.setConnection( settings.readEntry(key + "/host"),
-      settings.readEntry(key + "/port"),
+    uri.setConnection( settings.value(key + "/host").toString(),
+      settings.value(key + "/port").toString(),
       database,
-      settings.readEntry(key + "/username"),
+      settings.value(key + "/username").toString(),
       password );
   
     conn = PQconnectdb( uri.connInfo().toUtf8() );
@@ -760,7 +762,7 @@ void QgsSpit::import()
       canceled = false;
 
       QString key = "/PostgreSQL/connections/" + connName;
-      QString dbname = settings.readEntry( key + "/database" );
+      QString dbname = settings.value( key + "/database" ).toString();
       QString schema = tblShapefiles->item( i, ColDBSCHEMA )->text();
       QString srid = QString( "%1" ).arg( spinSrid->value() );
       QString errorText;

@@ -19,6 +19,7 @@
 #include "qgsproviderregistry.h"
 
 #include <QDir>
+#include <QPalette>
 
 #include <qgsconfig.h>
 #include <qgslogger.h>
@@ -186,7 +187,7 @@ const QString QgsApplication::qgisMasterDbFilePath()
  */
 const QString QgsApplication::qgisSettingsDirPath()
 {
-  return QDir::homeDirPath() + QString("/.qgis/");
+  return QDir::homePath() + QString("/.qgis/");
 }
 
 /*!
@@ -265,7 +266,7 @@ QString QgsApplication::reportStyleSheet()
   // Make the style sheet desktop preferences aware by using qappliation 
   // palette as a basis for colours where appropriate
   //
-  QColor myColor1 = palette().highlight();
+  QColor myColor1 = palette().highlight().color();
   QColor myColor2 = myColor1;
   myColor2 = myColor2.lighter(110); //10% lighter
   QString myStyle;

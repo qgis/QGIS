@@ -103,7 +103,7 @@ void QgsAttributeTable::setColumnReadOnly(int col, bool ro)
 
 void QgsAttributeTable::columnClicked(int col)
 {
-  QApplication::setOverrideCursor(Qt::waitCursor);
+  QApplication::setOverrideCursor(Qt::WaitCursor);
 
   //store the ids of the selected rows in a list
   QList<int> idsOfSelected;
@@ -198,7 +198,7 @@ void QgsAttributeTable::insertFeatureId(int id, int row)
 void QgsAttributeTable::selectRowWithId(int id)
 {
   QMap < int, int >::iterator it = rowIdMap.find(id);
-  setRangeSelected(QTableWidgetSelectionRange(it.data(), 0, it.data(), columnCount()-1), true);
+  setRangeSelected(QTableWidgetSelectionRange(it.value(), 0, it.value(), columnCount()-1), true);
 }
 
 void QgsAttributeTable::sortColumn(int col, bool ascending)
@@ -208,7 +208,7 @@ void QgsAttributeTable::sortColumn(int col, bool ascending)
   bool containsletter = false;
   for (int i = 0; i < firstentry.length(); i++)
   {
-    if (firstentry.ref(i).isLetter())
+    if (firstentry[i].isLetter())
     {
       containsletter = true;
       break;
@@ -403,7 +403,7 @@ void QgsAttributeTable::deleteAttribute(const QString& name)
   QgsNewAttributesMap::iterator iter = mAddedAttributes.find(name);
   if(iter!=mAddedAttributes.end())
   {
-    mAddedAttributes.remove(iter);
+    mAddedAttributes.erase(iter);
     removeAttrColumn(name);
   }
   else

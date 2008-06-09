@@ -56,8 +56,8 @@ void QgsAbout::init()
 
   QFile file(QgsApplication::authorsFilePath());
 #ifdef QGISDEBUG
-  printf (("Reading authors file " + file.name() +
-      ".............................................\n").toLocal8Bit().data());
+  printf (("Reading authors file " + file.fileName() +
+      ".............................................\n").toLocal8Bit().constData());
 #endif
   if ( file.open( QIODevice::ReadOnly ) ) {
     QTextStream stream( &file );
@@ -74,9 +74,9 @@ void QgsAbout::init()
       //ignore the line if it starts with a hash....
       if (line.left(1)=="#") continue;
 #ifdef QGISDEBUG 
-      printf( "Contributor: %3d: %s\n", i++, (const char *)line.toLocal8Bit().data() );
+      printf( "Contributor: %3d: %s\n", i++, line.toLocal8Bit().constData() );
 #endif 
-      QStringList myTokens = QStringList::split("\t",line);
+      QStringList myTokens = line.split("\t", QString::SkipEmptyParts);
       //printf ("Added contributor name to listbox: %s ",myTokens[0]);
       lines += myTokens[0];
 
@@ -85,7 +85,7 @@ void QgsAbout::init()
       QString authorName = myTokens[0].replace(" ","_");
 
       QString myString =QString(appPath + "/images/developers/") + authorName + QString(".jpg");
-      printf ("Loading mug: %s\n", myString.toLocal8Bit().data()); 
+      printf ("Loading mug: %s\n", myString.toLocal8Bit().constData()); 
       QPixmap *pixmap = new QPixmap(myString);
       mugs[myTokens[0]] = *pixmap;
       */
@@ -102,8 +102,8 @@ void QgsAbout::init()
   // read the SPONSORS file and populate the text widget
     QFile sponsorFile(QgsApplication::sponsorsFilePath());
   #ifdef QGISDEBUG
-    printf (("Reading sponsors file " + sponsorFile.name() +
-        ".............................................\n").toLocal8Bit().data());
+    printf (("Reading sponsors file " + sponsorFile.fileName() +
+        ".............................................\n").toLocal8Bit().constData());
   #endif
     if ( sponsorFile.open( QIODevice::ReadOnly ) ) {
       QString sponsorHTML = ""
@@ -123,7 +123,7 @@ void QgsAbout::init()
         sline = sponsorStream.readLine(); // line of text excluding '\n'
         //ignore the line if it starts with a hash....
         if (sline.left(1)=="#") continue;
-        QStringList myTokens = QStringList::split("|",sline);
+        QStringList myTokens = sline.split("|", QString::SkipEmptyParts);
         if(myTokens.size() > 1)
         {
           website = myTokens[1];
@@ -209,11 +209,11 @@ void QgsAbout::on_listBox1_currentItemChanged(QListWidgetItem *theItem)
   myString = myString.replace(" ","_");
   myString = QgsAbout::fileSystemSafe(myString);
 #ifdef QGISDEBUG 
-  printf ("Loading mug: %s", (const char *)myString.toLocal8Bit().data()); 
+  printf ("Loading mug: %s", myString.toLocal8Bit().constData()); 
 #endif 
   myString = QgsApplication::developerPath() + myString + QString(".jpg");
 #ifdef QGISDEBUG 
-  printf ("Loading mug: %s\n", (const char *)myString.toLocal8Bit().data()); 
+  printf ("Loading mug: %s\n", myString.toLocal8Bit().constData()); 
 #endif 
   QPixmap *pixmap = new QPixmap(myString);
   //pixAuthorMug->setPixmap(*pixmap);

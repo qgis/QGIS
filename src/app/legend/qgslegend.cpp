@@ -80,7 +80,9 @@ QgsLegend::QgsLegend(QWidget * parent, const char *name)
   setAutoScroll(true);
   QFont f("Arial", 10, QFont::Normal);
   setFont(f);
-  setBackgroundColor(QColor(192, 192, 192));
+  QPalette palette;
+  palette.setColor(backgroundRole(), QColor(192, 192, 192));
+  setPalette(palette);
 
   setColumnCount(1);
   header()->setHidden(1);
@@ -1018,8 +1020,8 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 		  // remove the whole legendlayer if this is the only legendlayerfile
 		  if(childelem.previousSibling().isNull() && childelem.nextSibling().isNull())
 		    {
-		      collapsed.remove(lastLayer);
-		      expanded.remove(lastLayer);
+		      collapsed.removeAll(lastLayer);
+		      expanded.removeAll(lastLayer);
 		      delete lastLayer;
 		      lastLayer=0;
 		    }

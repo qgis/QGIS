@@ -131,10 +131,10 @@ void QgsComposerVectorLegend::init ( void )
     
     // Preview style
     mPreviewMode = Render;
-    mPreviewModeComboBox->insertItem ( tr("Cache"), Cache );
-    mPreviewModeComboBox->insertItem ( tr("Render"), Render );
-    mPreviewModeComboBox->insertItem ( tr("Rectangle"), Rectangle );
-    mPreviewModeComboBox->setCurrentItem ( mPreviewMode );
+    mPreviewModeComboBox->addItem ( tr("Cache"), Cache );
+    mPreviewModeComboBox->addItem ( tr("Render"), Render );
+    mPreviewModeComboBox->addItem ( tr("Rectangle"), Rectangle );
+    mPreviewModeComboBox->setCurrentIndex ( mPreviewMode );
 
     connect ( mComposition, SIGNAL(mapChanged(int)), this, SLOT(mapChanged(int)) ); 
 }
@@ -164,9 +164,9 @@ QRectF QgsComposerVectorLegend::render ( QPainter *p )
   //std::cout << "mComposition->scale() = " << mComposition->scale() << std::endl;
 
   // Font size in canvas units
-  float titleSize = 25.4 * mComposition->scale() * mTitleFont.pointSizeFloat() / 72;
-  float sectionSize = 25.4 * mComposition->scale() * mSectionFont.pointSizeFloat() / 72;
-  float size = 25.4 * mComposition->scale() * mFont.pointSizeFloat() / 72;
+  float titleSize = 25.4 * mComposition->scale() * mTitleFont.pointSizeF() / 72;
+  float sectionSize = 25.4 * mComposition->scale() * mSectionFont.pointSizeF() / 72;
+  float size = 25.4 * mComposition->scale() * mFont.pointSizeF() / 72;
 
   //std::cout << "font sizes = " << titleSize << " " << sectionSize << " " << size << std::endl;
 
@@ -175,9 +175,9 @@ QRectF QgsComposerVectorLegend::render ( QPainter *p )
   QFont sectionFont ( mSectionFont );
   QFont font ( mFont );
 
-  titleFont.setPointSizeFloat ( titleSize );
-  sectionFont.setPointSizeFloat ( sectionSize );
-  font.setPointSizeFloat ( size );
+  titleFont.setPointSizeF ( titleSize );
+  sectionFont.setPointSizeF ( sectionSize );
+  font.setPointSizeF ( size );
 
   // Not sure about Style Strategy, QFont::PreferMatch?
   titleFont.setStyleStrategy ( (QFont::StyleStrategy) (QFont::PreferOutline | QFont::PreferAntialias) );
@@ -196,15 +196,15 @@ QRectF QgsComposerVectorLegend::render ( QPainter *p )
     double psSectionSize = sectionMetrics.ascent() * 72.0 / mComposition->resolution();
     double psSize = metrics.ascent() * 72.0 / mComposition->resolution();
 
-    titleFont.setPointSizeFloat ( psTitleSize * FONT_WORKAROUND_SCALE );
-    sectionFont.setPointSizeFloat ( psSectionSize * FONT_WORKAROUND_SCALE );
-    font.setPointSizeFloat ( psSize * FONT_WORKAROUND_SCALE );
+    titleFont.setPointSizeF ( psTitleSize * FONT_WORKAROUND_SCALE );
+    sectionFont.setPointSizeF ( psSectionSize * FONT_WORKAROUND_SCALE );
+    font.setPointSizeF ( psSize * FONT_WORKAROUND_SCALE );
   }
   else
   {
-    titleFont.setPointSizeFloat ( titleSize * FONT_WORKAROUND_SCALE );
-    sectionFont.setPointSizeFloat ( sectionSize * FONT_WORKAROUND_SCALE );
-    font.setPointSizeFloat ( size * FONT_WORKAROUND_SCALE );
+    titleFont.setPointSizeF ( titleSize * FONT_WORKAROUND_SCALE );
+    sectionFont.setPointSizeF ( sectionSize * FONT_WORKAROUND_SCALE );
+    font.setPointSizeF ( size * FONT_WORKAROUND_SCALE );
   }
 
   double x, y;
@@ -605,12 +605,12 @@ void QgsComposerVectorLegend::recalculate ( void )
     
     // Title and section font 
     mTitleFont = mFont;
-    mTitleFont.setPointSizeFloat ( 1.4 * mFont.pointSizeFloat());
+    mTitleFont.setPointSizeF ( 1.4 * mFont.pointSizeF());
     mSectionFont = mFont;
-    mSectionFont.setPointSizeFloat ( 1.2 * mFont.pointSizeFloat() );
+    mSectionFont.setPointSizeF ( 1.2 * mFont.pointSizeF() );
     
     // Font size in canvas units
-    float size = 25.4 * mComposition->scale() * mFont.pointSizeFloat() / 72;
+    float size = 25.4 * mComposition->scale() * mFont.pointSizeF() / 72;
 
     mMargin = 0.9 * size;
     mSymbolHeight = 1.3 * size;
@@ -618,8 +618,8 @@ void QgsComposerVectorLegend::recalculate ( void )
     mSymbolSpace = 0.4 * size;
 
 #ifdef QGISDEBUG
-    std::cout << "font size = " << mFont.pointSizeFloat() << std::endl;
-    std::cout << "title font size = " << mTitleFont.pointSizeFloat() << std::endl;
+    std::cout << "font size = " << mFont.pointSizeF() << std::endl;
+    std::cout << "title font size = " << mTitleFont.pointSizeF() << std::endl;
 
     std::cout << "mMargin = " << mMargin << " mSymbolHeight = " << mSymbolHeight
               << "mSymbolWidth = " << mSymbolWidth << " mSymbolSpace = " << mSymbolSpace << std::endl;
@@ -643,21 +643,21 @@ void QgsComposerVectorLegend::setOptions ( void )
   mMaps.clear();
     
   bool found = false;
-  mMapComboBox->insertItem ( "", 0 );
+  mMapComboBox->addItem ( "" );
   mMaps.push_back ( 0 );
   for ( int i = 0; i < (int)maps.size(); i++ ) {
-    mMapComboBox->insertItem ( maps[i]->name(), i+1 );
+    mMapComboBox->addItem ( maps[i]->name() );
     mMaps.push_back ( maps[i]->id() );
 
     if ( maps[i]->id() == mMap ) {
       found = true;
-      mMapComboBox->setCurrentItem ( i+1 );
+      mMapComboBox->setCurrentIndex ( i+1 );
     }
   }
 
   if ( ! found ) {
     mMap = 0;
-    mMapComboBox->setCurrentItem ( 0 );
+    mMapComboBox->setCurrentIndex ( 0 );
   }
 
   mFrameCheckBox->setChecked ( mFrame );
@@ -694,7 +694,7 @@ void QgsComposerVectorLegend::setOptions ( void )
     }
   }
 
-  mPreviewModeComboBox->setCurrentItem( mPreviewMode );
+  mPreviewModeComboBox->setCurrentIndex( mPreviewMode );
 }
 
 void QgsComposerVectorLegend::setSelected (  bool s ) 
@@ -914,7 +914,7 @@ bool QgsComposerVectorLegend::readSettings ( void )
   QStringList el = QgsProject::instance()->subkeyList ( "Compositions", path );
     
   for ( QStringList::iterator it = el.begin(); it != el.end(); ++it ) {
-    int idx = (*it).find('_');
+    int idx = (*it).indexOf('_');
 
     QString id = (*it).right( (*it).length() - (idx+1) );
   

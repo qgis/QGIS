@@ -1200,7 +1200,7 @@ void QgsMapCanvas::showError(QgsMapLayer * mapLayer)
 //   );
 
   QgsMessageViewer * mv = new QgsMessageViewer(this);
-  mv->setCaption( mapLayer->errorCaptionString() );
+  mv->setWindowTitle( mapLayer->errorCaptionString() );
   mv->setMessageAsPlainText(
     tr("Could not draw") + " " + mapLayer->name() + " " + tr("because") + ":\n" +
     mapLayer->errorString()

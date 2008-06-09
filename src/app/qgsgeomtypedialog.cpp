@@ -32,10 +32,10 @@ QgsGeomTypeDialog::QgsGeomTypeDialog(QWidget *parent, Qt::WFlags fl)
   mTypeBox->addItem(tr("String"),"String");
 
   mPointRadioButton->setChecked(true);
-  mFileFormatComboBox->insertItem("ESRI Shapefile");
-  /*mFileFormatComboBox->insertItem("Comma Separated Value");
-  mFileFormatComboBox->insertItem("GML");
-  mFileFormatComboBox->insertItem("Mapinfo File");*/
+  mFileFormatComboBox->addItem("ESRI Shapefile");
+  /*mFileFormatComboBox->addItem("Comma Separated Value");
+  mFileFormatComboBox->addItem("GML");
+  mFileFormatComboBox->addItem("Mapinfo File");*/
   mOkButton = buttonBox->button(QDialogButtonBox::Ok);
   mOkButton->setEnabled(false);
 }

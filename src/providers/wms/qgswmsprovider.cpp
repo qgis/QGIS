@@ -541,7 +541,8 @@ QImage* QgsWmsProvider::draw(QgsRect  const & viewExtent, int pixelWidth, int pi
   {
     delete cachedImage;
   }
-  cachedImage = new QImage(imagesource);
+  cachedImage = new QImage();
+  *cachedImage = QImage::fromData(imagesource);
 
   // Remember settings for useful caching next time.
   cachedViewExtent = viewExtent;
@@ -1976,7 +1977,7 @@ QString QgsWmsProvider::getMetadata()
     myMetadataQString += tr("Selected");
     myMetadataQString += "</td>";
     myMetadataQString += "<td bgcolor=\"gray\">";
-    myMetadataQString += (activeSubLayers.findIndex(layerName) >= 0) ?
+    myMetadataQString += (activeSubLayers.indexOf(layerName) >= 0) ?
                            tr("Yes") : tr("No");
     myMetadataQString += "</td></tr>";
   
@@ -1985,7 +1986,7 @@ QString QgsWmsProvider::getMetadata()
     myMetadataQString += tr("Visibility");
     myMetadataQString += "</td>";
     myMetadataQString += "<td bgcolor=\"gray\">";
-    myMetadataQString += (activeSubLayers.findIndex(layerName) >= 0) ?
+    myMetadataQString += (activeSubLayers.indexOf(layerName) >= 0) ?
                            (
                             (activeSubLayerVisibility.find(layerName)->second) ?
                             tr("Visible") : tr("Hidden")

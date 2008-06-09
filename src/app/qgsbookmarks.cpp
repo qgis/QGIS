@@ -94,7 +94,7 @@ void QgsBookmarks::initialise()
     sqlite3_stmt *ppStmt;
     QString sql = "select * from tbl_bookmarks";
 
-    rc = sqlite3_prepare(db, sql.utf8(), sql.length(), &ppStmt, &pzTail);
+    rc = sqlite3_prepare(db, sql.toUtf8(), sql.length(), &ppStmt, &pzTail);
     // XXX Need to free memory from the error msg if one is set
     if(rc == SQLITE_OK)
     {
@@ -170,7 +170,7 @@ void QgsBookmarks::on_btnDelete_clicked()
         char *errmsg;
         // build the sql statement
         QString sql = "delete from tbl_bookmarks where bookmark_id = " + item->text(3);
-        rc = sqlite3_exec(db, sql.utf8(), NULL, NULL, &errmsg);
+        rc = sqlite3_exec(db, sql.toUtf8(), NULL, NULL, &errmsg);
         if(rc != SQLITE_OK)
         {
           // XXX Provide popup message on failure?
@@ -217,7 +217,7 @@ void QgsBookmarks::zoomToBookmark()
     const char *pzTail;
     // build the sql statement
     QString sql = "select xmin, ymin, xmax, ymax from tbl_bookmarks where bookmark_id = " + item->text(3);
-    rc = sqlite3_prepare(db, sql.utf8(), sql.length(), &ppStmt, &pzTail);
+    rc = sqlite3_prepare(db, sql.toUtf8(), sql.length(), &ppStmt, &pzTail);
     if(rc == SQLITE_OK)
     {
       if(sqlite3_step(ppStmt) == SQLITE_ROW){

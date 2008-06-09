@@ -77,7 +77,7 @@ void QgsGeorefPluginGui::on_pbnDescription_clicked()
 
 void QgsGeorefPluginGui::on_pbnSelectRaster_clicked() {
   QSettings settings;
-  QString dir = settings.readEntry("/Plugin-GeoReferencer/rasterdirectory");
+  QString dir = settings.value("/Plugin-GeoReferencer/rasterdirectory").toString();
   if (dir.isEmpty())
     dir = ".";
   QString filename = 
@@ -103,13 +103,13 @@ void QgsGeorefPluginGui::on_pbnSelectRaster_clicked() {
   {
     QSettings settings;
     QFileInfo fileInfo(leSelectRaster->text());
-    settings.writeEntry("/Plugin-GeoReferencer/rasterdirectory", 
-			fileInfo.dirPath());
+    settings.setValue("/Plugin-GeoReferencer/rasterdirectory", 
+			fileInfo.path());
   }
   
   // guess the world file name
   QString raster = leSelectRaster->text();
-  int point = raster.findRev('.');
+  int point = raster.lastIndexOf('.');
   QString worldfile;
   if (point != -1 && point != raster.length() - 1) {
     worldfile = raster.left(point + 1);
@@ -136,15 +136,15 @@ void QgsGeorefPluginGui::on_pbnSelectRaster_clicked() {
   {
     QSettings settings;
     QgsProject* prj = QgsProject::instance();
-    mProjBehaviour = settings.readEntry("/Projections/defaultBehaviour");
+    mProjBehaviour = settings.value("/Projections/defaultBehaviour").toString();
     mProjectSRS = prj->readEntry("SpatialRefSys", "/ProjectSRSProj4String");
     mProjectSRSID = prj->readNumEntry("SpatialRefSys", "/ProjectSRSID");
     
-    settings.writeEntry("/Projections/defaultBehaviour", "useProject");
+    settings.setValue("/Projections/defaultBehaviour", "useProject");
     prj->writeEntry("SpatialRefSys", "/ProjectSRSProj4String", GEOPROJ4);
     prj->writeEntry("SpatialRefSys", "/ProjectSRSID", int(GEOSRS_ID));
     
-    settings.writeEntry("/Projections/defaultBehaviour", mProjBehaviour);
+    settings.setValue("/Projections/defaultBehaviour", mProjBehaviour);
     prj->writeEntry("SpatialRefSys", "/ProjectSRSProj4String", mProjectSRS);
     prj->writeEntry("SpatialRefSys", "/ProjectSRSID", mProjectSRSID);
   }

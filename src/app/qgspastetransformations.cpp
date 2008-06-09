@@ -46,8 +46,8 @@ QgsPasteTransformations::QgsPasteTransformations()
 
     // TODO: Test if a VECTOR or DATABASE layer only (not RASTER)
 
-    sourceLayerComboBox     ->insertItem( it.value()->name() );
-    destinationLayerComboBox->insertItem( it.value()->name() );
+    sourceLayerComboBox     ->addItem( it.value()->name() );
+    destinationLayerComboBox->addItem( it.value()->name() );
 
     // store the lookup from the name to the map layer object
     mMapNameLookup[ it.value()->name() ] = it.value();
@@ -72,11 +72,11 @@ void QgsPasteTransformations::accept()
 
   for (uint i = 0; i < mSourceTransfers.size(); i++)
   {
-    settings.writeEntry(
-                        baseKey + "/" + sourceKey + "/" + destinationKey + "/" +
-                        mSourceTransfers[i]     ->currentText(),
-                        mDestinationTransfers[i]->currentText()
-                       );
+    settings.setValue(
+                      baseKey + "/" + sourceKey + "/" + destinationKey + "/" +
+                      mSourceTransfers[i]     ->currentText(),
+                      mDestinationTransfers[i]->currentText()
+                     );
   }
 
   QDialog::accept();
@@ -126,13 +126,13 @@ void QgsPasteTransformations::addTransfer(const QString& sourceSelectedFieldName
           << std::endl;
 #endif
 
-  int newRow = gridLayout->numRows();
+  int newRow = gridLayout->rowCount();
 
 // TODO: Do not add the transfer if neither the sourceSelectedFieldName nor the destinationSelectedFieldName could be found.
 
   // For some reason Qt4's uic3 only outputs generic names for layout items
-  QComboBox* newSourceFields      = new QComboBox(gridLayout->mainWidget() );
-  QComboBox* newDestinationFields = new QComboBox(gridLayout->mainWidget() );
+  QComboBox* newSourceFields      = new QComboBox(gridLayout->parentWidget() );
+  QComboBox* newDestinationFields = new QComboBox(gridLayout->parentWidget() );
 
   int count = 0;
 
@@ -141,12 +141,12 @@ void QgsPasteTransformations::addTransfer(const QString& sourceSelectedFieldName
                                       it != mSourceFields.end();
                                     ++it )
   {
-    newSourceFields->insertItem( (*it) );
+    newSourceFields->addItem( (*it) );
 
     // highlight this item if appropriate
     if (sourceSelectedFieldName == (*it))
     {
-      newSourceFields->setCurrentItem(count);
+      newSourceFields->setCurrentIndex(count);
     }
 
     count++;
@@ -159,12 +159,12 @@ void QgsPasteTransformations::addTransfer(const QString& sourceSelectedFieldName
                                       it != mDestinationFields.end();
                                     ++it )
   {
-    newDestinationFields->insertItem( (*it) );
+    newDestinationFields->addItem( (*it) );
 
     // highlight this item if appropriate
     if (destinationSelectedFieldName == (*it))
     {
-      newDestinationFields->setCurrentItem(count);
+      newDestinationFields->setCurrentIndex(count);
     }
 
     count++;
@@ -230,7 +230,8 @@ void QgsPasteTransformations::restoreTransfers(const QString& sourceLayerName,
   QSettings settings;
   QString baseKey = "/Qgis/paste-transformations";             // TODO: promote to static member
 
-  QStringList sourceLayers = settings.subkeyList(baseKey);
+  settings.beginGroup(baseKey);
+  QStringList sourceLayers = settings.childGroups();
 
   for (QStringList::Iterator it  = sourceLayers.begin(); 
                              it != sourceLayers.end();
@@ -245,7 +246,8 @@ void QgsPasteTransformations::restoreTransfers(const QString& sourceLayerName,
     if ((sourceLayerName == (*it)))
     {
       // Go through destination layers defined for this source layer.
-      QStringList destinationLayers = settings.subkeyList( baseKey + "/" + (*it) );
+      settings.beginGroup(*it);
+      QStringList destinationLayers = settings.childGroups();
       for (QStringList::Iterator it2  = destinationLayers.begin(); 
                                  it2 != destinationLayers.end();
                                ++it2 )
@@ -263,7 +265,8 @@ void QgsPasteTransformations::restoreTransfers(const QString& sourceLayerName,
           << std::endl;
 #endif
           // Go through Transfers for this source/destination layer pair.
-          QStringList transfers = settings.entryList( baseKey + "/" + (*it) + "/" + (*it2) );
+          settings.beginGroup(*it2);
+          QStringList transfers = settings.childKeys();
           for (QStringList::Iterator it3  = transfers.begin(); 
                                      it3 != transfers.end();
                                    ++it3 )
@@ -273,14 +276,16 @@ void QgsPasteTransformations::restoreTransfers(const QString& sourceLayerName,
           << (*it3).toLocal8Bit().data() << "."
           << std::endl;
 #endif
-            QString destinationField = 
-              settings.readEntry( baseKey + "/" + (*it) + "/" + (*it2) + "/" + (*it3) );
+            QString destinationField = settings.value( *it3 ).toString();
             addTransfer( (*it3), destinationField );
           }
+          settings.endGroup();
         }
       }
+      settings.endGroup();
     }
   }
+  settings.endGroup();
 }
 
 
@@ -300,7 +305,7 @@ QString QgsPasteTransformations::pasteTo(const QString& sourceLayerName,
   QString baseKey = "/Qgis/paste-transformations";             // TODO: promote to static member
 
   QString destinationField = 
-    settings.readEntry( baseKey + "/" + sourceLayerName + "/" + destinationLayerName + "/" + sourceFieldName );
+    settings.value( baseKey + "/" + sourceLayerName + "/" + destinationLayerName + "/" + sourceFieldName ).toString();
 
   if (QString::null == destinationField)
   {

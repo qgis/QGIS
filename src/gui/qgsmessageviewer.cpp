@@ -70,7 +70,7 @@ void QgsMessageViewer::showMessage(bool blocking)
 
 void QgsMessageViewer::setTitle(const QString& title)
 {
-  setCaption(title);
+  setWindowTitle(title);
 }
 
 void QgsMessageViewer::setCheckBoxText(const QString& text)

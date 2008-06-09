@@ -64,7 +64,7 @@ QgsIdentifyResults::~QgsIdentifyResults()
 void QgsIdentifyResults::show()
 {
   // Enfore a few things before showing the dialog box
-  lstResults->sortItems(0, Qt::Ascending);
+  lstResults->sortItems(0, Qt::AscendingOrder);
   expandColumnsToFit();
 
   QDialog::show();

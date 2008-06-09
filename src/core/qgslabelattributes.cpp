@@ -424,7 +424,7 @@ QString QgsLabelAttributes::alignmentName ( int alignment )
 
 int QgsLabelAttributes::alignmentCode ( const QString &name ) 
 {
-  QString lname = name.lower();
+  QString lname = name.toLower();
   if (lname.compare("aboveleft")  == 0)  return Qt::AlignRight | Qt::AlignBottom     ;
   if (lname.compare("belowleft")  == 0)  return Qt::AlignRight | Qt::AlignTop        ; 
   if (lname.compare("aboveright")  == 0) return Qt::AlignLeft  | Qt::AlignBottom     ;

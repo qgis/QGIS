@@ -52,7 +52,7 @@ QgsContinuousColorDialog::QgsContinuousColorDialog(QgsVectorLayer * layer)
       if (type == QVariant::Int || type == QVariant::Double)
       {
         str = (*it).name();
-        classificationComboBox->insertItem(str);
+        classificationComboBox->addItem(str);
         mFieldMap.insert(std::make_pair(combonumber, fieldnumber));
         combonumber++;
       }
@@ -83,9 +83,9 @@ QgsContinuousColorDialog::QgsContinuousColorDialog(QgsVectorLayer * layer)
       iter++;
     }
     if (iter != mFieldMap.end())
-      classificationComboBox->setCurrentItem(iter->first);
+      classificationComboBox->setCurrentIndex(iter->first);
     else
-      classificationComboBox->setCurrentItem(-1);
+      classificationComboBox->setCurrentIndex(-1);
 
     const QgsSymbol* minsymbol = renderer->minimumSymbol();
     const QgsSymbol* maxsymbol = renderer->maximumSymbol();
@@ -223,7 +223,7 @@ void QgsContinuousColorDialog::selectMinimumColor()
   {
     btnMinValue->setColor(mincolor);
   }
-  setActiveWindow();
+  activateWindow();
 }
 
 void QgsContinuousColorDialog::selectMaximumColor()
@@ -233,7 +233,7 @@ void QgsContinuousColorDialog::selectMaximumColor()
   {
     btnMaxValue->setColor(maxcolor);
   }
-  setActiveWindow();
+  activateWindow();
 }
 
 void QgsContinuousColorDialog::on_cb_polygonOutline_clicked()

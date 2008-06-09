@@ -51,21 +51,21 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
       mShowInvalidLines(true)
 {
   // Get the file name and mDelimiter out of the uri
-  mFileName = uri.left(uri.find("?"));
+  mFileName = uri.left(uri.indexOf("?"));
   // split the string up on & to get the individual parameters
-  QStringList parameters = QStringList::split("&", uri.mid(uri.find("?")));
+  QStringList parameters = uri.mid(uri.indexOf("?")).split("&", QString::SkipEmptyParts);
   
   QgsDebugMsg("Parameter count after split on &" + QString::number(parameters.size()));
   
   // get the individual parameters and assign values
-  QStringList temp = parameters.grep("delimiter=");
-  mDelimiter = temp.size()? temp[0].mid(temp[0].find("=") + 1) : "";
-  temp = parameters.grep("delimiterType=");
-  mDelimiterType = temp.size()? temp[0].mid(temp[0].find("=") + 1) : "";
-  temp = parameters.grep("xField=");
-  QString xField = temp.size()? temp[0].mid(temp[0].find("=") + 1) : "";
-  temp = parameters.grep("yField=");
-  QString yField = temp.size()? temp[0].mid(temp[0].find("=") + 1) : "";
+  QStringList temp = parameters.filter("delimiter=");
+  mDelimiter = temp.size()? temp[0].mid(temp[0].indexOf("=") + 1) : "";
+  temp = parameters.filter("delimiterType=");
+  mDelimiterType = temp.size()? temp[0].mid(temp[0].indexOf("=") + 1) : "";
+  temp = parameters.filter("xField=");
+  QString xField = temp.size()? temp[0].mid(temp[0].indexOf("=") + 1) : "";
+  temp = parameters.filter("yField=");
+  QString yField = temp.size()? temp[0].mid(temp[0].indexOf("=") + 1) : "";
   // Decode the parts of the uri. Good if someone entered '=' as a delimiter, for instance.
   mFileName  = QUrl::fromPercentEncoding(mFileName.toUtf8());
   mDelimiter = QUrl::fromPercentEncoding(mDelimiter.toUtf8());
@@ -344,11 +344,11 @@ bool QgsDelimitedTextProvider::getNextFeature(QgsFeature& feature)
             // we're on a little-endian platform, so tell the data
             // stream to use that
             s.setByteOrder( QDataStream::LittleEndian );
-            s << (Q_UINT8)1; // 1 is for little-endian
+            s << (quint8)1; // 1 is for little-endian
             break;
         case QgsApplication::XDR :
             // don't change byte order since QDataStream is big endian by default
-            s << (Q_UINT8)0; // 0 is for big-endian
+            s << (quint8)0; // 0 is for big-endian
             break;
         default :
             qDebug( "%s:%d unknown endian", __FILE__, __LINE__ );
@@ -356,7 +356,7 @@ bool QgsDelimitedTextProvider::getNextFeature(QgsFeature& feature)
             return false;
     }
 
-    s << (Q_UINT32)QGis::WKBPoint;
+    s << (quint32)QGis::WKBPoint;
     s << x;
     s << y;
 

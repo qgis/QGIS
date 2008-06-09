@@ -116,14 +116,16 @@ QgsServerSourceSelect::~QgsServerSourceSelect()
 void QgsServerSourceSelect::populateConnectionList()
 {
   QSettings settings;
-  QStringList keys = settings.subkeyList("/Qgis/connections-wms");
+  settings.beginGroup("/Qgis/connections-wms");
+  QStringList keys = settings.childGroups();
   QStringList::Iterator it = keys.begin();
   cmbConnections->clear();
   while (it != keys.end())
   {
-    cmbConnections->insertItem(*it);
+    cmbConnections->addItem(*it);
     ++it;
   }
+  settings.endGroup();
   setConnectionListPosition();
 
   if (keys.begin() == keys.end())
@@ -173,7 +175,7 @@ void QgsServerSourceSelect::on_btnDelete_clicked()
   if (result == QMessageBox::Ok)
   {
     settings.remove(key);
-    cmbConnections->removeItem(cmbConnections->currentItem());  // populateConnectionList();
+    cmbConnections->removeItem(cmbConnections->currentIndex());  // populateConnectionList();
     setConnectionListPosition();
   }
 }
@@ -211,9 +213,9 @@ bool QgsServerSourceSelect::populateLayerList(QgsWmsProvider* wmsProvider)
 
     QgsNumericSortTreeWidgetItem *lItem = new QgsNumericSortTreeWidgetItem(lstLayers);
     lItem->setText(0, QString::number(layerAndStyleCount));
-    lItem->setText(1, layer->name.simplifyWhiteSpace());
-    lItem->setText(2, layer->title.simplifyWhiteSpace());
-    lItem->setText(3, layer->abstract.simplifyWhiteSpace());
+    lItem->setText(1, layer->name.simplified());
+    lItem->setText(2, layer->title.simplified());
+    lItem->setText(3, layer->abstract.simplified());
 
     // Also insert the styles
     // Layer Styles
@@ -227,9 +229,9 @@ bool QgsServerSourceSelect::populateLayerList(QgsWmsProvider* wmsProvider)
 
       QgsNumericSortTreeWidgetItem *lItem2 = new QgsNumericSortTreeWidgetItem(lItem);
       lItem2->setText(0, QString::number(layerAndStyleCount));
-      lItem2->setText(1, layer->style[j].name.simplifyWhiteSpace());
-      lItem2->setText(2, layer->style[j].title.simplifyWhiteSpace());
-      lItem2->setText(3, layer->style[j].abstract.simplifyWhiteSpace());
+      lItem2->setText(1, layer->style[j].name.simplified());
+      lItem2->setText(2, layer->style[j].title.simplified());
+      lItem2->setText(3, layer->style[j].abstract.simplified());
 
     }
 
@@ -359,18 +361,18 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
   QStringList connStringParts;
   QString part;
   
-  connStringParts += settings.readEntry(key + "/url");
+  connStringParts += settings.value(key + "/url").toString();
 
 /*
   // Add the proxy host and port if any are defined.
-  if ( ! ( (part = settings.readEntry(key + "/proxyhost")).isEmpty() ) )
+  if ( ! ( (part = settings.value(key + "/proxyhost").toString()).isEmpty() ) )
   {
 #ifdef QGISDEBUG
   std::cout << "QgsServerSourceSelect::serverConnect: Got a proxyhost - '" << part.toLocal8Bit().data() << "'." << std::endl;
 #endif
     connStringParts += part;
   
-    if ( ! ( (part = settings.readEntry(key + "/proxyport")).isEmpty() ) )
+    if ( ! ( (part = settings.value(key + "/proxyport").toString()).isEmpty() ) )
     {
 #ifdef QGISDEBUG
   std::cout << "QgsServerSourceSelect::serverConnect: Got a proxyport - '" << part.toLocal8Bit().data() << "'." << std::endl;
@@ -382,14 +384,14 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
       connStringParts += "80";   // well-known http port
     }
 
-    if ( ! ( (part = settings.readEntry(key + "/proxyuser")).isEmpty() ) )
+    if ( ! ( (part = settings.value(key + "/proxyuser").toString()).isEmpty() ) )
     {
 #ifdef QGISDEBUG
   std::cout << "QgsServerSourceSelect::serverConnect: Got a proxyuser - '" << part.toLocal8Bit().data() << "'." << std::endl;
 #endif
       connStringParts += part;
 
-      if ( ! ( (part = settings.readEntry(key + "/proxypass")).isEmpty() ) )
+      if ( ! ( (part = settings.value(key + "/proxypass").toString()).isEmpty() ) )
       {
 #ifdef QGISDEBUG
   std::cout << "QgsServerSourceSelect::serverConnect: Got a proxypass - '" << part.toLocal8Bit().data() << "'." << std::endl;
@@ -423,10 +425,10 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
 
     // Collect and set HTTP proxy on WMS provider
 
-    m_connProxyHost = settings.readEntry(key + "/proxyhost"),
-    m_connProxyPort = settings.readEntry(key + "/proxyport").toInt(),
-    m_connProxyUser = settings.readEntry(key + "/proxyuser"),
-    m_connProxyPass = settings.readEntry(key + "/proxypassword"),
+    m_connProxyHost = settings.value(key + "/proxyhost").toString(),
+    m_connProxyPort = settings.value(key + "/proxyport").toInt(),
+    m_connProxyUser = settings.value(key + "/proxyuser").toString(),
+    m_connProxyPass = settings.value(key + "/proxypassword").toString(),
 
     mWmsProvider->setProxy(
       m_connProxyHost,
@@ -693,20 +695,20 @@ void QgsServerSourceSelect::serverChanged()
 {
   // Remember which server was selected.
   QSettings settings;
-  settings.writeEntry("/Qgis/connections-wms/selected", 
+  settings.setValue("/Qgis/connections-wms/selected", 
 		      cmbConnections->currentText());
 }
 
 void QgsServerSourceSelect::setConnectionListPosition()
 {
   QSettings settings;
-  QString toSelect = settings.readEntry("/Qgis/connections-wms/selected");
+  QString toSelect = settings.value("/Qgis/connections-wms/selected").toString();
   // Does toSelect exist in cmbConnections?
   bool set = false;
   for (int i = 0; i < cmbConnections->count(); ++i)
-    if (cmbConnections->text(i) == toSelect)
+    if (cmbConnections->itemText(i) == toSelect)
     {
-      cmbConnections->setCurrentItem(i);
+      cmbConnections->setCurrentIndex(i);
       set = true;
       break;
     }
@@ -721,9 +723,9 @@ void QgsServerSourceSelect::setConnectionListPosition()
     // the user has used qgis with database connections, so default to
     // the first in the list of connetions. Otherwise default to the last.
     if (toSelect.isNull())
-      cmbConnections->setCurrentItem(0);
+      cmbConnections->setCurrentIndex(0);
     else
-      cmbConnections->setCurrentItem(cmbConnections->count()-1);
+      cmbConnections->setCurrentIndex(cmbConnections->count()-1);
   }
 }
 void QgsServerSourceSelect::showStatusMessage(QString const & theMessage)
@@ -746,7 +748,7 @@ void QgsServerSourceSelect::showError(QgsWmsProvider * wms)
 //   );
 
   QgsMessageViewer * mv = new QgsMessageViewer(this);
-  mv->setCaption( wms->errorCaptionString() );
+  mv->setWindowTitle( wms->errorCaptionString() );
   mv->setMessageAsPlainText(
     tr("Could not understand the response.  The") + " " + wms->name() + " " +
     tr("provider said") + ":\n" +
@@ -785,15 +787,15 @@ void QgsServerSourceSelect::addDefaultServers()
   //  exampleServers["Qgis users map"] = "http://qgis.org/wms.cgi";
 
   QSettings settings;
-  QString basePath("/Qgis/connections-wms/");
+  settings.beginGroup("/Qgis/connections-wms");
   QMap<QString, QString>::const_iterator i = exampleServers.constBegin();
   for (; i != exampleServers.constEnd(); ++i)
   {
     // Only do a server if it's name doesn't already exist.
-    QStringList keys = settings.subkeyList(basePath);
+    QStringList keys = settings.childGroups();
     if (!keys.contains(i.key()))
     {
-      QString path = basePath + i.key();
+      QString path = i.key();
       settings.setValue(path + "/proxyhost", "");
       settings.setValue(path + "/proxyport", 80);
       settings.setValue(path + "/proxyuser", "");
@@ -801,6 +803,7 @@ void QgsServerSourceSelect::addDefaultServers()
       settings.setValue(path + "/url", i.value());
     }
   }
+  settings.endGroup();
   populateConnectionList();
 
   QMessageBox::information(this, tr("WMS proxies"), tr("<p>Several WMS servers have been added to the server list. Note that the proxy fields have been left blank and if you access the internet via a web proxy, you will need to individually set the proxy fields with appropriate values.</p>"));

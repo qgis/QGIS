@@ -26,10 +26,6 @@
 
 #include <cassert>
 
-#include <QApplication>
-#include <QEvent>
-#include <QCustomEvent>
-
 #include <qgis.h>
 #include <qgsapplication.h>
 #include <qgsfeature.h>
@@ -938,7 +934,7 @@ QString QgsPostgresProvider::getPrimaryKey()
     for (int i = 0; i < PQntuples(pk); ++i)
     {
       QString col = QString::fromUtf8(PQgetvalue(pk, i, 0));
-      QStringList columns = QStringList::split(" ", col);
+      QStringList columns = col.split(" ", QString::SkipEmptyParts);
       if (columns.count() == 1)
       {
         // Get the column name and data type
@@ -1686,10 +1682,10 @@ QString QgsPostgresProvider::postgisVersion(PGconn *connection)
 
   PQclear(result);
 
-  QStringList postgisParts = QStringList::split(" ", postgisVersionInfo);
+  QStringList postgisParts = postgisVersionInfo.split(" ", QString::SkipEmptyParts);
 
   // Get major and minor version
-  QStringList postgisVersionParts = QStringList::split(".", postgisParts[0]);
+  QStringList postgisVersionParts = postgisParts[0].split(".", QString::SkipEmptyParts);
 
   postgisVersionMajor = postgisVersionParts[0].toInt();
   postgisVersionMinor = postgisVersionParts[1].toInt();
@@ -1700,17 +1696,17 @@ QString QgsPostgresProvider::postgisVersion(PGconn *connection)
   projAvailable = false;
 
   // parse out the capabilities and store them
-  QStringList geos = postgisParts.grep("GEOS");
+  QStringList geos = postgisParts.filter("GEOS");
   if(geos.size() == 1) {
-    geosAvailable = (geos[0].find("=1") > -1);  
+    geosAvailable = (geos[0].indexOf("=1") > -1);  
   }
-  QStringList gist = postgisParts.grep("STATS");
+  QStringList gist = postgisParts.filter("STATS");
   if(gist.size() == 1) {
-    gistAvailable = (geos[0].find("=1") > -1);
+    gistAvailable = (geos[0].indexOf("=1") > -1);
   }
-  QStringList proj = postgisParts.grep("PROJ");
+  QStringList proj = postgisParts.filter("PROJ");
   if(proj.size() == 1) {
-    projAvailable = (proj[0].find("=1") > -1);
+    projAvailable = (proj[0].indexOf("=1") > -1);
   }
 
   useWkbHex = postgisVersionMajor < 1;
@@ -2332,7 +2328,7 @@ void QgsPostgresProvider::calculateExtents()
 /**
  * Event sink for events from threads
  */
-void QgsPostgresProvider::customEvent( QCustomEvent * e )
+void QgsPostgresProvider::customEvent( QEvent * e )
 {
   QgsDebugMsg("received a custom event " + QString::number(e->type()));
 
@@ -2346,7 +2342,7 @@ void QgsPostgresProvider::customEvent( QCustomEvent * e )
       // extent with it.
 
       {
-        QgsRect* r = (QgsRect*) e->data();
+        QgsRect* r = ((QgsProviderExtentCalcEvent*) e)->layerExtent();
         setExtent( *r );
       }
 

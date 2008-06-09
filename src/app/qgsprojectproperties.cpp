@@ -353,7 +353,7 @@ bool QgsProjectProperties::isProjected()
 
 void QgsProjectProperties::showProjectionsTab()
 {
-  tabWidget->setCurrentPage(1);
+  tabWidget->setCurrentIndex(1);
 }
 
 void QgsProjectProperties::on_pbnSelectionColour_clicked()

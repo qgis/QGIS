@@ -96,18 +96,18 @@ void QgsComposerMap::init ()
     mCacheUpdated = false;
 
     // Calculate
-    mCalculateComboBox->insertItem( tr("Extent (calculate scale)"), Scale );
-    mCalculateComboBox->insertItem( tr("Scale (calculate extent)"), Extent );
+    mCalculateComboBox->addItem( tr("Extent (calculate scale)"), Scale );
+    mCalculateComboBox->addItem( tr("Scale (calculate extent)"), Extent );
     mCalculate = Scale;
 
     setPlotStyle ( QgsComposition::Preview );
     
     // Preview style
     mPreviewMode = Cache;
-    mPreviewModeComboBox->insertItem ( tr("Cache"), Cache );
-    mPreviewModeComboBox->insertItem ( tr("Render"), Render );
-    mPreviewModeComboBox->insertItem ( tr("Rectangle"), Rectangle );
-    mPreviewModeComboBox->setCurrentItem ( Cache );
+    mPreviewModeComboBox->addItem ( tr("Cache"), Cache );
+    mPreviewModeComboBox->addItem ( tr("Render"), Render );
+    mPreviewModeComboBox->addItem ( tr("Rectangle"), Rectangle );
+    mPreviewModeComboBox->setCurrentIndex ( Cache );
 
     mWidthScale = 1.0 / mComposition->scale();
     mSymbolScale = 0.5;
@@ -327,7 +327,7 @@ void QgsComposerMap::on_mHeightLineEdit_editingFinished ( void ) { sizeChanged()
 
 void QgsComposerMap::on_mCalculateComboBox_activated( int )
 {
-    mCalculate = mCalculateComboBox->currentItem();
+    mCalculate = mCalculateComboBox->currentIndex();
     
     if ( mCalculate == Scale )
     {
@@ -384,7 +384,7 @@ void QgsComposerMap::on_mScaleLineEdit_editingFinished()
 #ifdef QGISDEBUG
     std::cout << "QgsComposerMap::on_mScaleLineEdit_editingFinished" << std::endl;
 #endif
-    mCalculate = mCalculateComboBox->currentItem();
+    mCalculate = mCalculateComboBox->currentIndex();
 
     mUserScale = mScaleLineEdit->text().toDouble();
 
@@ -508,7 +508,7 @@ void QgsComposerMap::setOptions ( void )
     
   mNameLabel->setText ( mName );
     
-  mCalculateComboBox->setCurrentItem( mCalculate );
+  mCalculateComboBox->setCurrentIndex( mCalculate );
     
   mWidthLineEdit->setText ( QString("%1").arg( mComposition->toMM((int)QGraphicsRectItem::rect().width()), 0,'g') );
   mHeightLineEdit->setText ( QString("%1").arg( mComposition->toMM((int)QGraphicsRectItem::rect().height()),0,'g') );
@@ -536,7 +536,7 @@ void QgsComposerMap::setOptions ( void )
 
   mFrameCheckBox->setChecked ( mFrame );
     
-  mPreviewModeComboBox->setCurrentItem( mPreviewMode );
+  mPreviewModeComboBox->setCurrentIndex( mPreviewMode );
 }
 
 void QgsComposerMap::on_mSetCurrentExtentButton_clicked ( void )

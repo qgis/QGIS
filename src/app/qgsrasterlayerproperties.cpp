@@ -835,12 +835,12 @@ void QgsRasterLayerProperties::sync()
   //update the legend pixmap on this dialog
   pixmapLegend->setPixmap(mRasterLayer->getLegendQPixmap());
   pixmapLegend->setScaledContents(true);
-  pixmapLegend->repaint(false);
+  pixmapLegend->repaint();
 
   //set the palette pixmap
   pixmapPalette->setPixmap(mRasterLayer->getPaletteAsPixmap());
   pixmapPalette->setScaledContents(true);
-  pixmapPalette->repaint(false);
+  pixmapPalette->repaint();
 
 #ifdef QGISDEBUG
       QgsDebugMsg("QgsRasterLayerProperties::sync populate metadata tab");
@@ -1467,7 +1467,7 @@ void QgsRasterLayerProperties::apply()
   //update the legend pixmap
   pixmapLegend->setPixmap(mRasterLayer->getLegendQPixmap());
   pixmapLegend->setScaledContents(true);
-  pixmapLegend->repaint(false);
+  pixmapLegend->repaint();
 
   //get the thumbnail for the layer
   QPixmap myQPixmap = QPixmap(pixmapThumbnail->width(),pixmapThumbnail->height());
@@ -1626,7 +1626,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   //update the legend pixmap
   pixmapLegend->setPixmap(mRasterLayer->getLegendQPixmap());
   pixmapLegend->setScaledContents(true);
-  pixmapLegend->repaint(false);
+  pixmapLegend->repaint();
   //populate the metadata tab's text browser widget with gdal metadata info
   QString myStyle = QgsApplication::reportStyleSheet();
   txtbMetadata->setHtml(mRasterLayer->getMetadata());
@@ -1893,7 +1893,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   //
   const int BINCOUNT = spinHistBinCount->value();
   enum GRAPH_TYPE { BAR_CHART, LINE_CHART } myGraphType;
-  if (radHistTypeBar->isOn()) myGraphType=BAR_CHART; else myGraphType=LINE_CHART;
+  if (radHistTypeBar->isChecked()) myGraphType=BAR_CHART; else myGraphType=LINE_CHART;
   bool myIgnoreOutOfRangeFlag = chkHistIgnoreOutOfRange->isChecked();
   bool myThoroughBandScanFlag = chkHistAllowApproximation->isChecked();
 

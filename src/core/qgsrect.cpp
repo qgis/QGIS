@@ -228,9 +228,9 @@ QString QgsRect::asPolygon() const
 //     xmin, ymin, xmin, ymax, xmax, ymax, xmax, ymin, xmin, ymin);
    QString rep;
 
-   QTextOStream foo( &rep );
+   QTextStream foo( &rep );
 
-   foo.precision(8);
+   foo.setRealNumberPrecision(8);
    foo.setRealNumberNotation(QTextStream::FixedNotation);
    // NOTE: a polygon isn't a polygon unless its closed. In the case of 
    //       a rectangle, that means 5 points (last == first)

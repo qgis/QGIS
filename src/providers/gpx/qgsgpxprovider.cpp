@@ -29,6 +29,7 @@
 // fails. [gsherman]
 #include <QApplication>
 #include <QFile>
+#include <QTextCodec>
 #include <QTextStream>
 #include <QObject>
 
@@ -64,7 +65,7 @@ QgsGPXProvider::QgsGPXProvider(QString uri) :
   mEncoding = QTextCodec::codecForName("utf8");
   
   // get the filename and the type parameter from the URI
-  int fileNameEnd = uri.find('?');
+  int fileNameEnd = uri.indexOf('?');
   if (fileNameEnd == -1 || uri.mid(fileNameEnd + 1, 5) != "type=") {
     QgsLogger::warning(tr("Bad URI - you need to specify the feature type."));
     return;

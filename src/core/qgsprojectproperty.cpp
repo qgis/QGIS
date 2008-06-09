@@ -34,12 +34,12 @@ void QgsPropertyValue::dump( size_t tabs ) const
 
         for (QStringList::const_iterator i = sl.begin(); i != sl.end(); ++i)
         {
-            qDebug("%s[%s] ", tabString.toLocal8Bit().data(), (const char *) (*i).toLocal8Bit().data());
+            qDebug("%s[%s] ", tabString.toLocal8Bit().constData(), (*i).toLocal8Bit().constData());
         } 
     }
     else
     {
-        qDebug("%s%s", tabString.toLocal8Bit().data(), (const char *) value_.toString().toLocal8Bit().data());
+        qDebug("%s%s", tabString.toLocal8Bit().constData(), value_.toString().toLocal8Bit().constData());
     }
 } // QgsPropertyValue::dump()
 
@@ -56,7 +56,7 @@ bool QgsPropertyValue::readXML(QDomNode & keyNode)
     if (QString::null == typeString)
     {
         qDebug("%s:%d null ``type'' attribute for %s", __FILE__, __LINE__,
-               (const char *) keyNode.nodeName().utf8());
+               keyNode.nodeName().toUtf8().constData());
 
         return false;
     }
@@ -66,7 +66,7 @@ bool QgsPropertyValue::readXML(QDomNode & keyNode)
     value_.clear();
 
     // get the type associated with the value first
-    QVariant::Type type = QVariant::nameToType(typeString.toLocal8Bit().data());
+    QVariant::Type type = QVariant::nameToType(typeString.toLocal8Bit().constData());
 
     // This huge switch is left-over from an earlier incarnation of
     // QgsProject where there was a fine level of granularity for value
@@ -79,7 +79,7 @@ bool QgsPropertyValue::readXML(QDomNode & keyNode)
     {
         case QVariant::Invalid:
             qDebug("%s:%d invalid value type %s .. ", __FILE__, __LINE__,
-                   (const char *) typeString.utf8());
+                   typeString.toUtf8().constData());
 
             return false;
 
@@ -120,7 +120,7 @@ bool QgsPropertyValue::readXML(QDomNode & keyNode)
                 {
                     qDebug
                         ("qgsproject.cpp:%d non <value> element ``%s'' in string list",
-                         __LINE__, (const char *) values.item(i).nodeName().utf8());
+                         __LINE__, values.item(i).nodeName().toUtf8().constData());
                 }
 
                 ++i;
@@ -179,14 +179,6 @@ bool QgsPropertyValue::readXML(QDomNode & keyNode)
 
             break;
 
-        case QVariant::ColorGroup:
-            qDebug("qgsproject.cpp:%d add support for QVariant::ColorGroup",
-                   __LINE__);
-
-            return false;
-
-            break;
-
         case QVariant::Point:
             qDebug("qgsproject.cpp:%d add support for QVariant::Point", __LINE__);
 
@@ -221,14 +213,13 @@ bool QgsPropertyValue::readXML(QDomNode & keyNode)
 
             break;
 
-        // in Qt4 this is equivalent to case QVariant::ByteArray
-        case QVariant::CString:
-            value_ = QVariant(subkeyElement.text()).toCString();
+        case QVariant::ByteArray:
+            value_ = QVariant(subkeyElement.text()).toByteArray();
 
             break;
 
-        case QVariant::PointArray:
-            qDebug("qgsproject.cpp:%d add support for QVariant::PointArray",
+        case QVariant::Polygon:
+            qDebug("qgsproject.cpp:%d add support for QVariant::Polygon",
                    __LINE__);
 
             return false;
@@ -290,7 +281,7 @@ bool QgsPropertyValue::readXML(QDomNode & keyNode)
             */
         default :
             qDebug( "%s:%d unsupported value type %s .. not propertly translated to QVariant in qgsproject.cpp",
-                    __FILE__, __LINE__, (const char*)typeString.utf8() );
+                    __FILE__, __LINE__, typeString.toUtf8().constData() );
     }
 
     return true;
@@ -375,7 +366,7 @@ void QgsPropertyKey::dump( size_t tabs ) const
 
     tabString.fill( '\t', tabs );
 
-    qDebug( "%sname: %s", tabString.toLocal8Bit().data(), name().toLocal8Bit().data() );
+    qDebug( "%sname: %s", tabString.toLocal8Bit().constData(), name().toLocal8Bit().constData() );
          
     tabs++;
     tabString.fill( '\t', tabs );
@@ -393,40 +384,40 @@ void QgsPropertyKey::dump( size_t tabs ) const
                 if ( QVariant::StringList == propertyValue->value().type() )
                 {
                     qDebug("%skey: <%s>  value:", 
-                           tabString.toLocal8Bit().data(), 
-                           i.key().toLocal8Bit().data() );
+                           tabString.toLocal8Bit().constData(), 
+                           i.key().toLocal8Bit().constData() );
 
                     propertyValue->dump( tabs + 1 );
                 }
                 else
                 {
                     qDebug("%skey: <%s>  value: %s", 
-                           tabString.toLocal8Bit().data(), 
-                           i.key().toLocal8Bit().data(), 
-                           propertyValue->value().toString().toLocal8Bit().data() );
+                           tabString.toLocal8Bit().constData(), 
+                           i.key().toLocal8Bit().constData(), 
+                           propertyValue->value().toString().toLocal8Bit().constData() );
                 }
             }
             else
             {
                 qDebug("%skey: <%s>  subkey: <%s>", 
-                       tabString.toLocal8Bit().data(), 
-                       i.key().toLocal8Bit().data(),
+                       tabString.toLocal8Bit().constData(), 
+                       i.key().toLocal8Bit().constData(),
                        dynamic_cast<QgsPropertyKey*>(i.value())->name().toLocal8Bit().data() );
 
                 i.value()->dump( tabs + 1 );
             }
 
-//              qDebug("<%s>", (const char *) name().utf8());
+//              qDebug("<%s>", name().toUtf8().constData());
 //              if ( i.value()->isValue() )
 //              {
-//                  qDebug("   <%s>", (const char*) i.key().utf8() );
+//                  qDebug("   <%s>", i.key().toUtf8().constData() );
 //              }
 //              i.value()->dump();
 //              if ( i.value()->isValue() )
 //              {
-//                  qDebug("   </%s>", (const char*) i.key().utf8() );
+//                  qDebug("   </%s>", i.key().toUtf8().constData() );
 //              }
-//              qDebug("</%s>", (const char *) name().utf8());
+//              qDebug("</%s>", name().toUtf8().constData());
         }
     }
 
@@ -456,7 +447,7 @@ bool QgsPropertyKey::readXML(QDomNode & keyNode)
             if (!mProperties[subkeys.item(i).nodeName()]->readXML(subkey))
             {
                 qDebug("%s:%d unable to parse key value %s", __FILE__, __LINE__,
-                       (const char *) subkeys.item(i).nodeName().utf8());
+                       subkeys.item(i).nodeName().toUtf8().constData());
             }
         } else             // otherwise it's a subkey, so just
             // recurse on down the remaining keys
@@ -468,7 +459,7 @@ bool QgsPropertyKey::readXML(QDomNode & keyNode)
             if (!mProperties[subkeys.item(i).nodeName()]->readXML(subkey))
             {
                 qDebug("%s:%d unable to parse subkey %s", __FILE__, __LINE__,
-                       (const char *) subkeys.item(i).nodeName().utf8());
+                       subkeys.item(i).nodeName().toUtf8().constData());
             }
         }
 

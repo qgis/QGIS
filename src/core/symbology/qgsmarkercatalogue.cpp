@@ -64,7 +64,7 @@ QgsMarkerCatalogue::QgsMarkerCatalogue()
 
     QDir dir2 ( svgPath + *it );
 
-    QStringList dl2 = dir2.entryList("*.svg",QDir::Files);
+    QStringList dl2 = dir2.entryList(QStringList("*.svg"),QDir::Files);
 
     for ( QStringList::iterator it2 = dl2.begin(); it2 != dl2.end(); ++it2 ) {
       // TODO test if it is correct SVG

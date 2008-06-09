@@ -28,7 +28,7 @@ QgsAddAttrDialog::QgsAddAttrDialog(QgsVectorDataProvider* provider, QWidget *par
 
     for(QSet<QString>::const_iterator it = typelist.constBegin(); it != typelist.constEnd(); ++it)
       {
-	mTypeBox->insertItem(*it);
+	mTypeBox->addItem(*it);
       }
 }
 
@@ -39,7 +39,7 @@ QgsAddAttrDialog::QgsAddAttrDialog(const std::list<QString>& typelist, QWidget *
 
     for(std::list<QString>::const_iterator iter=typelist.begin();iter!=typelist.end();++iter)
     {
-	mTypeBox->insertItem(*iter);
+	mTypeBox->addItem(*iter);
     }
 }
 

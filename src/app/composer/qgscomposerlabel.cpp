@@ -207,7 +207,7 @@ QRectF QgsComposerLabel::boundingRect ( void ) const
 {
     // Recalculate sizes according to current font size
     
-    float size =  25.4 * mComposition->scale() * mFont.pointSizeFloat() / 72;
+    float size =  25.4 * mComposition->scale() * mFont.pointSizeF() / 72;
 
     QFont font ( mFont );
     font.setPointSizeF ( size );

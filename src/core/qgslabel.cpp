@@ -140,7 +140,7 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRect& viewExtent,
     	sizeType = mLabelAttributes->sizeType();
     else
     {
-    	value = value.lower();
+    	value = value.toLower();
 	if( value.compare("mapunits") == 0 )
 		sizeType = QgsLabelAttributes::MapUnits;
 	else
@@ -153,7 +153,7 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRect& viewExtent,
 	size *= sizeScale;
     }
     if(size>0.0)
-    	font.setPointSizeFloat ( size );
+    	font.setPointSizeF ( size );
 
     value = fieldValue ( Color, feature );
     if ( value.isEmpty() )
@@ -226,7 +226,7 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRect& viewExtent,
     }
     else
     {
-        value = value.lower();
+        value = value.toLower();
 
 	alignment=0;
 
@@ -896,18 +896,18 @@ void QgsLabel::writeXML(std::ostream& xml)
     {
       if (mLabelFieldIdx[Text] != -1)
       {
-          xml << "\t\t\t<label text=\"" << (const char*)(mLabelAttributes->text().utf8())
+          xml << "\t\t\t<label text=\"" << mLabelAttributes->text().toUtf8().constData()
               << "\" field=\"" << mLabelFieldIdx[Text] << "\" />\n";
       }
       else
       {
-          xml << "\t\t\t<label text=\"" << (const char*)(mLabelAttributes->text().utf8())
+          xml << "\t\t\t<label text=\"" << mLabelAttributes->text().toUtf8().constData()
               << "\" field=\"\" />\n";
       }
     }
     else
     {
-        xml << "\t\t\t<label text=\"" << (const char*)(mLabelAttributes->text().utf8())
+        xml << "\t\t\t<label text=\"" << mLabelAttributes->text().toUtf8().constData()
             << "\" field=\"\" />\n";
     }
 
@@ -916,12 +916,12 @@ void QgsLabel::writeXML(std::ostream& xml)
     {
       if (mLabelFieldIdx[Family] != -1)
       {
-          xml << "\t\t\t<family name=\"" << mLabelAttributes->family().utf8().data()
+          xml << "\t\t\t<family name=\"" << mLabelAttributes->family().toUtf8().constData()
               << "\" field=\"" << mLabelFieldIdx[Family] << "\" />\n";
       }
       else
       {
-          xml << "\t\t\t<family name=\"" << mLabelAttributes->family().utf8().data()
+          xml << "\t\t\t<family name=\"" << mLabelAttributes->family().toUtf8().constData()
               << "\" field=\"\" />\n";
       }
     }
@@ -944,14 +944,14 @@ void QgsLabel::writeXML(std::ostream& xml)
        	else
 	{
           xml << "\t\t\t<size value=\"" << mLabelAttributes->size()
-              << "\" units=\"" << (const char *)QgsLabelAttributes::unitsName(mLabelAttributes->sizeType()).utf8()
+              << "\" units=\"" << QgsLabelAttributes::unitsName(mLabelAttributes->sizeType()).toUtf8().constData()
               << "\" field=\"" << mLabelFieldIdx[Size] << "\" />\n";
 	}
       }
       else
       {
           xml << "\t\t\t<size value=\"" << mLabelAttributes->size()
-              << "\" units=\"" << (const char *)QgsLabelAttributes::unitsName(mLabelAttributes->sizeType()).utf8()
+              << "\" units=\"" << QgsLabelAttributes::unitsName(mLabelAttributes->sizeType()).toUtf8().constData()
               << "\" field=\"\" />\n";
       }
     }
@@ -1065,7 +1065,7 @@ void QgsLabel::writeXML(std::ostream& xml)
     // offset
     if ( mLabelAttributes->offsetIsSet() )
     {
-            xml << "\t\t\t<offset  units=\"" << QgsLabelAttributes::unitsName(mLabelAttributes->offsetType()).utf8().data()
+            xml << "\t\t\t<offset  units=\"" << QgsLabelAttributes::unitsName(mLabelAttributes->offsetType()).toUtf8().constData()
             << "\" x=\"" << mLabelAttributes->xOffset() << "\" xfield=\"" << mLabelFieldIdx[XOffset]
             << "\" y=\"" << mLabelAttributes->yOffset() << "\" yfield=\"" << mLabelFieldIdx[YOffset]
             << "\" />\n";
@@ -1092,7 +1092,7 @@ void QgsLabel::writeXML(std::ostream& xml)
     // alignment
     if ( mLabelAttributes->alignmentIsSet() )
     {
-      xml << "\t\t\t<alignment value=\"" << QgsLabelAttributes::alignmentName(mLabelAttributes->alignment()).utf8().data()
+      xml << "\t\t\t<alignment value=\"" << QgsLabelAttributes::alignmentName(mLabelAttributes->alignment()).toUtf8().constData()
             << "\" field=\"" << mLabelFieldIdx[Alignment] << "\" />\n";
     }
 
@@ -1125,13 +1125,13 @@ void QgsLabel::writeXML(std::ostream& xml)
       if (mLabelFieldIdx[BufferSize] != -1)
       {
           xml << "\t\t\t<buffersize value=\"" << mLabelAttributes->bufferSize()
-              << "\" units=\"" << (const char *)QgsLabelAttributes::unitsName(mLabelAttributes->bufferSizeType()).utf8()
+              << "\" units=\"" << QgsLabelAttributes::unitsName(mLabelAttributes->bufferSizeType()).toUtf8().constData()
               << "\" field=\"" << mLabelFieldIdx[BufferSize] << "\" />\n";
       }
       else
       {
           xml << "\t\t\t<buffersize value=\"" << mLabelAttributes->bufferSize()
-              << "\" units=\"" << (const char *)QgsLabelAttributes::unitsName(mLabelAttributes->bufferSizeType()).utf8()
+              << "\" units=\"" << QgsLabelAttributes::unitsName(mLabelAttributes->bufferSizeType()).toUtf8().constData()
               << "\" field=\"\" />\n";
       }
     }

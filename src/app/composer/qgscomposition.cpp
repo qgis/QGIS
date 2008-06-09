@@ -31,8 +31,10 @@
 #include "qgsproject.h"
 
 #include <QGraphicsRectItem>
+#include <QKeyEvent>
 #include <QMatrix>
 #include <QMessageBox>
+#include <QMouseEvent>
 
 #include <iostream>
 #include <math.h>
@@ -101,7 +103,7 @@ QgsComposition::QgsComposition( QgsComposer *c, int id )
 
   mPaper = mDefaultPaper = mCustomPaper = 0;
   for( int i = 0; i < (int)mPapers.size(); i++ ) {
-    mPaperSizeComboBox->insertItem( mPapers[i].mName );
+    mPaperSizeComboBox->addItem( mPapers[i].mName );
     // Map - A4 land for now, if future read from template
     if ( mPapers[i].mWidth == 210 && mPapers[i].mHeight == 297 ){
       mDefaultPaper = i;
@@ -110,11 +112,11 @@ QgsComposition::QgsComposition( QgsComposer *c, int id )
   }
 
   // Orientation
-  mPaperOrientationComboBox->insertItem( tr("Portrait"), Portrait );
-  mPaperOrientationComboBox->insertItem( tr("Landscape"), Landscape );
+  mPaperOrientationComboBox->addItem( tr("Portrait"), Portrait );
+  mPaperOrientationComboBox->addItem( tr("Landscape"), Landscape );
   mPaperOrientation = Landscape;
 
-  mPaperUnitsComboBox->insertItem( "mm" );
+  mPaperUnitsComboBox->addItem( "mm" );
 
   // Create canvas 
   mPaperWidth = 1;
@@ -130,8 +132,8 @@ QgsComposition::QgsComposition( QgsComposer *c, int id )
 
 void QgsComposition::createDefault(void) 
 {
-  mPaperSizeComboBox->setCurrentItem(mDefaultPaper);
-  mPaperOrientationComboBox->setCurrentItem(Landscape);
+  mPaperSizeComboBox->setCurrentIndex(mDefaultPaper);
+  mPaperOrientationComboBox->setCurrentIndex(Landscape);
 
   mUserPaperWidth = mPapers[mDefaultPaper].mWidth;
   mUserPaperHeight = mPapers[mDefaultPaper].mHeight;
@@ -598,8 +600,8 @@ void QgsComposition::paperSizeChanged ( void )
   std::cout << "QgsComposition::paperSizeChanged" << std::endl;
 #endif
 
-  mPaper = mPaperSizeComboBox->currentItem();
-  mPaperOrientation = mPaperOrientationComboBox->currentItem();
+  mPaper = mPaperSizeComboBox->currentIndex();
+  mPaperOrientation = mPaperOrientationComboBox->currentIndex();
 #ifdef QGISDEBUG
   std::cout << "custom = " << mPapers[mPaper].mCustom << std::endl;
   std::cout << "orientation = " << mPaperOrientation << std::endl;
@@ -663,8 +665,8 @@ void QgsComposition::resolutionChanged ( void )
 
 void QgsComposition::setOptions ( void )
 {
-  mPaperSizeComboBox->setCurrentItem(mPaper);
-  mPaperOrientationComboBox->setCurrentItem(mPaperOrientation);
+  mPaperSizeComboBox->setCurrentIndex(mPaper);
+  mPaperOrientationComboBox->setCurrentIndex(mPaperOrientation);
   mPaperWidthLineEdit->setText ( QString("%1").arg(mUserPaperWidth,0,'g') );
   mPaperHeightLineEdit->setText ( QString("%1").arg(mUserPaperHeight,0,'g') );
   mResolutionLineEdit->setText ( QString("%1").arg(mResolution) );
@@ -936,7 +938,7 @@ bool QgsComposition::readSettings ( void )
     std::cout << "key: " << (*it).toLocal8Bit().data() << std::endl;
 #endif
 
-    QStringList l = QStringList::split( '_', (*it) );
+    QStringList l = it->split( '_', QString::SkipEmptyParts );
     if ( l.size() == 2 ) {
       QString name = l.first();
       QString ids = l.last();
@@ -956,7 +958,7 @@ bool QgsComposition::readSettings ( void )
     std::cout << "key: " << (*it).toLocal8Bit().data() << std::endl;
 #endif
 
-    QStringList l = QStringList::split( '_', (*it) );
+    QStringList l = it->split( '_', QString::SkipEmptyParts );
     if ( l.size() == 2 ) {
       QString name = l.first();
       QString ids = l.last();
