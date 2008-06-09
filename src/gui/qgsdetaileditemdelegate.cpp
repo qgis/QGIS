@@ -63,7 +63,7 @@ void QgsDetailedItemDelegate::paint(QPainter * thepPainter,
 
       if (theOption.state & QStyle::State_Selected)
       {
-        QColor myColor1 = theOption.palette.highlight();
+        QColor myColor1 = theOption.palette.highlight().color();
         QColor myColor2 = myColor1;
         myColor2 = myColor2.lighter(110); //10% lighter
         QLinearGradient myGradient(QPointF(0,theOption.rect.y()),
@@ -110,7 +110,7 @@ void QgsDetailedItemDelegate::paint(QPainter * thepPainter,
       //
       if (theOption.state & QStyle::State_Selected)
       {
-        QColor myColor1 = theOption.palette.highlight();
+        QColor myColor1 = theOption.palette.highlight().color();
         QColor myColor2 = myColor1;
         myColor2 = myColor2.lighter(110); //10% lighter
         int myHeight = myTitleMetrics.height() + myVerticalSpacer;

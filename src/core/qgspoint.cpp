@@ -31,8 +31,8 @@ QgsPoint::QgsPoint(const QgsPoint& p)
 QString QgsPoint::stringRep() const
 {
   QString rep;
-  QTextOStream ot(&rep);
-  ot.precision(12);
+  QTextStream ot(&rep);
+  ot.setRealNumberPrecision(12);
   ot << m_x << ", " << m_y;
   return rep;
 }

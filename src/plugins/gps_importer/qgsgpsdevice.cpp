@@ -21,17 +21,17 @@ QgsGPSDevice::QgsGPSDevice(const QString& wptDlCmd, const QString& wptUlCmd,
 			   const QString& rteDlCmd, const QString& rteUlCmd,
 			   const QString& trkDlCmd, const QString& trkUlCmd) {
   if (!wptDlCmd.isEmpty())
-    mWptDlCmd = QStringList::split(QRegExp("\\s"), wptDlCmd); 
+    mWptDlCmd = wptDlCmd.split(QRegExp("\\s"), QString::SkipEmptyParts); 
   if (!wptUlCmd.isEmpty())
-    mWptUlCmd = QStringList::split(QRegExp("\\s"), wptUlCmd); 
+    mWptUlCmd = wptUlCmd.split(QRegExp("\\s"), QString::SkipEmptyParts); 
   if (!rteDlCmd.isEmpty())
-    mRteDlCmd = QStringList::split(QRegExp("\\s"), rteDlCmd); 
+    mRteDlCmd = rteDlCmd.split(QRegExp("\\s"), QString::SkipEmptyParts); 
   if (!rteUlCmd.isEmpty())
-    mRteUlCmd = QStringList::split(QRegExp("\\s"), rteUlCmd); 
+    mRteUlCmd = rteUlCmd.split(QRegExp("\\s"), QString::SkipEmptyParts); 
   if (!trkDlCmd.isEmpty())
-    mTrkDlCmd = QStringList::split(QRegExp("\\s"), trkDlCmd); 
+    mTrkDlCmd = trkDlCmd.split(QRegExp("\\s"), QString::SkipEmptyParts); 
   if (!trkUlCmd.isEmpty())
-    mTrkUlCmd = QStringList::split(QRegExp("\\s"), trkUlCmd); 
+    mTrkUlCmd = trkUlCmd.split(QRegExp("\\s"), QString::SkipEmptyParts); 
 }
 
 

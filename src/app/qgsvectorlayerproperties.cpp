@@ -146,12 +146,12 @@ void QgsVectorLayerProperties::alterLayerDialog(const QString & dialogString)
 
 void QgsVectorLayerProperties::setLegendType(QString type)
 {
-  legendtypecombobox->setCurrentText(type);
+  legendtypecombobox->setItemText(legendtypecombobox->currentIndex(), type);
 }
 
 void QgsVectorLayerProperties::setDisplayField(QString name)
 {
-  displayFieldComboBox->setCurrentText(name);
+  displayFieldComboBox->setItemText(displayFieldComboBox->currentIndex(), name);
 }
 
 //! @note in raster props, this method is called sync()
@@ -190,9 +190,9 @@ void QgsVectorLayerProperties::reset( void )
   const QgsFieldMap& myFields = dp->fields();
   for (QgsFieldMap::const_iterator it = myFields.begin(); it != myFields.end(); ++it)
   {
-    displayFieldComboBox->insertItem( it->name() );
+    displayFieldComboBox->addItem( it->name() );
   }   
-  displayFieldComboBox->setCurrentText( layer->displayField() );
+  displayFieldComboBox->setItemText( displayFieldComboBox->currentIndex(), layer->displayField() );
 
   // set up the scale based layer visibility stuff....
   chkUseScaleDependentRendering->setChecked(layer->scaleBasedVisibility());
@@ -202,12 +202,12 @@ void QgsVectorLayerProperties::reset( void )
   // symbology initialization
   if(legendtypecombobox->count()==0)
   {
-    legendtypecombobox->insertItem(tr("Single Symbol"));
+    legendtypecombobox->addItem(tr("Single Symbol"));
     if(myFields.size()>0)
     {
-      legendtypecombobox->insertItem(tr("Graduated Symbol"));
-      legendtypecombobox->insertItem(tr("Continuous Color"));
-      legendtypecombobox->insertItem(tr("Unique Value"));
+      legendtypecombobox->addItem(tr("Graduated Symbol"));
+      legendtypecombobox->addItem(tr("Continuous Color"));
+      legendtypecombobox->addItem(tr("Unique Value"));
     }
   }
 

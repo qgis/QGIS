@@ -41,28 +41,28 @@ QgsNewConnection::QgsNewConnection(QWidget *parent, const QString& connName, Qt:
     QSettings settings;
 
     QString key = "/PostgreSQL/connections/" + connName;
-    txtHost->setText(settings.readEntry(key + "/host"));
-    txtDatabase->setText(settings.readEntry(key + "/database"));
-    QString port = settings.readEntry(key + "/port");
+    txtHost->setText(settings.value(key + "/host").toString());
+    txtDatabase->setText(settings.value(key + "/database").toString());
+    QString port = settings.value(key + "/port").toString();
     if(port.length() ==0){
       port = "5432";
     }
     txtPort->setText(port);
-    txtUsername->setText(settings.readEntry(key + "/username"));
+    txtUsername->setText(settings.value(key + "/username").toString());
     Qt::CheckState s = Qt::Checked;
-    if ( ! settings.readBoolEntry(key + "/publicOnly", false))
+    if ( ! settings.value(key + "/publicOnly", false).toBool())
       s = Qt::Unchecked;
     cb_publicSchemaOnly->setCheckState(s);
     s = Qt::Checked;
-    if ( ! settings.readBoolEntry(key + "/geometrycolumnsOnly", false))
+    if ( ! settings.value(key + "/geometrycolumnsOnly", false).toBool())
       s = Qt::Unchecked;
     cb_geometryColumnsOnly->setCheckState(s);
     // Ensure that cb_plublicSchemaOnly is set correctly
     on_cb_geometryColumnsOnly_clicked();
 
-    if (settings.readEntry(key + "/save") == "true")
+    if (settings.value(key + "/save").toString() == "true")
     {
-      txtPassword->setText(settings.readEntry(key + "/password"));
+      txtPassword->setText(settings.value(key + "/password").toString());
       chkStorePassword->setChecked(true);
     }
     txtName->setText(connName);
@@ -130,16 +130,16 @@ void QgsNewConnection::saveConnection()
 {
   QSettings settings; 
   QString baseKey = "/PostgreSQL/connections/";
-  settings.writeEntry(baseKey + "selected", txtName->text());
+  settings.setValue(baseKey + "selected", txtName->text());
   baseKey += txtName->text();
-  settings.writeEntry(baseKey + "/host", txtHost->text());
-  settings.writeEntry(baseKey + "/database", txtDatabase->text());
-  settings.writeEntry(baseKey + "/port", txtPort->text());
-  settings.writeEntry(baseKey + "/username", txtUsername->text());
-  settings.writeEntry(baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : "");
-  settings.writeEntry(baseKey + "/publicOnly", cb_publicSchemaOnly->isChecked());
-  settings.writeEntry(baseKey + "/geometryColumnsOnly", cb_geometryColumnsOnly->isChecked());
-  settings.writeEntry(baseKey + "/save", chkStorePassword->isChecked() ? "true" : "false");
+  settings.setValue(baseKey + "/host", txtHost->text());
+  settings.setValue(baseKey + "/database", txtDatabase->text());
+  settings.setValue(baseKey + "/port", txtPort->text());
+  settings.setValue(baseKey + "/username", txtUsername->text());
+  settings.setValue(baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : "");
+  settings.setValue(baseKey + "/publicOnly", cb_publicSchemaOnly->isChecked());
+  settings.setValue(baseKey + "/geometryColumnsOnly", cb_geometryColumnsOnly->isChecked());
+  settings.setValue(baseKey + "/save", chkStorePassword->isChecked() ? "true" : "false");
   accept();
 }
 
@@ -154,11 +154,11 @@ void QgsNewConnection::saveConnection()
   QSettings settings;
   QString baseKey = "/PostgreSQL/connections/";
   baseKey += txtName->text();
-  settings.writeEntry(baseKey + "/host", txtHost->text());
-  settings.writeEntry(baseKey + "/database", txtDatabase->text());
+  settings.setValue(baseKey + "/host", txtHost->text());
+  settings.setValue(baseKey + "/database", txtDatabase->text());
 
-  settings.writeEntry(baseKey + "/username", txtUsername->text());
-  settings.writeEntry(baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : "");
+  settings.setValue(baseKey + "/username", txtUsername->text());
+  settings.setValue(baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : "");
   accept();
 }
 #endif

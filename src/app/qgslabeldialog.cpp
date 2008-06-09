@@ -74,70 +74,70 @@ void QgsLabelDialog::init ( )
   //now set all the combos that need field lists using the string list
   //
   cboLabelField->clear();
-  cboLabelField->insertStringList(myFieldStringList);
-  cboLabelField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::Text),myFieldStringList));
+  cboLabelField->addItems(myFieldStringList);
+  cboLabelField->setCurrentIndex(itemNoForField(mLabel->labelField(QgsLabel::Text),myFieldStringList));
 
 
   cboFontField->clear();
-  cboFontField->insertStringList(myFieldStringList); 
-  cboFontField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::Family),myFieldStringList));
+  cboFontField->addItems(myFieldStringList); 
+  cboFontField->setCurrentIndex(itemNoForField(mLabel->labelField(QgsLabel::Family),myFieldStringList));
 
   cboBoldField->clear();
-  cboBoldField->insertStringList(myFieldStringList); 
-  cboBoldField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::Bold),myFieldStringList));
+  cboBoldField->addItems(myFieldStringList); 
+  cboBoldField->setCurrentIndex(itemNoForField(mLabel->labelField(QgsLabel::Bold),myFieldStringList));
 
 
   cboItalicField->clear();
-  cboItalicField->insertStringList(myFieldStringList); 
-  cboItalicField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::Italic),myFieldStringList));
+  cboItalicField->addItems(myFieldStringList); 
+  cboItalicField->setCurrentIndex(itemNoForField(mLabel->labelField(QgsLabel::Italic),myFieldStringList));
 
   cboUnderlineField->clear();
-  cboUnderlineField->insertStringList(myFieldStringList); 
-  cboUnderlineField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::Underline),myFieldStringList));
+  cboUnderlineField->addItems(myFieldStringList); 
+  cboUnderlineField->setCurrentIndex(itemNoForField(mLabel->labelField(QgsLabel::Underline),myFieldStringList));
 
   cboFontSizeField->clear();
-  cboFontSizeField->insertStringList(myFieldStringList); 
-  cboFontSizeField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::Size),myFieldStringList));
+  cboFontSizeField->addItems(myFieldStringList); 
+  cboFontSizeField->setCurrentIndex(itemNoForField(mLabel->labelField(QgsLabel::Size),myFieldStringList));
 
   cboFontSizeTypeField->clear();
-  cboFontSizeTypeField->insertStringList(myFieldStringList); 
-  cboFontSizeTypeField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::SizeType),myFieldStringList));
+  cboFontSizeTypeField->addItems(myFieldStringList); 
+  cboFontSizeTypeField->setCurrentIndex(itemNoForField(mLabel->labelField(QgsLabel::SizeType),myFieldStringList));
 
   cboFontTransparencyField->clear();
-  cboFontTransparencyField->insertStringList(myFieldStringList); 
-  //cboFontTransparencyField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::FontTransparency),myFieldStringList));
+  cboFontTransparencyField->addItems(myFieldStringList); 
+  //cboFontTransparencyField->setCurrentIndex(itemNoForField(mLabel->labelField(QgsLabel::FontTransparency),myFieldStringList));
 
   cboBufferSizeField->clear();
-  cboBufferSizeField->insertStringList(myFieldStringList); 
-  cboBufferSizeField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::BufferSize),myFieldStringList));
+  cboBufferSizeField->addItems(myFieldStringList); 
+  cboBufferSizeField->setCurrentIndex(itemNoForField(mLabel->labelField(QgsLabel::BufferSize),myFieldStringList));
 
   cboBufferTransparencyField->clear();
-  cboBufferTransparencyField->insertStringList(myFieldStringList); 
-  //cboBufferTransparencyField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::BufferTransparency),myFieldStringList));
+  cboBufferTransparencyField->addItems(myFieldStringList); 
+  //cboBufferTransparencyField->setCurrentIndex(itemNoForField(mLabel->labelField(QgsLabel::BufferTransparency),myFieldStringList));
 
   cboXCoordinateField->clear();
-  cboXCoordinateField->insertStringList(myFieldStringList); 
-  cboXCoordinateField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::XCoordinate),myFieldStringList));
+  cboXCoordinateField->addItems(myFieldStringList); 
+  cboXCoordinateField->setCurrentIndex(itemNoForField(mLabel->labelField(QgsLabel::XCoordinate),myFieldStringList));
 
   cboYCoordinateField->clear();
-  cboYCoordinateField->insertStringList(myFieldStringList); 
-  cboYCoordinateField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::YCoordinate),myFieldStringList));
+  cboYCoordinateField->addItems(myFieldStringList); 
+  cboYCoordinateField->setCurrentIndex(itemNoForField(mLabel->labelField(QgsLabel::YCoordinate),myFieldStringList));
 
   cboXOffsetField->clear();
-  cboXOffsetField->insertStringList(myFieldStringList); 
-  cboXOffsetField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::XOffset),myFieldStringList));
+  cboXOffsetField->addItems(myFieldStringList); 
+  cboXOffsetField->setCurrentIndex(itemNoForField(mLabel->labelField(QgsLabel::XOffset),myFieldStringList));
 
   cboYOffsetField->clear();
-  cboYOffsetField->insertStringList(myFieldStringList); 
-  cboYOffsetField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::YOffset),myFieldStringList));
+  cboYOffsetField->addItems(myFieldStringList); 
+  cboYOffsetField->setCurrentIndex(itemNoForField(mLabel->labelField(QgsLabel::YOffset),myFieldStringList));
 
   cboAlignmentField->clear();
-  cboAlignmentField->insertStringList(myFieldStringList); 
-  cboAlignmentField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::Alignment),myFieldStringList));
+  cboAlignmentField->addItems(myFieldStringList); 
+  cboAlignmentField->setCurrentIndex(itemNoForField(mLabel->labelField(QgsLabel::Alignment),myFieldStringList));
 
   cboAngleField->clear();
-  cboAngleField->insertStringList(myFieldStringList); 
-  cboAngleField->setCurrentItem(itemNoForField(mLabel->labelField(QgsLabel::Angle),myFieldStringList));
+  cboAngleField->addItems(myFieldStringList); 
+  cboAngleField->setCurrentIndex(itemNoForField(mLabel->labelField(QgsLabel::Angle),myFieldStringList));
 
 
   //

@@ -319,7 +319,7 @@ QString QgsProjectionSelector::getCurrentProj4String()
       
       QgsDebugMsg("Selection sql: " + sql);
 
-      rc = sqlite3_prepare(db, sql.utf8(), sql.length(), &ppStmt, &pzTail);
+      rc = sqlite3_prepare(db, sql.toUtf8(), sql.length(), &ppStmt, &pzTail);
       // XXX Need to free memory from the error msg if one is set
       QString myProjString;
       if(rc == SQLITE_OK)
@@ -414,7 +414,7 @@ long QgsProjectionSelector::getCurrentLongAttribute(QString attributeName)
 #ifdef QGISDEBUG
       std::cout << "Finding selected attribute using : " <<  sql.toLocal8Bit().data() << std::endl;
 #endif
-      rc = sqlite3_prepare(db, sql.utf8(), sql.length(), &ppStmt, &pzTail);
+      rc = sqlite3_prepare(db, sql.toUtf8(), sql.length(), &ppStmt, &pzTail);
       // XXX Need to free memory from the error msg if one is set
       QString mySrid;
       if(rc == SQLITE_OK)
@@ -535,7 +535,7 @@ void QgsProjectionSelector::applyUserProjList(QSet<QString> * crsFilter)
 #ifdef QGISDEBUG
   std::cout << "User projection list sql" << mySql.toLocal8Bit().data() << std::endl;
 #endif
-  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
@@ -606,7 +606,7 @@ void QgsProjectionSelector::applyProjList(QSet<QString> * crsFilter)
   // get total count of records in the projection table
   QString sql = "select count(*) from tbl_srs";
 
-  rc = sqlite3_prepare(db, sql.utf8(), sql.length(), &ppStmt, &pzTail);
+  rc = sqlite3_prepare(db, sql.toUtf8(), sql.length(), &ppStmt, &pzTail);
   assert(rc == SQLITE_OK);
   sqlite3_step(ppStmt);
 
@@ -627,7 +627,7 @@ void QgsProjectionSelector::applyProjList(QSet<QString> * crsFilter)
 #ifdef QGISDEBUG
   std::cout << "SQL for projection list:\n" << sql.toLocal8Bit().data() << std::endl;
 #endif
-  rc = sqlite3_prepare(db, sql.utf8(), sql.length(), &ppStmt, &pzTail);
+  rc = sqlite3_prepare(db, sql.toUtf8(), sql.length(), &ppStmt, &pzTail);
   // XXX Need to free memory from the error msg if one is set
   if(rc == SQLITE_OK)
   {
@@ -728,7 +728,7 @@ void QgsProjectionSelector::updateProjAndEllipsoidAcronyms(int theSrsid,QString 
   QRegExp myProjRegExp( "proj=[a-zA-Z]* " );
   int myStart= 0;
   int myLength=0;
-  myStart = myProjRegExp.search(theProj4String, myStart);
+  myStart = myProjRegExp.indexIn(theProj4String, myStart);
   QString myProjectionAcronym;
   if (myStart==-1)
   {
@@ -745,7 +745,7 @@ void QgsProjectionSelector::updateProjAndEllipsoidAcronyms(int theSrsid,QString 
   QRegExp myEllipseRegExp( "ellps=[a-zA-Z0-9\\-]* " );
   myStart= 0;
   myLength=0;
-  myStart = myEllipseRegExp.search(theProj4String, myStart);
+  myStart = myEllipseRegExp.indexIn(theProj4String, myStart);
   QString myEllipsoidAcronym;
   if (myStart==-1)
   {
@@ -873,7 +873,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
     assert(myResult == 0);
   }
 
-  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
@@ -906,7 +906,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
     return;
   }
   
-  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
@@ -954,7 +954,7 @@ long QgsProjectionSelector::getLargestSRSIDMatch(QString theSql)
     }
     else
     {
-      myResult = sqlite3_prepare(myDatabase, theSql.utf8(), theSql.length(), &myPreparedStatement, &myTail);
+      myResult = sqlite3_prepare(myDatabase, theSql.toUtf8(), theSql.length(), &myPreparedStatement, &myTail);
       // XXX Need to free memory from the error msg if one is set
       if(myResult == SQLITE_OK)
       {
@@ -982,7 +982,7 @@ long QgsProjectionSelector::getLargestSRSIDMatch(QString theSql)
     return 0;
   }
 
-  myResult = sqlite3_prepare(myDatabase, theSql.utf8(), theSql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, theSql.toUtf8(), theSql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {

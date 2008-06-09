@@ -58,7 +58,7 @@ QgsAttributeActionDialog::QgsAttributeActionDialog(QgsAttributeAction* actions,
   // change? If so, they need to be passed into the init() call, or
   // some access to them retained in this class.
   for (QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); it++)
-    fieldComboBox->insertItem(it->name());
+    fieldComboBox->addItem(it->name());
 }
 
 void QgsAttributeActionDialog::init()

@@ -212,7 +212,7 @@ void QgsGPSPlugin::loadGPXFile(QString filename, bool loadWaypoints, bool loadRo
   
   // remember the directory
   QSettings settings;
-  settings.writeEntry("/Plugin-GPS/gpxdirectory", fileInfo.dirPath());
+  settings.setValue("/Plugin-GPS/gpxdirectory", fileInfo.path());
   
   // add the requested layers
   if (loadTracks)
@@ -437,8 +437,8 @@ void QgsGPSPlugin::downloadFromGPS(QString device, QString port,
   
   // everything was OK, remember the device and port for next time
   QSettings settings;
-  settings.writeEntry("/Plugin-GPS/lastdldevice", device);
-  settings.writeEntry("/Plugin-GPS/lastdlport", port);
+  settings.setValue("/Plugin-GPS/lastdldevice", device);
+  settings.setValue("/Plugin-GPS/lastdlport", port);
   
   emit closeGui();
 }
@@ -471,7 +471,7 @@ void QgsGPSPlugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
   // try to start the gpsbabel process
   QStringList babelArgs = 
     mDevices[device]->exportCommand(mBabelPath, typeArg, 
-				       source.left(source.findRev('?')), port);
+				       source.left(source.lastIndexOf('?')), port);
   if (babelArgs.isEmpty()) {
     QMessageBox::warning(NULL, tr("Not supported"),
 			 QString(tr("This device does not support uploading of "))+
@@ -509,8 +509,8 @@ void QgsGPSPlugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
   
   // everything was OK, remember this device for next time
   QSettings settings;
-  settings.writeEntry("/Plugin-GPS/lastuldevice", device);
-  settings.writeEntry("/Plugin-GPS/lastulport", port);
+  settings.setValue("/Plugin-GPS/lastuldevice", device);
+  settings.setValue("/Plugin-GPS/lastulport", port);
   
   emit closeGui();
 }

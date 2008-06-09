@@ -19,9 +19,6 @@
 
 #include "qgsvectordataprovider.h"
 
-
-#include <map>
-
 #include <QStringList>
 
 class QgsFeature;
@@ -214,7 +211,7 @@ private:
   struct wkbPoint
   {
     unsigned char byteOrder;
-    Q_UINT32 wkbType;
+    quint32 wkbType;
     double x;
     double y;
   };

@@ -83,7 +83,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(const QString& shapefileName,
   }
  
   // datasource created, now create the output layer
-  QString layerName = shapefileName.left(shapefileName.find(".shp"));
+  QString layerName = shapefileName.left(shapefileName.indexOf(".shp"));
   OGRwkbGeometryType wkbType = static_cast<OGRwkbGeometryType>(geometryType);
   mLayer = OGR_DS_CreateLayer(mDS,QFile::encodeName(layerName).data(), ogrRef, wkbType, NULL);
   

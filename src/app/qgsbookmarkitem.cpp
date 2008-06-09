@@ -57,7 +57,7 @@ QgsBookmarkItem::~QgsBookmarkItem()
   const char *pzTail;
   sqlite3_stmt *ppStmt;
   QString sql;
-  QTextOStream sqlStream(&sql);
+  QTextStream sqlStream(&sql);
   sqlStream << "insert into tbl_bookmarks values(null,'" <<
     mName << "','" <<
     mProjectTitle << "'," <<

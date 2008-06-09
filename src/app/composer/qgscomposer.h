@@ -165,7 +165,7 @@ private:
 	\param from starting position
 	\param shift shift in bytes 
     */
-    bool shiftFileContent ( QFile *file, Q_LONG start, int shift );
+    bool shiftFileContent ( QFile *file, qint64 start, int shift );
     
     //! Set buttons up
     void setToolActionsOff (void);

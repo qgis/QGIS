@@ -126,7 +126,7 @@ void QgsPgGeoprocessing::buffer()
         QgsFieldMap flds = dp->fields();
         for (QgsFieldMap::iterator it = flds.begin(); it != flds.end(); ++it) {
           // check the field type -- if its int we can use it
-          if (it->typeName().find("int") > -1) {
+          if (it->typeName().indexOf("int") > -1) {
             bb->addFieldItem(it->name());
           }
         }
@@ -241,7 +241,7 @@ void QgsPgGeoprocessing::buffer()
               // check pg version and formulate insert query accordingly
               result = PQexec(conn,"select version()");
               QString versionString = PQgetvalue(result,0,0);
-              QStringList versionParts = QStringList::split(" ", versionString);
+              QStringList versionParts = versionString.split(" ", QString::SkipEmptyParts);
               // second element is the version number
               QString version = versionParts[1];
 
@@ -369,18 +369,18 @@ QString QgsPgGeoprocessing::postgisVersion(PGconn *connection){
   gistAvailable = false;
   projAvailable = false;
   // parse out the capabilities and store them
-  QStringList postgisParts = QStringList::split(" ", postgisVersionInfo);
-  QStringList geos = postgisParts.grep("GEOS");
+  QStringList postgisParts = postgisVersionInfo.split(" ", QString::SkipEmptyParts);
+  QStringList geos = postgisParts.filter("GEOS");
   if(geos.size() == 1){
-    geosAvailable = (geos[0].find("=1") > -1);  
+    geosAvailable = (geos[0].indexOf("=1") > -1);  
   }
-  QStringList gist = postgisParts.grep("STATS");
+  QStringList gist = postgisParts.filter("STATS");
   if(gist.size() == 1){
-    gistAvailable = (geos[0].find("=1") > -1);
+    gistAvailable = (geos[0].indexOf("=1") > -1);
   }
-  QStringList proj = postgisParts.grep("PROJ");
+  QStringList proj = postgisParts.filter("PROJ");
   if(proj.size() == 1){
-    projAvailable = (proj[0].find("=1") > -1);
+    projAvailable = (proj[0].indexOf("=1") > -1);
   }
   return postgisVersionInfo;
 }

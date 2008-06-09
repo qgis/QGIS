@@ -90,7 +90,7 @@ void QgsMapToPixel::setParameters(double mupp, double xmin, double ymin, double 
 QString QgsMapToPixel::showParameters()
 {
   QString rep;
-  QTextOStream(&rep) << "Map units/pixel: " << mMapUnitsPerPixel
+  QTextStream(&rep) << "Map units/pixel: " << mMapUnitsPerPixel
     << " X minimum: " << xMin << " Y minimum: " << yMin << " Y maximum: " << yMax;
   return rep;
 

@@ -106,11 +106,11 @@ void QgsSearchTreeNode::stripText()
   
   // strip \n \' etc.
   int index = 0;
-  while ((index = mText.find('\\', index)) != -1)
+  while ((index = mText.indexOf('\\', index)) != -1)
   {
     mText.remove(index,1); // delete backslash
     QChar chr;
-    switch (mText[index].latin1()) // evaluate backslashed character
+    switch (mText[index].toLatin1()) // evaluate backslashed character
     {
       case 'n':  chr = '\n'; break;
       case 't':  chr = '\t'; break;
@@ -263,7 +263,7 @@ bool QgsSearchTreeNode::checkAgainst(const QgsFieldMap& fields, const QgsAttribu
       }
       
       QRegExp re(str);
-      res = re.search(value1.string());
+      res = re.indexIn(value1.string());
       QgsDebugMsgLevel("REGEXP: " + str + " ~ " + value2.string(), 2);
       QgsDebugMsgLevel("   res: " + res, 2);
       return (res != -1);
@@ -328,12 +328,12 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst(const QgsFieldMap& fields, co
   
     case tColumnRef:
     {
-      QgsDebugMsgLevel("column (" + mText.lower() + "): ", 2);
+      QgsDebugMsgLevel("column (" + mText.toLower() + "): ", 2);
       // find field index for the column
       QgsFieldMap::const_iterator it;
       for (it = fields.begin(); it != fields.end(); it++)
       {
-        if ( it->name().lower() == mText.lower()) // TODO: optimize
+        if ( it->name().toLower() == mText.toLower()) // TODO: optimize
           break;
       }
       

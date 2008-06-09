@@ -50,7 +50,7 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(QgsVectorLayer * layer): QDia
       QVariant::Type type = (*it).type();
       if (type == QVariant::Int || type == QVariant::Double)
       {
-        classificationComboBox->insertItem(it->name());
+        classificationComboBox->addItem(it->name());
         mFieldMap.insert(std::make_pair(it->name(), it.key()));
       }
     }
@@ -61,9 +61,9 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(QgsVectorLayer * layer): QDia
     return;
   }
 
-  modeComboBox->insertItem(tr("Equal Interval"));
-  modeComboBox->insertItem(tr("Quantiles"));
-  modeComboBox->insertItem(tr("Empty"));
+  modeComboBox->addItem(tr("Equal Interval"));
+  modeComboBox->addItem(tr("Quantiles"));
+  modeComboBox->addItem(tr("Empty"));
 
   //restore the correct settings
   const QgsGraduatedSymbolRenderer* renderer = dynamic_cast < const QgsGraduatedSymbolRenderer * >(layer->renderer());
@@ -82,7 +82,7 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(QgsVectorLayer * layer): QDia
         break;
       }
     }
-    classificationComboBox->setCurrentText(classfield);
+    classificationComboBox->setItemText(classificationComboBox->currentIndex(), classfield);
 
     numberofclassesspinbox->setValue(list.size());
     //fill the items of the renderer into mValues
@@ -192,7 +192,7 @@ void QgsGraduatedSymbolDialog::apply()
     bool lbcontainsletter = false;
     for (int j = 0; j < lower_bound.length(); j++)
     {
-      if (lower_bound.ref(j).isLetter())
+      if (lower_bound[j].isLetter())
       {
         lbcontainsletter = true;
       }
@@ -202,7 +202,7 @@ void QgsGraduatedSymbolDialog::apply()
     bool ubcontainsletter = false;
     for (int j = 0; j < upper_bound.length(); j++)
     {
-      if (upper_bound.ref(j).isLetter())
+      if (upper_bound[j].isLetter())
       {
         ubcontainsletter = true;
       }

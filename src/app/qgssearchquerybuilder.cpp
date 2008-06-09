@@ -191,7 +191,7 @@ long QgsSearchQueryBuilder::countRecords(QString searchString)
     return mLayer->featureCount();
   }
   
-  QApplication::setOverrideCursor(Qt::waitCursor);
+  QApplication::setOverrideCursor(Qt::WaitCursor);
   
   int count = 0;
   QgsFeature feat;
@@ -222,7 +222,7 @@ long QgsSearchQueryBuilder::countRecords(QString searchString)
 void QgsSearchQueryBuilder::on_btnOk_clicked()
 {
   // if user hits Ok and there is no query, skip the validation
-  if(txtSQL->toPlainText().stripWhiteSpace().length() > 0)
+  if(txtSQL->toPlainText().trimmed().length() > 0)
   {
     accept();
     return;
@@ -247,37 +247,37 @@ void QgsSearchQueryBuilder::on_btnOk_clicked()
 
 void QgsSearchQueryBuilder::on_btnEqual_clicked()
 {
-  txtSQL->insert(" = ");
+  txtSQL->insertPlainText(" = ");
 }
 
 void QgsSearchQueryBuilder::on_btnLessThan_clicked()
 {
-  txtSQL->insert(" < ");
+  txtSQL->insertPlainText(" < ");
 }
 
 void QgsSearchQueryBuilder::on_btnGreaterThan_clicked()
 {
-  txtSQL->insert(" > ");
+  txtSQL->insertPlainText(" > ");
 }
 
 void QgsSearchQueryBuilder::on_btnPct_clicked()
 {
-  txtSQL->insert(" % ");
+  txtSQL->insertPlainText(" % ");
 }
 
 void QgsSearchQueryBuilder::on_btnIn_clicked()
 {
-  txtSQL->insert(" IN ");
+  txtSQL->insertPlainText(" IN ");
 }
 
 void QgsSearchQueryBuilder::on_btnNotIn_clicked()
 {
-  txtSQL->insert(" NOT IN ");
+  txtSQL->insertPlainText(" NOT IN ");
 }
 
 void QgsSearchQueryBuilder::on_btnLike_clicked()
 {
-  txtSQL->insert(" LIKE ");
+  txtSQL->insertPlainText(" LIKE ");
 }
 
 QString QgsSearchQueryBuilder::searchString()
@@ -287,47 +287,47 @@ QString QgsSearchQueryBuilder::searchString()
 
 void QgsSearchQueryBuilder::setSearchString(QString searchString)
 {
-  txtSQL->setText(searchString);
+  txtSQL->setPlainText(searchString);
 }
 
 void QgsSearchQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
 {
-  txtSQL->insert(mModelFields->data(index).toString());
+  txtSQL->insertPlainText(mModelFields->data(index).toString());
 }
 
 void QgsSearchQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
 {
-  txtSQL->insert(mModelValues->data(index).toString());
+  txtSQL->insertPlainText(mModelValues->data(index).toString());
 }
 
 void QgsSearchQueryBuilder::on_btnLessEqual_clicked()
 {
-  txtSQL->insert(" <= ");
+  txtSQL->insertPlainText(" <= ");
 }
 
 void QgsSearchQueryBuilder::on_btnGreaterEqual_clicked()
 {
-  txtSQL->insert(" >= ");
+  txtSQL->insertPlainText(" >= ");
 }
 
 void QgsSearchQueryBuilder::on_btnNotEqual_clicked()
 {
-  txtSQL->insert(" != ");
+  txtSQL->insertPlainText(" != ");
 }
 
 void QgsSearchQueryBuilder::on_btnAnd_clicked()
 {
-  txtSQL->insert(" AND ");
+  txtSQL->insertPlainText(" AND ");
 }
 
 void QgsSearchQueryBuilder::on_btnNot_clicked()
 {
-  txtSQL->insert(" NOT ");
+  txtSQL->insertPlainText(" NOT ");
 }
 
 void QgsSearchQueryBuilder::on_btnOr_clicked()
 {
-  txtSQL->insert(" OR ");
+  txtSQL->insertPlainText(" OR ");
 }
 
 void QgsSearchQueryBuilder::on_btnClear_clicked()
@@ -337,7 +337,7 @@ void QgsSearchQueryBuilder::on_btnClear_clicked()
 
 void QgsSearchQueryBuilder::on_btnILike_clicked()
 {
-  //txtSQL->insert(" ILIKE ");
-  txtSQL->insert(" ~ ");
+  //txtSQL->insertPlainText(" ILIKE ");
+  txtSQL->insertPlainText(" ~ ");
 }
 

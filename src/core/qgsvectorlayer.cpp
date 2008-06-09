@@ -231,21 +231,21 @@ void QgsVectorLayer::setDisplayField(QString fldName)
       // We assume that the user has organized the data with the
       // more "interesting" field names first. As such, name should
       // be selected before oldname, othername, etc.
-      if (fldName.find("name", false) > -1)
+      if (fldName.indexOf("name", false) > -1)
       {
         if(idxName.isEmpty())
         {
           idxName = fldName;
         }
       }
-      if (fldName.find("descrip", false) > -1)
+      if (fldName.indexOf("descrip", false) > -1)
       {
         if(idxName.isEmpty())
         {
           idxName = fldName;
         }
       }
-      if (fldName.find("id", false) > -1)
+      if (fldName.indexOf("id", false) > -1)
       {
         if(idxId.isEmpty())
         {
@@ -723,7 +723,7 @@ bool QgsVectorLayer::draw(QgsRenderContext& renderContext)
 {
   //set update threshold before each draw to make sure the current setting is picked up
   QSettings settings;
-  mUpdateThreshold = settings.readNumEntry("Map/updateThreshold", 0);
+  mUpdateThreshold = settings.value("Map/updateThreshold", 0).toInt();
   //draw ( p, viewExtent, theMapToPixelTransform, ct, drawingToEditingCanvas, 1., 1.);
   
   if (mRenderer)
@@ -1560,7 +1560,7 @@ bool QgsVectorLayer::deleteSelectedFeatures()
         noncommited = TRUE;
         
         // Delete the feature itself
-        mAddedFeatures.remove(iter);
+        mAddedFeatures.erase(iter);
         
         break;
       }

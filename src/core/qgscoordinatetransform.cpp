@@ -22,7 +22,7 @@
 //qt includes
 #include <QDomNode>
 #include <QDomElement>
-#include <QTextOStream>
+#include <QTextStream>
 #include <QApplication>
 
 extern "C" {
@@ -478,7 +478,7 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
   {
     //something bad happened....
     QString msg;
-    QTextOStream pjErr(&msg);
+    QTextStream pjErr(&msg);
 
     pjErr << tr("Failed") << " " << dir << " " << tr("transform of") << '\n';
     for (int i = 0; i < numPoints; ++i)

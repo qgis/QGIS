@@ -110,11 +110,11 @@ QgsBabelCommand::QgsBabelCommand(const QString& importCmd,
   mSupportsImport = false;
   mSupportsExport = false;
   if (!importCmd.isEmpty()) {
-    mImportCmd = QStringList::split(QRegExp("\\s"), importCmd); 
+    mImportCmd = importCmd.split(QRegExp("\\s"), QString::SkipEmptyParts); 
     mSupportsImport = true;
   }
   if (!exportCmd.isEmpty()) {
-    mExportCmd = QStringList::split(QRegExp("\\s"), exportCmd);
+    mExportCmd = exportCmd.split(QRegExp("\\s"), QString::SkipEmptyParts);
     mSupportsExport = true;
   }
 }

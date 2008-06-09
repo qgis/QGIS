@@ -34,11 +34,11 @@ QgsNewHttpConnection::QgsNewHttpConnection(QWidget *parent, const QString& baseK
 
       QString key = mBaseKey + connName;
       txtName->setText     (connName);
-      txtUrl->setText      (settings.readEntry(key + "/url"));
-      txtProxyHost->setText(settings.readEntry(key + "/proxyhost"));
-      txtProxyPort->setText(settings.readEntry(key + "/proxyport"));
-      txtProxyUser->setText(settings.readEntry(key + "/proxyuser"));
-      txtProxyPass->setText(settings.readEntry(key + "/proxypassword"));
+      txtUrl->setText      (settings.value(key + "/url").toString());
+      txtProxyHost->setText(settings.value(key + "/proxyhost").toString());
+      txtProxyPort->setText(settings.value(key + "/proxyport").toString());
+      txtProxyUser->setText(settings.value(key + "/proxyuser").toString());
+      txtProxyPass->setText(settings.value(key + "/proxypassword").toString());
     }
 }
 
@@ -64,11 +64,11 @@ void QgsNewHttpConnection::saveConnection()
     {
       settings.remove(mBaseKey + mOriginalConnName);
     }
-  settings.writeEntry(key + "/url", txtUrl->text().trimmed());
-  settings.writeEntry(key + "/proxyhost", txtProxyHost->text().trimmed());
-  settings.writeEntry(key + "/proxyport", txtProxyPort->text().trimmed());
-  settings.writeEntry(key + "/proxyuser", txtProxyUser->text().trimmed());
-  settings.writeEntry(key + "/proxypassword", txtProxyPass->text().trimmed());
+  settings.setValue(key + "/url", txtUrl->text().trimmed());
+  settings.setValue(key + "/proxyhost", txtProxyHost->text().trimmed());
+  settings.setValue(key + "/proxyport", txtProxyPort->text().trimmed());
+  settings.setValue(key + "/proxyuser", txtProxyUser->text().trimmed());
+  settings.setValue(key + "/proxypassword", txtProxyPass->text().trimmed());
   
   accept();
 }

@@ -154,7 +154,7 @@ void QgsHelpViewer::loadContext(const QString &contextId)
 
     // Set the browser text to the help contents
     txtBrowser->setHtml(helpContents);
-    setCaption(tr("Quantum GIS Help"));
+    setWindowTitle(tr("Quantum GIS Help"));
 
         }
         }
@@ -182,7 +182,7 @@ void QgsHelpViewer::loadContextFromSqlite(const QString &contextId)
           // there should only be one row returned
           // Set the browser text to the record from the database
           txtBrowser->setText((char*)sqlite3_column_text(ppStmt, 0));
-          setCaption(tr("Quantum GIS Help - ") +QString((char*)sqlite3_column_text(ppStmt, 1)));
+          setWindowTitle(tr("Quantum GIS Help - ") +QString((char*)sqlite3_column_text(ppStmt, 1)));
         }
       }
       else

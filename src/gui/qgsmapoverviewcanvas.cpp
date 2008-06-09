@@ -181,7 +181,7 @@ void QgsMapOverviewCanvas::mouseReleaseEvent(QMouseEvent * e)
 //  if (mPanningWidget->isHidden())
 //    return;
 
-  if ((e->state() && Qt::LeftButton) == Qt::LeftButton)
+  if ((e->buttons() & Qt::LeftButton) == Qt::LeftButton)
   {
     // set new extent
     const QgsMapToPixel* cXf = mMapRender->coordXForm();
@@ -209,7 +209,7 @@ void QgsMapOverviewCanvas::mouseReleaseEvent(QMouseEvent * e)
 void QgsMapOverviewCanvas::mouseMoveEvent(QMouseEvent * e)
 {
   // move with panning widget if tracking cursor
-  if ((e->state() && Qt::LeftButton) == Qt::LeftButton)
+  if ((e->buttons() & Qt::LeftButton) == Qt::LeftButton)
   {
     updatePanningWidget(e->pos());
   }

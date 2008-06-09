@@ -315,7 +315,7 @@ int main(int argc, char *argv[])
       break;
 
     case 's':
-      mySnapshotFileName = QDir::convertSeparators(QFileInfo(QFile::decodeName(optarg)).absFilePath());
+      mySnapshotFileName = QDir::convertSeparators(QFileInfo(QFile::decodeName(optarg)).absoluteFilePath());
       break;
 
     case 'l':
@@ -323,7 +323,7 @@ int main(int argc, char *argv[])
       break;
 
     case 'p':
-      myProjectFileName = QDir::convertSeparators(QFileInfo(QFile::decodeName(optarg)).absFilePath());
+      myProjectFileName = QDir::convertSeparators(QFileInfo(QFile::decodeName(optarg)).absoluteFilePath());
       break;
 
     case 'e':
@@ -355,7 +355,7 @@ int main(int argc, char *argv[])
     int idx = optind;
     std::cout << idx << ": " << argv[idx] << std::endl;
 #endif
-    myFileList.append(QDir::convertSeparators(QFileInfo(QFile::decodeName(argv[optind++])).absFilePath()));
+    myFileList.append(QDir::convertSeparators(QFileInfo(QFile::decodeName(argv[optind++])).absoluteFilePath()));
     }
   }
   }
@@ -566,7 +566,7 @@ int main(int argc, char *argv[])
     // check for a .qgs
     for(int i = 0; i < argc; i++)
     {
-      QString arg = QDir::convertSeparators(QFileInfo(QFile::decodeName(argv[i])).absFilePath());
+      QString arg = QDir::convertSeparators(QFileInfo(QFile::decodeName(argv[i])).absoluteFilePath());
       if(arg.contains(".qgs"))
       {
         myProjectFileName = arg;
@@ -622,7 +622,7 @@ int main(int argc, char *argv[])
     for (int i = 0; i < 3; i++)
     {
       // find comma and get coordinate
-      pos = myInitialExtent.find(',', posOld);
+      pos = myInitialExtent.indexOf(',', posOld);
       if (pos == -1) {
         ok = false; break;
       }

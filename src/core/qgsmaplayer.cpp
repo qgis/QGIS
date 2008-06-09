@@ -401,7 +401,7 @@ QString QgsMapLayer::capitaliseLayerName(const QString name)
   QString layerName(name);
 
   if (capitaliseLayerName)
-    layerName = layerName.left(1).upper() + layerName.mid(1);
+    layerName = layerName.left(1).toUpper() + layerName.mid(1);
 
   return layerName;
 }

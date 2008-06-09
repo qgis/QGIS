@@ -99,7 +99,7 @@ bool QgsShapeFile::scanGeometries()
     {
       QString gml =  OGR_G_ExportToGML(geom);
       //      std::cerr << gml << std::endl; 
-      if(gml.find("gml:Multi") > -1)
+      if(gml.indexOf("gml:Multi") > -1)
       {
         //   std::cerr << "MULTI Part Feature detected" << std::endl; 
         multi = true;
@@ -131,7 +131,7 @@ bool QgsShapeFile::scanGeometries()
   
   OGR_L_ResetReading(ogrLayer);
   geom_type = geometries[currentType];
-  if(multi && (geom_type.find("MULTI") == -1))
+  if(multi && (geom_type.indexOf("MULTI") == -1))
   {
     geom_type = "MULTI" + geom_type;
   }
@@ -411,7 +411,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString primary_k
                    .arg( srid );
 
         if(result)
-          res = PQexec(conn, query.utf8() );
+          res = PQexec(conn, query.toUtf8() );
 
         if(PQresultStatus(res)!=PGRES_COMMAND_OK){
           // flag error and send query and error message to stdout on debug

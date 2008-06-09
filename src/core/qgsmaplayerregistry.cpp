@@ -103,7 +103,7 @@ void QgsMapLayerRegistry::removeMapLayer(QString theLayerId, bool theEmitSignal)
   QgsDebugMsg("QgsMapLayerRegistry::removemaplayer - deleting map layer.");
   delete mMapLayers[theLayerId]; 
   QgsDebugMsg("QgsMapLayerRegistry::removemaplayer - unregistering map layer.");
-  mMapLayers.erase(theLayerId);
+  mMapLayers.remove(theLayerId);
   QgsDebugMsg("QgsMapLayerRegistry::removemaplayer - operation complete.");
 }
 

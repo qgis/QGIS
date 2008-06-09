@@ -40,7 +40,7 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui(QgisInterface * _qI, QWidge
   // settings
   QSettings settings;
   QString key = "/Plugin-DelimitedText";
-  txtDelimiter->setText(settings.readEntry(key + "/delimiter"));
+  txtDelimiter->setText(settings.value(key + "/delimiter").toString());
 
   // and how to use the delimiter
   QString delimiterType = settings.value(key + "/delimiterType",
@@ -109,9 +109,9 @@ void QgsDelimitedTextPluginGui::on_buttonBox_accepted()
 
     QSettings settings;
     QString key = "/Plugin-DelimitedText";
-    settings.writeEntry(key + "/delimiter", txtDelimiter->text());
+    settings.setValue(key + "/delimiter", txtDelimiter->text());
     QFileInfo fi(txtFilePath->text());
-    settings.writeEntry(key + "/text_path", fi.dirPath());
+    settings.setValue(key + "/text_path", fi.path());
 
     if (delimiterPlain->isChecked())
       settings.setValue(key + "/delimiterType", "plain");
@@ -180,8 +180,8 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
           // add item to both drop-downs (X field and Y field)
           if((*it).length() > 0)
           {
-            cmbXField->insertItem(*it);
-            cmbYField->insertItem(*it);
+            cmbXField->addItem(*it);
+            cmbYField->addItem(*it);
           }
         }  
         // Have a go at setting the selected items in the X and Y
@@ -213,7 +213,7 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
       // clear the sample text box
       txtSample->clear();
       // put the header row in the sample box
-      txtSample->insert(line + "\n"); 
+      txtSample->insertPlainText(line + "\n"); 
       // put a few more lines into the sample box
       int counter = 0;
       while (
@@ -221,7 +221,7 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
               (counter < 20)
             )
       {
-        txtSample->insert(line + "\n");
+        txtSample->insertPlainText(line + "\n");
         counter++;
       }
       // close the file
@@ -243,7 +243,7 @@ void QgsDelimitedTextPluginGui::getOpenFileName()
   QString s = QFileDialog::getOpenFileName(
       this,
       tr("Choose a delimited text file to open"),
-      settings.readEntry("/Plugin-DelimitedText/text_path","./"),
+      settings.value("/Plugin-DelimitedText/text_path","./").toString(),
       "Text files (*.txt *.csv);; All files (* *.*)");
 
   // set path

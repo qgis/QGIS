@@ -239,12 +239,12 @@ sharedLibExtension = "*.so*";
     bool loaded = myLib->load();
     if (!loaded)
     {
-      QgsDebugMsg("Failed to load: " + myLib->library());
+      QgsDebugMsg("Failed to load: " + myLib->fileName());
       delete myLib;
       continue;
     }
 
-    QgsDebugMsg("Loaded library: " + myLib->library());
+    QgsDebugMsg("Loaded library: " + myLib->fileName());
 
     // Don't bother with libraries that are providers
     //if(!myLib->resolve("isProvider"))
@@ -290,7 +290,7 @@ sharedLibExtension = "*.so*";
 
     if (!pName || !pDesc || !pVersion)
     {
-      QgsDebugMsg("Failed to get name, description, or type for " + myLib->library());
+      QgsDebugMsg("Failed to get name, description, or type for " + myLib->fileName());
       delete myLib;
       continue;
     }
@@ -329,7 +329,7 @@ sharedLibExtension = "*.so*";
     else
     {
       QgsDebugMsg("Found library name in the registry");
-      if (libName == myLib->library())
+      if (libName == myLib->fileName())
       {
         // set the checkbox
         mypDetailItem->setCheckState(Qt::Checked);

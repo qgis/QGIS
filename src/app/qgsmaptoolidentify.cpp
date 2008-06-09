@@ -34,6 +34,7 @@
 
 #include <QSettings>
 #include <QMessageBox>
+#include <QMouseEvent>
 #include <QCursor>
 #include <QPixmap>
 
@@ -218,7 +219,7 @@ void QgsMapToolIdentify::identifyRasterWmsLayer(QgsRasterLayer* layer, const Qgs
   }
 
   QgsMessageViewer* viewer = new QgsMessageViewer();
-  viewer->setCaption( layer->name() );
+  viewer->setWindowTitle( layer->name() );
   viewer->setMessageAsPlainText( QString(tr("WMS identify result for %1\n%2")).arg(point.stringRep()).arg(text) );
 
   viewer->showMessage(); // deletes itself on close
@@ -232,7 +233,7 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
   // load identify radius from settings
   QSettings settings;
   double identifyValue = settings.value("/Map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS).toDouble();
-  QString ellipsoid = settings.readEntry("/qgis/measure/ellipsoid", "WGS84");
+  QString ellipsoid = settings.value("/qgis/measure/ellipsoid", "WGS84").toString();
 
   // create the search rectangle
   double searchRadius = mCanvas->extent().width() * (identifyValue/100.0);
@@ -581,7 +582,7 @@ void QgsMapToolIdentify::showError(QgsMapLayer * mapLayer)
 //   );
 
   QgsMessageViewer * mv = new QgsMessageViewer();
-  mv->setCaption( mapLayer->errorCaptionString() );
+  mv->setWindowTitle( mapLayer->errorCaptionString() );
   mv->setMessageAsPlainText(
     QObject::tr("Could not identify objects on") + " " + mapLayer->name() + " " + QObject::tr("because") + ":\n" +
     mapLayer->errorString()

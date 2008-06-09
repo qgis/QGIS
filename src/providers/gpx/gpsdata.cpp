@@ -20,6 +20,7 @@
 #include <cstring>
 
 #include <QFile>
+#include <QTextCodec>
 #include <QTextStream>
 #include <QObject>
 #include <QSet>
@@ -345,7 +346,7 @@ GPSData* GPSData::getData(const QString& filename) {
     char* buffer = new char[bufsize];
     int atEnd = 0;
     while (!file.atEnd()) {
-      long int readBytes = file.readBlock(buffer, bufsize);
+      long int readBytes = file.read(buffer, bufsize);
       if (file.atEnd())
         atEnd = 1;
       if (!XML_Parse(p, buffer, readBytes, atEnd)) {

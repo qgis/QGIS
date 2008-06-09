@@ -71,7 +71,7 @@ QgsProject * QgsProject::theProject_;
      //const char * key_str   = key.toLocal8Bit().data();
 
      QStringList keyTokens = QStringList(scope);
-     keyTokens += QStringList::split('/', key);
+     keyTokens += key.split('/', QString::SkipEmptyParts);
 
      // be sure to include the canonical root node
      keyTokens.push_front( "properties" );
@@ -404,7 +404,7 @@ QgsProject * QgsProject::theProject_;
 
  void QgsProject::filename(QString const &name)
  {
-     imp_->file.setName(name);
+     imp_->file.setFileName(name);
 
      dirty(true);
  } // void QgsProject::filename( QString const & name )
@@ -413,7 +413,7 @@ QgsProject * QgsProject::theProject_;
 
  QString QgsProject::filename() const
  {
-     return imp_->file.name();
+     return imp_->file.fileName();
  } // QString QgsProject::filename() const
 
 
@@ -497,7 +497,7 @@ _getProperties(QDomDocument const &doc, QgsPropertyKey & project_properties)
 
 //         qDebug("found %d property node(s) for scope %s",
 //                curr_scope_node.childNodes().count(),
-//                (const char *) curr_scope_node.nodeName().utf8());
+//                curr_scope_node.nodeName().utf8().constData());
 
 //         QString key(curr_scope_node.nodeName());
 
@@ -520,7 +520,7 @@ _getProperties(QDomDocument const &doc, QgsPropertyKey & project_properties)
 //         if (! currentKey->readXML(curr_scope_node))
 //         {
 //             qDebug("%s:%d unable to read XML for property %s", __FILE__, __LINE__,
-//                    (const char *) curr_scope_node.nodeName().utf8());
+//                    curr_scope_node.nodeName().utf8().constData());
 //         }
 
 //         ++i;
@@ -729,7 +729,7 @@ static std::pair< bool, std::list<QDomNode> > _getMapLayers(QDomDocument const &
 */
 bool QgsProject::read(QFileInfo const &file)
 {
-    imp_->file.setName(file.filePath());
+    imp_->file.setFileName(file.filePath());
 
     return read();
 } // QgsProject::read( QFile & file )
@@ -750,7 +750,7 @@ bool QgsProject::read()
         imp_->file.close();     // even though we got an error, let's make
                                 // sure it's closed anyway
 
-        throw QgsIOException( QObject::tr("Unable to open ") + imp_->file.name());
+        throw QgsIOException( QObject::tr("Unable to open ") + imp_->file.fileName());
 
         return false;           // XXX raise exception? Ok now superfluous
                                 // XXX because of exception.
@@ -771,11 +771,11 @@ bool QgsProject::read()
             errorMsg + QObject::tr(" at line ") + QString::number(line) + QObject::tr(" column ") +
             QString::number(column);
 
-        qDebug((const char *) errorString.utf8());
+        qDebug(errorString.toUtf8().constData());
 
         imp_->file.close();
 
-        throw QgsException(errorString + QObject::tr(" for file ") + imp_->file.name());
+        throw QgsException(errorString + QObject::tr(" for file ") + imp_->file.fileName());
 
         return false;               // XXX superfluous because of exception
     }
@@ -783,7 +783,7 @@ bool QgsProject::read()
     imp_->file.close();
 
 
-    QgsDebugMsg("Opened document " + imp_->file.name());
+    QgsDebugMsg("Opened document " + imp_->file.fileName());
     QgsDebugMsg("Project title: " + imp_->title);
 
     // get project version string, if any
@@ -915,7 +915,7 @@ bool QgsProject::read( QDomNode & layerNode )
 
 bool QgsProject::write(QFileInfo const &file)
 {
-    imp_->file.setName(file.filePath());
+    imp_->file.setFileName(file.filePath());
 
     return write();
 } // QgsProject::write( QFileInfo const & file )
@@ -931,7 +931,7 @@ bool QgsProject::write()
     imp_->file.close();         // even though we got an error, let's make
     // sure it's closed anyway
 
-    throw QgsIOException(QObject::tr("Unable to save to file ") + imp_->file.name());
+    throw QgsIOException(QObject::tr("Unable to save to file ") + imp_->file.fileName());
 
     return false;               // XXX raise exception? Ok now superfluous
     // XXX because of exception.
@@ -942,7 +942,7 @@ bool QgsProject::write()
     // even though we got an error, let's make
     // sure it's closed anyway
     imp_->file.close();         
-    throw QgsIOException(imp_->file.name() + QObject::tr(" is not writeable.")
+    throw QgsIOException(imp_->file.fileName() + QObject::tr(" is not writeable.")
             + QObject::tr("Please adjust permissions (if possible) and try again."));
     // XXX raise exception? Ok now superfluous
     return false;               
@@ -1138,7 +1138,7 @@ QgsProject::readEntry(QString const & scope,
         value = property->value();
     }
 
-    bool valid = value.canCast(QVariant::String);
+    bool valid = value.canConvert(QVariant::String);
 
     if (ok)
     {
@@ -1167,7 +1167,7 @@ QgsProject::readNumEntry(QString const &scope, const QString & key, int def,
         value = property->value();
     }
 
-    bool valid = value.canCast(QVariant::String);
+    bool valid = value.canConvert(QVariant::String);
 
     if (ok)
     {
@@ -1197,7 +1197,7 @@ QgsProject::readDoubleEntry(QString const &scope, const QString & key,
         value = property->value();
     }
 
-    bool valid = value.canCast(QVariant::Double);
+    bool valid = value.canConvert(QVariant::Double);
 
     if (ok)
     {
@@ -1226,7 +1226,7 @@ QgsProject::readBoolEntry(QString const &scope, const QString & key, bool def,
         value = property->value();
     }
 
-    bool valid = value.canCast(QVariant::Bool);
+    bool valid = value.canConvert(QVariant::Bool);
 
     if (ok)
     {

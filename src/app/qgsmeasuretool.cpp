@@ -164,7 +164,7 @@ void QgsMeasureTool::canvasReleaseEvent(QMouseEvent * e)
 {
   QgsPoint point = mCanvas->getCoordinateTransform()->toMapCoordinates(e->x(), e->y());
 
-  if(e->button() == Qt::RightButton && (e->state() & Qt::LeftButton) == 0) // restart
+  if(e->button() == Qt::RightButton && (e->buttons() & Qt::LeftButton) == 0) // restart
   {
     if (mRightMouseClicked)
       mDialog->restart();

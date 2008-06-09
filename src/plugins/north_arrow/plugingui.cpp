@@ -23,7 +23,7 @@ QgsNorthArrowPluginGui::QgsNorthArrowPluginGui(QWidget* parent, Qt::WFlags fl)
 {
   setupUi(this);
   //temporary hack until this is implemented
-  tabNorthArrowOptions->removePage( tabIcon );
+  tabNorthArrowOptions->removeTab( tabNorthArrowOptions->indexOf( tabIcon ));
 }  
 
 QgsNorthArrowPluginGui::~QgsNorthArrowPluginGui()

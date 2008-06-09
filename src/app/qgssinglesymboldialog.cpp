@@ -94,8 +94,8 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog(QgsVectorLayer * layer, bool disabl
     const QgsFieldMap & fields = provider->fields();
     QString str;
 
-    mRotationClassificationComboBox->insertItem(DO_NOT_USE_STR);
-    mScaleClassificationComboBox->insertItem(DO_NOT_USE_STR);
+    mRotationClassificationComboBox->addItem(DO_NOT_USE_STR);
+    mScaleClassificationComboBox->addItem(DO_NOT_USE_STR);
     mFieldMap.insert(std::make_pair(DO_NOT_USE_STR, -1));
     for (QgsFieldMap::const_iterator it = fields.begin(); 
         it != fields.end(); 
@@ -104,8 +104,8 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog(QgsVectorLayer * layer, bool disabl
       QVariant::Type type = (*it).type();
       if (type == QVariant::Int || type == QVariant::Double)
       {
-        mRotationClassificationComboBox->insertItem(it->name());
-        mScaleClassificationComboBox->insertItem(it->name());
+        mRotationClassificationComboBox->addItem(it->name());
+        mScaleClassificationComboBox->addItem(it->name());
         mFieldMap.insert(std::make_pair(it->name(), it.key()));
       }
     }
@@ -383,8 +383,10 @@ void QgsSingleSymbolDialog::set ( const QgsSymbol *sy )
       QgsDebugMsg(QString("Found scale field " + scaleclassfield));
     }
   }
-  mRotationClassificationComboBox->setCurrentText(rotationclassfield);
-  mScaleClassificationComboBox->setCurrentText(scaleclassfield);
+  mRotationClassificationComboBox->setItemText(
+    mRotationClassificationComboBox->currentIndex(), rotationclassfield);
+  mScaleClassificationComboBox->setItemText(
+    mScaleClassificationComboBox->currentIndex(), scaleclassfield);
 
   outlinewidthspinbox->setValue(sy->pen().widthF());
 

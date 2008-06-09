@@ -34,6 +34,7 @@ email                : sherman at mrcc.com
 #include <QFileInfo>
 #include <QMap>
 #include <QString>
+#include <QTextCodec>
 
 //TODO Following ifndef can be removed once WIN32 GEOS support
 //    is fixed
@@ -918,7 +919,7 @@ QString  QgsOgrProvider::description() const
 static QString createFileFilter_(QString const &longName, QString const &glob)
 {
   return "[OGR] " + 
-    longName + " (" + glob.lower() + " " + glob.upper() + ");;";
+    longName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
 } // createFileFilter_
 
 

@@ -121,7 +121,7 @@ void QgsComposerPicture::loadPicture ( void )
 
   if ( !mPicturePath.isNull() ) 
   {
-	if ( mPicturePath.lower().right(3) == "svg" )
+	if ( mPicturePath.toLower().right(3) == "svg" )
 	{
 	  if ( !mPicture.load ( mPicturePath, "svg" ) )
 	  {
@@ -469,14 +469,14 @@ QString QgsComposerPicture::pictureDialog ( void )
     for ( int i = 0; i < formats.count(); i++ )
     {
         QString frmt = formats.at( i );
-        QString fltr = " *." + frmt.lower() + " *." + frmt.upper();
+        QString fltr = " *." + frmt.toLower() + " *." + frmt.toUpper();
         filters += fltr;
     }
     filters += ");;All other files (*.*)";
 
     // Retrieve the last used directory
     QSettings settings;
-    QString lastUsedDir = settings.readEntry("/UI/lastComposerPictureDir", ".");
+    QString lastUsedDir = settings.value("/UI/lastComposerPictureDir", ".").toString();
 
     QString file = QFileDialog::getOpenFileName(
                     0,
@@ -486,8 +486,8 @@ QString QgsComposerPicture::pictureDialog ( void )
     if (file.length() != 0)
     {
       QFileInfo myFile(file);
-      QString myPath = myFile.dirPath();
-      settings.writeEntry("/UI/lastComposerPictureDir", myPath);
+      QString myPath = myFile.path();
+      settings.setValue("/UI/lastComposerPictureDir", myPath);
     }
 
     return file; 

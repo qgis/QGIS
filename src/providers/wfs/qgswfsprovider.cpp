@@ -27,6 +27,7 @@
 #include <QDomDocument>
 #include <QDomNodeList>
 #include <QFile>
+#include <QWidget>
 #include <cfloat>
 
 static const QString TEXT_PROVIDER_KEY = "WFS";

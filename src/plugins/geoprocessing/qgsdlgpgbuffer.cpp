@@ -78,12 +78,12 @@ QString QgsDlgPgBuffer::schema()
 
 void QgsDlgPgBuffer::addFieldItem(QString field)
 {
-    cmbFields->insertItem(field);
+    cmbFields->addItem(field);
 }
 
 void QgsDlgPgBuffer::addSchema(QString schema)
 {
-    cmbSchema->insertItem(schema);
+    cmbSchema->addItem(schema);
 }
 
 void QgsDlgPgBuffer::setSrid(QString srid)
