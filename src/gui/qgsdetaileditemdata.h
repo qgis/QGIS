@@ -26,7 +26,7 @@
 /** This class is the data only representation of a 
  * QgsDetailedItemWidget, designed to be used in custom views.
  */
-class QgsDetailedItemData 
+class GUI_EXPORT QgsDetailedItemData 
 {
   public:
     QgsDetailedItemData();
