@@ -1,3 +1,9 @@
+qgis (0.11.0test3) experimental; urgency=low
+
+  * add memory provider
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 10 Jun 2008 15:32:42 +0200
+
 qgis (0.11.0test2) experimental; urgency=low
 
   * removed 'upstream' changes from changelog 
