@@ -4,7 +4,7 @@ SET (MEMORY_SRCS memoryprovider.cpp)
 INCLUDE_DIRECTORIES(
   .
   ../../core
-#  ${GEOS_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
 )
 
 ADD_LIBRARY(memoryprovider MODULE ${MEMORY_SRCS})
