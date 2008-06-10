@@ -30,7 +30,6 @@ qgsvertexmarker.cpp
 SET(QGIS_GUI_MOC_HDRS
 qgsdetaileditemdelegate.h
 qgsdetaileditemwidget.h
-qgsdetaileditemdata.h
 qgisinterface.h
 qgsencodingfiledialog.h
 qgslayerprojectionselector.h
