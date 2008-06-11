@@ -93,11 +93,11 @@ bool QgsSpatialRefSys::createFromOgcWmsCrs(QString theCrs)
 {
   QStringList parts = theCrs.split(":");
 
-  if (parts.at(0) == "EPSG")
+  if(parts.at(0).compare("EPSG", Qt::CaseInsensitive) == 0)
   {
     createFromEpsg( parts.at(1).toLong() );
   }
-  else if (parts.at(0) == "CRS")
+  else if(parts.at(0).compare("CRS", Qt::CaseInsensitive) == 0)
   {
     if (parts.at(1) == "84")
     {
