@@ -535,34 +535,16 @@ public:
                  const QStringList & layers = QStringList(),
                  const QStringList & styles = QStringList(),
                  const QString & format = QString(),
-                 const QString & crs = QString(),
-                 const QString & proxyHost = QString(),
-                 int proxyPort = 80,
-                 const QString & proxyUser = QString(),
-                 const QString & proxyPass = QString());
+                 const QString & crs = QString());
 
   void setDataProvider( const QString & provider,
                         const QStringList & layers,
                         const QStringList & styles,
                         const QString & format,
-                        const QString & crs,
-                        const QString & proxyHost,
-                        int proxyPort,
-                        const QString & proxyUser,
-                        const QString & proxyPass );
+                        const QString & crs);
 
   //! Does this layer use a provider for setting/retrieving data?
   bool usesProvider();
-
-  /**
-   * Sets a proxy for the path given in the constructor
-   *
-   * \retval TRUE if proxy setting is successful (if indeed it is supported)
-   */
-  bool setProxy(const QString & host = 0,
-                            int port = 80,
-                const QString & user = 0,
-                const QString & pass = 0);
 
   //! Which provider is being used for this Raster Layer?
   QString providerKey();

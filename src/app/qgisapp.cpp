@@ -45,6 +45,7 @@
 #include <QMenuBar>
 #include <QMenuItem>
 #include <QMessageBox>
+#include <QNetworkProxy>
 #include <QPainter>
 #include <QPictureIO>
 #include <QPixmap>
@@ -331,6 +332,7 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
   createLegend();
   createOverview();
   createMapTips();
+  setupProxy();
 
   mComposer = new QgsComposer(this); // Map composer
   mInternalClipboard = new QgsClipboard; // create clipboard
@@ -2216,12 +2218,7 @@ void QgisApp::addWmsLayer()
         wmss->selectedLayers(),
         wmss->selectedStylesForSelectedLayers(),
         wmss->selectedImageEncoding(),
-        wmss->selectedCrs(),
-        wmss->connProxyHost(),
-        wmss->connProxyPort(),
-        wmss->connProxyUser(),
-        wmss->connProxyPass()
-        );
+        wmss->selectedCrs());
   }
 }
 
@@ -4355,6 +4352,7 @@ void QgisApp::options()
 //    bool splitterRedraw = mySettings.value("/qgis/splitterRedraw", true).toBool();
 //    canvasLegendSplit->setOpaqueResize(splitterRedraw);
 //    legendOverviewSplit->setOpaqueResize(splitterRedraw);
+    setupProxy();
   }
 }
 
@@ -5221,11 +5219,7 @@ QgsRasterLayer* QgisApp::addRasterLayer(QString const & rasterLayerPath,
     QStringList const & layers,
     QStringList const & styles,
     QString const & format,
-    QString const & crs,
-    QString const & proxyHost, 
-    int proxyPort, 
-    QString const & proxyUser,
-    QString const & proxyPassword)
+    QString const & crs)
 {
   QgsDebugMsg("about to get library for " + providerKey);
 
@@ -5254,8 +5248,7 @@ QgsRasterLayer* QgisApp::addRasterLayer(QString const & rasterLayerPath,
              + " and CRS of " + crs );
 
   // TODO: Remove the 0 when the raster layer becomes a full provider gateway.
-  layer = new QgsRasterLayer(0, rasterLayerPath, baseName, providerKey, layers, styles, format, crs,
-			     proxyHost, proxyPort, proxyUser, proxyPassword);
+  layer = new QgsRasterLayer(0, rasterLayerPath, baseName, providerKey, layers, styles, format, crs);
 
   QgsDebugMsg("Constructed new layer.");
 
@@ -5520,4 +5513,24 @@ void QgisApp::warnOlderProjectVersion(QString oldVersion)
     
   }  
   return;
+}
+
+void QgisApp::setupProxy()
+{
+  QSettings mySettings;
+  bool myFlag = mySettings.value("proxy/proxyEnabled", "0").toBool();
+  QNetworkProxy myProxy;
+  if (myFlag)
+  {
+    myProxy.setType(QNetworkProxy::HttpProxy);
+    myProxy.setHostName(mySettings.value("proxy/proxyHost", "").toString());
+    myProxy.setPort(mySettings.value("proxy/proxyPort", "").toInt());
+    myProxy.setUser(mySettings.value("proxy/proxyUser", "").toString());
+    myProxy.setPassword(mySettings.value("proxy/proxyPassword", "").toString());
+  }
+  else
+  {
+    // otherwise leave it blank to disable proxy usage
+  }
+  QNetworkProxy::setApplicationProxy(myProxy);
 }

@@ -328,8 +328,6 @@ class QgsCoordinateTransform;
   interface defined in the QgsDataProvider class to provide access to spatial
   data residing in a OGC Web Map Service.
   
-  TODO: Make it work
-  
 */
 class QgsWmsProvider : public QgsRasterDataProvider
 {
@@ -342,44 +340,14 @@ public:
   /**
   * Constructor for the provider. 
   *
-  * \param   uri   HTTP URL of the Web Server.  If setProxy() is not also called then we will
-  *                contact the host directly.
+  * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
+  *                otherwise we contact the host directly.
   *
   */
   QgsWmsProvider(QString const & uri = 0);
 
   //! Destructor
   virtual ~QgsWmsProvider();
-
-  /**
-   * Gets the HTTP proxy host used for this connection
-   */
-  virtual QString proxyHost() const;
-
-  /**
-   * Gets the HTTP proxy port used for this connection
-   */
-  virtual int proxyPort() const;
-
-  /**
-   * Gets the HTTP proxy user name used for this connection
-   */
-  virtual QString proxyUser() const;
-
-  /**
-   * Gets the HTTP proxy user password used for this connection
-   */
-  virtual QString proxyPass() const;
-
-  /**
-   *
-   * Sets an HTTP proxy for the URL given in the constructor
-   *
-   */
-  virtual bool setProxy(QString const & host = 0,
-                                    int port = 80,
-                        QString const & user = 0,
-                        QString const & pass = 0);
 
   /**
    * \brief   Returns a list of the supported layers of the WMS server
@@ -722,18 +690,6 @@ private:
 
   //! URL part of URI (httpuri)
   QString baseUrl;
-
-  //! HTTP proxy host name for the WMS for this layer
-  QString mHttpProxyHost;
-
-  //! HTTP proxy port number for the WMS for this layer
-  int mHttpProxyPort;
-
-  //! HTTP proxy username for the WMS for this layer
-  QString mHttpProxyUser;
-
-  //! HTTP proxy password for the WMS for this layer
-  QString mHttpProxyPass;
 
   /**
    * Flag indicating if the layer data source is a valid WMS layer

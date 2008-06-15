@@ -51,10 +51,6 @@ static QString DEFAULT_LATLON_CRS = "CRS:84";
 QgsWmsProvider::QgsWmsProvider(QString const & uri)
   : QgsRasterDataProvider(uri),
     httpuri(uri),
-    mHttpProxyHost(0),
-    mHttpProxyPort(80),
-    mHttpProxyUser(0),
-    mHttpProxyPass(0),
     httpcapabilitiesresponse(0),
     imageCrs(DEFAULT_LATLON_CRS),
     cachedImage(0),
@@ -134,42 +130,6 @@ QgsWmsProvider::~QgsWmsProvider()
 }
 
 
-QString QgsWmsProvider::proxyHost() const
-{
-  return mHttpProxyHost;
-}
-
-
-int QgsWmsProvider::proxyPort() const
-{
-  return mHttpProxyPort;
-}
-
-
-QString QgsWmsProvider::proxyUser() const
-{
-  return mHttpProxyUser;
-}
-
-
-QString QgsWmsProvider::proxyPass() const
-{
-  return mHttpProxyPass;
-}
-
-
-bool QgsWmsProvider::setProxy(QString const & host,
-                                          int port,
-                              QString const & user,
-                              QString const & pass)
-{
-  mHttpProxyHost = host;
-  mHttpProxyPort = port;
-  mHttpProxyUser = user;
-  mHttpProxyPass = pass;
-
-  return TRUE;
-}
 
 bool QgsWmsProvider::supportedLayers(std::vector<QgsWmsLayerProperty> & layers)
 {
@@ -655,11 +615,7 @@ QByteArray QgsWmsProvider::retrieveUrl(QString url)
 {
   QgsDebugMsg("WMS request Url: " + url);
   QgsHttpTransaction http(
-    url,
-    mHttpProxyHost,
-    mHttpProxyPort,
-    mHttpProxyUser,
-    mHttpProxyPass);
+    url);
 
   // Do a passthrough for the status bar text
   connect(

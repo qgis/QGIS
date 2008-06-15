@@ -58,48 +58,6 @@ public:
 
 
     /**
-     * Gets the HTTP proxy host used for this connection
-     */
-    virtual QString proxyHost() const = 0;
-
-    /**
-     * Gets the HTTP proxy port used for this connection
-     */
-    virtual int proxyPort() const = 0;
-
-    /**
-     * Gets the HTTP proxy user name used for this connection
-     */
-    virtual QString proxyUser() const = 0;
-
-    /**
-     * Gets the HTTP proxy user password used for this connection
-     */
-    virtual QString proxyPass() const = 0;
-
-
-    /**
-     *
-     * Sets a proxy for the URL given in the constructor
-     *
-     *
-     * \retval TRUE if proxy setting is successful (if indeed it is supported)
-     */
-    virtual bool setProxy(QString const & host,
-                                      int port,
-                          QString const & user,
-                          QString const & pass)
-    {
-      //this is mainly to prevent compiler warnings
-      if (host.isEmpty() || port < 1 || user.isEmpty() || pass.isEmpty())
-      {
-        return FALSE;
-      }
-
-      return FALSE;
-    }
-
-    /**
      * Add the list of WMS layer names to be rendered by this server
      */
     virtual void addLayers(QStringList const & layers,

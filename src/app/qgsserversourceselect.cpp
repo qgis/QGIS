@@ -363,47 +363,7 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
   
   connStringParts += settings.value(key + "/url").toString();
 
-/*
-  // Add the proxy host and port if any are defined.
-  if ( ! ( (part = settings.value(key + "/proxyhost").toString()).isEmpty() ) )
-  {
-#ifdef QGISDEBUG
-  std::cout << "QgsServerSourceSelect::serverConnect: Got a proxyhost - '" << part.toLocal8Bit().data() << "'." << std::endl;
-#endif
-    connStringParts += part;
-  
-    if ( ! ( (part = settings.value(key + "/proxyport").toString()).isEmpty() ) )
-    {
-#ifdef QGISDEBUG
-  std::cout << "QgsServerSourceSelect::serverConnect: Got a proxyport - '" << part.toLocal8Bit().data() << "'." << std::endl;
-#endif
-      connStringParts += part;
-    }
-    else
-    {
-      connStringParts += "80";   // well-known http port
-    }
-
-    if ( ! ( (part = settings.value(key + "/proxyuser").toString()).isEmpty() ) )
-    {
-#ifdef QGISDEBUG
-  std::cout << "QgsServerSourceSelect::serverConnect: Got a proxyuser - '" << part.toLocal8Bit().data() << "'." << std::endl;
-#endif
-      connStringParts += part;
-
-      if ( ! ( (part = settings.value(key + "/proxypass").toString()).isEmpty() ) )
-      {
-#ifdef QGISDEBUG
-  std::cout << "QgsServerSourceSelect::serverConnect: Got a proxypass - '" << part.toLocal8Bit().data() << "'." << std::endl;
-#endif
-        connStringParts += part;
-      }
-    }
-  }
-*/
-
   m_connName = cmbConnections->currentText();
-  // setup 'url ( + " " + proxyhost + " " + proxyport + " " + proxyuser + " " + proxypass)'
   m_connInfo = connStringParts.join(" ");
 
 #ifdef QGISDEBUG
@@ -422,20 +382,6 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
   if (mWmsProvider)
   {
     connect(mWmsProvider, SIGNAL(setStatus(QString)), this, SLOT(showStatusMessage(QString)));
-
-    // Collect and set HTTP proxy on WMS provider
-
-    m_connProxyHost = settings.value(key + "/proxyhost").toString(),
-    m_connProxyPort = settings.value(key + "/proxyport").toInt(),
-    m_connProxyUser = settings.value(key + "/proxyuser").toString(),
-    m_connProxyPass = settings.value(key + "/proxypassword").toString(),
-
-    mWmsProvider->setProxy(
-      m_connProxyHost,
-      m_connProxyPort,
-      m_connProxyUser,
-      m_connProxyPass
-    );
 
     // WMS Provider all set up; let's get some layers
 
@@ -632,26 +578,6 @@ QString QgsServerSourceSelect::connInfo()
   return m_connInfo;
 }
 
-QString QgsServerSourceSelect::connProxyHost()
-{
-  return m_connProxyHost;
-}
-
-int QgsServerSourceSelect::connProxyPort()
-{
-  return m_connProxyPort;
-}
-
-QString QgsServerSourceSelect::connProxyUser()
-{
-  return m_connProxyUser;
-}
-
-QString QgsServerSourceSelect::connProxyPass()
-{
-  return m_connProxyPass;
-}
-
 QStringList QgsServerSourceSelect::selectedLayers()
 {
   return m_selectedLayers;
@@ -796,17 +722,16 @@ void QgsServerSourceSelect::addDefaultServers()
     if (!keys.contains(i.key()))
     {
       QString path = i.key();
-      settings.setValue(path + "/proxyhost", "");
-      settings.setValue(path + "/proxyport", 80);
-      settings.setValue(path + "/proxyuser", "");
-      settings.setValue(path + "/proxypassword", "");
       settings.setValue(path + "/url", i.value());
     }
   }
   settings.endGroup();
   populateConnectionList();
 
-  QMessageBox::information(this, tr("WMS proxies"), tr("<p>Several WMS servers have been added to the server list. Note that the proxy fields have been left blank and if you access the internet via a web proxy, you will need to individually set the proxy fields with appropriate values.</p>"));
+  QMessageBox::information(this, tr("WMS proxies"), "<p>" + tr("Several WMS servers have "
+        "been added to the server list. Note that if "
+        "you access the internet via a web proxy, you will "
+        "need to set the proxy settings in the QGIS options dialog.") + "</p>");
 }
 
 // ENDS

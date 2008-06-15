@@ -5,12 +5,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>437</width>
-    <height>256</height>
+    <width>431</width>
+    <height>159</height>
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Create a New WMS connection</string>
+   <string>Create a new WMS connection</string>
   </property>
   <property name="sizeGripEnabled" >
    <bool>true</bool>
@@ -19,31 +19,22 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
    <item row="0" column="0" >
     <widget class="QGroupBox" name="GroupBox1" >
      <property name="title" >
-      <string>Connection Information</string>
+      <string>Connection details</string>
      </property>
      <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <property name="spacing" >
-       <number>5</number>
-      </property>
-      <item rowspan="6" row="0" column="2" >
-       <widget class="QFrame" name="frame" >
-        <property name="frameShape" >
-         <enum>QFrame::NoFrame</enum>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="TextLabel1_2" >
+        <property name="text" >
+         <string>Name</string>
         </property>
-        <property name="frameShadow" >
-         <enum>QFrame::Plain</enum>
+        <property name="margin" >
+         <number>5</number>
+        </property>
+        <property name="buddy" >
+         <cstring>txtName</cstring>
         </property>
        </widget>
       </item>
@@ -63,19 +54,6 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0" >
-       <widget class="QLabel" name="TextLabel1_2" >
-        <property name="text" >
-         <string>Name</string>
-        </property>
-        <property name="margin" >
-         <number>5</number>
-        </property>
-        <property name="buddy" >
-         <cstring>txtName</cstring>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="0" >
        <widget class="QLabel" name="TextLabel1" >
         <property name="text" >
@@ -89,91 +67,6 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0" >
-       <widget class="QLabel" name="TextLabel1_3" >
-        <property name="text" >
-         <string>Proxy Host</string>
-        </property>
-        <property name="margin" >
-         <number>5</number>
-        </property>
-        <property name="buddy" >
-         <cstring>txtProxyHost</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0" >
-       <widget class="QLabel" name="TextLabel1_3_2" >
-        <property name="text" >
-         <string>Proxy Port</string>
-        </property>
-        <property name="margin" >
-         <number>5</number>
-        </property>
-        <property name="buddy" >
-         <cstring>txtProxyPort</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0" >
-       <widget class="QLabel" name="TextLabel1_3_3" >
-        <property name="text" >
-         <string>Proxy User</string>
-        </property>
-        <property name="margin" >
-         <number>5</number>
-        </property>
-        <property name="buddy" >
-         <cstring>txtProxyUser</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0" >
-       <widget class="QLabel" name="TextLabel1_3_4" >
-        <property name="text" >
-         <string>Proxy Password</string>
-        </property>
-        <property name="margin" >
-         <number>5</number>
-        </property>
-        <property name="buddy" >
-         <cstring>txtProxyPass</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1" >
-       <widget class="QLineEdit" name="txtProxyUser" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>0</vsizetype>
-          <horstretch>1</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip" >
-         <string>Your user name for the HTTP proxy (optional)</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1" >
-       <widget class="QLineEdit" name="txtProxyPass" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>0</vsizetype>
-          <horstretch>1</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip" >
-         <string>Password for your HTTP proxy (optional)</string>
-        </property>
-        <property name="echoMode" >
-         <enum>QLineEdit::Password</enum>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="1" >
        <widget class="QLineEdit" name="txtUrl" >
         <property name="toolTip" >
@@ -181,104 +74,15 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1" >
-       <widget class="QLineEdit" name="txtProxyHost" >
-        <property name="toolTip" >
-         <string>Name of your HTTP proxy (optional)</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1" >
-       <widget class="QLineEdit" name="txtProxyPort" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>0</vsizetype>
-          <horstretch>1</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip" >
-         <string>Port number of your HTTP proxy (optional)</string>
-        </property>
-        <property name="maxLength" >
-         <number>5</number>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>
-   <item row="0" column="1" >
-    <layout class="QVBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
+   <item row="1" column="0" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
      </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <widget class="QPushButton" name="btnOk" >
-       <property name="text" >
-        <string>OK</string>
-       </property>
-       <property name="shortcut" >
-        <string/>
-       </property>
-       <property name="autoDefault" >
-        <bool>true</bool>
-       </property>
-       <property name="default" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnCancel" >
-       <property name="text" >
-        <string>Cancel</string>
-       </property>
-       <property name="shortcut" >
-        <string/>
-       </property>
-       <property name="autoDefault" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnHelp" >
-       <property name="enabled" >
-        <bool>true</bool>
-       </property>
-       <property name="text" >
-        <string>Help</string>
-       </property>
-       <property name="shortcut" >
-        <string>F1</string>
-       </property>
-       <property name="autoDefault" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>0</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -286,14 +90,40 @@
  <tabstops>
   <tabstop>txtName</tabstop>
   <tabstop>txtUrl</tabstop>
-  <tabstop>txtProxyHost</tabstop>
-  <tabstop>txtProxyPort</tabstop>
-  <tabstop>txtProxyUser</tabstop>
-  <tabstop>txtProxyPass</tabstop>
-  <tabstop>btnOk</tabstop>
-  <tabstop>btnCancel</tabstop>
-  <tabstop>btnHelp</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>QgsNewHttpConnectionBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>403</x>
+     <y>133</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>430</x>
+     <y>98</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsNewHttpConnectionBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>312</x>
+     <y>139</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>426</x>
+     <y>38</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
