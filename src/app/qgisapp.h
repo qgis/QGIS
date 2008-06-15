@@ -102,11 +102,7 @@ class QgisApp : public QMainWindow
       QStringList const & layers,
       QStringList const & styles,
       QString const & format,
-      QString const & crs,
-      QString const & proxyHost = QString(),
-      int proxyPort = 80,
-      QString const & proxyUser = QString(), 
-      QString const & proxyPassword = QString());
+      QString const & crs);
 
   /** open a raster layer for the given file
     @returns false if unable to open a raster layer for rasterFile
@@ -150,6 +146,22 @@ class QgisApp : public QMainWindow
 
   void dropEvent(QDropEvent *);
 
+  /** Setup the proxy settings from the QSettings environment.
+    * This is not called by default in the constructor. Rather, 
+    * the application must explicitly call setupProx(). If 
+    * you write your own application and wish to explicitly 
+    * set up your own proxy rather, you should e.g.
+    *  QNetworkProxy proxy;
+    *  proxy.setType(QNetworkProxy::Socks5Proxy);
+    *  proxy.setHostName("proxy.example.com");
+    *  proxy.setPort(1080);
+    *  proxy.setUser("username");
+    *  proxy.setPassword("password");
+    *  QNetworkProxy::setApplicationProxy(proxy);
+    *  
+    *  (as documented in Qt documentation.
+  */
+  void setupProxy();
 //private slots:
 public slots:
   //! About QGis

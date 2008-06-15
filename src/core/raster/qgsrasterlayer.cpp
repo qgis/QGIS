@@ -4164,14 +4164,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
     // Collect CRS
     QString crs = QString("EPSG:%1").arg(srs().epsg());
 
-    // Collect proxy information
-    QString proxyHost = rpNode.namedItem("wmsProxyHost").toElement().text();
-    int     proxyPort = rpNode.namedItem("wmsProxyPort").toElement().text().toInt();
-    QString proxyUser = rpNode.namedItem("wmsProxyUser").toElement().text();
-    QString proxyPass = rpNode.namedItem("wmsProxyPass").toElement().text();
-
-    setDataProvider( mProviderKey, layers, styles, format, crs,
-        proxyHost, proxyPort, proxyUser, proxyPass );
+    setDataProvider( mProviderKey, layers, styles, format, crs );
   }
   else
   {
@@ -4447,33 +4440,6 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
     formatElement.appendChild(formatText);
     rasterPropertiesElement.appendChild(formatElement);
 
-    // <rasterproperties><wmsProxyHost>
-    QDomElement proxyHostElement = document.createElement("wmsProxyHost");
-    QDomText proxyHostText =
-      document.createTextNode(mDataProvider->proxyHost());
-    proxyHostElement.appendChild(proxyHostText);
-    rasterPropertiesElement.appendChild(proxyHostElement);
-
-    // <rasterproperties><wmsProxyPort>
-    QDomElement proxyPortElement = document.createElement("wmsProxyPort");
-    QDomText proxyPortText =
-      document.createTextNode( QString::number(mDataProvider->proxyPort()) );
-    proxyPortElement.appendChild(proxyPortText);
-    rasterPropertiesElement.appendChild(proxyPortElement);
-
-    // <rasterproperties><wmsProxyUser>
-    QDomElement proxyUserElement = document.createElement("wmsProxyUser");
-    QDomText proxyUserText =
-      document.createTextNode(mDataProvider->proxyUser());
-    proxyUserElement.appendChild(proxyUserText);
-    rasterPropertiesElement.appendChild(proxyUserElement);
-
-    // <rasterproperties><wmsProxyPass>
-    QDomElement proxyPassElement = document.createElement("wmsProxyPass");
-    QDomText proxyPassText =
-      document.createTextNode(mDataProvider->proxyPass());
-    proxyPassElement.appendChild(proxyPassText);
-    rasterPropertiesElement.appendChild(proxyPassElement);
   }
 
   // <mDebugOverlayFlag>
@@ -4907,11 +4873,7 @@ QgsRasterLayer::QgsRasterLayer(int dummy,
     QStringList const & layers,
     QStringList const & styles,
     QString const & format,
-    QString const & crs,
-    QString const & proxyHost,
-    int proxyPort,
-    QString const & proxyUser,
-    QString const & proxyPass )
+    QString const & crs)
 : QgsMapLayer(RASTER, baseName, rasterLayerPath),
   mRasterXDim( std::numeric_limits<int>::max() ),
   mRasterYDim( std::numeric_limits<int>::max() ),
@@ -4941,8 +4903,7 @@ mModified(false)
   // if we're given a provider type, try to create and bind one to this layer
   if ( ! providerKey.isEmpty() )
   {
-    setDataProvider( providerKey, layers, styles, format, crs,
-        proxyHost, proxyPort, proxyUser, proxyPass );
+    setDataProvider( providerKey, layers, styles, format, crs );
   }
 
   // Default for the popup menu
@@ -4981,11 +4942,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     QStringList const & layers,
     QStringList const & styles,
     QString const & format,
-    QString const & crs,
-    QString const & proxyHost,
-    int proxyPort,
-    QString const & proxyUser,
-    QString const & proxyPass )
+    QString const & crs)
 {
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
@@ -5052,7 +5009,6 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
           mDataProvider->addLayers(layers, styles);
           mDataProvider->setImageEncoding(format);
           mDataProvider->setImageCrs(crs);
-          mDataProvider->setProxy(proxyHost, proxyPort, proxyUser, proxyPass);
 
           // get the extent
           QgsRect mbr = mDataProvider->extent();
@@ -5093,29 +5049,6 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
   QgsDebugMsg("QgsRasterLayer::setDataProvider: exiting.");
 
 } // QgsRasterLayer::setDataProvider
-
-
-bool QgsRasterLayer::setProxy(QString const & host,
-    int port,
-    QString const & user,
-    QString const & pass)
-{
-  if (!mDataProvider)
-  {
-    return FALSE;
-  }
-  else
-  {
-#ifdef QGISDEBUG
-    std::cout << "  QgsRasterLayer::setProxy: host = " << host.toLocal8Bit().data() << "." << std::endl;
-    std::cout << "  QgsRasterLayer::setProxy: port = " << port << "." << std::endl;
-    std::cout << "  QgsRasterLayer::setProxy: user = " << user.toLocal8Bit().data() << "." << std::endl;
-    std::cout << "  QgsRasterLayer::setProxy: pass = " << pass.toLocal8Bit().data() << "." << std::endl;
-#endif
-    return mDataProvider->setProxy(host, port, user, pass);
-  }
-}
-
 
 
 bool QgsRasterLayer::usesProvider()

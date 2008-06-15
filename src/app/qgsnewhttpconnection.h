@@ -31,13 +31,11 @@ class QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpConnectionBas
     QgsNewHttpConnection(QWidget *parent = 0, const QString& baseKey = "/Qgis/connections-wms/", const QString& connName = QString::null, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     //! Destructor
     ~QgsNewHttpConnection();
-    //! Tests the connection using the parameters supplied
-    void testConnection();
  public slots:
     //! Saves the connection to ~/.qt/qgisrc
-    void saveConnection();
+    void accept();
     //! Show context help
-    void on_btnHelp_clicked();
+    void helpRequested();
  private:
     QString mBaseKey;
     QString mOriginalConnName; //store initial name to delete entry in case of rename
