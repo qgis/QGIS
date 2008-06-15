@@ -61,6 +61,12 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
 #endif
   spinBoxIdentifyValue->setValue(identifyValue);
 
+  //Web proxy settings
+  grpProxy->setChecked(settings.value("proxy/proxyEnabled", "0").toBool());
+  leProxyHost->setText(settings.value("proxy/proxyHost", "").toString());
+  leProxyPort->setText(settings.value("proxy/proxyPort", "").toString());
+  leProxyUser->setText(settings.value("proxy/proxyUser", "").toString());
+  leProxyPassword->setText(settings.value("proxy/proxyPassword", "").toString());
   // set the current theme
   cmbTheme->setItemText(cmbTheme->currentIndex(), settings.value("/Themes").toString());
   // set the display update threshold
@@ -246,6 +252,13 @@ QString QgsOptions::theme()
 void QgsOptions::saveOptions()
 {
   QSettings settings;
+  //Web proxy settings
+  settings.setValue("proxy/proxyEnabled", grpProxy->isChecked());
+  settings.setValue("proxy/proxyHost", leProxyHost->text());
+  settings.setValue("proxy/proxyPort", leProxyPort->text());
+  settings.setValue("proxy/proxyUser", leProxyUser->text());
+  settings.setValue("proxy/proxyPassword", leProxyPassword->text());
+  //general settings
   settings.setValue("/Map/identifyRadius", spinBoxIdentifyValue->value());
   settings.setValue("/qgis/showLegendClassifiers",cbxLegendClassifiers->isChecked());
   settings.setValue("/qgis/hideSplash",cbxHideSplash->isChecked());
