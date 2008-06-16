@@ -68,7 +68,7 @@ bool QgsMemoryProvider::getNextFeature(QgsFeature& feature)
     else
     {
       // TODO: could use some less accurate test when not using mSelectUseIntersect (e.g. spatial index)
-      if (feature.geometry()->intersects(mSelectRect))
+      if (mSelectIterator->geometry()->intersects(mSelectRect))
       {
         hasFeature = TRUE;
         break;
