@@ -19,6 +19,7 @@
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
+#include "qgsspatialindex.h"
 #include "qgsspatialrefsys.h"
 
 
@@ -26,7 +27,9 @@ static const QString TEXT_PROVIDER_KEY = "memory";
 static const QString TEXT_PROVIDER_DESCRIPTION = "Memory provider";
 
 QgsMemoryProvider::QgsMemoryProvider(QString uri)
-  : QgsVectorDataProvider(uri)
+  : QgsVectorDataProvider(uri),
+    mSpatialIndex(NULL),
+    mSelectRectGeom(NULL)
 {
   if (uri == "Point")
     mWkbType = QGis::WKBPoint;
@@ -48,6 +51,8 @@ QgsMemoryProvider::QgsMemoryProvider(QString uri)
 
 QgsMemoryProvider::~QgsMemoryProvider()
 {
+  delete mSpatialIndex;
+  delete mSelectRectGeom;
 }
 
 QString QgsMemoryProvider::storageType() const
@@ -58,22 +63,62 @@ QString QgsMemoryProvider::storageType() const
 bool QgsMemoryProvider::getNextFeature(QgsFeature& feature)
 {
   bool hasFeature = FALSE;
+  
+  // option 1: using spatial index
+  if (mSelectUsingSpatialIndex)
+  {
+    while (mSelectSI_Iterator != mSelectSI_Features.end())
+    {
+      // do exact check in case we're doing intersection
+      if (mSelectUseIntersect)
+      {
+        if (mFeatures[*mSelectSI_Iterator].geometry()->intersects(mSelectRectGeom))
+          hasFeature = TRUE;
+      }
+      else
+        hasFeature = TRUE;
+      
+      if (hasFeature)
+        break;
+      
+      mSelectSI_Iterator++;
+    }
+    
+    // copy feature
+    if (hasFeature)
+    {
+      feature = mFeatures[*mSelectSI_Iterator];
+      mSelectSI_Iterator++;
+    }
+    return hasFeature;
+  }
+  
+  // option 2: not using spatial index
   while (mSelectIterator != mFeatures.end())
   {
     if (mSelectRect.isEmpty())
     {
+      // selection rect empty => using all features
       hasFeature = TRUE;
-      break;
     }
     else
     {
-      // TODO: could use some less accurate test when not using mSelectUseIntersect (e.g. spatial index)
-      if (mSelectIterator->geometry()->intersects(mSelectRect))
+      if (mSelectUseIntersect)
       {
-        hasFeature = TRUE;
-        break;
+        // using exact test when checking for intersection
+        if (mSelectIterator->geometry()->intersects(mSelectRectGeom))
+          hasFeature = TRUE;
+      }
+      else
+      {
+        // check just bounding box against rect when not using intersection
+        if (mSelectIterator->geometry()->boundingBox().intersects(mSelectRect))
+          hasFeature = TRUE;
       }
     }
+    
+    if (hasFeature)
+      break;
     
     mSelectIterator++;
   }
@@ -87,6 +132,7 @@ bool QgsMemoryProvider::getNextFeature(QgsFeature& feature)
   
   return hasFeature;
 }
+
 
 bool QgsMemoryProvider::getFeatureAtId(int featureId,
                               QgsFeature& feature,
@@ -110,15 +156,34 @@ void QgsMemoryProvider::select(QgsAttributeList fetchAttributes,
 {
   mSelectAttrs = fetchAttributes;
   mSelectRect = rect;
+  delete mSelectRectGeom;
+  mSelectRectGeom = QgsGeometry::fromRect(rect);
   mSelectGeometry = fetchGeometry;
   mSelectUseIntersect = useIntersect;
+  
+  // if there's spatial index, use it!
+  // (but don't use it when selection rect is not specified)
+  if (mSpatialIndex && !mSelectRect.isEmpty())
+  {
+    mSelectUsingSpatialIndex = TRUE;
+    mSelectSI_Features = mSpatialIndex->intersects(rect);
+    QgsDebugMsg("Features returned by spatial index: "+QString::number(mSelectSI_Features.count()));
+  }
+  else
+  {
+    mSelectUsingSpatialIndex = FALSE;
+    mSelectSI_Features.clear();
+  }
   
   reset();
 }
 
 void QgsMemoryProvider::reset()
 {
-  mSelectIterator = mFeatures.begin();
+  if (mSelectUsingSpatialIndex)
+    mSelectSI_Iterator = mSelectSI_Features.begin();
+  else
+    mSelectIterator = mFeatures.begin();
 }
 
 
@@ -166,10 +231,17 @@ bool QgsMemoryProvider::addFeatures(QgsFeatureList & flist)
   for (QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it)
   {
     mFeatures[mNextFeatureId] = *it;
-    mFeatures[mNextFeatureId].setFeatureId(mNextFeatureId);
+    QgsFeature& newfeat = mFeatures[mNextFeatureId];
+    newfeat.setFeatureId(mNextFeatureId);
+    
+    // update spatial index
+    if (mSpatialIndex)
+      mSpatialIndex->insertFeature(newfeat);
+    
     mNextFeatureId++;
   }
   
+
   updateExtent();
   
   return TRUE;
@@ -178,7 +250,19 @@ bool QgsMemoryProvider::addFeatures(QgsFeatureList & flist)
 bool QgsMemoryProvider::deleteFeatures(const QgsFeatureIds & id)
 {
   for (QgsFeatureIds::const_iterator it = id.begin(); it != id.end(); ++it)
-    mFeatures.remove(*it);
+  {
+    QgsFeatureMap::iterator fit = mFeatures.find(*it);
+    
+    // check whether such feature exists
+    if (fit == mFeatures.end())
+      continue;
+    
+    // update spatial index
+    if (mSpatialIndex)
+      mSpatialIndex->deleteFeature(*fit);
+    
+    mFeatures.erase(fit);
+  }
   
   updateExtent();
   
@@ -230,15 +314,32 @@ bool QgsMemoryProvider::changeGeometryValues(QgsGeometryMap & geometry_map)
 {
   // TODO: change geometries
   
+  // TODO: update spatial index
+  
   updateExtent();
   
   return FALSE;
 }
 
+bool QgsMemoryProvider::createSpatialIndex()
+{
+  if (!mSpatialIndex)
+  {
+    mSpatialIndex = new QgsSpatialIndex();
+    
+    // add existing features to index
+    for (QgsFeatureMap::iterator it = mFeatures.begin(); it != mFeatures.end(); ++it)
+    {
+      mSpatialIndex->insertFeature(*it);
+    }
+  }
+  return TRUE;
+}
+
 int QgsMemoryProvider::capabilities() const
 {
   return AddFeatures | DeleteFeatures | ChangeGeometries |
-      ChangeAttributeValues | AddAttributes | DeleteAttributes |
+      ChangeAttributeValues | AddAttributes | DeleteAttributes | CreateSpatialIndex |
       SelectAtId | SelectGeometryAtId | RandomSelectGeometryAtId | SequentialSelectGeometryAtId;
 }
 
