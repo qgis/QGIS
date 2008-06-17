@@ -18,6 +18,7 @@
 
 typedef QMap<int, QgsFeature> QgsFeatureMap;
 
+class QgsSpatialIndex;
 
 class QgsMemoryProvider : public QgsVectorDataProvider
 {
@@ -138,6 +139,12 @@ public:
        */
       virtual bool changeGeometryValues(QgsGeometryMap & geometry_map);      
       
+      /**
+       * Creates a spatial index
+       * @return true in case of success
+       */
+      virtual bool createSpatialIndex();
+
   /** Returns a bitmask containing the supported capabilities
   Note, some capabilities may change depending on whether
   a spatial filter is active on this provider, so it may
@@ -188,6 +195,14 @@ private:
     // selection
     QgsAttributeList mSelectAttrs;
     QgsRect mSelectRect;
+    QgsGeometry* mSelectRectGeom;
     bool mSelectGeometry, mSelectUseIntersect;
     QgsFeatureMap::iterator mSelectIterator;
+    bool mSelectUsingSpatialIndex;
+    QList<int> mSelectSI_Features;
+    QList<int>::iterator mSelectSI_Iterator;
+    
+    // indexing
+    QgsSpatialIndex* mSpatialIndex;
+    
 };
