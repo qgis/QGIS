@@ -138,6 +138,17 @@ QgsRect QgsRect::intersect(QgsRect * rect) const
   return intersection;
 }
 
+bool QgsRect::intersects(const QgsRect& rect) const
+{
+  double x1 = (xmin > rect.xmin ? xmin : rect.xmin);
+  double x2 = (xmax < rect.xmax ? xmax : rect.xmax);
+  if (x1 > x2) return FALSE;
+  double y1 = (ymin > rect.ymin ? ymin : rect.ymin);
+  double y2 = (ymax < rect.ymax ? ymax : rect.ymax);
+  if (y1 > y2) return FALSE;
+  return TRUE;
+}
+
 
 void QgsRect::combineExtentWith(QgsRect * rect)
 {
