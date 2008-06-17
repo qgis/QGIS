@@ -59,6 +59,8 @@ class QgsRect
     void expand(double, const QgsPoint *c = 0);
     //! return the intersection with the given rectangle
     QgsRect intersect(QgsRect *rect);
+    //! returns true when rectangle intersects with other rectangle
+    bool intersects(const QgsRect& rect) const;
     //! expand the rectangle so that covers both the original rectangle and the given rectangle
     void combineExtentWith(QgsRect *rect);
     //! expand the rectangle so that covers both the original rectangle and the given point
