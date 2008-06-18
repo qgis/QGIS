@@ -29,6 +29,8 @@ class QgsMapToolEdit: public QgsMapTool
  public:
   QgsMapToolEdit(QgsMapCanvas* canvas);
   virtual ~QgsMapToolEdit();
+
+  virtual bool isEditTool() { return true; }
   
  protected:
   /**Snapper object that reads the settings from project and option

@@ -141,6 +141,11 @@ bool QgsMapTool::isZoomTool()
   return false;
 }
 
+bool QgsMapTool::isEditTool()
+{
+  return false;
+}
+
 QgsMapCanvas* QgsMapTool::canvas()
 {
   return mCanvas;

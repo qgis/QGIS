@@ -234,6 +234,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! zooms with the factor supplied. Factor > 1 zooms in
     void zoom(double scaleFactor);
 
+    //! restore tool on toggle editing
+    void restoreMapTool();
 
   public slots:
 
@@ -299,7 +301,7 @@ signals:
 
     //! Emit key release event
     void keyReleased(QKeyEvent * e);
-    
+
 protected:
     //! Overridden key press event
     void keyPressEvent(QKeyEvent * e);
@@ -397,6 +399,9 @@ private:
     
     //! previous tool if current is for zooming/panning
     QgsMapTool* mLastNonZoomMapTool;
+
+    //! tool to restore when editing is toggled.
+    QgsMapTool* mNonEditMapTool;
 
     //! recently used extent
     QgsRect mLastExtent;
