@@ -2224,6 +2224,9 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
           lName = name();
         setLayerName(lName);
         QgsDebugMsg("Beautifying layer name " + name());
+
+        // deal with unnecessary schema qualification to make v.in.ogr happy
+        mDataSource = mDataProvider->dataSourceUri();
       }
 
       // label
