@@ -4750,8 +4750,6 @@ void QgisApp::showMapTip()
       // only process vector layers
       if ( mypLayer->type() == QgsMapLayer::VECTOR )
       {
-
-
         // Show the maptip if the maptips button is depressed
         if(mMapTipsVisible)
         {
@@ -4848,6 +4846,8 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
     mActionEditCopy->setEnabled(false);
     return;
   }
+
+  mMapCanvas->restoreMapTool();
 
   mActionToggleEditing->setEnabled(true);
   mActionRemoveLayer->setEnabled(true);
