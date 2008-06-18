@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include <QTextStream>
 #include <QDomDocument>
+#include <QPixmap> //to find out screen resolution
 
 typedef QgsProjectVersion PFV;
 
@@ -30,7 +31,9 @@ QgsProjectFileTransform::transform QgsProjectFileTransform::transformers[] = {
   {PFV(0,8,0), PFV(0,8,1), &QgsProjectFileTransform::transformNull},
   {PFV(0,8,1), PFV(0,9,0), &QgsProjectFileTransform::transform081to090},
   {PFV(0,9,0), PFV(0,9,1), &QgsProjectFileTransform::transformNull},
-  {PFV(0,9,1), PFV(0,10,0), &QgsProjectFileTransform::transform091to0100}
+  {PFV(0,9,1), PFV(0,10,0), &QgsProjectFileTransform::transform091to0100},
+  {PFV(0,9,2), PFV(0,10,0), &QgsProjectFileTransform::transformNull},
+  {PFV(0,10,0), PFV(0,11,0), &QgsProjectFileTransform::transform0100to0110}
 };
 
 bool QgsProjectFileTransform::updateRevision(QgsProjectVersion newVersion)
@@ -234,3 +237,43 @@ void QgsProjectFileTransform::transform091to0100()
 
 };
 
+void QgsProjectFileTransform::transform0100to0110()
+{
+  if ( ! mDom.isNull() )
+    {
+      //Change 'outlinewidth' in QgsSymbol
+      QPixmap thePixmap;
+      int screenDpi = (thePixmap.logicalDpiX() + thePixmap.logicalDpiY()) / 2;
+      double widthScaleFactor = 25.4 / screenDpi;
+
+      QDomNodeList outlineWidthList = mDom.elementsByTagName("outlinewidth");
+      for(int i = 0; i < outlineWidthList.size(); ++i)
+	{
+	  //calculate new width
+	  QDomElement currentOutlineElem = outlineWidthList.at(i).toElement();
+	  double outlineWidth = currentOutlineElem.text().toDouble();
+	  outlineWidth *= widthScaleFactor;
+
+	  //replace old text node
+	  QDomNode outlineTextNode = currentOutlineElem.firstChild();
+	  QDomText newOutlineText = mDom.createTextNode(QString::number(outlineWidth));
+	  currentOutlineElem.replaceChild(newOutlineText, outlineTextNode);
+	  
+	}
+
+      //Change 'pointsize' in QgsSymbol
+      QDomNodeList pointSizeList = mDom.elementsByTagName("pointsize");
+      for(int i = 0; i < pointSizeList.size(); ++i)
+	{
+	  //calculate new size
+	  QDomElement currentPointSizeElem = pointSizeList.at(i).toElement();
+	  double pointSize = currentPointSizeElem.text().toDouble();
+	  pointSize *= widthScaleFactor;
+	  
+	  //replace old text node
+	  QDomNode pointSizeTextNode = currentPointSizeElem.firstChild();
+	  QDomText newPointSizeText = mDom.createTextNode(QString::number((int)pointSize));
+	  currentPointSizeElem.replaceChild(newPointSizeText, pointSizeTextNode);
+	}
+    }
+}

@@ -76,6 +76,7 @@ class QgsProjectFileTransform
   void transformNull() {}; // Do absolutely nothing
   void transform081to090();
   void transform091to0100();
+  void transform0100to0110();
 };
 
 
