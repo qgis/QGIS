@@ -22,7 +22,7 @@
 #include "qgslogger.h"
 #include <QTextStream>
 #include <QDomDocument>
-#include <QPixmap> //to find out screen resolution
+#include <QPrinter> //to find out screen resolution
 
 typedef QgsProjectVersion PFV;
 
@@ -242,8 +242,8 @@ void QgsProjectFileTransform::transform0100to0110()
   if ( ! mDom.isNull() )
     {
       //Change 'outlinewidth' in QgsSymbol
-      QPixmap thePixmap;
-      int screenDpi = (thePixmap.logicalDpiX() + thePixmap.logicalDpiY()) / 2;
+      QPrinter myPrinter ( QPrinter::ScreenResolution ); 
+      int screenDpi = myPrinter.resolution();
       double widthScaleFactor = 25.4 / screenDpi;
 
       QDomNodeList outlineWidthList = mDom.elementsByTagName("outlinewidth");
