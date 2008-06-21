@@ -284,10 +284,10 @@ public:
     // Accessors for image height and width
     //
     /** \brief Accessor that returns the width of the (unclipped) raster  */
-    const int getRasterXDim() {return mRasterXDim;}
+    int getRasterXDim() {return mRasterXDim;}
 
     /** \brief Accessor that returns the height of the (unclipped) raster  */
-    const int getRasterYDim() {return mRasterYDim;}
+    int getRasterYDim() {return mRasterYDim;}
 
     //
     // Accessor and mutator for no data double
@@ -296,7 +296,7 @@ public:
     bool isNoDataValueValid() {return mValidNoDataValue;}
     
     /** \brief Accessor that returns the NO_DATA entry for this raster. */
-    const double getNoDataValue(bool* isValid=0) { if(isValid) { *isValid = mValidNoDataValue;} return mNoDataValue;}
+    double getNoDataValue(bool* isValid=0) { if(isValid) { *isValid = mValidNoDataValue;} return mNoDataValue;}
 
     /** \brief Mutator that allows the  NO_DATA entry for this raster to be overridden. */
     void setNoDataValue(double theNoData);
@@ -349,11 +349,11 @@ public:
         mStandardDeviations = theStdDevsToPlot;
     }
     /** \brief Get the number of bands in this layer  */
-    const unsigned int getBandCount();
+    unsigned int getBandCount();
     /** \brief Get RasterBandStats for a band given its number (read only)  */
     const  QgsRasterBandStats getRasterBandStats(int);
     /** \brief  Check whether a given band number has stats associated with it */
-    const bool hasStats(int theBandNoInt);
+    bool hasStats(int theBandNoInt);
     /** \brief Overloaded method that also returns stats for a band, but uses the band colour name
     *    Note this approach is not recommeneded because it is possible for two gdal raster
     *    bands to have the same name!
@@ -362,7 +362,7 @@ public:
     /** \brief Get the number of a band given its name. Note this will be the rewritten name set 
     *   up in the constructor, and will not necessarily be the same as the name retrieved directly from gdal!
     *   If no matching band is found zero will be returned! */
-    const  int getRasterBandNumber (const QString & theBandNameQString);
+    int getRasterBandNumber (const QString & theBandNameQString);
     /** \brief Get the name of a band given its number.  */
     const  QString getRasterBandName(int theBandNoInt);
     /** \brief Find out whether a given band exists.    */

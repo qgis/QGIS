@@ -1190,7 +1190,7 @@ bool QgsRasterLayer::draw(QgsRenderContext& renderContext)
   }
   else
   {
-    if ((myRasterViewPort->drawableAreaXDim) > 4000 &&  (myRasterViewPort->drawableAreaYDim > 4000))
+    if ((myRasterViewPort->drawableAreaXDim) > 4000 && (myRasterViewPort->drawableAreaYDim > 4000))
       {
 	// We have scaled one raster pixel to more than 4000 screen pixels. What's the point of showing this layer?
 	// Instead, we just stop displaying the layer. Prevents allocating the entire world of memory for showing
@@ -2238,7 +2238,7 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(QString const & theB
 //note this should be the rewritten name set up in the constructor,
 //not the name retrieved directly from gdal!
 //if no matching band is found zero will be returned!
-const int QgsRasterLayer::getRasterBandNumber(QString const &  theBandNameQString)
+int QgsRasterLayer::getRasterBandNumber(QString const & theBandNameQString)
 {
   for (int myIterator = 0; myIterator < mRasterStatsList.size(); ++myIterator)
   {
@@ -2280,7 +2280,7 @@ const QString QgsRasterLayer::getRasterBandName(int theBandNo)
 
 
 /** Check whether a given band number has stats associated with it */
-const bool QgsRasterLayer::hasStats(int theBandNo)
+bool QgsRasterLayer::hasStats(int theBandNo)
 {
   if (theBandNo <= mRasterStatsList.size())
   {
@@ -2637,7 +2637,7 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNo)
 
 
 //mutator for red band name (allows alternate mappings e.g. map blue as red colour)
-void QgsRasterLayer::setRedBandName(QString const &  theBandNameQString)
+void QgsRasterLayer::setRedBandName(QString const & theBandNameQString)
 {
   QgsDebugMsg("setRedBandName :  " + theBandNameQString);
   //check if the band is unset
@@ -2674,7 +2674,7 @@ void QgsRasterLayer::setRedBandName(QString const &  theBandNameQString)
 
 
 //mutator for green band name
-void QgsRasterLayer::setGreenBandName(QString const &  theBandNameQString)
+void QgsRasterLayer::setGreenBandName(QString const & theBandNameQString)
 {
   //check if the band is unset
   if (theBandNameQString == TRSTRING_NOT_SET || theBandNameQString == QSTRING_NOT_SET )
@@ -2708,7 +2708,7 @@ void QgsRasterLayer::setGreenBandName(QString const &  theBandNameQString)
 }
 
 //mutator for blue band name
-void QgsRasterLayer::setBlueBandName(QString const &  theBandNameQString)
+void QgsRasterLayer::setBlueBandName(QString const & theBandNameQString)
 {
   //check if the band is unset
   if (theBandNameQString == TRSTRING_NOT_SET || theBandNameQString == QSTRING_NOT_SET)
@@ -2742,7 +2742,7 @@ void QgsRasterLayer::setBlueBandName(QString const &  theBandNameQString)
 }
 
 //mutator for transparent band name
-void QgsRasterLayer::setTransparentBandName(QString const &  theBandNameQString)
+void QgsRasterLayer::setTransparentBandName(QString const & theBandNameQString)
 {
   //check if the band is unset
   if (theBandNameQString == TRSTRING_NOT_SET)
@@ -2776,7 +2776,7 @@ void QgsRasterLayer::setTransparentBandName(QString const &  theBandNameQString)
 
 
 //mutator for gray band name
-void QgsRasterLayer::setGrayBandName(QString const &  theBandNameQString)
+void QgsRasterLayer::setGrayBandName(QString const & theBandNameQString)
 {
   //check if the band is unset
   if (theBandNameQString == TRSTRING_NOT_SET || theBandNameQString == QSTRING_NOT_SET )
@@ -3348,7 +3348,7 @@ void QgsRasterLayer::setLayerOrder(QStringList const & layers)
 
 // Useful for Provider mode
 
-void QgsRasterLayer::setSubLayerVisibility(QString const &  name, bool vis)
+void QgsRasterLayer::setSubLayerVisibility(QString const & name, bool vis)
 {
 
   if (mDataProvider)
@@ -5110,7 +5110,7 @@ const QgsRasterDataProvider* QgsRasterLayer::getDataProvider() const
   return mDataProvider;
 }
 
-const unsigned int QgsRasterLayer::getBandCount()
+unsigned int QgsRasterLayer::getBandCount()
 {
   return mRasterStatsList.size();
 }

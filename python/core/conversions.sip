@@ -326,12 +326,18 @@ template<TYPE>
       Py_DECREF(d);
       
       if (kobj)
+      {
         Py_DECREF(kobj);
+      }
 
       if (tobj)
+      {
         Py_DECREF(tobj);
+      }
       else
+      {
         delete t;
+      }
 
       return NULL;
     }
@@ -547,7 +553,9 @@ template<double, TYPE2>
        PyObject *lst = PyList_New(0);
        PyDict_SetItem(d, t1obj, lst);
        if (lst)
+       {
          Py_DECREF(lst);
+       }
       }
 
       if (t1obj == NULL || t2obj == NULL ||
@@ -555,10 +563,14 @@ template<double, TYPE2>
         {
          Py_DECREF(d);
          if (t1obj)
+         {
            Py_DECREF(t1obj);
+         }
 
          if (t2obj)
+         {
            Py_DECREF(t2obj);
+         }
 
          return NULL;
         }

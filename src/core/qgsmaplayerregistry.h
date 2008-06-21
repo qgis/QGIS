@@ -44,7 +44,7 @@ public:
 /*! Return the number of registered layers.
  *
  * */
- const int count();
+ int count();
  
  ~QgsMapLayerRegistry();
  

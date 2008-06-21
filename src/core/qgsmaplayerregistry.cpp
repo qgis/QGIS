@@ -53,7 +53,7 @@ QgsMapLayerRegistry::~QgsMapLayerRegistry()
 }
 
 // get the layer count (number of registered layers)
-const int QgsMapLayerRegistry::count()
+int QgsMapLayerRegistry::count()
 {
   return mMapLayers.size();
 }
