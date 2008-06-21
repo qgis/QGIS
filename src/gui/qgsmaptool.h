@@ -80,8 +80,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     virtual bool isZoomTool();
  
     /** Check whether this MapTool performs an edit operation.
-     * If it does, we will deactivate it when editing is turned off and
-     * reactivate it when editing is turned back on.
+     * If it does, we will deactivate it when editing is turned off
      */
     virtual bool isEditTool();
 

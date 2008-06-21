@@ -1356,6 +1356,9 @@ void QgisApp::setupConnections()
   connect(mMapCanvas, SIGNAL(scaleChanged(double)), this, SLOT(showScale(double)));
   connect(mMapCanvas, SIGNAL(scaleChanged(double)), this, SLOT(updateMouseCoordinatePrecision()));
 
+  mNonEditMapTool=NULL;
+  connect(mMapCanvas, SIGNAL(mapToolSet(QgsMapTool *)), this, SLOT(mapToolChanged(QgsMapTool *)));
+
   connect(mRenderSuppressionCBox, SIGNAL(toggled(bool )), mMapCanvas, SLOT(setRenderFlag(bool)));
   //
   // Do we really need this ??? - its already connected to the esc key...TS
@@ -4677,6 +4680,14 @@ void QgisApp::showProgress(int theProgress, int theTotalSteps)
 
 }
 
+void QgisApp::mapToolChanged(QgsMapTool *tool)
+{
+  if( tool && !tool->isEditTool() )
+  {
+    mNonEditMapTool = tool;
+  }
+}
+
 void QgisApp::showExtents()
 {
   // update the statusbar with the current extents.
@@ -4847,8 +4858,6 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
     return;
   }
 
-  mMapCanvas->restoreMapTool();
-
   mActionToggleEditing->setEnabled(true);
   mActionRemoveLayer->setEnabled(true);
   mActionInOverview->setEnabled(true);
@@ -4863,6 +4872,11 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
 
     const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>(layer);
     const QgsVectorDataProvider* dprovider = vlayer->getDataProvider();
+
+    if( !vlayer->isEditable() && mMapCanvas->mapTool() && mMapCanvas->mapTool()->isEditTool() )
+    {
+	mMapCanvas->setMapTool(mNonEditMapTool);
+    }
 
     if (dprovider)
     {
