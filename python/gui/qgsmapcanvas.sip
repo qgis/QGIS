@@ -211,7 +211,7 @@ class QgsMapCanvas : QGraphicsView
     //! called to write map canvas settings to project
     void writeProject(QDomDocument &);
     
-signals:
+  signals:
     /** Let the owner know how far we are with render operations */
     void setProgress(int,int);
     /** emits current mouse position */
@@ -242,8 +242,10 @@ signals:
     //! Emit key release event
     void keyReleased(QKeyEvent * e);
    
+    //! Emit map tool changed event
+    void mapToolSet(QgsMapTool *tool);
 
-protected:
+  protected:
 
     //! Overridden key press event
     void keyPressEvent(QKeyEvent * e);

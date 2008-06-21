@@ -87,7 +87,6 @@ class QgsMapCanvas::CanvasProperties
   mMapOverview = NULL;
   mMapTool = NULL;
   mLastNonZoomMapTool = NULL;
-  mNonEditMapTool = NULL;
   
   mDrawing = false;
   mFrozen = false;
@@ -966,25 +965,8 @@ void QgsMapCanvas::setMapTool(QgsMapTool* tool)
   if (mMapTool)
     mMapTool->activate();
 
+  emit mapToolSet(mMapTool);
 } // setMapTool
-
-void QgsMapCanvas::restoreMapTool()
-{
-  if( !mMapTool )
-    return;
-  
-  if( !mMapTool->isEditTool() )
-  {
-    mNonEditMapTool = mMapTool;
-    return;
-  }
-
-  if ( mCurrentLayer && !mCurrentLayer->isEditable() )
-  {
-    setMapTool(mNonEditMapTool);
-  }
-}
-
 
 void QgsMapCanvas::unsetMapTool(QgsMapTool* tool)
 {
@@ -992,6 +974,7 @@ void QgsMapCanvas::unsetMapTool(QgsMapTool* tool)
   {
     mMapTool->deactivate();
     mMapTool = NULL;
+    emit mapToolSet(NULL);
     setCursor(Qt::ArrowCursor);
   }
 

@@ -318,6 +318,9 @@ public slots:
   //! starts/stops editing mode of the current layer
   void toggleEditing();
 
+  //! map tool changed
+  void mapToolChanged(QgsMapTool *tool);
+
   /** Activates or deactivates actions depending on the current maplayer type.
   Is called from the legend when the current legend item has changed*/
   void activateDeactivateLayerRelatedActions(QgsMapLayer* layer);
@@ -583,6 +586,8 @@ class Tools
       QgsMapTool* mAddRing;
       QgsMapTool* mAddIsland;
   } mMapTools;
+
+  QgsMapTool *mNonEditMapTool;
   
   //!The name of the active theme
   QString mThemeName;

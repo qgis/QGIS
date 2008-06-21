@@ -58,6 +58,11 @@ class QgsMapTool : QObject
      * If it does, we will be able to perform the zoom  and then 
      * resume operations with the original / previously used tool.*/
     virtual bool isZoomTool();
+
+    /** Check whether this MapTool performs an edit operation.
+     * If it does, we will deactivate it when editing is turned off 
+     */
+    virtual bool isEditTool();
     
     //! called when set as currently active map tool
     virtual void activate();
