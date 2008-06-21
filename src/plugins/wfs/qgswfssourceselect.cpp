@@ -141,7 +141,7 @@ int QgsWFSSourceSelect::getCapabilitiesGET(QString uri, std::list<QString>& type
     {
       uri.append("?");
     }
-  QString request = uri + "SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.1.1";
+  QString request = uri + "SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.0.0";
   
   QByteArray result;
   QgsHttpTransaction http(request);
