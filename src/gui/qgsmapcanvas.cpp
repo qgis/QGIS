@@ -319,10 +319,10 @@ void QgsMapCanvas::setOverview(QgsMapOverviewCanvas* overview)
     // map overview is not owned by map canvas so don't delete it...
   }
   
+  mMapOverview = overview;
+
   if (overview)
   {
-    mMapOverview = overview;
-  
     // connect to the map render to copy its projection settings
     connect(mMapRender, SIGNAL(projectionsEnabled(bool)),
             overview,     SLOT(projectionsEnabled(bool)));
