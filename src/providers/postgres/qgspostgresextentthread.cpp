@@ -18,6 +18,8 @@
 /* $Id$ */
 
 #include <fstream>
+#include <cstdlib>
+
 #include <QEvent>
 #include <QApplication>
 #include <QEvent>

@@ -1560,7 +1560,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   // as true so that we can generate pyramids for them.
   //
   QgsRasterLayer::RasterPyramidList myPyramidList = mRasterLayer->buildRasterPyramidList();
-  for ( unsigned int myCounterInt = 0; myCounterInt < lbxPyramidResolutions->count(); myCounterInt++ )
+  for ( int myCounterInt = 0; myCounterInt < lbxPyramidResolutions->count(); myCounterInt++ )
   {
     QListWidgetItem *myItem = lbxPyramidResolutions->item( myCounterInt );
     if ( myItem->isSelected() )
