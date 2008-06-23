@@ -50,7 +50,7 @@ class CORE_EXPORT QgsDistanceArea
     bool projectionsEnabled() { return mProjectionsEnabled; }
     
     //! sets source spatial reference system (by QGIS SRS)
-    void setSourceSRS(long srsid);
+    void setSourceSRS(long epsgId);
     
     //! returns source spatial reference system
     long sourceSRS() { return mSourceRefSys; }
