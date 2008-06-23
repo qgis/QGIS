@@ -1356,8 +1356,6 @@ void QgisApp::setupConnections()
   connect(mMapCanvas, SIGNAL(extentsChanged()),this,SLOT(showExtents()));
   connect(mMapCanvas, SIGNAL(scaleChanged(double)), this, SLOT(showScale(double)));
   connect(mMapCanvas, SIGNAL(scaleChanged(double)), this, SLOT(updateMouseCoordinatePrecision()));
-
-  mNonEditMapTool=NULL;
   connect(mMapCanvas, SIGNAL(mapToolSet(QgsMapTool *)), this, SLOT(mapToolChanged(QgsMapTool *)));
 
   connect(mRenderSuppressionCBox, SIGNAL(toggled(bool )), mMapCanvas, SLOT(setRenderFlag(bool)));
@@ -2603,8 +2601,9 @@ void QgisApp::fileNew(bool thePromptToSaveFlag)
   
   mMapCanvas->mapRender()->setProjectionsEnabled(FALSE);
   
-  pan(); // set map tool - panning
-
+  // set the initial map tool
+  mMapCanvas->setMapTool(mMapTools.mPan);
+  mNonEditMapTool = mMapTools.mPan;  // signals are not yet setup to catch this
 } // QgisApp::fileNew(bool thePromptToSaveFlag)
 
 
@@ -4540,7 +4539,7 @@ bool QgisApp::saveDirty()
     if (QMessageBox::Save == answer)
     {
       if (!fileSave())
-	    answer = QMessageBox::Cancel;
+        answer = QMessageBox::Cancel;
     }
   }
 
@@ -4876,7 +4875,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
 
     if( !vlayer->isEditable() && mMapCanvas->mapTool() && mMapCanvas->mapTool()->isEditTool() )
     {
-	mMapCanvas->setMapTool(mNonEditMapTool);
+      mMapCanvas->setMapTool(mNonEditMapTool);
     }
 
     if (dprovider)
