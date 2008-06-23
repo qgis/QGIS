@@ -327,7 +327,7 @@ void QgsDbSourceSelect::addTables()
         }
       }
 
-      query += "\"" + schemaName + "\".\"" + tableName + "\" " + "(" + geomColumnName + ") sql=" + sql;
+      query = "\"" + schemaName + "\".\"" + tableName + "\" " + "(" + geomColumnName + ") sql=" + sql;
 
       m_selectedTables.push_back(query);
     }
