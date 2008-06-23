@@ -92,7 +92,7 @@
          <string>Click to browse for an action</string>
         </property>
         <property name="whatsThis" >
-         <string>Clicking the buttone will let you select an application to use as the action</string>
+         <string>Clicking the button will let you select an application to use as the action</string>
         </property>
         <property name="text" >
          <string>...</string>
