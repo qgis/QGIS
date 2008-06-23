@@ -75,6 +75,8 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
 
       void setSelectedSRSID(long theSRSID);
 
+      //void setSelectedEPSG(long epsg);
+
       QString getCurrentProj4String();
 
       //! Gets the current PostGIS-style projection identifier

@@ -954,7 +954,7 @@ bool QgsSpatialRefSys::readXML( QDomNode & theNode )
   else
   {
     // Return default SRS if none was found in the XML.
-    createFromSrsId(GEOSRS_ID);
+    createFromEpsg(EPSGID);
   }
   return true;
 }
