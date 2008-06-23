@@ -93,14 +93,16 @@ void QgsDbTableModel::setSql(const QModelIndex& index, const QString& sql)
   //find out schema name and table name
   QModelIndex schemaSibling = index.sibling(index.row(), 0);
   QModelIndex tableSibling = index.sibling(index.row(), 1);
+  QModelIndex geomSibling = index.sibling(index.row(), 3);
 
-  if(!schemaSibling.isValid() || !tableSibling.isValid())
+  if(!schemaSibling.isValid() || !tableSibling.isValid() || !geomSibling.isValid())
   {
     return;
   }
 
   QString schemaName = itemFromIndex(schemaSibling)->text();
-  QString tableName = itemFromIndex(tableSibling)->text(); 
+  QString tableName = itemFromIndex(tableSibling)->text();
+  QString geomName = itemFromIndex(geomSibling)->text();
 
   QList<QStandardItem*> schemaItems = findItems(schemaName, Qt::MatchExactly, 0);
   if(schemaItems.size() < 1)
@@ -113,6 +115,7 @@ void QgsDbTableModel::setSql(const QModelIndex& index, const QString& sql)
 
   QModelIndex currentChildIndex;
   QModelIndex currentTableIndex;
+  QModelIndex currentGeomIndex;
 
   for(int i = 0; i < numChildren; ++i)
   {
@@ -127,7 +130,14 @@ void QgsDbTableModel::setSql(const QModelIndex& index, const QString& sql)
       continue;
     }
 
-    if(itemFromIndex(currentTableIndex)->text() == tableName)
+    currentGeomIndex = currentChildIndex.sibling(i, 3);
+    if(!currentGeomIndex.isValid())
+    {
+      continue;
+    }
+
+    if(itemFromIndex(currentTableIndex)->text() == tableName &&
+       itemFromIndex(currentGeomIndex)->text() == geomName )
     {
       QModelIndex sqlIndex = currentChildIndex.sibling(i, 4);
       if(sqlIndex.isValid())
