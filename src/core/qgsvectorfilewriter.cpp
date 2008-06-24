@@ -111,6 +111,8 @@ QgsVectorFileWriter::QgsVectorFileWriter(const QString& shapefileName,
     const QgsField& attrField = fldIt.value();
     
     OGRFieldType ogrType = OFTString; //default to string
+    int ogrWidth = -1;
+    int ogrPrecision = -1;
     switch (attrField.type())
     {
       case QVariant::String:
@@ -118,9 +120,12 @@ QgsVectorFileWriter::QgsVectorFileWriter(const QString& shapefileName,
         break;
       case QVariant::Int:
         ogrType = OFTInteger;
+        ogrWidth = 10;
         break;
       case QVariant::Double:
         ogrType = OFTReal;
+        ogrWidth = 32;
+        ogrPrecision = 3;
         break;
       default:
         //assert(0 && "invalid variant type!");
@@ -130,13 +135,21 @@ QgsVectorFileWriter::QgsVectorFileWriter(const QString& shapefileName,
 
     // create field definition
     OGRFieldDefnH fld = OGR_Fld_Create(mCodec->fromUnicode(attrField.name()), ogrType);
-    OGR_Fld_SetWidth(fld,attrField.length());
-    OGR_Fld_SetPrecision(fld,attrField.precision());
+    if(ogrWidth>0)
+    {
+      OGR_Fld_SetWidth(fld, ogrWidth);
+    }
+
+    if(ogrPrecision>=0)
+    {
+      OGR_Fld_SetPrecision(fld, ogrPrecision);
+    }
 
     // create the field
     QgsDebugMsg("creating field " + attrField.name() +
                 " type " + QString(QVariant::typeToName(attrField.type())) +
-                " width length " + QString::number(attrField.length()));
+                " width " + QString::number(ogrWidth) +
+                " precision " + QString::number(ogrPrecision));
     if (OGR_L_CreateField(mLayer,fld,TRUE) != OGRERR_NONE)
     {
       QgsDebugMsg("error creating field " + attrField.name());
