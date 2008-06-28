@@ -67,7 +67,7 @@
     </message>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dialog</translation>
     </message>
     <message>
         <source>Point Symbol</source>
@@ -1112,7 +1112,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>ERROR: Failed to created default style file as %1 Check file permissions and retry.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">FEHLER: Konnte die Datei %1 für den voreingestellten Stil nicht erzeugen.  Bitte prüfen Sie die Zugriffrechte vor einem erneuten Versuch.</translation>
     </message>
     <message>
         <source>Abort</source>
@@ -2231,7 +2231,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Resource Location Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Resource nicht gefunden</translation>
     </message>
     <message>
         <source>Error reading icon resources from: 
@@ -2311,11 +2311,11 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     </message>
     <message>
         <source>Stop map rendering</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zeichnen der Karte abbrechen</translation>
     </message>
     <message>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kartenansicht.  Hier werden Raster- und Vektorlayer angezeigt, wenn sie der Karte hinzugefügt werden.</translation>
     </message>
     <message>
         <source></source>
@@ -2396,7 +2396,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;p&gt;QGIS wurde durch Geldspenden für Entwicklungs- und andere Projektkosten unterstützt durch&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Name</source>
@@ -2408,15 +2408,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verfügbare QGIS-Datenlieferantenplugins</translation>
     </message>
     <message>
         <source>Available Qt Database Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verfügbare Qt-Datenbankplugins</translation>
     </message>
     <message>
         <source>Available Qt Image Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verfügbare Qt-Bildformatplugins</translation>
     </message>
 </context>
 <context>
@@ -6580,7 +6580,7 @@ bei Zeile </translation>
     </message>
     <message>
         <source>Modules List</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Modulliste</translation>
     </message>
 </context>
 <context>
@@ -7305,39 +7305,39 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>%1 at line %2 column %3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1 in Zeile %2, Spalte %3</translation>
     </message>
     <message>
         <source>could not open user database</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">konnte die Benutzerdatenbank nicht öffnen</translation>
     </message>
     <message>
         <source>style %1 not found in database</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Stil %1 nicht in der Datenbank gefunden</translation>
     </message>
     <message>
         <source>User database could not be opened.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Benutzerdatenbank konnte nicht geöffnet werden.</translation>
     </message>
     <message>
         <source>The style table could not be created.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Die Stiltabelle konnte nicht angelegt werden.</translation>
     </message>
     <message>
         <source>The style %1 was saved to database</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Der Stil %1 wurde in der Datenbank gespeichert.</translation>
     </message>
     <message>
         <source>The style %1 was updated in the database.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Der Stil %1 wurde in der Datenbank aktualisiert.</translation>
     </message>
     <message>
         <source>The style %1 could not be updated in the database.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Der Stil %1 konnte nicht in der Datenbank aktualisiert werden.</translation>
     </message>
     <message>
         <source>The style %1 could not be inserted into database.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Der Stil %1 konnte nicht in der Datenbank gespeichert werden.</translation>
     </message>
 </context>
 <context>
@@ -7894,11 +7894,11 @@ Ausführliche Fehlerinformation:</translation>
     </message>
     <message>
         <source>Create a new WMS connection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">WMS-Verbindung anlegen</translation>
     </message>
     <message>
         <source>Connection details</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verbindungsdetails</translation>
     </message>
 </context>
 <context>
@@ -8289,7 +8289,7 @@ Ausführliche Fehlerinformation:</translation>
     </message>
     <message>
         <source>Use proxy for web access</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Proxy für Webzugriff benutzen</translation>
     </message>
     <message>
         <source>Host</source>
@@ -8301,11 +8301,11 @@ Ausführliche Fehlerinformation:</translation>
     </message>
     <message>
         <source>User</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Benutzer</translation>
     </message>
     <message>
         <source>Leave this blank if no proxy username / password are required</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lassen Sie Benutzer/Passwort leer, wenn sie nicht benötigt werden.</translation>
     </message>
     <message>
         <source>Password</source>
@@ -10067,7 +10067,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Note:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hinweis:</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -10400,7 +10400,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verschiedene WMS-Server wurden der Serverliste hinzugefügt. Beachten Sie bitte, dass Sie ggf. noch die Proxyeinstellungen in den QGIS Optionen einstellen müssen.</translation>
     </message>
 </context>
 <context>
