@@ -66,6 +66,54 @@
         <source>Delete</source>
         <translation>Borrar</translation>
     </message>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point Symbol</source>
+        <translation type="unfinished">Símbolo de punto</translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation type="unfinished">Tamaño</translation>
+    </message>
+    <message>
+        <source>Area scale field</source>
+        <translation type="unfinished">Campo de escala de área</translation>
+    </message>
+    <message>
+        <source>Rotation field</source>
+        <translation type="unfinished">Campo de rotación</translation>
+    </message>
+    <message>
+        <source>Style Options</source>
+        <translation type="unfinished">Opciones de estilo</translation>
+    </message>
+    <message>
+        <source>Outline style</source>
+        <translation type="unfinished">Estilo de línea exterior</translation>
+    </message>
+    <message>
+        <source>Outline color</source>
+        <translation type="unfinished">Color de línea exterior</translation>
+    </message>
+    <message>
+        <source>Outline width</source>
+        <translation type="unfinished">Anchura de línea exterior</translation>
+    </message>
+    <message>
+        <source>Fill color</source>
+        <translation type="unfinished">Color de relleno</translation>
+    </message>
+    <message>
+        <source>Fill style</source>
+        <translation type="unfinished">Estilo de relleno</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
 </context>
 <context>
     <name>Gui</name>
