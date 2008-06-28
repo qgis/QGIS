@@ -37,6 +37,7 @@ class GPSData;
 */
 class QgsGPXProvider : public QgsVectorDataProvider
 {
+  Q_OBJECT;
   
 public:
   

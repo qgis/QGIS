@@ -23,6 +23,7 @@ schemas are the root elements that contain the individual tables as children.
 The tables have the following columns: Type, Schema, Tablename, Geometry Column, Sql*/
 class QgsDbTableModel: public QStandardItemModel
 {
+  Q_OBJECT;
  public:
   QgsDbTableModel();
   ~QgsDbTableModel();
