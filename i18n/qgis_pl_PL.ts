@@ -66,6 +66,54 @@
         <source>Delete</source>
         <translation>Usuń</translation>
     </message>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point Symbol</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation type="unfinished">Rozmiar</translation>
+    </message>
+    <message>
+        <source>Area scale field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotation field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Style Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outline style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outline color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outline width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fill color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fill style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
 </context>
 <context>
     <name>Gui</name>
@@ -6969,9 +7017,6 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
 </context>
 <context>
-    <name>QgsIDWInterpolatorDialogBase</name>
-</context>
-<context>
     <name>QgsIdentifyResults</name>
     <message>
         <source>Identify Results - </source>
@@ -7014,9 +7059,6 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
 </context>
 <context>
-    <name>QgsInterpolationDialog</name>
-</context>
-<context>
     <name>QgsInterpolationDialogBase</name>
     <message>
         <source>Output</source>
@@ -7026,9 +7068,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>...</source>
         <translation type="obsolete">...</translation>
     </message>
-</context>
-<context>
-    <name>QgsInterpolationPlugin</name>
 </context>
 <context>
     <name>QgsLUDialogBase</name>
@@ -10583,9 +10622,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsSOSPlugin</name>
-</context>
-<context>
     <name>QgsSOSSourceSelect</name>
     <message>
         <source>Are you sure you want to remove the </source>
@@ -11535,12 +11571,6 @@ p, li { white-space: pre-wrap; }
         <source>&amp;Spit</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>QgsTINInterpolatorDialog</name>
-</context>
-<context>
-    <name>QgsTINInterpolatorDialogBase</name>
 </context>
 <context>
     <name>QgsUniqueValueDialog</name>
