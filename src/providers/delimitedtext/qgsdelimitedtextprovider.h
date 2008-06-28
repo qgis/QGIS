@@ -42,6 +42,8 @@ class QTextStream;
 */
 class QgsDelimitedTextProvider : public QgsVectorDataProvider
 {
+  Q_OBJECT;
+
 public:
 
   QgsDelimitedTextProvider(QString uri = QString());

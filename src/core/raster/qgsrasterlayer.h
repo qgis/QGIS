@@ -101,14 +101,14 @@
  *      myRasterLayer->setDrawingStyle(QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR);
  *    }
  * 
- *  Raster layers can also have an arbitary level of transparency defined, and have their
+ *  Raster layers can also have an arbitrary level of transparency defined, and have their
  *  color palettes inverted using the setTransparency and setInvertHistogramFlag methods. 
  * 
  *  Pseudocolor images can have their output adjusted to a given number of standard
  *  deviations using the setStdDevsToPlot method.
  * 
  *  The final area of functionality you may be interested in is band mapping. Band mapping
- *  allows you to choose arbitary band -> color mappings and is applicable only to PALETTE
+ *  allows you to choose arbitrary band -> color mappings and is applicable only to PALETTE
  *  and MULTIBAND rasters, There are four mappings that can be made: red, green, blue and gray.
  *  Mappings are non-exclusive. That is a given band can be assigned to no, some or all 
  *  color mappings. The constructor sets sensible defaults for band mappings but these can be

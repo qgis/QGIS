@@ -22,6 +22,7 @@
 /**A map tool that draws a line and splits the features cut by the line*/
 class QgsMapToolSplitFeatures: public QgsMapToolCapture
 {
+  Q_OBJECT;
  public:
   QgsMapToolSplitFeatures(QgsMapCanvas* canvas);
   virtual ~QgsMapToolSplitFeatures();

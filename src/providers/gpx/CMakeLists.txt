@@ -2,7 +2,11 @@
 ########################################################
 # Files
 
-SET (OGR_SRCS qgsgpxprovider.cpp gpsdata.cpp)
+SET (GPX_SRCS qgsgpxprovider.cpp gpsdata.cpp)
+
+SET (GPX_MOC_HDRS
+	qgsgpxprovider.h
+)
 
 
 ########################################################
@@ -14,7 +18,7 @@ INCLUDE_DIRECTORIES(
   ${EXPAT_INCLUDE_DIR}
 )
 
-ADD_LIBRARY(gpxprovider MODULE ${OGR_SRCS})
+ADD_LIBRARY(gpxprovider MODULE ${GPX_SRCS})
 
 TARGET_LINK_LIBRARIES(gpxprovider
   ${QT_QTCORE_LIBRARY} 
