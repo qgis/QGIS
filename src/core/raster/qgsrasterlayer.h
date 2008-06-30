@@ -189,7 +189,12 @@ public:
     static void registerGdalDrivers();
 
     /** This helper checks to see whether the filename appears to be a valid
-       raster file name */
+       raster file name.  If the filename looks like it could be valid,
+       but some sort of error occurs in processing the file, the error is
+       returned in retError. */
+    static bool isValidRasterFileName(const QString & theFileNameQString,
+                                      QString &retError );
+
     static bool isValidRasterFileName(const QString & theFileNameQString);
 
     //
