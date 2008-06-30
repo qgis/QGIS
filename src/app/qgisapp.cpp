@@ -3126,6 +3126,7 @@ void QgisApp::openProject(const QString & fileName)
 bool QgisApp::openLayer(const QString & fileName)
 {
   QFileInfo fileInfo(fileName);
+
   // try to load it as raster
   QgsMapLayer* ok = NULL;
   CPLPushErrorHandler(CPLQuietErrorHandler); 
@@ -5323,7 +5324,9 @@ bool QgisApp::addRasterLayers(QStringList const &theFileNameQStringList, bool gu
       myIterator != theFileNameQStringList.end();
       ++myIterator)
   {
-    if (QgsRasterLayer::isValidRasterFileName(*myIterator))
+    QString errMsg;
+
+    if (QgsRasterLayer::isValidRasterFileName(*myIterator,errMsg))
     {
       QFileInfo myFileInfo(*myIterator);
       // get the directory the .adf file was in
@@ -5356,6 +5359,10 @@ bool QgisApp::addRasterLayers(QStringList const &theFileNameQStringList, bool gu
       if(guiWarning)
       {
         QString msg(*myIterator + tr(" is not a supported raster data source"));
+        
+        if( errMsg.size() > 0 )
+            msg += "\n" + errMsg;
+
         QMessageBox::critical(this, tr("Unsupported Data Source"), msg);
       }
       returnValue = false;

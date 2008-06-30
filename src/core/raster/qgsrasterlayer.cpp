@@ -255,22 +255,28 @@ void QgsRasterLayer::registerGdalDrivers()
 
 
 /** This helper checks to see whether the filename appears to be a valid raster file name */
-bool QgsRasterLayer::isValidRasterFileName(QString const & theFileNameQString)
+bool QgsRasterLayer::isValidRasterFileName(QString const & theFileNameQString,
+                                           QString & retErrMsg )
 {
 
   GDALDatasetH myDataset;
   registerGdalDrivers();
 
+  CPLErrorReset();
+
   //open the file using gdal making sure we have handled locale properly
   myDataset = GDALOpen( QFile::encodeName(theFileNameQString).constData(), GA_ReadOnly );
   if( myDataset == NULL )
   {
+    if( CPLGetLastErrorNo() != CPLE_OpenFailed )
+      retErrMsg = CPLGetLastErrorMsg();
     return false;
   }
   else if( GDALGetRasterCount( myDataset ) == 0 )
   {
     GDALClose( myDataset );
     myDataset = NULL;
+    retErrMsg = "This raster file has no bands and is invalid as a raster layer.";
     return false;
   }
   else
@@ -278,6 +284,14 @@ bool QgsRasterLayer::isValidRasterFileName(QString const & theFileNameQString)
     GDALClose(myDataset);
     return true;
   }
+}
+
+bool QgsRasterLayer::isValidRasterFileName(QString const & theFileNameQString)
+
+{
+    QString retErrMsg;
+
+    return isValidRasterFileName( theFileNameQString, retErrMsg);
 }
 
 
