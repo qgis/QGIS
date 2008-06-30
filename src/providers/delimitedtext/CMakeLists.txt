@@ -4,9 +4,7 @@
 
 SET (DTEXT_SRCS qgsdelimitedtextprovider.cpp)
 
-SET (DTEXT_MOC_HDRS
-	qgsdelimitedtextprovider.h
-)
+SET (DTEXT_MOC_HDRS	qgsdelimitedtextprovider.h)
 
 ########################################################
 # Build
@@ -18,7 +16,9 @@ INCLUDE_DIRECTORIES(
   ${GEOS_INCLUDE_DIR}
 )
 
-ADD_LIBRARY(delimitedtextprovider MODULE ${DTEXT_SRCS})
+QT4_WRAP_CPP(DTEXT_MOC_SRCS ${DTEXT_MOC_HDRS})
+
+ADD_LIBRARY(delimitedtextprovider MODULE ${DTEXT_SRCS} ${DTEXT_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES(delimitedtextprovider
   ${QT_QTCORE_LIBRARY} 
