@@ -267,34 +267,18 @@ bool QgsRasterLayer::isValidRasterFileName(QString const & theFileNameQString)
   {
     return false;
   }
+  else if( GDALGetRasterCount( myDataset ) == 0 )
+  {
+    GDALClose( myDataset );
+    myDataset = NULL;
+    return false;
+  }
   else
   {
     GDALClose(myDataset);
     return true;
   }
-
-  /*
-   * This way is no longer a good idea because it does not
-   * cater for filetypes such as grass rasters that dont
-   * have a predictable file extension.
-   *
-   QString name = theFileNameQString.toLower();
-   return (name.endsWith(".adf") ||
-   name.endsWith(".asc") ||
-   name.endsWith(".grd") ||
-   name.endsWith(".img") ||
-   name.endsWith(".tif") ||
-   name.endsWith(".png") ||
-   name.endsWith(".jpg") ||
-   name.endsWith(".dem") ||
-   name.endsWith(".ddf")) ||
-   name.endsWith(".dt0");
-
-*/
 }
-
-
-
 
 
 //////////////////////////////////////////////////////////
@@ -421,6 +405,16 @@ bool QgsRasterLayer::readFile( QString const & fileName )
 
   //check f this file has pyramids
   GDALRasterBandH myGDALBand = GDALGetRasterBand( mGdalDataset, 1 ); //just use the first band
+  if (myGDALBand == NULL)
+  {
+      GDALDereferenceDataset(mGdalBaseDataset);
+      mGdalBaseDataset = NULL;
+
+      GDALClose(mGdalDataset);
+      mGdalDataset = NULL;
+      mValid = FALSE;
+      return false;
+  }
   if( GDALGetOverviewCount(myGDALBand) > 0 )
   {
     hasPyramidsFlag=true;
