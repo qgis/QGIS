@@ -8,7 +8,6 @@ SET (GPX_MOC_HDRS
 	qgsgpxprovider.h
 )
 
-
 ########################################################
 # Build
 
@@ -18,7 +17,9 @@ INCLUDE_DIRECTORIES(
   ${EXPAT_INCLUDE_DIR}
 )
 
-ADD_LIBRARY(gpxprovider MODULE ${GPX_SRCS})
+QT4_WRAP_CPP(GPX_MOC_SRCS ${GPX_MOC_HDRS})
+
+ADD_LIBRARY(gpxprovider MODULE ${GPX_SRCS} ${GPX_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES(gpxprovider
   ${QT_QTCORE_LIBRARY} 
