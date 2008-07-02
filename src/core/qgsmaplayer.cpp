@@ -122,7 +122,7 @@ QString const & QgsMapLayer::source() const
   return mDataSource;
 }
 
-const QgsRect QgsMapLayer::extent()
+QgsRect QgsMapLayer::extent() const
 {
   return mLayerExtent;
 }

@@ -79,7 +79,7 @@ public:
     virtual void drawLabels(QgsRenderContext& renderContext);
 
     /** Return the extent of the layer as a QRect */
-    const QgsRect extent();
+    QgsRect extent() const;
 
     /*! Return the status of the layer. An invalid layer is one which has a bad datasource
      * or other problem. Child classes set this flag when intialized
