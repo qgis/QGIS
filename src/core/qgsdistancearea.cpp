@@ -43,7 +43,7 @@ QgsDistanceArea::QgsDistanceArea()
   // init with default settings
   mProjectionsEnabled = FALSE;
   mCoordTransform = new QgsCoordinateTransform;
-  setSourceSRS(EPSGID); // WGS 84
+  setSourceEPSG(EPSGID); // WGS 84
   setEllipsoid("WGS84");
 }
 
@@ -59,8 +59,14 @@ void QgsDistanceArea::setProjectionsEnabled(bool flag)
   mProjectionsEnabled = flag;
 }
 
+void QgsDistanceArea::setSourceSRS(long srsid)
+{
+  QgsSpatialRefSys srcSRS;
+  srcSRS.createFromSrsId(srsid);
+  mCoordTransform->setSourceSRS(srcSRS);
+}
 
-void QgsDistanceArea::setSourceSRS(long epsgId)
+void QgsDistanceArea::setSourceEPSG(long epsgId)
 {
   QgsSpatialRefSys srcSRS;
   srcSRS.createFromEpsg(epsgId);
