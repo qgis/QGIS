@@ -79,51 +79,51 @@
     </message>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Párbeszédablak</translation>
     </message>
     <message>
         <source>Point Symbol</source>
-        <translation type="unfinished">Pont szimbólum</translation>
+        <translation>Pont szimbólum</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished">Méret</translation>
+        <translation>Méret</translation>
     </message>
     <message>
         <source>Area scale field</source>
-        <translation type="unfinished"></translation>
+        <translation>Terület arány mező</translation>
     </message>
     <message>
         <source>Rotation field</source>
-        <translation type="unfinished">Forgatás mezõ</translation>
+        <translation>Forgatás mezõ</translation>
     </message>
     <message>
         <source>Style Options</source>
-        <translation type="unfinished">Stílus beállítások</translation>
+        <translation>Stílus beállítások</translation>
     </message>
     <message>
         <source>Outline style</source>
-        <translation type="unfinished">Körvonal stílus</translation>
+        <translation>Határvonal stílus</translation>
     </message>
     <message>
         <source>Outline color</source>
-        <translation type="unfinished">Körvonal szín</translation>
+        <translation>Határvonal szín</translation>
     </message>
     <message>
         <source>Outline width</source>
-        <translation type="unfinished">Körvonal vastagság</translation>
+        <translation>Határvonal vastagság</translation>
     </message>
     <message>
         <source>Fill color</source>
-        <translation type="unfinished">Kitöltés szín</translation>
+        <translation>Kitöltés szín</translation>
     </message>
     <message>
         <source>Fill style</source>
-        <translation type="unfinished">Kitöltés stílus</translation>
+        <translation>Kitöltés stílus</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -504,7 +504,7 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area.</source>
-        <translation type="unfinished">Egy koordinátarendszer kivételt kaptam egy pont transzformálása során. Nem tudom kiszámolni a területet.</translation>
+        <translation>Egy koordinátarendszer kivételt kaptam egy pont transzformálása során. Nem tudom kiszámolni a területet.</translation>
     </message>
     <message>
         <source> km2</source>
@@ -645,7 +645,7 @@ sorban</translation>
     </message>
     <message>
         <source> column </source>
-        <translation type="unfinished">oszlop</translation>
+        <translation>oszlop</translation>
     </message>
     <message>
         <source> for file </source>
@@ -790,7 +790,7 @@ sorban</translation>
     </message>
     <message>
         <source>Release vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Töréspont elengedése</translation>
     </message>
     <message>
         <source>Select element</source>
@@ -802,7 +802,7 @@ sorban</translation>
     </message>
     <message>
         <source>Release selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Szelektáltak elengedése</translation>
     </message>
     <message>
         <source>Delete selected / select next</source>
@@ -818,7 +818,7 @@ sorban</translation>
     </message>
     <message>
         <source>Release the line</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal elengedése</translation>
     </message>
     <message>
         <source>Select point on line</source>
@@ -932,7 +932,7 @@ sorban</translation>
     </message>
     <message>
         <source>Faces</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapok</translation>
     </message>
     <message>
         <source>Kernels</source>
@@ -1060,11 +1060,11 @@ sorban</translation>
     </message>
     <message>
         <source>Parse error at line </source>
-        <translation type="unfinished"></translation>
+        <translation>Feldolgozási hiba a következő sorban</translation>
     </message>
     <message>
         <source>GPS eXchange format provider</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS eXchange formátum feldolgozó</translation>
     </message>
     <message>
         <source>GRASS plugin</source>
@@ -1149,51 +1149,51 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>ERROR: Failed to created default style file as %1 Check file permissions and retry.</source>
-        <translation type="unfinished"></translation>
+        <translation>HIBA: Nem sikerült a %1 stílus fájlt létrehozni. Ellenőrizd a fájl engedélyeket és próbáld újra.</translation>
     </message>
     <message>
         <source> is not writeable.</source>
-        <translation type="unfinished"></translation>
+        <translation>nem írható.</translation>
     </message>
     <message>
         <source>Please adjust permissions (if possible) and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Módositsd az engedélyeket (ha lehet) és próbált újra.</translation>
     </message>
     <message>
         <source>Uncatched fatal GRASS error</source>
-        <translation type="unfinished"></translation>
+        <translation>Végzetes kezelhetetlen GRASS hiba</translation>
     </message>
     <message>
         <source>Couldn&apos;t load SIP module.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem tudom bertölteni a SIP modult.</translation>
     </message>
     <message>
         <source>Python support will be disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Python támogatást letiltom.</translation>
     </message>
     <message>
         <source>Couldn&apos;t load PyQt4.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem tudom betölteni a PyQt4-et.</translation>
     </message>
     <message>
         <source>Couldn&apos;t load PyQGIS.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem tudom betölteni a PyQGIS-t.</translation>
     </message>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba a Phyton kód végrehajtása közben:</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="unfinished"></translation>
+        <translation>Python verzió:</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="unfinished"></translation>
+        <translation>Python elérési út:</translation>
     </message>
     <message>
         <source>An error occured during execution of following code:</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba fordult elő a következő kód végrehajtása közben:</translation>
     </message>
 </context>
 <context>
@@ -1212,11 +1212,11 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Setting up the GUI</source>
-        <translation type="unfinished"></translation>
+        <translation>GUI beállítások</translation>
     </message>
     <message>
         <source>Checking provider plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Modulok ellenőzése</translation>
     </message>
     <message>
         <source>Starting Python</source>
@@ -1224,7 +1224,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Restoring loaded plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Betöltött modulok helyreállítása</translation>
     </message>
     <message>
         <source>Initializing file filters</source>
@@ -1232,7 +1232,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Restoring window state</source>
-        <translation type="unfinished"></translation>
+        <translation>Ablak státusz helyreállítás</translation>
     </message>
     <message>
         <source>QGIS Ready!</source>
@@ -1245,7 +1245,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <source>Ctrl+N</source>
         <comment>New Project</comment>
-        <translation type="unfinished">Ctrl+Ú</translation>
+        <translation>Ctrl+Ú</translation>
     </message>
     <message>
         <source>New Project</source>
@@ -1305,7 +1305,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Save as Image...</source>
-        <translation type="unfinished">Mentés &amp;képként...</translation>
+        <translation>Mentés képként...</translation>
     </message>
     <message>
         <source>Ctrl+I</source>
@@ -1957,7 +1957,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
-        <translation type="unfinished">Térkép. Ez az a hely ahol a raszter és vektor rétegek megjelennek amikor a térképhez adod</translation>
+        <translation>Térkép. Ez az a hely ahol a raszter és vektor rétegek megjelennek amikor a térképhez adod</translation>
     </message>
     <message>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
@@ -2023,7 +2023,7 @@ Qt-vel fordítva </translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="unfinished">Phyton hiba</translation>
+        <translation>Phyton hiba</translation>
     </message>
     <message>
         <source>Error when reading metadata of plugin </source>
@@ -2127,11 +2127,11 @@ Qt-vel fordítva </translation>
     </message>
     <message>
         <source>Provider does not support deletion</source>
-        <translation type="unfinished"></translation>
+        <translation>A törlés nem támogatott</translation>
     </message>
     <message>
         <source>Data provider does not support deleting features</source>
-        <translation type="unfinished"></translation>
+        <translation>Az adat tulajdonos nem engedélyezi az elemek törlését</translation>
     </message>
     <message>
         <source>Layer not editable</source>
@@ -2163,11 +2163,11 @@ Qt-vel fordítva </translation>
     </message>
     <message>
         <source>No MapLayer Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs MapLayer modul</translation>
     </message>
     <message>
         <source>No MapLayer plugins in ../plugins/maplayer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs MapLayer modul a ../plugins/maplayer könyvtárban</translation>
     </message>
     <message>
         <source>No Plugins</source>
@@ -2331,7 +2331,7 @@ Qt-vel fordítva </translation>
     </message>
     <message>
         <source> To improve the quality of QGIS, we appreciate if you file a bug report at %3.</source>
-        <translation type="unfinished"></translation>
+        <translation>A QGIS minőségének javítása érdekében nagyra értékeljük, ha egy hibajelentést küldesz ide %3.</translation>
     </message>
     <message>
         <source> Be sure to include the old project file, and state the version of QGIS you used to discover the error.</source>
@@ -2369,58 +2369,57 @@ Qt-vel fordítva </translation>
     </message>
     <message>
         <source>Resource Location Error</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Error reading icon resources from: 
  %1
  Quitting...</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba az ikon erőforrások olvasásában innen:
+%1
+Kilépek...</translation>
     </message>
     <message>
         <source>Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Áttekintő</translation>
     </message>
     <message>
         <source>Legend</source>
-        <translation type="unfinished">Jelmagyarázat</translation>
+        <translation>Jelmagyarázat</translation>
     </message>
     <message>
         <source>You are using QGIS version %1 built against code revision %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>A QGIS %1 verziót használod, mely a %2 kód változat alapján készült.</translation>
     </message>
     <message>
         <source> This copy of QGIS has been built with PostgreSQL support.</source>
-        <translation type="unfinished"></translation>
+        <translation>A QGIS ezen változata a PostgraSQL támogatássa készült.</translation>
     </message>
     <message>
         <source> This copy of QGIS has been built without PostgreSQL support.</source>
-        <translation type="unfinished"></translation>
+        <translation>A QGIS ezen változata a PostgraSQL támogatás nélkül készült.</translation>
     </message>
     <message>
         <source>
 This binary was compiled against Qt %1,and is currently running against Qt %2</source>
-        <translation type="unfinished"></translation>
+        <translation>
+A programot a Qt %1 változatával fordították és most a Qt %2 verzióval fut</translation>
     </message>
     <message>
         <source>This release candidate includes over 120 bug fixes and enchancements over the QGIS 0.9.1 release. In addition we have added the following new features:</source>
-        <translation type="unfinished">Ez a kibocsátás elõtti verzió több mint 40 hibajavítást és bõvítéseket tartalmaz a QGIS 0.9.1 verzióhoz képest. Emellett a következõ új funkciókat készítettük el: {120 ?} {0.9.1 ?}</translation>
+        <translation>Ez a kibocsátás elõtti verzió több mint 120 hibajavítást és bõvítéseket tartalmaz a QGIS 0.9.1 verzióhoz képest. Emellett a következõ új funkciókat készítettük el:</translation>
     </message>
     <message>
         <source>Updated icons for improved visual consistancy.</source>
-        <translation type="unfinished"></translation>
+        <translation>Frissített ikonok a jobb grafikus konzisztencia érdekében.</translation>
     </message>
     <message>
         <source>Support for migration of old projects to work in newer QGIS versions.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source></source>
-        <translation type="unfinished"></translation>
+        <translation>A régi projektek migrálásának támogatása a munkához az új QGIS verzióban.</translation>
     </message>
     <message>
         <source>Stop map rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Térkép rajzolás leállítása</translation>
     </message>
 </context>
 <context>
@@ -2442,7 +2441,7 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     <name>QgsAbout</name>
     <message>
         <source>Quantum GIS is licensed under the GNU General Public License</source>
-        <translation type="unfinished">A Quantum GIS-re a GNU General Public License érvényes</translation>
+        <translation>A Quantum GIS-re a GNU General Public License érvényes</translation>
     </message>
     <message>
         <source>QGIS Sponsors</source>
@@ -2450,11 +2449,11 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <source>Website</source>
-        <translation type="unfinished">Honlap</translation>
+        <translation>Honlap</translation>
     </message>
     <message>
         <source>QGIS Browser Selection</source>
@@ -2504,7 +2503,7 @@ You can change this option later by selection Options from the Settings menu (He
     </message>
     <message>
         <source>Providers</source>
-        <translation type="unfinished"></translation>
+        <translation>Szolgáltatók</translation>
     </message>
     <message>
         <source>Sponsors</source>
@@ -2516,34 +2515,37 @@ You can change this option later by selection Options from the Settings menu (He
     </message>
     <message>
         <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;A következők pénzzel támogatták a QGIS fejlesztését és más projekt költségeket&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Elérhető QGIS adat modulok</translation>
     </message>
     <message>
         <source>Available Qt Database Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Elérhető QT adatbázis modulok</translation>
     </message>
     <message>
         <source>Available Qt Image Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Elérhető Qt kép modulok</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:x-large;&quot;&gt;Quantum GIS (QGIS)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;(new line)
+p, li { white-space: pre-wrap; }(new line)
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;(new line)
+&lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:x-large;&quot;&gt;Quantum GIS (QGIS)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>http://www.gnu.org/licenses</source>
-        <translation type="unfinished">http://www.gnu.org/licenses</translation>
+        <translation>http://www.gnu.org/licenses</translation>
     </message>
     <message>
         <source>Join our user mailing list</source>
-        <translation type="unfinished"></translation>
+        <translation>Csatlakozz a felhasználói levelező listához</translation>
     </message>
 </context>
 <context>
@@ -2609,11 +2611,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Move down</source>
-        <translation type="unfinished">Mozgatás lefelé</translation>
+        <translation>Mozgatás lefelé</translation>
     </message>
     <message>
         <source>Move the selected action up</source>
-        <translation type="unfinished">Szelektált művelet mozgatása felfelé</translation>
+        <translation>Szelektált művelet mozgatása felfelé</translation>
     </message>
     <message>
         <source>Move up</source>
@@ -2621,11 +2623,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a lista tartalmazza az összes műveletet melyet az aktuális réteghez definiáltak. Add meg a részleteket az alábbi mezőkben egy művelet hozzáadásához, majd nyomd meg a művelet beszúrása gombot. A műveleteket duplakattintás után szerkesztheted.</translation>
     </message>
     <message>
         <source>The valid attribute names for this layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Az érvényes attribútum nevek ehhez a réteghez</translation>
     </message>
     <message>
         <source>Browse</source>
@@ -2633,11 +2635,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Inserts the selected field into the action, prepended with a %</source>
-        <translation type="unfinished"></translation>
+        <translation>Illeszd be a kiválasztott mezőt a műveletbe egy % után</translation>
     </message>
     <message>
         <source>Insert field</source>
-        <translation type="unfinished">Mező beillsztés</translation>
+        <translation>Mező beillesztés</translation>
     </message>
     <message>
         <source>Update the selected action</source>
@@ -2665,11 +2667,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Capture output</source>
-        <translation type="unfinished"></translation>
+        <translation>Digitalizálás output</translation>
     </message>
     <message>
         <source>Enter the action command here</source>
-        <translation type="unfinished"></translation>
+        <translation>Írd be a művelet parancsot ide</translation>
     </message>
     <message>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</source>
@@ -2693,31 +2695,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Attribute Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribútum műveletek</translation>
     </message>
     <message>
         <source>Action properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Művelet tulajdonságok</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <source>Action</source>
-        <translation type="unfinished">Művelet</translation>
+        <translation>Művelet</translation>
     </message>
     <message>
         <source>Browse for action</source>
-        <translation type="unfinished"></translation>
+        <translation>Műveletek tallózása</translation>
     </message>
     <message>
         <source>Click to browse for an action</source>
-        <translation type="unfinished"></translation>
+        <translation>Kattints a műveletek közötti tallózáshoz</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Capture</source>
@@ -2725,22 +2727,22 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Clicking the button will let you select an application to use as the action</source>
-        <translation type="unfinished"></translation>
+        <translation>A gomb megnyomása után egy alkalmazást választhatsz amit a műveletként használhatsz</translation>
     </message>
 </context>
 <context>
     <name>QgsAttributeDialog</name>
     <message>
         <source> (int)</source>
-        <translation type="unfinished"></translation>
+        <translation>(int)</translation>
     </message>
     <message>
         <source> (dbl)</source>
-        <translation type="unfinished"></translation>
+        <translation>(dbl)</translation>
     </message>
     <message>
         <source> (txt)</source>
-        <translation type="unfinished"></translation>
+        <translation>(txt)</translation>
     </message>
 </context>
 <context>
@@ -2781,7 +2783,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsAttributeTableBase</name>
     <message>
         <source>Attribute Table</source>
-        <translation type="unfinished">Attribútum tábla</translation>
+        <translation>Attribútum tábla</translation>
     </message>
     <message>
         <source>Remove selection</source>
@@ -2889,7 +2891,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Search for</source>
-        <translation type="unfinished"></translation>
+        <translation>Keresés</translation>
     </message>
 </context>
 <context>
@@ -2957,7 +2959,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not commit changes - changes are still pending</source>
-        <translation type="unfinished"></translation>
+        <translation>A változtatásokat nem tudom véglegesíteni - A változtatások még függőben vannak</translation>
     </message>
 </context>
 <context>
@@ -2990,11 +2992,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Töröl</translation>
     </message>
     <message>
         <source>&amp;Zoom to</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nagyítás</translation>
     </message>
 </context>
 <context>
@@ -3483,15 +3485,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Layers</source>
-        <translation type="unfinished">Rétegek</translation>
+        <translation>Rétegek</translation>
     </message>
     <message>
         <source>Group</source>
-        <translation type="unfinished">Csoport</translation>
+        <translation>Csoport</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation type="unfinished">ID</translation>
+        <translation>ID</translation>
     </message>
 </context>
 <context>
@@ -3577,7 +3579,7 @@ A legjobb, ha nem használod a térkép összeállítót a QGIS újraindításá
     </message>
     <message>
         <source>Label</source>
-        <translation type="unfinished">Cimke</translation>
+        <translation>Cimke</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -3778,7 +3780,7 @@ A legjobb, ha nem használod a térkép összeállítót a QGIS újraindításá
     </message>
     <message>
         <source>Creates a copyright label that is displayed on the map canvas.</source>
-        <translation type="unfinished">A térképen megjelenített szerzői jog cimke létrehozása.</translation>
+        <translation>A térképen megjelenített szerzői jog cimke létrehozása.</translation>
     </message>
     <message>
         <source>&amp;Decorations</source>
@@ -3789,7 +3791,7 @@ A legjobb, ha nem használod a térkép összeállítót a QGIS újraindításá
     <name>QgsCopyrightLabelPluginGuiBase</name>
     <message>
         <source>Copyright Label Plugin</source>
-        <translation type="unfinished">Szerzői jog cimke modul</translation>
+        <translation>Szerzői jog cimke modul</translation>
     </message>
     <message>
         <source>Color</source>
@@ -3817,7 +3819,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Enable Copyright Label</source>
-        <translation type="unfinished">Szerzői jog cimke bekapcsolás</translation>
+        <translation>Szerzői jog cimke bekapcsolása</translation>
     </message>
     <message encoding="UTF-8">
         <source>© QGIS 2008</source>
@@ -4003,38 +4005,38 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="unfinished">Paraméterek</translation>
+        <translation>Paraméterek</translation>
     </message>
     <message>
         <source>*</source>
-        <translation type="unfinished"></translation>
+        <translation>*</translation>
     </message>
     <message>
         <source>S</source>
-        <translation type="unfinished"></translation>
+        <translation>S</translation>
     </message>
     <message>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <source>North</source>
-        <translation type="unfinished">Észak</translation>
+        <translation>Észak</translation>
     </message>
     <message>
         <source>East</source>
-        <translation type="unfinished">Kelet</translation>
+        <translation>Kelet</translation>
     </message>
 </context>
 <context>
     <name>QgsDbSourceSelect</name>
     <message>
         <source>Wildcard</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>RegExp</source>
@@ -4102,7 +4104,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Accessible tables could not be determined</source>
-        <translation type="unfinished"></translation>
+        <translation>Az elérhető táblák nem határozhatók meg</translation>
     </message>
     <message>
         <source>Database connection was successful, but the accessible tables could not be determined.
@@ -4110,18 +4112,25 @@ p, li { white-space: pre-wrap; }
 The error message from the database was:
 %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Az adatbázishoz kapcsolódás sikeres, de nem találok elérhető táblákat
+
+A hibaüzenet az adatbázisból:
+%1
+</translation>
     </message>
     <message>
         <source>No accessible tables found</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs elérhető tábla</translation>
     </message>
     <message>
         <source>Database connection was successful, but no accessible tables were found.
 
 Please verify that you have SELECT privilege on a table carrying PostGIS
 geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az adatbázishoz kapcsolódás sikeres, de nem találok elérhető táblákat
+
+Ellenőrizd, hogy van-e SELECT jogod a geometriát tartalmazó PostGIS
+táblához.</translation>
     </message>
 </context>
 <context>
@@ -4431,15 +4440,15 @@ geometry.</source>
     <name>QgsDetailedItemWidgetBase</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Űrlap</translation>
     </message>
     <message>
         <source>Heading Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Fejléc cimke</translation>
     </message>
     <message>
         <source>Detail label</source>
-        <translation type="unfinished"></translation>
+        <translation>Részlet cimke</translation>
     </message>
 </context>
 <context>
@@ -4773,7 +4782,7 @@ geometry.</source>
     </message>
     <message>
         <source>of </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Downloading data...</source>
@@ -5043,15 +5052,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Real</source>
-        <translation type="unfinished"></translation>
+        <translation>Valós</translation>
     </message>
     <message>
         <source>Integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Egész</translation>
     </message>
     <message>
         <source>String</source>
-        <translation type="unfinished"></translation>
+        <translation>Szöveg</translation>
     </message>
 </context>
 <context>
@@ -5098,27 +5107,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>File format</source>
-        <translation type="unfinished"></translation>
+        <translation>Fájl formátum</translation>
     </message>
     <message>
         <source>Attributes</source>
-        <translation type="unfinished">Attribútumok</translation>
+        <translation>Attribútumok</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <source>Remove selected row</source>
-        <translation type="unfinished"></translation>
+        <translation>Szelektált sor törlése</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Add values manually</source>
-        <translation type="unfinished"></translation>
+        <translation>Értékeke manuális hozzáadása</translation>
     </message>
 </context>
 <context>
@@ -5294,15 +5303,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Classification field</source>
-        <translation type="unfinished"></translation>
+        <translation>Osztályozás mező</translation>
     </message>
     <message>
         <source>Mode</source>
-        <translation type="unfinished">Mód</translation>
+        <translation>Mód</translation>
     </message>
     <message>
         <source>Number of classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Osztályok száma</translation>
     </message>
 </context>
 <context>
@@ -7049,11 +7058,11 @@ at line </source>
     </message>
     <message>
         <source>Modules Tree</source>
-        <translation type="unfinished"></translation>
+        <translation>Modulok fa</translation>
     </message>
     <message>
         <source>Modules List</source>
-        <translation type="unfinished"></translation>
+        <translation>Modulok lista</translation>
     </message>
 </context>
 <context>
@@ -7310,9 +7319,6 @@ A hiba a hálózati kapcsolatodban vagy a WMS szervernél lehet.
     </message>
 </context>
 <context>
-    <name>QgsIDWInterpolatorDialogBase</name>
-</context>
-<context>
     <name>QgsIdentifyResults</name>
     <message>
         <source>Feature</source>
@@ -7355,9 +7361,6 @@ A hiba a hálózati kapcsolatodban vagy a WMS szervernél lehet.
     </message>
 </context>
 <context>
-    <name>QgsInterpolationDialog</name>
-</context>
-<context>
     <name>QgsInterpolationDialogBase</name>
     <message>
         <source>Output</source>
@@ -7367,9 +7370,6 @@ A hiba a hálózati kapcsolatodban vagy a WMS szervernél lehet.
         <source>...</source>
         <translation type="obsolete">...</translation>
     </message>
-</context>
-<context>
-    <name>QgsInterpolationPlugin</name>
 </context>
 <context>
     <name>QgsLUDialogBase</name>
@@ -7602,91 +7602,91 @@ A hiba a hálózati kapcsolatodban vagy a WMS szervernél lehet.
     </message>
     <message>
         <source>Field containing label</source>
-        <translation type="unfinished"></translation>
+        <translation>Cimkét tartalmazó mező</translation>
     </message>
     <message>
         <source>Default label</source>
-        <translation type="unfinished"></translation>
+        <translation>Alapértelmezett cimke</translation>
     </message>
     <message>
         <source>Data defined style</source>
-        <translation type="unfinished"></translation>
+        <translation>Adat szerinti stílus</translation>
     </message>
     <message>
         <source>Data defined alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Adat szerinti igazítás</translation>
     </message>
     <message>
         <source>Data defined buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Zóna adatok alapján</translation>
     </message>
     <message>
         <source>Data defined position</source>
-        <translation type="unfinished"></translation>
+        <translation>Adat szerinti pozició</translation>
     </message>
     <message>
         <source>Font transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>Betű átlátszóság</translation>
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished">Szín</translation>
+        <translation>Szín</translation>
     </message>
     <message>
         <source>Angle (deg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Szög (fok)</translation>
     </message>
     <message>
         <source>Buffer labels?</source>
-        <translation type="unfinished"></translation>
+        <translation>Zóna cimkék?</translation>
     </message>
     <message>
         <source>Buffer size</source>
-        <translation type="unfinished"></translation>
+        <translation>Zóna méret</translation>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>Átlátszóság</translation>
     </message>
     <message>
         <source>X Offset (pts)</source>
-        <translation type="unfinished"></translation>
+        <translation>X eltolás (pont)</translation>
     </message>
     <message>
         <source>Y Offset (pts)</source>
-        <translation type="unfinished"></translation>
+        <translation>Y eltolás (pont)</translation>
     </message>
     <message>
         <source>&amp;Font family</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Betű család</translation>
     </message>
     <message>
         <source>&amp;Bold</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Félkövér</translation>
     </message>
     <message>
         <source>&amp;Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dölt</translation>
     </message>
     <message>
         <source>&amp;Underline</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Aláhúzott</translation>
     </message>
     <message>
         <source>&amp;Size</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Méret</translation>
     </message>
     <message>
         <source>Size units</source>
-        <translation type="unfinished"></translation>
+        <translation>Méret mértékegység</translation>
     </message>
     <message>
         <source>X Coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>X Koordináta</translation>
     </message>
     <message>
         <source>Y Coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>Y koordináta</translation>
     </message>
 </context>
 <context>
@@ -7869,7 +7869,7 @@ A hiba a hálózati kapcsolatodban vagy a WMS szervernél lehet.
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Stop editing</source>
@@ -7977,39 +7977,39 @@ A hiba a hálózati kapcsolatodban vagy a WMS szervernél lehet.
     </message>
     <message>
         <source>%1 at line %2 column %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 a %2 sorban %3 oszlopban</translation>
     </message>
     <message>
         <source>could not open user database</source>
-        <translation type="unfinished"></translation>
+        <translation>nem tudom megnyitni a felhasználói adatbázist</translation>
     </message>
     <message>
         <source>style %1 not found in database</source>
-        <translation type="unfinished"></translation>
+        <translation>a %1 stílust nem találom az adatbázisban</translation>
     </message>
     <message>
         <source>User database could not be opened.</source>
-        <translation type="unfinished"></translation>
+        <translation>A felhasználói adatbázist nem tudom megnyitni.</translation>
     </message>
     <message>
         <source>The style table could not be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>A stílus táblát nem tudom létrehozni.</translation>
     </message>
     <message>
         <source>The style %1 was saved to database</source>
-        <translation type="unfinished"></translation>
+        <translation>A %1 stílust mentettem az adatbázisba</translation>
     </message>
     <message>
         <source>The style %1 was updated in the database.</source>
-        <translation type="unfinished"></translation>
+        <translation>A %1 stílust frissítettem az adatbázisban.</translation>
     </message>
     <message>
         <source>The style %1 could not be updated in the database.</source>
-        <translation type="unfinished"></translation>
+        <translation>A %1 stílus nem frissíthető az adatbázisban.</translation>
     </message>
     <message>
         <source>The style %1 could not be inserted into database.</source>
-        <translation type="unfinished"></translation>
+        <translation>A %1 stílus nem illeszthető be az adatbázisba.</translation>
     </message>
 </context>
 <context>
@@ -8054,7 +8054,7 @@ A hiba a hálózati kapcsolatodban vagy a WMS szervernél lehet.
     <name>QgsMapToolVertexEdit</name>
     <message>
         <source>Snap tolerance</source>
-        <translation></translation>
+        <translation>Tárgyrasszter tolerancia</translation>
     </message>
     <message>
         <source>Don&apos;t show this message again</source>
@@ -8115,7 +8115,7 @@ Felül akarod írni?</translation>
     </message>
     <message>
         <source>Web Interface Definition</source>
-        <translation type="unfinished"></translation>
+        <translation>Web interfész definíció</translation>
     </message>
     <message>
         <source>Template</source>
@@ -8275,7 +8275,7 @@ Felül akarod írni?</translation>
     </message>
     <message>
         <source>Prefix attached to map, scalebar and legend GIF filenames created using this MapFile. It should be kept short.</source>
-        <translation type="unfinished"></translation>
+        <translation>Előtag ezzel a térkép fájllal létrehozott térkép, léptékvonalzó és jelmagyarézat GIF fájlnevekhez. Lehetőleg rövid legyen.</translation>
     </message>
 </context>
 <context>
@@ -8329,7 +8329,7 @@ Felül akarod írni?</translation>
     </message>
     <message>
         <source>Segments</source>
-        <translation type="unfinished">Szakaszok</translation>
+        <translation>Szakaszok</translation>
     </message>
 </context>
 <context>
@@ -8461,7 +8461,7 @@ Bővebb hibaüzenet:
     </message>
     <message>
         <source>Restrict the search to the public schema for spatial tables not in the geometry_columns table</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>When searching for spatial tables that are not in the geometry_columns tables, restrict the search to tables that are in the public schema (for some databases this can save lots of time)</source>
@@ -8469,11 +8469,11 @@ Bővebb hibaüzenet:
     </message>
     <message>
         <source>Only look in the &apos;public&apos; schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Csak a &apos;public&apos; sémába nézd</translation>
     </message>
     <message>
         <source>Restrict the displayed tables to those that are in the geometry_columns table</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Restricts the displayed tables to those that are in the geometry_columns table. This can speed up the initial display of spatial tables.</source>
@@ -8481,7 +8481,7 @@ Bővebb hibaüzenet:
     </message>
     <message>
         <source>Only look in the geometry_columns table</source>
-        <translation type="unfinished"></translation>
+        <translation>Csak a geometry_columns táblába nézd</translation>
     </message>
     <message>
         <source>Save Password</source>
@@ -8616,11 +8616,11 @@ Bővebb hibaüzenet:
     </message>
     <message>
         <source>Create a new WMS connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Új WMS kapcsolat létrehozása</translation>
     </message>
     <message>
         <source>Connection details</source>
-        <translation type="unfinished"></translation>
+        <translation>Kapcsolódási részletek</translation>
     </message>
 </context>
 <context>
@@ -8747,23 +8747,23 @@ Bővebb hibaüzenet:
     </message>
     <message>
         <source>to vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>törésponthoz</translation>
     </message>
     <message>
         <source>to segment</source>
-        <translation type="unfinished">szakaszhoz</translation>
+        <translation>szakaszhoz</translation>
     </message>
     <message>
         <source>to vertex and segment</source>
-        <translation type="unfinished">törésponthoz és szakaszhoz</translation>
+        <translation>törésponthoz és szakaszhoz</translation>
     </message>
     <message>
         <source>Semi transparent circle</source>
-        <translation type="unfinished"></translation>
+        <translation>Félig átlátszó kör</translation>
     </message>
     <message>
         <source>Cross</source>
-        <translation type="unfinished"></translation>
+        <translation>Kereszt</translation>
     </message>
 </context>
 <context>
@@ -8958,7 +8958,7 @@ Bővebb hibaüzenet:
     </message>
     <message>
         <source>Snapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Tárgyraszter</translation>
     </message>
     <message>
         <source>Search radius for vertex edits (in layer units):</source>
@@ -9014,170 +9014,170 @@ Bővebb hibaüzenet:
     </message>
     <message>
         <source>Zoom to mouse cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>Nagyítás az egér kurzorhoz</translation>
     </message>
     <message>
         <source>Project files</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt fájl</translation>
     </message>
     <message>
         <source>Prompt to save project changes when required</source>
-        <translation type="unfinished"></translation>
+        <translation>Kérdés a projekt módosulások mentésére amikor szükséges</translation>
     </message>
     <message>
         <source>Warn when opening a project file saved with an older version of QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Figyelmeztetés, ha a projekt fájlt egy korábbi QGIS verzióval mentették</translation>
     </message>
     <message>
         <source>Default Map Appearance (overridden by project properties)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alapértelmezett térkép megjelenés (projekt tulajdonságok felülírják)</translation>
     </message>
     <message>
         <source>Selection color</source>
-        <translation type="unfinished"></translation>
+        <translation>Szelekció szín</translation>
     </message>
     <message>
         <source>Background color</source>
-        <translation type="unfinished"></translation>
+        <translation>Háttér szín</translation>
     </message>
     <message>
         <source>&amp;Application</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Alkalmazás</translation>
     </message>
     <message>
         <source>Icon theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Ikon téma</translation>
     </message>
     <message>
         <source>Capitalise layer names in legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Nagybetűs rétegnevek a jelmagyarázatban</translation>
     </message>
     <message>
         <source>Display classification attribute names in legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Oszályozás attribútum neve a jelmagyarázatba</translation>
     </message>
     <message>
         <source>Rendering behavior</source>
-        <translation type="unfinished"></translation>
+        <translation>Rajzolási viselkedés</translation>
     </message>
     <message>
         <source>Number of features to draw before updating the display</source>
-        <translation type="unfinished"></translation>
+        <translation>Rajzolt elemek száma mielőtt a képernyőt frissítem</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; Use zero to prevent display updates until all features have been rendered</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzés&lt;b&gt;:&lt;/b&gt; Használj nullát az összes elem megrajzolása utáni frissítéshez</translation>
     </message>
     <message>
         <source>Rendering quality</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjelenítási minőség</translation>
     </message>
     <message>
         <source>Zoom factor</source>
-        <translation type="unfinished"></translation>
+        <translation>Nagyítási tényező</translation>
     </message>
     <message>
         <source>Mouse wheel action</source>
-        <translation type="unfinished"></translation>
+        <translation>Egér görgő művelet</translation>
     </message>
     <message>
         <source>Rubberband color</source>
-        <translation type="unfinished"></translation>
+        <translation>Gumiszalag szín</translation>
     </message>
     <message>
         <source>Ellipsoid for distance calculations</source>
-        <translation type="unfinished"></translation>
+        <translation>Ellipszoid a távolság számításhoz</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; Specify the search radius as a percentage of the map width</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzés&lt;b&gt;:&lt;/b&gt; Add meg a keresési sugarat a térkép szélesség százalékában</translation>
     </message>
     <message>
         <source>Search radius for identifying features and displaying map tips</source>
-        <translation type="unfinished"></translation>
+        <translation>Keresési sugár elemek azonosításához és térkép tippek megjelenítéséhez</translation>
     </message>
     <message>
         <source>Line width</source>
-        <translation type="unfinished">Vonalvastagság</translation>
+        <translation>Vonalvastagság</translation>
     </message>
     <message>
         <source>Line colour</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonalszín</translation>
     </message>
     <message>
         <source>Default snap mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Alapértelmezett tárgyraszter mód</translation>
     </message>
     <message>
         <source>Default snapping tolerance in layer units</source>
-        <translation type="unfinished"></translation>
+        <translation>Alapértelmezett tárgyraszter tolerancia réteg egységekben</translation>
     </message>
     <message>
         <source>Search radius for vertex edits in layer units</source>
-        <translation type="unfinished"></translation>
+        <translation>Keresési sugár töréspont szerkesztéshez réteg egységekben</translation>
     </message>
     <message>
         <source>Vertex markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Töréspont jelek</translation>
     </message>
     <message>
         <source>Marker style</source>
-        <translation type="unfinished"></translation>
+        <translation>Jel stílus</translation>
     </message>
     <message>
         <source>Prompt for projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Kérdés a vetületre</translation>
     </message>
     <message>
         <source>Project wide default projection will be used</source>
-        <translation type="unfinished"></translation>
+        <translation>A projektre érvényes vetületett használom</translation>
     </message>
     <message>
         <source>Global default projection displa&amp;yed below will be used</source>
-        <translation type="unfinished"></translation>
+        <translation>Az alább meg&amp;jelenített globális alapértelmezett vetületet használom</translation>
     </message>
     <message>
         <source>Override system locale</source>
-        <translation type="unfinished"></translation>
+        <translation>Helyi beállítás felülbírálása</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; Enabling / changing overide on local requires an application restart</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Megjegyzés&lt;b&gt;:&lt;/b&gt; Enabling / changing overide on local requires an application restart</translation>
     </message>
     <message>
         <source>Proxy</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxy</translation>
     </message>
     <message>
         <source>Use proxy for web access</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxy használata a web eléréséhez</translation>
     </message>
     <message>
         <source>Host</source>
-        <translation type="unfinished">Gép</translation>
+        <translation>Gép</translation>
     </message>
     <message>
         <source>Port</source>
-        <translation type="unfinished">Port</translation>
+        <translation>Port</translation>
     </message>
     <message>
         <source>User</source>
-        <translation type="unfinished"></translation>
+        <translation>Felhasználó</translation>
     </message>
     <message>
         <source>Leave this blank if no proxy username / password are required</source>
-        <translation type="unfinished"></translation>
+        <translation>Hagyd üresen, ha proxy felhasználó és jelszó nem szükséges</translation>
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished">Jelszó</translation>
+        <translation>Jelszó</translation>
     </message>
 </context>
 <context>
     <name>QgsPasteTransformationsBase</name>
     <message>
         <source>Paste Transformations</source>
-        <translation type="unfinished"></translation>
+        <translation>Transzformációk beillesztése</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note: This function is not useful yet!&lt;/b&gt;</source>
@@ -9243,7 +9243,7 @@ Bővebb hibaüzenet:
     </message>
     <message>
         <source>&amp;Geoprocessing</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Geoprocessing</translation>
     </message>
     <message>
         <source>Buffer features in layer %1</source>
@@ -9301,7 +9301,7 @@ Bővebb hibaüzenet:
     </message>
     <message>
         <source>Create a buffer for a PostgreSQL layer. </source>
-        <translation type="unfinished"></translation>
+        <translation>Zóna létrehozása PostgreSQL réteghez.</translation>
     </message>
 </context>
 <context>
@@ -9403,11 +9403,11 @@ Bővebb hibaüzenet:
     </message>
     <message>
         <source>IN</source>
-        <translation type="unfinished"></translation>
+        <translation>Benne van</translation>
     </message>
     <message>
         <source>NOT IN</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs benne</translation>
     </message>
     <message>
         <source>!=</source>
@@ -9423,7 +9423,7 @@ Bővebb hibaüzenet:
     </message>
     <message>
         <source>ILIKE</source>
-        <translation type="unfinished"></translation>
+        <translation>Hasonló</translation>
     </message>
     <message>
         <source>&gt;=</source>
@@ -9511,11 +9511,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>SQL where clause</source>
-        <translation type="unfinished"></translation>
+        <translation>SQL ahol feltétel</translation>
     </message>
     <message>
         <source>Datasource</source>
-        <translation type="unfinished"></translation>
+        <translation>Adatforrás</translation>
     </message>
 </context>
 <context>
@@ -9546,11 +9546,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Select All</source>
-        <translation type="unfinished">&amp;Mindent szelektál</translation>
+        <translation>&amp;Mindent szelektál</translation>
     </message>
     <message>
         <source>&amp;Clear All</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Mindent töröl</translation>
     </message>
 </context>
 <context>
@@ -9601,19 +9601,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>To enable / disable a plugin, click its checkbox or description</source>
-        <translation type="unfinished"></translation>
+        <translation>A modul ki-, bekapcsolásához kattints a négyzetbe vagy a leírásra</translation>
     </message>
     <message>
         <source>&amp;Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Szűrő</translation>
     </message>
     <message>
         <source>Plugin Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Modul könyvtár:</translation>
     </message>
     <message>
         <source>Directory</source>
-        <translation type="unfinished">Mappa</translation>
+        <translation>Mappa</translation>
     </message>
 </context>
 <context>
@@ -9665,7 +9665,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source> transform is not yet supported.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>transzformáció még nem támogatott&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Error</source>
@@ -9681,7 +9681,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>z</source>
-        <translation type="unfinished"></translation>
+        <translation>z</translation>
     </message>
     <message>
         <source>Zoom Out</source>
@@ -9689,7 +9689,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Z</source>
-        <translation type="unfinished"></translation>
+        <translation>Z</translation>
     </message>
     <message>
         <source>Zoom To Layer</source>
@@ -9802,7 +9802,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPostgresProvider</name>
     <message>
         <source>Unable to access relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem érhető el a reláció</translation>
     </message>
     <message>
         <source>Unable to access the </source>
@@ -9812,7 +9812,9 @@ p, li { white-space: pre-wrap; }
         <source> relation.
 The error message from the database was:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>reláció
+Hibaüzenet az adatbázisból:
+</translation>
     </message>
     <message>
         <source>No GEOS Support!</source>
@@ -9910,7 +9912,8 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
     <message>
         <source>Qgis requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>A QGIS-hez szükséges, hogy a nézettábla egy oszlopot tartalmazzon, mely egyedi kulcs. Egy int4 oszlopból kell levezetni és elsődleges kulcsnak kell lennie, egyedi korlátozással vagy egy PostgreSQL oid oszlop. A hatékonyság növelése érdekében indexelje az oszlopot.
+</translation>
     </message>
     <message>
         <source>The view </source>
@@ -9964,15 +9967,15 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
     </message>
     <message>
         <source>Column </source>
-        <translation type="unfinished">Oszlop </translation>
+        <translation>Oszlop </translation>
     </message>
     <message>
         <source> in </source>
-        <translation type="unfinished"></translation>
+        <translation>ban</translation>
     </message>
     <message>
         <source> has a geometry type of </source>
-        <translation type="unfinished"></translation>
+        <translation>geometria típus</translation>
     </message>
     <message>
         <source>, which Qgis does not currently support.</source>
@@ -9990,39 +9993,39 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
     </message>
     <message>
         <source>Unable to determine table access privileges for the </source>
-        <translation type="unfinished"></translation>
+        <translation>NEm tudom meghatározni a tábla hozzáférési jogokat ehhez</translation>
     </message>
     <message>
         <source>Error while adding features</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba az elem hozzáadása közben</translation>
     </message>
     <message>
         <source>Error while deleting features</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba az elem törlése közben</translation>
     </message>
     <message>
         <source>Error while adding attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba az attribútum hozzáadásában</translation>
     </message>
     <message>
         <source>Error while deleting attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba az attribútum törlése közben</translation>
     </message>
     <message>
         <source>Error while changing attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba az attribútum módosítás közben</translation>
     </message>
     <message>
         <source>Error while changing geometry values</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba a geometria értékek változtatása közben</translation>
     </message>
     <message>
         <source>Qgis was unable to determine the type and srid of column </source>
-        <translation type="unfinished"></translation>
+        <translation>A Qgis nem tudja meghatározni az oszlop típusát és srid-jét</translation>
     </message>
     <message>
         <source>unexpected PostgreSQL error</source>
-        <translation type="unfinished"></translation>
+        <translation>váratlan PostreSQL hiba</translation>
     </message>
 </context>
 <context>
@@ -10053,7 +10056,7 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
     </message>
     <message>
         <source>Automatically sets the number of decimal places in the mouse position display</source>
-        <translation type="unfinished"></translation>
+        <translation>A tizedesjegyek automatikus beállítása a megjelenített egér pozícióban</translation>
     </message>
     <message>
         <source>The number of decimal places that are used when displaying the mouse position is automatically set to be enough so that moving the mouse by one pixel gives a change in the position display</source>
@@ -10101,7 +10104,7 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
     </message>
     <message>
         <source>Snapping options...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tárgyraszter beállítások...</translation>
     </message>
     <message>
         <source>Avoid intersections of new polygons</source>
@@ -10133,23 +10136,23 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
     </message>
     <message>
         <source>Title and colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Cím és színek</translation>
     </message>
     <message>
         <source>Project title</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt cím</translation>
     </message>
     <message>
         <source>Selection color</source>
-        <translation type="unfinished"></translation>
+        <translation>Szelekció szín</translation>
     </message>
     <message>
         <source>Background color</source>
-        <translation type="unfinished"></translation>
+        <translation>Háttér szín</translation>
     </message>
     <message>
         <source>Map units</source>
-        <translation type="unfinished">Térkép egységek</translation>
+        <translation>Térkép egységek</translation>
     </message>
 </context>
 <context>
@@ -10167,7 +10170,7 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
     <name>QgsProjectionSelectorBase</name>
     <message>
         <source>Projection Selector</source>
-        <translation type="unfinished"></translation>
+        <translation>Vetület kiválasztás</translation>
     </message>
     <message>
         <source>Projection</source>
@@ -10464,7 +10467,7 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
     </message>
     <message>
         <source>Band %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Sáv %1</translation>
     </message>
 </context>
 <context>
@@ -10479,11 +10482,11 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
     </message>
     <message>
         <source>Freak Out</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Custom Colormap</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyéni színskála</translation>
     </message>
     <message>
         <source>No Stretch</source>
@@ -10491,15 +10494,15 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
     </message>
     <message>
         <source>Stretch To MinMax</source>
-        <translation type="unfinished"></translation>
+        <translation>Széthúzás a terjedelemre</translation>
     </message>
     <message>
         <source>Stretch And Clip To MinMax</source>
-        <translation type="unfinished"></translation>
+        <translation>Széthúzás és vágás a terjedelemre</translation>
     </message>
     <message>
         <source>Clip To MinMax</source>
-        <translation type="unfinished"></translation>
+        <translation>Vágás a kiterjedésre</translation>
     </message>
     <message>
         <source>Discrete</source>
@@ -10515,7 +10518,7 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
     </message>
     <message>
         <source>Quantiles</source>
-        <translation type="unfinished">Egyenlõ számú</translation>
+        <translation>Egyenlõ számú</translation>
     </message>
     <message>
         <source>Palette</source>
@@ -10567,7 +10570,7 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
     </message>
     <message>
         <source>Indexed Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Indexelt érték</translation>
     </message>
     <message>
         <source>User Defined</source>
@@ -10591,17 +10594,19 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
     </message>
     <message>
         <source>n/a</source>
-        <translation type="unfinished"></translation>
+        <translation>n/a</translation>
     </message>
     <message>
         <source>Write access denied</source>
-        <translation type="unfinished"></translation>
+        <translation>emN írható</translation>
     </message>
     <message>
         <source>Write access denied. Adjust the file permissions and try again.
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Nem írható. Módosítsd a fájl jogokat és próbáld újra.
+
+</translation>
     </message>
     <message>
         <source>Building pyramids failed.</source>
@@ -10625,7 +10630,7 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
     </message>
     <message>
         <source>QGIS Generated Transparent Pixel Value Export File</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS generált átlátszó pixel érték export fájl</translation>
     </message>
     <message>
         <source>Open file</source>
@@ -10661,23 +10666,23 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
     </message>
     <message>
         <source>Not Set</source>
-        <translation type="unfinished">Nem beállított</translation>
+        <translation>Nem beállított</translation>
     </message>
     <message>
         <source>Default Style</source>
-        <translation type="unfinished">Alapértelmezett stílus</translation>
+        <translation>Alapértelmezett stílus</translation>
     </message>
     <message>
         <source>QGIS Layer Style File (*.qml)</source>
-        <translation type="unfinished">QGIS réteg stílus fájl (*.qml)</translation>
+        <translation>QGIS réteg stílus fájl (*.qml)</translation>
     </message>
     <message>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <source>Unknown style format: </source>
-        <translation type="unfinished">Ismeretlen stílus formátum: </translation>
+        <translation>Ismeretlen stílus formátum: </translation>
     </message>
 </context>
 <context>
@@ -10768,7 +10773,7 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
     </message>
     <message>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Semmi</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Full&lt;/p&gt;</source>
@@ -10828,7 +10833,7 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
     </message>
     <message>
         <source>Colormap</source>
-        <translation type="unfinished"></translation>
+        <translation>Szín tábla</translation>
     </message>
     <message>
         <source>Number of entries:</source>
@@ -10984,155 +10989,155 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
     </message>
     <message>
         <source>Single band gray</source>
-        <translation type="unfinished"></translation>
+        <translation>Egy sáv szürke</translation>
     </message>
     <message>
         <source>Three band color</source>
-        <translation type="unfinished"></translation>
+        <translation>Három sáv szín</translation>
     </message>
     <message>
         <source>RGB mode band selection and scaling</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB mód sáv szelektálás és skálázás</translation>
     </message>
     <message>
         <source>Red band</source>
-        <translation type="unfinished"></translation>
+        <translation>Vörös sáv</translation>
     </message>
     <message>
         <source>Green band</source>
-        <translation type="unfinished"></translation>
+        <translation>Zöld sáv</translation>
     </message>
     <message>
         <source>Blue band</source>
-        <translation type="unfinished"></translation>
+        <translation>Kék sáv</translation>
     </message>
     <message>
         <source>Custom min / max values</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyéni min/max értékek</translation>
     </message>
     <message>
         <source>Red min</source>
-        <translation type="unfinished"></translation>
+        <translation>Vörös min</translation>
     </message>
     <message>
         <source>Red max</source>
-        <translation type="unfinished"></translation>
+        <translation>Vörös max</translation>
     </message>
     <message>
         <source>Green min</source>
-        <translation type="unfinished"></translation>
+        <translation>Zöld min</translation>
     </message>
     <message>
         <source>Green max</source>
-        <translation type="unfinished"></translation>
+        <translation>Zöld max</translation>
     </message>
     <message>
         <source>Blue min</source>
-        <translation type="unfinished"></translation>
+        <translation>Kék min</translation>
     </message>
     <message>
         <source>Blue max</source>
-        <translation type="unfinished"></translation>
+        <translation>Kék max</translation>
     </message>
     <message>
         <source>Std. deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>Szórás</translation>
     </message>
     <message>
         <source>Single band properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Egy sáv tulajdonságok</translation>
     </message>
     <message>
         <source>Gray band</source>
-        <translation type="unfinished"></translation>
+        <translation>Szürke sáv</translation>
     </message>
     <message>
         <source>Color map</source>
-        <translation type="unfinished"></translation>
+        <translation>Szín tábla</translation>
     </message>
     <message>
         <source>Invert color map</source>
-        <translation type="unfinished"></translation>
+        <translation>Színek invertálása</translation>
     </message>
     <message>
         <source>Use standard deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>Szórás használata</translation>
     </message>
     <message>
         <source>Note:</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzés:</translation>
     </message>
     <message>
         <source>Load min / max values from band</source>
-        <translation type="unfinished"></translation>
+        <translation>Min/max értékek betöltése a sávból</translation>
     </message>
     <message>
         <source>Estimate (faster)</source>
-        <translation type="unfinished"></translation>
+        <translation>Becsül (gyorsabb)</translation>
     </message>
     <message>
         <source>Actual (slower)</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktuális (lassabb)</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Betölt</translation>
     </message>
     <message>
         <source>Contrast enhancement</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontraszt fokozás</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktuális</translation>
     </message>
     <message>
         <source>Save current contrast enhancement algorithm as default. This setting will be persistent between QGIS sessions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontraszt növelő algoritmus mentése alapértelmezettként. Ez a beállítás megmarad a QGIS-ből kilépés után.</translation>
     </message>
     <message>
         <source>Saves current contrast enhancement algorithm as a default. This setting will be persistent between QGIS sessions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontraszt növelő algoritmus mentése alapértelmezettként. Ez a beállítás megmarad a QGIS-ből kilépés után.</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Alapértelmezett</translation>
     </message>
     <message>
         <source>TextLabel</source>
-        <translation type="unfinished">Szöveg cimke</translation>
+        <translation>Szöveg cimke</translation>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>ÁtÁtlátszóság</translation>
     </message>
     <message>
         <source>Global transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>Globális átlátszóság</translation>
     </message>
     <message>
         <source>No data value</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs adat érték</translation>
     </message>
     <message>
         <source>Reset no data value</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs adat érték visszaállítása</translation>
     </message>
     <message>
         <source>Custom transparency options</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyéni átlátszóság beállítások</translation>
     </message>
     <message>
         <source>Transparency band</source>
-        <translation type="unfinished"></translation>
+        <translation>Átlátszó sáv</translation>
     </message>
     <message>
         <source>Transparent pixel list</source>
-        <translation type="unfinished"></translation>
+        <translation>Átlátszó képpont lista</translation>
     </message>
     <message>
         <source>Add values manually</source>
-        <translation type="unfinished"></translation>
+        <translation>Értékek manuális hozzáadása</translation>
     </message>
     <message>
         <source>Add Values from display</source>
@@ -11140,47 +11145,47 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
     </message>
     <message>
         <source>Remove selected row</source>
-        <translation type="unfinished"></translation>
+        <translation>Szelektált sor törlése</translation>
     </message>
     <message>
         <source>Default values</source>
-        <translation type="unfinished"></translation>
+        <translation>Alapértelmezett értékek</translation>
     </message>
     <message>
         <source>Import from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Fájlból importálás</translation>
     </message>
     <message>
         <source>Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Fájlba exportálás</translation>
     </message>
     <message>
         <source>Number of entries</source>
-        <translation type="unfinished"></translation>
+        <translation>Elemek száma</translation>
     </message>
     <message>
         <source>Color interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Szín interpoláció</translation>
     </message>
     <message>
         <source>Classification mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Osztályozási mód</translation>
     </message>
     <message>
         <source>Spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Térbeli referencia rendszer</translation>
     </message>
     <message>
         <source>Scale dependent visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Méretarány függő megjelenítés</translation>
     </message>
     <message>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximum</translation>
     </message>
     <message>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimum</translation>
     </message>
     <message>
         <source>Show debug info</source>
@@ -11188,30 +11193,33 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
     </message>
     <message>
         <source>Layer source</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg forrás</translation>
     </message>
     <message>
         <source>Display name</source>
-        <translation type="unfinished">Megjelenõ név</translation>
+        <translation>Megjelenõ név</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;(new line)
+p, li { white-space: pre-wrap; }(new line)
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;(new line)
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Pyramid resolutions</source>
-        <translation type="unfinished"></translation>
+        <translation>Piramis felbonás</translation>
     </message>
     <message>
         <source>Resampling method</source>
-        <translation type="unfinished"></translation>
+        <translation>Újramintavételezés módszer</translation>
     </message>
     <message>
         <source>Build pyramids</source>
-        <translation type="unfinished"></translation>
+        <translation>Piramis készítés</translation>
     </message>
     <message>
         <source>Line graph</source>
@@ -11219,35 +11227,35 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Bar chart</source>
-        <translation type="unfinished"></translation>
+        <translation>Oszlop diagramm</translation>
     </message>
     <message>
         <source>Column count</source>
-        <translation type="unfinished"></translation>
+        <translation>Oszlop szám</translation>
     </message>
     <message>
         <source>Out of range OK?</source>
-        <translation type="unfinished"></translation>
+        <translation>Tartományon kívül OK?</translation>
     </message>
     <message>
         <source>Allow approximation</source>
-        <translation type="unfinished"></translation>
+        <translation>Közelítés engedélyezése</translation>
     </message>
     <message>
         <source>Restore Default Style</source>
-        <translation type="unfinished">Alapértelmezett stílus visszaállítása</translation>
+        <translation>Alapértelmezett stílus visszaállítása</translation>
     </message>
     <message>
         <source>Save As Default</source>
-        <translation type="unfinished">Mentés alapértelmezettként</translation>
+        <translation>Mentés alapértelmezettként</translation>
     </message>
     <message>
         <source>Load Style ...</source>
-        <translation type="unfinished">Stílus betöltés ...</translation>
+        <translation>Stílus betöltés ...</translation>
     </message>
     <message>
         <source>Save Style ...</source>
-        <translation type="unfinished">Stílus mentés ...</translation>
+        <translation>Stílus mentés ...</translation>
     </message>
 </context>
 <context>
@@ -11264,9 +11272,6 @@ p, li { white-space: pre-wrap; }
         <source>Unable to run command</source>
         <translation>Nem tudom futtatni a parancsot</translation>
     </message>
-</context>
-<context>
-    <name>QgsSOSPlugin</name>
 </context>
 <context>
     <name>QgsSOSSourceSelect</name>
@@ -11326,11 +11331,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Oszlop</translation>
     </message>
     <message>
         <source>Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Téglalap</translation>
     </message>
     <message>
         <source>&amp;Scale Bar</source>
@@ -11417,7 +11422,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Automatically snap to round number on resize</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatikus egész számra kerekítés átméretezésnél</translation>
     </message>
     <message>
         <source>Colour of bar:</source>
@@ -11461,11 +11466,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Téglalap</translation>
     </message>
     <message>
         <source>Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Oszlop</translation>
     </message>
     <message>
         <source>Placement:</source>
@@ -11504,8 +11509,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Found %d matching features.</source>
-        <translation type="obsolete">
-        </translation>
+        <translation type="obsolete"></translation>
     </message>
 </context>
 <context>
@@ -11564,12 +11568,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Coordinate Reference System (%1 available)</source>
-        <translation type="obsolete">
-        </translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>Több WMS szervert adtál a szerver listához. Ha egy web proxyn keresztűl éred el az internetet, akkor be kell állítanod a proxyt a QGIS beállítások párbaszéddablakban.</translation>
     </message>
 </context>
 <context>
@@ -11680,7 +11683,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>... (rest of SQL trimmed)</source>
         <comment>is appended to a truncated SQL statement</comment>
-        <translation type="unfinished"></translation>
+        <translation>... (SQL további részét levágtam)</translation>
     </message>
 </context>
 <context>
@@ -11703,7 +11706,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Dash Dot Dot Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal pont pont</translation>
     </message>
     <message>
         <source>No Pen</source>
@@ -11719,31 +11722,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Solid</source>
-        <translation type="unfinished"></translation>
+        <translation>Tömör</translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished">Vízszintes</translation>
+        <translation>Vízszintes</translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation type="unfinished">Függőleges</translation>
+        <translation>Függőleges</translation>
     </message>
     <message>
         <source>Cross</source>
-        <translation type="unfinished"></translation>
+        <translation>Kereszt</translation>
     </message>
     <message>
         <source>BDiagonal</source>
-        <translation type="unfinished"></translation>
+        <translation>Átlós</translation>
     </message>
     <message>
         <source>FDiagonal</source>
-        <translation type="unfinished"></translation>
+        <translation>F Átlós</translation>
     </message>
     <message>
         <source>Diagonal X</source>
-        <translation type="unfinished"></translation>
+        <translation>Átlós X</translation>
     </message>
     <message>
         <source>Dense1</source>
@@ -11775,7 +11778,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Texture</source>
-        <translation type="unfinished"></translation>
+        <translation>Textura</translation>
     </message>
 </context>
 <context>
@@ -11794,7 +11797,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Area scale field</source>
-        <translation type="unfinished"></translation>
+        <translation>Terület skála mező</translation>
     </message>
     <message>
         <source>Rotation field</source>
@@ -11830,14 +11833,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Label</source>
-        <translation type="unfinished">Cimke</translation>
+        <translation>Cimke</translation>
     </message>
 </context>
 <context>
     <name>QgsSnappingDialog</name>
     <message>
         <source>to vertex</source>
-        <translation type="unfinished">törésponthoz</translation>
+        <translation>törésponthoz</translation>
     </message>
     <message>
         <source>to segment</source>
@@ -11852,7 +11855,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsSnappingDialogBase</name>
     <message>
         <source>Snapping options</source>
-        <translation type="unfinished"></translation>
+        <translation>Tárgyraszter beállítások</translation>
     </message>
     <message>
         <source>Layer</source>
@@ -11883,7 +11886,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>DB Relation Name</source>
-        <translation type="unfinished"></translation>
+        <translation>DB relációnév</translation>
     </message>
     <message>
         <source>Schema</source>
@@ -11935,7 +11938,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>General Interface Help:</source>
-        <translation type="unfinished"></translation>
+        <translation>Általános interfész súgó:</translation>
     </message>
     <message>
         <source>PostgreSQL Connections:</source>
@@ -11983,7 +11986,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>[Use Default (SRID)] - set SRID to -1</source>
-        <translation type="unfinished"></translation>
+        <translation>[Use Default (SRID)] - SRID -1-re állítása</translation>
     </message>
     <message>
         <source>[Geometry Column Name] - name of the geometry column in the database</source>
@@ -11991,11 +11994,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>[Use Default (Geometry Column Name)] - set column name to &apos;the_geom&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>[Use Default (Geometry Column Name)] - oszlop név beállítása &apos;the_geom&apos;-ra</translation>
     </message>
     <message>
         <source>[Glogal Schema] - set the schema for all files to be imported into</source>
-        <translation type="unfinished">[Globális séma]</translation>
+        <translation>[Globális séma] - séma beállítás az összes importálandó fájlhoz</translation>
     </message>
     <message>
         <source>[Import] - import the current shapefiles in the list</source>
@@ -12045,7 +12048,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Progress</source>
-        <translation type="unfinished"></translation>
+        <translation>Haladás</translation>
     </message>
     <message>
         <source>Problem inserting features from file:</source>
@@ -12061,7 +12064,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Checking to see if </source>
-        <translation type="unfinished"></translation>
+        <translation>Ellenőrzés</translation>
     </message>
     <message>
         <source>The following fields are duplicates:</source>
@@ -12077,7 +12080,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Import Shapefiles - Relation Exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Shapefájl import - Reláció létezik</translation>
     </message>
     <message>
         <source>The Shapefile:</source>
@@ -12085,23 +12088,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>will use [</source>
-        <translation type="unfinished"></translation>
+        <translation>használ [</translation>
     </message>
     <message>
         <source>] relation for its data,</source>
-        <translation type="unfinished"></translation>
+        <translation>] reláció az adatokra,</translation>
     </message>
     <message>
         <source>which already exists and possibly contains data.</source>
-        <translation type="unfinished"></translation>
+        <translation>mely már léttezik és valószinűleg adatokat tartalmaz.</translation>
     </message>
     <message>
         <source>To avoid data loss change the &quot;DB Relation Name&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Az adatvesztés elkerülése érdekében változtasd meg a &quot;DB reláció nevet&quot;</translation>
     </message>
     <message>
         <source>for this Shapefile in the main dialog file list.</source>
-        <translation type="unfinished"></translation>
+        <translation>ehhez a shapefájlhoz a fő párbeszédablak fájl listájában.</translation>
     </message>
     <message>
         <source>Do you want to overwrite the [</source>
@@ -12117,15 +12120,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>%1 of %2 shapefiles could not be imported.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 a % %2 shape fájlokból nem importálható.</translation>
     </message>
     <message>
         <source>Password for </source>
-        <translation type="unfinished">Jelszó</translation>
+        <translation>Jelszó</translation>
     </message>
     <message>
         <source>Please enter your password:</source>
-        <translation type="unfinished">Add meg a jelszavad:</translation>
+        <translation>Add meg a jelszavad:</translation>
     </message>
 </context>
 <context>
@@ -12172,7 +12175,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Set the SRID to the default value</source>
-        <translation type="unfinished"></translation>
+        <translation>SRID beállítása az alapértelmezett értékre</translation>
     </message>
     <message>
         <source>Set the geometry column name to the default value</source>
@@ -12208,7 +12211,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Connect</source>
-        <translation type="unfinished">Kapcsolódás</translation>
+        <translation>Kapcsolódás</translation>
     </message>
     <message>
         <source>Edit the current PostGIS connection</source>
@@ -12220,23 +12223,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Import options and shapefile list</source>
-        <translation type="unfinished"></translation>
+        <translation>Import beállítások és shapefájl lista</translation>
     </message>
     <message>
         <source>Use Default SRID or specify here</source>
-        <translation type="unfinished"></translation>
+        <translation>Alapértelmezett SRID használata vagy add meg itt</translation>
     </message>
     <message>
         <source>Use Default Geometry Column Name or specify here</source>
-        <translation type="unfinished"></translation>
+        <translation>Alapértelmezett geometria oszlop név használata vagy add meg itt</translation>
     </message>
     <message>
         <source>Primary Key Column Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Elsődleges kulcs oszlop név</translation>
     </message>
     <message>
         <source>Connect to PostGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Kapcsolódás PostGIS-hez</translation>
     </message>
 </context>
 <context>
@@ -12255,21 +12258,16 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsTINInterpolatorDialog</name>
-</context>
-<context>
-    <name>QgsTINInterpolatorDialogBase</name>
-</context>
-<context>
     <name>QgsUniqueValueDialog</name>
     <message>
         <source>Confirm Delete</source>
-        <translation type="unfinished">Törlés megerősítése</translation>
+        <translation>Törlés megerősítése</translation>
     </message>
     <message>
         <source>The classification field was changed from &apos;%1&apos; to &apos;%2&apos;.
 Should the existing classes be deleted before classification?</source>
-        <translation type="unfinished"></translation>
+        <translation>Az osztályozás mező megváltozott %1- ről %2 re.
+Töröljem a létező osztályokat az osztályozás előtt?</translation>
     </message>
 </context>
 <context>
@@ -12292,58 +12290,58 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Classification field</source>
-        <translation type="unfinished"></translation>
+        <translation>Osztályozás mező</translation>
     </message>
     <message>
         <source>Add class</source>
-        <translation type="unfinished"></translation>
+        <translation>Osztály hozzáadás</translation>
     </message>
     <message>
         <source>Delete classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Osztályok törlése</translation>
     </message>
     <message>
         <source>Randomize Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Véletlen színek</translation>
     </message>
     <message>
         <source>Reset Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Színek visszaállítása</translation>
     </message>
 </context>
 <context>
     <name>QgsVectorLayer</name>
     <message>
         <source>Could not commit the added features.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem tudom véglegesíteni a hozzáadott elemeket.</translation>
     </message>
     <message>
         <source>No other types of changes will be committed at this time.</source>
-        <translation type="unfinished"></translation>
+        <translation>További változás típusok véglegesítése nem történik most meg.</translation>
     </message>
     <message>
         <source>Could not commit the changed attributes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem tudom véglegesíteni a módosított attribútumokat.</translation>
     </message>
     <message>
         <source>However, the added features were committed OK.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bár a hozzáadott elemek véglegesítése OK.</translation>
     </message>
     <message>
         <source>Could not commit the changed geometries.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem tudom véglegesíteni a módosított geometriát.</translation>
     </message>
     <message>
         <source>However, the changed attributes were committed OK.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bár a módosított attribútumok véglegesítése OK.</translation>
     </message>
     <message>
         <source>Could not commit the deleted features.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem tudom véglegesíteni a törölt elemeket.</translation>
     </message>
     <message>
         <source>However, the changed geometries were committed OK.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bár a módosított geometria véglegesítése OK.</translation>
     </message>
 </context>
 <context>
@@ -12422,7 +12420,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>In layer spatial reference system units : </source>
-        <translation type="unfinished"></translation>
+        <translation>réteg A térbeli referencia rendszer egységeiben: </translation>
     </message>
     <message>
         <source>xMin,yMin </source>
@@ -12605,27 +12603,27 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Legend type</source>
-        <translation type="unfinished"></translation>
+        <translation>Jelmagyarázat típus</translation>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>Átlátszóság</translation>
     </message>
     <message>
         <source>Options</source>
-        <translation type="unfinished">Opciók</translation>
+        <translation>Beállítások</translation>
     </message>
     <message>
         <source>Change SRS</source>
-        <translation type="unfinished"></translation>
+        <translation>SRS módosítás</translation>
     </message>
     <message>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximum</translation>
     </message>
     <message>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimum</translation>
     </message>
 </context>
 <context>
@@ -12767,7 +12765,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>This is probably due to an incorrect WMS Server URL.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezt valószinűleg hibás WMS szerver URL okozza.</translation>
     </message>
     <message>
         <source>Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found</source>
@@ -12799,11 +12797,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>GetFeatureInfo request is applied to a Layer which is not declared queryable.</source>
-        <translation type="unfinished"></translation>
+        <translation>A GetFeatureInfo kérés olyan rétegre vonatkozik mely nem lekérdezhető.</translation>
     </message>
     <message>
         <source>GetFeatureInfo request contains invalid X or Y value.</source>
-        <translation type="unfinished"></translation>
+        <translation>A GetFeatureInfo kérés érvénytelen X vagy Y értéket tartalmaz.</translation>
     </message>
     <message>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number.</source>
@@ -12827,7 +12825,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>(Unknown error code from a post-1.3 WMS server)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Unknown error code from a post-1.3 WMS server)</translation>
     </message>
     <message>
         <source>The WMS vendor also reported: </source>
@@ -12835,7 +12833,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>This is probably due to a bug in the QGIS program.  Please report this error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ennek valószinűleg a QGIS program hibája az oka. Kérem jelentsd a hibát.</translation>
     </message>
     <message>
         <source>Server Properties:</source>
@@ -12871,7 +12869,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Contact Person</source>
-        <translation type="unfinished"></translation>
+        <translation>Kapcsolattartó személy</translation>
     </message>
     <message>
         <source>Fees</source>
@@ -12879,7 +12877,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Access Constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>Hozzáférés korlátozások</translation>
     </message>
     <message>
         <source>Image Formats</source>
@@ -12923,7 +12921,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>n/a</source>
-        <translation type="unfinished"></translation>
+        <translation>n/a</translation>
     </message>
     <message>
         <source>Can Identify</source>
@@ -13021,7 +13019,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Prompt for file name</source>
-        <translation type="unfinished"></translation>
+        <translation>Kérdés a fájlnévre</translation>
     </message>
     <message>
         <source>Note: If you want more control over the map layout please use the map composer function in QGIS.</source>
