@@ -40,7 +40,6 @@ class TestQgsRenderers: public QObject
 {
   Q_OBJECT;
   private slots:
-    QString getQgisPath(); // Gets the path to QGIS installation
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init(){};// will be called before each testfunction is executed.
@@ -61,25 +60,13 @@ class TestQgsRenderers: public QObject
     QString mReport;
 };
 
-QString TestQgsRenderers::getQgisPath()
-{
-#ifdef Q_OS_LINUX 
-  QString qgisPath = QCoreApplication::applicationDirPath () + "/../";
-#else //mac and win
-  QString qgisPath = QCoreApplication::applicationDirPath () ;
-#endif
-  return qgisPath;
-}
 
 void TestQgsRenderers::initTestCase()
 {
   // init QGIS's paths - true means that all path will be inited from prefix
-  //QString qgisPath = QCoreApplication::applicationDirPath ();
-  QgsApplication::setPrefixPath(getQgisPath(), TRUE);
-#ifdef Q_OS_LINUX
-//  QgsApplication::setPkgDataPath(qgisPath + "/../share/qgis");
-//  QgsApplication::setPluginPath(qgisPath + "/../lib/qgis");
-#endif
+  QString qgisPath = QCoreApplication::applicationDirPath ();
+  QgsApplication::setPrefixPath(INSTALL_PREFIX, true);
+  QgsApplication::showSettings();
   // Instantiate the plugin directory so that providers are loaded
   QgsProviderRegistry::instance(QgsApplication::pluginPath());
 
