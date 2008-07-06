@@ -93,13 +93,9 @@ void TestQgsVectorFileWriter::initTestCase()
       "******************\n");
   // init QGIS's paths - true means that all path will be inited from prefix
   QString qgisPath = QCoreApplication::applicationDirPath ();
-  QgsApplication::setPrefixPath(qgisPath, TRUE);
+  QgsApplication::setPrefixPath(INSTALL_PREFIX, true);
+  QgsApplication::showSettings();
   //create some objects that will be used in all tests...
-
-  std::cout << "Prefix  PATH: " << QgsApplication::prefixPath().toLocal8Bit().data() << std::endl;
-  std::cout << "Plugin  PATH: " << QgsApplication::pluginPath().toLocal8Bit().data() << std::endl;
-  std::cout << "PkgData PATH: " << QgsApplication::pkgDataPath().toLocal8Bit().data() << std::endl;
-  std::cout << "User DB PATH: " << QgsApplication::qgisUserDbFilePath().toLocal8Bit().data() << std::endl;
 
   mEncoding = "UTF-8";
   QgsField myField1("Field1",QVariant::String,"String",10,0,"Field 1 comment");
@@ -117,7 +113,7 @@ void TestQgsVectorFileWriter::createPoint()
   //
   // Remove old copies that may be lying around
   //
-  QString myFileName = "testpt.shp";
+  QString myFileName = "/testpt.shp";
   myFileName = QDir::tempPath() + myFileName; 
   QVERIFY(QgsVectorFileWriter::deleteShapeFile(myFileName));
   QgsVectorFileWriter myWriter (myFileName,
