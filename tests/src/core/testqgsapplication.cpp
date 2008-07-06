@@ -33,7 +33,7 @@ class TestQgsApplication: public QObject
 };
 
 
-void TestQgsGeometry::initTestCase()
+void TestQgsApplication::initTestCase()
 {
   //
   // Runs once before any tests are run
