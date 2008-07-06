@@ -70,17 +70,9 @@ void TestQgsRasterLayer::initTestCase()
 {
   // init QGIS's paths - true means that all path will be inited from prefix
   QString qgisPath = QCoreApplication::applicationDirPath ();
-  QgsApplication::setPrefixPath(qgisPath, TRUE);
-#ifdef Q_OS_LINUX
-  QgsApplication::setPkgDataPath(qgisPath + "/../share/qgis");
-#endif
+  QgsApplication::setPrefixPath(INSTALL_PREFIX, true);
+  QgsApplication::showSettings();
   //create some objects that will be used in all tests...
-
-  std::cout << "Prefix  PATH: " << QgsApplication::prefixPath().toLocal8Bit().data() << std::endl;
-  std::cout << "Plugin  PATH: " << QgsApplication::pluginPath().toLocal8Bit().data() << std::endl;
-  std::cout << "PkgData PATH: " << QgsApplication::pkgDataPath().toLocal8Bit().data() << std::endl;
-  std::cout << "User DB PATH: " << QgsApplication::qgisUserDbFilePath().toLocal8Bit().data() << std::endl;
-
   //create a raster layer that will be used in all tests...
   mTestDataDir = QString(TEST_DATA_DIR) + QDir::separator(); //defined in CmakeLists.txt
   QString myFileName = mTestDataDir + "tenbytenraster.asc";
