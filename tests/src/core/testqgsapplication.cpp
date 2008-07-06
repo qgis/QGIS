@@ -26,42 +26,27 @@ class TestQgsApplication: public QObject
 {
   Q_OBJECT;
   private slots:
-    void getPaths();
     void checkTheme();
+    void initTestCase();
   private:
     QString getQgisPath();
 };
 
-QString TestQgsApplication::getQgisPath()
-{
-#ifdef Q_OS_LINUX 
-  QString qgisPath = QCoreApplication::applicationDirPath () + "/../";
-#else //mac and win
-  QString qgisPath = QCoreApplication::applicationDirPath () ;
-#endif
-  return qgisPath;
-}
 
-void TestQgsApplication::getPaths()
+void TestQgsGeometry::initTestCase()
 {
+  //
+  // Runs once before any tests are run
+  //
   // init QGIS's paths - true means that all path will be inited from prefix
-  QgsApplication::setPrefixPath(getQgisPath(), TRUE);
-
-  std::cout << "Prefix  PATH: " << QgsApplication::prefixPath().toLocal8Bit().data() << std::endl;
-  std::cout << "Plugin  PATH: " << QgsApplication::pluginPath().toLocal8Bit().data() << std::endl;
-  std::cout << "PkgData PATH: " << QgsApplication::pkgDataPath().toLocal8Bit().data() << std::endl;
-  std::cout << "User DB PATH: " << QgsApplication::qgisUserDbFilePath().toLocal8Bit().data() << std::endl;
-
+  QString qgisPath = QCoreApplication::applicationDirPath ();
+  QgsApplication::setPrefixPath(INSTALL_PREFIX, true);
+  QgsApplication::showSettings();
 };
 
 void TestQgsApplication::checkTheme()
 {
   QgsApplication::setPrefixPath(getQgisPath(), TRUE);
-
-  std::cout << "Prefix  PATH: " << QgsApplication::prefixPath().toLocal8Bit().data() << std::endl;
-  std::cout << "Plugin  PATH: " << QgsApplication::pluginPath().toLocal8Bit().data() << std::endl;
-  std::cout << "PkgData PATH: " << QgsApplication::pkgDataPath().toLocal8Bit().data() << std::endl;
-  std::cout << "User DB PATH: " << QgsApplication::qgisUserDbFilePath().toLocal8Bit().data() << std::endl;
   QString myIconPath = QgsApplication::themePath();
   QPixmap myPixmap;
   myPixmap.load(myIconPath+"/mIconProjectionDisabled.png");
