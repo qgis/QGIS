@@ -35,7 +35,6 @@ class TestQgsGeometry: public QObject
 {
   Q_OBJECT;
   private slots:
-    QString getQgisPath(); // Gets the path to QGIS installation
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
@@ -64,15 +63,6 @@ class TestQgsGeometry: public QObject
     QString mTestDataDir;
 };
 
-QString TestQgsGeometry::getQgisPath()
-{
-#ifdef Q_OS_LINUX 
-  QString qgisPath = QCoreApplication::applicationDirPath () + "/../";
-#else //mac and win
-  QString qgisPath = QCoreApplication::applicationDirPath () ;
-#endif
-  return qgisPath;
-}
 
 void TestQgsGeometry::init()
 {
@@ -118,19 +108,11 @@ void TestQgsGeometry::initTestCase()
   // Runs once before any tests are run
   //
   // init QGIS's paths - true means that all path will be inited from prefix
-  //QString qgisPath = QCoreApplication::applicationDirPath ();
-  QgsApplication::setPrefixPath(getQgisPath(), TRUE);
-#ifdef Q_OS_LINUX
-//  QgsApplication::setPkgDataPath(qgisPath + "/../share/qgis");
-//  QgsApplication::setPluginPath(qgisPath + "/../lib/qgis");
-#endif
-
-  std::cout << "Prefix  PATH: " << QgsApplication::prefixPath().toLocal8Bit().data() << std::endl;
-  std::cout << "Plugin  PATH: " << QgsApplication::pluginPath().toLocal8Bit().data() << std::endl;
-  std::cout << "PkgData PATH: " << QgsApplication::pkgDataPath().toLocal8Bit().data() << std::endl;
-  std::cout << "User DB PATH: " << QgsApplication::qgisUserDbFilePath().toLocal8Bit().data() << std::endl;
-  
+  QString qgisPath = QCoreApplication::applicationDirPath ();
+  QgsApplication::setPrefixPath(INSTALL_PREFIX, true);
+  QgsApplication::showSettings();
 }
+
 void TestQgsGeometry::cleanupTestCase()
 {
   //
