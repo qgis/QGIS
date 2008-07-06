@@ -46,7 +46,6 @@ void TestQgsApplication::initTestCase()
 
 void TestQgsApplication::checkTheme()
 {
-  QgsApplication::setPrefixPath(getQgisPath(), TRUE);
   QString myIconPath = QgsApplication::themePath();
   QPixmap myPixmap;
   myPixmap.load(myIconPath+"/mIconProjectionDisabled.png");
