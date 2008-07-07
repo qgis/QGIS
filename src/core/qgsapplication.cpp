@@ -257,6 +257,7 @@ void QgsApplication::showSettings()
   qDebug("Plugin Path  :" + mPluginPath.toLocal8Bit());
   qDebug("PkgData Path :" + mPkgDataPath.toLocal8Bit());
   qDebug("Theme Path   :" + mThemePath.toLocal8Bit());
+  qDebug("User DB Path :" + qgisMasterDbFilePath().toLocal8Bit());
   qDebug("**********************************\n");
 }
 
