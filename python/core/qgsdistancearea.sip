@@ -22,6 +22,9 @@ class QgsDistanceArea
     //! sets source spatial reference system (by QGIS SRS)
     void setSourceSRS(long srsid);
     
+    //! sets source spatial reference system (by EPSG)
+    void setSourceEPSG(long epsgId);
+
     //! returns source spatial reference system
     long sourceSRS();
     //! What sort of coordinate system is being used?
