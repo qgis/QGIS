@@ -366,7 +366,7 @@ sudo ln -s /usr/local/ local
 
 == Install Qt4 from .dmg ==
 
-You need a minimum of Qt4.2. I suggest getting the latest (at time of writing).
+You need a minimum of Qt4.3.0. I suggest getting the latest (at time of writing).
 
 ``` 
 ftp://ftp.trolltech.com/qt/source/qt-mac-opensource-4.3.2.dmg
