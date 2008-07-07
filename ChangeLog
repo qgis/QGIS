@@ -1,5 +1,15 @@
 /* ChangeLog,v 1.214 2004/11/12 00:42:21 gsherman Exp */
 ------------------------------------------------------------------------------
+Version 0.11.0 'Metis'
+** This release includes over 60 bug fixes and enhancements over the 
+** QGIS 0.10.0 release. In addition we have made the following changes:
+** Revision of all dialogs for user interface consistancy
+** Improvements to unique value renderer vector dialog
+** Symbol previews when defining vector classes
+** Separation of python support into its own library
+** List view and filter for GRASS toolbox to find tools more quickly
+** List view and filter for Plugin Manager to find plugins more easily
+** Updated Spatial Reference System definitions
 Version 0.10.0 'Io'
 ** This release includes over 120 bug fixes and enchancements 
 ** over the QGIS 0.9.1 release. In addition we have added 
