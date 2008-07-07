@@ -166,7 +166,7 @@ For complete information, see the wiki at:
  * Flex, Bison
 
 '''Required runtime deps:'''
- * Qt >= 4.2.0
+ * Qt >= 4.3.0
  * Proj >= ? (known to work with 4.4.x)
  * GEOS >= 2.2 (3.0 is supported, maybe 2.1.x works too)
  * Sqlite3 >= ? (probably 3.0.0)
@@ -463,7 +463,7 @@ the XCODE SDK (in particular if you are using XCODE 2.5 on tiger):
 	4.2. Install Qt4 from .dmg
 	==========================
 
-You need a minimum of Qt4.2. I suggest getting the latest (at time of writing).
+You need a minimum of Qt4.3.0. I suggest getting the latest (at time of writing).
 
 
   ftp://ftp.trolltech.com/qt/source/qt-mac-opensource-4.3.2.dmg
