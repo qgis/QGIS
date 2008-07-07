@@ -97,7 +97,7 @@ void QgsAttributeTable::setColumnReadOnly(int col, bool ro)
   for (int i = 0; i < rowCount(); ++i)
   {
   	QTableWidgetItem *item = this->item(i, col);
-    item->setFlags(ro ? item->flags() | Qt::ItemIsEditable : item->flags() & ~Qt::ItemIsEditable);
+    item->setFlags(ro ? item->flags() & ~Qt::ItemIsEditable : item->flags() | Qt::ItemIsEditable);
   }
 }
 
