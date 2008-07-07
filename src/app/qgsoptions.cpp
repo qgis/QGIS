@@ -84,10 +84,8 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   {
     radUseGlobalProjection->setChecked(true);
   }
-  mGlobalSRSID = settings.value("/Projections/defaultProjectionSRSID",(int)GEOSRS_ID).toInt();
-  //! @todo changes this control name in gui to txtGlobalProjString
-  QString myProjString = QgsSpatialRefSys::getProj4FromSrsId(mGlobalSRSID);
-  txtGlobalWKT->setText(myProjString);
+
+  txtGlobalWKT->setText(settings.value("/Projections/defaultProjectionString",GEOPROJ4).toString());
 
   // populate combo box with ellipsoids
   getEllipsoidList();
@@ -293,7 +291,8 @@ void QgsOptions::saveOptions()
     //
     settings.setValue("/Projections/defaultBehaviour", "useGlobal");
   }
-  settings.setValue("/Projections/defaultProjectionSRSID",(int)mGlobalSRSID);
+
+  settings.setValue("/Projections/defaultProjectionString", txtGlobalWKT->toPlainText());
 
   settings.setValue("/qgis/measure/ellipsoid", getEllipsoidAcronym(cmbEllipsoid->currentText()));
 
@@ -367,13 +366,19 @@ void QgsOptions::on_pbnSelectProjection_clicked()
 {
   QSettings settings;
   QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector(this);
-  mySelector->setSelectedSRSID(mGlobalSRSID);
+
+  //find out srs id of current proj4 string
+  QgsSpatialRefSys refSys;
+  if(refSys.createFromProj4(txtGlobalWKT->toPlainText()))
+    {
+      mySelector->setSelectedSRSID(refSys.srsid());
+    }
+
   if(mySelector->exec())
   {
 #ifdef QGISDEBUG
     std::cout << "------ Global Default Projection Selection Set ----------" << std::endl;
-#endif
-    mGlobalSRSID = mySelector->getCurrentSRSID();  
+#endif 
     //! @todo changes this control name in gui to txtGlobalProjString
     txtGlobalWKT->setText(mySelector->getCurrentProj4String());
 #ifdef QGISDEBUG

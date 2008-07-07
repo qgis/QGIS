@@ -265,13 +265,17 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
     //it in the ctor of the layer projection selector
 
     QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector();
-    long myDefaultSRS =
-        QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectSRSID",GEOSRS_ID);
-    mySelector->setSelectedSRSID(myDefaultSRS);
+    proj4String = QgsProject::instance()->readEntry("SpatialRefSys","//ProjectSRSProj4String",GEOPROJ4);
+    QgsSpatialRefSys defaultSRS;
+    if(defaultSRS.createFromProj4(proj4String))
+      {
+	mySelector->setSelectedSRSID(defaultSRS.srsid());
+      }
+
     if(mySelector->exec())
     {
       QgsDebugMsg("Layer srs set from dialog: " + QString::number(mySelector->getCurrentSRSID()));
-      srs->createFromSrsId(mySelector->getCurrentSRSID());
+      srs->createFromProj4(mySelector->getCurrentProj4String());
       srs->debugPrint();
     }
     else
@@ -290,10 +294,7 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
   }
   else ///Projections/defaultBehaviour==useGlobal
   {
-    // XXX TODO: Change global settings to store default CS as 'defaultSRS' not 'defaultProjectionWKT'
-    int srs_id = mySettings.value("/Projections/defaultProjectionSRSID",(int)GEOSRS_ID).toInt(); 
-    QgsDebugMsg("Layer srs set from global: " + proj4String);
-    srs->createFromSrsId(srs_id);
+    srs->createFromProj4(mySettings.value("/Projections/defaultProjectionString",GEOPROJ4).toString());
     srs->debugPrint();
   }
 
