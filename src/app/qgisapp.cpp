@@ -1628,29 +1628,32 @@ void QgisApp::about()
      QString whatsNew = "<html><body>" + tr("Version") + " ";
      whatsNew += QGis::qgisVersion;
      whatsNew += "<h3>" + tr("New features") + "</h3>" +
-       tr("This release candidate includes over 120 bug fixes and enchancements "
-           "over the QGIS 0.9.1 release. In addition we have added "
+       tr("This release candidate includes over 60 bug fixes and enchancements "
+           "over the QGIS 0.10.0 release. In addition we have added "
            "the following new features:");
      whatsNew += "<ul><li>"
-       + tr("Imrovements to digitising capabilities.")
+       + tr("Revision of all dialogs for user interface consistancy")
        + "</li>"
        + "<li>"
-       + tr("Supporting default and defined styles (.qml) files for file based "
-           "vector layers. With styles you can save the symbolisation "
-           "and other settings associated with a vector layer and they "
-           "will be loaded whenever you load that layer.")
+       + tr("Improvements to unique value renderer vector dialog")
        + "</li>"
        + "<li>"
-       + tr("Improved support for transparency and contrast stretching "
-           "in raster layers. Support for color ramps in raster layers. "
-           "Support for non-north up rasters. Many other raster "
-           "improvements 'under the hood'.")
+       + tr("Symbol previews when defining vector classes")
        + "</li>"
        + "<li>"
-       + tr("Updated icons for improved visual consistancy.")
+       + tr("Separation of python support into its own library")
        + "</li>"
        + "<li>"
-       + tr("Support for migration of old projects to work in newer QGIS versions.")
+       + tr("List view and filter for GRASS toolbox to find tools more quickly")
+       + "</li>"
+       + "<li>"
+       + tr("List view and filter for Plugin Manager to find plugins more easily")
+       + "</li>"
+       + "<li>"
+       + tr("Updated Spatial Reference System definitions")
+       + "</li>"
+       + "<li>"
+       + tr("QML Style support for rasters and database layers")
        + "</li>"
 //+ "<li>"
 //+ tr("X")
