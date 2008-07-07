@@ -10,6 +10,7 @@ Version 0.11.0 'Metis'
 ** List view and filter for GRASS toolbox to find tools more quickly
 ** List view and filter for Plugin Manager to find plugins more easily
 ** Updated Spatial Reference System definitions
+** QML Style support for rasters and database layers
 Version 0.10.0 'Io'
 ** This release includes over 120 bug fixes and enchancements 
 ** over the QGIS 0.9.1 release. In addition we have added 
