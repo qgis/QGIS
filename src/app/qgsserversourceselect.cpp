@@ -434,9 +434,12 @@ void QgsServerSourceSelect::on_btnChangeSpatialRefSys_clicked()
 
   mySelector->setOgcWmsCrsFilter(crsFilter);
 
-  long myDefaultSRS = QgsProject::instance()->readNumEntry("SpatialRefSys", "/ProjectSRSID", GEOSRS_ID);
-
-  mySelector->setSelectedSRSID(myDefaultSRS);
+  QString myDefaultProjString = QgsProject::instance()->readEntry("SpatialRefSys", "/ProjectSRSProj4String", GEOPROJ4);
+  QgsSpatialRefSys defaultSRS;
+  if(defaultSRS.createFromProj4(myDefaultProjString))
+    {
+      mySelector->setSelectedSRSID(defaultSRS.srsid());
+    }
 
   if (mySelector->exec())
   {

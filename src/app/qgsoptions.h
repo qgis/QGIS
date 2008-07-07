@@ -97,7 +97,10 @@ class QgsOptions :public QDialog, private Ui::QgsOptionsBase
     QWidget *qparent;
 
     //!Global default projection used for new layers added that have no projection
-    long mGlobalSRSID;
+    //long mGlobalSRSID;
+
+    //!Default proj4 string used for new layers added that have no projection
+    QString mGlobalProj4String;
 
 };
 
