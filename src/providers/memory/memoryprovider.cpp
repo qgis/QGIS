@@ -284,7 +284,7 @@ bool QgsMemoryProvider::addAttributes(const QgsNewAttributesMap & attributes)
       type = QVariant::String;
     else
     {
-      QgsDebugMsg("Field type not supported: "+type);
+      QgsDebugMsg("Field type not supported: "+typeName);
       continue;
     }
     
