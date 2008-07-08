@@ -87,7 +87,7 @@ IF (APPLE)
   ADD_TEST(qgis_quickprinttest ${CMAKE_INSTALL_PREFIX}/qgis_quickprinttest)
 ELSE (APPLE)
   INSTALL(TARGETS qgis_quickprinttest RUNTIME DESTINATION ${QGIS_BIN_DIR})
-  ADD_TEST(qgis_quickprinttest ${QGIS_BIN_DIR}/qgis_quickprinttest)
+  ADD_TEST(qgis_quickprinttest ${CMAKE_INSTALL_PREFIX}/bin/qgis_quickprinttest)
 ENDIF (APPLE)
 
 

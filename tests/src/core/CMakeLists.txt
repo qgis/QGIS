@@ -76,9 +76,26 @@ ADD_CUSTOM_TARGET(qgis_applicationtestmoc ALL DEPENDS ${qgis_applicationtest_MOC
 ADD_EXECUTABLE(qgis_applicationtest ${qgis_applicationtest_SRCS})
 ADD_DEPENDENCIES(qgis_applicationtest qgis_applicationtestmoc)
 TARGET_LINK_LIBRARIES(qgis_applicationtest ${QT_LIBRARIES} qgis_core)
+  #No relinking and full RPATH for the install tree
+  #See: http://www.cmake.org/Wiki/CMake_RPATH_handling#No_relinking_and_full_RPATH_for_the_install_tree
 SET_TARGET_PROPERTIES(qgis_applicationtest 
+  # skip the full RPATH for the build tree
+  PROPERTIES SKIP_BUILD_RPATH  TRUE
+  )
+SET_TARGET_PROPERTIES(qgis_applicationtest 
+  # when building, use the install RPATH already
+  # (so it doesn't need to relink when installing)
+  PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE 
+  )
+SET_TARGET_PROPERTIES(qgis_applicationtest 
+  # the RPATH to be used when installing
   PROPERTIES INSTALL_RPATH ${QGIS_LIB_DIR}
-  INSTALL_RPATH_USE_LINK_PATH true)
+  )
+SET_TARGET_PROPERTIES(qgis_applicationtest 
+  # add the automatically determined parts of the RPATH
+  # which point to directories outside the build tree to the install RPATH
+  PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE
+  )
 IF (APPLE)
   # For Mac OS X, the executable must be at the root of the bundle's executable folder
   INSTALL(TARGETS qgis_applicationtest RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
