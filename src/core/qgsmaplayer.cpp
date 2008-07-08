@@ -446,7 +446,7 @@ QString QgsMapLayer::loadNamedStyle ( const QString theURI , bool & theResultFla
     sqlite3_stmt *myPreparedStatement;
     const char *myTail;
     int myResult;
-    
+
     myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase);
     if (myResult)
     {
@@ -464,8 +464,10 @@ QString QgsMapLayer::loadNamedStyle ( const QString theURI , bool & theResultFla
       {
         QString qml = QString::fromUtf8( (char *)sqlite3_column_text(myPreparedStatement, 0) );
         theResultFlag = myDocument.setContent ( qml, &myErrorMessage, &line, &column );
-	if(!theResultFlag)
-	  myErrorMessage = tr("%1 at line %2 column %3").arg( myErrorMessage ).arg( line ).arg(column);
+        if(!theResultFlag)
+        {
+          myErrorMessage = tr("%1 at line %2 column %3").arg( myErrorMessage ).arg( line ).arg(column);
+        }
       }
     }
     else
@@ -479,14 +481,16 @@ QString QgsMapLayer::loadNamedStyle ( const QString theURI , bool & theResultFla
   }
 
   if(!theResultFlag)
+  {
     return myErrorMessage;
-
+  }
   // now get the layer node out and pass it over to the layer
   // to deserialise...
   QDomElement myRoot = myDocument.firstChildElement("qgis");
   if (myRoot.isNull())
   {
     myErrorMessage = "Error: qgis element could not be found in " + theURI;
+    theResultFlag = false;
     return myErrorMessage;
   }
 
@@ -494,6 +498,7 @@ QString QgsMapLayer::loadNamedStyle ( const QString theURI , bool & theResultFla
   if (myLayer.isNull())
   {
     myErrorMessage = "Error: maplayer element could not be found in " + theURI;
+    theResultFlag = false;
     return myErrorMessage;
   }
 
@@ -505,6 +510,7 @@ QString QgsMapLayer::loadNamedStyle ( const QString theURI , bool & theResultFla
   if (myDataSource.isNull())
   {
     myErrorMessage = "Error: datasource element could not be found in " + theURI;
+    theResultFlag = false;
     return myErrorMessage;
   }
   QDomElement myNewDataSource = myDocument.createElement( "datasource" );
@@ -562,23 +568,25 @@ QString QgsMapLayer::saveNamedStyle ( const QString theURI, bool & theResultFlag
       // save as utf-8 with 2 spaces for indents
       myDocument.save( myFileStream, 2 );  
       myFile.close();
+      theResultFlag = true;
       return QObject::tr( "Created default style file as " ) + myFileName;
     }
     else
     {
+      theResultFlag = false;
       return QObject::tr( "ERROR: Failed to created default style file as %1 Check file permissions and retry." ).arg(myFileName); 
     }
   }
   else
   {
     QString qml = myDocument.toString();
-    
+
     // read from database
     sqlite3 *myDatabase; 
     sqlite3_stmt *myPreparedStatement;
     const char *myTail;
     int myResult;
-    
+
     myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase);
     if (myResult)
     {
@@ -595,7 +603,8 @@ QString QgsMapLayer::saveNamedStyle ( const QString theURI, bool & theResultFlag
       if( sqlite3_step(myPreparedStatement)!=SQLITE_DONE ) 
       {
         sqlite3_finalize(myPreparedStatement);
-	sqlite3_close(myDatabase);
+        sqlite3_close(myDatabase);
+        theResultFlag = false;
         return tr("The style table could not be created.");
       }
     }
@@ -611,7 +620,7 @@ QString QgsMapLayer::saveNamedStyle ( const QString theURI, bool & theResultFlag
           sqlite3_step(myPreparedStatement)==SQLITE_DONE ) 
       {
         theResultFlag = true;
-	myErrorMessage = tr("The style %1 was saved to database").arg(theURI);
+        myErrorMessage = tr("The style %1 was saved to database").arg(theURI);
       }
     }
 
@@ -628,13 +637,13 @@ QString QgsMapLayer::saveNamedStyle ( const QString theURI, bool & theResultFlag
             sqlite3_step(myPreparedStatement)==SQLITE_DONE ) 
         {
           theResultFlag = true;
-	  myErrorMessage = tr("The style %1 was updated in the database.").arg(theURI);
+          myErrorMessage = tr("The style %1 was updated in the database.").arg(theURI);
         }
-	else
-	{
-          theResultFlag = true;
-	  myErrorMessage = tr("The style %1 could not be updated in the database.").arg(theURI);
-	}
+        else
+        {
+          theResultFlag = false;
+          myErrorMessage = tr("The style %1 could not be updated in the database.").arg(theURI);
+        }
       }
       else
       {
@@ -645,7 +654,7 @@ QString QgsMapLayer::saveNamedStyle ( const QString theURI, bool & theResultFlag
 
       sqlite3_finalize(myPreparedStatement);
     }
-    
+
     sqlite3_close(myDatabase);
   }
 

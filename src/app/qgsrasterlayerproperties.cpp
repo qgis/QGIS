@@ -2866,12 +2866,17 @@ void QgsRasterLayerProperties::on_pbnLoadDefaultStyle_clicked()
   //reset if the default style was loaded ok only
   if ( defaultLoadedFlag )
   {
+    //it worked so do it quietly
     sync();
   }
-  QMessageBox::information( this, 
-      tr("Default Style"), 
-      myMessage
-      ); 
+  else
+  {
+    //otherwise let the user know what went wrong
+    QMessageBox::information( this, 
+        tr("Default Style"), 
+        myMessage
+        ); 
+  }
 }
 
 void QgsRasterLayerProperties::on_pbnSaveDefaultStyle_clicked()
@@ -2881,10 +2886,14 @@ void QgsRasterLayerProperties::on_pbnSaveDefaultStyle_clicked()
   // after calling this the above flag will be set true for success
   // or false if the save operation failed
   QString myMessage = mRasterLayer->saveDefaultStyle( defaultSavedFlag );
-  QMessageBox::information( this, 
-      tr("Default Style"), 
-      myMessage
-      ); 
+  if ( !defaultSavedFlag )
+  {
+    //let the user know what went wrong
+    QMessageBox::information( this, 
+        tr("Default Style"), 
+        myMessage
+        ); 
+  }
 }
 
 
@@ -2933,10 +2942,14 @@ void QgsRasterLayerProperties::on_pbnLoadStyle_clicked()
       {
         sync();
       }
-      QMessageBox::information( this, 
-          tr("Default Style"), 
-          myMessage
-          ); 
+      else
+      {
+        //let the user know something went wrong...
+        QMessageBox::information( this, 
+            tr("Saved Style"), 
+            myMessage
+            ); 
+      }
     }
     else
     {
@@ -2993,12 +3006,17 @@ void QgsRasterLayerProperties::on_pbnSaveStyleAs_clicked()
       //reset if the default style was loaded ok only
       if ( defaultLoadedFlag )
       {
+        //dont show the message if all went well...
         sync();
       }
-      QMessageBox::information( this, 
-          tr("Default Style"), 
-          myMessage
-          ); 
+      else
+      {
+        //if something went wrong let the user know why
+        QMessageBox::information( this, 
+            tr("Saved Style"), 
+            myMessage
+            ); 
+      }
     }
     else
     {
