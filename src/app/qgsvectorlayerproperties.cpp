@@ -629,12 +629,17 @@ void QgsVectorLayerProperties::on_pbnLoadDefaultStyle_clicked()
   //reset if the default style was loaded ok only
   if ( defaultLoadedFlag )
   {
+    // all worked ok so no need to inform user
     reset ();
   }
-  QMessageBox::information( this, 
-      tr("Default Style"), 
-      myMessage
-      ); 
+  else
+  {
+    //something went wrong - let them know why
+    QMessageBox::information( this, 
+        tr("Default Style"), 
+        myMessage
+        ); 
+  }
 }
 
 void QgsVectorLayerProperties::on_pbnSaveDefaultStyle_clicked()
@@ -646,10 +651,14 @@ void QgsVectorLayerProperties::on_pbnSaveDefaultStyle_clicked()
   // after calling this the above flag will be set true for success
   // or false if the save operation failed
   QString myMessage = layer->saveDefaultStyle( defaultSavedFlag );
-  QMessageBox::information( this, 
-      tr("Default Style"), 
-      myMessage
-      ); 
+  if ( !defaultSavedFlag )
+  {
+    //only raise the message if something went wrong
+    QMessageBox::information( this, 
+        tr("Default Style"), 
+        myMessage
+        ); 
+  }
 }
 
 
@@ -698,10 +707,14 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
       {
         reset ();
       }
-      QMessageBox::information( this, 
-          tr("Default Style"), 
-          myMessage
-          ); 
+      else
+      {
+        //let the user know what went wrong
+        QMessageBox::information( this, 
+            tr("Saved Style"), 
+            myMessage
+            ); 
+      }
     }
     else
     {
@@ -762,10 +775,14 @@ void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
       {
         reset ();
       }
-      QMessageBox::information( this, 
-          tr("Default Style"), 
-          myMessage
-          ); 
+      else
+      {
+        //let the user know what went wrong
+        QMessageBox::information( this, 
+            tr("Saved Style"), 
+            myMessage
+            ); 
+      }
     }
     else
     {
