@@ -225,7 +225,7 @@ void QgsAbout::on_listBox1_currentItemChanged(QListWidgetItem *theItem)
 void QgsAbout::on_btnQgisUser_clicked()
 {
   // find a browser
-  QString url = "http://lists.qgis.org/cgi-bin/mailman/listinfo/qgis-user";
+  QString url = "http://lists.osgeo.org/mailman/listinfo/qgis-user";
   openUrl(url);
 }
 
