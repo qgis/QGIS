@@ -31,8 +31,9 @@ const char* QGis::qgisVersion = VERSION;
 // SVN version
 const char* QGis::qgisSvnVersion = QGSSVNVERSION;
   
-// Version number used for comparing versions using the "Check QGIS Version" function
-const int QGis::qgisVersionInt =VERSION_INT;
+// Version number used for comparing versions using the 
+// "Check QGIS Version" function
+const int QGis::qgisVersionInt = VERSION_INT;
   
 // Release name
 const char* QGis::qgisReleaseName = RELEASE_NAME;
