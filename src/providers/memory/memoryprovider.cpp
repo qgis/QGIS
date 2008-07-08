@@ -306,19 +306,41 @@ bool QgsMemoryProvider::deleteAttributes(const QgsAttributeIds& attributes)
 
 bool QgsMemoryProvider::changeAttributeValues(const QgsChangedAttributesMap & attr_map)
 {
-  // TODO: change attribute values
-  return FALSE;
+  for (QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it)
+  {
+    QgsFeatureMap::iterator fit = mFeatures.find(it.key());
+    if (fit == mFeatures.end())
+      continue;
+    
+    const QgsAttributeMap& attrs = it.value();
+    for (QgsAttributeMap::const_iterator it2 = attrs.begin(); it2 != attrs.end(); ++it2)
+      fit->changeAttribute(it2.key(), it2.value());
+  }
+  return TRUE;
 }
 
 bool QgsMemoryProvider::changeGeometryValues(QgsGeometryMap & geometry_map)
 {
-  // TODO: change geometries
-  
-  // TODO: update spatial index
+  for (QgsGeometryMap::const_iterator it = geometry_map.begin(); it != geometry_map.end(); ++it)
+  {
+    QgsFeatureMap::iterator fit = mFeatures.find(it.key());
+    if (fit == mFeatures.end())
+      continue;
+    
+    // update spatial index
+    if (mSpatialIndex)
+      mSpatialIndex->deleteFeature(*fit);
+    
+    fit->setGeometry(it.value());
+    
+    // update spatial index
+    if (mSpatialIndex)
+      mSpatialIndex->insertFeature(*fit);
+  }
   
   updateExtent();
   
-  return FALSE;
+  return TRUE;
 }
 
 bool QgsMemoryProvider::createSpatialIndex()
