@@ -4,10 +4,12 @@
 <context>
     <name>@default</name>
     <message>
+        <location filename="" line="7471221"/>
         <source>OGR Driver Manager</source>
         <translation type="obsolete">OGR Driver Instellingen</translation>
     </message>
     <message>
+        <location filename="" line="7471221"/>
         <source>unable to get OGRDriverManager</source>
         <translation type="obsolete">laden van OGRDriverManager mislukt</translation>
     </message>
@@ -12535,7 +12537,7 @@ Installeer PostGIS met GEOS-ondersteuning (http://geos.refractions.net)</transla
     <message>
         <location filename="../src/ui/qgspythondialog.ui" line="13"/>
         <source>Python console</source>
-        <translation>Pythonconsole</translation>
+        <translation>Python console</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspythondialog.ui" line="33"/>
