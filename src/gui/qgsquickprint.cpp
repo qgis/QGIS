@@ -227,6 +227,8 @@ void QgsQuickPrint::printMap()
   // so we can restore it properly
   //
   int myOriginalDpi = mpMapRender->outputDpi();
+  //sensible default to prevent divide by zero
+  if (0==myOriginalDpi) myOriginalDpi=96; 
   QSize myOriginalSize = mpMapRender->outputSize();
   int mySymbolScalingAmount = myPrintResolutionDpi / myOriginalDpi; 
 
