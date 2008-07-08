@@ -536,7 +536,7 @@ bool QgsRasterLayer::readFile( QString const & fileName )
   //defaults - Needs to be set after the Contrast list has been build
   //Try to read the default contrast enhancement from the config file
   QSettings myQSettings;
-  setContrastEnhancementAlgorithm(myQSettings.value("/Raster/defaultContrastEnhancementAlgorithm", "NO_STRETCH").toString());
+  setContrastEnhancementAlgorithm(myQSettings.value("/Raster/defaultContrastEnhancementAlgorithm", "STRETCH_TO_MINMAX").toString());
   
   //decide what type of layer this is...
   //note that multiband images can have one or more 'undefindd' bands,
