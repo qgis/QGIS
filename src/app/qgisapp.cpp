@@ -4276,7 +4276,9 @@ void QgisApp::socketConnectionClosed()
     {
       versionInfo += parts[1] + "\n\n" + tr("Would you like more information?");
       ;
-      QMessageBox::StandardButton result = QMessageBox::information(this, tr("QGIS Version Information"), versionInfo, QMessageBox::Ok | QMessageBox::Cancel);
+      QMessageBox::StandardButton result = QMessageBox::information(this,
+          tr("QGIS Version Information"), versionInfo, QMessageBox::Ok |
+          QMessageBox::Cancel);
       if (result == QMessageBox::Ok)
       {
         // show more info

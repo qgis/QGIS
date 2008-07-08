@@ -5,7 +5,7 @@ SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINO
 SET(RELEASE_NAME "Metis")
 SET(PROJECT_VERSION ${COMPLETE_VERSION})
 PROJECT(qgis${PROJECT_VERSION})
-
+SET(QGIS_VERSION_INT 1100)
 
 # TODO:
 # - install includes for libs
@@ -25,6 +25,12 @@ SET(CMAKE_COLOR_MAKEFILE ON)
 
 # set path to additional CMake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+
+# in generated makefiles use relative paths so the project dir is moveable
+# Note commented out since it cause problems but it would be nice to resolve these and enable
+# 
+# issue is caused by INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}) near the end of this file generating incorrect path 
+#SET (CMAKE_USE_RELATIVE_PATHS ON)
 
 # it's possible to set PLUGINS_ALSO_BINARIES to TRUE
 # then some plugins that can run as standalone apps will be built
