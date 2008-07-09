@@ -190,8 +190,8 @@ http://python.org/download/
 
 === Download SIP and PyQt4 sources ===
 
-http://www.riverbankcomputing.com/Downloads/sip4/
-http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/
+http://www.riverbankcomputing.com/software/sip/download
+http://www.riverbankcomputing.com/software/pyqt/download
 
 Extract each of the above zip files in a temporary directory. Make sure
 to get versions that match your current Qt installed version.
@@ -471,7 +471,7 @@ __Leopard note:__ Leopard includes a usable Python 2.5.  Though you can install 
 Retrieve the python bindings toolkit SIP from
 
 ``` 
-http://www.riverbankcomputing.com/Downloads/sip4/
+http://www.riverbankcomputing.com/software/sip/download
 ```
 
 Then extract and build it (this installs by default into the Python framework):
@@ -506,7 +506,7 @@ export PATH=/Library/Frameworks/Python.framework/Versions/Current/bin:$PATH$
 Retrieve the python bindings toolkit for Qt from
 
 ``` 
-http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/
+http://www.riverbankcomputing.com/software/pyqt/download
 ```
 
 Then extract and build it (this installs by default into the Python framework):
