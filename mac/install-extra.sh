@@ -5,41 +5,33 @@
 # Edit INSTALLPREFIX to match the value of cmake INSTALL_PREFIX
 INSTALLPREFIX=$PWD
 
-VER=0.10
+VER=0.11
 BUNDLE=qgis$VER.0.app/Contents/MacOS
 BUILDPREFIX=$INSTALLPREFIX/$BUNDLE
 
 QLIBNAMES="core gui"
 
-# Declare libqgis_* relative to bundle and update qgis app client
+# Declare libqgis_* relative to bundle and update qgis and qgis_help app clients
 for NAME in $QLIBNAMES
 do
-	install_name_tool -id @executable_path/lib/libqgis_$NAME.dylib \
-		$BUILDPREFIX/lib/libqgis_$NAME.dylib
+	install_name_tool -id @executable_path/lib/libqgis_$NAME.$VER.dylib \
+		$BUILDPREFIX/lib/libqgis_$NAME.$VER.dylib
 
-	install_name_tool -change $BUILDPREFIX/lib/libqgis_$NAME.dylib \
-		@executable_path/lib/libqgis_$NAME.dylib \
+	install_name_tool -change $BUILDPREFIX/lib/libqgis_$NAME.$VER.dylib \
+		@executable_path/lib/libqgis_$NAME.$VER.dylib \
 		$BUILDPREFIX/qgis
 
 	install_name_tool -change $INSTALLPREFIX/src/$NAME/libqgis_$NAME.$VER.dylib \
-		@executable_path/lib/libqgis_$NAME.dylib \
+		@executable_path/lib/libqgis_$NAME.$VER.dylib \
 		$BUILDPREFIX/bin/qgis_help.app/Contents/MacOS/qgis_help
-
-	install_name_tool -change $INSTALLPREFIX/src/$NAME/libqgis_$NAME.$VER.dylib \
-		@executable_path/lib/libqgis_$NAME.dylib \
-		$BUILDPREFIX/share/qgis/python/qgis/core.so
-
-	install_name_tool -change $INSTALLPREFIX/src/$NAME/libqgis_$NAME.$VER.dylib \
-		@executable_path/lib/libqgis_$NAME.dylib \
-		$BUILDPREFIX/share/qgis/python/qgis/gui.so
 done
 
-# Update libqgis_gui client of libqgis_*
-install_name_tool -change $BUILDPREFIX/lib/libqgis_core.dylib \
-	@executable_path/lib/libqgis_core.dylib \
-	$BUILDPREFIX/lib/libqgis_gui.dylib
+# Update libqgis_gui client of libqgis_core
+install_name_tool -change $BUILDPREFIX/lib/libqgis_core.$VER.dylib \
+	@executable_path/lib/libqgis_core.$VER.dylib \
+	$BUILDPREFIX/lib/libqgis_gui.$VER.dylib
 
-# Update plugin and lib clients of libqgis_* and libqgsprojectionselector
+# Update plugin and lib clients of libqgis_*
 for PLUGIN in \
 	qgis/libcopyrightlabelplugin.so \
 	qgis/libdelimitedtextplugin.so \
@@ -47,10 +39,8 @@ for PLUGIN in \
 	qgis/libgeorefplugin.so \
 	qgis/libgpsimporterplugin.so \
 	qgis/libgpxprovider.so \
-	qgis/libgrassplugin.so \
-	qgis/libgrassprovider.so \
 	qgis/libgridmakerplugin.so \
-	qgis/libwfsprovider.so \
+	qgis/libmemoryprovider.so \
 	qgis/libnortharrowplugin.so \
 	qgis/libogrprovider.so \
 	qgis/libpggeoprocessingplugin.so \
@@ -59,25 +49,70 @@ for PLUGIN in \
 	qgis/libscalebarplugin.so \
 	qgis/libspitplugin.so \
 	qgis/libwfsplugin.so \
-	qgis/libwmsprovider.so \
-	libqgisgrass.dylib
+	qgis/libwfsprovider.so \
+	qgis/libwmsprovider.so
 do
 	for NAME in $QLIBNAMES
 	do
-		install_name_tool -change $BUILDPREFIX/lib/libqgis_$NAME.dylib \
-			@executable_path/lib/libqgis_$NAME.dylib \
+		install_name_tool -change $BUILDPREFIX/lib/libqgis_$NAME.$VER.dylib \
+			@executable_path/lib/libqgis_$NAME.$VER.dylib \
 			$BUILDPREFIX/lib/$PLUGIN
 	done
 done
 
-# Declare libqgisgrass relative to bundle
-install_name_tool -id @executable_path/lib/libqgisgrass.dylib \
-	$BUILDPREFIX/lib/libqgisgrass.dylib
+if test -f $BUILDPREFIX/lib/libqgisgrass.$VER.dylib; then
 
-# Update plugin clients of libqgisgrass
-for PLUGIN in qgis/libgrassplugin.so qgis/libgrassprovider.so
-do
-	install_name_tool -change $BUILDPREFIX/lib/libqgisgrass.dylib \
-		@executable_path/lib/libqgisgrass.dylib \
-		$BUILDPREFIX/lib/$PLUGIN
-done
+	# Declare libqgisgrass relative to bundle
+	install_name_tool -id @executable_path/lib/libqgisgrass.$VER.dylib \
+		$BUILDPREFIX/lib/libqgisgrass.$VER.dylib
+
+	# Update plugin and lib clients of libqgis_*
+	for PLUGIN in \
+		qgis/libgrassplugin.so \
+		qgis/libgrassprovider.so \
+		libqgisgrass.$VER.dylib
+	do
+		for NAME in $QLIBNAMES
+		do
+			install_name_tool -change $BUILDPREFIX/lib/libqgis_$NAME.$VER.dylib \
+				@executable_path/lib/libqgis_$NAME.$VER.dylib \
+				$BUILDPREFIX/lib/$PLUGIN
+		done
+	done
+
+	# Update plugin clients of libqgisgrass
+	for PLUGIN in qgis/libgrassplugin.so qgis/libgrassprovider.so
+	do
+		install_name_tool -change $BUILDPREFIX/lib/libqgisgrass.$VER.dylib \
+			@executable_path/lib/libqgisgrass.$VER.dylib \
+			$BUILDPREFIX/lib/$PLUGIN
+	done
+
+fi
+
+if test -f $BUILDPREFIX/lib/libqgispython.$VER.dylib; then
+
+	# Declare libqgispython relative to bundle
+	install_name_tool -id @executable_path/lib/libqgispython.$VER.dylib \
+		$BUILDPREFIX/lib/libqgispython.$VER.dylib
+
+	# Update python lib paths to libqgis_*
+	for NAME in $QLIBNAMES
+	do
+		install_name_tool -change $BUILDPREFIX/lib/libqgis_$NAME.$VER.dylib \
+			@executable_path/lib/libqgis_$NAME.$VER.dylib \
+			$BUILDPREFIX/lib/libqgispython.$VER.dylib
+	done
+
+	# Update python plugin paths libqgis_*
+	for PLUGIN in core.so gui.so
+	do
+		for NAME in $QLIBNAMES
+		do
+			install_name_tool -change $INSTALLPREFIX/src/$NAME/libqgis_$NAME.$VER.dylib \
+				@executable_path/lib/libqgis_$NAME.$VER.dylib \
+				$BUILDPREFIX/share/qgis/python/qgis/$PLUGIN
+		done
+	done
+
+fi
