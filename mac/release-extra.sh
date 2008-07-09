@@ -2,7 +2,7 @@
 # Copy supporting libraries (except Qt) to qgis bundle
 # and make search paths for them relative to bundle
 
-PREFIX=qgis0.10.0.app/Contents/MacOS
+PREFIX=qgis0.11.0.app/Contents/MacOS
 
 HELPPREFIX=$PREFIX/bin/qgis_help.app/Contents/MacOS
 PREFIXBACKTRACK=../../../..
@@ -16,7 +16,7 @@ LIBGEOSC=libgeos_c.1.4.1.dylib
 LNKGEOSC=libgeos_c.1.dylib
 LIBPROJ=libproj.0.5.4.dylib
 LNKPROJ=libproj.0.dylib
-LIBSQLITE3=libsqlite3.0.8.6.dylib
+LIBSQLITE3=libsqlite3.0.dylib
 LNKSQLITE3=libsqlite3.0.dylib
 LIBXERCESC=libxerces-c.28.0.dylib
 LNKXERCESC=libxerces-c.28.dylib
@@ -24,7 +24,7 @@ LIBGIF=libgif.4.1.6.dylib
 LNKGIF=libgif.4.dylib
 LIBJPEG=libjpeg.62.0.0.dylib
 LNKJPEG=libjpeg.62.dylib
-LIBPNG=libpng12.0.24.0.dylib
+LIBPNG=libpng12.0.dylib
 LNKPNG=libpng12.0.dylib
 LIBTIFF=libtiff.3.dylib
 LNKTIFF=libtiff.3.dylib
@@ -40,7 +40,7 @@ LIBEXPAT=libexpat.1.5.2.dylib
 LNKEXPAT=libexpat.1.dylib
 LIBPQ=libpq.5.1.dylib
 LNKPQ=libpq.5.dylib
-GRASSLIB=/usr/local/grass-6.3.0RC6/lib
+GRASSLIB=/usr/local/grass-6.3.0/lib
 
 # Copy supporting libraries to application bundle
 cd $PREFIX/lib
@@ -94,7 +94,7 @@ if test ! -f $LIBPROJ; then
 fi
 if test ! -f $LIBSQLITE3; then
 	cp /usr/local/lib/$LIBSQLITE3 $LIBSQLITE3
-	ln -s $LIBSQLITE3 $LNKSQLITE3
+	#ln -s $LIBSQLITE3 $LNKSQLITE3
 	install_name_tool -id @executable_path/lib/$LNKSQLITE3 $LIBSQLITE3
 fi
 if test ! -f $LIBXERCESC; then
@@ -109,7 +109,7 @@ if test ! -f $LIBGIF; then
 fi
 if test ! -f $LIBPNG; then
 	cp /usr/local/lib/$LIBPNG $LIBPNG
-	ln -s $LIBPNG $LNKPNG
+	#ln -s $LIBPNG $LNKPNG
 	install_name_tool -id @executable_path/lib/$LNKPNG $LIBPNG
 fi
 if test ! -f $LIBJPEG; then
@@ -170,7 +170,7 @@ install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQ
 install_name_tool -change /usr/local/pgsql/lib/$LNKPQ @executable_path/lib/$LNKPQ $PREFIX/qgis
 
 # Update library paths to supporting libraries
-for LIB in _core _gui grass
+for LIB in _core _gui grass python
 do
 	install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL $PREFIX/lib/libqgis$LIB.dylib
 	install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $PREFIX/lib/libqgis$LIB.dylib
@@ -189,7 +189,7 @@ for PLUGIN in \
 	libgrassplugin.so \
 	libgrassprovider.so \
 	libgridmakerplugin.so \
-	libwfsprovider.so \
+	libmemoryprovider.so \
 	libnortharrowplugin.so \
 	libogrprovider.so \
 	libpggeoprocessingplugin.so \
@@ -198,6 +198,7 @@ for PLUGIN in \
 	libscalebarplugin.so \
 	libspitplugin.so \
 	libwfsplugin.so \
+	libwfsprovider.so \
 	libwmsprovider.so
 do
 	install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL $PREFIX/lib/qgis/$PLUGIN
