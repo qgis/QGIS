@@ -778,12 +778,20 @@ void QgsCustomProjectionDialog::on_pbnSave_clicked()
     return;
   }
   
-  if ( myEllipsoidAcronym.isNull() ) 
-  {
-    QMessageBox::information( this, tr("QGIS Custom Projection"),
-            tr("This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.") );
-    return;
-  }
+  /** I am commenting this check out for now because of ticket #1146
+   * In 1.0.0 we should consider doing more sophisticated checks or just 
+   * removing this commented block entirely. It is possible to set the 
+   * parameters for the earths figure in ways other than using ellps (which 
+   * is a convenience function in proj). For example the radius and flattenning
+   * can be specified and various other parameter permutations. See the proj
+   * manual section entitled 'Specifying the Earths Figure' for more details.
+   * Tim Sutton */
+  //if ( myEllipsoidAcronym.isNull() ) 
+  //{
+  //  QMessageBox::information( this, tr("QGIS Custom Projection"),
+  //          tr("This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.") );
+  //  return;
+  //}
   
   
   //
