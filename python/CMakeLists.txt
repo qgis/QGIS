@@ -79,11 +79,7 @@ IF (BINDINGS_GLOBAL_INSTALL)
 
 # python's site-packages dir: bindings will be installed here
 IF (UNIX)
-  SET (CMD "
-import sys
-v = sys.version_info
-print sys.exec_prefix + '/lib/python' + str(v[0]) + '.' + str(v[1]) + '/site-packages'
-")
+  SET (CMD "from distutils.sysconfig import get_python_lib; print get_python_lib(1)") 
 ELSE (UNIX)
   SET (CMD "
 import sys
