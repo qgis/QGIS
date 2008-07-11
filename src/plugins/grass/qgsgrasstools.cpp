@@ -155,10 +155,7 @@ QgsGrassTools::QgsGrassTools ( QgisInterface *iface,
   connect( mModulesListView, SIGNAL(itemClicked(QTreeWidgetItem *, int)), 
     this, SLOT(moduleClicked( QTreeWidgetItem *, int)) );
 
-  QString title = tr("GRASS Tools: ") + QgsGrass::getDefaultLocation()
-    + "/" + QgsGrass::getDefaultMapset();
-  setCaption(title);
-  mModulesListView->show(); 
+  
 
 
   //
@@ -173,7 +170,7 @@ QgsGrassTools::QgsGrassTools ( QgisInterface *iface,
   mListView->setFocus();
   mListView->setItemDelegateForColumn(0,new QgsDetailedItemDelegate());
   mListView->setUniformItemSizes(false);
-  mListView->show();
+
   QWidget * mypBase = new QWidget(this);
   QVBoxLayout * mypListTabLayout = new QVBoxLayout(mypBase);
   mypListTabLayout->addWidget(mListView);
@@ -199,13 +196,20 @@ QgsGrassTools::QgsGrassTools ( QgisInterface *iface,
   loadConfig ( conf );
   QApplication::restoreOverrideCursor();
   //statusBar()->hide();
-
-  // Add map browser 
+  
+  // set the dialog title
+  QString title = tr("GRASS Tools: ") + QgsGrass::getDefaultLocation()
+      + "/" + QgsGrass::getDefaultMapset();
+  setCaption(title);
+  mModulesListView->show(); 
+  mListView->show();
+  
+    // Add map browser 
   mBrowser = new QgsGrassBrowser ( mIface, this );
   mTabWidget->addTab( mBrowser, tr("Browser") );
 
   connect( mBrowser, SIGNAL(regionChanged()), 
-    this, SLOT(emitRegionChanged()) );
+           this, SLOT(emitRegionChanged()) );
 }
 
 void QgsGrassTools::moduleClicked( QTreeWidgetItem * item, int column )
