@@ -142,6 +142,7 @@ QgsGrassEdit::QgsGrassEdit ( QgisInterface *iface, QgsMapLayer* layer, bool newM
   //TODO dynamic_cast ?
   mProvider = (QgsGrassProvider *) mLayer->getDataProvider();
 
+
   init();
 
 }
@@ -207,6 +208,12 @@ void QgsGrassEdit::init()
     return;
   }
 
+  
+  mRubberBandLine = new QgsRubberBand(mCanvas);
+  mRubberBandIcon = new QgsVertexMarker(mCanvas);
+  mRubberBandLine->setZValue(20);
+  mRubberBandIcon->setZValue(20);
+  
   connect ( mCanvas, SIGNAL(keyPressed(QKeyEvent *)), this, SLOT(keyPress(QKeyEvent *)) );
 
   QString myIconPath = QgsApplication::themePath() + "/grass/";
@@ -387,6 +394,8 @@ void QgsGrassEdit::init()
 
   for ( int i = 0; i < SYMB_COUNT; i++ ) {
     bool ok;
+
+
     bool displ = settings.readBoolEntry ( 
       spath + "display/" + QString::number(i), 
       true, &ok );
@@ -400,6 +409,11 @@ void QgsGrassEdit::init()
     if ( ok ) {
       QColor color( colorName );
       mSymb[i].setColor( color );
+       // Use the 'dynamic' color for mRubberBand
+      if ( i == SYMB_DYNAMIC )
+      {
+        mRubberBandLine->setColor(QColor(colorName));
+      }
     }
     mSymb[i].setWidth( mLineWidth );
   }
@@ -415,6 +429,7 @@ void QgsGrassEdit::init()
   symbologyList->clear();
   symbologyList->setSorting(-1);
 
+  
   for ( int i = SYMB_COUNT-1; i >= 0; i-- ) {
     if ( i == SYMB_NODE_0 ) continue;
 
@@ -492,10 +507,7 @@ void QgsGrassEdit::init()
 
   mPixmap = &mCanvasEdit->pixmap();
 
-  mRubberBandLine = new QgsRubberBand(mCanvas);
-  mRubberBandIcon = new QgsVertexMarker(mCanvas);
-  mRubberBandLine->setZValue(20);
-  mRubberBandIcon->setZValue(20);
+
 
   // Init GUI values
   mCatModeBox->insertItem( tr("Next not used"), CAT_MODE_NEXT );
@@ -729,6 +741,11 @@ void QgsGrassEdit::changeSymbology(Q3ListViewItem * item, const QPoint & pnt, in
     // TODO use a name instead of index
     sn.sprintf( "/GRASS/edit/symb/color/%d", index );
     settings.writeEntry ( sn, mSymb[index].color().name() );
+     // Use the 'dynamic' color for mRubberBand
+    if ( index == SYMB_DYNAMIC )
+    {
+      mRubberBandLine->setColor(color);
+    }
   }
 }
 
