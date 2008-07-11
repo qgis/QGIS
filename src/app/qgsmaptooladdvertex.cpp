@@ -26,7 +26,7 @@ QgsMapToolAddVertex::QgsMapToolAddVertex(QgsMapCanvas* canvas): QgsMapToolVertex
 {
 
 }
- 
+
 QgsMapToolAddVertex::~QgsMapToolAddVertex()
 {
   delete mRubberBand;
@@ -35,42 +35,42 @@ QgsMapToolAddVertex::~QgsMapToolAddVertex()
 void QgsMapToolAddVertex::canvasMoveEvent(QMouseEvent * e)
 {
   if(mRubberBand)
+  {
+    QList<QgsSnappingResult> snapResults;
+    if(mSnapper.snapToBackgroundLayers(e->pos(), snapResults) == 0)
     {
-      QList<QgsSnappingResult> snapResults;
-      if(mSnapper.snapToBackgroundLayers(e->pos(), snapResults) == 0)
-	{
-	  QgsPoint posMapCoord = snapPointFromResults(snapResults, e->pos());
-	  mRubberBand->movePoint(2, posMapCoord); //consider that the first rubber band point is added twice
-	}
+      QgsPoint posMapCoord = snapPointFromResults(snapResults, e->pos());
+      mRubberBand->movePoint(2, posMapCoord); //consider that the first rubber band point is added twice
     }
+  }
 }
 
 void QgsMapToolAddVertex::canvasPressEvent(QMouseEvent * e)
 {
   delete mRubberBand;
   mRubberBand = 0;
-  
+
   //snap to segments of the current layer
   if(mSnapper.snapToCurrentLayer(e->pos(), mRecentSnappingResults, QgsSnapper::SNAP_TO_SEGMENT) != 0)
-    {
-      //error
-    }
+  {
+    //error
+  }
 
-  
+
 
   if(mRecentSnappingResults.size() > 0)
-    {
-      mRubberBand = createRubberBand();
-      //take first snapping result and create the rubber band
-      QgsSnappingResult firstResult = *(mRecentSnappingResults.begin());
-      mRubberBand->addPoint(firstResult.beforeVertex, false);
-      mRubberBand->addPoint(firstResult.snappedVertex, false);
-      mRubberBand->addPoint(firstResult.afterVertex, true);
-    }
+  {
+    mRubberBand = createRubberBand();
+    //take first snapping result and create the rubber band
+    QgsSnappingResult firstResult = *(mRecentSnappingResults.begin());
+    mRubberBand->addPoint(firstResult.beforeVertex, false);
+    mRubberBand->addPoint(firstResult.snappedVertex, false);
+    mRubberBand->addPoint(firstResult.afterVertex, true);
+  }
   else
-    {
-      displaySnapToleranceWarning();
-    }
+  {
+    displaySnapToleranceWarning();
+  }
 }
 
 void QgsMapToolAddVertex::canvasReleaseEvent(QMouseEvent * e)
@@ -78,36 +78,36 @@ void QgsMapToolAddVertex::canvasReleaseEvent(QMouseEvent * e)
   QgsMapLayer* currentLayer = mCanvas->currentLayer();
   QgsVectorLayer* vlayer = 0;
   if(currentLayer)
-    {
-      vlayer = dynamic_cast<QgsVectorLayer*>(currentLayer);
-    }
+  {
+    vlayer = dynamic_cast<QgsVectorLayer*>(currentLayer);
+  }
 
   if(vlayer && mRecentSnappingResults.size() > 0)
-    {
-      //snap point to background layers
-      QgsPoint snappedPointMapCoord;
-      QgsPoint snappedPointLayerCoord;
-      QList<QgsSnappingResult> snapResults;
-      
-      if(mSnapper.snapToBackgroundLayers(e->pos(), snapResults) == 0)
-	{
-	  snappedPointMapCoord = snapPointFromResults(snapResults, e->pos());
-	  snappedPointLayerCoord = toLayerCoords(vlayer, snappedPointMapCoord);
+  {
+    //snap point to background layers
+    QgsPoint snappedPointMapCoord;
+    QgsPoint snappedPointLayerCoord;
+    QList<QgsSnappingResult> snapResults;
 
-	  int topologicalEditing = QgsProject::instance()->readNumEntry("Digitizing", "/TopologicalEditing", 0);
-	  if(topologicalEditing)
-	    {
-	      insertSegmentVerticesForSnap(snapResults, vlayer);
-	    }
-    
-	  //and change the feature points
-	  QList<QgsSnappingResult>::iterator sr_it = mRecentSnappingResults.begin();
-	  for(; sr_it != mRecentSnappingResults.end(); ++sr_it)
-	    {
-	      vlayer->insertVertexBefore(snappedPointLayerCoord.x(), snappedPointLayerCoord.y(), sr_it->snappedAtGeometry, sr_it->afterVertexNr);
-	    }
-	}
+    if(mSnapper.snapToBackgroundLayers(e->pos(), snapResults) == 0)
+    {
+      snappedPointMapCoord = snapPointFromResults(snapResults, e->pos());
+      snappedPointLayerCoord = toLayerCoords(vlayer, snappedPointMapCoord);
+
+      int topologicalEditing = QgsProject::instance()->readNumEntry("Digitizing", "/TopologicalEditing", 0);
+      if(topologicalEditing)
+      {
+        insertSegmentVerticesForSnap(snapResults, vlayer);
+      }
+
+      //and change the feature points
+      QList<QgsSnappingResult>::iterator sr_it = mRecentSnappingResults.begin();
+      for(; sr_it != mRecentSnappingResults.end(); ++sr_it)
+      {
+        vlayer->insertVertexBefore(snappedPointLayerCoord.x(), snappedPointLayerCoord.y(), sr_it->snappedAtGeometry, sr_it->afterVertexNr);
+      }
     }
+  }
 
   delete mRubberBand;
   mRubberBand = 0;
