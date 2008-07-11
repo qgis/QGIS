@@ -1419,6 +1419,8 @@ void QgisApp::createCanvas()
   mMapTools.mAddRing = new QgsMapToolAddRing(mMapCanvas);
   mMapTools.mAddRing->setAction(mActionAddRing);
   mMapTools.mAddIsland = new QgsMapToolAddIsland(mMapCanvas);
+  //ensure that non edit tool is initialised or we will get crashes in some situations
+  mNonEditMapTool = mMapTools.mPan; 
 }
 
 void QgisApp::createOverview()
