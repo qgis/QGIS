@@ -834,7 +834,7 @@ skip this section.
 Now you can install grass from dapper:
 
 ```
-sudo apt-get install grass libgrass-dev libgdal-1.4.0-grass 
+sudo apt-get install grass libgrass-dev libgdal1-1.4.0-grass 
 ```
 
 /!\ You may need to explicitly state your grass version e.g. libgdal1-1.3.2-grass
