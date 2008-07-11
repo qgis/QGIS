@@ -94,12 +94,6 @@ void QgsMapToolAddVertex::canvasReleaseEvent(QMouseEvent * e)
       snappedPointMapCoord = snapPointFromResults(snapResults, e->pos());
       snappedPointLayerCoord = toLayerCoords(vlayer, snappedPointMapCoord);
 
-      int topologicalEditing = QgsProject::instance()->readNumEntry("Digitizing", "/TopologicalEditing", 0);
-      if(topologicalEditing)
-      {
-        insertSegmentVerticesForSnap(snapResults, vlayer);
-      }
-
       //and change the feature points
       QList<QgsSnappingResult>::iterator sr_it = mRecentSnappingResults.begin();
       for(; sr_it != mRecentSnappingResults.end(); ++sr_it)
