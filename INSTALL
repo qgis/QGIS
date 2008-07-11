@@ -187,6 +187,13 @@ For complete information, see the wiki at:
   3. Building under windows using msys
   ====================================
 
+Note: For a detailed account of building all the dependencies yourself you 
+can visit Marco Pasetti's website here:
+
+http://www.webalice.it/marco.pasetti/qgis+grass/BuildFromSource.html
+
+Read on to use the simplified approach with pre-built libraries...
+
 
 	3.1. MSYS:
 	==========
