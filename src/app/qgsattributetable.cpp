@@ -358,8 +358,15 @@ void QgsAttributeTable::contextMenuEvent(QContextMenuEvent *event)
   mActionValues.clear();
 
   for (int i = 0; i < columnCount(); ++i)
-    mActionValues.push_back(std::make_pair(horizontalHeaderItem(i)->text(), item(row, i)->text()));
-
+  {
+    if (row >= 0) //prevent crash if row is negative, see ticket #1149
+    {
+      mActionValues.push_back(
+        std::make_pair(
+          horizontalHeaderItem( i )->text(),
+          item( row, i )->text() ) );
+    }
+  }
   // The item that was clicked on, stored as an index into the
   // mActionValues vector.
   mClickedOnValue = col;
