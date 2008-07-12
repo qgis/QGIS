@@ -125,6 +125,29 @@ ELSE (APPLE)
   INSTALL(TARGETS qgis_filewritertest RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
   ADD_TEST(qgis_filewritertest ${CMAKE_INSTALL_PREFIX}/bin/qgis_filewritertest)
 ENDIF (APPLE)
+
+
+#
+# Ticket 1141 Regression1141 test
+#
+SET(regression1141_SRCS regression1141.cpp ${util_SRCS})
+SET(regression1141_MOC_CPPS regression1141.cpp)
+QT4_WRAP_CPP(regression1141_MOC_SRCS ${regression1141_MOC_CPPS})
+ADD_CUSTOM_TARGET(regression1141moc ALL DEPENDS ${regression1141_MOC_SRCS})
+ADD_EXECUTABLE(regression1141 ${regression1141_SRCS})
+ADD_DEPENDENCIES(regression1141 regression1141moc)
+TARGET_LINK_LIBRARIES(regression1141 ${QT_LIBRARIES} qgis_core)
+SET_TARGET_PROPERTIES(regression1141
+  PROPERTIES INSTALL_RPATH ${QGIS_LIB_DIR}
+  INSTALL_RPATH_USE_LINK_PATH true)
+IF (APPLE)
+# For Mac OS X, the executable must be at the root of the bundle's executable folder
+  INSTALL(TARGETS regression1141 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
+  ADD_TEST(regression1141 ${CMAKE_INSTALL_PREFIX}/regression1141)
+ELSE (APPLE)
+  INSTALL(TARGETS regression1141 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+  ADD_TEST(regression1141 ${CMAKE_INSTALL_PREFIX}/bin/regression1141)
+ENDIF (APPLE)
 #
 # QgsRasterLayer test
 #
