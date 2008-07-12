@@ -270,7 +270,7 @@ QgsProject * QgsProject::theProject_;
              {
                  previousQgsPropertyKey->removeKey( currentProperty->name() );
              }
-             else if ( 0 == ( nextProperty = currentProperty->find( keySequence.first() ) ) )
+             else if ( ( nextProperty = currentProperty->find( keySequence.first() ) ) )
              {
                  previousQgsPropertyKey = currentProperty;
                  currentProperty = dynamic_cast<QgsPropertyKey*>(nextProperty);
