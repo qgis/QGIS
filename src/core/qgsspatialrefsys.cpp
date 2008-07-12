@@ -228,10 +228,10 @@ bool QgsSpatialRefSys::loadFromDb(QString db, QString field, long id)
     mGeoFlag = (geo == 0 ? false : true);
     setMapUnits();
     mIsValidFlag = true;
-    const char *oldlocale = setlocale(LC_ALL, NULL);
-    setlocale(LC_ALL, "C");
+    const char *oldlocale = setlocale(LC_NUMERIC, NULL);
+    setlocale(LC_NUMERIC, "C");
     OSRImportFromProj4( mSRS, proj4String.toLatin1().constData() );
-    setlocale(LC_ALL, oldlocale);
+    setlocale(LC_NUMERIC, oldlocale);
   }
   else
   {
@@ -411,10 +411,10 @@ bool QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
       if (!myRecord.empty())
       {
         // Success!  We have found the proj string by swapping the lat_1 and lat_2
-        const char *oldlocale = setlocale(LC_ALL, NULL);
-        setlocale(LC_ALL, "C");
+        const char *oldlocale = setlocale(LC_NUMERIC, NULL);
+        setlocale(LC_NUMERIC, "C");
         OSRImportFromProj4(mSRS, theProj4StringModified.toLatin1().constData() );
-        setlocale(LC_ALL, oldlocale); 
+        setlocale(LC_NUMERIC, oldlocale); 
         mySrsId=myRecord["srs_id"].toLong();
         QgsDebugMsg("QgsSpatialRefSys::createFromProj4 proj4string match search for srsid returned srsid: " + QString::number(mySrsId));
         if (mySrsId > 0)
@@ -664,10 +664,10 @@ void QgsSpatialRefSys::setDescription (QString theDescription)
 }
 void QgsSpatialRefSys::setProj4String (QString theProj4String)
 {
-  const char *oldlocale = setlocale(LC_ALL, NULL);
-  setlocale(LC_ALL, "C");
+  const char *oldlocale = setlocale(LC_NUMERIC, NULL);
+  setlocale(LC_NUMERIC, "C");
   mIsValidFlag = OSRImportFromProj4(mSRS, theProj4String.toLatin1().constData() )==OGRERR_NONE;
-  setlocale(LC_ALL, oldlocale);
+  setlocale(LC_NUMERIC, oldlocale);
 }
 void QgsSpatialRefSys::setGeographicFlag (bool theGeoFlag)
 {

@@ -1253,8 +1253,8 @@ QgsSpatialRefSys QgsGrassProvider::getSRS()
   QgsGrass::resetError();
   QgsGrass::setLocation ( mGisdbase, mLocation ); 
 
-  char *oldlocale = setlocale(LC_ALL, NULL);
-  setlocale(LC_ALL, "C");
+  const char *oldlocale = setlocale(LC_NUMERIC, NULL);
+  setlocale(LC_NUMERIC, "C");
 
   if ( setjmp(QgsGrass::fatalErrorEnv()) == 0 )
   {
@@ -1263,7 +1263,7 @@ QgsSpatialRefSys QgsGrassProvider::getSRS()
   QgsGrass::clearErrorEnv();
 
   if ( QgsGrass::getError() == QgsGrass::FATAL ) {
-    setlocale(LC_ALL, oldlocale);
+    setlocale(LC_NUMERIC, oldlocale);
     QgsDebugMsg(QString("Cannot get default window: %1").arg(QgsGrass::getErrorMessage()));
     return QgsSpatialRefSys();
   }
@@ -1276,7 +1276,7 @@ QgsSpatialRefSys QgsGrassProvider::getSRS()
     free ( wkt);
   }
 
-  setlocale(LC_ALL, oldlocale);
+  setlocale(LC_NUMERIC, oldlocale);
 
   QgsSpatialRefSys srs;
   srs.createFromWkt(WKT);

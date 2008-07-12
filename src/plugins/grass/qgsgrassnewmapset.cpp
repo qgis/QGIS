@@ -473,10 +473,10 @@ void QgsGrassNewMapset::setGrassProjection()
     OGRSpatialReferenceH hSRS = NULL;
     hSRS = OSRNewSpatialReference(NULL);
     int errcode;
-    const char *oldlocale = setlocale(LC_ALL, NULL);
-    setlocale(LC_ALL, "C");
+    const char *oldlocale = setlocale(LC_NUMERIC, NULL);
+    setlocale(LC_NUMERIC, "C");
     errcode = OSRImportFromProj4(hSRS, proj4.ascii());
-    setlocale(LC_ALL, oldlocale);
+    setlocale(LC_NUMERIC, oldlocale);
     if ( errcode!=OGRERR_NONE )
     {
       std::cerr << "OGR can't parse PROJ.4-style parameter string:\n" << proj4.ascii()
