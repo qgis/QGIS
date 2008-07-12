@@ -108,7 +108,7 @@ void Regression1141::diacriticalTest()
     QgsVectorFileWriter myWriter( mFileName,
                                   mEncoding,
                                   mFields,
-                                  QGis::WKBPolygon,
+                                  QGis::WKBPoint,
                                   &mSRS );
 
     QgsPoint myPoint = QgsPoint( 10.0, 10.0 );
