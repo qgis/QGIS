@@ -41,8 +41,15 @@ class TestQgsGeometry: public QObject
     void cleanup();// will be called after every testfunction.
 
     void intersectionCheck();
-    void unionCheck();
+    void unionCheck1();
+    void unionCheck2();
   private:
+    /** A helper method to return wkb geometry type as a string */
+    QString wkbTypeAsString( QGis::WKBTYPE theType );
+    /** A helper method to dump to qdebug the geometry of a multipolygon */
+    void dumpMultiPolygon( QgsMultiPolygon &theMultiPolygon );
+    /** A helper method to dump to qdebug the geometry of a polygon */
+    void dumpPolygon( QgsPolygon &thePolygon );
     QgsPoint mPoint1; 
     QgsPoint mPoint2; 
     QgsPoint mPoint3; 
@@ -87,6 +94,12 @@ void TestQgsGeometry::init()
   mPointY = QgsPoint(1040.0,1040.0); 
   mPointZ = QgsPoint(1000.0,1040.0); 
   
+  mPolygonA.clear();
+  mPolygonB.clear();
+  mPolygonC.clear();
+  mPolylineA.clear();
+  mPolylineB.clear();
+  mPolylineC.clear();
   mPolylineA << mPoint1 << mPoint2 << mPoint3 << mPoint4 << mPoint1;
   mPolygonA << mPolylineA;
   //Polygon B intersects Polygon A
@@ -137,23 +150,87 @@ void TestQgsGeometry::intersectionCheck()
   QVERIFY ( !mpPolygonGeometryA->intersects(mpPolygonGeometryC));
 }
 
-void TestQgsGeometry::unionCheck()
+void TestQgsGeometry::unionCheck1()
 {
-
-  // should be no union as A does not intersect C
+  // should be a multipolygon with 2 parts as A does not intersect C
   QgsGeometry * mypUnionGeometry  =  mpPolygonGeometryA->Union(mpPolygonGeometryC);
-  QgsPolyline myPolyline = mypUnionGeometry->asPolyline();
-  QVERIFY (myPolyline.size() == 0); //check that the union failed properly
-  // should be a union as A intersect B
-  mypUnionGeometry  =  mpPolygonGeometryA->Union(mpPolygonGeometryB);
-  myPolyline = mypUnionGeometry->asPolyline();
-  QVERIFY (myPolyline.size() > 0); //check that the union created a feature
-  for (int i = 0; i < myPolyline.size(); i++)
-  {
-    QgsPoint myPoint = myPolyline.at(i);
-    qDebug(myPoint.stringRep().toLocal8Bit());
-  }
+  qDebug ("Geometry Type: " + wkbTypeAsString(mypUnionGeometry->wkbType()).toLocal8Bit());
+  QVERIFY (mypUnionGeometry->wkbType() == QGis::WKBMultiPolygon);
+  QgsMultiPolygon myMultiPolygon = mypUnionGeometry->asMultiPolygon();
+  QVERIFY (myMultiPolygon.size() > 0); //check that the union did not fail
+  dumpMultiPolygon(myMultiPolygon);
+}
+void TestQgsGeometry::unionCheck2()
+{
+  // should be a single polygon as A intersect B
+  QgsGeometry * mypUnionGeometry  =  mpPolygonGeometryA->Union(mpPolygonGeometryB);
+  qDebug ("Geometry Type: " + wkbTypeAsString(mypUnionGeometry->wkbType()).toLocal8Bit());
+  QVERIFY (mypUnionGeometry->wkbType() == QGis::WKBPolygon);
+  QgsPolygon myPolygon = mypUnionGeometry->asPolygon();
+  QVERIFY (myPolygon.size() > 0); //check that the union created a feature
+  dumpPolygon(myPolygon);
   delete mypUnionGeometry;
+}
+
+void TestQgsGeometry::dumpMultiPolygon( QgsMultiPolygon &theMultiPolygon )
+{
+  qDebug ("Multipolygon Geometry Dump");
+  for (int i = 0; i < theMultiPolygon.size(); i++)
+  {
+    QgsPolygon myPolygon = theMultiPolygon.at(i);
+    qDebug("\tPolygon in multipolygon: " + QString::number(i).toLocal8Bit());    
+    dumpPolygon(myPolygon);
+  }
+}
+
+void TestQgsGeometry::dumpPolygon( QgsPolygon &thePolygon )
+{
+  for ( int j = 0; j < thePolygon.size(); j++ )
+  {
+    QgsPolyline myPolyline = thePolygon.at( j ); //rings of polygon
+    qDebug( "\t\tRing  in polygon: " + QString::number( j ).toLocal8Bit() );
+
+    for ( int k = 0; k < myPolyline.size(); k++ )
+    {
+      QgsPoint myPoint = myPolyline.at( k );
+      qDebug( "\t\t\tPoint in ring " + QString::number( k ).toLocal8Bit() + " :" + myPoint.stringRep().toLocal8Bit() );
+    }
+  }
+}
+
+QString TestQgsGeometry::wkbTypeAsString( QGis::WKBTYPE theType )
+{
+  switch ( theType )
+  {
+    case QGis::WKBPoint:
+      return "WKBPoint";
+    case QGis::WKBLineString:
+      return "WKBLineString";
+    case QGis::WKBPolygon:
+      return "WKBPolygon";
+    case QGis::WKBMultiPoint:
+      return "WKBMultiPoint";
+    case QGis::WKBMultiLineString:
+      return "WKBMultiLineString";
+    case QGis::WKBMultiPolygon:
+      return "WKBMultiPolygon";
+    case QGis::WKBUnknown:
+      return "WKBUnknown";
+    case QGis::WKBPoint25D:
+      return "WKBPoint25D";
+    case QGis::WKBLineString25D:
+      return "WKBLineString25D";
+    case QGis::WKBPolygon25D:
+      return "WKBPolygon25D";
+    case QGis::WKBMultiPoint25D:
+      return "WKBMultiPoint25D";
+    case QGis::WKBMultiLineString25D:
+      return "WKBMultiLineString25D";
+    case QGis::WKBMultiPolygon25D:
+      return "WKBMultiPolygon25D";
+    default:
+      return "Unknown type";
+  }
 }
 
 QTEST_MAIN(TestQgsGeometry)
