@@ -43,13 +43,18 @@ class TestQgsGeometry: public QObject
     void intersectionCheck();
     void unionCheck();
   private:
-    QgsPoint mPoint1; /*     +1  +A          */
-    QgsPoint mPoint2; /*    / \ / \          */
-    QgsPoint mPoint3; /*   /   X   \         */
-    QgsPoint mPointA; /* 2+---/-+3  \        */
-    QgsPoint mPointB; /*    B+-------+C      */
-    QgsPoint mPointC; /*                     */
-    QgsPoint mPointD; /*         +D          */
+    QgsPoint mPoint1; 
+    QgsPoint mPoint2; 
+    QgsPoint mPoint3; 
+    QgsPoint mPoint4; 
+    QgsPoint mPointA; 
+    QgsPoint mPointB; 
+    QgsPoint mPointC; 
+    QgsPoint mPointD; 
+    QgsPoint mPointW; 
+    QgsPoint mPointX; 
+    QgsPoint mPointY; 
+    QgsPoint mPointZ; 
     QgsPolyline mPolylineA;
     QgsPolyline mPolylineB;
     QgsPolyline mPolylineC;
@@ -69,21 +74,26 @@ void TestQgsGeometry::init()
   //
   // Reset / reinitialise the geometries before each test is run
   //
-  mPoint1 = QgsPoint(20.0,10.0); /*     +1  +A          */
-  mPoint2 = QgsPoint(10.0,30.0); /*    / \ / \          */
-  mPoint3 = QgsPoint(30.0,30.0); /*   /   X   \         */
-  mPointA = QgsPoint(40.0,10.0); /* 2+---/-+3  \        */
-  mPointB = QgsPoint(20.0,40.0); /*    B+-------+C      */
-  mPointC = QgsPoint(50.0,40.0); /*                     */
-  mPointD = QgsPoint(20.0,60.0); /*                     */
-
-  mPolylineA << mPoint1 << mPoint2 << mPoint3 << mPoint1;
+  mPoint1 = QgsPoint(20.0,20.0); 
+  mPoint2 = QgsPoint(80.0,20.0); 
+  mPoint3 = QgsPoint(80.0,80.0);
+  mPoint4 = QgsPoint(20.0,80.0);
+  mPointA = QgsPoint(40.0,40.0);
+  mPointB = QgsPoint(100.0,40.0); 
+  mPointC = QgsPoint(100.0,100.0); 
+  mPointD = QgsPoint(40.0,100.0); 
+  mPointW = QgsPoint(1000.0,1000.0); 
+  mPointX = QgsPoint(1040.0,1000.0); 
+  mPointY = QgsPoint(1040.0,1040.0); 
+  mPointZ = QgsPoint(1000.0,1040.0); 
+  
+  mPolylineA << mPoint1 << mPoint2 << mPoint3 << mPoint4 << mPoint1;
   mPolygonA << mPolylineA;
   //Polygon B intersects Polygon A
-  mPolylineB << mPointA << mPointB << mPointC << mPointA;
+  mPolylineB << mPointA << mPointB << mPointC << mPointD << mPointA;
   mPolygonB << mPolylineB;
   // Polygon C should intersect no other polys
-  mPolylineC << mPointD << mPointB << mPointC << mPointD;
+  mPolylineC << mPointW << mPointX << mPointY << mPointZ << mPointW;
   mPolygonC << mPolylineC;
 
   //polygon: first item of the list is outer ring, 
