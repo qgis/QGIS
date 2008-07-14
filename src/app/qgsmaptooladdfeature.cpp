@@ -175,7 +175,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent(QMouseEvent * e)
     }
 	  
 	  // show the dialog to enter attribute values
-    QgsAttributeDialog * mypDialog = new QgsAttributeDialog(fields,f );
+    QgsAttributeDialog * mypDialog = new QgsAttributeDialog( vlayer, f );
 	  if (mypDialog->exec())
     {
       qDebug("Adding feature to layer");
@@ -436,7 +436,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent(QMouseEvent * e)
 	      f->addAttribute(it.key(), provider->getDefaultValue(it.key()));
 	    }
 	  
-    QgsAttributeDialog * mypDialog = new QgsAttributeDialog(fields,f );
+    QgsAttributeDialog * mypDialog = new QgsAttributeDialog( vlayer, f );
 	  if (mypDialog->exec())
     {
       if(vlayer->addFeature(*f))

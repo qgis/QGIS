@@ -27,14 +27,14 @@ class QDialog;
 class QgsFeature;
 class QLayout;
 class QgsField;
-typedef QMap<int, QgsField> QgsFieldMap;
+class QgsVectorLayer;
 
 class QgsAttributeDialog: public QDialog, private Ui::QgsAttributeDialogBase
 {
   Q_OBJECT;
 
   public:
-  QgsAttributeDialog(const QgsFieldMap thepFieldMap, QgsFeature * thepFeature);
+  QgsAttributeDialog(QgsVectorLayer *vl, QgsFeature * thepFeature);
   ~QgsAttributeDialog();
 
   /** Overloaded accept method which will write the feature field 
@@ -53,7 +53,7 @@ class QgsAttributeDialog: public QDialog, private Ui::QgsAttributeDialogBase
   private:
   QString mSettingsPath;
   QList<QWidget *> mpWidgets;
-  QgsFieldMap mFieldMap;
+  QgsVectorLayer *mLayer;
   QgsFeature *  mpFeature;
 };
 
