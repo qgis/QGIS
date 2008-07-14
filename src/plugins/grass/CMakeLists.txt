@@ -42,6 +42,7 @@ SET (GRASS_PLUGIN_SRCS
 )
 
 SET (GRASS_PLUGIN_UIS
+     qgsgrasstoolsbase.ui
      qgsgrassselectbase.ui
      qgsgrasseditbase.ui
      qgsgrassmapcalcbase.ui
