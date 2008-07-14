@@ -201,7 +201,7 @@ public:
      * @see also loadNamedStyle ();
      */
     virtual QString loadDefaultStyle ( bool & theResultFlag );
-  
+
     /** Retrieve a named style for this layer if one 
      * exists (either as a .qml file on disk or as a 
      * record in the users style table in their personal qgis.db)
@@ -216,6 +216,8 @@ public:
      * @see also loadDefaultStyle ();
      */
     virtual QString loadNamedStyle ( const QString theURI , bool & theResultFlag );
+
+    virtual bool loadNamedStyleFromDb ( const QString db, const QString theURI , QString &qml );
 
     /** Save the properties of this layer as the default style 
      * (either as a .qml file on disk or as a 
