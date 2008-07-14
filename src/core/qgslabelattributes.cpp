@@ -51,7 +51,8 @@ QgsLabelAttributes::QgsLabelAttributes( bool def )
       mBufferStyleIsSet( false ),
       mBorderColorIsSet( false ),
       mBorderWidthIsSet( false ),
-      mBorderStyleIsSet( false )
+      mBorderStyleIsSet( false ),
+      mMultilineEnabledFlag( false )
 {
 
     if ( def ) { // set defaults
@@ -388,13 +389,25 @@ Qt::PenStyle QgsLabelAttributes::borderStyle ( void ) const
     return mBorderPen.style();
 }
 
+  /* Multiline */
+bool QgsLabelAttributes::multilineEnabled() const
+{
+  return mMultilineEnabledFlag;
+}
+void QgsLabelAttributes::setMultilineEnabled(bool useMultilineFlag)
+{
+  mMultilineEnabledFlag=useMultilineFlag;
+}
+
+  /* units */
 QString QgsLabelAttributes::unitsName ( int units ) 
 {
-    if ( units == MapUnits ){ 
-	return QString("mu");
-    }
-	
-    return QString("pt");
+  if ( units == MapUnits )
+  {
+    return QString("mu");
+  }
+
+  return QString("pt");
 }
 
 int QgsLabelAttributes::unitsCode ( const QString &name )
@@ -406,6 +419,7 @@ int QgsLabelAttributes::unitsCode ( const QString &name )
     return PointUnits;
 }
 
+ /* alignment */
 QString QgsLabelAttributes::alignmentName ( int alignment ) 
 {
   std::cout << "QString QgsLabelAttributes::alignmentName (" << alignment << ")" << std::endl;

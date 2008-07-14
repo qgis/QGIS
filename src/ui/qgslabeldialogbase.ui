@@ -449,6 +449,16 @@
         </widget>
        </item>
        <item row="5" column="0" >
+        <widget class="QCheckBox" name="chkUseMultiline" >
+         <property name="text" >
+          <string>Multiline labels?</string>
+         </property>
+         <property name="checked" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0" >
         <spacer>
          <property name="orientation" >
           <enum>Qt::Vertical</enum>

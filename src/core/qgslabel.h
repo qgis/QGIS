@@ -73,6 +73,7 @@ public:
 	BorderWidth,
 	BorderColor,
 	BorderStyle,
+	MultilineEnabled,
 	LabelFieldCount
     };
 
@@ -127,7 +128,8 @@ private:
                      QString text, QFont font, QPen pen,
                      int dx, int dy,
                      double xoffset, double yoffset,
-                     double ang);
+                     double ang,
+                     int width, int height, int alignment);
 
     /** Get label point for simple feature in map units */
     void labelPoint ( std::vector<QgsPoint>&, QgsFeature & feature );

@@ -101,6 +101,8 @@ public:
     void  setBorderStyle ( Qt::PenStyle style );
     bool  borderStyleIsSet ( ) const;
     Qt::PenStyle   borderStyle ( ) const;
-    
+
+    bool  multilineEnabled() const;
+    void  setMultilineEnabled( bool useMultiline );
 };
 
