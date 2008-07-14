@@ -171,6 +171,9 @@ public:
     void  setBorderStyle ( Qt::PenStyle style );
     bool  borderStyleIsSet ( void ) const;
     Qt::PenStyle   borderStyle ( void ) const;
+
+    bool  multilineEnabled() const;
+    void  setMultilineEnabled( bool useMultiline );
     
  protected:
     /* Text */
@@ -224,6 +227,9 @@ public:
     bool mBorderColorIsSet;
     bool mBorderWidthIsSet;
     bool mBorderStyleIsSet;
+
+    /** Multiline enablement */
+    bool mMultilineEnabledFlag;
 };
 
 #endif

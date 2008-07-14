@@ -239,6 +239,8 @@ void QgsLabelDialog::init ( )
   {
     spinBufferSize->setValue(1);
   }
+  //set the state of the multiline enabled checkbox
+  chkUseMultiline->setChecked(myLabelAttributes->multilineEnabled());   
   //set the state of the buffer enabled checkbox
   chkUseBuffer->setChecked(myLabelAttributes->bufferEnabled());   
   
@@ -360,6 +362,7 @@ void QgsLabelDialog::apply()
     if (radioBelow->isChecked())       myLabelAttributes->setAlignment(Qt::AlignTop   | Qt::AlignHCenter); 
     if (radioOver->isChecked())        myLabelAttributes->setAlignment(Qt::AlignCenter);
       
+    myLabelAttributes->setMultilineEnabled(chkUseMultiline->isChecked());
     myLabelAttributes->setBufferEnabled(chkUseBuffer->isChecked());
     myLabelAttributes->setBufferColor(mBufferColor); 
     myTypeInt = 0;
