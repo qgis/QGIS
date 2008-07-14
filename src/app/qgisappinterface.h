@@ -101,8 +101,8 @@ class QgisAppInterface : public QgisInterface
         /** Remove action from the plugins menu */
         void removePluginMenu(QString name, QAction* action); 
 
-        /** Return a pointer to the toolbox (where additional pages can be inserted) */
-        virtual QToolBox* getToolBox();
+        /** Add a dock widget to the main window */
+        void addDockWidget ( Qt::DockWidgetArea area, QDockWidget * dockwidget );
 
 	virtual void refreshLegend(QgsMapLayer *l);
 
