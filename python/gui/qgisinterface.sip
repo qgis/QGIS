@@ -83,7 +83,7 @@ class QgisInterface : QObject
     virtual void removePluginMenu(QString name, QAction* action)=0;
 
     /** Add a dock widget to the main window */
-    virtual void addDockWidget ( Qt::DockWidgetArea area, QDockWidget * dockwidget );=0;
+    virtual void addDockWidget ( Qt::DockWidgetArea area, QDockWidget * dockwidget )=0;
 
     /** refresh legend of a layer */
     virtual void refreshLegend( QgsMapLayer * layer )=0;
