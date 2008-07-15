@@ -9,6 +9,7 @@ Build-Depends: debhelper (>= 5.0.0), libgdal1-dev, libpq-dev,
  libqt4-qt3support (>=4.2.0), libqt4-sql (>=4.2.0), python-qt4 (>=4.1.0), python-qt4-dev (>=4.1.0),
  python-sip4-dev (>= 4.5.0), libfontconfig1-dev, libxi-dev, libxrandr-dev, libxrender-dev, libice-dev,
  libsm-dev
+Build-Conflicts: libqgis1-dev
 Standards-Version: 3.7.3
 XS-Python-Version: current
 Homepage: http://qgis.org/
