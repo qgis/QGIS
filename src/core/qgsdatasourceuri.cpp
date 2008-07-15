@@ -230,7 +230,6 @@ QString QgsDataSourceURI::connInfo() const
     connInfo += " host=" + mHost;
     if( mPort!="" )
       connInfo += " port=" + mPort;
-    connInfo += " sslmode=prefer";
   }
 
   if( mUsername != "" )
