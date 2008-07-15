@@ -26,59 +26,59 @@ QgsDetailedItemData::~QgsDetailedItemData()
 {
 }
 
-void QgsDetailedItemData::setTitle(QString theTitle)
+void QgsDetailedItemData::setTitle(const QString theTitle)
 {
   mTitle=theTitle;
 }
 
-void QgsDetailedItemData::setDetail(QString theDetail)
+void QgsDetailedItemData::setDetail(const QString theDetail)
 {
   mDetail=theDetail;
 }
 
-void QgsDetailedItemData::setIcon(QPixmap theIcon)
+void QgsDetailedItemData::setIcon(const QPixmap theIcon)
 {
   mPixmap = theIcon;
 }
-void QgsDetailedItemData::setCheckable(bool theFlag)
+void QgsDetailedItemData::setCheckable(const bool theFlag)
 {
   mCheckableFlag = theFlag;
 }
-void QgsDetailedItemData::setChecked(bool theFlag)
+void QgsDetailedItemData::setChecked(const bool theFlag)
 {
   mCheckedFlag = theFlag;
 }
-void QgsDetailedItemData::setRenderAsWidget(bool theFlag)
+void QgsDetailedItemData::setRenderAsWidget(const bool theFlag)
 {
   mRenderAsWidgetFlag = theFlag;
 }
 
-QString QgsDetailedItemData::title()
+QString QgsDetailedItemData::title() const
 {
   return mTitle;
 }
 
-QString QgsDetailedItemData::detail()
+QString QgsDetailedItemData::detail() const
 {
   return mDetail;
 }
 
-QPixmap QgsDetailedItemData::icon()
+QPixmap QgsDetailedItemData::icon() const
 {
   return mPixmap;
 }
 
-bool QgsDetailedItemData::isCheckable()
+bool QgsDetailedItemData::isCheckable() const
 {
   return mCheckableFlag;
 }
 
-bool QgsDetailedItemData::isChecked()
+bool QgsDetailedItemData::isChecked() const
 {
   return mCheckedFlag;
 }
 
-bool QgsDetailedItemData::isRenderedAsWidget()
+bool QgsDetailedItemData::isRenderedAsWidget() const
 {
   return mRenderAsWidgetFlag;
 }
