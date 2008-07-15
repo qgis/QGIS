@@ -2476,6 +2476,15 @@ bool QgsVectorLayer::commitChanges()
     }
     else
     {
+      //Remove all negative Id in selected features as they are not valid any more after commit
+      if(mSelectedFeatureIds.size() > 0)
+	{
+	  for(QgsFeatureList::iterator it = mAddedFeatures.begin(); it != mAddedFeatures.end(); ++it)
+	    {
+	      mSelectedFeatureIds.remove(it->featureId());
+	    }
+	}  
+
       // done, remove features from the list
       mAddedFeatures.clear();
       addedFeaturesOk = TRUE;
