@@ -129,7 +129,7 @@ zip archive that contains just about all dependencies.
 
 Get this: 
 
-http://qgis.org/uploadfiles/msys/msys.zip
+http://download.osgeo.org/qgis/win32/msys.zip
 
 and unpack to c:\msys
 
