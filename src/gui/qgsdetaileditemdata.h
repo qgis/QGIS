@@ -31,11 +31,11 @@ class GUI_EXPORT QgsDetailedItemData
   public:
     QgsDetailedItemData();
     ~QgsDetailedItemData();
-    void setTitle(QString theTitle);
-    void setDetail(QString theDetail);
-    void setIcon(QPixmap theIcon);
-    void setCheckable(bool theFlag);
-    void setChecked(bool theFlag);
+    void setTitle(const QString theTitle);
+    void setDetail(const QString theDetail);
+    void setIcon(const QPixmap theIcon);
+    void setCheckable(const bool theFlag);
+    void setChecked(const bool theFlag);
     /** This is a hint to the delegate to render using 
      * a widget rather than manually painting every 
      * part of the list item.
@@ -44,12 +44,12 @@ class GUI_EXPORT QgsDetailedItemData
      */
     void setRenderAsWidget(bool theFlag);
 
-    QString title();
-    QString detail();
-    QPixmap icon();
-    bool isCheckable();
-    bool isChecked();
-    bool isRenderedAsWidget();
+    QString title() const;
+    QString detail() const;
+    QPixmap icon() const;
+    bool isCheckable() const;
+    bool isChecked() const;
+    bool isRenderedAsWidget() const;
 
   private:
     QString mTitle;

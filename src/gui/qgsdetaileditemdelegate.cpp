@@ -33,7 +33,9 @@ QgsDetailedItemDelegate::QgsDetailedItemDelegate(QObject * parent) :
        
 {
   //mpWidget->setFixedHeight(80);
-  mpCheckBox->resize(16,16);
+  mpCheckBox->resize(mpCheckBox->sizeHint().height(),mpCheckBox->sizeHint().height());
+  setVerticalSpacing (3);
+  setHorizontalSpacing (5);
 }
 
 QgsDetailedItemDelegate::~QgsDetailedItemDelegate()
@@ -55,137 +57,17 @@ void QgsDetailedItemDelegate::paint(QPainter * thepPainter,
     bool myCheckState = theIndex.model()->data(theIndex, Qt::CheckStateRole).toBool();
     if (myData.isRenderedAsWidget())
     {
-      mpWidget->setChecked(myCheckState);
-      mpWidget->setData(myData);
-      mpWidget->resize(theOption.rect.width(),mpWidget->height());
-      mpWidget->setAutoFillBackground(false);
-      mpWidget->repaint();
-
-      if (theOption.state & QStyle::State_Selected)
-      {
-        QColor myColor1 = theOption.palette.highlight().color();
-        QColor myColor2 = myColor1;
-        myColor2 = myColor2.lighter(110); //10% lighter
-        QLinearGradient myGradient(QPointF(0,theOption.rect.y()),
-            QPointF(0,theOption.rect.y() + mpWidget->height()));
-        myGradient.setColorAt(0, myColor1);
-        myGradient.setColorAt(0.1, myColor2);
-        myGradient.setColorAt(0.5, myColor1);
-        myGradient.setColorAt(0.9, myColor2);
-        myGradient.setColorAt(1, myColor1);
-        thepPainter->fillRect(theOption.rect, QBrush(myGradient));
-      }
-      QPixmap myPixmap = QPixmap::grabWidget(mpWidget);
-      thepPainter->drawPixmap(theOption.rect.x(),
-          theOption.rect.y(), 
-          myPixmap);
-    } //render as widget 
+      paintAsWidget(thepPainter,theOption,myData);
+    } 
     else //render by manually painting
     {
-      //
-      // Get the strings and check box properties
-      //
-      bool myCheckState = theIndex.model()->data(theIndex, Qt::CheckStateRole).toBool();
-      mpCheckBox->setChecked(myCheckState);
-      QPixmap myCbxPixmap(mpCheckBox->size());
-      mpCheckBox->render(&myCbxPixmap); //we will draw this onto the widget further down
-
-      //
-      // Calculate the widget height and other metrics
-      //
-      QFont myFont = theOption.font;
-      QFont myTitleFont = myFont;
-      myTitleFont.setBold(true);
-      myTitleFont.setPointSize(myFont.pointSize() + 3);
-      QFontMetrics myTitleMetrics(myTitleFont);
-      QFontMetrics myDetailMetrics(myFont);
-      int myVerticalSpacer = 3; //spacing between title and description
-      int myHorizontalSpacer = 5; //spacing between checkbox / icon and description
-      int myTextStartX = theOption.rect.x() + myHorizontalSpacer;
-      int myTextStartY= theOption.rect.y() + myVerticalSpacer;
-      int myHeight = myTitleMetrics.height() + myVerticalSpacer;
-
-      //
-      // Draw the item background with a gradient if its highlighted
-      //
-      if (theOption.state & QStyle::State_Selected)
-      {
-        QColor myColor1 = theOption.palette.highlight().color();
-        QColor myColor2 = myColor1;
-        myColor2 = myColor2.lighter(110); //10% lighter
-        int myHeight = myTitleMetrics.height() + myVerticalSpacer;
-        QLinearGradient myGradient(QPointF(0,theOption.rect.y()),
-            QPointF(0,theOption.rect.y() + myHeight*2));
-        myGradient.setColorAt(0, myColor1);
-        myGradient.setColorAt(0.1, myColor2);
-        myGradient.setColorAt(0.5, myColor1);
-        myGradient.setColorAt(0.9, myColor2);
-        myGradient.setColorAt(1, myColor2);
-        thepPainter->fillRect(theOption.rect, QBrush(myGradient));
-      }
-
-      //
-      // Draw the checkbox
-      //
-      bool myCheckableFlag = true;
-      if (theIndex.flags() == Qt::ItemIsUserCheckable)
-      {
-        myCheckableFlag = false;
-      }
-      if (myCheckableFlag)
-      {
-        thepPainter->drawPixmap(theOption.rect.x(),
-            theOption.rect.y() + mpCheckBox->height(), 
-            myCbxPixmap);
-        myTextStartX = theOption.rect.x() + myCbxPixmap.width() + myHorizontalSpacer;
-      }
-      //
-      // Draw the decoration (pixmap)
-      //
-      bool myIconFlag = false;
-      QPixmap myDecoPixmap = myData.icon();
-      if (!myDecoPixmap.isNull())
-      {
-        thepPainter->drawPixmap(myTextStartX,
-            myTextStartY + (myDecoPixmap.height() / 2), 
-            myDecoPixmap);
-        myTextStartX += myDecoPixmap.width() + myHorizontalSpacer;
-      }
-      //
-      // Draw the title 
-      //
-      myTextStartY += myHeight/2;
-      thepPainter->setFont(myTitleFont);
-      thepPainter->drawText( myTextStartX ,
-          myTextStartY , 
-          myData.title());
-      //
-      // Draw the description with word wrapping if needed
-      //
-      thepPainter->setFont(myFont); //return to original font set by client
-      if (myIconFlag)
-      {
-        myTextStartY += myVerticalSpacer;
-      }
-      else
-      {
-        myTextStartY +=  myDetailMetrics.height() + myVerticalSpacer;
-      }
-      QStringList myList = 
-        wordWrap( myData.detail(), myDetailMetrics, theOption.rect.width() - myTextStartX );
-      QStringListIterator myLineWrapIterator(myList);
-      while (myLineWrapIterator.hasNext())
-      {
-        QString myLine = myLineWrapIterator.next();
-        thepPainter->drawText( myTextStartX, 
-            myTextStartY,
-            myLine);
-        myTextStartY += myDetailMetrics.height() - myVerticalSpacer;
-      }
-    } //render by manual painting
+      paintManually(thepPainter,theOption,myData);
+    }
   } //can convert item data
   thepPainter->restore();
 }
+
+
 
 QSize QgsDetailedItemDelegate::sizeHint( 
        const QStyleOptionViewItem & theOption, 
@@ -201,22 +83,8 @@ QSize QgsDetailedItemDelegate::sizeHint(
     }
     else // fall back to hand calculated & hand drawn item
     {
-      QFont myFont = theOption.font;
-      QFont myTitleFont = myFont;
-      myTitleFont.setBold(true);
-      myTitleFont.setPointSize(myFont.pointSize() + 3);
-      QFontMetrics myTitleMetrics(myTitleFont);
-      QFontMetrics myDetailMetrics(myFont);
-      int myVerticalSpacer = 3; //spacing between title and description
-      int myHorizontalSpacer = 5; //spacing between checkbox / icon and description
-      int myHeight = myTitleMetrics.height() + myVerticalSpacer;
-      QString myDetailString = theIndex.model()->data(theIndex, Qt::UserRole).toString();
-      QStringList myList = wordWrap( myDetailString, 
-          myDetailMetrics, 
-          theOption.rect.width() - (mpCheckBox->width() + myHorizontalSpacer));
-      myHeight += (myList.count() + 1) * (myDetailMetrics.height() - myVerticalSpacer);
       //for some reason itmes are non selectable if using rect.width() on osx and win
-      return QSize(50, myHeight + myVerticalSpacer);
+      return QSize(50, height(theOption,myData));
       //return QSize(theOption.rect.width(), myHeight + myVerticalSpacer);
     }
   }
@@ -225,6 +93,162 @@ QSize QgsDetailedItemDelegate::sizeHint(
     return QSize(50,50); //fallback
   }
 }
+
+void QgsDetailedItemDelegate::paintManually(QPainter * thepPainter, 
+                       const QStyleOptionViewItem & theOption,
+                       const QgsDetailedItemData theData) const
+{
+    //
+      // Get the strings and check box properties
+    //
+    //bool myCheckState = theIndex.model()->data(theIndex, Qt::CheckStateRole).toBool();
+    mpCheckBox->setChecked(theData.isChecked());
+    QPixmap myCbxPixmap(mpCheckBox->size());
+    mpCheckBox->render(&myCbxPixmap); //we will draw this onto the widget further down
+
+    //
+      // Calculate the widget height and other metrics
+    //
+
+    QFontMetrics myTitleMetrics(titleFont(theOption));
+    QFontMetrics myDetailMetrics(detailFont(theOption));
+    int myTextStartX = theOption.rect.x() + horizontalSpacing();
+    int myTextStartY= theOption.rect.y() + verticalSpacing();
+    int myHeight = myTitleMetrics.height() + verticalSpacing();
+
+    //
+      // Draw the item background with a gradient if its highlighted
+    //
+    if (theOption.state & QStyle::State_Selected)
+    {
+      drawHighlight(theOption,thepPainter, height(theOption, theData));
+    }
+
+    //
+    // Draw the checkbox
+    //
+    if (theData.isCheckable())
+    {
+      thepPainter->drawPixmap(theOption.rect.x(),
+                              theOption.rect.y() + mpCheckBox->height(), 
+                                               myCbxPixmap);
+      myTextStartX = theOption.rect.x() + myCbxPixmap.width() + horizontalSpacing();
+    }
+    //
+      // Draw the decoration (pixmap)
+    //
+    bool myIconFlag = false;
+    QPixmap myDecoPixmap = theData.icon();
+    if (!myDecoPixmap.isNull())
+    {
+      thepPainter->drawPixmap(myTextStartX,
+                              myTextStartY + (myDecoPixmap.height() / 2), 
+                                              myDecoPixmap);
+      myTextStartX += myDecoPixmap.width() + horizontalSpacing();
+    }
+    //
+      // Draw the title 
+    //
+    myTextStartY += myHeight/2;
+    thepPainter->setFont(titleFont(theOption));
+    thepPainter->drawText( myTextStartX ,
+                           myTextStartY , 
+                           theData.title());
+    //
+      // Draw the description with word wrapping if needed
+    //
+    thepPainter->setFont(detailFont(theOption)); //return to original font set by client
+    if (myIconFlag)
+    {
+      myTextStartY += verticalSpacing();
+    }
+    else
+    {
+      myTextStartY +=  myDetailMetrics.height() + verticalSpacing();
+    }
+    QStringList myList = 
+        wordWrap( theData.detail(), myDetailMetrics, theOption.rect.width() - myTextStartX );
+    QStringListIterator myLineWrapIterator(myList);
+    while (myLineWrapIterator.hasNext())
+    {
+      QString myLine = myLineWrapIterator.next();
+      thepPainter->drawText( myTextStartX, 
+                             myTextStartY,
+                             myLine);
+      myTextStartY += myDetailMetrics.height() - verticalSpacing();
+    }
+  } //render by manual painting
+
+
+void QgsDetailedItemDelegate::paintAsWidget(QPainter * thepPainter, 
+                       const QStyleOptionViewItem & theOption,
+                       const QgsDetailedItemData theData) const
+{
+  QApplication::style()->drawPrimitive(QStyle::PE_PanelItemViewItem, &theOption, thepPainter, 0);
+  mpWidget->setChecked(theData.isChecked());
+  mpWidget->setData(theData);
+  mpWidget->resize(theOption.rect.width(),mpWidget->height());
+  mpWidget->setAutoFillBackground(true);
+      //mpWidget->setAttribute(Qt::WA_OpaquePaintEvent);
+  mpWidget->repaint();
+
+  if (theOption.state & QStyle::State_Selected)
+  {
+    drawHighlight(theOption,thepPainter,height(theOption,theData));
+  }
+  QPixmap myPixmap = QPixmap::grabWidget(mpWidget);
+  thepPainter->drawPixmap(theOption.rect.x(),
+                          theOption.rect.y(), 
+                          myPixmap);
+}//render as widget 
+
+void QgsDetailedItemDelegate::drawHighlight(const QStyleOptionViewItem &theOption,
+                                            QPainter * thepPainter,
+                                            int theHeight) const
+{
+  QColor myColor1 = theOption.palette.highlight().color();
+  QColor myColor2 = myColor1;
+  myColor2 = myColor2.lighter(110); //10% lighter
+  QLinearGradient myGradient(QPointF(0,theOption.rect.y()),
+                             QPointF(0,theOption.rect.y() + theHeight));
+  myGradient.setColorAt(0, myColor1);
+  myGradient.setColorAt(0.1, myColor2);
+  myGradient.setColorAt(0.5, myColor1);
+  myGradient.setColorAt(0.9, myColor2);
+  myGradient.setColorAt(1, myColor2);
+  thepPainter->fillRect(theOption.rect, QBrush(myGradient));
+}
+
+int QgsDetailedItemDelegate::height(const QStyleOptionViewItem & theOption,
+                                     const QgsDetailedItemData theData) const
+{  
+  QFontMetrics myTitleMetrics( titleFont( theOption ) );
+  QFontMetrics myDetailMetrics( detailFont( theOption ) );
+  //we dont word wrap the title so its easy to measure
+  int myHeight = myTitleMetrics.height() + verticalSpacing();
+  //the detail needs to be measured though
+  QStringList myList = wordWrap( theData.detail(),
+                                 myDetailMetrics,
+                                 theOption.rect.width() - ( mpCheckBox->width() + horizontalSpacing() ) );
+  myHeight += ( myList.count() + 1 ) * ( myDetailMetrics.height() - verticalSpacing() );
+  return myHeight;
+}
+
+
+QFont QgsDetailedItemDelegate::detailFont(const QStyleOptionViewItem &theOption) const
+{
+  QFont myFont = theOption.font;
+  return myFont;
+}
+
+QFont QgsDetailedItemDelegate::titleFont(const QStyleOptionViewItem &theOption) const
+{
+  QFont myTitleFont = detailFont(theOption);
+  myTitleFont.setBold(true);
+  myTitleFont.setPointSize(myTitleFont.pointSize() + 1);
+  return myTitleFont;
+}
+
 
 QStringList QgsDetailedItemDelegate::wordWrap(QString theString, 
                                     QFontMetrics theMetrics, 
@@ -272,3 +296,27 @@ QStringList QgsDetailedItemDelegate::wordWrap(QString theString,
 
 }
 
+
+
+int QgsDetailedItemDelegate::verticalSpacing() const
+{
+  return mVerticalSpacing;
+}
+
+
+void QgsDetailedItemDelegate::setVerticalSpacing( int theValue )
+{
+  mVerticalSpacing = theValue;
+}
+
+
+int QgsDetailedItemDelegate::horizontalSpacing() const
+{
+  return mHorizontalSpacing;
+}
+
+
+void QgsDetailedItemDelegate::setHorizontalSpacing( int theValue )
+{
+  mHorizontalSpacing = theValue;
+}
