@@ -22,6 +22,10 @@
 			<section label="Import vector">
 				<grass name="v.in.ogr"/>
 				<grass name="v.in.ogr.loc"/>
+				<grass name="v.in.ogr.all"/>
+				<grass name="v.in.ogr.all.loc"/>
+				<grass name="v.in.shape"/>
+				<grass name="v.in.shape.loc"/>				
 				<grass name="v.in.dxf"/>
 				<grass name="v.in.e00"/>
 				<grass name="v.in.mapgen"/>
@@ -71,19 +75,23 @@
 	<section label="Config">
 		<section label="Region">
 			<section label="Region settings">
-				<grass name="g.region"/>
+				<grass name="g.region.save"/>
+				<grass name="g.region.zoom"/>
+				<grass name="g.region.multiple.raster"/>
+				<grass name="g.region.multiple.vector"/>
 			</section>
 			<section label="Projection management">
-				<section label="Print projection info of current Location">
+				<section label="Print projection information of the current location">
 					<grass name="g.proj.print"/>
 				</section>
-				<section label="Print projection info from a file">
+				<section label="Print projection information from a georeferenced file">
 					<grass name="g.proj.geo"/>
+					<grass name="g.proj.ascii"/>
 					<grass name="g.proj.proj"/>
 				</section>
-				<section label="Print projection info from a file to create new location">
-					<grass name="g.proj.ascii.new"/>
+				<section label="Print projection information from a georeferenced file and create a new location based on it">
 					<grass name="g.proj.geo.new"/>
+					<grass name="g.proj.ascii.new"/>
 					<grass name="g.proj.proj.new"/>
 				</section>
 			</section>
@@ -100,6 +108,9 @@
 		<section label="Develop map">
 			<section label="Compress raster">
 				<grass name="r.compress"/>
+			</section>
+			<section label="Patch raster layers">
+				<grass name="r.patch"/>
 			</section>
 			<section label="Sets the boundary definitions for a raster map">
 				<grass name="r.region.region"/>
@@ -125,6 +136,7 @@
 			</section>
 			<section label="Reproject raster from another Location">
 				<grass name="r.proj"/>
+				<grass name="r.proj.res"/>
 			</section>
 		</section>
 		<section label="Manage map colors">
@@ -240,6 +252,9 @@
 		<section label="Develop map">
 			<section label="Topology management">
 				<grass name="v.build.all"/>
+			</section>
+			<section label="Patch vector layers">
+				<grass name="v.patch"/>
 			</section>
 			<section label="Toolset for cleaning topology of vector map">
 				<grass name="v.clean.break"/>
