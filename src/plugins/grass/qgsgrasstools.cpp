@@ -106,6 +106,7 @@ QgsGrassTools::QgsGrassTools ( QgisInterface *iface,
 #ifdef QGISDEBUG
   std::cerr << "QgsGrassTools()" << std::endl;
 #endif
+  qRegisterMetaType<QgsDetailedItemData>();
 
   setWindowTitle ( tr("GRASS Tools") );
   //    setupUi(this);
@@ -120,7 +121,7 @@ QgsGrassTools::QgsGrassTools ( QgisInterface *iface,
   // Radims original tree view code.
   //
   mModulesTree->header()->hide();
- connect( mModulesTree, SIGNAL(itemClicked(QTreeWidgetItem *, int)), 
+  connect( mModulesTree, SIGNAL(itemClicked(QTreeWidgetItem *, int)), 
    this, SLOT(moduleClicked( QTreeWidgetItem *, int)) );
 
 

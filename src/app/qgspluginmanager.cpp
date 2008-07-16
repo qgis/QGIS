@@ -91,6 +91,7 @@ QgsPluginManager::QgsPluginManager(QgsPythonUtils* pythonUtils, QWidget * parent
   // connect the slot up to catch when a bookmark is zoomed to
   connect(btnClearAll, SIGNAL(clicked()), this, SLOT(clearAll()));
   
+  qRegisterMetaType<QgsDetailedItemData>();
 }
 
 
