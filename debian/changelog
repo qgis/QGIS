@@ -1,10 +1,22 @@
 qgis (1.0preview1) experimental; urgency=low
 
-  * new upstream version
+  * prepackaging of Quantum GIS 1.0
   * raised abi version from 0.11 to 1
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Wed, 16 Jul 2008 22:44:36 +0200
+
+qgis (0.11.0-1) stable; urgency=low
+
+  * libqgispython0.11 integrated into python-qgis
   * introduced a build conflict with libqgis1-dev
 
- -- Jürgen E. Fischer <jef@norbit.de>  Tue, 15 Jul 2008 10:03:44 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Wed, 16 Jul 2008 22:42:11 +0200
+
+qgis (0.11.0) stable; urgency=low
+
+  * New upstream release: Quantum GIS 0.11.0 'Metis'
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 15 Jul 2008 20:41:12 +0200
 
 qgis (0.11.0test3) experimental; urgency=low
 

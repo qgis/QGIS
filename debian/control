@@ -59,8 +59,7 @@ Depends: qgis (= ${binary:Version}), libgdal1-dev | libgdal1-1.3.2-dev,
  libsqlite3-dev, libgsl0-dev, proj, libexpat1-dev, libqt4-core (>=4.2.0),
  libqt4-dev (>=4.2.0), libqt4-gui (>=4.2.0), libqt4-qt3support (>=4.2.0),
  libqt4-sql (>=4.2.0), python-qt4 (>=4.1.0), python-qt4-dev (>=4.1.0),
- qt4-designer (>=4.2.0), libqgispython1, libqgisgrass1, libqgis-gui1,
- libqgis-core1
+ qt4-designer (>=4.2.0), libqgisgrass1, libqgis-gui1, libqgis-core1
 Provides: libqgis-dev
 Conflicts: libqgis-dev, qgis-dev
 Replaces: qgis-dev
@@ -90,7 +89,7 @@ Description: Quantum GIS - shared grass library
 Package: python-qgis
 Section: python
 Architecture: any
-Depends: libqgispython1, ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
 Description: Python bindings to Quantum GIS
@@ -99,12 +98,3 @@ Description: Python bindings to Quantum GIS
  .
  This package contains the files for the Python support.
 
-Package: libqgispython1
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-XB-Python-Version: ${python:Versions}
-Description: Quantum GIS - shared Python library
- Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
- and display databases of geographic information.
- .
- This package contains the shared library for the Python support.
