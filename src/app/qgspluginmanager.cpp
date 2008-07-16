@@ -161,8 +161,7 @@ void QgsPluginManager::getPythonPluginDescriptions()
     //myData.setIcon(pixmap); //todo use a python logo here
     myData.setCheckable(true);
     myData.setRenderAsWidget(false);
-    QVariant myVariant = qVariantFromValue(myData);
-    mypDetailItem->setData(myVariant,PLUGIN_DATA_ROLE);
+    myData.setChecked(false); //start off assuming false
 
     // check to see if the plugin is loaded and set the checkbox accordingly
     QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
@@ -177,9 +176,11 @@ void QgsPluginManager::getPythonPluginDescriptions()
       if (libName == packageName)
       {
         // set the checkbox
-        mypDetailItem->setCheckState(Qt::Checked);
+        myData.setChecked(true);
       }
     }
+    QVariant myVariant = qVariantFromValue(myData);
+    mypDetailItem->setData(myVariant,PLUGIN_DATA_ROLE);
     // Add item to model
     mModelPlugins->appendRow(mypDetailItem);
   }
@@ -358,7 +359,9 @@ void QgsPluginManager::unload()
   {
     // FPV - I want to use index. You can do evrething with item.
     QModelIndex myIndex=mModelPlugins->index(row,0);
-    if (mModelPlugins->data(myIndex,Qt::CheckStateRole).toInt() == 0)
+    QgsDetailedItemData myData = 
+        qVariantValue<QgsDetailedItemData>(mModelPlugins->data(myIndex,PLUGIN_DATA_ROLE));
+    if (!myData.isChecked())
     {
       // iThe plugin name without version string in its data PLUGIN_LIB [ts]
       myIndex=mModelPlugins->index(row,0);
@@ -402,7 +405,10 @@ std::vector < QgsPluginItem > QgsPluginManager::getSelectedPlugins()
   // FPV - I want to use item here. You can do everything with index if you want.
   for (int row=0;row < mModelPlugins->rowCount();row++)
   {
-    if (mModelPlugins->item(row,0)->checkState() == Qt::Checked)
+    QgsDetailedItemData myData = 
+        qVariantValue<QgsDetailedItemData>(mModelPlugins->item(row,0)->data(PLUGIN_DATA_ROLE));
+
+    if (myData.isChecked())
     {
       QString pluginName = mModelPlugins->item(row,0)->data(PLUGIN_LIBRARY_NAME_ROLE).toString();
       bool pythonic = false;
