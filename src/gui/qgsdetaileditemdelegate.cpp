@@ -184,7 +184,7 @@ void QgsDetailedItemDelegate::paintAsWidget(QPainter * thepPainter,
                        const QStyleOptionViewItem & theOption,
                        const QgsDetailedItemData theData) const
 {
-  QApplication::style()->drawPrimitive(QStyle::PE_PanelItemViewItem, &theOption, thepPainter, 0);
+
   mpWidget->setChecked(theData.isChecked());
   mpWidget->setData(theData);
   mpWidget->resize(theOption.rect.width(),mpWidget->height());
