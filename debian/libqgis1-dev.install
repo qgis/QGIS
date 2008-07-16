@@ -1,5 +1,4 @@
 usr/include/qgis/*
-usr/lib/libqgispython.so
 usr/lib/libqgisgrass.so
 usr/lib/libqgis_gui.so
 usr/lib/libqgis_core.so
