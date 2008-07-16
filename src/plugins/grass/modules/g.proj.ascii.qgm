@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Converts coordinate system descriptions (i.e. projection information) from location" module="g.proj">
+<qgisgrassmodule label="Print projection information from a georeferenced ASCII file containing a WKT projection description" module="g.proj">
+	<file key="wkt" type="old" />
 	<flag key="p" />
 	<flag key="d" />
 	<flag key="j" />
 	<flag key="w" />
 	<flag key="e" />
 	<flag key="f" />
-	<flag key="c" />
-	<option key="location" />
 </qgisgrassmodule>
