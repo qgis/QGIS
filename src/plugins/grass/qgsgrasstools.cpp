@@ -119,6 +119,7 @@ QgsGrassTools::QgsGrassTools ( QgisInterface *iface,
 #ifdef QGISDEBUG
   std::cerr << "QgsGrassTools()" << std::endl;
 #endif
+  qRegisterMetaType<QgsDetailedItemData>();
 
   setWindowTitle ( tr("GRASS Tools") );
   //    setupUi(this);
