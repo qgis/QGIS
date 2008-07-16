@@ -132,7 +132,7 @@ private:
     /**
      * \brief Populate the layer list - private for now.
      *
-     * \retval FALSE if the layers could not be retreived or parsed - 
+     * \retval FALSE if the layers could not be retrieved or parsed - 
      *         see mWmsProvider->errorString() for more info
      */
     bool populateLayerList(QgsWmsProvider* wmsProvider);
@@ -180,7 +180,7 @@ private:
     QButtonGroup* m_imageFormatGroup;
     QHBoxLayout* m_imageFormatLayout;
 
-    //! The WMS provider that retreives information for this dialog
+    //! The WMS provider that retrieves information for this dialog
     QgsWmsProvider * mWmsProvider;
 
     static const int context_id = 710979116;

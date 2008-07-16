@@ -42,7 +42,7 @@ public:
   //! Gets the name of the field
   const QString & name() const;
 
-  //! Gets variant type of the field as it will be retreived from data source
+  //! Gets variant type of the field as it will be retrieved from data source
   QVariant::Type type() const;
 
     /** 

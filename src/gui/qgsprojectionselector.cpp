@@ -527,7 +527,7 @@ void QgsProjectionSelector::applyUserProjList(QSet<QString> * crsFilter)
     assert(myResult == 0);
   }
 
-  // Set up the query to retreive the projection information needed to populate the list
+  // Set up the query to retrieve the projection information needed to populate the list
   QString mySql = "select description, srs_id, is_geo, name, parameters from vw_srs ";
   mySql += "where ";
   mySql += sqlFilter;
