@@ -115,7 +115,7 @@ void QgsCustomProjectionDialog::getProjList ()
     assert(myResult == 0);
   }
 
-  // Set up the query to retreive the projection information needed to populate the PROJECTION list
+  // Set up the query to retrieve the projection information needed to populate the PROJECTION list
   QString mySql = "select * from tbl_projection order by name";
   myResult = sqlite3_prepare(myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
@@ -150,7 +150,7 @@ void QgsCustomProjectionDialog::getEllipsoidList()
     assert(myResult == 0);
   }
 
-  // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
+  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString mySql = "select * from tbl_ellipsoid order by name";
   myResult = sqlite3_prepare(myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
@@ -193,7 +193,7 @@ void QgsCustomProjectionDialog::on_pbnDelete_clicked()
     //     database if it does not exist.
     assert(myResult == 0);
   }
-  // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
+  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString mySql = "delete from tbl_srs where srs_id='" + mCurrentRecordId + "'";
   myResult = sqlite3_prepare(myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
@@ -253,7 +253,7 @@ long QgsCustomProjectionDialog::getRecordCount()
     //     database if it does not exist.
     assert(myResult == 0);
   }
-  // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
+  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString mySql = "select count(*) from tbl_srs";
   myResult = sqlite3_prepare(myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
@@ -288,7 +288,7 @@ QString QgsCustomProjectionDialog::getProjectionFamilyName(QString theProjection
     //     database if it does not exist.
     assert(myResult == 0);
   }
-  // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
+  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString mySql = "select name from tbl_projection where acronym='" + theProjectionFamilyAcronym + "'";
   myResult = sqlite3_prepare(myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
@@ -319,7 +319,7 @@ QString QgsCustomProjectionDialog::getEllipsoidName(QString theEllipsoidAcronym)
     //     database if it does not exist.
     assert(myResult == 0);
   }
-  // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
+  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString mySql = "select name from tbl_ellipsoid where acronym='" + theEllipsoidAcronym + "'";
   myResult = sqlite3_prepare(myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
@@ -350,7 +350,7 @@ QString QgsCustomProjectionDialog::getProjectionFamilyAcronym(QString theProject
     //     database if it does not exist.
     assert(myResult == 0);
   }
-  // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
+  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString mySql = "select acronym from tbl_projection where name='" + theProjectionFamilyName + "'";
   myResult = sqlite3_prepare(myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
@@ -381,7 +381,7 @@ QString QgsCustomProjectionDialog::getEllipsoidAcronym(QString theEllipsoidName)
     //     database if it does not exist.
     assert(myResult == 0);
   }
-  // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
+  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString mySql = "select acronym from tbl_ellipsoid where name='" + theEllipsoidName + "'";
   myResult = sqlite3_prepare(myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
@@ -1000,7 +1000,7 @@ void QgsCustomProjectionDialog::cboProjectionFamily_highlighted( const QString &
     assert(myResult == 0);
   }
 
-  // Set up the query to retreive the projection information needed to populate the PROJECTION list
+  // Set up the query to retrieve the projection information needed to populate the PROJECTION list
   QString mySql = "select parameters from tbl_projection name where name='"+theText+"'";
 #ifdef QGISDEBUG
     std::cout << "Query to get proj params:" << mySql.toLocal8Bit().data() << std::endl;

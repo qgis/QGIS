@@ -100,7 +100,7 @@ private:
   QString tableName;
 
   /**
-   * SQL statement used to limit the features retreived
+   * SQL statement used to limit the features retrieved
    */
   QString sqlWhereClause;
 

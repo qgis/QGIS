@@ -769,7 +769,7 @@ long QgsSpatialRefSys::findMatchingProj()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
 
-  // Set up the query to retreive the projection information needed to populate the list
+  // Set up the query to retrieve the projection information needed to populate the list
   QString mySql = QString ("select srs_id,parameters from tbl_srs where projection_acronym='" +
                            mProjectionAcronym + "' and ellipsoid_acronym='" + mEllipsoidAcronym + "'");
   // Get the full path name to the sqlite3 spatial reference database.

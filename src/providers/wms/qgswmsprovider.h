@@ -354,7 +354,7 @@ public:
    *
    * \param[out] layers   The list of layers will be placed here.
    *
-   * \retval FALSE if the layers could not be retreived or parsed -
+   * \retval FALSE if the layers could not be retrieved or parsed -
    *         see errorString() for more info
    *
    * \todo Document this better, make static
@@ -587,7 +587,7 @@ private:
    *
    * \param forceRefresh  if true, ignores any previous response cached in memory
    *                      and always contact the server for a new copy.
-   * \retval FALSE if the capabilities document could not be retreived or parsed - 
+   * \retval FALSE if the capabilities document could not be retrieved or parsed - 
    *         see errorString() for more info
    *
    * When this returns, "layers" will make sense.
@@ -679,7 +679,7 @@ private:
   /**
    * \brief Calculates the combined extent of the layers selected by layersDrawn
    *
-   * \retval FALSE if the capabilities document could not be retreived or parsed - 
+   * \retval FALSE if the capabilities document could not be retrieved or parsed - 
    *         see errorString() for more info
    */
   bool calculateExtent();
