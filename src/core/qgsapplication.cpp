@@ -78,8 +78,8 @@ void QgsApplication::setPrefixPath(const QString thePrefixPath, bool useDefaultP
 #endif
   if (useDefaultPaths)
   {
-    setPluginPath(mPrefixPath + QDir::separator() + QString(QGIS_PLUGIN_SUBDIR));
-    setPkgDataPath(mPrefixPath + QDir::separator() + QString(QGIS_DATA_SUBDIR));
+    setPluginPath(mPrefixPath + "/" + QString(QGIS_PLUGIN_SUBDIR));
+    setPkgDataPath(mPrefixPath + "/" + QString(QGIS_DATA_SUBDIR));
   }
 }
 
