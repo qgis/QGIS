@@ -1,3 +1,11 @@
+qgis (0.11.0-2) stable; urgency=low
+
+  * remove libqgisgrass0.11 package by integrating it into qgis-plugin-grass
+  * move libqgisgrass.so link from libqgis1-dev to qgis-plugin-grass
+  * qgis recommends instead of just suggests the grass and python plugin
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 19 Jul 2008 11:38:49 +0200
+
 qgis (0.11.0-1) stable; urgency=low
 
   * libqgispython0.11 integrated into python-qgis
