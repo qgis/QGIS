@@ -36,8 +36,6 @@
 class CORE_EXPORT QgsRasterBandStats
 {
   public:
-    //This constructor was added because values were being used un initalized 
-    //TODO: This should not be in the header file.
     QgsRasterBandStats() {
       bandName = "";
       statsGatheredFlag = false;

@@ -284,13 +284,13 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
   QPixmap myPyramidPixmap(myThemePath + "/mIconPyramid.png");
   QPixmap myNoPyramidPixmap(myThemePath + "/mIconNoPyramid.png");
 
-  pbnAddValuesManually->setIcon(QIcon(QPixmap(myThemePath + "/mActionNewAttribute.png")));
-  pbnAddValuesFromDisplay->setIcon(QIcon(QPixmap(myThemePath + "/mActionContextHelp.png")));
-  pbnRemoveSelectedRow->setIcon(QIcon(QPixmap(myThemePath + "/mActionDeleteAttribute.png")));
-  pbnDefaultValues->setIcon(QIcon(QPixmap(myThemePath + "/mActionCopySelected.png")));
-  pbnImportTransparentPixelValues->setIcon(QIcon(QPixmap(myThemePath + "/mActionFileOpen.png")));
-  pbnExportTransparentPixelValues->setIcon(QIcon(QPixmap(myThemePath + "/mActionFileSave.png")));
-  pbtnMakeContrastEnhancementAlgorithmDefault->setIcon(QIcon(QPixmap(myThemePath + "/mActionFileSave.png")));
+  pbnAddValuesManually->setIcon(QIcon(myThemePath + "/mActionNewAttribute.png"));
+  pbnAddValuesFromDisplay->setIcon(QIcon(myThemePath + "/mActionContextHelp.png"));
+  pbnRemoveSelectedRow->setIcon(QIcon(myThemePath + "/mActionDeleteAttribute.png"));
+  pbnDefaultValues->setIcon(QIcon(myThemePath + "/mActionCopySelected.png"));
+  pbnImportTransparentPixelValues->setIcon(QIcon(myThemePath + "/mActionFileOpen.png"));
+  pbnExportTransparentPixelValues->setIcon(QIcon(myThemePath + "/mActionFileSave.png"));
+  pbtnMakeContrastEnhancementAlgorithmDefault->setIcon(QIcon(myThemePath + "/mActionFileSave.png"));
 
   // Only do pyramids if dealing directly with GDAL.
   if (mRasterLayerIsGdal)
@@ -729,20 +729,25 @@ void QgsRasterLayerProperties::sync()
   
   //Display the current default contrast enhancement algorithm
   QSettings myQSettings;
-  QString myDefaultAlgorithm = myQSettings.value("/Raster/defaultContrastEnhancementAlgorithm", "NO_STRETCH").toString();
-  if(myDefaultAlgorithm == "NO_STRETCH")
+  mDefaultRedBand = myQSettings.value("/Raster/defaultRedBand", 1).toInt();
+  mDefaultGreenBand = myQSettings.value("/Raster/defaultGreenBand", 2).toInt();
+  mDefaultBlueBand = myQSettings.value("/Raster/defaultBlueBand", 3).toInt();
+  labelDefaultBandCombination->setText(QString(tr("Default") + " R:%1 G:%2 B:%3") .arg(mDefaultRedBand) .arg(mDefaultGreenBand) .arg(mDefaultBlueBand));
+    
+  mDefaultContrastEnhancementAlgorithm = myQSettings.value("/Raster/defaultContrastEnhancementAlgorithm", "NO_STRETCH").toString();
+  if(mDefaultContrastEnhancementAlgorithm == "NO_STRETCH")
   {
     labelDefaultContrastEnhancementAlgorithm->setText(tr("No Stretch"));
   }
-  if(myDefaultAlgorithm == "STRETCH_TO_MINMAX")
+  if(mDefaultContrastEnhancementAlgorithm == "STRETCH_TO_MINMAX")
   {
     labelDefaultContrastEnhancementAlgorithm->setText(tr("Stretch To MinMax"));
   }
-  else if(myDefaultAlgorithm == "STRETCH_AND_CLIP_TO_MINMAX")
+  else if(mDefaultContrastEnhancementAlgorithm == "STRETCH_AND_CLIP_TO_MINMAX")
   {
     labelDefaultContrastEnhancementAlgorithm->setText(tr("Stretch And Clip To MinMax"));
   }
-  else if(myDefaultAlgorithm == "CLIP_TO_MINMAX")
+  else if(mDefaultContrastEnhancementAlgorithm == "CLIP_TO_MINMAX")
   {
     labelDefaultContrastEnhancementAlgorithm->setText(tr("Clip To MinMax"));
   }
@@ -1196,6 +1201,13 @@ void QgsRasterLayerProperties::apply()
     }
   }
 
+  QSettings myQSettings;
+  myQSettings.setValue("/Raster/defaultRedBand", mDefaultRedBand);
+  myQSettings.setValue("/Raster/defaultGreenBand", mDefaultGreenBand);
+  myQSettings.setValue("/Raster/defaultBlueBand", mDefaultBlueBand);
+  
+  myQSettings.setValue("/Raster/defaultContrastEnhancementAlgorithm", mDefaultContrastEnhancementAlgorithm);
+  
 #ifdef QGISDEBUG
       QgsDebugMsg("QgsRasterLayerProperties::apply processing transparency tab");
 #endif
@@ -1857,29 +1869,6 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   std::cout << "QgsRasterLayerProperties::on_pbnHistRefresh_clicked" << std::endl;
 #endif
   int myBandCountInt = mRasterLayer->getBandCount();
-  //
-  // Find out how many bands are selected and short circuit out clearing the image
-  // if needed
-  int mySelectionCount=0;
-  for (int myIteratorInt = 1;
-      myIteratorInt <= myBandCountInt;
-      ++myIteratorInt)
-  {
-    QgsRasterBandStats myRasterBandStats = mRasterLayer->getRasterBandStats(myIteratorInt);
-    QListWidgetItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
-    if ( myItem->isSelected() )
-    {
-      mySelectionCount++;
-    }
-  }
-  if (mySelectionCount==0)
-  {
-    int myImageWidth = pixHistogram->width();
-    int myImageHeight =  pixHistogram->height();
-    QPixmap myPixmap(myImageWidth,myImageHeight);
-    myPixmap.fill(Qt::white);
-    pixHistogram->setPixmap(myPixmap);
-  }
 
   // Explanation:
   // We use the gdal histogram creation routine is called for each selected  
@@ -2766,32 +2755,36 @@ void QgsRasterLayerProperties::on_pbtnLoadMinMax_clicked()
   }
 }
 
+void QgsRasterLayerProperties::on_pbtnMakeBandCombinationDefault_clicked()
+{
+  mDefaultRedBand = cboRed->currentIndex() + 1;
+  mDefaultGreenBand = cboGreen->currentIndex() + 1;
+  mDefaultBlueBand = cboBlue->currentIndex() + 1;
+  labelDefaultBandCombination->setText(QString(tr("Default") + " R:%1 G:%2 B:%3") .arg(mDefaultRedBand) .arg(mDefaultGreenBand) .arg(mDefaultBlueBand));
+}
+
 void QgsRasterLayerProperties::on_pbtnMakeContrastEnhancementAlgorithmDefault_clicked()
 {
-  //Like some of the other functionality in the raster properties GUI this deviated a little from the 
-  //best practice of GUI design as this pressing cancel will not undo setting the default 
-  //contrast enhancement algorithm
   if(cboxContrastEnhancementAlgorithm->currentText() != tr("User Defined"))
   {
-    QSettings myQSettings;
     if(cboxContrastEnhancementAlgorithm->currentText() == tr("No Stretch"))
     {
-      myQSettings.setValue("/Raster/defaultContrastEnhancementAlgorithm", "NO_STRETCH");
+      mDefaultContrastEnhancementAlgorithm = "NO_STRETCH";
       labelDefaultContrastEnhancementAlgorithm->setText(cboxContrastEnhancementAlgorithm->currentText());
     }
     else if(cboxContrastEnhancementAlgorithm->currentText() == tr("Stretch To MinMax"))
     {
-      myQSettings.setValue("/Raster/defaultContrastEnhancementAlgorithm", "STRETCH_TO_MINMAX");
+      mDefaultContrastEnhancementAlgorithm = "STRETCH_TO_MINMAX";
       labelDefaultContrastEnhancementAlgorithm->setText(cboxContrastEnhancementAlgorithm->currentText());
     }
     else if(cboxContrastEnhancementAlgorithm->currentText() == tr("Stretch And Clip To MinMax"))
     {
-      myQSettings.setValue("/Raster/defaultContrastEnhancementAlgorithm", "STRETCH_AND_CLIP_TO_MINMAX");
+      mDefaultContrastEnhancementAlgorithm =  "STRETCH_AND_CLIP_TO_MINMAX";
       labelDefaultContrastEnhancementAlgorithm->setText(cboxContrastEnhancementAlgorithm->currentText());
     }
     else if(cboxContrastEnhancementAlgorithm->currentText() == tr("Clip To MinMax"))
     {
-      myQSettings.setValue("/Raster/defaultContrastEnhancementAlgorithm", "CLIP_TO_MINMAX");
+      mDefaultContrastEnhancementAlgorithm = "CLIP_TO_MINMAX";
       labelDefaultContrastEnhancementAlgorithm->setText(cboxContrastEnhancementAlgorithm->currentText());
     }
     else
