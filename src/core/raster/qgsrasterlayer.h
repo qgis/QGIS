@@ -367,7 +367,7 @@ public:
     /** \brief Get the number of a band given its name. Note this will be the rewritten name set 
     *   up in the constructor, and will not necessarily be the same as the name retrieved directly from gdal!
     *   If no matching band is found zero will be returned! */
-    int getRasterBandNumber (const QString & theBandNameQString);
+    int getRasterBandNumber (const QString & theBandName);
     /** \brief Get the name of a band given its number.  */
     const  QString getRasterBandName(int theBandNoInt);
     /** \brief Find out whether a given band exists.    */
@@ -380,7 +380,7 @@ public:
         return mRedBandName;
     }
     /** \brief Mutator for red band name (allows alternate mappings e.g. map blue as red color). */
-    void setRedBandName(const QString & theBandNameQString);
+    void setRedBandName(const QString & theBandName);
     // 
     // Accessor and mutator for green band name
     // 
@@ -390,7 +390,7 @@ public:
         return mGreenBandName;
     }
     /** \brief Mutator for green band name mapping.  */
-    void setGreenBandName(const QString & theBandNameQString);
+    void setGreenBandName(const QString & theBandName);
     //
     // Accessor and mutator for blue band name
     // 
@@ -400,7 +400,7 @@ public:
         return mBlueBandName;
     }
     /** \brief Mutator for blue band name mapping.  */
-    void setBlueBandName(const QString & theBandNameQString);
+    void setBlueBandName(const QString & theBandName);
     
      //
     // Accessor raster transparency object
@@ -417,7 +417,7 @@ public:
         return mTransparencyBandName;
     }
     /** \brief Mutator for transparent band name mapping.  */
-    void setTransparentBandName(const QString & theBandNameQString);
+    void setTransparentBandName(const QString & theBandName);
     
     //
     // Accessor and mutator for gray band name
@@ -428,7 +428,7 @@ public:
         return mGrayBandName;
     }
     /** \brief Mutator for gray band name mapping.  */
-    void setGrayBandName(const QString & theBandNameQString);
+    void setGrayBandName(const QString & theBandName);
     // 
     // Accessor and mutator for mDebugOverlayFlag
     // 
@@ -1009,6 +1009,9 @@ private:
 
     /** \brief Update the layer if it is outdated */
     bool update ();
+
+    /** \brief Verify and transform band name for internal consistency. Return 'Not Set' on any type of failure */
+    QString validateBandName(const QString & theBandName);
 
     //
     // Private member vars

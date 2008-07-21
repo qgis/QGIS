@@ -108,9 +108,11 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
 	    void handleColormapTreeWidgetDoubleClick(QTreeWidgetItem* item, int column);
       /**This slot loads the minimum and maximum values from the raster band and updates the gui*/
       void on_pbtnLoadMinMax_clicked();
-      /**This slot save the current contrast enhancement algorithm as the default algorithm */
+      /**This slot sets the default band combination varaible to current band combination */
+      void on_pbtnMakeBandCombinationDefault_clicked();
+      /**This slot sets the default contrast enhancement varaible  to current contrast enhancement algorithm */
       void on_pbtnMakeContrastEnhancementAlgorithmDefault_clicked();
-	
+      
       /** Load the default style when appriate button is pressed. */
       void on_pbnLoadDefaultStyle_clicked();
       /** Save the default style when appriate button is pressed. */
@@ -132,6 +134,14 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
         
         /** Id for context help */
         static const int context_id = 394441851;
+        
+        /** \brief Default contrast enhancement algorithm */
+        QString mDefaultContrastEnhancementAlgorithm;
+        
+        /** \brief Default band combination */
+        int mDefaultRedBand;
+        int mDefaultGreenBand;
+        int mDefaultBlueBand;
         
         /** \brief Internal flag used to short circuit signal loop between min max field and stdDev spin box */
         bool ignoreSpinBoxEvent;
