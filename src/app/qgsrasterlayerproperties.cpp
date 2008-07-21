@@ -290,6 +290,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
   pbnDefaultValues->setIcon(QIcon(myThemePath + "/mActionCopySelected.png"));
   pbnImportTransparentPixelValues->setIcon(QIcon(myThemePath + "/mActionFileOpen.png"));
   pbnExportTransparentPixelValues->setIcon(QIcon(myThemePath + "/mActionFileSave.png"));
+  pbtnMakeBandCombinationDefault->setIcon(QIcon(myThemePath + "/mActionFileSave.png"));
   pbtnMakeContrastEnhancementAlgorithmDefault->setIcon(QIcon(myThemePath + "/mActionFileSave.png"));
 
   // Only do pyramids if dealing directly with GDAL.
