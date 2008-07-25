@@ -37,8 +37,6 @@ Functions:
 //the gui subclass
 #include "qgsdelimitedtextplugingui.h"
 
-// xpm for creating the toolbar icon
-#include "icon.xpm"
 // 
 
 static const QString pluginVersion = QObject::tr("Version 0.2");
@@ -98,7 +96,7 @@ void QgsDelimitedTextPlugin::help()
 void QgsDelimitedTextPlugin::initGui()
 {
   // Create the action for tool
-  myQActionPointer = new QAction(QIcon(icon), tr("&Add Delimited Text Layer"), this);
+  myQActionPointer = new QAction(QIcon(":/delimited_text.png"), tr("&Add Delimited Text Layer"), this);
 
   myQActionPointer->setWhatsThis(tr("Add a delimited text file as a map layer. ")+
       tr("The file must have a header row containing the field names. ")+
