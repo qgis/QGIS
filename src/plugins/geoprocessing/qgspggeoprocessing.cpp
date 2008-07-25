@@ -39,8 +39,6 @@ email                : sherman at mrcc.com
 #include "qgsdlgpgbuffer.h"
 #include "qgspggeoprocessing.h"
 
-// xpm for creating the toolbar icon
-#include "icon_buffer.xpm"
 
 static const char * const ident_ = "$Id$";
 
@@ -75,7 +73,7 @@ QgsPgGeoprocessing::~QgsPgGeoprocessing()
 void QgsPgGeoprocessing::initGui()
 {
   // Create the action for tool
-  bufferAction = new QAction(QIcon(icon_buffer), tr("&Buffer features"), this);
+  bufferAction = new QAction(QIcon(":/geoprocessing.png"), tr("&Buffer features"), this);
   bufferAction->setWhatsThis(tr("Create a buffer for a PostgreSQL layer. ") +
       tr("A new layer is created in the database with the buffered features."));
   // Connect the action to the buffer slot
