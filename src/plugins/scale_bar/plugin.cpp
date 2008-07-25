@@ -49,8 +49,6 @@ email                : sbr00pwb@users.sourceforge.net
 //the gui subclass
 #include "plugingui.h"
 
-// xpm for creating the toolbar icon
-#include "icon.xpm"
 //
 
 #ifdef _MSC_VER
@@ -99,7 +97,7 @@ QgsScaleBarPlugin::~QgsScaleBarPlugin()
 void QgsScaleBarPlugin::initGui()
 {
   // Create the action for tool
-  myQActionPointer = new QAction(QIcon(icon), tr("&Scale Bar"), this);
+  myQActionPointer = new QAction(QIcon(":/scalebar.png"), tr("&Scale Bar"), this);
   myQActionPointer->setWhatsThis(tr("Creates a scale bar that is displayed on the map canvas"));
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
