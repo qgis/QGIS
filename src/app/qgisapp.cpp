@@ -2081,6 +2081,8 @@ bool QgisApp::addVectorLayers(QStringList const & theLayerQStringList, const QSt
 
       // Register this layer with the layers registry
       QgsMapLayerRegistry::instance()->addMapLayer(layer);
+      // notify the project we've made a change
+      QgsProject::instance()->dirty(true);
 
     }
     else
@@ -2174,6 +2176,8 @@ void QgisApp::addDatabaseLayer()
       {
         // register this layer with the central layers registry
         QgsMapLayerRegistry::instance()->addMapLayer(layer);
+        // notify the project we've made a change
+        QgsProject::instance()->dirty(true);
       }
       else
       {
@@ -4448,6 +4452,8 @@ QgsVectorLayer* QgisApp::addVectorLayer(QString vectorLayerPath, QString baseNam
   {
     // Register this layer with the layers registry
     QgsMapLayerRegistry::instance()->addMapLayer(layer);
+    // notify the project we've made a change
+    QgsProject::instance()->dirty(true);
 
     statusBar()->showMessage(mMapCanvas->extent().stringRep(2));
 
@@ -4493,6 +4499,8 @@ void QgisApp::addMapLayer(QgsMapLayer *theMapLayer)
     // not necessary since adding to registry adds to canvas mMapCanvas->addLayer(theMapLayer);
 
     statusBar()->showMessage(mMapCanvas->extent().stringRep(2));
+    // notify the project we've made a change
+    QgsProject::instance()->dirty(true);
 
   }
   else
@@ -5167,6 +5175,8 @@ bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer)
       SIGNAL(setStatus(QString)),
       this,
       SLOT(showStatusMessage(QString)));
+  // notify the project we've made a change
+  QgsProject::instance()->dirty(true);
 
   return true;
 }
