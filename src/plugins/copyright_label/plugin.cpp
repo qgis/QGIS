@@ -43,8 +43,6 @@ email                : tim@linfiniti.com
 //the gui subclass
 #include "plugingui.h"
 
-// xpm for creating the toolbar icon
-#include "icon.xpm"
 
 static const char * const ident_ = "$Id$";
 
@@ -76,7 +74,7 @@ QgsCopyrightLabelPlugin::~QgsCopyrightLabelPlugin()
 void QgsCopyrightLabelPlugin::initGui()
 {
     // Create the action for tool
-    myQActionPointer = new QAction(QIcon(icon), tr("&Copyright Label"), this);
+    myQActionPointer = new QAction(QIcon(":/copyright.png"), tr("&Copyright Label"), this);
     myQActionPointer->setWhatsThis(tr("Creates a copyright label that is displayed on the map canvas."));
     // Connect the action to the run
     connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
