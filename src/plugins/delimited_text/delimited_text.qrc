@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/new/prefix1" >
+    <qresource prefix="/" >
         <file>delimited_text.png</file>
     </qresource>
 </RCC>
