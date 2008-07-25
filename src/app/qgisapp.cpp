@@ -3877,6 +3877,8 @@ void QgisApp::removeLayer()
     currentLayerFile->toggleEditing();
   }
   mMapLegend->legendLayerRemove();
+  // notify the project we've made a change
+  QgsProject::instance()->dirty(true);
 }
 
 
@@ -3884,6 +3886,8 @@ void QgisApp::removeAllLayers()
 {
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
   mMapCanvas->refresh();
+  // notify the project we've made a change
+  QgsProject::instance()->dirty(true);
 } //remove all layers
 
 
