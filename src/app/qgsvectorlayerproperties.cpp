@@ -29,6 +29,7 @@
 #include "qgslabel.h"
 #include "qgslayerprojectionselector.h"
 #include "qgslogger.h"
+#include "qgsproject.h"
 #include "qgssinglesymboldialog.h"
 #include "qgsuniquevaluedialog.h"
 #include "qgsvectordataprovider.h"
@@ -341,6 +342,8 @@ void QgsVectorLayerProperties::apply()
   emit refreshLegend(layer->getLayerID(), false);
 
   layer->triggerRepaint();
+  // notify the project we've made a change
+  QgsProject::instance()->dirty(true);
 
 }
 
