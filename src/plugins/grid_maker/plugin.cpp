@@ -35,8 +35,6 @@ email                : tim@linfiniti.com
 //the gui subclass
 #include "plugingui.h"
 
-// xpm for creating the toolbar icon
-#include "icon.xpm"
 
 static const char * const ident_ = "$Id$";
 
@@ -90,7 +88,7 @@ int QgsGridMakerPlugin::type()
 void QgsGridMakerPlugin::initGui()
 {
   // Create the action for tool
-  myQActionPointer = new QAction(QIcon(icon), tr("&Graticule Creator"), this);
+  myQActionPointer = new QAction(QIcon(":/graticule.png"), tr("&Graticule Creator"), this);
   myQActionPointer->setWhatsThis(tr("Creates a graticule (grid) and stores the result as a shapefile"));
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
