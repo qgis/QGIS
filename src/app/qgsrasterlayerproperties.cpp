@@ -1558,6 +1558,8 @@ void QgsRasterLayerProperties::apply()
     cboxContrastEnhancementAlgorithm->removeItem(cboxContrastEnhancementAlgorithm->findText(tr("User Defined")));
   }
 
+  // notify the project we've made a change
+  QgsProject::instance()->dirty(true);
 }//apply
 
 void QgsRasterLayerProperties::on_buttonBox_helpRequested()
