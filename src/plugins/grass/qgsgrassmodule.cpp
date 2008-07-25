@@ -106,6 +106,11 @@ static QString getShortPath(const QString &path)
 bool QgsGrassModule::mExecPathInited = 0;
 QStringList QgsGrassModule::mExecPath;
 
+
+
+
+
+
 QString QgsGrassModule::findExec ( QString file )
 {
   QgsDebugMsg("called.");
@@ -208,8 +213,6 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QString moduleName, QgisI
   mIface = iface;
   mCanvas = mIface->getMapCanvas();
   mParent = parent;
-  //mAppDir = QgsApplication::applicationDirPath();
-  mAppDir = mTools->appDir();
 
   /* Read module description and create options */
 
@@ -298,7 +301,10 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QString moduleName, QgisI
   }
   else
   {
-    QMessageBox::warning( 0, tr("Warning"), tr("Cannot find man page ") + manPath );
+    mManualTextBrowser->clear();
+    mManualTextBrowser->textCursor().insertImage( ":/grass/error.png");
+    mManualTextBrowser->insertPlainText (  tr("Cannot find man page ") + manPath );
+    mManualTextBrowser->insertPlainText (  tr("Please ensure you have the GRASS documentation installed.") );
   }
 
   connect ( &mProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(readStdout()));
@@ -326,8 +332,6 @@ QgsGrassModuleOptions::QgsGrassModuleOptions (
   mModule = module;
   mIface = iface;
   mCanvas = mIface->getMapCanvas();
-  //mAppDir = QgsApplication::applicationDirPath();
-  mAppDir = mTools->appDir();
 }
 
 QgsGrassModuleOptions::~QgsGrassModuleOptions()
@@ -408,8 +412,23 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
 
   // Read QGIS options and create controls
   QDomNode n = qDocElem.firstChild();
-  //QVBoxLayout *layout = new QVBoxLayout ( mTabWidget->page(0), 10 );
-  QVBoxLayout *layout = new QVBoxLayout ( mParent, 10 );
+  //
+  //Set up dynamic inside a scroll box
+  //
+  QVBoxLayout * mypOuterLayout = new QVBoxLayout(mParent);
+  mypOuterLayout->setContentsMargins(0,0,0,0);
+  //transfers layout ownership so no need to call delete
+  this->setLayout(mypOuterLayout);
+  QScrollArea * mypScrollArea = new QScrollArea();
+  //transfers scroll area ownership so no need to call delete
+  mypOuterLayout->addWidget(mypScrollArea);
+  QFrame * mypInnerFrame = new QFrame();
+  mypInnerFrame->setFrameShape(QFrame::NoFrame);
+  mypInnerFrame->setFrameShadow(QFrame::Plain);
+  //transfers frame ownership so no need to call delete
+  mypScrollArea->setWidget(mypInnerFrame);
+  mypScrollArea->setWidgetResizable( true );
+  QVBoxLayout *layout = new QVBoxLayout ( mypInnerFrame);
   while( !n.isNull() ) {
     QDomElement e = n.toElement();
     if( !e.isNull() ) {
@@ -1447,10 +1466,6 @@ void QgsGrassModule::readStderr()
 
 void QgsGrassModule::close()
 {
-  QgsDebugMsg("called.");
-
-  QTabWidget *tw = dynamic_cast<QTabWidget *>(mParent);
-  tw->removePage (this );
   delete this;
 }
 
