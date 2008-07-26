@@ -48,9 +48,6 @@ public:
 
 protected:
     QgsVectorLayer* mVectorLayer;
-    /**Stores the names and numbers of the fields with numeric values*/
-    std::map<QString,int> mFieldMap;
-    int mAngleClassificationField;
 
 public slots:
     /* arrange the widgets on this dialog to reflect the current state of QgsSymbol */
