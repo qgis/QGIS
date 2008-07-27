@@ -105,7 +105,7 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   }
 
   // set the theme combo
-  cmbTheme->setItemText(cmbTheme->currentIndex(), settings.value("/Themes","default").toString());
+  cmbTheme->setCurrentIndex(cmbTheme->findText(settings.value("/Themes","default").toString()));
 
   //set the state of the checkboxes
   chkAntiAliasing->setChecked(settings.value("/qgis/enable_anti_aliasing",false).toBool());
