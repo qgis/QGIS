@@ -81,7 +81,6 @@ signals:
     void regionChanged();
 
 private:
-    QIcon getThemeIcon(const QString theName);
     QgisInterface *mIface;
     
     //! Current GISBASE

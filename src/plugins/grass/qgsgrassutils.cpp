@@ -32,7 +32,7 @@ extern "C" {
 
 #include "qgisinterface.h"
 
-#include "../../src/providers/grass/qgsgrass.h"
+#include "qgsgrass.h"
 #include "qgsgrassutils.h"
 #include "qgsgrassselect.h"
 

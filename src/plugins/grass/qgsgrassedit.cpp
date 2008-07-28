@@ -66,8 +66,8 @@ extern "C" {
 #include <grass/Vect.h>
 }
 
-#include "../../src/providers/grass/qgsgrass.h"
-#include "../../src/providers/grass/qgsgrassprovider.h"
+#include "qgsgrass.h"
+#include "qgsgrassprovider.h"
 #include "qgsgrassattributes.h"
 #include "qgsgrassedit.h"
 #include "qgsgrassedittools.h"

@@ -115,6 +115,7 @@ INCLUDE_DIRECTORIES(
      ../../core/renderer 
      ../../core/symbology
      ../../gui
+     ../../providers/grass
      ${CMAKE_CURRENT_BINARY_DIR}/../../ui
      ${GRASS_INCLUDE_DIR}
      ${GDAL_INCLUDE_DIR}

@@ -57,7 +57,7 @@
 #include "qgsspatialrefsys.h"
 #include "qgsprojectionselector.h"
 
-#include "../../src/providers/grass/qgsgrass.h"
+#include "qgsgrass.h"
 #include "qgsgrassnewmapset.h"
 
 // For bug in GPJ_osr_to_grass()

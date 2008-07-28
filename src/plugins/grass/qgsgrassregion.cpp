@@ -57,7 +57,7 @@ extern "C" {
 #include <grass/gis.h>
 }
 
-#include "../../src/providers/grass/qgsgrass.h"
+#include "qgsgrass.h"
 #include "qgsgrassplugin.h"
 #include "qgsgrassregion.h"
 

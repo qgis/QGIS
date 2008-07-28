@@ -57,8 +57,8 @@ extern "C" {
 }
 
 #include "qgsgrassplugin.h"
-#include "../../src/providers/grass/qgsgrass.h"
-#include "../../src/providers/grass/qgsgrassprovider.h"
+#include "qgsgrass.h"
+#include "qgsgrassprovider.h"
 
 //the gui subclass
 #include "qgsgrassutils.h"

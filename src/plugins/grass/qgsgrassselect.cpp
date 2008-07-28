@@ -32,7 +32,7 @@ extern "C" {
 #include <grass/Vect.h>
 }
 
-#include "../../src/providers/grass/qgsgrass.h"
+#include "qgsgrass.h"
 #include "qgsgrassselect.h"
 
 QgsGrassSelect::QgsGrassSelect(int type):QgsGrassSelectBase()

@@ -43,8 +43,8 @@ extern "C" {
 #include <grass/Vect.h>
 }
 
-#include "../../src/providers/grass/qgsgrass.h"
-#include "../../src/providers/grass/qgsgrassprovider.h"
+#include "qgsgrass.h"
+#include "qgsgrassprovider.h"
 #include "qgsgrassmodel.h"
 #include "qgsgrassselect.h"
 
@@ -589,7 +589,7 @@ void QgsGrassModel::addItems(QgsGrassModelItem *item, QStringList list, int type
 
     if ( insertAt >= 0 )
     {
-      QgsDebugMsg( QString("insert %1 at %2").arg(name).arg(insertAt) );;
+      QgsDebugMsg( QString("insert %1 at %2").arg(name).arg(insertAt) );
       beginInsertRows( index, insertAt, insertAt );
       QgsGrassModelItem *newItem = new QgsGrassModelItem();
       item->mChildren.insert( insertAt, newItem );
