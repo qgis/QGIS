@@ -65,9 +65,8 @@ QgsGrassBrowser::QgsGrassBrowser ( QgisInterface *iface,
   QActionGroup *ag = new QActionGroup ( this );
   QToolBar *tb = addToolBar(tr("Tools"));
 
-  QString myIconPath = QgsApplication::themePath() + "/grass/";
   mActionAddMap = new QAction( 
-    QIcon(myIconPath+"grass_add_map.png"), 
+    getThemeIcon("grass_add_map.png"), 
     tr("Add selected map to canvas"), this);
   mActionAddMap->setEnabled(false); 
   ag->addAction ( mActionAddMap );
@@ -75,7 +74,7 @@ QgsGrassBrowser::QgsGrassBrowser ( QgisInterface *iface,
   connect ( mActionAddMap, SIGNAL(triggered()), this, SLOT(addMap()) );
 
   mActionCopyMap = new QAction( 
-    QIcon(myIconPath+"grass_copy_map.png"), 
+    getThemeIcon("grass_copy_map.png"), 
     tr("Copy selected map"), this);
   mActionCopyMap->setEnabled(false); 
   ag->addAction ( mActionCopyMap );
@@ -83,7 +82,7 @@ QgsGrassBrowser::QgsGrassBrowser ( QgisInterface *iface,
   connect ( mActionCopyMap, SIGNAL(triggered()), this, SLOT(copyMap()) );
 
   mActionRenameMap = new QAction( 
-    QIcon(myIconPath+"grass_rename_map.png"), 
+    getThemeIcon("grass_rename_map.png"), 
     tr("Rename selected map"), this);
   mActionRenameMap->setEnabled(false); 
   ag->addAction ( mActionRenameMap );
@@ -91,7 +90,7 @@ QgsGrassBrowser::QgsGrassBrowser ( QgisInterface *iface,
   connect ( mActionRenameMap, SIGNAL(triggered()), this, SLOT(renameMap()) );
 
   mActionDeleteMap = new QAction( 
-    QIcon(myIconPath+"grass_delete_map.png"), 
+    getThemeIcon("grass_delete_map.png"), 
     tr("Delete selected map"), this);
   mActionDeleteMap->setEnabled(false); 
   ag->addAction ( mActionDeleteMap );
@@ -99,7 +98,7 @@ QgsGrassBrowser::QgsGrassBrowser ( QgisInterface *iface,
   connect ( mActionDeleteMap, SIGNAL(triggered()), this, SLOT(deleteMap()) );
 
   mActionSetRegion = new QAction( 
-    QIcon(myIconPath+"grass_set_region.png"), 
+    getThemeIcon("grass_set_region.png"), 
     tr("Set current region to selected map"), this);
   mActionSetRegion->setEnabled(false); 
   ag->addAction ( mActionSetRegion );
@@ -107,7 +106,7 @@ QgsGrassBrowser::QgsGrassBrowser ( QgisInterface *iface,
   connect ( mActionSetRegion, SIGNAL(triggered()), this, SLOT(setRegion()) );
 
   mActionRefresh = new QAction( 
-    QIcon(myIconPath+"grass_refresh.png"), 
+    getThemeIcon("grass_refresh.png"), 
     tr("Refresh"), this);
   ag->addAction ( mActionRefresh );
   tb->addAction ( mActionRefresh );

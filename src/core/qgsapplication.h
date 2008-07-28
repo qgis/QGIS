@@ -24,8 +24,8 @@ class CORE_EXPORT QgsApplication: public QApplication
     QgsApplication(int & argc, char ** argv, bool GUIenabled);
     virtual ~QgsApplication();
 
-    //! Set the theme path to the specified theme.
-    static void selectTheme(const QString theThemeName);
+    //! Set the active theme path to the specified theme.
+    static void setTheme(const QString theThemeName);
 
     //! Returns the path to the authors file.
     static const QString authorsFilePath();
@@ -75,8 +75,11 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! Returns the common root path of all application data directories.
     static const QString pkgDataPath(); 
 
-    //! Returns the path to the current theme directory.
-    static const QString themePath(); 
+    //! Returns the path to the currently active theme directory.
+    static const QString activeThemePath(); 
+
+    //! Returns the path to the default theme directory.
+    static const QString defaultThemePath(); 
     
     //! Alters prefix path - used by 3rd party apps
     static void setPrefixPath(const QString thePrefixPath, bool useDefaultPaths = FALSE);

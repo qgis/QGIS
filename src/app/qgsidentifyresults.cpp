@@ -20,6 +20,7 @@
 #include "qgsidentifyresults.h"
 #include "qgscontexthelp.h"
 #include "qgsapplication.h"
+#include "qgisapp.h"
 
 #include <QCloseEvent>
 #include <QLabel>
@@ -210,8 +211,7 @@ void QgsIdentifyResults::addAction(QTreeWidgetItem * fnode, int id, QString fiel
   labels << field << value << "action" << QString::number(id);
   QTreeWidgetItem *item = new QTreeWidgetItem(fnode, labels );
 
-  QPixmap pm ( QgsApplication::themePath() + "/mAction.png" );
-  item->setIcon ( 0, QIcon(pm) ); 
+  item->setIcon ( 0, QgisApp::getThemeIcon("/mAction.png") ); 
 }
 
 /** Add a feature node to the list */

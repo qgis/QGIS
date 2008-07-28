@@ -22,6 +22,7 @@ class QAction;
 class QTreeView;
 class QTextBrowser;
 class QDirModel;
+class QIcon;
 
 class QgisInterface;
 #include "qgsgrassmodel.h"
@@ -80,6 +81,7 @@ signals:
     void regionChanged();
 
 private:
+    QIcon getThemeIcon(const QString theName);
     QgisInterface *mIface;
     
     //! Current GISBASE

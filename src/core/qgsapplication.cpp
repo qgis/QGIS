@@ -106,7 +106,11 @@ const QString QgsApplication::pkgDataPath()
 { 
   return mPkgDataPath; 
 }
-const QString QgsApplication::themePath() 
+const QString QgsApplication::defaultThemePath() 
+{ 
+  return mPkgDataPath + QString("/themes/default/");
+}
+const QString QgsApplication::activeThemePath() 
 { 
   return mThemePath; 
 }
@@ -114,9 +118,18 @@ const QString QgsApplication::themePath()
 /*!
   Set the theme path to the specified theme.
 */
-void QgsApplication::selectTheme(const QString theThemeName)
+void QgsApplication::setTheme(const QString theThemeName)
 {
-  mThemePath = mPkgDataPath + QString("/themes/") + theThemeName + QString("/");
+  QString myPath = mPkgDataPath + QString("/themes/") + theThemeName + QString("/");
+  //check it exists and if not roll back to default theme
+  if (QFile::exists(myPath))
+  {
+    mThemePath = myPath;
+  }
+  else
+  {
+    mThemePath = defaultThemePath();
+  }
 }
 
 /*!

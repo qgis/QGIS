@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include <QStandardItemModel>
+class QIcon;
 #include "qgis.h"
 
 /**A model that holds the tables of a database in a hierarchy where the 
@@ -41,7 +42,7 @@ class QgsDbTableModel: public QStandardItemModel
   /**Number of tables in the model*/
   int mTableCount;
 
-  QString iconFilePathForType(QGis::WKBTYPE type) const;
+  QIcon iconForType(QGis::WKBTYPE type) const;
   QString displayStringForType(QGis::WKBTYPE type) const;
   /**Returns qgis wkbtype from database typename*/
   QGis::WKBTYPE qgisTypeFromDbType(const QString& dbType) const;

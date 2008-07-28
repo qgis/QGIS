@@ -109,15 +109,14 @@ QgsAttributeTable *QgsAttributeTableDisplay::table()
 }
 void QgsAttributeTableDisplay::setTheme()
 {
-  QString myIconPath = QgsApplication::themePath();
-  mAddAttributeButton->setIcon(QPixmap(myIconPath+"/mActionNewAttribute.png"));
-  mRemoveSelectionButton->setIcon(QPixmap(myIconPath+"/mActionUnselectAttributes.png"));
-  mSelectedToTopButton->setIcon(QPixmap(myIconPath+"/mActionSelectedToTop.png"));
-  mInvertSelectionButton->setIcon(QPixmap(myIconPath+"/mActionInvertSelection.png"));
-  mCopySelectedRowsButton->setIcon(QPixmap(myIconPath+"/mActionCopySelected.png"));
-  mZoomMapToSelectedRowsButton->setIcon(QPixmap(myIconPath+"/mActionZoomToSelected.png"));
-  mAddAttributeButton->setIcon(QPixmap(myIconPath+"/mActionNewAttribute.png"));
-  mDeleteAttributeButton->setIcon(QPixmap(myIconPath+"/mActionDeleteAttribute.png"));
+  mAddAttributeButton->setIcon(QgisApp::getThemeIcon("/mActionNewAttribute.png"));
+  mRemoveSelectionButton->setIcon(QgisApp::getThemeIcon("/mActionUnselectAttributes.png"));
+  mSelectedToTopButton->setIcon(QgisApp::getThemeIcon("/mActionSelectedToTop.png"));
+  mInvertSelectionButton->setIcon(QgisApp::getThemeIcon("/mActionInvertSelection.png"));
+  mCopySelectedRowsButton->setIcon(QgisApp::getThemeIcon("/mActionCopySelected.png"));
+  mZoomMapToSelectedRowsButton->setIcon(QgisApp::getThemeIcon("/mActionZoomToSelected.png"));
+  mAddAttributeButton->setIcon(QgisApp::getThemeIcon("/mActionNewAttribute.png"));
+  mDeleteAttributeButton->setIcon(QgisApp::getThemeIcon("/mActionDeleteAttribute.png"));
 }
 
 void QgsAttributeTableDisplay::setTitle(QString title)

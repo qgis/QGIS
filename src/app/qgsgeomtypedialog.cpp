@@ -18,15 +18,15 @@
 
 #include "qgsgeomtypedialog.h"
 #include "qgsapplication.h"
+#include "qgisapp.h" // <- for theme icons
 #include <QPushButton>
 
 QgsGeomTypeDialog::QgsGeomTypeDialog(QWidget *parent, Qt::WFlags fl)
 : QDialog(parent, fl)
 {
   setupUi(this);
-  QString myThemePath = QgsApplication::themePath();
-  mAddAttributeButton->setIcon(QIcon(QPixmap(myThemePath + "/mActionNewAttribute.png")));
-  mRemoveAttributeButton->setIcon(QIcon(QPixmap(myThemePath + "/mActionDeleteAttribute.png")));
+  mAddAttributeButton->setIcon(QgisApp::getThemeIcon("/mActionNewAttribute.png"));
+  mRemoveAttributeButton->setIcon(QgisApp::getThemeIcon("/mActionDeleteAttribute.png"));
   mTypeBox->addItem(tr("Real"),"Real");
   mTypeBox->addItem(tr("Integer"),"Integer");;
   mTypeBox->addItem(tr("String"),"String");

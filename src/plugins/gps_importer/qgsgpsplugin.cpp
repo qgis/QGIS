@@ -109,7 +109,7 @@ void QgsGPSPlugin::help()
   //implement me!
 }
 
-// Slot called when the buffer menu item is activated
+// Slot called when the menu item is activated
 void QgsGPSPlugin::run()
 {
   // find all GPX layers

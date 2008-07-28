@@ -16,6 +16,7 @@
 /*  $Id$ */
 
 // includes
+#include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgisinterface.h"
 #include "qgsmapcanvas.h"
@@ -39,6 +40,7 @@
 #include <qregexp.h>
 #include <qglobal.h>
 #include <qinputdialog.h>
+#include <QIcon>
 //Added by qt3to4:
 #include <QPixmap>
 #include <Q3PointArray>
@@ -809,6 +811,22 @@ void QgsGrassPlugin::unload()
   QWidget* qgis = qGisInterface->getMainWindow();
   disconnect( qgis, SIGNAL( projectRead() ), this, SLOT( projectRead()));
   disconnect( qgis, SIGNAL( newProject() ), this, SLOT(newProject()));
+}
+// Note this code is duplicated from qgisapp.cpp because
+// I didnt want to make plugins dependent on qgsapplication 
+// and because it needs grass specific path [TS]
+QIcon QgsGrassPlugin::getThemeIcon(const QString theName)
+{
+  if (QFile::exists(QgsApplication::activeThemePath() + "/grass/" + theName))
+  {
+    return QIcon(QgsApplication::activeThemePath() + theName);
+  }
+  else
+  {
+    //could still return an empty icon if it
+    //doesnt exist in the default theme either!
+    return QIcon(QgsApplication::defaultThemePath() + "/grass/" + theName);
+  }
 }
 
 /** 
