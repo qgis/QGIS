@@ -60,6 +60,7 @@ class QgsAttributeTableDisplay:public QDialog, private Ui::QgsAttributeTableBase
   protected slots:
     void deleteAttributes();
     void addAttribute();
+    void on_btnEdit_toggled(bool theFlag);
     void startEditing();
     void stopEditing();
     void selectedToTop();
