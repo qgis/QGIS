@@ -82,8 +82,24 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
 
     virtual ~QgsApplication();
 
-    //! Set the active theme path to the specified theme.
-    static void setTheme(const QString theThemeName);
+    /** Set the active theme to the specified theme.
+     * The theme name should be a single word e.g. 'default','classic'.
+     * The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
+     * but plugin writers etc can use themeName() as a basis for searching
+     * for resources in their own datastores e.g. a Qt4 resource bundle.
+     * @Note A basic test will be carried out to ensure the theme search path
+     * based on the supplied theme name exists. If it does not the theme name will 
+     * be reverted to 'default'.
+     */
+    static void setThemeName(const QString theThemeName);
+
+    /** Set the active theme to the specified theme.
+     * The theme name should be a single word e.g. 'default','classic'.
+     * The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
+     * but plugin writers etc can use this method as a basis for searching
+     * for resources in their own datastores e.g. a Qt4 resource bundle.
+     */
+    static const QString themeName();
 
     //! Returns the path to the authors file.
     static const QString authorsFilePath();

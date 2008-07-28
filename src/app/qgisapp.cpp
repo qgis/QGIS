@@ -445,6 +445,8 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
   mFullScreenMode = false;
   show();
   qApp->processEvents();
+  //finally show all the application settings as initialised above
+  QgsApplication::showSettings();
 } // QgisApp ctor
 
 
@@ -1267,12 +1269,9 @@ void QgisApp::setTheme(QString theThemeName)
   // the themes directory and builds a list of themes (ie subdirectories)
   // for the user to choose from.
   //
-  // TODO: Check as each icon is grabbed and if it doesn't exist, use the
-  // one from the default theme (which is installed with qgis and should
-  // always be good)
   */
-  QgsApplication::setTheme(theThemeName);
-  QgsDebugMsg("Setting theme to \n" + QgsApplication::activeThemePath());
+  QgsApplication::setThemeName(theThemeName);
+  QgsDebugMsg("Setting theme to \n" + theThemeName);
   mActionFileNew->setIcon(getThemeIcon( "/mActionFileNew.png"));
   mActionFileSave->setIcon(getThemeIcon( "/mActionFileSave.png"));
   mActionFileSaveAs->setIcon(getThemeIcon( "/mActionFileSaveAs.png"));
@@ -1670,8 +1669,6 @@ void QgisApp::about()
 void QgisApp::restoreSessionPlugins(QString thePluginDirString)
 {
   QSettings mySettings;
-
-  QgsApplication::showSettings();
   QgsDebugMsg("\n\n*************************************************");
   QgsDebugMsg("Restoring plugins from last session " + thePluginDirString);
   
@@ -5567,15 +5564,17 @@ void QgisApp::setupProxy()
 
 QIcon QgisApp::getThemeIcon(const QString theName)
 {
-  if (QFile::exists(QgsApplication::activeThemePath() + theName))
+  QString myPreferredPath = QgsApplication::activeThemePath() + theName;
+  QString myDefaultPath = QgsApplication::defaultThemePath() + theName;
+  if (QFile::exists(myPreferredPath))
   {
-    return QIcon(QgsApplication::activeThemePath() + theName);
+    return QIcon(myPreferredPath);
   }
-  else if (QFile::exists(QgsApplication::defaultThemePath() + theName))
+  else if (QFile::exists(myDefaultPath))
   {
     //could still return an empty icon if it
     //doesnt exist in the default theme either!
-    return QIcon(QgsApplication::defaultThemePath() + theName);
+    return QIcon(myDefaultPath);
   }
   else
   {
@@ -5585,15 +5584,17 @@ QIcon QgisApp::getThemeIcon(const QString theName)
 
 QPixmap QgisApp::getThemePixmap(const QString theName)
 {
-  if (QFile::exists(QgsApplication::activeThemePath() + theName))
+  QString myPreferredPath = QgsApplication::activeThemePath() + theName;
+  QString myDefaultPath = QgsApplication::defaultThemePath() + theName;
+  if (QFile::exists(myPreferredPath))
   {
-    return QPixmap(QgsApplication::activeThemePath() + theName);
+    return QPixmap(myPreferredPath);
   }
   else
   {
     //could still return an empty icon if it
     //doesnt exist in the default theme either!
-    return QPixmap(QgsApplication::defaultThemePath() + theName);
+    return QPixmap(myDefaultPath);
   }
 }
 
