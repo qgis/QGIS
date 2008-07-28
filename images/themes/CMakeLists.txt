@@ -1,2 +1,2 @@
 
-SUBDIRS (default nkids)
+SUBDIRS (default nkids classic)
