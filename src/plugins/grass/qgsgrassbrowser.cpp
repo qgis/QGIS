@@ -48,11 +48,12 @@ extern "C" {
 #include <grass/Vect.h>
 }
 
-#include "../../src/providers/grass/qgsgrass.h"
+#include "qgsgrass.h"
 #include "qgsgrassmodel.h"
 #include "qgsgrassbrowser.h"
 #include "qgsgrassselect.h"
 #include "qgsgrassutils.h"
+#include "qgsgrassplugin.h"
 
 QgsGrassBrowser::QgsGrassBrowser ( QgisInterface *iface, 
 	 QWidget * parent, Qt::WFlags f )
@@ -66,7 +67,7 @@ QgsGrassBrowser::QgsGrassBrowser ( QgisInterface *iface,
   QToolBar *tb = addToolBar(tr("Tools"));
 
   mActionAddMap = new QAction( 
-    getThemeIcon("grass_add_map.png"), 
+    QgsGrassPlugin::getThemeIcon("grass_add_map.png"), 
     tr("Add selected map to canvas"), this);
   mActionAddMap->setEnabled(false); 
   ag->addAction ( mActionAddMap );
@@ -74,7 +75,7 @@ QgsGrassBrowser::QgsGrassBrowser ( QgisInterface *iface,
   connect ( mActionAddMap, SIGNAL(triggered()), this, SLOT(addMap()) );
 
   mActionCopyMap = new QAction( 
-    getThemeIcon("grass_copy_map.png"), 
+    QgsGrassPlugin::getThemeIcon("grass_copy_map.png"), 
     tr("Copy selected map"), this);
   mActionCopyMap->setEnabled(false); 
   ag->addAction ( mActionCopyMap );
@@ -82,7 +83,7 @@ QgsGrassBrowser::QgsGrassBrowser ( QgisInterface *iface,
   connect ( mActionCopyMap, SIGNAL(triggered()), this, SLOT(copyMap()) );
 
   mActionRenameMap = new QAction( 
-    getThemeIcon("grass_rename_map.png"), 
+    QgsGrassPlugin::getThemeIcon("grass_rename_map.png"), 
     tr("Rename selected map"), this);
   mActionRenameMap->setEnabled(false); 
   ag->addAction ( mActionRenameMap );
@@ -90,7 +91,7 @@ QgsGrassBrowser::QgsGrassBrowser ( QgisInterface *iface,
   connect ( mActionRenameMap, SIGNAL(triggered()), this, SLOT(renameMap()) );
 
   mActionDeleteMap = new QAction( 
-    getThemeIcon("grass_delete_map.png"), 
+    QgsGrassPlugin::getThemeIcon("grass_delete_map.png"), 
     tr("Delete selected map"), this);
   mActionDeleteMap->setEnabled(false); 
   ag->addAction ( mActionDeleteMap );
@@ -98,7 +99,7 @@ QgsGrassBrowser::QgsGrassBrowser ( QgisInterface *iface,
   connect ( mActionDeleteMap, SIGNAL(triggered()), this, SLOT(deleteMap()) );
 
   mActionSetRegion = new QAction( 
-    getThemeIcon("grass_set_region.png"), 
+    QgsGrassPlugin::getThemeIcon("grass_set_region.png"), 
     tr("Set current region to selected map"), this);
   mActionSetRegion->setEnabled(false); 
   ag->addAction ( mActionSetRegion );
@@ -106,7 +107,7 @@ QgsGrassBrowser::QgsGrassBrowser ( QgisInterface *iface,
   connect ( mActionSetRegion, SIGNAL(triggered()), this, SLOT(setRegion()) );
 
   mActionRefresh = new QAction( 
-    getThemeIcon("grass_refresh.png"), 
+    QgsGrassPlugin::getThemeIcon("grass_refresh.png"), 
     tr("Refresh"), this);
   ag->addAction ( mActionRefresh );
   tb->addAction ( mActionRefresh );
