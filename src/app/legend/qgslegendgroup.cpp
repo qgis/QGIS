@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "qgsapplication.h"
+#include "qgisapp.h"
 #include "qgslegendgroup.h"
 #include "qgslegendlayer.h"
 #include "qgslegendlayerfile.h"
@@ -30,7 +31,7 @@ QgsLegendGroup::QgsLegendGroup(QTreeWidgetItem * theItem ,QString theName)
   mType=LEGEND_GROUP;
   setFlags(Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
   setCheckState (0, Qt::Checked);
-  QIcon myIcon(QgsApplication::themePath()+"/mActionFolder.png");
+  QIcon myIcon = QgisApp::getThemeIcon("/mActionFolder.png");
   setIcon(0, myIcon);
 }
 QgsLegendGroup::QgsLegendGroup(QTreeWidget* theListView, QString theString)
@@ -39,7 +40,7 @@ QgsLegendGroup::QgsLegendGroup(QTreeWidget* theListView, QString theString)
   mType=LEGEND_GROUP;
   setFlags(Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
   setCheckState (0, Qt::Checked);
-  QIcon myIcon(QgsApplication::themePath()+"/mActionFolder.png");
+  QIcon myIcon = QgisApp::getThemeIcon("/mActionFolder.png");
   setIcon(0, myIcon);
 }
 
@@ -48,7 +49,7 @@ QgsLegendGroup::QgsLegendGroup(QString name): QgsLegendItem()
   mType=LEGEND_GROUP;
   setFlags(Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
   setCheckState (0, Qt::Checked);
-  QIcon myIcon(QgsApplication::themePath()+"/mActionFolder.png");
+  QIcon myIcon = QgisApp::getThemeIcon(+"/mActionFolder.png");
   setText(0, name);
   setIcon(0, myIcon);
 }

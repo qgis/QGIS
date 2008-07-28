@@ -46,7 +46,7 @@ void TestQgsApplication::initTestCase()
 
 void TestQgsApplication::checkTheme()
 {
-  QString myIconPath = QgsApplication::themePath();
+  QString myIconPath = QgsApplication::defaultThemePath();
   QPixmap myPixmap;
   myPixmap.load(myIconPath+"/mIconProjectionDisabled.png");
   qDebug("Checking if a theme icon exists:");

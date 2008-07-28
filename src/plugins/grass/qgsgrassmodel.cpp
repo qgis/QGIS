@@ -36,6 +36,7 @@
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsgrassplugin.h"
 
 extern "C" {
 #include <grass/gis.h>
@@ -488,12 +489,11 @@ QgsGrassModel::QgsGrassModel ( QObject * parent )
 
   mIconFile = QIcon(style->standardPixmap(QStyle::SP_FileIcon));
 
-  QString iconPath = QgsApplication::themePath();
-  mIconPointLayer = QIcon ( iconPath+"/mIconPointLayer.png" );
-  mIconLineLayer = QIcon ( iconPath+"/mIconLineLayer.png" );
-  mIconPolygonLayer = QIcon ( iconPath+"/mIconPolygonLayer.png" );
-  mIconVectorLayer = QIcon ( iconPath+"/grass/grass_browser_vector_layer.png" );
-  mIconRasterLayer = QIcon ( iconPath+"/grass/grass_browser_raster_layer.png" );
+  mIconPointLayer = QgsGrassPlugin::getThemeIcon("/mIconPointLayer.png" );
+  mIconLineLayer = QgsGrassPlugin::getThemeIcon("/mIconLineLayer.png" );
+  mIconPolygonLayer = QgsGrassPlugin::getThemeIcon("/mIconPolygonLayer.png" );
+  mIconVectorLayer = QgsGrassPlugin::getThemeIcon("/grass/grass_browser_vector_layer.png" );
+  mIconRasterLayer = QgsGrassPlugin::getThemeIcon("/grass/grass_browser_raster_layer.png" );
 
   mRoot = new QgsGrassModelItem();
   mRoot->mType = QgsGrassModel::Location;

@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
+#include "qgisapp.h"
 #include "qgslegend.h"
 #include "qgslegendlayer.h"
 #include "qgslegendlayerfile.h"
@@ -104,7 +105,7 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayerFile::accept(const QgsLegendItem* li) c
 
 QPixmap QgsLegendLayerFile::getOriginalPixmap() const
 {
-  QPixmap myPixmap(QgsApplication::themePath()+"mActionFileSmall.png");
+  QPixmap myPixmap = QgisApp::getThemePixmap("mActionFileSmall.png");
   return myPixmap;
 }
 
@@ -148,7 +149,7 @@ void QgsLegendLayerFile::setIconAppearance(bool inOverview,
   if (inOverview)
   {
     // Overlay the overview icon on the default icon
-    QPixmap myPixmap(QgsApplication::themePath()+"mIconOverview.png");
+    QPixmap myPixmap = QgisApp::getThemePixmap("mIconOverview.png");
     QPainter p(&newIcon);
     p.drawPixmap(0,0,myPixmap);
     p.end();
@@ -157,7 +158,7 @@ void QgsLegendLayerFile::setIconAppearance(bool inOverview,
   if (editable)
   {
     // Overlay the editable icon on the default icon
-    QPixmap myPixmap(QgsApplication::themePath()+"mIconEditable.png");
+    QPixmap myPixmap = QgisApp::getThemePixmap("mIconEditable.png");
     QPainter p(&newIcon);
     p.drawPixmap(0,0,myPixmap);
     p.end();
@@ -494,10 +495,9 @@ void QgsLegendLayerFile::layerNameChanged()
 void QgsLegendLayerFile::addToPopupMenu(QMenu& theMenu, QAction* toggleEditingAction)
 {
   QgsMapLayer* lyr = layer();
-  QString iconsPath = QgsApplication::themePath();
 
   // zoom to layer extent
-  theMenu.addAction(QIcon(iconsPath+QString("/mActionZoomToLayer.png")),
+  theMenu.addAction(QgisApp::getThemeIcon("/mActionZoomToLayer.png"),
                     tr("&Zoom to layer extent"), legend(), SLOT(legendLayerZoom()));
   
   // show in overview
@@ -508,7 +508,7 @@ void QgsLegendLayerFile::addToPopupMenu(QMenu& theMenu, QAction* toggleEditingAc
   showInOverviewAction->blockSignals(false);
   
   // remove from canvas
-  theMenu.addAction(QIcon(iconsPath+QString("/mActionRemove.png")),
+  theMenu.addAction(QgisApp::getThemeIcon("/mActionRemove.png"),
                     tr("&Remove"), legend(), SLOT(legendLayerRemove()));
 
   theMenu.addSeparator();

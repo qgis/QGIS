@@ -20,6 +20,7 @@
 
 //qgis includes
 #include "qgis.h" //<--magick numbers
+#include "qgisapp.h" //<--theme icons
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
@@ -44,16 +45,13 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog(QWidget *parent, Qt::WFlags
 {
   setupUi(this);
 
-  QString myThemePath = QgsApplication::themePath();
-  pbnFirst->setIcon(QPixmap(myThemePath+"mIconFirst.png"));
-  QString myString = "Setting first button to : " + myThemePath+"mIconFirst.png";
-  qDebug(myString.toLocal8Bit());
-  pbnPrevious->setIcon(QPixmap(myThemePath+"mIconPrevious.png"));
-  pbnNext->setIcon(QPixmap(myThemePath+"mIconNext.png"));
-  pbnLast->setIcon(QPixmap(myThemePath+"mIconLast.png"));
-  pbnNew->setIcon(QPixmap(myThemePath+"mIconNew.png"));
-  pbnSave->setIcon(QPixmap(myThemePath+"mActionFileSave.png"));
-  pbnDelete->setIcon(QPixmap(myThemePath+"mIconDelete.png"));
+  pbnFirst->setIcon(QgisApp::getThemeIcon("mIconFirst.png"));
+  pbnPrevious->setIcon(QgisApp::getThemeIcon("mIconPrevious.png"));
+  pbnNext->setIcon(QgisApp::getThemeIcon("mIconNext.png"));
+  pbnLast->setIcon(QgisApp::getThemeIcon("mIconLast.png"));
+  pbnNew->setIcon(QgisApp::getThemeIcon("mIconNew.png"));
+  pbnSave->setIcon(QgisApp::getThemeIcon("mActionFileSave.png"));
+  pbnDelete->setIcon(QgisApp::getThemeIcon("mIconDelete.png"));
   // user database is created at QGIS startup in QgisApp::createDB
   // we just check whether there is our database [MD]
   QFileInfo myFileInfo;
@@ -701,8 +699,7 @@ void QgsCustomProjectionDialog::on_pbnNew_clicked()
   if (pbnNew->text()==tr("Abort")) 
   {
     //if we get here, user has aborted add record
-    QString myThemePath = QgsApplication::themePath();
-    pbnNew->setIcon(QPixmap(myThemePath+"mIconNew.png"));
+    pbnNew->setIcon(QgisApp::getThemeIcon("mIconNew.png"));
     //next line needed for new/abort logic
     pbnNew->setText(tr("New"));
     //get back to the last used record before insert was pressed
@@ -724,8 +721,7 @@ void QgsCustomProjectionDialog::on_pbnNew_clicked()
     pbnNext->setEnabled(false);
     pbnLast->setEnabled(false);
     pbnDelete->setEnabled(false);
-    QString myThemePath = QgsApplication::themePath();
-    pbnNew->setIcon(QPixmap(myThemePath+"mIconNew.png"));
+    pbnNew->setIcon(QgisApp::getThemeIcon("mIconNew.png"));
     //next line needed for new/abort logic
     pbnNew->setText(tr("Abort"));
     //clear the controls

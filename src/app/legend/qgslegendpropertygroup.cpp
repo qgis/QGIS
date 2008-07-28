@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "qgsapplication.h"
+#include "qgisapp.h"
 #include "qgslegendpropertygroup.h"
 #include <QCoreApplication>
 #include <QIcon>
@@ -26,7 +27,7 @@ QgsLegendPropertyGroup::QgsLegendPropertyGroup(QTreeWidgetItem* theLegendItem, Q
     : QgsLegendItem(theLegendItem,theString )
 {
   mType=LEGEND_PROPERTY_GROUP;
-  QIcon myIcon(QgsApplication::themePath()+"/mIconProperties.png");
+  QIcon myIcon = QgisApp::getThemeIcon("/mIconProperties.png");
   setText(0, theString);
   setIcon(0,myIcon);
 }

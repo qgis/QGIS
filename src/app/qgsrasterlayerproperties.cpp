@@ -17,6 +17,7 @@
 
 #include "qgslogger.h"
 #include "qgsapplication.h"
+#include "qgisapp.h"
 #include "qgscoordinatetransform.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgslayerprojectionselector.h"
@@ -280,18 +281,17 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
 
   cboxTransparencyBand->addItem(TRSTRING_NOT_SET);
 
-  QString myThemePath = QgsApplication::themePath();
-  QPixmap myPyramidPixmap(myThemePath + "/mIconPyramid.png");
-  QPixmap myNoPyramidPixmap(myThemePath + "/mIconNoPyramid.png");
+  QIcon myPyramidPixmap(QgisApp::getThemeIcon("/mIconPyramid.png"));
+  QIcon myNoPyramidPixmap(QgisApp::getThemeIcon("/mIconNoPyramid.png"));
 
-  pbnAddValuesManually->setIcon(QIcon(myThemePath + "/mActionNewAttribute.png"));
-  pbnAddValuesFromDisplay->setIcon(QIcon(myThemePath + "/mActionContextHelp.png"));
-  pbnRemoveSelectedRow->setIcon(QIcon(myThemePath + "/mActionDeleteAttribute.png"));
-  pbnDefaultValues->setIcon(QIcon(myThemePath + "/mActionCopySelected.png"));
-  pbnImportTransparentPixelValues->setIcon(QIcon(myThemePath + "/mActionFileOpen.png"));
-  pbnExportTransparentPixelValues->setIcon(QIcon(myThemePath + "/mActionFileSave.png"));
-  pbtnMakeBandCombinationDefault->setIcon(QIcon(myThemePath + "/mActionFileSave.png"));
-  pbtnMakeContrastEnhancementAlgorithmDefault->setIcon(QIcon(myThemePath + "/mActionFileSave.png"));
+  pbnAddValuesManually->setIcon(QgisApp::getThemeIcon("/mActionNewAttribute.png"));
+  pbnAddValuesFromDisplay->setIcon(QgisApp::getThemeIcon("/mActionContextHelp.png"));
+  pbnRemoveSelectedRow->setIcon(QgisApp::getThemeIcon("/mActionDeleteAttribute.png"));
+  pbnDefaultValues->setIcon(QgisApp::getThemeIcon("/mActionCopySelected.png"));
+  pbnImportTransparentPixelValues->setIcon(QgisApp::getThemeIcon("/mActionFileOpen.png"));
+  pbnExportTransparentPixelValues->setIcon(QgisApp::getThemeIcon("/mActionFileSave.png"));
+  pbtnMakeBandCombinationDefault->setIcon(QgisApp::getThemeIcon("/mActionFileSave.png"));
+  pbtnMakeContrastEnhancementAlgorithmDefault->setIcon(QgisApp::getThemeIcon("/mActionFileSave.png"));
 
   // Only do pyramids if dealing directly with GDAL.
   if (mRasterLayerIsGdal)
@@ -1616,9 +1616,8 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   // repopulate the pyramids list
   //
   lbxPyramidResolutions->clear();
-  QString myThemePath = QgsApplication::themePath();
-  QPixmap myPyramidPixmap(myThemePath + "/mIconPyramid.png");
-  QPixmap myNoPyramidPixmap(myThemePath + "/mIconNoPyramid.png");
+  QIcon myPyramidPixmap(QgisApp::getThemeIcon("/mIconPyramid.png"));
+  QIcon myNoPyramidPixmap(QgisApp::getThemeIcon("/mIconNoPyramid.png"));
 
   QgsRasterLayer::RasterPyramidList::iterator myRasterPyramidIterator;
   for ( myRasterPyramidIterator=myPyramidList.begin();

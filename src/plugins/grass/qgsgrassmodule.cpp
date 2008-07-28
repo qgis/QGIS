@@ -90,6 +90,7 @@ extern "C" {
 #include "qgsgrassmapcalc.h"
 #include "qgsgrasstools.h"
 #include "qgsgrassselect.h"
+#include "qgsgrassplugin.h"
 
 #include <gdal.h>         // to collect version information
 
@@ -2102,10 +2103,9 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module,
     && region != "no"
     )
   {
-    QString iconPath = QgsApplication::themePath() + "/grass/";
 
     mRegionButton = new QPushButton( 
-      QIcon(iconPath+"grass_set_region.png"), "" );
+      QgsGrassPlugin::getThemeIcon("grass_set_region.png"), "" );
 
     mRegionButton->setToolTip ( tr("Use region of this map") );
     mRegionButton->setCheckable ( true );

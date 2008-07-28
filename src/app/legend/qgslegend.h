@@ -177,7 +177,8 @@ class QgsLegend : public QTreeWidget
 
   /**Returns structure with legend pixmaps*/
   QgsLegendPixmaps& pixmaps() { return mPixmaps; }
-  
+
+
   void updateCheckStates(QTreeWidgetItem* item, Qt::CheckState state) {mStateOfCheckBoxes[item] = state;}
   
 public slots:
@@ -400,20 +401,22 @@ private:
   /** structure which holds pixmap which are used in legend */
   class QgsLegendPixmaps
   {
-  public:
-    //! Pixmap which is shown by default
-    QPixmap mOriginalPixmap;
-    
-    //! Pixmap to show a bogus vertex was encoutnered in this layer (applies to vector layers only)
-    QPixmap mProjectionErrorPixmap;
+    public:
+      //! Pixmap which is shown by default
+      QPixmap mOriginalPixmap;
 
-    //! Pixmap to show if this layer is represented in overview or now
-    QPixmap mInOverviewPixmap;
+      //! Pixmap to show a bogus vertex was encoutnered in this layer (applies to vector layers only)
+      QPixmap mProjectionErrorPixmap;
 
-    //! Pixmap to show it this layer has currently editing turned on
-    QPixmap mEditablePixmap;
+      //! Pixmap to show if this layer is represented in overview or now
+      QPixmap mInOverviewPixmap;
+
+      //! Pixmap to show it this layer has currently editing turned on
+      QPixmap mEditablePixmap;
 
   } mPixmaps;
+
+
 
 signals:
   void zOrderChanged(QgsLegend * lv);

@@ -53,6 +53,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsdataprovider.h"
 #include "qgsfield.h"
+#include "qgsgrassplugin.h"
 
 extern "C" {
 #include <grass/gis.h>
@@ -105,47 +106,46 @@ QgsGrassMapcalc::QgsGrassMapcalc (
 
   mView->setCanvas ( mCanvas );
 
-  QString myIconPath = QgsApplication::themePath() + "/grass/";
 
   QActionGroup *ag = new QActionGroup ( this );
   QToolBar *tb = addToolBar(tr("Mapcalc tools"));
 
-  mActionAddMap = new QAction( QIcon(myIconPath+"mapcalc_add_map.png"), 
+  mActionAddMap = new QAction( QgsGrassPlugin::getThemeIcon("mapcalc_add_map.png"), 
     tr("Add map"), this);
   mActionAddMap->setCheckable ( true );
   ag->addAction ( mActionAddMap );
   tb->addAction ( mActionAddMap );
   connect ( mActionAddMap, SIGNAL(triggered()), this, SLOT(addMap()) );
 
-  mActionAddConstant = new QAction( QIcon(myIconPath+"mapcalc_add_constant.png"), 
+  mActionAddConstant = new QAction( QgsGrassPlugin::getThemeIcon("mapcalc_add_constant.png"), 
     tr("Add constant value"), this);
   mActionAddConstant->setCheckable ( true );
   ag->addAction ( mActionAddConstant );
   tb->addAction ( mActionAddConstant );
   connect ( mActionAddConstant, SIGNAL(triggered()), this, SLOT(addConstant()) );
 
-  mActionAddFunction = new QAction( QIcon(myIconPath+"mapcalc_add_function.png"), 
+  mActionAddFunction = new QAction( QgsGrassPlugin::getThemeIcon("mapcalc_add_function.png"), 
     tr("Add operator or function"), this);
   mActionAddFunction->setCheckable ( true );
   ag->addAction ( mActionAddFunction );
   tb->addAction ( mActionAddFunction );
   connect ( mActionAddFunction, SIGNAL(triggered()), this, SLOT(addFunction()) );
 
-  mActionAddConnection = new QAction( QIcon(myIconPath+"mapcalc_add_connection.png"), 
+  mActionAddConnection = new QAction( QgsGrassPlugin::getThemeIcon("mapcalc_add_connection.png"), 
     tr("Add connection"), this);
   mActionAddConnection->setCheckable ( true );
   ag->addAction ( mActionAddConnection );
   tb->addAction ( mActionAddConnection );
   connect ( mActionAddConnection, SIGNAL(triggered()), this, SLOT(addConnection()) );
 
-  mActionSelectItem = new QAction( QIcon(myIconPath+"mapcalc_select.png"), 
+  mActionSelectItem = new QAction( QgsGrassPlugin::getThemeIcon("mapcalc_select.png"), 
     tr("Select item"), this);
   mActionSelectItem->setCheckable ( true );
   ag->addAction ( mActionSelectItem );
   tb->addAction ( mActionSelectItem );
   connect ( mActionSelectItem, SIGNAL(triggered()), this, SLOT(selectItem()) );
 
-  mActionDeleteItem = new QAction( QIcon(myIconPath+"mapcalc_delete.png"), 
+  mActionDeleteItem = new QAction( QgsGrassPlugin::getThemeIcon("mapcalc_delete.png"), 
     tr("Delete selected item"), this);
   mActionDeleteItem->setCheckable ( true );
   mActionDeleteItem->setEnabled ( false );
@@ -155,18 +155,18 @@ QgsGrassMapcalc::QgsGrassMapcalc (
 
   mActionAddMap->setOn(true);
 
-  mActionLoad = new QAction( QIcon(myIconPath+"mapcalc_open.png"), 
+  mActionLoad = new QAction( QgsGrassPlugin::getThemeIcon("mapcalc_open.png"), 
     tr("Open"), this);
   tb->addAction ( mActionLoad );
   connect ( mActionLoad, SIGNAL(triggered()), this, SLOT(load()) );
 
-  mActionSave = new QAction( QIcon(myIconPath+"mapcalc_save.png"), 
+  mActionSave = new QAction( QgsGrassPlugin::getThemeIcon("mapcalc_save.png"), 
     tr("Save"), this);
   tb->addAction ( mActionSave );
   connect ( mActionSave, SIGNAL(triggered()), this, SLOT(save()) );
   mActionSave->setEnabled(false);
 
-  mActionSaveAs = new QAction( QIcon(myIconPath+"mapcalc_save_as.png"), 
+  mActionSaveAs = new QAction( QgsGrassPlugin::getThemeIcon("mapcalc_save_as.png"), 
     tr("Save as"), this);
   tb->addAction ( mActionSaveAs );
   connect ( mActionSaveAs, SIGNAL(triggered()), this, SLOT(saveAs()) );

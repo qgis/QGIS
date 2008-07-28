@@ -162,6 +162,14 @@ class QgisApp : public QMainWindow
     *  (as documented in Qt documentation.
   */
   void setupProxy();
+  //! Helper to get a theme icon. It will fall back to the 
+  //default theme if the active theme does not have the required
+  //icon.
+  static QIcon getThemeIcon(const QString theName);
+  //! Helper to get a theme icon as a pixmap. It will fall back to the 
+  //default theme if the active theme does not have the required
+  //icon.
+  static QPixmap getThemePixmap(const QString theName);
 //private slots:
 public slots:
   //! About QGis
@@ -589,9 +597,6 @@ class Tools
 
   QgsMapTool *mNonEditMapTool;
   
-  //!The name of the active theme
-  QString mThemeName;
-
   //! Widget that will live on the statusbar to display "scale 1:"
   QLabel * mScaleLabel;
   //! Widget that will live on the statusbar to display scale value

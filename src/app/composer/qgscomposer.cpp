@@ -109,26 +109,22 @@ QgsComposer::~QgsComposer()
 
 void QgsComposer::setupTheme()
 {
-  //calculate the active theme path
-  QString myThemePath= QgsApplication::themePath();
-  
-
   //now set all the icons
-  mActionOpenTemplate->setIcon(QIcon(QPixmap(myThemePath + "/mActionFileOpen.png")));
-  mActionSaveTemplateAs->setIcon(QIcon(QPixmap(myThemePath + "/mActionFileSaveAs.png")));
-  mActionExportAsImage->setIcon(QIcon(QPixmap(myThemePath + "/mActionExportMapServer.png")));
-  mActionExportAsSVG->setIcon(QIcon(QPixmap(myThemePath + "/mActionSaveAsSVG.png")));
-  mActionPrint->setIcon(QIcon(QPixmap(myThemePath + "/mActionFilePrint.png")));
-  mActionZoomAll->setIcon(QIcon(QPixmap(myThemePath + "/mActionZoomFullExtent.png")));
-  mActionZoomIn->setIcon(QIcon(QPixmap(myThemePath + "/mActionZoomIn.png")));
-  mActionZoomOut->setIcon(QIcon(QPixmap(myThemePath + "/mActionZoomOut.png")));
-  mActionRefreshView->setIcon(QIcon(QPixmap(myThemePath + "/mActionDraw.png")));
-  mActionAddImage->setIcon(QIcon(QPixmap(myThemePath + "/mActionSaveMapAsImage.png")));
-  mActionAddNewMap->setIcon(QIcon(QPixmap(myThemePath + "/mActionAddRasterLayer.png")));
-  mActionAddNewLabel->setIcon(QIcon(QPixmap(myThemePath + "/mActionLabel.png")));
-  mActionAddNewVectLegend->setIcon(QIcon(QPixmap(myThemePath + "/mActionAddLegend.png")));
-  mActionAddNewScalebar->setIcon(QIcon(QPixmap(myThemePath + "/mActionScaleBar.png")));
-  mActionSelectMoveItem->setIcon(QIcon(QPixmap(myThemePath + "/mActionPan.png")));
+  mActionOpenTemplate->setIcon(QgisApp::getThemeIcon("/mActionFileOpen.png"));
+  mActionSaveTemplateAs->setIcon(QgisApp::getThemeIcon("/mActionFileSaveAs.png"));
+  mActionExportAsImage->setIcon(QgisApp::getThemeIcon("/mActionExportMapServer.png"));
+  mActionExportAsSVG->setIcon(QgisApp::getThemeIcon("/mActionSaveAsSVG.png"));
+  mActionPrint->setIcon(QgisApp::getThemeIcon("/mActionFilePrint.png"));
+  mActionZoomAll->setIcon(QgisApp::getThemeIcon("/mActionZoomFullExtent.png"));
+  mActionZoomIn->setIcon(QgisApp::getThemeIcon("/mActionZoomIn.png"));
+  mActionZoomOut->setIcon(QgisApp::getThemeIcon("/mActionZoomOut.png"));
+  mActionRefreshView->setIcon(QgisApp::getThemeIcon("/mActionDraw.png"));
+  mActionAddImage->setIcon(QgisApp::getThemeIcon("/mActionSaveMapAsImage.png"));
+  mActionAddNewMap->setIcon(QgisApp::getThemeIcon("/mActionAddRasterLayer.png"));
+  mActionAddNewLabel->setIcon(QgisApp::getThemeIcon("/mActionLabel.png"));
+  mActionAddNewVectLegend->setIcon(QgisApp::getThemeIcon("/mActionAddLegend.png"));
+  mActionAddNewScalebar->setIcon(QgisApp::getThemeIcon("/mActionScaleBar.png"));
+  mActionSelectMoveItem->setIcon(QgisApp::getThemeIcon("/mActionPan.png"));
 }
 
 void QgsComposer::open ( void )

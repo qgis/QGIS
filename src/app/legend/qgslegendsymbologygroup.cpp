@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "qgsapplication.h"
+#include "qgisapp.h"
 #include "qgslegendlayerfile.h"
 #include "qgslegendlayerfilegroup.h"
 #include "qgslegendsymbologygroup.h"
@@ -29,7 +30,7 @@ QgsLegendSymbologyGroup::QgsLegendSymbologyGroup(QTreeWidgetItem * theItem, QStr
     : QgsLegendItem( theItem, theString)
 {
   mType = LEGEND_SYMBOL_GROUP;
-  QIcon myIcon(QgsApplication::themePath()+"/mIconSymbology.png");
+  QIcon myIcon = QgisApp::getThemeIcon("/mIconSymbology.png");
   setText(0, theString);
   setIcon(0,myIcon);
 }

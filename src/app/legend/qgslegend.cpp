@@ -19,6 +19,7 @@
 /* $Id$ */
 
 #include "qgsapplication.h"
+#include "qgisapp.h"
 #include "qgslogger.h"
 #include "qgslegend.h"
 #include "qgslegendgroup.h"
@@ -87,8 +88,9 @@ QgsLegend::QgsLegend(QWidget * parent, const char *name)
   setColumnCount(1);
   header()->setHidden(1);
   setRootIsDecorated(true);
-
   initPixmaps();
+
+
 }
 
 
@@ -400,8 +402,6 @@ void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& posit
 
   QMenu theMenu;
 
-  QString iconsPath = QgsApplication::themePath();
-
   QgsLegendItem* li = dynamic_cast<QgsLegendItem*>(item);
   if (li)
   {
@@ -422,7 +422,7 @@ void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& posit
     }
     else if(li->type() == QgsLegendItem::LEGEND_GROUP)
     {
-      theMenu.addAction(QPixmap(iconsPath+QString("/mActionRemove.png")),
+      theMenu.addAction(QgisApp::getThemeIcon("/mActionRemove.png"),
                         tr("&Remove"), this, SLOT(legendGroupRemove()));
     }
   
@@ -433,9 +433,9 @@ void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& posit
 	
   }
 
-  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
-  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/mActionExpandTree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
-  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/mActionCollapseTree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
+  theMenu.addAction(QgisApp::getThemeIcon("/folder_new.png"), tr("&Add group"), this, SLOT(addGroup()));
+  theMenu.addAction(QgisApp::getThemeIcon("/mActionExpandTree.png"), tr("&Expand all"), this, SLOT(expandAll()));
+  theMenu.addAction(QgisApp::getThemeIcon("/mActionCollapseTree.png"), tr("&Collapse all"), this, SLOT(collapseAll()));
 
   QAction* showFileGroupsAction = theMenu.addAction(tr("Show file groups"), this, SLOT(showLegendLayerFileGroups()));
   showFileGroupsAction->setCheckable(true);
@@ -443,6 +443,14 @@ void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& posit
   showFileGroupsAction->setChecked(mShowLegendLayerFiles);
   showFileGroupsAction->blockSignals(false);
   theMenu.exec(position);
+}
+
+void QgsLegend::initPixmaps()
+{
+  mPixmaps.mOriginalPixmap = QgisApp::getThemePixmap("/mActionFileSmall.png");
+  mPixmaps.mInOverviewPixmap = QgisApp::getThemePixmap("/mActionInOverview.png");
+  mPixmaps.mEditablePixmap = QgisApp::getThemePixmap("/mIconEditable.png");
+  mPixmaps.mProjectionErrorPixmap = QgisApp::getThemePixmap("/mIconProjectionProblem.png");
 }
 
 int QgsLegend::getItemPos(QTreeWidgetItem* item)
@@ -1826,15 +1834,6 @@ void QgsLegend::legendLayerAttributeTable()
   // nothing selected
   QMessageBox::information(this, tr("No Layer Selected"),
                            tr("To open an attribute table, you must select a vector layer in the legend"));
-}
-
-void QgsLegend::initPixmaps()
-{
-  QString myThemePath = QgsApplication::themePath();
-  mPixmaps.mOriginalPixmap.load(myThemePath + "/mActionFileSmall.png");
-  mPixmaps.mInOverviewPixmap.load(myThemePath + "/mActionInOverview.png");
-  mPixmaps.mEditablePixmap.load(myThemePath + "/mIconEditable.png");
-  mPixmaps.mProjectionErrorPixmap.load(myThemePath + "/mIconProjectionProblem.png");
 }
 
 void QgsLegend::readProject(const QDomDocument & doc)

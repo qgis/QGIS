@@ -31,6 +31,7 @@ class QgsGrassTools;
 class QgsGrassNewMapset;
 class QgsGrassRegion;
 class QToolBar;
+class QIcon;
 /**
 * \class QgsGrassPlugin
 * \brief OpenModeller plugin for QGIS
@@ -69,6 +70,8 @@ Q_OBJECT public:
   QPen & regionPen(void);
   //! Set Region Pen
   void setRegionPen(QPen &);
+  //! Get a plugin icon resource using the active theme
+  static QIcon getThemeIcon(const QString theName);
 
 public slots:
   //! init the gui

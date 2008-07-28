@@ -24,6 +24,7 @@
 
 class QAction;
 class QActionGroup;
+class QIcon;
 class QgsGeorefDataPoint;
 class QgsMapTool;
 class QgisInterface;
@@ -66,6 +67,7 @@ private:
   QString guessWorldFileName(const QString& raster);
 
   void enableModifiedRasterControls(bool state);
+  QIcon getThemeIcon(const QString theName);
   
   QActionGroup* mMapToolGroup;
   QAction* mActionZoomIn;

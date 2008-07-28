@@ -2954,7 +2954,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
     QPainter myQPainter(&myQPixmap2);
 
     //load  up the pyramid icons
-    QString myThemePath = QgsApplication::themePath();
+    QString myThemePath = QgsApplication::activeThemePath();
     QPixmap myPyramidPixmap(myThemePath + "/mIconPyramid.png");
     QPixmap myNoPyramidPixmap(myThemePath + "/mIconNoPyramid.png");
 
