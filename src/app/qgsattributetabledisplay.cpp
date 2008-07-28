@@ -55,8 +55,6 @@ QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer, QgisAp
   connect(mZoomMapToSelectedRowsButton, SIGNAL(clicked()), this, SLOT(zoomMapToSelectedRows()));
   connect(mAddAttributeButton, SIGNAL(clicked()), this, SLOT(addAttribute()));
   connect(mDeleteAttributeButton, SIGNAL(clicked()), this, SLOT(deleteAttributes()));
-  connect(btnStartEditing, SIGNAL(clicked()), this, SLOT(startEditing()));
-  connect(btnStopEditing, SIGNAL(clicked()), this, SLOT(stopEditing()));
   connect(mSearchButton, SIGNAL(clicked()), this, SLOT(search()));
   connect(mSearchShowResults, SIGNAL(activated(int)), this, SLOT(searchShowResultsChanged(int)));
   connect(btnAdvancedSearch, SIGNAL(clicked()), this, SLOT(advancedSearch()));
@@ -69,17 +67,16 @@ QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer, QgisAp
   mAddAttributeButton->setEnabled(false);
   mDeleteAttributeButton->setEnabled(false);
 
-  btnStopEditing->setEnabled(false);
   int cap=layer->getDataProvider()->capabilities();
   if((cap&QgsVectorDataProvider::ChangeAttributeValues)
       ||(cap&QgsVectorDataProvider::AddAttributes)
       ||(cap&QgsVectorDataProvider::DeleteAttributes))
   {
-    btnStartEditing->setEnabled(true);
+    btnEdit->setEnabled(true);
   }
   else
   {
-    btnStartEditing->setEnabled(false);
+    btnEdit->setEnabled(false);
   }
 
   // fill in mSearchColumns with available columns
@@ -175,8 +172,7 @@ void QgsAttributeTableDisplay::startEditing()
     }
     if(editing)
     {
-      btnStartEditing->setEnabled(false);
-      btnStopEditing->setEnabled(true);
+      btnEdit->setText(tr("Stop editing"));
       buttonBox->button(QDialogButtonBox::Close)->setEnabled(false);
       //make the dialog modal when in editable
       //otherwise map editing and table editing
@@ -185,6 +181,24 @@ void QgsAttributeTableDisplay::startEditing()
       setModal(true);
       show();
     }
+    else
+    {
+      //revert button
+      QMessageBox::information(this,tr("Editing not permitted"),tr("The data provider is read only, editing is not allowed."));
+      btnEdit->setChecked(false);
+    }
+  }
+}
+
+void QgsAttributeTableDisplay::on_btnEdit_toggled(bool theFlag)
+{
+  if (theFlag)
+  {
+    startEditing();
+  }
+  else
+  {
+    stopEditing();
   }
 }
 
@@ -213,8 +227,7 @@ void QgsAttributeTableDisplay::stopEditing()
       return;
     }
   }
-  btnStartEditing->setEnabled(true);
-  btnStopEditing->setEnabled(false);
+  btnEdit->setText(tr("Start editing"));
   buttonBox->button(QDialogButtonBox::Close)->setEnabled(true);
   mAddAttributeButton->setEnabled(false);
   mDeleteAttributeButton->setEnabled(false);

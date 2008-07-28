@@ -162,19 +162,12 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btnStartEditing" >
+      <widget class="QPushButton" name="btnEdit" >
        <property name="text" >
         <string>Start editing</string>
        </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnStopEditing" >
-       <property name="text" >
-        <string>Stop editin&amp;g</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+G</string>
+       <property name="checkable" >
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -272,8 +265,7 @@
   <tabstop>mZoomMapToSelectedRowsButton</tabstop>
   <tabstop>mAddAttributeButton</tabstop>
   <tabstop>mDeleteAttributeButton</tabstop>
-  <tabstop>btnStartEditing</tabstop>
-  <tabstop>btnStopEditing</tabstop>
+  <tabstop>btnEdit</tabstop>
   <tabstop>mSearchText</tabstop>
   <tabstop>mSearchColumns</tabstop>
   <tabstop>mSearchButton</tabstop>
