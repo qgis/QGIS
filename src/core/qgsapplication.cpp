@@ -34,7 +34,7 @@
 QString QgsApplication::mPrefixPath;
 QString QgsApplication::mPluginPath;
 QString QgsApplication::mPkgDataPath;
-QString QgsApplication::mThemePath;
+QString QgsApplication::mThemeName;
 
 /*!
   \class QgsApplication
@@ -91,7 +91,6 @@ void QgsApplication::setPluginPath(const QString thePluginPath)
 void QgsApplication::setPkgDataPath(const QString thePkgDataPath)
 {
   mPkgDataPath = thePkgDataPath;
-  mThemePath = mPkgDataPath + QString("/themes/default/");
 }
 
 const QString QgsApplication::prefixPath() 
@@ -108,30 +107,36 @@ const QString QgsApplication::pkgDataPath()
 }
 const QString QgsApplication::defaultThemePath() 
 { 
-  return mPkgDataPath + QString("/themes/default/");
+  return mPkgDataPath + "/themes/default/";
 }
 const QString QgsApplication::activeThemePath() 
 { 
-  return mThemePath; 
+  return mPkgDataPath + "/themes/" + mThemeName + "/";
 }
 
 /*!
   Set the theme path to the specified theme.
 */
-void QgsApplication::setTheme(const QString theThemeName)
+void QgsApplication::setThemeName(const QString theThemeName)
 {
-  QString myPath = mPkgDataPath + QString("/themes/") + theThemeName + QString("/");
+  QString myPath = mPkgDataPath + "/themes/" + theThemeName + "/";
   //check it exists and if not roll back to default theme
   if (QFile::exists(myPath))
   {
-    mThemePath = myPath;
+    mThemeName = theThemeName;
   }
   else
   {
-    mThemePath = defaultThemePath();
+    mThemeName = "default";
   }
 }
-
+/*!
+ * Get the active theme name
+ */
+const QString QgsApplication::themeName()
+{
+  return mThemeName;
+}
 /*!
   Returns the path to the authors file.
 */
@@ -269,7 +274,9 @@ void QgsApplication::showSettings()
   qDebug("Prefix       :" + mPrefixPath.toLocal8Bit());
   qDebug("Plugin Path  :" + mPluginPath.toLocal8Bit());
   qDebug("PkgData Path :" + mPkgDataPath.toLocal8Bit());
-  qDebug("Theme Path   :" + mThemePath.toLocal8Bit());
+  qDebug("Active Theme Name   :" + themeName().toLocal8Bit());
+  qDebug("Active Theme Path   :" + activeThemePath().toLocal8Bit());
+  qDebug("Default Theme Path   :" + defaultThemePath().toLocal8Bit());
   qDebug("User DB Path :" + qgisMasterDbFilePath().toLocal8Bit());
   qDebug("**********************************\n");
 }
