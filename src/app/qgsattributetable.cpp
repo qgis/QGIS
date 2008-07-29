@@ -395,11 +395,9 @@ bool QgsAttributeTable::addAttribute(const QString& name, const QString& type)
   mAddedAttributes.insert(name,type);
 
   QgsDebugMsg("inserting attribute " + name + " of type " + type + ", numCols: " + QString::number(columnCount()) );
-
   //add a new column at the end of the table
-
   insertColumn(columnCount());
-  horizontalHeaderItem(columnCount()-1)->setText(name);
+  setHorizontalHeaderItem(columnCount()-1, new QTableWidgetItem(name));
   mEdited=true;
   return true;
 }
