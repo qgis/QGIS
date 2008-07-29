@@ -25,6 +25,7 @@
 QgsRenderChecker::QgsRenderChecker( ) :
   mReport(""),
   mExpectedImageFile(""),
+  mRenderedImageFile(""), 
   mMismatchCount(0),
   mMatchTarget(0),
   mElapsedTime(0),
@@ -53,10 +54,7 @@ bool QgsRenderChecker::runTest( QString theTestName )
   // Now render our layers onto a pixmap 
   //
   QImage myImage( myExpectedImage.width() , myExpectedImage.height(), QImage::Format_RGB32 );
-  QImage myDifferenceImage( myExpectedImage.width() , myExpectedImage.height(), QImage::Format_RGB32);
-  QString myResultDiffImage = QDir::tempPath() + QDir::separator() + theTestName + "_result_diff.png";
   myImage.fill ( qRgb( 152,219,249  ) );
-  myDifferenceImage.fill ( qRgb( 152,219,249 ) );
   QPainter myPainter( &myImage );
   mpMapRenderer->setOutputSize( QSize ( myExpectedImage.width(),myExpectedImage.height() ),72 ); 
   QTime myTime;
@@ -68,13 +66,47 @@ bool QgsRenderChecker::runTest( QString theTestName )
   // Save the pixmap to disk so the user can make a 
   // visual assessment if needed
   //
-  QString myResultImage = QDir::tempPath() + QDir::separator() + theTestName + "_result.png";
-  myImage.save (myResultImage);
+  mRenderedImageFile = QDir::tempPath() + QDir::separator() + theTestName + "_result.png";
+  myImage.save (mRenderedImageFile);
+  return compareImages(theTestName);
+
+}
+
+
+bool QgsRenderChecker::compareImages( QString theTestName )
+{
+  if (mExpectedImageFile.isEmpty())
+  {
+    qDebug("QgsRenderChecker::runTest failed - Expected Image (control) File not set.");
+    mReport= "<table>"
+      "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
+      "<tr><td>Nothing rendered</td>\n<td>Failed because Expected "
+      "Image File not set.</td></tr></table>\n";
+    return false;
+  }
+  if (mRenderedImageFile.isEmpty())
+  {
+    qDebug("QgsRenderChecker::runTest failed - Rendered Image File not set.");
+    mReport= "<table>"
+      "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
+      "<tr><td>Nothing rendered</td>\n<td>Failed because Expected "
+      "Image File not set.</td></tr></table>\n";
+    return false;
+  }
+  //
+  // Load /create the images
+  //
+  QImage myExpectedImage (mExpectedImageFile);
+  QImage myResultImage (mRenderedImageFile);
+  QImage myDifferenceImage( myExpectedImage.width() , myExpectedImage.height(), QImage::Format_RGB32);
+  QString myResultDiffImage = QDir::tempPath() + QDir::separator() + theTestName + "_result_diff.png";
+  myDifferenceImage.fill ( qRgb( 152,219,249 ) );
+
   //
   // Set pixel count score and target
   //
   mMatchTarget = myExpectedImage.width() * myExpectedImage.height();
-  int myPixelCount = myImage.width() * myImage.height();
+  int myPixelCount = myResultImage.width() * myResultImage.height();
   //
   // Set the report with the result
   //
@@ -82,37 +114,33 @@ bool QgsRenderChecker::runTest( QString theTestName )
   mReport += "<tr><td colspan=2>";
   mReport += "Test image and result image for " + theTestName + "<br>"
     "Expected size: " + QString::number(myExpectedImage.width()).toLocal8Bit() + "w x " + 
-                                QString::number(myExpectedImage.width()).toLocal8Bit() + "h (" +
-                                QString::number(mMatchTarget).toLocal8Bit() + " pixels)<br>"
-    "Actual   size: " + QString::number(myImage.width()).toLocal8Bit() + "w x " + 
-                                QString::number(myImage.width()).toLocal8Bit() + "h (" +
-                                QString::number(myPixelCount).toLocal8Bit() + " pixels)";
+    QString::number(myExpectedImage.width()).toLocal8Bit() + "h (" +
+    QString::number(mMatchTarget).toLocal8Bit() + " pixels)<br>"
+    "Actual   size: " + QString::number(myResultImage.width()).toLocal8Bit() + "w x " + 
+    QString::number(myResultImage.width()).toLocal8Bit() + "h (" +
+    QString::number(myPixelCount).toLocal8Bit() + " pixels)";
   mReport += "</td></tr>";
   mReport += "<tr><td colspan = 2>\n";
   mReport += "Expected Duration : <= " + QString::number(mElapsedTimeTarget) + 
-             "ms (0 indicates not specified)<br>";
+    "ms (0 indicates not specified)<br>";
   mReport += "Actual Duration :  " + QString::number(mElapsedTime) + "ms<br>";
   QString myImagesString= "</td></tr>"
     "<tr><td>Test Result:</td><td>Expected Result:</td><td>Difference (all blue is good, any red is bad)</td></tr>\n"
     "<tr><td><img src=\"file://" +
-  myResultImage +
+    mRenderedImageFile +
     "\"></td>\n<td><img src=\"file://" +
-  mExpectedImageFile +
+    mExpectedImageFile +
     "\"></td><td><img src=\"file://" +
-  myResultDiffImage  +
+    myResultDiffImage  +
     "\"></td>\n</tr>\n</table>";
   //
   // Put the same info to debug too
   //
-  qDebug ("Expected size: " + QString::number(myExpectedImage.width()).toLocal8Bit() + + "w x " + 
-                                QString::number(myExpectedImage.width()).toLocal8Bit() + + "h");
-  qDebug ("Actual   size: " + QString::number(myImage.width()).toLocal8Bit() + + "w x " + 
-                                QString::number(myImage.width()).toLocal8Bit() + + "h");
-  //
-  // Now load the renderered image and the expected image
-  // and then iterate through them counting how many 
-  // dissimilar pixel values there are
-  //
+  
+  qDebug ("Expected size: " + QString::number(myExpectedImage.width()).toLocal8Bit() + "w x " + 
+      QString::number(myExpectedImage.width()).toLocal8Bit() + "h");
+  qDebug ("Actual   size: " + QString::number(myResultImage.width()).toLocal8Bit() + "w x " + 
+      QString::number(myResultImage.width()).toLocal8Bit() + "h");
 
   if (mMatchTarget!= myPixelCount )
   {
@@ -123,13 +151,19 @@ bool QgsRenderChecker::runTest( QString theTestName )
     mReport += myImagesString;
     return false;
   }
+
+  //
+  // Now iterate through them counting how many 
+  // dissimilar pixel values there are
+  //
+  
   mMismatchCount = 0;
   for (int x = 0; x < myExpectedImage.width(); ++x) 
   {
     for (int y = 0; y < myExpectedImage.height(); ++y) 
     {
       QRgb myExpectedPixel = myExpectedImage.pixel(x,y);
-      QRgb myActualPixel = myImage.pixel(x,y);
+      QRgb myActualPixel = myResultImage.pixel(x,y);
       if (myExpectedPixel != myActualPixel)
       {
         ++mMismatchCount;
@@ -141,14 +175,14 @@ bool QgsRenderChecker::runTest( QString theTestName )
   //save the diff image to disk
   //
   myDifferenceImage.save (myResultDiffImage);
-  
+
   //
   // Send match result to debug
   //
   qDebug (QString::number(mMismatchCount).toLocal8Bit() + "/" +
-          QString::number(mMatchTarget).toLocal8Bit() + 
-    " pixels mismatched");; 
-  
+      QString::number(mMatchTarget).toLocal8Bit() + 
+      " pixels mismatched");; 
+
   //
   // Send match result to report
   //
@@ -158,7 +192,7 @@ bool QgsRenderChecker::runTest( QString theTestName )
     " pixels mismatched"; 
   mReport += "</td></tr>";
 
-  
+
   if ( mMismatchCount==0 )
   {
     mReport += "<tr><td colspan = 3>\n";
