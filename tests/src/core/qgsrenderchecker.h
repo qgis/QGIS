@@ -44,16 +44,27 @@ public:
   int elapsedTime() { return mElapsedTime; };
   void setElapsedTimeTarget(int theTarget) { mElapsedTimeTarget = theTarget; };
   void setExpectedImage (QString theImageFileName) { mExpectedImageFile = theImageFileName; };
+  void setRenderedImage (QString theImageFileName) { mRenderedImageFile = theImageFileName; };
   void setMapRenderer ( QgsMapRender *  thepMapRenderer) { mpMapRenderer = thepMapRenderer; };
   /**
+   * Test using renderer to generate the image to be compared.
    * @param theTestName - to be used as the basis for writing a file to 
-   * /tmp/theTestName.png
+   * e.g. /tmp/theTestName.png
+   * @note make sure to call setExpectedImage and setMapRenderer first
    */
   bool runTest( QString theTestName );
 
+  /**
+   * Test using two arbitary images (map renderer will not be used)
+   * @param theTestName - to be used as the basis for writing a file to 
+   * e.g. /tmp/theTestName.png
+   * @note: make sure to call setExpectedImage and setRenderedImage first.
+   */
+  bool compareImages( QString theTestName );
 private:
   QString mReport;
   QString mExpectedImageFile;
+  QString mRenderedImageFile; 
   unsigned int mMismatchCount;
   unsigned int mMatchTarget;
   int mElapsedTime;

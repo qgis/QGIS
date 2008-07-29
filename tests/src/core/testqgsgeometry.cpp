@@ -21,12 +21,19 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QDesktopServices>
+#include <QVector>
+#include <QPointF>
+#include <QImage>
+#include <QPainter>
 
 #include <iostream>
 //qgis includes...
 #include <qgsapplication.h>
 #include <qgsgeometry.h>
 #include <qgspoint.h>
+
+//qgs unit test utility class
+#include "qgsrenderchecker.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the different geometry operations on vector features.
@@ -40,10 +47,16 @@ class TestQgsGeometry: public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
 
-    void intersectionCheck();
+    void intersectionCheck1();
+    void intersectionCheck2();
     void unionCheck1();
     void unionCheck2();
+    void differenceCheck1();
+    void differenceCheck2();
+    void bufferCheck();
   private:
+    /** A helper method to do a render check to see if the geometry op is as expected */
+    bool renderCheck(QString theTestName, QString theComment="");
     /** A helper method to return wkb geometry type as a string */
     QString wkbTypeAsString( QGis::WKBTYPE theType );
     /** A helper method to dump to qdebug the geometry of a multipolygon */
@@ -73,6 +86,11 @@ class TestQgsGeometry: public QObject
     QgsGeometry * mpPolygonGeometryC;
 
     QString mTestDataDir;
+    QImage mImage;
+    QPainter * mpPainter;
+    QPen mPen1;
+    QPen mPen2;
+    QString mReport;
 };
 
 
@@ -89,10 +107,10 @@ void TestQgsGeometry::init()
   mPointB = QgsPoint(100.0,40.0); 
   mPointC = QgsPoint(100.0,100.0); 
   mPointD = QgsPoint(40.0,100.0); 
-  mPointW = QgsPoint(1000.0,1000.0); 
-  mPointX = QgsPoint(1040.0,1000.0); 
-  mPointY = QgsPoint(1040.0,1040.0); 
-  mPointZ = QgsPoint(1000.0,1040.0); 
+  mPointW = QgsPoint(200.0,200.0); 
+  mPointX = QgsPoint(240.0,200.0); 
+  mPointY = QgsPoint(240.0,240.0); 
+  mPointZ = QgsPoint(200.0,240.0); 
   
   mPolygonA.clear();
   mPolygonB.clear();
@@ -115,6 +133,33 @@ void TestQgsGeometry::init()
   mpPolygonGeometryB = QgsGeometry::fromPolygon(mPolygonB);
   mpPolygonGeometryC = QgsGeometry::fromPolygon(mPolygonC);
 
+  mImage = QImage ( 250,250, QImage::Format_RGB32 );
+  mImage.fill ( qRgb( 152,219,249  ) );
+  mpPainter = new QPainter(&mImage);
+
+  // Draw the test shapes first
+  mPen1 = QPen();
+  mPen1.setWidth(5);
+  mPen1.setBrush(Qt::green);
+  mpPainter->setPen(mPen1);
+  dumpPolygon(mPolygonA);
+  mPen1.setBrush(Qt::red);
+  mpPainter->setPen(mPen1);
+  dumpPolygon(mPolygonB);
+  mPen1.setBrush(Qt::blue);
+  mpPainter->setPen(mPen1);
+  dumpPolygon(mPolygonC);
+
+  mPen2 = QPen();
+  mPen2.setWidth(1);
+  mPen2.setBrush(Qt::black);
+  QBrush myBrush(Qt::DiagCrossPattern);
+
+
+  //set the pen to a different colour - 
+  //any test outs will be drawn in pen2
+  mpPainter->setPen(mPen2);
+  mpPainter->setBrush(myBrush);
 }
 
 void TestQgsGeometry::cleanup()
@@ -123,6 +168,7 @@ void TestQgsGeometry::cleanup()
   delete mpPolygonGeometryA;
   delete mpPolygonGeometryB;
   delete mpPolygonGeometryC;
+  delete mpPainter;
 }
 
 void TestQgsGeometry::initTestCase()
@@ -134,19 +180,47 @@ void TestQgsGeometry::initTestCase()
   QString qgisPath = QCoreApplication::applicationDirPath ();
   QgsApplication::setPrefixPath(INSTALL_PREFIX, true);
   QgsApplication::showSettings();
+  mReport += "<h1>Geometry Tests</h1>\n";
+  mReport += "<p><font color=\"green\">Green = polygonA</font></p>\n";
+  mReport += "<p><font color=\"red\">Red = polygonB</font></p>\n";
+  mReport += "<p><font color=\"blue\">Blue = polygonC</font></p>\n";
 }
+
 
 void TestQgsGeometry::cleanupTestCase()
 {
   //
   // Runs once after all tests are run
   //
+  QString myReportFile = QDir::tempPath() + QDir::separator() + "geometrytest.html";
+  QFile myFile ( myReportFile);
+  if ( myFile.open ( QIODevice::WriteOnly ) )
+  {
+    QTextStream myQTextStream ( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+    QDesktopServices::openUrl("file://"+myReportFile);
+  }
   
 }
 
-void TestQgsGeometry::intersectionCheck()
+  
+
+void TestQgsGeometry::intersectionCheck1()
 {
   QVERIFY ( mpPolygonGeometryA->intersects(mpPolygonGeometryB));
+  // should be a single polygon as A intersect B
+  QgsGeometry * mypIntersectionGeometry  =  mpPolygonGeometryA->intersection(mpPolygonGeometryB);
+  qDebug ("Geometry Type: " + wkbTypeAsString(mypIntersectionGeometry->wkbType()).toLocal8Bit());
+  QVERIFY (mypIntersectionGeometry->wkbType() == QGis::WKBPolygon);
+  QgsPolygon myPolygon = mypIntersectionGeometry->asPolygon();
+  QVERIFY (myPolygon.size() > 0); //check that the union created a feature
+  dumpPolygon(myPolygon);
+  delete mypIntersectionGeometry;
+  QVERIFY(renderCheck("geometry_intersectionCheck1","Checking if A intersects B"));
+}
+void TestQgsGeometry::intersectionCheck2()
+{
   QVERIFY ( !mpPolygonGeometryA->intersects(mpPolygonGeometryC));
 }
 
@@ -159,7 +233,10 @@ void TestQgsGeometry::unionCheck1()
   QgsMultiPolygon myMultiPolygon = mypUnionGeometry->asMultiPolygon();
   QVERIFY (myMultiPolygon.size() > 0); //check that the union did not fail
   dumpMultiPolygon(myMultiPolygon);
+  delete mypUnionGeometry;
+  QVERIFY(renderCheck("geometry_unionCheck1","Checking A union C produces 2 polys"));
 }
+
 void TestQgsGeometry::unionCheck2()
 {
   // should be a single polygon as A intersect B
@@ -170,6 +247,61 @@ void TestQgsGeometry::unionCheck2()
   QVERIFY (myPolygon.size() > 0); //check that the union created a feature
   dumpPolygon(myPolygon);
   delete mypUnionGeometry;
+  QVERIFY(renderCheck("geometry_unionCheck2", "Checking A union B produces single union poly"));
+}
+
+void TestQgsGeometry::differenceCheck1()
+{
+  // should be same as A since A does not intersect C so diff is 100% of A
+  QgsGeometry * mypDifferenceGeometry  =  mpPolygonGeometryA->difference(mpPolygonGeometryC);
+  qDebug ("Geometry Type: " + wkbTypeAsString(mypDifferenceGeometry->wkbType()).toLocal8Bit());
+  QVERIFY (mypDifferenceGeometry->wkbType() == QGis::WKBPolygon);
+  QgsPolygon myPolygon = mypDifferenceGeometry->asPolygon();
+  QVERIFY (myPolygon.size() > 0); //check that the union did not fail
+  dumpPolygon(myPolygon);
+  delete mypDifferenceGeometry;
+  QVERIFY(renderCheck("geometry_differenceCheck1","Checking (A - C) = A"));
+}
+
+void TestQgsGeometry::differenceCheck2()
+{
+  // should be a single polygon as (A - B) = subset of A
+  QgsGeometry * mypDifferenceGeometry  =  mpPolygonGeometryA->difference(mpPolygonGeometryB);
+  qDebug ("Geometry Type: " + wkbTypeAsString(mypDifferenceGeometry->wkbType()).toLocal8Bit());
+  QVERIFY (mypDifferenceGeometry->wkbType() == QGis::WKBPolygon);
+  QgsPolygon myPolygon = mypDifferenceGeometry->asPolygon();
+  QVERIFY (myPolygon.size() > 0); //check that the union created a feature
+  dumpPolygon(myPolygon);
+  delete mypDifferenceGeometry;
+  QVERIFY(renderCheck("geometry_differenceCheck2", "Checking (A - B) = subset of A"));
+}
+void TestQgsGeometry::bufferCheck()
+{
+  // should be a single polygon
+  QgsGeometry * mypBufferGeometry  =  mpPolygonGeometryB->buffer(10,10);
+  qDebug ("Geometry Type: " + wkbTypeAsString(mypBufferGeometry->wkbType()).toLocal8Bit());
+  QVERIFY (mypBufferGeometry->wkbType() == QGis::WKBPolygon);
+  QgsPolygon myPolygon = mypBufferGeometry->asPolygon();
+  QVERIFY (myPolygon.size() > 0); //check that the buffer created a feature
+  dumpPolygon(myPolygon);
+  delete mypBufferGeometry;
+  QVERIFY(renderCheck("geometry_bufferCheck", "Checking buffer(10,10) of B"));
+}
+bool TestQgsGeometry::renderCheck(QString theTestName, QString theComment)
+{
+  mReport += "<h2>" + theTestName + "</h2>\n";
+  mReport += "<h3>" + theComment + "</h3>\n";
+  QString myTmpDir = QDir::tempPath() + QDir::separator() ;
+  QString myFileName = myTmpDir + theTestName + ".png";
+  QString myDataDir (TEST_DATA_DIR); //defined in CmakeLists.txt
+  QString myTestDataDir = myDataDir + QDir::separator();
+  mImage.save(myFileName,"PNG");
+  QgsRenderChecker myChecker;
+  myChecker.setExpectedImage ( myTestDataDir + "expected_" + theTestName + ".png" );
+  myChecker.setRenderedImage ( myFileName );
+  bool myResultFlag = myChecker.compareImages(theTestName);
+  mReport += myChecker.report();
+  return myResultFlag;
 }
 
 void TestQgsGeometry::dumpMultiPolygon( QgsMultiPolygon &theMultiPolygon )
@@ -185,6 +317,7 @@ void TestQgsGeometry::dumpMultiPolygon( QgsMultiPolygon &theMultiPolygon )
 
 void TestQgsGeometry::dumpPolygon( QgsPolygon &thePolygon )
 {
+  QVector<QPointF> myPoints;
   for ( int j = 0; j < thePolygon.size(); j++ )
   {
     QgsPolyline myPolyline = thePolygon.at( j ); //rings of polygon
@@ -194,8 +327,10 @@ void TestQgsGeometry::dumpPolygon( QgsPolygon &thePolygon )
     {
       QgsPoint myPoint = myPolyline.at( k );
       qDebug( "\t\t\tPoint in ring " + QString::number( k ).toLocal8Bit() + " :" + myPoint.stringRep().toLocal8Bit() );
+      myPoints << QPointF(myPoint.x(),myPoint.y());
     }
   }
+  mpPainter->drawPolygon(myPoints);
 }
 
 QString TestQgsGeometry::wkbTypeAsString( QGis::WKBTYPE theType )
