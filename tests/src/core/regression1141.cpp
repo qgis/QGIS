@@ -39,8 +39,9 @@
 
 
 /** \ingroup UnitTests
- * This is a unit test for the QgsMapRender class.
- * It will do some performance testing too
+ * This is a regression test ticket 1141.
+ * broken Polish characters support since r8592
+ * https://trac.osgeo.org/qgis/ticket/1141
  *
  */
 class Regression1141: public QObject
