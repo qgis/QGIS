@@ -29,12 +29,12 @@ IF (WIN32)
     ADD_DEFINITIONS("-DCORE_EXPORT=__declspec(dllimport)")
     #ADD_DEFINITIONS("-DPLUGIN_EXPORT=__declspec(dllimport)")
     #next needed for qgis gui includes
-    ADD_DEFINITIONS("-DGUI_EXPORT=__declspec(dllexport)")
+    ADD_DEFINITIONS("-DGUI_EXPORT=__declspec(dllimport)")
   ELSE (MSVC)
     ADD_DEFINITIONS("-UCORE_EXPORT \"-DCORE_EXPORT=__declspec(dllimport)\"")
     #ADD_DEFINITIONS("\"-DPLUGIN_EXPORT=__declspec(dllimport)\"")
     #next needed for qgis gui includes
-    ADD_DEFINITIONS("-UGUI_EXPORT \"-DGUI_EXPORT=__declspec(dllexport)\"")
+    ADD_DEFINITIONS("-UGUI_EXPORT \"-DGUI_EXPORT=__declspec(dllimport)\"")
   ENDIF (MSVC)
 ENDIF (WIN32)
 
