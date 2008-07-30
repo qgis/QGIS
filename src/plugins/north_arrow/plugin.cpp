@@ -91,7 +91,7 @@ QgsNorthArrowPlugin::~QgsNorthArrowPlugin()
 void QgsNorthArrowPlugin::initGui()
 {
   // Create the action for tool
-  myQActionPointer = new QAction(QIcon(":/northarrow.png"), tr("&North Arrow"), this);
+  myQActionPointer = new QAction(QIcon(":/north_arrow.png"), tr("&North Arrow"), this);
   myQActionPointer->setWhatsThis(tr("Creates a north arrow that is displayed on the map canvas"));
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));

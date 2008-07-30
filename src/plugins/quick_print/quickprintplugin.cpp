@@ -72,9 +72,9 @@ void QuickPrintPlugin::initGui()
 {
 
   // Create the action for tool
-  mQActionPointer = new QAction(QIcon(":/quickprint/quickprint.png"),tr("Quick Print"), this);
+  mQActionPointer = new QAction(QIcon(":/quickprint/quick_print.png"),tr("Quick Print"), this);
   // Set the what's this text
-  mQActionPointer->setWhatsThis(tr("Replace this with a short description of the what the plugin does"));
+  mQActionPointer->setWhatsThis(tr("Provides a qay to quickly produce a map with minimal user input."));
   // Connect the action to the run
   connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // Add the icon to the toolbar

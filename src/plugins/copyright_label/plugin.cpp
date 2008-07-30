@@ -74,7 +74,7 @@ QgsCopyrightLabelPlugin::~QgsCopyrightLabelPlugin()
 void QgsCopyrightLabelPlugin::initGui()
 {
     // Create the action for tool
-    myQActionPointer = new QAction(QIcon(":/copyright.png"), tr("&Copyright Label"), this);
+    myQActionPointer = new QAction(QIcon(":/copyright_label.png"), tr("&Copyright Label"), this);
     myQActionPointer->setWhatsThis(tr("Creates a copyright label that is displayed on the map canvas."));
     // Connect the action to the run
     connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));

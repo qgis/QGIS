@@ -88,7 +88,7 @@ QgsGeorefPlugin::~QgsGeorefPlugin()
 void QgsGeorefPlugin::initGui()
 {
   // Create the action for tool
-  mQActionPointer = new QAction(QIcon(":/icon.png"), tr("&Georeferencer"), this);
+  mQActionPointer = new QAction(QIcon(":/georeferencer.png"), tr("&Georeferencer"), this);
 
   // Connect the action to the run
   connect(mQActionPointer, SIGNAL(triggered()), this, SLOT(run()));
