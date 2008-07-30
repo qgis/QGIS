@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/" >
-        <file>scalebar.png</file>
+        <file>scale_bar.png</file>
     </qresource>
 </RCC>

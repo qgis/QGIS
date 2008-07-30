@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/" >
-        <file>graticule.png</file>
+        <file>grid_maker.png</file>
     </qresource>
 </RCC>

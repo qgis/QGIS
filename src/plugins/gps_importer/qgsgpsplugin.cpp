@@ -46,9 +46,6 @@
 //the gui subclass
 #include "qgsgpsplugingui.h"
 
-// xpm for creating the toolbar icon
-#include "icon.xpm"
-
 
 static const char * const ident_ = 
   "$Id$";
@@ -90,8 +87,8 @@ QgsGPSPlugin::~QgsGPSPlugin()
 void QgsGPSPlugin::initGui()
 {
   // add an action to the toolbar
-  mQActionPointer = new QAction(QIcon(icon), tr("&Gps Tools"), this);
-  mCreateGPXAction = new QAction(QIcon(icon), tr("&Create new GPX layer"), this);
+  mQActionPointer = new QAction(QIcon(":/gps_importer.png"), tr("&Gps Tools"), this);
+  mCreateGPXAction = new QAction(QIcon(":/gps_importer.png"), tr("&Create new GPX layer"), this);
 
   mQActionPointer->setWhatsThis(tr("Creates a new GPX layer and displays it on the map canvas"));
   mCreateGPXAction->setWhatsThis(tr("Creates a new GPX layer and displays it on the map canvas"));

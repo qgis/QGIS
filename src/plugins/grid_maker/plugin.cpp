@@ -88,7 +88,7 @@ int QgsGridMakerPlugin::type()
 void QgsGridMakerPlugin::initGui()
 {
   // Create the action for tool
-  myQActionPointer = new QAction(QIcon(":/graticule.png"), tr("&Graticule Creator"), this);
+  myQActionPointer = new QAction(QIcon(":/grid_maker.png"), tr("&Graticule Creator"), this);
   myQActionPointer->setWhatsThis(tr("Creates a graticule (grid) and stores the result as a shapefile"));
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));

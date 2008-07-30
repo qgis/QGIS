@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/" >
-        <file>northarrow.png</file>
+        <file>north_arrow.png</file>
     </qresource>
 </RCC>
