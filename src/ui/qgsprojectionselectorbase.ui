@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>468</width>
-    <height>428</height>
+    <width>457</width>
+    <height>403</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -16,216 +16,148 @@
    </sizepolicy>
   </property>
   <property name="windowTitle" >
-   <string>Projection Selector</string>
+   <string>Coordinate Reference System Selector</string>
   </property>
   <property name="windowIcon" >
    <iconset/>
   </property>
   <layout class="QGridLayout" >
    <property name="leftMargin" >
-    <number>0</number>
+    <number>3</number>
    </property>
    <property name="topMargin" >
-    <number>0</number>
+    <number>3</number>
    </property>
    <property name="rightMargin" >
-    <number>0</number>
+    <number>3</number>
    </property>
    <property name="bottomMargin" >
-    <number>0</number>
-   </property>
-   <property name="horizontalSpacing" >
-    <number>0</number>
-   </property>
-   <property name="verticalSpacing" >
-    <number>0</number>
+    <number>3</number>
    </property>
    <item row="0" column="0" >
-    <widget class="QGroupBox" name="groupBox_2" >
+    <widget class="QTreeWidget" name="lstCoordinateSystems" >
+     <property name="alternatingRowColors" >
+      <bool>true</bool>
+     </property>
+     <property name="uniformRowHeights" >
+      <bool>true</bool>
+     </property>
+     <property name="columnCount" >
+      <number>3</number>
+     </property>
+     <column>
+      <property name="text" >
+       <string>Coordinate Reference System</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>EPSG</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>ID</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QTextEdit" name="teProjection" >
      <property name="sizePolicy" >
       <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="minimumSize" >
+      <size>
+       <width>0</width>
+       <height>100</height>
+      </size>
+     </property>
+     <property name="maximumSize" >
+      <size>
+       <width>16777215</width>
+       <height>100</height>
+      </size>
+     </property>
+     <property name="autoFormatting" >
+      <set>QTextEdit::AutoBulletList</set>
+     </property>
+     <property name="readOnly" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Minimum" hsizetype="MinimumExpanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="title" >
-      <string>Projection</string>
+      <string>Search</string>
      </property>
      <layout class="QGridLayout" >
-      <property name="leftMargin" >
-       <number>12</number>
-      </property>
-      <property name="topMargin" >
-       <number>12</number>
-      </property>
-      <property name="rightMargin" >
-       <number>12</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>12</number>
-      </property>
-      <property name="horizontalSpacing" >
-       <number>0</number>
-      </property>
-      <property name="verticalSpacing" >
-       <number>0</number>
-      </property>
-      <item row="2" column="0" >
-       <widget class="QGroupBox" name="groupBox" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Minimum" hsizetype="MinimumExpanding" >
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+      <item row="0" column="0" >
+       <widget class="QRadioButton" name="radEPSGID" >
+        <property name="text" >
+         <string>EPSG ID</string>
         </property>
-        <property name="title" >
-         <string>Search</string>
-        </property>
-        <layout class="QGridLayout" >
-         <property name="leftMargin" >
-          <number>2</number>
-         </property>
-         <property name="topMargin" >
-          <number>2</number>
-         </property>
-         <property name="rightMargin" >
-          <number>2</number>
-         </property>
-         <property name="bottomMargin" >
-          <number>2</number>
-         </property>
-         <property name="horizontalSpacing" >
-          <number>3</number>
-         </property>
-         <property name="verticalSpacing" >
-          <number>3</number>
-         </property>
-         <item row="1" column="3" >
-          <widget class="QPushButton" name="pbnFind" >
-           <property name="maximumSize" >
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="text" >
-            <string>Find</string>
-           </property>
-           <property name="default" >
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" colspan="3" >
-          <widget class="QLineEdit" name="leSearch" />
-         </item>
-         <item row="0" column="3" >
-          <widget class="QRadioButton" name="radName" >
-           <property name="text" >
-            <string>Name</string>
-           </property>
-           <property name="iconSize" >
-            <size>
-             <width>16</width>
-             <height>10</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2" >
-          <widget class="QRadioButton" name="radSRSID" >
-           <property name="text" >
-            <string>QGIS SRSID</string>
-           </property>
-           <property name="iconSize" >
-            <size>
-             <width>16</width>
-             <height>10</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1" >
-          <widget class="QRadioButton" name="radEPSGID" >
-           <property name="text" >
-            <string>EPSG ID</string>
-           </property>
-           <property name="iconSize" >
-            <size>
-             <width>16</width>
-             <height>10</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0" >
-          <widget class="QRadioButton" name="radSRID" >
-           <property name="text" >
-            <string>Postgis SRID</string>
-           </property>
-           <property name="iconSize" >
-            <size>
-             <width>16</width>
-             <height>10</height>
-            </size>
-           </property>
-           <property name="checked" >
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="1" column="0" >
-       <widget class="QTextEdit" name="teProjection" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize" >
+        <property name="iconSize" >
          <size>
-          <width>0</width>
-          <height>100</height>
+          <width>16</width>
+          <height>10</height>
          </size>
         </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QRadioButton" name="radName" >
+        <property name="text" >
+         <string>Name</string>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>16</width>
+          <height>10</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" colspan="2" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>231</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="0" colspan="3" >
+       <widget class="QLineEdit" name="leSearch" />
+      </item>
+      <item row="1" column="3" >
+       <widget class="QPushButton" name="pbnFind" >
         <property name="maximumSize" >
          <size>
-          <width>16777215</width>
-          <height>100</height>
+          <width>100</width>
+          <height>16777215</height>
          </size>
         </property>
-        <property name="autoFormatting" >
-         <set>QTextEdit::AutoBulletList</set>
+        <property name="text" >
+         <string>Find</string>
         </property>
-        <property name="readOnly" >
+        <property name="default" >
          <bool>true</bool>
         </property>
-       </widget>
-      </item>
-      <item row="0" column="0" >
-       <widget class="QTreeWidget" name="lstCoordinateSystems" >
-        <property name="alternatingRowColors" >
-         <bool>true</bool>
-        </property>
-        <property name="uniformRowHeights" >
-         <bool>true</bool>
-        </property>
-        <property name="columnCount" >
-         <number>2</number>
-        </property>
-        <column>
-         <property name="text" >
-          <string>Spatial Reference System</string>
-         </property>
-        </column>
-        <column>
-         <property name="text" >
-          <string>Id</string>
-         </property>
-        </column>
        </widget>
       </item>
      </layout>

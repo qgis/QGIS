@@ -59,7 +59,6 @@ QgsProjectProperties::QgsProjectProperties(QgsMapCanvas* mapCanvas, QWidget *par
   bool myProjectionEnabled = myRender->projectionsEnabled();
   cbxProjectionEnabled->setChecked(myProjectionEnabled);
   
-  // set the default wkt to WGS 84
   long mySRSID = myRender->destinationSrs().srsid();
   QgsDebugMsg("Read project SRSID: " + QString::number(mySRSID));
   projectionSelector->setSelectedSRSID(mySRSID);

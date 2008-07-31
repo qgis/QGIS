@@ -661,9 +661,9 @@ void QgisApp::createActions()
   mActionOptions->setStatusTip(tr("Change various QGIS options"));
   connect(mActionOptions, SIGNAL(triggered()), this, SLOT(options()));
   //
-  mActionCustomProjection= new QAction(getThemeIcon("/mActionCustomProjection.png"), tr("Custom Projection..."), this);
+  mActionCustomProjection= new QAction(getThemeIcon("/mActionCustomProjection.png"), tr("Custom CRS..."), this);
   // mActionCustomProjection->setShortcut(tr("Alt+I","Manage custom projections"));
-  mActionCustomProjection->setStatusTip(tr("Manage custom projections"));
+  mActionCustomProjection->setStatusTip(tr("Manage custom coordinate reference systems"));
   connect(mActionCustomProjection, SIGNAL(triggered()), this, SLOT(customProjection()));
   //
   // Help Menu Related items
@@ -1237,10 +1237,11 @@ void QgisApp::createStatusBar()
     exit(0);
   }
   mOnTheFlyProjectionStatusButton->setWhatsThis(tr("This icon shows whether "
-        "on the fly projection is enabled or not. Click the icon to bring up "
+        "on the fly coordinate reference system transformation is enabled or not. "
+        "Click the icon to bring up "
         "the project properties dialog to alter this behaviour."));
-  mOnTheFlyProjectionStatusButton->setToolTip(tr("Projection status - Click "
-        "to open projection dialog"));
+  mOnTheFlyProjectionStatusButton->setToolTip(tr("CRS status - Click "
+        "to open coordinate reference system dialog"));
   connect(mOnTheFlyProjectionStatusButton, SIGNAL(clicked()),
       this, SLOT(projectPropertiesProjections()));//bring up the project props dialog when clicked
   statusBar()->addPermanentWidget(mOnTheFlyProjectionStatusButton,0);

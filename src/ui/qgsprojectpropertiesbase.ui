@@ -279,17 +279,17 @@
      </widget>
      <widget class="QWidget" name="tab2" >
       <attribute name="title" >
-       <string>Projection</string>
+       <string>Coordinate Reference System (CRS)</string>
       </attribute>
       <layout class="QGridLayout" >
        <property name="leftMargin" >
-        <number>11</number>
+        <number>3</number>
        </property>
        <property name="topMargin" >
         <number>11</number>
        </property>
        <property name="rightMargin" >
-        <number>11</number>
+        <number>3</number>
        </property>
        <property name="bottomMargin" >
         <number>11</number>
@@ -297,7 +297,7 @@
        <item row="0" column="0" >
         <widget class="QCheckBox" name="cbxProjectionEnabled" >
          <property name="text" >
-          <string>Enable on the fly projection</string>
+          <string>Enable 'on the fly' CRS transformation</string>
          </property>
         </widget>
        </item>
