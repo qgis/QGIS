@@ -52,7 +52,6 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
        */
       void applyProjList(QSet<QString> * crsFilter = 0);
 
-      void updateProjAndEllipsoidAcronyms(int theSrsid, QString theProj4String);
 
       /*!
        * \brief Make the string safe for use in SQL statements.
@@ -156,6 +155,8 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
        */
       long getCurrentLongAttribute(QString attributeName);
 
+      /** Show the user a warning if the srs database could not be found */
+      const void showDBMissingWarning(const QString theFileName);
       // List view nodes for the tree view of projections
       //! User defined projections node
       QTreeWidgetItem *mUserProjList;

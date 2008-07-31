@@ -41,7 +41,6 @@ class QgsProjectionSelector: QWidget //, private Ui::QgsProjectionSelectorBase
        */
       void applyProjList(QSet<QString> * crsFilter = 0);
 
-      void updateProjAndEllipsoidAcronyms(int theSrsid, QString theProj4String);
 
       /*!
        * \brief Make the string safe for use in SQL statements.

@@ -56,7 +56,8 @@ bool QgsRenderChecker::runTest( QString theTestName )
   QImage myImage( myExpectedImage.width() , myExpectedImage.height(), QImage::Format_RGB32 );
   myImage.fill ( qRgb( 152,219,249  ) );
   QPainter myPainter( &myImage );
-  mpMapRenderer->setOutputSize( QSize ( myExpectedImage.width(),myExpectedImage.height() ),72 ); 
+  mpMapRenderer->setOutputSize( QSize (
+        myExpectedImage.width(),myExpectedImage.height() ),myExpectedImage.logicalDpiX() ); 
   QTime myTime;
   myTime.start();
   mpMapRenderer->render( &myPainter );
