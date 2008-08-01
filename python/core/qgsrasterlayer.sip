@@ -463,12 +463,18 @@ public slots:
 
     /** \brief Create  gdal pyramid overviews  for this layer.
     * This will speed up performance at the expense of hard drive space.
-    * Also, write access to the file is required. If no paramter is passed in
+    * Also, write access to the file is required for creating internal pyramids,
+    * and to the directory in which the files exists if external 
+    * pyramids (.ovr) are to be created. If no paramter is passed in
     * it will default to nearest neighbor resampling.
+    * @param theTryInternalFlag - Try to make the pyramids internal to 
+    * the raster file if supported (e.g. geotiff). If not supported it 
+    * will revert to creating external .ovr file anyway.
     * \return null string on success, otherwise a string specifying error
     */
     QString buildPyramids(const RasterPyramidList &, 
-                          const QString &  theResamplingMethod="NEAREST");
+                          const QString &  theResamplingMethod="NEAREST",
+                          bool theTryInternalFlag=false);
     /** \brief Used at the moment by the above function but hopefully will later
     be useable by any operation that needs to notify the user of its progress. */
 /*
