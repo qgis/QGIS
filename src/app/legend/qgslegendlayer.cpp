@@ -454,7 +454,15 @@ QPixmap QgsLegendLayer::getOriginalPixmap() const
           return QgisApp::getThemePixmap("/mIconLayer.png");
       }
     }
-    else // RASTER
+    else if (firstLayer->type() == QgsMapLayer::RASTER)
+    {
+      QgsRasterLayer* rlayer = dynamic_cast<QgsRasterLayer*>(firstLayer);
+      QPixmap myPixmap(32,32);
+      rlayer->drawThumbnail(&myPixmap);
+      return myPixmap;
+      
+    }
+    else // undefined - should never reach this
     {
       return QgisApp::getThemePixmap("/mIconLayer.png");
     }
