@@ -3728,18 +3728,18 @@ QString QgsRasterLayer::buildPyramids(RasterPyramidList const & theRasterPyramid
         if(theResamplingMethod==tr("Average Magphase"))
         {
           myError = GDALBuildOverviews( mGdalDataset, "MODE", 1, myOverviewLevelsArray, 0, NULL,
-              GDALDummyProgress, NULL );
+              progressCallback, this); //this is the arg for the gdal progress callback
         }
         else if(theResamplingMethod==tr("Average"))
 
         {
           myError = GDALBuildOverviews( mGdalDataset, "AVERAGE", 1, myOverviewLevelsArray, 0, NULL,
-              GDALDummyProgress, NULL );
+              progressCallback, this); //this is the arg for the gdal progress callback
         }
         else // fall back to nearest neighbor
         {
           myError = GDALBuildOverviews( mGdalDataset, "NEAREST", 1, myOverviewLevelsArray, 0, NULL,
-              GDALDummyProgress, NULL );
+              progressCallback, this); //this is the arg for the gdal progress callback
         }
         if (myError == CE_Failure || CPLGetLastErrorNo()==CPLE_NotSupported  )
         {
@@ -4749,7 +4749,10 @@ void QgsRasterLayer::populateHistogram(int theBandNo, int theBinCount,bool theIg
      *          ) 
      */
     double myerval = (myRasterBandStats.maxVal-myRasterBandStats.minVal)/theBinCount;
-    GDALGetRasterHistogram( myGdalBand, myRasterBandStats.minVal-0.1*myerval, myRasterBandStats.maxVal+0.1*myerval, theBinCount, myHistogramArray ,theIgnoreOutOfRangeFlag ,theHistogramEstimatedFlag , GDALDummyProgress, NULL );
+    GDALGetRasterHistogram( myGdalBand, myRasterBandStats.minVal-0.1*myerval,
+        myRasterBandStats.maxVal+0.1*myerval, theBinCount, myHistogramArray
+        ,theIgnoreOutOfRangeFlag ,theHistogramEstimatedFlag , progressCallback,
+        this ); //this is the arg for our custome gdal progress callback
 
     for (int myBin = 0; myBin <theBinCount; myBin++)
     {
@@ -5218,4 +5221,54 @@ void QgsRasterLayer::setContrastEnhancementAlgorithm(QString theAlgorithm, bool 
   {
     setContrastEnhancementAlgorithm(QgsContrastEnhancement::NO_STRETCH, theGenerateLookupTableFlag);
   }
+}
+
+void QgsRasterLayer::showProgress(int theValue)
+{
+  emit progressUpdate(theValue);
+}
+//
+// global callback function
+//
+int CPL_STDCALL progressCallback( double dfComplete, 
+    const char * pszMessage,
+    void * pProgressArg)
+{
+  static double dfLastComplete = -1.0;
+
+  QgsRasterLayer * mypLayer = (QgsRasterLayer *) pProgressArg;
+
+  if( dfLastComplete > dfComplete )
+  {
+    if( dfLastComplete >= 1.0 )
+      dfLastComplete = -1.0;
+    else
+      dfLastComplete = dfComplete;
+  }
+
+  if( floor(dfLastComplete*10) != floor(dfComplete*10) )
+  {
+    int    nPercent = (int) floor(dfComplete*100);
+
+    if( nPercent == 0 && pszMessage != NULL )
+    {
+      //fprintf( stdout, "%s:", pszMessage );
+    }
+
+    if( nPercent == 100 )
+    {
+      //fprintf( stdout, "%d - done.\n", (int) floor(dfComplete*100) );
+      mypLayer->showProgress(100);
+    }
+    else
+    {
+      int myProgress = (int) floor(dfComplete*100);
+      //fprintf( stdout, "%d.", myProgress);
+      mypLayer->showProgress(myProgress);
+      //fflush( stdout );
+    }
+  }
+  dfLastComplete = dfComplete;
+
+  return TRUE;
 }

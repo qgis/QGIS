@@ -137,23 +137,16 @@
 #include "qgsrastertransparency.h"
 #include "qgsrastershader.h"
 #include "qgsrastershaderfunction.h"
-
-/*
- * 
- * New includes that will convert this class to a data provider interface
- * (B Morley)
- *
- */ 
- 
 #include "qgsrasterdataprovider.h"
 
-/*
- * END
- */
 
 #define CPL_SUPRESS_CPLUSPLUS
-
 #include <gdal.h>
+
+int CPL_STDCALL progressCallback( double dfComplete, 
+    const char *pszMessage,
+    void * pProgressArg );
+
 
 //
 // Forward declarations
@@ -1113,9 +1106,18 @@ public:
   //! Which provider is being used for this Raster Layer?
   QString providerKey();
 
+  /** A wrapper function to emit a progress update signal.
+   * For example used by gdal callback to show pyramid building progress.
+   */
+  void showProgress(int theValue);
+  
 public slots:
 
   void showStatusMessage(const QString & theMessage);
+
+signals:
+  //for notifying listeners of long running processes
+  void progressUpdate(int theValue);
 
 
 private:
