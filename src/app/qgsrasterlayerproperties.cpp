@@ -1570,6 +1570,7 @@ void QgsRasterLayerProperties::on_buttonBox_helpRequested()
 void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 {
 
+  connect(mRasterLayer, SIGNAL(progressUpdate(int)), mPyramidProgress, SLOT(setValue(int)));
   //
   // Go through the list marking any files that are selected in the listview
   // as true so that we can generate pyramids for them.
@@ -1592,6 +1593,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   QApplication::setOverrideCursor(Qt::WaitCursor);
   QString res = mRasterLayer->buildPyramids(myPyramidList,cboResamplingMethod->currentText());
   QApplication::restoreOverrideCursor();
+  disconnect(mRasterLayer, SIGNAL(progressUpdate(int)), mPyramidProgress, SLOT(setValue(int)));
   if (!res.isNull())
   {
     if (res == "ERROR_WRITE_ACCESS")
@@ -1867,6 +1869,8 @@ void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
 
 void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
 {
+  connect(mRasterLayer, SIGNAL(progressUpdate(int)), mHistogramProgress, SLOT(setValue(int)));
+  QApplication::setOverrideCursor(Qt::WaitCursor);
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayerProperties::on_pbnHistRefresh_clicked" << std::endl;
 #endif
@@ -1960,6 +1964,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
       myFirstItemFlag=false;
     }
   }
+  disconnect(mRasterLayer, SIGNAL(progressUpdate(int)), mHistogramProgress, SLOT(setValue(int)));
 #ifdef QGISDEBUG
   std::cout << "max " << myYAxisMax << std::endl;
   std::cout << "min " << myYAxisMin << std::endl;
@@ -2289,6 +2294,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   //
   myPainter.end();
   pixHistogram->setPixmap(myPixmap);
+  QApplication::restoreOverrideCursor();
 }
 
 void QgsRasterLayerProperties::on_pbnImportTransparentPixelValues_clicked()
