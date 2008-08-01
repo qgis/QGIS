@@ -334,8 +334,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
   QString pyramidSentence1 = tr("Large resolution raster layers can slow navigation in QGIS.");
   QString pyramidSentence2 = tr("By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom.");
   QString pyramidSentence3 = tr("You must have write access in the directory where the original data is stored to build pyramids.");
-  QString pyramidSentence4 = tr("Please note that building pyramids may alter the original data file and once created they cannot be removed!");
-  QString pyramidSentence5 = tr("Please note that building pyramids could corrupt your image - always make a backup of your data first!");
+  QString pyramidSentence4 = tr("Please note that building internal pyramids may alter the original data file and once created they cannot be removed!");
+  QString pyramidSentence5 = tr("Please note that building internal pyramids could corrupt your image - always make a backup of your data first!");
 
   tePyramidDescription->setHtml(pyramidFormat.arg(pyramidHeader).arg(pyramidSentence1)
 				.arg(pyramidSentence2).arg(pyramidSentence3)
@@ -1591,7 +1591,11 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 
   // let the user know we're going to possibly be taking a while
   QApplication::setOverrideCursor(Qt::WaitCursor);
-  QString res = mRasterLayer->buildPyramids(myPyramidList,cboResamplingMethod->currentText());
+  bool myBuildInternalFlag = cbxInternalPyramids->isChecked();
+  QString res = mRasterLayer->buildPyramids(
+        myPyramidList,
+        cboResamplingMethod->currentText(),
+        myBuildInternalFlag);
   QApplication::restoreOverrideCursor();
   disconnect(mRasterLayer, SIGNAL(progressUpdate(int)), mPyramidProgress, SLOT(setValue(int)));
   if (!res.isNull())

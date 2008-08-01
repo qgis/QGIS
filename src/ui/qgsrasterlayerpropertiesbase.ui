@@ -729,19 +729,6 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" >
-          <size>
-           <width>20</width>
-           <height>0</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
        <item row="4" column="0" colspan="2" >
         <widget class="Line" name="line" >
          <property name="orientation" >
@@ -1786,7 +1773,21 @@
        <string>Pyramids</string>
       </attribute>
       <layout class="QGridLayout" >
-       <item rowspan="2" row="0" column="0" colspan="3" >
+       <item row="0" column="0" >
+        <widget class="QLabel" name="label_3" >
+         <property name="text" >
+          <string>Notes</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3" colspan="2" >
+        <widget class="QLabel" name="textLabel5" >
+         <property name="text" >
+          <string>Pyramid resolutions</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="3" >
         <widget class="QTextEdit" name="tePyramidDescription" >
          <property name="sizePolicy" >
           <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
@@ -1799,13 +1800,6 @@
 p, li { white-space: pre-wrap; }
 &lt;/style>&lt;/head>&lt;body style=" font-family:'Verdana'; font-size:10pt; font-weight:400; font-style:normal;">
 &lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;">&lt;/p>&lt;/body>&lt;/html></string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="3" colspan="2" >
-        <widget class="QLabel" name="textLabel5" >
-         <property name="text" >
-          <string>Pyramid resolutions</string>
          </property>
         </widget>
        </item>
@@ -1828,7 +1822,14 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
-       <item row="2" column="0" >
+       <item row="2" column="0" colspan="5" >
+        <widget class="QCheckBox" name="cbxInternalPyramids" >
+         <property name="text" >
+          <string>Build pyramids internally if possible</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" >
         <widget class="QLabel" name="textLabel4_2" >
          <property name="text" >
           <string>Resampling method</string>
@@ -1838,7 +1839,7 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
-       <item row="2" column="1" >
+       <item row="3" column="1" >
         <widget class="QComboBox" name="cboResamplingMethod" >
          <item>
           <property name="text" >
@@ -1852,14 +1853,14 @@ p, li { white-space: pre-wrap; }
          </item>
         </widget>
        </item>
-       <item row="2" column="2" colspan="2" >
+       <item row="3" column="2" colspan="2" >
         <widget class="QProgressBar" name="mPyramidProgress" >
          <property name="value" >
           <number>0</number>
          </property>
         </widget>
        </item>
-       <item row="2" column="4" >
+       <item row="3" column="4" >
         <widget class="QPushButton" name="buttonBuildPyramids" >
          <property name="text" >
           <string>Build pyramids</string>

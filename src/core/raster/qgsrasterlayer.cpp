@@ -3653,8 +3653,14 @@ QString QgsRasterLayer::getMetadata()
 }
 
 QString QgsRasterLayer::buildPyramids(RasterPyramidList const & theRasterPyramidList, 
-    QString const & theResamplingMethod)
+    QString const & theResamplingMethod, bool theTryInternalFlag)
 {
+  //
+  // Note: Make sure the raster is not opened in write mode
+  // in order to force overviews to be written to a separate file.
+  //
+
+
   emit drawingProgress(0,0);
   //first test if the file is writeable
   QFileInfo myQFile(mDataSource);
@@ -3670,20 +3676,20 @@ QString QgsRasterLayer::buildPyramids(RasterPyramidList const & theRasterPyramid
     return "ERROR_VIRTUAL";
   }
 
-  registerGdalDrivers();
 
-  //close the gdal dataset and reopen it in read / write mode
-  GDALClose( mGdalDataset );
-  mGdalDataset = GDALOpen(QFile::encodeName(mDataSource).constData(), GA_Update);
-
-  // if the dataset couldn't be opened in read / write mode, tell the user
-  if (!mGdalDataset)
+  if (theTryInternalFlag)
   {
-    emit drawingProgress(0,0);
-    mGdalDataset = GDALOpen(QFile::encodeName(mDataSource).constData(), GA_ReadOnly);
-    return "ERROR_WRITE_FORMAT";
-  }
+    //close the gdal dataset and reopen it in read / write mode
+    GDALClose( mGdalDataset );
+    mGdalDataset = GDALOpen(QFile::encodeName(mDataSource).constData(), GA_Update);
 
+    // if the dataset couldn't be opened in read / write mode, tell the user
+    if (!mGdalDataset)
+    {
+      mGdalDataset = GDALOpen(QFile::encodeName(mDataSource).constData(), GA_ReadOnly);
+      return "ERROR_WRITE_FORMAT";
+    }
+  }
   //
   // Iterate through the Raster Layer Pyramid Vector, building any pyramid
   // marked as exists in eaxh RasterPyramid struct.
@@ -3761,9 +3767,12 @@ QString QgsRasterLayer::buildPyramids(RasterPyramidList const & theRasterPyramid
     }
   }
   QgsDebugMsg("Pyramid overviews built");
-  //close the gdal dataset and reopen it in read only mode
-  GDALClose( mGdalDataset );
-  mGdalDataset = GDALOpen(QFile::encodeName(mDataSource).constData(), GA_ReadOnly);
+  if (theTryInternalFlag)
+  {
+    //close the gdal dataset and reopen it in read only mode
+    GDALClose( mGdalDataset );
+    mGdalDataset = GDALOpen(QFile::encodeName(mDataSource).constData(), GA_ReadOnly);
+  }
   emit drawingProgress(0,0);
   return NULL; // returning null on success
 }
