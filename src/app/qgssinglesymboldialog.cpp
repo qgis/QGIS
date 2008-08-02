@@ -184,7 +184,7 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog(QgsVectorLayer * layer, bool disabl
   connect(mLabelEdit, SIGNAL(textChanged(const QString&)), this, SLOT(resendSettingsChanged()));
   connect (lstSymbols,SIGNAL(currentItemChanged ( QListWidgetItem * , QListWidgetItem * )),
       this, SLOT (symbolChanged (QListWidgetItem * , QListWidgetItem * )));
-  connect(mPointSizeSpinBox, SIGNAL(valueChanged(int)), this, SLOT(resendSettingsChanged()));
+  connect(mPointSizeSpinBox, SIGNAL(valueChanged(double)), this, SLOT(resendSettingsChanged()));
   connect(mRotationClassificationComboBox, SIGNAL(currentIndexChanged(const QString &)),
       this, SLOT(resendSettingsChanged()));
   connect(mScaleClassificationComboBox, SIGNAL(currentIndexChanged(const QString &)),

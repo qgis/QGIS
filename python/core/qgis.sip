@@ -108,3 +108,11 @@ public:
    *  or user (~/.qgis.qgis.db) defined projection. */
   const int USER_PROJECTION_START_ID;
 
+  //
+  // Constants for point symbols
+  //
+
+  /** Magic number that determines the minimum allowable point size for point symbols */
+  const float MINIMUM_POINT_SIZE;
+  /** Magic number that determines the minimum allowable point size for point symbols */
+  const float DEFAULT_POINT_SIZE;

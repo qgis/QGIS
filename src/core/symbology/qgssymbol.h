@@ -83,9 +83,9 @@ class CORE_EXPORT QgsSymbol{
     /**Get point symbol*/
     virtual QString pointSymbolName() const;
     /**Set size*/
-    virtual void setPointSize(int s);
+    virtual void setPointSize(double s);
     /**Get size*/
-    virtual int pointSize() const;
+    virtual double pointSize() const;
     //! Destructor
     virtual ~QgsSymbol();
 
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsSymbol{
     /* Point symbol name */
     QString mPointSymbolName;
     /* Point size */
-    int mPointSize; 
+    double mPointSize; 
 
     /* TODO Because for printing we always need a symbol without oversampling but with line width scale, 
      *      we keep also separate picture with line width scale */
