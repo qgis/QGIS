@@ -29,6 +29,7 @@
 
 //qgis includes...
 #include <qgsrasterlayer.h> 
+#include <qgsrasterpyramid.h>
 #include <qgsrasterbandstats.h> 
 #include <qgsmaplayerregistry.h> 
 #include <qgsapplication.h>
@@ -55,6 +56,7 @@ class TestQgsRasterLayer: public QObject
     void landsatBasic();
     void landsatBasic875Qml();
     void checkDimensions(); 
+    void buildExternalOverviews();
   private:
     bool render(QString theFileName);
     bool setQml (QString theType);
@@ -154,6 +156,54 @@ void TestQgsRasterLayer::checkDimensions()
    QVERIFY ( mpRasterLayer->getRasterBandStats(1).elementCount == 100 );
 }
 
+void TestQgsRasterLayer::buildExternalOverviews()
+{
+  //before we begin delete any old ovr file (if it exists)
+  //and make a copy of the landsat raster into the temp dir
+
+  QString myTempPath = QDir::tempPath() + QDir::separator();
+  QFile::remove( myTempPath + "landsat.tif.ovr" );
+  QFile::copy( mTestDataDir + "landsat.tif" , myTempPath + "landsat.tif" );
+  QFileInfo myRasterFileInfo ( myTempPath + "landsat.tif" );
+  QgsRasterLayer * mypLayer = new QgsRasterLayer ( myRasterFileInfo.filePath(),
+            myRasterFileInfo.completeBaseName() );
+
+
+  //
+  // Ok now we can go on to test
+  //
+
+  bool myInternalFlag = false;
+  QgsRasterLayer::RasterPyramidList myPyramidList = mypLayer->buildRasterPyramidList();
+  for ( int myCounterInt = 0; myCounterInt < myPyramidList.count(); myCounterInt++ )
+  {
+    //mark to be pyramided
+    myPyramidList[myCounterInt].existsFlag=true;
+  }
+  //now actually make the pyramids
+  QString myResult = mypLayer->buildPyramids(
+        myPyramidList,
+        "NEAREST",
+        myInternalFlag
+        );
+  qDebug (myResult.toLocal8Bit());
+  //
+  // Lets verify we have pyramids now...
+  //
+  myPyramidList = mypLayer->buildRasterPyramidList();
+  for ( int myCounterInt = 0; myCounterInt < myPyramidList.count(); myCounterInt++ )
+  {
+    //mark to be pyramided
+    QVERIFY(myPyramidList.at(myCounterInt).existsFlag);
+  }
+
+  //
+  // And that they were indeed in an external file...
+  //
+  QVERIFY(QFile::exists(myTempPath + "landsat.tif.ovr"));
+  //cleanup
+  delete mypLayer;
+}
 bool TestQgsRasterLayer::render(QString theTestType)
 {
   mReport += "<h2>" + theTestType + "</h2>\n";
