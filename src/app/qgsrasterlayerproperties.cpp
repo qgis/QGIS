@@ -1608,7 +1608,8 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
     else if (res == "ERROR_WRITE_FORMAT")
     {
       QMessageBox::warning(this, tr("Building pyramids failed."),
-          tr("The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again.") );
+          tr("The file was not writeable. Some formats do not "
+            "support pyramid overviews. Consult the GDAL documentation if in doubt.") );
     }
     else if (res == "FAILED_NOT_SUPPORTED")
     {
