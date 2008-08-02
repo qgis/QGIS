@@ -193,7 +193,8 @@ void QgsVectorLayerProperties::reset( void )
   {
     displayFieldComboBox->addItem( it->name() );
   }   
-  displayFieldComboBox->setItemText( displayFieldComboBox->currentIndex(), layer->displayField() );
+  displayFieldComboBox->setCurrentIndex( displayFieldComboBox->findText(
+        layer->displayField() ) );
 
   // set up the scale based layer visibility stuff....
   chkUseScaleDependentRendering->setChecked(layer->scaleBasedVisibility());
