@@ -128,6 +128,27 @@ ENDIF (APPLE)
 
 
 #
+# Ticket 992 Regression992 test
+#
+SET(regression992_SRCS regression992.cpp ${util_SRCS})
+SET(regression992_MOC_CPPS regression992.cpp)
+QT4_WRAP_CPP(regression992_MOC_SRCS ${regression992_MOC_CPPS})
+ADD_CUSTOM_TARGET(regression992moc ALL DEPENDS ${regression992_MOC_SRCS})
+ADD_EXECUTABLE(regression992 ${regression992_SRCS})
+ADD_DEPENDENCIES(regression992 regression992moc)
+TARGET_LINK_LIBRARIES(regression992 ${QT_LIBRARIES} qgis_core)
+SET_TARGET_PROPERTIES(regression992
+  PROPERTIES INSTALL_RPATH ${QGIS_LIB_DIR}
+  INSTALL_RPATH_USE_LINK_PATH true)
+IF (APPLE)
+# For Mac OS X, the executable must be at the root of the bundle's executable folder
+  INSTALL(TARGETS regression992 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
+  ADD_TEST(regression992 ${CMAKE_INSTALL_PREFIX}/regression992)
+ELSE (APPLE)
+  INSTALL(TARGETS regression992 RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+  ADD_TEST(regression992 ${CMAKE_INSTALL_PREFIX}/bin/regression992)
+ENDIF (APPLE)
+#
 # Ticket 1141 Regression1141 test
 #
 SET(regression1141_SRCS regression1141.cpp ${util_SRCS})
