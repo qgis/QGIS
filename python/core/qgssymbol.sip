@@ -51,9 +51,9 @@ class QgsSymbol
     /**Get point symbol*/
     virtual QString pointSymbolName() const;
     /**Set size*/
-    virtual void setPointSize(int s);
+    virtual void setPointSize(double s);
     /**Get size*/
-    virtual int pointSize() const;
+    virtual double pointSize() const;
     //! Destructor
     virtual ~QgsSymbol();
 

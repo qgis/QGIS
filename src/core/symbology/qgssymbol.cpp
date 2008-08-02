@@ -40,7 +40,7 @@ QgsSymbol::QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString
       mLabel(label),
       mType(t),
       mPointSymbolName( "hard:circle" ),
-      mPointSize( 3 ),
+      mPointSize( DEFAULT_POINT_SIZE ),
       mPointSymbolImage(1,1, QImage::Format_ARGB32_Premultiplied),
       mWidthScale(1.0),
       mCacheUpToDate( false ),
@@ -58,7 +58,7 @@ QgsSymbol::QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString
       mPen( c ),
       mBrush( c ),
       mPointSymbolName( "hard:circle" ),
-      mPointSize( 3 ),
+      mPointSize( DEFAULT_POINT_SIZE ),
       mPointSymbolImage(1,1, QImage::Format_ARGB32_Premultiplied),
       mWidthScale(1.0),
       mCacheUpToDate( false ),
@@ -69,7 +69,7 @@ QgsSymbol::QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString
 
 QgsSymbol::QgsSymbol()
     : mPointSymbolName( "hard:circle" ),
-      mPointSize( 3 ),
+      mPointSize( DEFAULT_POINT_SIZE ),
       mPointSymbolImage(1,1, QImage::Format_ARGB32_Premultiplied),
       mWidthScale(1.0),
       mCacheUpToDate( false ),
@@ -83,7 +83,7 @@ QgsSymbol::QgsSymbol(QColor c)
     : mPen( c ),
       mBrush( c ),
       mPointSymbolName( "hard:circle" ),
-      mPointSize( 3 ),
+      mPointSize( DEFAULT_POINT_SIZE ),
       mPointSymbolImage(1,1, QImage::Format_ARGB32_Premultiplied),
       mWidthScale(1.0),
       mCacheUpToDate( false ),
@@ -227,17 +227,17 @@ QString QgsSymbol::pointSymbolName() const
     return mPointSymbolName;
 }
 
-void QgsSymbol::setPointSize(int s)
+void QgsSymbol::setPointSize(double s)
 {
-    if ( s < 3 )  
-	mPointSize = 3;
-    else 
-    	mPointSize = s;
+  if ( s < MINIMUM_POINT_SIZE )  
+    mPointSize = MINIMUM_POINT_SIZE;
+  else 
+    mPointSize = s;
 
-    mCacheUpToDate = mCacheUpToDate2 = false;
+  mCacheUpToDate = mCacheUpToDate2 = false;
 }
 
-int QgsSymbol::pointSize() const
+double QgsSymbol::pointSize() const
 {
     return mPointSize;
 }
@@ -343,12 +343,12 @@ QImage QgsSymbol::getPointSymbolAsImage(  double widthScale, bool selected, QCol
   {
     pen.setColor ( selectionColor ); 
     QBrush brush = mBrush;
-    preRotateImage = QgsMarkerCatalogue::instance()->imageMarker ( mPointSymbolName, (int)(mPointSize * scale * widthScale * rasterScaleFactor),
+    preRotateImage = QgsMarkerCatalogue::instance()->imageMarker ( mPointSymbolName, (float)(mPointSize * scale * widthScale * rasterScaleFactor),
                                                                    pen, mBrush );
   }
   else 
   {
-    preRotateImage = QgsMarkerCatalogue::instance()->imageMarker ( mPointSymbolName, (int)(mPointSize * scale * widthScale * rasterScaleFactor),
+    preRotateImage = QgsMarkerCatalogue::instance()->imageMarker ( mPointSymbolName, (float)(mPointSize * scale * widthScale * rasterScaleFactor),
                                                                    pen, mBrush );
   }
 
@@ -517,7 +517,7 @@ bool QgsSymbol::readXML( QDomNode & synode )
     if ( !  psizenode.isNull() )
     {
         QDomElement psizeelement = psizenode.toElement();
-        setPointSize( psizeelement.text().toInt() );
+        setPointSize( psizeelement.text().toFloat() );
     }
 
     mRotationClassificationField = -1;

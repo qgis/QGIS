@@ -3658,6 +3658,8 @@ QString QgsRasterLayer::buildPyramids(RasterPyramidList const & theRasterPyramid
   //
   // Note: Make sure the raster is not opened in write mode
   // in order to force overviews to be written to a separate file.
+  // Otherwise reoopen it in read/write mode to stick overviews 
+  // into the same file (if supported)
   //
 
 
